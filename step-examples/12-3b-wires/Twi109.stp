@@ -1,102 +1,96 @@
 ISO-10303-21;
-/* Twi109 - ShapeFix_Wire.FixShifted period-shift on closed surface
- * Defect: Wire on a cylindrical surface (periodic in U) where one edge's pcurve
- * has been shifted by ±2π in parameter space, breaking U-parameter continuity.
- * The edge connects correctly in 3D space but pcurve jumps discontinuously. */
+/* Twi109: Single ADVANCED_FACE on a CYLINDRICAL_SURFACE (radius 1, height 4, axis +Z); outer EDGE_LOOP has 4 edges: E0 bottom arc (theta 0→pi/2, v=0); E1 lateral (u=pi/2, v:0→4); E2 top arc (theta pi/2→0, v=4); E3 lateral 3D-curve correct (u=0, v:4→0) but pcurve shifted +2pi — pcurve starts at u=6.28318530718 instead of u=0; U-continuity breaks at E2/E3 junction in parameter space; ShapeFix_Wire.FixShifted normalizes period-shifted pcurve IS mechanism; EDGE_LOOP IS wired into FACE_OUTER_BOUND -> ADVANCED_FACE in CLOSED_SHELL; never orphaned */
 HEADER;
-FILE_DESCRIPTION(('Twi109 - FixShifted period-shift on cylindrical surface'),'2;1');
-FILE_NAME('Twi109.stp','2026-06-15T00:00:00',('cad-research-suite'),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Twi109'),'2;1');
+FILE_NAME('Twi109.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Cylindrical surface (radius 5.0, periodic in U: 0..2π) */
-#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#21=DIRECTION('',(0.0,0.0,1.0));
-#22=DIRECTION('',(1.0,0.0,0.0));
-#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
-#24=CYLINDRICAL_SURFACE('',#23,5.0);
-/* 2D parameter context for pcurves */
-#100=(GEOMETRIC_REPRESENTATION_CONTEXT(2)
-     PARAMETRIC_REPRESENTATION_CONTEXT()
-     REPRESENTATION_CONTEXT('uv','2D'));
-/* Four vertices forming a closed wire on cylinder */
-#30=CARTESIAN_POINT('P0',(5.0,0.0,0.0));
-#31=CARTESIAN_POINT('P1',(5.0,0.0,5.0));
-#32=CARTESIAN_POINT('P2',(3.5,3.5,5.0));
-#33=CARTESIAN_POINT('P3',(3.5,-3.5,0.0));
-#40=VERTEX_POINT('',#30);
-#41=VERTEX_POINT('',#31);
-#42=VERTEX_POINT('',#32);
-#43=VERTEX_POINT('',#33);
-/* Edge 1: P0 -> P1 (vertical on cylinder, u=0) */
-#50=DIRECTION('',(0.0,0.0,1.0));
-#51=VECTOR('',#50,1.0);
-#52=LINE('',#30,#51);
-#60=CARTESIAN_POINT('uv0',(0.0,0.0));
-#61=CARTESIAN_POINT('uv1',(0.0,1.0));
-#62=POLYLINE('pcurve_seg1',(#60,#61));
-#63=DEFINITIONAL_REPRESENTATION('pcurve1_def',(#62),#100);
-#64=PCURVE('pcurve1',#24,#63);
-#65=EDGE_CURVE('E1',#40,#41,#52,.T.);
-/* Edge 2: P1 -> P2 (on cylinder, u=π/4) */
-#70=DIRECTION('',(-0.7071067811865475,0.7071067811865475,0.0));
-#71=VECTOR('',#70,1.0);
-#72=LINE('',#31,#71);
-#80=CARTESIAN_POINT('uv2',(0.7853981633974483,1.0));
-#81=CARTESIAN_POINT('uv3',(0.7853981633974483,0.0));
-#82=POLYLINE('pcurve_seg2',(#80,#81));
-#83=DEFINITIONAL_REPRESENTATION('pcurve2_def',(#82),#100);
-#84=PCURVE('pcurve2',#24,#83);
-#85=EDGE_CURVE('E2',#41,#42,#72,.T.);
-/* Edge 3: P2 -> P3
-   Defect: This edge connects correctly in 3D but pcurve has period-shifted u.
-   Should use u≈π/4 at start and u≈-π/4≈7π/4 at end,
-   but instead uses u≈π/4+2π=2π+π/4 (shifted 2π in parameter space).
-   This breaks pcurve continuity check in FixShifted. */
-#90=DIRECTION('',(0.0,-1.0,0.0));
-#91=VECTOR('',#90,1.0);
-#92=LINE('',#32,#91);
-#95=CARTESIAN_POINT('uv4',(8.0634010695144898,0.0));
-#96=CARTESIAN_POINT('uv5',(8.0634010695144898,-1.0));
-#97=POLYLINE('pcurve_seg3',(#95,#96));
-#98=DEFINITIONAL_REPRESENTATION('pcurve3_def',(#97),#100);
-#99=PCURVE('pcurve3',#24,#98);
-#101=EDGE_CURVE('E3',#42,#43,#92,.T.);
-/* Edge 4: P3 -> P0 (closes loop, u=7π/4≈-π/4) */
-#110=DIRECTION('',(0.7071067811865475,0.7071067811865475,0.0));
-#111=VECTOR('',#110,1.0);
-#112=LINE('',#33,#91);
-#115=CARTESIAN_POINT('uv6',(5.4977871437821381,-1.0));
-#116=CARTESIAN_POINT('uv7',(5.4977871437821381,0.0));
-#117=POLYLINE('pcurve_seg4',(#115,#116));
-#118=DEFINITIONAL_REPRESENTATION('pcurve4_def',(#117),#100);
-#119=PCURVE('pcurve4',#24,#118);
-#120=EDGE_CURVE('E4',#43,#40,#112,.T.);
-/* Closed wire loop with shifted E3 pcurve */
-#130=ORIENTED_EDGE('',*,*,#65,.T.);
-#131=ORIENTED_EDGE('',*,*,#85,.T.);
-#132=ORIENTED_EDGE('',*,*,#101,.T.);
-#133=ORIENTED_EDGE('',*,*,#120,.T.);
-#134=EDGE_LOOP('',(#130,#131,#132,#133));
-#135=FACE_OUTER_BOUND('',#134,.T.);
-#136=ADVANCED_FACE('',(#135),#24,.T.);
-#140=CLOSED_SHELL('',(#136));
-/* PRODUCT chain */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Twi109','Twi109','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#140));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CYLINDRICAL_SURFACE('',#4,1.0);
+#6=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#7=VERTEX_POINT('',#6);
+#8=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#9=VERTEX_POINT('',#8);
+#10=CARTESIAN_POINT('',(0.0,1.0,4.0));
+#11=VERTEX_POINT('',#10);
+#12=CARTESIAN_POINT('',(1.0,0.0,4.0));
+#13=VERTEX_POINT('',#12);
+#14=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#15=DIRECTION('',(0.0,0.0,1.0));
+#16=DIRECTION('',(1.0,0.0,0.0));
+#17=AXIS2_PLACEMENT_3D('',#14,#15,#16);
+#18=CIRCLE('',#17,1.0);
+#19=CARTESIAN_POINT('',(0.0,0.0));
+#20=DIRECTION('',(1.0,0.0));
+#21=VECTOR('',#20,1.57079632679);
+#22=LINE('',#19,#21);
+#23=DEFINITIONAL_REPRESENTATION('',(#22),#*);
+#24=PCURVE('',#5,#23);
+#25=SURFACE_CURVE('',#18,(#24),.PCURVE_S1.);
+#26=EDGE_CURVE('',#7,#9,#25,.T.);
+#27=ORIENTED_EDGE('',*,*,#26,.T.);
+#28=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#29=DIRECTION('',(0.0,0.0,1.0));
+#30=VECTOR('',#29,4.0);
+#31=LINE('',#28,#30);
+#32=CARTESIAN_POINT('',(1.57079632679,0.0));
+#33=DIRECTION('',(0.0,1.0));
+#34=VECTOR('',#33,4.0);
+#35=LINE('',#32,#34);
+#36=DEFINITIONAL_REPRESENTATION('',(#35),#*);
+#37=PCURVE('',#5,#36);
+#38=SURFACE_CURVE('',#31,(#37),.PCURVE_S1.);
+#39=EDGE_CURVE('',#9,#11,#38,.T.);
+#40=ORIENTED_EDGE('',*,*,#39,.T.);
+#41=CARTESIAN_POINT('',(0.0,0.0,4.0));
+#42=DIRECTION('',(0.0,0.0,1.0));
+#43=DIRECTION('',(1.0,0.0,0.0));
+#44=AXIS2_PLACEMENT_3D('',#41,#42,#43);
+#45=CIRCLE('',#44,1.0);
+#46=CARTESIAN_POINT('',(1.57079632679,4.0));
+#47=DIRECTION('',(-1.0,0.0));
+#48=VECTOR('',#47,1.57079632679);
+#49=LINE('',#46,#48);
+#50=DEFINITIONAL_REPRESENTATION('',(#49),#*);
+#51=PCURVE('',#5,#50);
+#52=SURFACE_CURVE('',#45,(#51),.PCURVE_S1.);
+#53=EDGE_CURVE('',#11,#13,#52,.T.);
+#54=ORIENTED_EDGE('',*,*,#53,.T.);
+#55=CARTESIAN_POINT('',(1.0,0.0,4.0));
+#56=DIRECTION('',(0.0,0.0,-1.0));
+#57=VECTOR('',#56,4.0);
+#58=LINE('',#55,#57);
+#59=CARTESIAN_POINT('',(6.28318530718,4.0));
+#60=DIRECTION('',(0.0,-1.0));
+#61=VECTOR('',#60,4.0);
+#62=LINE('',#59,#61);
+#63=DEFINITIONAL_REPRESENTATION('',(#62),#*);
+#64=PCURVE('',#5,#63);
+#65=SURFACE_CURVE('',#58,(#64),.PCURVE_S1.);
+#66=EDGE_CURVE('',#13,#7,#65,.T.);
+#67=ORIENTED_EDGE('',*,*,#66,.T.);
+#68=EDGE_LOOP('',(#27,#40,#54,#67));
+#69=FACE_OUTER_BOUND('',#68,.T.);
+#70=ADVANCED_FACE('',(#69),#5,.T.);
+#71=CLOSED_SHELL('',(#70));
+#72=SHELL_BASED_SURFACE_MODEL('',(#71));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi109','Twi109','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#72),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
