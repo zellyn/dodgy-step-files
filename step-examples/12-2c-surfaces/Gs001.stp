@@ -1,47 +1,95 @@
 ISO-10303-21;
-/* Gs001 - TOROIDAL_SURFACE with negative MajorRadius (SolidWorks/Pro-E orientation marker)
- *
- * Sources:           R001 (OCCT bug11857), Q012, Q058, G004, W019, J010
- * Originally:        Tsh034
- * Senders observed:  SolidWorks 2014 (and earlier), Pro/E Wildfire 5.0
- *
- * Defect: Some vendors encode reversed face orientation by emitting a TOROIDAL_SURFACE
- *  with negative major_radius (and/or negative minor_radius, or minor > major).
- *  Translators that take the radius value at face value compute the wrong geometry;
- *  translators that only check sign produce partially wrong shapes.
- *
- * Reproducer: TOROIDAL_SURFACE('',axis2, major:=-50.0, minor:=10.0) referenced by an
- *  ADVANCED_FACE; major_radius negative and SameSense interpreted by writer as flip.
- *
- * Expected kernel behavior:
- *   heal - interpret negative-radius torus as orientation flip;
- *   reject only when the absolute dimensions are physically impossible. */
+/* Gs001: TOROIDAL_SURFACE major_radius=-50.0 minor_radius=10.0 IS ADVANCED_FACE.face_geometry; negative major_radius encodes SolidWorks/Pro-E orientation flip; degenerate torus evaluation; shape(1) (live OCC heals) */
 HEADER;
-FILE_DESCRIPTION(('Gs001 test case','Negative MajorRadius torus orientation marker'),'2;1');
-FILE_NAME('Gs001.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Gs001'),'2;1');
+FILE_NAME('Gs001.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Axis placement at origin */
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-/* Defect: TOROIDAL_SURFACE with negative MajorRadius (-50.0) */
-/* Reader must interpret as orientation flip, not literal negative radius. */
-#20=TOROIDAL_SURFACE('',#13,-50.0,10.0);
-/* Outer-bound vertex on the natural torus (using |major|+minor = 60.0) */
-#30=CARTESIAN_POINT('',(60.0,0.0,0.0));
-#31=VERTEX_POINT('',#30);
-/* Single VERTEX_LOOP describing the natural full-torus boundary */
-#32=VERTEX_LOOP('',#31);
-#33=FACE_OUTER_BOUND('',#32,.T.);
-/* ADVANCED_FACE references the negative-radius torus surface */
-#34=ADVANCED_FACE('',(#33),#20,.T.);
-/* Wrap the face into a simple shell so consumers attempting to compute volume
- * trip the radius-sign pathology rather than just the surface evaluation. */
-#40=OPEN_SHELL('',(#34));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=TOROIDAL_SURFACE('gs001_torus',#4,-50.0,10.0);
+#6=CARTESIAN_POINT('',(60.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(59.7002499167,5.99000499881,0.0));
+#8=CARTESIAN_POINT('',(59.6505411531,5.98501748632,0.998334166468));
+#9=CARTESIAN_POINT('',(59.9500416528,0.0,0.998334166468));
+#10=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#11=VERTEX_POINT('',#6);
+#12=VERTEX_POINT('',#7);
+#13=VERTEX_POINT('',#8);
+#14=VERTEX_POINT('',#9);
+#15=CARTESIAN_POINT('',(60.0,0.0,0.0));
+#16=DIRECTION('',(1.0,0.0,0.0));
+#17=VECTOR('',#16,5.0);
+#18=LINE('',#15,#17);
+#19=CARTESIAN_POINT('',(0.0,0.0));
+#20=DIRECTION('',(1.0,0.0));
+#21=VECTOR('',#20,0.1);
+#22=LINE('',#19,#21);
+#23=DEFINITIONAL_REPRESENTATION('pcdef',(#22),#10);
+#24=PCURVE('pc',#5,#23);
+#25=SURFACE_CURVE('sc',#18,(#24),.PCURVE_S1.);
+#26=EDGE_CURVE('ec',#11,#12,#25,.T.);
+#27=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#28=DIRECTION('',(0.0,1.0,0.0));
+#29=VECTOR('',#28,1.0);
+#30=LINE('',#27,#29);
+#31=CARTESIAN_POINT('',(0.1,0.0));
+#32=DIRECTION('',(0.0,1.0));
+#33=VECTOR('',#32,0.1);
+#34=LINE('',#31,#33);
+#35=DEFINITIONAL_REPRESENTATION('pcdef',(#34),#10);
+#36=PCURVE('pc',#5,#35);
+#37=SURFACE_CURVE('sc',#30,(#36),.PCURVE_S1.);
+#38=EDGE_CURVE('ec',#12,#13,#37,.T.);
+#39=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#40=DIRECTION('',(-1.0,0.0,0.0));
+#41=VECTOR('',#40,1.0);
+#42=LINE('',#39,#41);
+#43=CARTESIAN_POINT('',(0.1,0.1));
+#44=DIRECTION('',(-1.0,0.0));
+#45=VECTOR('',#44,0.1);
+#46=LINE('',#43,#45);
+#47=DEFINITIONAL_REPRESENTATION('pcdef',(#46),#10);
+#48=PCURVE('pc',#5,#47);
+#49=SURFACE_CURVE('sc',#42,(#48),.PCURVE_S1.);
+#50=EDGE_CURVE('ec',#13,#14,#49,.T.);
+#51=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#52=DIRECTION('',(0.0,-1.0,0.0));
+#53=VECTOR('',#52,1.0);
+#54=LINE('',#51,#53);
+#55=CARTESIAN_POINT('',(0.0,0.1));
+#56=DIRECTION('',(0.0,-1.0));
+#57=VECTOR('',#56,0.1);
+#58=LINE('',#55,#57);
+#59=DEFINITIONAL_REPRESENTATION('pcdef',(#58),#10);
+#60=PCURVE('pc',#5,#59);
+#61=SURFACE_CURVE('sc',#54,(#60),.PCURVE_S1.);
+#62=EDGE_CURVE('ec',#14,#11,#61,.T.);
+#63=ORIENTED_EDGE('',$,$,#26,.T.);
+#64=ORIENTED_EDGE('',$,$,#38,.T.);
+#65=ORIENTED_EDGE('',$,$,#50,.T.);
+#66=ORIENTED_EDGE('',$,$,#62,.T.);
+#67=EDGE_LOOP('',(#63,#64,#65,#66));
+#68=FACE_OUTER_BOUND('',#67,.T.);
+#69=ADVANCED_FACE('',(#68),#5,.T.);
+#70=OPEN_SHELL('',(#69));
+#71=SHELL_BASED_SURFACE_MODEL('',(#70));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gs001','Gs001','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#71),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

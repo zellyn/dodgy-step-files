@@ -2111,11 +2111,11 @@ End of file.
 - **Notes**: Recurs across OCCT bug R001 (bug11857) and Mantis 0026376; maintainer-acknowledged orientation pathology in J010. **See also**: Gs036, Tsh035. Synonyms: "torus negative major radius", "TOROIDAL_SURFACE has negative MajorRadius", "SolidWorks negative-radius torus orientation marker", "Pro/E torus with sign-flipped radius", "torus radius negative encodes face flip".
 - **Byte assertion**: contains(b'TOROIDAL_SURFACE(')
 - **Byte assertion**: contains(b'-50.0,10.0')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs002 — Degenerate (lemon/apple) torus where minor_radius >= major_radius
 - **Category**: §12.2c surface-degeneracy
@@ -2132,7 +2132,7 @@ End of file.
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
 ### Gs005 — Surface periodicity not declared but actually closed
 - **Category**: §12.2c surface-degeneracy
@@ -12842,9 +12842,9 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "fit didn't converge". Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: runtime-only. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: contains(b'LINE(')
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 5
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Geometric-utility computation (intersection, projection, extrema) returns a wrong or NULL result; downstream operations that depend on it propagate the wrong value into the loaded geometry.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-2c-surfaces/Gb001.stp
 
 ### Gb002 — Surface tangent / normal undefined at a parameter (LProp_Status.Undefined)
@@ -12861,7 +12861,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Geometric-utility computation (intersection, projection, extrema) returns a wrong or NULL result; downstream operations that depend on it propagate the wrong value into the loaded geometry.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-2c-surfaces/Gb002.stp
 
 ### Gb003 — Closed B-spline curve has reversed end-tangent
@@ -12877,7 +12877,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') == 5
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: Geometric-utility computation (intersection, projection, extrema) returns a wrong or NULL result; downstream operations that depend on it propagate the wrong value into the loaded geometry.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-2c-surfaces/Gb003.stp
 
 ### Gb004 — Pcurve and 3D curve disagree by a measurable distance (CheckCurveOnSurface)
@@ -12891,11 +12891,11 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'PCURVE(')
 - **Byte assertion**: contains(b'SURFACE_CURVE(')
 - **Byte assertion**: contains(b'EDGE_CURVE(')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Geometric-utility computation (intersection, projection, extrema) returns a wrong or NULL result; downstream operations that depend on it propagate the wrong value into the loaded geometry.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-2c-surfaces/Gb004.stp
 
 ---

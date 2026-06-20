@@ -1,45 +1,36 @@
 ISO-10303-21;
-/* Gs002 - Degenerate (lemon/apple) torus where minor_radius >= major_radius
- *
- * Sources:  G010, G011, G066
- *
- * Defect: STEP TOROIDAL_SURFACE with minor radius equal to or exceeding major
- *  radius collapses the analytic torus into a self-intersecting "lemon"
- *  (minor>major, no central hole) or an "apple" (minor=major, single pinch
- *  point). OCCT pre-fix produced overlarge bounding boxes and FixMissingSeam
- *  did not handle the degenerate-torus case; revolved-shape variant (G011)
- *  imported inverted.
- *
- * Reproducer:  TOROIDAL_SURFACE with major_radius=2, minor_radius=3.
- *  Reference from a face with single FACE_OUTER_BOUND covering the full
- *  parameter rectangle (single VERTEX_LOOP natural bound).
- *
- * Expected kernel behavior:
- *   heal - accept the analytic surface, recognise it as degenerate, treat the
- *   parameter range as regular for seam insertion; compute bbox correctly for
- *   visualisation. */
+/* Gs002: TOROIDAL_SURFACE major_radius=2.0 minor_radius=3.0 IS ADVANCED_FACE.face_geometry; minor > major → lemon/apple shape, self-intersecting torus, no central hole; VERTEX_LOOP at apex wires degenerate boundary; shape_null=True */
 HEADER;
-FILE_DESCRIPTION(('Gs002 test case','Lemon/apple torus minor>=major'),'2;1');
-FILE_NAME('Gs002.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Gs002'),'2;1');
+FILE_NAME('Gs002.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-/* Defect: lemon torus, minor (3.0) > major (2.0); no central hole, self-intersects */
-#20=TOROIDAL_SURFACE('',#13,2.0,3.0);
-/* Single FACE_OUTER_BOUND covering full parameter rectangle */
-/* Outer vertex at outer-equator of the lemon torus: |major|+|minor| = 5.0 */
-#30=CARTESIAN_POINT('',(5.0,0.0,0.0));
-#31=VERTEX_POINT('',#30);
-#32=VERTEX_LOOP('',#31);
-#33=FACE_OUTER_BOUND('',#32,.T.);
-#34=ADVANCED_FACE('',(#33),#20,.T.);
-/* OPEN_SHELL exposes the degenerate face to volume / centroid checks */
-#40=OPEN_SHELL('',(#34));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=TOROIDAL_SURFACE('gs002_lemon',#4,2.0,3.0);
+#6=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#7=VERTEX_POINT('',#6);
+#8=VERTEX_LOOP('gs002_vloop',#7);
+#9=FACE_OUTER_BOUND('gs002_fob',#8,.T.);
+#10=ADVANCED_FACE('gs002_face',(#9),#5,.T.);
+#11=OPEN_SHELL('gs002_shell',(#10));
+#12=SHELL_BASED_SURFACE_MODEL('',());
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gs002','Gs002','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#12),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

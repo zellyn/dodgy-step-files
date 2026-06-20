@@ -1,23 +1,36 @@
 ISO-10303-21;
-/* Gb003 - Closed B-spline with reversed end tangent (cusp).
- * Defect: degree-3 closed B-spline with control points (1,0,0),
- * (0,1,0), (-1,0,0), (0,-1,0), (1,0,0). The curve closes positionally
- * but the start and end tangents are perpendicular - cusp. */
+/* Gb003: B_SPLINE_CURVE_WITH_KNOTS degree-3 closed=.T. 5 control points cp[0]==cp[4]=(1,0,0); tangent at t=0 != tangent at t=1 (cusp); IS ADVANCED_FACE.face_geometry (3D curve used as surface entity); VERTEX_LOOP at (1,0,0) wires boundary; shape_null=True; exactly 5 CARTESIAN_POINT entities */
 HEADER;
-FILE_DESCRIPTION(('Gb003 - closed bspline reversed tangent','Pass C gap-fill'),'2;1');
-FILE_NAME('Gb003.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Gb003'),'2;1');
+FILE_NAME('Gb003.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#10=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#11=CARTESIAN_POINT('',(0.0,1.0,0.0));
-#12=CARTESIAN_POINT('',(-1.0,0.0,0.0));
-#13=CARTESIAN_POINT('',(0.0,-1.0,0.0));
-#14=CARTESIAN_POINT('',(1.0,0.0,0.0));
-/* Marked closed_curve = .T. but tangent at start (toward Y+) and end
-   (toward X+) differ by 90° - not a smooth closure. */
-#20=B_SPLINE_CURVE_WITH_KNOTS('cusp_at_closure',3,(#10,#11,#12,#13,#14),
-   .UNSPECIFIED.,.T.,.F.,(4,1,4),(0.0,0.5,1.0),.UNSPECIFIED.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#3=CARTESIAN_POINT('',(-1.0,0.0,0.0));
+#4=CARTESIAN_POINT('',(0.0,-1.0,0.0));
+#5=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#6=B_SPLINE_CURVE_WITH_KNOTS('gb003_cusp_close',3,(#1,#2,#3,#4,#5),.UNSPECIFIED.,.T.,.F.,(4,4),(0.0,1.0),.UNSPECIFIED.);
+#7=VERTEX_POINT('',#1);
+#8=VERTEX_LOOP('gb003_vloop',#7);
+#9=FACE_OUTER_BOUND('gb003_fob',#8,.T.);
+#10=ADVANCED_FACE('gb003_face',(#9),#6,.T.);
+#11=OPEN_SHELL('gb003_shell',(#10));
+#12=SHELL_BASED_SURFACE_MODEL('',());
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gb003','Gb003','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#12),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

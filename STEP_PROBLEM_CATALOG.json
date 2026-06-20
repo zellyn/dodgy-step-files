@@ -25679,7 +25679,7 @@
     "cross_oracle_note": null,
     "description": "A user requests a B-spline approximation of a non-rational curve (e.g., a polynomial of high degree) within tolerance ε. The approximation algorithm does not converge; the residual remains above ε after the maximum number of refinement iterations. Bug-reporter language: \"approximation didn't converge\", \"B-spline fit failed\", \"tolerance too tight for fit\".",
     "expected_kernel_behavior": "Return the partial result with the achieved residual reported; or reject.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": "receiver-behavior",
     "fixture_path": "step-examples/12-2c-surfaces/Gb001.stp",
     "id": "Gb001",
@@ -25701,7 +25701,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Curve approximation cannot meet the requested tolerance"
   },
@@ -25716,7 +25716,7 @@
     "cross_oracle_note": null,
     "description": "A surface property query (tangent in U, V, or normal) at a specific UV parameter returns \"undefined\" because the surface partial derivatives vanish there (a pole, a degenerate corner). Bug-reporter language: \"surface tangent undefined\", \"normal not computable\", \"pole on surface\".",
     "expected_kernel_behavior": "Reject with status: return the undefined status to the caller; do not return a NaN or arbitrary unit vector. Must not silently accept.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gb002.stp",
     "id": "Gb002",
@@ -25734,6 +25734,7 @@
       "OCCT GeomLProp_SLProps (LProp_Status::Undefined) (uncovered class evidence)"
     ],
     "taxonomy": [
+      "crash",
       "geometry"
     ],
     "tier3_assertions": [
@@ -25753,7 +25754,7 @@
     "cross_oracle_note": null,
     "description": "A `B_SPLINE_CURVE_WITH_KNOTS` declares `closed = .T.` and the first/last control points coincide, but the start and end tangents differ in sign; meaning the curve closes positionally but the tangent has a sharp reversal at the closure point (a cusp). Bug-reporter language: \"closed B-spline has cusp\", \"closure tangent reversed\", \"C0 closure but no C1\".",
     "expected_kernel_behavior": "Reject the smooth-closure claim; or open the curve at the cusp.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gb003.stp",
     "id": "Gb003",
@@ -25771,6 +25772,7 @@
       "OCCT GeomLib_CheckBSplineCurve (uncovered class evidence)"
     ],
     "taxonomy": [
+      "crash",
       "silent-loss",
       "geometry"
     ],
@@ -25791,7 +25793,7 @@
     "cross_oracle_note": null,
     "description": "For an edge represented by both a 3D curve and a pcurve, the kernel computes the maximum point-to-curve distance between the 3D curve and the surface evaluation of the pcurve. This distance is non-trivial (not just numerical noise) and exceeds the edge's declared tolerance. Bug-reporter language: \"pcurve and 3D curve disagree\", \"edge representation gap\", \"pcurve drift\".",
     "expected_kernel_behavior": "Heal and accept: detect via sample-based check; bump tolerance to encompass the gap, or reproject to align.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gb004.stp",
     "id": "Gb004",
@@ -25812,7 +25814,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Pcurve and 3D curve disagree by a measurable distance (CheckCurveOnSurface)"
   },
@@ -25827,7 +25829,7 @@
     "cross_oracle_note": null,
     "description": "Some vendors encode reversed face orientation by emitting a `TOROIDAL_SURFACE` with negative `major_radius` (and/or negative `minor_radius`, or `minor > major`). Translators that take the radius value at face value compute the wrong geometry; translators that only check sign produce partially wrong shapes.",
     "expected_kernel_behavior": "heal; interpret negative-radius torus as orientation flip; reject only when the absolute dimensions are physically impossible.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs001.stp",
     "id": "Gs001",
@@ -25851,7 +25853,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "TOROIDAL_SURFACE with negative MajorRadius (SolidWorks/Pro-E orientation marker)"
   },
@@ -25867,7 +25869,7 @@
     "cross_oracle_note": null,
     "description": "A STEP `TOROIDAL_SURFACE` with minor radius equal to or exceeding major radius collapses the analytic torus into a self-intersecting \"lemon\" (minor > major, no central hole) or \"apple\" (minor = major, single pinch point at the centre). Receivers that assume `minor < major` produce overlarge bounding boxes, mis-handle seam insertion, or import a revolved-shape variant inverted.",
     "expected_kernel_behavior": "accept the analytic surface and treat its parameter range correctly for seam insertion and bbox computation, or reject as malformed (a kernel that requires `minor < major` should refuse rather than silently mis-bound).",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs002.stp",
     "id": "Gs002",
@@ -25885,6 +25887,7 @@
       "G010, G011, G066"
     ],
     "taxonomy": [
+      "crash",
       "geometry"
     ],
     "tier3_assertions": [
