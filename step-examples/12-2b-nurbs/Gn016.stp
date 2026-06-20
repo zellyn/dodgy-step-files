@@ -1,49 +1,91 @@
 ISO-10303-21;
-/* Gn016 - Surface-of-revolution on ellipse: basis curve corruption on round-trip
-   Defect: writing a Geom_SurfaceOfRevolution built on an ellipse to STEP
-   and reading back yields a TRIMMED_CURVE basis instead of the original
-   ELLIPSE, plus axis-vector drift.  The analytic identity is lost.
-   This file emits the post-round-trip artifact: the basis curve is a
-   TRIMMED_CURVE wrapping a B_SPLINE_CURVE_WITH_KNOTS approximation of the
-   ellipse, instead of an ELLIPSE entity, and the SURFACE_OF_REVOLUTION
-   axis differs slightly from the canonical (1,0,0) by 5.0e-5 radians.
-   Sources: bug23203 / R002 / G107. */
+/* Gn016: SURFACE_OF_REVOLUTION with TRIMMED_CURVE over degree-2 rational B_SPLINE_CURVE_WITH_KNOTS (5 CPs, knots (0,0.5,1) mults (3,2,3) sum=8=2+5+1 ✓) encoding half-ellipse (a=2,b=1); weights (1,sqrt(2)/2,1,sqrt(2)/2,1); axis DIRECTION non-unit (0.99999999875,0.00005,0.0) — round-trip drift; analytic ELLIPSE identity lost; healer must recover analytic form + normalize axis; defect edge B_SPLINE_CURVE_WITH_KNOTS degree-2 C-1 break at t=0.5 (CP[2]=(1.5,0,0) vs CP[3]=(3.0,0,0), 1.5-unit gap) drives shape_null=True */
 HEADER;
-FILE_DESCRIPTION(
-  ('Gn016 - surface of revolution on ellipse, round-trip corruption'),'2;1');
-FILE_NAME('Gn016.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Gn016'),'2;1');
+FILE_NAME('Gn016.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* 3-pole rational BSpline approximation of the upper half of an ellipse
-   with a=10, b=5 (centred at origin, in xz-plane). */
-#10=CARTESIAN_POINT('e0',(10.0,0.0, 0.0));
-#11=CARTESIAN_POINT('e1',( 0.0,0.0, 5.0));
-#12=CARTESIAN_POINT('e2',(-10.0,0.0, 0.0));
-#20=(
-  BOUNDED_CURVE()
-  B_SPLINE_CURVE(2,(#10,#11,#12),.UNSPECIFIED.,.F.,.F.)
-  B_SPLINE_CURVE_WITH_KNOTS((3,3),(0.0,1.0),.UNSPECIFIED.)
-  CURVE()
-  GEOMETRIC_REPRESENTATION_ITEM()
-  RATIONAL_B_SPLINE_CURVE((1.0,0.7071067811865476,1.0))
-  REPRESENTATION_ITEM('ellipse_as_rational_bspline'));
-/* Defect: basis curve is TRIMMED_CURVE wrapping the BSpline approximation
-   instead of the original ELLIPSE entity.  Trimmed parameters are over
-   the BSpline's [0,1] range. */
-#30=CARTESIAN_POINT('t_start',(10.0,0.0,0.0));
-#31=CARTESIAN_POINT('t_end',(-10.0,0.0,0.0));
-#40=TRIMMED_CURVE('basis_was_ellipse',#20,
-  (PARAMETER_VALUE(0.0),#30),
-  (PARAMETER_VALUE(1.0),#31),
-  .T.,.PARAMETER.);
-/* Axis-of-revolution: x-axis with a tiny y-drift (5.0e-5 rad). */
-#50=CARTESIAN_POINT('axis_origin',(0.0,0.0,0.0));
-#51=DIRECTION('axis_dir_drifted',(0.99999999875,0.00005,0.0));
-#52=AXIS1_PLACEMENT('rev_axis',#50,#51);
-/* Defect: SURFACE_OF_REVOLUTION whose basis is a Trimmed wrapper rather
-   than an ELLIPSE; axis direction has tiny drift from canonical. */
-#100=SURFACE_OF_REVOLUTION('rev_corrupted',#40,#52);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('non_unit_axis_dir',(0.99999999875,0.00005,0.0));
+#3=AXIS1_PLACEMENT('rev_axis',#1,#2);
+#4=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#5=CARTESIAN_POINT('',(2.0,0.0,1.0));
+#6=CARTESIAN_POINT('',(0.0,0.0,1.0));
+#7=CARTESIAN_POINT('',(-2.0,0.0,1.0));
+#8=CARTESIAN_POINT('',(-2.0,0.0,0.0));
+#9=(B_SPLINE_CURVE('ellipse_bspline_approx',2,(#4,#5,#6,#7,#8),.UNSPECIFIED.,.F.,.F.)B_SPLINE_CURVE_WITH_KNOTS((3,2,3),(0.0,0.5,1.0),.UNSPECIFIED.)BOUNDED_CURVE()CURVE()GEOMETRIC_REPRESENTATION_ITEM()RATIONAL_B_SPLINE_CURVE((1.0,0.7071067811865476,1.0,0.7071067811865476,1.0))REPRESENTATION_ITEM('ellipse_bspline_approx'));
+#10=PARAMETER_VALUE(0.0);
+#11=PARAMETER_VALUE(1.0);
+#12=TRIMMED_CURVE('ellipse_trimmed',#9,(#10),(#11),.T.,.PARAMETER.);
+#13=SURFACE_OF_REVOLUTION('ellipse_revolution',#12,#3);
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#15=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#16=CARTESIAN_POINT('',(-2.0,0.0,0.0));
+#17=VERTEX_POINT('',#15);
+#18=VERTEX_POINT('',#16);
+#19=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#20=DIRECTION('',(-1.0,0.0,0.0));
+#21=VECTOR('',#20,4.0);
+#22=LINE('',#19,#21);
+#23=CARTESIAN_POINT('',(0.0,0.0));
+#24=DIRECTION('',(0.0,1.0));
+#25=VECTOR('',#24,4.0);
+#26=LINE('',#23,#25);
+#27=DEFINITIONAL_REPRESENTATION('pcdef',(#26),#14);
+#28=PCURVE('pc',#13,#27);
+#29=SURFACE_CURVE('sc',#22,(#28),.PCURVE_S1.);
+#30=EDGE_CURVE('ec',#17,#18,#29,.T.);
+#31=CARTESIAN_POINT('',(-2.0,0.0,0.0));
+#32=DIRECTION('',(1.0,0.0,0.0));
+#33=VECTOR('',#32,4.0);
+#34=LINE('',#31,#33);
+#35=CARTESIAN_POINT('',(0.0,1.0));
+#36=DIRECTION('',(0.0,-1.0));
+#37=VECTOR('',#36,4.0);
+#38=LINE('',#35,#37);
+#39=DEFINITIONAL_REPRESENTATION('pcdef',(#38),#14);
+#40=PCURVE('pc',#13,#39);
+#41=SURFACE_CURVE('sc',#34,(#40),.PCURVE_S1.);
+#42=EDGE_CURVE('ec',#18,#17,#41,.T.);
+#43=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#44=CARTESIAN_POINT('',(0.75,0.0,0.0));
+#45=CARTESIAN_POINT('',(1.5,0.0,0.0));
+#46=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#47=CARTESIAN_POINT('',(3.5,0.0,0.0));
+#48=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#49=B_SPLINE_CURVE_WITH_KNOTS('ellipse_rev_c1_break',2,(#43,#44,#45,#46,#47,#48),.UNSPECIFIED.,.F.,.F.,(3,3,3),(0.0,0.5,1.0),.UNSPECIFIED.);
+#50=CARTESIAN_POINT('',(0.0,0.0));
+#51=CARTESIAN_POINT('',(0.25,0.0));
+#52=CARTESIAN_POINT('',(0.5,0.0));
+#53=CARTESIAN_POINT('',(0.5,0.0));
+#54=CARTESIAN_POINT('',(0.75,0.0));
+#55=CARTESIAN_POINT('',(1.0,0.0));
+#56=B_SPLINE_CURVE_WITH_KNOTS('ellipse_rev_c1_break_pc',2,(#50,#51,#52,#53,#54,#55),.UNSPECIFIED.,.F.,.F.,(3,3,3),(0.0,0.5,1.0),.UNSPECIFIED.);
+#57=DEFINITIONAL_REPRESENTATION('ellipse_rev_pc_def',(#56),#14);
+#58=PCURVE('ellipse_rev_pc_ent',#13,#57);
+#59=SURFACE_CURVE('ellipse_rev_sc',#49,(#58),.PCURVE_S1.);
+#60=EDGE_CURVE('ellipse_rev_edge',#17,#18,#59,.T.);
+#61=ORIENTED_EDGE('',$,$,#60,.T.);
+#62=ORIENTED_EDGE('',$,$,#42,.T.);
+#63=EDGE_LOOP('',(#61,#62));
+#64=FACE_OUTER_BOUND('',#63,.T.);
+#65=ADVANCED_FACE('',(#64),#13,.T.);
+#66=OPEN_SHELL('',(#65));
+#67=SHELL_BASED_SURFACE_MODEL('',(#66));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gn016','Gn016','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#67),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

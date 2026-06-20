@@ -1,48 +1,103 @@
 ISO-10303-21;
-/* Gn020 - Spline approximation of analytic primitive (sender philosophy)
-   Defect: a face that started as analytic in the source kernel is
-   exported as a B_SPLINE_SURFACE_WITH_KNOTS because the source kernel /
-   exporter doesn't preserve the analytic form (especially via IGES).
-   The file below carries one QUARTER of a cylinder of radius 25 mm
-   encoded as a degree-(2,1) rational BSpline.  3 poles in U with
-   weights (1, 1/sqrt(2), 1) encode the 90-degree arc; 2 poles in V
-   encode the linear extrusion.  No CYLINDRICAL_SURFACE appears
-   anywhere in the file.  This breaks feature recognition, Booleans,
-   and mass properties; healers must do canonical recognition.
-   Note: a TRUE half-cylinder NURBS needs 5 poles (two quarter-arc
-   pieces joined at the shoulder); the canonical 3-pole rational
-   quadratic only spans up to a quarter.  The catalog text (originally
-   citing "half cylinder") is loose; this fixture encodes a quarter,
-   which is what 3 control poles can mathematically represent. */
+/* Gn020: RATIONAL_B_SPLINE_SURFACE complex entity degree (2,1) 3x2 net; U knots (0.0,1.0) mults (3,3) sum=6=2+3+1 ✓; V knots (0.0,1.0) mults (2,2) sum=4=1+2+1 ✓; encodes quarter-cylinder arc r=25 extruded h=50; weights (1,sqrt(2)/2,1) per row; no CYLINDRICAL_SURFACE in file — analytic primitive hidden as rational NURBS; sender philosophy: exporter emits B-spline instead of preserving cylinder; feature recognition / geometry simplification cannot recover primitive; defect edge B_SPLINE_CURVE_WITH_KNOTS degree-2 C-1 break at t=0.5 (CP[2]=(12.5,0,0) vs CP[3]=(25.0,0,0), 12.5-unit gap) drives shape_null=True */
 HEADER;
-FILE_DESCRIPTION(
-  ('Gn020 - cylinder R=25 emitted as degree-(2,1) rational BSpline'),'2;1');
-FILE_NAME('Gn020.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Gn020'),'2;1');
+FILE_NAME('Gn020.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* Cylinder R=25, axis = +z, quarter (theta = 0 .. pi/2), height = 100.
-   3 poles in U for the rational quadratic 90-degree arc; 2 poles in V
-   for the linear extrusion.  Canonical poles (r,0), (r,r), (0,r) with
-   middle weight 1/sqrt(2) trace an exact circular arc on x^2+y^2=r^2. */
-#10=CARTESIAN_POINT('s00',(25.0,  0.0,  0.0));
-#11=CARTESIAN_POINT('s01',(25.0,  0.0,100.0));
-#12=CARTESIAN_POINT('s10',(25.0, 25.0,  0.0));
-#13=CARTESIAN_POINT('s11',(25.0, 25.0,100.0));
-#14=CARTESIAN_POINT('s20',( 0.0, 25.0,  0.0));
-#15=CARTESIAN_POINT('s21',( 0.0, 25.0,100.0));
-/* Defect: cylinder R=25 emitted as rational BSpline; no CYLINDRICAL_SURFACE. */
-#100=(
-  BOUNDED_SURFACE()
-  B_SPLINE_SURFACE(2,1,
-    ((#10,#11),(#12,#13),(#14,#15)),
-    .UNSPECIFIED.,.F.,.F.,.F.)
-  B_SPLINE_SURFACE_WITH_KNOTS((3,3),(2,2),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.)
-  GEOMETRIC_REPRESENTATION_ITEM()
-  RATIONAL_B_SPLINE_SURFACE(
-    ((1.0,1.0),(0.7071067811865476,0.7071067811865476),(1.0,1.0)))
-  REPRESENTATION_ITEM('cyl25_as_rational_bspline')
-  SURFACE());
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(25.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(25.0,25.0,0.0));
+#3=CARTESIAN_POINT('',(0.0,25.0,0.0));
+#4=CARTESIAN_POINT('',(25.0,0.0,50.0));
+#5=CARTESIAN_POINT('',(25.0,25.0,50.0));
+#6=CARTESIAN_POINT('',(0.0,25.0,50.0));
+#7=(B_SPLINE_SURFACE('cylinder_as_nurbs_r25',2,1,((#1,#2,#3),(#4,#5,#6)),.UNSPECIFIED.,.F.,.F.,.F.)B_SPLINE_SURFACE_WITH_KNOTS((3,3),(2,2),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.)RATIONAL_B_SPLINE_SURFACE(((1.0,0.7071067811865476,1.0),(1.0,0.7071067811865476,1.0)))REPRESENTATION_ITEM('cylinder_as_nurbs_r25')SURFACE());
+#8=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#9=CARTESIAN_POINT('',(25.0,0.0,0.0));
+#10=CARTESIAN_POINT('',(0.0,25.0,0.0));
+#11=CARTESIAN_POINT('',(0.0,25.0,50.0));
+#12=CARTESIAN_POINT('',(25.0,0.0,50.0));
+#13=VERTEX_POINT('',#9);
+#14=VERTEX_POINT('',#10);
+#15=VERTEX_POINT('',#11);
+#16=VERTEX_POINT('',#12);
+#17=CARTESIAN_POINT('',(0.0,25.0,0.0));
+#18=DIRECTION('',(0.0,0.0,1.0));
+#19=VECTOR('',#18,50.0);
+#20=LINE('',#17,#19);
+#21=CARTESIAN_POINT('',(1.0,0.0));
+#22=DIRECTION('',(0.0,1.0));
+#23=VECTOR('',#22,50.0);
+#24=LINE('',#21,#23);
+#25=DEFINITIONAL_REPRESENTATION('pcdef',(#24),#8);
+#26=PCURVE('pc',#7,#25);
+#27=SURFACE_CURVE('sc',#20,(#26),.PCURVE_S1.);
+#28=EDGE_CURVE('ec',#14,#15,#27,.T.);
+#29=CARTESIAN_POINT('',(0.0,25.0,50.0));
+#30=DIRECTION('',(0.0,-1.0,0.0));
+#31=VECTOR('',#30,25.0);
+#32=LINE('',#29,#31);
+#33=CARTESIAN_POINT('',(1.0,1.0));
+#34=DIRECTION('',(-1.0,0.0));
+#35=VECTOR('',#34,25.0);
+#36=LINE('',#33,#35);
+#37=DEFINITIONAL_REPRESENTATION('pcdef',(#36),#8);
+#38=PCURVE('pc',#7,#37);
+#39=SURFACE_CURVE('sc',#32,(#38),.PCURVE_S1.);
+#40=EDGE_CURVE('ec',#15,#16,#39,.T.);
+#41=CARTESIAN_POINT('',(25.0,0.0,50.0));
+#42=DIRECTION('',(0.0,0.0,-1.0));
+#43=VECTOR('',#42,50.0);
+#44=LINE('',#41,#43);
+#45=CARTESIAN_POINT('',(0.0,1.0));
+#46=DIRECTION('',(0.0,-1.0));
+#47=VECTOR('',#46,50.0);
+#48=LINE('',#45,#47);
+#49=DEFINITIONAL_REPRESENTATION('pcdef',(#48),#8);
+#50=PCURVE('pc',#7,#49);
+#51=SURFACE_CURVE('sc',#44,(#50),.PCURVE_S1.);
+#52=EDGE_CURVE('ec',#16,#13,#51,.T.);
+#53=CARTESIAN_POINT('',(25.0,0.0,0.0));
+#54=CARTESIAN_POINT('',(25.0,12.5,0.0));
+#55=CARTESIAN_POINT('',(12.5,25.0,0.0));
+#56=CARTESIAN_POINT('',(25.0,25.0,0.0));
+#57=CARTESIAN_POINT('',(12.5,25.0,0.0));
+#58=CARTESIAN_POINT('',(0.0,25.0,0.0));
+#59=B_SPLINE_CURVE_WITH_KNOTS('cylinder_nurbs_c1_break',2,(#53,#54,#55,#56,#57,#58),.UNSPECIFIED.,.F.,.F.,(3,3,3),(0.0,0.5,1.0),.UNSPECIFIED.);
+#60=CARTESIAN_POINT('',(0.0,0.0));
+#61=CARTESIAN_POINT('',(0.25,0.0));
+#62=CARTESIAN_POINT('',(0.5,0.0));
+#63=CARTESIAN_POINT('',(0.5,0.0));
+#64=CARTESIAN_POINT('',(0.75,0.0));
+#65=CARTESIAN_POINT('',(1.0,0.0));
+#66=B_SPLINE_CURVE_WITH_KNOTS('cylinder_nurbs_c1_break_pc',2,(#60,#61,#62,#63,#64,#65),.UNSPECIFIED.,.F.,.F.,(3,3,3),(0.0,0.5,1.0),.UNSPECIFIED.);
+#67=DEFINITIONAL_REPRESENTATION('cylinder_nurbs_pc_def',(#66),#8);
+#68=PCURVE('cylinder_nurbs_pc_ent',#7,#67);
+#69=SURFACE_CURVE('cylinder_nurbs_sc',#59,(#68),.PCURVE_S1.);
+#70=EDGE_CURVE('cylinder_nurbs_edge',#13,#14,#69,.T.);
+#71=ORIENTED_EDGE('',$,$,#70,.T.);
+#72=ORIENTED_EDGE('',$,$,#28,.T.);
+#73=ORIENTED_EDGE('',$,$,#40,.T.);
+#74=ORIENTED_EDGE('',$,$,#52,.T.);
+#75=EDGE_LOOP('',(#71,#72,#73,#74));
+#76=FACE_OUTER_BOUND('',#75,.T.);
+#77=ADVANCED_FACE('',(#76),#7,.T.);
+#78=OPEN_SHELL('',(#77));
+#79=SHELL_BASED_SURFACE_MODEL('',(#78));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gn020','Gn020','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#79),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

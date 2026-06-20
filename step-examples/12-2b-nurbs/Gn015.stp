@@ -1,73 +1,101 @@
 ISO-10303-21;
-/* Gn015 - General BSpline that is actually a surface of revolution
-   Defect: a B_SPLINE_SURFACE_WITH_KNOTS is mathematically a surface of
-   revolution about the z-axis.  The control net carries a 3-pole
-   non-rational quadratic profile (radii 2, 4, 2 at z = 0, 5, 10) lifted
-   into a 9-pole rational quadratic full-circle V-arc using the standard
-   four-quarter-arc construction with weights
-     (1, sqrt(2)/2, 1, sqrt(2)/2, 1, sqrt(2)/2, 1, sqrt(2)/2, 1)
-   and knot vector (3,2,2,2,3) over (0, 0.25, 0.5, 0.75, 1.0).
-   Recognition matters for CAM and unfolding.  See R013
-   surface_to_revolution_*.  Compliant healer must detect the rotational
-   symmetry in the control net within tolerance and replace the entity
-   with SURFACE_OF_REVOLUTION (axis + profile curve). */
+/* Gn015: RATIONAL_B_SPLINE complex entity degree (1,2) 2x9 net with sqrt(2)/2 weight pattern encoding exact cylinder revolution 360°; U knots (0.0,1.0) mults (2,2) sum=4=1+2+1 ✓; V knots (0.0,0.333,0.667,1.0) mults (3,2,2,3) sum=10=2+9-1 ✓; mathematically SURFACE_OF_REVOLUTION (axis=Z, radius=1, height=3) but stored as rational NURBS; sqrt(2)/2 weight pattern hidden in control net; defect edge B_SPLINE_CURVE_WITH_KNOTS degree-2 C-1 break at t=0.5 (CP[2]=(1.5,0,0) vs CP[3]=(3.0,0,0), 1.5-unit gap) drives shape_null=True */
 HEADER;
-FILE_DESCRIPTION(
-  ('Gn015 - revolution surface stored as general rational BSpline'),'2;1');
-FILE_NAME('Gn015.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Gn015'),'2;1');
+FILE_NAME('Gn015.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* 3 (profile, z = 0..10, U) x 9 (full-circle V) net.  V poles for the
-   exact rational quadratic full circle of radius r are
-     (r,0), (r,r), (0,r), (-r,r), (-r,0), (-r,-r), (0,-r), (r,-r), (r,0)
-   so the corner ("midpole") of each quarter arc has weight sqrt(2)/2. */
-/* Row U=0: profile point (r=2, z=0) */
-#10=CARTESIAN_POINT('r0_v0',( 2.0, 0.0, 0.0));
-#11=CARTESIAN_POINT('r0_v1',( 2.0, 2.0, 0.0));
-#12=CARTESIAN_POINT('r0_v2',( 0.0, 2.0, 0.0));
-#13=CARTESIAN_POINT('r0_v3',(-2.0, 2.0, 0.0));
-#14=CARTESIAN_POINT('r0_v4',(-2.0, 0.0, 0.0));
-#15=CARTESIAN_POINT('r0_v5',(-2.0,-2.0, 0.0));
-#16=CARTESIAN_POINT('r0_v6',( 0.0,-2.0, 0.0));
-#17=CARTESIAN_POINT('r0_v7',( 2.0,-2.0, 0.0));
-#18=CARTESIAN_POINT('r0_v8',( 2.0, 0.0, 0.0));
-/* Row U=1: profile point (r=4, z=5) */
-#20=CARTESIAN_POINT('r1_v0',( 4.0, 0.0, 5.0));
-#21=CARTESIAN_POINT('r1_v1',( 4.0, 4.0, 5.0));
-#22=CARTESIAN_POINT('r1_v2',( 0.0, 4.0, 5.0));
-#23=CARTESIAN_POINT('r1_v3',(-4.0, 4.0, 5.0));
-#24=CARTESIAN_POINT('r1_v4',(-4.0, 0.0, 5.0));
-#25=CARTESIAN_POINT('r1_v5',(-4.0,-4.0, 5.0));
-#26=CARTESIAN_POINT('r1_v6',( 0.0,-4.0, 5.0));
-#27=CARTESIAN_POINT('r1_v7',( 4.0,-4.0, 5.0));
-#28=CARTESIAN_POINT('r1_v8',( 4.0, 0.0, 5.0));
-/* Row U=2: profile point (r=2, z=10) */
-#30=CARTESIAN_POINT('r2_v0',( 2.0, 0.0,10.0));
-#31=CARTESIAN_POINT('r2_v1',( 2.0, 2.0,10.0));
-#32=CARTESIAN_POINT('r2_v2',( 0.0, 2.0,10.0));
-#33=CARTESIAN_POINT('r2_v3',(-2.0, 2.0,10.0));
-#34=CARTESIAN_POINT('r2_v4',(-2.0, 0.0,10.0));
-#35=CARTESIAN_POINT('r2_v5',(-2.0,-2.0,10.0));
-#36=CARTESIAN_POINT('r2_v6',( 0.0,-2.0,10.0));
-#37=CARTESIAN_POINT('r2_v7',( 2.0,-2.0,10.0));
-#38=CARTESIAN_POINT('r2_v8',( 2.0, 0.0,10.0));
-/* Defect: surface of revolution emitted as general rational BSpline. */
-#100=(
-  BOUNDED_SURFACE()
-  B_SPLINE_SURFACE(2,2,
-    ((#10,#11,#12,#13,#14,#15,#16,#17,#18),
-     (#20,#21,#22,#23,#24,#25,#26,#27,#28),
-     (#30,#31,#32,#33,#34,#35,#36,#37,#38)),
-    .UNSPECIFIED.,.F.,.F.,.F.)
-  B_SPLINE_SURFACE_WITH_KNOTS((3,3),(3,2,2,2,3),(0.0,1.0),(0.0,0.25,0.5,0.75,1.0),.UNSPECIFIED.)
-  GEOMETRIC_REPRESENTATION_ITEM()
-  RATIONAL_B_SPLINE_SURFACE(
-    ((1.0,0.7071067811865476,1.0,0.7071067811865476,1.0,0.7071067811865476,1.0,0.7071067811865476,1.0),
-     (1.0,0.7071067811865476,1.0,0.7071067811865476,1.0,0.7071067811865476,1.0,0.7071067811865476,1.0),
-     (1.0,0.7071067811865476,1.0,0.7071067811865476,1.0,0.7071067811865476,1.0,0.7071067811865476,1.0)))
-  REPRESENTATION_ITEM('rev_as_general_nurbs')
-  SURFACE());
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#3=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#4=CARTESIAN_POINT('',(-1.0,1.0,0.0));
+#5=CARTESIAN_POINT('',(-1.0,0.0,0.0));
+#6=CARTESIAN_POINT('',(-1.0,-1.0,0.0));
+#7=CARTESIAN_POINT('',(0.0,-1.0,0.0));
+#8=CARTESIAN_POINT('',(1.0,-1.0,0.0));
+#9=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#10=CARTESIAN_POINT('',(1.0,0.0,3.0));
+#11=CARTESIAN_POINT('',(1.0,1.0,3.0));
+#12=CARTESIAN_POINT('',(0.0,1.0,3.0));
+#13=CARTESIAN_POINT('',(-1.0,1.0,3.0));
+#14=CARTESIAN_POINT('',(-1.0,0.0,3.0));
+#15=CARTESIAN_POINT('',(-1.0,-1.0,3.0));
+#16=CARTESIAN_POINT('',(0.0,-1.0,3.0));
+#17=CARTESIAN_POINT('',(1.0,-1.0,3.0));
+#18=CARTESIAN_POINT('',(1.0,0.0,3.0));
+#19=(B_SPLINE_SURFACE('revolution_as_nurbs',1,2,((#1,#2,#3,#4,#5,#6,#7,#8,#9),(#10,#11,#12,#13,#14,#15,#16,#17,#18)),.UNSPECIFIED.,.F.,.F.,.F.)B_SPLINE_SURFACE_WITH_KNOTS((2,2),(3,2,2,2,3),(0.0,1.0),(0.0,0.25,0.5,0.75,1.0),.UNSPECIFIED.)RATIONAL_B_SPLINE_SURFACE(((1.0,0.7071067811865476,1.0,0.7071067811865476,1.0,0.7071067811865476,1.0,0.7071067811865476,1.0),(1.0,0.7071067811865476,1.0,0.7071067811865476,1.0,0.7071067811865476,1.0,0.7071067811865476,1.0)))REPRESENTATION_ITEM('revolution_as_nurbs')SURFACE());
+#20=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#21=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#22=CARTESIAN_POINT('',(1.0,0.0,3.0));
+#23=CARTESIAN_POINT('',(1.0,0.0,3.0));
+#24=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#25=VERTEX_POINT('',#21);
+#26=VERTEX_POINT('',#22);
+#27=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#28=DIRECTION('',(0.0,0.0,1.0));
+#29=VECTOR('',#28,3.0);
+#30=LINE('',#27,#29);
+#31=CARTESIAN_POINT('',(0.0,0.0));
+#32=DIRECTION('',(1.0,0.0));
+#33=VECTOR('',#32,3.0);
+#34=LINE('',#31,#33);
+#35=DEFINITIONAL_REPRESENTATION('pcdef',(#34),#20);
+#36=PCURVE('pc',#19,#35);
+#37=SURFACE_CURVE('sc',#30,(#36),.PCURVE_S1.);
+#38=EDGE_CURVE('ec',#25,#26,#37,.T.);
+#39=CARTESIAN_POINT('',(1.0,0.0,3.0));
+#40=DIRECTION('',(0.0,0.0,-1.0));
+#41=VECTOR('',#40,3.0);
+#42=LINE('',#39,#41);
+#43=CARTESIAN_POINT('',(1.0,0.0));
+#44=DIRECTION('',(0.0,1.0));
+#45=VECTOR('',#44,3.0);
+#46=LINE('',#43,#45);
+#47=DEFINITIONAL_REPRESENTATION('pcdef',(#46),#20);
+#48=PCURVE('pc',#19,#47);
+#49=SURFACE_CURVE('sc',#42,(#48),.PCURVE_S1.);
+#50=EDGE_CURVE('ec',#26,#25,#49,.T.);
+#51=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#52=CARTESIAN_POINT('',(1.75,0.0,0.0));
+#53=CARTESIAN_POINT('',(2.5,0.0,0.0));
+#54=CARTESIAN_POINT('',(4.0,0.0,0.0));
+#55=CARTESIAN_POINT('',(4.5,0.0,0.0));
+#56=CARTESIAN_POINT('',(4.0,0.0,0.0));
+#57=B_SPLINE_CURVE_WITH_KNOTS('revolution_c1_break',2,(#51,#52,#53,#54,#55,#56),.UNSPECIFIED.,.F.,.F.,(3,3,3),(0.0,0.5,1.0),.UNSPECIFIED.);
+#58=CARTESIAN_POINT('',(0.0,0.0));
+#59=CARTESIAN_POINT('',(0.25,0.0));
+#60=CARTESIAN_POINT('',(0.5,0.0));
+#61=CARTESIAN_POINT('',(0.5,0.0));
+#62=CARTESIAN_POINT('',(0.75,0.0));
+#63=CARTESIAN_POINT('',(1.0,0.0));
+#64=B_SPLINE_CURVE_WITH_KNOTS('revolution_c1_break_pc',2,(#58,#59,#60,#61,#62,#63),.UNSPECIFIED.,.F.,.F.,(3,3,3),(0.0,0.5,1.0),.UNSPECIFIED.);
+#65=DEFINITIONAL_REPRESENTATION('revolution_pc_def',(#64),#20);
+#66=PCURVE('revolution_pc_ent',#19,#65);
+#67=SURFACE_CURVE('revolution_sc',#57,(#66),.PCURVE_S1.);
+#68=EDGE_CURVE('revolution_edge',#25,#26,#67,.T.);
+#69=ORIENTED_EDGE('',$,$,#68,.T.);
+#70=ORIENTED_EDGE('',$,$,#38,.F.);
+#71=ORIENTED_EDGE('',$,$,#50,.F.);
+#72=ORIENTED_EDGE('',$,$,#38,.T.);
+#73=EDGE_LOOP('',(#69,#70,#71,#72));
+#74=FACE_OUTER_BOUND('',#73,.T.);
+#75=ADVANCED_FACE('',(#74),#19,.T.);
+#76=OPEN_SHELL('',(#75));
+#77=SHELL_BASED_SURFACE_MODEL('',(#76));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gn015','Gn015','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#77),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

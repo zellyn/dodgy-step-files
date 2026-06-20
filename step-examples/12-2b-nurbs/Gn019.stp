@@ -1,50 +1,70 @@
 ISO-10303-21;
-/* Gn019 - Sample count <2 in pcurve approximation
-   Defect: when sampling a pcurve for openNURBS ON_BrepTrim, step-g
-   sometimes gets fewer than 2 sample points, yielding a degenerate trim.
-   Likely from the seam_curve or near-singular pcurve evaluation on a
-   closed surface (cylinder/cone) at the apex/seam.
-   This file emits a CYLINDRICAL_SURFACE plus a SURFACE_CURVE whose
-   pcurve is a degree-1 BSpline whose two control points coincide -- so
-   any naive evaluator counts it as a single sample point.  The healer
-   should enforce >= 2 samples and fall back to endpoint+midpoint+endpoint
-   adaptive refinement. */
+/* Gn019: CYLINDRICAL_SURFACE seam pcurve B_SPLINE_CURVE_WITH_KNOTS degree-1 2 CPs; both CPs at UV=(0.0,0.0) — coincident, zero-length pcurve; knots (0.0,1.0) mults (2,2) sum=4=1+2+1 ✓; sample count <2 distinct points → degenerate trim in BRep; seam edge 3D curve is valid LINE along cylinder seam (Z: 0→3, X=1, Y=0); defect edge B_SPLINE_CURVE_WITH_KNOTS degree-2 C-1 break at t=0.5 (CP[2]=(1.5,0,0) vs CP[3]=(3.0,0,0), 1.5-unit gap) drives shape_null=True */
 HEADER;
-FILE_DESCRIPTION(
-  ('Gn019 - degenerate pcurve with <2 distinct samples on cylinder seam'),
-  '2;1');
-FILE_NAME('Gn019.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Gn019'),'2;1');
+FILE_NAME('Gn019.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* Host cylinder, axis = +z, radius = 5. */
-#10=CARTESIAN_POINT('axis_o',(0.0,0.0,0.0));
-#11=DIRECTION('axis_z',(0.0,0.0,1.0));
-#12=DIRECTION('ref_x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('cyl_pl',#10,#11,#12);
-#20=CYLINDRICAL_SURFACE('cyl',#13,5.0);
-/* Defect: pcurve is a degree-1 B_SPLINE_CURVE_WITH_KNOTS in the (u,v)
-   parameter plane whose two control points coincide -- gives 1 distinct
-   sample point. */
-#30=CARTESIAN_POINT('uv0',(0.0,0.0));
-#31=CARTESIAN_POINT('uv1',(0.0,0.0));
-#40=B_SPLINE_CURVE_WITH_KNOTS('degenerate_pcurve',1,(#30,#31),
-  .UNSPECIFIED.,.F.,.F.,(2,2),(0.0,1.0),.UNSPECIFIED.);
-#50=DEFINITIONAL_REPRESENTATION('',(#40),#60);
-/* Parameter space (u,v in 2D) for the cylinder. */
-#60=(
-  GEOMETRIC_REPRESENTATION_CONTEXT(2)
-  PARAMETRIC_REPRESENTATION_CONTEXT()
-  REPRESENTATION_CONTEXT('cyl_param','2D'));
-/* PCURVE wrapping the degenerate definitional representation. */
-#70=PCURVE('seam_pcurve',#20,#50);
-/* The 3D seam line on the cylinder is a meridian at u=0. */
-#80=CARTESIAN_POINT('seam_a',(5.0,0.0,0.0));
-#81=CARTESIAN_POINT('seam_b',(5.0,0.0,1.0));
-#82=DIRECTION('seam_dir',(0.0,0.0,1.0));
-#83=VECTOR('seam_vec',#82,1.0);
-#84=LINE('seam_line',#80,#83);
-#85=SURFACE_CURVE('seam',#84,(#70),.PCURVE_S1.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CYLINDRICAL_SURFACE('degenerate_pcurve_cyl',#4,1.0);
+#6=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#7=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(1.0,0.0,3.0));
+#9=VERTEX_POINT('',#7);
+#10=VERTEX_POINT('',#8);
+#11=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#12=DIRECTION('',(0.0,0.0,1.0));
+#13=VECTOR('',#12,3.0);
+#14=LINE('',#11,#13);
+#15=CARTESIAN_POINT('',(0.0,0.0));
+#16=CARTESIAN_POINT('',(0.0,0.0));
+#17=B_SPLINE_CURVE_WITH_KNOTS('degenerate_zero_length_pcurve',1,(#15,#16),.UNSPECIFIED.,.F.,.F.,(2,2),(0.0,1.0),.UNSPECIFIED.);
+#18=DEFINITIONAL_REPRESENTATION('degen_pcurve_def',(#17),#6);
+#19=PCURVE('degen_pcurve_ent',#5,#18);
+#20=SURFACE_CURVE('seam_sc',#14,(#19),.PCURVE_S1.);
+#21=EDGE_CURVE('seam_edge',#9,#10,#20,.T.);
+#22=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#23=CARTESIAN_POINT('',(1.75,0.0,0.0));
+#24=CARTESIAN_POINT('',(2.5,0.0,0.0));
+#25=CARTESIAN_POINT('',(4.0,0.0,0.0));
+#26=CARTESIAN_POINT('',(4.5,0.0,0.0));
+#27=CARTESIAN_POINT('',(4.0,0.0,0.0));
+#28=B_SPLINE_CURVE_WITH_KNOTS('degen_pcurve_c1_break',2,(#22,#23,#24,#25,#26,#27),.UNSPECIFIED.,.F.,.F.,(3,3,3),(0.0,0.5,1.0),.UNSPECIFIED.);
+#29=CARTESIAN_POINT('',(0.0,0.0));
+#30=CARTESIAN_POINT('',(0.0,0.25));
+#31=CARTESIAN_POINT('',(0.0,0.5));
+#32=CARTESIAN_POINT('',(0.0,0.5));
+#33=CARTESIAN_POINT('',(0.0,0.75));
+#34=CARTESIAN_POINT('',(0.0,1.0));
+#35=B_SPLINE_CURVE_WITH_KNOTS('degen_pcurve_c1_break_pc',2,(#29,#30,#31,#32,#33,#34),.UNSPECIFIED.,.F.,.F.,(3,3,3),(0.0,0.5,1.0),.UNSPECIFIED.);
+#36=DEFINITIONAL_REPRESENTATION('degen_c1_pc_def',(#35),#6);
+#37=PCURVE('degen_c1_pc_ent',#5,#36);
+#38=SURFACE_CURVE('degen_c1_sc',#28,(#37),.PCURVE_S1.);
+#39=EDGE_CURVE('degen_c1_edge',#9,#10,#38,.T.);
+#40=ORIENTED_EDGE('',$,$,#21,.T.);
+#41=ORIENTED_EDGE('',$,$,#39,.F.);
+#42=EDGE_LOOP('',(#40,#41));
+#43=FACE_OUTER_BOUND('',#42,.T.);
+#44=ADVANCED_FACE('',(#43),#5,.T.);
+#45=OPEN_SHELL('',(#44));
+#46=SHELL_BASED_SURFACE_MODEL('',(#45));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gn019','Gn019','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#46),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

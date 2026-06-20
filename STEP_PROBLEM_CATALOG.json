@@ -20477,7 +20477,7 @@
     "cross_oracle_note": null,
     "description": "A surface stored as a rational `B_SPLINE_SURFACE_WITH_KNOTS` is mathematically a `SURFACE_OF_REVOLUTION`. Common shape: a 3×9 control net rational B-spline standing in for a cylinder/torus revolved 360° (with the canonical sqrt(2)/2 weight pattern of an exact-circle NURBS); exact analytic shape encoded via NURBS. Recognition matters for CAM and unfolding workflows.",
     "expected_kernel_behavior": "heal; detect rotational symmetry in the control net within tolerance; replace with `SURFACE_OF_REVOLUTION` carrying the recovered axis and profile curve.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn015.stp",
     "id": "Gn015",
@@ -20513,7 +20513,7 @@
     "cross_oracle_note": null,
     "description": "Writing a `SURFACE_OF_REVOLUTION` built on an `ELLIPSE` to STEP and reading back yields a `TRIMMED_CURVE` wrapping a degree-2 rational `B_SPLINE_CURVE_WITH_KNOTS` ellipse-equivalent instead of the original analytic `ELLIPSE`, plus drift in the revolved-axis `DIRECTION` away from unit norm (e.g. (0.99999999875, 0.00005, 0.0)). Analytic identity lost.",
     "expected_kernel_behavior": "heal; preserve analytic basis curve (no Trimmed wrapper); reset orthonormal X/Y axes within 1e-6.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn016.stp",
     "id": "Gn016",
@@ -20532,8 +20532,8 @@
       "08-occt-gitlog.md (G107)"
     ],
     "taxonomy": [
+      "crash",
       "silent-loss",
-      "round-trip",
       "geometry"
     ],
     "tier3_assertions": [
@@ -20662,7 +20662,7 @@
     "cross_oracle_note": null,
     "description": "A face that started as analytic is exported as a `B_SPLINE_SURFACE_WITH_KNOTS` because the source kernel/exporter doesn't preserve the analytic form. Affects feature recognition, Booleans, mass properties.",
     "expected_kernel_behavior": "heal by analytic recovery (Spatial \"Geometry Simplification\" / OCCT canonical recognition).",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn020.stp",
     "id": "Gn020",

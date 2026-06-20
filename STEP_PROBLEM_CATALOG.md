@@ -1910,7 +1910,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE')
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gn016 — `SURFACE_OF_REVOLUTION` on `ELLIPSE`: basis curve becomes `TRIMMED_CURVE` over rational B-spline plus non-unit axis `DIRECTION` after round-trip
 - **Category**: §12.2b NURBS/knots
@@ -1922,7 +1922,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: contains(b'B_SPLINE_CURVE')
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
 ### Gn017 — `B_SPLINE_SURFACE_WITH_KNOTS` requiring split-at-interior-knots Bezier conversion for legacy export
 - **Category**: §12.2b NURBS/knots
@@ -1976,7 +1976,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE')
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gn021 — `OFFSET_SURFACE` of complex BSpline base fails parsing only when wrapped
 - **Category**: §12.2b NURBS/knots
