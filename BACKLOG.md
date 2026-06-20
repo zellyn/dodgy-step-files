@@ -42,10 +42,6 @@ than committed. New strategy: Sonnet-generates instead of Haiku-generates.
 **Last touched:** 2026-06-19.
 
 **Deferred (need bespoke regen per mechanism — not generic C-1 break):**
-- Gp050: SameRange recursive stack overflow (catalog says deg-3 / 10-CP / pcurve mismatch; need specific recipe, not C-1 break in 3D curve)
-- Gp061: CheckCurve3dWithPCurve sample-count threshold (defect should be in pcurve bow that 2-sample misses, not in 3D curve)
-- Gp062: FixAddPCurve trim-window boundary (endpoint must extend BEYOND v_max trim boundary, not sit on it)
-- Gp063: CheckOverlapping false-positive on bounded-curve TRIMMED_CURVE pair (need 2 EDGE_CURVEs sharing 3D LINE with disjoint trim ranges [0,5] and [10,15] — current attempt had neither)
 - Gp066: FixSameParameter selection-bias algorithm bug — cannot embed algorithmic selection in static STEP geometry; bytes can only encode the post-bug result (broken curve), not the trigger.
 - Logged 2026-06-19 after Sonnet indep verify caught batch-7 mechanism mismatches.
 
@@ -71,19 +67,12 @@ than committed. New strategy: Sonnet-generates instead of Haiku-generates.
 - Gs134/136/137/138: surfaces signal(11) — defer to signal(11) work
 
 **Deferred (nurbs Wave-B — mechanism encoded only as orphan entity, not wired into face pipeline):**
-- Gn044: ConvertCurve2dToBezier degree-1 skip — degree-1 2D B-spline was placed as a standalone COMPOSITE_CURVE_SEGMENT orphan, not in any PCURVE/EDGE_CURVE chain. Needs the degree-1 B-spline to BE the pcurve of the face's defect edge.
-- Gn045: SplitSurface.Init out-of-domain — out-of-domain U=2.0 PCURVE was an orphan with no semantic meaning in STEP (no SplitSurface entity). Recipe TBD — may need TRIMMED_CURVE with out-of-domain U1/U2 wired into face's actual SURFACE_CURVE.
 - Gn087: SetUSplitValues neg-zero dedup — defect is pure OCC runtime behavior of SetUSplitValues([-0.0, 0.5, 1.0]); -0.0 cannot be encoded in STEP knot literals (which serialize as "0.0"). The fixture was indistinguishable from a plain flat patch + C-1 driver. No encodable trigger.
 - Gn110: ConvertSurfaceToBezierBasis trim-ignored — catalog claims defect is triggered by an inner FACE_BOUND trim at 0.25..0.75, but Sonnet's fixture only emitted FACE_OUTER_BOUND with full extent. Needs explicit inner trim loop on the surface to actually trigger the documented behavior.
 - Gn160 (periodic B-spline parameter wrapping): live oracle returns empty/empty but Sonnet's analysis says geometry should load — fixture wires periodic B-spline as edge 3D curve on plane face, OCC rejects but mechanism narrative is unclear. Needs investigation of WHY OCC rejects.
 - Gn162 (B-spline interior knot mult=degree+1 Bezier-join): live oracle empty but Sonnet's analysis says tangent-only break should load — fixture wires the discontinuous B-spline as defect 3D curve; OCC rejects for unknown reason. Needs investigation.
-- Gn164 (Rational BSpline Closure Detection Bypass): catalog needs the rational B-spline surface to BE the face_geometry, but Sonnet's fixture builds the surface as an orphan alongside a flat-plane face. Recipe: pass the rational B-spline as the `surf` argument to `advanced_face()`, not the pre-built plane.
-- Gn165 (Ill-conditioned knot 44:1 ratio): same orphan-surface issue as Gn164. Need B-spline surface IS face_geometry.
-- Gn166 (Boundary pole singularity first row): same orphan-surface issue. Need B-spline surface IS face_geometry.
 - Logged 2026-06-20 from batch 49 indep verify systemic finding: Sonnet keeps building B-spline surfaces as orphans alongside the face's flat-plane geometry instead of swapping them in. Affects batch 49 final-nurbs trio.
 - Ps004, Ps005 (shells): Sonnet attempted post-hoc entity-args mutation (`ent.args[0].append(msb2)`) but ADVANCED_BREP_SHAPE_REPRESENTATION's items arg is stored as a string, not a list. Needs proper builder support for multi-MSB shape representations or a different mechanism encoding.
-- Tsh179 (shells): Sonnet used `f.method[index]` syntax (method-not-subscriptable error). Needs retry with proper builder API.
-- Tsh186 (shells): Sonnet used `Entity[index]` syntax (Entity-not-subscriptable error). Needs retry.
 - Logged 2026-06-20 from batch 31 indep verify systemic finding.
 - Reason: signal(11) requires engineering a deliberate OCC SIGSEGV; Wave-B Sonnet pipeline doesn't have a template for this yet. Gp001 is the existing reference but is a hand-authored .stp without a fixture_source.py. Need to (a) reverse-engineer Gp001's crash trigger or (b) propose a new builder API for signal-11 fixtures.
 - Logged 2026-06-19 from batch 13-18 archetype-aware scans.

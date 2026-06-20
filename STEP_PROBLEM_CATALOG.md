@@ -21408,13 +21408,13 @@ Rational B-spline with non-uniform weights (1.0, 2.0 variation) triggers 4x samp
 ### Gn044 — ShapeUpgrade_ConvertCurve2dToBezier degree-elevation skip on degree=1
 
 2D B-spline curve of degree 1 with 3 control points. Degree-elevation logic should elevate to degree 3 before Bezier extraction but skips this step when input degree equals 1, causing downstream conversion failures.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn045 — ShapeUpgrade_SplitSurface.Init split-parameters validation out-of-domain
 
 B-spline surface with split request using u_split values outside [u_min, u_max]. Init() must reject these values but currently accepts them, producing empty patches instead of raising validation error.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn046 — ShapeAnalysis_Curve.IsPlanar near-coplanar at tolerance boundary
 
 4-point cubic B-spline where 3 control points are coplanar and the 4th is offset by exactly 1.0E-7 (planarity tolerance). IsPlanar() returns true at the tolerance boundary despite curve being technically non-planar.
@@ -22206,16 +22206,16 @@ Defect: 3x3 NURBS (U-degree 2, V-degree 2); middle U-row poles near-identical (1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn164 — Rational BSpline Closure Detection Bypass
 Rational surface with varying weights requires knot-aware grid sampling, not pole-based shortcut. ShapeAnalysis_Surface.IsURational() gate bypassed.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn165 — Ill-Conditioned Knot Spacing (44:1 Ratio)
 Clustered interior knots create numerical instability. BRepLib::SameParameter knot anomaly detection (critratio > 10) triggers arc-length reparametrization.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn166 — Boundary Pole Singularity (First Row)
 U-boundary poles coalesce; ShapeAnalysis_CheckSmallFace.CheckPin must iterate boundary rows via IsoStat, not interior poles.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn167 — Non-Planar Degree-4 BSpline
 Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis_Curve.IsPlanar pole-sufficiency false positive.
 - **Tier-3 assertion**: load == "ok"
@@ -28160,8 +28160,8 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Trigger**: Call FixFaceOrientation() on shell with 8 faces (hex base, top, 6 lateral faces); propagation walks edges and flips orientation at each lateral face inconsistently
 - **Expected failure**: Lateral faces alternate between correct and flipped normals; final state oscillates between two invalid patterns
 - **Test assertion**: Shell orientation state after Perform() should stabilize, not oscillate between two configurations
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tsh180 — ShapeAnalysis_Shell.CheckOrientedShells single-face zero-area
 - **Defect class**: Shell containing single face with computed area exactly 0.0; normal-based orientation test fails to classify orientation
 - **Trigger**: Call CheckOrientedShells() on CLOSED_SHELL with one degenerate face (e.g., all edges collinear or all vertices coplanar in line)
@@ -28671,8 +28671,8 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Description**: Edge with high-degree B-spline 3D curve (degree 3, 10 control points, 11-knot vector) paired with a simple degree-2 PCURVE B-spline (3 control points). The knot-domain mismatch triggers recursive SameRange refinement; on deep nesting the recursion consumes stack depth before convergence.
 - **Reproducer recipe**: see `step-examples/12-2a-pcurves/Gp050.stp`; the fixture file's top comment names the specific OCCT method and line range.
 - **Expected kernel behavior**: detect or heal per the named OCCT branch; the fixture demonstrates the buggy input pattern.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
-- **Tier-3 assertion**: shape_null == True
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
 
 ### Gp051 — ShapeAnalysis_Edge.GetEndTangent2d B-spline endpoint tangent divergence
 
@@ -28779,16 +28779,16 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 
 ### Gp061 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve sample-count threshold
 Very short edge (0.001 units on cylindrical surface) triggers sample-count collapse to 2, skipping midspan validation between 3D curve and pcurve. Reproduces OCCT scaling logic that reduces samples below viable threshold for short edges.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gp062 — ShapeFix_Edge.FixAddPCurve trimmed-surface boundary
 Edge on RECTANGULAR_TRIMMED_SURFACE (u,v ∈ [0,1]) with 3D endpoint at (1.0, 1.1, 0.0), extending beyond v_max trim boundary. FixAddPCurve constructs pcurve without validating trim window constraints.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gp063 — ShapeAnalysis_Edge.CheckOverlapping bounded-curve trim
 Two edges share identical 3D line but with non-overlapping parameter ranges: edge1 covers parameter [0,5], edge2 covers [10,15]. CheckOverlapping fails to intersect trim domains and falsely reports overlap.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gp064 — ShapeFix_Edge.FixRemovePCurve degenerate-on-cone
 Edge at cone apex where 3D curve has zero length (degenerate point). PCurve is parametrically valid but references degenerate geometry. FixRemovePCurve removes pcurve, leaving only unusable zero-length 3D curve.
 - **Tier-3 assertion**: shape_null == True

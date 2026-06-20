@@ -1,55 +1,51 @@
 ISO-10303-21;
-/* Gp061 - ShapeAnalysis_Edge.CheckCurve3dWithPCurve sample-count threshold
- * Defect: very short edge has sample count that drops to 2, skipping midspan check.
- * CheckCurve3dWithPCurve scales sample count with curve length; on short edge,
- * count becomes 2 and the midspan verification between 3D curve and pcurve is skipped. */
+/* Gp061: 0.001-unit-long edge on CYLINDRICAL_SURFACE (r=1.0); degree-2 pcurve B-spline with 3 CPs: start=(0,0), mid=(0.0005, 0.1), end=(0.001,0); midpoint bows 0.1 UV-units off straight path; CheckCurve3dWithPCurve collapses to 2 samples for short edge → endpoint-only check misses bow in pcurve; defect IS in pcurve */
 HEADER;
-FILE_DESCRIPTION(('Gp061 test case','CheckCurve3dWithPCurve sample-count threshold'),'2;1');
-FILE_NAME('Gp061.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Gp061'),'2;1');
+FILE_NAME('Gp061.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-/* Cylindrical surface, radius 5 */
-#20=CYLINDRICAL_SURFACE('',#13,5.0);
-/* Very short 3D curve - line 0.001 units long, causing sample count to drop to 2 */
-#30=CARTESIAN_POINT('',(5.0,0.0,0.0));
-#31=DIRECTION('',(0.0,0.0,1.0));
-#32=VECTOR('',#31,0.001);
-#33=LINE('',#30,#32);
-/* Vertex points for very short edge */
-#40=VERTEX_POINT('',(5.0,0.0,0.0));
-#41=VERTEX_POINT('',(5.0,0.0,0.001));
-/* PCurve - line in (u,v) space along u=0 from v=0 to v=0.001 */
-#50=CARTESIAN_POINT('',(0.0,0.0));
-#51=DIRECTION('',(0.0,1.0));
-#52=VECTOR('',#51,0.001);
-#53=LINE('',#50,#52);
-#54=PCURVE('',#20,#53);
-#60=SURFACE_CURVE('',#33,(#54),.PCURVE_S1.);
-#70=EDGE_CURVE('',#40,#41,#60,.T.);
-#71=ORIENTED_EDGE('',*,*,#70,.T.);
-#72=EDGE_LOOP('',(#71));
-#73=FACE_OUTER_BOUND('',#72,.T.);
-#74=ADVANCED_FACE('',(#73),#20,.T.);
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Gp061','Gp061','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#72));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CYLINDRICAL_SURFACE('',#4,1.0);
+#6=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(1.0,0.0,0.001));
+#8=VERTEX_POINT('',#6);
+#9=VERTEX_POINT('',#7);
+#10=DIRECTION('',(0.0,0.0,1.0));
+#11=VECTOR('',#10,0.001);
+#12=LINE('',#6,#11);
+#13=CARTESIAN_POINT('',(0.0,0.0));
+#14=CARTESIAN_POINT('',(0.0005,0.1));
+#15=CARTESIAN_POINT('',(0.001,0.0));
+#16=B_SPLINE_CURVE_WITH_KNOTS('gp061_bow_pcurve',2,(#13,#14,#15),.UNSPECIFIED.,.F.,.F.,(3,3),(0.0,1.0),.UNSPECIFIED.);
+#17=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#18=DEFINITIONAL_REPRESENTATION('gp061_def',(#16),#17);
+#19=PCURVE('gp061_uv',#5,#18);
+#20=SURFACE_CURVE('gp061_sc',#12,(#19),.PCURVE_S1.);
+#21=EDGE_CURVE('gp061_edge',#8,#9,#20,.T.);
+#22=ORIENTED_EDGE('',$,$,#21,.T.);
+#23=EDGE_LOOP('',(#22));
+#24=FACE_OUTER_BOUND('',#23,.T.);
+#25=ADVANCED_FACE('',(#24),#5,.T.);
+#26=OPEN_SHELL('',(#25));
+#27=SHELL_BASED_SURFACE_MODEL('',(#26));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gp061','Gp061','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#27),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

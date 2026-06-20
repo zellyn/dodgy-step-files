@@ -16044,7 +16044,7 @@
     "cross_oracle_note": null,
     "description": "Edge with high-degree B-spline 3D curve (degree 3, 10 control points, 11-knot vector) paired with a simple degree-2 PCURVE B-spline (3 control points). The knot-domain mismatch triggers recursive SameRange refinement; on deep nesting the recursion consumes stack depth before convergence.",
     "expected_kernel_behavior": "detect or heal per the named OCCT branch; the fixture demonstrates the buggy input pattern.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp050.stp",
     "id": "Gp050",
@@ -16065,7 +16065,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeFix_Edge.FixSameParameter recursive SameRange"
   },
@@ -16403,7 +16403,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Edge.CheckCurve3dWithPCurve sample-count threshold",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp061.stp",
     "id": "Gp061",
@@ -16424,7 +16424,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Edge.CheckCurve3dWithPCurve sample-count threshold"
   },
@@ -16436,7 +16436,7 @@
     "cross_oracle_note": null,
     "description": "ShapeFix_Edge.FixAddPCurve trimmed-surface boundary",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp062.stp",
     "id": "Gp062",
@@ -16457,7 +16457,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeFix_Edge.FixAddPCurve trimmed-surface boundary"
   },
@@ -16469,7 +16469,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Edge.CheckOverlapping bounded-curve trim",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp063.stp",
     "id": "Gp063",
@@ -16490,7 +16490,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Edge.CheckOverlapping bounded-curve trim"
   },
@@ -21391,7 +21391,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_ConvertCurve2dToBezier degree-elevation skip on degree=1",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn044.stp",
     "id": "Gn044",
@@ -21412,7 +21412,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeUpgrade_ConvertCurve2dToBezier degree-elevation skip on degree=1"
   },
@@ -21424,7 +21424,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_SplitSurface.Init split-parameters validation out-of-domain",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn045.stp",
     "id": "Gn045",
@@ -21445,7 +21445,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeUpgrade_SplitSurface.Init split-parameters validation out-of-domain"
   },
@@ -25347,7 +25347,7 @@
     "cross_oracle_note": null,
     "description": "Rational BSpline Closure Detection Bypass",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn164.stp",
     "id": "Gn164",
@@ -25368,7 +25368,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Rational BSpline Closure Detection Bypass"
   },
@@ -25380,7 +25380,7 @@
     "cross_oracle_note": null,
     "description": "Ill-Conditioned Knot Spacing (44:1 Ratio)",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn165.stp",
     "id": "Gn165",
@@ -25401,7 +25401,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Ill-Conditioned Knot Spacing (44:1 Ratio)"
   },
@@ -25413,7 +25413,7 @@
     "cross_oracle_note": null,
     "description": "Boundary Pole Singularity (First Row)",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn166.stp",
     "id": "Gn166",
@@ -25434,7 +25434,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Boundary Pole Singularity (First Row)"
   },
@@ -39263,7 +39263,7 @@
     "cross_oracle_note": null,
     "description": "ShapeFix_Shell.FixFaceOrientation hex-prism orientation propagation oscillation",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh179.stp",
     "id": "Tsh179",
@@ -39284,7 +39284,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeFix_Shell.FixFaceOrientation hex-prism orientation propagation oscillation"
   },
