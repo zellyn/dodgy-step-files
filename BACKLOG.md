@@ -53,8 +53,16 @@ than committed. New strategy: Sonnet-generates instead of Haiku-generates.
 - Gp096: CheckCurve3dWithPCurve direction-reversed-but-coincident — Expected occt=signal(11)/signal(11)
 - Gp098: CheckOverlapping arc-tangent-to-line — Expected occt=signal(11)/signal(11)
 - Gp099: FixSameParameter very-long-edge — Expected occt=signal(11)/signal(11)
+- Gp101: CheckCurve3dWithPCurve sample-skip near-endpoint — signal(11)
+- Gp102: FixAddPCurve toroidal projection — signal(11)
+- Gp104: FixSameParameter offset-curve-3d — signal(11)
 - Reason: signal(11) requires engineering a deliberate OCC SIGSEGV; Wave-B Sonnet pipeline doesn't have a template for this yet. Gp001 is the existing reference but is a hand-authored .stp without a fixture_source.py. Need to (a) reverse-engineer Gp001's crash trigger or (b) propose a new builder API for signal-11 fixtures.
-- Logged 2026-06-19 from batch 13 archetype-aware scan.
+- Logged 2026-06-19 from batch 13/14 archetype-aware scan.
+
+**Deferred (builder API gaps — mechanism can't be encoded in STEP-as-supported):**
+- Gp105: CheckOverlapping zero-tolerance-overlap — UNCERTAINTY=0.0 requires injection into the geom_ctx that wraps the shape representation; current builder's add_product_chain hardcodes UNCERTAINTY=1e-7 in the geom_ctx, so a fresh zero-tolerance UNCERTAINTY entity ends up as an orphan and OCCT never sees it. Need builder hook to override geom_ctx UNCERTAINTY.
+- Gp108: CheckPCurveRange B-spline-out-of-knot — catalog describes pcurve knots [0,2] used at edge vertex parameters [-1,6]; STEP EDGE_CURVE has no explicit parameter-bounds field, so the out-of-domain claim can't be structurally forced. Need TRIMMED_CURVE wrapper or DEFINED_FUNCTION trick.
+- Logged 2026-06-19 from batch 14 indep verify SLOPPY verdicts.
 
 **Plan:**
 - [x] Q5.0 Pilot: 5 Gp fixtures pushed (`29c1c03`)
