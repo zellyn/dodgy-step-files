@@ -60,6 +60,7 @@ than committed. New strategy: Sonnet-generates instead of Haiku-generates.
 - Gp113: CheckOverlapping different-curves-same-geometry — signal(11)
 - Gp127: CheckCurve3dWithPCurve missing P-curve (FAIL1) — signal(11)
 - Gp131: Confusion tolerance fallback — signal(11)
+- Gp140: ShapeFix_ComposeShell.SplitByLine.pcurve-missing-skip — signal(11)
 - Reason: signal(11) requires engineering a deliberate OCC SIGSEGV; Wave-B Sonnet pipeline doesn't have a template for this yet. Gp001 is the existing reference but is a hand-authored .stp without a fixture_source.py. Need to (a) reverse-engineer Gp001's crash trigger or (b) propose a new builder API for signal-11 fixtures.
 - Logged 2026-06-19 from batch 13-18 archetype-aware scans.
 
