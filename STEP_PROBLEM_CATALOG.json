@@ -26880,7 +26880,7 @@
     "cross_oracle_note": null,
     "description": "2D points along a projected pcurve sometimes have a huge jump (>0.95 of UV range) on BSpline surface when 3D points are close; surface near-periodicity not recognized. Self-touching closed BSpline surface where 2D pcurve crosses near the wrap-around boundary.",
     "expected_kernel_behavior": "heal — detect jump; insert additional point; adjust by inferred period.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs038.stp",
     "id": "Gs038",
@@ -26903,7 +26903,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Pcurve U/V parameter has large jump near periodic boundary on BSpline"
   },
@@ -26919,7 +26919,7 @@
     "cross_oracle_note": null,
     "description": "Specific feature kinds that exist in source CAD vanish after STEP export — typically because writer's BRep decomposition fails on multi-blend intersections, helical sweeps, or variable-radius blends and silently emits an incomplete shell (zero-volume, missing faces, or only end caps surviving). Common signature: a `SHELL_BASED_SURFACE_MODEL` carries only one face — a `SPHERICAL_SURFACE` cap whose `FACE_OUTER_BOUND` is a degenerate `VERTEX_LOOP` at a single equator vertex (one point covers the whole sphere) — with the side walls and other caps missing.",
     "expected_kernel_behavior": "accept what is present; rely on validation properties (volume, area, centroid checksums) to detect loss; never silently emit zero-volume body.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs039.stp",
     "id": "Gs039",
@@ -26943,7 +26943,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Helical sweep / variable-radius blend silently emitted as incomplete shell (cap-only face on `SPHERICAL_SURFACE` with `VERTEX_LOOP` bound)"
   },
@@ -26959,7 +26959,7 @@
     "cross_oracle_note": null,
     "description": "Curves with very high local curvature (often artifacts of NURBS knot insertion or approximation during translation) that downstream tools — meshers especially — over-resolve or fail to mesh. `B_SPLINE_CURVE` with multi-knots near full-degree multiplicity that produce a near-cusp; `RATIONAL_B_SPLINE_CURVE` with control-point weight ratio above ~1e3.",
     "expected_kernel_behavior": "accept geometrically; downstream meshers detect and refuse / heal; archive-stable only if validation properties still match.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs040.stp",
     "id": "Gs040",
@@ -26982,7 +26982,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "High-curvature curve / cusp from NURBS knot insertion"
   },
@@ -26998,7 +26998,7 @@
     "cross_oracle_note": null,
     "description": "A RECTANGULAR_COMPOSITE_SURFACE is parameterised as an MxN grid of SURFACE_PATCH children. The U parameter spans across all M patches; V across all N. The spec permits non-uniform parameter intervals (one patch occupies U=0.0.7, the next U=0.7.1.0). Many receivers assume uniform spacing and either pass through with the wrong global parameterisation or trip an internal assertion.",
     "expected_kernel_behavior": "Heal and accept: respect each patch's individual parameter interval; if the kernel internally re-parameterises to uniform, it must record the original mapping so isoparametric queries on the composite return the correct point.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs041.stp",
     "id": "Gs041",
@@ -27019,7 +27019,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "`RECTANGULAR_COMPOSITE_SURFACE` with non-uniform patch grid"
   },
@@ -27035,7 +27035,7 @@
     "cross_oracle_note": null,
     "description": "A CURVE_BOUNDED_SURFACE is a (basis surface, set of boundary curves) where boundary curves are pcurves on the basis. The spec requires the boundary to be a non-self-intersecting loop in parameter space. Producers occasionally emit a boundary whose two segments cross at an interior point (figure-eight / bowtie), yielding two regions where the trim \"inside\" is ambiguous.",
     "expected_kernel_behavior": "detect the self-intersection and either reject as malformed or split the boundary into simple loops with explicit inside/outside designation.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs042.stp",
     "id": "Gs042",
@@ -27057,7 +27057,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "`CURVE_BOUNDED_SURFACE` with self-intersecting (bowtie) boundary"
   },
@@ -27073,7 +27073,7 @@
     "cross_oracle_note": null,
     "description": "An OFFSET_CURVE_3D with ref_distance equal to the local radius of curvature creates a cusp at every point of that curvature. The mathematical offset is undefined at such points (the offset point coincides with the curve's center of curvature; 0/0 arises in the offset's first derivative). For a circular basis of radius R, an offset of -R collapses the entire offset to the center.",
     "expected_kernel_behavior": "detect collapse / cusp at construction time and either reject the offset as degenerate or treat the result as a point set rather than a curve.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs043.stp",
     "id": "Gs043",
@@ -27097,7 +27097,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "`OFFSET_CURVE_3D` with `ref_distance` equal to the basis curve's radius of curvature (collapse)"
   },

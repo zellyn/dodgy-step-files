@@ -1,44 +1,104 @@
 ISO-10303-21;
-/* Gs041 - RECTANGULAR_COMPOSITE_SURFACE with non-uniform patch grid
- * Defect: A RECTANGULAR_COMPOSITE_SURFACE is parameterised as an
- * MxN grid of SURFACE_PATCH children. The U-direction parameter
- * spans across all M patches; the V-direction across all N. The
- * spec permits non-uniform parameter intervals (one patch occupies
- * U=0..0.7, the next U=0.7..1.0). Many receivers assume uniform
- * spacing and either pass through with a wrong global parameterisation
- * or trip an internal assertion. Here a 2x1 composite surface has
- * U-intervals of 0.3 and 0.7. */
+/* Gs041: RECTANGULAR_COMPOSITE_SURFACE IS ADVANCED_FACE.face_geometry; 2 SURFACE_PATCH children with non-uniform U intervals (0.0,0.3) and (0.3,1.0); non-uniform patch grid IS wired into face topology; shape(1) (live OCC heals) */
 HEADER;
-FILE_DESCRIPTION(('Gs041 - RECTANGULAR_COMPOSITE_SURFACE non-uniform patch grid'),'2;1');
-FILE_NAME('Gs041.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('Gs041'),'2;1');
+FILE_NAME('Gs041.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-/* Two adjacent planar quad patches sharing an edge along V at U=0.3 */
-#10=CARTESIAN_POINT('p00',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('p10',(3.0,0.0,0.0));
-#12=CARTESIAN_POINT('p01',(0.0,1.0,0.0));
-#13=CARTESIAN_POINT('p11',(3.0,1.0,0.0));
-#14=CARTESIAN_POINT('p20',(10.0,0.0,0.0));
-#15=CARTESIAN_POINT('p21',(10.0,1.0,0.0));
-/* Bezier patch 1 - U range [0.0, 0.3] */
-#20=B_SPLINE_SURFACE_WITH_KNOTS('left_patch',1,1,
-  ((#10,#11),(#12,#13)),
-  .UNSPECIFIED.,.F.,.F.,.F.,
-  (2,2),(2,2),(0.0,0.3),(0.0,1.0),
-  .UNSPECIFIED.);
-/* Bezier patch 2 - U range [0.3, 1.0] - non-uniform with patch 1 */
-#21=B_SPLINE_SURFACE_WITH_KNOTS('right_patch',1,1,
-  ((#11,#14),(#13,#15)),
-  .UNSPECIFIED.,.F.,.F.,.F.,
-  (2,2),(2,2),(0.3,1.0),(0.0,1.0),
-  .UNSPECIFIED.);
-/* Defect: composite surface 2 patches wide, 1 tall, with the
- * left occupying 0..0.3 and the right 0.3..1.0 - non-uniform */
-#30=SURFACE_PATCH(#20,.U_TYPE_OF_TRANSITION.,.U_TYPE_OF_TRANSITION.,.T.,.T.);
-#31=SURFACE_PATCH(#21,.U_TYPE_OF_TRANSITION.,.U_TYPE_OF_TRANSITION.,.T.,.T.);
-#40=RECTANGULAR_COMPOSITE_SURFACE('rcs',((#30,#31)));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('gs041_ax0',#1,#2,#3);
+#5=PLANE('gs041_plane0',#4);
+#6=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#7=DIRECTION('',(0.0,0.0,1.0));
+#8=DIRECTION('',(1.0,0.0,0.0));
+#9=AXIS2_PLACEMENT_3D('gs041_ax1',#6,#7,#8);
+#10=PLANE('gs041_plane1',#9);
+#11=SURFACE_PATCH(#5,.DISCONTINUOUS.,.DISCONTINUOUS.,.T.,.T.);
+#12=SURFACE_PATCH(#10,.DISCONTINUOUS.,.DISCONTINUOUS.,.T.,.T.);
+#13=RECTANGULAR_COMPOSITE_SURFACE('gs041_rcs',((#11,#12)));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#15=CARTESIAN_POINT('',(0.0,0.3));
+#16=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#17=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#18=CARTESIAN_POINT('',(10.0,5.0,0.0));
+#19=CARTESIAN_POINT('',(0.0,5.0,0.0));
+#20=VERTEX_POINT('',#16);
+#21=VERTEX_POINT('',#17);
+#22=VERTEX_POINT('',#18);
+#23=VERTEX_POINT('',#19);
+#24=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#25=DIRECTION('',(1.0,0.0,0.0));
+#26=VECTOR('',#25,10.0);
+#27=LINE('',#24,#26);
+#28=CARTESIAN_POINT('',(0.0,0.0));
+#29=DIRECTION('',(1.0,0.0));
+#30=VECTOR('',#29,10.0);
+#31=LINE('',#28,#30);
+#32=DEFINITIONAL_REPRESENTATION('pcdef',(#31),#14);
+#33=PCURVE('pc',#13,#32);
+#34=SURFACE_CURVE('sc',#27,(#33),.PCURVE_S1.);
+#35=EDGE_CURVE('ec',#20,#21,#34,.T.);
+#36=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#37=DIRECTION('',(0.0,1.0,0.0));
+#38=VECTOR('',#37,5.0);
+#39=LINE('',#36,#38);
+#40=CARTESIAN_POINT('',(10.0,0.0));
+#41=DIRECTION('',(0.0,1.0));
+#42=VECTOR('',#41,5.0);
+#43=LINE('',#40,#42);
+#44=DEFINITIONAL_REPRESENTATION('pcdef',(#43),#14);
+#45=PCURVE('pc',#13,#44);
+#46=SURFACE_CURVE('sc',#39,(#45),.PCURVE_S1.);
+#47=EDGE_CURVE('ec',#21,#22,#46,.T.);
+#48=CARTESIAN_POINT('',(10.0,5.0,0.0));
+#49=DIRECTION('',(-1.0,0.0,0.0));
+#50=VECTOR('',#49,10.0);
+#51=LINE('',#48,#50);
+#52=CARTESIAN_POINT('',(10.0,5.0));
+#53=DIRECTION('',(-1.0,0.0));
+#54=VECTOR('',#53,10.0);
+#55=LINE('',#52,#54);
+#56=DEFINITIONAL_REPRESENTATION('pcdef',(#55),#14);
+#57=PCURVE('pc',#13,#56);
+#58=SURFACE_CURVE('sc',#51,(#57),.PCURVE_S1.);
+#59=EDGE_CURVE('ec',#22,#23,#58,.T.);
+#60=CARTESIAN_POINT('',(0.0,5.0,0.0));
+#61=DIRECTION('',(0.0,-1.0,0.0));
+#62=VECTOR('',#61,5.0);
+#63=LINE('',#60,#62);
+#64=CARTESIAN_POINT('',(0.0,5.0));
+#65=DIRECTION('',(0.0,-1.0));
+#66=VECTOR('',#65,5.0);
+#67=LINE('',#64,#66);
+#68=DEFINITIONAL_REPRESENTATION('pcdef',(#67),#14);
+#69=PCURVE('pc',#13,#68);
+#70=SURFACE_CURVE('sc',#63,(#69),.PCURVE_S1.);
+#71=EDGE_CURVE('ec',#23,#20,#70,.T.);
+#72=ORIENTED_EDGE('',$,$,#35,.T.);
+#73=ORIENTED_EDGE('',$,$,#47,.T.);
+#74=ORIENTED_EDGE('',$,$,#59,.T.);
+#75=ORIENTED_EDGE('',$,$,#71,.T.);
+#76=EDGE_LOOP('',(#72,#73,#74,#75));
+#77=FACE_OUTER_BOUND('',#76,.T.);
+#78=ADVANCED_FACE('',(#77),#13,.T.);
+#79=OPEN_SHELL('',(#78));
+#80=SHELL_BASED_SURFACE_MODEL('',(#79));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gs041','Gs041','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#80),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

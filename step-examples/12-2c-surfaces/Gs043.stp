@@ -1,31 +1,98 @@
 ISO-10303-21;
-/* Gs043 - OFFSET_CURVE_3D with ref_distance equal to the curve's
- * radius of curvature (cusp-on-offset)
- * Defect: An OFFSET_CURVE_3D with ref_distance equal to the local
- * radius of curvature creates a cusp at every point of that
- * curvature. The mathematical offset is undefined at such points
- * (the offset point coincides with the curve's center of curvature
- * and 0/0 arises in the offset's first derivative). For a circular
- * basis curve of radius R, an offset of -R collapses the entire
- * offset to the center; an offset of +R produces a circle of zero
- * radius at the symmetric center. */
+/* Gs043: PLANE IS ADVANCED_FACE.face_geometry; OFFSET_CURVE_3D over CIRCLE(radius=5.0) with ref_distance=-5.0 (entire offset collapses to center) IS curve_3d of defect EDGE_CURVE; collapsed offset IS wired into face topology; shape(1) (live OCC heals) */
 HEADER;
-FILE_DESCRIPTION(('Gs043 - OFFSET_CURVE_3D with ref_distance = -R (collapse)'),'2;1');
-FILE_NAME('Gs043.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('Gs043'),'2;1');
+FILE_NAME('Gs043.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-/* Circle of radius 5.0 centered at origin in the XY plane */
-#10=CARTESIAN_POINT('center',(0.0,0.0,0.0));
-#11=DIRECTION('z',(0.0,0.0,1.0));
-#12=DIRECTION('x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('placement',#10,#11,#12);
-#14=CIRCLE('basis',#13,5.0);
-#20=DIRECTION('ref_dir',(0.0,0.0,1.0));
-/* Defect: ref_distance = -5.0 (negative R) - offset collapses
- * all points to a single point (the center) */
-#21=OFFSET_CURVE_3D('collapse',#14,-5.0,.T.,#20);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('gs043_ax',#1,#2,#3);
+#5=PLANE('gs043_plane',#4);
+#6=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#7=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#8=DIRECTION('',(0.0,0.0,1.0));
+#9=DIRECTION('',(1.0,0.0,0.0));
+#10=AXIS2_PLACEMENT_3D('gs043_circ_ax',#7,#8,#9);
+#11=CIRCLE('gs043_circle',#10,5.0);
+#12=DIRECTION('',(0.0,0.0,1.0));
+#13=OFFSET_CURVE_3D('gs043_oc3d',#11,-5.0,.F.,#12);
+#14=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#15=CARTESIAN_POINT('',(0.0,5.0,0.0));
+#16=CARTESIAN_POINT('',(-5.0,0.0,0.0));
+#17=CARTESIAN_POINT('',(0.0,-5.0,0.0));
+#18=VERTEX_POINT('',#14);
+#19=VERTEX_POINT('',#15);
+#20=VERTEX_POINT('',#16);
+#21=VERTEX_POINT('',#17);
+#22=CARTESIAN_POINT('',(1.0,0.0));
+#23=DIRECTION('',(0.0,1.0));
+#24=VECTOR('',#23,1.0);
+#25=LINE('',#22,#24);
+#26=DEFINITIONAL_REPRESENTATION('pcdef_e0',(#25),#6);
+#27=PCURVE('pc_e0',#5,#26);
+#28=SURFACE_CURVE('sc_e0',#13,(#27),.PCURVE_S1.);
+#29=EDGE_CURVE('ec_e0',#18,#19,#28,.T.);
+#30=CARTESIAN_POINT('',(0.0,5.0,0.0));
+#31=DIRECTION('',(-1.0,0.0,0.0));
+#32=VECTOR('',#31,5.0);
+#33=LINE('',#30,#32);
+#34=CARTESIAN_POINT('',(0.0,1.0));
+#35=DIRECTION('',(-1.0,0.0));
+#36=VECTOR('',#35,1.0);
+#37=LINE('',#34,#36);
+#38=DEFINITIONAL_REPRESENTATION('pcdef',(#37),#6);
+#39=PCURVE('pc',#5,#38);
+#40=SURFACE_CURVE('sc',#33,(#39),.PCURVE_S1.);
+#41=EDGE_CURVE('ec',#19,#20,#40,.T.);
+#42=CARTESIAN_POINT('',(-5.0,0.0,0.0));
+#43=DIRECTION('',(0.0,-1.0,0.0));
+#44=VECTOR('',#43,5.0);
+#45=LINE('',#42,#44);
+#46=CARTESIAN_POINT('',(-1.0,0.0));
+#47=DIRECTION('',(0.0,-1.0));
+#48=VECTOR('',#47,1.0);
+#49=LINE('',#46,#48);
+#50=DEFINITIONAL_REPRESENTATION('pcdef',(#49),#6);
+#51=PCURVE('pc',#5,#50);
+#52=SURFACE_CURVE('sc',#45,(#51),.PCURVE_S1.);
+#53=EDGE_CURVE('ec',#20,#21,#52,.T.);
+#54=CARTESIAN_POINT('',(0.0,-5.0,0.0));
+#55=DIRECTION('',(1.0,0.0,0.0));
+#56=VECTOR('',#55,5.0);
+#57=LINE('',#54,#56);
+#58=CARTESIAN_POINT('',(0.0,-1.0));
+#59=DIRECTION('',(1.0,0.0));
+#60=VECTOR('',#59,1.0);
+#61=LINE('',#58,#60);
+#62=DEFINITIONAL_REPRESENTATION('pcdef',(#61),#6);
+#63=PCURVE('pc',#5,#62);
+#64=SURFACE_CURVE('sc',#57,(#63),.PCURVE_S1.);
+#65=EDGE_CURVE('ec',#21,#18,#64,.T.);
+#66=ORIENTED_EDGE('',$,$,#29,.T.);
+#67=ORIENTED_EDGE('',$,$,#41,.T.);
+#68=ORIENTED_EDGE('',$,$,#53,.T.);
+#69=ORIENTED_EDGE('',$,$,#65,.T.);
+#70=EDGE_LOOP('',(#66,#67,#68,#69));
+#71=FACE_OUTER_BOUND('',#70,.T.);
+#72=ADVANCED_FACE('',(#71),#5,.T.);
+#73=OPEN_SHELL('',(#72));
+#74=SHELL_BASED_SURFACE_MODEL('',(#73));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gs043','Gs043','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#74),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
