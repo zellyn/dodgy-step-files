@@ -23105,7 +23105,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Curve.FillBndBox infinite-bbox",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn096.stp",
     "id": "Gn096",
@@ -23126,7 +23126,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Curve.FillBndBox infinite-bbox"
   },
@@ -23138,7 +23138,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_SplitSurface.Init duplicate-split-values",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn097.stp",
     "id": "Gn097",
@@ -23159,7 +23159,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeUpgrade_SplitSurface.Init duplicate-split-values"
   },
@@ -23204,7 +23204,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Curve.GetSamplePoints conic-arc rational-weight cap",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn099.stp",
     "id": "Gn099",
@@ -23225,7 +23225,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Curve.GetSamplePoints conic-arc rational-weight cap"
   },
@@ -23237,7 +23237,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_SplitSurface high-multiplicity-clamp",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn100.stp",
     "id": "Gn100",
@@ -23258,7 +23258,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeUpgrade_SplitSurface high-multiplicity-clamp"
   },
@@ -23270,7 +23270,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Curve.IsClosed COMPOSITE_CURVE with-discontinuity",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn101.stp",
     "id": "Gn101",
@@ -23291,7 +23291,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Curve.IsClosed COMPOSITE_CURVE with-discontinuity"
   },
