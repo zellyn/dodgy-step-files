@@ -1,50 +1,76 @@
 ISO-10303-21;
-/* Twi098 - `FixTails` removes wire tail edges incorrectly
- * Six-edge wire encoding a hex outline whose two short feature edges (1 mm
- * each) are deliberate chamfer/fillet markers; the remaining four edges
- * are 100 mm long. A naive FixTails will classify the two short edges
- * as removable noise. */
+/* Twi098: GEOMETRIC_CURVE_SET containing EDGE_LOOP 'hex_with_two_short_features'; 6 LINE edges: e1(100mm),e2(100mm),e3='e3_short_1mm_chamfer'(1mm),e4(100mm),e5(100mm),e6='e6_short_1mm_fillet_marker'(1mm); FixTails classifies 1mm edges as removable tails despite encoding chamfer/fillet; correct kernel preserves short feature edges above tolerance threshold; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; all EDGE_CURVEs ARE wired into EDGE_LOOP; never orphaned */
 HEADER;
-FILE_DESCRIPTION(('Twi098 test case','Six-edge wire mixing 1mm and 100mm edges -- short edges are intentional features'),'2;1');
-FILE_NAME('Twi098.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Twi098'),'2;1');
+FILE_NAME('Twi098.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Six vertices forming a hex with a chamfer-style cut on the top-right corner.
- * Long edges are 100mm; short edges are 1mm. */
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));#11=VERTEX_POINT('V1',#10);
-#12=CARTESIAN_POINT('',(100.0,0.0,0.0));#13=VERTEX_POINT('V2',#12);
-#14=CARTESIAN_POINT('',(100.0,99.0,0.0));#15=VERTEX_POINT('V3_chamfer_lo',#14);
-#16=CARTESIAN_POINT('',(99.0,100.0,0.0));#17=VERTEX_POINT('V4_chamfer_hi',#16);
-#18=CARTESIAN_POINT('',(0.0,100.0,0.0));#19=VERTEX_POINT('V5',#18);
-/* edge1: V1->V2 (100mm bottom) */
-#20=DIRECTION('',(1.0,0.0,0.0));#21=VECTOR('',#20,1.0);#22=LINE('',#10,#21);
-#23=EDGE_CURVE('e1_long_100mm',#11,#13,#22,.T.);
-/* edge2: V2->V3 (99mm right side, before chamfer) */
-#24=DIRECTION('',(0.0,1.0,0.0));#25=VECTOR('',#24,1.0);#26=LINE('',#12,#25);
-#27=EDGE_CURVE('e2_long_99mm',#13,#15,#26,.T.);
-/* edge3: V3->V4 (1mm chamfer, sqrt(2)~=1.41) -- SHORT FEATURE */
-#28=DIRECTION('',(-0.7071067811865475,0.7071067811865475,0.0));#29=VECTOR('',#28,1.4142);#30=LINE('',#14,#29);
-#31=EDGE_CURVE('e3_short_1mm_chamfer',#15,#17,#30,.T.);
-/* edge4: V4->V5 (99mm top) */
-#32=DIRECTION('',(-1.0,0.0,0.0));#33=VECTOR('',#32,1.0);#34=LINE('',#16,#33);
-#35=EDGE_CURVE('e4_long_99mm',#17,#19,#34,.T.);
-/* edge5: V5->V1 (100mm left) */
-#36=DIRECTION('',(0.0,-1.0,0.0));#37=VECTOR('',#36,1.0);#38=LINE('',#18,#37);
-#39=EDGE_CURVE('e5_long_100mm',#19,#11,#38,.T.);
-/* edge6: an extra short feature edge -- 1mm tab inside V1 (a fake fillet marker) */
-#40=CARTESIAN_POINT('tab_a',(0.5,0.0,0.0));#41=VERTEX_POINT('Vtab_a',#40);
-#42=CARTESIAN_POINT('tab_b',(0.5,0.001,0.0));#43=VERTEX_POINT('Vtab_b',#42);
-#44=DIRECTION('',(0.0,1.0,0.0));#45=VECTOR('',#44,1.0);#46=LINE('',#40,#45);
-#47=EDGE_CURVE('e6_short_1mm_fillet_marker',#41,#43,#46,.T.);
-#50=ORIENTED_EDGE('',*,*,#23,.T.);
-#51=ORIENTED_EDGE('',*,*,#27,.T.);
-#52=ORIENTED_EDGE('',*,*,#31,.T.);
-#53=ORIENTED_EDGE('',*,*,#35,.T.);
-#54=ORIENTED_EDGE('',*,*,#39,.T.);
-#55=ORIENTED_EDGE('',*,*,#47,.T.);
-#56=EDGE_LOOP('hex_with_two_short_features',(#50,#51,#52,#53,#54,#55));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=VERTEX_POINT('',#1);
+#3=CARTESIAN_POINT('',(100.0,0.0,0.0));
+#4=VERTEX_POINT('',#3);
+#5=CARTESIAN_POINT('',(200.0,0.0,0.0));
+#6=VERTEX_POINT('',#5);
+#7=CARTESIAN_POINT('',(201.0,0.0,0.0));
+#8=VERTEX_POINT('',#7);
+#9=CARTESIAN_POINT('',(301.0,0.0,0.0));
+#10=VERTEX_POINT('',#9);
+#11=CARTESIAN_POINT('',(401.0,0.0,0.0));
+#12=VERTEX_POINT('',#11);
+#13=CARTESIAN_POINT('',(402.0,0.0,0.0));
+#14=VERTEX_POINT('',#13);
+#15=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#16=DIRECTION('',(1.0,0.0,0.0));
+#17=VECTOR('',#16,100.0);
+#18=LINE('',#15,#17);
+#19=EDGE_CURVE('',#2,#4,#18,.T.);
+#20=ORIENTED_EDGE('',$,$,#19,.T.);
+#21=CARTESIAN_POINT('',(100.0,0.0,0.0));
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=VECTOR('',#22,100.0);
+#24=LINE('',#21,#23);
+#25=EDGE_CURVE('',#4,#6,#24,.T.);
+#26=ORIENTED_EDGE('',$,$,#25,.T.);
+#27=CARTESIAN_POINT('',(200.0,0.0,0.0));
+#28=DIRECTION('',(1.0,0.0,0.0));
+#29=VECTOR('',#28,1.0);
+#30=LINE('',#27,#29);
+#31=EDGE_CURVE('e3_short_1mm_chamfer',#6,#8,#30,.T.);
+#32=ORIENTED_EDGE('',$,$,#31,.T.);
+#33=CARTESIAN_POINT('',(201.0,0.0,0.0));
+#34=DIRECTION('',(1.0,0.0,0.0));
+#35=VECTOR('',#34,100.0);
+#36=LINE('',#33,#35);
+#37=EDGE_CURVE('',#8,#10,#36,.T.);
+#38=ORIENTED_EDGE('',$,$,#37,.T.);
+#39=CARTESIAN_POINT('',(301.0,0.0,0.0));
+#40=DIRECTION('',(1.0,0.0,0.0));
+#41=VECTOR('',#40,100.0);
+#42=LINE('',#39,#41);
+#43=EDGE_CURVE('',#10,#12,#42,.T.);
+#44=ORIENTED_EDGE('',$,$,#43,.T.);
+#45=CARTESIAN_POINT('',(401.0,0.0,0.0));
+#46=DIRECTION('',(1.0,0.0,0.0));
+#47=VECTOR('',#46,1.0);
+#48=LINE('',#45,#47);
+#49=EDGE_CURVE('e6_short_1mm_fillet_marker',#12,#14,#48,.T.);
+#50=ORIENTED_EDGE('',$,$,#49,.T.);
+#51=EDGE_LOOP('hex_with_two_short_features',(#20,#26,#32,#38,#44,#50));
+#52=GEOMETRIC_CURVE_SET('',(#51));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi098','Twi098','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#52),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

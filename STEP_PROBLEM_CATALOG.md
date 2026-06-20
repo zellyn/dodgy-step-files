@@ -24739,7 +24739,7 @@ em-dash Degenerated synthetic edge synthesis at sphere pole. Single wire at equa
 - **Expected kernel behavior**: reject — emit `E_DEGENERATE_EDGE` when the start and end vertex of an `EDGE_CURVE` resolve to the same vertex instance unless the underlying curve is closed (e.g., full circle); writers must collapse zero-length edges before export.
 - **Notes**: **See also**: Twi045, Tsh021. Synonyms: "edge curve with identical vertices", "self-loop EDGE_CURVE", "zero-length edge written by OCCT", "STEP edge endpoints are the same vertex".
 - **Byte assertion**: contains(b'EDGE_CURVE')
-- **Byte assertion**: matches(rb'EDGE_CURVE\([^)]*#10,#10')
+- **Byte assertion**: matches(rb'EDGE_CURVE\([^)]*#(\d+),#\1')
 - **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must reject or heal this fixture.
 - **Severity**: P1

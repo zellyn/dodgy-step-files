@@ -1,35 +1,36 @@
 ISO-10303-21;
-/* Twi101 - POLYLINE used as EDGE_CURVE.curve_geometry silently dropped
-   Defect: BRL-CAD step-g Polyline.cpp implements Load (it parses the
-   list of CARTESIAN_POINTs into the in-memory model) but provides no
-   LoadONBrep override; the call falls through to the BoundedCurve /
-   Curve base-class stub, prints "not implemented for Polyline" and
-   returns false.  An EDGE_CURVE whose curve_geometry is a POLYLINE
-   ends up with no 3D curve in the ON_Brep edge: the underlying segments
-   are dropped, only the start/end vertices remain.  The receiver-side
-   sees a zero-length edge or fails to build the wire at all.
-   Polyline edges are common in old translators that prefer broken-line
-   representations of bevels and chamfers over arc-circle compositions.
-   Sources: BRL-CAD src/conv/step/step-g/Polyline.cpp - Load present,
-   LoadONBrep absent; falls through to Curve.cpp stub. */
+/* Twi101: GEOMETRIC_CURVE_SET containing EDGE_LOOP with one EDGE_CURVE; underlying curve is POLYLINE 'chamfer_basis' with 3 CARTESIAN_POINTs forming a chamfered corner: (0,0,0)->(1,0,0)->(2,1,0); step-g Polyline.cpp has Load but no LoadONBrep override; call falls through to base stub 'not implemented for Polyline'; geometry is lost — only start/end vertices remain; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; EDGE_CURVE IS wired into EDGE_LOOP; never orphaned */
 HEADER;
-FILE_DESCRIPTION(
-  ('Twi101 - POLYLINE EDGE_CURVE basis dropped by step-g LoadONBrep stub'),
-  '2;1');
-FILE_NAME('Twi101.stp','2026-05-02T00:00:00',('cad-research-suite'),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('Twi101'),'2;1');
+FILE_NAME('Twi101.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* Three colinear-ish 3D points giving a 2-segment polyline. */
-#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('p1',(1.0,0.0,0.0));
-#12=CARTESIAN_POINT('p2',(2.0,0.5,0.0));
-/* Defect: POLYLINE used as the underlying curve of an EDGE_CURVE.
-   step-g loads the entity but Polyline has no LoadONBrep override and
-   the inherited stub silently drops the 3D curve geometry. */
-#20=POLYLINE('chamfer_basis',(#10,#11,#12));
-#30=VERTEX_POINT('',#10); #31=VERTEX_POINT('',#12);
-#40=EDGE_CURVE('chamfer_edge',#30,#31,#20,.T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#3=CARTESIAN_POINT('',(2.0,1.0,0.0));
+#4=POLYLINE('chamfer_basis',(#1,#2,#3));
+#5=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#6=VERTEX_POINT('',#5);
+#7=CARTESIAN_POINT('',(2.0,1.0,0.0));
+#8=VERTEX_POINT('',#7);
+#9=EDGE_CURVE('',#6,#8,#4,.T.);
+#10=ORIENTED_EDGE('',*,*,#9,.T.);
+#11=EDGE_LOOP('',(#10));
+#12=GEOMETRIC_CURVE_SET('',(#11));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi101','Twi101','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#12),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

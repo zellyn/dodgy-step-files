@@ -44394,7 +44394,7 @@
   {
     "byte_assertions": [
       "contains(b'EDGE_CURVE')",
-      "matches(rb'EDGE_CURVE\\([^)]*#10,#10')"
+      "matches(rb'EDGE_CURVE\\([^)]*#(\\d+),#\\1')"
     ],
     "category": "§12.3b wires / loops / edges (sub-class: degenerate edge)",
     "closure_defect": null,

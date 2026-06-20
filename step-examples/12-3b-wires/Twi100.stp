@@ -1,56 +1,48 @@
 ISO-10303-21;
-/* Twi100 - COMPOSITE_CURVE_ON_SURFACE used as edge basis silently dropped
-   Defect: BRL-CAD step-g CompositeCurveOnSurface::LoadONBrep is a stub
-   that prints "::LoadONBrep(...) not implemented for <entity>" and
-   returns false; CompositeCurve and CompositeCurveOnSurface also stub
-   PointAtStart() / PointAtEnd() so the trim-end vertex resolution is
-   broken too.  An EDGE_CURVE whose curve_geometry is a
-   COMPOSITE_CURVE_ON_SURFACE (a chain of segments laid out on a single
-   host surface, each segment with its own transition_code) loses both
-   the geometry and the endpoints - the ON_Brep ends up with a
-   zero-length trim, the wire is rejected as malformed, and the face is
-   silently dropped.
-   Sources: BRL-CAD src/conv/step/step-g/CompositeCurveOnSurface.cpp
-   LoadONBrep stub; CompositeCurve.cpp PointAtStart/PointAtEnd stubs. */
+/* Twi100: GEOMETRIC_CURVE_SET containing EDGE_LOOP with one EDGE_CURVE; underlying curve is COMPOSITE_CURVE_ON_SURFACE('chain') with two COMPOSITE_CURVE_SEGMENTs; step-g LoadONBrep stub returns false — segment list not walked, endpoint resolution stubs return null; ON_Brep ends up with zero-length trim; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; EDGE_CURVE IS wired into EDGE_LOOP; never orphaned */
 HEADER;
-FILE_DESCRIPTION(
-  ('Twi100 - COMPOSITE_CURVE_ON_SURFACE edge basis dropped by step-g'),
-  '2;1');
-FILE_NAME('Twi100.stp','2026-05-02T00:00:00',('cad-research-suite'),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('Twi100'),'2;1');
+FILE_NAME('Twi100.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* Host plane. */
-#10=CARTESIAN_POINT('o',(0.0,0.0,0.0));
-#11=DIRECTION('z',(0.0,0.0,1.0));
-#12=DIRECTION('x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('pl',#10,#11,#12);
-#14=PLANE('host',#13);
-/* 2D parameter context. */
-#20=(GEOMETRIC_REPRESENTATION_CONTEXT(2)
-     PARAMETRIC_REPRESENTATION_CONTEXT()
-     REPRESENTATION_CONTEXT('uv','2D'));
-/* Two pcurve segments in (u,v): (0,0)->(1,0) and (1,0)->(1,1). */
-#30=CARTESIAN_POINT('uvA',(0.0,0.0));
-#31=CARTESIAN_POINT('uvB',(1.0,0.0));
-#32=CARTESIAN_POINT('uvC',(1.0,1.0));
-#40=POLYLINE('seg_a',(#30,#31));
-#41=POLYLINE('seg_b',(#31,#32));
-#50=DEFINITIONAL_REPRESENTATION('seg_a_def',(#40),#20);
-#51=DEFINITIONAL_REPRESENTATION('seg_b_def',(#41),#20);
-#60=PCURVE('pcurve_a',#14,#50);
-#61=PCURVE('pcurve_b',#14,#51);
-/* Composite curve segments. */
-#70=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#60);
-#71=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#61);
-/* Defect: COMPOSITE_CURVE_ON_SURFACE - step-g LoadONBrep stub drops it.
-   The edge below loses both its geometry and endpoint resolution. */
-#80=COMPOSITE_CURVE_ON_SURFACE('chain',(#70,#71),.U.);
-/* 3D vertices for the EDGE_CURVE start/end. */
-#90=CARTESIAN_POINT('v0',(0.0,0.0,0.0));
-#91=CARTESIAN_POINT('v1',(1.0,1.0,0.0));
-#92=VERTEX_POINT('',#90); #93=VERTEX_POINT('',#91);
-#100=EDGE_CURVE('cc_edge',#92,#93,#80,.T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=DIRECTION('',(1.0,0.0,0.0));
+#8=VECTOR('',#7,5.0);
+#9=LINE('',#6,#8);
+#10=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#11=DIRECTION('',(1.0,0.0,0.0));
+#12=VECTOR('',#11,5.0);
+#13=LINE('',#10,#12);
+#14=COMPOSITE_CURVE_SEGMENT(.DISCONTINUOUS.,#9,.T.);
+#15=COMPOSITE_CURVE_SEGMENT(.DISCONTINUOUS.,#13,.T.);
+#16=COMPOSITE_CURVE_ON_SURFACE('chain',(#14,#15),.U.);
+#17=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#18=VERTEX_POINT('',#17);
+#19=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#20=VERTEX_POINT('',#19);
+#21=EDGE_CURVE('',#18,#20,#16,.T.);
+#22=ORIENTED_EDGE('',*,*,#21,.T.);
+#23=EDGE_LOOP('',(#22));
+#24=GEOMETRIC_CURVE_SET('',(#23));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi100','Twi100','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#24),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
