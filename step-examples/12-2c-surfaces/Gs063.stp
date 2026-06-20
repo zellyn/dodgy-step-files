@@ -1,45 +1,97 @@
 ISO-10303-21;
-/* Gs063 - ShapeUpgrade_ConvertSurfaceToBezierBasis.Compute trimmed/offset delegation
- * Defect: When converting a RECTANGULAR_TRIMMED_SURFACE or OFFSET_SURFACE to
- * Bezier basis (via Compute), the conversion logic delegates to the basis
- * surface recursively. However, the trim parameters (u1,u2,v1,v2) or offset
- * value are not propagated: the method returns the Bezier decomposition of the
- * basis surface without re-trimming or re-offsetting the result. For trimmed
- * surfaces, this returns geometry outside the trim domain. For offset surfaces,
- * the offset displacement is lost entirely. Here: a trimmed plane wrapped in an
- * offset surface; conversion should preserve both, but will return untrimmed
- * and unoff-set Bezier instead. */
+/* Gs063: OFFSET_SURFACE (distance=2.0) wrapping RECTANGULAR_TRIMMED_SURFACE (PLANE) IS ADVANCED_FACE.face_geometry; trim u∈[0.5,2.5] v∈[0.5,2.5] + offset IS the mechanism wired into face topology; Bezier delegation strips trim and offset IS the defect; shape_null */
 HEADER;
-FILE_DESCRIPTION(('Gs063 - Trimmed offset surface Bezier conversion delegation failure'),'2;1');
-FILE_NAME('Gs063.stp','2026-06-15T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('Gs063'),'2;1');
+FILE_NAME('Gs063.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-/* Base plane in XY at z=0 */
-#10=CARTESIAN_POINT('plane_origin',(0.0,0.0,0.0));
-#11=DIRECTION('plane_z',(0.0,0.0,1.0));
-#12=DIRECTION('plane_x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('plane_placement',#10,#11,#12);
-#14=PLANE('base_plane',#13);
-/* Trim the plane to u in [0.5, 2.5] and v in [0.5, 2.5] */
-#20=RECTANGULAR_TRIMMED_SURFACE(
-  'trimmed_plane',
-  #14,
-  0.5,
-  2.5,
-  0.5,
-  2.5,
-  .T.,
-  .T.);
-/* Offset the trimmed plane by 2.0 units in the normal (Z) direction */
-/* The offset surface wraps the trimmed plane, not the base plane. */
-#30=OFFSET_SURFACE(
-  'offset_trimmed_plane',
-  #20,
-  2.0,
-  .T.,
-  .T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('gs063_pl_ax',#1,#2,#3);
+#5=PLANE('gs063_plane',#4);
+#6=RECTANGULAR_TRIMMED_SURFACE('gs063_trim',#5,0.5,2.5,0.5,2.5,.T.,.T.);
+#7=OFFSET_SURFACE('gs063_offset',#6,2.0,.F.);
+#8=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#9=CARTESIAN_POINT('',(0.5,0.5,2.0));
+#10=CARTESIAN_POINT('',(2.5,0.5,2.0));
+#11=CARTESIAN_POINT('',(2.5,2.5,2.0));
+#12=CARTESIAN_POINT('',(0.5,2.5,2.0));
+#13=VERTEX_POINT('',#9);
+#14=VERTEX_POINT('',#10);
+#15=VERTEX_POINT('',#11);
+#16=VERTEX_POINT('',#12);
+#17=CARTESIAN_POINT('',(0.5,0.5,2.0));
+#18=DIRECTION('',(1.0,0.0,0.0));
+#19=VECTOR('',#18,2.0);
+#20=LINE('',#17,#19);
+#21=CARTESIAN_POINT('',(0.5,0.5));
+#22=DIRECTION('',(1.0,0.0));
+#23=VECTOR('',#22,2.0);
+#24=LINE('',#21,#23);
+#25=DEFINITIONAL_REPRESENTATION('pcdef',(#24),#8);
+#26=PCURVE('pc',#7,#25);
+#27=SURFACE_CURVE('sc',#20,(#26),.PCURVE_S1.);
+#28=EDGE_CURVE('ec',#13,#14,#27,.T.);
+#29=CARTESIAN_POINT('',(2.5,0.5,2.0));
+#30=DIRECTION('',(0.0,1.0,0.0));
+#31=VECTOR('',#30,2.0);
+#32=LINE('',#29,#31);
+#33=CARTESIAN_POINT('',(2.5,0.5));
+#34=DIRECTION('',(0.0,1.0));
+#35=VECTOR('',#34,2.0);
+#36=LINE('',#33,#35);
+#37=DEFINITIONAL_REPRESENTATION('pcdef',(#36),#8);
+#38=PCURVE('pc',#7,#37);
+#39=SURFACE_CURVE('sc',#32,(#38),.PCURVE_S1.);
+#40=EDGE_CURVE('ec',#14,#15,#39,.T.);
+#41=CARTESIAN_POINT('',(2.5,2.5,2.0));
+#42=DIRECTION('',(-1.0,0.0,0.0));
+#43=VECTOR('',#42,2.0);
+#44=LINE('',#41,#43);
+#45=CARTESIAN_POINT('',(2.5,2.5));
+#46=DIRECTION('',(-1.0,0.0));
+#47=VECTOR('',#46,2.0);
+#48=LINE('',#45,#47);
+#49=DEFINITIONAL_REPRESENTATION('pcdef',(#48),#8);
+#50=PCURVE('pc',#7,#49);
+#51=SURFACE_CURVE('sc',#44,(#50),.PCURVE_S1.);
+#52=EDGE_CURVE('ec',#15,#16,#51,.T.);
+#53=CARTESIAN_POINT('',(0.5,2.5,2.0));
+#54=DIRECTION('',(0.0,-1.0,0.0));
+#55=VECTOR('',#54,2.0);
+#56=LINE('',#53,#55);
+#57=CARTESIAN_POINT('',(0.5,2.5));
+#58=DIRECTION('',(0.0,-1.0));
+#59=VECTOR('',#58,2.0);
+#60=LINE('',#57,#59);
+#61=DEFINITIONAL_REPRESENTATION('pcdef',(#60),#8);
+#62=PCURVE('pc',#7,#61);
+#63=SURFACE_CURVE('sc',#56,(#62),.PCURVE_S1.);
+#64=EDGE_CURVE('ec',#16,#13,#63,.T.);
+#65=ORIENTED_EDGE('',$,$,#28,.T.);
+#66=ORIENTED_EDGE('',$,$,#40,.T.);
+#67=ORIENTED_EDGE('',$,$,#52,.T.);
+#68=ORIENTED_EDGE('',$,$,#64,.T.);
+#69=EDGE_LOOP('',(#65,#66,#67,#68));
+#70=FACE_OUTER_BOUND('',#69,.T.);
+#71=ADVANCED_FACE('',(#70),#7,.T.);
+#72=OPEN_SHELL('',(#71));
+#73=SHELL_BASED_SURFACE_MODEL('',(#72));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gs063','Gs063','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#73),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

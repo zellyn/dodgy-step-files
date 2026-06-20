@@ -27805,7 +27805,7 @@
     "cross_oracle_note": null,
     "description": "Cylindrical surface (r=5.0) trimmed to u∈[π/4, 3π/4], v∈[1.0, 5.0]",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs062.stp",
     "id": "Gs062",
@@ -27826,7 +27826,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Trimmed cylinder ValueOfUV dispatch"
   },
@@ -27838,7 +27838,7 @@
     "cross_oracle_note": null,
     "description": "Plane trimmed to u∈[0.5, 2.5], v∈[0.5, 2.5], then offset by 2.0",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs063.stp",
     "id": "Gs063",
@@ -27859,7 +27859,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Trimmed offset surface Bezier delegation"
   },
@@ -28036,7 +28036,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface.IsDegenerated zero-length axis",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs069.stp",
     "id": "Gs069",
@@ -28057,7 +28057,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Surface.IsDegenerated zero-length axis"
   },
@@ -28069,7 +28069,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_SplitSurfaceContinuity.Compute trimmed-fallback",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs070.stp",
     "id": "Gs070",
@@ -28090,7 +28090,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeUpgrade_SplitSurfaceContinuity.Compute trimmed-fallback"
   },
@@ -28102,7 +28102,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface.ProjectDegenerated even-redistribution",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs071.stp",
     "id": "Gs071",
@@ -28123,7 +28123,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Surface.ProjectDegenerated even-redistribution"
   },
@@ -28168,7 +28168,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_ConvertSurfaceToBezierBasis plane-approximation thin patch",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs073.stp",
     "id": "Gs073",
@@ -28189,7 +28189,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeUpgrade_ConvertSurfaceToBezierBasis plane-approximation thin patch"
   },
