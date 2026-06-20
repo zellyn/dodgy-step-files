@@ -21924,23 +21924,23 @@ Composite curve containing a degenerate segment (zero-length). FillBndBox sample
 ### Gn125 — ShapeUpgrade_SplitSurface.SetVSplitValues partial-domain
 
 BSpline surface with full V domain [0,1]. Split values provided only for partial range [0.3, 0.7]. SetVSplitValues clips silently, leaving V ranges [0, 0.3) and (0.7, 1] unprocessed and unsplit.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn126 — ShapeAnalysis_Curve.GetSamplePoints CIRCLE with-trim-near-2π
 
 Trimmed circle with parameters [0.001, 2π-0.001]. GetSamplePoints uses 360-degree cap for sampling, but the trim removes start/end points, leaving a tiny gap that the sampling grid misses.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn127 — ShapeUpgrade_ConvertCurve2dToBezier with-already-bezier
 
 Degree-3 Bezier curve (already in Bezier form). ConvertCurve2dToBezier should be a no-op but instead elevates the degree and replicates control points unnecessarily.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn128 — ShapeAnalysis_Curve.IsClosed B-spline with-identical-knots-different-poles
 
 Periodic B-spline with knot parameters identical at boundaries but control poles differing by 1e-3. IsClosed checks knot equality only and reports true, but geometry gap persists at closure point.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn129 — Geom_BSplineSurface periodic-U-closure weight-extraction
 - **Category**: §12.2b NURBS
 - **Sources**: OCCT/see OCCT/v3

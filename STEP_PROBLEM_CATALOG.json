@@ -24060,7 +24060,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_SplitSurface.SetVSplitValues partial-domain",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn125.stp",
     "id": "Gn125",
@@ -24081,7 +24081,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeUpgrade_SplitSurface.SetVSplitValues partial-domain"
   },
@@ -24093,7 +24093,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Curve.GetSamplePoints CIRCLE with-trim-near-2π",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn126.stp",
     "id": "Gn126",
@@ -24114,7 +24114,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Curve.GetSamplePoints CIRCLE with-trim-near-2π"
   },
@@ -24126,7 +24126,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_ConvertCurve2dToBezier with-already-bezier",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn127.stp",
     "id": "Gn127",
@@ -24147,7 +24147,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeUpgrade_ConvertCurve2dToBezier with-already-bezier"
   },
@@ -24159,7 +24159,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Curve.IsClosed B-spline with-identical-knots-different-poles",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn128.stp",
     "id": "Gn128",
@@ -24180,7 +24180,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Curve.IsClosed B-spline with-identical-knots-different-poles"
   },
