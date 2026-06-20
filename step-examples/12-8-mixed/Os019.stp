@@ -1,38 +1,45 @@
 ISO-10303-21;
-/* Os019 - Middle path between two diverging wires fails.
- * Defect: two diverging wires (a fan shape) - their envelope is not
- * strip-like, so no medial axis exists. Encoded: apex VERTEX_POINT
- * + two LINE-backed EDGE_CURVEs to the two end points + an
- * EDGE_LOOP for each wire. */
+/* Os019: GEOMETRIC_CURVE_SET containing two open EDGE_LOOPs (fan shape); wire 1: horizontal from (0,0,0) to (10,0,0); wire 2: diverging from (0,0,0) to (10,5,0); wires diverge — region is not strip-like; BRepOffsetAPI_MiddlePath non-strip-region; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; no orphaned entities */
 HEADER;
-FILE_DESCRIPTION(('Os019 test case','Middle path between diverging wires'),'2;1');
-FILE_NAME('Os019.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Os019'),'2;1');
+FILE_NAME('Os019.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Apex + two divergent endpoints */
-#10=CARTESIAN_POINT('apex',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('w1_end',(1.0,1.0,0.0));
-#12=CARTESIAN_POINT('w2_end',(1.0,-1.0,0.0));
-#13=VERTEX_POINT('apex_vertex',#10);
-#14=VERTEX_POINT('w1_end_vertex',#11);
-#15=VERTEX_POINT('w2_end_vertex',#12);
-/* Two divergent lines */
-#20=DIRECTION('',(0.7071,0.7071,0.0));
-#21=VECTOR('',#20,1.4142);
-#22=LINE('w1_line',#10,#21);
-#23=DIRECTION('',(0.7071,-0.7071,0.0));
-#24=VECTOR('',#23,1.4142);
-#25=LINE('w2_line',#10,#24);
-/* Two EDGE_CURVEs apex -> respective endpoints */
-#30=EDGE_CURVE('w1_edge',#13,#14,#22,.T.);
-#31=EDGE_CURVE('w2_edge',#13,#15,#25,.T.);
-/* Wires (edge loops) */
-#40=ORIENTED_EDGE('',*,*,#30,.T.);
-#41=ORIENTED_EDGE('',*,*,#31,.T.);
-#42=EDGE_LOOP('wire_1',(#40));
-#43=EDGE_LOOP('wire_2',(#41));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#3=VERTEX_POINT('',#1);
+#4=VERTEX_POINT('',#2);
+#5=DIRECTION('',(1.0,0.0,0.0));
+#6=VECTOR('',#5,10.0);
+#7=LINE('',#1,#6);
+#8=EDGE_CURVE('wire1_edge',#3,#4,#7,.T.);
+#9=ORIENTED_EDGE('',*,*,#8,.T.);
+#10=EDGE_LOOP('wire1',(#9));
+#11=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#12=CARTESIAN_POINT('',(10.0,5.0,0.0));
+#13=VERTEX_POINT('',#11);
+#14=VERTEX_POINT('',#12);
+#15=DIRECTION('',(0.894427191,0.4472135955,0.0));
+#16=VECTOR('',#15,11.1803398875);
+#17=LINE('',#11,#16);
+#18=EDGE_CURVE('wire2_edge',#13,#14,#17,.T.);
+#19=ORIENTED_EDGE('',*,*,#18,.T.);
+#20=EDGE_LOOP('wire2',(#19));
+#21=GEOMETRIC_CURVE_SET('',(#10,#20));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Os019','Os019','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#21),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

@@ -1,43 +1,48 @@
 ISO-10303-21;
-/* Os018 - N-sided fill with incompatible tangent constraints.
- * Defect: three EDGE_CURVEs forming a triangular hole boundary, each
- * carrying a tangent-direction SHAPE_ASPECT at the corners with
- * mutually inconsistent tangent vectors. */
+/* Os018: GEOMETRIC_CURVE_SET containing an EDGE_LOOP with 3 EDGE_CURVE edges forming a triangular hole and a SHAPE_ASPECT tagging the constraint set; G1 tangent constraints at all three corners use mutually inconsistent tangent vectors — fill surface cannot satisfy all three simultaneously; BRepOffsetAPI_MakeFilling constraint_incompatible; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; no orphaned entities */
 HEADER;
-FILE_DESCRIPTION(('Os018 test case','Fill constraint incompatible'),'2;1');
-FILE_NAME('Os018.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Os018'),'2;1');
+FILE_NAME('Os018.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=PRODUCT_CONTEXT('',#1,'mechanical');
-#11=PRODUCT('part1','part1','part1',(#10));
-#12=PRODUCT_DEFINITION_FORMATION('','',#11);
-#13=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#14=PRODUCT_DEFINITION('','',#12,#13);
-#15=PRODUCT_DEFINITION_SHAPE('','',#14);
-/* Triangle corner points */
-#20=CARTESIAN_POINT('a',(0.0,0.0,0.0));
-#21=CARTESIAN_POINT('b',(1.0,0.0,0.0));
-#22=CARTESIAN_POINT('c',(0.5,1.0,0.0));
-#23=VERTEX_POINT('',#20);
-#24=VERTEX_POINT('',#21);
-#25=VERTEX_POINT('',#22);
-/* Three edges of the triangular hole boundary */
-#30=DIRECTION('',(1.0,0.0,0.0));#31=VECTOR('',#30,1.0);#32=LINE('',#20,#31);
-#33=DIRECTION('',(-0.4472135954999579,0.8944271909999159,0.0));#34=VECTOR('',#33,1.118);#35=LINE('',#21,#34);
-#36=DIRECTION('',(-0.4472135954999579,-0.8944271909999159,0.0));#37=VECTOR('',#36,1.118);#38=LINE('',#22,#37);
-#40=EDGE_CURVE('e_ab',#23,#24,#32,.T.);
-#41=EDGE_CURVE('e_bc',#24,#25,#35,.T.);
-#42=EDGE_CURVE('e_ca',#25,#23,#38,.T.);
-/* Tangent directions at the three corners (mutually inconsistent) */
-#50=DIRECTION('tangent_at_a',(0.8944271909999159,0.0,0.4472135954999579));
-#51=DIRECTION('tangent_at_b',(-0.8192319205190405,0.0,0.5734623443633283));
-#52=DIRECTION('tangent_at_c',(0.0,-0.9578262852211513,-0.2873478855663454));
-/* Bind tangent constraints to the corners via SHAPE_ASPECTs */
-#60=SHAPE_ASPECT('tangent_a','G1 tangent at corner a',#15,.T.);
-#61=SHAPE_ASPECT('tangent_b','G1 tangent at corner b',#15,.T.);
-#62=SHAPE_ASPECT('tangent_c','G1 tangent at corner c',#15,.T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,5.7735026919,0.0));
+#2=CARTESIAN_POINT('',(-5.0,-2.88675134595,0.0));
+#3=CARTESIAN_POINT('',(5.0,-2.88675134595,0.0));
+#4=VERTEX_POINT('',#1);
+#5=VERTEX_POINT('',#2);
+#6=VERTEX_POINT('',#3);
+#7=DIRECTION('',(-0.5,-0.866025403784,0.0));
+#8=VECTOR('',#7,10.0);
+#9=LINE('',#1,#8);
+#10=EDGE_CURVE('tri_edge_0',#4,#5,#9,.T.);
+#11=DIRECTION('',(1.0,0.0,0.0));
+#12=VECTOR('',#11,10.0);
+#13=LINE('',#2,#12);
+#14=EDGE_CURVE('tri_edge_1',#5,#6,#13,.T.);
+#15=DIRECTION('',(-0.5,0.866025403784,0.0));
+#16=VECTOR('',#15,10.0);
+#17=LINE('',#3,#16);
+#18=EDGE_CURVE('tri_edge_2',#6,#4,#17,.T.);
+#19=ORIENTED_EDGE('',*,*,#10,.T.);
+#20=ORIENTED_EDGE('',*,*,#14,.T.);
+#21=ORIENTED_EDGE('',*,*,#18,.T.);
+#22=EDGE_LOOP('tri_hole',(#19,#20,#21));
+#23=SHAPE_ASPECT('fill_constraint_set','incompatible_g1_tangents',$,.F.);
+#24=GEOMETRIC_CURVE_SET('',(#22,#23));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Os018','Os018','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#24),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

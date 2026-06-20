@@ -1,44 +1,36 @@
 ISO-10303-21;
-/* Os020 - MakeEvolved sweep self-intersects.
- * Defect: a small circular profile evolved along a tight 3D helix where
- * the profile diameter exceeds the helix pitch. Encoded: profile CIRCLE
- * + B_SPLINE_CURVE_WITH_KNOTS approximating one turn of a helix
- * (radius 0.5, pitch 0.2; profile diameter 1.0 exceeds pitch). */
+/* Os020: GEOMETRIC_CURVE_SET containing a CIRCLE (profile radius=3) and a B_SPLINE_CURVE_WITH_KNOTS (tight 3D helix-approximation spine); profile diameter (6) exceeds helix local curvature radius (~4) — evolved swept surface self-intersects (folds over); BRepOffsetAPI_MakeEvolved self-intersection along spine; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; no orphaned entities */
 HEADER;
-FILE_DESCRIPTION(('Os020 test case','Evolved sweep self-intersects'),'2;1');
-FILE_NAME('Os020.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Os020'),'2;1');
+FILE_NAME('Os020.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Helix axis */
-#10=CARTESIAN_POINT('h_axis_origin',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('helix_axis',#10,#11,#12);
-/* Profile circle of diameter 1.0 (radius 0.5) at the origin, in the XY plane */
-#20=AXIS2_PLACEMENT_3D('profile_axis',#10,#11,#12);
-#21=CIRCLE('profile_circle_r05',#20,0.5);
-/* Helix approximation: degree-3 B-spline with control points at one turn,
- * radius 0.5, pitch 0.2 (much smaller than profile diameter 1.0). */
-#30=CARTESIAN_POINT('h0',(0.5,0.0,0.0));
-#31=CARTESIAN_POINT('h1',(0.5,0.276,0.025));
-#32=CARTESIAN_POINT('h2',(0.276,0.5,0.05));
-#33=CARTESIAN_POINT('h3',(0.0,0.5,0.075));
-#34=CARTESIAN_POINT('h4',(-0.276,0.5,0.1));
-#35=CARTESIAN_POINT('h5',(-0.5,0.276,0.125));
-#36=CARTESIAN_POINT('h6',(-0.5,0.0,0.15));
-#37=CARTESIAN_POINT('h7',(-0.5,-0.276,0.175));
-#38=CARTESIAN_POINT('h8',(-0.276,-0.5,0.2));
-#39=B_SPLINE_CURVE_WITH_KNOTS('helix_one_turn',3,
-       (#30,#31,#32,#33,#34,#35,#36,#37,#38),
-       .UNSPECIFIED.,.F.,.F.,(4,1,1,1,1,1,4),(0.0,0.2,0.4,0.5,0.6,0.8,1.0),
-       .UNSPECIFIED.);
-/* Operation parameters expressed as MEASURE_WITH_UNITs so the cited
- * numbers (helix pitch 0.2, profile diameter 1.0) are byte-visible. */
-#40=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#41=MEASURE_WITH_UNIT(LENGTH_MEASURE(0.2),#40);
-#42=MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0),#40);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CIRCLE('',#4,3.0);
+#6=CARTESIAN_POINT('',(4.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(0.0,4.0,1.0));
+#8=CARTESIAN_POINT('',(-4.0,0.0,2.0));
+#9=CARTESIAN_POINT('',(0.0,-4.0,3.0));
+#10=CARTESIAN_POINT('',(4.0,0.0,4.0));
+#11=B_SPLINE_CURVE_WITH_KNOTS('helix_spine',3,(#6,#7,#8,#9,#10),.UNSPECIFIED.,.F.,.F.,(4,1,4),(0.0,0.5,1.0),.UNSPECIFIED.);
+#12=GEOMETRIC_CURVE_SET('',(#5,#11));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Os020','Os020','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#12),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
