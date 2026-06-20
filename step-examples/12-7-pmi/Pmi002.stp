@@ -1,62 +1,33 @@
 ISO-10303-21;
-/* Pmi002 - Blank/hidden dimensions exported as semantic dimensions
-   Defect: CAD users hide a dimension's value (blank dimension) so that only
-   extension lines remain as visual aids. Such a dimension is purely
-   presentational. This file emits TWO DIMENSIONAL_SIZE instances on the
-   same shape_aspect: one is the real dimension, the other is the blank
-   dimension. The blank one inflates semantic-PMI counts and produces
-   phantom semantic content with no real toleranced value. */
+/* Pmi002: blank dimension emitted as DIMENSIONAL_SIZE; two DIMENSIONAL_SIZE + two SHAPE_DIMENSION_REPRESENTATION instances; one is real, one is blank (blanked-width) — inflates semantic-PMI count; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Pmi002 - blank dimension emitted as semantic'),'2;1');
-FILE_NAME('Pmi002.stp','2026-04-26T00:00:00',('catalog'),('cad'),
-  'manual','','');
-FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+FILE_DESCRIPTION(('Pmi002'),'2;1');
+FILE_NAME('Pmi002.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'ap242_managed_model_based_3d_engineering',2020,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT('Pmi002','PartWithBlankDim','',(#12));
-#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
-#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
-#16 = PRODUCT_DEFINITION('','',#14,#15);
-#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
-#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
-  'distance_accuracy_value','');
-#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
-  REPRESENTATION_CONTEXT('','3D') );
-#30 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31 = DIRECTION('',(0.0,0.0,1.0));
-#32 = DIRECTION('',(1.0,0.0,0.0));
-#33 = AXIS2_PLACEMENT_3D('',#30,#31,#32);
-#40 = SHAPE_REPRESENTATION('',(#33),#25);
-#41 = SHAPE_DEFINITION_REPRESENTATION(#17,#40);
-/* Real width feature */
-#50 = SHAPE_ASPECT('width','external width',#17,.T.);
-/* Real dimensional_size */
-#60 = DIMENSIONAL_SIZE(#50,'width');
-#61 = MEASURE_REPRESENTATION_ITEM('nominal',LENGTH_MEASURE(50.0),#20);
-#62 = SHAPE_DIMENSION_REPRESENTATION('width_rep',(#61),#25);
-/* Defect: blank dimension still emitted as semantic dimensional_size.
-   Should have been omitted on export; visual extension lines belong
-   in graphic presentation only. */
-#70 = DIMENSIONAL_SIZE(#50,'blanked-width');
-#71 = MEASURE_REPRESENTATION_ITEM('nominal',LENGTH_MEASURE(50.0),#20);
-#72 = SHAPE_DIMENSION_REPRESENTATION('blank_rep',(#71),#25);
-/* Plus-minus tolerance on the real dimension only */
-#80 = PLUS_MINUS_TOLERANCE(#81,#60);
-#81 = TOLERANCE_VALUE(#82,#83);
-#82 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(-0.1),#20);
-#83 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.1),#20);
-/* Both dimensions feed into the count, but only one carries semantic value. */
-#90 = DRAUGHTING_MODEL('Default',(),#25);
-#91 = PLANE('',#33);
-#92 = ANNOTATION_PLANE('PMI',(),#91,());
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Pmi002','Pmi002','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=SHAPE_ASPECT('width','external width',#9055,.T.);
+#9064=DIMENSIONAL_SIZE(#9063,'width');
+#9065=MEASURE_REPRESENTATION_ITEM('nominal',LENGTH_MEASURE(50.0),#9056);
+#9066=SHAPE_DIMENSION_REPRESENTATION('width_rep',(#9065),#9060);
+#9067=DIMENSIONAL_SIZE(#9063,'blanked-width');
+#9068=MEASURE_REPRESENTATION_ITEM('nominal',LENGTH_MEASURE(50.0),#9056);
+#9069=SHAPE_DIMENSION_REPRESENTATION('blank_rep',(#9068),#9060);
 ENDSEC;
 END-ISO-10303-21;

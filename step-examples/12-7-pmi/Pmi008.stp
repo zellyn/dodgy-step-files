@@ -1,55 +1,33 @@
 ISO-10303-21;
-/* Pmi008 - Tolerance precision: missing decimal-place qualifier fallback chain
-   Defect: Some CAD systems ignore tolerance values that lack an explicit
-   decimal-place precision qualifier even when a default precision is set
-   globally. The fallback hierarchy is: precision at tolerance value ->
-   precision at nominal value -> global default. This file dimensions
-   nominal 5.0 with tolerance +/-0.01, but neither the nominal nor the
-   tolerance carries a value_format_type_qualifier (precision_qualifier),
-   AND no global default is declared. */
+/* Pmi008: PLUS_MINUS_TOLERANCE + TOLERANCE_VALUE with no PRECISION_QUALIFIER; fallback hierarchy broken — no precision at tolerance, nominal, or global; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Pmi008 - missing decimal-place qualifier fallback chain'),'2;1');
-FILE_NAME('Pmi008.stp','2026-04-26T00:00:00',('catalog'),('cad'),
-  'manual','','');
-FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+FILE_DESCRIPTION(('Pmi008'),'2;1');
+FILE_NAME('Pmi008.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'ap242_managed_model_based_3d_engineering',2020,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT('Pmi008','PrecisionFallbackPart','',(#12));
-#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
-#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
-#16 = PRODUCT_DEFINITION('','',#14,#15);
-#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
-#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
-  'distance_accuracy_value','');
-#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
-  REPRESENTATION_CONTEXT('','3D') );
-/* Defect: no global default precision (no
-   value_format_default in any property_definition). */
-#30 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31 = DIRECTION('',(0.0,0.0,1.0));
-#32 = DIRECTION('',(1.0,0.0,0.0));
-#33 = AXIS2_PLACEMENT_3D('',#30,#31,#32);
-#34 = SHAPE_ASPECT('width','',#17,.T.);
-#40 = DIMENSIONAL_SIZE(#34,'width');
-#41 = MEASURE_REPRESENTATION_ITEM('nom',LENGTH_MEASURE(5.0),#20);
-#42 = SHAPE_DIMENSION_REPRESENTATION('rep',(#41),#25);
-/* Plus-minus tolerance with no precision qualifier on either bound */
-#50 = PLUS_MINUS_TOLERANCE(#51,#40);
-#51 = TOLERANCE_VALUE(#52,#53);
-#52 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(-0.01),#20);
-#53 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.01),#20);
-/* No VALUE_FORMAT_TYPE_QUALIFIER, no PRECISION_QUALIFIER, no fallback. */
-#60 = DRAUGHTING_MODEL('Default',(),#25);
-#61 = SHAPE_REPRESENTATION('',(#33),#25);
-#62 = SHAPE_DEFINITION_REPRESENTATION(#17,#61);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Pmi008','Pmi008','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=SHAPE_ASPECT('dim_feature','',#9055,.T.);
+#9064=DIMENSIONAL_SIZE(#9063,'shaft_diameter');
+#9065=MEASURE_REPRESENTATION_ITEM('nominal',LENGTH_MEASURE(5.0),#9056);
+#9066=MEASURE_REPRESENTATION_ITEM('upper',LENGTH_MEASURE(0.01),#9056);
+#9067=MEASURE_REPRESENTATION_ITEM('lower',LENGTH_MEASURE(0.01),#9056);
+#9068=TOLERANCE_VALUE(#9066,#9067);
+#9069=PLUS_MINUS_TOLERANCE(#9068,#9064);
 ENDSEC;
 END-ISO-10303-21;
