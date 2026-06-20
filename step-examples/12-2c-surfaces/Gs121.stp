@@ -1,83 +1,103 @@
 ISO-10303-21;
-/* Gs121 - SurfaceNewton trapped in local minimum of distance function
- *
- * Defect: ShapeAnalysis_Surface.SurfaceNewton can get trapped in a local minimum
- *  when the surface has multiple local minima of the distance function.
- *  Newton iteration doesn't escape the basin and returns a false minimum.
- *
- * Reproducer: Wavy surface (e.g., sine-wave-modulated cylinder or B-spline
- *  with multiple peaks and valleys) where Newton iteration starting from
- *  a generic point gets trapped in a local minimum instead of finding
- *  the actual closest point on the surface.
- *
- * Expected kernel behavior:
- *   heal - detect convergence to local minimum and backtrack or restart;
- *   reject only when surface is malformed. */
+/* Gs121: B_SPLINE_SURFACE_WITH_KNOTS (degree=3, oscillating control net with multiple humps creating multiple distance-function local minima) IS ADVANCED_FACE.face_geometry; multi-minimum distance function IS the mechanism wired into face topology; SurfaceNewton non-escaping local-minimum trapping IS the defect; shape_null */
 HEADER;
-FILE_DESCRIPTION(('Gs121 test case','SurfaceNewton trapped in local minimum'),'2;1');
-FILE_NAME('Gs121.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
+FILE_DESCRIPTION(('Gs121'),'2;1');
+FILE_NAME('Gs121.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Axis placement */
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-/* B-spline surface with multiple local minima (wavy surface)
- * Control points arranged to create peaks and valleys */
-#20=B_SPLINE_SURFACE_WITH_KNOTS('',3,3,
-  ((
-    (#30, #31, #32, #33),
-    (#34, #35, #36, #37),
-    (#38, #39, #40, #41),
-    (#42, #43, #44, #45)
-  )),
-  .UNSPECIFIED.,
-  .F.,
-  .F.,
-  (1,2,1),(1,2,1),(2.0,3.0,4.0,5.0,6.0,7.0,8.0),(2.0,3.0,4.0,5.0,6.0,7.0,8.0));
-/* Control points defining the wavy surface */
-#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31=CARTESIAN_POINT('',(1.0,0.0,2.0));
-#32=CARTESIAN_POINT('',(2.0,0.0,0.0));
-#33=CARTESIAN_POINT('',(3.0,0.0,1.0));
-#34=CARTESIAN_POINT('',(0.0,1.0,1.0));
-#35=CARTESIAN_POINT('',(1.0,1.0,3.5));
-#36=CARTESIAN_POINT('',(2.0,1.0,3.0));
-#37=CARTESIAN_POINT('',(3.0,1.0,2.5));
-#38=CARTESIAN_POINT('',(0.0,2.0,0.5));
-#39=CARTESIAN_POINT('',(1.0,2.0,2.8));
-#40=CARTESIAN_POINT('',(2.0,2.0,2.5));
-#41=CARTESIAN_POINT('',(3.0,2.0,1.8));
-#42=CARTESIAN_POINT('',(0.0,3.0,0.0));
-#43=CARTESIAN_POINT('',(1.0,3.0,1.5));
-#44=CARTESIAN_POINT('',(2.0,3.0,0.8));
-#45=CARTESIAN_POINT('',(3.0,3.0,0.0));
-/* Outer bound on u-v domain */
-#50=CARTESIAN_POINT('',(1.5,1.5,2.0));
-#51=VERTEX_POINT('',#50);
-#52=VERTEX_LOOP('',#51);
-#53=FACE_OUTER_BOUND('',#52,.T.);
-/* Face referencing the wavy B-spline surface */
-#60=ADVANCED_FACE('',(#53),#20,.T.);
-/* Shell */
-#70=OPEN_SHELL('',(#60));
-/* Product context chain */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Gs121','Gs121','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#70),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,1.0));
+#2=CARTESIAN_POINT('',(0.2,0.0,-1.0));
+#3=CARTESIAN_POINT('',(0.4,0.0,1.0));
+#4=CARTESIAN_POINT('',(0.6,0.0,-1.0));
+#5=CARTESIAN_POINT('',(0.8,0.0,1.0));
+#6=CARTESIAN_POINT('',(1.0,0.0,-1.0));
+#7=CARTESIAN_POINT('',(0.0,1.0,1.0));
+#8=CARTESIAN_POINT('',(0.2,1.0,-1.0));
+#9=CARTESIAN_POINT('',(0.4,1.0,1.0));
+#10=CARTESIAN_POINT('',(0.6,1.0,-1.0));
+#11=CARTESIAN_POINT('',(0.8,1.0,1.0));
+#12=CARTESIAN_POINT('',(1.0,1.0,-1.0));
+#13=B_SPLINE_SURFACE_WITH_KNOTS('gs121_bss',3,1,((#1,#2,#3,#4,#5,#6),(#7,#8,#9,#10,#11,#12)),.UNSPECIFIED.,.F.,.F.,.F.,(4,1,1,4),(2,2),(0.0,0.333,0.667,1.0),(0.0,1.0),.UNSPECIFIED.);
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#15=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#16=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#17=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#18=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#19=VERTEX_POINT('',#15);
+#20=VERTEX_POINT('',#16);
+#21=VERTEX_POINT('',#17);
+#22=VERTEX_POINT('',#18);
+#23=CARTESIAN_POINT('',(0.0,0.0,1.0));
+#24=DIRECTION('',(1.0,0.0,0.0));
+#25=VECTOR('',#24,1.0);
+#26=LINE('',#23,#25);
+#27=CARTESIAN_POINT('',(0.0,0.0));
+#28=DIRECTION('',(1.0,0.0));
+#29=VECTOR('',#28,1.0);
+#30=LINE('',#27,#29);
+#31=DEFINITIONAL_REPRESENTATION('pcdef',(#30),#14);
+#32=PCURVE('pc',#13,#31);
+#33=SURFACE_CURVE('sc',#26,(#32),.PCURVE_S1.);
+#34=EDGE_CURVE('ec',#19,#20,#33,.T.);
+#35=CARTESIAN_POINT('',(1.0,0.0,-1.0));
+#36=DIRECTION('',(0.0,1.0,0.0));
+#37=VECTOR('',#36,1.0);
+#38=LINE('',#35,#37);
+#39=CARTESIAN_POINT('',(1.0,0.0));
+#40=DIRECTION('',(0.0,1.0));
+#41=VECTOR('',#40,1.0);
+#42=LINE('',#39,#41);
+#43=DEFINITIONAL_REPRESENTATION('pcdef',(#42),#14);
+#44=PCURVE('pc',#13,#43);
+#45=SURFACE_CURVE('sc',#38,(#44),.PCURVE_S1.);
+#46=EDGE_CURVE('ec',#20,#21,#45,.T.);
+#47=CARTESIAN_POINT('',(1.0,1.0,-1.0));
+#48=DIRECTION('',(-1.0,0.0,0.0));
+#49=VECTOR('',#48,1.0);
+#50=LINE('',#47,#49);
+#51=CARTESIAN_POINT('',(1.0,1.0));
+#52=DIRECTION('',(-1.0,0.0));
+#53=VECTOR('',#52,1.0);
+#54=LINE('',#51,#53);
+#55=DEFINITIONAL_REPRESENTATION('pcdef',(#54),#14);
+#56=PCURVE('pc',#13,#55);
+#57=SURFACE_CURVE('sc',#50,(#56),.PCURVE_S1.);
+#58=EDGE_CURVE('ec',#21,#22,#57,.T.);
+#59=CARTESIAN_POINT('',(0.0,1.0,1.0));
+#60=DIRECTION('',(0.0,-1.0,0.0));
+#61=VECTOR('',#60,1.0);
+#62=LINE('',#59,#61);
+#63=CARTESIAN_POINT('',(0.0,1.0));
+#64=DIRECTION('',(0.0,-1.0));
+#65=VECTOR('',#64,1.0);
+#66=LINE('',#63,#65);
+#67=DEFINITIONAL_REPRESENTATION('pcdef',(#66),#14);
+#68=PCURVE('pc',#13,#67);
+#69=SURFACE_CURVE('sc',#62,(#68),.PCURVE_S1.);
+#70=EDGE_CURVE('ec',#22,#19,#69,.T.);
+#71=ORIENTED_EDGE('',$,$,#34,.T.);
+#72=ORIENTED_EDGE('',$,$,#46,.T.);
+#73=ORIENTED_EDGE('',$,$,#58,.T.);
+#74=ORIENTED_EDGE('',$,$,#70,.T.);
+#75=EDGE_LOOP('',(#71,#72,#73,#74));
+#76=FACE_OUTER_BOUND('',#75,.T.);
+#77=ADVANCED_FACE('',(#76),#13,.T.);
+#78=OPEN_SHELL('',(#77));
+#79=SHELL_BASED_SURFACE_MODEL('',(#78));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gs121','Gs121','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#79),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

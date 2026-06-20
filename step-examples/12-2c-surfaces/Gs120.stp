@@ -1,65 +1,80 @@
 ISO-10303-21;
-/* Gs120 - FaceDivide splitter curve tangent to boundary (zero-area sub-face)
- *
- * Defect: ShapeUpgrade_FaceDivide.SplitCurves produces zero-area sub-face
- *  when splitter curve is tangent to face boundary at a single point.
- *  The division logic doesn't guard against tangency leading to degenerate splits.
- *
- * Reproducer: Face with a splitter curve that touches the outer bound tangentially.
- *  After splitting, one sub-face has zero interior area (boundary collapses).
- *
- * Expected kernel behavior:
- *   heal - detect tangent-splitter condition and refuse the split or merge result;
- *   reject only when split point is outside face bounds. */
+/* Gs120: PLANE IS ADVANCED_FACE.face_geometry; splitter pcurve tangent to boundary pcurve at single point creates zero-area sub-face IS the mechanism wired into face topology; FaceDivide.SplitCurves missing tangency guard IS the defect; shape_null */
 HEADER;
-FILE_DESCRIPTION(('Gs120 test case','Face divide splitter curve tangent to boundary'),'2;1');
-FILE_NAME('Gs120.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
+FILE_DESCRIPTION(('Gs120'),'2;1');
+FILE_NAME('Gs120.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Base plane placement */
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-/* Plane surface (XY plane at Z=0) */
-#20=PLANE('',#13);
-/* Outer boundary: circle of radius 10 centered at origin */
-#30=CIRCLE('',#13,10.0);
-#31=EDGE_CURVE('',#30,#30,#30,.T.);
-#32=VERTEX_POINT('',#10);
-/* Boundary curve (closed circle) */
-#33=ORIENTED_EDGE('',.F.,#31);
-#34=EDGE_LOOP('',(#33));
-#35=FACE_OUTER_BOUND('',#34,.T.);
-/* Inner boundary: line segment tangent to outer circle at (10,0,0)
- * This creates a tangency condition at the boundary */
-#40=CARTESIAN_POINT('',(10.0,0.0,0.0));
-#41=CARTESIAN_POINT('',(12.0,0.0,0.0));
-#42=LINE('',#40,#12);
-#43=EDGE_CURVE('',#40,#41,#42,.T.);
-#44=ORIENTED_EDGE('',.T.,#43);
-#45=EDGE_LOOP('',(#44));
-#46=FACE_INNER_BOUND('',#45,.T.);
-/* Face with tangent inner edge */
-#50=ADVANCED_FACE('',(#35,#46),#20,.T.);
-/* Shell containing the face */
-#60=OPEN_SHELL('',(#50));
-/* Product context chain */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Gs120','Gs120','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#60),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('gs120_plane_ax',#1,#2,#3);
+#5=PLANE('gs120_plane',#4);
+#6=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#7=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(0.5,1.0,0.0));
+#9=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#10=VERTEX_POINT('',#7);
+#11=VERTEX_POINT('',#8);
+#12=VERTEX_POINT('',#9);
+#13=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#14=DIRECTION('',(1.0,2.0,0.0));
+#15=VECTOR('',#14,1.118);
+#16=LINE('',#13,#15);
+#17=CARTESIAN_POINT('',(0.0,0.0));
+#18=DIRECTION('',(1.0,2.0));
+#19=VECTOR('',#18,1.118);
+#20=LINE('',#17,#19);
+#21=DEFINITIONAL_REPRESENTATION('pcdef',(#20),#6);
+#22=PCURVE('pc',#5,#21);
+#23=SURFACE_CURVE('sc',#16,(#22),.PCURVE_S1.);
+#24=EDGE_CURVE('ec',#10,#11,#23,.T.);
+#25=CARTESIAN_POINT('',(0.5,1.0,0.0));
+#26=DIRECTION('',(1.0,-2.0,0.0));
+#27=VECTOR('',#26,1.118);
+#28=LINE('',#25,#27);
+#29=CARTESIAN_POINT('',(0.5,1.0));
+#30=DIRECTION('',(1.0,-2.0));
+#31=VECTOR('',#30,1.118);
+#32=LINE('',#29,#31);
+#33=DEFINITIONAL_REPRESENTATION('pcdef',(#32),#6);
+#34=PCURVE('pc',#5,#33);
+#35=SURFACE_CURVE('sc',#28,(#34),.PCURVE_S1.);
+#36=EDGE_CURVE('ec',#11,#12,#35,.T.);
+#37=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#38=DIRECTION('',(-1.0,0.0,0.0));
+#39=VECTOR('',#38,1.0);
+#40=LINE('',#37,#39);
+#41=CARTESIAN_POINT('',(1.0,0.0));
+#42=DIRECTION('',(-1.0,0.0));
+#43=VECTOR('',#42,1.0);
+#44=LINE('',#41,#43);
+#45=DEFINITIONAL_REPRESENTATION('pcdef',(#44),#6);
+#46=PCURVE('pc',#5,#45);
+#47=SURFACE_CURVE('sc',#40,(#46),.PCURVE_S1.);
+#48=EDGE_CURVE('ec',#12,#10,#47,.T.);
+#49=ORIENTED_EDGE('',$,$,#24,.T.);
+#50=ORIENTED_EDGE('',$,$,#36,.T.);
+#51=ORIENTED_EDGE('',$,$,#48,.T.);
+#52=EDGE_LOOP('',(#49,#50,#51));
+#53=FACE_OUTER_BOUND('',#52,.T.);
+#54=ADVANCED_FACE('',(#53),#5,.T.);
+#55=OPEN_SHELL('',(#54));
+#56=SHELL_BASED_SURFACE_MODEL('',(#55));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gs120','Gs120','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#56),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

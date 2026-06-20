@@ -29744,7 +29744,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_FaceDivide.SplitCurves produces zero-area sub-face when splitter curve is tangent to face boundary at a single point. The division logic doesn't guard against tangency leading to degenerate splits.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs120.stp",
     "id": "Gs120",
@@ -29765,7 +29765,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "FaceDivide splitter curve tangent to boundary (zero-area sub-face)"
   },
@@ -29777,7 +29777,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface.SurfaceNewton can get trapped in a local minimum when the surface has multiple local minima of the distance function. Newton iteration doesn't escape the basin and returns a false minimum.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs121.stp",
     "id": "Gs121",
@@ -29798,7 +29798,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "SurfaceNewton trapped in local minimum of distance function"
   },
@@ -29810,7 +29810,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_SplitSurface processes rational B-spline surface where one weight is 0, producing degenerate interior region. The split operation doesn't validate weight coherence post-split.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs122.stp",
     "id": "Gs122",
@@ -29831,7 +29831,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Rational B-spline surface with zero weight (degenerate interior)"
   },
@@ -29843,7 +29843,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface.IsVClosed reports true for a self-intersecting torus where major_radius < minor_radius. The geometry is degenerate (torus touches itself) but IsVClosed doesn't detect the invalid configuration.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs123.stp",
     "id": "Gs123",
@@ -29864,7 +29864,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "TOROIDAL_SURFACE with major_radius < minor_radius (self-intersecting)"
   },
@@ -29876,7 +29876,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface.IsUClosed reports true based on the u_periodic flag, but the first/last U-poles don't coincide, leaving a gap. This confuses healing logic which expects closed surfaces to have geometrically coincident boundaries.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs124.stp",
     "id": "Gs124",
@@ -29897,7 +29897,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "B-SPLINE_SURFACE with u_periodic flag but non-coincident poles"
   },
@@ -29909,7 +29909,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_ConvertSurfaceToBezierBasis produces excessive subdivision when input domain is very wide. A surface with U domain [0, 1000] gets split into ~1000 tiny Bezier patches, each occupying parameter range of 1.0, causing memory bloat and numerical issues.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs125.stp",
     "id": "Gs125",
@@ -29930,7 +29930,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "B-SPLINE_SURFACE with very wide U domain"
   },
