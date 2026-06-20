@@ -1,67 +1,71 @@
 ISO-10303-21;
-/* Twi031 - Degenerate edges duplicated at apex (Pro/E)
- * Defect: Some Pro/E exports emit two degenerate edges where one is sufficient
- * at a cone/sphere apex. Causes downstream wire reorder confusion. Reader
- * should detect and dedupe; preserve a single canonical apex bridge.
- * Source: Pro/E PRO7226.stp #489490; ShapeFix F083. */
+/* Twi031: OPEN_SHELL with one ADVANCED_FACE on a CONICAL_SURFACE (semi-angle 30°, axis +Z, apex at origin); FACE_OUTER_BOUND references an EDGE_LOOP containing: two degenerate ORIENTED_EDGEs (degen_A and degen_B) both at the apex — same zero-length EDGE_CURVEs with apex vertex at both ends — two lateral line edges from apex to base, and one base semi-circle arc; two degenerate apex EDGE_CURVEs in the same EDGE_LOOP IS the mechanism (Pro/E redundant apex bridge); EDGE_LOOP IS wired into FACE_OUTER_BOUND, ADVANCED_FACE, OPEN_SHELL; kernel must detect and dedupe to a single canonical apex bridge */
 HEADER;
-FILE_DESCRIPTION(('Twi031 test case','Degenerate edges duplicated at apex (Pro/E)'),'2;1');
-FILE_NAME('Twi031.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Twi031'),'2;1');
+FILE_NAME('Twi031.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CONICAL_SURFACE('',#4,2.0,0.5235987756);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=VERTEX_POINT('',#6);
+#8=CARTESIAN_POINT('',(1.15470053838,0.0,2.0));
+#9=VERTEX_POINT('',#8);
+#10=CARTESIAN_POINT('',(-1.15470053838,0.0,2.0));
+#11=VERTEX_POINT('',#10);
 #12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#20=CONICAL_SURFACE('',#13,5.0,0.5235988);
-/* Apex */
-#21=CARTESIAN_POINT('',(0.0,0.0,8.660254));
-#22=VERTEX_POINT('',#21);
-/* Base rim */
-#30=CARTESIAN_POINT('',(5.0,0.0,0.0));
-#31=VERTEX_POINT('',#30);
-#32=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#33=CIRCLE('',#32,5.0);
-#34=EDGE_CURVE('',#31,#31,#33,.T.);
-/* Meridian to apex */
-#40=DIRECTION('',(-0.5,0.0,0.8660254));
-#41=VECTOR('',#40,1.0);
-#42=LINE('',#30,#41);
-#43=EDGE_CURVE('',#31,#22,#42,.T.);
-/* TWO zero-length apex-bridge degenerate edges (only one is needed) */
-#50=DIRECTION('',(1.0,0.0,0.0));
-#51=VECTOR('',#50,1.0E-12);
-#52=LINE('',#21,#51);
-#53=EDGE_CURVE('',#22,#22,#52,.T.);
-#54=EDGE_CURVE('',#22,#22,#52,.T.);
-/* Defect: two degenerate ORIENTED_EDGEs in the same wire (#61, #62) at the
- * same apex - one is canonical, the other should be deduped. */
-#60=ORIENTED_EDGE('',*,*,#34,.T.);
-#61=ORIENTED_EDGE('',*,*,#43,.T.);
-#62=ORIENTED_EDGE('',*,*,#53,.T.);
-#63=ORIENTED_EDGE('',*,*,#54,.T.);
-#64=ORIENTED_EDGE('',*,*,#43,.F.);
-#70=EDGE_LOOP('',(#60,#61,#62,#63,#64));
-#71=FACE_OUTER_BOUND('',#70,.T.);
-#72=ADVANCED_FACE('',(#71),#20,.T.);
-/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Twi031','Twi031','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9020=OPEN_SHELL('wrap_shell',(#72));
-#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9020));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#13=VECTOR('',#12,0.0);
+#14=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#15=LINE('',#14,#13);
+#16=EDGE_CURVE('',#7,#7,#15,.T.);
+#17=ORIENTED_EDGE('',*,*,#16,.T.);
+#18=DIRECTION('',(1.0,0.0,0.0));
+#19=VECTOR('',#18,0.0);
+#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#21=LINE('',#20,#19);
+#22=EDGE_CURVE('',#7,#7,#21,.T.);
+#23=ORIENTED_EDGE('',*,*,#22,.T.);
+#24=DIRECTION('',(0.5,0.0,0.866025403784));
+#25=VECTOR('',#24,2.30940107676);
+#26=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#27=LINE('',#26,#25);
+#28=EDGE_CURVE('',#7,#9,#27,.T.);
+#29=ORIENTED_EDGE('',$,$,#28,.T.);
+#30=CARTESIAN_POINT('',(0.0,0.0,2.0));
+#31=DIRECTION('',(0.0,0.0,1.0));
+#32=DIRECTION('',(1.0,0.0,0.0));
+#33=AXIS2_PLACEMENT_3D('',#30,#31,#32);
+#34=CIRCLE('',#33,1.1547005384);
+#35=EDGE_CURVE('',#9,#11,#34,.T.);
+#36=ORIENTED_EDGE('',*,*,#35,.T.);
+#37=DIRECTION('',(-0.5,0.0,0.866025403784));
+#38=VECTOR('',#37,2.30940107676);
+#39=CARTESIAN_POINT('',(-1.15470053838,0.0,2.0));
+#40=LINE('',#39,#38);
+#41=EDGE_CURVE('',#11,#7,#40,.T.);
+#42=ORIENTED_EDGE('',$,$,#41,.T.);
+#43=EDGE_LOOP('',(#17,#23,#29,#36,#42));
+#44=FACE_OUTER_BOUND('',#43,.T.);
+#45=ADVANCED_FACE('',(#44),#5,.T.);
+#46=OPEN_SHELL('',(#45));
+#47=SHELL_BASED_SURFACE_MODEL('',(#46));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi031','Twi031','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#47),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

@@ -1,39 +1,46 @@
 ISO-10303-21;
-/* Twi027 - ConnectEdgesToWires fails on INTERNAL-only edges / non-determinism
- * Defect: ShapeAnalysis_FreeBounds::ConnectEdgesToWires throws on a compound
- * that contains only INTERNAL-oriented edges (no wires/faces). Separately,
- * with normal input it can return wires marked Closed when not, or yield
- * non-deterministic ordering across runs. Reader should detect non-manifold
- * input; bypass connection or warn; produce deterministic output
- * (Mantis 0024807; bug25068/bug25333; bug22924). */
+/* Twi027: GEOMETRIC_CURVE_SET containing three standalone EDGE_CURVE entities whose vertices form a closed equilateral triangle in 3D; no EDGE_LOOP, no FACE_BOUND, no ADVANCED_FACE, no OPEN_SHELL — bare standalone edges IS the mechanism; EDGE_CURVEs ARE wired into GEOMETRIC_CURVE_SET which IS the shape item; ConnectEdgesToWires pass must emit a diagnostic on INTERNAL-only edge compound; kernel must warn and return empty result, not crash silently */
 HEADER;
-FILE_DESCRIPTION(('Twi027 test case','ConnectEdgesToWires INTERNAL-only edges'),'2;1');
-FILE_NAME('Twi027.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Twi027'),'2;1');
+FILE_NAME('Twi027.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Three free-floating edges with no enclosing wire/face context - they will
- * read as INTERNAL-only when passed through ShapeAnalysis_FreeBounds */
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=VERTEX_POINT('',#10);
-#12=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#13=VERTEX_POINT('',#12);
-#14=CARTESIAN_POINT('',(2.0,0.0,0.0));
-#15=VERTEX_POINT('',#14);
-#16=CARTESIAN_POINT('',(3.0,0.0,0.0));
-#17=VERTEX_POINT('',#16);
-#20=DIRECTION('',(1.0,0.0,0.0));
-#21=VECTOR('',#20,1.0);
-#22=LINE('',#10,#21);
-#23=LINE('',#12,#21);
-#24=LINE('',#14,#21);
-#30=EDGE_CURVE('',#11,#13,#22,.T.);
-#31=EDGE_CURVE('',#13,#15,#23,.T.);
-#32=EDGE_CURVE('',#15,#17,#24,.T.);
-/* Defect: this is a GEOMETRIC_CURVE_SET of edges with no parent face/shell.
- * ShapeAnalysis_FreeBounds::ConnectEdgesToWires once threw on this input. */
-#40=GEOMETRIC_CURVE_SET('',(#30,#31,#32));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#2=VERTEX_POINT('',#1);
+#3=CARTESIAN_POINT('',(-0.5,0.866025403784,0.0));
+#4=VERTEX_POINT('',#3);
+#5=CARTESIAN_POINT('',(-0.5,-0.866025403784,0.0));
+#6=VERTEX_POINT('',#5);
+#7=DIRECTION('',(-0.866025403784,0.5,0.0));
+#8=VECTOR('',#7,1.73205080757);
+#9=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#10=LINE('',#9,#8);
+#11=EDGE_CURVE('',#2,#4,#10,.T.);
+#12=DIRECTION('',(-3.5254315917E-16,-1.0,0.0));
+#13=VECTOR('',#12,1.73205080757);
+#14=CARTESIAN_POINT('',(-0.5,0.866025403784,0.0));
+#15=LINE('',#14,#13);
+#16=EDGE_CURVE('',#4,#6,#15,.T.);
+#17=DIRECTION('',(0.866025403784,0.5,0.0));
+#18=VECTOR('',#17,1.73205080757);
+#19=CARTESIAN_POINT('',(-0.5,-0.866025403784,0.0));
+#20=LINE('',#19,#18);
+#21=EDGE_CURVE('',#6,#2,#20,.T.);
+#22=GEOMETRIC_CURVE_SET('',(#11,#16,#21));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi027','Twi027','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#22),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
