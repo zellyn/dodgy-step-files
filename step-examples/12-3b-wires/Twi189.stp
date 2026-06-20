@@ -1,70 +1,78 @@
 ISO-10303-21;
-/* Twi189 - ShapeFix_Wire.FixGaps3d directional-extension
- * Defect: Gap-bridge by extending edge A vs extending edge B yields different results;
- * FixGaps3d picks arbitrary direction not the geometrically-correct one.
- * Wire has symmetric gap where either edge can extend to fill it, but algorithm
- * chooses extension direction that is not the intended geometry.
- */
+/* Twi189: GEOMETRIC_CURVE_SET containing EDGE_LOOP with 4 edges on PLANE; PLANE: normal +Z, origin (0,0,0); A(0,0)->B(5,5) gap to C(5,5.1)->D(0,5.1)->A; gap from B(5,5,0) to C(5,5.1,0) is 0.1 units vertical; gap_extend_lower (A->B) IS edge below gap; gap_extend_upper (C->D) IS edge above gap; FixGaps3d IS mechanism — extends lower edge upward by iteration order, not by geometric preference (e.g. lower slope change); GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; all EDGE_CURVEs ARE wired into EDGE_LOOP; never orphaned */
 HEADER;
-FILE_DESCRIPTION(('Twi189 test case','FixGaps3d directional-extension'),'2;1');
-FILE_NAME('Twi189.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('Twi189'),'2;1');
+FILE_NAME('Twi189.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#20=PLANE('',#13);
-/* Create a symmetric gap where extending either edge would close it,
-   but correct geometry would prefer one direction */
-#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31=VERTEX_POINT('',#30);
-#32=CARTESIAN_POINT('',(5.0,5.0,0.0));
-#33=VERTEX_POINT('',#32);
-#34=CARTESIAN_POINT('',(5.0,5.1,0.0));
-#35=VERTEX_POINT('',#34);
-#36=CARTESIAN_POINT('',(10.0,10.0,0.0));
-#37=VERTEX_POINT('',#36);
-/* Edge 1: (0,0) to (5,5) */
-#50=DIRECTION('',(1.0,1.0,0.0));
-#51=VECTOR('',#50,1.0);
-#52=LINE('',#30,#51);
-#53=EDGE_CURVE('',#31,#33,#52,.T.);
-/* Gap: edge ends at (5,5), next edge starts at (5,5.1) - small gap in Y */
-/* Edge 2: (5,5.1) to (10,10) */
-#54=DIRECTION('',(1.0,1.0,0.0));
-#55=VECTOR('',#54,1.0);
-#56=LINE('',#34,#55);
-#57=EDGE_CURVE('',#35,#37,#56,.T.);
-/* Closing edges to form a closed wire */
-#58=DIRECTION('',(-1.0,-1.0,0.0));
-#59=VECTOR('',#58,1.0);
-#60=LINE('',#36,#59);
-#61=EDGE_CURVE('',#37,#31,#60,.T.);
-/* Wire with directionally ambiguous gap */
-#100=ORIENTED_EDGE('',*,*,#53,.T.);
-#101=ORIENTED_EDGE('',*,*,#57,.T.);
-#102=ORIENTED_EDGE('',*,*,#61,.T.);
-#110=EDGE_LOOP('',(#100,#101,#102));
-#111=FACE_OUTER_BOUND('',#110,.T.);
-#112=ADVANCED_FACE('',(#111),#20,.T.);
-/* Mandatory product chain */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Twi189','Twi189','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#112));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=VERTEX_POINT('',#6);
+#8=CARTESIAN_POINT('',(5.0,5.0,0.0));
+#9=VERTEX_POINT('',#8);
+#10=CARTESIAN_POINT('',(5.0,5.1,0.0));
+#11=VERTEX_POINT('',#10);
+#12=CARTESIAN_POINT('',(0.0,5.1,0.0));
+#13=VERTEX_POINT('',#12);
+#14=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#15=DIRECTION('',(0.707106781187,0.707106781187,0.0));
+#16=VECTOR('',#15,7.07106781187);
+#17=LINE('',#14,#16);
+#18=CARTESIAN_POINT('',(0.0,0.0));
+#19=DIRECTION('',(0.707106781187,0.707106781187));
+#20=VECTOR('',#19,7.07106781187);
+#21=LINE('',#18,#20);
+#22=DEFINITIONAL_REPRESENTATION('',(#21),#*);
+#23=PCURVE('',#5,#22);
+#24=SURFACE_CURVE('',#17,(#23),.PCURVE_S1.);
+#25=EDGE_CURVE('gap_extend_lower',#7,#9,#24,.T.);
+#26=ORIENTED_EDGE('',*,*,#25,.T.);
+#27=CARTESIAN_POINT('',(5.0,5.1,0.0));
+#28=DIRECTION('',(-1.0,0.0,0.0));
+#29=VECTOR('',#28,5.0);
+#30=LINE('',#27,#29);
+#31=CARTESIAN_POINT('',(5.0,5.1));
+#32=DIRECTION('',(-1.0,0.0));
+#33=VECTOR('',#32,5.0);
+#34=LINE('',#31,#33);
+#35=DEFINITIONAL_REPRESENTATION('',(#34),#*);
+#36=PCURVE('',#5,#35);
+#37=SURFACE_CURVE('',#30,(#36),.PCURVE_S1.);
+#38=EDGE_CURVE('gap_extend_upper',#11,#13,#37,.T.);
+#39=ORIENTED_EDGE('',*,*,#38,.T.);
+#40=CARTESIAN_POINT('',(0.0,5.1,0.0));
+#41=DIRECTION('',(0.0,-1.0,0.0));
+#42=VECTOR('',#41,5.1);
+#43=LINE('',#40,#42);
+#44=CARTESIAN_POINT('',(0.0,5.1));
+#45=DIRECTION('',(0.0,-1.0));
+#46=VECTOR('',#45,5.1);
+#47=LINE('',#44,#46);
+#48=DEFINITIONAL_REPRESENTATION('',(#47),#*);
+#49=PCURVE('',#5,#48);
+#50=SURFACE_CURVE('',#43,(#49),.PCURVE_S1.);
+#51=EDGE_CURVE('',#13,#7,#50,.T.);
+#52=ORIENTED_EDGE('',*,*,#51,.T.);
+#53=EDGE_LOOP('',(#26,#39,#52));
+#54=GEOMETRIC_CURVE_SET('',(#53));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi189','Twi189','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#54),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
