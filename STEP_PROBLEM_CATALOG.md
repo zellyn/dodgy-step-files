@@ -19778,11 +19778,11 @@ _Section summary: 41 entries._
 - **Notes**: Synonyms: "back-and-forth wire", "fold-line face", "zero-area face accepted", "degenerate face wire collapses to line", "face collapsed to a line or point".
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
 - **Byte assertion**: contains(b'zero_area_face')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Sewing leaves the shell open or produces non-manifold edges; loaded shape is a compound of free faces instead of a closed shell, and MakeSolid downstream fails to produce a valid solid.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-3a-shells/Sw003.stp
 
 ### Sw004 — Fast-sewing face has null surface reference
@@ -19847,11 +19847,11 @@ _Section summary: 41 entries._
 - **Notes**: Rare; depends on hash function used. Provenance tier: runtime-only; bytes alone cannot demonstrate this defect; the symptom is a hash-bucket collision inside the fast-sewing vertex table during a sewing operation. The static fixture encodes only the inputs; whether they collide depends on the kernel's specific hash function and table size. A behavioral test against the sewing implementation is the appropriate venue. Synonyms: "fast sew vertex hashing mismatch", "vertex not found", "widely-separated VERTEX_POINTs collide in hash", "hash bucket collision in vertex table", "spatial hash needed instead of bit-equal".
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') == 2
 - **Byte assertion**: contains(b'1.0e6') or contains(b'1.0E6') or contains(b'1.E6') or contains(b'1000000')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Sewing leaves the shell open or produces non-manifold edges; loaded shape is a compound of free faces instead of a closed shell, and MakeSolid downstream fails to produce a valid solid.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-3a-shells/Sw007.stp
 
 ### Sw008 — Fast-sewing cannot match candidate EDGE_CURVE to global edge table: same endpoints but different underlying curves (LINE vs degree-1 B_SPLINE_CURVE_WITH_KNOTS)
@@ -19865,11 +19865,11 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'B_SPLINE_CURVE_WITH_KNOTS')
 - **Byte assertion**: contains(b'LINE')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 2
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Sewing leaves the shell open or produces non-manifold edges; loaded shape is a compound of free faces instead of a closed shell, and MakeSolid downstream fails to produce a valid solid.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-3a-shells/Sw008.stp
 
 ### Sw009 — `same_parameter` flag-skip trap during fast sewing
@@ -19883,11 +19883,11 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'LINE_2D')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'VECTOR_2D')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Sewing leaves the shell open or produces non-manifold edges; loaded shape is a compound of free faces instead of a closed shell, and MakeSolid downstream fails to produce a valid solid.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-3a-shells/Sw009.stp
 
 ---

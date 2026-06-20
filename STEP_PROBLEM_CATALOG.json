@@ -32977,7 +32977,7 @@
     "cross_oracle_note": null,
     "description": "A face whose bounding wire collapses to a curve or a point (zero-area face) is reported by the sewer as \"degenerated\" but appears unflagged in the source file. Bug-reporter language: \"zero-area face\", \"face is a line\", \"degenerate face accepted\".",
     "expected_kernel_behavior": "Detect via signed-area; reject the face, or coerce to a degenerate edge.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Sw003.stp",
     "id": "Sw003",
@@ -32998,7 +32998,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Degenerate face (collapsed wire) marked as such by sewing but accepted upstream"
   },
@@ -33124,7 +33124,7 @@
     "cross_oracle_note": null,
     "description": "While building the fast-sewing vertex table, a wire endpoint hashes to a bucket containing only vertices at very different 3D coordinates; no near-coincident match within the sewing tolerance. The algorithm cannot decide whether to dedup or insert. Typical fixture: two VERTEX_POINTs with widely separated coordinates (e.g., (0,0,0) and (1e6,0,0)) that nonetheless share a hash bucket. Bug-reporter language: \"fast sew vertex hashing mismatch\", \"vertex not found\", \"widely-separated VERTEX_POINTs collide in hash\".",
     "expected_kernel_behavior": "Heal and accept: normalize with spatial hashing under tolerance, not bit-equal hashing; fall back to the slow path.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Sw007.stp",
     "id": "Sw007",
@@ -33145,7 +33145,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Fast-sewing cannot find the canonical vertex for a wire endpoint"
   },
@@ -33161,7 +33161,7 @@
     "cross_oracle_note": null,
     "description": "Analogous to Sw007 but for edges: an edge's lookup key (endpoints + curve type) does not hit a unique entry in the global edge table. Bug-reporter language: \"edge not matched\", \"fast sew edge collision\".",
     "expected_kernel_behavior": "Heal and accept: normalize matching by geometric coincidence within tolerance, not by curve-type identity.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Sw008.stp",
     "id": "Sw008",
@@ -33184,7 +33184,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Fast-sewing cannot match candidate EDGE_CURVE to global edge table: same endpoints but different underlying curves (LINE vs degree-1 B_SPLINE_CURVE_WITH_KNOTS)"
   },
@@ -33200,7 +33200,7 @@
     "cross_oracle_note": null,
     "description": "An incoming EDGE_CURVE has its `same_parameter` flag falsely set true; fast-sewing skips the parameter-reconciliation pass that would catch it. The result is a sewn shell with edges whose 3D curve and pcurve disagree. Typical fixture: an EDGE_CURVE references a 3D LINE for its curve geometry; a separate LINE_2D/VECTOR_2D/DIRECTION_2D pcurve is also defined but parameterized differently and not connected via PCURVE/SURFACE_CURVE to the edge; the parametric pcurve dangles separately. Bug-reporter language: \"same_parameter flag stuck\", \"fast sew skips parameter reconciliation\", \"orphan pcurve / dangling LINE_2D\".",
     "expected_kernel_behavior": "Heal and accept: always normalize / reconcile parameters when sewing produces a new edge; trust no input flag.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Sw009.stp",
     "id": "Sw009",
@@ -33221,7 +33221,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "`same_parameter` flag-skip trap during fast sewing"
   },

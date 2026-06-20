@@ -1,28 +1,46 @@
 ISO-10303-21;
-/* Sw008 - Fast-sewing edge match fails: same endpoints, different curve types.
- * Defect: two faces declare a shared edge between the same vertices,
- * but one uses LINE geometry and the other a degree-1 B_SPLINE_CURVE
- * with the same knots. Hash mismatch. */
+/* Sw008: Exactly 2 EDGE_CURVEs between same endpoints (0,0,0)→(1,0,0): one using LINE and one using degree-1 B_SPLINE_CURVE_WITH_KNOTS; both ARE wired into EDGE_LOOP of ADVANCED_FACE of OPEN_SHELL; fast-sewing edge-table lookup key mismatch (curve-type differs) prevents stitching */
 HEADER;
-FILE_DESCRIPTION(('Sw008 - fast sewing edge match failure','Pass C gap-fill'),'2;1');
-FILE_NAME('Sw008.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Sw008'),'2;1');
+FILE_NAME('Sw008.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#12=VERTEX_POINT('',#10);
-#13=VERTEX_POINT('',#11);
-/* Curve A: LINE */
-#20=DIRECTION('',(1.0,0.0,0.0));
-#21=VECTOR('',#20,1.0);
-#22=LINE('lineA',#10,#21);
-/* Curve B: degree-1 B-spline through (0,0,0) and (1,0,0) */
-#30=B_SPLINE_CURVE_WITH_KNOTS('bsplineB',1,(#10,#11),.UNSPECIFIED.,.F.,.F.,
-    (2,2),(0.0,1.0),.UNSPECIFIED.);
-#40=EDGE_CURVE('eA',#12,#13,#22,.T.);
-#41=EDGE_CURVE('eB',#12,#13,#30,.T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#3=VERTEX_POINT('',#1);
+#4=VERTEX_POINT('',#2);
+#5=DIRECTION('',(1.0,0.0,0.0));
+#6=VECTOR('',#5,1.0);
+#7=LINE('',#1,#6);
+#8=EDGE_CURVE('',#3,#4,#7,.T.);
+#9=B_SPLINE_CURVE_WITH_KNOTS('',1,(#1,#2),.UNSPECIFIED.,.F.,.F.,(2,2),(0.0,1.0),.UNSPECIFIED.);
+#10=EDGE_CURVE('',#3,#4,#9,.T.);
+#11=ORIENTED_EDGE('',$,$,#8,.T.);
+#12=ORIENTED_EDGE('',$,$,#10,.F.);
+#13=EDGE_LOOP('',(#11,#12));
+#14=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#15=DIRECTION('',(0.0,0.0,1.0));
+#16=DIRECTION('',(1.0,0.0,0.0));
+#17=AXIS2_PLACEMENT_3D('',#14,#15,#16);
+#18=PLANE('',#17);
+#19=FACE_OUTER_BOUND('',#13,.T.);
+#20=ADVANCED_FACE('',(#19),#18,.T.);
+#21=OPEN_SHELL('sw008_line_vs_bspline_edge',(#20));
+#22=SHELL_BASED_SURFACE_MODEL('',(#21));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Sw008','Sw008','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#22),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
