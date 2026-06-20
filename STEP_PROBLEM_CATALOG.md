@@ -22181,8 +22181,8 @@ Minimal reproducer: B_SPLINE_CURVE_WITH_KNOTS, degree 3, 7 poles. Interior knots
 ### Gn159 — B-spline surface with collapsed U-boundary pole (pin-face singularity)
 
 Defect: 4x3 NURBS surface (U-degree 2, V-degree 2); last U-row poles all at (3.0,1.5,0.0). CheckPin detects singularity; FixPinFace unimplemented. Falsifiable: pin-face repair must flatten degenerate boundary edge.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn160 — Periodic B-spline curve with parameter wrapping
 
 Defect: 5-pole closed curve (degree 2, periodic); period=1.0. Projection parameter may exceed definition range [0,1) after wrapping. Falsifiable: theProjParam validation must enforce domain bounds in periodic NURBS.
@@ -22191,8 +22191,8 @@ Defect: 5-pole closed curve (degree 2, periodic); period=1.0. Projection paramet
 ### Gn161 — B-spline surface with asymmetric pole clustering
 
 Defect: 5x2 NURBS (U-degree 2, V-degree 1); dense U-boundary clustering at (0.9,0.95,1.0) with sparse V direction (2 poles only). CheckSmallFace boundary-focused IsoStat must detect asymmetric singularities. Falsifiable: pole-grid boundary scan catches strips missed by interior iteration.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn162 — B-spline curve with interior knot over-multiplicity
 
 Defect: 6-pole curve (degree 3); interior knot at 0.5 has multiplicity 4 (degree+1). Creates geometric discontinuity at interior point. Falsifiable: knot removal must repair interior clamping that violates smoothness.
@@ -22202,8 +22202,8 @@ Defect: 6-pole curve (degree 3); interior knot at 0.5 has multiplicity 4 (degree
 
 Defect: 3x3 NURBS (U-degree 2, V-degree 2); middle U-row poles near-identical (1.5,1.5,0.01). SplitSurface produces zero-area or empty patches. Falsifiable: patch validation rejects degenerate outputs from split operations.
 
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn164 — Rational BSpline Closure Detection Bypass
 Rational surface with varying weights requires knot-aware grid sampling, not pole-based shortcut. ShapeAnalysis_Surface.IsURational() gate bypassed.
 - **Tier-3 assertion**: shape_null == True

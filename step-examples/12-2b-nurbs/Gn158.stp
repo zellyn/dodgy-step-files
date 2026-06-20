@@ -1,66 +1,99 @@
 ISO-10303-21;
-/* Gn158 - B-spline curve with extremely dense interior knots (clustering),
-   near-singularity in knot ratio. Defect: Degree 3, 7 poles, interior knots
-   clustered at 0.5, 0.501, 0.502 (spacing ~0.001). Healing must detect
-   clustering and apply knot removal or smoothing. Condition number escalation. */
+/* Gn158: B_SPLINE_CURVE_WITH_KNOTS degree=3, 7 poles; interior knots (0.5,0.501,0.502) mults (4,1,1,1,4) sum=11=7+3+1 ✓; knot spacing ratio 1:500 → ill-conditioned basis matrix; IS defect edge 3D curve; geometry valid → shape(1)/shape(1) */
 HEADER;
-FILE_DESCRIPTION(('Gn158 - B-spline with clustered interior knots, conditioning'),'2;1');
-FILE_NAME('Gn158.stp','2026-06-17T00:00:00',('auto'),(''),
-  'auto','','');
+FILE_DESCRIPTION(('Gn158'),'2;1');
+FILE_NAME('Gn158.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* 7 poles, degree 3, clustered interior knots */
-#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('p1',(1.0,0.2,0.0));
-#12=CARTESIAN_POINT('p2',(2.0,0.5,0.0));
-#13=CARTESIAN_POINT('p3',(3.0,0.3,0.0));
-#14=CARTESIAN_POINT('p4',(4.0,0.2,0.0));
-#15=CARTESIAN_POINT('p5',(5.0,0.5,0.0));
-#16=CARTESIAN_POINT('p6',(6.0,0.0,0.0));
-/* Defect: 7 poles, degree 3 => knot count = 7+3+1 = 11
-   Multiplicities: (4,1,1,1,1,1,1,1,4) => sum=4+1+1+1+1+1+1+1+4=15. TOO MANY!
-   Let me recalculate: for 7 poles, degree 3, fully clamped:
-   Knot count formula: sum(multiplicities) = n + d + 1 = 7+3+1 = 11
-   With clustering at 0.5: (4, 1, 1, 1, 1, 1, 1, 4) => 4+1+1+1+1+1+1+4=14. Still over.
-   Correct: (4, 1, 1, 1, 1, 1, 4) => sum=14. Hmm, 7 poles, degree 3 => exactly 11 knots.
-   Multiplicities must sum to 11. For clamped: (4, ?, ..., 4) where interior sums to 3.
-   Interior region (0,1): if we have clustering at 0.5, 0.501, 0.502:
-   Three interior knots, each with some multiplicity. Min multiplicity=1.
-   So (4, 1, 1, 1, 4) => 4+1+1+1+4=11. Perfect!
-   Knots: (0,0,0,0, 0.5, 0.501, 0.502, 1.0, 1.0, 1.0, 1.0)
-   Wait, that's 11 knots but only 3 interior. Let me list: (4 zeros) + (0.5, 0.501, 0.502) + (4 ones) = 11. Good!
-   Actually, the knot vector indices: k[0..10]
-   k[0..3] = 0.0 (mult 4)
-   k[4] = 0.5, k[5] = 0.501, k[6] = 0.502 (mults 1,1,1)
-   k[7..10] = 1.0 (mult 4)
-   But multiplicities list describes groupings: (4, 1, 1, 1, 4) means 5 distinct knot values
-   with those multiplicities. So multiplicities should be (4,1,1,1,4) => 5 values, 11 total. Good! */
-#100=B_SPLINE_CURVE_WITH_KNOTS('clustered_knots',3,
-  (#10,#11,#12,#13,#14,#15,#16),
-  .UNSPECIFIED.,.F.,.F.,
-  (4,1,1,1,4),
-  (0.0,0.0,0.0,0.0,0.5,0.501,0.502,1.0,1.0,1.0,1.0),
-  .UNSPECIFIED.);
-/* Reference LINE */
-#110=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#111=DIRECTION('dir',(1.0,0.0,0.0));
-#112=VECTOR('vec',#111,1.0);
-#113=LINE('ref_axis',#110,#112);
-#9990=APPLICATION_CONTEXT('automotive_design');
-#9000=PRODUCT_CONTEXT('',#9990,'mechanical');
-#9001=PRODUCT('Gn158','Gn158','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#9990,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9020=GEOMETRIC_CURVE_SET('curve_set',(#113));
-#9022=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9020),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#7=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(0.5,0.0,0.2));
+#9=CARTESIAN_POINT('',(1.0,0.0,0.1));
+#10=CARTESIAN_POINT('',(1.5,0.0,0.3));
+#11=CARTESIAN_POINT('',(2.0,0.0,0.1));
+#12=CARTESIAN_POINT('',(2.5,0.0,0.2));
+#13=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#14=B_SPLINE_CURVE_WITH_KNOTS('gn158_clustered_knots',3,(#7,#8,#9,#10,#11,#12,#13),.UNSPECIFIED.,.F.,.F.,(4,1,1,1,4),(0.0,0.5,0.501,0.502,1.0),.UNSPECIFIED.);
+#15=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#16=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#17=CARTESIAN_POINT('',(3.0,2.0,0.0));
+#18=CARTESIAN_POINT('',(0.0,2.0,0.0));
+#19=VERTEX_POINT('',#15);
+#20=VERTEX_POINT('',#16);
+#21=VERTEX_POINT('',#17);
+#22=VERTEX_POINT('',#18);
+#23=CARTESIAN_POINT('',(0.0,0.0));
+#24=DIRECTION('',(1.0,0.0));
+#25=VECTOR('',#24,1.0);
+#26=LINE('',#23,#25);
+#27=DEFINITIONAL_REPRESENTATION('pcdef_bot',(#26),#6);
+#28=PCURVE('pc_bot',#5,#27);
+#29=SURFACE_CURVE('sc_bot',#14,(#28),.PCURVE_S1.);
+#30=EDGE_CURVE('ec_bot',#19,#20,#29,.T.);
+#31=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#32=DIRECTION('',(0.0,1.0,0.0));
+#33=VECTOR('',#32,2.0);
+#34=LINE('',#31,#33);
+#35=CARTESIAN_POINT('',(3.0,0.0));
+#36=DIRECTION('',(0.0,1.0));
+#37=VECTOR('',#36,2.0);
+#38=LINE('',#35,#37);
+#39=DEFINITIONAL_REPRESENTATION('pcdef',(#38),#6);
+#40=PCURVE('pc',#5,#39);
+#41=SURFACE_CURVE('sc',#34,(#40),.PCURVE_S1.);
+#42=EDGE_CURVE('ec',#20,#21,#41,.T.);
+#43=CARTESIAN_POINT('',(3.0,2.0,0.0));
+#44=DIRECTION('',(-1.0,0.0,0.0));
+#45=VECTOR('',#44,3.0);
+#46=LINE('',#43,#45);
+#47=CARTESIAN_POINT('',(3.0,2.0));
+#48=DIRECTION('',(-1.0,0.0));
+#49=VECTOR('',#48,3.0);
+#50=LINE('',#47,#49);
+#51=DEFINITIONAL_REPRESENTATION('pcdef',(#50),#6);
+#52=PCURVE('pc',#5,#51);
+#53=SURFACE_CURVE('sc',#46,(#52),.PCURVE_S1.);
+#54=EDGE_CURVE('ec',#21,#22,#53,.T.);
+#55=CARTESIAN_POINT('',(0.0,2.0,0.0));
+#56=DIRECTION('',(0.0,-1.0,0.0));
+#57=VECTOR('',#56,2.0);
+#58=LINE('',#55,#57);
+#59=CARTESIAN_POINT('',(0.0,2.0));
+#60=DIRECTION('',(0.0,-1.0));
+#61=VECTOR('',#60,2.0);
+#62=LINE('',#59,#61);
+#63=DEFINITIONAL_REPRESENTATION('pcdef',(#62),#6);
+#64=PCURVE('pc',#5,#63);
+#65=SURFACE_CURVE('sc',#58,(#64),.PCURVE_S1.);
+#66=EDGE_CURVE('ec',#22,#19,#65,.T.);
+#67=ORIENTED_EDGE('',$,$,#30,.T.);
+#68=ORIENTED_EDGE('',$,$,#42,.T.);
+#69=ORIENTED_EDGE('',$,$,#54,.T.);
+#70=ORIENTED_EDGE('',$,$,#66,.T.);
+#71=EDGE_LOOP('',(#67,#68,#69,#70));
+#72=FACE_OUTER_BOUND('',#71,.T.);
+#73=ADVANCED_FACE('',(#72),#5,.T.);
+#74=OPEN_SHELL('',(#73));
+#75=SHELL_BASED_SURFACE_MODEL('',(#74));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gn158','Gn158','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#75),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
