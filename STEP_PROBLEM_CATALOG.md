@@ -21883,44 +21883,44 @@ Degenerate B-spline curve (degree 2, 3 points) where first two poles are coincid
 
 **Geometry:** Cubic B-spline with control polygon (0,0,0)→(4,2,0). Interior knots at {0.2, 0.20025, 0.2005, 0.200750, 0.20100, 0.8}.
 
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn120 — ShapeUpgrade_ConvertSurfaceToBezierBasis with-clamped-knots-degenerate
 
 **Defect:** B-spline surface, degree (2,2), where U-direction knots are clamped (multiplicity at endpoints = degree+1) but V-direction knots are unclamped. Conversion to Bezier basis applies different logic per direction, causing inconsistent patch decomposition.
 
 **Geometry:** 4×2 control grid, U knots clamped {0.0, 0.0, 0.0, 1.0, 1.0, 1.0}, V knots unclamped {0.1, 0.2, 0.3}.
 
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn121 — ShapeAnalysis_Curve.IsPlanar B-spline-of-degree-1
 
 **Defect:** Degree-1 B-spline (piecewise linear) with control polygon bent out of plane. IsPlanar returns true trivially (linearity ≠ planarity) but endpoint test misses mid-segment deviation.
 
 **Geometry:** 5-point degree-1 B-spline: (0,0,0)→(1,0,0)→(2,1,1)→(3,0,0)→(4,0,0). Point #22 at (2,1,1) lifts the control polygon out XY plane.
 
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn122 — ShapeUpgrade_SplitSurface.Init with-control-net-collapsed
 
 **Defect:** B-spline surface whose first 6 control points map to a single location (1,1,1); remaining 2 points at (2,2,2). Split initialization logic skips validation of degenerate control nets, allowing invalid surface to proceed to splitting algorithm.
 
 **Geometry:** 4×2 surface, degree (2,2), 8 control points collapsed to 2 unique positions.
 
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn123 — ShapeAnalysis_Curve.IsClosed COMPOSITE_CURVE with-direction-reversal
 
 **Defect:** Composite curve with 2 line segments: first forward (0,0,0)→(2,0,0), second reversed (2,0,0)→(0,0,0). IsClosed checks endpoint coincidence but ignores direction reversal, missing topological mismatch.
 
 **Geometry:** Two lines, segment 1 direction (1,0,0), segment 2 direction (-1,0,0) with REVERSE sense flag.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn124 — ShapeAnalysis_Curve.FillBndBox with-degenerate-segments
 
 Composite curve containing a degenerate segment (zero-length). FillBndBox samples all segments including the degenerate one, causing the bounding box to contain a collapsed axis. Downstream code assumes all bbox axes span non-zero ranges.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn125 — ShapeUpgrade_SplitSurface.SetVSplitValues partial-domain
 
 BSpline surface with full V domain [0,1]. Split values provided only for partial range [0.3, 0.7]. SetVSplitValues clips silently, leaving V ranges [0, 0.3) and (0.7, 1] unprocessed and unsplit.
