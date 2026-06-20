@@ -1,48 +1,37 @@
 ISO-10303-21;
-/* Tfa070 - CURVE_BOUNDED_SURFACE.implicit_outer = .U. (unset)
-   Defect: BRL-CAD step-g CurveBoundedSurface::Load reads the
-   `implicit_outer` BOOLEAN attribute via getBooleanAttribute with a
-   default of BUnset; LoadONBrep is a stub that prints "not implemented
-   for <entity>" and returns false.  The schema actually allows three
-   states (.T. / .F. / unset implied via missing attribute), but a
-   .U. literal in the file leaves the boundary semantics ambiguous: is
-   the natural boundary of the basis surface to be considered the outer
-   loop, or are all listed boundaries explicit? step-g neither chooses
-   a default behaviour nor rejects the construction; the face is
-   silently dropped.
-   Sources: BRL-CAD src/conv/step/step-g/CurveBoundedSurface.cpp -
-   `implicit_outer` defaults BUnset; LoadONBrep stub. */
+/* Tfa070: GEOMETRIC_CURVE_SET containing CURVE_BOUNDED_SURFACE with implicit_outer=.U.; basis surface is a PLANE at z=0; one boundary curve: a B_SPLINE_CURVE tracing the rectangle [0,10]x[0,10]; implicit_outer left as .U. (undefined BOOLEAN) — receiver cannot determine whether natural surface boundary is implicit outer loop; step-g LoadONBrep is a stub — face silently dropped; schema-strict receivers must reject with E_AMBIGUOUS_IMPLICIT_OUTER; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; no orphaned entities */
 HEADER;
-FILE_DESCRIPTION(
-  ('Tfa070 - CURVE_BOUNDED_SURFACE implicit_outer unset and LoadONBrep stub'),
-  '2;1');
-FILE_NAME('Tfa070.stp','2026-05-02T00:00:00',('cad-research-suite'),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('Tfa070'),'2;1');
+FILE_NAME('Tfa070.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* Host plane. */
-#10=CARTESIAN_POINT('o',(0.0,0.0,0.0));
-#11=DIRECTION('z',(0.0,0.0,1.0));
-#12=DIRECTION('x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('pl',#10,#11,#12);
-#14=PLANE('host',#13);
-/* 2D parameter context. */
-#20=(GEOMETRIC_REPRESENTATION_CONTEXT(2)
-     PARAMETRIC_REPRESENTATION_CONTEXT()
-     REPRESENTATION_CONTEXT('uv','2D'));
-/* A single rectangular boundary in (u,v). */
-#30=CARTESIAN_POINT('uv0',(0.0,0.0));
-#31=CARTESIAN_POINT('uv1',(1.0,0.0));
-#32=CARTESIAN_POINT('uv2',(1.0,1.0));
-#33=CARTESIAN_POINT('uv3',(0.0,1.0));
-#40=POLYLINE('rect_uv',(#30,#31,#32,#33,#30));
-#50=DEFINITIONAL_REPRESENTATION('def',(#40),#20);
-#60=PCURVE('rect_pcurve',#14,#50);
-/* The boundary curve as required by CURVE_BOUNDED_SURFACE.boundaries. */
-#70=BOUNDARY_CURVE('boundary',(#60),.PCURVE_S1.);
-/* Defect: CURVE_BOUNDED_SURFACE with implicit_outer = .U. (unknown).
-   step-g reads BUnset and never picks a side; LoadONBrep stubs out. */
-#80=CURVE_BOUNDED_SURFACE('cbs_face',#14,(#70),.U.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#9=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#11=B_SPLINE_CURVE_WITH_KNOTS('rect_boundary',1,(#6,#7,#8,#9,#10),.UNSPECIFIED.,.F.,.F.,(2,1,1,1,2),(0.0,1.0,2.0,3.0,4.0),.UNSPECIFIED.);
+#12=CURVE_BOUNDED_SURFACE('cbs_face',#5,(#11),.U.);
+#13=GEOMETRIC_CURVE_SET('',( #12));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Tfa070','Tfa070','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#13),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

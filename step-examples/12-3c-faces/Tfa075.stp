@@ -1,39 +1,40 @@
 ISO-10303-21;
-/* Tfa075 — ShapeFix_ComposeShell.MakeFacesOnPatch fallback resolution
-   Defect: residual loop promotion when topology resolution ambiguous.
-   Single non-WIRE loop (e.g., VERTEX) passed to method triggers early
-   return without proper face construction. */
+/* Tfa075: GEOMETRIC_CURVE_SET containing ADVANCED_FACE on PLANE; FACE_OUTER_BOUND references EDGE_LOOP with single degenerate ORIENTED_EDGE; edge is self-loop: start vertex == end vertex at (5.0, 5.0, 0.0); collapses to VERTEX-type non-WIRE loop — triggers MakeFacesOnPatch bypass; fast-path at line 2985: loops.Length==1 && !WIRE returns early; residual loop promoted as face without topology resolution; kernel should reject or fallback with diagnostic for non-WIRE single loop; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; no orphaned entities */
 HEADER;
-FILE_DESCRIPTION(('Tfa075 - MakeFacesOnPatch fallback loop resolution'),'2;1');
-FILE_NAME('Tfa075.stp','2026-06-15T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Tfa075'),'2;1');
+FILE_NAME('Tfa075.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#2=DIRECTION('zdir',(0.0,0.0,1.0));
-#3=DIRECTION('xdir',(1.0,0.0,0.0));
-#4=AXIS2_PLACEMENT_3D('placement',#1,#2,#3);
-#5=PLANE('patch_plane',#4);
-/* Vertex that could be confused as loop */
-#10=CARTESIAN_POINT('v_single',(0.5,0.5,0.0));
-#11=VERTEX_POINT('vp_single',#10);
-/* Minimal edge to satisfy topology */
-#12=CARTESIAN_POINT('v_start',(0.0,0.0,0.0));
-#13=CARTESIAN_POINT('v_end',(1.0,0.0,0.0));
-#14=VERTEX_POINT('vp_start',#12);
-#15=VERTEX_POINT('vp_end',#13);
-#20=LINE('edge_line',#12,#27);
-#21=DIRECTION('',(1.0,0.0,0.0));
-#27=VECTOR('',#21,1.0);
-#30=EDGE_CURVE('edge',#14,#15,#20,.T.);
-/* Single edge loop (valid WIRE) */
-#33=ORIENTED_EDGE('oe',*,*,#30,.T.);
-#40=EDGE_LOOP('loop',(#33));
-#41=FACE_OUTER_BOUND('bound',#40,.T.);
-/* Face constructed from patch */
-#50=ADVANCED_FACE('patch_face',(#41),#5,.T.);
-#60=CLOSED_SHELL('shell',(#50));
-#70=MANIFOLD_SOLID_BREP('solid',#60);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(5.0,5.0,0.0));
+#7=VERTEX_POINT('degenerate_vertex',#6);
+#8=DIRECTION('',(1.0,0.0,0.0));
+#9=VECTOR('',#8,0.0);
+#10=LINE('',#6,#9);
+#11=EDGE_CURVE('self_loop',#7,#7,#10,.T.);
+#12=ORIENTED_EDGE('',*,*,#11,.T.);
+#13=EDGE_LOOP('degenerate_loop',(#12));
+#14=FACE_OUTER_BOUND('',#13,.T.);
+#15=ADVANCED_FACE('patch_face',(#14),#5,.T.);
+#16=GEOMETRIC_CURVE_SET('',( #15));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Tfa075','Tfa075','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#16),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

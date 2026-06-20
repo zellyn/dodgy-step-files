@@ -1,51 +1,61 @@
 ISO-10303-21;
-/* Tfa073 — ShapeFix_FixSmallFace.ComputeSharedEdgeForStripFace endpoint asymmetry
-   Defect: strip-face shared-edge construction with asymmetric vertex merging.
-   When V1 merged to V3 but V2 not merged to V4, degenerate edge created
-   with one matched and one unmatched endpoint. */
+/* Tfa073: GEOMETRIC_CURVE_SET containing ADVANCED_FACE on PLANE; strip-face topology: two candidate shared edges E1=(V1,V2), E2=(V3,V4); dev(V1,V3)=0.00005 < tol(0.001) → V1 merged to V3; dev(V2,V4)=1.5 >> tol(0.001) → V2 not merged to V4; asymmetric merging: shared edge constructed as (V3,V4) with V2 unmatched; degenerate edge breaks strip-face topology; ComputeSharedEdgeForStripFace should merge both endpoints or neither; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; no orphaned entities */
 HEADER;
-FILE_DESCRIPTION(('Tfa073 - strip-face shared-edge endpoint asymmetry'),'2;1');
-FILE_NAME('Tfa073.stp','2026-06-15T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Tfa073'),'2;1');
+FILE_NAME('Tfa073.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#2=DIRECTION('zdir',(0.0,0.0,1.0));
-#3=DIRECTION('xdir',(1.0,0.0,0.0));
-#4=AXIS2_PLACEMENT_3D('placement',#1,#2,#3);
-#5=PLANE('plane1',#4);
-#6=PLANE('plane2',#4);
-/* First edge: endpoints V1, V2 */
-#10=CARTESIAN_POINT('v1',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('v2',(1.0,0.0,0.0));
-#12=VERTEX_POINT('vp1',#10);
-#13=VERTEX_POINT('vp2',#11);
-/* Second edge: endpoints V3~V1, V4 far from V2 */
-#14=CARTESIAN_POINT('v3',(0.00005,0.0,0.0));
-#15=CARTESIAN_POINT('v4',(1.5,0.0,0.0));
-#16=VERTEX_POINT('vp3',#14);
-#17=VERTEX_POINT('vp4',#15);
-/* Edge 1 on plane1 */
-#20=LINE('line1',#10,#27);
-#21=DIRECTION('',(1.0,0.0,0.0));
-#27=VECTOR('',#21,1.0);
-#30=EDGE_CURVE('edge1',#12,#13,#20,.T.);
-/* Edge 2 on plane2 (offset slightly) */
-#31=LINE('line2',#14,#28);
-#28=VECTOR('',#21,1.5);
-#32=EDGE_CURVE('edge2',#16,#17,#31,.T.);
-/* Wire 1 (interior/strip edge) */
-#40=ORIENTED_EDGE('oe1',*,*,#30,.T.);
-#41=EDGE_LOOP('loop1',(#40));
-#42=FACE_OUTER_BOUND('bound1',#41,.T.);
-#50=ADVANCED_FACE('face1',(#42),#5,.T.);
-/* Wire 2 (exterior edge) */
-#43=ORIENTED_EDGE('oe2',*,*,#32,.T.);
-#44=EDGE_LOOP('loop2',(#43));
-#45=FACE_OUTER_BOUND('bound2',#44,.T.);
-#51=ADVANCED_FACE('face2',(#45),#6,.T.);
-#60=CLOSED_SHELL('shell',(#50,#51));
-#70=MANIFOLD_SOLID_BREP('solid',#60);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(5.0E-05,0.0,0.0));
+#9=CARTESIAN_POINT('',(5.0,1.5,0.0));
+#10=VERTEX_POINT('V1',#6);
+#11=VERTEX_POINT('V2',#7);
+#12=VERTEX_POINT('V3',#8);
+#13=VERTEX_POINT('V4',#9);
+#14=DIRECTION('',(1.0,0.0,0.0));
+#15=VECTOR('',#14,5.0);
+#16=LINE('',#6,#15);
+#17=EDGE_CURVE('E1',#10,#11,#16,.T.);
+#18=DIRECTION('',(0.957825494345,0.287350521809,0.0));
+#19=VECTOR('',#18,5.22010536316);
+#20=LINE('',#8,#19);
+#21=EDGE_CURVE('E2',#12,#13,#20,.T.);
+#22=DIRECTION('',(0.0,1.0,0.0));
+#23=VECTOR('',#22,1.5);
+#24=LINE('',#7,#23);
+#25=EDGE_CURVE('close1',#11,#13,#24,.T.);
+#26=DIRECTION('',(-1.0,0.0,0.0));
+#27=VECTOR('',#26,5.0E-05);
+#28=LINE('',#8,#27);
+#29=EDGE_CURVE('close2',#12,#10,#28,.T.);
+#30=ORIENTED_EDGE('',*,*,#17,.T.);
+#31=ORIENTED_EDGE('',*,*,#25,.T.);
+#32=ORIENTED_EDGE('',*,*,#21,.F.);
+#33=ORIENTED_EDGE('',*,*,#29,.T.);
+#34=EDGE_LOOP('',(#30,#31,#32,#33));
+#35=FACE_OUTER_BOUND('',#34,.T.);
+#36=ADVANCED_FACE('strip_face',(#35),#5,.T.);
+#37=GEOMETRIC_CURVE_SET('',( #36));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Tfa073','Tfa073','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#37),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
