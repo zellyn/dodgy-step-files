@@ -1,67 +1,60 @@
 ISO-10303-21;
-/* Twi160 - ShapeFix_Wire.FixLacking degenerate-vertex-gap
- * Defect: wire missing an edge between v1 and v2 where dist(v1,v2) < Confusion
- * (effectively coincident). FixLacking inserts a degenerate edge but the
- * degenerate-edge construction has wrong direction. */
+/* Twi160: Single ADVANCED_FACE on PLANE in CLOSED_SHELL; outer EDGE_LOOP has 3 LINE edges forming near-closed triangle; V1=(10,0,0) and V2'=(10,0,5e-8) are 5e-8 apart — below Confusion; E0 LINE (0,0,0)→(10,0,0), E1 LINE (10,0,0)→(5,10,0), E2 LINE (5,10,0)→(10,0,5e-8) — ends at near-coincident V2'; micro-gap of 5e-8 between V2' and V1 IS the defect; FixLacking inserts degenerate edge but wrong direction; dist(V1,V2') < Confusion IS the mechanism; EDGE_LOOP IS wired into FACE_OUTER_BOUND → ADVANCED_FACE in CLOSED_SHELL — never orphaned */
 HEADER;
-FILE_DESCRIPTION(('Twi160 test case','FixLacking degenerate-vertex-gap'),'2;1');
-FILE_NAME('Twi160.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('Twi160'),'2;1');
+FILE_NAME('Twi160.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#20=PLANE('',#13);
-/* Three vertices: V1, V2 (very close), V3 */
-#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31=VERTEX_POINT('',#30);
-#32=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#33=VERTEX_POINT('',#32);
-/* V2 is effectively coincident with V1 within Confusion (1.0e-7) */
-#34=CARTESIAN_POINT('',(1.0,0.0,5.0E-8));
-#35=VERTEX_POINT('',#34);
-#36=CARTESIAN_POINT('',(0.0,1.0,0.0));
-#37=VERTEX_POINT('',#36);
-/* Line edges: V1->V2, V2->V3, V3->V1 (missing edge between V1 and V2 gap) */
-#40=DIRECTION('',(1.0,0.0,0.0));
-#41=VECTOR('',#40,1.0);
-#42=LINE('',#30,#41);
-#43=DIRECTION('',(0.0,1.0,0.0));
-#44=VECTOR('',#43,1.0);
-#45=LINE('',#33,#44);
-#46=DIRECTION('',(-1.0,-1.0,0.0));
-#47=VECTOR('',#46,1.4142135623730951);
-#48=LINE('',#36,#47);
-/* Three edges in loop */
-#60=EDGE_CURVE('',#31,#33,#42,.T.);
-#61=EDGE_CURVE('',#33,#37,#45,.T.);
-#62=EDGE_CURVE('',#37,#31,#48,.T.);
-#70=ORIENTED_EDGE('',*,*,#60,.T.);
-#71=ORIENTED_EDGE('',*,*,#61,.T.);
-#72=ORIENTED_EDGE('',*,*,#62,.T.);
-/* Defect: gap between V1 and V2 not bridged; vertices #31 and #35 are
-   effectively coincident but not topologically connected by an edge */
-#80=EDGE_LOOP('',(#70,#71,#72));
-#81=FACE_OUTER_BOUND('',#80,.T.);
-#82=ADVANCED_FACE('',(#81),#20,.T.);
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Twi160','Twi160','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9020=OPEN_SHELL('shell',(#82));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=VERTEX_POINT('',#6);
+#8=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#9=VERTEX_POINT('',#8);
+#10=CARTESIAN_POINT('',(5.0,10.0,0.0));
+#11=VERTEX_POINT('',#10);
+#12=CARTESIAN_POINT('',(10.0,0.0,5.0E-08));
+#13=VERTEX_POINT('',#12);
+#14=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#15=DIRECTION('',(1.0,0.0,0.0));
+#16=VECTOR('',#15,10.0);
+#17=LINE('',#14,#16);
+#18=EDGE_CURVE('',#7,#9,#17,.T.);
+#19=ORIENTED_EDGE('',$,$,#18,.T.);
+#20=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#21=DIRECTION('',(-0.4472135955,0.894427191,0.0));
+#22=VECTOR('',#21,11.1803398875);
+#23=LINE('',#20,#22);
+#24=EDGE_CURVE('',#9,#11,#23,.T.);
+#25=ORIENTED_EDGE('',$,$,#24,.T.);
+#26=CARTESIAN_POINT('',(5.0,10.0,0.0));
+#27=DIRECTION('',(0.4472135955,-0.894427191,4.472135955E-09));
+#28=VECTOR('',#27,11.1803398875);
+#29=LINE('',#26,#28);
+#30=EDGE_CURVE('',#11,#13,#29,.T.);
+#31=ORIENTED_EDGE('',$,$,#30,.T.);
+#32=EDGE_LOOP('',(#19,#25,#31));
+#33=FACE_OUTER_BOUND('',#32,.T.);
+#34=ADVANCED_FACE('',(#33),#5,.T.);
+#35=CLOSED_SHELL('',(#34));
+#36=SHELL_BASED_SURFACE_MODEL('',(#35));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi160','Twi160','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#36),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

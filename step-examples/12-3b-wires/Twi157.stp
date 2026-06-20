@@ -1,72 +1,66 @@
 ISO-10303-21;
-/* Twi157 - ShapeAnalysis_Wire.CheckSelfIntersection figure-8 wire
- * Defect: wire whose path forms a figure-8 (crosses itself at one point).
- * CheckSelfIntersection should detect the crossing at the self-intersection
- * point where the two lobes of the figure-8 intersect. */
+/* Twi157: Single ADVANCED_FACE on PLANE in CLOSED_SHELL; outer EDGE_LOOP of 4 LINE edges traces a figure-8 that self-crosses at (5,5,0): E0 LINE (0,0,0)→(10,10,0), E1 LINE (10,10,0)→(10,0,0), E2 LINE (10,0,0)→(0,10,0) — crosses E0 at (5,5,0) IS the defect, E3 LINE (0,10,0)→(0,0,0); CheckSelfIntersection must detect the single crossing at (5,5,0); figure-8 self-crossing IS the mechanism; EDGE_LOOP IS wired into FACE_OUTER_BOUND → ADVANCED_FACE in CLOSED_SHELL — never orphaned */
 HEADER;
-FILE_DESCRIPTION(('Twi157 test case','CheckSelfIntersection figure-8 wire'),'2;1');
-FILE_NAME('Twi157.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('Twi157'),'2;1');
+FILE_NAME('Twi157.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#20=PLANE('',#13);
-/* Four vertices forming the figure-8 shape:
-   P1=(0,0,0) - left lobe far point
-   P2=(2,0,0) - crossover point
-   P3=(4,0,0) - right lobe far point
-   P4=(2,0,0) - same as P2 (crossing vertex) */
-#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31=VERTEX_POINT('',#30);
-#32=CARTESIAN_POINT('',(2.0,0.0,0.0));
-#33=VERTEX_POINT('',#32);
-#34=CARTESIAN_POINT('',(4.0,0.0,0.0));
-#35=VERTEX_POINT('',#34);
-/* Curves: two semicircular arcs for left lobe, two for right lobe */
-#40=DIRECTION('',(0.0,-1.0,0.0));
-#41=VECTOR('',#40,1.0);
-#42=LINE('',#30,#41);
-#43=DIRECTION('',(0.0,1.0,0.0));
-#44=VECTOR('',#43,1.0);
-#45=LINE('',#32,#44);
-#46=DIRECTION('',(0.0,-1.0,0.0));
-#47=VECTOR('',#46,1.0);
-#48=LINE('',#32,#47);
-#49=DIRECTION('',(0.0,1.0,0.0));
-#50=VECTOR('',#49,1.0);
-#51=LINE('',#34,#50);
-/* Four edges forming two lobes */
-#60=EDGE_CURVE('',#31,#33,#42,.T.);
-#61=EDGE_CURVE('',#33,#31,#45,.T.);
-#62=EDGE_CURVE('',#33,#35,#48,.T.);
-#63=EDGE_CURVE('',#35,#33,#51,.T.);
-#70=ORIENTED_EDGE('',*,*,#60,.T.);
-#71=ORIENTED_EDGE('',*,*,#61,.T.);
-#72=ORIENTED_EDGE('',*,*,#62,.T.);
-#73=ORIENTED_EDGE('',*,*,#63,.T.);
-/* Defect: wire with self-intersection at vertex #33 where lobes cross */
-#80=EDGE_LOOP('',(#70,#71,#72,#73));
-#81=FACE_OUTER_BOUND('',#80,.T.);
-#82=ADVANCED_FACE('',(#81),#20,.T.);
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Twi157','Twi157','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9020=OPEN_SHELL('shell',(#82));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=VERTEX_POINT('',#6);
+#8=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#9=VERTEX_POINT('',#8);
+#10=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#11=VERTEX_POINT('',#10);
+#12=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#13=VERTEX_POINT('',#12);
+#14=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#15=DIRECTION('',(0.707106781187,0.707106781187,0.0));
+#16=VECTOR('',#15,14.1421356237);
+#17=LINE('',#14,#16);
+#18=EDGE_CURVE('',#7,#9,#17,.T.);
+#19=ORIENTED_EDGE('',$,$,#18,.T.);
+#20=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#21=DIRECTION('',(0.0,-1.0,0.0));
+#22=VECTOR('',#21,10.0);
+#23=LINE('',#20,#22);
+#24=EDGE_CURVE('',#9,#11,#23,.T.);
+#25=ORIENTED_EDGE('',$,$,#24,.T.);
+#26=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#27=DIRECTION('',(-0.707106781187,0.707106781187,0.0));
+#28=VECTOR('',#27,14.1421356237);
+#29=LINE('',#26,#28);
+#30=EDGE_CURVE('',#11,#13,#29,.T.);
+#31=ORIENTED_EDGE('',$,$,#30,.T.);
+#32=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#33=DIRECTION('',(0.0,-1.0,0.0));
+#34=VECTOR('',#33,10.0);
+#35=LINE('',#32,#34);
+#36=EDGE_CURVE('',#13,#7,#35,.T.);
+#37=ORIENTED_EDGE('',$,$,#36,.T.);
+#38=EDGE_LOOP('',(#19,#25,#31,#37));
+#39=FACE_OUTER_BOUND('',#38,.T.);
+#40=ADVANCED_FACE('',(#39),#5,.T.);
+#41=CLOSED_SHELL('',(#40));
+#42=SHELL_BASED_SURFACE_MODEL('',(#41));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi157','Twi157','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#42),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

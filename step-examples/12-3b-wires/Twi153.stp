@@ -1,66 +1,47 @@
 ISO-10303-21;
-/* Twi153 - ShapeAnalysis_Wire.CheckIntersectingEdges B-spline self-intersection
- * Defect: B-spline edge has a self-intersection (loops back on itself).
- * CheckIntersectingEdges treats each edge as injective (one-to-one mapping from
- * parameter to curve point). A self-intersecting B-spline violates this assumption,
- * and the check misses intra-edge intersections since it only compares pairs of
- * distinct edges. (ShapeAnalysis_Wire.cxx:1563-1650; pairwise edge intersection
- * loop does not test edge against itself) */
+/* Twi153: Single ADVANCED_FACE on PLANE; outer EDGE_LOOP contains two edges: E0 is a degree-3 B-spline from (0,0,0) back to (0,0,0) that loops through (10,5,0) and (5,10,0) — self-intersecting curve, the curve crosses itself near (3,3,0); E1 is a LINE from (0,0,0) → (10,0,0) — fictitious closing segment; CheckIntersectingEdges pairwise loop at line 1563 compares only distinct-edge pairs and never tests E0 against itself; intra-edge self-intersection IS the mechanism; EDGE_LOOP IS wired into FACE_OUTER_BOUND → ADVANCED_FACE in CLOSED_SHELL — never orphaned */
 HEADER;
-FILE_DESCRIPTION(('Twi153 test case','B-spline edge with self-intersection'),'2;1');
-FILE_NAME('Twi153.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('Twi153'),'2;1');
+FILE_NAME('Twi153.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=VERTEX_POINT('',#6);
+#8=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#9=VERTEX_POINT('',#8);
 #10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#20=PLANE('',#13);
-/* Vertices for loop-back B-spline: starts at (0,0), goes to (1,1), loops back to (0.5,0.5), ends at (0,0) */
-#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31=VERTEX_POINT('',#30);
-#32=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#33=VERTEX_POINT('',#32);
-#34=CARTESIAN_POINT('',(1.0,1.0,0.0));
-#35=VERTEX_POINT('',#34);
-/* Self-intersecting B-spline: degree 3, 4 control points forming a loop */
-#40=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#41=CARTESIAN_POINT('',(1.0,0.5,0.0));
-#42=CARTESIAN_POINT('',(0.5,1.0,0.0));
-#43=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#44=B_SPLINE_CURVE_WITH_KNOTS('',3,(#40,#41,#42,#43),.UNSPECIFIED.,.F.,.F.,(4,4),(0.0,1.0),
-  .UNSPECIFIED.);
-/* Edge that self-intersects: from (0,0) to (0,0) - closed with loop-back */
-#50=EDGE_CURVE('',#31,#31,#44,.T.);
-/* Closing edge to complete wire topology */
-#60=CARTESIAN_POINT('',(0.0,1.0,0.0));
-#61=DIRECTION('',(0.0,-1.0,0.0));
-#62=VECTOR('',#61,1.0);
-#63=LINE('',#60,#62);
-#51=EDGE_CURVE('',#33,#35,#63,.T.);
-#64=ORIENTED_EDGE('',*,*,#50,.T.);
-#65=ORIENTED_EDGE('',*,*,#51,.T.);
-#66=EDGE_LOOP('',(#64,#65));
-#67=FACE_OUTER_BOUND('',#66,.T.);
-#68=ADVANCED_FACE('',(#67),#20,.T.);
-/* Mandatory PRODUCT chain */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Twi153','Twi153','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
-#9020=CLOSED_SHELL('shell',(#68));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#11=CARTESIAN_POINT('',(15.0,5.0,0.0));
+#12=CARTESIAN_POINT('',(5.0,15.0,0.0));
+#13=CARTESIAN_POINT('',(-5.0,10.0,0.0));
+#14=CARTESIAN_POINT('',(-2.0,2.0,0.0));
+#15=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#16=B_SPLINE_CURVE_WITH_KNOTS('',3,(#10,#11,#12,#13,#14,#15),.UNSPECIFIED.,.F.,.T.,(4,1,1,4),(0.0,0.25,0.75,1.0),.UNSPECIFIED.);
+#17=EDGE_CURVE('',#7,#7,#16,.T.);
+#18=ORIENTED_EDGE('',$,$,#17,.T.);
+#19=EDGE_LOOP('',(#18));
+#20=FACE_OUTER_BOUND('',#19,.T.);
+#21=ADVANCED_FACE('',(#20),#5,.T.);
+#22=CLOSED_SHELL('',(#21));
+#23=SHELL_BASED_SURFACE_MODEL('',(#22));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi153','Twi153','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#23),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
