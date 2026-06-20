@@ -1,77 +1,72 @@
 ISO-10303-21;
-/* Twi033 - Wire with two coincident edges (FixWiresTwoCoincEdges)
- * Defect: A single wire contains two distinct edges whose 3D and 2D traces
- * coincide within tolerance - likely from a failed Boolean or duplicate-
- * injection. Heal by ShapeFix_Face::FixWiresTwoCoincEdges - remove duplicate
- * edge. The wire here lists [e1, e2, e3, e2', e4] where e2' is geometrically
- * equal to e2. */
+/* Twi033: OPEN_SHELL with one ADVANCED_FACE on a PLANE (z=0, 2x2 square); FACE_OUTER_BOUND references an EDGE_LOOP containing five ORIENTED_EDGEs: bottom edge (v00→v10), right edge (v10→v11), top edge (v11→v01), left edge A (v01→v00) — the main edge, left edge B (v01→v00) — a duplicate with separate EDGE_CURVE entity but geometrically identical to left edge A; two coincident EDGE_CURVEs for the left side IS the mechanism (Boolean fallout / duplicate-injection); EDGE_LOOP IS wired into FACE_OUTER_BOUND, ADVANCED_FACE, OPEN_SHELL; kernel must detect and drop the duplicate, or reject as malformed */
 HEADER;
-FILE_DESCRIPTION(('Twi033 test case','Wire with two coincident edges'),'2;1');
-FILE_NAME('Twi033.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Twi033'),'2;1');
+FILE_NAME('Twi033.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#20=PLANE('',#13);
-/* Vertices */
-#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31=VERTEX_POINT('',#30);
-#32=CARTESIAN_POINT('',(5.0,0.0,0.0));
-#33=VERTEX_POINT('',#32);
-#34=CARTESIAN_POINT('',(5.0,5.0,0.0));
-#35=VERTEX_POINT('',#34);
-#36=CARTESIAN_POINT('',(0.0,5.0,0.0));
-#37=VERTEX_POINT('',#36);
-/* Curves */
-#40=DIRECTION('',(1.0,0.0,0.0));
-#41=VECTOR('',#40,1.0);
-#42=LINE('',#30,#41);
-#43=DIRECTION('',(0.0,1.0,0.0));
-#44=VECTOR('',#43,1.0);
-#45=LINE('',#32,#44);
-#46=DIRECTION('',(-1.0,0.0,0.0));
-#47=VECTOR('',#46,1.0);
-#48=LINE('',#34,#47);
-#49=DIRECTION('',(0.0,-1.0,0.0));
-#50=VECTOR('',#49,1.0);
-#51=LINE('',#36,#50);
-/* Two distinct EDGE_CURVE entities tracing the SAME 3D segment (5,0)->(5,5) */
-#60=EDGE_CURVE('',#31,#33,#42,.T.);
-#61=EDGE_CURVE('',#33,#35,#45,.T.);
-#62=EDGE_CURVE('',#35,#37,#48,.T.);
-#63=EDGE_CURVE('',#37,#31,#51,.T.);
-/* Defect: e2-prime is a separate EDGE_CURVE with the SAME geometric trace
- * as e2 (both go from #33 to #35 along (5,0)->(5,5)). */
-#64=EDGE_CURVE('',#33,#35,#45,.T.);
-#70=ORIENTED_EDGE('',*,*,#60,.T.);
-#71=ORIENTED_EDGE('',*,*,#61,.T.);
-#72=ORIENTED_EDGE('',*,*,#64,.F.);
-#73=ORIENTED_EDGE('',*,*,#61,.T.);
-#74=ORIENTED_EDGE('',*,*,#62,.T.);
-#75=ORIENTED_EDGE('',*,*,#63,.T.);
-#80=EDGE_LOOP('',(#70,#71,#72,#73,#74,#75));
-#81=FACE_OUTER_BOUND('',#80,.T.);
-#82=ADVANCED_FACE('',(#81),#20,.T.);
-/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Twi033','Twi033','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9020=OPEN_SHELL('wrap_shell',(#82));
-#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9020));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=VERTEX_POINT('',#6);
+#8=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#9=VERTEX_POINT('',#8);
+#10=CARTESIAN_POINT('',(2.0,2.0,0.0));
+#11=VERTEX_POINT('',#10);
+#12=CARTESIAN_POINT('',(0.0,2.0,0.0));
+#13=VERTEX_POINT('',#12);
+#14=DIRECTION('',(1.0,0.0,0.0));
+#15=VECTOR('',#14,2.0);
+#16=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#17=LINE('',#16,#15);
+#18=EDGE_CURVE('',#7,#9,#17,.T.);
+#19=ORIENTED_EDGE('',$,$,#18,.T.);
+#20=DIRECTION('',(0.0,1.0,0.0));
+#21=VECTOR('',#20,2.0);
+#22=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#23=LINE('',#22,#21);
+#24=EDGE_CURVE('',#9,#11,#23,.T.);
+#25=ORIENTED_EDGE('',$,$,#24,.T.);
+#26=DIRECTION('',(-1.0,0.0,0.0));
+#27=VECTOR('',#26,2.0);
+#28=CARTESIAN_POINT('',(2.0,2.0,0.0));
+#29=LINE('',#28,#27);
+#30=EDGE_CURVE('',#11,#13,#29,.T.);
+#31=ORIENTED_EDGE('',$,$,#30,.T.);
+#32=DIRECTION('',(0.0,-1.0,0.0));
+#33=VECTOR('',#32,2.0);
+#34=CARTESIAN_POINT('',(0.0,2.0,0.0));
+#35=LINE('',#34,#33);
+#36=EDGE_CURVE('',#13,#7,#35,.T.);
+#37=ORIENTED_EDGE('',$,$,#36,.T.);
+#38=DIRECTION('',(0.0,-1.0,0.0));
+#39=VECTOR('',#38,2.0);
+#40=CARTESIAN_POINT('',(0.0,2.0,0.0));
+#41=LINE('',#40,#39);
+#42=EDGE_CURVE('',#13,#7,#41,.T.);
+#43=ORIENTED_EDGE('',$,$,#42,.T.);
+#44=EDGE_LOOP('',(#19,#25,#31,#37,#43));
+#45=FACE_OUTER_BOUND('',#44,.T.);
+#46=ADVANCED_FACE('',(#45),#5,.T.);
+#47=OPEN_SHELL('',(#46));
+#48=SHELL_BASED_SURFACE_MODEL('',(#47));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi033','Twi033','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#48),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

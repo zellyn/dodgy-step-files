@@ -1,61 +1,74 @@
 ISO-10303-21;
-/* Twi032 - Closed face needs splitting at seam (ShapeUpgrade_ShapeDivideClosed)
- * Defect: A periodic face (full cylinder here) wrapping U from 0 to 2pi as a
- * single face must be split at the seam into multiple faces - for downstream
- * meshing, parametric trimming, or BSpline conversion. Closed-edge splitting
- * is a sub-step. Heal by ShapeUpgrade_ShapeDivideClosed - split into two faces
- * at U=0 (and optionally U=pi) introducing seam edges and matching pcurves. */
+/* Twi032: CLOSED_SHELL with one ADVANCED_FACE on a CYLINDRICAL_SURFACE (radius 1, axis +Z, height 2); FACE_OUTER_BOUND references an EDGE_LOOP containing: two top semi-circle arcs (upper circle, 0→π and π→2π) and two bottom semi-circle arcs (lower circle, 0→π and π→2π) connected by four vertical seam-less lateral edges; the EDGE_LOOP spans the full 360° U-period with no topological seam IS the mechanism — face wraps back on itself; EDGE_LOOP IS wired into FACE_OUTER_BOUND, ADVANCED_FACE, CLOSED_SHELL; ShapeUpgrade_ShapeDivideClosed must split into two faces at U=0 and U=π */
 HEADER;
-FILE_DESCRIPTION(('Twi032 test case','Closed face needs splitting at seam'),'2;1');
-FILE_NAME('Twi032.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Twi032'),'2;1');
+FILE_NAME('Twi032.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#20=CYLINDRICAL_SURFACE('',#13,10.0);
-/* Bottom rim circle (closed full 2pi single edge) */
-#30=CARTESIAN_POINT('',(10.0,0.0,0.0));
-#31=VERTEX_POINT('',#30);
-#32=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#33=CIRCLE('',#32,10.0);
-#34=EDGE_CURVE('',#31,#31,#33,.T.);
-/* Top rim */
-#40=CARTESIAN_POINT('',(0.0,0.0,5.0));
-#41=AXIS2_PLACEMENT_3D('',#40,#11,#12);
-#42=CIRCLE('',#41,10.0);
-#43=CARTESIAN_POINT('',(10.0,0.0,5.0));
-#44=VERTEX_POINT('',#43);
-#45=EDGE_CURVE('',#44,#44,#42,.T.);
-/* Defect: a single ADVANCED_FACE wraps the full cylinder 0..2pi without any
- * seam split. Downstream tools (mesher, exporter) need the face split at U=0
- * (and possibly U=pi) into matching half-faces. */
-#50=ORIENTED_EDGE('',*,*,#34,.T.);
-#51=ORIENTED_EDGE('',*,*,#45,.F.);
-#60=EDGE_LOOP('',(#50));
-#61=FACE_OUTER_BOUND('',#60,.T.);
-#62=EDGE_LOOP('',(#51));
-#63=FACE_BOUND('',#62,.T.);
-#64=ADVANCED_FACE('',(#61,#63),#20,.T.);
-/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Twi032','Twi032','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9020=OPEN_SHELL('wrap_shell',(#64));
-#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9020));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CYLINDRICAL_SURFACE('',#4,1.0);
+#6=CARTESIAN_POINT('',(1.0,0.0,2.0));
+#7=VERTEX_POINT('',#6);
+#8=CARTESIAN_POINT('',(-1.0,0.0,2.0));
+#9=VERTEX_POINT('',#8);
+#10=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#11=VERTEX_POINT('',#10);
+#12=CARTESIAN_POINT('',(-1.0,0.0,0.0));
+#13=VERTEX_POINT('',#12);
+#14=CARTESIAN_POINT('',(0.0,0.0,2.0));
+#15=DIRECTION('',(0.0,0.0,1.0));
+#16=DIRECTION('',(1.0,0.0,0.0));
+#17=AXIS2_PLACEMENT_3D('',#14,#15,#16);
+#18=CIRCLE('',#17,1.0);
+#19=EDGE_CURVE('',#7,#9,#18,.T.);
+#20=EDGE_CURVE('',#9,#7,#18,.T.);
+#21=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#22=DIRECTION('',(0.0,0.0,1.0));
+#23=DIRECTION('',(1.0,0.0,0.0));
+#24=AXIS2_PLACEMENT_3D('',#21,#22,#23);
+#25=CIRCLE('',#24,1.0);
+#26=EDGE_CURVE('',#11,#13,#25,.T.);
+#27=EDGE_CURVE('',#13,#11,#25,.T.);
+#28=DIRECTION('',(0.0,0.0,-1.0));
+#29=VECTOR('',#28,2.0);
+#30=CARTESIAN_POINT('',(1.0,0.0,2.0));
+#31=LINE('',#30,#29);
+#32=EDGE_CURVE('',#7,#11,#31,.T.);
+#33=DIRECTION('',(0.0,0.0,-1.0));
+#34=VECTOR('',#33,2.0);
+#35=CARTESIAN_POINT('',(-1.0,0.0,2.0));
+#36=LINE('',#35,#34);
+#37=EDGE_CURVE('',#9,#13,#36,.T.);
+#38=ORIENTED_EDGE('',*,*,#19,.T.);
+#39=ORIENTED_EDGE('',*,*,#37,.T.);
+#40=ORIENTED_EDGE('',*,*,#27,.F.);
+#41=ORIENTED_EDGE('',*,*,#32,.F.);
+#42=ORIENTED_EDGE('',*,*,#20,.T.);
+#43=ORIENTED_EDGE('',*,*,#32,.T.);
+#44=ORIENTED_EDGE('',*,*,#26,.F.);
+#45=ORIENTED_EDGE('',*,*,#37,.F.);
+#46=EDGE_LOOP('',(#38,#42,#43,#44,#40,#45));
+#47=FACE_OUTER_BOUND('',#46,.T.);
+#48=ADVANCED_FACE('',(#47),#5,.T.);
+#49=CLOSED_SHELL('',(#48));
+#50=SHELL_BASED_SURFACE_MODEL('',(#49));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi032','Twi032','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#50),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
