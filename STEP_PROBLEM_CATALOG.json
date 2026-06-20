@@ -30730,7 +30730,7 @@
     "cross_oracle_note": null,
     "description": "ShapeConstruct_Surface.AdjustByTransformation",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs150.stp",
     "id": "Gs150",
@@ -30751,7 +30751,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeConstruct_Surface.AdjustByTransformation"
   },
@@ -30796,7 +30796,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_Surface.SplitSurface",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs152.stp",
     "id": "Gs152",
@@ -30817,7 +30817,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeUpgrade_Surface.SplitSurface"
   },
@@ -30829,7 +30829,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface.CalcMaxDegree",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs153.stp",
     "id": "Gs153",
@@ -30850,7 +30850,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Surface.CalcMaxDegree"
   },
@@ -30862,7 +30862,7 @@
     "cross_oracle_note": null,
     "description": "CheckSmall weak tolerance comparison",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs154.stp",
     "id": "Gs154",
@@ -30883,7 +30883,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "CheckSmall weak tolerance comparison"
   },
@@ -30895,7 +30895,7 @@
     "cross_oracle_note": null,
     "description": "CopyTrimmedSurface uv-param loss",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs155.stp",
     "id": "Gs155",
@@ -30916,7 +30916,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "CopyTrimmedSurface uv-param loss"
   },
@@ -30928,7 +30928,7 @@
     "cross_oracle_note": null,
     "description": "EditVertex ordering corruption",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs156.stp",
     "id": "Gs156",
@@ -30949,7 +30949,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "EditVertex ordering corruption"
   },

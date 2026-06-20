@@ -27042,8 +27042,8 @@ trimming or intersection operations assume richer surface.
 **Defect**: Placement inconsistency after coordinate system transformation on cylindrical surface.
 **Geometry**: CYLINDRICAL_SURFACE (radius 2.5) with offset AXIS2_PLACEMENT_3D at (1,2,3).
 **Test**: Verify surface parameterization remains coherent after transformation adjustment.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs151 — ShapeFix_Face.FixWireTool
 **Defect**: Seam edge consolidation failure on toroidal closed surfaces (duplicate/malformed wires).
 **Geometry**: TOROIDAL_SURFACE (major 5.0, minor 2.0) with u/v-periodic bounds.
@@ -27054,26 +27054,26 @@ trimming or intersection operations assume richer surface.
 **Defect**: Parametric split ignores RECTANGULAR_TRIMMED_SURFACE bounds, extending patches beyond envelope.
 **Geometry**: B_SPLINE_SURFACE_WITH_KNOTS (4x4, deg 3/3) trimmed to u:[1.0,3.0] v:[1.5,3.5].
 **Test**: Verify split patches respect trim bounds and maintain G1 continuity.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs153 — ShapeAnalysis_Surface.CalcMaxDegree
 **Defect**: Knot multiplicity mismatch (sum != n+p+1) causes incorrect effective degree computation.
 **Geometry**: B_SPLINE_SURFACE_WITH_KNOTS (3x3, deg 2/2) with intentionally mismatched knots.
 **Test**: Verify CalcMaxDegree detects and handles knot-count inconsistency gracefully.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs154 — CheckSmall weak tolerance comparison
 ShapeAnalysis_WireVertex::CheckSmall uses undocumented internal threshold independent of schema tolerance. Closely-spaced vertices (within declared tolerance) may be spuriously marked degenerate, causing edge collapse in healing.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs155 — CopyTrimmedSurface uv-param loss
 ShapeUpgrade_ShapeCopyTool::CopyTrimmedSurface on TOROIDAL_SURFACE loses parametrization bounds in copy. RECTANGULAR_TRIMMED_SURFACE trim range becomes semantically invalid, breaking topology.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs156 — EditVertex ordering corruption
 ShapeExtend_WireData::EditVertex corrupts edge-to-vertex connectivity during in-place reorder. Multi-edge wires with shared vertices break EDGE_LOOP closure invariants.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs157 — GetSurfaceType misidentification via precision
 ShapeAnalysis_Geom::GetSurfaceType uses fixed classification thresholds independent of model scale. CONICAL_SURFACE near-cylindrical cases misclassified, triggering wrong healing path.
 - **Tier-3 assertion**: shape_null == True
