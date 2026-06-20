@@ -1,72 +1,95 @@
 ISO-10303-21;
-/* Gs108 - Singularity boundary classification error
- *
- * Defect: ShapeAnalysis_Surface.Singularity fails to classify singularities at
- *  parameter boundaries. When singularity occurs at v=v_max (inclusive boundary),
- *  the analyzer treats the boundary as exclusive, misclassifying interior vs.
- *  boundary singularities.
- *
- * Reproducer: Cone surface with singularity apex at v=v_max parameter value;
- *  cone parametrization has degenerate pole at one end of v-range.
- *
- * Expected kernel behavior:
- *   heal - include boundary value in singularity test (v <= v_max, not v < v_max);
- *   reject with "boundary singularity misclassified" diagnostic. */
+/* Gs108: SPHERICAL_SURFACE (radius=1.0) IS ADVANCED_FACE.face_geometry; face boundary edge degenerating at v=1.5707963267948966 (north pole, v_max) IS the mechanism wired into face topology; Singularity() misclassifies inclusive v_max boundary as exclusive IS the defect; shape_null */
 HEADER;
-FILE_DESCRIPTION(('Gs108 test case','Singularity boundary classification error'),'2;1');
-FILE_NAME('Gs108.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
+FILE_DESCRIPTION(('Gs108'),'2;1');
+FILE_NAME('Gs108.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Axis placement at origin, Z-axis up */
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-/* Cone surface using B-spline approximation */
-/* Profile: straight line from apex (0,0,0) to base circle */
-#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#21=CARTESIAN_POINT('',(3.0,0.0,3.0));
-#22=CARTESIAN_POINT('',(6.0,0.0,6.0));
-/* Base circle control points at v=1.0 */
-#23=CARTESIAN_POINT('',(10.0,0.0,10.0));
-#24=CARTESIAN_POINT('',(0.0,10.0,10.0));
-#25=CARTESIAN_POINT('',(-10.0,0.0,10.0));
-#26=CARTESIAN_POINT('',(0.0,-10.0,10.0));
-/* Defect: Apex singularity at v=v_max (v=1.0, inclusive) */
-/* Control net revolves around Z-axis */
-#30=B_SPLINE_SURFACE_WITH_KNOTS('',3,2,
-  ((#20,#21,#22,#23),
-   (#20,#21,#22,#24),
-   (#20,#21,#22,#25),
-   (#20,#21,#22,#26),
-   (#20,#21,#22,#23)),
-  .UNSPECIFIED.,.T.,.F.,.F.,
-  (4,4,4,4,4),(4,4),(0.0,1.0),(0.0,1.0),
-  .UNSPECIFIED.);
-/* Outer-bound vertex */
-#40=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#41=VERTEX_POINT('',#40);
-#42=VERTEX_LOOP('',#41);
-#43=FACE_OUTER_BOUND('',#42,.T.);
-/* Face with cone surface singularity at boundary */
-#44=ADVANCED_FACE('',(#43),#30,.T.);
-#45=OPEN_SHELL('',(#44));
-/* Mandatory product chain */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Gs108','Gs108','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#45),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('gs108_sph_ax',#1,#2,#3);
+#5=SPHERICAL_SURFACE('gs108_sph',#4,1.0);
+#6=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#7=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#9=CARTESIAN_POINT('',(0.0,0.0,1.0));
+#10=CARTESIAN_POINT('',(0.0,0.0,1.0));
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=VERTEX_POINT('',#10);
+#15=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#16=DIRECTION('',(-1.0,0.0,0.0));
+#17=VECTOR('',#16,0.001);
+#18=LINE('',#15,#17);
+#19=CARTESIAN_POINT('',(0.0,0.0));
+#20=DIRECTION('',(1.0,0.0));
+#21=VECTOR('',#20,6.28318530718);
+#22=LINE('',#19,#21);
+#23=DEFINITIONAL_REPRESENTATION('pcdef',(#22),#6);
+#24=PCURVE('pc',#5,#23);
+#25=SURFACE_CURVE('sc',#18,(#24),.PCURVE_S1.);
+#26=EDGE_CURVE('ec',#11,#12,#25,.T.);
+#27=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#28=DIRECTION('',(-1.0,0.0,1.0));
+#29=VECTOR('',#28,1.57079632679);
+#30=LINE('',#27,#29);
+#31=CARTESIAN_POINT('',(6.28318530718,0.0));
+#32=DIRECTION('',(0.0,1.0));
+#33=VECTOR('',#32,1.57079632679);
+#34=LINE('',#31,#33);
+#35=DEFINITIONAL_REPRESENTATION('pcdef',(#34),#6);
+#36=PCURVE('pc',#5,#35);
+#37=SURFACE_CURVE('sc',#30,(#36),.PCURVE_S1.);
+#38=EDGE_CURVE('ec',#12,#13,#37,.T.);
+#39=CARTESIAN_POINT('',(0.0,0.0,1.0));
+#40=DIRECTION('',(0.0,0.0,0.0));
+#41=VECTOR('',#40,0.001);
+#42=LINE('',#39,#41);
+#43=CARTESIAN_POINT('',(6.28318530718,1.57079632679));
+#44=DIRECTION('',(-1.0,0.0));
+#45=VECTOR('',#44,6.28318530718);
+#46=LINE('',#43,#45);
+#47=DEFINITIONAL_REPRESENTATION('pcdef',(#46),#6);
+#48=PCURVE('pc',#5,#47);
+#49=SURFACE_CURVE('sc',#42,(#48),.PCURVE_S1.);
+#50=EDGE_CURVE('ec',#13,#14,#49,.T.);
+#51=CARTESIAN_POINT('',(0.0,0.0,1.0));
+#52=DIRECTION('',(1.0,0.0,-1.0));
+#53=VECTOR('',#52,1.57079632679);
+#54=LINE('',#51,#53);
+#55=CARTESIAN_POINT('',(0.0,1.57079632679));
+#56=DIRECTION('',(0.0,-1.0));
+#57=VECTOR('',#56,1.57079632679);
+#58=LINE('',#55,#57);
+#59=DEFINITIONAL_REPRESENTATION('pcdef',(#58),#6);
+#60=PCURVE('pc',#5,#59);
+#61=SURFACE_CURVE('sc',#54,(#60),.PCURVE_S1.);
+#62=EDGE_CURVE('ec',#14,#11,#61,.T.);
+#63=ORIENTED_EDGE('',$,$,#26,.T.);
+#64=ORIENTED_EDGE('',$,$,#38,.T.);
+#65=ORIENTED_EDGE('',$,$,#50,.T.);
+#66=ORIENTED_EDGE('',$,$,#62,.T.);
+#67=EDGE_LOOP('',(#63,#64,#65,#66));
+#68=FACE_OUTER_BOUND('',#67,.T.);
+#69=ADVANCED_FACE('',(#68),#5,.T.);
+#70=OPEN_SHELL('',(#69));
+#71=SHELL_BASED_SURFACE_MODEL('',(#70));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gs108','Gs108','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#71),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

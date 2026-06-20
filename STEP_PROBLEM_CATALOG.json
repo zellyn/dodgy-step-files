@@ -29323,7 +29323,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface.Singularity fails to classify singularities at parameter boundaries. When singularity occurs at v=v_max (inclusive boundary), the analyzer treats the boundary as exclusive, misclassifying interior vs.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs108.stp",
     "id": "Gs108",
@@ -29344,7 +29344,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Singularity boundary classification error"
   },
@@ -29356,7 +29356,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface::UVFromIso parameter test allows u-iso at v=pole of sphere even though u is undefined at the pole; parameter is accepted but produces meaningless results. Reproducer: SPHERICAL_SURFACE with u-iso extraction at v=π/2 (north pole); UVFromIso accepts the.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs109.stp",
     "id": "Gs109",
@@ -29377,7 +29377,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Surface.UVFromIso v-iso-at-pole"
   },
@@ -29389,7 +29389,7 @@
     "cross_oracle_note": null,
     "description": "SetUSplitValues called with 3 split values for a surface that internally allocates 2 split slots; silently drops 3rd value without validation or warning. Reproducer: PLANE surface with SetUSplitValues(3 values) when internal allocation expects 2; the 3rd value is ignored.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs110.stp",
     "id": "Gs110",
@@ -29410,7 +29410,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeUpgrade_SplitSurface.SetUSplitValues count-mismatch"
   },
@@ -29422,7 +29422,7 @@
     "cross_oracle_note": null,
     "description": "SURFACE_OF_LINEAR_EXTRUSION with zero-magnitude extrusion vector; surface collapses to base curve but IsDegenerated's test uses Length() which returns positive value for zero VECTOR magnitude due to sign bug. Reproducer:.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs111.stp",
     "id": "Gs111",
@@ -29443,7 +29443,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Surface.IsDegenerated SURFACE_OF_LINEAR_EXTRUSION zero-extrusion"
   },
@@ -29455,7 +29455,7 @@
     "cross_oracle_note": null,
     "description": "Trimmed CONICAL_SURFACE conversion to Bezier patch boundaries doesn't translate cleanly; trim boundaries don't align with Bezier patch boundaries, causing conversion artifacts. Reproducer: CONICAL_SURFACE trimmed with FACE_BOUND defining a partial cone; conversion to Bezier.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs112.stp",
     "id": "Gs112",
@@ -29476,7 +29476,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeUpgrade_ConvertSurfaceToBezierBasis cone-with-trim"
   },
@@ -29488,7 +29488,7 @@
     "cross_oracle_note": null,
     "description": "ComputeBoundIsos doesn't validate trim parameter range; when v_min > v_max (inverted range), produces inverted iso sweeps without error or warning. Reproducer: Face trim with inverted v-parameter range (e.g., v_min=1.0, v_max=0.0); ComputeBoundIsos generates iso curves with.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs113.stp",
     "id": "Gs113",
@@ -29509,7 +29509,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Surface.ComputeBoundIsos negative-trim"
   },

@@ -26531,8 +26531,8 @@ the analyzer treats the boundary as exclusive, misclassifying interior vs.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs108.stp
 - **Fixture kind**: scaffold
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs109 — ShapeAnalysis_Surface.UVFromIso v-iso-at-pole
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -26545,8 +26545,8 @@ UVFromIso accepts the.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs109.stp
 - **Fixture kind**: scaffold
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs110 — ShapeUpgrade_SplitSurface.SetUSplitValues count-mismatch
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -26559,8 +26559,8 @@ allocation expects 2; the 3rd value is ignored.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs110.stp
 - **Fixture kind**: scaffold
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs111 — ShapeAnalysis_Surface.IsDegenerated SURFACE_OF_LINEAR_EXTRUSION zero-extrusion
 - **Category**: §12.2c surfaces (sub-class: curve)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -26572,8 +26572,8 @@ which returns positive value for zero VECTOR magnitude due to sign bug. Reproduc
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs111.stp
 - **Fixture kind**: scaffold
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs112 — ShapeUpgrade_ConvertSurfaceToBezierBasis cone-with-trim
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -26586,8 +26586,8 @@ cone; conversion to Bezier.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs112.stp
 - **Fixture kind**: scaffold
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs113 — ShapeAnalysis_Surface.ComputeBoundIsos negative-trim
 - **Category**: §12.2c surfaces (sub-class: curve)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -26600,8 +26600,8 @@ v_max=0.0); ComputeBoundIsos generates iso curves with.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs113.stp
 - **Fixture kind**: scaffold
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs114 — B-spline surface
 - **Category**: §12.2c surfaces (sub-class: b-spline)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
