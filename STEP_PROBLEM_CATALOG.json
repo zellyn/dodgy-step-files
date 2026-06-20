@@ -30140,7 +30140,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_SplitSurfaceContinuity.Compute is called on an analytic surface (C∞ continuous, like TOROIDAL_SURFACE). The method attempts to split and elevate continuity via Bezier approximation, producing a non-analytic BSpline surface with wrong continuity class.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs132.stp",
     "id": "Gs132",
@@ -30161,7 +30161,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "TOROIDAL_SURFACE wrongly elevated to non-analytic Bezier"
   },
@@ -30173,7 +30173,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface.ProjectDegenerated is called on a degenerate edge whose endpoints collapse to a single point (within tolerance margin). The method picks a sub-optimal projection onto the surface: it projects the collapse-point tangent direction but fails to minimize the.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs133.stp",
     "id": "Gs133",
@@ -30194,7 +30194,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "CYLINDRICAL_SURFACE degenerate edge with sub-optimal projection"
   },
@@ -30367,7 +30367,7 @@
     "cross_oracle_note": null,
     "description": "IsUClosed() validates U-periodicity via first/last pole comparison but skips validation when poles span conical singularities. Endpoint poles at apex dominate evaluation, masking parametric non-closure. Surface reports closure incorrectly.",
     "expected_kernel_behavior": "heal",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs139.stp",
     "id": "Gs139",
@@ -30388,7 +30388,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "IsUClosed pole-singularity false positive"
   },
@@ -30433,7 +30433,7 @@
     "cross_oracle_note": null,
     "description": "FixMissingSeam() wraps base surface in RECTANGULAR_TRIMMED_SURFACE using computed bounds [u1,u2]x[v1,v2]. For base surfaces with non-unit-range knot structure, RTS bounds mismatch parametric extents, placing seam at wrong location. Geometry distorted.",
     "expected_kernel_behavior": "heal",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs141.stp",
     "id": "Gs141",
@@ -30454,7 +30454,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "FixMissingSeam RectangularTrimmedSurface bound mismatch"
   },
@@ -30466,7 +30466,7 @@
     "cross_oracle_note": null,
     "description": "Segment() subdivides rational B-spline surfaces without validating weight stability across split boundaries. For mixed-weight surfaces, splitting at critical parameter can create false singularities where weight transitions occur at patch edge. Boundary evaluation becomes unstable.",
     "expected_kernel_behavior": "heal",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs142.stp",
     "id": "Gs142",
@@ -30487,7 +30487,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Segment rational-weight singularity"
   },
@@ -30499,7 +30499,7 @@
     "cross_oracle_note": null,
     "description": "ShapeConstruct_Surface::MakeBSpline() reconstructs a B-spline from a raw point grid, detecting periodicity via endpoint sampling. For quasi-periodic grids with repeating midpoint structure but non-matching endpoint heights, sampling returns false-positive closure and the synthesized knot topology is incorrect. The defect lives in the kernel's point→B-spline fitting path, which Part-21 cannot exercise directly — a static STEP file can only carry an already-fit B_SPLINE_SURFACE_WITH_KNOTS, not the raw grid that triggers the bug.",
     "expected_kernel_behavior": "heal — endpoint mismatch should suppress the false-periodicity inference",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs143.stp",
     "id": "Gs143",
@@ -30520,7 +30520,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "MakeBSpline grid-sampling false periodicity"
   },

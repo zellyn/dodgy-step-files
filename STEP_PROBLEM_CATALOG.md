@@ -26838,8 +26838,8 @@ producing a non-analytic BSpline surface with wrong continuity class.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs132.stp
 - **Fixture kind**: scaffold
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs133 — CYLINDRICAL_SURFACE degenerate edge with sub-optimal projection
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -26853,8 +26853,8 @@ fails to minimize the.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs133.stp
 - **Fixture kind**: scaffold
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs134 — ShapeAnalysis_Surface.UVFromIso intermediate-bounce
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -26925,8 +26925,8 @@ trimming or intersection operations assume richer surface.
 - **Model impact**: Incorrectly marked as U-closed; seam placement assumes closure; geometry distortion
 - **Fixture path**: step-examples/12-2c-surfaces/Gs139.stp
 - **Fixture kind**: scaffold
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs140 — IsVClosed Bezier pole-coincidence shortcut
 - **Category**: §12.2c surfaces (sub-class: ShapeAnalysis_Surface closure detection)
 - **Sources**: OCCT/ShapeAnalysis_Surface.cxx (line 995)
@@ -26947,8 +26947,8 @@ trimming or intersection operations assume richer surface.
 - **Model impact**: Seam misaligned; discontinuity at seam; surface warping
 - **Fixture path**: step-examples/12-2c-surfaces/Gs141.stp
 - **Fixture kind**: scaffold
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs142 — Segment rational-weight singularity
 - **Category**: §12.2c surfaces (sub-class: ShapeUpgrade_Surface splitting)
 - **Sources**: OCCT/ShapeUpgrade_Surface.cxx (line 450)
@@ -26958,8 +26958,8 @@ trimming or intersection operations assume richer surface.
 - **Model impact**: Weight discontinuity; unstable boundary evaluation; invalid split patches
 - **Fixture path**: step-examples/12-2c-surfaces/Gs142.stp
 - **Fixture kind**: scaffold
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs143 — MakeBSpline grid-sampling false periodicity
 - **Category**: §12.2c surfaces (sub-class: ShapeConstruct_Surface grid reconstruction)
 - **Sources**: OCCT/ShapeConstruct_Surface.cxx (line 310)
@@ -26969,8 +26969,8 @@ trimming or intersection operations assume richer surface.
 - **Model impact**: Incorrect periodicity flag; invalid knot structure; seam placement error
 - **Fixture path**: step-examples/12-2c-surfaces/Gs143.stp
 - **Fixture kind**: scaffold (kernel-test-pair: shape only; runtime invocation required to reproduce)
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs144 — ComputeBoxes null-ISO silent skip
 
 - **Category**: §12.2c surfaces (sub-class: boundary computation)
