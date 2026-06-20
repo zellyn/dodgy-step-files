@@ -29521,7 +29521,7 @@
     "cross_oracle_note": null,
     "description": "No explicit defect documentation in fixture comment. Geometry present for investigation.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs114.stp",
     "id": "Gs114",
@@ -29547,7 +29547,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "B-spline surface"
   },
@@ -29559,7 +29559,7 @@
     "cross_oracle_note": null,
     "description": "No explicit defect documentation in fixture comment. Geometry present for investigation.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs115.stp",
     "id": "Gs115",
@@ -29585,7 +29585,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "B-spline surface"
   },
@@ -29597,7 +29597,7 @@
     "cross_oracle_note": null,
     "description": "No explicit defect documentation in fixture comment. Geometry present for investigation.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs116.stp",
     "id": "Gs116",
@@ -29623,7 +29623,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "B-spline surface"
   },
@@ -29635,7 +29635,7 @@
     "cross_oracle_note": null,
     "description": "No explicit defect documentation in fixture comment. Geometry present for investigation.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs117.stp",
     "id": "Gs117",
@@ -29661,7 +29661,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "B-spline surface"
   },
@@ -29673,7 +29673,7 @@
     "cross_oracle_note": null,
     "description": "No explicit defect documentation in fixture comment. Geometry present for investigation.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs118.stp",
     "id": "Gs118",
@@ -29699,7 +29699,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "B-spline surface"
   },
@@ -29711,7 +29711,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface.IsDegenerated CONICAL_SURFACE zero-radius cone with radius 0 and arbitrary semi-angle (effectively a degenerate point). IsDegenerated should detect but the radius test uses `radius > 0` not abs(radius).",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs119.stp",
     "id": "Gs119",
@@ -29732,7 +29732,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "CONICAL_SURFACE with zero radius (degenerate point)"
   },
