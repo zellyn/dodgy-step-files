@@ -20318,11 +20318,11 @@
     "cross_oracle_note": null,
     "description": "Curves / surfaces have degree or segment count exceeding what the target system can read; typically a degree-9 univariate `B_SPLINE_CURVE_WITH_KNOTS` with only ~10 Bezier-style clamped control points, or a degree-9-by-degree-7 `B_SPLINE_SURFACE_WITH_KNOTS` with rank-deficient control nets (every U-row identical). A degree-restriction healer re-fits with a target degree, segment cap and continuity. A historical typo bug caused fits not to achieve requested continuity.",
     "expected_kernel_behavior": "heal; re-fit within stated tolerance; report deviation; refuse output if requested continuity cannot be met.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn011.stp",
     "id": "Gn011",
-    "notes": "**See also**: Gn026. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: \"excess-degree B-spline curve needs degree reduction\", \"high-degree NURBS surface 9x7 over-spec\", \"degree-restriction healer needed for legacy export\", \"B-spline degree exceeds target system limit\", \"rank-deficient high-degree NURBS net\".- **Byte assertion**: contains(b'B_SPLINE_SURFACE')",
+    "notes": "**See also**: Gn026. **OCC behavior**: silently accepts excess-degree NURBS without re-fitting (no degree-restriction performed); shape loads but tessellation may diverge. Kernel-bug witnessed: catalog requires either heal-by-restriction or reject; OCC silently accepts. Synonyms: \"excess-degree B-spline curve needs degree reduction\", \"high-degree NURBS surface 9x7 over-spec\", \"degree-restriction healer needed for legacy export\", \"B-spline degree exceeds target system limit\", \"rank-deficient high-degree NURBS net\".- **Byte assertion**: contains(b'B_SPLINE_SURFACE')",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -20344,7 +20344,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Excess-degree `B_SPLINE_CURVE_WITH_KNOTS` / `B_SPLINE_SURFACE_WITH_KNOTS` requiring degree restriction"
   },

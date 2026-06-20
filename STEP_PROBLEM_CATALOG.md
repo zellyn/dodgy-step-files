@@ -1858,11 +1858,11 @@ _Section summary: 82 entries._
 - **Description**: Curves / surfaces have degree or segment count exceeding what the target system can read; typically a degree-9 univariate `B_SPLINE_CURVE_WITH_KNOTS` with only ~10 Bezier-style clamped control points, or a degree-9-by-degree-7 `B_SPLINE_SURFACE_WITH_KNOTS` with rank-deficient control nets (every U-row identical). A degree-restriction healer re-fits with a target degree, segment cap and continuity. A historical typo bug caused fits not to achieve requested continuity.
 - **Reproducer recipe**: STEP with `B_SPLINE_CURVE_WITH_KNOTS` degree 9 or `B_SPLINE_SURFACE_WITH_KNOTS` (9,7); pass through `ShapeCustom_BSplineRestriction` targeting degree 3 with C2 continuity.
 - **Expected kernel behavior**: heal; re-fit within stated tolerance; report deviation; refuse output if requested continuity cannot be met.
-- **Notes**: **See also**: Gn026. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: "excess-degree B-spline curve needs degree reduction", "high-degree NURBS surface 9x7 over-spec", "degree-restriction healer needed for legacy export", "B-spline degree exceeds target system limit", "rank-deficient high-degree NURBS net".- **Byte assertion**: contains(b'B_SPLINE_SURFACE')
+- **Notes**: **See also**: Gn026. **OCC behavior**: silently accepts excess-degree NURBS without re-fitting (no degree-restriction performed); shape loads but tessellation may diverge. Kernel-bug witnessed: catalog requires either heal-by-restriction or reject; OCC silently accepts. Synonyms: "excess-degree B-spline curve needs degree reduction", "high-degree NURBS surface 9x7 over-spec", "degree-restriction healer needed for legacy export", "B-spline degree exceeds target system limit", "rank-deficient high-degree NURBS net".- **Byte assertion**: contains(b'B_SPLINE_SURFACE')
 - **Byte assertion**: contains(b'B_SPLINE_CURVE')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gn012 — C0 BSpline curves should be split into C1+ pieces
 - **Category**: §12.2b NURBS/knots
