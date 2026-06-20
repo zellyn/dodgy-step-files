@@ -21617,22 +21617,22 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 **False-claim:** IsClosed correctly detects closure and topological validity.  
 **Minimal reproducer:** B-spline degree-2 curve with control polygon [P0,P1,P2,P3,P4] where P4=P0 (closes) but P2 direction-reversal causes self-intersection. IsClosed reports closed but misses crossing.
 
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn078 — ShapeUpgrade_ConvertCurve2dToBezier double-degree-elevation knot error
 
 **Defect axis:** curve-type-handling  
 **False-claim:** ConvertCurve2dToBezier correctly handles multi-step degree elevation.  
 **Minimal reproducer:** 2D B-spline degree-2 curve (6 control points) elevated to degree 4. Algorithm assumes single-step elevation and produces incorrect knot vector; correct path is 2→3→4 (two steps).
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn079 — ShapeAnalysis_Curve.IsPlanar BSpline interior bow
 
 **Defect**: Degree-3 B-spline with 5 control points nominally planar but interior control point deviates 2mm perpendicular to plane. IsPlanar evaluates only at control point parameter values, missing interior curvature deviation.
 
 **Fixture**: Curve with endpoints at z=0, interior pole at z=2mm; all other poles in z=0 plane.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn080 — ShapeUpgrade_SplitSurface.SetUSplitValues duplicate dedup
 
 **Defect**: Split parameter array [0.3, 0.3, 0.7] deduplicates but removes wrong copy, producing incorrect patch grid topology.
@@ -21645,8 +21645,8 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 **Defect**: Full-circle CIRCLE (radius 0.001mm) samples with fixed 360-point cap regardless of scale, producing 1µm spacing for 1µm radius curve (exceeds 1e-7 tolerance).
 
 **Fixture**: Micro-scale CIRCLE trimmed to full range; parametrization [0, 2π].
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn082 — ShapeUpgrade_ConvertSurfaceToBezierBasis multi-patch seam drift
 
 **Defect**: B-spline surface with interior knots in both U and V converts to N×M Bezier grid with seam tolerance mismatch between adjacent patches.

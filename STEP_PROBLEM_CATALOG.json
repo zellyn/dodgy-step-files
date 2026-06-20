@@ -22478,7 +22478,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Curve.IsClosed with self-intersecting direction reversal",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn077.stp",
     "id": "Gn077",
@@ -22499,7 +22499,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Curve.IsClosed with self-intersecting direction reversal"
   },
@@ -22511,7 +22511,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_ConvertCurve2dToBezier double-degree-elevation knot error",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn078.stp",
     "id": "Gn078",
@@ -22532,7 +22532,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeUpgrade_ConvertCurve2dToBezier double-degree-elevation knot error"
   },
@@ -22544,7 +22544,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Curve.IsPlanar BSpline interior bow",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn079.stp",
     "id": "Gn079",
@@ -22565,7 +22565,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Curve.IsPlanar BSpline interior bow"
   },
@@ -22610,7 +22610,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Curve.GetSamplePoints CIRCLE scale-insensitive cap",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn081.stp",
     "id": "Gn081",
@@ -22631,7 +22631,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Curve.GetSamplePoints CIRCLE scale-insensitive cap"
   },
