@@ -1,60 +1,42 @@
 ISO-10303-21;
-/* Twi172 - ShapeFix_Wire.FixSelfIntersectingEdge cusp-edge
- * Defect: Single edge with a cusp (∂C/∂t = 0 at parameter t=0.5); FixSelfIntersectingEdge attempts to compute tangent at cusp and fails */
+/* Twi172: GEOMETRIC_CURVE_SET containing EDGE_LOOP with 1 B-spline edge on PLANE; PLANE: normal +Z, origin (0,0,0); B-spline degree-3 curve with cusp at t=0.5 — control points fold back so that the derivative ∂C/∂t = 0 at midpoint parameter IS the defect; edge labelled 'cusp_zero_derivative_midpoint'; FixSelfIntersectingEdge IS the mechanism — attempts tangent at cusp and fails because zero derivative prevents intersection test direction computation; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; EDGE_CURVE IS wired into EDGE_LOOP; never orphaned */
 HEADER;
-FILE_DESCRIPTION(('Twi172 test case','FixSelfIntersectingEdge cusp-edge'),'2;1');
-FILE_NAME('Twi172.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('Twi172'),'2;1');
+FILE_NAME('Twi172.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#20=PLANE('',#13);
-/* Two vertices forming a cusp-bearing edge. */
-#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31=VERTEX_POINT('',#30);
-#32=CARTESIAN_POINT('',(2.0,0.0,0.0));
-#33=VERTEX_POINT('',#32);
-/* B-spline curve with a cusp: tangent vector becomes zero at parameter 0.5 */
-#40=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#41=CARTESIAN_POINT('',(0.5,1.0,0.0));
-#42=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#43=CARTESIAN_POINT('',(1.5,1.0,0.0));
-#44=CARTESIAN_POINT('',(2.0,0.0,0.0));
-#50=B_SPLINE_CURVE_WITH_KNOTS('',3,
-  (#40,#41,#42,#43,#44),
-  .UNSPECIFIED.,
-  .F.,
-  .F.,
-  (4,2,4),
-  (0.0,0.5,1.0),
-  .UNSPECIFIED.);
-/* Single edge with cusp in the curve. */
-#60=EDGE_CURVE('',#31,#33,#50,.T.);
-/* ORIENTED_EDGE wrapping the cusp edge. */
-#70=ORIENTED_EDGE('',*,*,#60,.T.);
-/* Wire containing single edge with cusp. */
-#80=EDGE_LOOP('',(#70));
-#81=FACE_OUTER_BOUND('',#80,.T.);
-#82=ADVANCED_FACE('',(#81),#20,.T.);
-/* Mandatory PRODUCT chain. */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Twi172','Twi172','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#82));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(5.0,10.0,0.0));
+#8=CARTESIAN_POINT('',(5.0,10.0,0.0));
+#9=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#10=B_SPLINE_CURVE_WITH_KNOTS('cusp_zero_derivative_midpoint',3,(#6,#7,#8,#9),.UNSPECIFIED.,.F.,.F.,(4,4),(0.0,1.0),.UNSPECIFIED.);
+#11=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#12=VERTEX_POINT('',#11);
+#13=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#14=VERTEX_POINT('',#13);
+#15=EDGE_CURVE('cusp_zero_derivative_midpoint',#12,#14,#10,.T.);
+#16=ORIENTED_EDGE('',*,*,#15,.T.);
+#17=EDGE_LOOP('',(#16));
+#18=GEOMETRIC_CURVE_SET('',(#17));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi172','Twi172','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#18),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
