@@ -1,55 +1,46 @@
 ISO-10303-21;
-/* Twi006 - ORIENTED_EDGE underlying EDGE_CURVE is null/missing reference
- * Defect: ORIENTED_EDGE whose edge_element slot is '$' (null) or unresolved id;
- * separately some senders fill the derived edge_start/edge_end attributes with
- * explicit vertices instead of '*' (Part-21 §6.4.4 says derived attributes are
- * '*' on write). Reader should tolerate either form on read; emit '*' for
- * derived attributes on write (Mantis 0029979). */
+/* Twi006: OPEN_SHELL with one ADVANCED_FACE on a PLANE (z=0, normal +Z); FACE_OUTER_BOUND references an EDGE_LOOP with two ORIENTED_EDGEs; the first ORIENTED_EDGE has edge_element = $ (null/missing reference); the second is a valid half-circle EDGE_CURVE so the loop parses; null edge_element IS the defect; kernel must normalize/tolerate on read; must coerce derived attributes to * on write per Part-21 §6.4.4 */
 HEADER;
-FILE_DESCRIPTION(('Twi006 test case','ORIENTED_EDGE EDGE_CURVE null/derived non-asterisk'),'2;1');
-FILE_NAME('Twi006.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Twi006'),'2;1');
+FILE_NAME('Twi006.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#20=PLANE('',#13);
-/* Two vertices and a real EDGE_CURVE */
-#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31=VERTEX_POINT('',#30);
-#32=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#33=VERTEX_POINT('',#32);
-#34=DIRECTION('',(1.0,0.0,0.0));
-#35=VECTOR('',#34,1.0);
-#36=LINE('',#30,#35);
-#37=EDGE_CURVE('',#31,#33,#36,.T.);
-/* Defect 1: edge_element is '$' (null). Bare reader assumed non-null. */
-#40=ORIENTED_EDGE('',*,*,$,.T.);
-/* Defect 2: derived attributes (edge_start, edge_end) carry explicit vertex
- * references instead of '*' as Part-21 §6.4.4 requires for DERIVE attrs */
-#41=ORIENTED_EDGE('',#31,#33,#37,.F.);
-#62=EDGE_LOOP('',(#40,#41));
-#63=FACE_OUTER_BOUND('',#62,.T.);
-#64=ADVANCED_FACE('',(#63),#20,.T.);
-/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Twi006','Twi006','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9020=OPEN_SHELL('wrap_shell',(#64));
-#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9020));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=DIRECTION('',(0.0,0.0,1.0));
+#8=DIRECTION('',(1.0,0.0,0.0));
+#9=AXIS2_PLACEMENT_3D('',#6,#7,#8);
+#10=CIRCLE('',#9,1.0);
+#11=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#12=CARTESIAN_POINT('',(-1.0,0.0,0.0));
+#13=VERTEX_POINT('',#11);
+#14=VERTEX_POINT('',#12);
+#15=EDGE_CURVE('',#13,#14,#10,.T.);
+#16=ORIENTED_EDGE('',*,*,$,.T.);
+#17=ORIENTED_EDGE('',*,*,#15,.T.);
+#18=EDGE_LOOP('',(#16,#17));
+#19=FACE_OUTER_BOUND('',#18,.T.);
+#20=ADVANCED_FACE('',(#19),#5,.T.);
+#21=OPEN_SHELL('',(#20));
+#22=SHELL_BASED_SURFACE_MODEL('',(#21));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi006','Twi006','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#22),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

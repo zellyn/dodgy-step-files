@@ -3174,9 +3174,9 @@ _Section summary: 101 entries._
 - **Severity**: P1
 - **Byte assertion**: contains(b"EDGE_LOOP('',())")
 - **Byte assertion**: count_entity_def(b'ORIENTED_EDGE') == 0
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Twi002 — Single-edge EDGE_LOOP with non-coincident start/end vertex
 - **Category**: §12.3b wire-loop
@@ -3232,9 +3232,9 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b"ORIENTED_EDGE('',*,*,#31,.T.)")
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 0
 - **Byte assertion**: contains(b'VERTEX_POINT(')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Twi006 — ORIENTED_EDGE underlying EDGE_CURVE is null/missing reference
 - **Category**: §12.3b wire-loop

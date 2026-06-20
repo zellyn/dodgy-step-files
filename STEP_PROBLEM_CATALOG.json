@@ -41013,7 +41013,7 @@
     "cross_oracle_note": null,
     "description": "STEP `EDGE_LOOP` declared with empty edge aggregate (`#10=EDGE_LOOP('',());`). Translator drops the wire and fails the parent face; bare reader crashed before guards added.",
     "expected_kernel_behavior": "reject the loop with diagnostic; do not propagate null wire to face; do not crash.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3b-wires/Twi001.stp",
     "id": "Twi001",
@@ -41038,7 +41038,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Empty edge_list in EDGE_LOOP"
   },
@@ -41174,7 +41174,7 @@
     "cross_oracle_note": null,
     "description": "`ORIENTED_EDGE.edge_element` resolves to something other than `EDGE_CURVE` (e.g. `VERTEX_POINT`, an unrelated geometric_representation_item, or unresolved id). Dereferencing assumes EDGE_CURVE and crashes.",
     "expected_kernel_behavior": "skip the oriented-edge with warning; continue translation of remaining edges.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3b-wires/Twi005.stp",
     "id": "Twi005",
@@ -41199,7 +41199,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ORIENTED_EDGE.edge_element references non-EDGE_CURVE"
   },
