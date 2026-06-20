@@ -29125,7 +29125,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_ConvertSurfaceToBezierBasis detects input is already BEZIER_SURFACE and should return unmodified. Instead, algorithm extracts and reconstructs Bezier, producing numerically different (re-extracted) surface.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs102.stp",
     "id": "Gs102",
@@ -29146,7 +29146,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ConvertSurfaceToBezierBasis: Bezier passthrough produces re-extracted copy"
   },
@@ -29158,7 +29158,7 @@
     "cross_oracle_note": null,
     "description": "Surface IsUClosed() checks u_closed declaration flag, not actual geometry. Surface may declare u_closed=true but control polygon doesn't close within tolerance (gap > Precision::Confusion).",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs103.stp",
     "id": "Gs103",
@@ -29179,7 +29179,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "IsUClosed: periodic-vs-closed semantic mismatch"
   },
@@ -29191,7 +29191,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface.IsDegenerated fails to detect degenerate SURFACE_OF_REVOLUTION where the profile curve coincides with the axis of revolution. The cross-product test produces near-zero result but is not properly classified as singular.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs104.stp",
     "id": "Gs104",
@@ -29212,7 +29212,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "SURFACE_OF_REVOLUTION with profile-on-axis"
   },
@@ -29224,7 +29224,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_FaceDivide.SplitCurves fails when splitting curves cross each other. The algorithm doesn't handle intersection between splitter curves and produces overlapping sub-faces on same surface.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs105.stp",
     "id": "Gs105",
@@ -29245,7 +29245,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "FaceDivide crossing-curves defect"
   },
@@ -29257,7 +29257,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface.NextValueOfUV fails on surfaces where all control poles cluster in a small region, creating high curvature and causing Newton iteration step to underflow (step size becomes subnormal). Reproducer: B-spline surface with control poles clustered in 1mm cube at.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs106.stp",
     "id": "Gs106",
@@ -29278,7 +29278,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Concentrated-poles surface with Newton underflow"
   },
@@ -29290,7 +29290,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_ConvertSurfaceToBezierBasis fails to preserve closure when converting closed cylindrical surfaces to Bezier basis. The resulting Bezier patches don't maintain seam closure or periodic boundary conditions.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs107.stp",
     "id": "Gs107",
@@ -29311,7 +29311,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Closed-surface preservation in Bezier conversion"
   },
