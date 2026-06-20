@@ -27113,7 +27113,7 @@
     "cross_oracle_note": null,
     "description": "An INTERSECTION_CURVE entity holds the curve of intersection between two surfaces. The spec models the intersection as a single CURVE_ON_SURFACE pair, but in general two surfaces (e.g. a plane and a torus, or two non-coaxial cylinders) intersect along *multiple disjoint branches*. A single INTERSECTION_CURVE entity cannot faithfully represent this; the producer chose one branch arbitrarily, silently dropping the others.",
     "expected_kernel_behavior": "detect that the producer's basis curve does not cover the full surface intersection and warn; or reject INTERSECTION_CURVE if the kernel expects a single branch and detect-time analysis disagrees.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs044.stp",
     "id": "Gs044",
@@ -27136,7 +27136,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "`INTERSECTION_CURVE` between two surfaces with multiple disjoint intersection branches, only one represented"
   },
@@ -27152,7 +27152,7 @@
     "cross_oracle_note": null,
     "description": "A SURFACE_OF_REVOLUTION sweeps a basis curve about an axis. If the axis crosses the basis curve at an interior point, one side of the curve is swept \"inward\" while the other is swept \"outward\", producing a self-intersecting surface that folds through itself near the axis. Distinct from existing entries about co-axial / parallel sweeps; this is the *crossing* pathological case.",
     "expected_kernel_behavior": "detect axis-crosses-basis at construction; reject or split the basis at the crossing into two non-crossing sub-curves and revolve each separately.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs045.stp",
     "id": "Gs045",
@@ -27177,7 +27177,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "`SURFACE_OF_REVOLUTION` whose revolution axis crosses the basis curve at an interior point"
   },
@@ -27192,7 +27192,7 @@
     "cross_oracle_note": null,
     "description": "A SURFACE_OF_LINEAR_EXTRUSION sweeps a basis curve along a vector (DIRECTION + magnitude). If the vector magnitude is 0.0, the surface degenerates to the basis curve. The DIRECTION is technically still well-formed (any unit vector) but the VECTOR carries magnitude 0. Distinct from Gs032's parallel-collinear case: there the direction is non-zero but parallel to the basis. Here the magnitude itself is zero.",
     "expected_kernel_behavior": "detect zero-magnitude vectors and reject the surface as degenerate (it has no area).",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs046.stp",
     "id": "Gs046",
@@ -27217,7 +27217,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "`SURFACE_OF_LINEAR_EXTRUSION` with zero-magnitude extrusion vector"
   },
@@ -27233,7 +27233,7 @@
     "cross_oracle_note": null,
     "description": "AP242 introduces BLENDED_EDGE_SURFACE to represent an edge fillet between two adjacent faces. The blend's radius (or radius profile) is one of the entity's defining attributes. A producer that supports variable-radius fillets but exports through a constant-radius schema may emit two BLENDED_EDGE_SURFACE instances for adjacent edges with mismatched radii at their shared vertex; the receiver sees a 0-thickness gap where they meet.",
     "expected_kernel_behavior": "reconcile the radii by transitioning between them through a third spherical / variable-radius patch, or reject as inconsistent.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs047.stp",
     "id": "Gs047",
@@ -27255,7 +27255,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "`BLENDED_EDGE_SURFACE` with mismatched fillet radii at a shared vertex"
   },
@@ -27271,7 +27271,7 @@
     "cross_oracle_note": null,
     "description": "ISO 10303-42 OFFSET_CURVE_2D carries ref_distance (a signed real where sign determines side). When a producer chains OFFSET_CURVE_2D segments around a composite curve and switches sign mid-chain (perhaps to \"fix\" inside/outside on a concave region), the resulting offset is non-continuous: successive segments do not meet at a shared point.",
     "expected_kernel_behavior": "detect the C0 discontinuity at the chain junction and either reject or insert a connecting segment (line, arc) bridging the gap.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs048.stp",
     "id": "Gs048",
@@ -27295,7 +27295,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "`OFFSET_CURVE_2D` with sign of `ref_distance` flipping mid composite-curve chain"
   },
@@ -27311,7 +27311,7 @@
     "cross_oracle_note": null,
     "description": "A B_SPLINE_SURFACE_WITH_KNOTS has a knot in U (or V) whose multiplicity equals the degree, creating a C0 isoparametric line. Faces on this surface present a kink across the entire isoline; meshing/Boolean tools that assume C1+ produce wrong tangent normals. Some receivers split such surfaces at the C0 line into two sub-surfaces with single-piece continuity.",
     "expected_kernel_behavior": "detect C0 isoparametric lines and either split the surface (and propagate splits to bound faces and edges) or report the discontinuity. Splitting must keep edge/wire/face topology consistent.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs049.stp",
     "id": "Gs049",
@@ -27332,7 +27332,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "B-spline surface has C0 isoparametric line that triggers split-on-import"
   },

@@ -17940,9 +17940,9 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'INTERSECTION_CURVE(')
 - **Byte assertion**: contains(b'TOROIDAL_SURFACE(')
 - **Byte assertion**: contains(b'CIRCLE(\'outer_branch\'')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs045 — `SURFACE_OF_REVOLUTION` whose revolution axis crosses the basis curve at an interior point
 - **Category**: §12.2c surface-degeneracy (sub-class: surface of revolution)
@@ -17956,9 +17956,9 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'SURFACE_OF_REVOLUTION(')
 - **Byte assertion**: contains(b'AXIS1_PLACEMENT(')
 - **Byte assertion**: contains(b'(-2.0,0.0,0.0)')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs046 — `SURFACE_OF_LINEAR_EXTRUSION` with zero-magnitude extrusion vector
 - **Category**: §12.2c surface-degeneracy (sub-class: surface of linear extrusion)
@@ -17971,9 +17971,9 @@ _Section summary: 41 entries._
 - **Severity**: P1
 - **Byte assertion**: contains(b'SURFACE_OF_LINEAR_EXTRUSION(')
 - **Byte assertion**: contains(b"VECTOR('extr_v',#20,0.0)")
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs047 — `BLENDED_EDGE_SURFACE` with mismatched fillet radii at a shared vertex
 - **Category**: §12.2c surface-degeneracy (sub-class: AP242 fillet surface)
@@ -17987,9 +17987,9 @@ _Section summary: 41 entries._
 - **Byte assertion**: count_entity_def(b'BLENDED_EDGE_SURFACE') == 2
 - **Byte assertion**: contains(b"BLENDED_EDGE_SURFACE('blendA_radius_1',#25,1.0)")
 - **Byte assertion**: contains(b"BLENDED_EDGE_SURFACE('blendB_radius_2',#31,2.0)")
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs048 — `OFFSET_CURVE_2D` with sign of `ref_distance` flipping mid composite-curve chain
 - **Category**: §12.2c surface-degeneracy (sub-class: offset curve)
@@ -18003,9 +18003,9 @@ _Section summary: 41 entries._
 - **Byte assertion**: count_entity_def(b'OFFSET_CURVE_2D') == 2
 - **Byte assertion**: contains(b"OFFSET_CURVE_2D('off1',#20,1.0,.T.)")
 - **Byte assertion**: contains(b"OFFSET_CURVE_2D('off2',#21,-1.0,.T.)")
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ---
 
@@ -18021,9 +18021,9 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS(')
 - **Byte assertion**: contains(b'(3,3,3)')
 - **Byte assertion**: contains(b'(0.0,0.5,1.0)')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ## §12.3a Shells — Pass-A gap-fill
 
