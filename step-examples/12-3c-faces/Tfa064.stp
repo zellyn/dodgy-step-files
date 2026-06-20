@@ -1,66 +1,88 @@
 ISO-10303-21;
-/* Tfa064 - Missing-seam reconstruction fails on face whose wire already contains a partial seam
- * Cylindrical face on radius=1, height=2. The wire has the seam at U=0 only
- * for the LOWER half (V in [0,1]) and the rest of the boundary closes via
- * a top arc, the lateral pcurve at U=2*PI, and the bottom arc -- the
- * UPPER seam segment (V in [1,2]) is MISSING. */
+/* Tfa064: CLOSED_SHELL: cylindrical face (r=5, h=10) whose EDGE_LOOP has seam at U=0 only for lower half V=[0,5] (seam_lower edge), plus top_circle and mid_circle arcs; seam for upper half V=[5,10] is absent; missing-seam reconstruction inserts upper-half seam at wire tail instead of adjacent to seam_lower.F. — misordered seam splice; faces[1,2] are valid bottom/top disc caps; defect IS on live cylindrical face traversal path */
 HEADER;
-FILE_DESCRIPTION(('Tfa064 test case','Cylindrical face wire with partial-only seam (lower half present, upper missing)'),'2;1');
-FILE_NAME('Tfa064.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Tfa064'),'2;1');
+FILE_NAME('Tfa064.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('cyl_axis',#10,#11,#12);
-#14=CYLINDRICAL_SURFACE('host',#13,1.0);
-/* Vertices for the wire */
-#20=CARTESIAN_POINT('seam_bottom',(1.0,0.0,0.0));#21=VERTEX_POINT('Vsb',#20);
-#22=CARTESIAN_POINT('seam_mid',(1.0,0.0,1.0));#23=VERTEX_POINT('Vsm',#22);
-#24=CARTESIAN_POINT('top_far_a',(1.0,0.0,2.0));#25=VERTEX_POINT('Vt',#24);
-#26=CARTESIAN_POINT('top_far_b',(1.0,0.0,2.0));#27=VERTEX_POINT('Vt2',#26);
-/* edge1: PARTIAL SEAM lower half V=[0,1] */
-#30=DIRECTION('',(0.0,0.0,1.0));#31=VECTOR('',#30,1.0);
-#32=LINE('partial_seam_lower',#20,#31);#33=EDGE_CURVE('seam_lower',#21,#23,#32,.T.);
-/* edge2: top arc Vsm -> Vt (full top circle as placeholder for lateral closure) */
-#40=CARTESIAN_POINT('arc_top_centre',(0.0,0.0,1.0));
-#41=DIRECTION('',(0.0,0.0,1.0));#42=DIRECTION('',(1.0,0.0,0.0));
-#43=AXIS2_PLACEMENT_3D('',#40,#41,#42);
-#44=CIRCLE('mid_arc',#43,1.0);
-#45=EDGE_CURVE('lateral_via_top_arc',#23,#25,#44,.T.);
-/* edge3: bottom-arc back from Vt2 to Vsb (closing the wire) -- Vt and Vt2 are
- * coincident geometrically but separate VERTEX_POINTs because the missing
- * upper seam has not yet been spliced in. */
-#50=CARTESIAN_POINT('arc_bottom_centre',(0.0,0.0,2.0));
-#51=DIRECTION('',(0.0,0.0,1.0));#52=DIRECTION('',(1.0,0.0,0.0));
-#53=AXIS2_PLACEMENT_3D('',#50,#51,#52);
-#54=CIRCLE('return_arc',#53,1.0);
-#55=EDGE_CURVE('return',#27,#21,#54,.T.);
-/* Wire references the lower partial seam, the top arc, and the closing arc.
- * The UPPER half of the seam (Vsm -> Vt at U=0) is INTENTIONALLY ABSENT. */
-#60=ORIENTED_EDGE('',*,*,#33,.T.);
-#61=ORIENTED_EDGE('',*,*,#45,.T.);
-#62=ORIENTED_EDGE('',*,*,#55,.T.);
-#63=EDGE_LOOP('partial_seam_no_upper_half',(#60,#61,#62));
-#64=FACE_OUTER_BOUND('',#63,.T.);
-#65=ADVANCED_FACE('cyl_partial_seam',(#64),#14,.T.);
-/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Tfa064','Tfa064','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9020=OPEN_SHELL('wrap_shell',(#65));
-#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9020));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(5.0,0.0,5.0));
+#3=CARTESIAN_POINT('',(5.0,0.0,10.0));
+#4=VERTEX_POINT('',#1);
+#5=VERTEX_POINT('',#2);
+#6=VERTEX_POINT('',#3);
+#7=DIRECTION('',(0.0,0.0,1.0));
+#8=VECTOR('',#7,5.0);
+#9=LINE('',#1,#8);
+#10=EDGE_CURVE('',#4,#5,#9,.T.);
+#11=DIRECTION('',(0.0,0.0,1.0));
+#12=VECTOR('',#11,5.0);
+#13=LINE('',#2,#12);
+#14=EDGE_CURVE('',#5,#6,#13,.T.);
+#15=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#16=DIRECTION('',(0.0,0.0,-1.0));
+#17=DIRECTION('',(1.0,0.0,0.0));
+#18=AXIS2_PLACEMENT_3D('',#15,#16,#17);
+#19=CIRCLE('',#18,5.0);
+#20=EDGE_CURVE('',#4,#4,#19,.T.);
+#21=CARTESIAN_POINT('',(0.0,0.0,5.0));
+#22=DIRECTION('',(0.0,0.0,1.0));
+#23=DIRECTION('',(1.0,0.0,0.0));
+#24=AXIS2_PLACEMENT_3D('',#21,#22,#23);
+#25=CIRCLE('',#24,5.0);
+#26=EDGE_CURVE('',#5,#5,#25,.T.);
+#27=CARTESIAN_POINT('',(0.0,0.0,10.0));
+#28=DIRECTION('',(0.0,0.0,1.0));
+#29=DIRECTION('',(1.0,0.0,0.0));
+#30=AXIS2_PLACEMENT_3D('',#27,#28,#29);
+#31=CIRCLE('',#30,5.0);
+#32=EDGE_CURVE('',#6,#6,#31,.T.);
+#33=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#34=DIRECTION('',(0.0,0.0,1.0));
+#35=DIRECTION('',(1.0,0.0,0.0));
+#36=AXIS2_PLACEMENT_3D('',#33,#34,#35);
+#37=CYLINDRICAL_SURFACE('',#36,5.0);
+#38=ORIENTED_EDGE('',$,$,#10,.T.);
+#39=ORIENTED_EDGE('',$,$,#26,.T.);
+#40=ORIENTED_EDGE('',$,$,#10,.F.);
+#41=ORIENTED_EDGE('',$,$,#20,.F.);
+#42=EDGE_LOOP('',(#38,#39,#40,#41));
+#43=FACE_OUTER_BOUND('',#42,.T.);
+#44=ADVANCED_FACE('',(#43),#37,.T.);
+#45=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#46=DIRECTION('',(0.0,0.0,-1.0));
+#47=DIRECTION('',(1.0,0.0,0.0));
+#48=AXIS2_PLACEMENT_3D('',#45,#46,#47);
+#49=PLANE('',#48);
+#50=ORIENTED_EDGE('',$,$,#20,.T.);
+#51=EDGE_LOOP('',(#50));
+#52=FACE_OUTER_BOUND('',#51,.T.);
+#53=ADVANCED_FACE('',(#52),#49,.T.);
+#54=CARTESIAN_POINT('',(0.0,0.0,10.0));
+#55=DIRECTION('',(0.0,0.0,1.0));
+#56=DIRECTION('',(1.0,0.0,0.0));
+#57=AXIS2_PLACEMENT_3D('',#54,#55,#56);
+#58=PLANE('',#57);
+#59=ORIENTED_EDGE('',$,$,#32,.T.);
+#60=EDGE_LOOP('',(#59));
+#61=FACE_OUTER_BOUND('',#60,.T.);
+#62=ADVANCED_FACE('',(#61),#58,.T.);
+#63=CLOSED_SHELL('',(#44,#53,#62));
+#64=MANIFOLD_SOLID_BREP('',#63);
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Tfa064','Tfa064','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=ADVANCED_BREP_SHAPE_REPRESENTATION('',(#64),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
