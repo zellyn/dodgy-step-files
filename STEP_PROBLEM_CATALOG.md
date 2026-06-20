@@ -2626,7 +2626,7 @@ _Section summary: 101 entries._
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(26) ifc=schema_n/a`
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Tsh003 — Closed solid round-trips as SHELL_BASED_SURFACE_MODEL/OPEN_SHELL (SpaceClaim regression)
 - **Category**: §12.3a shell-orientation

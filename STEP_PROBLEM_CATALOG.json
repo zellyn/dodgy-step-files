@@ -33282,7 +33282,7 @@
     "cross_oracle_note": null,
     "description": "The `FACETED_BREP` schema requires a `CLOSED_SHELL`, but some producers reference an `OPEN_SHELL` instead. The receiver aborts with \"not supported\", losing the geometry entirely.",
     "expected_kernel_behavior": "reject with precise diagnostic, or accept by promoting the shell to closed when its topology actually closes within tolerance.",
-    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(26) ifc=schema_n/a",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh002.stp",
     "id": "Tsh002",
