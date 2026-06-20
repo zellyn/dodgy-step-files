@@ -27586,7 +27586,7 @@
     "cross_oracle_note": null,
     "description": "A `SURFACE_OF_REVOLUTION` references an `ELLIPSE` as its swept curve and a vertical axis that passes through the ellipse's centre. The resulting analytic surface is degenerate at both poles where the generatrix meets the axis (zero-radius circles). On import, OCCT cannot recover a usable parametric surface; the face appears empty, geometry is dropped silently, or a heal pass replaces the analytic with a high-cost B-spline approximation. Writers should refuse to emit this construction and instead emit two half-spheres / a torus depending on whether the axis is in-plane.",
     "expected_kernel_behavior": "warn-and-proceed — detect axis-through-centre construction, emit `W_DEGENERATE_REVOLUTION_AXIS`, and either heal to canonical analytic (sphere / torus) or fall back to B-spline; never silently drop the face.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs056.stp",
     "id": "Gs056",
@@ -27611,7 +27611,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "`SURFACE_OF_REVOLUTION` of an ellipse around its own centre produces a degenerate surface"
   },
@@ -27626,7 +27626,7 @@
     "cross_oracle_note": null,
     "description": "`RECTANGULAR_COMPOSITE_SURFACE` describes a piecewise-Bezier or piecewise-NURBS quilt with explicit per-patch transition codes. step-g's `Load` parses the segments grid (a `LIST_OF_LIST_OF_PATCHES`) into in-memory SurfacePatch objects, so the entity is recognised — but `LoadONBrep` is a stub that prints `\"not implemented\"` and returns false. Faces referencing the quilt are dropped without further diagnostic. Algebraically the entity could be promoted to a single `B_SPLINE_SURFACE_WITH_KNOTS` at multiplicity-(degree+1) internal knots, so the drop is doubly avoidable. Distinct from Gs041 (non-uniform patch grid — structural defect) and Tfa036 (face-on-quilt boundary crossing seams): this is the wholesale unimplemented dispatch.",
     "expected_kernel_behavior": "heal-and-accept; promote the patch grid to a single `B_SPLINE_SURFACE_WITH_KNOTS` (multiplicity = degree+1 at the internal patch boundaries) and feed the result to the existing BSpline importer; emit `W_RECTANGULAR_COMPOSITE_PROMOTED` so users know the conversion happened.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs057.stp",
     "id": "Gs057",
@@ -27653,7 +27653,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "`RECTANGULAR_COMPOSITE_SURFACE` LoadONBrep stub (BRL-CAD step-g)"
   },
@@ -27668,7 +27668,7 @@
     "cross_oracle_note": null,
     "description": "Even when the consumer **does** intend to promote a `RECTANGULAR_COMPOSITE_SURFACE` (Gs057) to a single B-spline, the patch-by-patch continuity metadata (`u_transition` / `v_transition` and the per-patch `u_sense` / `v_sense` direction flags) carries information the receiver needs to perform that promotion correctly: a `CONT_SAME_GRADIENT_SAME_CURVATURE` boundary must be promoted with multiplicity = degree-2 knot at the patch boundary; a `DISCONTINUOUS` boundary must be promoted with multiplicity = degree+1. step-g parses both attributes into the in-memory model and then never reads them back; the receiver re-evaluates continuity numerically, which both costs CPU and may produce a kink the producer's continuity hint would have prevented.",
     "expected_kernel_behavior": "heal-and-accept; every importer that consumes a `SURFACE_PATCH` (whether via `RECTANGULAR_COMPOSITE_SURFACE` or directly) must convert the parsed `transition_code` into the appropriate knot multiplicity at the patch boundary; emit `W_PATCH_TRANSITION_HONORED` recording which transition was applied.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs058.stp",
     "id": "Gs058",
@@ -27694,7 +27694,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "`SURFACE_PATCH` `transition_code` / `u_sense` / `v_sense` parsed but ignored (BRL-CAD step-g)"
   },
@@ -27706,7 +27706,7 @@
     "cross_oracle_note": null,
     "description": "B-spline surface with 8×4 control points, degree 3 in U",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs059.stp",
     "id": "Gs059",
@@ -27727,7 +27727,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "B-spline knot-multiplicity closure sanity"
   },
@@ -27739,7 +27739,7 @@
     "cross_oracle_note": null,
     "description": "Spherical surface, radius 5.0, ISO axes (Z-axis vertical)",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs060.stp",
     "id": "Gs060",
@@ -27760,7 +27760,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Spherical surface pole singularity detection"
   },
@@ -27772,7 +27772,7 @@
     "cross_oracle_note": null,
     "description": "4×4 cubic B-spline with cusp at center (u~0.5, v~0.5)",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs061.stp",
     "id": "Gs061",
@@ -27793,7 +27793,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "B-spline surface normal degeneracy at cusp"
   },

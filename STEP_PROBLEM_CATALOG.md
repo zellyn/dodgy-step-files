@@ -25997,11 +25997,11 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 - **Notes**: **See also**: Gs049, A083. Synonyms: "STEP error for ellipse revol shape", "ellipse revolved around its own centre", "SURFACE_OF_REVOLUTION poles", "degenerate ellipse-of-revolution surface".
 - **Byte assertion**: contains(b'SURFACE_OF_REVOLUTION')
 - **Byte assertion**: contains(b'ELLIPSE')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs057 — `RECTANGULAR_COMPOSITE_SURFACE` LoadONBrep stub (BRL-CAD step-g)
 - **Category**: §12.2c (sub-class: composite quilt unimplemented)
@@ -26013,11 +26013,11 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 - **Notes**: **See also**: Gs058, Gs041, Tfa036, Gn018. Synonyms: "RECTANGULAR_COMPOSITE_SURFACE LoadONBrep stub", "step-g composite quilt unimplemented", "patch quilt face dropped", "promote to NURBS not done", "BRL-CAD step-g RECTANGULAR_COMPOSITE_SURFACE skipped".
 - **Byte assertion**: contains(b'RECTANGULAR_COMPOSITE_SURFACE')
 - **Byte assertion**: contains(b'SURFACE_PATCH')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs058 — `SURFACE_PATCH` `transition_code` / `u_sense` / `v_sense` parsed but ignored (BRL-CAD step-g)
 - **Category**: §12.2c surface / curve degeneracies (sub-class: patch continuity metadata lost)
@@ -26029,11 +26029,11 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 - **Notes**: **See also**: Gs057, Gn017. Synonyms: "SURFACE_PATCH transition_code dropped", "step-g ignores patch continuity metadata", "CONT_SAME_GRADIENT_SAME_CURVATURE not applied", "u_sense / v_sense booleans lost", "patch-boundary C2 hint discarded by importer".
 - **Byte assertion**: contains(b'SURFACE_PATCH')
 - **Byte assertion**: contains(b'CONT_SAME_GRADIENT_SAME_CURVATURE')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs059 — B-spline knot-multiplicity closure sanity
 - **Defect class**: `ShapeAnalysis_Surface.IsUClosed`
@@ -26043,8 +26043,8 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 - **Actual closure**: Last pole at u_max offset 0.01 in Z, breaking closure
 - **Trigger**: Midpoint sample in IsUClosed detects pole mismatch despite knot structure
 - **Expected healing**: Surface marked as non-closed; subsequent passes may split or reject
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs060 — Spherical surface pole singularity detection
 - **Defect class**: `ShapeAnalysis_Surface.ComputeSingularities`
 - **Probe method**: `ComputeSingularities_at182`
@@ -26052,8 +26052,8 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 - **Singularity**: Natural poles at v=π/2 (north) and v=-π/2 (south)
 - **Trigger**: Gradient analysis of surface position; normal becomes degenerate at poles
 - **Expected healing**: Poles marked in singularity map; edge loops adjusted to avoid pole crossing
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs061 — B-spline surface normal degeneracy at cusp
 - **Defect class**: `ShapeAnalysis_Surface.SurfaceNewton`
 - **Probe method**: `SurfaceNewton_at1069`
@@ -26061,8 +26061,8 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 - **Degeneracy**: Two rows (v=1, v=2) have parallel X-directional tangent vectors; normal becomes singular
 - **Trigger**: Newton iteration for closest-point projection diverges when normal is near-zero
 - **Expected healing**: Projection fails; surface may be rejected or split at cusp
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs062 — Trimmed cylinder ValueOfUV dispatch
 - **Defect class**: `ShapeAnalysis_Surface.ValueOfUV`
 - **Probe method**: `ValueOfUV_at1246`

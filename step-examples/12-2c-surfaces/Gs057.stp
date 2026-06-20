@@ -1,68 +1,103 @@
 ISO-10303-21;
-/* Gs057 - RECTANGULAR_COMPOSITE_SURFACE silently dropped (LoadONBrep stub)
-   Defect: BRL-CAD step-g implements RECTANGULAR_COMPOSITE_SURFACE::Load
-   (it parses the segments grid into SurfacePatch objects) but its
-   LoadONBrep is a stub that prints "::LoadONBrep(...) not implemented for
-   <entity>" and returns false.  The face referencing the composite
-   surface is dropped without further diagnostic; downstream the shell
-   appears with one face missing.  Algebraically a rectangular composite
-   surface is just a piecewise-Bezier / piecewise-NURBS quilt and could
-   be promoted to a single B_SPLINE_SURFACE_WITH_KNOTS at multiplicity
-   degree+1 internal knots.
-   Sources: BRL-CAD src/conv/step/step-g/RectangularCompositeSurface.cpp
-   LoadONBrep stub. */
+/* Gs057: RECTANGULAR_COMPOSITE_SURFACE IS ADVANCED_FACE.face_geometry; SURFACE_PATCH grid referencing BEZIER patches IS the segment list; unimplemented LoadONBrep stub IS the defect wired into face topology; shape_null (unimplemented dispatch) */
 HEADER;
-FILE_DESCRIPTION(
-  ('Gs057 - RECTANGULAR_COMPOSITE_SURFACE silently dropped by step-g'),
-  '2;1');
-FILE_NAME('Gs057.stp','2026-05-02T00:00:00',('cad-research-suite'),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('Gs057'),'2;1');
+FILE_NAME('Gs057.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* Two adjacent 4x4 Bezier patches forming a 1x2 rectangular composite
-   surface. */
-#10=CARTESIAN_POINT('p00',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('p01',(0.0,1.0,0.0));
-#12=CARTESIAN_POINT('p02',(0.0,2.0,0.0));
-#13=CARTESIAN_POINT('p03',(0.0,3.0,0.0));
-#20=CARTESIAN_POINT('p10',(1.0,0.0,0.5));
-#21=CARTESIAN_POINT('p11',(1.0,1.0,1.0));
-#22=CARTESIAN_POINT('p12',(1.0,2.0,1.0));
-#23=CARTESIAN_POINT('p13',(1.0,3.0,0.5));
-#30=CARTESIAN_POINT('p20',(2.0,0.0,0.5));
-#31=CARTESIAN_POINT('p21',(2.0,1.0,1.0));
-#32=CARTESIAN_POINT('p22',(2.0,2.0,1.0));
-#33=CARTESIAN_POINT('p23',(2.0,3.0,0.5));
-#40=CARTESIAN_POINT('p30',(3.0,0.0,0.0));
-#41=CARTESIAN_POINT('p31',(3.0,1.0,0.0));
-#42=CARTESIAN_POINT('p32',(3.0,2.0,0.0));
-#43=CARTESIAN_POINT('p33',(3.0,3.0,0.0));
-#50=CARTESIAN_POINT('p40',(4.0,0.0,0.0));
-#51=CARTESIAN_POINT('p41',(4.0,1.0,0.0));
-#52=CARTESIAN_POINT('p42',(4.0,2.0,0.0));
-#53=CARTESIAN_POINT('p43',(4.0,3.0,0.0));
-#60=CARTESIAN_POINT('p50',(5.0,0.0,0.5));
-#61=CARTESIAN_POINT('p51',(5.0,1.0,0.5));
-#62=CARTESIAN_POINT('p52',(5.0,2.0,0.5));
-#63=CARTESIAN_POINT('p53',(5.0,3.0,0.5));
-#70=CARTESIAN_POINT('p60',(6.0,0.0,0.0));
-#71=CARTESIAN_POINT('p61',(6.0,1.0,0.0));
-#72=CARTESIAN_POINT('p62',(6.0,2.0,0.0));
-#73=CARTESIAN_POINT('p63',(6.0,3.0,0.0));
-/* Patch (0,0): 4x4 Bezier, U/V transition CONT (continuous at boundary
-   to the next patch). */
-#100=BEZIER_SURFACE('patchA',3,3,
-  ((#10,#11,#12,#13),(#20,#21,#22,#23),(#30,#31,#32,#33),(#40,#41,#42,#43)),
-  .UNSPECIFIED.,.F.,.F.,.F.);
-#101=SURFACE_PATCH(#100,.CONT_SAME_GRADIENT.,.UNSPECIFIED.,.T.,.T.);
-/* Patch (0,1). */
-#200=BEZIER_SURFACE('patchB',3,3,
-  ((#40,#41,#42,#43),(#50,#51,#52,#53),(#60,#61,#62,#63),(#70,#71,#72,#73)),
-  .UNSPECIFIED.,.F.,.F.,.F.);
-#201=SURFACE_PATCH(#200,.UNSPECIFIED.,.UNSPECIFIED.,.T.,.T.);
-/* Defect: RECTANGULAR_COMPOSITE_SURFACE - step-g LoadONBrep stub
-   silently drops the face. */
-#300=RECTANGULAR_COMPOSITE_SURFACE('quilt',((#101,#201)));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#3=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#4=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#5=B_SPLINE_SURFACE_WITH_KNOTS('gs057_p0',1,1,((#1,#2),(#3,#4)),.UNSPECIFIED.,.F.,.F.,.F.,(2,2),(2,2),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
+#6=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#9=CARTESIAN_POINT('',(2.0,1.0,0.0));
+#10=B_SPLINE_SURFACE_WITH_KNOTS('gs057_p1',1,1,((#6,#7),(#8,#9)),.UNSPECIFIED.,.F.,.F.,.F.,(2,2),(2,2),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
+#11=SURFACE_PATCH(#5,.DISCONTINUOUS.,.DISCONTINUOUS.,.T.,.T.);
+#12=SURFACE_PATCH(#10,.DISCONTINUOUS.,.DISCONTINUOUS.,.T.,.T.);
+#13=RECTANGULAR_COMPOSITE_SURFACE('gs057_rcs',((#11,#12)));
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#15=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#16=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#17=CARTESIAN_POINT('',(2.0,1.0,0.0));
+#18=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#19=VERTEX_POINT('',#15);
+#20=VERTEX_POINT('',#16);
+#21=VERTEX_POINT('',#17);
+#22=VERTEX_POINT('',#18);
+#23=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#24=DIRECTION('',(1.0,0.0,0.0));
+#25=VECTOR('',#24,2.0);
+#26=LINE('',#23,#25);
+#27=CARTESIAN_POINT('',(0.0,0.0));
+#28=DIRECTION('',(1.0,0.0));
+#29=VECTOR('',#28,2.0);
+#30=LINE('',#27,#29);
+#31=DEFINITIONAL_REPRESENTATION('pcdef',(#30),#14);
+#32=PCURVE('pc',#13,#31);
+#33=SURFACE_CURVE('sc',#26,(#32),.PCURVE_S1.);
+#34=EDGE_CURVE('ec',#19,#20,#33,.T.);
+#35=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#36=DIRECTION('',(0.0,1.0,0.0));
+#37=VECTOR('',#36,1.0);
+#38=LINE('',#35,#37);
+#39=CARTESIAN_POINT('',(2.0,0.0));
+#40=DIRECTION('',(0.0,1.0));
+#41=VECTOR('',#40,1.0);
+#42=LINE('',#39,#41);
+#43=DEFINITIONAL_REPRESENTATION('pcdef',(#42),#14);
+#44=PCURVE('pc',#13,#43);
+#45=SURFACE_CURVE('sc',#38,(#44),.PCURVE_S1.);
+#46=EDGE_CURVE('ec',#20,#21,#45,.T.);
+#47=CARTESIAN_POINT('',(2.0,1.0,0.0));
+#48=DIRECTION('',(-1.0,0.0,0.0));
+#49=VECTOR('',#48,2.0);
+#50=LINE('',#47,#49);
+#51=CARTESIAN_POINT('',(2.0,1.0));
+#52=DIRECTION('',(-1.0,0.0));
+#53=VECTOR('',#52,2.0);
+#54=LINE('',#51,#53);
+#55=DEFINITIONAL_REPRESENTATION('pcdef',(#54),#14);
+#56=PCURVE('pc',#13,#55);
+#57=SURFACE_CURVE('sc',#50,(#56),.PCURVE_S1.);
+#58=EDGE_CURVE('ec',#21,#22,#57,.T.);
+#59=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#60=DIRECTION('',(0.0,-1.0,0.0));
+#61=VECTOR('',#60,1.0);
+#62=LINE('',#59,#61);
+#63=CARTESIAN_POINT('',(0.0,1.0));
+#64=DIRECTION('',(0.0,-1.0));
+#65=VECTOR('',#64,1.0);
+#66=LINE('',#63,#65);
+#67=DEFINITIONAL_REPRESENTATION('pcdef',(#66),#14);
+#68=PCURVE('pc',#13,#67);
+#69=SURFACE_CURVE('sc',#62,(#68),.PCURVE_S1.);
+#70=EDGE_CURVE('ec',#22,#19,#69,.T.);
+#71=ORIENTED_EDGE('',$,$,#34,.T.);
+#72=ORIENTED_EDGE('',$,$,#46,.T.);
+#73=ORIENTED_EDGE('',$,$,#58,.T.);
+#74=ORIENTED_EDGE('',$,$,#70,.T.);
+#75=EDGE_LOOP('',(#71,#72,#73,#74));
+#76=FACE_OUTER_BOUND('',#75,.T.);
+#77=ADVANCED_FACE('',(#76),#13,.T.);
+#78=OPEN_SHELL('',(#77));
+#79=SHELL_BASED_SURFACE_MODEL('',(#78));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gs057','Gs057','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#79),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

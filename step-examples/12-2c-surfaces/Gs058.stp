@@ -1,55 +1,111 @@
 ISO-10303-21;
-/* Gs058 - SURFACE_PATCH transition_code, u_sense, v_sense parsed but ignored
-   Defect: BRL-CAD step-g SurfacePatch::Load reads u_transition,
-   v_transition (Transition_code enum: DISCONTINUOUS / CONTINUOUS /
-   CONT_SAME_GRADIENT / CONT_SAME_GRADIENT_SAME_CURVATURE) and the
-   u_sense / v_sense BOOLEANs, then SurfacePatch::LoadONBrep is a stub
-   that prints "not implemented" and returns false.  Even a producer that
-   carefully sets transition_code = .CONT_SAME_GRADIENT_SAME_CURVATURE.
-   to declare C2 continuity at the patch boundary loses that information
-   on the import side; the receiver cannot use the producer's continuity
-   guarantee, will re-evaluate continuity numerically, and may emit a
-   gap or kink at the boundary.  Distinct from Gs057 (which is the
-   wholesale silent drop of RECTANGULAR_COMPOSITE_SURFACE): this is the
-   specific loss of the per-patch transition / sense metadata.
-   Sources: BRL-CAD src/conv/step/step-g/SurfacePatch.cpp Load+LoadONBrep
-   stub. */
+/* Gs058: RECTANGULAR_COMPOSITE_SURFACE IS ADVANCED_FACE.face_geometry; SURFACE_PATCH(.CONT_SAME_GRADIENT_SAME_CURVATURE.,.CONT_SAME_GRADIENT_SAME_CURVATURE.,.T.,.F.) IS defect entity whose C2 continuity metadata is parsed but never applied; ignored transition_code IS wired into face topology; shape_null (strict reject) */
 HEADER;
-FILE_DESCRIPTION(
-  ('Gs058 - SURFACE_PATCH transition_code dropped by step-g'),
-  '2;1');
-FILE_NAME('Gs058.stp','2026-05-02T00:00:00',('cad-research-suite'),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('Gs058'),'2;1');
+FILE_NAME('Gs058.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* Two adjacent 4x4 Bezier patches with a producer-declared C2 boundary. */
-#10=CARTESIAN_POINT('a00',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('a01',(0.0,1.0,0.0));
-#12=CARTESIAN_POINT('a02',(0.0,2.0,0.0));
-#13=CARTESIAN_POINT('a03',(0.0,3.0,0.0));
-#20=CARTESIAN_POINT('a10',(1.0,0.0,0.0));
-#21=CARTESIAN_POINT('a11',(1.0,1.0,0.0));
-#22=CARTESIAN_POINT('a12',(1.0,2.0,0.0));
-#23=CARTESIAN_POINT('a13',(1.0,3.0,0.0));
-#30=CARTESIAN_POINT('a20',(2.0,0.0,0.0));
-#31=CARTESIAN_POINT('a21',(2.0,1.0,0.0));
-#32=CARTESIAN_POINT('a22',(2.0,2.0,0.0));
-#33=CARTESIAN_POINT('a23',(2.0,3.0,0.0));
-#40=CARTESIAN_POINT('a30',(3.0,0.0,0.0));
-#41=CARTESIAN_POINT('a31',(3.0,1.0,0.0));
-#42=CARTESIAN_POINT('a32',(3.0,2.0,0.0));
-#43=CARTESIAN_POINT('a33',(3.0,3.0,0.0));
-#100=BEZIER_SURFACE('patchA',3,3,
-  ((#10,#11,#12,#13),(#20,#21,#22,#23),(#30,#31,#32,#33),(#40,#41,#42,#43)),
-  .UNSPECIFIED.,.F.,.F.,.F.);
-/* Defect: SURFACE_PATCH carrying explicit
-   .CONT_SAME_GRADIENT_SAME_CURVATURE. continuity (C2 at boundary).
-   step-g parses u_transition + v_transition + u_sense + v_sense then
-   does nothing with them; the C2 hint is lost on import. */
-#101=SURFACE_PATCH(#100,
-  .CONT_SAME_GRADIENT_SAME_CURVATURE.,
-  .CONT_SAME_GRADIENT_SAME_CURVATURE.,
-  .T.,.F.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#3=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#4=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#5=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#6=CARTESIAN_POINT('',(2.0,1.0,0.0));
+#7=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(3.0,1.0,0.0));
+#9=B_SPLINE_SURFACE_WITH_KNOTS('gs058_p0',3,1,((#1,#2),(#3,#4),(#5,#6),(#7,#8)),.UNSPECIFIED.,.F.,.F.,.F.,(4,4),(2,2),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
+#10=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#12=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#13=CARTESIAN_POINT('',(2.0,1.0,0.0));
+#14=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#15=CARTESIAN_POINT('',(3.0,1.0,0.0));
+#16=CARTESIAN_POINT('',(4.0,0.0,0.0));
+#17=CARTESIAN_POINT('',(4.0,1.0,0.0));
+#18=B_SPLINE_SURFACE_WITH_KNOTS('gs058_p1',3,1,((#10,#11),(#12,#13),(#14,#15),(#16,#17)),.UNSPECIFIED.,.F.,.F.,.F.,(4,4),(2,2),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
+#19=SURFACE_PATCH(#9,.CONT_SAME_GRADIENT_SAME_CURVATURE.,.CONT_SAME_GRADIENT_SAME_CURVATURE.,.T.,.F.);
+#20=SURFACE_PATCH(#18,.CONT_SAME_GRADIENT_SAME_CURVATURE.,.CONT_SAME_GRADIENT_SAME_CURVATURE.,.T.,.F.);
+#21=RECTANGULAR_COMPOSITE_SURFACE('gs058_rcs',((#19,#20)));
+#22=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#23=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#24=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#25=CARTESIAN_POINT('',(2.0,1.0,0.0));
+#26=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#27=VERTEX_POINT('',#23);
+#28=VERTEX_POINT('',#24);
+#29=VERTEX_POINT('',#25);
+#30=VERTEX_POINT('',#26);
+#31=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#32=DIRECTION('',(1.0,0.0,0.0));
+#33=VECTOR('',#32,2.0);
+#34=LINE('',#31,#33);
+#35=CARTESIAN_POINT('',(0.0,0.0));
+#36=DIRECTION('',(1.0,0.0));
+#37=VECTOR('',#36,2.0);
+#38=LINE('',#35,#37);
+#39=DEFINITIONAL_REPRESENTATION('pcdef',(#38),#22);
+#40=PCURVE('pc',#21,#39);
+#41=SURFACE_CURVE('sc',#34,(#40),.PCURVE_S1.);
+#42=EDGE_CURVE('ec',#27,#28,#41,.T.);
+#43=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#44=DIRECTION('',(0.0,1.0,0.0));
+#45=VECTOR('',#44,1.0);
+#46=LINE('',#43,#45);
+#47=CARTESIAN_POINT('',(2.0,0.0));
+#48=DIRECTION('',(0.0,1.0));
+#49=VECTOR('',#48,1.0);
+#50=LINE('',#47,#49);
+#51=DEFINITIONAL_REPRESENTATION('pcdef',(#50),#22);
+#52=PCURVE('pc',#21,#51);
+#53=SURFACE_CURVE('sc',#46,(#52),.PCURVE_S1.);
+#54=EDGE_CURVE('ec',#28,#29,#53,.T.);
+#55=CARTESIAN_POINT('',(2.0,1.0,0.0));
+#56=DIRECTION('',(-1.0,0.0,0.0));
+#57=VECTOR('',#56,2.0);
+#58=LINE('',#55,#57);
+#59=CARTESIAN_POINT('',(2.0,1.0));
+#60=DIRECTION('',(-1.0,0.0));
+#61=VECTOR('',#60,2.0);
+#62=LINE('',#59,#61);
+#63=DEFINITIONAL_REPRESENTATION('pcdef',(#62),#22);
+#64=PCURVE('pc',#21,#63);
+#65=SURFACE_CURVE('sc',#58,(#64),.PCURVE_S1.);
+#66=EDGE_CURVE('ec',#29,#30,#65,.T.);
+#67=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#68=DIRECTION('',(0.0,-1.0,0.0));
+#69=VECTOR('',#68,1.0);
+#70=LINE('',#67,#69);
+#71=CARTESIAN_POINT('',(0.0,1.0));
+#72=DIRECTION('',(0.0,-1.0));
+#73=VECTOR('',#72,1.0);
+#74=LINE('',#71,#73);
+#75=DEFINITIONAL_REPRESENTATION('pcdef',(#74),#22);
+#76=PCURVE('pc',#21,#75);
+#77=SURFACE_CURVE('sc',#70,(#76),.PCURVE_S1.);
+#78=EDGE_CURVE('ec',#30,#27,#77,.T.);
+#79=ORIENTED_EDGE('',$,$,#42,.T.);
+#80=ORIENTED_EDGE('',$,$,#54,.T.);
+#81=ORIENTED_EDGE('',$,$,#66,.T.);
+#82=ORIENTED_EDGE('',$,$,#78,.T.);
+#83=EDGE_LOOP('',(#79,#80,#81,#82));
+#84=FACE_OUTER_BOUND('',#83,.T.);
+#85=ADVANCED_FACE('',(#84),#21,.T.);
+#86=OPEN_SHELL('',(#85));
+#87=SHELL_BASED_SURFACE_MODEL('',(#86));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gs058','Gs058','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#87),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
