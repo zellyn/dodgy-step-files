@@ -30532,7 +30532,7 @@
     "cross_oracle_note": null,
     "description": "ISO curve iteration skips null curves without reporting omission. When a U or V iso-curve evaluates to null (degenerate surface, missing parametric branch), BndLib_Add3dCurve::Add is bypassed. Result: boundary box incomplete, missing facets at degenerate edges.",
     "expected_kernel_behavior": "heal—detect null-ISO case; abort or report incomplete bound",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs144.stp",
     "id": "Gs144",
@@ -30553,7 +30553,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ComputeBoxes null-ISO silent skip"
   },
@@ -30565,7 +30565,7 @@
     "cross_oracle_note": null,
     "description": "ProjectDegenerated assumes singularities pre-initialized. If myNbDeg < 0 (stale state), lazy recomputation may be skipped. Without triggering ComputeSingularities, degenerate points project incorrectly away from true singularity loci (cone apex, sphere poles).",
     "expected_kernel_behavior": "heal—detect myNbDeg < 0, force recomputation before projecting",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs145.stp",
     "id": "Gs145",
@@ -30586,7 +30586,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ProjectDegenerated lazy singularity init"
   },
@@ -30598,7 +30598,7 @@
     "cross_oracle_note": null,
     "description": "Newton iteration evaluates surface normals each step. At singular points (sphere pole, cone apex, degenerate patch), D1 partial derivatives collapse to zero magnitude. Without check, division by zero occurs in subsequent normalization, returning invalid projection.",
     "expected_kernel_behavior": "heal—abort iteration if normal magnitude ≤ epsilon",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs146.stp",
     "id": "Gs146",
@@ -30619,7 +30619,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "SurfaceNewton zero-normal break"
   },
@@ -30631,7 +30631,7 @@
     "cross_oracle_note": null,
     "description": "Projects 3D point onto surface, returning parametric (u,v). If projection falls outside natural surface parameter range, code may silently clamp or return unclamped values without reporting out-of-bounds. Downstream operations use wrong u/v, breaking topology.",
     "expected_kernel_behavior": "heal—clamp to bounds with confidence flag; reject if distance-to-bound large",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs147.stp",
     "id": "Gs147",
@@ -30652,7 +30652,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ValueOfUV projection beyond bound"
   },
@@ -30664,7 +30664,7 @@
     "cross_oracle_note": null,
     "description": "Classifies edge points as degenerate by testing proximity to singularities. If singularities uninitialized (myNbDeg < 0) or tolerance threshold inconsistent with ComputeSingularities, gap metric misses true degenerate edges near apex, poles, or seams.",
     "expected_kernel_behavior": "heal—recompute singularities if stale; apply consistent tolerance filtering",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs148.stp",
     "id": "Gs148",
@@ -30685,7 +30685,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "DegeneratedValues singularity gap classification"
   },
@@ -30697,7 +30697,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface.IsUVBounded",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs149.stp",
     "id": "Gs149",
@@ -30718,7 +30718,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Surface.IsUVBounded"
   },

@@ -26981,8 +26981,8 @@ trimming or intersection operations assume richer surface.
 - **Model impact**: Incomplete bounding box; downstream operations using this box (e.g., interference checks) may miss overlaps
 - **Fixture path**: step-examples/12-2c-surfaces/Gs144.stp
 - **Fixture kind**: scaffold
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs145 — ProjectDegenerated lazy singularity init
 
 - **Category**: §12.2c surfaces (sub-class: singularity projection)
@@ -26993,8 +26993,8 @@ trimming or intersection operations assume richer surface.
 - **Model impact**: Degenerate edges misaligned with singularity; edges collapse to wrong u/v value
 - **Fixture path**: step-examples/12-2c-surfaces/Gs145.stp
 - **Fixture kind**: scaffold
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs146 — SurfaceNewton zero-normal break
 
 - **Category**: §12.2c surfaces (sub-class: iterative projection)
@@ -27005,8 +27005,8 @@ trimming or intersection operations assume richer surface.
 - **Model impact**: Projection returns nan/inf; downstream face evaluation fails
 - **Fixture path**: step-examples/12-2c-surfaces/Gs146.stp
 - **Fixture kind**: scaffold
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs147 — ValueOfUV projection beyond bound
 
 - **Category**: §12.2c surfaces (sub-class: uv mapping)
@@ -27017,8 +27017,8 @@ trimming or intersection operations assume richer surface.
 - **Model impact**: Incorrect parametric mapping; edges snap to wrong surface regions
 - **Fixture path**: step-examples/12-2c-surfaces/Gs147.stp
 - **Fixture kind**: scaffold
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs148 — DegeneratedValues singularity gap classification
 
 - **Category**: §12.2c surfaces (sub-class: degeneracy detection)
@@ -27030,14 +27030,14 @@ trimming or intersection operations assume richer surface.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs148.stp
 - **Fixture kind**: scaffold
 
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs149 — ShapeAnalysis_Surface.IsUVBounded
 **Defect**: Parameter gap classification on trimmed B-spline surfaces with inverted or missing bounds.
 **Geometry**: B_SPLINE_SURFACE_WITH_KNOTS (3x2, deg 2u/1v) trimmed to u:[0.5,2.5] v:[0.2,0.8].
 **Test**: Verify IsUVBounded correctly identifies bounded status despite inverted or malformed trim.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs150 — ShapeConstruct_Surface.AdjustByTransformation
 **Defect**: Placement inconsistency after coordinate system transformation on cylindrical surface.
 **Geometry**: CYLINDRICAL_SURFACE (radius 2.5) with offset AXIS2_PLACEMENT_3D at (1,2,3).

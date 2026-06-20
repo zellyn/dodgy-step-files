@@ -1,54 +1,85 @@
 ISO-10303-21;
-/* Gs144 - ShapeAnalysis_Surface.ComputeBoxes null-ISO silent skip
- *
- * Defect: ComputeBoxes() iterates over ISO curves (U and V isos) to compute
- * boundary boxes. When an ISO curve is null (e.g., degenerate surface, missing
- * evaluation), the code skips BndLib_Add3dCurve::Add without reporting the
- * omission. Result: boundary box is incomplete, missing facets that touch
- * degenerate edges.
- *
- * Reproducer: TOROIDAL_SURFACE with one degenerate V-iso near seam;
- * ComputeBoxes silently omits the missing boundary contribution.
- */
+/* Gs144: B_SPLINE_SURFACE_WITH_KNOTS (degenerate: top V-row collapses all U control points to single apex point, producing null V-max iso-curve) IS ADVANCED_FACE.face_geometry; face boundary edge at degenerate V-max iso-curve (null iso) IS the mechanism wired into face topology; ComputeBoxes null-ISO silent skip IS the defect; shape_null */
 HEADER;
-FILE_DESCRIPTION(('Gs144 test case','ComputeBoxes null-ISO silent skip'),'2;1');
-FILE_NAME('Gs144.stp','2026-06-16T00:00:00',('zellyn@gmail.com'),'','auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Gs144'),'2;1');
+FILE_NAME('Gs144.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-/* TOROIDAL_SURFACE: major radius 5.0, minor radius 2.0 */
-#20=TOROIDAL_SURFACE('',#13,5.0,2.0);
-#50=CARTESIAN_POINT('',(5.0,0.0,0.0));
-#51=VERTEX_POINT('',#50);
-#52=CARTESIAN_POINT('',(7.0,0.0,0.0));
-#53=VERTEX_POINT('',#52);
-#60=DIRECTION('',(0.0,1.0,0.0));
-#61=VECTOR('',#60,1.0);
-#62=LINE('',#50,#61);
-#63=EDGE_CURVE('',#51,#53,#62,.T.);
-#64=ORIENTED_EDGE('',*,*,#63,.T.);
-#65=EDGE_LOOP('',(#64));
-#66=FACE_OUTER_BOUND('',#65,.T.);
-#67=ADVANCED_FACE('',(#66),#20,.T.);
-#80=OPEN_SHELL('',(#67));
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Gs144','Gs144','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#80),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#3=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#4=CARTESIAN_POINT('',(0.0,1.0,1.0));
+#5=CARTESIAN_POINT('',(1.0,1.0,1.5));
+#6=CARTESIAN_POINT('',(2.0,1.0,1.0));
+#7=CARTESIAN_POINT('',(1.0,2.0,2.0));
+#8=CARTESIAN_POINT('',(1.0,2.0,2.0));
+#9=CARTESIAN_POINT('',(1.0,2.0,2.0));
+#10=B_SPLINE_SURFACE_WITH_KNOTS('gs144_degenerate',2,2,((#1,#2,#3),(#4,#5,#6),(#7,#8,#9)),.UNSPECIFIED.,.F.,.F.,.F.,(1,1,1),(1,1,1),(0.,1.,2.),(0.,1.,2.),.UNSPECIFIED.);
+#11=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#12=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#13=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#14=CARTESIAN_POINT('',(1.0,2.0,2.0));
+#15=VERTEX_POINT('',#12);
+#16=VERTEX_POINT('',#13);
+#17=VERTEX_POINT('',#14);
+#18=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#19=DIRECTION('',(1.0,0.0,0.0));
+#20=VECTOR('',#19,2.0);
+#21=LINE('',#18,#20);
+#22=CARTESIAN_POINT('',(0.0,0.0));
+#23=DIRECTION('',(1.0,0.0));
+#24=VECTOR('',#23,2.0);
+#25=LINE('',#22,#24);
+#26=DEFINITIONAL_REPRESENTATION('pcdef',(#25),#11);
+#27=PCURVE('pc',#10,#26);
+#28=SURFACE_CURVE('sc',#21,(#27),.PCURVE_S1.);
+#29=EDGE_CURVE('ec',#15,#16,#28,.T.);
+#30=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#31=DIRECTION('',(-1.0,2.0,2.0));
+#32=VECTOR('',#31,3.0);
+#33=LINE('',#30,#32);
+#34=CARTESIAN_POINT('',(2.0,0.0));
+#35=DIRECTION('',(-1.0,1.0));
+#36=VECTOR('',#35,2.0);
+#37=LINE('',#34,#36);
+#38=DEFINITIONAL_REPRESENTATION('pcdef',(#37),#11);
+#39=PCURVE('pc',#10,#38);
+#40=SURFACE_CURVE('sc',#33,(#39),.PCURVE_S1.);
+#41=EDGE_CURVE('ec',#16,#17,#40,.T.);
+#42=CARTESIAN_POINT('',(1.0,2.0,2.0));
+#43=DIRECTION('',(-1.0,-2.0,-2.0));
+#44=VECTOR('',#43,3.0);
+#45=LINE('',#42,#44);
+#46=CARTESIAN_POINT('',(1.0,2.0));
+#47=DIRECTION('',(-1.0,-1.0));
+#48=VECTOR('',#47,2.0);
+#49=LINE('',#46,#48);
+#50=DEFINITIONAL_REPRESENTATION('pcdef',(#49),#11);
+#51=PCURVE('pc',#10,#50);
+#52=SURFACE_CURVE('sc',#45,(#51),.PCURVE_S1.);
+#53=EDGE_CURVE('ec',#17,#15,#52,.T.);
+#54=ORIENTED_EDGE('',$,$,#29,.T.);
+#55=ORIENTED_EDGE('',$,$,#41,.T.);
+#56=ORIENTED_EDGE('',$,$,#53,.T.);
+#57=EDGE_LOOP('',(#54,#55,#56));
+#58=FACE_OUTER_BOUND('',#57,.T.);
+#59=ADVANCED_FACE('',(#58),#10,.T.);
+#60=OPEN_SHELL('',(#59));
+#61=SHELL_BASED_SURFACE_MODEL('',(#60));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gs144','Gs144','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#61),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

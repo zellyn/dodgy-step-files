@@ -1,66 +1,98 @@
 ISO-10303-21;
-/* Gs149 - ShapeAnalysis_Surface.IsUVBounded parameter gap classification
- *
- * Defect: IsUVBounded() determines if a surface is bounded in parametric space.
- * For trimmed surfaces, the bounds extraction may fail if trim limits are
- * inverted or if the base surface lacks proper domain definition, leading to
- * misclassified bounded/unbounded status.
- *
- * Reproducer: B-SPLINE_SURFACE with explicit knot vector, trimmed to inverted
- * bounds (u_max < u_min); verify IsUVBounded handles inversion correctly.
- */
+/* Gs149: B_SPLINE_SURFACE_WITH_KNOTS (deg 2u/1v, domain [0,2.5]x[0,1]) wrapped in RECTANGULAR_TRIMMED_SURFACE with inverted U-bounds (u1=2.5, u2=0.5 — u1>u2) IS ADVANCED_FACE.face_geometry; face boundary edge pcurve at inverted trim boundary IS the mechanism wired into face topology; IsUVBounded inverted-bound guard absence IS the defect; shape_null */
 HEADER;
-FILE_DESCRIPTION(('Gs149 test case','IsUVBounded parameter gap classification'),'2;1');
-FILE_NAME('Gs149.stp','2026-06-16T00:00:00',('zellyn@gmail.com'),'','auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Gs149'),'2;1');
+FILE_NAME('Gs149.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-/* B-SPLINE_SURFACE with 3x2 control points, degree 2 in u, 1 in v */
-#20=B_SPLINE_SURFACE_WITH_KNOTS('',3,2,2,1,.F.,.F.,.F.,
-  (1,2,3,4),(1,2,3),
-  (#30,#31,#32,#33,#34,#35),
-  (1.0,1.0,1.0,1.0,1.0,1.0),
-  (1.0,1.0,1.0),.UNSPECIFIED.);
-/* Control points for ruled surface */
-#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31=CARTESIAN_POINT('',(5.0,0.0,1.0));
-#32=CARTESIAN_POINT('',(10.0,0.0,0.0));
-#33=CARTESIAN_POINT('',(0.0,5.0,0.5));
-#34=CARTESIAN_POINT('',(5.0,5.0,2.0));
-#35=CARTESIAN_POINT('',(10.0,5.0,0.5));
-/* RECTANGULAR_TRIMMED_SURFACE with normal bounds */
-#40=RECTANGULAR_TRIMMED_SURFACE('',#20,0.5,2.5,0.2,0.8,.T.,.T.);
-#50=CARTESIAN_POINT('',(2.5,1.5,0.75));
-#51=VERTEX_POINT('',#50);
-#52=CARTESIAN_POINT('',(7.5,3.5,0.75));
-#53=VERTEX_POINT('',#52);
-#60=DIRECTION('',(1.0,0.0,0.0));
-#61=VECTOR('',#60,5.0);
-#62=LINE('',#50,#61);
-#63=EDGE_CURVE('',#51,#53,#62,.T.);
-#64=ORIENTED_EDGE('',*,*,#63,.T.);
-#65=EDGE_LOOP('',(#64));
-#66=FACE_OUTER_BOUND('',#65,.T.);
-#67=ADVANCED_FACE('',(#66),#40,.T.);
-#80=OPEN_SHELL('',(#67));
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Gs149','Gs149','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#80),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(1.25,0.0,0.5));
+#3=CARTESIAN_POINT('',(2.5,0.0,0.0));
+#4=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#5=CARTESIAN_POINT('',(1.25,1.0,0.5));
+#6=CARTESIAN_POINT('',(2.5,1.0,0.0));
+#7=B_SPLINE_SURFACE_WITH_KNOTS('gs149_bspline',2,1,((#1,#2,#3),(#4,#5,#6)),.UNSPECIFIED.,.F.,.F.,.F.,(1,1,1),(1,1),(0.,1.25,2.5),(0.,1.),.UNSPECIFIED.);
+#8=RECTANGULAR_TRIMMED_SURFACE('gs149_rts',#7,2.5,0.5,0.2,0.8,.T.,.T.);
+#9=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#10=CARTESIAN_POINT('',(0.0,0.2,0.0));
+#11=CARTESIAN_POINT('',(2.5,0.2,0.0));
+#12=CARTESIAN_POINT('',(2.5,0.8,0.0));
+#13=CARTESIAN_POINT('',(0.0,0.8,0.0));
+#14=VERTEX_POINT('',#10);
+#15=VERTEX_POINT('',#11);
+#16=VERTEX_POINT('',#12);
+#17=VERTEX_POINT('',#13);
+#18=CARTESIAN_POINT('',(0.0,0.2,0.0));
+#19=DIRECTION('',(1.0,0.0,0.0));
+#20=VECTOR('',#19,2.5);
+#21=LINE('',#18,#20);
+#22=CARTESIAN_POINT('',(2.5,0.2));
+#23=DIRECTION('',(-1.0,0.0));
+#24=VECTOR('',#23,2.0);
+#25=LINE('',#22,#24);
+#26=DEFINITIONAL_REPRESENTATION('pcdef',(#25),#9);
+#27=PCURVE('pc',#8,#26);
+#28=SURFACE_CURVE('sc',#21,(#27),.PCURVE_S1.);
+#29=EDGE_CURVE('ec',#14,#15,#28,.T.);
+#30=CARTESIAN_POINT('',(2.5,0.2,0.0));
+#31=DIRECTION('',(0.0,1.0,0.0));
+#32=VECTOR('',#31,0.6);
+#33=LINE('',#30,#32);
+#34=CARTESIAN_POINT('',(2.5,0.2));
+#35=DIRECTION('',(0.0,1.0));
+#36=VECTOR('',#35,0.6);
+#37=LINE('',#34,#36);
+#38=DEFINITIONAL_REPRESENTATION('pcdef',(#37),#9);
+#39=PCURVE('pc',#8,#38);
+#40=SURFACE_CURVE('sc',#33,(#39),.PCURVE_S1.);
+#41=EDGE_CURVE('ec',#15,#16,#40,.T.);
+#42=CARTESIAN_POINT('',(2.5,0.8,0.0));
+#43=DIRECTION('',(-1.0,0.0,0.0));
+#44=VECTOR('',#43,2.5);
+#45=LINE('',#42,#44);
+#46=CARTESIAN_POINT('',(2.5,0.8));
+#47=DIRECTION('',(-1.0,0.0));
+#48=VECTOR('',#47,2.0);
+#49=LINE('',#46,#48);
+#50=DEFINITIONAL_REPRESENTATION('pcdef',(#49),#9);
+#51=PCURVE('pc',#8,#50);
+#52=SURFACE_CURVE('sc',#45,(#51),.PCURVE_S1.);
+#53=EDGE_CURVE('ec',#16,#17,#52,.T.);
+#54=CARTESIAN_POINT('',(0.0,0.8,0.0));
+#55=DIRECTION('',(0.0,-1.0,0.0));
+#56=VECTOR('',#55,0.6);
+#57=LINE('',#54,#56);
+#58=CARTESIAN_POINT('',(0.5,0.8));
+#59=DIRECTION('',(0.0,-1.0));
+#60=VECTOR('',#59,0.6);
+#61=LINE('',#58,#60);
+#62=DEFINITIONAL_REPRESENTATION('pcdef',(#61),#9);
+#63=PCURVE('pc',#8,#62);
+#64=SURFACE_CURVE('sc',#57,(#63),.PCURVE_S1.);
+#65=EDGE_CURVE('ec',#17,#14,#64,.T.);
+#66=ORIENTED_EDGE('',$,$,#29,.T.);
+#67=ORIENTED_EDGE('',$,$,#41,.T.);
+#68=ORIENTED_EDGE('',$,$,#53,.T.);
+#69=ORIENTED_EDGE('',$,$,#65,.T.);
+#70=EDGE_LOOP('',(#66,#67,#68,#69));
+#71=FACE_OUTER_BOUND('',#70,.T.);
+#72=ADVANCED_FACE('',(#71),#8,.T.);
+#73=OPEN_SHELL('',(#72));
+#74=SHELL_BASED_SURFACE_MODEL('',(#73));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gs149','Gs149','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#74),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
