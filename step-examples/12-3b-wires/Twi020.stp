@@ -1,59 +1,68 @@
 ISO-10303-21;
-/* Twi020 - Missing seam edge on closed (periodic) surface
- * Defect: An ADVANCED_FACE on a CYLINDRICAL_SURFACE is bounded by a wire that
- * is closed in 3D but open in UV - the explicit seam edge along U=0 (or U=2pi)
- * is missing. Receiver sees a wire that does not close in the parameter
- * rectangle. Heal by ShapeFix_Face::FixMissingSeam - synthesize a new edge
- * along U=0 to seam-close the wire. Common from ProSTEP TR9 r0501-ug.stp,
- * CATIA via near-closed BSpline, SolidWorks (without Split Periodic Faces). */
+/* Twi020: OPEN_SHELL with one ADVANCED_FACE on a CYLINDRICAL_SURFACE (radius 1, height 2); FACE_OUTER_BOUND references an EDGE_LOOP with two semi-circular arcs at z=0 and z=2 but NO seam EDGE_CURVE along the U=0 (x=1,y=0) isoline; missing seam edge IS the mechanism — wire closes in 3D but is open in UV; defect EDGE_LOOP IS wired into FACE_OUTER_BOUND, ADVANCED_FACE, OPEN_SHELL; receiver must synthesise a seam edge along U=0 or reject as malformed */
 HEADER;
-FILE_DESCRIPTION(('Twi020 test case','Missing seam edge on closed surface'),'2;1');
-FILE_NAME('Twi020.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Twi020'),'2;1');
+FILE_NAME('Twi020.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#20=CYLINDRICAL_SURFACE('',#13,10.0);
-/* Bottom and top rim circles */
-#30=CARTESIAN_POINT('',(10.0,0.0,0.0));
-#31=VERTEX_POINT('',#30);
-#32=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#33=CIRCLE('',#32,10.0);
-#34=EDGE_CURVE('',#31,#31,#33,.T.);
-#40=CARTESIAN_POINT('',(0.0,0.0,5.0));
-#41=AXIS2_PLACEMENT_3D('',#40,#11,#12);
-#42=CIRCLE('',#41,10.0);
-#43=CARTESIAN_POINT('',(10.0,0.0,5.0));
-#44=VERTEX_POINT('',#43);
-#45=EDGE_CURVE('',#44,#44,#42,.T.);
-#50=ORIENTED_EDGE('',*,*,#34,.T.);
-#51=ORIENTED_EDGE('',*,*,#45,.F.);
-/* Defect: the outer wire is closed in 3D (bottom rim + top rim) but in UV the
- * face is U: 0..2pi, V: 0..5 - the seam edge from (10,0,0) up to (10,0,5)
- * along U=0 is MISSING. The wire does not close as a parameter rectangle. */
-#60=EDGE_LOOP('',(#50,#51));
-#61=FACE_OUTER_BOUND('',#60,.T.);
-#62=ADVANCED_FACE('',(#61),#20,.T.);
-/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Twi020','Twi020','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9020=OPEN_SHELL('wrap_shell',(#62));
-#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9020));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CYLINDRICAL_SURFACE('',#4,1.0);
+#6=CARTESIAN_POINT('',(1.0,0.0,2.0));
+#7=VERTEX_POINT('',#6);
+#8=CARTESIAN_POINT('',(-1.0,0.0,2.0));
+#9=VERTEX_POINT('',#8);
+#10=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#11=VERTEX_POINT('',#10);
+#12=CARTESIAN_POINT('',(-1.0,0.0,0.0));
+#13=VERTEX_POINT('',#12);
+#14=DIRECTION('',(0.0,0.0,1.0));
+#15=VECTOR('',#14,2.0);
+#16=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#17=LINE('',#16,#15);
+#18=EDGE_CURVE('',#11,#7,#17,.T.);
+#19=ORIENTED_EDGE('',$,$,#18,.T.);
+#20=DIRECTION('',(0.0,0.0,1.0));
+#21=VECTOR('',#20,2.0);
+#22=CARTESIAN_POINT('',(-1.0,0.0,0.0));
+#23=LINE('',#22,#21);
+#24=EDGE_CURVE('',#13,#9,#23,.T.);
+#25=ORIENTED_EDGE('',$,$,#24,.F.);
+#26=CARTESIAN_POINT('',(0.0,0.0,2.0));
+#27=DIRECTION('',(0.0,0.0,1.0));
+#28=DIRECTION('',(1.0,0.0,0.0));
+#29=AXIS2_PLACEMENT_3D('',#26,#27,#28);
+#30=CIRCLE('',#29,1.0);
+#31=EDGE_CURVE('',#7,#9,#30,.T.);
+#32=ORIENTED_EDGE('',*,*,#31,.T.);
+#33=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#34=DIRECTION('',(0.0,0.0,1.0));
+#35=DIRECTION('',(1.0,0.0,0.0));
+#36=AXIS2_PLACEMENT_3D('',#33,#34,#35);
+#37=CIRCLE('',#36,1.0);
+#38=EDGE_CURVE('',#11,#13,#37,.T.);
+#39=ORIENTED_EDGE('',*,*,#38,.F.);
+#40=EDGE_LOOP('',(#39,#19,#32,#25));
+#41=FACE_OUTER_BOUND('',#40,.T.);
+#42=ADVANCED_FACE('',(#41),#5,.T.);
+#43=OPEN_SHELL('',(#42));
+#44=SHELL_BASED_SURFACE_MODEL('',(#43));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi020','Twi020','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#44),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
