@@ -1,69 +1,62 @@
 ISO-10303-21;
-/* Twi121 - ShapeFix_Wire.FixSeam closed-surface seam reset
- * Defect: wire on cylindrical surface where seam-edge tolerance gets reset to 0.0
- * unconditionally; FixSeam erases user-set tolerance. Seam edge on cylindrical surface
- * at u-parameter boundary (seam) with explicit tolerance set; FixSeam clears it to 0.
- * Creates gap tolerance mismatch downstream in CheckConnected or healing chain.
- */
+/* Twi121: GEOMETRIC_CURVE_SET containing EDGE_LOOP on CYLINDRICAL_SURFACE (radius 1); 2 SURFACE_CURVE edges: e1 IS seam edge at U=0/2π boundary labelled 'SEAM_EDGE_tol0p001'; pcurve goes from U=0,V=0 to U=0,V=1 (same U at seam); e2 connects V=1 back to V=0 via UV from (0,1)→(2π,1)→... not used; seam edge user tolerance 0.001 IS reset to 0.0 by FixSeam unconditionally; downstream CheckConnected tolerance mismatch detection fails IS defect; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; all EDGE_CURVEs ARE wired into EDGE_LOOP; never orphaned */
 HEADER;
-FILE_DESCRIPTION(('Twi121 test case','ShapeFix_Wire.FixSeam closed-surface seam reset'),'2;1');
-FILE_NAME('Twi121.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Twi121'),'2;1');
+FILE_NAME('Twi121.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-/* Cylindrical surface: axis Z, radius 1.0, u=theta (0..2*pi), v=z */
-#20=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#21=CYLINDRICAL_SURFACE('',#20,1.0);
-/* Vertices at seam (u=0 and u=2*pi are same point on cylinder) */
-#30=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#31=VERTEX_POINT('',#30);
-#32=CARTESIAN_POINT('',(1.0,0.0,1.0));
-#33=VERTEX_POINT('',#32);
-#34=CARTESIAN_POINT('',(0.99999,0.0628,1.0));
-#35=VERTEX_POINT('',#34);
-#36=CARTESIAN_POINT('',(0.99999,0.0628,0.0));
-#37=VERTEX_POINT('',#36);
-/* Curve 1: seam line on cylinder from (1,0,0) to (1,0,1) - u=0 boundary */
-#50=LINE('',#30,#11);
-/* Curve 2: arc at v=1, u from 0 to pi/50 (small arc near seam) */
-#60=CIRCLE('',#20,1.0);
-/* Curve 3: line at u=pi/50, v from 1 to 0 */
-#61=LINE('',#35,#11);
-/* Curve 4: arc at v=0 closing back - u from pi/50 to 0 */
-#62=CIRCLE('',#20,1.0);
-/* Edges: edge 1 is the seam with explicit tolerance */
-#70=EDGE_CURVE('',#31,#33,#50,.T.);
-#71=EDGE_CURVE('',#33,#35,#60,.T.);
-#72=EDGE_CURVE('',#35,#37,#61,.T.);
-#73=EDGE_CURVE('',#37,#31,#62,.T.);
-/* Seam edge (edge 0) has tolerance 0.001 - FixSeam will reset it to 0.0 */
-#80=ORIENTED_EDGE('',*,*,#70,.T.);
-#81=ORIENTED_EDGE('',*,*,#71,.T.);
-#82=ORIENTED_EDGE('',*,*,#72,.T.);
-#83=ORIENTED_EDGE('',*,*,#73,.T.);
-#90=EDGE_LOOP('',(#80,#81,#82,#83));
-#91=FACE_OUTER_BOUND('',#90,.T.);
-#92=ADVANCED_FACE('',(#91),#21,.T.);
-/* Product chain */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Twi121','Twi121','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#92));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CYLINDRICAL_SURFACE('',#4,1.0);
+#6=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#7=VERTEX_POINT('',#6);
+#8=CARTESIAN_POINT('',(1.0,0.0,1.0));
+#9=VERTEX_POINT('',#8);
+#10=CARTESIAN_POINT('',(0.0,0.0));
+#11=DIRECTION('',(0.0,1.0));
+#12=VECTOR('',#11,1.0);
+#13=LINE('SEAM_EDGE_tol0p001',#10,#12);
+#14=DEFINITIONAL_REPRESENTATION('',(#13),#?);
+#15=PCURVE('',#5,#14);
+#16=CARTESIAN_POINT('',(0.0,1.0));
+#17=DIRECTION('',(1.0,0.0));
+#18=VECTOR('',#17,6.28318530718);
+#19=LINE('',#16,#18);
+#20=DEFINITIONAL_REPRESENTATION('',(#19),#?);
+#21=PCURVE('',#5,#20);
+#22=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#23=DIRECTION('',(0.0,0.0,1.0));
+#24=VECTOR('',#23,1.0);
+#25=LINE('',#22,#24);
+#26=SURFACE_CURVE('',#25,(#15),.PCURVE_S1.);
+#27=EDGE_CURVE('',#7,#9,#26,.T.);
+#28=ORIENTED_EDGE('',*,*,#27,.T.);
+#29=CARTESIAN_POINT('',(0.0,0.0,1.0));
+#30=DIRECTION('',(0.0,0.0,1.0));
+#31=DIRECTION('',(1.0,0.0,0.0));
+#32=AXIS2_PLACEMENT_3D('',#29,#30,#31);
+#33=CIRCLE('',#32,1.0);
+#34=SURFACE_CURVE('',#33,(#21),.PCURVE_S1.);
+#35=EDGE_CURVE('',#9,#7,#34,.T.);
+#36=ORIENTED_EDGE('',*,*,#35,.T.);
+#37=EDGE_LOOP('',(#28,#36));
+#38=GEOMETRIC_CURVE_SET('',(#37));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi121','Twi121','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#38),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
