@@ -1,50 +1,34 @@
 ISO-10303-21;
-/* Tsh053 - Merging coplanar adjacent faces fails with construction error on empty edge loop
- * Defect: A face with a FACE_OUTER_BOUND whose EDGE_LOOP is empty.
- * The merge algorithm hits an internal precondition requiring >=1 edge per loop
- * and raises a construction error, aborting the entire merge operation.
- * Byte assertions: matches EDGE_LOOP('',()) pattern, count ADVANCED_FACE == 1 */
+/* Tsh053: OPEN_SHELL with one ADVANCED_FACE on a PLANE (z=0, normal +Z); FACE_OUTER_BOUND references an EDGE_LOOP with empty edge list EDGE_LOOP('',()); empty EDGE_LOOP IS wired into face boundary topology; merge step must validate input before running; construction error raised when merge walker finds zero edges to iterate */
 HEADER;
-FILE_DESCRIPTION(('Tsh053 - empty EDGE_LOOP triggers construction error during face merge','2;1'),'2;1');
-FILE_NAME('Tsh053.stp','2026-06-16T00:00:00',(''),(''),'wave-regen','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Tsh053'),'2;1');
+FILE_NAME('Tsh053.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-
-/* Plane surface */
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#14=PLANE('',#13);
-
-/* Empty EDGE_LOOP — this is the defect trigger */
-#20=EDGE_LOOP('',());
-
-/* FACE_OUTER_BOUND with empty loop */
-#21=FACE_OUTER_BOUND('',#20,.T.);
-
-/* ADVANCED_FACE with empty outer bound */
-#22=ADVANCED_FACE('empty_loop_face',(#21),#14,.T.);
-
-#500=OPEN_SHELL('shell_with_empty_loop',(#22));
-
-/* Mandatory PRODUCT chain */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Tsh053','Tsh053','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#500));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=EDGE_LOOP('',());
+#7=FACE_OUTER_BOUND('',#6,.T.);
+#8=ADVANCED_FACE('',(#7),#5,.T.);
+#9=OPEN_SHELL('',(#8));
+#10=SHELL_BASED_SURFACE_MODEL('',(#9));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Tsh053','Tsh053','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#10),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
