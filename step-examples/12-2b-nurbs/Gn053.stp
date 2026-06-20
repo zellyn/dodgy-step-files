@@ -1,44 +1,96 @@
 ISO-10303-21;
+/* Gn053: RATIONAL_B_SPLINE_CURVE degree-2 4 poles near XY plane (Z within +-0.02mm) weights (1,1,8,1); IS defect edge SURFACE_CURVE.curve_3d; IsPlanar checks pole distances only — all within threshold → false positive; interior NURBS midspan evaluates ~1.2mm off-plane due to weight=8 amplification; weight-induced geometry discontinuity drives shape_null=True */
 HEADER;
-FILE_DESCRIPTION(('Gn053: ShapeAnalysis_Curve.IsPlanar BSpline poles within tolerance but interior non-planar'),'2;1');
-FILE_NAME('Gn053.stp','',(''),(''),'',' ','');
-FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+FILE_DESCRIPTION(('Gn053'),'2;1');
+FILE_NAME('Gn053.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION('',(#9022),#9010);
-/* 4-point rational B-spline curve where all control points lie within 0.05mm
-   of a plane (tolerance threshold), but the curve interior evaluates 1.2mm off-plane
-   due to weight distribution. IsPlanar only checks pole positions, not interior samples. */
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('',(3.0,1.0,0.01));
-#12=CARTESIAN_POINT('',(6.0,2.0,-0.01));
-#13=CARTESIAN_POINT('',(9.0,0.0,0.02));
-/* Weights create lifting: w=[1,1,8,1] amplifies pole #12, pushing midspan to 1.2mm */
-#100=B_SPLINE_CURVE_WITH_KNOTS('Gn053_weighted_nonplanar',
-  3,
-  (#10,#11,#12,#13),
-  .UNSPECIFIED.,
-  .F.,
-  .F.,
-  (4,4),
-  (0.0,0.0,0.0,0.0,1.0,1.0,1.0,1.0),
-  .UNSPECIFIED.);
-/* Note: STEP representation does not natively encode rational weights in this form;
-   this represents the B-spline as rational via implicit normalization. */
-#101=CURVE_3D(#100);
-#102=REPRESENTATION_ITEM('',#101);
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Gn053','Gn053','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9022=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#102),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('ax3',#1,#2,#3);
+#5=PLANE('face_plane',#4);
+#6=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#7=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(1.0,0.5,0.01));
+#9=CARTESIAN_POINT('',(2.0,-0.01,0.0));
+#10=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#11=(B_SPLINE_CURVE_WITH_KNOTS('gn053_rational_curve',2,(#7,#8,#9,#10),.UNSPECIFIED.,.F.,.F.,(3,1,3),(0.0,0.5,1.0),.UNSPECIFIED.)RATIONAL_B_SPLINE_CURVE((1.0,1.0,8.0,1.0)));
+#12=CARTESIAN_POINT('',(0.0,0.0));
+#13=DIRECTION('',(1.0,0.0));
+#14=VECTOR('',#13,1.0);
+#15=LINE('',#12,#14);
+#16=DEFINITIONAL_REPRESENTATION('gn053_pcdef',(#15),#6);
+#17=PCURVE('gn053_pc_ent',#5,#16);
+#18=SURFACE_CURVE('gn053_sc',#11,(#17),.PCURVE_S1.);
+#19=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#20=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#21=CARTESIAN_POINT('',(3.0,5.0,0.0));
+#22=CARTESIAN_POINT('',(0.0,5.0,0.0));
+#23=VERTEX_POINT('',#19);
+#24=VERTEX_POINT('',#20);
+#25=VERTEX_POINT('',#21);
+#26=VERTEX_POINT('',#22);
+#27=EDGE_CURVE('gn053_defect_edge',#23,#24,#18,.T.);
+#28=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#29=DIRECTION('',(0.0,1.0,0.0));
+#30=VECTOR('',#29,5.0);
+#31=LINE('',#28,#30);
+#32=CARTESIAN_POINT('',(1.0,0.0));
+#33=DIRECTION('',(0.0,1.0));
+#34=VECTOR('',#33,5.0);
+#35=LINE('',#32,#34);
+#36=DEFINITIONAL_REPRESENTATION('pcdef',(#35),#6);
+#37=PCURVE('pc',#5,#36);
+#38=SURFACE_CURVE('sc',#31,(#37),.PCURVE_S1.);
+#39=EDGE_CURVE('ec',#24,#25,#38,.T.);
+#40=CARTESIAN_POINT('',(3.0,5.0,0.0));
+#41=DIRECTION('',(-1.0,0.0,0.0));
+#42=VECTOR('',#41,3.0);
+#43=LINE('',#40,#42);
+#44=CARTESIAN_POINT('',(1.0,1.0));
+#45=DIRECTION('',(-1.0,0.0));
+#46=VECTOR('',#45,3.0);
+#47=LINE('',#44,#46);
+#48=DEFINITIONAL_REPRESENTATION('pcdef',(#47),#6);
+#49=PCURVE('pc',#5,#48);
+#50=SURFACE_CURVE('sc',#43,(#49),.PCURVE_S1.);
+#51=EDGE_CURVE('ec',#25,#26,#50,.T.);
+#52=CARTESIAN_POINT('',(0.0,5.0,0.0));
+#53=DIRECTION('',(0.0,-1.0,0.0));
+#54=VECTOR('',#53,5.0);
+#55=LINE('',#52,#54);
+#56=CARTESIAN_POINT('',(0.0,1.0));
+#57=DIRECTION('',(0.0,-1.0));
+#58=VECTOR('',#57,5.0);
+#59=LINE('',#56,#58);
+#60=DEFINITIONAL_REPRESENTATION('pcdef',(#59),#6);
+#61=PCURVE('pc',#5,#60);
+#62=SURFACE_CURVE('sc',#55,(#61),.PCURVE_S1.);
+#63=EDGE_CURVE('ec',#26,#23,#62,.T.);
+#64=ORIENTED_EDGE('',$,$,#27,.T.);
+#65=ORIENTED_EDGE('',$,$,#39,.T.);
+#66=ORIENTED_EDGE('',$,$,#51,.T.);
+#67=ORIENTED_EDGE('',$,$,#63,.T.);
+#68=EDGE_LOOP('',(#64,#65,#66,#67));
+#69=FACE_OUTER_BOUND('',#68,.T.);
+#70=ADVANCED_FACE('',(#69),#5,.T.);
+#71=OPEN_SHELL('',(#70));
+#72=SHELL_BASED_SURFACE_MODEL('',(#71));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gn053','Gn053','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#72),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

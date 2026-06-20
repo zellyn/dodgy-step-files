@@ -21439,12 +21439,12 @@ B-spline curve with one parameter (U_MAX) set to infinity sentinel value (`1.797
 
 Valid B-spline surface (degree 2×2, 3×4 control net) fed to SetUSplitValues with empty split parameter list. Code initializes without diagnostic message and produces no surface splits. Lacks error signaling for degenerate input.
 - **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn051 — ShapeAnalysis_Curve.GetSamplePoints offset/trimmed recursion depth
 
 Curve nesting: `OFFSET_CURVE(TRIMMED_CURVE(B_SPLINE))` with 0.5mm offset on trimmed domain [0.25, 0.75]. GetSamplePoints recursion selects incorrect sample density when unwrapping nested derivative curves; interior evaluation may fail.
 - **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn052 — ShapeUpgrade_ConvertSurfaceToBezierBasis knot-multiplicity C0 boundary
 
 B-spline surface (degree 3×3) with interior V-knot at 0.5 where multiplicity equals degree (4,3,4 pattern), creating C0 continuity. Converter re-inserts at this boundary despite already full multiplicity; spurious subdivisions follow.
@@ -21454,12 +21454,12 @@ B-spline surface (degree 3×3) with interior V-knot at 0.5 where multiplicity eq
 
 4-point rational B-spline with weights [1,1,8,1] and poles within ±0.02mm of XY plane. Curve interior (midspan) evaluates 1.2mm off-plane due to weight amplification; IsPlanar checks only control-point distance to plane, missing interior deviation.
 - **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn054 — ShapeAnalysis_Curve.IsPlanar BSpline dispatch false-negative
 
 B-spline degree-3 curve with poles clustered in XY plane but high-curvature interior sections bow out to Z=5. IsPlanar samples only poles; threshold check fails when interior geometry dominates. Validates2 passes; tier-3 lint should flag.
 - **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=reject`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=reject`
 ### Gn055 — ShapeUpgrade_SplitSurface knot-spec mismatch on QUASI_UNIFORM
 
 Degree-2 B-spline surface marked `.QUASI_UNIFORM_KNOTS.` but knot vectors are piecewise (0.0, 0.25, 0.75, 1.0) and (0.0, 0.4, 0.6, 1.0). Init dispatch recognizes form tag and skips careful split logic, causing incorrect patch extraction.
