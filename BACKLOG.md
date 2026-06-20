@@ -56,8 +56,10 @@ than committed. New strategy: Sonnet-generates instead of Haiku-generates.
 - Gp101: CheckCurve3dWithPCurve sample-skip near-endpoint — signal(11)
 - Gp102: FixAddPCurve toroidal projection — signal(11)
 - Gp104: FixSameParameter offset-curve-3d — signal(11)
+- Gp112: FixAddPCurve scaled-surface — signal(11)
+- Gp113: CheckOverlapping different-curves-same-geometry — signal(11)
 - Reason: signal(11) requires engineering a deliberate OCC SIGSEGV; Wave-B Sonnet pipeline doesn't have a template for this yet. Gp001 is the existing reference but is a hand-authored .stp without a fixture_source.py. Need to (a) reverse-engineer Gp001's crash trigger or (b) propose a new builder API for signal-11 fixtures.
-- Logged 2026-06-19 from batch 13/14 archetype-aware scan.
+- Logged 2026-06-19 from batch 13/14/15 archetype-aware scan.
 
 **Deferred (builder API gaps — mechanism can't be encoded in STEP-as-supported):**
 - Gp105: CheckOverlapping zero-tolerance-overlap — UNCERTAINTY=0.0 requires injection into the geom_ctx that wraps the shape representation; current builder's add_product_chain hardcodes UNCERTAINTY=1e-7 in the geom_ctx, so a fresh zero-tolerance UNCERTAINTY entity ends up as an orphan and OCCT never sees it. Need builder hook to override geom_ctx UNCERTAINTY.
