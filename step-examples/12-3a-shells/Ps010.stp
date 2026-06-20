@@ -1,63 +1,62 @@
 ISO-10303-21;
-/* Ps010 - ORIENTED_EDGE.orientation=.F. on edges already directed correctly - kernel accepts file silently; tier-3 introspection reveals loop traversal goes backwards */
+/* Ps010: Square ADVANCED_FACE at z=0: all four ORIENTED_EDGEs in EDGE_LOOP have orientation=.F. (reversed); underlying EDGE_CURVEs trace CCW but each reversal makes traversal CW; all reversed flags ARE wired into EDGE_LOOP of FACE_OUTER_BOUND in OPEN_SHELL of SHELL_BASED_SURFACE_MODEL; loop closes (endpoints match) but signed area is wrong */
 HEADER;
-FILE_DESCRIPTION(('Ps010 pathological-success','Inverted half-edge traversal on closed wire'),'2;1');
-FILE_NAME('Ps010.stp','2026-04-26T00:00:00',(''),(''),'manual','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Ps010'),'2;1');
+FILE_NAME('Ps010.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Single planar face (z=0) bounded by a square loop. Each edge's
-   underlying EDGE_CURVE points "the right way" for a CCW traversal,
-   but every ORIENTED_EDGE has orientation=.F., reversing each one.
-   Net effect: the wire still closes, but the loop traverses CW when
-   it should be CCW. The face's boundary is therefore semantically
-   inverted, swapping inside/outside. The kernel's edge-closure check
-   still passes because adjacent endpoints match. */
-#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#101=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#102=CARTESIAN_POINT('',(1.0,1.0,0.0));
-#103=CARTESIAN_POINT('',(0.0,1.0,0.0));
-#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
-#112=VERTEX_POINT('',#102); #113=VERTEX_POINT('',#103);
-#200=DIRECTION('',(0.0,0.0,1.0)); #201=DIRECTION('',(1.0,0.0,0.0));
-#210=CARTESIAN_POINT('',(0.5,0.5,0.0));
-#211=AXIS2_PLACEMENT_3D('',#210,#200,#201);
-#212=PLANE('',#211);
-/* Edges: each EDGE_CURVE is built so that its 3D direction matches the
-   intended CCW traversal (110->111, 111->112, 112->113, 113->110). */
-#300=DIRECTION('',(1.0,0.0,0.0)); #301=VECTOR('',#300,1.0);
-#302=DIRECTION('',(0.0,1.0,0.0)); #303=VECTOR('',#302,1.0);
-#304=DIRECTION('',(-1.0,0.0,0.0)); #305=VECTOR('',#304,1.0);
-#306=DIRECTION('',(0.0,-1.0,0.0)); #307=VECTOR('',#306,1.0);
-#310=LINE('',#100,#301); #311=EDGE_CURVE('e_bot',#110,#111,#310,.T.);
-#312=LINE('',#101,#303); #313=EDGE_CURVE('e_right',#111,#112,#312,.T.);
-#314=LINE('',#102,#305); #315=EDGE_CURVE('e_top',#112,#113,#314,.T.);
-#316=LINE('',#103,#307); #317=EDGE_CURVE('e_left',#113,#110,#316,.T.);
-/* DEFECT: every ORIENTED_EDGE flagged orientation=.F. so the loop
-   visits 110->113->112->111->110 -- CW instead of CCW. */
-#400=ORIENTED_EDGE('',*,*,#311,.F.);
-#401=ORIENTED_EDGE('',*,*,#313,.F.);
-#402=ORIENTED_EDGE('',*,*,#315,.F.);
-#403=ORIENTED_EDGE('',*,*,#317,.F.);
-#404=EDGE_LOOP('all_inverted',(#400,#401,#402,#403));
-#405=FACE_OUTER_BOUND('',#404,.T.);
-#406=ADVANCED_FACE('inverted_traversal',(#405),#212,.T.);
-#500=OPEN_SHELL('one_face',(#406));
-#510=SHELL_BASED_SURFACE_MODEL('plate',(#500));
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Ps010','Ps010','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#510),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#9=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#10=VERTEX_POINT('',#6);
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=DIRECTION('',(1.0,0.0,0.0));
+#15=VECTOR('',#14,1.0);
+#16=LINE('',#6,#15);
+#17=EDGE_CURVE('',#10,#11,#16,.T.);
+#18=DIRECTION('',(0.0,1.0,0.0));
+#19=VECTOR('',#18,1.0);
+#20=LINE('',#7,#19);
+#21=EDGE_CURVE('',#11,#12,#20,.T.);
+#22=DIRECTION('',(-1.0,0.0,0.0));
+#23=VECTOR('',#22,1.0);
+#24=LINE('',#8,#23);
+#25=EDGE_CURVE('',#12,#13,#24,.T.);
+#26=DIRECTION('',(0.0,-1.0,0.0));
+#27=VECTOR('',#26,1.0);
+#28=LINE('',#9,#27);
+#29=EDGE_CURVE('',#13,#10,#28,.T.);
+#30=ORIENTED_EDGE('',$,$,#17,.F.);
+#31=ORIENTED_EDGE('',$,$,#21,.F.);
+#32=ORIENTED_EDGE('',$,$,#25,.F.);
+#33=ORIENTED_EDGE('',$,$,#29,.F.);
+#34=EDGE_LOOP('',(#30,#31,#32,#33));
+#35=FACE_OUTER_BOUND('',#34,.T.);
+#36=ADVANCED_FACE('',(#35),#5,.T.);
+#37=OPEN_SHELL('ps010_all_edges_reversed',(#36));
+#38=SHELL_BASED_SURFACE_MODEL('ps010_cw_loop_face',(#37));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Ps010','Ps010','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#38),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
