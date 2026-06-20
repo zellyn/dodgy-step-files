@@ -65,8 +65,16 @@ def _format_real(v: float) -> str:
     between macOS and Linux, which broke fixture-source round-trip
     checks on CI). 12 digits is more than enough precision for CAD
     fixtures while eliminating libm divergence.
+
+    Also snaps any value with magnitude < 1e-14 to exactly 0.0. CAD
+    geometric precision is at most ~1e-9; values smaller than 1e-14
+    are libm round-off noise (e.g. ``math.sin(math.pi)`` evaluates to
+    ~1.22e-16, with the exact ULP varying between macOS and Linux).
+    Snapping suppresses the cross-platform divergence.
     """
     v = float(v)
+    if abs(v) < 1e-14:
+        v = 0.0
     # Round to 12 significant digits; preserves identity of nice values
     # like 0.5 / -1.0 / 1e-7 and trims libm-divergent trailing bits.
     s = f"{v:.12g}"
