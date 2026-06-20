@@ -27561,7 +27561,7 @@ Shell with three faces where middle face (intentionally degenerate or marked for
 
 Compound with two shells exhibiting mixed FACE_OUTER_BOUND orientation flags (.T. and .F. on respective outer bounds). LoadShells must preserve mixed flags but loses one during compound decomposition, normalizing both to same orientation.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=accept(0)`
+- **Expected validation**: `occt=shape(2)/shape(2) gmsh=empty ifc=accept(0)`
 ### Tsh089 — ShapeUpgrade_RemoveInternalWires tolerance-based removal
 
 Face with two small internal wires (5mm×5mm and 10mm×10mm) below typical tolerance thresholds. Tests whether `Perform` uses face-area-relative scaling (recommended: remove if wire area < 0.1% of face) or absolute threshold. Expected: wires removed. Likely failure: Perform uses fixed absolute threshold, skips small wires on large faces.
@@ -27581,7 +27581,7 @@ Shell containing one regular face and one degenerate "sliver" face whose four ve
 
 Compound containing two shells: outer (10×10 base) and inner (2×2 at height 5-7). Tests `CheckOrientedShells` with nesting topology (cavity). Expected: both shells recognized as valid; outer outward, inner inward. Likely failure: Inner shell misclassified as inverted; reports outer as wrongly oriented.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=accept(0)`
+- **Expected validation**: `occt=shape(2)/shape(2) gmsh=empty ifc=accept(0)`
 ### Tsh093 — ShapeFix_Shell.Perform empty-output handling
 
 Shell with two faces whose vertices all collapse to near-degenerate edges (e.g., edge from P to same P with zero direction). Tests `Perform` when all faces get rejected during fixing. Expected: diagnostic flag set or exception. Likely failure: Returns empty shell silently; no error flag; caller unaware that output is invalid.
