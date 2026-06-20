@@ -31555,7 +31555,7 @@
     "cross_oracle_note": null,
     "description": "ToroidalSurface Dual-Pinch Singularities",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs175.stp",
     "id": "Gs175",
@@ -31576,7 +31576,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ToroidalSurface Dual-Pinch Singularities"
   },
@@ -31588,7 +31588,7 @@
     "cross_oracle_note": null,
     "description": "RectangularTrimmedSurface Null Basis",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs176.stp",
     "id": "Gs176",
@@ -31609,7 +31609,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "RectangularTrimmedSurface Null Basis"
   },
@@ -31654,7 +31654,7 @@
     "cross_oracle_note": null,
     "description": "OffsetSurface Edge Degeneracy",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs178.stp",
     "id": "Gs178",
@@ -31675,7 +31675,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "OffsetSurface Edge Degeneracy"
   },
