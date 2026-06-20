@@ -21473,7 +21473,7 @@ Degree-2 B-spline with knot exactly at t=0.5 (multiplicity 1 in interior). Exact
 
 Full-circle CIRCLE entity with radius 1,000,000 meters. GetSamplePoints caps at 360 samples; 1-degree resolution insufficient to detect near-tangent intersections in high-curvature regions.
 - **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=reject`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=reject`
 ### Gn058 — ShapeUpgrade_ConvertSurfaceToBezierBasis symmetric-knot asymmetric extraction
 
 Degree-2 B-spline surface with symmetric knot vectors (0.0, 0.5, 1.0) in both U and V. Extraction algorithm applies knot insertions in order-dependent sequence, producing asymmetric Bezier patches despite symmetric input structure.
@@ -21487,12 +21487,12 @@ Non-uniform B-spline with sharp peak at u=0.5. Fixed-step extremum search oversh
 
 2D B-spline with 6+ segments (degree 2, 9 control points). Loop variable j1 doesn't reset between outer iterations, causing patch skip during C0→Bezier decomposition. Knot multiplicities create multiple continuity breaks.
 - **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn061 — ShapeAnalysis_Curve.GetSamplePoints (3D 2pt LINE shortcut)
 
 LINE trimmed to [2.0, 8.0] on 10-unit baseline. 2-point shortcut samples only trimmed endpoints, missing midspan information (u=5.0) used by downstream healing for curvature/degeneracy detection.
 - **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn062 — ShapeUpgrade_SplitSurface.SetVSplitValues out-of-order
 
 Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split values passed as [1.0, 0.5, 0.2] without sort, Init produces inverted sub-patches with swapped parameter ranges.
@@ -21502,7 +21502,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 
 5-control-point NURBS with weight 150.0 at midpoint (u=0.5), creating extreme cusp. Sample density doesn't scale with pole weight; uniform grid misses the sharp feature pulled by high-weight pole.
 - **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn064 — ShapeAnalysis_Curve.IsClosed periodic vs closed semantic
 
 **Defect:** B-spline curve with periodic flag (`periodic=TRUE`) but the control polygon doesn't close (first pole ≠ last pole). IsClosed reports closed because it only checks the periodic tag, not geometric closure.

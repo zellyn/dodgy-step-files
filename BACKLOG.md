@@ -66,6 +66,7 @@ than committed. New strategy: Sonnet-generates instead of Haiku-generates.
 - Gn004: Complex BSpline surface entity with empty knots/multiplicities — signal(11)
 - Gn043: nurbs signal(11) — to be addressed with signal(11) work later
 - Gn055: nurbs signal(11) — to be addressed with signal(11) work later
+- Gn058: nurbs signal(11) — to be addressed with signal(11) work later
 
 **Deferred (nurbs Wave-B — mechanism encoded only as orphan entity, not wired into face pipeline):**
 - Gn044: ConvertCurve2dToBezier degree-1 skip — degree-1 2D B-spline was placed as a standalone COMPOSITE_CURVE_SEGMENT orphan, not in any PCURVE/EDGE_CURVE chain. Needs the degree-1 B-spline to BE the pcurve of the face's defect edge.
