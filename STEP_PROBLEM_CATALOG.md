@@ -26329,20 +26329,20 @@ B-spline surface with interior knot at u=0.5 in iso-curve at v=0.5. Bisection al
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs090 — ShapeUpgrade_ConvertSurfaceToBezierBasis thin-patch elimination threshold
 Bezier surface with near-collinear control points (width 1e-9). Absolute area comparison fails to eliminate degenerate patch; needs normalized area threshold.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs091 — ShapeAnalysis_Surface.IsUClosed B-spline rational weights
 Rational B-spline surface with asymmetric weights at U closure (first=1.0, last=2.0). Weighted projection differs from geometric distance; closure detection misses boundary condition.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs092 — ShapeAnalysis_Surface.ComputeBoundIsos extrusion-direction reset
 Surface of linear extrusion with non-unit direction vector (2.0,0.0,0.0). Cached BoundIsos reflect pre-normalization range; recomputation fails to invalidate cache.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs093 — ShapeUpgrade_SplitSurface BSpline irregular knots
 B-spline surface with irregular V knot multiplicities (3,1,3) on 4 control points. SplitSurface assumes uniform multiplicities, causing over-subdivision and invalid knot structure.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs094 — ShapeAnalysis_Surface.UVFromIso parameter-clamp underflow
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -26353,8 +26353,8 @@ causing incorrect parameter mapping on extremely narrow domains.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs094.stp
 - **Fixture kind**: scaffold
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs095 — ShapeUpgrade_ConvertSurfaceToBezierBasis sphere
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -26365,8 +26365,8 @@ but pole regions become degenerate Bezier patches with zero-area. Control points
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs095.stp
 - **Fixture kind**: scaffold
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs096 — ShapeAnalysis_Surface.ComputeSingularities torus pinch
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)

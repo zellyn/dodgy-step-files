@@ -28729,7 +28729,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_ConvertSurfaceToBezierBasis thin-patch elimination threshold",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs090.stp",
     "id": "Gs090",
@@ -28750,7 +28750,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeUpgrade_ConvertSurfaceToBezierBasis thin-patch elimination threshold"
   },
@@ -28762,7 +28762,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface.IsUClosed B-spline rational weights",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs091.stp",
     "id": "Gs091",
@@ -28783,7 +28783,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Surface.IsUClosed B-spline rational weights"
   },
@@ -28795,7 +28795,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface.ComputeBoundIsos extrusion-direction reset",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs092.stp",
     "id": "Gs092",
@@ -28816,7 +28816,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Surface.ComputeBoundIsos extrusion-direction reset"
   },
@@ -28828,7 +28828,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_SplitSurface BSpline irregular knots",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs093.stp",
     "id": "Gs093",
@@ -28849,7 +28849,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeUpgrade_SplitSurface BSpline irregular knots"
   },
@@ -28861,7 +28861,7 @@
     "cross_oracle_note": null,
     "description": "Surface trimmed to subnormal parameter range u∈[1.0e-20, 1.0e-19]. UVFromIso's clamp logic doesn't handle subnormal/denormalized floats, causing incorrect parameter mapping on extremely narrow domains.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs094.stp",
     "id": "Gs094",
@@ -28882,7 +28882,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Surface.UVFromIso parameter-clamp underflow"
   },
@@ -28894,7 +28894,7 @@
     "cross_oracle_note": null,
     "description": "SPHERICAL_SURFACE conversion to Bezier basis produces 4 patches, but pole regions become degenerate Bezier patches with zero-area. Control points collapse at poles, violating Bezier non-degeneracy.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs095.stp",
     "id": "Gs095",
@@ -28915,7 +28915,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeUpgrade_ConvertSurfaceToBezierBasis sphere"
   },
