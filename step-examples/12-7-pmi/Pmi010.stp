@@ -1,53 +1,35 @@
 ISO-10303-21;
-/* Pmi010 - Tolerance zone form name from AP242 Ed.2 used in Ed.1 file
-   Defect: AP242 Ed.2 added several TOLERANCE_ZONE_FORM.name values
-   ('within a sphere', 'within a cone', 'within a single complex surface').
-   This file's FILE_SCHEMA declares AP242 Ed.1 (CC1 MIM_LF, version 1) but
-   contains a TOLERANCE_ZONE_FORM('within a cone'). Strict Ed.1 conformance
-   readers raise a WHERE-rule violation; lenient readers warn. */
+/* Pmi010: TOLERANCE_ZONE_FORM('within a cone') is an AP242 Ed.2-only name used in an Ed.1-declared file; triggers WHERE-rule violation on read; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Pmi010 - Ed.2 zone form name in Ed.1 file'),'2;1');
-FILE_NAME('Pmi010.stp','2026-04-26T00:00:00',('catalog'),('cad'),
-  'manual','','');
-/* Defect: schema declares Ed.1 explicitly */
-FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 1 }'));
+FILE_DESCRIPTION(('Pmi010'),'2;1');
+FILE_NAME('Pmi010.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'ap242_managed_model_based_3d_engineering',2014,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT('Pmi010','ConeZonePart','',(#12));
-#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
-#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
-#16 = PRODUCT_DEFINITION('','',#14,#15);
-#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
-#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
-  'distance_accuracy_value','');
-#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
-  REPRESENTATION_CONTEXT('','3D') );
-#30 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31 = DIRECTION('',(0.0,0.0,1.0));
-#32 = DIRECTION('',(1.0,0.0,0.0));
-#33 = AXIS2_PLACEMENT_3D('',#30,#31,#32);
-#40 = SHAPE_ASPECT('hole_axis','',#17,.T.);
-#41 = DATUM('A','',#17,.T.,'A');
-#42 = DATUM_REFERENCE_COMPARTMENT('',$,#43);
-#43 = DATUM_REFERENCE_ELEMENT('',$,#41);
-#44 = DATUM_SYSTEM('A','',#17,.T.,(#42));
-#50 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#20);
-#51 = POSITION_TOLERANCE('pos',$,#50,#40,#44);
-/* Defect: 'within a cone' is an Ed.2 zone form; Ed.1 only allowed
-   'cylindrical', 'spherical', 'between two parallel planes', etc. */
-#60 = TOLERANCE_ZONE_FORM('within a cone');
-#61 = TOLERANCE_ZONE('cone_zone','',(#51),#60);
-#70 = DRAUGHTING_MODEL('Default',(),#25);
-#80 = SHAPE_REPRESENTATION('',(#33),#25);
-#81 = SHAPE_DEFINITION_REPRESENTATION(#17,#80);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Pmi010','Pmi010','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=DATUM('A','primary datum',#9055,.T.,'A');
+#9064=DATUM_REFERENCE_ELEMENT('',$,#9063);
+#9065=DATUM_REFERENCE_COMPARTMENT('',$,#9064);
+#9066=DATUM_SYSTEM('datum_system_A','',#9055,.T.,(#9065));
+#9067=SHAPE_ASPECT('bore_axis','',#9055,.T.);
+#9068=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#9056);
+#9069=TOLERANCE_ZONE_FORM('within a cone');
+#9070=TOLERANCE_ZONE('',#9067,#9069);
+#9071=POSITION_TOLERANCE('pos_tol',$,#9068,#9067,#9066);
 ENDSEC;
 END-ISO-10303-21;
