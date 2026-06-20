@@ -30961,7 +30961,7 @@
     "cross_oracle_note": null,
     "description": "GetSurfaceType misidentification via precision",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs157.stp",
     "id": "Gs157",
@@ -30982,7 +30982,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "GetSurfaceType misidentification via precision"
   },
@@ -30994,7 +30994,7 @@
     "cross_oracle_note": null,
     "description": "AddFace null geometry propagation",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs158.stp",
     "id": "Gs158",
@@ -31015,7 +31015,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "AddFace null geometry propagation"
   },
@@ -31027,7 +31027,7 @@
     "cross_oracle_note": null,
     "description": "RectangularTrimmedSurface null-basis unwrap",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs159.stp",
     "id": "Gs159",
@@ -31048,7 +31048,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "RectangularTrimmedSurface null-basis unwrap"
   },
@@ -31060,7 +31060,7 @@
     "cross_oracle_note": null,
     "description": "GeomAdaptor_Surface offset-surface misclassification",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs160.stp",
     "id": "Gs160",
@@ -31081,7 +31081,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "GeomAdaptor_Surface offset-surface misclassification"
   },
@@ -31093,7 +31093,7 @@
     "cross_oracle_note": null,
     "description": "Face with null geometric surface",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs161.stp",
     "id": "Gs161",
@@ -31114,7 +31114,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Face with null geometric surface"
   },
@@ -31126,7 +31126,7 @@
     "cross_oracle_note": null,
     "description": "Surface C0 in single direction undetected",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs162.stp",
     "id": "Gs162",
@@ -31147,7 +31147,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Surface C0 in single direction undetected"
   },

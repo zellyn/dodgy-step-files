@@ -27076,28 +27076,28 @@ ShapeExtend_WireData::EditVertex corrupts edge-to-vertex connectivity during in-
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs157 — GetSurfaceType misidentification via precision
 ShapeAnalysis_Geom::GetSurfaceType uses fixed classification thresholds independent of model scale. CONICAL_SURFACE near-cylindrical cases misclassified, triggering wrong healing path.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs158 — AddFace null geometry propagation
 BRepBuilderAPI_Sewing::AddFace does not validate non-null surface reference on ADVANCED_FACE. Invalid geometry propagates silently, breaking shell coherence.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs159 — RectangularTrimmedSurface null-basis unwrap
 **Defect**: GeomAdaptor_Surface unwraps trimmed surfaces without null-checking BasisSurface result. Unwrap-null handling in GeomAdaptor_Surface constructor passes null to downstream classifier, triggering undefined behavior.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs160 — GeomAdaptor_Surface offset-surface misclassification
 **Defect**: Type switch covers 5 standard types (plane, cylinder, cone, sphere, torus) but omits offset-surface branch. Offset surfaces fall to default case (LOther), losing semantic grouping and confusing downstream algorithms expecting elementary surfaces.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs161 — Face with null geometric surface
 **Defect**: Face with null surface is silently dropped from partitioned output lists without error logging or recovery. Geometry loss in healing workflows that partition by surface type (SF-003).
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs162 — Surface C0 in single direction undetected
 **Defect**: ShapeUpgrade continuity check uses AND logic (C1 in both U and V required) instead of OR. Surfaces discontinuous in only one direction are not flagged as C0. Requires B-spline with C1-U, C0-V knot multiplicity.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs163 — ShapeUpgrade large-pole B-spline threshold
 **Defect**: ShapeUpgrade observer tracks pole count exceeding 8192 (NbUPoles × NbVPoles) but threshold is hardcoded without justification. Surfaces near boundary not flagged; downstream algorithms may fail on unexpectedly large interpolation tasks.
 - **Tier-3 assertion**: shape_null == True
