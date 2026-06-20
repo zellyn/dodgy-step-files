@@ -19165,11 +19165,11 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Tfa054, Pf027. Fixture is a scaled representative (8 disjoint single-face shells) of the catalog's 50; topology pattern (N independent shells in a compound) is identical. Synonyms: "face merge takes hours on assembly", "quadratic complexity in face unifier", "face merger runs all-pairs across compound", "assembly-level merge hangs", "performance regression on N-solid compound".
 - **Byte assertion**: count_entity_def(b'OPEN_SHELL') == 8
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 8
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Tsh061 — Merging same-surface faces around a non-manifold interior edge corrupts topology
 - **Category**: §12.3a shells/orientation

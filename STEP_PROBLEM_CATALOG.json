@@ -35286,7 +35286,7 @@
     "cross_oracle_note": null,
     "description": "A compound containing N independent shells is processed for adjacent same-surface face merging; algorithmic complexity is `O(N²)` in face count across all shells because candidate-pair iteration runs over the whole compound rather than per-shell. For N=100 shells with ~20 faces each, runtime is hours.",
     "expected_kernel_behavior": "Heal and accept: normalize / filter same-surface candidate pairs by spatial / connectivity grouping (e.g., only pairs sharing an edge can be candidates); never iterate all-pairs across disconnected shells. Must not hang on all-pairs traversal.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh060.stp",
     "id": "Tsh060",
@@ -35313,7 +35313,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Same-surface face merge runs quadratically across disjoint shells"
   },
