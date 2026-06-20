@@ -505,7 +505,8 @@ class StepFile:
 
     def add_product_chain(self, model_entity: Entity, *,
                           product_id: str | None = None,
-                          mode: str = "surface_shape") -> Entity:
+                          mode: str = "surface_shape",
+                          uncertainty: float = 1.0E-7) -> Entity:
         """Add the canonical PRODUCT/PRODUCT_DEFINITION chain at fixed IDs
         #9000-#9023 referencing ``model_entity`` (usually a
         SHELL_BASED_SURFACE_MODEL or MANIFOLD_SOLID_BREP).
@@ -517,6 +518,11 @@ class StepFile:
                 (for SHELL_BASED_SURFACE_MODEL)
             - "brep_shape" → ADVANCED_BREP_SHAPE_REPRESENTATION
                 (for solid breps)
+
+        ``uncertainty`` sets the global geom_ctx UNCERTAINTY_MEASURE
+        (default 1.0E-7). Override for fixtures that need tight (e.g.,
+        1.0E-15) or loose (e.g., 0.01) tolerances embedded in the
+        geometric context.
         """
         if product_id is None:
             product_id = self.catalog_id
@@ -547,14 +553,15 @@ class StepFile:
         solid_angle_unit = self._emit_raw(
             "(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT())"
         )
-        uncertainty = self._emit(
+        unc_literal = f"LENGTH_MEASURE({uncertainty:.6E})" if uncertainty != 1.0E-7 else "LENGTH_MEASURE(1.0E-7)"
+        uncertainty_ent = self._emit(
             "UNCERTAINTY_MEASURE_WITH_UNIT",
-            Enum_("LENGTH_MEASURE(1.0E-7)"),
+            Enum_(unc_literal),
             length_unit, "distance_accuracy_value", "", name="_no_name",
         )
         geom_ctx = self._emit_raw(
             f"(GEOMETRIC_REPRESENTATION_CONTEXT(3)"
-            f"GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT(({uncertainty.ref()}))"
+            f"GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT(({uncertainty_ent.ref()}))"
             f"GLOBAL_UNIT_ASSIGNED_CONTEXT(({length_unit.ref()},{plane_angle_unit.ref()},{solid_angle_unit.ref()}))"
             f"REPRESENTATION_CONTEXT('','3D'))"
         )
