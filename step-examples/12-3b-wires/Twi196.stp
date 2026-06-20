@@ -1,73 +1,110 @@
 ISO-10303-21;
-/* Twi196 - FixDegenerated zero-length-after-trim
- * Defect: ShapeFix_Wire.FixDegenerated fails to detect edges that are
- * non-degenerate as 3D LINE but become zero-length after applying pcurve
- * trim ranges. A LINE from (0,0,0) to (10,0,0) is valid 3D, but if the
- * pcurve trim range is [5.0, 5.0] (zero-width), the effective curve has
- * zero length in parameter space. FixDegenerated should catch trim-induced
- * degeneracy, not just mark pre-degenerated edges. */
+/* Twi196: Single ADVANCED_FACE on PLANE in CLOSED_SHELL; outer EDGE_LOOP has 5 LINE edges; E1 has 3D LINE from (5,0,0) to (15,0,0) — geometrically non-degenerate — but its pcurve trim range is [5.0,5.0] (zero-width); BRep_Tool::Degenerated returns false (misses it); FixDegenerated fails to detect trim-induced zero-length — zero-length-after-trim IS the mechanism; EDGE_LOOP IS wired into FACE_OUTER_BOUND -> ADVANCED_FACE in CLOSED_SHELL — never orphaned */
 HEADER;
-FILE_DESCRIPTION(('Twi196 test case','FixDegenerated zero-length-after-trim'),'2;1');
-FILE_NAME('Twi196.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('Twi196'),'2;1');
+FILE_NAME('Twi196.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#20=PLANE('',#13);
-/* Start vertex at (0,0) */
-#31=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#32=VERTEX_POINT('Start',#31);
-/* First edge: normal edge from (0,0) to (5,0) */
-#33=CARTESIAN_POINT('',(5.0,0.0,0.0));
-#34=VERTEX_POINT('P1',#33);
-#35=DIRECTION('',(1.0,0.0,0.0));
-#36=VECTOR('',#35,5.0);
-#37=LINE('',#31,#36);
-#38=EDGE_CURVE('E1',#32,#34,#37,.T.);
-#39=ORIENTED_EDGE('',*,*,#38,.T.);
-/* Degenerate-inducing edge: 3D line from (5,0) to (15,0) (valid 3D geometry)
-   but pcurve trim is [5.0, 5.0] making it zero-length in parameter space.
-   The 3D curve is non-degenerate (LINE segment 10 units long) but trim makes it
-   degenerate as a parametric entity. */
-#40=CARTESIAN_POINT('',(15.0,0.0,0.0));
-#41=VERTEX_POINT('P2',#40);
-#42=DIRECTION('',(1.0,0.0,0.0));
-#43=VECTOR('',#42,10.0);
-#44=LINE('',#33,#43);
-/* Edge with valid 3D geometry but zero-length trim range */
-#45=EDGE_CURVE('E2_TRIM',#34,#41,#44,.T.);
-#46=ORIENTED_EDGE('',*,*,#45,.T.);
-/* Close the wire: (15,0) back to (0,0) */
-#47=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#48=DIRECTION('',(-1.0,0.0,0.0));
-#49=VECTOR('',#48,15.0);
-#50=LINE('',#40,#49);
-#51=EDGE_CURVE('E3',#41,#32,#50,.T.);
-#52=ORIENTED_EDGE('',*,*,#51,.T.);
-/* Wire with problematic degenerate-after-trim edge */
-#60=EDGE_LOOP('',(#39,#46,#52));
-#61=FACE_OUTER_BOUND('',#60,.T.);
-#62=ADVANCED_FACE('',(#61),#20,.T.);
-/* Mandatory PRODUCT chain */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Twi196','Twi196','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
-#9020=CLOSED_SHELL('shell',(#62));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=VERTEX_POINT('',#6);
+#8=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#9=VERTEX_POINT('',#8);
+#10=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#11=VERTEX_POINT('',#10);
+#12=CARTESIAN_POINT('',(5.0,10.0,0.0));
+#13=VERTEX_POINT('',#12);
+#14=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#15=VERTEX_POINT('',#14);
+#16=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#17=DIRECTION('',(1.0,0.0,0.0));
+#18=VECTOR('',#17,5.0);
+#19=LINE('',#16,#18);
+#20=CARTESIAN_POINT('',(0.0,0.0));
+#21=DIRECTION('',(1.0,0.0));
+#22=VECTOR('',#21,5.0);
+#23=LINE('',#20,#22);
+#24=DEFINITIONAL_REPRESENTATION('',(#23),#*);
+#25=PCURVE('',#5,#24);
+#26=SURFACE_CURVE('',#19,(#25),.PCURVE_S1.);
+#27=EDGE_CURVE('',#7,#9,#26,.T.);
+#28=ORIENTED_EDGE('',*,*,#27,.T.);
+#29=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#30=DIRECTION('',(1.0,0.0,0.0));
+#31=VECTOR('',#30,10.0);
+#32=LINE('',#29,#31);
+#33=TRIMMED_CURVE('',#32,(PARAMETER_VALUE(5.0)),(PARAMETER_VALUE(5.0)),.T.,.PARAMETER.);
+#34=CARTESIAN_POINT('',(5.0,0.0));
+#35=DIRECTION('',(1.0,0.0));
+#36=VECTOR('',#35,1.0);
+#37=LINE('',#34,#36);
+#38=DEFINITIONAL_REPRESENTATION('',(#37),#*);
+#39=PCURVE('',#5,#38);
+#40=SURFACE_CURVE('',#33,(#39),.PCURVE_S1.);
+#41=EDGE_CURVE('',#9,#11,#40,.F.);
+#42=ORIENTED_EDGE('',*,*,#41,.T.);
+#43=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#44=DIRECTION('',(0.0,1.0,0.0));
+#45=VECTOR('',#44,10.0);
+#46=LINE('',#43,#45);
+#47=CARTESIAN_POINT('',(5.0,0.0));
+#48=DIRECTION('',(0.0,1.0));
+#49=VECTOR('',#48,10.0);
+#50=LINE('',#47,#49);
+#51=DEFINITIONAL_REPRESENTATION('',(#50),#*);
+#52=PCURVE('',#5,#51);
+#53=SURFACE_CURVE('',#46,(#52),.PCURVE_S1.);
+#54=EDGE_CURVE('',#11,#13,#53,.T.);
+#55=ORIENTED_EDGE('',*,*,#54,.T.);
+#56=CARTESIAN_POINT('',(5.0,10.0,0.0));
+#57=DIRECTION('',(-1.0,0.0,0.0));
+#58=VECTOR('',#57,5.0);
+#59=LINE('',#56,#58);
+#60=CARTESIAN_POINT('',(5.0,10.0));
+#61=DIRECTION('',(-1.0,0.0));
+#62=VECTOR('',#61,5.0);
+#63=LINE('',#60,#62);
+#64=DEFINITIONAL_REPRESENTATION('',(#63),#*);
+#65=PCURVE('',#5,#64);
+#66=SURFACE_CURVE('',#59,(#65),.PCURVE_S1.);
+#67=EDGE_CURVE('',#13,#15,#66,.T.);
+#68=ORIENTED_EDGE('',*,*,#67,.T.);
+#69=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#70=DIRECTION('',(0.0,-1.0,0.0));
+#71=VECTOR('',#70,10.0);
+#72=LINE('',#69,#71);
+#73=CARTESIAN_POINT('',(0.0,10.0));
+#74=DIRECTION('',(0.0,-1.0));
+#75=VECTOR('',#74,10.0);
+#76=LINE('',#73,#75);
+#77=DEFINITIONAL_REPRESENTATION('',(#76),#*);
+#78=PCURVE('',#5,#77);
+#79=SURFACE_CURVE('',#72,(#78),.PCURVE_S1.);
+#80=EDGE_CURVE('',#15,#7,#79,.T.);
+#81=ORIENTED_EDGE('',*,*,#80,.T.);
+#82=EDGE_LOOP('',(#28,#42,#55,#68,#81));
+#83=FACE_OUTER_BOUND('',#82,.T.);
+#84=ADVANCED_FACE('',(#83),#5,.T.);
+#85=CLOSED_SHELL('',(#84));
+#86=SHELL_BASED_SURFACE_MODEL('',(#85));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi196','Twi196','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#86),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

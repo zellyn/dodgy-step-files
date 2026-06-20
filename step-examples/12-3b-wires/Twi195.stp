@@ -1,76 +1,66 @@
 ISO-10303-21;
-/* Twi195 - CheckClosed open-tail-vs-spur
- * Defect: ShapeAnalysis_Wire.CheckClosed reports wire as unclosed due to a
- * small trailing spur (e.g., 1.0e-6 units) that nearly closes the gap. The
- * defect is that a spur too small to close meaningfully should be
- * distinguished from a true open gap, but CheckClosed only returns boolean
- * open/closed, losing nuance for "almost closed" classification. */
+/* Twi195: Single ADVANCED_FACE on PLANE in CLOSED_SHELL; outer EDGE_LOOP has 4 LINE edges; E0-E2 form a near-closed triangle-ish path ending at (0, 1e-6, 0); E3 is a 1e-6-long spur from (0,1e-6,0) back to (0,0,0); CheckClosed returns false but cannot distinguish spur vs genuine gap — open-tail-vs-spur IS the mechanism; EDGE_LOOP IS wired into FACE_OUTER_BOUND -> ADVANCED_FACE in CLOSED_SHELL — never orphaned */
 HEADER;
-FILE_DESCRIPTION(('Twi195 test case','CheckClosed open-tail-vs-spur classification'),'2;1');
-FILE_NAME('Twi195.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('Twi195'),'2;1');
+FILE_NAME('Twi195.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#20=PLANE('',#13);
-/* Start vertex at origin */
-#31=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#32=VERTEX_POINT('Start',#31);
-/* First edge: (0,0) to (10,0) */
-#33=CARTESIAN_POINT('',(10.0,0.0,0.0));
-#34=VERTEX_POINT('P1',#33);
-#35=DIRECTION('',(1.0,0.0,0.0));
-#36=VECTOR('',#35,10.0);
-#37=LINE('',#31,#36);
-#38=EDGE_CURVE('E1',#32,#34,#37,.T.);
-#39=ORIENTED_EDGE('',*,*,#38,.T.);
-/* Second edge: (10,0) to (0,1) -- goes up and back */
-#40=CARTESIAN_POINT('',(0.0,1.0,0.0));
-#41=VERTEX_POINT('P2',#40);
-#42=DIRECTION('',(-1.0,0.1,0.0));
-#43=VECTOR('',#42,1.0);
-#44=LINE('',#33,#43);
-#45=EDGE_CURVE('E2',#34,#41,#44,.T.);
-#46=ORIENTED_EDGE('',*,*,#45,.T.);
-/* Third edge: (0,1) to (0,0) -- closes almost, ending at (0, 1.0e-6) */
-#47=CARTESIAN_POINT('',(0.0,0.000001,0.0));
-#48=VERTEX_POINT('Almost',#47);
-#49=DIRECTION('',(0.0,-1.0,0.0));
-#50=VECTOR('',#49,0.999999);
-#51=LINE('',#40,#50);
-#52=EDGE_CURVE('E3',#41,#48,#51,.T.);
-#53=ORIENTED_EDGE('',*,*,#52,.T.);
-/* Tiny spur edge: (0, 1.0e-6) back to (0,0) -- gap of 1.0e-6 */
-#54=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#55=DIRECTION('',(0.0,-1.0,0.0));
-#56=VECTOR('',#55,0.000001);
-#57=LINE('',#47,#56);
-#58=EDGE_CURVE('E4',#48,#32,#57,.T.);
-#59=ORIENTED_EDGE('',*,*,#58,.T.);
-/* Wire: three main edges plus tiny spur; wire is not fully closed */
-#60=EDGE_LOOP('',(#39,#46,#53,#59));
-#61=FACE_OUTER_BOUND('',#60,.T.);
-#62=ADVANCED_FACE('',(#61),#20,.T.);
-/* Mandatory PRODUCT chain */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Twi195','Twi195','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
-#9020=CLOSED_SHELL('shell',(#62));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=VERTEX_POINT('',#6);
+#8=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#9=VERTEX_POINT('',#8);
+#10=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#11=VERTEX_POINT('',#10);
+#12=CARTESIAN_POINT('',(0.0,1.0E-06,0.0));
+#13=VERTEX_POINT('',#12);
+#14=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#15=DIRECTION('',(1.0,0.0,0.0));
+#16=VECTOR('',#15,10.0);
+#17=LINE('',#14,#16);
+#18=EDGE_CURVE('',#7,#9,#17,.T.);
+#19=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#20=DIRECTION('',(0.0,1.0,0.0));
+#21=VECTOR('',#20,10.0);
+#22=LINE('',#19,#21);
+#23=EDGE_CURVE('',#9,#11,#22,.T.);
+#24=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#25=DIRECTION('',(-0.707106816542,-0.707106745831,0.0));
+#26=VECTOR('',#25,14.1421349166);
+#27=LINE('',#24,#26);
+#28=EDGE_CURVE('',#11,#13,#27,.T.);
+#29=CARTESIAN_POINT('',(0.0,1.0E-06,0.0));
+#30=DIRECTION('',(0.0,-1.0,0.0));
+#31=VECTOR('',#30,1.0E-06);
+#32=LINE('',#29,#31);
+#33=EDGE_CURVE('',#13,#7,#32,.T.);
+#34=ORIENTED_EDGE('',$,$,#18,.T.);
+#35=ORIENTED_EDGE('',$,$,#23,.T.);
+#36=ORIENTED_EDGE('',$,$,#28,.T.);
+#37=ORIENTED_EDGE('',$,$,#33,.T.);
+#38=EDGE_LOOP('',(#34,#35,#36,#37));
+#39=FACE_OUTER_BOUND('',#38,.T.);
+#40=ADVANCED_FACE('',(#39),#5,.T.);
+#41=CLOSED_SHELL('',(#40));
+#42=SHELL_BASED_SURFACE_MODEL('',(#41));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi195','Twi195','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#42),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
