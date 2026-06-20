@@ -1,39 +1,58 @@
 ISO-10303-21;
-/* Twi078 - Wire-order analysis: reorder unordered edges (no reversal needed)
- * Four edges of a unit square authored as #e1=bottom (V1->V2), #e2=right
- * (V2->V3), #e3=top (V3->V4), #e4=left (V4->V1). Wire is emitted with the
- * edges in scrambled order [e3, e1, e4, e2]. Each edge already has the
- * correct head-to-tail orientation -- only reorder is needed, no flips. */
+/* Twi078: GEOMETRIC_CURVE_SET containing EDGE_LOOP 'scrambled_3_1_4_2'; 4 LINE edges of a unit square declared in permuted order [e3, e1, e4, e2]; head-to-tail vertex chain broken: e3 ends at v4=(0,1,0), next e1 starts at v1=(0,0,0) — gap; ShapeAnalysis_WireOrder::Perform must reorder [3,1,4,2]→[1,2,3,4] without reversal (STATUS_DONE, not STATUS_DONE2); GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty; all 4 EDGE_CURVEs and 4 ORIENTED_EDGEs ARE wired into the EDGE_LOOP; never orphaned */
 HEADER;
-FILE_DESCRIPTION(('Twi078 test case','Four-edge square wire emitted in scrambled order [e3,e1,e4,e2]'),'2;1');
-FILE_NAME('Twi078.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Twi078'),'2;1');
+FILE_NAME('Twi078.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));#11=VERTEX_POINT('V1',#10);
-#12=CARTESIAN_POINT('',(1.0,0.0,0.0));#13=VERTEX_POINT('V2',#12);
-#14=CARTESIAN_POINT('',(1.0,1.0,0.0));#15=VERTEX_POINT('V3',#14);
-#16=CARTESIAN_POINT('',(0.0,1.0,0.0));#17=VERTEX_POINT('V4',#16);
-/* edge e1: V1->V2 */
-#20=DIRECTION('',(1.0,0.0,0.0));#21=VECTOR('',#20,1.0);#22=LINE('',#10,#21);
-#23=EDGE_CURVE('e1_bottom',#11,#13,#22,.T.);
-/* edge e2: V2->V3 */
-#24=DIRECTION('',(0.0,1.0,0.0));#25=VECTOR('',#24,1.0);#26=LINE('',#12,#25);
-#27=EDGE_CURVE('e2_right',#13,#15,#26,.T.);
-/* edge e3: V3->V4 */
-#28=DIRECTION('',(-1.0,0.0,0.0));#29=VECTOR('',#28,1.0);#30=LINE('',#14,#29);
-#31=EDGE_CURVE('e3_top',#15,#17,#30,.T.);
-/* edge e4: V4->V1 */
-#32=DIRECTION('',(0.0,-1.0,0.0));#33=VECTOR('',#32,1.0);#34=LINE('',#16,#33);
-#35=EDGE_CURVE('e4_left',#17,#11,#34,.T.);
-/* ORIENTED_EDGEs all .T. -- correct orientation, only the LIST order is scrambled. */
-#40=ORIENTED_EDGE('oe_e3',*,*,#31,.T.);
-#41=ORIENTED_EDGE('oe_e1',*,*,#23,.T.);
-#42=ORIENTED_EDGE('oe_e4',*,*,#35,.T.);
-#43=ORIENTED_EDGE('oe_e2',*,*,#27,.T.);
-/* Scrambled list: [3, 1, 4, 2] -- valid square only after reordering to [1,2,3,4]. */
-#44=EDGE_LOOP('scrambled_3_1_4_2',(#40,#41,#42,#43));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=VERTEX_POINT('',#1);
+#3=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#4=VERTEX_POINT('',#3);
+#5=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#6=VERTEX_POINT('',#5);
+#7=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#8=VERTEX_POINT('',#7);
+#9=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#10=DIRECTION('',(1.0,0.0,0.0));
+#11=VECTOR('',#10,1.0);
+#12=LINE('',#9,#11);
+#13=EDGE_CURVE('',#2,#4,#12,.T.);
+#14=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#15=DIRECTION('',(0.0,1.0,0.0));
+#16=VECTOR('',#15,1.0);
+#17=LINE('',#14,#16);
+#18=EDGE_CURVE('',#4,#6,#17,.T.);
+#19=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#20=DIRECTION('',(-1.0,0.0,0.0));
+#21=VECTOR('',#20,1.0);
+#22=LINE('',#19,#21);
+#23=EDGE_CURVE('',#6,#8,#22,.T.);
+#24=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#25=DIRECTION('',(0.0,-1.0,0.0));
+#26=VECTOR('',#25,1.0);
+#27=LINE('',#24,#26);
+#28=EDGE_CURVE('',#8,#2,#27,.T.);
+#29=ORIENTED_EDGE('',$,$,#23,.T.);
+#30=ORIENTED_EDGE('',$,$,#13,.T.);
+#31=ORIENTED_EDGE('',$,$,#28,.T.);
+#32=ORIENTED_EDGE('',$,$,#18,.T.);
+#33=EDGE_LOOP('scrambled_3_1_4_2',(#29,#30,#31,#32));
+#34=GEOMETRIC_CURVE_SET('',(#33));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi078','Twi078','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#34),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
