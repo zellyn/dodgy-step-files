@@ -1,44 +1,95 @@
 ISO-10303-21;
-/* Gp038 - Vertex point and pcurve disagree beyond tolerance
- * Defect: an edge has start VERTEX at (1.0,0.0,0.0); its 3D LINE
- * agrees; but the bound PCURVE 2D LINE, when evaluated at parameter 0
- * on the host plane, places the start at (1.05,0.0). The 0.05 mismatch
- * exceeds typical 1.0e-6 vertex tolerance. */
+/* Gp038: Right-seam EDGE_CURVE on PLANE: 3D LINE starts at (1.0,0,0) matching vertex V_right, but PCURVE LINE starts at UV (1.05,0.0) whose 3D image is (1.05,0,0) — 0.05 beyond vertex tolerance; vertex-pcurve consistency check fails independently of vertex-3D-curve check */
 HEADER;
-FILE_DESCRIPTION(('Gp038 test case','Vertex point and pcurve disagree beyond tolerance'),'2;1');
-FILE_NAME('Gp038.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Gp038'),'2;1');
+FILE_NAME('Gp038.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Host plane */
-#100=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#101=DIRECTION('z',(0.0,0.0,1.0));
-#102=DIRECTION('x',(1.0,0.0,0.0));
-#103=AXIS2_PLACEMENT_3D('',#100,#101,#102);
-#104=PLANE('host',#103);
-/* Vertices: V0 at (1,0,0), V1 at (2,0,0) */
-#110=CARTESIAN_POINT('vertex_3d',(1.0,0.0,0.0));
-#111=VERTEX_POINT('v0_at_1',#110);
-#112=CARTESIAN_POINT('end_3d',(2.0,0.0,0.0));
-#113=VERTEX_POINT('v1_at_2',#112);
-/* 3D curve: LINE from V0 along +x */
-#120=DIRECTION('+x',(1.0,0.0,0.0));
-#121=VECTOR('vx',#120,1.0);
-#122=LINE('e_3d',#110,#121);
-/* PCURVE: 2D LINE whose param=0 image is (1.05, 0). 0.05 mismatch */
-#130=CARTESIAN_POINT('vertex_pcurve_eval',(1.05,0.0));
-#131=DIRECTION('puv_dir',(1.0,0.0));
-#132=VECTOR('puv_vec',#131,1.0);
-#133=LINE('e_pc',#130,#132);
-#134=DEFINITIONAL_REPRESENTATION('e_pc_def',(#133),#103);
-#135=PCURVE('e_pc',#104,#134);
-/* SURFACE_CURVE wiring 3D and 2D parameterisations together */
-#140=SURFACE_CURVE('e_sc',#122,(#135),.PCURVE_S1.);
-/* EDGE_CURVE explicitly using V0 and V1 — the disagreement between
- * V0's 3D position (1,0,0) and the pcurve's parameter-0 image (1.05,0)
- * is the cited tolerance breach. */
-#141=EDGE_CURVE('vertex_pcurve_disagree',#111,#113,#140,.T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#7=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#9=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#10=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=VERTEX_POINT('',#10);
+#15=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#16=DIRECTION('',(1.0,0.0,0.0));
+#17=VECTOR('',#16,1.0);
+#18=LINE('',#15,#17);
+#19=CARTESIAN_POINT('',(0.0,0.0));
+#20=DIRECTION('',(1.0,0.0));
+#21=VECTOR('',#20,1.0);
+#22=LINE('',#19,#21);
+#23=DEFINITIONAL_REPRESENTATION('pc_bot',(#22),#6);
+#24=PCURVE('pcv_bot',#5,#23);
+#25=SURFACE_CURVE('bot',#18,(#24),.PCURVE_S1.);
+#26=EDGE_CURVE('bot',#11,#12,#25,.T.);
+#27=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#28=DIRECTION('',(-1.0,0.0,0.0));
+#29=VECTOR('',#28,1.0);
+#30=LINE('',#27,#29);
+#31=CARTESIAN_POINT('',(1.0,1.0));
+#32=DIRECTION('',(-1.0,0.0));
+#33=VECTOR('',#32,1.0);
+#34=LINE('',#31,#33);
+#35=DEFINITIONAL_REPRESENTATION('pc_top',(#34),#6);
+#36=PCURVE('pcv_top',#5,#35);
+#37=SURFACE_CURVE('top',#30,(#36),.PCURVE_S1.);
+#38=EDGE_CURVE('top',#13,#14,#37,.T.);
+#39=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#40=DIRECTION('',(0.0,-1.0,0.0));
+#41=VECTOR('',#40,1.0);
+#42=LINE('',#39,#41);
+#43=CARTESIAN_POINT('',(0.0,1.0));
+#44=DIRECTION('',(0.0,-1.0));
+#45=VECTOR('',#44,1.0);
+#46=LINE('',#43,#45);
+#47=DEFINITIONAL_REPRESENTATION('pc_left',(#46),#6);
+#48=PCURVE('pcv_left',#5,#47);
+#49=SURFACE_CURVE('left',#42,(#48),.PCURVE_S1.);
+#50=EDGE_CURVE('left',#14,#11,#49,.T.);
+#51=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#52=DIRECTION('',(0.0,1.0,0.0));
+#53=VECTOR('',#52,1.0);
+#54=LINE('',#51,#53);
+#55=CARTESIAN_POINT('',(1.05,0.0));
+#56=DIRECTION('',(0.0,1.0));
+#57=VECTOR('',#56,1.0);
+#58=LINE('',#55,#57);
+#59=DEFINITIONAL_REPRESENTATION('pc_right_offset',(#58),#6);
+#60=PCURVE('right_uoffset',#5,#59);
+#61=SURFACE_CURVE('right_edge',#54,(#60),.PCURVE_S1.);
+#62=EDGE_CURVE('right_edge',#12,#13,#61,.T.);
+#63=ORIENTED_EDGE('',$,$,#26,.T.);
+#64=ORIENTED_EDGE('',$,$,#62,.T.);
+#65=ORIENTED_EDGE('',$,$,#38,.T.);
+#66=ORIENTED_EDGE('',$,$,#50,.T.);
+#67=EDGE_LOOP('',(#63,#64,#65,#66));
+#68=FACE_OUTER_BOUND('',#67,.T.);
+#69=ADVANCED_FACE('',(#68),#5,.T.);
+#70=OPEN_SHELL('',(#69));
+#71=SHELL_BASED_SURFACE_MODEL('',(#70));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gp038','Gp038','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#71),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
