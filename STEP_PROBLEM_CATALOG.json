@@ -28366,7 +28366,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface.UVFromIso periodic reset",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs079.stp",
     "id": "Gs079",
@@ -28387,7 +28387,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Surface.UVFromIso periodic reset"
   },
@@ -28399,7 +28399,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_FaceDivide.SplitSurface boundary-merge",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs080.stp",
     "id": "Gs080",
@@ -28420,7 +28420,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeUpgrade_FaceDivide.SplitSurface boundary-merge"
   },
@@ -28432,7 +28432,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface.IsUClosed extrusion-base form",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs081.stp",
     "id": "Gs081",
@@ -28453,7 +28453,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Surface.IsUClosed extrusion-base form"
   },
@@ -28465,7 +28465,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface.NextValueOfUV curvature step-size",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs082.stp",
     "id": "Gs082",
@@ -28486,7 +28486,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Surface.NextValueOfUV curvature step-size"
   },
@@ -28498,7 +28498,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_ConvertSurfaceToBezierBasis quasi-uniform vs non-uniform mismatch",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs083.stp",
     "id": "Gs083",
@@ -28519,7 +28519,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeUpgrade_ConvertSurfaceToBezierBasis quasi-uniform vs non-uniform mismatch"
   },
@@ -28696,7 +28696,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface.UVFromIso B-spline midspan failure",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs089.stp",
     "id": "Gs089",
@@ -28717,7 +28717,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Surface.UVFromIso B-spline midspan failure"
   },

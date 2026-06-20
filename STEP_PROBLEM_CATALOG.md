@@ -26276,28 +26276,28 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 ### Gs079 — ShapeAnalysis_Surface.UVFromIso periodic reset
 
 B_SPLINE_SURFACE_WITH_KNOTS, U-periodic (periodic_u=.T.), u_upper=2π. Reproduces silent wraparound when querying u_iso=2π that maps to u_iso=0, breaking downstream code expecting original parameter.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs080 — ShapeUpgrade_FaceDivide.SplitSurface boundary-merge
 
 B_SPLINE_SURFACE with internal knot at natural face boundary. SplitSurface splits at boundary-coincident knot, producing degenerate sub-face with coincident control points.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs081 — ShapeAnalysis_Surface.IsUClosed extrusion-base form
 
 SURFACE_OF_LINEAR_EXTRUSION with open parabolic base curve. IsUClosed correctly returns false but loses extrusion-axis closure metadata needed by downstream processors.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs082 — ShapeAnalysis_Surface.NextValueOfUV curvature step-size
 
 B_SPLINE_SURFACE with sharp peak (Z=5.0 at center). Newton iteration for surface point location exhibits curvature-driven step collapse below epsilon tolerance before convergence.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs083 — ShapeUpgrade_ConvertSurfaceToBezierBasis quasi-uniform vs non-uniform mismatch
 
 B_SPLINE_SURFACE_WITH_KNOTS declared form='.QUASI_UNIFORM_KNOTS.' but actual knots are non-uniform. Bezier converter follows form tag and produces incorrect patch geometry.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs084 — ShapeAnalysis_Surface.IsDegenerated bounded-surface zero-area
 
 RECTANGULAR_TRIMMED_SURFACE with u1==u2 (zero-width trim). IsDegenerated parameter-difference check fails to detect zero area. Fixture uses B-spline base with trimmed surface u∈[0,0].
@@ -26325,8 +26325,8 @@ CYLINDRICAL_SURFACE split at u=0 (seam). SplitSurface produces two identical pat
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Gs089 — ShapeAnalysis_Surface.UVFromIso B-spline midspan failure
 B-spline surface with interior knot at u=0.5 in iso-curve at v=0.5. Bisection algorithm in UVFromIso converges on wrong side of knot, returning incorrect UV parameters.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs090 — ShapeUpgrade_ConvertSurfaceToBezierBasis thin-patch elimination threshold
 Bezier surface with near-collinear control points (width 1e-9). Absolute area comparison fails to eliminate degenerate patch; needs normalized area threshold.
 - **Tier-3 assertion**: shape_null == True
