@@ -1,82 +1,60 @@
 ISO-10303-21;
-/* Bo025 - Smooth (G1) edge tagged as sharp (or vice versa).
- * Defect: two ADVANCED_FACEs on duplicate CYLINDRICAL_SURFACE entities
- * (same axis, same radius) share the joining circle - geometrically G1
- * but the duplicate-surface form prevents downstream tools from inferring
- * the smooth join, so the edge is treated as a hard boundary. */
+/* Bo025: Two ADVANCED_FACEs on duplicate CYLINDRICAL_SURFACEs (same axis, same radius=1.0) share a circular edge — surfaces meet tangentially (G1) but modelled as distinct surface entities IS wired into OPEN_SHELL face/edge topology; regularity-encoder mis-tags the shared edge as C0 (sharp crease) */
 HEADER;
-FILE_DESCRIPTION(('Bo025 - duplicate cylinders share edge','Pass C gap-fill'),'2;1');
-FILE_NAME('Bo025.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Bo025'),'2;1');
+FILE_NAME('Bo025.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Lower cylinder z=[0,1], upper z=[1,2], same axis (z), same radius 1. */
-#10=CARTESIAN_POINT('axis',(0.0,0.0,0.0));
-#11=DIRECTION('z',(0.0,0.0,1.0));
-#12=DIRECTION('x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-/* Two duplicate cylindrical surfaces on the same axis/radius. */
-#14=CYLINDRICAL_SURFACE('cyl1',#13,1.0);
-#15=CYLINDRICAL_SURFACE('cyl2',#13,1.0);
-/* Three ring points: bottom (z=0), middle (z=1, shared), top (z=2). */
-#20=CARTESIAN_POINT('p_bot',(1.0,0.0,0.0));
-#21=CARTESIAN_POINT('p_mid',(1.0,0.0,1.0));
-#22=CARTESIAN_POINT('p_top',(1.0,0.0,2.0));
-#30=VERTEX_POINT('',#20);
-#31=VERTEX_POINT('',#21);
-#32=VERTEX_POINT('',#22);
-/* Ring circles at z=0, z=1, z=2 (radius 1, axis vertical). */
-#40=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#41=CIRCLE('ring_bot',#40,1.0);
-#42=CARTESIAN_POINT('mid_o',(0.0,0.0,1.0));
-#43=AXIS2_PLACEMENT_3D('',#42,#11,#12);
-#44=CIRCLE('ring_mid_shared',#43,1.0);
-#45=CARTESIAN_POINT('top_o',(0.0,0.0,2.0));
-#46=AXIS2_PLACEMENT_3D('',#45,#11,#12);
-#47=CIRCLE('ring_top',#46,1.0);
-/* Seam line (z direction, x=1, y=0) shared as the seam of each cylinder. */
-#48=DIRECTION('',(0.0,0.0,1.0));
-#49=VECTOR('',#48,1.0);
-#50=LINE('seam_lo',#20,#49); #51=EDGE_CURVE('seam_lower',#30,#31,#50,.T.);
-#52=LINE('seam_up',#21,#49); #53=EDGE_CURVE('seam_upper',#31,#32,#52,.T.);
-/* Ring edges - bottom, shared middle, top. Each is a closed seam edge. */
-#60=EDGE_CURVE('e_ring_bot',#30,#30,#41,.T.);
-#61=EDGE_CURVE('e_ring_shared',#31,#31,#44,.T.);
-#62=EDGE_CURVE('e_ring_top',#32,#32,#47,.T.);
-/* Lower cylinder face: outer boundary uses #51 (up seam), #61 (top ring),
- * #51 reversed (down seam), #60 (bottom ring rev). */
-#70=ORIENTED_EDGE('',*,*,#60,.F.);
-#71=ORIENTED_EDGE('',*,*,#51,.T.);
-#72=ORIENTED_EDGE('',*,*,#61,.T.);
-#73=ORIENTED_EDGE('',*,*,#51,.F.);
-#74=EDGE_LOOP('',(#70,#71,#72,#73));
-#75=FACE_OUTER_BOUND('',#74,.T.);
-#100=ADVANCED_FACE('lower_cyl',(#75),#14,.T.);
-/* Upper cylinder face: similar, sharing #61 ring with lower. */
-#80=ORIENTED_EDGE('',*,*,#61,.F.);
-#81=ORIENTED_EDGE('',*,*,#53,.T.);
-#82=ORIENTED_EDGE('',*,*,#62,.T.);
-#83=ORIENTED_EDGE('',*,*,#53,.F.);
-#84=EDGE_LOOP('',(#80,#81,#82,#83));
-#85=FACE_OUTER_BOUND('',#84,.T.);
-#101=ADVANCED_FACE('upper_cyl',(#85),#15,.T.);
-#200=OPEN_SHELL('two_cyls_G1_duplicate_surfaces',(#100,#101));
-/* PRODUCT chain so OCCT loads the geometry. */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Bo025','Bo025','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#200));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CYLINDRICAL_SURFACE('',#4,1.0);
+#6=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#7=CYLINDRICAL_SURFACE('',#6,1.0);
+#8=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#9=CIRCLE('',#8,1.0);
+#10=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#11=VERTEX_POINT('',#10);
+#12=EDGE_CURVE('',#11,#11,#9,.T.);
+#13=CARTESIAN_POINT('',(0.0,0.0,1.0));
+#14=AXIS2_PLACEMENT_3D('',#13,#2,#3);
+#15=CIRCLE('',#14,1.0);
+#16=CARTESIAN_POINT('',(1.0,0.0,1.0));
+#17=VERTEX_POINT('',#16);
+#18=EDGE_CURVE('',#17,#17,#15,.T.);
+#19=CARTESIAN_POINT('',(0.0,0.0,-1.0));
+#20=AXIS2_PLACEMENT_3D('',#19,#2,#3);
+#21=CIRCLE('',#20,1.0);
+#22=CARTESIAN_POINT('',(1.0,0.0,-1.0));
+#23=VERTEX_POINT('',#22);
+#24=EDGE_CURVE('',#23,#23,#21,.T.);
+#25=ORIENTED_EDGE('',$,$,#24,.T.);
+#26=ORIENTED_EDGE('',$,$,#12,.T.);
+#27=EDGE_LOOP('',(#25,#26));
+#28=FACE_OUTER_BOUND('',#27,.T.);
+#29=ADVANCED_FACE('',(#28),#5,.T.);
+#30=ORIENTED_EDGE('',$,$,#12,.F.);
+#31=ORIENTED_EDGE('',$,$,#18,.T.);
+#32=EDGE_LOOP('',(#30,#31));
+#33=FACE_OUTER_BOUND('',#32,.T.);
+#34=ADVANCED_FACE('',(#33),#7,.T.);
+#35=OPEN_SHELL('bo025_dup_cyl',(#29,#34));
+#36=SHELL_BASED_SURFACE_MODEL('',(#35));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Bo025','Bo025','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#36),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

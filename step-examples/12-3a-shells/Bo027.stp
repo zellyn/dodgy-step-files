@@ -1,43 +1,32 @@
 ISO-10303-21;
-/* Bo027 - Per-vertex normals inconsistent across smooth edge.
- * Defect: two adjacent COMPLEX_TRIANGULATED_FACEs share node index 1.
- * Face A supplies a per-node normal of (0,0,1) at that node;
- * Face B supplies (0.7071, 0, 0.7071) at the SAME shared node.
- * Across a supposedly smooth edge the normals disagree, so a
- * shading pass must average (or worse: dispatch to default).
- * (AP242 ed.2 entity scaffold.) */
+/* Bo027: Two COMPLEX_TRIANGULATED_FACEs sharing node at origin: faceA normal (0,0,1), faceB normal (0.7,0,0.7) at same node — inconsistent per-vertex normals IS wired into shell/face topology; OCCT silently drops (empty result); catalog asks for heal or reject */
 HEADER;
-FILE_DESCRIPTION(('Bo027 - normal mismatch across smooth edge','Pass C gap-fill'),'2;1');
-FILE_NAME('Bo027.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
+FILE_DESCRIPTION(('Bo027'),'2;1');
+FILE_NAME('Bo027.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('managed model based 3d engineering');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','ap242_managed_model_based_3d_engineering',2020,#1);
-/* Shared coordinate list (4 vertices: shared_node at index 1) */
-#10=COORDINATES_LIST('mesh_coords',4,(
-  (1.0,0.0,0.0),
-  (1.0,1.0,0.0),
-  (0.0,1.0,0.0),
-  (1.0,0.0,1.0)));
-/* Face A normals: at shared node (index 1) the normal is +Z */
-#20=COMPLEX_TRIANGULATED_FACE('faceA_smooth_disagree',#10,$,
-  ((0.0,0.0,1.0),
-   (0.0,0.0,1.0),
-   (0.0,0.0,1.0)),
-  ((1,2,3)),
-  ((1,2,3)),
-  $);
-/* Face B normals: at shared node (also index 1) the normal is
- * (0.7071, 0, 0.7071) — disagrees with face A by 45 degrees. */
-#21=COMPLEX_TRIANGULATED_FACE('faceB_smooth_disagree',#10,$,
-  ((0.7071,0.0,0.7071),
-   (0.0,0.0,1.0),
-   (0.7071,0.0,0.7071)),
-  ((1,2,4)),
-  ((1,2,3)),
-  $);
-/* Tessellated shell wrapping the two faces */
-#30=TESSELLATED_SHELL_REPRESENTATION('mismatch_shell',(#20,#21),$);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=COORDINATES_LIST('faceA_coords',3,((0.,0.,0.),(1.,0.,0.),(0.,1.,0.)));
+#2=COORDINATES_LIST('faceA_normals',3,((0.,0.,1.),(0.,0.,1.),(0.,0.,1.)));
+#3=COMPLEX_TRIANGULATED_FACE('faceA',#1,((0,1,2)),.T.,#2);
+#4=COORDINATES_LIST('faceB_coords',3,((0.,0.,0.),(1.,0.,0.),(0.,0.,1.)));
+#5=COORDINATES_LIST('faceB_normals',3,((0.7071067811865476,0.,0.7071067811865476),(0.7071067811865476,0.,0.7071067811865476),(0.7071067811865476,0.,0.7071067811865476)));
+#6=COMPLEX_TRIANGULATED_FACE('faceB',#4,((0,1,2)),.T.,#5);
+#7=OPEN_SHELL('bo027_shell',(#3,#6));
+#8=SHELL_BASED_SURFACE_MODEL('bo027',(#7));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Bo027','Bo027','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#8),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

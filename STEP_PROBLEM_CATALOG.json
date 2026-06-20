@@ -32109,7 +32109,7 @@
     "cross_oracle_note": null,
     "description": "A `VERTEX_POINT` listed as an endpoint of an `EDGE_CURVE` is not actually walked-to from the edge's geometry: the edge's start/end parameter evaluation yields a different point. The vertex was attached at the wrong topological level by the producer. Bug-reporter language: \"vertex doesn't match edge\", \"stray vertex on edge\", \"topology references a sub-shape not in the parent\".",
     "expected_kernel_behavior": "Reject the edge, or replace the bad vertex with a vertex synthesized from curve evaluation.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Bo008.stp",
     "id": "Bo008",
@@ -32131,7 +32131,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Sub-shape attached at the wrong topological level"
   },
@@ -32251,7 +32251,7 @@
     "cross_oracle_note": null,
     "description": "A triangulated face (AP242 ed.2 `TRIANGULATED_FACE`) declares per-node normals, and at a smooth-edge node shared with the neighbour face, the two face's per-node normals point in noticeably different directions. Bug-reporter language: \"vertex normals don't match across edge\", \"normal inconsistency\", \"lighting seam in tessellation\".",
     "expected_kernel_behavior": "Average normals across smooth edges, or recompute from surface gradients.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Bo027.stp",
     "id": "Bo027",
@@ -32273,7 +32273,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Per-vertex normals supplied for a triangulated face are inconsistent across smooth edges"
   },

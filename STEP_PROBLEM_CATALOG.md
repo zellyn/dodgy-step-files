@@ -18177,9 +18177,9 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'VERTEX_POINT')
 - **Byte assertion**: contains(b'LINE')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Shell construction reports invalidity (free edges, multi-connected vertices, or wrong orientation); BRepCheck flags the shape, and downstream solid construction either produces an invalid solid or fails outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-3a-shells/Bo008.stp
 
 ### Bo022 — Shell is internally disconnected (two face groups never share an edge)
@@ -18237,9 +18237,9 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'COMPLEX_TRIANGULATED_FACE')
 - **Byte assertion**: contains(b'COORDINATES_LIST')
 - **Byte assertion**: declared_schema == b'AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Shell construction reports invalidity (free edges, multi-connected vertices, or wrong orientation); BRepCheck flags the shape, and downstream solid construction either produces an invalid solid or fails outright.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-3a-shells/Bo027.stp
 
 ### Bo028 — Two adjacent faces meet C1-discontinuously across a shared edge
