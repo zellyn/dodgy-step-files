@@ -2455,9 +2455,9 @@ End of file.
 - **Severity**: P1
 - **Byte assertion**: contains(b'SURFACE_OF_LINEAR_EXTRUSION(')
 - **Byte assertion**: count_entity_def(b'LINE') == 1
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs033 — Trim curves on `TOROIDAL_SURFACE` / NURBS produce jagged tessellation borders (`TRIMMED_CURVE` on `ELLIPSE` pcurve)
 - **Category**: §12.2c surface-degeneracy
@@ -2471,9 +2471,9 @@ End of file.
 - **Byte assertion**: contains(b'TOROIDAL_SURFACE(')
 - **Byte assertion**: contains(b'TRIMMED_CURVE(')
 - **Byte assertion**: contains(b'ELLIPSE(')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs034 — Twisted / pinched / vertex-split face: `EDGE_LOOP` revisits a shared vertex (Möbius-cell pathology)
 - **Category**: §12.2c surface-degeneracy
@@ -2486,9 +2486,9 @@ End of file.
 - **Severity**: P1
 - **Byte assertion**: count_entity_def(b'ORIENTED_EDGE') == 6
 - **Byte assertion**: contains(b'(5.0,5.0,0.0)')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs035 — Composite curve segment with null `parent_curve`
 - **Category**: §12.2c surface-degeneracy
@@ -2502,9 +2502,9 @@ End of file.
 - **Byte assertion**: contains(b'COMPOSITE_CURVE_SEGMENT(')
 - **Byte assertion**: contains(b',$)')
 - **Byte assertion**: contains(b'COMPOSITE_CURVE(')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs036 — Negative-radius / zero-magnitude direction or vector
 - **Category**: §12.2c surface-degeneracy
@@ -2517,9 +2517,9 @@ End of file.
 - **Severity**: P1
 - **Byte assertion**: contains(b'DIRECTION(\'\',(0.0,0.0,0.0))')
 - **Byte assertion**: count(b'DIRECTION(\'\',(0.0,0.0,1.0))') >= 2
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs037 — Offset of a surface-of-linear-extrusion fails iso-curve evaluation
 - **Category**: §12.2c surface-degeneracy
@@ -2530,11 +2530,11 @@ End of file.
 - **Notes**: Validation observed: silent-empty rather than the cited UIso/VIso exception. The exception path is downstream of an extra analysis pass that the validate2 transfer pipeline does not invoke at fixture scale; the kernel-mishandling-by-silent-acceptance still demonstrates the defect class. **See also**: Gn021. Synonyms: "offset of surface-of-linear-extrusion fails iso-curve evaluation", "OFFSET_SURFACE over SURFACE_OF_LINEAR_EXTRUSION throws on iso eval", "iso evaluation can not descend through offset wrappers", "composite surface chain fails UIso", "offset extrusion surface evaluation fails".
 - **Byte assertion**: contains(b'OFFSET_SURFACE(')
 - **Byte assertion**: contains(b'SURFACE_OF_LINEAR_EXTRUSION(')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs038 — Pcurve U/V parameter has large jump near periodic boundary on BSpline
 - **Category**: §12.2c surface-degeneracy

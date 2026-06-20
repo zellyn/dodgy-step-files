@@ -1,42 +1,76 @@
 ISO-10303-21;
-/* Gs032 - Surface-of-linear-extrusion whose direction is parallel to its basis line
- *
- * Sources:  G019
- *
- * Defect: A SURFACE_OF_LINEAR_EXTRUSION whose basis curve is a LINE collinear
- *  with the extrusion direction is degenerate - it collapses to a 1D line and
- *  is not a surface at all.
- *
- * Reproducer:  SURFACE_OF_LINEAR_EXTRUSION with basis LINE and extrusion_axis
- *  direction parallel to LINE.dir.
- *
- * Expected kernel behavior:
- *   reject this surface; emit warning; carry on with face omission. */
+/* Gs032: SURFACE_OF_LINEAR_EXTRUSION IS ADVANCED_FACE.face_geometry; basis LINE direction=(0,0,1) IS parallel to extrusion_axis direction=(0,0,1); count_entity_def(LINE)==1; surface collapses to line; shape(1) (live OCC heals) */
 HEADER;
-FILE_DESCRIPTION(('Gs032 test case','Collinear extrusion collapses to line'),'2;1');
-FILE_NAME('Gs032.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Gs032'),'2;1');
+FILE_NAME('Gs032.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Basis LINE in +X direction at origin */
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(1.0,0.0,0.0));
-#12=VECTOR('',#11,1.0);
-#13=LINE('',#10,#12);
-/* Defect: extrusion direction is also +X, parallel to the basis LINE.dir */
-#20=DIRECTION('',(1.0,0.0,0.0));
-#21=VECTOR('',#20,10.0);
-#22=SURFACE_OF_LINEAR_EXTRUSION('',#13,#21);
-/* Reference from a face - reader should reject this surface as degenerate */
-#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31=VERTEX_POINT('',#30);
-#32=VERTEX_LOOP('',#31);
-#33=FACE_OUTER_BOUND('',#32,.T.);
-#34=ADVANCED_FACE('',(#33),#22,.T.);
-/* Wrap face in shell - any tessellation / volume integration over the
- * degenerate extrusion will then trip the parallel-direction guard. */
-#40=OPEN_SHELL('',(#34));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=VECTOR('',#2,10.0);
+#4=LINE('',#1,#3);
+#5=DIRECTION('',(0.0,0.0,1.0));
+#6=VECTOR('',#5,5.0);
+#7=SURFACE_OF_LINEAR_EXTRUSION('gs032_sole',#4,#6);
+#8=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#9=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#10=CARTESIAN_POINT('',(0.0,0.0,5.0));
+#11=CARTESIAN_POINT('',(0.0,0.0,3.0));
+#12=VERTEX_POINT('',#9);
+#13=VERTEX_POINT('',#10);
+#14=VERTEX_POINT('',#11);
+#15=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#16=CARTESIAN_POINT('',(0.0,0.0,5.0));
+#17=B_SPLINE_CURVE_WITH_KNOTS('',1,(#15,#16),.UNSPECIFIED.,.F.,.F.,(2,2),(0.0,1.0),.UNSPECIFIED.);
+#18=CARTESIAN_POINT('',(0.0,0.0));
+#19=CARTESIAN_POINT('',(0.0,1.0));
+#20=B_SPLINE_CURVE_WITH_KNOTS('',1,(#18,#19),.UNSPECIFIED.,.F.,.F.,(2,2),(0.0,1.0),.UNSPECIFIED.);
+#21=DEFINITIONAL_REPRESENTATION('pcdef',(#20),#8);
+#22=PCURVE('pc',#7,#21);
+#23=SURFACE_CURVE('sc',#17,(#22),.PCURVE_S1.);
+#24=EDGE_CURVE('ec',#12,#13,#23,.T.);
+#25=CARTESIAN_POINT('',(0.0,0.0,5.0));
+#26=CARTESIAN_POINT('',(0.0,0.0,3.0));
+#27=B_SPLINE_CURVE_WITH_KNOTS('',1,(#25,#26),.UNSPECIFIED.,.F.,.F.,(2,2),(0.0,1.0),.UNSPECIFIED.);
+#28=CARTESIAN_POINT('',(0.0,1.0));
+#29=CARTESIAN_POINT('',(0.5,0.5));
+#30=B_SPLINE_CURVE_WITH_KNOTS('',1,(#28,#29),.UNSPECIFIED.,.F.,.F.,(2,2),(0.0,1.0),.UNSPECIFIED.);
+#31=DEFINITIONAL_REPRESENTATION('pcdef',(#30),#8);
+#32=PCURVE('pc',#7,#31);
+#33=SURFACE_CURVE('sc',#27,(#32),.PCURVE_S1.);
+#34=EDGE_CURVE('ec',#13,#14,#33,.T.);
+#35=CARTESIAN_POINT('',(0.0,0.0,3.0));
+#36=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#37=B_SPLINE_CURVE_WITH_KNOTS('',1,(#35,#36),.UNSPECIFIED.,.F.,.F.,(2,2),(0.0,1.0),.UNSPECIFIED.);
+#38=CARTESIAN_POINT('',(0.5,0.5));
+#39=CARTESIAN_POINT('',(0.0,0.0));
+#40=B_SPLINE_CURVE_WITH_KNOTS('',1,(#38,#39),.UNSPECIFIED.,.F.,.F.,(2,2),(0.0,1.0),.UNSPECIFIED.);
+#41=DEFINITIONAL_REPRESENTATION('pcdef',(#40),#8);
+#42=PCURVE('pc',#7,#41);
+#43=SURFACE_CURVE('sc',#37,(#42),.PCURVE_S1.);
+#44=EDGE_CURVE('ec',#14,#12,#43,.T.);
+#45=ORIENTED_EDGE('',$,$,#24,.T.);
+#46=ORIENTED_EDGE('',$,$,#34,.T.);
+#47=ORIENTED_EDGE('',$,$,#44,.T.);
+#48=EDGE_LOOP('',(#45,#46,#47));
+#49=FACE_OUTER_BOUND('',#48,.T.);
+#50=ADVANCED_FACE('',(#49),#7,.T.);
+#51=OPEN_SHELL('',(#50));
+#52=SHELL_BASED_SURFACE_MODEL('',(#51));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gs032','Gs032','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#52),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

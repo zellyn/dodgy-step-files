@@ -26645,7 +26645,7 @@
     "cross_oracle_note": null,
     "description": "A `SURFACE_OF_LINEAR_EXTRUSION` whose basis curve is a `LINE` collinear with the extrusion direction is degenerate; it collapses to a line.",
     "expected_kernel_behavior": "reject this surface; emit warning; carry on with face omission.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs032.stp",
     "id": "Gs032",
@@ -26668,7 +26668,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Surface-of-linear-extrusion whose direction is parallel to its basis line"
   },
@@ -26684,7 +26684,7 @@
     "cross_oracle_note": null,
     "description": "Trim curves on `TOROIDAL_SURFACE` and NURBS surfaces produce sharp, chaotic border meshes while the interior of the patch is regular. Typical signature: a pcurve on a `TOROIDAL_SURFACE` is a `TRIMMED_CURVE` over an `ELLIPSE` in (u,v) parametric space. Tessellator falls back to coarse parametric sampling on the trim curve while the rest of the patch uses chordal-error sampling. Affects tube.stp and similar trimmed `TOROIDAL_SURFACE` / bicubic NURBS faces with `TRIMMED_CURVE` defined via `PCURVE`.",
     "expected_kernel_behavior": "heal; apply chordal-error refinement to trim curves consistently with surface refinement.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs033.stp",
     "id": "Gs033",
@@ -26705,7 +26705,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Trim curves on `TOROIDAL_SURFACE` / NURBS produce jagged tessellation borders (`TRIMMED_CURVE` on `ELLIPSE` pcurve)"
   },
@@ -26720,7 +26720,7 @@
     "cross_oracle_note": null,
     "description": "Family of single-face topology defects, all characterised by an `EDGE_LOOP` that visits the same `VERTEX_POINT` more than once: pinched face self-touches at a single vertex visited twice by its outer wire (figure-eight); vertex-split face has a boundary vertex visited three times so the loop traces two adjoined triangles sharing a common centre vertex (e.g. six edges all meeting at a centre point (5,5,0)); twisted face has a Möbius-cell-like parametrisation (the parametric region maps to a non-orientable patch); a periodic face represented by a single belt wire collapses to a degenerate pole.",
     "expected_kernel_behavior": "split the pinched face at the shared vertex into two manifold faces; re-fit a twisted face's parametrisation if recoverable; insert degenerate edges at poles for the belt-wire-on-periodic case; or reject as malformed when the topology cannot be recovered.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs034.stp",
     "id": "Gs034",
@@ -26745,7 +26745,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Twisted / pinched / vertex-split face: `EDGE_LOOP` revisits a shared vertex (Möbius-cell pathology)"
   },
@@ -26761,7 +26761,7 @@
     "cross_oracle_note": null,
     "description": "`COMPOSITE_CURVE_SEGMENT.parent_curve` is null (`$`). Translator must drop the null segment with a warning rather than dereferencing `$` as a curve.",
     "expected_kernel_behavior": "heal; drop the null segment with a warning; never crash.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs035.stp",
     "id": "Gs035",
@@ -26786,7 +26786,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Composite curve segment with null `parent_curve`"
   },
@@ -26801,7 +26801,7 @@
     "cross_oracle_note": null,
     "description": "`DIRECTION` with all-zero direction_ratios (S020); `VECTOR` with zero magnitude (Q057); `axis2_placement_3d` whose `axis` and `ref_direction` are colinear so an orthonormal frame cannot be constructed (S021); `PLANE` whose ref direction is parallel to its normal (W020, degenerate plane causes import crashes).",
     "expected_kernel_behavior": "reject the surface/placement; healers may project ref_direction onto plane normal or substitute global Z/X; never crash.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs036.stp",
     "id": "Gs036",
@@ -26826,7 +26826,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Negative-radius / zero-magnitude direction or vector"
   },
@@ -26841,7 +26841,7 @@
     "cross_oracle_note": null,
     "description": "A face's supporting surface is built as a finite offset of a surface-of-linear-extrusion (an extruded curve, then offset by a constant distance along its normal). Evaluating an iso-curve (a row of constant U or V) on that composite surface throws an exception in some receivers, because the iso-evaluation logic does not descend through the offset/extrusion wrappers down to the basis curve.",
     "expected_kernel_behavior": "Heal and accept: iso-curve evaluation must work through composite surface wrappers, falling through to the basis curve when the offset is finite. Throwing on legitimate composite surface chains is not acceptable; must not crash or reject valid input.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs037.stp",
     "id": "Gs037",
@@ -26864,7 +26864,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Offset of a surface-of-linear-extrusion fails iso-curve evaluation"
   },
