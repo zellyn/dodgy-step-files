@@ -51,6 +51,6 @@ def test_no_inconsistent_pairs(audit_results: list[dict]) -> None:
 
 
 def test_verdicts_are_well_formed(audit_results: list[dict]) -> None:
-    allowed = {"consistent", "inconsistent", "uncheckable"}
+    allowed = {"consistent", "inconsistent", "uncheckable", "documented"}
     bad = [r for r in audit_results if r["verdict"] not in allowed]
     assert not bad, f"unexpected verdicts: {bad!r}"

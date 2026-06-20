@@ -33,7 +33,7 @@ import json
 import re
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterable
 
 from step_corpus import catalog
 from step_corpus._build_catalog_json import RESEARCH_ROOT
@@ -147,9 +147,10 @@ def check_entry(entry: dict) -> list[dict[str, Any]]:
     return out
 
 
-def check_all() -> list[dict[str, Any]]:
+def check_all(entries: Iterable[dict] | None = None) -> list[dict[str, Any]]:
     out = []
-    for entry in catalog.iter_canonical():
+    src = entries if entries is not None else catalog.iter_canonical()
+    for entry in src:
         out.extend(check_entry(entry))
     return out
 

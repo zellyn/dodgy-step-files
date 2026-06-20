@@ -54,11 +54,18 @@ import json
 import re
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterable
 
 from step_corpus import catalog
 
 OUTPUT_JSON = Path("/tmp/cad-bytes-tier3-audit.json")
+
+# Entries where bytes/tier-3 divergence IS the documented kernel-bug
+# evidence (OCC silently transforms the source). Both assertions are
+# individually correct; cross-audit downgrades inconsistent → documented.
+DOCUMENTED_DIVERGENCE: set[str] = {
+    "Tsh050",  # OCC silently merges two coplanar ADVANCED_FACEs sharing an edge
+}
 
 # --- Byte-assertion shape extractors --------------------------------------
 
@@ -337,12 +344,23 @@ def audit_entry(entry: dict) -> list[dict[str, Any]]:
             ),
         })
 
+    if entry["id"] in DOCUMENTED_DIVERGENCE:
+        for p in pairs:
+            if p["verdict"] == "inconsistent":
+                p["verdict"] = "documented"
+                p["reason"] = (
+                    "divergence IS the documented kernel-bug evidence "
+                    "(OCC silently transforms the source); original: "
+                    + p["reason"]
+                )
+
     return pairs
 
 
-def audit_all() -> list[dict[str, Any]]:
+def audit_all(entries: Iterable[dict] | None = None) -> list[dict[str, Any]]:
     out: list[dict[str, Any]] = []
-    for entry in catalog.iter_canonical():
+    src = entries if entries is not None else catalog.iter_canonical()
+    for entry in src:
         out.extend(audit_entry(entry))
     return out
 

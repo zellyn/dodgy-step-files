@@ -29,7 +29,7 @@ import json
 import sys
 from collections import Counter
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterable
 
 from step_corpus import catalog
 from step_corpus._outcome_extractor import extract_outcomes
@@ -109,9 +109,10 @@ def _load_summary(entry: dict) -> dict | None:
         return None
 
 
-def report() -> list[dict[str, Any]]:
+def report(entries: Iterable[dict] | None = None) -> list[dict[str, Any]]:
     rows = []
-    for entry in catalog.iter_canonical():
+    src = entries if entries is not None else catalog.iter_canonical()
+    for entry in src:
         prose = entry.get("expected_kernel_behavior") or ""
         out = extract_outcomes(prose)
         allowed = set(out["allowed"])

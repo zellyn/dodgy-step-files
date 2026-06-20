@@ -45,7 +45,7 @@ import json
 import re
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterable
 
 from step_corpus import catalog
 from step_corpus._build_catalog_json import RESEARCH_ROOT
@@ -208,14 +208,15 @@ def check_entry(entry: dict, md_text: str = "") -> list[dict[str, Any]]:
     return results
 
 
-def check_all() -> list[dict[str, Any]]:
+def check_all(entries: Iterable[dict] | None = None) -> list[dict[str, Any]]:
     """Run tier-3 assertions for every catalog entry that declares any.
 
     Source of truth: the ``tier3_assertions`` field in the JSON
     catalog. Markdown is no longer scraped on the hot path.
     """
     out = []
-    for entry in catalog.iter_canonical():
+    src = entries if entries is not None else catalog.iter_canonical()
+    for entry in src:
         out.extend(check_entry(entry))
     return out
 
