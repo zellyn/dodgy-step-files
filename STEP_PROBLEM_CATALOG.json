@@ -31159,7 +31159,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade large-pole B-spline threshold",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs163.stp",
     "id": "Gs163",
@@ -31180,7 +31180,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeUpgrade large-pole B-spline threshold"
   },
@@ -31192,7 +31192,7 @@
     "cross_oracle_note": null,
     "description": "BezierSurface pole extraction dispatch",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs164.stp",
     "id": "Gs164",
@@ -31213,7 +31213,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "BezierSurface pole extraction dispatch"
   },
@@ -31225,7 +31225,7 @@
     "cross_oracle_note": null,
     "description": "OffsetSurface detection and collection mode",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs165.stp",
     "id": "Gs165",
@@ -31246,7 +31246,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "OffsetSurface detection and collection mode"
   },
@@ -31258,7 +31258,7 @@
     "cross_oracle_note": null,
     "description": "SurfaceOfRevolution V-closed seam edge gap",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs166.stp",
     "id": "Gs166",
@@ -31279,7 +31279,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "SurfaceOfRevolution V-closed seam edge gap"
   },
@@ -31291,7 +31291,7 @@
     "cross_oracle_note": null,
     "description": "RectangularTrimmedSurface null basis detection",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs167.stp",
     "id": "Gs167",
@@ -31312,7 +31312,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "RectangularTrimmedSurface null basis detection"
   },
@@ -31324,7 +31324,7 @@
     "cross_oracle_note": null,
     "description": "B-spline C0 continuity asymmetric detection",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs168.stp",
     "id": "Gs168",
@@ -31345,7 +31345,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "B-spline C0 continuity asymmetric detection"
   },
