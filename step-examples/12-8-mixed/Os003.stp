@@ -1,20 +1,52 @@
 ISO-10303-21;
-/* Os003 - Inward offset > cylinder radius: face inverts.
- * Defect: cylinder r=5, offset distance -6 inward. Offset face
- * appears on the wrong side of the axis. */
+/* Os003: GEOMETRIC_CURVE_SET containing ADVANCED_FACE; face references an OFFSET_SURFACE wrapping CYLINDRICAL_SURFACE('cyl_r5',#13,5.0); offset distance=-6.0 (inward by more than radius) inverts surface (inside-out); BRepOffset_Status.Reversed — result is physically impossible reversed face; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; no orphaned entities */
 HEADER;
-FILE_DESCRIPTION(('Os003 - reversed offset','Pass C gap-fill'),'2;1');
-FILE_NAME('Os003.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Os003'),'2;1');
+FILE_NAME('Os003.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#3=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#4=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#5=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#9=CARTESIAN_POINT('',(0.0,0.0,0.0));
 #10=CARTESIAN_POINT('',(0.0,0.0,0.0));
 #11=DIRECTION('',(0.0,0.0,1.0));
 #12=DIRECTION('',(1.0,0.0,0.0));
 #13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
 #14=CYLINDRICAL_SURFACE('cyl_r5',#13,5.0);
-/* Inward offset 6 - reverses the surface. */
+#15=OFFSET_SURFACE('',#14,-6.0,.F.);
+#16=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#17=DIRECTION('',(0.0,0.0,1.0));
+#18=DIRECTION('',(1.0,0.0,0.0));
+#19=AXIS2_PLACEMENT_3D('',#16,#17,#18);
+#20=CIRCLE('',#19,5.0);
+#21=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#22=VERTEX_POINT('',#21);
+#23=EDGE_CURVE('bot_seam',#22,#22,#20,.T.);
+#24=ORIENTED_EDGE('',*,*,#23,.T.);
+#25=EDGE_LOOP('',(#24));
+#26=FACE_OUTER_BOUND('',#25,.T.);
+#27=ADVANCED_FACE('inverted_offset_face',(#26),#15,.T.);
+#28=GEOMETRIC_CURVE_SET('',(#27));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Os003','Os003','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#28),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

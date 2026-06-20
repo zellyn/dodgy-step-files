@@ -1,62 +1,65 @@
 ISO-10303-21;
-/* Fi004 - Faulty fillet contour: edges don't connect AND one self-crosses.
- * Defect: three EDGE_CURVEs submitted as one fillet contour:
- *   e1, e2 share vertex #21 (connected pair),
- *   e3_self_crossing is a B-spline whose control polygon describes a
- *   figure-eight (geometric self-cross),
- * meeting all three sub-conditions in the catalog claim. */
+/* Fi004: GEOMETRIC_CURVE_SET containing ADVANCED_FACE; FACE_OUTER_BOUND references EDGE_LOOP with a self-crossing fillet contour; one edge is a B_SPLINE_CURVE_WITH_KNOTS labelled 'e3_self_crossing' whose control polygon forms a figure_eight shape; fillet contour is geometrically inconsistent — disjoint or self-crossing; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; no orphaned entities */
 HEADER;
-FILE_DESCRIPTION(('Fi004 test case','Faulty fillet contour: disjoint and self-crossing'),'2;1');
-FILE_NAME('Fi004.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Fi004'),'2;1');
+FILE_NAME('Fi004.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Three connected vertices for e1, e2 */
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#12=CARTESIAN_POINT('',(2.0,0.0,0.0));
-#20=VERTEX_POINT('',#10);
-#21=VERTEX_POINT('shared',#11);
-#22=VERTEX_POINT('',#12);
-/* e1: linear segment 0..1; e2: linear segment 1..2 */
-#30=DIRECTION('',(1.0,0.0,0.0));
-#31=VECTOR('',#30,1.0);
-#32=LINE('',#10,#31);
-#33=LINE('',#11,#31);
-#40=EDGE_CURVE('e1',#20,#21,#32,.T.);
-#41=EDGE_CURVE('e2',#21,#22,#33,.T.);
-/* Disjoint, self-crossing third edge: a B-spline with figure-eight
- * control polygon. Endpoints at (5,0,0) and (5,0,0) (closed) so the
- * curve's polygon crosses itself geometrically. */
-#50=CARTESIAN_POINT('p0',(5.0,0.0,0.0));
-#51=CARTESIAN_POINT('p1',(6.0,1.0,0.0));
-#52=CARTESIAN_POINT('p2',(7.0,-1.0,0.0));
-#53=CARTESIAN_POINT('p3',(7.0,1.0,0.0));
-#54=CARTESIAN_POINT('p4',(6.0,-1.0,0.0));
-#55=CARTESIAN_POINT('p5',(5.0,0.0,0.0));
-#60=B_SPLINE_CURVE_WITH_KNOTS('figure_eight',3,(#50,#51,#52,#53,#54,#55),
-       .UNSPECIFIED.,.F.,.F.,(4,2,4),(0.0,0.5,1.0),.UNSPECIFIED.);
-#61=VERTEX_POINT('',#50);
-#62=VERTEX_POINT('',#55);
-#63=EDGE_CURVE('e3_self_crossing',#61,#62,#60,.T.);
-/* {e1, e2, e3_self_crossing} is not a valid fillet contour:
- * e3 is disjoint from {e1,e2} AND self-crosses. */
-/* PRODUCT chain so OCCT loads the geometry. */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Fi004','Fi004','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9020=GEOMETRIC_CURVE_SET('wire_set',(#40,#41,#63));
-#9021=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9020),#9010);
-#9022=SHAPE_DEFINITION_REPRESENTATION(#9005,#9021);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(10.0,5.0,0.0));
+#9=CARTESIAN_POINT('',(0.0,5.0,0.0));
+#10=VERTEX_POINT('',#6);
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=DIRECTION('',(1.0,0.0,0.0));
+#15=VECTOR('',#14,10.0);
+#16=LINE('',#6,#15);
+#17=EDGE_CURVE('e0_bottom',#10,#11,#16,.T.);
+#18=DIRECTION('',(0.0,1.0,0.0));
+#19=VECTOR('',#18,5.0);
+#20=LINE('',#7,#19);
+#21=EDGE_CURVE('e1_right',#11,#12,#20,.T.);
+#22=DIRECTION('',(-1.0,0.0,0.0));
+#23=VECTOR('',#22,10.0);
+#24=LINE('',#8,#23);
+#25=EDGE_CURVE('e2_top',#12,#13,#24,.T.);
+#26=CARTESIAN_POINT('',(0.0,5.0,0.0));
+#27=CARTESIAN_POINT('',(8.0,10.0,0.0));
+#28=CARTESIAN_POINT('',(12.0,2.5,0.0));
+#29=CARTESIAN_POINT('',(-2.0,8.0,0.0));
+#30=CARTESIAN_POINT('',(6.0,-2.0,0.0));
+#31=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#32=B_SPLINE_CURVE_WITH_KNOTS('e3_self_crossing',3,(#26,#27,#28,#29,#30,#31),.UNSPECIFIED.,.F.,.T.,(4,1,1,4),(0.0,0.333333333333,0.666666666667,1.0),.UNSPECIFIED.);
+#33=EDGE_CURVE('figure_eight_contour',#13,#10,#32,.T.);
+#34=ORIENTED_EDGE('',$,$,#17,.T.);
+#35=ORIENTED_EDGE('',$,$,#21,.T.);
+#36=ORIENTED_EDGE('',$,$,#25,.T.);
+#37=ORIENTED_EDGE('',*,*,#33,.T.);
+#38=EDGE_LOOP('',(#34,#35,#36,#37));
+#39=FACE_OUTER_BOUND('',#38,.T.);
+#40=ADVANCED_FACE('',(#39),#5,.T.);
+#41=GEOMETRIC_CURVE_SET('',(#40));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Fi004','Fi004','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#41),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
