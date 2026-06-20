@@ -26379,7 +26379,7 @@
     "cross_oracle_note": null,
     "description": "Untrimmed `PLANE` exported and re-imported turns into `B_SPLINE_SURFACE_WITH_KNOTS` of degree (1,1) with 2x2 control net, comes back as trimmed plane with oversize natural rectangle relative to original. Affects feature recognition, mass properties, Booleans. CAD Exchanger and Spatial both call this \"Geometry Simplification\" / \"Canonical Recognition\".",
     "expected_kernel_behavior": "heal by analytic recovery; fit candidate primitive within tolerance, replace; reject canonicalization if recovered surface deviates beyond user-supplied tolerance.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs024.stp",
     "id": "Gs024",
@@ -26403,7 +26403,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Round-trip planar face becomes trimmed B-spline (degree-1 NURBS)"
   },
@@ -26493,7 +26493,7 @@
     "cross_oracle_note": null,
     "description": "An edge appears to be a seam edge — two faces meeting along what looks like a periodic-surface boundary — but the underlying surface is not actually periodic. Common signature: a `SURFACE_CURVE` with `master_representation` set to `.PCURVE_S1_AND_S2.` whose `associated_geometry` list contains the same `PCURVE` reference twice (e.g. `(#46, #46)`), claiming two pcurves on two surfaces but using one pcurve for both slots. Healing logic must distinguish true periodic seams from coincidental shared edges to avoid spuriously splitting or merging.",
     "expected_kernel_behavior": "heal; verify periodicity flag and parametric distance before treating as seam; do not insert seam-degenerate edge.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs028.stp",
     "id": "Gs028",
@@ -26514,7 +26514,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Pseudo-seam edge: `SURFACE_CURVE` claims `PCURVE_S1_AND_S2` but lists same pcurve twice"
   },
@@ -26530,7 +26530,7 @@
     "cross_oracle_note": null,
     "description": "A `TRIMMED_CURVE` or `EDGE_CURVE` claims `[first, last]` parameter range outside the curve's natural domain or with `last < first`. Translator and downstream evaluation must normalize.",
     "expected_kernel_behavior": "heal; clamp/wrap parameter values into natural domain; if `last < first`, swap or wrap modulo period.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs029.stp",
     "id": "Gs029",
@@ -26553,7 +26553,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Curve with last < first parameter range"
   },
@@ -26568,7 +26568,7 @@
     "cross_oracle_note": null,
     "description": "After local edits (face translation, blend suppression, partial defeaturing) an edge's stored 3D curve no longer matches the geometric intersection of its two host faces. Edge survives as topology but its curve is stale, leading to large tolerances or visible cracks. TransMagic's \"edges for the geometry do not match the surfaces that they are edges for\"; also applies to translator output where edges deviate from cylinder/cone surfaces beyond tolerance.",
     "expected_kernel_behavior": "heal; `rebuild-edge` re-intersects host faces and rebuilds vertices; reproject curve onto surface, or replace with surface intersection.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs030.stp",
     "id": "Gs030",
@@ -26592,7 +26592,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "Edge geometry inconsistent with adjacent faces' actual intersection"
   },
@@ -26607,7 +26607,7 @@
     "cross_oracle_note": null,
     "description": "A single `ADVANCED_FACE` ends up with two `FACE_OUTER_BOUND` entries — typically both referencing the same `EDGE_LOOP` — when the schema permits only one. Equivalently, the same outer wire is stored twice in the parametric domain so two pcurves trace the same contour. Common cause: rehosting a face onto a new supporting surface and reprojecting all 3D edges, without first deduplicating the wire that already describes the contour.",
     "expected_kernel_behavior": "a face-construction or rehosting pass must ensure exactly one outer wire per face; merge duplicates or reject. A multiply-traced outer wire produces ambiguous parametric trims.",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs031.stp",
     "id": "Gs031",
@@ -26630,7 +26630,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "`ADVANCED_FACE` with two `FACE_OUTER_BOUND` entries (duplicated outer contour, overlapping pcurves)"
   },
