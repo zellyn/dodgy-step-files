@@ -22907,7 +22907,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Curve.IsPlanar Z-NaN",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn090.stp",
     "id": "Gn090",
@@ -22928,7 +22928,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Curve.IsPlanar Z-NaN"
   },
@@ -22940,7 +22940,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_ConvertCurve2dToBezier endpoint-pole-multiplicity",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn091.stp",
     "id": "Gn091",
@@ -22961,7 +22961,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeUpgrade_ConvertCurve2dToBezier endpoint-pole-multiplicity"
   },
@@ -22973,7 +22973,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Curve.GetSamplePoints offset-curve sample-density",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn092.stp",
     "id": "Gn092",
@@ -22994,7 +22994,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Curve.GetSamplePoints offset-curve sample-density"
   },
@@ -23006,7 +23006,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_ConvertSurfaceToBezierBasis u-and-v-knot-asymmetry",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn093.stp",
     "id": "Gn093",
@@ -23027,7 +23027,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeUpgrade_ConvertSurfaceToBezierBasis u-and-v-knot-asymmetry"
   },
@@ -23072,7 +23072,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_ConvertSurfaceToBezierBasis 1x1-control-grid",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn095.stp",
     "id": "Gn095",
@@ -23093,7 +23093,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeUpgrade_ConvertSurfaceToBezierBasis 1x1-control-grid"
   },

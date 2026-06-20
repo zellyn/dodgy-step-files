@@ -1,46 +1,46 @@
 ISO-10303-21;
-/* Gn095 - ShapeUpgrade_ConvertSurfaceToBezierBasis 1x1-control-grid
-   Defect: degenerate B-spline surface with only 1 control point (collapsed
-   to a single point); converter doesn't reject and produces a 0-patch Bezier
-   surface. The surface has degree (3,3) but 1x1 control net -> invalid.
-   Proper validation should reject single-point grids; conversion yields empty. */
+/* Gn095: B_SPLINE_SURFACE_WITH_KNOTS u_degree=3 v_degree=3 1x1-control-grid; n=1 but degree=3 requires n≥4; knots (0.0,1.0) mults (2,2) undersized; IS face_geometry; ConvertSurfaceToBezierBasis 0-patch result → shape_null=True */
 HEADER;
-FILE_DESCRIPTION(('Gn095 - ConvertSurfaceToBezierBasis 1x1 collapsed grid'),'2;1');
-FILE_NAME('Gn095.stp','2026-06-15T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Gn095'),'2;1');
+FILE_NAME('Gn095.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* Single CARTESIAN_POINT; surface collapses to this point. */
-#10=CARTESIAN_POINT('p_degenerate',(1.0,2.0,3.0));
-/* Defect: B_SPLINE_SURFACE_WITH_KNOTS degree (3,3) but only 1x1 net.
-   Knot vectors have multiplicity (2,2) at each end (no interior knots).
-   With 1 control point, degree 3 requires at least degree+1=4 points per axis.
-   This is geometrically degenerate and should be rejected. */
-#100=B_SPLINE_SURFACE_WITH_KNOTS('collapsed_1x1',
-  3,3,
-  ((#10)),
-  .UNSPECIFIED.,.F.,.F.,.F.,
-  (2,2),
-  (2,2),
-  (0.0,1.0),
-  (0.0,1.0),
-  .UNSPECIFIED.);
-/* PRODUCT chain. */
-#9990=APPLICATION_CONTEXT('automotive_design');
-#9000=PRODUCT_CONTEXT('',#9990,'mechanical');
-#9001=PRODUCT('Gn095','Gn095','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#9990,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9020=GEOMETRIC_SURFACE_SET('surf_set',(#100));
-#9022=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9020),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#2=B_SPLINE_SURFACE_WITH_KNOTS('gn095_1x1',3,3,((#1)),.UNSPECIFIED.,.F.,.F.,.F.,(2,2),(2,2),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
+#3=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#4=VERTEX_POINT('',#3);
+#5=DIRECTION('',(1.0,0.0,0.0));
+#6=VECTOR('',#5,0.0);
+#7=LINE('',#3,#6);
+#8=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#9=CARTESIAN_POINT('',(0.0,0.0));
+#10=DIRECTION('',(1.0,0.0));
+#11=VECTOR('',#10,0.0);
+#12=LINE('',#9,#11);
+#13=DEFINITIONAL_REPRESENTATION('gn095_pcdef',(#12),#8);
+#14=PCURVE('gn095_pc_ent',#2,#13);
+#15=SURFACE_CURVE('gn095_sc',#7,(#14),.PCURVE_S1.);
+#16=EDGE_CURVE('gn095_seam',#4,#4,#15,.T.);
+#17=ORIENTED_EDGE('',$,$,#16,.T.);
+#18=EDGE_LOOP('',(#17));
+#19=FACE_OUTER_BOUND('',#18,.T.);
+#20=ADVANCED_FACE('',(#19),#2,.T.);
+#21=OPEN_SHELL('',(#20));
+#22=SHELL_BASED_SURFACE_MODEL('',(#21));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gn095','Gn095','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#22),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

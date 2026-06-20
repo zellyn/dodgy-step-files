@@ -21718,23 +21718,23 @@ Defect: B-spline surface trimmed to non-rectangular region (triangular trim); Sp
 ### Gn090 — ShapeAnalysis_Curve.IsPlanar Z-NaN
 
 Defect: B-spline with one control point having Z=NaN; IsPlanar's pole sampling produces NaN result, which IEEE compare-with-zero returns false (so "is planar" reported). Fixture: degree-3 curve with 6 control points; middle pole has Z=1.0E+100 to simulate NaN behavior.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn091 — ShapeUpgrade_ConvertCurve2dToBezier endpoint-pole-multiplicity
 
 Defect: 2D B-spline whose endpoint knot multiplicity is degree (open), but inner multiplicity is also degree (C0 break); converter expects only-endpoint-clamped. Fixture: degree-3 2D curve with 7 control points, knot multiplicities (4,3,3,4).
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn092 — ShapeAnalysis_Curve.GetSamplePoints offset-curve sample-density
 
 Defect: OFFSET_CURVE wrapping a B-spline; sample density inherited from base curve doesn't account for offset's local curvature change. Fixture: degree-3 B-spline with 8 control points wrapped by OFFSET_CURVE with 1.5mm offset in Z direction.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn093 — ShapeUpgrade_ConvertSurfaceToBezierBasis u-and-v-knot-asymmetry
 
 Defect: Surface with u_degree=3, v_degree=5 and asymmetric knot multiplicities; conversion's symmetric assumption produces wrong Bezier patch count in U vs V. Fixture: 4x6 control point grid, degree-3 in U, degree-5 in V, knot multiplicities (3,1,3) in U and (5,1,5) in V.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn094 — ShapeAnalysis_Curve.IsClosed degree-0-curve
 
 Defect: B-spline of degree 0 (piecewise constant); `IsClosed` reports false but the curve has no meaningful direction, so closed-vs-open is ill-defined. A degree-0 B-spline is piecewise constant segments with no tangent or direction. The `IsClosed` logic assumes non-zero degree and fails to handle the degenerate case properly.
@@ -21747,8 +21747,8 @@ Defect: B-spline of degree 0 (piecewise constant); `IsClosed` reports false but 
 Defect: Degenerate B-spline surface with only 1 control point (collapsed to a single point); converter doesn't reject and produces a 0-patch Bezier. A degree (3,3) surface with a 1×1 net is geometrically invalid (requires ≥4 points per axis for degree 3). Proper validation should reject single-point grids; conversion yields empty result.
 
 **Minimal reproducer**: `B_SPLINE_SURFACE_WITH_KNOTS` degree (3,3), 1 control point, knot multiplicities (2,2) on both axes.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn096 — ShapeAnalysis_Curve.FillBndBox infinite-bbox
 
 Defect: Curve with NaN/inf control points; `FillBndBox` returns an unbounded bbox without flagging the invalid input. At least one control point contains inf or NaN coordinate, causing bbox calculation to fail silently and produce an infinite or undefined bounding box.
