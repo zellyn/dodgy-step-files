@@ -1,51 +1,74 @@
 ISO-10303-21;
-/* Tfa110 - ShapeFix_Face.FixOrientation indeterminate-normal
- * Face with a wire that's a single closed curve (e.g., circle).
- * FixOrientation's winding-direction test doesn't have well-defined inside/outside
- * for a planar circle without external context.
- * Expected: should handle planar circular wires unambiguously.
- */
+/* Tfa110: CLOSED_SHELL: top cap ADVANCED_FACE (z=5) bounded by single closed CIRCLE EDGE_CURVE (radius=3, start==end==v_seam_top); ShapeFix_Face::FixOrientation calls BRepClass_FaceClassifier on edge midpoints and vertices — all lie on the boundary circle so interior/exterior is undefined; defect IS on live CLOSED_SHELL traversal path */
 HEADER;
-FILE_DESCRIPTION(('Tfa110 test case','Face with single planar circular wire (indeterminate normal)'),'2;1');
-FILE_NAME('Tfa110.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Tfa110'),'2;1');
+FILE_NAME('Tfa110.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* === Planar surface: z = 0 === */
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);#14=PLANE('circle_plane',#13);
-/* === Single closed circular wire (radius 5) === */
-#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#21=AXIS2_PLACEMENT_3D('',#20,#11,#12);
-#22=CIRCLE('boundary_circle',#21,5.0);
-/* === Start/end vertex on the circle === */
-#30=CARTESIAN_POINT('',(5.0,0.0,0.0));#31=VERTEX_POINT('',#30);
-/* === Full circle edge (closed curve) === */
-#40=EDGE_CURVE('circle_edge_closed',#31,#31,#22,.T.);
-/* === Edge in loop (single edge forming closed wire) === */
-#50=ORIENTED_EDGE('oe_circle',*,*,#40,.T.);
-#51=EDGE_LOOP('circle_wire_single_edge',(#50));
-#52=FACE_OUTER_BOUND('',#51,.T.);
-/* === Face with single-edge circular boundary === */
-#60=ADVANCED_FACE('indeterminate_normal_face',(#52),#14,.T.);
-/* === Mandatory product chain === */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Tfa110','Tfa110','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=OPEN_SHELL('shell',(#60));
-#9022=SHELL_BASED_SURFACE_MODEL('sbsm',(#9021));
-#9023=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9022),#9010);
-#9024=SHAPE_DEFINITION_REPRESENTATION(#9005,#9023);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(3.0,0.0,5.0));
+#3=VERTEX_POINT('',#1);
+#4=VERTEX_POINT('',#2);
+#5=DIRECTION('',(0.0,0.0,1.0));
+#6=VECTOR('',#5,5.0);
+#7=LINE('',#1,#6);
+#8=EDGE_CURVE('',#3,#4,#7,.T.);
+#9=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#10=DIRECTION('',(0.0,0.0,-1.0));
+#11=DIRECTION('',(1.0,0.0,0.0));
+#12=AXIS2_PLACEMENT_3D('',#9,#10,#11);
+#13=CIRCLE('',#12,3.0);
+#14=EDGE_CURVE('',#3,#3,#13,.T.);
+#15=CARTESIAN_POINT('',(0.0,0.0,5.0));
+#16=DIRECTION('',(0.0,0.0,1.0));
+#17=DIRECTION('',(1.0,0.0,0.0));
+#18=AXIS2_PLACEMENT_3D('',#15,#16,#17);
+#19=CIRCLE('',#18,3.0);
+#20=EDGE_CURVE('',#4,#4,#19,.T.);
+#21=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#22=DIRECTION('',(0.0,0.0,1.0));
+#23=DIRECTION('',(1.0,0.0,0.0));
+#24=AXIS2_PLACEMENT_3D('',#21,#22,#23);
+#25=CYLINDRICAL_SURFACE('',#24,3.0);
+#26=ORIENTED_EDGE('',$,$,#8,.T.);
+#27=ORIENTED_EDGE('',$,$,#20,.T.);
+#28=ORIENTED_EDGE('',$,$,#8,.F.);
+#29=ORIENTED_EDGE('',$,$,#14,.F.);
+#30=EDGE_LOOP('',(#26,#27,#28,#29));
+#31=FACE_OUTER_BOUND('',#30,.T.);
+#32=ADVANCED_FACE('',(#31),#25,.T.);
+#33=ORIENTED_EDGE('',$,$,#14,.T.);
+#34=EDGE_LOOP('',(#33));
+#35=FACE_OUTER_BOUND('',#34,.T.);
+#36=DIRECTION('',(0.0,0.0,-1.0));
+#37=DIRECTION('',(1.0,0.0,0.0));
+#38=AXIS2_PLACEMENT_3D('',#9,#36,#37);
+#39=PLANE('',#38);
+#40=ADVANCED_FACE('',(#35),#39,.T.);
+#41=ORIENTED_EDGE('',$,$,#20,.T.);
+#42=EDGE_LOOP('',(#41));
+#43=FACE_OUTER_BOUND('',#42,.T.);
+#44=DIRECTION('',(0.0,0.0,1.0));
+#45=DIRECTION('',(1.0,0.0,0.0));
+#46=AXIS2_PLACEMENT_3D('',#15,#44,#45);
+#47=PLANE('',#46);
+#48=ADVANCED_FACE('',(#43),#47,.T.);
+#49=CLOSED_SHELL('',(#32,#40,#48));
+#50=MANIFOLD_SOLID_BREP('',#49);
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Tfa110','Tfa110','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=ADVANCED_BREP_SHAPE_REPRESENTATION('',(#50),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
