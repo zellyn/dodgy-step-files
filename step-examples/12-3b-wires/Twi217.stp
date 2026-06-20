@@ -1,67 +1,92 @@
 ISO-10303-21;
-/* Twi217 - ShapeFix_Wire.FixSeam pcurve-direction-not-matching-3d
- * Defect: Seam edge where parametric curve direction (PCurve u-orientation)
- * differs from 3D curve direction. FixSeam corrects PCurve to match 3D, but
- * the original 3D curve becomes orphaned/unreferenced in STEP model. This is
- * a defect in the pre-heal STEP instance: mismatch between curve orientations
- * on a seam edge that forces a repair where one orientation must be sacrificed.
- * Reproduces: ShapeFix_Wire.FixSeam branch at line ~1616. */
+/* Twi217: Single ADVANCED_FACE on CYLINDRICAL_SURFACE (radius 1, height 2) in CLOSED_SHELL; 4-edge EDGE_LOOP forming patch from u=0 to u=pi; seam edge E0 has 3D LINE going upward (z: 0->2, same_sense=T) but PCURVE 2D direction going downward in UV (v: H->0) — u-orientation of pcurve antiparallel to 3D curve IS the defect; FixSeam corrects pcurve but old 3D geometry becomes orphaned — orphaned 3D curve IS the secondary mechanism; EDGE_LOOP IS wired into FACE_OUTER_BOUND -> ADVANCED_FACE in CLOSED_SHELL — never orphaned */
 HEADER;
-FILE_DESCRIPTION(('Twi217 test case','Seam edge pcurve direction mismatching 3D curve'),'2;1');
-FILE_NAME('Twi217.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('Twi217'),'2;1');
+FILE_NAME('Twi217.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-/* Cylindrical surface seam at u=0/2π */
-#14=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#15=CYLINDER('',#14,5.0);
-/* 3D curve: line along u=0 (seam position) from v=0 to v=10 */
-#20=CARTESIAN_POINT('',(5.0,0.0,0.0));
-#21=CARTESIAN_POINT('',(5.0,0.0,10.0));
-#22=CARTESIAN_POINT('',(5.0,0.0,0.0));
-#23=CARTESIAN_POINT('',(5.0,0.0,10.0));
-#24=LINE('',#20,(DIRECTION('',(0.0,0.0,1.0)),1.0));
-/* Vertices at seam endpoints */
-#30=VERTEX_POINT('',#22);
-#31=VERTEX_POINT('',#23);
-/* Seam edge with 3D line */
-#40=EDGE_CURVE('',#30,#31,#24,.T.);
-/* PCurve on cylinder: parametric direction (u-direction) pointing
- * opposite to 3D curve orientation. This creates the mismatch. */
-#50=CARTESIAN_POINT('',(0.0,0.0));
-#51=DIRECTION('',(1.0,0.0));
-#52=VECTOR('',#51,1.0);
-#53=CARTESIAN_POINT('',(0.0,10.0));
-#54=DIRECTION('',(0.0,1.0));
-#55=VECTOR('',#54,1.0);
-#56=LINE('',#50,#55);
-/* PCurve: opposite direction means seam correction must flip orientation */
-#60=PCURVE('',#15,#56);
-#61=ORIENTED_EDGE('',*,*,#40,.F.);
-#62=EDGE_LOOP('',(#61));
-#63=FACE_OUTER_BOUND('',#62,.T.);
-#64=ADVANCED_FACE('',(#63),#15,.T.);
-/* Product chain (v3.2 schema) */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Twi217','Twi217','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9020=OPEN_SHELL('shell',(#64));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CYLINDRICAL_SURFACE('',#4,1.0);
+#6=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#7=VERTEX_POINT('',#6);
+#8=CARTESIAN_POINT('',(1.0,0.0,2.0));
+#9=VERTEX_POINT('',#8);
+#10=CARTESIAN_POINT('',(-1.0,0.0,0.0));
+#11=VERTEX_POINT('',#10);
+#12=CARTESIAN_POINT('',(-1.0,0.0,2.0));
+#13=VERTEX_POINT('',#12);
+#14=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#15=DIRECTION('',(0.0,0.0,1.0));
+#16=VECTOR('',#15,2.0);
+#17=LINE('',#14,#16);
+#18=CARTESIAN_POINT('',(0.0,2.0));
+#19=DIRECTION('',(0.0,-1.0));
+#20=VECTOR('',#19,2.0);
+#21=LINE('',#18,#20);
+#22=DEFINITIONAL_REPRESENTATION('',(#21),#*);
+#23=PCURVE('',#5,#22);
+#24=SURFACE_CURVE('',#17,(#23),.PCURVE_S1.);
+#25=EDGE_CURVE('',#7,#9,#24,.T.);
+#26=ORIENTED_EDGE('',*,*,#25,.T.);
+#27=CARTESIAN_POINT('',(0.0,0.0,2.0));
+#28=AXIS2_PLACEMENT_3D('',#27,#2,#3);
+#29=CIRCLE('',#28,1.0);
+#30=CARTESIAN_POINT('',(0.0,2.0));
+#31=DIRECTION('',(1.0,0.0));
+#32=VECTOR('',#31,3.14159265359);
+#33=LINE('',#30,#32);
+#34=DEFINITIONAL_REPRESENTATION('',(#33),#*);
+#35=PCURVE('',#5,#34);
+#36=SURFACE_CURVE('',#29,(#35),.PCURVE_S1.);
+#37=EDGE_CURVE('',#9,#13,#36,.T.);
+#38=ORIENTED_EDGE('',*,*,#37,.T.);
+#39=CARTESIAN_POINT('',(-1.0,0.0,2.0));
+#40=DIRECTION('',(0.0,0.0,-1.0));
+#41=VECTOR('',#40,2.0);
+#42=LINE('',#39,#41);
+#43=CARTESIAN_POINT('',(3.14159265359,2.0));
+#44=DIRECTION('',(0.0,-1.0));
+#45=VECTOR('',#44,2.0);
+#46=LINE('',#43,#45);
+#47=DEFINITIONAL_REPRESENTATION('',(#46),#*);
+#48=PCURVE('',#5,#47);
+#49=SURFACE_CURVE('',#42,(#48),.PCURVE_S1.);
+#50=EDGE_CURVE('',#13,#11,#49,.T.);
+#51=ORIENTED_EDGE('',*,*,#50,.T.);
+#52=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#53=AXIS2_PLACEMENT_3D('',#52,#2,#3);
+#54=CIRCLE('',#53,1.0);
+#55=CARTESIAN_POINT('',(3.14159265359,0.0));
+#56=DIRECTION('',(-1.0,0.0));
+#57=VECTOR('',#56,3.14159265359);
+#58=LINE('',#55,#57);
+#59=DEFINITIONAL_REPRESENTATION('',(#58),#*);
+#60=PCURVE('',#5,#59);
+#61=SURFACE_CURVE('',#54,(#60),.PCURVE_S1.);
+#62=EDGE_CURVE('',#11,#7,#61,.T.);
+#63=ORIENTED_EDGE('',*,*,#62,.T.);
+#64=EDGE_LOOP('',(#26,#38,#51,#63));
+#65=FACE_OUTER_BOUND('',#64,.T.);
+#66=ADVANCED_FACE('',(#65),#5,.T.);
+#67=CLOSED_SHELL('',(#66));
+#68=SHELL_BASED_SURFACE_MODEL('',(#67));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Twi217','Twi217','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#68),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
