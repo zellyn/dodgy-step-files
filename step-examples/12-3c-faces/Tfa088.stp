@@ -1,57 +1,43 @@
 ISO-10303-21;
-/* Tfa088 - ShapeFix_Face.FixAddNaturalBound: sphere natural boundary
- * Full-sphere face requesting natural boundary. The inserter must construct
- * a "no-boundary" face but the code tries to construct a single-edge bound.
- */
+/* Tfa088: CLOSED_SHELL: single ADVANCED_FACE on SPHERICAL_SURFACE radius=5.0 at origin; outer FACE_OUTER_BOUND is a single-edge circle at equator (latitude 0); FixAddNaturalBound for full sphere: attempts single-edge bound construction instead of 'no-boundary' representation for complete sphere; natural boundary for full sphere should span entire parameter domain; defect IS on live CLOSED_SHELL traversal path */
 HEADER;
-FILE_DESCRIPTION(('Tfa088 test case','Full-sphere face requesting natural boundary; single-edge construct fails for no-boundary'),'2;1');
-FILE_NAME('Tfa088.stp','2026-06-15T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Tfa088'),'2;1');
+FILE_NAME('Tfa088.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Sphere: center at (0,0,0), radius 5.0 */
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#14=SPHERICAL_SURFACE('sphere_surface',#13,5.0);
-/* Full sphere from parametric domain u:[0,2*pi), v:[0,pi]
-   No boundary - represents complete sphere surface.
-   We need to represent this as a face with no explicit loop.
-*/
-#20=CARTESIAN_POINT('',(5.0,0.0,0.0));
-#21=VERTEX_POINT('v_single',#20);
-/* Single degenerate edge for sphere pole (from -z pole to +z pole along prime meridian) */
-#30=DIRECTION('',(0.0,0.0,1.0));
-#31=VECTOR('',#30,1.0);
-#32=CIRCLE('',#13,5.0);
-#33=EDGE_CURVE('e_meridian',#21,#21,#32,.T.);
-/* Single-edge loop around sphere */
-#40=ORIENTED_EDGE('',*,*,#33,.T.);
-#50=EDGE_LOOP('sphere_boundary',(#40));
-#51=FACE_OUTER_BOUND('',#50,.T.);
-/* Full sphere face - should not need boundary correction, but FixAddNaturalBound
-   attempts to add one anyway, expecting a proper boundary ring rather than
-   a no-boundary representation.
-*/
-#90=ADVANCED_FACE('full_sphere_face',(#51),#14,.T.);
-/* Minimal PRODUCT chain */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Tfa088','Tfa088','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9100));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
-#9100=CLOSED_SHELL('shell_for_product',(#90));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=SPHERICAL_SURFACE('',#4,5.0);
+#6=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#7=VERTEX_POINT('',#6);
+#8=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#9=DIRECTION('',(0.0,0.0,1.0));
+#10=DIRECTION('',(1.0,0.0,0.0));
+#11=AXIS2_PLACEMENT_3D('',#8,#9,#10);
+#12=CIRCLE('',#11,5.0);
+#13=EDGE_CURVE('',#7,#7,#12,.T.);
+#14=ORIENTED_EDGE('',$,$,#13,.T.);
+#15=EDGE_LOOP('',(#14));
+#16=FACE_OUTER_BOUND('',#15,.T.);
+#17=ADVANCED_FACE('',(#16),#5,.T.);
+#18=CLOSED_SHELL('',(#17));
+#19=MANIFOLD_SOLID_BREP('',#18);
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Tfa088','Tfa088','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=ADVANCED_BREP_SHAPE_REPRESENTATION('',(#19),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
