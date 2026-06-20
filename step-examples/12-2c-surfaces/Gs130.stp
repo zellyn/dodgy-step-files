@@ -1,87 +1,93 @@
 ISO-10303-21;
-/* Gs130 - FACE with trim coincident to existing split edge
- *
- * Defect: ShapeUpgrade_FaceDivide.Perform uses a splitter parameter that
- *  exactly coincides with an existing trim edge. The implementation does not
- *  detect this collision and creates an empty sub-face whose loop has zero
- *  area or degenerate bounds. This sub-face passes validation checks but
- *  fails during downstream geometry operations (tessellation, meshing).
- *
- * Reproducer: ADVANCED_FACE with a trim edge from (0,0) to (10,0).
- *  FaceDivide.Perform is called with split parameter at x=10.0, exactly
- *  on the existing trim. Result: degenerate sub-face with zero extent.
- *
- * Expected kernel behavior:
- *   heal - detect trim-coincides-with-split condition; skip that split
- *  or merge the degenerate face into an adjacent sub-face. */
+/* Gs130: PLANE IS ADVANCED_FACE.face_geometry; two boundary edges coinciding exactly in UV parameter space (trim coincident to existing split edge creating zero-area sub-face) IS the mechanism wired into face topology; FaceDivide.Perform coincident-edge detection absence IS the defect; shape_null */
 HEADER;
-FILE_DESCRIPTION(('Gs130 test case','FACE with trim edge coinciding with split parameter'),'2;1');
-FILE_NAME('Gs130.stp','2026-06-15T00:00:00',(''),(''),'auto-generated','','');
+FILE_DESCRIPTION(('Gs130'),'2;1');
+FILE_NAME('Gs130.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Axis placement at origin */
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-/* PLANE surface: Z=0 */
-#20=PLANE('',#13);
-/* Rectangle vertices: (0,0,0) to (10,10,0) */
-#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31=VERTEX_POINT('',#30);
-#32=CARTESIAN_POINT('',(10.0,0.0,0.0));
-#33=VERTEX_POINT('',#32);
-#34=CARTESIAN_POINT('',(10.0,10.0,0.0));
-#35=VERTEX_POINT('',#34);
-#36=CARTESIAN_POINT('',(0.0,10.0,0.0));
-#37=VERTEX_POINT('',#36);
-/* Bottom edge: (0,0,0) to (10,0,0) — EXISTING TRIM */
-#40=EDGE_CURVE('',#31,#33,#41,.T.);
-#41=LINE('',#30,#42);
-#42=DIRECTION('',(1.0,0.0,0.0));
-/* Right edge: (10,0,0) to (10,10,0) */
-#50=EDGE_CURVE('',#33,#35,#51,.T.);
-#51=LINE('',#32,#52);
-#52=DIRECTION('',(0.0,1.0,0.0));
-/* Top edge: (10,10,0) to (0,10,0) */
-#60=EDGE_CURVE('',#35,#37,#61,.T.);
-#61=LINE('',#34,#62);
-#62=DIRECTION('',(-1.0,0.0,0.0));
-/* Left edge: (0,10,0) to (0,0,0) */
-#70=EDGE_CURVE('',#37,#31,#71,.T.);
-#71=LINE('',#36,#72);
-#72=DIRECTION('',(0.0,-1.0,0.0));
-/* Outer wire: rectangle boundary */
-#80=WIRE('',((#40),(#50),(#60),(#70)));
-#81=FACE_OUTER_BOUND('',#80,.T.);
-/* Vertical trim edge at x=10.0 — COINCIDES WITH SPLIT POINT */
-#90=EDGE_CURVE('',#33,#35,#91,.T.);
-#91=LINE('',#32,#92);
-#92=DIRECTION('',(0.0,1.0,0.0));
-/* Inner wire with coincident trim */
-#100=WIRE('',((#90)));
-#101=FACE_INNER_BOUND('',#100,.F.);
-/* ADVANCED_FACE with outer and inner bounds
- * Inner bound is exactly at x=10.0 (coincident with right edge) */
-#110=ADVANCED_FACE('',(#81,#101),#20,.T.);
-/* Shell */
-#120=OPEN_SHELL('',(#110));
-/* Product context chain */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Gs130','Gs130','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9022=GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION('',(#120),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('gs130_plane_ax',#1,#2,#3);
+#5=PLANE('gs130_plane',#4);
+#6=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('UV','2D'));
+#7=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(0.5,0.0,0.0));
+#9=CARTESIAN_POINT('',(0.5,1.0,0.0));
+#10=VERTEX_POINT('',#7);
+#11=VERTEX_POINT('',#8);
+#12=VERTEX_POINT('',#9);
+#13=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#14=DIRECTION('',(1.0,0.0,0.0));
+#15=VECTOR('',#14,0.5);
+#16=LINE('',#13,#15);
+#17=CARTESIAN_POINT('',(0.0,0.0));
+#18=DIRECTION('',(1.0,0.0));
+#19=VECTOR('',#18,0.5);
+#20=LINE('',#17,#19);
+#21=DEFINITIONAL_REPRESENTATION('pcdef',(#20),#6);
+#22=PCURVE('pc',#5,#21);
+#23=SURFACE_CURVE('sc',#16,(#22),.PCURVE_S1.);
+#24=EDGE_CURVE('ec',#10,#11,#23,.T.);
+#25=CARTESIAN_POINT('',(0.5,0.0,0.0));
+#26=DIRECTION('',(0.0,1.0,0.0));
+#27=VECTOR('',#26,1.0);
+#28=LINE('',#25,#27);
+#29=CARTESIAN_POINT('',(0.5,0.0));
+#30=DIRECTION('',(0.0,1.0));
+#31=VECTOR('',#30,1.0);
+#32=LINE('',#29,#31);
+#33=DEFINITIONAL_REPRESENTATION('pcdef',(#32),#6);
+#34=PCURVE('pc',#5,#33);
+#35=SURFACE_CURVE('sc',#28,(#34),.PCURVE_S1.);
+#36=EDGE_CURVE('ec',#11,#12,#35,.T.);
+#37=CARTESIAN_POINT('',(0.5,1.0,0.0));
+#38=DIRECTION('',(0.0,-1.0,0.0));
+#39=VECTOR('',#38,1.0);
+#40=LINE('',#37,#39);
+#41=CARTESIAN_POINT('',(0.5,1.0));
+#42=DIRECTION('',(0.0,-1.0));
+#43=VECTOR('',#42,1.0);
+#44=LINE('',#41,#43);
+#45=DEFINITIONAL_REPRESENTATION('pcdef',(#44),#6);
+#46=PCURVE('pc',#5,#45);
+#47=SURFACE_CURVE('sc',#40,(#46),.PCURVE_S1.);
+#48=EDGE_CURVE('ec',#12,#11,#47,.T.);
+#49=CARTESIAN_POINT('',(0.5,0.0,0.0));
+#50=DIRECTION('',(-1.0,0.0,0.0));
+#51=VECTOR('',#50,0.5);
+#52=LINE('',#49,#51);
+#53=CARTESIAN_POINT('',(0.5,0.0));
+#54=DIRECTION('',(-1.0,0.0));
+#55=VECTOR('',#54,0.5);
+#56=LINE('',#53,#55);
+#57=DEFINITIONAL_REPRESENTATION('pcdef',(#56),#6);
+#58=PCURVE('pc',#5,#57);
+#59=SURFACE_CURVE('sc',#52,(#58),.PCURVE_S1.);
+#60=EDGE_CURVE('ec',#11,#10,#59,.T.);
+#61=ORIENTED_EDGE('',$,$,#24,.T.);
+#62=ORIENTED_EDGE('',$,$,#36,.T.);
+#63=ORIENTED_EDGE('',$,$,#48,.T.);
+#64=ORIENTED_EDGE('',$,$,#60,.T.);
+#65=EDGE_LOOP('',(#61,#62,#63,#64));
+#66=FACE_OUTER_BOUND('',#65,.T.);
+#67=ADVANCED_FACE('',(#66),#5,.T.);
+#68=OPEN_SHELL('',(#67));
+#69=SHELL_BASED_SURFACE_MODEL('',(#68));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gs130','Gs130','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#69),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

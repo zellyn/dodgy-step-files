@@ -29942,7 +29942,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface.NextValueOfUV produces inf intermediate when Newton's method is applied near a high-curvature region. The clamping to finite value picks an arbitrary direction, leading to incorrect UV projections and surface reference failures.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs126.stp",
     "id": "Gs126",
@@ -29963,7 +29963,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "B-SPLINE_SURFACE with high-curvature Newton singularity"
   },
@@ -29975,7 +29975,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_SplitSurface splits a surface such that one sub-patch has degenerate edge (zero parameter range in V). The split produces it without flagging, causing downstream healing to reference invalid surface boundaries.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs127.stp",
     "id": "Gs127",
@@ -29996,7 +29996,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "B-SPLINE_SURFACE with degenerate edge after split"
   },
@@ -30008,7 +30008,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface.UVFromIso misclassifies wraparound handling for u-iso requests on v-closed surfaces. When requesting u-iso near v=v_max on a v-closed torus, the method confuses u-iso with v-iso and produces incorrect parameter projection.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs128.stp",
     "id": "Gs128",
@@ -30029,7 +30029,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "TOROIDAL_SURFACE with v-closed property and u-iso wraparound"
   },
@@ -30041,7 +30041,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface.IsUClosed applies radius-relative tolerance when testing if a CYLINDRICAL_SURFACE closes in the U direction. For very small radii (e.g., 0.0001 mm), the radius-relative tolerance underflows, causing the method to incorrectly report closure even when the.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs129.stp",
     "id": "Gs129",
@@ -30062,7 +30062,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "CYLINDRICAL_SURFACE with non-unit radius underflowing tolerance check"
   },
@@ -30074,7 +30074,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_FaceDivide.Perform uses a splitter parameter that exactly coincides with an existing trim edge. The implementation does not detect this collision and creates an empty sub-face whose loop has zero area or degenerate bounds.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs130.stp",
     "id": "Gs130",
@@ -30095,7 +30095,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "FACE with trim coincident to existing split edge"
   },
@@ -30107,7 +30107,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface.NextValueOfUV implements Newton iteration to find UV coordinates on a surface for a given 3D point. When the previous iterate is very close to the target (within Confusion tolerance), the algorithm declares convergence prematurely without verifying that the.",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs131.stp",
     "id": "Gs131",
@@ -30128,7 +30128,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "TOROIDAL_SURFACE with Newton iteration near convergence"
   },
