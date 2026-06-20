@@ -31357,7 +31357,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface: rational surface knot-unaware sampling gap",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs169.stp",
     "id": "Gs169",
@@ -31378,7 +31378,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Surface: rational surface knot-unaware sampling gap"
   },
@@ -31390,7 +31390,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface: trimmed surface closure validation skip",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs170.stp",
     "id": "Gs170",
@@ -31411,7 +31411,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Surface: trimmed surface closure validation skip"
   },
@@ -31423,7 +31423,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface: surface domain mismatch on projection result",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs171.stp",
     "id": "Gs171",
@@ -31444,7 +31444,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Surface: surface domain mismatch on projection result"
   },
@@ -31456,7 +31456,7 @@
     "cross_oracle_note": null,
     "description": "ShapeAnalysis_Surface: degenerate surface derivative guard omission",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs172.stp",
     "id": "Gs172",
@@ -31477,7 +31477,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeAnalysis_Surface: degenerate surface derivative guard omission"
   },
@@ -31489,7 +31489,7 @@
     "cross_oracle_note": null,
     "description": "ShapeUpgrade_ShapeCopy: offset surface mode coverage validation omission",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs173.stp",
     "id": "Gs173",
@@ -31510,7 +31510,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "ShapeUpgrade_ShapeCopy: offset surface mode coverage validation omission"
   },
@@ -31522,7 +31522,7 @@
     "cross_oracle_note": null,
     "description": "SphericalSurface Pole Singularities",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs174.stp",
     "id": "Gs174",
@@ -31543,7 +31543,7 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "load == \"ok\""
     ],
     "title": "SphericalSurface Pole Singularities"
   },
