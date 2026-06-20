@@ -31931,7 +31931,7 @@
     "cross_oracle_note": null,
     "description": "A `BREP_WITH_VOIDS` carries two inner void shells where one void is fully enclosed by the other rather than disjoint. The kernel cannot construct a clean inside/outside classification because the void hierarchy is malformed: a region the inner void declares \"solid material\" the outer void declares \"empty space\". Bug-reporter language: \"nested cavities\", \"voids inside voids\", \"shell inside another shell\".",
     "expected_kernel_behavior": "Detect the imbricated-shells case before classifying point-in-solid queries; reject as malformed, or heal by coalescing nested voids into one and emit a warning.",
-    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(79) ifc=schema_n/a",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Bo003.stp",
     "id": "Bo003",
@@ -31949,6 +31949,7 @@
       "OCCT BRepCheck_Solid.cxx (InvalidImbricationOfShells code path) (uncovered class evidence)"
     ],
     "taxonomy": [
+      "crash",
       "topology"
     ],
     "tier3_assertions": [
