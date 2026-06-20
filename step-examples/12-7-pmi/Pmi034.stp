@@ -1,57 +1,36 @@
 ISO-10303-21;
-/* Pmi034 - placed_datum_target_feature shared DatumTargetType_Area null deref
-   Defect: Two PLACED_DATUM_TARGET_FEATURE entities incorrectly share a
-   single DATUM_TARGET_TYPE_AREA instance. Some translators (notably
-   OCCT pre-fix per Mantis 0031685) NULL-deref when iterating the second
-   reference because they assume independent ownership. Each placed datum
-   target should own its own type-area. */
+/* Pmi034: Two PLACED_DATUM_TARGET_FEATUREs share a single DESCRIPTIVE_REPRESENTATION_ITEM encoding the DatumTargetType_Area; incorrect sharing causes NULL dereference during translation in OCC; receivers must maintain independent target-type instances with null-guards on every reference; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Pmi034 - shared DatumTargetType_Area null deref'),'2;1');
-FILE_NAME('Pmi034.stp','2026-04-26T00:00:00',('catalog'),('cad'),
-  'manual','','');
-FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+FILE_DESCRIPTION(('Pmi034'),'2;1');
+FILE_NAME('Pmi034.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'ap242_managed_model_based_3d_engineering',2020,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT('Pmi034','SharedAreaTargetPart','',(#12));
-#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
-#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
-#16 = PRODUCT_DEFINITION('','',#14,#15);
-#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
-#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
-  'distance_accuracy_value','');
-#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
-  REPRESENTATION_CONTEXT('','3D') );
-#30 = CARTESIAN_POINT('p1',(0.0,0.0,0.0));
-#31 = CARTESIAN_POINT('p2',(20.0,0.0,0.0));
-#32 = DIRECTION('',(0.0,0.0,1.0));
-#33 = DIRECTION('',(1.0,0.0,0.0));
-#34 = AXIS2_PLACEMENT_3D('',#30,#32,#33);
-#35 = AXIS2_PLACEMENT_3D('',#31,#32,#33);
-#40 = DATUM('A','',#17,.T.,'A');
-/* Single DatumTargetType_Area instance #50 shared by both placed targets */
-#50 = DESCRIPTIVE_REPRESENTATION_ITEM('DatumTargetType_Area','area');
-/* Two placed datum target features both type 'rectangle' both
-   referencing the SAME #50 area-type item — defect. */
-#60 = PLACED_DATUM_TARGET_FEATURE('A1','rectangle',#17,.T.,'A1');
-#61 = PLACED_DATUM_TARGET_FEATURE('A2','rectangle',#17,.T.,'A2');
-#62 = PROPERTY_DEFINITION('shared area type','',#60);
-#63 = PROPERTY_DEFINITION('shared area type','',#61);
-#64 = REPRESENTATION('',(#50),#25);
-#65 = PROPERTY_DEFINITION_REPRESENTATION(#62,#64);
-#66 = PROPERTY_DEFINITION_REPRESENTATION(#63,#64);
-#70 = SHAPE_ASPECT_RELATIONSHIP('','',#40,#60);
-#71 = SHAPE_ASPECT_RELATIONSHIP('','',#40,#61);
-#80 = DRAUGHTING_MODEL('Default',(),#25);
-#90 = SHAPE_REPRESENTATION('',(#34,#35),#25);
-#91 = SHAPE_DEFINITION_REPRESENTATION(#17,#90);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Pmi034','Pmi034','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=SHAPE_ASPECT('datum_feature_A','',#9055,.T.);
+#9064=SHAPE_ASPECT('datum_feature_B','',#9055,.T.);
+#9065=PLACED_DATUM_TARGET_FEATURE('A1','area',#9063,.T.,'1','A');
+#9066=PLACED_DATUM_TARGET_FEATURE('B1','area',#9064,.T.,'1','B');
+#9067=DESCRIPTIVE_REPRESENTATION_ITEM('datum target type','area');
+#9068=REPRESENTATION('',(#9067),$);
+#9069=PROPERTY_DEFINITION('datum target type','',#9065);
+#9070=PROPERTY_DEFINITION('datum target type','',#9066);
+#9071=PROPERTY_DEFINITION_REPRESENTATION(#9069,#9068);
+#9072=PROPERTY_DEFINITION_REPRESENTATION(#9070,#9068);
 ENDSEC;
 END-ISO-10303-21;
