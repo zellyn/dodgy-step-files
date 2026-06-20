@@ -27696,8 +27696,8 @@ Shell-level RemoveInternalWires is called but doesn't propagate to face-level in
 Perform's orientation pass runs FixFaceOrientation then re-checks; the recheck flips orientation again when invariant is achieved (oscillation). Three-face corner shell where each pair shares edges; subtle orientation inconsistencies cause FixFaceOrientation to flip Face 3, then recheck flips it back, creating oscillation loop.
 
 **File:** `Tsh107.stp`
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tsh108 — ShapeUpgrade_ShellSewing.Apply zero-tolerance
 
 Sewing tolerance set to 0.0; Apply should reject or use Confusion as minimum but uses 0.0 literally, leaving vertex-pair matches to require exact equality. Two adjacent faces with perturbed shared-edge vertices (1.0000001 vs 1.0); sewing at 0.0 tolerance fails because vertex pairing requires exact equality instead of applying Confusion minimum.
