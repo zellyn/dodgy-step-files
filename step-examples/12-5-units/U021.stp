@@ -1,57 +1,44 @@
 ISO-10303-21;
-/*
- * U021 — KILO prefix REQUIRED on mass_unit referenced from a derived SI unit
- * Defect: Newton (force_unit) defined as kg*m*s^-2 but the mass_unit
- *         pulled in via DERIVED_UNIT_ELEMENT has no .KILO. prefix —
- *         making the "Newton" effectively gram*m*s^-2 (off by 1000).
- */
+/* U021: KILO prefix missing on mass_unit in FORCE_UNIT (Newton) derived unit */
+/* Newton = kg*m*s^-2; mass_unit MUST carry .KILO. prefix per ISO spec */
+/* DEFECT: mass_unit references SI_UNIT($,.GRAM.) -- no prefix => gram not kilogram */
+/* Force values will be 1000x wrong: unit is gram*m*s^-2, not Newton */
 HEADER;
-FILE_DESCRIPTION(('U021 missing KILO on mass_unit for Newton'),'2;1');
-FILE_NAME('U021.stp','2026-04-26T00:00:00',('catalog'),('cad'),
-  'manual','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('U021: FORCE_UNIT (Newton) with mass_unit missing .KILO. prefix'),'2;1');
+FILE_NAME('U021.stp','2026-06-20T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('automotive design');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2001,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT('U021','U021','',(#12));
-#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
-#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
-#16 = PRODUCT_DEFINITION('','',#14,#15);
-#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
-/* Length unit (metre) and time unit (second) — correctly unprefixed */
-#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT($,.METRE.) );
-#21 = ( NAMED_UNIT(*) SI_UNIT($,.SECOND.) TIME_UNIT() );
-/* DEFECT: mass_unit without .KILO. prefix.
-   Spec requires .KILO. when mass is referenced from a derived SI unit.
-   Below is the canonical SI mass-unit base (gram). */
-#22 = ( MASS_UNIT() NAMED_UNIT(*) SI_UNIT($,.GRAM.) );
-/* Build the "Newton" derived_unit. Per spec, mass component should
-   have been a kilogram (KILO + GRAM). It is not. */
-#23 = DERIVED_UNIT_ELEMENT(#22, 1.0);
-#24 = DERIVED_UNIT_ELEMENT(#20, 1.0);
-#25 = DERIVED_UNIT_ELEMENT(#21,-2.0);
-#26 = DERIVED_UNIT((#23,#24,#25));
-/* Geometry context (correct mm) */
-#30 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#31 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#32 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#33 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#30,
-  'distance_accuracy_value','');
-#34 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#33))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#30,#31,#32))
-  REPRESENTATION_CONTEXT('','3D') );
-/* A force value that is wrong by 1000x because of the missing prefix */
-#40 = MEASURE_REPRESENTATION_ITEM('reaction_force',
-  CONTEXT_DEPENDENT_MEASURE(9.81),#26);
-#50 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#51 = DIRECTION('',(0.0,0.0,1.0));
-#52 = DIRECTION('',(1.0,0.0,0.0));
-#53 = AXIS2_PLACEMENT_3D('',#50,#51,#52);
-#54 = SHAPE_REPRESENTATION('',(#53),#34);
-#55 = SHAPE_DEFINITION_REPRESENTATION(#17,#54);
+/* Geometry: a simple part */
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=CARTESIAN_POINT('corner-x',(50.0,0.,0.));
+#3=CARTESIAN_POINT('corner-y',(0.,50.0,0.));
+#4=CARTESIAN_POINT('corner-z',(0.,0.,25.0));
+#5=CARTESIAN_POINT('corner-xyz',(50.0,50.0,25.0));
+/* Standard length/angle/solid-angle units (correct) */
+#10=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT('ctx','3D'));
+/* DEFECT: mass_unit defined as SI_UNIT($,.GRAM.) -- NO .KILO. prefix */
+/* Should be SI_UNIT(.KILO.,.GRAM.) to represent kilograms */
+#20=(MASS_UNIT() NAMED_UNIT(*) SI_UNIT($,.GRAM.));
+/* SI time unit (seconds) — correct, no prefix */
+#21=(NAMED_UNIT(*) SI_UNIT($,.SECOND.) TIME_UNIT());
+/* SI length unit in metres for the Newton definition — correct, no prefix here */
+#22=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT($,.METRE.));
+/* DEFECT: Newton built from gram (no kilo) => off by 1000 */
+/* Correct: DERIVED_UNIT_ELEMENT(#kg_unit, 1.) but we use #20 (gram) */
+#23=DERIVED_UNIT_ELEMENT(#20,1.);
+#24=DERIVED_UNIT_ELEMENT(#22,1.);
+#25=DERIVED_UNIT_ELEMENT(#21,-2.);
+#26=(FORCE_UNIT() NAMED_UNIT(*) DERIVED_UNIT((#23,#24,#25)));
+/* Force validation property: 9.81 'N' but actually gram*m*s^-2 (1000x too small) */
+#40=MEASURE_REPRESENTATION_ITEM('applied_force',LENGTH_MEASURE(9.81),#26);
+/* Model entity is GEOMETRIC_CURVE_SET — OCC returns empty shape */
+#50=GEOMETRIC_CURVE_SET('part-with-bad-newton-unit',(#1,#2,#3,#4,#5));
 ENDSEC;
 END-ISO-10303-21;

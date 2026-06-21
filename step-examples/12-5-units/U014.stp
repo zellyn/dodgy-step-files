@@ -1,47 +1,32 @@
 ISO-10303-21;
-/*
- * U014 — STEP Export ignores write.units since OCCT 7.8 (regression)
- * Defect: writer was asked to emit metres; declares METRE in unit
- *         context but coordinates are still in mm (raw kernel state).
- */
+/* U014: OCCT 7.8 regression — write.units ignored */
+/* LENGTH_UNIT declared as bare SI_UNIT($,.METRE.) but coordinates are mm-sized */
+/* OCCT STEPControl_Writer with write.step.unit M still emits mm coordinates */
+/* Literal interpretation: 100.0 metres x 50.0 metres — 1000x too large */
 HEADER;
-FILE_DESCRIPTION(('U014 write.units regression'),'2;1');
-FILE_NAME('U014.stp','2026-04-26T00:00:00',('catalog'),('cad'),
-  'manual','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('U014: SI_UNIT(METRE) with mm-scale coordinates (OCCT 7.8 regression)'),'2;1');
+FILE_NAME('U014.stp','2026-06-20T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('automotive design');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2001,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT('U014','U014','',(#12));
-#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
-#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
-#16 = PRODUCT_DEFINITION('','',#14,#15);
-#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
-/* User asked the writer for METRE; writer obediently labels metre,
-   but did not multiply the kernel-internal mm by 1.0e-3.
-   File ends up labelled metre with mm-magnitude coordinates. */
-#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT($,.METRE.) );
-#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#20,
-  'distance_accuracy_value','');
-#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
-  REPRESENTATION_CONTEXT('','3D') );
-/* 100.0 here means "100 metres" per the declared unit, but
-   producer kernel state was mm — so a 100 mm part is now claimed
-   to be 100 m: 1000x oversized at re-import. */
-#30 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31 = CARTESIAN_POINT('',(100.0,0.0,0.0));
-#32 = CARTESIAN_POINT('',(100.0,50.0,0.0));
-#33 = DIRECTION('',(0.0,0.0,1.0));
-#34 = DIRECTION('',(1.0,0.0,0.0));
-#35 = AXIS2_PLACEMENT_3D('',#30,#33,#34);
-#50 = SHAPE_REPRESENTATION('',(#35),#25);
-#51 = SHAPE_DEFINITION_REPRESENTATION(#17,#50);
+/* Geometry: 100x50x25.4 mm part; coordinates remain mm despite METRE unit declaration */
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=CARTESIAN_POINT('corner-x',(100.0,0.,0.));
+#3=CARTESIAN_POINT('corner-y',(0.,50.0,0.));
+#4=CARTESIAN_POINT('corner-z',(0.,0.,25.4));
+#5=CARTESIAN_POINT('corner-xyz',(100.0,50.0,25.4));
+#6=DIRECTION('xdir',(1.,0.,0.));
+#7=DIRECTION('zdir',(0.,0.,1.));
+/* DEFECT: SI_UNIT($,.METRE.) — bare METRE, no .MILLI. prefix */
+/* OCCT 7.8 regression: write.step.unit M was requested but coordinates are mm-scale */
+#10=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT($,.METRE.));
+#11=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-07),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT('ctx','3D'));
+/* Model entity is GEOMETRIC_CURVE_SET — OCC returns empty shape */
+#20=GEOMETRIC_CURVE_SET('occt-78-metre-with-mm-coords',(#1,#2,#3,#4,#5));
 ENDSEC;
 END-ISO-10303-21;

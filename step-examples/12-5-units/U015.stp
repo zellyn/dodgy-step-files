@@ -1,49 +1,35 @@
 ISO-10303-21;
-/*
- * U015 — FreeCAD/OCCT 7.8.1: model in mm but file labelled inches
- * Defect: header declares CONVERSION_BASED_UNIT('INCH',...) but
- *         CARTESIAN_POINT coordinates are mm-valued; re-import 25.4x
- *         too large.
- */
+/* U015: FreeCAD/OCCT 7.8.1 — model in mm but file labelled as INCH */
+/* User picks inch as export unit; OCCT 7.8.1 still writes mm coordinates */
+/* LENGTH_UNIT declared as INCH but coordinate values are mm magnitudes */
+/* Re-import: receiver multiplies by 25.4 => body is 25.4x too large */
 HEADER;
-FILE_DESCRIPTION(('U015 file mislabel inch with mm coords'),'2;1');
-FILE_NAME('U015.stp','2026-04-26T00:00:00',('catalog'),('cad'),
-  'manual','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('U015: INCH unit declared but coordinates are mm-scale (FreeCAD OCCT 7.8.1)'),'2;1');
+FILE_NAME('U015.stp','2026-06-20T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('automotive design');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2001,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT('U015','U015','',(#12));
-#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
-#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
-#16 = PRODUCT_DEFINITION('','',#14,#15);
-#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
-/* Inch CONVERSION_BASED_UNIT (correct shape) — but kernel forgot to
-   convert mm internals to inches. */
-#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#21 = DIMENSIONAL_EXPONENTS(1.0,0.0,0.0,0.0,0.0,0.0,0.0);
-#22 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#20);
-#23 = ( CONVERSION_BASED_UNIT('INCH',#22) NAMED_UNIT(#21) LENGTH_UNIT() );
-#26 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#27 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#28 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0001),#23,
-  'distance_accuracy_value','');
-#29 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#28))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#23,#26,#27))
-  REPRESENTATION_CONTEXT('','3D') );
-/* Coordinates are mm-valued (e.g. 100 mm) but declared unit is INCH.
-   Re-import multiplies by 25.4 -> 2540 mm. */
-#30 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31 = CARTESIAN_POINT('',(100.0,0.0,0.0));
-#32 = CARTESIAN_POINT('',(100.0,50.0,0.0));
-#33 = DIRECTION('',(0.0,0.0,1.0));
-#34 = DIRECTION('',(1.0,0.0,0.0));
-#35 = AXIS2_PLACEMENT_3D('',#30,#33,#34);
-#50 = SHAPE_REPRESENTATION('',(#35),#29);
-#51 = SHAPE_DEFINITION_REPRESENTATION(#17,#50);
+/* Geometry: 100x50x25.4 mm part; OCCT 7.8.1 writes mm coords despite INCH declaration */
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=CARTESIAN_POINT('corner-x',(100.0,0.,0.));
+#3=CARTESIAN_POINT('corner-y',(0.,50.0,0.));
+#4=CARTESIAN_POINT('corner-z',(0.,0.,25.4));
+#5=CARTESIAN_POINT('corner-xyz',(100.0,50.0,25.4));
+#6=DIRECTION('xdir',(1.,0.,0.));
+#7=DIRECTION('zdir',(0.,0.,1.));
+/* SI mm basis for the inch conversion factor */
+#8=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+/* Standard inch conversion: 1 inch = 25.4 mm */
+#9=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#8);
+/* DEFECT: INCH unit declared but coordinates are mm-valued — OCCT 7.8.1 regression */
+#10=(CONVERSION_BASED_UNIT('INCH',#9) LENGTH_UNIT() NAMED_UNIT(*));
+#11=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#8,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT('ctx','3D'));
+/* Model entity is GEOMETRIC_CURVE_SET — OCC returns empty shape */
+#20=GEOMETRIC_CURVE_SET('freecad-inch-label-mm-coords',(#1,#2,#3,#4,#5));
 ENDSEC;
 END-ISO-10303-21;

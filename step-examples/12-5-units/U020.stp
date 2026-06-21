@@ -1,53 +1,43 @@
 ISO-10303-21;
-/*
- * U020 — Validation properties (mass/area/volume) with units mismatched to GRC
- * Defect: GRC is mm but a volume MEASURE_REPRESENTATION_ITEM is in
- *         metre^3; another MEASURE_REPRESENTATION_ITEM has no
- *         unit_component reference at all.
- */
+/* U020: Validation properties (area/volume) with units mismatched to geometry GRC */
+/* Geometry context is mm; validation properties use metre-based measures */
+/* Also: one MEASURE_REPRESENTATION_ITEM has no unit_component reference */
 HEADER;
-FILE_DESCRIPTION(('U020 validation prop unit mismatch'),'2;1');
-FILE_NAME('U020.stp','2026-04-26T00:00:00',('catalog'),('cad'),
-  'manual','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('U020: Validation property units mismatched to GRC'),'2;1');
+FILE_NAME('U020.stp','2026-06-20T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('automotive design');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2001,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT('U020','U020','',(#12));
-#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
-#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
-#16 = PRODUCT_DEFINITION('','',#14,#15);
-#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
+/* Geometry: 50x50x10 mm block */
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=CARTESIAN_POINT('corner-x',(50.0,0.,0.));
+#3=CARTESIAN_POINT('corner-y',(0.,50.0,0.));
+#4=CARTESIAN_POINT('corner-z',(0.,0.,10.0));
+#5=CARTESIAN_POINT('corner-xyz',(50.0,50.0,10.0));
 /* Geometry context: mm */
-#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-/* Volume unit derived from metre cubed (NOT mm^3) — mismatched */
-#21 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT($,.METRE.) );
-#22 = DIMENSIONAL_EXPONENTS(3.0,0.0,0.0,0.0,0.0,0.0,0.0);
-#23 = DERIVED_UNIT_ELEMENT(#21,3.0);
-#24 = DERIVED_UNIT((#23));
-#25 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#26 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#27 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
-  'distance_accuracy_value','');
-#28 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#27))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#25,#26))
-  REPRESENTATION_CONTEXT('','3D') );
-#30 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31 = DIRECTION('',(0.0,0.0,1.0));
-#32 = DIRECTION('',(1.0,0.0,0.0));
-#33 = AXIS2_PLACEMENT_3D('',#30,#31,#32);
-#34 = SHAPE_REPRESENTATION('',(#33),#28);
-#35 = SHAPE_DEFINITION_REPRESENTATION(#17,#34);
-/* Volume validation property in metre^3, while geometry is mm */
-#40 = MEASURE_WITH_UNIT(VOLUME_MEASURE(1.0E-6),#24);
-#41 = MEASURE_REPRESENTATION_ITEM('volume',VOLUME_MEASURE(1.0E-6),#24);
-/* Surface area MEASURE_REPRESENTATION_ITEM with no unit_component
-   (passed as $ — a hand-written defect)  */
-#42 = MEASURE_REPRESENTATION_ITEM('surface_area',AREA_MEASURE(150.0),$);
-#43 = REPRESENTATION('valprop',(#41,#42),#28);
+#10=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT('ctx','3D'));
+/* Main model entity */
+#20=GEOMETRIC_CURVE_SET('geometry',(#1,#2,#3,#4,#5));
+/* DEFECT: Validation-property context uses METRE (not MILLI METRE) */
+/* Area: 50x50 mm = 2500 mm^2, but emitted as 0.0025 m^2 in a metre context */
+#30=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT($,.METRE.));
+/* DEFECT: AREA_MEASURE uses metre-squared unit — mismatched to mm GRC */
+#31=(AREA_UNIT() NAMED_UNIT(*) SI_UNIT($,.SQUARE_METRE.));
+/* DEFECT: VOLUME_MEASURE uses metre-cubed unit — mismatched to mm GRC */
+#32=(NAMED_UNIT(*) SI_UNIT($,.CUBIC_METRE.) VOLUME_UNIT());
+/* Validation property: surface area in m^2 (should be mm^2 to match GRC) */
+#40=MEASURE_WITH_UNIT(AREA_MEASURE(2.5E-3),#31);
+#41=MEASURE_REPRESENTATION_ITEM('surface_area',AREA_MEASURE(2.5E-3),#31);
+/* Validation property: volume in m^3 (should be mm^3 to match GRC) */
+#42=MEASURE_WITH_UNIT(VOLUME_MEASURE(2.5E-5),#32);
+#43=MEASURE_REPRESENTATION_ITEM('volume',VOLUME_MEASURE(2.5E-5),#32);
+/* DEFECT: centroid item with no unit_component reference -- dimensionless value */
+#44=MEASURE_REPRESENTATION_ITEM('centroid_x',LENGTH_MEASURE(25.0),$);
 ENDSEC;
 END-ISO-10303-21;

@@ -1,50 +1,39 @@
 ISO-10303-21;
-/*
- * U018 — Tessellated annotation coords with no global unit context
- * Defect: tessellated_shape_representation under a plain
- *         REPRESENTATION_CONTEXT (NOT a global_unit_assigned_context).
- *         Bare REAL coordinates have no resolvable unit; common
- *         breakage: tessellated PMI extracted out of context appears 25.4x.
- */
+/* U018: Tessellated annotation coords with no global_unit_assigned_context */
+/* TESSELLATED_SHAPE_REPRESENTATION placed under bare REPRESENTATION_CONTEXT */
+/* coordinates_list uses bare REAL values with no resolvable unit */
+/* PMI tessellation appears 25.4x wrong size due to missing unit anchor */
 HEADER;
-FILE_DESCRIPTION(('U018 tess annotation no-unit ctx'),'2;1');
-FILE_NAME('U018.stp','2026-04-26T00:00:00',('catalog'),('cad'),
-  'manual','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('U018: Tessellated PMI with no global_unit_assigned_context'),'2;1');
+FILE_NAME('U018.stp','2026-06-20T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('automotive design');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2001,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT('U018','U018','',(#12));
-#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
-#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
-#16 = PRODUCT_DEFINITION('','',#14,#15);
-#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
-/* Proper unit context for the part shape */
-#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#21 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#22 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#23 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
-  'distance_accuracy_value','');
-#24 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#23))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#21,#22))
-  REPRESENTATION_CONTEXT('part_ctx','3D') );
-/* DEFECT: tessellated context lacks global_unit_assigned_context. */
-#25 = REPRESENTATION_CONTEXT('tess_no_unit','3D');
-#30 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31 = DIRECTION('',(0.0,0.0,1.0));
-#32 = DIRECTION('',(1.0,0.0,0.0));
-#33 = AXIS2_PLACEMENT_3D('',#30,#31,#32);
-#34 = SHAPE_REPRESENTATION('part',(#33),#24);
-/* Tessellated annotation positioned by bare REALs — magnitudes
-   would be inch-valued in producer's mind, mm-valued by receiver. */
-#40 = COORDINATES_LIST('',2,((0.0,0.0,0.0),(1.0,0.5,0.0)));
-#41 = TESSELLATED_GEOMETRIC_SET('annot',(#40));
-#42 = TESSELLATED_ANNOTATION_OCCURRENCE('annot_occ',(#41),#41);
-#43 = TESSELLATED_SHAPE_REPRESENTATION('tess_rep',(#42),#25);
-#50 = SHAPE_DEFINITION_REPRESENTATION(#17,#34);
+/* Main geometry context — properly unit-assigned */
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=CARTESIAN_POINT('corner-x',(50.0,0.,0.));
+#3=CARTESIAN_POINT('corner-y',(0.,50.0,0.));
+#4=CARTESIAN_POINT('corner-z',(0.,0.,25.0));
+#5=CARTESIAN_POINT('corner-xyz',(50.0,50.0,25.0));
+/* Proper unit context for main geometry */
+#10=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT('main-ctx','3D'));
+/* Main model entity */
+#20=GEOMETRIC_CURVE_SET('main-geometry',(#1,#2,#3,#4,#5));
+/* DEFECT: tessellated PMI placed under bare REPRESENTATION_CONTEXT */
+/* No GLOBAL_UNIT_ASSIGNED_CONTEXT => coordinates have no resolvable unit */
+#50=COORDINATES_LIST('annot-pts',3,(
+  (0.0,0.0,0.0),(50.0,0.0,0.0),(50.0,50.0,0.0),(0.0,50.0,0.0),
+  (0.0,0.0,0.0)));
+#51=TESSELLATED_GEOMETRIC_SET('tess-outline',(#50));
+#52=TESSELLATED_ANNOTATION_OCCURRENCE('dim-label',(),(#51));
+/* DEFECT: bare REPRESENTATION_CONTEXT — no GLOBAL_UNIT_ASSIGNED_CONTEXT */
+#60=REPRESENTATION_CONTEXT('tess-pmi-ctx','3D');
+#61=TESSELLATED_SHAPE_REPRESENTATION('tess-pmi-rep',(#52),#60);
 ENDSEC;
 END-ISO-10303-21;
