@@ -1,16 +1,36 @@
 ISO-10303-21;
-/* M060 - External reference points back at the same file.
- * Defect: a DOCUMENT_FILE whose filename argument equals the main
- * file's own filename - reader recurses into itself. */
+/* M060: GEOMETRIC_CURVE_SET in file with DOCUMENT_FILE whose id points back at the main file's own name ('M060.stp') — external reference self-loop; input: AP242 STEP file where DOCUMENT_FILE references a path equal to the file's own filename, causing a reader that resolves external references to recurse into itself; the self-reference creates an infinite-recursion or cycle-detection scenario; conformant readers must detect the identity and skip with a warning, or treat as a no-op reference; silently following the link is a bug (infinite loop or stack overflow); OCC silently accepts (no diagnostic, empty result); GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty; synonyms: STEP self-reference loop, external reference loops, external file is same as main, DOCUMENT_FILE points to self */
 HEADER;
-FILE_DESCRIPTION(('M060 test case','Self-referential external reference'),'2;1');
-FILE_NAME('M060.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('M060'),'2;1');
+FILE_NAME('M060.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Self-referential external link - DOCUMENT_FILE id matches this file's name */
-#10=DOCUMENT_FILE('M060','self-reference','M060.stp');
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=APPLICATION_CONTEXT('mechanical design');
+#2=DOCUMENT_FILE('M060.stp','self-referencing external link',#1,'step_physical_file');
+#3=DOCUMENT('doc_001','Self-reference document','',(#2));
+#4=DOCUMENT_REFERENCE(#3,#2,'self-ref-link');
+#5=CARTESIAN_POINT('origin',(0.,0.,0.));
+#6=DIRECTION('z_axis',(0.,0.,1.));
+#7=DIRECTION('x_axis',(1.,0.,0.));
+#8=AXIS2_PLACEMENT_3D('ref_placement',#5,#6,#7);
+#9=DIRECTION('line_dir',(1.,0.,0.));
+#10=VECTOR(#9,10.);
+#11=LINE('ref_edge',#5,#10);
+#12=GEOMETRIC_CURVE_SET('external-reference-self-loop-document-file',(#2,#3,#4,#11,#8));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M060','M060','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#12),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

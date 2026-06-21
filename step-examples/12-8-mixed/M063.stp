@@ -1,16 +1,33 @@
 ISO-10303-21;
-/* M063 - Entity with no unit context.
- * Defect: SHAPE_REPRESENTATION's context lacks a LENGTH_UNIT. */
+/* M063: GEOMETRIC_CURVE_SET in file where SHAPE_REPRESENTATION references a GEOMETRIC_REPRESENTATION_CONTEXT lacking LENGTH_UNIT — no unit context, reader silently applies default units; input: AP242 STEP file where SHAPE_REPRESENTATION.context_of_items points to a GEOMETRIC_REPRESENTATION_CONTEXT('no_units',$,3) — the second attribute (global_unit_assigned_context, a GLOBAL_UNIT_ASSIGNED_CONTEXT mixin) is $=absent; no LENGTH_UNIT is declared anywhere in the file for this representation; AP203/214/242 mandate that every geometric representation carry an explicit unit context; a reader that silently defaults to mm will produce a model that is 1000× too large or too small when the intended unit was metres or inches; kernel must reject as malformed (units are mandatory) or warn loudly and require explicit user confirmation of the assumed unit; OCC silently accepts (no diagnostic, empty result); GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty; synonyms: STEP no units defaulted, kernel guessed units, model 1000x wrong, no unit context default mm applied, SHAPE_REPRESENTATION lacks unit context */
 HEADER;
-FILE_DESCRIPTION(('In007 - no unit context','Pass C gap-fill'),'2;1');
-FILE_NAME('M063.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('M063'),'2;1');
+FILE_NAME('M063.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-/* GEOMETRIC_REPRESENTATION_CONTEXT with empty units list */
-#10=GEOMETRIC_REPRESENTATION_CONTEXT('no_units',$,3);
-#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#30=SHAPE_REPRESENTATION('shape_no_units',(#20),#10);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=GEOMETRIC_REPRESENTATION_CONTEXT('no_units',$,3);
+#2=CARTESIAN_POINT('pt_a',(0.,0.,0.));
+#3=CARTESIAN_POINT('pt_b',(100.,0.,0.));
+#4=CARTESIAN_POINT('pt_c',(0.,100.,0.));
+#5=DIRECTION('z_axis',(0.,0.,1.));
+#6=DIRECTION('x_axis',(1.,0.,0.));
+#7=AXIS2_PLACEMENT_3D('placement',#2,#5,#6);
+#8=SHAPE_REPRESENTATION('no_unit_shape',(#2,#3,#4),#1);
+#9=GEOMETRIC_CURVE_SET('shape-representation-missing-unit-context-defaulted',(#1,#8,#2,#3,#4,#7));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M063','M063','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

@@ -1,18 +1,41 @@
 ISO-10303-21;
-/* M064 - No length uncertainty in context.
- * Defect: GEOMETRIC_REPRESENTATION_CONTEXT has no
- * UNCERTAINTY_MEASURE_WITH_UNIT. */
+/* M064: GEOMETRIC_REPRESENTATION_CONTEXT missing UNCERTAINTY_MEASURE_WITH_UNIT */
+/* DEFECT: no GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT mixin; reader defaults precision */
+/* count_entity_def(b'UNCERTAINTY_MEASURE_WITH_UNIT') == 0 throughout file */
 HEADER;
-FILE_DESCRIPTION(('In008 - no length uncertainty','Pass C gap-fill'),'2;1');
-FILE_NAME('M064.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('M064: GEOMETRIC_REPRESENTATION_CONTEXT missing UNCERTAINTY_MEASURE_WITH_UNIT'),'2;1');
+FILE_NAME('M064.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-/* SI_UNIT length but no UNCERTAINTY_MEASURE_WITH_UNIT in the context */
+/* Unit declarations — present, but UNCERTAINTY_MEASURE_WITH_UNIT is absent */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#20=GEOMETRIC_REPRESENTATION_CONTEXT('no_uncertainty',(#10),3);
-#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#40=SHAPE_REPRESENTATION('',(#30),#20);
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+/* Context with units but NO uncertainty — the defect */
+/* Byte assertion: contains(b'GEOMETRIC_REPRESENTATION_CONTEXT') */
+/* Byte assertion: contains(b'no_uncertainty') */
+#13=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('no_uncertainty','3D'));
+/* Geometry */
+#20=CARTESIAN_POINT('origin',(0.,0.,0.));
+#21=CARTESIAN_POINT('end',(50.,0.,0.));
+#22=DIRECTION('z_axis',(0.,0.,1.));
+#23=DIRECTION('x_axis',(1.,0.,0.));
+#24=AXIS2_PLACEMENT_3D('placement',#20,#22,#23);
+#25=CIRCLE('edge_circle',#24,25.);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#26=GEOMETRIC_CURVE_SET('geometric-context-missing-uncertainty-measure-with-unit',(#24,#25,#20,#21));
+/* Minimal PRODUCT chain — no UNCERTAINTY_MEASURE_WITH_UNIT emitted */
+#30=APPLICATION_CONTEXT('mechanical design');
+#31=PRODUCT_CONTEXT('',#30,'mechanical');
+#32=PRODUCT('M064','M064','M064',(#31));
+#33=PRODUCT_DEFINITION_FORMATION('','',#32);
+#34=PRODUCT_DEFINITION_CONTEXT(#30,'design');
+#35=PRODUCT_DEFINITION('','',#33,#34);
+#36=PRODUCT_DEFINITION_SHAPE('','',#35);
+#37=SHAPE_REPRESENTATION('',(#26),#13);
+#38=SHAPE_DEFINITION_REPRESENTATION(#36,#37);
 ENDSEC;
 END-ISO-10303-21;

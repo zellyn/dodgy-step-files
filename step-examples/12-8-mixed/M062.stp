@@ -1,23 +1,38 @@
 ISO-10303-21;
-/* M062 - SRR reverses NAUO direction.
- * Defect: NEXT_ASSEMBLY_USAGE_OCCURRENCE says A is parent of B;
- * a SHAPE_REPRESENTATION_RELATIONSHIP says B is parent of A. */
+/* M062: GEOMETRIC_CURVE_SET in file where NEXT_ASSEMBLY_USAGE_OCCURRENCE declares product_A as parent of product_B, but SHAPE_REPRESENTATION_RELATIONSHIP encodes the opposite direction (rep_B→rep_A) — assembly relation conflict; input: AP242 STEP assembly file with NAUO(relating=product_def_A, related=product_def_B) and SRR(rep_A=shape_rep_B, rep_B=shape_rep_A), reversing the parent→child direction established by the NAUO; AP242 §4.3.2 (assembly_component_usage) requires SRR and NAUO to be consistent: the SRR.rep_1 must be the representing_item for the NAUO's relating_product_definition, and SRR.rep_2 for the related; the conflict means one direction is authoritative and the other is wrong; readers that trust NAUO will invert the assembly; readers that trust SRR will produce the same wrong result; silently resolving either way is a bug; kernel must reject the conflict with a diagnostic; or trust NAUO by convention and make the choice explicit in a warning; OCC silently accepts (no diagnostic, empty result); GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty; synonyms: assembly direction conflict, SRR vs NAUO direction mismatch, parent/child conflict in STEP, assembly relation reversed */
 HEADER;
-FILE_DESCRIPTION(('In006 - SRR vs NAUO direction conflict','Pass C gap-fill'),'2;1');
-FILE_NAME('M062.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('M062'),'2;1');
+FILE_NAME('M062.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#10=PRODUCT('A','partA','',());
-#11=PRODUCT('B','partB','',());
-#20=PRODUCT_DEFINITION_FORMATION('','',#10);
-#21=PRODUCT_DEFINITION_FORMATION('','',#11);
-#22=PRODUCT_DEFINITION('','',#20,$);
-#23=PRODUCT_DEFINITION('','',#21,$);
-/* NAUO: A is parent of B */
-#30=NEXT_ASSEMBLY_USAGE_OCCURRENCE('','','',#22,#23,$);
-/* SRR claims reversed direction */
-#40=SHAPE_REPRESENTATION_RELATIONSHIP('reversed','',#23,#22);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=APPLICATION_CONTEXT('mechanical design');
+#2=PRODUCT_CONTEXT('',#1,'design');
+#3=PRODUCT('A','Assembly_A','Parent assembly',(#2));
+#4=PRODUCT_DEFINITION_FORMATION('','',#3);
+#5=PRODUCT_DEFINITION('design','',#4,#2);
+#6=PRODUCT('B','Component_B','Child component',(#2));
+#7=PRODUCT_DEFINITION_FORMATION('','',#6);
+#8=PRODUCT_DEFINITION('design','',#7,#2);
+#9=NEXT_ASSEMBLY_USAGE_OCCURRENCE('u1','','uses',#5,#8,$);
+#10=GEOMETRIC_REPRESENTATION_CONTEXT(3);
+#11=SHAPE_REPRESENTATION('rep_A',(),#10);
+#12=SHAPE_REPRESENTATION('rep_B',(),#10);
+#13=SHAPE_REPRESENTATION_RELATIONSHIP('srr_reversed','reversed direction',#12,#11);
+#14=GEOMETRIC_CURVE_SET('srr-reverses-nauo-assembly-relation-direction',(#9,#13,#11,#12,#5,#8));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M062','M062','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#14),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
