@@ -1,45 +1,38 @@
 ISO-10303-21;
-/* N011 - FixMissingSeam adds degenerate edge inside vertex tolerance ball
- * Defect: When the seam edge to be inserted on a periodic face would lie
- * entirely within an existing vertex tolerance ball, FixMissingSeam still
- * inserts a degenerated edge, violating tolerance invariants (vertex
- * tolerance now covers a "real" edge of length zero).
- * Reproducer: cylindrical face whose seam line is at length zero (degenerate)
- * with vertex tolerance ball that fully covers the seam location.
- */
+/* N011: seam EDGE_CURVE on CYLINDRICAL_SURFACE: length 5.0E-5 mm inside vertex tol ball 1.0E-3 mm; seam insertion creates zero-length edge; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N011 FixMissingSeam degenerate edge inside vertex tol ball'),'2;1');
-FILE_NAME('N011.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('N011'),'2;1');
+FILE_NAME('N011.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-#10=CARTESIAN_POINT('axis_o',(0.0,0.0,0.0));
-#11=DIRECTION('z',(0.0,0.0,1.0));
-#12=DIRECTION('x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('cyl_axis',#10,#11,#12);
-#14=CYLINDRICAL_SURFACE('cyl',#13,5.0);
-/* Both vertices share the same point on the seam ring; "seam" is degenerate */
-#20=CARTESIAN_POINT('seam_pt',(5.0,0.0,0.0));
-#21=VERTEX_POINT('seam_v_a_tol1e-3',#20);
-#22=VERTEX_POINT('seam_v_b_tol1e-3',#20);
-/* 3D curve of zero geometric range -- degenerate */
-#30=DIRECTION('+z',(0.0,0.0,1.0));
-#31=VECTOR('',#30,0.0);
-#32=LINE('degenerate_seam',#20,#31);
-/* Defect site: degenerate seam edge inserted inside vertex tolerance ball */
-#40=EDGE_CURVE('degenerate_seam_edge',#21,#22,#32,.T.);
-#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#50,
-  'distance_accuracy_value','vertex_tol_covers_inserted_seam');
-#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
-  REPRESENTATION_CONTEXT('ctx','3D'));
+#1=CARTESIAN_POINT('cyl_orig',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CYLINDRICAL_SURFACE('cyl',#4,1.0);
+#6=CARTESIAN_POINT('p_seam_bot',(1.0,0.0,0.0));
+#7=CARTESIAN_POINT('p_seam_top_inside_tol',(1.0,0.0,5.0E-05));
+#8=VERTEX_POINT('v_bot',#6);
+#9=VERTEX_POINT('v_top_inside_tol',#7);
+#10=DIRECTION('',(0.0,0.0,1.0));
+#11=VECTOR('',#10,5.0E-05);
+#12=LINE('seam_line_zero_length',#6,#11);
+#13=EDGE_CURVE('seam_edge_inside_tol',#8,#9,#12,.T.);
+#14=GEOMETRIC_CURVE_SET('seam_set',(#13,#5));
+#15=APPLICATION_CONTEXT('automotive_design');
+#16=PRODUCT_CONTEXT('',#15,'mechanical');
+#17=PRODUCT('N011','N011','',(#16));
+#18=PRODUCT_DEFINITION_FORMATION('','',#17);
+#19=PRODUCT_DEFINITION_CONTEXT('part definition',#15,'design');
+#20=PRODUCT_DEFINITION('','',#18,#19);
+#21=PRODUCT_DEFINITION_SHAPE('','',#20);
+#22=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#23=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#24=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#25=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#22,'distance_accuracy_value','vertex_tol_ball_covers_seam');
+#26=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#25))GLOBAL_UNIT_ASSIGNED_CONTEXT((#22,#23,#24))REPRESENTATION_CONTEXT('ctx','3D'));
+#27=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#14),#26);
+#28=SHAPE_DEFINITION_REPRESENTATION(#21,#27);
 ENDSEC;
 END-ISO-10303-21;
