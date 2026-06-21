@@ -1,0 +1,187 @@
+# validate-full.yml — SLOW LANE (gated; runs the full oracle sweep)
+#
+# Cadence policy
+# --------------
+# This lane runs the full ~50-75 min validation:
+#   - _run_corpus with 4 workers + every oracle (OCCT heal_on/off, gmsh
+#     autofix, ifc, solvespace, manifold3d, OCAF)
+#   - pytest oracle-dependent modules (outcome_conformance,
+#     tier3_assertions) that read /tmp/cad-v2-out*
+#   - _final_verdict DRIFT detection
+#   - _tier3_assertions catalog-encoded geometric assertions
+#
+# Because the lane takes longer than the interval between Wave-B pushes,
+# running it on every push would cancel itself indefinitely (see the
+# top-comment in validate-fast.yml for the back-story). Triggers here
+# are gated to three explicit modes:
+#
+#   1. push to main with ``[full-ci]`` in the commit message
+#      (use this to force a slow-lane run for risky changes)
+#   2. daily cron (07:13 UTC = ~early morning Pacific) — gives one
+#      guaranteed green-or-red signal per day
+#   3. manual workflow_dispatch from the Actions tab
+#
+# ``cancel-in-progress: false`` — once a slow lane is running, let it
+# finish. Concurrency group still serializes runs so we never have two
+# slow lanes fighting over the same /tmp paths.
+#
+# The fast-lane checks (fixture_lint, fixture_source_check,
+# category_lint, bytes_tier3_audit, schema_oracle, fast pytest) are
+# *not* duplicated here — they already ran on the triggering push via
+# validate-fast.yml.
+
+name: validate-full
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    # 07:13 UTC daily. Odd minute keeps us out of the top-of-hour
+    # GitHub Actions backlog.
+    - cron: '13 7 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: validate-full-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  gate:
+    name: Decide whether to run the full sweep
+    runs-on: ubuntu-latest
+    outputs:
+      run: ${{ steps.decide.outputs.run }}
+    steps:
+      - name: Decide
+        id: decide
+        env:
+          EVENT: ${{ github.event_name }}
+          MSG: ${{ github.event.head_commit.message }}
+        run: |
+          # schedule + workflow_dispatch always run.
+          # push only runs if the head commit message contains [full-ci].
+          if [ "$EVENT" = "schedule" ] || [ "$EVENT" = "workflow_dispatch" ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+            echo "Full lane: event=$EVENT — running."
+            exit 0
+          fi
+          if [ "$EVENT" = "push" ] && printf '%s' "$MSG" | grep -qF '[full-ci]'; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+            echo "Full lane: push with [full-ci] marker — running."
+            exit 0
+          fi
+          echo "run=false" >> "$GITHUB_OUTPUT"
+          echo "Full lane: skipping (no [full-ci] marker on push)."
+
+  full:
+    name: Run multi-tier validator on every fixture
+    needs: gate
+    if: needs.gate.outputs.run == 'true'
+    runs-on: ubuntu-latest
+    # Corpus has grown to 2347+ fixtures (2026-06-19); _run_corpus with
+    # 4 workers + multiple oracles typically takes 50-75 min. 120 gives
+    # headroom for corpus growth.
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # gmsh's PyPI wheel link-depends on libGLU at load time even with
+      # gmsh.initialize([], False) (no GUI). Without this the gmsh oracle
+      # subprocess crashes with `libGLU.so.1: cannot open shared object file`
+      # and downstream tests see `gmsh=subprocess_error` everywhere.
+      - name: Install gmsh runtime deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libglu1-mesa
+
+      # Cross-kernel oracle: Solvespace gives an independent STEP parser
+      # (not OCCT-backed) for kernel-disagreement detection. See
+      # CROSS_KERNEL_SURVEY.md for the survey + decision.
+      - name: Install Solvespace
+        run: sudo apt-get install -y --no-install-recommends solvespace
+        continue-on-error: true   # don't block CI if the package is unavailable
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+          cache-dependency-glob: |
+            validation/uv.lock
+            validation/pyproject.toml
+
+      - name: Set up Python 3.12
+        run: uv python install 3.12
+        working-directory: validation
+
+      - name: Sync validator dependencies
+        run: uv sync --frozen
+        working-directory: validation
+
+      # ---- Run the full validate2 + tier3 corpus pass via the parallel runner ----
+      # Output lands in /tmp/cad-v2-out/ and /tmp/cad-v2-out-tier3/.
+      - name: Run validate2 + tier3 across full corpus
+        working-directory: validation
+        run: uv run python -m step_corpus._run_corpus --workers 4
+
+      # ---- Oracle-dependent self-tests run after the oracle pass ----
+      # outcome_conformance + tier3_assertions read /tmp/cad-v2-out*.
+      - name: Validator self-tests — oracle-dependent tier (pytest)
+        working-directory: validation
+        run: |
+          uv run pytest -v --tb=short \
+            tests/test_outcome_conformance.py \
+            tests/test_tier3_assertions.py
+
+      # ---- DRIFT detection: codified Expected validation vs live oracle ----
+      # _final_verdict reads catalog Expected lines + /tmp/cad-v2-out and
+      # writes per-section reports to validation/reports/. Any DRIFT or
+      # FAIL exits non-zero.
+      - name: DRIFT detection (final verdict classifier)
+        id: verdict
+        working-directory: validation
+        run: |
+          set -euo pipefail
+          out="$(uv run python -m step_corpus._final_verdict)"
+          echo "$out"
+          echo "$out" > /tmp/final-verdict-output.txt
+          # Flag anything other than CONFIRMED / CONFIRMED-WEAK
+          if echo "$out" | grep -E "DRIFT|FAIL" > /dev/null; then
+            echo "::error::DRIFT or FAIL verdict in final classifier"
+            exit 1
+          fi
+
+      # ---- Machine-checkable tier-3 geometric assertions ----
+      # Catalog entries can carry **Tier-3 assertion**: lines (e.g.
+      # face[0].sliver_aspect_max_min > 1e6). Each is checked against
+      # live tier3 output. Any failure exits non-zero.
+      - name: Tier-3 assertions
+        working-directory: validation
+        run: uv run python -m step_corpus._tier3_assertions
+
+      # ---- Run summary ----
+      - name: Per-section verdict summary
+        if: always()
+        run: |
+          {
+            echo "## STEP corpus validation (full lane)"
+            echo
+            if [ -f /tmp/final-verdict-output.txt ]; then
+              echo '```'
+              cat /tmp/final-verdict-output.txt
+              echo '```'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload validation artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validation-results
+          path: |
+            validation/reports/
+            /tmp/cad-v2-out/
+            /tmp/cad-v2-out-tier3/
+            /tmp/final-verdict-output.txt
+          if-no-files-found: warn
