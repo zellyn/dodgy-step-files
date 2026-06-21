@@ -1,57 +1,71 @@
 ISO-10303-21;
-/* Xp020 - Cross-product: PMI binding spans a TESSELLATED_FACE and an
- *   ADVANCED_FACE (two halves of a hole), but the tessellated face has
- *   no STYLED_ITEM (style binding lost), and the unit context says inches
- *   while the PMI text value is in mm.
- * Builds on M020 (tess style binding lost) + Pmi001 (PMI across tess+brep) +
- *   U005 (drawing-vs-context unit disagreement). */
+/* Xp020: Tessellated face x BRep face sharing PMI x inch/mm unit collision */
 HEADER;
-FILE_DESCRIPTION(('Xp020 cross-product','PMI tess+brep x style lost x unit conflict'),'2;1');
-FILE_NAME('Xp020.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('Xp020'),'2;1');
+FILE_NAME('Xp020.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('managed model based 3d engineering');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'ap242_managed_model_based_3d_engineering',2014,#1);
-/* Defect 3: LENGTH_UNIT inch */
-#10=(LENGTH_UNIT()NAMED_UNIT(*)CONVERSION_BASED_UNIT('inch',#100));
-#100=DIMENSIONAL_EXPONENTS(1.0,0.0,0.0,0.0,0.0,0.0,0.0);
-#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-     REPRESENTATION_CONTEXT('part','3D'));
-/* BRep half of a cylinder */
-#200=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#201=DIRECTION('',(0.0,0.0,1.0));
-#202=DIRECTION('',(1.0,0.0,0.0));
-#203=AXIS2_PLACEMENT_3D('',#200,#201,#202);
-#204=CYLINDRICAL_SURFACE('',#203,5.0);
-#205=CARTESIAN_POINT('a',(5.0,0.0,0.0));
-#206=CARTESIAN_POINT('b',(5.0,0.0,1.0));
-#207=VERTEX_POINT('',#205);
-#208=VERTEX_POINT('',#206);
-#209=LINE('',#205,VECTOR('',#201,1.0));
-#210=EDGE_CURVE('',#207,#208,#209,.T.);
-#211=ORIENTED_EDGE('',*,*,#210,.T.);
-#212=EDGE_LOOP('',(#211));
-#213=FACE_OUTER_BOUND('',#212,.T.);
-#214=ADVANCED_FACE('brep_half',(#213),#204,.T.);
-/* Tessellated half */
-#300=COORDINATES_LIST('',3,((-5.0,0.0,0.0),(-5.0,0.0,1.0),(-5.0,0.5,0.5)));
-#310=TRIANGULATED_FACE('tess_half',#300,$,$,(),((1,2,3)));
-/* Defect 2: tessellated face has NO STYLED_ITEM bound to it */
-#320=PRESENTATION_STYLE_ASSIGNMENT(());
-/* (Note: only #214 has its style implied via PRODUCT_DEFINITION; #310 has none.) */
-/* PMI: dimensional_size cites a shape_aspect bound to BOTH halves */
-#400=PRODUCT_DEFINITION_SHAPE('','',$);
-#401=SHAPE_ASPECT('hole','through-hole',#400,.T.);
-#410=GEOMETRIC_ITEM_SPECIFIC_USAGE('','',#401,$,#214);
-#411=GEOMETRIC_ITEM_SPECIFIC_USAGE('','',#401,$,#310);
-/* Defect 3: diameter value 10.0 makes sense in mm but unit context is inches */
-#420=DIMENSIONAL_SIZE(#401,'10.0');
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CYLINDRICAL_SURFACE('',#4,1.0);
+#6=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(-1.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(1.0,0.0,1.0));
+#9=CARTESIAN_POINT('',(-1.0,0.0,1.0));
+#10=VERTEX_POINT('',#6);
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=DIRECTION('',(-1.0,0.0,0.0));
+#15=VECTOR('',#14,2.0);
+#16=LINE('',#6,#15);
+#17=EDGE_CURVE('',#10,#11,#16,.T.);
+#18=DIRECTION('',(-1.0,0.0,0.0));
+#19=VECTOR('',#18,2.0);
+#20=LINE('',#8,#19);
+#21=EDGE_CURVE('',#12,#13,#20,.T.);
+#22=DIRECTION('',(0.0,0.0,1.0));
+#23=VECTOR('',#22,1.0);
+#24=LINE('',#6,#23);
+#25=EDGE_CURVE('',#10,#12,#24,.T.);
+#26=DIRECTION('',(0.0,0.0,1.0));
+#27=VECTOR('',#26,1.0);
+#28=LINE('',#7,#27);
+#29=EDGE_CURVE('',#11,#13,#28,.T.);
+#30=ORIENTED_EDGE('',$,$,#17,.T.);
+#31=ORIENTED_EDGE('',$,$,#29,.T.);
+#32=ORIENTED_EDGE('',$,$,#21,.F.);
+#33=ORIENTED_EDGE('',$,$,#25,.F.);
+#34=EDGE_LOOP('',(#30,#31,#32,#33));
+#35=FACE_OUTER_BOUND('',#34,.T.);
+#36=ADVANCED_FACE('',(#35),#5,.T.);
+#37=OPEN_SHELL('',(#36));
+#38=SHELL_BASED_SURFACE_MODEL('',(#37));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Xp020','Xp020','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#38),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=COORDINATES_LIST('half_cyl_tess',3,((1.0,0.0,0.0),(0.0,1.0,0.0),(-1.0,0.0,0.0),(1.0,0.0,1.0),(0.0,1.0,1.0),(-1.0,0.0,1.0)));
+#9064=TRIANGULATED_FACE('tess_half_cyl',#9063,(),(),(),(3,((1,2,3),(4,5,6),(1,4,5))));
+#9065=SHAPE_ASPECT('brep_half','',#9005,.T.);
+#9066=SHAPE_ASPECT('tess_half','',#9005,.T.);
+#9067=GEOMETRIC_ITEM_SPECIFIC_USAGE(#9065,#36);
+#9068=GEOMETRIC_ITEM_SPECIFIC_USAGE(#9066,#9064);
+#9069=DIMENSIONAL_SIZE(#9065,'diameter');
+#9070=/* xp020 defect-3: LENGTH_UNIT declares inches; PMI diameter value 2.0 is in mm — unit collision */;
+#9071=DESCRIPTIVE_REPRESENTATION_ITEM('unit_note','diameter: 2.0 (mm); LENGTH_UNIT=inches');
 ENDSEC;
 END-ISO-10303-21;

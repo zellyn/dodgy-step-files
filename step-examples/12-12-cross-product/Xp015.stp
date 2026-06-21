@@ -1,55 +1,63 @@
 ISO-10303-21;
-/* Xp015 - Cross-product: face on a closed cylindrical surface whose wire
- *   self-intersects in UV near the seam (u=0 / u=2pi), with no seam edge
- *   listed and the self-intersection at the parametric ambiguity itself.
- * Builds on Twi045 (self-intersection) + Twi-seam-class (UV-period shift) +
- *   Gp005 (parametric singularity). */
+/* Xp015: Self-intersecting wire on cylindrical face x seam-edge missing x UV crossover */
 HEADER;
-FILE_DESCRIPTION(('Xp015 cross-product','self-intersecting wire x missing seam x parametric ambiguity'),'2;1');
-FILE_NAME('Xp015.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Xp015'),'2;1');
+FILE_NAME('Xp015.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#14=CYLINDRICAL_SURFACE('',#13,1.0);
-/* Vertices on the cylinder near the seam */
-#20=CARTESIAN_POINT('a',(1.0,0.0,0.0));
-#21=CARTESIAN_POINT('b',(1.0,0.0,1.0));
-/* Slightly past seam (small negative angle) */
-#22=CARTESIAN_POINT('c',(0.9999,-0.0001,1.0));
-#23=CARTESIAN_POINT('d',(0.9999,-0.0001,0.0));
-#30=VERTEX_POINT('',#20);
-#31=VERTEX_POINT('',#21);
-#32=VERTEX_POINT('',#22);
-#33=VERTEX_POINT('',#23);
-/* Four 3D curves whose UV pcurves cross near u=2pi - self-intersection. */
-#40=DIRECTION('',(0.0,0.0,1.0));
-#41=VECTOR('',#40,1.0);
-#42=LINE('',#20,#41);
-#43=DIRECTION('',(-0.7071067811865475,-0.7071067811865475,0.0));
-#44=VECTOR('',#43,0.000141);
-#45=LINE('',#21,#44);
-#46=VECTOR('',#40,-1.0);
-#47=LINE('',#22,#46);
-#48=DIRECTION('',(0.7071067811865475,0.7071067811865475,0.0));
-#49=VECTOR('',#48,0.000141);
-#50=LINE('',#23,#49);
-#60=EDGE_CURVE('',#30,#31,#42,.T.);
-#61=EDGE_CURVE('',#31,#32,#45,.T.);
-#62=EDGE_CURVE('',#32,#33,#47,.T.);
-#63=EDGE_CURVE('',#33,#30,#50,.T.);
-/* Defect: no seam edge listed; wire crosses seam without one */
-#70=ORIENTED_EDGE('',*,*,#60,.T.);
-#71=ORIENTED_EDGE('',*,*,#61,.T.);
-#72=ORIENTED_EDGE('',*,*,#62,.T.);
-#73=ORIENTED_EDGE('',*,*,#63,.T.);
-#80=EDGE_LOOP('seam_cross',(#70,#71,#72,#73));
-#81=FACE_OUTER_BOUND('',#80,.T.);
-#82=ADVANCED_FACE('cyl_face_seam',(#81),#14,.T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CYLINDRICAL_SURFACE('',#4,1.0);
+#6=CARTESIAN_POINT('',(0.995004165278,0.0998334166468,0.0));
+#7=CARTESIAN_POINT('',(0.951056516295,-0.309016994375,0.0));
+#8=CARTESIAN_POINT('',(0.951056516295,0.309016994375,0.5));
+#9=CARTESIAN_POINT('',(0.951056516295,0.309016994375,0.5));
+#10=VERTEX_POINT('',#6);
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=DIRECTION('',(-0.106875119932,-0.994272451966,0.0));
+#15=VECTOR('',#14,0.41120561091);
+#16=LINE('',#6,#15);
+#17=EDGE_CURVE('',#10,#11,#16,.T.);
+#18=DIRECTION('',(0.0,0.777437524821,0.628960169645));
+#19=VECTOR('',#18,0.794962899292);
+#20=LINE('',#7,#19);
+#21=EDGE_CURVE('',#11,#12,#20,.T.);
+#22=DIRECTION('',(0.111022302463,-0.222044604925,0.0));
+#23=VECTOR('',#22,0.0);
+#24=LINE('',#8,#23);
+#25=EDGE_CURVE('',#12,#13,#24,.T.);
+#26=DIRECTION('',(0.0808198316775,-0.384689100167,-0.919501196856));
+#27=VECTOR('',#26,0.543773082308);
+#28=LINE('',#9,#27);
+#29=EDGE_CURVE('',#13,#10,#28,.T.);
+#30=ORIENTED_EDGE('',$,$,#17,.T.);
+#31=ORIENTED_EDGE('',$,$,#21,.T.);
+#32=ORIENTED_EDGE('',$,$,#25,.T.);
+#33=ORIENTED_EDGE('',$,$,#29,.T.);
+#34=EDGE_LOOP('',(#30,#31,#32,#33));
+#35=FACE_OUTER_BOUND('',#34,.T.);
+#36=ADVANCED_FACE('',(#35),#5,.T.);
+#37=OPEN_SHELL('',(#36));
+#38=SHELL_BASED_SURFACE_MODEL('',(#37));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Xp015','Xp015','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#38),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=/* xp015 defect: wire self-intersects in UV near seam (u=2*pi); seam edge absent; pcurves absent */;
 ENDSEC;
 END-ISO-10303-21;
