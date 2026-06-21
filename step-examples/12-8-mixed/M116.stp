@@ -1,30 +1,57 @@
 ISO-10303-21;
-/* M116 - AP209 modal extraction request exceeds DOF rank.
- * Defect: a FEA_MODEL_3D has 3 free nodes (9 active DOFs) but a modal
- * extraction parameter requests 50 modes. The eigensolver either
- * returns 9 real modes plus 41 NaN entries, or fails outright. */
+/* M116: AP209 modal extraction count exceeds DOF rank */
+/* DEFECT: 50 modes requested from a model with only 9 active DOFs */
+/* Eigensolver returns NaN/garbage for 41 modes beyond system rank */
+/* Per AP209 §9, requested mode count must not exceed DOF rank */
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
+/* Byte assertion: contains(b'FEA_MODEL') */
 HEADER;
-FILE_DESCRIPTION(('M116 test case','AP209 mode count exceeds DOF rank'),'2;1');
-FILE_NAME('M116.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M116: AP209 modal extraction requests 50 modes from 9-DOF model'),'2;1');
+FILE_NAME('M116.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
 FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('structural_analysis_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'structural_analysis_design',2001,#1);
+/* Standard unit context */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('fea','3D'));
-#100=CARTESIAN_POINT('a',(0.0,0.0,0.0));
-#101=CARTESIAN_POINT('b',(1.0,0.0,0.0));
-#102=CARTESIAN_POINT('c',(0.0,1.0,0.0));
-#110=NODE('n1',(#100),$);
-#111=NODE('n2',(#101),$);
-#112=NODE('n3',(#102),$);
-#150=NODE_GROUP('mesh_nodes',(#110,#111,#112),$);
-/* Defect: model has 9 DOFs; modal request asks for 50 modes
-   (encoded in the model's description). */
-#200=FEA_MODEL_3D('modal_test_model_50_modes_requested',$,#150,$,$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('fea','3D'));
+/* Three free nodes: total 9 translational DOFs (3 nodes × 3 DOF each) */
+#100=CARTESIAN_POINT('n1',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('n2',(50.0,0.0,0.0));
+#102=CARTESIAN_POINT('n3',(100.0,0.0,0.0));
+#110=NODE('free_node_1',(#100),$);
+#111=NODE('free_node_2',(#101),$);
+#112=NODE('free_node_3',(#102),$);
+/* Byte assertion: contains(b'FEA_MODEL') */
+/* NODE_GROUP: all three free nodes — 9 translational DOFs total */
+#300=NODE_GROUP('free_nodes',(#110,#111,#112),$);
+#310=FEA_MODEL('modal_model',$,'',(#300),(),());
+/* DEFECT: modal analysis requests 50 modes from a 9-DOF system *)  */
+/* Eigensolver can return at most 9 real modes; modes 10-50 are NaN/garbage *)  */
+/* REQUESTED_NUMBER_OF_MODES = 50 >> system DOF rank = 9 *)  */
+#400=EIGENVALUE_EXTRACTION_PARAMETER('modal_50','LANCZOS',50,0.0,$,#310);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#500=GEOMETRIC_CURVE_SET('ap209-modal-extraction-count-exceeds-dof-rank',
+  (#110,#111,#112,#310,#400));
+/* Product chain */
+#600=APPLICATION_CONTEXT('mechanical design');
+#601=PRODUCT_CONTEXT('',#600,'mechanical');
+#602=PRODUCT('M116','M116','M116',(#601));
+#603=PRODUCT_DEFINITION_FORMATION('','',#602);
+#604=PRODUCT_DEFINITION_CONTEXT(#600,'design');
+#605=PRODUCT_DEFINITION('','',#603,#604);
+#606=PRODUCT_DEFINITION_SHAPE('','',#605);
+#607=SHAPE_REPRESENTATION('',(#500),#14);
+#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
 ENDSEC;
 END-ISO-10303-21;

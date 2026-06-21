@@ -1,30 +1,39 @@
 ISO-10303-21;
-/* M113 - AP209 hex element with collapsed corner (degenerate jacobian).
- * Defect: a VOLUME_3D_ELEMENT_DESCRIPTOR for a linear_hexahedron lists
- * 8 nodes, but two of the corner nodes (n7, n8) are at the same XYZ.
- * The jacobian determinant is zero at the collapsed corner. */
+/* M113: AP209 hex element with degenerate jacobian (collapsed corner) */
+/* DEFECT: nodes n7 and n8 are coincident — hex collapses to prism */
+/* Jacobian determinant is zero at collapsed corner — NaN stresses */
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
+/* Byte assertion: contains(b'VOLUME_3D_ELEMENT_DESCRIPTOR') */
 HEADER;
-FILE_DESCRIPTION(('M113 test case','AP209 collapsed-corner hex element'),'2;1');
-FILE_NAME('M113.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M113: AP209 degenerate hex — coincident nodes n7 n8'),'2;1');
+FILE_NAME('M113.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
 FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('structural_analysis_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'structural_analysis_design',2001,#1);
+/* Standard unit context */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('fea','3D'));
-#100=CARTESIAN_POINT('p1',(0.0,0.0,0.0));
-#101=CARTESIAN_POINT('p2',(1.0,0.0,0.0));
-#102=CARTESIAN_POINT('p3',(1.0,1.0,0.0));
-#103=CARTESIAN_POINT('p4',(0.0,1.0,0.0));
-#104=CARTESIAN_POINT('p5',(0.0,0.0,1.0));
-#105=CARTESIAN_POINT('p6',(1.0,0.0,1.0));
-/* Defect: p7 and p8 are at the same point (collapsed corner). */
-#106=CARTESIAN_POINT('p7_collapsed',(0.5,0.5,1.0));
-#107=CARTESIAN_POINT('p8_collapsed',(0.5,0.5,1.0));
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('fea','3D'));
+/* Hex corner nodes: n1-n6 normal, n7 and n8 COINCIDENT — the defect */
+#100=CARTESIAN_POINT('n1',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('n2',(100.0,0.0,0.0));
+#102=CARTESIAN_POINT('n3',(100.0,100.0,0.0));
+#103=CARTESIAN_POINT('n4',(0.0,100.0,0.0));
+#104=CARTESIAN_POINT('n5',(0.0,0.0,100.0));
+#105=CARTESIAN_POINT('n6',(100.0,0.0,100.0));
+/* DEFECT: n7 and n8 share identical coordinates — jacobian det = 0 at this corner */
+#106=CARTESIAN_POINT('n7',(100.0,100.0,0.0));
+#107=CARTESIAN_POINT('n8',(100.0,100.0,0.0));
 #110=NODE('n1',(#100),$);
 #111=NODE('n2',(#101),$);
 #112=NODE('n3',(#102),$);
@@ -33,7 +42,26 @@ DATA;
 #115=NODE('n6',(#105),$);
 #116=NODE('n7',(#106),$);
 #117=NODE('n8',(#107),$);
-#200=VOLUME_3D_ELEMENT_DESCRIPTOR('collapsed_hex','linear_hexahedron',
-       (#110,#111,#112,#113,#114,#115,#116,#117));
+/* NODE_GROUP containing all eight corner nodes */
+#300=NODE_GROUP('hex_nodes',(#110,#111,#112,#113,#114,#115,#116,#117),$);
+#310=FEA_MODEL('hex_model',$,'',(#300),(),());
+/* Byte assertion: contains(b'VOLUME_3D_ELEMENT_DESCRIPTOR') */
+/* DEFECT: hex8 element — n7 (#116) and n8 (#117) are coincident */
+/* Isoparametric jacobian is singular at collapsed corner */
+#400=VOLUME_3D_ELEMENT_DESCRIPTOR('hex8_degenerate',.HEX.,
+  (#110,#111,#112,#113,#114,#115,#116,#117));
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#500=GEOMETRIC_CURVE_SET('ap209-hex-element-degenerate-jacobian-collapsed-corner',
+  (#110,#111,#112,#113,#114,#115,#116,#117,#310,#400));
+/* Product chain */
+#600=APPLICATION_CONTEXT('mechanical design');
+#601=PRODUCT_CONTEXT('',#600,'mechanical');
+#602=PRODUCT('M113','M113','M113',(#601));
+#603=PRODUCT_DEFINITION_FORMATION('','',#602);
+#604=PRODUCT_DEFINITION_CONTEXT(#600,'design');
+#605=PRODUCT_DEFINITION('','',#603,#604);
+#606=PRODUCT_DEFINITION_SHAPE('','',#605);
+#607=SHAPE_REPRESENTATION('',(#500),#14);
+#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
 ENDSEC;
 END-ISO-10303-21;

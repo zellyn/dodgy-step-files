@@ -1,25 +1,66 @@
 ISO-10303-21;
-/* M117 - AP209 anisotropic material with missing tensor components.
- * Defect: an ANISOTROPIC_LINEAR_ELASTICITY card declares 9 of the 21
- * required tensor components and leaves the rest unspecified ($).
- * Solver substitutes zeros, yielding a non-positive-definite stiffness. */
+/* M117: AP209 anisotropic material with missing tensor components */
+/* DEFECT: ANISOTROPIC_LINEAR_ELASTICITY — only 9 of 21 components given */
+/* Remaining 12 components are $ (undefined); solver gets non-PD matrix */
+/* Per AP209 §8 all 21 independent tensor components are mandatory */
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
+/* Byte assertion: contains(b'ANISOTROPIC_LINEAR_ELASTICITY') */
 HEADER;
-FILE_DESCRIPTION(('M117 test case','AP209 anisotropic material card incomplete'),'2;1');
-FILE_NAME('M117.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M117: AP209 anisotropic material elasticity tensor incomplete'),'2;1');
+FILE_NAME('M117.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
 FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('structural_analysis_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'structural_analysis_design',2001,#1);
+/* Standard unit context */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('fea','3D'));
-/* Defect: only 9 tensor entries supplied; rest are $. */
-#100=ANISOTROPIC_LINEAR_ELASTICITY('aniso_card',
-  (200000.0, 80000.0, 70000.0, 200000.0, 65000.0, 180000.0,
-   75000.0, 70000.0, 80000.0,
-   $, $, $, $, $, $, $, $, $, $, $, $));
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('fea','3D'));
+/* Single representative node for the material model */
+#100=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#110=NODE('mat_node',(#100),$);
+#300=NODE_GROUP('mat_nodes',(#110),$);
+#310=FEA_MODEL('aniso_model',$,'',(#300),(),());
+/* Byte assertion: contains(b'ANISOTROPIC_LINEAR_ELASTICITY') */
+/* DEFECT: 21-component Voigt upper triangle; only 9 given, 12 are $ (undefined) */
+/* Row 1 (C11,C12,C13,C14,C15,C16): C11=210000 given; C12-C16 all $ */
+/* Row 2 (C22,C23,C24,C25,C26): C22=210000 given; C23-C26 all $ */
+/* Row 3 (C33,C34,C35,C36): C33=210000 given; C34-C36 all $ */
+/* Row 4 (C44,C45,C46): C44=80769 given; C45,C46 are $ */
+/* Row 5 (C55,C56): C55=80769 given; C56 is $ */
+/* Row 6 (C66): C66=80769 given */
+/* 9 values given (diagonal + partial), 12 off-diagonal couplings are $ */
+/* A fully anisotropic material requires all 21 components explicitly */
+#400=ANISOTROPIC_LINEAR_ELASTICITY('aniso_carbon_fibre',
+  210000.0,$,$,$,$,$,
+  210000.0,$,$,$,$,
+  210000.0,$,$,$,
+  80769.0,$,$,
+  80769.0,$,
+  80769.0);
+/* Material property linking anisotropic stiffness to FEA model */
+#410=MATERIAL_PROPERTY_REPRESENTATION('aniso_mat_prop',#400,#310,$);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#500=GEOMETRIC_CURVE_SET('ap209-anisotropic-material-missing-tensor-components',
+  (#110,#310,#400,#410));
+/* Product chain */
+#600=APPLICATION_CONTEXT('mechanical design');
+#601=PRODUCT_CONTEXT('',#600,'mechanical');
+#602=PRODUCT('M117','M117','M117',(#601));
+#603=PRODUCT_DEFINITION_FORMATION('','',#602);
+#604=PRODUCT_DEFINITION_CONTEXT(#600,'design');
+#605=PRODUCT_DEFINITION('','',#603,#604);
+#606=PRODUCT_DEFINITION_SHAPE('','',#605);
+#607=SHAPE_REPRESENTATION('',(#500),#14);
+#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
 ENDSEC;
 END-ISO-10303-21;
