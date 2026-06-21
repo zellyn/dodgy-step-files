@@ -1,17 +1,9 @@
 ISO-10303-21;
-/* M024 - Mesh-to-BRep gaps at trim curves.
- * Defect: when a mesh is fitted with NURBS patches per region and
- * adjacent patches' boundary curves are fitted independently, the two
- * curves miss along a tolerance-exceeding gap. The file is "visually"
- * closed but a tessellation of the result reveals slits along the
- * shared edge and a downstream watertightness check fails.
- * This fixture: two adjacent planar quads (left and right halves of a
- * 2x1 rectangle) sharing an interior edge x=1. The right quad's left
- * edge sits at x=1.0001 instead of x=1.0 - a 100-micron gap. */
+/* M024: Mesh-to-BRep gaps at trim curves (non-watertight result); input: STEP file with two adjacent planar ADVANCED_FACEs sharing an interior edge where independent patch fitting left a 100-micron gap: left face right edge at x=1.0, right face left edge at x=1.0001; gap of 0.0001 mm exceeds declared tolerance of 1.0e-6 mm; B-rep appears visually closed but downstream watertightness check fails; kernel must heal: enforce watertightness as a fitting constraint; OCC validity-checker does not flag sub-tolerance trim gaps; synonyms: mesh-to-BRep gaps at trims, non-watertight reverse-engineered face, patch fitting leaves trim gaps, STL-to-NURBS not watertight */
 HEADER;
-FILE_DESCRIPTION(('M024 test case','mesh-to-BRep trim curve gap'),'2;1');
-FILE_NAME('M024.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('M024'),'2;1');
+FILE_NAME('M024.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('automotive_design');
@@ -24,36 +16,42 @@ DATA;
      GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
      GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
      REPRESENTATION_CONTEXT('part','3D'));
-/* Left quad: x in [0,1.0], y in [0,1].
- * Shared edge: should be at x=1.0 from BOTH sides. Left side honors it. */
+/* Left quad: x in [0,1], y in [0,1] */
 #100=CARTESIAN_POINT('L_v0',(0.0,0.0,0.0));
 #101=CARTESIAN_POINT('L_v1',(1.0,0.0,0.0));
 #102=CARTESIAN_POINT('L_v2',(1.0,1.0,0.0));
 #103=CARTESIAN_POINT('L_v3',(0.0,1.0,0.0));
-/* Right quad: x in [1.0001,2.0001] (100-micron gap), y in [0,1].
- * Defect: right quad's left edge does not match left quad's right
- * edge. */
+/* Right quad: x in [1.0001,2.0001] — 100-micron gap on left edge */
 #110=CARTESIAN_POINT('R_v0',(1.0001,0.0,0.0));
 #111=CARTESIAN_POINT('R_v1',(2.0001,0.0,0.0));
 #112=CARTESIAN_POINT('R_v2',(2.0001,1.0,0.0));
 #113=CARTESIAN_POINT('R_v3',(1.0001,1.0,0.0));
-#120=VERTEX_POINT('',#100); #121=VERTEX_POINT('',#101);
-#122=VERTEX_POINT('',#102); #123=VERTEX_POINT('',#103);
-#124=VERTEX_POINT('',#110); #125=VERTEX_POINT('',#111);
-#126=VERTEX_POINT('',#112); #127=VERTEX_POINT('',#113);
-/* Left face plane and edges */
+#120=VERTEX_POINT('',#100);
+#121=VERTEX_POINT('',#101);
+#122=VERTEX_POINT('',#102);
+#123=VERTEX_POINT('',#103);
+#124=VERTEX_POINT('',#110);
+#125=VERTEX_POINT('',#111);
+#126=VERTEX_POINT('',#112);
+#127=VERTEX_POINT('',#113);
+/* Directions and vectors */
 #200=DIRECTION('',(0.0,0.0,1.0));
 #201=DIRECTION('',(1.0,0.0,0.0));
-#202=AXIS2_PLACEMENT_3D('',#100,#200,#201);
-#203=PLANE('left_plane',#202);
 #210=DIRECTION('',(1.0,0.0,0.0));
 #211=VECTOR('',#210,1.0);
 #212=DIRECTION('',(0.0,1.0,0.0));
 #213=VECTOR('',#212,1.0);
-#220=LINE('',#100,#211); #221=EDGE_CURVE('',#120,#121,#220,.T.);
-#222=LINE('',#101,#213); #223=EDGE_CURVE('',#121,#122,#222,.T.);
-#224=LINE('',#103,#211); #225=EDGE_CURVE('',#123,#122,#224,.T.);
-#226=LINE('',#100,#213); #227=EDGE_CURVE('',#120,#123,#226,.T.);
+/* Left face plane and edges */
+#202=AXIS2_PLACEMENT_3D('',#100,#200,#201);
+#203=PLANE('left_plane',#202);
+#220=LINE('',#100,#211);
+#221=EDGE_CURVE('',#120,#121,#220,.T.);
+#222=LINE('',#101,#213);
+#223=EDGE_CURVE('',#121,#122,#222,.T.);
+#224=LINE('',#103,#211);
+#225=EDGE_CURVE('',#123,#122,#224,.T.);
+#226=LINE('',#100,#213);
+#227=EDGE_CURVE('',#120,#123,#226,.T.);
 #230=ORIENTED_EDGE('',*,*,#221,.T.);
 #231=ORIENTED_EDGE('',*,*,#223,.T.);
 #232=ORIENTED_EDGE('',*,*,#225,.F.);
@@ -61,13 +59,21 @@ DATA;
 #234=EDGE_LOOP('',(#230,#231,#232,#233));
 #235=FACE_OUTER_BOUND('',#234,.T.);
 #236=ADVANCED_FACE('left_face',(#235),#203,.T.);
-/* Right face plane and edges */
+/* Right face plane and edges (offset by 100 microns from left face) */
 #300=AXIS2_PLACEMENT_3D('',#110,#200,#201);
 #301=PLANE('right_plane',#300);
-#310=LINE('',#110,#211); #311=EDGE_CURVE('',#124,#125,#310,.T.);
-#312=LINE('',#111,#213); #313=EDGE_CURVE('',#125,#126,#312,.T.);
-#314=LINE('',#113,#211); #315=EDGE_CURVE('',#127,#126,#314,.T.);
-#316=LINE('',#110,#213); #317=EDGE_CURVE('',#124,#127,#316,.T.);
+#302=DIRECTION('',(1.0,0.0,0.0));
+#303=VECTOR('',#302,1.0);
+#304=DIRECTION('',(0.0,1.0,0.0));
+#305=VECTOR('',#304,1.0);
+#310=LINE('',#110,#303);
+#311=EDGE_CURVE('',#124,#125,#310,.T.);
+#312=LINE('',#111,#305);
+#313=EDGE_CURVE('',#125,#126,#312,.T.);
+#314=LINE('',#113,#303);
+#315=EDGE_CURVE('',#127,#126,#314,.T.);
+#316=LINE('',#110,#305);
+#317=EDGE_CURVE('',#124,#127,#316,.T.);
 #318=ORIENTED_EDGE('',*,*,#311,.T.);
 #319=ORIENTED_EDGE('',*,*,#313,.T.);
 #320=ORIENTED_EDGE('',*,*,#315,.F.);
@@ -75,12 +81,12 @@ DATA;
 #322=EDGE_LOOP('',(#318,#319,#320,#321));
 #323=FACE_OUTER_BOUND('',#322,.T.);
 #324=ADVANCED_FACE('right_face',(#323),#301,.T.);
-/* Both faces in an OPEN_SHELL - the gap means it cannot be sewn into
- * a CLOSED_SHELL within tolerance 1.0e-6. */
+/* OPEN_SHELL: the gap means it cannot be sewn into a CLOSED_SHELL.
+   Non-watertight: shared edge has 100-micron gap between left and right faces. */
 #400=OPEN_SHELL('non_watertight',(#236,#324));
 #410=SHELL_BASED_SURFACE_MODEL('',(#400));
 #420=ADVANCED_BREP_SHAPE_REPRESENTATION('',(#410),#14);
-/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+/* PRODUCT chain */
 #9010=PRODUCT_CONTEXT('',#1,'mechanical');
 #9011=PRODUCT('M024','M024','',(#9010));
 #9012=PRODUCT_DEFINITION_FORMATION('','',#9011);

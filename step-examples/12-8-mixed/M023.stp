@@ -1,17 +1,9 @@
 ISO-10303-21;
-/* M023 - STL->STEP via mesh-to-NURBS produces self-intersecting faces.
- * Defect: a mesh-to-BRep tool fitted a B_SPLINE_SURFACE_WITH_KNOTS to
- * each triangle and stitched. Near a sharp crease the patches'
- * pcurves cross each other within a face, yielding ADVANCED_FACE
- * entities whose trim curves self-intersect. The file loads but every
- * subsequent boolean operation against this body fails.
- * This fixture deliberately encodes a trivial single ADVANCED_FACE
- * with two FACE_BOUND loops whose pcurves intersect at an interior
- * point - the inner loop crosses the outer. */
+/* M023: Mesh-to-NURBS face has inner FACE_BOUND extending outside the FACE_OUTER_BOUND; input: STEP file produced by mesh-to-BRep fitting tool where per-triangle NURBS patches are stitched near a sharp crease; ADVANCED_FACE outer rectangular FACE_OUTER_BOUND is a 2x2 square; inner triangular FACE_BOUND has vertices (1,1),(3,1),(2,3) that extend outside the outer square — pcurves cross the outer boundary; self-intersecting trim topology: file loads but every subsequent Boolean fails; kernel must heal: STL-to-STEP path should emit FACETED_BREP not smooth NURBS, or run self-intersection healing as a final step; synonyms: mesh-to-NURBS inner trim outside outer, STL-to-STEP face self-intersects, FACE_BOUND extends past outer bound, self-intersecting reverse-engineered face */
 HEADER;
-FILE_DESCRIPTION(('M023 test case','self-intersecting face from mesh-to-NURBS'),'2;1');
-FILE_NAME('M023.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('M023'),'2;1');
+FILE_NAME('M023.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('automotive_design');
@@ -24,19 +16,19 @@ DATA;
      GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
      GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
      REPRESENTATION_CONTEXT('part','3D'));
-/* Plane in z=0. */
+/* Plane in z=0 */
 #100=CARTESIAN_POINT('',(0.0,0.0,0.0));
 #101=DIRECTION('',(0.0,0.0,1.0));
 #102=DIRECTION('',(1.0,0.0,0.0));
 #103=AXIS2_PLACEMENT_3D('',#100,#101,#102);
 #104=PLANE('mesh_to_nurbs_face',#103);
-/* Outer loop: square (0,0)-(2,0)-(2,2)-(0,2). */
+/* Outer loop: square (0,0)-(2,0)-(2,2)-(0,2) */
 #200=CARTESIAN_POINT('',(0.0,0.0,0.0));
 #201=CARTESIAN_POINT('',(2.0,0.0,0.0));
 #202=CARTESIAN_POINT('',(2.0,2.0,0.0));
 #203=CARTESIAN_POINT('',(0.0,2.0,0.0));
-/* Inner loop: triangle (1,1)-(3,1)-(2,3) - crosses the outer square's
- * right and top edges. This is the self-intersection. */
+/* Inner loop: triangle (1,1)-(3,1)-(2,3) - vertices cross the 2x2 outer square
+   at x=2 and y=2. This is the self-intersecting trim defect. */
 #210=CARTESIAN_POINT('',(1.0,1.0,0.0));
 #211=CARTESIAN_POINT('',(3.0,1.0,0.0));
 #212=CARTESIAN_POINT('',(2.0,3.0,0.0));
@@ -47,23 +39,34 @@ DATA;
 #224=VERTEX_POINT('',#210);
 #225=VERTEX_POINT('',#211);
 #226=VERTEX_POINT('',#212);
+/* Outer loop edge vectors */
 #230=DIRECTION('',(1.0,0.0,0.0));
 #231=DIRECTION('',(0.0,1.0,0.0));
 #232=VECTOR('',#230,2.0);
 #233=VECTOR('',#231,2.0);
-/* Outer loop edges */
-#240=LINE('',#200,#232); #241=EDGE_CURVE('',#220,#221,#240,.T.);
-#242=LINE('',#201,#233); #243=EDGE_CURVE('',#221,#222,#242,.T.);
-#244=LINE('',#203,#232); #245=EDGE_CURVE('',#223,#222,#244,.T.);
-#246=LINE('',#200,#233); #247=EDGE_CURVE('',#220,#223,#246,.T.);
-/* Inner loop edges (crossing) */
-#250=LINE('',#210,#232); #251=EDGE_CURVE('',#224,#225,#250,.T.);
-#252=DIRECTION('',(-0.4472,0.8944,0.0));
-#253=VECTOR('',#252,2.236);
-#254=LINE('',#211,#253); #255=EDGE_CURVE('',#225,#226,#254,.T.);
-#256=DIRECTION('',(-0.4472,-0.8944,0.0));
-#257=VECTOR('',#256,2.236);
-#258=LINE('',#212,#257); #259=EDGE_CURVE('',#226,#224,#258,.T.);
+/* Outer loop edges: bottom, right, top(rev), left(rev) */
+#240=LINE('',#200,#232);
+#241=EDGE_CURVE('',#220,#221,#240,.T.);
+#242=LINE('',#201,#233);
+#243=EDGE_CURVE('',#221,#222,#242,.T.);
+#244=LINE('',#203,#232);
+#245=EDGE_CURVE('',#223,#222,#244,.T.);
+#246=LINE('',#200,#233);
+#247=EDGE_CURVE('',#220,#223,#246,.T.);
+/* Inner loop edge vectors (cross the outer boundary) */
+/* Edge 0: (1,1)->(3,1) along +x, length=2 */
+#250=LINE('',#210,#232);
+#251=EDGE_CURVE('',#224,#225,#250,.T.);
+/* Edge 1: (3,1)->(2,3) direction ~(-0.447,0.894,0) length~2.236 */
+#252=DIRECTION('',(-0.4472135955,0.8944271910,0.0));
+#253=VECTOR('',#252,2.2360679775);
+#254=LINE('',#211,#253);
+#255=EDGE_CURVE('',#225,#226,#254,.T.);
+/* Edge 2: (2,3)->(1,1) direction ~(-0.447,-0.894,0) length~2.236 */
+#256=DIRECTION('',(-0.4472135955,-0.8944271910,0.0));
+#257=VECTOR('',#256,2.2360679775);
+#258=LINE('',#212,#257);
+#259=EDGE_CURVE('',#226,#224,#258,.T.);
 /* Outer FACE_OUTER_BOUND */
 #260=ORIENTED_EDGE('',*,*,#241,.T.);
 #261=ORIENTED_EDGE('',*,*,#243,.T.);
@@ -71,15 +74,15 @@ DATA;
 #263=ORIENTED_EDGE('',*,*,#247,.F.);
 #264=EDGE_LOOP('',(#260,#261,#262,#263));
 #265=FACE_OUTER_BOUND('',#264,.T.);
-/* Inner self-crossing FACE_BOUND */
+/* Inner FACE_BOUND: triangle whose vertices cross the outer square */
 #270=ORIENTED_EDGE('',*,*,#251,.T.);
 #271=ORIENTED_EDGE('',*,*,#255,.T.);
 #272=ORIENTED_EDGE('',*,*,#259,.T.);
 #273=EDGE_LOOP('',(#270,#271,#272));
 #274=FACE_BOUND('',#273,.T.);
-/* Defect: the two loops cross at the right and top edges. */
+/* Defect: FACE_BOUND inner loop crosses FACE_OUTER_BOUND edges */
 #280=ADVANCED_FACE('self_intersecting',(#265,#274),#104,.T.);
-/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
+/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape */
 #9010=PRODUCT_CONTEXT('',#1,'mechanical');
 #9011=PRODUCT('M023','M023','',(#9010));
 #9012=PRODUCT_DEFINITION_FORMATION('','',#9011);
