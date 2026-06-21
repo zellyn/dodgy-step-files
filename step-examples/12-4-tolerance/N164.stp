@@ -1,84 +1,45 @@
 ISO-10303-21;
-/* N164 - tolerance_closure: edge-loop closure exceeds tolerance
- * Defect: BRepBuilderAPI_Sewing allows EDGE_LOOP gaps > tolerance w/o reporting.
- * Reproducer: Edge loop with 0.05 mm gap; closure tolerance=0.01 mm.
- * Expected: rejection or warning. Actual: silently accepted (gap masked).
- */
+/* N164: tolerance_closure EDGE_LOOP gap: triangle with 0.05mm gap; closure tol=0.01; sewing skips gap validation; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N164 tolerance_closure edge-loop gap exceeds threshold'),'2;1');
-FILE_NAME('N164.stp','2026-06-15T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('N164'),'2;1');
+FILE_NAME('N164.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#11=DIRECTION('z',(0.0,0.0,1.0));
-#12=DIRECTION('x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
-/* Edge 1: from (0,0,0) to (1,0,0) */
-#20=CARTESIAN_POINT('p1',(0.0,0.0,0.0));
-#21=CARTESIAN_POINT('p2',(1.0,0.0,0.0));
-#30=VERTEX_POINT('v1',#20);
-#31=VERTEX_POINT('v2',#21);
-#40=DIRECTION('edge1_dir',(1.0,0.0,0.0));
-#41=VECTOR('edge1_vec',#40,1.0);
-#42=LINE('e1_line',#20,#41);
-#43=EDGE_CURVE('e1',#30,#31,#42,.T.);
-/* Edge 2: from (1,0,0) to (0.95,1,0) — intentional 0.05 gap */
-#50=CARTESIAN_POINT('p3',(1.0,0.0,0.0));
-#51=CARTESIAN_POINT('p4',(0.95,1.0,0.0));
-#60=VERTEX_POINT('v3',#50);
-#61=VERTEX_POINT('v4',#51);
-#70=DIRECTION('edge2_dir',(0.0,1.0,0.0));
-#71=VECTOR('edge2_vec',#70,1.0);
-#72=LINE('e2_line',#50,#71);
-#73=EDGE_CURVE('e2',#60,#61,#72,.T.);
-/* Edge 3: from (0.95,1,0) to (0,1,0) */
-#80=CARTESIAN_POINT('p5',(0.95,1.0,0.0));
-#81=CARTESIAN_POINT('p6',(0.0,1.0,0.0));
-#90=VERTEX_POINT('v5',#80);
-#91=VERTEX_POINT('v6',#81);
-#100=DIRECTION('edge3_dir',(-1.0,0.0,0.0));
-#101=VECTOR('edge3_vec',#100,0.95);
-#102=LINE('e3_line',#80,#101);
-#103=EDGE_CURVE('e3',#90,#91,#102,.T.);
-/* Edge 4: from (0,1,0) back to (0,0,0) */
-#110=CARTESIAN_POINT('p7',(0.0,1.0,0.0));
-#111=CARTESIAN_POINT('p8',(0.0,0.0,0.0));
-#120=VERTEX_POINT('v7',#110);
-#121=VERTEX_POINT('v8',#111);
-#130=DIRECTION('edge4_dir',(0.0,-1.0,0.0));
-#131=VECTOR('edge4_vec',#130,1.0);
-#132=LINE('e4_line',#110,#131);
-#133=EDGE_CURVE('e4',#120,#121,#132,.T.);
-/* EDGE_LOOP with gap between e2 and e3 (0.05 mm) */
-#140=EDGE_LOOP('loop_with_gap',(#43,#73,#103,#133));
-#150=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#151=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#152=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-/* Tight closure tolerance: 0.01 mm (but gap is 0.05 mm) */
-#153=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.01),#150,
-  'distance_accuracy_value','closure_tol');
-#154=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#153))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#150,#151,#152))
-  REPRESENTATION_CONTEXT('closure_ctx','3D'));
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('N164','N164','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.01),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#150));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#1=CARTESIAN_POINT('p0_loop_start',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('p1',(5.0,0.0,0.0));
+#3=CARTESIAN_POINT('p2',(2.5,5.0,0.0));
+#4=CARTESIAN_POINT('p3_gap',(0.05,0.0,0.0));
+#5=VERTEX_POINT('v0_loop_start',#1);
+#6=VERTEX_POINT('v1',#2);
+#7=VERTEX_POINT('v2',#3);
+#8=VERTEX_POINT('v3_gap',#4);
+#9=DIRECTION('',(1.0,0.0,0.0));
+#10=VECTOR('',#9,5.0);
+#11=LINE('',#1,#10);
+#12=EDGE_CURVE('e0',#5,#6,#11,.T.);
+#13=DIRECTION('',(-0.5,1.0,0.0));
+#14=VECTOR('',#13,5.0);
+#15=LINE('',#2,#14);
+#16=EDGE_CURVE('e1',#6,#7,#15,.T.);
+#17=DIRECTION('',(-0.489,-1.0,0.0));
+#18=VECTOR('',#17,5.0);
+#19=LINE('',#3,#18);
+#20=EDGE_CURVE('e2_gap',#7,#8,#19,.T.);
+#21=GEOMETRIC_CURVE_SET('unclosed_loop',(#12,#16,#20));
+#22=APPLICATION_CONTEXT('automotive_design');
+#23=PRODUCT_CONTEXT('',#22,'mechanical');
+#24=PRODUCT('N164','N164','',(#23));
+#25=PRODUCT_DEFINITION_FORMATION('','',#24);
+#26=PRODUCT_DEFINITION_CONTEXT('part definition',#22,'design');
+#27=PRODUCT_DEFINITION('','',#25,#26);
+#28=PRODUCT_DEFINITION_SHAPE('','',#27);
+#29=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#30=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#31=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#32=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(5.0E-2),#29,'distance_accuracy_value','loop_closure_gap');
+#33=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#32))GLOBAL_UNIT_ASSIGNED_CONTEXT((#29,#30,#31))REPRESENTATION_CONTEXT('ctx','3D'));
+#34=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#21),#33);
+#35=SHAPE_DEFINITION_REPRESENTATION(#28,#34);
 ENDSEC;
 END-ISO-10303-21;
