@@ -1,75 +1,61 @@
 ISO-10303-21;
-/* N134 - ShapeFix_ShapeTolerance.LimitTolerance.recursive_wire_vertices
- * Defect: WIRE branch recursively calls LimitTolerance on V1/V2 without
- * preventing double-application. Shared vertices between wire edges processed
- * multiple times; tolerance converges to tmin/tmax nondeterministically.
- */
+/* N134: CLOSED_SHELL with face containing v_shared used by both ec1 (→v2) and ec2 (→v3); LimitTolerance processes v_shared twice without deduplication — tolerance applied twice, last-write-wins nondeterministic semantics */
 HEADER;
-FILE_DESCRIPTION(('N134 ShapeFix_ShapeTolerance.LimitTolerance.recursive_wire_vertices'),'2;1');
-FILE_NAME('N134.stp','2026-06-16T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('N134'),'2;1');
+FILE_NAME('N134.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-/* Origin and axes */
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#11=DIRECTION('z',(0.0,0.0,1.0));
-#12=DIRECTION('x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
-/* Three vertices: one shared between two edges */
-#20=CARTESIAN_POINT('p1',(0.0,0.0,0.0));
-#30=VERTEX_POINT('v_shared',#20);
-#21=CARTESIAN_POINT('p2',(1.0,0.0,0.0));
-#31=VERTEX_POINT('v2',#21);
-#22=CARTESIAN_POINT('p3',(1.0,1.0,0.0));
-#32=VERTEX_POINT('v3',#22);
-/* Edge 1: from v_shared to v2 */
-#40=DIRECTION('e1_dir',(1.0,0.0,0.0));
-#41=VECTOR('e1_vec',#40,1.0);
-#42=LINE('edge1',#20,#41);
-#43=EDGE_CURVE('ec1',#30,#31,#42,.T.);
-/* Edge 2: from v_shared to v3 (shares v_shared with edge1) */
-#50=DIRECTION('e2_dir',(0.0,1.0,0.0));
-#51=VECTOR('e2_vec',#50,1.0);
-#52=LINE('edge2',#20,#51);
-#53=EDGE_CURVE('ec2',#30,#32,#52,.T.);
-/* Wire containing both edges with shared vertex */
-#60=ORIENTED_EDGE('oe1',*,*,#43,.T.);
-#61=ORIENTED_EDGE('oe2',*,*,#53,.T.);
-#62=WIRE('wire_shared_vertex',(#60,#61));
-/* Face using the wire */
-#70=PLANE('face_plane',#13,1.0);
-#71=FACE_OUTER_BOUND('face_bound',#62,.T.);
-#72=ADVANCED_FACE('',(#71),#70,.T.);
-/* Shell */
-#80=CLOSED_SHELL('shell',(#72));
-/* Units and context */
-#90=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#91=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#92=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#93=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#90,
-  'distance_accuracy_value','nominal_tolerance');
-#94=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#93))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#90,#91,#92))
-  REPRESENTATION_CONTEXT('recursive_wire_ctx','3D'));
-/* PRODUCT CHAIN */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('N134','N134','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#80));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#3=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#4=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#5=VERTEX_POINT('v_shared',#1);
+#6=VERTEX_POINT('v2',#2);
+#7=VERTEX_POINT('v3',#3);
+#8=VERTEX_POINT('',#4);
+#9=DIRECTION('',(1.0,0.0,0.0));
+#10=VECTOR('',#9,1.0);
+#11=LINE('',#1,#10);
+#12=EDGE_CURVE('ec1',#5,#6,#11,.T.);
+#13=DIRECTION('',(0.0,-1.0,0.0));
+#14=VECTOR('',#13,1.0);
+#15=LINE('',#3,#14);
+#16=EDGE_CURVE('ec2',#7,#5,#15,.T.);
+#17=DIRECTION('',(0.0,1.0,0.0));
+#18=VECTOR('',#17,1.0);
+#19=LINE('',#2,#18);
+#20=EDGE_CURVE('',#6,#8,#19,.T.);
+#21=DIRECTION('',(-1.0,0.0,0.0));
+#22=VECTOR('',#21,1.0);
+#23=LINE('',#4,#22);
+#24=EDGE_CURVE('',#8,#7,#23,.T.);
+#25=ORIENTED_EDGE('',$,$,#12,.T.);
+#26=ORIENTED_EDGE('',$,$,#20,.T.);
+#27=ORIENTED_EDGE('',$,$,#24,.T.);
+#28=ORIENTED_EDGE('',$,$,#16,.T.);
+#29=EDGE_LOOP('',(#25,#26,#27,#28));
+#30=FACE_OUTER_BOUND('',#29,.T.);
+#31=DIRECTION('',(0.0,0.0,1.0));
+#32=DIRECTION('',(1.0,0.0,0.0));
+#33=AXIS2_PLACEMENT_3D('',#1,#31,#32);
+#34=PLANE('',#33);
+#35=ADVANCED_FACE('',(#30),#34,.T.);
+#36=CLOSED_SHELL('',(#35));
+#37=SHELL_BASED_SURFACE_MODEL('',(#36));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('N134','N134','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#37),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
