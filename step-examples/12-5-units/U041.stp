@@ -1,31 +1,42 @@
 ISO-10303-21;
-/* U041 - Dynamic-viscosity Pa.s as derived-unit chain (kg / (m * s))
- * Defect: a DERIVED_UNIT composed of mass^+1, length^-1, time^-1.
- * Receivers that flatten time exponent into a length-time-mass dictionary
- * lookup may drop the redundant time and read the unit as Pa instead of
- * Pa.s. */
+/* U041: Dynamic viscosity Pa*s as DERIVED_UNIT: kg*m^-1*s^-1 */
+/* DEFECT: receivers may flatten time exponent and read as Pa instead of Pa*s */
+/* Kernel must resolve dimensional signature mass^1 length^-1 time^-1 to Pa.s */
 HEADER;
-FILE_DESCRIPTION(('U041 - dynamic viscosity Pa.s as derived unit chain'),'2;1');
-FILE_NAME('U041.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('U041: Pa.s dynamic viscosity DERIVED_UNIT chain kg*m^-1*s^-1'),'2;1');
+FILE_NAME('U041.stp','2026-06-20T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#3=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT($,.METRE.));
-#4=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#5=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#6=(NAMED_UNIT(*)MASS_UNIT()SI_UNIT(.KILO.,.GRAM.));
-#7=(NAMED_UNIT(*)SI_UNIT($,.SECOND.)TIME_MEASURE_UNIT());
-/* Pa.s = kg^+1 m^-1 s^-1 */
-#10=DERIVED_UNIT_ELEMENT(#6,1.0);
-#11=DERIVED_UNIT_ELEMENT(#3,-1.0);
-#12=DERIVED_UNIT_ELEMENT(#7,-1.0);
-#13=DERIVED_UNIT((#10,#11,#12));
-#20=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#3,
-  'distance_accuracy_value','');
-#21=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#20))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#3,#4,#5))
-  REPRESENTATION_CONTEXT('ctx','3D'));
+/* Geometry: part with mm coordinates */
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=CARTESIAN_POINT('corner-x',(50.0,0.,0.));
+#3=CARTESIAN_POINT('corner-y',(0.,50.0,0.));
+#4=CARTESIAN_POINT('corner-z',(0.,0.,25.0));
+#5=CARTESIAN_POINT('corner-xyz',(50.0,50.0,25.0));
+/* Standard mm geometry context */
+#10=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT('ctx','3D'));
+/* Base SI units for dynamic viscosity DERIVED_UNIT chain */
+#20=(MASS_UNIT() NAMED_UNIT(*) SI_UNIT(.KILO.,.GRAM.));
+#21=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT($,.METRE.));
+#22=(NAMED_UNIT(*) SI_UNIT($,.SECOND.) TIME_UNIT());
+/* DERIVED_UNIT for dynamic viscosity Pa*s: mass^+1, length^-1, time^-1 */
+/* Correct dimensional signature: kg*m^-1*s^-1 = Pa.s */
+/* DEFECT: receivers that flatten time exponent read this as Pa (not Pa.s) */
+#30=DERIVED_UNIT_ELEMENT(#20,1.);
+#31=DERIVED_UNIT_ELEMENT(#21,-1.);
+#32=DERIVED_UNIT_ELEMENT(#22,-1.);
+#33=DERIVED_UNIT((#30,#31,#32));
+/* Viscosity measure: 0.001 Pa*s (water at 20 deg C) */
+/* Receiver that reads Pa instead of Pa*s gets wrong material property */
+#40=MEASURE_REPRESENTATION_ITEM('dynamic_viscosity',LENGTH_MEASURE(0.001),#33);
+/* Model entity is GEOMETRIC_CURVE_SET — OCC returns empty shape */
+#50=GEOMETRIC_CURVE_SET('viscosity-unit-pas-derived-chain',(#1,#2,#3,#4,#5));
 ENDSEC;
 END-ISO-10303-21;

@@ -1,34 +1,44 @@
 ISO-10303-21;
-/* U040 - Pressure unit Pa built from a derived-unit chain (kg / (m * s^2))
- * Defect: a DERIVED_UNIT composed of three DERIVED_UNIT_ELEMENT entries
- * representing mass^+1, length^-1, time^-2. Spec-conforming, but
- * receivers that pattern-match on a single named pressure unit need to
- * detect the dimensional signature. This fixture's length unit is
- * MILLIMETRE (1000x off from the canonical Pa derivation in metres). */
+/* U040: Pressure unit Pa as DERIVED_UNIT with mixed prefix: kg*mm^-1*s^-2 = 1000 Pa */
+/* DEFECT: length unit is MILLI METRE, not METRE — composed unit is 1000x off from Pa */
+/* Kernel must resolve dimensional signature and normalise SI prefix mismatch */
 HEADER;
-FILE_DESCRIPTION(('U040 - pressure Pa as multi-element derived unit chain'),'2;1');
-FILE_NAME('U040.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('U040: Pa DERIVED_UNIT chain with mm length unit — 1000x SI prefix mismatch'),'2;1');
+FILE_NAME('U040.stp','2026-06-20T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#3=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#4=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#5=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#6=(NAMED_UNIT(*)MASS_UNIT()SI_UNIT($,.GRAM.));
-#7=(NAMED_UNIT(*)SI_UNIT($,.SECOND.)TIME_MEASURE_UNIT());
-/* Defect: derived-unit elements with mixed SI prefix (gram for mass,
-   millimetre for length). The composition is Pa-like but the magnitude
-   is off from canonical SI Pa. */
-#10=DERIVED_UNIT_ELEMENT(#6,1.0);
-#11=DERIVED_UNIT_ELEMENT(#3,-1.0);
-#12=DERIVED_UNIT_ELEMENT(#7,-2.0);
-#13=DERIVED_UNIT((#10,#11,#12));
-#20=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#3,
-  'distance_accuracy_value','');
-#21=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#20))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#3,#4,#5))
-  REPRESENTATION_CONTEXT('ctx','3D'));
+/* Geometry: part with mm coordinates */
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=CARTESIAN_POINT('corner-x',(50.0,0.,0.));
+#3=CARTESIAN_POINT('corner-y',(0.,50.0,0.));
+#4=CARTESIAN_POINT('corner-z',(0.,0.,25.0));
+#5=CARTESIAN_POINT('corner-xyz',(50.0,50.0,25.0));
+/* Standard mm geometry context */
+#10=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT('ctx','3D'));
+/* Base SI units for DERIVED_UNIT pressure chain */
+/* DEFECT: mass in kg (correct), but length is MILLI METRE not METRE */
+#20=(MASS_UNIT() NAMED_UNIT(*) SI_UNIT(.KILO.,.GRAM.));
+/* DEFECT: millimetre used for length in pressure chain — makes unit 1000x off from Pa */
+#21=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+#22=(NAMED_UNIT(*) SI_UNIT($,.SECOND.) TIME_UNIT());
+/* DERIVED_UNIT for pressure: mass^+1, length^-1, time^-2 */
+/* With mm as length: kg*mm^-1*s^-2 = 1000*kg*m^-1*s^-2 = 1000 Pa */
+#30=DERIVED_UNIT_ELEMENT(#20,1.);
+#31=DERIVED_UNIT_ELEMENT(#21,-1.);
+#32=DERIVED_UNIT_ELEMENT(#22,-2.);
+/* DEFECT: this DERIVED_UNIT composes to 1000 Pa, not 1 Pa */
+#33=DERIVED_UNIT((#30,#31,#32));
+/* Pressure measure using the malformed DERIVED_UNIT */
+/* Author intends 101325 Pa (atmospheric) but the unit is 1000x off */
+#40=MEASURE_REPRESENTATION_ITEM('pressure_value',LENGTH_MEASURE(101325.),#33);
+/* Model entity is GEOMETRIC_CURVE_SET — OCC returns empty shape */
+#50=GEOMETRIC_CURVE_SET('pressure-unit-pa-derived-chain',(#1,#2,#3,#4,#5));
 ENDSEC;
 END-ISO-10303-21;

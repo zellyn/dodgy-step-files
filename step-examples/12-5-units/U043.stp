@@ -1,45 +1,35 @@
 ISO-10303-21;
-/* U043 - Slicer-side unit-context inversion: STEP says inch, slicer
- * reads as mm.
- * Defect: a producer correctly emits an inch-unit context with inch-
- * scale coordinates. A receiver that hard-codes "mm" assumes the
- * numbers are mm and produces a 25.4x too-small model. Mirror image
- * of Wr044. */
+/* U043: Well-formed STEP with INCH unit; 1x1x1 inch cube */
+/* DEFECT (receiver side): slicer ignores CONVERSION_BASED_UNIT('INCH') declaration */
+/* Correct receiver: loads 25.4 mm cube */
+/* Buggy receiver (hard-codes mm): loads 1.0 mm cube (25.4x too small) */
 HEADER;
-FILE_DESCRIPTION(('U043 - INCH unit context with inch-scale coordinates'),'2;1');
-FILE_NAME('U043.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('U043: INCH unit declared; receiver must honour, not hard-code mm'),'2;1');
+FILE_NAME('U043.stp','2026-06-20T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#1);
-#3=PRODUCT_CONTEXT('part',#1,'mechanical');
-#4=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#5=PRODUCT('U043_inchcube','inch context, inch values','',(#3));
-#6=PRODUCT_DEFINITION_FORMATION('','',#5);
-#7=PRODUCT_DEFINITION('design','',#6,#4);
-#8=PRODUCT_DEFINITION_SHAPE('','',#7);
-/* Inch unit context, declared via CONVERSION_BASED_UNIT. */
-#10=( LENGTH_UNIT() NAMED_UNIT(*) CONVERSION_BASED_UNIT('INCH',#11) );
-#11=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#12);
-#12=( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#13=( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#14=( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#15=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#10,'tol','');
-#16=( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#15)) GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#13,#14)) REPRESENTATION_CONTEXT('','3D') );
-/* Inch-scale corner coordinates -- a unit cube measured in inches. */
-#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#21=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#22=CARTESIAN_POINT('',(1.0,1.0,0.0));
-#23=CARTESIAN_POINT('',(0.0,1.0,0.0));
-#24=CARTESIAN_POINT('',(0.0,0.0,1.0));
-#25=CARTESIAN_POINT('',(1.0,0.0,1.0));
-#26=CARTESIAN_POINT('',(1.0,1.0,1.0));
-#27=CARTESIAN_POINT('',(0.0,1.0,1.0));
-#30=DIRECTION('',(0.0,0.0,1.0));
-#31=DIRECTION('',(1.0,0.0,0.0));
-#32=AXIS2_PLACEMENT_3D('',#20,#30,#31);
-#33=SHAPE_REPRESENTATION('U043_inchcube',(#32),#16);
-#34=SHAPE_DEFINITION_REPRESENTATION(#8,#33);
+/* SI mm base — required as the conversion reference for INCH */
+#8=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+/* INCH conversion: exactly 25.4 mm per inch */
+#9=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#8);
+/* File declares INCH as active length unit */
+#10=(CONVERSION_BASED_UNIT('INCH',#9) LENGTH_UNIT() NAMED_UNIT(*));
+#11=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(3.937E-5),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT('ctx','3D'));
+/* Geometry: 1x1x1 inch cube (corner coords at 1.0 — one inch per side) */
+/* Correct receiver: normalises to 25.4 mm per side */
+/* Buggy receiver (hard-codes mm): reads as 1.0 mm per side (25.4x too small) */
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=CARTESIAN_POINT('corner-x',(1.0,0.,0.));
+#3=CARTESIAN_POINT('corner-y',(0.,1.0,0.));
+#4=CARTESIAN_POINT('corner-z',(0.,0.,1.0));
+#5=CARTESIAN_POINT('corner-xyz',(1.0,1.0,1.0));
+/* Model entity is GEOMETRIC_CURVE_SET — OCC returns empty shape */
+#30=GEOMETRIC_CURVE_SET('inch-unit-receiver-ignores-declaration',(#1,#2,#3,#4,#5));
 ENDSEC;
 END-ISO-10303-21;

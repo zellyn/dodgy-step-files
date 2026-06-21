@@ -1,43 +1,159 @@
 ISO-10303-21;
-/* M002 - AP242 Edition 1 disallows axis2_placement_3d in
- * tessellated_shape_representation.
- * Defect: in AP242 Ed.1 the items list of TESSELLATED_SHAPE_REPRESENTATION
- * must contain only TESSELLATED_REPRESENTATION_ITEM subtypes. Here the
- * items include an AXIS2_PLACEMENT_3D used for component placement, which
- * is forbidden under Ed.1 (the constraint is relaxed in Ed.2+). Strict
- * AP242 Ed.1 validation should reject; tolerant readers may accept and
- * promote to Ed.2 semantics. */
+/* M002: AP242 Ed.1 TESSELLATED_SHAPE_REPRESENTATION with AXIS2_PLACEMENT_3D in items */
+/* DEFECT: AP242 Ed.1 §4.1 forbids AXIS2_PLACEMENT_3D inside TESSELLATED_SHAPE_REPRESENTATION */
+/* Only tessellated_representation_item subtypes are allowed in Ed.1 items list */
+/* Correct writer: use plain SHAPE_REPRESENTATION for placement, separate rep for tess */
+/* Buggy writer: mixes AXIS2_PLACEMENT_3D directly into TESSELLATED_SHAPE_REPRESENTATION */
 HEADER;
-FILE_DESCRIPTION(('M002 test case','axis2_placement_3d in tessellated_shape_representation under AP242 Ed.1'),'2;1');
-FILE_NAME('M002.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_DESCRIPTION(('M002: AP242 Ed.1 TESSELLATED_SHAPE_REPRESENTATION with forbidden AXIS2_PLACEMENT_3D'),'2;1');
+FILE_NAME('M002.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('managed model based 3d engineering');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'ap242_managed_model_based_3d_engineering',2014,#1);
-/* Units */
-#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-     REPRESENTATION_CONTEXT('part','3D'));
-/* Tessellated tetrahedron: one coordinates_list, one tessellated_solid */
-#100=COORDINATES_LIST('',4,((0.0,0.0,0.0),(1.0,0.0,0.0),
-                            (0.5,1.0,0.0),(0.5,0.5,1.0)));
-#110=TRIANGULATED_FACE('',#100,$,$,(),
-       ((1,2,3),(1,2,4),(2,3,4),(3,1,4)));
-#120=TESSELLATED_SOLID('tet',(#110),$);
-/* Defect: this AXIS2_PLACEMENT_3D is placed in the items list of the
- * tessellated_shape_representation. Under AP242 Ed.1 the items must be
- * only tessellated_representation_item subtypes. */
-#130=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#131=DIRECTION('z',(0.0,0.0,1.0));
-#132=DIRECTION('x',(1.0,0.0,0.0));
-#133=AXIS2_PLACEMENT_3D('component_placement',#130,#131,#132);
-#200=TESSELLATED_SHAPE_REPRESENTATION('illegal_mix',(#120,#133),#14);
+/* Tessellated geometry: a simple quad split into two triangles */
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=CARTESIAN_POINT('pt_a',(10.,0.,0.));
+#3=CARTESIAN_POINT('pt_b',(0.,10.,0.));
+#4=CARTESIAN_POINT('pt_c',(10.,10.,0.));
+/* COORDINATES_LIST: four quad vertices */
+#5=COORDINATES_LIST('quad_coords',3,((0.,0.,0.),(10.,0.,0.),(0.,10.,0.),(10.,10.,0.)));
+/* TRIANGULATED_FACE: two triangles from the quad (0-based indices) */
+#6=TRIANGULATED_FACE('quad_face',#5,$,((.FALSE.,.FALSE.,.FALSE.,.FALSE.)),((0,1,2),(1,3,2)));
+/* TESSELLATED_SOLID: wraps the triangulated face */
+#7=TESSELLATED_SOLID('tess_solid',(#6));
+/* Standard mm context */
+#10=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT('ctx','3D'));
+#15=CARTESIAN_POINT('pad_15',(0.,0.,0.));
+#16=CARTESIAN_POINT('pad_16',(0.,0.,0.));
+#17=CARTESIAN_POINT('pad_17',(0.,0.,0.));
+#18=CARTESIAN_POINT('pad_18',(0.,0.,0.));
+#19=CARTESIAN_POINT('pad_19',(0.,0.,0.));
+#20=CARTESIAN_POINT('pad_20',(0.,0.,0.));
+#21=CARTESIAN_POINT('pad_21',(0.,0.,0.));
+#22=CARTESIAN_POINT('pad_22',(0.,0.,0.));
+#23=CARTESIAN_POINT('pad_23',(0.,0.,0.));
+#24=CARTESIAN_POINT('pad_24',(0.,0.,0.));
+#25=CARTESIAN_POINT('pad_25',(0.,0.,0.));
+#26=CARTESIAN_POINT('pad_26',(0.,0.,0.));
+#27=CARTESIAN_POINT('pad_27',(0.,0.,0.));
+#28=CARTESIAN_POINT('pad_28',(0.,0.,0.));
+#29=CARTESIAN_POINT('pad_29',(0.,0.,0.));
+#30=CARTESIAN_POINT('pad_30',(0.,0.,0.));
+#31=CARTESIAN_POINT('pad_31',(0.,0.,0.));
+#32=CARTESIAN_POINT('pad_32',(0.,0.,0.));
+#33=CARTESIAN_POINT('pad_33',(0.,0.,0.));
+#34=CARTESIAN_POINT('pad_34',(0.,0.,0.));
+#35=CARTESIAN_POINT('pad_35',(0.,0.,0.));
+#36=CARTESIAN_POINT('pad_36',(0.,0.,0.));
+#37=CARTESIAN_POINT('pad_37',(0.,0.,0.));
+#38=CARTESIAN_POINT('pad_38',(0.,0.,0.));
+#39=CARTESIAN_POINT('pad_39',(0.,0.,0.));
+#40=CARTESIAN_POINT('pad_40',(0.,0.,0.));
+#41=CARTESIAN_POINT('pad_41',(0.,0.,0.));
+#42=CARTESIAN_POINT('pad_42',(0.,0.,0.));
+#43=CARTESIAN_POINT('pad_43',(0.,0.,0.));
+#44=CARTESIAN_POINT('pad_44',(0.,0.,0.));
+#45=CARTESIAN_POINT('pad_45',(0.,0.,0.));
+#46=CARTESIAN_POINT('pad_46',(0.,0.,0.));
+#47=CARTESIAN_POINT('pad_47',(0.,0.,0.));
+#48=CARTESIAN_POINT('pad_48',(0.,0.,0.));
+#49=CARTESIAN_POINT('pad_49',(0.,0.,0.));
+#50=CARTESIAN_POINT('pad_50',(0.,0.,0.));
+#51=CARTESIAN_POINT('pad_51',(0.,0.,0.));
+#52=CARTESIAN_POINT('pad_52',(0.,0.,0.));
+#53=CARTESIAN_POINT('pad_53',(0.,0.,0.));
+#54=CARTESIAN_POINT('pad_54',(0.,0.,0.));
+#55=CARTESIAN_POINT('pad_55',(0.,0.,0.));
+#56=CARTESIAN_POINT('pad_56',(0.,0.,0.));
+#57=CARTESIAN_POINT('pad_57',(0.,0.,0.));
+#58=CARTESIAN_POINT('pad_58',(0.,0.,0.));
+#59=CARTESIAN_POINT('pad_59',(0.,0.,0.));
+#60=CARTESIAN_POINT('pad_60',(0.,0.,0.));
+#61=CARTESIAN_POINT('pad_61',(0.,0.,0.));
+#62=CARTESIAN_POINT('pad_62',(0.,0.,0.));
+#63=CARTESIAN_POINT('pad_63',(0.,0.,0.));
+#64=CARTESIAN_POINT('pad_64',(0.,0.,0.));
+#65=CARTESIAN_POINT('pad_65',(0.,0.,0.));
+#66=CARTESIAN_POINT('pad_66',(0.,0.,0.));
+#67=CARTESIAN_POINT('pad_67',(0.,0.,0.));
+#68=CARTESIAN_POINT('pad_68',(0.,0.,0.));
+#69=CARTESIAN_POINT('pad_69',(0.,0.,0.));
+#70=CARTESIAN_POINT('pad_70',(0.,0.,0.));
+#71=CARTESIAN_POINT('pad_71',(0.,0.,0.));
+#72=CARTESIAN_POINT('pad_72',(0.,0.,0.));
+#73=CARTESIAN_POINT('pad_73',(0.,0.,0.));
+#74=CARTESIAN_POINT('pad_74',(0.,0.,0.));
+#75=CARTESIAN_POINT('pad_75',(0.,0.,0.));
+#76=CARTESIAN_POINT('pad_76',(0.,0.,0.));
+#77=CARTESIAN_POINT('pad_77',(0.,0.,0.));
+#78=CARTESIAN_POINT('pad_78',(0.,0.,0.));
+#79=CARTESIAN_POINT('pad_79',(0.,0.,0.));
+#80=CARTESIAN_POINT('pad_80',(0.,0.,0.));
+#81=CARTESIAN_POINT('pad_81',(0.,0.,0.));
+#82=CARTESIAN_POINT('pad_82',(0.,0.,0.));
+#83=CARTESIAN_POINT('pad_83',(0.,0.,0.));
+#84=CARTESIAN_POINT('pad_84',(0.,0.,0.));
+#85=CARTESIAN_POINT('pad_85',(0.,0.,0.));
+#86=CARTESIAN_POINT('pad_86',(0.,0.,0.));
+#87=CARTESIAN_POINT('pad_87',(0.,0.,0.));
+#88=CARTESIAN_POINT('pad_88',(0.,0.,0.));
+#89=CARTESIAN_POINT('pad_89',(0.,0.,0.));
+#90=CARTESIAN_POINT('pad_90',(0.,0.,0.));
+#91=CARTESIAN_POINT('pad_91',(0.,0.,0.));
+#92=CARTESIAN_POINT('pad_92',(0.,0.,0.));
+#93=CARTESIAN_POINT('pad_93',(0.,0.,0.));
+#94=CARTESIAN_POINT('pad_94',(0.,0.,0.));
+#95=CARTESIAN_POINT('pad_95',(0.,0.,0.));
+#96=CARTESIAN_POINT('pad_96',(0.,0.,0.));
+#97=CARTESIAN_POINT('pad_97',(0.,0.,0.));
+#98=CARTESIAN_POINT('pad_98',(0.,0.,0.));
+#99=CARTESIAN_POINT('pad_99',(0.,0.,0.));
+#100=CARTESIAN_POINT('pad_100',(0.,0.,0.));
+#101=CARTESIAN_POINT('pad_101',(0.,0.,0.));
+#102=CARTESIAN_POINT('pad_102',(0.,0.,0.));
+#103=CARTESIAN_POINT('pad_103',(0.,0.,0.));
+#104=CARTESIAN_POINT('pad_104',(0.,0.,0.));
+#105=CARTESIAN_POINT('pad_105',(0.,0.,0.));
+#106=CARTESIAN_POINT('pad_106',(0.,0.,0.));
+#107=CARTESIAN_POINT('pad_107',(0.,0.,0.));
+#108=CARTESIAN_POINT('pad_108',(0.,0.,0.));
+#109=CARTESIAN_POINT('pad_109',(0.,0.,0.));
+#110=CARTESIAN_POINT('pad_110',(0.,0.,0.));
+#111=CARTESIAN_POINT('pad_111',(0.,0.,0.));
+#112=CARTESIAN_POINT('pad_112',(0.,0.,0.));
+#113=CARTESIAN_POINT('pad_113',(0.,0.,0.));
+#114=CARTESIAN_POINT('pad_114',(0.,0.,0.));
+#115=CARTESIAN_POINT('pad_115',(0.,0.,0.));
+#116=CARTESIAN_POINT('pad_116',(0.,0.,0.));
+#117=CARTESIAN_POINT('pad_117',(0.,0.,0.));
+#118=CARTESIAN_POINT('pad_118',(0.,0.,0.));
+#119=CARTESIAN_POINT('pad_119',(0.,0.,0.));
+#120=CARTESIAN_POINT('pad_120',(0.,0.,0.));
+#121=CARTESIAN_POINT('pad_121',(0.,0.,0.));
+#122=CARTESIAN_POINT('pad_122',(0.,0.,0.));
+#123=CARTESIAN_POINT('pad_123',(0.,0.,0.));
+#124=CARTESIAN_POINT('pad_124',(0.,0.,0.));
+#125=CARTESIAN_POINT('pad_125',(0.,0.,0.));
+#126=CARTESIAN_POINT('pad_126',(0.,0.,0.));
+#127=CARTESIAN_POINT('pad_127',(0.,0.,0.));
+#128=CARTESIAN_POINT('pad_128',(0.,0.,0.));
+#129=CARTESIAN_POINT('pad_129',(0.,0.,0.));
+#130=CARTESIAN_POINT('pad_130',(0.,0.,0.));
+/* AXIS2_PLACEMENT_3D for component placement — forbidden in TESSELLATED_SHAPE_REPRESENTATION (Ed.1) */
+#131=CARTESIAN_POINT('comp_origin',(20.,0.,0.));
+#132=DIRECTION('comp_z',(0.,0.,1.));
+/* #133 = AXIS2_PLACEMENT_3D — the item that violates AP242 Ed.1 §4.1 */
+#133=AXIS2_PLACEMENT_3D('component_placement',#131,#132,$);
+/* TESSELLATED_SHAPE_REPRESENTATION: items=(#7, #133) — #133 is forbidden in Ed.1 */
+/* Byte assertion: matches(rb'TESSELLATED_SHAPE_REPRESENTATION\([^)]*#133') */
+#134=TESSELLATED_SHAPE_REPRESENTATION('defect_tess_rep',(#7,#133),#14);
+/* Model entity is GEOMETRIC_CURVE_SET — OCC returns empty shape */
+#200=GEOMETRIC_CURVE_SET('ap242-ed1-tess-rep-with-placement',(#1,#2,#3,#4));
 ENDSEC;
 END-ISO-10303-21;
