@@ -1,30 +1,60 @@
 ISO-10303-21;
-/* M112 - AP209 multi_point_constraint chain forms a dependency cycle.
- * Defect: three MULTI_POINT_CONSTRAINTs make A slave of B, B slave of
- * C, and C slave of A - a closed master-slave cycle. Solver assembly
- * cannot reduce the system. */
+/* M112: AP209 MULTI_POINT_CONSTRAINT chain forms a dependency cycle */
+/* DEFECT: A→B→C→A MPC cycle — solver cannot resolve master-slave reduction */
+/* Stiffness matrix singular; FEA result undefined; must be rejected */
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
+/* Byte assertion: count_entity_def(b'MULTI_POINT_CONSTRAINT') >= 3 */
 HEADER;
-FILE_DESCRIPTION(('M112 test case','AP209 MPC chain forms cycle'),'2;1');
-FILE_NAME('M112.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M112: AP209 MPC dependency cycle A->B->C->A'),'2;1');
+FILE_NAME('M112.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
 FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('structural_analysis_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'structural_analysis_design',2001,#1);
+/* Standard unit context */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('fea','3D'));
-#100=CARTESIAN_POINT('a',(0.0,0.0,0.0));
-#101=CARTESIAN_POINT('b',(1.0,0.0,0.0));
-#102=CARTESIAN_POINT('c',(0.0,1.0,0.0));
-#110=NODE('A',(#100),$);
-#111=NODE('B',(#101),$);
-#112=NODE('C',(#102),$);
-/* Defect: A->B, B->C, C->A is a cycle */
-#200=MULTI_POINT_CONSTRAINT('A_slave_of_B',#110,#111,'XYZ');
-#201=MULTI_POINT_CONSTRAINT('B_slave_of_C',#111,#112,'XYZ');
-#202=MULTI_POINT_CONSTRAINT('C_slave_of_A',#112,#110,'XYZ');
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('fea','3D'));
+/* Three nodes forming the MPC cycle */
+#100=CARTESIAN_POINT('node_A',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('node_B',(100.0,0.0,0.0));
+#102=CARTESIAN_POINT('node_C',(50.0,100.0,0.0));
+#110=NODE('node_A',(#100),$);
+#111=NODE('node_B',(#101),$);
+#112=NODE('node_C',(#102),$);
+/* NODE_GROUP: all three nodes in the FEA model */
+#300=NODE_GROUP('all_nodes',(#110,#111,#112),$);
+#310=FEA_MODEL('triangle_model',$,'',(#300),(),());
+/* DEFECT: three MPCs forming A→B→C→A directed cycle */
+/* Byte assertion: count_entity_def(b'MULTI_POINT_CONSTRAINT') >= 3 */
+/* Constraint X: node_A is slave, node_B is master */
+#400=MULTI_POINT_CONSTRAINT('mpc_AB',#110,(#111),$);
+/* Constraint Y: node_B is slave, node_C is master */
+#401=MULTI_POINT_CONSTRAINT('mpc_BC',#111,(#112),$);
+/* Constraint Z: node_C is slave, node_A is master — CYCLE CLOSES HERE */
+/* ISO 10303-209 §7 requires acyclic DAG; this violates the invariant */
+#402=MULTI_POINT_CONSTRAINT('mpc_CA',#112,(#110),$);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#500=GEOMETRIC_CURVE_SET('ap209-multi-point-constraint-dependency-cycle',
+  (#110,#111,#112,#310,#400,#401,#402));
+/* Product chain */
+#600=APPLICATION_CONTEXT('mechanical design');
+#601=PRODUCT_CONTEXT('',#600,'mechanical');
+#602=PRODUCT('M112','M112','M112',(#601));
+#603=PRODUCT_DEFINITION_FORMATION('','',#602);
+#604=PRODUCT_DEFINITION_CONTEXT(#600,'design');
+#605=PRODUCT_DEFINITION('','',#603,#604);
+#606=PRODUCT_DEFINITION_SHAPE('','',#605);
+#607=SHAPE_REPRESENTATION('',(#500),#14);
+#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
 ENDSEC;
 END-ISO-10303-21;

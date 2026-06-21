@@ -1,31 +1,62 @@
 ISO-10303-21;
-/* M115 - AP209 nodal force distribution with negative weights.
- * Defect: three NODE_WITH_FORCE entries distribute a load across three
- * nodes with weights (0.6, 0.6, -0.2). The third node receives a
- * pulling contribution rather than the intended pushing force; the
- * resultant is preserved but local stress concentrations are unphysical. */
+/* M115: AP209 nodal force distribution with negative weight */
+/* DEFECT: NODE_WITH_FORCE distribution factors (0.6, 0.6, -0.2) */
+/* Negative weight at third node pulls instead of pushes — unphysical */
+/* Per AP209 §7, all distribution factors must be non-negative */
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
+/* Byte assertion: contains(b'NODE_WITH_FORCE') */
 HEADER;
-FILE_DESCRIPTION(('M115 test case','AP209 negative load distribution weight'),'2;1');
-FILE_NAME('M115.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M115: AP209 distributed load with negative weight factor'),'2;1');
+FILE_NAME('M115.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
 FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('structural_analysis_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'structural_analysis_design',2001,#1);
+/* Standard unit context */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('fea','3D'));
-#100=CARTESIAN_POINT('a',(0.0,0.0,0.0));
-#101=CARTESIAN_POINT('b',(1.0,0.0,0.0));
-#102=CARTESIAN_POINT('c',(2.0,0.0,0.0));
-#110=NODE('n1',(#100),$);
-#111=NODE('n2',(#101),$);
-#112=NODE('n3',(#102),$);
-/* Defect: third weight is negative. Total resultant = 100*(0.6+0.6-0.2) = 100. */
-#200=NODE_WITH_FORCE('load_a',#110,(60.0,0.0,0.0));
-#201=NODE_WITH_FORCE('load_b',#111,(60.0,0.0,0.0));
-#202=NODE_WITH_FORCE('load_c_negative_weight',#112,(-20.0,0.0,0.0));
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('fea','3D'));
+/* Three nodes receiving the distributed load */
+#100=CARTESIAN_POINT('p1',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('p2',(50.0,0.0,0.0));
+#102=CARTESIAN_POINT('p3',(100.0,0.0,0.0));
+#110=NODE('load_node_1',(#100),$);
+#111=NODE('load_node_2',(#101),$);
+#112=NODE('load_node_3',(#102),$);
+/* NODE_GROUP: all three load nodes in the FEA model */
+#300=NODE_GROUP('load_nodes',(#110,#111,#112),$);
+#310=FEA_MODEL('load_model',$,'',(#300),(),());
+/* Byte assertion: contains(b'NODE_WITH_FORCE') */
+/* DEFECT: distribution factors 0.6 + 0.6 + (-0.2) = 1.0 but -0.2 is negative */
+/* Node 1: factor 0.6 — downward force component (F_z = -1000.0 * 0.6 = -600 N) */
+#400=NODE_WITH_FORCE('nwf_1',#110,(0.0,0.0,-600.0),$,0.6);
+/* Node 2: factor 0.6 — downward force component (F_z = -1000.0 * 0.6 = -600 N) */
+#401=NODE_WITH_FORCE('nwf_2',#111,(0.0,0.0,-600.0),$,0.6);
+/* Node 3: factor -0.2 — DEFECT: negative weight pulls upward against resultant */
+/* F_z = -1000.0 * (-0.2) = +200 N (upward) when resultant is downward */
+/* This is unphysical; stress concentrations appear at this node *)  */
+#402=NODE_WITH_FORCE('nwf_3',#112,(0.0,0.0,200.0),$,-0.2);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#500=GEOMETRIC_CURVE_SET('ap209-nodal-force-distribution-negative-weights',
+  (#110,#111,#112,#310,#400,#401,#402));
+/* Product chain */
+#600=APPLICATION_CONTEXT('mechanical design');
+#601=PRODUCT_CONTEXT('',#600,'mechanical');
+#602=PRODUCT('M115','M115','M115',(#601));
+#603=PRODUCT_DEFINITION_FORMATION('','',#602);
+#604=PRODUCT_DEFINITION_CONTEXT(#600,'design');
+#605=PRODUCT_DEFINITION('','',#603,#604);
+#606=PRODUCT_DEFINITION_SHAPE('','',#605);
+#607=SHAPE_REPRESENTATION('',(#500),#14);
+#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
 ENDSEC;
 END-ISO-10303-21;
