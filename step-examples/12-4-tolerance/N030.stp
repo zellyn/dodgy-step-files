@@ -1,52 +1,34 @@
 ISO-10303-21;
-/* N030 - Non-canonical surface where canonical is expected (canonical recognition tolerance)
- * Defect: A surface that mathematically is a plane / cylinder / cone / sphere /
- * torus / linear extrusion is stored as a generic Geom_BSplineSurface.
- * Feature recognition (hole/shaft detection), unfolding, CAM tool-axis
- * derivation, DXF/SVG export, and GD&T tools all degrade silently because
- * they cannot ask the surface for its radius or axis.
- * Reproducer: a "cylinder" emitted as a B_SPLINE_SURFACE_WITH_KNOTS rather
- * than CYLINDRICAL_SURFACE -- canonical recognition tolerance is needed
- * to recover the analytic form.
- */
+/* N030: quarter cylinder approximation as B_SPLINE_SURFACE_WITH_KNOTS deg 3x1; 4x2 control net = 8 CARTESIAN_POINTs; canonical recognition fails; tol 1.0E-6; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N030 non-canonical BSpline surface where cylinder expected'),'2;1');
-FILE_NAME('N030.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('N030'),'2;1');
+FILE_NAME('N030.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-/* 9 control points approximating a 90-degree arc cylinder swept along z;
- * mathematically it is a CYLINDRICAL_SURFACE. */
-#10=CARTESIAN_POINT('cp00',(5.0,0.0,0.0));
-#11=CARTESIAN_POINT('cp01',(5.0,5.0,0.0));
-#12=CARTESIAN_POINT('cp02',(0.0,5.0,0.0));
-#13=CARTESIAN_POINT('cp10',(5.0,0.0,10.0));
-#14=CARTESIAN_POINT('cp11',(5.0,5.0,10.0));
-#15=CARTESIAN_POINT('cp12',(0.0,5.0,10.0));
-/* Defect site: surface emitted as generic B-spline; analytic cylinder lost. */
-#20=B_SPLINE_SURFACE_WITH_KNOTS('quarter_cyl_as_bspline',
-  2,1,((#10,#11,#12),(#13,#14,#15)),.UNSPECIFIED.,.F.,.F.,.F.,
-  (3,3),(2,2),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
-#30=CARTESIAN_POINT('rim',(5.0,0.0,0.0));
-#31=CARTESIAN_POINT('rim_top',(5.0,0.0,10.0));
-#40=VERTEX_POINT('',#30);
-#41=VERTEX_POINT('',#31);
-#50=DIRECTION('+z',(0.0,0.0,1.0));
-#51=VECTOR('',#50,10.0);
-#52=LINE('seam',#30,#51);
-#60=EDGE_CURVE('seam_edge',#40,#41,#52,.T.);
-#70=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#71=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#72=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#73=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#70,
-  'distance_accuracy_value','canonical_recognition_budget');
-#80=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#73))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#70,#71,#72))
-  REPRESENTATION_CONTEXT('ctx','3D'));
+#1=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(0.866025403784,0.5,0.0));
+#3=CARTESIAN_POINT('',(0.5,0.866025403784,0.0));
+#4=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#5=CARTESIAN_POINT('',(1.0,0.0,1.0));
+#6=CARTESIAN_POINT('',(0.866025403784,0.5,1.0));
+#7=CARTESIAN_POINT('',(0.5,0.866025403784,1.0));
+#8=CARTESIAN_POINT('',(0.0,1.0,1.0));
+#9=B_SPLINE_SURFACE_WITH_KNOTS('qtr_cyl_bspline',3,1,((#1,#2,#3,#4),(#5,#6,#7,#8)),.UNSPECIFIED.,.F.,.F.,.F.,(4,4),(2,2),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
+#10=GEOMETRIC_CURVE_SET('bspline_set',(#9));
+#11=APPLICATION_CONTEXT('automotive_design');
+#12=PRODUCT_CONTEXT('',#11,'mechanical');
+#13=PRODUCT('N030','N030','',(#12));
+#14=PRODUCT_DEFINITION_FORMATION('','',#13);
+#15=PRODUCT_DEFINITION_CONTEXT('part definition',#11,'design');
+#16=PRODUCT_DEFINITION('','',#14,#15);
+#17=PRODUCT_DEFINITION_SHAPE('','',#16);
+#18=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#19=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#20=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#21=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#18,'distance_accuracy_value','canonical_recognition_tolerance');
+#22=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#21))GLOBAL_UNIT_ASSIGNED_CONTEXT((#18,#19,#20))REPRESENTATION_CONTEXT('ctx','3D'));
+#23=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#10),#22);
+#24=SHAPE_DEFINITION_REPRESENTATION(#17,#23);
 ENDSEC;
 END-ISO-10303-21;
