@@ -1,28 +1,29 @@
 ISO-10303-21;
-/* Le048 - Numeric literal exceeding IEEE-754 double range
- * (overflow to infinity) and producer-emitted "infinity-as-double"
- * Defect: ISO 10303-21 REAL has no syntactic form for non-finite
- * values (no +Inf, -Inf, NaN). Producers that internally hold
- * IEEE-754 doubles and serialise via printf with %g may emit
- * 'INF', 'inf', 'NaN', or '1.0E+999' (which on parse overflows to
- * +Inf). A receiver must decide whether to reject, snap to a
- * finite sentinel, or propagate the non-finite value through
- * downstream computations. */
+/* Le048: REAL literal exceeding double range: overflow → +Inf / underflow → 0; ISO 10303-21 Ed.3 §6.4.5: REAL has no infinity form (no +Inf, -Inf, NaN); producers internally holding IEEE-754 doubles and serialising via printf %g may emit 1.0E+999 (overflows to +Inf on parse) or 1.0E-999 (underflows to 0 on parse); receiver must detect overflow during literal-to-binary conversion and reject; must not let +Inf or -Inf enter the geometric pipeline; defect 1: CARTESIAN_POINT with X=1.0E+999 (overflows to IEEE-754 +Inf); defect 2: CARTESIAN_POINT with X=1.0E-999 (underflows to 0); GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Le048 - REAL overflow / non-finite producer-emit'),'2;1');
-FILE_NAME('Le048.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('Le048'),'2;1');
+FILE_NAME('Le048.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=PRODUCT_CONTEXT('part',#1,'mechanical');
-/* Defect: 1.0E+999 - parses as +Inf in IEEE-754 binary64 */
-#10=CARTESIAN_POINT('overflow',(1.0E+999,0.0,0.0));
-/* Defect: 1.0E-999 - parses to 0.0 as denormal flushes */
-#11=CARTESIAN_POINT('underflow',(1.0E-999,0.0,0.0));
-#20=DIRECTION('z',(0.0,0.0,1.0));
-#21=DIRECTION('x',(1.0,0.0,0.0));
-#22=AXIS2_PLACEMENT_3D('placement',#10,#20,#21);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Le048','Le048','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#8998=CARTESIAN_POINT('overflow',(1.0E+999,0.0,0.0));
+#8999=CARTESIAN_POINT('underflow',(1.0E-999,0.0,0.0));
+
 ENDSEC;
 END-ISO-10303-21;

@@ -1,16 +1,30 @@
 ISO-10303-21;
-/* Le049 - Carriage-return strip corrupts string content
- * Defect: DESCRIPTION_ATTRIBUTE with literal CR (0x0D) byte inside string;
- * writer normalises line endings inside string body, dropping the embedded 0x0D 0x0A. */
+/* Le049: Carriage-return stripping during STEP file write; OCCT MANTIS#0033602 / MANTIS#0028454: writer normalises line endings by stripping all \r characters including inside string literals; ISO 10303-21 §6.4.4: string contents must be preserved byte-for-byte; line-ending normalisation must only apply outside string contexts; defect: DESCRIPTION_ATTRIBUTE('line1\r\nline2','desc') — writer strips \r, output reads 'line1\nline2' — embedded CR silently lost; heal and accept: preserve string contents; escape via \X\ if needed; must not silently strip CR inside string literals; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Le049 test case','Carriage-return strip corrupts string content'),'2;1');
-FILE_NAME('Le049.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Le049'),'2;1');
+FILE_NAME('Le049.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#100=DESCRIPTION_ATTRIBUTE('multi_line_with_cr','line1
-line2');
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Le049','Le049','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#8997=PERSON('line1
+line2','cr-lf-in-string','');
+#8998=PERSON('line3\X\0D\nline4','cr-escaped-in-string','');
+
 ENDSEC;
 END-ISO-10303-21;

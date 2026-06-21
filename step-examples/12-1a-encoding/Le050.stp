@@ -1,15 +1,30 @@
 ISO-10303-21;
-/* Le050 - Unicode characters dropped on STEP export
- * Defect: document name with Cyrillic Тест; writer emits raw UTF-8 bytes in Ed.2-declared file */
+/* Le050: Unicode characters in STEP export silently dropped; OCCT MANTIS#0031851 / MANTIS#0031670 / MANTIS#0030694: document name contains Cyrillic / CJK / Greek characters; STEP exporter ASCII-encodes the file body but does not escape non-ASCII via \X2\...\X0\ directive; characters emitted as raw UTF-8 bytes in an Ed.2-declared file — illegal under Ed.2; downstream readers mis-decode or reject the file; defect: PRODUCT name 'Test' in Cyrillic emitted as raw bytes \xD0\xA2\xD0\xB5\xD1\x81\xD1\x82 instead of \X2\0422043504410442\X0\; heal and accept: writer must escape non-ASCII via \X2\ for Ed.2, or declare Ed.3 and emit raw UTF-8 with proper FILE_DESCRIPTION; must not silently drop Unicode characters on export; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Le050 test case','Unicode characters dropped on STEP export'),'2;1');
-FILE_NAME('Le050.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Le050'),'2;1');
+FILE_NAME('Le050.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#100=PRODUCT('Тест','Test','',(#10));
-#10=PRODUCT_CONTEXT('',#1,'mechanical');
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Le050','Le050','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#8997=PERSON('Тест','cyrillic-raw-bytes','');
+#8998=PERSON('Αλφα','greek-raw-bytes','');
+#8999=PERSON('\X2\0422043504410442\X0\','cyrillic-x2-escaped','');
+
 ENDSEC;
 END-ISO-10303-21;

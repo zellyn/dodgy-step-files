@@ -1,26 +1,28 @@
 ISO-10303-21;
-/* Le046 - String literal containing every legal printable ASCII
- * character (0x20..0x7E) including ', \, =, and #
- * Defect: a kernel that does not handle every printable-ASCII byte
- * correctly inside a single string literal will mis-parse one of:
- * embedded apostrophe (must be doubled as ''), backslash (legal
- * literal in Ed.2 but begins a directive in Ed.3), '=' / '#' / ';'
- * (token boundary characters at outer scope but legal in strings).
- * This fixture exercises every printable ASCII byte exactly once
- * inside a single PRODUCT.name. */
+/* Le046: String literal containing every legal printable ASCII character (0x20..0x7E); ISO 10303-21 Ed.3 §6.4.4: all printable ASCII bytes are legal inside string literals; embedded apostrophe must be doubled (''); embedded backslash is a literal in Ed.2 but begins a directive in Ed.3; token-boundary characters '=' '#' ';' are legal inside string context but mishandled by parsers that do not track string state; defect: kernel that does not handle every printable-ASCII byte correctly will mis-parse one of: '' apostrophe, backslash, '=' '#' ';'; round-trip every printable ASCII byte through encode/decode/storage byte-for-byte; heal and accept; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Le046 - all printable ASCII inside one string literal'),'2;1');
-FILE_NAME('Le046.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('Le046'),'2;1');
+FILE_NAME('Le046.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=PRODUCT_CONTEXT('part',#1,'mechanical');
-/* Defect-witness: every printable ASCII 0x20..0x7E. The two
- * apostrophes are doubled per Ed.3 escape; the single backslash
- * is the literal Ed.2 form (would be \\\\ if interpreted as Ed.3
- * directive sentinel). */
-#10=PRODUCT(' !"#$%&''()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~','all-printable','',(#2));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Le046','Le046','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#8999=PERSON(' !"#$%&''()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~','all-printable-ascii','');
+
 ENDSEC;
 END-ISO-10303-21;

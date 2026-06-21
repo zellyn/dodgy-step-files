@@ -1,35 +1,31 @@
 ISO-10303-21;
-/* Le047 - Numeric literal at the IEEE-754 double subnormal boundary
- * Defect: ISO 10303-21 specifies REAL as a decimal floating-point
- * representation but most implementations parse into IEEE-754
- * binary64. Inputs at the subnormal boundary (smallest positive
- * subnormal ~4.9406564584124654E-324; smallest positive normal
- * ~2.2250738585072014E-308) test for two failure modes:
- *  - readers that round to zero and silently drop the value
- *  - readers that flag underflow and reject the file
- * A coordinate emitted at this magnitude often arises in BSpline
- * weight values from buggy producers normalising weights through
- * very small denominators. */
+/* Le047: REAL literal at IEEE-754 subnormal / minimum-normal / maximum boundaries; ISO 10303-21 Ed.3 §6.4.5: REAL is decimal floating-point; most implementations parse into IEEE-754 binary64; subnormal: 4.9406564584124654E-324 (smallest positive subnormal double); min-normal: 2.2250738585072014E-308 (smallest positive normal double); max-finite: 1.7976931348623157E+308 (largest finite double); negative zero: -0.0 (IEEE-754 negative zero); failure mode 1: reader rounds subnormal to zero and silently drops the value; failure mode 2: reader flags underflow and rejects the file; A coordinate at this magnitude arises in BSpline weight values from buggy producers; heal and accept: parse value losslessly; snap below-precision values to zero with diagnostic; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Le047 - IEEE-754 subnormal boundary REAL literal'),'2;1');
-FILE_NAME('Le047.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('Le047'),'2;1');
+FILE_NAME('Le047.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=PRODUCT_CONTEXT('part',#1,'mechanical');
-/* Defect: subnormal value 4.9E-324 in coordinate */
-#10=CARTESIAN_POINT('subnormal',(4.9406564584124654E-324,0.0,0.0));
-/* And the smallest positive *normal* double, just above subnormal */
-#11=CARTESIAN_POINT('min_normal',(2.2250738585072014E-308,0.0,0.0));
-/* And the largest finite double */
-#12=CARTESIAN_POINT('max_finite',(1.7976931348623157E+308,0.0,0.0));
-/* And negative zero, which IEEE-754 distinguishes from positive
- * zero but most STEP comparators treat as equal. */
-#13=CARTESIAN_POINT('neg_zero',(-0.0,0.0,0.0));
-#20=DIRECTION('z',(0.0,0.0,1.0));
-#21=DIRECTION('x',(1.0,0.0,0.0));
-#22=AXIS2_PLACEMENT_3D('placement',#10,#20,#21);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Le047','Le047','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#8996=CARTESIAN_POINT('subnormal',(4.9406564584124654E-324,0.0,0.0));
+#8997=CARTESIAN_POINT('min-normal',(2.2250738585072014E-308,0.0,0.0));
+#8998=CARTESIAN_POINT('max-finite',(1.7976931348623157E+308,0.0,0.0));
+#8999=CARTESIAN_POINT('negative-zero',(-0.0,0.0,0.0));
+
 ENDSEC;
 END-ISO-10303-21;
