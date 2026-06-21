@@ -1,82 +1,69 @@
 ISO-10303-21;
-/*
- * A030 — Edition-mixed Part 21 file (header schema vs instance schema)
- * Defect (STEP Tools edition notes; Datakit; Creo 4 cannot import Creo 7+):
- *   FILE_SCHEMA declares one edition (e.g. AUTOMOTIVE_DESIGN / AP214) but the
- *   payload contains entities defined only in AP242 (e.g. ROUND_HOLE feature
- *   entities). Older readers treat the unknown entity as fatal and crash.
- * Reproducer: this file claims AUTOMOTIVE_DESIGN in FILE_SCHEMA yet emits a
- *   ROUND_HOLE feature entity from AP242 Ed.3 hole-feature recommended
- *   practice.
- * Expected kernel: parse based on entity availability, not header schema name;
- *   warn on mismatch; unknown entities should be ignored, not fatal.
- *
- * NOTE: this file is INTENTIONALLY schema-mismatched. Catalog use only.
- */
+/* A030: AP214 schema header + AP242-only entities (edition-mixed STEP file) */
 HEADER;
-FILE_DESCRIPTION(('A030 header claims AUTOMOTIVE_DESIGN but uses AP242-only ROUND_HOLE'),'2;1');
-FILE_NAME('A030.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('A030'),'2;1');
+FILE_NAME('A030.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('automotive design');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
-#20 = PRODUCT('A030_ASSY','','',(#12));
-#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
-#22 = PRODUCT_DEFINITION('design','',#21,#13);
-#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
-#30 = PRODUCT('PLATE','holed plate','',(#12));
-#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
-#32 = PRODUCT_DEFINITION('design','',#31,#13);
-#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
-#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','PLATE_INST','',#22,#32,$);
-/* DEFECT: ROUND_HOLE is an AP242-only feature_definition entity; emitting it
-   while declaring AP214 in FILE_SCHEMA crashes strict AP214 readers. */
-#90 = SHAPE_ASPECT('hole_axis','',#33,.T.);
-#91 = ROUND_HOLE('M6_clearance','tap drill',#90,(1),
-                 LENGTH_MEASURE(6.5),LENGTH_MEASURE(12.0));
-/* Units */
-#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
-#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
-        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
-#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#61 = DIRECTION('',(0.0,0.0,1.0));
-#62 = DIRECTION('',(1.0,0.0,0.0));
-#63 = AXIS2_PLACEMENT_3D('leaf_origin',#60,#61,#62);
-#64 = SHAPE_REPRESENTATION('leaf_rep',(#63),#54);
-#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
-#66 = REPRESENTATION_MAP(#63,#64);
-#67 = MAPPED_ITEM('inst',#66,#63);
-#80 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
-#81 = SHAPE_REPRESENTATION('assy_rep',(#80,#67),#54);
-#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
-/* Extended catalog notes:
- * This reproducer is a minimal demonstrator of the §12.6 entry
- * referenced in the /* * / header above. The entity-graph above
- * is just enough to exercise the defect on a writer or reader
- * test harness; it is NOT a production-quality assembly.
- *
- * License: this file is part of a defect catalog assembled from
- * publicly described bug reports and recommended-practice notes.
- * No proprietary geometry or names are reproduced. The entity IDs
- * and minimal coordinates are author-original.
- *
- * Cross-refs: see STEP_PROBLEM_CATALOG.md §12.6 for full entry,
- * source list, sender attribution and expected kernel behavior.
- */
-#900 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_id','A030');
-#901 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_section','12.6 assembly hierarchy');
-#902 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_status','pending');
-#903 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_target_dir','step-examples/12-6-assembly/');
-#904 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_corpus_origin','phase-04-resume-12-6 gap fill');
-#905 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_authoring','manual reproducer');
-#906 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_phase','04 resume 12-6');
-#907 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_extension','license-clean');
-#908 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_dataset','step-examples');
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#9=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#10=VERTEX_POINT('',#6);
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=DIRECTION('',(1.0,0.0,0.0));
+#15=VECTOR('',#14,1.0);
+#16=LINE('',#6,#15);
+#17=EDGE_CURVE('',#10,#11,#16,.T.);
+#18=DIRECTION('',(0.0,1.0,0.0));
+#19=VECTOR('',#18,1.0);
+#20=LINE('',#7,#19);
+#21=EDGE_CURVE('',#11,#12,#20,.T.);
+#22=DIRECTION('',(-1.0,0.0,0.0));
+#23=VECTOR('',#22,1.0);
+#24=LINE('',#8,#23);
+#25=EDGE_CURVE('',#12,#13,#24,.T.);
+#26=DIRECTION('',(0.0,-1.0,0.0));
+#27=VECTOR('',#26,1.0);
+#28=LINE('',#9,#27);
+#29=EDGE_CURVE('',#13,#10,#28,.T.);
+#30=ORIENTED_EDGE('',$,$,#17,.T.);
+#31=ORIENTED_EDGE('',$,$,#21,.T.);
+#32=ORIENTED_EDGE('',$,$,#25,.T.);
+#33=ORIENTED_EDGE('',$,$,#29,.T.);
+#34=EDGE_LOOP('',(#30,#31,#32,#33));
+#35=FACE_OUTER_BOUND('',#34,.T.);
+#36=ADVANCED_FACE('',(#35),#5,.T.);
+#37=OPEN_SHELL('',(#36));
+#38=SHELL_BASED_SURFACE_MODEL('',(#37));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('A030','A030','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#38),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=PRODUCT_CONTEXT('sub',#9000,'mechanical');
+#9064=PRODUCT('Sub','Sub','',(#9063));
+#9065=PRODUCT_DEFINITION_FORMATION('','',#9064);
+#9066=PRODUCT_DEFINITION('design','',#9065,#9003);
+#9067=NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','sub','',#9004,#9066,$);
+#9068=SHAPE_ASPECT('ap242_aspect','AP242 Edition-3 hole feature',#9066,.T.);
+#9069=ROUND_HOLE('rh1','',#9068,.T.);
 ENDSEC;
 END-ISO-10303-21;

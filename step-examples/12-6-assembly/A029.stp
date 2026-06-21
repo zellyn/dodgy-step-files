@@ -1,89 +1,70 @@
 ISO-10303-21;
-/*
- * A029 — User-Defined Attribute (UDA) target-binding inconsistency
- * Defect (CAx-IF UDA v1.8):
- *   Same UDA template implemented differently across CAD systems — bound to
- *   PRODUCT, to PRODUCT_DEFINITION, to NEXT_ASSEMBLY_USAGE_OCCURRENCE, or to
- *   a SHAPE_ASPECT. Round-trip loses the binding because the receiver expects
- *   a different target.
- * Reproducer: this file binds the same UDA template to FOUR different targets
- *   simultaneously. A receiver that scans only one binding scope will report
- *   3/4 missing.
- * Expected kernel: preserve UDA verbatim using rec-practice template; do not
- *   silently re-bind.
- */
+/* A029: UDA bound to SHAPE_ASPECT('mat_aspect') instead of NAUO — target-binding mismatch */
 HEADER;
-FILE_DESCRIPTION(('A029 UDA bound to PRODUCT, PD, NAUO and SHAPE_ASPECT simultaneously'),'2;1');
-FILE_NAME('A029.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('A029'),'2;1');
+FILE_NAME('A029.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('automotive design');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
-#20 = PRODUCT('A029_ASSY','','',(#12));
-#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
-#22 = PRODUCT_DEFINITION('design','',#21,#13);
-#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
-#30 = PRODUCT('PART_X','','',(#12));
-#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
-#32 = PRODUCT_DEFINITION('design','',#31,#13);
-#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
-#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','PART_X_INST','',#22,#32,$);
-/* DEFECT: same logical UDA "MaterialGrade=AA6061" attached to four scopes.
-   The CAx-IF rec-practice says UDAs go on PD, but real-world senders mix. */
-#100 = DESCRIPTIVE_REPRESENTATION_ITEM('MaterialGrade','AA6061');
-#101 = REPRESENTATION('uda_on_product',(#100),#54);
-#102 = PROPERTY_DEFINITION('UDA','bound to PRODUCT',#30);
-#103 = PROPERTY_DEFINITION_REPRESENTATION(#102,#101);
-#110 = DESCRIPTIVE_REPRESENTATION_ITEM('MaterialGrade','AA6061');
-#111 = REPRESENTATION('uda_on_pd',(#110),#54);
-#112 = PROPERTY_DEFINITION('UDA','bound to PRODUCT_DEFINITION',#32);
-#113 = PROPERTY_DEFINITION_REPRESENTATION(#112,#111);
-#120 = DESCRIPTIVE_REPRESENTATION_ITEM('MaterialGrade','AA6061');
-#121 = REPRESENTATION('uda_on_nauo',(#120),#54);
-#122 = PROPERTY_DEFINITION('UDA','bound to NAUO',#40);
-#123 = PROPERTY_DEFINITION_REPRESENTATION(#122,#121);
-#130 = SHAPE_ASPECT('mat_aspect','',#33,.T.);
-#131 = DESCRIPTIVE_REPRESENTATION_ITEM('MaterialGrade','AA6061');
-#132 = REPRESENTATION('uda_on_aspect',(#131),#54);
-#133 = PROPERTY_DEFINITION('UDA','bound to SHAPE_ASPECT',#130);
-#134 = PROPERTY_DEFINITION_REPRESENTATION(#133,#132);
-/* Units */
-#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
-#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
-        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
-#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#61 = DIRECTION('',(0.0,0.0,1.0));
-#62 = DIRECTION('',(1.0,0.0,0.0));
-#63 = AXIS2_PLACEMENT_3D('leaf_origin',#60,#61,#62);
-#64 = SHAPE_REPRESENTATION('leaf_rep',(#63),#54);
-#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
-#66 = REPRESENTATION_MAP(#63,#64);
-#67 = MAPPED_ITEM('inst',#66,#63);
-#80 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
-#81 = SHAPE_REPRESENTATION('assy_rep',(#80,#67),#54);
-#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
-/* Extended catalog notes:
- * This reproducer is a minimal demonstrator of the §12.6 entry
- * referenced in the /* * / header above. The entity-graph above
- * is just enough to exercise the defect on a writer or reader
- * test harness; it is NOT a production-quality assembly.
- *
- * License: this file is part of a defect catalog assembled from
- * publicly described bug reports and recommended-practice notes.
- * No proprietary geometry or names are reproduced. The entity IDs
- * and minimal coordinates are author-original.
- *
- * Cross-refs: see STEP_PROBLEM_CATALOG.md §12.6 for full entry,
- * source list, sender attribution and expected kernel behavior.
- */
-#900 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_id','A029');
-#901 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_section','12.6 assembly hierarchy');
-#902 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_status','pending');
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#9=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#10=VERTEX_POINT('',#6);
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=DIRECTION('',(1.0,0.0,0.0));
+#15=VECTOR('',#14,1.0);
+#16=LINE('',#6,#15);
+#17=EDGE_CURVE('',#10,#11,#16,.T.);
+#18=DIRECTION('',(0.0,1.0,0.0));
+#19=VECTOR('',#18,1.0);
+#20=LINE('',#7,#19);
+#21=EDGE_CURVE('',#11,#12,#20,.T.);
+#22=DIRECTION('',(-1.0,0.0,0.0));
+#23=VECTOR('',#22,1.0);
+#24=LINE('',#8,#23);
+#25=EDGE_CURVE('',#12,#13,#24,.T.);
+#26=DIRECTION('',(0.0,-1.0,0.0));
+#27=VECTOR('',#26,1.0);
+#28=LINE('',#9,#27);
+#29=EDGE_CURVE('',#13,#10,#28,.T.);
+#30=ORIENTED_EDGE('',$,$,#17,.T.);
+#31=ORIENTED_EDGE('',$,$,#21,.T.);
+#32=ORIENTED_EDGE('',$,$,#25,.T.);
+#33=ORIENTED_EDGE('',$,$,#29,.T.);
+#34=EDGE_LOOP('',(#30,#31,#32,#33));
+#35=FACE_OUTER_BOUND('',#34,.T.);
+#36=ADVANCED_FACE('',(#35),#5,.T.);
+#37=OPEN_SHELL('',(#36));
+#38=SHELL_BASED_SURFACE_MODEL('',(#37));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('A029','A029','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#38),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=PRODUCT_CONTEXT('sub',#9000,'mechanical');
+#9064=PRODUCT('Sub','Sub','',(#9063));
+#9065=PRODUCT_DEFINITION_FORMATION('','',#9064);
+#9066=PRODUCT_DEFINITION('design','',#9065,#9003);
+#9067=NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','sub','',#9004,#9066,$);
+#9068=SHAPE_ASPECT('mat_aspect','material binding',#9066,.T.);
+#9069=PROPERTY_DEFINITION('mat_aspect','material UDA',#9068);
+#9070=PROPERTY_DEFINITION_REPRESENTATION(#9069,REPRESENTATION('mat_uda',(DESCRIPTIVE_REPRESENTATION_ITEM('material','Steel_1045')),#9010));
 ENDSEC;
 END-ISO-10303-21;
