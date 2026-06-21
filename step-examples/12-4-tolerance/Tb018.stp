@@ -1,48 +1,33 @@
 ISO-10303-21;
-/* Tb018 - UNCERTAINTY value of exactly zero -- no fuzzy compare requested
- * Defect: UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0)) declares zero
- * tolerance. Receiver A respects it: every comparison is exact equality;
- * any sub-bit drift is a defect. Receiver B floors at Precision::Confusion
- * (~1.0e-7): silently substitutes a non-zero working tolerance, behaves
- * identically to a normal file. The producer's request for exact arithmetic
- * may or may not be honoured.
- */
+/* Tb018: UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0)) — zero tolerance; exact arithmetic requested; receiver silently flooring to 1e-7 violates contract; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Tb018 zero declared uncertainty'),'2;1');
-FILE_NAME('Tb018.stp','2026-04-30T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Tb018'),'2;1');
+FILE_NAME('Tb018.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-/* Simple edge so context is exercised. */
-#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('p1',(1.0,0.0,0.0));
-#20=VERTEX_POINT('v0',#10);
-#21=VERTEX_POINT('v1',#11);
-#30=DIRECTION('+x',(1.0,0.0,0.0));
-#31=VECTOR('vx',#30,1.0);
-#32=LINE('l',#10,#31);
-#40=EDGE_CURVE('e',#20,#21,#32,.T.);
-#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0),#50,
-  'distance_accuracy_value','exact_arithmetic_requested');
-#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
-  REPRESENTATION_CONTEXT('ctx','3D'));
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Tb018','Tb018','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9020=GEOMETRIC_CURVE_SET('cs',(#40));
-#9021=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9020),#70);
-#9022=SHAPE_DEFINITION_REPRESENTATION(#9005,#9021);
+#1=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('p1',(1.0,0.0,0.0));
+#3=VERTEX_POINT('v0',#1);
+#4=VERTEX_POINT('v1',#2);
+#5=DIRECTION('',(1.0,0.0,0.0));
+#6=VECTOR('',#5,1.0);
+#7=LINE('',#1,#6);
+#8=EDGE_CURVE('e',#3,#4,#7,.T.);
+#9=GEOMETRIC_CURVE_SET('cs',(#8));
+#10=APPLICATION_CONTEXT('automotive_design');
+#11=PRODUCT_CONTEXT('',#10,'mechanical');
+#12=PRODUCT('Tb018','Tb018','',(#11));
+#13=PRODUCT_DEFINITION_FORMATION('','',#12);
+#14=PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#15=PRODUCT_DEFINITION('','',#13,#14);
+#16=PRODUCT_DEFINITION_SHAPE('','',#15);
+#17=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#18=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#19=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#20=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0),#17,'distance_accuracy_value','exact_arithmetic_requested');
+#21=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#20))GLOBAL_UNIT_ASSIGNED_CONTEXT((#17,#18,#19))REPRESENTATION_CONTEXT('ctx','3D'));
+#22=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9),#21);
+#23=SHAPE_DEFINITION_REPRESENTATION(#16,#22);
 ENDSEC;
 END-ISO-10303-21;
