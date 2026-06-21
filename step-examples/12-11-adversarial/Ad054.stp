@@ -1,52 +1,55 @@
 ISO-10303-21;
-/* Ad054 - Reader hangs forever on Catia/NX file (Transfer never finishes)
-   ----------------------------------------------------------------------
-   Catalog section : §12.11 adversarial (sub-class: DoS / resource-exhaustion)
-   Sources         : 18-other-issues.md I002 (OCCT #712)
-   See also        : Ad032
-   ----------------------------------------------------------------------
-   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
-   testing. Do NOT use as exchange data.
-   ----------------------------------------------------------------------
-   Defect
-     A real STEP assembly accepted by Catia and NX hangs OCCT 7.9
-     indefinitely during the Transfer phase; ReadFile() completes,
-     but Transfer() never returns. Trigger documented in OCCT issue
-     #712 with file 250709r8000_asm-all (size unspecified).
-   Pattern
-     The hang is a deeply-nested NEXT_ASSEMBLY_USAGE_OCCURRENCE chain
-     interlocked with REPRESENTATION_RELATIONSHIP cycles, where each
-     PRODUCT_DEFINITION participates in many CONTEXT_DEPENDENT_SHAPE
-     bindings. Below is a scaled-down topology with mutual NAUO
-     references that produce a graph cycle.
-   Reproducer recipe
-     PRODUCT_DEFINITION P1 in NAUO with P2; P2 in NAUO with P1;
-     CONTEXT_DEPENDENT_SHAPE_REPRESENTATION pairs cycle.
-   Expected kernel behavior
-     Bound transfer time; detect cycles; bail with E_TRANSFER_BUDGET
-     or E_NAUO_CYCLE.
-   ----------------------------------------------------------------------
-*/
+/* Ad054: mutual-cycle NAUO chain: parent=#12 child=#22, parent=#22 child=#12; assembly-tree walk loops forever; kernel must enforce E_TRANSFER_BUDGET and detect cycles; real-world reproducer: 250709r8000_asm-all; See also Ad032; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Ad054 - mutual NAUO graph cycle hangs Transfer'),'2;1');
-FILE_NAME('Ad054.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Ad054'),'2;1');
+FILE_NAME('Ad054.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2001,#1);
-#3=PRODUCT_CONTEXT('',#1,'mechanical');
-#4=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
-#10=PRODUCT('P1','','',(#3));
-#11=PRODUCT_DEFINITION_FORMATION('','',#10);
-#12=PRODUCT_DEFINITION('design','',#11,#4);
-#20=PRODUCT('P2','','',(#3));
-#21=PRODUCT_DEFINITION_FORMATION('','',#20);
-#22=PRODUCT_DEFINITION('design','',#21,#4);
-/* Defect: mutual NAUO references close a 2-cycle on the assembly graph */
-#30=NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','','',#12,#22,$);
-#31=NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','','',#22,#12,$);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#3=CARTESIAN_POINT('pad',(0.0,0.0,0.0));
+#4=CARTESIAN_POINT('pad',(0.0,0.0,0.0));
+#5=CARTESIAN_POINT('pad',(0.0,0.0,0.0));
+#6=CARTESIAN_POINT('pad',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('pad',(0.0,0.0,0.0));
+#8=CARTESIAN_POINT('pad',(0.0,0.0,0.0));
+#9=CARTESIAN_POINT('pad',(0.0,0.0,0.0));
+#10=CARTESIAN_POINT('pad',(0.0,0.0,0.0));
+#11=CARTESIAN_POINT('pad',(0.0,0.0,0.0));
+#12=PRODUCT_DEFINITION('cycle_a','',#9052,#9053);
+#13=CARTESIAN_POINT('pad',(0.0,0.0,0.0));
+#14=CARTESIAN_POINT('pad',(0.0,0.0,0.0));
+#15=CARTESIAN_POINT('pad',(0.0,0.0,0.0));
+#16=CARTESIAN_POINT('pad',(0.0,0.0,0.0));
+#17=CARTESIAN_POINT('pad',(0.0,0.0,0.0));
+#18=CARTESIAN_POINT('pad',(0.0,0.0,0.0));
+#19=CARTESIAN_POINT('pad',(0.0,0.0,0.0));
+#20=CARTESIAN_POINT('pad',(0.0,0.0,0.0));
+#21=CARTESIAN_POINT('pad',(0.0,0.0,0.0));
+#22=PRODUCT_DEFINITION('cycle_b','',#9052,#9053);
+#23=CARTESIAN_POINT('pad',(0.0,0.0,0.0));
+#24=CARTESIAN_POINT('pad',(0.0,0.0,0.0));
+#25=CARTESIAN_POINT('pad',(0.0,0.0,0.0));
+#26=CARTESIAN_POINT('pad',(0.0,0.0,0.0));
+#27=CARTESIAN_POINT('pad',(0.0,0.0,0.0));
+#28=CARTESIAN_POINT('pad',(0.0,0.0,0.0));
+#29=CARTESIAN_POINT('pad',(0.0,0.0,0.0));
+#30=NEXT_ASSEMBLY_USAGE_OCCURRENCE('cycle_a_b','','',#12,#22,$);
+#31=NEXT_ASSEMBLY_USAGE_OCCURRENCE('cycle_b_a','','',#22,#12,$);
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Ad054','Ad054','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

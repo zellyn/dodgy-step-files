@@ -1,54 +1,34 @@
 ISO-10303-21;
-/* Ad078 - NEXT_ASSEMBLY_USAGE_OCCURRENCE child as PRODUCT_DEFINITION_SHAPE
-   Source: STEP_PROBLEM_CATALOG.md §12.11 Ad078;
-           mining 08-occt-gitlog.md G016 (Mantis 0025167);
-           03-occt-tests.md R049.
-   Pattern: in AP214/AP203, NAUO's relating/related slots are typed as a
-           SELECT that admits both PRODUCT_DEFINITION and
-           PRODUCT_DEFINITION_SHAPE. A schema-strict reader rejects PDS
-           (treating only PD as legal); a permissive reader cast across
-           vtables and produced silently corrupt assembly trees.
-   Reproducer recipe: NAUO whose `related_product_definition` slot
-           references PDS (#9) instead of PD (#7).
-   Expected kernel behavior: accept PDS child; resolve PDS->PD silently
-           with a warning; emit hard error if neither type matches.
-   This file mixes one valid NAUO (PD->PD) with one adversarial NAUO
-   (PD->PDS) so a fuzzer can test both paths in a single fixture.
-   License-clean: synthesized minimal assembly. */
+/* Ad078: type-confusion: NAUO child slot references PRODUCT_DEFINITION_SHAPE instead of PRODUCT_DEFINITION; schema-strict reader rejects, permissive reader casts across vtables; kernel must warn and resolve PDS→PD silently; Mantis 0025167 (G016); R049; See also Ad030; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(
-  ('Ad078 - NAUO child mistyped as PRODUCT_DEFINITION_SHAPE'),
-  '2;1');
-FILE_NAME('Ad078.stp','2026-04-26T00:00:00',
-  ('auto-generated'),(''),'auto-generated','','');
+FILE_DESCRIPTION(('Ad078'),'2;1');
+FILE_NAME('Ad078.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2001,#1);
-#3=PRODUCT_CONTEXT('',#1,'mechanical');
-#4=PRODUCT('PARENT','parent assembly','',(#3));
-#5=PRODUCT_DEFINITION_FORMATION('','',#4);
-#6=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
-#7=PRODUCT_DEFINITION('design','',#5,#6);
-#8=PRODUCT_DEFINITION_SHAPE('','',#7);
-#10=PRODUCT('CHILD-A','child A','',(#3));
-#11=PRODUCT_DEFINITION_FORMATION('','',#10);
-#12=PRODUCT_DEFINITION('design','',#11,#6);
-#13=PRODUCT_DEFINITION_SHAPE('','',#12);
-#20=PRODUCT('CHILD-B','child B','',(#3));
-#21=PRODUCT_DEFINITION_FORMATION('','',#20);
-#22=PRODUCT_DEFINITION('design','',#21,#6);
-#23=PRODUCT_DEFINITION_SHAPE('','',#22);
-/* well-typed NAUO: PD parent (#7) -> PD child (#12). */
-#30=NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','wellTyped','',#7,#12,$);
-/* ADVERSARIAL NAUO: PD parent (#7) -> PDS child (#23) instead of PD.
-   Schema-strict readers raise; permissive readers vtable-cast and
-   may corrupt the assembly tree. Robust readers should resolve
-   PDS->PD via the represented_product_definition link with a warn. */
-#31=NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','misTyped','',#7,#23,$);
-/* triple-mistype: parent and child both PDS (some legacy emitters). */
-#32=NEXT_ASSEMBLY_USAGE_OCCURRENCE('3','bothMisTyped','',#8,#13,$);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Ad078','Ad078','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=PRODUCT('part_a','part_a','',());
+#9064=PRODUCT_DEFINITION_FORMATION('','',#9063);
+#9065=PRODUCT_DEFINITION('parent','',#9064,#9003);
+#9066=PRODUCT('part_b','part_b','',());
+#9067=PRODUCT_DEFINITION_FORMATION('','',#9066);
+#9068=PRODUCT_DEFINITION('child_pd','',#9067,#9003);
+#9069=PRODUCT_DEFINITION_SHAPE('','',#9068);
+#9070=NEXT_ASSEMBLY_USAGE_OCCURRENCE('nauo_mistype','','',#9065,#9069,$);
 ENDSEC;
 END-ISO-10303-21;

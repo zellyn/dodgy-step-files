@@ -1,61 +1,130 @@
 ISO-10303-21;
-/* Ad057 - Memory leak / unbounded RSS after STEPCAFControl_Reader
-   ----------------------------------------------------------------------
-   Catalog section : §12.11 adversarial (sub-class: resource-exhaustion)
-   Sources         : 18-other-issues.md I017 (ShapeFix_Shape huge memory),
-                     I018 (Linux/Docker RSS),
-                     I019 (LSAN reports STEPControl_Controller::Init enum
-                           allocations leaked)
-   See also        : Ad027
-   ----------------------------------------------------------------------
-   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
-   testing. Do NOT use as exchange data.
-   ----------------------------------------------------------------------
-   Defect
-     After read of a moderate STEP file, RSS does not return to baseline
-     (e.g. ~900 MB held after a 142 MB file on glibc); ShapeFix on huge
-     shells hangs and consumes huge memory. LSAN reports leaks from
-     STEPControl_Controller::Init enum tables that are never freed.
-   Reproducer recipe
-     File with many enum-typed slots that flood the typed-value tables
-     (here: many BOOLEAN/LOGICAL slots), exercising leak in the
-     enum-table allocator.
-   Expected kernel behavior
-     Bypass/chunk shell-fix at large counts; release working set on
-     destruction; free typed-value tables on shutdown.
-   ----------------------------------------------------------------------
-*/
+/* Ad057: memory leak / unbounded RSS: typed-value/enum tables not freed; each distinct BOOLEAN .T./.F. slot grows per-process table; ShapeFix on huge shells also leaks; LSAN reports STEPControl_Controller::Init enum allocations; See also Ad027; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Ad057 - many enum slots stress typed-value table'),'2;1');
-FILE_NAME('Ad057.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Ad057'),'2;1');
+FILE_NAME('Ad057.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=CARTESIAN_POINT('o',(0.0,0.0,0.0));
-#2=CARTESIAN_POINT('a',(1.0,0.0,0.0));
-#3=VERTEX_POINT('va',#1);
-#4=VERTEX_POINT('vb',#2);
-#5=DIRECTION('x',(1.0,0.0,0.0));
-#6=VECTOR('v',#5,1.0);
-#7=LINE('l',#1,#6);
-/* 16 EDGE_CURVE entries, each carrying a BOOLEAN slot the typed-value
-   table caches; enough to demonstrate the leak class with LSAN. */
-#100=EDGE_CURVE('e0',#3,#4,#7,.T.);
-#101=EDGE_CURVE('e1',#3,#4,#7,.F.);
-#102=EDGE_CURVE('e2',#3,#4,#7,.T.);
-#103=EDGE_CURVE('e3',#3,#4,#7,.F.);
-#104=EDGE_CURVE('e4',#3,#4,#7,.T.);
-#105=EDGE_CURVE('e5',#3,#4,#7,.F.);
-#106=EDGE_CURVE('e6',#3,#4,#7,.T.);
-#107=EDGE_CURVE('e7',#3,#4,#7,.F.);
-#108=EDGE_CURVE('e8',#3,#4,#7,.T.);
-#109=EDGE_CURVE('e9',#3,#4,#7,.F.);
-#110=EDGE_CURVE('e10',#3,#4,#7,.T.);
-#111=EDGE_CURVE('e11',#3,#4,#7,.F.);
-#112=EDGE_CURVE('e12',#3,#4,#7,.T.);
-#113=EDGE_CURVE('e13',#3,#4,#7,.F.);
-#114=EDGE_CURVE('e14',#3,#4,#7,.T.);
-#115=EDGE_CURVE('e15',#3,#4,#7,.F.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Ad057','Ad057','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#9064=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#9065=VERTEX_POINT('',#9063);
+#9066=VERTEX_POINT('',#9064);
+#9067=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#9068=DIRECTION('d',(1.,0.,0.));
+#9069=VECTOR(#9068,1.0);
+#9070=LINE(#9067,#9069);
+#9071=EDGE_CURVE('ec0',#9065,#9066,#9070,.T.);
+#9072=CARTESIAN_POINT('p1',(0.1,0.0,0.0));
+#9073=DIRECTION('d',(1.,0.,0.));
+#9074=VECTOR(#9073,1.0);
+#9075=LINE(#9072,#9074);
+#9076=EDGE_CURVE('ec1',#9065,#9066,#9075,.F.);
+#9077=CARTESIAN_POINT('p2',(0.2,0.0,0.0));
+#9078=DIRECTION('d',(1.,0.,0.));
+#9079=VECTOR(#9078,1.0);
+#9080=LINE(#9077,#9079);
+#9081=EDGE_CURVE('ec2',#9065,#9066,#9080,.T.);
+#9082=CARTESIAN_POINT('p3',(0.30000000000000004,0.0,0.0));
+#9083=DIRECTION('d',(1.,0.,0.));
+#9084=VECTOR(#9083,1.0);
+#9085=LINE(#9082,#9084);
+#9086=EDGE_CURVE('ec3',#9065,#9066,#9085,.F.);
+#9087=CARTESIAN_POINT('p4',(0.4,0.0,0.0));
+#9088=DIRECTION('d',(1.,0.,0.));
+#9089=VECTOR(#9088,1.0);
+#9090=LINE(#9087,#9089);
+#9091=EDGE_CURVE('ec4',#9065,#9066,#9090,.T.);
+#9092=CARTESIAN_POINT('p5',(0.5,0.0,0.0));
+#9093=DIRECTION('d',(1.,0.,0.));
+#9094=VECTOR(#9093,1.0);
+#9095=LINE(#9092,#9094);
+#9096=EDGE_CURVE('ec5',#9065,#9066,#9095,.F.);
+#9097=CARTESIAN_POINT('p6',(0.6000000000000001,0.0,0.0));
+#9098=DIRECTION('d',(1.,0.,0.));
+#9099=VECTOR(#9098,1.0);
+#9100=LINE(#9097,#9099);
+#9101=EDGE_CURVE('ec6',#9065,#9066,#9100,.T.);
+#9102=CARTESIAN_POINT('p7',(0.7000000000000001,0.0,0.0));
+#9103=DIRECTION('d',(1.,0.,0.));
+#9104=VECTOR(#9103,1.0);
+#9105=LINE(#9102,#9104);
+#9106=EDGE_CURVE('ec7',#9065,#9066,#9105,.F.);
+#9107=CARTESIAN_POINT('p8',(0.8,0.0,0.0));
+#9108=DIRECTION('d',(1.,0.,0.));
+#9109=VECTOR(#9108,1.0);
+#9110=LINE(#9107,#9109);
+#9111=EDGE_CURVE('ec8',#9065,#9066,#9110,.T.);
+#9112=CARTESIAN_POINT('p9',(0.9,0.0,0.0));
+#9113=DIRECTION('d',(1.,0.,0.));
+#9114=VECTOR(#9113,1.0);
+#9115=LINE(#9112,#9114);
+#9116=EDGE_CURVE('ec9',#9065,#9066,#9115,.F.);
+#9117=CARTESIAN_POINT('p10',(1.0,0.0,0.0));
+#9118=DIRECTION('d',(1.,0.,0.));
+#9119=VECTOR(#9118,1.0);
+#9120=LINE(#9117,#9119);
+#9121=EDGE_CURVE('ec10',#9065,#9066,#9120,.T.);
+#9122=CARTESIAN_POINT('p11',(1.1,0.0,0.0));
+#9123=DIRECTION('d',(1.,0.,0.));
+#9124=VECTOR(#9123,1.0);
+#9125=LINE(#9122,#9124);
+#9126=EDGE_CURVE('ec11',#9065,#9066,#9125,.F.);
+#9127=CARTESIAN_POINT('p12',(1.2000000000000002,0.0,0.0));
+#9128=DIRECTION('d',(1.,0.,0.));
+#9129=VECTOR(#9128,1.0);
+#9130=LINE(#9127,#9129);
+#9131=EDGE_CURVE('ec12',#9065,#9066,#9130,.T.);
+#9132=CARTESIAN_POINT('p13',(1.3,0.0,0.0));
+#9133=DIRECTION('d',(1.,0.,0.));
+#9134=VECTOR(#9133,1.0);
+#9135=LINE(#9132,#9134);
+#9136=EDGE_CURVE('ec13',#9065,#9066,#9135,.F.);
+#9137=CARTESIAN_POINT('p14',(1.4000000000000001,0.0,0.0));
+#9138=DIRECTION('d',(1.,0.,0.));
+#9139=VECTOR(#9138,1.0);
+#9140=LINE(#9137,#9139);
+#9141=EDGE_CURVE('ec14',#9065,#9066,#9140,.T.);
+#9142=CARTESIAN_POINT('p15',(1.5,0.0,0.0));
+#9143=DIRECTION('d',(1.,0.,0.));
+#9144=VECTOR(#9143,1.0);
+#9145=LINE(#9142,#9144);
+#9146=EDGE_CURVE('ec15',#9065,#9066,#9145,.F.);
+#9147=CARTESIAN_POINT('p16',(1.6,0.0,0.0));
+#9148=DIRECTION('d',(1.,0.,0.));
+#9149=VECTOR(#9148,1.0);
+#9150=LINE(#9147,#9149);
+#9151=EDGE_CURVE('ec16',#9065,#9066,#9150,.T.);
+#9152=CARTESIAN_POINT('p17',(1.7000000000000002,0.0,0.0));
+#9153=DIRECTION('d',(1.,0.,0.));
+#9154=VECTOR(#9153,1.0);
+#9155=LINE(#9152,#9154);
+#9156=EDGE_CURVE('ec17',#9065,#9066,#9155,.F.);
+#9157=CARTESIAN_POINT('p18',(1.8,0.0,0.0));
+#9158=DIRECTION('d',(1.,0.,0.));
+#9159=VECTOR(#9158,1.0);
+#9160=LINE(#9157,#9159);
+#9161=EDGE_CURVE('ec18',#9065,#9066,#9160,.T.);
+#9162=CARTESIAN_POINT('p19',(1.9000000000000001,0.0,0.0));
+#9163=DIRECTION('d',(1.,0.,0.));
+#9164=VECTOR(#9163,1.0);
+#9165=LINE(#9162,#9164);
+#9166=EDGE_CURVE('ec19',#9065,#9066,#9165,.F.);
 ENDSEC;
 END-ISO-10303-21;

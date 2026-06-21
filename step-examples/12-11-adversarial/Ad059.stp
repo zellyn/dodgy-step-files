@@ -1,53 +1,32 @@
 ISO-10303-21;
-/* Ad059 - Mismatched weight / pole counts in BSpline (writer-emitted)
-   ----------------------------------------------------------------------
-   Catalog section : §12.11 adversarial (sub-class: schema-validation / OOB-read)
-   Sources         : 08-occt-gitlog.md G024 (Mantis 0030921),
-                     G023 (zero-poles)
-   See also        : Gn002
-   ----------------------------------------------------------------------
-   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
-   testing. Do NOT use as exchange data.
-   ----------------------------------------------------------------------
-   Defect
-     STEP RATIONAL_B_SPLINE_CURVE with weights array length != poles
-     array length; reader walks past the end of the weights vector.
-     Documented in OCCT Mantis 0030921. Companion bug G023: zero
-     poles silently accepted, leading to division-by-zero downstream.
-   Reproducer recipe
-     RATIONAL_B_SPLINE_CURVE complex entity with 4 control points
-     (poles) but only 3 weights. The schema is the typical AP242
-     complex-record layout combining BOUNDED_CURVE / B_SPLINE_CURVE /
-     B_SPLINE_CURVE_WITH_KNOTS / RATIONAL_B_SPLINE_CURVE.
-   Expected kernel behavior
-     Validate equality: weights.length == poles.length. Pad/truncate
-     with E_BSPLINE_WEIGHT_MISMATCH warning; never read past either
-     array.
-   ----------------------------------------------------------------------
-*/
+/* Ad059: mismatched weight/pole count in RATIONAL_B_SPLINE_CURVE: weights (1.,1.,1.) has 3 entries but poles list has 4 entries; reader walks past end of weights vector → OOB-read; writer-emitted bug: Mantis 0030921 (G024); See also Gn002; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Ad059 - rational BSpline with weight/pole count mismatch'),
-  '2;1');
-FILE_NAME('Ad059.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Ad059'),'2;1');
+FILE_NAME('Ad059.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
-#2=CARTESIAN_POINT('p1',(1.0,0.0,0.0));
-#3=CARTESIAN_POINT('p2',(2.0,0.0,0.0));
-#4=CARTESIAN_POINT('p3',(3.0,0.0,0.0));
-/* Defect: complex-record rational BSpline with 4 poles but only 3
-   weights. The RATIONAL_B_SPLINE_CURVE.weights_data list length
-   disagrees with the B_SPLINE_CURVE control_points_list length. */
-#100=(
-  BOUNDED_CURVE()
-  B_SPLINE_CURVE(2,(#1,#2,#3,#4),.UNSPECIFIED.,.F.,.F.)
-  B_SPLINE_CURVE_WITH_KNOTS((3,3),(0.0,1.0),.UNSPECIFIED.)
-  CURVE()
-  GEOMETRIC_REPRESENTATION_ITEM()
-  RATIONAL_B_SPLINE_CURVE((1.0,1.0,1.0))
-  REPRESENTATION_ITEM('rbsc_bad')
-);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Ad059','Ad059','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=CARTESIAN_POINT('p0',(0.,0.,0.));
+#9064=CARTESIAN_POINT('p1',(1.,1.,0.));
+#9065=CARTESIAN_POINT('p2',(2.,0.,0.));
+#9066=CARTESIAN_POINT('p3',(3.,1.,0.));
+#9067=(B_SPLINE_CURVE_WITH_KNOTS('mismatch',3,(#9063,#9064,#9065,#9066),.UNSPECIFIED.,.F.,.F.,(4,4),(0.,1.),.PIECEWISE_BEZIER_KNOTS.)RATIONAL_B_SPLINE_CURVE((1.,1.,1.)));
+#9068=RATIONAL_B_SPLINE_CURVE((1.,1.,1.));
 ENDSEC;
 END-ISO-10303-21;

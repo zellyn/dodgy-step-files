@@ -1,49 +1,30 @@
 ISO-10303-21;
-/* Ad080 - token-boundary attack: ENDSEC;DATA; concatenated twice
-   Source: STEP_PROBLEM_CATALOG.md §12.11 Ad080;
-           mining 12-adversarial.md A025.
-   Pattern: two `ENDSEC;DATA;` framing markers concatenated into a single
-           file. Greedy regex parsers may match across boundaries and
-           merge the two DATA sections, or skip the first ENDSEC and
-           treat the second DATA as a continuation.
-   Reproducer recipe (per catalog):
-           ...ENDSEC;DATA;...ENDSEC;DATA;...ENDSEC;
-   Expected kernel behavior: per ISO-10303-21 Ed.2, exactly one DATA
-           section per file - reject any subsequent DATA. Ed.3 admits
-           multi-section but each section must declare its schema.
-   This fixture supplies two DATA sections in an Ed.2-mode file
-   (FILE_DESCRIPTION '2;1') so a strict reader MUST reject the second
-   DATA. License-clean: hand-synthesized. */
+/* Ad080: two DATA sections in one file: both sections reuse entity-id range #1..#N; readers with a single #-keyed map silently overwrite first section; greedy regex parsers may match across ENDSEC; boundary; illegal per ISO 10303-21 Ed.2; See also Lh024, Ls024; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(
-  ('Ad080 - duplicate DATA sections, Ed.2 mode'),
-  '2;1');
-FILE_NAME('Ad080.stp','2026-04-26T00:00:00',
-  ('auto-generated'),(''),'auto-generated','','');
+FILE_DESCRIPTION(('Ad080'),'2;1');
+FILE_NAME('Ad080.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2001,#1);
-#3=PRODUCT_CONTEXT('',#1,'mechanical');
-#4=PRODUCT('SECTION-A','first DATA','',(#3));
-#5=PRODUCT_DEFINITION_FORMATION('','',#4);
-#6=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
-#7=PRODUCT_DEFINITION('design','',#5,#6);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Ad080','Ad080','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 DATA;
-/* second DATA section - illegal in Ed.2.
-   the ID space silently collides: a permissive parser may either
-   overwrite #1..#7 or merge both sections into one symbol table. */
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2001,#1);
-#3=PRODUCT_CONTEXT('',#1,'mechanical');
-#4=PRODUCT('SECTION-B','second DATA','',(#3));
-#5=PRODUCT_DEFINITION_FORMATION('','',#4);
-#6=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
-#7=PRODUCT_DEFINITION('design','',#5,#6);
-#10=PROPERTY_DEFINITION('marker','this entity proves merge',#7);
+#1=CARTESIAN_POINT('shadow_point',(9.,9.,9.));
+#2=GEOMETRIC_CURVE_SET('shadow_gcs',(#1));
 ENDSEC;
 END-ISO-10303-21;
