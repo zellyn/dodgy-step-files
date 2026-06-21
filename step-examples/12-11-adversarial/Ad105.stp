@@ -1,20 +1,38 @@
 ISO-10303-21;
-/* Ad105 - .stpz / .stpx archive container claims gigabytes of uncompressed data
- * Defect: a ZIP / gzip archive whose entry header advertises gigabytes
- * of uncompressed payload from a few KB compressed bytes (decompression
- * bomb). The defect lives in the archive wrapper, not the embedded
- * STEP body. This fixture shows only the embedded body; the actual
- * exploit is the wrapper's compressed-vs-uncompressed-size ratio.
- * Provenance tier: cross-file-state. */
+/* Ad105: decompression bomb: .stpz/.stpx archive header advertises 10 GB uncompressed size; compressed payload is tiny; receiver decompresses into memory before parsing, exhausting RAM; receiver must cap per-archive-entry decompression budget (size+time); CWE-409; ISO 10303-21 §12 compressed-archive transfer; See also Ad104; cross-file-state defect; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Ad105 - .stpz archive bomb (witness only - bomb in wrapper)'),'2;1');
-FILE_NAME('Ad105.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Ad105'),'2;1');
+FILE_NAME('Ad105.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* Witness body: archive-bomb wrapper not present in this Part-21 fixture;
-   the bug-reporter searchable terms are in this file's header. */
-#1=APPLICATION_CONTEXT('automotive_design');
-#10=CARTESIAN_POINT('benign',(0.0,0.0,0.0));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Ad105','Ad105','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=/* stpz decompression bomb (archive-wrapper layer):
+   ZIP local file header:
+     signature:        PK\x03\x04
+     compression:      deflate (8)
+     compressed size:  5 bytes
+     uncompressed size: 10737418240 bytes (10 GB)
+   The archive entry body is 5 null bytes; a receiver that inflates
+   without a size budget allocates 10 GB of RAM before parsing.
+   Receiver must: cap decompression budget; reject oversized entries.
+   This .stp file is the embedded STEP body (tiny; the bomb is the
+   archive header, not the STEP content inside it). */
+CARTESIAN_POINT('stpz_bomb_note',(0.0,0.0,0.0));
 ENDSEC;
 END-ISO-10303-21;

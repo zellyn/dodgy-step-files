@@ -1,25 +1,38 @@
 ISO-10303-21;
-/* Ad104 - STEP-XML wrapper with DTD external-entity reference (XXE)
- * Defect: a STEP-XML (.stpx) file with an internal DTD declaring an
- * external entity. XML parsers with XXE enabled fetch the resource and
- * inline it. This fixture is shown in .stp form for cataloguing; the
- * actual attack surface is .stpx. Provenance tier: cross-file-state. */
+/* XXE attack payload (STEP-XML / ISO 10303-28 wrapper layer):
+   <?xml version="1.0" encoding="UTF-8"?>
+   <!DOCTYPE step [
+     <!ENTITY xxe SYSTEM "file:///etc/passwd">
+   ]>
+   <step:iso_10303_28 xmlns:step="urn:oid:1.0.10303.28.3.1">
+     <step:header/>
+     <step:data>&xxe;</step:data>
+   </step:iso_10303_28>
+   Receiver must disable external-entity resolution (XXE / CWE-611).
+   SYSTEM URI: file:///etc/passwd
+*/
+/* Ad104: STEP-XML wrapper carries internal DTD with external-entity reference; <!ENTITY xxe SYSTEM 'file:///etc/passwd'> triggers XXE on parsers with external-entity resolution enabled; receiver must disable external-entity resolution by default; must reject documents declaring external-entity references with a precise diagnostic; CWE-611; ISO 10303-28 STEP-XML transfer; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Ad104 - STEP-XML wrapper carries DTD with XXE entity'),'2;1');
-FILE_NAME('Ad104.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Ad104'),'2;1');
+FILE_NAME('Ad104.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* Witness fixture: the .stp body is benign. The defect lives in the
-   .stpx XML prologue:
-     <?xml version="1.0"?>
-     <!DOCTYPE step [<!ENTITY xxe SYSTEM "file:///etc/passwd">]>
-     <step>...&xxe;...</step>
-   The DTD declaration is not legal inside Part-21; it is shown here
-   inside a comment so receivers can grep for the marker even though
-   the actual exploit lives in the XML wrapper. */
-/* <!DOCTYPE step [<!ENTITY xxe SYSTEM "file:///etc/passwd">]> */
-#1=APPLICATION_CONTEXT('automotive_design');
-#10=CARTESIAN_POINT('benign',(0.0,0.0,0.0));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Ad104','Ad104','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

@@ -1,22 +1,42 @@
 ISO-10303-21;
-/* Ad106 - EXTERNAL_FILE URI resolves through a symlink (TOCTOU race)
- * Defect: an Edition-3 REFERENCE section names a path that the receiver
- * stat()s and then open()s in two filesystem operations. If the path
- * resolves through a symlink that an attacker swaps between check and
- * open, the receiver opens a different file than it validated. This
- * fixture establishes the path-naming side; the demonstration requires
- * receiver-side filesystem manipulation. Provenance tier: cross-file-state. */
+/* Ad106: EXTERNAL_FILE URI resolves through a symlink; receiver performs stat then open — TOCTOU race; symlink target may change between check and open, causing receiver to read a different file than it validated; receiver must open path once and stat the resulting fd; must not re-resolve path between check and open; must refuse to follow symlinks unless explicitly enabled; must reject EXTERNAL_FILE paths resolving outside configured root; CWE-367; ISO 10303-21 Ed.3 §8 REFERENCE/EXTERNAL_FILE; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Ad106 - EXTERNAL_FILE TOCTOU symlink-swap witness'),'2;1');
-FILE_NAME('Ad106.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('Ad106'),'2;1');
+FILE_NAME('Ad106.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
-REFERENCE;
-/* Path is a symlink target attackable between stat and open. */
-<companion>=<file:/tmp/parts/widget.stp#main_assembly>;
-ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#10=CARTESIAN_POINT('benign',(0.0,0.0,0.0));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Ad106','Ad106','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=EXTERNAL_FILE('companion_widget',('/tmp/parts/widget.stp'),'application/step',$);
+#9064=/* TOCTOU race payload:
+   EXTERNAL_FILE path: /tmp/parts/widget.stp
+   Receiver checks access('/tmp/parts/widget.stp') then
+   open('/tmp/parts/widget.stp') — two separate syscalls.
+   Between the stat and the open, an attacker swaps the symlink:
+     /tmp/parts/widget.stp -> /tmp/parts/safe.stp  (at stat time)
+     /tmp/parts/widget.stp -> /etc/shadow          (at open time)
+   Receiver reads /etc/shadow despite validating /tmp/parts/safe.stp.
+   Fix: open-then-fstat; never re-resolve path after initial open. */
+CARTESIAN_POINT('toctou_note',(0.0,0.0,0.0));
+ENDSEC;
+REFERENCE;
+/* EXTERNAL_FILE /tmp/parts/widget.stp resolves through a symlink;
+   TOCTOU race: symlink target can be swapped between stat and open.
+   companion file: widget.stp */
 ENDSEC;
 END-ISO-10303-21;

@@ -1,34 +1,50 @@
 ISO-10303-21;
-/* Ad101 - FixEdgeCurves throws Standard_OutOfRange
- * Defect: open wire of 3 edges. The first FixEdgeCurves step
- * removes the last edge (because it fails some check). Subsequent
- * iteration code accesses edges[3] (the now-removed slot), throwing
- * Standard_OutOfRange. */
+/* Ad101: open wire (non-closed EDGE_LOOP) with 3 ORIENTED_EDGEs forming v0->v1->v2->v3 chain; edge-curves-fix reads past end of edge vector after last edge removal; out-of-range OOB access; fix iteration must bounds-check after each edge modification; OCCT MANTIS#0030348, #0029780; See also Twi051, Twi064; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Ad101 test case','FixEdgeCurves throws Standard_OutOfRange'),'2;1');
-FILE_NAME('Ad101.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Ad101'),'2;1');
+FILE_NAME('Ad101.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#100=CARTESIAN_POINT('',(0.0,0.0,0.0));#101=VERTEX_POINT('',#100);
-#102=CARTESIAN_POINT('',(1.0,0.0,0.0));#103=VERTEX_POINT('',#102);
-#104=CARTESIAN_POINT('',(2.0,0.0,0.0));#105=VERTEX_POINT('',#104);
-#106=CARTESIAN_POINT('',(3.0,0.0,0.0));#107=VERTEX_POINT('',#106);
-#110=DIRECTION('+x',(1.0,0.0,0.0));
-#111=VECTOR('vx',#110,1.0);
-#120=LINE('e0',#100,#111);
-#121=LINE('e1',#102,#111);
-#122=LINE('e2',#104,#111);
-/* Three EDGE_CURVEs forming an open wire v0->v1->v2->v3 */
-#130=EDGE_CURVE('edge_0_kept',#101,#103,#120,.T.);
-#131=EDGE_CURVE('edge_1_kept',#103,#105,#121,.T.);
-#132=EDGE_CURVE('edge_2_to_be_removed',#105,#107,#122,.T.);
-#140=ORIENTED_EDGE('',*,*,#130,.T.);
-#141=ORIENTED_EDGE('',*,*,#131,.T.);
-#142=ORIENTED_EDGE('',*,*,#132,.T.);
-/* Open EDGE_LOOP referencing all three edges */
-#150=EDGE_LOOP('open_3edge_wire',(#140,#141,#142));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Ad101','Ad101','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=CARTESIAN_POINT('open_wire_v0',(0.0,0.0,0.0));
+#9064=CARTESIAN_POINT('open_wire_v1',(1.0,0.0,0.0));
+#9065=CARTESIAN_POINT('open_wire_v2',(2.0,0.0,0.0));
+#9066=CARTESIAN_POINT('open_wire_v3',(3.0,0.0,0.0));
+#9067=VERTEX_POINT('',#9063);
+#9068=VERTEX_POINT('',#9064);
+#9069=VERTEX_POINT('',#9065);
+#9070=VERTEX_POINT('',#9066);
+#9071=DIRECTION('',(1.0,0.0,0.0));
+#9072=VECTOR('',#9071,1.0);
+#9073=LINE('',#9063,#9072);
+#9074=EDGE_CURVE('',#9067,#9068,#9073,.T.);
+#9075=DIRECTION('',(1.0,0.0,0.0));
+#9076=VECTOR('',#9075,1.0);
+#9077=LINE('',#9064,#9076);
+#9078=EDGE_CURVE('',#9068,#9069,#9077,.T.);
+#9079=DIRECTION('',(1.0,0.0,0.0));
+#9080=VECTOR('',#9079,1.0);
+#9081=LINE('',#9065,#9080);
+#9082=EDGE_CURVE('',#9069,#9070,#9081,.T.);
+#9083=ORIENTED_EDGE('',$,$,#9074,.T.);
+#9084=ORIENTED_EDGE('',$,$,#9078,.T.);
+#9085=ORIENTED_EDGE('',$,$,#9082,.T.);
+#9086=EDGE_LOOP('open_wire_loop',(#9083,#9084,#9085));
 ENDSEC;
 END-ISO-10303-21;
