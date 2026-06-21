@@ -1,83 +1,55 @@
 ISO-10303-21;
-/*
- * A037 — Implicit / minimalist product structure missing entirely
- * Defect (CAD Exchanger CHANGES v3.24.13):
- *   STEP file with MANIFOLD_SOLID_BREP data but no PRODUCT, PRODUCT_DEFINITION
- *   or SHAPE_DEFINITION_REPRESENTATION. Common in minimalist exporters and
- *   many open-source / hobbyist tools.
- * Reproducer (mini): bare ADVANCED_BREP_SHAPE_REPRESENTATION with no
- *   PRODUCT_DEFINITION_SHAPE reference.
- * Expected kernel: synthesize default product wrapper; warn.
- *
- * NOTE: this file intentionally has NO PRODUCT, NO PRODUCT_DEFINITION,
- *   NO NAUO, NO SHAPE_DEFINITION_REPRESENTATION — only geometry.
- *   It is *legal STEP text* but semantically minimalist.
- */
+/* A037: bare ADVANCED_BREP_SHAPE_REPRESENTATION with no PRODUCT/PDS/NAUO (minimalist exporter) */
 HEADER;
-FILE_DESCRIPTION(('A037 only geometry, no product structure at all'),'2;1');
-FILE_NAME('A037.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('A037'),'2;1');
+FILE_NAME('A037.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('automotive design');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
-/* No PRODUCT_CONTEXT, no PRODUCT, no PRODUCT_DEFINITION_SHAPE —
-   the file describes geometry but skips the product wrapper entirely. */
-#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
-#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
-        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
-/* Bare geometry: an axis placement and a (deliberately minimal) BREP solid.
-   No PRODUCT_DEFINITION_SHAPE binds the BREP into a product structure, so
-   the file describes geometry but contains no entity-graph anchor that a
-   product browser can latch onto. */
-#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#61 = DIRECTION('',(0.0,0.0,1.0));
-#62 = DIRECTION('',(1.0,0.0,0.0));
-#63 = AXIS2_PLACEMENT_3D('orphan_origin',#60,#61,#62);
-/* unit-cube outline (vertex set + box plane) — only enough to make the BREP
-   non-empty; not a closed solid */
-#65 = CARTESIAN_POINT('cb0',(0.0,0.0,0.0));
-#66 = CARTESIAN_POINT('cb1',(1.0,0.0,0.0));
-#67 = CARTESIAN_POINT('cb2',(1.0,1.0,0.0));
-#68 = CARTESIAN_POINT('cb3',(0.0,1.0,0.0));
-#69 = VERTEX_POINT('vb0',#65);
-#70 = VERTEX_POINT('vb1',#66);
-#71 = VERTEX_POINT('vb2',#67);
-#72 = VERTEX_POINT('vb3',#68);
-#73 = VECTOR('vbx',#62,1.0);
-#74 = LINE('eb0_line',#65,#73);
-#75 = EDGE_CURVE('eb0',#69,#70,#74,.T.);
-#76 = ORIENTED_EDGE('oeb0',*,*,#75,.T.);
-#77 = EDGE_LOOP('lb',(#76));
-#78 = FACE_OUTER_BOUND('fb',#77,.T.);
-#79 = PLANE('plane_z0',#63);
-#80 = ADVANCED_FACE('orphan_face',(#78),#79,.T.);
-#64 = ADVANCED_BREP_SHAPE_REPRESENTATION('orphan_brep',(#63,#80),#54);
-/* Extended catalog notes:
- * This reproducer is a minimal demonstrator of the §12.6 entry
- * referenced in the /* * / header above. The entity-graph above
- * is just enough to exercise the defect on a writer or reader
- * test harness; it is NOT a production-quality assembly.
- *
- * License: this file is part of a defect catalog assembled from
- * publicly described bug reports and recommended-practice notes.
- * No proprietary geometry or names are reproduced. The entity IDs
- * and minimal coordinates are author-original.
- *
- * Cross-refs: see STEP_PROBLEM_CATALOG.md §12.6 for full entry,
- * source list, sender attribution and expected kernel behavior.
- */
-#900 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_id','A037');
-#901 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_section','12.6 assembly hierarchy');
-#902 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_status','pending');
-#903 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_target_dir','step-examples/12-6-assembly/');
-#904 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_corpus_origin','phase-04-resume-12-6 gap fill');
-#905 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_authoring','manual reproducer');
-#906 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_phase','04 resume 12-6');
-#907 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_extension','license-clean');
-#908 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_dataset','step-examples');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#9=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#10=VERTEX_POINT('',#6);
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=DIRECTION('',(1.0,0.0,0.0));
+#15=VECTOR('',#14,1.0);
+#16=LINE('',#6,#15);
+#17=EDGE_CURVE('',#10,#11,#16,.T.);
+#18=DIRECTION('',(0.0,1.0,0.0));
+#19=VECTOR('',#18,1.0);
+#20=LINE('',#7,#19);
+#21=EDGE_CURVE('',#11,#12,#20,.T.);
+#22=DIRECTION('',(-1.0,0.0,0.0));
+#23=VECTOR('',#22,1.0);
+#24=LINE('',#8,#23);
+#25=EDGE_CURVE('',#12,#13,#24,.T.);
+#26=DIRECTION('',(0.0,-1.0,0.0));
+#27=VECTOR('',#26,1.0);
+#28=LINE('',#9,#27);
+#29=EDGE_CURVE('',#13,#10,#28,.T.);
+#30=ORIENTED_EDGE('',$,$,#17,.T.);
+#31=ORIENTED_EDGE('',$,$,#21,.T.);
+#32=ORIENTED_EDGE('',$,$,#25,.T.);
+#33=ORIENTED_EDGE('',$,$,#29,.T.);
+#34=EDGE_LOOP('',(#30,#31,#32,#33));
+#35=FACE_OUTER_BOUND('',#34,.T.);
+#36=ADVANCED_FACE('',(#35),#5,.T.);
+#37=CLOSED_SHELL('',(#36));
+#38=MANIFOLD_SOLID_BREP('',#37);
+#39=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#40=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#41=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#42=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#39,'distance_accuracy_value','');
+#43=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#42))GLOBAL_UNIT_ASSIGNED_CONTEXT((#39,#40,#41))REPRESENTATION_CONTEXT('','3D'));
+#44=ADVANCED_BREP_SHAPE_REPRESENTATION('bare_geom',(#38),#43);
+#45=COLOUR_RGB('scaffold',0.5,0.5,0.5);
 ENDSEC;
 END-ISO-10303-21;
