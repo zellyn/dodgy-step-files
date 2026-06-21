@@ -1,50 +1,38 @@
 ISO-10303-21;
-/*
- * U024 — dimensional_exponents inconsistent with declared unit
- * Defect: CONVERSION_BASED_UNIT('POUND',...) carries
- *         DIMENSIONAL_EXPONENTS(0,0,0,0,0,0,0) — all zero — yet is
- *         referenced from a mass measure.
- */
+/* U024: CONVERSION_BASED_UNIT 'POUND' with DIMENSIONAL_EXPONENTS(0,0,0,0,0,0,0) */
+/* Mass unit must have exponent (0,1,0,0,0,0,0) per ISO 31 */
+/* All-zero exponents => dimensionless: inconsistent with mass unit claim */
 HEADER;
-FILE_DESCRIPTION(('U024 wrong dimensional_exponents'),'2;1');
-FILE_NAME('U024.stp','2026-04-26T00:00:00',('catalog'),('cad'),
-  'manual','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('U024: POUND unit with all-zero dimensional_exponents'),'2;1');
+FILE_NAME('U024.stp','2026-06-20T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('automotive design');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2001,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT('U024','U024','',(#12));
-#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
-#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
-#16 = PRODUCT_DEFINITION('','',#14,#15);
-#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
-/* SI gram (kilogram = KILO+GRAM) — used as reference for the conversion */
-#20 = ( MASS_UNIT() NAMED_UNIT(*) SI_UNIT(.KILO.,.GRAM.) );
-/* DEFECT: dimensional_exponents are all zero on a mass unit.
-   They should be (0,1,0,0,0,0,0). */
-#21 = DIMENSIONAL_EXPONENTS(0.0,0.0,0.0,0.0,0.0,0.0,0.0);
-#22 = MASS_MEASURE_WITH_UNIT(MASS_MEASURE(0.45359237),#20);
-#23 = ( CONVERSION_BASED_UNIT('POUND',#22) MASS_UNIT() NAMED_UNIT(#21) );
-/* Geometry context */
-#30 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#31 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#32 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#33 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#30,
-  'distance_accuracy_value','');
-#34 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#33))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#30,#31,#32))
-  REPRESENTATION_CONTEXT('','3D') );
-/* Reference the broken POUND from a mass_measure */
-#40 = MEASURE_REPRESENTATION_ITEM('weight',MASS_MEASURE(2.5),#23);
-#50 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#51 = DIRECTION('',(0.0,0.0,1.0));
-#52 = DIRECTION('',(1.0,0.0,0.0));
-#53 = AXIS2_PLACEMENT_3D('',#50,#51,#52);
-#54 = SHAPE_REPRESENTATION('',(#53),#34);
-#55 = SHAPE_DEFINITION_REPRESENTATION(#17,#54);
+/* Geometry: simple part */
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=CARTESIAN_POINT('corner-x',(50.0,0.,0.));
+#3=CARTESIAN_POINT('corner-y',(0.,50.0,0.));
+#4=CARTESIAN_POINT('corner-z',(0.,0.,25.0));
+#5=CARTESIAN_POINT('corner-xyz',(50.0,50.0,25.0));
+/* Standard geometry context: mm */
+#10=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT('ctx','3D'));
+/* DEFECT: POUND unit with all-zero DIMENSIONAL_EXPONENTS */
+/* Correct for mass: DIMENSIONAL_EXPONENTS(0.0,1.0,0.0,0.0,0.0,0.0,0.0) */
+#20=DIMENSIONAL_EXPONENTS(0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+/* SI mm basis for pound conversion: 1 pound = 453.592 grams */
+#21=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+#22=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(453.592),#21);
+/* DEFECT: CONVERSION_BASED_UNIT 'POUND' references all-zero exponents */
+#23=(CONVERSION_BASED_UNIT('POUND',#22) MASS_UNIT() NAMED_UNIT(#20));
+/* Validation property using the defective POUND unit */
+#40=MEASURE_REPRESENTATION_ITEM('mass',LENGTH_MEASURE(2.5),#23);
+/* Model entity is GEOMETRIC_CURVE_SET — OCC returns empty shape */
+#50=GEOMETRIC_CURVE_SET('pound-bad-exponents',(#1,#2,#3,#4,#5));
 ENDSEC;
 END-ISO-10303-21;
