@@ -1,41 +1,34 @@
 ISO-10303-21;
-/* N007 - Vertex tolerance bump factor hard-coded 1.000001 * on disagreement
- * Defect: StepToTopoDS_TranslateEdge -- when imported edge's 3D curve and
- * vertex points disagree beyond preci, OCCT bumps vertex tolerance by
- * 1.000001 * (deviation) to make the edge pass invariants. Repeated reads
- * accumulate the factor.
- * Reproducer: VERTEX_POINT.cartesian_point lies 1.0e-3 from the curve evaluation
- * at the edge's parametric endpoint; declared uncertainty is 1.0e-6.
- */
+/* N007: vertex at (0,0.001,0) displaced 1.0E-3 mm from LINE endpoint at (0,0,0); translator bumped vertex tol by 1.000001x; model uncertainty 1.0E-6; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N007 vertex tolerance bump factor 1.000001 hard-coded'),'2;1');
-FILE_NAME('N007.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+FILE_DESCRIPTION(('N007'),'2;1');
+FILE_NAME('N007.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('configuration controlled 3d designs of mechanical parts');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'config_control_design',1994,#1);
-/* Curve evaluates to (10.0, 0, 0) at t=10; vertex stored at (10.0, 0.001, 0)
- * -- 1.0e-3 mm off the curve. */
-#10=CARTESIAN_POINT('curve_start',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('vertex_off_curve',(10.0,0.001,0.0));
-#12=VERTEX_POINT('v_start',#10);
-/* Defect site: vertex_off_curve will trigger 1.000001 * 1.0e-3 vertex-tol bump */
-#13=VERTEX_POINT('v_end_offcurve',#11);
-#20=DIRECTION('+x',(1.0,0.0,0.0));
-#21=VECTOR('',#20,10.0);
-#22=LINE('edge_3d',#10,#21);
-#30=EDGE_CURVE('edge_pro8845',#12,#13,#22,.T.);
-#40=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#41=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#42=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#43=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#40,
-  'distance_accuracy_value','declared');
-#50=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#43))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#40,#41,#42))
-  REPRESENTATION_CONTEXT('ctx','3D'));
+#1=CARTESIAN_POINT('curve_start',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('curve_end',(10.0,0.0,0.0));
+#3=CARTESIAN_POINT('vtx_displaced_1e-3',(0.0,0.001,0.0));
+#4=VERTEX_POINT('v_start_displaced',#3);
+#5=VERTEX_POINT('v_end',#2);
+#6=DIRECTION('',(1.0,0.0,0.0));
+#7=VECTOR('',#6,10.0);
+#8=LINE('line',#1,#7);
+#9=EDGE_CURVE('edge_vtx_displaced',#4,#5,#8,.T.);
+#10=GEOMETRIC_CURVE_SET('edges',(#9));
+#11=APPLICATION_CONTEXT('automotive_design');
+#12=PRODUCT_CONTEXT('',#11,'mechanical');
+#13=PRODUCT('N007','N007','',(#12));
+#14=PRODUCT_DEFINITION_FORMATION('','',#13);
+#15=PRODUCT_DEFINITION_CONTEXT('part definition',#11,'design');
+#16=PRODUCT_DEFINITION('','',#14,#15);
+#17=PRODUCT_DEFINITION_SHAPE('','',#16);
+#18=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#19=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#20=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#21=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#18,'distance_accuracy_value','model_precision');
+#22=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#21))GLOBAL_UNIT_ASSIGNED_CONTEXT((#18,#19,#20))REPRESENTATION_CONTEXT('ctx','3D'));
+#23=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#10),#22);
+#24=SHAPE_DEFINITION_REPRESENTATION(#17,#23);
 ENDSEC;
 END-ISO-10303-21;

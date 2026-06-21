@@ -1,40 +1,34 @@
 ISO-10303-21;
-/* N009 - Vertex position dispersion exceeding tolerance (FixVertexPosition)
- * Defect: A vertex's 3D point is so far from incident edges' curve evaluations
- * at the parametric endpoint that the would-be tolerance disc spans the entire
- * local feature. ShapeFix::FixVertexPosition snaps the vertex to the curve
- * point or grows tolerance to encompass deviation.
- * Reproducer: EDGE_CURVE with line (0,0,0)->(1,0,0); vertex stored at
- * (0, 0.001, 0) -- 1.0e-3 mm off the curve while declared tolerance is 1.0e-4.
- */
+/* N009: VERTEX_POINT at (0,0.001,0) displaced 1.0E-3 mm from LINE start (0,0,0); declared tol 1.0E-4; displacement 10x tol; vertex disc spans whole feature; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N009 vertex position dispersion exceeds tolerance'),'2;1');
-FILE_NAME('N009.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('N009'),'2;1');
+FILE_NAME('N009.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-/* Defect site: vertex stored 1.0e-3 off the curve while tol is 1.0e-4 */
-#10=CARTESIAN_POINT('curve_start',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('vertex_off_axis',(0.0,0.001,0.0));
-#12=CARTESIAN_POINT('curve_end_eval',(1.0,0.0,0.0));
-#20=VERTEX_POINT('v_off_curve',#11);
-#21=VERTEX_POINT('v_end',#12);
-#30=DIRECTION('+x',(1.0,0.0,0.0));
-#31=VECTOR('',#30,1.0);
-#32=LINE('curve',#10,#31);
-#40=EDGE_CURVE('vertex_dispersion',#20,#21,#32,.T.);
-#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-4),#50,
-  'distance_accuracy_value','declared_below_observed_dispersion');
-#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
-  REPRESENTATION_CONTEXT('ctx','3D'));
+#1=CARTESIAN_POINT('line_start',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('line_end',(1.0,0.0,0.0));
+#3=CARTESIAN_POINT('vtx_start_far',(0.0,0.001,0.0));
+#4=VERTEX_POINT('v_start_displaced',#3);
+#5=VERTEX_POINT('v_end',#2);
+#6=DIRECTION('',(1.0,0.0,0.0));
+#7=VECTOR('',#6,1.0);
+#8=LINE('line',#1,#7);
+#9=EDGE_CURVE('edge',#4,#5,#8,.T.);
+#10=GEOMETRIC_CURVE_SET('edges',(#9));
+#11=APPLICATION_CONTEXT('automotive_design');
+#12=PRODUCT_CONTEXT('',#11,'mechanical');
+#13=PRODUCT('N009','N009','',(#12));
+#14=PRODUCT_DEFINITION_FORMATION('','',#13);
+#15=PRODUCT_DEFINITION_CONTEXT('part definition',#11,'design');
+#16=PRODUCT_DEFINITION('','',#14,#15);
+#17=PRODUCT_DEFINITION_SHAPE('','',#16);
+#18=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#19=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#20=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#21=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-4),#18,'distance_accuracy_value','model_precision');
+#22=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#21))GLOBAL_UNIT_ASSIGNED_CONTEXT((#18,#19,#20))REPRESENTATION_CONTEXT('ctx','3D'));
+#23=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#10),#22);
+#24=SHAPE_DEFINITION_REPRESENTATION(#17,#23);
 ENDSEC;
 END-ISO-10303-21;

@@ -1,44 +1,33 @@
 ISO-10303-21;
-/* N012 - Setting face tolerance to a tiny value then ShapeFix produces vertex/vertex intersections
- * Defect: Programmatically reducing a face tolerance below the actual
- * geometric defect, then running ShapeFix, makes the fix algorithm interpret
- * coincident vertex tolerance balls as separate vertices, producing
- * vertex/vertex intersection diagnostics.
- * Reproducer: face declared at 1.0e-9 tolerance while actual edge gap is 1.0e-5;
- * sub-resolution tolerance falsely promotes near-coincident vertices to
- * "intersecting" vertices.
- */
+/* N012: face tol set to 1.0E-9 below actual gap 1.0E-5; two VERTEX_POINTs 1.0E-5 apart appear separate at sub-resolution tol; GEOMETRIC_CURVE_SET — OCC empty */
 HEADER;
-FILE_DESCRIPTION(('N012 sub-resolution face tolerance produces vertex intersections'),'2;1');
-FILE_NAME('N012.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('N012'),'2;1');
+FILE_NAME('N012.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-/* Two vertices 1.0e-5 apart -- truly coincident relative to model precision,
- * but below the 1.0e-9 face tolerance they read as "different".  */
-#10=CARTESIAN_POINT('p_a',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('p_b',(1.0E-5,0.0,0.0));
-#20=VERTEX_POINT('v_a',#10);
-#21=VERTEX_POINT('v_b',#11);
-#30=DIRECTION('+x',(1.0,0.0,0.0));
-#31=VECTOR('',#30,1.0E-5);
-#32=LINE('subres_curve',#10,#31);
-/* Defect site: edge endpoints fall inside true 1.0e-5 deviation but
- * a sub-resolution face tolerance treats them as separate vertices. */
-#40=EDGE_CURVE('vertex_pair_split_by_undertol',#20,#21,#32,.T.);
-#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-/* Defect: face tolerance set below kernel resolution */
-#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-9),#50,
-  'distance_accuracy_value','face_tol_set_below_kernel_resolution');
-#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
-  REPRESENTATION_CONTEXT('ctx','3D'));
+#1=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('p1_1e-5_gap',(0.0,1.0E-05,0.0));
+#3=VERTEX_POINT('v0',#1);
+#4=VERTEX_POINT('v1_near_coincident',#2);
+#5=DIRECTION('',(0.0,1.0,0.0));
+#6=VECTOR('',#5,1.0E-05);
+#7=LINE('short_edge_line',#1,#6);
+#8=EDGE_CURVE('edge_near_coincident',#3,#4,#7,.T.);
+#9=GEOMETRIC_CURVE_SET('edges',(#8));
+#10=APPLICATION_CONTEXT('automotive_design');
+#11=PRODUCT_CONTEXT('',#10,'mechanical');
+#12=PRODUCT('N012','N012','',(#11));
+#13=PRODUCT_DEFINITION_FORMATION('','',#12);
+#14=PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#15=PRODUCT_DEFINITION('','',#13,#14);
+#16=PRODUCT_DEFINITION_SHAPE('','',#15);
+#17=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#18=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#19=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#20=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-9),#17,'distance_accuracy_value','face_tol_set_below_gap');
+#21=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#20))GLOBAL_UNIT_ASSIGNED_CONTEXT((#17,#18,#19))REPRESENTATION_CONTEXT('ctx','3D'));
+#22=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9),#21);
+#23=SHAPE_DEFINITION_REPRESENTATION(#16,#22);
 ENDSEC;
 END-ISO-10303-21;
