@@ -1,50 +1,42 @@
 ISO-10303-21;
-/* N002 - ShapeFix_Wireframe::FixWireGaps inflates max-tolerance instead of bridging gaps
- * Defect: Wireframe gap-fixing increases the maximum tolerance carried by
- * edges/vertices to encompass the gap rather than adjusting the underlying
- * geometry to actually close it. The shape passes BRepCheck only because
- * tolerance discs now overlap, hiding the real defect.
- * Reproducer: two consecutive edges whose 3D endpoints differ by 1.0e-3 mm
- * on a model with declared 1.0e-6 uncertainty; vertex tolerance bumped to 2.0e-3
- * instead of bridging.
- */
+/* N002: gap-fix inflates declared tolerance to 2.0E-3 to cover 1.0E-3 gap; model uncertainty 1.0E-6; two EDGE_CURVEs with 1.0E-3 mm gap at junction; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N002 FixWireGaps inflates max-tolerance instead of bridging'),'2;1');
-FILE_NAME('N002.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('N002'),'2;1');
+FILE_NAME('N002.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-/* Edge A goes (0,0,0) -> (10,0,0); Edge B starts at (10.001,0,0) -- 1.0e-3 gap */
-#10=CARTESIAN_POINT('a0',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('a1',(10.0,0.0,0.0));
-#12=CARTESIAN_POINT('b0',(10.001,0.0,0.0));
-#13=CARTESIAN_POINT('b1',(20.001,0.0,0.0));
-#20=VERTEX_POINT('a0',#10);
-#21=VERTEX_POINT('a1_inflated_tol',#11);
-#22=VERTEX_POINT('b0_inflated_tol',#12);
-#23=VERTEX_POINT('b1',#13);
-#30=DIRECTION('+x',(1.0,0.0,0.0));
-#31=VECTOR('',#30,10.0);
-#32=LINE('',#10,#31);
-#33=LINE('',#12,#31);
-#40=EDGE_CURVE('A',#20,#21,#32,.T.);
-#41=EDGE_CURVE('B',#22,#23,#33,.T.);
-#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-/* Declared uncertainty 1.0e-6 mm, but vertex tolerance was bloated to 2.0e-3
- * by FixWireGaps -- the gap is hidden, not bridged. */
-#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#50,
-  'distance_accuracy_value','declared_precision');
-#61=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(2.0E-3),#50,
-  'distance_accuracy_value','vertex_tol_after_FixWireGaps_balloon');
-#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60,#61))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
-  REPRESENTATION_CONTEXT('ctx','3D'));
+#1=CARTESIAN_POINT('pa0',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('pa1',(10.0,0.0,0.0));
+#3=VERTEX_POINT('va0',#1);
+#4=VERTEX_POINT('va1',#2);
+#5=DIRECTION('',(1.0,0.0,0.0));
+#6=VECTOR('',#5,10.0);
+#7=LINE('',#1,#6);
+#8=EDGE_CURVE('eA',#3,#4,#7,.T.);
+#9=CARTESIAN_POINT('pb0_gap_1e-3',(10.001,0.0,0.0));
+#10=CARTESIAN_POINT('pb1',(20.001,0.0,0.0));
+#11=VERTEX_POINT('vb0_gap',#9);
+#12=VERTEX_POINT('vb1',#10);
+#13=DIRECTION('',(1.0,0.0,0.0));
+#14=VECTOR('',#13,10.0);
+#15=LINE('',#9,#14);
+#16=EDGE_CURVE('eB',#11,#12,#15,.T.);
+#17=GEOMETRIC_CURVE_SET('wire',(#8,#16));
+#18=APPLICATION_CONTEXT('automotive_design');
+#19=PRODUCT_CONTEXT('',#18,'mechanical');
+#20=PRODUCT('N002','N002','',(#19));
+#21=PRODUCT_DEFINITION_FORMATION('','',#20);
+#22=PRODUCT_DEFINITION_CONTEXT('part definition',#18,'design');
+#23=PRODUCT_DEFINITION('','',#21,#22);
+#24=PRODUCT_DEFINITION_SHAPE('','',#23);
+#25=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#26=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#27=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#28=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#25,'distance_accuracy_value','original_model_uncertainty');
+#29=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(2.0E-3),#25,'distance_accuracy_value','gap_fix_inflated_tolerance');
+#30=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#28,#29))GLOBAL_UNIT_ASSIGNED_CONTEXT((#25,#26,#27))REPRESENTATION_CONTEXT('ctx','3D'));
+#31=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#17),#30);
+#32=SHAPE_DEFINITION_REPRESENTATION(#24,#31);
 ENDSEC;
 END-ISO-10303-21;

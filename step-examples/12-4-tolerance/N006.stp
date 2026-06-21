@@ -1,57 +1,43 @@
 ISO-10303-21;
-/* N006 - Pcurve out of sync with 3D curve parameterization (sameparameter, geometric)
- * Defect: After reproject of a pcurve at non-uniform sampling without
- * rebasing parameter, parameter-by-parameter evaluation between 3D curve
- * and pcurve drifts. OCCT compensates by inflating edge tolerance, hiding
- * a real gap. check-toler highlights the resulting "hot" edges.
- * Reproducer: BSpline pcurve on a planar face with non-uniform knot vector
- * applied while the underlying 3D BSpline keeps a uniform knot vector --
- * parameter mismatch within the same edge.
- */
+/* N006: pcurve B_SPLINE_CURVE_WITH_KNOTS has non-uniform knots vs 3D curve; parameter-by-parameter sampling drifts; edge tolerance silently inflated to 1.0E-3; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N006 Pcurve out of sync with 3D curve parameterization'),'2;1');
-FILE_NAME('N006.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('N006'),'2;1');
+FILE_NAME('N006.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-#10=CARTESIAN_POINT('o',(0.0,0.0,0.0));
-#11=DIRECTION('z',(0.0,0.0,1.0));
-#12=DIRECTION('x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
-#14=PLANE('host',#13);
-#20=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
-#21=CARTESIAN_POINT('p1',(3.33,0.0,0.0));
-#22=CARTESIAN_POINT('p2',(6.66,0.0,0.0));
-#23=CARTESIAN_POINT('p3',(10.0,0.0,0.0));
-#24=VERTEX_POINT('',#20);
-#25=VERTEX_POINT('',#23);
-/* 3D BSpline curve with UNIFORM knot vector */
-#30=B_SPLINE_CURVE_WITH_KNOTS('3d_uniform',3,(#20,#21,#22,#23),
-  .UNSPECIFIED.,.F.,.F.,(4,4),(0.0,1.0),.UNSPECIFIED.);
-/* Pcurve in (u,v): NON-UNIFORM knot vector chosen via reproject without rebase */
-#40=CARTESIAN_POINT('uv0',(0.0,0.0));
-#41=CARTESIAN_POINT('uv1',(2.0,0.0));
-#42=CARTESIAN_POINT('uv2',(8.0,0.0));
-#43=CARTESIAN_POINT('uv3',(10.0,0.0));
-#44=B_SPLINE_CURVE_WITH_KNOTS('pcurve_nonuniform',3,(#40,#41,#42,#43),
-  .UNSPECIFIED.,.F.,.F.,(4,4),(0.0,1.0),.UNSPECIFIED.);
-#45=DEFINITIONAL_REPRESENTATION('',(#44),#13);
-#46=PCURVE('pc',#14,#45);
-/* Defect site: param-mismatch hidden by inflated edge tolerance */
-#50=SURFACE_CURVE('hot_edge_curve',#30,(#46),.PCURVE_S1.);
-#51=EDGE_CURVE('hot_edge',#24,#25,#50,.T.);
-#60=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#61=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#62=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#63=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#60,
-  'distance_accuracy_value','inflated_edge_tol_to_hide_param_drift');
-#64=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#63))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#60,#61,#62))
-  REPRESENTATION_CONTEXT('ctx','3D'));
+#1=CARTESIAN_POINT('bs3d_p0',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('bs3d_p1',(10.0,0.0,0.0));
+#3=B_SPLINE_CURVE_WITH_KNOTS('bspline3d',1,(#1,#2),.UNSPECIFIED.,.F.,.F.,(2,2),(0.0,1.0),.UNSPECIFIED.);
+#4=VERTEX_POINT('v0',#1);
+#5=VERTEX_POINT('v1',#2);
+#6=CARTESIAN_POINT('plane_orig',(0.0,0.0,0.0));
+#7=DIRECTION('',(0.0,0.0,1.0));
+#8=DIRECTION('',(1.0,0.0,0.0));
+#9=AXIS2_PLACEMENT_3D('',#6,#7,#8);
+#10=PLANE('host_plane',#9);
+#11=(GEOMETRIC_REPRESENTATION_CONTEXT(2)GLOBAL_UNIT_ASSIGNED_CONTEXT($)REPRESENTATION_CONTEXT('uv_ctx','2D'));
+#12=CARTESIAN_POINT('pc_p0',(0.0,0.0));
+#13=CARTESIAN_POINT('pc_p1',(10.0,0.0));
+#14=B_SPLINE_CURVE_WITH_KNOTS('bspline_pc',1,(#12,#13),.UNSPECIFIED.,.F.,.F.,(2,2),(0.0,1.5),.UNSPECIFIED.);
+#15=DEFINITIONAL_REPRESENTATION('pdef',(#14),#11);
+#16=PCURVE('pc_drift',#10,#15);
+#17=SURFACE_CURVE('sc_drift',#3,(#16),.PCURVE_S1.);
+#18=EDGE_CURVE('edge_drift',#4,#5,#17,.T.);
+#19=GEOMETRIC_CURVE_SET('drift_set',(#18));
+#20=APPLICATION_CONTEXT('automotive_design');
+#21=PRODUCT_CONTEXT('',#20,'mechanical');
+#22=PRODUCT('N006','N006','',(#21));
+#23=PRODUCT_DEFINITION_FORMATION('','',#22);
+#24=PRODUCT_DEFINITION_CONTEXT('part definition',#20,'design');
+#25=PRODUCT_DEFINITION('','',#23,#24);
+#26=PRODUCT_DEFINITION_SHAPE('','',#25);
+#27=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#28=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#29=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#30=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#27,'distance_accuracy_value','silently_inflated_hot_edge_tol');
+#31=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#30))GLOBAL_UNIT_ASSIGNED_CONTEXT((#27,#28,#29))REPRESENTATION_CONTEXT('ctx','3D'));
+#32=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#19),#31);
+#33=SHAPE_DEFINITION_REPRESENTATION(#26,#32);
 ENDSEC;
 END-ISO-10303-21;

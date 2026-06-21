@@ -1,53 +1,35 @@
 ISO-10303-21;
-/* N001 - Tolerance hierarchy violation (vertex tol > edge tol > face tol)
- * Defect: After ShapeFix_Shape runs, vertex tolerance can exceed the tolerance
- * of its containing edge, and edge tolerance can exceed the tolerance of its
- * containing face -- violating the canonical OCCT invariant
- * tol(vertex) <= tol(edge) <= tol(face). Downstream Boolean and meshing
- * algorithms rely on the hierarchy and produce incorrect results when violated.
- * Reproducer: face declares uncertainty 1.0e-7, edges/vertices in the same
- * representation context have implied healing tolerances 1.0e-3 / 1.0e-2.
- */
+/* N001: tolerance hierarchy inverted: vertex tol=1.0E-2 > edge tol=1.0E-3 > face tol=1.0E-7; three UNCERTAINTY_MEASURE_WITH_UNIT in GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N001 tolerance hierarchy violation vertex>edge>face'),'2;1');
-FILE_NAME('N001.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('N001'),'2;1');
+FILE_NAME('N001.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#11=DIRECTION('z',(0.0,0.0,1.0));
-#12=DIRECTION('x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
-#20=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
-#21=CARTESIAN_POINT('p1',(10.0,0.0,0.0));
-#30=VERTEX_POINT('',#20);
-#31=VERTEX_POINT('',#21);
-#40=DIRECTION('',(1.0,0.0,0.0));
-#41=VECTOR('',#40,10.0);
-#42=LINE('',#20,#41);
-#50=EDGE_CURVE('',#30,#31,#42,.T.);
-/* Face-level uncertainty declared at 1.0e-7 */
-#60=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#61=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#62=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#63=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#60,
-  'distance_accuracy_value','face_tolerance');
-#64=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#63))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#60,#61,#62))
-  REPRESENTATION_CONTEXT('face_ctx','3D'));
-/* Defect site: vertex tolerance (1.0e-2) exceeds edge tolerance (1.0e-3)
- * which itself exceeds the face tolerance carried by the context (1.0e-7).
- * Receivers walking topology see V-tol=1.0e-2 dominating E-tol=1.0e-3
- * dominating F-tol=1.0e-7 -- inverted hierarchy.
- */
-#70=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#60,
-  'distance_accuracy_value','edge_tolerance');
-#71=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-2),#60,
-  'distance_accuracy_value','vertex_tolerance');
+#1=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('p1',(10.0,0.0,0.0));
+#3=VERTEX_POINT('v0',#1);
+#4=VERTEX_POINT('v1',#2);
+#5=DIRECTION('',(1.0,0.0,0.0));
+#6=VECTOR('',#5,10.0);
+#7=LINE('',#1,#6);
+#8=EDGE_CURVE('edge',#3,#4,#7,.T.);
+#9=GEOMETRIC_CURVE_SET('edges',(#8));
+#10=APPLICATION_CONTEXT('automotive_design');
+#11=PRODUCT_CONTEXT('',#10,'mechanical');
+#12=PRODUCT('N001','N001','',(#11));
+#13=PRODUCT_DEFINITION_FORMATION('','',#12);
+#14=PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#15=PRODUCT_DEFINITION('','',#13,#14);
+#16=PRODUCT_DEFINITION_SHAPE('','',#15);
+#17=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#18=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#19=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#20=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#17,'face_distance_accuracy','face_tol_tight');
+#21=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#17,'edge_distance_accuracy','edge_tol_bloated');
+#22=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-2),#17,'vertex_distance_accuracy','vertex_tol_worst');
+#23=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#20,#21,#22))GLOBAL_UNIT_ASSIGNED_CONTEXT((#17,#18,#19))REPRESENTATION_CONTEXT('ctx','3D'));
+#24=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9),#23);
+#25=SHAPE_DEFINITION_REPRESENTATION(#16,#24);
 ENDSEC;
 END-ISO-10303-21;

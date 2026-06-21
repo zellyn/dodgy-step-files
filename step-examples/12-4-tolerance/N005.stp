@@ -1,57 +1,46 @@
 ISO-10303-21;
-/* N005 - ShapeUpgrade_ShapeDivideClosed leaves invalid SameParameter state
- * Defect: Splitting a closed periodic face/solid (cylinder/torus seam) returns
- * a result whose new edges are not SameParameter; BRepCheck reports invalid
- * edges until ShapeFix::SameParameter(res, false) is called manually.
- * Reproducer: full cylinder solid that has been programmatically split at
- * the seam; the new seam edges carry same_sense=.F. and inconsistent
- * pcurve/3D pairings indicating the splitter did not call SameParameter.
- */
+/* N005: seam edge on CYLINDRICAL_SURFACE: 3D LINE +Z sense but pcurve in -V direction (inverted); pcurve and 3D curve parameterisations opposite; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N005 ShapeDivideClosed leaves invalid SameParameter'),'2;1');
-FILE_NAME('N005.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('N005'),'2;1');
+FILE_NAME('N005.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-#10=CARTESIAN_POINT('axis_origin',(0.0,0.0,0.0));
-#11=DIRECTION('z',(0.0,0.0,1.0));
-#12=DIRECTION('x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('cyl_axis',#10,#11,#12);
-#14=CYLINDRICAL_SURFACE('cyl',#13,5.0);
-/* Seam vertices at z=0 and z=10 on the cylinder seam line */
-#20=CARTESIAN_POINT('seam_low',(5.0,0.0,0.0));
-#21=CARTESIAN_POINT('seam_high',(5.0,0.0,10.0));
-#22=VERTEX_POINT('',#20);
-#23=VERTEX_POINT('',#21);
-/* 3D seam curve: straight line up the cylinder seam */
-#30=DIRECTION('+z',(0.0,0.0,1.0));
-#31=VECTOR('',#30,10.0);
-#32=LINE('seam_3d',#20,#31);
-/* 2D pcurve in (u,v) -- u=0 (seam) but starts at v=10 going down (reversed),
- * which together with EDGE_CURVE same_sense=.F. encodes the post-split
- * inconsistent state SameParameter healing was meant to fix.
- */
-#40=CARTESIAN_POINT('uv_top',(0.0,10.0));
-#41=DIRECTION('uv_neg_v',(0.0,-1.0));
-#42=VECTOR('',#41,10.0);
-#43=LINE('pcurve_reversed',#40,#42);
-#44=DEFINITIONAL_REPRESENTATION('',(#43),#13);
-#45=PCURVE('seam_pc',#14,#44);
-#50=SURFACE_CURVE('sc',#32,(#45),.PCURVE_S1.);
-/* Defect site: same_sense=.F. while pcurve/3D require recompute */
-#51=EDGE_CURVE('post_split_seam',#22,#23,#50,.F.);
-#60=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#61=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#62=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#63=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#60,
-  'distance_accuracy_value','');
-#64=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#63))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#60,#61,#62))
-  REPRESENTATION_CONTEXT('ctx','3D'));
+#1=CARTESIAN_POINT('cyl_orig',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CYLINDRICAL_SURFACE('cyl',#4,1.0);
+#6=CARTESIAN_POINT('p_seam_bot',(1.0,0.0,0.0));
+#7=CARTESIAN_POINT('p_seam_top',(1.0,0.0,10.0));
+#8=VERTEX_POINT('v_bot',#6);
+#9=VERTEX_POINT('v_top',#7);
+#10=DIRECTION('',(0.0,0.0,1.0));
+#11=VECTOR('',#10,10.0);
+#12=LINE('seam_line3d_plus_z',#6,#11);
+#13=(GEOMETRIC_REPRESENTATION_CONTEXT(2)GLOBAL_UNIT_ASSIGNED_CONTEXT($)REPRESENTATION_CONTEXT('uv_ctx','2D'));
+#14=CARTESIAN_POINT('pc_start_v10',(0.0,10.0));
+#15=DIRECTION('',(0.0,-1.0));
+#16=VECTOR('',#15,10.0);
+#17=LINE('pc_line_neg_v',#14,#16);
+#18=DEFINITIONAL_REPRESENTATION('pdef',(#17),#13);
+#19=PCURVE('pc_inverted',#5,#18);
+#20=SURFACE_CURVE('sc_seam',#12,(#19),.PCURVE_S1.);
+#21=EDGE_CURVE('seam_edge_inverted',#8,#9,#20,.T.);
+#22=GEOMETRIC_CURVE_SET('seam',(#21,#5));
+#23=APPLICATION_CONTEXT('automotive_design');
+#24=PRODUCT_CONTEXT('',#23,'mechanical');
+#25=PRODUCT('N005','N005','',(#24));
+#26=PRODUCT_DEFINITION_FORMATION('','',#25);
+#27=PRODUCT_DEFINITION_CONTEXT('part definition',#23,'design');
+#28=PRODUCT_DEFINITION('','',#26,#27);
+#29=PRODUCT_DEFINITION_SHAPE('','',#28);
+#30=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#31=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#32=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#33=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#30,'distance_accuracy_value','model_precision');
+#34=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#33))GLOBAL_UNIT_ASSIGNED_CONTEXT((#30,#31,#32))REPRESENTATION_CONTEXT('ctx','3D'));
+#35=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#22),#34);
+#36=SHAPE_DEFINITION_REPRESENTATION(#29,#35);
 ENDSEC;
 END-ISO-10303-21;
