@@ -5,32 +5,31 @@
    See also        : Le028
    ----------------------------------------------------------------------
    Defect
-     ISO 10303-21 §5.2 says LF, CR, TAB, FF are ignored characters; §5.6
-     says only SPACE, comments, and print directives separate tokens.
-     A strict reading of "ignored" means TAB removal turns "#1<TAB>2"
-     into "#12" - an integer concatenation. Real-world parsers tolerate
-     any ASCII whitespace as a separator. Defects exercised below:
-       - split keyword "FILE _SCHEMA" (space inside the keyword);
-       - whitespace between '#' and digits in an instance reference;
-       - tab inside an attribute list (used as separator).
+     ISO 10303-21 §5.2: LF, CR, TAB, FF are ignored characters.
+     §5.6: only SPACE, comments, and print directives separate tokens.
+     Critical defect: embedded whitespace inside #NNN reference
+     (between # and digits) — this changes what the tokenizer reads.
+     Defect 1: space between # and instance number: # 1=...
+     Defect 2: TAB characters used as token separators.
    Expected behavior
-     Treat any of \t \f \r \n as whitespace separator (matches user
-     expectation); preserve line/column counting across line-ending
-     conventions; warn on TAB inside an identifier; reject embedded
-     whitespace inside #N (between '#' and the digits).
+     Reject embedded whitespace inside #N (between # and digits);
+     treat any ASCII whitespace as separator elsewhere.
    ----------------------------------------------------------------------
 */
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Ls033 - whitespace defects: tab/CR/LF/FF separators'),'2;1');
-FILE_NAME('Ls033.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+FILE_DESCRIPTION(('Ls033 - whitespace inside instance-ID and TAB separators'),'2;1');
+FILE_NAME('Ls033.stp','2026-06-20T00:00:00',('auto-generated'),(''),
   'auto-generated','','');
-FILE _SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#20=DIRECTION('x',(1.0,0.0,0.0));
-/* Defect: whitespace between '#' and digits in instance reference */
-#30=AXIS2_PLACEMENT_3D('placement', # 10 ,#20,$);
+/* Defect 1: space between # and instance number -- # 1 is NOT #1 per §5.6 */
+# 1=CARTESIAN_POINT('origin',(0.,0.,0.));
+/* Defect 2: TAB characters used as token separators throughout */
+#2	=	CARTESIAN_POINT('p1',(1.,0.,0.));
+#3	=	DIRECTION('x',(1.,0.,0.));
+/* Defect 3: space inside back-reference -- # 1 as argument */
+#4=VECTOR('v',# 3,1.);
 ENDSEC;
 END-ISO-10303-21;

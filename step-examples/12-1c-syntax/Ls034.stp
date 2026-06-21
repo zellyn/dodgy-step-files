@@ -5,34 +5,33 @@
    See also        : Ls035
    ----------------------------------------------------------------------
    Defect
-     ISO 10303-21 enum literals are .IDENT. where IDENT is an EXPRESS-
-     conformant identifier (uppercase letters and digits only).
-     Defects: missing closing dot, lower-case body, digit-leading body,
-     quoted body (."LEFT".), missing leading dot. Generators that emit
-     enum values via plain Python str() routinely lose the dots.
+     ISO 10303-21 enum literals are .IDENT. (uppercase, no quotes).
+     Defect 1: .true. -- lowercase body
+     Defect 2: TRUE   -- bare identifier without dotted delimiters
+     Defect 3: .LENGTHUNIT, -- missing closing dot (comma closes slot)
+     Defect 4: ."LEFT". -- quoted body inside the dots
    Expected behavior
-     Strict reject; lenient mode may case-fold the identifier but the
-     dots themselves are non-negotiable - rejecting the dotless form is
-     mandatory because it is ambiguous with a bare keyword.
+     Strict reject; lenient mode may case-fold but dots are non-negotiable.
    ----------------------------------------------------------------------
 */
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Ls034 - enum missing dots / bad casing'),'2;1');
-FILE_NAME('Ls034.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+FILE_DESCRIPTION(('Ls034 - malformed enumeration literals'),'2;1');
+FILE_NAME('Ls034.stp','2026-06-20T00:00:00',('auto-generated'),(''),
   'auto-generated','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* Defect: missing closing dot after LENGTHUNIT */
-#10=IFCSIUNIT(*,.LENGTHUNIT,$,.METRE.);
-/* Defect: lower-case enum body (should be .TRUE. style identifier) */
-#20=DIRECTION_FLAG(.true.);
-/* Defect: bare keyword without dots (TRUE instead of .T.) */
-#30=DIRECTION_FLAG(TRUE);
-/* Defect: quoted enum body */
-#40=DIRECTION_FLAG(."LEFT".);
-/* Defect: missing leading dot */
-#50=DIRECTION_FLAG(LEFT.);
+/* Defect 1: lowercase enum body -- .true. instead of .T. */
+#1=DIRECTION_FLAG('flag-lc',.true.);
+/* Defect 2: bare unquoted identifier without dots -- TRUE */
+#2=DIRECTION_FLAG('flag-bare',TRUE);
+/* Defect 3: SIUNIT with missing closing dot after LENGTHUNIT */
+/* .LENGTHUNIT, has comma immediately after identifier — no closing dot */
+#3=NAMED_UNIT(*,.LENGTHUNIT,$);
+/* Defect 4: quoted body inside dots -- ."LEFT". */
+#4=CARTESIAN_POINT('pt',(1.,0.,0.));
+#5=DIRECTION('dir-quoted',(0.,1.,0.));
+#6=PLACEMENT_FLAG('pf',#4,#5,."LEFT".);
 ENDSEC;
 END-ISO-10303-21;

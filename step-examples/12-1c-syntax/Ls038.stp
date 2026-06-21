@@ -2,11 +2,11 @@
    ----------------------------------------------------------------------
    Catalog section : §12.1c instance-namespace
    Sources         : T016, T017, A022
-   Originally also catalogued as: Lh020, Lh021, Ad022, Ad063
    See also        : Lh023, Ls051, Ls052
    ----------------------------------------------------------------------
    Defect
-     ISO 10303-21 requires positive non-zero instance IDs. #0 is invalid.
+     ISO 10303-21 §11.1 requires positive non-zero instance IDs.
+     #0 is invalid: zero is not a positive integer.
    Expected behavior
      Reject #0 with E_INSTANCE_ID_RANGE; continue parsing the remainder
      of the section rather than skipping it.
@@ -14,14 +14,17 @@
 */
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Ls038 - instance ID #0'),'2;1');
-FILE_NAME('Ls038.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+FILE_DESCRIPTION(('Ls038 - instance ID #0 is invalid'),'2;1');
+FILE_NAME('Ls038.stp','2026-06-20T00:00:00',('auto-generated'),(''),
   'auto-generated','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* Defect: instance ID #0 (must be positive non-zero) */
-#0=IFCPERSON($,$,'',$,$,$,$,$);
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+/* Defect: #0 is an invalid instance ID (must be >= 1 per §11.1) */
+#0=CARTESIAN_POINT('origin',(0.,0.,0.));
+#1=DIRECTION('x',(1.,0.,0.));
+#2=VECTOR('v',#1,1.);
+/* Back-reference to invalid #0 -- becomes dangling after rejection */
+#3=LINE('l',#0,#2);
 ENDSEC;
 END-ISO-10303-21;

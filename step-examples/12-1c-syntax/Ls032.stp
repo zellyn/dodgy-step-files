@@ -1,198 +1,176 @@
-/* Ls032 - Comment longer than implementation buffer
-   ----------------------------------------------------------------------
+/*
+   Ls032 - Comment longer than implementation buffer
+   =========================================================================
    Catalog section : §12.1c comments
    Sources         : T004 (MAX_COMMENT_LENGTH 8192)
-   ----------------------------------------------------------------------
+   =========================================================================
    Defect
-     stepcode hardcodes an 8 KiB ceiling on comment body length. Files
-     with multi-page log banners exceed this and trip rejection. The
-     limit is a buffer-sizing concession, not a grammar requirement.
+     stepcode hardcodes an 8 KiB ceiling on comment body length. Files with
+     multi-page log banners exceed this and trip rejection. ISO 10303-21 has
+     no comment-length limit; memory-bound only.
    Expected behavior
-     Comment length unbounded (memory-bound only); never silently
-     truncate. If a hard cap is required (e.g. 1 MiB), emit a precise
-     diagnostic naming the cap and fail the parse rather than mutating
-     the file.
-   ----------------------------------------------------------------------
-   This fixture deliberately includes a single comment whose body
-   exceeds the 8 KiB stepcode cap so that strict readers exercise the
-   overflow path. The padding banner below is one /* ... * / comment.
+     Comment length is unbounded (memory-bound only); never silently truncate.
+   =========================================================================
+   BEGIN EXTENDED LOG BANNER
+   =========================================================================
+   This comment body is intentionally padded to exceed the 8192-byte ceiling
+   that stepcode and several other implementations impose. A conforming reader
+   must accept arbitrarily long comment bodies without truncation or rejection.
+   The following lines contain generated padding to push the total comment body
+   length well past 8 KiB (8192 bytes). The content is structurally identical
+   to a typical multi-page export log banner that a CAD system might prepend.
+
+   This comment body is intentionally padded to exceed the 8192-byte ceiling
+   that stepcode and several other implementations impose. A conforming reader
+   must accept arbitrarily long comment bodies without truncation or rejection.
+   The following lines contain generated padding to push the total comment body
+   length well past 8 KiB (8192 bytes). The content is structurally identical
+   to a typical multi-page export log banner that a CAD system might prepend.
+
+   This comment body is intentionally padded to exceed the 8192-byte ceiling
+   that stepcode and several other implementations impose. A conforming reader
+   must accept arbitrarily long comment bodies without truncation or rejection.
+   The following lines contain generated padding to push the total comment body
+   length well past 8 KiB (8192 bytes). The content is structurally identical
+   to a typical multi-page export log banner that a CAD system might prepend.
+
+   This comment body is intentionally padded to exceed the 8192-byte ceiling
+   that stepcode and several other implementations impose. A conforming reader
+   must accept arbitrarily long comment bodies without truncation or rejection.
+   The following lines contain generated padding to push the total comment body
+   length well past 8 KiB (8192 bytes). The content is structurally identical
+   to a typical multi-page export log banner that a CAD system might prepend.
+
+   This comment body is intentionally padded to exceed the 8192-byte ceiling
+   that stepcode and several other implementations impose. A conforming reader
+   must accept arbitrarily long comment bodies without truncation or rejection.
+   The following lines contain generated padding to push the total comment body
+   length well past 8 KiB (8192 bytes). The content is structurally identical
+   to a typical multi-page export log banner that a CAD system might prepend.
+
+   This comment body is intentionally padded to exceed the 8192-byte ceiling
+   that stepcode and several other implementations impose. A conforming reader
+   must accept arbitrarily long comment bodies without truncation or rejection.
+   The following lines contain generated padding to push the total comment body
+   length well past 8 KiB (8192 bytes). The content is structurally identical
+   to a typical multi-page export log banner that a CAD system might prepend.
+
+   This comment body is intentionally padded to exceed the 8192-byte ceiling
+   that stepcode and several other implementations impose. A conforming reader
+   must accept arbitrarily long comment bodies without truncation or rejection.
+   The following lines contain generated padding to push the total comment body
+   length well past 8 KiB (8192 bytes). The content is structurally identical
+   to a typical multi-page export log banner that a CAD system might prepend.
+
+   This comment body is intentionally padded to exceed the 8192-byte ceiling
+   that stepcode and several other implementations impose. A conforming reader
+   must accept arbitrarily long comment bodies without truncation or rejection.
+   The following lines contain generated padding to push the total comment body
+   length well past 8 KiB (8192 bytes). The content is structurally identical
+   to a typical multi-page export log banner that a CAD system might prepend.
+
+   This comment body is intentionally padded to exceed the 8192-byte ceiling
+   that stepcode and several other implementations impose. A conforming reader
+   must accept arbitrarily long comment bodies without truncation or rejection.
+   The following lines contain generated padding to push the total comment body
+   length well past 8 KiB (8192 bytes). The content is structurally identical
+   to a typical multi-page export log banner that a CAD system might prepend.
+
+   This comment body is intentionally padded to exceed the 8192-byte ceiling
+   that stepcode and several other implementations impose. A conforming reader
+   must accept arbitrarily long comment bodies without truncation or rejection.
+   The following lines contain generated padding to push the total comment body
+   length well past 8 KiB (8192 bytes). The content is structurally identical
+   to a typical multi-page export log banner that a CAD system might prepend.
+
+   This comment body is intentionally padded to exceed the 8192-byte ceiling
+   that stepcode and several other implementations impose. A conforming reader
+   must accept arbitrarily long comment bodies without truncation or rejection.
+   The following lines contain generated padding to push the total comment body
+   length well past 8 KiB (8192 bytes). The content is structurally identical
+   to a typical multi-page export log banner that a CAD system might prepend.
+
+   This comment body is intentionally padded to exceed the 8192-byte ceiling
+   that stepcode and several other implementations impose. A conforming reader
+   must accept arbitrarily long comment bodies without truncation or rejection.
+   The following lines contain generated padding to push the total comment body
+   length well past 8 KiB (8192 bytes). The content is structurally identical
+   to a typical multi-page export log banner that a CAD system might prepend.
+
+   This comment body is intentionally padded to exceed the 8192-byte ceiling
+   that stepcode and several other implementations impose. A conforming reader
+   must accept arbitrarily long comment bodies without truncation or rejection.
+   The following lines contain generated padding to push the total comment body
+   length well past 8 KiB (8192 bytes). The content is structurally identical
+   to a typical multi-page export log banner that a CAD system might prepend.
+
+   This comment body is intentionally padded to exceed the 8192-byte ceiling
+   that stepcode and several other implementations impose. A conforming reader
+   must accept arbitrarily long comment bodies without truncation or rejection.
+   The following lines contain generated padding to push the total comment body
+   length well past 8 KiB (8192 bytes). The content is structurally identical
+   to a typical multi-page export log banner that a CAD system might prepend.
+
+   This comment body is intentionally padded to exceed the 8192-byte ceiling
+   that stepcode and several other implementations impose. A conforming reader
+   must accept arbitrarily long comment bodies without truncation or rejection.
+   The following lines contain generated padding to push the total comment body
+   length well past 8 KiB (8192 bytes). The content is structurally identical
+   to a typical multi-page export log banner that a CAD system might prepend.
+
+   This comment body is intentionally padded to exceed the 8192-byte ceiling
+   that stepcode and several other implementations impose. A conforming reader
+   must accept arbitrarily long comment bodies without truncation or rejection.
+   The following lines contain generated padding to push the total comment body
+   length well past 8 KiB (8192 bytes). The content is structurally identical
+   to a typical multi-page export log banner that a CAD system might prepend.
+
+   This comment body is intentionally padded to exceed the 8192-byte ceiling
+   that stepcode and several other implementations impose. A conforming reader
+   must accept arbitrarily long comment bodies without truncation or rejection.
+   The following lines contain generated padding to push the total comment body
+   length well past 8 KiB (8192 bytes). The content is structurally identical
+   to a typical multi-page export log banner that a CAD system might prepend.
+
+   This comment body is intentionally padded to exceed the 8192-byte ceiling
+   that stepcode and several other implementations impose. A conforming reader
+   must accept arbitrarily long comment bodies without truncation or rejection.
+   The following lines contain generated padding to push the total comment body
+   length well past 8 KiB (8192 bytes). The content is structurally identical
+   to a typical multi-page export log banner that a CAD system might prepend.
+
+   This comment body is intentionally padded to exceed the 8192-byte ceiling
+   that stepcode and several other implementations impose. A conforming reader
+   must accept arbitrarily long comment bodies without truncation or rejection.
+   The following lines contain generated padding to push the total comment body
+   length well past 8 KiB (8192 bytes). The content is structurally identical
+   to a typical multi-page export log banner that a CAD system might prepend.
+
+   This comment body is intentionally padded to exceed the 8192-byte ceiling
+   that stepcode and several other implementations impose. A conforming reader
+   must accept arbitrarily long comment bodies without truncation or rejection.
+   The following lines contain generated padding to push the total comment body
+   length well past 8 KiB (8192 bytes). The content is structurally identical
+   to a typical multi-page export log banner that a CAD system might prepend.
+
+   Status      : Export succeeded
+   Tool        : CAD Research Suite v1.0 (auto-generated fixture)
+   Date        : 2026-06-20T00:00:00Z
+   Schema      : AUTOMOTIVE_DESIGN
+   Entities    : 2 (CARTESIAN_POINT, DIRECTION)
+   =========================================================================
+   END EXTENDED LOG BANNER
+   =========================================================================
 */
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Ls032 - long comment exceeds 8 KiB implementation buffer'),'2;1');
-FILE_NAME('Ls032.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+FILE_DESCRIPTION(('Ls032 - comment longer than implementation buffer'),'2;1');
+FILE_NAME('Ls032.stp','2026-06-20T00:00:00',('auto-generated'),(''),
   'auto-generated','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
-/* PAD-START -- the banner block below intentionally exceeds 8 KiB so a
- * fixed-width comment buffer (8192 bytes in stepcode T004) clips it.
- * Tools relying on MAX_COMMENT_LENGTH 8192 must surface a diagnostic
- * rather than silently truncate. Each "pad" line below is 70 chars; we
- * include enough lines so the comment body alone passes 9000 chars.
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 001
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 002
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 003
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 004
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 005
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 006
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 007
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 008
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 009
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 010
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 011
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 012
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 013
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 014
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 015
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 016
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 017
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 018
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 019
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 020
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 021
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 022
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 023
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 024
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 025
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 026
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 027
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 028
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 029
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 030
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 031
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 032
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 033
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 034
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 035
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 036
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 037
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 038
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 039
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 040
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 041
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 042
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 043
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 044
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 045
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 046
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 047
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 048
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 049
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 050
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 051
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 052
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 053
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 054
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 055
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 056
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 057
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 058
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 059
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 060
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 061
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 062
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 063
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 064
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 065
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 066
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 067
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 068
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 069
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 070
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 071
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 072
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 073
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 074
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 075
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 076
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 077
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 078
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 079
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 080
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 081
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 082
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 083
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 084
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 085
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 086
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 087
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 088
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 089
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 090
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 091
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 092
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 093
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 094
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 095
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 096
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 097
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 098
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 099
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 100
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 101
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 102
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 103
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 104
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 105
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 106
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 107
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 108
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 109
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 110
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 111
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 112
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 113
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 114
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 115
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 116
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 117
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 118
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 119
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 120
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 121
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 122
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 123
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 124
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 125
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 126
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 127
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 128
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 129
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 130
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 131
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 132
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 133
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 134
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 135
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 136
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 137
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 138
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 139
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 140
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 141
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 142
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 143
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 144
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 145
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 146
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 147
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 148
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 149
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 150
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 151
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 152
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 153
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 154
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 155
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 156
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 157
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 158
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 159
- * pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad pad 160
- * PAD-END */
 DATA;
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#20=DIRECTION('x',(1.0,0.0,0.0));
-#30=AXIS2_PLACEMENT_3D('placement',#10,#20,$);
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=DIRECTION('x',(1.,0.,0.));
 ENDSEC;
 END-ISO-10303-21;
