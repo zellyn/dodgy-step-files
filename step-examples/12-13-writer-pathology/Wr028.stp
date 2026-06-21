@@ -1,19 +1,20 @@
 ISO-10303-21;
-/* Wr028 - FILE_NAME author and originating_system fields blank or auto-filled with placeholder */
+/* Wr028: FILE_NAME.author and originating_system fields blank */
+/* All provenance fields are empty strings: author, organization, */
+/* originating_system, and authorisation are all '' */
+/* Produced by writers that do not capture user identity or origin */
 HEADER;
-FILE_DESCRIPTION(('Wr028 - blank provenance fields'),'2;1');
-/* Wr028: writer never captures user identity; emits empty strings for
-   author, organization, originating_system, authorisation */
-FILE_NAME('Wr028.stp','2026-04-30T00:00:00',(''),(''),
-  '','','');
+FILE_DESCRIPTION(('Wr028'),'2;1');
+/* DEFECT: author=(''), organization=(''), originating_system='', authorisation='' */
+FILE_NAME('Wr028.stp','2026-06-17T00:00:00',(''),(''),'','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('mechanical design');
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#11=DIRECTION('z',(0.0,0.0,1.0));
-#12=DIRECTION('x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('placement',#10,#11,#12);
-#20=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+/* Geometry: minimal GEOMETRIC_CURVE_SET — defect is in HEADER only */
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=CARTESIAN_POINT('pt',(1.,0.,0.));
+#3=DIRECTION('xdir',(1.,0.,0.));
+#4=DIRECTION('zdir',(0.,0.,1.));
+#5=GEOMETRIC_CURVE_SET('no-provenance-shape',());
 ENDSEC;
 END-ISO-10303-21;

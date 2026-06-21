@@ -1,21 +1,19 @@
 ISO-10303-21;
-/* Wr030 - FILE_SCHEMA listing schemas the file does not actually use */
+/* Wr030: FILE_SCHEMA over-declares schemas the DATA section does not use */
+/* Three schemas declared; DATA section contains only AP203-compatible entities */
+/* Writer hard-coded schema list instead of computing minimal referenced set */
 HEADER;
-FILE_DESCRIPTION(('Wr030 - over-declared FILE_SCHEMA'),'2;1');
-FILE_NAME('Wr030.stp','2026-04-30T00:00:00',(''),(''),
-  'cad-research-suite','','');
-/* Wr030: writer hard-codes a list of schemas; file actually uses only
-   AP203 entities, but FILE_SCHEMA declares three schemas including AP242 */
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }',
-  'CONFIG_CONTROL_DESIGN',
-  'AP242_MANAGED_MODEL_BASED_3D_ENGINEERING { 1 0 10303 442 1 1 4 }'));
+FILE_DESCRIPTION(('Wr030'),'2;1');
+FILE_NAME('Wr030.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+/* DEFECT: three schemas declared; only AP203 entities appear in DATA section */
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }','CONFIG_CONTROL_DESIGN','AP242_MANAGED_MODEL_BASED_3D_ENGINEERING'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('mechanical design');
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#11=DIRECTION('z',(0.0,0.0,1.0));
-#12=DIRECTION('x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('placement',#10,#11,#12);
-#20=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+/* Only AP203-compatible entities: GEOMETRIC_CURVE_SET, CARTESIAN_POINT, DIRECTION */
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=CARTESIAN_POINT('corner',(1.,1.,0.));
+#3=DIRECTION('xdir',(1.,0.,0.));
+#4=DIRECTION('zdir',(0.,0.,1.));
+#5=GEOMETRIC_CURVE_SET('ap203-only-body',());
 ENDSEC;
 END-ISO-10303-21;
