@@ -1,28 +1,56 @@
 ISO-10303-21;
-/* M177 - AP238 COOLANT_OPERATION on tool with no internal-cooling declared.
- * Defect: a COOLANT_OPERATION specifies through-spindle / through-tool
- * coolant delivery, but the referenced milling tool has no internal-
- * cooling channel attribute. Activating through-tool flood on a solid-
- * shank tool either floods the spindle bearings or stalls the coolant
- * pump. */
+/* M177: AP238 coolant_operation requests through-tool flow on tool with no internal cooling */
+/* DEFECT: COOLANT_OPERATION mode .THROUGH_TOOL. on MILLING_CUTTING_TOOL with no channel */
+/* MILLING_CUTTING_TOOL 'solid_endmill' is solid-shank — no internal cooling channels */
+/* Through-tool coolant on solid shank floods spindle bearings or stalls coolant pump */
+/* Per ISO 10303-238 §5.8 coolant capability must be cross-checked against tool attributes */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'COOLANT_OPERATION') */
+/* Byte assertion: contains(b'.THROUGH_TOOL.') */
 HEADER;
-FILE_DESCRIPTION(('M177 test case','AP238 through-tool coolant on non-coolant tool'),'2;1');
-FILE_NAME('M177.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M177: AP238 coolant_operation THROUGH_TOOL on solid-shank tool'),'2;1');
+FILE_NAME('M177.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 3 1 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('nc','3D'));
-/* Tool: no internal_cooling attribute declared. */
-#90=MILLING_CUTTING_TOOL('solid_endmill',$,$,$,$);
-/* Defect: COOLANT_OPERATION asks for THROUGH_TOOL on a tool with no
-   internal_cooling channel. */
-#100=COOLANT_OPERATION('through_tool_coolant',.THROUGH_TOOL.,#90);
-#200=WORKPLAN('main',(#100),$,$,$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#20=GEOMETRIC_CURVE_SET('ap238-coolant-operation-through-tool-on-solid-shank',
+  (#52,#54,#60));
+/* DEFECT: MILLING_CUTTING_TOOL 'solid_endmill' — no internal_cooling channels declared */
+/* All cooling-channel fields are null — this is a solid-shank endmill */
+#54=MILLING_CUTTING_TOOL('solid_endmill',$,$,$,$,$,$,$,$);
+/* Byte assertion: contains(b'COOLANT_OPERATION') */
+/* Byte assertion: contains(b'.THROUGH_TOOL.') */
+/* DEFECT: COOLANT_OPERATION with coolant_type .THROUGH_TOOL. on solid-shank tool */
+#53=COOLANT_OPERATION('thru_tool_coolant',.THROUGH_TOOL.,$);
+/* MILLING_OPERATION 'mill_with_thru_coolant' references both tool and coolant op */
+#52=MILLING_OPERATION('mill_with_thru_coolant',$,$,$,$,$,#53,#54,$,$,$,$,$);
+/* WORKPIECE 'coolant_workpiece' */
+#60=WORKPIECE('coolant_workpiece','Workpiece for through-tool coolant test',$,$,$,$,$);
+/* MACHINING_WORKINGSTEP links milling op to workpiece */
+#51=MACHINING_WORKINGSTEP('coolant_step','Through-tool coolant milling step',#52,#60,$);
+/* WORKPLAN: single milling step with through-tool coolant on solid-shank tool */
+#50=WORKPLAN('thru_tool_coolant_program','Through-tool coolant workplan',(),$,(#51));
+/* Product chain */
+#100=APPLICATION_CONTEXT('mechanical design');
+#101=PRODUCT_CONTEXT('',#100,'mechanical');
+#102=PRODUCT('M177','M177','M177',(#101));
+#103=PRODUCT_DEFINITION_FORMATION('','',#102);
+#104=PRODUCT_DEFINITION_CONTEXT(#100,'design');
+#105=PRODUCT_DEFINITION('','',#103,#104);
+#106=PRODUCT_DEFINITION_SHAPE('','',#105);
+#107=SHAPE_REPRESENTATION('',(#20),#14);
+#108=SHAPE_DEFINITION_REPRESENTATION(#106,#107);
 ENDSEC;
 END-ISO-10303-21;

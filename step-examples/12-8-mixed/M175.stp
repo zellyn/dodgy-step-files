@@ -1,31 +1,59 @@
 ISO-10303-21;
-/* M175 - AP238 DRILLING_OPERATION with non-vertical tool axis on horizontal feature.
- * Defect: a DRILLING_OPERATION declares a tool_axis vector tilted 30
- * degrees from the feature's hole-axis. The controller either drills a
- * slanted hole (mismatching the design intent) or refuses the operation
- * because the tool axis isn't normal to the feature face. */
+/* M175: AP238 drilling_operation tool axis not normal to feature face */
+/* DEFECT: DRILLING_OPERATION tool_axis (0.5,0.0,0.866) tilted 30 deg from feature axis (0,0,1) */
+/* ROUND_HOLE 'target_hole' has hole-axis (0,0,1); drill does not align with feature */
+/* Controller drills slanted hole or refuses operation — design intent violated */
+/* Per ISO 10303-238 §5.8 drilling tool axis must align with feature hole-axis */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'DRILLING_OPERATION') */
+/* Byte assertion: contains(b'tool_axis_tilted') */
 HEADER;
-FILE_DESCRIPTION(('M175 test case','AP238 drill axis off feature normal'),'2;1');
-FILE_NAME('M175.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M175: AP238 drilling_operation tool axis 30 deg off feature normal'),'2;1');
+FILE_NAME('M175.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 3 1 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('nc','3D'));
-/* Feature axis: vertical (+Z). */
-#400=DIRECTION('feature_normal',(0.0,0.0,1.0));
-#410=AXIS2_PLACEMENT_3D('hole_locator',
-  CARTESIAN_POINT('o',(50.0,30.0,0.0)),#400,
-  DIRECTION('x',(1.0,0.0,0.0)));
-#500=ROUND_HOLE('hole1',$,$,$,#410);
-/* Defect: tool_axis tilted 30 deg from feature normal. */
-#90=DIRECTION('tool_axis_tilted',(0.5,0.0,0.866));
-#100=DRILLING_OPERATION('drill_hole1',$,$,$,$,#500,#90);
-#200=WORKPLAN('main',(#100),$,$,$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* Feature hole-axis direction (0,0,1) — vertical, expected tool alignment */
+#30=DIRECTION('hole_axis',(0.0,0.0,1.0));
+/* DEFECT: tool_axis direction (0.5,0.0,0.866) — 30 degrees from (0,0,1) */
+/* Byte assertion: contains(b'tool_axis_tilted') */
+#31=DIRECTION('tool_axis_tilted',(0.5,0.0,0.866));
+#32=CARTESIAN_POINT('hole_origin',(50.0,50.0,0.0));
+#33=AXIS2_PLACEMENT_3D('hole_locator',#32,#30,$);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#20=GEOMETRIC_CURVE_SET('ap238-drilling-tool-axis-not-normal-to-feature-face',
+  (#40,#52,#60));
+/* ROUND_HOLE 'target_hole': located with vertical axis (0,0,1) */
+#40=ROUND_HOLE('target_hole',$,$,#33,$);
+/* Byte assertion: contains(b'DRILLING_OPERATION') */
+/* DEFECT: DRILLING_OPERATION with tool_axis (0.5,0.0,0.866) — 30 deg off feature axis */
+#52=DRILLING_OPERATION('drill_tilted',$,$,$,#31,$,$,$,$);
+/* WORKPIECE 'drill_workpiece' */
+#60=WORKPIECE('drill_workpiece','Drilling workpiece for tilted-axis test',$,$,$,$,$);
+/* MACHINING_WORKINGSTEP 'tilted_drill_step' links operation to workpiece */
+#51=MACHINING_WORKINGSTEP('tilted_drill_step','Tilted drill axis workingstep',#52,#60,$);
+/* WORKPLAN: single step with tilted drilling operation */
+#50=WORKPLAN('tilted_drill_program','Tilted drill axis workplan',(),$,(#51));
+/* Product chain */
+#100=APPLICATION_CONTEXT('mechanical design');
+#101=PRODUCT_CONTEXT('',#100,'mechanical');
+#102=PRODUCT('M175','M175','M175',(#101));
+#103=PRODUCT_DEFINITION_FORMATION('','',#102);
+#104=PRODUCT_DEFINITION_CONTEXT(#100,'design');
+#105=PRODUCT_DEFINITION('','',#103,#104);
+#106=PRODUCT_DEFINITION_SHAPE('','',#105);
+#107=SHAPE_REPRESENTATION('',(#20),#14);
+#108=SHAPE_DEFINITION_REPRESENTATION(#106,#107);
 ENDSEC;
 END-ISO-10303-21;

@@ -1,31 +1,59 @@
 ISO-10303-21;
-/* M178 - AP238 INSPECTION_PROBING with probe path through workpiece.
- * Defect: an INSPECTION_PROBING op's approach segment runs from the
- * probe-storage position straight through the workpiece body to reach
- * the touch point. The probe stylus shears or breaks. Bug-reporter
- * language: "probe path collides with part", "AP238 inspection crashes
- * stylus". */
+/* M178: AP238 inspection_probing path passes through workpiece body */
+/* DEFECT: INSPECTION_PROBING probe path POLYLINE runs (50,50,200) to (50,50,-5) */
+/* Workpiece 'inspection_block' occupies box (0..100, 0..100, 0..50) */
+/* Probe descends from z=200 through workpiece top face (z=50) to z=-5 */
+/* Probe stylus shears against workpiece body — safe approach required */
+/* Per ISO 10303-238 §6.2 probe paths must be collision-free with workpiece envelope */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'INSPECTION_PROBING(') */
+/* Byte assertion: contains(b'probe_path_through_part') */
 HEADER;
-FILE_DESCRIPTION(('M178 test case','AP238 probe path collision with workpiece'),'2;1');
-FILE_NAME('M178.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M178: AP238 inspection_probing path through workpiece body'),'2;1');
+FILE_NAME('M178.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 3 1 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('nc','3D'));
-/* Workpiece occupies (0..100, 0..100, 0..50). */
-#400=WORKPIECE('block_100x100x50',$,$,$,$,$,$);
-/* Defect: probe approach line from (50,50,200) to (50,50,-5) - passes
-   straight through the block body. */
-#50=CARTESIAN_POINT('probe_start',(50.0,50.0,200.0));
-#51=CARTESIAN_POINT('probe_target',(50.0,50.0,-5.0));
-#60=POLYLINE('probe_path_through_part',(#50,#51));
-#100=INSPECTION_PROBING('measure_z',$,$,$,$,#60,#400);
-#200=WORKPLAN('main',(#100),$,$,$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* Probe path points: from storage position straight through workpiece body */
+#30=CARTESIAN_POINT('probe_storage',(50.0,50.0,200.0));
+#31=CARTESIAN_POINT('probe_target',(50.0,50.0,-5.0));
+/* Byte assertion: contains(b'probe_path_through_part') */
+/* DEFECT: POLYLINE descends from (50,50,200) through workpiece body to (50,50,-5) */
+/* Workpiece top face is at z=50; probe enters body at z=50, exits below z=0 */
+#32=POLYLINE('probe_path_through_part',(#30,#31));
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#20=GEOMETRIC_CURVE_SET('ap238-inspection-probing-path-through-workpiece-body',
+  (#32,#52,#60));
+/* Byte assertion: contains(b'INSPECTION_PROBING(') */
+/* DEFECT: INSPECTION_PROBING op whose approach path runs through workpiece */
+#52=INSPECTION_PROBING('probe_collision_op',$,#32,$,$,$);
+/* WORKPIECE 'inspection_block': occupies box (0..100, 0..100, 0..50) */
+/* Probe path (50,50,200)->(50,50,-5) passes through this body */
+#60=WORKPIECE('inspection_block','Inspection block workpiece (0..100 0..100 0..50)',$,$,$,$,$);
+/* MACHINING_WORKINGSTEP 'probe_collision_step' links op to workpiece */
+#51=MACHINING_WORKINGSTEP('probe_collision_step','Probe collision workingstep',#52,#60,$);
+/* WORKPLAN: single inspection step with colliding probe path */
+#50=WORKPLAN('probe_collision_program','Probe collision inspection workplan',(),$,(#51));
+/* Product chain */
+#100=APPLICATION_CONTEXT('mechanical design');
+#101=PRODUCT_CONTEXT('',#100,'mechanical');
+#102=PRODUCT('M178','M178','M178',(#101));
+#103=PRODUCT_DEFINITION_FORMATION('','',#102);
+#104=PRODUCT_DEFINITION_CONTEXT(#100,'design');
+#105=PRODUCT_DEFINITION('','',#103,#104);
+#106=PRODUCT_DEFINITION_SHAPE('','',#105);
+#107=SHAPE_REPRESENTATION('',(#20),#14);
+#108=SHAPE_DEFINITION_REPRESENTATION(#106,#107);
 ENDSEC;
 END-ISO-10303-21;

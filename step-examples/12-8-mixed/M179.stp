@@ -1,29 +1,59 @@
 ISO-10303-21;
-/* M179 - AP238 TOUCH_PROBING tolerance smaller than probe-stylus diameter.
- * Defect: a TOUCH_PROBING op declares a measurement tolerance of 0.005
- * mm while the touch probe's stylus tip ball diameter is 4.0 mm. The
- * stylus radius compensation cannot resolve features below the tip
- * radius - the declared tolerance is fundamentally unattainable with
- * this probe. */
+/* M179: AP238 touch_probing tolerance smaller than probe stylus radius */
+/* DEFECT: TOUCH_PROBING tolerance 0.005 mm; TOUCH_PROBE stylus diameter 4.0 mm */
+/* Stylus radius 2.0 mm is 400x larger than declared tolerance 0.005 mm */
+/* Stylus radius compensation cannot resolve features below tip radius */
+/* Declared tolerance is fundamentally unattainable with this probe tip */
+/* Per ISO 10303-238 §5.8 tolerance must be achievable with probe stylus radius */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'TOUCH_PROBING(') */
+/* Byte assertion: contains(b'TOUCH_PROBE(') */
 HEADER;
-FILE_DESCRIPTION(('M179 test case','AP238 touch probing tolerance below stylus radius'),'2;1');
-FILE_NAME('M179.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M179: AP238 touch_probing tolerance 0.005mm < stylus radius 2.0mm'),'2;1');
+FILE_NAME('M179.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 3 1 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('nc','3D'));
-/* Probe stylus tip ball diameter: 4.0 mm. */
-#90=TOUCH_PROBE('renishaw_4mm',$,$,$,
-  MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(4.0),#10));
-/* Defect: tolerance 0.005 mm << stylus radius 2.0 mm. */
-#80=MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(0.005),#10);
-#100=TOUCH_PROBING('precise_probe_op',$,$,$,$,#90,#80);
-#200=WORKPLAN('main',(#100),$,$,$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* mm length unit reference for MEASURE_WITH_UNIT */
+#15=SI_UNIT(.MILLI.,.METRE.);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#20=GEOMETRIC_CURVE_SET('ap238-touch-probing-tolerance-below-stylus-radius',
+  (#40,#52,#60));
+/* Byte assertion: contains(b'TOUCH_PROBE(') */
+/* TOUCH_PROBE 'big_stylus_probe': stylus_diameter 4.0 mm (radius 2.0 mm) */
+#41=MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(4.0),#15);
+#40=TOUCH_PROBE('big_stylus_probe',$,#41,$,$,$);
+/* DEFECT: tolerance 0.005 mm << stylus radius 2.0 mm — unattainable resolution */
+#42=MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(0.005),#15);
+/* Byte assertion: contains(b'TOUCH_PROBING(') */
+/* DEFECT: TOUCH_PROBING tolerance 0.005 mm with stylus diameter 4.0 mm probe */
+#52=TOUCH_PROBING('overspec_probe_op',$,#40,#42,$,$);
+/* WORKPIECE 'probe_workpiece' */
+#60=WORKPIECE('probe_workpiece','Workpiece for touch-probe tolerance test',$,$,$,$,$);
+/* MACHINING_WORKINGSTEP 'overspec_probe_step' links probing op to workpiece */
+#51=MACHINING_WORKINGSTEP('overspec_probe_step','Overspec probe workingstep',#52,#60,$);
+/* WORKPLAN: single touch-probing step with unattainable tolerance */
+#50=WORKPLAN('overspec_probe_program','Overspec touch probe workplan',(),$,(#51));
+/* Product chain */
+#100=APPLICATION_CONTEXT('mechanical design');
+#101=PRODUCT_CONTEXT('',#100,'mechanical');
+#102=PRODUCT('M179','M179','M179',(#101));
+#103=PRODUCT_DEFINITION_FORMATION('','',#102);
+#104=PRODUCT_DEFINITION_CONTEXT(#100,'design');
+#105=PRODUCT_DEFINITION('','',#103,#104);
+#106=PRODUCT_DEFINITION_SHAPE('','',#105);
+#107=SHAPE_REPRESENTATION('',(#20),#14);
+#108=SHAPE_DEFINITION_REPRESENTATION(#106,#107);
 ENDSEC;
 END-ISO-10303-21;
