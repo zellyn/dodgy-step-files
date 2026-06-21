@@ -1,74 +1,71 @@
 ISO-10303-21;
-/* Hea014 - Compound rebuild during ShapeCustom misses location chain
- * Compound containing one solid at NON-IDENTITY location, attached via a
- * MAPPED_ITEM that places the solid at (50,0,0). Renumbered IDs so there
- * are no duplicates. After ShapeCustom rebuild the compound's location
- * should still be honored; the defect is implementation-only. */
+/* Hea014: Compound containing one 1x1 ADVANCED_FACE solid at NON-IDENTITY placement (50,0,0) via REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION; ShapeCustom rebuild must preserve the compound's TopLoc location chain; defect: rebuild loses location attribute + cached context state; REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION encodes the non-identity transform */
 HEADER;
-FILE_DESCRIPTION(('Hea014 test case','Compound w/ solid at non-identity location via MAPPED_ITEM'),'2;1');
-FILE_NAME('Hea014.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Hea014'),'2;1');
+FILE_NAME('Hea014.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Identity placement and host plane */
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('identity',#10,#11,#12);
-#14=PLANE('host',#13);
-/* Unit-square face (the "solid" stand-in for this fixture) */
-#20=CARTESIAN_POINT('',(0.0,0.0,0.0));#21=VERTEX_POINT('',#20);
-#22=CARTESIAN_POINT('',(1.0,0.0,0.0));#23=VERTEX_POINT('',#22);
-#24=CARTESIAN_POINT('',(1.0,1.0,0.0));#25=VERTEX_POINT('',#24);
-#26=CARTESIAN_POINT('',(0.0,1.0,0.0));#27=VERTEX_POINT('',#26);
-#30=DIRECTION('',(1.0,0.0,0.0));#31=VECTOR('',#30,1.0);#32=LINE('',#20,#31);
-#33=EDGE_CURVE('',#21,#23,#32,.T.);
-#34=DIRECTION('',(0.0,1.0,0.0));#35=VECTOR('',#34,1.0);#36=LINE('',#22,#35);
-#37=EDGE_CURVE('',#23,#25,#36,.T.);
-#38=DIRECTION('',(-1.0,0.0,0.0));#39=VECTOR('',#38,1.0);#40=LINE('',#24,#39);
-#41=EDGE_CURVE('',#25,#27,#40,.T.);
-#42=DIRECTION('',(0.0,-1.0,0.0));#43=VECTOR('',#42,1.0);#44=LINE('',#26,#43);
-#45=EDGE_CURVE('',#27,#21,#44,.T.);
-#50=ORIENTED_EDGE('',*,*,#33,.T.);#51=ORIENTED_EDGE('',*,*,#37,.T.);
-#52=ORIENTED_EDGE('',*,*,#41,.T.);#53=ORIENTED_EDGE('',*,*,#45,.T.);
-#54=EDGE_LOOP('',(#50,#51,#52,#53));
-#55=FACE_OUTER_BOUND('',#54,.T.);
-#56=ADVANCED_FACE('quad',(#55),#14,.T.);
-#57=CLOSED_SHELL('child_shell',(#56));
-#58=MANIFOLD_SOLID_BREP('child_solid',#57);
-/* PRODUCT chain (renumbered to avoid duplicate IDs) */
-#60=PRODUCT_CONTEXT('',#1,'mechanical');
-#61=PRODUCT('part1','part1','part1',(#60));
-#62=PRODUCT_DEFINITION_FORMATION('','',#61);
-#63=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#64=PRODUCT_DEFINITION('','',#62,#63);
-#65=PRODUCT_DEFINITION_SHAPE('','',#64);
-/* Non-identity placement at (50, 0, 0); attach the solid via REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION */
-#70=CARTESIAN_POINT('',(50.0,0.0,0.0));
-#71=DIRECTION('',(0.0,0.0,1.0));#72=DIRECTION('',(1.0,0.0,0.0));
-#73=AXIS2_PLACEMENT_3D('non_identity',#70,#71,#72);
-#74=ITEM_DEFINED_TRANSFORMATION('move_50',$,#13,#73);
-#75=GEOMETRIC_REPRESENTATION_CONTEXT('local_ctx',(#13),3);
-#76=SHAPE_REPRESENTATION('child_repr',(#56),#75);
-#77=SHAPE_REPRESENTATION('parent_compound',(#73),#75);
-#78=(REPRESENTATION_RELATIONSHIP('move','solid located at non-identity',#76,#77)
-     REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION(#74)
-     SHAPE_REPRESENTATION_RELATIONSHIP());
-/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Hea014','Hea014','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9022=ADVANCED_BREP_SHAPE_REPRESENTATION('',(#58),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('identity',#1,#2,#3);
+#5=PLANE('host',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#9=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#10=VERTEX_POINT('',#6);
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=DIRECTION('',(1.0,0.0,0.0));
+#15=VECTOR('',#14,1.0);
+#16=LINE('',#6,#15);
+#17=EDGE_CURVE('',#10,#11,#16,.T.);
+#18=DIRECTION('',(0.0,1.0,0.0));
+#19=VECTOR('',#18,1.0);
+#20=LINE('',#7,#19);
+#21=EDGE_CURVE('',#11,#12,#20,.T.);
+#22=DIRECTION('',(-1.0,0.0,0.0));
+#23=VECTOR('',#22,1.0);
+#24=LINE('',#8,#23);
+#25=EDGE_CURVE('',#12,#13,#24,.T.);
+#26=DIRECTION('',(0.0,-1.0,0.0));
+#27=VECTOR('',#26,1.0);
+#28=LINE('',#9,#27);
+#29=EDGE_CURVE('',#13,#10,#28,.T.);
+#30=ORIENTED_EDGE('',$,$,#17,.T.);
+#31=ORIENTED_EDGE('',$,$,#21,.T.);
+#32=ORIENTED_EDGE('',$,$,#25,.T.);
+#33=ORIENTED_EDGE('',$,$,#29,.T.);
+#34=EDGE_LOOP('',(#30,#31,#32,#33));
+#35=FACE_OUTER_BOUND('',#34,.T.);
+#36=ADVANCED_FACE('quad',(#35),#5,.T.);
+#37=CLOSED_SHELL('child_shell',(#36));
+#38=MANIFOLD_SOLID_BREP('child_solid',#37);
+#39=CARTESIAN_POINT('',(50.0,0.0,0.0));
+#40=DIRECTION('',(0.0,0.0,1.0));
+#41=DIRECTION('',(1.0,0.0,0.0));
+#42=AXIS2_PLACEMENT_3D('non_identity',#39,#40,#41);
+#43=ITEM_DEFINED_TRANSFORMATION('move_50',$,#4,#42);
+#44=GEOMETRIC_REPRESENTATION_CONTEXT('local_ctx',(#4),3);
+#45=SHAPE_REPRESENTATION('child_repr',(#36),#44);
+#46=SHAPE_REPRESENTATION('parent_compound',(#42),#44);
+#47=(REPRESENTATION_RELATIONSHIP('move','solid located at non-identity',#45,#46)REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION(#43)SHAPE_REPRESENTATION_RELATIONSHIP());
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Hea014','Hea014','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=ADVANCED_BREP_SHAPE_REPRESENTATION('',(#38),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
