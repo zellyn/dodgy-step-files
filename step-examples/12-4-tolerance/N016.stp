@@ -1,51 +1,41 @@
 ISO-10303-21;
-/* N016 - Edge tolerance 2-3 orders of magnitude > file tolerance (CATIA per-edge precision)
- * Defect: CATIA writes per-edge tolerance values that are 2-3 orders of
- * magnitude larger than the file's default tolerance. Receivers reading only
- * the global tolerance find gaps between adjacent faces and treat the body
- * as an open shell.
- * Reproducer: file declares global uncertainty 1.0e-4 mm but emits multiple
- * GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT entries with per-edge precisions of
- * 1.0e-2 / 5.0e-3 mm (CATIA-style per-entity tolerance metadata).
- */
+/* N016: CATIA per-edge tol: global=1.0E-4, edge1=5.0E-3, edge2=1.0E-2; receiver using only global sees gaps; 3×UNCERTAINTY_MEASURE_WITH_UNIT; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N016 CATIA per-edge tolerance 2-3 orders > file tolerance'),'2;1');
-FILE_NAME('N016.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('N016'),'2;1');
+FILE_NAME('N016.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('p1',(20.0,0.0,0.0));
-#12=CARTESIAN_POINT('p2',(20.0,20.0,0.0));
-#20=VERTEX_POINT('',#10);
-#21=VERTEX_POINT('',#11);
-#22=VERTEX_POINT('',#12);
-#30=DIRECTION('+x',(1.0,0.0,0.0));
-#31=DIRECTION('+y',(0.0,1.0,0.0));
-#32=VECTOR('',#30,20.0);
-#33=VECTOR('',#31,20.0);
-#34=LINE('e1',#10,#32);
-#35=LINE('e2',#11,#33);
-#40=EDGE_CURVE('edge_tight',#20,#21,#34,.T.);
-#41=EDGE_CURVE('edge_loose',#21,#22,#35,.T.);
-#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-/* Global file tolerance */
-#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-4),#50,
-  'distance_accuracy_value','file_default');
-/* Per-edge tolerances 2-3 orders of magnitude larger than file default */
-#61=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-2),#50,
-  'distance_accuracy_value','edge_tight_per_entity_tolerance');
-#62=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(5.0E-3),#50,
-  'distance_accuracy_value','edge_loose_per_entity_tolerance');
-#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60,#61,#62))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
-  REPRESENTATION_CONTEXT('ctx','3D'));
+#1=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('p1_shared',(10.0,0.0,0.0));
+#3=CARTESIAN_POINT('p2',(20.0,0.0,0.0));
+#4=VERTEX_POINT('v0',#1);
+#5=VERTEX_POINT('v1_shared',#2);
+#6=VERTEX_POINT('v2',#3);
+#7=DIRECTION('',(1.0,0.0,0.0));
+#8=VECTOR('',#7,10.0);
+#9=LINE('',#1,#8);
+#10=EDGE_CURVE('eA_tight',#4,#5,#9,.T.);
+#11=DIRECTION('',(1.0,0.0,0.0));
+#12=VECTOR('',#11,10.0);
+#13=LINE('',#2,#12);
+#14=EDGE_CURVE('eB_loose',#5,#6,#13,.T.);
+#15=GEOMETRIC_CURVE_SET('catia_edges',(#10,#14));
+#16=APPLICATION_CONTEXT('automotive_design');
+#17=PRODUCT_CONTEXT('',#16,'mechanical');
+#18=PRODUCT('N016','N016','',(#17));
+#19=PRODUCT_DEFINITION_FORMATION('','',#18);
+#20=PRODUCT_DEFINITION_CONTEXT('part definition',#16,'design');
+#21=PRODUCT_DEFINITION('','',#19,#20);
+#22=PRODUCT_DEFINITION_SHAPE('','',#21);
+#23=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#24=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#25=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#26=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-4),#23,'distance_accuracy_value','global_file_tolerance');
+#27=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(5.0E-3),#23,'distance_accuracy_value','catia_per_edge_tol_medium');
+#28=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-2),#23,'distance_accuracy_value','catia_per_edge_tol_worst');
+#29=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#26,#27,#28))GLOBAL_UNIT_ASSIGNED_CONTEXT((#23,#24,#25))REPRESENTATION_CONTEXT('ctx','3D'));
+#30=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#15),#29);
+#31=SHAPE_DEFINITION_REPRESENTATION(#22,#30);
 ENDSEC;
 END-ISO-10303-21;
