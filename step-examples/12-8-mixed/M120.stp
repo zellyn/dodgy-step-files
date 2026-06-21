@@ -1,26 +1,60 @@
 ISO-10303-21;
-/* M120 - AP209 symmetry plane not perpendicular to a coordinate axis.
- * Defect: a symmetry constraint is encoded as "U_x = 0" (X-DOF
- * restricted) but the symmetry plane normal is (0.5, 0.5, 0.707) -
- * non-axis-aligned. The constraint frame is wrong; the actual
- * symmetry physics is not enforced. */
+/* M120: AP209 symmetry plane not perpendicular to a coordinate axis */
+/* DEFECT: SINGLE_POINT_CONSTRAINT symmetry-plane normal = (0.5,0.5,0.707) */
+/* Constraint restricts only U_x=0 without rotating to the symmetry frame */
+/* Skew normal means no coordinate plane corresponds to the symmetry surface */
+/* Per AP209 §7, non-axis-aligned symmetry requires frame transformation */
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
+/* Byte assertion: contains(b'SINGLE_POINT_CONSTRAINT') */
+/* Byte assertion: contains(b'(0.5,0.5,0.707)') */
 HEADER;
-FILE_DESCRIPTION(('M120 test case','AP209 skew symmetry plane'),'2;1');
-FILE_NAME('M120.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M120: AP209 symmetry plane not perpendicular to coordinate axis'),'2;1');
+FILE_NAME('M120.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
 FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('structural_analysis_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'structural_analysis_design',2001,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('fea','3D'));
-#100=CARTESIAN_POINT('a',(0.0,0.0,0.0));
-#110=NODE('n1',(#100),$);
-/* Defect: symmetry plane normal is non-axis-aligned. */
-#150=DIRECTION('skew_symmetry_normal',(0.5,0.5,0.707));
-#200=SINGLE_POINT_CONSTRAINT('skew_sym',#110,'X',$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('fea','3D'));
+/* Node on the symmetry plane */
+#100=CARTESIAN_POINT('sym_node',(5.0,5.0,7.07));
+/* Byte assertion: contains(b'(0.5,0.5,0.707)') */
+/* DEFECT: symmetry-plane normal is (0.5,0.5,0.707) — non-axis-aligned */
+/* A valid axis-aligned normal would be e.g. (1.0,0.0,0.0) for YZ plane */
+#101=DIRECTION('skew_sym_normal',(0.5,0.5,0.707));
+#102=AXIS2_PLACEMENT_3D('skew_sym_plane',#100,#101,$);
+#110=NODE('sym_boundary_node',(#100),$);
+/* Byte assertion: contains(b'SINGLE_POINT_CONSTRAINT') */
+/* DEFECT: constraint applied as U_x=0 using axis-aligned convention */
+/* For a skew normal (0.5,0.5,0.707) the correct constraint requires frame rotation */
+/* Encoding only DOF_1 (U_x=0.0) is incorrect — missing U_y and U_z contributions */
+#200=SINGLE_POINT_CONSTRAINT('skew_symmetry_bc','symmetry',
+  #110,#102,(1),(0.0,$,$,$,$,$));
+#300=NODE_GROUP('sym_nodes',(#110),$);
+#310=FEA_MODEL('skew_symmetry_model',$,'',(#300),(),());
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#500=GEOMETRIC_CURVE_SET('ap209-symmetry-plane-not-perpendicular-to-axis',
+  (#100,#101,#102,#110,#200,#310));
+/* Product chain */
+#600=APPLICATION_CONTEXT('mechanical design');
+#601=PRODUCT_CONTEXT('',#600,'mechanical');
+#602=PRODUCT('M120','M120','M120',(#601));
+#603=PRODUCT_DEFINITION_FORMATION('','',#602);
+#604=PRODUCT_DEFINITION_CONTEXT(#600,'design');
+#605=PRODUCT_DEFINITION('','',#603,#604);
+#606=PRODUCT_DEFINITION_SHAPE('','',#605);
+#607=SHAPE_REPRESENTATION('',(#500),#14);
+#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
 ENDSEC;
 END-ISO-10303-21;

@@ -1,46 +1,74 @@
 ISO-10303-21;
-/* M118 - AP209 non-conforming mesh: tet & hex sharing face mismatched.
- * Defect: a tet element shares its triangular face with a hex element's
- * quadrilateral face. The hex face has 4 nodes; the tet face has 3
- * nodes - one hex node is unconstrained at the interface. No MPC ties
- * the unmatched node. The mesh leaks at the boundary. */
+/* M118: AP209 non-conforming mesh — tet-hex face with mismatched node counts */
+/* DEFECT: tet face (3 nodes) and hex face (4 nodes) share geometry; no MPC tying */
+/* Interface is kinematically free; solver computes separation across the face */
+/* Per AP209 §6 mesh conformity invariants, MPC is mandatory at mixed interfaces */
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
+/* Byte assertion: count_entity_def(b'VOLUME_3D_ELEMENT_DESCRIPTOR') >= 2 */
 HEADER;
-FILE_DESCRIPTION(('M118 test case','AP209 tet-hex non-conforming interface'),'2;1');
-FILE_NAME('M118.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M118: AP209 non-conforming tet-hex mesh interface without MPC'),'2;1');
+FILE_NAME('M118.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
 FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('structural_analysis_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'structural_analysis_design',2001,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('fea','3D'));
-/* Hex element nodes (4 corners on shared face + 4 opposite) */
-#100=CARTESIAN_POINT('h1',(0.0,0.0,0.0));
-#101=CARTESIAN_POINT('h2',(1.0,0.0,0.0));
-#102=CARTESIAN_POINT('h3',(1.0,1.0,0.0));
-#103=CARTESIAN_POINT('h4',(0.0,1.0,0.0));
-#104=CARTESIAN_POINT('h5',(0.0,0.0,-1.0));
-#105=CARTESIAN_POINT('h6',(1.0,0.0,-1.0));
-#106=CARTESIAN_POINT('h7',(1.0,1.0,-1.0));
-#107=CARTESIAN_POINT('h8',(0.0,1.0,-1.0));
-/* Tet element shares the face (h1, h2, h3) - 3 nodes; h4 hangs free. */
-#108=CARTESIAN_POINT('t4',(0.5,0.5,1.0));
-#110=NODE('h1',(#100),$);
-#111=NODE('h2',(#101),$);
-#112=NODE('h3',(#102),$);
-#113=NODE('h4',(#103),$);
-#114=NODE('h5',(#104),$);
-#115=NODE('h6',(#105),$);
-#116=NODE('h7',(#106),$);
-#117=NODE('h8',(#107),$);
-#118=NODE('t4',(#108),$);
-#200=VOLUME_3D_ELEMENT_DESCRIPTOR('hex','linear_hexahedron',
-       (#110,#111,#112,#113,#114,#115,#116,#117));
-/* Defect: tet shares only 3 of 4 nodes on the interface face; #113 (h4) is unconstrained. */
-#201=VOLUME_3D_ELEMENT_DESCRIPTOR('tet_with_hanging_node','linear_tetrahedron',
-       (#110,#111,#112,#118));
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('fea','3D'));
+/* Tet nodes: n1(0,0,0) n2(10,0,0) n3(5,10,0) n4(5,5,10) */
+/* Shared face between tet and hex: nodes n1, n2, n3 (3-node tet face) */
+/* Hex has a 4th node n5=(5,-5,0) on its corresponding face — no MPC for n5 */
+#100=CARTESIAN_POINT('n1',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('n2',(10.0,0.0,0.0));
+#102=CARTESIAN_POINT('n3',(5.0,10.0,0.0));
+#103=CARTESIAN_POINT('n4',(5.0,5.0,10.0));
+#104=CARTESIAN_POINT('n5',(5.0,-5.0,0.0));
+#105=CARTESIAN_POINT('n6',(0.0,-10.0,0.0));
+#106=CARTESIAN_POINT('n7',(10.0,-10.0,0.0));
+#107=CARTESIAN_POINT('n8',(5.0,-5.0,-10.0));
+#110=NODE('tet_n1',(#100),$);
+#111=NODE('tet_n2',(#101),$);
+#112=NODE('tet_n3',(#102),$);
+#113=NODE('tet_n4',(#103),$);
+#114=NODE('hex_n5',(#104),$);
+#115=NODE('hex_n6',(#105),$);
+#116=NODE('hex_n7',(#106),$);
+#117=NODE('hex_n8',(#107),$);
+/* Byte assertion: count_entity_def(b'VOLUME_3D_ELEMENT_DESCRIPTOR') >= 2 */
+/* DEFECT partner 1: linear tet — shared face is (n1,n2,n3), 3 nodes */
+#200=VOLUME_3D_ELEMENT_DESCRIPTOR('tet_elem','linear_tetrahedron',
+  (#110,#111,#112,#113));
+/* DEFECT partner 2: linear hex — corresponding face is (n1,n2,n3,n5), 4 nodes */
+/* n5 (#114) is the extra 4th hex-face node with NO MPC tying to tet */
+#201=VOLUME_3D_ELEMENT_DESCRIPTOR('hex_elem','linear_hexahedron',
+  (#110,#111,#114,#112,#113,#115,#116,#117));
+/* NO MULTI_POINT_CONSTRAINT entity tying hex node n5 to tet nodes n1,n2,n3 */
+/* This is the defect: the interface is kinematically free (non-conforming) */
+#300=NODE_GROUP('all_nodes',
+  (#110,#111,#112,#113,#114,#115,#116,#117),$);
+#310=FEA_MODEL('nonconforming_mesh',$,'',(#300),(),());
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#500=GEOMETRIC_CURVE_SET('ap209-nonconforming-tet-hex-interface-no-mpc',
+  (#110,#111,#112,#113,#114,#115,#116,#117,#200,#201,#310));
+/* Product chain */
+#600=APPLICATION_CONTEXT('mechanical design');
+#601=PRODUCT_CONTEXT('',#600,'mechanical');
+#602=PRODUCT('M118','M118','M118',(#601));
+#603=PRODUCT_DEFINITION_FORMATION('','',#602);
+#604=PRODUCT_DEFINITION_CONTEXT(#600,'design');
+#605=PRODUCT_DEFINITION('','',#603,#604);
+#606=PRODUCT_DEFINITION_SHAPE('','',#605);
+#607=SHAPE_REPRESENTATION('',(#500),#14);
+#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
 ENDSEC;
 END-ISO-10303-21;

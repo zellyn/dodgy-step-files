@@ -1,30 +1,61 @@
 ISO-10303-21;
-/* M123 - AP209 element references the same node twice.
- * Defect: a VOLUME_3D_ELEMENT_DESCRIPTOR for a linear_tetrahedron
- * (4 distinct corner nodes mandated) lists nodes (n1, n2, n3, n2) -
- * node 2 appears twice. The element collapses to a triangle of
- * zero volume. */
+/* M123: AP209 element references the same node twice in its node list */
+/* DEFECT: VOLUME_3D_ELEMENT_DESCRIPTOR linear_tetrahedron node list = (n1,n2,n3,n2) */
+/* Node n2 appears at positions 2 and 4 — element collapses to zero volume */
+/* Jacobian determinant = 0; solver produces NaN stiffness or skips element */
+/* Per AP209 §6 all node references within an element node list must be distinct */
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
+/* Byte assertion: contains(b'linear_tetrahedron') */
+/* Byte assertion: contains(b'VOLUME_3D_ELEMENT_DESCRIPTOR') */
 HEADER;
-FILE_DESCRIPTION(('M123 test case','AP209 element with duplicate node reference'),'2;1');
-FILE_NAME('M123.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M123: AP209 linear_tetrahedron with duplicate node n2 in node list'),'2;1');
+FILE_NAME('M123.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
 FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('structural_analysis_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'structural_analysis_design',2001,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('fea','3D'));
-#100=CARTESIAN_POINT('p1',(0.0,0.0,0.0));
-#101=CARTESIAN_POINT('p2',(1.0,0.0,0.0));
-#102=CARTESIAN_POINT('p3',(0.5,1.0,0.0));
-#110=NODE('n1',(#100),$);
-#111=NODE('n2',(#101),$);
-#112=NODE('n3',(#102),$);
-/* Defect: tet has only 3 unique node references; n2 is repeated. */
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('fea','3D'));
+/* Only 3 unique nodes — a valid tet would need a 4th at e.g. (5.0,5.0,10.0) */
+/* Node n2 is reused at position 4 in the defective element node list */
+#100=CARTESIAN_POINT('n1',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('n2',(10.0,0.0,0.0));
+#102=CARTESIAN_POINT('n3',(5.0,10.0,0.0));
+#110=NODE('tet_n1',(#100),$);
+#111=NODE('tet_n2',(#101),$);
+#112=NODE('tet_n3',(#102),$);
+/* Byte assertion: contains(b'VOLUME_3D_ELEMENT_DESCRIPTOR') */
+/* Byte assertion: contains(b'linear_tetrahedron') */
+/* DEFECT: node list is (#110,#111,#112,#111) — #111 (n2) appears twice */
+/* A valid tetrahedron would list four DISTINCT nodes: (#110,#111,#112,#N4) */
+/* The repeated n2 collapses one tet edge to zero length; volume = 0 */
 #200=VOLUME_3D_ELEMENT_DESCRIPTOR('degenerate_tet','linear_tetrahedron',
-       (#110,#111,#112,#111));
+  (#110,#111,#112,#111));
+#300=NODE_GROUP('tet_nodes',(#110,#111,#112),$);
+#310=FEA_MODEL('duplicate_node_model',$,'',(#300),(),());
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#500=GEOMETRIC_CURVE_SET('ap209-element-duplicate-node-in-list',
+  (#110,#111,#112,#200,#310));
+/* Product chain */
+#600=APPLICATION_CONTEXT('mechanical design');
+#601=PRODUCT_CONTEXT('',#600,'mechanical');
+#602=PRODUCT('M123','M123','M123',(#601));
+#603=PRODUCT_DEFINITION_FORMATION('','',#602);
+#604=PRODUCT_DEFINITION_CONTEXT(#600,'design');
+#605=PRODUCT_DEFINITION('','',#603,#604);
+#606=PRODUCT_DEFINITION_SHAPE('','',#605);
+#607=SHAPE_REPRESENTATION('',(#500),#14);
+#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
 ENDSEC;
 END-ISO-10303-21;

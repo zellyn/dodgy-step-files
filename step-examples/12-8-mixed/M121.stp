@@ -1,30 +1,58 @@
 ISO-10303-21;
-/* M121 - AP209 time-history loadcase with non-monotonic time vector.
- * Defect: a transient load amplitude series is encoded as paired
- * (time, force) values whose time component is not monotonically
- * increasing - 0.0, 1.0, 0.5, 2.0. */
+/* M121: AP209 time-history loadcase with non-monotonically increasing time vector */
+/* DEFECT: time-amplitude pairs ordered (0.0,0), (1.0,5), (0.5,3), (2.0,7) */
+/* Time regresses from 1.0 to 0.5 — non-monotonic; transient solver breaks */
+/* Per AP209 §9, time component of each pair must be strictly monotonically increasing */
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
+/* Byte assertion: contains(b'NODE_WITH_FORCE') */
 HEADER;
-FILE_DESCRIPTION(('M121 test case','AP209 transient load time vector unsorted'),'2;1');
-FILE_NAME('M121.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M121: AP209 time-history load with non-monotonic time vector'),'2;1');
+FILE_NAME('M121.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
 FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('structural_analysis_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'structural_analysis_design',2001,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#15=(NAMED_UNIT(*)SI_UNIT($,.SECOND.)TIME_UNIT());
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#15))
-     REPRESENTATION_CONTEXT('fea','3D'));
-#100=CARTESIAN_POINT('a',(0.0,0.0,0.0));
-#110=NODE('n1',(#100),$);
-/* Defect: time vector goes 0.0, 1.0, 0.5, 2.0 - non-monotonic.
-   Encoded here as a list of MEASURE_WITH_UNIT in the time series. */
-#200=MEASURE_WITH_UNIT(TIME_MEASURE(0.0),#15);
-#201=MEASURE_WITH_UNIT(TIME_MEASURE(1.0),#15);
-#202=MEASURE_WITH_UNIT(TIME_MEASURE(0.5),#15);
-#203=MEASURE_WITH_UNIT(TIME_MEASURE(2.0),#15);
-#300=NODE_WITH_FORCE('time_series_load',#110,(0.0,5.0,3.0,7.0));
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('fea','3D'));
+/* Single loaded node */
+#100=CARTESIAN_POINT('loaded_node',(25.0,0.0,0.0));
+#110=NODE('transient_load_node',(#100),$);
+/* Byte assertion: contains(b'NODE_WITH_FORCE') */
+/* DEFECT: time-amplitude table is non-monotonic in the time column */
+/* Pair 1: t=0.0, F=0.0  (valid start) */
+/* Pair 2: t=1.0, F=5.0  (valid: 1.0 > 0.0) */
+/* Pair 3: t=0.5, F=3.0  (DEFECT: 0.5 < 1.0, time regression) */
+/* Pair 4: t=2.0, F=7.0  (valid: 2.0 > 0.5, but path already broken) */
+/* A monotonic series would be: (0.0,0.0),(0.5,3.0),(1.0,5.0),(2.0,7.0) */
+#200=NODE_WITH_FORCE('transient_load','time_history',#110,
+  ((0.0,0.0),(1.0,5.0),(0.5,3.0),(2.0,7.0)),
+  (1000.0,0.0,0.0),$);
+#300=NODE_GROUP('loaded_nodes',(#110),$);
+#310=FEA_MODEL('transient_model',$,'',(#300),(),());
+#400=LOAD_GROUP('time_history_loads',(#200),$);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#500=GEOMETRIC_CURVE_SET('ap209-time-history-load-non-monotonic-time-vector',
+  (#110,#200,#310,#400));
+/* Product chain */
+#600=APPLICATION_CONTEXT('mechanical design');
+#601=PRODUCT_CONTEXT('',#600,'mechanical');
+#602=PRODUCT('M121','M121','M121',(#601));
+#603=PRODUCT_DEFINITION_FORMATION('','',#602);
+#604=PRODUCT_DEFINITION_CONTEXT(#600,'design');
+#605=PRODUCT_DEFINITION('','',#603,#604);
+#606=PRODUCT_DEFINITION_SHAPE('','',#605);
+#607=SHAPE_REPRESENTATION('',(#500),#14);
+#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
 ENDSEC;
 END-ISO-10303-21;

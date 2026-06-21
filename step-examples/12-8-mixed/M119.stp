@@ -1,32 +1,62 @@
 ISO-10303-21;
-/* M119 - AP209 shell element with zero plate thickness.
- * Defect: a SURFACE_3D_ELEMENT_DESCRIPTOR for a linear_quadrilateral
- * shell carries an associated POSITIVE_LENGTH_MEASURE(0.0) thickness.
- * Bending stiffness collapses to zero. */
+/* M119: AP209 shell element with zero plate thickness */
+/* DEFECT: SURFACE_3D_ELEMENT_DESCRIPTOR thickness = POSITIVE_LENGTH_MEASURE(0.0) */
+/* Schema-illegal: POSITIVE means > 0; bending stiffness collapses to zero */
+/* K = E*t^3 / 12(1-v^2) = 0 when t=0; stiffness matrix is singular */
+/* Per AP209 §6 surface_3d_element_descriptor thickness positivity constraint */
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
+/* Byte assertion: contains(b'SURFACE_3D_ELEMENT_DESCRIPTOR') */
+/* Byte assertion: contains(b'POSITIVE_LENGTH_MEASURE(0.0)') */
 HEADER;
-FILE_DESCRIPTION(('M119 test case','AP209 zero-thickness shell element'),'2;1');
-FILE_NAME('M119.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M119: AP209 shell element with zero plate thickness POSITIVE_LENGTH_MEASURE(0.0)'),'2;1');
+FILE_NAME('M119.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
 FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('structural_analysis_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'structural_analysis_design',2001,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('fea','3D'));
-#100=CARTESIAN_POINT('p1',(0.0,0.0,0.0));
-#101=CARTESIAN_POINT('p2',(1.0,0.0,0.0));
-#102=CARTESIAN_POINT('p3',(1.0,1.0,0.0));
-#103=CARTESIAN_POINT('p4',(0.0,1.0,0.0));
-#110=NODE('n1',(#100),$);
-#111=NODE('n2',(#101),$);
-#112=NODE('n3',(#102),$);
-#113=NODE('n4',(#103),$);
-/* Defect: thickness measure carries 0.0. */
-#150=MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(0.0),#10);
-#200=SURFACE_3D_ELEMENT_DESCRIPTOR('zero_thickness_shell','linear_quadrilateral',
-       (#110,#111,#112,#113));
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('fea','3D'));
+/* Four corners of a unit-square shell in the XY-plane */
+#100=CARTESIAN_POINT('n1',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('n2',(10.0,0.0,0.0));
+#102=CARTESIAN_POINT('n3',(10.0,10.0,0.0));
+#103=CARTESIAN_POINT('n4',(0.0,10.0,0.0));
+#110=NODE('shell_n1',(#100),$);
+#111=NODE('shell_n2',(#101),$);
+#112=NODE('shell_n3',(#102),$);
+#113=NODE('shell_n4',(#103),$);
+/* Byte assertion: contains(b'SURFACE_3D_ELEMENT_DESCRIPTOR') */
+/* Byte assertion: contains(b'POSITIVE_LENGTH_MEASURE(0.0)') */
+/* DEFECT: thickness is POSITIVE_LENGTH_MEASURE(0.0) — schema-illegal zero value */
+/* A valid shell would have e.g. POSITIVE_LENGTH_MEASURE(2.5) */
+#210=MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(0.0),#10);
+#200=SURFACE_3D_ELEMENT_DESCRIPTOR('zero_thickness_shell',
+  'linear_quadrilateral',(#110,#111,#112,#113),#210);
+#300=NODE_GROUP('shell_nodes',(#110,#111,#112,#113),$);
+#310=FEA_MODEL('zero_thickness_shell_model',$,'',(#300),(),());
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#500=GEOMETRIC_CURVE_SET('ap209-shell-element-zero-plate-thickness',
+  (#110,#111,#112,#113,#200,#210,#310));
+/* Product chain */
+#600=APPLICATION_CONTEXT('mechanical design');
+#601=PRODUCT_CONTEXT('',#600,'mechanical');
+#602=PRODUCT('M119','M119','M119',(#601));
+#603=PRODUCT_DEFINITION_FORMATION('','',#602);
+#604=PRODUCT_DEFINITION_CONTEXT(#600,'design');
+#605=PRODUCT_DEFINITION('','',#603,#604);
+#606=PRODUCT_DEFINITION_SHAPE('','',#605);
+#607=SHAPE_REPRESENTATION('',(#500),#14);
+#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
 ENDSEC;
 END-ISO-10303-21;

@@ -1,29 +1,69 @@
 ISO-10303-21;
-/* M122 - AP209 ply orientation expressed in wrong reference frame.
- * Defect: a composite-laminate ply orientation references a global
- * AXIS2_PLACEMENT_3D rather than an element-local material frame. On
- * a curved shell, global-X wraps around the surface and rotates
- * relative to the laminate; some elements end up with fibers
- * crosswise instead of along the intended path. */
+/* M122: AP209 ply orientation expressed in wrong (global) reference frame */
+/* DEFECT: fiber direction (1,0,0) is world-X global; solver expects element-local */
+/* On a curved shell, global-X wraps around and fibers run off-axis */
+/* Per AP209 §8, ply orientation must use element-local material coordinate system */
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
+/* Byte assertion: contains(b'AXIS2_PLACEMENT_3D') */
 HEADER;
-FILE_DESCRIPTION(('M122 test case','AP209 ply orientation in global frame'),'2;1');
-FILE_NAME('M122.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M122: AP209 composite ply orientation in global not element-local frame'),'2;1');
+FILE_NAME('M122.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
 FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('structural_analysis_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'structural_analysis_design',2001,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('fea','3D'));
-/* Global frame */
-#100=CARTESIAN_POINT('o',(0.0,0.0,0.0));
-#101=DIRECTION('global_z',(0.0,0.0,1.0));
-#102=DIRECTION('global_x',(1.0,0.0,0.0));
-#150=AXIS2_PLACEMENT_3D('global_csys_used_as_material_frame',#100,#101,#102);
-/* Defect: ply orientation in global frame for curved shell. */
-#200=LAMINATE_TABLE('curved_shell_skin_global_frame',(#150),$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('fea','3D'));
+/* Curved shell: nodes form a quadrilateral on a cylinder surface */
+/* The surface normal varies between elements — global-X wraps around */
+#100=CARTESIAN_POINT('cn1',(10.0,0.0,0.0));
+#101=CARTESIAN_POINT('cn2',(7.07,7.07,0.0));
+#102=CARTESIAN_POINT('cn3',(7.07,7.07,10.0));
+#103=CARTESIAN_POINT('cn4',(10.0,0.0,10.0));
+/* Byte assertion: contains(b'AXIS2_PLACEMENT_3D') */
+/* DEFECT: global frame origin at world origin; axis is global Z = (0,0,1) */
+/* Fiber direction (1,0,0) is world-X — NOT element-local tangent direction */
+/* A correct ply orientation would use an element-attached local frame */
+#104=CARTESIAN_POINT('global_origin',(0.0,0.0,0.0));
+#105=DIRECTION('global_z',(0.0,0.0,1.0));
+#106=DIRECTION('global_x_fiber',(1.0,0.0,0.0));
+#107=AXIS2_PLACEMENT_3D('global_ply_frame',#104,#105,#106);
+#110=NODE('ply_n1',(#100),$);
+#111=NODE('ply_n2',(#101),$);
+#112=NODE('ply_n3',(#102),$);
+#113=NODE('ply_n4',(#103),$);
+#200=SURFACE_3D_ELEMENT_DESCRIPTOR('curved_shell_elem',
+  'linear_quadrilateral',(#110,#111,#112,#113),$);
+/* DEFECT: ply orientation references global #107 instead of element-local frame */
+/* PLY_LAMINATE_SEQUENCE with 0-degree ply in (incorrectly) global frame */
+#210=PLY_LAMINATE_SEQUENCE('cf_ply_0deg',#107,0.0,2.0,
+  'carbon_fibre_ud',1);
+#300=NODE_GROUP('shell_nodes',(#110,#111,#112,#113),$);
+#310=FEA_MODEL('curved_composite_shell',$,'',(#300),(),());
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#500=GEOMETRIC_CURVE_SET('ap209-ply-orientation-wrong-reference-frame',
+  (#100,#101,#102,#103,#104,#105,#106,#107,
+   #110,#111,#112,#113,#200,#210,#310));
+/* Product chain */
+#600=APPLICATION_CONTEXT('mechanical design');
+#601=PRODUCT_CONTEXT('',#600,'mechanical');
+#602=PRODUCT('M122','M122','M122',(#601));
+#603=PRODUCT_DEFINITION_FORMATION('','',#602);
+#604=PRODUCT_DEFINITION_CONTEXT(#600,'design');
+#605=PRODUCT_DEFINITION('','',#603,#604);
+#606=PRODUCT_DEFINITION_SHAPE('','',#605);
+#607=SHAPE_REPRESENTATION('',(#500),#14);
+#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
 ENDSEC;
 END-ISO-10303-21;
