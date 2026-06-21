@@ -1,0 +1,114 @@
+# validate-fast.yml — FAST LANE (runs on every push/PR, target < 5 min)
+#
+# Cadence policy
+# --------------
+# Wave-B fixture batches push to main every 3-8 minutes from two worktrees.
+# The previous monolithic ``validate.yml`` ran the full ~50-75 min oracle
+# sweep (``_run_corpus`` with 4 workers + OCCT heal_on/off + gmsh autofix
+# + ifc + solvespace + manifold3d + OCAF) on every push, with
+# ``cancel-in-progress: true``. Result: every new push cancelled the
+# in-flight run, so runs never completed and GitHub emailed a steady
+# stream of "cancelled" notifications that looked like failures.
+#
+# The split is:
+#   - validate-fast.yml (this file) — runs on every push/PR, ~3-5 min,
+#     covers the lightweight stages that catch ~95% of regressions:
+#       * pytest self-tests (minus the two oracle-dependent modules)
+#       * _fixture_lint
+#       * _fixture_source_check  (byte-stable builder round-trip)
+#       * _category_lint
+#       * _bytes_tier3_audit
+#       * _schema_oracle
+#     ``cancel-in-progress: true`` is fine here — the lane finishes
+#     quickly enough that cancelling an in-flight push to start a newer
+#     one wastes only seconds.
+#
+#   - validate-full.yml — runs the full ``_run_corpus`` sweep plus the
+#     oracle-dependent pytest modules + DRIFT detection + tier-3
+#     assertions. Triggered by:
+#       * push to main with ``[full-ci]`` in the commit message
+#       * daily cron
+#       * manual workflow_dispatch
+#     ``cancel-in-progress: false`` — let nightly / on-demand runs
+#     finish to completion.
+#
+# The pre-push ``uv run python -m step_corpus._precheck`` hook already
+# runs these same fast stages locally, so this lane is defense-in-depth
+# against (a) machine drift between dev and CI and (b) skipped
+# precheck. Failures here are real bugs the local precheck missed.
+
+name: validate-fast
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: validate-fast-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fast:
+    name: Fast-lane catalog + builder checks
+    runs-on: ubuntu-latest
+    # Generous ceiling; the lane typically runs in 3-5 min.
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+          cache-dependency-glob: |
+            validation/uv.lock
+            validation/pyproject.toml
+
+      - name: Set up Python 3.12
+        run: uv python install 3.12
+        working-directory: validation
+
+      - name: Sync validator dependencies
+        run: uv sync --frozen
+        working-directory: validation
+
+      # 500+ tests cover catalog integrity, byte-stable JSON round-trip,
+      # bug-report search regression, OCCT-API ratchet, entity-match
+      # drift, validator self-tests, fixture lint coverage. The two
+      # oracle-dependent modules (outcome_conformance, tier3_assertions)
+      # need /tmp/cad-v2-out* populated by _run_corpus — they live in
+      # the full lane.
+      - name: Validator self-tests — fast tier (pytest)
+        working-directory: validation
+        run: |
+          uv run pytest tests/ -v --tb=short \
+            --ignore=tests/test_outcome_conformance.py \
+            --ignore=tests/test_tier3_assertions.py
+
+      - name: Fixture lint (file-naming, header comments, framing)
+        working-directory: validation
+        run: uv run python -m step_corpus._fixture_lint
+
+      # Every fixture_sources/<...>/<ID>.py must regenerate
+      # byte-identical to step-examples/<...>/<ID>.stp. Catches
+      # builder regressions and source/.stp drift.
+      - name: Fixture-source round-trip check (Python builder)
+        working-directory: validation
+        run: uv run python -m step_corpus._fixture_source_check
+
+      - name: Category lint
+        working-directory: validation
+        # --strict exits 1 on any category-lint violation.
+        run: uv run python -m step_corpus._category_lint --strict
+
+      - name: Bytes <-> tier-3 cross-audit
+        working-directory: validation
+        run: uv run python -m step_corpus._bytes_tier3_audit
+
+      - name: Schema oracle (catalog-only, no live OCCT)
+        working-directory: validation
+        # --strict exits non-zero on unexpected violation OR if an exempt
+        # entry no longer trips its expected violation (regression both ways).
+        run: uv run python -m step_corpus._schema_oracle --strict
