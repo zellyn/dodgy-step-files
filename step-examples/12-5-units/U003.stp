@@ -1,45 +1,33 @@
 ISO-10303-21;
-/*
- * U003 — Onshape inch workspace exports metric STEP
- * Defect: model authored in inches but file declares mm length unit;
- *         coordinates pre-converted to mm, display-unit choice lost.
- */
+/* U003: Onshape inch workspace exports mm STEP — display unit dropped */
+/* Authored as 1 in x 2.5 in part; Onshape forces LENGTH_UNIT to mm on export */
+/* Coordinates are inch-to-mm conversions: 1 in = 25.4, 2.5 in = 63.5 */
+/* The file looks like a mm part but the authoring intent was in inches */
 HEADER;
-FILE_DESCRIPTION(('U003 inch authoring exported as mm'),'2;1');
-FILE_NAME('U003.stp','2026-04-26T00:00:00',('catalog'),('cad'),
-  'manual','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('U003: Onshape inch workspace export with mm LENGTH_UNIT context'),'2;1');
+FILE_NAME('U003.stp','2026-06-20T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('automotive design');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2001,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT('U003','U003','',(#12));
-#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
-#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
-#16 = PRODUCT_DEFINITION('','',#14,#15);
-#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
-/* User authored in inch; producer drops the display-unit
-   preference and writes mm, applying the 25.4 conversion to coords. */
-#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
-  'distance_accuracy_value','');
-#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
-  REPRESENTATION_CONTEXT('','3D') );
-/* 1.0" -> 25.4 mm; 2.5" -> 63.5 mm — coordinates fine,
-   but no record that the document was authored in inches. */
-#30 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31 = CARTESIAN_POINT('',(25.4,0.0,0.0));
-#32 = CARTESIAN_POINT('',(25.4,63.5,0.0));
-#33 = DIRECTION('',(0.0,0.0,1.0));
-#34 = DIRECTION('',(1.0,0.0,0.0));
-#35 = AXIS2_PLACEMENT_3D('',#30,#33,#34);
-#50 = SHAPE_REPRESENTATION('',(#35),#25);
-#51 = SHAPE_DEFINITION_REPRESENTATION(#17,#50);
+/* Geometry: 1 in x 2.5 in part; coordinates are inch-to-mm conversions */
+/* 1 inch = 25.4 mm, 2.5 inches = 63.5 mm */
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=CARTESIAN_POINT('corner-x',(25.4,0.,0.));
+#3=CARTESIAN_POINT('corner-y',(0.,63.5,0.));
+#4=CARTESIAN_POINT('corner-z',(0.,0.,25.4));
+#5=CARTESIAN_POINT('corner-xyz',(25.4,63.5,25.4));
+#6=DIRECTION('xdir',(1.,0.,0.));
+#7=DIRECTION('zdir',(0.,0.,1.));
+/* DEFECT: SI_UNIT(.MILLI.,.METRE.) but coordinates are inch-valued (25.4, 63.5) */
+/* Kernel should have preserved CONVERSION_BASED_UNIT for inch round-trip */
+#10=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT('ctx','3D'));
+/* Model entity is GEOMETRIC_CURVE_SET — OCC returns empty shape */
+#20=GEOMETRIC_CURVE_SET('onshape-inch-in-mm-context',(#1,#2,#3,#4,#5));
 ENDSEC;
 END-ISO-10303-21;

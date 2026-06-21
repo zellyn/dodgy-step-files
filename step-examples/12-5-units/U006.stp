@@ -1,51 +1,37 @@
 ISO-10303-21;
-/*
- * U006 — PrePoMax double-applies inch->mm scaling on inch STEP (25.4x too large)
- * Defect: file is correctly inch-tagged with INCH CONVERSION_BASED_UNIT,
- *         but the reproducer puts coordinates already in mm — receiver
- *         that re-applies 25.4 makes the body 25.4x too large.
- */
+/* U006: PrePoMax double-applies inch->mm scaling on SolidWorks inch STEP */
+/* File declares CONVERSION_BASED_UNIT('INCH',...) with 25.4 mm factor */
+/* Coordinates are in mm (25.4 = 1 inch, 50.8 = 2 inches) */
+/* PrePoMax sees INCH unit and multiplies by 25.4 again => 25.4x too large */
 HEADER;
-FILE_DESCRIPTION(('U006 receiver double-scales inch'),'2;1');
-FILE_NAME('U006.stp','2026-04-26T00:00:00',('catalog'),('cad'),
-  'manual','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('U006: SolidWorks inch STEP; PrePoMax double-applies 25.4x factor'),'2;1');
+FILE_NAME('U006.stp','2026-06-20T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('automotive design');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2001,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT('U006','U006','',(#12));
-#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
-#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
-#16 = PRODUCT_DEFINITION('','',#14,#15);
-#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
-/* Base mm SI unit, plus inch CONVERSION_BASED_UNIT pointing to 25.4 mm.
-   The defect is in the *coordinates*: producer wrote them already
-   converted to mm. A receiver that scales by 25.4 makes them 25.4x too large. */
-#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#21 = DIMENSIONAL_EXPONENTS(1.0,0.0,0.0,0.0,0.0,0.0,0.0);
-#22 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#20);
-#23 = ( CONVERSION_BASED_UNIT('INCH',#22) NAMED_UNIT(#21) LENGTH_UNIT() );
-#26 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#27 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#28 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0001),#23,
-  'distance_accuracy_value','');
-#29 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#28))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#23,#26,#27))
-  REPRESENTATION_CONTEXT('','3D') );
-/* These look like mm: 25.4 = "1 inch already in mm".
-   PrePoMax sees inch-tagged file, multiplies by 25.4, gets 645.16 mm
-   wide — 25.4x oversized. */
-#30 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31 = CARTESIAN_POINT('',(25.4,0.0,0.0));
-#32 = CARTESIAN_POINT('',(25.4,12.7,0.0));
-#33 = DIRECTION('',(0.0,0.0,1.0));
-#34 = DIRECTION('',(1.0,0.0,0.0));
-#35 = AXIS2_PLACEMENT_3D('',#30,#33,#34);
-#50 = SHAPE_REPRESENTATION('',(#35),#29);
-#51 = SHAPE_DEFINITION_REPRESENTATION(#17,#50);
+/* Geometry: 1x2x1 inch part; coordinates in mm (25.4 mm = 1 in, 50.8 mm = 2 in) */
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=CARTESIAN_POINT('corner-x',(25.4,0.,0.));
+#3=CARTESIAN_POINT('corner-y',(0.,50.8,0.));
+#4=CARTESIAN_POINT('corner-z',(0.,0.,25.4));
+#5=CARTESIAN_POINT('corner-xyz',(25.4,50.8,25.4));
+#6=DIRECTION('xdir',(1.,0.,0.));
+#7=DIRECTION('zdir',(0.,0.,1.));
+/* DEFECT: CONVERSION_BASED_UNIT declares INCH; coordinates are already in mm */
+/* PrePoMax applies the 25.4 inch->mm factor a second time => 25.4x too large */
+/* SI mm basis for the inch conversion factor */
+#8=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+/* 1 inch = 25.4 mm — this is the conversion factor */
+#9=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#8);
+/* DEFECT: CONVERSION_BASED_UNIT('INCH') triggers double-scaling in PrePoMax */
+#10=(CONVERSION_BASED_UNIT('INCH',#9) LENGTH_UNIT() NAMED_UNIT(*));
+#11=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0254),#8,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT('ctx','3D'));
+/* Model entity is GEOMETRIC_CURVE_SET — OCC returns empty shape */
+#20=GEOMETRIC_CURVE_SET('solidworks-inch-mm-coords',(#1,#2,#3,#4,#5));
 ENDSEC;
 END-ISO-10303-21;

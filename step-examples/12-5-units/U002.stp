@@ -1,45 +1,32 @@
 ISO-10303-21;
-/*
- * U002 — Onshape always emits METRE; NX rescales as if mm (1000x too small)
- * Defect: SI_UNIT($,.METRE.) — no prefix — coordinates in metres.
- *         Receivers that only support inch/mm treat magnitudes as mm.
- */
+/* U002: Onshape always emits METRE; NX treats metric STEP as mm (1000x too small) */
+/* Onshape writes SI_UNIT($,.METRE.) with no prefix regardless of workspace display unit */
+/* Coordinates are in metres: a 100x50 mm part appears as 0.1 x 0.05 m */
+/* NX silently reads metre values as mm => body is 1000x too small */
 HEADER;
-FILE_DESCRIPTION(('U002 metre-declared coords read as mm'),'2;1');
-FILE_NAME('U002.stp','2026-04-26T00:00:00',('catalog'),('cad'),
-  'manual','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('U002: SI_UNIT(METRE) from Onshape misread as mm by NX'),'2;1');
+FILE_NAME('U002.stp','2026-06-20T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('automotive design');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2001,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT('U002','U002','',(#12));
-#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
-#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
-#16 = PRODUCT_DEFINITION('','',#14,#15);
-#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
-/* Producer-fixed unit: METRE with no prefix.
-   A 100-mm widget is encoded as 0.1 here. */
-#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT($,.METRE.) );
-#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#20,
-  'distance_accuracy_value','');
-#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
-  REPRESENTATION_CONTEXT('','3D') );
-/* Magnitudes are metres: 0.1 m = 100 mm.
-   NX-style reader assumes mm and shows a 0.1-mm widget — 1000x too small. */
-#30 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31 = CARTESIAN_POINT('',(0.1,0.0,0.0));
-#32 = CARTESIAN_POINT('',(0.1,0.05,0.0));
-#33 = DIRECTION('',(0.0,0.0,1.0));
-#34 = DIRECTION('',(1.0,0.0,0.0));
-#35 = AXIS2_PLACEMENT_3D('',#30,#33,#34);
-#50 = SHAPE_REPRESENTATION('',(#35),#25);
-#51 = SHAPE_DEFINITION_REPRESENTATION(#17,#50);
+/* Geometry: 100x50 mm part authored in Onshape, exported in metre coordinates */
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=CARTESIAN_POINT('corner-x',(0.1,0.,0.));
+#3=CARTESIAN_POINT('corner-y',(0.,0.05,0.));
+#4=CARTESIAN_POINT('corner-z',(0.,0.,0.025));
+#5=CARTESIAN_POINT('corner-xyz',(0.1,0.05,0.025));
+#6=DIRECTION('xdir',(1.,0.,0.));
+#7=DIRECTION('zdir',(0.,0.,1.));
+/* DEFECT: SI_UNIT($,.METRE.) — no MILLI prefix — Onshape always writes base metre */
+/* NX configured for mm silently treats 0.1 m as 0.1 mm => 1000x too small */
+#10=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT($,.METRE.));
+#11=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-07),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT('ctx','3D'));
+/* Model entity is GEOMETRIC_CURVE_SET — OCC returns empty shape */
+#20=GEOMETRIC_CURVE_SET('onshape-metre-part',(#1,#2,#3,#4,#5));
 ENDSEC;
 END-ISO-10303-21;
