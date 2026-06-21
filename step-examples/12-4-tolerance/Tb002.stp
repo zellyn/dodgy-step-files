@@ -1,61 +1,45 @@
 ISO-10303-21;
-/* Tb002 - Sub-tolerance vertex gap (5.0e-5 mm) at declared tolerance 1.0e-7
- * Defect: Inverse of Tb001. Vertices honestly 5.0e-5 mm apart at strict
- * declared tolerance 1.0e-7. Strict receiver keeps them distinct (correct).
- * Receiver that loosens tolerance for downstream fuzzy-Boolean (e.g.
- * tol*1000 = 1.0e-4) silently merges them, dropping a topological edge
- * the input asserted to exist. The "fix" applied by the lax tolerance
- * receiver actively corrupts the model.
- */
+/* Tb002: two VERTEX_POINTs 5e-5 mm apart; declared uncertainty 1.0E-7 (strict) means they are distinct; lax receiver merging at 1e-3 corrupts topology; three EDGE_CURVEs including 5e-5 mm bridge; OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Tb002 honestly distinct vertices at declared 1.0e-7'),'2;1');
-FILE_NAME('Tb002.stp','2026-04-30T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Tb002'),'2;1');
+FILE_NAME('Tb002.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-/* Two distinct vertices 5.0e-5 mm apart. Two edges share the gap as a real edge. */
-#10=CARTESIAN_POINT('a0',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('a1',(10.0,0.0,0.0));
-#12=CARTESIAN_POINT('b0',(10.00005,0.0,0.0));
-#13=CARTESIAN_POINT('b1',(20.00005,0.0,0.0));
-#20=VERTEX_POINT('a0',#10);
-#21=VERTEX_POINT('a1_distinct',#11);
-#22=VERTEX_POINT('b0_distinct_5e-5_apart',#12);
-#23=VERTEX_POINT('b1',#13);
-#30=DIRECTION('+x',(1.0,0.0,0.0));
-#31=VECTOR('vx10',#30,10.0);
-#32=LINE('lA',#10,#31);
-#33=LINE('lB',#12,#31);
-#40=EDGE_CURVE('eA',#20,#21,#32,.T.);
-#41=EDGE_CURVE('eB',#22,#23,#33,.T.);
-/* Bridge edge between the gap -- the input asserts these are different
- * vertices joined by a 5.0e-5 mm geometric edge (e.g. a thin slot wall). */
-#34=DIRECTION('+x_short',(1.0,0.0,0.0));
-#35=VECTOR('vx_short',#34,5.0E-5);
-#36=LINE('lBridge',#11,#35);
-#42=EDGE_CURVE('eBridge_5e-5_long',#21,#22,#36,.T.);
-/* Strict declared tolerance: 1.0e-7. */
-#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#50,
-  'distance_accuracy_value','declared_strict_tolerance');
-#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
-  REPRESENTATION_CONTEXT('ctx','3D'));
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Tb002','Tb002','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9020=GEOMETRIC_CURVE_SET('wire_set',(#40,#42,#41));
-#9021=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9020),#70);
-#9022=SHAPE_DEFINITION_REPRESENTATION(#9005,#9021);
+#1=CARTESIAN_POINT('a0',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('a1',(10.0,0.0,0.0));
+#3=CARTESIAN_POINT('b0_5e-5_apart',(10.00005,0.0,0.0));
+#4=CARTESIAN_POINT('b1',(20.00005,0.0,0.0));
+#5=VERTEX_POINT('va0',#1);
+#6=VERTEX_POINT('va1_distinct',#2);
+#7=VERTEX_POINT('vb0_distinct',#3);
+#8=VERTEX_POINT('vb1',#4);
+#9=DIRECTION('',(1.0,0.0,0.0));
+#10=VECTOR('',#9,10.0);
+#11=LINE('',#1,#10);
+#12=EDGE_CURVE('eA',#5,#6,#11,.T.);
+#13=DIRECTION('',(1.0,0.0,0.0));
+#14=VECTOR('',#13,5.0E-05);
+#15=LINE('',#2,#14);
+#16=EDGE_CURVE('eBridge_5e-5',#6,#7,#15,.T.);
+#17=DIRECTION('',(1.0,0.0,0.0));
+#18=VECTOR('',#17,10.0);
+#19=LINE('',#3,#18);
+#20=EDGE_CURVE('eB',#7,#8,#19,.T.);
+#21=GEOMETRIC_CURVE_SET('wire_set',(#12,#16,#20));
+#22=APPLICATION_CONTEXT('automotive_design');
+#23=PRODUCT_CONTEXT('',#22,'mechanical');
+#24=PRODUCT('Tb002','Tb002','',(#23));
+#25=PRODUCT_DEFINITION_FORMATION('','',#24);
+#26=PRODUCT_DEFINITION_CONTEXT('part definition',#22,'design');
+#27=PRODUCT_DEFINITION('','',#25,#26);
+#28=PRODUCT_DEFINITION_SHAPE('','',#27);
+#29=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#30=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#31=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#32=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#29,'distance_accuracy_value','declared_strict_tolerance');
+#33=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#32))GLOBAL_UNIT_ASSIGNED_CONTEXT((#29,#30,#31))REPRESENTATION_CONTEXT('ctx','3D'));
+#34=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#21),#33);
+#35=SHAPE_DEFINITION_REPRESENTATION(#28,#34);
 ENDSEC;
 END-ISO-10303-21;

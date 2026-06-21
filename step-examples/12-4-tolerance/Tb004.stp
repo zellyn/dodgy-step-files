@@ -1,54 +1,35 @@
 ISO-10303-21;
-/* Tb004 - Vertex<edge<face hierarchy at ULP precision: barely holds in mm
- * Defect: Same hierarchy invariant as Tb003 but with values 1.000e-6,
- * 1.001e-6, 1.002e-6 -- the ordering is preserved by 0.001e-6 = 1.0e-9
- * margins. After unit conversion mm -> in (factor 25.4 exactly), values
- * become 2.54e-5, 2.5425e-5, 2.5450e-5; but a kernel that round-trips
- * any field through float32 (~7 significant digits) loses the third
- * decimal, collapsing all three to ~2.54e-5 and flipping or losing the
- * strict ordering. Hierarchy invariant holds at one precision policy and
- * fails at another.
- */
+/* Tb004: three UNCERTAINTY_MEASURE_WITH_UNIT at 1.000E-6/1.001E-6/1.002E-6 mm; hierarchy barely holds (1e-9 margin); mm->inch conversion (factor 25.4) plus float32 round-trip collapses all three, inverting strict ordering; OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Tb004 hierarchy at ULP barely holds in mm fails after inch convert'),'2;1');
-FILE_NAME('Tb004.stp','2026-04-30T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Tb004'),'2;1');
+FILE_NAME('Tb004.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('p1',(10.0,0.0,0.0));
-#20=VERTEX_POINT('v0',#10);
-#21=VERTEX_POINT('v1',#11);
-#30=DIRECTION('+x',(1.0,0.0,0.0));
-#31=VECTOR('vx10',#30,10.0);
-#32=LINE('l',#10,#31);
-#40=EDGE_CURVE('e',#20,#21,#32,.T.);
-#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-/* ULP-margin hierarchy: 1.000e-6 < 1.001e-6 < 1.002e-6 -- all 4-digit precision. */
-#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.000E-6),#50,
-  'distance_accuracy_value','vertex_tol_at_ULP_floor');
-#61=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.001E-6),#50,
-  'distance_accuracy_value','edge_tol_one_ULP_higher');
-#62=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.002E-6),#50,
-  'distance_accuracy_value','face_tol_two_ULP_higher');
-#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60,#61,#62))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
-  REPRESENTATION_CONTEXT('ctx_mm','3D'));
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Tb004','Tb004','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9020=GEOMETRIC_CURVE_SET('wire_set',(#40));
-#9021=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9020),#70);
-#9022=SHAPE_DEFINITION_REPRESENTATION(#9005,#9021);
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#3=VERTEX_POINT('',#1);
+#4=VERTEX_POINT('',#2);
+#5=DIRECTION('',(1.0,0.0,0.0));
+#6=VECTOR('',#5,10.0);
+#7=LINE('',#1,#6);
+#8=EDGE_CURVE('',#3,#4,#7,.T.);
+#9=GEOMETRIC_CURVE_SET('wire_set',(#8));
+#10=APPLICATION_CONTEXT('automotive_design');
+#11=PRODUCT_CONTEXT('',#10,'mechanical');
+#12=PRODUCT('Tb004','Tb004','',(#11));
+#13=PRODUCT_DEFINITION_FORMATION('','',#12);
+#14=PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#15=PRODUCT_DEFINITION('','',#13,#14);
+#16=PRODUCT_DEFINITION_SHAPE('','',#15);
+#17=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#18=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#19=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#20=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.000E-6),#17,'distance_accuracy_value','vertex_tol_at_ULP_floor');
+#21=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.001E-6),#17,'distance_accuracy_value','edge_tol_one_ULP_higher');
+#22=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.002E-6),#17,'distance_accuracy_value','face_tol_two_ULP_higher');
+#23=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#20,#21,#22))GLOBAL_UNIT_ASSIGNED_CONTEXT((#17,#18,#19))REPRESENTATION_CONTEXT('ctx_mm','3D'));
+#24=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9),#23);
+#25=SHAPE_DEFINITION_REPRESENTATION(#16,#24);
 ENDSEC;
 END-ISO-10303-21;
