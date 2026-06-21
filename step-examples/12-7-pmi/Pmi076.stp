@@ -1,55 +1,30 @@
 ISO-10303-21;
-/* Pmi076 - COMPOSITE_PROPERTY (AP242 ED4) carrying contradictory
- * material attributes for different layers
- * Defect: AP242 ED4 introduces composite-property entities to
- * describe layered or fibre-reinforced materials, with one
- * property record per layer. A producer that re-uses a layer
- * stack template across products without updating layer-specific
- * material references emits a stack where two adjacent layers
- * claim the same fibre angle but reference different material
- * grades; downstream FEA pre-processors silently take the first
- * match. */
+/* Pmi076: Two PROPERTY_DEFINITIONs 'layer1' ('0deg orientation, T300') and 'layer2' ('0deg orientation, M55J') both claim 0-degree fibre angle but reference different material grades (T300 vs M55J); a PROPERTY_DEFINITION_RELATIONSHIP links them as adjacent stack layers; FEA pre-processors that silently accept the first material grade miss the contradictory second layer; receivers must surface contradictory same-angle/different-material layer combinations; silently taking the first match is forbidden; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Pmi076 - COMPOSITE_PROPERTY contradictory layer materials'),'2;1');
-FILE_NAME('Pmi076.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('Pmi076'),'2;1');
+FILE_NAME('Pmi076.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('managed model based 3d engineering');
-#2=PRODUCT_CONTEXT('',#1,'mechanical');
-#3=PRODUCT('Pmi076','CompositePart','',(#2));
-#4=PRODUCT_DEFINITION_FORMATION('','',#3);
-#5=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
-#6=PRODUCT_DEFINITION('','',#4,#5);
-#7=PRODUCT_DEFINITION_SHAPE('','',#6);
-#20=( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#22=( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#23=( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#24=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
-  'distance_accuracy_value','');
-#25=( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
-  REPRESENTATION_CONTEXT('','3D') );
-/* Two property descriptions for two layers, both claiming
- * fibre_angle = 0deg but referencing two different materials.
- * Modeled here as PROPERTY_DEFINITION pairs since
- * COMPOSITE_PROPERTY entity names vary across AP242 editions. */
-#40=PROPERTY_DEFINITION('layer1','0deg orientation, T300',#7);
-#41=PROPERTY_DEFINITION('layer2','0deg orientation, M55J',#7);
-#50=PROPERTY_DEFINITION_RELATIONSHIP('stack','layer1+layer2 in single stack',#40,#41);
-/* Defect: relationship_type='same_orientation' between two layers
- * with different material grades (T300 vs M55J) - per-layer
- * property mismatch */
-#90=SHAPE_REPRESENTATION('',(),#25);
-#91=SHAPE_DEFINITION_REPRESENTATION(#7,#90);
-/* PMI anchor: minimal ANNOTATION_PLANE so this PMI fixture cites at least one canonical PMI entity. */
-#9100=CARTESIAN_POINT('pmi_o',(0.0,0.0,0.0));
-#9101=DIRECTION('pmi_z',(0.0,0.0,1.0));
-#9102=DIRECTION('pmi_x',(1.0,0.0,0.0));
-#9103=AXIS2_PLACEMENT_3D('pmi_a',#9100,#9101,#9102);
-#9104=PLANE('pmi_anchor_plane',#9103);
-#9105=ANNOTATION_PLANE('pmi_annotation',(),#9104,());
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Pmi076','Pmi076','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=PROPERTY_DEFINITION('layer1','0deg orientation, T300',#9055);
+#9064=PROPERTY_DEFINITION('layer2','0deg orientation, M55J',#9055);
+#9065=PROPERTY_DEFINITION_RELATIONSHIP('layer_stack','composite layer stack',#9063,#9064);
+#9066=SHAPE_ASPECT('composite_face','composite laminate face',#9055,.T.);
 ENDSEC;
 END-ISO-10303-21;

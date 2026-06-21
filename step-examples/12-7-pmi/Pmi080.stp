@@ -1,33 +1,30 @@
 ISO-10303-21;
-/* Pmi080 - GD&T tolerance frame missing tolerance-zone plane reference
- * Defect: a perpendicularity tolerance with tolerance_zone_form = 'unbounded'
- * but NO tolerance_zone_plane (tolerance_zone with no `defining_planes`).
- * AP242 requires the plane reference; older AP203 emissions drop it,
- * leaving the zone direction ambiguous. Reader silently picks +Z. */
+/* Pmi080: GEOMETRIC_TOLERANCE 'perp_tol' specifies a perpendicularity zone of 0.1 mm on SHAPE_ASPECT 'feat_face'; the tolerance zone uses TOLERANCE_ZONE_FORM('unbounded') but no tolerance_zone_plane reference is provided — the zone direction is ambiguous; AP242 requires an explicit plane reference for an unbounded zone; older AP203 emissions omit it and receivers silently assign +Z, which is wrong for most features; receivers must reject or emit an 'ambiguous zone' diagnostic when the plane reference is absent; silently picking an arbitrary plane is forbidden; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Pmi080 test case','GD&T tolerance frame missing zone-plane reference'),'2;1');
-FILE_NAME('Pmi080.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Pmi080'),'2;1');
+FILE_NAME('Pmi080.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=PRODUCT_CONTEXT('',#1,'mechanical');
-#11=PRODUCT('Pmi080','Pmi080','',(#10));
-#12=PRODUCT_DEFINITION_FORMATION('','',#11);
-#13=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#14=PRODUCT_DEFINITION('','',#12,#13);
-#15=PRODUCT_DEFINITION_SHAPE('','',#14);
-#20=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-/* Shape aspect referenced by the tolerance */
-#50=SHAPE_ASPECT('feat_face','',#15,.T.);
-/* Tolerance value */
-#60=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.1),#20);
-/* Geometric tolerance: 4th arg is the tolerance VALUE, 5th is the SHAPE_ASPECT
- * being toleranced. Defect: there is NO TOLERANCE_ZONE referencing a
- * defining_planes set - the zone direction is unspecified. */
-#100=GEOMETRIC_TOLERANCE('perpendicularity','perp tol no zone-plane',$,#60,#50);
-/* Tolerance zone form is 'unbounded' but with no zone plane reference */
-#101=TOLERANCE_ZONE_FORM('unbounded');
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Pmi080','Pmi080','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=SHAPE_ASPECT('feat_face','toleranced feature',#9055,.T.);
+#9064=MEASURE_REPRESENTATION_ITEM('tol_value',LENGTH_MEASURE(0.1),#9056);
+#9065=TOLERANCE_ZONE_FORM('unbounded');
+#9066=GEOMETRIC_TOLERANCE('perp_tol','perp tol no zone-plane',$,#9064,#9063);
 ENDSEC;
 END-ISO-10303-21;

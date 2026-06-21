@@ -1,22 +1,33 @@
 ISO-10303-21;
-/* Pmi081 - Saved-views label name silently emptied
- * Defect: two saved-view labels named front and iso; clear-contents pass also empties names */
+/* Pmi081: Two PRESENTATION_VIEWs are present: 'front_view' and 'iso_view'; a 'clear contents' operation on these saved-view labels also empties the label name attribute, producing nameless PRESENTATION_VIEW entries that downstream PMI tools (which look up views by name) cannot locate; receivers must detect PRESENTATION_VIEW entries with empty names and warn or reject; a heal-and-proceed path must preserve the label name while clearing only non-name child attributes; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Pmi081 test case','Saved-views label name silently emptied'),'2;1');
-FILE_NAME('Pmi081.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Pmi081'),'2;1');
+FILE_NAME('Pmi081.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#100=PRESENTATION_VIEW('front','front view','',(#1),#1);
-#101=PRESENTATION_VIEW('iso','iso view','',(#1),#1);
-/* PMI anchor: minimal ANNOTATION_PLANE so this PMI fixture cites at least one canonical PMI entity. */
-#9100=CARTESIAN_POINT('pmi_o',(0.0,0.0,0.0));
-#9101=DIRECTION('pmi_z',(0.0,0.0,1.0));
-#9102=DIRECTION('pmi_x',(1.0,0.0,0.0));
-#9103=AXIS2_PLACEMENT_3D('pmi_a',#9100,#9101,#9102);
-#9104=PLANE('pmi_anchor_plane',#9103);
-#9105=ANNOTATION_PLANE('pmi_annotation',(),#9104,());
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Pmi081','Pmi081','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=DIRECTION('z',(0.0,0.0,1.0));
+#9064=DIRECTION('x',(1.0,0.0,0.0));
+#9065=CARTESIAN_POINT('ap_origin',(0.0,0.0,0.0));
+#9066=AXIS2_PLACEMENT_3D('ap_plc',#9065,#9063,#9064);
+#9067=ANNOTATION_PLANE('pmi_annotation_plane',(),#9066,());
+#9068=PRESENTATION_VIEW('','front view name emptied by clear-contents','',(#9067),#9000);
+#9069=PRESENTATION_VIEW('','iso view name emptied by clear-contents','',(#9067),#9000);
 ENDSEC;
 END-ISO-10303-21;
