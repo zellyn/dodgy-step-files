@@ -1,41 +1,33 @@
 ISO-10303-21;
-/* N014 - Boolean spurious tiny edge that should have collapsed to a vertex
- * Defect: An intersection edge that ought to be of zero length persists due
- * to misclassification at the topological filtering step in BOPAlgo. Both
- * endpoints lie within tolerance of a single corrected position, but the
- * filter treats them as distinct.
- * Reproducer: two surfaces tangent along a curve with a single contact point;
- * numerical noise produces a short crossing edge near that point that should
- * have collapsed to a vertex.
- */
+/* N014: EDGE_CURVE between vtx at (2e-8,0,0) and (-2e-8,0,0); length 4.0E-8 mm < declared tol 1.0E-7; both vertices within tol of one corrected position; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N014 Boolean spurious tiny edge that should collapse'),'2;1');
-FILE_NAME('N014.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('N014'),'2;1');
+FILE_NAME('N014.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-/* Endpoints both within tol of single corrected position (origin) -- 4.0e-8 apart */
-#10=CARTESIAN_POINT('p_a',(2.0E-8,0.0,0.0));
-#11=CARTESIAN_POINT('p_b',(-2.0E-8,0.0,0.0));
-#20=VERTEX_POINT('v_a_should_collapse',#10);
-#21=VERTEX_POINT('v_b_should_collapse',#11);
-#30=DIRECTION('-x',(-1.0,0.0,0.0));
-#31=VECTOR('',#30,4.0E-8);
-#32=LINE('spurious_curve',#10,#31);
-/* Defect site: tiny edge survives instead of collapsing to a single vertex */
-#40=EDGE_CURVE('spurious_tiny_edge',#20,#21,#32,.T.);
-#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#50,
-  'distance_accuracy_value','tol_exceeds_edge_length_should_collapse');
-#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
-  REPRESENTATION_CONTEXT('ctx','3D'));
+#1=CARTESIAN_POINT('vtx_pos',(2.0E-08,0.0,0.0));
+#2=CARTESIAN_POINT('vtx_neg',(-2.0E-08,0.0,0.0));
+#3=VERTEX_POINT('v_pos',#1);
+#4=VERTEX_POINT('v_neg',#2);
+#5=DIRECTION('',(-1.0,0.0,0.0));
+#6=VECTOR('',#5,4.0E-08);
+#7=LINE('tiny_line',#1,#6);
+#8=EDGE_CURVE('should_have_collapsed',#3,#4,#7,.T.);
+#9=GEOMETRIC_CURVE_SET('edges',(#8));
+#10=APPLICATION_CONTEXT('automotive_design');
+#11=PRODUCT_CONTEXT('',#10,'mechanical');
+#12=PRODUCT('N014','N014','',(#11));
+#13=PRODUCT_DEFINITION_FORMATION('','',#12);
+#14=PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#15=PRODUCT_DEFINITION('','',#13,#14);
+#16=PRODUCT_DEFINITION_SHAPE('','',#15);
+#17=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#18=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#19=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#20=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#17,'distance_accuracy_value','tol_covers_edge');
+#21=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#20))GLOBAL_UNIT_ASSIGNED_CONTEXT((#17,#18,#19))REPRESENTATION_CONTEXT('ctx','3D'));
+#22=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9),#21);
+#23=SHAPE_DEFINITION_REPRESENTATION(#16,#22);
 ENDSEC;
 END-ISO-10303-21;

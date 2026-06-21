@@ -1,43 +1,33 @@
 ISO-10303-21;
-/* N015 - xstep.cascade.unit M meters setting inflates tolerance and corrupts geometry
- * Defect: Setting OCCT's cascade unit to meters during STEP/IGES read inflates
- * max-tolerance >0.001 (some files balloon AABB to +/-1.0e+100). With unit=M,
- * too-small distances are not detected during edge reordering and BSpline
- * segments are missed.
- * Reproducer: file declared in METRE units (instead of mm) plus tight
- * uncertainty 1.0e-7 in metre context. Reader's cascade.unit M scaling
- * produces tolerance 1.0e-7 m = 0.1 mm, far above true model precision.
- */
+/* N015: cascade unit M inflation: file declares 1.0E-7 precision but M-mode scales tolerance below kernel resolution; single EDGE_CURVE; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N015 cascade.unit M inflates tolerance corrupts geometry'),'2;1');
-FILE_NAME('N015.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('N015'),'2;1');
+FILE_NAME('N015.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-/* All coordinates declared in METRE; tiny part is 0.001 m on a side. */
-#10=CARTESIAN_POINT('p0_m',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('p1_m',(0.001,0.0,0.0));
-#20=VERTEX_POINT('v0',#10);
-#21=VERTEX_POINT('v1',#11);
-#30=DIRECTION('+x',(1.0,0.0,0.0));
-#31=VECTOR('',#30,0.001);
-#32=LINE('e',#10,#31);
-#40=EDGE_CURVE('cascade_m_edge',#20,#21,#32,.T.);
-/* LENGTH_UNIT defined in metres -- when reader maps via xstep.cascade.unit=M,
- * the working tolerance is interpreted as 1.0e-7 m == 1.0e-4 mm, way above
- * native precision. */
-#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT($,.METRE.));
-#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#50,
-  'distance_accuracy_value','tol_in_metres_inflates_under_cascade_M');
-#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
-  REPRESENTATION_CONTEXT('ctx_m','3D'));
+#1=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('p1_1m',(1000.0,0.0,0.0));
+#3=VERTEX_POINT('v0',#1);
+#4=VERTEX_POINT('v1',#2);
+#5=DIRECTION('',(1.0,0.0,0.0));
+#6=VECTOR('',#5,1000.0);
+#7=LINE('line_1m',#1,#6);
+#8=EDGE_CURVE('edge',#3,#4,#7,.T.);
+#9=GEOMETRIC_CURVE_SET('edges',(#8));
+#10=APPLICATION_CONTEXT('automotive_design');
+#11=PRODUCT_CONTEXT('',#10,'mechanical');
+#12=PRODUCT('N015','N015','',(#11));
+#13=PRODUCT_DEFINITION_FORMATION('','',#12);
+#14=PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#15=PRODUCT_DEFINITION('','',#13,#14);
+#16=PRODUCT_DEFINITION_SHAPE('','',#15);
+#17=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#18=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#19=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#20=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#17,'distance_accuracy_value','precision_below_M_mode_threshold');
+#21=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#20))GLOBAL_UNIT_ASSIGNED_CONTEXT((#17,#18,#19))REPRESENTATION_CONTEXT('ctx','3D'));
+#22=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9),#21);
+#23=SHAPE_DEFINITION_REPRESENTATION(#16,#22);
 ENDSEC;
 END-ISO-10303-21;

@@ -1,39 +1,32 @@
 ISO-10303-21;
-/* N018 - representation_context null/wrong type -> fall back to read.precision
- * Defect: When a STEP file lacks a recognizable
- * geometric_representation_context_with_uncertainty (or attaches the wrong
- * type), OCCT falls back to the read.precision.val parameter without warning.
- * Models from such files all share whatever precision the user happened to
- * configure, regardless of source.
- * Reproducer: file uses bare GEOMETRIC_REPRESENTATION_CONTEXT (no
- * GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT), so receivers must invent a tolerance.
- */
+/* N018: GEOMETRIC_REPRESENTATION_CONTEXT with GLOBAL_UNIT_ASSIGNED_CONTEXT only; no UNCERTAINTY_MEASURE_WITH_UNIT; OCCT silently falls back to read.precision.val; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N018 representation_context lacks uncertainty fallback'),'2;1');
-FILE_NAME('N018.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('N018'),'2;1');
+FILE_NAME('N018.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('p1',(15.0,0.0,0.0));
-#20=VERTEX_POINT('',#10);
-#21=VERTEX_POINT('',#11);
-#30=DIRECTION('+x',(1.0,0.0,0.0));
-#31=VECTOR('',#30,15.0);
-#32=LINE('',#10,#31);
-#40=EDGE_CURVE('no_uncertainty_edge',#20,#21,#32,.T.);
-#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-/* Defect site: bare GEOMETRIC_REPRESENTATION_CONTEXT without
- * GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT subtype -- the producer never declared
- * its working precision; receivers fall back silently to read.precision.val. */
-#60=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
-  REPRESENTATION_CONTEXT('ctx_no_uncertainty','3D'));
+#1=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('p1',(10.0,0.0,0.0));
+#3=VERTEX_POINT('v0',#1);
+#4=VERTEX_POINT('v1',#2);
+#5=DIRECTION('',(1.0,0.0,0.0));
+#6=VECTOR('',#5,10.0);
+#7=LINE('',#1,#6);
+#8=EDGE_CURVE('edge',#3,#4,#7,.T.);
+#9=GEOMETRIC_CURVE_SET('edges',(#8));
+#10=APPLICATION_CONTEXT('automotive_design');
+#11=PRODUCT_CONTEXT('',#10,'mechanical');
+#12=PRODUCT('N018','N018','',(#11));
+#13=PRODUCT_DEFINITION_FORMATION('','',#12);
+#14=PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#15=PRODUCT_DEFINITION('','',#13,#14);
+#16=PRODUCT_DEFINITION_SHAPE('','',#15);
+#17=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#18=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#19=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#20=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNIT_ASSIGNED_CONTEXT((#17,#18,#19))REPRESENTATION_CONTEXT('ctx','3D'));
+#21=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9),#20);
+#22=SHAPE_DEFINITION_REPRESENTATION(#16,#21);
 ENDSEC;
 END-ISO-10303-21;
