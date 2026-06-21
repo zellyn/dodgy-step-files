@@ -1,21 +1,61 @@
 ISO-10303-21;
-/* Ad100 - Memory leak during STEP read into XCAF
- * Defect: entity-graph table holds strong refs to entities not in final shape; doc destruction doesnt walk graph */
+/* Ad100: STEP read into XCAF TDocStd_Document leaks entity-graph table; strong references to entities unreachable from final shape retained; document destruction does not walk entity graph; RSS grows proportionally to number of files read; document destruction must release all internal caches; OCCT MANTIS#0031075, #0022807, #0022941; See also A076; cross-file-state defect; fixture is a companion STEP file; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Ad100 test case','Memory leak during STEP read into XCAF'),'2;1');
-FILE_NAME('Ad100.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Ad100'),'2;1');
+FILE_NAME('Ad100.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=PRODUCT_CONTEXT('',#1,'mechanical');
-#11=PRODUCT('part1','part1','part1',(#10));
-#12=PRODUCT_DEFINITION_FORMATION('','',#11);
-#13=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#14=PRODUCT_DEFINITION('','',#12,#13);
-#15=PRODUCT_DEFINITION_SHAPE('','',#14);
-/* Memory leak defect - manifests across many sequential reads. */
-
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Ad100','Ad100','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=CARTESIAN_POINT('orphan_pt_00',(0.0,0.0,0.0));
+#9064=DIRECTION('orphan_dir_00',(1.0,0.0,0.0));
+#9065=VERTEX_POINT('orphan_vt_00',#9063);
+#9066=CARTESIAN_POINT('orphan_pt_01',(1.0,0.0,0.0));
+#9067=DIRECTION('orphan_dir_01',(1.0,0.0,0.0));
+#9068=VERTEX_POINT('orphan_vt_01',#9066);
+#9069=CARTESIAN_POINT('orphan_pt_02',(2.0,0.0,0.0));
+#9070=DIRECTION('orphan_dir_02',(1.0,0.0,0.0));
+#9071=VERTEX_POINT('orphan_vt_02',#9069);
+#9072=CARTESIAN_POINT('orphan_pt_03',(3.0,0.0,0.0));
+#9073=DIRECTION('orphan_dir_03',(1.0,0.0,0.0));
+#9074=VERTEX_POINT('orphan_vt_03',#9072);
+#9075=CARTESIAN_POINT('orphan_pt_04',(4.0,0.0,0.0));
+#9076=DIRECTION('orphan_dir_04',(1.0,0.0,0.0));
+#9077=VERTEX_POINT('orphan_vt_04',#9075);
+#9078=CARTESIAN_POINT('orphan_pt_05',(5.0,0.0,0.0));
+#9079=DIRECTION('orphan_dir_05',(1.0,0.0,0.0));
+#9080=VERTEX_POINT('orphan_vt_05',#9078);
+#9081=CARTESIAN_POINT('orphan_pt_06',(6.0,0.0,0.0));
+#9082=DIRECTION('orphan_dir_06',(1.0,0.0,0.0));
+#9083=VERTEX_POINT('orphan_vt_06',#9081);
+#9084=CARTESIAN_POINT('orphan_pt_07',(7.0,0.0,0.0));
+#9085=DIRECTION('orphan_dir_07',(1.0,0.0,0.0));
+#9086=VERTEX_POINT('orphan_vt_07',#9084);
+#9087=CARTESIAN_POINT('orphan_pt_08',(8.0,0.0,0.0));
+#9088=DIRECTION('orphan_dir_08',(1.0,0.0,0.0));
+#9089=VERTEX_POINT('orphan_vt_08',#9087);
+#9090=CARTESIAN_POINT('orphan_pt_09',(9.0,0.0,0.0));
+#9091=DIRECTION('orphan_dir_09',(1.0,0.0,0.0));
+#9092=VERTEX_POINT('orphan_vt_09',#9090);
+#9093=/* memory-leak trigger: read this file 100 times in succession;
+   measure RSS before and after each read;
+   leak is visible as monotonic growth proportional to file count;
+   each document destruction should release entity-graph entries */
+CARTESIAN_POINT('leak_probe',(99.0,0.0,0.0));
 ENDSEC;
 END-ISO-10303-21;

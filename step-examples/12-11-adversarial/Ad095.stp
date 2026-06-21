@@ -1,38 +1,30 @@
 ISO-10303-21;
-/* Ad095 - Pro/E vintage file with positional argument swap
- * Defect: STYLED_ITEM with definition parameter in non-spec order.
- * Pro/Engineer v2001 emitted STYLED_ITEM with the (item, styles) slots
- * accidentally swapped. The vendor signature is in FILE_NAME's
- * originating_system slot ('Pro/Engineer 2001'); a vendor-aware
- * post-processor must detect this and reorder. */
+/* Ad095: Pro/Engineer legacy STEP files combine entities in patterns reader did not anticipate; STYLED_ITEM with positional arguments swapped from spec order; MAPPED_ITEM referencing itself transitively; vendor-conditional handling must tolerate known legacy patterns; OCCT MANTIS#0026461, #0025699; See also Ad081; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Ad095 test case','Pro/E vintage file with positional argument swap'),'2;1');
-FILE_NAME('Ad095.stp','2026-04-30T00:00:00',(''),(''),
-  'Pro/Engineer 2001','PTC ProductView 2001','vendor-positional-swap');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Ad095'),'2;1');
+FILE_NAME('Ad095.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* A geometric_representation_item to be styled */
-#10=CARTESIAN_POINT('item_pt',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('item_axes',#10,#11,#12);
-/* Style chain */
-#100=COLOUR_RGB('red',1.0,0.0,0.0);
-#101=FILL_AREA_STYLE_COLOUR('',#100);
-#102=FILL_AREA_STYLE('',(#101));
-#103=SURFACE_STYLE_FILL_AREA(#102);
-#104=SURFACE_SIDE_STYLE('',(#103));
-#105=SURFACE_STYLE_USAGE(.BOTH.,#104);
-#106=PRESENTATION_STYLE_ASSIGNMENT((#105));
-/* Defect: STYLED_ITEM in spec is STYLED_ITEM(name,(styles),item).
- * The Pro/E vintage writer swapped the (styles) and (item) slots.
- * Here we encode the BUGGY emission - second slot is the geometric
- * item (#13), third slot is the (single-element list of) styles
- * (#106) wrapped as an aggregate. A spec-conformant parser will
- * either reject (entity-attribute type mismatch on slot 2) or
- * silently mis-interpret the geometry as a style. */
-#107=STYLED_ITEM('proe_swapped_args',#13,(#106));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Ad095','Ad095','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=STYLED_ITEM('Pro/E_swapped_styled',(#2),());
+#9064=/* Pro/E v2001 vendor string: Pro/Engineer 2001 legacy output */
+CARTESIAN_POINT('Pro/E_probe',(1.0,0.0,0.0));
+#9065=MAPPED_ITEM('Pro_self_ref_mapped',#2,#9065);
 ENDSEC;
 END-ISO-10303-21;

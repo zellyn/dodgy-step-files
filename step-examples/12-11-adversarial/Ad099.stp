@@ -1,48 +1,50 @@
 ISO-10303-21;
-/* Ad099 - Self-intersection-fix infinite loop
- * Defect: a wire whose pcurves describe a small self-tangent loop
- *   (a teardrop/cusp at the apex). The fix-self-intersections pass
- *   keys its visited-segment map on segment ID only, so it
- *   re-visits the same segment forever. */
+/* Ad099: wire whose pcurve traverses a self-tangent teardrop loop; revisits same parameter range causing self-intersection-fix to loop forever; visited-segment map keys on ID not ID+direction; fix must monotonically reduce complexity measure or abort; OCCT MANTIS#0026671; See also Tsh056; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Ad099 test case','Self-intersection-fix infinite loop'),'2;1');
-FILE_NAME('Ad099.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Ad099'),'2;1');
+FILE_NAME('Ad099.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Host plane */
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#11=DIRECTION('+z',(0.0,0.0,1.0));
-#12=DIRECTION('+x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('axes',#10,#11,#12);
-#14=PLANE('host',#13);
-/* Single vertex at the cusp */
-#20=CARTESIAN_POINT('cusp_pt',(0.0,0.0,0.0));
-#21=VERTEX_POINT('cusp',#20);
-/* 3D curve: closed teardrop traced as a degree-2 B-spline whose
- * control polygon visits the apex twice with self-tangency. */
-#30=CARTESIAN_POINT('lobe_a',(1.0,0.5,0.0));
-#31=CARTESIAN_POINT('lobe_b',(1.0,-0.5,0.0));
-#32=B_SPLINE_CURVE_WITH_KNOTS('teardrop_3d',2,
-  (#20,#30,#31,#20),
-  .UNSPECIFIED.,.F.,.T.,
-  (3,1,3),(0.0,0.5,1.0),.UNSPECIFIED.);
-/* Pcurve: 2D B-spline with the SAME control structure on the host
- * plane, so its self-tangency is a pure pcurve self-intersection. */
-#40=CARTESIAN_POINT('pc_cusp',(0.0,0.0));
-#41=CARTESIAN_POINT('pc_lobe_a',(1.0,0.5));
-#42=CARTESIAN_POINT('pc_lobe_b',(1.0,-0.5));
-#43=B_SPLINE_CURVE_2D('teardrop_pc',2,
-  (#40,#41,#42,#40),
-  .UNSPECIFIED.,.F.,.T.,
-  (3,1,3),(0.0,0.5,1.0),.UNSPECIFIED.);
-#44=DEFINITIONAL_REPRESENTATION('pc_def',(#43),#13);
-#45=PCURVE('teardrop_pc',#14,#44);
-#50=SURFACE_CURVE('teardrop_sc',#32,(#45),.PCURVE_S1.);
-#60=EDGE_CURVE('teardrop_self_tangent',#21,#21,#50,.T.);
-#61=ORIENTED_EDGE('',*,*,#60,.T.);
-#62=EDGE_LOOP('teardrop_loop',(#61));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Ad099','Ad099','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=CARTESIAN_POINT('teardrop_cusp',(0.5,0.0,0.0));
+#9064=VERTEX_POINT('',#9063);
+#9065=CARTESIAN_POINT('',(0.5,0.0,0.0));
+#9066=CARTESIAN_POINT('',(0.5,0.1,0.0));
+#9067=CARTESIAN_POINT('',(0.8,0.15,0.0));
+#9068=CARTESIAN_POINT('',(0.8,-0.15,0.0));
+#9069=CARTESIAN_POINT('',(0.5,-0.1,0.0));
+#9070=CARTESIAN_POINT('',(0.5,0.0,0.0));
+#9071=B_SPLINE_CURVE_WITH_KNOTS('teardrop_loop',3,(#9065,#9066,#9067,#9068,#9069,#9070),.UNSPECIFIED.,.F.,.T.,(4,1,1,4),(0.0,0.25,0.75,1.0),.UNSPECIFIED.);
+#9072=EDGE_CURVE('teardrop_edge',#9064,#9064,#9071,.T.);
+#9073=ORIENTED_EDGE('',$,$,#9072,.T.);
+#9074=EDGE_LOOP('teardrop_wire_loop',(#9073));
+#9075=CARTESIAN_POINT('teardrop_cusp2',(2.0,0.0,0.0));
+#9076=VERTEX_POINT('',#9075);
+#9077=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#9078=CARTESIAN_POINT('',(2.0,0.05,0.0));
+#9079=CARTESIAN_POINT('',(2.1,0.08,0.0));
+#9080=CARTESIAN_POINT('',(2.1,-0.08,0.0));
+#9081=CARTESIAN_POINT('',(2.0,-0.05,0.0));
+#9082=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#9083=B_SPLINE_CURVE_WITH_KNOTS('teardrop_loop2',3,(#9077,#9078,#9079,#9080,#9081,#9082),.UNSPECIFIED.,.F.,.T.,(4,1,1,4),(0.0,0.25,0.75,1.0),.UNSPECIFIED.);
+#9084=EDGE_CURVE('teardrop_edge2',#9076,#9076,#9083,.T.);
+#9085=ORIENTED_EDGE('',$,$,#9084,.T.);
+#9086=EDGE_LOOP('teardrop_wire_loop2',(#9085));
 ENDSEC;
 END-ISO-10303-21;
