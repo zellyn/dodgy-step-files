@@ -1,43 +1,30 @@
 ISO-10303-21;
-/* ============================================================
-   WARNING: THIS FILE IS INTENTIONALLY MALFORMED.
-   It exists ONLY for parser-robustness / fuzz-class testing.
-   DO NOT feed to a production translator without sandboxing.
-
-   Entry  : Ad026
-   Title  : Self-referencing complex-entity instance during
-            construction (UAF on half-initialised vtable).
-   Defect : Each complex entity below contains a sub-entity
-            slot whose value is the outer instance ID itself.
-            A two-phase build that dereferences #self while
-            the C++ object is still under construction may
-            invoke methods through a not-yet-installed vtable
-            (use-after-free in practice on most C++ ABIs).
-            Variant Q023 (composite curve self-cyclic) and
-            Ad004 share this root cause.
-   Expected: build attribute graph in two passes — allocate
-             placeholder shells first, bind references after.
-             Constructors must NEVER walk inbound references.
-   See also: Ad004.
-   ============================================================ */
+/* Ad026: self-referencing complex entity during construction; #N=(A() B(#N)) — sub-entity references outer instance; vtable use before init → UAF; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Ad026 self-ref complex entity'),'2;1');
-FILE_NAME('Ad026.stp','2026-04-26T00:00:00',('synthetic'),('cad-research'),
-  'none','none','none');
+FILE_DESCRIPTION(('Ad026'),'2;1');
+FILE_NAME('Ad026.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* Pattern A: simple self-reference inside complex */
-#1=(NAMED_UNIT(*) DERIVED_UNIT_ELEMENT(#1, 1.0));
-
-/* Pattern B: self-reference via composite_curve_segment list,
-   modelled on OCCT Q023 (composite curve self-cyclic). */
-#2=COMPOSITE_CURVE('',(#3),.F.);
-#3=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#2);
-
-/* Pattern C: complex with self in BOTH sub-entities */
-#4=(GEOMETRIC_REPRESENTATION_ITEM()
-    REPRESENTATION_ITEM('self')
-    STYLED_ITEM('',(#4),#4));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Ad026','Ad026','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=(NAMED_UNIT(*) DERIVED_UNIT_ELEMENT(#9063, 1.0));
+#9064=COMPOSITE_CURVE('',(#9065),.F.);
+#9065=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#9064);
+#9066=(GEOMETRIC_REPRESENTATION_ITEM() REPRESENTATION_ITEM('self') STYLED_ITEM('',(#9066),#9066));
 ENDSEC;
 END-ISO-10303-21;

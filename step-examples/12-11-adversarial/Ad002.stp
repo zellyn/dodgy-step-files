@@ -1,34 +1,27 @@
 ISO-10303-21;
-/* ============================================================
-   WARNING: THIS FILE IS INTENTIONALLY MALFORMED.
-   It exists ONLY for parser-robustness / fuzz-class testing.
-   DO NOT feed to a production translator without sandboxing.
-
-   Entry  : Ad002
-   Title  : Stack overflow via deeply nested aggregate parens
-   Defect : The aggregate value of #1 is wrapped in many
-            thousand layers of '(' / ')'. Naive recursive
-            descent over LIST/SET/BAG aggregates blows the
-            call stack long before reaching the inner literal.
-   Expected: enforce a depth ceiling (e.g. 64) and emit
-             E_AGGREGATE_TOO_DEEP; iterative parsing preferred.
-   ============================================================ */
+/* Ad002: deeply nested aggregate parentheses; ~120 levels of (((..))) on FOO entity; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Ad002 nested aggregate parens'),'2;1');
-FILE_NAME('Ad002.stp','2026-04-26T00:00:00',('synthetic'),('cad-research'),
-  'none','none','none');
+FILE_DESCRIPTION(('Ad002'),'2;1');
+FILE_NAME('Ad002.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* For the catalogued fixture only ~80 layers shown; a real
-   fuzz harness should expand this to >=10_000 layers to
-   trigger the stack overflow on default ulimit -s. */
-#1=FOO((((((((((((((((((((((((((((((((((((((((
-((((((((((((((((((((((((((((((((((((((((
-((((((((((((((((((((((((((((((((((((((((
-0
-))))))))))))))))))))))))))))))))))))))))
-))))))))))))))))))))))))))))))))))))))))
-))))))))))))))))))))))))))))))))))))))));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Ad002','Ad002','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=FOO(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((0)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))));
 ENDSEC;
 END-ISO-10303-21;
