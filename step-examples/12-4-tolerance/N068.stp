@@ -1,79 +1,52 @@
 ISO-10303-21;
-/* N068 — BRepLib.UpdateInnerTolerances minimal 2-point sampling
- * Defect: UpdateInnerTolerances edge-tolerance computation samples B-spline at
- * endpoints only (2 samples), missing interior curvature. Deviation at mid-curve
- * peak not captured in tolerance estimate. Root cause: sample-count hardcoded to 2
- * or loop exits early.
- * Fixture: 4-control-point B-spline with ~5-unit bulge at center, parameterized
- * [0,1], global context 1.0e-4. Endpoint sampling misses interior curvature
- * requiring ~1.0e-2 tolerance.
- */
+/* N068: B-spline bspline_bulge with 4 control points and ~5-unit interior bulge; UpdateInnerTolerances samples at endpoints only (2 samples), missing the ~1e-2 peak curvature deviation at center */
 HEADER;
-FILE_DESCRIPTION(('N068 BRepLib UpdateInnerTolerances 2-sample undersampling'),'2;1');
-FILE_NAME('N068.stp','2026-06-15T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('N068'),'2;1');
+FILE_NAME('N068.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-/* B-spline endpoints */
-#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('p3',(10.0,0.0,0.0));
-/* Interior control points creating 5-unit bulge */
-#12=CARTESIAN_POINT('p1',(3.0,5.0,0.0));
-#13=CARTESIAN_POINT('p2',(7.0,5.0,0.0));
-/* Vertices */
-#20=VERTEX_POINT('v0',#10);
-#21=VERTEX_POINT('v1',#11);
-/* B-spline curve with high interior curvature */
-#30=B_SPLINE_CURVE_WITH_KNOTS('bspline_bulge',3,
-  (#10,#12,#13,#11),
-  .UNSPECIFIED.,.F.,.F.,
-  (4,4),(0.0,1.0),
-  .UNSPECIFIED.);
-#31=EDGE_CURVE('bspl_edge',#20,#21,#30,.T.);
-/* Close the loop with a straight edge */
-#32=DIRECTION('negx',(-1.0,0.0,0.0));
-#33=VECTOR('negxvec',#32,10.0);
-#34=LINE('close_line',#11,#33);
-#35=EDGE_CURVE('close_edge',#21,#20,#34,.T.);
-#36=ORIENTED_EDGE('',*,*,#31,.T.);
-#37=ORIENTED_EDGE('',*,*,#35,.T.);
-#38=EDGE_LOOP('',(#36,#37));
-/* Plane surface */
-#40=DIRECTION('zdir',(0.0,0.0,1.0));
-#41=DIRECTION('xdir',(1.0,0.0,0.0));
-#42=AXIS2_PLACEMENT_3D('ax3',#10,#40,#41);
-#43=PLANE('plane_xy',#42);
-#44=FACE_OUTER_BOUND('',#38,.T.);
-#45=ADVANCED_FACE('face',(#44),#43,.T.);
-#46=OPEN_SHELL('shell',(#45));
-/* Units and tight tolerance (1.0E-4 mm) */
-#200=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#201=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#202=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#203=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-4),#200,
-  'distance_accuracy_value','');
-#204=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#203))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#200,#201,#202))
-  REPRESENTATION_CONTEXT('','3D'));
-/* PRODUCT CHAIN */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('N068','N068','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#46));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('p3',(10.0,0.0,0.0));
+#3=CARTESIAN_POINT('p1',(3.0,5.0,0.0));
+#4=CARTESIAN_POINT('p2',(7.0,5.0,0.0));
+#5=VERTEX_POINT('v0',#1);
+#6=VERTEX_POINT('v1',#2);
+#7=B_SPLINE_CURVE_WITH_KNOTS('bspline_bulge',3,(#1,#3,#4,#2),.UNSPECIFIED.,.F.,.F.,(4,4),(0.0,1.0),.UNSPECIFIED.);
+#8=EDGE_CURVE('bspl_edge',#5,#6,#7,.T.);
+#9=DIRECTION('negx',(-1.0,0.0,0.0));
+#10=VECTOR('negxvec',#9,10.0);
+#11=LINE('close_line',#2,#10);
+#12=EDGE_CURVE('close_edge',#6,#5,#11,.T.);
+#13=ORIENTED_EDGE('',$,$,#8,.T.);
+#14=ORIENTED_EDGE('',$,$,#12,.T.);
+#15=EDGE_LOOP('',(#13,#14));
+#16=FACE_OUTER_BOUND('',#15,.T.);
+#17=DIRECTION('zdir',(0.0,0.0,1.0));
+#18=DIRECTION('xdir',(1.0,0.0,0.0));
+#19=AXIS2_PLACEMENT_3D('ax3',#1,#17,#18);
+#20=PLANE('plane_xy',#19);
+#21=ADVANCED_FACE('face',(#16),#20,.T.);
+#22=OPEN_SHELL('shell',(#21));
+#23=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#24=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#25=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#26=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-4),#23,'distance_accuracy_value','');
+#27=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#26))GLOBAL_UNIT_ASSIGNED_CONTEXT((#23,#24,#25))REPRESENTATION_CONTEXT('','3D'));
+#28=SHELL_BASED_SURFACE_MODEL('sbsm',(#22));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('N068','N068','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#28),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
