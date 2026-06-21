@@ -1,71 +1,55 @@
 ISO-10303-21;
-/* Tb014 - Sliver triangle with smallest internal angle at hardcoded trigger
- * Defect: Triangle has internal angles 89.9999, 89.9999, 0.0002 deg
- * (= 3.49e-6 rad). Different sliver detectors use thresholds 1.0e-7, 1.0e-5,
- * 1.0e-3 rad. The triangle is alive in some regimes and silently dropped
- * in others. "Long skinny face missing", "thin sliver triangle removed
- * by ShapeFix" -- same input, different verdicts.
- */
+/* Tb014: triangular ADVANCED_FACE with vertices (0,0,0),(1,0,0),(1,3.49e-06,0); angle at (0,0,0) ≈ 3.49e-6 rad = 0.0002°; sliver detector triggers at 1e-5 rad (triangle dead) or 1e-7 rad (alive); policy-dependent rejection; silent drop is unacceptable */
 HEADER;
-FILE_DESCRIPTION(('Tb014 sliver triangle at sliver-detection threshold'),'2;1');
-FILE_NAME('Tb014.stp','2026-04-30T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Tb014'),'2;1');
+FILE_NAME('Tb014.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-#10=CARTESIAN_POINT('o',(0.0,0.0,0.0));
-#11=DIRECTION('+z',(0.0,0.0,1.0));
-#12=DIRECTION('+x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
-#14=PLANE('pl',#13);
-/* Sliver triangle: smallest angle 3.49e-6 rad. */
-#20=CARTESIAN_POINT('A',(0.0,0.0,0.0));
-#21=CARTESIAN_POINT('B',(1.0,0.0,0.0));
-#22=CARTESIAN_POINT('C',(1.0,3.49E-6,0.0));
-#30=VERTEX_POINT('vA',#20);
-#31=VERTEX_POINT('vB',#21);
-#32=VERTEX_POINT('vC_sliver_3.49e-6_above_B',#22);
-#40=DIRECTION('AB',(1.0,0.0,0.0));
-#41=VECTOR('vAB',#40,1.0);
-#42=LINE('lAB',#20,#41);
-#43=DIRECTION('BC',(0.0,1.0,0.0));
-#44=VECTOR('vBC',#43,3.49E-6);
-#45=LINE('lBC',#21,#44);
-/* C->A long hypotenuse. */
-#46=DIRECTION('CA',(-1.0,-3.49E-6,0.0));
-#47=VECTOR('vCA',#46,1.0);
-#48=LINE('lCA',#22,#47);
-#50=EDGE_CURVE('eAB',#30,#31,#42,.T.);
-#51=EDGE_CURVE('eBC_short',#31,#32,#45,.T.);
-#52=EDGE_CURVE('eCA_hypot',#32,#30,#48,.T.);
-#60=ORIENTED_EDGE('',*,*,#50,.T.);
-#61=ORIENTED_EDGE('',*,*,#51,.T.);
-#62=ORIENTED_EDGE('',*,*,#52,.T.);
-#63=EDGE_LOOP('',(#60,#61,#62));
-#64=RECTANGULAR_TRIMMED_SURFACE('trim',#14,0.0,1.0,0.0,3.49E-6,.T.,.T.);
-#65=FACE_OUTER_BOUND('',#63,.T.);
-#66=ADVANCED_FACE('sliver',(#65),#64,.T.);
-#70=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#71=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#72=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#73=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#70,
-  'distance_accuracy_value','default_tolerance');
-#80=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#73))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#70,#71,#72))
-  REPRESENTATION_CONTEXT('ctx','3D'));
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Tb014','Tb014','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9020=OPEN_SHELL('shell',(#66));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#80);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('v0_sharp_angle',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('v1_base',(1.0,0.0,0.0));
+#3=CARTESIAN_POINT('v2_sliver_tip',(1.0,3.49E-06,0.0));
+#4=VERTEX_POINT('',#1);
+#5=VERTEX_POINT('',#2);
+#6=VERTEX_POINT('',#3);
+#7=DIRECTION('',(1.0,0.0,0.0));
+#8=VECTOR('',#7,1.0);
+#9=LINE('',#1,#8);
+#10=EDGE_CURVE('e01_base',#4,#5,#9,.T.);
+#11=DIRECTION('',(0.0,1.0,0.0));
+#12=VECTOR('',#11,3.49E-06);
+#13=LINE('',#2,#12);
+#14=EDGE_CURVE('e12_sliver_side',#5,#6,#13,.T.);
+#15=DIRECTION('',(-0.999999999994,-3.48999999998E-06,0.0));
+#16=VECTOR('',#15,1.00000000001);
+#17=LINE('',#3,#16);
+#18=EDGE_CURVE('e20_hypotenuse',#6,#4,#17,.T.);
+#19=ORIENTED_EDGE('',$,$,#10,.T.);
+#20=ORIENTED_EDGE('',$,$,#14,.T.);
+#21=ORIENTED_EDGE('',$,$,#18,.T.);
+#22=EDGE_LOOP('',(#19,#20,#21));
+#23=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#24=DIRECTION('',(0.0,0.0,1.0));
+#25=DIRECTION('',(1.0,0.0,0.0));
+#26=AXIS2_PLACEMENT_3D('',#23,#24,#25);
+#27=PLANE('',#26);
+#28=FACE_OUTER_BOUND('',#22,.T.);
+#29=ADVANCED_FACE('',(#28),#27,.T.);
+#30=OPEN_SHELL('',(#29));
+#31=SHELL_BASED_SURFACE_MODEL('',(#30));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Tb014','Tb014','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#31),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

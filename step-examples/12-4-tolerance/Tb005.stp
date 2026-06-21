@@ -1,82 +1,62 @@
 ISO-10303-21;
-/* Tb005 - Face area sub-tolerance squared (tol*tol comparison threshold)
- * Defect: A planar face is 3.0e-4 x 3.0e-4 mm (area 9.0e-8 mm^2). At declared
- * tolerance 1.0e-4 the threshold tol*tol = 1.0e-8 keeps the face. After a
- * heal that bumped tolerance to 1.0e-3, threshold tol*tol = 1.0e-6, and the
- * face is sub-threshold and silently dropped. A face that survives one
- * Boolean pass disappears in the next; "small feature silently removed
- * after import".
- */
+/* Tb005: ADVANCED_FACE 0.0003x0.0003 mm square (area=9.0e-08 mm²) on PLANE; declared tolerance 1.0E-4 mm; area < (1e-3)^2 = 1e-6 triggers silent drop under a bumped-tolerance kernel; alive at (1e-4)^2 = 1e-8 threshold; face-area comparison should use documented tol not tol*tol */
 HEADER;
-FILE_DESCRIPTION(('Tb005 face area sub-tolerance squared'),'2;1');
-FILE_NAME('Tb005.stp','2026-04-30T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Tb005'),'2;1');
+FILE_NAME('Tb005.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-/* Face on PLANE; quad of side 3.0e-4 mm. Area = 9.0e-8 mm^2. */
-#10=CARTESIAN_POINT('o',(0.0,0.0,0.0));
-#11=DIRECTION('+z',(0.0,0.0,1.0));
-#12=DIRECTION('+x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
-#14=PLANE('s',#13);
-/* Four corners of the tiny quad. */
-#20=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
-#21=CARTESIAN_POINT('p1',(3.0E-4,0.0,0.0));
-#22=CARTESIAN_POINT('p2',(3.0E-4,3.0E-4,0.0));
-#23=CARTESIAN_POINT('p3',(0.0,3.0E-4,0.0));
-#30=VERTEX_POINT('',#20);
-#31=VERTEX_POINT('',#21);
-#32=VERTEX_POINT('',#22);
-#33=VERTEX_POINT('',#23);
-#40=DIRECTION('+x',(1.0,0.0,0.0));
-#41=DIRECTION('+y',(0.0,1.0,0.0));
-#42=DIRECTION('-x',(-1.0,0.0,0.0));
-#43=DIRECTION('-y',(0.0,-1.0,0.0));
-#44=VECTOR('vx',#40,3.0E-4);
-#45=VECTOR('vy',#41,3.0E-4);
-#46=VECTOR('vmx',#42,3.0E-4);
-#47=VECTOR('vmy',#43,3.0E-4);
-#50=LINE('',#20,#44);
-#51=LINE('',#21,#45);
-#52=LINE('',#22,#46);
-#53=LINE('',#23,#47);
-#60=EDGE_CURVE('',#30,#31,#50,.T.);
-#61=EDGE_CURVE('',#31,#32,#51,.T.);
-#62=EDGE_CURVE('',#32,#33,#52,.T.);
-#63=EDGE_CURVE('',#33,#30,#53,.T.);
-#70=ORIENTED_EDGE('',*,*,#60,.T.);
-#71=ORIENTED_EDGE('',*,*,#61,.T.);
-#72=ORIENTED_EDGE('',*,*,#62,.T.);
-#73=ORIENTED_EDGE('',*,*,#63,.T.);
-#80=EDGE_LOOP('',(#70,#71,#72,#73));
-/* Trim the unbounded plane to the tiny quad area so tier-3 sees finite area. */
-#85=RECTANGULAR_TRIMMED_SURFACE('trim',#14,0.0,3.0E-4,0.0,3.0E-4,.T.,.T.);
-#90=FACE_OUTER_BOUND('',#80,.T.);
-#100=ADVANCED_FACE('tiny_face',(#90),#85,.T.);
-/* Tolerance at boundary: declared 1.0e-4 keeps face (tol*tol=1.0e-8 < area=9.0e-8);
- * loosened 1.0e-3 drops it (tol*tol=1.0e-6 > area). */
-#110=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#111=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#112=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#120=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-4),#110,
-  'distance_accuracy_value','threshold_keeps_face_at_tol_squared');
-#130=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#120))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#110,#111,#112))
-  REPRESENTATION_CONTEXT('ctx','3D'));
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Tb005','Tb005','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9020=OPEN_SHELL('shell',(#100));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#9020));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#130);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(0.0003,0.0,0.0));
+#3=CARTESIAN_POINT('',(0.0003,0.0003,0.0));
+#4=CARTESIAN_POINT('',(0.0,0.0003,0.0));
+#5=VERTEX_POINT('',#1);
+#6=VERTEX_POINT('',#2);
+#7=VERTEX_POINT('',#3);
+#8=VERTEX_POINT('',#4);
+#9=DIRECTION('',(1.0,0.0,0.0));
+#10=VECTOR('',#9,0.0003);
+#11=LINE('',#1,#10);
+#12=EDGE_CURVE('e_bot',#5,#6,#11,.T.);
+#13=DIRECTION('',(0.0,1.0,0.0));
+#14=VECTOR('',#13,0.0003);
+#15=LINE('',#2,#14);
+#16=EDGE_CURVE('e_rgt',#6,#7,#15,.T.);
+#17=DIRECTION('',(1.0,0.0,0.0));
+#18=VECTOR('',#17,0.0003);
+#19=LINE('',#4,#18);
+#20=EDGE_CURVE('e_top',#8,#7,#19,.T.);
+#21=DIRECTION('',(0.0,1.0,0.0));
+#22=VECTOR('',#21,0.0003);
+#23=LINE('',#1,#22);
+#24=EDGE_CURVE('e_lft',#5,#8,#23,.T.);
+#25=ORIENTED_EDGE('',$,$,#12,.T.);
+#26=ORIENTED_EDGE('',$,$,#16,.T.);
+#27=ORIENTED_EDGE('',$,$,#20,.F.);
+#28=ORIENTED_EDGE('',$,$,#24,.F.);
+#29=EDGE_LOOP('',(#25,#26,#27,#28));
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=DIRECTION('',(0.0,0.0,1.0));
+#32=DIRECTION('',(1.0,0.0,0.0));
+#33=AXIS2_PLACEMENT_3D('',#30,#31,#32);
+#34=PLANE('',#33);
+#35=FACE_OUTER_BOUND('',#29,.T.);
+#36=ADVANCED_FACE('',(#35),#34,.T.);
+#37=OPEN_SHELL('',(#36));
+#38=SHELL_BASED_SURFACE_MODEL('',(#37));
+#39=APPLICATION_CONTEXT('automotive_design');
+#40=PRODUCT_CONTEXT('',#39,'mechanical');
+#41=PRODUCT('Tb005','Tb005','',(#40));
+#42=PRODUCT_DEFINITION_FORMATION('','',#41);
+#43=PRODUCT_DEFINITION_CONTEXT('part definition',#39,'design');
+#44=PRODUCT_DEFINITION('','',#42,#43);
+#45=PRODUCT_DEFINITION_SHAPE('','',#44);
+#46=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#47=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#48=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#49=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-4),#46,'distance_accuracy_value','face_area_tol_squared_threshold');
+#50=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#49))GLOBAL_UNIT_ASSIGNED_CONTEXT((#46,#47,#48))REPRESENTATION_CONTEXT('ctx','3D'));
+#51=ADVANCED_BREP_SHAPE_REPRESENTATION('',(#38),#50);
+#52=SHAPE_DEFINITION_REPRESENTATION(#45,#51);
 ENDSEC;
 END-ISO-10303-21;

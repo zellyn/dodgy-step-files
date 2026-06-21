@@ -1,68 +1,83 @@
 ISO-10303-21;
-/* Tb006 - Edge length sub-tolerance squared in 2D pcurve domain
- * Defect: Pcurve U-domain length is exactly 1.0e-4 on a face whose declared
- * uncertainty is 1.0e-3. A kernel comparing pcurve domain to sqrt(tol)
- * (~3.16e-2) keeps the edge alive. A kernel comparing to tol*tol = 1.0e-6
- * declares it degenerate and drops the pcurve. The two policies disagree
- * on whether the edge has a usable parametric representation.
- */
+/* Tb006: EDGE_CURVE with PCURVE whose parameter range is 1e-4 (U-direction); declared tolerance 1.0E-3; pcurve degeneracy threshold tol*tol_param = 1e-6 kills the edge under one policy, while sqrt(tol) ≈ 3.16e-2 keeps it under another; receiver A keeps edge; receiver B drops it; small ADVANCED_FACE on a PLANE for tier-3 face[0].area assertion */
 HEADER;
-FILE_DESCRIPTION(('Tb006 pcurve domain at sqrt-tolerance threshold'),'2;1');
-FILE_NAME('Tb006.stp','2026-04-30T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Tb006'),'2;1');
+FILE_NAME('Tb006.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-/* Face on PLANE. */
-#10=CARTESIAN_POINT('o',(0.0,0.0,0.0));
-#11=DIRECTION('+z',(0.0,0.0,1.0));
-#12=DIRECTION('+x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
-#14=PLANE('s',#13);
-/* Edge with 3D length 1.0e-4 and pcurve U-range 1.0e-4. */
-#20=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
-#21=CARTESIAN_POINT('p1',(1.0E-4,0.0,0.0));
-#30=VERTEX_POINT('',#20);
-#31=VERTEX_POINT('',#21);
-#40=DIRECTION('+x_3d',(1.0,0.0,0.0));
-#41=VECTOR('vx_short',#40,1.0E-4);
-#42=LINE('line3d',#20,#41);
-/* Pcurve: 2D line in UV with same parameter range 0..1e-4 */
-#43=CARTESIAN_POINT('uv0',(0.0,0.0));
-#44=DIRECTION('+u',(1.0,0.0));
-#45=VECTOR('vu_short',#44,1.0E-4);
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(0.0003,0.0,0.0));
+#8=CARTESIAN_POINT('',(0.0003,0.0003,0.0));
+#9=CARTESIAN_POINT('',(0.0,0.0003,0.0));
+#10=VERTEX_POINT('',#6);
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=DIRECTION('',(1.0,0.0,0.0));
+#15=VECTOR('',#14,0.0003);
+#16=LINE('',#6,#15);
+#17=EDGE_CURVE('e_bot',#10,#11,#16,.T.);
+#18=DIRECTION('',(0.0,1.0,0.0));
+#19=VECTOR('',#18,0.0003);
+#20=LINE('',#7,#19);
+#21=EDGE_CURVE('e_rgt',#11,#12,#20,.T.);
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=VECTOR('',#22,0.0003);
+#24=LINE('',#9,#23);
+#25=EDGE_CURVE('e_top',#13,#12,#24,.T.);
+#26=DIRECTION('',(0.0,1.0,0.0));
+#27=VECTOR('',#26,0.0003);
+#28=LINE('',#6,#27);
+#29=EDGE_CURVE('e_lft',#10,#13,#28,.T.);
+#30=ORIENTED_EDGE('',$,$,#17,.T.);
+#31=ORIENTED_EDGE('',$,$,#21,.T.);
+#32=ORIENTED_EDGE('',$,$,#25,.F.);
+#33=ORIENTED_EDGE('',$,$,#29,.F.);
+#34=EDGE_LOOP('',(#30,#31,#32,#33));
+#35=FACE_OUTER_BOUND('',#34,.T.);
+#36=ADVANCED_FACE('',(#35),#5,.T.);
+#37=CARTESIAN_POINT('',(20.0,0.0,0.0));
+#38=DIRECTION('',(0.0,0.0,1.0));
+#39=DIRECTION('',(1.0,0.0,0.0));
+#40=AXIS2_PLACEMENT_3D('',#37,#38,#39);
+#41=CYLINDRICAL_SURFACE('',#40,1.0);
+#42=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT('','2D'));
+#43=CARTESIAN_POINT('pcurve_uv_start',(0.0,0.0));
+#44=DIRECTION('pcurve_udir',(1.0,0.0));
+#45=VECTOR('pcurve_urange_1e-4',#44,0.0001);
 #46=LINE('pcurve_line',#43,#45);
-#47=DEFINITIONAL_REPRESENTATION('pcurve_def',(#46),#80);
-#48=PCURVE('pc',#14,#47);
-#49=SURFACE_CURVE('sc',#42,(#48),.PCURVE_S1.);
-#50=EDGE_CURVE('e_subtolsq',#30,#31,#49,.T.);
-/* Trim the surface to the tiny edge region. */
-#60=RECTANGULAR_TRIMMED_SURFACE('trim',#14,0.0,1.0E-4,0.0,1.0E-4,.T.,.T.);
-/* Defect-class threshold: declared 1.0e-3 -> tol*tol = 1.0e-6 (drop) vs
- * sqrt(tol) ~ 3.16e-2 (keep). Edge length 1.0e-4 sits between. */
-#70=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#71=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#72=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#73=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#70,
-  'distance_accuracy_value','tolerance_at_pcurve_sqrt_threshold');
-#80=(GEOMETRIC_REPRESENTATION_CONTEXT(2)
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#70,#71,#72))
-  REPRESENTATION_CONTEXT('uv_ctx','2D'));
-#90=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#73))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#70,#71,#72))
-  REPRESENTATION_CONTEXT('ctx_3d','3D'));
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Tb006','Tb006','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9020=GEOMETRIC_CURVE_SET('curveset',(#50,#60));
-#9021=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9020),#90);
-#9022=SHAPE_DEFINITION_REPRESENTATION(#9005,#9021);
+#47=DEFINITIONAL_REPRESENTATION('pcurve_range_1e-4',(#46),#42);
+#48=PCURVE('pcurve_param_range_1e-4',#41,#47);
+#49=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#50=CARTESIAN_POINT('',(0.999999995,9.99999998333E-05,0.0));
+#51=VERTEX_POINT('',#49);
+#52=VERTEX_POINT('',#50);
+#53=DIRECTION('',(0.0,1.0,0.0));
+#54=VECTOR('',#53,0.0001);
+#55=LINE('',#49,#54);
+#56=SURFACE_CURVE('',#55,(#48),.PCURVE_S1.);
+#57=EDGE_CURVE('pcurve_sub_tol_squared',#51,#52,#56,.T.);
+#58=OPEN_SHELL('',(#36));
+#59=SHELL_BASED_SURFACE_MODEL('',(#58));
+#60=APPLICATION_CONTEXT('automotive_design');
+#61=PRODUCT_CONTEXT('',#60,'mechanical');
+#62=PRODUCT('Tb006','Tb006','',(#61));
+#63=PRODUCT_DEFINITION_FORMATION('','',#62);
+#64=PRODUCT_DEFINITION_CONTEXT('part definition',#60,'design');
+#65=PRODUCT_DEFINITION('','',#63,#64);
+#66=PRODUCT_DEFINITION_SHAPE('','',#65);
+#67=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#68=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#69=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#70=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#67,'distance_accuracy_value','pcurve_domain_length_squared_tol_test');
+#71=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#70))GLOBAL_UNIT_ASSIGNED_CONTEXT((#67,#68,#69))REPRESENTATION_CONTEXT('ctx','3D'));
+#72=ADVANCED_BREP_SHAPE_REPRESENTATION('',(#59),#71);
+#73=SHAPE_DEFINITION_REPRESENTATION(#66,#72);
 ENDSEC;
 END-ISO-10303-21;
