@@ -1,43 +1,33 @@
 ISO-10303-21;
-/* M032 - Validation property name not in CAx-IF list / mismatches
- * associated general_property name.
- * Defect: PROPERTY_DEFINITION.name is 'volume mm3' instead of one of
- * the recognized CAx-IF keywords ('volume', 'surface area', 'centroid',
- * etc.). Additionally, a USER_DEFINED_ATTRIBUTE / general_property
- * pairing here uses 'Volume' (mixed case) on the GENERAL_PROPERTY but
- * 'volume mm3' on the PROPERTY_DEFINITION. Tools that case-fold for
- * matching will diverge. */
+/* M032: GEOMETRIC_CURVE_SET containing PROPERTY_DEFINITION named 'volume mm3' (non-standard CAx-IF name) with associated GENERAL_PROPERTY named 'Volume'; input: AP242 STEP file where property_definition.name is 'volume mm3' instead of the CAx-IF recognized keyword 'volume'; also general_property.name 'Volume' differs from the linked property_definition.name 'volume mm3'; kernel must warn and accept: emit diagnostic on unrecognized name, ignore or log non-standard validation property; OCC silently accepts (no diagnostic, empty result); GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty; synonyms: GVP name not in CAx-IF list, validation property name unrecognized, general_property name mismatch, non-standard validation property name */
 HEADER;
-FILE_DESCRIPTION(('M032 test case','GVP name not in CAx-IF list / mismatched general_property'),'2;1');
-FILE_NAME('M032.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('M032'),'2;1');
+FILE_NAME('M032.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-     REPRESENTATION_CONTEXT('part','3D'));
-#300=PRODUCT('part','part','',(#310));
-#310=MECHANICAL_CONTEXT('',#1,'mechanical');
-#320=PRODUCT_DEFINITION_FORMATION('','',#300);
-#330=PRODUCT_DEFINITION('design','',#320,#340);
-#340=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#350=PRODUCT_DEFINITION_SHAPE('','',#330);
-/* Defect 1: 'volume mm3' is not a CAx-IF keyword (should be 'volume'). */
-#400=PROPERTY_DEFINITION('geometric validation property',
-       'volume mm3',#350);
-#410=MEASURE_REPRESENTATION_ITEM('volume mm3',VOLUME_MEASURE(1000.0),#10);
-#420=REPRESENTATION('',(#410),#14);
-#430=PROPERTY_DEFINITION_REPRESENTATION(#400,#420);
-/* Defect 2: GENERAL_PROPERTY links a UDA whose name 'Volume' does not
- * match the PROPERTY_DEFINITION.name 'volume mm3'. */
-#500=GENERAL_PROPERTY('UDA-Volume','Volume',$);
-#510=PROPERTY_DEFINITION_RELATIONSHIP('','',#500,#400);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=MEASURE_REPRESENTATION_ITEM('volume',VOLUME_MEASURE(98765.4),(SI_UNIT(.MILLI.,.METRE.) LENGTH_UNIT() NAMED_UNIT(*)));
+#2=GENERAL_PROPERTY('Volume','user-defined volume attribute',$);
+#3=PROPERTY_DEFINITION('volume mm3','non-standard CAx-IF validation property name',#2);
+#4=PROPERTY_DEFINITION_REPRESENTATION(#3,#1);
+#5=MEASURE_REPRESENTATION_ITEM('area',AREA_MEASURE(4321.0),(SI_UNIT(.MILLI.,.METRE.) LENGTH_UNIT() NAMED_UNIT(*)));
+#6=GENERAL_PROPERTY('Area','user-defined area attribute',$);
+#7=PROPERTY_DEFINITION('area sqmm','non-standard area name',#6);
+#8=PROPERTY_DEFINITION_REPRESENTATION(#7,#5);
+#9=GEOMETRIC_CURVE_SET('gvp-name-not-in-caxif-list',(#1,#2,#3,#4,#5,#6,#7,#8));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M032','M032','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
