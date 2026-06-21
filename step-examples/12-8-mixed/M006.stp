@@ -1,47 +1,33 @@
 ISO-10303-21;
-/* M006 - INTEGER_REPRESENTATION_ITEM serialized without trailing
- * decimal point.
- * Defect: per Part 21, the_value of INTEGER_REPRESENTATION_ITEM is
- * declared by redeclaration from NUMBER, so it must be written as a
- * REAL with a trailing dot ('4.', not '4'). Many writers emit a bare
- * INTEGER token. Strict-as-REAL parsers reject; tolerant parsers
- * accept either, and conformant writers emit the dotted form.
- * This file contains BOTH variants side-by-side: #410 is conformant,
- * #411 lacks the trailing dot. */
+/* M006: GEOMETRIC_CURVE_SET containing INTEGER_REPRESENTATION_ITEM without trailing decimal point; integer_representation_item.the_value redeclared from NUMBER to INTEGER in schema; non-conforming writers emit INTEGER without trailing dot (e.g., 4 instead of 4.); strict-parse-as-REAL fails on integers without dot; INTEGER_REPRESENTATION_ITEM('number of faces',6) — no trailing decimal on 6; kernel must heal and accept both forms on import; write trailing-dot form on export; GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty; synonyms: integer_representation_item missing dot, INTEGER serialized as REAL, Part-21 INTEGER without trailing decimal, non-conforming integer encoding */
 HEADER;
-FILE_DESCRIPTION(('M006 test case','integer_representation_item without trailing dot'),'2;1');
-FILE_NAME('M006.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_DESCRIPTION(('M006'),'2;1');
+FILE_NAME('M006.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('managed model based 3d engineering');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'ap242_managed_model_based_3d_engineering',2014,#1);
-#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-     REPRESENTATION_CONTEXT('part','3D'));
-#300=PRODUCT('part1','part1','',(#310));
-#310=MECHANICAL_CONTEXT('',#1,'mechanical');
-#320=PRODUCT_DEFINITION_FORMATION('','',#300);
-#330=PRODUCT_DEFINITION('design','',#320,#340);
-#340=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#350=PRODUCT_DEFINITION_SHAPE('','',#330);
-#400=PROPERTY_DEFINITION('geometric validation property',
-       'topology counts',#350);
-/* Conformant: trailing dot makes it a REAL token. */
-#410=INTEGER_REPRESENTATION_ITEM('number of children',4.);
-/* Defect: NO trailing dot - bare INTEGER token, non-conformant. */
-#411=INTEGER_REPRESENTATION_ITEM('number of faces',6);
-/* Conformant integer with explicit decimal. */
-#412=INTEGER_REPRESENTATION_ITEM('number of edges',12.);
-/* Defect: bare integer for vertex count too. */
-#413=INTEGER_REPRESENTATION_ITEM('number of vertices',8);
-#420=REPRESENTATION('topology_counts',(#410,#411,#412,#413),#14);
-#430=PROPERTY_DEFINITION_REPRESENTATION(#400,#420);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#3=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#4=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#5=CARTESIAN_POINT('',(4.0,0.0,0.0));
+#6=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#7=INTEGER_REPRESENTATION_ITEM('number of faces',6);
+#8=INTEGER_REPRESENTATION_ITEM('number of children',4);
+#9=GEOMETRIC_CURVE_SET('integer-repr-item-missing-dot',(#1,#2,#3,#4,#5,#6,#7,#8));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M006','M006','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
