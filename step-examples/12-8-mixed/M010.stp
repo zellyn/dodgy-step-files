@@ -1,46 +1,40 @@
 ISO-10303-21;
-/* M010 - Bound vs. unbound supplemental elements (planes, lines).
- * Defect: NX-style preprocessors emit reference planes as unbounded
- * PLANE and centerlines as unbounded LINE inside a
- * CONSTRUCTIVE_GEOMETRY_REPRESENTATION. CATIA-style consumers expect
- * bounded FACE_SURFACE / EDGE_CURVE elements with explicit extent.
- * Round-tripping fails when a bounded reader receives an unbounded
- * element with no fallback, or when name-bearing elements lose their
- * label during the bound->unbound conversion.
- * This file emits a NAMED unbounded reference PLANE and a NAMED
- * unbounded centerline LINE in a CGR. */
+/* M010: GEOMETRIC_CURVE_SET containing CONSTRUCTIVE_GEOMETRY_REPRESENTATION with one named unbounded PLANE and one named unbounded LINE; NX-style writers emit unbounded PLANE/LINE supplemental elements; CATIA-style readers require bounded face_surface/edge_curve — round-trip fails; name-bearing supplemental elements lose their name on bound→unbound conversion; kernel must heal: auto-generate bounds from model extents on import; GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty; synonyms: bound vs unbound supplemental geometry, datum plane unbounded vs bounded, centerline lost on round-trip, supplemental element type mismatch */
 HEADER;
-FILE_DESCRIPTION(('M010 test case','unbounded supplemental plane and line in CGR'),'2;1');
-FILE_NAME('M010.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_DESCRIPTION(('M010'),'2;1');
+FILE_NAME('M010.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('managed model based 3d engineering');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'ap242_managed_model_based_3d_engineering',2014,#1);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('reference_datum_plane_unbounded',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=DIRECTION('',(1.0,0.0,0.0));
+#8=VECTOR('',#7,1.0);
+#9=LINE('centerline_unbounded',#6,#8);
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 #11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
 #12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-     REPRESENTATION_CONTEXT('part','3D'));
-/* Unbounded reference plane (datum_plane_A) */
-#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#101=DIRECTION('',(0.0,0.0,1.0));
-#102=DIRECTION('',(1.0,0.0,0.0));
-#103=AXIS2_PLACEMENT_3D('',#100,#101,#102);
-#110=PLANE('datum_plane_A',#103);
-/* Unbounded centerline (axis_of_symmetry) */
-#120=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#121=DIRECTION('',(0.0,0.0,1.0));
-#122=VECTOR('',#121,1.0);
-#130=LINE('axis_of_symmetry',#120,#122);
-/* Constructive_Geometry_Representation aggregates the supplemental
- * items. Receivers expecting bounded FACE_SURFACE/EDGE_CURVE will
- * have nothing to import here. */
-#200=CONSTRUCTIVE_GEOMETRY_REPRESENTATION('supplemental_geom',
-       (#110,#130),#14);
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#10,'distance_accuracy_value','');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))REPRESENTATION_CONTEXT('','3D'));
+#15=CONSTRUCTIVE_GEOMETRY_REPRESENTATION('supplemental_geometry',(#5,#9),#14);
+#16=GEOMETRIC_CURVE_SET('bound-vs-unbound-supplemental',(#5,#9,#15));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M010','M010','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#16),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

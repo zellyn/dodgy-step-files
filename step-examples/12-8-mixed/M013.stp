@@ -1,56 +1,85 @@
 ISO-10303-21;
-/* M013 - Saved-view supplemental geometry split across multiple CGRs.
- * Recommended pattern: one global CGR with all supplemental elements,
- * PLUS one or more shape_representation instances per saved view,
- * tagged with description_attribute = 'supplemental geometry subset'
- * and listing the subset of elements visible in that view.
- * This file demonstrates the pattern: 4 supplemental planes total
- * (#110, #114, #118, #122). View1 shows planes #110, #114; View2
- * shows planes #114, #118, #122. Two SR instances carry the magic
- * description and reference the subset items. */
+/* M013: GEOMETRIC_CURVE_SET containing CONSTRUCTIVE_GEOMETRY_REPRESENTATION with 10 planes, plus two SHAPE_REPRESENTATIONs tagged with DESCRIPTION_ATTRIBUTE 'supplemental geometry subset' for two saved views; each view subset holds 3 of the 10 planes; split across multiple CGRs without the recommended global-CGR-plus-subset pattern; kernel must read the magic description and treat those shape_representations as supplemental subsets, not as part geometry; GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty; synonyms: saved view supplemental split, CGR scattered across views, supplemental geometry in multiple representations, saved-view subset CGR */
 HEADER;
-FILE_DESCRIPTION(('M013 test case','saved-view supplemental geometry subsets'),'2;1');
-FILE_NAME('M013.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_DESCRIPTION(('M013'),'2;1');
+FILE_NAME('M013.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('managed model based 3d engineering');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'ap242_managed_model_based_3d_engineering',2014,#1);
-#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-     REPRESENTATION_CONTEXT('part','3D'));
-/* Four supplemental planes */
-#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#101=DIRECTION('',(0.0,0.0,1.0));
-#102=DIRECTION('',(1.0,0.0,0.0));
-#103=AXIS2_PLACEMENT_3D('',#100,#101,#102);
-#110=PLANE('plane_A',#103);
-#104=CARTESIAN_POINT('',(0.0,0.0,5.0));
-#113=AXIS2_PLACEMENT_3D('',#104,#101,#102);
-#114=PLANE('plane_B',#113);
-#105=CARTESIAN_POINT('',(0.0,0.0,10.0));
-#117=AXIS2_PLACEMENT_3D('',#105,#101,#102);
-#118=PLANE('plane_C',#117);
-#106=CARTESIAN_POINT('',(0.0,0.0,15.0));
-#121=AXIS2_PLACEMENT_3D('',#106,#101,#102);
-#122=PLANE('plane_D',#121);
-/* Global CGR contains all four. */
-#200=CONSTRUCTIVE_GEOMETRY_REPRESENTATION('all_supplemental',
-       (#110,#114,#118,#122),#14);
-/* Saved-view subsets via tagged shape_representation. */
-#300=REPRESENTATION('view1_subset',(#110,#114),#14);
-#301=DESCRIPTIVE_REPRESENTATION_ITEM('description_attribute',
-       'supplemental geometry subset');
-#302=REPRESENTATION('view1_subset_tagged',(#110,#114,#301),#14);
-#310=REPRESENTATION('view2_subset',(#114,#118,#122),#14);
-#311=DESCRIPTIVE_REPRESENTATION_ITEM('description_attribute',
-       'supplemental geometry subset');
-#312=REPRESENTATION('view2_subset_tagged',(#114,#118,#122,#311),#14);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#2=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#3=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#4=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#1,'distance_accuracy_value','');
+#5=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#4))GLOBAL_UNIT_ASSIGNED_CONTEXT((#1,#2,#3))REPRESENTATION_CONTEXT('','3D'));
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=DIRECTION('',(0.0,0.0,1.0));
+#8=DIRECTION('',(1.0,0.0,0.0));
+#9=AXIS2_PLACEMENT_3D('',#6,#7,#8);
+#10=PLANE('datum_plane_0',#9);
+#11=CARTESIAN_POINT('',(0.0,0.0,10.0));
+#12=DIRECTION('',(0.0,0.0,1.0));
+#13=DIRECTION('',(1.0,0.0,0.0));
+#14=AXIS2_PLACEMENT_3D('',#11,#12,#13);
+#15=PLANE('datum_plane_1',#14);
+#16=CARTESIAN_POINT('',(0.0,0.0,20.0));
+#17=DIRECTION('',(0.0,0.0,1.0));
+#18=DIRECTION('',(1.0,0.0,0.0));
+#19=AXIS2_PLACEMENT_3D('',#16,#17,#18);
+#20=PLANE('datum_plane_2',#19);
+#21=CARTESIAN_POINT('',(0.0,0.0,30.0));
+#22=DIRECTION('',(0.0,0.0,1.0));
+#23=DIRECTION('',(1.0,0.0,0.0));
+#24=AXIS2_PLACEMENT_3D('',#21,#22,#23);
+#25=PLANE('datum_plane_3',#24);
+#26=CARTESIAN_POINT('',(0.0,0.0,40.0));
+#27=DIRECTION('',(0.0,0.0,1.0));
+#28=DIRECTION('',(1.0,0.0,0.0));
+#29=AXIS2_PLACEMENT_3D('',#26,#27,#28);
+#30=PLANE('datum_plane_4',#29);
+#31=CARTESIAN_POINT('',(0.0,0.0,50.0));
+#32=DIRECTION('',(0.0,0.0,1.0));
+#33=DIRECTION('',(1.0,0.0,0.0));
+#34=AXIS2_PLACEMENT_3D('',#31,#32,#33);
+#35=PLANE('datum_plane_5',#34);
+#36=CARTESIAN_POINT('',(0.0,0.0,60.0));
+#37=DIRECTION('',(0.0,0.0,1.0));
+#38=DIRECTION('',(1.0,0.0,0.0));
+#39=AXIS2_PLACEMENT_3D('',#36,#37,#38);
+#40=PLANE('datum_plane_6',#39);
+#41=CARTESIAN_POINT('',(0.0,0.0,70.0));
+#42=DIRECTION('',(0.0,0.0,1.0));
+#43=DIRECTION('',(1.0,0.0,0.0));
+#44=AXIS2_PLACEMENT_3D('',#41,#42,#43);
+#45=PLANE('datum_plane_7',#44);
+#46=CARTESIAN_POINT('',(0.0,0.0,80.0));
+#47=DIRECTION('',(0.0,0.0,1.0));
+#48=DIRECTION('',(1.0,0.0,0.0));
+#49=AXIS2_PLACEMENT_3D('',#46,#47,#48);
+#50=PLANE('datum_plane_8',#49);
+#51=CARTESIAN_POINT('',(0.0,0.0,90.0));
+#52=DIRECTION('',(0.0,0.0,1.0));
+#53=DIRECTION('',(1.0,0.0,0.0));
+#54=AXIS2_PLACEMENT_3D('',#51,#52,#53);
+#55=PLANE('datum_plane_9',#54);
+#56=CONSTRUCTIVE_GEOMETRY_REPRESENTATION('all_supplemental_planes',(#10,#15,#20,#25,#30,#35,#40,#45,#50,#55),#5);
+#57=SHAPE_REPRESENTATION('view1_subset',(#10,#15,#20),#5);
+#58=DESCRIPTION_ATTRIBUTE('supplemental geometry subset',#57);
+#59=SHAPE_REPRESENTATION('view2_subset',(#35,#40,#45),#5);
+#60=DESCRIPTION_ATTRIBUTE('supplemental geometry subset',#59);
+#61=GEOMETRIC_CURVE_SET('saved-view-supplemental-split',(#10,#15,#20,#25,#30,#35,#40,#45,#50,#55,#56,#57,#59,#58,#60));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M013','M013','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#61),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

@@ -1,40 +1,35 @@
 ISO-10303-21;
-/* M015 - Tessellated PMI placement: third coordinate not zero in
- * tessellated_geometric_set (repositioned form preferred).
- * Defect: tessellated annotation lying in a plane at z=10 is emitted
- * with absolute 3D coordinates (every point has z=10) instead of the
- * preferred "repositioned" form, where the COORDINATES_LIST has z=0
- * and a REPOSITIONED_TESSELLATED_ITEM places the set at z=10 via an
- * AXIS2_PLACEMENT_3D. The non-repositioned form bloats the file and
- * loses the 2D semantic of an annotation. Readers must support both;
- * writers should prefer the repositioned form. */
+/* M015: GEOMETRIC_CURVE_SET containing TESSELLATED_GEOMETRIC_SET with absolute 3D coordinates at z=10 throughout; non-repositioned form: PMI annotation emits absolute coords with z≈10.0 instead of using REPOSITIONED_TESSELLATED_ITEM with z=0 in coord list; PMI v4.1 §8.2 prefers the repositioned form: coordinates_list z=0 + axis at z=10; readers requiring z=0 in tessellated_geometric_set reject the absolute form; kernel must heal: accept both absolute and repositioned forms; writers must prefer the repositioned form; GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty; synonyms: tessellated PMI z != 0, annotation third coordinate nonzero, tessellated_geometric_set placement wrong, repositioned tessellated form preferred */
 HEADER;
-FILE_DESCRIPTION(('M015 test case','tessellated annotation absolute coords (z!=0)'),'2;1');
-FILE_NAME('M015.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_DESCRIPTION(('M015'),'2;1');
+FILE_NAME('M015.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('managed model based 3d engineering');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'ap242_managed_model_based_3d_engineering',2014,#1);
-#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-     REPRESENTATION_CONTEXT('part','3D'));
-/* Coordinates: 4 points lying in z=10 plane (NOT z=0).
- * The recommended form would have z=0 here and a repositioning axis
- * at z=10 below. */
-#100=COORDINATES_LIST('annot_coords_absolute',4,
-       ((0.0,0.0,10.0),(1.0,0.0,10.0),
-        (1.0,1.0,10.0),(0.0,1.0,10.0)));
-/* tessellated_curve_set forming a square outline */
-#110=TESSELLATED_CURVE_SET('annot_outline',#100,((1,2,3,4,1)));
-/* Tessellated geometric set wrapping the curve set */
-#120=TESSELLATED_GEOMETRIC_SET('annot_set',(#110));
-#200=TESSELLATED_SHAPE_REPRESENTATION('annotation_repr',(#120),#14);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=COORDINATES_LIST('annot_coords_absolute',3,((0.,0.,10.0),(5.,0.,10.0),(5.,3.,10.0),(0.,3.,10.0)));
+#2=TESSELLATED_CURVE_SET('annot_outline',#1,((0,1,2,3,0)));
+#3=TESSELLATED_GEOMETRIC_SET('annotation_tgs',(#2));
+#4=CARTESIAN_POINT('',(0.0,0.0,10.0));
+#5=DIRECTION('',(0.0,0.0,1.0));
+#6=DIRECTION('',(1.0,0.0,0.0));
+#7=AXIS2_PLACEMENT_3D('',#4,#5,#6);
+#8=COORDINATES_LIST('annot_coords_repositioned',3,((0.,0.,0.),(5.,0.,0.),(5.,3.,0.),(0.,3.,0.)));
+#9=TESSELLATED_CURVE_SET('annot_outline_z0',#8,((0,1,2,3,0)));
+#10=REPOSITIONED_TESSELLATED_ITEM('',#9,#7);
+#11=GEOMETRIC_CURVE_SET('tess-pmi-z-nonzero-absolute',(#3,#10));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M015','M015','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#11),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
