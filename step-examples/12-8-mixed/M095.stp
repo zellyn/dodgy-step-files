@@ -1,25 +1,60 @@
 ISO-10303-21;
-/* M095 - AP238 machining_operation declares negative execution time.
- * Defect: a MEASURE_WITH_UNIT(TIME_MEASURE(-12.5), seconds) is
- * attached to a MACHINING_OPERATION as its execution duration. Cycle-
- * time estimators that sum operation times produce nonsense totals. */
+/* M095: AP238 machining_operation declares negative execution time */
+/* DEFECT: EXECUTION_TIME = TIME_MEASURE(-12.5) seconds — negative duration */
+/* ISO 10303-238 §5.6 requires non-negative time_measure values */
+/* Arises from timestamp arithmetic bug: end_time - start_time with args swapped */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'TIME_MEASURE') */
+/* Byte assertion: contains(b'MACHINING_OPERATION') */
 HEADER;
-FILE_DESCRIPTION(('M095 test case','AP238 negative execution time'),'2;1');
-FILE_NAME('M095.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M095: AP238 MACHINING_OPERATION with negative execution time'),'2;1');
+FILE_NAME('M095.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
+#1=APPLICATION_CONTEXT('step_nc_mim');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
+  'ap238_step_nc_mim',2007,#1);
+/* Standard unit context — mm */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#15=(NAMED_UNIT(*)SI_UNIT($,.SECOND.)TIME_UNIT());
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#15))
-     REPRESENTATION_CONTEXT('nc','3D'));
-/* Defect: TIME_MEASURE(-12.5) attached to operation. */
-#80=MEASURE_WITH_UNIT(TIME_MEASURE(-12.5),#15);
-#100=MACHINING_OPERATION('rough_pocket',$,$,$,#80,$);
-#200=WORKPLAN('main',(#100),$,$,$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('nc','3D'));
+/* Seconds unit for EXECUTION_TIME */
+#20=(NAMED_UNIT(*)SI_UNIT($,.SECOND.)TIME_UNIT());
+/* Byte assertion: contains(b'TIME_MEASURE') */
+/* DEFECT: TIME_MEASURE(-12.5) — negative duration violates §5.6 non-negativity */
+/* Correct value would be a positive number of seconds, e.g. TIME_MEASURE(45.0) */
+#21=TIME_MEASURE_WITH_UNIT(TIME_MEASURE(-12.5),#20);
+/* Target machined feature */
+#50=MACHINED_FEATURE('pocket_b',$,$,$,$,$);
+/* Byte assertion: contains(b'MACHINING_OPERATION') */
+/* Machining tool for the operation */
+#60=MACHINING_TOOL('endmill_8mm',$,$,$);
+/* DEFECT: MACHINING_OPERATION references #21 (negative TIME_MEASURE) as execution time */
+/* The -12.5 s duration causes cycle-time totals to go negative in downstream tooling */
+#70=MACHINING_OPERATION('mill_pocket',#60,$,#21,$,$,$,$,#50,$,$);
+/* Workingstep and workplan */
+#80=MACHINING_WORKINGSTEP('pocket_step',#50,#70,$);
+#90=WORKPLAN('main',(#80),$,$,$);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#300=GEOMETRIC_CURVE_SET('ap238-machining-operation-negative-execution-time',
+  (#21,#50,#60,#70,#80,#90));
+/* Product chain */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M095','M095','M095',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#300),#14);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;

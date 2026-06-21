@@ -1,30 +1,60 @@
 ISO-10303-21;
-/* M099 - AP238 tool feedrate declared as zero on a cutting move.
- * Defect: MACHINING_TOOL_FEEDSPEED carries value 0.0 mm/min while the
- * tool is in contact (not a dwell). The controller dwells indefinitely
- * with the spindle running, work-hardening the surface and burning
- * the tool tip. */
+/* M099: AP238 tool feedrate declared as zero on a cutting move */
+/* DEFECT: MACHINING_TOOL_FEEDSPEED carries POSITIVE_RATIO_MEASURE(0.0) */
+/* Zero feedrate on cutting move causes indefinite dwell — tool burns workpiece */
+/* Violates ISO 10303-238 §5.8 feedspeed positivity invariant */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'MACHINING_TOOL_FEEDSPEED') */
 HEADER;
-FILE_DESCRIPTION(('M099 test case','AP238 feedrate zero during cut'),'2;1');
-FILE_NAME('M099.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M099: AP238 MACHINING_TOOL_FEEDSPEED with zero feedrate'),'2;1');
+FILE_NAME('M099.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
+#1=APPLICATION_CONTEXT('step_nc_mim');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
+  'ap238_step_nc_mim',2007,#1);
+/* Standard unit context — mm */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#15=(NAMED_UNIT(*)SI_UNIT($,.SECOND.)TIME_UNIT());
-#16=(DERIVED_UNIT_ELEMENT(#10,1.0));
-#17=(DERIVED_UNIT_ELEMENT(#15,-1.0));
-#18=DERIVED_UNIT((#16,#17));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#15))
-     REPRESENTATION_CONTEXT('nc','3D'));
-/* Defect: feedrate zero. */
-#80=MEASURE_WITH_UNIT(POSITIVE_RATIO_MEASURE(0.0),#18);
-#90=MACHINING_TOOL_FEEDSPEED($,#80,$);
-#100=MACHINING_OPERATION('finish_pass',$,$,$,$,$);
-#200=WORKPLAN('main',(#100),$,$,$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('nc','3D'));
+/* Feed rate unit base: mm (per minute implied by usage context) */
+#20=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+/* Byte assertion: contains(b'MACHINING_TOOL_FEEDSPEED') */
+/* DEFECT: POSITIVE_RATIO_MEASURE(0.0) — zero feedrate on cutting move */
+/* POSITIVE_RATIO_MEASURE domain requires strictly positive values > 0 */
+/* Zero feed causes controller to dwell indefinitely during cut */
+#21=MEASURE_WITH_UNIT(POSITIVE_RATIO_MEASURE(0.0),#20);
+/* MACHINING_TOOL_FEEDSPEED wrapping the zero feed measure */
+#22=MACHINING_TOOL_FEEDSPEED($,#21,$);
+/* Target machined feature — a face milling pass */
+#50=MACHINED_FEATURE('face_d',$,$,$,$,$);
+/* 50mm face mill — will burn if feedrate is zero */
+#60=MACHINING_TOOL('facemill_50mm',$,$,$);
+/* MACHINING_OPERATION references zero feedspeed #22 — DEFECT propagation */
+/* Controller dwells at each point in the toolpath with spindle running */
+#70=MACHINING_OPERATION('cut_face',#60,#22,$,$,$,$,$,#50,$,$);
+#80=MACHINING_WORKINGSTEP('face_step',#50,#70,$);
+#90=WORKPLAN('main',(#80),$,$,$);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#300=GEOMETRIC_CURVE_SET('ap238-tool-feedrate-zero-on-cutting-move',
+  (#21,#22,#50,#60,#70,#80,#90));
+/* Product chain */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M099','M099','M099',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#300),#14);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;
