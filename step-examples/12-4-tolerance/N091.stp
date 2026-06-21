@@ -1,67 +1,76 @@
 ISO-10303-21;
-/* N091 - ShapeFix_Edge.FixSameParameter wrong-floor-clamp
- * Defect: ideal SameParameter tolerance is 1.0e-9 (sub-precision) but the
- * implementation floors the result to 1.0e-7 minimum, causing legitimate
- * high-precision edges to be over-toleranced and lose fidelity.
- * Reproducer: edge whose parametric-vs-3D deviation measures 1.0e-9,
- * gets clamped up to 1.0e-7 despite 1.0e-9 being valid in the context.
- */
+/* N091: OPEN_SHELL face with edge_subprecision (1e-9 ideal tolerance) and edge_normal; ultra-precision context 1e-10; FixSameParameter floors 1e-9 up to 1e-7 floor-clamp — legitimate high-precision edge loses fidelity */
 HEADER;
-FILE_DESCRIPTION(('N091 - FixSameParameter floor clamp defect'),'2;1');
-FILE_NAME('N091.stp','2026-06-15T00:00:00',('auto-generated'),(''),'auto-generated','','');
+FILE_DESCRIPTION(('N091'),'2;1');
+FILE_NAME('N091.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Ultra-precision context: UNCERTAINTY_MEASURE declares 1.0e-10 */
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-/* Edge with ideal tolerance 1.0e-9 (should survive, but will be clamped to 1.0e-7) */
-#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#21=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#22=VERTEX_POINT('v0',#20);
-#23=VERTEX_POINT('v1',#21);
-/* Curve: nearly-perfect parametrization with 1.0e-9 max deviation */
-#30=DIRECTION('',(1.0,0.0,0.0));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#6=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#7=VERTEX_POINT('v0',#5);
+#8=VERTEX_POINT('v1',#6);
+#9=DIRECTION('',(1.0,0.0,0.0));
+#10=VECTOR('',#9,1.0);
+#11=LINE('',#5,#10);
+#12=EDGE_CURVE('edge_subprecision',#7,#8,#11,.T.);
+#13=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#14=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#15=VERTEX_POINT('v2',#13);
+#16=VERTEX_POINT('v3',#14);
+#17=DIRECTION('',(1.0,0.0,0.0));
+#18=VECTOR('',#17,1.0);
+#19=LINE('',#13,#18);
+#20=EDGE_CURVE('edge_normal',#15,#16,#19,.T.);
+#21=CARTESIAN_POINT('',(2.0,1.0,0.0));
+#22=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#23=VERTEX_POINT('',#21);
+#24=VERTEX_POINT('',#22);
+#25=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#26=DIRECTION('',(1.0,0.0,0.0));
+#27=VECTOR('',#26,0.0);
+#28=LINE('',#6,#27);
+#29=EDGE_CURVE('',#8,#15,#28,.T.);
+#30=DIRECTION('',(0.0,1.0,0.0));
 #31=VECTOR('',#30,1.0);
-#32=LINE('',#20,#31);
-/* Edge references the nearly-perfect curve */
-#40=EDGE_CURVE('edge_subprecision',#22,#23,#32,.T.);
-/* Second edge with wider tolerance for contrast */
-#50=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#51=CARTESIAN_POINT('',(2.0,0.0,0.0));
-#52=VERTEX_POINT('v2',#50);
-#53=VERTEX_POINT('v3',#51);
-#60=DIRECTION('',(1.0,0.0,0.0));
-#61=VECTOR('',#60,1.0);
-#62=LINE('',#50,#61);
-#63=EDGE_CURVE('edge_normal',#52,#53,#62,.T.);
-/* Wire formed from both edges */
-#70=ORIENTED_EDGE('',*,*,#40,.T.);
-#71=ORIENTED_EDGE('',*,*,#63,.T.);
-#72=EDGE_LOOP('wire_loop',(#70,#71));
-/* Degenerate face for shell wrapping */
-#80=PLANE('',#13);
-#81=FACE_OUTER_BOUND('',#72,.T.);
-#82=ADVANCED_FACE('face_from_edges',(#81),#80,.T.);
-#83=OPEN_SHELL('wire_shell',(#82));
-/* Product chain with mandatory units and uncertainty at 1.0e-10 */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('N091','N091','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-10),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#83));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#32=LINE('',#14,#31);
+#33=EDGE_CURVE('',#16,#23,#32,.T.);
+#34=DIRECTION('',(-1.0,0.0,0.0));
+#35=VECTOR('',#34,2.0);
+#36=LINE('',#21,#35);
+#37=EDGE_CURVE('',#23,#24,#36,.T.);
+#38=DIRECTION('',(0.0,-1.0,0.0));
+#39=VECTOR('',#38,1.0);
+#40=LINE('',#22,#39);
+#41=EDGE_CURVE('',#24,#7,#40,.T.);
+#42=ORIENTED_EDGE('',$,$,#12,.T.);
+#43=ORIENTED_EDGE('',$,$,#20,.T.);
+#44=ORIENTED_EDGE('',$,$,#33,.T.);
+#45=ORIENTED_EDGE('',$,$,#37,.T.);
+#46=ORIENTED_EDGE('',$,$,#41,.T.);
+#47=EDGE_LOOP('wire_loop',(#42,#43,#44,#45,#46));
+#48=FACE_OUTER_BOUND('',#47,.T.);
+#49=PLANE('',#4);
+#50=ADVANCED_FACE('face_from_edges',(#48),#49,.T.);
+#51=OPEN_SHELL('wire_shell',(#50));
+#52=SHELL_BASED_SURFACE_MODEL('',(#51));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('N091','N091','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.000000E-10).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#52),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
