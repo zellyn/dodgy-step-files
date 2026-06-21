@@ -1,28 +1,58 @@
 ISO-10303-21;
-/* M169 - AP238 TURNING_ROUGHING with stepover > tool nose radius.
- * Defect: a roughing-turning op declares a radial stepover (e.g. 4.0 mm)
- * larger than the cutting-tool's nose radius (0.8 mm); each successive
- * pass leaves an unsupported scallop the tool can't reach, producing a
- * stair-stepped surface and gouging the next pass. */
+/* M169: AP238 turning_roughing stepover exceeds tool nose radius */
+/* DEFECT: TURNING_ROUGHING stepover=4.0mm; TURNING_MACHINING_TOOL nose_radius=0.8mm */
+/* Each pass leaves 3.2mm scallop nose cannot reach — stair-step surface */
+/* STEP-NC programmer used tool-diameter-based stepover instead of nose-radius rule */
+/* Per ISO 10303-238 §5.8 turning stepover must not exceed nose radius */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'TURNING_ROUGHING') */
+/* Byte assertion: contains(b'TURNING_MACHINING_TOOL') */
 HEADER;
-FILE_DESCRIPTION(('M169 test case','AP238 turning stepover exceeds nose radius'),'2;1');
-FILE_NAME('M169.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M169: AP238 turning_roughing stepover 4.0mm exceeds nose radius 0.8mm'),'2;1');
+FILE_NAME('M169.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 3 1 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('nc','3D'));
-/* Tool nose radius: 0.8 mm. */
-#80=MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(0.8),#10);
-#90=TURNING_MACHINING_TOOL('nose_r0p8',$,$,$,#80);
-/* Defect: stepover 4.0 mm >> nose radius 0.8 mm. */
-#95=MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(4.0),#10);
-#100=TURNING_ROUGHING('rough_pass',$,$,$,$,$,#90,#95);
-#200=WORKPLAN('main',(#100),$,$,$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* mm length unit reference for MEASURE_WITH_UNIT */
+#15=SI_UNIT(.MILLI.,.METRE.);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#20=GEOMETRIC_CURVE_SET('ap238-turning-roughing-stepover-exceeds-tool-nose-radius',
+  (#52,#54,#60));
+/* WORKPLAN 'rough_turn_program' — AP238 top-level NC program */
+#50=WORKPLAN('rough_turn_program','Rough turning workplan',(),$,(#51));
+/* MACHINING_WORKINGSTEP links workpiece to roughing operation */
+#51=MACHINING_WORKINGSTEP('rough_turn_step','Rough turning workingstep',#52,#60,$);
+/* Byte assertion: contains(b'TURNING_MACHINING_TOOL') */
+/* TURNING_MACHINING_TOOL 'turn_rough_tool': nose_radius = 0.8mm */
+#55=MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(0.8),#15);
+#54=TURNING_MACHINING_TOOL('turn_rough_tool',$,#55,$,$,$,$,$,$);
+/* Byte assertion: contains(b'TURNING_ROUGHING') */
+/* DEFECT: TURNING_ROUGHING stepover = 4.0mm > nose_radius 0.8mm */
+/* stepover = MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(4.0), mm) */
+#53=MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(4.0),#15);
+#52=TURNING_ROUGHING('roughing_pass',$,$,$,#53,$,#54);
+/* WORKPIECE 'cyl_rough_workpiece' */
+#60=WORKPIECE('cyl_rough_workpiece','Cylindrical workpiece for rough turning',$,$,$,$,$);
+/* Product chain */
+#100=APPLICATION_CONTEXT('mechanical design');
+#101=PRODUCT_CONTEXT('',#100,'mechanical');
+#102=PRODUCT('M169','M169','M169',(#101));
+#103=PRODUCT_DEFINITION_FORMATION('','',#102);
+#104=PRODUCT_DEFINITION_CONTEXT(#100,'design');
+#105=PRODUCT_DEFINITION('','',#103,#104);
+#106=PRODUCT_DEFINITION_SHAPE('','',#105);
+#107=SHAPE_REPRESENTATION('',(#20),#14);
+#108=SHAPE_DEFINITION_REPRESENTATION(#106,#107);
 ENDSEC;
 END-ISO-10303-21;

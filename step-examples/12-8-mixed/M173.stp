@@ -1,32 +1,63 @@
 ISO-10303-21;
-/* M173 - AP238 MILLING_TOOLPATH consecutive points beyond tool diameter.
- * Defect: successive points along a milling toolpath are spaced 12 mm
- * apart while the tool diameter is 6 mm. Linear interpolation between
- * those samples leaves stock between passes and the toolpath has no
- * implicit guarantee of contiguous engagement; the controller either
- * over-feeds or leaves uncut islands. */
+/* M173: AP238 milling_toolpath consecutive points spaced beyond tool diameter */
+/* DEFECT: MILLING_TOOLPATH points 12.0mm apart; MILLING_CUTTING_TOOL diameter 6.0mm */
+/* Ratio 2.0 — linear interpolation leaves 6mm uncut stock between samples */
+/* Controllers over-feed (gouge) or leave uncut islands between consecutive samples */
+/* Per ISO 10303-238 §6.2 milling toolpath sample spacing must not exceed tool diameter */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'MILLING_TOOLPATH') */
+/* Byte assertion: contains(b'MILLING_CUTTING_TOOL') */
 HEADER;
-FILE_DESCRIPTION(('M173 test case','AP238 milling-toolpath sampling exceeds tool diameter'),'2;1');
-FILE_NAME('M173.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M173: AP238 milling_toolpath sample spacing 12mm exceeds tool diameter 6mm'),'2;1');
+FILE_NAME('M173.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 3 1 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('nc','3D'));
-/* Tool diameter 6 mm. */
-#90=MILLING_CUTTING_TOOL('endmill_6mm',$,$,$,
-  MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(6.0),#10));
-/* Defect: toolpath samples 12 mm apart - twice the tool diameter. */
-#50=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
-#51=CARTESIAN_POINT('p1',(12.0,0.0,0.0));
-#52=CARTESIAN_POINT('p2',(24.0,0.0,0.0));
-#60=POLYLINE('jumpy_path',(#50,#51,#52));
-#100=MILLING_TOOLPATH('coarse_path',$,$,$,$,#60,#90);
-#200=WORKPLAN('main',(#100),$,$,$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* mm length unit reference for MEASURE_WITH_UNIT */
+#15=SI_UNIT(.MILLI.,.METRE.);
+/* POLYLINE backing the sparse toolpath — four points 12mm apart */
+/* Point spacing 12.0mm >> tool diameter 6.0mm: leaves uncut stock between samples */
+#30=CARTESIAN_POINT('sample_0',(0.0,0.0,0.0));
+#31=CARTESIAN_POINT('sample_1',(12.0,0.0,0.0));
+#32=CARTESIAN_POINT('sample_2',(24.0,0.0,0.0));
+#33=CARTESIAN_POINT('sample_3',(36.0,0.0,0.0));
+#34=POLYLINE('sparse_path_polyline',(#30,#31,#32,#33));
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#20=GEOMETRIC_CURVE_SET('ap238-milling-toolpath-sample-spacing-12mm-exceeds-tool-dia-6mm',
+  (#34,#52,#54,#60));
+/* WORKPLAN 'sparse_mill_program' — AP238 top-level NC program */
+#50=WORKPLAN('sparse_mill_program','Sparse milling toolpath workplan',(),$,(#51));
+/* MACHINING_WORKINGSTEP links workpiece to milling operation */
+#51=MACHINING_WORKINGSTEP('sparse_mill_step','Sparse milling workingstep',#52,#60,$);
+/* Byte assertion: contains(b'MILLING_CUTTING_TOOL') */
+/* MILLING_CUTTING_TOOL 'mill_6mm': cutter diameter = 6.0mm */
+#55=MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(6.0),#15);
+#54=MILLING_CUTTING_TOOL('mill_6mm',$,#55,$,$,$,$,$,$);
+/* Byte assertion: contains(b'MILLING_TOOLPATH') */
+/* DEFECT: MILLING_TOOLPATH backed by POLYLINE with 12mm spacing > 6mm diameter */
+#52=MILLING_TOOLPATH('sparse_mill_path',#34,$,#54,$);
+/* WORKPIECE 'mill_workpiece' */
+#60=WORKPIECE('mill_workpiece','Milling workpiece for sparse toolpath test',$,$,$,$,$);
+/* Product chain */
+#100=APPLICATION_CONTEXT('mechanical design');
+#101=PRODUCT_CONTEXT('',#100,'mechanical');
+#102=PRODUCT('M173','M173','M173',(#101));
+#103=PRODUCT_DEFINITION_FORMATION('','',#102);
+#104=PRODUCT_DEFINITION_CONTEXT(#100,'design');
+#105=PRODUCT_DEFINITION('','',#103,#104);
+#106=PRODUCT_DEFINITION_SHAPE('','',#105);
+#107=SHAPE_REPRESENTATION('',(#20),#14);
+#108=SHAPE_DEFINITION_REPRESENTATION(#106,#107);
 ENDSEC;
 END-ISO-10303-21;

@@ -1,28 +1,55 @@
 ISO-10303-21;
-/* M171 - AP238 THREAD_TURNING pitch disagrees with thread-spec pitch.
- * Defect: a thread-turning op declares a lead/pitch of 1.5 mm while the
- * referenced thread feature's spec is M10x1.0 (pitch 1.0 mm). The
- * controller cuts a thread of the wrong pitch; the mating part won't
- * engage. */
+/* M171: AP238 thread_turning pitch differs from thread-spec pitch */
+/* DEFECT: THREAD_TURNING pitch=1.5mm; THREAD feature spec pitch=1.0mm (M10x1.0) */
+/* Controller cuts M10x1.5 thread; M10x1.0 mating fastener won't engage */
+/* STEP-NC programmer used coarse-thread template instead of fine-thread */
+/* Per ISO 10303-238 §5.8 thread_turning pitch must match feature spec */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'THREAD_TURNING') */
+/* Byte assertion: contains(b'THREAD(') */
 HEADER;
-FILE_DESCRIPTION(('M171 test case','AP238 thread-turning pitch mismatch'),'2;1');
-FILE_NAME('M171.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M171: AP238 thread_turning pitch 1.5mm vs thread-spec M10x1.0'),'2;1');
+FILE_NAME('M171.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 3 1 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('nc','3D'));
-/* Thread feature: M10x1.0 (pitch 1.0 mm spec). */
-#400=THREAD('M10x1p0_thread',$,$,$,
-  MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(1.0),#10));
-/* Defect: THREAD_TURNING op pitch (1.5 mm) doesn't match thread spec. */
-#100=THREAD_TURNING('cut_thread',$,$,$,$,$,#400,
-  MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(1.5),#10));
-#200=WORKPLAN('main',(#100),$,$,$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* mm length unit reference for MEASURE_WITH_UNIT */
+#15=SI_UNIT(.MILLI.,.METRE.);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#20=GEOMETRIC_CURVE_SET('ap238-thread-turning-pitch-1p5mm-vs-thread-spec-1p0mm',
+  (#52,#60));
+/* WORKPLAN 'thread_turn_program' — AP238 top-level NC program */
+#50=WORKPLAN('thread_turn_program','M10x1.0 thread turning workplan',(),$,(#51));
+/* MACHINING_WORKINGSTEP links workpiece to thread-turning operation */
+#51=MACHINING_WORKINGSTEP('thread_turn_step','Thread turning workingstep',#52,#60,$);
+/* Byte assertion: contains(b'THREAD(') */
+/* THREAD 'M10x1p0_thread': M10x1.0 feature — spec pitch = 1.0mm */
+#61=MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(1.0),#15);
+#60=THREAD('M10x1p0_thread','M10x1.0 thread feature',$,#61,$);
+/* Byte assertion: contains(b'THREAD_TURNING') */
+/* DEFECT: THREAD_TURNING pitch = 1.5mm, but THREAD feature spec is 1.0mm */
+#53=MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(1.5),#15);
+#52=THREAD_TURNING('thread_turn_pass',$,$,$,#53,#60,$);
+/* Product chain */
+#100=APPLICATION_CONTEXT('mechanical design');
+#101=PRODUCT_CONTEXT('',#100,'mechanical');
+#102=PRODUCT('M171','M171','M171',(#101));
+#103=PRODUCT_DEFINITION_FORMATION('','',#102);
+#104=PRODUCT_DEFINITION_CONTEXT(#100,'design');
+#105=PRODUCT_DEFINITION('','',#103,#104);
+#106=PRODUCT_DEFINITION_SHAPE('','',#105);
+#107=SHAPE_REPRESENTATION('',(#20),#14);
+#108=SHAPE_DEFINITION_REPRESENTATION(#106,#107);
 ENDSEC;
 END-ISO-10303-21;

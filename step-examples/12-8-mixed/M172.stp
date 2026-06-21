@@ -1,26 +1,51 @@
 ISO-10303-21;
-/* M172 - AP238 TURNING_OPERATION on workpiece with no rotation axis declared.
- * Defect: a TURNING_OPERATION targets a WORKPIECE that lacks any
- * rotational-axis declaration (no spindle_axis, no axis_of_revolution
- * placement). The controller has no axis to spin the stock around;
- * turning is meaningless on a non-rotating workpiece. */
+/* M172: AP238 turning_operation on workpiece without rotation axis */
+/* DEFECT: WORKPIECE 'prismatic_block' has no axis_of_revolution or spindle_axis */
+/* Turning requires workpiece to rotate about spindle axis — none declared */
+/* STEP-NC programmer applied lathe op template to milling-machine workpiece */
+/* Per ISO 10303-238 §5.8 turning op workpiece must declare rotational axis */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'TURNING_OPERATION(') */
+/* Byte assertion: contains(b'WORKPIECE(') */
 HEADER;
-FILE_DESCRIPTION(('M172 test case','AP238 turning on workpiece without rotation axis'),'2;1');
-FILE_NAME('M172.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M172: AP238 turning_operation on workpiece with no rotation axis'),'2;1');
+FILE_NAME('M172.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 3 1 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('nc','3D'));
-/* Defect: WORKPIECE has no axis_of_revolution / spindle_axis declared. */
-#400=WORKPIECE('block_stock_no_axis',$,$,$,$,$,$);
-#100=TURNING_OPERATION('turn_a_block',$,$,$,$,$,$,$);
-#300=MACHINING_WORKINGSTEP('ws1',$,#100,#400);
-#200=WORKPLAN('main',(#300),$,$,$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#20=GEOMETRIC_CURVE_SET('ap238-turning-operation-on-workpiece-without-rotation-axis',
+  (#52,#60));
+/* WORKPLAN 'turn_no_axis_program' — AP238 top-level NC program */
+#50=WORKPLAN('turn_no_axis_program','Turning no-axis defect workplan',(),$,(#51));
+/* MACHINING_WORKINGSTEP links workpiece to turning operation */
+#51=MACHINING_WORKINGSTEP('turn_no_axis_step','No-rotation-axis turning workingstep',#52,#60,$);
+/* Byte assertion: contains(b'TURNING_OPERATION(') */
+#52=TURNING_OPERATION('turn_no_axis',$,$,$,$,$,$);
+/* Byte assertion: contains(b'WORKPIECE(') */
+/* DEFECT: WORKPIECE has no axis_of_revolution — all optional axis fields are null */
+/* A prismatic block with no rotation axis is an invalid target for turning operations */
+#60=WORKPIECE('prismatic_block','Prismatic block workpiece no rotation axis',$,$,$,$,$);
+/* Product chain */
+#100=APPLICATION_CONTEXT('mechanical design');
+#101=PRODUCT_CONTEXT('',#100,'mechanical');
+#102=PRODUCT('M172','M172','M172',(#101));
+#103=PRODUCT_DEFINITION_FORMATION('','',#102);
+#104=PRODUCT_DEFINITION_CONTEXT(#100,'design');
+#105=PRODUCT_DEFINITION('','',#103,#104);
+#106=PRODUCT_DEFINITION_SHAPE('','',#105);
+#107=SHAPE_REPRESENTATION('',(#20),#14);
+#108=SHAPE_DEFINITION_REPRESENTATION(#106,#107);
 ENDSEC;
 END-ISO-10303-21;

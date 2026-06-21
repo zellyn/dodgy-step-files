@@ -1,26 +1,55 @@
 ISO-10303-21;
-/* M168 - AP238 TURNING_FINISHING_FACE with feed direction inverted.
- * Defect: a face-turning finishing op declares a feed_direction vector
- * pointing OUTWARD (toward the chuck) instead of toward the spindle axis.
- * The tool retracts during what should be the finishing pass, leaving
- * uncut stock and a witness mark from the entry point. */
+/* M168: AP238 turning_finishing_face with feed direction inverted */
+/* DEFECT: TURNING_FINISHING_FACE feed_direction = (1.0,0.0,0.0) outward */
+/* Face-turning requires inward feed toward spindle axis (-X direction) */
+/* Outward feed causes tool retraction during finishing pass — uncut stock remains */
+/* Per ISO 10303-238 §5.8 face-turning feed_direction must be inward */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'TURNING_FINISHING_FACE') */
+/* Byte assertion: contains(b'feed_outward_WRONG') */
 HEADER;
-FILE_DESCRIPTION(('M168 test case','AP238 face-turning feed direction reversed'),'2;1');
-FILE_NAME('M168.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M168: AP238 turning_finishing_face feed direction inverted outward'),'2;1');
+FILE_NAME('M168.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 3 1 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('nc','3D'));
-/* For face-turning the feed should point inward (-X toward axis).
-   Defect: feed_direction is +X (outward, away from axis). */
-#50=DIRECTION('feed_outward_WRONG',(1.0,0.0,0.0));
-#100=TURNING_FINISHING_FACE('finish_face_op',$,$,$,$,$,$,#50);
-#200=WORKPLAN('main',(#100),$,$,$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* mm length unit reference */
+#15=SI_UNIT(.MILLI.,.METRE.);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#20=GEOMETRIC_CURVE_SET('ap238-turning-finishing-face-feed-direction-inverted',
+  (#52,#60));
+/* WORKPLAN 'face_turn_program' — AP238 top-level NC program */
+#50=WORKPLAN('face_turn_program','Face turning finish program',(),$,(#51));
+/* MACHINING_WORKINGSTEP links workpiece to finishing operation */
+#51=MACHINING_WORKINGSTEP('face_finish_step','Face finishing workingstep',#52,#60,$);
+/* Byte assertion: contains(b'TURNING_FINISHING_FACE') */
+/* Byte assertion: contains(b'feed_outward_WRONG') */
+/* DEFECT: feed_direction = DIRECTION('feed_outward_WRONG',(1.0,0.0,0.0)) */
+/* Correct direction for face-turning is (-1.0,0.0,0.0) inward toward spindle */
+#53=DIRECTION('feed_outward_WRONG',(1.0,0.0,0.0));
+#52=TURNING_FINISHING_FACE('face_finish_pass',$,$,$,$,#53,$);
+/* WORKPIECE 'cyl_face_workpiece': cylindrical part being face-turned */
+#60=WORKPIECE('cyl_face_workpiece','Cylindrical workpiece for face turning',$,$,$,$,$);
+/* Product chain */
+#100=APPLICATION_CONTEXT('mechanical design');
+#101=PRODUCT_CONTEXT('',#100,'mechanical');
+#102=PRODUCT('M168','M168','M168',(#101));
+#103=PRODUCT_DEFINITION_FORMATION('','',#102);
+#104=PRODUCT_DEFINITION_CONTEXT(#100,'design');
+#105=PRODUCT_DEFINITION('','',#103,#104);
+#106=PRODUCT_DEFINITION_SHAPE('','',#105);
+#107=SHAPE_REPRESENTATION('',(#20),#14);
+#108=SHAPE_DEFINITION_REPRESENTATION(#106,#107);
 ENDSEC;
 END-ISO-10303-21;

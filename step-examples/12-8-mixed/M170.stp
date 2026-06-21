@@ -1,28 +1,58 @@
 ISO-10303-21;
-/* M170 - AP238 TURNING_FEED_DIRECTION ambiguous (radial vs axial conflict).
- * Defect: a turning op declares two feed-direction attributes that
- * disagree - one says feed is radial (.X.) while another says axial
- * (.Z.). The controller has no way to decide whether to perform a face-
- * turning or a longitudinal-turning move; some emit one, some the other,
- * some refuse the operation. */
+/* M170: AP238 turning feed-direction ambiguous (radial vs axial conflict) */
+/* DEFECT: TURNING_OPERATION has both radial_feed (X) and axial_feed (Z) populated */
+/* Per ISO 10303-238 §5.8 a turning op must have a single feed_direction invariant */
+/* Controller cannot decide face-turning vs longitudinal-turning — behaviour diverges */
+/* STEP-NC programmer merged two template operations, leaving both attributes non-null */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'TURNING_OPERATION(') */
+/* Byte assertion: contains(b'radial_feed') */
+/* Byte assertion: contains(b'axial_feed') */
 HEADER;
-FILE_DESCRIPTION(('M170 test case','AP238 turning feed-direction radial/axial conflict'),'2;1');
-FILE_NAME('M170.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M170: AP238 turning_operation radial vs axial feed direction conflict'),'2;1');
+FILE_NAME('M170.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 3 1 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('nc','3D'));
-/* Defect: TURNING_FEED_DIRECTION declared as both .RADIAL. and .AXIAL.
-   in the same operation via two contradictory attributes. */
-#50=DIRECTION('radial_feed',(1.0,0.0,0.0));
-#51=DIRECTION('axial_feed',(0.0,0.0,1.0));
-#100=TURNING_OPERATION('ambiguous_feed_op',$,$,$,$,#50,#51,$);
-#200=WORKPLAN('main',(#100),$,$,$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#20=GEOMETRIC_CURVE_SET('ap238-turning-operation-radial-vs-axial-feed-conflict',
+  (#52,#60));
+/* WORKPLAN 'turn_ambiguous_program' — AP238 top-level NC program */
+#50=WORKPLAN('turn_ambiguous_program','Ambiguous feed turning program',(),$,(#51));
+/* MACHINING_WORKINGSTEP links workpiece to turning operation */
+#51=MACHINING_WORKINGSTEP('ambiguous_feed_step','Ambiguous feed workingstep',#52,#60,$);
+/* Byte assertion: contains(b'radial_feed') */
+/* Byte assertion: contains(b'axial_feed') */
+/* DEFECT: both feed_direction attributes non-null simultaneously */
+/* radial_feed: (1.0,0.0,0.0) — face-turning direction */
+#53=DIRECTION('radial_feed',(1.0,0.0,0.0));
+/* axial_feed: (0.0,0.0,1.0) — longitudinal-turning direction */
+#54=DIRECTION('axial_feed',(0.0,0.0,1.0));
+/* Byte assertion: contains(b'TURNING_OPERATION(') */
+/* TURNING_OPERATION: tool=$ speed=$ feed=radial_feed feed2=axial_feed ... */
+#52=TURNING_OPERATION('turn_ambiguous_feed',$,$,#53,#54,$,$);
+/* WORKPIECE 'turn_workpiece' */
+#60=WORKPIECE('turn_workpiece','Workpiece for ambiguous-feed turning',$,$,$,$,$);
+/* Product chain */
+#100=APPLICATION_CONTEXT('mechanical design');
+#101=PRODUCT_CONTEXT('',#100,'mechanical');
+#102=PRODUCT('M170','M170','M170',(#101));
+#103=PRODUCT_DEFINITION_FORMATION('','',#102);
+#104=PRODUCT_DEFINITION_CONTEXT(#100,'design');
+#105=PRODUCT_DEFINITION('','',#103,#104);
+#106=PRODUCT_DEFINITION_SHAPE('','',#105);
+#107=SHAPE_REPRESENTATION('',(#20),#14);
+#108=SHAPE_DEFINITION_REPRESENTATION(#106,#107);
 ENDSEC;
 END-ISO-10303-21;
