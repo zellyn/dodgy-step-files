@@ -1,89 +1,66 @@
 ISO-10303-21;
-/* N073 — BRepLib.UpdateDeflection null-triangulation skip
- * Defect: UpdateDeflection checks if a face has triangulation; if reference is null,
- * it silently skips. Deflection state remains uninitialized (undefined, stale, or
- * zero), and downstream consumers may read garbage or assume face is
- * valid-triangulated when it is not.
- * Reproducer: Face created from surface (no triangulation attached). Call
- * UpdateDeflection(face, tol). If face->Triangulation() is null, routine returns
- * without setting deflection state.
- * Expected: Either compute deflection from surface geometry OR raise diagnostic flag.
- */
+/* N073: 5×5 CLOSED_SHELL planar face with no triangulation data; UpdateDeflection finds null face->Triangulation() and silently returns without setting deflection state — stale/undefined deflection downstream */
 HEADER;
-FILE_DESCRIPTION(('N073 BRepLib UpdateDeflection null-triangulation skip'),'2;1');
-FILE_NAME('N073.stp','2026-06-15T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('N073'),'2;1');
+FILE_NAME('N073.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-/* Planar face without explicit triangulation record.
-   UpdateDeflection called on this face will find null triangulation and skip. */
-#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('p1',(5.0,0.0,0.0));
-#12=CARTESIAN_POINT('p2',(5.0,5.0,0.0));
-#13=CARTESIAN_POINT('p3',(0.0,5.0,0.0));
-#20=VERTEX_POINT('v0',#10);
-#21=VERTEX_POINT('v1',#11);
-#22=VERTEX_POINT('v2',#12);
-#23=VERTEX_POINT('v3',#13);
-/* Simple edge-loop quad */
-#30=DIRECTION('d0',(1.0,0.0,0.0));
-#31=VECTOR('vec0',#30,5.0);
-#32=LINE('line0',#10,#31);
-#33=EDGE_CURVE('e0',#20,#21,#32,.T.);
-#34=DIRECTION('d1',(0.0,1.0,0.0));
-#35=VECTOR('vec1',#34,5.0);
-#36=LINE('line1',#11,#35);
-#37=EDGE_CURVE('e1',#21,#22,#36,.T.);
-#38=DIRECTION('d2',(-1.0,0.0,0.0));
-#39=VECTOR('vec2',#38,5.0);
-#40=LINE('line2',#12,#39);
-#41=EDGE_CURVE('e2',#22,#23,#40,.T.);
-#42=DIRECTION('d3',(0.0,-1.0,0.0));
-#43=VECTOR('vec3',#42,5.0);
-#44=LINE('line3',#13,#43);
-#45=EDGE_CURVE('e3',#23,#20,#44,.T.);
-#46=ORIENTED_EDGE('',*,*,#33,.T.);
-#47=ORIENTED_EDGE('',*,*,#37,.T.);
-#48=ORIENTED_EDGE('',*,*,#41,.T.);
-#49=ORIENTED_EDGE('',*,*,#45,.T.);
-#50=EDGE_LOOP('',(#46,#47,#48,#49));
-/* Plane surface (no triangulation attached in STEP data) */
-#60=DIRECTION('zdir',(0.0,0.0,1.0));
-#61=DIRECTION('xdir',(1.0,0.0,0.0));
-#62=AXIS2_PLACEMENT_3D('ax3',#10,#60,#61);
-#63=PLANE('xy_plane',#62);
-#64=FACE_OUTER_BOUND('',#50,.T.);
-/* ADVANCED_FACE with no triangulation — UpdateDeflection will skip */
-#65=ADVANCED_FACE('face',(#64),#63,.T.);
-#66=CLOSED_SHELL('shell',(#65));
-/* Units and nominal tolerance */
-#200=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#201=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#202=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#203=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-2),#200,
-  'distance_accuracy_value','');
-#204=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#203))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#200,#201,#202))
-  REPRESENTATION_CONTEXT('','3D'));
-/* PRODUCT CHAIN */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('N073','N073','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#66));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('p1',(5.0,0.0,0.0));
+#3=CARTESIAN_POINT('p2',(5.0,5.0,0.0));
+#4=CARTESIAN_POINT('p3',(0.0,5.0,0.0));
+#5=VERTEX_POINT('v0',#1);
+#6=VERTEX_POINT('v1',#2);
+#7=VERTEX_POINT('v2',#3);
+#8=VERTEX_POINT('v3',#4);
+#9=DIRECTION('d0',(1.0,0.0,0.0));
+#10=VECTOR('vec0',#9,5.0);
+#11=LINE('line0',#1,#10);
+#12=EDGE_CURVE('e0',#5,#6,#11,.T.);
+#13=DIRECTION('d1',(0.0,1.0,0.0));
+#14=VECTOR('vec1',#13,5.0);
+#15=LINE('line1',#2,#14);
+#16=EDGE_CURVE('e1',#6,#7,#15,.T.);
+#17=DIRECTION('d2',(-1.0,0.0,0.0));
+#18=VECTOR('vec2',#17,5.0);
+#19=LINE('line2',#3,#18);
+#20=EDGE_CURVE('e2',#7,#8,#19,.T.);
+#21=DIRECTION('d3',(0.0,-1.0,0.0));
+#22=VECTOR('vec3',#21,5.0);
+#23=LINE('line3',#4,#22);
+#24=EDGE_CURVE('e3',#8,#5,#23,.T.);
+#25=ORIENTED_EDGE('',$,$,#12,.T.);
+#26=ORIENTED_EDGE('',$,$,#16,.T.);
+#27=ORIENTED_EDGE('',$,$,#20,.T.);
+#28=ORIENTED_EDGE('',$,$,#24,.T.);
+#29=EDGE_LOOP('',(#25,#26,#27,#28));
+#30=FACE_OUTER_BOUND('',#29,.T.);
+#31=DIRECTION('zdir',(0.0,0.0,1.0));
+#32=DIRECTION('xdir',(1.0,0.0,0.0));
+#33=AXIS2_PLACEMENT_3D('ax3',#1,#31,#32);
+#34=PLANE('xy_plane',#33);
+#35=ADVANCED_FACE('face',(#30),#34,.T.);
+#36=CLOSED_SHELL('shell',(#35));
+#37=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#38=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#39=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#40=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-2),#37,'distance_accuracy_value','');
+#41=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#40))GLOBAL_UNIT_ASSIGNED_CONTEXT((#37,#38,#39))REPRESENTATION_CONTEXT('','3D'));
+#42=SHELL_BASED_SURFACE_MODEL('sbsm',(#36));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('N073','N073','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#42),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
