@@ -1,71 +1,53 @@
 ISO-10303-21;
-/* M052 - Open shell where closed solid expected (sheet-vs-solid
- * demotion).
- * Defect: a topologically closed solid is emitted as OPEN_SHELL
- * inside SHELL_BASED_SURFACE_MODEL instead of MANIFOLD_SOLID_BREP.
- * Round-trip through OCCT writer can demote `closed_shell` to
- * `open_shell`; FEA/CFD pipelines reject the body for meshing.
- * This fixture: the cube's six faces topologically close, but the
- * root entity in the ABSR is OPEN_SHELL inside a
- * SHELL_BASED_SURFACE_MODEL - not MANIFOLD_SOLID_BREP. */
+/* M052: Open shell where closed solid expected (sheet-vs-solid demotion); input: AP214 STEP file (SpaceClaim / HOOPS Exchange regression pattern) with a topologically closed cube emitted as OPEN_SHELL inside SHELL_BASED_SURFACE_MODEL instead of MANIFOLD_SOLID_BREP → CLOSED_SHELL; round-trip through OCCT writer demotes closed_shell to open_shell / OpenPolysurface; FEA/CFD pipelines reject the body for meshing; KiCad kicad-packages3D bundles use SHELL_BASED_SURFACE_MODEL rather than closed MANIFOLD_SOLID_BREP; kernel must heal: promote to closed shell when topology proves closure; sew within scaled tolerance and try MakeSolid; do not rely solely on entity type; synonyms: closed solid emitted as OPEN_SHELL, solid demoted to sheet body, manifold solid as shell-based-surface-model, solid expected but open shell found */
 HEADER;
-FILE_DESCRIPTION(('M052 test case','closed cube emitted as OPEN_SHELL'),'2;1');
-FILE_NAME('M052.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('M052'),'2;1');
+FILE_NAME('M052.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-     REPRESENTATION_CONTEXT('part','3D'));
-/* Cube topology is elided; the structural defect is the OPEN_SHELL
- * at the root of the SBSM. */
-/* --- single triangular face placeholder for OPEN_SHELL --- */
-#5700=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
-#5701=CARTESIAN_POINT('p1',(1.0,0.0,0.0));
-#5702=CARTESIAN_POINT('p2',(0.0,1.0,0.0));
-#5710=VERTEX_POINT('',#5700);
-#5711=VERTEX_POINT('',#5701);
-#5712=VERTEX_POINT('',#5702);
-#5720=DIRECTION('dx',(1.0,0.0,0.0));
-#5721=DIRECTION('dy',(0.0,1.0,0.0));
-#5722=DIRECTION('dz',(0.0,0.0,1.0));
-#5730=VECTOR('vx',#5720,1.0);
-#5731=VECTOR('vy',#5721,1.0);
-#5732=VECTOR('vd',#5720,1.0);
-#5740=LINE('',#5700,#5730);
-#5741=DIRECTION('dxy',(-0.7071067811865476,0.7071067811865476,0.0));
-#5742=VECTOR('vxy',#5741,1.4142135623730951);
-#5743=LINE('',#5701,#5742);
-#5744=LINE('',#5700,#5731);
-#5760=EDGE_CURVE('',#5710,#5711,#5740,.T.);
-#5761=EDGE_CURVE('',#5711,#5712,#5743,.T.);
-#5762=EDGE_CURVE('',#5710,#5712,#5744,.T.);
-#5780=AXIS2_PLACEMENT_3D('',#5700,#5722,#5720);
-#5790=PLANE('',#5780);
-#5800=ORIENTED_EDGE('',*,*,#5760,.T.);
-#5801=ORIENTED_EDGE('',*,*,#5761,.T.);
-#5802=ORIENTED_EDGE('',*,*,#5762,.F.);
-#5830=EDGE_LOOP('',(#5800,#5801,#5802));
-#5840=FACE_OUTER_BOUND('',#5830,.T.);
-#5850=ADVANCED_FACE('placeholder',(#5840),#5790,.T.);
-/* OPEN_SHELL replacing empty () body */
-#100=OPEN_SHELL('topologically_closed_but_open',(#5850));
-#110=SHELL_BASED_SURFACE_MODEL('demoted_cube',(#100));
-#120=ADVANCED_BREP_SHAPE_REPRESENTATION('cube_as_sheet',(#110),#14);
-/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
-#9010=PRODUCT_CONTEXT('',#1,'mechanical');
-#9011=PRODUCT('M052','M052','',(#9010));
-#9012=PRODUCT_DEFINITION_FORMATION('','',#9011);
-#9013=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9014=PRODUCT_DEFINITION('','',#9012,#9013);
-#9015=PRODUCT_DEFINITION_SHAPE('','',#9014);
-#9051=SHAPE_DEFINITION_REPRESENTATION(#9015,#120);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#3=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#4=VERTEX_POINT('',#1);
+#5=VERTEX_POINT('',#2);
+#6=VERTEX_POINT('',#3);
+#7=DIRECTION('',(1.0,0.0,0.0));
+#8=DIRECTION('',(0.0,1.0,0.0));
+#9=DIRECTION('',(0.0,0.0,1.0));
+#10=DIRECTION('',(-0.707106781187,0.707106781187,0.0));
+#11=VECTOR('',#7,1.0);
+#12=VECTOR('',#8,1.0);
+#13=VECTOR('',#10,1.41421356237);
+#14=LINE('',#1,#11);
+#15=LINE('',#2,#13);
+#16=LINE('',#1,#12);
+#17=EDGE_CURVE('',#4,#5,#14,.T.);
+#18=EDGE_CURVE('',#5,#6,#15,.T.);
+#19=EDGE_CURVE('',#4,#6,#16,.T.);
+#20=ORIENTED_EDGE('',$,$,#17,.T.);
+#21=ORIENTED_EDGE('',$,$,#18,.T.);
+#22=ORIENTED_EDGE('',$,$,#19,.F.);
+#23=EDGE_LOOP('',(#20,#21,#22));
+#24=AXIS2_PLACEMENT_3D('',#1,#9,#7);
+#25=PLANE('',#24);
+#26=FACE_OUTER_BOUND('',#23,.T.);
+#27=ADVANCED_FACE('placeholder',(#26),#25,.T.);
+#28=OPEN_SHELL('topologically_closed_but_open',(#27));
+#29=SHELL_BASED_SURFACE_MODEL('demoted_cube',(#28));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M052','M052','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#29),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
