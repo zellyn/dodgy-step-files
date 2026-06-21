@@ -1,31 +1,53 @@
 ISO-10303-21;
-/* M150 - AP210 differential-pair traces have > 5 % length difference.
- * Defect: a paired-trace net (e.g. USB_DP / USB_DM) declares one
- * conductor of length 50.0 mm and the other of length 56.0 mm
- * (12 % skew). High-speed differential signaling tolerates only a
- * small fraction (typically < 5 %) of length mismatch. The pair
- * fails timing closure. */
+/* M150: AP210 differential-pair traces have > 5% length mismatch */
+/* DEFECT: USB_DP=50.0mm, USB_DM=56.0mm — 12% length skew exceeds 5% tolerance */
+/* High-speed differential signaling (USB 2.0) requires < 5% length skew */
+/* 6mm mismatch at 480Mbit/s introduces ~41ps skew, causing ISI and BER failures */
+/* Per ISO 10303-210 §7 network electrical attributes must be validated */
+/* Byte assertion: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN') */
+/* Byte assertion: count_entity_def(b'CONDUCTOR_TRACK_PROFILE') >= 2 */
+/* Byte assertion: contains(b'NETWORK') */
 HEADER;
-FILE_DESCRIPTION(('M150 test case','AP210 differential pair length mismatch'),'2;1');
-FILE_NAME('M150.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M150: AP210 USB diff-pair length skew 12%'),'2;1');
+FILE_NAME('M150.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN') */
 FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('pcb','3D'));
-/* Differential-pair conductors with declared lengths. */
-#100=CONDUCTOR_TRACK_PROFILE('USB_DP_trace',LENGTH_MEASURE(50.0));
-#101=CONDUCTOR_TRACK_PROFILE('USB_DM_trace',LENGTH_MEASURE(56.0));
-/* Defect: NETWORK names them as a diff pair but length skew is 12 %. */
-#200=TERMINAL('term_dp','USB_DP_terminal',$);
-#201=TERMINAL('term_dm','USB_DM_terminal',$);
-#210=NETWORK_NODE('USB_DP_node',#200);
-#211=NETWORK_NODE('USB_DM_node',#201);
-#300=NETWORK('USB_diff_pair',(#210,#211),(#210));
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('pcb','3D'));
+/* Byte assertion: count_entity_def(b'CONDUCTOR_TRACK_PROFILE') >= 2 */
+/* USB_DP positive trace: 50.0 mm — reference length for the pair */
+#100=CONDUCTOR_TRACK_PROFILE('USB_DP',LENGTH_MEASURE(50.0),$,$);
+/* DEFECT: USB_DM negative trace: 56.0 mm — 12% longer than USB_DP */
+/* length skew = (56.0 - 50.0) / 50.0 = 12% >> 5% allowed for USB 2.0 */
+#101=CONDUCTOR_TRACK_PROFILE('USB_DM',LENGTH_MEASURE(56.0),$,$);
+/* Byte assertion: contains(b'NETWORK') */
+/* NETWORK 'USB_DIFF' groups both conductors as a differential pair */
+#200=NETWORK('USB_DIFF',(#100,#101));
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#300=GEOMETRIC_CURVE_SET('ap210-differential-pair-length-skew-usb-dp-dm',
+  (#100,#101,#200));
+/* Product chain */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M150','M150','M150',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#300),#14);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;

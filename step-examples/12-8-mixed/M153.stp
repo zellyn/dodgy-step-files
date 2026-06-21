@@ -1,27 +1,61 @@
 ISO-10303-21;
-/* M153 - AP210 buried via has only one terminating layer reference.
- * Defect: a buried VIA_DEFINITION is declared with a single
- * terminating LAMINATE_OR_PLY_DEFINITION. A buried via must terminate
- * at two distinct internal plies; with only one termination, the via
- * is dangling - it begins at one layer and goes nowhere. */
+/* M153: AP210 buried via has only one terminating layer reference */
+/* DEFECT: VIA_DEFINITION 'dangling_via' declares via_kind=BURIED */
+/* but references only one ply (inner_2) instead of two (inner_1 + inner_2) */
+/* A buried via needs start-ply and stop-ply; with one ply it goes nowhere */
+/* Per ISO 10303-210 §6 buried via two-endpoint invariant requires 2 plies */
+/* Byte assertion: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN') */
+/* Byte assertion: contains(b'VIA_DEFINITION') */
+/* Byte assertion: contains(b'BURIED') */
 HEADER;
-FILE_DESCRIPTION(('M153 test case','AP210 buried via single termination'),'2;1');
-FILE_NAME('M153.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M153: AP210 buried via with single termination ply'),'2;1');
+FILE_NAME('M153.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN') */
 FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('pcb','3D'));
-#100=MATERIAL_DESIGNATION('copper','signal layer',(#1));
-#200=LAMINATE_OR_PLY_DEFINITION('inner_2',$,#100,#100,LENGTH_MEASURE(0.035));
-/* Defect: terminating-plies list has only one entry; buried via must
- * have two endpoint plies. */
-#300=VIA_DEFINITION('dangling_buried_via',LENGTH_MEASURE(0.1),(#200));
-#301=DESCRIPTIVE_REPRESENTATION_ITEM('via_kind','BURIED');
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('pcb','3D'));
+/* 4-layer stackup plies */
+#100=LAMINATE_OR_PLY_DEFINITION('copper_top',LENGTH_MEASURE(0.035),$);
+#101=LAMINATE_OR_PLY_DEFINITION('inner_1',LENGTH_MEASURE(0.018),$);
+#102=LAMINATE_OR_PLY_DEFINITION('core',LENGTH_MEASURE(0.360),$);
+#103=LAMINATE_OR_PLY_DEFINITION('inner_2',LENGTH_MEASURE(0.018),$);
+#104=LAMINATE_OR_PLY_DEFINITION('copper_bot',LENGTH_MEASURE(0.035),$);
+#110=LAMINATE_TABLE('pcb_stackup',(#100,#101,#102,#103,#104));
+/* Byte assertion: contains(b'VIA_DEFINITION') */
+/* DEFECT: dangling_via only references #103 (inner_2) as termination *)
+/* A buried via from inner_1 to inner_2 must reference both #101 and #103 */
+#120=VIA_DEFINITION('dangling_via',LENGTH_MEASURE(0.1),LENGTH_MEASURE(0.1),$,#103);
+/* Byte assertion: contains(b'BURIED') */
+/* via_kind='BURIED' property marks this as a buried via — requires 2 plies */
+#121=DESCRIPTIVE_REPRESENTATION_ITEM('via_kind','BURIED');
+#122=REPRESENTATION('via_props',(#121),#14);
+#123=PROPERTY_DEFINITION('via_kind','Via type classification',#120);
+#124=PROPERTY_DEFINITION_REPRESENTATION(#123,#122);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#200=GEOMETRIC_CURVE_SET('ap210-buried-via-single-termination-ply-dangling',
+  (#100,#101,#102,#103,#104,#110,#120,#121,#122,#123,#124));
+/* Product chain */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M153','M153','M153',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#200),#14);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;

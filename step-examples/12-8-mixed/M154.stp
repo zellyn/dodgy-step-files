@@ -1,33 +1,67 @@
 ISO-10303-21;
-/* M154 - AP210 placement footprint conflicts with library footprint.
- * Defect: a NEXT_ASSEMBLY_USAGE_OCCURRENCE places component U1 with
- * a 4-pin layout, but the referenced PRODUCT 'BGA_84' has 84 pins
- * in its package model. The placement footprint and the
- * component-library footprint disagree on pin count. */
+/* M154: AP210 placement footprint pin count conflicts with library footprint */
+/* DEFECT: PRODUCT 'BGA_84' library_pin_count='84' but U1 placement has only 4 TERMINALs */
+/* 80 BGA pads are unconnected — netlist broken for 80 signals */
+/* Exporter used a 4-pin SOT-23 template for an 84-pin BGA component */
+/* Per ISO 10303-210 §6 placement footprint pin count must match library */
+/* Byte assertion: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN') */
+/* Byte assertion: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') */
+/* Byte assertion: contains(b'library_pin_count') */
 HEADER;
-FILE_DESCRIPTION(('M154 test case','AP210 footprint package mismatch'),'2;1');
-FILE_NAME('M154.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M154: AP210 BGA_84 library 84 pins vs placement 4 pins'),'2;1');
+FILE_NAME('M154.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN') */
 FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('pcb','3D'));
-/* Library declares BGA_84 with 84 pin package. */
-#100=PRODUCT('BGA_84','BGA_84','84-pin package',(#1));
-#101=DESCRIPTIVE_REPRESENTATION_ITEM('library_pin_count','84');
-/* Defect: placement only references 4 terminals - 80 pins are missing. */
-#200=TERMINAL('U1_pin1','U1_pin1',$);
-#201=TERMINAL('U1_pin2','U1_pin2',$);
-#202=TERMINAL('U1_pin3','U1_pin3',$);
-#203=TERMINAL('U1_pin4','U1_pin4',$);
-#300=PRODUCT_DEFINITION_FORMATION('rev_A','released',#100);
-#301=PRODUCT_DEFINITION('design','',#300,#1);
-#400=NEXT_ASSEMBLY_USAGE_OCCURRENCE('U1','U1','4-pin placement footprint',
-       #301,#301,$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('pcb','3D'));
+/* BGA_84 library component: 84-pin BGA package */
+#50=PRODUCT('BGA_84','BGA_84','84-pin BGA package',(#1));
+/* Byte assertion: contains(b'library_pin_count') */
+/* library_pin_count property declares the component has 84 pins */
+#51=PROPERTY_DEFINITION('library_pin_count','Component library pin count',#50);
+#52=DESCRIPTIVE_REPRESENTATION_ITEM('library_pin_count','84');
+#53=REPRESENTATION('lib_props',(#52),#14);
+#54=PROPERTY_DEFINITION_REPRESENTATION(#51,#53);
+/* PCB board assembly product */
+#60=PRODUCT('PCB_BOARD','PCB_BOARD','Main PCB assembly',(#1));
+/* Byte assertion: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') */
+/* NEXT_ASSEMBLY_USAGE_OCCURRENCE places BGA_84 as U1 on the board */
+#70=NEXT_ASSEMBLY_USAGE_OCCURRENCE('U1_placement','U1','U1 BGA_84 placement',#60,#50,$);
+/* DEFECT: placement footprint has only 4 TERMINALs; library declares 84 */
+#100=CARTESIAN_POINT('T1_loc',(5.0,5.0,0.0));
+#101=TERMINAL('T1',#100);
+#102=CARTESIAN_POINT('T2_loc',(6.0,5.0,0.0));
+#103=TERMINAL('T2',#102);
+#104=CARTESIAN_POINT('T3_loc',(5.0,6.0,0.0));
+#105=TERMINAL('T3',#104);
+#106=CARTESIAN_POINT('T4_loc',(6.0,6.0,0.0));
+#107=TERMINAL('T4',#106);
+/* 80 BGA pads unaccounted for — connectivity broken for 80 signals */
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#200=GEOMETRIC_CURVE_SET('ap210-placement-pin-count-conflicts-library-bga84',
+  (#50,#51,#52,#53,#54,#60,#70,#100,#101,#102,#103,#104,#105,#106,#107));
+/* Product chain */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M154','M154','M154',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#200),#14);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;

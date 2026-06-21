@@ -1,29 +1,56 @@
 ISO-10303-21;
-/* M151 - AP210 declared trace impedance contradicts stackup geometry.
- * Defect: an electrical PROPERTY_DEFINITION on a CONDUCTOR_TRACK_PROFILE
- * declares characteristic_impedance = 50 ohm, but the actual stackup
- * (15 um copper, 0.2 mm dielectric, 4 mm trace width with FR4 Er=4.4)
- * gives ~ 22 ohm by standard microstrip calculation. The declared
- * impedance and the geometry-derived impedance disagree by > 50 %. */
+/* M151: AP210 declared trace impedance contradicts stackup geometry */
+/* DEFECT: PROPERTY_DEFINITION declares characteristic_impedance=50 ohm */
+/* Stackup: 4mm trace / 0.2mm FR4 dielectric / Er=4.4 yields Z0~22 ohm */
+/* Declared 50 ohm vs geometry-derived 22 ohm — 127% disagreement */
+/* Per ISO 10303-210 §7 electrical properties must match stackup geometry */
+/* Byte assertion: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN') */
+/* Byte assertion: contains(b'characteristic_impedance') */
+/* Byte assertion: contains(b'CONDUCTOR_TRACK_PROFILE') */
 HEADER;
-FILE_DESCRIPTION(('M151 test case','AP210 stackup impedance contradiction'),'2;1');
-FILE_NAME('M151.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M151: AP210 50-ohm claim vs 22-ohm stackup geometry'),'2;1');
+FILE_NAME('M151.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN') */
 FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('pcb','3D'));
-#100=MATERIAL_DESIGNATION('FR4_Er44','glass-epoxy Er=4.4',(#1));
-#200=LAMINATE_OR_PLY_DEFINITION('dielectric',$,#100,#100,LENGTH_MEASURE(0.2));
-/* Trace 4 mm wide on 0.2 mm FR4 - far too wide for 50 ohm. */
-#300=CONDUCTOR_TRACK_PROFILE('signal_trace',LENGTH_MEASURE(4.0));
-/* Defect: declares 50 ohm; geometry yields ~22 ohm. */
-#400=DESCRIPTIVE_REPRESENTATION_ITEM('characteristic_impedance_ohm','50.0');
-#401=PROPERTY_DEFINITION('electrical_impedance','declared 50R',#300);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('pcb','3D'));
+/* Dielectric core: 0.2 mm thick FR4, relative permittivity 4.4 */
+#100=LAMINATE_OR_PLY_DEFINITION('dielectric_core',LENGTH_MEASURE(0.2),$);
+/* Byte assertion: contains(b'CONDUCTOR_TRACK_PROFILE') */
+/* Signal trace: 4.0 mm wide microstrip above dielectric_core */
+#101=CONDUCTOR_TRACK_PROFILE('signal_trace',LENGTH_MEASURE(4.0),$,#100);
+/* Byte assertion: contains(b'characteristic_impedance') */
+/* DEFECT: PROPERTY_DEFINITION declares Z0=50 ohm; geometry yields ~22 ohm */
+/* Hammerstad-Jensen: W/H=20, Er=4.4, T=0.015mm => Z0 ~ 22 ohm */
+#110=PROPERTY_DEFINITION('characteristic_impedance','Trace characteristic impedance',#101);
+#111=DESCRIPTIVE_REPRESENTATION_ITEM('characteristic_impedance','50');
+#112=REPRESENTATION('impedance_props',(#111),#14);
+#113=PROPERTY_DEFINITION_REPRESENTATION(#110,#112);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#200=GEOMETRIC_CURVE_SET('ap210-declared-impedance-contradicts-stackup-geometry',
+  (#100,#101,#110,#111,#112,#113));
+/* Product chain */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M151','M151','M151',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#200),#14);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;
