@@ -1,80 +1,39 @@
 ISO-10303-21;
-/* N155 - ShapeAnalysis_CheckSmallFace.CheckPin.tolerance-fallback
- * Defect: Falls back to default tolerance if precision is negative.
- * Reproducer: CheckPin with myPrecision = -1 (invalid). Without fallback, IsoStat uses invalid.
- * Expected: toler = 1.0e-4 fallback used for valid comparisons. Without: spurious results.
- * Test: precision fallback guards against negative precision in sharpness tests.
- */
+/* N155: CheckPin tolerance-fallback: pin-face shape; SetPrecision(-1.0) triggers default 1e-4 fallback; negative myPrecision causes undefined sharpness comparison; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N155 tolerance-fallback'),'2;1');
-FILE_NAME('N155.stp','2026-06-16T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('N155'),'2;1');
+FILE_NAME('N155.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-/* Origin and axes */
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#11=DIRECTION('z',(0.0,0.0,1.0));
-#12=DIRECTION('x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
-/* Small face point cloud */
-#20=CARTESIAN_POINT('p1',(0.0,0.0,0.0));
-#21=CARTESIAN_POINT('p2',(0.001,0.0,0.0));
-#22=CARTESIAN_POINT('p3',(0.0,0.001,0.0));
-#23=CARTESIAN_POINT('p4',(0.001,0.001,0.0));
-/* Vertices for small face */
-#30=VERTEX_POINT('v1',#20);
-#31=VERTEX_POINT('v2',#21);
-#32=VERTEX_POINT('v3',#22);
-#33=VERTEX_POINT('v4',#23);
-/* Edges (1mm square) */
-#40=DIRECTION('dir_x',(1.0,0.0,0.0));
-#41=VECTOR('vec_x',#40,0.001);
-#42=LINE('line_x',#20,#41);
-#43=EDGE_CURVE('edge_x',#30,#31,#42,.T.);
-#50=DIRECTION('dir_y',(0.0,1.0,0.0));
-#51=VECTOR('vec_y',#50,0.001);
-#52=LINE('line_y',#21,#51);
-#53=EDGE_CURVE('edge_y',#31,#33,#52,.T.);
-#60=DIRECTION('dir_x_neg',(-1.0,0.0,0.0));
-#61=VECTOR('vec_x_neg',#60,0.001);
-#62=LINE('line_x_neg',#33,#61);
-#63=EDGE_CURVE('edge_x_neg',#33,#32,#62,.T.);
-#70=DIRECTION('dir_y_neg',(0.0,-1.0,0.0));
-#71=VECTOR('vec_y_neg',#70,0.001);
-#72=LINE('line_y_neg',#32,#71);
-#73=EDGE_CURVE('edge_y_neg',#32,#30,#72,.T.);
-/* Tolerance markers */
-#80=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#81=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#82=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#83=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#80,
-  'distance_accuracy_value','nominal_tolerance');
-#84=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(-1.0),#80,
-  'distance_accuracy_value','invalid_negative_precision');
-#85=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-4),#80,
-  'distance_accuracy_value','fallback_tolerance_default');
-#86=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#83))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#80,#81,#82))
-  REPRESENTATION_CONTEXT('fallback_ctx','3D'));
-/* PRODUCT CHAIN */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('N155','N155','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#80));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#1=CARTESIAN_POINT('p_bot',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('p_top',(0.0,0.0,10.0));
+#3=CARTESIAN_POINT('p_side_pin',(0.001,0.0,5.0));
+#4=VERTEX_POINT('v_bot',#1);
+#5=VERTEX_POINT('v_top',#2);
+#6=VERTEX_POINT('v_side',#3);
+#7=DIRECTION('',(0.0,0.0,1.0));
+#8=VECTOR('',#7,10.0);
+#9=LINE('',#1,#8);
+#10=EDGE_CURVE('e_pin',#4,#5,#9,.T.);
+#11=DIRECTION('',(1.0,0.0,0.0));
+#12=VECTOR('',#11,0.001);
+#13=LINE('',#1,#12);
+#14=EDGE_CURVE('e_width',#4,#6,#13,.T.);
+#15=GEOMETRIC_CURVE_SET('pin_face',(#10,#14));
+#16=APPLICATION_CONTEXT('automotive_design');
+#17=PRODUCT_CONTEXT('',#16,'mechanical');
+#18=PRODUCT('N155','N155','',(#17));
+#19=PRODUCT_DEFINITION_FORMATION('','',#18);
+#20=PRODUCT_DEFINITION_CONTEXT('part definition',#16,'design');
+#21=PRODUCT_DEFINITION('','',#19,#20);
+#22=PRODUCT_DEFINITION_SHAPE('','',#21);
+#23=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#24=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#25=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#26=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-4),#23,'distance_accuracy_value','checkpin_fallback_tol');
+#27=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#26))GLOBAL_UNIT_ASSIGNED_CONTEXT((#23,#24,#25))REPRESENTATION_CONTEXT('ctx','3D'));
+#28=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#15),#27);
+#29=SHAPE_DEFINITION_REPRESENTATION(#22,#28);
 ENDSEC;
 END-ISO-10303-21;
