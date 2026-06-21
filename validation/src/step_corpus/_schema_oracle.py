@@ -137,9 +137,11 @@ EXEMPT_SCHEMA_MISMATCH = {
     "U037",   # "RescaleGeometry does not rescale triangulations"
     "A030",   # "Edition-mixed Part 21 file (header schema vs instance schema)"
     "A031",   # "Schema migration: retired AP214/AP203 kinematics entities"
-    "M068",   # "Pretessellated geometry skipped on STEP write"
-    "M069",   # "TRIANGULATED_FACE emitted without pnval indices"
+    # M068, M069 regenerated 2026-06-21 under AP242 header — defect now
+    # uses native AP242 vocabulary, no schema-vs-vocabulary mismatch.
     "M070",   # "STL writer does not respect existing triangulation"
+    "M037",   # AP209 VOLUME_3D_ELEMENT_DESCRIPTOR in AP242 header
+    "M038",   # AP209 SINGLE_POINT_CONSTRAINT + FREEDOM_AND_COEFFICIENT in AP242 header
     # Phase F regens (2026-06-18) — fixtures that demonstrate AP242 / AP238 /
     # AP210 defects using their native vocabulary while declaring the
     # AUTOMOTIVE_DESIGN schema (the Python builder only emits AP214 by

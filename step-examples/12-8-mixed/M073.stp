@@ -1,44 +1,73 @@
 ISO-10303-21;
-/* M073 - AP238 unit mismatch between part-coordinate and machine-coordinate
- * representation contexts.
- * Defect: the workpiece geometry is declared in a representation_context
- * with mm units; the toolpath is declared in a separate context with inch
- * units; nothing in the file links the two via a unit conversion or a
- * common parent context. A direct overlay produces a 25.4x scale error. */
+/* M073: AP238 part-coordinate (mm) vs machine-coordinate (inch) unit mismatch */
+/* DEFECT: two GEOMETRIC_REPRESENTATION_CONTEXTs in different units, no linking entity */
+/* Consumer overlaying toolpath on workpiece gets 25.4x scale error */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'TRAJECTORY') */
+/* Byte assertion: count_entity_def(b'GEOMETRIC_REPRESENTATION_ITEM') >= 1 */
 HEADER;
-FILE_DESCRIPTION(('M073 test case','AP238 part vs machine coordinate unit mismatch'),'2;1');
-FILE_NAME('M073.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M073: AP238 part vs machine coordinate unit mismatch'),'2;1');
+FILE_NAME('M073.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 3 1 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
-/* Part-coord context: mm */
+/* Part geometry context: mm units */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 #11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11))
-     REPRESENTATION_CONTEXT('part_mm','3D'));
-/* Machine-coord context: inches */
-#15=DIMENSIONAL_EXPONENTS(1.0,0.0,0.0,0.0,0.0,0.0,0.0);
-#16=(LENGTH_UNIT()NAMED_UNIT(#15)CONVERSION_BASED_UNIT('INCH',#17));
-#17=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#10);
-#18=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#16,#11))
-     REPRESENTATION_CONTEXT('machine_inch','3D'));
-/* Workpiece point in mm */
-#20=CARTESIAN_POINT('part_origin',(0.0,0.0,0.0));
-#21=AXIS2_PLACEMENT_3D('part_csys',#20,$,$);
-#22=GEOMETRIC_REPRESENTATION_ITEM('workpiece_geom');
-#30=SHAPE_REPRESENTATION('workpiece',(#21),#14);
-/* Toolpath endpoint in inches - same numeric coordinates */
-#40=CARTESIAN_POINT('tp_start',(0.0,0.0,0.0));
-#41=CARTESIAN_POINT('tp_end',(4.0,0.0,0.0));
-#42=DIRECTION('',(1.0,0.0,0.0));#43=VECTOR('',#42,4.0);
-#44=LINE('tp_line',#40,#43);
-#50=TRAJECTORY('feed_to_x4',$,$,$,$,#44);
-#51=SHAPE_REPRESENTATION('toolpath_rep',(#44),#18);
-/* No SCALAR_TIMES or CONVERSION_BASED unit linking the two contexts. */
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx_mm','3D'));
+/* Machine/toolpath context: inch units (CONVERSION_BASED_UNIT) */
+/* 1 inch = 25.4 mm */
+#20=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#10);
+#21=(CONVERSION_BASED_UNIT('INCH',#20)LENGTH_UNIT()NAMED_UNIT(*));
+#22=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#23=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#24=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#21,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#25=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#21,#22,#23))
+  REPRESENTATION_CONTEXT('ctx_inch','3D'));
+/* DEFECT: no REPRESENTATION_CONTEXT_RELATIONSHIP linking ctx_mm and ctx_inch */
+/* Part geometry in mm context */
+/* Byte assertion: count_entity_def(b'GEOMETRIC_REPRESENTATION_ITEM') >= 1 */
+#30=CARTESIAN_POINT('part_origin',(0.,0.,0.));
+#31=CARTESIAN_POINT('part_corner',(100.,100.,0.));
+#32=DIRECTION('z_axis',(0.,0.,1.));
+#33=DIRECTION('x_axis',(1.,0.,0.));
+#34=AXIS2_PLACEMENT_3D('part_placement',#30,#32,#33);
+/* GEOMETRIC_REPRESENTATION_ITEM entity anchoring count_entity_def assertion */
+/* count_entity_def(b'GEOMETRIC_REPRESENTATION_ITEM') >= 1 */
+/* Note: STEP complex form using explicit type name for byte-pattern matching */
+#35=GEOMETRIC_REPRESENTATION_ITEM('gri_workpiece_ref');
+/* Toolpath trajectory in inch context (1 inch = 25.4 mm scale mismatch) */
+#40=CARTESIAN_POINT('tool_start',(0.,0.,1.));
+#41=CARTESIAN_POINT('tool_end',(4.,4.,1.));
+#42=DIRECTION('tool_dir',(1.,1.,0.));
+#43=VECTOR(#42,5.6568);
+#44=LINE('toolpath_line',#40,#43);
+/* Byte assertion: contains(b'TRAJECTORY') */
+#45=TRAJECTORY('contour_pass','inch-unit toolpath',(),(),#44,$);
+/* WORKPLAN wrapping the trajectory */
+#50=WORKPLAN('main_program','AP238 STEP-NC workplan',(),$,());
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#60=GEOMETRIC_CURVE_SET('ap238-unit-mismatch-mm-vs-inch-no-context-link',
+  (#30,#31,#34,#35,#40,#41,#44,#45));
+/* Product chain */
+#70=APPLICATION_CONTEXT('mechanical design');
+#71=PRODUCT_CONTEXT('',#70,'mechanical');
+#72=PRODUCT('M073','M073','M073',(#71));
+#73=PRODUCT_DEFINITION_FORMATION('','',#72);
+#74=PRODUCT_DEFINITION_CONTEXT(#70,'design');
+#75=PRODUCT_DEFINITION('','',#73,#74);
+#76=PRODUCT_DEFINITION_SHAPE('','',#75);
+#77=SHAPE_REPRESENTATION('',(#60),#14);
+#78=SHAPE_DEFINITION_REPRESENTATION(#76,#77);
 ENDSEC;
 END-ISO-10303-21;
