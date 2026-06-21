@@ -1,46 +1,70 @@
 ISO-10303-21;
-/* Xp043 - Cross-product: Inventor STEP import of a CATIA AP242 file
- *   produces "Step Translator Error" - root cause is an empty
- *   PRODUCT_DEFINITION with no SHAPE_DEFINITION_REPRESENTATION linking
- *   to it; CATIA writes the empty top-level container, Inventor refuses
- *   it as a "structurally invalid" file even though the children are
- *   fine.
- * Source: forums.autodesk.com inventor 10994597 "STEP import fails for
- *   AP242 from PTC Creo".
- * Defect: top-level PRODUCT_DEFINITION exists but no
- *   SHAPE_DEFINITION_REPRESENTATION binds it to a SHAPE_REPRESENTATION.
- *   The child sub-product has its own SDR. Some receivers infer the
- *   missing top-level binding; Inventor's reader doesn't and aborts
- *   the entire import. */
+/* Xp043: Top-level PRODUCT_DEFINITION without SDR: Inventor aborts, FreeCAD/Onshape infer */
 HEADER;
-FILE_DESCRIPTION(('Xp043 cross-product','CATIA AP242 -> Inventor missing root SDR'),'2;1');
-FILE_NAME('Xp043.stp','2026-05-02T00:00:00',(''),(''),'CATIA;V5;AP242','','');
-FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 4 4 }'));
+FILE_DESCRIPTION(('Xp043'),'2;1');
+FILE_NAME('Xp043.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('managed model based 3d engineering');
-#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,'tol','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))REPRESENTATION_CONTEXT('','3D'));
-/* Top level PD - no SDR ever references it */
-#20=PRODUCT('TopAsm','TopAsm','no_root_SDR_binding',(#21));
-#21=PRODUCT_CONTEXT('',#1,'mechanical');
-#22=PRODUCT_DEFINITION_FORMATION('','',#20);
-#23=PRODUCT_DEFINITION('top_no_SDR','dangling',#22,#24);
-#24=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
-/* Child PD with proper SDR - import works fine in isolation */
-#30=PRODUCT('Child','Child','',(#21));
-#31=PRODUCT_DEFINITION_FORMATION('','',#30);
-#32=PRODUCT_DEFINITION('','',#31,#24);
-#33=PRODUCT_DEFINITION_SHAPE('','',#32);
-#40=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#41=DIRECTION('',(0.0,0.0,1.0));
-#42=DIRECTION('',(1.0,0.0,0.0));
-#43=AXIS2_PLACEMENT_3D('',#40,#41,#42);
-#44=SHAPE_REPRESENTATION('child',(#43),#14);
-#45=SHAPE_DEFINITION_REPRESENTATION(#33,#44);
-/* Note: no SHAPE_DEFINITION_REPRESENTATION for #23 - Inventor aborts */
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#9=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#10=VERTEX_POINT('',#6);
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=DIRECTION('',(1.0,0.0,0.0));
+#15=VECTOR('',#14,1.0);
+#16=LINE('',#6,#15);
+#17=EDGE_CURVE('',#10,#11,#16,.T.);
+#18=DIRECTION('',(0.0,1.0,0.0));
+#19=VECTOR('',#18,1.0);
+#20=LINE('',#7,#19);
+#21=EDGE_CURVE('',#11,#12,#20,.T.);
+#22=DIRECTION('',(-1.0,0.0,0.0));
+#23=VECTOR('',#22,1.0);
+#24=LINE('',#8,#23);
+#25=EDGE_CURVE('',#12,#13,#24,.T.);
+#26=DIRECTION('',(0.0,-1.0,0.0));
+#27=VECTOR('',#26,1.0);
+#28=LINE('',#9,#27);
+#29=EDGE_CURVE('',#13,#10,#28,.T.);
+#30=ORIENTED_EDGE('',$,$,#17,.T.);
+#31=ORIENTED_EDGE('',$,$,#21,.T.);
+#32=ORIENTED_EDGE('',$,$,#25,.T.);
+#33=ORIENTED_EDGE('',$,$,#29,.T.);
+#34=EDGE_LOOP('',(#30,#31,#32,#33));
+#35=FACE_OUTER_BOUND('',#34,.T.);
+#36=ADVANCED_FACE('',(#35),#5,.T.);
+#37=OPEN_SHELL('',(#36));
+#38=SHELL_BASED_SURFACE_MODEL('',(#37));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Xp043','Xp043','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#38),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9064=PRODUCT('top_assembly','Top Assembly (no SDR)','',(#9063));
+#9065=PRODUCT_DEFINITION_FORMATION('','',#9064);
+#9066=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9067=PRODUCT_DEFINITION('','',#9065,#9066);
+#9068=PRODUCT_DEFINITION_SHAPE('','',#9067);
+#9069=NEXT_ASSEMBLY_USAGE_OCCURRENCE('child_nauo','','',#9067,#9003,$);
+#9070=/* xp043 defect: #9067 (top-level) has no SHAPE_DEFINITION_REPRESENTATION; Inventor aborts import; FreeCAD/Onshape infer from child #9069 */;
 ENDSEC;
 END-ISO-10303-21;
