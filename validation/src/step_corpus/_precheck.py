@@ -120,7 +120,7 @@ def _filter_entries(ids: set[str]) -> list[dict]:
 
 
 def precheck(ids: set[str]) -> int:
-    """Run the three audits scoped to ``ids``. Returns process exit code."""
+    """Run the audits scoped to ``ids``. Returns process exit code."""
     if not ids:
         print("No changed catalog entries detected — nothing to check.")
         return 0
@@ -138,10 +138,12 @@ def precheck(ids: set[str]) -> int:
     from step_corpus._tier3_assertions import check_all as tier3_check_all
     from step_corpus._schema_oracle import check_all as schema_check_all
     from step_corpus._category_lint import lint_one as category_lint_one
+    from step_corpus._fixture_lint import lint_fixture as fixture_lint_one
+    from step_corpus._build_catalog_json import RESEARCH_ROOT
 
     exit_code = 0
 
-    print("\n[1/5] byte_assertions...")
+    print("\n[1/7] byte_assertions...")
     byte_results = byte_check_all(entries)
     byte_fails = [r for r in byte_results if r["status"] != "pass"]
     if byte_fails:
@@ -151,7 +153,7 @@ def precheck(ids: set[str]) -> int:
     else:
         print(f"  ok ({len(byte_results)} assertions across {len(entries)} entries)")
 
-    print("\n[2/5] tier3_assertions...")
+    print("\n[2/7] tier3_assertions...")
     tier3_results = tier3_check_all(entries)
     tier3_fails = [
         r for r in tier3_results
@@ -165,7 +167,7 @@ def precheck(ids: set[str]) -> int:
     else:
         print(f"  ok ({len(tier3_results)} assertions)")
 
-    print("\n[3/5] bytes/tier-3 cross-audit...")
+    print("\n[3/7] bytes/tier-3 cross-audit...")
     bt3_results = bt3_audit_all(entries)
     bt3_fails = [r for r in bt3_results if r["verdict"] == "inconsistent"]
     bt3_documented = [r for r in bt3_results if r["verdict"] == "documented"]
@@ -180,7 +182,7 @@ def precheck(ids: set[str]) -> int:
         suffix = f", {len(bt3_documented)} documented" if bt3_documented else ""
         print(f"  ok ({len(bt3_results)} pairs{suffix})")
 
-    print("\n[4/5] schema-oracle...")
+    print("\n[4/7] schema-oracle...")
     schema_results = schema_check_all(entries)
     schema_fails = [
         r for r in schema_results
@@ -193,7 +195,7 @@ def precheck(ids: set[str]) -> int:
     else:
         print(f"  ok ({len(schema_results)} fixtures)")
 
-    print("\n[5/5] category-lint...")
+    print("\n[5/7] category-lint...")
     cat_fails = []
     for e in entries:
         for msg in category_lint_one(e):
@@ -204,6 +206,77 @@ def precheck(ids: set[str]) -> int:
             print(f"  FAIL {fid:<8} {msg}")
     else:
         print(f"  ok ({len(entries)} entries)")
+
+    # [6/7] fixture-lint: per-file structural invariants (END marker,
+    # FILE_NAME stem match, etc.). Closes precheck gap that let Ls029 land
+    # without an END-ISO-10303-21; close marker (Ls029 was on the exempt
+    # list semantically — unterminated comment runs through EOF — but the
+    # lint code wasn't told). The lint runs against every changed fixture;
+    # if a new fixture has a structural defect that is genuinely the
+    # documented bug, add its ID to _fixture_lint.EXEMPT_END_MARKER (or
+    # EXEMPT_FILENAME_MATCH / EXEMPT_ID_IN_TEXT).
+    print("\n[6/7] fixture-lint (structural invariants)...")
+    examples_root = RESEARCH_ROOT / "step-examples"
+    fl_fails = []
+    fl_checked = 0
+    for e in entries:
+        fid = e["id"]
+        # Find the .stp file for this entry. Catalog entries record a
+        # 'category' / 'section' loosely; the fixture lives at
+        # step-examples/<section>/<ID>.stp. We discover via glob.
+        candidates = list(examples_root.rglob(f"{fid}.stp"))
+        # Skip _quarantine
+        candidates = [c for c in candidates if "_quarantine" not in c.parts]
+        for stp in candidates:
+            fl_checked += 1
+            result = fixture_lint_one(stp)
+            if result.get("errors"):
+                for msg in result["errors"]:
+                    fl_fails.append((fid, msg))
+    if fl_fails:
+        exit_code = 1
+        for fid, msg in fl_fails:
+            print(f"  FAIL {fid:<8} {msg}")
+    else:
+        print(f"  ok ({fl_checked} fixtures linted)")
+
+    # [7/7] part21-validator pins: spot-check the small set of pinned
+    # fixtures whose status (accept/reject) is hard-coded in
+    # tests/test_part21_validator.py. Regenerating a fixture can silently
+    # shift its validator status (Le028 went accept↔reject when CRLF + NUL
+    # positioning changed). Run the pins here so the regen author sees the
+    # break locally instead of in CI.
+    print("\n[7/7] part21-validator pins...")
+    from step_corpus._part21_validator import validate_file as _validate_file
+    # Mirror the pin list from tests/test_part21_validator.py exactly.
+    # Keep in sync — there is a self-test below that fails CI if these drift.
+    PINS = [
+        ("12-3a-shells/Tsh007.stp", "accept"),
+        ("12-1a-encoding/Le001.stp", "accept_with_warnings"),
+        ("12-1b-header/Lh002.stp", "reject"),
+        ("12-1a-encoding/Le028.stp", "reject"),
+    ]
+    # Only re-validate pins whose fixture ID was actually changed.
+    changed_pin_fids = {fid for fid in ids}
+    pin_fails = []
+    pin_checked = 0
+    for rel, expected in PINS:
+        pin_fid = Path(rel).stem
+        if pin_fid not in changed_pin_fids:
+            continue
+        path = examples_root / rel
+        if not path.is_file():
+            continue
+        pin_checked += 1
+        v = _validate_file(path)
+        if v.status != expected:
+            pin_fails.append((pin_fid, expected, v.status))
+    if pin_fails:
+        exit_code = 1
+        for fid, exp, got in pin_fails:
+            print(f"  FAIL {fid:<8} validator pin: expected {exp}, got {got}")
+    else:
+        print(f"  ok ({pin_checked} pins re-validated)")
 
     print("\n=== PRECHECK FAILED ===" if exit_code else "\n=== PRECHECK OK ===")
     return exit_code

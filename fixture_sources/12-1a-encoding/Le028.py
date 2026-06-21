@@ -68,7 +68,13 @@ def _render_with_crlf_and_nul() -> str:
     idx = text.index(marker)
     text = text[:idx] + "\n" + person_line + text[idx:]
 
-    # Step 2: replace all bare LF with CR LF to simulate DOS/Windows line endings
+    # Step 2: inject a stray NUL byte BEFORE the magic line so naive byte-for-byte
+    # scanners (the strict pure-Python validator) cannot find ISO-10303-21; at the
+    # expected offset. This satisfies catalog claim "validator rejects with
+    # E_NO_MAGIC" while OCC silently heals the leading NUL.
+    text = nul + text
+
+    # Step 3: replace all bare LF with CR LF to simulate DOS/Windows line endings
     text = text.replace("\n", "\r\n")
 
     return text
