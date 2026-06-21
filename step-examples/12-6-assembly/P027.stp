@@ -1,95 +1,49 @@
 ISO-10303-21;
-/*
- * P027 — Boolean-history Faces with degenerate hole-loop pcurves crash writer
- * Defect (FreeCAD #5783; OCCT issue #80; FreeCAD-internal shape graph):
- *   With "write parametric pcurves" enabled, certain Geom_BSplineSurface
- *   faces with a hole loop whose pcurve domain is degenerate (zero length)
- *   or maps outside the surface's natural domain crash
- *   TopoDSToStep_MakeStepFace::Init (null deref). When such files are
- *   nonetheless emitted, they contain malformed pcurves on read.
- * Reproducer: a B-spline surface face with a hole loop whose 2D pcurve has
- *   zero-length parameter domain.
- * Expected kernel: detect and skip / fix the bad pcurve before writing;
- *   reader should reject malformed pcurves with clear message.
- */
+/* P027: BSpline-surface face with a hole loop whose PCURVE domain is degenerate (zero length: start == end at parameter 0.0); hole-loop pcurve maps outside the surface's natural domain; STEP writer dereferences null on face-emission pass and crashes; reader must reject malformed pcurves with clear message; B_SPLINE_SURFACE + PCURVE + SURFACE_CURVE are the defect entities; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('P027 hole-loop pcurve with degenerate (zero-length) domain'),'2;1');
-FILE_NAME('P027.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('P027'),'2;1');
+FILE_NAME('P027.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('automotive design');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
-#20 = PRODUCT('P027_ASSY','','',(#12));
-#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
-#22 = PRODUCT_DEFINITION('design','',#21,#13);
-#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
-#30 = PRODUCT('BSPLINE_FACE','face with degenerate hole pcurve','',(#12));
-#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
-#32 = PRODUCT_DEFINITION('design','',#31,#13);
-#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
-#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','BSP_INST','',#22,#32,$);
-/* B-spline surface — minimal 2x2 cubic */
-#100 = CARTESIAN_POINT('cp00',(0.0,0.0,0.0));
-#101 = CARTESIAN_POINT('cp01',(1.0,0.0,0.0));
-#102 = CARTESIAN_POINT('cp10',(0.0,1.0,0.0));
-#103 = CARTESIAN_POINT('cp11',(1.0,1.0,0.0));
-#104 = B_SPLINE_SURFACE_WITH_KNOTS('bsp_surf',1,1,
-         ((#100,#101),(#102,#103)),
-         .UNSPECIFIED.,.F.,.F.,.F.,
-         (2,2),(2,2),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
-/* DEFECT: hole-loop pcurve has degenerate domain — start point equals end
-   point, both at uv=(0.5,0.5). */
-#105 = CARTESIAN_POINT('pc_zero',(0.5,0.5));
-#106 = DIRECTION('pc_d',(1.0,0.0));
-#107 = VECTOR('pc_v_zero',#106,0.0);
-#108 = LINE('pc_zero_line',#105,#107);
-#109 = DEFINITIONAL_REPRESENTATION('zero_pc_def',(#108),#54);
-#110 = PCURVE('degenerate_hole_pc',#104,#109);
-#111 = CARTESIAN_POINT('hole_3d',(0.5,0.5,0.0));
-#112 = VERTEX_POINT('vh',#111);
-#113 = VECTOR('e3v',#106,0.0);
-#114 = LINE('hole_3d_line',#111,#113);
-#115 = SURFACE_CURVE('hole_surf_curve',#114,(#110),.PCURVE_S1.);
-#116 = EDGE_CURVE('hole_edge',#112,#112,#115,.T.);
-#117 = ORIENTED_EDGE('hole_oe',*,*,#116,.T.);
-#118 = EDGE_LOOP('hole_loop',(#117));
-#119 = FACE_BOUND('hole_inner_bound',#118,.T.);
-#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
-#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
-        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
-#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#61 = DIRECTION('',(0.0,0.0,1.0));
-#62 = DIRECTION('',(1.0,0.0,0.0));
-#63 = AXIS2_PLACEMENT_3D('part_origin',#60,#61,#62);
-#64 = SHAPE_REPRESENTATION('part_rep',(#63,#104,#119),#54);
-#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
-#66 = REPRESENTATION_MAP(#63,#64);
-#67 = MAPPED_ITEM('inst',#66,#63);
-#80 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
-#81 = SHAPE_REPRESENTATION('assy_rep',(#80,#67),#54);
-#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
-/* Extended catalog notes:
- * This reproducer is a minimal demonstrator of the §12.6 entry
- * referenced in the /* * / header above. The entity-graph above
- * is just enough to exercise the defect on a writer or reader
- * test harness; it is NOT a production-quality assembly.
- *
- * License: this file is part of a defect catalog assembled from
- * publicly described bug reports and recommended-practice notes.
- * No proprietary geometry or names are reproduced. The entity IDs
- * and minimal coordinates are author-original.
- *
- * Cross-refs: see STEP_PROBLEM_CATALOG.md §12.6 for full entry,
- * source list, sender attribution and expected kernel behavior.
- */
-#900 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_id','P027');
-#901 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_section','12.6 assembly hierarchy');
-#902 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_status','pending');
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('P027','P027','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=CARTESIAN_POINT('cp00',(0.0,0.0,0.0));
+#9064=CARTESIAN_POINT('cp01',(0.0,1.0,0.0));
+#9065=CARTESIAN_POINT('cp10',(1.0,0.0,0.0));
+#9066=CARTESIAN_POINT('cp11',(1.0,1.0,0.0));
+#9067=B_SPLINE_SURFACE_WITH_KNOTS('bspline_patch',1,1,((#9063,#9064),(#9065,#9066)),.UNSPECIFIED.,.F.,.F.,.F.,(2,2),(2,2),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
+#9068=CARTESIAN_POINT('e3d_start',(0.0,0.0,0.0));
+#9069=CARTESIAN_POINT('e3d_end',(1.0,0.0,0.0));
+#9070=DIRECTION('e3d_dir',(1.0,0.0,0.0));
+#9071=VECTOR('e3d_vec',#9070,1.0);
+#9072=LINE('edge_line_3d',#9068,#9071);
+#9073=CARTESIAN_POINT('deg_pcurve_pt',(0.0,0.0));
+#9074=DIRECTION('deg_pcurve_dir',(1.0,0.0));
+#9075=VECTOR('deg_pcurve_vec',#9074,0.0);
+#9076=LINE('deg_pcurve_line',#9073,#9075);
+#9077=DEFINITIONAL_REPRESENTATION('',(#9076),#9010);
+#9078=PCURVE('degenerate_hole_pcurve',#9067,#9077);
+#9079=SURFACE_CURVE('defect_surface_curve',#9072,(#9078),.PCURVE_S1.);
+#9080=GEOMETRIC_CURVE_SET('degenerate_pcurve_defect',(#9079));
+#9081=PRODUCT_CONTEXT('sub',#9000,'mechanical');
+#9082=PRODUCT('BoolHistoryFace','BoolHistoryFace','',(#9081));
+#9083=PRODUCT_DEFINITION_FORMATION('','',#9082);
+#9084=PRODUCT_DEFINITION('design','',#9083,#9003);
+#9085=NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','bool_history_face_instance','',#9004,#9084,$);
 ENDSEC;
 END-ISO-10303-21;

@@ -1,85 +1,56 @@
 ISO-10303-21;
-/*
- * P024 — Flattened sub-assembly hierarchy after merge
- * Defect (FreeCAD #11441; pcb-3d.com / KiCad-adjacent component library
- *         re-exported through FreeCAD):
- *   Two STEP assembly files merged in a tree and re-exported emit
- *   NEXT_ASSEMBLY_USAGE_OCCURRENCE chains that don't preserve the original
- *   product hierarchy — receiver shows flattened/scrambled tree.
- * Reproducer: the *original* hierarchy was BOARD -> SUBASSY -> COMPONENT.
- *   After merge+export the file emits BOARD -> COMPONENT directly, with the
- *   intermediate SUBASSY product entirely missing — a flattened tree.
- * Expected kernel: preserve original sub-assembly hierarchy on round-trip.
- */
+/* P024: NEXT_ASSEMBLY_USAGE_OCCURRENCE chain flattened after assembly merge; two assembly files merged in a tree and re-exported lose sub-assembly grouping; PRODUCT_DEFINITION_USAGE graph drops a hierarchy layer; receiver shows flattened/scrambled tree instead of nested sub-assembly; 2 NAUO + 2 MAPPED_ITEM all pointing to parent without intermediate grouping; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('P024 NAUO chain flattened — intermediate SUBASSY product absent'),'2;1');
-FILE_NAME('P024.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('P024'),'2;1');
+FILE_NAME('P024.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('automotive design');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
-/* root: BOARD */
-#20 = PRODUCT('BOARD','top-level board','',(#12));
-#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
-#22 = PRODUCT_DEFINITION('design','',#21,#13);
-#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
-/* leaves: COMPONENTS — should have come through SUBASSY but SUBASSY is gone */
-#30 = PRODUCT('TO92_COMP','TO-92 transistor','',(#12));
-#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
-#32 = PRODUCT_DEFINITION('design','',#31,#13);
-#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
-#34 = PRODUCT('LED_COMP','5mm LED','',(#12));
-#35 = PRODUCT_DEFINITION_FORMATION('','',#34);
-#36 = PRODUCT_DEFINITION('design','',#35,#13);
-#37 = PRODUCT_DEFINITION_SHAPE('','',#36);
-/* DEFECT: NAUOs go BOARD -> COMPONENT directly. The original SUBASSY layer
-   ("THROUGH_HOLE_GROUP") would have been a PRODUCT_DEFINITION between #22
-   and #32/#36. It is absent. */
-#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','TO92_INST','direct (was: through SUBASSY)',
-        #22,#32,$);
-#41 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','LED_INST','direct (was: through SUBASSY)',
-        #22,#36,$);
-#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
-#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
-        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
-#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#61 = DIRECTION('',(0.0,0.0,1.0));
-#62 = DIRECTION('',(1.0,0.0,0.0));
-#63 = AXIS2_PLACEMENT_3D('to92_origin',#60,#61,#62);
-#64 = SHAPE_REPRESENTATION('to92_rep',(#63),#54);
-#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
-#66 = REPRESENTATION_MAP(#63,#64);
-#67 = AXIS2_PLACEMENT_3D('led_origin',#60,#61,#62);
-#68 = SHAPE_REPRESENTATION('led_rep',(#67),#54);
-#69 = SHAPE_DEFINITION_REPRESENTATION(#37,#68);
-#70 = REPRESENTATION_MAP(#67,#68);
-#71 = MAPPED_ITEM('to92_mi',#66,#63);
-#72 = MAPPED_ITEM('led_mi',#70,#67);
-#80 = AXIS2_PLACEMENT_3D('board_origin',#60,#61,#62);
-#81 = SHAPE_REPRESENTATION('board_rep',(#80,#71,#72),#54);
-#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
-/* Extended catalog notes:
- * This reproducer is a minimal demonstrator of the §12.6 entry
- * referenced in the /* * / header above. The entity-graph above
- * is just enough to exercise the defect on a writer or reader
- * test harness; it is NOT a production-quality assembly.
- *
- * License: this file is part of a defect catalog assembled from
- * publicly described bug reports and recommended-practice notes.
- * No proprietary geometry or names are reproduced. The entity IDs
- * and minimal coordinates are author-original.
- *
- * Cross-refs: see STEP_PROBLEM_CATALOG.md §12.6 for full entry,
- * source list, sender attribution and expected kernel behavior.
- */
-#900 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_id','P024');
-#901 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_section','12.6 assembly hierarchy');
-#902 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_status','pending');
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('P024','P024','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=CARTESIAN_POINT('asm_origin',(0.0,0.0,0.0));
+#9064=DIRECTION('asm_z',(0.0,0.0,1.0));
+#9065=DIRECTION('asm_x',(1.0,0.0,0.0));
+#9066=AXIS2_PLACEMENT_3D('asm_plc',#9063,#9064,#9065);
+#9067=PRODUCT_CONTEXT('sub',#9000,'mechanical');
+#9068=PRODUCT('RootAsm','RootAsm','Assembly root',(#9067));
+#9069=PRODUCT_DEFINITION_FORMATION('','',#9068);
+#9070=PRODUCT_DEFINITION('design','',#9069,#9003);
+#9071=PRODUCT('LeafPart1','LeafPart1','First leaf (orphaned by merge)',(#9067));
+#9072=PRODUCT_DEFINITION_FORMATION('','',#9071);
+#9073=PRODUCT_DEFINITION('design','',#9072,#9003);
+#9074=SHAPE_REPRESENTATION('leaf1_rep',(#9066),#9010);
+#9075=REPRESENTATION_MAP(#9066,#9074);
+#9076=CARTESIAN_POINT('leaf1_inst_orig',(0.0,0.0,0.0));
+#9077=DIRECTION('leaf1_inst_z',(0.0,0.0,1.0));
+#9078=DIRECTION('leaf1_inst_x',(1.0,0.0,0.0));
+#9079=AXIS2_PLACEMENT_3D('leaf1_inst_plc',#9076,#9077,#9078);
+#9080=MAPPED_ITEM('leaf1_mi',#9075,#9079);
+#9081=NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','leaf1_flat_instance','',#9070,#9073,$);
+#9082=PRODUCT('LeafPart2','LeafPart2','Second leaf (orphaned by merge)',(#9067));
+#9083=PRODUCT_DEFINITION_FORMATION('','',#9082);
+#9084=PRODUCT_DEFINITION('design','',#9083,#9003);
+#9085=SHAPE_REPRESENTATION('leaf2_rep',(#9066),#9010);
+#9086=REPRESENTATION_MAP(#9066,#9085);
+#9087=CARTESIAN_POINT('leaf2_inst_orig',(5.0,0.0,0.0));
+#9088=DIRECTION('leaf2_inst_z',(0.0,0.0,1.0));
+#9089=DIRECTION('leaf2_inst_x',(1.0,0.0,0.0));
+#9090=AXIS2_PLACEMENT_3D('leaf2_inst_plc',#9087,#9088,#9089);
+#9091=MAPPED_ITEM('leaf2_mi',#9086,#9090);
+#9092=NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','leaf2_flat_instance','',#9070,#9084,$);
 ENDSEC;
 END-ISO-10303-21;

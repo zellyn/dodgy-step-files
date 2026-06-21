@@ -1,81 +1,56 @@
 ISO-10303-21;
-/*
- * P025 — Body name overwritten by last-operation label on export
- * Defect (FreeCAD #24962; FreeCAD itself, regression late 2025):
- *   STEP write populates PRODUCT.name and NEXT_ASSEMBLY_USAGE_OCCURRENCE.name
- *   from the last operation's label rather than the body's label. Round-trip
- *   loses body names.
- * Reproducer: assembly where each PRODUCT_DEFINITION chain has a name
- *   shadowed by a sub-feature label (e.g. "Pocket" instead of
- *   "MyPart_Body").
- * Expected kernel: stable mapping of body name to STEP product name.
- */
+/* P025: PRODUCT.name and NAUO.name populated from last-operation label not body label; PRODUCT entities carry names like 'Pocket' and 'Chamfer' — internal feature labels; body label 'MyPart_Body' / 'MyPart_Base' is absent from PRODUCT chain; round-trip loses correct body names; kernel must heal and preserve body-to-product mapping; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('P025 PRODUCT.name shows last-operation label instead of body label'),'2;1');
-FILE_NAME('P025.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('P025'),'2;1');
+FILE_NAME('P025.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('automotive design');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
-/* ASSEMBLY's product name shadowed by "Boolean" — the last op in the tree */
-#20 = PRODUCT('Boolean','assy: should have read MyAssy_Top','',(#12));
-#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
-#22 = PRODUCT_DEFINITION('design','',#21,#13);
-#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
-/* PART 1: name "Pocket" — should have been "Lid_Body" */
-#30 = PRODUCT('Pocket','should be Lid_Body','',(#12));
-#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
-#32 = PRODUCT_DEFINITION('design','',#31,#13);
-#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
-/* PART 2: name "Fillet" — should have been "Bracket_Body" */
-#34 = PRODUCT('Fillet','should be Bracket_Body','',(#12));
-#35 = PRODUCT_DEFINITION_FORMATION('','',#34);
-#36 = PRODUCT_DEFINITION('design','',#35,#13);
-#37 = PRODUCT_DEFINITION_SHAPE('','',#36);
-/* DEFECT: NAUO names also taken from last op */
-#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','Pocket','',#22,#32,$);
-#41 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','Fillet','',#22,#36,$);
-#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
-#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
-        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
-#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#61 = DIRECTION('',(0.0,0.0,1.0));
-#62 = DIRECTION('',(1.0,0.0,0.0));
-#63 = AXIS2_PLACEMENT_3D('lid_origin',#60,#61,#62);
-#64 = SHAPE_REPRESENTATION('Pocket_rep',(#63),#54);
-#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
-#66 = REPRESENTATION_MAP(#63,#64);
-#67 = AXIS2_PLACEMENT_3D('bracket_origin',#60,#61,#62);
-#68 = SHAPE_REPRESENTATION('Fillet_rep',(#67),#54);
-#69 = SHAPE_DEFINITION_REPRESENTATION(#37,#68);
-#70 = REPRESENTATION_MAP(#67,#68);
-#71 = MAPPED_ITEM('lid_mi',#66,#63);
-#72 = MAPPED_ITEM('bracket_mi',#70,#67);
-#80 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
-#81 = SHAPE_REPRESENTATION('Boolean_rep',(#80,#71,#72),#54);
-#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
-/* Extended catalog notes:
- * This reproducer is a minimal demonstrator of the §12.6 entry
- * referenced in the /* * / header above. The entity-graph above
- * is just enough to exercise the defect on a writer or reader
- * test harness; it is NOT a production-quality assembly.
- *
- * License: this file is part of a defect catalog assembled from
- * publicly described bug reports and recommended-practice notes.
- * No proprietary geometry or names are reproduced. The entity IDs
- * and minimal coordinates are author-original.
- *
- * Cross-refs: see STEP_PROBLEM_CATALOG.md §12.6 for full entry,
- * source list, sender attribution and expected kernel behavior.
- */
-#900 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_id','P025');
-#901 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_section','12.6 assembly hierarchy');
-#902 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_status','pending');
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('P025','P025','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=CARTESIAN_POINT('asm_origin',(0.0,0.0,0.0));
+#9064=DIRECTION('asm_z',(0.0,0.0,1.0));
+#9065=DIRECTION('asm_x',(1.0,0.0,0.0));
+#9066=AXIS2_PLACEMENT_3D('asm_plc',#9063,#9064,#9065);
+#9067=PRODUCT_CONTEXT('sub',#9000,'mechanical');
+#9068=PRODUCT('MyDocument','MyDocument','Document root',(#9067));
+#9069=PRODUCT_DEFINITION_FORMATION('','',#9068);
+#9070=PRODUCT_DEFINITION('design','',#9069,#9003);
+#9071=PRODUCT('Pocket','Pocket','body_label_should_be_MyPart_Body',(#9067));
+#9072=PRODUCT_DEFINITION_FORMATION('','',#9071);
+#9073=PRODUCT_DEFINITION('design','',#9072,#9003);
+#9074=SHAPE_REPRESENTATION('body1_rep',(#9066),#9010);
+#9075=REPRESENTATION_MAP(#9066,#9074);
+#9076=CARTESIAN_POINT('body1_inst_orig',(0.0,0.0,0.0));
+#9077=DIRECTION('body1_inst_z',(0.0,0.0,1.0));
+#9078=DIRECTION('body1_inst_x',(1.0,0.0,0.0));
+#9079=AXIS2_PLACEMENT_3D('body1_inst_plc',#9076,#9077,#9078);
+#9080=MAPPED_ITEM('body1_mi',#9075,#9079);
+#9081=NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','Pocket','',#9070,#9073,$);
+#9082=PRODUCT('Chamfer','Chamfer','body_label_should_be_MyPart_Base',(#9067));
+#9083=PRODUCT_DEFINITION_FORMATION('','',#9082);
+#9084=PRODUCT_DEFINITION('design','',#9083,#9003);
+#9085=SHAPE_REPRESENTATION('body2_rep',(#9066),#9010);
+#9086=REPRESENTATION_MAP(#9066,#9085);
+#9087=CARTESIAN_POINT('body2_inst_orig',(10.0,0.0,0.0));
+#9088=DIRECTION('body2_inst_z',(0.0,0.0,1.0));
+#9089=DIRECTION('body2_inst_x',(1.0,0.0,0.0));
+#9090=AXIS2_PLACEMENT_3D('body2_inst_plc',#9087,#9088,#9089);
+#9091=MAPPED_ITEM('body2_mi',#9086,#9090);
+#9092=NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','Chamfer','',#9070,#9084,$);
 ENDSEC;
 END-ISO-10303-21;
