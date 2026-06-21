@@ -1,14 +1,30 @@
 ISO-10303-21;
-/* Ad087 - Reader crashes on dangling entity reference
- * Defect: MANIFOLD_SOLID_BREP references undefined entity #999 */
+/* Ad087: dangling reference to #999 (entity never defined); TransferRoots dereferences null pointer on unresolved reference; cross-oracle: Part-21 validator → reject(E_UNRESOLVED_REFS); OCCT silently accepts with empty result; MANTIS#0033487, #0033665, #0033603, #0032314; See also Ad078; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Ad087 test case','Reader crashes on dangling entity reference'),'2;1');
-FILE_NAME('Ad087.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Ad087'),'2;1');
+FILE_NAME('Ad087.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#100=MANIFOLD_SOLID_BREP('dangling_ref',#999);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Ad087','Ad087','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=MANIFOLD_SOLID_BREP('dangling_brep',#999);
+#9064=SHAPE_REPRESENTATION('dangling_rep',(#999),#9010);
+#9065=FACE_OUTER_BOUND('dangling_bound',#999,.T.);
+#9066=NEXT_ASSEMBLY_USAGE_OCCURRENCE('n1','','',#9001,#999,$);
 ENDSEC;
 END-ISO-10303-21;
