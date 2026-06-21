@@ -1,25 +1,16 @@
 ISO-10303-21;
-/* Xp041 - Cross-product: IfcOpenShell parser rejects valid IFC4X1 file
- *   because the FILE_SCHEMA token is spelled "IFC4x1" with a lowercase
- *   x while the validator only matches uppercase X.
- * Source: github.com/IfcOpenShell/IfcOpenShell issue #1311 "Bug report:
- *   fail at parsing IFC4x1 standard files".
- * Defect: FILE_SCHEMA carries 'IFC4x1' verbatim. ISO 10303-21 schema
- *   names are case-sensitive but ISO 10303-11 does not constrain the
- *   case of trailing characters; IFC's official spelling has been
- *   inconsistent across published versions. A strict equality check
- *   against an uppercase whitelist rejects the file before parsing
- *   begins, even though the data section is valid. */
+/* Xp041: IFC4x1 lowercase-x schema name rejected by IfcOpenShell strict whitelist */
 HEADER;
-FILE_DESCRIPTION(('Xp041 cross-product','IfcOpenShell case-sensitive schema reject'),'2;1');
-FILE_NAME('Xp041.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-/* lowercase 'x' triggers strict-uppercase reject */
+FILE_DESCRIPTION(('Xp041'),'2;1');
+FILE_NAME('Xp041.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('IFC4x1'));
 ENDSEC;
 DATA;
-#1=IFCPROJECT('1AaAa$AAa00000000000FF',$,'project',$,$,$,$,(#10),$);
-#10=IFCGEOMETRICREPRESENTATIONCONTEXT($,'Model',3,1.E-5,#11,$);
-#11=IFCAXIS2PLACEMENT3D(#12,$,$);
-#12=IFCCARTESIANPOINT((0.0,0.0,0.0));
+#1=IFCCARTESIANPOINT((0.,0.,0.));
+#2=IFCCARTESIANPOINT((0.,0.,1.));
+#3=IFCAXIS2PLACEMENT3D(#1,#2,$);
+#4=IFCDIRECTION((1.,0.,0.));
+#5=IFCGEOMETRICREPRESENTATIONCONTEXT($,'Model',3,1.0E-5,#3,#4);
+#6=IFCPROJECT('xp041',#5,'Xp041 IFC4x1 lowercase-x schema test',$,$,$,$,(#6),$);
 ENDSEC;
 END-ISO-10303-21;

@@ -1,50 +1,69 @@
 ISO-10303-21;
-/* Xp040 - Cross-product: Solid Edge import of a Creo Elements STEP
- *   assembly leaves sub-assemblies "stuck" - they cannot be moved or
- *   constrained because each child PRODUCT_DEFINITION is bound to the
- *   top-level ITEM_DEFINED_TRANSFORMATION instead of an instance-local
- *   placement.
- * Source: community.plm.automation.siemens.com Solid Edge 274875
- *   "STEP FILE ASSEMBLY ISSUES"; Siemens question 0xgTFSAY "Inserted
- *   part into assembly is placed way far from origin or other parts".
- * Defect: NEXT_ASSEMBLY_USAGE_OCCURRENCE links every child to the same
- *   shared ITEM_DEFINED_TRANSFORMATION, so the receiver cannot identify
- *   per-instance placement. Solid Edge displays the children but
- *   prevents UI manipulation because no per-instance frame exists. */
+/* Xp040: Solid Edge stuck sub-assemblies: two NAUOs share same ITEM_DEFINED_TRANSFORMATION */
 HEADER;
-FILE_DESCRIPTION(('Xp040 cross-product','Creo Elements -> Solid Edge stuck subassembly'),'2;1');
-FILE_NAME('Xp040.stp','2026-05-02T00:00:00',(''),(''),'CreoElements;2.1','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Xp040'),'2;1');
+FILE_NAME('Xp040.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,'tol','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))REPRESENTATION_CONTEXT('','3D'));
-#20=PRODUCT('Asm','Asm','top',(#21));
-#21=PRODUCT_CONTEXT('',#1,'mechanical');
-#22=PRODUCT_DEFINITION_FORMATION('','',#20);
-#23=PRODUCT_DEFINITION('','',#22,#24);
-#24=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
-#30=PRODUCT('SubA','SubA','child',(#21));
-#31=PRODUCT_DEFINITION_FORMATION('','',#30);
-#32=PRODUCT_DEFINITION('','',#31,#24);
-#40=PRODUCT('SubB','SubB','child',(#21));
-#41=PRODUCT_DEFINITION_FORMATION('','',#40);
-#42=PRODUCT_DEFINITION('','',#41,#24);
-#50=CARTESIAN_POINT('shared_origin',(0.0,0.0,0.0));
-#51=DIRECTION('z',(0.0,0.0,1.0));
-#52=DIRECTION('x',(1.0,0.0,0.0));
-#53=AXIS2_PLACEMENT_3D('shared',#50,#51,#52);
-/* SHARED IDT - both NAUOs reference it - "stuck" sub-assemblies. */
-#60=ITEM_DEFINED_TRANSFORMATION('SHARED_IDT_BUG','no per-instance frame',#53,#53);
-#70=(NEXT_ASSEMBLY_USAGE_OCCURRENCE('a','SubA','stuck',#23,#32,$)REPRESENTATION_RELATIONSHIP('','',#80,#81)REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION(#60)SHAPE_REPRESENTATION_RELATIONSHIP());
-#71=(NEXT_ASSEMBLY_USAGE_OCCURRENCE('b','SubB','stuck',#23,#42,$)REPRESENTATION_RELATIONSHIP('','',#80,#82)REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION(#60)SHAPE_REPRESENTATION_RELATIONSHIP());
-#80=SHAPE_REPRESENTATION('top',(#53),#14);
-#81=SHAPE_REPRESENTATION('SubA',(#53),#14);
-#82=SHAPE_REPRESENTATION('SubB',(#53),#14);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#9=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#10=VERTEX_POINT('',#6);
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=DIRECTION('',(1.0,0.0,0.0));
+#15=VECTOR('',#14,1.0);
+#16=LINE('',#6,#15);
+#17=EDGE_CURVE('',#10,#11,#16,.T.);
+#18=DIRECTION('',(0.0,1.0,0.0));
+#19=VECTOR('',#18,1.0);
+#20=LINE('',#7,#19);
+#21=EDGE_CURVE('',#11,#12,#20,.T.);
+#22=DIRECTION('',(-1.0,0.0,0.0));
+#23=VECTOR('',#22,1.0);
+#24=LINE('',#8,#23);
+#25=EDGE_CURVE('',#12,#13,#24,.T.);
+#26=DIRECTION('',(0.0,-1.0,0.0));
+#27=VECTOR('',#26,1.0);
+#28=LINE('',#9,#27);
+#29=EDGE_CURVE('',#13,#10,#28,.T.);
+#30=ORIENTED_EDGE('',$,$,#17,.T.);
+#31=ORIENTED_EDGE('',$,$,#21,.T.);
+#32=ORIENTED_EDGE('',$,$,#25,.T.);
+#33=ORIENTED_EDGE('',$,$,#29,.T.);
+#34=EDGE_LOOP('',(#30,#31,#32,#33));
+#35=FACE_OUTER_BOUND('',#34,.T.);
+#36=ADVANCED_FACE('',(#35),#5,.T.);
+#37=OPEN_SHELL('',(#36));
+#38=SHELL_BASED_SURFACE_MODEL('',(#37));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Xp040','Xp040','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#38),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=AXIS2_PLACEMENT_3D('shared_plc',#1,#2,#3);
+#9064=ITEM_DEFINED_TRANSFORMATION('shared_xform','',#9063,#9063);
+#9065=PRODUCT('SubA','SubA','',());
+#9066=PRODUCT('SubB','SubB','',());
+#9067=NEXT_ASSEMBLY_USAGE_OCCURRENCE('nauo_A','','',#9003,#9065,$);
+#9068=NEXT_ASSEMBLY_USAGE_OCCURRENCE('nauo_B','','',#9003,#9066,$);
+#9069=/* xp040 defect: NAUO #9067 and NAUO #9068 both reference shared IDT #9064 — Solid Edge cannot assign per-instance frames */;
 ENDSEC;
 END-ISO-10303-21;

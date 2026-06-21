@@ -1,52 +1,58 @@
 ISO-10303-21;
-/* Xp021 - Cross-product: face on closed cylindrical surface with a
- *   disconnected EDGE_LOOP (head-to-tail violated), missing pcurves, and
- *   a wire whose 3D U-extent exceeds 2pi (one full period).
- * Builds on Twi003 (head-to-tail) + Gp001 (missing pcurve) +
- *   Twi-seam-class (period spanning). */
+/* Xp021: Disconnected EDGE_LOOP x pcurve missing x wire bypassing seam */
 HEADER;
-FILE_DESCRIPTION(('Xp021 cross-product','disconnected loop x missing pcurve x period spanning'),'2;1');
-FILE_NAME('Xp021.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Xp021'),'2;1');
+FILE_NAME('Xp021.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#14=CYLINDRICAL_SURFACE('',#13,1.0);
-/* Vertices: a, b, c with deliberately non-consecutive c->a */
-#20=CARTESIAN_POINT('a',(1.0,0.0,0.0));
-#21=CARTESIAN_POINT('b',(-1.0,0.0,1.0));
-/* Defect 1: edge[1].end (-1,0,1) != edge[2].start (-0.5,0.5,0.5) */
-#22=CARTESIAN_POINT('c',(-0.5,0.5,0.5));
-#23=CARTESIAN_POINT('c2',(0.5,-0.5,0.5));
-#30=VERTEX_POINT('',#20);
-#31=VERTEX_POINT('',#21);
-#32=VERTEX_POINT('',#22);
-#33=VERTEX_POINT('',#23);
-#40=DIRECTION('',(-0.7071,0.0,0.7071));
-#41=VECTOR('',#40,2.828);
-#42=LINE('',#20,#41);
-#43=DIRECTION('',(0.5773502691896258,0.5773502691896258,-0.5773502691896258));
-#44=VECTOR('',#43,1.732);
-#45=LINE('',#22,#44);
-#46=DIRECTION('',(0.5773502691896258,-0.5773502691896258,-0.5773502691896258));
-#47=VECTOR('',#46,1.732);
-#48=LINE('',#23,#47);
-#60=EDGE_CURVE('',#30,#31,#42,.T.);
-#61=EDGE_CURVE('',#32,#33,#45,.T.);
-#62=EDGE_CURVE('',#33,#30,#48,.T.);
-/* Defect 2: SURFACE_CURVE.associated_geometry empty (no PCURVE) */
-/* (Lines used directly as 3D curves; pcurves never authored.) */
-#70=ORIENTED_EDGE('',*,*,#60,.T.);
-#71=ORIENTED_EDGE('',*,*,#61,.T.);
-#72=ORIENTED_EDGE('',*,*,#62,.T.);
-/* Defect 3: wire wraps > one full period in U (path 0 -> pi -> >2pi) */
-#80=EDGE_LOOP('disconnected_period_span',(#70,#71,#72));
-#81=FACE_OUTER_BOUND('',#80,.T.);
-#82=ADVANCED_FACE('cyl_face',(#81),#14,.T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CYLINDRICAL_SURFACE('',#4,1.0);
+#6=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(-1.0,0.0,0.5));
+#8=CARTESIAN_POINT('',(-0.87758256189,-0.479425538604,0.5));
+#9=CARTESIAN_POINT('',(-0.809016994375,-0.587785252292,1.0));
+#10=VERTEX_POINT('',#6);
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=DIRECTION('',(-0.970142500145,0.0,0.242535625036));
+#15=VECTOR('',#14,2.06155281281);
+#16=LINE('',#6,#15);
+#17=EDGE_CURVE('',#10,#11,#16,.T.);
+#18=DIRECTION('',(0.132832352713,-0.209925713884,0.968652032839));
+#19=VECTOR('',#18,0.51618123232);
+#20=LINE('',#8,#19);
+#21=EDGE_CURVE('',#12,#13,#20,.T.);
+#22=DIRECTION('',(0.841810007277,0.27352065185,-0.465341127195));
+#23=VECTOR('',#22,2.14896114175);
+#24=LINE('',#9,#23);
+#25=EDGE_CURVE('',#13,#10,#24,.T.);
+#26=ORIENTED_EDGE('',$,$,#17,.T.);
+#27=ORIENTED_EDGE('',$,$,#21,.T.);
+#28=ORIENTED_EDGE('',$,$,#25,.T.);
+#29=EDGE_LOOP('',(#26,#27,#28));
+#30=FACE_OUTER_BOUND('',#29,.T.);
+#31=ADVANCED_FACE('',(#30),#5,.T.);
+#32=OPEN_SHELL('',(#31));
+#33=SHELL_BASED_SURFACE_MODEL('',(#32));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Xp021','Xp021','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#33),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=/* xp021 defect: edge_loop disconnected (gap 0.5 in 3D); no pcurves; wire U-extent > 2*pi */;
 ENDSEC;
 END-ISO-10303-21;
