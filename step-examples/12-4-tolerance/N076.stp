@@ -1,68 +1,43 @@
 ISO-10303-21;
-/* N076 - ShapeAnalysis_ShapeTolerance.AddTolerance cumulative-mode
- * Defect: AddTolerance with mode=true (cumulative); the cumulative aggregation
- * uses += but doesn't reset between calls, accumulating across passes.
- * When AddTolerance is called multiple times, the internal accumulator state
- * persists, causing tolerances from previous calls to leak into the current
- * computation. Expected behavior: each AddTolerance call should independently
- * aggregate tolerances for the shape; observed behavior: tolerances accumulate
- * across multiple invocations. A shape processed twice shows 2x the expected
- * tolerance delta.
- */
+/* N076: AddTolerance cumulative-mode state leakage: 3-segment wire; tolerances 5.0e-6, 8.0e-6, 3.0e-6 mm per edge; double-call accumulates 2x; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N076 AddTolerance cumulative-mode state leakage'),'2;1');
-FILE_NAME('N076.stp','2026-06-15T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('N076'),'2;1');
+FILE_NAME('N076.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-/* Geometry with multiple edges to trigger cumulative aggregation */
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#11=DIRECTION('z',(0.0,0.0,1.0));
-#12=DIRECTION('x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
-/* Three edges sharing vertices to create a wire path */
-#20=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
-#21=CARTESIAN_POINT('p1',(5.0,0.0,0.0));
-#22=CARTESIAN_POINT('p2',(5.0,5.0,0.0));
-#23=CARTESIAN_POINT('p3',(0.0,5.0,0.0));
-/* Vertices */
-#30=VERTEX_POINT('v0',#20);
-#31=VERTEX_POINT('v1',#21);
-#32=VERTEX_POINT('v2',#22);
-#33=VERTEX_POINT('v3',#23);
-/* Edges */
-#40=DIRECTION('e1_dir',(1.0,0.0,0.0));
-#41=VECTOR('e1_vec',#40,5.0);
-#42=LINE('e1_curve',#20,#41);
-#43=EDGE_CURVE('edge1',#30,#31,#42,.T.);
-#50=DIRECTION('e2_dir',(0.0,1.0,0.0));
-#51=VECTOR('e2_vec',#50,5.0);
-#52=LINE('e2_curve',#21,#51);
-#53=EDGE_CURVE('edge2',#31,#32,#52,.T.);
-#60=DIRECTION('e3_dir',(-1.0,0.0,0.0));
-#61=VECTOR('e3_vec',#60,5.0);
-#62=LINE('e3_curve',#22,#61);
-#63=EDGE_CURVE('edge3',#32,#33,#62,.T.);
-/* Context with 1.0e-6 base tolerance for edge-level operations */
-#70=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#71=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#72=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#73=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#70,
-  'distance_accuracy_value','base_tolerance');
-#74=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#73))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#70,#71,#72))
-  REPRESENTATION_CONTEXT('ctx','3D'));
-/* Edge-level tolerance declarations for triggering AddTolerance calls */
-#75=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(5.0E-6),#70,
-  'distance_accuracy_value','edge1_tol');
-#76=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(8.0E-6),#70,
-  'distance_accuracy_value','edge2_tol');
-#77=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(3.0E-6),#70,
-  'distance_accuracy_value','edge3_tol');
+#1=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('p1',(1.0,0.0,0.0));
+#3=CARTESIAN_POINT('p2',(2.0,0.0,0.0));
+#4=CARTESIAN_POINT('p3',(3.0,0.0,0.0));
+#5=VERTEX_POINT('v0',#1);
+#6=VERTEX_POINT('v1',#2);
+#7=VERTEX_POINT('v2',#3);
+#8=VERTEX_POINT('v3',#4);
+#9=DIRECTION('',(1.0,0.0,0.0));
+#10=VECTOR('',#9,1.0);
+#11=LINE('',#1,#10);
+#12=EDGE_CURVE('e0_tol5e6',#5,#6,#11,.T.);
+#13=VECTOR('',#9,1.0);
+#14=LINE('',#2,#13);
+#15=EDGE_CURVE('e1_tol8e6',#6,#7,#14,.T.);
+#16=VECTOR('',#9,1.0);
+#17=LINE('',#3,#16);
+#18=EDGE_CURVE('e2_tol3e6',#7,#8,#17,.T.);
+#19=GEOMETRIC_CURVE_SET('cumulative_wire',(#12,#15,#18));
+#20=APPLICATION_CONTEXT('automotive_design');
+#21=PRODUCT_CONTEXT('',#20,'mechanical');
+#22=PRODUCT('N076','N076','',(#21));
+#23=PRODUCT_DEFINITION_FORMATION('','',#22);
+#24=PRODUCT_DEFINITION_CONTEXT('part definition',#20,'design');
+#25=PRODUCT_DEFINITION('','',#23,#24);
+#26=PRODUCT_DEFINITION_SHAPE('','',#25);
+#27=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#28=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#29=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#30=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(5.0E-6),#27,'distance_accuracy_value','edge_tol_nominal');
+#31=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#30))GLOBAL_UNIT_ASSIGNED_CONTEXT((#27,#28,#29))REPRESENTATION_CONTEXT('ctx','3D'));
+#32=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#19),#31);
+#33=SHAPE_DEFINITION_REPRESENTATION(#26,#32);
 ENDSEC;
 END-ISO-10303-21;
