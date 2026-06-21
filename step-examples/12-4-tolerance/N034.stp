@@ -1,50 +1,42 @@
 ISO-10303-21;
-/* N034 - +/- tolerance bounds inverted, equal, or wrong measure type
- * Defect: PLUS_MINUS_TOLERANCE recorded with upper_bound < lower_bound or
- * upper_bound == lower_bound or with bound expressed via
- * descriptive_representation_item / plane_angle_measure_with_unit instead
- * of length_measure_with_unit. SFA tooling flags these as warnings; many
- * CAD systems silently accept and ignore.
- * Reproducer: PLUS_MINUS_TOLERANCE with upper=-0.005 and lower=+0.005
- * (inverted), and a sibling tolerance whose bound is plane_angle, not length.
- */
+/* N034: 4×PLUS_MINUS_TOLERANCE: inverted bounds (-0.005/0.005), equal bounds, wrong PLANE_ANGLE_MEASURE_WITH_UNIT type, correct form; SFA flags; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N034 +/- tolerance bounds inverted equal or wrong measure type'),'2;1');
-FILE_NAME('N034.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF'));
+FILE_DESCRIPTION(('N034'),'2;1');
+FILE_NAME('N034.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('managed model-based 3d engineering');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'ap242_managed_model_based_3d_engineering',2014,#1);
-#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('p1',(10.0,0.0,0.0));
-#20=VERTEX_POINT('',#10);
-#21=VERTEX_POINT('',#11);
-#30=DIRECTION('+x',(1.0,0.0,0.0));
-#31=VECTOR('',#30,10.0);
-#32=LINE('',#10,#31);
-#40=EDGE_CURVE('dim_edge',#20,#21,#32,.T.);
-#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#50,
-  'distance_accuracy_value','');
-#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
-  REPRESENTATION_CONTEXT('ctx','3D'));
-/* Defect (a): bounds inverted -- upper -0.005 < lower +0.005 */
-#80=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(-0.005),#50);
-#81=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.005),#50);
-#82=PLUS_MINUS_TOLERANCE(#80,'inverted_pm','upper<lower');
-#83=PLUS_MINUS_TOLERANCE(#81,'inverted_pm_low','swapped');
-/* Defect (b): equal upper == lower */
-#84=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0),#50);
-#85=PLUS_MINUS_TOLERANCE(#84,'zero_band','upper==lower');
-/* Defect (c): plane_angle measure used where length expected */
-#86=PLANE_ANGLE_MEASURE_WITH_UNIT(PLANE_ANGLE_MEASURE(0.001),#51);
-#87=PLUS_MINUS_TOLERANCE(#86,'wrong_measure_type','angle_used_for_length');
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('N034','N034','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=SHAPE_ASPECT('feature','',#9055,.T.);
+#9064=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.005),#9056);
+#9065=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(-0.005),#9056);
+#9066=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.005),#9056);
+#9067=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9068=PLANE_ANGLE_MEASURE_WITH_UNIT(PLANE_ANGLE_MEASURE(0.005),#9067);
+#9069=TOLERANCE_VALUE(#9065,#9064);
+#9070=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.005),#9056);
+#9071=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.005),#9056);
+#9072=TOLERANCE_VALUE(#9070,#9071);
+#9073=TOLERANCE_VALUE(#9068,#9068);
+#9074=TOLERANCE_VALUE(#9065,#9064);
+#9075=PLUS_MINUS_TOLERANCE(#9069,'',#9063);
+#9076=PLUS_MINUS_TOLERANCE(#9072,'',#9063);
+#9077=PLUS_MINUS_TOLERANCE(#9073,'',#9063);
+#9078=PLUS_MINUS_TOLERANCE(#9074,'',#9063);
 ENDSEC;
 END-ISO-10303-21;

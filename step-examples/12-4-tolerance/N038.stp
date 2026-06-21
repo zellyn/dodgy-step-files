@@ -1,52 +1,35 @@
 ISO-10303-21;
-/* N038 - Patrikalakis interval-solid violation: face-pair gap exceeds bound
- * Defect: Adjacent faces are not "approximately equal" to an interval solid:
- * the maximum gap between any two trimmed surfaces along their shared edge
- * exceeds the chosen interval radius. Without this guarantee the boundary
- * reconstruction is not provably gap-free.
- * Reproducer: two B-spline patches whose maximum Hausdorff distance along
- * a shared edge is 5*epsilon while declared epsilon = 1.0e-5 mm. The face-pair
- * gap (5.0e-5) exceeds the tube radius epsilon.
- */
+/* N038: two B_SPLINE_SURFACE_WITH_KNOTS patches; shared-edge max gap 5.0E-5 = 5×ε where ε=1.0E-5; interval-solid condition violated; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N038 Patrikalakis interval-solid face-pair gap exceeds epsilon'),'2;1');
-FILE_NAME('N038.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('N038'),'2;1');
+FILE_NAME('N038.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-/* Patch A along z=0; patch B parallel at z=5.0e-5 -- max Hausdorff = 5*1.0e-5 */
-#10=CARTESIAN_POINT('A_00',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('A_01',(0.0,10.0,0.0));
-#12=CARTESIAN_POINT('A_10',(10.0,0.0,0.0));
-#13=CARTESIAN_POINT('A_11',(10.0,10.0,0.0));
-#14=B_SPLINE_SURFACE_WITH_KNOTS('patch_A',1,1,
-  ((#10,#11),(#12,#13)),.UNSPECIFIED.,.F.,.F.,.F.,
-  (2,2),(2,2),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
-#20=CARTESIAN_POINT('B_00',(0.0,0.0,5.0E-5));
-#21=CARTESIAN_POINT('B_01',(0.0,10.0,5.0E-5));
-#22=CARTESIAN_POINT('B_10',(10.0,0.0,5.0E-5));
-#23=CARTESIAN_POINT('B_11',(10.0,10.0,5.0E-5));
-#24=B_SPLINE_SURFACE_WITH_KNOTS('patch_B_offset_5eps',1,1,
-  ((#20,#21),(#22,#23)),.UNSPECIFIED.,.F.,.F.,.F.,
-  (2,2),(2,2),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
-#30=VERTEX_POINT('shared0',#10);
-#31=VERTEX_POINT('shared1',#12);
-#40=DIRECTION('+x',(1.0,0.0,0.0));
-#41=VECTOR('',#40,10.0);
-#42=LINE('',#10,#41);
-#50=EDGE_CURVE('shared_edge_with_pair_gap_5eps',#30,#31,#42,.T.);
-#60=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#61=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#62=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#63=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-5),#60,
-  'distance_accuracy_value','epsilon_smaller_than_face_pair_gap');
-#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#63))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#60,#61,#62))
-  REPRESENTATION_CONTEXT('ctx','3D'));
+#1=CARTESIAN_POINT('p00',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('p10',(5.0,0.0,0.0));
+#3=CARTESIAN_POINT('p01',(0.0,5.0,0.0));
+#4=CARTESIAN_POINT('p11',(5.0,5.0,0.0));
+#5=B_SPLINE_SURFACE_WITH_KNOTS('patch1',1,1,((#1,#2),(#3,#4)),.UNSPECIFIED.,.F.,.F.,.F.,(2,2),(2,2),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
+#6=CARTESIAN_POINT('q00_gap_5e-5',(5.0,0.0,5.0E-05));
+#7=CARTESIAN_POINT('q10',(10.0,0.0,0.0));
+#8=CARTESIAN_POINT('q01_gap_5e-5',(5.0,5.0,5.0E-05));
+#9=CARTESIAN_POINT('q11',(10.0,5.0,0.0));
+#10=B_SPLINE_SURFACE_WITH_KNOTS('patch2',1,1,((#6,#7),(#8,#9)),.UNSPECIFIED.,.F.,.F.,.F.,(2,2),(2,2),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
+#11=GEOMETRIC_CURVE_SET('interval',(#5,#10));
+#12=APPLICATION_CONTEXT('automotive_design');
+#13=PRODUCT_CONTEXT('',#12,'mechanical');
+#14=PRODUCT('N038','N038','',(#13));
+#15=PRODUCT_DEFINITION_FORMATION('','',#14);
+#16=PRODUCT_DEFINITION_CONTEXT('part definition',#12,'design');
+#17=PRODUCT_DEFINITION('','',#15,#16);
+#18=PRODUCT_DEFINITION_SHAPE('','',#17);
+#19=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#20=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#21=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#22=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-5),#19,'distance_accuracy_value','interval_solid_radius');
+#23=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#22))GLOBAL_UNIT_ASSIGNED_CONTEXT((#19,#20,#21))REPRESENTATION_CONTEXT('ctx','3D'));
+#24=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#11),#23);
+#25=SHAPE_DEFINITION_REPRESENTATION(#18,#24);
 ENDSEC;
 END-ISO-10303-21;
