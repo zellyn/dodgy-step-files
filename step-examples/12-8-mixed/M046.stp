@@ -1,76 +1,102 @@
 ISO-10303-21;
-/* M046 - PRESENTATION_LAYER_ASSIGNMENT carrying material/group names
- * dropped.
- * Defect: producers (CST Microwave Studio etc.) sometimes encode
- * physical-group / material semantics in PRESENTATION_LAYER_ASSIGNMENT
- * rather than STYLED_ITEM. OCC's XCAF only honors layer for
- * visibility, so the data is silently lost.
- * This fixture has two SHELL_BASED_SURFACE_MODEL bodies; one is
- * tagged with a layer named 'Copper' and a description 'meshable'. A
- * smart receiver should surface this as a queryable group. */
+/* M046: PRESENTATION_LAYER_ASSIGNMENT carrying material/group names dropped; input: AP214 STEP file (CST Microwave Studio pattern) where PRESENTATION_LAYER_ASSIGNMENT('Copper','meshable',(#42,#43)) and PRESENTATION_LAYER_ASSIGNMENT('FR4','dielectric',(#44,#45)) encode physical-group and material semantics by pointing at SHELL_BASED_SURFACE_MODEL shells; OCC XCAF only honors PRESENTATION_LAYER_ASSIGNMENT for visibility; material names and physical group assignments are silently dropped; kernel must heal: surface PRESENTATION_LAYER_ASSIGNMENT names as queryable group attributes; synonyms: layer carrying material name dropped, physical group encoded as layer, PRESENTATION_LAYER_ASSIGNMENT semantic loss, layer-as-group not honored */
 HEADER;
-FILE_DESCRIPTION(('M046 test case','material assignment via PLA name'),'2;1');
-FILE_NAME('M046.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('M046'),'2;1');
+FILE_NAME('M046.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-     REPRESENTATION_CONTEXT('part','3D'));
-/* Two placeholder shell-based surface models. */
-/* --- single triangular face placeholder for OPEN_SHELL --- */
-#5700=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
-#5701=CARTESIAN_POINT('p1',(1.0,0.0,0.0));
-#5702=CARTESIAN_POINT('p2',(0.0,1.0,0.0));
-#5710=VERTEX_POINT('',#5700);
-#5711=VERTEX_POINT('',#5701);
-#5712=VERTEX_POINT('',#5702);
-#5720=DIRECTION('dx',(1.0,0.0,0.0));
-#5721=DIRECTION('dy',(0.0,1.0,0.0));
-#5722=DIRECTION('dz',(0.0,0.0,1.0));
-#5730=VECTOR('vx',#5720,1.0);
-#5731=VECTOR('vy',#5721,1.0);
-#5732=VECTOR('vd',#5720,1.0);
-#5740=LINE('',#5700,#5730);
-#5741=DIRECTION('dxy',(-0.7071067811865476,0.7071067811865476,0.0));
-#5742=VECTOR('vxy',#5741,1.4142135623730951);
-#5743=LINE('',#5701,#5742);
-#5744=LINE('',#5700,#5731);
-#5760=EDGE_CURVE('',#5710,#5711,#5740,.T.);
-#5761=EDGE_CURVE('',#5711,#5712,#5743,.T.);
-#5762=EDGE_CURVE('',#5710,#5712,#5744,.T.);
-#5780=AXIS2_PLACEMENT_3D('',#5700,#5722,#5720);
-#5790=PLANE('',#5780);
-#5800=ORIENTED_EDGE('',*,*,#5760,.T.);
-#5801=ORIENTED_EDGE('',*,*,#5761,.T.);
-#5802=ORIENTED_EDGE('',*,*,#5762,.F.);
-#5830=EDGE_LOOP('',(#5800,#5801,#5802));
-#5840=FACE_OUTER_BOUND('',#5830,.T.);
-#5850=ADVANCED_FACE('placeholder',(#5840),#5790,.T.);
-/* OPEN_SHELL replacing empty () body */
-#100=OPEN_SHELL('shell_42',(#5850));
-#101=OPEN_SHELL('shell_43',(#5850));
-#110=SHELL_BASED_SURFACE_MODEL('body_42',(#100));
-#111=SHELL_BASED_SURFACE_MODEL('body_43',(#101));
-/* Layer carries a material/group name 'Copper' and a description
- * 'meshable'. Visibility-only readers see "layer Copper, on" and lose
- * the meshable semantic. */
-#200=PRESENTATION_LAYER_ASSIGNMENT('Copper','meshable',(#110,#111));
-/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
-#9010=PRODUCT_CONTEXT('',#1,'mechanical');
-#9011=PRODUCT('M046','M046','',(#9010));
-#9012=PRODUCT_DEFINITION_FORMATION('','',#9011);
-#9013=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9014=PRODUCT_DEFINITION('','',#9012,#9013);
-#9015=PRODUCT_DEFINITION_SHAPE('','',#9014);
-#9050=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#110),#14);
-#9051=SHAPE_DEFINITION_REPRESENTATION(#9015,#9050);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#3=CARTESIAN_POINT('',(2.0,1.0,0.0));
+#4=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#5=VERTEX_POINT('',#1);
+#6=VERTEX_POINT('',#2);
+#7=VERTEX_POINT('',#3);
+#8=VERTEX_POINT('',#4);
+#9=DIRECTION('',(1.0,0.0,0.0));
+#10=VECTOR('',#9,2.0);
+#11=LINE('',#1,#10);
+#12=EDGE_CURVE('',#5,#6,#11,.T.);
+#13=DIRECTION('',(0.0,1.0,0.0));
+#14=VECTOR('',#13,1.0);
+#15=LINE('',#2,#14);
+#16=EDGE_CURVE('',#6,#7,#15,.T.);
+#17=DIRECTION('',(-1.0,0.0,0.0));
+#18=VECTOR('',#17,2.0);
+#19=LINE('',#3,#18);
+#20=EDGE_CURVE('',#7,#8,#19,.T.);
+#21=DIRECTION('',(0.0,-1.0,0.0));
+#22=VECTOR('',#21,1.0);
+#23=LINE('',#4,#22);
+#24=EDGE_CURVE('',#8,#5,#23,.T.);
+#25=ORIENTED_EDGE('',$,$,#12,.T.);
+#26=ORIENTED_EDGE('',$,$,#16,.T.);
+#27=ORIENTED_EDGE('',$,$,#20,.T.);
+#28=ORIENTED_EDGE('',$,$,#24,.T.);
+#29=EDGE_LOOP('',(#25,#26,#27,#28));
+#30=DIRECTION('',(0.0,0.0,1.0));
+#31=DIRECTION('',(1.0,0.0,0.0));
+#32=AXIS2_PLACEMENT_3D('',#1,#30,#31);
+#33=PLANE('',#32);
+#34=FACE_OUTER_BOUND('',#29,.T.);
+#35=ADVANCED_FACE('copper_trace',(#34),#33,.T.);
+#36=OPEN_SHELL('shell_copper',(#35));
+#37=SHELL_BASED_SURFACE_MODEL('sbsm_copper',(#36));
+#38=CARTESIAN_POINT('',(0.0,0.0,-0.2));
+#39=CARTESIAN_POINT('',(2.0,0.0,-0.2));
+#40=CARTESIAN_POINT('',(2.0,1.0,-0.2));
+#41=CARTESIAN_POINT('',(0.0,1.0,-0.2));
+#42=VERTEX_POINT('',#38);
+#43=VERTEX_POINT('',#39);
+#44=VERTEX_POINT('',#40);
+#45=VERTEX_POINT('',#41);
+#46=DIRECTION('',(1.0,0.0,0.0));
+#47=VECTOR('',#46,2.0);
+#48=LINE('',#38,#47);
+#49=EDGE_CURVE('',#42,#43,#48,.T.);
+#50=DIRECTION('',(0.0,1.0,0.0));
+#51=VECTOR('',#50,1.0);
+#52=LINE('',#39,#51);
+#53=EDGE_CURVE('',#43,#44,#52,.T.);
+#54=DIRECTION('',(-1.0,0.0,0.0));
+#55=VECTOR('',#54,2.0);
+#56=LINE('',#40,#55);
+#57=EDGE_CURVE('',#44,#45,#56,.T.);
+#58=DIRECTION('',(0.0,-1.0,0.0));
+#59=VECTOR('',#58,1.0);
+#60=LINE('',#41,#59);
+#61=EDGE_CURVE('',#45,#42,#60,.T.);
+#62=ORIENTED_EDGE('',$,$,#49,.T.);
+#63=ORIENTED_EDGE('',$,$,#53,.T.);
+#64=ORIENTED_EDGE('',$,$,#57,.T.);
+#65=ORIENTED_EDGE('',$,$,#61,.T.);
+#66=EDGE_LOOP('',(#62,#63,#64,#65));
+#67=DIRECTION('',(0.0,0.0,1.0));
+#68=DIRECTION('',(1.0,0.0,0.0));
+#69=AXIS2_PLACEMENT_3D('',#38,#67,#68);
+#70=PLANE('',#69);
+#71=FACE_OUTER_BOUND('',#66,.T.);
+#72=ADVANCED_FACE('fr4_substrate',(#71),#70,.T.);
+#73=OPEN_SHELL('shell_fr4',(#72));
+#74=SHELL_BASED_SURFACE_MODEL('sbsm_fr4',(#73));
+#75=SHELL_BASED_SURFACE_MODEL('sbsm_all',(#36,#73));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M046','M046','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#75),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=PRESENTATION_LAYER_ASSIGNMENT('Copper','meshable',(#37,#35));
+#9064=PRESENTATION_LAYER_ASSIGNMENT('FR4','dielectric',(#74,#72));
+#9065=PRESENTATION_LAYER_ASSIGNMENT('PortBoundary','excitation boundary',(#35));
 ENDSEC;
 END-ISO-10303-21;
