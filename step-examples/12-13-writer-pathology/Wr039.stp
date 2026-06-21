@@ -1,22 +1,22 @@
 ISO-10303-21;
-/* Wr039 - Re-export re-orders attributes within complex (subtype-stack) records */
+/* Wr039: re-export re-orders attributes within complex (subtype-stack) records */
+/* Canonical: (LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.)) */
+/* DEFECT:    (SI_UNIT(.MILLI.,.METRE.) NAMED_UNIT(*) LENGTH_UNIT()) */
+/* Writer iterated an unordered set of supertype names; SI_UNIT happened first */
+/* Parsers accept both orders; byte-hash comparators report the file as changed */
 HEADER;
-FILE_DESCRIPTION(('Wr039 - subtype-stack reordering on re-export'),'2;1');
-FILE_NAME('Wr039.stp','2026-04-30T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('Wr039: non-canonical complex-entity supertype ordering'),'2;1');
+FILE_NAME('Wr039.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('mechanical design');
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#11=DIRECTION('z',(0.0,0.0,1.0));
-#12=DIRECTION('x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('placement',#10,#11,#12);
-/* Wr039: canonical ordering of LENGTH_UNIT/NAMED_UNIT/SI_UNIT in
-   complex records varies by writer. Receivers building canonical hash
-   strings see this as a different file than the input */
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=CARTESIAN_POINT('corner',(1.,1.,0.));
+#3=DIRECTION('xdir',(1.,0.,0.));
+#4=DIRECTION('zdir',(0.,0.,1.));
+/* DEFECT: supertype order is SI_UNIT first, then NAMED_UNIT, then LENGTH_UNIT */
+/* Canonical schema-declaration order is: LENGTH_UNIT NAMED_UNIT SI_UNIT */
 #20=(SI_UNIT(.MILLI.,.METRE.) NAMED_UNIT(*) LENGTH_UNIT());
-#21=(SI_UNIT($,.RADIAN.) PLANE_ANGLE_UNIT() NAMED_UNIT(*));
-#22=(SOLID_ANGLE_UNIT() SI_UNIT($,.STERADIAN.) NAMED_UNIT(*));
+#21=GEOMETRIC_CURVE_SET('reordered-complex-entity-shape',(#1,#2));
 ENDSEC;
 END-ISO-10303-21;

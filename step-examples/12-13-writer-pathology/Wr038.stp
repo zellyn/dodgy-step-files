@@ -1,23 +1,20 @@
 ISO-10303-21;
-/* Wr038 - Re-emitted file uses entity-numbering pattern that breaks round-trip equivalence */
+/* Wr038: non-canonical entity numbering breaks round-trip equivalence */
+/* Entity numbers (#42, #17, #99, #1) are in non-sequential, non-canonical order */
+/* Writer assigned numbers in internal-representation visit order (unordered set) */
+/* Every export run produces different numbering — file hashes change with each write */
+/* A no-op round-trip (read then write) produces a byte-different file */
 HEADER;
-FILE_DESCRIPTION(('Wr038 - non-canonical numbering breaks round-trip equality'),'2;1');
-FILE_NAME('Wr038.stp','2026-04-30T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('Wr038: non-canonical entity numbering'),'2;1');
+FILE_NAME('Wr038.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* Wr038: every export uses different entity numbers because the writer
-   inserts a timestamp seed into the numbering. A no-op round-trip
-   produces a file with different numbering, breaking byte-equivalence
-   regression tests */
-#42=APPLICATION_CONTEXT('mechanical design');
-#17=PRODUCT_CONTEXT('part',#42,'mechanical');
-#99=PRODUCT('Wr038-part','Wr038 demo','',(#17));
-#1=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#73=DIRECTION('z',(0.0,0.0,1.0));
-#28=DIRECTION('x',(1.0,0.0,0.0));
-#56=AXIS2_PLACEMENT_3D('placement',#1,#73,#28);
-#84=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+/* DEFECT: entity numbers skip and reorder: #42, #17, #99, #1 — non-canonical */
+/* Canonical form would assign #1, #2, #3, #4 sequentially */
+#42=APPLICATION_CONTEXT('automotive_design');
+#17=CARTESIAN_POINT('origin',(0.,0.,0.));
+#99=CARTESIAN_POINT('corner',(1.,1.,1.));
+#1=GEOMETRIC_CURVE_SET('non-canonical-numbering-shape',(#17,#99));
 ENDSEC;
 END-ISO-10303-21;

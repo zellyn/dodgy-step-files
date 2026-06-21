@@ -1,30 +1,70 @@
 ISO-10303-21;
-/* Wr037 - Loss of seam-edge marking on closed surfaces - cylinder seam emitted as ordinary edge with duplicate vertex */
+/* Wr037: loss of seam-edge marking on cylindrical surface */
+/* Original: cylindrical face with a seam at U=0/U=2pi (writer marked it) */
+/* Re-emitted: two ordinary EDGE_CURVE entries at U=0 and U=2pi with */
+/*   distinct VERTEX_POINT entities even though they are coincident in 3D */
+/* Receiver cannot detect the seam; shell is open where it should be closed */
 HEADER;
-FILE_DESCRIPTION(('Wr037 - cylinder seam lost on re-export'),'2;1');
-FILE_NAME('Wr037.stp','2026-04-30T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('Wr037: cylinder seam edge lost on re-export'),'2;1');
+FILE_NAME('Wr037.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('mechanical design');
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#11=DIRECTION('z',(0.0,0.0,1.0));
-#12=DIRECTION('x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('placement',#10,#11,#12);
-#14=CYLINDRICAL_SURFACE('cyl',#13,1.0);
-/* Wr037: original had seam-marked edge at U=0 / U=2pi identification.
-   Writer linearised it to two ordinary edges sharing duplicate
-   coincident VERTEX_POINTs. Receiver sees two vertices at the same
-   3D location and reports a non-watertight shell */
-#20=CARTESIAN_POINT('seamA_top',(1.0,0.0,1.0));
-#21=CARTESIAN_POINT('seamA_bot',(1.0,0.0,0.0));
-#22=CARTESIAN_POINT('seamB_top',(1.0,0.0,1.0));
-#23=CARTESIAN_POINT('seamB_bot',(1.0,0.0,0.0));
-#30=VERTEX_POINT('vA_top',#20);
-#31=VERTEX_POINT('vA_bot',#21);
-#32=VERTEX_POINT('vB_top',#22);
-#33=VERTEX_POINT('vB_bot',#23);
-#40=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+/* Cylinder axis */
+#1=CARTESIAN_POINT('axis-origin',(0.,0.,0.));
+#2=DIRECTION('zdir',(0.,0.,1.));
+#3=DIRECTION('xdir',(1.,0.,0.));
+#4=AXIS2_PLACEMENT_3D('cyl-axis',#1,#2,#3);
+#5=CYLINDRICAL_SURFACE('cyl-surf',#4,1.0);
+/* Top circle: at Z=1, radius=1 */
+#6=CARTESIAN_POINT('top-seam-a',(1.,0.,1.));
+#7=CARTESIAN_POINT('top-center',(0.,0.,1.));
+#8=DIRECTION('top-zdir',(0.,0.,1.));
+#9=DIRECTION('top-xdir',(1.,0.,0.));
+#10=AXIS2_PLACEMENT_3D('top-circle-ax',#7,#8,#9);
+#11=CIRCLE('top-circle',#10,1.0);
+/* Bottom circle: at Z=0, radius=1 */
+#12=CARTESIAN_POINT('bot-center',(0.,0.,0.));
+#13=DIRECTION('bot-zdir',(0.,0.,1.));
+#14=DIRECTION('bot-xdir',(1.,0.,0.));
+#15=AXIS2_PLACEMENT_3D('bot-circle-ax',#12,#13,#14);
+#16=CIRCLE('bot-circle',#15,1.0);
+/* Side seam lines (straight generators at U=0 and U=2pi) */
+#17=CARTESIAN_POINT('seam-line-pt',(1.,0.,0.));
+#18=DIRECTION('seam-dir',(0.,0.,1.));
+#19=VECTOR('seam-vec',#18,1.0);
+#20=LINE('seam-line-a',#17,#19);
+#21=LINE('seam-line-b',#17,#19);
+/* DEFECT: four distinct VERTEX_POINT entities — two pairs coincide in 3D at seam */
+/* Top vertices at U=0 (seam-A) and U=2pi (seam-B) — same 3D point (1,0,1) */
+#22=CARTESIAN_POINT('top-pt-seam-a',(1.,0.,1.));
+#23=CARTESIAN_POINT('top-pt-seam-b',(1.,0.,1.));
+/* Bottom vertices at U=0 (seam-A) and U=2pi (seam-B) — same 3D point (1,0,0) */
+#24=CARTESIAN_POINT('bot-pt-seam-a',(1.,0.,0.));
+#25=CARTESIAN_POINT('bot-pt-seam-b',(1.,0.,0.));
+#26=VERTEX_POINT('top-v-seam-a',#22);
+#27=VERTEX_POINT('top-v-seam-b',#23);
+#28=VERTEX_POINT('bot-v-seam-a',#24);
+#29=VERTEX_POINT('bot-v-seam-b',#25);
+/* Edges */
+/* Top circle edge */
+#30=EDGE_CURVE('top-edge',#26,#27,#11,.T.);
+/* Bottom circle edge */
+#31=EDGE_CURVE('bot-edge',#28,#29,#16,.T.);
+/* DEFECT: side-A and side-B are ordinary EDGE_CURVE (no seam marking) */
+/* side-A runs from bot-v-seam-a (#28) to top-v-seam-a (#26) */
+#32=EDGE_CURVE('seam-side-a',#28,#26,#20,.T.);
+/* side-B runs from top-v-seam-b (#27) to bot-v-seam-b (#29) */
+#33=EDGE_CURVE('seam-side-b',#27,#29,#21,.T.);
+/* Oriented edges and loop */
+#34=ORIENTED_EDGE('',*,*,#30,.T.);
+#35=ORIENTED_EDGE('',*,*,#33,.T.);
+#36=ORIENTED_EDGE('',*,*,#31,.F.);
+#37=ORIENTED_EDGE('',*,*,#32,.F.);
+#38=EDGE_LOOP('cyl-loop',(#34,#35,#36,#37));
+#39=FACE_OUTER_BOUND('',#38,.T.);
+#40=ADVANCED_FACE('cyl-face',(#39),#5,.T.);
+#41=OPEN_SHELL('open-shell',(#40));
+#42=SHELL_BASED_SURFACE_MODEL('cyl-model',(#41));
 ENDSEC;
 END-ISO-10303-21;

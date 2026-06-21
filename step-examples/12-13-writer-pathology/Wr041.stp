@@ -1,29 +1,52 @@
 ISO-10303-21;
-/* Wr041 - Writer emits .TRUE. / .FALSE. instead of canonical .T. / .F.
- * Defect: every boolean attribute uses the long-form .TRUE. / .FALSE.
- * spelling. Producer-side root cause for the receiver-side defect Le055. */
+/* Wr041: writer emits .TRUE. / .FALSE. instead of canonical .T. / .F. */
+/* ISO 10303-21 §6.3.4: boolean lexemes must be exactly .T. or .F. */
+/* DEFECT: same_sense and orientation attributes use long-form .TRUE. / .FALSE. */
+/* Strict receivers reject; heuristic receivers fold; diff tools see noise */
 HEADER;
-FILE_DESCRIPTION(('Wr041 - writer emits long-form boolean lexemes'),'2;1');
-FILE_NAME('Wr041.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Wr041: long-form boolean lexemes .TRUE. / .FALSE.'),'2;1');
+FILE_NAME('Wr041.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#12=CARTESIAN_POINT('',(2.0,0.0,0.0));
-#13=VERTEX_POINT('',#10);
-#14=VERTEX_POINT('',#11);
-#15=VERTEX_POINT('',#12);
-#16=DIRECTION('',(1.0,0.0,0.0));
-#17=VECTOR('',#16,1.0);
-#18=LINE('',#10,#17);
-#19=LINE('',#11,#17);
-/* Defect: every boolean lexeme is long-form. */
-#20=EDGE_CURVE('',#13,#14,#18,.TRUE.);
-#21=EDGE_CURVE('',#14,#15,#19,.FALSE.);
-#22=ORIENTED_EDGE('',*,*,#20,.TRUE.);
-#23=ORIENTED_EDGE('',*,*,#21,.FALSE.);
-#24=EDGE_LOOP('',(#22,#23));
+/* Geometry: unit square in XY plane */
+#1=CARTESIAN_POINT('p0',(0.,0.,0.));
+#2=CARTESIAN_POINT('p1',(1.,0.,0.));
+#3=CARTESIAN_POINT('p2',(1.,1.,0.));
+#4=CARTESIAN_POINT('p3',(0.,1.,0.));
+#5=DIRECTION('xdir',(1.,0.,0.));
+#6=DIRECTION('ydir',(0.,1.,0.));
+#7=DIRECTION('xneg',(-1.,0.,0.));
+#8=DIRECTION('yneg',(0.,-1.,0.));
+#9=DIRECTION('zdir',(0.,0.,1.));
+#10=VECTOR('vx',#5,1.);
+#11=VECTOR('vy',#6,1.);
+#12=VECTOR('vxn',#7,1.);
+#13=VECTOR('vyn',#8,1.);
+#14=LINE('line-bot',#1,#10);
+#15=LINE('line-rgt',#2,#11);
+#16=LINE('line-top',#3,#12);
+#17=LINE('line-lft',#4,#13);
+#18=VERTEX_POINT('v0',#1);
+#19=VERTEX_POINT('v1',#2);
+#20=VERTEX_POINT('v2',#3);
+#21=VERTEX_POINT('v3',#4);
+/* DEFECT: same_sense uses .TRUE. instead of canonical .T. */
+#22=EDGE_CURVE('e-bot',#18,#19,#14,.TRUE.);
+#23=EDGE_CURVE('e-rgt',#19,#20,#15,.TRUE.);
+#24=EDGE_CURVE('e-top',#20,#21,#16,.TRUE.);
+#25=EDGE_CURVE('e-lft',#21,#18,#17,.TRUE.);
+/* DEFECT: orientation uses .TRUE. / .FALSE. instead of canonical .T. / .F. */
+#26=ORIENTED_EDGE('',*,*,#22,.TRUE.);
+#27=ORIENTED_EDGE('',*,*,#23,.TRUE.);
+#28=ORIENTED_EDGE('',*,*,#24,.FALSE.);
+#29=ORIENTED_EDGE('',*,*,#25,.FALSE.);
+#30=EDGE_LOOP('loop',(#26,#27,#28,#29));
+#31=FACE_OUTER_BOUND('',#30,.T.);
+#32=AXIS2_PLACEMENT_3D('ax',#1,#9,#5);
+#33=PLANE('pln',#32);
+#34=ADVANCED_FACE('sq-face',(#31),#33,.T.);
+#35=OPEN_SHELL('shell',(#34));
+#36=SHELL_BASED_SURFACE_MODEL('model',(#35));
 ENDSEC;
 END-ISO-10303-21;

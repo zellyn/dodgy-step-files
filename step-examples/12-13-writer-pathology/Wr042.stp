@@ -1,21 +1,20 @@
-/* Wr042 - Inconsistent end-of-record terminator: ;\n and ;\r\n mixed in same file
- * Defect: alternate records use bare LF and CRLF terminators within
- * the same DATA section. Whitespace-tolerant parsers accept; tools
- * line-counting for diagnostics report inconsistent line numbers. */
 ISO-10303-21;
+/* Wr042: inconsistent line terminators: ;LF and ;CRLF mixed in DATA section */
+/* Alternate records use LF and CRLF terminators (two-pass writer bug) */
+/* Parser accepts both; byte-hash tools and editors see inconsistency */
 HEADER;
-FILE_DESCRIPTION(('Wr042 - mixed ;\n and ;\r\n line endings'),'2;1');
-FILE_NAME('Wr042.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Wr042: mixed line endings per record'),'2;1');
+FILE_NAME('Wr042.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=PRODUCT_CONTEXT('part',#1,'mechanical');
-#3=PRODUCT('Wr042','mixed_line_endings','',(#2));
-#4=PRODUCT_DEFINITION_FORMATION('','',#3);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#12,#12);
+/* DEFECT: alternating ;LF and ;CRLF terminators within the DATA section */
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=CARTESIAN_POINT('px',(1.,0.,0.));
+#3=CARTESIAN_POINT('py',(0.,1.,0.));
+#4=CARTESIAN_POINT('pz',(0.,0.,1.));
+#5=DIRECTION('xdir',(1.,0.,0.));
+#6=DIRECTION('zdir',(0.,0.,1.));
+#7=GEOMETRIC_CURVE_SET('mixed-eol-shape',(#1,#2,#3,#4));
 ENDSEC;
 END-ISO-10303-21;
