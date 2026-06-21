@@ -1,32 +1,28 @@
 ISO-10303-21;
-/* M017 - Tessellated geometry without a STYLED_ITEM (no color).
- * Defect: a TESSELLATED_SOLID exists with no STYLED_ITEM referencing
- * it, so no color/style information is set. Receivers must default to
- * a neutral material; well-behaved kernels should warn. */
+/* M017: GEOMETRIC_CURVE_SET containing TESSELLATED_SOLID with no STYLED_ITEM referencing it; tessellated_solid 'tet_no_style' has no style assignment or STYLED_ITEM; receivers must warn and default to a neutral material/color; input: AP242 STEP file where TESSELLATED_SOLID has no style binding; kernel-bug: receivers enforcing the spec must emit a diagnostic for this fixture; OCC silently accepts (no diagnostic); GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty; synonyms: tessellated geometry no color, no styled_item on tessellation, tessellated face missing style, tessellation defaults color */
 HEADER;
-FILE_DESCRIPTION(('M017 test case','tessellated solid with no styled_item'),'2;1');
-FILE_NAME('M017.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_DESCRIPTION(('M017'),'2;1');
+FILE_NAME('M017.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('managed model based 3d engineering');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'ap242_managed_model_based_3d_engineering',2014,#1);
-#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-     REPRESENTATION_CONTEXT('part','3D'));
-/* Tessellated tetrahedron */
-#100=COORDINATES_LIST('',4,((0.0,0.0,0.0),(1.0,0.0,0.0),
-                            (0.5,1.0,0.0),(0.5,0.5,1.0)));
-#110=TRIANGULATED_FACE('tet_face',#100,$,$,(),
-       ((1,2,3),(1,2,4),(2,3,4),(3,1,4)));
-#120=TESSELLATED_SOLID('tet_no_style',(#110),$);
-#200=TESSELLATED_SHAPE_REPRESENTATION('',(#120),#14);
-/* Defect: NO STYLED_ITEM, no PSA, no MDGPR. */
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=COORDINATES_LIST('quad_verts',3,((0.,0.,0.),(10.,0.,0.),(0.,10.,0.),(10.,10.,0.)));
+#2=TRIANGULATED_FACE('quad_face',#1,$,((.FALSE.,.FALSE.,.FALSE.,.FALSE.)),((0,1,2),(1,3,2)));
+#3=TESSELLATED_SOLID('tet_no_style',(#2));
+#4=GEOMETRIC_CURVE_SET('tessellated-solid-no-style',(#3));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M017','M017','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#4),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

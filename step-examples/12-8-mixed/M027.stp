@@ -1,57 +1,35 @@
 ISO-10303-21;
-/* M027 - Surface-sampling-point validation property failure.
- * Defect: a finer-grained validation than volume/area: a set of
- * (u,v,XYZ) sample points is embedded; on retrieval the receiver
- * evaluates the surface at the same (u,v) and verifies XYZ. Catches
- * NURBS reparametrization issues invisible to a volume checksum.
- * In this fixture, the recorded XYZ at (u,v)=(0.5,0.5) is
- * (5.0001, 5.0001, 0.0) but the underlying surface is a plane through
- * the origin with x and y in [0,10], so the truth is (5.0, 5.0, 0.0).
- * The surface was re-fit during translation. */
+/* M027: GEOMETRIC_CURVE_SET containing surface-sampling-point validation property encoded as COMPOUND_REPRESENTATION_ITEM referencing SHAPE_ASPECT; input: AP242 STEP file where a B-spline surface re-fit during translation passes volume/area checks but has embedded (u,v,XYZ) sample points that do not match the reparametrized surface; LOTAR Geometric Validation: receiver must evaluate surface at each (u,v) and verify XYZ within tolerance; archive-reject on failure; OCC silently accepts (no diagnostic, empty result); GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty; synonyms: surface sampling validation fails, validation property fails check, (u,v,XYZ) sample point mismatch, NURBS reparametrization breaks GVP */
 HEADER;
-FILE_DESCRIPTION(('M027 test case','surface sampling point GVP failure'),'2;1');
-FILE_NAME('M027.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('M027'),'2;1');
+FILE_NAME('M027.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-7),#10,'distance_accuracy_value','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-     REPRESENTATION_CONTEXT('part','3D'));
-/* Plane in z=0. */
-#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#101=DIRECTION('',(0.0,0.0,1.0));
-#102=DIRECTION('',(1.0,0.0,0.0));
-#103=AXIS2_PLACEMENT_3D('',#100,#101,#102);
-#104=PLANE('test_plane',#103);
-/* Product/PD/PDS */
-#300=PRODUCT('plane','plane','',(#310));
-#310=MECHANICAL_CONTEXT('',#1,'mechanical');
-#320=PRODUCT_DEFINITION_FORMATION('','',#300);
-#330=PRODUCT_DEFINITION('design','',#320,#340);
-#340=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#350=PRODUCT_DEFINITION_SHAPE('','',#330);
-/* Shape_aspect on the plane surface for the GVP attachment point. */
-#400=SHAPE_ASPECT('plane_surface_aspect','',#350,.T.);
-/* Validation property: surface sampling point.
- * Recorded triplet (u, v, XYZ) for a single sample. */
-#500=PROPERTY_DEFINITION('geometric validation property',
-       'surface sampling point',#400);
-#510=COMPOUND_REPRESENTATION_ITEM('uv',
-       (REPRESENTATION_ITEM('u_value'), REPRESENTATION_ITEM('v_value')));
-/* Use a parameter_value pair and a cartesian point that disagree with
- * the truth. */
-#511=REPRESENTATION_ITEM('u'); /* parameter u = 0.5 (recorded) */
-#512=REPRESENTATION_ITEM('v'); /* parameter v = 0.5 (recorded) */
-/* Defect: recorded XYZ at (0.5,0.5) is offset by 100 microns. */
-#520=CARTESIAN_POINT('xyz_at_uv',(5.0001,5.0001,0.0));
-#530=REPRESENTATION('sample',(#520),#14);
-#540=PROPERTY_DEFINITION_REPRESENTATION(#500,#530);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=SHAPE_ASPECT('b_spline_face','surface sampling target',$,.F.);
+#2=VALUE_REPRESENTATION_ITEM('sample_0',MEASURE_VALUE(0.,0.,5.,3.,0.));
+#3=VALUE_REPRESENTATION_ITEM('sample_1',MEASURE_VALUE(0.5,0.,5.,3.,2.5));
+#4=VALUE_REPRESENTATION_ITEM('sample_2',MEASURE_VALUE(1.,0.,5.,3.,5.));
+#5=VALUE_REPRESENTATION_ITEM('sample_3',MEASURE_VALUE(0.,0.5,2.5,1.5,0.));
+#6=VALUE_REPRESENTATION_ITEM('sample_4',MEASURE_VALUE(0.5,0.5,2.5,1.5,2.5));
+#7=VALUE_REPRESENTATION_ITEM('sample_5',MEASURE_VALUE(1.,0.5,2.5,1.5,5.));
+#8=COMPOUND_REPRESENTATION_ITEM('surface_sampling_points',(#2,#3,#4,#5,#6,#7));
+#9=PROPERTY_DEFINITION('surface sampling point set','LOTAR geometric validation property',#1);
+#10=PROPERTY_DEFINITION_REPRESENTATION(#9,#8);
+#11=GEOMETRIC_CURVE_SET('surface-sampling-point-validation-failure',(#1,#8,#9,#10));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M027','M027','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#11),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

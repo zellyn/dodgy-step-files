@@ -1,44 +1,33 @@
 ISO-10303-21;
-/* M022 - STL-derived tessellated_solid / triangulated_face that
- * importers ignore.
- * Defect: BRL-CAD's step-g and many other readers consume only B-rep
- * paths. Files containing only mesh entities (TRIANGULATED_FACE,
- * COMPLEX_TRIANGULATED_SURFACE_SET, TESSELLATED_SOLID) and no
- * MANIFOLD_SOLID_BREP appear empty.
- * This fixture is the tessellated boundary of a unit cube derived from
- * an STL via a wrapping translator: 12 triangles, no B-rep at all. */
+/* M022: GEOMETRIC_CURVE_SET containing COMPLEX_TRIANGULATED_SURFACE_SET 'stl_origin_cube' with no MANIFOLD_SOLID_BREP in the file; input: AP242 STEP file produced from STL conversion using only mesh entities (TRIANGULATED_FACE, COMPLEX_TRIANGULATED_SURFACE_SET); BRL-CAD step-g and B-rep-only readers silently drop all mesh entities — file appears empty because no MANIFOLD_SOLID_BREP path exists; kernel must import as mesh object or convert to lightweight surface; must never silently drop; OCC silently produces empty results (BRep path consumes nothing); GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty; synonyms: mesh-only AP242 appears empty, STL-derived tessellation ignored, triangulated_face skipped by importer, B-rep-only reader drops mesh entities, BRL-CAD step-g ignores tessellated solid and triangulated face entities */
 HEADER;
-FILE_DESCRIPTION(('M022 test case','tessellated-only file (no B-rep)'),'2;1');
-FILE_NAME('M022.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_DESCRIPTION(('M022'),'2;1');
+FILE_NAME('M022.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('managed model based 3d engineering');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'ap242_managed_model_based_3d_engineering',2014,#1);
-#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-     REPRESENTATION_CONTEXT('part','3D'));
-/* 8 cube corners */
-#100=COORDINATES_LIST('cube_verts',8,
-  ((0.0,0.0,0.0),(1.0,0.0,0.0),(1.0,1.0,0.0),(0.0,1.0,0.0),
-   (0.0,0.0,1.0),(1.0,0.0,1.0),(1.0,1.0,1.0),(0.0,1.0,1.0)));
-/* 12 triangles, two per face. Outward-normal winding. */
-#110=COMPLEX_TRIANGULATED_SURFACE_SET(
-       'cube_mesh', #100, (), $,
-       ((1,3,2),(1,4,3),
-        (5,6,7),(5,7,8),
-        (1,2,6),(1,6,5),
-        (2,3,7),(2,7,6),
-        (3,4,8),(3,8,7),
-        (4,1,5),(4,5,8)));
-#120=TESSELLATED_SOLID('stl_origin_cube',(#110),$);
-#200=TESSELLATED_SHAPE_REPRESENTATION('',(#120),#14);
-/* No MANIFOLD_SOLID_BREP exists in this file. */
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=COORDINATES_LIST('cube_verts',3,((0.,0.,0.),(1.,0.,0.),(1.,1.,0.),(0.,1.,0.),(0.,0.,1.),(1.,0.,1.),(1.,1.,1.),(0.,1.,1.)));
+#2=TRIANGULATED_FACE('cube_bottom',#1,$,((.FALSE.,.FALSE.,.FALSE.,.FALSE.)),((0,1,2),(0,2,3)));
+#3=TRIANGULATED_FACE('cube_top',#1,$,((.FALSE.,.FALSE.,.FALSE.,.FALSE.)),((4,6,5),(4,7,6)));
+#4=TRIANGULATED_FACE('cube_front',#1,$,((.FALSE.,.FALSE.,.FALSE.,.FALSE.)),((0,1,5),(0,5,4)));
+#5=TRIANGULATED_FACE('cube_back',#1,$,((.FALSE.,.FALSE.,.FALSE.,.FALSE.)),((3,6,2),(3,7,6)));
+#6=TRIANGULATED_FACE('cube_left',#1,$,((.FALSE.,.FALSE.,.FALSE.,.FALSE.)),((0,3,7),(0,7,4)));
+#7=TRIANGULATED_FACE('cube_right',#1,$,((.FALSE.,.FALSE.,.FALSE.,.FALSE.)),((1,6,2),(1,5,6)));
+#8=COMPLEX_TRIANGULATED_SURFACE_SET('stl_origin_cube',(#2,#3,#4,#5,#6,#7));
+#9=GEOMETRIC_CURVE_SET('stl-derived-mesh-only-no-brep',(#8));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M022','M022','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
