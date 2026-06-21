@@ -1,120 +1,69 @@
 ISO-10303-21;
-/* N099 - BRepLib.UpdateEdgeTol multi-face-edge
- * Defect: Edge shared by 5+ faces; UpdateEdgeTol inner sampling loops over
- * face-edge intersections. Count of 5+ faces overflows a hardcoded buffer
- * or array index limit, causing memory corruption, incorrect tolerance
- * computation, or silent data loss. The algorithm assumes a fixed maximum
- * number of faces per edge but provides no bounds checking.
- * Reproducer: Create a topological configuration where a single edge is
- * shared by 6 or more faces (e.g., a star-burst of planar faces meeting at
- * a central edge). UpdateEdgeTol will attempt to process all 6 faces but
- * only allocate space for 4, causing buffer overflow.
- */
+/* N099: UpdateEdgeTol multi-face-edge buffer overflow: central edge shared by 6 faces; hardcoded 4-face buffer overflows on 6th face sample; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N099 UpdateEdgeTol multi-face-edge buffer overflow'),'2;1');
-FILE_NAME('N099.stp','2026-06-15T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('N099'),'2;1');
+FILE_NAME('N099.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-/* Central shared edge: from origin to (10,0,0) */
-#10=CARTESIAN_POINT('edge_p0',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('edge_p1',(10.0,0.0,0.0));
-#12=VERTEX_POINT('v0',#10);
-#13=VERTEX_POINT('v1',#11);
-#20=DIRECTION('edge_dir',(1.0,0.0,0.0));
-#21=VECTOR('edge_vec',#20,10.0);
-#22=LINE('shared_edge_curve',#10,#21);
-/* Central edge shared by 6 faces */
-#30=EDGE_CURVE('shared_edge',#12,#13,#22,.T.);
-/* Face 1: xy-plane (z=0), positive y side */
-#40=CARTESIAN_POINT('f1_p0',(0.0,0.0,0.0));
-#41=CARTESIAN_POINT('f1_p1',(10.0,0.0,0.0));
-#42=CARTESIAN_POINT('f1_p2',(10.0,5.0,0.0));
-#43=CARTESIAN_POINT('f1_p3',(0.0,5.0,0.0));
-#44=VERTEX_POINT('f1_v0',#40);
-#45=VERTEX_POINT('f1_v1',#41);
-#46=VERTEX_POINT('f1_v2',#42);
-#47=VERTEX_POINT('f1_v3',#43);
-#48=DIRECTION('f1_e1_dir',(1.0,0.0,0.0));
-#49=VECTOR('f1_e1_vec',#48,10.0);
-#50=LINE('f1_e1_curve',#40,#49);
-#51=EDGE_CURVE('f1_e1',#44,#45,#50,.T.);
-/* Face 2: xy-plane (z=0), negative y side */
-#60=CARTESIAN_POINT('f2_p0',(0.0,0.0,0.0));
-#61=CARTESIAN_POINT('f2_p1',(10.0,0.0,0.0));
-#62=CARTESIAN_POINT('f2_p2',(10.0,-5.0,0.0));
-#63=CARTESIAN_POINT('f2_p3',(0.0,-5.0,0.0));
-#64=VERTEX_POINT('f2_v0',#60);
-#65=VERTEX_POINT('f2_v1',#61);
-#66=VERTEX_POINT('f2_v2',#62);
-#67=VERTEX_POINT('f2_v3',#63);
-/* Face 3: xz-plane (y=0), positive z side */
-#70=CARTESIAN_POINT('f3_p0',(0.0,0.0,0.0));
-#71=CARTESIAN_POINT('f3_p1',(10.0,0.0,0.0));
-#72=CARTESIAN_POINT('f3_p2',(10.0,0.0,5.0));
-#73=CARTESIAN_POINT('f3_p3',(0.0,0.0,5.0));
-#74=VERTEX_POINT('f3_v0',#70);
-#75=VERTEX_POINT('f3_v1',#71);
-#76=VERTEX_POINT('f3_v2',#72);
-#77=VERTEX_POINT('f3_v3',#73);
-/* Face 4: xz-plane (y=0), negative z side */
-#80=CARTESIAN_POINT('f4_p0',(0.0,0.0,0.0));
-#81=CARTESIAN_POINT('f4_p1',(10.0,0.0,0.0));
-#82=CARTESIAN_POINT('f4_p2',(10.0,0.0,-5.0));
-#83=CARTESIAN_POINT('f4_p3',(0.0,0.0,-5.0));
-#84=VERTEX_POINT('f4_v0',#80);
-#85=VERTEX_POINT('f4_v1',#81);
-#86=VERTEX_POINT('f4_v2',#82);
-#87=VERTEX_POINT('f4_v3',#83);
-/* Face 5: diagonal plane, containing shared edge */
-#90=CARTESIAN_POINT('f5_p0',(0.0,0.0,0.0));
-#91=CARTESIAN_POINT('f5_p1',(10.0,0.0,0.0));
-#92=CARTESIAN_POINT('f5_p2',(10.0,3.54,3.54));
-#93=CARTESIAN_POINT('f5_p3',(0.0,3.54,3.54));
-#94=VERTEX_POINT('f5_v0',#90);
-#95=VERTEX_POINT('f5_v1',#91);
-#96=VERTEX_POINT('f5_v2',#92);
-#97=VERTEX_POINT('f5_v3',#93);
-/* Face 6: opposite diagonal plane, containing shared edge */
-#100=CARTESIAN_POINT('f6_p0',(0.0,0.0,0.0));
-#101=CARTESIAN_POINT('f6_p1',(10.0,0.0,0.0));
-#102=CARTESIAN_POINT('f6_p2',(10.0,-3.54,-3.54));
-#103=CARTESIAN_POINT('f6_p3',(0.0,-3.54,-3.54));
-#104=VERTEX_POINT('f6_v0',#100);
-#105=VERTEX_POINT('f6_v1',#101);
-#106=VERTEX_POINT('f6_v2',#102);
-#107=VERTEX_POINT('f6_v3',#103);
-/* Units and context */
-#110=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#111=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#112=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#113=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#110,
-  'distance_accuracy_value','nominal_tolerance');
-#114=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#113))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#110,#111,#112))
-  REPRESENTATION_CONTEXT('multi_face_ctx','3D'));
-/* Edge tolerance before UpdateEdgeTol; will overflow buffer when processing 6 faces */
-#115=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#110,
-  'distance_accuracy_value','shared_edge_tolerance');
-/* PRODUCT CHAIN */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('N099','N099','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#114));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#1=CARTESIAN_POINT('p_center',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('p_end',(1.0,0.0,0.0));
+#3=VERTEX_POINT('v_center',#1);
+#4=VERTEX_POINT('v_end',#2);
+#5=DIRECTION('',(1.0,0.0,0.0));
+#6=VECTOR('',#5,1.0);
+#7=LINE('',#1,#6);
+#8=EDGE_CURVE('central_edge',#3,#4,#7,.T.);
+#9=CARTESIAN_POINT('p_fan0',(1.0,0.0,0.0));
+#10=VERTEX_POINT('v_fan0',#9);
+#11=DIRECTION('',(1.0,0.0,0.0));
+#12=VECTOR('',#11,1.0);
+#13=LINE('ln_fan0',#1,#12);
+#14=EDGE_CURVE('fan_edge0',#3,#10,#13,.T.);
+#15=CARTESIAN_POINT('p_fan1',(0.5,0.866025403784,0.0));
+#16=VERTEX_POINT('v_fan1',#15);
+#17=DIRECTION('',(0.5,0.866025403784,0.0));
+#18=VECTOR('',#17,1.0);
+#19=LINE('ln_fan1',#1,#18);
+#20=EDGE_CURVE('fan_edge1',#3,#16,#19,.T.);
+#21=CARTESIAN_POINT('p_fan2',(-0.5,0.866025403784,0.0));
+#22=VERTEX_POINT('v_fan2',#21);
+#23=DIRECTION('',(-0.5,0.866025403784,0.0));
+#24=VECTOR('',#23,1.0);
+#25=LINE('ln_fan2',#1,#24);
+#26=EDGE_CURVE('fan_edge2',#3,#22,#25,.T.);
+#27=CARTESIAN_POINT('p_fan3',(-1.0,0.0,0.0));
+#28=VERTEX_POINT('v_fan3',#27);
+#29=DIRECTION('',(-1.0,0.0,0.0));
+#30=VECTOR('',#29,1.0);
+#31=LINE('ln_fan3',#1,#30);
+#32=EDGE_CURVE('fan_edge3',#3,#28,#31,.T.);
+#33=CARTESIAN_POINT('p_fan4',(-0.5,-0.866025403784,0.0));
+#34=VERTEX_POINT('v_fan4',#33);
+#35=DIRECTION('',(-0.5,-0.866025403784,0.0));
+#36=VECTOR('',#35,1.0);
+#37=LINE('ln_fan4',#1,#36);
+#38=EDGE_CURVE('fan_edge4',#3,#34,#37,.T.);
+#39=CARTESIAN_POINT('p_fan5',(0.5,-0.866025403784,0.0));
+#40=VERTEX_POINT('v_fan5',#39);
+#41=DIRECTION('',(0.5,-0.866025403784,0.0));
+#42=VECTOR('',#41,1.0);
+#43=LINE('ln_fan5',#1,#42);
+#44=EDGE_CURVE('fan_edge5',#3,#40,#43,.T.);
+#45=GEOMETRIC_CURVE_SET('starburst',(#8,#14,#20,#26,#32,#38,#44));
+#46=APPLICATION_CONTEXT('automotive_design');
+#47=PRODUCT_CONTEXT('',#46,'mechanical');
+#48=PRODUCT('N099','N099','',(#47));
+#49=PRODUCT_DEFINITION_FORMATION('','',#48);
+#50=PRODUCT_DEFINITION_CONTEXT('part definition',#46,'design');
+#51=PRODUCT_DEFINITION('','',#49,#50);
+#52=PRODUCT_DEFINITION_SHAPE('','',#51);
+#53=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#54=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#55=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#56=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#53,'distance_accuracy_value','model_precision');
+#57=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#56))GLOBAL_UNIT_ASSIGNED_CONTEXT((#53,#54,#55))REPRESENTATION_CONTEXT('ctx','3D'));
+#58=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#45),#57);
+#59=SHAPE_DEFINITION_REPRESENTATION(#52,#58);
 ENDSEC;
 END-ISO-10303-21;

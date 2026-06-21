@@ -1,64 +1,33 @@
 ISO-10303-21;
-/* N128 - ShapeFix_ShapeTolerance.LimitTolerance boundary-equality-nondeterminism
- * Defect: LimitTolerance(shape, tmin, tmax) allows tmax == tmin, creating
- * ambiguous state where tolerance bound selection becomes nondeterministic.
- * No semantic enforcement that tmax > tmin; iamax = (tmax >= tmin) is insufficient.
- * Reproducer: LimitTolerance(shape, 1.0, 1.0, TopAbs_VERTEX) should reject
- * but accepts; newtol selection between tmin/tmax becomes unpredictable.
- */
+/* N128: LimitTolerance boundary-equality-nondeterminism: single edge; LimitTolerance(shape, 0.003, 0.003) — iamax condition (>=) satisfied but newtol selection nondeterministic; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N128 LimitTolerance boundary-equality-nondeterminism'),'2;1');
-FILE_NAME('N128.stp','2026-06-16T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('N128'),'2;1');
+FILE_NAME('N128.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-/* Single vertex with tolerance requiring clamping */
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#11=DIRECTION('z',(0.0,0.0,1.0));
-#12=DIRECTION('x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
-/* Vertex with high tolerance */
-#20=CARTESIAN_POINT('v_pt',(0.0,0.0,0.0));
-#30=VERTEX_POINT('v_hi_tol',#20);
-/* Edge structure for closure */
-#40=DIRECTION('line_dir',(1.0,0.0,0.0));
-#41=VECTOR('line_vec',#40,1.0);
-#42=LINE('line',#20,#41);
-#50=CARTESIAN_POINT('v2_pt',(1.0,0.0,0.0));
-#60=VERTEX_POINT('v2',#50);
-#70=EDGE_CURVE('e',(#30,#60),#42,.T.);
-#80=EDGE_LOOP('l',(#70));
-/* Units */
-#100=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#101=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#102=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#103=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#100,
-  'distance_accuracy_value','nominal');
-#104=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#103))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#100,#101,#102))
-  REPRESENTATION_CONTEXT('ctx','3D'));
-/* High tolerance (test will call LimitTolerance(shape, 1.0, 1.0)) */
-#105=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(2.0),#100,
-  'distance_accuracy_value','high_tol');
-/* PRODUCT CHAIN */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('N128','N128','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#100));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#1=CARTESIAN_POINT('p_start',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('p_end',(5.0,0.0,0.0));
+#3=VERTEX_POINT('v_start',#1);
+#4=VERTEX_POINT('v_end',#2);
+#5=DIRECTION('',(1.0,0.0,0.0));
+#6=VECTOR('',#5,5.0);
+#7=LINE('line',#1,#6);
+#8=EDGE_CURVE('edge',#3,#4,#7,.T.);
+#9=GEOMETRIC_CURVE_SET('boundary_eq',(#8));
+#10=APPLICATION_CONTEXT('automotive_design');
+#11=PRODUCT_CONTEXT('',#10,'mechanical');
+#12=PRODUCT('N128','N128','',(#11));
+#13=PRODUCT_DEFINITION_FORMATION('','',#12);
+#14=PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#15=PRODUCT_DEFINITION('','',#13,#14);
+#16=PRODUCT_DEFINITION_SHAPE('','',#15);
+#17=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#18=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#19=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#20=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(3.0E-3),#17,'distance_accuracy_value','limit_tol_equal_boundary');
+#21=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#20))GLOBAL_UNIT_ASSIGNED_CONTEXT((#17,#18,#19))REPRESENTATION_CONTEXT('ctx','3D'));
+#22=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9),#21);
+#23=SHAPE_DEFINITION_REPRESENTATION(#16,#22);
 ENDSEC;
 END-ISO-10303-21;

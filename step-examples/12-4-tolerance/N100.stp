@@ -1,80 +1,42 @@
 ISO-10303-21;
-/* N100 - ShapeAnalysis_Edge.CheckPoints precision-asymmetry-extreme
- * Defect: CheckPoints averages two precision values with extreme asymmetry:
- * preci1 = 1.0e-15 (effectively zero), preci2 = 1.0 (huge). Average ≈ 0.5,
- * masking both extremes. Neither tolerance is enforced; result is neither
- * zero-precision nor unit-precision, creating false-negative distance checks.
- * Reproducer: Call CheckPoints with P1A, P2A (separated by 1.0e-14) and
- * P1B, P2B (separated by 0.9) with preci1=1.0e-15, preci2=1.0.
- * Result: P1A/P2A within preci1 but fails average (0.5) threshold.
- * P1B/P2B exceeds preci2 but passes average threshold. Incorrect verdict.
- */
+/* N100: CheckPoints precision-asymmetry-extreme: two edges; preci1=1e-15 vs preci2=1.0; averaging masks both extremes; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N100 CheckPoints precision-asymmetry-extreme'),'2;1');
-FILE_NAME('N100.stp','2026-06-15T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('N100'),'2;1');
+FILE_NAME('N100.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-/* Two edges with extreme precision asymmetry in CheckPoints context */
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#11=DIRECTION('z',(0.0,0.0,1.0));
-#12=DIRECTION('x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
-/* Edge 1: ultra-tight precision pair
-   P1A and P2A separated by ~1.0e-14 (within preci1=1.0e-15? No, but close) */
-#20=CARTESIAN_POINT('p1a',(0.0,0.0,0.0));
-#21=CARTESIAN_POINT('p2a',(1.0E-14,0.0,0.0));
-#30=VERTEX_POINT('v1a',#20);
-#31=VERTEX_POINT('v2a',#21);
-#40=DIRECTION('e1_dir',(1.0,0.0,0.0));
-#41=VECTOR('e1_vec',#40,1.0E-14);
-#42=LINE('e1_ultra_tight',#20,#41);
-#43=EDGE_CURVE('e1',#30,#31,#42,.T.);
-/* Edge 2: ultra-loose precision pair
-   P1B and P2B separated by 0.9 (within preci2=1.0? Yes, at boundary) */
-#50=CARTESIAN_POINT('p1b',(0.0,0.0,0.0));
-#51=CARTESIAN_POINT('p2b',(0.9,0.0,0.0));
-#60=VERTEX_POINT('v1b',#50);
-#61=VERTEX_POINT('v2b',#51);
-#70=DIRECTION('e2_dir',(1.0,0.0,0.0));
-#71=VECTOR('e2_vec',#70,0.9);
-#72=LINE('e2_ultra_loose',#50,#71);
-#73=EDGE_CURVE('e2',#60,#61,#72,.T.);
-/* Units and context */
-#80=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#81=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#82=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#83=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#80,
-  'distance_accuracy_value','nominal_tolerance');
-#84=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#83))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#80,#81,#82))
-  REPRESENTATION_CONTEXT('asymmetry_ctx','3D'));
-/* Precision declarations: ultra-tight and ultra-loose
-   CheckPoints will average them (1.0e-15 + 1.0) / 2 ≈ 0.5,
-   causing both to fail their respective checks while seemingly passing average */
-#85=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-15),#80,
-  'distance_accuracy_value','ultra_tight_preci1');
-#86=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0),#80,
-  'distance_accuracy_value','ultra_loose_preci2');
-/* PRODUCT CHAIN */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('N100','N100','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#80));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#1=CARTESIAN_POINT('p1A',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('p2A_ultra_close',(1.0E-14,0.0,0.0));
+#3=VERTEX_POINT('v1A',#1);
+#4=VERTEX_POINT('v2A',#2);
+#5=DIRECTION('',(1.0,0.0,0.0));
+#6=VECTOR('',#5,1.0E-14);
+#7=LINE('ln_ultra_tight',#1,#6);
+#8=EDGE_CURVE('eA_ultra_tight',#3,#4,#7,.T.);
+#9=CARTESIAN_POINT('p1B',(0.0,1.0,0.0));
+#10=CARTESIAN_POINT('p2B_coarse',(0.9,1.0,0.0));
+#11=VERTEX_POINT('v1B',#9);
+#12=VERTEX_POINT('v2B',#10);
+#13=DIRECTION('',(1.0,0.0,0.0));
+#14=VECTOR('',#13,0.9);
+#15=LINE('ln_coarse',#9,#14);
+#16=EDGE_CURVE('eB_coarse',#11,#12,#15,.T.);
+#17=GEOMETRIC_CURVE_SET('asymmetric_prec',(#8,#16));
+#18=APPLICATION_CONTEXT('automotive_design');
+#19=PRODUCT_CONTEXT('',#18,'mechanical');
+#20=PRODUCT('N100','N100','',(#19));
+#21=PRODUCT_DEFINITION_FORMATION('','',#20);
+#22=PRODUCT_DEFINITION_CONTEXT('part definition',#18,'design');
+#23=PRODUCT_DEFINITION('','',#21,#22);
+#24=PRODUCT_DEFINITION_SHAPE('','',#23);
+#25=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#26=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#27=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#28=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-15),#25,'distance_accuracy_value','ultra_tight_preci1');
+#29=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0),#25,'distance_accuracy_value','coarse_preci2');
+#30=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#28,#29))GLOBAL_UNIT_ASSIGNED_CONTEXT((#25,#26,#27))REPRESENTATION_CONTEXT('ctx','3D'));
+#31=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#17),#30);
+#32=SHAPE_DEFINITION_REPRESENTATION(#24,#31);
 ENDSEC;
 END-ISO-10303-21;
