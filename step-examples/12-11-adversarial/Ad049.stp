@@ -1,47 +1,31 @@
 ISO-10303-21;
-/* Ad049 - Real literal lacks decimal point or has Fortran D exponent
-   ----------------------------------------------------------------------
-   Catalog section : §12.11 adversarial (sub-class: malformed-numeric / encoding)
-   Sources         : 07-stepcode-ifcopenshell.md T021, T022, T023, T044, T045;
-                     16-iso-spec.md N015, N016, N017, N018
-   See also        : Ls001
-   ----------------------------------------------------------------------
-   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
-   testing. Do NOT use as exchange data.
-   ----------------------------------------------------------------------
-   Defect
-     Per ISO 10303-21 §6.4.3.1, REAL must have `.` (e.g. 1., 1.0, 0.5);
-     exponent letter is uppercase `E`; integers may not have leading `.`.
-     Generators emit malformations: bare `1`, leading-dot `.5`, lowercase
-     `1e+18`, Fortran-style `1.0D5`, signed `+1.0`, underscore-grouped
-     `1_000.0`, locale-comma `1,5`, hexadecimal `0x10`. Stepcode
-     silently coerces INTEGER -> REAL via istringstream, hiding
-     unit-corruption bugs.
-   Reproducer recipe
-     One DIRECTION with bare integer coords, one with Fortran D exponent,
-     one with underscore digit grouping, one with leading dot.
-   Expected kernel behavior
-     Strict spec lex; tolerant mode warns and coerces with
-     E_REAL_NONCONFORMING.
-   ----------------------------------------------------------------------
-*/
+/* Ad049: malformed REAL literals: '1.0D5' (Fortran D-exponent), '1_000.0' (underscore separator), '1.5e+02' (lowercase e), '(1,0,0)' (INTEGER coordinates without decimal point); Stepcode silently coerces INTEGER→REAL hiding unit-corruption bugs; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Ad049 - REAL literal grammar violations'),'2;1');
-FILE_NAME('Ad049.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Ad049'),'2;1');
+FILE_NAME('Ad049.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=CARTESIAN_POINT('o',(0.0,0.0,0.0));
-/* Defect: bare integers in REAL slots */
-#10=DIRECTION('z_bare_ints',(0,0,1));
-/* Defect: Fortran D-exponent */
-#11=DIRECTION('x_fortran',(1.0D0,0.0D0,0.0D0));
-/* Defect: leading dot */
-#12=CARTESIAN_POINT('half',(.5,.5,.5));
-/* Defect: underscore digit grouping */
-#13=CARTESIAN_POINT('grouped',(1_000.0,2_000.0,3_000.0));
-/* Defect: lowercase exponent (warns even in lenient mode) */
-#14=CARTESIAN_POINT('lc_exp',(1.5e+02,0.0,0.0));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Ad049','Ad049','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=DIRECTION('integer_coords',(1,0,0));
+#9064=DIRECTION('fortran_d_exp',(1.0D5,0.,0.));
+#9065=DIRECTION('underscore_sep',(1_000.0,0.0,0.0));
+#9066=DIRECTION('lowercase_e_exp',(1.5e+02,0.0,0.0));
+#9067=CARTESIAN_POINT('int_point',(0,0,0));
 ENDSEC;
 END-ISO-10303-21;

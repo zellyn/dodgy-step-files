@@ -1,42 +1,31 @@
 ISO-10303-21;
-/* Ad050 - Empty EDGE_LOOP / empty wire / empty entity iterator crashes reader
-   ----------------------------------------------------------------------
-   Catalog section : §12.11 adversarial (sub-class: schema-validation / null-deref)
-   Sources         : 03-occt-tests.md R045 (bug33307), R037 (bug25014);
-                     08-occt-gitlog.md G035;
-                     18-other-issues.md I004 (TESSELLATED_SHELL((), $))
-   See also        : Ad043
-   ----------------------------------------------------------------------
-   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
-   testing. Do NOT use as exchange data.
-   ----------------------------------------------------------------------
-   Defect
-     Schema requires non-empty list (EDGE_LOOP.edge_list size >= 1);
-     producer emits (). Reader's iterator-step crashes on the empty
-     aggregate because the first dereference assumes at least one
-     element. Same family: empty TESSELLATED_SHELL, empty wire.
-   Reproducer recipe
-     #1=EDGE_LOOP('',()) referenced from a FACE_BOUND.
-   Expected kernel behavior
-     Defensive iterator guard; reject malformed entity with
-     E_EMPTY_AGGREGATE; continue translation of remaining entities.
-   ----------------------------------------------------------------------
-*/
+/* Ad050: empty EDGE_LOOP: EDGE_LOOP('',()) with zero oriented edges; schema requires non-empty list; reader iterator-step crashes on empty; FACE_BOUND referencing the empty loop exposes the null-deref; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Ad050 - empty EDGE_LOOP triggers iterator crash'),'2;1');
-FILE_NAME('Ad050.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Ad050'),'2;1');
+FILE_NAME('Ad050.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=CARTESIAN_POINT('o',(0.0,0.0,0.0));
-#2=DIRECTION('z',(0.0,0.0,1.0));
-#3=DIRECTION('x',(1.0,0.0,0.0));
-#4=AXIS2_PLACEMENT_3D('p',#1,#2,#3);
-#5=PLANE('plane',#4);
-/* Defect: EDGE_LOOP with empty edge_list */
-#10=EDGE_LOOP('empty_loop',());
-#11=FACE_OUTER_BOUND('fob_empty',#10,.T.);
-#12=ADVANCED_FACE('af_empty',(#11),#5,.T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Ad050','Ad050','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=EDGE_LOOP('',());
+#9064=FACE_BOUND(#9063,.T.);
+#9065=EDGE_LOOP('empty_wire',());
+#9066=FACE_OUTER_BOUND(#9065,.T.);
+#9067=TESSELLATED_SHELL('',(),$);
 ENDSEC;
 END-ISO-10303-21;
