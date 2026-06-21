@@ -57,9 +57,18 @@ shell = f.open_shell([face])
 sbsm = f.shell_based_surface_model([shell])
 f.add_product_chain(sbsm)
 
-# Defect 1 (commented): AP242 entity types in DATA under AP203 schema
-# TRIANGULATED_FACE and COMPLEX_TRIANGULATED_SURFACE_SET would be here
-# in the wild; we document rather than emit them to avoid schema-oracle precheck
+# Defect 1: AP242-only entities (COORDINATES_LIST + TRIANGULATED_FACE)
+# emitted in DATA section under AP203 schema. This IS the schema-mismatch
+# claim; Xp006 is on schema_oracle.EXEMPT_SCHEMA_MISMATCH so the resulting
+# oracle violation is the documented bug (not a regression).
+coords = f._emit_raw(
+    "COORDINATES_LIST('',4,((0.0,0.0,0.0),(1.0,0.0,0.0),"
+    "(0.5,1.0,0.0),(0.5,0.5,1.0)))"
+)
+f._emit_raw(
+    f"TRIANGULATED_FACE('',#{coords.eid},$,$,(),"
+    f"((1,2,3),(1,2,4),(2,3,4),(3,1,4)))"
+)
 f._emit_raw("/* xp006 defect-1: AP242-only entities present under AP203 schema */")
 f._emit_raw("/* xp006 defect-3: FILE_SCHEMA CONFIG_CONTROL_DESIGN (AP203) declared */")
 

@@ -184,14 +184,32 @@ def precheck(ids: set[str]) -> int:
 
     print("\n[4/7] schema-oracle...")
     schema_results = schema_check_all(entries)
+    # Failure A: an entry has schema-vocabulary violations but is NOT on the
+    # documented-claim list (AP242 schema OR EXEMPT_SCHEMA_MISMATCH).
+    from step_corpus._schema_oracle import EXEMPT_SCHEMA_MISMATCH
     schema_fails = [
         r for r in schema_results
-        if r.get("violations") and r.get("schema") not in (None, "AP242")
+        if r.get("violations")
+        and r.get("schema") not in (None, "AP242")
+        and r["id"] not in EXEMPT_SCHEMA_MISMATCH
     ]
-    if schema_fails:
+    # Failure B: an entry IS on EXEMPT_SCHEMA_MISMATCH (catalog-claim-IS-
+    # mismatch) but no longer shows violations — the catalog claim has
+    # been silently weakened. test_exempt_fixtures_still_violate enforces
+    # this in CI; mirror here for changed entries to catch the break
+    # before push (the Xp006 regen weakened its claim this way).
+    changed_exempt = {e["id"] for e in entries} & EXEMPT_SCHEMA_MISMATCH
+    seen_with_violations = {r["id"] for r in schema_results if r.get("violations")}
+    weakened = sorted(changed_exempt - seen_with_violations)
+    if schema_fails or weakened:
         exit_code = 1
         for r in schema_fails:
             print(f"  FAIL {r['id']:<8} {r.get('schema')}  {r['violations']}")
+        for fid in weakened:
+            print(
+                f"  WEAKENED {fid:<8} on EXEMPT_SCHEMA_MISMATCH but no oracle "
+                f"violation in bytes — catalog claim silently weakened"
+            )
     else:
         print(f"  ok ({len(schema_results)} fixtures)")
 
