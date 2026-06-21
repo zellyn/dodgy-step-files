@@ -1,35 +1,68 @@
 ISO-10303-21;
-/* Xp005 - Cross-product: rational B-spline curve with knot-vector
- *   inconsistency, zero weight, and tolerance-boundary cusp.
- * Builds on Gn001 (knot/multiplicity) + Gn010 (out-of-range weight) +
- *   N001 (tolerance-boundary geometry).
- * Defect 1: u_knots = (0,0,0,0,0.5,0.5,1,1,1,1) - inner pair duplicated
- *   without justification by multiplicity list (which says 1,1).
- * Defect 2: weights = (1.0, 0.0, 1.0, 1.0, 1.0) - one weight is zero.
- * Defect 3: control points (0,0,0) and (1e-7,0,0) - cusp at OCCT's
- *   default Confusion boundary. */
+/* Xp005: NURBS knot vector x control-point weight x tolerance-boundary cusp */
 HEADER;
-FILE_DESCRIPTION(('Xp005 cross-product','NURBS knots x weight x tolerance cusp'),'2;1');
-FILE_NAME('Xp005.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Xp005'),'2;1');
+FILE_NAME('Xp005.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('p1',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('p2',(1.0E-7,0.0,0.0));
-#12=CARTESIAN_POINT('p3',(1.0,0.0,0.0));
-#13=CARTESIAN_POINT('p4',(2.0,1.0,0.0));
-#14=CARTESIAN_POINT('p5',(3.0,0.0,0.0));
-/* Defect 1+2+3 in the rational B-spline definition */
-#20=(BOUNDED_CURVE()
-     B_SPLINE_CURVE(3,(#10,#11,#12,#13,#14),.UNSPECIFIED.,.F.,.F.)
-     B_SPLINE_CURVE_WITH_KNOTS((4,1,1,4),(0.0,0.5,0.5,1.0),.UNSPECIFIED.)
-     CURVE()
-     GEOMETRIC_REPRESENTATION_ITEM()
-     RATIONAL_B_SPLINE_CURVE((1.0,0.0,1.0,1.0,1.0))
-     REPRESENTATION_ITEM(''));
-/* Anchor the curve into a representation so it is exercised */
-#30=GEOMETRIC_CURVE_SET('curve_set',(#20));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(1.0E-07,0.0,0.0));
+#3=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#4=CARTESIAN_POINT('',(2.0,1.0,0.0));
+#5=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=DIRECTION('',(0.0,0.0,1.0));
+#8=DIRECTION('',(1.0,0.0,0.0));
+#9=AXIS2_PLACEMENT_3D('',#6,#7,#8);
+#10=PLANE('',#9);
+#11=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#12=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#13=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#14=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#15=VERTEX_POINT('',#11);
+#16=VERTEX_POINT('',#12);
+#17=VERTEX_POINT('',#13);
+#18=VERTEX_POINT('',#14);
+#19=DIRECTION('',(1.0,0.0,0.0));
+#20=VECTOR('',#19,1.0);
+#21=LINE('',#11,#20);
+#22=EDGE_CURVE('',#15,#16,#21,.T.);
+#23=DIRECTION('',(0.0,1.0,0.0));
+#24=VECTOR('',#23,1.0);
+#25=LINE('',#12,#24);
+#26=EDGE_CURVE('',#16,#17,#25,.T.);
+#27=DIRECTION('',(-1.0,0.0,0.0));
+#28=VECTOR('',#27,1.0);
+#29=LINE('',#13,#28);
+#30=EDGE_CURVE('',#17,#18,#29,.T.);
+#31=DIRECTION('',(0.0,-1.0,0.0));
+#32=VECTOR('',#31,1.0);
+#33=LINE('',#14,#32);
+#34=EDGE_CURVE('',#18,#15,#33,.T.);
+#35=ORIENTED_EDGE('',$,$,#22,.T.);
+#36=ORIENTED_EDGE('',$,$,#26,.T.);
+#37=ORIENTED_EDGE('',$,$,#30,.T.);
+#38=ORIENTED_EDGE('',$,$,#34,.T.);
+#39=EDGE_LOOP('',(#35,#36,#37,#38));
+#40=FACE_OUTER_BOUND('',#39,.T.);
+#41=ADVANCED_FACE('',(#40),#10,.T.);
+#42=OPEN_SHELL('',(#41));
+#43=SHELL_BASED_SURFACE_MODEL('',(#42));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Xp005','Xp005','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#43),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=(B_SPLINE_CURVE(3,(#1,#2,#3,#4,#5),.UNSPECIFIED.,.F.,.F.)B_SPLINE_CURVE_WITH_KNOTS((4,2,4),(0.0,0.5,1.0),.UNSPECIFIED.)BOUNDED_CURVE()CURVE()GEOMETRIC_REPRESENTATION_ITEM()RATIONAL_B_SPLINE_CURVE((1.0,0.0,1.0,1.0,1.0))REPRESENTATION_ITEM('xp005_defective_nurbs'));
 ENDSEC;
 END-ISO-10303-21;

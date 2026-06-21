@@ -1,63 +1,65 @@
 ISO-10303-21;
-/* Xp001 - Cross-product: malformed \X2\ escape in PRODUCT.name AND
- * self-intersecting wire on a planar face.
- * Builds on Le005 (encoding) + Twi045 (self-intersecting wire).
- * Defect 1: PRODUCT.name string contains \X2\30A2 30A4 (a 4-hex group
- *   then a 4-hex group) but never closes with \X0\ before the apostrophe.
- *   The Edition-3 control-directive grammar is violated.
- * Defect 2: the planar face's outer wire traces a figure-eight (two
- *   diagonals crossing at the origin) - it is not a simple polygon. */
+/* Xp001: Malformed \X2\ escape in PRODUCT.name AND self-intersecting wire */
 HEADER;
-FILE_DESCRIPTION(('Xp001 cross-product','encoding x wire self-intersection'),'2;1');
-FILE_NAME('Xp001.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Xp001'),'2;1');
+FILE_NAME('Xp001.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Defect 1 - malformed \X2\ in PRODUCT.name (no \X0\ close) */
-#3=PRODUCT('part-\X2\30A2 30A4','desc-\X2\30A2 30A4','',(#4));
-#4=PRODUCT_CONTEXT('',#1,'mechanical');
-/* Geometry: planar surface */
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#14=PLANE('',#13);
-/* Vertices for figure-eight wire */
-#20=CARTESIAN_POINT('A',(-1.0,-1.0,0.0));
-#21=CARTESIAN_POINT('B',( 1.0, 1.0,0.0));
-#22=CARTESIAN_POINT('C',(-1.0, 1.0,0.0));
-#23=CARTESIAN_POINT('D',( 1.0,-1.0,0.0));
-#30=VERTEX_POINT('',#20);
-#31=VERTEX_POINT('',#21);
-#32=VERTEX_POINT('',#22);
-#33=VERTEX_POINT('',#23);
-/* Lines */
-#40=DIRECTION('',(0.7071,0.7071,0.0));
-#41=VECTOR('',#40,2.828);
-#42=LINE('',#20,#41);
-#43=DIRECTION('',(0.7071,-0.7071,0.0));
-#44=VECTOR('',#43,2.828);
-#45=LINE('',#22,#44);
-#46=DIRECTION('',(-0.7071,-0.7071,0.0));
-#47=VECTOR('',#46,2.828);
-#48=LINE('',#21,#47);
-#49=DIRECTION('',(-0.7071,0.7071,0.0));
-#50=VECTOR('',#49,2.828);
-#51=LINE('',#23,#50);
-/* Edge curves: A-B, B-C (via diagonal), C-D, D-A - the wire crosses itself */
-#60=EDGE_CURVE('',#30,#31,#42,.T.);
-#61=EDGE_CURVE('',#31,#32,#48,.T.);
-#62=EDGE_CURVE('',#32,#33,#45,.T.);
-#63=EDGE_CURVE('',#33,#30,#51,.T.);
-/* Defect 2: figure-eight oriented edges - diagonals cross at origin */
-#70=ORIENTED_EDGE('',*,*,#60,.T.);
-#71=ORIENTED_EDGE('',*,*,#61,.T.);
-#72=ORIENTED_EDGE('',*,*,#62,.T.);
-#73=ORIENTED_EDGE('',*,*,#63,.T.);
-#80=EDGE_LOOP('',(#70,#71,#72,#73));
-#81=FACE_OUTER_BOUND('',#80,.T.);
-#82=ADVANCED_FACE('',(#81),#14,.T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#8=CARTESIAN_POINT('',(-1.0,1.0,0.0));
+#9=CARTESIAN_POINT('',(1.0,-1.0,0.0));
+#10=CARTESIAN_POINT('',(-1.0,-1.0,0.0));
+#11=VERTEX_POINT('',#6);
+#12=VERTEX_POINT('',#7);
+#13=VERTEX_POINT('',#8);
+#14=VERTEX_POINT('',#9);
+#15=VERTEX_POINT('',#10);
+#16=DIRECTION('',(0.707106781187,0.707106781187,0.0));
+#17=VECTOR('',#16,1.41421356237);
+#18=LINE('',#6,#17);
+#19=EDGE_CURVE('',#11,#12,#18,.T.);
+#20=DIRECTION('',(-1.0,0.0,0.0));
+#21=VECTOR('',#20,2.0);
+#22=LINE('',#7,#21);
+#23=EDGE_CURVE('',#12,#13,#22,.T.);
+#24=DIRECTION('',(0.707106781187,-0.707106781187,0.0));
+#25=VECTOR('',#24,2.82842712475);
+#26=LINE('',#8,#25);
+#27=EDGE_CURVE('',#13,#14,#26,.T.);
+#28=DIRECTION('',(-0.707106781187,0.707106781187,0.0));
+#29=VECTOR('',#28,1.41421356237);
+#30=LINE('',#9,#29);
+#31=EDGE_CURVE('',#14,#11,#30,.T.);
+#32=ORIENTED_EDGE('',$,$,#19,.T.);
+#33=ORIENTED_EDGE('',$,$,#23,.T.);
+#34=ORIENTED_EDGE('',$,$,#27,.T.);
+#35=ORIENTED_EDGE('',$,$,#31,.T.);
+#36=EDGE_LOOP('',(#32,#33,#34,#35));
+#37=FACE_OUTER_BOUND('',#36,.T.);
+#38=ADVANCED_FACE('',(#37),#5,.T.);
+#39=OPEN_SHELL('',(#38));
+#40=SHELL_BASED_SURFACE_MODEL('',(#39));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Xp001','Xp001','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#40),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=DESCRIPTIVE_REPRESENTATION_ITEM('xp001_defect','part-\X2\30A2 30A4');
 ENDSEC;
 END-ISO-10303-21;

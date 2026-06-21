@@ -1,35 +1,71 @@
 ISO-10303-21;
-/* Xp006 - Cross-product: schema declares AP203 but file uses AP242
- *   tessellated entities, AND a face references undefined entity #999.
- * Builds on Lh010-class (schema mismatch) + Ls-forward-ref-class +
- *   Tfa001 (NULL/unresolved face_geometry). */
+/* Xp006: Schema-mismatch x forward-reference x unresolved entity */
 HEADER;
-FILE_DESCRIPTION(('Xp006 cross-product','schema mismatch x forward-ref x unresolved'),'2;1');
-FILE_NAME('Xp006.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
-/* Defect 1: AP203 schema declared */
+FILE_DESCRIPTION(('Xp006'),'2;1');
+FILE_NAME('Xp006.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('CONFIG_CONTROL_DESIGN { 1 0 10303 203 1 1 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('config control design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','config_control_design',1994,#1);
-/* Defect 1 continued: AP242-only entities in body */
-#100=COORDINATES_LIST('',4,((0.0,0.0,0.0),(1.0,0.0,0.0),
-                            (0.5,1.0,0.0),(0.5,0.5,1.0)));
-#110=TRIANGULATED_FACE('',#100,$,$,(),
-       ((1,2,3),(1,2,4),(2,3,4),(3,1,4)));
-/* Plane / face whose face_geometry references undefined #999 - Defect 2+3 */
-#200=CARTESIAN_POINT('a',(0.0,0.0,0.0));
-#201=CARTESIAN_POINT('b',(1.0,0.0,0.0));
-#202=VERTEX_POINT('',#200);
-#203=VERTEX_POINT('',#201);
-#204=DIRECTION('',(1.0,0.0,0.0));
-#205=VECTOR('',#204,1.0);
-#206=LINE('',#200,#205);
-#207=EDGE_CURVE('',#202,#203,#206,.T.);
-#208=ORIENTED_EDGE('',*,*,#207,.T.);
-#209=EDGE_LOOP('',(#208));
-#210=FACE_OUTER_BOUND('',#209,.T.);
-/* Defect 2: face_geometry = #999, not defined anywhere */
-#211=ADVANCED_FACE('',(#210),#999,.T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#9=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#10=VERTEX_POINT('',#6);
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=DIRECTION('',(1.0,0.0,0.0));
+#15=VECTOR('',#14,1.0);
+#16=LINE('',#6,#15);
+#17=EDGE_CURVE('',#10,#11,#16,.T.);
+#18=DIRECTION('',(0.0,1.0,0.0));
+#19=VECTOR('',#18,1.0);
+#20=LINE('',#7,#19);
+#21=EDGE_CURVE('',#11,#12,#20,.T.);
+#22=DIRECTION('',(-1.0,0.0,0.0));
+#23=VECTOR('',#22,1.0);
+#24=LINE('',#8,#23);
+#25=EDGE_CURVE('',#12,#13,#24,.T.);
+#26=DIRECTION('',(0.0,-1.0,0.0));
+#27=VECTOR('',#26,1.0);
+#28=LINE('',#9,#27);
+#29=EDGE_CURVE('',#13,#10,#28,.T.);
+#30=ORIENTED_EDGE('',$,$,#17,.T.);
+#31=ORIENTED_EDGE('',$,$,#21,.T.);
+#32=ORIENTED_EDGE('',$,$,#25,.T.);
+#33=ORIENTED_EDGE('',$,$,#29,.T.);
+#34=EDGE_LOOP('',(#30,#31,#32,#33));
+#35=FACE_OUTER_BOUND('',#34,.T.);
+#36=ADVANCED_FACE('',(#35),#5,.T.);
+#37=ORIENTED_EDGE('',$,$,#17,.T.);
+#38=ORIENTED_EDGE('',$,$,#21,.T.);
+#39=ORIENTED_EDGE('',$,$,#25,.T.);
+#40=ORIENTED_EDGE('',$,$,#29,.T.);
+#41=EDGE_LOOP('',(#37,#38,#39,#40));
+#42=FACE_OUTER_BOUND('',#41,.T.);
+#43=ADVANCED_FACE('bad_face',(#42),#999,.T.);
+#44=OPEN_SHELL('',(#36));
+#45=SHELL_BASED_SURFACE_MODEL('',(#44));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Xp006','Xp006','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#45),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=/* xp006 defect-1: AP242-only entities present under AP203 schema */;
+#9064=/* xp006 defect-3: FILE_SCHEMA CONFIG_CONTROL_DESIGN (AP203) declared */;
 ENDSEC;
 END-ISO-10303-21;
