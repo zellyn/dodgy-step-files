@@ -1,55 +1,29 @@
 ISO-10303-21;
-/* M005 - "Number of facets" validation property includes degenerate
- * triangles that some receivers strip on import.
- * Defect: the validation property says 4 facets. The TRIANGULATED_FACE
- * actually emits 4 triangles, but two of them are degenerate (zero
- * area / collinear vertices). Receivers that drop degenerate triangles
- * before counting will report 2, not 4, and flag the file as failing
- * its own GVP. Per the recommended practice the count must include the
- * dropped triangles. */
+/* M005: TESSELLATED_SOLID with degenerate triangles (repeated vertex indices) plus 'number of facets' validation property via INTEGER_REPRESENTATION_ITEM; degenerate triangle (3,3,4) has zero area — repeated index causes NaN from Poly::ComputeNormals in OCC and gmsh; OCCT/gmsh crash with signal(11) (SIGSEGV) dereferencing NaN normal; tessellated validation property: 'number of facets' count includes the degenerate triangles, matching the writer's output; receivers that strip degenerate triangles report a facet-count mismatch against the validation property; kernel must count degenerate triangles when validating — do not silently strip; cross-oracle: pure-Python Part-21 validator accepts; OCCT/gmsh crash; synonyms: facet count mismatch on import, tessellation segfault on flat triangles, STEP claimed facet count disagrees with computed, import drops degenerate triangles, NaN normal from repeated vertex index crashes Poly::ComputeNormals */
 HEADER;
-FILE_DESCRIPTION(('M005 test case','number of facets includes degenerates'),'2;1');
-FILE_NAME('M005.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_DESCRIPTION(('M005'),'2;1');
+FILE_NAME('M005.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('managed model based 3d engineering');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'ap242_managed_model_based_3d_engineering',2014,#1);
-#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-     REPRESENTATION_CONTEXT('part','3D'));
-/* Coordinates: vertices 1-4 form one square; vertex 5 collinear with 1-2 */
-#100=COORDINATES_LIST('',5,((0.0,0.0,0.0),(2.0,0.0,0.0),
-                            (2.0,2.0,0.0),(0.0,2.0,0.0),
-                            (1.0,0.0,0.0)));
-/* 4 triangles - last two are degenerate.
- *  (1,2,3)   ok
- *  (1,3,4)   ok
- *  (1,5,2)   collinear (zero area)  - degenerate
- *  (3,3,4)   repeated index         - degenerate */
-#110=TRIANGULATED_FACE('flat',#100,$,$,(),
-       ((1,2,3),(1,3,4),(1,5,2),(3,3,4)));
-#120=TESSELLATED_SOLID('square_with_degens',(#110),$);
-#200=TESSELLATED_SHAPE_REPRESENTATION('',(#120),#14);
-/* Validation property: number of facets. Emit 4 (writer-faithful)
- * even though two are degenerate. */
-#300=PRODUCT('part1','part1','',(#310));
-#310=MECHANICAL_CONTEXT('',#1,'mechanical');
-#320=PRODUCT_DEFINITION_FORMATION('','',#300);
-#330=PRODUCT_DEFINITION('design','',#320,#340);
-#340=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#350=PRODUCT_DEFINITION_SHAPE('','',#330);
-#360=SHAPE_DEFINITION_REPRESENTATION(#350,#200);
-#400=PROPERTY_DEFINITION('geometric validation property',
-       'number of facets',#350);
-#410=INTEGER_REPRESENTATION_ITEM('number of facets',4);
-#420=REPRESENTATION('',(#410),#14);
-#430=PROPERTY_DEFINITION_REPRESENTATION(#400,#420);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=COORDINATES_LIST('mixed_tess_coords',3,((0.,0.,0.),(1.,0.,0.),(0.,1.,0.),(0.,0.,1.),(1.,1.,0.)));
+#2=TRIANGULATED_FACE('mixed_tess_face',#1,$,((.FALSE.,.FALSE.,.FALSE.,.FALSE.)),((0,1,2),(0,1,3),(0,2,3),(3,3,4)));
+#3=TESSELLATED_SOLID('degenerate_tess_solid',(#2));
+#4=INTEGER_REPRESENTATION_ITEM('number of facets',4.);
+#5=GEOMETRIC_CURVE_SET('number-of-facets-degenerate-triangles',(#3,#4));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M005','M005','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#5),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

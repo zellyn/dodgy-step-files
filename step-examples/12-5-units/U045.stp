@@ -1,37 +1,48 @@
 ISO-10303-21;
-/* U045 - CARTESIAN_TRANSFORMATION_OPERATOR scale parsed but never applied
-   Defect: BRL-CAD step-g CartesianTransformationOperator::Load reads
-   the optional `scale` REAL attribute (default 1.0) into a member
-   variable; LoadONBrep is a stub that prints "not implemented for
-   <entity>" and returns false. The scale is not applied to the
-   transformation, and a producer that emits a uniform-scale operator
-   to inflate or deflate a sub-component (e.g. a STEP file with a
-   prototype cube of side 1.0 and a per-instance scale = 25.4 to make
-   a one-inch cube) gets the unit-cube geometry with no scale at all.
-   The inverse defect on the producer side is U015 / Wr050 (writer
-   forgets to compose scale); this entry is the symmetric reader-side
-   defect.
-   Sources: BRL-CAD src/conv/step/step-g/CartesianTransformationOperator.cpp
-   Load reads `scale`; LoadONBrep is a stub that doesn't apply it. */
+/* U045: CARTESIAN_TRANSFORMATION_OPERATOR_3D scale=25.4 (inch->mm conversion) */
+/* DEFECT (BRL-CAD step-g): LoadONBrep stub silently drops the scale attribute */
+/* Producer intent: place 1-unit inch prototype scaled by 25.4 to get 25.4 mm part */
+/* Buggy receiver (step-g): stub ignores scale; subassembly arrives at 1 mm (unit scale) */
+/* Correct receiver: build uniform-scale xform from parsed scale=25.4 */
 HEADER;
-FILE_DESCRIPTION(
-  ('U045 - CARTESIAN_TRANSFORMATION_OPERATOR scale ignored by step-g'),
-  '2;1');
-FILE_NAME('U045.stp','2026-05-02T00:00:00',('cad-research-suite'),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('U045: CARTESIAN_TRANSFORMATION_OPERATOR_3D scale=25.4 ignored by step-g'),'2;1');
+FILE_NAME('U045.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* Common axis. */
-#10=CARTESIAN_POINT('o',(0.0,0.0,0.0));
-#11=DIRECTION('x',(1.0,0.0,0.0));
-#12=DIRECTION('y',(0.0,1.0,0.0));
-#13=DIRECTION('z',(0.0,0.0,1.0));
-/* Defect: CARTESIAN_TRANSFORMATION_OPERATOR_3D with `scale = 25.4`.  A
-   producer expecting one inch -> 25.4 mm scale to be applied to the
-   located sub-shape; step-g loads the value but LoadONBrep does
-   nothing with it. */
-#100=CARTESIAN_TRANSFORMATION_OPERATOR_3D(
-  'inch_to_mm_scale',#11,#12,#10,25.4,#13);
+/* Standard mm context for assembly */
+#10=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT('ctx','3D'));
+/* Prototype geometry: 1-unit (inch) coordinates — should become 25.4 mm after scaling */
+#1=CARTESIAN_POINT('proto_origin',(0.,0.,0.));
+#2=CARTESIAN_POINT('proto_corner_a',(1.,0.,0.));
+#3=CARTESIAN_POINT('proto_corner_b',(0.,1.,0.));
+#4=CARTESIAN_POINT('proto_corner_c',(1.,1.,1.));
+/* Prototype representation (inch-space) */
+#20=GEOMETRIC_CURVE_SET('inch_prototype',(#1,#2,#3,#4));
+#21=SHAPE_REPRESENTATION('inch_proto_rep',(#20),#14);
+/* Assembly-space axes for the CARTESIAN_TRANSFORMATION_OPERATOR_3D */
+#30=CARTESIAN_POINT('xform_origin',(0.,0.,0.));
+#31=DIRECTION('xform_axis1',(0.,0.,1.));
+#32=DIRECTION('xform_axis2',(1.,0.,0.));
+#33=CARTESIAN_POINT('xform_local_origin',(0.,0.,0.));
+#34=DIRECTION('xform_local_axis1',(0.,0.,1.));
+#35=DIRECTION('xform_local_axis2',(1.,0.,0.));
+/* CARTESIAN_TRANSFORMATION_OPERATOR_3D: inch->mm scale factor = 25.4 */
+/* BRL-CAD step-g Load() reads scale=25.4 into member variable */
+/* BRL-CAD step-g LoadONBrep() is a stub: scale is NEVER applied */
+#100=CARTESIAN_TRANSFORMATION_OPERATOR_3D('inch_to_mm',#30,#31,#32,25.4,#33,#34,#35);
+/* Assembly representation referencing the transformation */
+#110=SHAPE_REPRESENTATION('assembly_rep',(#20),#14);
+/* REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION links the two representations */
+#120=REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION(
+  'inch_to_mm_placement','scale 25.4 inch to mm',#21,#110,#100);
+/* Model entity is GEOMETRIC_CURVE_SET — OCC returns empty shape */
+#200=GEOMETRIC_CURVE_SET('cartesian-transform-scale-dropped',(#1,#2,#3,#4));
 ENDSEC;
 END-ISO-10303-21;
