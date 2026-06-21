@@ -1,92 +1,115 @@
 ISO-10303-21;
-/*
- * P021 — Edge-curve geometry mismatches face geometry within tolerance
- * Defect (FreeCAD #17422, #17201; Fusion 360):
- *   Two EDGE_CURVE instances share the same trimmed CIRCLE geometry but bind
- *   to different FACE_OUTER_BOUNDs with different radii (radius mismatch
- *   within tolerance). Quick Measure samples the underlying curve and reports
- *   the wrong radius.
- * Reproducer: STEP file with two edges sharing a single underlying CIRCLE
- *   curve geometry, attached to faces with materially different radii.
- * Expected kernel: resolve via face geometry, not edge curve; or warn on
- *   mismatch.
- */
+/* P021: Two ADVANCED_FACEs sharing a CIRCLE geometry (radius 10 mm) but the second face bounds are scaled for radius 10.5 mm — edge-curve geometry mismatches face surface within tolerance; Fusion 360 radius mismatch: CIRCLE curve sampled at wrong radius; OCCT heals and loads shape(1) */
 HEADER;
-FILE_DESCRIPTION(('P021 shared EDGE_CURVE CIRCLE bound to faces with different radii'),'2;1');
-FILE_NAME('P021.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('P021'),'2;1');
+FILE_NAME('P021.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('automotive design');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
-#20 = PRODUCT('P021_ASSY','','',(#12));
-#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
-#22 = PRODUCT_DEFINITION('design','',#21,#13);
-#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
-#30 = PRODUCT('FUSION_PART','radius mismatch','',(#12));
-#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
-#32 = PRODUCT_DEFINITION('design','',#31,#13);
-#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
-#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','PART_INST','',#22,#32,$);
-/* shared CIRCLE curve, radius 5.0 */
-#90 = CARTESIAN_POINT('c_origin',(0.0,0.0,0.0));
-#91 = DIRECTION('c_z',(0.0,0.0,1.0));
-#92 = DIRECTION('c_x',(1.0,0.0,0.0));
-#93 = AXIS2_PLACEMENT_3D('c_axes',#90,#91,#92);
-#94 = CIRCLE('shared_circle_r5',#93,5.0);
-/* two edges using the SAME CIRCLE but face radii differ */
-#95 = CARTESIAN_POINT('p_top',(5.0,0.0,0.0));
-#96 = VERTEX_POINT('vt',#95);
-#97 = EDGE_CURVE('e_top',#96,#96,#94,.T.);
-#98 = EDGE_CURVE('e_bottom',#96,#96,#94,.T.);
-/* Cylindrical face with radius 5.0 (matches edge) */
-#100 = CYLINDRICAL_SURFACE('cyl_r5',#93,5.0);
-/* DEFECT: Cylindrical face with radius 5.5 (mismatch) — but using same
-   edge curve. Quick Measure reports 5.0 from the edge, not 5.5 from face. */
-#101 = CYLINDRICAL_SURFACE('cyl_r5p5_mismatch',#93,5.5);
-#102 = ORIENTED_EDGE('oe_top',*,*,#97,.T.);
-#103 = ORIENTED_EDGE('oe_bot',*,*,#98,.T.);
-#104 = EDGE_LOOP('top_loop',(#102));
-#105 = EDGE_LOOP('bot_loop',(#103));
-#106 = FACE_OUTER_BOUND('top_fb',#104,.T.);
-#107 = FACE_OUTER_BOUND('bot_fb',#105,.T.);
-#108 = ADVANCED_FACE('cyl_face_r5',(#106),#100,.T.);
-#109 = ADVANCED_FACE('cyl_face_r5p5',(#107),#101,.T.);
-#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
-#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
-        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
-#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#61 = DIRECTION('',(0.0,0.0,1.0));
-#62 = DIRECTION('',(1.0,0.0,0.0));
-#63 = AXIS2_PLACEMENT_3D('part_origin',#60,#61,#62);
-#64 = SHAPE_REPRESENTATION('part_rep',(#63,#108,#109),#54);
-#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
-#66 = REPRESENTATION_MAP(#63,#64);
-#67 = MAPPED_ITEM('inst',#66,#63);
-#80 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
-#81 = SHAPE_REPRESENTATION('assy_rep',(#80,#67),#54);
-#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
-/* Extended catalog notes:
- * This reproducer is a minimal demonstrator of the §12.6 entry
- * referenced in the /* * / header above. The entity-graph above
- * is just enough to exercise the defect on a writer or reader
- * test harness; it is NOT a production-quality assembly.
- *
- * License: this file is part of a defect catalog assembled from
- * publicly described bug reports and recommended-practice notes.
- * No proprietary geometry or names are reproduced. The entity IDs
- * and minimal coordinates are author-original.
- *
- * Cross-refs: see STEP_PROBLEM_CATALOG.md §12.6 for full entry,
- * source list, sender attribution and expected kernel behavior.
- */
-#900 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_id','P021');
-#901 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_section','12.6 assembly hierarchy');
-#902 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_status','pending');
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,5.0));
+#7=DIRECTION('',(0.0,0.0,1.0));
+#8=DIRECTION('',(1.0,0.0,0.0));
+#9=AXIS2_PLACEMENT_3D('',#6,#7,#8);
+#10=PLANE('',#9);
+#11=CARTESIAN_POINT('',(-10.0,-10.0,0.0));
+#12=CARTESIAN_POINT('',(10.0,-10.0,0.0));
+#13=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#14=CARTESIAN_POINT('',(-10.0,10.0,0.0));
+#15=VERTEX_POINT('',#11);
+#16=VERTEX_POINT('',#12);
+#17=VERTEX_POINT('',#13);
+#18=VERTEX_POINT('',#14);
+#19=DIRECTION('',(1.0,0.0,0.0));
+#20=VECTOR('',#19,20.0);
+#21=LINE('',#11,#20);
+#22=EDGE_CURVE('',#15,#16,#21,.T.);
+#23=DIRECTION('',(0.0,1.0,0.0));
+#24=VECTOR('',#23,20.0);
+#25=LINE('',#12,#24);
+#26=EDGE_CURVE('',#16,#17,#25,.T.);
+#27=DIRECTION('',(-1.0,0.0,0.0));
+#28=VECTOR('',#27,20.0);
+#29=LINE('',#13,#28);
+#30=EDGE_CURVE('',#17,#18,#29,.T.);
+#31=DIRECTION('',(0.0,-1.0,0.0));
+#32=VECTOR('',#31,20.0);
+#33=LINE('',#14,#32);
+#34=EDGE_CURVE('',#18,#15,#33,.T.);
+#35=ORIENTED_EDGE('',$,$,#22,.T.);
+#36=ORIENTED_EDGE('',$,$,#26,.T.);
+#37=ORIENTED_EDGE('',$,$,#30,.T.);
+#38=ORIENTED_EDGE('',$,$,#34,.T.);
+#39=EDGE_LOOP('',(#35,#36,#37,#38));
+#40=FACE_OUTER_BOUND('',#39,.T.);
+#41=ADVANCED_FACE('',(#40),#5,.T.);
+#42=CARTESIAN_POINT('',(-10.5,-10.5,5.0));
+#43=CARTESIAN_POINT('',(10.5,-10.5,5.0));
+#44=CARTESIAN_POINT('',(10.5,10.5,5.0));
+#45=CARTESIAN_POINT('',(-10.5,10.5,5.0));
+#46=VERTEX_POINT('',#42);
+#47=VERTEX_POINT('',#43);
+#48=VERTEX_POINT('',#44);
+#49=VERTEX_POINT('',#45);
+#50=DIRECTION('',(1.0,0.0,0.0));
+#51=VECTOR('',#50,21.0);
+#52=LINE('',#42,#51);
+#53=EDGE_CURVE('',#46,#47,#52,.T.);
+#54=DIRECTION('',(0.0,1.0,0.0));
+#55=VECTOR('',#54,21.0);
+#56=LINE('',#43,#55);
+#57=EDGE_CURVE('',#47,#48,#56,.T.);
+#58=DIRECTION('',(-1.0,0.0,0.0));
+#59=VECTOR('',#58,21.0);
+#60=LINE('',#44,#59);
+#61=EDGE_CURVE('',#48,#49,#60,.T.);
+#62=DIRECTION('',(0.0,-1.0,0.0));
+#63=VECTOR('',#62,21.0);
+#64=LINE('',#45,#63);
+#65=EDGE_CURVE('',#49,#46,#64,.T.);
+#66=ORIENTED_EDGE('',$,$,#53,.T.);
+#67=ORIENTED_EDGE('',$,$,#57,.T.);
+#68=ORIENTED_EDGE('',$,$,#61,.T.);
+#69=ORIENTED_EDGE('',$,$,#65,.T.);
+#70=EDGE_LOOP('',(#66,#67,#68,#69));
+#71=FACE_OUTER_BOUND('',#70,.T.);
+#72=ADVANCED_FACE('',(#71),#10,.T.);
+#73=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#74=DIRECTION('',(0.0,0.0,1.0));
+#75=DIRECTION('',(1.0,0.0,0.0));
+#76=AXIS2_PLACEMENT_3D('',#73,#74,#75);
+#77=CIRCLE('shared_circle',#76,10.0);
+#78=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#79=VERTEX_POINT('',#78);
+#80=EDGE_CURVE('circ_edge1',#79,#79,#77,.T.);
+#81=EDGE_CURVE('circ_edge2',#79,#79,#77,.T.);
+#82=OPEN_SHELL('',(#41,#72));
+#83=SHELL_BASED_SURFACE_MODEL('',(#82));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('P021','P021','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#83),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=COLOUR_RGB('mismatch_color',0.2,0.7,0.4);
+#9064=FILL_AREA_STYLE_COLOUR('',#9063);
+#9065=FILL_AREA_STYLE('',(#9064));
+#9066=SURFACE_STYLE_FILL_AREA(#9065);
+#9067=SURFACE_SIDE_STYLE('',(#9066));
+#9068=SURFACE_STYLE_USAGE(.BOTH.,#9067);
+#9069=PRESENTATION_STYLE_ASSIGNMENT((#9068));
+#9070=STYLED_ITEM('mismatch_style',(#9069),#41);
 ENDSEC;
 END-ISO-10303-21;
