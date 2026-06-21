@@ -1,25 +1,60 @@
 ISO-10303-21;
-/* M106 - AP238 single MACHINING_OPERATION declares 50-hour cycle.
- * Defect: a MACHINING_OPERATION carries an EXECUTION_TIME of 180000
- * seconds (50 hours) - well past any reasonable shift length. Indicates
- * an upstream feedrate or unit-confusion bug. */
+/* M106: AP238 workplan total execution time exceeds shift length */
+/* DEFECT: single MACHINING_OPERATION declares 180000.0 s (50 h) execution time */
+/* 180000 s >> 28800 s (8-hour shift) — indicates feedrate or unit confusion */
+/* Violates ISO 10303-238 §5.6 cycle-time / shift-length practicality */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'TIME_MEASURE') */
+/* Byte assertion: contains(b'180000.0') */
 HEADER;
-FILE_DESCRIPTION(('M106 test case','AP238 unrealistic 50-hour cycle time'),'2;1');
-FILE_NAME('M106.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M106: AP238 workplan execution time exceeds shift length'),'2;1');
+FILE_NAME('M106.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
+#1=APPLICATION_CONTEXT('step_nc_mim');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
+  'ap238_step_nc_mim',2007,#1);
+/* Standard unit context — mm */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#15=(NAMED_UNIT(*)SI_UNIT($,.SECOND.)TIME_UNIT());
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#15))
-     REPRESENTATION_CONTEXT('nc','3D'));
-/* Defect: 180000 seconds = 50 hours of continuous machining. */
-#80=MEASURE_WITH_UNIT(TIME_MEASURE(180000.0),#15);
-#100=MACHINING_OPERATION('marathon_cut',$,$,$,#80,$);
-#200=WORKPLAN('main',(#100),$,$,$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('nc','3D'));
+/* Time unit — seconds — for execution time measurement */
+#20=(NAMED_UNIT(*)SI_UNIT($,.SECOND.)TIME_UNIT());
+/* Byte assertion: contains(b'TIME_MEASURE') */
+/* Byte assertion: contains(b'180000.0') */
+/* DEFECT: 180000.0 seconds = 50 hours; shift length is 28800 s (8 h) */
+/* Feedrate stuck at near-zero or units mm/rev instead of mm/min cause this */
+#21=MEASURE_WITH_UNIT(TIME_MEASURE(180000.0),#20);
+/* Machined feature — a pocket requiring the absurdly long cut */
+#50=MACHINED_FEATURE('pocket_a',$,$,$,$,$);
+/* 12mm end mill used for the long pocket milling pass */
+#60=MACHINING_TOOL('endmill_12mm',$,$,$);
+/* DEFECT: MACHINING_OPERATION declares execution_time of 180000.0 s (50 h) */
+/* Correct shift length would cap at 28800 s; 180000 s signals feedrate error */
+#70=MACHINING_OPERATION('op_long_cut',#60,$,#21,$,$,$,$,#50,$,$);
+#80=MACHINING_WORKINGSTEP('step_a',#50,#70,$);
+/* WORKPLAN: single step; total scheduled time = 180000.0 s */
+#90=WORKPLAN('main',(#80),$,$,$);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#300=GEOMETRIC_CURVE_SET('ap238-workplan-execution-time-exceeds-shift-length',
+  (#21,#50,#60,#70,#80,#90));
+/* Product chain */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M106','M106','M106',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#300),#14);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;
