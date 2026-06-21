@@ -1,26 +1,40 @@
 ISO-10303-21;
-/* Ad110 - .stpz gzip wrapper expands ratio 1:10000 into multi-gigabyte body
- * Defect: a .stpz file (gzip-wrapped Part-21) whose payload is highly
- * compressible. Gzip ratios approaching 1:1024 per DEFLATE block chain
- * to aggregate ratios of 1:10000+. A ~3 KB .stpz can decompress to
- * gigabytes. Distinct from Ad027 / Pf030 (instance-count bombs at the
- * parser layer) - the bomb here is at the gzip layer and triggers
- * before any Part-21 token is seen. Distinct from Ad105 (header lies
- * about size) - this gzip stream actually produces the bytes when
- * decoded. Provenance tier: cross-file-state. */
+/* Ad110: stpz gzip wrapper expands at ratio 1:10000 into multi-gigabyte body; attacker ships ~3 KB .stpz file decompressing to 30+ GB of repeated bytes; receiver that gunzips into a single buffer exhausts RAM before parsing; bomb triggers at the gzip layer before any Part-21 token is seen; distinct from Ad027/Pf030 (instance-count bombs at parser layer); receiver must cap per-stream decompressed-byte budget; must abort decompression when budget exceeded with precise diagnostic; must stream decompressed bytes through tokeniser rather than buffering; CWE-409; ISO 10303-21 §12 compressed-archive transfer; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Ad110 - .stpz gzip ratio bomb (witness only - bomb in wrapper)'),'2;1');
-FILE_NAME('Ad110.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Ad110'),'2;1');
+FILE_NAME('Ad110.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* Witness body: the gzip-wrapper bomb is not present in this Part-21
-   fixture; the bug-reporter searchable terms (gzip, .stpz, decompression,
-   ratio, bomb) are in this file's header and comments. The actual
-   exploit is a gzip stream with ratio 1:10000+ that decodes to
-   gigabytes of repeated whitespace before any Part-21 token is seen. */
-/* gzip ratio 1:10000 .stpz decompression bomb */
-#1=APPLICATION_CONTEXT('automotive_design');
-#10=CARTESIAN_POINT('benign',(0.0,0.0,0.0));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Ad110','Ad110','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=/* stpz gzip decompression bomb (gzip-wrapper layer; cross-file-state):
+   .stpz gzip stream structure:
+     gzip magic:          1F 8B
+     compression method:  deflate (8)
+     compressed size:     ~3 KB (highly-compressible repeated bytes)
+     decompressed size:   ~30 GB (ratio 1:10000)
+     payload:             4294967296 repeated ' ' bytes + Part-21 envelope
+   A receiver that buffers the full gunzip output allocates 30 GB of RAM
+   before seeing a single Part-21 token — OOM before parsing begins.
+   Receiver must: cap per-stream decompressed-byte budget; reject .stpz
+   files whose decompression ratio exceeds a configurable limit; stream
+   rather than buffer. This .stp file is the embedded STEP body (tiny;
+   the bomb is in the gzip wrapper, not the STEP content inside it). */
+CARTESIAN_POINT('stpz_gzip_ratio_bomb_note',(0.0,0.0,0.0));
 ENDSEC;
 END-ISO-10303-21;

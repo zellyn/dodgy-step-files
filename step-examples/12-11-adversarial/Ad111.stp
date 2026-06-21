@@ -1,25 +1,41 @@
 ISO-10303-21;
-/* Ad111 - ZIP bomb inside a 3MF / IFCZIP container that wraps a STEP body
- * Defect: 3MF and IFCZIP are STEP-adjacent ZIP-container formats. A
- * maliciously-crafted ZIP archive carries one entry whose compressed
- * bytes are tiny but whose uncompressed bytes claim gigabytes - the
- * textbook ZIP bomb. Distinct from Ad105 (archive header lies about
- * size) - in this entry the ZIP entry actually decompresses to the
- * claimed size. Provenance tier: cross-file-state. */
+/* Ad111: ZIP bomb inside 3MF/IFCZIP container wrapping a STEP body; ZIP archive entry 3D/3dmodel.model compressed-vs-uncompressed ratio 1:5000; entry actually decompresses to claimed size (~2 GB) unlike Ad105 header lie; receiver extracting to tempdir exhausts disk; extracting to memory exhausts RAM; distinct from Ad105 (archive-header lie — detectable from header alone); receiver must cap per-entry decompression budget with precise diagnostic; must cap per-archive total budget; must refuse archives with implausible entry-count / total-size combinations; CWE-409; 3MF spec §3 ZIP container; ISO 10303-21 STEP body in IFCZIP; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Ad111 - 3MF/IFCZIP ZIP bomb wrapping STEP body (witness only)'),'2;1');
-FILE_NAME('Ad111.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Ad111'),'2;1');
+FILE_NAME('Ad111.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* Witness body: the ZIP-wrapper bomb is not present in this Part-21
-   fixture; the bug-reporter searchable terms (3MF, IFCZIP, ZIP, bomb,
-   ratio) are in this file's header and comments. The actual exploit
-   is a 3MF (.3mf) or IFCZIP (.ifczip) ZIP archive containing one
-   entry whose compressed:uncompressed ratio is 1:5000 and whose
-   decompressed body is multi-gigabyte. */
-/* 3MF ZIP bomb / IFCZIP container ratio bomb */
-#1=APPLICATION_CONTEXT('automotive_design');
-#10=CARTESIAN_POINT('benign',(0.0,0.0,0.0));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Ad111','Ad111','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=/* ZIP bomb in 3MF/IFCZIP container (ZIP-wrapper layer; cross-file-state):
+   3MF ZIP archive structure:
+     [Content_Types].xml    (valid 3MF content-types manifest)
+     3D/3dmodel.model       (the ZIP bomb entry)
+       compressed size:     ~400 KB (highly-compressible repeated bytes)
+       uncompressed size:   ~2 GB (ratio 1:5000)
+       content when decompressed: valid but enormous 3MF XML body
+   Unlike Ad105 the ZIP entry actually decompresses to the claimed size;
+   the bomb is not a header lie but a real high-ratio DEFLATE stream.
+   Applies to both 3MF and IFCZIP containers wrapping a STEP body.
+   Receiver must: cap per-entry budget; cap per-archive total; refuse
+   archives with implausible entry-count/size combinations.
+   This .stp file is the embedded STEP body (tiny; the bomb ratio
+   is in the ZIP wrapper, not in the STEP content inside it). */
+CARTESIAN_POINT('ifczip_3mf_zip_bomb_note',(0.0,0.0,0.0));
 ENDSEC;
 END-ISO-10303-21;

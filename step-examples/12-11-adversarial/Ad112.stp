@@ -1,28 +1,45 @@
 ISO-10303-21;
-/* Ad112 - Nested gzip-of-gzip-of-... .stpz triggers N-level recursive
- * decompression
- * Defect: a receiver that auto-detects gzip framing and decompresses
- * transparently before tokenising will, on input that is gzip-of-
- * gzip-of-...-of-Part-21, recurse into each layer. With N stacked
- * layers (8 layers at 1:100 each yields 1:10^16 aggregate ratio) the
- * receiver's recursion or per-layer buffer overflows. Distinct from
- * Ad110 (single-layer ratio) - this entry attacks layering depth.
- * Provenance tier: cross-file-state. */
+/* Ad112: nested gzip-of-gzip-.stpz triggers N-level recursive decompression; Part-21 body wrapped in 8 successive gzip layers; each layer ~1:100 ratio; aggregate ratio 1:10^16; unwrapping requires 8 sequential gunzip passes; recursive auto-detect implementation overflows call stack at layer depth N; distinct from Ad110 (single-layer ratio bomb) — attacks depth not ratio; receiver must cap gzip-layer recursion depth at 1 or small bounded N; must refuse files whose decompressed body has gzip magic at offset 0; must reject with a precise diagnostic when depth cap exceeded; CWE-674; ISO 10303-21 §12 compressed-archive transfer; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Ad112 - nested gzip recursion .stpz of .stpz of ... (witness only)'),'2;1');
-FILE_NAME('Ad112.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Ad112'),'2;1');
+FILE_NAME('Ad112.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* Witness body: the nested gzip wrapper is not present in this Part-21
-   fixture; the bug-reporter searchable terms (nested, recursive, gzip,
-   .stpz, depth, recursion) are in this file's header and comments.
-   The actual exploit is a Part-21 body wrapped in 8 successive gzip
-   layers (each layer's input is the previous layer's gzip output);
-   compressed final size is a few KB, decompressed final size is 100
-   MB+, and unwrapping requires 8 sequential gunzip passes. */
-/* nested gzip recursion depth 8 - .stpz of .stpz of .stpz */
-#1=APPLICATION_CONTEXT('automotive_design');
-#10=CARTESIAN_POINT('benign',(0.0,0.0,0.0));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Ad112','Ad112','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=/* Nested gzip recursion bomb (.stpz stack; cross-file-state):
+   Wrapper structure (outermost first):
+     Layer 8: gzip(Layer 7)  magic: 1F 8B  ratio ~1:100
+     Layer 7: gzip(Layer 6)  magic: 1F 8B  ratio ~1:100
+     Layer 6: gzip(Layer 5)  magic: 1F 8B  ratio ~1:100
+     Layer 5: gzip(Layer 4)  magic: 1F 8B  ratio ~1:100
+     Layer 4: gzip(Layer 3)  magic: 1F 8B  ratio ~1:100
+     Layer 3: gzip(Layer 2)  magic: 1F 8B  ratio ~1:100
+     Layer 2: gzip(Layer 1)  magic: 1F 8B  ratio ~1:100
+     Layer 1: gzip(Part-21)  magic: 1F 8B  ratio ~1:100
+     Layer 0: this Part-21 body (innermost)
+   Aggregate ratio: 1:10^16 across 8 nested .stpz layers.
+   A receiver that auto-detects gzip magic (1F 8B) and recurses
+   into each layer: (a) overflows call stack at depth N if recursion
+   is via function calls; (b) allocates one buffer per layer.
+   Receiver must: cap gzip recursion depth at 1; refuse .stpz files
+   whose decompressed body still starts with gzip magic 1F 8B;
+   reject with precise diagnostic when depth cap exceeded. */
+CARTESIAN_POINT('nested_gzip_recursion_depth_note',(0.0,0.0,0.0));
 ENDSEC;
 END-ISO-10303-21;
