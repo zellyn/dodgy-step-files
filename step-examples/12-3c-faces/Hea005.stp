@@ -1,68 +1,83 @@
 ISO-10303-21;
-/* Hea005 - Notches detected on a free-bound contour
- * Open shell of one face whose perimeter has a notched-wire defect from
- * Twi054: bottom edge replaced by 3-edge bump-out detour pulling vertex
- * (5,-0.05) inward forming a sharp triangular notch. Loop becomes 6 edges. */
+/* Hea005: OPEN_SHELL with 10x10 face on PLANE; bottom edge replaced by triangular notch detour: V1(0,0)->V_notch_a(4.5,0)->V_notch_apex(5.0,0.05)->V_notch_b(5.5,0)->V2(10,0); 7 total ORIENTED_EDGEs; ShapeAnalysis_FreeBoundsProperties::CheckNotches must report notch with width~1.0 and depth~0.05; defect: triangular bump on free-bound contour bottom side */
 HEADER;
-FILE_DESCRIPTION(('Hea005 test case','Open shell whose face has a triangular notch detour on the bottom edge'),'2;1');
-FILE_NAME('Hea005.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Hea005'),'2;1');
+FILE_NAME('Hea005.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#14=PLANE('',#13);
-/* 7 vertices: V1, V2a (notch start), V_notch (apex inward), V2b (notch end), V2 (corner), V3, V4 */
-#20=CARTESIAN_POINT('',(0.0,0.0,0.0));#21=VERTEX_POINT('V1',#20);
-#22=CARTESIAN_POINT('',(4.5,0.0,0.0));#23=VERTEX_POINT('V_notch_a',#22);
-#24=CARTESIAN_POINT('notch_apex_inward',(5.0,0.05,0.0));#25=VERTEX_POINT('V_notch_apex',#24);
-#26=CARTESIAN_POINT('',(5.5,0.0,0.0));#27=VERTEX_POINT('V_notch_b',#26);
-#28=CARTESIAN_POINT('',(10.0,0.0,0.0));#29=VERTEX_POINT('V2',#28);
-#30=CARTESIAN_POINT('',(10.0,10.0,0.0));#31=VERTEX_POINT('V3',#30);
-#32=CARTESIAN_POINT('',(0.0,10.0,0.0));#33=VERTEX_POINT('V4',#32);
-/* Bottom-1 V1 -> V_notch_a (4.5 long along +X) */
-#40=DIRECTION('',(1.0,0.0,0.0));#41=VECTOR('',#40,1.0);#42=LINE('',#20,#41);#43=EDGE_CURVE('b1',#21,#23,#42,.T.);
-/* notch up V_notch_a -> V_notch_apex */
-#44=DIRECTION('',(0.9950371902099893,0.09950371902099893,0.0));#45=VECTOR('',#44,0.50249);#46=LINE('',#22,#45);#47=EDGE_CURVE('notch_up',#23,#25,#46,.T.);
-/* notch down V_notch_apex -> V_notch_b */
-#48=DIRECTION('',(0.9950371902099893,-0.09950371902099893,0.0));#49=VECTOR('',#48,0.50249);#50=LINE('',#24,#49);#51=EDGE_CURVE('notch_down',#25,#27,#50,.T.);
-/* Bottom-2 V_notch_b -> V2 */
-#52=DIRECTION('',(1.0,0.0,0.0));#53=VECTOR('',#52,1.0);#54=LINE('',#26,#53);#55=EDGE_CURVE('b2',#27,#29,#54,.T.);
-/* Right V2 -> V3 */
-#56=DIRECTION('',(0.0,1.0,0.0));#57=VECTOR('',#56,1.0);#58=LINE('',#28,#57);#59=EDGE_CURVE('right',#29,#31,#58,.T.);
-/* Top V3 -> V4 */
-#60=DIRECTION('',(-1.0,0.0,0.0));#61=VECTOR('',#60,1.0);#62=LINE('',#30,#61);#63=EDGE_CURVE('top',#31,#33,#62,.T.);
-/* Left V4 -> V1 */
-#64=DIRECTION('',(0.0,-1.0,0.0));#65=VECTOR('',#64,1.0);#66=LINE('',#32,#65);#67=EDGE_CURVE('left',#33,#21,#66,.T.);
-#70=ORIENTED_EDGE('',*,*,#43,.T.);
-#71=ORIENTED_EDGE('',*,*,#47,.T.);
-#72=ORIENTED_EDGE('',*,*,#51,.T.);
-#73=ORIENTED_EDGE('',*,*,#55,.T.);
-#74=ORIENTED_EDGE('',*,*,#59,.T.);
-#75=ORIENTED_EDGE('',*,*,#63,.T.);
-#76=ORIENTED_EDGE('',*,*,#67,.T.);
-#77=EDGE_LOOP('outer_with_notch',(#70,#71,#72,#73,#74,#75,#76));
-#78=FACE_OUTER_BOUND('',#77,.T.);
-#79=ADVANCED_FACE('face_with_notch',(#78),#14,.T.);
-#80=OPEN_SHELL('shell_with_notch_contour',(#79));
-/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Hea005','Hea005','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#80));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(4.5,0.0,0.0));
+#8=CARTESIAN_POINT('notch_apex_inward',(5.0,0.05,0.0));
+#9=CARTESIAN_POINT('',(5.5,0.0,0.0));
+#10=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#12=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#13=VERTEX_POINT('V1',#6);
+#14=VERTEX_POINT('V_notch_a',#7);
+#15=VERTEX_POINT('V_notch_apex',#8);
+#16=VERTEX_POINT('V_notch_b',#9);
+#17=VERTEX_POINT('V2',#10);
+#18=VERTEX_POINT('V3',#11);
+#19=VERTEX_POINT('V4',#12);
+#20=DIRECTION('',(1.0,0.0,0.0));
+#21=VECTOR('',#20,1.0);
+#22=LINE('',#6,#21);
+#23=EDGE_CURVE('b1',#13,#14,#22,.T.);
+#24=DIRECTION('',(0.99503719021,0.099503719021,0.0));
+#25=VECTOR('',#24,0.502493781056);
+#26=LINE('',#7,#25);
+#27=EDGE_CURVE('notch_up',#14,#15,#26,.T.);
+#28=DIRECTION('',(0.99503719021,-0.099503719021,0.0));
+#29=VECTOR('',#28,0.502493781056);
+#30=LINE('',#8,#29);
+#31=EDGE_CURVE('notch_down',#15,#16,#30,.T.);
+#32=DIRECTION('',(1.0,0.0,0.0));
+#33=VECTOR('',#32,1.0);
+#34=LINE('',#9,#33);
+#35=EDGE_CURVE('b2',#16,#17,#34,.T.);
+#36=DIRECTION('',(0.0,1.0,0.0));
+#37=VECTOR('',#36,1.0);
+#38=LINE('',#10,#37);
+#39=EDGE_CURVE('right',#17,#18,#38,.T.);
+#40=DIRECTION('',(-1.0,0.0,0.0));
+#41=VECTOR('',#40,1.0);
+#42=LINE('',#11,#41);
+#43=EDGE_CURVE('top',#18,#19,#42,.T.);
+#44=DIRECTION('',(0.0,-1.0,0.0));
+#45=VECTOR('',#44,1.0);
+#46=LINE('',#12,#45);
+#47=EDGE_CURVE('left',#19,#13,#46,.T.);
+#48=ORIENTED_EDGE('',$,$,#23,.T.);
+#49=ORIENTED_EDGE('',$,$,#27,.T.);
+#50=ORIENTED_EDGE('',$,$,#31,.T.);
+#51=ORIENTED_EDGE('',$,$,#35,.T.);
+#52=ORIENTED_EDGE('',$,$,#39,.T.);
+#53=ORIENTED_EDGE('',$,$,#43,.T.);
+#54=ORIENTED_EDGE('',$,$,#47,.T.);
+#55=EDGE_LOOP('outer_with_notch',(#48,#49,#50,#51,#52,#53,#54));
+#56=FACE_OUTER_BOUND('',#55,.T.);
+#57=ADVANCED_FACE('face_with_notch',(#56),#5,.T.);
+#58=OPEN_SHELL('shell_with_notch_contour',(#57));
+#59=SHELL_BASED_SURFACE_MODEL('',(#58));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Hea005','Hea005','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#59),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
