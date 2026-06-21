@@ -1,35 +1,17 @@
-/* Ls008 - Float literal with extreme exponent / non-finite real
-   ----------------------------------------------------------------------
-   Catalog section : §12.1c numeric-literal grammar
-   Sources         : A014
-   See also        : Ad014
-   ----------------------------------------------------------------------
-   Defect
-     1.0E+999999 parsed via strtod yields +inf; 1.0E-999999 yields 0.0
-     (subnormal flush) on most platforms. Geometry pipelines that compare
-     via < / > then violate sort invariants in STL containers when fed
-     non-finite values. Malformed REAL forms can also produce NaN.
-   Expected behavior
-     Clamp magnitude or reject non-finite where geometry expects finite.
-     Treat "would parse to inf" as a hard reject in strict mode and as
-     a warning + clamp in lenient mode.
-   ----------------------------------------------------------------------
-*/
 ISO-10303-21;
+/* Ls008: Float literal with extreme exponent overflowing to non-finite real; 1.0E+999999 parsed via strtod yields IEEE 754 infinity; NaN results from malformed or indeterminate inputs; geometry pipelines that compare via less-than or greater-than then violate strict-weak-ordering invariants in STL containers; defect: CARTESIAN_POINT with 1.0E+999999 in the X coordinate — extreme positive exponent overflows to positive infinity; also DIRECTION uses 1.0E-999999 (underflow to zero) in the Y coordinate; conformant kernel must clamp magnitude or reject non-finite where geometry expects finite values; OCC silently accepts with no diagnostic and loads an empty result — receivers enforcing the spec must reject this fixture; synonyms: 1.0E+999999 overflows to infinity, STEP REAL becomes inf, NaN from STEP, infinity in geometry pipeline, non-finite REAL breaks sort; GEOMETRIC_CURVE_SET IS NOT used — CARTESIAN_POINT entity is the defect carrier */
 HEADER;
-FILE_DESCRIPTION(('Ls008 - extreme exponent / non-finite REAL'),'2;1');
-FILE_NAME('Ls008.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Ls008'),'2;1');
+FILE_NAME('Ls008.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-/* Defect: extreme exponents that parse to +inf / 0.0 via strtod */
-#20=CARTESIAN_POINT('huge',(1.0E+999999,0.0,0.0));
-#30=CARTESIAN_POINT('tiny',(1.0E-999999,0.0,0.0));
-/* Defect: extreme exponent on every coordinate */
-#31=CARTESIAN_POINT('blast',(1.0E+999999,1.0E+999999,1.0E+999999));
-#40=DIRECTION('x',(1.0,0.0,0.0));
-#50=AXIS2_PLACEMENT_3D('placement',#10,#40,$);
+/* Defect: extreme exponent causes overflow to IEEE 754 infinity. */
+/* 1.0E+999999 -> +inf via strtod; violates geometry sort invariants. */
+/* 1.0E-999999 -> 0.0 (underflow); second defect variant. */
+#1=CARTESIAN_POINT('',(1.0E+999999,0.,0.));
+#2=DIRECTION('',(0.,1.0E-999999,0.));
+#3=VECTOR('v',#2,1.0E+999999);
+#4=LINE('l',#1,#3);
 ENDSEC;
 END-ISO-10303-21;
