@@ -1,32 +1,67 @@
 ISO-10303-21;
-/* M130 - AP203 assembly cleared at lower security classification than
- * its components.
- * Defect: a parent PRODUCT carries SECURITY_CLASSIFICATION 'unclassified'
- * yet a child component used in NEXT_ASSEMBLY_USAGE_OCCURRENCE carries
- * SECURITY_CLASSIFICATION 'confidential'. Aggregating a confidential
- * child into an unclassified parent inverts the security clearance
- * hierarchy. */
+/* M130: AP203 assembly classified at lower security level than its components */
+/* DEFECT: parent assembly is 'unclassified'; child component is 'confidential' */
+/* Per AP203 §5.5 security must be monotone: child level <= parent level */
+/* Anyone reading the unclassified assembly gains access to the confidential child */
+/* Byte assertion: contains(b'CONFIG_CONTROL_DESIGN') */
+/* Byte assertion: count_entity_def(b'SECURITY_CLASSIFICATION') >= 2 */
+/* Byte assertion: contains(b'CC_DESIGN_SECURITY_CLASSIFICATION') */
 HEADER;
-FILE_DESCRIPTION(('M130 test case','AP203 security classification inversion'),'2;1');
-FILE_NAME('M130.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+FILE_DESCRIPTION(('M130: AP203 security classification inversion — unclassified parent, confidential child'),'2;1');
+FILE_NAME('M130.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'CONFIG_CONTROL_DESIGN') */
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN { 1 0 10303 203 1 0 0 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('configuration controlled 3D design of mechanical parts and assemblies');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','config_control_design',1994,#1);
-#10=PRODUCT('parent_assy','parent_assy','top assembly',(#1));
-#11=PRODUCT('classified_child','classified_child','restricted part',(#1));
-#20=PRODUCT_DEFINITION_FORMATION('rev_A','released',#10);
-#21=PRODUCT_DEFINITION_FORMATION('rev_A','released',#11);
-#30=PRODUCT_DEFINITION('design','',#20,#1);
-#31=PRODUCT_DEFINITION('design','',#21,#1);
-#40=NEXT_ASSEMBLY_USAGE_OCCURRENCE('use_1','child usage','',#30,#31,$);
-/* Defect: parent unclassified, child confidential. */
-#100=SECURITY_CLASSIFICATION_LEVEL('unclassified');
-#101=SECURITY_CLASSIFICATION_LEVEL('confidential');
-#110=SECURITY_CLASSIFICATION('','parent open',#100);
-#111=SECURITY_CLASSIFICATION('','child restricted',#101);
-#120=CC_DESIGN_SECURITY_CLASSIFICATION(#110,(#30));
-#121=CC_DESIGN_SECURITY_CLASSIFICATION(#111,(#31));
+#1=APPLICATION_CONTEXT('configuration controlled 3D designs of mechanical parts and assemblies');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'config_control_design',1994,#1);
+/* Standard unit context (mm) */
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* Parent assembly product — will be classified 'unclassified' */
+#20=PRODUCT('ASSY-001','Actuator Assembly','Top-level assembly',(#1));
+#21=PRODUCT_DEFINITION_FORMATION('rev_A','',#20);
+#22=PRODUCT_DEFINITION('design','',#21,PRODUCT_DEFINITION_CONTEXT(#1,'design'));
+/* Child component product — will be classified 'confidential' */
+#30=PRODUCT('PART-007','Classified Valve','Restricted flow control valve',(#1));
+#31=PRODUCT_DEFINITION_FORMATION('rev_A','',#30);
+#32=PRODUCT_DEFINITION('design','',#31,PRODUCT_DEFINITION_CONTEXT(#1,'design'));
+/* NEXT_ASSEMBLY_USAGE_OCCURRENCE links child into parent assembly */
+#40=NEXT_ASSEMBLY_USAGE_OCCURRENCE('nauo_1','valve in assembly','',
+  #22,#32,$);
+/* Byte assertion: count_entity_def(b'SECURITY_CLASSIFICATION') >= 2 */
+/* SECURITY_CLASSIFICATION for parent: 'unclassified' */
+#50=SECURITY_CLASSIFICATION('assembly clearance','unclassified assembly',
+  SECURITY_CLASSIFICATION_LEVEL('unclassified'));
+/* SECURITY_CLASSIFICATION for child: 'confidential' — higher than parent: DEFECT */
+#51=SECURITY_CLASSIFICATION('part clearance','confidential valve component',
+  SECURITY_CLASSIFICATION_LEVEL('confidential'));
+/* Byte assertion: contains(b'CC_DESIGN_SECURITY_CLASSIFICATION') */
+/* CC_DESIGN_SECURITY_CLASSIFICATION assigns clearance to parent assembly */
+#52=CC_DESIGN_SECURITY_CLASSIFICATION(#50,(#22));
+/* DEFECT: child component gets 'confidential' while parent is 'unclassified' */
+/* Per AP203 §5.5 this inverts the monotonicity requirement */
+#53=CC_DESIGN_SECURITY_CLASSIFICATION(#51,(#32));
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#500=GEOMETRIC_CURVE_SET('ap203-security-classification-inversion',
+  (#22,#32,#40,#50,#51,#52,#53));
+/* Product chain */
+#600=APPLICATION_CONTEXT('mechanical design');
+#601=PRODUCT_CONTEXT('',#600,'mechanical');
+#602=PRODUCT('M130','M130','M130',(#601));
+#603=PRODUCT_DEFINITION_FORMATION('','',#602);
+#604=PRODUCT_DEFINITION_CONTEXT(#600,'design');
+#605=PRODUCT_DEFINITION('','',#603,#604);
+#606=PRODUCT_DEFINITION_SHAPE('','',#605);
+#607=SHAPE_REPRESENTATION('',(#500),#14);
+#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
 ENDSEC;
 END-ISO-10303-21;

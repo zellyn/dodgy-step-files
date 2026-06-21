@@ -1,25 +1,59 @@
 ISO-10303-21;
-/* M135 - AP203 declares CONFIG_CONTROL_DESIGN (CC1) but uses CC2-only
- * entities.
- * Defect: a file declares the legacy CONFIG_CONTROL_DESIGN schema in
- * its FILE_SCHEMA, yet uses entities such as DESIGN_CONTEXT and
- * MECHANICAL_CONTEXT that were introduced in the AP203 second-edition
- * (CC2 / CCD2) schema. CC1-strict readers will reject the unknown
- * entities; lax readers may accept and produce inconsistent results. */
+/* M135: AP203 CC1 file using CC2-only DESIGN_CONTEXT and MECHANICAL_CONTEXT */
+/* DEFECT: FILE_SCHEMA declares CONFIG_CONTROL_DESIGN (CC1 / Ed.1) */
+/* DATA section uses DESIGN_CONTEXT and MECHANICAL_CONTEXT added in CC2 (Ed.2) */
+/* CC1-strict readers reject with 'unknown entity type'; lax readers get inconsistency */
+/* Correct fix: upgrade FILE_SCHEMA to CC2, or strip CC2-only entities */
+/* Byte assertion: contains(b'CONFIG_CONTROL_DESIGN') */
+/* Byte assertion: contains(b'DESIGN_CONTEXT') */
+/* Byte assertion: contains(b'MECHANICAL_CONTEXT') */
 HEADER;
-FILE_DESCRIPTION(('M135 test case','AP203 CC1 schema with CC2 entities'),'2;1');
-FILE_NAME('M135.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+FILE_DESCRIPTION(('M135: AP203 CC1 schema declaration with CC2-only entities DESIGN_CONTEXT MECHANICAL_CONTEXT'),'2;1');
+FILE_NAME('M135.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'CONFIG_CONTROL_DESIGN') */
+/* CC1 / Ed.1 schema declaration — does NOT include CC2-only entity types */
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN { 1 0 10303 203 1 0 0 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('configuration controlled 3D design of mechanical parts and assemblies');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','config_control_design',1994,#1);
-/* Defect: DESIGN_CONTEXT and MECHANICAL_CONTEXT are CC2-only entities,
- * not in the original CC1 schema declared above. */
-#3=DESIGN_CONTEXT('design_ctx',#1,'design');
-#4=MECHANICAL_CONTEXT('mech_ctx',#1,'mechanical');
-#10=PRODUCT('part_x','part_x','sample',(#3,#4));
-#20=PRODUCT_DEFINITION_FORMATION('rev_A','released',#10);
-#30=PRODUCT_DEFINITION('design','',#20,#3);
+#1=APPLICATION_CONTEXT('configuration controlled 3D designs of mechanical parts and assemblies');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'config_control_design',1994,#1);
+/* Standard unit context (mm) */
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* Byte assertion: contains(b'MECHANICAL_CONTEXT') */
+/* DEFECT: MECHANICAL_CONTEXT is a CC2-only entity; CC1 does not define this type */
+/* CC1 equivalent is PRODUCT_CONTEXT with discipline_type='mechanical' */
+/* A legacy PDM exporter that switched from CC2 to CC1 header but forgot to strip entities */
+#20=MECHANICAL_CONTEXT('MECH',#1,'mechanical');
+/* Byte assertion: contains(b'DESIGN_CONTEXT') */
+/* DEFECT: DESIGN_CONTEXT is a CC2-only entity; not present in CC1 schema *)   
+/* CC1 equivalent is PRODUCT_DEFINITION_CONTEXT with lifecycle_stage='design' */
+#21=DESIGN_CONTEXT('DESIGN',#1,'design');
+/* Product using the CC2-only context entities in a CC1-declared file */
+#30=PRODUCT('PART-099','Valve Body','Main flow control body',(#20));
+#31=PRODUCT_DEFINITION_FORMATION('rev_A','Production release',#30);
+/* PRODUCT_DEFINITION references DESIGN_CONTEXT (#21) — another CC2-only type *)  
+#32=PRODUCT_DEFINITION('design','',#31,#21);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#500=GEOMETRIC_CURVE_SET('ap203-cc1-schema-with-cc2-only-entities',
+  (#20,#21,#30,#31,#32));
+/* Product chain */
+#600=APPLICATION_CONTEXT('mechanical design');
+#601=PRODUCT_CONTEXT('',#600,'mechanical');
+#602=PRODUCT('M135','M135','M135',(#601));
+#603=PRODUCT_DEFINITION_FORMATION('','',#602);
+#604=PRODUCT_DEFINITION_CONTEXT(#600,'design');
+#605=PRODUCT_DEFINITION('','',#603,#604);
+#606=PRODUCT_DEFINITION_SHAPE('','',#605);
+#607=SHAPE_REPRESENTATION('',(#500),#14);
+#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
 ENDSEC;
 END-ISO-10303-21;

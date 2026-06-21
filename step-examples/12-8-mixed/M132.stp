@@ -1,24 +1,56 @@
 ISO-10303-21;
-/* M132 - AP203 material-class APPLIED_GROUP_ASSIGNMENT without a
- * material reference.
- * Defect: an APPLIED_GROUP_ASSIGNMENT classifies a part as belonging
- * to a 'material' group but the GROUP carries no MATERIAL_DESIGNATION
- * or specification reference. The part is tagged as having a material
- * but with no actual material identified. */
+/* M132: AP203 material-class APPLIED_GROUP_ASSIGNMENT without a material reference */
+/* DEFECT: GROUP tagged 'material_class' has no MATERIAL_DESIGNATION entity */
+/* Part claims to be steel alloy but grade/spec is entirely absent from the file */
+/* Per AP203 §5.6 material GROUP must be accompanied by a MATERIAL_DESIGNATION */
+/* Byte assertion: contains(b'CONFIG_CONTROL_DESIGN') */
+/* Byte assertion: contains(b'APPLIED_GROUP_ASSIGNMENT') */
+/* Byte assertion: count_entity_def(b'MATERIAL_DESIGNATION') == 0 */
 HEADER;
-FILE_DESCRIPTION(('M132 test case','AP203 material group missing designation'),'2;1');
-FILE_NAME('M132.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+FILE_DESCRIPTION(('M132: AP203 material GROUP assignment missing MATERIAL_DESIGNATION'),'2;1');
+FILE_NAME('M132.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'CONFIG_CONTROL_DESIGN') */
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN { 1 0 10303 203 1 0 0 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('configuration controlled 3D design of mechanical parts and assemblies');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','config_control_design',1994,#1);
-#10=PRODUCT('shaft','shaft','rotating shaft',(#1));
-#20=PRODUCT_DEFINITION_FORMATION('rev_A','released',#10);
-#30=PRODUCT_DEFINITION('design','',#20,#1);
-/* Defect: GROUP claims to identify a material but has no
- * MATERIAL_DESIGNATION linked. */
-#100=GROUP('material_class','steel category - unspecified grade');
-#101=APPLIED_GROUP_ASSIGNMENT(#100,(#30));
+#1=APPLICATION_CONTEXT('configuration controlled 3D designs of mechanical parts and assemblies');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'config_control_design',1994,#1);
+/* Standard unit context (mm) */
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* Product to which the material group is assigned */
+#20=PRODUCT('PART-042','Structural Flange','Flange for pipe connection',(#1));
+#21=PRODUCT_DEFINITION_FORMATION('rev_A','',#20);
+#22=PRODUCT_DEFINITION('design','',#21,PRODUCT_DEFINITION_CONTEXT(#1,'design'));
+/* GROUP entity classifies part as 'material_class' — no MATERIAL_DESIGNATION follows */
+/* A correct file would have a MATERIAL_DESIGNATION linking this group to a spec */
+/* e.g. MATERIAL_DESIGNATION('304 stainless steel',$,(#22)) *)  <- ABSENT in this file */
+/* Byte assertion: count_entity_def(b'MATERIAL_DESIGNATION') == 0 */
+#30=GROUP('material_class','Steel alloy material group — no grade specified');
+/* Byte assertion: contains(b'APPLIED_GROUP_ASSIGNMENT') */
+/* DEFECT: assigns material group to part but the group has no MATERIAL_DESIGNATION */
+/* Receivers cannot determine which steel alloy, heat treatment, or standard applies */
+#31=APPLIED_GROUP_ASSIGNMENT(#30,(#22));
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#500=GEOMETRIC_CURVE_SET('ap203-material-group-no-designation',
+  (#20,#21,#22,#30,#31));
+/* Product chain */
+#600=APPLICATION_CONTEXT('mechanical design');
+#601=PRODUCT_CONTEXT('',#600,'mechanical');
+#602=PRODUCT('M132','M132','M132',(#601));
+#603=PRODUCT_DEFINITION_FORMATION('','',#602);
+#604=PRODUCT_DEFINITION_CONTEXT(#600,'design');
+#605=PRODUCT_DEFINITION('','',#603,#604);
+#606=PRODUCT_DEFINITION_SHAPE('','',#605);
+#607=SHAPE_REPRESENTATION('',(#500),#14);
+#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
 ENDSEC;
 END-ISO-10303-21;
