@@ -1,33 +1,72 @@
 ISO-10303-21;
-/* M096 - AP238 trajectory missing connecting curve between segments.
- * Defect: a TRAJECTORY's COMPOSITE_CURVE has two segments that don't
- * connect end-to-end - segment A ends at (10,0,0); segment B starts
- * at (20,0,0). No third connector segment. The CAM tool intended a
- * rapid retract/reposition but emitted no explicit move. */
+/* M096: AP238 trajectory missing connecting curve between adjacent segments */
+/* DEFECT: COMPOSITE_CURVE segment A ends at (10,0,0); segment B starts at (20,0,0) */
+/* 10 mm gap has no connector — violates ISO 10303-238 §6.2 G0 continuity */
+/* Controller either E-stops at gap or drives tool through workpiece material */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'TRAJECTORY') */
+/* Byte assertion: contains(b'COMPOSITE_CURVE_SEGMENT') */
 HEADER;
-FILE_DESCRIPTION(('M096 test case','AP238 trajectory has discontinuous segments'),'2;1');
-FILE_NAME('M096.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M096: AP238 TRAJECTORY with gap between composite curve segments'),'2;1');
+FILE_NAME('M096.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
+#1=APPLICATION_CONTEXT('step_nc_mim');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
+  'ap238_step_nc_mim',2007,#1);
+/* Standard unit context — mm */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('nc','3D'));
-/* Segment A: (0,0,0) -> (10,0,0) */
-#100=CARTESIAN_POINT('a0',(0.0,0.0,0.0));
-#101=CARTESIAN_POINT('a1',(10.0,0.0,0.0));
-#102=POLYLINE('seg_a',(#100,#101));
-#110=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#102);
-/* Segment B: (20,0,0) -> (30,0,0) - GAP between #101 and (20,0,0) */
-#120=CARTESIAN_POINT('b0',(20.0,0.0,0.0));
-#121=CARTESIAN_POINT('b1',(30.0,0.0,0.0));
-#122=POLYLINE('seg_b',(#120,#121));
-#130=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#122);
-#200=COMPOSITE_CURVE('discontinuous_path',(#110,#130),.F.);
-#300=TRAJECTORY('toolpath_with_gap',$,$,$,#200);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('nc','3D'));
+/* Segment A geometry: (0,0,0) → (10,0,0) */
+#20=CARTESIAN_POINT('seg_a_start',(0.,0.,0.));
+#21=CARTESIAN_POINT('seg_a_end',(10.,0.,0.));
+#22=DIRECTION('seg_a_dir',(1.,0.,0.));
+#23=LINE('seg_a_line',#20,VECTOR('seg_a_vec',#22,10.));
+/* Byte assertion: contains(b'COMPOSITE_CURVE_SEGMENT') */
+/* Segment A: cutting pass from (0,0,0) to (10,0,0) */
+#24=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,#23);
+/* Segment B geometry: (20,0,0) → (30,0,0) */
+/* DEFECT: starts at (20,0,0) — 10 mm gap from segment A endpoint (10,0,0) */
+#30=CARTESIAN_POINT('seg_b_start',(20.,0.,0.));
+#31=CARTESIAN_POINT('seg_b_end',(30.,0.,0.));
+#32=DIRECTION('seg_b_dir',(1.,0.,0.));
+#33=LINE('seg_b_line',#30,VECTOR('seg_b_vec',#32,10.));
+/* Segment B: cutting pass from (20,0,0) to (30,0,0) */
+/* Endpoint of #24 is (10,0,0); start of #34 is (20,0,0) — 10 mm gap — DEFECT */
+#34=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,#33);
+/* DEFECT: COMPOSITE_CURVE with only (#24, #34) — no connector between them */
+/* Adjacent segment endpoints: #24 ends at (10,0,0), #34 starts at (20,0,0) */
+/* Correct: add a third segment (10,0,0)→(20,0,0) for rapid traverse */
+#40=COMPOSITE_CURVE('gapped_toolpath',(#24,#34),.F.);
+/* Byte assertion: contains(b'TRAJECTORY') */
+/* TRAJECTORY uses the gapped COMPOSITE_CURVE as its basis curve */
+#50=TRAJECTORY('toolpath_a',#40,$,$,$,$,$);
+/* Machining setup */
+#60=MACHINING_TOOL('drill_a',$,$,$);
+#70=MACHINING_OPERATION('cut_path',#60,$,$,$,$,$,$,$,$,#50);
+#80=MACHINING_WORKINGSTEP('cut_step',$,#70,$);
+#90=WORKPLAN('main',(#80),$,$,$);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#300=GEOMETRIC_CURVE_SET('ap238-trajectory-missing-connecting-curve-between-segments',
+  (#23,#33,#40,#50,#60,#70,#80,#90));
+/* Product chain */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M096','M096','M096',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#300),#14);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;

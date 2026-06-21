@@ -1,29 +1,60 @@
 ISO-10303-21;
-/* M098 - AP238 tool feedrate exceeds manufacturer rated maximum.
- * Defect: a MACHINING_TOOL_FEEDSPEED declares 50000.0 mm/min for a
- * 6mm carbide end-mill (rated maximum ~3000 mm/min). The controller
- * either clips silently or runs the tool until it breaks. */
+/* M098: AP238 tool feedrate exceeds manufacturer rated maximum */
+/* DEFECT: MACHINING_TOOL_FEEDSPEED = 50000.0 mm/min on 6mm carbide end-mill */
+/* Realistic maximum for 6mm end-mill in steel is ~3000 mm/min */
+/* Arises from copying feedrate from a different (larger/faster) tool family */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'MACHINING_TOOL_FEEDSPEED') */
+/* Byte assertion: contains(b'50000.0') */
 HEADER;
-FILE_DESCRIPTION(('M098 test case','AP238 feedrate above tool envelope'),'2;1');
-FILE_NAME('M098.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M098: AP238 MACHINING_TOOL_FEEDSPEED exceeds rated maximum'),'2;1');
+FILE_NAME('M098.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
+#1=APPLICATION_CONTEXT('step_nc_mim');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
+  'ap238_step_nc_mim',2007,#1);
+/* Standard unit context — mm */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#15=(NAMED_UNIT(*)SI_UNIT($,.SECOND.)TIME_UNIT());
-#16=(DERIVED_UNIT_ELEMENT(#10,1.0));
-#17=(DERIVED_UNIT_ELEMENT(#15,-1.0));
-#18=DERIVED_UNIT((#16,#17));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#15))
-     REPRESENTATION_CONTEXT('nc','3D'));
-/* Defect: 50000 mm/min on a small end-mill - way past envelope. */
-#80=MEASURE_WITH_UNIT(POSITIVE_RATIO_MEASURE(50000.0),#18);
-#90=MACHINING_TOOL_FEEDSPEED($,#80,$);
-#100=MACHINING_OPERATION('rough_pocket',$,$,$,$,$);
-#200=WORKPLAN('main',(#100),$,$,$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('nc','3D'));
+/* Feed rate unit: mm per minute — derived from mm and seconds */
+#20=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+/* Byte assertion: contains(b'MACHINING_TOOL_FEEDSPEED') */
+/* Byte assertion: contains(b'50000.0') */
+/* DEFECT: POSITIVE_RATIO_MEASURE(50000.0) mm/min — 16.7x the 6mm end-mill maximum */
+/* A feedspeed of 50000 mm/min will break the tool or clip at machine maximum */
+#21=MEASURE_WITH_UNIT(POSITIVE_RATIO_MEASURE(50000.0),#20);
+/* MACHINING_TOOL_FEEDSPEED with the absurdly high feed value */
+#23=MACHINING_TOOL_FEEDSPEED($,#21,$);
+/* Target machined feature */
+#50=MACHINED_FEATURE('slot_c',$,$,$,$,$);
+/* The 6mm carbide end-mill that will break at 50000 mm/min */
+#60=MACHINING_TOOL('endmill_6mm',$,$,$);
+/* MACHINING_OPERATION carries the over-limit feedspeed #23 */
+#70=MACHINING_OPERATION('cut_slot_c',#60,#23,$,$,$,$,$,#50,$,$);
+#80=MACHINING_WORKINGSTEP('slot_c_step',#50,#70,$);
+#90=WORKPLAN('main',(#80),$,$,$);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#300=GEOMETRIC_CURVE_SET('ap238-tool-feedrate-exceeds-manufacturer-rated-maximum',
+  (#21,#23,#50,#60,#70,#80,#90));
+/* Product chain */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M098','M098','M098',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#300),#14);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;
