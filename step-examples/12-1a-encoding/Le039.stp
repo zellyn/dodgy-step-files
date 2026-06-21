@@ -1,21 +1,29 @@
 ISO-10303-21;
-/* Le039 - \PE\ selector letter outside the legal A..I range
- * Defect: ISO 10303-21 defines code pages A through I (nine pages)
- * for \PA\..\PI\ alphabet selectors and \PE\ as the alphabet-extend
- * directive whose follow byte denotes one of the same nine pages.
- * Here the operand is 'Z' which does not name any defined page.
- * A parser must decide between rejecting, falling back to the
- * default page, or treating 'Z' as a literal and resyncing. */
+/* Le039: \PE\ selector letter outside the legal A-I range; ISO 10303-21 Ed.3 §6.4.3: \PE\ must be followed by exactly one letter in A-I naming one of the nine ISO 8859 supplementary code pages; operand 'Z' (and any letter outside A-I) does not name a defined page; a receiver must reject the directive or emit a diagnostic and fall back; defect string: 'bad=\PE\Z\S\xx' — the operand 'Z' is out-of-range; parsers that silently accept 'Z' as a code-page selector produce wrong glyphs or pass the directive bytes through verbatim; the out-of-range letter may cause the lexer to desynchronise if it treats the following byte as the next token start; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Le039 - \PE\Z out-of-range page'),'2;1');
-FILE_NAME('Le039.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('Le039'),'2;1');
+FILE_NAME('Le039.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=PRODUCT_CONTEXT('part',#1,'mechanical');
-/* Defect: page selector Z is not in A..I */
-#10=PRODUCT('bad=\PE\Z\S\xx','page-Z','',(#2));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Le039','Le039','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#8998=PERSON('bad=\PE\Z\S\xx','pe-selector-out-of-range-Z','');
+#8999=PERSON('also=\PE\M\S\yy','pe-selector-out-of-range-M','');
+
 ENDSEC;
 END-ISO-10303-21;
