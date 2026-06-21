@@ -1,30 +1,30 @@
-/* Le035 — Encoding directives emitted in Ed.3 UTF-8 file unnecessarily
-   Defect: an Ed.3 producer that retains Ed.2 codepaths emits \S\, \P\, \X\
-   even though the body is UTF-8 by default. Strict Ed.3 readers that assume
-   raw multi-byte UTF-8 may then double-decode a sequence that has both an
-   \X\ escape AND raw multi-byte UTF-8 for the same character. This file
-   declares implementation_level '4' (Ed.3) and contains:
-     - 'caf\X\E9'           -- e-acute via Ed.2-style \X\
-     - 'caf\PA\\S\i'        -- explicit page selector + \S\ shift
-     - 'caf<UTF-8 e-acute>' -- raw UTF-8 multi-byte 0xC3 0xA9
-   A correct kernel accepts both edition styles regardless of declared
-   edition and never assumes the file declares its encoding mode. */
 ISO-10303-21;
+/* Le035: Ed.2 encoding directives emitted in an Ed.3 UTF-8 file unnecessarily; ISO 10303-21 Ed.3 §6.4: the file body is UTF-8 by default when implementation_level is '4' or higher; Ed.3 producers that retain Ed.2 codepaths emit \X\E9 or \PA\\S\i even though the body is already UTF-8 — causing double-decode; strict Ed.3 reader interprets raw 0xC3 0xA9 as é AND also decodes \X\E9 as é, producing a doubled or corrupted glyph; heal and accept: receivers must not assume the file edition matches its header; defect 1: 'caf\X\E9' — \X\E9 is the Ed.2 escape for é (latin-1 0xE9) but also raw UTF-8 byte 0xE9 appears because the body is UTF-8; defect 2: 'caf\PA\\S\i' — \PA\ selects ISO-8859-1 then \S\i is 0xE9=é, again redundant in an Ed.3 UTF-8 body; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Le035 - Ed.2 directives in declared Ed.3 UTF-8 file'),'4');
-FILE_NAME('Le035.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Le035'),'4');
+FILE_NAME('Le035.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* Ed.2-style single-byte \X\ in declared Ed.3 file */
-#10=PERSON('p1','caf\X\E9','given',$,$,$,$,$);
-/* explicit \PA\ + \S\ chaining in Ed.3 file */
-#11=PERSON('p2','caf\PA\\S\i','given',$,$,$,$,$);
-#12=PERSON('p3','café','given',$,$,$,$,$);
-#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#21=DIRECTION('',(0.0,0.0,1.0));
-#22=DIRECTION('',(1.0,0.0,0.0));
-#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Le035','Le035','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#8997=PERSON('cafÃ©','raw-utf8-e-acute','');
+#8998=PERSON('caf\X\E9','ed2-x-escape-in-ed3','');
+#8999=PERSON('caf\PA\\S\i','ed2-pa-s-in-ed3','');
+
 ENDSEC;
 END-ISO-10303-21;

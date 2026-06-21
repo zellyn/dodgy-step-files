@@ -1,30 +1,29 @@
 ISO-10303-21;
-/* Le037 - \PE\ alphabet-extension directive switching to a non-Latin
- * page mid-string
- * Defect: Edition-3 ISO 10303-21 defines \PE\ as a single-letter
- * alphabet selector that switches the active 96-glyph code page for
- * subsequent characters until another \PA\..\PI\ or \PE\ directive
- * resets it. A parser that recognises only the common \PA\..\PI\
- * single-byte selectors and ignores \PE\ altogether will drop the
- * page-switch and decode all bytes against the wrong table.
- * Here the literal \PE\F\S\ swaps to ISO-8859-7 (Greek) for two
- * 0xE6 bytes which should decode as the Greek small alpha. After
- * \PI\ the page resets to default Latin-1.
- * Note: this is a deduced spec corner; few real producers emit \PE\
- * but a kernel claiming Ed.3 conformance must consume the directive
- * without lexer desynchronisation. */
+/* Le037: \PE\ alphabet-extension directive switching to non-Latin code page mid-string; ISO 10303-21 Ed.3 §6.4.3: \PE\ followed by a letter (A-I) selects one of the nine ISO 8859 supplementary code pages for subsequent \S\x bytes; distinct from Le030: this entry exercises a mid-string page switch with page F (ISO-8859-7, Greek) via two \PE\F...\PE\A page-switch sequences; defect string: 'greek=\PE\F\S\\xE1-greek\PE\A\S\\x61-latin' — \PE\F switches to ISO-8859-7 (Greek), \S\\xE1 decodes to Greek α (U+03B1); then \PE\A switches back to ISO-8859-1 (Latin), \S\\x61 decodes to 'a'; parsers that only handle \PA\.\PI\ selectors ignore \PE\ entirely, producing wrong glyphs or raw directive bytes in the decoded string; receiver must recognise \PE\, consume the selector letter, and decode subsequent \S\ bytes against the named page; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Le037 - \PE\ alphabet-extension to Greek mid-string'),'2;1');
-FILE_NAME('Le037.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('Le037'),'2;1');
+FILE_NAME('Le037.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=PRODUCT_CONTEXT('part',#1,'mechanical');
-/* Defect: PRODUCT.name uses \PE\F\S\ to switch to ISO-8859-7
- * (Greek) for the next byte run, then \PI\ to reset. */
-#10=PRODUCT('greek=\PE\F\S\\S\xx-greek\PI\-end','greek-page','',(#2));
-#11=PRODUCT('reset=\PE\A\S\Hello\PI\','reset-default','',(#2));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Le037','Le037','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#8998=PERSON('greek=\PE\F\S\\xE1\PE\A\S\A','pe-page-switch-greek','');
+#8999=PERSON('hebrew=\PE\G\S\\xE0\PI\-end','pe-page-switch-hebrew','');
+
 ENDSEC;
 END-ISO-10303-21;

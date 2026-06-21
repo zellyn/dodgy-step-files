@@ -1,24 +1,29 @@
-/* Le032 - \X2\..\X0\ or \N\ escape spanning a physical line break
-   Defect: a hex run is split across a CR LF boundary inside an \X2\ block.
-   Per Part-21 5.2 those bytes are ignored; a tolerant lexer must accept
-   the split, but many implementations consume the directive byte-greedily
-   and fail at the line-end. The PERSON below has a \X2\..\X0\ run with a
-   raw CR LF inserted between the two 4-digit groups. */
 ISO-10303-21;
+/* Le032: \X2\…\X0\ escape spanning a physical CR LF line break; ISO 10303-21 §5.2: whitespace (including CR LF) within a string literal is ignored by the lexer, permitting a hex run to span a line boundary; broken pretty-printers or line-length limiters split \X2\30A2 30A4\X0\ with an actual CR LF between the two 4-digit groups; byte-greedy implementations consume the directive byte-by-byte and fail when they encounter CR (0x0D) inside the hex run; tolerant lexer must skip embedded whitespace inside \X2\ hex runs; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Le032 - X2 escape split across physical line break'),'2;1');
-FILE_NAME('Le032.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Le032'),'2;1');
+FILE_NAME('Le032.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10=PERSON('p1','foo\X2\30A2
-30A4\X0\bar','given',$,$,$,$,$);
-#11=PERSON('p2','head\N\
-tail','given',$,$,$,$,$);
-#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#21=DIRECTION('',(0.0,0.0,1.0));
-#22=DIRECTION('',(1.0,0.0,0.0));
-#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Le032','Le032','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#8999=PERSON('foo\X2\30A2
+30A4\X0\bar','x2-split-crlf','');
+
 ENDSEC;
 END-ISO-10303-21;

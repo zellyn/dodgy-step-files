@@ -1,25 +1,29 @@
 ISO-10303-21;
-/* Le038 - \PE\ at end-of-string with no following character
- * Defect: ISO 10303-21 Ed.3 \PE\ requires a single ASCII letter (the
- * page selector A..I) immediately following the slashes. A producer
- * truncating a string at the directive boundary or copy/pasting
- * incorrectly emits a bare \PE\ with no follow byte before the
- * closing apostrophe. A naive parser may consume the closing ' as
- * the page operand and lose string termination, walking off into
- * the rest of the entity. */
+/* Le038: Bare \PE\ directive at end-of-string with no operand letter; ISO 10303-21 Ed.3 §6.4.3: \PE\ must be followed by exactly one ASCII letter (page selector A-I) before any further string content; a truncated or copy-paste-corrupted string emits 'text\PE\' — the closing apostrophe immediately follows \PE\ with no page-letter between; a naive parser that reads the next byte as the \PE\ operand consumes the apostrophe as the selector letter, losing the string terminator; the parser then walks into the next entity record, treating #9001=... as string content until it encounters an unexpected token; receiver must reject with a precise diagnostic citing the string offset; never let the closing apostrophe be consumed as a directive operand; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Le038 - bare \PE\ at end-of-string'),'2;1');
-FILE_NAME('Le038.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('Le038'),'2;1');
+FILE_NAME('Le038.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=PRODUCT_CONTEXT('part',#1,'mechanical');
-/* Defect: \PE\ with no operand letter; closing apostrophe immediately
- * follows. Strict parsers should reject; lenient parsers must NOT
- * eat the apostrophe. */
-#10=PRODUCT('text\PE\','dangling-PE','',(#2));
-#11=PRODUCT('after-pe-still-here','witness','',(#2));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Le038','Le038','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#8999=PERSON('text\PE\'bare-pe-no-selector','');
+#9000=PERSON('prefix\PE\','bare-pe-truncated-string','');
+
 ENDSEC;
 END-ISO-10303-21;
