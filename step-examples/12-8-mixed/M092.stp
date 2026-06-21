@@ -1,27 +1,61 @@
 ISO-10303-21;
-/* M092 - AP238 workplan with workingsteps in non-executable order.
- * Defect: a finishing operation appears in the workplan element list
- * BEFORE the roughing operation that targets the same feature. AP238
- * §6.4 makes the workplan list the executable sequence; running this
- * file as written cuts the finish pass into raw stock. */
+/* M092: AP238 workplan workingsteps in non-executable order */
+/* DEFECT: WORKPLAN lists finish_step before rough_step on same feature */
+/* Per AP238 §6.4, its_elements list is the executable sequence */
+/* Controller runs finish pass before roughing creates clearance — tool breakage */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'WORKPLAN(') */
+/* Byte assertion: contains(b'MACHINING_OPERATION') */
 HEADER;
-FILE_DESCRIPTION(('M092 test case','AP238 workplan order finishing before roughing'),'2;1');
-FILE_NAME('M092.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M092: AP238 WORKPLAN with finishing before roughing'),'2;1');
+FILE_NAME('M092.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
+#1=APPLICATION_CONTEXT('step_nc_mim');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
+  'ap238_step_nc_mim',2007,#1);
+/* Standard unit context — mm */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('nc','3D'));
-/* Both ops target the same feature #500. */
-#100=MACHINING_OPERATION('finish_pocket',$,$,$,$,#500);
-#101=MACHINING_OPERATION('rough_pocket',$,$,$,$,#500);
-/* Defect: WORKPLAN lists finish (#100) before rough (#101). */
-#200=WORKPLAN('main',(#100,#101),$,$,$);
-#500=CARTESIAN_POINT('feature_locator',(50.0,30.0,0.0));
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('nc','3D'));
+/* Shared MACHINED_FEATURE that both workingsteps operate on */
+/* Both roughing and finishing target the same pocket */
+#50=MACHINED_FEATURE('pocket_a',$,$,$,$,$);
+/* Byte assertion: contains(b'MACHINING_OPERATION') */
+/* Roughing pass: removes bulk material from pocket_a */
+#60=MACHINING_TOOL('roughing_endmill',$,$,$);
+#70=MACHINING_OPERATION('rough_pocket_a',#60,$,$,$,$,$,$,#50,$,$);
+/* Finishing pass: light cuts to achieve final tolerance on pocket_a */
+#61=MACHINING_TOOL('finishing_endmill',$,$,$);
+#71=MACHINING_OPERATION('finish_pocket_a',#61,$,$,$,$,$,$,#50,$,$);
+/* Workingsteps wrapping each operation */
+#80=MACHINING_WORKINGSTEP('rough_step',#50,#70,$);
+#81=MACHINING_WORKINGSTEP('finish_step',#50,#71,$);
+/* Byte assertion: contains(b'WORKPLAN(') */
+/* DEFECT: WORKPLAN lists (#81 finish, #80 rough) — finishing before roughing */
+/* Executable order is: finish_step THEN rough_step — physically wrong */
+/* Correct order would be: (#80 rough, #81 finish) */
+#90=WORKPLAN('main',(#81,#80),$,$,$);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#300=GEOMETRIC_CURVE_SET('ap238-workplan-finishing-before-roughing-wrong-order',
+  (#50,#60,#61,#70,#71,#80,#81,#90));
+/* Product chain */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M092','M092','M092',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#300),#14);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;

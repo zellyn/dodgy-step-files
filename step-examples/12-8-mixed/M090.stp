@@ -1,29 +1,56 @@
 ISO-10303-21;
-/* M090 - AP210 BoM line item references no physical part definition.
- * Defect: a NEXT_ASSEMBLY_USAGE_OCCURRENCE in a PCB BoM lists a child
- * PRODUCT (e.g. 'R0805_10K') with no PRODUCT_DEFINITION_FORMATION /
- * PRODUCT_DEFINITION / SHAPE_DEFINITION_REPRESENTATION chain attached.
- * The BoM has the part name but no geometry, no footprint, no MPN -
- * the BoM is a list of strings, not a list of parts. */
+/* M090: AP210 BoM line item with no PRODUCT_DEFINITION chain */
+/* DEFECT: NEXT_ASSEMBLY_USAGE_OCCURRENCE child PRODUCT has no PD chain */
+/* BoM entry R0805_10K has name only — no geometry, footprint, or MPN */
+/* Byte assertion: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN') */
+/* Byte assertion: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') */
 HEADER;
-FILE_DESCRIPTION(('M090 test case','AP210 BoM item with no part definition chain'),'2;1');
-FILE_NAME('M090.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M090: AP210 BoM NAUO child missing PRODUCT_DEFINITION chain'),'2;1');
+FILE_NAME('M090.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN') */
 FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+/* Standard unit context — mm */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-/* Top-level board */
-#100=PRODUCT('PCB1','main board','PCB top assembly',(#1));
-#101=PRODUCT_DEFINITION_FORMATION('','',#100);
-#102=PRODUCT_DEFINITION('','',#101,#1);
-/* Child resistor PRODUCT - no PDF, no PD, no SDR */
-#200=PRODUCT('R0805_10K','10K 0805 resistor','',(#1));
-/* Defect: NAUO references #200 directly without going through a
- * PRODUCT_DEFINITION; the placement is geometry-less. */
-#300=NEXT_ASSEMBLY_USAGE_OCCURRENCE('R1','R1','at_corner',
-       #102,#200,$);
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('pcb','3D'));
+/* PRODUCT_CONTEXT for the PCB application */
+#20=PRODUCT_CONTEXT('',#1,'electronic');
+/* Parent board assembly — has full PD chain */
+#30=PRODUCT('PCB_ASSEMBLY','PCB Assembly','Main PCB board',(#20));
+#31=PRODUCT_DEFINITION_FORMATION('','',#30);
+#32=PRODUCT_DEFINITION_CONTEXT(#1,'assembly');
+#33=PRODUCT_DEFINITION('','',#31,#32);
+/* Byte assertion: child PRODUCT with NO PRODUCT_DEFINITION chain */
+/* DEFECT: R0805_10K is a bare PRODUCT with no PD formation, definition, or shape */
+/* A BoM receiver cannot resolve footprint, MPN, or placement from this stub */
+#40=PRODUCT('R0805_10K','10k resistor 0805','0805 resistor 10kohm',(#20));
+/* Byte assertion: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') */
+/* NAUO references parent PD (#33) and child PRODUCT (#40) */
+/* The child #40 has no PRODUCT_DEFINITION — this is the defect */
+#50=NEXT_ASSEMBLY_USAGE_OCCURRENCE('R1','R1','at_corner',#33,#40,$);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#300=GEOMETRIC_CURVE_SET('ap210-bom-nauo-child-missing-product-definition-chain',
+  (#30,#33,#40,#50));
+/* Product chain — parent board assembly only */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M090','M090','M090',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#300),#14);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;

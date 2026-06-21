@@ -1,25 +1,55 @@
 ISO-10303-21;
-/* M093 - AP238 machining_operation references a tool with no geometry.
- * Defect: the tool entity is a bare MACHINING_TOOL stub with no
- * associated cutting-tool body / dimension / edge geometry. The
- * controller has no diameter, no flute count, nothing to plan motion
- * with. */
+/* M093: AP238 machining_tool referenced without cutting-edge geometry */
+/* DEFECT: MACHINING_OPERATION references MACHINING_TOOL with all attrs NULL */
+/* No diameter, no flute count, no cutting geometry — tool is a bare name stub */
+/* Controller cannot compute cutter compensation or feedrate from stub tool */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'MACHINING_OPERATION') */
 HEADER;
-FILE_DESCRIPTION(('M093 test case','AP238 tool geometry empty'),'2;1');
-FILE_NAME('M093.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M093: AP238 MACHINING_TOOL stub without cutting-edge geometry'),'2;1');
+FILE_NAME('M093.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
+#1=APPLICATION_CONTEXT('step_nc_mim');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
+  'ap238_step_nc_mim',2007,#1);
+/* Standard unit context — mm */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('nc','3D'));
-/* Defect: tool stub - no cutting-tool body, no diameter, no edges. */
-#150=MACHINING_TOOL('end_mill_10mm',$,$,$);
-#100=MACHINING_OPERATION('rough_pocket',$,$,#150,$,$);
-#200=WORKPLAN('main',(#100),$,$,$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('nc','3D'));
+/* Target machined feature for the slot operation */
+#50=MACHINED_FEATURE('slot_a',$,$,$,$,$);
+/* Byte assertion: contains(b'MACHINING_OPERATION') */
+/* DEFECT: MACHINING_TOOL with all optional attributes NULL — bare name stub */
+/* No cutting_edges, no CUTTING_TOOL_BODY, no MILLING_TOOL_DIMENSION */
+/* Tool name 'end_mill_10mm' implies 10mm diameter — but no geometry confirms it */
+#60=MACHINING_TOOL('end_mill_10mm',$,$,$);
+/* MACHINING_OPERATION references the stub tool #60 */
+/* Controller must know tool diameter for cutter compensation — impossible with stub */
+#70=MACHINING_OPERATION('mill_slot',#60,$,$,$,$,$,$,#50,$,$);
+/* Workingstep and workplan wrapping the operation */
+#80=MACHINING_WORKINGSTEP('slot_step',#50,#70,$);
+#90=WORKPLAN('main',(#80),$,$,$);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#300=GEOMETRIC_CURVE_SET('ap238-machining-tool-stub-no-cutting-edge-geometry',
+  (#50,#60,#70,#80,#90));
+/* Product chain */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M093','M093','M093',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#300),#14);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;
