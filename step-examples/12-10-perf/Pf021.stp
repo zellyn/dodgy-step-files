@@ -1,48 +1,64 @@
 ISO-10303-21;
-/* Pf021 - Floating / non-deterministic crash in shape healing
-   Pattern: healing pipeline crashes intermittently on the same input;
-   symptoms are uninitialized memory, threading races, or floating-point
-   exceptions in projection routines. Whole class, not a single defect -
-   every vendor fixes it repeatedly (CAD Exchanger CHANGES v3.24.8).
-   The file pattern below stresses the projection / healing path with
-   geometry that produces near-singular Jacobians: a face whose surface
-   degenerates near a wire vertex (cone apex or sphere pole), and an
-   edge curve that approaches a self-intersection at a parameter that
-   is not exactly representable.
-   Scaling-up: same file, run 1000 times under repeated reads of
-   the same input - observe non-deterministic crash / divergent output. */
+/* Pf021: CONICAL_SURFACE with near-apex EDGE_CURVE: apex vertex at Z=0, adjacent vertex at Z=1e-12 (near-zero edge); singular projection in healing produces FP exception / uninitialised-memory read; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Pf021 - non-deterministic healing crash pattern'),'2;1');
-FILE_NAME('Pf021.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Pf021'),'2;1');
+FILE_NAME('Pf021.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
+#9000=APPLICATION_CONTEXT('mechanical design');
 #1=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#2=DIRECTION('',(0.0,0.0,1.0));
-#3=DIRECTION('',(1.0,0.0,0.0));
-#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
-/* cone apex - projection here is singular */
-#5=CONICAL_SURFACE('singular-cone',#4,1.0,0.785398163397448);
-/* edge that touches the apex - projection produces FP exception
-   non-deterministically depending on uninitialised scratch state */
-#10=CARTESIAN_POINT('apex',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('off-apex',(1.0e-12,1.0e-12,1.0e-12));
-#12=CARTESIAN_POINT('away',(1.0,0.0,1.0));
-#20=VERTEX_POINT('apex-v',#10);
-#21=VERTEX_POINT('off-apex-v',#11);
-#22=VERTEX_POINT('away-v',#12);
-#30=VECTOR('',#3,1.0);
-#31=LINE('',#10,#30);
-/* edge from apex to off-apex - the ~zero-length but non-zero edge that
-   triggers floating-point ambiguity in projection */
-#40=EDGE_CURVE('zero-len-near-apex',#20,#21,#31,.T.);
-#41=EDGE_CURVE('apex-to-away',#21,#22,#31,.T.);
-#42=ORIENTED_EDGE('',*,*,#40,.T.);
-#43=ORIENTED_EDGE('',*,*,#41,.T.);
-#50=EDGE_LOOP('',(#42,#43));
-#51=FACE_OUTER_BOUND('',#50,.T.);
-#60=ADVANCED_FACE('apex-touch',(#51),#5,.T.);
-#100=OPEN_SHELL('healing-trigger',(#60));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Pf021','Pf021','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#9064=DIRECTION('',(0.0,0.0,1.0));
+#9065=DIRECTION('',(1.0,0.0,0.0));
+#9066=AXIS2_PLACEMENT_3D('',#9063,#9064,#9065);
+#9067=CONICAL_SURFACE('',#9066,0.0,0.5236);
+#9068=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#9069=CARTESIAN_POINT('',(0.0,0.0,1.0E-12));
+#9070=CARTESIAN_POINT('',(1.0,0.0,1.7321));
+#9071=CARTESIAN_POINT('',(0.0,1.0,1.7321));
+#9072=VERTEX_POINT('',#9068);
+#9073=VERTEX_POINT('',#9069);
+#9074=VERTEX_POINT('',#9070);
+#9075=VERTEX_POINT('',#9071);
+#9076=DIRECTION('',(0.0,0.0,1.0));
+#9077=VECTOR('',#9076,1.0E-12);
+#9078=LINE('',#9068,#9077);
+#9079=EDGE_CURVE('',#9072,#9073,#9078,.T.);
+#9080=DIRECTION('',(1.0,0.0,0.0));
+#9081=VECTOR('',#9080,1.0);
+#9082=LINE('',#9069,#9081);
+#9083=EDGE_CURVE('',#9073,#9074,#9082,.T.);
+#9084=DIRECTION('',(0.0,1.0,0.0));
+#9085=VECTOR('',#9084,1.0);
+#9086=LINE('',#9070,#9085);
+#9087=EDGE_CURVE('',#9074,#9075,#9086,.T.);
+#9088=DIRECTION('',(-0.707106781187,-0.707106781187,0.0));
+#9089=VECTOR('',#9088,1.41421356237);
+#9090=LINE('',#9071,#9089);
+#9091=EDGE_CURVE('',#9075,#9072,#9090,.T.);
+#9092=ORIENTED_EDGE('',$,$,#9079,.T.);
+#9093=ORIENTED_EDGE('',$,$,#9083,.T.);
+#9094=ORIENTED_EDGE('',$,$,#9087,.T.);
+#9095=ORIENTED_EDGE('',$,$,#9091,.T.);
+#9096=EDGE_LOOP('',(#9092,#9093,#9094,#9095));
+#9097=FACE_OUTER_BOUND('',#9096,.T.);
+#9098=ADVANCED_FACE('',(#9097),#9067,.T.);
+#9099=OPEN_SHELL('apex_cone_shell',(#9098));
+#9100=SHELL_BASED_SURFACE_MODEL('cone_sbsm',(#9099));
 ENDSEC;
 END-ISO-10303-21;

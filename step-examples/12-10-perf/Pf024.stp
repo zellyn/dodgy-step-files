@@ -1,50 +1,70 @@
 ISO-10303-21;
-/* Pf024 - ShapeFix_IntersectionTool infinite loop
-   Pattern: intersection-healing algorithm could infinite-loop on certain
-   edges because a split-index range check was missing (Mantis 0029695;
-   OCCT ea1114e).  Trigger: a face whose intersection-tool produces a
-   split index out of the wire's current edge range, and whose iterative
-   re-split reproduces the same condition.
-   Scaling-up: the same single-face fixture below is enough; just run
-   ShapeFix_IntersectionTool against the face. The pre-fix code spins
-   forever on this shape. */
+/* Pf024: EDGE_LOOP with crossed diagonals forming X-shape: A→C, B→D, A→B, C→D; intersection-healing split-index range check missing; healer infinite-loops on out-of-range split index; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Pf024 - ShapeFix_IntersectionTool infinite loop trigger'),'2;1');
-FILE_NAME('Pf024.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Pf024'),'2;1');
+FILE_NAME('Pf024.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
+#9000=APPLICATION_CONTEXT('mechanical design');
 #1=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#2=DIRECTION('',(0.0,0.0,1.0));
-#3=DIRECTION('',(1.0,0.0,0.0));
-#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
-#5=PLANE('',#4);
-/* two edges that cross at a non-endpoint, plus a shared closing edge */
-#10=CARTESIAN_POINT('a',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('b',(2.0,0.0,0.0));
-#12=CARTESIAN_POINT('c',(2.0,2.0,0.0));
-#13=CARTESIAN_POINT('d',(0.0,2.0,0.0));
-/* crossing pair: AC and BD intersect inside the rectangle */
-#14=CARTESIAN_POINT('mid-cross',(1.0,1.0,0.0));
-#20=VERTEX_POINT('vA',#10);
-#21=VERTEX_POINT('vB',#11);
-#22=VERTEX_POINT('vC',#12);
-#23=VERTEX_POINT('vD',#13);
-#24=VERTEX_POINT('vM',#14);
-#30=VECTOR('',#3,1.0);
-#31=LINE('',#10,#30);
-#40=EDGE_CURVE('A-to-C',#20,#22,#31,.T.);
-#41=EDGE_CURVE('B-to-D',#21,#23,#31,.T.);
-#42=EDGE_CURVE('A-to-B',#20,#21,#31,.T.);
-#43=EDGE_CURVE('C-to-D',#22,#23,#31,.T.);
-#50=ORIENTED_EDGE('',*,*,#40,.T.);
-#51=ORIENTED_EDGE('',*,*,#41,.T.);
-#52=ORIENTED_EDGE('',*,*,#42,.T.);
-#53=ORIENTED_EDGE('',*,*,#43,.T.);
-/* loop with crossing pair - intersection tool tries to split */
-#60=EDGE_LOOP('cross-loop',(#52,#50,#53,#51));
-#70=FACE_OUTER_BOUND('',#60,.T.);
-#100=ADVANCED_FACE('intersect-target',(#70),#5,.T.);
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Pf024','Pf024','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#9064=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#9065=CARTESIAN_POINT('',(2.0,2.0,0.0));
+#9066=CARTESIAN_POINT('',(0.0,2.0,0.0));
+#9067=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#9068=VERTEX_POINT('',#9063);
+#9069=VERTEX_POINT('',#9064);
+#9070=VERTEX_POINT('',#9065);
+#9071=VERTEX_POINT('',#9066);
+#9072=DIRECTION('',(0.707106781187,0.707106781187,0.0));
+#9073=VECTOR('',#9072,2.82842712475);
+#9074=LINE('',#9063,#9073);
+#9075=EDGE_CURVE('',#9068,#9070,#9074,.T.);
+#9076=DIRECTION('',(-0.707106781187,0.707106781187,0.0));
+#9077=VECTOR('',#9076,2.82842712475);
+#9078=LINE('',#9064,#9077);
+#9079=EDGE_CURVE('',#9069,#9071,#9078,.T.);
+#9080=DIRECTION('',(1.0,0.0,0.0));
+#9081=VECTOR('',#9080,2.0);
+#9082=LINE('',#9063,#9081);
+#9083=EDGE_CURVE('',#9068,#9069,#9082,.T.);
+#9084=DIRECTION('',(-1.0,0.0,0.0));
+#9085=VECTOR('',#9084,2.0);
+#9086=LINE('',#9065,#9085);
+#9087=EDGE_CURVE('',#9070,#9071,#9086,.T.);
+#9088=DIRECTION('',(0.0,-1.0,0.0));
+#9089=VECTOR('',#9088,2.0);
+#9090=LINE('',#9066,#9089);
+#9091=EDGE_CURVE('',#9071,#9068,#9090,.T.);
+#9092=ORIENTED_EDGE('',$,$,#9075,.T.);
+#9093=ORIENTED_EDGE('',$,$,#9079,.T.);
+#9094=ORIENTED_EDGE('',$,$,#9083,.T.);
+#9095=ORIENTED_EDGE('',$,$,#9087,.T.);
+#9096=ORIENTED_EDGE('',$,$,#9091,.T.);
+#9097=EDGE_LOOP('',(#9092,#9093,#9094,#9095,#9096));
+#9098=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#9099=DIRECTION('',(0.0,0.0,1.0));
+#9100=DIRECTION('',(1.0,0.0,0.0));
+#9101=AXIS2_PLACEMENT_3D('',#9098,#9099,#9100);
+#9102=PLANE('',#9101);
+#9103=FACE_OUTER_BOUND('',#9097,.T.);
+#9104=ADVANCED_FACE('',(#9103),#9102,.T.);
+#9105=OPEN_SHELL('crossed_diag_shell',(#9104));
+#9106=SHELL_BASED_SURFACE_MODEL('crossed_diag_sbsm',(#9105));
 ENDSEC;
 END-ISO-10303-21;

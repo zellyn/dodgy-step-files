@@ -1,55 +1,69 @@
 ISO-10303-21;
-/* Pf025 - ShapeAnalysis::OuterWire() infinite loop on IFC-derived face
-   (Mantis 0031144 / 0031926; OCCT G069/G102).
-   Pattern: a face whose sub-shape list contains a vertex with INTERNAL
-   orientation (common in IFC slab/wall models converted to STEP). The
-   pre-fix OuterWire() iterator does not skip internal sub-shapes and
-   spins indefinitely.
-   Scaling-up: the single face below is enough; iterating OuterWire()
-   on this face triggers the infinite loop. The trigger is the
-   INTERNAL-orientation vertex inside the face bounds, not the geometry
-   complexity. */
+/* Pf025: ADVANCED_FACE with outer rectangular FACE_OUTER_BOUND + internal VERTEX_LOOP FACE_BOUND (.U.) at centre: ShapeAnalysis::OuterWire() spins indefinitely iterating over sub-shapes including the vertex bound; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Pf025 - ShapeAnalysis::OuterWire() spin on internal vertex'),'2;1');
-FILE_NAME('Pf025.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Pf025'),'2;1');
+FILE_NAME('Pf025.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
+#9000=APPLICATION_CONTEXT('mechanical design');
 #1=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#2=DIRECTION('',(0.0,0.0,1.0));
-#3=DIRECTION('',(1.0,0.0,0.0));
-#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
-#5=PLANE('',#4);
-/* outer wire vertices */
-#10=CARTESIAN_POINT('A',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('B',(1.0,0.0,0.0));
-#12=CARTESIAN_POINT('C',(1.0,1.0,0.0));
-#13=CARTESIAN_POINT('D',(0.0,1.0,0.0));
-/* internal-orientation vertex inside face (IFC pattern) */
-#14=CARTESIAN_POINT('internal',(0.5,0.5,0.0));
-#20=VERTEX_POINT('vA',#10);
-#21=VERTEX_POINT('vB',#11);
-#22=VERTEX_POINT('vC',#12);
-#23=VERTEX_POINT('vD',#13);
-#24=VERTEX_POINT('vINT',#14);
-#30=VECTOR('',#3,1.0);
-#31=LINE('',#10,#30);
-#40=EDGE_CURVE('AB',#20,#21,#31,.T.);
-#41=EDGE_CURVE('BC',#21,#22,#31,.T.);
-#42=EDGE_CURVE('CD',#22,#23,#31,.T.);
-#43=EDGE_CURVE('DA',#23,#20,#31,.T.);
-#50=ORIENTED_EDGE('',*,*,#40,.T.);
-#51=ORIENTED_EDGE('',*,*,#41,.T.);
-#52=ORIENTED_EDGE('',*,*,#42,.T.);
-#53=ORIENTED_EDGE('',*,*,#43,.T.);
-#60=EDGE_LOOP('outer',(#50,#51,#52,#53));
-#70=FACE_OUTER_BOUND('',#60,.T.);
-/* internal-orientation vertex appears as additional FACE_BOUND on the
-   face's bounds list - this is the IFC-converted shape that pre-fix
-   OuterWire() iterator does not skip */
-#80=VERTEX_LOOP('internal-vertex-loop',#24);
-#81=FACE_BOUND('internal-bound',#80,.U.);
-#100=ADVANCED_FACE('ifc-target',(#70,#81),#5,.T.);
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Pf025','Pf025','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#9064=CARTESIAN_POINT('',(4.0,0.0,0.0));
+#9065=CARTESIAN_POINT('',(4.0,3.0,0.0));
+#9066=CARTESIAN_POINT('',(0.0,3.0,0.0));
+#9067=CARTESIAN_POINT('',(2.0,1.5,0.0));
+#9068=VERTEX_POINT('',#9063);
+#9069=VERTEX_POINT('',#9064);
+#9070=VERTEX_POINT('',#9065);
+#9071=VERTEX_POINT('',#9066);
+#9072=VERTEX_POINT('',#9067);
+#9073=DIRECTION('',(1.0,0.0,0.0));
+#9074=VECTOR('',#9073,4.0);
+#9075=LINE('',#9063,#9074);
+#9076=EDGE_CURVE('',#9068,#9069,#9075,.T.);
+#9077=DIRECTION('',(0.0,1.0,0.0));
+#9078=VECTOR('',#9077,3.0);
+#9079=LINE('',#9064,#9078);
+#9080=EDGE_CURVE('',#9069,#9070,#9079,.T.);
+#9081=DIRECTION('',(-1.0,0.0,0.0));
+#9082=VECTOR('',#9081,4.0);
+#9083=LINE('',#9065,#9082);
+#9084=EDGE_CURVE('',#9070,#9071,#9083,.T.);
+#9085=DIRECTION('',(0.0,-1.0,0.0));
+#9086=VECTOR('',#9085,3.0);
+#9087=LINE('',#9066,#9086);
+#9088=EDGE_CURVE('',#9071,#9068,#9087,.T.);
+#9089=ORIENTED_EDGE('',$,$,#9076,.T.);
+#9090=ORIENTED_EDGE('',$,$,#9080,.T.);
+#9091=ORIENTED_EDGE('',$,$,#9084,.T.);
+#9092=ORIENTED_EDGE('',$,$,#9088,.T.);
+#9093=EDGE_LOOP('',(#9089,#9090,#9091,#9092));
+#9094=FACE_OUTER_BOUND('',#9093,.T.);
+#9095=VERTEX_LOOP('',#9072);
+#9096=FACE_BOUND(#9095,.U.);
+#9097=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#9098=DIRECTION('',(0.0,0.0,1.0));
+#9099=DIRECTION('',(1.0,0.0,0.0));
+#9100=AXIS2_PLACEMENT_3D('',#9097,#9098,#9099);
+#9101=PLANE('',#9100);
+#9102=ADVANCED_FACE('',(#9094,#9096),#9101,.T.);
+#9103=OPEN_SHELL('vertex_loop_shell',());
+#9104=OPEN_SHELL('vertex_loop_shell',(#9102));
+#9105=SHELL_BASED_SURFACE_MODEL('vertex_loop_sbsm',(#9104));
 ENDSEC;
 END-ISO-10303-21;
