@@ -2,35 +2,32 @@
    ----------------------------------------------------------------------
    Catalog section : §12.1c structural / framing
    Sources         : A025, N002 (notes)
-   Originally also catalogued as: Ad037
    See also        : Ad080
    ----------------------------------------------------------------------
    Defect
-     Material appearing after END-ISO-10303-21; - appended log lines,
-     multiple concatenated files, or stray DATA;ENDSEC; blocks. Greedy
-     regex parsers may match across boundaries and pick up entities from
-     the trailing garbage as if they were part of the file.
+     Material appearing after END-ISO-10303-21;: appended log lines,
+     concatenated STEP files, or stray DATA;ENDSEC; blocks. Greedy regex
+     parsers may match across the boundary.
    Expected behavior
      Stop reading at the first end marker; treat trailing bytes as a
-     warning and discard. Reject a second 'DATA;' at top level (after
-     the proper end marker has already terminated the file).
+     warning and discard. Reject a second DATA; block at top level.
    ----------------------------------------------------------------------
-   This file appends a log banner and a stray DATA;ENDSEC; pair.
 */
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Ls024 - tail garbage after END-ISO-10303-21;'),'2;1');
-FILE_NAME('Ls024.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+FILE_DESCRIPTION(('Ls024 - tail garbage after end marker'),'2;1');
+FILE_NAME('Ls024.stp','2026-06-20T00:00:00',('auto-generated'),(''),
   'auto-generated','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#20=DIRECTION('x',(1.0,0.0,0.0));
-#30=AXIS2_PLACEMENT_3D('placement',#10,#20,$);
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=DIRECTION('x',(1.,0.,0.));
 ENDSEC;
 END-ISO-10303-21;
-**** export complete: 2026-04-26T00:00:00 / writer v1.2.3 / 3 entities ****
+/* Defect: everything below this line is tail garbage after the end marker */
+Export completed at 2026-06-20T00:00:00Z
+Total entities: 2
 DATA;
-#99=CARTESIAN_POINT('stray',(9.0,9.0,9.0));
+#100=CARTESIAN_POINT('stray',(9.,9.,9.));
 ENDSEC;

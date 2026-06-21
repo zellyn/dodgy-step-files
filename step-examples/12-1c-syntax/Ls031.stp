@@ -4,32 +4,27 @@
    Sources         : T003, N029
    ----------------------------------------------------------------------
    Defect
-     ISO 10303-21 comments do not nest. A naive scanner that re-fires
-     on inner "/" "*" (or fails to require both '*' and '/' consecutively
-     for close) desynchronizes when comments contain Windows file paths
-     or URLs. After the first close marker the scanner should be back in
-     code mode regardless of any inner slash-star sequences.
+     ISO 10303-21 comments do not nest. A naive scanner that re-fires on
+     inner /* desynchronizes when comments contain Windows paths or URLs.
    Expected behavior
-     Only star-slash ends a comment; inner slash-star within a comment
-     is literal text. After the first close marker everything else is
-     code.
+     Heal and accept: only */ ends a comment; /* within a comment is literal
+     text. After the first */ everything else is code.
    ----------------------------------------------------------------------
 */
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Ls031 - slash inside comment'),'2;1');
-FILE_NAME('Ls031.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+FILE_DESCRIPTION(('Ls031 - nested comment open from slash in comment'),'2;1');
+FILE_NAME('Ls031.stp','2026-06-20T00:00:00',('auto-generated'),(''),
   'auto-generated','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
-/* path C:/foo/bar and url https://example.com/step/file.stp */
+/* Defect 1: Windows path inside comment -- the C: is NOT a nested comment open */
+/* source file: C:/models/step/export.stp revision 3 */
 DATA;
-/* outer /* inner */ should still be the END of the outer comment,
-   so any words after the first close marker should be treated as code
-   (which is itself a defect to demonstrate, since real STEP code may
-   not appear here as text) */
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#20=DIRECTION('x',(1.0,0.0,0.0));
-#30=AXIS2_PLACEMENT_3D('placement',#10,#20,$);
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+/* Defect 2: nested /* marker inside comment -- outer /* inner */ still comment */
+#2=DIRECTION('x',(1.,0.,0.));
+/* outer /* inner comment here */ this text must still be inside outer */
+#3=CARTESIAN_POINT('p',(1.,1.,0.));
 ENDSEC;
 END-ISO-10303-21;

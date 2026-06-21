@@ -1,36 +1,26 @@
-/* Ls029 - Comment terminator absent - runs through EOF
+/* Ls029 - Comment terminator absent -- runs through EOF
    ----------------------------------------------------------------------
    Catalog section : §12.1c comments
    Sources         : A007, N028
-   Originally also catalogued as: Ad007
    See also        : Le015
    ----------------------------------------------------------------------
    Defect
-     A "/" "*" sequence opens a comment that is never closed; a lexer
-     scans past EOF if its loop only terminates on the close marker.
-     A one-byte read past the mmap'd file boundary is weaponizable for
-     info-leak. Editor mishaps and concatenation accidents can both
-     produce this state.
+     /* .. opens a comment that is never closed; lexer scans past EOF if
+     the loop only terminates on */. One-byte read past mmap'd file boundary;
+     weaponizable for info leak.
    Expected behavior
-     Lexer must check pos<end on every advance and emit the diagnostic
-     E_UNTERMINATED_COMMENT at EOF. Never read past the mapped region;
-     never silently close the comment by treating EOF as the close marker.
+     Reject with E_UNTERMINATED_COMMENT: lexer must check pos < end on every
+     advance and emit the diagnostic at EOF.
    ----------------------------------------------------------------------
-   The file ends with an unterminated comment.
 */
 ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Ls029 - unterminated comment runs through EOF'),'2;1');
-FILE_NAME('Ls029.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+FILE_NAME('Ls029.stp','2026-06-20T00:00:00',('auto-generated'),(''),
   'auto-generated','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#20=DIRECTION('x',(1.0,0.0,0.0));
-#30=AXIS2_PLACEMENT_3D('placement',#10,#20,$);
-ENDSEC;
-END-ISO-10303-21;
-/* unterminated comment that runs through EOF: the closing star-slash
-   is intentionally missing and the file ends inside this comment body
-   without ever closing it
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=DIRECTION('x',(1.,0.,0.));
+/* Defect: this comment is never closed; lexer must detect EOF while scanning for closing it

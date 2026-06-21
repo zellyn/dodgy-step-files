@@ -2,34 +2,30 @@
    ----------------------------------------------------------------------
    Catalog section : §12.1c comments
    Sources         : T002
-   Originally also catalogued as: Le033
+   Fixture kind    : conformance-probe
    ----------------------------------------------------------------------
    Defect
-     A comment containing an apostrophe is rejected by some readers
-     because the comment-skip routine and a separate string-literal
-     recognizer share a regex / scanner that mis-pairs the in-comment
-     apostrophe with the next apostrophe in the file. The file looks
-     valid to a human but the lexer thinks it has entered a string at
-     the apostrophe inside the comment.
+     A comment containing an apostrophe is rejected because the comment-skip
+     routine and a separate string-literal recognizer share a regex/scanner
+     that mis-pairs the in-comment apostrophe with the next apostrophe in
+     the file.
    Expected behavior
-     Comments must be scanned to the next close marker independent of
-     any string state; an apostrophe inside a comment must be opaque to
-     the string-literal recognizer.
+     Heal and accept: comments scanned to next */ independent of any string
+     state; apostrophe inside comment is opaque.
    ----------------------------------------------------------------------
 */
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Ls030 - apostrophe inside comment'),'2;1');
-FILE_NAME('Ls030.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+FILE_DESCRIPTION(('Ls030 - apostrophe in comment misread as string delimiter'),'2;1');
+FILE_NAME('Ls030.stp','2026-06-20T00:00:00',('auto-generated'),(''),
   'auto-generated','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
-/* plane angle is 'degree' as non-SI unit */
+/* Defect: apostrophe inside this comment -- scanner must NOT treat it as a string open */
+/* plane angle is 'degree' as non-SI unit; the apostrophes here are inside the comment */
 DATA;
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-/* the user's working tree has a label 'foo' inside this comment */
-#20=DIRECTION('x',(1.0,0.0,0.0));
-/* hardware spec: machine's reference axis is 'z' */
-#30=AXIS2_PLACEMENT_3D('placement',#10,#20,$);
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=DIRECTION('x',(1.,0.,0.));
+/* another comment with apostrophe: it's fine inside here */
 ENDSEC;
 END-ISO-10303-21;
