@@ -204,4 +204,4 @@ Two retained CONCERN entries (P009 missing-entity, P026 process-state contaminat
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add a catalog entry + matching fixture. The validator runs in roughly 10 minutes on the full corpus (6-worker subprocess pool); CI is wired up at `.github/workflows/validate.yml`. New entries should target an as-yet-uncovered defect class; the per-section table above is a useful gap finder.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add a catalog entry + matching fixture. The validator runs in roughly 10 minutes on the full corpus (6-worker subprocess pool); CI is split into `.github/workflows/validate-fast.yml` (runs on every push) and `.github/workflows/validate-full.yml` (gated to `[full-ci]` pushes / daily cron / manual dispatch). New entries should target an as-yet-uncovered defect class; the per-section table above is a useful gap finder.
