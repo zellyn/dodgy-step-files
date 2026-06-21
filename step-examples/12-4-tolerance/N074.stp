@@ -1,60 +1,33 @@
 ISO-10303-21;
+/* N074: colinear-shortcut: edge (0,0,0)→(10,0,0); vertices colinear on X-axis; CheckPoints shortcut skips param validation; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N074 ShapeAnalysis_Edge CheckPoints colinear-shortcut'),'2;1');
-FILE_NAME('N074.stp','2026-06-15T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('N074'),'2;1');
+FILE_NAME('N074.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-/* Colinear endpoints: (0,0,0) and (10,0,0) along X-axis */
-#10=CARTESIAN_POINT('p_start',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('p_end',(10.0,0.0,0.0));
-#20=VERTEX_POINT('v_start',#10);
-#21=VERTEX_POINT('v_end',#11);
-/* LINE curve along X-axis: colinear with endpoints */
-#30=DIRECTION('line_dir',(1.0,0.0,0.0));
-#31=VECTOR('line_vec',#30,10.0);
-#32=LINE('colinear_line',#10,#31);
-/* EDGE_CURVE: the curve is colinear with the vertices,
-   but imagine reversed or wrong parameter mapping internally */
-#40=EDGE_CURVE('e_colinear',#20,#21,#32,.T.);
-/* Simple face containing this edge */
-#50=ORIENTED_EDGE('oe1',*,*,#40,.T.);
-#51=EDGE_LOOP('el1',(#50));
-#60=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#61=DIRECTION('z',(0.0,0.0,1.0));
-#62=DIRECTION('x',(1.0,0.0,0.0));
-#63=AXIS2_PLACEMENT_3D('plc',#60,#61,#62);
-#64=PLANE('xy_plane',#63);
-#65=FACE_OUTER_BOUND('outer_bound',#51,.T.);
-#66=ADVANCED_FACE('face1',(#65),#64,.T.);
-/* Units and tolerance */
-#200=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#201=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#202=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#203=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#200,
-  'distance_accuracy_value','');
-#204=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#203))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#200,#201,#202))
-  REPRESENTATION_CONTEXT('','3D'));
-/* Mandatory product chain */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('N074','N074','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#66));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#1=CARTESIAN_POINT('p_start',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('p_end',(10.0,0.0,0.0));
+#3=VERTEX_POINT('v_start',#1);
+#4=VERTEX_POINT('v_end',#2);
+#5=DIRECTION('',(1.0,0.0,0.0));
+#6=VECTOR('',#5,10.0);
+#7=LINE('colinear_line',#1,#6);
+#8=EDGE_CURVE('colinear_edge',#3,#4,#7,.T.);
+#9=GEOMETRIC_CURVE_SET('colinear_shortcut',(#8));
+#10=APPLICATION_CONTEXT('automotive_design');
+#11=PRODUCT_CONTEXT('',#10,'mechanical');
+#12=PRODUCT('N074','N074','',(#11));
+#13=PRODUCT_DEFINITION_FORMATION('','',#12);
+#14=PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#15=PRODUCT_DEFINITION('','',#13,#14);
+#16=PRODUCT_DEFINITION_SHAPE('','',#15);
+#17=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#18=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#19=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#20=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#17,'distance_accuracy_value','model_precision');
+#21=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#20))GLOBAL_UNIT_ASSIGNED_CONTEXT((#17,#18,#19))REPRESENTATION_CONTEXT('ctx','3D'));
+#22=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9),#21);
+#23=SHAPE_DEFINITION_REPRESENTATION(#16,#22);
 ENDSEC;
 END-ISO-10303-21;
