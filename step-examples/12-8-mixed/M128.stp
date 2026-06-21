@@ -1,26 +1,68 @@
 ISO-10303-21;
-/* M128 - AP203 design approved AFTER its effectivity start date.
- * Defect: an APPROVAL_DATE_TIME on a PRODUCT_DEFINITION_FORMATION is
- * 2024-09-15 but the EFFECTIVITY for that revision starts 2024-06-01.
- * The configuration was effective in the field for ~3 months before
- * its design was formally approved - a process violation. */
+/* M128: AP203 design approved AFTER its effectivity start date */
+/* DEFECT: APPROVAL_DATE_TIME = 2024-09-15; effectivity starts 2024-06-01 */
+/* Approval is three months AFTER effectivity began — process order inverted */
+/* Per AP203 §4 approval must precede effectivity start; design cannot be */
+/* effective (in production) before it has been formally approved */
+/* Byte assertion: contains(b'CONFIG_CONTROL_DESIGN') */
+/* Byte assertion: contains(b'APPROVAL_DATE_TIME') */
+/* Byte assertion: contains(b'TIME_INTERVAL_BASED_EFFECTIVITY') */
 HEADER;
-FILE_DESCRIPTION(('M128 test case','AP203 approval after effectivity start'),'2;1');
-FILE_NAME('M128.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+FILE_DESCRIPTION(('M128: AP203 APPROVAL_DATE_TIME after effectivity start date'),'2;1');
+FILE_NAME('M128.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'CONFIG_CONTROL_DESIGN') */
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN { 1 0 10303 203 1 0 0 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('configuration controlled 3D design of mechanical parts and assemblies');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','config_control_design',1994,#1);
-#10=PRODUCT('clamp_assembly','clamp_assembly','rev B',(#1));
-#11=PRODUCT_DEFINITION_FORMATION('rev_B','released revision',#10);
-#20=APPROVAL_STATUS('approved');
-#21=APPROVAL('approval_B',#20);
-/* Defect: approval timestamp 2024-09-15 is AFTER effectivity start 2024-06-01. */
-#30=DATE_AND_TIME(CALENDAR_DATE(2024,9,15),LOCAL_TIME(10,30,0.0,$));
-#31=DATE_AND_TIME(CALENDAR_DATE(2024,6,1),LOCAL_TIME(0,0,0.0,$));
-#32=DATE_AND_TIME(CALENDAR_DATE(2025,6,1),LOCAL_TIME(0,0,0.0,$));
-#100=APPROVAL_DATE_TIME(#30,'approval_logged',#21);
-#101=TIME_INTERVAL_BASED_EFFECTIVITY('rev_B_in_field',#11,#31,#32);
+#1=APPLICATION_CONTEXT('configuration controlled 3D designs of mechanical parts and assemblies');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'config_control_design',1994,#1);
+/* Standard unit context (mm) */
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* Calendar dates: effectivity start (2024-06-01) and approval (2024-09-15) */
+/* The key invariant: approval_date (2024-09-15) > effectivity_start (2024-06-01) */
+#20=CALENDAR_DATE(2024,6,1);
+#21=CALENDAR_DATE(2025,5,31);
+/* Byte assertion: contains(b'APPROVAL_DATE_TIME') */
+/* DEFECT: approval date 2024-09-15 is three months after effectivity start 2024-06-01 */
+#22=CALENDAR_DATE(2024,9,15);
+/* Product and formation */
+#30=PRODUCT('PART-001','Bracket Assembly','Structural mounting bracket',(#1));
+#31=PRODUCT_DEFINITION_FORMATION('rev_A','Initial production release',#30);
+#32=PRODUCT_DEFINITION_CONTEXT(#1,'design');
+#33=PRODUCT_DEFINITION('release','',#31,#32);
+/* APPROVAL: the release approval that was logged late */
+#40=APPROVAL(APPROVAL_STATUS('approved'),'Release approval for rev_A');
+/* Byte assertion: contains(b'APPROVAL_DATE_TIME') */
+/* DEFECT: approval logged 2024-09-15 — three months after effectivity began 2024-06-01 */
+/* Correct ordering: approval_date <= effectivity_start */
+#41=APPROVAL_DATE_TIME(DATE_AND_TIME(#22,$),#40);
+#42=APPLIED_APPROVAL_ASSIGNMENT(#40,(#33));
+/* Byte assertion: contains(b'TIME_INTERVAL_BASED_EFFECTIVITY') */
+/* DEFECT: effectivity starts 2024-06-01 which is BEFORE approval date 2024-09-15 */
+/* Design was declared effective three months before it was approved */
+#43=TIME_INTERVAL_BASED_EFFECTIVITY('cfg_v1','',#31,
+  DATE_AND_TIME(#20,$),DATE_AND_TIME(#21,$));
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#500=GEOMETRIC_CURVE_SET('ap203-approval-date-after-effectivity-start',
+  (#31,#33,#40,#41,#43));
+/* Product chain */
+#600=APPLICATION_CONTEXT('mechanical design');
+#601=PRODUCT_CONTEXT('',#600,'mechanical');
+#602=PRODUCT('M128','M128','M128',(#601));
+#603=PRODUCT_DEFINITION_FORMATION('','',#602);
+#604=PRODUCT_DEFINITION_CONTEXT(#600,'design');
+#605=PRODUCT_DEFINITION('','',#603,#604);
+#606=PRODUCT_DEFINITION_SHAPE('','',#605);
+#607=SHAPE_REPRESENTATION('',(#500),#14);
+#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
 ENDSEC;
 END-ISO-10303-21;

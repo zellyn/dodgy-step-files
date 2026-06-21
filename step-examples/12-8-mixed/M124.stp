@@ -1,35 +1,64 @@
 ISO-10303-21;
-/* M124 - AP209 fea_model element references node outside its node-set.
- * Defect: a FEA_MODEL_3D declares a 3-node its_node_set, while a
- * VOLUME_3D_ELEMENT_DESCRIPTOR in the same model references a 4th
- * node not in the node set. The element implicitly extends the model
- * with the unlisted node, or solver assembly fails. */
+/* M124: AP209 fea_model includes element referencing a node outside its node-set */
+/* DEFECT: FEA_MODEL_3D its_node_set = (n1,n2,n3); element references n4 which is outside */
+/* Node n4 exists in the file but is NOT a member of the model's NODE_GROUP */
+/* Per AP209 §6 all element nodes must be members of fea_model.its_node_set */
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
+/* Byte assertion: contains(b'FEA_MODEL_3D') */
+/* Byte assertion: contains(b'VOLUME_3D_ELEMENT_DESCRIPTOR') */
 HEADER;
-FILE_DESCRIPTION(('M124 test case','AP209 element node outside model node-set'),'2;1');
-FILE_NAME('M124.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M124: AP209 FEA_MODEL_3D element references node outside node-set'),'2;1');
+FILE_NAME('M124.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
 FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('structural_analysis_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'structural_analysis_design',2001,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('fea','3D'));
-#100=CARTESIAN_POINT('a',(0.0,0.0,0.0));
-#101=CARTESIAN_POINT('b',(1.0,0.0,0.0));
-#102=CARTESIAN_POINT('c',(0.5,1.0,0.0));
-#103=CARTESIAN_POINT('d_extra',(0.5,0.5,1.0));
-#110=NODE('n1',(#100),$);
-#111=NODE('n2',(#101),$);
-#112=NODE('n3',(#102),$);
-#113=NODE('n4_outside_model',(#103),$);
-/* Model node-set has only 3 nodes. */
-#150=NODE_GROUP('model_nodes',(#110,#111,#112),$);
-/* Defect: element references 4 nodes; n4 is not in the model node-set. */
-#200=VOLUME_3D_ELEMENT_DESCRIPTOR('tet_with_outsider','linear_tetrahedron',
-       (#110,#111,#112,#113));
-#300=FEA_MODEL_3D('inconsistent_model',$,#150,$,$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('fea','3D'));
+/* Three nodes in the declared node-set */
+#100=CARTESIAN_POINT('n1',(0.0,0.0,0.0));
+#101=CARTESIAN_POINT('n2',(10.0,0.0,0.0));
+#102=CARTESIAN_POINT('n3',(5.0,10.0,0.0));
+/* n4 is OUTSIDE the node-set — its CARTESIAN_POINT and NODE exist but are excluded */
+#103=CARTESIAN_POINT('n4',(5.0,5.0,10.0));
+#110=NODE('tet_n1',(#100),$);
+#111=NODE('tet_n2',(#101),$);
+#112=NODE('tet_n3',(#102),$);
+/* #113 = n4: present in file but NOT in NODE_GROUP #300 — the node-set leak */
+#113=NODE('tet_n4_outside',(#103),$);
+/* Byte assertion: contains(b'VOLUME_3D_ELEMENT_DESCRIPTOR') */
+/* DEFECT: element references #113 (n4) which is outside the model node-set #300 */
+/* A valid element would only reference nodes that are members of its_node_set */
+#200=VOLUME_3D_ELEMENT_DESCRIPTOR('leak_tet','linear_tetrahedron',
+  (#110,#111,#112,#113));
+/* NODE_GROUP: only the 3 declared nodes; n4 (#113) is intentionally omitted */
+#300=NODE_GROUP('declared_nodes',(#110,#111,#112),$);
+/* Byte assertion: contains(b'FEA_MODEL_3D') */
+/* DEFECT: its_element_set contains #200 whose 4th node (#113) is outside its_node_set #300 */
+#310=FEA_MODEL_3D('node_set_leak_model',$,'',(#300),(#200),());
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#500=GEOMETRIC_CURVE_SET('ap209-fea-model-element-outside-node-set',
+  (#110,#111,#112,#113,#200,#310));
+/* Product chain */
+#600=APPLICATION_CONTEXT('mechanical design');
+#601=PRODUCT_CONTEXT('',#600,'mechanical');
+#602=PRODUCT('M124','M124','M124',(#601));
+#603=PRODUCT_DEFINITION_FORMATION('','',#602);
+#604=PRODUCT_DEFINITION_CONTEXT(#600,'design');
+#605=PRODUCT_DEFINITION('','',#603,#604);
+#606=PRODUCT_DEFINITION_SHAPE('','',#605);
+#607=SHAPE_REPRESENTATION('',(#500),#14);
+#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
 ENDSEC;
 END-ISO-10303-21;

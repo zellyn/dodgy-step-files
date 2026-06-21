@@ -1,25 +1,58 @@
 ISO-10303-21;
-/* M129 - AP203 new revision references parent that isn't in the
- * change-history chain.
- * Defect: PRODUCT_DEFINITION_FORMATION 'rev_C' lists 'rev_A' as the
- * basis revision via PRODUCT_DEFINITION_RELATIONSHIP, skipping the
- * intermediate 'rev_B'. The engineering change history is broken
- * - rev_C did not derive from rev_B and there is no relationship
- * accounting for the rev_B work. */
+/* M129: AP203 new revision references parent not in change-history chain */
+/* DEFECT: rev_C links to rev_A via PRODUCT_DEFINITION_RELATIONSHIP; rev_B is orphaned */
+/* rev_B has no inbound or outbound relationship — change-history chain is broken */
+/* Per AP203 §4.3 ECO chain must be a connected path through all intermediate revisions */
+/* Byte assertion: contains(b'CONFIG_CONTROL_DESIGN') */
+/* Byte assertion: count_entity_def(b'PRODUCT_DEFINITION_FORMATION') >= 3 */
+/* Byte assertion: contains(b'PRODUCT_DEFINITION_RELATIONSHIP') */
 HEADER;
-FILE_DESCRIPTION(('M129 test case','AP203 ECO chain skip'),'2;1');
-FILE_NAME('M129.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+FILE_DESCRIPTION(('M129: AP203 revision change-history chain skips intermediate revision'),'2;1');
+FILE_NAME('M129.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'CONFIG_CONTROL_DESIGN') */
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN { 1 0 10303 203 1 0 0 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('configuration controlled 3D design of mechanical parts and assemblies');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','config_control_design',1994,#1);
-#10=PRODUCT('housing','housing','primary case',(#1));
-#11=PRODUCT_DEFINITION_FORMATION('rev_A','first release',#10);
-#12=PRODUCT_DEFINITION_FORMATION('rev_B','intermediate update',#10);
-#13=PRODUCT_DEFINITION_FORMATION('rev_C','latest revision',#10);
-/* Defect: rev_C declares rev_A as predecessor, skipping rev_B which
- * exists but has no inbound or outbound relationship. */
-#100=PRODUCT_DEFINITION_RELATIONSHIP('eco_chain','derived_from',#11,#13);
+#1=APPLICATION_CONTEXT('configuration controlled 3D designs of mechanical parts and assemblies');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'config_control_design',1994,#1);
+/* Standard unit context (mm) */
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* The product for which three revisions exist */
+#30=PRODUCT('PART-001','Actuator Housing','Pneumatic actuator housing',(#1));
+/* Byte assertion: count_entity_def(b'PRODUCT_DEFINITION_FORMATION') >= 3 */
+/* Three revisions: rev_A (initial), rev_B (orphan), rev_C (skips to rev_A) */
+#31=PRODUCT_DEFINITION_FORMATION('rev_A','Initial engineering release',#30);
+/* DEFECT: rev_B is an orphan — no PRODUCT_DEFINITION_RELATIONSHIP references it */
+/* It has no predecessor link (was it branched? re-worked?) and no successor link */
+/* A valid change chain: rev_A -> rev_B -> rev_C would require two relationships */
+#32=PRODUCT_DEFINITION_FORMATION('rev_B','Intermediate ECO (orphaned)',#30);
+#33=PRODUCT_DEFINITION_FORMATION('rev_C','Production release derived from rev_A',#30);
+/* Byte assertion: contains(b'PRODUCT_DEFINITION_RELATIONSHIP') */
+/* DEFECT: relates rev_C directly to rev_A, skipping rev_B entirely */
+/* A correct ECO chain would link: #40 rev_B->rev_A, #41 rev_C->rev_B */
+#40=PRODUCT_DEFINITION_RELATIONSHIP('eco_chain','ECO: rev_C from rev_A',
+  $,#33,#31);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#500=GEOMETRIC_CURVE_SET('ap203-revision-change-history-chain-skips-intermediate',
+  (#31,#32,#33,#40));
+/* Product chain */
+#600=APPLICATION_CONTEXT('mechanical design');
+#601=PRODUCT_CONTEXT('',#600,'mechanical');
+#602=PRODUCT('M129','M129','M129',(#601));
+#603=PRODUCT_DEFINITION_FORMATION('','',#602);
+#604=PRODUCT_DEFINITION_CONTEXT(#600,'design');
+#605=PRODUCT_DEFINITION('','',#603,#604);
+#606=PRODUCT_DEFINITION_SHAPE('','',#605);
+#607=SHAPE_REPRESENTATION('',(#500),#14);
+#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
 ENDSEC;
 END-ISO-10303-21;

@@ -1,21 +1,58 @@
 ISO-10303-21;
-/* M127 - AP203 DOCUMENT_FILE referenced with empty URI/path field.
- * Defect: a DOCUMENT_FILE entity declares a referenced specification
- * document but its `name` and `description` strings are empty,
- * leaving consumers with no path or URI to resolve. The document
- * is referenced but unreachable. */
+/* M127: AP203 DOCUMENT_FILE referenced with empty URI / path field */
+/* DEFECT: DOCUMENT_FILE('','','',doc_type) — identifier, name, description all empty */
+/* APPLIED_DOCUMENT_REFERENCE links the part to an unresolvable document */
+/* Consumers cannot retrieve the referenced spec because no URI or identifier exists */
+/* Per AP203 §5.4 DOCUMENT_FILE must have a non-empty identifier for resolution */
+/* Byte assertion: contains(b'CONFIG_CONTROL_DESIGN') */
+/* Byte assertion: contains(b'DOCUMENT_FILE') */
+/* Byte assertion: contains(b"DOCUMENT_FILE('','','',") */
 HEADER;
-FILE_DESCRIPTION(('M127 test case','AP203 document_file empty URI'),'2;1');
-FILE_NAME('M127.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+FILE_DESCRIPTION(('M127: AP203 DOCUMENT_FILE with empty identifier name and description'),'2;1');
+FILE_NAME('M127.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'CONFIG_CONTROL_DESIGN') */
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN { 1 0 10303 203 1 0 0 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('configuration controlled 3D design of mechanical parts and assemblies');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','config_control_design',1994,#1);
-#10=PRODUCT('part_42','part_42','widget',(#1));
-#50=DOCUMENT_TYPE('design_specification');
-/* Defect: DOCUMENT_FILE id+name+description all empty - no URI to resolve. */
-#100=DOCUMENT_FILE('','','',#50);
-#101=APPLIED_DOCUMENT_REFERENCE(#100,'spec_link',(#10));
+#1=APPLICATION_CONTEXT('configuration controlled 3D designs of mechanical parts and assemblies');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'config_control_design',1994,#1);
+/* Standard unit context (mm) */
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* Document type for the referenced specification */
+#20=DOCUMENT_TYPE('specification');
+/* Byte assertion: contains(b'DOCUMENT_FILE') */
+/* Byte assertion: contains(b"DOCUMENT_FILE('','','',") */
+/* DEFECT: all three string fields are empty — document is unresolvable */
+/* A valid DOCUMENT_FILE would have: DOCUMENT_FILE('SPEC-001','Widget Spec','Rev A drawing',#20) */
+#21=DOCUMENT_FILE('','','',#20);
+/* Product being documented */
+#22=PRODUCT('PART-001','Widget','Precision widget',(#1));
+#23=PRODUCT_DEFINITION_FORMATION('A','Initial',#22);
+#24=PRODUCT_DEFINITION_CONTEXT(#1,'design');
+#25=PRODUCT_DEFINITION('release','',#23,#24);
+/* APPLIED_DOCUMENT_REFERENCE: links product definition to the empty DOCUMENT_FILE */
+#26=APPLIED_DOCUMENT_REFERENCE(#21,'specification',(#25));
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#500=GEOMETRIC_CURVE_SET('ap203-document-file-empty-uri-path-field',
+  (#21,#22,#23,#25,#26));
+/* Product chain */
+#600=APPLICATION_CONTEXT('mechanical design');
+#601=PRODUCT_CONTEXT('',#600,'mechanical');
+#602=PRODUCT('M127','M127','M127',(#601));
+#603=PRODUCT_DEFINITION_FORMATION('','',#602);
+#604=PRODUCT_DEFINITION_CONTEXT(#600,'design');
+#605=PRODUCT_DEFINITION('','',#603,#604);
+#606=PRODUCT_DEFINITION_SHAPE('','',#605);
+#607=SHAPE_REPRESENTATION('',(#500),#14);
+#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
 ENDSEC;
 END-ISO-10303-21;

@@ -1,27 +1,61 @@
 ISO-10303-21;
-/* M126 - AP203 effectivity periods overlap with conflicting product
- * configurations.
- * Defect: two TIME_INTERVAL_BASED_EFFECTIVITY entities cover the same
- * date range while binding contradictory product-configuration items.
- * A configuration query at any date in the overlap window can return
- * either configuration depending on which effectivity was scanned
- * first - the configuration is non-deterministic. */
+/* M126: AP203 effectivity periods overlap with conflicting product configurations */
+/* DEFECT: two TIME_INTERVAL_BASED_EFFECTIVITY windows overlap 2024-06-01..2024-12-31 */
+/* cfg_v1 (rev_A): 2024-01-01..2024-12-31; cfg_v2 (rev_B): 2024-06-01..2025-05-31 */
+/* Any query in the overlap window returns rev_A or rev_B non-deterministically */
+/* Per AP203 §4 effectivity windows for conflicting configs must not overlap */
+/* Byte assertion: contains(b'CONFIG_CONTROL_DESIGN') */
+/* Byte assertion: count_entity_def(b'TIME_INTERVAL_BASED_EFFECTIVITY') >= 2 */
 HEADER;
-FILE_DESCRIPTION(('M126 test case','AP203 effectivity overlap conflict'),'2;1');
-FILE_NAME('M126.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+FILE_DESCRIPTION(('M126: AP203 overlapping effectivity periods for conflicting configurations'),'2;1');
+FILE_NAME('M126.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'CONFIG_CONTROL_DESIGN') */
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN { 1 0 10303 203 1 0 0 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('configuration controlled 3D design of mechanical parts and assemblies');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','config_control_design',1994,#1);
-#10=PRODUCT('valve_block','valve_block','high-pressure manifold',(#1));
-#20=DATE_AND_TIME(CALENDAR_DATE(2024,1,1),LOCAL_TIME(0,0,0.0,$));
-#21=DATE_AND_TIME(CALENDAR_DATE(2024,12,31),LOCAL_TIME(23,59,59.0,$));
-#22=DATE_AND_TIME(CALENDAR_DATE(2024,6,1),LOCAL_TIME(0,0,0.0,$));
-#23=DATE_AND_TIME(CALENDAR_DATE(2025,5,31),LOCAL_TIME(23,59,59.0,$));
-/* Defect: two effectivities overlap from 2024-06-01 to 2024-12-31 yet
- * bind different configuration codes for the same product. */
-#100=TIME_INTERVAL_BASED_EFFECTIVITY('config_v1','rev_A',#20,#21);
-#101=TIME_INTERVAL_BASED_EFFECTIVITY('config_v2','rev_B',#22,#23);
+#1=APPLICATION_CONTEXT('configuration controlled 3D designs of mechanical parts and assemblies');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'config_control_design',1994,#1);
+/* Standard unit context (mm) */
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* Calendar dates for overlapping effectivity windows */
+/* Window 1: 2024-01-01 to 2024-12-31 */
+#20=CALENDAR_DATE(2024,1,1);
+#21=CALENDAR_DATE(2024,12,31);
+/* Window 2: 2024-06-01 to 2025-05-31 — overlaps window 1 from 2024-06-01..2024-12-31 */
+#22=CALENDAR_DATE(2024,6,1);
+#23=CALENDAR_DATE(2025,5,31);
+/* Product with two conflicting configurations */
+#30=PRODUCT('PART-001','Widget Assembly','Precision widget assembly',(#1));
+#31=PRODUCT_DEFINITION_FORMATION('rev_A','Initial release',#30);
+#32=PRODUCT_DEFINITION_FORMATION('rev_B','Engineering change rev_B',#30);
+/* Byte assertion: count_entity_def(b'TIME_INTERVAL_BASED_EFFECTIVITY') >= 2 */
+/* DEFECT: cfg_v1 window (2024-01-01..2024-12-31) overlaps cfg_v2 (2024-06-01..2025-05-31) */
+/* A valid file would use non-overlapping windows: e.g. 2024-01-01..2024-05-31, 2024-06-01.. */
+#40=TIME_INTERVAL_BASED_EFFECTIVITY('cfg_v1','',#31,
+  DATE_AND_TIME(#20,$),DATE_AND_TIME(#21,$));
+#41=TIME_INTERVAL_BASED_EFFECTIVITY('cfg_v2','',#32,
+  DATE_AND_TIME(#22,$),DATE_AND_TIME(#23,$));
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#500=GEOMETRIC_CURVE_SET('ap203-effectivity-periods-overlap-conflicting-configs',
+  (#31,#32,#40,#41));
+/* Product chain */
+#600=APPLICATION_CONTEXT('mechanical design');
+#601=PRODUCT_CONTEXT('',#600,'mechanical');
+#602=PRODUCT('M126','M126','M126',(#601));
+#603=PRODUCT_DEFINITION_FORMATION('','',#602);
+#604=PRODUCT_DEFINITION_CONTEXT(#600,'design');
+#605=PRODUCT_DEFINITION('','',#603,#604);
+#606=PRODUCT_DEFINITION_SHAPE('','',#605);
+#607=SHAPE_REPRESENTATION('',(#500),#14);
+#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
 ENDSEC;
 END-ISO-10303-21;
