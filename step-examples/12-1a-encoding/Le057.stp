@@ -1,33 +1,30 @@
-/* Le057 - Records terminated with ;\n plus extra blank lines between records
- * Defect: ISO 10303-21 6.2 allows arbitrary whitespace between records;
- * the record terminator is `;`. This fixture emits a non-canonical
- * mix of EOR formatting: some records end with `;\n` and the next
- * begins immediately, others end with `;\n\n` (blank line between),
- * and one record runs `;` followed by another record on the same
- * line. All three are spec-conformant; the inconsistency is the
- * defect that stresses streaming tokenisers. */
 ISO-10303-21;
+/* Le057: Records terminated with ;\n plus extra blank lines between records; ISO 10303-21 §6.2: record terminator is ';'; arbitrary whitespace (including newlines) between records is allowed; producers that emit ;\n\n (blank line after each record) are technically conformant but stress streaming tokenisers that special-case ;\n as a record boundary; defect: DATA section mixes three EOR styles within one file — ;\n (no separator), ;\n\n (blank line), and ; on same line as next record; non-canonical mixing is the defect — inconsistency harder to diagnose than a uniformly long-form or uniformly compact file; receiver must tokenise on ';' alone and treat all inter-record whitespace (including blank lines) as ignorable; never reject for EOR whitespace variation; sibling of Le056; see also Le054, Le058; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Le057 - mixed EOR formatting with blank lines and inline records'),'2;1');
-FILE_NAME('Le057.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Le057'),'2;1');
+FILE_NAME('Le057.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Le057','Le057','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#8997=PERSON('style-a-immediate','no-blank-line','');
 
-#11=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#8998=PERSON('style-b-blank-line','blank-line-before','');#8999=PERSON('style-c-same-line','next-on-same-line','');
 
-
-#12=CARTESIAN_POINT('',(2.0,0.0,0.0));
-#13=VERTEX_POINT('',#10);#14=VERTEX_POINT('',#11);
-#15=VERTEX_POINT('',#12);
-
-#16=DIRECTION('',(1.0,0.0,0.0));
-#17=VECTOR('',#16,1.0);
-
-
-#18=LINE('',#10,#17);
-#19=EDGE_CURVE('',#13,#14,#18,.T.);
 ENDSEC;
 END-ISO-10303-21;

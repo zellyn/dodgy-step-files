@@ -1,32 +1,30 @@
-/* Le056 - Mixed .T. and .TRUE. boolean lexemes within one file
- * Defect: one EDGE_CURVE uses canonical .T., a second uses .TRUE.
- * inside the same DATA section. Receivers that accept only the
- * canonical form parse some attributes and reject others; the
- * inconsistency is harder to diagnose than uniform long-form. */
 ISO-10303-21;
+/* Le056: Mixed .T. and .TRUE. boolean lexemes within one file; ISO 10303-21 §6.3.4: canonical boolean spellings are .T. and .F. only; one DATA section contains both canonical .T./.F. and long-form .TRUE./.FALSE.; deduced from multi-source writer pipelines where one subsystem writes .T. and another writes .TRUE. without normalising; receivers that accept only canonical form produce inconsistent parse results across the same file — some attributes parse, others fail — harder to diagnose than a uniformly long-form file; sibling of Le055 (uniform long-form); cousin of Wr041; receiver must surface the inconsistency: never accept some and reject others in the same file; normalise to .T./.F. in lenient mode; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Le056 - mixed .T. and .TRUE. in same file'),'2;1');
-FILE_NAME('Le056.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Le056'),'2;1');
+FILE_NAME('Le056.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#12=CARTESIAN_POINT('',(2.0,0.0,0.0));
-#13=VERTEX_POINT('',#10);
-#14=VERTEX_POINT('',#11);
-#15=VERTEX_POINT('',#12);
-#16=DIRECTION('',(1.0,0.0,0.0));
-#17=VECTOR('',#16,1.0);
-#18=LINE('',#10,#17);
-#19=LINE('',#11,#17);
-/* Canonical short form */
-#20=EDGE_CURVE('canonical',#13,#14,#18,.T.);
-/* Long form within same file */
-#21=EDGE_CURVE('long_form',#14,#15,#19,.TRUE.);
-#22=ORIENTED_EDGE('',*,*,#20,.T.);
-#23=ORIENTED_EDGE('',*,*,#21,.FALSE.);
-#24=EDGE_LOOP('',(#22,#23));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Le056','Le056','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#8997=EDGE_CURVE('edge-canonical',#9001,#9002,#9003,.T.);
+#8998=EDGE_CURVE('edge-long-form',#9001,#9002,#9003,.TRUE.);
+#8999=PERSON('file mixes .T. and .TRUE. booleans','mixed-boolean-lexemes','');
+
 ENDSEC;
 END-ISO-10303-21;

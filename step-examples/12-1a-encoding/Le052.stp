@@ -1,21 +1,29 @@
-/* Le052 - \X2\ UCS-2 escape with whitespace splitting the hex run
-   Defect: \X2\..\X0\ groups must hold a contiguous run of 4-hex-digit
-   units; embedded whitespace (e.g. between two 4-digit groups) is not
-   permitted by the directive grammar even though it would be a legal
-   continuation in some Java string literals. */
 ISO-10303-21;
+/* Le052: \X2\...\X0\ (UCS-2) escape: whitespace splits the hex run; ISO 10303-21 Ed.3 §6.4.3.4: hex run inside \X2\...\X0\ must be contiguous (multiple of four hex digits); embedding whitespace between two 4-digit groups is malformed even if it would be legal in some host string forms; defect string: 'name=\X2\30A2 30A4\X0\rest' — space between '30A2' and '30A4'; receiver must emit E_BAD_X2_DIRECTIVE; reject the string or, in lenient mode, drop the whitespace and continue with a warning; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Le052 - X2 hex run split by whitespace'),'2;1');
-FILE_NAME('Le052.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Le052'),'2;1');
+FILE_NAME('Le052.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* Defect: whitespace splits the hex run inside \X2\..\X0\ */
-#10=PERSON('p3','name=\X2\30A2 30A4\X0\rest','given',$,$,$,$,$);
-#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#21=DIRECTION('',(0.0,0.0,1.0));
-#22=DIRECTION('',(1.0,0.0,0.0));
-#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Le052','Le052','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#8998=PERSON('name=\X2\30A2 30A4\X0\rest','whitespace-split-x2-hex','');
+#8999=PERSON('name=\X2\30A230A4\X0\rest','contiguous-x2-hex-ok','');
+
 ENDSEC;
 END-ISO-10303-21;

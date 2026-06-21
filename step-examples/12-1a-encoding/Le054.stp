@@ -1,25 +1,31 @@
-/* Le054 - cp1252 vs ISO-8859-1 high-bit confusion in 0x80..0x9F range
- * Defect: bytes \X\91, \X\92, \X\80, \X\97 are C1 control bytes in
- * ISO-8859-1 (the Edition-2 default page) but carry glyphs in
- * Windows-1252 (left/right single quote, Euro sign, em-dash).
- * Receivers disagree on which page is in effect; tolerant readers
- * silently re-interpret the byte run as cp1252 to recover smart
- * quotes and the Euro sign, hiding a producer-side defect. */
 ISO-10303-21;
+/* Le054: High-bit byte ambiguous between Windows-1252 and ISO-8859-1; ISO 10303-21 Ed.2 §6.4.3.5: default 8-bit page is ISO-8859-1; bytes 0x80-0x9F are C1 control characters in ISO-8859-1 (no glyphs); in Windows-1252 the same bytes carry printable glyphs (0x80=Euro, 0x91-0x92=smart single quotes, 0x93-0x94=smart double quotes, 0x97=em-dash, 0x99=trademark); Windows-hosted writers emit raw 0x80-0x9F bytes in string literals without converting to ISO-8859-1 or \X2\ escapes; strict Ed.2 readers see C1 control bytes in string body and reject or corrupt; defect strings contain \X\91, \X\92, \X\80, \X\97 (the \X\ escape form of the ambiguous bytes); receiver must surface the ambiguity: name the byte and the page-selection policy; silent reinterpretation across vendor policies hides the disagreement; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Le054 - high-bit ambiguous between cp1252 and ISO-8859-1'),'2;1');
-FILE_NAME('Le054.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Le054'),'2;1');
+FILE_NAME('Le054.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=PRODUCT_CONTEXT('part',#1,'mechanical');
-/* Bytes 0x91..0x94 are smart-quotes in cp1252, C1 controls in ISO-8859-1.
-   0x80 is Euro in cp1252; 0x97 is em-dash. */
-#10=PRODUCT('part \X\91A\X\92','smart-quote name','',(#2));
-#11=PRODUCT('cost \X\80100','euro sign in name','',(#2));
-#12=PRODUCT('span \X\97','em-dash separator','',(#2));
-#13=PRODUCT('also \X\99','trademark glyph in cp1252','',(#2));
-#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Le054','Le054','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#8996=PERSON('it\X\92s a \X\91note\X\92','smart-quotes-cp1252-ambiguous','');
+#8997=PERSON('price \X\80 100','euro-sign-cp1252-ambiguous','');
+#8998=PERSON('word\X\97word','em-dash-cp1252-ambiguous','');
+#8999=PERSON('brand\X\99','trademark-cp1252-ambiguous','');
+
 ENDSEC;
 END-ISO-10303-21;
