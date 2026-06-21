@@ -1,58 +1,26 @@
 ISO-10303-21;
-/* N098 - ShapeAnalysis_ShapeTolerance.GlobalTolerance empty-shape
- * Defect: Call GlobalTolerance(shape) on a shape with no edges or vertices.
- * Expected: Return a flag indicating "no data available". Actual: Returns 0
- * with no distinguishing flag, masking the empty-shape condition. Callers
- * cannot distinguish between "all tolerances are 0" vs "shape is empty".
- * Reproducer: Create a shape containing only a face with no edges/vertices
- * (degenerate or placeholder geometry). Call GlobalTolerance(shape).
- * Returns 0, indistinguishable from a shape with true zero tolerance.
- */
+/* N098: GlobalTolerance empty-shape: standalone point with no topology; GlobalTolerance returns 0 — indistinguishable from all-zero tolerances; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N098 GlobalTolerance empty-shape no-flag'),'2;1');
-FILE_NAME('N098.stp','2026-06-15T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('N098'),'2;1');
+FILE_NAME('N098.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-/* Placeholder/empty surface with no boundary edges or vertices */
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#11=DIRECTION('z',(0.0,0.0,1.0));
-#12=DIRECTION('x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
-/* Create a face-level geometry with minimal edge/vertex content
-   Degenerate or placeholder surfaces common in healing workflows */
-#20=PLANE('empty_plane',#13);
-/* Units and context */
-#30=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#31=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#32=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-/* Nominal uncertainty; empty geometry has no vertices/edges to carry tolerance */
-#33=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#30,
-  'distance_accuracy_value','nominal_tolerance');
-#34=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#33))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#30,#31,#32))
-  REPRESENTATION_CONTEXT('empty_shape_ctx','3D'));
-/* Deliberately omit VERTEX_POINT and EDGE_CURVE entities.
-   GlobalTolerance on this shape should flag "no data", but instead returns 0 */
-/* PRODUCT CHAIN */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('N098','N098','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#20));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#1=CARTESIAN_POINT('lone_point',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('empty_shape',(#1));
+#3=APPLICATION_CONTEXT('automotive_design');
+#4=PRODUCT_CONTEXT('',#3,'mechanical');
+#5=PRODUCT('N098','N098','',(#4));
+#6=PRODUCT_DEFINITION_FORMATION('','',#5);
+#7=PRODUCT_DEFINITION_CONTEXT('part definition',#3,'design');
+#8=PRODUCT_DEFINITION('','',#6,#7);
+#9=PRODUCT_DEFINITION_SHAPE('','',#8);
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#10,'distance_accuracy_value','model_precision');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))REPRESENTATION_CONTEXT('ctx','3D'));
+#15=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#2),#14);
+#16=SHAPE_DEFINITION_REPRESENTATION(#9,#15);
 ENDSEC;
 END-ISO-10303-21;

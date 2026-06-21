@@ -1,72 +1,38 @@
 ISO-10303-21;
-/* N096 - BRepLib.UpdateInnerTolerances cone-apex-singularity
- * Defect: Edge passes through cone apex where curvature is infinite;
- * UpdateInnerTolerances samples near apex, Epsilon(aDist) → 0 as curvature → ∞,
- * and produces unbounded tolerance value. The algorithm fails to guard against
- * singularities where curvature diverges.
- * Reproducer: Create a cone, define an edge that crosses through the apex vertex.
- * UpdateInnerTolerances samples the edge at multiple parameter values including
- * near the apex; at the apex itself, the distance computation becomes singular
- * and the tolerance escalates to infinity or NaN.
- */
+/* N096: UpdateInnerTolerances cone-apex-singularity: CONICAL_SURFACE 30-deg; edge from base (5,0,0) through apex (0,0,0); curvature→inf at apex; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N096 UpdateInnerTolerances cone-apex singularity'),'2;1');
-FILE_NAME('N096.stp','2026-06-15T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('N096'),'2;1');
+FILE_NAME('N096.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-/* Cone geometry: apex at origin, axis along z, half-angle 30 degrees */
-#10=CARTESIAN_POINT('apex',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('cone_base_center',(0.0,0.0,10.0));
-#12=DIRECTION('z',(0.0,0.0,1.0));
-#13=DIRECTION('x',(1.0,0.0,0.0));
-#14=AXIS2_PLACEMENT_3D('cone_axis',#11,#12,#13);
-#15=CONICAL_SURFACE('cone',#14,5.77350269189626); /* tan(30°) ≈ 0.577 → radius 5.77 at z=10 */
-/* Edge across apex: from base circle to apex and beyond */
-#20=CARTESIAN_POINT('p_base',(5.77,0.0,10.0));
-#21=CARTESIAN_POINT('p_apex',(0.0,0.0,0.0));
-#22=VERTEX_POINT('v_base',#20);
-#23=VERTEX_POINT('v_apex',#21);
-#30=DIRECTION('edge_dir',(-5.77,0.0,-10.0));
-#31=VECTOR('edge_vec',#30,1.0);
-#32=LINE('apex_crossing',#20,#31);
-/* Edge curves through cone singularity; UpdateInnerTolerances will sample
-   near apex where curvature → ∞, causing tolerance escalation */
-#40=EDGE_CURVE('crossing_edge',#22,#23,#32,.T.);
-#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-/* Nominal uncertainty: 1.0e-7 */
-#53=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#50,
-  'distance_accuracy_value','nominal_tolerance');
-#54=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
-  REPRESENTATION_CONTEXT('cone_ctx','3D'));
-/* Edge tolerance: will escalate due to singular sampling */
-#55=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,
-  'distance_accuracy_value','edge_tolerance_before_update');
-/* Vertex tolerance at apex: will see unbounded escalation */
-#56=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#50,
-  'distance_accuracy_value','apex_vertex_tolerance');
-/* PRODUCT CHAIN */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('N096','N096','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#15));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#1=CARTESIAN_POINT('cone_orig',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CONICAL_SURFACE('cone',#4,0.5235987756);
+#6=CARTESIAN_POINT('p_base',(5.0,0.0,0.0));
+#7=CARTESIAN_POINT('p_apex',(0.0,0.0,0.0));
+#8=VERTEX_POINT('v_base',#6);
+#9=VERTEX_POINT('v_apex',#7);
+#10=DIRECTION('',(-1.0,0.0,0.0));
+#11=VECTOR('',#10,5.0);
+#12=LINE('line_to_apex',#6,#11);
+#13=EDGE_CURVE('edge_through_apex',#8,#9,#12,.T.);
+#14=GEOMETRIC_CURVE_SET('cone_apex',(#5,#13));
+#15=APPLICATION_CONTEXT('automotive_design');
+#16=PRODUCT_CONTEXT('',#15,'mechanical');
+#17=PRODUCT('N096','N096','',(#16));
+#18=PRODUCT_DEFINITION_FORMATION('','',#17);
+#19=PRODUCT_DEFINITION_CONTEXT('part definition',#15,'design');
+#20=PRODUCT_DEFINITION('','',#18,#19);
+#21=PRODUCT_DEFINITION_SHAPE('','',#20);
+#22=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#23=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#24=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#25=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#22,'distance_accuracy_value','model_precision');
+#26=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#25))GLOBAL_UNIT_ASSIGNED_CONTEXT((#22,#23,#24))REPRESENTATION_CONTEXT('ctx','3D'));
+#27=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#14),#26);
+#28=SHAPE_DEFINITION_REPRESENTATION(#21,#27);
 ENDSEC;
 END-ISO-10303-21;
