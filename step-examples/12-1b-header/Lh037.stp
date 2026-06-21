@@ -1,26 +1,21 @@
 ISO-10303-21;
-/* Lh037 - User-defined HEADER entity (!FOO) preceding the standard
- * three required header records
- * Defect: ISO 10303-21 Edition 3 permits user-defined header
- * entities, syntactically prefixed with '!' (e.g. !COMPANY_INFO).
- * The order, duplication, and unknown-record rules are weakly
- * specified. Producers occasionally place !FOO before
- * FILE_DESCRIPTION (the spec mandates FILE_DESCRIPTION first), or
- * use !FOO names that collide with EXPRESS schema entity names. */
+/* Lh037: user-defined !FOO header entity placed before FILE_DESCRIPTION */
+/* ISO 10303-21 Ed.3 §6.2: FILE_DESCRIPTION must be the first HEADER record */
+/* DEFECT: !COMPANY_INFO appears before FILE_DESCRIPTION — violates required order */
+/* OCC rejects under strict mode; expected: skip !FOO with warning, tolerate any position */
 HEADER;
-/* Defect: user-defined header entity emitted *before* the required
- * FILE_DESCRIPTION/FILE_NAME/FILE_SCHEMA records */
-!COMPANY_INFO('ACME','release-2026','','','','','');
-FILE_DESCRIPTION(('Lh037 - user-defined header entity before required records'),'2;1');
-FILE_NAME('Lh037.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
-/* Defect: user-defined header record AFTER the required ones,
- * in a position where order is even less defined */
-!INTERNAL_ROUTING_TAG('release/qa/region=eu','rev1');
+!COMPANY_INFO('ACME','release-2026','contact@acme.example');
+/* DEFECT: standard records follow the !FOO entity, not precede it */
+FILE_DESCRIPTION(('Lh037: !COMPANY_INFO vendor header before FILE_DESCRIPTION'),'2;1');
+FILE_NAME('Lh037.stp','2026-06-20T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+!INTERNAL_ROUTING_TAG('dept=CAD','priority=low');
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=CARTESIAN_POINT('corner',(1.,1.,0.));
+#3=DIRECTION('xdir',(1.,0.,0.));
+#4=DIRECTION('zdir',(0.,0.,1.));
+#5=GEOMETRIC_CURVE_SET('vendor-header-shape',(#1,#2));
 ENDSEC;
 END-ISO-10303-21;

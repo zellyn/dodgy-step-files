@@ -1,29 +1,29 @@
 ISO-10303-21;
-/* Lh041 - REFERENCE section published with multiple URI schemes
- * (file:, https:, urn:) including unsupported schemes
- * Defect: Edition-3 REFERENCE entries carry URIs to external
- * resources. The spec does not constrain the URI scheme. Receivers
- * implement file:// and possibly http(s)://; uncommon schemes
- * (urn:, ftp:, custom org-specific) are typically unsupported.
- * The kernel must decide whether unsupported schemes mean reject,
- * skip, or attempt fallback. Mixed schemes in a single REFERENCE
- * section test the consistency of that decision. */
+/* Lh041: REFERENCE section with mixed URI schemes including unsupported ones */
+/* ISO 10303-21 Ed.3 §8: REFERENCE entries carry URIs; spec does not constrain scheme */
+/* DEFECT: urn: and plmlink: schemes are typically unsupported by receivers */
+/* pure-Python validator rejects (E_UNRESOLVED_REFS); OCC silently accepts empty */
+/* expected: classify each URI scheme; report unsupported entries deterministically */
 HEADER;
-FILE_DESCRIPTION(('Lh041 - REFERENCE with mixed URI schemes incl. urn:'),'2;1');
-FILE_NAME('Lh041.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+FILE_DESCRIPTION(('Lh041: REFERENCE section with mixed URI schemes'),'2;1');
+FILE_NAME('Lh041.stp','2026-06-20T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
 ENDSEC;
 REFERENCE;
-#100=<file:companion.stp#part_a>;
-#101=<https://example.invalid/companion.stp#part_b>;
-/* Defect: urn: scheme - typically unsupported */
-#102=<urn:plm:org-acme:doc:12345#assembly>;
-/* Defect: custom scheme - definitely unsupported */
-#103=<plmlink:vault://acme/parts/12345#main>;
+/* supported scheme: file: */
+#10=<file:companion.stp#part_a>;
+/* supported scheme: https: */
+#11=<https://example.invalid/companion.stp#part_b>;
+/* DEFECT: unsupported scheme urn: */
+#12=<urn:plm:org-acme:doc:12345#assembly>;
+/* DEFECT: unsupported custom scheme plmlink: */
+#13=<plmlink:vault://acme/parts/12345#main>;
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=CARTESIAN_POINT('corner',(1.,1.,0.));
+#3=DIRECTION('xdir',(1.,0.,0.));
+#4=DIRECTION('zdir',(0.,0.,1.));
+#5=GEOMETRIC_CURVE_SET('mixed-uri-scheme-shape',(#1,#2));
 ENDSEC;
 END-ISO-10303-21;

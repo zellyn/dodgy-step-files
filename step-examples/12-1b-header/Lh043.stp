@@ -1,13 +1,19 @@
 ISO-10303-21;
-/* Lh043 - Header FILE_DESCRIPTION with embedded comment
- * Defect: FILE_DESCRIPTION string contains /* note * / which legacy readers strip */
+/* Lh043: FILE_DESCRIPTION string containing embedded comment sequence /* note */ */
+/* ISO 10303-21: comment sequences /* */ apply only outside string literals */
+/* DEFECT: legacy readers strip /* note */ from inside the string, corrupting content */
+/* pure-Python validator accepts; OCC rejects; expected: heal and accept */
 HEADER;
-FILE_DESCRIPTION(('Test /* note */ part'),'2;1');
-FILE_NAME('Lh043.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Test /* note */ part description'),'2;1');
+/* DEFECT: /* note */ inside the string literal above must NOT be stripped as a comment */
+FILE_NAME('Lh043.stp','2026-06-20T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=CARTESIAN_POINT('corner',(1.,1.,0.));
+#3=DIRECTION('xdir',(1.,0.,0.));
+#4=DIRECTION('zdir',(0.,0.,1.));
+#5=GEOMETRIC_CURVE_SET('comment-in-string-shape',(#1,#2));
 ENDSEC;
 END-ISO-10303-21;

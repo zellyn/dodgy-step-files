@@ -1,24 +1,21 @@
 ISO-10303-21;
-/* Lh038 - FILE_POPULATION header record naming a population_set
- * that is never closed (no matching POP_END or analogous marker)
- * Defect: Edition-3 FILE_POPULATION records declare a 'population'
- * - a named subset of instances - whose closure is determined by
- * a separate marker (or by section boundary). When the marker is
- * missing or misspelt, instances appear to belong to multiple
- * populations or to none. Consumers diverge on whether to treat
- * the open population as covering the whole DATA section or
- * to discard the population designation entirely. */
+/* Lh038: FILE_POPULATION header record without closing population marker */
+/* ISO 10303-21 Ed.3 §6.3: FILE_POPULATION must have a corresponding close marker */
+/* DEFECT: FILE_POPULATION('release_a',...) has no terminator/close marker */
+/* instances appear to belong to population 'release_a' or to none; */
+/* OCC silently accepts with no diagnostic; expected: reject or require deterministic apply */
 HEADER;
-FILE_DESCRIPTION(('Lh038 - unterminated FILE_POPULATION'),'2;1');
-FILE_NAME('Lh038.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
-/* Defect: FILE_POPULATION declares 'release_a' but no closing
- * record exists later in HEADER or DATA */
+FILE_DESCRIPTION(('Lh038: FILE_POPULATION without close marker'),'2;1');
+FILE_NAME('Lh038.stp','2026-06-20T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
 FILE_POPULATION('release_a','version-1','release-baseline');
+/* DEFECT: no closing/terminating record for the population 'release_a' */
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=CARTESIAN_POINT('corner',(1.,1.,0.));
+#3=DIRECTION('xdir',(1.,0.,0.));
+#4=DIRECTION('zdir',(0.,0.,1.));
+#5=GEOMETRIC_CURVE_SET('unterminated-population-shape',(#1,#2));
 ENDSEC;
 END-ISO-10303-21;

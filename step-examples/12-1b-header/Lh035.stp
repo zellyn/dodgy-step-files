@@ -1,28 +1,26 @@
 ISO-10303-21;
-/* Lh035 - ANCHOR section publishing the same anchor name twice
- * Defect: ISO 10303-21 Edition 3 ANCHOR sections publish a mapping
- * from anchor-name (a string) to instance handle. The spec is silent
- * on whether duplicate names are permitted; a strict implementation
- * rejects, a lenient one takes first-wins or last-wins (divergent).
- * A REFERENCE section in another file pointing at the duplicated
- * anchor name resolves nondeterministically. */
+/* Lh035: ANCHOR section with duplicate anchor name <origin> */
+/* ISO 10303-21 Ed.3: ANCHOR maps anchor-name to instance handle */
+/* DEFECT: <origin> is published twice — once for #10, once for #11 */
+/* strict receiver must reject; lenient receiver must document first-wins/last-wins */
+/* OCC silently accepts with diagnostic but loads empty result */
 HEADER;
-FILE_DESCRIPTION(('Lh035 - ANCHOR section duplicate anchor name'),'2;1');
-FILE_NAME('Lh035.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+FILE_DESCRIPTION(('Lh035: ANCHOR section with duplicate anchor name origin'),'2;1');
+FILE_NAME('Lh035.stp','2026-06-20T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
 ENDSEC;
 ANCHOR;
-/* Defect: anchor name 'origin' published twice for two different
- * instances - which one wins on cross-file resolution? */
+/* DEFECT: <origin> appears twice — maps to two different instances */
 <origin>=#10;
 <origin>=#11;
+<corner>=#12;
 ENDSEC;
 DATA;
-#10=CARTESIAN_POINT('first-origin',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('second-origin',(1.0,1.0,1.0));
-#20=DIRECTION('z',(0.0,0.0,1.0));
-#21=DIRECTION('x',(1.0,0.0,0.0));
-#22=AXIS2_PLACEMENT_3D('placement',#10,#20,#21);
+#10=CARTESIAN_POINT('origin-a',(0.,0.,0.));
+#11=CARTESIAN_POINT('origin-b',(0.5,0.,0.));
+#12=CARTESIAN_POINT('corner',(1.,1.,0.));
+#13=DIRECTION('xdir',(1.,0.,0.));
+#14=DIRECTION('zdir',(0.,0.,1.));
+#15=GEOMETRIC_CURVE_SET('duplicate-anchor-shape',(#10,#12));
 ENDSEC;
 END-ISO-10303-21;
