@@ -1,26 +1,56 @@
 ISO-10303-21;
-/* M107 - AP238 cutting tool diameter declared as zero.
- * Defect: a milling tool's diameter MEASURE_WITH_UNIT carries the
- * value 0.0 mm. Toolpaths computed against this tool have zero radial
- * offset; passes overlap themselves with no material removal. */
+/* M107: AP238 cutting tool diameter declared as zero or negative */
+/* DEFECT: POSITIVE_LENGTH_MEASURE(0.0) — zero diameter violates positivity */
+/* Controller rejects or generates contour-on-contour passes with no material removal */
+/* Violates ISO 10303-238 §5.7 cutting_tool_dimension positivity rules */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'POSITIVE_LENGTH_MEASURE(0.0)') */
 HEADER;
-FILE_DESCRIPTION(('M107 test case','AP238 tool zero diameter'),'2;1');
-FILE_NAME('M107.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M107: AP238 cutting tool diameter declared as zero'),'2;1');
+FILE_NAME('M107.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
+#1=APPLICATION_CONTEXT('step_nc_mim');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
+  'ap238_step_nc_mim',2007,#1);
+/* Standard unit context — mm */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('nc','3D'));
-/* Defect: tool diameter declared 0.0 (POSITIVE_LENGTH_MEASURE
-   schema-illegally allows it through producer mis-implementation). */
-#80=MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(0.0),#10);
-#150=MACHINING_TOOL('zero_diameter_endmill',$,$,#80);
-#100=MACHINING_OPERATION('rough',$,$,#150,$,$);
-#200=WORKPLAN('main',(#100),$,$,$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('nc','3D'));
+/* Byte assertion: contains(b'POSITIVE_LENGTH_MEASURE(0.0)') */
+/* DEFECT: diameter = 0.0 mm — violates POSITIVE_LENGTH_MEASURE constraint */
+/* A milling cutter with zero diameter cannot remove any material */
+/* Typical cause: CAM system using uninitialised tool template default value */
+#21=MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(0.0),#10);
+/* Machined feature — a slot requiring nonzero tool radius offset */
+#50=MACHINED_FEATURE('slot_a',$,$,$,$,$);
+/* DEFECT: MILLING_CUTTER with zero diameter — cannot produce radial offset */
+/* Tool template left at default 0.0; should be e.g. 12.0 mm for this slot op */
+#60=MILLING_CUTTER('endmill_bad',$,$,#21,$,$,$,$);
+/* MACHINING_OPERATION references zero-diameter tool #60 */
+#70=MACHINING_OPERATION('op_slot',#60,$,$,$,$,$,$,#50,$,$);
+#80=MACHINING_WORKINGSTEP('step_slot',#50,#70,$);
+#90=WORKPLAN('main',(#80),$,$,$);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#300=GEOMETRIC_CURVE_SET('ap238-cutting-tool-diameter-zero-or-negative',
+  (#21,#50,#60,#70,#80,#90));
+/* Product chain */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M107','M107','M107',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#300),#14);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;

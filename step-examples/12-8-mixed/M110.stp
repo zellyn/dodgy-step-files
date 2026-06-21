@@ -1,25 +1,58 @@
 ISO-10303-21;
-/* M110 - AP209 ply orientation vector not normalized.
- * Defect: a DIRECTION used as a ply fiber orientation has magnitude
- * 2.0 instead of unit length. Consumers using the ratios directly for
- * stiffness-matrix transformation compute doubled effective fiber
- * weight. */
+/* M110: AP209 ply orientation vector not normalized */
+/* DEFECT: DIRECTION('ply_0deg',(2.0,0.0,0.0)) — magnitude=2.0, not unit length */
+/* Consumers computing stiffness-matrix transforms get 2x effective fiber weight */
+/* Violates ISO 10303-42 direction normalization and AP209 §8 ply orientation */
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
+/* Byte assertion: contains(b'DIRECTION') */
+/* Byte assertion: contains(b'(2.0,0.0,0.0)') */
 HEADER;
-FILE_DESCRIPTION(('M110 test case','AP209 ply DIRECTION not unit length'),'2;1');
-FILE_NAME('M110.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M110: AP209 ply orientation DIRECTION not unit normalized'),'2;1');
+FILE_NAME('M110.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
 FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('structural_analysis_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'structural_analysis_design',2001,#1);
+/* Standard unit context */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('fea','3D'));
-/* Defect: DIRECTION ratios magnitude = 2.0 instead of 1.0. */
-#100=DIRECTION('ply_0deg_unnormalized',(2.0,0.0,0.0));
-/* Reference from a laminate so the direction has functional weight. */
-#200=LAMINATE_TABLE('skin',(#100),$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('fea','3D'));
+/* Byte assertion: contains(b'DIRECTION') */
+/* Byte assertion: contains(b'(2.0,0.0,0.0)') */
+/* DEFECT: ply_0deg direction has magnitude 2.0 — should be (1.0,0.0,0.0) */
+/* CAM tool stored raw vector without normalisation; magnitude = sqrt(4) = 2.0 */
+#50=DIRECTION('ply_0deg',(2.0,0.0,0.0));
+/* Normal to ply plane — correctly unit-normalised (0 deg layup on XY plane) */
+#51=DIRECTION('ply_normal',(0.0,0.0,1.0));
+/* Origin for ply axis placement */
+#52=CARTESIAN_POINT('ply_origin',(0.0,0.0,0.0));
+/* AXIS2_PLACEMENT_3D using the defective unnormalized direction as ref direction *)  */
+#60=AXIS2_PLACEMENT_3D('ply_axis',#52,#51,#50);
+/* PLY_LAMINATE_DEFINITION referencing the unnormalized ply orientation axis */
+#70=PLY_LAMINATE_DEFINITION('ply_0',#60,$,$,$);
+/* LAMINATE_TABLE holding the defective ply entry *)  */
+#80=LAMINATE_TABLE('layup_A',(#70),$);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#300=GEOMETRIC_CURVE_SET('ap209-ply-orientation-direction-not-unit-normalized',
+  (#50,#51,#52,#60,#70,#80));
+/* Product chain */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M110','M110','M110',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#300),#14);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;

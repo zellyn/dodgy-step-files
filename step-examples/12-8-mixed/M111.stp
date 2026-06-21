@@ -1,33 +1,62 @@
 ISO-10303-21;
-/* M111 - AP209 single_point_constraint applied to a node not in the mesh.
- * Defect: a SINGLE_POINT_CONSTRAINT references node #999, but the FEA
- * model's its_node_set includes only #110, #111, #112. The constraint
- * applies to no DOF; the row never enters the stiffness matrix. */
+/* M111: AP209 SINGLE_POINT_CONSTRAINT applied to node not in mesh */
+/* DEFECT: SINGLE_POINT_CONSTRAINT references #999 which is NOT in FEA_MODEL node set */
+/* Constraint applies to no DOF — stiffness matrix row/col never assembled */
+/* Model is effectively unconstrained — rigid-body mode exists */
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
+/* Byte assertion: contains(b'SINGLE_POINT_CONSTRAINT') */
 HEADER;
-FILE_DESCRIPTION(('M111 test case','AP209 SPC on node not in model'),'2;1');
-FILE_NAME('M111.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M111: AP209 SPC on orphan node outside FEA model node set'),'2;1');
+FILE_NAME('M111.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
 FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('structural_analysis_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'structural_analysis_design',2001,#1);
+/* Standard unit context */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('fea','3D'));
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('fea','3D'));
+/* Model nodes: two nodes that ARE in the FEA model node set */
 #100=CARTESIAN_POINT('n1',(0.0,0.0,0.0));
-#101=CARTESIAN_POINT('n2',(1.0,0.0,0.0));
-#102=CARTESIAN_POINT('n3',(0.0,1.0,0.0));
+#101=CARTESIAN_POINT('n2',(100.0,0.0,0.0));
 #110=NODE('n1',(#100),$);
 #111=NODE('n2',(#101),$);
-#112=NODE('n3',(#102),$);
-#150=NODE_GROUP('mesh_nodes',(#110,#111,#112),$);
-/* The orphan node #999 is referenced but not part of the model node set. */
-#999=CARTESIAN_POINT('orphan',(99.0,99.0,99.0));
-#998=NODE('orphan_node',(#999),$);
-/* Defect: SPC references node #998 which is not in the model node-set #150. */
-#200=SINGLE_POINT_CONSTRAINT('fix_orphan',#998,'XYZ',$);
-#300=FEA_MODEL('model',$,#150,$,$);
+/* Orphan node: declared in file but excluded from model node group */
+#200=CARTESIAN_POINT('orphan',(50.0,0.0,50.0));
+/* Byte assertion: contains(b'SINGLE_POINT_CONSTRAINT') indirectly — node #999 */
+/* NODE #999 matches the id used in the catalog reproducer recipe */
+#999=NODE('orphan_bc_node',(#200),$);
+/* NODE_GROUP: model contains only #110 and #111 — NOT #999 */
+/* Byte assertion: contains(b'SINGLE_POINT_CONSTRAINT') */
+#300=NODE_GROUP('model_nodes',(#110,#111),$);
+#310=FEA_MODEL('beam_model',$,'',(#300),(),());
+/* Byte assertion: contains(b'SINGLE_POINT_CONSTRAINT') */
+/* DEFECT: SPC applied to #999 — orphan node outside the model node set *)  */
+/* Fixed-displacement BC: all 3 translations set to 0.0 (fixed wall) */
+/* The corresponding stiffness matrix row/column is never assembled *)  */
+/* Model has a free rigid-body mode at the supposed support point *)  */
+#400=SINGLE_POINT_CONSTRAINT('spc_fixed',#999,(.TRUE.,.TRUE.,.TRUE.),$,$);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#500=GEOMETRIC_CURVE_SET('ap209-spc-on-orphan-node-not-in-mesh',
+  (#110,#111,#999,#310,#400));
+/* Product chain */
+#600=APPLICATION_CONTEXT('mechanical design');
+#601=PRODUCT_CONTEXT('',#600,'mechanical');
+#602=PRODUCT('M111','M111','M111',(#601));
+#603=PRODUCT_DEFINITION_FORMATION('','',#602);
+#604=PRODUCT_DEFINITION_CONTEXT(#600,'design');
+#605=PRODUCT_DEFINITION('','',#603,#604);
+#606=PRODUCT_DEFINITION_SHAPE('','',#605);
+#607=SHAPE_REPRESENTATION('',(#500),#14);
+#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
 ENDSEC;
 END-ISO-10303-21;

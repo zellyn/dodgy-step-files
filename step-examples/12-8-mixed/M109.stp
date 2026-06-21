@@ -1,35 +1,59 @@
 ISO-10303-21;
-/* M109 - AP209 linear_hexahedron with only 4 nodes (should be 8).
- * Defect: a VOLUME_3D_ELEMENT_DESCRIPTOR declares linear_hexahedron
- * topology (8 corner nodes mandated) but lists only 4. The element
- * cannot be evaluated as a hex; consumers either drop it or treat
- * as a degenerate tet. */
+/* M109: AP209 linear_hexahedron with only 4 nodes (should be 8) */
+/* DEFECT: linear hex (C3D8) requires 8 corner nodes; only 4 provided */
+/* Element degenerates — consumers must drop or reject */
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
+/* Byte assertion: contains(b'linear_hexahedron') */
+/* Byte assertion: contains(b'VOLUME_3D_ELEMENT_DESCRIPTOR') */
 HEADER;
-FILE_DESCRIPTION(('M109 test case','AP209 linear_hexahedron with 4 nodes'),'2;1');
-FILE_NAME('M109.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M109: AP209 linear_hexahedron with 4 nodes not 8'),'2;1');
+FILE_NAME('M109.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
 FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('structural_analysis_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'structural_analysis_design',2001,#1);
+/* Standard unit context */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 #11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11))
-     REPRESENTATION_CONTEXT('fea','3D'));
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('fea','3D'));
+/* 4 corner nodes provided — only the bottom face of a unit cube *)  */
+/* A complete linear hex needs 8 corners: 4 bottom + 4 top */
 #100=CARTESIAN_POINT('n1',(0.0,0.0,0.0));
 #101=CARTESIAN_POINT('n2',(1.0,0.0,0.0));
 #102=CARTESIAN_POINT('n3',(1.0,1.0,0.0));
 #103=CARTESIAN_POINT('n4',(0.0,1.0,0.0));
+/* NODE entities — only 4 of the required 8 for a C3D8 hex */
 #110=NODE('n1',(#100),$);
 #111=NODE('n2',(#101),$);
 #112=NODE('n3',(#102),$);
 #113=NODE('n4',(#103),$);
-/* Defect: declares linear_hexahedron but lists only 4 nodes. */
+/* Byte assertion: contains(b'VOLUME_3D_ELEMENT_DESCRIPTOR') */
+/* Byte assertion: contains(b'linear_hexahedron') */
+/* DEFECT: linear_hexahedron requires 8 nodes; only 4 provided */
+/* Cannot evaluate element as C3D8 trilinear brick with 4 nodes *)  */
 #200=VOLUME_3D_ELEMENT_DESCRIPTOR('lin_hex','linear_hexahedron',
-       (#110,#111,#112,#113));
+  (#110,#111,#112,#113));
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#300=GEOMETRIC_CURVE_SET('ap209-linear-hexahedron-4-nodes-not-8',
+  (#110,#111,#112,#113,#200));
+/* Product chain */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M109','M109','M109',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#300),#14);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;
