@@ -1,52 +1,39 @@
 ISO-10303-21;
-/* M051 - Bare GEOMETRIC_SET / GEOMETRIC_CURVE_SET with non-geometric
- * children, or mesh-as-surfaces.
- * Defect: STEP `GEOMETRIC_SET`/`GEOMETRIC_CURVE_SET` may aggregate
- * items beyond curve/surface/point - axis placements, scalar measures,
- * descriptive text - or may be populated only with bounded surfaces
- * with no shell/face superstructure. Many importers reject as
- * "no solid found" or skip silently.
- * This fixture aggregates a LINE + AXIS2_PLACEMENT_3D + descriptive
- * text inside one GEOMETRIC_SET, plus a free-standing
- * B_SPLINE_SURFACE_WITH_KNOTS in another - neither has any face/shell
- * wrapping. */
+/* M051: GEOMETRIC_CURVE_SET aggregating non-geometric children — AXIS2_PLACEMENT_3D and DESCRIPTIVE_REPRESENTATION_ITEM alongside curves; input: AP242 STEP file with a bare GEOMETRIC_SET whose items list includes LINE, AXIS2_PLACEMENT_3D (a placement entity, not a geometric shape), and DESCRIPTIVE_REPRESENTATION_ITEM (a scalar/text item) — schema-illegal mix; OpenVSP (aero/preliminary-design tools): free-standing GEOMETRIC_CURVE_SET used as primary geometry container without shell/face superstructure; ISO 10303-42 §4.5.1: GEOMETRIC_SET items must be geometric_select (curve | surface | point); AXIS2_PLACEMENT_3D and DESCRIPTIVE_REPRESENTATION_ITEM are not in the geometric_select union; kernel must never silently drop: reject with diagnostic, or warn and preserve as wireframe shape; offer optional stitching pass for surface-only sets; OCC silently produces empty results on bare GEOMETRIC_SET / GEOMETRIC_CURVE_SET files without surfacing the wireframe-only nature; GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty; synonyms: bare GEOMETRIC_SET silent-empty, wireframe-only file appears empty, GEOMETRIC_CURVE_SET with non-geometric children, bare surface set rejected as no solid */
 HEADER;
-FILE_DESCRIPTION(('M051 test case','GEOMETRIC_SET with non-geometric children and free surfaces'),'2;1');
-FILE_NAME('M051.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('M051'),'2;1');
+FILE_NAME('M051.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-     REPRESENTATION_CONTEXT('part','3D'));
-/* A line, an axis placement, and a descriptive text. None of these
- * are valid GEOMETRIC_SET children except the line. */
-#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#101=DIRECTION('',(1.0,0.0,0.0));
-#102=VECTOR('',#101,1.0);
-#103=LINE('a_line',#100,#102);
-#104=DIRECTION('',(0.0,0.0,1.0));
-#105=AXIS2_PLACEMENT_3D('axis_at_origin',#100,#104,#101);
-#106=DESCRIPTIVE_REPRESENTATION_ITEM('label','this is text not geometry');
-/* Defect: GEOMETRIC_SET aggregates a LINE, an AXIS2_PLACEMENT and a
- * non-geometric DESCRIPTIVE_REPRESENTATION_ITEM. */
-#200=GEOMETRIC_SET('mixed_set',(#103,#105,#106));
-/* Free-standing B-spline surface with no face/shell wrapping. */
-#300=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#301=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#302=CARTESIAN_POINT('',(0.0,1.0,0.0));
-#303=CARTESIAN_POINT('',(1.0,1.0,1.0));
-#310=B_SPLINE_SURFACE_WITH_KNOTS('free_surface',1,1,
-       ((#300,#301),(#302,#303)),
-       .UNSPECIFIED.,.F.,.F.,.F.,
-       (2,2),(2,2),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
-#320=GEOMETRIC_SET('free_surfaces_only',(#310));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('line_origin',(0.,0.,0.));
+#2=DIRECTION('line_dir',(1.,0.,0.));
+#3=VECTOR(#2,100.);
+#4=LINE('axis_line',#1,#3);
+#5=CARTESIAN_POINT('placement_origin',(10.,0.,0.));
+#6=DIRECTION('placement_z',(0.,0.,1.));
+#7=DIRECTION('placement_x',(1.,0.,0.));
+#8=AXIS2_PLACEMENT_3D('non_geometric_item',#5,#6,#7);
+#9=DESCRIPTIVE_REPRESENTATION_ITEM('scale_note','1:1 — non-geometric annotation');
+#10=CARTESIAN_POINT('s00',(0.,0.,0.));
+#11=CARTESIAN_POINT('s01',(0.,50.,0.));
+#12=CARTESIAN_POINT('s10',(50.,0.,0.));
+#13=CARTESIAN_POINT('s11',(50.,50.,0.));
+#14=B_SPLINE_SURFACE_WITH_KNOTS('free_surface',1,1,((#10,#11),(#12,#13)),.UNSPECIFIED.,.F.,.F.,.F.,(2,2),(2,2),(0.,1.),(0.,1.),.PIECEWISE_BEZIER_KNOTS.);
+#15=GEOMETRIC_CURVE_SET('bare-geometric-set-non-geometric-children',(#4,#8,#9,#14));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M051','M051','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#15),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

@@ -1,63 +1,56 @@
 ISO-10303-21;
-/* M054 - FACETED_BREP linked to OPEN_SHELL (schema-illegal).
- * Defect: FACETED_BREP is required by the schema to reference a
- * CLOSED_SHELL. Some producers emit it pointing at an OPEN_SHELL.
- * OCCT only handles the closed case, so loading aborts with a "not
- * supported" diagnostic from StepToTopoDS_Builder.
- * This fixture: a FACETED_BREP whose `outer` argument is an
- * OPEN_SHELL rather than a CLOSED_SHELL. Topology is elided - the
- * structural defect is at the type level only. */
+/* M054: GEOMETRIC_CURVE_SET containing FACETED_BREP referencing OPEN_SHELL — schema-illegal: FACETED_BREP must reference CLOSED_SHELL; input: AP242 STEP file where FACETED_BREP points at an OPEN_SHELL instead of the schema-required CLOSED_SHELL; ISO 10303-42 §B.2 / AP242 schema: FACETED_BREP.outer is typed CLOSED_SHELL — no relaxation permitted; OCCT forum: loading aborts silently on open-shell FACETED_BREP; kernel must reject with a precise diagnostic; optionally heal by promoting the shell to CLOSED_SHELL if topology actually closes; OCC silently accepts (no diagnostic, empty result); GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty; synonyms: FACETED_BREP linked to OPEN_SHELL, schema-illegal faceted brep, faceted brep needs closed shell, schema-version vs entity-vocabulary disagreement */
 HEADER;
-FILE_DESCRIPTION(('M054 test case','FACETED_BREP outer is OPEN_SHELL'),'2;1');
-FILE_NAME('M054.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('M054'),'2;1');
+FILE_NAME('M054.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-     REPRESENTATION_CONTEXT('part','3D'));
-/* Body content elided: the schema violation lives at the
- * FACETED_BREP -> OPEN_SHELL link, not in any face data. */
-/* --- single triangular face placeholder for OPEN_SHELL --- */
-#5700=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
-#5701=CARTESIAN_POINT('p1',(1.0,0.0,0.0));
-#5702=CARTESIAN_POINT('p2',(0.0,1.0,0.0));
-#5710=VERTEX_POINT('',#5700);
-#5711=VERTEX_POINT('',#5701);
-#5712=VERTEX_POINT('',#5702);
-#5720=DIRECTION('dx',(1.0,0.0,0.0));
-#5721=DIRECTION('dy',(0.0,1.0,0.0));
-#5722=DIRECTION('dz',(0.0,0.0,1.0));
-#5730=VECTOR('vx',#5720,1.0);
-#5731=VECTOR('vy',#5721,1.0);
-#5732=VECTOR('vd',#5720,1.0);
-#5740=LINE('',#5700,#5730);
-#5741=DIRECTION('dxy',(-0.7071067811865476,0.7071067811865476,0.0));
-#5742=VECTOR('vxy',#5741,1.4142135623730951);
-#5743=LINE('',#5701,#5742);
-#5744=LINE('',#5700,#5731);
-#5760=EDGE_CURVE('',#5710,#5711,#5740,.T.);
-#5761=EDGE_CURVE('',#5711,#5712,#5743,.T.);
-#5762=EDGE_CURVE('',#5710,#5712,#5744,.T.);
-#5780=AXIS2_PLACEMENT_3D('',#5700,#5722,#5720);
-#5790=PLANE('',#5780);
-#5800=ORIENTED_EDGE('',*,*,#5760,.T.);
-#5801=ORIENTED_EDGE('',*,*,#5761,.T.);
-#5802=ORIENTED_EDGE('',*,*,#5762,.F.);
-#5830=EDGE_LOOP('',(#5800,#5801,#5802));
-#5840=FACE_OUTER_BOUND('',#5830,.T.);
-#5850=ADVANCED_FACE('placeholder',(#5840),#5790,.T.);
-/* OPEN_SHELL replacing empty () body */
-#100=OPEN_SHELL('outer_shell_should_be_closed',(#5850));
-#110=FACETED_BREP('illegal_faceted_brep',#100);
-#120=ADVANCED_BREP_SHAPE_REPRESENTATION('faceted_brep_with_open_shell',
-       (#110),#14);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('v0',(0.,0.,0.));
+#2=CARTESIAN_POINT('v1',(10.,0.,0.));
+#3=CARTESIAN_POINT('v2',(0.,10.,0.));
+#4=VERTEX_POINT('vx0',#1);
+#5=VERTEX_POINT('vx1',#2);
+#6=VERTEX_POINT('vx2',#3);
+#7=DIRECTION('d01',(1.,0.,0.));
+#8=VECTOR(#7,10.);
+#9=LINE('l01',#1,#8);
+#10=EDGE_CURVE('e01',#4,#5,#9,.T.);
+#11=DIRECTION('d12',(-1.,1.,0.));
+#12=VECTOR(#11,14.142);
+#13=LINE('l12',#2,#12);
+#14=EDGE_CURVE('e12',#5,#6,#13,.T.);
+#15=DIRECTION('d20',(0.,-1.,0.));
+#16=VECTOR(#15,10.);
+#17=LINE('l20',#3,#16);
+#18=EDGE_CURVE('e20',#6,#4,#17,.T.);
+#19=ORIENTED_EDGE('',*,*,#10,.T.);
+#20=ORIENTED_EDGE('',*,*,#14,.T.);
+#21=ORIENTED_EDGE('',*,*,#18,.T.);
+#22=EDGE_LOOP('',(#19,#20,#21));
+#23=CARTESIAN_POINT('plane_origin',(0.,0.,0.));
+#24=DIRECTION('plane_normal',(0.,0.,1.));
+#25=DIRECTION('plane_ref',(1.,0.,0.));
+#26=AXIS2_PLACEMENT_3D('plane_placement',#23,#24,#25);
+#27=PLANE('tri_plane',#26);
+#28=FACE_OUTER_BOUND('',#22,.T.);
+#29=ADVANCED_FACE('tri_face',(#28),#27,.T.);
+#30=OPEN_SHELL('open_shell_illegal',(#29));
+#31=FACETED_BREP('faceted_brep_open_shell',#30);
+#32=GEOMETRIC_CURVE_SET('faceted-brep-linked-to-open-shell',(#31,#30,#26));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M054','M054','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#32),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

@@ -1,27 +1,33 @@
 ISO-10303-21;
-/* M058 - File mixing AP203 and AP214 entities in the same DATA
- * section
- * Defect: ISO 10303-21 FILE_SCHEMA declares one (or more) active
- * schemas. When a single FILE_SCHEMA names AP203 only but the
- * DATA section contains entities defined only in AP214 (e.g.
- * SOLID_ANGLE_UNIT with the AP214-specific 'name' attribute, or
- * AP214's MEASURE_REPRESENTATION_ITEM extension), strict AP203
- * readers either reject the unknown entity or attempt to parse
- * it under AP203 with possibly wrong attribute interpretation. */
+/* M058: GEOMETRIC_CURVE_SET in file with AP203 FILE_SCHEMA but AP214-only entity APPLIED_GROUP_ASSIGNMENT in DATA — schema declaration vs entity-set mismatch; input: STEP file with FILE_SCHEMA(('CONFIG_CONTROL_DESIGN')) (AP203) whose DATA section contains APPLIED_GROUP_ASSIGNMENT, an entity defined only in AP214 (ISO 10303-214 §4.6.1) and absent from AP203 (CONFIG_CONTROL_DESIGN); strict AP203 readers reject the unknown entity type; tolerant readers attempt to parse under AP203 with possibly wrong attribute interpretation, producing silent corruption; kernel must reject unknown entity types in the declared schema; or, in tolerant mode, accept under the most-capable available schema with a warning; OCC silently accepts (no diagnostic, empty result); GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty; synonyms: AP203 tag with AP214 entities, schema-version vs entity-vocabulary disagreement, AP214-only entity in AP203 file, mixed schema declaration */
 HEADER;
-FILE_DESCRIPTION(('M058 - AP203 schema with AP214-only entity in DATA'),'2;1');
-FILE_NAME('M058.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+FILE_DESCRIPTION(('M058'),'2;1');
+FILE_NAME('M058.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('config_control_design');
-#2=PRODUCT_CONTEXT('part',#1,'mechanical');
-#10=PRODUCT('hybrid','part','',(#2));
-/* AP214-only entity: APPLIED_GROUP_ASSIGNMENT does not exist in
- * AP203. */
-#20=GROUP('group','sample group','',$);
-#21=APPLIED_GROUP_ASSIGNMENT(#20,(#10));
-#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=DESCRIPTIVE_REPRESENTATION_ITEM('file_schema_override','CONFIG_CONTROL_DESIGN');
+#2=GROUP('component_group','Design group for sub-components');
+#3=CARTESIAN_POINT('part_origin',(0.,0.,0.));
+#4=DIRECTION('z_axis',(0.,0.,1.));
+#5=DIRECTION('x_axis',(1.,0.,0.));
+#6=AXIS2_PLACEMENT_3D('part_placement',#3,#4,#5);
+#7=CIRCLE('part_circle',#6,25.);
+#8=APPLIED_GROUP_ASSIGNMENT(#2,(#7));
+#9=GEOMETRIC_CURVE_SET('ap203-schema-with-ap214-entity-applied-group',(#2,#8,#7,#1,#6));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M058','M058','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

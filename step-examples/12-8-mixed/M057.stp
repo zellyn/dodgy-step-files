@@ -1,34 +1,35 @@
 ISO-10303-21;
-/* M057 - File declaring AP203 schema but using a Boolean expression
- * that strict AP203 readers reject (AP242-only attribute on a base
- * entity)
- * Defect: ISO 10303-21 declares the active EXPRESS schema in
- * FILE_SCHEMA. AP203 is a stable, narrow schema; AP242 extends
- * many AP203 entities with extra optional attributes. A producer
- * configured for AP242 but mistakenly emitting an AP203 schema
- * tag may emit entities at AP242 arity (extra attributes) that
- * a strict AP203 reader rejects ("attribute count mismatch") even
- * though every individual attribute is well-formed. */
+/* M057: GEOMETRIC_CURVE_SET in file declaring AP203 schema (CONFIG_CONTROL_DESIGN) but emitting AP242-arity PRODUCT with 5 attributes — schema-version mismatch; input: STEP file with FILE_SCHEMA(('CONFIG_CONTROL_DESIGN')) (AP203) whose DATA section contains a PRODUCT entity with 5 attributes: name, id, description, frame_of_reference, AND a 5th AP242-only attribute; AP203 PRODUCT (ISO 10303-214 Ed.3 §4.4.1) has exactly 4 attributes; a strict AP203 reader raises 'attribute count mismatch' and aborts; a tolerant reader must log the schema mismatch and accept using minimum-arity interpretation, documenting the chosen policy; OCC silently accepts (no diagnostic, empty result); GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty; synonyms: AP203 schema declared but uses AP242 entities, schema-version vs entity-vocabulary disagreement, AP203 tag with AP242 arity, FILE_SCHEMA mismatch with DATA */
 HEADER;
-FILE_DESCRIPTION(('M057 - AP203 schema tag with AP242 entity arity'),'2;1');
-FILE_NAME('M057.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-/* Defect: declares AP203_CONFIG_CONTROL_DESIGN but instances use
- * AP242 attribute counts */
-FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+FILE_DESCRIPTION(('M057'),'2;1');
+FILE_NAME('M057.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('config_control_design');
-#2=PRODUCT_CONTEXT('part',#1,'mechanical');
-/* AP242 PRODUCT carries 4 attributes (id, name, description,
- * frame_of_reference). AP203 PRODUCT also has 4 - but if the
- * producer mistakenly emits a 5th (an AP242-only "id_owner"
- * concept), a strict AP203 parser rejects. */
-#10=PRODUCT('Pmi-001','partA','description',(#2),'extra_unknown');
-#11=PRODUCT('Pmi-002','partB','description',(#2));
-#20=CARTESIAN_POINT('o',(0.0,0.0,0.0));
-#21=DIRECTION('z',(0.0,0.0,1.0));
-#22=DIRECTION('x',(1.0,0.0,0.0));
-#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=DESCRIPTIVE_REPRESENTATION_ITEM('file_schema_override','CONFIG_CONTROL_DESIGN');
+#2=PRODUCT_CONTEXT('',APPLICATION_CONTEXT('mechanical design'),'design');
+#3=PRODUCT('part_001','Widget','AP242-arity product in AP203 file',(#2),'extra_ap242_attribute');
+#4=CARTESIAN_POINT('origin',(0.,0.,0.));
+#5=DIRECTION('z_axis',(0.,0.,1.));
+#6=DIRECTION('x_axis',(1.,0.,0.));
+#7=AXIS2_PLACEMENT_3D('placement',#4,#5,#6);
+#8=DIRECTION('line_dir',(0.,1.,0.));
+#9=VECTOR(#8,10.);
+#10=LINE('part_edge',#4,#9);
+#11=GEOMETRIC_CURVE_SET('ap203-schema-tag-with-ap242-arity-product',(#3,#1,#10,#7));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M057','M057','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#11),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
