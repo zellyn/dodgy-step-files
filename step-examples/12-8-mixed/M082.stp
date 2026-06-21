@@ -1,33 +1,57 @@
 ISO-10303-21;
-/* M082 - AP209 element node order winds the wrong way.
- * Defect: a SURFACE_3D_ELEMENT_DESCRIPTOR for a linear_quadrilateral
- * lists corner nodes in clockwise order when viewed from the surface
- * normal, but AP209 (and most FEA conventions) require counter-clockwise
- * winding. The element's Jacobian determinant is negative; volume /
- * area integrals come out with the wrong sign. */
+/* M082: AP209 surface element node order is clockwise (negative Jacobian) */
+/* DEFECT: linear_quadrilateral nodes listed CW: n1(0,0),n4(0,1),n3(1,1),n2(1,0) */
+/* CCW convention: n1(0,0),n2(1,0),n3(1,1),n4(0,1) */
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
+/* Byte assertion: contains(b'SURFACE_3D_ELEMENT_DESCRIPTOR') */
 HEADER;
-FILE_DESCRIPTION(('M082 test case','AP209 element node order reversed'),'2;1');
-FILE_NAME('M082.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M082: AP209 linear_quadrilateral with clockwise node order'),'2;1');
+FILE_NAME('M082.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
 FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('structural_analysis_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'structural_analysis_design',2001,#1);
+/* Standard unit context */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('fea','3D'));
-/* Quad nodes: CCW order would be n1,n2,n3,n4 with positive Z normal.
- * Here we list them CW: n1,n4,n3,n2. */
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('fea','3D'));
+/* Unit-square quad corners */
+/* n1=(0,0,0) n2=(1,0,0) n3=(1,1,0) n4=(0,1,0) in geometric CCW order */
 #100=CARTESIAN_POINT('n1',(0.0,0.0,0.0));
 #101=CARTESIAN_POINT('n2',(1.0,0.0,0.0));
 #102=CARTESIAN_POINT('n3',(1.0,1.0,0.0));
 #103=CARTESIAN_POINT('n4',(0.0,1.0,0.0));
-#110=NODE('n1',(#100),$);#111=NODE('n2',(#101),$);
-#112=NODE('n3',(#102),$);#113=NODE('n4',(#103),$);
-/* Defect: clockwise winding order, negative Jacobian. */
-#200=SURFACE_3D_ELEMENT_DESCRIPTOR('quad','linear_quadrilateral',
-       (#110,#113,#112,#111));
+#110=NODE('n1',(#100),$);
+#111=NODE('n2',(#101),$);
+#112=NODE('n3',(#102),$);
+#113=NODE('n4',(#103),$);
+/* Byte assertion: contains(b'SURFACE_3D_ELEMENT_DESCRIPTOR') */
+/* DEFECT: node list is n1,n4,n3,n2 — clockwise winding, negative Jacobian */
+/* CCW convention would be n1,n2,n3,n4 */
+/* Clockwise: (0,0) -> (0,1) -> (1,1) -> (1,0) viewed from +Z */
+#120=SURFACE_3D_ELEMENT_DESCRIPTOR('quad','linear_quadrilateral',
+  (#110,#113,#112,#111));
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#300=GEOMETRIC_CURVE_SET('ap209-linear-quadrilateral-clockwise-negative-jacobian',
+  (#110,#111,#112,#113,#120));
+/* Product chain */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M082','M082','M082',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#300),#14);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;

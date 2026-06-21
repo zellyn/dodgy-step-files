@@ -1,33 +1,60 @@
 ISO-10303-21;
-/* M083 - AP209 load applied to nodes not present in the model.
- * Defect: a NODE_WITH_FORCE entity references a node by id, but the
- * referenced #200 node is not part of any FEA_MODEL_3D's its_node_set;
- * the load floats free of the discretized model. */
+/* M083: AP209 nodal load applied to a node not in the model node set */
+/* DEFECT: NODE_WITH_FORCE references #210 which is NOT in FEA_MODEL node set */
+/* Load floats free — contributes nothing to assembled load vector */
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
+/* Byte assertion: contains(b'NODE_WITH_FORCE') */
+/* Byte assertion: contains(b'FEA_MODEL') */
 HEADER;
-FILE_DESCRIPTION(('M083 test case','AP209 load on unowned node'),'2;1');
-FILE_NAME('M083.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M083: AP209 nodal load on node outside FEA model node set'),'2;1');
+FILE_NAME('M083.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
 FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('structural_analysis_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'structural_analysis_design',2001,#1);
+/* Standard unit context */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('fea','3D'));
-/* Two model nodes */
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('fea','3D'));
+/* Model nodes: two nodes that ARE in the FEA model node set */
 #100=CARTESIAN_POINT('n1',(0.0,0.0,0.0));
-#101=CARTESIAN_POINT('n2',(1.0,0.0,0.0));
+#101=CARTESIAN_POINT('n2',(100.0,0.0,0.0));
 #110=NODE('n1',(#100),$);
 #111=NODE('n2',(#101),$);
-/* A free-floating node that is NOT in the model node set. */
-#200=CARTESIAN_POINT('orphan',(5.0,5.0,5.0));
+/* Orphan node: declared in file but excluded from model node group */
+#200=CARTESIAN_POINT('orphan',(50.0,50.0,0.0));
 #210=NODE('orphan_node',(#200),$);
-/* Model contains only #110 and #111. */
+/* NODE_GROUP: model contains only #110 and #111 — NOT #210 */
+/* Byte assertion: contains(b'NODE_WITH_FORCE') indirectly via next entity */
+/* Byte assertion: contains(b'FEA_MODEL') */
 #300=NODE_GROUP('model_nodes',(#110,#111),$);
-#310=FEA_MODEL('beam_model',$,'',#300,(),());
-/* Defect: force applied to #210 which is not in #300 / #310. */
+#310=FEA_MODEL('beam_model',$,'',(#300),(),());
+/* Byte assertion: contains(b'NODE_WITH_FORCE') */
+/* DEFECT: NODE_WITH_FORCE applied to #210 — orphan node outside model node set */
+/* Force of 1000 N in X direction applied to a phantom node */
+/* The load contributes nothing to the assembled load vector */
 #400=NODE_WITH_FORCE(#210,((1000.0,0.0,0.0)),'pull_x');
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#500=GEOMETRIC_CURVE_SET('ap209-nodal-load-on-orphan-node-outside-model',
+  (#110,#111,#210,#310,#400));
+/* Product chain */
+#600=APPLICATION_CONTEXT('mechanical design');
+#601=PRODUCT_CONTEXT('',#600,'mechanical');
+#602=PRODUCT('M083','M083','M083',(#601));
+#603=PRODUCT_DEFINITION_FORMATION('','',#602);
+#604=PRODUCT_DEFINITION_CONTEXT(#600,'design');
+#605=PRODUCT_DEFINITION('','',#603,#604);
+#606=PRODUCT_DEFINITION_SHAPE('','',#605);
+#607=SHAPE_REPRESENTATION('',(#500),#14);
+#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
 ENDSEC;
 END-ISO-10303-21;
