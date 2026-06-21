@@ -1,30 +1,66 @@
 ISO-10303-21;
-/* M183 - AP238 WORKPIECE_SETUP coordinate system not aligned with machine axes.
- * Defect: a WORKPIECE_SETUP's placement axes are rotated 17.3 degrees
- * about the machine Z-axis with no rotational fixturing declared. The
- * machine cannot drive its X/Y stages along the workpiece's local axes;
- * every toolpath issues compound moves that exceed acceleration limits. */
+/* M183: AP238 workpiece_setup coordinate system not aligned with machine axes */
+/* DEFECT: WORKPIECE_SETUP x-axis (0.9550, 0.2974, 0.0) — 17.3 deg rotation about Z */
+/* No rotary fixturing or rotary stage declared in this file */
+/* Machine cannot drive linear X/Y stages along skewed workpiece axes */
+/* Every toolpath requires compound simultaneous moves exceeding acceleration limits */
+/* Per ISO 10303-238 §5.4 setup orientation must align with machine axes (no rotary) */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'WORKPIECE_SETUP') */
+/* Byte assertion: contains(b'workpiece_csys_rotated') */
 HEADER;
-FILE_DESCRIPTION(('M183 test case','AP238 workpiece-setup axes off machine axes'),'2;1');
-FILE_NAME('M183.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M183: AP238 workpiece_setup rotated 17.3 deg with no rotary fixturing'),'2;1');
+FILE_NAME('M183.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 3 1 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('nc','3D'));
-/* Defect: workpiece-setup axis rotated 17.3 deg from machine X (cos = 0.9550,
-   sin = 0.2974). No rotary fixturing declared. */
-#50=DIRECTION('z',(0.0,0.0,1.0));
-#51=DIRECTION('x_off_axis',(0.9550,0.2974,0.0));
-#100=AXIS2_PLACEMENT_3D('workpiece_csys_rotated',
-  CARTESIAN_POINT('o',(0.0,0.0,0.0)),#50,#51);
-#400=WORKPIECE('part_a',$,$,$,$,$,$);
-#150=WORKPIECE_SETUP('vise_misaligned',#100,$,#400,$);
-#200=WORKPLAN('main',(),$,$,$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* mm length unit reference for MEASURE_WITH_UNIT */
+#15=SI_UNIT(.MILLI.,.METRE.);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#20=GEOMETRIC_CURVE_SET('ap238-workpiece-setup-coordinate-system-not-aligned-with-machine-axes',
+  (#41,#52,#60));
+/* Setup origin at machine zero */
+#30=CARTESIAN_POINT('setup_origin',(0.0,0.0,0.0));
+/* Machine Z-axis (vertical) */
+#31=DIRECTION('machine_z',(0.0,0.0,1.0));
+/* DEFECT: x-axis rotated 17.3 degrees — cos(17.3 deg)=0.9550, sin(17.3 deg)=0.2974 */
+#32=DIRECTION('rotated_x',(0.9550,0.2974,0.0));
+/* DEFECT: skewed coordinate system — 17.3 deg rotation about Z-axis */
+#33=AXIS2_PLACEMENT_3D('rotated_csys',#30,#31,#32);
+/* NC workpiece being positioned in the skewed setup */
+#40=WORKPIECE('nc_workpiece','Workpiece for skewed setup test',$,$,$,$,$);
+/* Byte assertion: contains(b'WORKPIECE_SETUP') */
+/* Byte assertion: contains(b'workpiece_csys_rotated') */
+/* DEFECT: WORKPIECE_SETUP using rotated_csys — 17.3 deg skew, no rotary stage */
+#41=WORKPIECE_SETUP('workpiece_csys_rotated',#33,#40,$,$,$);
+/* WORKPIECE 'mill_workpiece' for the milling step */
+#60=WORKPIECE('mill_workpiece','Workpiece for skewed-setup milling',$,$,$,$,$);
+/* MILLING_OPERATION for the skewed setup scenario */
+#52=MILLING_OPERATION('mill_op',$,$,$,$,$,$,$,$,$,$,$,$);
+/* MACHINING_WORKINGSTEP links milling op to workpiece */
+#51=MACHINING_WORKINGSTEP('mill_step','Skewed setup mill step',#52,#60,$);
+/* WORKPLAN: milling on skewed workpiece setup without rotary stage */
+#50=WORKPLAN('skewed_setup_program','Skewed setup milling workplan',(),$,(#51));
+/* Product chain */
+#100=APPLICATION_CONTEXT('mechanical design');
+#101=PRODUCT_CONTEXT('',#100,'mechanical');
+#102=PRODUCT('M183','M183','M183',(#101));
+#103=PRODUCT_DEFINITION_FORMATION('','',#102);
+#104=PRODUCT_DEFINITION_CONTEXT(#100,'design');
+#105=PRODUCT_DEFINITION('','',#103,#104);
+#106=PRODUCT_DEFINITION_SHAPE('','',#105);
+#107=SHAPE_REPRESENTATION('',(#20),#14);
+#108=SHAPE_DEFINITION_REPRESENTATION(#106,#107);
 ENDSEC;
 END-ISO-10303-21;

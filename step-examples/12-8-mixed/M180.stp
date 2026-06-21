@@ -1,31 +1,61 @@
 ISO-10303-21;
-/* M180 - AP238 INSPECTION_RESULT measurement uncertainty larger than feature tolerance.
- * Defect: an INSPECTION_RESULT records a measurement_uncertainty of
- * 0.05 mm against a feature whose design tolerance is +/-0.02 mm. The
- * measurement is statistically incapable of confirming or denying
- * conformance - it tells you nothing. Reporting it as "in spec" or
- * "out of spec" is misleading. */
+/* M180: AP238 inspection_result measurement uncertainty exceeds feature tolerance */
+/* DEFECT: INSPECTION_RESULT uncertainty 0.05 mm; PLUS_MINUS_TOLERANCE +/-0.02 mm */
+/* Measurement uncertainty 0.05 mm exceeds feature tolerance range 0.04 mm */
+/* Gauge cannot statistically confirm or deny conformance with this tolerance */
+/* Reporting as in-spec or out-of-spec is meaningless — gauge incapable */
+/* Per ISO 10303-238 §5.8 uncertainty must be below tolerance for valid inspection */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'INSPECTION_RESULT') */
+/* Byte assertion: contains(b'PLUS_MINUS_TOLERANCE') */
 HEADER;
-FILE_DESCRIPTION(('M180 test case','AP238 inspection uncertainty exceeds feature tolerance'),'2;1');
-FILE_NAME('M180.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M180: AP238 inspection_result uncertainty 0.05mm exceeds tolerance 0.02mm'),'2;1');
+FILE_NAME('M180.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 3 1 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('nc','3D'));
-/* Feature design tolerance: +/-0.02 mm. */
-#400=ROUND_HOLE('precision_hole',$,$,$,$);
-#410=PLUS_MINUS_TOLERANCE('hole_tol',
-  MEASURE_WITH_UNIT(LENGTH_MEASURE(0.02),#10),
-  MEASURE_WITH_UNIT(LENGTH_MEASURE(-0.02),#10),#400);
-/* Defect: measurement uncertainty 0.05 mm > tolerance 0.02 mm. */
-#80=MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(0.05),#10);
-#100=INSPECTION_RESULT('result_hole1',$,#400,$,#80);
-#200=WORKPLAN('main',(),$,$,$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* mm length unit reference for MEASURE_WITH_UNIT */
+#15=SI_UNIT(.MILLI.,.METRE.);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#20=GEOMETRIC_CURVE_SET('ap238-inspection-uncertainty-exceeds-feature-tolerance',
+  (#43,#52,#60));
+/* Byte assertion: contains(b'PLUS_MINUS_TOLERANCE') */
+/* Feature design tolerance: +/-0.02 mm (total range 0.04 mm) */
+#41=MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(0.02),#15);
+#40=PLUS_MINUS_TOLERANCE(#41,$);
+/* DEFECT: measurement_uncertainty 0.05 mm exceeds tolerance range 0.04 mm */
+#42=MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(0.05),#15);
+/* Byte assertion: contains(b'INSPECTION_RESULT') */
+/* DEFECT: INSPECTION_RESULT with uncertainty 0.05mm against +/-0.02mm tolerance */
+#43=INSPECTION_RESULT('bad_inspection_result',$,#40,#42,$);
+/* WORKPIECE 'inspection_workpiece' */
+#60=WORKPIECE('inspection_workpiece','Workpiece for gauge-incapable inspection test',$,$,$,$,$);
+/* INSPECTION_OPERATION references the bad inspection result */
+#52=INSPECTION_OPERATION('inspection_op',$,$,$,$,$,#43,$);
+/* MACHINING_WORKINGSTEP links inspection op to workpiece */
+#51=MACHINING_WORKINGSTEP('inspection_step','Gauge-incapable inspection workingstep',#52,#60,$);
+/* WORKPLAN: single inspection step with gauge-incapable uncertainty */
+#50=WORKPLAN('inspection_gauge_incapable_program','Gauge incapable inspection workplan',(),$,(#51));
+/* Product chain */
+#100=APPLICATION_CONTEXT('mechanical design');
+#101=PRODUCT_CONTEXT('',#100,'mechanical');
+#102=PRODUCT('M180','M180','M180',(#101));
+#103=PRODUCT_DEFINITION_FORMATION('','',#102);
+#104=PRODUCT_DEFINITION_CONTEXT(#100,'design');
+#105=PRODUCT_DEFINITION('','',#103,#104);
+#106=PRODUCT_DEFINITION_SHAPE('','',#105);
+#107=SHAPE_REPRESENTATION('',(#20),#14);
+#108=SHAPE_DEFINITION_REPRESENTATION(#106,#107);
 ENDSEC;
 END-ISO-10303-21;

@@ -1,28 +1,65 @@
 ISO-10303-21;
-/* M185 - AP238 MACHINING_TOOL_FEEDSPEED feed-per-tooth x spindle speed exceeds tool max.
- * Defect: a MACHINING_TOOL_FEEDSPEED declares spindle 12000 rpm and
- * feed-per-tooth 0.10 mm with a 4-flute end-mill, giving an effective
- * feed of 12000 x 4 x 0.10 = 4800 mm/min. Tool manufacturer's rated
- * maximum chip-load for a 6 mm carbide cutter is closer to 0.04 mm
- * per tooth at this RPM; the tool will fracture. */
+/* M185: AP238 machining_tool_feedspeed product exceeds tool envelope */
+/* DEFECT: spindle 12000 rpm x 4 flutes x 0.10 mm/tooth = 4800 mm/min feed */
+/* Rated chip-load at 12000 rpm for 6mm carbide: 0.04 mm/tooth maximum */
+/* Declared feed-per-tooth 0.10 mm is 2.5x the rated maximum 0.04 mm/tooth */
+/* The 6 mm carbide end-mill will fracture under this aggressive chip-load */
+/* Per ISO 10303-238 §5.8 feedspeed product must not exceed tool-family envelope */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'MACHINING_TOOL_FEEDSPEED') */
+/* Byte assertion: contains(b'12000.0') */
 HEADER;
-FILE_DESCRIPTION(('M185 test case','AP238 feedspeed product exceeds tool envelope'),'2;1');
-FILE_NAME('M185.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M185: AP238 machining_tool_feedspeed 12000rpm x 0.10mm/tooth exceeds envelope'),'2;1');
+FILE_NAME('M185.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 3 1 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('nc','3D'));
-/* Defect: feed-per-tooth 0.10 mm x 4 flutes x 12000 rpm = 4800 mm/min,
-   well above tool envelope. */
-#80=MEASURE_WITH_UNIT(POSITIVE_RATIO_MEASURE(12000.0),#10);
-#81=MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(0.10),#10);
-#100=MACHINING_TOOL_FEEDSPEED('aggressive_chipload',#80,#81,$);
-#200=WORKPLAN('main',(),$,$,$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* mm length unit reference for MEASURE_WITH_UNIT */
+#15=SI_UNIT(.MILLI.,.METRE.);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#20=GEOMETRIC_CURVE_SET('ap238-machining-tool-feedspeed-exceeds-tool-envelope',
+  (#30,#40,#52,#60));
+/* END_MILL_TOOL 'carbide_endmill_6mm': 4-flute carbide, 6 mm diameter */
+/* Manufacturer rated chip-load at 12000 rpm: 0.04 mm/tooth maximum */
+#31=MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(6.0),#15);
+#30=END_MILL_TOOL('carbide_endmill_6mm',$,#31,$,4,$,$,$,$);
+/* Byte assertion: contains(b'MACHINING_TOOL_FEEDSPEED') */
+/* Byte assertion: contains(b'12000.0') */
+/* DEFECT: spindle_speed 12000.0 rpm — at rated chip-load limit */
+#41=MEASURE_WITH_UNIT(POSITIVE_RATIO_MEASURE(12000.0),#11);
+/* DEFECT: feed_per_tooth 0.10 mm — 2.5x rated maximum of 0.04 mm/tooth */
+#42=MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(0.10),#15);
+/* DEFECT: MACHINING_TOOL_FEEDSPEED with 12000 rpm x 4-flute x 0.10 mm/tooth */
+/* Effective feed 4800 mm/min — tool will fracture from excessive chip-load */
+#40=MACHINING_TOOL_FEEDSPEED('aggressive_feedspeed',#41,#42,$,$);
+/* WORKPIECE 'mill_workpiece' */
+#60=WORKPIECE('mill_workpiece','Workpiece for overspeed feed test',$,$,$,$,$);
+/* MILLING_OPERATION references the carbide end-mill with aggressive feedspeed */
+#52=MILLING_OPERATION('mill_op',$,$,$,$,$,#30,$,$,$,#40,$,$);
+/* MACHINING_WORKINGSTEP links milling op to workpiece */
+#51=MACHINING_WORKINGSTEP('mill_step','Overspeed milling workingstep',#52,#60,$);
+/* WORKPLAN: milling step with aggressive feedspeed exceeding tool envelope */
+#50=WORKPLAN('overspeed_endmill_program','Overspeed end-mill milling workplan',(),$,(#51));
+/* Product chain */
+#100=APPLICATION_CONTEXT('mechanical design');
+#101=PRODUCT_CONTEXT('',#100,'mechanical');
+#102=PRODUCT('M185','M185','M185',(#101));
+#103=PRODUCT_DEFINITION_FORMATION('','',#102);
+#104=PRODUCT_DEFINITION_CONTEXT(#100,'design');
+#105=PRODUCT_DEFINITION('','',#103,#104);
+#106=PRODUCT_DEFINITION_SHAPE('','',#105);
+#107=SHAPE_REPRESENTATION('',(#20),#14);
+#108=SHAPE_DEFINITION_REPRESENTATION(#106,#107);
 ENDSEC;
 END-ISO-10303-21;
