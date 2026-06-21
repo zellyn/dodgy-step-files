@@ -1,51 +1,55 @@
 ISO-10303-21;
-/* Pf031 - STEP read parsing slow due to single-pass tokenisation.
- * Pattern: 100 MB STEP files with millions of small entities; the parser
- * issues one read syscall per character. Production scale: ~10^7
- * CARTESIAN_POINTs.
- * Notes: scaled-down representative - this fixture has ~30
- * CARTESIAN_POINTs to make the small-entity-density pattern recognisable
- * to a static scanner; replicate the block to ~10^6 to reproduce the
- * production-scale 100 MB I/O-dominated parse. */
+/* Pf031: STEP read parsing slow due to single-pass tokenisation: parser issues one read syscall per character; 100 MB file with millions of small entities causes hundreds of millions of OS read calls; heal: use bulk-buffered I/O or memory-mapped input; scaled-down representative with 30 CARTESIAN_POINTs — replicate to 10^6 for production scale; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Pf031 test case','Slow STEP read due to single-byte tokenisation'),'2;1');
-FILE_NAME('Pf031.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Pf031'),'2;1');
+FILE_NAME('Pf031.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* ~30 small CARTESIAN_POINTs - the scaled representative of the
- * "millions of small entities" pattern. */
-#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#101=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#102=CARTESIAN_POINT('',(2.0,0.0,0.0));
-#103=CARTESIAN_POINT('',(3.0,0.0,0.0));
-#104=CARTESIAN_POINT('',(4.0,0.0,0.0));
-#105=CARTESIAN_POINT('',(5.0,0.0,0.0));
-#106=CARTESIAN_POINT('',(6.0,0.0,0.0));
-#107=CARTESIAN_POINT('',(7.0,0.0,0.0));
-#108=CARTESIAN_POINT('',(8.0,0.0,0.0));
-#109=CARTESIAN_POINT('',(9.0,0.0,0.0));
-#110=CARTESIAN_POINT('',(0.0,1.0,0.0));
-#111=CARTESIAN_POINT('',(1.0,1.0,0.0));
-#112=CARTESIAN_POINT('',(2.0,1.0,0.0));
-#113=CARTESIAN_POINT('',(3.0,1.0,0.0));
-#114=CARTESIAN_POINT('',(4.0,1.0,0.0));
-#115=CARTESIAN_POINT('',(5.0,1.0,0.0));
-#116=CARTESIAN_POINT('',(6.0,1.0,0.0));
-#117=CARTESIAN_POINT('',(7.0,1.0,0.0));
-#118=CARTESIAN_POINT('',(8.0,1.0,0.0));
-#119=CARTESIAN_POINT('',(9.0,1.0,0.0));
-#120=CARTESIAN_POINT('',(0.0,2.0,0.0));
-#121=CARTESIAN_POINT('',(1.0,2.0,0.0));
-#122=CARTESIAN_POINT('',(2.0,2.0,0.0));
-#123=CARTESIAN_POINT('',(3.0,2.0,0.0));
-#124=CARTESIAN_POINT('',(4.0,2.0,0.0));
-#125=CARTESIAN_POINT('',(5.0,2.0,0.0));
-#126=CARTESIAN_POINT('',(6.0,2.0,0.0));
-#127=CARTESIAN_POINT('',(7.0,2.0,0.0));
-#128=CARTESIAN_POINT('',(8.0,2.0,0.0));
-#129=CARTESIAN_POINT('',(9.0,2.0,0.0));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#3=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#4=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#5=CARTESIAN_POINT('',(4.0,0.0,0.0));
+#6=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(6.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(7.0,0.0,0.0));
+#9=CARTESIAN_POINT('',(8.0,0.0,0.0));
+#10=CARTESIAN_POINT('',(9.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#12=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#13=CARTESIAN_POINT('',(2.0,1.0,0.0));
+#14=CARTESIAN_POINT('',(3.0,1.0,0.0));
+#15=CARTESIAN_POINT('',(4.0,1.0,0.0));
+#16=CARTESIAN_POINT('',(5.0,1.0,0.0));
+#17=CARTESIAN_POINT('',(6.0,1.0,0.0));
+#18=CARTESIAN_POINT('',(7.0,1.0,0.0));
+#19=CARTESIAN_POINT('',(8.0,1.0,0.0));
+#20=CARTESIAN_POINT('',(9.0,1.0,0.0));
+#21=CARTESIAN_POINT('',(0.0,2.0,0.0));
+#22=CARTESIAN_POINT('',(1.0,2.0,0.0));
+#23=CARTESIAN_POINT('',(2.0,2.0,0.0));
+#24=CARTESIAN_POINT('',(3.0,2.0,0.0));
+#25=CARTESIAN_POINT('',(4.0,2.0,0.0));
+#26=CARTESIAN_POINT('',(5.0,2.0,0.0));
+#27=CARTESIAN_POINT('',(6.0,2.0,0.0));
+#28=CARTESIAN_POINT('',(7.0,2.0,0.0));
+#29=CARTESIAN_POINT('',(8.0,2.0,0.0));
+#30=CARTESIAN_POINT('',(9.0,2.0,0.0));
+#31=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Pf031','Pf031','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#31),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

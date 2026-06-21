@@ -1,73 +1,162 @@
 ISO-10303-21;
-/* Pf020 - OCAF modification-delta leak on long-running healing test
-   suites (quaoar B013).  OCAF's modification-delta mechanism for
-   array-style attributes (Active Data Mesh Attribute) skips a destructor
-   on the previous state; long-running suites that perform thousands of
-   modify/commit cycles accumulate memory.  Hides as "test-suite OOM".
-   The trigger is repeated modify/commit, not the file content. We
-   provide a small mesh-attribute-bearing file with multiple array
-   targets so a regression suite can open / mutate / commit it many
-   times under varying mutation patterns.
-   Scaling-up: have a test driver run thousands of modify/commit cycles
-   on this file's attributes; observe RSS growth proportional to
-   iteration count. The fixture only needs to look like representative
-   in-memory state — the leak is in the OCAF Backup/Delta path. */
+/* Pf020: OCAF modification-delta leak: Backup/Delta lifetime in OCAF must be bounded; coerce to release after commit; this fixture is a multi-face solid used by a test driver that performs thousands of modify/commit cycles; observe RSS growth proportional to iteration count; MANIFOLD_SOLID_BREP IS model entity — OCC yields shape(1) */
 HEADER;
-FILE_DESCRIPTION(('Pf020 - OCAF mod-delta leak: multi-attribute mesh file'),'2;1');
-FILE_NAME('Pf020.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Pf020'),'2;1');
+FILE_NAME('Pf020.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2001,#1);
-#3=PRODUCT_CONTEXT('',#1,'mechanical');
-#4=PRODUCT('LEAK-TARGET','','',(#3));
-#5=PRODUCT_DEFINITION_FORMATION('','',#4);
-#6=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
-#7=PRODUCT_DEFINITION('design','',#5,#6);
-#8=( NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) LENGTH_UNIT() );
-#9=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#8,'','');
-#10=( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT
-  ((#9)) GLOBAL_UNIT_ASSIGNED_CONTEXT((#8)) REPRESENTATION_CONTEXT('','3D') );
-/* basic placement (always present so ShapeFix has somewhere to start) */
-#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#21=DIRECTION('',(0.0,0.0,1.0));
-#22=DIRECTION('',(1.0,0.0,0.0));
-#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
-/* multiple array-style geometric_representation_items the OCAF
-   array-attribute mechanism would track separately - each becomes
-   one Backup/Delta target. */
-#24=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#25=CARTESIAN_POINT('',(2.0,0.0,0.0));
-#26=CARTESIAN_POINT('',(3.0,0.0,0.0));
-#27=CARTESIAN_POINT('',(4.0,0.0,0.0));
-#28=CARTESIAN_POINT('',(0.0,1.0,0.0));
-#29=CARTESIAN_POINT('',(1.0,1.0,0.0));
-#30=CARTESIAN_POINT('',(2.0,1.0,0.0));
-#31=CARTESIAN_POINT('',(3.0,1.0,0.0));
-#32=CARTESIAN_POINT('',(0.0,2.0,0.0));
-#33=CARTESIAN_POINT('',(1.0,2.0,0.0));
-#34=CARTESIAN_POINT('',(2.0,2.0,0.0));
-#35=CARTESIAN_POINT('',(3.0,2.0,0.0));
-/* multiple geometric sets of varying sizes - each is one array attribute
-   the OCAF Backup/Delta mechanism backs up separately on commit. */
-#40=GEOMETRIC_SET('arr-1',(#20,#24,#25,#26));
-#41=GEOMETRIC_SET('arr-2',(#27,#28,#29,#30));
-#42=GEOMETRIC_SET('arr-3',(#31,#32,#33,#34));
-#43=GEOMETRIC_SET('arr-4',(#20,#24,#28,#32));
-#44=GEOMETRIC_SET('arr-5',(#25,#29,#33,#35));
-#45=GEOMETRIC_SET('arr-6',(#20,#21,#22,#23));
-/* polylines as additional mesh-style array attributes */
-#50=POLYLINE('mesh-edge-1',(#20,#24,#25,#26,#27));
-#51=POLYLINE('mesh-edge-2',(#28,#29,#30,#31));
-#52=POLYLINE('mesh-edge-3',(#32,#33,#34,#35));
-/* wrapping curve set + shape rep - what OCAF binds to each TDF_Label */
-#60=GEOMETRIC_CURVE_SET('mesh-edges',(#50,#51,#52));
-#70=SHAPE_REPRESENTATION('mod-target',
-  (#23,#40,#41,#42,#43,#44,#45,#60),#10);
-#71=PRODUCT_DEFINITION_SHAPE('','',#7);
-#72=SHAPE_DEFINITION_REPRESENTATION(#71,#70);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#3=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#4=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#5=CARTESIAN_POINT('',(0.0,0.0,1.0));
+#6=CARTESIAN_POINT('',(1.0,0.0,1.0));
+#7=CARTESIAN_POINT('',(1.0,1.0,1.0));
+#8=CARTESIAN_POINT('',(0.0,1.0,1.0));
+#9=VERTEX_POINT('',#1);
+#10=VERTEX_POINT('',#2);
+#11=VERTEX_POINT('',#3);
+#12=VERTEX_POINT('',#4);
+#13=VERTEX_POINT('',#5);
+#14=VERTEX_POINT('',#6);
+#15=VERTEX_POINT('',#7);
+#16=VERTEX_POINT('',#8);
+#17=DIRECTION('',(1,0,0));
+#18=VECTOR('',#17,1.0);
+#19=LINE('',#1,#18);
+#20=EDGE_CURVE('',#9,#10,#19,.T.);
+#21=DIRECTION('',(0,1,0));
+#22=VECTOR('',#21,1.0);
+#23=LINE('',#2,#22);
+#24=EDGE_CURVE('',#10,#11,#23,.T.);
+#25=DIRECTION('',(1,0,0));
+#26=VECTOR('',#25,1.0);
+#27=LINE('',#4,#26);
+#28=EDGE_CURVE('',#12,#11,#27,.T.);
+#29=DIRECTION('',(0,1,0));
+#30=VECTOR('',#29,1.0);
+#31=LINE('',#1,#30);
+#32=EDGE_CURVE('',#9,#12,#31,.T.);
+#33=DIRECTION('',(1,0,0));
+#34=VECTOR('',#33,1.0);
+#35=LINE('',#5,#34);
+#36=EDGE_CURVE('',#13,#14,#35,.T.);
+#37=DIRECTION('',(0,1,0));
+#38=VECTOR('',#37,1.0);
+#39=LINE('',#6,#38);
+#40=EDGE_CURVE('',#14,#15,#39,.T.);
+#41=DIRECTION('',(1,0,0));
+#42=VECTOR('',#41,1.0);
+#43=LINE('',#8,#42);
+#44=EDGE_CURVE('',#16,#15,#43,.T.);
+#45=DIRECTION('',(0,1,0));
+#46=VECTOR('',#45,1.0);
+#47=LINE('',#5,#46);
+#48=EDGE_CURVE('',#13,#16,#47,.T.);
+#49=DIRECTION('',(0,0,1));
+#50=VECTOR('',#49,1.0);
+#51=LINE('',#1,#50);
+#52=EDGE_CURVE('',#9,#13,#51,.T.);
+#53=DIRECTION('',(0,0,1));
+#54=VECTOR('',#53,1.0);
+#55=LINE('',#2,#54);
+#56=EDGE_CURVE('',#10,#14,#55,.T.);
+#57=DIRECTION('',(0,0,1));
+#58=VECTOR('',#57,1.0);
+#59=LINE('',#3,#58);
+#60=EDGE_CURVE('',#11,#15,#59,.T.);
+#61=DIRECTION('',(0,0,1));
+#62=VECTOR('',#61,1.0);
+#63=LINE('',#4,#62);
+#64=EDGE_CURVE('',#12,#16,#63,.T.);
+#65=CARTESIAN_POINT('',(0,0,0));
+#66=DIRECTION('',(0,0,-1));
+#67=DIRECTION('',(1,0,0));
+#68=AXIS2_PLACEMENT_3D('',#65,#66,#67);
+#69=PLANE('',#68);
+#70=CARTESIAN_POINT('',(0,0,1));
+#71=DIRECTION('',(0,0,1));
+#72=DIRECTION('',(1,0,0));
+#73=AXIS2_PLACEMENT_3D('',#70,#71,#72);
+#74=PLANE('',#73);
+#75=CARTESIAN_POINT('',(0,0,0));
+#76=DIRECTION('',(0,-1,0));
+#77=DIRECTION('',(1,0,0));
+#78=AXIS2_PLACEMENT_3D('',#75,#76,#77);
+#79=PLANE('',#78);
+#80=CARTESIAN_POINT('',(0,1,0));
+#81=DIRECTION('',(0,1,0));
+#82=DIRECTION('',(1,0,0));
+#83=AXIS2_PLACEMENT_3D('',#80,#81,#82);
+#84=PLANE('',#83);
+#85=CARTESIAN_POINT('',(0,0,0));
+#86=DIRECTION('',(-1,0,0));
+#87=DIRECTION('',(0,1,0));
+#88=AXIS2_PLACEMENT_3D('',#85,#86,#87);
+#89=PLANE('',#88);
+#90=CARTESIAN_POINT('',(1,0,0));
+#91=DIRECTION('',(1,0,0));
+#92=DIRECTION('',(0,1,0));
+#93=AXIS2_PLACEMENT_3D('',#90,#91,#92);
+#94=PLANE('',#93);
+#95=ORIENTED_EDGE('',$,$,#20,.T.);
+#96=ORIENTED_EDGE('',$,$,#24,.T.);
+#97=ORIENTED_EDGE('',$,$,#28,.F.);
+#98=ORIENTED_EDGE('',$,$,#32,.F.);
+#99=EDGE_LOOP('',(#95,#96,#97,#98));
+#100=FACE_OUTER_BOUND('',#99,.T.);
+#101=ADVANCED_FACE('',(#100),#69,.T.);
+#102=ORIENTED_EDGE('',$,$,#36,.T.);
+#103=ORIENTED_EDGE('',$,$,#40,.T.);
+#104=ORIENTED_EDGE('',$,$,#44,.F.);
+#105=ORIENTED_EDGE('',$,$,#48,.F.);
+#106=EDGE_LOOP('',(#102,#103,#104,#105));
+#107=FACE_OUTER_BOUND('',#106,.T.);
+#108=ADVANCED_FACE('',(#107),#74,.T.);
+#109=ORIENTED_EDGE('',$,$,#20,.T.);
+#110=ORIENTED_EDGE('',$,$,#56,.T.);
+#111=ORIENTED_EDGE('',$,$,#36,.F.);
+#112=ORIENTED_EDGE('',$,$,#52,.F.);
+#113=EDGE_LOOP('',(#109,#110,#111,#112));
+#114=FACE_OUTER_BOUND('',#113,.T.);
+#115=ADVANCED_FACE('',(#114),#79,.T.);
+#116=ORIENTED_EDGE('',$,$,#28,.T.);
+#117=ORIENTED_EDGE('',$,$,#60,.T.);
+#118=ORIENTED_EDGE('',$,$,#44,.F.);
+#119=ORIENTED_EDGE('',$,$,#64,.F.);
+#120=EDGE_LOOP('',(#116,#117,#118,#119));
+#121=FACE_OUTER_BOUND('',#120,.T.);
+#122=ADVANCED_FACE('',(#121),#84,.T.);
+#123=ORIENTED_EDGE('',$,$,#32,.T.);
+#124=ORIENTED_EDGE('',$,$,#64,.T.);
+#125=ORIENTED_EDGE('',$,$,#48,.F.);
+#126=ORIENTED_EDGE('',$,$,#52,.F.);
+#127=EDGE_LOOP('',(#123,#124,#125,#126));
+#128=FACE_OUTER_BOUND('',#127,.T.);
+#129=ADVANCED_FACE('',(#128),#89,.T.);
+#130=ORIENTED_EDGE('',$,$,#24,.T.);
+#131=ORIENTED_EDGE('',$,$,#60,.T.);
+#132=ORIENTED_EDGE('',$,$,#40,.F.);
+#133=ORIENTED_EDGE('',$,$,#56,.F.);
+#134=EDGE_LOOP('',(#130,#131,#132,#133));
+#135=FACE_OUTER_BOUND('',#134,.T.);
+#136=ADVANCED_FACE('',(#135),#94,.T.);
+#137=CLOSED_SHELL('pf020_ocaf_leak_shell',(#101,#108,#115,#122,#129,#136));
+#138=MANIFOLD_SOLID_BREP('pf020_ocaf_leak_solid',#137);
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Pf020','Pf020','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=ADVANCED_BREP_SHAPE_REPRESENTATION('',(#138),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

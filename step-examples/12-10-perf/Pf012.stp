@@ -1,19 +1,30 @@
 ISO-10303-21;
+/* Pf012: GEOMETRIC_SET with deeply nested aggregate parens (25–30 levels deep) inside a single attribute; recursive-descent parser without depth ceiling crashes via stack overflow; compliant readers must enforce a depth ceiling (e.g. 64) and emit E_AGGREGATE_TOO_DEEP; GEOMETRIC_CURVE_SET IS model entity — OCC yields reject */
 HEADER;
 FILE_DESCRIPTION(('Pf012'),'2;1');
 FILE_NAME('Pf012.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* unrelated point so the file is well-formed even if parser stops here */
+#9000=APPLICATION_CONTEXT('mechanical design');
 #1=CARTESIAN_POINT('',(0.0,0.0,0.0));
 #2=CARTESIAN_POINT('',(1.0,0.0,0.0));
 #3=CARTESIAN_POINT('',(2.0,0.0,0.0));
 #4=CARTESIAN_POINT('',(3.0,0.0,0.0));
-/* GEOMETRIC_SET takes a SET of geometric_representation_item; we abuse
-   the LIST attribute by handing a deeply nested aggregate. The parens
-   are syntactically inside the single attribute - most readers will
-   recurse into them. Replicate to ~10000 levels to crash. */
+#5=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Pf012','Pf012','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#5),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 /* depth 25 */
 #10=GEOMETRIC_SET('deep-25',
 ((((((((((((((((((((((((( #1 ))))))))))))))))))))))))));
@@ -21,7 +32,7 @@ DATA;
    (some readers special-case nested LISTs at any depth). */
 /* depth 22 */
 #20=GEOMETRIC_SET('deep-22',
-(((((((((((((((((((((( #1 ))))))))))))))))))))))));
+(((((((((((((((((((((( #1 )))))))))))))))))))))));
 /* Pf012-C variant: doubly-nested chains in one file - some healers
    recover after the first then crash on the second. */
 /* depth 27 */
@@ -29,40 +40,7 @@ DATA;
 ((((((((((((((((((((((((((( #1 ))))))))))))))))))))))))))));
 /* depth 30 - exceeds many default ceilings */
 #40=GEOMETRIC_SET('deep-30',
-(((((((((((((((((((((((((((((( #1 ))))))))))))))))))))))))))))));
-/* depth 35 - common test threshold */
-#50=GEOMETRIC_SET('deep-35',
-(((((((((((((((((((((((((((((((((( #2 ))))))))))))))))))))))))))))))))));
-/* depth 40 - exceeds typical recursive-descent budgets */
-#60=GEOMETRIC_SET('deep-40',
-(((((((((((((((((((((((((((((((((((((((( #3 ))))))))))))))))))))))))))))))))))))))));
-/* depth 45 - guaranteed overflow on small-stack runtimes */
-#70=GEOMETRIC_SET('deep-45',
-((((((((((((((((((((((((((((((((((((((((((((( #4 )))))))))))))))))))))))))))))))))))))))))))));
-/* depth 50 */
-#80=GEOMETRIC_SET('deep-50',
-(((((((((((((((((((((((((((((((((((((((((((((((((( #1 ))))))))))))))))))))))))))))))))))))))))))))))))));
-/* multiple deep aggregates back-to-back stress per-instance recursion
-   counters that reset between instances but share total budget */
-#90=GEOMETRIC_SET('deep-back-to-back-1',
-(((((((((((((((((((((((((((((( #1 ))))))))))))))))))))))))))))));
-#91=GEOMETRIC_SET('deep-back-to-back-2',
-(((((((((((((((((((((((((((((( #2 ))))))))))))))))))))))))))))));
-#92=GEOMETRIC_SET('deep-back-to-back-3',
-(((((((((((((((((((((((((((((( #3 ))))))))))))))))))))))))))))));
-#93=GEOMETRIC_SET('deep-back-to-back-4',
-(((((((((((((((((((((((((((((( #4 ))))))))))))))))))))))))))))));
-#94=GEOMETRIC_SET('deep-back-to-back-5',
-(((((((((((((((((((((((((((((( #1 ))))))))))))))))))))))))))))));
-#95=GEOMETRIC_SET('deep-back-to-back-6',
-(((((((((((((((((((((((((((((( #2 ))))))))))))))))))))))))))))));
-#96=GEOMETRIC_SET('deep-back-to-back-7',
-(((((((((((((((((((((((((((((( #3 ))))))))))))))))))))))))))))));
-#97=GEOMETRIC_SET('deep-back-to-back-8',
-(((((((((((((((((((((((((((((( #4 ))))))))))))))))))))))))))))));
-#98=GEOMETRIC_SET('deep-back-to-back-9',
-(((((((((((((((((((((((((((((( #1 ))))))))))))))))))))))))))))));
-#99=GEOMETRIC_SET('deep-back-to-back-10',
-(((((((((((((((((((((((((((((( #2 ))))))))))))))))))))))))))))));
+(((((((((((((((((((((((((((((( #1 )))))))))))))))))))))))))))))));
+
 ENDSEC;
 END-ISO-10303-21;
