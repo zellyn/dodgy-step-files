@@ -1,66 +1,78 @@
 ISO-10303-21;
-/*
- * A001 — Duplicated component instances collapsed to a single transform on export
- * Defect (CATIA V5 R22-R26 / Inventor / Fusion 360):
- *   N NEXT_ASSEMBLY_USAGE_OCCURRENCEs reference one shared PRODUCT, but each
- *   MAPPED_ITEM ends up sharing a single AXIS2_PLACEMENT_3D rather than carrying
- *   its own. Receivers see all N component copies stacked at the same coordinate.
- * Reproducer: build siblings sharing an AXIS2_PLACEMENT_3D in the MAPPED_ITEM /
- *   ITEM_DEFINED_TRANSFORMATION; verify writer emits N distinct placements.
- * Expected kernel behavior: every NAUO instance must carry its own placement;
- *   readers must not deduplicate placements by reference equality.
- */
+/* A001: 3 NAUO + 3 MAPPED_ITEM sharing one AXIS2_PLACEMENT_3D(SHARED_PLACEMENT) */
 HEADER;
-FILE_DESCRIPTION(('A001 duplicated NAUO instances share one AXIS2_PLACEMENT_3D'),'2;1');
-FILE_NAME('A001.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('A001'),'2;1');
+FILE_NAME('A001.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('automotive design');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
-/* Assembly product */
-#20 = PRODUCT('A001_ASSY','A001 Assembly','',(#12));
-#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
-#22 = PRODUCT_DEFINITION('design','',#21,#13);
-#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
-/* Single child product instanced three times */
-#30 = PRODUCT('BOLT','M6 bolt','',(#12));
-#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
-#32 = PRODUCT_DEFINITION('design','',#31,#13);
-#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
-/* Three NAUO rows that should carry distinct placements */
-#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','BOLT_INSTANCE_A','',#22,#32,$);
-#41 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','BOLT_INSTANCE_B','',#22,#32,$);
-#42 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('3','BOLT_INSTANCE_C','',#22,#32,$);
-/* Length unit context (mm) */
-#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
-#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
-        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
-/* Bolt component representation with its own origin */
-#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#61 = DIRECTION('',(0.0,0.0,1.0));
-#62 = DIRECTION('',(1.0,0.0,0.0));
-#63 = AXIS2_PLACEMENT_3D('bolt_origin',#60,#61,#62);
-#64 = SHAPE_REPRESENTATION('bolt_rep',(#63),#54);
-#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
-#66 = REPRESENTATION_MAP(#63,#64);
-/* DEFECT: all three MAPPED_ITEMs reference the SAME AXIS2_PLACEMENT_3D #71.
-   Properly each instance should reference its own distinct AXIS2_PLACEMENT_3D
-   with a unique location vector. Here the writer collapsed all three. */
-#70 = CARTESIAN_POINT('shared_origin',(0.0,0.0,0.0));
-#71 = AXIS2_PLACEMENT_3D('SHARED_PLACEMENT',#70,#61,#62);
-#72 = MAPPED_ITEM('inst_A',#66,#71);
-#73 = MAPPED_ITEM('inst_B',#66,#71);
-#74 = MAPPED_ITEM('inst_C',#66,#71);
-/* Assembly representation aggregating the three duplicate-placement instances */
-#80 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#81 = AXIS2_PLACEMENT_3D('assy_origin',#80,#61,#62);
-#82 = SHAPE_REPRESENTATION('assy_rep',(#81,#72,#73,#74),#54);
-#83 = SHAPE_DEFINITION_REPRESENTATION(#23,#82);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#9=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#10=VERTEX_POINT('',#6);
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=DIRECTION('',(1.0,0.0,0.0));
+#15=VECTOR('',#14,1.0);
+#16=LINE('',#6,#15);
+#17=EDGE_CURVE('',#10,#11,#16,.T.);
+#18=DIRECTION('',(0.0,1.0,0.0));
+#19=VECTOR('',#18,1.0);
+#20=LINE('',#7,#19);
+#21=EDGE_CURVE('',#11,#12,#20,.T.);
+#22=DIRECTION('',(-1.0,0.0,0.0));
+#23=VECTOR('',#22,1.0);
+#24=LINE('',#8,#23);
+#25=EDGE_CURVE('',#12,#13,#24,.T.);
+#26=DIRECTION('',(0.0,-1.0,0.0));
+#27=VECTOR('',#26,1.0);
+#28=LINE('',#9,#27);
+#29=EDGE_CURVE('',#13,#10,#28,.T.);
+#30=ORIENTED_EDGE('',$,$,#17,.T.);
+#31=ORIENTED_EDGE('',$,$,#21,.T.);
+#32=ORIENTED_EDGE('',$,$,#25,.T.);
+#33=ORIENTED_EDGE('',$,$,#29,.T.);
+#34=EDGE_LOOP('',(#30,#31,#32,#33));
+#35=FACE_OUTER_BOUND('',#34,.T.);
+#36=ADVANCED_FACE('',(#35),#5,.T.);
+#37=OPEN_SHELL('',(#36));
+#38=SHELL_BASED_SURFACE_MODEL('',(#37));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('A001','A001','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#38),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=PRODUCT_CONTEXT('sub',#9000,'mechanical');
+#9064=PRODUCT('Sub','Sub','',(#9063));
+#9065=PRODUCT_DEFINITION_FORMATION('','',#9064);
+#9066=PRODUCT_DEFINITION('design','',#9065,#9003);
+#9067=CARTESIAN_POINT('SHARED_PLACEMENT',(0.0,0.0,0.0));
+#9068=DIRECTION('',(0.0,0.0,1.0));
+#9069=DIRECTION('',(1.0,0.0,0.0));
+#9070=AXIS2_PLACEMENT_3D('SHARED_PLACEMENT',#9067,#9068,#9069);
+#9071=SHAPE_REPRESENTATION('sub_rep',(#9070),#9010);
+#9072=REPRESENTATION_MAP(#9070,#9071);
+#9073=NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','inst1','',#9004,#9066,$);
+#9074=MAPPED_ITEM('mi1',#9072,#9070);
+#9075=NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','inst2','',#9004,#9066,$);
+#9076=MAPPED_ITEM('mi2',#9072,#9070);
+#9077=NEXT_ASSEMBLY_USAGE_OCCURRENCE('3','inst3','',#9004,#9066,$);
+#9078=MAPPED_ITEM('mi3',#9072,#9070);
 ENDSEC;
 END-ISO-10303-21;
