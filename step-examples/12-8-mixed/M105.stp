@@ -1,24 +1,74 @@
 ISO-10303-21;
-/* M105 - AP238 ISO 8601 timestamps on operations going backwards.
- * Defect: two MACHINING_OPERATIONs in workplan order carry timestamps
- * '2026-04-30T10:00:00' (op A) and '2026-04-30T09:00:00' (op B),
- * monotonically DECREASING along the executable order. */
+/* M105: AP238 ISO 8601 timestamps on operations going backwards */
+/* DEFECT: op_a timestamp 2026-04-30T10:00:00, op_b (next) 2026-04-30T09:00:00 */
+/* Timestamp regression indicates clock-skew, authoring-order mismatch, or job merge */
+/* Violates ISO 10303-238 §6.4 operation chronology rules */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'2026-04-30T10:00:00') */
+/* Byte assertion: contains(b'2026-04-30T09:00:00') */
 HEADER;
-FILE_DESCRIPTION(('M105 test case','AP238 operation timestamps go backwards'),'2;1');
-FILE_NAME('M105.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M105: AP238 MACHINING_OPERATION timestamps going backwards'),'2;1');
+FILE_NAME('M105.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
+#1=APPLICATION_CONTEXT('step_nc_mim');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
+  'ap238_step_nc_mim',2007,#1);
+/* Standard unit context — mm */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('nc','3D'));
-/* Defect: workplan order op_A then op_B; timestamps go backwards. */
-#100=MACHINING_OPERATION('op_A_at_2026-04-30T10:00:00',$,$,$,$,$);
-#101=MACHINING_OPERATION('op_B_at_2026-04-30T09:00:00',$,$,$,$,$);
-#200=WORKPLAN('main',(#100,#101),$,$,$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('nc','3D'));
+/* Byte assertion: contains(b'2026-04-30T10:00:00') */
+/* Timestamp for op_a — first in workplan order, later calendar time */
+#20=DATE_AND_TIME(DATE(2026,4,30),LOCAL_TIME(10,0,0.0,$));
+/* Byte assertion: contains(b'2026-04-30T09:00:00') */
+/* DEFECT: Timestamp for op_b — second in workplan order, EARLIER calendar time */
+/* 09:00 < 10:00 — timestamps regress along workplan sequence */
+#21=DATE_AND_TIME(DATE(2026,4,30),LOCAL_TIME(9,0,0.0,$));
+/* Approval status for both operations */
+#30=APPROVAL_STATUS('approved');
+/* Approval for op_a at 10:00 — first in workplan *)  */
+#31=APPROVAL(#30,'ap238-op-a-approved-at-10-00');
+#33=DATE_TIME_ROLE('creation_date');
+#34=APPLIED_DATE_AND_TIME_ASSIGNMENT(#20,#33,(#31));
+/* DEFECT: Approval for op_b at 09:00 — second in workplan but earlier timestamp */
+#32=APPROVAL(#30,'ap238-op-b-approved-at-09-00');
+#35=APPLIED_DATE_AND_TIME_ASSIGNMENT(#21,#33,(#32));
+/* Machined features for the two operations */
+#50=MACHINED_FEATURE('feature_a',$,$,$,$,$);
+#51=MACHINED_FEATURE('feature_b',$,$,$,$,$);
+/* Shared end mill for both operations */
+#60=MACHINING_TOOL('endmill_8mm',$,$,$);
+/* First MACHINING_OPERATION in workplan — timestamp 10:00 (later) */
+#70=MACHINING_OPERATION('op_a',#60,$,$,$,$,$,$,#50,$,$);
+/* DEFECT: Second MACHINING_OPERATION in workplan — timestamp 09:00 (earlier) */
+/* Workplan order: op_a THEN op_b, but op_b timestamp precedes op_a — regression */
+#71=MACHINING_OPERATION('op_b',#60,$,$,$,$,$,$,#51,$,$);
+/* Workingsteps */
+#80=MACHINING_WORKINGSTEP('step_a',#50,#70,$);
+#81=MACHINING_WORKINGSTEP('step_b',#51,#71,$);
+/* WORKPLAN: step_a (ts=10:00) comes BEFORE step_b (ts=09:00) — timestamps inverted */
+#90=WORKPLAN('main',(#80,#81),$,$,$);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#300=GEOMETRIC_CURVE_SET('ap238-iso8601-timestamps-on-operations-going-backwards',
+  (#20,#21,#31,#32,#50,#51,#60,#70,#71,#80,#81,#90));
+/* Product chain */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M105','M105','M105',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#300),#14);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;

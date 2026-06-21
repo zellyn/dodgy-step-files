@@ -1,34 +1,54 @@
 ISO-10303-21;
-/* M101 - AP238 two5d_milling_operation applied to a 3D-only feature.
- * Defect: a TWO5D_MILLING_OPERATION (Z-constant contour pass) is
- * applied to a freeform-surface feature whose toolpath topology is
- * intrinsically 3D. The 2.5D Z-step semantics cannot represent the
- * surface; either gouges the design or leaves un-cut stock. */
+/* M101: AP238 TWO5D_MILLING_OPERATION applied to a 3D-only feature */
+/* DEFECT: TWO5D_MILLING_OPERATION references FREEFORM_FEATURE (sculpted surface) */
+/* 2.5D Z-step semantics cannot follow intrinsically 3D surface curvature */
+/* Violates ISO 10303-238 §5.8 two5d_milling_operation applicability constraints */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'TWO5D_MILLING_OPERATION') */
 HEADER;
-FILE_DESCRIPTION(('M101 test case','AP238 2.5D op on freeform surface feature'),'2;1');
-FILE_NAME('M101.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M101: AP238 TWO5D_MILLING_OPERATION on 3D freeform feature'),'2;1');
+FILE_NAME('M101.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
+#1=APPLICATION_CONTEXT('step_nc_mim');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
+  'ap238_step_nc_mim',2007,#1);
+/* Standard unit context — mm */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('nc','3D'));
-/* The "feature" is a sculpted freeform surface (NURBS, locally non-planar) */
-#400=CARTESIAN_POINT('p1',(0.0,0.0,0.0));
-#401=CARTESIAN_POINT('p2',(10.0,0.0,5.0));
-#402=CARTESIAN_POINT('p3',(20.0,0.0,3.0));
-#403=CARTESIAN_POINT('p4',(0.0,10.0,2.0));
-#404=CARTESIAN_POINT('p5',(10.0,10.0,8.0));
-#405=CARTESIAN_POINT('p6',(20.0,10.0,4.0));
-#410=B_SPLINE_SURFACE_WITH_KNOTS('freeform_surf',2,1,
-  ((#400,#401,#402),(#403,#404,#405)),
-  .UNSPECIFIED.,.F.,.F.,.F.,(3,3),(2,2),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
-/* Defect: a 2.5D op applied to the freeform surface feature. */
-#100=TWO5D_MILLING_OPERATION('contour_pass',$,$,$,$,#410);
-#200=WORKPLAN('main',(#100),$,$,$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('nc','3D'));
+/* DEFECT target: FREEFORM_FEATURE is an intrinsically 3D feature */
+/* Sculpted surfaces require simultaneous X, Y, Z motion — incompatible with 2.5D */
+#50=FREEFORM_FEATURE('sculpted_surface',$,$,$,$,$);
+/* Ball-end mill for the (incorrectly typed) operation */
+#60=MACHINING_TOOL('ballmill_6mm',$,$,$);
+/* Byte assertion: contains(b'TWO5D_MILLING_OPERATION') */
+/* DEFECT: TWO5D_MILLING_OPERATION references its_feature=#50 (FREEFORM_FEATURE) */
+/* A 2.5D operation cannot represent 3D surface curvature — gouge or stock remains */
+#70=TWO5D_MILLING_OPERATION('contour_2p5d',#60,$,$,$,$,$,$,#50,$,$);
+/* Workingstep and workplan */
+#80=MACHINING_WORKINGSTEP('contour_step',#50,#70,$);
+#90=WORKPLAN('main',(#80),$,$,$);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#300=GEOMETRIC_CURVE_SET('ap238-two5d-milling-op-on-3d-freeform-feature',
+  (#50,#60,#70,#80,#90));
+/* Product chain */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M101','M101','M101',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#300),#14);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;

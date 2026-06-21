@@ -1,33 +1,68 @@
 ISO-10303-21;
-/* M102 - AP238 drilling sequence with coincident hole positions.
- * Defect: two DRILLING_OPERATIONs target features whose locator
- * placements are identical. The second drill enters an already-drilled
- * hole; either zero-load entry breaks the tool or cycle time is wasted. */
+/* M102: AP238 drilling sequence with coincident hole positions */
+/* DEFECT: two DRILLING_OPERATIONs target features at identical position (50,30,0) */
+/* Second drill enters already-drilled hole — breaks tool or wastes cycle time */
+/* Violates ISO 10303-238 §5.8 drilling_operation positional uniqueness */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: count_entity_def(b'DRILLING_OPERATION') >= 2 */
 HEADER;
-FILE_DESCRIPTION(('M102 test case','AP238 duplicate drill positions'),'2;1');
-FILE_NAME('M102.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M102: AP238 two DRILLING_OPERATIONs at coincident positions'),'2;1');
+FILE_NAME('M102.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
+#1=APPLICATION_CONTEXT('step_nc_mim');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
+  'ap238_step_nc_mim',2007,#1);
+/* Standard unit context — mm */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('nc','3D'));
-/* Two identical AXIS2_PLACEMENT_3D origins for two drilling features. */
-#500=CARTESIAN_POINT('p1',(50.0,30.0,0.0));
-#501=DIRECTION('zA',(0.0,0.0,1.0));
-#502=DIRECTION('xA',(1.0,0.0,0.0));
-#503=AXIS2_PLACEMENT_3D('locA',#500,#501,#502);
-#510=CARTESIAN_POINT('p2',(50.0,30.0,0.0));
-#511=DIRECTION('zB',(0.0,0.0,1.0));
-#512=DIRECTION('xB',(1.0,0.0,0.0));
-#513=AXIS2_PLACEMENT_3D('locB',#510,#511,#512);
-/* Defect: two drill ops at the same coordinate. */
-#100=DRILLING_OPERATION('drill_first',$,$,$,$,#503);
-#101=DRILLING_OPERATION('drill_second',$,$,$,$,#513);
-#200=WORKPLAN('main',(#100,#101),$,$,$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('nc','3D'));
+/* First hole locator at (50,30,0) */
+#20=CARTESIAN_POINT('origin_a',(50.,30.,0.));
+#21=DIRECTION('z_a',(0.,0.,1.));
+#22=AXIS2_PLACEMENT_3D('locator_a',#20,#21,$);
+/* DEFECT: Second hole locator at IDENTICAL position (50,30,0) */
+/* Correct fix: use a distinct position for hole_b, e.g. (100.,30.,0.) */
+#23=CARTESIAN_POINT('origin_b',(50.,30.,0.));
+#24=DIRECTION('z_b',(0.,0.,1.));
+#25=AXIS2_PLACEMENT_3D('locator_b',#23,#24,$);
+/* Feature declarations — hole_a and hole_b at same position */
+#50=MACHINED_FEATURE('hole_a',$,$,$,$,#22);
+/* hole_b has same locator position — this is the coincident defect */
+#51=MACHINED_FEATURE('hole_b',$,$,$,$,#25);
+/* Drill bit — 8mm diameter */
+#60=MACHINING_TOOL('drill_8mm',$,$,$);
+/* Byte assertion: count_entity_def(b'DRILLING_OPERATION') >= 2 */
+/* First DRILLING_OPERATION on hole_a */
+#70=DRILLING_OPERATION('drill_a',#60,$,$,$,$,$,$,#50,$,$);
+/* DEFECT: Second DRILLING_OPERATION on hole_b — same position as hole_a */
+/* Enters already-drilled hole: tool slams through or zero material removal */
+#71=DRILLING_OPERATION('drill_b',#60,$,$,$,$,$,$,#51,$,$);
+/* Workingsteps in sequence */
+#80=MACHINING_WORKINGSTEP('drill_step_a',#50,#70,$);
+#81=MACHINING_WORKINGSTEP('drill_step_b',#51,#71,$);
+/* WORKPLAN sequences both steps — second step drills into already-finished hole */
+#90=WORKPLAN('main',(#80,#81),$,$,$);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#300=GEOMETRIC_CURVE_SET('ap238-drilling-sequence-coincident-hole-positions',
+  (#22,#25,#50,#51,#60,#70,#71,#80,#81,#90));
+/* Product chain */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M102','M102','M102',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#300),#14);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;
