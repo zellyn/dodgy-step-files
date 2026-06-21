@@ -1,27 +1,29 @@
-/* Le023 — Locale-dependent decimal separator inside numeric attribute
-   Defect: the Part-21 REAL grammar uses '.' only. A producer using
-   locale-aware printf on a de_DE/fr_FR locale emits 1,5 for one-and-a-half.
-   A reader using strtod without setlocale("C") on the same locale silently
-   accepts these values. This file emits CARTESIAN_POINTs whose coordinates
-   contain commas instead of dots inside the REAL fields, breaking the LIST
-   structure (the comma is also the list separator!) and producing extra
-   tokens. A correct parser uses strtod_l with the "C" locale and rejects. */
 ISO-10303-21;
+/* Le023: Locale-dependent decimal separator inside numeric attribute; ISO 10303-21 §6.4.4: REAL grammar uses '.' only as decimal separator; European locale (LC_NUMERIC=de_DE) printf emits '1,5' for one-and-a-half; parser using strtod without setlocale("C") reads comma-separated as separate tokens; CARTESIAN_POINT with commas instead of decimal points in coordinate list; wildly wrong coordinates — degenerate geometry downstream, possible tessellation crash; receiver must use strtod_l with C locale; reject anything strtod does not consume; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Le023 - locale-dependent decimal separator in REAL attribute'),'2;1');
-FILE_NAME('Le023.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Le023'),'2;1');
+FILE_NAME('Le023.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* comma instead of dot in REAL: parser may parse 1,5 as two tokens */
-#10=CARTESIAN_POINT('',(1,5,0.,0.));
-/* mixed: some coords use dot, others use comma */
-#11=CARTESIAN_POINT('',(2.5,3,7,4,0));
-/* single coord with European decimal */
-#12=CARTESIAN_POINT('',(0,0,0,0,0));
-#21=DIRECTION('',(0.0,0.0,1.0));
-#22=DIRECTION('',(1.0,0.0,0.0));
-#23=AXIS2_PLACEMENT_3D('',#10,#21,#22);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Le023','Le023','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#8997=CARTESIAN_POINT('',(1,5,0.,0.));
+#8998=CARTESIAN_POINT('',(0,0,0,0,0));
+
 ENDSEC;
 END-ISO-10303-21;
