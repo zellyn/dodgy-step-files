@@ -1,53 +1,63 @@
 ISO-10303-21;
-/* A101 - SubShapeBinder-derived Boolean Cut crashes downstream slicers
- * and re-import.
- * Defect (FreeCAD #26994): asterisk-implicit ORIENTED_EDGE references
- * escape into the file body. The receiver tries to materialise them
- * and crashes (PrusaSlicer) or yields empty (FreeCAD self-import). */
+/* A101: ORIENTED_EDGE('',*,*,#N,.T.) with dangling edge_element — SubShapeBinder Boolean Cut emits orphan ORIENTED_EDGE causing slicer crash */
 HEADER;
-FILE_DESCRIPTION(('A101 - asterisk edge_element escapes into file body'),'2;1');
-FILE_NAME('A101.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('A101'),'2;1');
+FILE_NAME('A101.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#1);
-#3=PRODUCT_CONTEXT('part',#1,'mechanical');
-#4=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#5=PRODUCT('A101_subshape','subshape-binder boolean','',(#3));
-#6=PRODUCT_DEFINITION_FORMATION('','',#5);
-#7=PRODUCT_DEFINITION('design','',#6,#4);
-#8=PRODUCT_DEFINITION_SHAPE('','',#7);
-#10=( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#11=( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#12=( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#10,'tol','');
-#14=( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13)) GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT('','3D') );
-#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#21=CARTESIAN_POINT('',(10.0,0.0,0.0));
-#22=VERTEX_POINT('',#20);
-#23=VERTEX_POINT('',#21);
-#24=DIRECTION('',(1.0,0.0,0.0));
-#25=VECTOR('',#24,10.0);
-#26=LINE('',#20,#25);
-#27=EDGE_CURVE('',#22,#23,#26,.T.);
-/* Defect: ORIENTED_EDGE has both edge_start (* asterisk) and edge_end
-   (* asterisk) AND its edge_element points at #99 -- which itself is an
-   ORIENTED_EDGE whose own edge_element is *. The receiver dereferences
-   into nothing. */
-#28=ORIENTED_EDGE('outer_oedge',*,*,#99,.T.);
-#29=ORIENTED_EDGE('',*,*,#27,.T.);
-#99=ORIENTED_EDGE('asterisk_edge_element',*,*,*,.T.);
-#30=EDGE_LOOP('',(#28,#29));
-#31=DIRECTION('',(0.0,0.0,1.0));
-#32=DIRECTION('',(1.0,0.0,0.0));
-#33=AXIS2_PLACEMENT_3D('',#20,#31,#32);
-#34=PLANE('',#33);
-#35=FACE_OUTER_BOUND('',#30,.T.);
-#36=ADVANCED_FACE('',(#35),#34,.T.);
-#37=CLOSED_SHELL('',(#36));
-#38=MANIFOLD_SOLID_BREP('A101_body',#37);
-#40=SHAPE_REPRESENTATION('A101_repr',(#33,#38),#14);
-#41=SHAPE_DEFINITION_REPRESENTATION(#8,#40);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#9=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#10=VERTEX_POINT('',#6);
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=DIRECTION('',(1.0,0.0,0.0));
+#15=VECTOR('',#14,1.0);
+#16=LINE('',#6,#15);
+#17=EDGE_CURVE('',#10,#11,#16,.T.);
+#18=DIRECTION('',(0.0,1.0,0.0));
+#19=VECTOR('',#18,1.0);
+#20=LINE('',#7,#19);
+#21=EDGE_CURVE('',#11,#12,#20,.T.);
+#22=DIRECTION('',(-1.0,0.0,0.0));
+#23=VECTOR('',#22,1.0);
+#24=LINE('',#8,#23);
+#25=EDGE_CURVE('',#12,#13,#24,.T.);
+#26=DIRECTION('',(0.0,-1.0,0.0));
+#27=VECTOR('',#26,1.0);
+#28=LINE('',#9,#27);
+#29=EDGE_CURVE('',#13,#10,#28,.T.);
+#30=ORIENTED_EDGE('',$,$,#17,.T.);
+#31=ORIENTED_EDGE('',$,$,#21,.T.);
+#32=ORIENTED_EDGE('',$,$,#25,.T.);
+#33=ORIENTED_EDGE('',$,$,#29,.T.);
+#34=EDGE_LOOP('',(#30,#31,#32,#33));
+#35=FACE_OUTER_BOUND('',#34,.T.);
+#36=ADVANCED_FACE('',(#35),#5,.T.);
+#37=OPEN_SHELL('',(#36));
+#38=SHELL_BASED_SURFACE_MODEL('',(#37));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('A101','A101','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#38),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=EDGE_LOOP('defect_loop',(ORIENTED_EDGE('',*,*,#17,.T.),ORIENTED_EDGE('',*,*,#21,.T.)));
 ENDSEC;
 END-ISO-10303-21;

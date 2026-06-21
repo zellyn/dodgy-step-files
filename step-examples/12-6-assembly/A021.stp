@@ -1,70 +1,81 @@
 ISO-10303-21;
-/*
- * A021 — CDORSI WR1 violated by per-component styling in Saved View
- * Defect (CAx-IF PMI v4.1 §9.4.2.3):
- *   Hiding or restyling a single assembly component within a Saved View uses
- *   context_dependent_over_riding_styled_item (CDORSI) whose style_context
- *   mixes one mapped_item with one or more representation_relationships.
- *   This violates CDORSI WR1 ("only one rep_item OR all are mapped_items OR
- *   all are representation_relationships"). The recommendation is to do it
- *   anyway.
- * Reproducer: Two-level assembly; Saved View where one leaf is hidden by a
- *   CDORSI whose style_context is (mapped_item, representation_relationship_1,
- *   representation_relationship_2).
- * Expected kernel: accept this pattern despite the WR1 violation.
- */
+/* A021: CDORSI WR1 violated — style_context mixes MAPPED_ITEM with REPRESENTATION_RELATIONSHIP (2 SRR + COLOUR_RGB + MAPPED_ITEM) */
 HEADER;
-FILE_DESCRIPTION(('A021 CDORSI mixing mapped_item with representation_relationships'),'2;1');
-FILE_NAME('A021.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
-FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 3 0 0 }'));
+FILE_DESCRIPTION(('A021'),'2;1');
+FILE_NAME('A021.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','ap242_managed_model_based_3d_engineering',2020,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
-#20 = PRODUCT('A021_ASSY','two-level','',(#12));
-#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
-#22 = PRODUCT_DEFINITION('design','',#21,#13);
-#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
-#30 = PRODUCT('LEAF','','',(#12));
-#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
-#32 = PRODUCT_DEFINITION('design','',#31,#13);
-#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
-#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','LEAF_INST','',#22,#32,$);
-#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
-#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
-        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
-#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#61 = DIRECTION('',(0.0,0.0,1.0));
-#62 = DIRECTION('',(1.0,0.0,0.0));
-#63 = AXIS2_PLACEMENT_3D('leaf_origin',#60,#61,#62);
-#64 = SHAPE_REPRESENTATION('leaf_rep',(#63),#54);
-#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
-#66 = REPRESENTATION_MAP(#63,#64);
-#67 = MAPPED_ITEM('leaf_inst',#66,#63);
-#80 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
-#81 = SHAPE_REPRESENTATION('assy_rep',(#80,#67),#54);
-#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
-/* Saved View draughting_model */
-#83 = DRAUGHTING_MODEL('SavedView',(),#54);
-/* Two SHAPE_REPRESENTATION_RELATIONSHIPs (siblings of mapped_item in
-   style_context) */
-#84 = SHAPE_REPRESENTATION_RELATIONSHIP('rr1','',#81,#64);
-#85 = SHAPE_REPRESENTATION_RELATIONSHIP('rr2','',#64,#81);
-/* DEFECT: CDORSI.style_context mixes one mapped_item (#67) with two
-   representation_relationships (#84, #85), violating CDORSI WR1. */
-#90 = COLOUR_RGB('hide',0.5,0.5,0.5);
-#91 = FILL_AREA_STYLE_COLOUR('',#90);
-#92 = FILL_AREA_STYLE('',(#91));
-#93 = SURFACE_STYLE_FILL_AREA(#92);
-#94 = SURFACE_SIDE_STYLE('',(#93));
-#95 = SURFACE_STYLE_USAGE(.BOTH.,#94);
-#96 = PRESENTATION_STYLE_ASSIGNMENT((#95));
-#97 = OVER_RIDING_STYLED_ITEM('hide_leaf',(#96),#67,#67);
-#98 = CONTEXT_DEPENDENT_OVER_RIDING_STYLED_ITEM('view_hide',(#96),#67,#67,(#67,#84,#85));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#9=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#10=VERTEX_POINT('',#6);
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=DIRECTION('',(1.0,0.0,0.0));
+#15=VECTOR('',#14,1.0);
+#16=LINE('',#6,#15);
+#17=EDGE_CURVE('',#10,#11,#16,.T.);
+#18=DIRECTION('',(0.0,1.0,0.0));
+#19=VECTOR('',#18,1.0);
+#20=LINE('',#7,#19);
+#21=EDGE_CURVE('',#11,#12,#20,.T.);
+#22=DIRECTION('',(-1.0,0.0,0.0));
+#23=VECTOR('',#22,1.0);
+#24=LINE('',#8,#23);
+#25=EDGE_CURVE('',#12,#13,#24,.T.);
+#26=DIRECTION('',(0.0,-1.0,0.0));
+#27=VECTOR('',#26,1.0);
+#28=LINE('',#9,#27);
+#29=EDGE_CURVE('',#13,#10,#28,.T.);
+#30=ORIENTED_EDGE('',$,$,#17,.T.);
+#31=ORIENTED_EDGE('',$,$,#21,.T.);
+#32=ORIENTED_EDGE('',$,$,#25,.T.);
+#33=ORIENTED_EDGE('',$,$,#29,.T.);
+#34=EDGE_LOOP('',(#30,#31,#32,#33));
+#35=FACE_OUTER_BOUND('',#34,.T.);
+#36=ADVANCED_FACE('',(#35),#5,.T.);
+#37=OPEN_SHELL('',(#36));
+#38=SHELL_BASED_SURFACE_MODEL('',(#37));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('A021','A021','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#38),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=PRODUCT_CONTEXT('sub',#9000,'mechanical');
+#9064=PRODUCT('Comp','Comp','',(#9063));
+#9065=PRODUCT_DEFINITION_FORMATION('','',#9064);
+#9066=PRODUCT_DEFINITION('design','',#9065,#9003);
+#9067=SHAPE_REPRESENTATION('sub_rep',(#4),#9010);
+#9068=REPRESENTATION_MAP(#4,#9067);
+#9069=AXIS2_PLACEMENT_3D('mi_plc',#1,#2,#3);
+#9070=MAPPED_ITEM('comp_instance',#9068,#9069);
+#9071=SHAPE_REPRESENTATION_RELATIONSHIP('srr1','',#9010,#9067);
+#9072=SHAPE_REPRESENTATION_RELATIONSHIP('srr2','',#9010,#9067);
+#9073=COLOUR_RGB('comp_color',1.0,0.0,0.0);
+#9074=FILL_AREA_STYLE_COLOUR('',#9073);
+#9075=FILL_AREA_STYLE('',(#9074));
+#9076=SURFACE_STYLE_FILL_AREA(#9075);
+#9077=SURFACE_SIDE_STYLE('',(#9076));
+#9078=SURFACE_STYLE_USAGE(.BOTH.,#9077);
+#9079=PRESENTATION_STYLE_ASSIGNMENT((#9078));
+#9080=STYLED_ITEM('comp_style',(#9079),#36);
+#9081=CONTEXT_DEPENDENT_OVER_RIDING_STYLED_ITEM('cdorsi',(#9079),#36,(#9070,#9071,#9072));
 ENDSEC;
 END-ISO-10303-21;
