@@ -1,38 +1,52 @@
 ISO-10303-21;
-/* Ad114 - STEP fixture path is a symlink to /etc/passwd or other
- * privileged file
- * Defect: a receiver that opens a fixture by name without checking
- * whether the path traverses a symlink will follow symlinks
- * transparently. If an attacker can place a symlink at the fixture
- * path (or anywhere along its resolution chain) pointing at a
- * privileged file (/etc/passwd, ~/.ssh/id_rsa, /proc/self/environ),
- * the receiver reads the privileged file's bytes and feeds them to
- * the Part-21 tokeniser. Most privileged files do not parse as
- * Part-21 and the load fails benignly, but the bytes have already
- * been read into the receiver's address space and may appear in
- * error messages, crash dumps, or telemetry.
- *
- * IMPORTANT: this fixture documents the scenario in this header
- * comment; no real symlink to /etc/passwd is created in the
- * repository. Provenance tier: cross-file-state. */
+/* Symlink-following attack payload (CWE-59 / CWE-22):
+   Attack scenario: fixture path Ad114.stp is a symlink
+   pointing to /etc/passwd (or ~/.ssh/id_rsa, /proc/self/environ).
+
+   ln -s /etc/passwd /path/to/research/step-examples/12-11-adversarial/Ad114.stp
+
+   A receiver that opens the fixture path without O_NOFOLLOW
+   will read ~3 KB of 'root:x:0:0:..' bytes into its Part-21 tokeniser.
+   The load fails (non-Part-21 content) but the privileged bytes have
+   already been read into the process address space and may appear in:
+     - error messages logged to disk or transmitted over the network
+     - crash dumps captured by the OS or monitoring systems
+     - telemetry payloads sent to the vendor
+
+   Required mitigations:
+     1. Open with O_NOFOLLOW (POSIX) or CreateFile with
+        FILE_FLAG_OPEN_REPARSE_POINT (Windows) to refuse symlink targets.
+     2. Resolve the real path and verify it is within the configured root
+        before reading any bytes (Path.resolve() + is_relative_to()).
+     3. Never include raw file bytes from a failed parse in error messages.
+
+   Static fixture is document-only: no real symlink is created in the repo
+   (cross-platform-unfriendly). See also: Ad106 (TOCTOU on EXTERNAL_FILE),
+   Ad113 (sibling-pair race), Ad115 (directory-entry race).
+   Target path: /etc/passwd, /proc/self/environ, ~/.ssh/id_rsa
+*/
+/* Ad114: STEP fixture path is a symlink to /etc/passwd or other privileged file; receiver that opens path without O_NOFOLLOW reads privileged bytes into Part-21 tokeniser; bytes may appear in error messages or telemetry; receiver must refuse to open paths whose resolved location is outside a configured root; refuse to follow symlinks unless explicitly enabled; check O_NOFOLLOW-style flags on open; CWE-59 (symlink following); CWE-22 (path traversal); provenance tier: cross-file-state — static fixture is document-only: no real symlink created in repo; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Ad114 - .stp fixture path is symlink to /etc/passwd'),'2;1');
-FILE_NAME('Ad114.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Ad114'),'2;1');
+FILE_NAME('Ad114.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* Witness body: the symlink-following defect lives in the receiver-side
-   filesystem. The bug-reporter searchable terms (symlink, /etc/passwd,
-   /etc/, O_NOFOLLOW) are in this file's header and comments. The
-   actual demonstration requires a symlink at the fixture path
-   pointing at /etc/passwd or similar privileged file.
-
-   No real symlink is created in this repo - it would be a clear
-   security smell in source control and cross-platform unfriendly.
-   The receiver should refuse to follow symlinks within the research
-   tree unless explicitly enabled, and should set O_NOFOLLOW on open. */
-/* symlink to /etc/passwd at fixture path - O_NOFOLLOW required */
-#1=APPLICATION_CONTEXT('automotive_design');
-#10=CARTESIAN_POINT('benign',(0.0,0.0,0.0));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Ad114','Ad114','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

@@ -1,22 +1,28 @@
-/* Le002 — Edition-default encoding mismatch (Ed.2 ISO-8859-1 vs Ed.3 UTF-8)
-   Defect: file declares Ed.3 implementation_level but uses Ed.2-style \X\E9
-   single-byte ISO-8859 escape for the character e-acute. A strict Ed.3-only
-   reader assuming raw UTF-8 may double-decode or mishandle this lawful form.
-   The literal value should decode to the single character "e-acute". */
 ISO-10303-21;
+/* Le002: Edition-default encoding mismatch: Ed.2 ISO-8859-1 vs Ed.3 UTF-8; Ed.2 file uses \X\E9 escape for U+00E9 (e-acute); Ed.3-only parser reads raw UTF-8 and misinterprets the \X\E9 escape; receiver must inspect FILE_DESCRIPTION implementation_level to determine edition; accept both forms regardless and never assume file declares its encoding; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Le002 - Edition-default encoding mismatch (Ed.2 ISO-8859-1 vs Ed.3 UTF-8)'),'4');
-FILE_NAME('Le002.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Le002'),'2;1');
+FILE_NAME('Le002.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10=CARTESIAN_POINT('caf\X\E9',(0.0,0.0,0.0));
-#20=DIRECTION('',(0.0,0.0,1.0));
-#30=DIRECTION('',(1.0,0.0,0.0));
-#40=AXIS2_PLACEMENT_3D('',#10,#20,#30);
-#50=PRODUCT('caf\X\E9-Ed3','caf\X\E9 (E acute via X-escape)','description',(#60));
-#60=PRODUCT_CONTEXT('part definition',#70,'mechanical');
-#70=APPLICATION_CONTEXT('automotive_design');
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Le002','Le002','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#8999=PERSON('caf\X\E9','Caf\X\E9','');
+
 ENDSEC;
 END-ISO-10303-21;
