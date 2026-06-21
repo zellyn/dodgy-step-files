@@ -1,59 +1,57 @@
 ISO-10303-21;
-/* N048 - Walk-line step unrelated to surface tolerance
- * Defect: two cylindrical surfaces with PERPENDICULAR axes meet at a
- * non-trivial intersection curve. Declared surface tolerance is
- * 1.0E-3 mm. The walk-line algorithm should step at ~tolerance,
- * but in fact uses a fixed internal 1.0e-7 step, doing 1e4x more
- * work than necessary and producing pcurves with sub-tolerance
- * sample density. */
+/* N048: surface-surface walk: 2 CYLINDRICAL_SURFACE at coarse tol 1e-3; fixed walk step ignores tol; INTERSECTION_CURVE with 2 PCURVE; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N048 test case','Walk-line step unrelated to surface tolerance'),'2;1');
-FILE_NAME('N048.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('N048'),'2;1');
+FILE_NAME('N048.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#100=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-/* Cylinder A: axis along +Z */
-#101=DIRECTION('+z',(0.0,0.0,1.0));
-#102=DIRECTION('+x',(1.0,0.0,0.0));
-#103=AXIS2_PLACEMENT_3D('axesA',#100,#101,#102);
-#104=CYLINDRICAL_SURFACE('cyl_a',#103,1.0);
-/* Cylinder B: axis along +X (perpendicular to A) */
-#110=DIRECTION('+xB',(1.0,0.0,0.0));
-#111=DIRECTION('+yB',(0.0,1.0,0.0));
-#112=AXIS2_PLACEMENT_3D('axesB',#100,#110,#111);
-#113=CYLINDRICAL_SURFACE('cyl_b',#112,1.0);
-/* Walk-line tolerance metadata */
-#120=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#121=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#122=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#123=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#120,
-  'distance_accuracy_value','walk_line_tolerance');
-#124=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-      GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#123))
-      GLOBAL_UNIT_ASSIGNED_CONTEXT((#120,#121,#122))
-      REPRESENTATION_CONTEXT('ctx','3D'));
-/* INTERSECTION_CURVE entity binding the two cylinders.
- * (3D representation: a 2-pcurve SURFACE_CURVE/INTERSECTION_CURVE.) */
-#130=DIRECTION('walk_3d_dir',(0.0,1.0,0.0));
-#131=VECTOR('walk_3d_vec',#130,1.0);
-#132=LINE('walk_3d_curve',#100,#131);
-/* Pcurve A on cyl_a (U is theta, V is z) */
-#140=CARTESIAN_POINT('pcA_start',(0.0,0.0));
-#141=DIRECTION('pcA_dir',(0.0,1.0));
-#142=VECTOR('pcA_vec',#141,1.0);
-#143=LINE('pcA_line',#140,#142);
-#144=DEFINITIONAL_REPRESENTATION('pcA_def',(#143),#103);
-#145=PCURVE('pcA',#104,#144);
-/* Pcurve B on cyl_b */
-#150=CARTESIAN_POINT('pcB_start',(0.0,0.0));
-#151=DIRECTION('pcB_dir',(0.0,1.0));
-#152=VECTOR('pcB_vec',#151,1.0);
-#153=LINE('pcB_line',#150,#152);
-#154=DEFINITIONAL_REPRESENTATION('pcB_def',(#153),#112);
-#155=PCURVE('pcB',#113,#154);
-#160=INTERSECTION_CURVE('cyl_intersect_perp',#132,(#145,#155),.PCURVE_S1.);
+#1=CARTESIAN_POINT('c1_orig',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CYLINDRICAL_SURFACE('cyl1',#4,5.0);
+#6=CARTESIAN_POINT('c2_orig',(5.0,0.0,0.0));
+#7=DIRECTION('',(1.0,0.0,0.0));
+#8=DIRECTION('',(0.0,1.0,0.0));
+#9=AXIS2_PLACEMENT_3D('',#6,#7,#8);
+#10=CYLINDRICAL_SURFACE('cyl2',#9,5.0);
+#11=(GEOMETRIC_REPRESENTATION_CONTEXT(2)GLOBAL_UNIT_ASSIGNED_CONTEXT($)REPRESENTATION_CONTEXT('uv_ctx','2D'));
+#12=CARTESIAN_POINT('pc1_start',(1.57079632679,0.0));
+#13=DIRECTION('',(0.0,1.0));
+#14=VECTOR('',#13,10.0);
+#15=LINE('pc1_line',#12,#14);
+#16=DEFINITIONAL_REPRESENTATION('pdef1',(#15),#11);
+#17=PCURVE('pc1',#5,#16);
+#18=CARTESIAN_POINT('pc2_start',(0.0,0.0));
+#19=DIRECTION('',(0.0,1.0));
+#20=VECTOR('',#19,10.0);
+#21=LINE('pc2_line',#18,#20);
+#22=DEFINITIONAL_REPRESENTATION('pdef2',(#21),#11);
+#23=PCURVE('pc2',#10,#22);
+#24=CARTESIAN_POINT('int_p0',(5.0,0.0,0.0));
+#25=CARTESIAN_POINT('int_p1',(5.0,0.0,10.0));
+#26=VERTEX_POINT('v3d_0',#24);
+#27=VERTEX_POINT('v3d_1',#25);
+#28=DIRECTION('',(0.0,0.0,1.0));
+#29=VECTOR('',#28,10.0);
+#30=LINE('int_line',#24,#29);
+#31=INTERSECTION_CURVE('int_curve',#30,(#17,#23),.PCURVE_S1.);
+#32=EDGE_CURVE('int_edge',#26,#27,#31,.T.);
+#33=GEOMETRIC_CURVE_SET('ints',(#5,#10,#32));
+#34=APPLICATION_CONTEXT('automotive_design');
+#35=PRODUCT_CONTEXT('',#34,'mechanical');
+#36=PRODUCT('N048','N048','',(#35));
+#37=PRODUCT_DEFINITION_FORMATION('','',#36);
+#38=PRODUCT_DEFINITION_CONTEXT('part definition',#34,'design');
+#39=PRODUCT_DEFINITION('','',#37,#38);
+#40=PRODUCT_DEFINITION_SHAPE('','',#39);
+#41=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#42=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#43=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#44=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#41,'distance_accuracy_value','coarse_walk_tolerance');
+#45=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#44))GLOBAL_UNIT_ASSIGNED_CONTEXT((#41,#42,#43))REPRESENTATION_CONTEXT('ctx','3D'));
+#46=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#33),#45);
+#47=SHAPE_DEFINITION_REPRESENTATION(#40,#46);
 ENDSEC;
 END-ISO-10303-21;

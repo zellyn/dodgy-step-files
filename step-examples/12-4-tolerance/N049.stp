@@ -1,24 +1,34 @@
 ISO-10303-21;
-/* N049 - Reading structurally valid STEP file produces invalid TopoDS_Shape
- * Defect: EDGE_CURVE end-vertex CARTESIAN_POINT lies 2.0e-6 off the underlying LINE
- * curve at the curve's parameter; receiver's edge tolerance is 1.0e-7. */
+/* N049: EDGE_CURVE end-VERTEX_POINT displaced 2.0E-6 mm from curve endpoint; receiver edge tol 1.0E-7; structurally valid but BRepCheck fails; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N049 - point-on-curve deviation exceeds receiver tolerance'),'2;1');
-FILE_NAME('N049.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('N049'),'2;1');
+FILE_NAME('N049.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('start',(0.0,0.0,0.0));
-/* End vertex SHOULD be at (1.0, 0.0, 0.0) on the line; instead it is at (1.0, 2.0e-6, 0.0).
- * BRepCheck_InvalidPointOnCurve at receiver's 1.0e-7 tolerance. */
-#11=CARTESIAN_POINT('end_off_curve',(1.0,0.000002,0.0));
-#12=VERTEX_POINT('',#10);
-#13=VERTEX_POINT('',#11);
-#14=DIRECTION('',(1.0,0.0,0.0));
-#15=VECTOR('',#14,1.0);
-#16=LINE('curve_along_X',#10,#15);
-#17=EDGE_CURVE('off_tolerance_edge',#12,#13,#16,.T.);
+#1=CARTESIAN_POINT('curve_start',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('curve_end',(10.0,0.0,0.0));
+#3=CARTESIAN_POINT('vtx_end_off_curve',(10.0,2.0E-06,0.0));
+#4=VERTEX_POINT('v_start',#1);
+#5=VERTEX_POINT('v_end_displaced',#3);
+#6=DIRECTION('',(1.0,0.0,0.0));
+#7=VECTOR('',#6,10.0);
+#8=LINE('line',#1,#7);
+#9=EDGE_CURVE('edge',#4,#5,#8,.T.);
+#10=GEOMETRIC_CURVE_SET('edges',(#9));
+#11=APPLICATION_CONTEXT('automotive_design');
+#12=PRODUCT_CONTEXT('',#11,'mechanical');
+#13=PRODUCT('N049','N049','',(#12));
+#14=PRODUCT_DEFINITION_FORMATION('','',#13);
+#15=PRODUCT_DEFINITION_CONTEXT('part definition',#11,'design');
+#16=PRODUCT_DEFINITION('','',#14,#15);
+#17=PRODUCT_DEFINITION_SHAPE('','',#16);
+#18=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#19=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#20=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#21=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#18,'distance_accuracy_value','receiver_edge_tolerance');
+#22=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#21))GLOBAL_UNIT_ASSIGNED_CONTEXT((#18,#19,#20))REPRESENTATION_CONTEXT('ctx','3D'));
+#23=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#10),#22);
+#24=SHAPE_DEFINITION_REPRESENTATION(#17,#23);
 ENDSEC;
 END-ISO-10303-21;
