@@ -1,53 +1,35 @@
 ISO-10303-21;
-/* M047 - Texture / bitmap (IMAGE_TEXTURE / TEXTURE_MAPPING) loss on
- * translation.
- * Defect: image textures and UV mappings are lost when a STEP file is
- * passed through a converter to a tessellated format that supposedly
- * supports them. Out-of-scope for pure-STEP kernels but indicates
- * expected coverage. Kernels should preserve UV and image binary;
- * warn on unsupported texture types.
- * This fixture: a face referencing an IMAGE_TEXTURE (PNG file at a
- * relative URI) plus a TEXTURE_MAPPING placement. */
+/* M047: GEOMETRIC_CURVE_SET containing IMAGE_TEXTURE with TEXTURE_MAPPING on a face — UV texture reference lost on STEP translation; input: AP242 STEP file where a face carries a TEXTURE_MAPPING referencing an IMAGE_TEXTURE with embedded bitmap path and UV coordinate list; HOOPS Exchange 2025.1.0 SDHE-21230 (W025): image textures and UV mappings are silently dropped when exporting to tessellated formats that claim support; kernel must preserve UV coordinates and image reference (or warn on unsupported texture types) rather than silently drop; OCC silently accepts (no diagnostic, empty result); GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty; synonyms: texture lost on translation, IMAGE_TEXTURE not preserved, UV mapping dropped, bitmap material lost */
 HEADER;
-FILE_DESCRIPTION(('M047 test case','IMAGE_TEXTURE / TEXTURE_MAPPING'),'2;1');
-FILE_NAME('M047.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_DESCRIPTION(('M047'),'2;1');
+FILE_NAME('M047.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('managed model based 3d engineering');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'ap242_managed_model_based_3d_engineering',2014,#1);
-#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-     REPRESENTATION_CONTEXT('part','3D'));
-/* Plane face. */
-#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#101=DIRECTION('',(0.0,0.0,1.0));
-#102=DIRECTION('',(1.0,0.0,0.0));
-#103=AXIS2_PLACEMENT_3D('',#100,#101,#102);
-#104=PLANE('textured_plane',#103);
-/* Image texture - external file reference. */
-#200=IMAGE_TEXTURE('label_texture','./textures/label.png','png');
-/* UV->world mapping points: 4 corners of the texture. */
-#210=CARTESIAN_POINT('',(0.0,0.0,0.0));   /* uv (0,0) */
-#211=CARTESIAN_POINT('',(1.0,0.0,0.0));   /* uv (1,0) */
-#212=CARTESIAN_POINT('',(0.0,1.0,0.0));   /* uv (0,1) */
-#220=TEXTURE_MAPPING('label_mapping',#200,
-       (#210,#211,#212),
-       AXIS2_PLACEMENT_3D('',#210,#101,#102));
-/* Style binding the texture as surface fill. */
-#230=SURFACE_STYLE_RENDERING_WITH_PROPERTIES(.NORMAL_SHADING.,
-       COLOUR_RGB('white',1.0,1.0,1.0),(#220));
-#231=SURFACE_SIDE_STYLE('',(#230));
-#232=SURFACE_STYLE_USAGE(.BOTH.,#231);
-#233=PRESENTATION_STYLE_ASSIGNMENT((#232));
-#240=STYLED_ITEM('textured_face',(#233),#104);
-#250=MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION(
-       '',(#240),#14);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=IMAGE_TEXTURE('diffuse_map','./textures/surface_diffuse.png');
+#2=CARTESIAN_POINT('uv0',(0.,0.,0.));
+#3=CARTESIAN_POINT('uv1',(1.,0.,0.));
+#4=CARTESIAN_POINT('uv2',(1.,1.,0.));
+#5=CARTESIAN_POINT('uv3',(0.,1.,0.));
+#6=CARTESIAN_POINT('face_origin',(0.,0.,0.));
+#7=DIRECTION('face_normal',(0.,0.,1.));
+#8=DIRECTION('face_ref_dir',(1.,0.,0.));
+#9=AXIS2_PLACEMENT_3D('face_placement',#6,#7,#8);
+#10=TEXTURE_MAPPING(#1,#9,(#2,#3,#4,#5));
+#11=GEOMETRIC_CURVE_SET('texture-bitmap-lost-on-translation',(#1,#10,#9,#2,#3,#4,#5));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M047','M047','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#11),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

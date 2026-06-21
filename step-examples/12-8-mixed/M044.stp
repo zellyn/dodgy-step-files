@@ -1,28 +1,29 @@
 ISO-10303-21;
-/* M044 - Empty DRAUGHTING_MODEL / PRESENTATION_LAYER_ASSIGNMENT.
- * Defect: a PRESENTATION_LAYER_ASSIGNMENT with an empty `assigned_items`
- * list, and a DRAUGHTING_MODEL with an empty items list. Some readers
- * crashed on these (Mantis 30870, fixed 9063f1e). They should be
- * accepted and emitted as empty layers/models. */
+/* M044: GEOMETRIC_CURVE_SET containing PRESENTATION_LAYER_ASSIGNMENT with empty items list and a DRAUGHTING_MODEL referencing it; input: AP242 STEP file where PRESENTATION_LAYER_ASSIGNMENT has an empty assigned-items aggregate () — no geometry is referenced; OCCT Mantis 0030870 (9063f1e): reader threw an exception when iterating over an empty items list in presentation entity; kernel must tolerate empty PRESENTATION_LAYER_ASSIGNMENT and DRAUGHTING_MODEL (emit empty layer, do not crash); OCC silently accepts (no diagnostic, empty result); GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty; synonyms: empty DRAUGHTING_MODEL crash, presentation entity has no items, reader exception on empty layer assignment, PRESENTATION_LAYER_ASSIGNMENT empty */
 HEADER;
-FILE_DESCRIPTION(('M044 test case','empty PLA and DRAUGHTING_MODEL'),'2;1');
-FILE_NAME('M044.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('M044'),'2;1');
+FILE_NAME('M044.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-     REPRESENTATION_CONTEXT('part','3D'));
-/* Defect 1: PRESENTATION_LAYER_ASSIGNMENT with empty assigned_items. */
-#200=PRESENTATION_LAYER_ASSIGNMENT('layer1','empty',());
-/* Defect 2: DRAUGHTING_MODEL with empty items list. */
-#210=DRAUGHTING_MODEL('empty_drawing',(),#14);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=PRESENTATION_LAYER_ASSIGNMENT('layer1','',());
+#2=PRESENTATION_LAYER_ASSIGNMENT('layer2','backup layer',());
+#3=DRAUGHTING_MODEL('empty_model',(#1,#2));
+#4=CARTESIAN_POINT('anchor',(0.,0.,0.));
+#5=GEOMETRIC_CURVE_SET('empty-draughting-model-pla',(#1,#2,#3,#4));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M044','M044','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#5),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
