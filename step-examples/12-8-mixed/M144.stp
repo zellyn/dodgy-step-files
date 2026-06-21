@@ -1,30 +1,54 @@
 ISO-10303-21;
-/* M144 - AP210 NETWORK_NODE chain forms a cycle (signal feedback
- * path).
- * Defect: NETWORK_NODE entries link node A -> node B -> node C ->
- * node A. A connectivity walk of the net never terminates. The net
- * is also electrically nonsensical for a non-feedback signal
- * (e.g. a clock distribution net is short-circuited to itself). */
+/* M144: AP210 NETWORK_NODE chain forms a cycle (signal feedback path) */
+/* DEFECT: node_A -> node_B -> node_C -> node_A — cycle never terminates */
+/* Non-feedback clock net CLK_NET is electrically short-circuited to itself */
+/* Per ISO 10303-210 §7 net connectivity must be acyclic for non-feedback signals */
+/* Byte assertion: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN') */
+/* Byte assertion: count_entity_def(b'NETWORK_NODE') >= 3 */
+/* Byte assertion: contains(b'NETWORK') */
 HEADER;
-FILE_DESCRIPTION(('M144 test case','AP210 net connectivity cycle'),'2;1');
-FILE_NAME('M144.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M144: AP210 NETWORK_NODE cyclic connectivity'),'2;1');
+FILE_NAME('M144.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN') */
 FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('pcb','3D'));
-#100=TERMINAL('term_a','TERM_A',$);
-#101=TERMINAL('term_b','TERM_B',$);
-#102=TERMINAL('term_c','TERM_C',$);
-/* Defect: each node points to the next in a 3-cycle a->b->c->a. */
-#200=NETWORK_NODE('node_a',#100);
-#201=NETWORK_NODE('node_b',#101);
-#202=NETWORK_NODE('node_c',#102);
-#300=NETWORK('CLK_loop',(#200,#201,#202),(#200));
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('pcb','3D'));
+/* Byte assertion: count_entity_def(b'NETWORK_NODE') >= 3 */
+/* Three NETWORK_NODEs forming a cycle: A -> B -> C -> A */
+/* node_A connects to node_B */
+#100=NETWORK_NODE('node_A',(#101));
+/* node_B connects to node_C */
+#101=NETWORK_NODE('node_B',(#102));
+/* DEFECT: node_C connects back to node_A — closes the cycle */
+#102=NETWORK_NODE('node_C',(#100));
+/* Byte assertion: contains(b'NETWORK') */
+/* CLK_NET groups all three cyclic nodes — walk never terminates */
+#110=NETWORK('CLK_NET',(#100,#101,#102));
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#300=GEOMETRIC_CURVE_SET('ap210-network-node-cycle-signal-feedback-path',
+  (#100,#101,#102,#110));
+/* Product chain */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M144','M144','M144',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#300),#14);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;

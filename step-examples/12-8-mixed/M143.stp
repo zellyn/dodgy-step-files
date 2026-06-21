@@ -1,31 +1,59 @@
 ISO-10303-21;
-/* M143 - AP210 vias declared with stack-up positions out of board-layer
- * order.
- * Defect: a LAMINATE_TABLE declares plies in physical order top->bottom,
- * but VIA_DEFINITION entries name terminating layers in reversed order
- * (bottom layer cited as the start, top as the end). A stackup-aware
- * layer router walks the via stack and visits layers in inverted Z
- * sequence, generating bogus drill ordering for the manufacturer. */
+/* M143: AP210 vias declared with stack-up positions out of board-layer order */
+/* DEFECT: LAMINATE_TABLE order is (top, mid, bot) but VIA_DEFINITION */
+/* terminating layers are listed reversed: (bot, top) */
+/* Stackup-aware routers visit layers in inverted Z sequence */
+/* Per ISO 10303-210 §6 via termination order must match LAMINATE_TABLE */
+/* Byte assertion: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN') */
+/* Byte assertion: contains(b'VIA_DEFINITION') */
+/* Byte assertion: contains(b'LAMINATE_TABLE') */
 HEADER;
-FILE_DESCRIPTION(('M143 test case','AP210 via stackup ordering inverted'),'2;1');
-FILE_NAME('M143.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M143: AP210 via stackup termination order inverted'),'2;1');
+FILE_NAME('M143.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN') */
 FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('pcb','3D'));
-#100=MATERIAL_DESIGNATION('FR4','glass-epoxy laminate',(#1));
-#200=LAMINATE_OR_PLY_DEFINITION('top_ply',$,#100,#100,LENGTH_MEASURE(0.1));
-#201=LAMINATE_OR_PLY_DEFINITION('mid_ply',$,#100,#100,LENGTH_MEASURE(0.4));
-#202=LAMINATE_OR_PLY_DEFINITION('bot_ply',$,#100,#100,LENGTH_MEASURE(0.1));
-#210=LAMINATE_TABLE('stackup',(#200,#201,#202));
-/* Defect: via terminates at bot_ply (#202) -> top_ply (#200) listed in
- * reverse stackup order. */
-#300=VIA_DEFINITION('inverted_via',$,(#202,#200));
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('pcb','3D'));
+/* Three PCB plies in physical top-to-bottom order */
+#100=LAMINATE_OR_PLY_DEFINITION('top_ply',$,$,$,LENGTH_MEASURE(0.035));
+#101=LAMINATE_OR_PLY_DEFINITION('mid_ply',$,$,$,LENGTH_MEASURE(0.2));
+#102=LAMINATE_OR_PLY_DEFINITION('bot_ply',$,$,$,LENGTH_MEASURE(0.035));
+/* Byte assertion: contains(b'LAMINATE_TABLE') */
+/* LAMINATE_TABLE declares physical stackup order: top_ply, mid_ply, bot_ply */
+#110=LAMINATE_TABLE('stackup',(#100,#101,#102));
+/* Byte assertion: contains(b'VIA_DEFINITION') */
+/* Via drill axis at board position (5.0, 5.0, 0.0) */
+#200=CARTESIAN_POINT('via_loc',(5.0,5.0,0.0));
+#201=AXIS2_PLACEMENT_3D('via_axis',#200,$,$);
+/* DEFECT: terminating layers listed as (#102, #100) — bot first, top last */
+/* Correct order matching LAMINATE_TABLE would be (#100, #102) — top first */
+/* A stackup-aware router walks via layers in inverted Z sequence */
+#210=VIA_DEFINITION('via_inverted',(#102,#100),#201,LENGTH_MEASURE(0.3));
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#300=GEOMETRIC_CURVE_SET('ap210-via-stackup-termination-order-inverted',
+  (#100,#101,#102,#110,#200,#201,#210));
+/* Product chain */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M143','M143','M143',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#300),#14);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;

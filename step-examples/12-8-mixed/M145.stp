@@ -1,28 +1,61 @@
 ISO-10303-21;
-/* M145 - AP210 fixed-side reference inverts top/bottom semantics.
- * Defect: a board with stackup top -> top_signal -> ... -> bottom is
- * exported with PHYSICAL_LAYER 'top_signal' annotated as
- * fixed_side = 'BOTTOM'. Components placed by the assembly using
- * 'fixed_side' to disambiguate top/bottom land on the wrong PCB
- * face. Bug-reporter language: "PCB top side mirrored", "AP210
- * fixed-side reference inverted". */
+/* M145: AP210 fixed-side reference inverts top/bottom semantics */
+/* DEFECT: 'top_signal' ply is 2nd from top in LAMINATE_TABLE */
+/* but DESCRIPTIVE_REPRESENTATION_ITEM annotates it fixed_side='BOTTOM' */
+/* Components using fixed_side to resolve placement land on the wrong PCB face */
+/* Per ISO 10303-210 §5 fixed_side must match ply position in stackup */
+/* Byte assertion: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN') */
+/* Byte assertion: contains(b'fixed_side') */
+/* Byte assertion: contains(b"'BOTTOM'") */
 HEADER;
-FILE_DESCRIPTION(('M145 test case','AP210 layer side reference inverted'),'2;1');
-FILE_NAME('M145.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M145: AP210 fixed-side reference inverts top/bottom'),'2;1');
+FILE_NAME('M145.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN') */
 FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('pcb','3D'));
-#100=MATERIAL_DESIGNATION('copper','signal copper',(#1));
-/* Defect: layer name says top_signal but fixed_side claims BOTTOM. */
-#200=LAMINATE_OR_PLY_DEFINITION('top_signal',$,#100,#100,LENGTH_MEASURE(0.035));
-#201=DESCRIPTIVE_REPRESENTATION_ITEM('fixed_side','BOTTOM');
-#202=PROPERTY_DEFINITION('layer_side_reference','side disambiguator',#200);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('pcb','3D'));
+/* Four-ply stackup (top to bottom) */
+#100=LAMINATE_OR_PLY_DEFINITION('top_copper',$,$,$,LENGTH_MEASURE(0.035));
+/* top_signal is the 2nd ply — physically near the top face of the board */
+#101=LAMINATE_OR_PLY_DEFINITION('top_signal',$,$,$,LENGTH_MEASURE(0.035));
+#102=LAMINATE_OR_PLY_DEFINITION('core',$,$,$,LENGTH_MEASURE(0.2));
+#103=LAMINATE_OR_PLY_DEFINITION('bot_copper',$,$,$,LENGTH_MEASURE(0.035));
+/* LAMINATE_TABLE: physical order is top_copper -> top_signal -> core -> bot_copper */
+#110=LAMINATE_TABLE('stackup',(#100,#101,#102,#103));
+/* PROPERTY_DEFINITION records the layer side reference for top_signal ply */
+#120=PROPERTY_DEFINITION('layer_side_reference','PCB side annotation',#101);
+/* Byte assertion: contains(b'fixed_side') */
+/* Byte assertion: contains(b"'BOTTOM'") */
+/* DEFECT: top_signal (2nd from top) labelled fixed_side='BOTTOM' — inverted */
+/* Correct value for the 2nd-from-top ply would be 'TOP' */
+#121=DESCRIPTIVE_REPRESENTATION_ITEM('fixed_side','BOTTOM');
+#130=REPRESENTATION('side_ref',(#121),#14);
+#122=PROPERTY_DEFINITION_REPRESENTATION(#120,#130);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#300=GEOMETRIC_CURVE_SET('ap210-fixed-side-reference-inverts-top-bottom-semantics',
+  (#100,#101,#102,#103,#110,#120,#121,#130,#122));
+/* Product chain */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M145','M145','M145',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#300),#14);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;

@@ -1,33 +1,58 @@
 ISO-10303-21;
-/* M147 - AP210 surface-mount component oriented on the wrong board
- * side.
- * Defect: a component placement transform on the bottom side
- * (z=0, normal = -Z) is applied to a part declared as a
- * 'top-only' SMD package (BGA). The footprint nodes resolve below
- * the board surface and the placement is fundamentally invalid -
- * the BGA balls are on the wrong face. */
+/* M147: AP210 surface-mount component oriented on wrong board side */
+/* DEFECT: BGA256 declared TOP_ONLY but placement uses -Z normal (bottom side) */
+/* BGA solder balls face away from the PCB — component cannot be soldered */
+/* Per ISO 10303-210 §6 placement axis must agree with mount_constraint */
+/* Byte assertion: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN') */
+/* Byte assertion: contains(b'AXIS2_PLACEMENT_3D') */
+/* Byte assertion: contains(b'TOP_ONLY') */
 HEADER;
-FILE_DESCRIPTION(('M147 test case','AP210 SMD wrong-side placement'),'2;1');
-FILE_NAME('M147.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M147: AP210 TOP_ONLY SMD component placed on bottom side'),'2;1');
+FILE_NAME('M147.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN') */
 FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('pcb','3D'));
-/* Defect: BGA_84 declared as top-only SMD but placed on bottom side. */
-#100=PRODUCT('BGA_84','BGA_84','top-mount BGA package',(#1));
-#110=DESCRIPTIVE_REPRESENTATION_ITEM('mount_constraint','TOP_ONLY');
-#200=CARTESIAN_POINT('origin',(50.0,40.0,0.0));
-/* Normal -Z indicates bottom side mount. */
-#201=DIRECTION('placement_normal',(0.0,0.0,-1.0));
-#202=DIRECTION('placement_x',(1.0,0.0,0.0));
-#203=AXIS2_PLACEMENT_3D('U1_placement',#200,#201,#202);
-#300=NEXT_ASSEMBLY_USAGE_OCCURRENCE('U1','U1','BGA mounted bottom side',
-       #100,#100,$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('pcb','3D'));
+/* BGA256 component product — 256-ball BGA surface-mount package */
+#100=PRODUCT('BGA256','BGA256','256-ball BGA package',(#1));
+/* Byte assertion: contains(b'TOP_ONLY') */
+/* mount_constraint property declares BGA256 is a top-side-only package */
+#110=PROPERTY_DEFINITION('mount_constraint','Placement side constraint',#100);
+#111=DESCRIPTIVE_REPRESENTATION_ITEM('mount_constraint','TOP_ONLY');
+#112=REPRESENTATION('mount',(#111),#14);
+#113=PROPERTY_DEFINITION_REPRESENTATION(#110,#112);
+/* Byte assertion: contains(b'AXIS2_PLACEMENT_3D') */
+/* Placement origin on the PCB at position (15.0, 20.0, 0.0) */
+#200=CARTESIAN_POINT('bga_origin',(15.0,20.0,0.0));
+/* DEFECT: z-axis direction (0,0,-1) = -Z normal = bottom-side placement */
+/* A TOP_ONLY package requires +Z normal (0,0,1) for top-side placement */
+#202=DIRECTION('bottom_normal',(0.0,0.0,-1.0));
+#201=AXIS2_PLACEMENT_3D('bga_placement',#200,#202,$);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#300=GEOMETRIC_CURVE_SET('ap210-smd-component-oriented-on-wrong-board-side',
+  (#100,#110,#111,#112,#113,#200,#202,#201));
+/* Product chain */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M147','M147','M147',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#300),#14);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;
