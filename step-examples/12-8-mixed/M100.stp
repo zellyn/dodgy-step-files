@@ -1,24 +1,58 @@
 ISO-10303-21;
-/* M100 - AP238 spindle-on issued after first tool-workpiece contact.
- * Defect: WORKPLAN's first operation is a DRILLING_OPERATION (tool
- * descends into workpiece) followed by a SPINDLE_SPEED setting. The
- * first contact occurs with the spindle stopped; tool snaps. */
+/* M100: AP238 spindle-on issued after first tool-workpiece contact */
+/* DEFECT: DRILLING_OPERATION precedes any spindle-control operation */
+/* Spindle stopped at first tool-workpiece contact — breaks tool or mars surface */
+/* Violates ISO 10303-238 §6.4 spindle / coolant / approach ordering */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'DRILLING_OPERATION') */
+/* Byte assertion: contains(b'WORKPLAN') */
 HEADER;
-FILE_DESCRIPTION(('M100 test case','AP238 cut starts before spindle on'),'2;1');
-FILE_NAME('M100.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M100: AP238 DRILLING_OPERATION before spindle-on'),'2;1');
+FILE_NAME('M100.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
+#1=APPLICATION_CONTEXT('step_nc_mim');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
+  'ap238_step_nc_mim',2007,#1);
+/* Standard unit context — mm */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('nc','3D'));
-/* Defect: drilling first, then spindle command. */
-#100=DRILLING_OPERATION('drill_a',$,$,$,$,$);
-#101=MACHINING_OPERATION('start_spindle',$,$,$,$,$);
-#200=WORKPLAN('main',(#100,#101),$,$,$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('nc','3D'));
+/* Target machined feature — a drilled hole */
+#50=MACHINED_FEATURE('hole_a',$,$,$,$,$);
+/* 10mm drill bit — will break if spindle is not rotating at contact */
+#60=MACHINING_TOOL('drill_10mm',$,$,$);
+/* Byte assertion: contains(b'DRILLING_OPERATION') */
+/* DEFECT: DRILLING_OPERATION is the first (and only) operation in the workplan */
+/* No spindle-on control operation precedes this cutting operation */
+/* When controller executes this, spindle is stopped during plunge — tool breaks */
+#70=DRILLING_OPERATION('drill_plunge',#60,$,$,$,$,$,$,#50,$,$);
+/* First workingstep in the WORKPLAN — no spindle-on workingstep before this */
+#80=MACHINING_WORKINGSTEP('drill_step',#50,#70,$);
+/* Byte assertion: contains(b'WORKPLAN') */
+/* WORKPLAN has only the drilling step — missing a spindle-on step as first entry */
+/* Correct ordering: spindle-on workingstep FIRST, then drilling workingstep *)  */
+#90=WORKPLAN('main',(#80),$,$,$);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#300=GEOMETRIC_CURVE_SET('ap238-spindle-on-after-first-tool-workpiece-contact',
+  (#50,#60,#70,#80,#90));
+/* Product chain */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M100','M100','M100',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#300),#14);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;

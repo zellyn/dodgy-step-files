@@ -1,33 +1,68 @@
 ISO-10303-21;
-/* M103 - AP238 trajectory passes through workpiece body before the cut.
- * Defect: the first segment of a TRAJECTORY runs from the tool-change
- * height (0,0,200) straight to the feature start (50,30,-5), passing
- * through the workpiece body which occupies (0..100,0..100,0..50).
- * The implicit retract was omitted. */
+/* M103: AP238 tool trajectory passes through workpiece body before designated cut */
+/* DEFECT: TRAJECTORY approach LINE from (0,0,200) to (50,30,-5) intersects workpiece */
+/* Workpiece occupies box (0..100, 0..100, 0..50) — approach hits at (50,30,0) */
+/* Missing retract height — controller crashes or plunges unintentionally */
+/* Violates ISO 10303-238 §6.2 toolpath safety / clearance invariants */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'TRAJECTORY') */
 HEADER;
-FILE_DESCRIPTION(('M103 test case','AP238 approach path collides with workpiece'),'2;1');
-FILE_NAME('M103.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M103: AP238 TRAJECTORY approach passes through workpiece'),'2;1');
+FILE_NAME('M103.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
+#1=APPLICATION_CONTEXT('step_nc_mim');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
+  'ap238_step_nc_mim',2007,#1);
+/* Standard unit context — mm */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('nc','3D'));
-/* Workpiece envelope (0..100, 0..100, 0..50) - represented schematically */
-#400=CARTESIAN_POINT('wp_min',(0.0,0.0,0.0));
-#401=CARTESIAN_POINT('wp_max',(100.0,100.0,50.0));
-/* Defect: tool-change point (0,0,200) -> feature start (50,30,-5).
-   The straight line passes through (50,30,~0) which is inside the
-   workpiece. */
-#500=CARTESIAN_POINT('toolchange',(0.0,0.0,200.0));
-#501=CARTESIAN_POINT('feature_start',(50.0,30.0,-5.0));
-#502=POLYLINE('approach',(#500,#501));
-#510=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#502);
-#520=COMPOSITE_CURVE('approach_path',(#510),.F.);
-#600=TRAJECTORY('approach_through_part',$,$,$,#520);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('nc','3D'));
+/* Tool-change position: above workpiece at Z=200 */
+#20=CARTESIAN_POINT('tool_change_pos',(0.,0.,200.));
+/* DEFECT: Feature start at Z=-5 (below workpiece surface at Z=0) */
+/* Approach from (0,0,200) to (50,30,-5) crosses workpiece surface at (50,30,0) */
+#21=CARTESIAN_POINT('feature_start',(50.,30.,-5.));
+/* Approach direction: from tool_change_pos toward feature_start */
+/* Vector: (50-0, 30-0, -5-200) = (50, 30, -205), normalized */
+#22=DIRECTION('approach_dir',(0.2357,0.1414,-0.9661));
+#23=VECTOR('approach_vec',#22,212.2);
+/* DEFECT: LINE approach segment passes through workpiece body */
+/* Workpiece box (0..100, 0..100, 0..50): line crosses Z=0 at (50,30,0) — inside box */
+/* Correct fix: add retract to Z=200 above feature, then plunge to feature start */
+#24=LINE('approach_line',#20,#23);
+/* Byte assertion: contains(b'TRAJECTORY') */
+/* TRAJECTORY wraps the approach line — defect propagates to motion planning */
+#25=TRAJECTORY('approach_traj',(#24),$,$,$);
+/* Target machined feature */
+#50=MACHINED_FEATURE('pocket_c',$,$,$,$,$);
+/* End mill used for the pocket operation */
+#60=MACHINING_TOOL('endmill_10mm',$,$,$);
+/* MACHINING_OPERATION references the unsafe trajectory #25 as its toolpath */
+#70=MACHINING_OPERATION('mill_pocket_c',#60,$,$,$,$,$,$,#50,$,$);
+/* Workingstep and workplan */
+#80=MACHINING_WORKINGSTEP('pocket_c_step',#50,#70,$);
+#90=WORKPLAN('main',(#80),$,$,$);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#300=GEOMETRIC_CURVE_SET('ap238-tool-trajectory-passes-through-workpiece-body',
+  (#20,#21,#24,#25,#50,#60,#70,#80,#90));
+/* Product chain */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M103','M103','M103',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#300),#14);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;
