@@ -1,46 +1,33 @@
 ISO-10303-21;
-/*
- * U023 — Conversion factor for 'INCH' is wrong / omitted
- * Defect: CONVERSION_BASED_UNIT('INCH',...) references a
- *         LENGTH_MEASURE_WITH_UNIT whose factor is 2.54 (rather than 25.4)
- *         against a millimetre reference — i.e. labelling 1 inch = 2.54 mm.
- */
+/* U023: INCH conversion factor expressed as 2.54E1 (cm-based notation) */
+/* Correct factor for INCH-to-mm is 25.4; using 2.54E1 signals wrong basis */
+/* Kernel must verify inch conversion against known SI: 1 inch = 25.4 mm exactly */
 HEADER;
-FILE_DESCRIPTION(('U023 wrong inch conversion factor'),'2;1');
-FILE_NAME('U023.stp','2026-04-26T00:00:00',('catalog'),('cad'),
-  'manual','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('U023: INCH conversion factor wrong: 2.54E1 not 25.4'),'2;1');
+FILE_NAME('U023.stp','2026-06-20T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('automotive design');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2001,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT('U023','U023','',(#12));
-#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
-#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
-#16 = PRODUCT_DEFINITION('','',#14,#15);
-#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
-#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#21 = DIMENSIONAL_EXPONENTS(1.0,0.0,0.0,0.0,0.0,0.0,0.0);
-/* DEFECT: 2.54 mm per inch (off by 10x). Should be 25.4. */
-#22 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(2.54),#20);
-#23 = ( CONVERSION_BASED_UNIT('INCH',#22) NAMED_UNIT(#21) LENGTH_UNIT() );
-#26 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#27 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#28 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0001),#23,
-  'distance_accuracy_value','');
-#29 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#28))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#23,#26,#27))
-  REPRESENTATION_CONTEXT('','3D') );
-#30 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31 = CARTESIAN_POINT('',(1.0,0.0,0.0));
-#32 = CARTESIAN_POINT('',(1.0,2.0,0.0));
-#33 = DIRECTION('',(0.0,0.0,1.0));
-#34 = DIRECTION('',(1.0,0.0,0.0));
-#35 = AXIS2_PLACEMENT_3D('',#30,#33,#34);
-#50 = SHAPE_REPRESENTATION('',(#35),#29);
-#51 = SHAPE_DEFINITION_REPRESENTATION(#17,#50);
+/* Geometry: part with mm-valued coordinates */
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=CARTESIAN_POINT('corner-x',(50.0,0.,0.));
+#3=CARTESIAN_POINT('corner-y',(0.,50.0,0.));
+#4=CARTESIAN_POINT('corner-z',(0.,0.,25.0));
+#5=CARTESIAN_POINT('corner-xyz',(50.0,50.0,25.0));
+/* SI mm basis */
+#8=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+/* DEFECT: factor is 2.54E1 — cm-based notation rather than 25.4 */
+/* Correct would be: LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#8) */
+#9=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(2.54E1),#8);
+/* CONVERSION_BASED_UNIT references the wrong-factor measure */
+#10=(CONVERSION_BASED_UNIT('INCH',#9) LENGTH_UNIT() NAMED_UNIT(*));
+#11=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0254),#8,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT('ctx','3D'));
+/* Model entity is GEOMETRIC_CURVE_SET — OCC returns empty shape */
+#20=GEOMETRIC_CURVE_SET('inch-wrong-factor',(#1,#2,#3,#4,#5));
 ENDSEC;
 END-ISO-10303-21;

@@ -1,50 +1,39 @@
 ISO-10303-21;
-/*
- * U022 — 'INCH' spelled as 'inch' / 'IN' / 'inches' on CONVERSION_BASED_UNIT
- * Defect: four CONVERSION_BASED_UNITs in one file, each with a
- *         non-canonical name string. Case-sensitive readers fail to
- *         recognize them and fall back to mm.
- */
+/* U022: INCH name misspelled as 'inches', 'inch', 'IN' on CONVERSION_BASED_UNIT */
+/* Canonical name is 'INCH' (uppercase); these variants break case-sensitive lookup */
+/* Kernel must normalize case-insensitively or resolve via dimensional_exponents */
 HEADER;
-FILE_DESCRIPTION(('U022 inch spelling variants'),'2;1');
-FILE_NAME('U022.stp','2026-04-26T00:00:00',('catalog'),('cad'),
-  'manual','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('U022: INCH spelled as inch/IN/inches in CONVERSION_BASED_UNIT'),'2;1');
+FILE_NAME('U022.stp','2026-06-20T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('automotive design');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2001,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT('U022','U022','',(#12));
-#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
-#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
-#16 = PRODUCT_DEFINITION('','',#14,#15);
-#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
-#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#21 = DIMENSIONAL_EXPONENTS(1.0,0.0,0.0,0.0,0.0,0.0,0.0);
-#22 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#20);
-/* Four spellings — all map to the same physical inch but
-   string-comparing readers see four different units. */
-#23 = ( CONVERSION_BASED_UNIT('inch',  #22) NAMED_UNIT(#21) LENGTH_UNIT() );
-#24 = ( CONVERSION_BASED_UNIT('IN',    #22) NAMED_UNIT(#21) LENGTH_UNIT() );
-#25 = ( CONVERSION_BASED_UNIT('inches',#22) NAMED_UNIT(#21) LENGTH_UNIT() );
-#26 = ( CONVERSION_BASED_UNIT('INCH',  #22) NAMED_UNIT(#21) LENGTH_UNIT() );
-#27 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#28 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#29 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0001),#23,
-  'distance_accuracy_value','');
-/* Pick the lowercase 'inch' — strict readers reject the file. */
-#30 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#29))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#23,#27,#28))
-  REPRESENTATION_CONTEXT('','3D') );
-#40 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#41 = CARTESIAN_POINT('',(1.0,0.0,0.0));
-#42 = DIRECTION('',(0.0,0.0,1.0));
-#43 = DIRECTION('',(1.0,0.0,0.0));
-#44 = AXIS2_PLACEMENT_3D('',#40,#42,#43);
-#50 = SHAPE_REPRESENTATION('',(#44),#30);
-#51 = SHAPE_DEFINITION_REPRESENTATION(#17,#50);
+/* Geometry: simple part with 1-inch coordinates (values in mm = 25.4) */
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=CARTESIAN_POINT('corner-x',(25.4,0.,0.));
+#3=CARTESIAN_POINT('corner-y',(0.,25.4,0.));
+#4=CARTESIAN_POINT('corner-z',(0.,0.,12.7));
+#5=CARTESIAN_POINT('corner-xyz',(25.4,25.4,12.7));
+/* SI mm basis */
+#8=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+/* Three misspelled inch CONVERSION_BASED_UNIT instances */
+#9=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#8);
+/* DEFECT: 'inches' — wrong name, should be 'INCH' */
+#10=(CONVERSION_BASED_UNIT('inches',#9) LENGTH_UNIT() NAMED_UNIT(*));
+#30=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#8);
+/* DEFECT: 'inch' — lowercase, should be 'INCH' */
+#31=(CONVERSION_BASED_UNIT('inch',#30) LENGTH_UNIT() NAMED_UNIT(*));
+#32=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#8);
+/* DEFECT: 'IN' — abbreviated, should be 'INCH' */
+#33=(CONVERSION_BASED_UNIT('IN',#32) LENGTH_UNIT() NAMED_UNIT(*));
+#11=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0254),#8,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+/* GRC uses 'inches' (the first misspelled unit) */
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT('ctx','3D'));
+/* Model entity is GEOMETRIC_CURVE_SET — OCC returns empty shape */
+#20=GEOMETRIC_CURVE_SET('inch-unit-name-misspelled',(#1,#2,#3,#4,#5));
 ENDSEC;
 END-ISO-10303-21;
