@@ -1,0 +1,71 @@
+"""N148 — EvaluateDistances.projection_direction_selection.
+
+Curve-length comparison fails at parity (5.0 vs 4.9): backwards projection
+direction selected, reporting distance to far branch. True separation 0.1
+masked when lengths nearly equal.
+
+Geometry: two nearly equal-length parallel edges (5.0 mm and 4.9 mm)
+separated by 0.1 mm; near-parity causes direction-selection flip.
+
+(No byte assertions; kernel-test-pair — defect requires EvaluateDistances
+runtime invocation.)
+
+Tier-3: shape_null == True
+Expected: occt=empty/empty gmsh=empty ifc=schema_n/a
+"""
+from step_corpus.step_builder import StepFile
+
+f = StepFile(
+    catalog_id="N148",
+    defect=(
+        "EvaluateDistances projection_direction: 2 edges 5.0 vs 4.9 mm, "
+        "0.1mm apart; near-parity triggers backwards projection direction; "
+        "GEOMETRIC_CURVE_SET — OCC yields empty"
+    ),
+)
+
+# Edge A: 5.0 mm long.
+p0a = f.cartesian_point((0.0, 0.0, 0.0), name="p0a")
+p1a = f.cartesian_point((5.0, 0.0, 0.0), name="p1a")
+v0a = f.vertex_point(p0a, name="v0a")
+v1a = f.vertex_point(p1a, name="v1a")
+d = f.direction((1.0, 0.0, 0.0))
+eA = f.edge_curve(v0a, v1a, f.line(p0a, f.vector(d, 5.0)), name="eA_5mm")
+
+# Edge B: 4.9 mm long, 0.1 mm offset in Y.
+p0b = f.cartesian_point((0.0, 0.1, 0.0), name="p0b")
+p1b = f.cartesian_point((4.9, 0.1, 0.0), name="p1b")
+v0b = f.vertex_point(p0b, name="v0b")
+v1b = f.vertex_point(p1b, name="v1b")
+eB = f.edge_curve(v0b, v1b, f.line(p0b, f.vector(d, 4.9)), name="eB_4p9mm")
+
+gcs = f._emit_raw(f"GEOMETRIC_CURVE_SET('near_parity',(#{eA.eid},#{eB.eid}))")
+
+# Product chain
+app_ctx = f._emit_raw("APPLICATION_CONTEXT('automotive_design')")
+prod_ctx = f._emit_raw(f"PRODUCT_CONTEXT('',#{app_ctx.eid},'mechanical')")
+product = f._emit_raw(f"PRODUCT('N148','N148','',(#{prod_ctx.eid}))")
+pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{product.eid})")
+pdc = f._emit_raw(
+    f"PRODUCT_DEFINITION_CONTEXT('part definition',#{app_ctx.eid},'design')"
+)
+pd = f._emit_raw(f"PRODUCT_DEFINITION('','',#{pdf.eid},#{pdc.eid})")
+pds = f._emit_raw(f"PRODUCT_DEFINITION_SHAPE('','',#{pd.eid})")
+
+lu = f._emit_raw("(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.))")
+pau = f._emit_raw("(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.))")
+sau = f._emit_raw("(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT())")
+unc = f._emit_raw(
+    f"UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#{lu.eid},"
+    f"'distance_accuracy_value','model_precision')"
+)
+ctx = f._emit_raw(
+    f"(GEOMETRIC_REPRESENTATION_CONTEXT(3)"
+    f"GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#{unc.eid}))"
+    f"GLOBAL_UNIT_ASSIGNED_CONTEXT((#{lu.eid},#{pau.eid},#{sau.eid}))"
+    f"REPRESENTATION_CONTEXT('ctx','3D'))"
+)
+wfr = f._emit_raw(
+    f"GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#{gcs.eid}),#{ctx.eid})"
+)
+f._emit_raw(f"SHAPE_DEFINITION_REPRESENTATION(#{pds.eid},#{wfr.eid})")
