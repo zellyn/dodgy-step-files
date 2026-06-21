@@ -1,28 +1,58 @@
 ISO-10303-21;
-/* M076 - AP238 cutting_tool feed/speed measurement uses wrong unit class.
- * Defect: a CUTTING_TOOL has a feedrate stated in a unit-measure whose
- * dimensional_exponents are length/time^2 (acceleration) instead of
- * length/time (velocity). A consumer mapping feed onto an actual machine
- * would either scale by an unintended factor or reject the value. */
+/* M076: AP238 cutting-tool feedrate stated in wrong dimensional unit */
+/* DEFECT: DERIVED_UNIT has DIMENSIONAL_EXPONENTS (1,0,-2,...) = acceleration */
+/* Feedrate must be velocity: DIMENSIONAL_EXPONENTS (1,0,-1,...) */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'CUTTING_TOOL') */
+/* Byte assertion: contains(b'MACHINING_TOOL_FEEDSPEED') */
 HEADER;
-FILE_DESCRIPTION(('M076 test case','AP238 feedrate unit dimension wrong'),'2;1');
-FILE_NAME('M076.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M076: AP238 feedrate stated in wrong dimensional unit'),'2;1');
+FILE_NAME('M076.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 3 1 1 1 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('numerical_control_machining');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'numerical_control_machining',2007,#1);
+/* Standard unit context */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 #11=(NAMED_UNIT(*)TIME_UNIT()SI_UNIT($,.SECOND.));
-/* Defect: dimensional_exponents (1, 0, -2, ...) is acceleration. A
- * feedrate is length/time, exponents (1, 0, -1, ...). */
-#12=DIMENSIONAL_EXPONENTS(1.0,0.0,-2.0,0.0,0.0,0.0,0.0);
-#13=DERIVED_UNIT_ELEMENT(#10,1.0);
-#14=DERIVED_UNIT_ELEMENT(#11,-2.0);
-#15=DERIVED_UNIT((#13,#14));
-#20=MEASURE_WITH_UNIT(LENGTH_MEASURE(500.0),#15);
-#100=CUTTING_TOOL('endmill_6mm',$,$,$);
-#101=MACHINING_TOOL_FEEDSPEED('feed500_per_s2',#20,$);
+#12=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#13=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#15=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#16=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#15))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12,#13))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* DEFECT: DIMENSIONAL_EXPONENTS for acceleration (1,0,-2,...) */
+/* Correct velocity exponents would be (1,0,-1,...) */
+#20=DIMENSIONAL_EXPONENTS(1.0,0.0,-2.0,0.0,0.0,0.0,0.0);
+/* DERIVED_UNIT_ELEMENTs: LENGTH^1 and TIME^-2 — acceleration, not velocity */
+#21=DERIVED_UNIT_ELEMENT(#10,1.0);
+#22=DERIVED_UNIT_ELEMENT(#11,-2.0);
+/* DERIVED_UNIT composed of length/time^2 — the wrong unit class */
+#23=DERIVED_UNIT((#21,#22));
+/* Feedrate value 500.0 in acceleration unit (mm/s^2) instead of mm/s */
+#30=MEASURE_WITH_UNIT(LENGTH_MEASURE(500.0),#23);
+/* Byte assertion: contains(b'CUTTING_TOOL') */
+#50=CUTTING_TOOL('endmill_6mm',$,$,$);
+/* Byte assertion: contains(b'MACHINING_TOOL_FEEDSPEED') */
+/* MACHINING_TOOL_FEEDSPEED referencing the wrong-unit measure */
+#51=MACHINING_TOOL_FEEDSPEED('feed500_per_s2',#30,$);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#60=GEOMETRIC_CURVE_SET('ap238-feedrate-wrong-dimensional-unit-acceleration',
+  (#50,#51,#30));
+/* Product chain */
+#100=APPLICATION_CONTEXT('mechanical design');
+#101=PRODUCT_CONTEXT('',#100,'mechanical');
+#102=PRODUCT('M076','M076','M076',(#101));
+#103=PRODUCT_DEFINITION_FORMATION('','',#102);
+#104=PRODUCT_DEFINITION_CONTEXT(#100,'design');
+#105=PRODUCT_DEFINITION('','',#103,#104);
+#106=PRODUCT_DEFINITION_SHAPE('','',#105);
+#107=SHAPE_REPRESENTATION('',(#60),#16);
+#108=SHAPE_DEFINITION_REPRESENTATION(#106,#107);
 ENDSEC;
 END-ISO-10303-21;

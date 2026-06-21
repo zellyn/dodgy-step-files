@@ -1,35 +1,55 @@
 ISO-10303-21;
-/* M080 - AP209 material property unit mismatch.
- * Defect: an ELASTICITY (Young's modulus) is stated with a unit whose
- * dimensional_exponents are (length, mass, time) = (-1, 1, -2) (pressure)
- * but the numeric value 200000.0 is the canonical mm-MPa value. The
- * file's representation_context declares SI base units (Pa = N/m^2);
- * imported as Pa, the modulus is 200 kPa instead of 200 GPa, and the
- * resulting analysis is 1e6x too soft. */
+/* M080: AP209 material property unit mismatch by 6 orders of magnitude */
+/* DEFECT: Young's modulus 200000.0 is mm-MPa value, but context uses Pa (SI) */
+/* Imported as 200 kPa instead of 200 GPa — structure is 1e6x too soft */
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
+/* Byte assertion: contains(b'DERIVED_UNIT') */
+/* Byte assertion: contains(b'200000.0') */
 HEADER;
-FILE_DESCRIPTION(('M080 test case','AP209 material property unit mismatch'),'2;1');
-FILE_NAME('M080.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M080: AP209 material property unit mismatch 6 orders'),'2;1');
+FILE_NAME('M080.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
 FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('structural_analysis_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'structural_analysis_design',2001,#1);
+/* SI base units: metre, kilogram, second */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT($,.METRE.));
 #11=(MASS_UNIT()NAMED_UNIT(*)SI_UNIT(.KILO.,.GRAM.));
 #12=(NAMED_UNIT(*)SI_UNIT($,.SECOND.)TIME_UNIT());
+/* DIMENSIONAL_EXPONENTS for pressure/stress: Pa = kg m^-1 s^-2 */
 #13=DIMENSIONAL_EXPONENTS(-1.0,1.0,-2.0,0.0,0.0,0.0,0.0);
+/* Byte assertion: contains(b'DERIVED_UNIT') */
+/* DERIVED_UNIT_ELEMENTs composing Pa = m^-1 kg^1 s^-2 */
 #14=DERIVED_UNIT_ELEMENT(#10,-1.0);
 #15=DERIVED_UNIT_ELEMENT(#11,1.0);
 #16=DERIVED_UNIT_ELEMENT(#12,-2.0);
 #17=DERIVED_UNIT((#14,#15,#16));
+/* Geometric context in SI metre — important: not mm */
 #20=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-     REPRESENTATION_CONTEXT('analysis','3D'));
-/* Defect: Steel modulus declared as 200000.0 in unit-context that is
- * Pascals. Steel modulus is 200 GPa = 2.0e11 Pa. This is 1.0e6 too small. */
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('analysis','3D'));
+/* Byte assertion: contains(b'200000.0') */
+/* DEFECT: 200000.0 is the steel modulus in mm-MPa convention (200 GPa = 200000 MPa) */
+/* In this file's Pa unit context: 200000.0 Pa = 200 kPa — 1e6x too small */
+/* Correct SI value for steel: 2.0e11 Pa = 200 GPa */
 #100=MEASURE_WITH_UNIT(POSITIVE_RATIO_MEASURE(200000.0),#17);
 #110=GENERAL_PROPERTY('Youngs_Modulus','Youngs_Modulus','steel');
 #120=PROPERTY_DEFINITION('Youngs_Modulus_def','',#110);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#300=GEOMETRIC_CURVE_SET('ap209-material-unit-mismatch-mpa-vs-pa-6-orders',
+  (#100,#110,#120));
+/* Product chain */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M080','M080','M080',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#300),#20);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;
