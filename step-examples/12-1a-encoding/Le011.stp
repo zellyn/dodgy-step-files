@@ -1,23 +1,29 @@
-/* Le011 — \N\ notation directive misused as C-style newline escape
-   Defect: \N\ toggles a notation context per Part-21; it is NOT a C-style
-   newline escape. A real LF must be encoded as \X\0A. This file embeds
-   'line1\N\line2' as written by a generator that assumed \N\ == LF. The
-   reader must not crash and must warn that \N\ is not a newline. */
 ISO-10303-21;
+/* Le011: \N\ notation directive misused as C-style newline escape; \N\ toggles a notation context per ISO 10303-21 §6.4.3 Table 4; it is NOT a newline — a literal newline must be encoded as \X\0A; defect: 'line1\N\line2' — the producer confused \N\ with C '\n'; a tolerant reader must not crash; it should warn that \N\ is not a newline; literal text intended by the producer is silently re-flowed and the loaded attribute differs from the source bytes; multiple \N\ occurrences demonstrate the repeated-misuse pattern; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Le011 - N directive misused as newline escape'),'2;1');
-FILE_NAME('Le011.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Le011'),'2;1');
+FILE_NAME('Le011.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* \N\ misused as newline escape */
-#10=PERSON('p1','line1\N\line2','given',$,$,$,$,$);
-/* multiple \N\ in a row */
-#11=PERSON('p2','a\N\b\N\c','given',$,$,$,$,$);
-#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#21=DIRECTION('',(0.0,0.0,1.0));
-#22=DIRECTION('',(1.0,0.0,0.0));
-#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Le011','Le011','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#8998=PERSON('line1\N\line2','N-directive-as-newline','');
+#8999=PERSON('para1\N\para2\N\para3','repeated-N-directive-newline','');
+
 ENDSEC;
 END-ISO-10303-21;

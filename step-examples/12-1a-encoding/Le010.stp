@@ -1,23 +1,28 @@
-/* Le010 — \F\ font-shift directive consumed wrongly
-   Defect: \F\ is a single-character alternate-font selector, exactly one
-   letter follows. This file emits an HTML-style multi-letter tag
-   ('mix\F\katakana hello') as written by tools that mistake \F\ for an
-   open/close tag. A greedy parser may consume the wrong number of bytes. */
 ISO-10303-21;
+/* Le010: \F\ font-shift directive consumed wrongly: multi-character tag after \F\; \F\ introduces a single-character alternate-font selector for CJK font shifts; exactly one letter follows — the selector is always a single byte; defect: 'mix\F\katakana hello' treats \F\ like an HTML tag and embeds multi-character text after it before any closing marker; a parser that over-consumes eats trailing characters of the string; the attribute records a truncated or wrong value; receiver must reject with diagnostic; ignoring the directive is safer than over-consuming text; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Le010 - F font-shift directive consumed wrongly'),'2;1');
-FILE_NAME('Le010.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Le010'),'2;1');
+FILE_NAME('Le010.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* multi-letter tag after \F\ — only the first letter is the operand */
-#10=PERSON('p1','mix\F\katakana hello','given',$,$,$,$,$);
-/* paired \F\..\F\ as if HTML-style tag */
-#11=PERSON('p2','start\F\bold middle\F\bold end','given',$,$,$,$,$);
-#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#21=DIRECTION('',(0.0,0.0,1.0));
-#22=DIRECTION('',(1.0,0.0,0.0));
-#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Le010','Le010','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#8999=PERSON('mix\F\katakana hello','multi-char-font-directive','');
+
 ENDSEC;
 END-ISO-10303-21;

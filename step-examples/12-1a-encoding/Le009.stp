@@ -1,36 +1,30 @@
-/* Le009 — \P{X}\ page-shift directive: bad selector / state-machine omission
-   Defect: \PA\ through \PI\ select ISO-8859-1 through ISO-8859-9. This file
-   emits multiple malformed selectors:
-     - lowercase letter (\Pg\)
-     - digit selector   (\P1\)
-     - non-letter       (\P!\)
-     - missing selector (\P\)
-     - selector outside [A-I] — out-of-bounds page-table index
-   Also includes a legitimate \PB\Krak\X\F3w (Polish "Krakow" via Latin-2) to
-   exercise correct page-state machinery. */
 ISO-10303-21;
+/* Le009: \P{X}\ page-shift directive: bad selector and state-machine omission; \PA\ through \PI\ selects ISO-8859-1 through ISO-8859-9; defect 1: \Pg\ — lowercase selector 'g' is out of range (spec requires [A-I]); defect 2: \P1\ — digit selector '1' is invalid; defect 3: \P!\ — non-letter selector '!' is invalid; parsers ignoring the page-state machine decode subsequent characters against the wrong ISO-8859 page and produce wrong glyphs even when the entity is otherwise structurally valid; receiver must reject E_BAD_PAGE_DIRECTIVE for out-of-range selectors; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Le009 - bad P{X} page-shift selectors'),'2;1');
-FILE_NAME('Le009.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Le009'),'2;1');
+FILE_NAME('Le009.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* lowercase selector */
-#10=PERSON('p1','\Pg\\S\a','given',$,$,$,$,$);
-/* digit selector */
-#11=PERSON('p2','\P1\stuff','given',$,$,$,$,$);
-/* non-letter selector */
-#12=PERSON('p3','\P!\X\41','given',$,$,$,$,$);
-/* missing selector */
-#13=PERSON('p4','\P\stuff','given',$,$,$,$,$);
-/* legitimate Latin-2 Polish "Krakow" with valid \PB\ */
-#14=PERSON('p5','\PB\Krak\X\F3w','given',$,$,$,$,$);
-/* selector outside A..I (J is out of range Table 4) */
-#15=PERSON('p6','\PJ\stuff','given',$,$,$,$,$);
-#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#21=DIRECTION('',(0.0,0.0,1.0));
-#22=DIRECTION('',(1.0,0.0,0.0));
-#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Le009','Le009','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#8997=PERSON('\Pg\Krak\X\F3w','lowercase-page-selector','');
+#8998=PERSON('\P1\encoded-text','digit-page-selector','');
+#8999=PERSON('\P!\\X\41','non-letter-page-selector','');
+
 ENDSEC;
 END-ISO-10303-21;
