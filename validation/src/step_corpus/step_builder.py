@@ -630,7 +630,11 @@ class StepFile:
         )
 
     def write(self, path: str | Path) -> None:
-        Path(path).write_text(self.render())
+        # write_bytes so fixtures with CRLF / NUL / non-ASCII payloads
+        # (Le028's NUL+CRLF, Le032 UTF-16-BOM bodies, §-style symbols)
+        # round-trip byte-stable. write_text would apply universal-newline
+        # translation on some platforms.
+        Path(path).write_bytes(self.render().encode("utf-8"))
 
 
 # Re-export Enum for fixture source files

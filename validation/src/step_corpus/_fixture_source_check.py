@@ -108,11 +108,18 @@ def main(argv: list[str] | None = None) -> int:
         if err is not None:
             errored.append((src, err))
             continue
+        # Compare in BYTES so that CRLF line endings and non-ASCII UTF-8
+        # payloads (e.g. Le028's §, Le032's NUL bytes) round-trip
+        # faithfully. read_text() applies universal-newline translation
+        # (\r\n -> \n) and UTF-8 decode, which silently rewrites the
+        # comparison string and produces false-positive drift on fixtures
+        # whose defects are at the byte layer.
+        rendered_bytes = rendered.encode("utf-8")
         if args.fix:
             out_path.parent.mkdir(parents=True, exist_ok=True)
-            current = out_path.read_text() if out_path.is_file() else None
-            if current != rendered:
-                out_path.write_text(rendered)
+            current_bytes = out_path.read_bytes() if out_path.is_file() else None
+            if current_bytes != rendered_bytes:
+                out_path.write_bytes(rendered_bytes)
                 if not args.quiet:
                     print(f"REWRITE {out_path.relative_to(RESEARCH_ROOT)}")
             ok += 1
@@ -122,12 +129,16 @@ def main(argv: list[str] | None = None) -> int:
             if not args.quiet:
                 print(f"MISSING {out_path.relative_to(RESEARCH_ROOT)}")
             continue
-        current = out_path.read_text()
-        if current != rendered:
+        current_bytes = out_path.read_bytes()
+        if current_bytes != rendered_bytes:
             mismatched.append(out_path)
             if not args.quiet:
                 print(f"DRIFT   {out_path.relative_to(RESEARCH_ROOT)}")
-                _print_first_diff_lines(current, rendered, out_path)
+                _print_first_diff_lines(
+                    current_bytes.decode("latin-1"),
+                    rendered_bytes.decode("latin-1"),
+                    out_path,
+                )
             continue
         ok += 1
 
