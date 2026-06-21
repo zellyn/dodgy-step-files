@@ -1,89 +1,54 @@
 ISO-10303-21;
-/* N120 — ShapeAnalysis_ShapeTolerance.GlobalTolerance averaging-over-empty
- * Defect: call GlobalTolerance with mode=avg on a shape containing no
- * vertices/edges of the requested type; division-by-zero produces NaN.
- * The method accumulates sum across elements and divides by count at the end,
- * but does not guard against empty iteration, resulting in NaN or silent overflow.
- */
+/* N120: CLOSED_SHELL with a single triangular face (v0, v1, v2, v3) with edges e_01, e_12, e_20; no free isolated vertices; GlobalTolerance(VERTEX, avg) iterates empty vertex set, divides 0/0 producing NaN */
 HEADER;
-FILE_DESCRIPTION(('N120 GlobalTolerance NaN on empty selection'),'2;1');
-FILE_NAME('N120.stp','2026-06-15T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('N120'),'2;1');
+FILE_NAME('N120.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-#6=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#7=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#8=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-/* Shape consisting only of faces (no discrete vertices or edges that would
- * match a vertex-only or edge-only query). GlobalTolerance with mode=avg
- * iterating over vertices will find zero vertices and divide by zero. */
-#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('p1',(10.0,0.0,0.0));
-#12=CARTESIAN_POINT('p2',(10.0,10.0,0.0));
-#13=CARTESIAN_POINT('p3',(0.0,10.0,0.0));
-#20=VERTEX_POINT('v0',#10);
-#21=VERTEX_POINT('v1',#11);
-#22=VERTEX_POINT('v2',#12);
-#23=VERTEX_POINT('v3',#13);
-/* Construct a triangular wire with only 3 edges, no isolated free vertices. */
-#30=DIRECTION('x',(1.0,0.0,0.0));
-#31=DIRECTION('y',(0.0,1.0,0.0));
-#32=DIRECTION('xy_diag',(1.0,1.0,0.0));
-#40=VECTOR('v10',#30,10.0);
-#41=VECTOR('v01',#31,10.0);
-#42=VECTOR('v_diag',#32,-14.142135623730951);
-#50=LINE('l_01',#10,#40);
-#51=LINE('l_12',#11,#41);
-#52=LINE('l_20',#12,#42);
-/* Three edges forming a triangle. */
-#60=EDGE_CURVE('e_01',#20,#21,#50,.T.);
-#61=EDGE_CURVE('e_12',#21,#22,#51,.T.);
-#62=EDGE_CURVE('e_20',#22,#20,#52,.T.);
-/* Host surface for the face. */
-#70=CARTESIAN_POINT('plane_o',(0.0,0.0,0.0));
-#71=DIRECTION('plane_z',(0.0,0.0,1.0));
-#72=DIRECTION('plane_x',(1.0,0.0,0.0));
-#73=AXIS2_PLACEMENT_3D('plane_p',#70,#71,#72);
-#74=PLANE('face_plane',#73);
-/* Triangle boundary loop. */
-#80=ORIENTED_EDGE('',*,*,#60,.T.);
-#81=ORIENTED_EDGE('',*,*,#61,.T.);
-#82=ORIENTED_EDGE('',*,*,#62,.T.);
-#83=EDGE_LOOP('tri_loop',(#80,#81,#82));
-#84=FACE_OUTER_BOUND('',#83,.T.);
-/* Single triangular face. */
-#85=ADVANCED_FACE('triangle',(#84),#74,.T.);
-/* Tolerance context declaring vertex & edge tolerances, but the shape
- * carries no free vertices (all are part of edges). GlobalTolerance(vertex_mode)
- * will iterate over an empty list and divide by 0. */
-#100=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#6,
-  'distance_accuracy_value','vertex_nominal');
-#101=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-5),#6,
-  'distance_accuracy_value','edge_nominal');
-#102=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-4),#6,
-  'distance_accuracy_value','face_nominal');
-#110=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#100,#101,#102))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#6,#7,#8))
-  REPRESENTATION_CONTEXT('empty_vertex_set','3D'));
-#200=CLOSED_SHELL('tri_shell',(#85));
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('N120','N120','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#200));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#3=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#4=VERTEX_POINT('v0',#1);
+#5=VERTEX_POINT('v1',#2);
+#6=VERTEX_POINT('v2',#3);
+#7=DIRECTION('',(1.0,0.0,0.0));
+#8=VECTOR('',#7,10.0);
+#9=LINE('',#1,#8);
+#10=EDGE_CURVE('e_01',#4,#5,#9,.T.);
+#11=DIRECTION('',(-1.0,1.0,0.0));
+#12=VECTOR('',#11,10.0);
+#13=LINE('',#2,#12);
+#14=EDGE_CURVE('e_12',#5,#6,#13,.T.);
+#15=DIRECTION('',(0.0,-1.0,0.0));
+#16=VECTOR('',#15,10.0);
+#17=LINE('',#3,#16);
+#18=EDGE_CURVE('e_20',#6,#4,#17,.T.);
+#19=ORIENTED_EDGE('',$,$,#10,.T.);
+#20=ORIENTED_EDGE('',$,$,#14,.T.);
+#21=ORIENTED_EDGE('',$,$,#18,.T.);
+#22=EDGE_LOOP('',(#19,#20,#21));
+#23=FACE_OUTER_BOUND('',#22,.T.);
+#24=DIRECTION('',(0.0,0.0,1.0));
+#25=DIRECTION('',(1.0,0.0,0.0));
+#26=AXIS2_PLACEMENT_3D('',#1,#24,#25);
+#27=PLANE('',#26);
+#28=ADVANCED_FACE('',(#23),#27,.T.);
+#29=CLOSED_SHELL('',(#28));
+#30=SHELL_BASED_SURFACE_MODEL('',(#29));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('N120','N120','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#30),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
