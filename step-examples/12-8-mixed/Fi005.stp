@@ -1,79 +1,65 @@
 ISO-10303-21;
-/* Fi005 - Fillet faulty terminal vertex: trim at near-zero dihedral.
- * Defect: spine ends at a vertex where two adjacent ADVANCED_FACEs
- * meet at near-zero dihedral (almost coplanar). Encoded: spine
- * EDGE_CURVE with two incident faces sharing the terminal vertex. */
+/* Fi005: two ADVANCED_FACEs sharing a spine EDGE_CURVE; face_a normal = (0,0,1); face_b normal = (0.001,0,0.999999499); normals differ by ~1e-3 rad (near-coplanar, near-zero dihedral); fillet trim at terminal vertex degenerates (rolling-ball can't trim); FaultyVertex condition in ChFi3d_Builder */
 HEADER;
-FILE_DESCRIPTION(('Fi005 test case','Fillet faulty vertex at near-zero dihedral'),'2;1');
-FILE_NAME('Fi005.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Fi005'),'2;1');
+FILE_NAME('Fi005.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Spine endpoints */
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('terminal',(1.0,0.0,0.0));
-#12=VERTEX_POINT('',#10);
-#13=VERTEX_POINT('terminal_vertex',#11);
-/* Spine edge */
-#20=DIRECTION('',(1.0,0.0,0.0));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('terminal',(1.0,0.0,0.0));
+#3=VERTEX_POINT('',#1);
+#4=VERTEX_POINT('terminal_vertex',#2);
+#5=DIRECTION('',(1.0,0.0,0.0));
+#6=VECTOR('',#5,1.0);
+#7=LINE('',#1,#6);
+#8=EDGE_CURVE('spine',#3,#4,#7,.T.);
+#9=DIRECTION('z_norm',(0.0,0.0,1.0));
+#10=DIRECTION('x_ref',(1.0,0.0,0.0));
+#11=AXIS2_PLACEMENT_3D('',#1,#9,#10);
+#12=PLANE('face_a_surface',#11);
+#13=DIRECTION('almost_z',(0.001,0.0,0.999999499));
+#14=AXIS2_PLACEMENT_3D('',#1,#13,#10);
+#15=PLANE('face_b_surface_near_coplanar',#14);
+#16=CARTESIAN_POINT('p10y',(1.0,1.0,0.0));
+#17=CARTESIAN_POINT('p00y',(0.0,1.0,0.0));
+#18=VERTEX_POINT('',#16);
+#19=VERTEX_POINT('',#17);
+#20=DIRECTION('',(0.0,1.0,0.0));
 #21=VECTOR('',#20,1.0);
-#22=LINE('spine_line',#10,#21);
-#23=EDGE_CURVE('spine',#12,#13,#22,.T.);
-/* Two surfaces sharing the spine, with very nearly parallel normals
- * (near-zero dihedral). face_a normal +Z; face_b normal almost +Z. */
-#30=DIRECTION('z_norm',(0.0,0.0,1.0));
-#31=DIRECTION('x_ref',(1.0,0.0,0.0));
-#32=AXIS2_PLACEMENT_3D('',#10,#30,#31);
-#33=PLANE('face_a_surface',#32);
-#34=DIRECTION('almost_z',(0.001,0.0,0.999999499));
-#35=AXIS2_PLACEMENT_3D('',#10,#34,#31);
-#36=PLANE('face_b_surface_near_coplanar',#35);
-/* Both faces include the spine edge as one boundary; we close each loop
- * with three more edges so each EDGE_LOOP has 4 oriented edges total
- * (closed planar quad). Face A's loop: spine -> (1,1,0) -> (0,1,0) -> back.
- * Face B's loop: spine -> (1,-1,0) -> (0,-1,0) -> back (on the other side
- * of the spine since face B's normal tilts forward). */
-#50=CARTESIAN_POINT('p10y',(1.0,1.0,0.0));
-#51=CARTESIAN_POINT('p00y',(0.0,1.0,0.0));
-#52=VERTEX_POINT('',#50);
-#53=VERTEX_POINT('',#51);
-#54=DIRECTION('dy',(0.0,1.0,0.0));
-#55=VECTOR('',#54,1.0);
-#56=LINE('',#11,#55);     /* (1,0,0) -> (1,1,0) */
-#57=DIRECTION('dxn',(-1.0,0.0,0.0));
-#58=VECTOR('',#57,1.0);
-#59=LINE('',#50,#58);     /* (1,1,0) -> (0,1,0) */
-#60=DIRECTION('dyn',(0.0,-1.0,0.0));
-#61=VECTOR('',#60,1.0);
-#62=LINE('',#51,#61);     /* (0,1,0) -> (0,0,0) */
-#63=EDGE_CURVE('',#13,#52,#56,.T.);
-#64=EDGE_CURVE('',#52,#53,#59,.T.);
-#65=EDGE_CURVE('',#53,#12,#62,.T.);
-#40=ORIENTED_EDGE('',*,*,#23,.T.);
-#66=ORIENTED_EDGE('',*,*,#63,.T.);
-#67=ORIENTED_EDGE('',*,*,#64,.T.);
-#68=ORIENTED_EDGE('',*,*,#65,.T.);
-#41=EDGE_LOOP('',(#40,#66,#67,#68));
-#42=FACE_OUTER_BOUND('',#41,.T.);
-#43=ADVANCED_FACE('face_a',(#42),#33,.T.);
-#44=ADVANCED_FACE('face_b_almost_coplanar',(#42),#36,.T.);
-/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
-#9010=PRODUCT_CONTEXT('',#1,'mechanical');
-#9011=PRODUCT('Fi005','Fi005','',(#9010));
-#9012=PRODUCT_DEFINITION_FORMATION('','',#9011);
-#9013=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9014=PRODUCT_DEFINITION('','',#9012,#9013);
-#9015=PRODUCT_DEFINITION_SHAPE('','',#9014);
-#9020=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9021=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9022=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9023=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9020,'distance_accuracy_value','');
-#9024=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9023))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9020,#9021,#9022))REPRESENTATION_CONTEXT('','3D'));
-#9030=OPEN_SHELL('wrap_shell',(#43,#44));
-#9031=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9030));
-#9050=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9031),#9024);
-#9051=SHAPE_DEFINITION_REPRESENTATION(#9015,#9050);
+#22=LINE('',#2,#21);
+#23=EDGE_CURVE('e_right',#4,#18,#22,.T.);
+#24=DIRECTION('',(-1.0,0.0,0.0));
+#25=VECTOR('',#24,1.0);
+#26=LINE('',#16,#25);
+#27=EDGE_CURVE('e_top',#18,#19,#26,.T.);
+#28=DIRECTION('',(0.0,-1.0,0.0));
+#29=VECTOR('',#28,1.0);
+#30=LINE('',#17,#29);
+#31=EDGE_CURVE('e_left',#19,#3,#30,.T.);
+#32=ORIENTED_EDGE('',$,$,#8,.T.);
+#33=ORIENTED_EDGE('',$,$,#23,.T.);
+#34=ORIENTED_EDGE('',$,$,#27,.T.);
+#35=ORIENTED_EDGE('',$,$,#31,.T.);
+#36=EDGE_LOOP('',(#32,#33,#34,#35));
+#37=FACE_OUTER_BOUND('',#36,.T.);
+#38=ADVANCED_FACE('face_a',(#37),#12,.T.);
+#39=ADVANCED_FACE('face_b_almost_coplanar',(#37),#15,.T.);
+#40=OPEN_SHELL('',(#38,#39));
+#41=SHELL_BASED_SURFACE_MODEL('',(#40));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Fi005','Fi005','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#41),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

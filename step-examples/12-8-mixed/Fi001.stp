@@ -1,66 +1,52 @@
 ISO-10303-21;
-/* Fi001 - Fillet contour spans concavity flip.
- * Defect: a small two-faced solid has a shared spine edge whose dihedral
- * angle is convex (<180 deg) on the first half and concave (>180 deg)
- * on the second half. Fillet surface twists across the inflection.
- * Encoded: spine EDGE_CURVE with two incident ADVANCED_FACEs. */
+/* Fi001: two-faced OPEN_SHELL sharing a spine EDGE_CURVE; face A has plane tilted up (convex side, ~120 deg dihedral); face B has plane tilted down at inflection vertex (concave side, ~60 deg dihedral); fillet surface twists across the concavity-flip inflection point; fillet must be rejected or split at inflection vertex */
 HEADER;
-FILE_DESCRIPTION(('Fi001 test case','Fillet contour with concavity flip'),'2;1');
-FILE_NAME('Fi001.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Fi001'),'2;1');
+FILE_NAME('Fi001.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Two endpoints + the inflection vertex on the spine */
-#10=CARTESIAN_POINT('v_start',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('v_inflect',(5.0,0.0,0.0));
-#12=CARTESIAN_POINT('v_end',(10.0,0.0,0.0));
-#13=VERTEX_POINT('',#10);
-#14=VERTEX_POINT('inflection_vertex',#11);
-#15=VERTEX_POINT('',#12);
-/* Direction + line for the spine */
-#20=DIRECTION('',(1.0,0.0,0.0));
-#21=VECTOR('',#20,1.0);
-#22=LINE('spine_line',#10,#21);
-/* Spine edge spanning start->inflection->end (single curve) */
-#30=EDGE_CURVE('spine_edge',#13,#15,#22,.T.);
-/* Two adjacent face surfaces meeting at the spine. Face A is tilted UP
- * (normal = (0,-sin(30),cos(30))) so its plane is above the spine on
- * the +y side; face B is tilted DOWN (normal = (0,+sin(30),-cos(30)))
- * so its plane is below the spine on the +y side. The two faces meet at
- * the spine with a real (non-coplanar) dihedral angle of ~120 deg on
- * one half of the spine and ~60 deg on the other - encoded by placing
- * face B's local origin at the inflection vertex (#11) so the dihedral
- * across the inflection is mathematically discontinuous (concavity flip). */
-#40=DIRECTION('na',(0.0,-0.5,0.8660254037844386));
-#41=DIRECTION('',(1.0,0.0,0.0));
-#42=AXIS2_PLACEMENT_3D('',#10,#40,#41);
-#43=PLANE('face_a_convex_surface',#42);
-#44=DIRECTION('nb',(0.0,0.5,-0.8660254037844386));
-#45=AXIS2_PLACEMENT_3D('',#11,#44,#41);
-#46=PLANE('face_b_concave_surface_flipped',#45);
-/* ADVANCED_FACEs on the spine - both reference the spine edge */
-#50=ORIENTED_EDGE('',*,*,#30,.T.);
-#51=EDGE_LOOP('',(#50));
-#52=FACE_OUTER_BOUND('',#51,.T.);
-#53=ADVANCED_FACE('face_a_convex',(#52),#43,.T.);
-#54=ADVANCED_FACE('face_b_concave',(#52),#46,.F.);
-/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
-#9010=PRODUCT_CONTEXT('',#1,'mechanical');
-#9011=PRODUCT('Fi001','Fi001','',(#9010));
-#9012=PRODUCT_DEFINITION_FORMATION('','',#9011);
-#9013=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9014=PRODUCT_DEFINITION('','',#9012,#9013);
-#9015=PRODUCT_DEFINITION_SHAPE('','',#9014);
-#9020=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9021=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9022=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9023=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9020,'distance_accuracy_value','');
-#9024=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9023))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9020,#9021,#9022))REPRESENTATION_CONTEXT('','3D'));
-#9030=OPEN_SHELL('wrap_shell',(#53,#54));
-#9031=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9030));
-#9050=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9031),#9024);
-#9051=SHAPE_DEFINITION_REPRESENTATION(#9015,#9050);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('v_start',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('v_inflect',(5.0,0.0,0.0));
+#3=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#4=VERTEX_POINT('',#1);
+#5=VERTEX_POINT('inflection_vertex',#2);
+#6=VERTEX_POINT('',#3);
+#7=DIRECTION('',(1.0,0.0,0.0));
+#8=VECTOR('',#7,1.0);
+#9=LINE('',#1,#8);
+#10=EDGE_CURVE('spine_edge',#4,#6,#9,.T.);
+#11=DIRECTION('na',(0.0,-0.5,0.866025403784));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('plc_a',#1,#11,#12);
+#14=PLANE('face_a_convex_surface',#13);
+#15=DIRECTION('nb',(0.0,0.5,-0.866025403784));
+#16=DIRECTION('',(1.0,0.0,0.0));
+#17=AXIS2_PLACEMENT_3D('plc_b',#2,#15,#16);
+#18=PLANE('face_b_concave_surface_flipped',#17);
+#19=ORIENTED_EDGE('',$,$,#10,.T.);
+#20=EDGE_LOOP('',(#19));
+#21=FACE_OUTER_BOUND('',#20,.T.);
+#22=ADVANCED_FACE('face_a_convex',(#21),#14,.T.);
+#23=ORIENTED_EDGE('',$,$,#10,.T.);
+#24=EDGE_LOOP('',(#23));
+#25=FACE_OUTER_BOUND('',#24,.T.);
+#26=ADVANCED_FACE('face_b_concave',(#25),#18,.F.);
+#27=OPEN_SHELL('',(#22,#26));
+#28=SHELL_BASED_SURFACE_MODEL('',(#27));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Fi001','Fi001','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#28),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
