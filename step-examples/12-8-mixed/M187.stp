@@ -1,28 +1,59 @@
 ISO-10303-21;
-/* M187 - AP238 KNURLING_OPERATION with knurl-pitch finer than tool resolution.
- * Defect: a KNURLING_OPERATION declares a knurl pitch of 0.05 mm while
- * the knurling tool's tooth spacing (resolution) is 0.5 mm. The tool
- * physically cannot impress a finer pattern than its own teeth - the
- * declared pitch is unattainable. */
+/* M187: AP238 KNURLING_OPERATION pitch 0.05 mm finer than tool tooth spacing 0.5 mm */
+/* DEFECT: KNURLING_TOOL tooth spacing 0.5 mm — physical resolution limit of the tool */
+/* DEFECT: KNURLING_OPERATION knurl_pitch 0.05 mm — 10x finer than tool can achieve */
+/* Tool cannot impress pattern finer than its own tooth spacing — pitch is unattainable */
+/* Per ISO 10303-238 §5.8 knurling_operation tool-resolution invariant */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'KNURLING_OPERATION') */
+/* Byte assertion: contains(b'KNURLING_TOOL') */
 HEADER;
-FILE_DESCRIPTION(('M187 test case','AP238 knurl pitch finer than tool teeth'),'2;1');
-FILE_NAME('M187.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M187: AP238 KNURLING_OPERATION pitch 0.05mm finer than tool resolution 0.5mm'),'2;1');
+FILE_NAME('M187.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 3 1 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('nc','3D'));
-/* Knurling tool tooth spacing: 0.5 mm. */
-#90=KNURLING_TOOL('diamond_knurler_0p5',$,$,$,
-  MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(0.5),#10));
-/* Defect: requested pitch 0.05 mm < tool tooth spacing 0.5 mm. */
-#80=MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(0.05),#10);
-#100=KNURLING_OPERATION('fine_knurl',$,$,$,$,#90,#80);
-#200=WORKPLAN('main',(#100),$,$,$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* mm length unit reference for MEASURE_WITH_UNIT */
+#15=SI_UNIT(.MILLI.,.METRE.);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#20=GEOMETRIC_CURVE_SET('ap238-knurling-pitch-finer-than-tool-resolution',
+  (#30,#40,#50,#60));
+/* Byte assertion: contains(b'KNURLING_TOOL') */
+/* KNURLING_TOOL 'diamond_knurl_05mm': diamond knurl, tooth spacing 0.5 mm */
+/* Tool physical resolution limit: cannot impress pattern finer than 0.5 mm pitch */
+#31=MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(0.5),#15);
+#30=KNURLING_TOOL('diamond_knurl_05mm',$,#31,$,$,$,$,$,$);
+/* Byte assertion: contains(b'KNURLING_OPERATION') */
+/* DEFECT: KNURLING_OPERATION knurl_pitch 0.05 mm — 10x finer than tool tooth spacing */
+/* At 0.05 mm pitch with 0.5 mm teeth: teeth overlap — pattern unattainable */
+#41=MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(0.05),#15);
+#40=KNURLING_OPERATION('fine_knurl_op',$,$,$,$,$,#30,$,#41,$);
+/* WORKPIECE 'knurl_workpiece' */
+#60=WORKPIECE('knurl_workpiece','Workpiece for impossible knurl pitch test',$,$,$,$,$);
+/* MACHINING_WORKINGSTEP 'knurl_step' */
+#50=MACHINING_WORKINGSTEP('knurl_step','Impossible knurl pitch step',#40,#60,$);
+/* WORKPLAN: knurling with pitch finer than tool resolution — unattainable */
+#70=WORKPLAN('impossible_knurl_program','Impossible knurl pitch workplan',(),$,(#50));
+/* Product chain */
+#100=APPLICATION_CONTEXT('mechanical design');
+#101=PRODUCT_CONTEXT('',#100,'mechanical');
+#102=PRODUCT('M187','M187','M187',(#101));
+#103=PRODUCT_DEFINITION_FORMATION('','',#102);
+#104=PRODUCT_DEFINITION_CONTEXT(#100,'design');
+#105=PRODUCT_DEFINITION('','',#103,#104);
+#106=PRODUCT_DEFINITION_SHAPE('','',#105);
+#107=SHAPE_REPRESENTATION('',(#20),#14);
+#108=SHAPE_DEFINITION_REPRESENTATION(#106,#107);
 ENDSEC;
 END-ISO-10303-21;

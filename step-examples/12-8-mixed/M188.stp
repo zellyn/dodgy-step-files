@@ -1,29 +1,61 @@
 ISO-10303-21;
-/* M188 - AP238 DEBURRING_OPERATION on edge that doesn't exist in workpiece geometry.
- * Defect: a DEBURRING_OPERATION references an edge feature (#510) that
- * isn't part of the WORKPIECE's geometry. The deburring path is
- * computed against a phantom edge; the tool either swings into empty
- * space or contacts the workpiece in an unintended location. */
+/* M188: AP238 DEBURRING_OPERATION references edge #510 not present in workpiece */
+/* DEFECT: workpiece edge list = {#500, #501}; deburring target = #510 (phantom) */
+/* Phantom edge #510 is declared in file but NOT part of workpiece geometry */
+/* Tool swings into empty space or contacts workpiece in unintended location */
+/* Per ISO 10303-238 §5.8 deburring_operation edge-presence invariant */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'DEBURRING_OPERATION') */
+/* Byte assertion: contains(b'phantom_edge_NOT_ON_PART') */
 HEADER;
-FILE_DESCRIPTION(('M188 test case','AP238 deburring of nonexistent edge'),'2;1');
-FILE_NAME('M188.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M188: AP238 DEBURRING_OPERATION targets phantom edge not on workpiece'),'2;1');
+FILE_NAME('M188.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 3 1 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('nc','3D'));
-/* Workpiece has only edges #500 and #501. */
-#500=EDGE_CURVE('edge_top_a',$,$,$,.T.);
-#501=EDGE_CURVE('edge_top_b',$,$,$,.T.);
-#400=WORKPIECE('part_with_two_edges',$,$,$,$,$,$);
-/* Defect: deburring op references edge #510 which isn't on the workpiece. */
-#510=EDGE_CURVE('phantom_edge_NOT_ON_PART',$,$,$,.T.);
-#100=DEBURRING_OPERATION('deburr_phantom',$,$,$,$,#510,#400);
-#200=WORKPLAN('main',(#100),$,$,$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* mm length unit reference for MEASURE_WITH_UNIT */
+#15=SI_UNIT(.MILLI.,.METRE.);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#20=GEOMETRIC_CURVE_SET('ap238-deburring-operation-phantom-edge-not-on-workpiece',
+  (#500,#501,#510,#40,#50,#60));
+/* EDGE_FEATURE 'workpiece_edge_A' (#500): valid edge on machined_block workpiece */
+#500=EDGE_FEATURE('workpiece_edge_A','Valid edge A on machined block',$,$);
+/* EDGE_FEATURE 'workpiece_edge_B' (#501): valid edge on machined_block workpiece */
+#501=EDGE_FEATURE('workpiece_edge_B','Valid edge B on machined block',$,$);
+/* Byte assertion: contains(b'phantom_edge_NOT_ON_PART') */
+/* DEFECT: EDGE_FEATURE 'phantom_edge_NOT_ON_PART' (#510): declared in file */
+/* but NOT listed in machined_block workpiece edge list — phantom edge */
+#510=EDGE_FEATURE('phantom_edge_NOT_ON_PART','Phantom edge not belonging to workpiece',$,$);
+/* WORKPIECE 'machined_block': edge list = {#500, #501} only — #510 is NOT included */
+#40=WORKPIECE('machined_block','Machined block with two valid edges',$,$,(#500,#501),$,$);
+/* Byte assertion: contains(b'DEBURRING_OPERATION') */
+/* DEFECT: DEBURRING_OPERATION 'deburr_phantom_op' targets #510 — phantom edge */
+/* #510 is not in workpiece edge list; deburring path against non-existent edge */
+#50=DEBURRING_OPERATION('deburr_phantom_op',$,$,$,$,$,$,$,$,$,$,#510,$);
+/* MACHINING_WORKINGSTEP 'deburr_step' */
+#60=MACHINING_WORKINGSTEP('deburr_step','Deburring phantom edge step',#50,#40,$);
+/* WORKPLAN: deburring operation on phantom edge not part of workpiece */
+#70=WORKPLAN('phantom_edge_deburr_program','Phantom edge deburring workplan',(),$,(#60));
+/* Product chain */
+#100=APPLICATION_CONTEXT('mechanical design');
+#101=PRODUCT_CONTEXT('',#100,'mechanical');
+#102=PRODUCT('M188','M188','M188',(#101));
+#103=PRODUCT_DEFINITION_FORMATION('','',#102);
+#104=PRODUCT_DEFINITION_CONTEXT(#100,'design');
+#105=PRODUCT_DEFINITION('','',#103,#104);
+#106=PRODUCT_DEFINITION_SHAPE('','',#105);
+#107=SHAPE_REPRESENTATION('',(#20),#14);
+#108=SHAPE_DEFINITION_REPRESENTATION(#106,#107);
 ENDSEC;
 END-ISO-10303-21;

@@ -1,26 +1,58 @@
 ISO-10303-21;
-/* M189 - AP238 BORING with tool diameter declared as zero or negative.
- * Defect: a BORING_TOOL's diameter MEASURE_WITH_UNIT carries a
- * negative value (-12.0 mm). The controller either rejects the file
- * or computes a negative-radius offset toolpath, sending the boring
- * bar in the wrong direction. */
+/* M189: AP238 BORING_TOOL diameter declared as negative (-12.0 mm) */
+/* DEFECT: BORING_TOOL 'boring_bar_12mm' diameter = LENGTH_MEASURE(-12.0) */
+/* Negative tool diameter is physically meaningless — must be positive */
+/* Controller rejects file or computes negative-radius offset toolpath */
+/* Negative-radius offset: boring bar moves away from bore center — wrong direction */
+/* Per ISO 10303-238 §5.7 boring_tool diameter-positivity invariant */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'BORING_TOOL') */
+/* Byte assertion: contains(b'-12.0') */
 HEADER;
-FILE_DESCRIPTION(('M189 test case','AP238 boring tool diameter negative'),'2;1');
-FILE_NAME('M189.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M189: AP238 BORING_TOOL diameter LENGTH_MEASURE(-12.0) negative value'),'2;1');
+FILE_NAME('M189.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 3 1 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('nc','3D'));
-/* Defect: BORING_TOOL diameter = -12.0 mm (negative length). */
-#80=MEASURE_WITH_UNIT(LENGTH_MEASURE(-12.0),#10);
-#90=BORING_TOOL('bad_bar',$,$,$,#80);
-#100=BORING_OPERATION('bore_op',$,$,$,$,$,#90);
-#200=WORKPLAN('main',(#100),$,$,$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* mm length unit reference for MEASURE_WITH_UNIT */
+#15=SI_UNIT(.MILLI.,.METRE.);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#20=GEOMETRIC_CURVE_SET('ap238-boring-tool-negative-diameter',
+  (#30,#40,#50,#60));
+/* Byte assertion: contains(b'BORING_TOOL') */
+/* Byte assertion: contains(b'-12.0') */
+/* DEFECT: BORING_TOOL 'boring_bar_12mm' with diameter LENGTH_MEASURE(-12.0) mm */
+/* Negative diameter is physically meaningless — positivity invariant violated */
+#31=MEASURE_WITH_UNIT(LENGTH_MEASURE(-12.0),#15);
+#30=BORING_TOOL('boring_bar_12mm',$,#31,$,$,$,$,$,$);
+/* BORING_OPERATION 'bore_op': uses boring_bar_12mm with negative diameter */
+#40=BORING_OPERATION('bore_op',$,$,$,$,$,#30,$,$,$,$,$,$);
+/* WORKPIECE 'bore_workpiece' */
+#60=WORKPIECE('bore_workpiece','Workpiece for negative diameter boring test',$,$,$,$,$);
+/* MACHINING_WORKINGSTEP 'bore_step' */
+#50=MACHINING_WORKINGSTEP('bore_step','Boring with negative diameter tool',#40,#60,$);
+/* WORKPLAN: boring operation with negative tool diameter — malformed */
+#70=WORKPLAN('negative_diameter_boring_program','Negative diameter boring workplan',(),$,(#50));
+/* Product chain */
+#100=APPLICATION_CONTEXT('mechanical design');
+#101=PRODUCT_CONTEXT('',#100,'mechanical');
+#102=PRODUCT('M189','M189','M189',(#101));
+#103=PRODUCT_DEFINITION_FORMATION('','',#102);
+#104=PRODUCT_DEFINITION_CONTEXT(#100,'design');
+#105=PRODUCT_DEFINITION('','',#103,#104);
+#106=PRODUCT_DEFINITION_SHAPE('','',#105);
+#107=SHAPE_REPRESENTATION('',(#20),#14);
+#108=SHAPE_DEFINITION_REPRESENTATION(#106,#107);
 ENDSEC;
 END-ISO-10303-21;
