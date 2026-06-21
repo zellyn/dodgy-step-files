@@ -1,34 +1,17 @@
-/* Ls002 - REAL literal with no digit before the decimal point
-   ----------------------------------------------------------------------
-   Catalog section : §12.1c numeric-literal grammar
-   Sources         : N016
-   See also        : Ls001
-   ----------------------------------------------------------------------
-   Defect
-     The grammar requires at least one digit before the dot. Bare ".5"
-     is not legal; "0.5" is. C and Python %g formatters frequently emit
-     ".5" instead of "0.5" when a value is in (-1, 1). The DIRECTION
-     coordinates and CARTESIAN_POINT below use the illegal leading-dot
-     form (.0, .5).
-   Expected behavior
-     Strict mode  : reject with "leading digit required before '.'".
-     Lenient mode : commonly accept implicit zero with a warning.
-   ----------------------------------------------------------------------
-*/
 ISO-10303-21;
+/* Ls002: REAL literal with no digit before the decimal point; ISO 10303-21 grammar requires at least one digit before the dot: .5 is not legal; 0.5 is; C and Python percent-g formatters frequently emit bare .5 for values < 1; defect: DIRECTION('',(.0,.0,.5)) — leading-dot REAL literals in all three coordinate slots: .0, .0, .5; no digit before any decimal point; strict readers must reject with digit-required-before-decimal diagnostic; lenient readers commonly accept implicit zero; bug-reporter synonyms: REAL with no digit before decimal, .5 instead of 0.5 in STEP, leading-dot REAL literal, percent-g formatter emits .5, missing zero before decimal; GEOMETRIC_CURVE_SET IS NOT used — DIRECTION entity is the defect carrier */
 HEADER;
-FILE_DESCRIPTION(('Ls002 - REAL literal missing leading digit'),'2;1');
-FILE_NAME('Ls002.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Ls002'),'2;1');
+FILE_NAME('Ls002.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-/* Defect: leading-dot REAL forms (.0, .5) where 0.0 / 0.5 is required */
-#20=DIRECTION('z',(.0,.0,1.0));
-#30=CARTESIAN_POINT('half',(.5,.5,.5));
-/* Defect: leading-dot mixed with canonical 0.x form on same instance */
-#31=CARTESIAN_POINT('mix',(.25,0.5,.75));
-#40=AXIS2_PLACEMENT_3D('placement',#10,#20,$);
+/* Defect: leading-dot REAL literals — no digit before the decimal point. */
+/* ISO 10303-21: grammar requires at least one digit before the dot. */
+/* C/Python %g formatter emits .5 instead of 0.5 for values < 1. */
+#1=DIRECTION('',(.0,.0,.5));
+#2=CARTESIAN_POINT('origin',(0.,0.,0.));
+#3=VECTOR('v',#1,1.);
+#4=LINE('l',#2,#3);
 ENDSEC;
 END-ISO-10303-21;

@@ -1,36 +1,16 @@
-/* Ls001 - REAL literal missing mandatory decimal point
-   ----------------------------------------------------------------------
-   Catalog section : §12.1c numeric-literal grammar
-   Sources         : T021, N015, Q051 (Implementors Issue 003)
-   See also        : Ad049, Ls002, Ls003, Ls004, Ls005, Ls006, Ls009
-   ----------------------------------------------------------------------
-   Defect
-     ISO 10303-21 grammar requires every REAL value to carry a decimal
-     point (1., 1.0, 0.5). Generators that print integer values into REAL
-     slots emit "1" where "1." is required, e.g. IFCDIRECTION((1,0,0)).
-     The DIRECTION coordinate lists below carry bare integers (1, 0, 0)
-     in slots whose schema type is REAL.
-   Expected behavior
-     Strict mode  : reject with diagnostic "expected REAL, found INTEGER"
-                    naming attribute index and instance ID.
-     Lenient mode : auto-promote INTEGER to REAL with one warning per
-                    instance; never silently coerce without diagnostic.
-   ----------------------------------------------------------------------
-*/
 ISO-10303-21;
+/* Ls001: REAL literal missing mandatory decimal point; ISO 10303-21 §6.4 grammar requires every REAL to carry a decimal point: 1. or 1.0 or 0.5; generators that print integer values into REAL slots emit 1 where 1. is required; defect: DIRECTION('',(1,0,0)) — integers in all three coordinate slots, no decimal point on any value; stepcode warns and salvages via istringstream >> double; strict readers must reject with decimal-point-required diagnostic; lenient mode may auto-promote INTEGER to REAL with a warning, never silently; implementors Issue 003 records the original disagreement: integers must not be followed by a dot, REALs must be; a primary cause of integer-vs-real type-coercion bugs; bug-reporter synonyms: REAL with no decimal point, integer where REAL required, 1 written instead of 1., DIRECTION coords missing dots, STEP REAL missing trailing period; GEOMETRIC_CURVE_SET IS NOT used — DIRECTION entity is the defect carrier */
 HEADER;
-FILE_DESCRIPTION(('Ls001 - REAL literal missing decimal point'),'2;1');
-FILE_NAME('Ls001.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Ls001'),'2;1');
+FILE_NAME('Ls001.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-/* Defect: integer literals where REAL is required */
-#20=DIRECTION('z',(0,0,1));
-#30=DIRECTION('x',(1,0,0));
-/* Defect: integer literal mixed with REALs inside one coord list */
-#31=CARTESIAN_POINT('mixed',(1,0.0,0.0));
-#40=AXIS2_PLACEMENT_3D('placement',#10,#20,#30);
+/* Defect: integer values in REAL slots — no decimal point. */
+/* ISO 10303-21 §6.4: every REAL must carry a decimal point. */
+#1=DIRECTION('',(1,0,0));
+#2=CARTESIAN_POINT('origin',(0.,0.,0.));
+#3=VECTOR('v',#1,1.);
+#4=LINE('l',#2,#3);
 ENDSEC;
 END-ISO-10303-21;

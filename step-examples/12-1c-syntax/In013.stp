@@ -1,15 +1,15 @@
 ISO-10303-21;
-/* In013 - Entity type unrecognized; transfer status remains Void.
- * Defect: a hypothetical AP242 ed.2 entity that the reader's actor
- * pool doesn't know about. */
+/* In013: Transfer Status remains Void after Defined was expected: unknown entity type in DATA section silently skipped; OCCT Transfer_StatusResult Void/Defined transitions (uncovered class evidence); a transfer process expected to produce a Defined result for an entity, but the result remains Void because no actor handled the entity type; the transfer log does not flag the void as an error; defect: DATA section contains HYPOTHETICAL_AP242_ED2_FUTURE_ENTITY — a made-up future type no standard schema defines and no kernel actor recognizes; the reader silently skips it; receiver must emit no-actor-for-entity-type-X warning; track unrecognized types in a per-file summary; never silently skip unknown entity types with no diagnostic; bug-reporter synonyms: entity type not transferred, kernel skipped entity silently, unknown entity type ignored, STEP entity skipped without warning, future-schema entity Void after transfer, transfer Status remains Void; GEOMETRIC_CURVE_SET IS NOT used — unknown entity type is the defect carrier */
 HEADER;
-FILE_DESCRIPTION(('In013 - unrecognised entity type','Pass C gap-fill'),'2;1');
-FILE_NAME('In013.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
-FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+FILE_DESCRIPTION(('In013'),'2;1');
+FILE_NAME('In013.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-/* Made-up entity type that no actor recognises */
-#10=HYPOTHETICAL_AP242_ED2_FUTURE_ENTITY('unknown_type','params',1.0);
+/* Made-up future-schema entity: no kernel actor recognizes this type. */
+/* Transfer status stays Void with no diagnostic emitted. */
+#1=HYPOTHETICAL_AP242_ED2_FUTURE_ENTITY('future_001',42,'schema_version_9999',(1.0,2.0,3.0),.UNKNOWN_ENUM_VALUE.);
+/* A second unknown entity to confirm the per-file summary lists both. */
+#2=HYPOTHETICAL_AP242_ED2_FUTURE_ENTITY('future_002',99,'schema_version_9999',(4.0,5.0,6.0),.ANOTHER_UNKNOWN_VALUE.);
 ENDSEC;
 END-ISO-10303-21;

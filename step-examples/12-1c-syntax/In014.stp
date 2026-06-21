@@ -1,59 +1,40 @@
-/* In014 - Curve base-class abstract LoadONBrep stub catches every unhandled curve type
-   Defect: BRL-CAD step-g routes every Curve subtype through a virtual
-   LoadONBrep that the base Curve.cpp implements as
-   `std::cerr << "Error: ::LoadONBrep(...) not implemented for "
-              << entityname << std::endl; return false;`
-   so any subtype that the importer does not specifically override (in
-   particular SeamCurve, CompositeCurve, BoundedPCurve, RectangularComposite-
-   Surface family, IntersectionCurve, CurveReplica, OFFSET_CURVE_3D under
-   AP203) silently falls through and gets dropped without any caller-side
-   knowledge that geometry was lost.  The diagnostic prints to stderr,
-   never propagates as an error code, and the caller cannot distinguish
-   "all geometry imported cleanly" from "half the curves were dropped".
-   This is the umbrella defect class for every other LoadONBrep stub
-   in step-g; individual entries (Gn038, Twi100, Twi101, Gs057, Gs058)
-   document specific subclasses.
-   Sources: BRL-CAD src/conv/step/step-g/Curve.cpp Curve::LoadONBrep base
-   stub; same pattern in Surface.cpp and several derived classes. */
 ISO-10303-21;
+/* In014: LoadONBrep virtual-dispatch fall-through umbrella (BRL-CAD step-g); BRL-CAD src/conv/step/step-g/Curve.cpp base stub: std::cerr << Error: ::LoadONBrep(..) not implemented for << entityname; return false; same pattern in SeamCurve.cpp, CompositeCurve.cpp, CompositeCurveOnSurface.cpp, CurveBoundedSurface.cpp, RectangularCompositeSurface.cpp, SurfacePatch.cpp, CartesianTransformationOperator.cpp; defect: SEAM_CURVE referenced from a CYLINDRICAL_SURFACE cylinder host; step-g SeamCurve::LoadONBrep stub returns false and the seam geometry is lost; the diagnostic prints to stderr only and never propagates as an error code; callers cannot distinguish full success from partial geometry drop; receiver must reject: every stubbed dispatch must escalate to STEP_LOAD_ERROR; converter must exit non-zero when any subgraph reachable from ADVANCED_BREP_SHAPE_REPRESENTATION returned false; distinct from In013: here the actor exists but is a stub, not absent; bug-reporter synonyms: step-g LoadONBrep not implemented umbrella, virtual-dispatch fall-through silently drops geometry, stderr-only diagnostic for missing subtype, BRL-CAD step-g cannot escalate stub-misses to error; GEOMETRIC_CURVE_SET IS NOT used — SEAM_CURVE defect is the carrier */
 HEADER;
-FILE_DESCRIPTION(
-  ('In014 - SEAM_CURVE LoadONBrep stub silently drops geometry'),
-  '2;1');
-FILE_NAME('In014.stp','2026-05-02T00:00:00',('cad-research-suite'),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('In014'),'2;1');
+FILE_NAME('In014.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* Cylinder: the canonical surface needing a SEAM_CURVE on the closed
-   parameter direction. */
-#10=CARTESIAN_POINT('o',(0.0,0.0,0.0));
-#11=DIRECTION('z',(0.0,0.0,1.0));
-#12=DIRECTION('x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('pl',#10,#11,#12);
-#14=CYLINDRICAL_SURFACE('cyl',#13,5.0);
-/* 2D parameter context. */
-#20=(GEOMETRIC_REPRESENTATION_CONTEXT(2)
-     PARAMETRIC_REPRESENTATION_CONTEXT()
-     REPRESENTATION_CONTEXT('uv','2D'));
-/* Two pcurves on the seam, one at u=0 and one at u=2pi. */
-#30=CARTESIAN_POINT('uv_a0',(0.0,0.0));
-#31=CARTESIAN_POINT('uv_a1',(0.0,1.0));
-#32=POLYLINE('seam_a',(#30,#31));
-#33=DEFINITIONAL_REPRESENTATION('seam_a_def',(#32),#20);
-#34=PCURVE('seam_pcurve_a',#14,#33);
-#40=CARTESIAN_POINT('uv_b0',(6.283185307179586,0.0));
-#41=CARTESIAN_POINT('uv_b1',(6.283185307179586,1.0));
-#42=POLYLINE('seam_b',(#40,#41));
-#43=DEFINITIONAL_REPRESENTATION('seam_b_def',(#42),#20);
-#44=PCURVE('seam_pcurve_b',#14,#43);
-/* 3D meridian curve. */
-#50=CARTESIAN_POINT('m0',(5.0,0.0,0.0));
-#51=DIRECTION('mdir',(0.0,0.0,1.0));
-#52=VECTOR('mvec',#51,1.0);
-#53=LINE('m_line',#50,#52);
-/* Defect: SEAM_CURVE - subtype of SURFACE_CURVE. step-g SeamCurve.cpp
-   has its own LoadONBrep stub that returns false silently. */
-#60=SEAM_CURVE('seam',#53,(#34,#44),.PCURVE_S1.);
+/* Cylinder geometry */
+#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#11=DIRECTION('z_axis',(0.0,0.0,1.0));
+#12=DIRECTION('x_axis',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('cyl_placement',#10,#11,#12);
+#14=CYLINDRICAL_SURFACE('cylinder',#13,5.0);
+/* Seam line: the 3D edge curve along the seam of the cylinder */
+#20=CARTESIAN_POINT('seam_start',(5.0,0.0,0.0));
+#21=CARTESIAN_POINT('seam_end',(5.0,0.0,10.0));
+#22=DIRECTION('seam_dir',(0.0,0.0,1.0));
+#23=VECTOR('seam_vec',#22,10.0);
+#24=LINE('seam_3d',#20,#23);
+/* Parameter space: 2D line on cylinder surface (u=0 seam line) */
+#30=CARTESIAN_POINT('seam_2d_start',(0.0,0.0));
+#31=DIRECTION('seam_2d_dir',(0.0,1.0));
+#32=VECTOR('seam_2d_vec',#31,10.0);
+#33=LINE('seam_2d',#30,#32);
+/* DEFINITIONAL_REPRESENTATION for pcurve */
+#40=DEFINITIONAL_REPRESENTATION('',(#33),#50);
+/* GEOMETRIC_REPRESENTATION_CONTEXT (2D) */
+#50=GEOMETRIC_REPRESENTATION_CONTEXT(2);
+/* PCURVE: associates 3D host surface with 2D parameter curve */
+#41=PCURVE('',#14,#40);
+/* SEAM_CURVE: the defect entity — triggers BRL-CAD LoadONBrep stub */
+/* SEAM_CURVE(name, edge_geometry, associated_geometry, master_representation) */
+#42=SEAM_CURVE('seam',#24,(#41),.PCURVE_S1.);
+/* Topology referencing the seam curve */
+#51=VERTEX_POINT('v_bot',#20);
+#52=VERTEX_POINT('v_top',#21);
+#53=EDGE_CURVE('seam_edge',#51,#52,#42,.T.);
 ENDSEC;
 END-ISO-10303-21;
