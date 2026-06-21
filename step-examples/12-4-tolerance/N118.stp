@@ -1,81 +1,70 @@
 ISO-10303-21;
-/* N118 — BRepLib.UpdateEdgeTol with-pcurve-discontinuity
- * Defect: edge whose pcurve has a C0 discontinuity in the middle; UpdateEdgeTol
- * samples uniformly and the discontinuity contaminates one sample's tolerance
- * calculation, inflating the entire edge tolerance to hide the discontinuity
- * instead of reporting the failure to heal it.
- */
+/* N118: OPEN_SHELL face with edge_pcurve_disc (v_start→v_end, 10mm 3D line); B-spline pcurve has C0 discontinuity jump of 0.5 units at u=0.5; UpdateEdgeTol uniform sampling hits discontinuity and inflates tolerance to 0.5 instead of reporting the gap */
 HEADER;
-FILE_DESCRIPTION(('N118 UpdateEdgeTol pcurve C0 discontinuity'),'2;1');
-FILE_NAME('N118.stp','2026-06-15T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('N118'),'2;1');
+FILE_NAME('N118.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-#6=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#7=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#8=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-/* Edge vertices spanning 0 to 10 in X. */
-#10=CARTESIAN_POINT('v_start',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('v_end',(10.0,0.0,0.0));
-#12=VERTEX_POINT('vs',#10);
-#13=VERTEX_POINT('ve',#11);
-/* 3D curve: smooth line from 0 to 10 in X. */
-#20=DIRECTION('x_dir',(1.0,0.0,0.0));
-#21=VECTOR('x_vec',#20,10.0);
-#22=LINE('edge_3d',#10,#21);
-/* Host surface: a plane z=0. */
-#30=CARTESIAN_POINT('plane_origin',(0.0,0.0,0.0));
-#31=DIRECTION('plane_z',(0.0,0.0,1.0));
-#32=DIRECTION('plane_x',(1.0,0.0,0.0));
-#33=AXIS2_PLACEMENT_3D('plane_plc',#30,#31,#32);
-#34=PLANE('host_surface',#33);
-/* PCurve segment A (u=0 to u=5): quadratic spline, u increases linearly */
-#40=CARTESIAN_POINT('pca_0',(0.0,0.0));
-#41=CARTESIAN_POINT('pca_1',(2.5,0.1));
-#42=CARTESIAN_POINT('pca_2',(5.0,0.0));
-#43=B_SPLINE_CURVE_WITH_KNOTS('pcurve_a',2,(#40,#41,#42),.UNSPECIFIED.,
-  .F.,.F.,(3,3),(0.0,1.0),.UNSPECIFIED.);
-/* PCurve segment B (u=5 to u=10): different control points with C0 jump
- * at u=5 (the endpoint of this spline is at (5.0, 0.5) rather than (5.0, 0.0)). */
-#50=CARTESIAN_POINT('pcb_0',(5.0,0.5));
-#51=CARTESIAN_POINT('pcb_1',(7.5,0.6));
-#52=CARTESIAN_POINT('pcb_2',(10.0,0.5));
-#53=B_SPLINE_CURVE_WITH_KNOTS('pcurve_b',2,(#50,#51,#52),.UNSPECIFIED.,
-  .F.,.F.,(3,3),(0.0,1.0),.UNSPECIFIED.);
-/* Compose the discontinuous pcurve from segments A and B.
- * At parameter u=0.5 (the middle of the normalized range [0,1]),
- * there is a C0 discontinuity from (5.0, 0.0) to (5.0, 0.5). */
-#60=EDGE_CURVE('edge_with_c0_pcurve_jump',#12,#13,#22,.T.);
-#100=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#6,
-  'distance_accuracy_value','nominal_tolerance');
-#101=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.5),#6,
-  'distance_accuracy_value','pcurve_discontinuity_gap');
-#110=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#100,#101))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#6,#7,#8))
-  REPRESENTATION_CONTEXT('pcurve_c0_disc','3D'));
-#200=ORIENTED_EDGE('',*,*,#60,.T.);
-#201=EDGE_LOOP('single_edge_loop',(#200));
-#202=FACE_OUTER_BOUND('',#201,.T.);
-#203=ADVANCED_FACE('single_face',(#202),#34,.T.);
-#210=CLOSED_SHELL('shell_with_c0_pcurve',(#203));
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('N118','N118','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#210));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#3=VERTEX_POINT('v_start',#1);
+#4=VERTEX_POINT('v_end',#2);
+#5=DIRECTION('',(1.0,0.0,0.0));
+#6=VECTOR('',#5,10.0);
+#7=LINE('',#1,#6);
+#8=DIRECTION('',(0.0,0.0,1.0));
+#9=DIRECTION('',(1.0,0.0,0.0));
+#10=AXIS2_PLACEMENT_3D('',#1,#8,#9);
+#11=PLANE('',#10);
+#12=CARTESIAN_POINT('pca_0',(0.0,0.0));
+#13=CARTESIAN_POINT('pca_1',(2.5,0.1));
+#14=CARTESIAN_POINT('pca_2',(5.0,0.0));
+#15=B_SPLINE_CURVE_WITH_KNOTS('pcurve_a',2,(#12,#13,#14),.UNSPECIFIED.,.F.,.F.,(3,3),(0.0,1.0),.UNSPECIFIED.);
+#16=CARTESIAN_POINT('pcb_0',(5.0,0.5));
+#17=CARTESIAN_POINT('pcb_1',(7.5,0.4));
+#18=CARTESIAN_POINT('pcb_2',(10.0,0.0));
+#19=B_SPLINE_CURVE_WITH_KNOTS('pcurve_b',2,(#16,#17,#18),.UNSPECIFIED.,.F.,.F.,(3,3),(0.0,1.0),.UNSPECIFIED.);
+#20=PCURVE('',#11,#15);
+#21=EDGE_CURVE('edge_pcurve_disc',#3,#4,#7,.T.);
+#22=CARTESIAN_POINT('',(10.0,1.0,0.0));
+#23=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#24=VERTEX_POINT('',#22);
+#25=VERTEX_POINT('',#23);
+#26=DIRECTION('',(0.0,1.0,0.0));
+#27=VECTOR('',#26,1.0);
+#28=LINE('',#2,#27);
+#29=EDGE_CURVE('',#4,#24,#28,.T.);
+#30=DIRECTION('',(-1.0,0.0,0.0));
+#31=VECTOR('',#30,10.0);
+#32=LINE('',#22,#31);
+#33=EDGE_CURVE('',#24,#25,#32,.T.);
+#34=DIRECTION('',(0.0,-1.0,0.0));
+#35=VECTOR('',#34,1.0);
+#36=LINE('',#23,#35);
+#37=EDGE_CURVE('',#25,#3,#36,.T.);
+#38=ORIENTED_EDGE('',$,$,#21,.T.);
+#39=ORIENTED_EDGE('',$,$,#29,.T.);
+#40=ORIENTED_EDGE('',$,$,#33,.T.);
+#41=ORIENTED_EDGE('',$,$,#37,.T.);
+#42=EDGE_LOOP('',(#38,#39,#40,#41));
+#43=FACE_OUTER_BOUND('',#42,.T.);
+#44=ADVANCED_FACE('',(#43),#11,.T.);
+#45=OPEN_SHELL('',(#44));
+#46=SHELL_BASED_SURFACE_MODEL('',(#45));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('N118','N118','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#46),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
