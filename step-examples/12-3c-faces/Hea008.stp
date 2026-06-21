@@ -1,52 +1,62 @@
 ISO-10303-21;
-/* Hea008 - Transfer parameters using projection (not affine remapping)
- * Edge on a B_SPLINE_SURFACE_WITH_KNOTS whose control net has very
- * high curvature on one side (control points clustered) -- the surface
- * metric varies by ~10x across the edge length. Affine UV remapping
- * produces wrong sample points; projection-based transfer is required. */
+/* Hea008: B_SPLINE_SURFACE_WITH_KNOTS named 'non_uniform_metric' with 4x4 control grid: left side (U=0) clustered in x=[0,1] (control points 'cluster_lo_a'...'cluster_lo_d'), right side (U=1) spread to x=[20,20] -- surface metric varies ~10x along U; edge spans full U range with uniform UV pcurve (U=0..1, V=0.5); affine remapping gives wrong 3D samples; projection-based transfer required; wrapped in GEOMETRIC_CURVE_SET; OCC silently accepts; spec-kernel must heal/reject */
 HEADER;
-FILE_DESCRIPTION(('Hea008 test case','Edge on B-spline surface with metric varying 10x along edge length'),'2;1');
-FILE_NAME('Hea008.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Hea008'),'2;1');
+FILE_NAME('Hea008.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* B-spline surface 4x4 control points; left side (u=0) clustered to x in [0,1],
- * right side (u=1) spread to x in [10,20] -- gives ~10x metric variation along U. */
-#10=CARTESIAN_POINT('cluster_lo_a',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('cluster_lo_b',(0.0,1.0,0.0));
-#12=CARTESIAN_POINT('cluster_lo_c',(0.0,2.0,0.0));
-#13=CARTESIAN_POINT('cluster_lo_d',(0.0,3.0,0.0));
-#14=CARTESIAN_POINT('cluster_mid_a',(1.0,0.0,0.0));
-#15=CARTESIAN_POINT('cluster_mid_b',(1.0,1.0,0.0));
-#16=CARTESIAN_POINT('cluster_mid_c',(1.0,2.0,0.0));
-#17=CARTESIAN_POINT('cluster_mid_d',(1.0,3.0,0.0));
-#18=CARTESIAN_POINT('spread_mid_a',(10.0,0.0,0.0));
-#19=CARTESIAN_POINT('spread_mid_b',(10.0,1.0,0.0));
-#20=CARTESIAN_POINT('spread_mid_c',(10.0,2.0,0.0));
-#21=CARTESIAN_POINT('spread_mid_d',(10.0,3.0,0.0));
-#22=CARTESIAN_POINT('spread_hi_a',(20.0,0.0,0.0));
-#23=CARTESIAN_POINT('spread_hi_b',(20.0,1.0,0.0));
-#24=CARTESIAN_POINT('spread_hi_c',(20.0,2.0,0.0));
-#25=CARTESIAN_POINT('spread_hi_d',(20.0,3.0,0.0));
-#30=B_SPLINE_SURFACE_WITH_KNOTS('non_uniform_metric',3,3,
-((#10,#11,#12,#13),(#14,#15,#16,#17),(#18,#19,#20,#21),(#22,#23,#24,#25)),
-.UNSPECIFIED.,.F.,.F.,.F.,(4,4),(4,4),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
-/* Edge spans across the full U range -- from (0,1.5,0) to (20,1.5,0) */
-#40=CARTESIAN_POINT('e_start',(0.0,1.5,0.0));#41=VERTEX_POINT('Vstart',#40);
-#42=CARTESIAN_POINT('e_end',(20.0,1.5,0.0));#43=VERTEX_POINT('Vend',#42);
-#44=DIRECTION('',(1.0,0.0,0.0));#45=VECTOR('',#44,1.0);#46=LINE('e_3d',#40,#45);
-/* Pcurve: U=0..1, V=0.5 -- linear in UV but lifts to non-linear 3D */
-#50=CARTESIAN_POINT('uv_start',(0.0,0.5));#51=DIRECTION('',(1.0,0.0));
-#52=VECTOR('',#51,1.0);#53=LINE('e_pcurve',#50,#52);
-#48=DIRECTION('host_z',(0.0,0.0,1.0));
-#54=AXIS2_PLACEMENT_3D('host_repr',#10,#48,#44);
-#55=DEFINITIONAL_REPRESENTATION('',(#53),#54);
-#56=PCURVE('e_pcurve_uv_lin',#30,#55);
-#57=SURFACE_CURVE('proj_required',#46,(#56),.PCURVE_S1.);
-#58=EDGE_CURVE('e_on_nonuniform_metric_surface',#41,#43,#57,.T.);
-#59=ORIENTED_EDGE('',*,*,#58,.T.);
-#60=EDGE_LOOP('proj_transfer_required_edge',(#59));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('cluster_lo_a',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('cluster_lo_b',(0.0,1.0,0.0));
+#3=CARTESIAN_POINT('cluster_lo_c',(0.0,2.0,0.0));
+#4=CARTESIAN_POINT('cluster_lo_d',(0.0,3.0,0.0));
+#5=CARTESIAN_POINT('cluster_mid_a',(1.0,0.0,0.0));
+#6=CARTESIAN_POINT('cluster_mid_b',(1.0,1.0,0.0));
+#7=CARTESIAN_POINT('cluster_mid_c',(1.0,2.0,0.0));
+#8=CARTESIAN_POINT('cluster_mid_d',(1.0,3.0,0.0));
+#9=CARTESIAN_POINT('spread_mid_a',(10.0,0.0,0.0));
+#10=CARTESIAN_POINT('spread_mid_b',(10.0,1.0,0.0));
+#11=CARTESIAN_POINT('spread_mid_c',(10.0,2.0,0.0));
+#12=CARTESIAN_POINT('spread_mid_d',(10.0,3.0,0.0));
+#13=CARTESIAN_POINT('spread_hi_a',(20.0,0.0,0.0));
+#14=CARTESIAN_POINT('spread_hi_b',(20.0,1.0,0.0));
+#15=CARTESIAN_POINT('spread_hi_c',(20.0,2.0,0.0));
+#16=CARTESIAN_POINT('spread_hi_d',(20.0,3.0,0.0));
+#17=B_SPLINE_SURFACE_WITH_KNOTS('non_uniform_metric',3,3,((#1,#2,#3,#4),(#5,#6,#7,#8),(#9,#10,#11,#12),(#13,#14,#15,#16)),.UNSPECIFIED.,.F.,.F.,.F.,(4,4),(4,4),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
+#18=CARTESIAN_POINT('e_start',(0.0,1.5,0.0));
+#19=CARTESIAN_POINT('e_end',(20.0,1.5,0.0));
+#20=VERTEX_POINT('Vstart',#18);
+#21=VERTEX_POINT('Vend',#19);
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=VECTOR('',#22,1.0);
+#24=LINE('e_3d',#18,#23);
+#25=CARTESIAN_POINT('uv_start',(0.0,0.5));
+#26=DIRECTION('',(1.0,0.0));
+#27=VECTOR('',#26,1.0);
+#28=LINE('e_pcurve',#25,#27);
+#29=DIRECTION('host_z',(0.0,0.0,1.0));
+#30=AXIS2_PLACEMENT_3D('host_repr',#1,#29,#22);
+#31=GEOMETRIC_REPRESENTATION_CONTEXT(2);
+#32=DEFINITIONAL_REPRESENTATION('',( #28),#31);
+#33=PCURVE('e_pcurve_uv_lin',#17,#32);
+#34=SURFACE_CURVE('proj_required',#24,(#33),.PCURVE_S1.);
+#35=EDGE_CURVE('e_on_nonuniform_metric_surface',#20,#21,#34,.T.);
+#36=ORIENTED_EDGE('',$,$,#35,.T.);
+#37=EDGE_LOOP('proj_transfer_required_edge',(#36));
+#38=GEOMETRIC_CURVE_SET('',( #37));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Hea008','Hea008','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#38),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

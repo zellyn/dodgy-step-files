@@ -1,36 +1,46 @@
 ISO-10303-21;
-/* Hea009 - Convert all curves and surfaces of a shape to Bezier
- * Defect: shape whose surfaces and curves are mixed analytic + B-spline;
- * the convert-to-Bezier pipeline must handle each kind, splitting at
- * non-Bezier breaks where needed. */
+/* Hea009: ADVANCED_FACE on PLANE with FACE_OUTER_BOUND using degree-2 B_SPLINE_CURVE_WITH_KNOTS (6 ctrl pts, knot-mults (3,3,3) at (0.0,0.5,1.0)); internal C0 knot at u=0.5 (mult=3=degree+1 produces C^-1 break); not a single Bezier segment; must be split by ShapeUpgrade_ShapeConvertToBezier; wrapped in GEOMETRIC_CURVE_SET → TransferRoots yields empty; OCC silently accepts; spec-kernel must heal/reject */
 HEADER;
-FILE_DESCRIPTION(('Hea009 test case','Convert all curves and surfaces of a shape to Bezier'),'2;1');
-FILE_NAME('Hea009.stp','2026-04-26T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Hea009'),'2;1');
+FILE_NAME('Hea009.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* B-spline curve with internal C0 knot at u=0.5 */
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#8=VERTEX_POINT('',#6);
+#9=VERTEX_POINT('',#7);
 #10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#14=PLANE('',#13);
-#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#21=VERTEX_POINT('',#20);
-#22=CARTESIAN_POINT('',(10.0,0.0,0.0));
-#23=VERTEX_POINT('',#22);
-#24=CARTESIAN_POINT('',(2.5,0.5,0.0));
-#25=CARTESIAN_POINT('',(5.0,1.0,0.0));
-#26=CARTESIAN_POINT('',(7.5,0.5,0.0));
-/* Multiplicity 3 = degree gives C0 at u=0.5 */
-#30=B_SPLINE_CURVE_WITH_KNOTS('',2,(#20,#24,#25,#26,#22),.UNSPECIFIED.,
-  .F.,.F.,(3,3,3),(0.0,0.5,1.0),.UNSPECIFIED.);
-#50=EDGE_CURVE('',#21,#23,#30,.T.);
-#60=ORIENTED_EDGE('',*,*,#50,.T.);
-#70=EDGE_LOOP('',(#60));
-#71=FACE_OUTER_BOUND('',#70,.T.);
-#72=ADVANCED_FACE('',(#71),#14,.T.);
+#11=CARTESIAN_POINT('',(2.5,0.5,0.0));
+#12=CARTESIAN_POINT('',(5.0,1.0,0.0));
+#13=CARTESIAN_POINT('',(5.0,1.0,0.0));
+#14=CARTESIAN_POINT('',(7.5,0.5,0.0));
+#15=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#16=B_SPLINE_CURVE_WITH_KNOTS('',2,(#10,#11,#12,#13,#14,#15),.UNSPECIFIED.,.F.,.F.,(3,3,3),(0.0,0.5,1.0),.UNSPECIFIED.);
+#17=EDGE_CURVE('',#8,#9,#16,.T.);
+#18=ORIENTED_EDGE('',$,$,#17,.T.);
+#19=EDGE_LOOP('',(#18));
+#20=FACE_OUTER_BOUND('',#19,.T.);
+#21=ADVANCED_FACE('',(#20),#5,.T.);
+#22=GEOMETRIC_CURVE_SET('',( #21));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Hea009','Hea009','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#22),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
