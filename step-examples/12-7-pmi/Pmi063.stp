@@ -1,65 +1,32 @@
 ISO-10303-21;
-/* Pmi063 - FILE_DESCRIPTION missing references to CAx-IF Recommended Practices
-   Defect: An AP242 PMI file with datum-target / dimension / GT /
-   supplemental-geometry constructs has FILE_DESCRIPTION text that
-   does NOT cite the relevant CAx-IF Recommended Practice. RP version
-   disambiguation is then impossible: a reader does not know whether
-   to apply RP v3 vs v4.1 vs v5 conventions. NIST SFA S060.
-   Receivers should issue an informational warning, not reject. */
+/* Pmi063: FILE_DESCRIPTION header lists only the CAD system name with no CAx-IF Recommended Practice citation; AP242 PMI files that use datum-targets, tolerances, and supplemental-geometry constructs must declare the RP version (e.g. 'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1') in FILE_DESCRIPTION so receivers can apply the correct interpretation rules; missing RP citation makes version disambiguation impossible; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Pmi063 - missing CAx-IF RP citation in header'),'2;1');
-FILE_NAME('Pmi063.stp','2026-04-26T00:00:00',('catalog'),('cad'),
-  'manual','','');
-FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+FILE_DESCRIPTION(('Pmi063'),'2;1');
+FILE_NAME('Pmi063.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'ap242_managed_model_based_3d_engineering',2020,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT('Pmi063','MissingRPCitationPart','',(#12));
-#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
-#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
-#16 = PRODUCT_DEFINITION('','',#14,#15);
-#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
-#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
-  'distance_accuracy_value','');
-#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
-  REPRESENTATION_CONTEXT('','3D') );
-/* Real PMI content below: with no RP citation in the header, readers
-   cannot pick the correct RP rules to apply. */
-#30 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#31 = DIRECTION('',(0.0,0.0,1.0));
-#32 = DIRECTION('',(1.0,0.0,0.0));
-#33 = AXIS2_PLACEMENT_3D('',#30,#31,#32);
-#40 = DATUM('A','primary',#17,.T.,'A');
-#41 = DATUM_REFERENCE_ELEMENT('',$,#40);
-#42 = DATUM_REFERENCE_COMPARTMENT('',$,#41);
-#43 = DATUM_SYSTEM('A','',#17,.T.,(#42));
-/* Datum target - a feature explicitly listed in NIST S060 as needing
-   RP version disambiguation. */
-#50 = PLACED_DATUM_TARGET_FEATURE('A1','rectangle',#17,.T.,'A1');
-#51 = SHAPE_ASPECT_RELATIONSHIP('','',#40,#50);
-#52 = MEASURE_REPRESENTATION_ITEM('target_length',LENGTH_MEASURE(5.0),#20);
-#53 = MEASURE_REPRESENTATION_ITEM('target_width',LENGTH_MEASURE(3.0),#20);
-#54 = SHAPE_DIMENSION_REPRESENTATION('',(#52,#53),#25);
-#60 = SHAPE_ASPECT('toleranced','',#17,.T.);
-#61 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#20);
-#62 = POSITION_TOLERANCE('pos','',#61,#60,#43);
-#70 = DIMENSIONAL_SIZE(#60,'distance');
-#71 = MEASURE_REPRESENTATION_ITEM('nom',LENGTH_MEASURE(10.0),#20);
-#72 = SHAPE_DIMENSION_REPRESENTATION('',(#71),#25);
-#80 = PLUS_MINUS_TOLERANCE(#81,#70);
-#81 = TOLERANCE_VALUE(#82,#83);
-#82 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(-0.05),#20);
-#83 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#20);
-#90 = DRAUGHTING_MODEL('Default',(),#25);
-#91 = PLANE('ann_plane',#33);
-#92 = ANNOTATION_PLANE('PMI',(),#91,(#62));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Pmi063','Pmi063','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=PLACED_DATUM_TARGET_FEATURE('datum_target_A1','datum target A1',#9055,.T.,'point',1);
+#9064=DATUM_FEATURE('datum_A','primary datum',#9055,.T.);
+#9065=DATUM_SYSTEM('primary_datum_frame','primary datum',(#9064),#9055,.T.);
+#9066=SHAPE_ASPECT('toleranced_face','',#9055,.T.);
+#9067=MEASURE_REPRESENTATION_ITEM('tol_val',LENGTH_MEASURE(0.1),#9056);
+#9068=POSITION_TOLERANCE('position','0.1mm position tol',#9067,#9066);
 ENDSEC;
 END-ISO-10303-21;

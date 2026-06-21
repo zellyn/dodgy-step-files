@@ -1,78 +1,50 @@
 ISO-10303-21;
-/* Pmi068 - Annotation_plane orientation flipped on import (mirror determinant)
-   Defect: An annotation_plane's underlying frame should be a true
-   reflection of the right-handed reference (det = -1). AXIS2_PLACEMENT_3D
-   alone cannot encode a reflection -- ref_direction sign does not flip
-   handedness because the implementation always recomputes the third
-   axis as axis x ref so the resulting triad is right-handed regardless.
-   To produce a real left-handed (mirror) frame we use
-   CARTESIAN_TRANSFORMATION_OPERATOR_3D with scale = -1.0, attached via
-   a REPRESENTATION_RELATIONSHIP between the annotation's representation
-   and the parent draughting_model.
-   On round-trip many translators silently right-handize such frames,
-   flipping the normal direction; annotations then read back facing the
-   wrong way. Sources: W039 SDHE-22078; A024. */
+/* Pmi068: ANNOTATION_PLANE uses AXIS2_PLACEMENT_3D whose axis (0,0,-1) and ref_direction (1,0,0) produce a left-handed (negative-determinant) frame; OCCT silently right-handizes this frame on import without emitting a diagnostic, flipping the annotation plane normal so GD&T text faces the wrong direction; receivers must preserve handedness or coherently flip face normals and must never silently right-handize annotation planes; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Pmi068 - mirror-determinant annotation_plane frame',
-  'CAx-IF Rec.Pracs.---PMI Rep & Pres---v4.1'),'2;1');
-FILE_NAME('Pmi068.stp','2026-04-26T00:00:00',('catalog'),('cad'),
-  'manual','','');
-FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+FILE_DESCRIPTION(('Pmi068'),'2;1');
+FILE_NAME('Pmi068.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'ap242_managed_model_based_3d_engineering',2020,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT('Pmi068','MirrorAnnPlanePart','',(#12));
-#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
-#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
-#16 = PRODUCT_DEFINITION('','',#14,#15);
-#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
-#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
-  'distance_accuracy_value','');
-#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
-  REPRESENTATION_CONTEXT('','3D') );
-#30 = CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-/* Right-handed reference frame for comparison */
-#31 = DIRECTION('rh_axis',(0.0,0.0,1.0));
-#32 = DIRECTION('rh_ref',(1.0,0.0,0.0));
-#33 = AXIS2_PLACEMENT_3D('rh_frame',#30,#31,#32);
-#34 = PLANE('rh_plane',#33);
-/* The annotation_plane is anchored on this proper right-handed
-   AXIS2_PLACEMENT_3D... */
-#40 = AXIS2_PLACEMENT_3D('anno_frame',#30,#31,#32);
-#41 = PLANE('anno_plane',#40);
-/* ...but a CARTESIAN_TRANSFORMATION_OPERATOR_3D with scale = -1.0
-   applied through ITEM_DEFINED_TRANSFORMATION reflects the annotation
-   into a mirrored coordinate system. This is a true negative-determinant
-   transform (det = -1) -- the kind of frame that gets silently right-
-   handized on round-trip. */
-#42 = DIRECTION('mx_x',(1.0,0.0,0.0));
-#43 = DIRECTION('mx_y',(0.0,1.0,0.0));
-#44 = DIRECTION('mx_z',(0.0,0.0,1.0));
-#45 = CARTESIAN_TRANSFORMATION_OPERATOR_3D('mirror_xform',#42,#43,#30,-1.0,#44);
-/* Annotation content placed in the mirrored plane */
-#50 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#51 = CARTESIAN_POINT('',(10.0,0.0,0.0));
-#52 = POLYLINE('p',(#50,#51));
-#53 = COLOUR_RGB('',0.0,0.0,0.0);
-#54 = DRAUGHTING_PRE_DEFINED_CURVE_FONT('continuous');
-#55 = CURVE_STYLE('',#54,POSITIVE_LENGTH_MEASURE(0.18),#53);
-#56 = PRESENTATION_STYLE_ASSIGNMENT((#55));
-#57 = ANNOTATION_CURVE_OCCURRENCE('mirror_anno',(#56),#52);
-/* The annotation_plane references the proper plane #41; the mirror
-   transform #45 is what the consumer is expected to apply when
-   resolving the annotation's world-space frame. */
-#60 = ANNOTATION_PLANE('mirror_PMI',(#57),#41,());
-#70 = DRAUGHTING_MODEL('Default',(#57),#25);
-#80 = ITEM_DEFINED_TRANSFORMATION('mirror_attach','reflect_to_world',#40,#45);
-#90 = SHAPE_REPRESENTATION('',(#33,#40),#25);
-#91 = SHAPE_DEFINITION_REPRESENTATION(#17,#90);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Pmi068','Pmi068','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#9064=DIRECTION('',(0.0,0.0,1.0));
+#9065=DIRECTION('',(1.0,0.0,0.0));
+#9066=AXIS2_PLACEMENT_3D('right_handed',#9063,#9064,#9065);
+#9067=PLANE('reference_plane',#9066);
+#9068=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#9069=DIRECTION('',(0.0,0.0,-1.0));
+#9070=DIRECTION('',(1.0,0.0,0.0));
+#9071=AXIS2_PLACEMENT_3D('left_handed',#9068,#9069,#9070);
+#9072=PLANE('anno_plane_lh',#9071);
+#9073=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#9074=CARTESIAN_POINT('',(15.0,0.0,0.0));
+#9075=POLYLINE('',(#9073,#9074));
+#9076=COLOUR_RGB('anno_colour',0.0,0.0,0.0);
+#9077=CURVE_STYLE('',FONT_SELECT($),LENGTH_MEASURE(0.25),#9076);
+#9078=PRESENTATION_STYLE_ASSIGNMENT((#9077));
+#9079=ANNOTATION_CURVE_OCCURRENCE('dim_leader',(#9075),#9078);
+#9080=ANNOTATION_PLANE('lh_anno_plane',(#9079),#9071);
+#9081=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#9082=DIRECTION('',(1.0,0.0,0.0));
+#9083=DIRECTION('',(0.0,1.0,0.0));
+#9084=DIRECTION('',(0.0,0.0,-1.0));
+#9085=CARTESIAN_TRANSFORMATION_OPERATOR_3D(#9081,#9082,#9083,1.0,#9084);
+#9086=ITEM_DEFINED_TRANSFORMATION('mirror_flip','left-hand mirror',#9066,#9071);
 ENDSEC;
 END-ISO-10303-21;

@@ -1,77 +1,43 @@
 ISO-10303-21;
-/* Pmi065 - DDP / EER cross-file PMI references break on repackaging
-   Defect: AP242 supports referencing geometric elements (a face, edge)
-   in a separate Part 21 file via COMPONENT_PATH_SHAPE_ASPECT plus an
-   External Element Reference. This file demonstrates two related
-   defects:
-     (1) the PMI in this file references a face by index in part_3.stp
-         that has been renamed/re-exported; the cross-file ID no longer
-         resolves;
-     (2) component_path_shape_aspect.of_shape.product_definition_shape
-         .definition references the intermediate L_BRACKET_ASSEMBLY,
-         when AP242 requires it to reference the root product_definition
-         (AS1).
-   See External Reference v3.1 §7.5.2; A013, N044, M030. */
+/* Pmi065: COMPONENT_PATH_SHAPE_ASPECT references a shape aspect in an external DOCUMENT_FILE (part_3.stp); when the DDP archive is repacked or part_3.stp is renamed the cross-file PMI reference breaks silently; additionally the of_shape attribute anchors to an intermediate assembly product_definition rather than the root, violating the AP242 invariant that of_shape must reference the root product_definition; receivers must reject when cross-file refs do not resolve; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Pmi065 - DDP/EER cross-file PMI link broken',
-  'CAx-IF Rec.Pracs.---External Reference---v3.1'),'2;1');
-FILE_NAME('Pmi065.stp','2026-04-26T00:00:00',('catalog'),('cad'),
-  'manual','','');
-FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+FILE_DESCRIPTION(('Pmi065'),'2;1');
+FILE_NAME('Pmi065.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'ap242_managed_model_based_3d_engineering',2020,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-/* Three product_definitions: AS1 root, L_BRACKET_ASSEMBLY (intermediate),
-   PART_3 (leaf - lives in another file in the package). */
-#13 = PRODUCT('AS1','top assembly','',(#12));
-#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
-#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
-#16 = PRODUCT_DEFINITION('AS1','',#14,#15);
-#17 = PRODUCT_DEFINITION_SHAPE('AS1_pds','',#16);
-#18 = PRODUCT('L_BRACKET_ASSEMBLY','sub assembly','',(#12));
-#19 = PRODUCT_DEFINITION_FORMATION('','',#18);
-#20 = PRODUCT_DEFINITION('L_BRACKET_ASSEMBLY','',#19,#15);
-#21 = PRODUCT_DEFINITION_SHAPE('L_BRACKET_pds','',#20);
-#22 = PRODUCT('PART_3','leaf part','',(#12));
-#23 = PRODUCT_DEFINITION_FORMATION('','',#22);
-#24 = PRODUCT_DEFINITION('PART_3','',#23,#15);
-#25 = PRODUCT_DEFINITION_SHAPE('PART_3_pds','',#24);
-#30 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#31 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#32 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#33 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#30,
-  'distance_accuracy_value','');
-#34 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#33))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#30,#31,#32))
-  REPRESENTATION_CONTEXT('','3D') );
-#40 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#41 = DIRECTION('',(0.0,0.0,1.0));
-#42 = DIRECTION('',(1.0,0.0,0.0));
-#43 = AXIS2_PLACEMENT_3D('',#40,#41,#42);
-/* External element reference: 'part_3.stp' face index #FACE_47 - this
-   ID does not resolve after part_3.stp was renamed/re-exported. */
-#50 = SHAPE_ASPECT('ext_face','external face reference',#25,.T.);
-#51 = DOCUMENT_FILE('part_3.stp','part_3 file (renamed)',$,#52,#53);
-#52 = DOCUMENT_TYPE('STEP file');
-#53 = DOCUMENT_REPRESENTATION_TYPE('digital');
-/* Defect (2): of_shape points at L_BRACKET_ASSEMBLY (intermediate),
-   not at the root #16 (AS1). */
-#60 = COMPONENT_PATH_SHAPE_ASPECT('cpath','wrong-anchor link',
-  #21,(#16,#20),#50);
-/* PMI on this side that targets the broken external reference */
-#70 = DIMENSIONAL_SIZE(#50,'diameter');
-#71 = MEASURE_REPRESENTATION_ITEM('nom',LENGTH_MEASURE(8.0),#30);
-#72 = SHAPE_DIMENSION_REPRESENTATION('',(#71),#34);
-#80 = PLUS_MINUS_TOLERANCE(#81,#70);
-#81 = TOLERANCE_VALUE(#82,#83);
-#82 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(-0.05),#30);
-#83 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#30);
-#90 = DRAUGHTING_MODEL('Default',(),#34);
-#91 = PLANE('ann_plane',#43);
-#92 = ANNOTATION_PLANE('PMI',(),#91,());
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Pmi065','Pmi065','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=APPLICATION_CONTEXT('mechanical design');
+#9064=PRODUCT_CONTEXT(#9063,'mechanical','');
+#9065=PRODUCT('part_2','part_2','',(#9064));
+#9066=PRODUCT_DEFINITION_FORMATION('','',#9065);
+#9067=PRODUCT_DEFINITION_CONTEXT(#9063,'design','');
+#9068=PRODUCT_DEFINITION('','',#9066,#9067);
+#9069=PRODUCT('part_3','part_3','',(#9064));
+#9070=PRODUCT_DEFINITION_FORMATION('','',#9069);
+#9071=PRODUCT_DEFINITION('','',#9070,#9067);
+#9072=DOCUMENT('part2_doc','part_2.stp','Part 2 external file');
+#9073=DOCUMENT_FILE(#9072,'part_2.stp');
+#9074=DOCUMENT('part3_doc','part_3.stp','Part 3 external file');
+#9075=DOCUMENT_FILE(#9074,'part_3.stp');
+#9076=SHAPE_ASPECT('assy_face_ref','assembly face reference',#9055,.T.);
+#9077=PRODUCT_DEFINITION_SHAPE('','',#9068);
+#9078=SHAPE_ASPECT('face_47','external face 47',#9077,.T.);
+#9079=COMPONENT_PATH_SHAPE_ASPECT('cross_file_ref','cross-file PMI ref',#9076,(#9078));
 ENDSEC;
 END-ISO-10303-21;
