@@ -2,33 +2,30 @@
    ----------------------------------------------------------------------
    Catalog section : §12.1c lexical / identifier limits
    Sources         : A021, S002
-   Originally also catalogued as: Ad021
    ----------------------------------------------------------------------
    Defect
-     A parser that copies the entity name into a fixed-size identifier
-     buffer is a classic strcpy overflow. ISO conformance class permits
-     long names but not unbounded. Embedded '-' in identifiers is also
-     disallowed (e.g. BS7752-1) - hyphen is not a legal identifier
-     character in EXPRESS.
+     Parser copies entity name into a fixed-size identifier buffer;
+     classic strcpy overflow. ISO conformance class permits long names
+     but not unbounded.
+     Defect 1: entity name is 80 uppercase A's — overflows a 32/64-char buffer.
+     Defect 2: BS7752-1 — hyphen is not a valid identifier character.
    Expected behavior
-     Cap identifier length per ISO conformance class (e.g. 256 chars);
-     reject overflow before allocation. Reject '-' in identifiers;
-     lenient mode may map '-' to '_' but must always warn.
+     Reject overflow before allocation (max ~256 chars per ISO);
+     reject hyphen in identifier; lenient mode may map hyphen to underscore.
    ----------------------------------------------------------------------
 */
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Ls043 - long entity name / hyphen in identifier'),'2;1');
-FILE_NAME('Ls043.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+FILE_DESCRIPTION(('Ls043 - excessively long entity name and hyphen in identifier'),'2;1');
+FILE_NAME('Ls043.stp','2026-06-20T00:00:00',('auto-generated'),(''),
   'auto-generated','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-/* Defect: hyphen inside an entity name (identifiers may not contain '-') */
-#20=BS7752-1(#10);
-/* Defect: an entity name longer than typical conformance caps; replicate
-   the AAAA token in stress fixtures to exceed 256 / 4096 / 64 K thresholds */
-#30=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA(#10);
+/* Defect 1: entity name is 80 uppercase A characters — fixed-buffer overflow */
+#1=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA('overflow-test',(0.,0.,0.));
+/* Defect 2: embedded hyphen in entity name (BS7752-1) */
+/* ISO 10303-21 §4.2: identifiers use letters, digits, underscore only */
+#2=BS7752-1('hyphen-name',(1.,0.,0.));
 ENDSEC;
 END-ISO-10303-21;

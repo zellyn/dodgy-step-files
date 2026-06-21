@@ -1,27 +1,32 @@
-/* Ls047 - Complex / multiple-inheritance entity: leaves separated by commas
+/* Ls047 - Complex entity record: leaves separated by commas (not whitespace)
    ----------------------------------------------------------------------
    Catalog section : §12.1c complex entity instances
+   Sources         : T025, Q046, G088, N032
+   See also        : Ls010, Ls048
    ----------------------------------------------------------------------
    Defect
-     The Part-21 grammar requires the leaves of a complex entity record
-     to be separated by whitespace, not commas. A writer that emits
-     commas (carrying habit from argument lists) produces a token that
-     a strict reader must reject.
+     ISO 10303-21 complex entity leaves must be whitespace-separated:
+       #N=( LEAF_A(..) LEAF_B(..) LEAF_C(..) )
+     A writer using commas between leaves (habit from argument lists)
+     produces a token that a strict reader must reject.
    Expected behavior
-     Reject comma-separated leaves in strict mode; lenient mode may
-     accept-with-warning.
+     Reject comma-separated leaves in strict mode;
+     lenient mode may accept-with-warning.
    ----------------------------------------------------------------------
 */
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Ls047 - complex entity comma-separated leaves'),'2;1');
-FILE_NAME('Ls047.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+FILE_DESCRIPTION(('Ls047 - complex entity leaves separated by commas'),'2;1');
+FILE_NAME('Ls047.stp','2026-06-20T00:00:00',('auto-generated'),(''),
   'auto-generated','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#9=DIMENSIONAL_EXPONENTS(0.0,0.0,0.0,0.0,0.0,0.0,0.0);
-/* Defect: leaves separated by commas instead of whitespace */
-#30=( CONVERSION_BASED_UNIT('DEG',#9), NAMED_UNIT(*), PLANE_ANGLE_UNIT() );
+#1=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0),#2);
+#2=( NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
+/* Correct reference for context */
+#9=( NAMED_UNIT(*) SI_UNIT(.MILLI.,.RADIAN.) );
+/* Defect: commas between complex-entity leaves (should be whitespace only) */
+#10=( CONVERSION_BASED_UNIT('DEG',#9), NAMED_UNIT(*), PLANE_ANGLE_UNIT() );
 ENDSEC;
 END-ISO-10303-21;

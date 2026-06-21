@@ -2,34 +2,30 @@
    ----------------------------------------------------------------------
    Catalog section : §12.1c lexical / directive scope
    Sources         : N047
-   Originally also catalogued as: Le019, Ad048
    ----------------------------------------------------------------------
    Defect
-     Control directives such as \X\, \S\, \F\, \N\ are valid only inside
-     '...' string literals. Tools that pre-process content textually
-     sometimes leave directives in BINARY values, ENUMERATION names, or
-     between top-level tokens. The lexer must recognize them as illegal
-     outside a string-literal context rather than silently consuming them.
+     Control directives (\X\, \S\, \F\, \N\) are valid only inside
+     '..' string literals. Tools that pre-process content textually
+     sometimes leave directives in BINARY values, ENUMERATION names,
+     or between top-level tokens.
    Expected behavior
-     Strict reject; lenient strip and warn. The diagnostic should name
-     the directive and the lexical context (e.g. "directive \X\ outside
-     string literal at instance #20").
+     Strict reject; lenient mode may strip and warn.
    ----------------------------------------------------------------------
 */
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Ls045 - control directive outside string literal'),'2;1');
-FILE_NAME('Ls045.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+FILE_DESCRIPTION(('Ls045 - control directives outside string context'),'2;1');
+FILE_NAME('Ls045.stp','2026-06-20T00:00:00',('auto-generated'),(''),
   'auto-generated','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-/* Defect: \X\09 control directive embedded in a REAL literal context
-   (outside any '...' string) */
-#20=DIRECTION('',(1.\X\09,0.,0.));
-/* Defect: \N\ between top-level tokens (not a permitted token separator) */
-#30=DIRECTION('y',\N\(0.0,1.0,0.0));
-#40=AXIS2_PLACEMENT_3D('placement',#10,#20,$);
+/* Defect 1: \X\09 (horizontal tab escape) embedded in a coordinate list */
+/* The directive appears after the real number 1. outside any string literal */
+#1=DIRECTION('',(1.\X\09,0.,0.));
+/* Defect 2: \N\ (newline directive) embedded between entity tokens */
+#2=CARTESIAN_POINT(''\N\,(0.,0.,0.));
+/* Defect 3: \S\ (shift directive) left inside an ENUMERATION slot */
+#3=FACE_SURFACE('',(),$,\S\.T.);
 ENDSEC;
 END-ISO-10303-21;
