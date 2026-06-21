@@ -1,42 +1,35 @@
 ISO-10303-21;
-/* N029 - Inch-units silent treatment as mm (25.4x scale error)
- * Defect: A STEP file written in inches is silently treated as millimetres
- * because the LENGTH_UNIT declaration is parsed inconsistently.
- * Reproducer: SolidWorks-style file uses CONVERSION_BASED_UNIT('INCH', ...)
- * wrapping a SI METRE base unit; receiver that ignores the conversion wrapper
- * sees raw mm coordinates and produces a 25.4x scale error on a 2-inch part.
- */
+/* N029: inch units via CONVERSION_BASED_UNIT 0.0254 m; reader defaults to mm; 50.8mm feature arrives as 2mm — 25.4x scale error; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N029 inch units silent treatment as mm 25.4x scale error'),'2;1');
-FILE_NAME('N029.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+FILE_DESCRIPTION(('N029'),'2;1');
+FILE_NAME('N029.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('configuration controlled 3d designs of mechanical parts');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'config_control_design',1994,#1);
-/* 2-inch part: 2.0 in = 50.8 mm. Raw value stored: 2.0 (in inches). */
-#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('p1_2_inches',(2.0,0.0,0.0));
-#20=VERTEX_POINT('',#10);
-#21=VERTEX_POINT('',#11);
-#30=DIRECTION('+x',(1.0,0.0,0.0));
-#31=VECTOR('',#30,2.0);
-#32=LINE('',#10,#31);
-#40=EDGE_CURVE('two_inch_edge',#20,#21,#32,.T.);
-/* CONVERSION_BASED_UNIT for inches -- base is SI METRE, factor 0.0254 */
-#50=(NAMED_UNIT(*)LENGTH_UNIT()SI_UNIT($,.METRE.));
-#51=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0254),#50);
-#52=DIMENSIONAL_EXPONENTS(1.0,0.0,0.0,0.0,0.0,0.0,0.0);
-#53=(CONVERSION_BASED_UNIT('INCH',#51) LENGTH_UNIT() NAMED_UNIT(#52));
-#54=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#55=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#53,
-  'distance_accuracy_value','inch_precision');
-#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#53,#54,#55))
-  REPRESENTATION_CONTEXT('ctx_inch','3D'));
+#1=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('p1_2_inches',(2.0,0.0,0.0));
+#3=VERTEX_POINT('v0',#1);
+#4=VERTEX_POINT('v1',#2);
+#5=DIRECTION('',(1.0,0.0,0.0));
+#6=VECTOR('',#5,2.0);
+#7=LINE('two_inch_line',#1,#6);
+#8=EDGE_CURVE('edge_2_inches',#3,#4,#7,.T.);
+#9=GEOMETRIC_CURVE_SET('edges',(#8));
+#10=APPLICATION_CONTEXT('automotive_design');
+#11=PRODUCT_CONTEXT('',#10,'mechanical');
+#12=PRODUCT('N029','N029','',(#11));
+#13=PRODUCT_DEFINITION_FORMATION('','',#12);
+#14=PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#15=PRODUCT_DEFINITION('','',#13,#14);
+#16=PRODUCT_DEFINITION_SHAPE('','',#15);
+#17=SI_UNIT(.MILLI.,.METRE.);
+#18=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0254),#17);
+#19=(CONVERSION_BASED_UNIT('inch',#18)LENGTH_UNIT()NAMED_UNIT(*));
+#20=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#21=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#22=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#19,'distance_accuracy_value','inch_precision');
+#23=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#22))GLOBAL_UNIT_ASSIGNED_CONTEXT((#19,#20,#21))REPRESENTATION_CONTEXT('ctx','3D'));
+#24=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9),#23);
+#25=SHAPE_DEFINITION_REPRESENTATION(#16,#24);
 ENDSEC;
 END-ISO-10303-21;

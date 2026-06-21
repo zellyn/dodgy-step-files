@@ -1,37 +1,31 @@
 ISO-10303-21;
-/* N028 - xstep.cascade.unit ignored when StepModel has no unit declaration
- * Defect: When the STEP model contains no GEOMETRIC_REPRESENTATION_CONTEXT
- * unit info, the user-configured xstep.cascade.unit is silently ignored.
- * The reader uses an internal default and the model arrives at unexpected
- * scale.
- * Reproducer: file lacks any LENGTH_UNIT inside its representation context
- * units list -- coordinates exist but the unit basis is undeclared.
- */
+/* N028: GEOMETRIC_REPRESENTATION_CONTEXT with only PLANE_ANGLE_UNIT + SOLID_ANGLE_UNIT; no LENGTH_UNIT, no UNCERTAINTY_MEASURE_WITH_UNIT; cascade.unit ignored; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N028 xstep.cascade.unit ignored when no LENGTH_UNIT'),'2;1');
-FILE_NAME('N028.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('N028'),'2;1');
+FILE_NAME('N028.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('p1',(25.4,0.0,0.0));
-#20=VERTEX_POINT('',#10);
-#21=VERTEX_POINT('',#11);
-#30=DIRECTION('+x',(1.0,0.0,0.0));
-#31=VECTOR('',#30,25.4);
-#32=LINE('',#10,#31);
-#40=EDGE_CURVE('unit_unspecified_edge',#20,#21,#32,.T.);
-/* Defect site: representation context has NO LENGTH_UNIT.
- * Only angle and solid-angle units are declared. xstep.cascade.unit set by
- * the user is then silently ignored. */
-#50=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#51=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#60=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51))
-  REPRESENTATION_CONTEXT('ctx_no_length_unit','3D'));
+#1=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('p1',(10.0,0.0,0.0));
+#3=VERTEX_POINT('v0',#1);
+#4=VERTEX_POINT('v1',#2);
+#5=DIRECTION('',(1.0,0.0,0.0));
+#6=VECTOR('',#5,10.0);
+#7=LINE('',#1,#6);
+#8=EDGE_CURVE('edge',#3,#4,#7,.T.);
+#9=GEOMETRIC_CURVE_SET('edges',(#8));
+#10=APPLICATION_CONTEXT('automotive_design');
+#11=PRODUCT_CONTEXT('',#10,'mechanical');
+#12=PRODUCT('N028','N028','',(#11));
+#13=PRODUCT_DEFINITION_FORMATION('','',#12);
+#14=PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#15=PRODUCT_DEFINITION('','',#13,#14);
+#16=PRODUCT_DEFINITION_SHAPE('','',#15);
+#17=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#18=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#19=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNIT_ASSIGNED_CONTEXT((#17,#18))REPRESENTATION_CONTEXT('ctx','3D'));
+#20=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9),#19);
+#21=SHAPE_DEFINITION_REPRESENTATION(#16,#20);
 ENDSEC;
 END-ISO-10303-21;
