@@ -1,50 +1,41 @@
 ISO-10303-21;
-/* N045 - Vertex-tolerance under-checked at edge intersection
- * Defect: two edges meet at a T-junction. Edge A goes from V (origin)
- * to A_end. Edge B goes from B_start to B_end and PASSES through
- * V's tolerance ball (perpendicular distance to V = 1.0e-4 mm < 1.0e-3 mm
- * declared vertex tolerance) without ending at V. The intersection
- * test should declare a near-T-junction but the kernel uses an
- * internal 1.0e-7 tolerance and reports no intersection. */
+/* N045: T-junction: edge A ends at V; edge B passes through V's 1.0E-3 tol ball but doesn't terminate there; wire-intersection check silently filters; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N045 test case','Vertex-tolerance under-checked at edge intersection'),'2;1');
-FILE_NAME('N045.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('N045'),'2;1');
+FILE_NAME('N045.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Vertex V at origin and edge A's far end */
-#100=CARTESIAN_POINT('vertex_v',(0.0,0.0,0.0));
-#101=VERTEX_POINT('v',#100);
-#102=CARTESIAN_POINT('end_a',(1.0,0.0,0.0));
-#103=VERTEX_POINT('a_end',#102);
-#104=DIRECTION('+x',(1.0,0.0,0.0));
-#105=VECTOR('vx',#104,1.0);
-#106=LINE('lineA',#100,#105);
-#107=EDGE_CURVE('edgeA',#101,#103,#106,.T.);
-/* Edge B: from (-1, 1.0e-4, 0) to (-1+2, 1.0e-4, 0) = (1, 1.0e-4, 0).
- * The closest approach of edgeB to vertex V is at parameter t=1
- * (the midpoint), where the line passes (0, 1.0e-4, 0). 1.0e-4 < 1.0e-3
- * declared tolerance — the line passes inside V's tolerance ball
- * but does NOT end at V. */
-#108=CARTESIAN_POINT('b_start',(-1.0,1.0E-4,0.0));
-#109=VERTEX_POINT('b_start',#108);
-#110=CARTESIAN_POINT('b_end',(1.0,1.0E-4,0.0));
-#111=VERTEX_POINT('b_end',#110);
-#112=DIRECTION('+xB',(1.0,0.0,0.0));
-#113=VECTOR('vxB',#112,2.0);
-#114=LINE('lineB_passes_near_V',#108,#113);
-#115=EDGE_CURVE('edgeB_inside_v_tol_ball',#109,#111,#114,.T.);
-/* Declared tolerance 1.0e-3 mm */
-#120=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#121=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#122=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#123=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#120,
-  'distance_accuracy_value','vertex tolerance');
-#124=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-      GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#123))
-      GLOBAL_UNIT_ASSIGNED_CONTEXT((#120,#121,#122))
-      REPRESENTATION_CONTEXT('ctx','3D'));
+#1=CARTESIAN_POINT('pA0',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('pV_junction',(5.0,0.0,0.0));
+#3=VERTEX_POINT('vA0',#1);
+#4=VERTEX_POINT('vV_junction',#2);
+#5=DIRECTION('',(1.0,0.0,0.0));
+#6=VECTOR('',#5,5.0);
+#7=LINE('lineA',#1,#6);
+#8=EDGE_CURVE('eA_ends_at_V',#3,#4,#7,.T.);
+#9=CARTESIAN_POINT('pB0',(5.0,-10.0,0.0));
+#10=CARTESIAN_POINT('pB1',(5.0,10.0,0.0));
+#11=VERTEX_POINT('vB0',#9);
+#12=VERTEX_POINT('vB1',#10);
+#13=DIRECTION('',(0.0,1.0,0.0));
+#14=VECTOR('',#13,20.0);
+#15=LINE('lineB_through_V_interior',#9,#14);
+#16=EDGE_CURVE('eB_passes_through_V_tol_ball',#11,#12,#15,.T.);
+#17=GEOMETRIC_CURVE_SET('T_junction',(#8,#16));
+#18=APPLICATION_CONTEXT('automotive_design');
+#19=PRODUCT_CONTEXT('',#18,'mechanical');
+#20=PRODUCT('N045','N045','',(#19));
+#21=PRODUCT_DEFINITION_FORMATION('','',#20);
+#22=PRODUCT_DEFINITION_CONTEXT('part definition',#18,'design');
+#23=PRODUCT_DEFINITION('','',#21,#22);
+#24=PRODUCT_DEFINITION_SHAPE('','',#23);
+#25=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#26=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#27=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#28=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#25,'distance_accuracy_value','vertex_tol_ball');
+#29=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#28))GLOBAL_UNIT_ASSIGNED_CONTEXT((#25,#26,#27))REPRESENTATION_CONTEXT('ctx','3D'));
+#30=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#17),#29);
+#31=SHAPE_DEFINITION_REPRESENTATION(#24,#30);
 ENDSEC;
 END-ISO-10303-21;
