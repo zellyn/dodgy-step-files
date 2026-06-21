@@ -1,28 +1,58 @@
 ISO-10303-21;
-/* M167 - AP238 TURNING_OPERATION with cut depth exceeding workpiece radius.
- * Defect: a TURNING_OPERATION declares a depth-of-cut whose absolute value
- * exceeds the stock cylinder radius; the tool would pass through the
- * spindle axis and out the far side, parting the workpiece in a single
- * pass with no support. */
+/* M167: AP238 turning operation cut depth exceeds workpiece radius */
+/* DEFECT: TURNING_OPERATION depth_of_cut=30.0mm; workpiece radius=12.5mm */
+/* The cut passes through the spindle axis and 17.5mm beyond — parts the bar */
+/* Programmer specified tool-travel depth instead of radial material removal */
+/* Per ISO 10303-238 §5.8 depth-of-cut must not exceed stock radius */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'TURNING_OPERATION(') */
+/* Byte assertion: contains(b'30.0') */
 HEADER;
-FILE_DESCRIPTION(('M167 test case','AP238 turning depth exceeds stock radius'),'2;1');
-FILE_NAME('M167.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M167: AP238 turning depth 30.0mm exceeds bar radius 12.5mm'),'2;1');
+FILE_NAME('M167.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 3 1 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('nc','3D'));
-/* Workpiece is a 25 mm diameter bar (radius 12.5 mm). */
-#400=WORKPIECE('bar_stock',$,$,$,$,$,$);
-/* Defect: TURNING_OPERATION declares 30 mm radial cut depth on a 12.5 mm
-   radius bar. */
-#100=TURNING_OPERATION('rough_cut',$,$,$,$,$,$,
-  MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(30.0),#10));
-#200=WORKPLAN('main',(#100),$,$,$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* mm length unit reference for MEASURE_WITH_UNIT */
+#15=SI_UNIT(.MILLI.,.METRE.);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#20=GEOMETRIC_CURVE_SET('ap238-turning-depth-exceeds-workpiece-radius-30mm-vs-12-5mm',
+  (#52,#60));
+/* WORKPLAN 'turn_bar_program' — AP238 top-level NC program */
+#50=WORKPLAN('turn_bar_program','Turn 25mm bar stock workplan',(),$,(#51));
+/* MACHINING_WORKINGSTEP links the workpiece to the operation */
+#51=MACHINING_WORKINGSTEP('rough_turn_step','Rough turning workingstep',#52,#60,$);
+/* Byte assertion: contains(b'TURNING_OPERATION(') */
+/* DEFECT: TURNING_OPERATION depth_of_cut = 30.0mm; workpiece radius = 12.5mm */
+/* Byte assertion: contains(b'30.0') */
+/* depth_of_cut = MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(30.0), mm) */
+#53=MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(30.0),#15);
+/* TURNING_OPERATION: ($=tool,$=spindle speed,$=feed,$=cutting_depth,depth_of_cut,retract) */
+#52=TURNING_OPERATION('rough_turn_pass',$,$,$,#53,$);
+/* WORKPIECE 'bar_stock_25mm': 25mm diameter bar (radius 12.5mm) */
+/* The depth-of-cut 30.0mm > radius 12.5mm — the defect */
+#61=MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(12.5),#15);
+#60=WORKPIECE('bar_stock_25mm','25mm diameter bar stock 250mm length',$,#61,$,$,$);
+/* Product chain */
+#100=APPLICATION_CONTEXT('mechanical design');
+#101=PRODUCT_CONTEXT('',#100,'mechanical');
+#102=PRODUCT('M167','M167','M167',(#101));
+#103=PRODUCT_DEFINITION_FORMATION('','',#102);
+#104=PRODUCT_DEFINITION_CONTEXT(#100,'design');
+#105=PRODUCT_DEFINITION('','',#103,#104);
+#106=PRODUCT_DEFINITION_SHAPE('','',#105);
+#107=SHAPE_REPRESENTATION('',(#20),#14);
+#108=SHAPE_DEFINITION_REPRESENTATION(#106,#107);
 ENDSEC;
 END-ISO-10303-21;

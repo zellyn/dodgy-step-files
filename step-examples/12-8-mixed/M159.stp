@@ -1,32 +1,63 @@
 ISO-10303-21;
-/* M159 - AP210 connector keying / polarization missing on a multi-pin
- * connector.
- * Defect: a CONNECTOR PRODUCT (e.g. 4-pin power harness) has no
- * polarization or keying property and no DESCRIPTIVE_REPRESENTATION_ITEM
- * indicating shell orientation. The component can be inserted
- * rotated 180 deg, swapping VCC and GND. The defect is a missing
- * required attribute, not a conflict. */
+/* M159: AP210 connector keying / polarization missing */
+/* DEFECT: PRODUCT 'PWR_HDR_4' has VCC/SIG/SIG2/GND TERMINALs but no polarization property */
+/* Connector can be inserted 180deg reversed, swapping VCC and GND — power short risk */
+/* ECAD exporter omitted polarization/keying attribute from connector PRODUCT */
+/* Per ISO 10303-210 §6 asymmetric connectors require polarization attribute */
+/* Byte assertion: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN') */
+/* Byte assertion: contains(b'PWR_HDR_4') */
+/* Byte assertion: count_entity_def(b'TERMINAL') >= 4 */
 HEADER;
-FILE_DESCRIPTION(('M159 test case','AP210 connector keying missing'),'2;1');
-FILE_NAME('M159.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M159: AP210 PWR_HDR_4 connector missing polarization keying'),'2;1');
+FILE_NAME('M159.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN') */
 FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('pcb','3D'));
-#100=PRODUCT('PWR_HDR_4','PWR_HDR_4','4-pin power header',(#1));
-#101=PRODUCT_DEFINITION_FORMATION('rev_A','released',#100);
-#102=PRODUCT_DEFINITION('design','no polarization key declared',#101,#1);
-/* Defect: connector has VCC and GND on outer pins but no keying or
- * polarization attribute - rotation by 180 deg is not prevented. */
-#200=TERMINAL('VCC','VCC pin',$);
-#201=TERMINAL('SIG','signal pin',$);
-#202=TERMINAL('SIG2','second signal pin',$);
-#203=TERMINAL('GND','GND pin',$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('pcb','3D'));
+/* Byte assertion: contains(b'PWR_HDR_4') */
+/* PRODUCT 'PWR_HDR_4': 4-pin power harness connector, 2.54mm pitch */
+#50=PRODUCT('PWR_HDR_4','PWR_HDR_4','4-pin power harness connector',(#1));
+/* Byte assertion: count_entity_def(b'TERMINAL') >= 4 */
+/* Four TERMINALs at 2.54mm pitch: VCC / SIG / SIG2 / GND */
+/* Pin 1 at origin — 3.3V supply */
+#60=CARTESIAN_POINT('T1_VCC_loc',(0.0,0.0,0.0));
+#61=TERMINAL('T1_VCC',#60);
+/* Pin 2 — signal */
+#62=CARTESIAN_POINT('T2_SIG_loc',(2.54,0.0,0.0));
+#63=TERMINAL('T2_SIG',#62);
+/* Pin 3 — signal */
+#64=CARTESIAN_POINT('T3_SIG2_loc',(5.08,0.0,0.0));
+#65=TERMINAL('T3_SIG2',#64);
+/* Pin 4 — ground return */
+#66=CARTESIAN_POINT('T4_GND_loc',(7.62,0.0,0.0));
+#67=TERMINAL('T4_GND',#66);
+/* NOTE: no PROPERTY_DEFINITION for 'polarization' or 'keying' — that is the defect */
+/* Without polarization, reversed insertion maps T1_VCC onto T4_GND: power short *)
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#200=GEOMETRIC_CURVE_SET('ap210-connector-keying-polarization-missing-pwr-hdr-4',
+  (#50,#60,#61,#62,#63,#64,#65,#66,#67));
+/* Product chain */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M159','M159','M159',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#200),#14);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;

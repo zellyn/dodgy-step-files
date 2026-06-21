@@ -1,36 +1,62 @@
 ISO-10303-21;
-/* M158 - AP210 assembly footprint conflicts with component-library
- * footprint.
- * Defect: an assembly's local PRODUCT_DEFINITION declares an SOIC-8
- * footprint with 1.27 mm pitch but the component library's
- * PRODUCT_DEFINITION for the same MPN declares 0.65 mm pitch
- * (effectively SSOP). The assembly's pads will not align with the
- * component pins. */
+/* M158: AP210 assembly footprint pitch conflicts with component-library footprint */
+/* DEFECT: U2_ASSEMBLY declares SOIC-8 pitch 1.27mm; U2_LIBRARY is SSOP-8 pitch 0.65mm */
+/* The pads at 1.27mm pitch cannot align with SSOP component pins at 0.65mm pitch */
+/* ECAD exporter used a SOIC-8 template override for an SSOP-8 library component */
+/* Per ISO 10303-210 §6 assembly and library footprint pitch must agree */
+/* Byte assertion: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN') */
+/* Byte assertion: contains(b'library_pin_pitch_mm') */
+/* Byte assertion: contains(b'assembly_pin_pitch_mm') */
 HEADER;
-FILE_DESCRIPTION(('M158 test case','AP210 footprint pitch override conflict'),'2;1');
-FILE_NAME('M158.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M158: AP210 SOIC-8 assembly pitch 1.27mm vs SSOP library pitch 0.65mm'),'2;1');
+FILE_NAME('M158.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN') */
 FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('pcb','3D'));
-/* Library entry for the component. */
-#100=PRODUCT('LM358','LM358','dual op-amp library entry',(#1));
-#101=PRODUCT_DEFINITION_FORMATION('lib_v1','library',#100);
-#102=PRODUCT_DEFINITION('library_def','SSOP-8 0.65mm pitch',#101,#1);
-#110=DESCRIPTIVE_REPRESENTATION_ITEM('library_pin_pitch_mm','0.65');
-/* Assembly entry for the same MPN. */
-#200=PRODUCT('LM358','LM358','assembly placement record',(#1));
-#201=PRODUCT_DEFINITION_FORMATION('asm_v1','assembly',#200);
-#202=PRODUCT_DEFINITION('assembly_def','SOIC-8 1.27mm pitch',#201,#1);
-/* Defect: assembly pitch (1.27) doesn't match library pitch (0.65). */
-#210=DESCRIPTIVE_REPRESENTATION_ITEM('assembly_pin_pitch_mm','1.27');
-#300=NEXT_ASSEMBLY_USAGE_OCCURRENCE('U2','U2','SOIC-8 footprint placement',
-       #102,#202,$);
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('pcb','3D'));
+/* U2_LIBRARY: component library entry for MPN 'U2_MPN' — SSOP-8 at 0.65mm pitch */
+#50=PRODUCT('U2_LIBRARY','U2_MPN','SSOP-8 component library entry',(#1));
+/* Byte assertion: contains(b'library_pin_pitch_mm') */
+/* library declares 0.65mm pitch — SSOP-8 package standard */
+#51=PROPERTY_DEFINITION('library_pin_pitch_mm','Library footprint pin pitch',#50);
+#52=DESCRIPTIVE_REPRESENTATION_ITEM('library_pin_pitch_mm','0.65');
+#53=REPRESENTATION('lib_pitch',(#52),#14);
+#54=PROPERTY_DEFINITION_REPRESENTATION(#51,#53);
+/* U2_ASSEMBLY: per-design footprint for U2 placement — SOIC-8 at 1.27mm (DEFECT) */
+#60=PRODUCT('U2_ASSEMBLY','U2_MPN','SOIC-8 assembly footprint override',(#1));
+/* Byte assertion: contains(b'assembly_pin_pitch_mm') */
+/* DEFECT: assembly declares 1.27mm pitch — SOIC-8 pitch, wrong for SSOP-8 component */
+#61=PROPERTY_DEFINITION('assembly_pin_pitch_mm','Assembly footprint pin pitch',#60);
+#62=DESCRIPTIVE_REPRESENTATION_ITEM('assembly_pin_pitch_mm','1.27');
+#63=REPRESENTATION('asm_pitch',(#62),#14);
+#64=PROPERTY_DEFINITION_REPRESENTATION(#61,#63);
+/* U2_placement: NEXT_ASSEMBLY_USAGE_OCCURRENCE linking library to assembly footprint */
+#70=NEXT_ASSEMBLY_USAGE_OCCURRENCE('U2_placement','U2','U2 SSOP vs SOIC placement',#60,#50,$);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#200=GEOMETRIC_CURVE_SET('ap210-assembly-pitch-conflicts-library-soic8-vs-ssop8',
+  (#50,#51,#52,#53,#54,#60,#61,#62,#63,#64,#70));
+/* Product chain */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M158','M158','M158',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#200),#14);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;

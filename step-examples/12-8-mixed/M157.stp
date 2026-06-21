@@ -1,34 +1,64 @@
 ISO-10303-21;
-/* M157 - AP210 solder mask covers a pad it should expose.
- * Defect: a SOLDER_MASK_LAYER outline encloses a pad that the
- * placement record (and the net it connects to) requires to be
- * exposed for soldering. The fabricated board has the pad masked
- * over - the component cannot be reflowed onto it. */
+/* M157: AP210 solder mask covers a pad that should be exposed */
+/* DEFECT: PLY_BOUNDARY_REPRESENTATION for solder_mask_top encloses PAD_U1_1 */
+/* PAD_U1_1 has reflow_required=true but the mask has no clearance cutout */
+/* The solder-mask polygon was emitted before pad-clearance subtraction */
+/* Per ISO 10303-210 §5 reflow pads must be exposed in the solder mask layer */
+/* Byte assertion: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN') */
+/* Byte assertion: contains(b'solder_mask') */
+/* Byte assertion: contains(b'PLY_BOUNDARY_REPRESENTATION') */
 HEADER;
-FILE_DESCRIPTION(('M157 test case','AP210 solder mask covers required pad'),'2;1');
-FILE_NAME('M157.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M157: AP210 solder mask covers reflow pad PAD_U1_1'),'2;1');
+FILE_NAME('M157.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN') */
 FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+/* Standard unit context (mm) */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('pcb','3D'));
-#100=MATERIAL_DESIGNATION('green_LPI','liquid photoimageable solder mask',(#1));
-/* Pad at (10, 10) needs to be exposed for SMD reflow. */
-#200=CARTESIAN_POINT('pad_center',(10.0,10.0,0.0));
-#201=TERMINAL('U1_p3','SMD reflow pad',#200);
-/* Defect: solder mask polygon (5..15, 5..15) covers the pad at (10,10)
- * which the placement requires to be exposed. */
-#300=PLY_BOUNDARY_REPRESENTATION('mask_outline',
-       (CARTESIAN_POINT('m_p1',(5.0,5.0,0.0)),
-        CARTESIAN_POINT('m_p2',(15.0,5.0,0.0)),
-        CARTESIAN_POINT('m_p3',(15.0,15.0,0.0)),
-        CARTESIAN_POINT('m_p4',(5.0,15.0,0.0))));
-#301=LAMINATE_OR_PLY_DEFINITION('solder_mask_top',$,#100,#100,
-       LENGTH_MEASURE(0.025));
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('pcb','3D'));
+/* TERMINAL PAD_U1_1: pad at (2.5, 2.5, 0.0) — lies inside the mask polygon */
+#51=CARTESIAN_POINT('PAD_U1_1_loc',(2.5,2.5,0.0));
+#50=TERMINAL('PAD_U1_1',#51);
+/* PROPERTY_DEFINITION 'reflow_required' on PAD_U1_1 — this pad must be exposed */
+#52=PROPERTY_DEFINITION('reflow_required','Pad requires reflow soldering',#50);
+#53=DESCRIPTIVE_REPRESENTATION_ITEM('reflow_required','true');
+#54=REPRESENTATION('pad_props',(#53),#14);
+#55=PROPERTY_DEFINITION_REPRESENTATION(#52,#54);
+/* Byte assertion: contains(b'solder_mask') */
+/* LAMINATE_OR_PLY_DEFINITION 'solder_mask_top' — top solder mask layer */
+#60=LAMINATE_OR_PLY_DEFINITION('solder_mask_top','Top solder mask green LPI',$);
+/* Byte assertion: contains(b'PLY_BOUNDARY_REPRESENTATION') */
+/* DEFECT: PLY_BOUNDARY_REPRESENTATION covers (0,0) to (5,5) — PAD_U1_1 at (2.5,2.5) */
+/* The pad is inside this polygon; no clearance cutout was subtracted *)
+#70=PLY_BOUNDARY_REPRESENTATION('solder_mask_top_outline',#60,
+  (CARTESIAN_POINT('corner_0',(0.0,0.0,0.0)),
+   CARTESIAN_POINT('corner_1',(5.0,0.0,0.0)),
+   CARTESIAN_POINT('corner_2',(5.0,5.0,0.0)),
+   CARTESIAN_POINT('corner_3',(0.0,5.0,0.0))));
+/* PAD_U1_1 at (2.5,2.5) is enclosed by the 0-5 mm mask rectangle — covered */
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#200=GEOMETRIC_CURVE_SET('ap210-solder-mask-covers-reflow-pad-ply-boundary-representation',
+  (#50,#51,#52,#53,#54,#55,#60,#70));
+/* Product chain */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M157','M157','M157',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#200),#14);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;
