@@ -1,40 +1,43 @@
 ISO-10303-21;
-/* Pmi084 - Coordinate-system connection points missing.
- * Defect: AP242 dimension references a chain of three intermediate
- * AXIS2_PLACEMENT_3D anchors via PRESENTED_ITEM. Older readers walk
- * only the leaf placement and ignore the intermediate transforms,
- * so the dimension text falls back to the part origin. */
+/* Pmi084: DIMENSIONAL_LOCATION 'length_dim' has a connection-point chain through three AXIS2_PLACEMENT_3D anchors expressed via PRESENTED_ITEM_REPRESENTATION; older readers that do not walk the full chain fall back to the part origin (0,0,0) instead of the correct attachment point at (50,0,0); receivers must compose all transforms in the PRESENTED_ITEM chain to resolve the final dimension anchor; silently using the raw leaf placement without the chain is forbidden; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Pmi084 test case','Connection-point chain ignored on read'),'2;1');
-FILE_NAME('Pmi084.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 3 0 0 }'));
+FILE_DESCRIPTION(('Pmi084'),'2;1');
+FILE_NAME('Pmi084.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('managed model based 3d engineering');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','ap242_managed_model_based_3d_engineering',2020,#1);
-#10=PRODUCT_CONTEXT('',#1,'mechanical');
-#11=PRODUCT('part1','part1','part1',(#10));
-#12=PRODUCT_DEFINITION_FORMATION('','',#11);
-#13=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#14=PRODUCT_DEFINITION('','',#12,#13);
-#15=PRODUCT_DEFINITION_SHAPE('','',#14);
-/* Three-step connection-point chain */
-#100=CARTESIAN_POINT('p_inter1',(10.0,0.0,0.0));
-#101=DIRECTION('',(0.0,0.0,1.0));
-#102=DIRECTION('',(1.0,0.0,0.0));
-#103=AXIS2_PLACEMENT_3D('inter1',#100,#101,#102);
-#104=CARTESIAN_POINT('p_inter2',(20.0,0.0,0.0));
-#105=AXIS2_PLACEMENT_3D('inter2',#104,#101,#102);
-#106=CARTESIAN_POINT('p_leaf',(30.0,0.0,0.0));
-#107=AXIS2_PLACEMENT_3D('leaf',#106,#101,#102);
-/* SHAPE_ASPECT for the dimensioned feature */
-#110=SHAPE_ASPECT('hole','dimensioned hole',#15,.T.);
-/* DIMENSIONAL_LOCATION attached to the chain */
-#111=DIMENSIONAL_LOCATION('dim_through_chain','',#110,#110);
-/* PRESENTED_ITEM_REPRESENTATION linking dimension to all three
- * intermediate placements as connection-point chain anchors */
-#112=DRAUGHTING_CALLOUT('chain_callout',());
-#113=PRESENTATION_REPRESENTATION('chain_rep',(#103,#105,#107,#112),#1);
-#114=PRESENTED_ITEM_REPRESENTATION(#112,#113);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Pmi084','Pmi084','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=SHAPE_ASPECT('dim_start','start feature',#9055,.T.);
+#9064=SHAPE_ASPECT('dim_end','end feature',#9055,.T.);
+#9065=DIMENSIONAL_LOCATION('length_dim','linear distance',#9063,#9064);
+#9066=DIRECTION('n1',(0.0,0.0,1.0));
+#9067=DIRECTION('x1',(1.0,0.0,0.0));
+#9068=CARTESIAN_POINT('o1',(0.0,0.0,0.0));
+#9069=AXIS2_PLACEMENT_3D('anchor_a',#9068,#9066,#9067);
+#9070=DIRECTION('n2',(0.0,0.0,1.0));
+#9071=DIRECTION('x2',(1.0,0.0,0.0));
+#9072=CARTESIAN_POINT('o2',(25.0,0.0,0.0));
+#9073=AXIS2_PLACEMENT_3D('anchor_b',#9072,#9070,#9071);
+#9074=DIRECTION('n3',(0.0,0.0,1.0));
+#9075=DIRECTION('x3',(1.0,0.0,0.0));
+#9076=CARTESIAN_POINT('o3',(50.0,0.0,0.0));
+#9077=AXIS2_PLACEMENT_3D('anchor_c',#9076,#9074,#9075);
+#9078=REPRESENTATION('conn_pt_rep',(#9069,#9073,#9077),$);
+#9079=PRESENTED_ITEM_REPRESENTATION(#9078,#9065);
 ENDSEC;
 END-ISO-10303-21;
