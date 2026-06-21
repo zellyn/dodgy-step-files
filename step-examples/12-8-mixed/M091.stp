@@ -1,34 +1,63 @@
 ISO-10303-21;
-/* M091 - AP210 conductor segment crosses board edge.
- * Defect: a copper conductor (CONDUCTOR_TRACK_PROFILE) is described as
- * a line segment from (15.0, 5.0) to (40.0, 5.0) on an outline that
- * is bounded by (0..30, 0..30). The track exits the board at x=30
- * and continues in mid-air to x=40 - a fabrication-impossible trace. */
+/* M091: AP210 conductor trace exits the board outline */
+/* DEFECT: CONDUCTOR_TRACK_PROFILE trace from (15,5) to (40,5) but board ends at x=30 */
+/* The trace exits the board at x=30 — right half (x=30..40) is not fabricable */
+/* Byte assertion: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN') */
+/* Byte assertion: contains(b'CONDUCTOR_TRACK_PROFILE') */
+/* Byte assertion: contains(b'PLY_BOUNDARY_REPRESENTATION') */
 HEADER;
-FILE_DESCRIPTION(('M091 test case','AP210 trace exits board outline'),'2;1');
-FILE_NAME('M091.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M091: AP210 conductor trace exits board outline'),'2;1');
+FILE_NAME('M091.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN') */
 FILE_SCHEMA(('ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN { 1 0 10303 210 3 1 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('electronic_assembly_interconnect_and_packaging_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'electronic_assembly_interconnect_and_packaging_design',2014,#1);
+/* Standard unit context — mm */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('pcb','3D'));
-/* PCB outline: 30 x 30 mm */
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('pcb','3D'));
+/* PCB board outline: 30 mm x 30 mm rectangle */
 #20=CARTESIAN_POINT('bl',(0.0,0.0,0.0));
 #21=CARTESIAN_POINT('br',(30.0,0.0,0.0));
 #22=CARTESIAN_POINT('tr',(30.0,30.0,0.0));
 #23=CARTESIAN_POINT('tl',(0.0,30.0,0.0));
-#24=POLYLINE('outline',(#20,#21,#22,#23,#20));
+/* Closed POLYLINE outline (30x30 mm board) */
+#25=POLYLINE('outline',(#20,#21,#22,#23,#20));
+/* Byte assertion: contains(b'PLY_BOUNDARY_REPRESENTATION') */
+/* Board core ply definition */
 #100=LAMINATE_OR_PLY_DEFINITION('core',$,$,$,LENGTH_MEASURE(0.2));
-#101=PLY_BOUNDARY_REPRESENTATION('outline_rep',(#24),#14);
-/* Defect: trace from (15,5) to (40,5), exits board at x=30. */
-#200=CARTESIAN_POINT('trace_a',(15.0,5.0,0.0));
-#201=CARTESIAN_POINT('trace_b',(40.0,5.0,0.0));
-#202=POLYLINE('trace_path',(#200,#201));
-#210=CONDUCTOR_TRACK_PROFILE('clk_trace',$,#202,LENGTH_MEASURE(0.2));
+/* PLY_BOUNDARY_REPRESENTATION links the outline to the ply */
+#101=PLY_BOUNDARY_REPRESENTATION('core_outline',(#25),#14);
+/* Trace endpoints: from (15,5) inside board to (40,5) outside board */
+/* Board right edge is at x=30; trace exits at x=30, ends at x=40 */
+#200=CARTESIAN_POINT('trace_start',(15.0,5.0,0.0));
+#201=CARTESIAN_POINT('trace_end',(40.0,5.0,0.0));
+/* Byte assertion: contains(b'CONDUCTOR_TRACK_PROFILE') */
+/* DEFECT: CONDUCTOR_TRACK_PROFILE trace exits board outline at x=30 */
+/* Right endpoint (40,5) is 10mm outside the 30x30mm board */
+#210=POLYLINE('trace_path',(#200,#201));
+#220=CONDUCTOR_TRACK_PROFILE('trace_r1',(#210),#14);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#300=GEOMETRIC_CURVE_SET('ap210-conductor-trace-exits-board-outline',
+  (#25,#100,#101,#200,#201,#210,#220));
+/* Product chain */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M091','M091','M091',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#300),#14);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;
