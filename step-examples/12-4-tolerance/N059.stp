@@ -1,67 +1,48 @@
 ISO-10303-21;
-/* N059 — BRepLib.UpdateEdgeTol sampling-grid undersample
- * Defect: UpdateEdgeTol uses 23-sample default grid to detect maximum distance
- * between 3D curve and 2D parametric curve. On B-spline edges with high-curvature
- * peaks between sample points, the peak distance is never observed, causing
- * underestimated edge tolerance that fails later validation.
- */
+/* N059: B-spline edge bspline_high_curvature with degree-3 cubic and 5 control points; peak curvature near u=0.48 falls between 23 default samples; UpdateEdgeTol underestimates maximum 3D-vs-2D curve deviation */
 HEADER;
-FILE_DESCRIPTION(('N059 UpdateEdgeTol undersample curvature peak'),'2;1');
-FILE_NAME('N059.stp','2026-06-15T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('N059'),'2;1');
+FILE_NAME('N059.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-/* B-spline edge with high curvature between sample points.
-   5 control points produce a curve with peak curvature near parameter 0.5.
-   With 23 default samples, peak at ~0.48 falls between samples. */
-#10=CARTESIAN_POINT('cp0',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('cp1',(1.0,0.0,0.0));
-#12=CARTESIAN_POINT('cp2',(2.0,1.0,0.0));
-#13=CARTESIAN_POINT('cp3',(3.0,0.5,0.0));
-#14=CARTESIAN_POINT('cp4',(4.0,0.0,0.0));
-#20=VERTEX_POINT('v_start',#10);
-#21=VERTEX_POINT('v_end',#14);
-/* B-spline curve degree 3, 5 control points */
-#30=B_SPLINE_CURVE_WITH_KNOTS('bspline_high_curvature',3,
-  (#10,#11,#12,#13,#14),
-  .UNSPECIFIED.,.F.,.F.,
-  (4,1,4),(0.0,0.5,1.0),
-  .UNSPECIFIED.);
-#40=EDGE_CURVE('bspline_edge',#20,#21,#30,.T.);
-/* Close the loop with a straight edge returning to start */
-#50=DIRECTION('negx',(-1.0,0.0,0.0));
-#51=VECTOR('negxvec',#50,4.0);
-#52=LINE('close_line',#14,#51);
-#53=EDGE_CURVE('close_edge',#21,#20,#52,.T.);
-#54=ORIENTED_EDGE('',*,*,#40,.T.);
-#55=ORIENTED_EDGE('',*,*,#53,.T.);
-#56=EDGE_LOOP('',(#54,#55));
-/* Plane on XY */
-#60=DIRECTION('zdir',(0.0,0.0,1.0));
-#61=DIRECTION('xdir',(1.0,0.0,0.0));
-#62=AXIS2_PLACEMENT_3D('ax3',#10,#60,#61);
-#63=PLANE('plane_xy',#62);
-#64=FACE_OUTER_BOUND('',#56,.T.);
-#65=ADVANCED_FACE('face_on_plane',(#64),#63,.T.);
-#66=OPEN_SHELL('shell1',(#65));
-/* PRODUCT CHAIN */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('N059','N059','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#66));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('cp0',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('cp1',(1.0,0.0,0.0));
+#3=CARTESIAN_POINT('cp2',(2.0,1.0,0.0));
+#4=CARTESIAN_POINT('cp3',(3.0,0.5,0.0));
+#5=CARTESIAN_POINT('cp4',(4.0,0.0,0.0));
+#6=VERTEX_POINT('v_start',#1);
+#7=VERTEX_POINT('v_end',#5);
+#8=B_SPLINE_CURVE_WITH_KNOTS('bspline_high_curvature',3,(#1,#2,#3,#4,#5),.UNSPECIFIED.,.F.,.F.,(4,1,4),(0.0,0.5,1.0),.UNSPECIFIED.);
+#9=EDGE_CURVE('bspline_edge',#6,#7,#8,.T.);
+#10=DIRECTION('negx',(-1.0,0.0,0.0));
+#11=VECTOR('negxvec',#10,4.0);
+#12=LINE('close_line',#5,#11);
+#13=EDGE_CURVE('close_edge',#7,#6,#12,.T.);
+#14=ORIENTED_EDGE('',$,$,#9,.T.);
+#15=ORIENTED_EDGE('',$,$,#13,.T.);
+#16=EDGE_LOOP('',(#14,#15));
+#17=FACE_OUTER_BOUND('',#16,.T.);
+#18=DIRECTION('zdir',(0.0,0.0,1.0));
+#19=DIRECTION('xdir',(1.0,0.0,0.0));
+#20=AXIS2_PLACEMENT_3D('ax3',#1,#18,#19);
+#21=PLANE('plane_xy',#20);
+#22=ADVANCED_FACE('face_on_plane',(#17),#21,.T.);
+#23=OPEN_SHELL('shell1',(#22));
+#24=SHELL_BASED_SURFACE_MODEL('sbsm',(#23));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('N059','N059','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#24),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

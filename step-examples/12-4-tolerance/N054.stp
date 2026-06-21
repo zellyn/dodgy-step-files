@@ -1,95 +1,79 @@
 ISO-10303-21;
-/* N054 - FixVertexTolerance multi-surface underestimation
- * When face context evaluation fails, CheckVertexTolerance computes
- * tolerance using only single-surface geometry, underestimating required
- * tolerance for vertices shared between multiple surfaces. */
+/* N054: shared vertex v_shared at (5,0,0) on intersection of PLANE z=0 and CYLINDRICAL_SURFACE r=5; FixVertexTolerance with face context=null computes from plane only, underestimating tolerance (misses cylinder) */
 HEADER;
-FILE_DESCRIPTION(('N054 - FixVertexTolerance multi-surface underestimation'),'2;1');
-FILE_NAME('N054.stp','2026-06-16T00:00:00',('auto-generated'),(''),'auto-generated','','');
+FILE_DESCRIPTION(('N054'),'2;1');
+FILE_NAME('N054.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* --- Two surfaces: PLANE at z=0, CYLINDRICAL_SURFACE at x=0, r=5 --- */
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('ax3_plane',#10,#11,#12);
-#14=PLANE('plane_z0',#13);
-/* Cylindrical surface: axis along Z, radius 5, centered at origin */
-#15=AXIS2_PLACEMENT_3D('ax3_cyl',#10,#11,#12);
-#16=CYLINDRICAL_SURFACE('cyl_r5',#15,5.0);
-/* Shared vertex at intersection: (5, 0, 0) lies on both plane and cylinder */
-#20=CARTESIAN_POINT('shared_intersection',(5.0,0.0,0.0));
-#21=VERTEX_POINT('v_shared',#20);
-/* Vertices for plane face triangle: shared + two others in z=0 plane */
-#25=CARTESIAN_POINT('',(0.0,5.0,0.0));
-#26=VERTEX_POINT('v_plane_2',#25);
-#27=CARTESIAN_POINT('',(-5.0,0.0,0.0));
-#28=VERTEX_POINT('v_plane_3',#27);
-/* Edges for plane face */
-#40=DIRECTION('',(-1.0,1.0,0.0));
-#41=VECTOR('',#40,7.071067811865475);
-#42=LINE('',#20,#41);
-#43=EDGE_CURVE('e_plane_1',#21,#26,#42,.T.);
-#44=DIRECTION('',(-1.0,-1.0,0.0));
-#45=VECTOR('',#44,7.071067811865475);
-#46=LINE('',#25,#45);
-#47=EDGE_CURVE('e_plane_2',#26,#28,#46,.T.);
-#48=DIRECTION('',(1.0,0.0,0.0));
-#49=VECTOR('',#48,10.0);
-#50=LINE('',#27,#49);
-#51=EDGE_CURVE('e_plane_3',#28,#21,#50,.T.);
-#60=ORIENTED_EDGE('',*,*,#43,.T.);
-#61=ORIENTED_EDGE('',*,*,#47,.T.);
-#62=ORIENTED_EDGE('',*,*,#51,.T.);
-#63=EDGE_LOOP('',(#60,#61,#62));
-#64=FACE_OUTER_BOUND('',#63,.T.);
-#65=ADVANCED_FACE('face_plane',(#64),#14,.T.);
-/* Vertices for cylinder face: shared + two others on cylinder surface */
-#70=CARTESIAN_POINT('',(5.0,0.0,2.0));
-#71=VERTEX_POINT('v_cyl_2',#70);
-#72=CARTESIAN_POINT('',(5.0,0.0,-2.0));
-#73=VERTEX_POINT('v_cyl_3',#72);
-/* Edges for cylinder face: shared vertex participates in both faces */
-#80=DIRECTION('',(0.0,0.0,1.0));
-#81=VECTOR('',#80,2.0);
-#82=LINE('',#20,#81);
-#83=EDGE_CURVE('e_cyl_1',#21,#71,#82,.T.);
-#84=DIRECTION('',(0.0,0.0,-1.0));
-#85=VECTOR('',#84,4.0);
-#86=LINE('',#70,#85);
-#87=EDGE_CURVE('e_cyl_2',#71,#73,#86,.T.);
-#88=DIRECTION('',(0.0,0.0,1.0));
-#89=VECTOR('',#88,2.0);
-#90=LINE('',#72,#89);
-#91=EDGE_CURVE('e_cyl_3',#73,#21,#90,.T.);
-#100=ORIENTED_EDGE('',*,*,#83,.T.);
-#101=ORIENTED_EDGE('',*,*,#87,.T.);
-#102=ORIENTED_EDGE('',*,*,#91,.T.);
-#103=EDGE_LOOP('',(#100,#101,#102));
-#104=FACE_OUTER_BOUND('',#103,.T.);
-#105=ADVANCED_FACE('face_cylinder',(#104),#16,.T.);
-/* Defect: Shared vertex #21 at (5,0,0) lies on intersection of plane and
-   cylinder. FixVertexTolerance with face context=null computes tolerance
-   from plane only, missing cylinder's contribution. Proper tolerance must
-   account for both surfaces' proximity errors at the shared vertex. */
-#110=OPEN_SHELL('',(#65,#105));
-/* PRODUCT chain wrapping geometry so OCCT TransferRoots produces shape */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('N054','N054','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#110));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('ax3_plane',#1,#2,#3);
+#5=PLANE('plane_z0',#4);
+#6=AXIS2_PLACEMENT_3D('ax3_cyl',#1,#2,#3);
+#7=CYLINDRICAL_SURFACE('cyl_r5',#6,5.0);
+#8=CARTESIAN_POINT('shared_intersection',(5.0,0.0,0.0));
+#9=VERTEX_POINT('v_shared',#8);
+#10=CARTESIAN_POINT('',(0.0,5.0,0.0));
+#11=VERTEX_POINT('v_plane_2',#10);
+#12=CARTESIAN_POINT('',(-5.0,0.0,0.0));
+#13=VERTEX_POINT('v_plane_3',#12);
+#14=DIRECTION('',(-1.0,1.0,0.0));
+#15=VECTOR('',#14,7.07106781187);
+#16=LINE('',#8,#15);
+#17=EDGE_CURVE('e_plane_1',#9,#11,#16,.T.);
+#18=DIRECTION('',(-1.0,-1.0,0.0));
+#19=VECTOR('',#18,7.07106781187);
+#20=LINE('',#10,#19);
+#21=EDGE_CURVE('e_plane_2',#11,#13,#20,.T.);
+#22=DIRECTION('',(1.0,0.0,0.0));
+#23=VECTOR('',#22,10.0);
+#24=LINE('',#12,#23);
+#25=EDGE_CURVE('e_plane_3',#13,#9,#24,.T.);
+#26=ORIENTED_EDGE('',$,$,#17,.T.);
+#27=ORIENTED_EDGE('',$,$,#21,.T.);
+#28=ORIENTED_EDGE('',$,$,#25,.T.);
+#29=EDGE_LOOP('',(#26,#27,#28));
+#30=FACE_OUTER_BOUND('',#29,.T.);
+#31=ADVANCED_FACE('face_plane',(#30),#5,.T.);
+#32=CARTESIAN_POINT('',(5.0,0.0,2.0));
+#33=VERTEX_POINT('v_cyl_2',#32);
+#34=CARTESIAN_POINT('',(5.0,0.0,-2.0));
+#35=VERTEX_POINT('v_cyl_3',#34);
+#36=DIRECTION('',(0.0,0.0,1.0));
+#37=VECTOR('',#36,2.0);
+#38=LINE('',#8,#37);
+#39=EDGE_CURVE('e_cyl_1',#9,#33,#38,.T.);
+#40=DIRECTION('',(0.0,0.0,-1.0));
+#41=VECTOR('',#40,4.0);
+#42=LINE('',#32,#41);
+#43=EDGE_CURVE('e_cyl_2',#33,#35,#42,.T.);
+#44=DIRECTION('',(0.0,0.0,1.0));
+#45=VECTOR('',#44,2.0);
+#46=LINE('',#34,#45);
+#47=EDGE_CURVE('e_cyl_3',#35,#9,#46,.T.);
+#48=ORIENTED_EDGE('',$,$,#39,.T.);
+#49=ORIENTED_EDGE('',$,$,#43,.T.);
+#50=ORIENTED_EDGE('',$,$,#47,.T.);
+#51=EDGE_LOOP('',(#48,#49,#50));
+#52=FACE_OUTER_BOUND('',#51,.T.);
+#53=ADVANCED_FACE('face_cylinder',(#52),#7,.T.);
+#54=OPEN_SHELL('',(#31,#53));
+#55=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#54));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('N054','N054','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#55),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
