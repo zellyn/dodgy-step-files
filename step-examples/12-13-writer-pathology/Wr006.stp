@@ -1,21 +1,17 @@
 ISO-10303-21;
-/* Wr006 - Floating-point precision degradation on round-trip - exact decimals corrupted to nearly-but-not-exactly */
+/* Wr006: floating-point precision degradation — near-integer coordinates */
 HEADER;
-FILE_DESCRIPTION(('Wr006 - round-trip precision loss'),'2;1');
-FILE_NAME('Wr006.stp','2026-04-30T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('Wr006 - floating-point precision degradation on round-trip'),'2;1');
+FILE_NAME('Wr006.stp','2026-06-20T00:00:00',('auto-generated'),(''),
+  'auto-generated','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('mechanical design');
-/* originally these vertices were (1.5, 2.5, 1.0); after a round-trip
-   through a single-precision intermediate they have drifted */
-#10=CARTESIAN_POINT('p1',(1.4999999999998,2.5000000000003,0.99999999999996));
-#11=CARTESIAN_POINT('p2',(2.5000000000007,1.4999999999994,1.0000000000002));
-#12=CARTESIAN_POINT('p3',(0.0000000000003,0.0000000000002,-0.0000000000001));
-#13=DIRECTION('z',(0.0,0.0,1.0));
-#14=DIRECTION('x',(0.99999999999998,0.0,0.0));
-#15=AXIS2_PLACEMENT_3D('p',#10,#13,#14);
-#20=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+/* Defect: coordinates are slightly off their intended exact values */
+/* Intended (1.5, 2.5, 1.0) but emitted with float32 round-trip drift */
+#1=CARTESIAN_POINT('drifted-pt',(1.4999999999998,2.5000000000003,0.99999999999996));
+/* Additional near-zero coordinate to show the pattern */
+#2=CARTESIAN_POINT('near-zero',(0.00000000000002,0.49999999999998,0.25000000000004));
+#3=GEOMETRIC_CURVE_SET('precision-degraded',(#1,#2));
 ENDSEC;
 END-ISO-10303-21;
