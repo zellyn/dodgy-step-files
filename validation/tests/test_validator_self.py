@@ -23,13 +23,25 @@ EXAMPLES = ROOT / "step-examples"
 PYTHON = sys.executable
 
 
+def _parse_json_with_occ_prefix(out: str) -> dict:
+    """OCCT can emit ANSI-coloured diagnostic lines (e.g.
+    ``**** ERR StepFile : Incorrect Syntax : Fails Count : 2 ****``) to
+    stdout before the JSON we asked for. Strip anything before the first
+    ``{`` so json.loads sees only the JSON payload.
+    """
+    idx = out.find("{")
+    if idx == -1:
+        raise ValueError(f"no JSON object in subprocess stdout: {out[:200]!r}")
+    return json.loads(out[idx:])
+
+
 def run_validate2(fixture: Path) -> dict:
     """Run validate2 on a fixture, return parsed JSON."""
     proc = subprocess.run(
         [PYTHON, "-m", "step_corpus.validate2", str(fixture), "--json"],
         capture_output=True, text=True, timeout=120,
     )
-    return json.loads(proc.stdout)
+    return _parse_json_with_occ_prefix(proc.stdout)
 
 
 def run_tier3(fixture: Path) -> dict:
@@ -39,7 +51,7 @@ def run_tier3(fixture: Path) -> dict:
     )
     if proc.returncode != 0 or not proc.stdout:
         return {"status": "tier3_failed", "rc": proc.returncode}
-    return json.loads(proc.stdout)
+    return _parse_json_with_occ_prefix(proc.stdout)
 
 
 # ---------- known-malformed: byte-level rejection ----------

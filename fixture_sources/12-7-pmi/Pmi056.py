@@ -19,6 +19,7 @@ from step_corpus.step_builder import StepFile
 
 f = StepFile(
     catalog_id="Pmi056",
+    schema="AP242",
     defect=(
         "DRAUGHTING_CALLOUT references both a TESSELLATED_ANNOTATION_OCCURRENCE and "
         "an ANNOTATION_CURVE_OCCURRENCE for the same callout; AP242 ed.2 forbids "

@@ -18,6 +18,7 @@ from step_corpus.step_builder import StepFile
 
 f = StepFile(
     catalog_id="Pmi030",
+    schema="AP242",
     defect=(
         "PROJECTED_ZONE_DEFINITION.magnitude is negative (-5.0); receivers must "
         "take the absolute value and warn, or reject outright; silently using the "

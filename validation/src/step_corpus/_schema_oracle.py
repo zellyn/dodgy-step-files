@@ -226,9 +226,10 @@ def check_fixture(path: Path) -> dict[str, Any]:
     }
 
 
-def check_all() -> list[dict[str, Any]]:
+def check_all(entries: "Iterable[dict] | None" = None) -> list[dict[str, Any]]:
     rows = []
-    for entry in catalog.iter_canonical():
+    src = entries if entries is not None else catalog.iter_canonical()
+    for entry in src:
         path = RESEARCH_ROOT / entry["fixture_path"]
         if not path.is_file():
             continue

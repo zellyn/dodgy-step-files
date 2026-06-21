@@ -47,6 +47,8 @@ EXEMPT_PMI_PRESENCE = {
     # process-state, sibling-pair). When a `provenance_tier` field is
     # added catalog-wide, this exemption list collapses to entries
     # tagged `bytes-sufficient` only.
+    "Pmi006",  # saved-view-name on CAMERA_MODEL_D3 not DRAUGHTING_MODEL — meta-PMI defect with no annotation entities
+    "Pmi017",  # supplemental-geometry subset tagged via DESCRIPTION_ATTRIBUTE on SHAPE_REPRESENTATION — meta-PMI
 }
 
 EXEMPT_ASSEMBLY_PRESENCE = {

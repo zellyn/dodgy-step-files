@@ -156,10 +156,15 @@ class StepFile:
     """
 
     def __init__(self, catalog_id: str, defect: str,
-                 timestamp: str = "2026-06-17T00:00:00"):
+                 timestamp: str = "2026-06-17T00:00:00",
+                 schema: str = "AP214"):
         self.catalog_id = catalog_id
         self.defect = defect
         self.timestamp = timestamp
+        # ``schema`` may be "AP214" (default) or "AP242". AP242 entities
+        # like PROJECTED_ZONE_DEFINITION, TRIANGULATED_FACE etc. require
+        # AP242 — using them under AP214 trips schema_oracle test.
+        self.schema = schema
         self.entities: list[Entity] = []
         self._next_id = 1
         # Entity-ID 9000-9023 reserved for PRODUCT chain (set by add_product_chain).
@@ -611,12 +616,16 @@ class StepFile:
         return f"ISO-10303-21;\n/* {self.catalog_id}: {self.defect} */\n{header}\nDATA;\n{data}\nENDSEC;\nEND-ISO-10303-21;\n"
 
     def _render_header(self) -> str:
+        schema_lit = {
+            "AP214": "AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }",
+            "AP242": "AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }",
+        }[self.schema]
         return (
             "HEADER;\n"
             f"FILE_DESCRIPTION(('{self.catalog_id}'),'2;1');\n"
             f"FILE_NAME('{self.catalog_id}.stp','{self.timestamp}',(''),(''),"
             f"'cad-research-suite','','');\n"
-            f"FILE_SCHEMA(('AUTOMOTIVE_DESIGN {{ 1 0 10303 214 3 1 1 }}'));\n"
+            f"FILE_SCHEMA(('{schema_lit}'));\n"
             "ENDSEC;"
         )
 

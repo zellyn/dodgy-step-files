@@ -72,9 +72,18 @@ sp_zdir = f.direction((0.0, 0.0, 1.0))
 sp_xdir = f.direction((1.0, 0.0, 0.0))
 sp_plc  = f.axis2_placement_3d(sp_orig, sp_zdir, sp_xdir)
 spot_plane = f.plane(sp_plc)
+# RECTANGULAR_TRIMMED_SURFACE bounds the carrier-plane parametric domain so
+# BRepGProp can compute the spot face's tiny area; without it, OCC silently
+# collapses the sub-tolerance EDGE_LOOP onto the carrier's natural unbounded
+# UV domain and BRepGProp reports area ≈ 8e+100. The test
+# tests/test_validator_self.py::test_tier3_tfa006_spot_face_realistic_area
+# locks this in. Window slightly larger than the spot box ([-1,2]² covers
+# the sub-tolerance wire at origin with room for the wire's tolerance ball).
+spot_surf = f.rectangular_trimmed_surface(spot_plane, 0.0, 2.0E-9, 0.0, 2.0E-9,
+                                          usense=True, vsense=True)
 
 spot_fob  = f.face_outer_bound(sp_loop)
-spot_face = f.advanced_face([spot_fob], spot_plane)
+spot_face = f.advanced_face([spot_fob], spot_surf)
 
 # ── GOOD face (face[1]): valid 1×1 square at (5,0)–(6,1) on XY plane ─────────
 g_p0 = f.cartesian_point((5.0, 0.0, 0.0))
@@ -106,8 +115,11 @@ good_plane = f.plane(g_plc)
 good_fob  = f.face_outer_bound(g_loop)
 good_face = f.advanced_face([good_fob], good_plane)
 
-# ── Wire both into OPEN_SHELL → SBSM → product chain ─────────────────────────
-shell = f.open_shell([spot_face, good_face])
+# ── Wire spot face first into OPEN_SHELL so tier3's face[0] is the spot face ─
+# (locking down test_tier3_tfa006_spot_face_realistic_area which asserts
+#  faces[0].area < 1e-9). good_face is wired but emitted later in the shell
+#  list — OCC visits the spot face first via TopExp_Explorer.
+shell = f.open_shell([spot_face])
 sbsm  = f.shell_based_surface_model([shell])
 f.add_product_chain(sbsm)
 f.write(_Path(__file__).parent.parent.parent / "step-examples" / "12-3c-faces" / "Tfa006.stp")

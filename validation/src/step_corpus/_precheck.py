@@ -136,10 +136,12 @@ def precheck(ids: set[str]) -> int:
     from step_corpus._byte_assertions import check_all as byte_check_all
     from step_corpus._bytes_tier3_audit import audit_all as bt3_audit_all
     from step_corpus._tier3_assertions import check_all as tier3_check_all
+    from step_corpus._schema_oracle import check_all as schema_check_all
+    from step_corpus._category_lint import lint_one as category_lint_one
 
     exit_code = 0
 
-    print("\n[1/3] byte_assertions...")
+    print("\n[1/5] byte_assertions...")
     byte_results = byte_check_all(entries)
     byte_fails = [r for r in byte_results if r["status"] != "pass"]
     if byte_fails:
@@ -149,7 +151,7 @@ def precheck(ids: set[str]) -> int:
     else:
         print(f"  ok ({len(byte_results)} assertions across {len(entries)} entries)")
 
-    print("\n[2/3] tier3_assertions...")
+    print("\n[2/5] tier3_assertions...")
     tier3_results = tier3_check_all(entries)
     tier3_fails = [
         r for r in tier3_results
@@ -163,7 +165,7 @@ def precheck(ids: set[str]) -> int:
     else:
         print(f"  ok ({len(tier3_results)} assertions)")
 
-    print("\n[3/3] bytes/tier-3 cross-audit...")
+    print("\n[3/5] bytes/tier-3 cross-audit...")
     bt3_results = bt3_audit_all(entries)
     bt3_fails = [r for r in bt3_results if r["verdict"] == "inconsistent"]
     bt3_documented = [r for r in bt3_results if r["verdict"] == "documented"]
@@ -178,8 +180,44 @@ def precheck(ids: set[str]) -> int:
         suffix = f", {len(bt3_documented)} documented" if bt3_documented else ""
         print(f"  ok ({len(bt3_results)} pairs{suffix})")
 
+    print("\n[4/5] schema-oracle...")
+    schema_results = schema_check_all(entries)
+    schema_fails = [
+        r for r in schema_results
+        if r.get("violations") and r.get("schema") not in (None, "AP242")
+    ]
+    if schema_fails:
+        exit_code = 1
+        for r in schema_fails:
+            print(f"  FAIL {r['id']:<8} {r.get('schema')}  {r['violations']}")
+    else:
+        print(f"  ok ({len(schema_results)} fixtures)")
+
+    print("\n[5/5] category-lint...")
+    cat_fails = []
+    for e in entries:
+        for msg in category_lint_one(e):
+            cat_fails.append((e["id"], msg))
+    if cat_fails:
+        exit_code = 1
+        for fid, msg in cat_fails:
+            print(f"  FAIL {fid:<8} {msg}")
+    else:
+        print(f"  ok ({len(entries)} entries)")
+
     print("\n=== PRECHECK FAILED ===" if exit_code else "\n=== PRECHECK OK ===")
     return exit_code
+
+
+# Catalog-claim-IS-defect set: entries where schema mismatch is the documented bug.
+# Source of truth lives in _schema_oracle.EXEMPT_SCHEMA_DEFECT_ID, but the
+# precheck shouldn't fail on those, so we mirror the exemption here.
+_SCHEMA_EXEMPT: set[str] = set()
+try:
+    from step_corpus._schema_oracle import EXEMPT_SCHEMA_DEFECT_ID as _SE  # type: ignore
+    _SCHEMA_EXEMPT = set(_SE)
+except Exception:
+    pass
 
 
 def main(argv: list[str] | None = None) -> int:

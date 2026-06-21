@@ -19,6 +19,7 @@ from step_corpus.step_builder import StepFile
 
 f = StepFile(
     catalog_id="Pmi005",
+    schema="AP242",
     defect=(
         "polyline ANNOTATION_CURVE_OCCURRENCE and TESSELLATED_ANNOTATION_OCCURRENCE "
         "mixed under the same DRAUGHTING_MODEL; viewers pick one and drop the other; "

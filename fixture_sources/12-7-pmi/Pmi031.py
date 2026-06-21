@@ -18,6 +18,7 @@ from step_corpus.step_builder import StepFile
 
 f = StepFile(
     catalog_id="Pmi031",
+    schema="AP242",
     defect=(
         "PROJECTED_ZONE_DEFINITION.projection_end references a CYLINDRICAL_SURFACE "
         "instead of a plane; spec requires the end face to be planar; receivers must "
