@@ -1,68 +1,72 @@
 ISO-10303-21;
-/* Pmi112 - COMPOSITE_FEATURE depth-attribute conflict between sub-features
- * Defect: a composite feature aggregates a slot (depth=5 mm) and a
- * sub-groove (depth=8 mm). The sub-groove is meant to be inside the
- * slot, but the sub-groove's depth exceeds its parent's depth. The
- * attribute relationship is contradictory: a child cannot be deeper
- * than its parent. Receivers diverge: some take the larger as authoritative,
- * some take the parent as authoritative, some reject. */
+/* Pmi112: composite_slot SHAPE_ASPECT depth=5.0 mm; child sub_groove depth=8.0 mm; sub-feature depth (8) exceeds parent depth (5) — sub-groove punches through slot floor */
 HEADER;
-FILE_DESCRIPTION(('Pmi112 - composite_feature depth conflict between parent and sub'),'2;1');
-FILE_NAME('Pmi112.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+FILE_DESCRIPTION(('Pmi112'),'2;1');
+FILE_NAME('Pmi112.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('managed model based 3d engineering');
-#2=PRODUCT_CONTEXT('part',#1,'mechanical');
-#3=PRODUCT('Pmi112','composite_depth_conflict','',(#2));
-#4=PRODUCT_DEFINITION_FORMATION('','',#3);
-#5=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
-#6=PRODUCT_DEFINITION('','',#4,#5);
-#7=PRODUCT_DEFINITION_SHAPE('','',#6);
-#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,'tol','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13)) GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT('','3D'));
-/* 50x50 mm planar host face. */
-#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#101=CARTESIAN_POINT('',(50.0,0.0,0.0));
-#102=CARTESIAN_POINT('',(50.0,50.0,0.0));
-#103=CARTESIAN_POINT('',(0.0,50.0,0.0));
-#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
-#112=VERTEX_POINT('',#102); #113=VERTEX_POINT('',#103);
-#200=DIRECTION('',(0.0,0.0,1.0));
-#201=DIRECTION('',(1.0,0.0,0.0));
-#202=DIRECTION('',(0.0,1.0,0.0));
-#210=AXIS2_PLACEMENT_3D('plate_origin',#100,#200,#201);
-#211=PLANE('host_plate_50x50',#210);
-#300=VECTOR('',#201,50.0);
-#301=VECTOR('',#202,50.0);
-#310=LINE('',#100,#300); #311=EDGE_CURVE('',#110,#111,#310,.T.);
-#312=LINE('',#101,#301); #313=EDGE_CURVE('',#111,#112,#312,.T.);
-#314=LINE('',#103,#300); #315=EDGE_CURVE('',#113,#112,#314,.T.);
-#316=LINE('',#100,#301); #317=EDGE_CURVE('',#110,#113,#316,.T.);
-#400=ORIENTED_EDGE('',*,*,#311,.T.); #401=ORIENTED_EDGE('',*,*,#313,.T.);
-#402=ORIENTED_EDGE('',*,*,#315,.F.); #403=ORIENTED_EDGE('',*,*,#317,.F.);
-#404=EDGE_LOOP('',(#400,#401,#402,#403));
-#405=FACE_OUTER_BOUND('',#404,.T.);
-#406=ADVANCED_FACE('host_plate',(#405),#211,.T.);
-#500=OPEN_SHELL('plate_shell',(#406));
-#501=SHELL_BASED_SURFACE_MODEL('plate_model',(#500));
-#502=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('shape',(#501,#210),#14);
-#503=SHAPE_DEFINITION_REPRESENTATION(#7,#502);
-/* Composite feature: parent slot (depth=5), sub-groove (depth=8). Defect. */
-#600=SHAPE_ASPECT('composite_slot','parent slot feature',#7,.T.);
-#601=SHAPE_ASPECT('sub_groove','groove inside slot',#7,.T.);
-#602=GEOMETRIC_ITEM_SPECIFIC_USAGE('GISU',$,#600,#502,#406);
-#610=SHAPE_ASPECT_RELATIONSHIP('composite_membership','sub_groove is inside slot',#600,#601);
-/* Parent slot depth=5 mm. */
-#620=DIMENSIONAL_SIZE(#600,'depth');
-#621=MEASURE_REPRESENTATION_ITEM('slot_depth',LENGTH_MEASURE(5.0),#10);
-#622=SHAPE_DIMENSION_REPRESENTATION('',(#621),#14);
-/* Sub-groove depth=8 mm (deeper than its parent slot). */
-#630=DIMENSIONAL_SIZE(#601,'depth');
-#631=MEASURE_REPRESENTATION_ITEM('groove_depth',LENGTH_MEASURE(8.0),#10);
-#632=SHAPE_DIMENSION_REPRESENTATION('',(#631),#14);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(50.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(50.0,50.0,0.0));
+#9=CARTESIAN_POINT('',(0.0,50.0,0.0));
+#10=VERTEX_POINT('',#6);
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=DIRECTION('',(1.0,0.0,0.0));
+#15=VECTOR('',#14,50.0);
+#16=LINE('',#6,#15);
+#17=EDGE_CURVE('',#10,#11,#16,.T.);
+#18=ORIENTED_EDGE('',$,$,#17,.T.);
+#19=DIRECTION('',(0.0,1.0,0.0));
+#20=VECTOR('',#19,50.0);
+#21=LINE('',#7,#20);
+#22=EDGE_CURVE('',#11,#12,#21,.T.);
+#23=ORIENTED_EDGE('',$,$,#22,.T.);
+#24=DIRECTION('',(-1.0,0.0,0.0));
+#25=VECTOR('',#24,50.0);
+#26=LINE('',#8,#25);
+#27=EDGE_CURVE('',#12,#13,#26,.T.);
+#28=ORIENTED_EDGE('',$,$,#27,.T.);
+#29=DIRECTION('',(0.0,-1.0,0.0));
+#30=VECTOR('',#29,50.0);
+#31=LINE('',#9,#30);
+#32=EDGE_CURVE('',#13,#10,#31,.T.);
+#33=ORIENTED_EDGE('',$,$,#32,.T.);
+#34=EDGE_LOOP('',(#18,#23,#28,#33));
+#35=FACE_OUTER_BOUND('',#34,.T.);
+#36=ADVANCED_FACE('host_face',(#35),#5,.T.);
+#37=OPEN_SHELL('',(#36));
+#38=SHELL_BASED_SURFACE_MODEL('',(#37));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Pmi112','Pmi112','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#38),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=SHAPE_ASPECT('host_face','',#9055,.T.);
+#9064=SHAPE_ASPECT('composite_slot','',#9055,.T.);
+#9065=SHAPE_ASPECT('sub_groove','',#9055,.T.);
+#9066=DIMENSIONAL_SIZE(#9064,'depth');
+#9067=MEASURE_REPRESENTATION_ITEM('parent_depth',LENGTH_MEASURE(5.0),#9056);
+#9068=DIMENSIONAL_SIZE(#9065,'depth');
+#9069=MEASURE_REPRESENTATION_ITEM('child_depth',LENGTH_MEASURE(8.0),#9056);
+#9070=SHAPE_ASPECT_RELATIONSHIP('slot_has_groove','composite slot has sub groove',#9064,#9065);
+#9071=SHAPE_ASPECT_RELATIONSHIP('parent_on_face','composite on host',#9063,#9064);
+#9072=GEOMETRIC_ITEM_SPECIFIC_USAGE('comp_gisu',$,#9064,#9061,#36);
 ENDSEC;
 END-ISO-10303-21;
