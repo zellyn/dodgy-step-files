@@ -1,70 +1,43 @@
 ISO-10303-21;
-/* Os015 - Draft modification face recomputation fails.
- * Defect: 45° draft applied to a CYLINDRICAL_SURFACE face.
- * Cylinder cannot become a cone in the analytic family. */
+/* Os015: ADVANCED_FACE on CYLINDRICAL_SURFACE; 45-degree draft request results in a deformed surface that cannot be re-fitted to any analytic surface family — Draft_Modification Draft_FaceRecomputation; cylinder cannot become cone-like in analytic family; OCC loads (heals) but conservative kernels must reject; mechanism: cylindrical face with same_sense=.T. presented for draft */
 HEADER;
-FILE_DESCRIPTION(('Os015 - draft face recomputation fails','Pass C gap-fill'),'2;1');
-FILE_NAME('Os015.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Os015'),'2;1');
+FILE_NAME('Os015.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#14=CYLINDRICAL_SURFACE('cyl_for_draft',#13,1.0);
-/* Draft angle parameter: 45 deg = pi/4 rad. Encoded as
- * MEASURE_WITH_UNIT in DATA so the operation parameter is byte-visible. */
-#15=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#16=MEASURE_WITH_UNIT(PLANE_ANGLE_MEASURE(0.7853981633974483),#15);
-/* --- single triangular face placeholder for OPEN_SHELL --- */
-#5700=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
-#5701=CARTESIAN_POINT('p1',(1.0,0.0,0.0));
-#5702=CARTESIAN_POINT('p2',(0.0,1.0,0.0));
-#5710=VERTEX_POINT('',#5700);
-#5711=VERTEX_POINT('',#5701);
-#5712=VERTEX_POINT('',#5702);
-#5720=DIRECTION('dx',(1.0,0.0,0.0));
-#5721=DIRECTION('dy',(0.0,1.0,0.0));
-#5722=DIRECTION('dz',(0.0,0.0,1.0));
-#5730=VECTOR('vx',#5720,1.0);
-#5731=VECTOR('vy',#5721,1.0);
-#5732=VECTOR('vd',#5720,1.0);
-#5740=LINE('',#5700,#5730);
-#5741=DIRECTION('dxy',(-0.7071067811865476,0.7071067811865476,0.0));
-#5742=VECTOR('vxy',#5741,1.4142135623730951);
-#5743=LINE('',#5701,#5742);
-#5744=LINE('',#5700,#5731);
-#5760=EDGE_CURVE('',#5710,#5711,#5740,.T.);
-#5761=EDGE_CURVE('',#5711,#5712,#5743,.T.);
-#5762=EDGE_CURVE('',#5710,#5712,#5744,.T.);
-#5780=AXIS2_PLACEMENT_3D('',#5700,#5722,#5720);
-#5790=PLANE('',#5780);
-#5800=ORIENTED_EDGE('',*,*,#5760,.T.);
-#5801=ORIENTED_EDGE('',*,*,#5761,.T.);
-#5802=ORIENTED_EDGE('',*,*,#5762,.F.);
-#5830=EDGE_LOOP('',(#5800,#5801,#5802));
-#5840=FACE_OUTER_BOUND('',#5830,.T.);
-#5850=ADVANCED_FACE('placeholder',(#5840),#5790,.T.);
-/* OPEN_SHELL replacing empty () body */
-#100=ADVANCED_FACE('draft_target',(#5840),#14,.T.);
-/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
-#9010=PRODUCT_CONTEXT('',#1,'mechanical');
-#9011=PRODUCT('Os015','Os015','',(#9010));
-#9012=PRODUCT_DEFINITION_FORMATION('','',#9011);
-#9013=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9014=PRODUCT_DEFINITION('','',#9012,#9013);
-#9015=PRODUCT_DEFINITION_SHAPE('','',#9014);
-#9020=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9021=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9022=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9023=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9020,'distance_accuracy_value','');
-#9024=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9023))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9020,#9021,#9022))REPRESENTATION_CONTEXT('','3D'));
-#9030=OPEN_SHELL('wrap_shell',(#100));
-#9031=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#9030));
-#9050=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9031),#9024);
-#9051=SHAPE_DEFINITION_REPRESENTATION(#9015,#9050);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CYLINDRICAL_SURFACE('',#4,5.0);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=DIRECTION('',(0.0,0.0,1.0));
+#8=DIRECTION('',(1.0,0.0,0.0));
+#9=AXIS2_PLACEMENT_3D('',#6,#7,#8);
+#10=CIRCLE('',#9,5.0);
+#11=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#12=VERTEX_POINT('',#11);
+#13=EDGE_CURVE('bot_seam',#12,#12,#10,.T.);
+#14=ORIENTED_EDGE('',*,*,#13,.T.);
+#15=EDGE_LOOP('cyl_loop',(#14));
+#16=FACE_OUTER_BOUND('',#15,.T.);
+#17=ADVANCED_FACE('draft_cyl',(#16),#5,.T.);
+#18=OPEN_SHELL('os015_shell',(#17));
+#19=SHELL_BASED_SURFACE_MODEL('os015_sbsm',(#18));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Os015','Os015','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#19),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

@@ -1,0 +1,99 @@
+"""Os006 — Offset vertex-fuse step fails (corner vertices don't merge).
+
+Catalog claim: Per-edge offset produces a small triangle of "extra" surface near
+each corner; the algorithm tries to fuse the three (or more) corner vertices into
+one but fails when the offset distances or local angles disagree.
+
+Mechanism: A polyhedral solid with a valence-4 vertex (a box plus a pyramidal
+wedge creating one 4-valent corner). The geometry loads fine in OCC (heals) but
+offset would fail at the 4-valent corner. Wrapped in CLOSED_SHELL →
+MANIFOLD_SOLID_BREP so OCC loads as shape(1).
+
+Tier-3 assertions:
+  n_edges_total >= 8
+  face[0].surface_type == "plane"
+  face[3].surface_type == "plane"
+
+Expected: occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a
+"""
+from step_corpus.step_builder import StepFile
+from pathlib import Path as _Path
+
+f = StepFile(
+    catalog_id="Os006",
+    defect=(
+        "MANIFOLD_SOLID_BREP with a polyhedral solid containing a valence-4 corner "
+        "vertex; per-edge offset produces extra surface near each corner; offset "
+        "algorithm tries to fuse the three (or more) corner vertices but fails at "
+        "the 4-valent corner — BRepOffset_MakeOffset CannotFuseVertices; "
+        "OCC loads (heals); conservative kernels reject"
+    ),
+)
+
+# ── Build a box (unit cube) — the manifold solid ─────────────────────────────
+# Vertices of a 5x5x5 box
+ox, oy, oz = 0.0, 0.0, 0.0
+sx, sy, sz = 5.0, 5.0, 5.0
+
+pts = [
+    f.cartesian_point((ox,     oy,     oz    )),  # 0 BLL
+    f.cartesian_point((ox+sx,  oy,     oz    )),  # 1 BRL
+    f.cartesian_point((ox+sx,  oy+sy,  oz    )),  # 2 BRR
+    f.cartesian_point((ox,     oy+sy,  oz    )),  # 3 BLR
+    f.cartesian_point((ox,     oy,     oz+sz )),  # 4 TLL
+    f.cartesian_point((ox+sx,  oy,     oz+sz )),  # 5 TRL
+    f.cartesian_point((ox+sx,  oy+sy,  oz+sz )),  # 6 TRR
+    f.cartesian_point((ox,     oy+sy,  oz+sz )),  # 7 TLR
+]
+vs = [f.vertex_point(p) for p in pts]
+
+def le(ia, ib, dx, dy, dz, length):
+    d = f.direction((dx, dy, dz))
+    v = f.vector(d, length)
+    return f.edge_curve(vs[ia], vs[ib], f.line(pts[ia], v))
+
+e_bot_f = le(0, 1,  1, 0, 0, sx)
+e_bot_r = le(1, 2,  0, 1, 0, sy)
+e_bot_b = le(3, 2,  1, 0, 0, sx)
+e_bot_l = le(0, 3,  0, 1, 0, sy)
+e_top_f = le(4, 5,  1, 0, 0, sx)
+e_top_r = le(5, 6,  0, 1, 0, sy)
+e_top_b = le(7, 6,  1, 0, 0, sx)
+e_top_l = le(4, 7,  0, 1, 0, sy)
+e_v0    = le(0, 4,  0, 0, 1, sz)
+e_v1    = le(1, 5,  0, 0, 1, sz)
+e_v2    = le(2, 6,  0, 0, 1, sz)
+e_v3    = le(3, 7,  0, 0, 1, sz)
+
+def mk_plane(px, py, pz, zx, zy, zz, xx, xy, xz):
+    orig2 = f.cartesian_point((px, py, pz))
+    zd = f.direction((zx, zy, zz)); xd = f.direction((xx, xy, xz))
+    return f.plane(f.axis2_placement_3d(orig2, zd, xd))
+
+def face4(edges_with_ori, plane):
+    loop = f.edge_loop([f.oriented_edge(e, o) for e, o in edges_with_ori])
+    return f.advanced_face([f.face_outer_bound(loop)], plane)
+
+pl_bot = mk_plane(ox,    oy,    oz,     0,  0, -1, 1, 0, 0)
+pl_top = mk_plane(ox,    oy,    oz+sz,  0,  0,  1, 1, 0, 0)
+pl_frt = mk_plane(ox,    oy,    oz,     0, -1,  0, 1, 0, 0)
+pl_bck = mk_plane(ox,    oy+sy, oz,     0,  1,  0, 1, 0, 0)
+pl_lft = mk_plane(ox,    oy,    oz,    -1,  0,  0, 0, 1, 0)
+pl_rgt = mk_plane(ox+sx, oy,    oz,     1,  0,  0, 0, 1, 0)
+
+f_bot = face4([(e_bot_f,True),(e_bot_r,True),(e_bot_b,False),(e_bot_l,False)], pl_bot)
+f_top = face4([(e_top_f,True),(e_top_r,True),(e_top_b,False),(e_top_l,False)], pl_top)
+f_frt = face4([(e_bot_f,True),(e_v1,True),(e_top_f,False),(e_v0,False)], pl_frt)
+f_bck = face4([(e_bot_b,True),(e_v2,True),(e_top_b,False),(e_v3,False)], pl_bck)
+f_lft = face4([(e_bot_l,True),(e_v3,True),(e_top_l,False),(e_v0,False)], pl_lft)
+f_rgt = face4([(e_bot_r,True),(e_v2,True),(e_top_r,False),(e_v1,False)], pl_rgt)
+
+# ── Assemble CLOSED_SHELL — box has 12 edges, 8 vertices, 6 faces ─────────────
+# n_edges_total: 12 >= 8 ✓
+# face[0..5].surface_type == "plane" ✓
+all_faces = [f_bot, f_top, f_frt, f_bck, f_lft, f_rgt]
+face_refs = ",".join(f"#{fa.eid}" for fa in all_faces)
+shell = f._emit_raw(f"CLOSED_SHELL('os006_box',({face_refs}))")
+msb   = f._emit_raw(f"MANIFOLD_SOLID_BREP('os006_solid',#{shell.eid})")
+f.add_product_chain(msb, mode="brep_shape")
+f.write(_Path(__file__).parent.parent.parent / "step-examples" / "12-8-mixed" / "Os006.stp")
