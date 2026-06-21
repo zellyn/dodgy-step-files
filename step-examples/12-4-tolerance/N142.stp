@@ -1,77 +1,33 @@
 ISO-10303-21;
-/* N142 - ShapeUpgrade_ConvertCurve2dToBezier precision-semantics,asymmetric-tolerance
- * Defect: Precision test uses one-directional subtraction (parU - param < prec)
- * instead of absolute distance Abs(parU - param).
- * When param > parU by small amount, condition fails asymmetrically.
- * Reproducer: myUSplitValues slightly above myUSplitParams; loop exits prematurely.
- */
+/* N142: ConvertCurve2dToBezier asymmetric-tolerance: split params reversed; parU - param < prec fails when param > parU; loop exits prematurely; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N142 ConvertCurve2dToBezier asymmetric-tolerance precision'),'2;1');
-FILE_NAME('N142.stp','2026-06-16T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('N142'),'2;1');
+FILE_NAME('N142.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-/* Origin and axes */
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#11=DIRECTION('z',(0.0,0.0,1.0));
-#12=DIRECTION('x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
-/* U-parameter split causing asymmetry:
-   parU = 5.0, param = 5.00001 (param > parU by 1.0e-5)
-   With prec = 1.0e-7 and asymmetric check (parU - param < prec):
-   5.0 - 5.00001 = -0.00001, which is NOT < 1.0e-7 (false, when should pass)
-*/
-#20=CARTESIAN_POINT('pt1',(0.0,0.0,0.0));
-#21=CARTESIAN_POINT('pt2',(5.0,0.0,0.0));
-#22=CARTESIAN_POINT('pt3',(10.0,0.0,0.0));
-#30=VERTEX_POINT('v1',#20);
-#31=VERTEX_POINT('v2',#21);
-#32=VERTEX_POINT('v3',#22);
-/* Curve segment 1: 0 to 5 (nominal) */
-#40=DIRECTION('dir1',(1.0,0.0,0.0));
-#41=VECTOR('vec1',#40,5.0);
-#42=LINE('line1',#20,#41);
-#43=EDGE_CURVE('seg1',#30,#31,#42,.T.);
-/* Curve segment 2: 5 (split point with asymmetry) to 10 */
-#50=DIRECTION('dir2',(1.0,0.0,0.0));
-#51=VECTOR('vec2',#50,5.0);
-#52=LINE('line2',#21,#51);
-#53=EDGE_CURVE('seg2',#31,#32,#52,.T.);
-/* Units and context */
-#80=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#81=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#82=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#83=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#80,
-  'distance_accuracy_value','precision_confusion');
-#84=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#83))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#80,#81,#82))
-  REPRESENTATION_CONTEXT('asymmetry_ctx','3D'));
-/* Split parameters with asymmetry trigger
-   Nominal split at 5.0, but represented as 5.00001 in param array
-   Bug: comparison (parU - param < prec) fails because 5.0 - 5.00001 = -0.00001 NOT < 1.0e-7 */
-#85=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-5),#80,
-  'distance_accuracy_value','asymmetric_split_offset');
-#86=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#80,
-  'distance_accuracy_value','precision_confusion_threshold');
-/* PRODUCT CHAIN */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('N142','N142','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#80));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#1=CARTESIAN_POINT('p_start_reversed',(1.0,0.0,0.0));
+#2=CARTESIAN_POINT('p_end_reversed',(0.0,0.0,0.0));
+#3=VERTEX_POINT('v_start',#1);
+#4=VERTEX_POINT('v_end',#2);
+#5=DIRECTION('',(-1.0,0.0,0.0));
+#6=VECTOR('',#5,1.0);
+#7=LINE('reversed_line',#1,#6);
+#8=EDGE_CURVE('reversed_param_edge',#3,#4,#7,.T.);
+#9=GEOMETRIC_CURVE_SET('reversed_param',(#8));
+#10=APPLICATION_CONTEXT('automotive_design');
+#11=PRODUCT_CONTEXT('',#10,'mechanical');
+#12=PRODUCT('N142','N142','',(#11));
+#13=PRODUCT_DEFINITION_FORMATION('','',#12);
+#14=PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#15=PRODUCT_DEFINITION('','',#13,#14);
+#16=PRODUCT_DEFINITION_SHAPE('','',#15);
+#17=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#18=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#19=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#20=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#17,'distance_accuracy_value','model_precision');
+#21=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#20))GLOBAL_UNIT_ASSIGNED_CONTEXT((#17,#18,#19))REPRESENTATION_CONTEXT('ctx','3D'));
+#22=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9),#21);
+#23=SHAPE_DEFINITION_REPRESENTATION(#16,#22);
 ENDSEC;
 END-ISO-10303-21;
