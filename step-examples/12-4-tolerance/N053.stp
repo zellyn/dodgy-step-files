@@ -1,70 +1,55 @@
 ISO-10303-21;
-/* N053 - AddTolerance polarity asymmetry in tolerance comparison
- * AddTolerance applies asymmetric comparisons to tolerance array:
- * myTols[0] (minimum) uses > (upper bound check) while myTols[2]
- * (maximum) uses < (lower bound check), inverting min vs max semantics. */
+/* N053: PLANE face with vertices at tolerance bounds 0.001 and 0.002; AddTolerance asymmetric comparisons: myTols[0]>cmin (upper-bound) vs myTols[2]<cmax (lower-bound) inverts min/max semantics */
 HEADER;
-FILE_DESCRIPTION(('N053 - AddTolerance polarity asymmetry'),'2;1');
-FILE_NAME('N053.stp','2026-06-16T00:00:00',('auto-generated'),(''),'auto-generated','','');
+FILE_DESCRIPTION(('N053'),'2;1');
+FILE_NAME('N053.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* --- PLANE face with edge spanning tolerance boundary extremes --- */
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=VERTEX_POINT('v_min_bound',#6);
+#8=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#9=VERTEX_POINT('v_max_bound',#8);
+#10=CARTESIAN_POINT('',(5.0,8.66,0.0));
+#11=VERTEX_POINT('v_nominal',#10);
 #12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#14=PLANE('',#13);
-/* Three vertices: one at lower bound, one at upper bound, one nominal */
-/* Vertex at min tolerance boundary 0.001 */
-#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#21=VERTEX_POINT('v_min_bound',#20);
-/* Vertex at max tolerance boundary 0.002 */
-#25=CARTESIAN_POINT('',(10.0,0.0,0.0));
-#26=VERTEX_POINT('v_max_bound',#25);
-/* Vertex with nominal tolerance 0.0015 (within [0.001, 0.002]) */
-#30=CARTESIAN_POINT('',(5.0,8.66,0.0));
-#31=VERTEX_POINT('v_nominal',#30);
-/* Edge from min to max boundary vertices */
-#40=DIRECTION('',(1.0,0.0,0.0));
-#41=VECTOR('',#40,1.0);
-#42=LINE('',#20,#41);
-#43=EDGE_CURVE('edge_boundary',#21,#26,#42,.T.);
-/* Defect: AddTolerance asymmetrically compares tolerance array elements:
-   myTols[0]=0.001 vs cmin=0.001 using > (incorrect upper-bound semantics)
-   myTols[2]=0.002 vs cmax=0.002 using < (incorrect lower-bound semantics)
-   This inverted logic causes in-range tolerances to be rejected */
-#45=DIRECTION('',(-0.5,0.866,0.0));
-#46=VECTOR('',#45,1.0);
-#47=LINE('',#25,#46);
-#48=EDGE_CURVE('e2',#26,#31,#47,.T.);
-#49=DIRECTION('',(-0.5,-0.866,0.0));
-#50=VECTOR('',#49,1.0);
-#51=LINE('',#30,#50);
-#52=EDGE_CURVE('e3',#31,#21,#51,.T.);
-#60=ORIENTED_EDGE('',*,*,#43,.T.);
-#61=ORIENTED_EDGE('',*,*,#48,.T.);
-#62=ORIENTED_EDGE('',*,*,#52,.T.);
-#63=EDGE_LOOP('',(#60,#61,#62));
-#64=FACE_OUTER_BOUND('',#63,.T.);
-#65=ADVANCED_FACE('face_asymmetric_tol',(#64),#14,.T.);
-#70=OPEN_SHELL('',(#65));
-/* PRODUCT chain wrapping geometry so OCCT TransferRoots produces shape */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('N053','N053','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#70));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#13=VECTOR('',#12,1.0);
+#14=LINE('',#6,#13);
+#15=EDGE_CURVE('edge_boundary',#7,#9,#14,.T.);
+#16=DIRECTION('',(-0.5,0.866,0.0));
+#17=VECTOR('',#16,1.0);
+#18=LINE('',#8,#17);
+#19=EDGE_CURVE('e2',#9,#11,#18,.T.);
+#20=DIRECTION('',(-0.5,-0.866,0.0));
+#21=VECTOR('',#20,1.0);
+#22=LINE('',#10,#21);
+#23=EDGE_CURVE('e3',#11,#7,#22,.T.);
+#24=ORIENTED_EDGE('',$,$,#15,.T.);
+#25=ORIENTED_EDGE('',$,$,#19,.T.);
+#26=ORIENTED_EDGE('',$,$,#23,.T.);
+#27=EDGE_LOOP('',(#24,#25,#26));
+#28=FACE_OUTER_BOUND('',#27,.T.);
+#29=ADVANCED_FACE('face_asymmetric_tol',(#28),#5,.T.);
+#30=OPEN_SHELL('',(#29));
+#31=SHELL_BASED_SURFACE_MODEL('',(#30));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('N053','N053','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#31),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
