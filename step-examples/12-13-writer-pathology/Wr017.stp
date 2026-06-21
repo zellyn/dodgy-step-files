@@ -1,24 +1,15 @@
 ISO-10303-21;
-/* Wr017 - Tessellation re-emitted from B-rep input - silent precision loss */
+/* Wr017: B-rep cylinder re-exported as tessellated mesh (silent precision loss) */
+/* Original: MANIFOLD_SOLID_BREP with CYLINDRICAL_SURFACE r=1 h=2 */
+/* Writer tessellated to 8-sided polygon; CYLINDRICAL_SURFACE is gone */
 HEADER;
-FILE_DESCRIPTION(('Wr017 - tessellated re-export of B-rep'),'2;1');
-FILE_NAME('Wr017.stp','2026-04-30T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING { 1 0 10303 442 1 1 4 }'));
+FILE_DESCRIPTION(('Wr017 - tessellation re-emitted from B-rep input'),'2;1');
+FILE_NAME('Wr017.stp','2026-06-20T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('mechanical design');
-#10=CARTESIAN_POINT('p1',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('p2',(1.0,0.0,0.0));
-#12=CARTESIAN_POINT('p3',(0.5,0.866,0.0));
-#13=CARTESIAN_POINT('p4',(0.5,0.289,1.0));
-/* Wr017: input was a CYLINDRICAL_SURFACE with analytical exact geometry;
-   writer tessellated it to a triangle list before emit. The mesh
-   approximates the original cylinder with 4 triangles. Down-stream
-   readers cannot reconstruct the original analytical surface. */
-#20=COORDINATES_LIST('coords',4,((0.0,0.0,0.0),(1.0,0.0,0.0),(0.5,0.866,0.0),(0.5,0.289,1.0)));
-#21=TRIANGULATED_FACE('tri_face',(#20),$,$,(1,2,3),(2,3,4),(3,4,1),(4,1,2));
-#22=TESSELLATED_SHELL_REPRESENTATION('tess_shell',(#21),$);
-#30=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+#1=COORDINATES_LIST('cyl_nodes',3,((1.0,0.0,0.0),(0.707107,0.707107,0.0),(0.0,1.0,0.0),(-0.707107,0.707107,0.0),(-1.0,0.0,0.0),(-0.707107,-0.707107,0.0),(-0.0,-1.0,0.0),(0.707107,-0.707107,0.0),(1.0,0.0,2.0),(0.707107,0.707107,2.0),(0.0,1.0,2.0),(-0.707107,0.707107,2.0),(-1.0,0.0,2.0),(-0.707107,-0.707107,2.0),(-0.0,-1.0,2.0),(0.707107,-0.707107,2.0),(0.0,0.0,0.0),(0.0,0.0,2.0)));
+#2=TRIANGULATED_FACE('cyl_tess',#1,.F.,32,((1,2,10),(1,10,9),(2,3,11),(2,11,10),(3,4,12),(3,12,11),(4,5,13),(4,13,12),(5,6,14),(5,14,13),(6,7,15),(6,15,14),(7,8,16),(7,16,15),(8,1,9),(8,9,16),(17,2,1),(17,3,2),(17,4,3),(17,5,4),(17,6,5),(17,7,6),(17,8,7),(17,1,8),(18,9,10),(18,10,11),(18,11,12),(18,12,13),(18,13,14),(18,14,15),(18,15,16),(18,16,9)));
+#3=TESSELLATED_SHELL_REPRESENTATION('cylinder_approx',(#2),#1);
 ENDSEC;
 END-ISO-10303-21;
