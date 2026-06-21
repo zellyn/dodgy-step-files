@@ -1,20 +1,14 @@
 ISO-10303-21;
-/* In002 - Both load-time warning (stray comment after ENDSEC) and a
- * data-content boundary value (entity at spec edge). */
+/* In002: Load-time warning vs data-content warning: severity confusion; OCCT Interface_InterfaceModel.cxx:281 (Interface_LoadWarning); two different sources of warnings — parser warnings about file syntax and semantic warnings about data content — are mapped onto the same severity bucket; a consumer who suppresses load warnings ends up suppressing data warnings too; defect: stray comment between HEADER ENDSEC and DATA keyword (parser-level warning) combined with a B_SPLINE_CURVE_WITH_KNOTS at spec-boundary degree 25 (data-level semantic warning); receiver must distinguish severity classes and provide separate warning channels; bug-reporter synonyms: warnings hidden, parser warnings vs data warnings confused, diagnostic channel confusion; GEOMETRIC_CURVE_SET IS NOT used — B-spline entity is the model object */
 HEADER;
-FILE_DESCRIPTION(('In002 - mixed-channel warnings','Pass C gap-fill'),'2;1');
-FILE_NAME('In002.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('In002'),'2;1');
+FILE_NAME('In002.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 /* parser-level event: stray comment between HEADER ENDSEC and DATA */
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-/* Boundary-valued data: B-spline degree at upper limit. */
-#10=B_SPLINE_CURVE_WITH_KNOTS('high_degree',25,
-   (#100,#101,#102,#103,#104,#105,#106,#107,#108,#109,
-    #110,#111,#112,#113,#114,#115,#116,#117,#118,#119,
-    #120,#121,#122,#123,#124,#125),
-   .UNSPECIFIED.,.F.,.F.,(26,26),(0.0,1.0),.UNSPECIFIED.);
+#10=B_SPLINE_CURVE_WITH_KNOTS('high_degree_boundary',25,(#100,#101,#102,#103,#104,#105,#106,#107,#108,#109,#110,#111,#112,#113,#114,#115,#116,#117,#118,#119,#120,#121,#122,#123,#124,#125),.UNSPECIFIED.,.F.,.F.,(26,26),(0.0,1.0),.UNSPECIFIED.);
+/* data-level event: B_SPLINE_CURVE_WITH_KNOTS at spec-boundary degree 25 */
 #100=CARTESIAN_POINT('',(0.0,0.0,0.0));
 #101=CARTESIAN_POINT('',(1.0,0.0,0.0));
 #102=CARTESIAN_POINT('',(2.0,0.0,0.0));

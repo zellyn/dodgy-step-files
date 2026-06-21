@@ -1,19 +1,15 @@
 ISO-10303-21;
-/* In003 - B-spline knot count off-by-one, auto-fixed by reader.
- * Defect: a Fail-class diagnostic (knot count wrong) is downgraded
- * to a Warning by the reader's Mend pass. */
+/* In003: A Mend demotes a Fail to a Warning, hiding the original failure; OCCT Interface_Check.hxx:97 (Mend method); a reader Mend() step takes a Fail-class diagnostic and downgrades it to a Warning if the kernel auto-fixed the underlying problem; a consumer relying on the original Fail to gate further processing misses it; defect: B_SPLINE_CURVE_WITH_KNOTS degree 2 with 3 control points: required knot sum = n+degree+1 = 3+2+1 = 6, but knot_multiplicities (3,1,3) sum to 7 (off-by-one extra knot); a Fail-class condition that gets auto-mended and silently demoted to Warning; receiver must always preserve the original severity; record the Mend as a separate auto-corrected event; must not silently downgrade Fail to Warning; bug-reporter synonyms: kernel hid an error, fail downgraded to warning silently, wrong knot count not reported, B_SPLINE knot defect silently fixed; GEOMETRIC_CURVE_SET IS NOT used — B-spline entity is the defect carrier */
 HEADER;
-FILE_DESCRIPTION(('In003 - mend demotes fail to warning','Pass C gap-fill'),'2;1');
-FILE_NAME('In003.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('In003'),'2;1');
+FILE_NAME('In003.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('',(1.0,1.0,0.0));
-#12=CARTESIAN_POINT('',(2.0,0.0,0.0));
-/* Defect: B-spline degree 2 needs n+degree+1 = 3+2+1 = 6 knots; here 7. */
-#20=B_SPLINE_CURVE_WITH_KNOTS('extra_knot',2,(#10,#11,#12),.UNSPECIFIED.,
-   .F.,.F.,(3,1,3),(0.0,0.5,1.0),.UNSPECIFIED.);
+#10=CARTESIAN_POINT('',( 0.0,0.0,0.0));
+#11=CARTESIAN_POINT('',( 1.0,1.0,0.0));
+#12=CARTESIAN_POINT('',( 2.0,0.0,0.0));
+/* Defect: degree 2, 3 ctrl-pts => expected knot sum 6; multiplicities (3,1,3) sum to 7 (off-by-one). */
+#20=B_SPLINE_CURVE_WITH_KNOTS('extra_knot',2,(#10,#11,#12),.UNSPECIFIED.,.F.,.F.,(3,1,3),(0.0,0.5,1.0),.UNSPECIFIED.);
 ENDSEC;
 END-ISO-10303-21;

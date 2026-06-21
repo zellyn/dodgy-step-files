@@ -1,11 +1,9 @@
 ISO-10303-21;
-/* In001 - Empty DATA section after valid HEADER.
- * Defect: HEADER is well-formed; DATA contains only a comment, no
- * entities. Reader's data state ends as "Unloaded" silently. */
+/* In001: Model marked Loaded without entities; load skipped silently; OCCT Interface_InterfaceModel.cxx:276 (Interface_StateUnloaded); a reader data state is Unloaded when the file was opened but the entity table was never populated — e.g. parser bailed silently after the header; defect: a Part-21 file with a valid HEADER but a DATA section containing only a comment and no entities; ENDSEC closes the section; downstream consumers see an empty model without a diagnostic; receiver must distinguish empty-data from load-failed with separate diagnostic codes; never let the consumer see an empty model from a load failure; must not silently accept failed load; bug-reporter synonyms: STEP loaded but empty, no entities in file, kernel imports nothing silently; GEOMETRIC_CURVE_SET IS NOT used — DATA section intentionally empty of entities */
 HEADER;
-FILE_DESCRIPTION(('In001 - empty data section','Pass C gap-fill'),'2;1');
-FILE_NAME('In001.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('In001'),'2;1');
+FILE_NAME('In001.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
 /* This DATA section is intentionally empty of entities. */

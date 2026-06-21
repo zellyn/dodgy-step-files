@@ -1,27 +1,25 @@
-/* Le058 - Final record before ENDSEC; lacks trailing newline at EOF
- * Defect: the file's byte stream ends with the last DATA-section
- * record glued directly to ENDSEC; and END-ISO-10303-21; with no
- * intervening newlines and no trailing newline at EOF. ISO 10303-21
- * 6.2 records are terminated by `;` alone, and the spec is silent
- * on whether trailing newlines are required, so this is technically
- * conformant. But POSIX line-buffered tokenisers drop the last line
- * if it lacks a `\n` - the final record (or the END-ISO-10303-21;
- * terminator) is silently lost. */
 ISO-10303-21;
+/* Le058: Final record before ENDSEC lacks trailing newline at EOF; ISO 10303-21 §6.2: record terminator is ';'; spec is silent on whether a trailing newline is required after the final ';'; a producer may emit the file body ending in );ENDSEC;END-ISO-10303-21; with no trailing newline anywhere; POSIX tools that read line-by-line drop the last line if it lacks a newline — the final record or the END-ISO-10303-21; terminator is silently lost; cousin defect: missing newline between the last DATA-section record and ENDSEC; receiver must tokenise on ';' alone; treat EOF as a valid record-and-section terminator if the preceding ';'-terminated record has been seen; never require a trailing newline; lexers that scan line-by-line should be replaced or wrapped with a ';'-aware preprocessor; do not reject missing-trailing-newline files; sibling of Le056/Le057; see also Le054; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Le058 - last record glued to ENDSEC and no trailing newline at EOF'),'2;1');
-FILE_NAME('Le058.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Le058'),'2;1');
+FILE_NAME('Le058.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#12=VERTEX_POINT('',#10);
-#13=VERTEX_POINT('',#11);
-#14=DIRECTION('',(1.0,0.0,0.0));
-#15=VECTOR('',#14,1.0);
-#16=LINE('',#10,#15);
-#17=EDGE_CURVE('',#12,#13,#16,.T.);
-#18=ORIENTED_EDGE('',*,*,#17,.T.);
-#19=EDGE_LOOP('',(#18));ENDSEC;END-ISO-10303-21;
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Le058','Le058','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#8999=PERSON('no-trailing-newline-defect','eof-without-lf','');ENDSEC;END-ISO-10303-21;
