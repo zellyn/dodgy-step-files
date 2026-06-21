@@ -1,44 +1,34 @@
 ISO-10303-21;
-/* N026 - Cross-kernel topology rejection: source-valid, target-invalid by tolerance bookkeeping
- * Defect: Production kernels (Parasolid, ACIS, CGM) define validity
- * differently. ACIS may export a body with a tolerant edge of tolerance 5.0e-4;
- * Parasolid demands geometric intersection within 1.0e-6 and rejects the edge.
- * Reproducer: ACIS-style file declares per-edge tolerance 5.0e-4 mm while
- * the global file uncertainty is 1.0e-6 mm; receiving Parasolid pipeline
- * cannot accommodate the loose edge tolerance.
- */
+/* N026: ACIS tolerant edge tol 5.0E-4 vs Parasolid demand 1.0E-6; 2×UNCERTAINTY_MEASURE_WITH_UNIT encode both; shared vertex becomes two on import; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N026 cross-kernel mixed precision ACIS->Parasolid rejection'),'2;1');
-FILE_NAME('N026.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('N026'),'2;1');
+FILE_NAME('N026.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('p1',(10.0,0.0,0.0));
-#20=VERTEX_POINT('',#10);
-#21=VERTEX_POINT('',#11);
-#30=DIRECTION('+x',(1.0,0.0,0.0));
-#31=VECTOR('',#30,10.0);
-#32=LINE('',#10,#31);
-/* ACIS-style "tolerant edge" tolerance attached to the edge */
-#40=EDGE_CURVE('acis_tolerant_edge_5e-4',#20,#21,#32,.T.);
-#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-/* Mixed working precisions: file global 1.0e-6 (Parasolid-friendly),
- * but per-entity 5.0e-4 (ACIS-style tolerant edge). Target Parasolid kernel
- * would reject the looser per-edge tolerance. */
-#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#50,
-  'distance_accuracy_value','file_global_parasolid_friendly');
-#61=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(5.0E-4),#50,
-  'distance_accuracy_value','acis_tolerant_edge_per_entity');
-#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60,#61))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
-  REPRESENTATION_CONTEXT('ctx','3D'));
+#1=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('p1_within_acis_tol',(0.0005,0.0,0.0));
+#3=VERTEX_POINT('v0',#1);
+#4=VERTEX_POINT('v1_would_split_in_parasolid',#2);
+#5=DIRECTION('',(1.0,0.0,0.0));
+#6=VECTOR('',#5,0.0005);
+#7=LINE('tolerant_edge_line',#1,#6);
+#8=EDGE_CURVE('tolerant_edge',#3,#4,#7,.T.);
+#9=GEOMETRIC_CURVE_SET('cross_kernel',(#8));
+#10=APPLICATION_CONTEXT('automotive_design');
+#11=PRODUCT_CONTEXT('',#10,'mechanical');
+#12=PRODUCT('N026','N026','',(#11));
+#13=PRODUCT_DEFINITION_FORMATION('','',#12);
+#14=PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#15=PRODUCT_DEFINITION('','',#13,#14);
+#16=PRODUCT_DEFINITION_SHAPE('','',#15);
+#17=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#18=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#19=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#20=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(5.0E-4),#17,'distance_accuracy_value','acis_tolerant_edge_tol');
+#21=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#17,'distance_accuracy_value','parasolid_required_precision');
+#22=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#20,#21))GLOBAL_UNIT_ASSIGNED_CONTEXT((#17,#18,#19))REPRESENTATION_CONTEXT('ctx','3D'));
+#23=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9),#22);
+#24=SHAPE_DEFINITION_REPRESENTATION(#16,#23);
 ENDSEC;
 END-ISO-10303-21;

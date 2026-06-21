@@ -1,40 +1,34 @@
 ISO-10303-21;
-/* N023 - EDGE_CURVE based on LINE displaced from true vertex position
- * Defect: STEP files emit an EDGE_CURVE whose underlying LINE is parallel-
- * displaced from the line that actually passes through both vertex points.
- * Direction is correct; position is offset.
- * Reproducer: VERTEX_POINT A at (0,0,0), B at (10,0,0); LINE pnt is at
- * (0, 0.001, 0) (offset 1.0e-3 mm from the true line through both vertices).
- */
+/* N023: EDGE_CURVE LINE starts at (0,0.001,0) not (0,0,0); vertex A at (0,0,0), B at (10,0,0); LINE direction correct but position offset 1.0E-3 mm in Y; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N023 EDGE_CURVE LINE parallel-displaced from vertices'),'2;1');
-FILE_NAME('N023.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+FILE_DESCRIPTION(('N023'),'2;1');
+FILE_NAME('N023.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('configuration controlled 3d designs of mechanical parts');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'config_control_design',1994,#1);
-#10=CARTESIAN_POINT('vertex_A',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('vertex_B',(10.0,0.0,0.0));
-/* Defect: line origin point is offset 1.0e-3 in y; direction correct */
-#12=CARTESIAN_POINT('LINE_pnt_offset_1e-3',(0.0,0.001,0.0));
-#20=VERTEX_POINT('A',#10);
-#21=VERTEX_POINT('B',#11);
-#30=DIRECTION('+x_correct',(1.0,0.0,0.0));
-#31=VECTOR('',#30,10.0);
-/* LINE.pnt is offset 1.0e-3 from where it should be -- parallel-displaced */
-#32=LINE('parallel_displaced',#12,#31);
-#40=EDGE_CURVE('fpx_expert_edge',#20,#21,#32,.T.);
-#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#50,
-  'distance_accuracy_value','declared_tight');
-#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
-  REPRESENTATION_CONTEXT('ctx','3D'));
+#1=CARTESIAN_POINT('vtx_a',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('vtx_b',(10.0,0.0,0.0));
+#3=VERTEX_POINT('v_a',#1);
+#4=VERTEX_POINT('v_b',#2);
+#5=CARTESIAN_POINT('line_start_displaced',(0.0,0.001,0.0));
+#6=DIRECTION('',(1.0,0.0,0.0));
+#7=VECTOR('',#6,10.0);
+#8=LINE('displaced_line',#5,#7);
+#9=EDGE_CURVE('edge_displaced_line',#3,#4,#8,.T.);
+#10=GEOMETRIC_CURVE_SET('edges',(#9));
+#11=APPLICATION_CONTEXT('automotive_design');
+#12=PRODUCT_CONTEXT('',#11,'mechanical');
+#13=PRODUCT('N023','N023','',(#12));
+#14=PRODUCT_DEFINITION_FORMATION('','',#13);
+#15=PRODUCT_DEFINITION_CONTEXT('part definition',#11,'design');
+#16=PRODUCT_DEFINITION('','',#14,#15);
+#17=PRODUCT_DEFINITION_SHAPE('','',#16);
+#18=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#19=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#20=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#21=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#18,'distance_accuracy_value','model_precision');
+#22=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#21))GLOBAL_UNIT_ASSIGNED_CONTEXT((#18,#19,#20))REPRESENTATION_CONTEXT('ctx','3D'));
+#23=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#10),#22);
+#24=SHAPE_DEFINITION_REPRESENTATION(#17,#23);
 ENDSEC;
 END-ISO-10303-21;
