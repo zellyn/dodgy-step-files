@@ -1,70 +1,62 @@
 ISO-10303-21;
-/* N094 - ShapeFix_Edge.FixVertexTolerance precision-floor
- * Defect: shared vertex used by multiple edges with tolerances 1.0e-10 and 1.0e-3;
- * FixVertexTolerance computes harmonic mean which underflows to 0, violating
- * the invariant that vertex tolerance >= max(edge tolerances).
- * Reproducer: vertex shared by two edges with extreme tolerance mismatch.
- */
+/* N094: OPEN_SHELL shell_mixed_tol with face_mixed_tol: shared_vertex at (0,0,0) used by edge_precision (v_precision→shared, tol=1e-10) and edge_coarse (shared→v_coarse, tol=1e-3); FixVertexTolerance harmonic-mean underflows to 0, violating tol(vertex) >= max(tol(edges)) */
 HEADER;
-FILE_DESCRIPTION(('N094 - FixVertexTolerance underflow'),'2;1');
-FILE_NAME('N094.stp','2026-06-15T00:00:00',('auto-generated'),(''),'auto-generated','','');
+FILE_DESCRIPTION(('N094'),'2;1');
+FILE_NAME('N094.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#14=PLANE('',#13);
-/* Shared vertex at junction - tolerance should be >= max(1.0e-10, 1.0e-3) = 1.0e-3 */
-#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#21=VERTEX_POINT('shared_vertex',#20);
-/* Edge 1: ultra-high precision, tolerance 1.0e-10 */
-#30=CARTESIAN_POINT('',(-1.0,0.0,0.0));
-#31=VERTEX_POINT('v_precision',#30);
-#40=DIRECTION('',(1.0,0.0,0.0));
-#41=VECTOR('',#40,1.0);
-#42=LINE('',#30,#41);
-#43=EDGE_CURVE('edge_precision',#31,#21,#42,.T.);
-/* Edge 2: low precision, tolerance 1.0e-3 */
-#50=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#51=VERTEX_POINT('v_coarse',#50);
-#60=DIRECTION('',(-1.0,0.0,0.0));
-#61=VECTOR('',#60,1.0);
-#62=LINE('',#50,#61);
-#63=EDGE_CURVE('edge_coarse',#21,#51,#62,.T.);
-/* Edge 3: from high-precision vertex */
-#70=CARTESIAN_POINT('',(0.0,1.0,0.0));
-#71=VERTEX_POINT('v_third',#70);
-#80=DIRECTION('',(0.0,1.0,0.0));
-#81=VECTOR('',#80,1.0);
-#82=LINE('',#20,#81);
-#83=EDGE_CURVE('edge_closure',#21,#71,#82,.T.);
-/* Wire closing the loop */
-#90=ORIENTED_EDGE('',*,*,#43,.T.);
-#91=ORIENTED_EDGE('',*,*,#63,.T.);
-#92=ORIENTED_EDGE('',*,*,#83,.T.);
-#93=EDGE_LOOP('wire_mixed_tol',(#90,#91,#92));
-/* Face */
-#100=FACE_OUTER_BOUND('',#93,.T.);
-#101=ADVANCED_FACE('face_mixed_tol',(#100),#14,.T.);
-#102=OPEN_SHELL('shell_mixed_tol',(#101));
-/* Product chain with defect site context */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('N094','N094','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#102));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(-1.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#9=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#10=VERTEX_POINT('v_precision',#6);
+#11=VERTEX_POINT('shared_vertex',#7);
+#12=VERTEX_POINT('v_coarse',#8);
+#13=VERTEX_POINT('',#9);
+#14=DIRECTION('',(1.0,0.0,0.0));
+#15=VECTOR('',#14,1.0);
+#16=LINE('',#6,#15);
+#17=EDGE_CURVE('edge_precision',#10,#11,#16,.T.);
+#18=DIRECTION('',(1.0,0.0,0.0));
+#19=VECTOR('',#18,1.0);
+#20=LINE('',#7,#19);
+#21=EDGE_CURVE('edge_coarse',#11,#12,#20,.T.);
+#22=DIRECTION('',(0.5,1.0,0.0));
+#23=VECTOR('',#22,1.0);
+#24=LINE('',#6,#23);
+#25=EDGE_CURVE('',#10,#13,#24,.T.);
+#26=DIRECTION('',(0.5,-1.0,0.0));
+#27=VECTOR('',#26,1.0);
+#28=LINE('',#9,#27);
+#29=EDGE_CURVE('',#13,#12,#28,.T.);
+#30=ORIENTED_EDGE('',$,$,#17,.T.);
+#31=ORIENTED_EDGE('',$,$,#21,.T.);
+#32=ORIENTED_EDGE('',$,$,#29,.F.);
+#33=ORIENTED_EDGE('',$,$,#25,.F.);
+#34=EDGE_LOOP('loop_mixed_tol',(#30,#31,#32,#33));
+#35=FACE_OUTER_BOUND('',#34,.T.);
+#36=ADVANCED_FACE('face_mixed_tol',(#35),#5,.T.);
+#37=OPEN_SHELL('shell_mixed_tol',(#36));
+#38=SHELL_BASED_SURFACE_MODEL('',(#37));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('N094','N094','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#38),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
