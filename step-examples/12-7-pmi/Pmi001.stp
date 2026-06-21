@@ -1,184 +1,217 @@
 ISO-10303-21;
-/* Pmi001 - Hole emitted as two half-cylinders breaks PMI feature association.
- * Defect: a 50x50x20 mm plate with a 10 mm-diameter through-hole. The hole
- * wall is emitted as TWO ADVANCED_FACEs that share ONE CYLINDRICAL_SURFACE
- * - the first face spans theta=0..pi, the second spans theta=pi..2*pi. The
- * seam edges are shared between them. PMI feature association needs to
- * traverse both halves: a SHAPE_ASPECT 'hole_feature' references both
- * halves through two GEOMETRIC_ITEM_SPECIFIC_USAGE entries (instead of a
- * single feature face). Receivers that expect one face per cylindrical
- * feature drop or duplicate the PMI link. */
+/* Pmi001: through-hole emitted as TWO half-cylinder ADVANCED_FACEs sharing ONE CYLINDRICAL_SURFACE; PMI SHAPE_ASPECT links both halves via two GEOMETRIC_ITEM_SPECIFIC_USAGE entries; receivers expecting one face per hole feature drop or duplicate the PMI dimension link */
 HEADER;
-FILE_DESCRIPTION(('Pmi001 - half-cylinders break PMI association'),'2;1');
-FILE_NAME('Pmi001.stp','2026-05-02T00:00:00',('catalog'),('cad'),
-  'manual','','');
-FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+FILE_DESCRIPTION(('Pmi001'),'2;1');
+FILE_NAME('Pmi001.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('managed model based 3d engineering');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'ap242_managed_model_based_3d_engineering',2020,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT('Pmi001','BlockWithHole','',(#12));
-#14 = PRODUCT_DEFINITION_FORMATION('','',#13);
-#15 = PRODUCT_DEFINITION_CONTEXT('',#10,'design');
-#16 = PRODUCT_DEFINITION('','',#14,#15);
-#17 = PRODUCT_DEFINITION_SHAPE('','',#16);
-#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
-  'distance_accuracy_value','');
-#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
-  REPRESENTATION_CONTEXT('','3D') );
-/* Plate corners: 50x50x20 with a 10mm-dia hole centered at (25,25). */
-#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#101=CARTESIAN_POINT('',(50.0,0.0,0.0));
-#102=CARTESIAN_POINT('',(50.0,50.0,0.0));
-#103=CARTESIAN_POINT('',(0.0,50.0,0.0));
-#104=CARTESIAN_POINT('',(0.0,0.0,20.0));
-#105=CARTESIAN_POINT('',(50.0,0.0,20.0));
-#106=CARTESIAN_POINT('',(50.0,50.0,20.0));
-#107=CARTESIAN_POINT('',(0.0,50.0,20.0));
-#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
-#112=VERTEX_POINT('',#102); #113=VERTEX_POINT('',#103);
-#114=VERTEX_POINT('',#104); #115=VERTEX_POINT('',#105);
-#116=VERTEX_POINT('',#106); #117=VERTEX_POINT('',#107);
-/* Hole: cylindrical_surface, axis along +Z at (25,25,0), radius 5. */
-#120=CARTESIAN_POINT('hole_center',(25.0,25.0,0.0));
-#121=DIRECTION('hole_axis',(0.0,0.0,1.0));
-#122=DIRECTION('hole_ref',(1.0,0.0,0.0));
-#123=AXIS2_PLACEMENT_3D('hole_origin',#120,#121,#122);
-#124=CYLINDRICAL_SURFACE('hole_surface',#123,5.0);
-/* Hole seam vertices on bottom (z=0) and top (z=20). */
-#130=CARTESIAN_POINT('',(30.0,25.0,0.0));   /* theta=0  bot */
-#131=CARTESIAN_POINT('',(20.0,25.0,0.0));   /* theta=pi bot */
-#132=CARTESIAN_POINT('',(30.0,25.0,20.0));  /* theta=0  top */
-#133=CARTESIAN_POINT('',(20.0,25.0,20.0));  /* theta=pi top */
-#140=VERTEX_POINT('',#130); #141=VERTEX_POINT('',#131);
-#142=VERTEX_POINT('',#132); #143=VERTEX_POINT('',#133);
-/* Top circle (z=20) and bottom circle (z=0) supporting curves. */
-#150=CARTESIAN_POINT('hole_top_center',(25.0,25.0,20.0));
-#151=AXIS2_PLACEMENT_3D('top_circle_axis',#150,#121,#122);
-#152=CIRCLE('hole_top_circle',#151,5.0);
-#153=AXIS2_PLACEMENT_3D('bot_circle_axis',#120,#121,#122);
-#154=CIRCLE('hole_bot_circle',#153,5.0);
-/* Half-circle edges. Bottom: A from theta=0..pi; B from theta=pi..2pi. */
-#160=EDGE_CURVE('',#140,#141,#154,.T.);  /* bot half A */
-#161=EDGE_CURVE('',#141,#140,#154,.T.);  /* bot half B */
-#162=EDGE_CURVE('',#142,#143,#152,.T.);  /* top half A */
-#163=EDGE_CURVE('',#143,#142,#152,.T.);  /* top half B */
-/* Vertical seam edges shared by the two half-cylinders. */
-#170=DIRECTION('',(0.0,0.0,1.0)); #171=VECTOR('',#170,20.0);
-#172=LINE('',#130,#171); #173=EDGE_CURVE('seam0',#140,#142,#172,.T.);
-#174=LINE('',#131,#171); #175=EDGE_CURVE('seam_pi',#141,#143,#174,.T.);
-/* Outer plate edge curves (perimeter & verticals). */
-#200=DIRECTION('',(1.0,0.0,0.0)); #201=VECTOR('',#200,50.0);
-#202=DIRECTION('',(0.0,1.0,0.0)); #203=VECTOR('',#202,50.0);
-#204=VECTOR('',#170,20.0);
-#210=LINE('',#100,#201); #211=EDGE_CURVE('',#110,#111,#210,.T.);
-#212=LINE('',#101,#203); #213=EDGE_CURVE('',#111,#112,#212,.T.);
-#214=LINE('',#103,#201); #215=EDGE_CURVE('',#113,#112,#214,.T.);
-#216=LINE('',#100,#203); #217=EDGE_CURVE('',#110,#113,#216,.T.);
-#218=LINE('',#104,#201); #219=EDGE_CURVE('',#114,#115,#218,.T.);
-#220=LINE('',#105,#203); #221=EDGE_CURVE('',#115,#116,#220,.T.);
-#222=LINE('',#107,#201); #223=EDGE_CURVE('',#117,#116,#222,.T.);
-#224=LINE('',#104,#203); #225=EDGE_CURVE('',#114,#117,#224,.T.);
-#226=LINE('',#100,#204); #227=EDGE_CURVE('',#110,#114,#226,.T.);
-#228=LINE('',#101,#204); #229=EDGE_CURVE('',#111,#115,#228,.T.);
-#230=LINE('',#102,#204); #231=EDGE_CURVE('',#112,#116,#230,.T.);
-#232=LINE('',#103,#204); #233=EDGE_CURVE('',#113,#117,#232,.T.);
-/* Plate face planes. */
-#250=CARTESIAN_POINT('',(25.0,25.0,0.0));
-#251=DIRECTION('',(0.0,0.0,-1.0));
-#252=AXIS2_PLACEMENT_3D('',#250,#251,#200); #253=PLANE('',#252);
-#254=CARTESIAN_POINT('',(25.0,25.0,20.0));
-#255=AXIS2_PLACEMENT_3D('',#254,#170,#200); #256=PLANE('',#255);
-#260=CARTESIAN_POINT('',(25.0,0.0,10.0));
-#261=DIRECTION('',(0.0,-1.0,0.0));
-#262=AXIS2_PLACEMENT_3D('',#260,#261,#200); #263=PLANE('',#262);
-#264=CARTESIAN_POINT('',(25.0,50.0,10.0));
-#265=AXIS2_PLACEMENT_3D('',#264,#202,#200); #266=PLANE('',#265);
-#270=CARTESIAN_POINT('',(0.0,25.0,10.0));
-#271=DIRECTION('',(-1.0,0.0,0.0));
-#272=AXIS2_PLACEMENT_3D('',#270,#271,#202); #273=PLANE('',#272);
-#274=CARTESIAN_POINT('',(50.0,25.0,10.0));
-#275=AXIS2_PLACEMENT_3D('',#274,#200,#202); #276=PLANE('',#275);
-/* Bottom face (z=0): outer wire + inner hole wire (both halves). */
-#300=ORIENTED_EDGE('',*,*,#211,.T.); #301=ORIENTED_EDGE('',*,*,#213,.T.);
-#302=ORIENTED_EDGE('',*,*,#215,.F.); #303=ORIENTED_EDGE('',*,*,#217,.F.);
-#304=EDGE_LOOP('bot_outer',(#300,#301,#302,#303));
-#305=FACE_OUTER_BOUND('',#304,.T.);
-/* Bottom hole loop: bot half A then bot half B (CW so it's a hole when
-   bottom face normal is -Z). */
-#306=ORIENTED_EDGE('',*,*,#160,.T.);
-#307=ORIENTED_EDGE('',*,*,#161,.T.);
-#308=EDGE_LOOP('bot_hole',(#306,#307));
-#309=FACE_BOUND('',#308,.T.);
-#310=ADVANCED_FACE('plate_bot',(#305,#309),#253,.T.);
-/* Top face (z=20): outer wire + inner hole wire. */
-#320=ORIENTED_EDGE('',*,*,#219,.T.); #321=ORIENTED_EDGE('',*,*,#221,.T.);
-#322=ORIENTED_EDGE('',*,*,#223,.F.); #323=ORIENTED_EDGE('',*,*,#225,.F.);
-#324=EDGE_LOOP('top_outer',(#320,#321,#322,#323));
-#325=FACE_OUTER_BOUND('',#324,.T.);
-/* Top hole loop: traverse the hole edges in opposite order so it's CW
-   when viewed from +Z (the top face's normal). */
-#326=ORIENTED_EDGE('',*,*,#163,.F.);
-#327=ORIENTED_EDGE('',*,*,#162,.F.);
-#328=EDGE_LOOP('top_hole',(#326,#327));
-#329=FACE_BOUND('',#328,.T.);
-#330=ADVANCED_FACE('plate_top',(#325,#329),#256,.T.);
-/* Plate side faces. */
-#340=ORIENTED_EDGE('',*,*,#211,.T.); #341=ORIENTED_EDGE('',*,*,#229,.T.);
-#342=ORIENTED_EDGE('',*,*,#219,.F.); #343=ORIENTED_EDGE('',*,*,#227,.F.);
-#344=EDGE_LOOP('',(#340,#341,#342,#343));
-#345=FACE_OUTER_BOUND('',#344,.T.);
-#346=ADVANCED_FACE('plate_front',(#345),#263,.T.);
-#350=ORIENTED_EDGE('',*,*,#215,.T.); #351=ORIENTED_EDGE('',*,*,#231,.T.);
-#352=ORIENTED_EDGE('',*,*,#223,.F.); #353=ORIENTED_EDGE('',*,*,#233,.F.);
-#354=EDGE_LOOP('',(#350,#351,#352,#353));
-#355=FACE_OUTER_BOUND('',#354,.T.);
-#356=ADVANCED_FACE('plate_back',(#355),#266,.T.);
-#360=ORIENTED_EDGE('',*,*,#217,.T.); #361=ORIENTED_EDGE('',*,*,#233,.T.);
-#362=ORIENTED_EDGE('',*,*,#225,.F.); #363=ORIENTED_EDGE('',*,*,#227,.F.);
-#364=EDGE_LOOP('',(#360,#361,#362,#363));
-#365=FACE_OUTER_BOUND('',#364,.T.);
-#366=ADVANCED_FACE('plate_left',(#365),#273,.T.);
-#370=ORIENTED_EDGE('',*,*,#213,.T.); #371=ORIENTED_EDGE('',*,*,#231,.T.);
-#372=ORIENTED_EDGE('',*,*,#221,.F.); #373=ORIENTED_EDGE('',*,*,#229,.F.);
-#374=EDGE_LOOP('',(#370,#371,#372,#373));
-#375=FACE_OUTER_BOUND('',#374,.T.);
-#376=ADVANCED_FACE('plate_right',(#375),#276,.T.);
-/* Half-cylinder hole walls A and B. Both share #124 cylindrical_surface. */
-#380=ORIENTED_EDGE('',*,*,#160,.F.);   /* bot half A reversed */
-#381=ORIENTED_EDGE('',*,*,#173,.T.);   /* seam0 up */
-#382=ORIENTED_EDGE('',*,*,#162,.T.);   /* top half A */
-#383=ORIENTED_EDGE('',*,*,#175,.F.);   /* seam_pi down */
-#384=EDGE_LOOP('hole_wall_A',(#380,#381,#382,#383));
-#385=FACE_OUTER_BOUND('',#384,.T.);
-#386=ADVANCED_FACE('hole_half_A',(#385),#124,.T.);
-#390=ORIENTED_EDGE('',*,*,#161,.F.);   /* bot half B reversed */
-#391=ORIENTED_EDGE('',*,*,#175,.T.);   /* seam_pi up */
-#392=ORIENTED_EDGE('',*,*,#163,.T.);   /* top half B */
-#393=ORIENTED_EDGE('',*,*,#173,.F.);   /* seam0 down */
-#394=EDGE_LOOP('hole_wall_B',(#390,#391,#392,#393));
-#395=FACE_OUTER_BOUND('',#394,.T.);
-#396=ADVANCED_FACE('hole_half_B',(#395),#124,.T.);
-/* Closed shell + solid for the plate-with-hole. */
-#400=CLOSED_SHELL('plate_shell',(#310,#330,#346,#356,#366,#376,#386,#396));
-#401=MANIFOLD_SOLID_BREP('plate_body',#400);
-#402=AXIS2_PLACEMENT_3D('',#100,#121,#122);
-#410=ADVANCED_BREP_SHAPE_REPRESENTATION('shape',(#401,#402),#25);
-#411=SHAPE_DEFINITION_REPRESENTATION(#17,#410);
-/* SHAPE_ASPECT 'hole' linked to BOTH half-faces via two GISUs. */
-#500=SHAPE_ASPECT('hole_feature','through hole (two-half feature)',#17,.T.);
-#501=GEOMETRIC_ITEM_SPECIFIC_USAGE('GISU_A',$,#500,#410,#386);
-#502=GEOMETRIC_ITEM_SPECIFIC_USAGE('GISU_B',$,#500,#410,#396);
-/* Diameter PMI on the shape_aspect. */
-#510=DIMENSIONAL_SIZE(#500,'diameter');
-#511=MEASURE_REPRESENTATION_ITEM('nominal',LENGTH_MEASURE(10.0),#20);
-#512=SHAPE_DIMENSION_REPRESENTATION('',(#511),#25);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(50.0,0.0,0.0));
+#3=CARTESIAN_POINT('',(50.0,50.0,0.0));
+#4=CARTESIAN_POINT('',(0.0,50.0,0.0));
+#5=CARTESIAN_POINT('',(0.0,0.0,20.0));
+#6=CARTESIAN_POINT('',(50.0,0.0,20.0));
+#7=CARTESIAN_POINT('',(50.0,50.0,20.0));
+#8=CARTESIAN_POINT('',(0.0,50.0,20.0));
+#9=VERTEX_POINT('',#1);
+#10=VERTEX_POINT('',#2);
+#11=VERTEX_POINT('',#3);
+#12=VERTEX_POINT('',#4);
+#13=VERTEX_POINT('',#5);
+#14=VERTEX_POINT('',#6);
+#15=VERTEX_POINT('',#7);
+#16=VERTEX_POINT('',#8);
+#17=CARTESIAN_POINT('',(25.0,25.0,0.0));
+#18=DIRECTION('',(0.0,0.0,1.0));
+#19=DIRECTION('',(1.0,0.0,0.0));
+#20=AXIS2_PLACEMENT_3D('',#17,#18,#19);
+#21=CYLINDRICAL_SURFACE('hole_surface',#20,5.0);
+#22=CARTESIAN_POINT('',(30.0,25.0,0.0));
+#23=CARTESIAN_POINT('',(20.0,25.0,0.0));
+#24=CARTESIAN_POINT('',(30.0,25.0,20.0));
+#25=CARTESIAN_POINT('',(20.0,25.0,20.0));
+#26=VERTEX_POINT('',#22);
+#27=VERTEX_POINT('',#23);
+#28=VERTEX_POINT('',#24);
+#29=VERTEX_POINT('',#25);
+#30=CARTESIAN_POINT('',(25.0,25.0,20.0));
+#31=AXIS2_PLACEMENT_3D('',#30,#18,#19);
+#32=CIRCLE('hole_top_circle',#31,5.0);
+#33=AXIS2_PLACEMENT_3D('',#17,#18,#19);
+#34=CIRCLE('hole_bot_circle',#33,5.0);
+#35=EDGE_CURVE('',#26,#27,#34,.T.);
+#36=EDGE_CURVE('',#27,#26,#34,.T.);
+#37=EDGE_CURVE('',#28,#29,#32,.T.);
+#38=EDGE_CURVE('',#29,#28,#32,.T.);
+#39=DIRECTION('',(0.0,0.0,1.0));
+#40=VECTOR('',#39,20.0);
+#41=LINE('',#22,#40);
+#42=EDGE_CURVE('',#26,#28,#41,.T.);
+#43=LINE('',#23,#40);
+#44=EDGE_CURVE('',#27,#29,#43,.T.);
+#45=DIRECTION('',(1,0,0));
+#46=VECTOR('',#45,50.0);
+#47=LINE('',#1,#46);
+#48=EDGE_CURVE('',#9,#10,#47,.T.);
+#49=DIRECTION('',(0,1,0));
+#50=VECTOR('',#49,50.0);
+#51=LINE('',#2,#50);
+#52=EDGE_CURVE('',#10,#11,#51,.T.);
+#53=DIRECTION('',(-1,0,0));
+#54=VECTOR('',#53,50.0);
+#55=LINE('',#4,#54);
+#56=EDGE_CURVE('',#11,#12,#55,.T.);
+#57=DIRECTION('',(0,-1,0));
+#58=VECTOR('',#57,50.0);
+#59=LINE('',#1,#58);
+#60=EDGE_CURVE('',#12,#9,#59,.T.);
+#61=DIRECTION('',(1,0,0));
+#62=VECTOR('',#61,50.0);
+#63=LINE('',#5,#62);
+#64=EDGE_CURVE('',#13,#14,#63,.T.);
+#65=DIRECTION('',(0,1,0));
+#66=VECTOR('',#65,50.0);
+#67=LINE('',#6,#66);
+#68=EDGE_CURVE('',#14,#15,#67,.T.);
+#69=DIRECTION('',(-1,0,0));
+#70=VECTOR('',#69,50.0);
+#71=LINE('',#8,#70);
+#72=EDGE_CURVE('',#15,#16,#71,.T.);
+#73=DIRECTION('',(0,-1,0));
+#74=VECTOR('',#73,50.0);
+#75=LINE('',#5,#74);
+#76=EDGE_CURVE('',#16,#13,#75,.T.);
+#77=DIRECTION('',(0,0,1));
+#78=VECTOR('',#77,20.0);
+#79=LINE('',#1,#78);
+#80=EDGE_CURVE('',#9,#13,#79,.T.);
+#81=DIRECTION('',(0,0,1));
+#82=VECTOR('',#81,20.0);
+#83=LINE('',#2,#82);
+#84=EDGE_CURVE('',#10,#14,#83,.T.);
+#85=DIRECTION('',(0,0,1));
+#86=VECTOR('',#85,20.0);
+#87=LINE('',#3,#86);
+#88=EDGE_CURVE('',#11,#15,#87,.T.);
+#89=DIRECTION('',(0,0,1));
+#90=VECTOR('',#89,20.0);
+#91=LINE('',#4,#90);
+#92=EDGE_CURVE('',#12,#16,#91,.T.);
+#93=ORIENTED_EDGE('',$,$,#35,.T.);
+#94=ORIENTED_EDGE('',$,$,#36,.T.);
+#95=ORIENTED_EDGE('',$,$,#48,.T.);
+#96=ORIENTED_EDGE('',$,$,#52,.T.);
+#97=ORIENTED_EDGE('',$,$,#56,.T.);
+#98=ORIENTED_EDGE('',$,$,#60,.T.);
+#99=CARTESIAN_POINT('',(25,25,0));
+#100=DIRECTION('',(0,0,-1));
+#101=DIRECTION('',(1,0,0));
+#102=AXIS2_PLACEMENT_3D('',#99,#100,#101);
+#103=PLANE('',#102);
+#104=EDGE_LOOP('',(#95,#96,#97,#98));
+#105=FACE_OUTER_BOUND('',#104,.T.);
+#106=EDGE_LOOP('',(#93,#94));
+#107=FACE_BOUND('',#106,.T.);
+#108=ADVANCED_FACE('',(#105,#107),#103,.T.);
+#109=ORIENTED_EDGE('',$,$,#38,.F.);
+#110=ORIENTED_EDGE('',$,$,#37,.F.);
+#111=ORIENTED_EDGE('',$,$,#64,.T.);
+#112=ORIENTED_EDGE('',$,$,#68,.T.);
+#113=ORIENTED_EDGE('',$,$,#72,.T.);
+#114=ORIENTED_EDGE('',$,$,#76,.T.);
+#115=CARTESIAN_POINT('',(25,25,20));
+#116=DIRECTION('',(0,0,1));
+#117=DIRECTION('',(1,0,0));
+#118=AXIS2_PLACEMENT_3D('',#115,#116,#117);
+#119=PLANE('',#118);
+#120=EDGE_LOOP('',(#111,#112,#113,#114));
+#121=FACE_OUTER_BOUND('',#120,.T.);
+#122=EDGE_LOOP('',(#109,#110));
+#123=FACE_BOUND('',#122,.T.);
+#124=ADVANCED_FACE('',(#121,#123),#119,.T.);
+#125=ORIENTED_EDGE('',$,$,#48,.T.);
+#126=ORIENTED_EDGE('',$,$,#84,.T.);
+#127=ORIENTED_EDGE('',$,$,#64,.F.);
+#128=ORIENTED_EDGE('',$,$,#80,.F.);
+#129=CARTESIAN_POINT('',(25,0,10));
+#130=DIRECTION('',(0,-1,0));
+#131=DIRECTION('',(1,0,0));
+#132=AXIS2_PLACEMENT_3D('',#129,#130,#131);
+#133=PLANE('',#132);
+#134=EDGE_LOOP('',(#125,#126,#127,#128));
+#135=FACE_OUTER_BOUND('',#134,.T.);
+#136=ADVANCED_FACE('',(#135),#133,.T.);
+#137=ORIENTED_EDGE('',$,$,#56,.F.);
+#138=ORIENTED_EDGE('',$,$,#92,.T.);
+#139=ORIENTED_EDGE('',$,$,#72,.F.);
+#140=ORIENTED_EDGE('',$,$,#88,.F.);
+#141=CARTESIAN_POINT('',(25,50,10));
+#142=DIRECTION('',(0,1,0));
+#143=DIRECTION('',(1,0,0));
+#144=AXIS2_PLACEMENT_3D('',#141,#142,#143);
+#145=PLANE('',#144);
+#146=EDGE_LOOP('',(#137,#138,#139,#140));
+#147=FACE_OUTER_BOUND('',#146,.T.);
+#148=ADVANCED_FACE('',(#147),#145,.T.);
+#149=ORIENTED_EDGE('',$,$,#60,.F.);
+#150=ORIENTED_EDGE('',$,$,#80,.T.);
+#151=ORIENTED_EDGE('',$,$,#76,.F.);
+#152=ORIENTED_EDGE('',$,$,#92,.F.);
+#153=CARTESIAN_POINT('',(0,25,10));
+#154=DIRECTION('',(-1,0,0));
+#155=DIRECTION('',(0,1,0));
+#156=AXIS2_PLACEMENT_3D('',#153,#154,#155);
+#157=PLANE('',#156);
+#158=EDGE_LOOP('',(#149,#150,#151,#152));
+#159=FACE_OUTER_BOUND('',#158,.T.);
+#160=ADVANCED_FACE('',(#159),#157,.T.);
+#161=ORIENTED_EDGE('',$,$,#52,.T.);
+#162=ORIENTED_EDGE('',$,$,#88,.T.);
+#163=ORIENTED_EDGE('',$,$,#68,.F.);
+#164=ORIENTED_EDGE('',$,$,#84,.F.);
+#165=CARTESIAN_POINT('',(50,25,10));
+#166=DIRECTION('',(1,0,0));
+#167=DIRECTION('',(0,1,0));
+#168=AXIS2_PLACEMENT_3D('',#165,#166,#167);
+#169=PLANE('',#168);
+#170=EDGE_LOOP('',(#161,#162,#163,#164));
+#171=FACE_OUTER_BOUND('',#170,.T.);
+#172=ADVANCED_FACE('',(#171),#169,.T.);
+#173=ORIENTED_EDGE('',$,$,#35,.F.);
+#174=ORIENTED_EDGE('',$,$,#42,.T.);
+#175=ORIENTED_EDGE('',$,$,#37,.T.);
+#176=ORIENTED_EDGE('',$,$,#44,.F.);
+#177=EDGE_LOOP('',(#173,#174,#175,#176));
+#178=FACE_OUTER_BOUND('',#177,.T.);
+#179=ADVANCED_FACE('hole_half_A',(#178),#21,.T.);
+#180=ORIENTED_EDGE('',$,$,#36,.F.);
+#181=ORIENTED_EDGE('',$,$,#44,.T.);
+#182=ORIENTED_EDGE('',$,$,#38,.T.);
+#183=ORIENTED_EDGE('',$,$,#42,.F.);
+#184=EDGE_LOOP('',(#180,#181,#182,#183));
+#185=FACE_OUTER_BOUND('',#184,.T.);
+#186=ADVANCED_FACE('hole_half_B',(#185),#21,.T.);
+#187=CLOSED_SHELL('',(#108,#124,#136,#148,#160,#172,#179,#186));
+#188=MANIFOLD_SOLID_BREP('',#187);
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Pmi001','Pmi001','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=ADVANCED_BREP_SHAPE_REPRESENTATION('',(#188),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=SHAPE_ASPECT('hole_feature','through hole (two-half feature)',#9055,.T.);
+#9064=GEOMETRIC_ITEM_SPECIFIC_USAGE('GISU_A',$,#9063,#9061,#179);
+#9065=GEOMETRIC_ITEM_SPECIFIC_USAGE('GISU_B',$,#9063,#9061,#186);
+#9066=DIMENSIONAL_SIZE(#9063,'diameter');
+#9067=MEASURE_REPRESENTATION_ITEM('nominal',LENGTH_MEASURE(10.0),#9056);
 ENDSEC;
 END-ISO-10303-21;
