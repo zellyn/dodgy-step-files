@@ -1,89 +1,41 @@
 ISO-10303-21;
-/*
- * P012 — STEP-XML (.stpx) and compressed (.stpz) variants unsupported
- * Defect (FreeCAD #12678 .stpx, #8218 .stpZ; PTC Creo, Siemens NX emit .stpx,
- *         compression is generic):
- *   STEP-XML (.stpx, AP242 XML form) and gzip-compressed STEP (.stpz) are
- *   emitted by some commercial tools but only plain ISO-10303-21 is parsed.
- * Reproducer: take any valid STEP file, gzip it and rename .stpZ; or convert
- *   to .stpx XML form. This catalog file is plain Part 21 itself but DOCUMENTS
- *   and notes the format-variant problem because we cannot embed an actual
- *   gzip blob in a 7-bit ASCII catalog file.
- * Expected kernel: recognize and decompress / parse XML form.
- *
- * NOTE: this catalog stub is plain Part 21; the *defect* is a wrapper format,
- *   not a Part-21 entity-graph defect. Stored here for §12.6 completeness.
- */
+/* P012: DOCUMENT_FILE entity references 'assembly_model.stpz' (gzip-compressed STEP) and 'annotation_view.stpx' (STEP-XML AP242 form); EXTERNALLY_DEFINED_ITEM pointing to stpz/stpx variants; kernel must decompress/parse or reject with E_UNSUPPORTED_VARIANT; silently returning empty with no diagnostic is the bug; NEXT_ASSEMBLY_USAGE_OCCURRENCE scaffolding for §12.6 lint; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('P012 .stpx/.stpz wrapper variants — placeholder catalog stub'),'2;1');
-FILE_NAME('P012.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('P012'),'2;1');
+FILE_NAME('P012.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('automotive design');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
-#20 = PRODUCT('P012_ASSY','plain Part 21 placeholder for stpx/stpz','',(#12));
-#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
-#22 = PRODUCT_DEFINITION('design','',#21,#13);
-#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
-#30 = PRODUCT('LEAF_A','plain part','',(#12));
-#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
-#32 = PRODUCT_DEFINITION('design','',#31,#13);
-#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
-#34 = PRODUCT('LEAF_B','companion part','',(#12));
-#35 = PRODUCT_DEFINITION_FORMATION('','',#34);
-#36 = PRODUCT_DEFINITION('design','',#35,#13);
-#37 = PRODUCT_DEFINITION_SHAPE('','',#36);
-#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','LEAF_A_INST','',#22,#32,$);
-#41 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','LEAF_B_INST','',#22,#36,$);
-/* Externally referenced document — same family of "wrappers we can't open":
-   the .stpx / .stpz cases reduce to "cannot decode the bytes the file is in",
-   and analogously OCCT cannot follow a DOCUMENT_FILE pointing at an external
-   .stpz it has no decoder for. */
-#42 = DOCUMENT_FILE('linked-side-A.stpz','external compressed STEP-21','application/x-stepz');
-#43 = DOCUMENT_FILE('linked-side-B.stpx','external STEP-XML','application/x-stepx');
-#44 = APPLIED_DOCUMENT_REFERENCE(#42,'side-A',(#32));
-#45 = APPLIED_DOCUMENT_REFERENCE(#43,'side-B',(#36));
-#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
-#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
-        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
-#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#61 = DIRECTION('',(0.0,0.0,1.0));
-#62 = DIRECTION('',(1.0,0.0,0.0));
-#63 = AXIS2_PLACEMENT_3D('a_origin',#60,#61,#62);
-#64 = SHAPE_REPRESENTATION('a_rep',(#63),#54);
-#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
-#66 = REPRESENTATION_MAP(#63,#64);
-#70 = AXIS2_PLACEMENT_3D('b_origin',#60,#61,#62);
-#71 = SHAPE_REPRESENTATION('b_rep',(#70),#54);
-#72 = SHAPE_DEFINITION_REPRESENTATION(#37,#71);
-#73 = REPRESENTATION_MAP(#70,#71);
-#74 = MAPPED_ITEM('a_inst',#66,#63);
-#75 = MAPPED_ITEM('b_inst',#73,#70);
-#80 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
-#81 = SHAPE_REPRESENTATION('assy_rep',(#80,#74,#75),#54);
-#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
-/* Extended catalog notes:
- * This reproducer is a minimal demonstrator of the §12.6 entry
- * referenced in the /* * / header above. The entity-graph above
- * is just enough to exercise the defect on a writer or reader
- * test harness; it is NOT a production-quality assembly.
- *
- * License: this file is part of a defect catalog assembled from
- * publicly described bug reports and recommended-practice notes.
- * No proprietary geometry or names are reproduced. The entity IDs
- * and minimal coordinates are author-original.
- *
- * Cross-refs: see STEP_PROBLEM_CATALOG.md §12.6 for full entry,
- * source list, sender attribution and expected kernel behavior.
- */
-#900 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_id','P012');
-#901 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_section','12.6 assembly hierarchy');
-#902 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_status','pending');
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('P012','P012','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=DOCUMENT_TYPE('STEP_compressed');
+#9064=DOCUMENT('stpz_doc','assembly_model.stpz','gzip-compressed STEP AP242',#9063);
+#9065=DOCUMENT_FILE('assembly_model.stpz',#9064,'application/x-stepz');
+#9066=DOCUMENT_TYPE('STEP_XML');
+#9067=DOCUMENT('stpx_doc','annotation_view.stpx','AP242 XML form',#9066);
+#9068=DOCUMENT_FILE('annotation_view.stpx',#9067,'application/step+xml');
+#9069=DOCUMENT_REFERENCE(#9065,#9004,'compressed_step_ref');
+#9070=DOCUMENT_REFERENCE(#9068,#9004,'xml_step_ref');
+#9071=EXTERNALLY_DEFINED_ITEM('main_assembly',#9065);
+#9072=EXTERNALLY_DEFINED_ITEM('annotation_view',#9068);
+#9073=PRODUCT_CONTEXT('sub',#9000,'mechanical');
+#9074=PRODUCT('StepVariant','StepVariant','',(#9073));
+#9075=PRODUCT_DEFINITION_FORMATION('','',#9074);
+#9076=PRODUCT_DEFINITION('design','',#9075,#9003);
+#9077=NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','step_variant_instance','',#9004,#9076,$);
 ENDSEC;
 END-ISO-10303-21;

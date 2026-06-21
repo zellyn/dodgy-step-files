@@ -1,90 +1,50 @@
 ISO-10303-21;
-/*
- * P011 — AP242 PMI / GD&T / kinematics annotations silently discarded
- * Defect (FreeCAD #19795; any AP242-capable CAD: Siemens NX, CATIA, Creo):
- *   AP242 files carry semantic PMI (dimensional / geometric tolerances, datum
- *   features), graphic PMI, saved views, clipping planes, materials,
- *   kinematic joints, design-history attributes. OCCT silently discards
- *   these; the geometric BREP imports but assembly is dimensionally
- *   context-less.
- * Reproducer (mini): assembly with one PMI dimension, one GD&T position
- *   tolerance, one kinematic joint, one saved view (camera). All four are
- *   present but a non-AP242 reader silently drops them.
- * Expected kernel: preservation, or at minimum diagnostics listing dropped
- *   entity types.
- */
+/* P011: AP242-ed2 file with GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE on faces; KINEMATIC_JOINT / MECHANISM chain for kinematic assembly; OCCT silently discards all PMI and kinematic entities — geometric BREP imports but no tolerances, no joints, no saved views; kernel must warn-and-accept with diagnostics, never silently discard; crashes with signal(11) on kinematic joint chain; NEXT_ASSEMBLY_USAGE_OCCURRENCE scaffolding for §12.6 lint; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('P011 AP242 PMI/GD&T/kinematics/saved-view present but dropped'),'2;1');
-FILE_NAME('P011.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_DESCRIPTION(('P011'),'2;1');
+FILE_NAME('P011.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('managed model-based 3D engineering');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','ap242_managed_model_based_3d_engineering',2014,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
-#20 = PRODUCT('P011_ASSY','','',(#12));
-#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
-#22 = PRODUCT_DEFINITION('design','',#21,#13);
-#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
-#30 = PRODUCT('PART_X','','',(#12));
-#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
-#32 = PRODUCT_DEFINITION('design','',#31,#13);
-#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
-#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','PART_X_INST','',#22,#32,$);
-/* PMI: dimensional tolerance on a face */
-#90 = SHAPE_ASPECT('hole_face','tap drill',#33,.T.);
-#91 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#50);
-#92 = PLUS_MINUS_TOLERANCE(#91,#91);
-#93 = DIMENSIONAL_LOCATION('hole_pos','',#90,#90);
-/* GD&T: position tolerance with datum ref */
-#94 = DATUM('A','primary datum',#33,.T.,'');
-#95 = DATUM_REFERENCE(1,#94);
-#96 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.1),#50);
-#97 = GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE('pos','',
-        '',#90,#96,(#95));
-/* kinematic joint placeholder */
-#98 = MECHANISM('motion','single revolute joint',#22);
-#99 = KINEMATIC_JOINT('hinge_joint','revolute',#90,#90);
-/* saved view (camera + draughting model) */
-#150 = CARTESIAN_POINT('cam_eye',(100.0,0.0,80.0));
-#151 = DIRECTION('cam_view',(-0.7808688094430303,0.0,-0.6246950475544243));
-#152 = DIRECTION('cam_up',(0.0,0.0,1.0));
-#153 = AXIS2_PLACEMENT_3D('camera_frame',#150,#151,#152);
-#154 = CAMERA_MODEL_D3('saved_view_1','iso',#153);
-#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
-#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
-        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
-#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#61 = DIRECTION('',(0.0,0.0,1.0));
-#62 = DIRECTION('',(1.0,0.0,0.0));
-#63 = AXIS2_PLACEMENT_3D('part_origin',#60,#61,#62);
-#64 = SHAPE_REPRESENTATION('part_rep',(#63),#54);
-#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
-#66 = REPRESENTATION_MAP(#63,#64);
-#67 = MAPPED_ITEM('inst',#66,#63);
-#80 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
-#81 = SHAPE_REPRESENTATION('assy_rep',(#80,#67),#54);
-#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
-/* Extended catalog notes:
- * This reproducer is a minimal demonstrator of the §12.6 entry
- * referenced in the /* * / header above. The entity-graph above
- * is just enough to exercise the defect on a writer or reader
- * test harness; it is NOT a production-quality assembly.
- *
- * License: this file is part of a defect catalog assembled from
- * publicly described bug reports and recommended-practice notes.
- * No proprietary geometry or names are reproduced. The entity IDs
- * and minimal coordinates are author-original.
- *
- * Cross-refs: see STEP_PROBLEM_CATALOG.md §12.6 for full entry,
- * source list, sender attribution and expected kernel behavior.
- */
-#900 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_id','P011');
-#901 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_section','12.6 assembly hierarchy');
-#902 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_status','pending');
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('P011','P011','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#9064=DIRECTION('',(0.0,0.0,1.0));
+#9065=DIRECTION('',(1.0,0.0,0.0));
+#9066=AXIS2_PLACEMENT_3D('',#9063,#9064,#9065);
+#9067=DATUM_FEATURE('datum_A',#9066);
+#9068=DATUM('A','',#9067,$);
+#9069=DATUM_REFERENCE('A_ref',1.0,#9068);
+#9070=DATUM_REFERENCE_MODIFIER_WITH_VALUE(.MAXIMUM_MATERIAL_REQUIREMENT.,#9069);
+#9071=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#9009);
+#9072=TOLERANCE_ZONE_FORM('cylindrical');
+#9073=TOLERANCE_ZONE_DEFINITION(#9072,$);
+#9074=GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE('pos_tol','',LENGTH_MEASURE(0.05),#9009,#9066,$,(#9069));
+#9075=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#9076=DIRECTION('',(0.0,0.0,1.0));
+#9077=DIRECTION('',(1.0,0.0,0.0));
+#9078=AXIS2_PLACEMENT_3D('',#9075,#9076,#9077);
+#9079=KINEMATIC_JOINT('revolute_joint',#9078);
+#9080=MECHANISM('assembly_mech',(#9079));
+#9081=KINEMATIC_LINK('link1',#9080,$);
+#9082=PRODUCT_CONTEXT('sub',#9000,'mechanical');
+#9083=PRODUCT('PMIAssembly','PMIAssembly','',(#9082));
+#9084=PRODUCT_DEFINITION_FORMATION('','',#9083);
+#9085=PRODUCT_DEFINITION('design','',#9084,#9003);
+#9086=NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','pmi_assy_instance','',#9004,#9085,$);
 ENDSEC;
 END-ISO-10303-21;
