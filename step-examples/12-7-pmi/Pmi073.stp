@@ -1,53 +1,32 @@
 ISO-10303-21;
-/* Pmi073 - COMPOUND_FEATURE (AP242 ED4) self-reference
- * Defect: AP242 Edition 4 introduces COMPOUND_FEATURE as a
- * grouping of feature definitions (e.g. a "hole pattern" of N
- * counterbore holes treated as one PMI target). The spec does
- * not explicitly forbid a compound feature including itself as
- * one of its components - a programmatic exporter that builds
- * compound features by recursive descent and forgets the
- * recursion guard emits a cycle. */
+/* Pmi073: COMPOUND_FEATURE compound_pattern has a SHAPE_ASPECT_RELATIONSHIP 'part_of' linking it to itself (self-loop); a recursive descent traversal of the part-of graph never terminates; receivers must detect cycles in the pattern-membership graph and reject, or treat the self-loop as a no-op with a warning; silently accepting a self-referential pattern is forbidden; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Pmi073 - COMPOUND_FEATURE self-reference cycle'),'2;1');
-FILE_NAME('Pmi073.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('Pmi073'),'2;1');
+FILE_NAME('Pmi073.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('managed model based 3d engineering');
-#2=PRODUCT_CONTEXT('',#1,'mechanical');
-#3=PRODUCT('Pmi073','CompoundCyclePart','',(#2));
-#4=PRODUCT_DEFINITION_FORMATION('','',#3);
-#5=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
-#6=PRODUCT_DEFINITION('','',#4,#5);
-#7=PRODUCT_DEFINITION_SHAPE('','',#6);
-#20=( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#22=( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#23=( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#24=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
-  'distance_accuracy_value','');
-#25=( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
-  REPRESENTATION_CONTEXT('','3D') );
-#40=SHAPE_ASPECT('hole1','',#7,.T.);
-#41=SHAPE_ASPECT('hole2','',#7,.T.);
-/* Defect: compound feature whose components include itself.
- * Modeled as SHAPE_ASPECT_RELATIONSHIP cycles since
- * COMPOUND_FEATURE entity name may not be in the schema. */
-#50=SHAPE_ASPECT('compound_pattern','',#7,.T.);
-#51=SHAPE_ASPECT_RELATIONSHIP('part_of','hole1 part of pattern',#40,#50);
-#52=SHAPE_ASPECT_RELATIONSHIP('part_of','hole2 part of pattern',#41,#50);
-/* Defect: pattern is also "part of" itself */
-#53=SHAPE_ASPECT_RELATIONSHIP('part_of','pattern part of pattern',#50,#50);
-#90=SHAPE_REPRESENTATION('',(),#25);
-#91=SHAPE_DEFINITION_REPRESENTATION(#7,#90);
-/* PMI anchor: minimal ANNOTATION_PLANE so this PMI fixture cites at least one canonical PMI entity. */
-#9100=CARTESIAN_POINT('pmi_o',(0.0,0.0,0.0));
-#9101=DIRECTION('pmi_z',(0.0,0.0,1.0));
-#9102=DIRECTION('pmi_x',(1.0,0.0,0.0));
-#9103=AXIS2_PLACEMENT_3D('pmi_a',#9100,#9101,#9102);
-#9104=PLANE('pmi_anchor_plane',#9103);
-#9105=ANNOTATION_PLANE('pmi_annotation',(),#9104,());
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Pmi073','Pmi073','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=SHAPE_ASPECT('compound_pattern','hole pattern',#9055,.T.);
+#9064=SHAPE_ASPECT('hole1','first hole',#9055,.T.);
+#9065=SHAPE_ASPECT('hole2','second hole',#9055,.T.);
+#9066=SHAPE_ASPECT_RELATIONSHIP('part_of','self-loop',#9063,#9063);
+#9067=SHAPE_ASPECT_RELATIONSHIP('part_of','hole1 member',#9064,#9063);
+#9068=SHAPE_ASPECT_RELATIONSHIP('part_of','hole2 member',#9065,#9063);
 ENDSEC;
 END-ISO-10303-21;

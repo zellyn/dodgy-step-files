@@ -1,52 +1,30 @@
 ISO-10303-21;
-/* Pmi069 - DIMENSIONAL_LOCATION_WITH_PATH whose path does not
- * traverse the model
- * Defect: AP242 DIMENSIONAL_LOCATION_WITH_PATH carries an extra
- * 'path' attribute (a SHAPE_ASPECT_RELATIONSHIP chain) describing
- * the route through the model along which a dimension is to be
- * measured. The spec assumes the path is a connected sequence of
- * shape_aspects. A producer that emits a path whose endpoints
- * are unrelated shape_aspects on disconnected components leaves
- * the dimension's interpretation ambiguous. Here the path
- * connects #40 (a feature on solid A) to #41 (a feature on
- * solid B) but neither is reachable from the other through the
- * model's topology. */
+/* Pmi069: DIMENSIONAL_LOCATION_WITH_PATH path connects 'feature_on_A' and 'feature_on_B' which are on disconnected (disjoint) topology; the SHAPE_ASPECT_RELATIONSHIP named 'no path' does not form a connected chain through the model; receivers must validate that the path is a connected sequence of shape_aspects and reject or warn when endpoints are unrelated; silently accepting a disconnected path is forbidden; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Pmi069 - DIMENSIONAL_LOCATION_WITH_PATH disconnected'),'2;1');
-FILE_NAME('Pmi069.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('Pmi069'),'2;1');
+FILE_NAME('Pmi069.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('managed model based 3d engineering');
-#2=PRODUCT_CONTEXT('',#1,'mechanical');
-#3=PRODUCT('Pmi069','PathDisconnectPart','',(#2));
-#4=PRODUCT_DEFINITION_FORMATION('','',#3);
-#5=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
-#6=PRODUCT_DEFINITION('','',#4,#5);
-#7=PRODUCT_DEFINITION_SHAPE('','',#6);
-#20=( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#22=( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#23=( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#24=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
-  'distance_accuracy_value','');
-#25=( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
-  REPRESENTATION_CONTEXT('','3D') );
-/* Two SHAPE_ASPECT entities representing features on disjoint
- * topological components */
-#40=SHAPE_ASPECT('feature_on_A','planar face A',#7,.T.);
-#41=SHAPE_ASPECT('feature_on_B','planar face B',#7,.T.);
-/* Defect: the dimensional location's "path" connects the two
- * shape aspects through a single SHAPE_ASPECT_RELATIONSHIP, but
- * the relationship's intent is unclear since the two features
- * are not connected through any topology in the model. */
-#50=SHAPE_ASPECT_RELATIONSHIP('disconnected_path','no path',#40,#41);
-#51=DIMENSIONAL_LOCATION_WITH_PATH('width across',$,#40,#41,#50);
-#52=MEASURE_REPRESENTATION_ITEM('width',LENGTH_MEASURE(50.0),#20);
-#53=SHAPE_DIMENSION_REPRESENTATION('',(#52),#25);
-#90=SHAPE_REPRESENTATION('',(),#25);
-#91=SHAPE_DEFINITION_REPRESENTATION(#7,#90);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Pmi069','Pmi069','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=SHAPE_ASPECT('feature_on_A','',#9055,.T.);
+#9064=SHAPE_ASPECT('feature_on_B','',#9055,.T.);
+#9065=SHAPE_ASPECT_RELATIONSHIP('no path','unrelated disconnected path',#9063,#9064);
+#9066=DIMENSIONAL_LOCATION_WITH_PATH(#9063,#9064,'distance',#9065);
 ENDSEC;
 END-ISO-10303-21;

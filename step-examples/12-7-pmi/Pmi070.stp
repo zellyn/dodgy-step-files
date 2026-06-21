@@ -1,50 +1,36 @@
 ISO-10303-21;
-/* Pmi070 - GEOMETRIC_TOLERANCE_RELATIONSHIP cycle (A relates to B
- * which relates to C which relates back to A)
- * Defect: AP242 GEOMETRIC_TOLERANCE_RELATIONSHIP allows one
- * tolerance to be derived/refined from another (e.g. a position
- * tolerance refined under MMC by a separate form tolerance). The
- * spec does not explicitly forbid cycles; producers that compose
- * tolerance frames programmatically can emit a cycle by linking
- * three GEOMETRIC_TOLERANCE_RELATIONSHIP records A->B, B->C, C->A
- * at different abstraction levels. A receiver that walks the
- * relationship graph to evaluate a tolerance will recurse
- * infinitely or hit a stack guard. */
+/* Pmi070: GEOMETRIC_TOLERANCE_RELATIONSHIP forms a cycle A→B→C→A across three GEOMETRIC_TOLERANCE entities; any receiver that walks the refinement graph to evaluate a tolerance recurses infinitely or hits a stack guard; receivers must detect cycles in the tolerance-relationship graph at load time and reject with a diagnostic naming the cycle members; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Pmi070 - GEOMETRIC_TOLERANCE_RELATIONSHIP cycle'),'2;1');
-FILE_NAME('Pmi070.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('Pmi070'),'2;1');
+FILE_NAME('Pmi070.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('managed model based 3d engineering');
-#2=PRODUCT_CONTEXT('',#1,'mechanical');
-#3=PRODUCT('Pmi070','TolCyclePart','',(#2));
-#4=PRODUCT_DEFINITION_FORMATION('','',#3);
-#5=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
-#6=PRODUCT_DEFINITION('','',#4,#5);
-#7=PRODUCT_DEFINITION_SHAPE('','',#6);
-#20=( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#22=( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#23=( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#24=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
-  'distance_accuracy_value','');
-#25=( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
-  REPRESENTATION_CONTEXT('','3D') );
-#40=SHAPE_ASPECT('faceA','',#7,.T.);
-#41=SHAPE_ASPECT('faceB','',#7,.T.);
-#42=SHAPE_ASPECT('faceC','',#7,.T.);
-#50=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#20);
-#60=GEOMETRIC_TOLERANCE('A','tolA',#50,#40);
-#61=GEOMETRIC_TOLERANCE('B','tolB',#50,#41);
-#62=GEOMETRIC_TOLERANCE('C','tolC',#50,#42);
-/* Defect: cycle A -> B -> C -> A */
-#70=GEOMETRIC_TOLERANCE_RELATIONSHIP('refines','A refined by B',#60,#61);
-#71=GEOMETRIC_TOLERANCE_RELATIONSHIP('refines','B refined by C',#61,#62);
-#72=GEOMETRIC_TOLERANCE_RELATIONSHIP('refines','C refined by A',#62,#60);
-#90=SHAPE_REPRESENTATION('',(),#25);
-#91=SHAPE_DEFINITION_REPRESENTATION(#7,#90);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Pmi070','Pmi070','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=SHAPE_ASPECT('feature_A','',#9055,.T.);
+#9064=SHAPE_ASPECT('feature_B','',#9055,.T.);
+#9065=SHAPE_ASPECT('feature_C','',#9055,.T.);
+#9066=MEASURE_REPRESENTATION_ITEM('tol',LENGTH_MEASURE(0.05),#9056);
+#9067=GEOMETRIC_TOLERANCE('gt_A','tolerance A',#9066,#9063);
+#9068=GEOMETRIC_TOLERANCE('gt_B','tolerance B',#9066,#9064);
+#9069=GEOMETRIC_TOLERANCE('gt_C','tolerance C',#9066,#9065);
+#9070=GEOMETRIC_TOLERANCE_RELATIONSHIP('refines','A refines B',#9067,#9068);
+#9071=GEOMETRIC_TOLERANCE_RELATIONSHIP('refines','B refines C',#9068,#9069);
+#9072=GEOMETRIC_TOLERANCE_RELATIONSHIP('refines','C refines A',#9069,#9067);
 ENDSEC;
 END-ISO-10303-21;
