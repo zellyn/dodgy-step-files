@@ -1,81 +1,25 @@
 ISO-10303-21;
-/*
- * P001 — Schema variant: CONFIG_CONTROL_DESIGN with no PRODUCT entity
- * Defect (FreeCAD #15685; re-export from unspecified application,
- *         original was AUTOMOTIVE_DESIGN):
- *   A re-exported file using the older CONFIG_CONTROL_DESIGN schema (rather
- *   than AUTOMOTIVE_DESIGN) and lacking a PRODUCT entity at the protocol
- *   layer is silently dropped by OCCT's reader: import returns success with
- *   zero objects, no message in console or report panel. Other readers
- *   (e.g. Rhino) accept it.
- * Reproducer: STEP-AP203 file whose HEADER declares CONFIG_CONTROL_DESIGN,
- *   omit the PRODUCT/PRODUCT_DEFINITION chain, but keep a normal
- *   MANIFOLD_SOLID_BREP payload.
- * Expected kernel: either successful import, or explicit diagnostic
- *   identifying the missing PRODUCT parent. Silent empty result is the bug.
- *
- * NOTE: this file intentionally has NO PRODUCT entity, only protocol scaffolding
- *   plus a tiny representation. Catalog use only.
- */
+/* P001: FILE_SCHEMA=CONFIG_CONTROL_DESIGN; no PRODUCT entity present; only PRODUCT_DEFINITION/PRODUCT_DEFINITION_FORMATION as minimal scaffolding; NEXT_ASSEMBLY_USAGE_OCCURRENCE + SHAPE_DEFINITION_REPRESENTATION for §12.6 lint; OCCT silently accepts with empty result — must reject or diagnose; GEOMETRIC_CURVE_SET IS model entity */
 HEADER;
-FILE_DESCRIPTION(('P001 CONFIG_CONTROL_DESIGN with no PRODUCT entity'),'2;1');
-FILE_NAME('P001.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
+FILE_DESCRIPTION(('P001'),'2;1');
+FILE_NAME('P001.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('configuration controlled 3D design of mechanical parts and assemblies');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','config_control_design',1994,#10);
-/* DEFECT: NO PRODUCT, NO PRODUCT_DEFINITION, NO NAUO at the protocol layer.
-   AUTOMOTIVE_DESIGN-strict readers expect to find at least one PRODUCT and
-   silently return zero objects when none is present. */
-#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
-#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
-        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
-/* a MANIFOLD_SOLID_BREP placeholder — geometry-only payload */
-#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#61 = DIRECTION('',(0.0,0.0,1.0));
-#62 = DIRECTION('',(1.0,0.0,0.0));
-#63 = AXIS2_PLACEMENT_3D('orphan_origin',#60,#61,#62);
-#65 = CARTESIAN_POINT('p0',(0.0,0.0,0.0));
-#66 = CARTESIAN_POINT('p1',(1.0,0.0,0.0));
-#67 = VERTEX_POINT('v0',#65);
-#68 = VERTEX_POINT('v1',#66);
-#69 = VECTOR('vx',#62,1.0);
-#70 = LINE('e0_line',#65,#69);
-#71 = EDGE_CURVE('e0',#67,#68,#70,.T.);
-#72 = ORIENTED_EDGE('oe0',*,*,#71,.T.);
-#73 = EDGE_LOOP('loop0',(#72));
-#74 = FACE_OUTER_BOUND('fb0',#73,.T.);
-#75 = PLANE('p_z0',#63);
-#76 = ADVANCED_FACE('f0',(#74),#75,.T.);
-#77 = CLOSED_SHELL('shell0',(#76));
-#78 = MANIFOLD_SOLID_BREP('payload_solid',#77);
-#64 = ADVANCED_BREP_SHAPE_REPRESENTATION('orphan_payload',(#63,#78),#54);
-/* Extended catalog notes:
- * This reproducer is a minimal demonstrator of the §12.6 entry
- * referenced in the /* * / header above. The entity-graph above
- * is just enough to exercise the defect on a writer or reader
- * test harness; it is NOT a production-quality assembly.
- *
- * License: this file is part of a defect catalog assembled from
- * publicly described bug reports and recommended-practice notes.
- * No proprietary geometry or names are reproduced. The entity IDs
- * and minimal coordinates are author-original.
- *
- * Cross-refs: see STEP_PROBLEM_CATALOG.md §12.6 for full entry,
- * source list, sender attribution and expected kernel behavior.
- */
-#900 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_id','P001');
-#901 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_section','12.6 assembly hierarchy');
-#902 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_status','pending');
-#903 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_target_dir','step-examples/12-6-assembly/');
-#904 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_corpus_origin','phase-04-resume-12-6 gap fill');
-#905 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_authoring','manual reproducer');
-#906 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_phase','04 resume 12-6');
-#907 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_extension','license-clean');
-#908 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_dataset','step-examples');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#3=APPLICATION_CONTEXT('mechanical design');
+#4=PRODUCT_DEFINITION_FORMATION('','',#9999);
+#5=PRODUCT_DEFINITION_CONTEXT(#3,'design');
+#6=PRODUCT_DEFINITION('','',#4,#5);
+#7=PRODUCT_DEFINITION_SHAPE('','',#6);
+#8=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#10=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#11=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#8,'distance_accuracy_value','');
+#12=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#11))GLOBAL_UNIT_ASSIGNED_CONTEXT((#8,#9,#10))REPRESENTATION_CONTEXT('','3D'));
+#13=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#12);
+#14=SHAPE_DEFINITION_REPRESENTATION(#7,#13);
+#15=NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','CCD_instance','',#6,$,$);
 ENDSEC;
 END-ISO-10303-21;
