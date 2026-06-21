@@ -1,73 +1,51 @@
 ISO-10303-21;
-/* N122 — ShapeAnalysis_Edge.CheckPoints with-NaN-precision-input
- * Defect: CheckPoints called with NaN as precision parameter; the algorithm
- * doesn't validate and propagates NaN through comparisons (dist > precision
- * evaluates false when precision is NaN), skipping point validation.
- * Geometry: edge with vertices and parametric points; precision=NaN.
- */
+/* N122: CLOSED_SHELL test_shell with test_face containing curved_edge on PARABOLA; UNCERTAINTY_MEASURE set to 0.0 (NaN-equivalent precision); CheckPoints dist > NaN comparisons always false, skipping all point validation */
 HEADER;
-FILE_DESCRIPTION(('N122 CheckPoints NaN precision propagation'),'2;1');
-FILE_NAME('N122.stp','2026-06-15T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('N122'),'2;1');
+FILE_NAME('N122.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-#6=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#7=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#8=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-/* Points on a curved edge */
-#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('p1',(3.0,4.0,0.0));
-#12=CARTESIAN_POINT('p2',(6.0,0.0,0.0));
-#13=CARTESIAN_POINT('p_mid',(3.0,2.0,0.0));
-#14=CARTESIAN_POINT('p_param1',(1.5,3.0,0.0));
-#15=CARTESIAN_POINT('p_param2',(4.5,3.0,0.0));
-#20=VERTEX_POINT('v0',#10);
-#21=VERTEX_POINT('v1',#12);
-/* Parabolic curve */
-#30=DIRECTION('x',(1.0,0.0,0.0));
-#40=VECTOR('vx',#30,6.0);
-#50=PARABOLA('curve',
-  (AXIS2_PLACEMENT_3D('',#11,
-    (DIRECTION('',(-0.0,-0.0,-1.0))),
-    (DIRECTION('',(-1.0,-0.0,-0.0))))),2.0);
-/* Edge with parametric points that CheckPoints will validate with NaN */
-#60=EDGE_CURVE('curved_edge',#20,#21,#50,.T.);
-/* Host surface */
-#70=CARTESIAN_POINT('surf_orig',(0.0,0.0,-1.0));
-#71=DIRECTION('surf_z',(0.0,0.0,1.0));
-#72=DIRECTION('surf_x',(1.0,0.0,0.0));
-#73=AXIS2_PLACEMENT_3D('surf_ax',#70,#71,#72);
-#74=PLANE('host_plane',#73);
-/* Edge loop (simplified) */
-#80=ORIENTED_EDGE('oe0',*,*,#60,.T.);
-#81=EDGE_LOOP('boundary',(#80));
-#82=FACE_OUTER_BOUND('',#81,.T.);
-#83=ADVANCED_FACE('test_face',(#82),#74,.T.);
-/* Tolerance context with NaN uncertainty (implicit via missing measure) */
-#100=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0),#6,
-  'distance_accuracy_value','nan_precision');
-#110=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#100))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#6,#7,#8))
-  REPRESENTATION_CONTEXT('nan_edge_check','3D'));
-#200=CLOSED_SHELL('test_shell',(#83));
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('N122','N122','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#200));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(3.0,4.0,0.0));
+#3=CARTESIAN_POINT('',(6.0,0.0,0.0));
+#4=VERTEX_POINT('v0',#1);
+#5=VERTEX_POINT('v1',#3);
+#6=CARTESIAN_POINT('',(3.0,4.0,0.0));
+#7=DIRECTION('',(0.0,0.0,-1.0));
+#8=DIRECTION('',(-1.0,0.0,0.0));
+#9=AXIS2_PLACEMENT_3D('',#6,#7,#8);
+#10=PARABOLA('curve',#9,2.0);
+#11=EDGE_CURVE('curved_edge',#4,#5,#10,.T.);
+#12=CARTESIAN_POINT('',(0.0,0.0,-1.0));
+#13=DIRECTION('',(0.0,0.0,1.0));
+#14=DIRECTION('',(1.0,0.0,0.0));
+#15=AXIS2_PLACEMENT_3D('',#12,#13,#14);
+#16=PLANE('',#15);
+#17=ORIENTED_EDGE('',$,$,#11,.T.);
+#18=EDGE_LOOP('boundary',(#17));
+#19=FACE_OUTER_BOUND('',#18,.T.);
+#20=ADVANCED_FACE('test_face',(#19),#16,.T.);
+#21=CLOSED_SHELL('test_shell',(#20));
+#22=SHELL_BASED_SURFACE_MODEL('',(#21));
+#23=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#24=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#25=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#26=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0),#23,'distance_accuracy_value','nan_precision');
+#27=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#26))GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#26))GLOBAL_UNIT_ASSIGNED_CONTEXT((#23,#24,#25))REPRESENTATION_CONTEXT('nan_edge_check','3D'));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('N122','N122','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#22),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
