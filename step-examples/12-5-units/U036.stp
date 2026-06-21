@@ -1,16 +1,34 @@
 ISO-10303-21;
-/* U036 - BinXCAF does not preserve length unit
- * Defect: document with LENGTH_UNIT INCH and one cube of side 1.0; XBF reload defaults to mm */
+/* U036: BinXCAF does not preserve INCH length unit — reloads as mm */
+/* Document: 1x1x1 inch cube saved via OCCT XBF persistence */
+/* DEFECT: XBF records geometry but drops the length unit; reload defaults to mm */
+/* On reload: 1.0 inch becomes 1.0 mm (should be 25.4 mm) */
 HEADER;
-FILE_DESCRIPTION(('U036 test case','BinXCAF does not preserve length unit'),'2;1');
-FILE_NAME('U036.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('U036: INCH unit lost through BinXCAF XBF round-trip'),'2;1');
+FILE_NAME('U036.stp','2026-06-20T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#100=(LENGTH_UNIT() NAMED_UNIT(*) CONVERSION_BASED_UNIT('INCH',#101));
-#101=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#102);
-#102=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+/* Geometry: 1x1x1 inch cube; values are in inches */
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=CARTESIAN_POINT('corner-x',(1.0,0.,0.));
+#3=CARTESIAN_POINT('corner-y',(0.,1.0,0.));
+#4=CARTESIAN_POINT('corner-z',(0.,0.,1.0));
+#5=CARTESIAN_POINT('corner-xyz',(1.0,1.0,1.0));
+/* SI mm basis for conversion reference */
+#8=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+/* INCH conversion: 25.4 mm per inch */
+#9=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#8);
+/* File declares INCH as active length unit */
+#10=(CONVERSION_BASED_UNIT('INCH',#9) LENGTH_UNIT() NAMED_UNIT(*));
+#11=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(3.937E-5),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+/* DEFECT: BinXCAF persistence drops this unit record — reload defaults to mm */
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT('ctx','3D'));
+/* Model entity is GEOMETRIC_CURVE_SET — OCC returns empty shape */
+#20=GEOMETRIC_CURVE_SET('binxcaf-inch-unit-lost',(#1,#2,#3,#4,#5));
 ENDSEC;
 END-ISO-10303-21;
