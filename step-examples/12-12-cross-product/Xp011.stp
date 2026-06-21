@@ -1,21 +1,63 @@
 ISO-10303-21;
-/* Xp011 - Cross-product: REAL slot filled with integer literal (no
- *   decimal point) AND empty FILE_NAME author/organisation fields.
- * Builds on Ls001 (REAL missing decimal) + Lh-empty-author-class. */
+/* Xp011: REAL missing decimal x integer in DIRECTION x empty FILE_NAME author */
 HEADER;
-FILE_DESCRIPTION(('Xp011 cross-product','integer-in-REAL x empty author fields'),'2;1');
-/* Defect 2: author=(''), organisation=(''), originating_system='', authorization='' */
-FILE_NAME('Xp011.stp','2026-04-26T00:00:00',(''),(''),'','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Xp011'),'2;1');
+FILE_NAME('Xp011.stp','2026-06-17T00:00:00',(''),(''),'','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-/* Defect 1: integer literals (1,0,0) inside the REAL aggregate of a DIRECTION */
-#11=DIRECTION('',(1,0,0));
-#12=DIRECTION('',(0,0,1));
-#13=AXIS2_PLACEMENT_3D('',#10,#12,#11);
-#14=PLANE('',#13);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=DIRECTION('',(1,0,0));
+#2=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#3=DIRECTION('',(0.0,0.0,1.0));
+#4=DIRECTION('',(1.0,0.0,0.0));
+#5=AXIS2_PLACEMENT_3D('',#2,#3,#4);
+#6=PLANE('',#5);
+#7=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#9=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#10=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=VERTEX_POINT('',#10);
+#15=DIRECTION('',(1.0,0.0,0.0));
+#16=VECTOR('',#15,1.0);
+#17=LINE('',#7,#16);
+#18=EDGE_CURVE('',#11,#12,#17,.T.);
+#19=DIRECTION('',(0.0,1.0,0.0));
+#20=VECTOR('',#19,1.0);
+#21=LINE('',#8,#20);
+#22=EDGE_CURVE('',#12,#13,#21,.T.);
+#23=DIRECTION('',(-1.0,0.0,0.0));
+#24=VECTOR('',#23,1.0);
+#25=LINE('',#9,#24);
+#26=EDGE_CURVE('',#13,#14,#25,.T.);
+#27=DIRECTION('',(0.0,-1.0,0.0));
+#28=VECTOR('',#27,1.0);
+#29=LINE('',#10,#28);
+#30=EDGE_CURVE('',#14,#11,#29,.T.);
+#31=ORIENTED_EDGE('',$,$,#18,.T.);
+#32=ORIENTED_EDGE('',$,$,#22,.T.);
+#33=ORIENTED_EDGE('',$,$,#26,.T.);
+#34=ORIENTED_EDGE('',$,$,#30,.T.);
+#35=EDGE_LOOP('',(#31,#32,#33,#34));
+#36=FACE_OUTER_BOUND('',#35,.T.);
+#37=ADVANCED_FACE('',(#36),#6,.T.);
+#38=OPEN_SHELL('',(#37));
+#39=SHELL_BASED_SURFACE_MODEL('',(#38));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Xp011','Xp011','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#39),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

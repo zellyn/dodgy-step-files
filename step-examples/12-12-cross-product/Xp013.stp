@@ -1,97 +1,106 @@
 ISO-10303-21;
-/* Xp013 - Cross-product: cone apex pcurve singularity, folded B-spline
- *   surface, non-manifold vertex shared across components.
- * Builds on Gp005 (pcurve singularity through cone apex) + Gs010 (folded
- *   B-spline surface) + Tsh-nonmanifold-vertex-class.
- * Non-manifold encoding: TWO disjoint shells share the apex VERTEX,
- *   so the apex vertex is referenced from edges in both shells —
- *   the vertex's link is non-manifold (more than two faces incident). */
+/* Xp013: Cone apex pcurve x surface-folded x non-manifold vertex */
 HEADER;
-FILE_DESCRIPTION(('Xp013 cross-product','cone apex x folded surface x non-manifold vertex'),'2;1');
-FILE_NAME('Xp013.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Xp013'),'2;1');
+FILE_NAME('Xp013.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Defect 1: cone with apex at origin */
-#10=CARTESIAN_POINT('apex',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
-#14=CONICAL_SURFACE('cone',#13,1.0,0.7853981633974483);
-/* Apex vertex - shared by edges across two SEPARATE shells */
-#20=VERTEX_POINT('apex_shared',#10);
-/* === Component A: shell of two faces meeting at apex === */
-#30=CARTESIAN_POINT('A_p1',(1.0,0.0,1.0));
-#31=VERTEX_POINT('',#30);
-#32=DIRECTION('',(0.7071,0.0,0.7071));
-#33=VECTOR('',#32,1.4142);
-#34=LINE('',#10,#33);
-#35=EDGE_CURVE('eA1',#20,#31,#34,.T.);
-#40=CARTESIAN_POINT('A_p2',(0.0,1.0,1.0));
-#41=VERTEX_POINT('',#40);
-#42=DIRECTION('',(0.0,0.7071,0.7071));
-#43=VECTOR('',#42,1.4142);
-#44=LINE('',#10,#43);
-#45=EDGE_CURVE('eA2',#20,#41,#44,.T.);
-/* third edge between the two far ends to close the loop */
-#46=DIRECTION('',(-0.7071,0.7071,0.0));
-#47=VECTOR('',#46,1.4142);
-#48=LINE('',#30,#47);
-#49=EDGE_CURVE('eA_close',#31,#41,#48,.T.);
-#50=ORIENTED_EDGE('',*,*,#35,.T.);
-#51=ORIENTED_EDGE('',*,*,#49,.T.);
-#52=ORIENTED_EDGE('',*,*,#45,.F.);
-#53=EDGE_LOOP('A_loop',(#50,#51,#52));
-#54=FACE_OUTER_BOUND('',#53,.T.);
-#55=ADVANCED_FACE('A_face',(#54),#14,.T.);
-#56=OPEN_SHELL('A_shell',(#55));
-/* === Component B: shell of one face also meeting at apex === */
-#60=CARTESIAN_POINT('B_p1',(0.0,0.0,-1.0));
-#61=VERTEX_POINT('',#60);
-#62=DIRECTION('',(0.0,0.0,-1.0));
-#63=VECTOR('',#62,1.0);
-#64=LINE('',#10,#63);
-#65=EDGE_CURVE('eB1',#20,#61,#64,.T.);
-#66=CARTESIAN_POINT('B_p2',(0.7071,0.7071,0.0));
-#67=VERTEX_POINT('',#66);
-#68=DIRECTION('',(0.7071,0.7071,0.0));
-#69=VECTOR('',#68,1.0);
-#70=LINE('',#10,#69);
-#71=EDGE_CURVE('eB2',#20,#67,#70,.T.);
-#72=DIRECTION('',(0.5774,0.5774,-0.5774));
-#73=VECTOR('',#72,1.7320);
-#74=LINE('',#60,#73);
-#75=EDGE_CURVE('eB_close',#61,#67,#74,.T.);
-#76=ORIENTED_EDGE('',*,*,#65,.T.);
-#77=ORIENTED_EDGE('',*,*,#75,.T.);
-#78=ORIENTED_EDGE('',*,*,#71,.F.);
-#79=EDGE_LOOP('B_loop',(#76,#77,#78));
-#80=FACE_OUTER_BOUND('',#79,.T.);
-#81=ADVANCED_FACE('B_face',(#80),#14,.T.);
-#82=OPEN_SHELL('B_shell',(#81));
-/* === Defect 3: SHELL_BASED_SURFACE_MODEL holding two shells that
- *   share a non-manifold vertex (#20) === */
-#90=SHELL_BASED_SURFACE_MODEL('non_manifold_apex_two_shells',(#56,#82));
-/* Defect 2: B-spline surface with control net that folds (interior
- *   row reverses U order) */
-#100=CARTESIAN_POINT('',(0.0,0.0,2.0));
-#101=CARTESIAN_POINT('',(1.0,0.0,2.0));
-#102=CARTESIAN_POINT('',(2.0,0.0,2.0));
-#103=CARTESIAN_POINT('',(3.0,0.0,2.0));
-/* Folded row: u-order swapped */
-#104=CARTESIAN_POINT('',(2.0,1.0,2.0));
-#105=CARTESIAN_POINT('',(3.0,1.0,2.0));
-#106=CARTESIAN_POINT('',(0.0,1.0,2.0));
-#107=CARTESIAN_POINT('',(1.0,1.0,2.0));
-#108=CARTESIAN_POINT('',(0.0,2.0,2.0));
-#109=CARTESIAN_POINT('',(1.0,2.0,2.0));
-#110=CARTESIAN_POINT('',(2.0,2.0,2.0));
-#111=CARTESIAN_POINT('',(3.0,2.0,2.0));
-#120=B_SPLINE_SURFACE_WITH_KNOTS('folded',3,2,
-  ((#100,#101,#102,#103),(#104,#105,#106,#107),(#108,#109,#110,#111)),
-  .UNSPECIFIED.,.F.,.F.,.F.,
-  (4,4),(3,3),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=CONICAL_SURFACE('',#4,0.0,0.785398163397);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(1.0,0.0,1.0));
+#8=CARTESIAN_POINT('',(0.0,1.0,1.0));
+#9=VERTEX_POINT('',#6);
+#10=VERTEX_POINT('',#7);
+#11=VERTEX_POINT('',#8);
+#12=DIRECTION('',(0.707106781187,0.0,0.707106781187));
+#13=VECTOR('',#12,1.41421356237);
+#14=LINE('',#6,#13);
+#15=EDGE_CURVE('',#9,#10,#14,.T.);
+#16=DIRECTION('',(-0.707106781187,0.707106781187,0.0));
+#17=VECTOR('',#16,1.41421356237);
+#18=LINE('',#7,#17);
+#19=EDGE_CURVE('',#10,#11,#18,.T.);
+#20=DIRECTION('',(0.0,-0.707106781187,-0.707106781187));
+#21=VECTOR('',#20,1.41421356237);
+#22=LINE('',#8,#21);
+#23=EDGE_CURVE('',#11,#9,#22,.T.);
+#24=ORIENTED_EDGE('',$,$,#15,.T.);
+#25=ORIENTED_EDGE('',$,$,#19,.T.);
+#26=ORIENTED_EDGE('',$,$,#23,.T.);
+#27=EDGE_LOOP('',(#24,#25,#26));
+#28=FACE_OUTER_BOUND('',#27,.T.);
+#29=ADVANCED_FACE('',(#28),#5,.T.);
+#30=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#31=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#32=CARTESIAN_POINT('',(1.0,0.0,1.0));
+#33=CARTESIAN_POINT('',(1.0,1.0,1.0));
+#34=CARTESIAN_POINT('',(0.5,0.0,0.0));
+#35=CARTESIAN_POINT('',(0.5,1.0,0.0));
+#36=B_SPLINE_SURFACE_WITH_KNOTS('',2,1,((#30,#31),(#32,#33),(#34,#35)),.UNSPECIFIED.,.F.,.F.,.F.,(3,3),(2,2),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
+#37=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#38=CARTESIAN_POINT('',(1.0,0.0,1.0));
+#39=CARTESIAN_POINT('',(1.0,1.0,1.0));
+#40=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#41=VERTEX_POINT('',#37);
+#42=VERTEX_POINT('',#38);
+#43=VERTEX_POINT('',#39);
+#44=VERTEX_POINT('',#40);
+#45=DIRECTION('',(0.707106781187,0.0,0.707106781187));
+#46=VECTOR('',#45,1.41421356237);
+#47=LINE('',#37,#46);
+#48=EDGE_CURVE('',#41,#42,#47,.T.);
+#49=DIRECTION('',(0.0,1.0,0.0));
+#50=VECTOR('',#49,1.0);
+#51=LINE('',#38,#50);
+#52=EDGE_CURVE('',#42,#43,#51,.T.);
+#53=DIRECTION('',(-0.707106781187,0.0,-0.707106781187));
+#54=VECTOR('',#53,1.41421356237);
+#55=LINE('',#39,#54);
+#56=EDGE_CURVE('',#43,#44,#55,.T.);
+#57=DIRECTION('',(0.0,-1.0,0.0));
+#58=VECTOR('',#57,1.0);
+#59=LINE('',#40,#58);
+#60=EDGE_CURVE('',#44,#41,#59,.T.);
+#61=ORIENTED_EDGE('',$,$,#48,.T.);
+#62=ORIENTED_EDGE('',$,$,#52,.T.);
+#63=ORIENTED_EDGE('',$,$,#56,.T.);
+#64=ORIENTED_EDGE('',$,$,#60,.T.);
+#65=EDGE_LOOP('',(#61,#62,#63,#64));
+#66=FACE_OUTER_BOUND('',#65,.T.);
+#67=ADVANCED_FACE('',(#66),#36,.T.);
+#68=CARTESIAN_POINT('',(0.5,0.5,0.5));
+#69=CARTESIAN_POINT('',(-0.5,0.5,0.5));
+#70=VERTEX_POINT('',#68);
+#71=VERTEX_POINT('',#69);
+#72=DIRECTION('',(0.57735026919,0.57735026919,0.57735026919));
+#73=VECTOR('',#72,0.866025403784);
+#74=LINE('',#6,#73);
+#75=EDGE_CURVE('',#9,#70,#74,.T.);
+#76=DIRECTION('',(-0.57735026919,0.57735026919,0.57735026919));
+#77=VECTOR('',#76,0.866025403784);
+#78=LINE('',#6,#77);
+#79=EDGE_CURVE('',#9,#71,#78,.T.);
+#80=/* xp013 defect-3: v_apex #9 shared by edges #15, #23, #75, #79 — non-manifold vertex */;
+#81=OPEN_SHELL('',(#29,#67));
+#82=SHELL_BASED_SURFACE_MODEL('',(#81));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Xp013','Xp013','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#82),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
