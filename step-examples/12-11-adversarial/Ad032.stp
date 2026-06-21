@@ -1,62 +1,155 @@
 ISO-10303-21;
-/* Ad032 - Schema-EXPRESS rule recursion bomb
-   ----------------------------------------------------------------------
-   Catalog section : §12.11 adversarial (sub-class: resource-exhaustion / DoS)
-   Sources         : 12-adversarial.md A032
-   See also        : Ad027, Ad054, Ad055, Pf030
-   Severity        : M (DoS)
-   ----------------------------------------------------------------------
-   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
-   testing. Do NOT use as exchange data.
-   ----------------------------------------------------------------------
-   Defect
-     EXPRESS WHERE rules invoke functions transitively. An attacker
-     references entities such that rule evaluation walks the entity
-     graph repeatedly. With a star topology, an O(n^2) evaluation with
-     cycle re-entry is weaponisable: rule re-checks fan out across every
-     EDGE_CURVE -> VERTEX_POINT pair, then back-link.
-   Reproducer recipe (scaled-down 16-edge star here; production size 10^4)
-     Sixteen EDGE_CURVE entities each referencing the same two
-     VERTEX_POINTs in a star topology. WHERE rules on edge curves and
-     vertices repeatedly traverse this set on every binding.
-   Expected kernel behavior
-     Per-file rule-evaluation budget; abort with E_RULE_BUDGET when
-     budget exceeded. Memoise WHERE-rule results per entity; never
-     re-evaluate beyond a bounded depth.
-   ----------------------------------------------------------------------
-*/
+/* Ad032: schema-EXPRESS rule recursion bomb: star topology of EDGE_CURVE entities sharing VERTEX_POINTs triggers O(n²) WHERE-rule re-evaluation; kernel must enforce per-file rule-evaluation budget (E_RULE_BUDGET); GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Ad032 - WHERE-rule recursion bomb via star topology'),'2;1');
-FILE_NAME('Ad032.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Ad032'),'2;1');
+FILE_NAME('Ad032.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=CARTESIAN_POINT('a',(0.0,0.0,0.0));
-#2=CARTESIAN_POINT('b',(1.0,0.0,0.0));
-#3=VERTEX_POINT('va',#1);
-#4=VERTEX_POINT('vb',#2);
-#5=DIRECTION('z',(0.0,0.0,1.0));
-#6=DIRECTION('x',(1.0,0.0,0.0));
-#7=AXIS2_PLACEMENT_3D('ap',#1,#5,#6);
-#8=LINE('l',#1,#9);
-#9=VECTOR('v',#6,1.0);
-/* Sixteen edges sharing the same two vertices -> WHERE-rule fan-out */
-#100=EDGE_CURVE('e0',#3,#4,#8,.T.);
-#101=EDGE_CURVE('e1',#3,#4,#8,.T.);
-#102=EDGE_CURVE('e2',#3,#4,#8,.T.);
-#103=EDGE_CURVE('e3',#3,#4,#8,.T.);
-#104=EDGE_CURVE('e4',#3,#4,#8,.T.);
-#105=EDGE_CURVE('e5',#3,#4,#8,.T.);
-#106=EDGE_CURVE('e6',#3,#4,#8,.T.);
-#107=EDGE_CURVE('e7',#3,#4,#8,.T.);
-#108=EDGE_CURVE('e8',#3,#4,#8,.T.);
-#109=EDGE_CURVE('e9',#3,#4,#8,.T.);
-#110=EDGE_CURVE('e10',#3,#4,#8,.T.);
-#111=EDGE_CURVE('e11',#3,#4,#8,.T.);
-#112=EDGE_CURVE('e12',#3,#4,#8,.T.);
-#113=EDGE_CURVE('e13',#3,#4,#8,.T.);
-#114=EDGE_CURVE('e14',#3,#4,#8,.T.);
-#115=EDGE_CURVE('e15',#3,#4,#8,.T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Ad032','Ad032','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#9064=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#9065=VERTEX_POINT('',#9063);
+#9066=VERTEX_POINT('',#9064);
+#9067=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#9068=DIRECTION('',(1.0,0.0,0.0));
+#9069=VECTOR('',#9068,10.0);
+#9070=LINE('',#9067,#9069);
+#9071=EDGE_CURVE('star_0',#9065,#9066,#9070,.T.);
+#9072=CARTESIAN_POINT('',(0.1,1.0,0.0));
+#9073=DIRECTION('',(1.0,0.0,0.0));
+#9074=VECTOR('',#9073,10.0);
+#9075=LINE('',#9072,#9074);
+#9076=EDGE_CURVE('star_1',#9065,#9066,#9075,.T.);
+#9077=CARTESIAN_POINT('',(0.2,2.0,0.0));
+#9078=DIRECTION('',(1.0,0.0,0.0));
+#9079=VECTOR('',#9078,10.0);
+#9080=LINE('',#9077,#9079);
+#9081=EDGE_CURVE('star_2',#9065,#9066,#9080,.T.);
+#9082=CARTESIAN_POINT('',(0.3,3.0,0.0));
+#9083=DIRECTION('',(1.0,0.0,0.0));
+#9084=VECTOR('',#9083,10.0);
+#9085=LINE('',#9082,#9084);
+#9086=EDGE_CURVE('star_3',#9065,#9066,#9085,.T.);
+#9087=CARTESIAN_POINT('',(0.4,4.0,0.0));
+#9088=DIRECTION('',(1.0,0.0,0.0));
+#9089=VECTOR('',#9088,10.0);
+#9090=LINE('',#9087,#9089);
+#9091=EDGE_CURVE('star_4',#9065,#9066,#9090,.T.);
+#9092=CARTESIAN_POINT('',(0.5,5.0,0.0));
+#9093=DIRECTION('',(1.0,0.0,0.0));
+#9094=VECTOR('',#9093,10.0);
+#9095=LINE('',#9092,#9094);
+#9096=EDGE_CURVE('star_5',#9065,#9066,#9095,.T.);
+#9097=CARTESIAN_POINT('',(0.6,6.0,0.0));
+#9098=DIRECTION('',(1.0,0.0,0.0));
+#9099=VECTOR('',#9098,10.0);
+#9100=LINE('',#9097,#9099);
+#9101=EDGE_CURVE('star_6',#9065,#9066,#9100,.T.);
+#9102=CARTESIAN_POINT('',(0.7,7.0,0.0));
+#9103=DIRECTION('',(1.0,0.0,0.0));
+#9104=VECTOR('',#9103,10.0);
+#9105=LINE('',#9102,#9104);
+#9106=EDGE_CURVE('star_7',#9065,#9066,#9105,.T.);
+#9107=CARTESIAN_POINT('',(0.8,8.0,0.0));
+#9108=DIRECTION('',(1.0,0.0,0.0));
+#9109=VECTOR('',#9108,10.0);
+#9110=LINE('',#9107,#9109);
+#9111=EDGE_CURVE('star_8',#9065,#9066,#9110,.T.);
+#9112=CARTESIAN_POINT('',(0.9,9.0,0.0));
+#9113=DIRECTION('',(1.0,0.0,0.0));
+#9114=VECTOR('',#9113,10.0);
+#9115=LINE('',#9112,#9114);
+#9116=EDGE_CURVE('star_9',#9065,#9066,#9115,.T.);
+#9117=CARTESIAN_POINT('',(1.0,10.0,0.0));
+#9118=DIRECTION('',(1.0,0.0,0.0));
+#9119=VECTOR('',#9118,10.0);
+#9120=LINE('',#9117,#9119);
+#9121=EDGE_CURVE('star_10',#9065,#9066,#9120,.T.);
+#9122=CARTESIAN_POINT('',(1.1,11.0,0.0));
+#9123=DIRECTION('',(1.0,0.0,0.0));
+#9124=VECTOR('',#9123,10.0);
+#9125=LINE('',#9122,#9124);
+#9126=EDGE_CURVE('star_11',#9065,#9066,#9125,.T.);
+#9127=CARTESIAN_POINT('',(1.2,12.0,0.0));
+#9128=DIRECTION('',(1.0,0.0,0.0));
+#9129=VECTOR('',#9128,10.0);
+#9130=LINE('',#9127,#9129);
+#9131=EDGE_CURVE('star_12',#9065,#9066,#9130,.T.);
+#9132=CARTESIAN_POINT('',(1.3,13.0,0.0));
+#9133=DIRECTION('',(1.0,0.0,0.0));
+#9134=VECTOR('',#9133,10.0);
+#9135=LINE('',#9132,#9134);
+#9136=EDGE_CURVE('star_13',#9065,#9066,#9135,.T.);
+#9137=CARTESIAN_POINT('',(1.4,14.0,0.0));
+#9138=DIRECTION('',(1.0,0.0,0.0));
+#9139=VECTOR('',#9138,10.0);
+#9140=LINE('',#9137,#9139);
+#9141=EDGE_CURVE('star_14',#9065,#9066,#9140,.T.);
+#9142=CARTESIAN_POINT('',(1.5,15.0,0.0));
+#9143=DIRECTION('',(1.0,0.0,0.0));
+#9144=VECTOR('',#9143,10.0);
+#9145=LINE('',#9142,#9144);
+#9146=EDGE_CURVE('star_15',#9065,#9066,#9145,.T.);
+#9147=CARTESIAN_POINT('',(1.6,16.0,0.0));
+#9148=DIRECTION('',(1.0,0.0,0.0));
+#9149=VECTOR('',#9148,10.0);
+#9150=LINE('',#9147,#9149);
+#9151=EDGE_CURVE('star_16',#9065,#9066,#9150,.T.);
+#9152=CARTESIAN_POINT('',(1.7,17.0,0.0));
+#9153=DIRECTION('',(1.0,0.0,0.0));
+#9154=VECTOR('',#9153,10.0);
+#9155=LINE('',#9152,#9154);
+#9156=EDGE_CURVE('star_17',#9065,#9066,#9155,.T.);
+#9157=CARTESIAN_POINT('',(1.8,18.0,0.0));
+#9158=DIRECTION('',(1.0,0.0,0.0));
+#9159=VECTOR('',#9158,10.0);
+#9160=LINE('',#9157,#9159);
+#9161=EDGE_CURVE('star_18',#9065,#9066,#9160,.T.);
+#9162=CARTESIAN_POINT('',(1.9,19.0,0.0));
+#9163=DIRECTION('',(1.0,0.0,0.0));
+#9164=VECTOR('',#9163,10.0);
+#9165=LINE('',#9162,#9164);
+#9166=EDGE_CURVE('star_19',#9065,#9066,#9165,.T.);
+#9167=CARTESIAN_POINT('',(2.0,20.0,0.0));
+#9168=DIRECTION('',(1.0,0.0,0.0));
+#9169=VECTOR('',#9168,10.0);
+#9170=LINE('',#9167,#9169);
+#9171=EDGE_CURVE('star_20',#9065,#9066,#9170,.T.);
+#9172=CARTESIAN_POINT('',(2.1,21.0,0.0));
+#9173=DIRECTION('',(1.0,0.0,0.0));
+#9174=VECTOR('',#9173,10.0);
+#9175=LINE('',#9172,#9174);
+#9176=EDGE_CURVE('star_21',#9065,#9066,#9175,.T.);
+#9177=CARTESIAN_POINT('',(2.2,22.0,0.0));
+#9178=DIRECTION('',(1.0,0.0,0.0));
+#9179=VECTOR('',#9178,10.0);
+#9180=LINE('',#9177,#9179);
+#9181=EDGE_CURVE('star_22',#9065,#9066,#9180,.T.);
+#9182=CARTESIAN_POINT('',(2.3,23.0,0.0));
+#9183=DIRECTION('',(1.0,0.0,0.0));
+#9184=VECTOR('',#9183,10.0);
+#9185=LINE('',#9182,#9184);
+#9186=EDGE_CURVE('star_23',#9065,#9066,#9185,.T.);
+#9187=CARTESIAN_POINT('',(2.4,24.0,0.0));
+#9188=DIRECTION('',(1.0,0.0,0.0));
+#9189=VECTOR('',#9188,10.0);
+#9190=LINE('',#9187,#9189);
+#9191=EDGE_CURVE('star_24',#9065,#9066,#9190,.T.);
 ENDSEC;
 END-ISO-10303-21;

@@ -1,59 +1,30 @@
 ISO-10303-21;
-/* ============================================================
-   WARNING: THIS FILE IS INTENTIONALLY MALFORMED.
-   It exists ONLY for parser-robustness / fuzz-class testing.
-   DO NOT feed to a production translator without sandboxing.
-
-   Entry  : Ad030
-   Title  : Type-confusion via mis-typed reference
-            (CARTESIAN_POINT used as DIRECTION).
-   Defect : Schema-driven late binding lifts an entity from
-            the instance table and casts to the slot's
-            declared type without a dynamic-type check. If
-            an earlier parse error caused the type-validation
-            pass to be skipped, downstream geometry code
-            dereferences via the wrong-type vtable.
-
-            This fixture declares #10 as CARTESIAN_POINT but
-            references it in slots demanding:
-              - DIRECTION         (axis2_placement.axis)
-              - DIRECTION         (axis2_placement.ref_dir)
-              - VECTOR            (line.dir)
-            and similarly references #20 as DIRECTION where
-            CARTESIAN_POINT is required (line.pnt).
-
-            Primary RCE class for STEP/STP CVEs in 2024-2026
-            advisories (ZDI-25-615 / CVE-2025-9450).
-   Expected: every attribute bind must check dynamic type vs
-             schema; reject with E_TYPE_MISMATCH.
-   See also: Ad042, Ad078.
-   ============================================================ */
+/* Ad030: type-confusion: #10=CARTESIAN_POINT used in DIRECTION slot; schema-driven late binding without dynamic-type check → wrong-type vtable deref; primary RCE class for STEP CVEs 2024-2026; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Ad030 type confusion CARTESIAN_POINT vs DIRECTION'),'2;1');
-FILE_NAME('Ad030.stp','2026-04-26T00:00:00',('synthetic'),('cad-research'),
-  'none','none','none');
+FILE_DESCRIPTION(('Ad030'),'2;1');
+FILE_NAME('Ad030.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* #10 is a CARTESIAN_POINT (truthful declaration). */
-#10=CARTESIAN_POINT('',(0.,0.,1.));
-
-/* #20 is a DIRECTION (truthful declaration). */
-#20=DIRECTION('',(1.,0.,0.));
-
-/* AXIS2_PLACEMENT_3D expects:
-     location  : CARTESIAN_POINT
-     axis      : DIRECTION   <- but we pass #10 (POINT)
-     ref_dir   : DIRECTION   <- but we pass #10 (POINT) */
-#30=AXIS2_PLACEMENT_3D('',#10,#10,#10);
-
-/* LINE expects:
-     pnt : CARTESIAN_POINT  <- but we pass #20 (DIRECTION)
-     dir : VECTOR           <- but we pass #10 (POINT) */
-#40=LINE('',#20,#10);
-
-/* Place the bad references behind one valid construct so
-   readers that bail early may still report success. */
-#50=PLANE('',#30);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Ad030','Ad030','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#10=CARTESIAN_POINT('',(1.0,2.0,3.0));
+#11=DIRECTION('type_confused_dir',(#10,0.,0.));
+#12=LINE('type_confused_line',#1,#10);
+#13=DIRECTION('wrong_type_slot',(#10,1.,0.));
 ENDSEC;
 END-ISO-10303-21;

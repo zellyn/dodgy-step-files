@@ -1,47 +1,28 @@
 ISO-10303-21;
-/* Ad035 - IGES-style 80-column padding sensitivity (shared translator paths)
-   ----------------------------------------------------------------------
-   Catalog section : §12.11 adversarial (sub-class: framing / OOB-read)
-   Sources         : 12-adversarial.md A039
-   Severity        : Medium
-   ----------------------------------------------------------------------
-   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
-   testing. It mixes IGES-style fixed-column padding and an off-by-one
-   record count to exercise the shared IGES/STEP translator code path.
-   Do NOT use as exchange data.
-   ----------------------------------------------------------------------
-   Defect
-     IGES Directory-Entry uses fixed 80-column records; a record with
-     non-space padding or off-by-one record count crashes parsers that
-     index columns 73..80 unconditionally. This matters in STEP because
-     translators (e.g. ASMIMPORT, IfcOpenShell IGES path) commonly share
-     code paths between IGES and STEP framing. STEP files placed in
-     pipelines that try IGES first can trigger the IGES OOB path.
-   Reproducer recipe
-     STEP file whose first non-comment line is shorter than 80 columns
-     yet declares an IGES-style record count one greater than the
-     physical line count. Below: a comment block masquerading as IGES
-     directory padding that mis-reports its terminator count.
-   Expected kernel behavior
-     Bound all column indexes against actual line length. Do not blindly
-     read 80 columns. Detect ISO-10303-21 magic before any IGES probe.
-   ----------------------------------------------------------------------
-*/
-/*S0000001                                                                S0000001*/
-/*G0000002                                                                G0000002*/
-/*D0000003                                                                D0000004*/
-/*P0000005                                                                P0000005*/
-/*T0000099S0000001G0000001D0000002P0000001                                T0000001*/
+/* Ad035: IGES-style 80-column padding sensitivity via shared translator code paths; oversized-line attack pattern in STEP data section probes fixed-column-index path; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Ad035 - IGES 80-col padding fronting STEP body'),'2;1');
-FILE_NAME('Ad035.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Ad035'),'2;1');
+FILE_NAME('Ad035.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#20=DIRECTION('z',(0.0,0.0,1.0));
-#30=DIRECTION('x',(1.0,0.0,0.0));
-#40=AXIS2_PLACEMENT_3D('placement',#10,#20,#30);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Ad035','Ad035','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=CARTESIAN_POINT('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',(1.0,2.0,3.0));
+#9064=CARTESIAN_POINT('YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY99999999',(4.0,5.0,6.0));
 ENDSEC;
 END-ISO-10303-21;

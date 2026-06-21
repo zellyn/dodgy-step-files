@@ -1,57 +1,76 @@
 ISO-10303-21;
-/* ============================================================
-   WARNING: THIS FILE IS INTENTIONALLY MALFORMED.
-   It exists ONLY for parser-robustness / fuzz-class testing.
-   DO NOT feed to a production translator without sandboxing.
-
-   Entry  : Ad027
-   Title  : STEP "zip bomb" — many tiny instances exhaust
-            memory through O(N) instance tables and O(N x K)
-            reverse-reference maps.
-   Defect : This catalogued fixture declares a relatively
-            modest run of CARTESIAN_POINT instances. A real
-            fuzz fixture would include 10^6 - 10^7 such
-            instances; even a 50 MB file with 5M tiny entity
-            declarations holding 100 references each can
-            expand to ~40 GB resident in many readers.
-            Pattern documented in CAD Exchanger floating-
-            crash class (#A027/A040).
-   Expected: streaming-friendly architecture; configurable
-             max_instances; abort with E_INSTANCE_LIMIT.
-   See also: Ad032, Ad057.
-   ============================================================ */
+/* Ad027: zip-bomb: many CARTESIAN_POINT declarations exhaust O(N) instance table; structural attack pattern — parser must enforce max_instances budget; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Ad027 instance-count zip bomb'),'2;1');
-FILE_NAME('Ad027.stp','2026-04-26T00:00:00',('synthetic'),('cad-research'),
-  'none','none','none');
+FILE_DESCRIPTION(('Ad027'),'2;1');
+FILE_NAME('Ad027.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* truncated bomb: catalogued fixture shows only the pattern;
-   a real fuzz fixture inflates these to millions of rows. */
-#1=CARTESIAN_POINT('',(0.,0.,0.));
-#2=CARTESIAN_POINT('',(0.,0.,0.));
-#3=CARTESIAN_POINT('',(0.,0.,0.));
-#4=CARTESIAN_POINT('',(0.,0.,0.));
-#5=CARTESIAN_POINT('',(0.,0.,0.));
-#6=CARTESIAN_POINT('',(0.,0.,0.));
-#7=CARTESIAN_POINT('',(0.,0.,0.));
-#8=CARTESIAN_POINT('',(0.,0.,0.));
-#9=CARTESIAN_POINT('',(0.,0.,0.));
-#10=CARTESIAN_POINT('',(0.,0.,0.));
-#11=CARTESIAN_POINT('',(0.,0.,0.));
-#12=CARTESIAN_POINT('',(0.,0.,0.));
-#13=CARTESIAN_POINT('',(0.,0.,0.));
-#14=CARTESIAN_POINT('',(0.,0.,0.));
-#15=CARTESIAN_POINT('',(0.,0.,0.));
-#16=CARTESIAN_POINT('',(0.,0.,0.));
-#17=CARTESIAN_POINT('',(0.,0.,0.));
-#18=CARTESIAN_POINT('',(0.,0.,0.));
-#19=CARTESIAN_POINT('',(0.,0.,0.));
-#20=CARTESIAN_POINT('',(0.,0.,0.));
-/* ... real bomb continues to 10^7 lines, each of similar
-       shape, with 100 cross-references back-and-forth. */
-#100=GROUP_ASSIGNMENT(#1,#2,#3,#4,#5,#6,#7,#8,#9,#10,
-  #11,#12,#13,#14,#15,#16,#17,#18,#19,#20);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Ad027','Ad027','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=CARTESIAN_POINT('',(1.0E+308,0.0,0.0));
+#9064=CARTESIAN_POINT('',(1.0E+308,0.01,0.01));
+#9065=CARTESIAN_POINT('',(1.0E+308,0.02,0.02));
+#9066=CARTESIAN_POINT('',(1.0E+308,0.03,0.03));
+#9067=CARTESIAN_POINT('',(1.0E+308,0.04,0.04));
+#9068=CARTESIAN_POINT('',(1.0E+308,0.05,0.05));
+#9069=CARTESIAN_POINT('',(1.0E+308,0.06,0.06));
+#9070=CARTESIAN_POINT('',(1.0E+308,0.07,0.07));
+#9071=CARTESIAN_POINT('',(1.0E+308,0.08,0.08));
+#9072=CARTESIAN_POINT('',(1.0E+308,0.09,0.09));
+#9073=CARTESIAN_POINT('',(1.0E+308,0.1,0.1));
+#9074=CARTESIAN_POINT('',(1.0E+308,0.11,0.11));
+#9075=CARTESIAN_POINT('',(1.0E+308,0.12,0.12));
+#9076=CARTESIAN_POINT('',(1.0E+308,0.13,0.13));
+#9077=CARTESIAN_POINT('',(1.0E+308,0.14,0.14));
+#9078=CARTESIAN_POINT('',(1.0E+308,0.15,0.15));
+#9079=CARTESIAN_POINT('',(1.0E+308,0.16,0.16));
+#9080=CARTESIAN_POINT('',(1.0E+308,0.17,0.17));
+#9081=CARTESIAN_POINT('',(1.0E+308,0.18,0.18));
+#9082=CARTESIAN_POINT('',(1.0E+308,0.19,0.19));
+#9083=CARTESIAN_POINT('',(1.0E+308,0.2,0.2));
+#9084=CARTESIAN_POINT('',(1.0E+308,0.21,0.21));
+#9085=CARTESIAN_POINT('',(1.0E+308,0.22,0.22));
+#9086=CARTESIAN_POINT('',(1.0E+308,0.23,0.23));
+#9087=CARTESIAN_POINT('',(1.0E+308,0.24,0.24));
+#9088=CARTESIAN_POINT('',(1.0E+308,0.25,0.25));
+#9089=CARTESIAN_POINT('',(1.0E+308,0.26,0.26));
+#9090=CARTESIAN_POINT('',(1.0E+308,0.27,0.27));
+#9091=CARTESIAN_POINT('',(1.0E+308,0.28,0.28));
+#9092=CARTESIAN_POINT('',(1.0E+308,0.29,0.29));
+#9093=CARTESIAN_POINT('',(1.0E+308,0.3,0.3));
+#9094=CARTESIAN_POINT('',(1.0E+308,0.31,0.31));
+#9095=CARTESIAN_POINT('',(1.0E+308,0.32,0.32));
+#9096=CARTESIAN_POINT('',(1.0E+308,0.33,0.33));
+#9097=CARTESIAN_POINT('',(1.0E+308,0.34,0.34));
+#9098=CARTESIAN_POINT('',(1.0E+308,0.35000000000000003,0.35000000000000003));
+#9099=CARTESIAN_POINT('',(1.0E+308,0.36,0.36));
+#9100=CARTESIAN_POINT('',(1.0E+308,0.37,0.37));
+#9101=CARTESIAN_POINT('',(1.0E+308,0.38,0.38));
+#9102=CARTESIAN_POINT('',(1.0E+308,0.39,0.39));
+#9103=CARTESIAN_POINT('',(1.0E+308,0.4,0.4));
+#9104=CARTESIAN_POINT('',(1.0E+308,0.41000000000000003,0.41000000000000003));
+#9105=CARTESIAN_POINT('',(1.0E+308,0.42,0.42));
+#9106=CARTESIAN_POINT('',(1.0E+308,0.43,0.43));
+#9107=CARTESIAN_POINT('',(1.0E+308,0.44,0.44));
+#9108=CARTESIAN_POINT('',(1.0E+308,0.45,0.45));
+#9109=CARTESIAN_POINT('',(1.0E+308,0.46,0.46));
+#9110=CARTESIAN_POINT('',(1.0E+308,0.47000000000000003,0.47000000000000003));
+#9111=CARTESIAN_POINT('',(1.0E+308,0.48,0.48));
+#9112=CARTESIAN_POINT('',(1.0E+308,0.49,0.49));
 ENDSEC;
 END-ISO-10303-21;

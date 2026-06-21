@@ -1,45 +1,26 @@
 ISO-10303-21;
-/* Ad031 - Use-after-free on header-mode-handle reuse
-   ----------------------------------------------------------------------
-   Catalog section : §12.11 adversarial / parser robustness (sub-class: UAF)
-   Sources         : 12-adversarial.md A031; ZDI-24-268 / CVE-2024-1847
-                     (eDrawings UAF on file reading)
-   See also        : Ad084
-   Severity        : H
-   ----------------------------------------------------------------------
-   WARNING: This file is INTENTIONALLY MALFORMED. It is a test input for
-   parser-robustness checks, NOT a valid STEP exchange document.
-   ----------------------------------------------------------------------
-   Defect
-     Parser opens a header-parsing context, frees its transient allocator
-     on ENDSEC;, but a deferred diagnostic emitter still holds a pointer
-     into header strings. The attack vector is a malformed
-     FILE_DESCRIPTION whose diagnostic is queued (not flushed) until well
-     after the header arena is destroyed; the eventual flush dereferences
-     freed memory.
-   Reproducer recipe
-     Header with malformed FILE_DESCRIPTION (missing implementation_level
-     argument so a deferred diagnostic is queued) followed by a valid
-     DATA section whose translation triggers the diagnostic flush.
-   Expected kernel behavior
-     Own all diagnostic-bound strings via a long-lived diagnostic arena,
-     never alias parser-temp memory. Emit E_HEADER_MALFORMED at the time
-     of the parse error; do not defer past arena destruction.
-   ----------------------------------------------------------------------
-*/
+/* Ad031: malformed FILE_DESCRIPTION: missing implementation_level second argument; deferred diagnostic holds pointer into freed header allocator → UAF; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-/* Defect: FILE_DESCRIPTION missing the implementation_level argument
-   (only one positional arg). Diagnostic captures pointer into the
-   description string and queues for later emission. */
-FILE_DESCRIPTION(('Ad031 - malformed header triggers deferred diagnostic'));
-FILE_NAME('Ad031.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Ad031'));
+FILE_NAME('Ad031.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#20=DIRECTION('z',(0.0,0.0,1.0));
-#30=DIRECTION('x',(1.0,0.0,0.0));
-#40=AXIS2_PLACEMENT_3D('placement',#10,#20,#30);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Ad031','Ad031','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
