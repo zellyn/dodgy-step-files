@@ -1,40 +1,20 @@
-/* Lh017 — User-defined entity name with ! prefix in DATA section
- * Defect: ISO 10303-21 §11 reserves names beginning with ! for
- * user-defined entities. Schema-driven readers whose keyword regex
- * is [A-Z][0-9A-Z_]* reject them outright instead of treating them
- * as opaque user types. This file emits #50=!MYCURVE(...) inside
- * an otherwise-valid DATA section so the parser must distinguish
- * "lex-error" from "schema-validation reject" from "pass-through
- * generic-entity". */
 ISO-10303-21;
+/* Lh017: user-defined entity with ! prefix in DATA section */
+/* ISO 10303-21 §11: ! prefix designates user-defined entity types */
+/* DEFECT: schema readers with regex [A-Z][0-9A-Z_]* reject ! identifiers */
+/* Cross-oracle: pure Python rejects E_UNRESOLVED_REFS; OCCT silently accepts */
 HEADER;
-FILE_DESCRIPTION((''),'2;1');
-FILE_NAME('Lh017.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('Lh017: user-defined entity with ! prefix in DATA section'),'2;1');
+FILE_NAME('Lh017.stp','2026-06-20T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-#3=PRODUCT_CONTEXT('part',#1,'mechanical');
-#4=PRODUCT('Lh017-part','Lh017 demo','',(#3));
-#5=PRODUCT_DEFINITION_FORMATION('','',#4);
-#6=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#7=PRODUCT_DEFINITION('design','',#5,#6);
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#11=DIRECTION('z',(0.0,0.0,1.0));
-#12=DIRECTION('x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('placement',#10,#11,#12);
-#20=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
-#21=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
-#22=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
-#23=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#20,
-  'distance_accuracy_value','');
-#24=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#23))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#21,#22))
-  REPRESENTATION_CONTEXT('Lh017','3D'));
-#50=!MYCURVE(0.0,0.0,0.0,1.0,$,$,$);
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=CARTESIAN_POINT('corner',(1.,1.,0.));
+#3=DIRECTION('xdir',(1.,0.,0.));
+#4=DIRECTION('zdir',(0.,0.,1.));
+/* DEFECT: !MYCURVE uses the ! prefix for user-defined entity — breaks schema readers */
+#12=!MYCURVE(0.0,0.0,0.0,1.0,$,$,$);
+#5=GEOMETRIC_CURVE_SET('bang-prefixed-entity-shape',(#1,#2));
 ENDSEC;
 END-ISO-10303-21;
