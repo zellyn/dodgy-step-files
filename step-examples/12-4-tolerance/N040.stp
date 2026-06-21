@@ -1,51 +1,42 @@
 ISO-10303-21;
-/* N040 - Limit Tolerance resets shape to user value (Salome) -- destructive
- *        when bloated tolerances hide gaps
- * Defect: Salome's "Limit Tolerance" forces the tolerance of a shape's
- * vertices/edges/faces to a user-given value. When tolerances were inflated
- * by upstream tools to hide real gaps, clamping back down can re-expose
- * those gaps as topology defects (now-disconnected vertices, open wires).
- * Reproducer: file carries inflated 1.0e-3 tolerance hiding a 5.0e-4 gap;
- * an UNCERTAINTY entry tagged "limit_tolerance_post_clamp" records the
- * destructive reset to the file's original 1.0e-6.
- */
+/* N040: Limit Tolerance re-exposes gap: bloated tol 1.0E-3 hides 5.0E-4 gap; clamped to 1.0E-6 gap reappears; 4 VERTEX_POINTs with separate junctions; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N040 Salome Limit Tolerance destructive reset re-exposes gaps'),'2;1');
-FILE_NAME('N040.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('N040'),'2;1');
+FILE_NAME('N040.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-/* Two adjacent edges with a 5.0e-4 mm gap masked by 1.0e-3 tolerance balls. */
-#10=CARTESIAN_POINT('a0',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('a1_end',(10.0,0.0,0.0));
-#12=CARTESIAN_POINT('b0_off_5e-4',(10.0005,0.0,0.0));
-#13=CARTESIAN_POINT('b1',(20.0005,0.0,0.0));
-#20=VERTEX_POINT('a0',#10);
-#21=VERTEX_POINT('a1',#11);
-#22=VERTEX_POINT('b0',#12);
-#23=VERTEX_POINT('b1',#13);
-#30=DIRECTION('+x',(1.0,0.0,0.0));
-#31=VECTOR('',#30,10.0);
-#32=LINE('',#10,#31);
-#33=LINE('',#12,#31);
-#40=EDGE_CURVE('A',#20,#21,#32,.T.);
-#41=EDGE_CURVE('B',#22,#23,#33,.T.);
-#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-/* History: bloated tolerance hid the gap; Limit Tolerance clamped back to
- * native -- gap is re-exposed but topology remains as wire-with-gap. */
-#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#50,
-  'distance_accuracy_value','bloated_tol_pre_LimitTolerance');
-#61=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#50,
-  'distance_accuracy_value','limit_tolerance_post_clamp_reexposes_5e-4_gap');
-#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60,#61))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
-  REPRESENTATION_CONTEXT('ctx','3D'));
+#1=CARTESIAN_POINT('pa0',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('pa1_nominal',(10.0,0.0,0.0));
+#3=CARTESIAN_POINT('pb0_hidden_gap',(10.0005,0.0,0.0));
+#4=CARTESIAN_POINT('pb1',(20.0005,0.0,0.0));
+#5=VERTEX_POINT('va0',#1);
+#6=VERTEX_POINT('va1_nominal',#2);
+#7=VERTEX_POINT('vb0_with_gap',#3);
+#8=VERTEX_POINT('vb1',#4);
+#9=DIRECTION('',(1.0,0.0,0.0));
+#10=VECTOR('',#9,10.0);
+#11=LINE('',#1,#10);
+#12=EDGE_CURVE('eA',#5,#6,#11,.T.);
+#13=DIRECTION('',(1.0,0.0,0.0));
+#14=VECTOR('',#13,10.0);
+#15=LINE('',#3,#14);
+#16=EDGE_CURVE('eB',#7,#8,#15,.T.);
+#17=GEOMETRIC_CURVE_SET('clamp',(#12,#16));
+#18=APPLICATION_CONTEXT('automotive_design');
+#19=PRODUCT_CONTEXT('',#18,'mechanical');
+#20=PRODUCT('N040','N040','',(#19));
+#21=PRODUCT_DEFINITION_FORMATION('','',#20);
+#22=PRODUCT_DEFINITION_CONTEXT('part definition',#18,'design');
+#23=PRODUCT_DEFINITION('','',#21,#22);
+#24=PRODUCT_DEFINITION_SHAPE('','',#23);
+#25=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#26=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#27=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#28=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#25,'distance_accuracy_value','pre_clamp_bloated_tol');
+#29=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#25,'distance_accuracy_value','post_clamp_tight_tol');
+#30=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#28,#29))GLOBAL_UNIT_ASSIGNED_CONTEXT((#25,#26,#27))REPRESENTATION_CONTEXT('ctx','3D'));
+#31=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#17),#30);
+#32=SHAPE_DEFINITION_REPRESENTATION(#24,#31);
 ENDSEC;
 END-ISO-10303-21;

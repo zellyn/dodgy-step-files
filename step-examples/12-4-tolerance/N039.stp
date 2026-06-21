@@ -1,46 +1,40 @@
 ISO-10303-21;
-/* N039 - ShapeFix_Shape increases tolerance of valid sub-shapes (over-eager bump)
- * Defect: ShapeFix_Shape historically inflated edge/vertex tolerances even
- * when the existing tolerance covered the actual deviation. The fix routine
- * touched every sub-shape, even ones that did not need it. Combined with
- * SafeInputMode=false, this also mutated the input shape.
- * Reproducer: shape whose declared tolerance 1.0e-6 already covers all
- * deviations; ShapeFix bumps every edge/vertex tolerance to 1.0e-3 anyway.
- */
+/* N039: healing pass inflates all tolerances 1000x: native 1.0E-6 → post-fix 1.0E-3; 2×UNCERTAINTY_MEASURE_WITH_UNIT in GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N039 ShapeFix_Shape over-eager tolerance bump on valid sub-shapes'),'2;1');
-FILE_NAME('N039.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('N039'),'2;1');
+FILE_NAME('N039.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('p1',(10.0,0.0,0.0));
-#12=CARTESIAN_POINT('p2',(20.0,0.0,0.0));
-#20=VERTEX_POINT('precise_v0',#10);
-#21=VERTEX_POINT('precise_v1',#11);
-#22=VERTEX_POINT('precise_v2',#12);
-#30=DIRECTION('+x',(1.0,0.0,0.0));
-#31=VECTOR('',#30,10.0);
-#32=LINE('',#10,#31);
-#33=LINE('',#11,#31);
-#40=EDGE_CURVE('precise_edge_a',#20,#21,#32,.T.);
-#41=EDGE_CURVE('precise_edge_b',#21,#22,#33,.T.);
-#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-/* Native precision is 1.0e-6; ShapeFix bumped tol to 1.0e-3 across the board
- * even though deviations all fit comfortably under 1.0e-6. */
-#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#50,
-  'distance_accuracy_value','native_precision');
-#61=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#50,
-  'distance_accuracy_value','tol_post_ShapeFix_overbumped');
-#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60,#61))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
-  REPRESENTATION_CONTEXT('ctx','3D'));
+#1=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('p1_shared',(10.0,0.0,0.0));
+#3=CARTESIAN_POINT('p2',(20.0,0.0,0.0));
+#4=VERTEX_POINT('v0',#1);
+#5=VERTEX_POINT('v1_shared',#2);
+#6=VERTEX_POINT('v2',#3);
+#7=DIRECTION('',(1.0,0.0,0.0));
+#8=VECTOR('',#7,10.0);
+#9=LINE('',#1,#8);
+#10=EDGE_CURVE('eA',#4,#5,#9,.T.);
+#11=DIRECTION('',(1.0,0.0,0.0));
+#12=VECTOR('',#11,10.0);
+#13=LINE('',#2,#12);
+#14=EDGE_CURVE('eB',#5,#6,#13,.T.);
+#15=GEOMETRIC_CURVE_SET('heal_bloat',(#10,#14));
+#16=APPLICATION_CONTEXT('automotive_design');
+#17=PRODUCT_CONTEXT('',#16,'mechanical');
+#18=PRODUCT('N039','N039','',(#17));
+#19=PRODUCT_DEFINITION_FORMATION('','',#18);
+#20=PRODUCT_DEFINITION_CONTEXT('part definition',#16,'design');
+#21=PRODUCT_DEFINITION('','',#19,#20);
+#22=PRODUCT_DEFINITION_SHAPE('','',#21);
+#23=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#24=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#25=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#26=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#23,'distance_accuracy_value','native_precision');
+#27=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#23,'distance_accuracy_value','post_heal_over_bumped_1000x');
+#28=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#26,#27))GLOBAL_UNIT_ASSIGNED_CONTEXT((#23,#24,#25))REPRESENTATION_CONTEXT('ctx','3D'));
+#29=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#15),#28);
+#30=SHAPE_DEFINITION_REPRESENTATION(#22,#29);
 ENDSEC;
 END-ISO-10303-21;

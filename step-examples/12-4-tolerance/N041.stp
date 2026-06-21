@@ -1,66 +1,54 @@
 ISO-10303-21;
-/* N041 - Manifold epsilon-validity contract: cumulative transform error
- *        inflates epsilon beyond input scale
- * Defect: The Manifold library tracks an epsilon (the maximum vertex
- * perturbation that would suffice to make the mesh strictly non-overlapping).
- * Cumulative transform / Boolean error inflates epsilon beyond the input
- * scale; subsequent Booleans become unstable. User must rebuild from cleaner
- * data or call SetTolerance to widen and Simplify. STEP carrier shows two
- * UNCERTAINTY entries: a clean input epsilon and the inflated epsilon
- * recorded after a Boolean cascade.
- * Reproducer: input mesh epsilon 1.0e-7 m; after a 50-step Boolean cascade
- * the file emerges with epsilon 4.2e-3 m -- four orders of magnitude wider
- * than input scale.
- */
+/* N041: Manifold epsilon: input tol 1.0E-7; post-Boolean inflated epsilon 4.2E-3; 4 EDGE_CURVEs; inter-pair gap = inflated epsilon; Boolean becomes unstable; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N041 Manifold epsilon-validity inflated by cumulative Boolean drift'),'2;1');
-FILE_NAME('N041.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('N041'),'2;1');
+FILE_NAME('N041.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-/* Two cubes the Manifold library would Boolean-fuse; the meaningful
- * carriers are the two GLOBAL_UNCERTAINTY values declaring input vs
- * post-cascade epsilon. */
-#10=CARTESIAN_POINT('a0',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('a1',(10.0,0.0,0.0));
-#12=CARTESIAN_POINT('a2',(10.0,10.0,0.0));
-#13=CARTESIAN_POINT('a3',(0.0,10.0,0.0));
-#20=VERTEX_POINT('a0',#10);
-#21=VERTEX_POINT('a1',#11);
-#22=VERTEX_POINT('a2',#12);
-#23=VERTEX_POINT('a3',#13);
-#30=DIRECTION('+x',(1.0,0.0,0.0));
-#31=DIRECTION('+y',(0.0,1.0,0.0));
-#32=DIRECTION('-x',(-1.0,0.0,0.0));
-#33=DIRECTION('-y',(0.0,-1.0,0.0));
-#40=VECTOR('',#30,10.0);
-#41=VECTOR('',#31,10.0);
-#42=VECTOR('',#32,10.0);
-#43=VECTOR('',#33,10.0);
-#50=LINE('',#10,#40);
-#51=LINE('',#11,#41);
-#52=LINE('',#12,#42);
-#53=LINE('',#13,#43);
-#60=EDGE_CURVE('e0',#20,#21,#50,.T.);
-#61=EDGE_CURVE('e1',#21,#22,#51,.T.);
-#62=EDGE_CURVE('e2',#22,#23,#52,.T.);
-#63=EDGE_CURVE('e3',#23,#20,#53,.T.);
-#70=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#71=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#72=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-/* Defect site: epsilon ballooned 4 orders of magnitude across cumulative
- * Boolean operations. Manifold validity contract violated. */
-#80=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#70,
-  'distance_accuracy_value','manifold_input_epsilon');
-#81=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(4.2E-3),#70,
-  'distance_accuracy_value','manifold_epsilon_after_50_boolean_steps');
-#90=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#80,#81))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#70,#71,#72))
-  REPRESENTATION_CONTEXT('ctx_manifold_eps_drift','3D'));
+#1=CARTESIAN_POINT('pa0',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('pa1',(1.0,0.0,0.0));
+#3=CARTESIAN_POINT('pa2',(0.5,1.0,0.0));
+#4=VERTEX_POINT('va0',#1);
+#5=VERTEX_POINT('va1',#2);
+#6=VERTEX_POINT('va2',#3);
+#7=DIRECTION('',(1.0,0.0,0.0));
+#8=VECTOR('',#7,1.0);
+#9=LINE('',#1,#8);
+#10=EDGE_CURVE('eA1',#4,#5,#9,.T.);
+#11=DIRECTION('',(-0.5,1.0,0.0));
+#12=VECTOR('',#11,1.118);
+#13=LINE('',#2,#12);
+#14=EDGE_CURVE('eA2',#5,#6,#13,.T.);
+#15=CARTESIAN_POINT('pb0_eps_offset',(0.0042,0.0,0.0));
+#16=CARTESIAN_POINT('pb1',(1.0042,0.0,0.0));
+#17=CARTESIAN_POINT('pb2',(0.5042,1.0,0.0));
+#18=VERTEX_POINT('vb0',#15);
+#19=VERTEX_POINT('vb1',#16);
+#20=VERTEX_POINT('vb2',#17);
+#21=DIRECTION('',(1.0,0.0,0.0));
+#22=VECTOR('',#21,1.0);
+#23=LINE('',#15,#22);
+#24=EDGE_CURVE('eB1',#18,#19,#23,.T.);
+#25=DIRECTION('',(-0.5,1.0,0.0));
+#26=VECTOR('',#25,1.118);
+#27=LINE('',#16,#26);
+#28=EDGE_CURVE('eB2',#19,#20,#27,.T.);
+#29=GEOMETRIC_CURVE_SET('manifold_eps',(#10,#14,#24,#28));
+#30=APPLICATION_CONTEXT('automotive_design');
+#31=PRODUCT_CONTEXT('',#30,'mechanical');
+#32=PRODUCT('N041','N041','',(#31));
+#33=PRODUCT_DEFINITION_FORMATION('','',#32);
+#34=PRODUCT_DEFINITION_CONTEXT('part definition',#30,'design');
+#35=PRODUCT_DEFINITION('','',#33,#34);
+#36=PRODUCT_DEFINITION_SHAPE('','',#35);
+#37=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#38=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#39=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#40=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#37,'distance_accuracy_value','input_model_precision');
+#41=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(4.2E-3),#37,'distance_accuracy_value','post_boolean_inflated_epsilon');
+#42=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#40,#41))GLOBAL_UNIT_ASSIGNED_CONTEXT((#37,#38,#39))REPRESENTATION_CONTEXT('ctx','3D'));
+#43=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#29),#42);
+#44=SHAPE_DEFINITION_REPRESENTATION(#36,#43);
 ENDSEC;
 END-ISO-10303-21;
