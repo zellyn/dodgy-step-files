@@ -1,78 +1,40 @@
 ISO-10303-21;
-/* N148 - BRepBuilderAPI_Sewing.EvaluateDistances.projection_direction_selection
- * Defect: Choosing projection direction by length comparison misses closest
- * solution when curve lengths are similar. Without if(arrLen(indRef)>=arrLen(i))
- * selector, projection direction may be backwards, computing distance to
- * wrong curve branch. Reproducer: Reference length=5.0, candidate=4.9,
- * but candidate is 0.1 away in forward direction only. Without: distance to
- * far branch reported. With: distance to near branch computed correctly.
- */
+/* N148: EvaluateDistances projection_direction: 2 edges 5.0 vs 4.9 mm, 0.1mm apart; near-parity triggers backwards projection direction; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N148 projection_direction_selection'),'2;1');
-FILE_NAME('N148.stp','2026-06-16T00:00:00',(''),(''),
-  'cad-research-suite','','');
+FILE_DESCRIPTION(('N148'),'2;1');
+FILE_NAME('N148.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-/* Origin and axes */
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#11=DIRECTION('z',(0.0,0.0,1.0));
-#12=DIRECTION('x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('plc',#10,#11,#12);
-/* Reference edge: length = 5.0 */
-#20=CARTESIAN_POINT('ref_start',(0.0,0.0,0.0));
-#21=CARTESIAN_POINT('ref_end',(5.0,0.0,0.0));
-#30=VERTEX_POINT('vref1',#20);
-#31=VERTEX_POINT('vref2',#21);
-#40=DIRECTION('ref_dir',(1.0,0.0,0.0));
-#41=VECTOR('ref_vec',#40,5.0);
-#42=LINE('ref_line',#20,#41);
-#43=EDGE_CURVE('ref_edge',#30,#31,#42,.T.);
-/* Candidate edge: length = 4.9, positioned 0.1 away in forward direction
-   At similar length, direction selector may choose backwards projection,
-   reporting distance to far branch instead of near endpoint. */
-#50=CARTESIAN_POINT('cand_start',(0.1,0.0,0.0));
-#51=CARTESIAN_POINT('cand_end',(5.0,0.0,0.0));
-#52=DIRECTION('cand_dir',(1.0,0.0,0.0));
-#53=VECTOR('cand_vec',#52,4.9);
-#54=LINE('cand_line',#50,#53);
-#60=VERTEX_POINT('vcand1',#50);
-#61=VERTEX_POINT('vcand2',#51);
-#62=EDGE_CURVE('cand_edge',#60,#61,#54,.T.);
-/* Units and context */
-#80=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#81=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#82=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#83=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#80,
-  'distance_accuracy_value','nominal_tolerance');
-#84=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#83))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#80,#81,#82))
-  REPRESENTATION_CONTEXT('proj_dir_ctx','3D'));
-/* Length markers for projection direction ambiguity */
-#85=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(5.0),#80,
-  'distance_accuracy_value','arrLen_ref');
-#86=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(4.9),#80,
-  'distance_accuracy_value','arrLen_cand_near_parity');
-#87=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.1),#80,
-  'distance_accuracy_value','true_separation_forward');
-/* PRODUCT CHAIN */
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('N148','N148','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,'distance_accuracy_value','');
-#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT('','3D'));
-#9021=SHELL_BASED_SURFACE_MODEL('sbsm',(#80));
-#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9021),#9010);
-#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+#1=CARTESIAN_POINT('p0a',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('p1a',(5.0,0.0,0.0));
+#3=VERTEX_POINT('v0a',#1);
+#4=VERTEX_POINT('v1a',#2);
+#5=DIRECTION('',(1.0,0.0,0.0));
+#6=VECTOR('',#5,5.0);
+#7=LINE('',#1,#6);
+#8=EDGE_CURVE('eA_5mm',#3,#4,#7,.T.);
+#9=CARTESIAN_POINT('p0b',(0.0,0.1,0.0));
+#10=CARTESIAN_POINT('p1b',(4.9,0.1,0.0));
+#11=VERTEX_POINT('v0b',#9);
+#12=VERTEX_POINT('v1b',#10);
+#13=VECTOR('',#5,4.9);
+#14=LINE('',#9,#13);
+#15=EDGE_CURVE('eB_4p9mm',#11,#12,#14,.T.);
+#16=GEOMETRIC_CURVE_SET('near_parity',(#8,#15));
+#17=APPLICATION_CONTEXT('automotive_design');
+#18=PRODUCT_CONTEXT('',#17,'mechanical');
+#19=PRODUCT('N148','N148','',(#18));
+#20=PRODUCT_DEFINITION_FORMATION('','',#19);
+#21=PRODUCT_DEFINITION_CONTEXT('part definition',#17,'design');
+#22=PRODUCT_DEFINITION('','',#20,#21);
+#23=PRODUCT_DEFINITION_SHAPE('','',#22);
+#24=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#25=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#26=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#27=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#24,'distance_accuracy_value','model_precision');
+#28=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#27))GLOBAL_UNIT_ASSIGNED_CONTEXT((#24,#25,#26))REPRESENTATION_CONTEXT('ctx','3D'));
+#29=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#16),#28);
+#30=SHAPE_DEFINITION_REPRESENTATION(#23,#29);
 ENDSEC;
 END-ISO-10303-21;
