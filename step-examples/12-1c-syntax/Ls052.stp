@@ -5,10 +5,10 @@
    See also        : Ls038, Ls051
    ----------------------------------------------------------------------
    Defect
-     UINT64_MAX is 18446744073709551615. The ID 18446744073709551617 is
-     two greater and wraps modulo 2^64 to 1, which collides with the
-     low-numbered #1 namespace and may enable type confusion if the
-     reader does not validate before storing.
+     UINT64_MAX is 18446744073709551615. The ID 18446744073709551617
+     is two greater and wraps modulo 2^64 to 1, which collides with
+     the low-numbered #1 namespace and may enable type confusion if
+     the reader does not validate before storing.
    Expected behavior
      Detect overflow during digit accumulation and reject with
      E_INSTANCE_ID_RANGE; never silently wrap.
@@ -16,14 +16,16 @@
 */
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Ls052 - instance ID past UINT64_MAX wraps'),'2;1');
-FILE_NAME('Ls052.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+FILE_DESCRIPTION(('Ls052 - instance ID UINT64_MAX+2 wraps to #1'),'2;1');
+FILE_NAME('Ls052.stp','2026-06-20T00:00:00',('auto-generated'),(''),
   'auto-generated','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=CARTESIAN_POINT('safe',(0.0,0.0,0.0));
-/* Defect: ID just past UINT64_MAX (18446744073709551615) wraps to 1 */
+/* #1 is a legitimate CARTESIAN_POINT */
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+/* Defect: UINT64_MAX+2 = 18446744073709551617; wraps mod 2^64 to 1 */
+/* A silent wrap aliases this entity onto #1, causing type confusion */
 #18446744073709551617=AXIS2_PLACEMENT_3D('wrap',#1,$,$);
 ENDSEC;
 END-ISO-10303-21;

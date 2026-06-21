@@ -5,29 +5,32 @@
    See also        : Ad044, Ls034, Ls035, Ls049
    ----------------------------------------------------------------------
    Defect
-     EDGE_CURVE.same_sense is a BOOLEAN (.T. / .F.). Passing .UNKNOWN.
-     (the long-form LOGICAL three-state value) is structurally identical
-     to .U. but uses the long token, exercising readers that special-
-     case .U. while accepting .UNKNOWN. through a different parser path.
+     EDGE_CURVE.same_sense is a BOOLEAN (.T./.F. only). Passing
+     .UNKNOWN. (the long-form LOGICAL three-state value) is structurally
+     identical to .U. but uses the long token, exercising readers that
+     special-case .U. while accepting .UNKNOWN. through a different
+     parser path. BOOLEAN slots do not admit a three-state LOGICAL.
    Expected behavior
-     Reject the value at the BOOLEAN slot; never leave the bool
-     uninitialised.
+     Reject the value at the BOOLEAN slot; never leave the bool uninitialised.
    ----------------------------------------------------------------------
 */
 ISO-10303-21;
 HEADER;
-FILE_DESCRIPTION(('Ls050 - BOOLEAN given .UNKNOWN.'),'2;1');
-FILE_NAME('Ls050.stp','2026-04-26T00:00:00',('auto-generated'),(''),
+FILE_DESCRIPTION(('Ls050 - EDGE_CURVE same_sense given long-form .UNKNOWN.'),'2;1');
+FILE_NAME('Ls050.stp','2026-06-20T00:00:00',('auto-generated'),(''),
   'auto-generated','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10=CARTESIAN_POINT('a',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('b',(1.0,0.0,0.0));
-#12=VERTEX_POINT('',#10);
-#13=VERTEX_POINT('',#11);
-#14=LINE('',#10,$);
-/* Defect: same_sense given as long-form .UNKNOWN. */
-#22=EDGE_CURVE('',#12,#13,#14,.UNKNOWN.);
+#1=CARTESIAN_POINT('p1',(0.,0.,0.));
+#2=CARTESIAN_POINT('p2',(1.,0.,0.));
+#3=DIRECTION('dir',(1.,0.,0.));
+#4=VECTOR('v',#3,1.);
+#5=LINE('l',#1,#4);
+#6=VERTEX_POINT('v1',#1);
+#7=VERTEX_POINT('v2',#2);
+/* Defect: .UNKNOWN. (LOGICAL long-form) at the same_sense BOOLEAN slot */
+/* Correct form would be: #8=EDGE_CURVE('',#6,#7,#5,.T.); */
+#8=EDGE_CURVE('',#6,#7,#5,.UNKNOWN.);
 ENDSEC;
 END-ISO-10303-21;
