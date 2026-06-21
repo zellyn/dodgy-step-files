@@ -1,37 +1,17 @@
-/* Lh019 — FILE_SCHEMA names a schema that disagrees with entity
- *         types in DATA
- * Defect: HEADER claims IFC4 but DATA uses an entity name that
- * exists only in IFC2X3 (IFC2X3_PROJECT). The remaining entities
- * are valid IFC4 names (IFCOWNERHISTORY, IFCSITE, ...). Strict
- * readers must reject with a diagnostic naming the offending
- * entity-name vs. claimed schema; tolerant readers may parse based
- * on entity-name availability and warn on mismatch. */
 ISO-10303-21;
+/* Lh019: FILE_SCHEMA claims IFC4 but DATA contains IFC2X3_PROJECT from IFC2X3 */
+/* DEFECT: schema mismatch — FILE_SCHEMA declares IFC4, entity belongs to IFC2X3 */
+/* Conforming kernel must reject with diagnostic naming offending entity vs schema */
+/* OCC silently accepts (no diagnostic, empty result) — catalog forbids silent acceptance */
 HEADER;
-FILE_DESCRIPTION(('Lh019: schema/entity mismatch demo'),'2;1');
-FILE_NAME('Lh019.ifc','2026-04-26T00:00:00',
-  ('cad-research-suite'),('cad-research-org'),
-  'cad-research-suite v0.1','','');
+FILE_DESCRIPTION(('Lh019: FILE_SCHEMA IFC4 but DATA uses IFC2X3_PROJECT'),'2;1');
+FILE_NAME('Lh019.stp','2026-06-20T00:00:00',(''),(''),'cad-research-suite','','');
+/* DEFECT: declares IFC4 but DATA below uses IFC2X3 entity types */
 FILE_SCHEMA(('IFC4'));
 ENDSEC;
 DATA;
-/* The offending entity: IFC2X3_PROJECT does not exist in IFC4. */
-#1=IFC2X3_PROJECT('0YvctVUKr0kugbFTf53O$z',$,'Lh019',$,$,$,$,$,$);
-/* Surrounding entities are valid IFC4. */
-#2=IFCOWNERHISTORY($,$,$,.ADDED.,$,$,$,1700000000);
-#3=IFCSITE('0kRZl3$EXAFhEqu7TPnRwH',#2,'Site',$,$,$,$,$,
-  .ELEMENT.,$,$,$,$,$);
-#4=IFCBUILDING('1JrnxEqXz4lPTo8gcAyVRz',#2,'Building',$,$,$,$,$,
-  .ELEMENT.,$,$,$);
-#5=IFCBUILDINGSTOREY('2RhA5ZcvLBCANN8w$f7C8X',#2,'Storey',$,$,
-  $,$,$,.ELEMENT.,0.0);
-#6=IFCRELAGGREGATES('3cTP0DB$T4ihbe9bF8d6cP',#2,$,$,#1,(#3));
-#7=IFCRELAGGREGATES('4dUQ1ECAU5jicf0cG9e7dQ',#2,$,$,#3,(#4));
-#8=IFCRELAGGREGATES('5eVR2FDBV6kjdg1dH0f8eR',#2,$,$,#4,(#5));
-#10=IFCCARTESIANPOINT((0.0,0.0,0.0));
-#11=IFCDIRECTION((0.0,0.0,1.0));
-#12=IFCDIRECTION((1.0,0.0,0.0));
-#13=IFCAXIS2PLACEMENT3D(#10,#11,#12);
-#14=IFCLOCALPLACEMENT($,#13);
+/* DEFECT: IFC2X3_PROJECT belongs to IFC2X3, not IFC4 as declared in FILE_SCHEMA */
+#1=IFC2X3_PROJECT('2TH4j2P0X0JvdGnNH$MHRS',$,'Lh019 schema mismatch project',$,$,(#2),$);
+#2=GEOMETRIC_CURVE_SET('schema-mismatch-shape',());
 ENDSEC;
 END-ISO-10303-21;
