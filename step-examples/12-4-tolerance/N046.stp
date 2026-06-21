@@ -1,71 +1,63 @@
 ISO-10303-21;
-/* N046 - Default tolerance projection wrong on bloated shape
- * Defect: a planar face is wrapped in a shell whose representation
- * context declares a vertex tolerance of 1.0E-3 mm. A free
- * CARTESIAN_POINT sits at distance 5.0E-4 mm above the plane (z =
- * 0.0005). The projection should declare the point on-surface (since
- * 5.0e-4 < 1.0e-3 declared tolerance), but the kernel uses an internal
- * fixed 1.0e-7 threshold and rejects the projection. */
+/* N046: PLANE z=0 with declared tolerance 1.0E-3; free CARTESIAN_POINT at (0.5, 0.5, 5.0E-4) is 5e-4 above plane — within declared tolerance but rejected by kernel's hardcoded 1e-7 internal projection tolerance */
 HEADER;
-FILE_DESCRIPTION(('N046 test case','Default tolerance projection wrong on bloated shape'),'2;1');
-FILE_NAME('N046.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('N046'),'2;1');
+FILE_NAME('N046.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Host PLANE z=0 */
-#100=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#101=DIRECTION('+z',(0.0,0.0,1.0));
-#102=DIRECTION('+x',(1.0,0.0,0.0));
-#103=AXIS2_PLACEMENT_3D('axes',#100,#101,#102);
-#104=PLANE('high_tolerance',#103);
-/* Quad face boundary */
-#110=CARTESIAN_POINT('v0',(0.0,0.0,0.0));
-#111=VERTEX_POINT('',#110);
-#112=CARTESIAN_POINT('v1',(1.0,0.0,0.0));
-#113=VERTEX_POINT('',#112);
-#114=CARTESIAN_POINT('v2',(1.0,1.0,0.0));
-#115=VERTEX_POINT('',#114);
-#116=CARTESIAN_POINT('v3',(0.0,1.0,0.0));
-#117=VERTEX_POINT('',#116);
-#120=DIRECTION('+x',(1.0,0.0,0.0));#121=VECTOR('',#120,1.0);#122=LINE('',#110,#121);
-#123=EDGE_CURVE('',#111,#113,#122,.T.);
-#124=DIRECTION('+y',(0.0,1.0,0.0));#125=VECTOR('',#124,1.0);#126=LINE('',#112,#125);
-#127=EDGE_CURVE('',#113,#115,#126,.T.);
-#128=DIRECTION('-x',(-1.0,0.0,0.0));#129=VECTOR('',#128,1.0);#130=LINE('',#114,#129);
-#131=EDGE_CURVE('',#115,#117,#130,.T.);
-#132=DIRECTION('-y',(0.0,-1.0,0.0));#133=VECTOR('',#132,1.0);#134=LINE('',#116,#133);
-#135=EDGE_CURVE('',#117,#111,#134,.T.);
-#140=ORIENTED_EDGE('',*,*,#123,.T.);
-#141=ORIENTED_EDGE('',*,*,#127,.T.);
-#142=ORIENTED_EDGE('',*,*,#131,.T.);
-#143=ORIENTED_EDGE('',*,*,#135,.T.);
-#144=EDGE_LOOP('',(#140,#141,#142,#143));
-#145=FACE_OUTER_BOUND('',#144,.T.);
-#146=ADVANCED_FACE('bloated',(#145),#104,.T.);
-#147=OPEN_SHELL('bloated_shell',(#146));
-/* Free point: 5.0e-4 mm above the plane (closer than declared tol 1.0e-3). */
-#150=CARTESIAN_POINT('test_pt_5e-4_above_plane',(0.5,0.5,5.0E-4));
-/* Declared tolerance: 1.0e-3 mm vertex tolerance */
-#160=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#161=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#162=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#163=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#160,
-  'distance_accuracy_value','bloated_vertex_tolerance');
-#164=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-      GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#163))
-      GLOBAL_UNIT_ASSIGNED_CONTEXT((#160,#161,#162))
-      REPRESENTATION_CONTEXT('ctx','3D'));
-/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
-#9010=PRODUCT_CONTEXT('',#1,'mechanical');
-#9011=PRODUCT('N046','N046','',(#9010));
-#9012=PRODUCT_DEFINITION_FORMATION('','',#9011);
-#9013=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9014=PRODUCT_DEFINITION('','',#9012,#9013);
-#9015=PRODUCT_DEFINITION_SHAPE('','',#9014);
-#9030=SHELL_BASED_SURFACE_MODEL('wrap_sbsm',(#147));
-#9050=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#9030),#164);
-#9051=SHAPE_DEFINITION_REPRESENTATION(#9015,#9050);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
+#2=DIRECTION('+z',(0.0,0.0,1.0));
+#3=DIRECTION('+x',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('axes',#1,#2,#3);
+#5=PLANE('high_tolerance',#4);
+#6=CARTESIAN_POINT('v0',(0.0,0.0,0.0));
+#7=VERTEX_POINT('',#6);
+#8=CARTESIAN_POINT('v1',(1.0,0.0,0.0));
+#9=VERTEX_POINT('',#8);
+#10=CARTESIAN_POINT('v2',(1.0,1.0,0.0));
+#11=VERTEX_POINT('',#10);
+#12=CARTESIAN_POINT('v3',(0.0,1.0,0.0));
+#13=VERTEX_POINT('',#12);
+#14=DIRECTION('+x',(1.0,0.0,0.0));
+#15=VECTOR('',#14,1.0);
+#16=LINE('',#6,#15);
+#17=EDGE_CURVE('',#7,#9,#16,.T.);
+#18=DIRECTION('+y',(0.0,1.0,0.0));
+#19=VECTOR('',#18,1.0);
+#20=LINE('',#8,#19);
+#21=EDGE_CURVE('',#9,#11,#20,.T.);
+#22=DIRECTION('-x',(-1.0,0.0,0.0));
+#23=VECTOR('',#22,1.0);
+#24=LINE('',#10,#23);
+#25=EDGE_CURVE('',#11,#13,#24,.T.);
+#26=DIRECTION('-y',(0.0,-1.0,0.0));
+#27=VECTOR('',#26,1.0);
+#28=LINE('',#12,#27);
+#29=EDGE_CURVE('',#13,#7,#28,.T.);
+#30=ORIENTED_EDGE('',$,$,#17,.T.);
+#31=ORIENTED_EDGE('',$,$,#21,.T.);
+#32=ORIENTED_EDGE('',$,$,#25,.T.);
+#33=ORIENTED_EDGE('',$,$,#29,.T.);
+#34=EDGE_LOOP('',(#30,#31,#32,#33));
+#35=FACE_OUTER_BOUND('',#34,.T.);
+#36=ADVANCED_FACE('bloated',(#35),#5,.T.);
+#37=CARTESIAN_POINT('test_pt_5e-4_above_plane',(0.5,0.5,0.0005));
+#38=OPEN_SHELL('bloated_shell',(#36));
+#39=SHELL_BASED_SURFACE_MODEL('',(#38));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('N046','N046','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.000000E-03).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#39),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

@@ -1,201 +1,157 @@
 ISO-10303-21;
-/* N008 - Vertex tolerance inflation by repeated FixSelfIntersection cascades
- * Defect: ShapeFix_Wire::FixSelfIntersection modifies a pcurve and bumps the
- * affected vertex tolerance to encompass both the original and the new
- * position. Repeated rounds grow the tolerance ball geometrically
- * (1.0e-7 -> 1.0e-3 in a few iterations).
- *
- * Reproducer: a closed-shell unit cube whose top face carries a small
- * rectangular inner-loop hole; the hole's outer wire is described by
- * two near-tangent B-spline edges that cross at a measurable distance
- * (~2.5e-4) close to one shared vertex. The two edges are *not*
- * coincident in 3D -- they cross slightly inside Precision::Confusion()
- * scaled by file uncertainty, so ShapeFix_Wire::FixSelfIntersection has
- * something real to attempt and the recorded UNCERTAINTY cascade
- * (1.0e-7..1e-3) reflects the actual geometric inflation per pass.
- */
+/* N008: CLOSED_SHELL cube; top face has inner wire with two near-tangent B_SPLINE_CURVE edges crossing at ~2.5e-4 mm; FixSelfIntersection cascades inflate vertex tolerance: 1e-7→1e-6→1e-5→1e-4→1e-3; five UNCERTAINTY_MEASURE_WITH_UNIT entries record the cascade growth */
 HEADER;
-FILE_DESCRIPTION(('N008 vertex tolerance inflation cascade FixSelfIntersection'),'2;1');
-FILE_NAME('N008.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('N008'),'2;1');
+FILE_NAME('N008.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-/* ---------- units & uncertainty cascade context ---------- */
-#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-/* Cascade growth at the shared vertex across successive
- * FixSelfIntersection passes; each pass writes a new uncertainty entry. */
-#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#50,
-  'distance_accuracy_value','vertex_tol_pass0_native');
-#61=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#50,
-  'distance_accuracy_value','vertex_tol_pass1');
-#62=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-5),#50,
-  'distance_accuracy_value','vertex_tol_pass2');
-#63=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-4),#50,
-  'distance_accuracy_value','vertex_tol_pass3');
-#64=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#50,
-  'distance_accuracy_value','vertex_tol_pass4_overrun');
-#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60,#61,#62,#63,#64))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
-  REPRESENTATION_CONTEXT('ctx','3D'));
-/* ---------- 8 cube corners ---------- */
-#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#101=CARTESIAN_POINT('',(10.0,0.0,0.0));
-#102=CARTESIAN_POINT('',(10.0,10.0,0.0));
-#103=CARTESIAN_POINT('',(0.0,10.0,0.0));
-#104=CARTESIAN_POINT('',(0.0,0.0,10.0));
-#105=CARTESIAN_POINT('',(10.0,0.0,10.0));
-#106=CARTESIAN_POINT('',(10.0,10.0,10.0));
-#107=CARTESIAN_POINT('',(0.0,10.0,10.0));
-#110=VERTEX_POINT('',#100); #111=VERTEX_POINT('',#101);
-#112=VERTEX_POINT('',#102); #113=VERTEX_POINT('',#103);
-#114=VERTEX_POINT('',#104); #115=VERTEX_POINT('',#105);
-#116=VERTEX_POINT('',#106); #117=VERTEX_POINT('',#107);
-/* ---------- direction & vector library ---------- */
-#120=DIRECTION('+x',(1.0,0.0,0.0));
-#121=DIRECTION('+y',(0.0,1.0,0.0));
-#122=DIRECTION('+z',(0.0,0.0,1.0));
-#123=DIRECTION('-x',(-1.0,0.0,0.0));
-#124=DIRECTION('-y',(0.0,-1.0,0.0));
-#125=VECTOR('vx10',#120,10.0);
-#126=VECTOR('vy10',#121,10.0);
-#127=VECTOR('vz10',#122,10.0);
-/* ---------- cube outer-loop straight edges ---------- */
-#130=LINE('',#100,#125); #131=EDGE_CURVE('e_b0',#110,#111,#130,.T.);
-#132=LINE('',#101,#126); #133=EDGE_CURVE('e_b1',#111,#112,#132,.T.);
-#134=LINE('',#103,#125); #135=EDGE_CURVE('e_b2',#113,#112,#134,.T.);
-#136=LINE('',#100,#126); #137=EDGE_CURVE('e_b3',#110,#113,#136,.T.);
-#138=LINE('',#104,#125); #139=EDGE_CURVE('e_t0',#114,#115,#138,.T.);
-#140=LINE('',#105,#126); #141=EDGE_CURVE('e_t1',#115,#116,#140,.T.);
-#142=LINE('',#107,#125); #143=EDGE_CURVE('e_t2',#117,#116,#142,.T.);
-#144=LINE('',#104,#126); #145=EDGE_CURVE('e_t3',#114,#117,#144,.T.);
-#146=LINE('',#100,#127); #147=EDGE_CURVE('e_v0',#110,#114,#146,.T.);
-#148=LINE('',#101,#127); #149=EDGE_CURVE('e_v1',#111,#115,#148,.T.);
-#150=LINE('',#102,#127); #151=EDGE_CURVE('e_v2',#112,#116,#150,.T.);
-#152=LINE('',#103,#127); #153=EDGE_CURVE('e_v3',#113,#117,#152,.T.);
-/* ---------- cube planes (one axis2_placement per face) ---------- */
-#160=AXIS2_PLACEMENT_3D('p_bot',#100,#124,#120);
-#161=PLANE('s_bot',#160);
-#162=AXIS2_PLACEMENT_3D('p_top',#104,#122,#120);
-#163=PLANE('s_top',#162);
-#164=AXIS2_PLACEMENT_3D('p_x0',#100,#123,#121);
-#165=PLANE('s_x0',#164);
-#166=AXIS2_PLACEMENT_3D('p_x1',#101,#120,#121);
-#167=PLANE('s_x1',#166);
-#168=AXIS2_PLACEMENT_3D('p_y0',#100,#124,#120);
-#169=PLANE('s_y0',#168);
-#170=AXIS2_PLACEMENT_3D('p_y1',#103,#121,#120);
-#171=PLANE('s_y1',#170);
-/* ---------- self-intersecting B-spline pcurve (the actual defect) ---------- */
-/* Two B-spline edges nominally meeting at vertex #181 ((5.0, 5.0, 10.0))
- * but whose tangent directions at that vertex are nearly equal AND
- * whose interiors cross at a separation of ~2.5e-4 -- well inside
- * Precision::Confusion() (~1.0e-7 default) once tolerance is inflated.
- * That crossing is what FixSelfIntersection detects, snaps and grows
- * the vertex tolerance ball around. */
-#180=CARTESIAN_POINT('inner_v',(5.0,5.0,10.0));
-#181=VERTEX_POINT('shared_v',#180);
-/* curve A control polygon -- enters from the +x side, dips slightly */
-#190=CARTESIAN_POINT('',(4.0,4.999875,10.0));
-#191=CARTESIAN_POINT('',(4.5,5.000000,10.0));
-#192=CARTESIAN_POINT('',(4.8,4.999850,10.0));
-#193=CARTESIAN_POINT('',(5.0,5.000000,10.0));
-#194=B_SPLINE_CURVE_WITH_KNOTS('curveA',3,
-  (#190,#191,#192,#193),.UNSPECIFIED.,.F.,.F.,
-  (4,4),(0.0,1.0),.UNSPECIFIED.);
-#195=VERTEX_POINT('A_start',#190);
-#196=EDGE_CURVE('selfint_A',#195,#181,#194,.T.);
-/* curve B control polygon -- approaches from the -x side, rises through
- * the middle of curve A's dip; the crossing at u~0.55 lies 2.5e-4 above
- * curve A's path */
-#200=CARTESIAN_POINT('',(4.0,5.000125,10.0));
-#201=CARTESIAN_POINT('',(4.5,5.000000,10.0));
-#202=CARTESIAN_POINT('',(4.8,5.000150,10.0));
-#203=CARTESIAN_POINT('',(5.0,5.000000,10.0));
-#204=B_SPLINE_CURVE_WITH_KNOTS('curveB',3,
-  (#200,#201,#202,#203),.UNSPECIFIED.,.F.,.F.,
-  (4,4),(0.0,1.0),.UNSPECIFIED.);
-#205=VERTEX_POINT('B_start',#200);
-#206=EDGE_CURVE('selfint_B',#205,#181,#204,.T.);
-/* close the inner hole loop with two short straight edges so the wire
- * is a valid closed loop (figure-eight when projected, which is the
- * topology that triggers the cascade) */
-#210=DIRECTION('inner_d1',(0.0,1.0,0.0));
-#211=VECTOR('inner_v1',#210,2.5e-4);
-#212=LINE('inner_l1',#190,#211);
-#213=EDGE_CURVE('inner_close',#195,#205,#212,.T.);
-/* face on the top with the self-intersecting inner loop */
-#220=ORIENTED_EDGE('',*,*,#196,.T.);
-#221=ORIENTED_EDGE('',*,*,#206,.F.);
-#222=ORIENTED_EDGE('',*,*,#213,.F.);
-#223=EDGE_LOOP('inner_loop',(#220,#221,#222));
-#224=FACE_BOUND('inner_hole',#223,.F.);
-/* ---------- six face boundary loops & faces (closed shell) ---------- */
-/* bottom face z=0 */
-#300=ORIENTED_EDGE('',*,*,#131,.T.);
-#301=ORIENTED_EDGE('',*,*,#133,.T.);
-#302=ORIENTED_EDGE('',*,*,#135,.F.);
-#303=ORIENTED_EDGE('',*,*,#137,.F.);
-#304=EDGE_LOOP('',(#300,#301,#302,#303));
-#305=FACE_OUTER_BOUND('',#304,.T.);
-#306=ADVANCED_FACE('bottom',(#305),#161,.T.);
-/* top face z=10 (with inner self-intersecting loop) */
-#310=ORIENTED_EDGE('',*,*,#139,.T.);
-#311=ORIENTED_EDGE('',*,*,#141,.T.);
-#312=ORIENTED_EDGE('',*,*,#143,.F.);
-#313=ORIENTED_EDGE('',*,*,#145,.F.);
-#314=EDGE_LOOP('',(#310,#311,#312,#313));
-#315=FACE_OUTER_BOUND('',#314,.T.);
-#316=ADVANCED_FACE('top_with_hole',(#315,#224),#163,.T.);
-/* x0 face */
-#320=ORIENTED_EDGE('',*,*,#137,.T.);
-#321=ORIENTED_EDGE('',*,*,#153,.T.);
-#322=ORIENTED_EDGE('',*,*,#145,.F.);
-#323=ORIENTED_EDGE('',*,*,#147,.F.);
-#324=EDGE_LOOP('',(#320,#321,#322,#323));
-#325=FACE_OUTER_BOUND('',#324,.T.);
-#326=ADVANCED_FACE('x0',(#325),#165,.T.);
-/* x1 face */
-#330=ORIENTED_EDGE('',*,*,#133,.T.);
-#331=ORIENTED_EDGE('',*,*,#151,.T.);
-#332=ORIENTED_EDGE('',*,*,#141,.F.);
-#333=ORIENTED_EDGE('',*,*,#149,.F.);
-#334=EDGE_LOOP('',(#330,#331,#332,#333));
-#335=FACE_OUTER_BOUND('',#334,.T.);
-#336=ADVANCED_FACE('x1',(#335),#167,.T.);
-/* y0 face */
-#340=ORIENTED_EDGE('',*,*,#131,.T.);
-#341=ORIENTED_EDGE('',*,*,#149,.T.);
-#342=ORIENTED_EDGE('',*,*,#139,.F.);
-#343=ORIENTED_EDGE('',*,*,#147,.F.);
-#344=EDGE_LOOP('',(#340,#341,#342,#343));
-#345=FACE_OUTER_BOUND('',#344,.T.);
-#346=ADVANCED_FACE('y0',(#345),#169,.T.);
-/* y1 face */
-#350=ORIENTED_EDGE('',*,*,#135,.T.);
-#351=ORIENTED_EDGE('',*,*,#151,.T.);
-#352=ORIENTED_EDGE('',*,*,#143,.F.);
-#353=ORIENTED_EDGE('',*,*,#153,.F.);
-#354=EDGE_LOOP('',(#350,#351,#352,#353));
-#355=FACE_OUTER_BOUND('',#354,.T.);
-#356=ADVANCED_FACE('y1',(#355),#171,.T.);
-/* ---------- closed shell + manifold solid ---------- */
-#400=CLOSED_SHELL('cube_shell',(#306,#316,#326,#336,#346,#356));
-#401=MANIFOLD_SOLID_BREP('cube',#400);
-#402=ADVANCED_BREP_SHAPE_REPRESENTATION('',(#401),#70);
-/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
-#9010=PRODUCT_CONTEXT('',#1,'mechanical');
-#9011=PRODUCT('N008','N008','',(#9010));
-#9012=PRODUCT_DEFINITION_FORMATION('','',#9011);
-#9013=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9014=PRODUCT_DEFINITION('','',#9012,#9013);
-#9015=PRODUCT_DEFINITION_SHAPE('','',#9014);
-#9051=SHAPE_DEFINITION_REPRESENTATION(#9015,#402);
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#3=CARTESIAN_POINT('',(10.0,10.0,0.0));
+#4=CARTESIAN_POINT('',(0.0,10.0,0.0));
+#5=CARTESIAN_POINT('',(0.0,0.0,10.0));
+#6=CARTESIAN_POINT('',(10.0,0.0,10.0));
+#7=CARTESIAN_POINT('',(10.0,10.0,10.0));
+#8=CARTESIAN_POINT('',(0.0,10.0,10.0));
+#9=VERTEX_POINT('',#1);
+#10=VERTEX_POINT('',#2);
+#11=VERTEX_POINT('',#3);
+#12=VERTEX_POINT('',#4);
+#13=VERTEX_POINT('',#5);
+#14=VERTEX_POINT('',#6);
+#15=VERTEX_POINT('',#7);
+#16=VERTEX_POINT('',#8);
+#17=DIRECTION('+x',(1.0,0.0,0.0));
+#18=DIRECTION('+y',(0.0,1.0,0.0));
+#19=DIRECTION('+z',(0.0,0.0,1.0));
+#20=DIRECTION('-x',(-1.0,0.0,0.0));
+#21=DIRECTION('-y',(0.0,-1.0,0.0));
+#22=VECTOR('vx10',#17,10.0);
+#23=VECTOR('vy10',#18,10.0);
+#24=VECTOR('vz10',#19,10.0);
+#25=LINE('',#1,#22);
+#26=EDGE_CURVE('e_b0',#9,#10,#25,.T.);
+#27=LINE('',#2,#23);
+#28=EDGE_CURVE('e_b1',#10,#11,#27,.T.);
+#29=LINE('',#4,#22);
+#30=EDGE_CURVE('e_b2',#12,#11,#29,.T.);
+#31=LINE('',#1,#23);
+#32=EDGE_CURVE('e_b3',#9,#12,#31,.T.);
+#33=LINE('',#5,#22);
+#34=EDGE_CURVE('e_t0',#13,#14,#33,.T.);
+#35=LINE('',#6,#23);
+#36=EDGE_CURVE('e_t1',#14,#15,#35,.T.);
+#37=LINE('',#8,#22);
+#38=EDGE_CURVE('e_t2',#16,#15,#37,.T.);
+#39=LINE('',#5,#23);
+#40=EDGE_CURVE('e_t3',#13,#16,#39,.T.);
+#41=LINE('',#1,#24);
+#42=EDGE_CURVE('e_v0',#9,#13,#41,.T.);
+#43=LINE('',#2,#24);
+#44=EDGE_CURVE('e_v1',#10,#14,#43,.T.);
+#45=LINE('',#3,#24);
+#46=EDGE_CURVE('e_v2',#11,#15,#45,.T.);
+#47=LINE('',#4,#24);
+#48=EDGE_CURVE('e_v3',#12,#16,#47,.T.);
+#49=AXIS2_PLACEMENT_3D('p_bot',#1,#21,#17);
+#50=PLANE('s_bot',#49);
+#51=AXIS2_PLACEMENT_3D('p_top',#5,#19,#17);
+#52=PLANE('s_top',#51);
+#53=AXIS2_PLACEMENT_3D('p_x0',#1,#20,#18);
+#54=PLANE('s_x0',#53);
+#55=AXIS2_PLACEMENT_3D('p_x1',#2,#17,#18);
+#56=PLANE('s_x1',#55);
+#57=AXIS2_PLACEMENT_3D('p_y0',#1,#21,#17);
+#58=PLANE('s_y0',#57);
+#59=AXIS2_PLACEMENT_3D('p_y1',#4,#18,#17);
+#60=PLANE('s_y1',#59);
+#61=CARTESIAN_POINT('inner_v',(5.0,5.0,10.0));
+#62=VERTEX_POINT('shared_v',#61);
+#63=CARTESIAN_POINT('',(4.0,4.999875,10.0));
+#64=CARTESIAN_POINT('',(4.5,5.0,10.0));
+#65=CARTESIAN_POINT('',(4.8,4.99985,10.0));
+#66=CARTESIAN_POINT('',(5.0,5.0,10.0));
+#67=B_SPLINE_CURVE_WITH_KNOTS('curveA',3,(#63,#64,#65,#66),.UNSPECIFIED.,.F.,.F.,(4,4),(0.0,1.0),.UNSPECIFIED.);
+#68=VERTEX_POINT('A_start',#63);
+#69=EDGE_CURVE('selfint_A',#68,#62,#67,.T.);
+#70=CARTESIAN_POINT('',(4.0,5.000125,10.0));
+#71=CARTESIAN_POINT('',(4.5,5.0,10.0));
+#72=CARTESIAN_POINT('',(4.8,5.00015,10.0));
+#73=CARTESIAN_POINT('',(5.0,5.0,10.0));
+#74=B_SPLINE_CURVE_WITH_KNOTS('curveB',3,(#70,#71,#72,#73),.UNSPECIFIED.,.F.,.F.,(4,4),(0.0,1.0),.UNSPECIFIED.);
+#75=VERTEX_POINT('B_start',#70);
+#76=EDGE_CURVE('selfint_B',#75,#62,#74,.T.);
+#77=DIRECTION('inner_d1',(0.0,1.0,0.0));
+#78=VECTOR('inner_v1',#77,0.00025);
+#79=LINE('inner_l1',#63,#78);
+#80=EDGE_CURVE('inner_close',#68,#75,#79,.T.);
+#81=ORIENTED_EDGE('',$,$,#69,.T.);
+#82=ORIENTED_EDGE('',$,$,#76,.F.);
+#83=ORIENTED_EDGE('',$,$,#80,.F.);
+#84=EDGE_LOOP('inner_loop',(#81,#82,#83));
+#85=FACE_BOUND('inner_hole',#84,.F.);
+#86=ORIENTED_EDGE('',$,$,#26,.T.);
+#87=ORIENTED_EDGE('',$,$,#28,.T.);
+#88=ORIENTED_EDGE('',$,$,#30,.F.);
+#89=ORIENTED_EDGE('',$,$,#32,.F.);
+#90=EDGE_LOOP('',(#86,#87,#88,#89));
+#91=FACE_OUTER_BOUND('',#90,.T.);
+#92=ADVANCED_FACE('bottom',(#91),#50,.T.);
+#93=ORIENTED_EDGE('',$,$,#34,.T.);
+#94=ORIENTED_EDGE('',$,$,#36,.T.);
+#95=ORIENTED_EDGE('',$,$,#38,.F.);
+#96=ORIENTED_EDGE('',$,$,#40,.F.);
+#97=EDGE_LOOP('',(#93,#94,#95,#96));
+#98=FACE_OUTER_BOUND('',#97,.T.);
+#99=ADVANCED_FACE('top_with_hole',(#98,#85),#52,.T.);
+#100=ORIENTED_EDGE('',$,$,#32,.T.);
+#101=ORIENTED_EDGE('',$,$,#48,.T.);
+#102=ORIENTED_EDGE('',$,$,#40,.F.);
+#103=ORIENTED_EDGE('',$,$,#42,.F.);
+#104=EDGE_LOOP('',(#100,#101,#102,#103));
+#105=FACE_OUTER_BOUND('',#104,.T.);
+#106=ADVANCED_FACE('x0',(#105),#54,.T.);
+#107=ORIENTED_EDGE('',$,$,#28,.T.);
+#108=ORIENTED_EDGE('',$,$,#46,.T.);
+#109=ORIENTED_EDGE('',$,$,#36,.F.);
+#110=ORIENTED_EDGE('',$,$,#44,.F.);
+#111=EDGE_LOOP('',(#107,#108,#109,#110));
+#112=FACE_OUTER_BOUND('',#111,.T.);
+#113=ADVANCED_FACE('x1',(#112),#56,.T.);
+#114=ORIENTED_EDGE('',$,$,#26,.T.);
+#115=ORIENTED_EDGE('',$,$,#44,.T.);
+#116=ORIENTED_EDGE('',$,$,#34,.F.);
+#117=ORIENTED_EDGE('',$,$,#42,.F.);
+#118=EDGE_LOOP('',(#114,#115,#116,#117));
+#119=FACE_OUTER_BOUND('',#118,.T.);
+#120=ADVANCED_FACE('y0',(#119),#58,.T.);
+#121=ORIENTED_EDGE('',$,$,#30,.T.);
+#122=ORIENTED_EDGE('',$,$,#46,.T.);
+#123=ORIENTED_EDGE('',$,$,#38,.F.);
+#124=ORIENTED_EDGE('',$,$,#48,.F.);
+#125=EDGE_LOOP('',(#121,#122,#123,#124));
+#126=FACE_OUTER_BOUND('',#125,.T.);
+#127=ADVANCED_FACE('y1',(#126),#60,.T.);
+#128=CLOSED_SHELL('cube_shell',(#92,#99,#106,#113,#120,#127));
+#129=MANIFOLD_SOLID_BREP('cube',#128);
+#130=APPLICATION_CONTEXT('automotive design');
+#131=PRODUCT_CONTEXT('',#130,'mechanical');
+#132=PRODUCT('N008','N008','',(#131));
+#133=PRODUCT_DEFINITION_FORMATION('','',#132);
+#134=PRODUCT_DEFINITION_CONTEXT('part definition',#130,'design');
+#135=PRODUCT_DEFINITION('','',#133,#134);
+#136=PRODUCT_DEFINITION_SHAPE('','',#135);
+#137=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#138=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#139=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#140=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#137,'distance_accuracy_value','vertex_tol_pass0_native');
+#141=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#137,'distance_accuracy_value','vertex_tol_pass1');
+#142=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-5),#137,'distance_accuracy_value','vertex_tol_pass2');
+#143=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-4),#137,'distance_accuracy_value','vertex_tol_pass3');
+#144=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#137,'distance_accuracy_value','vertex_tol_pass4_overrun');
+#145=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#140,#141,#142,#143,#144))GLOBAL_UNIT_ASSIGNED_CONTEXT((#137,#138,#139))REPRESENTATION_CONTEXT('ctx','3D'));
+#146=ADVANCED_BREP_SHAPE_REPRESENTATION('',(#129),#145);
+#147=SHAPE_DEFINITION_REPRESENTATION(#136,#146);
 ENDSEC;
 END-ISO-10303-21;
