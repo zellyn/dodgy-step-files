@@ -1,16 +1,19 @@
 ISO-10303-21;
-/* Lh047 - Lower-case section keywords (data; instead of DATA;)
- * Defect: ISO 10303-21 spells framing keywords in upper case.
- * This fixture uses lower-case 'header;', 'data;', 'endsec;'.
- * Strict readers reject at the first mis-cased keyword; lenient
- * readers fold case and silently accept. */
+/* Lh047: lower-case framing keywords — header; data; endsec; instead of upper-case */
+/* ISO 10303-21 §6.2: framing keywords ISO-10303-21, HEADER, DATA, ENDSEC are upper-case */
+/* DEFECT: all three section-delimiters below appear in lower case */
+/* strict parsers reject at first mis-cased keyword; lenient parsers fold case and proceed */
 header;
-FILE_DESCRIPTION(('Lh047 - lower-case section keywords'),'2;1');
-FILE_NAME('Lh047.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Lh047: lower-case framing keywords'),'2;1');
+FILE_NAME('Lh047.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
 endsec;
+/* DEFECT: data; and endsec; are lower-case — violate the Part-21 framing grammar */
 data;
-#1=APPLICATION_CONTEXT('automotive_design');
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=CARTESIAN_POINT('corner',(1.,1.,0.));
+#3=DIRECTION('xdir',(1.,0.,0.));
+#4=DIRECTION('zdir',(0.,0.,1.));
+#5=GEOMETRIC_CURVE_SET('lowercase-keyword-shape',(#1,#2));
 endsec;
 END-ISO-10303-21;
