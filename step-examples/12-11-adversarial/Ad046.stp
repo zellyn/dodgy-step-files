@@ -1,62 +1,66 @@
 ISO-10303-21;
-/* Ad046 - STEPCAFControl_Writer / writer crashes on shape
-   ----------------------------------------------------------------------
-   Catalog section : §12.11 adversarial (sub-class: null-deref / DoS)
-   Sources         : 03-occt-tests.md R050 (empty APPLIED_GROUP_ASSIGNMENT
-                     write exception), R067 (writer exception);
-                     19-datasets.md D025 (FreeCAD #5783 STEP-export crash
-                     via missing pcurve);
-                     18-other-issues.md I050 (SolveSpace 0-byte STEP/PDF)
-   See also        : Ad043
-   ----------------------------------------------------------------------
-   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
-   testing on the WRITER side (used as round-trip input). Do NOT use as
-   exchange data.
-   ----------------------------------------------------------------------
-   Defect
-     Writer-side null-deref when shape has missing handles (e.g.
-     missing pcurve), an empty APPLIED_GROUP_ASSIGNMENT, or a feature
-     whose translation is incomplete. Producer crashes producing
-     zero-byte output. SolveSpace lathe-then-extrusion-difference and
-     FreeCAD #5783 missing-pcurve are documented incidents.
-   Reproducer recipe
-     APPLIED_GROUP_ASSIGNMENT with empty items list (used to crash
-     writer); plus an ADVANCED_FACE missing its pcurve handle.
-   Expected kernel behavior
-     Detect missing handle, fall back to recompute, or skip with
-     warning; never crash. Reject empty group with E_EMPTY_AGGREGATE.
-   ----------------------------------------------------------------------
-*/
+/* Ad046: writer null-deref: EDGE_CURVE on ADVANCED_FACE with bare 3D LINE and no SURFACE_CURVE/pcurve; APPLIED_GROUP_ASSIGNMENT with empty items list; both trigger null-deref in writer output path; FreeCAD #5783 / SolveSpace 0-byte STEP output; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Ad046 - empty APPLIED_GROUP_ASSIGNMENT + missing pcurve'),
-  '2;1');
-FILE_NAME('Ad046.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Ad046'),'2;1');
+FILE_NAME('Ad046.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=GROUP('g','desc');
-/* Defect: APPLIED_GROUP_ASSIGNMENT with empty items list. */
-#2=APPLIED_GROUP_ASSIGNMENT(#1,());
-#10=CARTESIAN_POINT('o',(0.0,0.0,0.0));
-#11=DIRECTION('z',(0.0,0.0,1.0));
-#12=DIRECTION('x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('p',#10,#11,#12);
-#14=PLANE('plane',#13);
-#15=CARTESIAN_POINT('a',(1.0,0.0,0.0));
-#16=CARTESIAN_POINT('b',(0.0,1.0,0.0));
-#17=VERTEX_POINT('va',#15);
-#18=VERTEX_POINT('vb',#16);
-#19=DIRECTION('dx',(0.0,1.0,0.0));
-#20=VECTOR('v',#19,1.0);
-#21=LINE('line3d',#15,#20);
-/* Note: writer expects pcurve aggregate; here we provide only the 3D
-   curve and no SURFACE_CURVE wrapper, simulating the FreeCAD #5783
-   missing-pcurve crash on export round-trip. */
-#22=EDGE_CURVE('e',#17,#18,#21,.T.);
-#23=ORIENTED_EDGE('oe',*,*,#22,.T.);
-#24=EDGE_LOOP('el',(#23));
-#25=FACE_OUTER_BOUND('fob',#24,.T.);
-#26=ADVANCED_FACE('af',(#25),#14,.T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Ad046','Ad046','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#9064=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#9065=CARTESIAN_POINT('',(0.0,0.0,1.0));
+#9066=DIRECTION('',(0.0,0.0,1.0));
+#9067=DIRECTION('',(1.0,0.0,0.0));
+#9068=AXIS2_PLACEMENT_3D('',#9063,#9066,#9067);
+#9069=PLANE('',#9068);
+#9070=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#9071=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#9072=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#9073=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#9074=DIRECTION('',(1.0,0.0,0.0));
+#9075=DIRECTION('',(0.0,1.0,0.0));
+#9076=DIRECTION('',(-1.0,0.0,0.0));
+#9077=DIRECTION('',(0.0,-1.0,0.0));
+#9078=VECTOR('',#9074,1.0);
+#9079=VECTOR('',#9075,1.0);
+#9080=VECTOR('',#9076,1.0);
+#9081=VECTOR('',#9077,1.0);
+#9082=LINE('',#9070,#9078);
+#9083=LINE('',#9071,#9079);
+#9084=LINE('',#9072,#9080);
+#9085=LINE('',#9073,#9081);
+#9086=VERTEX_POINT('',#9070);
+#9087=VERTEX_POINT('',#9071);
+#9088=VERTEX_POINT('',#9072);
+#9089=VERTEX_POINT('',#9073);
+#9090=EDGE_CURVE('',#9086,#9087,#9082,.T.);
+#9091=EDGE_CURVE('',#9087,#9088,#9083,.T.);
+#9092=EDGE_CURVE('',#9088,#9089,#9084,.T.);
+#9093=EDGE_CURVE('',#9089,#9086,#9085,.T.);
+#9094=ORIENTED_EDGE('',$,$,#9090,.T.);
+#9095=ORIENTED_EDGE('',$,$,#9091,.T.);
+#9096=ORIENTED_EDGE('',$,$,#9092,.T.);
+#9097=ORIENTED_EDGE('',$,$,#9093,.T.);
+#9098=EDGE_LOOP('',(#9094,#9095,#9096,#9097));
+#9099=FACE_OUTER_BOUND('',#9098,.T.);
+#9100=ADVANCED_FACE('',(#9099),#9069,.T.);
+#9101=GROUP('empty_group','triggers writer null-deref on empty items');
+#9102=APPLIED_GROUP_ASSIGNMENT(#9101,(#9100),());
 ENDSEC;
 END-ISO-10303-21;

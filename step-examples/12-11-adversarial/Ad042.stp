@@ -1,60 +1,31 @@
 ISO-10303-21;
-/* Ad042 - Reference to entity-of-wrong-type in attribute slot
-   ----------------------------------------------------------------------
-   Catalog section : §12.11 adversarial (sub-class: type-confusion / null-deref)
-   Sources         : 06-nist-sfa.md S007;
-                     18-other-issues.md I001 (CATIA V6 SDR with SHAPE_ASPECT
-                       instead of PROPERTY_DEFINITION_SHAPE; null-handle deref);
-                     08-occt-gitlog.md G002 (Datum_System mixed array crash),
-                     G016 (NAUO with PDS instead of PD)
-   See also        : Ad030
-   ----------------------------------------------------------------------
-   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
-   testing. Do NOT use as exchange data.
-   ----------------------------------------------------------------------
-   Defect
-     SCHEMA SELECT type validated by structural shape only; the actual
-     attribute type is the wrong subtype. Downstream chained calls of
-     the form x->A()->B() dereference a null handle. The CATIA V6
-     incident: 1088 of 1267 SHAPE_DEFINITION_REPRESENTATION instances
-     in a 430 MB file pointed at SHAPE_ASPECT instead of
-     PROPERTY_DEFINITION_SHAPE.
-   Reproducer recipe
-     #27=SHAPE_DEFINITION_REPRESENTATION(#23,#26) where #23 is a
-     SHAPE_ASPECT (not PROPERTY_DEFINITION_SHAPE).
-   Expected kernel behavior
-     Schema-aware select-narrowing that distinguishes the SELECT branch
-     and emits E_SELECT_BRANCH instead of dereffing a null.
-   ----------------------------------------------------------------------
-*/
+/* Ad042: type-confusion: SHAPE_ASPECT in SHAPE_DEFINITION_REPRESENTATION attribute slot that requires PROPERTY_DEFINITION_SHAPE; schema SELECT branch mismatch → null-handle deref on chained accessor; 1088/1267 SDRs broken in 430 MB CATIA V6 file; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Ad042 - SDR points at SHAPE_ASPECT, wrong SELECT branch'),
-  '2;1');
-FILE_NAME('Ad042.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Ad042'),'2;1');
+FILE_NAME('Ad042.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2001,#1);
-#3=PRODUCT_CONTEXT('',#1,'mechanical');
-#4=PRODUCT('P','part','',(#3));
-#5=PRODUCT_DEFINITION_FORMATION('','',#4);
-#6=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
-#7=PRODUCT_DEFINITION('design','',#5,#6);
-#8=PRODUCT_DEFINITION_SHAPE('','',#7);
-#10=CARTESIAN_POINT('o',(0.0,0.0,0.0));
-#11=DIRECTION('z',(0.0,0.0,1.0));
-#12=DIRECTION('x',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('p',#10,#11,#12);
-#20=MECHANICAL_CONTEXT('',#1,'mechanical');
-#21=REPRESENTATION_CONTEXT('','3d');
-#26=SHAPE_REPRESENTATION('rep',(#13),#21);
-/* Defect: #23 is SHAPE_ASPECT, not PROPERTY_DEFINITION_SHAPE.
-   The SELECT in SDR's first slot accepts both structurally; downstream
-   code that calls (#23)->property_definition() crashes. */
-#23=SHAPE_ASPECT('aspect','',#8,.T.);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Ad042','Ad042','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#23=SHAPE_ASPECT('mistyped_aspect','wrong branch',#9000,.T.);
+#24=PRODUCT_DEFINITION_SHAPE('','',#9000);
+#25=SHAPE_REPRESENTATION('',(#1),#9000);
+#26=ADVANCED_BREP_SHAPE_REPRESENTATION('',(#1),#9000);
 #27=SHAPE_DEFINITION_REPRESENTATION(#23,#26);
 ENDSEC;
 END-ISO-10303-21;

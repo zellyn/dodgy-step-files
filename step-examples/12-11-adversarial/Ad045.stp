@@ -1,54 +1,35 @@
 ISO-10303-21;
-/* Ad045 - FixShape raises exception on real input ("must not throw")
-   ----------------------------------------------------------------------
-   Catalog section : §12.11 adversarial (sub-class: null-deref / fuzz-class)
-   Sources         : 03-occt-tests.md R083 (bug24126, bug24249_*, bug24934,
-                     bug7570), R038, R075, R078, R079;
-                     22-niche-forums.md Y017 (gmsh >=4.12 fatal regression
-                     "Could not fix wire")
-   See also        : Ad043
-   ----------------------------------------------------------------------
-   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
-   testing. Do NOT use as exchange data.
-   ----------------------------------------------------------------------
-   Defect
-     ShapeFix pipeline must not throw exceptions on real input. OCCT CI
-     pins this guarantee. Real-world failures: Standard_RangeError in
-     ShapeAnalysis_WireOrder, Geom_OffsetSurface exception, fix-shape
-     negative-area, ShapeFix_Wire fatal regression after OCC 4.12.
-     Common trigger: a wire whose EDGE_CURVE start/end disagree by
-     ~Precision::Confusion() from the surface trace, exercising the
-     numerical-path branch that ShapeFix_Wire previously tolerated.
-   Reproducer recipe
-     EDGE_CURVE start/end vertices offset from line by ~1e-7 (just
-     below typical Confusion threshold) so wire-order analysis
-     numerical compare flips.
-   Expected kernel behavior
-     Degrade to warning; accept the file with healed geometry; never
-     throw across an ABI boundary. Wrap fix path in try/catch shim and
-     return E_FIX_FAILED.
-   ----------------------------------------------------------------------
-*/
+/* Ad045: healing-pipeline exception: EDGE_CURVE VERTEX_POINTs displaced ±1e-7 in Y from the hosting X-axis LINE; sub-confusion mismatch triggers out-of-range index in wire-ordering pass; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Ad045 - wire with sub-Confusion vertex/curve mismatch'),
-  '2;1');
-FILE_NAME('Ad045.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Ad045'),'2;1');
+FILE_NAME('Ad045.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* Line is exactly the X axis (0,0,0)+t*(1,0,0). Vertices intentionally
-   sit ~1e-7 off the line, just under typical Precision::Confusion. */
-#1=CARTESIAN_POINT('a',(0.0,0.0000001,0.0));
-#2=CARTESIAN_POINT('b',(1.0,-0.0000001,0.0));
-#3=VERTEX_POINT('va',#1);
-#4=VERTEX_POINT('vb',#2);
-#5=CARTESIAN_POINT('o',(0.0,0.0,0.0));
-#6=DIRECTION('x',(1.0,0.0,0.0));
-#7=VECTOR('vx',#6,1.0);
-#8=LINE('l',#5,#7);
-#10=EDGE_CURVE('e',#3,#4,#8,.T.);
-#11=ORIENTED_EDGE('oe',*,*,#10,.T.);
-#12=EDGE_LOOP('el',(#11));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Ad045','Ad045','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#9064=DIRECTION('',(1.0,0.0,0.0));
+#9065=VECTOR('',#9064,1.0);
+#9066=LINE('',#9063,#9065);
+#9067=CARTESIAN_POINT('v_start_offset',(0.0,1.0E-7,0.0));
+#9068=CARTESIAN_POINT('v_end_offset',(1.0,-1.0E-7,0.0));
+#9069=VERTEX_POINT('v_start',#9067);
+#9070=VERTEX_POINT('v_end',#9068);
+#9071=EDGE_CURVE('sub_confusion_edge',#9069,#9070,#9066,.T.);
 ENDSEC;
 END-ISO-10303-21;
