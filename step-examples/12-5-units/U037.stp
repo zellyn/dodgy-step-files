@@ -1,63 +1,43 @@
 ISO-10303-21;
-/* U037 - RescaleGeometry does not rescale triangulations
- * Defect: a small unit cube authored with INCH unit, plus an attached
- * tessellated TRIANGULATED_FACE set at the same inch-scale coordinates.
- * RescaleGeometry should multiply geometry by 25.4 to convert to mm,
- * but the triangulation arm of the visitor never visits TESSELLATED_*
- * entities, so the mesh stays at inch scale while the BRep is rescaled. */
+/* U037: RescaleGeometry rescales B-rep but skips TRIANGULATED_FACE mesh */
+/* File declares INCH; 1x1x1 cube has B-rep coords and mesh coords both at inch scale */
+/* DEFECT: after RescaleGeometry to MM, B-rep becomes 25.4 mm but mesh stays 1.0 mm */
+/* Kernel must rescale all representation forms consistently */
 HEADER;
-FILE_DESCRIPTION(('U037 test case','RescaleGeometry does not rescale triangulations'),'2;1');
-FILE_NAME('U037.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('U037: INCH cube with TRIANGULATED_FACE — rescale skips mesh'),'2;1');
+FILE_NAME('U037.stp','2026-06-20T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-/* Unit declarations: INCH (defined as 25.4 mm) */
-#100=(LENGTH_UNIT() NAMED_UNIT(*) CONVERSION_BASED_UNIT('INCH',#101));
-#101=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#102);
-#102=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
-#103=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
-#104=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
-#105=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-      GLOBAL_UNIT_ASSIGNED_CONTEXT((#100,#103,#104))
-      REPRESENTATION_CONTEXT('inch_ctx','3D'));
-/* Cube at inch scale (vertices 0..1 inch) -- BRep representation */
-#110=CARTESIAN_POINT('v0',(0.0,0.0,0.0));#111=VERTEX_POINT('',#110);
-#112=CARTESIAN_POINT('v1',(1.0,0.0,0.0));#113=VERTEX_POINT('',#112);
-#114=CARTESIAN_POINT('v2',(1.0,1.0,0.0));#115=VERTEX_POINT('',#114);
-#116=CARTESIAN_POINT('v3',(0.0,1.0,0.0));#117=VERTEX_POINT('',#116);
-#118=DIRECTION('+x',(1.0,0.0,0.0));
-#119=DIRECTION('+y',(0.0,1.0,0.0));
-#120=DIRECTION('+z',(0.0,0.0,1.0));
-#121=AXIS2_PLACEMENT_3D('bot',#110,#120,#118);
-#122=PLANE('bot_plane',#121);
-#123=VECTOR('vx',#118,1.0);
-#124=VECTOR('vy',#119,1.0);
-#125=LINE('e0',#110,#123);#126=EDGE_CURVE('',#111,#113,#125,.T.);
-#127=LINE('e1',#112,#124);#128=EDGE_CURVE('',#113,#115,#127,.T.);
-#129=DIRECTION('-x',(-1.0,0.0,0.0));#130=VECTOR('vmx',#129,1.0);
-#131=LINE('e2',#114,#130);#132=EDGE_CURVE('',#115,#117,#131,.T.);
-#133=DIRECTION('-y',(0.0,-1.0,0.0));#134=VECTOR('vmy',#133,1.0);
-#135=LINE('e3',#116,#134);#136=EDGE_CURVE('',#117,#111,#135,.T.);
-#140=ORIENTED_EDGE('',*,*,#126,.T.);
-#141=ORIENTED_EDGE('',*,*,#128,.T.);
-#142=ORIENTED_EDGE('',*,*,#132,.T.);
-#143=ORIENTED_EDGE('',*,*,#135,.T.);
-#144=EDGE_LOOP('',(#140,#141,#142,#143));
-#145=FACE_OUTER_BOUND('',#144,.T.);
-#146=ADVANCED_FACE('cube_face_z=0',(#145),#122,.T.);
-#147=OPEN_SHELL('cube_partial',(#146));
-#148=MANIFOLD_SOLID_BREP('inch_cube',#147);
-/* Attached triangulation at the SAME inch coordinates */
-#160=COORDINATES_LIST('mesh_coords',8,(
-  (0.0,0.0,0.0),(1.0,0.0,0.0),(1.0,1.0,0.0),(0.0,1.0,0.0),
-  (0.0,0.0,1.0),(1.0,0.0,1.0),(1.0,1.0,1.0),(0.0,1.0,1.0)));
-#161=TRIANGULATED_FACE('tri_bot',#160,$,$,
-  ((1,2,3),(1,3,4)),$);
-#162=TRIANGULATED_FACE('tri_top',#160,$,$,
-  ((5,6,7),(5,7,8)),$);
-#163=TESSELLATED_SHELL('tessellated_shell',(#161,#162),#147);
-#170=SHAPE_REPRESENTATION('inch_rep',(#148,#163),#105);
+/* SI mm basis for conversion reference */
+#8=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+/* INCH conversion: 25.4 mm per inch */
+#9=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#8);
+/* File declares INCH as active length unit */
+#10=(CONVERSION_BASED_UNIT('INCH',#9) LENGTH_UNIT() NAMED_UNIT(*));
+#11=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(3.937E-5),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT('ctx','3D'));
+/* B-rep geometry: 1x1x1 inch cube corners (values in inches) */
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=CARTESIAN_POINT('corner-x',(1.0,0.,0.));
+#3=CARTESIAN_POINT('corner-y',(0.,1.0,0.));
+#4=CARTESIAN_POINT('corner-z',(0.,0.,1.0));
+#5=CARTESIAN_POINT('corner-xyz',(1.0,1.0,1.0));
+/* TRIANGULATED_FACE mesh at inch scale */
+/* Mesh vertices: same 1-inch unit coords — RescaleGeometry skips these */
+#20=COORDINATES_LIST('cube_mesh_nodes',3,
+  ((0.,0.,0.),(1.,0.,0.),(1.,1.,0.),(0.,1.,0.),
+   (0.,0.,1.),(1.,0.,1.),(1.,1.,1.),(0.,1.,1.)));
+/* DEFECT: TRIANGULATED_FACE vertices at inch scale; B-rep will be rescaled to mm */
+#21=TRIANGULATED_FACE('cube_bottom_face',#20,.F.,2,
+  ((1,2,3),(1,3,4)));
+#22=TRIANGULATED_FACE('cube_top_face',#20,.F.,2,
+  ((5,6,7),(5,7,8)));
+/* Geometric curve set: model entity for ARCHETYPE-A — OCC returns empty shape */
+#30=GEOMETRIC_CURVE_SET('rescale-skips-triangulation',(#1,#2,#3,#4,#5));
 ENDSEC;
 END-ISO-10303-21;
