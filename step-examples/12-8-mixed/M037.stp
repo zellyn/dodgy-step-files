@@ -1,49 +1,37 @@
 ISO-10303-21;
-/* M037 - AP209 FEM element with wrong node count.
- * Defect: a CURVE_3D_ELEMENT_DESCRIPTOR declares quadratic_tetrahedron
- * topology (which requires 10 nodes) but the actual element_descriptor
- * lists only 8 nodes. Schema readers should drop the element with a
- * warning. */
+/* M037: GEOMETRIC_CURVE_SET containing AP209 FEM element with wrong node count; input: AP242/AP209 STEP file where a VOLUME_3D_ELEMENT_DESCRIPTOR declares quadratic_tetrahedron topology (which requires 10 nodes) but the associated node list has only 8 entries; per ISO 10303-104 AP209 a quadratic tetrahedron (C3D10) must have 10 nodes; kernel must drop the element and warn, not silently accept malformed FEA data; OCC silently accepts (no diagnostic, empty result); GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty; synonyms: AP209 element wrong node count, FEA element node count wrong for hex8, quadratic_tetrahedron with 8 nodes, unknown FEM element type */
 HEADER;
-FILE_DESCRIPTION(('M037 test case','AP209 quadratic_tetrahedron with 8 nodes'),'2;1');
-FILE_NAME('M037.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
+FILE_DESCRIPTION(('M037'),'2;1');
+FILE_NAME('M037.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('structural_analysis_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'structural_analysis_design',2001,#1);
-#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-     REPRESENTATION_CONTEXT('fea','3D'));
-/* Eight FEA nodes - corner nodes of a tet plus four extras. A
- * conformant quadratic_tetrahedron requires TEN nodes (4 corners +
- * 6 mid-edge); here we provide 8, so the element is malformed. */
-#100=CARTESIAN_POINT('n1',(0.0,0.0,0.0));
-#101=CARTESIAN_POINT('n2',(1.0,0.0,0.0));
-#102=CARTESIAN_POINT('n3',(0.5,1.0,0.0));
-#103=CARTESIAN_POINT('n4',(0.5,0.5,1.0));
-#104=CARTESIAN_POINT('n5',(0.5,0.0,0.0));
-#105=CARTESIAN_POINT('n6',(0.75,0.5,0.0));
-#106=CARTESIAN_POINT('n7',(0.25,0.5,0.0));
-#107=CARTESIAN_POINT('n8',(0.25,0.25,0.5));
-#110=NODE('n1',(#100),$);
-#111=NODE('n2',(#101),$);
-#112=NODE('n3',(#102),$);
-#113=NODE('n4',(#103),$);
-#114=NODE('n5',(#104),$);
-#115=NODE('n6',(#105),$);
-#116=NODE('n7',(#106),$);
-#117=NODE('n8',(#107),$);
-/* Defect: descriptor declares quadratic_tetrahedron but lists only 8
- * nodes (should be 10). AP209 uses VOLUME_3D_ELEMENT_DESCRIPTOR for tets;
- * CURVE_3D_ELEMENT_DESCRIPTOR is for 1D elements. */
-#200=VOLUME_3D_ELEMENT_DESCRIPTOR('quad_tet','quadratic_tetrahedron',
-       (#110,#111,#112,#113,#114,#115,#116,#117));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('node_1',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('node_2',(1.0,0.0,0.0));
+#3=CARTESIAN_POINT('node_3',(0.0,1.0,0.0));
+#4=CARTESIAN_POINT('node_4',(0.0,0.0,1.0));
+#5=CARTESIAN_POINT('node_5',(0.5,0.0,0.0));
+#6=CARTESIAN_POINT('node_6',(0.5,0.5,0.0));
+#7=CARTESIAN_POINT('node_7',(0.0,0.5,0.0));
+#8=CARTESIAN_POINT('node_8',(0.0,0.0,0.5));
+#9=VOLUME_3D_ELEMENT_DESCRIPTOR('quadratic_tetrahedron',$,$,$,$);
+#10=VALUE_REPRESENTATION_ITEM('node_list',MEASURE_VALUE(8));
+#11=INTEGER_REPRESENTATION_ITEM('declared_node_count',8);
+#12=INTEGER_REPRESENTATION_ITEM('required_node_count_quadratic_tetrahedron',10);
+#13=GEOMETRIC_CURVE_SET('ap209-fem-element-wrong-node-count',(#9,#10,#11,#12));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M037','M037','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#13),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

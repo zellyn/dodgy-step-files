@@ -1,31 +1,29 @@
 ISO-10303-21;
-/* M038 - AP209 freedom_and_coefficient `a` != 1, or
- * single_point_constraint `b` != 0.
- * Defect: the AP209 simplifying recommended practice requires a==1
- * and b==0 in the SPC's coefficient pair. This file emits a=2.0 and
- * b=0.001, violating both. Readers should warn but honor the values. */
+/* M038: GEOMETRIC_CURVE_SET containing AP209 SPC boundary condition with nonstandard constraint coefficients; input: AP242/AP209 STEP file where FREEDOM_AND_COEFFICIENT has a=2.0 (RP requires a==1) and SINGLE_POINT_CONSTRAINT has b=0.001 (RP requires b==0); per ISO 10303-104 AP209 the simplifying assumptions for SPC are a==1, b==0; a nonstandard 'a' scales the constrained DOF; nonzero 'b' shifts it; kernel must warn and proceed, honoring the actual values rather than silently clamping them to the assumed defaults; OCC silently accepts (no diagnostic, empty result); GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty; synonyms: AP209 SPC coefficient nonstandard, freedom_and_coefficient a!=1, single_point_constraint b!=0, BC simplifying assumptions violated */
 HEADER;
-FILE_DESCRIPTION(('M038 test case','SPC coefficient violations'),'2;1');
-FILE_NAME('M038.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
+FILE_DESCRIPTION(('M038'),'2;1');
+FILE_NAME('M038.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('structural_analysis_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'structural_analysis_design',2001,#1);
-#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-     REPRESENTATION_CONTEXT('fea','3D'));
-#100=CARTESIAN_POINT('n1',(0.0,0.0,0.0));
-#110=NODE('n1',(#100),$);
-/* Defect: a coefficient is 2.0 instead of required 1.0. */
-#200=FREEDOM_AND_COEFFICIENT('translation_x','U',2.0);
-/* Defect: b (right-hand side) is 0.001 instead of required 0.0. */
-#210=SINGLE_POINT_CONSTRAINT('spc1',#110,(#200),0.001);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('constrained_node',(1.,2.,3.));
+#2=FREEDOM_AND_COEFFICIENT('constrained_dof_x',.X.,2.0);
+#3=SINGLE_POINT_CONSTRAINT('spc_nonstandard_b',(#2),0.001);
+#4=FREEDOM_AND_COEFFICIENT('constrained_dof_y',.Y.,2.0);
+#5=GEOMETRIC_CURVE_SET('ap209-spc-nonstandard-coefficients',(#2,#3,#4));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M038','M038','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#5),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
