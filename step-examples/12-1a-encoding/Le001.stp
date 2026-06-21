@@ -1,19 +1,14 @@
-﻿/* Le001 — UTF-8 BOM at start of ISO-10303-21;
-   Defect: leading EF BB BF bytes appear before the magic line, violating
-   the Part-21 framing grammar that requires ISO-10303-21; as the first token.
-   Note: the BOM is the FIRST three bytes of this file; this comment sits
-   AFTER the BOM. Strict parsers fail at the first non-ASCII byte. */
-ISO-10303-21;
+﻿ISO-10303-21;
+/* Le001: UTF-8 BOM (EF BB BF) at start of file before ISO-10303-21; magic line; spec framing grammar requires ISO-10303-21; as first non-whitespace token; strict parsers fail on first non-ASCII byte; heal: strip single leading UTF-8 BOM at offset 0 with warning; reject UTF-16/UTF-32 BOMs with E_UNEXPECTED_BOM; the three BOM bytes ARE the first bytes of the rendered file */
 HEADER;
-FILE_DESCRIPTION(('Le001 - UTF-8 BOM at start of ISO-10303-21;'),'2;1');
-FILE_NAME('Le001.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Le001'),'2;1');
+FILE_NAME('Le001.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10=CARTESIAN_POINT('origin',(0.0,0.0,0.0));
-#20=DIRECTION('z',(0.0,0.0,1.0));
-#30=DIRECTION('x',(1.0,0.0,0.0));
-#40=AXIS2_PLACEMENT_3D('placement',#10,#20,#30);
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('placement',#1,#2,#3);
 ENDSEC;
 END-ISO-10303-21;

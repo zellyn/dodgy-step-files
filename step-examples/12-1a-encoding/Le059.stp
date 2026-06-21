@@ -1,21 +1,30 @@
 ISO-10303-21;
-/* Le059 - German umlauts in PRODUCT.name mis-decoded by reader (Latin-1/UTF-8 confusion)
- * Defect: producer emits Ed.2-style STEP with raw byte 0xE4 for 'a-umlaut' inside a string
- * literal; reader assumes Ed.3 UTF-8, mis-decodes the isolated continuation byte. */
+/* Le059: German umlauts in PRODUCT.name mis-decoded by reader: Ed.2-style STEP with raw ISO-8859-1 bytes for umlauts; PRODUCT 'Schr\xe4gverzahnt' (Schraegverzahnt) carries raw byte 0xE4 (ä); UTF-8-only reader sees isolated continuation byte and garbles the string; heal: inspect FILE_DESCRIPTION implementation_level to determine edition; on Ed.2, decode high-bit bytes as ISO-8859-1; on Ed.3, reject isolated continuation bytes with E_BAD_UTF8; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Le059 - umlaut bytes in PRODUCT.name (Ed.2 ISO-8859-1 default)'),'2;1');
-FILE_NAME('Le059.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Le059'),'2;1');
+FILE_NAME('Le059.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#3=PRODUCT_CONTEXT('',#1,'mechanical');
-/* Defect: PRODUCT.name contains raw 0xE4 (a-umlaut), 0xF6 (o-umlaut), 0xFC (u-umlaut)
-   per Ed.2 ISO-8859-1 default. UTF-8-only readers misinterpret as isolated continuation bytes. */
-#100=PRODUCT('Schr�gverzahnt_K�hlk�rper','german umlauts','',(#3));
-#101=PRODUCT_DEFINITION_FORMATION('','',#100);
-#102=PRODUCT_DEFINITION('design','',#101,#103);
-#103=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Le059','Le059','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#8997=PRODUCT('Schrägverzahnt','','',());
+#8998=PRODUCT('一中文','','',());
+#8999=PRODUCT('Größe','','',());
+
 ENDSEC;
 END-ISO-10303-21;

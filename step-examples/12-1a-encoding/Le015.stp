@@ -1,21 +1,13 @@
-/* Le015 — Unterminated string literal
-   Defect: PERSON below opens an apostrophe and never closes it. A naive
-   scanner advances past the intended attribute boundary and may swallow
-   the rest of the file or read past the buffer until a lucky ' byte is
-   found. The remainder of this file is intentionally truncated immediately
-   after the open quote — there is no closing apostrophe, no trailing
-   parameters, no semicolon, no ENDSEC, no END-ISO-10303-21. A bounded
-   scanner must emit E_UNTERMINATED_STRING. */
 ISO-10303-21;
+/* Le015: Unterminated string literal at EOF: PERSON entity opens an apostrophe and never closes it; no trailing parameters, no semicolon, no ENDSEC, no file-footer; a bounded scanner must emit E_UNTERMINATED_STRING; the open-quote IS the mechanism; file is intentionally truncated after the opening apostrophe of the unclosed string */
 HEADER;
-FILE_DESCRIPTION(('Le015 - unterminated string literal at EOF'),'2;1');
-FILE_NAME('Le015.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Le015'),'2;1');
+FILE_NAME('Le015.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('',(0.0,0.0,1.0));
-#12=DIRECTION('',(1.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('',#10,#11,#12);
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
 #20=PERSON('p1','unclosed_string_then_eof
