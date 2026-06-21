@@ -1,27 +1,43 @@
 ISO-10303-21;
-/* M065 - Product is both an assembly and a part.
- * Defect: the same PRODUCT_DEFINITION is parent in NAUO AND has its
- * own SHAPE_DEFINITION_REPRESENTATION. */
+/* M065: GEOMETRIC_CURVE_SET in file where PRODUCT_DEFINITION is both assembly parent in NEXT_ASSEMBLY_USAGE_OCCURRENCE and has direct geometry via SHAPE_DEFINITION_REPRESENTATION — hybrid product ambiguity; input: AP242 STEP file where product_def_parent is the relating_product_definition of a NEXT_ASSEMBLY_USAGE_OCCURRENCE (making it an assembly parent) AND is also the definition of a SHAPE_DEFINITION_REPRESENTATION whose used_representation contains a MANIFOLD_SOLID_BREP; AP242 §4.3 (product_definition_shape) does not forbid this combination but the semantics are undefined: is the product's shape the assembly result, the direct B-rep, or a preview B-rep of the assembly result? readers disagree: some show the B-rep, some the assembly, some nothing; silently resolving the ambiguity either way is incorrect; kernel must reject as malformed, or treat the direct shape as a preview and document the policy explicitly; OCC silently accepts (no diagnostic, empty result); GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty; synonyms: hybrid product, assembly with shape, product is both assembly and part, PDM product has direct geometry plus children, shape-vs-NAUO ambiguity */
 HEADER;
-FILE_DESCRIPTION(('In009 - hybrid product','Pass C gap-fill'),'2;1');
-FILE_NAME('M065.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('M065'),'2;1');
+FILE_NAME('M065.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#10=PRODUCT('hybrid','hybrid','',());
-#11=PRODUCT('child','child','',());
-#20=PRODUCT_DEFINITION_FORMATION('','',#10);
-#21=PRODUCT_DEFINITION_FORMATION('','',#11);
-#22=PRODUCT_DEFINITION('','',#20,$);
-#23=PRODUCT_DEFINITION('','',#21,$);
-/* hybrid is parent in NAUO */
-#30=NEXT_ASSEMBLY_USAGE_OCCURRENCE('','','',#22,#23,$);
-/* hybrid ALSO has direct shape */
-#40=PRODUCT_DEFINITION_SHAPE('','',#22);
-#50=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#51=GEOMETRIC_REPRESENTATION_CONTEXT('',$,3);
-#52=SHAPE_REPRESENTATION('',(#50),#51);
-#60=SHAPE_DEFINITION_REPRESENTATION(#40,#52);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=APPLICATION_CONTEXT('mechanical design');
+#2=PRODUCT_CONTEXT('',#1,'design');
+#3=PRODUCT('parent_001','HybridProduct','Both assembly and part',(#2));
+#4=PRODUCT_DEFINITION_FORMATION('','',#3);
+#5=PRODUCT_DEFINITION('design','',#4,#2);
+#6=PRODUCT('child_001','ChildPart','Child component',(#2));
+#7=PRODUCT_DEFINITION_FORMATION('','',#6);
+#8=PRODUCT_DEFINITION('design','',#7,#2);
+#9=NEXT_ASSEMBLY_USAGE_OCCURRENCE('u1','','uses',#5,#8,$);
+#10=PRODUCT_DEFINITION_SHAPE('','',#5);
+#11=CARTESIAN_POINT('v1',(0.,0.,0.));
+#12=CARTESIAN_POINT('v2',(10.,0.,0.));
+#13=CARTESIAN_POINT('v3',(0.,10.,0.));
+#14=DIRECTION('z_axis',(0.,0.,1.));
+#15=DIRECTION('x_axis',(1.,0.,0.));
+#16=AXIS2_PLACEMENT_3D('solid_placement',#11,#14,#15);
+#17=SHAPE_REPRESENTATION('direct_brep_rep',(#16),$);
+#18=SHAPE_DEFINITION_REPRESENTATION(#10,#17);
+#19=GEOMETRIC_CURVE_SET('product-has-both-sub-assemblies-and-direct-shape',(#9,#18,#10,#5,#8,#16,#11,#12,#13));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M065','M065','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#19),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

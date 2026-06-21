@@ -1,18 +1,37 @@
 ISO-10303-21;
-/* M061 - Assembly transformation has scaling factor.
- * Defect: ITEM_DEFINED_TRANSFORMATION declares non-unit scale axis;
- * STEP placements canonically have no scale. */
+/* M061: GEOMETRIC_CURVE_SET in file with AXIS2_PLACEMENT_3D referencing DIRECTION entities with non-unit magnitude (2.0,0.0,0.0) — hidden scale factor that STEP writers silently strip on write; input: AP242 STEP assembly file where a child component's AXIS2_PLACEMENT_3D uses DIRECTION('not_unit_length',(2.0,0.0,0.0)) and DIRECTION('not_unit_length',(0.0,2.0,0.0)) implicitly encoding scale 2.0; STEP placements have no canonical scale attribute; the DIRECTION magnitude is not a standardised scale encoding but some tools exploit it; AP242 ISO 10303-42 §4.4 states DIRECTION values should be normalised; on write, the writer normalises the DIRECTION to unit length and the scale is silently lost — the exported child appears at the wrong size; kernel must reject non-unit DIRECTION in AXIS2_PLACEMENT_3D; or bake the scale factor into child geometry before write; OCC silently accepts (no diagnostic, empty result); GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty; synonyms: scale dropped, AXIS2_PLACEMENT scale lost, non-unit DIRECTION scale stripped, ITEM_DEFINED_TRANSFORMATION ignored scale */
 HEADER;
-FILE_DESCRIPTION(('In005 - scale on assembly placement','Pass C gap-fill'),'2;1');
-FILE_NAME('M061.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('M061'),'2;1');
+FILE_NAME('M061.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-/* AXIS2_PLACEMENT with directions of length != 1 implicitly encodes scale */
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('not_unit_length',(2.0,0.0,0.0));
-#12=DIRECTION('not_unit_length_2',(0.0,2.0,0.0));
-#13=AXIS2_PLACEMENT_3D('scale_2x',#10,#11,#12);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('child_origin',(0.,0.,0.));
+#2=DIRECTION('not_unit_length',(2.0,0.0,0.0));
+#3=DIRECTION('not_unit_length',(0.0,2.0,0.0));
+#4=AXIS2_PLACEMENT_3D('scaled_child_placement',#1,#2,#3);
+#5=CARTESIAN_POINT('parent_origin',(0.,0.,0.));
+#6=DIRECTION('z_axis',(0.,0.,1.));
+#7=DIRECTION('x_axis',(1.,0.,0.));
+#8=AXIS2_PLACEMENT_3D('parent_placement',#5,#6,#7);
+#9=ITEM_DEFINED_TRANSFORMATION('scale2x','implicit scale by 2',#8,#4);
+#10=CARTESIAN_POINT('box_a',(0.,0.,0.));
+#11=CARTESIAN_POINT('box_b',(1.,0.,0.));
+#12=CARTESIAN_POINT('box_c',(0.,1.,0.));
+#13=GEOMETRIC_CURVE_SET('non-unit-direction-encodes-hidden-scale-in-placement',(#4,#2,#3,#9,#10,#11,#12));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M061','M061','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#13),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
