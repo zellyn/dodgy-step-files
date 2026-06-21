@@ -1,59 +1,30 @@
 ISO-10303-21;
-/* Pf010 - Cyclic / self-referential reference graph causes infinite
-   recursion. Reference resolver loops forever or stack-overflows.
-   This fixture exercises four canonical cycle shapes documented in
-   A004, OCCT G031/G032/G033, Q023 and ISO-10303-21 §11.5:
-     #10  - DERIVED_UNIT element referencing its own host (self-loop)
-     #20  - APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT pointing at this
-            same file (cyclic external file reference)
-     #30  - SHAPE_REPRESENTATION_RELATIONSHIP whose rep_2 == rep_1
-     #40  - COMPOSITE_CURVE_SEGMENT whose parent_curve is the composite
-   Scaling-up: any one cycle hangs naive resolvers; combining several in
-   one file (as here) defeats single-pattern guards. */
+/* Pf010: COMPOSITE_CURVE segment whose parent_curve references the composite itself; reference resolver follows cycle indefinitely; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Pf010 - cyclic / self-referential reference graphs'),'2;1');
-FILE_NAME('Pf010.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Pf010'),'2;1');
+FILE_NAME('Pf010.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* (1) complex unit entity with derived-unit element pointing at itself */
-#9=DIMENSIONAL_EXPONENTS(1.0,0.0,0.0,0.0,0.0,0.0,0.0);
-#10=( NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) LENGTH_UNIT() );
-/* Pf010-A: derived unit element references its own parent unit */
-#11=DERIVED_UNIT_ELEMENT(#10,1.0);
-#12=DERIVED_UNIT((#11));
-/* (2) external file reference resolves to this same file path */
-#20=EXTERNAL_SOURCE('Pf010.stp');
-#21=APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT('id','same-file',#20,#22);
-/* victim that is in the same file - cycle on resolution */
-#22=PRODUCT('SELF','self','',(#23));
-#23=PRODUCT_CONTEXT('',#100,'mechanical');
-/* (3) shape rep relationship whose rep_2 is itself (rep_1 == rep_2) */
-#30=AXIS2_PLACEMENT_3D('',#31,#32,#33);
-#31=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#32=DIRECTION('',(0.0,0.0,1.0));
-#33=DIRECTION('',(1.0,0.0,0.0));
-#34=( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT
-   ((#35)) GLOBAL_UNIT_ASSIGNED_CONTEXT((#10)) REPRESENTATION_CONTEXT('','3D') );
-/* simplified context node */
-#35=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#10,'',
-   '');
-#36=SHAPE_REPRESENTATION('R',(#30),#34);
-/* Pf010-C: rep_2 == rep_1 makes resolver loop */
-#37=SHAPE_REPRESENTATION_RELATIONSHIP('','',#36,#36);
-/* (4) composite curve whose only segment's parent_curve points back
-   at the composite itself */
-#40=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#41=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#42=POLYLINE('',(#40,#41));
-/* COMPOSITE_CURVE_SEGMENT (transition, sense, parent_curve)
-   parent_curve below points at the composite #44 to form a cycle */
-#43=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#44);
-#44=COMPOSITE_CURVE('cycle',(#43),.F.);
-/* application context boilerplate */
-#100=APPLICATION_CONTEXT('automotive_design');
-#101=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2001,#100);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Pf010','Pf010','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#9064=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#9065=COMPOSITE_CURVE('cyclic_composite',(#9066),.F.);
+#9066=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#9065);
 ENDSEC;
 END-ISO-10303-21;

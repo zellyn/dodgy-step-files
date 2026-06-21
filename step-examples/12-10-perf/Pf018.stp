@@ -1,49 +1,69 @@
 ISO-10303-21;
-/* Pf018 - Memory not released after STEPCAFControl_Reader (Linux/Docker)
-   Pattern: a moderately large STEP (~142 MB) read by STEPCAFControl_
-   Reader leaves ~900 MB resident on glibc even after the destructor runs;
-   the same code under Windows VS allocator releases cleanly. Indicates
-   allocator-arena fragmentation, not a true leak (OCCT #534).
-   The file shape that triggers this is incidental - any large STEP with
-   many heterogeneous-size allocations through the reader will do.
-   Scaling-up: this fixture mixes small and large entities to trigger the
-   typical small/large allocation interleave; replicate the pattern up
-   to ~142 MB total to reproduce. */
+/* Pf018: multi-product assembly tree: 5 PRODUCT leaves + NAUO links; glibc arena retains ~900 MB resident after destructor; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Pf018 - reader memory-arena retention pattern'),'2;1');
-FILE_NAME('Pf018.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Pf018'),'2;1');
+FILE_NAME('Pf018.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
+#9000=APPLICATION_CONTEXT('mechanical design');
 #1=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#2=DIRECTION('',(0.0,0.0,1.0));
-#3=DIRECTION('',(1.0,0.0,0.0));
-#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
-/* small allocations (typical allocator small-bin) */
-#10=CARTESIAN_POINT('',(1.0,2.0,3.0));
-#11=CARTESIAN_POINT('',(2.0,3.0,4.0));
-#12=CARTESIAN_POINT('',(3.0,4.0,5.0));
-#13=CARTESIAN_POINT('',(4.0,5.0,6.0));
-#14=CARTESIAN_POINT('',(5.0,6.0,7.0));
-/* large allocations (large-arena allocations interleaved) */
-#100=B_SPLINE_CURVE_WITH_KNOTS('big1',3,(#10,#11,#12,#13,#14),
-   .UNSPECIFIED.,.F.,.F.,(4,1,4),(0.0,0.5,1.0),.UNSPECIFIED.);
-#101=B_SPLINE_CURVE_WITH_KNOTS('big2',3,(#10,#11,#12,#13,#14),
-   .UNSPECIFIED.,.F.,.F.,(4,1,4),(0.0,0.5,1.0),.UNSPECIFIED.);
-#102=B_SPLINE_CURVE_WITH_KNOTS('big3',3,(#10,#11,#12,#13,#14),
-   .UNSPECIFIED.,.F.,.F.,(4,1,4),(0.0,0.5,1.0),.UNSPECIFIED.);
-#103=B_SPLINE_CURVE_WITH_KNOTS('big4',3,(#10,#11,#12,#13,#14),
-   .UNSPECIFIED.,.F.,.F.,(4,1,4),(0.0,0.5,1.0),.UNSPECIFIED.);
-/* short-lived per-entity strings (tiny-string churn into glibc arenas) */
-#200=PROPERTY_DEFINITION('attribute1','desc-which-is-discarded',#4);
-#201=PROPERTY_DEFINITION('attribute2','desc-which-is-discarded',#4);
-#202=PROPERTY_DEFINITION('attribute3','desc-which-is-discarded',#4);
-#203=PROPERTY_DEFINITION('attribute4','desc-which-is-discarded',#4);
-#204=PROPERTY_DEFINITION('attribute5','desc-which-is-discarded',#4);
-#205=PROPERTY_DEFINITION('attribute6','desc-which-is-discarded',#4);
-#206=PROPERTY_DEFINITION('attribute7','desc-which-is-discarded',#4);
-#207=PROPERTY_DEFINITION('attribute8','desc-which-is-discarded',#4);
-#208=PROPERTY_DEFINITION('attribute9','desc-which-is-discarded',#4);
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Pf018','Pf018','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=APPLICATION_CONTEXT('assembly memory leak pattern');
+#9064=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#9063);
+#9065=PRODUCT_CONTEXT('',#9063,'mechanical');
+#9066=PRODUCT_DEFINITION_CONTEXT('part definition',#9063,'design');
+#9067=REPRESENTATION_CONTEXT('leak_asm','3D');
+#9068=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#9069=SHAPE_REPRESENTATION('leaf_sr_0',(#9068),#9067);
+#9070=PRODUCT('leaf_0','Leaf 0','',(9065));
+#9071=PRODUCT_DEFINITION_FORMATION('','',#9070);
+#9072=PRODUCT_DEFINITION('design','',#9071,#9066);
+#9073=SHAPE_DEFINITION_REPRESENTATION(PRODUCT_DEFINITION_SHAPE('','',#9072),#9069);
+#9074=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#9075=SHAPE_REPRESENTATION('leaf_sr_1',(#9074),#9067);
+#9076=PRODUCT('leaf_1','Leaf 1','',(9065));
+#9077=PRODUCT_DEFINITION_FORMATION('','',#9076);
+#9078=PRODUCT_DEFINITION('design','',#9077,#9066);
+#9079=SHAPE_DEFINITION_REPRESENTATION(PRODUCT_DEFINITION_SHAPE('','',#9078),#9075);
+#9080=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#9081=SHAPE_REPRESENTATION('leaf_sr_2',(#9080),#9067);
+#9082=PRODUCT('leaf_2','Leaf 2','',(9065));
+#9083=PRODUCT_DEFINITION_FORMATION('','',#9082);
+#9084=PRODUCT_DEFINITION('design','',#9083,#9066);
+#9085=SHAPE_DEFINITION_REPRESENTATION(PRODUCT_DEFINITION_SHAPE('','',#9084),#9081);
+#9086=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#9087=SHAPE_REPRESENTATION('leaf_sr_3',(#9086),#9067);
+#9088=PRODUCT('leaf_3','Leaf 3','',(9065));
+#9089=PRODUCT_DEFINITION_FORMATION('','',#9088);
+#9090=PRODUCT_DEFINITION('design','',#9089,#9066);
+#9091=SHAPE_DEFINITION_REPRESENTATION(PRODUCT_DEFINITION_SHAPE('','',#9090),#9087);
+#9092=CARTESIAN_POINT('',(4.0,0.0,0.0));
+#9093=SHAPE_REPRESENTATION('leaf_sr_4',(#9092),#9067);
+#9094=PRODUCT('leaf_4','Leaf 4','',(9065));
+#9095=PRODUCT_DEFINITION_FORMATION('','',#9094);
+#9096=PRODUCT_DEFINITION('design','',#9095,#9066);
+#9097=SHAPE_DEFINITION_REPRESENTATION(PRODUCT_DEFINITION_SHAPE('','',#9096),#9093);
+#9098=PRODUCT('root_asm','Root Assembly','',(9065));
+#9099=PRODUCT_DEFINITION_FORMATION('','',#9098);
+#9100=PRODUCT_DEFINITION('design','',#9099,#9066);
+#9101=NEXT_ASSEMBLY_USAGE_OCCURRENCE('nauo_0','0','',#9100,#9072,$);
+#9102=NEXT_ASSEMBLY_USAGE_OCCURRENCE('nauo_1','1','',#9100,#9078,$);
+#9103=NEXT_ASSEMBLY_USAGE_OCCURRENCE('nauo_2','2','',#9100,#9084,$);
+#9104=NEXT_ASSEMBLY_USAGE_OCCURRENCE('nauo_3','3','',#9100,#9090,$);
+#9105=NEXT_ASSEMBLY_USAGE_OCCURRENCE('nauo_4','4','',#9100,#9096,$);
 ENDSEC;
 END-ISO-10303-21;

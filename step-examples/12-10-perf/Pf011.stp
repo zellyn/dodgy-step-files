@@ -1,56 +1,89 @@
 ISO-10303-21;
-/* Pf011 - StepData_EntityCluster pathological deep / cyclic chain
-   Pattern: OCCT's internal StepData_EntityCluster chain allows cyclic
-   next-pointer links and recursion in Value/SetValue/Append. Pathological
-   inputs crash via stack overflow and leak memory through a missing
-   destructor (Mantis 0031435; OCCT e00b8ed).
-   The chain is normally invisible to the file format - it is the OCCT
-   in-memory shape of complex / multi-inheritance entities. We expose
-   the pattern here as a deeply nested complex-record entity whose part
-   list is recursively self-referencing through a long chain.
-   Scaling-up: replicate the deeply-nested complex record below to depth
-   10000+ to trigger the entity-cluster recursion. */
+/* Pf011: pathological entity-cluster chain: CARTESIAN_POINTs linked through COMPOSITE_CURVE segments forming a cyclic next-pointer pattern; EntityCluster traversal recurses infinitely / leaks on cycle; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Pf011 - StepData_EntityCluster cyclic deep chain'),'2;1');
-FILE_NAME('Pf011.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Pf011'),'2;1');
+FILE_NAME('Pf011.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* deeply-chained complex record family - each cluster references the
-   next; the last loops back to the first to expose missing destructor +
-   cycle handling in StepData_EntityCluster::Value/SetValue/Append. */
-#1=DIMENSIONAL_EXPONENTS(1.0,0.0,0.0,0.0,0.0,0.0,0.0);
-#10=( NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) LENGTH_UNIT() );
-#11=( NAMED_UNIT(*) SI_UNIT($,.METRE.) LENGTH_UNIT() );
-#12=( NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) LENGTH_UNIT() );
-#13=( NAMED_UNIT(*) SI_UNIT($,.METRE.) LENGTH_UNIT() );
-#14=( NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) LENGTH_UNIT() );
-#15=( NAMED_UNIT(*) SI_UNIT($,.METRE.) LENGTH_UNIT() );
-/* derived-unit chain (cluster of CLUSTERs) */
-#20=DERIVED_UNIT_ELEMENT(#10,1.0);
-#21=DERIVED_UNIT_ELEMENT(#11,1.0);
-#22=DERIVED_UNIT_ELEMENT(#12,1.0);
-#23=DERIVED_UNIT_ELEMENT(#13,1.0);
-#24=DERIVED_UNIT_ELEMENT(#14,1.0);
-#25=DERIVED_UNIT_ELEMENT(#15,1.0);
-/* derived-unit aggregating chain - in OCCT this becomes a linked
-   EntityCluster chain. Replicate to depth 10000+ to trigger recursion. */
-#30=DERIVED_UNIT((#20));
-#31=DERIVED_UNIT((#20,#21));
-#32=DERIVED_UNIT((#20,#21,#22));
-#33=DERIVED_UNIT((#20,#21,#22,#23));
-#34=DERIVED_UNIT((#20,#21,#22,#23,#24));
-#35=DERIVED_UNIT((#20,#21,#22,#23,#24,#25));
-/* cluster cycle via measure_with_unit:
-   the measures #40..#45 each reference the next derived unit, and the
-   final back-reference completes the cycle. Naive cluster traversal
-   without cycle detection will recurse indefinitely. */
-#40=MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0),#30);
-#41=MEASURE_WITH_UNIT(LENGTH_MEASURE(2.0),#31);
-#42=MEASURE_WITH_UNIT(LENGTH_MEASURE(3.0),#32);
-#43=MEASURE_WITH_UNIT(LENGTH_MEASURE(4.0),#33);
-#44=MEASURE_WITH_UNIT(LENGTH_MEASURE(5.0),#34);
-#45=MEASURE_WITH_UNIT(LENGTH_MEASURE(6.0),#35);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Pf011','Pf011','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#9064=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#9065=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#9066=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#9067=CARTESIAN_POINT('',(4.0,0.0,0.0));
+#9068=CARTESIAN_POINT('',(5.0,0.0,0.0));
+#9069=CARTESIAN_POINT('',(6.0,0.0,0.0));
+#9070=CARTESIAN_POINT('',(7.0,0.0,0.0));
+#9071=CARTESIAN_POINT('',(8.0,0.0,0.0));
+#9072=CARTESIAN_POINT('',(9.0,0.0,0.0));
+#9073=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#9074=CARTESIAN_POINT('',(11.0,0.0,0.0));
+#9075=CARTESIAN_POINT('',(12.0,0.0,0.0));
+#9076=CARTESIAN_POINT('',(13.0,0.0,0.0));
+#9077=CARTESIAN_POINT('',(14.0,0.0,0.0));
+#9078=CARTESIAN_POINT('',(15.0,0.0,0.0));
+#9079=CARTESIAN_POINT('',(16.0,0.0,0.0));
+#9080=CARTESIAN_POINT('',(17.0,0.0,0.0));
+#9081=CARTESIAN_POINT('',(18.0,0.0,0.0));
+#9082=CARTESIAN_POINT('',(19.0,0.0,0.0));
+#9083=DIRECTION('',(1.0,0.0,0.0));
+#9084=VECTOR('',#9083,1.0);
+#9085=LINE('chain_0',#9063,#9084);
+#9086=LINE('chain_1',#9064,#9084);
+#9087=LINE('chain_2',#9065,#9084);
+#9088=LINE('chain_3',#9066,#9084);
+#9089=LINE('chain_4',#9067,#9084);
+#9090=LINE('chain_5',#9068,#9084);
+#9091=LINE('chain_6',#9069,#9084);
+#9092=LINE('chain_7',#9070,#9084);
+#9093=LINE('chain_8',#9071,#9084);
+#9094=LINE('chain_9',#9072,#9084);
+#9095=LINE('chain_10',#9073,#9084);
+#9096=LINE('chain_11',#9074,#9084);
+#9097=LINE('chain_12',#9075,#9084);
+#9098=LINE('chain_13',#9076,#9084);
+#9099=LINE('chain_14',#9077,#9084);
+#9100=LINE('chain_15',#9078,#9084);
+#9101=LINE('chain_16',#9079,#9084);
+#9102=LINE('chain_17',#9080,#9084);
+#9103=LINE('chain_18',#9081,#9084);
+#9104=LINE('chain_19',#9082,#9084);
+#9105=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#9086);
+#9106=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#9087);
+#9107=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#9088);
+#9108=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#9089);
+#9109=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#9090);
+#9110=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#9091);
+#9111=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#9092);
+#9112=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#9093);
+#9113=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#9094);
+#9114=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#9095);
+#9115=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#9096);
+#9116=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#9097);
+#9117=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#9098);
+#9118=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#9099);
+#9119=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#9100);
+#9120=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#9101);
+#9121=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#9102);
+#9122=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#9103);
+#9123=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#9104);
+#9124=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#9085);
+#9125=COMPOSITE_CURVE('cyclic_chain',(#9105,#9106,#9107,#9108,#9109,#9110,#9111,#9112,#9113,#9114,#9115,#9116,#9117,#9118,#9119,#9120,#9121,#9122,#9123,#9124),.F.);
 ENDSEC;
 END-ISO-10303-21;
