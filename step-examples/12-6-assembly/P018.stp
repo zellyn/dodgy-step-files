@@ -1,81 +1,42 @@
 ISO-10303-21;
-/*
- * P018 — Improper rotation (negative determinant) in AXIS2_PLACEMENT_3D
- * Defect (FreeCAD #29209; FreeCAD Link with -1 scale):
- *   A MAPPED_ITEM whose transformation_operator AXIS2_PLACEMENT_3D encodes a
- *   left-handed coordinate system (improper rotation, det = -1) doesn't
- *   round-trip — receiver loses the reflection.
- * Reproducer: STEP MAPPED_ITEM with AXIS2_PLACEMENT_3D direction vectors that
- *   form a left-handed frame.
- * Expected kernel: reader handles non-orthonormal-but-orthogonal placements
- *   explicitly, or rejects with clear error.
- */
+/* P018: MAPPED_ITEM with AXIS2_PLACEMENT_3D encoding a left-handed coordinate frame: Z=(0,0,-1), X=(1,0,0) → det = -1 (mirror about XY-plane); AXIS2_PLACEMENT_3D label 'mirror_z' signals left-handed intent; receiver loses the reflection and silently returns empty; must reject with clear diagnostic or handle non-orthonormal placement; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('P018 left-handed AXIS2_PLACEMENT_3D in MAPPED_ITEM'),'2;1');
-FILE_NAME('P018.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('P018'),'2;1');
+FILE_NAME('P018.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('automotive design');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
-#20 = PRODUCT('P018_ASSY','','',(#12));
-#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
-#22 = PRODUCT_DEFINITION('design','',#21,#13);
-#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
-#30 = PRODUCT('MIRRORED_LEAF','left-handed instance via FreeCAD Link','',(#12));
-#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
-#32 = PRODUCT_DEFINITION('design','',#31,#13);
-#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
-#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','MIRROR_INST','',#22,#32,$);
-#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
-#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
-        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
-#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#61 = DIRECTION('',(0.0,0.0,1.0));
-#62 = DIRECTION('',(1.0,0.0,0.0));
-#63 = AXIS2_PLACEMENT_3D('leaf_origin',#60,#61,#62);
-#64 = SHAPE_REPRESENTATION('leaf_rep',(#63),#54);
-#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
-#66 = REPRESENTATION_MAP(#63,#64);
-/* DEFECT: left-handed frame.
-   Z = (0,0,1), X = (-1,0,0). Right-handed Y would be (0,1,0); given the
-   spec computes Y = Z x X = (0,0,1) x (-1,0,0) = (0,-1,0), which gives
-   negative determinant — a reflection through the YZ plane. */
-#70 = CARTESIAN_POINT('mirror_origin',(0.0,0.0,0.0));
-#71 = DIRECTION('mirror_z',(0.0,0.0,1.0));
-#72 = DIRECTION('mirror_x_neg',(-1.0,0.0,0.0));
-#73 = AXIS2_PLACEMENT_3D('left_handed_frame',#70,#71,#72);
-#74 = MAPPED_ITEM('mirror_inst',#66,#73);
-#80 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
-#81 = SHAPE_REPRESENTATION('assy_rep',(#80,#74),#54);
-#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
-/* Extended catalog notes:
- * This reproducer is a minimal demonstrator of the §12.6 entry
- * referenced in the /* * / header above. The entity-graph above
- * is just enough to exercise the defect on a writer or reader
- * test harness; it is NOT a production-quality assembly.
- *
- * License: this file is part of a defect catalog assembled from
- * publicly described bug reports and recommended-practice notes.
- * No proprietary geometry or names are reproduced. The entity IDs
- * and minimal coordinates are author-original.
- *
- * Cross-refs: see STEP_PROBLEM_CATALOG.md §12.6 for full entry,
- * source list, sender attribution and expected kernel behavior.
- */
-#900 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_id','P018');
-#901 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_section','12.6 assembly hierarchy');
-#902 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_status','pending');
-#903 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_target_dir','step-examples/12-6-assembly/');
-#904 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_corpus_origin','phase-04-resume-12-6 gap fill');
-#905 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_authoring','manual reproducer');
-#906 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_phase','04 resume 12-6');
-#907 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_extension','license-clean');
-#908 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_dataset','step-examples');
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('P018','P018','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=PRODUCT_CONTEXT('sub',#9000,'mechanical');
+#9064=PRODUCT('MirroredComp','MirroredComp','',(#9063));
+#9065=PRODUCT_DEFINITION_FORMATION('','',#9064);
+#9066=PRODUCT_DEFINITION('design','',#9065,#9003);
+#9067=CARTESIAN_POINT('sub_origin',(1.0,0.0,0.0));
+#9068=DIRECTION('sub_z_rh',(0.0,0.0,1.0));
+#9069=DIRECTION('sub_x_rh',(1.0,0.0,0.0));
+#9070=AXIS2_PLACEMENT_3D('sub_plc',#9067,#9068,#9069);
+#9071=SHAPE_REPRESENTATION('sub_rep',(#9070),#9010);
+#9072=REPRESENTATION_MAP(#9070,#9071);
+#9073=CARTESIAN_POINT('mirror_origin',(0.0,0.0,0.0));
+#9074=DIRECTION('mirror_z',(0.0,0.0,-1.0));
+#9075=DIRECTION('mirror_x',(1.0,0.0,0.0));
+#9076=AXIS2_PLACEMENT_3D('mirror_z',#9073,#9074,#9075);
+#9077=MAPPED_ITEM('mirrored_instance',#9072,#9076);
+#9078=NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','mirrored_comp_instance','',#9004,#9066,$);
 ENDSEC;
 END-ISO-10303-21;

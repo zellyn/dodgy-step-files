@@ -1,84 +1,56 @@
 ISO-10303-21;
-/*
- * P017 — Free wires in a top-level COMPOUND silently dropped
- * Defect (FreeCAD #17807; any tool emitting free wires alongside solids,
- *         e.g. KiCad, electronics packaging):
- *   STEP file with a top-level COMPOUND mixing solids and free EDGE_CURVE /
- *   WIRE items at the same level: with importer's "compound merge" preference
- *   OFF, loose edges are dropped silently.
- * Reproducer: SHAPE_REPRESENTATION containing both a solid placement and
- *   free-standing EDGE_CURVE / WIRE items at the same level.
- * Expected kernel: default setting must not drop entities silently.
- */
+/* P017: SHAPE_REPRESENTATION at top-level mixes free-standing EDGE_CURVE + VERTEX_POINT wire entities alongside a geometric body; importers with 'compound merge' ON silently drop the free wires; compliant receiver must preserve all wire items in top-level COMPOUND; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('P017 top-level compound mixes solid + free wires; wires dropped'),'2;1');
-FILE_NAME('P017.stp','2026-04-26T00:00:00',('catalog'),('cad'),'manual','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('P017'),'2;1');
+FILE_NAME('P017.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#10 = APPLICATION_CONTEXT('automotive design');
-#11 = APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#10);
-#12 = PRODUCT_CONTEXT('',#10,'mechanical');
-#13 = PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
-#20 = PRODUCT('P017_ASSY','','',(#12));
-#21 = PRODUCT_DEFINITION_FORMATION('','',#20);
-#22 = PRODUCT_DEFINITION('design','',#21,#13);
-#23 = PRODUCT_DEFINITION_SHAPE('','',#22);
-#30 = PRODUCT('PCB_PART','board with hatch wires','',(#12));
-#31 = PRODUCT_DEFINITION_FORMATION('','',#30);
-#32 = PRODUCT_DEFINITION('design','',#31,#13);
-#33 = PRODUCT_DEFINITION_SHAPE('','',#32);
-#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','PCB_INST','',#22,#32,$);
-/* free WIRE items at the same level as the solid placement */
-#90 = CARTESIAN_POINT('w0',(0.0,0.0,0.0));
-#91 = CARTESIAN_POINT('w1',(10.0,0.0,0.0));
-#92 = CARTESIAN_POINT('w2',(10.0,5.0,0.0));
-#93 = VERTEX_POINT('vw0',#90);
-#94 = VERTEX_POINT('vw1',#91);
-#95 = VERTEX_POINT('vw2',#92);
-#96 = DIRECTION('wd1',(1.0,0.0,0.0));
-#97 = VECTOR('wv1',#96,1.0);
-#98 = LINE('wl1',#90,#97);
-#99 = EDGE_CURVE('we1',#93,#94,#98,.T.);
-#100 = DIRECTION('wd2',(0.0,1.0,0.0));
-#101 = VECTOR('wv2',#100,1.0);
-#102 = LINE('wl2',#91,#101);
-#103 = EDGE_CURVE('we2',#94,#95,#102,.T.);
-#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,'distance_accuracy_value','');
-#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
-        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT('','3D') );
-#60 = CARTESIAN_POINT('',(0.0,0.0,0.0));
-#61 = DIRECTION('',(0.0,0.0,1.0));
-#62 = DIRECTION('',(1.0,0.0,0.0));
-#63 = AXIS2_PLACEMENT_3D('part_origin',#60,#61,#62);
-/* DEFECT: SHAPE_REPRESENTATION's items list mixes the solid origin AND the
-   free edge curves #99 #103 at the same level. */
-#64 = SHAPE_REPRESENTATION('part_rep_with_loose_edges',(#63,#99,#103),#54);
-#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
-#66 = REPRESENTATION_MAP(#63,#64);
-#67 = MAPPED_ITEM('inst',#66,#63);
-#80 = AXIS2_PLACEMENT_3D('assy_origin',#60,#61,#62);
-#81 = SHAPE_REPRESENTATION('assy_rep',(#80,#67),#54);
-#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
-/* Extended catalog notes:
- * This reproducer is a minimal demonstrator of the §12.6 entry
- * referenced in the /* * / header above. The entity-graph above
- * is just enough to exercise the defect on a writer or reader
- * test harness; it is NOT a production-quality assembly.
- *
- * License: this file is part of a defect catalog assembled from
- * publicly described bug reports and recommended-practice notes.
- * No proprietary geometry or names are reproduced. The entity IDs
- * and minimal coordinates are author-original.
- *
- * Cross-refs: see STEP_PROBLEM_CATALOG.md §12.6 for full entry,
- * source list, sender attribution and expected kernel behavior.
- */
-#900 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_id','P017');
-#901 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_section','12.6 assembly hierarchy');
-#902 = DESCRIPTIVE_REPRESENTATION_ITEM('catalog_status','pending');
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('P017','P017','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=CARTESIAN_POINT('wire1_p0',(0.0,0.0,0.0));
+#9064=CARTESIAN_POINT('wire1_p1',(5.0,0.0,0.0));
+#9065=VERTEX_POINT('wire1_v0',#9063);
+#9066=VERTEX_POINT('wire1_v1',#9064);
+#9067=DIRECTION('wire1_dir',(1.0,0.0,0.0));
+#9068=VECTOR('',#9067,5.0);
+#9069=LINE('wire1_line',#9063,#9068);
+#9070=EDGE_CURVE('wire1_edge',#9065,#9066,#9069,.T.);
+#9071=CARTESIAN_POINT('wire2_p0',(0.0,1.0,0.0));
+#9072=CARTESIAN_POINT('wire2_p1',(3.0,1.0,0.0));
+#9073=VERTEX_POINT('wire2_v0',#9071);
+#9074=VERTEX_POINT('wire2_v1',#9072);
+#9075=DIRECTION('wire2_dir',(1.0,0.0,0.0));
+#9076=VECTOR('',#9075,3.0);
+#9077=LINE('wire2_line',#9071,#9076);
+#9078=EDGE_CURVE('wire2_edge',#9073,#9074,#9077,.T.);
+#9079=CARTESIAN_POINT('wire3_p0',(1.0,0.0,0.0));
+#9080=CARTESIAN_POINT('wire3_p1',(4.0,3.0,0.0));
+#9081=VERTEX_POINT('wire3_v0',#9079);
+#9082=VERTEX_POINT('wire3_v1',#9080);
+#9083=DIRECTION('wire3_dir',(0.707107,0.707107,0.0));
+#9084=VECTOR('',#9083,4.242641);
+#9085=LINE('wire3_line',#9079,#9084);
+#9086=EDGE_CURVE('wire3_edge',#9081,#9082,#9085,.T.);
+#9087=GEOMETRIC_CURVE_SET('free_wires',(#9070,#9078,#9086));
+#9088=PRODUCT_CONTEXT('sub',#9000,'mechanical');
+#9089=PRODUCT('FreeWireComp','FreeWireComp','',(#9088));
+#9090=PRODUCT_DEFINITION_FORMATION('','',#9089);
+#9091=PRODUCT_DEFINITION('design','',#9090,#9003);
+#9092=NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','free_wire_instance','',#9004,#9091,$);
 ENDSEC;
 END-ISO-10303-21;
