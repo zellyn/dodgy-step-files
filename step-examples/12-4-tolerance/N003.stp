@@ -1,48 +1,40 @@
 ISO-10303-21;
-/* N003 - UnifySameDomain inflates vertex tolerance by orders of magnitude on merge
- * Defect: When ShapeUpgrade_UnifySameDomain merges adjacent same-domain faces,
- * the resulting shared vertex receives an aggregate tolerance equal to the
- * worst-case vertex among merged inputs (~1.0e-1 instead of preserving native
- * 2.0e-7). Downstream algorithms then treat coincident points as fuzzy-equal
- * where they were previously precise.
- * Reproducer: two coplanar faces with vertex tolerance 2.0e-7 each plus one
- * vertex with tolerance 1.0e-1 (legacy from prior healing); the post-merge
- * vertex carries 1.0e-1.
- */
+/* N003: same-domain face merge: shared vertex inherits worst-input tol 1.0E-1 instead of 2.0E-7; two UNCERTAINTY_MEASURE_WITH_UNIT; two EDGE_CURVEs; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('N003 UnifySameDomain inflates merged-vertex tolerance'),'2;1');
-FILE_NAME('N003.stp','2026-04-26T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));
+FILE_DESCRIPTION(('N003'),'2;1');
+FILE_NAME('N003.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-#10=CARTESIAN_POINT('shared_corner',(5.0,0.0,0.0));
-#11=CARTESIAN_POINT('a',(0.0,0.0,0.0));
-#12=CARTESIAN_POINT('b',(10.0,0.0,0.0));
-#20=VERTEX_POINT('precise_a',#11);
-#21=VERTEX_POINT('precise_b',#12);
-/* Defect site: shared vertex inherited 1.0e-1 from worst input */
-#22=VERTEX_POINT('merged_shared_bloated',#10);
-#30=DIRECTION('+x',(1.0,0.0,0.0));
-#31=VECTOR('',#30,5.0);
-#32=LINE('',#11,#31);
-#33=LINE('',#10,#31);
-#40=EDGE_CURVE('left_face_edge',#20,#22,#32,.T.);
-#41=EDGE_CURVE('right_face_edge',#22,#21,#33,.T.);
-#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(2.0E-7),#50,
-  'distance_accuracy_value','native_vertex_precision');
-/* Defect: aggregate took max not recomputed deviation */
-#61=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-1),#50,
-  'distance_accuracy_value','merged_vertex_tolerance_inflated');
-#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60,#61))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
-  REPRESENTATION_CONTEXT('ctx','3D'));
+#1=CARTESIAN_POINT('pa0',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('pa1_shared',(10.0,0.0,0.0));
+#3=CARTESIAN_POINT('pb1',(20.0,0.0,0.0));
+#4=VERTEX_POINT('va0_precise',#1);
+#5=VERTEX_POINT('va1_shared_worst_tol',#2);
+#6=VERTEX_POINT('vb1',#3);
+#7=DIRECTION('',(1.0,0.0,0.0));
+#8=VECTOR('',#7,10.0);
+#9=LINE('',#1,#8);
+#10=EDGE_CURVE('eA_face1',#4,#5,#9,.T.);
+#11=DIRECTION('',(1.0,0.0,0.0));
+#12=VECTOR('',#11,10.0);
+#13=LINE('',#2,#12);
+#14=EDGE_CURVE('eB_face2',#5,#6,#13,.T.);
+#15=GEOMETRIC_CURVE_SET('merged',(#10,#14));
+#16=APPLICATION_CONTEXT('automotive_design');
+#17=PRODUCT_CONTEXT('',#16,'mechanical');
+#18=PRODUCT('N003','N003','',(#17));
+#19=PRODUCT_DEFINITION_FORMATION('','',#18);
+#20=PRODUCT_DEFINITION_CONTEXT('part definition',#16,'design');
+#21=PRODUCT_DEFINITION('','',#19,#20);
+#22=PRODUCT_DEFINITION_SHAPE('','',#21);
+#23=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#24=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#25=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#26=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(2.0E-7),#23,'distance_accuracy_value','pre_merge_precise_vertex_tol');
+#27=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-1),#23,'distance_accuracy_value','merge_adopted_worst_vertex_tol');
+#28=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#26,#27))GLOBAL_UNIT_ASSIGNED_CONTEXT((#23,#24,#25))REPRESENTATION_CONTEXT('ctx','3D'));
+#29=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#15),#28);
+#30=SHAPE_DEFINITION_REPRESENTATION(#22,#29);
 ENDSEC;
 END-ISO-10303-21;
