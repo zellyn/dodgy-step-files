@@ -1,45 +1,42 @@
 ISO-10303-21;
-/* M029 - PMI-count validation property failure.
- * Defect: number of dimensions / GD&T tolerances / datum features is
- * embedded as a validation property; receiver reports a different
- * count after import. Typically because some PMI was tagged graphic-
- * only and dropped, or composite callouts were exploded.
- * Recorded counts: 12 PMI annotations total, 6 dimensions, 4
- * tolerances, 2 datums. Receiver parses only 10 (graphic-only PMI was
- * stripped). Archive systems must reject; CAD-to-CAD must warn. */
+/* M029: GEOMETRIC_CURVE_SET containing PMI-count validation property encoded as INTEGER_REPRESENTATION_ITEM inside PROPERTY_DEFINITION; input: AP242 STEP file where 12 PMI annotations are declared in a validation_property but only 10 survive import (2 dropped as graphic-only or exploded from composite callouts); LOTAR/CAx-IF validation: receiver compares declared count to imported count and must reject or emit diagnostic when they differ; OCC silently accepts (no diagnostic, empty result); GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty; synonyms: PMI count validation fails, validation property fails check, GD&T count mismatch on import, tolerance count differs after read */
 HEADER;
-FILE_DESCRIPTION(('M029 test case','PMI count validation mismatch'),'2;1');
-FILE_NAME('M029.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_DESCRIPTION(('M029'),'2;1');
+FILE_NAME('M029.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('managed model based 3d engineering');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'ap242_managed_model_based_3d_engineering',2014,#1);
-#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-     REPRESENTATION_CONTEXT('part','3D'));
-#300=PRODUCT('part','part','',(#310));
-#310=MECHANICAL_CONTEXT('',#1,'mechanical');
-#320=PRODUCT_DEFINITION_FORMATION('','',#300);
-#330=PRODUCT_DEFINITION('design','',#320,#340);
-#340=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#350=PRODUCT_DEFINITION_SHAPE('','',#330);
-/* Validation property: PMI counts. */
-#400=PROPERTY_DEFINITION('geometric validation property',
-       'PMI counts',#350);
-/* Recorded: 12 annotations total, 6 dimensions, 4 tolerances, 2 datums.
- * Receiver actually parses 10 - graphic-only PMI dropped. */
-#410=INTEGER_REPRESENTATION_ITEM('number of annotations',12.);
-#411=INTEGER_REPRESENTATION_ITEM('number of dimensions',6.);
-#412=INTEGER_REPRESENTATION_ITEM('number of tolerances',4.);
-#413=INTEGER_REPRESENTATION_ITEM('number of datums',2.);
-#420=REPRESENTATION('pmi_counts',(#410,#411,#412,#413),#14);
-#430=PROPERTY_DEFINITION_REPRESENTATION(#400,#420);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=INTEGER_REPRESENTATION_ITEM('number_of_annotations',12);
+#2=PROPERTY_DEFINITION('pmi_validation_property','declared PMI count: 12 annotations',$);
+#3=PROPERTY_DEFINITION_REPRESENTATION(#2,#1);
+#4=VALUE_REPRESENTATION_ITEM('annotation_01',MEASURE_VALUE(10.0));
+#5=VALUE_REPRESENTATION_ITEM('annotation_02',MEASURE_VALUE(20.0));
+#6=VALUE_REPRESENTATION_ITEM('annotation_03',MEASURE_VALUE(30.0));
+#7=VALUE_REPRESENTATION_ITEM('annotation_04',MEASURE_VALUE(40.0));
+#8=VALUE_REPRESENTATION_ITEM('annotation_05',MEASURE_VALUE(50.0));
+#9=VALUE_REPRESENTATION_ITEM('annotation_06',MEASURE_VALUE(60.0));
+#10=VALUE_REPRESENTATION_ITEM('annotation_07',MEASURE_VALUE(70.0));
+#11=VALUE_REPRESENTATION_ITEM('annotation_08',MEASURE_VALUE(80.0));
+#12=VALUE_REPRESENTATION_ITEM('annotation_09',MEASURE_VALUE(90.0));
+#13=VALUE_REPRESENTATION_ITEM('annotation_10',MEASURE_VALUE(100.0));
+#14=VALUE_REPRESENTATION_ITEM('annotation_11',MEASURE_VALUE(110.0));
+#15=VALUE_REPRESENTATION_ITEM('annotation_12',MEASURE_VALUE(120.0));
+#16=COMPOUND_REPRESENTATION_ITEM('composite_gdt_callout',(#14,#15));
+#17=VALUE_REPRESENTATION_ITEM('graphic_only_flag',MEASURE_VALUE(1.));
+#18=GEOMETRIC_CURVE_SET('pmi-count-validation-property-failure',(#1,#2,#3,#16,#17));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M029','M029','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#18),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

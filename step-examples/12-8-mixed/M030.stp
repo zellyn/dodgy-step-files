@@ -1,39 +1,31 @@
 ISO-10303-21;
-/* M030 - Validation property naming: "geometric_validation_property"
- * with underscores vs spaces.
- * Defect: the recommended-practice name changed:
- *   geometric_validation_property  ->  geometric validation property
- * Both forms appear in the wild. Strict matching by exact string
- * mis-categorizes one or the other. Healers should replace '_' with
- * space before comparing.
- * This file emits the OLD underscore form. */
+/* M030: GEOMETRIC_CURVE_SET containing PROPERTY_DEFINITION named 'geometric_validation_property' (underscore form); input: AP242 STEP file where validation-property RP name changed from 'geometric_validation_property' to 'geometric validation property' (space form); the underscore form is written by older CAD tools that predate the RP update; kernel must heal: replace underscore with space before comparison, or accept both name forms as equivalent; OCC silently accepts (no diagnostic, empty result); GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty; synonyms: GVP name underscore vs space, validation property naming inconsistent, geometric_validation_property naming form, RP changed name format */
 HEADER;
-FILE_DESCRIPTION(('M030 test case','GVP name with underscores'),'2;1');
-FILE_NAME('M030.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('M030'),'2;1');
+FILE_NAME('M030.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-     REPRESENTATION_CONTEXT('part','3D'));
-#300=PRODUCT('part','part','',(#310));
-#310=MECHANICAL_CONTEXT('',#1,'mechanical');
-#320=PRODUCT_DEFINITION_FORMATION('','',#300);
-#330=PRODUCT_DEFINITION('design','',#320,#340);
-#340=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#350=PRODUCT_DEFINITION_SHAPE('','',#330);
-/* Defect: "geometric_validation_property" with underscores instead of
- * spaces. Strict matchers will not classify this as a GVP. */
-#400=PROPERTY_DEFINITION('geometric_validation_property','volume',#350);
-#410=MEASURE_REPRESENTATION_ITEM('volume',VOLUME_MEASURE(1000.0),#10);
-#420=REPRESENTATION('',(#410),#14);
-#430=PROPERTY_DEFINITION_REPRESENTATION(#400,#420);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=MEASURE_REPRESENTATION_ITEM('volume',VOLUME_MEASURE(1234.567),(SI_UNIT(.MILLI.,.METRE.) LENGTH_UNIT() NAMED_UNIT(*)));
+#2=PROPERTY_DEFINITION('geometric_validation_property','volume in cubic mm',$);
+#3=PROPERTY_DEFINITION_REPRESENTATION(#2,#1);
+#4=PROPERTY_DEFINITION('geometric validation property','area in square mm',$);
+#5=MEASURE_REPRESENTATION_ITEM('surface_area',AREA_MEASURE(456.789),(SI_UNIT(.MILLI.,.METRE.) LENGTH_UNIT() NAMED_UNIT(*)));
+#6=PROPERTY_DEFINITION_REPRESENTATION(#4,#5);
+#7=GEOMETRIC_CURVE_SET('gvp-name-underscore-vs-space',(#1,#2,#3,#4,#5,#6));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M030','M030','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#7),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

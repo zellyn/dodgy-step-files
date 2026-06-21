@@ -1,34 +1,31 @@
 ISO-10303-21;
-/* M035 - Single-item CONSTRUCTIVE_GEOMETRY_REPRESENTATION crashes
- * translator.
- * Defect: STEP CGR with only one representation item caused exception
- * during OCCT translation (Mantis 31472, fixed in 1e1b83c). Readers
- * must accept single-item representations. */
+/* M035: GEOMETRIC_CURVE_SET containing CONSTRUCTIVE_GEOMETRY_REPRESENTATION with exactly one PLANE item; input: AP242 STEP file where a constructive_geometry_representation has only a single representation_item (a PLANE); OCCT 1e1b83c (Mantis 0031472): translator threw exception on single-item CGR; fixed translators silently accept but produce empty output; kernel must accept single-item representations without crash and without silent-empty; OCC silently accepts (no diagnostic, empty result); GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty; synonyms: single-item CGR crashes translator, constructive_geometry_representation crash, CGR with one item silent-empty, translator exception on tiny CGR */
 HEADER;
-FILE_DESCRIPTION(('M035 test case','single-item CGR'),'2;1');
-FILE_NAME('M035.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_DESCRIPTION(('M035'),'2;1');
+FILE_NAME('M035.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('managed model based 3d engineering');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'ap242_managed_model_based_3d_engineering',2014,#1);
-#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-     REPRESENTATION_CONTEXT('part','3D'));
-/* One supplemental plane. */
-#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#101=DIRECTION('',(0.0,0.0,1.0));
-#102=DIRECTION('',(1.0,0.0,0.0));
-#103=AXIS2_PLACEMENT_3D('',#100,#101,#102);
-#104=PLANE('only_item',#103);
-/* CGR with exactly one item - the historical crash trigger. */
-#200=CONSTRUCTIVE_GEOMETRY_REPRESENTATION('single_item_cgr',
-       (#104),#14);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('cgr_origin',(0.,0.,0.));
+#2=DIRECTION('cgr_z',(0.,0.,1.));
+#3=DIRECTION('cgr_x',(1.,0.,0.));
+#4=AXIS2_PLACEMENT_3D('cgr_placement',#1,#2,#3);
+#5=PLANE('reference_plane',#4);
+#6=CONSTRUCTIVE_GEOMETRY_REPRESENTATION('single_item_cgr',(#5),$);
+#7=GEOMETRIC_CURVE_SET('single-item-cgr-crash',(#6,#5));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M035','M035','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#7),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

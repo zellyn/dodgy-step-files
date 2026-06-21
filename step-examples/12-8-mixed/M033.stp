@@ -1,57 +1,37 @@
 ISO-10303-21;
-/* M033 - Constructive geometry / supplemental geometry not allowed
- * type.
- * Defect: the supplemental-geometry recommended practice allows only
- * specific entity types in CONSTRUCTIVE_GEOMETRY_REPRESENTATION.items
- * (point, axis2_placement, plane, line, circle, cylinder, sphere,
- * etc.). This file uses a B_SPLINE_SURFACE_WITH_KNOTS as a
- * supplemental item, which is not on the allowed list. Additionally
- * a GISU references an item NOT present in the items list. */
+/* M033: GEOMETRIC_CURVE_SET containing CONSTRUCTIVE_GEOMETRY_REPRESENTATION whose items include B_SPLINE_SURFACE_WITH_KNOTS — an unsupported supplemental entity type; input: AP242 STEP file where a constructive_geometry_representation contains a b_spline_surface_with_knots (CAx-IF supplemental-geometry RP allows only point, axis, plane, cylinder, cone, sphere, torus — not B-spline surfaces); kernel must reject (drop) or warn-and-accept; OCC silently accepts (no diagnostic, empty result); GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty; synonyms: supplemental geometry wrong type, CGR has unsupported entity, supplemental items beyond allowed list, GISU references wrong type */
 HEADER;
-FILE_DESCRIPTION(('M033 test case','disallowed supplemental type / GISU points outside CGR items'),'2;1');
-FILE_NAME('M033.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_DESCRIPTION(('M033'),'2;1');
+FILE_NAME('M033.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('managed model based 3d engineering');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'ap242_managed_model_based_3d_engineering',2014,#1);
-#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-     REPRESENTATION_CONTEXT('part','3D'));
-#300=PRODUCT('part','part','',(#310));
-#310=MECHANICAL_CONTEXT('',#1,'mechanical');
-#320=PRODUCT_DEFINITION_FORMATION('','',#300);
-#330=PRODUCT_DEFINITION('design','',#320,#340);
-#340=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#350=PRODUCT_DEFINITION_SHAPE('','',#330);
-/* B-spline surface (NOT an allowed supplemental type). */
-#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#101=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#102=CARTESIAN_POINT('',(0.0,1.0,0.0));
-#103=CARTESIAN_POINT('',(1.0,1.0,0.0));
-#110=B_SPLINE_SURFACE_WITH_KNOTS('disallowed_in_cgr',1,1,
-       ((#100,#101),(#102,#103)),
-       .UNSPECIFIED.,.F.,.F.,.F.,
-       (2,2),(2,2),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
-/* A separate plane that is allowed, but not present in the CGR's
- * items list - the GISU below points to it anyway. */
-#120=CARTESIAN_POINT('',(0.0,0.0,5.0));
-#121=DIRECTION('',(0.0,0.0,1.0));
-#122=DIRECTION('',(1.0,0.0,0.0));
-#123=AXIS2_PLACEMENT_3D('',#120,#121,#122);
-#124=PLANE('not_in_items',#123);
-/* CGR items include only the disallowed B-spline. */
-#200=CONSTRUCTIVE_GEOMETRY_REPRESENTATION('bad_supplemental',
-       (#110),#14);
-/* Defect 2: GISU references #124 but used_representation #200 does
- * not contain it. */
-#210=GEOMETRIC_ITEM_SPECIFIC_USAGE('dangling_reference','',
-       #350,#200,#124);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=B_SPLINE_SURFACE_WITH_KNOTS('supp_bspline',1,1,((#11,#12),(#13,#14)),.UNSPECIFIED.,.F.,.F.,.F.,(2,2),(2,2),(0.,1.),(0.,1.),.PIECEWISE_BEZIER_KNOTS.);
+#2=CARTESIAN_POINT('cp11',(0.,0.,0.));
+#3=CARTESIAN_POINT('cp12',(10.,0.,0.));
+#4=CARTESIAN_POINT('cp13',(0.,10.,0.));
+#5=CARTESIAN_POINT('cp14',(10.,10.,0.));
+#6=B_SPLINE_SURFACE_WITH_KNOTS('supp_bspline',1,1,((#2,#3),(#4,#5)),.UNSPECIFIED.,.F.,.F.,.F.,(2,2),(2,2),(0.,1.),(0.,1.),.PIECEWISE_BEZIER_KNOTS.);
+#7=CARTESIAN_POINT('cgr_origin',(0.,0.,0.));
+#8=DIRECTION('cgr_z',(0.,0.,1.));
+#9=DIRECTION('cgr_x',(1.,0.,0.));
+#10=AXIS2_PLACEMENT_3D('cgr_placement',#7,#8,#9);
+#11=PLANE('supp_ref_plane',#10);
+#12=CONSTRUCTIVE_GEOMETRY_REPRESENTATION('supplemental_geom',(#11,#6),$);
+#13=GEOMETRIC_CURVE_SET('supplemental-geometry-unsupported-type',(#12,#11,#6));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M033','M033','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#13),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
