@@ -1,18 +1,65 @@
 ISO-10303-21;
-/* M067 - Transformation creation fails; placement falls back to identity.
- * Defect: ITEM_DEFINED_TRANSFORMATION references AXIS2_PLACEMENT
- * with zero-vector directions. */
+/* M067: ITEM_DEFINED_TRANSFORMATION with zero-vector DIRECTION in AXIS2_PLACEMENT_3D */
+/* DEFECT: zero-vector axis direction makes transformation matrix undefined */
+/* OCCT silently substitutes identity; kernel must reject */
+/* Byte assertion: contains(b'ITEM_DEFINED_TRANSFORMATION') */
+/* Byte assertion: matches(rb'DIRECTION\'zero_vec\',(0\.0,0\.0,0\.0)\)') */
 HEADER;
-FILE_DESCRIPTION(('In014 - transformation creation fails','Pass C gap-fill'),'2;1');
-FILE_NAME('M067.stp','2026-04-30T00:00:00',(''),(''),'gap-fill C','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('M067: ITEM_DEFINED_TRANSFORMATION with zero-vector DIRECTION'),'2;1');
+FILE_NAME('M067.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#11=DIRECTION('zero_vec',(0.0,0.0,0.0));
-#12=DIRECTION('zero_vec_2',(0.0,0.0,0.0));
-#13=AXIS2_PLACEMENT_3D('bad_placement',#10,#11,#12);
-#20=ITEM_DEFINED_TRANSFORMATION('failed','',#13,#13);
+/* Standard unit context */
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* Application context */
+#20=APPLICATION_CONTEXT('mechanical design');
+#21=PRODUCT_CONTEXT('',#20,'mechanical');
+/* Parent product */
+#22=PRODUCT('parent_001','Assembly','Top-level assembly',(#21));
+#23=PRODUCT_DEFINITION_FORMATION('','',#22);
+#24=PRODUCT_DEFINITION_CONTEXT(#20,'design');
+#25=PRODUCT_DEFINITION('','',#23,#24);
+#26=PRODUCT_DEFINITION_SHAPE('','',#25);
+/* Child product */
+#30=PRODUCT('child_001','Part','Child component',(#21));
+#31=PRODUCT_DEFINITION_FORMATION('','',#30);
+#32=PRODUCT_DEFINITION('','',#31,#24);
+#33=PRODUCT_DEFINITION_SHAPE('','',#32);
+/* Valid placement for transform_item_1 (parent origin) */
+#40=CARTESIAN_POINT('parent_origin',(0.,0.,0.));
+#41=DIRECTION('parent_z',(0.,0.,1.));
+#42=DIRECTION('parent_x',(1.,0.,0.));
+#43=AXIS2_PLACEMENT_3D('parent_placement',#40,#41,#42);
+/* DEFECT: zero-vector DIRECTION in child placement for transform_item_2 */
+/* A zero axis vector makes the transformation matrix geometrically undefined */
+#50=CARTESIAN_POINT('child_origin',(100.,0.,0.));
+/* Byte assertion: matches(rb'DIRECTION\'zero_vec\',(0\.0,0\.0,0\.0)\)') */
+#51=DIRECTION('zero_vec',(0.0,0.0,0.0));
+#52=DIRECTION('child_x',(1.,0.,0.));
+#53=AXIS2_PLACEMENT_3D('child_zero_placement',#50,#51,#52);
+/* Byte assertion: contains(b'ITEM_DEFINED_TRANSFORMATION') */
+/* ITEM_DEFINED_TRANSFORMATION references parent placement and bad child placement */
+#54=ITEM_DEFINED_TRANSFORMATION('xform','assembly transform',#43,#53);
+/* NAUO: parent uses ITEM_DEFINED_TRANSFORMATION to place child */
+#55=NEXT_ASSEMBLY_USAGE_OCCURRENCE('u1','','uses',#25,#32,$);
+#56=PRODUCT_DEFINITION_SHAPE('','',#55);
+#57=CONTEXT_DEPENDENT_SHAPE_REPRESENTATION(#58,#56);
+#58=SHAPE_REPRESENTATION_RELATIONSHIP('rel','',
+  SHAPE_REPRESENTATION('',(#43),#14),
+  SHAPE_REPRESENTATION('',(#53),#14));
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#60=GEOMETRIC_CURVE_SET('transformation-relation-creation-failed-zero-vec',
+  (#43,#53,#54,#55,#40,#50));
+#61=SHAPE_REPRESENTATION('',(#60),#14);
+#62=SHAPE_DEFINITION_REPRESENTATION(#26,#61);
 ENDSEC;
 END-ISO-10303-21;

@@ -1,32 +1,49 @@
 ISO-10303-21;
-/* M071 - AP238 machining_process_executable references nonexistent process_aspect.
- * Defect: a MACHINING_PROCESS_EXECUTABLE_LINK is supposed to reference a
- * PROCESS_ASPECT subtype that names which feature of the workpiece the
- * operation acts on, but the cited reference is absent from the file. */
+/* M071: AP238 MACHINING_OPERATION references CARTESIAN_POINT instead of PROCESS_ASPECT */
+/* DEFECT: type mismatch — #200 is CARTESIAN_POINT, not a PROCESS_ASPECT subtype */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'MACHINING_OPERATION') */
+/* Byte assertion: contains(b'WORKPLAN') */
 HEADER;
-FILE_DESCRIPTION(('M071 test case','AP238 process_aspect dangling reference'),'2;1');
-FILE_NAME('M071.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M071: AP238 machining_operation references nonexistent process_aspect'),'2;1');
+FILE_NAME('M071.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 3 1 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('numerical_control_machining');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'numerical_control_machining',2007,#1);
-/* Units */
+/* Standard unit context */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 #11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
 #12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-     REPRESENTATION_CONTEXT('nc_program','3D'));
-/* A workplan with a single executable - a drilling operation. */
-#100=WORKPLAN('main_plan',(#110),$,$,$);
-/* Defect: the machining_operation_link's its_process attribute names a
- * process_aspect by ID, but no entity at that ID is a PROCESS_ASPECT.
- * #200 is referenced but defined as a CARTESIAN_POINT instead. */
-#110=MACHINING_OPERATION('drill_hole_a',$,$,$,$,#200);
-#200=CARTESIAN_POINT('not_a_process_aspect',(0.0,0.0,0.0));
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#20=GEOMETRIC_CURVE_SET('ap238-machining-op-dangling-process-aspect',
+  (#200));
+/* Byte assertion: contains(b'WORKPLAN') */
+/* AP238 WORKPLAN — top-level program structure */
+#50=WORKPLAN('main_program','AP238 STEP-NC workplan',(),$,(#51));
+/* AP238 MACHINING_WORKINGSTEP — references the operation */
+#51=MACHINING_WORKINGSTEP('drill_step','drilling workingstep',#52,$,$);
+/* Byte assertion: contains(b'MACHINING_OPERATION') */
+/* MACHINING_OPERATION — last attribute is process_aspect reference: #200 */
+/* #200 is a CARTESIAN_POINT, not a PROCESS_ASPECT subtype — the defect */
+#52=MACHINING_OPERATION('drill_hole_a',$,$,$,$,#200);
+/* Product chain */
+#100=APPLICATION_CONTEXT('mechanical design');
+#101=PRODUCT_CONTEXT('',#100,'mechanical');
+#102=PRODUCT('M071','M071','M071',(#101));
+#103=PRODUCT_DEFINITION_FORMATION('','',#102);
+#104=PRODUCT_DEFINITION_CONTEXT(#100,'design');
+#105=PRODUCT_DEFINITION('','',#103,#104);
+#106=PRODUCT_DEFINITION_SHAPE('','',#105);
+#107=SHAPE_REPRESENTATION('',(#20),#14);
+#108=SHAPE_DEFINITION_REPRESENTATION(#106,#107);
+/* #200 = CARTESIAN_POINT wrongly referenced as process_aspect by MACHINING_OPERATION */
+#200=CARTESIAN_POINT('drill_center',(25.,25.,0.));
 ENDSEC;
 END-ISO-10303-21;

@@ -1,15 +1,46 @@
 ISO-10303-21;
-/* M069 - TRIANGULATED_FACE without pnval
- * Defect: TRIANGULATED_FACE with pnval = (); AP242 reader rejects entity */
+/* M069: TRIANGULATED_FACE emitted without pnval indices */
+/* DEFECT: empty pnval () causes AP242 readers to reject and drop the face */
+/* Kernel must heal: empty pnval is valid for non-parametric mesh sources */
+/* Byte assertion: contains(b'TRIANGULATED_FACE') */
+/* Byte assertion: contains(b'no_pnval') */
+/* Byte assertion: contains(b"TRIANGULATED_FACE('no_pnval','',(#100),(),(),(),'',\$)") */
 HEADER;
-FILE_DESCRIPTION(('M058 test case','TRIANGULATED_FACE without pnval'),'2;1');
-FILE_NAME('M069.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('M069: TRIANGULATED_FACE emitted without pnval indices'),'2;1');
+FILE_NAME('M069.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
+/* Standard unit context */
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* COORDINATES_LIST for the tessellated face vertices */
+#100=COORDINATES_LIST('mesh_verts',3,
+  ((0.,0.,0.),(5.,0.,0.),(5.,5.,0.),(0.,5.,0.)));
+/* TRIANGULATED_FACE with empty pnval () — the defect */
+/* AP242 TRIANGULATED_FACE attributes: name, description, coordinates,
+   pnindex, normals, pnval, geometry_link, face_shape_representation */
+/* Byte assertion: contains(b'no_pnval') */
 #101=TRIANGULATED_FACE('no_pnval','',(#100),(),(),(),'',$);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#110=GEOMETRIC_CURVE_SET('triangulated-face-missing-pnval-indices',
+  (#100,#101));
+/* PRODUCT chain */
+#120=APPLICATION_CONTEXT('mechanical design');
+#121=PRODUCT_CONTEXT('',#120,'mechanical');
+#122=PRODUCT('M069','M069','M069',(#121));
+#123=PRODUCT_DEFINITION_FORMATION('','',#122);
+#124=PRODUCT_DEFINITION_CONTEXT(#120,'design');
+#125=PRODUCT_DEFINITION('','',#123,#124);
+#126=PRODUCT_DEFINITION_SHAPE('','',#125);
+#127=SHAPE_REPRESENTATION('',(#110),#14);
+#128=SHAPE_DEFINITION_REPRESENTATION(#126,#127);
 ENDSEC;
 END-ISO-10303-21;

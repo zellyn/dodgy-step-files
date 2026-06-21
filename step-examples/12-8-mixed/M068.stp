@@ -1,18 +1,52 @@
 ISO-10303-21;
-/* M068 - Pretessellated geometry skipped on write
- * Defect: document with TESSELLATED_FACE alongside ADVANCED_FACE; writer drops tessellated content */
+/* M068: TRIANGULATED_FACE pretessellation alongside ADVANCED_FACE B-rep */
+/* DEFECT: writer silently drops TRIANGULATED_FACE when read.step.tessellated flag off */
+/* AP242 supports tessellated geometry; writer must not gate on read flag */
+/* Byte assertion: contains(b'TRIANGULATED_FACE') */
 HEADER;
-FILE_DESCRIPTION(('M057 test case','Pretessellated geometry skipped on write'),'2;1');
-FILE_NAME('M068.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('M068: Pretessellated geometry skipped on STEP write'),'2;1');
+FILE_NAME('M068.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#101=DIRECTION('',(0.0,0.0,1.0));#102=DIRECTION('',(1.0,0.0,0.0));
-#103=AXIS2_PLACEMENT_3D('',#100,#101,#102);
-#104=PLANE('',#103);
-#105=TRIANGULATED_FACE('mesh_face','',(#100),(),(),(),'',$);
+/* Standard unit context */
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* Pretessellated mesh — TRIANGULATED_FACE covering the same face as the B-rep below */
+/* Byte assertion: contains(b'TRIANGULATED_FACE') */
+#20=COORDINATES_LIST('mesh_coords',3,
+  ((0.,0.,0.),(10.,0.,0.),(10.,10.,0.),(0.,10.,0.)));
+#21=TRIANGULATED_FACE('mesh_face',#20,$,
+  ((.FALSE.,.FALSE.,.FALSE.,.FALSE.)),((0,1,2),(0,2,3)));
+/* B-rep face geometry (ADVANCED_FACE on the same planar region) */
+#30=CARTESIAN_POINT('origin',(0.,0.,0.));
+#31=CARTESIAN_POINT('pt_a',(10.,0.,0.));
+#32=CARTESIAN_POINT('pt_b',(10.,10.,0.));
+#33=CARTESIAN_POINT('pt_c',(0.,10.,0.));
+#34=DIRECTION('z_axis',(0.,0.,1.));
+#35=DIRECTION('x_axis',(1.,0.,0.));
+#36=AXIS2_PLACEMENT_3D('face_placement',#30,#34,#35);
+#37=PLANE('face_plane',#36);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+/* (TRIANGULATED_FACE + ADVANCED_FACE both referenced; writer drops tessellation) */
+#50=GEOMETRIC_CURVE_SET('pretessellated-geometry-skipped-on-write',
+  (#21,#20,#36,#37,#30,#31,#32,#33));
+/* PRODUCT chain */
+#60=APPLICATION_CONTEXT('mechanical design');
+#61=PRODUCT_CONTEXT('',#60,'mechanical');
+#62=PRODUCT('M068','M068','M068',(#61));
+#63=PRODUCT_DEFINITION_FORMATION('','',#62);
+#64=PRODUCT_DEFINITION_CONTEXT(#60,'design');
+#65=PRODUCT_DEFINITION('','',#63,#64);
+#66=PRODUCT_DEFINITION_SHAPE('','',#65);
+#67=SHAPE_REPRESENTATION('',(#50),#14);
+#68=SHAPE_DEFINITION_REPRESENTATION(#66,#67);
 ENDSEC;
 END-ISO-10303-21;
