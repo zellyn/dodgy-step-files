@@ -1,28 +1,30 @@
-/* Le016 — Single backslash inside a string literal (Windows path)
-   Defect: a literal backslash must be doubled (\\). Generators copying
-   Windows paths verbatim emit single backslashes, accidentally forming
-   what looks like a malformed \X\ or \S\ directive. This file embeds:
-     'C:\path'                        -- bare illegal single backslash
-     'C:\Users\Test\X1\file.stp'      -- \X1 resembles malformed \X\
-     'C:\\good\\path'                 -- correct doubled-backslash form
-   for contrast. A round-trip-correct kernel preserves literal backslashes. */
 ISO-10303-21;
+/* Le016: Single backslash inside a string literal (Windows file path); ISO 10303-21 §6.4.3.1: reverse-solidus is the control-directive lead-in; a literal backslash must be doubled as \\\\; Windows path generators copy verbatim single backslashes into STEP strings; 'C:\\Users\\Test\\X1\\file.stp' — the \\X1 fragment resembles a malformed \\X\\ directive; strict mode must reject; tolerant readers must warn and must not silently consume following bytes as directive operands; round-trip must preserve literal backslashes (OCCT 7.5.0 lost them); GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Le016 - single backslash in Windows path string'),'2;1');
-FILE_NAME('Le016.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Le016'),'2;1');
+FILE_NAME('Le016.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* bare single backslash */
-#10=PERSON('p1','C:\path','given',$,$,$,$,$);
-/* path that masquerades as malformed \X\ directive */
-#11=PERSON('p2','C:\Users\Test\X1\file.stp','given',$,$,$,$,$);
-/* correctly-doubled backslashes for contrast */
-#12=PERSON('p3','C:\\good\\path','given',$,$,$,$,$);
-#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#21=DIRECTION('',(0.0,0.0,1.0));
-#22=DIRECTION('',(1.0,0.0,0.0));
-#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Le016','Le016','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#8997=PERSON('C:\path','windows-single-backslash','');
+#8998=PERSON('C:\Users\Test\X1\file.stp','windows-x1-fragment','');
+#8999=PERSON('C:\\good\\path','windows-doubled-backslash-correct','');
+
 ENDSEC;
 END-ISO-10303-21;

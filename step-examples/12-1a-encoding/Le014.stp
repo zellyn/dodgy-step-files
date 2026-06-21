@@ -1,24 +1,28 @@
-/* Le014 — Apostrophe inside a \X\..\X0\ block decoded as string close
-   Defect: a scanner that counts apostrophe parity but does not first
-   recognise hex-escape blocks may treat the byte sequence \X\27 (where 27
-   is the ASCII code for apostrophe) as a closing quote. This file embeds
-   'pre\X\27post' which the recognizer must leave as the literal string
-   pre'post (apostrophe encoded via \X\27), not pre + post. */
 ISO-10303-21;
+/* Le014: Apostrophe inside \X\27 hex-escape block decoded as string close; ISO 10303-21 §12.1a: \X\HH directive consumes exactly two hex digits and the byte value they encode is NOT an apostrophe delimiter; hex pair 27 is U+0027, the apostrophe code point; a scanner that applies apostrophe parity before consuming \X\-escape blocks reads \X\27 as: literal '\', 'X', '\', closing apostrophe (27 ignored as next token); the string 'pre\X\27post' must parse to the 8-char string pre'post; receiver must scan control directives before counting apostrophe parity; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Le014 - apostrophe inside X-escape misread as string close'),'2;1');
-FILE_NAME('Le014.stp','2026-04-26T00:00:00',('auto-generated'),(''),
-  'auto-generated','','');
+FILE_DESCRIPTION(('Le014'),'2;1');
+FILE_NAME('Le014.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-/* apostrophe encoded as \X\27 inside an otherwise valid string */
-#10=PERSON('p1','pre\X\27post','given',$,$,$,$,$);
-/* multiple encoded apostrophes */
-#11=PERSON('p2','a\X\27b\X\27c','given',$,$,$,$,$);
-#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#21=DIRECTION('',(0.0,0.0,1.0));
-#22=DIRECTION('',(1.0,0.0,0.0));
-#23=AXIS2_PLACEMENT_3D('',#20,#21,#22);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=GEOMETRIC_CURVE_SET('',(#1));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Le014','Le014','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#8999=PERSON('pre\X\27post','apostrophe-in-x-escape','');
+
 ENDSEC;
 END-ISO-10303-21;
