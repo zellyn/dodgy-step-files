@@ -1,20 +1,23 @@
 ISO-10303-21;
-/* Wr043 - Writer emits raw UTF-8 bytes in string literal where Ed.2
- * mandates \X\ / \X2\ escape.
- * Defect: FILE_DESCRIPTION declares Edition 2 ('2;1'); a PRODUCT name
- * carries raw UTF-8 bytes for non-ASCII characters. Edition-2 readers
- * see ISO-8859-1 nonsense; only Edition-3 readers (UTF-8 default)
- * decode by accident. */
+/* Wr043: writer emits raw UTF-8 bytes in string literal under Edition-2 declaration */
+/* FILE_DESCRIPTION declares '2;1' (Edition 2); Edition 2 mandates \X\HH escapes */
+/* DEFECT: PRODUCT.name contains raw UTF-8 bytes 0xC3 0xA9 (Ã©) instead of '\X\E9' */
+/* Ed.2-strict readers see 0xC3=Ã and 0xA9=Â© (two ISO-8859-1 chars, mojibake) */
 HEADER;
-FILE_DESCRIPTION(('Wr043 - raw UTF-8 in Ed.2 string literal'),'2;1');
-FILE_NAME('Wr043.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Wr043: raw UTF-8 bytes in Edition-2 string literal'),'2;1');
+FILE_NAME('Wr043.stp','2026-06-20T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=PRODUCT_CONTEXT('part',#1,'mechanical');
-#3=PRODUCT('café','raw UTF-8 in Ed.2','',(#2));
-#4=PRODUCT('Tokyo 東京','raw multi-byte UTF-8','',(#2));
-#10=CARTESIAN_POINT('',(0.0,0.0,0.0));
+/* DEFECT: PRODUCT.name below contains raw UTF-8 bytes for Ã© (0xC3 0xA9) */
+/* Spec-conformant Ed.2 form would be: 'caf\X\E9' */
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=CARTESIAN_POINT('corner',(1.,1.,0.));
+#3=DIRECTION('xdir',(1.,0.,0.));
+#4=DIRECTION('zdir',(0.,0.,1.));
+#5=PRODUCT('cafÃ©','cafÃ©-part','raw-utf8-in-ed2',(#6));
+#6=PRODUCT_CONTEXT('part',#7,'mechanical');
+#7=APPLICATION_CONTEXT('config design');
+#8=GEOMETRIC_CURVE_SET('raw-utf8-ed2-shape',(#1,#2));
 ENDSEC;
 END-ISO-10303-21;

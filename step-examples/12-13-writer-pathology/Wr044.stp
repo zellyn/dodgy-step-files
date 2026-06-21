@@ -1,45 +1,27 @@
 ISO-10303-21;
-/* Wr044 - Inch unit declared in LENGTH_UNIT context but coordinates emitted
- * in millimetres (no conversion).
- * Defect (FreeCAD #18078): user picks "inch" in the export dialog; writer
- * flips the LENGTH_UNIT label but does not divide coordinate values by 25.4.
- * A 25.4 mm cube round-trips as a 25.4 inch (645 mm) cube. */
+/* Wr044: inch unit declared in LENGTH_UNIT but coordinates are in millimetres */
+/* FreeCAD #18078: user picks inch export unit; writer labels file as inch but */
+/* emits mm coordinates unchanged (skips the divide-by-25.4 conversion pass) */
+/* A 25.4 mm cube round-trips as a 25.4 inch (645 mm) cube — 25.4x too large */
 HEADER;
-FILE_DESCRIPTION(('Wr044 - inch unit declared but mm-scale coordinates'),'2;1');
-FILE_NAME('Wr044.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Wr044: inch unit declared but coordinates are in mm'),'2;1');
+FILE_NAME('Wr044.stp','2026-06-20T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2001,#1);
-#3=PRODUCT_CONTEXT('part',#1,'mechanical');
-#4=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#5=PRODUCT('Wr044_inchcube','inch unit decl with mm values','',(#3));
-#6=PRODUCT_DEFINITION_FORMATION('','',#5);
-#7=PRODUCT_DEFINITION('design','',#6,#4);
-#8=PRODUCT_DEFINITION_SHAPE('','',#7);
-/* Defect: inch unit declared, but the eight corners below carry mm-scale
-   values (25.4 mm = 1 inch). After unit interpretation the cube becomes
-   25.4 inch on a side -- 25.4x larger than authored. */
-#10=( LENGTH_UNIT() NAMED_UNIT(*) CONVERSION_BASED_UNIT('INCH',#11) );
-#11=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#12);
-#12=( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-#13=( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-#14=( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-#15=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#10,'tol','');
-#16=( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#15)) GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#13,#14)) REPRESENTATION_CONTEXT('','3D') );
-#20=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#21=CARTESIAN_POINT('',(25.4,0.0,0.0));
-#22=CARTESIAN_POINT('',(25.4,25.4,0.0));
-#23=CARTESIAN_POINT('',(0.0,25.4,0.0));
-#24=CARTESIAN_POINT('',(0.0,0.0,25.4));
-#25=CARTESIAN_POINT('',(25.4,0.0,25.4));
-#26=CARTESIAN_POINT('',(25.4,25.4,25.4));
-#27=CARTESIAN_POINT('',(0.0,25.4,25.4));
-#30=DIRECTION('',(0.0,0.0,1.0));
-#31=DIRECTION('',(1.0,0.0,0.0));
-#32=AXIS2_PLACEMENT_3D('',#20,#30,#31);
-#33=SHAPE_REPRESENTATION('Wr044_cube',(#32),#16);
-#34=SHAPE_DEFINITION_REPRESENTATION(#8,#33);
+/* DEFECT: LENGTH_UNIT declares INCH but all coordinates are millimetre values */
+/* Correct inch file would have corner at (1.0, 1.0, 1.0) — 25.4mm / 25.4 */
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=CARTESIAN_POINT('corner-x',(25.4,0.,0.));
+#3=CARTESIAN_POINT('corner-y',(0.,25.4,0.));
+#4=CARTESIAN_POINT('corner-z',(0.,0.,25.4));
+#5=CARTESIAN_POINT('corner-xyz',(25.4,25.4,25.4));
+#6=DIRECTION('xdir',(1.,0.,0.));
+#7=DIRECTION('zdir',(0.,0.,1.));
+/* DEFECT: unit declared as INCH; coordinates are mm values (25.4 should be 1.0) */
+#8=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#9);
+#9=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+#10=(CONVERSION_BASED_UNIT('INCH',#8) LENGTH_UNIT() NAMED_UNIT(*));
+#11=GEOMETRIC_CURVE_SET('inch-unit-mm-coords-shape',(#1,#2,#3,#4,#5));
 ENDSEC;
 END-ISO-10303-21;
