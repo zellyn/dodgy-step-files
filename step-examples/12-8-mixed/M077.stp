@@ -1,32 +1,56 @@
 ISO-10303-21;
-/* M077 - AP238 fixture_usage references a workpiece not in the assembly.
- * Defect: SETUP.its_workpiece_setup lists fixture references to
- * WORKPIECE entities (datum-mating fixture stacks) that are declared in
- * the file, but the WORKPIECE_SETUP.its_workpiece points to a different
- * WORKPIECE id, leaving the fixture orphaned in space. */
+/* M077: AP238 fixture references different workpiece than the setup is machining */
+/* DEFECT: WORKPIECE_SETUP attaches fixture to plate_a, but MACHINING_WORKINGSTEP */
+/*   names plate_b as the machined part — fixture is orphaned */
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+/* Byte assertion: contains(b'WORKPIECE_SETUP') */
+/* Byte assertion: contains(b'WORKPIECE') */
 HEADER;
-FILE_DESCRIPTION(('M077 test case','AP238 fixture orphaned from workpiece'),'2;1');
-FILE_NAME('M077.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 1 0 0 1 }'));
+FILE_DESCRIPTION(('M077: AP238 fixture references wrong workpiece'),'2;1');
+FILE_NAME('M077.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'AP238_STEP_NC_MIM') */
+FILE_SCHEMA(('AP238_STEP_NC_MIM { 1 0 10303 238 3 1 1 1 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('numerical_control_machining');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'numerical_control_machining',2007,#1);
+/* Standard unit context */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('setup','3D'));
-/* Two workpieces */
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* Byte assertion: contains(b'WORKPIECE') */
+/* Two workpieces: plate_a and plate_b */
 #100=WORKPIECE('plate_a',$,$,$,$,$,$);
 #101=WORKPIECE('plate_b',$,$,$,$,$,$);
-/* A fixture vise referencing plate_a */
+/* Fixture: vise jaw */
 #110=WORKPIECE('vise_jaw',$,$,$,$,$,$);
+/* Byte assertion: contains(b'WORKPIECE_SETUP') */
+/* WORKPIECE_SETUP: attaches vise_jaw (#110) as fixture for plate_a (#100) */
 #120=WORKPIECE_SETUP(#100,$,$,(#110),$);
-/* Defect: SETUP names plate_b as its workpiece, but the workpiece_setup
- * above references plate_a - the vise jaws are now constraining a part
- * that isn't the one being machined in this setup. */
+/* SETUP uses the workpiece_setup for plate_a */
 #200=SETUP('main_setup',(#120),$,$,$);
+/* DEFECT: MACHINING_WORKINGSTEP references plate_b (#101), not plate_a (#100) */
+/* The fixture constrains plate_a, but plate_b is being machined */
 #210=MACHINING_WORKINGSTEP('ws',$,$,#101,#200);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#300=GEOMETRIC_CURVE_SET('ap238-fixture-references-wrong-workpiece-orphaned',
+  (#100,#101,#110,#120,#200,#210));
+/* Product chain */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M077','M077','M077',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#300),#14);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;

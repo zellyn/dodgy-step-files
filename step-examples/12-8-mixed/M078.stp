@@ -1,22 +1,31 @@
 ISO-10303-21;
-/* M078 - AP209 hexahedron element with wrong node count.
- * Defect: a VOLUME_3D_ELEMENT_DESCRIPTOR declares quadratic_hexahedron
- * topology (which requires 20 nodes - 8 corners + 12 mid-edge) but the
- * descriptor lists only 12 nodes. Schema-strict readers should drop the
- * element with a warning. */
+/* M078: AP209 quadratic_hexahedron with wrong node count (12 instead of 20) */
+/* DEFECT: quadratic hex (C3D20) requires 20 nodes; only 12 provided */
+/* Element cannot be evaluated; consumers must drop or reject */
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
+/* Byte assertion: contains(b'quadratic_hexahedron') */
+/* Byte assertion: contains(b'VOLUME_3D_ELEMENT_DESCRIPTOR') */
 HEADER;
-FILE_DESCRIPTION(('M078 test case','AP209 quadratic_hexahedron with 12 nodes'),'2;1');
-FILE_NAME('M078.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M078: AP209 quadratic_hexahedron with 12 nodes not 20'),'2;1');
+FILE_NAME('M078.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'STRUCTURAL_ANALYSIS_DESIGN') */
 FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('structural_analysis_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'structural_analysis_design',2001,#1);
+/* Standard unit context */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('fea','3D'));
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('fea','3D'));
+/* 8 corner nodes of unit cube */
 #100=CARTESIAN_POINT('n1',(0.0,0.0,0.0));
 #101=CARTESIAN_POINT('n2',(1.0,0.0,0.0));
 #102=CARTESIAN_POINT('n3',(1.0,1.0,0.0));
@@ -25,19 +34,41 @@ DATA;
 #105=CARTESIAN_POINT('n6',(1.0,0.0,1.0));
 #106=CARTESIAN_POINT('n7',(1.0,1.0,1.0));
 #107=CARTESIAN_POINT('n8',(0.0,1.0,1.0));
+/* 4 mid-edge nodes (only 4 of 12 required; should be 12 mid-edge for C3D20) */
 #108=CARTESIAN_POINT('m1',(0.5,0.0,0.0));
 #109=CARTESIAN_POINT('m2',(1.0,0.5,0.0));
 #110=CARTESIAN_POINT('m3',(0.5,1.0,0.0));
 #111=CARTESIAN_POINT('m4',(0.0,0.5,0.0));
-#120=NODE('n1',(#100),$);#121=NODE('n2',(#101),$);
-#122=NODE('n3',(#102),$);#123=NODE('n4',(#103),$);
-#124=NODE('n5',(#104),$);#125=NODE('n6',(#105),$);
-#126=NODE('n7',(#106),$);#127=NODE('n8',(#107),$);
-#128=NODE('m1',(#108),$);#129=NODE('m2',(#109),$);
-#130=NODE('m3',(#110),$);#131=NODE('m4',(#111),$);
-/* Defect: 20-node hex declared with only 12 nodes. */
+/* NODE entities for the 12 geometry points */
+#120=NODE('n1',(#100),$);
+#121=NODE('n2',(#101),$);
+#122=NODE('n3',(#102),$);
+#123=NODE('n4',(#103),$);
+#124=NODE('n5',(#104),$);
+#125=NODE('n6',(#105),$);
+#126=NODE('n7',(#106),$);
+#127=NODE('n8',(#107),$);
+#128=NODE('m1',(#108),$);
+#129=NODE('m2',(#109),$);
+#130=NODE('m3',(#110),$);
+#131=NODE('m4',(#111),$);
+/* Byte assertion: contains(b'VOLUME_3D_ELEMENT_DESCRIPTOR') */
+/* Byte assertion: contains(b'quadratic_hexahedron') */
+/* DEFECT: quadratic_hexahedron requires 20 nodes; only 12 listed */
 #200=VOLUME_3D_ELEMENT_DESCRIPTOR('quad_hex','quadratic_hexahedron',
-       (#120,#121,#122,#123,#124,#125,#126,#127,
-        #128,#129,#130,#131));
+  (#120,#121,#122,#123,#124,#125,#126,#127,#128,#129,#130,#131));
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#300=GEOMETRIC_CURVE_SET('ap209-quadratic-hexahedron-12-nodes-not-20',
+  (#120,#121,#122,#123,#124,#125,#126,#127,#128,#129,#130,#131,#200));
+/* Product chain */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M078','M078','M078',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#300),#14);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;

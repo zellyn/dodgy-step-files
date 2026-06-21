@@ -1,28 +1,53 @@
 ISO-10303-21;
-/* M079 - AP209 boundary condition without associated geometry.
- * Defect: a SINGLE_POINT_CONSTRAINT references a constraint freedom and
- * coefficient pair, but the NODE_GROUP it should be applied to is empty
- * (or, equivalently, the constrained_node attribute is unresolved). The
- * BC has no effect because the kernel cannot find the points to fix. */
+/* M079: AP209 boundary condition with no nodes attached */
+/* DEFECT: NODE_GROUP('fixed_nodes', (), $) is empty — constraint applies to nothing */
+/* SINGLE_POINT_CONSTRAINT references empty node group */
+/* Byte assertion: contains(b'SINGLE_POINT_CONSTRAINT') */
+/* Byte assertion: contains(b'NODE_GROUP') */
 HEADER;
-FILE_DESCRIPTION(('M079 test case','AP209 boundary condition no associated geometry'),'2;1');
-FILE_NAME('M079.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_DESCRIPTION(('M079: AP209 boundary condition with no nodes attached'),'2;1');
+FILE_NAME('M079.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }'));
 ENDSEC;
 DATA;
 #1=APPLICATION_CONTEXT('structural_analysis_design');
 #2=APPLICATION_PROTOCOL_DEFINITION('international standard',
   'structural_analysis_design',2001,#1);
+/* Standard unit context */
 #10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
 #14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-     REPRESENTATION_CONTEXT('fea','3D'));
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('fea','3D'));
+/* A valid node — declared but not included in the (empty) node group */
 #100=CARTESIAN_POINT('n1',(0.0,0.0,0.0));
 #110=NODE('n1',(#100),$);
+/* Constraint freedoms: X, Y, Z */
 #120=FREEDOMS_LIST((.X.,.Y.,.Z.));
 #130=FREEDOM_AND_COEFFICIENT(#120,1.0);
-/* Defect: Empty node_group - the constraint applies to nothing. */
+/* Byte assertion: contains(b'NODE_GROUP') */
+/* DEFECT: NODE_GROUP with empty node list — constraint has nowhere to apply */
 #140=NODE_GROUP('fixed_nodes',(),$);
+/* Byte assertion: contains(b'SINGLE_POINT_CONSTRAINT') */
+/* SINGLE_POINT_CONSTRAINT referencing the empty node group */
+/* b=0.0 (prescribed value); effectively applies to zero nodes */
 #200=SINGLE_POINT_CONSTRAINT($,#130,0.0,#140);
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#300=GEOMETRIC_CURVE_SET('ap209-boundary-condition-empty-node-group',
+  (#110,#130,#140,#200));
+/* Product chain */
+#400=APPLICATION_CONTEXT('mechanical design');
+#401=PRODUCT_CONTEXT('',#400,'mechanical');
+#402=PRODUCT('M079','M079','M079',(#401));
+#403=PRODUCT_DEFINITION_FORMATION('','',#402);
+#404=PRODUCT_DEFINITION_CONTEXT(#400,'design');
+#405=PRODUCT_DEFINITION('','',#403,#404);
+#406=PRODUCT_DEFINITION_SHAPE('','',#405);
+#407=SHAPE_REPRESENTATION('',(#300),#14);
+#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
 ENDSEC;
 END-ISO-10303-21;
