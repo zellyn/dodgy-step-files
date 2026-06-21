@@ -112,14 +112,25 @@ validation/
 
 ## CI
 
-The `.github/workflows/validate.yml` workflow runs:
+CI is split into two lanes:
 
-1. `uv run pytest tests/`: 512 self-tests (validator + catalog + bug-search + API-shape + schema + dedup audit + taxonomy)
+**`.github/workflows/validate-fast.yml`** — runs on every push/PR, target <5 min:
+
+1. `uv run pytest tests/` (minus the two oracle-dependent modules): 500+ self-tests (validator + catalog + bug-search + API-shape + schema + dedup audit + taxonomy)
 2. `uv run python -m step_corpus._fixture_lint`: fixture style lint
-3. Validate2 across every fixture
-4. Final verdict classifier (DRIFT detection)
+3. `uv run python -m step_corpus._fixture_source_check`: byte-stable builder round-trip
+4. `uv run python -m step_corpus._category_lint --strict`
+5. `uv run python -m step_corpus._bytes_tier3_audit`
+6. `uv run python -m step_corpus._schema_oracle --strict`
 
-Any FAIL or DRIFT verdict fails the job.
+**`.github/workflows/validate-full.yml`** — gated (push-to-main with `[full-ci]` in message, daily 07:13 UTC cron, or manual workflow_dispatch):
+
+1. `uv run python -m step_corpus._run_corpus --workers 4`: validate2 + tier3 across every fixture with all oracles
+2. `uv run pytest tests/test_outcome_conformance.py tests/test_tier3_assertions.py`: oracle-dependent self-tests
+3. `uv run python -m step_corpus._final_verdict`: DRIFT detection classifier
+4. `uv run python -m step_corpus._tier3_assertions`: machine-checkable geometric assertions
+
+Any FAIL or DRIFT verdict fails the job. The split exists because the full sweep takes 50-75 min and would otherwise be cancelled by every new push (Wave-B fixture batches push every 3-8 min). See the top-comments in each workflow for the cadence policy.
 
 ## License
 

@@ -75,7 +75,7 @@ Start with **Solvespace** for B3.3:
    in subprocess isolation, captures exit code + stderr, emits a JSON
    record `{loaded, n_solids, error, error_class}` matching the
    `_occt_oracle.py` schema.
-2. Add solvespace install to `.github/workflows/validate.yml`
+2. Add solvespace install to `.github/workflows/validate-full.yml`
    (`sudo apt-get install -y solvespace`).
 3. Wire into `validate2.py` as an additional column in the per-fixture
    JSON record.
