@@ -1,22 +1,26 @@
 ISO-10303-21;
-/* A072 - Single vertex written as compound-of-two-points
- * Defect: XCAF document with one TopoDS_Vertex at (0,0,0); writer emits both CARTESIAN_POINT and VERTEX_POINT */
+/* A072: single vertex emitted as both CARTESIAN_POINT and VERTEX_POINT ('emitted_twice' pattern) */
 HEADER;
-FILE_DESCRIPTION(('A072 test case','Single vertex written as compound-of-two-points'),'2;1');
-FILE_NAME('A072.stp','2026-04-30T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('A072'),'2;1');
+FILE_NAME('A072.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=PRODUCT_CONTEXT('',#1,'mechanical');
-#11=PRODUCT('part1','part1','part1',(#10));
-#12=PRODUCT_DEFINITION_FORMATION('','',#11);
-#13=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#14=PRODUCT_DEFINITION('','',#12,#13);
-#15=PRODUCT_DEFINITION_SHAPE('','',#14);
-#100=CARTESIAN_POINT('only_vertex',(0.0,0.0,0.0));
-#101=VERTEX_POINT('emitted_twice',#100);
-
+#1=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#2=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#3=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#4=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#1,'distance_accuracy_value','');
+#5=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#4))GLOBAL_UNIT_ASSIGNED_CONTEXT((#1,#2,#3))REPRESENTATION_CONTEXT('','3D'));
+#6=CARTESIAN_POINT('emitted_twice',(0.0,0.0,0.0));
+#7=VERTEX_POINT('emitted_twice',#6);
+#8=ADVANCED_BREP_SHAPE_REPRESENTATION('compound_two_pts',(#6,#7),#5);
+#9=COLOUR_RGB('vertex_color',0.5,0.5,0.5);
+#10=FILL_AREA_STYLE_COLOUR('',#9);
+#11=FILL_AREA_STYLE('',(#10));
+#12=SURFACE_STYLE_FILL_AREA(#11);
+#13=SURFACE_SIDE_STYLE('',(#12));
+#14=SURFACE_STYLE_USAGE(.BOTH.,#13);
+#15=PRESENTATION_STYLE_ASSIGNMENT((#14));
+#16=STYLED_ITEM('vertex_style',(#15),#7);
 ENDSEC;
 END-ISO-10303-21;
