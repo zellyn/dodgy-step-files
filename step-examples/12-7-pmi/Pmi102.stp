@@ -1,71 +1,62 @@
 ISO-10303-21;
-/* Pmi102 - GROOVE depth wraps around cylindrical face improperly
- * Defect: a circumferential GROOVE on a cylinder with radial depth=15 mm
- * but the host cylinder radius is only 10 mm. The groove cuts through the
- * cylinder's centerline -- the depth wraps past the axis and reappears on
- * the other side. Receivers must validate radial depth < host radius
- * for circumferential grooves. */
+/* Pmi102: GROOVE on cylinder (radius=10 mm) with groove_radial_depth=15 mm; depth exceeds host radius — groove cuts through centerline; receiver must reject or clamp with deterministic warning */
 HEADER;
-FILE_DESCRIPTION(('Pmi102 - GROOVE radial depth exceeds cylinder radius'),'2;1');
-FILE_NAME('Pmi102.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+FILE_DESCRIPTION(('Pmi102'),'2;1');
+FILE_NAME('Pmi102.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('managed model based 3d engineering');
-#2=PRODUCT_CONTEXT('part',#1,'mechanical');
-#3=PRODUCT('Pmi102','groove_depth_wraparound','',(#2));
-#4=PRODUCT_DEFINITION_FORMATION('','',#3);
-#5=PRODUCT_DEFINITION_CONTEXT('',#1,'design');
-#6=PRODUCT_DEFINITION('','',#4,#5);
-#7=PRODUCT_DEFINITION_SHAPE('','',#6);
-#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,'tol','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13)) GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT('','3D'));
-/* Cylindrical host face: radius 10, height 30. Bounded by two circular edges. */
-#100=CARTESIAN_POINT('cyl_origin',(0.0,0.0,0.0));
-#101=CARTESIAN_POINT('cyl_top_centre',(0.0,0.0,30.0));
-#200=DIRECTION('cyl_axis_z',(0.0,0.0,1.0));
-#201=DIRECTION('cyl_ref_x',(1.0,0.0,0.0));
-#202=DIRECTION('cyl_ref_y',(0.0,1.0,0.0));
-#210=AXIS2_PLACEMENT_3D('cyl_base',#100,#200,#201);
-#211=AXIS2_PLACEMENT_3D('cyl_top',#101,#200,#201);
-#220=CYLINDRICAL_SURFACE('host_cyl',#210,10.0);
-/* Two circular edges (bottom and top) for the cylinder side face. */
-#230=CARTESIAN_POINT('seam_bottom',(10.0,0.0,0.0));
-#231=CARTESIAN_POINT('seam_top',(10.0,0.0,30.0));
-#240=VERTEX_POINT('vb',#230); #241=VERTEX_POINT('vt',#231);
-#250=CIRCLE('bottom_circle',#210,10.0);
-#251=CIRCLE('top_circle',#211,10.0);
-#260=EDGE_CURVE('bottom_edge',#240,#240,#250,.T.);
-#261=EDGE_CURVE('top_edge',#241,#241,#251,.T.);
-/* Seam line. */
-#270=VECTOR('seam_dir',#200,30.0);
-#271=LINE('seam',#230,#270);
-#272=EDGE_CURVE('seam_edge',#240,#241,#271,.T.);
-#400=ORIENTED_EDGE('',*,*,#260,.T.);
-#401=ORIENTED_EDGE('',*,*,#272,.T.);
-#402=ORIENTED_EDGE('',*,*,#261,.F.);
-#403=ORIENTED_EDGE('',*,*,#272,.F.);
-#404=EDGE_LOOP('',(#400,#401,#402,#403));
-#405=FACE_OUTER_BOUND('',#404,.T.);
-#406=ADVANCED_FACE('host_cyl_face',(#405),#220,.T.);
-#500=OPEN_SHELL('host_shell',(#406));
-#501=SHELL_BASED_SURFACE_MODEL('host_model',(#500));
-#502=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('shape',(#501,#210),#14);
-#503=SHAPE_DEFINITION_REPRESENTATION(#7,#502);
-/* GROOVE: radial depth=15mm, cylinder radius=10mm. Defect (depth > radius). */
-#600=SHAPE_ASPECT('GROOVE','circumferential groove with radial depth > host radius',#7,.T.);
-#601=GEOMETRIC_ITEM_SPECIFIC_USAGE('GISU',$,#600,#502,#406);
-#610=DIMENSIONAL_SIZE(#600,'groove_width');
-#611=MEASURE_REPRESENTATION_ITEM('width',LENGTH_MEASURE(3.0),#10);
-#612=SHAPE_DIMENSION_REPRESENTATION('',(#611),#14);
-#620=DIMENSIONAL_SIZE(#600,'groove_radial_depth');
-#621=MEASURE_REPRESENTATION_ITEM('depth_DEFECT_exceeds_radius',LENGTH_MEASURE(15.0),#10);
-#622=SHAPE_DIMENSION_REPRESENTATION('',(#621),#14);
-#630=DIMENSIONAL_SIZE(#600,'host_cylinder_radius');
-#631=MEASURE_REPRESENTATION_ITEM('host_radius',LENGTH_MEASURE(10.0),#10);
-#632=SHAPE_DIMENSION_REPRESENTATION('',(#631),#14);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(0.0,0.0,30.0));
+#3=DIRECTION('',(0.0,0.0,1.0));
+#4=DIRECTION('',(1.0,0.0,0.0));
+#5=AXIS2_PLACEMENT_3D('',#1,#3,#4);
+#6=AXIS2_PLACEMENT_3D('',#2,#3,#4);
+#7=CYLINDRICAL_SURFACE('',#5,10.0);
+#8=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#9=CARTESIAN_POINT('',(10.0,0.0,30.0));
+#10=VERTEX_POINT('',#8);
+#11=VERTEX_POINT('',#9);
+#12=CIRCLE('',#5,10.0);
+#13=CIRCLE('',#6,10.0);
+#14=EDGE_CURVE('',#10,#10,#12,.T.);
+#15=EDGE_CURVE('',#11,#11,#13,.T.);
+#16=DIRECTION('',(0.0,0.0,1.0));
+#17=VECTOR('',#16,30.0);
+#18=LINE('',#8,#17);
+#19=EDGE_CURVE('',#10,#11,#18,.T.);
+#20=ORIENTED_EDGE('',$,$,#14,.T.);
+#21=ORIENTED_EDGE('',$,$,#19,.T.);
+#22=ORIENTED_EDGE('',$,$,#15,.F.);
+#23=ORIENTED_EDGE('',$,$,#19,.F.);
+#24=EDGE_LOOP('',(#20,#21,#22,#23));
+#25=FACE_OUTER_BOUND('',#24,.T.);
+#26=ADVANCED_FACE('host_cyl_face',(#25),#7,.T.);
+#27=OPEN_SHELL('',(#26));
+#28=SHELL_BASED_SURFACE_MODEL('',(#27));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Pmi102','Pmi102','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#28),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+#9063=SHAPE_ASPECT('host_cyl_face','',#9055,.T.);
+#9064=SHAPE_ASPECT('GROOVE','circumferential groove depth defect',#9055,.T.);
+#9065=DIMENSIONAL_SIZE(#9064,'groove_width');
+#9066=MEASURE_REPRESENTATION_ITEM('groove_width',LENGTH_MEASURE(3.0),#9056);
+#9067=DIMENSIONAL_SIZE(#9064,'groove_radial_depth');
+#9068=MEASURE_REPRESENTATION_ITEM('depth_DEFECT_exceeds_radius',LENGTH_MEASURE(15.0),#9056);
+#9069=DIMENSIONAL_SIZE(#9064,'host_cylinder_radius');
+#9070=MEASURE_REPRESENTATION_ITEM('host_cylinder_radius',LENGTH_MEASURE(10.0),#9056);
+#9071=SHAPE_ASPECT_RELATIONSHIP('groove_on_cyl','groove on cylinder host',#9063,#9064);
+#9072=GEOMETRIC_ITEM_SPECIFIC_USAGE('groove_gisu',$,#9064,#9061,#26);
 ENDSEC;
 END-ISO-10303-21;
