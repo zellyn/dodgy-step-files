@@ -1,58 +1,41 @@
 ISO-10303-21;
-/* Tb009 - Self-intersection visible at full precision but rounded out at receiver tolerance
- * Defect: Two short edges cross at separation 3.0e-7 mm in 3D. Declared
- * uncertainty is 1.0e-6 (looser than the crossing). A receiver rounding
- * coordinates to 1.0e-6 working precision sees the edges as touching at
- * a point (no self-intersection). An exact-arithmetic receiver, or one
- * with tol < 3.0e-7, sees the self-intersection. Same input, two reports.
- */
+/* Tb009: two EDGE_CURVEs crossing at 3.0E-7 mm separation below declared 1.0E-6 tolerance; receiver rounding to 1e-6 sees edges touching (no self-intersection); exact receiver sees self-intersection; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Tb009 self-intersection at 3.0e-7 below 1.0e-6 declared tolerance'),'2;1');
-FILE_NAME('Tb009.stp','2026-04-30T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Tb009'),'2;1');
+FILE_NAME('Tb009.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-/* Edge A: line from (0,0,0) to (1,0,0).
- * Edge B: line from (0.5,-3.0E-7,0) to (0.5,1,0) -- crosses A at
- * y = -3.0E-7 (below A by 3.0e-7). Below 1.0e-6 declared tolerance; above
- * a strict 1.0e-7 tolerance. */
-#10=CARTESIAN_POINT('a0',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('a1',(1.0,0.0,0.0));
-#12=CARTESIAN_POINT('b0',(0.5,-3.0E-7,0.0));
-#13=CARTESIAN_POINT('b1',(0.5,1.0,0.0));
-#20=VERTEX_POINT('a0',#10);
-#21=VERTEX_POINT('a1',#11);
-#22=VERTEX_POINT('b0_below_3e-7',#12);
-#23=VERTEX_POINT('b1',#13);
-#30=DIRECTION('+x',(1.0,0.0,0.0));
-#31=VECTOR('vx1',#30,1.0);
-#32=LINE('lA',#10,#31);
-#33=DIRECTION('+y',(0.0,1.0,0.0));
-#34=VECTOR('vyalmost',#33,1.0+3.0E-7);
-#35=LINE('lB',#12,#34);
-#40=EDGE_CURVE('eA',#20,#21,#32,.T.);
-#41=EDGE_CURVE('eB',#22,#23,#35,.T.);
-#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#50,
-  'distance_accuracy_value','tol_above_intersection_separation');
-#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
-  REPRESENTATION_CONTEXT('ctx','3D'));
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Tb009','Tb009','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9020=GEOMETRIC_CURVE_SET('cs',(#40,#41));
-#9021=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9020),#70);
-#9022=SHAPE_DEFINITION_REPRESENTATION(#9005,#9021);
+#1=CARTESIAN_POINT('a0',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('a1',(1.0,0.0,0.0));
+#3=CARTESIAN_POINT('b0_below_3e-7',(0.5,-3.0E-07,0.0));
+#4=CARTESIAN_POINT('b1',(0.5,1.0,0.0));
+#5=VERTEX_POINT('va0',#1);
+#6=VERTEX_POINT('va1',#2);
+#7=VERTEX_POINT('vb0',#3);
+#8=VERTEX_POINT('vb1',#4);
+#9=DIRECTION('',(1.0,0.0,0.0));
+#10=VECTOR('',#9,1.0);
+#11=LINE('',#1,#10);
+#12=EDGE_CURVE('eA',#5,#6,#11,.T.);
+#13=DIRECTION('',(0.0,1.0,0.0));
+#14=VECTOR('',#13,1.0000003);
+#15=LINE('',#3,#14);
+#16=EDGE_CURVE('eB',#7,#8,#15,.T.);
+#17=GEOMETRIC_CURVE_SET('cs',(#12,#16));
+#18=APPLICATION_CONTEXT('automotive_design');
+#19=PRODUCT_CONTEXT('',#18,'mechanical');
+#20=PRODUCT('Tb009','Tb009','',(#19));
+#21=PRODUCT_DEFINITION_FORMATION('','',#20);
+#22=PRODUCT_DEFINITION_CONTEXT('part definition',#18,'design');
+#23=PRODUCT_DEFINITION('','',#21,#22);
+#24=PRODUCT_DEFINITION_SHAPE('','',#23);
+#25=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#26=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#27=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#28=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#25,'distance_accuracy_value','tol_above_intersection_separation');
+#29=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#28))GLOBAL_UNIT_ASSIGNED_CONTEXT((#25,#26,#27))REPRESENTATION_CONTEXT('ctx','3D'));
+#30=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#17),#29);
+#31=SHAPE_DEFINITION_REPRESENTATION(#24,#30);
 ENDSEC;
 END-ISO-10303-21;

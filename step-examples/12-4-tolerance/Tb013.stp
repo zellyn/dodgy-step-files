@@ -1,48 +1,33 @@
 ISO-10303-21;
-/* Tb013 - Coordinate at 1.0e-300 tests "near zero" only under denormalized math
- * Defect: A CARTESIAN_POINT has coordinate 1.0e-300 -- a denormalized double.
- * Receiver A: |x| < 1.0e-7 -> "near zero" yes. Receiver B with flush-to-zero
- * math library treats 1.0e-300 as exactly 0. Receiver C without flush-to-zero
- * keeps the value alive and trips on 1.0/(1.0e-300) = 1.0e+300 overflow during
- * a normal-vector or transform computation. The "very small coordinate"
- * test depends on host floating-point environment, not on the file.
- */
+/* Tb013: CARTESIAN_POINT at (1.0E-300,0,0) — denormalized double; flush-to-zero math sees 0; exact math risks 1/1e-300=1e+300 overflow; declared 1.0E-7; one EDGE_CURVE; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Tb013 coordinate 1.0e-300 escape under denormalized math'),'2;1');
-FILE_NAME('Tb013.stp','2026-04-30T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Tb013'),'2;1');
+FILE_NAME('Tb013.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-/* Vertex at the denormalized coordinate. */
-#10=CARTESIAN_POINT('p_denorm',(1.0E-300,0.0,0.0));
-#11=CARTESIAN_POINT('p_normal',(1.0,0.0,0.0));
-#20=VERTEX_POINT('v_denorm_x',#10);
-#21=VERTEX_POINT('v_normal',#11);
-#30=DIRECTION('+x',(1.0,0.0,0.0));
-#31=VECTOR('vx',#30,1.0);
-#32=LINE('l',#10,#31);
-#40=EDGE_CURVE('e_from_denorm_to_normal',#20,#21,#32,.T.);
-#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#50,
-  'distance_accuracy_value','tol_far_above_denormal');
-#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
-  REPRESENTATION_CONTEXT('ctx','3D'));
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Tb013','Tb013','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9020=GEOMETRIC_CURVE_SET('cs',(#40));
-#9021=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9020),#70);
-#9022=SHAPE_DEFINITION_REPRESENTATION(#9005,#9021);
+#1=CARTESIAN_POINT('p_denorm',(1.0E-300,0.0,0.0));
+#2=CARTESIAN_POINT('p_normal',(1.0,0.0,0.0));
+#3=VERTEX_POINT('v_denorm_x',#1);
+#4=VERTEX_POINT('v_normal',#2);
+#5=DIRECTION('',(1.0,0.0,0.0));
+#6=VECTOR('',#5,1.0);
+#7=LINE('',#1,#6);
+#8=EDGE_CURVE('e_from_denorm_to_normal',#3,#4,#7,.T.);
+#9=GEOMETRIC_CURVE_SET('cs',(#8));
+#10=APPLICATION_CONTEXT('automotive_design');
+#11=PRODUCT_CONTEXT('',#10,'mechanical');
+#12=PRODUCT('Tb013','Tb013','',(#11));
+#13=PRODUCT_DEFINITION_FORMATION('','',#12);
+#14=PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#15=PRODUCT_DEFINITION('','',#13,#14);
+#16=PRODUCT_DEFINITION_SHAPE('','',#15);
+#17=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#18=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#19=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#20=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#17,'distance_accuracy_value','tol_far_above_denormal');
+#21=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#20))GLOBAL_UNIT_ASSIGNED_CONTEXT((#17,#18,#19))REPRESENTATION_CONTEXT('ctx','3D'));
+#22=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9),#21);
+#23=SHAPE_DEFINITION_REPRESENTATION(#16,#22);
 ENDSEC;
 END-ISO-10303-21;

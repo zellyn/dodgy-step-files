@@ -1,46 +1,33 @@
 ISO-10303-21;
-/* Tb015 - Edge length 1.0e-3 at sqrt(tol=1.0e-6) ambiguity boundary
- * Defect: Edge has 3D length 1.0e-3 mm; declared tol = 1.0e-6.
- * - Receiver comparing length < tol (1.0e-6): edge keeps (1.0e-3 > 1.0e-6).
- * - Receiver comparing length < sqrt(tol) (~1.0e-3): right at threshold.
- * - Receiver comparing length*length < tol: 1.0e-6 vs 1.0e-6 -- exact tie.
- * Linear vs squared vs square-root threshold disagrees on this edge.
- */
+/* Tb015: EDGE_CURVE of length 1.0E-3 mm with declared tol 1.0E-6; sqrt(1.0E-6) ~= 1.0E-3 — right at threshold for squared comparison; linear/squared/sqrt policies disagree on edge survival; GEOMETRIC_CURVE_SET — OCC yields empty */
 HEADER;
-FILE_DESCRIPTION(('Tb015 edge length at sqrt-tol vs linear-tol boundary'),'2;1');
-FILE_NAME('Tb015.stp','2026-04-30T00:00:00',(''),(''),
-  'cad-research-suite','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('Tb015'),'2;1');
+FILE_NAME('Tb015.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'automotive_design',2009,#1);
-#10=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
-#11=CARTESIAN_POINT('p1_at_1e-3',(1.0E-3,0.0,0.0));
-#20=VERTEX_POINT('v0',#10);
-#21=VERTEX_POINT('v1_short_edge_1e-3',#11);
-#30=DIRECTION('+x',(1.0,0.0,0.0));
-#31=VECTOR('vx_short',#30,1.0E-3);
-#32=LINE('l',#10,#31);
-#40=EDGE_CURVE('e_at_sqrt_tol_threshold',#20,#21,#32,.T.);
-#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#50,
-  'distance_accuracy_value','tol_whose_sqrt_equals_edge_length');
-#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
-  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
-  REPRESENTATION_CONTEXT('ctx','3D'));
-#9000=PRODUCT_CONTEXT('',#1,'mechanical');
-#9001=PRODUCT('Tb015','Tb015','',(#9000));
-#9002=PRODUCT_DEFINITION_FORMATION('','',#9001);
-#9003=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#9004=PRODUCT_DEFINITION('','',#9002,#9003);
-#9005=PRODUCT_DEFINITION_SHAPE('','',#9004);
-#9020=GEOMETRIC_CURVE_SET('cs',(#40));
-#9021=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9020),#70);
-#9022=SHAPE_DEFINITION_REPRESENTATION(#9005,#9021);
+#1=CARTESIAN_POINT('p0',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('p1_at_1e-3',(0.001,0.0,0.0));
+#3=VERTEX_POINT('v0',#1);
+#4=VERTEX_POINT('v1_short_edge_1e-3',#2);
+#5=DIRECTION('',(1.0,0.0,0.0));
+#6=VECTOR('',#5,0.001);
+#7=LINE('',#1,#6);
+#8=EDGE_CURVE('e_at_sqrt_tol_threshold',#3,#4,#7,.T.);
+#9=GEOMETRIC_CURVE_SET('cs',(#8));
+#10=APPLICATION_CONTEXT('automotive_design');
+#11=PRODUCT_CONTEXT('',#10,'mechanical');
+#12=PRODUCT('Tb015','Tb015','',(#11));
+#13=PRODUCT_DEFINITION_FORMATION('','',#12);
+#14=PRODUCT_DEFINITION_CONTEXT('part definition',#10,'design');
+#15=PRODUCT_DEFINITION('','',#13,#14);
+#16=PRODUCT_DEFINITION_SHAPE('','',#15);
+#17=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#18=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#19=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#20=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#17,'distance_accuracy_value','tol_whose_sqrt_equals_edge_length');
+#21=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#20))GLOBAL_UNIT_ASSIGNED_CONTEXT((#17,#18,#19))REPRESENTATION_CONTEXT('ctx','3D'));
+#22=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#9),#21);
+#23=SHAPE_DEFINITION_REPRESENTATION(#16,#22);
 ENDSEC;
 END-ISO-10303-21;
