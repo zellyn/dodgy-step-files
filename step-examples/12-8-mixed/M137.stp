@@ -1,28 +1,64 @@
 ISO-10303-21;
-/* M137 - AP203 APPLIED_ACTION_ASSIGNMENT applies to a multi-arity
- * mixed-class object list.
- * Defect: an APPLIED_ACTION_ASSIGNMENT distributes a single ACTION
- * (engineering review) across a list that mixes classes
- * incompatibly (a PRODUCT_DEFINITION and a DOCUMENT_FILE). The
- * action's domain semantics are ambiguous - was the review of the
- * design or of the document? */
+/* M137: AP203 APPLIED_ACTION_ASSIGNMENT with mixed-class items list */
+/* DEFECT: single ACTION assignment targets both PRODUCT_DEFINITION and DOCUMENT_FILE */
+/* Domain semantics are ambiguous: was the review of the design or the document? */
+/* Per ISO 10303-41 items should be homogeneous; fix: split into two assignments */
+/* Byte assertion: contains(b'CONFIG_CONTROL_DESIGN') */
+/* Byte assertion: contains(b'APPLIED_ACTION_ASSIGNMENT') */
+/* Byte assertion: contains(b'DOCUMENT_FILE') */
 HEADER;
-FILE_DESCRIPTION(('M137 test case','AP203 action assignment ambiguous arity'),'2;1');
-FILE_NAME('M137.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+FILE_DESCRIPTION(('M137: AP203 APPLIED_ACTION_ASSIGNMENT mixed-class items PRODUCT_DEFINITION DOCUMENT_FILE'),'2;1');
+FILE_NAME('M137.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'CONFIG_CONTROL_DESIGN') */
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN { 1 0 10303 203 1 0 0 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('configuration controlled 3D design of mechanical parts and assemblies');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','config_control_design',1994,#1);
-#10=PRODUCT('valve','valve','flow valve',(#1));
-#20=PRODUCT_DEFINITION_FORMATION('rev_A','released',#10);
-#30=PRODUCT_DEFINITION('design','',#20,#1);
-#40=DOCUMENT_TYPE('test_report');
-#41=DOCUMENT_FILE('TR-001','flow_test.pdf','test report',#40);
-#50=ACTION_METHOD('engineering_review','formal review',$);
-#51=ACTION('review_action','periodic review','approved',#50);
-/* Defect: assignment lists both PRODUCT_DEFINITION and DOCUMENT_FILE
- * as items - mixed-arity domain. */
-#100=APPLIED_ACTION_ASSIGNMENT(#51,(#30,#41));
+#1=APPLICATION_CONTEXT('configuration controlled 3D designs of mechanical parts and assemblies');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'config_control_design',1994,#1);
+/* Standard unit context (mm) */
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* Design artifact: PRODUCT and its PRODUCT_DEFINITION */
+#20=PRODUCT('PART-101','Bracket Assembly','Structural mounting bracket',(#1));
+#21=PRODUCT_DEFINITION_FORMATION('rev_C','Third revision',#20);
+#22=PRODUCT_DEFINITION('design','',#21,PRODUCT_DEFINITION_CONTEXT(#1,'design'));
+/* Byte assertion: contains(b'DOCUMENT_FILE') */
+/* Document artifact: DOCUMENT_FILE referencing a design specification PDF */
+#30=DOCUMENT('DOC-101','Bracket Assembly Design Spec',
+  'Technical specification for bracket assembly');
+#31=DOCUMENT_TYPE('design_specification');
+/* DEFECT contributor: DOCUMENT_FILE is an incompatible class to mix with PRODUCT_DEFINITION */
+#32=DOCUMENT_FILE('bracket-spec-rev-C.pdf',#30,$,$,$,#31);
+/* Engineering review ACTION targeting the rev_C release decision */
+#40=ACTION('review-2024-Q4','Engineering design review Q4 2024',$);
+#41=ACTION_METHOD('design_review','Standard design review procedure',$,'approved');
+#42=ACTION_STATUS('approved');
+/* Byte assertion: contains(b'APPLIED_ACTION_ASSIGNMENT') */
+/* DEFECT: items list mixes PRODUCT_DEFINITION (#22) and DOCUMENT_FILE (#32) */
+/* A correct file would use two separate APPLIED_ACTION_ASSIGNMENT instances: */
+/*   one with items=(#22) for the design, one with items=(#32) for the document */
+/* With a single mixed-class assignment the ACTION receiver cannot route correctly */
+#50=APPLIED_ACTION_ASSIGNMENT(#40,(#22,#32),ACTION_REQUEST_SOLUTION(#41,#40));
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#500=GEOMETRIC_CURVE_SET('ap203-applied-action-assignment-mixed-class-items',
+  (#20,#21,#22,#30,#31,#32,#40,#41,#42,#50));
+/* Product chain */
+#600=APPLICATION_CONTEXT('mechanical design');
+#601=PRODUCT_CONTEXT('',#600,'mechanical');
+#602=PRODUCT('M137','M137','M137',(#601));
+#603=PRODUCT_DEFINITION_FORMATION('','',#602);
+#604=PRODUCT_DEFINITION_CONTEXT(#600,'design');
+#605=PRODUCT_DEFINITION('','',#603,#604);
+#606=PRODUCT_DEFINITION_SHAPE('','',#605);
+#607=SHAPE_REPRESENTATION('',(#500),#14);
+#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
 ENDSEC;
 END-ISO-10303-21;

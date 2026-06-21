@@ -1,24 +1,63 @@
 ISO-10303-21;
-/* M140 - AP203 PRODUCT_DEFINITION_FORMATION declares a make_or_buy
- * field that doesn't match the supplier role.
- * Defect: a part with PRODUCT_DEFINITION_FORMATION_WITH_SPECIFIED_SOURCE
- * declares source = .MADE. (made in-house) but a
- * SUPPLIED_PART_RELATIONSHIP designates an external supplier for the
- * same part. The make-or-buy declaration contradicts the supplier
- * record. */
+/* M140: AP203 make-or-buy declaration contradicts external supplier record */
+/* DEFECT: PRODUCT_DEFINITION_FORMATION_WITH_SPECIFIED_SOURCE(.MADE.) but */
+/*         APPLIED_ORGANIZATION_ASSIGNMENT role='supplier' designates external org */
+/* Per ISO 10303-203 §5.4: .MADE. means no external supplier should be declared */
+/* Procurement systems receive conflicting signals: make it AND buy it */
+/* Byte assertion: contains(b'CONFIG_CONTROL_DESIGN') */
+/* Byte assertion: contains(b'PRODUCT_DEFINITION_FORMATION_WITH_SPECIFIED_SOURCE') */
+/* Byte assertion: contains(b'.MADE.') */
 HEADER;
-FILE_DESCRIPTION(('M140 test case','AP203 make-or-buy contradicts supplier'),'2;1');
-FILE_NAME('M140.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+FILE_DESCRIPTION(('M140: AP203 make-or-buy MADE contradicts supplier APPLIED_ORGANIZATION_ASSIGNMENT'),'2;1');
+FILE_NAME('M140.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'CONFIG_CONTROL_DESIGN') */
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN { 1 0 10303 203 1 0 0 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('configuration controlled 3D design of mechanical parts and assemblies');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','config_control_design',1994,#1);
-#10=PRODUCT('fastener_set','fastener_set','M6 bolts',(#1));
-/* Defect: source declared MADE but external supplier follows. */
-#20=PRODUCT_DEFINITION_FORMATION_WITH_SPECIFIED_SOURCE('rev_A','in-house only',#10,.MADE.);
-#30=PRODUCT_DEFINITION('design','',#20,#1);
-#40=ORGANIZATION('extco','External Co','third-party supplier');
-#50=APPLIED_ORGANIZATION_ASSIGNMENT(#40,'supplier',(#30));
+#1=APPLICATION_CONTEXT('configuration controlled 3D designs of mechanical parts and assemblies');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'config_control_design',1994,#1);
+/* Standard unit context (mm) */
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* Part declared as made in-house */
+#20=PRODUCT('PART-404','Mounting Flange','Precision-machined mounting flange',(#1));
+/* Byte assertion: contains(b'PRODUCT_DEFINITION_FORMATION_WITH_SPECIFIED_SOURCE') */
+/* Byte assertion: contains(b'.MADE.') */
+/* DEFECT: .MADE. declares this part is manufactured by the design organization */
+/* A .BOUGHT. source enumeration would permit an external supplier designation */
+/* A .NOT_SPECIFIED. value would be ambiguous but not strictly contradictory */
+#21=PRODUCT_DEFINITION_FORMATION_WITH_SPECIFIED_SOURCE(
+  'rev_A','Production specification',#20,.MADE.);
+#22=PRODUCT_DEFINITION('design','',#21,PRODUCT_DEFINITION_CONTEXT(#1,'design'));
+/* External organization designated as supplier — contradicts .MADE. above */
+#30=ORGANIZATION('SUP-999','ExtSupplierCo','External precision machining supplier');
+/* Organization role: 'supplier' — this role is only valid for .BOUGHT. parts *)  
+#31=ORGANIZATION_ROLE('supplier');
+/* DEFECT: APPLIED_ORGANIZATION_ASSIGNMENT assigns an external supplier (#30) */
+/* to PRODUCT_DEFINITION #22 which was formed with source=.MADE. (#21) */
+/* Contradiction: the part is simultaneously declared made in-house AND has a supplier */
+/* A procurement system would generate both a shop order AND a purchase order */
+#32=APPLIED_ORGANIZATION_ASSIGNMENT(#30,#31,(#22));
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#500=GEOMETRIC_CURVE_SET('ap203-make-or-buy-MADE-contradicts-supplier-assignment',
+  (#20,#21,#22,#30,#31,#32));
+/* Product chain */
+#600=APPLICATION_CONTEXT('mechanical design');
+#601=PRODUCT_CONTEXT('',#600,'mechanical');
+#602=PRODUCT('M140','M140','M140',(#601));
+#603=PRODUCT_DEFINITION_FORMATION('','',#602);
+#604=PRODUCT_DEFINITION_CONTEXT(#600,'design');
+#605=PRODUCT_DEFINITION('','',#603,#604);
+#606=PRODUCT_DEFINITION_SHAPE('','',#605);
+#607=SHAPE_REPRESENTATION('',(#500),#14);
+#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
 ENDSEC;
 END-ISO-10303-21;

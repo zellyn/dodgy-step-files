@@ -1,22 +1,61 @@
 ISO-10303-21;
-/* M139 - AP203 effectivity start date is AFTER its end date.
- * Defect: a TIME_INTERVAL_BASED_EFFECTIVITY declares
- * effectivity_start = 2025-06-01 and effectivity_end = 2024-12-31.
- * The interval is empty (or, taken literally, runs backward).
- * No date is ever within the effectivity window. */
+/* M139: AP203 effectivity start date AFTER end date — reversed interval */
+/* DEFECT: TIME_INTERVAL_BASED_EFFECTIVITY start=2025-06-01 > end=2024-12-31 */
+/* The effectivity window is empty: no date falls within [2025-06-01, 2024-12-31] */
+/* Configuration governed by this effectivity is permanently unavailable */
+/* Per ISO 10303-203 §4 invariant: effectivity_start_date <= effectivity_end_date */
+/* Byte assertion: contains(b'CONFIG_CONTROL_DESIGN') */
+/* Byte assertion: contains(b'TIME_INTERVAL_BASED_EFFECTIVITY') */
 HEADER;
-FILE_DESCRIPTION(('M139 test case','AP203 effectivity start after end'),'2;1');
-FILE_NAME('M139.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+FILE_DESCRIPTION(('M139: AP203 TIME_INTERVAL_BASED_EFFECTIVITY reversed start after end'),'2;1');
+FILE_NAME('M139.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'CONFIG_CONTROL_DESIGN') */
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN { 1 0 10303 203 1 0 0 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('configuration controlled 3D design of mechanical parts and assemblies');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','config_control_design',1994,#1);
-#10=PRODUCT('rotor','rotor','rotating element',(#1));
-#20=PRODUCT_DEFINITION_FORMATION('rev_A','released',#10);
-/* Defect: start 2025-06-01 is after end 2024-12-31. */
-#30=DATE_AND_TIME(CALENDAR_DATE(2025,6,1),LOCAL_TIME(0,0,0.0,$));
-#31=DATE_AND_TIME(CALENDAR_DATE(2024,12,31),LOCAL_TIME(23,59,59.0,$));
-#100=TIME_INTERVAL_BASED_EFFECTIVITY('reversed_window',#20,#30,#31);
+#1=APPLICATION_CONTEXT('configuration controlled 3D designs of mechanical parts and assemblies');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'config_control_design',1994,#1);
+/* Standard unit context (mm) */
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* Product under effectivity control */
+#20=PRODUCT('PART-303','Fuel Injector','High-pressure fuel injection nozzle',(#1));
+#21=PRODUCT_DEFINITION_FORMATION('rev_A','Initial release rev A',#20);
+#22=PRODUCT_DEFINITION('design','',#21,PRODUCT_DEFINITION_CONTEXT(#1,'design'));
+/* CALENDAR_DATE for effectivity_start: 2025-06-01 (year=2025, month=6, day=1) */
+/* DEFECT contributor: this date is LATER than the end date below */
+#30=CALENDAR_DATE(2025,6,1);
+/* CALENDAR_DATE for effectivity_end: 2024-12-31 (year=2024, month=12, day=31) */
+/* This end date is EARLIER than start — the exporter swapped the two fields */
+#31=CALENDAR_DATE(2024,12,31);
+/* Byte assertion: contains(b'TIME_INTERVAL_BASED_EFFECTIVITY') */
+/* DEFECT: TIME_INTERVAL_BASED_EFFECTIVITY with reversed dates */
+/* start_date=#30 (2025-06-01) is AFTER end_date=#31 (2024-12-31) */
+/* ISO 10303-203 §4 invariant violated: start must be <= end */
+/* A PDM resolver checking if today falls within this window always returns false */
+#32=TIME_INTERVAL_BASED_EFFECTIVITY('eff-rev-A','rev_A effectivity window',#30,#31);
+/* PRODUCT_DEFINITION_EFFECTIVITY ties the reversed effectivity to the product definition */
+#33=PRODUCT_DEFINITION_EFFECTIVITY(#32,(#22));
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#500=GEOMETRIC_CURVE_SET('ap203-time-interval-effectivity-reversed-start-after-end',
+  (#20,#21,#22,#30,#31,#32,#33));
+/* Product chain */
+#600=APPLICATION_CONTEXT('mechanical design');
+#601=PRODUCT_CONTEXT('',#600,'mechanical');
+#602=PRODUCT('M139','M139','M139',(#601));
+#603=PRODUCT_DEFINITION_FORMATION('','',#602);
+#604=PRODUCT_DEFINITION_CONTEXT(#600,'design');
+#605=PRODUCT_DEFINITION('','',#603,#604);
+#606=PRODUCT_DEFINITION_SHAPE('','',#605);
+#607=SHAPE_REPRESENTATION('',(#500),#14);
+#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
 ENDSEC;
 END-ISO-10303-21;

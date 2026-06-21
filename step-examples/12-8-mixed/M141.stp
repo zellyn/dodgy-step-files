@@ -1,22 +1,67 @@
 ISO-10303-21;
-/* M141 - AP203 PRODUCT_CATEGORY hierarchy contains a cycle.
- * Defect: PRODUCT_CATEGORY_RELATIONSHIP entries form a cycle:
- * 'electronics' is a sub-category of 'mechanical_assembly' which is
- * a sub-category of 'electronics'. Walking the category tree to
- * discover a part's parent class loops indefinitely. */
+/* M141: AP203 PRODUCT_CATEGORY hierarchy contains a cycle */
+/* DEFECT: electronics sub-of mechanical_assembly sub-of electronics */
+/* Two PRODUCT_CATEGORY_RELATIONSHIP entries form cycle: A->B->A */
+/* Category tree walkers loop indefinitely; PDM tools hang or stack-overflow */
+/* Per ISO 10303-44 PRODUCT_CATEGORY_RELATIONSHIP graph must be acyclic *)  
+/* Byte assertion: contains(b'CONFIG_CONTROL_DESIGN') */
+/* Byte assertion: count_entity_def(b'PRODUCT_CATEGORY_RELATIONSHIP') >= 2 */
+/* Byte assertion: count_entity_def(b'PRODUCT_CATEGORY') >= 2 */
 HEADER;
-FILE_DESCRIPTION(('M141 test case','AP203 product category cycle'),'2;1');
-FILE_NAME('M141.stp','2026-05-02T00:00:00',(''),(''),'cad-research-suite','','');
-FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+FILE_DESCRIPTION(('M141: AP203 PRODUCT_CATEGORY hierarchy cycle electronics mechanical_assembly'),'2;1');
+FILE_NAME('M141.stp','2026-06-21T00:00:00',(''),(''),'cad-research-suite','','');
+/* Byte assertion: contains(b'CONFIG_CONTROL_DESIGN') */
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN { 1 0 10303 203 1 0 0 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('configuration controlled 3D design of mechanical parts and assemblies');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','config_control_design',1994,#1);
-#100=PRODUCT_CATEGORY('electronics','EE assemblies');
-#101=PRODUCT_CATEGORY('mechanical_assembly','ME assemblies');
-/* Defect: category hierarchy forms a cycle:
- * electronics -> mech_assembly -> electronics. */
-#110=PRODUCT_CATEGORY_RELATIONSHIP('parent_a','sub_of',#100,#101);
-#111=PRODUCT_CATEGORY_RELATIONSHIP('parent_b','sub_of',#101,#100);
+#1=APPLICATION_CONTEXT('configuration controlled 3D designs of mechanical parts and assemblies');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
+  'config_control_design',1994,#1);
+/* Standard unit context (mm) */
+#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+  'distance_accuracy_value','maximum model space distance between geometric entities');
+#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+  REPRESENTATION_CONTEXT('ctx','3D'));
+/* Byte assertion: count_entity_def(b'PRODUCT_CATEGORY') >= 2 */
+/* First category node: 'electronics' — typically a leaf or mid-level category *)  
+#20=PRODUCT_CATEGORY('electronics','Electronic components and sub-assemblies');
+/* Second category node: 'mechanical_assembly' — normally a parent category */
+#21=PRODUCT_CATEGORY('mechanical_assembly','Mechanical assembly components');
+/* Byte assertion: count_entity_def(b'PRODUCT_CATEGORY_RELATIONSHIP') >= 2 */
+/* DEFECT leg 1: 'electronics' declared as sub-category of 'mechanical_assembly' */
+/* This makes electronics appear as a specialization of mechanical_assembly */
+#30=PRODUCT_CATEGORY_RELATIONSHIP('elec-sub-mech',
+  'electronics is sub-category of mechanical_assembly',#20,#21);
+/* DEFECT leg 2: 'mechanical_assembly' declared as sub-category of 'electronics' */
+/* This makes mechanical_assembly appear as a specialization of electronics *)   
+/* Together #30 and #31 form the cycle: electronics->mechanical_assembly->electronics */
+/* Walking parent links from either node never reaches a root — infinite loop *)  
+#31=PRODUCT_CATEGORY_RELATIONSHIP('mech-sub-elec',
+  'mechanical_assembly is sub-category of electronics',#21,#20);
+/* Part assigned to the 'electronics' category — triggers the cycle on class lookup */
+#35=PRODUCT('PART-505','Sensor PCB','Printed circuit board for sensor module',(#1));
+#36=PRODUCT_DEFINITION_FORMATION('rev_B','Rev B sensor board',#35);
+#37=PRODUCT_DEFINITION('design','',#36,PRODUCT_DEFINITION_CONTEXT(#1,'design'));
+/* Classification assignment binds #37 to category 'electronics' (#20) */
+/* A BOM exploder walking the hierarchy from #20 enters the A->B->A cycle *)  
+#40=APPLIED_CLASSIFICATION_ASSIGNMENT(#20,CLASSIFICATION_ROLE('classification'),(#37));
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+#500=GEOMETRIC_CURVE_SET('ap203-product-category-relationship-cycle-A-B-A',
+  (#20,#21,#30,#31,#35,#36,#37,#40));
+/* Product chain */
+#600=APPLICATION_CONTEXT('mechanical design');
+#601=PRODUCT_CONTEXT('',#600,'mechanical');
+#602=PRODUCT('M141','M141','M141',(#601));
+#603=PRODUCT_DEFINITION_FORMATION('','',#602);
+#604=PRODUCT_DEFINITION_CONTEXT(#600,'design');
+#605=PRODUCT_DEFINITION('','',#603,#604);
+#606=PRODUCT_DEFINITION_SHAPE('','',#605);
+#607=SHAPE_REPRESENTATION('',(#500),#14);
+#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
 ENDSEC;
 END-ISO-10303-21;
