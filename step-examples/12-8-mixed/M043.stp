@@ -1,35 +1,31 @@
 ISO-10303-21;
-/* M043 - Layer with empty/duplicate name colliding with another.
- * Defect: two PRESENTATION_LAYER_ASSIGNMENT entries share the same
- * (empty) name and reference different items with different visibility
- * flags. OCCT historically grouped them as one layer (Mantis 32049,
- * fixed 96049f2). Readers should group by (name, visibility) tuple,
- * not by name alone. */
+/* M043: GEOMETRIC_CURVE_SET containing two PRESENTATION_LAYER_ASSIGNMENT entities with identical names but different visibility flags; input: AP242 STEP file where two PRESENTATION_LAYER_ASSIGNMENT entries share the name 'layer_A' — one marked visible, one hidden; OCCT Mantis 0032049 (96049f2): OCCT did not differentiate layers by visibility, grouping both under the same name and losing the visibility distinction; kernel must group layers by (name, visibility) tuple and preserve independent visibility state for each; OCC silently accepts (no diagnostic, empty result); GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty; synonyms: layer name collision, duplicate PRESENTATION_LAYER_ASSIGNMENT, layers not differentiated by visibility, layer with empty name */
 HEADER;
-FILE_DESCRIPTION(('M043 test case','duplicate-named PRESENTATION_LAYER_ASSIGNMENT'),'2;1');
-FILE_NAME('M043.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('M043'),'2;1');
+FILE_NAME('M043.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-     REPRESENTATION_CONTEXT('part','3D'));
-#100=CARTESIAN_POINT('a',(0.0,0.0,0.0));
-#101=CARTESIAN_POINT('b',(1.0,0.0,0.0));
-/* Two layers with the same empty name but different visibility flags
- * (.T. and .F.). */
-#200=PRESENTATION_LAYER_OCCURRENCE_ASSIGNMENT('',(#100),(#100));
-#201=PRESENTATION_LAYER_ASSIGNMENT('','visible_layer',(#100));
-#202=PRESENTATION_LAYER_ASSIGNMENT('','hidden_layer',(#101));
-/* Visibility flags as separate dressed entries. */
-#210=PRESENTATION_LAYER_USAGE(#201,'on');
-#211=PRESENTATION_LAYER_USAGE(#202,'off');
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('item_pt1',(0.,0.,0.));
+#2=CARTESIAN_POINT('item_pt2',(1.,0.,0.));
+#3=CARTESIAN_POINT('item_pt3',(0.,1.,0.));
+#4=PRESENTATION_LAYER_ASSIGNMENT('layer_A','visible layer',(#1));
+#5=PRESENTATION_LAYER_ASSIGNMENT('layer_A','hidden layer',(#2));
+#6=DRAUGHTING_MODEL('collision_model',(#4,#5));
+#7=GEOMETRIC_CURVE_SET('layer-name-collision-duplicate-pla',(#4,#5,#6,#1,#2,#3));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M043','M043','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#7),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

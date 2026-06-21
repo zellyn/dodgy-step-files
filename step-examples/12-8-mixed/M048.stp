@@ -1,43 +1,35 @@
 ISO-10303-21;
-/* M048 - Material / appearance / physical attributes silently dropped
- * on STEP export.
- * Defect: density-zero material plus empty material name combination
- * historically crashed OCCT (Mantis 32xxx series). On export, kernels
- * should skip density emission for zero-density materials and supply
- * a default name. This fixture exercises BOTH issues:
- *   #200: MATERIAL_DESIGNATION with empty name
- *   #310: density value = 0 emitted as a property */
+/* M048: GEOMETRIC_CURVE_SET containing MATERIAL_DESIGNATION with empty name and MASS_DENSITY_MEASURE(0.0) — physical attributes silently dropped on export; input: AP242 STEP file where MATERIAL_DESIGNATION has an empty name string and a density property uses MASS_DENSITY_MEASURE(0.0); OCCT Mantis (G057, G059): reader crashed on empty material name; writer emitted invalid density entity when density==0; Autodesk Fusion (V025) / SolidWorks→Inventor (V048) / HOOPS Exchange (W024): visual appearances and density stripped on STEP round-trip; kernel must default empty datum/material description, skip density emission for zero-density, and never silently drop appearance attributes; OCC silently accepts (no diagnostic, empty result); GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty; synonyms: material attributes silently dropped, STEP export loses appearance, physical attributes missing on export, material/density lost on STEP write, appearance stripped on STEP output */
 HEADER;
-FILE_DESCRIPTION(('M048 test case','material with empty name and 0 density'),'2;1');
-FILE_NAME('M048.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
-FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+FILE_DESCRIPTION(('M048'),'2;1');
+FILE_NAME('M048.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('automotive_design');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#1);
-#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-     REPRESENTATION_CONTEXT('part','3D'));
-#100=PRODUCT('part','part','',(#110));
-#110=MECHANICAL_CONTEXT('',#1,'mechanical');
-#120=PRODUCT_DEFINITION_FORMATION('','',#100);
-#130=PRODUCT_DEFINITION('design','',#120,#140);
-#140=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
-#150=PRODUCT_DEFINITION_SHAPE('','',#130);
-/* Defect 1: MATERIAL_DESIGNATION with empty name - some readers
- * abort. */
-#200=MATERIAL_DESIGNATION('','',#130);
-/* Defect 2: density property with value 0 (kg/m^3). Should not be
- * emitted at all if zero. */
-#300=PROPERTY_DEFINITION('density','',#150);
-#310=MEASURE_REPRESENTATION_ITEM('density',
-       MASS_DENSITY_MEASURE(0.0),#10);
-#320=REPRESENTATION('density_repr',(#310),#14);
-#330=PROPERTY_DEFINITION_REPRESENTATION(#300,#320);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=MATERIAL_DESIGNATION('','',$);
+#2=PROPERTY_DEFINITION('material_property','physical attributes',#1);
+#3=MEASURE_WITH_UNIT(MASS_DENSITY_MEASURE(0.0),$);
+#4=COLOUR_RGB('material_colour',0.5,0.5,0.5);
+#5=FILL_AREA_STYLE('material_fill',(#4));
+#6=SURFACE_STYLE_FILL_AREA(#5);
+#7=SURFACE_SIDE_STYLE('material_side',(#6));
+#8=SURFACE_STYLE_USAGE(.BOTH.,#7);
+#9=PRESENTATION_STYLE_ASSIGNMENT((#8));
+#10=STYLED_ITEM('material_appearance',(#9),$);
+#11=GEOMETRIC_CURVE_SET('material-appearance-dropped-on-export',(#1,#2,#3,#10,#4));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M048','M048','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#11),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;

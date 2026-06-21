@@ -1,46 +1,32 @@
 ISO-10303-21;
-/* M049 - Schema migration: 53 retired kinematics entities (AP242
- * Ed.1).
- * Defect: AP242 Ed.1 retired ~53 AP214/AP203 kinematics entities such
- * as KINEMATIC_LINK_REPRESENTATION_RELATION, MECHANISM,
- * KINEMATIC_PROPERTY_DEFINITION, CYLINDRICAL_PAIR_RANGE etc. An
- * archived AP214 file containing them cannot be re-validated against
- * the AP242 schema after a header swap.
- * This fixture: an AP214 file using KINEMATIC_LINK_REPRESENTATION_
- * RELATION re-headered as AP242 (the schema in the header is AP242
- * but the data uses retired entities). */
+/* M049: GEOMETRIC_CURVE_SET containing retired AP214 kinematics entities re-headered as AP242 — schema-version vs entity-vocabulary mismatch; input: AP242 STEP file (re-headered AP214) containing KINEMATIC_LINK_REPRESENTATION_RELATION, CYLINDRICAL_PAIR_RANGE, and MECHANISM — all retired in AP242 Ed.1; ISO 10303 AP242 Ed.1 (M016 / STEP Tools 'AP242 First Edition Notes'): approximately 53 AP214/AP203 kinematic entities were removed; a file using them cannot be validated against the AP242 schema; kernel must either refuse migration (schema-version mismatch) or record loss-of-fidelity and drop the retired entities; OCC silently accepts (no diagnostic, empty result); GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty; synonyms: AP242 retired kinematics entities, schema-version vs entity-vocabulary disagreement, kinematic_structure entity gone, AP214 kinematics not in AP242 Ed.1 */
 HEADER;
-FILE_DESCRIPTION(('M049 test case','retired kinematics entities under AP242 header'),'2;1');
-FILE_NAME('M049.stp','2026-04-26T00:00:00',(''),(''),'auto-generated','','');
+FILE_DESCRIPTION(('M049'),'2;1');
+FILE_NAME('M049.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
 FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
 ENDSEC;
 DATA;
-#1=APPLICATION_CONTEXT('managed model based 3d engineering');
-#2=APPLICATION_PROTOCOL_DEFINITION('international standard',
-  'ap242_managed_model_based_3d_engineering',2014,#1);
-#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,'distance_accuracy_value','');
-#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-     REPRESENTATION_CONTEXT('mechanism','3D'));
-/* Two link placements (positions of two parts). */
-#100=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#101=DIRECTION('',(0.0,0.0,1.0));
-#102=DIRECTION('',(1.0,0.0,0.0));
-#103=AXIS2_PLACEMENT_3D('link_a_origin',#100,#101,#102);
-#110=CARTESIAN_POINT('',(10.0,0.0,0.0));
-#111=AXIS2_PLACEMENT_3D('link_b_origin',#110,#101,#102);
-/* Defect: KINEMATIC_LINK_REPRESENTATION_RELATION is in the retired
- * set under AP242 Ed.1. */
-#200=KINEMATIC_LINK_REPRESENTATION_RELATION('A_to_B','',#103,#111);
-/* Other retired entities likely paired with it. */
-#210=MECHANISM('one_revolute_joint','',(#200));
-#220=KINEMATIC_PROPERTY_DEFINITION('joint_range','',$);
-#230=CYLINDRICAL_PAIR_RANGE('range_q','',$,
-       PLANE_ANGLE_MEASURE(-1.5708),
-       PLANE_ANGLE_MEASURE( 1.5708),$,$);
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('joint_origin',(0.,0.,0.));
+#2=DIRECTION('joint_axis',(0.,0.,1.));
+#3=DIRECTION('joint_ref',(1.,0.,0.));
+#4=AXIS2_PLACEMENT_3D('joint_placement',#1,#2,#3);
+#5=MECHANISM('crank_slider_mechanism','$');
+#6=CYLINDRICAL_PAIR_RANGE('cyl_joint_limits',#5,-3.14159,3.14159,-100.,100.);
+#7=KINEMATIC_LINK_REPRESENTATION_RELATION('link_rep_rel',#5,#4);
+#8=GEOMETRIC_CURVE_SET('ap242-retired-kinematics-schema-mismatch',(#5,#6,#7,#4));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M049','M049','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#8),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 ENDSEC;
 END-ISO-10303-21;
