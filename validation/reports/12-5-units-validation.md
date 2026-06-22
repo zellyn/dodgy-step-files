@@ -1,7 +1,7 @@
 # §5-units — validate2 verdicts
 
 Generated from `/tmp/cad-v2-out/12-5-units/*.json` via subprocess-isolated multi-oracle validator.
-Total: 34  CONFIRMED: 34  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
+Total: 37  CONFIRMED: 37  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
 
 ## Per-file
 `U001` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
@@ -38,6 +38,9 @@ Total: 34  CONFIRMED: 34  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
 `U043` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
 `U044` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
 `U045` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
+`U046` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
+`U047` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
+`U048` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
 
 ## Summary
-- CONFIRMED: 34
+- CONFIRMED: 37

@@ -6,7 +6,7 @@ Total: 57  CONFIRMED: 56  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
 ## Per-file
 `Le001` **CONFIRMED** — occt=reject gmsh=reject ifc=reject — clean rejection by all parsers
 `Le002` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
-`Le004` **CONFIRMED** — occt=empty gmsh=empty ifc=process_signal — silent acceptance matches catalog defect class
+`Le004` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
 `Le005` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
 `Le006` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
 `Le007` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
@@ -20,7 +20,7 @@ Total: 57  CONFIRMED: 56  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
 `Le015` **CONFIRMED** — occt=reject gmsh=reject ifc=schema_n/a — clean rejection by all parsers
 `Le016` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
 `Le017` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
-`Le018` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
+`Le018` **CONFIRMED** — occt=empty gmsh=empty ifc=reject — silent acceptance matches catalog defect class
 `Le020` **CONFIRMED** — occt=reject gmsh=reject ifc=schema_n/a — clean rejection by all parsers
 `Le021` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
 `Le022` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
@@ -39,11 +39,11 @@ Total: 57  CONFIRMED: 56  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
 `Le037` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
 `Le038` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
 `Le039` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
-`Le040` **CONFIRMED** — occt=empty gmsh=empty ifc=process_signal — silent acceptance matches catalog defect class
-`Le041` **CONFIRMED** — occt=empty gmsh=empty ifc=process_signal — silent acceptance matches catalog defect class
-`Le042` **CONFIRMED** — occt=empty gmsh=empty ifc=process_signal — silent acceptance matches catalog defect class
-`Le043` **CONFIRMED** — occt=empty gmsh=empty ifc=process_signal — silent acceptance matches catalog defect class
-`Le044` **CONFIRMED** — occt=empty gmsh=empty ifc=process_signal — silent acceptance matches catalog defect class
+`Le040` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
+`Le041` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
+`Le042` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
+`Le043` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
+`Le044` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
 `Le045` **CONFIRMED** — occt=reject gmsh=reject ifc=schema_n/a — clean rejection by all parsers
 `Le046` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
 `Le047` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
@@ -60,7 +60,7 @@ Total: 57  CONFIRMED: 56  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
 `Le056` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
 `Le057` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
 `Le058` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
-`Le059` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
+`Le059` **CONFIRMED** — occt=shape(1) gmsh=shape(1) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
 
 ## Summary
 - CONFIRMED: 56

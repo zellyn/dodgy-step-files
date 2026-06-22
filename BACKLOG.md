@@ -339,3 +339,29 @@ they need it.
 See `DONE.md` for completed work history.
 - Le059 (encoding): catalog wants raw Latin-1 byte 0xE4 in .stp, but fixture_source_check's UTF-8 read_text round-trip cannot reproduce from a builder-generated render(). Either: (a) update builder write/read to support raw bytes, or (b) exempt Le059 from round-trip check.
 - Le031 (encoding): catalog byte assertion `bytes_starts_with(b'\xff\xfe')` requires raw UTF-16 LE BOM bytes which are never produced by UTF-8 encoding in the fixture pipeline. The 0xFF and 0xFE bytes are not valid UTF-8 sequences. Fixture source deferred; requires either a binary-write mode in StepFile or a special exemption in _fixture_source_check. The Le031.stp continues to use the original hand-crafted file (starts with c3 bf c3 be = UTF-8 for ÿþ, not the actual FF FE bytes). The existing byte assertion was already failing before this session.
+
+---
+
+## Mesh-defect §12.14 expansion (deferred 2026-06-21)
+
+§12.14 currently has 4 mesh-defect catalog entries (Me001-004) wrapping
+the `mesh_builder` + `mesh-examples/12-14-mesh/*.mesh.json` pipeline.
+The `MESH_DEFECT_TAXONOMY.md` source referenced by Me001 enumerates many
+more defect classes worth covering: non-manifold edges/vertices (extra),
+zero-area triangles, near-coincident vertices, T-junctions, boundary
+holes, normal flips, self-intersection, slivers, hanging vertices,
+duplicate triangles, inverted winding, etc.
+
+**Target:** expand §12.14 from 4 → ~30-50 entries.
+
+**Tradeoff:** different fixture-kind (JSON not STEP) means the existing
+Python tooling/lint/oracle wiring needs to grow to cover it — not just
+authoring. `_mesh_oracle.py` exists (Q4.5) but coverage and category-lint
+treatment are sparse.
+
+**Why deferred:** the user prefers to land quality (validate2 reconciliation
+of the 470 fixtures shipped 2026-06-21) before expanding scope.
+
+**How to apply:** when the kernel needs to be tested against meshing/
+tessellation defects, this section is the gap. Treat as a Q5 ticket once
+quality work clears.
