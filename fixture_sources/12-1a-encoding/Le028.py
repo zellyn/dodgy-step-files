@@ -34,11 +34,12 @@ f = StepFile(
     ),
 )
 
-# Minimal geometry: a single point wrapped in GEOMETRIC_CURVE_SET so that
-# OCC yields empty (shape_null == True).
+# Silent-accept encoding defect: omit add_product_chain so there is no
+# PRODUCT/SHAPE_REPRESENTATION for OCC to construct geometry from. The
+# defective DATA bytes remain but OCC yields empty (occt=empty/empty per
+# catalog Expected line).
 origin = f.cartesian_point((0.0, 0.0, 0.0))
-gcs = f._emit_raw(f"GEOMETRIC_CURVE_SET('',(#{origin.eid}))")
-f.add_product_chain(gcs)
+f._emit_raw(f"GEOMETRIC_CURVE_SET('',(#{origin.eid}))")
 
 # Defect payload: override render() to:
 #   1. Replace all LF (\n) line endings with CR LF (\r\n) throughout the file.

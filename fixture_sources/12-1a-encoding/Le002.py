@@ -30,11 +30,14 @@ f = StepFile(
     ),
 )
 
-# Minimal geometry: a single point wrapped in GEOMETRIC_CURVE_SET so that
-# OCC yields empty (shape_null == True).
+# Silent-accept encoding defect: parser must accept the file but OCC must
+# yield no shape (occt=empty/empty per catalog). Omit add_product_chain so
+# there is no PRODUCT/SHAPE_REPRESENTATION for OCC to construct geometry
+# from — only the encoding-defective DATA bytes remain. A single
+# GEOMETRIC_CURVE_SET preserves a parseable DATA section without giving
+# OCC anything to load.
 origin = f.cartesian_point((0.0, 0.0, 0.0))
-gcs = f._emit_raw(f"GEOMETRIC_CURVE_SET('',(#{origin.eid}))")
-f.add_product_chain(gcs)
+f._emit_raw(f"GEOMETRIC_CURVE_SET('',(#{origin.eid}))")
 
 # Encoding defect payload: inject the Ed.2 \\X\\E9 escape sequence into a
 # PERSON entity in the DATA section via render() override. The \\X\\E9 byte
