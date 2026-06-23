@@ -3262,44 +3262,44 @@ Fixture IDs: Me130 Me131 Me132 Me133 Me134 Me135 Me136 Me137 Me138 Me139
   - Suggested fixture: defect mentioning '!sT.numels()', 'delete(tin)'
 
 ##### `Basic_TMesh.eulerUpdate` — lines 1735–1781
-(9 branches; all UNCOVERED — no mesh fixtures exist yet)
+(9 branches; ALL COVERED — Me220–Me228, wave 8C)
 
-- **Branch 1** @ line 1747 — *component_discovery*
+- **Branch 1** @ line 1747 — *component_discovery* → **Me220**
   - What it tests: Triangle not yet visited by connected component BFS
   - Repair action: Mark as component start, increment shell count
-  - Suggested fixture: defect mentioning '!IS_BIT(t, 5)', 'n_shells++'
-- **Branch 2** @ line 1756 — *triangle_adjacency_e1*
+  - Fixture: Me220 — two disconnected triangles; '!IS_BIT(t, 5)', 'n_shells++'
+- **Branch 2** @ line 1756 — *triangle_adjacency_e1* → **Me221**
   - What it tests: t1 (edge e1 neighbor) unvisited in shell
   - Repair action: Add to component traversal queue
-  - Suggested fixture: defect mentioning 't1 != NULL && !IS_BIT(s, 5)'
-- **Branch 3** @ line 1757 — *triangle_adjacency_e2*
+  - Fixture: Me221 — two adjacent triangles sharing e1-slot edge; 't1 != NULL && !IS_BIT(s, 5)'
+- **Branch 3** @ line 1757 — *triangle_adjacency_e2* → **Me222**
   - What it tests: t2 (edge e2 neighbor) unvisited in shell
   - Repair action: Add to component traversal queue
-  - Suggested fixture: defect mentioning 't2 != NULL && !IS_BIT(s, 5)'
-- **Branch 4** @ line 1758 — *triangle_adjacency_e3*
+  - Fixture: Me222 — two adjacent triangles sharing e2-slot edge; 't2 != NULL && !IS_BIT(s, 5)'
+- **Branch 4** @ line 1758 — *triangle_adjacency_e3* → **Me223**
   - What it tests: t3 (edge e3 neighbor) unvisited in shell
   - Repair action: Add to component traversal queue
-  - Suggested fixture: defect mentioning 't3 != NULL && !IS_BIT(s, 5)'
-- **Branch 5** @ line 1765 — *boundary_edge_detection*
+  - Fixture: Me223 — two adjacent triangles sharing e3-slot edge; 't3 != NULL && !IS_BIT(s, 5)'
+- **Branch 5** @ line 1765 — *boundary_edge_detection* → **Me224**
   - What it tests: Any edge on mesh boundary
   - Repair action: Mark boundary vertices, set hasBoundary flag
-  - Suggested fixture: defect mentioning 'e->isOnBoundary()', 'hasBoundary = true'
-- **Branch 6** @ line 1771 — *boundary_exists*
+  - Fixture: Me224 — open two-triangle strip with four boundary edges; 'e->isOnBoundary()', 'hasBoundary = true'
+- **Branch 6** @ line 1771 — *boundary_exists* → **Me225**
   - What it tests: Mesh has at least one boundary
   - Repair action: Process boundary vertex loops if hasBoundary
-  - Suggested fixture: defect mentioning 'if (hasBoundary)'
-- **Branch 7** @ line 1772 — *boundary_loop_traversal*
+  - Fixture: Me225 — three-triangle open fan with boundary rim; 'if (hasBoundary)'
+- **Branch 7** @ line 1772 — *boundary_loop_traversal* → **Me226**
   - What it tests: Vertex on boundary, not yet processed
   - Repair action: Traverse next boundary-connected vertices, count loops
-  - Suggested fixture: defect mentioning 'IS_BIT(v, 5)', 'nextOnBoundary()'
-- **Branch 8** @ line 1779 — *euler_characteristic*
+  - Fixture: Me226 — two disconnected triangles, two boundary loops; 'IS_BIT(v, 5)', 'nextOnBoundary()'
+- **Branch 8** @ line 1779 — *euler_characteristic* → **Me227**
   - What it tests: Compute handles from Euler formula V-E+T
   - Repair action: Calculate n_handles from genus formula
-  - Suggested fixture: defect mentioning 'n_handles = (E.numels()'
-- **Branch 9** @ line 1780 — *topology_reset*
+  - Fixture: Me227 — tetrahedron V=4 E=6 F=4 chi=2 genus=0; 'n_handles = (E.numels()'
+- **Branch 9** @ line 1780 — *topology_reset* → **Me228**
   - What it tests: Topology validity check flags
   - Repair action: Reset derivative topology flags
-  - Suggested fixture: defect mentioning 'd_boundaries = d_handles = d_shells = 0'
+  - Fixture: Me228 — two-triangle open strip with boundary; 'd_boundaries = d_handles = d_shells = 0'
 
 ##### `Basic_TMesh.flipNormals` — lines 1639–1681
 (10 branches; ALL COVERED — Me150–Me159, wave 6B)

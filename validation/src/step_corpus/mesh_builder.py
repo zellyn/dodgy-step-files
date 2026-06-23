@@ -241,6 +241,26 @@ class MeshFile:
             "source": int(source),
         })
 
+    def assert_euler_characteristic(
+        self, v: int, e: int, f: int, chi: int
+    ) -> None:
+        """Catalog the mesh's Euler characteristic χ = V - E + F.
+
+        Asserts that the mesh has exactly ``v`` distinct vertices, ``e``
+        distinct edges (canonical pairs), ``f`` triangles, and that
+        V - E + F == ``chi``.  For a closed orientable surface: χ = 2(1-g)
+        where g is the genus. Tetrahedron: V=4, E=6, F=4, χ=2 (genus 0).
+
+        Source: MeshFix `Basic_TMesh.eulerUpdate` Branch 8
+        (*euler_characteristic*) — 'n_handles = (E.numels() - …) / 2'."""
+        self.assertions.append({
+            "kind": "euler_characteristic",
+            "v": int(v),
+            "e": int(e),
+            "f": int(f),
+            "chi": int(chi),
+        })
+
     # ----- Serialization -----
 
     def to_dict(self) -> dict[str, Any]:

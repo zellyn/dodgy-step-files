@@ -466,6 +466,22 @@ def _check_assertion(assertion: dict, vertices: list, triangles: list) -> dict:
             "detail": (f"triangles {ta} and {tb}: same_vertex_set=True, same_winding={same_winding}"
                        f" tri_a={tri_a} tri_b={tri_b}"),
         }
+    if kind == "euler_characteristic":
+        expected_v = assertion["v"]
+        expected_e = assertion["e"]
+        expected_f = assertion["f"]
+        expected_chi = assertion["chi"]
+        actual_v = len(vertices)
+        actual_e = len(_edge_incidence(triangles))
+        actual_f = len(triangles)
+        actual_chi = actual_v - actual_e + actual_f
+        ok = (actual_v == expected_v and actual_e == expected_e
+              and actual_f == expected_f and actual_chi == expected_chi)
+        return {
+            "status": "pass" if ok else "fail",
+            "detail": (f"V={actual_v}(exp {expected_v}) E={actual_e}(exp {expected_e}) "
+                       f"F={actual_f}(exp {expected_f}) chi={actual_chi}(exp {expected_chi})"),
+        }
     return {"status": "unknown", "detail": f"unknown assertion kind {kind!r}"}
 
 

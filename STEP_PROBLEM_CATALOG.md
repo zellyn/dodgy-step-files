@@ -33592,6 +33592,145 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me198.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me220 — eulerUpdate_component_discovery: BFS discovers second disconnected shell (n_shells++)
+- **Category**: §12.14 mesh defects (sub-class: eulerUpdate / component-discovery)
+- **Sources**: MeshFix `Basic_TMesh.eulerUpdate` Branch 1 (*component_discovery*: `!IS_BIT(t, 5)`, `n_shells++`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two completely disconnected triangles (T0 at z=0, T1 at z=5). eulerUpdate's BFS must seed a new component twice, incrementing n_shells each time. T1 is unreachable from T0 by shared-edge traversal.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0,0,5), v4=(1,0,5), v5=(0.5,1,5); t0=(v0,v1,v2), t1=(v3,v4,v5).
+- **Expected kernel behavior**: eulerUpdate seeds BFS twice → n_shells=2.
+- **Mesh assertion**: `triangle_not_reachable_from target=1 source=0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me220.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me221 — eulerUpdate_triangle_adjacency_e1: BFS enqueues unvisited e1 neighbor
+- **Category**: §12.14 mesh defects (sub-class: eulerUpdate / triangle-adjacency-e1)
+- **Sources**: MeshFix `Basic_TMesh.eulerUpdate` Branch 2 (*triangle_adjacency_e1*: `t1 != NULL && !IS_BIT(s, 5)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two adjacent triangles sharing edge (v1,v2). Seed triangle t0's e1 slot neighbor t1 is unvisited; BFS enqueues it via the e1-adjacency branch. Both end up in the same shell.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1.5,1,0); t0=(v0,v1,v2), t1=(v1,v3,v2).
+- **Expected kernel behavior**: BFS enqueues t1 through e1 slot; both triangles in one shell.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me221.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me222 — eulerUpdate_triangle_adjacency_e2: BFS enqueues unvisited e2 neighbor
+- **Category**: §12.14 mesh defects (sub-class: eulerUpdate / triangle-adjacency-e2)
+- **Sources**: MeshFix `Basic_TMesh.eulerUpdate` Branch 3 (*triangle_adjacency_e2*: `t2 != NULL && !IS_BIT(s, 5)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two adjacent triangles sharing edge (v0,v2). Seed triangle t0's e2 slot neighbor t1 shares (v2,v0). BFS enqueues t1 via the e2-adjacency branch.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(-1,0.5,0); t0=(v0,v1,v2), t1=(v2,v3,v0).
+- **Expected kernel behavior**: BFS enqueues t1 through e2 slot; both triangles in one shell.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me222.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me223 — eulerUpdate_triangle_adjacency_e3: BFS enqueues unvisited e3 neighbor
+- **Category**: §12.14 mesh defects (sub-class: eulerUpdate / triangle-adjacency-e3)
+- **Sources**: MeshFix `Basic_TMesh.eulerUpdate` Branch 4 (*triangle_adjacency_e3*: `t3 != NULL && !IS_BIT(s, 5)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two adjacent triangles sharing edge (v0,v1). Seed triangle t0's e3 slot neighbor t1 shares (v0,v1) (opposite winding). BFS enqueues t1 via the e3-adjacency branch.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,-1,0); t0=(v0,v1,v2), t1=(v1,v0,v3).
+- **Expected kernel behavior**: BFS enqueues t1 through e3 slot; both triangles in one shell.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me223.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me224 — eulerUpdate_boundary_edge_detection: boundary edge triggers hasBoundary=true
+- **Category**: §12.14 mesh defects (sub-class: eulerUpdate / boundary-edge-detection)
+- **Sources**: MeshFix `Basic_TMesh.eulerUpdate` Branch 5 (*boundary_edge_detection*: `e->isOnBoundary()`, `hasBoundary = true`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: An open two-triangle strip with four boundary edges (n=1) and one interior edge (n=2). The first n=1 edge encountered sets hasBoundary=true, enabling boundary-loop counting.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1.5,1,0); t0=(v0,v1,v2), t1=(v1,v3,v2).
+- **Expected kernel behavior**: hasBoundary set true on first isOnBoundary() hit; boundary-loop phase activated.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,3,2]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me224.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me225 — eulerUpdate_boundary_exists: hasBoundary flag gates boundary-loop processing
+- **Category**: §12.14 mesh defects (sub-class: eulerUpdate / boundary-exists)
+- **Sources**: MeshFix `Basic_TMesh.eulerUpdate` Branch 6 (*boundary_exists*: `if (hasBoundary)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three-triangle fan around hub v0 with open arc (not a full disk). Spoke edges v0-v2 and v0-v3 are interior (n=2); rim and gap edges are boundary (n=1). hasBoundary=true gates the boundary-loop phase.
+- **Reproducer recipe**: v0=(0,0,0) hub; v1=(1,0,0), v2=(0.5,1,0), v3=(-0.5,1,0), v4=(-1,0,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v4).
+- **Expected kernel behavior**: hasBoundary=true branches into boundary-loop traversal; n_boundaries=1.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `hole_boundary loop=[1,2,3,4,0]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me225.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me226 — eulerUpdate_boundary_loop_traversal: nextOnBoundary() walks two distinct loops
+- **Category**: §12.14 mesh defects (sub-class: eulerUpdate / boundary-loop-traversal)
+- **Sources**: MeshFix `Basic_TMesh.eulerUpdate` Branch 7 (*boundary_loop_traversal*: `IS_BIT(v, 5)`, `nextOnBoundary()`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two completely disconnected triangles, each with its own boundary loop (3 boundary edges each). eulerUpdate must seed nextOnBoundary() traversal twice — once per loop — counting n_boundaries=2.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0); v3=(5,0,0), v4=(6,0,0), v5=(5.5,1,0); t0=(v0,v1,v2), t1=(v3,v4,v5).
+- **Expected kernel behavior**: nextOnBoundary() traversal seeds twice; n_boundaries=2.
+- **Mesh assertion**: `triangle_not_reachable_from target=1 source=0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2]`
+- **Mesh assertion**: `hole_boundary loop=[3,4,5]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me226.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me227 — eulerUpdate_euler_characteristic: V-E+F=2 computed via Euler formula (genus 0)
+- **Category**: §12.14 mesh defects (sub-class: eulerUpdate / euler-characteristic)
+- **Sources**: MeshFix `Basic_TMesh.eulerUpdate` Branch 8 (*euler_characteristic*: `n_handles = (E.numels() - V.numels() - T.numels()) / 2 + n_shells`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A tetrahedron — the minimal closed manifold. V=4, E=6, F=4, χ=V-E+F=2, genus g=0. eulerUpdate computes n_handles=(6-4-4)/2+1=0 (no topological handles). All 6 edges are interior (n=2); no boundary.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,0.5,1); t0=(v0,v2,v1), t1=(v0,v1,v3), t2=(v1,v2,v3), t3=(v2,v0,v3).
+- **Expected kernel behavior**: Euler formula yields χ=2, n_handles=0.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me227.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me228 — eulerUpdate_topology_reset: d_boundaries=d_handles=d_shells=0 reset at end
+- **Category**: §12.14 mesh defects (sub-class: eulerUpdate / topology-reset)
+- **Sources**: MeshFix `Basic_TMesh.eulerUpdate` Branch 9 (*topology_reset*: `d_boundaries = d_handles = d_shells = 0`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A two-triangle open strip (n_shells=1, n_boundaries=1, n_handles=0). After eulerUpdate computes topology, it unconditionally zeroes all three dirty flags. Geometry confirms the precondition: one interior edge (n=2) and four boundary edges (n=1).
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1.5,1,0); t0=(v0,v1,v2), t1=(v1,v3,v2).
+- **Expected kernel behavior**: d_boundaries=d_handles=d_shells=0 after eulerUpdate completes.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,3,2]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me228.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me210 — cutAndStitch_duplicate_singular_edge: BIT-5 non-manifold edge duplicated before stitching
 - **Category**: §12.14 mesh defects (sub-class: cutAndStitch / duplicate-singular-edge)
 - **Sources**: MeshFix `Basic_TMesh.cutAndStitch` Branch 1 (*DUPLICATE_SINGULAR_EDGE*: `if (e2 = T->duplicateEdge(e1)) MARK_BIT(e2, 5)`); `MESH_HEAL_COVERAGE.md`.
