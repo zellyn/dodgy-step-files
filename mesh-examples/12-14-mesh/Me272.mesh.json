@@ -1,0 +1,69 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      1.5,
+      1.0,
+      0.0
+    ],
+    [
+      1.0,
+      2.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      3,
+      4,
+      5
+    ]
+  ],
+  "metadata": {
+    "id": "Me272",
+    "schema_version": 0,
+    "defect_class": "autorefine_single_point_touch",
+    "title": "autorefine_triangle_soup intersection-point-count switch: nbi=1 vertex touch",
+    "assertions": [
+      {
+        "kind": "vertex_pair_distance_lt",
+        "pair": [
+          2,
+          3
+        ],
+        "lt": 1e-12
+      },
+      {
+        "kind": "triangles_do_not_intersect",
+        "triangles": [
+          0,
+          1
+        ]
+      }
+    ]
+  }
+}

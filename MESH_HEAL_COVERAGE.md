@@ -583,44 +583,45 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
 (6 methods, 53 branches)
 
 ##### `PMP.autorefine_impl::autorefine_triangle_soup` — lines 1040–1186
-(9 branches; all UNCOVERED — no mesh fixtures exist yet)
+(9 branches; ALL COVERED — Me270–Me279 — wave 10B, 2026-06-21)
 
-- **Branch 1** @ line 1040 — *no-intersections-trivial-case*
+- **Branch 1** @ line 1040 — *no-intersections-trivial-case* — **Me270**
   - What it tests: whether self-intersection collection found zero pairs
   - Repair action: copy verbatim and return vs enter refinement pipeline
-  - Suggested fixture: defect mentioning 'si_pairs.empty', 'number_of_output_triangles'
-- **Branch 2** @ line 1055 — *degenerate-face-tagging*
+  - Fixture: Me270 — two separated non-intersecting triangles; si_pairs.empty() → verbatim copy
+- **Branch 2** @ line 1055 — *degenerate-face-tagging* — **Me271**
   - What it tests: whether (f,f) pairs indicate degenerate faces in bbox intersection results
   - Repair action: tag degenerate faces for skipping vs include in refinement
-  - Suggested fixture: defect mentioning 'p.first==p.second', 'is_degen'
-- **Branch 3** @ line 1127 — *intersection-point-count-cases*
+  - Fixture: Me271 — collinear zero-area triangle; (f,f) self-pair → is_degen flag
+- **Branch 3** @ line 1127 — *intersection-point-count-cases* — **Me272**
   - What it tests: the number of intersection points between two triangles (1, 2, or 3+)
   - Repair action: branch to appropriate sub-triangle insertion strategy per case
-  - Suggested fixture: defect mentioning 'nbi', 'switch(nbi)', 'case 1:'
-- **Branch 4** @ line 1130 — *single-point-containment-branch*
+  - Fixture: Me272 — two triangles sharing a vertex position; switch(nbi) dispatch at nbi=1
+- **Branch 4** @ line 1130 — *single-point-containment-branch* — **Me273**
   - What it tests: whether intersection consists of single point only
   - Repair action: add point to both triangles (case 1)
-  - Suggested fixture: defect mentioning 'case 1:', 'add_point<1>', 'add_point<2>'
-- **Branch 5** @ line 1136 — *segment-intersection-two-point-branch*
+  - Fixture: Me273 — T-junction vertex on edge; case 1 single-point add_point<1>/add_point<2>
+- **Branch 5** @ line 1136 — *segment-intersection-two-point-branch* — **Me274** + **Me279**
   - What it tests: whether intersection is a line segment (two endpoints)
   - Repair action: add two points and create segment if not on shared edge (case 2)
-  - Suggested fixture: defect mentioning 'case 2:', 'on_same_edge', 'segments.emplace_back'
-- **Branch 6** @ line 1155 — *polygon-intersection-multi-point-branch*
+  - Fixture: Me274 — two crossing triangles (XY/XZ); case 2 segments.emplace_back
+  - Fixture: Me279 — shared-edge fold (open book); on_same_edge=true → segment skipped
+- **Branch 6** @ line 1155 — *polygon-intersection-multi-point-branch* — **Me275**
   - What it tests: whether intersection is a polygon (3+ vertices)
   - Repair action: add all points and create polygon boundary segments (default case)
-  - Suggested fixture: defect mentioning 'default:', 'ipt_ids1[i]', 'ipt_ids2[i]'
-- **Branch 7** @ line 1183 — *coplanarity-tracking*
+  - Fixture: Me275 — two coplanar shifted triangles; default: polygon boundary via ipt_ids1/ipt_ids2
+- **Branch 7** @ line 1183 — *coplanarity-tracking* — **Me276**
   - What it tests: whether intersecting triangles are coplanar
   - Repair action: track for downstream special handling vs non-coplanar intersection
-  - Suggested fixture: defect mentioning 'triangles_are_coplanar', 'coplanar_triangles'
-- **Branch 8** @ line 1284 — *parallel-vs-sequential-deduplication*
+  - Fixture: Me276 — two coplanar overlapping triangles; triangles_are_coplanar → coplanar_triangles set
+- **Branch 8** @ line 1284 — *parallel-vs-sequential-deduplication* — **Me277**
   - What it tests: whether TBB is linked and parallel execution was requested
   - Repair action: deduplicate points/segments in parallel vs sequential loop
-  - Suggested fixture: defect mentioning 'CGAL_LINKED_WITH_TBB', 'parallel_execution', 'tbb::parallel_for'
-- **Branch 9** @ line 1224 — *duplicate-point-detection-in-dedup*
+  - Fixture: Me277 — four radially crossing triangles; large SI point pool for parallel_for dedup
+- **Branch 9** @ line 1224 — *duplicate-point-detection-in-dedup* — **Me278**
   - What it tests: whether adjacent points in sorted list are geometrically identical
   - Repair action: collapse to single id via id_map vs keep separate
-  - Suggested fixture: defect mentioning 'points[indices[i]]==points[indices[i+1]]', 'id_map'
+  - Fixture: Me278 — three triangles two pairs sharing an insertion point; points[i]==points[i+1] → id_map
 
 ##### `PMP.autorefine_triangle_soup` — lines 1729–1748
 (2 branches; all UNCOVERED — no mesh fixtures exist yet)

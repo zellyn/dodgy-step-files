@@ -1,0 +1,104 @@
+{
+  "vertices": [
+    [
+      -2.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      2.0,
+      0.0
+    ],
+    [
+      -1.0,
+      0.0,
+      -1.0
+    ],
+    [
+      -1.0,
+      0.0,
+      1.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      1.0
+    ],
+    [
+      0.5,
+      1.0,
+      -1.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      3,
+      4,
+      5
+    ],
+    [
+      6,
+      7,
+      8
+    ]
+  ],
+  "metadata": {
+    "id": "Me278",
+    "schema_version": 0,
+    "defect_class": "autorefine_dedup_duplicate_point",
+    "title": "autorefine_triangle_soup dedup duplicate-point: coincident insertion points \u2192 id_map",
+    "assertions": [
+      {
+        "kind": "triangles_self_intersect",
+        "triangles": [
+          0,
+          1
+        ]
+      },
+      {
+        "kind": "triangles_self_intersect",
+        "triangles": [
+          0,
+          2
+        ]
+      },
+      {
+        "kind": "vertex_pair_distance_lt",
+        "pair": [
+          5,
+          8
+        ],
+        "lt": 1e-12
+      },
+      {
+        "kind": "vertex_on_edge",
+        "vertex": 5,
+        "edge": [
+          0,
+          1
+        ]
+      }
+    ]
+  }
+}

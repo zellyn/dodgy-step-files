@@ -1,0 +1,69 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      2.0,
+      0.0
+    ],
+    [
+      0.5,
+      0.5,
+      0.0
+    ],
+    [
+      2.5,
+      0.5,
+      0.0
+    ],
+    [
+      1.5,
+      2.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      3,
+      4,
+      5
+    ]
+  ],
+  "metadata": {
+    "id": "Me276",
+    "schema_version": 0,
+    "defect_class": "autorefine_coplanar_tracking",
+    "title": "autorefine_triangle_soup coplanarity-tracking: coplanar pair \u2192 coplanar_triangles",
+    "assertions": [
+      {
+        "kind": "triangles_self_intersect",
+        "triangles": [
+          0,
+          1
+        ]
+      },
+      {
+        "kind": "vertex_pair_distance_lt",
+        "pair": [
+          0,
+          3
+        ],
+        "lt": 10.0
+      }
+    ]
+  }
+}

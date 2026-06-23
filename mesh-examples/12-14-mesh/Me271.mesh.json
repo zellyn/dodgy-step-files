@@ -1,0 +1,66 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      5.0,
+      0.0,
+      0.0
+    ],
+    [
+      6.0,
+      1.0,
+      0.0
+    ],
+    [
+      5.0,
+      1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      3,
+      4,
+      5
+    ]
+  ],
+  "metadata": {
+    "id": "Me271",
+    "schema_version": 0,
+    "defect_class": "autorefine_degenerate_face_tag",
+    "title": "autorefine_triangle_soup degenerate-face-tagging: (f,f) self-pair \u2192 is_degen flag",
+    "assertions": [
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 0,
+        "lt": 1e-09
+      },
+      {
+        "kind": "triangles_do_not_intersect",
+        "triangles": [
+          0,
+          1
+        ]
+      }
+    ]
+  }
+}
