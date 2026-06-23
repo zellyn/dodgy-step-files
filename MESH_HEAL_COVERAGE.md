@@ -1889,48 +1889,20 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
   - Suggested fixture: defect mentioning 'MARK_VISIT(t); ns++'
 
 ##### `Vertex.inverseCollapse` — lines 645–680
-(10 branches; all UNCOVERED — no mesh fixtures exist yet)
+(10 branches; all COVERED by Me120–Me129)
 
-- **Branch 1** @ line 651 — *right_triangle_e2*
-  - What it tests: e2 has triangle on right side of vertex
-  - Repair action: Extract ta1 from e2 using rightTriangle()
-  - Suggested fixture: defect mentioning 'e2->rightTriangle(this)'
-- **Branch 2** @ line 652 — *left_triangle_e3*
-  - What it tests: e3 has triangle on left side of vertex
-  - Repair action: Extract ta4 from e3 using leftTriangle()
-  - Suggested fixture: defect mentioning 'e3->leftTriangle(this)'
-- **Branch 3** @ line 654 — *vertex_edge_list_circular*
-  - What it tests: Vertex edges form circular list
-  - Repair action: Get VE() and find e3 position
-  - Suggested fixture: defect mentioning 'VE()'
-- **Branch 4** @ line 655 — *find_e3_position*
-  - What it tests: e3 found in edge list
-  - Repair action: Break at e3 position in circular traversal
-  - Suggested fixture: defect mentioning 'if (f == e3) break'
-- **Branch 5** @ line 660 — *vertex_redirection_e2_to_e3*
-  - What it tests: Edges between e3 and e2 in ring
-  - Repair action: Redirect intermediate edges from this to v2
-  - Suggested fixture: defect mentioning 'f->replaceVertex(this, v2)'
-- **Branch 6** @ line 664 — *edge_e_update*
-  - What it tests: Central edge e vertex assignment
-  - Repair action: Set e connecting this to v2
-  - Suggested fixture: defect mentioning 'e->v1 = this; e->v2 = v2'
-- **Branch 7** @ line 665 — *edge_e1_update*
-  - What it tests: First new edge e1 assignment
-  - Repair action: Connect v2 to e2's opposite vertex
-  - Suggested fixture: defect mentioning 'e1->v1 = v2; e1->v2 = e2->oppositeVertex'
-- **Branch 8** @ line 667 — *triangle_t1_setup*
-  - What it tests: Triangle t1 edge assignments
-  - Repair action: Set t1 edges to e, e1, e2
-  - Suggested fixture: defect mentioning 't1->e1 = e; t1->e2 = e1; t1->e3 = e2'
-- **Branch 9** @ line 668 — *triangle_t2_setup*
-  - What it tests: Triangle t2 edge assignments
-  - Repair action: Set t2 edges to e, e3, e4
-  - Suggested fixture: defect mentioning 't2->e1 = e; t2->e2 = e3; t2->e3 = e4'
-- **Branch 10** @ line 671 — *edge_triangle_adjacency*
-  - What it tests: Triangle adjacency propagation through edges
-  - Repair action: Update e2 and e3 triangle references to t1 and t2
-  - Suggested fixture: defect mentioning 'e2->replaceTriangle(ta1, t1)', 'e3->replaceTriangle(ta4, t2)'
+- **Branch 1** @ line 651 — *right_triangle_e2* — COVERED (Me120: 4-triangle fan, e2 interior, rightTriangle confirmed)
+- **Branch 2** @ line 652 — *left_triangle_e3* — COVERED (Me121: 3-triangle minimal fan, e3 interior, leftTriangle confirmed)
+- **Branch 3** @ line 654 — *vertex_edge_list_circular* — COVERED (Me122: pentagon fan fully interior, circular VE() ring)
+- **Branch 4** @ line 655 — *find_e3_position* — COVERED (Me123: hexagonal fan, e3 at position 3 in ring, break at k>0)
+- **Branch 5** @ line 660 — *vertex_redirection_e2_to_e3* — COVERED (Me124: N=1 redirection; Me125: N=2 redirections)
+- **Branch 6** @ line 664 — *edge_e_update* — COVERED (Me126: central edge e=(v0,v_new) interior, near-coincident pair)
+- **Branch 7** @ line 665 — *edge_e1_update* — COVERED (Me127: new edge e1=(v_new,apex2) boundary, e2 interior)
+- **Branch 8** @ line 667 — *triangle_t1_setup* — COVERED (Me128: t1 with edges e, e1, e2 all verified)
+- **Branch 9** @ line 668 — *triangle_t2_setup* — COVERED (Me129: t2 with edges e, e3, e4 verified alongside adjacency)
+- **Branch 10** @ line 671 — *edge_triangle_adjacency* — COVERED (Me129: e2/e3 replaceTriangle to t1/t2)
+
+Fixture IDs: Me120 Me121 Me122 Me123 Me124 Me125 Me126 Me127 Me128 Me129
 
 ##### `Vertex.isDoubleFlat` — lines 320–339
 (7 branches; all UNCOVERED — no mesh fixtures exist yet)

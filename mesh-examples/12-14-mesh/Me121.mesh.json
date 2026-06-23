@@ -1,0 +1,81 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      -1.0,
+      0.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      2,
+      3
+    ],
+    [
+      0,
+      3,
+      1
+    ]
+  ],
+  "metadata": {
+    "id": "Me121",
+    "schema_version": 0,
+    "defect_class": "inverse_collapse_split_vertex",
+    "title": "inverse_collapse_left_triangle_e3: ta4 exists on left side of split edge e3",
+    "assertions": [
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          3
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          2
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          1
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          2,
+          3
+        ],
+        "n": 1
+      }
+    ]
+  }
+}

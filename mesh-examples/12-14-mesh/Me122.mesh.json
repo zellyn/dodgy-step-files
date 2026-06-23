@@ -1,0 +1,149 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.309017,
+      0.951057,
+      0.0
+    ],
+    [
+      -0.809017,
+      0.587785,
+      0.0
+    ],
+    [
+      -0.809017,
+      -0.587785,
+      0.0
+    ],
+    [
+      0.309017,
+      -0.951057,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      2,
+      3
+    ],
+    [
+      0,
+      3,
+      4
+    ],
+    [
+      0,
+      4,
+      5
+    ],
+    [
+      0,
+      5,
+      1
+    ]
+  ],
+  "metadata": {
+    "id": "Me122",
+    "schema_version": 0,
+    "defect_class": "inverse_collapse_split_vertex",
+    "title": "inverse_collapse_vertex_edge_list_circular: fully interior vertex, circular VE() ring",
+    "assertions": [
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          1
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          2
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          3
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          4
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          5
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          2
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          2,
+          3
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          3,
+          4
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          4,
+          5
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          5
+        ],
+        "n": 1
+      }
+    ]
+  }
+}

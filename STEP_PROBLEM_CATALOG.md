@@ -32781,6 +32781,126 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me139.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me120 — inverse_collapse_right_triangle_e2: ta1 exists on right side of split edge e2
+- **Category**: §12.14 mesh defects (sub-class: inverse-collapse / right-triangle-e2)
+- **Sources**: MeshFix `Vertex.inverseCollapse` Branch 1 (*right_triangle_e2*: `ta1 = e2->rightTriangle(this)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: vertex v0 has a 4-triangle fan; e2=(v0,v2) is an interior edge whose rightTriangle(v0) is non-NULL (= t0 = ta1). After inverse collapse, ta1 becomes the outer neighbor of new triangle t1. The geometry confirms e2 is interior (n=2).
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,1,0), v3=(0,1,0), v4=(-1,0,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v4), t3=(v0,v4,v1).
+- **Expected kernel behavior**: extract ta1 from e2->rightTriangle(this) before constructing the new split triangles.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me120.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me121 — inverse_collapse_left_triangle_e3: ta4 exists on left side of split edge e3
+- **Category**: §12.14 mesh defects (sub-class: inverse-collapse / left-triangle-e3)
+- **Sources**: MeshFix `Vertex.inverseCollapse` Branch 2 (*left_triangle_e3*: `ta4 = e3->leftTriangle(this)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: vertex v0 has a 3-triangle fan; e3=(v0,v3) is an interior edge whose leftTriangle(v0) is non-NULL (= t2 = ta4). The 3-triangle minimal fan confirms both e2 and e3 are interior and ta4 is captured on the left side.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(-1,0,0); t0=(v0,v1,v2) [ta1], t1=(v0,v2,v3) [sector], t2=(v0,v3,v1) [ta4].
+- **Expected kernel behavior**: extract ta4 from e3->leftTriangle(this) to record the outer left neighbor before split.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me121.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me122 — inverse_collapse_vertex_edge_list_circular: fully interior vertex with circular VE() ring
+- **Category**: §12.14 mesh defects (sub-class: inverse-collapse / circular-edge-ring)
+- **Sources**: MeshFix `Vertex.inverseCollapse` Branch 3 (*vertex_edge_list_circular*: `VE()` circular traversal); `MESH_HEAL_COVERAGE.md`.
+- **Description**: vertex v0 is fully interior (all 5 spoke edges interior, no boundary break). The inverseCollapse must call VE() and traverse the entire circular ring to find e3. Pentagon fan with all ring edges boundary and all spoke edges interior.
+- **Reproducer recipe**: v0=(0,0,0) with 5 pentagon ring vertices at unit radius; 5 fan triangles (v0,v_k,v_{k+1}).
+- **Expected kernel behavior**: use circular VE() ring traversal to find e3 position.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,k] n=2` for all 5 spokes; ring edges n=1.
+- **Fixture path**: mesh-examples/12-14-mesh/Me122.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me123 — inverse_collapse_find_e3_position: e3 at position 3 in 6-edge ring, break triggered at k>0
+- **Category**: §12.14 mesh defects (sub-class: inverse-collapse / find-e3-position)
+- **Sources**: MeshFix `Vertex.inverseCollapse` Branch 4 (*find_e3_position*: `if (f == e3) break` at k>0); `MESH_HEAL_COVERAGE.md`.
+- **Description**: fully interior v0 with 6-triangle hexagonal fan. Ring traversal starting at e2=(v0,v3) must advance 3 steps to reach e3=(v0,v5) before triggering the break — the non-trivial position case.
+- **Reproducer recipe**: v0=(0,0,0) with 6 hexagon ring vertices; split sector t2=(v0,v3,v4), t3=(v0,v4,v5); e2=(v0,v3) and e3=(v0,v5).
+- **Expected kernel behavior**: iterate ring from e2 three times to find e3 and redirect intermediate edge (v0,v4).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,k] n=2` for all 6 spokes; ring edges n=1.
+- **Fixture path**: mesh-examples/12-14-mesh/Me123.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me124 — inverse_collapse_vertex_redirection: 1 intermediate edge redirected from v0 to v_new
+- **Category**: §12.14 mesh defects (sub-class: inverse-collapse / vertex-redirection-N1)
+- **Sources**: MeshFix `Vertex.inverseCollapse` Branch 5 (*vertex_redirection_e2_to_e3*: `f->replaceVertex(this, v2)` x1); `MESH_HEAL_COVERAGE.md`.
+- **Description**: v0 has a 5-triangle fan; the split sector spans 2 triangles. The intermediate spoke (v0,v3) between e2=(v0,v2) and e3=(v0,v4) is redirected to v_new in one replaceVertex call. The pre-split spoke is interior (n=2).
+- **Reproducer recipe**: v0=(0,0,0) with v1..v5; t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v4), t3=(v0,v4,v5), t4=(v0,v5,v1).
+- **Expected kernel behavior**: call f->replaceVertex(this, v2) once for the intermediate edge (v0,v3).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me124.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me125 — inverse_collapse_multi_redirection: 2 intermediate edges redirected to v_new
+- **Category**: §12.14 mesh defects (sub-class: inverse-collapse / vertex-redirection-N2)
+- **Sources**: MeshFix `Vertex.inverseCollapse` Branch 5 (*vertex_redirection_e2_to_e3*) with N=2 iterations; `MESH_HEAL_COVERAGE.md`.
+- **Description**: v0 is a fully interior 6-triangle fan vertex; the split sector spans 3 triangles. Two intermediate spokes (v0,v4) and (v0,v5) are both redirected to v_new. Distinguishes from Me124 (N=1) by having a wider sector.
+- **Reproducer recipe**: hexagonal fan at v0; sector t2,t3,t4 with e2=(v0,v3) and e3=(v0,v6); spokes (v0,v4) and (v0,v5) redirected.
+- **Expected kernel behavior**: replaceVertex loop fires twice, redirecting both intermediate spokes.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,k] n=2` for all 6 spokes; ring edges n=1.
+- **Fixture path**: mesh-examples/12-14-mesh/Me125.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me126 — inverse_collapse_edge_e_update: central edge e between this and v_new
+- **Category**: §12.14 mesh defects (sub-class: inverse-collapse / central-edge-assignment)
+- **Sources**: MeshFix `Vertex.inverseCollapse` Branch 6 (*edge_e_update*: `e->v1 = this; e->v2 = v2`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: post-split, the central edge e = (v0, v_new) is the spine shared by both new triangles t1 and t2. The near-coincident pair (v0, v_new at 1e-4) models a freshly-split vertex; the edge between them is interior (n=2).
+- **Reproducer recipe**: v0=(0,0,0), v_new=(1e-4,0,0), v_left=(0,1,0), v_right=(0,-1,0); t0=(v0,v_new,v_left), t1=(v0,v_right,v_new).
+- **Expected kernel behavior**: assign e->v1=this, e->v2=v2 to connect the two split vertices.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=1e-3`
+- **Fixture path**: mesh-examples/12-14-mesh/Me126.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me127 — inverse_collapse_edge_e1_update: edge e1 connects v_new to e2 opposite vertex
+- **Category**: §12.14 mesh defects (sub-class: inverse-collapse / edge-e1-assignment)
+- **Sources**: MeshFix `Vertex.inverseCollapse` Branch 7 (*edge_e1_update*: `e1->v1=v2; e1->v2=e2->oppositeVertex(this)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: post-split, new edge e1 connects v_new to the far endpoint of e2 (= apex2). e1 is a boundary edge (n=1) and forms the third side of new triangle t1. Central edge e=(v0,v_new) is interior (n=2).
+- **Reproducer recipe**: v0=(0,0,0), v_new=(0,1e-4,0), apex2=(1,0,0), apex3=(-1,0,0), outer_right=(0.5,-1,0), outer_left=(-0.5,-1,0).
+- **Expected kernel behavior**: assign e1->v1=v_new, e1->v2=apex2 so e1 closes triangle t1.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me127.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me128 — inverse_collapse_triangle_t1_setup: t1 bounded by edges e, e1, e2
+- **Category**: §12.14 mesh defects (sub-class: inverse-collapse / triangle-t1-setup)
+- **Sources**: MeshFix `Vertex.inverseCollapse` Branch 8 (*triangle_t1_setup*: `t1->e1=e; t1->e2=e1; t1->e3=e2`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: after vertex split, new triangle t1 is assigned exactly three edges: central edge e=(v0,v_new), new edge e1=(v_new,apex2), and right-boundary edge e2=(v0,apex2). All three edge assignments verified by incidence counts.
+- **Reproducer recipe**: v0=(0,0,0), v_new=(5e-5,0,0), apex2=(1,1,0), apex3=(1,-1,0), apex4=(2,0,0), apex5=(2,-2,0); t1_new=(v0,v_new,apex2), t2_new=(v0,apex3,v_new), ta1=(v0,apex2,apex4), ta4=(v0,apex5,apex3).
+- **Expected kernel behavior**: assign t1->e1=e, t1->e2=e1, t1->e3=e2 to link the three edges into the new triangle.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me128.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me129 — inverse_collapse_edge_triangle_adjacency: e2/e3 adjacency refs updated to t1/t2 (Branch 9+10)
+- **Category**: §12.14 mesh defects (sub-class: inverse-collapse / edge-triangle-adjacency)
+- **Sources**: MeshFix `Vertex.inverseCollapse` Branch 9 (*triangle_t2_setup*) and Branch 10 (*edge_triangle_adjacency*: `e2->replaceTriangle(ta1,t1)`, `e3->replaceTriangle(ta4,t2)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: the final step — e2 and e3 replace their old outer-triangle references with new t1 and t2. Both edges are interior (n=2) so the replaceTriangle call is meaningful. Also covers t2 edge assignment {e, e3, e4} (Branch 9).
+- **Reproducer recipe**: v0=(0,0,0), v_new=(0,2e-4,0), apex2=(1,0,0), apex3=(-1,0,0), outer_apex=(0,2,0); t1_new=(v0,v_new,apex2), t2_new=(v0,apex3,v_new), ta1=(v0,apex2,outer_apex), ta4=(v0,outer_apex,apex3).
+- **Expected kernel behavior**: call e2->replaceTriangle(ta1,t1) and e3->replaceTriangle(ta4,t2) to complete adjacency.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,1] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=1e-3`
+- **Fixture path**: mesh-examples/12-14-mesh/Me129.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Wr052 — Writer emits EDGE_CURVE backed by untrimmed LINE entity
 - **Category**: §12.13 writer-pathology (sub-class: unbounded-curve emission)
 - **Sources**: Pattern-mined from OCCT/tests/bugs/step/bug32817_1 (LGPL-clean — pattern only, no bytes copied). OCCT method `STEPControl_Writer::Transfer` on a single-line edge.
