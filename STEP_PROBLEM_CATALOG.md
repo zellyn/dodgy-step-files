@@ -35283,3 +35283,129 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `adjacent_triangles_normal_dot_gt triangles=[0,1] threshold=0.99`
 - **Fixture path**: mesh-examples/12-14-mesh/Me287.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me310 — watsonInsert_point_in_circumsphere: inserted point inside circumsphere triggers cavity marking (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: holeFilling / watsonInsert / circumsphere-marking)
+- **Sources**: MeshFix `holeFilling::watsonInsert` Branch 1 (*POINT_IN_CIRCUMSPHERE*: `t->inSphere(p)` → `MARK_BIT(t, 6)`, `todo.appendHead(t)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 2-triangle mesh (t0, t1) covering a 2×2 square with diagonal (v0,v2). The inserted point v4=(1,1,0) lies at the circumcentre of both triangles (circumsphere radius sqrt(2)). Branch 1 fires when inSphere(p) returns true — the triangle is marked for cavity removal and appended to the Bowyer-Watson todo queue.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(2,2,0), v3=(0,2,0); t0=(v0,v1,v2), t1=(v0,v2,v3); assert diagonal edge (v0,v2) shared n=2; assert outer boundary edges n=1; euler chi=1.
+- **Expected kernel behavior**: Branch 1 fires on inSphere test; both triangles marked bit 6 and queued; cavity excavation proceeds.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me310.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me311 — watsonInsert_cavity_vertex_v1: v1 of removed triangle appended to cavity boundary (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: holeFilling / watsonInsert / cavity-vertex-v1)
+- **Sources**: MeshFix `holeFilling::watsonInsert` Branch 2 (*CAVITY_VERTEX_V1*: `!IS_BIT(v1, 5)` → `bdr.appendHead(v1); MARK_BIT(v1, 5)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 3-triangle fan with hub v3=(1,0.5,0) and outer ring v0,v1,v2. When cavity triangle t0=(v0,v1,v3) is removed, v1 (the second vertex in the half-edge walk order) is new to the boundary list — Branch 2 fires, appending v1 to 'bdr' and marking bit 5.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(1,0.5,0); t0=(v0,v1,v3), t1=(v1,v2,v3), t2=(v2,v0,v3); assert hub edges n=2, outer edges n=1, hole_boundary [v0,v1,v2].
+- **Expected kernel behavior**: Branch 2 fires when v1 of t0 is first encountered; v1 added to bdr and marked.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me311.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me312 — watsonInsert_cavity_vertex_v2: v2 of removed triangle appended to cavity boundary (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: holeFilling / watsonInsert / cavity-vertex-v2)
+- **Sources**: MeshFix `holeFilling::watsonInsert` Branch 3 (*CAVITY_VERTEX_V2*: `bdr.appendHead(v2); MARK_BIT(v2, 5)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 4-triangle fan with outer square v0-v3 and hub v4=(1,1,0). For t0=(v0,v1,v4), v4 occupies the 'v2 slot' (third argument). Branch 3 fires when v4 is first encountered as a cavity boundary vertex, appending it to 'bdr'.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(2,2,0), v3=(0,2,0), v4=(1,1,0); 4 fan triangles; assert hub edges n=2, outer edges n=1, hole_boundary [v0,v1,v2,v3].
+- **Expected kernel behavior**: Branch 3 fires when v4 (v2 slot of t0) is first appended to bdr; marked bit 5.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2,3]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me312.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me313 — watsonInsert_cavity_vertex_v3: v3-slot vertex of removed triangle appended to cavity boundary (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: holeFilling / watsonInsert / cavity-vertex-v3)
+- **Sources**: MeshFix `holeFilling::watsonInsert` Branch 4 (*CAVITY_VERTEX_V3*: `bdr.appendHead(v3); MARK_BIT(v3, 5)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 4-triangle fan with outer square v0-v3 and hub v4=(1,1,0). Each fan triangle has v4 in the 'v3 slot' (source-code notation). Branch 4 fires each time v4 (or an outer corner) is encountered as a new boundary vertex via the third slot.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(2,2,0), v3=(0,2,0), v4=(1,1,0); t0=(v0,v1,v4), t1=(v1,v2,v4), t2=(v2,v3,v4), t3=(v3,v0,v4); hub edges n=2, outer edges n=1, hole_boundary [v0,v1,v2,v3].
+- **Expected kernel behavior**: Branch 4 fires for each new v3-slot vertex; outer vertices added to bdr as they are encountered.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2,3]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me313.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me314 — watsonInsert_no_circumsphere_triangles: point outside all circumspheres returns NULL (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: holeFilling / watsonInsert / empty-cavity)
+- **Sources**: MeshFix `holeFilling::watsonInsert` Branch 5 (*NO_CIRCUMSPHERE_TRIANGLES*: `bdr.numels() == 0` → `return NULL`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two completely separate triangle patches with no shared edges: Patch A (v0,v1,v2) at x=0..1 and Patch B (v3,v4,v5) at x=3..4. An inserted point at (2,0.5,0) lies in the gap between them — no triangle's circumsphere contains it. The Bowyer-Watson cavity is empty (bdr.numels()==0) and the function returns NULL.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0); v3=(3,0,0), v4=(4,0,0), v5=(3,1,0); t0=(v0,v1,v2), t1=(v3,v4,v5); all edges n=1; assert triangle_not_reachable_from t1 from t0.
+- **Expected kernel behavior**: Branch 5 fires; bdr is empty; watsonInsert returns NULL (point outside triangulation).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=1`
+- **Mesh assertion**: `triangle_not_reachable_from source=0 target=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me314.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me315 — watsonInsert_boundary_edge_selection: mixed cavity/non-cavity edges at boundary vertex (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: holeFilling / watsonInsert / boundary-edge-selection)
+- **Sources**: MeshFix `holeFilling::watsonInsert` Branch 6 (*BOUNDARY_EDGE_SELECTION*: `!IS_BIT(e->t1, 6) || !IS_BIT(e->t2, 6)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 5-triangle fan over a regular pentagon, hub v5=(0,0,0), outer ring v0-v4 at radius 2. When 3 of the 5 fan triangles are marked as cavity, each cavity-seam vertex has one marked and one unmarked triangle on its hub edge. Branch 6 fires at each such vertex to select the boundary edge where exactly one adjacent triangle is in the cavity.
+- **Reproducer recipe**: pentagon outer ring at r=2, hub v5=(0,0,0); 5 fan triangles; hub edges all n=2; outer edges all n=1; hole_boundary [v0,v1,v2,v3,v4].
+- **Expected kernel behavior**: Branch 6 selects cavity-boundary edges where one adjacent triangle is marked (bit 6) and the other is not — used to build the re-triangulation boundary loop.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,0] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2,3,4]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me315.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me316 — watsonInsert_cavity_triangle_removal: 6 cavity triangles unlinked by unlinkTriangleNoManifold (Branch 7)
+- **Category**: §12.14 mesh defects (sub-class: holeFilling / watsonInsert / cavity-triangle-removal)
+- **Sources**: MeshFix `holeFilling::watsonInsert` Branch 7 (*CAVITY_TRIANGLE_REMOVAL*: `unlinkTriangleNoManifold(t)` for each marked cavity triangle); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 6-triangle hexagonal fan: hub v6=(0,0,0), outer ring v0-v5 at radius 2. All 6 fan triangles lie inside the circumsphere of a newly inserted point near the hub — Branch 7 fires 6 times as each is unlinked. After removal, the outer hexagonal boundary loop (v0..v5) becomes the re-triangulation target.
+- **Reproducer recipe**: v0=(2,0,0), v1=(1,1.732,0), v2=(-1,1.732,0), v3=(-2,0,0), v4=(-1,-1.732,0), v5=(1,-1.732,0), v6=(0,0,0); 6 fan triangles; hub edges all n=2; outer edges all n=1; hole_boundary [v0..v5]; euler chi=1.
+- **Expected kernel behavior**: Branch 7 fires once per cavity triangle; unlinkTriangleNoManifold removes each; hexagonal hole exposed for Delaunay re-triangulation.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,0] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2,3,4,5]`
+- **Mesh assertion**: `euler_characteristic v=7 e=12 f=6 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me316.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder

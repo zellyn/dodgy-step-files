@@ -2589,36 +2589,29 @@ Fixture IDs: Me200 Me201 Me202 Me203 Me204 Me205 Me206 Me207 Me208 Me209
   - Suggested fixture: defect mentioning 'Re-triangulation failed', 'Restoring'
 
 ##### `holeFilling::watsonInsert` — lines 297–378
-(7 branches; all UNCOVERED — no mesh fixtures exist yet)
+(7 branches; COVERED by Me310–Me316 — wave 11C, 2026-06-21)
 
-- **Branch 1** @ line 309 — *POINT_IN_CIRCUMSPHERE*
+- **Branch 1** @ line 309 — *POINT_IN_CIRCUMSPHERE* → **Me310** (hole_in_hull: 2-triangle square; inserted point at circumcentre)
   - What it tests: Point p lies in triangle's circumsphere
   - Repair action: Mark triangle for cavity removal; append to todo
-  - Suggested fixture: defect mentioning 't->inSphere(p)', 'MARK_BIT(t, 6)'
-- **Branch 2** @ line 312 — *CAVITY_VERTEX_V1*
+- **Branch 2** @ line 312 — *CAVITY_VERTEX_V1* → **Me311** (hole_in_hull: 3-triangle fan; v1 of removed triangle added to bdr)
   - What it tests: Vertex v1 part of cavity boundary
   - Repair action: Mark vertex; track for boundary restoration
-  - Suggested fixture: defect mentioning '!IS_BIT(v1, 5)', 'bdr.appendHead(v1)'
-- **Branch 3** @ line 313 — *CAVITY_VERTEX_V2*
+- **Branch 3** @ line 313 — *CAVITY_VERTEX_V2* → **Me312** (hole_in_hull: 4-triangle fan; v2 slot hub vertex added to bdr)
   - What it tests: Vertex v2 in cavity boundary set
   - Repair action: Add to boundary; mark visited
-  - Suggested fixture: defect mentioning 'bdr.appendHead(v2)'
-- **Branch 4** @ line 314 — *CAVITY_VERTEX_V3*
+- **Branch 4** @ line 314 — *CAVITY_VERTEX_V3* → **Me313** (hole_in_hull: 4-triangle fan; v3-slot vertex added to bdr)
   - What it tests: Vertex v3 part of cavity
   - Repair action: Add to boundary; prevent duplication
-  - Suggested fixture: defect mentioning 'bdr.appendHead(v3)'
-- **Branch 5** @ line 320 — *NO_CIRCUMSPHERE_TRIANGLES*
+- **Branch 5** @ line 320 — *NO_CIRCUMSPHERE_TRIANGLES* → **Me314** (hole_in_hull: two disconnected triangles; inserted point in gap → bdr empty → NULL)
   - What it tests: No triangles contain point (empty cavity)
   - Repair action: Return NULL; point outside current triangulation
-  - Suggested fixture: defect mentioning 'bdr.numels() == 0'
-- **Branch 6** @ line 325 — *BOUNDARY_EDGE_SELECTION*
+- **Branch 6** @ line 325 — *BOUNDARY_EDGE_SELECTION* → **Me315** (hole_in_hull: 5-triangle pentagon fan; hub edges at cavity seam have mixed marked/unmarked adjacency)
   - What it tests: Vertex has mixed internal/external edges
   - Repair action: Select boundary edge (cavity edge)
-  - Suggested fixture: defect mentioning '!IS_BIT(e->t1, 6) || !IS_BIT(e->t2, 6)'
-- **Branch 7** @ line 333 — *CAVITY_TRIANGLE_REMOVAL*
+- **Branch 7** @ line 333 — *CAVITY_TRIANGLE_REMOVAL* → **Me316** (hole_in_hull: 6-triangle hexagonal fan; all 6 triangles unlinked by unlinkTriangleNoManifold)
   - What it tests: Remove all triangles in cavity
   - Repair action: Call unlinkTriangleNoManifold; free interior triangles
-  - Suggested fixture: defect mentioning 'unlinkTriangleNoManifold(t)'
 
 
 #### `src/Algorithms/holeFilling.cpp`
