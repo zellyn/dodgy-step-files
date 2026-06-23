@@ -33592,6 +33592,158 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me198.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me200 — zip_vertex_edge_list: vertex v0 has non-empty incident-edge list enabling zip boundary walk
+- **Category**: §12.14 mesh defects (sub-class: zip / vertex-edge-list)
+- **Sources**: MeshFix `Vertex.zip` Branch 1 (*vertex_edge_list*: `VE* ve = VE()`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: zip() begins by collecting the circular list of edges incident on the zip vertex. Branch 1 covers the case where the vertex has incident edges (non-empty VE list) so the algorithm can proceed. Geometry: two triangles sharing interior edge (v0,v3) at junction vertex v0; boundary edges (v0,v1) and (v0,v2) are the be1/be2 candidates.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(-1,0,0), v3=(0,1,0); t0=(v0,v1,v3), t1=(v0,v3,v2).
+- **Expected kernel behavior**: VE() returns non-empty list for v0 so zip can enumerate boundary edges.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me200.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me201 — zip_boundary_edge_first: head of VE circular list for v0 is boundary edge → assigned as be1
+- **Category**: §12.14 mesh defects (sub-class: zip / boundary-edge-first)
+- **Sources**: MeshFix `Vertex.zip` Branch 2 (*boundary_edge_first*: `be1 = ve->head()->data`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: After collecting the VE list, zip assigns the head edge as be1 when it is a boundary edge. Geometry: two-triangle fan at v0 with boundary edges (v0,v1) [head/be1] and (v0,v3) [tail/be2], sharing interior edge (v0,v2).
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(-1,0,0); t0=(v0,v1,v2), t1=(v0,v2,v3).
+- **Expected kernel behavior**: head edge (v0,v1) is boundary → be1 assigned at Branch 2.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me201.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me202 — zip_boundary_edge_last: tail of VE circular list for v0 is boundary edge → assigned as be2
+- **Category**: §12.14 mesh defects (sub-class: zip / boundary-edge-last)
+- **Sources**: MeshFix `Vertex.zip` Branch 3 (*boundary_edge_last*: `be2 = ve->tail()->data`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: The tail edge in the VE circular list is boundary and is assigned as be2. Geometry: two-triangle fan at v0; (v0,v1) [head/be1] and (v0,v3) [tail/be2] are boundary, (v0,v2) is interior (n=2).
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,1,0), v3=(0,2,0); t0=(v0,v1,v2), t1=(v0,v2,v3).
+- **Expected kernel behavior**: tail edge (v0,v3) is boundary → be2 assigned at Branch 3.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me202.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me203 — zip_edge_not_boundary: closed fan around v0 means no boundary edges at head/tail → zip aborts
+- **Category**: §12.14 mesh defects (sub-class: zip / edge-not-boundary)
+- **Sources**: MeshFix `Vertex.zip` Branch 4 (*edge_not_boundary*: `if (!be1->isOnBoundary() || !be2->isOnBoundary()) return 0`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: When be1 or be2 is not a boundary edge, zip returns 0. Geometry: fully closed 4-triangle fan around v0 so all edges (v0,v1)..(v0,v4) are interior (n=2). zip's boundary check fails → return 0.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(-1,0,0), v4=(0,-1,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v4), t3=(v0,v4,v1).
+- **Expected kernel behavior**: all edges at v0 are interior → neither be1 nor be2 on boundary → return 0.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me203.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me204 — zip_geometry_check_enabled: check_geom rejects zip when ov1 and ov2 have distinct coordinates
+- **Category**: §12.14 mesh defects (sub-class: zip / geometry-check-enabled)
+- **Sources**: MeshFix `Vertex.zip` Branch 5 (*geometry_check_enabled*: `if (check_geom && ((*ov1)!=(*ov2))) return 0`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: With check_geom=true, zip refuses to merge when the opposite vertices ov1 and ov2 have different coordinates. Geometry: two isolated triangles sharing only v0; ov1=v3=(0,1,0) and ov2=v4=(0,3,0) are clearly distinct → return 0.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(-1,0,0), v3=(0,1,0), v4=(0,3,0); t0=(v0,v1,v3), t1=(v0,v2,v4).
+- **Expected kernel behavior**: check_geom detects (*ov1)!=(*ov2) by coordinates → return 0 without merging.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,3]`
+- **Mesh assertion**: `hole_boundary loop=[0,2,4]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me204.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me205 — zip_opposite_vertices_distinct: ov1 and ov2 are distinct objects at coincident positions → zip merge proceeds
+- **Category**: §12.14 mesh defects (sub-class: zip / opposite-vertices-distinct)
+- **Sources**: MeshFix `Vertex.zip` Branch 6 (*opposite_vertices_distinct*: `if (ov1 != ov2)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: When ov1 and ov2 are distinct objects (pointer inequality), zip proceeds with the merge even if check_geom is false. Geometry: two open patches with near-coincident seam vertices; v1≈v4 (both at (1,0,0)) are ov1 and ov2 as distinct objects.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0); v3=(0,0,0), v4=(1,0,0), v5=(0.5,-1,0); t0=(v0,v1,v2), t1=(v3,v4,v5).
+- **Expected kernel behavior**: ov1 and ov2 are distinct objects → Branch 6 enters merge body.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,3] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-09`
+- **Fixture path**: mesh-examples/12-14-mesh/Me205.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me206 — zip_vertex_replacement_in_edges: ov2 incident on multiple edges; zip replaceVertex loop touches all of them
+- **Category**: §12.14 mesh defects (sub-class: zip / vertex-replacement-in-edges)
+- **Sources**: MeshFix `Vertex.zip` Branch 7 (*vertex_replacement_in_edges*: `e->replaceVertex(ov2, ov1)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: zip iterates over all edges incident to ov2 and replaces the ov2 reference with ov1. Branch 7 covers the replacement loop. Geometry: Patch B has a two-triangle fan at ov2 (v3) so the loop iterates twice; ov1=v2 and ov2=v3 are near-coincident.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0); v3=(0.5,1,0) [near v2], v4=(1.5,1.5,0), v5=(-0.5,1.5,0), v6=(0,0,0) [near v0]; t0=(v0,v1,v2), t1=(v6,v3,v4), t2=(v6,v5,v3).
+- **Expected kernel behavior**: replaceVertex loop replaces v3→v2 in both edges (v3,v4) and (v5,v3).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,6] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[2,3] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,6] lt=1e-09`
+- **Fixture path**: mesh-examples/12-14-mesh/Me206.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me207 — zip_edge_triangle_selection: be2 is boundary with exactly 1 incident triangle; ternary selects t1 or t2 slot
+- **Category**: §12.14 mesh defects (sub-class: zip / edge-triangle-selection)
+- **Sources**: MeshFix `Vertex.zip` Branch 8 (*edge_triangle_selection*: `t = (be2->t1!=NULL)?(be2->t1):(be2->t2)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: After merging ov1/ov2, zip retrieves the single incident triangle of be2 by checking which slot (t1 or t2) is non-NULL. Geometry: open two-triangle fan at v0; be2=(v0,v2) incident on exactly one triangle (t1) → Branch 8 ternary selects it.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(-1,0,0), v3=(0,1,0); t0=(v0,v1,v3), t1=(v0,v3,v2).
+- **Expected kernel behavior**: be2=(v0,v2) has exactly 1 incident triangle → ternary selects non-NULL slot.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me207.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me208 — zip_triangle_edge_update: t->replaceEdge(be2, be1) swaps be2 out of triangle's edge record during zip
+- **Category**: §12.14 mesh defects (sub-class: zip / triangle-edge-update)
+- **Sources**: MeshFix `Vertex.zip` Branch 9 (*triangle_edge_update*: `t->replaceEdge(be2, be1)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: After selecting the incident triangle of be2, zip calls replaceEdge(be2, be1) to update the triangle's edge records. Branch 9 covers this structural update. Geometry: two-triangle fan at v0; t1 currently references be2=(v0,v2) which gets replaced with be1=(v0,v1) after zip.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(-1,0,0), v3=(0,1,0); t0=(v0,v1,v3), t1=(v0,v3,v2).
+- **Expected kernel behavior**: t1's edge pointer for be2=(v0,v2) replaced by be1=(v0,v1).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,3,2]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me208.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me209 — zip_recursive_zip: after zipping v0→ov1 merge, zip recurses on ov1 to close chain seam
+- **Category**: §12.14 mesh defects (sub-class: zip / recursive-zip)
+- **Sources**: MeshFix `Vertex.zip` Branch 10 (*recursive_zip*: `ret += ov1->zip(check_geom)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: After merging ov2 into ov1, zip recurses on ov1 to close the next link in a chain seam. Branch 10 covers this recursive accumulation. Geometry: two-patch two-triangle-strip mesh with a two-vertex chain seam; v0≈v4, v1≈v5, v2≈v6 are all near-coincident pairs.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0), v3=(1,1,0); v4=(0,0,0), v5=(1,0,0), v6=(2,0,0), v7=(1,-1,0); t0=(v0,v1,v3), t1=(v1,v2,v3), t2=(v4,v7,v5), t3=(v5,v7,v6).
+- **Expected kernel behavior**: zip(v0) merges v4→v0, then recurses ov1->zip() on v1 (≈v5) to close the next link.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,7] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,5] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[2,6] lt=1e-09`
+- **Fixture path**: mesh-examples/12-14-mesh/Me209.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me220 — eulerUpdate_component_discovery: BFS discovers second disconnected shell (n_shells++)
 - **Category**: §12.14 mesh defects (sub-class: eulerUpdate / component-discovery)
 - **Sources**: MeshFix `Basic_TMesh.eulerUpdate` Branch 1 (*component_discovery*: `!IS_BIT(t, 5)`, `n_shells++`); `MESH_HEAL_COVERAGE.md`.

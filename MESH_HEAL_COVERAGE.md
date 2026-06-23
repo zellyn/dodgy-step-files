@@ -1953,48 +1953,50 @@ Fixture IDs: Me120 Me121 Me122 Me123 Me124 Me125 Me126 Me127 Me128 Me129
 Fixture IDs: Me130 Me131 Me132 Me133 Me134 Me135 Me136 Me137 Me138 Me139
 
 ##### `Vertex.zip` — lines 558–587
-(10 branches; all UNCOVERED — no mesh fixtures exist yet)
+(10 branches; ALL COVERED by Me200–Me209 — wave 8A)
 
-- **Branch 1** @ line 563 — *vertex_edge_list*
+- **Branch 1** @ line 563 — *vertex_edge_list* — **COVERED** → Me200
   - What it tests: Vertex has incident edges
   - Repair action: Get VE() edge list from vertex
   - Suggested fixture: defect mentioning 'VE()'
-- **Branch 2** @ line 564 — *boundary_edge_first*
+- **Branch 2** @ line 564 — *boundary_edge_first* — **COVERED** → Me201
   - What it tests: First edge in circular list is boundary
   - Repair action: Select head edge as be1
   - Suggested fixture: defect mentioning 've->head()->data'
-- **Branch 3** @ line 565 — *boundary_edge_last*
+- **Branch 3** @ line 565 — *boundary_edge_last* — **COVERED** → Me202
   - What it tests: Last edge in circular list is boundary
   - Repair action: Select tail edge as be2
   - Suggested fixture: defect mentioning 've->tail()->data'
-- **Branch 4** @ line 567 — *edge_not_boundary*
+- **Branch 4** @ line 567 — *edge_not_boundary* — **COVERED** → Me203
   - What it tests: Either be1 or be2 is not boundary
   - Repair action: Return 0 - singular vertex not at boundary
   - Suggested fixture: defect mentioning '!be1->isOnBoundary() || !be2->isOnBoundary()'
-- **Branch 5** @ line 571 — *geometry_check_enabled*
+- **Branch 5** @ line 571 — *geometry_check_enabled* — **COVERED** → Me204
   - What it tests: Geometric validation enabled and vertices distinct
   - Repair action: Return 0 if opposite vertices have different coordinates
   - Suggested fixture: defect mentioning 'if (check_geom && ((*ov1)!=(*ov2)))'
-- **Branch 6** @ line 573 — *opposite_vertices_distinct*
+- **Branch 6** @ line 573 — *opposite_vertices_distinct* — **COVERED** → Me205
   - What it tests: ov1 and ov2 are different vertex objects
   - Repair action: Merge ov2 into ov1 by redirecting edges
   - Suggested fixture: defect mentioning 'if (ov1 != ov2)'
-- **Branch 7** @ line 576 — *vertex_replacement_in_edges*
+- **Branch 7** @ line 576 — *vertex_replacement_in_edges* — **COVERED** → Me206
   - What it tests: All edges incident to ov2 are updated
   - Repair action: Replace all ov2 refs with ov1 in incident edges
   - Suggested fixture: defect mentioning 'e->replaceVertex(ov2, ov1)'
-- **Branch 8** @ line 581 — *edge_triangle_selection*
+- **Branch 8** @ line 581 — *edge_triangle_selection* — **COVERED** → Me207
   - What it tests: be2 has one incident triangle
   - Repair action: Select triangle from be2->t1 or be2->t2
   - Suggested fixture: defect mentioning '(be2->t1!=NULL)?(be2->t1):(be2->t2)'
-- **Branch 9** @ line 582 — *triangle_edge_update*
+- **Branch 9** @ line 582 — *triangle_edge_update* — **COVERED** → Me208
   - What it tests: Triangle references be2 edge
   - Repair action: Replace be2 with be1 in triangle
   - Suggested fixture: defect mentioning 't->replaceEdge(be2, be1)'
-- **Branch 10** @ line 586 — *recursive_zip*
+- **Branch 10** @ line 586 — *recursive_zip* — **COVERED** → Me209
   - What it tests: Recursive zip call on merged vertex
   - Repair action: Recurse zip() and accumulate count
   - Suggested fixture: defect mentioning 'ov1->zip(check_geom)'
+
+Fixture IDs: Me200 Me201 Me202 Me203 Me204 Me205 Me206 Me207 Me208 Me209
 
 
 #### `src/Algorithms/checkAndRepair.cpp`
