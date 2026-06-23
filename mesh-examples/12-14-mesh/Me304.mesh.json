@@ -1,0 +1,106 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      2.0,
+      0.0
+    ],
+    [
+      -1.0,
+      -1.0,
+      0.0
+    ],
+    [
+      3.0,
+      -1.0,
+      0.0
+    ],
+    [
+      1.0,
+      4.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      3,
+      1,
+      0
+    ],
+    [
+      3,
+      4,
+      1
+    ],
+    [
+      4,
+      2,
+      1
+    ],
+    [
+      4,
+      5,
+      2
+    ],
+    [
+      5,
+      0,
+      2
+    ],
+    [
+      5,
+      3,
+      0
+    ]
+  ],
+  "metadata": {
+    "id": "Me304",
+    "schema_version": 0,
+    "defect_class": "retriangulate_region_unlinked",
+    "title": "retriangulateSelectedRegion_triangle_unlink: selected triangles unlinked, hole exposed (Branch 5)",
+    "assertions": [
+      {
+        "kind": "hole_boundary",
+        "loop": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          3,
+          4
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          4,
+          5
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          3,
+          5
+        ],
+        "n": 1
+      }
+    ]
+  }
+}

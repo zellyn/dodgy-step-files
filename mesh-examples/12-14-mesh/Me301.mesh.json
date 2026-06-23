@@ -1,0 +1,59 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      2.0,
+      0.0
+    ],
+    [
+      3.0,
+      2.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      2,
+      3,
+      1
+    ]
+  ],
+  "metadata": {
+    "id": "Me301",
+    "schema_version": 0,
+    "defect_class": "retriangulate_region_orientation_conflict",
+    "title": "retriangulateSelectedRegion_normal_orientation_conflict: region normals conflict, abort (Branch 2)",
+    "assertions": [
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          2
+        ],
+        "n": 2
+      },
+      {
+        "kind": "adjacent_triangles_inconsistent_winding",
+        "triangles": [
+          0,
+          1
+        ]
+      }
+    ]
+  }
+}

@@ -3553,40 +3553,32 @@ Fixture IDs: Me200 Me201 Me202 Me203 Me204 Me205 Me206 Me207 Me208 Me209
   - Suggested fixture: defect mentioning 'unlinkTriangle(s)'
 
 ##### `Basic_TMesh.retriangulateSelectedRegion` — lines 950–989
-(8 branches; all UNCOVERED — no mesh fixtures exist yet)
+(8 branches; ALL COVERED by Me300–Me307 — wave 11B, 2026-06-21)
 
-- **Branch 1** @ line 959 — *insufficient_triangles*
+- **Branch 1** @ line 959 — *insufficient_triangles* — COVERED (Me300: single selected triangle, numels()==1 < 2; edge (v0,v1) n=1; early-abort guard)
   - What it tests: Selected region has fewer than 2 triangles
   - Repair action: Warning: abort retriangulation of trivial region
-  - Suggested fixture: defect mentioning 'ttbr.numels() < 2'
-- **Branch 2** @ line 966 — *normal_orientation_conflict*
+- **Branch 2** @ line 966 — *normal_orientation_conflict* — COVERED (Me301: t0 CCW +Z, t1=(v2,v3,v1) CW -Z; shared edge n=2; inconsistent_winding asserted)
   - What it tests: Triangle normal opposite to accumulated region normal
   - Repair action: Warning: abort if geometry too complex for Delaunay
-  - Suggested fixture: defect mentioning 'u->getNormal()*nor <= 0.0'
-- **Branch 3** @ line 972 — *non_simple_selection*
+- **Branch 3** @ line 972 — *non_simple_selection* — COVERED (Me302: two disjoint patches, all edges n=1; triangle_not_reachable_from asserted)
   - What it tests: Selection is topologically non-simple (multiply connected)
   - Repair action: Warning: abort retriangulation of non-simple region
-  - Suggested fixture: defect mentioning '!isSelectionSimple'
-- **Branch 4** @ line 978 — *internal_vertices_extraction*
+- **Branch 4** @ line 978 — *internal_vertices_extraction* — COVERED (Me303: 4-fan around vi=(1,1,0); all vi-edges interior n=2; outer edges n=1; euler V=5,E=8,F=4,chi=1)
   - What it tests: Get boundary edges and inner vertices of region
   - Repair action: Extract region topology for hole-filling algorithm
-  - Suggested fixture: defect mentioning 'getRegionInternalVertices'
-- **Branch 5** @ line 980 — *triangle_unlink*
+- **Branch 5** @ line 980 — *triangle_unlink* — COVERED (Me304: 6-frame triangles around triangular hole; hole_boundary=[0,1,2]; outer edges n=1)
   - What it tests: Remove selected triangles from mesh
   - Repair action: Detach all selected triangles for re-triangulation
-  - Suggested fixture: defect mentioning 'unlinkTriangle(u)'
-- **Branch 6** @ line 981 — *boundary_edge_extraction*
+- **Branch 6** @ line 981 — *boundary_edge_extraction* — COVERED (Me305: quad hole; hole_boundary=[0,1,2,3]; boundary edges n=1; (v0,v1) is ms->head())
   - What it tests: First element is boundary edge of region
   - Repair action: Extract start edge for TriangulateHole
-  - Suggested fixture: defect mentioning 'e = ((Edge *)ms->head()->data)'
-- **Branch 7** @ line 982 — *vertex_list_extraction*
+- **Branch 7** @ line 982 — *vertex_list_extraction* — COVERED (Me306: quad hole + isolated Steiner vs=(1.5,1.5,0); isolated_vertex=4; vs is vl entry)
   - What it tests: Second element is internal vertex list
   - Repair action: Extract vertex list for Delaunay triangulation
-  - Suggested fixture: defect mentioning 'vl = ((List *)ms->head()->next()'
-- **Branch 8** @ line 983 — *hole_triangulation*
+- **Branch 8** @ line 983 — *hole_triangulation* — COVERED (Me307: 3-tri re-fill + Steiner vs=(1.5,1,0); vs-edges n=2; former boundary n=2; euler V=7,E=12,F=6,chi=1)
   - What it tests: Delaunay hole-filling with internal vertices
   - Repair action: Re-triangulate hole with Steiner points
-  - Suggested fixture: defect mentioning 'TriangulateHole(e, vl)'
 
 ##### `Basic_TMesh.splitEdge` — lines 1861–1902
 (10 branches; ALL COVERED by Me180–Me189 — wave 7B, 2026-06-21)

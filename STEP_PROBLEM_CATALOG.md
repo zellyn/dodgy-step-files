@@ -35284,6 +35284,94 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me287.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me300 — retriangulateSelectedRegion_insufficient_triangles: region < 2 triangles, abort (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: retriangulateSelectedRegion / trivial-region)
+- **Sources**: MeshFix `Basic_TMesh.retriangulateSelectedRegion` Branch 1 (*insufficient_triangles*: `ttbr.numels() < 2`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Selected region contains only 1 triangle (< 2). `retriangulateSelectedRegion` aborts with a warning because the region is too small to have a meaningful boundary loop. Mesh has 3 triangles: t0 is the sole selected region member (boundary edge (v0,v1) n=1), t1 and t2 are adjacent unselected frame triangles.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(3,2,0), v4=(-1,2,0); t0=(v0,v1,v2), t1=(v1,v3,v2), t2=(v0,v2,v4); assert edge (v0,v1) n=1; assert t0 area < 5.0.
+- **Expected kernel behavior**: Branch 1 fires; warn 'Selected region is too small'; retriangulateSelectedRegion returns without creating new geometry.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=5.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me300.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me301 — retriangulateSelectedRegion_normal_orientation_conflict: region normals conflict, abort (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: retriangulateSelectedRegion / orientation-conflict)
+- **Sources**: MeshFix `Basic_TMesh.retriangulateSelectedRegion` Branch 2 (*normal_orientation_conflict*: `u->getNormal()*nor <= 0.0`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Selected region has two triangles with conflicting normals. t0=(v0,v1,v2) is CCW (+Z normal); t1=(v2,v3,v1) is CW (-Z normal). When the algorithm accumulates the region normal from t0, then checks t1, the dot product is negative — the geometry is too complex for Delaunay retriangulation. Adjacent triangles share edge (v1,v2) with n=2.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(3,2,0); t0=(v0,v1,v2) CCW; t1=(v2,v3,v1) CW; assert edge (v1,v2) n=2; assert adjacent_triangles_inconsistent_winding.
+- **Expected kernel behavior**: Branch 2 fires; warn 'Selected region is too complex for retriangulation'; returns without re-triangulating.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me301.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me302 — retriangulateSelectedRegion_non_simple_selection: two disconnected selected patches, abort (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: retriangulateSelectedRegion / non-simple-topology)
+- **Sources**: MeshFix `Basic_TMesh.retriangulateSelectedRegion` Branch 3 (*non_simple_selection*: `!isSelectionSimple()`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two completely disjoint triangle patches are both in the selected region. The selection boundary forms two disconnected loops — `isSelectionSimple()` returns false. Mesh: Patch A = t0=(v0,v1,v2) isolated at origin; Patch B = t1=(v3,v4,v5) isolated at x=5. All six edges are boundary (n=1). t1 is unreachable from t0 by edge-walking.
+- **Reproducer recipe**: v0..v2 near origin, v3..v5 near x=5; one triangle each; all edges n=1; triangle_not_reachable_from target=1 source=0.
+- **Expected kernel behavior**: Branch 3 fires; `isSelectionSimple` returns false; warn 'Selected region is not simply connected'; return without retriangulating.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `triangle_not_reachable_from source=0 target=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me302.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me303 — retriangulateSelectedRegion_internal_vertices_extraction: central vertex is internal to region (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: retriangulateSelectedRegion / internal-vertex-extraction)
+- **Sources**: MeshFix `Basic_TMesh.retriangulateSelectedRegion` Branch 4 (*internal_vertices_extraction*: `getRegionInternalVertices(ttbr)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four-triangle fan around a central vertex vi=(1,1,0). The fan covers a square region; vi is interior (all edges from vi are shared by 2 triangles — interior). The outer square boundary edges (v0-v1-v2-v3) are each boundary (n=1). `getRegionInternalVertices` identifies vi as a Steiner point.
+- **Reproducer recipe**: vi=(1,1,0); v0=(0,0,0), v1=(2,0,0), v2=(2,2,0), v3=(0,2,0); 4 fan triangles; assert edges (vi,vX) n=2; outer edges n=1; euler V=5,E=8,F=4,chi=1.
+- **Expected kernel behavior**: Branch 4 runs; `getRegionInternalVertices` returns list containing vi; used by TriangulateHole as Steiner points.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `euler_characteristic v=5 e=8 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me303.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me304 — retriangulateSelectedRegion_triangle_unlink: selected triangles unlinked, hole exposed (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: retriangulateSelectedRegion / triangle-unlink)
+- **Sources**: MeshFix `Basic_TMesh.retriangulateSelectedRegion` Branch 5 (*triangle_unlink*: `unlinkTriangle(u)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Post-unlink state: 6 frame triangles surround a triangular hole (vi0,vi1,vi2). The 3 originally-selected triangles have been removed, leaving a hole with 3 boundary edges each incident on 1 frame triangle. The outer edges (vo0-vo1-vo2) are also each boundary (n=1). The hole_boundary assertion confirms the 3 inner edges are true boundaries.
+- **Reproducer recipe**: vi0=(0,0,0), vi1=(2,0,0), vi2=(1,2,0); vo0=(-1,-1,0), vo1=(3,-1,0), vo2=(1,4,0); 6 frame triangles; assert hole_boundary=[vi0,vi1,vi2]; outer edges n=1.
+- **Expected kernel behavior**: Branch 5 fires; each selected triangle is unlinked in sequence; the hole boundary becomes visible for TriangulateHole.
+- **Mesh assertion**: `hole_boundary loop=[0,1,2]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me304.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me305 — retriangulateSelectedRegion_boundary_edge_extraction: boundary edge e = ms->head() (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: retriangulateSelectedRegion / boundary-edge-extraction)
+- **Sources**: MeshFix `Basic_TMesh.retriangulateSelectedRegion` Branch 6 (*boundary_edge_extraction*: `e = ((Edge *)ms->head()->data)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Quadrilateral hole (v0,v1,v2,v3) bounded by 4 frame triangles. The first element of the region topology list `ms` is the boundary edge (v0,v1) which serves as the starting edge for `TriangulateHole`. All 4 hole-boundary edges are n=1; hole_boundary assertion confirms the loop.
+- **Reproducer recipe**: v0=(0,0,0), v1=(3,0,0), v2=(3,3,0), v3=(0,3,0); vo0..vo3 as outer apices; 4 frame triangles; assert hole_boundary=[v0,v1,v2,v3]; all boundary edges n=1.
+- **Expected kernel behavior**: Branch 6 extracts `e = ms->head()->data`; e is (v0,v1); passed to TriangulateHole as the starting boundary edge.
+- **Mesh assertion**: `hole_boundary loop=[0,1,2,3]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me305.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me306 — retriangulateSelectedRegion_vertex_list_extraction: vl = internal vertex list (Branch 7)
+- **Category**: §12.14 mesh defects (sub-class: retriangulateSelectedRegion / vertex-list-extraction)
+- **Sources**: MeshFix `Basic_TMesh.retriangulateSelectedRegion` Branch 7 (*vertex_list_extraction*: `vl = ((List *)ms->head()->next()->data)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Quadrilateral hole (v0..v3) plus one isolated Steiner vertex vs=(1.5,1.5,0) that was interior to the unlinked region. After unlinking, vs is unreferenced by any remaining triangle — it is the `vl` vertex list entry for TriangulateHole. Four frame triangles bound the hole; vs is confirmed as isolated_vertex.
+- **Reproducer recipe**: v0..v3 as hole quad; vs=(1.5,1.5,0) isolated; 4 frame triangles; assert isolated_vertex=vs; hole_boundary=[v0,v1,v2,v3]; boundary edges n=1.
+- **Expected kernel behavior**: Branch 7 extracts `vl = ms->head()->next()->data`; vl is the list containing vs; passed to TriangulateHole as Steiner points.
+- **Mesh assertion**: `isolated_vertex vertex=4`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2,3]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me306.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me307 — retriangulateSelectedRegion_hole_triangulation: TriangulateHole with Steiner point (Branch 8)
+- **Category**: §12.14 mesh defects (sub-class: retriangulateSelectedRegion / hole-triangulation)
+- **Sources**: MeshFix `Basic_TMesh.retriangulateSelectedRegion` Branch 8 (*hole_triangulation*: `TriangulateHole(e, vl)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Post-retriangulation state: triangular hole (v0,v1,v2) has been re-filled with 3 Delaunay triangles using Steiner point vs=(1.5,1.0,0). Three frame triangles provide context. All edges from vs are interior (n=2); the original hole-boundary edges are now interior (n=2) shared between frame and re-tri triangles. Euler V=7,E=12,F=6,chi=1 confirms open-disk topology.
+- **Reproducer recipe**: v0=(0,0,0), v1=(3,0,0), v2=(1.5,3,0); vs=(1.5,1,0); 3 frame triangles + 3 re-tri triangles; assert edges (vX,vs) n=2; former boundary edges n=2; euler V=7,E=12,F=6,chi=1.
+- **Expected kernel behavior**: Branch 8 calls `TriangulateHole(e, vl)`; hole filled with 3 new triangles incorporating the Steiner point vs; mesh is repaired.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=7 e=12 f=6 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me307.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me310 — watsonInsert_point_in_circumsphere: inserted point inside circumsphere triggers cavity marking (Branch 1)
 - **Category**: §12.14 mesh defects (sub-class: holeFilling / watsonInsert / circumsphere-marking)
 - **Sources**: MeshFix `holeFilling::watsonInsert` Branch 1 (*POINT_IN_CIRCUMSPHERE*: `t->inSphere(p)` → `MARK_BIT(t, 6)`, `todo.appendHead(t)`); `MESH_HEAL_COVERAGE.md`.
