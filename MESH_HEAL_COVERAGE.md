@@ -1631,37 +1631,37 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
 (13 methods, 91 branches)
 
 ##### `Basic_TMesh.CreateTriangle` — lines 361–384
-(8 branches; all UNCOVERED — no mesh fixtures exist yet)
+(8 branches; COVERED — Me350–Me357)
 
-- **Branch 1** @ line 365 — *e1_e2_orientation_check*
+- **Branch 1** @ line 365 — *e1_e2_orientation_check* — **Me350**
   - What it tests: e1 and e2 share a vertex and t1/t2 slots match orientation
   - Repair action: Assign e1's t1 or t2 based on common vertex position
   - Suggested fixture: defect mentioning 'e1->commonVertex(e2) == e1->v2 && e1->t1 == NULL'
-- **Branch 2** @ line 368 — *e2_e3_orientation_check*
+- **Branch 2** @ line 368 — *e2_e3_orientation_check* — **Me351**
   - What it tests: e2 and e3 share a vertex and t1/t2 slots match
   - Repair action: Assign e2's t1 or t2 based on orientation
   - Suggested fixture: defect mentioning 'e2->commonVertex(e3) == e2->v2 && e2->t1 == NULL'
-- **Branch 3** @ line 371 — *e3_e1_orientation_check*
+- **Branch 3** @ line 371 — *e3_e1_orientation_check* — **Me352**
   - What it tests: e3 and e1 share a vertex and t1/t2 slots available
   - Repair action: Assign e3's t1 or t2 based on orientation
   - Suggested fixture: defect mentioning 'e3->commonVertex(e1) == e3->v2 && e3->t1 == NULL'
-- **Branch 4** @ line 375 — *triangle_creation*
+- **Branch 4** @ line 375 — *triangle_creation* — **Me353**
   - What it tests: New triangle created from edges
   - Repair action: Call newTriangle(e1, e2, e3)
   - Suggested fixture: defect mentioning 'tt = newTriangle(e1,e2,e3)'
-- **Branch 5** @ line 376 — *triangle_adjacency_assignment*
+- **Branch 5** @ line 376 — *triangle_adjacency_assignment* — **Me354**
   - What it tests: Assign triangle to all three edges
   - Repair action: Set *at1, *at2, *at3 to tt
   - Suggested fixture: defect mentioning '*at1 = *at2 = *at3 = tt'
-- **Branch 6** @ line 377 — *mesh_list_append*
+- **Branch 6** @ line 377 — *mesh_list_append* — **Me355**
   - What it tests: Triangle added to mesh list T
   - Repair action: Append triangle to head of T
   - Suggested fixture: defect mentioning 'T.appendHead(tt)'
-- **Branch 7** @ line 379 — *visit_flag_mark*
+- **Branch 7** @ line 379 — *visit_flag_mark* — **Me356**
   - What it tests: Mark triangle as visited
   - Repair action: Set VISITED bit on newly created triangle
   - Suggested fixture: defect mentioning 'MARK_VISIT(tt)'
-- **Branch 8** @ line 381 — *topology_invalidation*
+- **Branch 8** @ line 381 — *topology_invalidation* — **Me357**
   - What it tests: Mark topology dirty after triangle creation
   - Repair action: Set d_boundaries, d_handles, d_shells flags
   - Suggested fixture: defect mentioning 'd_boundaries = d_handles = d_shells = 1'

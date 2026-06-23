@@ -35906,6 +35906,128 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me347.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me350 — CreateTriangle_e1_e2_orientation_check: e1->v2 is junction with e2, assign e1->t1 slot
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.CreateTriangle / orientation-slot-assignment)
+- **Sources**: MeshFix `Basic_TMesh.CreateTriangle` Branch 1 (*e1_e2_orientation_check*: `e1->commonVertex(e2)==e1->v2 && e1->t1==NULL`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four vertices forming two existing triangles plus a fill triangle. The fill triangle tf=(v0,v2,v3) is created by CreateTriangle with e1=(v0,v2). Edge e1's head (v2) is the junction with e2=(v2,v3), and e1->t1 is free, so Branch 1 sets at1=&(e1->t1). After creation edge (v0,v2) is interior (n=2), confirming the t1 slot was assigned.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(3,2,0); t0=(v0,v1,v2), t1=(v1,v3,v2); tf=(v0,v2,v3). Assert edge(v0,v2) n=2, edge(v1,v2) n=2, edge(v2,v3) n=2, boundary edges n=1.
+- **Expected kernel behavior**: Branch 1 fires; at1 set to &(e1->t1); edge (v0,v2) becomes interior after CreateTriangle completes.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me350.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me351 — CreateTriangle_e2_e3_orientation_check: e2->v2 is junction with e3, assign e2->t1 slot
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.CreateTriangle / orientation-slot-assignment)
+- **Sources**: MeshFix `Basic_TMesh.CreateTriangle` Branch 2 (*e2_e3_orientation_check*: `e2->commonVertex(e3)==e2->v2 && e2->t1==NULL`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Reference triangle tref=(v0,v1,v2) occupies one slot of edge (v1,v2). The new triangle tf=(v3,v1,v2) is created by CreateTriangle with e2=(v1,v2). e2's head vertex v2 is also the start of e3=(v2,v3), so Branch 2 fires: e2->t1 is free, at2=&(e2->t1). After creation (v1,v2) becomes interior (n=2).
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(2,2,0), v3=(0,2,0); tref=(v0,v1,v2); tf=(v3,v1,v2). Assert edge(v1,v2) n=2, edge(v2,v3) n=1, other edges n=1.
+- **Expected kernel behavior**: Branch 2 fires; at2 set to &(e2->t1); shared edge (v1,v2) has n=2 after CreateTriangle.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me351.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me352 — CreateTriangle_e3_e1_orientation_check: e3->v2 is junction with e1, assign e3->t1 slot
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.CreateTriangle / orientation-slot-assignment)
+- **Sources**: MeshFix `Basic_TMesh.CreateTriangle` Branch 3 (*e3_e1_orientation_check*: `e3->commonVertex(e1)==e3->v2 && e3->t1==NULL`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two existing triangles tA=(v0,v1,v3) and tB=(v1,v2,v3) plus a new gap-closing triangle tf=(v0,v3,v2). In tf, e3=(v0,v3) has its head at v3 which is also the junction with e1=(v3,v2). Branch 3 fires: e3->t1 is free, at3=&(e3->t1). After creation edge (v0,v3) is interior (n=2).
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0), v3=(1,1,0); tA=(v0,v1,v3), tB=(v1,v2,v3), tf=(v0,v3,v2). Assert edge(v0,v3) n=2, edge(v2,v3) n=2, edge(v0,v2) n=1, others as expected.
+- **Expected kernel behavior**: Branch 3 fires; at3 set to &(e3->t1); edge (v0,v3) becomes interior.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me352.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me353 — CreateTriangle_triangle_creation: tt=newTriangle(e1,e2,e3) allocates triangle object
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.CreateTriangle / triangle-creation)
+- **Sources**: MeshFix `Basic_TMesh.CreateTriangle` Branch 4 (*triangle_creation*: `tt = newTriangle(e1,e2,e3)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Single newly created triangle t0=(v0,v1,v2) with all three boundary edges (n=1). This is the minimum output of newTriangle(e1,e2,e3): the object exists, its three bounding edges are set, and no neighbours exist yet. The triangle is non-degenerate (area=3.0).
+- **Reproducer recipe**: v0=(0,0,0), v1=(3,0,0), v2=(1.5,2,0); t0=(v0,v1,v2). All edges n=1; triangle_area_lt(t0, 10.0).
+- **Expected kernel behavior**: Branch 4 fires; tt object instantiated from e1,e2,e3; all three edges store tt in their t-slot.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=10.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me353.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me354 — CreateTriangle_triangle_adjacency_assignment: *at1=*at2=*at3=tt links edge slots to triangle
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.CreateTriangle / adjacency-assignment)
+- **Sources**: MeshFix `Basic_TMesh.CreateTriangle` Branch 5 (*triangle_adjacency_assignment*: `*at1 = *at2 = *at3 = tt`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing diagonal edge (v0,v2) of a rectangle. The first CreateTriangle wrote t0 into e_diag->t1; the second wrote t1 into e_diag->t2. The resulting n=2 on the diagonal confirms both *at= assignments fired. Euler: V=4, E=5, F=2, chi=1 (open disk).
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(2,2,0), v3=(0,2,0); t0=(v0,v1,v2), t1=(v0,v2,v3). edge(v0,v2) n=2; boundary edges n=1; euler_characteristic v=4 e=5 f=2 chi=1.
+- **Expected kernel behavior**: Branch 5 fires for each CreateTriangle call; diagonal edge slot fully occupied after both calls.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me354.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me355 — CreateTriangle_mesh_list_append: T.appendHead(tt) inserts triangle into mesh list T
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.CreateTriangle / mesh-list-append)
+- **Sources**: MeshFix `Basic_TMesh.CreateTriangle` Branch 6 (*mesh_list_append*: `T.appendHead(tt)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three fan triangles around a central apex v0, each added by CreateTriangle's T.appendHead. All three are reachable via the mesh list (confirmed by Euler count V=5,E=7,F=3,chi=1). Interior fan edges (n=2) between adjacent triangles prove each triangle was fully registered in T.
+- **Reproducer recipe**: v0=(1,1,0) apex; v1=(0,0,0), v2=(2,0,0), v3=(2,2,0), v4=(0,2,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v4). Fan edges n=2; boundary edges n=1; euler v=5 e=7 f=3 chi=1.
+- **Expected kernel behavior**: Branch 6 fires 3 times; all three triangles appear in T; mesh iteration reaches all F=3 faces.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `euler_characteristic v=5 e=7 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me355.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me356 — CreateTriangle_visit_flag_mark: MARK_VISIT(tt) tags newly created triangle as visited
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.CreateTriangle / visit-flag)
+- **Sources**: MeshFix `Basic_TMesh.CreateTriangle` Branch 7 (*visit_flag_mark*: `MARK_VISIT(tt)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A strip of three triangles: two pre-existing (tpre0, tpre1) plus one newly created (tnew). tnew shares edge (v1,v3) with tpre0 and edge (v1,v4) with tpre1, and has boundary edge (v3,v4). The complete edge linkage confirms CreateTriangle ran through Branch 7 (MARK_VISIT fires after T.appendHead). Euler: V=5, E=7, F=3, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0), v3=(0,1,0), v4=(1,1,0); tpre0=(v0,v1,v3), tpre1=(v1,v2,v4), tnew=(v1,v4,v3). edge(v1,v3) n=2, edge(v1,v4) n=2, edge(v3,v4) n=1; euler v=5 e=7 f=3 chi=1.
+- **Expected kernel behavior**: Branch 7 fires on tnew; MARK_VISIT sets VISITED bit so subsequent fillSmallBoundaries/retriangulate passes skip tt.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=1`
+- **Mesh assertion**: `euler_characteristic v=5 e=7 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me356.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me357 — CreateTriangle_topology_invalidation: d_boundaries=d_handles=d_shells=1 after shell closure
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.CreateTriangle / topology-invalidation)
+- **Sources**: MeshFix `Basic_TMesh.CreateTriangle` Branch 8 (*topology_invalidation*: `d_boundaries = d_handles = d_shells = 1`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Tetrahedron: 4 vertices, 6 edges, 4 triangles, χ=2 (closed genus-0 surface). The fourth and final triangle tf=(v0,v2,v3) is added by CreateTriangle, closing the last open boundary. Branch 8 immediately sets all three topology-cache flags dirty so the next query recomputes boundary count, genus (handles), and shell count from scratch.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,0.33,1); t0=(v0,v1,v2), t1=(v0,v3,v1), t2=(v1,v3,v2), tf=(v0,v2,v3). All 6 edges n=2; euler_characteristic v=4 e=6 f=4 chi=2.
+- **Expected kernel behavior**: Branch 8 fires after tf is appended; d_boundaries=d_handles=d_shells=1; next boundary/genus/shell query triggers lazy recompute yielding 0 boundaries, 0 handles, 1 shell.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me357.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me360 — remove_isolated_points_empty_input: empty vertex list triggers early return with 0 removed
 - **Category**: §12.14 mesh defects (sub-class: isolated_vertex / remove-isolated-points-in-polygon-soup)
 - **Sources**: CGAL PMP `remove_isolated_points_in_polygon_soup` Branch 1 (*empty_input*: `if(points.empty()) return 0;`); `MESH_HEAL_COVERAGE.md`.
