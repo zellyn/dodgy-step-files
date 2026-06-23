@@ -3407,36 +3407,29 @@ Fixture IDs: Me200 Me201 Me202 Me203 Me204 Me205 Me206 Me207 Me208 Me209
   - Suggested fixture: defect mentioning 'closest_triangle != NULL', 'getVector().x'
 
 ##### `Basic_TMesh.isSelectionSimple` — lines 994–1044
-(7 branches; all UNCOVERED — no mesh fixtures exist yet)
+(7 branches; ALL COVERED by Me370–Me376 — wave 13C, 2026-06-21)
 
-- **Branch 1** @ line 996 — *empty_selection*
+- **Branch 1** @ line 996 — *empty_selection* — COVERED (Me370: 2-triangle strip, selection empty, numels==0 → return 0)
   - What it tests: Selection list is empty
   - Repair action: Return 0 (false) - empty region not topologically simple
-  - Suggested fixture: defect mentioning 's->numels()', 'return 0'
-- **Branch 2** @ line 1008 — *visited_neighbor*
+- **Branch 2** @ line 1008 — *visited_neighbor* — COVERED (Me371: 3-triangle fan, BFS discovers t1 and t2 via IS_VISITED+!IS_VISITED2)
   - What it tests: Neighbor triangle is in selection and not yet marked
   - Repair action: Add to BFS queue and mark visited2
-  - Suggested fixture: defect mentioning 'IS_VISITED(ta) && !IS_VISITED2(ta)', 'MARK_VISIT2'
-- **Branch 3** @ line 1009 — *boundary_neighbor*
+- **Branch 3** @ line 1009 — *boundary_neighbor* — COVERED (Me372: single triangle, all neighbors NULL, break fires on first NULL)
   - What it tests: Neighbor is NULL (mesh boundary) or unvisited
   - Repair action: Break if mesh boundary; else add edge to boundary list
-  - Suggested fixture: defect mentioning 'ta == NULL', 'break'
-- **Branch 4** @ line 1017 — *mesh_boundary_in_selection*
+- **Branch 4** @ line 1017 — *mesh_boundary_in_selection* — COVERED (Me373: 2-triangle connected strip, outer boundary edges fill top, top.numels()>0 → return 0)
   - What it tests: Selection touches mesh boundary
   - Repair action: Return 0 - topologically invalid
-  - Suggested fixture: defect mentioning 'top.numels()', 'Mesh-boundary'
-- **Branch 5** @ line 1018 — *disconnected_selection*
+- **Branch 5** @ line 1018 — *disconnected_selection* — COVERED (Me374: two disjoint patches both selected, BFS visits 1, numels==2, nv!=numels → return 0)
   - What it tests: Selection is not connected (nv != numels)
   - Repair action: Return 0 - disconnected region
-  - Suggested fixture: defect mentioning 'nv != s->numels()', 'Disconnected'
-- **Branch 6** @ line 1034 — *boundary_edge_count*
+- **Branch 6** @ line 1034 — *boundary_edge_count* — COVERED (Me375: figure-8 bowtie selection, pinch vertex v0 has 4 boundary edges nae>1 → break)
   - What it tests: Vertex has multiple incident boundary edges
   - Repair action: Break if nae > 1 - violates simple loop
-  - Suggested fixture: defect mentioning 'nae > 1', 'break'
-- **Branch 7** @ line 1041 — *boundary_loop_complexity*
+- **Branch 7** @ line 1041 — *boundary_loop_complexity* — COVERED (Me376: annular 6-triangle ring with inner hole, two boundary loops, nv != bdr.numels() → return 0)
   - What it tests: Boundary loop has more edges than vertices (non-simple)
   - Repair action: Return 0 - non-simple boundary
-  - Suggested fixture: defect mentioning 'nv != bdr.numels()', 'Non-simple'
 
 ##### `Basic_TMesh.iterativeEdgeSwaps` — lines 1554–1614
 (6 branches; all UNCOVERED — no mesh fixtures exist yet)

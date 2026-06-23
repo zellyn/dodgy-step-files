@@ -36238,3 +36238,88 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `triangle_not_reachable_from target=7 source=0`
 - **Fixture path**: mesh-examples/12-14-mesh/Me297.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me370 — isSelectionSimple_empty_selection: no triangles marked selected, numels==0, return 0 (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: isSelectionSimple / empty-selection)
+- **Sources**: MeshFix `Basic_TMesh.isSelectionSimple` Branch 1 (*empty_selection*: `!s->numels() → return 0`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A valid 2-triangle strip mesh (quadrilateral split diagonally) where the selection set is empty. No triangle is marked IS_VISITED before the call. `s->numels() == 0` → Branch 1 fires immediately and returns 0. All outer edges are boundary (n=1); the shared diagonal edge (v0,v2) is interior (n=2). Euler: V=4, E=5, F=2, chi=1 (open disk).
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(1,1,0), v3=(0,1,0); t0=(v0,v1,v2), t1=(v0,v2,v3); assert_edge_shared(v0,v2,2); outer edges n=1; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 1 fires; `!s->numels()` is true; function returns 0 (not simple) immediately without BFS.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me370.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me371 — isSelectionSimple_visited_neighbor: 3-triangle fan, BFS discovers each via IS_VISITED+!IS_VISITED2 (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: isSelectionSimple / BFS-expansion)
+- **Sources**: MeshFix `Basic_TMesh.isSelectionSimple` Branch 2 (*visited_neighbor*: `IS_VISITED(ta) && !IS_VISITED2(ta) → MARK_VISIT2 + queue`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 3-triangle fan sharing a common hub vertex v0. All three triangles are in the selection (IS_VISITED). BFS from t0 discovers t1 via spoke edge (v0,v2) and t2 via spoke edge (v0,v3) — each triggers Branch 2. After BFS: nv==3==numels (connected), top is empty (all inter-selection edges, no mesh boundary) → returns true (1). Inner spoke edges (v0,v2) and (v0,v3) are n=2; end-spokes and rim are n=1. Euler: V=5, E=7, F=3, chi=1.
+- **Reproducer recipe**: v0=(0,0,0) hub; v1=(1,0,0), v2=(0.5,1,0), v3=(-0.5,1,0), v4=(-1,0,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v4); assert_edge_shared(v0,v2,2); assert_edge_shared(v0,v3,2); euler V=5,E=7,F=3,chi=1.
+- **Expected kernel behavior**: Branch 2 fires twice during BFS (once for t1, once for t2); both marked IS_VISITED2 and queued; final nv==3 → selection is connected and simple.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=5 e=7 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me371.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me372 — isSelectionSimple_boundary_neighbor: single selected triangle at mesh boundary, NULL neighbor → break (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: isSelectionSimple / mesh-boundary-neighbor)
+- **Sources**: MeshFix `Basic_TMesh.isSelectionSimple` Branch 3 (*boundary_neighbor*: `ta == NULL → break`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A single isolated triangle (v0,v1,v2) forming the entire mesh. When isSelectionSimple processes this triangle, all three neighbor slots are NULL (mesh boundary). On the first neighbor walk, `ta == NULL` → Branch 3's break fires. Euler: V=3, E=3, F=1, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0); t0=(v0,v1,v2); all three edges n=1; euler V=3,E=3,F=1,chi=1.
+- **Expected kernel behavior**: BFS processes t0; first neighbor walk hits NULL; Branch 3 break fires; returns 0 (selection touching mesh boundary).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `euler_characteristic v=3 e=3 f=1 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me372.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me373 — isSelectionSimple_mesh_boundary_in_selection: 2-triangle strip with open boundary, top.numels()>0 → return 0 (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: isSelectionSimple / mesh-boundary-in-selection)
+- **Sources**: MeshFix `Basic_TMesh.isSelectionSimple` Branch 4 (*mesh_boundary_in_selection*: `top.numels() → return 0`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two adjacent triangles sharing interior edge (v1,v2) — a connected 2-triangle strip. Both selected. BFS from t0 discovers t1 via Branch 2. For the four outer boundary edges, Branch 3 appends each to `top`. After BFS, `top.numels() > 0` → Branch 4 fires → return 0. Interior shared edge (v1,v2) is n=2; four outer edges are n=1. Euler: V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,1,0), v3=(3,1,0); t0=(v0,v1,v2), t1=(v1,v3,v2); assert_edge_shared(v1,v2,2); outer edges n=1; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: BFS completes (connected); outer boundary edges fill `top`; Branch 4 fires; returns 0 (selection touches mesh boundary).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me373.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me374 — isSelectionSimple_disconnected_selection: two disjoint selected patches, nv != numels → return 0 (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: isSelectionSimple / disconnected-selection)
+- **Sources**: MeshFix `Basic_TMesh.isSelectionSimple` Branch 5 (*disconnected_selection*: `nv != s->numels() → return 0`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two completely disjoint triangle patches, both in the selection (IS_VISITED). BFS starts at Patch A (t0) and visits only t0 (nv=1). s->numels()=2 because t1 (Patch B) is also selected but unreachable. Branch 5 fires: nv(1) != numels(2) → return 0. All edges are boundary (n=1). t1 not reachable from t0. Euler: V=6, E=6, F=2, chi=2.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0); v3=(8,0,0), v4=(9,0,0), v5=(8.5,1,0); t0=(v0,v1,v2), t1=(v3,v4,v5); all edges n=1; triangle_not_reachable_from target=1 source=0; euler V=6,E=6,F=2,chi=2.
+- **Expected kernel behavior**: BFS from t0 reaches nv=1; s->numels()=2; Branch 5 fires; returns 0 (disconnected).
+- **Mesh assertion**: `triangle_not_reachable_from source=0 target=1`
+- **Mesh assertion**: `euler_characteristic v=6 e=6 f=2 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me374.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me375 — isSelectionSimple_boundary_edge_count: figure-8 selection with pinch vertex, nae>1 → break (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: isSelectionSimple / boundary-edge-count)
+- **Sources**: MeshFix `Basic_TMesh.isSelectionSimple` Branch 6 (*boundary_edge_count*: `nae > 1 → break`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangle patches sharing a single vertex v0 (bowtie) but no shared edge — a figure-8 shaped selection. All edges are boundary (n=1). When isSelectionSimple traverses the boundary loop, it reaches vertex v0 and finds 4 incident boundary edges (two from each patch): nae >= 2 → Branch 6 fires. v0 has a disconnected fan. t1 not reachable from t0.
+- **Reproducer recipe**: v0=(0,0,0) pinch; v1=(-1,-1,0), v2=(1,-1,0); v3=(-1,1,0), v4=(1,1,0); t0=(v0,v1,v2), t1=(v0,v3,v4); all edges n=1; vertex_fan_disconnected(v0); triangle_not_reachable_from target=1 source=0.
+- **Expected kernel behavior**: Boundary traversal reaches v0; counts nae > 1 boundary edges; Branch 6 break fires; returns 0 (non-simple).
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Mesh assertion**: `triangle_not_reachable_from source=0 target=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me375.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me376 — isSelectionSimple_boundary_loop_complexity: annular selection with two boundary loops, nv != bdr.numels() (Branch 7)
+- **Category**: §12.14 mesh defects (sub-class: isSelectionSimple / boundary-loop-complexity)
+- **Sources**: MeshFix `Basic_TMesh.isSelectionSimple` Branch 7 (*boundary_loop_complexity*: `nv != bdr.numels() → return 0`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 6-triangle annular ring surrounding a triangular hole. The selection boundary has two separate loops: an inner hole boundary (v0,v1,v2 — 3 edges n=1) and an outer boundary (v3,v4,v5 — 3 edges n=1). When isSelectionSimple counts boundary vertices (nv) via a single traversal and compares against bdr.numels() (total edges), the two-loop annulus fails the single-loop equality test → Branch 7 fires → return 0. Interior ring edges are n=2. Euler: V=6, E=12, F=6, chi=0 (annulus/cylinder).
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,0.87,0) inner; v3=(-1,-1,0), v4=(2,-1,0), v5=(0.5,2,0) outer; 6 ring triangles; inner edges n=1; outer edges n=1; ring edges n=2; euler V=6,E=12,F=6,chi=0.
+- **Expected kernel behavior**: Boundary traversal finds more edges than can form one simple loop; nv != bdr.numels(); Branch 7 fires; returns 0 (non-simple boundary).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=1`
+- **Mesh assertion**: `euler_characteristic v=6 e=12 f=6 chi=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me376.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
