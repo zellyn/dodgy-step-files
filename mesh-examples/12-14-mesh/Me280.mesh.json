@@ -1,0 +1,89 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      2.0
+    ],
+    [
+      1.0,
+      0.0,
+      2.0
+    ],
+    [
+      0.5,
+      1.0,
+      2.0
+    ],
+    [
+      5e-08,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      -1.0,
+      0.0
+    ],
+    [
+      -0.5,
+      -1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      3,
+      4,
+      5
+    ],
+    [
+      6,
+      7,
+      8
+    ]
+  ],
+  "metadata": {
+    "id": "Me280",
+    "schema_version": 0,
+    "defect_class": "coincident_vertices",
+    "title": "checkGeometry_memory_alloc_fail_vertices: near-coincident vertex pair, alloc guard (Branch 1)",
+    "assertions": [
+      {
+        "kind": "vertex_pair_distance_lt",
+        "pair": [
+          0,
+          6
+        ],
+        "lt": 1e-07
+      },
+      {
+        "kind": "vertex_pair_no_shared_triangle",
+        "pair": [
+          0,
+          6
+        ]
+      }
+    ]
+  }
+}

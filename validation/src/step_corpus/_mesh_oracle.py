@@ -482,6 +482,53 @@ def _check_assertion(assertion: dict, vertices: list, triangles: list) -> dict:
             "detail": (f"V={actual_v}(exp {expected_v}) E={actual_e}(exp {expected_e}) "
                        f"F={actual_f}(exp {expected_f}) chi={actual_chi}(exp {expected_chi})"),
         }
+    if kind == "edge_pair_coincident":
+        # Two edges specified as vertex-index pairs; pass iff each vertex of
+        # pair_a is within eps of the corresponding vertex of pair_b (after
+        # matching endpoints: either a0≈b0,a1≈b1 or a0≈b1,a1≈b0).
+        a0, a1 = assertion["edge_a"]
+        b0, b1 = assertion["edge_b"]
+        eps = assertion.get("eps", 1e-7)
+        pa0, pa1 = vertices[a0], vertices[a1]
+        pb0, pb1 = vertices[b0], vertices[b1]
+        d_straight = max(_vertex_distance(pa0, pb0), _vertex_distance(pa1, pb1))
+        d_crossed = max(_vertex_distance(pa0, pb1), _vertex_distance(pa1, pb0))
+        coincident = min(d_straight, d_crossed) < eps
+        return {
+            "status": "pass" if coincident else "fail",
+            "detail": (f"edge ({a0},{a1}) vs ({b0},{b1}): "
+                       f"min_dist={min(d_straight, d_crossed):.3g} (eps={eps})"),
+        }
+    if kind == "adjacent_triangles_normal_dot_gt":
+        # Two triangles sharing an edge; pass iff dot(n_a, n_b) > threshold.
+        # Catches coplanar adjacent triangles (dihedral ≈ 180°, normals same direction).
+        ta, tb = assertion["triangles"]
+        threshold = assertion.get("threshold", 0.99)
+        tri_a, tri_b = triangles[ta], triangles[tb]
+        na = _triangle_normal(vertices[tri_a[0]], vertices[tri_a[1]], vertices[tri_a[2]])
+        nb = _triangle_normal(vertices[tri_b[0]], vertices[tri_b[1]], vertices[tri_b[2]])
+        len_a = math.sqrt(na[0] ** 2 + na[1] ** 2 + na[2] ** 2)
+        len_b = math.sqrt(nb[0] ** 2 + nb[1] ** 2 + nb[2] ** 2)
+        if len_a < 1e-30 or len_b < 1e-30:
+            return {"status": "fail", "detail": f"degenerate normal on triangle {ta} or {tb}"}
+        dot = (na[0] * nb[0] + na[1] * nb[1] + na[2] * nb[2]) / (len_a * len_b)
+        return {
+            "status": "pass" if dot > threshold else "fail",
+            "detail": f"triangles {ta} and {tb} normal dot={dot:.6g} (expected > {threshold})",
+        }
+    if kind == "vertex_pair_no_shared_triangle":
+        # Two vertex indices; pass iff no triangle contains both.
+        i, j = assertion["pair"]
+        for ti, tri in enumerate(triangles):
+            if i in tri and j in tri:
+                return {
+                    "status": "fail",
+                    "detail": f"vertices ({i},{j}) both appear in triangle {ti}: {tri}",
+                }
+        return {
+            "status": "pass",
+            "detail": f"vertices ({i},{j}) share no triangle",
+        }
     return {"status": "unknown", "detail": f"unknown assertion kind {kind!r}"}
 
 

@@ -2124,40 +2124,32 @@ Fixture IDs: Me200 Me201 Me202 Me203 Me204 Me205 Me206 Me207 Me208 Me209
   - Repair action: Return error string; vertex link non-manifold
 
 ##### `checkAndRepair::checkGeometry` — lines 184–252
-(8 branches; all UNCOVERED — no mesh fixtures exist yet)
+(8 branches; ALL COVERED by Me280–Me287 — wave 10C, 2026-06-21)
 
-- **Branch 1** @ line 196 — *MEMORY_ALLOCATION_FAILURE*
+- **Branch 1** @ line 196 — *MEMORY_ALLOCATION_FAILURE* → **Me280** (near-coincident vertex pair v0/v6 at distance 5e-8; alloc-guard branch; same geometry as Branch 2)
   - What it tests: Vertex array allocation for coincident check fails
   - Repair action: Skip coincident vertex check; continue with other geometry tests
-  - Suggested fixture: defect mentioning 'Not enough memory'
-- **Branch 2** @ line 204 — *COINCIDENT_VERTICES_EDGE_ABSENT*
+- **Branch 2** @ line 204 — *COINCIDENT_VERTICES_EDGE_ABSENT* → **Me281** (v0 and v3 both at (0,0,0), distinct triangles, no shared edge)
   - What it tests: Two coincident vertices exist without edge
   - Repair action: Mark as defective; continue searching
-  - Suggested fixture: defect mentioning 'detected coincident vertices', 'getEdge(v2) == null'
-- **Branch 3** @ line 208 — *COINCIDENT_VERTICES_WITH_EDGE*
+- **Branch 3** @ line 208 — *COINCIDENT_VERTICES_WITH_EDGE* → **Me282** (v0=v1=(1,0,0) in triangle t1; zero-length edge (v0,v1))
   - What it tests: Two coincident vertices connected by edge
   - Repair action: Return first vertex; flag as severe defect
-  - Suggested fixture: defect mentioning 'and there is an edge'
-- **Branch 4** @ line 220 — *MEMORY_ALLOCATION_FAILURE_EDGES*
+- **Branch 4** @ line 220 — *MEMORY_ALLOCATION_FAILURE_EDGES* → **Me283** (coincident edge pair (v0,v1)≡(v3,v4); alloc-guard branch; same geometry as Branch 5)
   - What it tests: Edge array allocation fails
   - Repair action: Skip coincident edge check; continue
-  - Suggested fixture: defect mentioning 'Not enough memory'
-- **Branch 5** @ line 226 — *COINCIDENT_EDGES*
+- **Branch 5** @ line 226 — *COINCIDENT_EDGES* → **Me284** (edge (v0,v1) and (v3,v4) with v0≡v3, v1≡v4 by coordinate; distinct vertex indices)
   - What it tests: Two edges with same vertex pair (after lex sort)
   - Repair action: Mark edge v1 as defective; flag geometry issue
-  - Suggested fixture: defect mentioning 'detected coincident edges'
-- **Branch 6** @ line 237 — *DEGENERATE_TRIANGLE_ZERO_ANGLE*
+- **Branch 6** @ line 237 — *DEGENERATE_TRIANGLE_ZERO_ANGLE* → **Me285** (p1 at left end of collinear triple; both edges from p1 point in +X; angle=0°)
   - What it tests: Triangle has zero angle at v1
   - Repair action: Return v1; flag as degenerate
-  - Suggested fixture: defect mentioning 'degenerate triangle detected'
-- **Branch 7** @ line 239 — *DEGENERATE_TRIANGLE_FLAT_ANGLE*
+- **Branch 7** @ line 239 — *DEGENERATE_TRIANGLE_FLAT_ANGLE* → **Me286** (q1 at middle of collinear triple; edges from q1 anti-parallel; angle=180°)
   - What it tests: Triangle has 180-degree angle at v1
   - Repair action: Return v1; collinear vertices detected
-  - Suggested fixture: defect mentioning 'ang == M_PI'
-- **Branch 8** @ line 247 — *OVERLAPPING_TRIANGLES_DIHEDRAL*
+- **Branch 8** @ line 247 — *OVERLAPPING_TRIANGLES_DIHEDRAL* → **Me287** (two CCW triangles in z=0 sharing edge (v1,v2); both normals +Z; dihedral=180°)
   - What it tests: Two adjacent triangles have 180-degree dihedral angle
   - Repair action: Return edge v1; mark as coplanar overlap
-  - Suggested fixture: defect mentioning 'overlapping triangles detected', 'getDAngle(e->t2)) == M_PI'
 
 ##### `checkAndRepair::duplicateNonManifoldVertices` — lines 128–174
 (3 branches; all UNCOVERED — no mesh fixtures exist yet)

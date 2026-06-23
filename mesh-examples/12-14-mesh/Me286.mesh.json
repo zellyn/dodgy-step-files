@@ -1,0 +1,59 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0
+    ],
+    [
+      1.0,
+      -1.0,
+      0.0
+    ],
+    [
+      2.0,
+      -1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      3,
+      4,
+      5
+    ]
+  ],
+  "metadata": {
+    "id": "Me286",
+    "schema_version": 0,
+    "defect_class": "degenerate_triangle",
+    "title": "checkGeometry_degenerate_triangle_flat_angle: interior angle = 180\u00b0 (pi) at pivot vertex (Branch 7)",
+    "assertions": [
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 1,
+        "lt": 1e-12
+      }
+    ]
+  }
+}

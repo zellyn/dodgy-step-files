@@ -241,6 +241,46 @@ class MeshFile:
             "source": int(source),
         })
 
+    def assert_edge_pair_coincident(
+        self, edge_a: tuple[int, int], edge_b: tuple[int, int], eps: float = 1e-7
+    ) -> None:
+        """Catalog two edges (each specified as a vertex-index pair) as spatially
+        coincident — i.e. the endpoint coordinates of edge_a match those of edge_b
+        within eps (in either order). Catches MeshFix checkGeometry Branch 5
+        (COINCIDENT_EDGES): two distinct edge objects in the half-edge structure
+        that point to the same geometric position."""
+        self.assertions.append({
+            "kind": "edge_pair_coincident",
+            "edge_a": [int(edge_a[0]), int(edge_a[1])],
+            "edge_b": [int(edge_b[0]), int(edge_b[1])],
+            "eps": float(eps),
+        })
+
+    def assert_adjacent_triangles_normal_dot_gt(
+        self, ta: int, tb: int, threshold: float = 0.99
+    ) -> None:
+        """Catalog two adjacent triangles as having nearly parallel normals
+        (dot product > threshold after normalization). This catches the MeshFix
+        checkGeometry Branch 8 (OVERLAPPING_TRIANGLES_DIHEDRAL): two coplanar
+        adjacent triangles where getDAngle returns π — the dihedral angle is 180°,
+        meaning they fold flat in the same direction and overlap when viewed from
+        either side."""
+        self.assertions.append({
+            "kind": "adjacent_triangles_normal_dot_gt",
+            "triangles": [int(ta), int(tb)],
+            "threshold": float(threshold),
+        })
+
+    def assert_vertex_pair_no_shared_triangle(self, i: int, j: int) -> None:
+        """Catalog vertex pair (i, j) as not appearing together in any triangle.
+        Combined with vertex_pair_distance_lt, this confirms the MeshFix
+        checkGeometry Branch 2 (COINCIDENT_VERTICES_EDGE_ABSENT) pattern:
+        two spatially coincident vertices that have no edge between them."""
+        self.assertions.append({
+            "kind": "vertex_pair_no_shared_triangle",
+            "pair": [int(i), int(j)],
+        })
+
     def assert_euler_characteristic(
         self, v: int, e: int, f: int, chi: int
     ) -> None:

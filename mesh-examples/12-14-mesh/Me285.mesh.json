@@ -1,0 +1,59 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      1.0,
+      -1.0,
+      0.0
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0
+    ],
+    [
+      2.0,
+      -1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      3,
+      4,
+      5
+    ]
+  ],
+  "metadata": {
+    "id": "Me285",
+    "schema_version": 0,
+    "defect_class": "degenerate_triangle",
+    "title": "checkGeometry_degenerate_triangle_zero_angle: interior angle = 0\u00b0 at pivot vertex (Branch 6)",
+    "assertions": [
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 1,
+        "lt": 1e-12
+      }
+    ]
+  }
+}

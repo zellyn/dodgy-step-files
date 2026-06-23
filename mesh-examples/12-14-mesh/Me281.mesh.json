@@ -1,0 +1,69 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      2.0
+    ],
+    [
+      0.5,
+      1.0,
+      2.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      3,
+      4,
+      5
+    ]
+  ],
+  "metadata": {
+    "id": "Me281",
+    "schema_version": 0,
+    "defect_class": "coincident_vertices",
+    "title": "checkGeometry_coincident_vertices_edge_absent: two coincident vertices without connecting edge (Branch 2)",
+    "assertions": [
+      {
+        "kind": "vertex_pair_distance_lt",
+        "pair": [
+          0,
+          3
+        ],
+        "lt": 1e-12
+      },
+      {
+        "kind": "vertex_pair_no_shared_triangle",
+        "pair": [
+          0,
+          3
+        ]
+      }
+    ]
+  }
+}
