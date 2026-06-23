@@ -33592,6 +33592,147 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me198.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me210 — cutAndStitch_duplicate_singular_edge: BIT-5 non-manifold edge duplicated before stitching
+- **Category**: §12.14 mesh defects (sub-class: cutAndStitch / duplicate-singular-edge)
+- **Sources**: MeshFix `Basic_TMesh.cutAndStitch` Branch 1 (*DUPLICATE_SINGULAR_EDGE*: `if (e2 = T->duplicateEdge(e1)) MARK_BIT(e2, 5)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Edge (v0,v2) is shared by three triangles (non-manifold, IS_BIT(e1,5)). cutAndStitch calls duplicateEdge(e1) to create a topological copy e2 and marks e2 with BIT 5 so Branch 2 collects it. Geometry: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(0,0,1), v4=(-1,0,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v2,v4).
+- **Reproducer recipe**: three triangles sharing edge (v0,v2); edge_shared_by_n_triangles n=3.
+- **Expected kernel behavior**: duplicateEdge(e1) called; duplicate e2 marked BIT 5 for collection.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=3`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me210.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me211 — cutAndStitch_collect_singular_edges: boundary edge appended to singular_edges list
+- **Category**: §12.14 mesh defects (sub-class: cutAndStitch / collect-singular-edges)
+- **Sources**: MeshFix `Basic_TMesh.cutAndStitch` Branch 2 (*COLLECT_SINGULAR_EDGES*: `singular_edges.appendHead(e1); UNMARK_BIT(e1, 5)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: After edge duplication, each BIT-5-marked edge is appended to singular_edges and the bit cleared. A boundary edge (v0,v3) on exactly one triangle represents such a collected singular edge. Geometry: v0=(0,0,0), v1=(1,0,0), v2=(1,1,0), v3=(0,1,0), v4=(0.5,-1,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v4,v1).
+- **Reproducer recipe**: mesh with interior edge (v0,v1) n=2 and boundary edge (v0,v3) n=1.
+- **Expected kernel behavior**: edge (v0,v3) collected into singular_edges list; BIT 5 cleared.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me211.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me212 — cutAndStitch_orientation_inconsistency: adjacent triangles with antiparallel normals
+- **Category**: §12.14 mesh defects (sub-class: cutAndStitch / orientation-inconsistency)
+- **Sources**: MeshFix `Basic_TMesh.cutAndStitch` Branch 3 (*ORIENTATION_INCONSISTENCY*: `forceNormalConsistence()`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles share edge (v0,v1) but have opposite winding orders (antiparallel normals). cutAndStitch calls forceNormalConsistence() to unify orientation before stitching. Geometry: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,-1,0); t0=(v0,v1,v2) CCW, t1=(v0,v1,v3) CW at shared edge.
+- **Reproducer recipe**: two triangles sharing edge (v0,v1) with reversed winding; normal dot product negative.
+- **Expected kernel behavior**: forceNormalConsistence() detects and corrects the orientation mismatch.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,1]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me212.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me213 — cutAndStitch_non_manifold_vertices: bowtie vertex requiring duplicateNonManifoldVertices()
+- **Category**: §12.14 mesh defects (sub-class: cutAndStitch / non-manifold-vertices)
+- **Sources**: MeshFix `Basic_TMesh.cutAndStitch` Branch 4 (*NON_MANIFOLD_VERTICES*: `duplicateNonManifoldVertices()`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: After orientation pass, vertex v0 is still singular (bowtie): upper fan t0=(v0,v1,v2) and lower fan t1=(v0,v3,v4) share only v0 with no shared edge. cutAndStitch calls duplicateNonManifoldVertices() to split v0 into two copies. Geometry: v0=(0,0,0), v1=(1,1,0), v2=(-1,1,0), v3=(1,-1,0), v4=(-1,-1,0).
+- **Reproducer recipe**: classic bowtie at v0; vertex_fan_disconnected assertion.
+- **Expected kernel behavior**: duplicateNonManifoldVertices() splits v0 into two boundary-safe copies.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me213.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me214 — cutAndStitch_sort_singular_edges: coincident boundary edges sorted by lexEdgeCompare
+- **Category**: §12.14 mesh defects (sub-class: cutAndStitch / sort-singular-edges)
+- **Sources**: MeshFix `Basic_TMesh.cutAndStitch` Branch 5 (*SORT_SINGULAR_EDGES*: `singular_edges.sort(&lexEdgeCompare)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two boundary patches have seam edges at coincident positions (v0≡v3, v1≡v4). lexEdgeCompare sorts the collected singular_edges list so coincident pairs become adjacent for grouping. Near-coincident vertex pairs at the seam confirm zero distance. Geometry: patch A (v0,v1,v2), patch B (v3,v4,v5) with v0=v3=(0,0,0) and v1=v4=(1,0,0).
+- **Reproducer recipe**: two triangles with seam edges at same coordinates; vertex_pair_distance_lt assertions.
+- **Expected kernel behavior**: singular_edges sorted so coincident pairs land adjacent; grouping in Branch 6 proceeds.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,3] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-09`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me214.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me215 — cutAndStitch_group_coincident_edges: distinct boundary edges each start a new grouping list
+- **Category**: §12.14 mesh defects (sub-class: cutAndStitch / group-coincident-edges)
+- **Sources**: MeshFix `Basic_TMesh.cutAndStitch` Branch 6 (*GROUP_COINCIDENT_EDGES*: `if (e2 == NULL || lexEdgeCompare(e1, e2) != 0) { e1->info = new List(); e2 = e1; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three isolated triangle patches have seam edges at three distinct lexicographic positions. Each edge starts a new group (new List() allocated). The three components are disconnected, confirming the distinct-group condition fires for each. Geometry: patches at x=0-1, x=2-3, x=4-5 in XY plane.
+- **Reproducer recipe**: three isolated single-triangle patches; triangle_not_reachable_from assertions.
+- **Expected kernel behavior**: each distinct singular edge creates new e1->info = new List() grouping.
+- **Mesh assertion**: `triangle_not_reachable_from target=1 source=0`
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[6,7] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[7,8] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[6,8] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me215.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me216 — cutAndStitch_bounded_singular_chain: seam edges form bounded chain pinched from common vertex
+- **Category**: §12.14 mesh defects (sub-class: cutAndStitch / bounded-singular-chain)
+- **Sources**: MeshFix `Basic_TMesh.cutAndStitch` Branch 7 (*BOUNDED_SINGULAR_CHAIN*: `if (e1->isLinked()) pinch(e1, true)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two patches have coincident seam edges (v0≡v3, v1≡v4) forming a bounded open chain with identifiable endpoints. Linked singular edges with endpoints are pinched using with_common_vertex=true. The seam boundary (v0,v1) on patch A and (v3,v4) on patch B are the chain. Geometry: patch A (v0,v1,v2), patch B (v3,v5,v4) at coincident seam.
+- **Reproducer recipe**: two boundary edges with coincident endpoints; vertex_pair_distance_lt confirms boundedness.
+- **Expected kernel behavior**: pinch(e1, true) merges seam from common-vertex side.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,3] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-09`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me216.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me217 — cutAndStitch_unbounded_singular_chain: closed hole boundary pinched from interior edge
+- **Category**: §12.14 mesh defects (sub-class: cutAndStitch / unbounded-singular-chain)
+- **Sources**: MeshFix `Basic_TMesh.cutAndStitch` Branch 8 (*UNBOUNDED_SINGULAR_CHAIN*: `if (e1->isLinked()) pinch(e1, false)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A square-frame mesh has a square hole (v4,v5,v6,v7) forming a closed cyclic boundary with no endpoints. After bounded pinches, remaining linked singular edges in unbounded cycles are pinched with with_common_vertex=false. The hole_boundary assertion confirms the loop is a pure cycle. Geometry: 8-triangle frame around inner hole.
+- **Reproducer recipe**: triangulated frame with square hole; hole_boundary loop=[4,5,6,7].
+- **Expected kernel behavior**: pinch(e1, false) called for each edge in the unbounded cyclic chain.
+- **Mesh assertion**: `hole_boundary loop=[4,5,6,7]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me217.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me218 — cutAndStitch_cleanup_unlinked: isolated orphan vertex swept by removeUnlinkedElements()
+- **Category**: §12.14 mesh defects (sub-class: cutAndStitch / cleanup-unlinked)
+- **Sources**: MeshFix `Basic_TMesh.cutAndStitch` Branch 9 (*CLEANUP_UNLINKED*: `removeUnlinkedElements()`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: After pinch operations, original seam vertices may become orphaned (not referenced by any triangle). removeUnlinkedElements() sweeps and frees these dangling elements. Geometry: a single triangle (v0,v1,v2) plus isolated vertex v3=(2,2,2) not in any triangle.
+- **Reproducer recipe**: triangle + isolated vertex v3; isolated_vertex assertion.
+- **Expected kernel behavior**: removeUnlinkedElements() frees v3 (and any similar orphaned edges/triangles).
+- **Mesh assertion**: `isolated_vertex vertex=3`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me218.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me120 — inverse_collapse_right_triangle_e2: ta1 exists on right side of split edge e2
 - **Category**: §12.14 mesh defects (sub-class: inverse-collapse / right-triangle-e2)
 - **Sources**: MeshFix `Vertex.inverseCollapse` Branch 1 (*right_triangle_e2*: `ta1 = e2->rightTriangle(this)`); `MESH_HEAL_COVERAGE.md`.

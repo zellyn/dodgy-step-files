@@ -3130,44 +3130,44 @@ Fixture IDs: Me130 Me131 Me132 Me133 Me134 Me135 Me136 Me137 Me138 Me139
   - Suggested fixture: defect mentioning 'e1->t1 == NULL && e1->t2 == NULL'
 
 ##### `Basic_TMesh.cutAndStitch` — lines 989–1028
-(9 branches; all UNCOVERED — no mesh fixtures exist yet)
+(9 branches; ALL COVERED — Me210–Me218, wave 8B)
 
-- **Branch 1** @ line 995 — *DUPLICATE_SINGULAR_EDGE*
+- **Branch 1** @ line 995 — *DUPLICATE_SINGULAR_EDGE* → **Me210**
   - What it tests: Marked edge e1 (BIT 5) has a duplicatable counterpart via duplicateEdge()
   - Repair action: Duplicate e1 and mark the duplicate with BIT 5 for later stitching
-  - Suggested fixture: defect mentioning 'IS_BIT(e1, 5)', 'duplicateEdge(e1)', 'MARK_BIT(e2, 5)'
-- **Branch 2** @ line 997 — *COLLECT_SINGULAR_EDGES*
+  - Fixture: Me210 — non-manifold edge (v0,v2) shared by 3 triangles; edge_shared_by_n_triangles n=3
+- **Branch 2** @ line 997 — *COLLECT_SINGULAR_EDGES* → **Me211**
   - What it tests: Collect all marked singular edges (BIT 5) into singular_edges list
   - Repair action: Append e1 to singular_edges and unmark BIT 5
-  - Suggested fixture: defect mentioning 'singular_edges.appendHead(e1)', 'UNMARK_BIT(e1, 5)'
-- **Branch 3** @ line 1003 — *ORIENTATION_INCONSISTENCY*
+  - Fixture: Me211 — boundary edge (v0,v3) n=1 collected; interior edge (v0,v1) n=2
+- **Branch 3** @ line 1003 — *ORIENTATION_INCONSISTENCY* → **Me212**
   - What it tests: After duplications, mesh may have non-orientable seams
   - Repair action: Force normal consistency to unify orientation and cut along non-orientable boundaries
-  - Suggested fixture: defect mentioning 'forceNormalConsistence()'
-- **Branch 4** @ line 1004 — *NON_MANIFOLD_VERTICES*
+  - Fixture: Me212 — two triangles on edge (v0,v1) with antiparallel normals; adjacent_triangles_inconsistent_winding
+- **Branch 4** @ line 1004 — *NON_MANIFOLD_VERTICES* → **Me213**
   - What it tests: Mesh may still have singular vertices after orientation pass
   - Repair action: Duplicate non-manifold vertices to enforce manifoldness
-  - Suggested fixture: defect mentioning 'duplicateNonManifoldVertices()'
-- **Branch 5** @ line 1006 — *SORT_SINGULAR_EDGES*
+  - Fixture: Me213 — classic bowtie at v0; vertex_fan_disconnected
+- **Branch 5** @ line 1006 — *SORT_SINGULAR_EDGES* → **Me214**
   - What it tests: Group coincident boundary edges lexicographically
   - Repair action: Sort singular_edges for subsequent grouping by lexEdgeCompare
-  - Suggested fixture: defect mentioning 'singular_edges.sort(&lexEdgeCompare)'
-- **Branch 6** @ line 1011 — *GROUP_COINCIDENT_EDGES*
+  - Fixture: Me214 — two coincident seam edges; vertex_pair_distance_lt confirms coincidence
+- **Branch 6** @ line 1011 — *GROUP_COINCIDENT_EDGES* → **Me215**
   - What it tests: Edge e1 is lexicographically different from previous e2 or is first edge
   - Repair action: Create new grouping list in e1->info and reset e2 anchor
-  - Suggested fixture: defect mentioning 'if (e2 == NULL || lexEdgeCompare(e1, e2) != 0)', 'e1->info = new List()'
-- **Branch 7** @ line 1018 — *BOUNDED_SINGULAR_CHAIN*
+  - Fixture: Me215 — three isolated patches at distinct positions; triangle_not_reachable_from
+- **Branch 7** @ line 1018 — *BOUNDED_SINGULAR_CHAIN* → **Me216**
   - What it tests: Singular edge e1 that is linked (still in mesh) belongs to a bounded chain with endpoints
   - Repair action: Pinch e1 starting from one endpoint (with_common_vertex=true)
-  - Suggested fixture: defect mentioning 'if (e1->isLinked()) pinch(e1, true)'
-- **Branch 8** @ line 1021 — *UNBOUNDED_SINGULAR_CHAIN*
+  - Fixture: Me216 — two patches with coincident bounded seam; vertex_pair_distance_lt
+- **Branch 8** @ line 1021 — *UNBOUNDED_SINGULAR_CHAIN* → **Me217**
   - What it tests: After bounded pinches, remaining linked singular edges form unbounded cycles
   - Repair action: Pinch from any interior edge of remaining cycle (with_common_vertex=false)
-  - Suggested fixture: defect mentioning 'if (e1->isLinked()) pinch(e1, false)'
-- **Branch 9** @ line 1023 — *CLEANUP_UNLINKED*
+  - Fixture: Me217 — square frame with square hole; hole_boundary [4,5,6,7]
+- **Branch 9** @ line 1023 — *CLEANUP_UNLINKED* → **Me218**
   - What it tests: Pinch operations may leave orphaned vertices/edges/triangles
   - Repair action: Sweep and free all unlinked mesh elements
-  - Suggested fixture: defect mentioning 'removeUnlinkedElements()'
+  - Fixture: Me218 — isolated vertex v3 not in any triangle; isolated_vertex
 
 ##### `Basic_TMesh.pinch` — lines 918–977
 (8 branches; all UNCOVERED — no mesh fixtures exist yet)
