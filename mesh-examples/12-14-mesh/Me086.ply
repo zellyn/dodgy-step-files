@@ -1,0 +1,17 @@
+ply
+format ascii 1.0
+comment Me086: connectivity edge orientation mismatch: adjacent triangles t0,t1 have opposite normals along shared edge
+comment defect_class: inconsistent_winding
+element vertex 4
+property float x
+property float y
+property float z
+element face 2
+property list uchar int vertex_indices
+end_header
+0 0 0
+1 0 0
+0.5 1 0
+-0.5 1 0
+3 0 1 2
+3 3 2 0

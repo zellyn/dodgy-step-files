@@ -32126,6 +32126,120 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me079.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me080 — connectivity null vertex: orphan vertex not referenced by any triangle
+- **Category**: §12.14 mesh defects (sub-class: connectivity / null vertex element)
+- **Sources**: MeshFix `checkAndRepair::checkConnectivity` Branch 1 (*NULL_VERTEX_ELEMENT*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: vertex 4 is present in the vertex array at (5,5,5) but is not referenced by any triangle. In MeshFix's half-edge structure, such a vertex has a NULL e0 pointer — it was allocated but never connected. Two triangles form a valid quad; vertex 4 is a pure orphan with no incident edges.
+- **Reproducer recipe**: v0–v3 form a quad (2 triangles); v4=(5,5,5) added to vertex list but not used in any triangle.
+- **Expected kernel behavior**: detect and remove the orphan vertex; reindex remaining vertices.
+- **Mesh assertion**: `isolated_vertex vertex=4`
+- **Fixture path**: mesh-examples/12-14-mesh/Me080.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me081 — connectivity null edge ref: interior orphan vertex at centroid with no incident edges
+- **Category**: §12.14 mesh defects (sub-class: connectivity / null edge reference)
+- **Sources**: MeshFix `checkAndRepair::checkConnectivity` Branch 2 (*NULL_EDGE_REFERENCE*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: vertex 4 sits geometrically at the centroid (0.5, 0.5, 0) of the mesh but is not referenced by any triangle. In MeshFix's half-edge structure, such a vertex's e0 field is NULL — meaning no edge has been linked to it. Two triangles form the surrounding quad; v4 is an interior orphan.
+- **Reproducer recipe**: v0–v3 form a quad (2 triangles); v4=(0.5,0.5,0) at centroid, not used in any triangle.
+- **Expected kernel behavior**: detect and remove the orphan vertex; reindex.
+- **Mesh assertion**: `isolated_vertex vertex=4`
+- **Fixture path**: mesh-examples/12-14-mesh/Me081.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me082 — connectivity null edge endpoint: degenerate triangle with duplicate vertex index (self-loop)
+- **Category**: §12.14 mesh defects (sub-class: connectivity / null edge endpoint)
+- **Sources**: MeshFix `checkAndRepair::checkConnectivity` Branch 4 (*NULL_EDGE_ENDPOINT*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: triangle t1 = (v0, v0, v2) uses vertex 0 for two of its three corners. This creates a self-loop edge (v0→v0) with zero length, which in MeshFix's half-edge structure appears as an edge with a NULL or coincident endpoint. The degenerate triangle has zero area.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0); t0=(v0,v1,v2) valid; t1=(v0,v0,v2) degenerate.
+- **Expected kernel behavior**: detect and remove the zero-area degenerate triangle; the self-loop edge has no valid half-edge pairing.
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,0] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me082.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me083 — connectivity coincident edge endpoints: edge between two distinct vertices at identical positions
+- **Category**: §12.14 mesh defects (sub-class: connectivity / coincident edge endpoints)
+- **Sources**: MeshFix `checkAndRepair::checkConnectivity` Branch 5 (*COINCIDENT_EDGE_ENDPOINTS*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: vertices v2 and v3 are distinct indices but share the same position (0,0,1). Triangle t1 = (v0, v2, v3) has a zero-length edge between v2 and v3 — coincident endpoints. MeshFix Branch 5 fires when edge.v0.pos == edge.v1.pos. The degenerate triangle has zero area and its edge (v2,v3) has zero length.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,0,1), v3=(0,0,1); t0=(v0,v1,v2) valid; t1=(v0,v2,v3) degenerate.
+- **Expected kernel behavior**: merge coincident vertices v2/v3 via mergeCoincidentEdges or similar; remove the resulting degenerate face.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[2,3] lt=1e-12`
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-12`
+- **Fixture path**: mesh-examples/12-14-mesh/Me083.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me084 — connectivity orphaned edge: open 2×2 quad strip with 7 boundary edges
+- **Category**: §12.14 mesh defects (sub-class: connectivity / orphaned edge)
+- **Sources**: MeshFix `checkAndRepair::checkConnectivity` Branch 6 (*ORPHANED_EDGE*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: 4 triangles form a 2×2 open quad strip. All boundary edges are incident on exactly 1 triangle — they have no opposite twin in the half-edge structure. In MeshFix, an edge with no incident triangles is a true orphan; boundary edges (t2==NULL) are the detectable analog. The single interior edge (v10,v11)=(1,4) is shared by 2 triangles; all 7 outer edges are boundary-only.
+- **Reproducer recipe**: 6 vertices in 3×2 grid; 4 triangles in 2×2 arrangement (left and right quads each split on diagonal).
+- **Expected kernel behavior**: detect and flag all boundary edges; holeFilling can close boundary cycles if desired.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2,5,4,3]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me084.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me085 — connectivity triangle-not-owns-edge: non-manifold edge shared by 4 triangles
+- **Category**: §12.14 mesh defects (sub-class: connectivity / triangle does not own edge)
+- **Sources**: MeshFix `checkAndRepair::checkConnectivity` Branches 7 (*TRIANGLE_NOT_OWNS_EDGE t1*) and 9 (*TRIANGLE_NOT_OWNS_EDGE t2*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: the undirected edge (v0, v2) is shared by 4 triangles — two using orientation v0→v2 and two using v2→v0. MeshFix's half-edge structure allows each edge only one t1 and one t2; a third and fourth triangle that reference the same undirected edge cannot be assigned ownership — those triangles "do not own" the edge. Both Branches 7 and 9 fire when traversing this over-shared edge.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(-1,0,0), v4=(0,-1,0); 4 triangles all sharing edge (v0,v2).
+- **Expected kernel behavior**: detect non-manifold edge; cut or split the mesh at (v0,v2).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=4`
+- **Fixture path**: mesh-examples/12-14-mesh/Me085.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me086 — connectivity edge orientation mismatch: adjacent triangles with opposite normals along shared edge
+- **Category**: §12.14 mesh defects (sub-class: connectivity / edge orientation mismatch)
+- **Sources**: MeshFix `checkAndRepair::checkConnectivity` Branches 8 (*EDGE_ORIENTATION_MISMATCH_T1*) and 10 (*EDGE_ORIENTATION_MISMATCH_T2*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: t0=(v0,v1,v2) and t1=(v3,v2,v0) share edge (v0,v2) but their face normals point in opposite directions (+Z and -Z respectively). In a correctly-oriented closed manifold, adjacent faces should have consistent outward normals (dot > 0); here the dot product is negative, indicating a winding flip. MeshFix Branches 8/10 detect this as an inconsistency between an edge's orientation and its t1/t2 triangle normals.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(-0.5,1,0); t0 CCW (+Z normal); t1 CW (-Z normal); shared edge (v0,v2).
+- **Expected kernel behavior**: flip winding of one triangle via forceNormalConsistence.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me086.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me087 — connectivity null triangle edge: single isolated triangle with all boundary edges
+- **Category**: §12.14 mesh defects (sub-class: connectivity / null triangle edge pointer)
+- **Sources**: MeshFix `checkAndRepair::checkConnectivity` Branch 11 (*NULL_TRIANGLE_EDGE*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: the mesh contains a single triangle (v0,v1,v2) with no adjacent faces. In MeshFix's half-edge structure, each triangle must maintain pointers to all three of its edges; when a triangle is newly allocated or incompletely initialised, one or more edge pointers may be NULL. A single isolated triangle is the minimal case: all three of its edges are boundary edges (incidence 1) with no twin half-edge, and any partial half-edge setup would leave the boundary slots NULL.
+- **Reproducer recipe**: exactly 3 vertices; exactly 1 triangle; no other geometry.
+- **Expected kernel behavior**: detect open boundary; apply hole-filling if needed.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me087.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me088 — connectivity duplicate triangle edges: two identical triangles with same vertex indices
+- **Category**: §12.14 mesh defects (sub-class: connectivity / duplicate triangle edges)
+- **Sources**: MeshFix `checkAndRepair::checkConnectivity` Branch 12 (*DUPLICATE_TRIANGLE_EDGES*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: triangles t0 and t1 both reference vertex set {v0,v1,v2} with the same index triple. MeshFix Branch 12 fires when a triangle has two coincident edges — which happens when two triangles are geometrically identical and the half-edge structure cannot assign t1/t2 consistently. All three edges are shared by exactly 2 triangles, but since both triangles are duplicates, no valid half-edge pairing exists.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0); t0=t1=(v0,v1,v2) exact duplicates.
+- **Expected kernel behavior**: detect and remove one of the duplicate triangles; verify edge ownership.
+- **Mesh assertion**: `duplicate_triangle_pair triangles=[0,1]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me088.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me089 — connectivity disconnected edges: triple-bowtie vertex with 3 disconnected triangle fans
+- **Category**: §12.14 mesh defects (sub-class: connectivity / disconnected triangle edges)
+- **Sources**: MeshFix `checkAndRepair::checkConnectivity` Branches 13 (*DISCONNECTED_TRIANGLE_EDGES*) and 15 (*NONMANIFOLD_VERTEX*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: vertex v0 is a triple-bowtie (triple-pinch) vertex — its incident triangle fan is split into three disconnected components: an upper fan (t0 + t1, sharing edge (v0,v1)), a right fan (t2), and a lower fan (t3). Removing v0 disconnects the mesh into three pieces. MeshFix Branch 13 detects this when traversing a triangle's edge ring finds edges that don't share vertices as required; Branch 15 detects vertex non-manifoldness directly. Both fire here because the edge ring cannot be consistently linked.
+- **Reproducer recipe**: v0=(0,0,0); upper fan: v1–v3 with 2 triangles sharing (v0,v1); right fan: v4,v5 (1 triangle); lower fan: v6,v7 (1 triangle); all 4 triangles share only v0.
+- **Expected kernel behavior**: split v0 into 3 copies via duplicateNonManifoldVertices; one copy per fan.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me089.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Wr052 — Writer emits EDGE_CURVE backed by untrimmed LINE entity
 - **Category**: §12.13 writer-pathology (sub-class: unbounded-curve emission)
 - **Sources**: Pattern-mined from OCCT/tests/bugs/step/bug32817_1 (LGPL-clean — pattern only, no bytes copied). OCCT method `STEPControl_Writer::Transfer` on a single-line edge.

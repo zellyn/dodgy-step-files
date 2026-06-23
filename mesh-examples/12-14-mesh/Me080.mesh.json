@@ -1,0 +1,53 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      1.0,
+      0.0
+    ],
+    [
+      0.0,
+      1.0,
+      0.0
+    ],
+    [
+      5.0,
+      5.0,
+      5.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      2,
+      3
+    ]
+  ],
+  "metadata": {
+    "id": "Me080",
+    "schema_version": 0,
+    "defect_class": "isolated_vertex",
+    "title": "connectivity null vertex: vertex 4 is orphan \u2014 not referenced by any triangle",
+    "assertions": [
+      {
+        "kind": "isolated_vertex",
+        "vertex": 4
+      }
+    ]
+  }
+}

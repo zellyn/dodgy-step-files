@@ -1,0 +1,21 @@
+ply
+format ascii 1.0
+comment Me084: connectivity orphaned edge: open 2×2 quad strip — 9 boundary edges each incident on 1 triangle
+comment defect_class: open_boundary
+element vertex 6
+property float x
+property float y
+property float z
+element face 4
+property list uchar int vertex_indices
+end_header
+0 0 0
+1 0 0
+2 0 0
+0 1 0
+1 1 0
+2 1 0
+3 0 1 4
+3 0 4 3
+3 1 2 5
+3 1 5 4

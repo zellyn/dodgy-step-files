@@ -1,0 +1,6 @@
+# Me087: connectivity null triangle edge: single isolated triangle — all 3 edges are boundary (incidence 1)
+# defect_class: open_boundary
+v 0 0 0
+v 1 0 0
+v 0.5 1 0
+f 1 2 3

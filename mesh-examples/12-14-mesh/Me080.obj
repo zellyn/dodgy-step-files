@@ -1,0 +1,9 @@
+# Me080: connectivity null vertex: vertex 4 is orphan — not referenced by any triangle
+# defect_class: isolated_vertex
+v 0 0 0
+v 1 0 0
+v 1 1 0
+v 0 1 0
+v 5 5 5
+f 1 2 3
+f 1 3 4

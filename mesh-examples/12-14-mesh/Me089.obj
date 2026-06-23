@@ -1,0 +1,14 @@
+# Me089: connectivity disconnected edges: triple-bowtie vertex v0 — 3 disconnected triangle fans
+# defect_class: non_manifold_vertex
+v 0 0 0
+v 0 1 0
+v 1 1 0
+v -1 1 0
+v 2 0 0
+v 2 1 0
+v 0 -1 0
+v 1 -1 0
+f 1 2 3
+f 1 4 2
+f 1 5 6
+f 1 7 8

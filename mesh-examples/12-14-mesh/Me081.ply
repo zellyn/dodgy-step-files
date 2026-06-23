@@ -1,0 +1,18 @@
+ply
+format ascii 1.0
+comment Me081: connectivity null edge ref: interior orphan vertex v4 at centroid, no triangles reference it
+comment defect_class: isolated_vertex
+element vertex 5
+property float x
+property float y
+property float z
+element face 2
+property list uchar int vertex_indices
+end_header
+0 0 0
+1 0 0
+1 1 0
+0 1 0
+0.5 0.5 0
+3 0 1 2
+3 0 2 3

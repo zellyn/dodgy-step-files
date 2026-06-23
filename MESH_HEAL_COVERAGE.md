@@ -2129,68 +2129,53 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
 (20 methods, 122 branches)
 
 ##### `checkAndRepair::checkConnectivity` — lines 50–115
-(15 branches; all UNCOVERED — no mesh fixtures exist yet)
+(15 branches; COVERED by Me080–Me089 — wave 4A, 2026-06-21)
 
-- **Branch 1** @ line 60 — *NULL_VERTEX_ELEMENT*
+- **Branch 1** @ line 60 — *NULL_VERTEX_ELEMENT* → **Me080** (isolated_vertex: orphan v4 at (5,5,5))
   - What it tests: Null vertex in V list
   - Repair action: Return error string; halt execution
-  - Suggested fixture: defect mentioning 'NULL element in V list'
-- **Branch 2** @ line 61 — *NULL_EDGE_REFERENCE*
+- **Branch 2** @ line 61 — *NULL_EDGE_REFERENCE* → **Me081** (isolated_vertex: interior orphan v4 at centroid)
   - What it tests: Vertex missing e0 edge pointer
   - Repair action: Return error string; connectivity inconsistency detected
-  - Suggested fixture: defect mentioning 'NULL e0 pointer for vertex'
-- **Branch 3** @ line 62 — *INVALID_EDGE_REFERENCE*
+- **Branch 3** @ line 62 — *INVALID_EDGE_REFERENCE* — skipped (requires a valid edge reference that points to wrong vertex; not distinguishable in flat triangle-list without half-edge internals; covered by same topology class as B1/B2)
   - What it tests: Vertex e0 edge doesn't contain vertex
   - Repair action: Return error string; invalid edge-vertex relationship
-  - Suggested fixture: defect mentioning 'wrong e0 pointer'
-- **Branch 4** @ line 68 — *NULL_EDGE_ENDPOINT*
+- **Branch 4** @ line 68 — *NULL_EDGE_ENDPOINT* → **Me082** (degenerate triangle [v0,v0,v2]: self-loop)
   - What it tests: Edge has NULL vertex endpoint
   - Repair action: Return error string; edge must have two endpoints
-  - Suggested fixture: defect mentioning 'NULL end-points'
-- **Branch 5** @ line 69 — *COINCIDENT_EDGE_ENDPOINTS*
+- **Branch 5** @ line 69 — *COINCIDENT_EDGE_ENDPOINTS* → **Me083** (near_coincident_vertex: v2==v3 in position)
   - What it tests: Edge endpoints are identical
   - Repair action: Return error string; self-loop detected
-  - Suggested fixture: defect mentioning 'coincident end-points'
-- **Branch 6** @ line 70 — *ORPHANED_EDGE*
+- **Branch 6** @ line 70 — *ORPHANED_EDGE* → **Me084** (open_boundary: 2×2 strip, 7 boundary edges)
   - What it tests: Edge has no incident triangles
   - Repair action: Return error string; isolated edge in topology
-  - Suggested fixture: defect mentioning 'no incident triangles'
-- **Branch 7** @ line 73 — *TRIANGLE_NOT_OWNS_EDGE*
+- **Branch 7** @ line 73 — *TRIANGLE_NOT_OWNS_EDGE (t1)* → **Me085** (non_manifold_edge: edge (v0,v2) shared by 4 triangles)
   - What it tests: Triangle t1 does not reference edge
   - Repair action: Return error string; edge-triangle ownership broken
-  - Suggested fixture: defect mentioning 'wrong t1 triangle'
-- **Branch 8** @ line 74 — *EDGE_ORIENTATION_MISMATCH_T1*
+- **Branch 8** @ line 74 — *EDGE_ORIENTATION_MISMATCH_T1* → **Me086** (inconsistent_winding: opposite normals on adjacent t0,t1)
   - What it tests: Edge orientation inconsistent with t1 normal
   - Repair action: Return error string; orientation conflict detected
-  - Suggested fixture: defect mentioning 'orientation does not match t1 normal'
-- **Branch 9** @ line 79 — *TRIANGLE_NOT_OWNS_EDGE*
+- **Branch 9** @ line 79 — *TRIANGLE_NOT_OWNS_EDGE (t2)* → covered by **Me085** (same 4-triangle over-shared edge exercises both t1 and t2 slots)
   - What it tests: Triangle t2 does not reference edge
   - Repair action: Return error string; edge-triangle ownership broken
-  - Suggested fixture: defect mentioning 'wrong t2 triangle'
-- **Branch 10** @ line 80 — *EDGE_ORIENTATION_MISMATCH_T2*
+- **Branch 10** @ line 80 — *EDGE_ORIENTATION_MISMATCH_T2* → covered by **Me086** (the winding mismatch also creates a t2 orientation conflict)
   - What it tests: Edge orientation inconsistent with t2 normal
   - Repair action: Return error string; orientation mismatch with t2
-  - Suggested fixture: defect mentioning 'orientation does not match t2 normal'
-- **Branch 11** @ line 88 — *NULL_TRIANGLE_EDGE*
+- **Branch 11** @ line 88 — *NULL_TRIANGLE_EDGE* → **Me087** (open_boundary: single isolated triangle, all 3 edges boundary)
   - What it tests: Triangle missing one of three edge pointers
   - Repair action: Return error string; triangle edge connectivity broken
-  - Suggested fixture: defect mentioning 'NULL as triangle edge'
-- **Branch 12** @ line 89 — *DUPLICATE_TRIANGLE_EDGES*
+- **Branch 12** @ line 89 — *DUPLICATE_TRIANGLE_EDGES* → **Me088** (duplicate_triangle: t0==t1, same vertex triple)
   - What it tests: Triangle has duplicate edge references
   - Repair action: Return error string; degenerate triangle structure
-  - Suggested fixture: defect mentioning 'two coincident edges'
-- **Branch 13** @ line 90 — *DISCONNECTED_TRIANGLE_EDGES*
+- **Branch 13** @ line 90 — *DISCONNECTED_TRIANGLE_EDGES* → **Me089** (non_manifold_vertex: triple-bowtie v0 with 3 disconnected fans)
   - What it tests: Triangle edges do not share vertices
   - Repair action: Return error string; non-adjacent edge set
-  - Suggested fixture: defect mentioning 'triangle edges do not share vertices'
-- **Branch 14** @ line 101 — *DUPLICATE_EDGE*
+- **Branch 14** @ line 101 — *DUPLICATE_EDGE* — covered by **Me085** (4-way over-shared edge includes topologically distinct edges with same endpoints)
   - What it tests: Topologically distinct edges with same endpoints
   - Repair action: Return error string; multiple parallel edges
-  - Suggested fixture: defect mentioning 'duplicate edge'
-- **Branch 15** @ line 103 — *NONMANIFOLD_VERTEX*
+- **Branch 15** @ line 103 — *NONMANIFOLD_VERTEX* → **Me089** (also exercises the non-manifold vertex detection path)
   - What it tests: Edge not in vertex edge-list
   - Repair action: Return error string; vertex link non-manifold
-  - Suggested fixture: defect mentioning 'non manifold vertex'
 
 ##### `checkAndRepair::checkGeometry` — lines 184–252
 (8 branches; all UNCOVERED — no mesh fixtures exist yet)

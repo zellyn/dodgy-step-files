@@ -1,0 +1,20 @@
+ply
+format ascii 1.0
+comment Me085: connectivity triangle-not-owns-edge: edge (v0,v2) shared by 4 triangles — over-shared non-manifold
+comment defect_class: non_manifold_edge
+element vertex 5
+property float x
+property float y
+property float z
+element face 4
+property list uchar int vertex_indices
+end_header
+0 0 0
+1 0 0
+0 1 0
+-1 0 0
+0 -1 0
+3 0 1 2
+3 0 2 3
+3 0 4 2
+3 0 2 4

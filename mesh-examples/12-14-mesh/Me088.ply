@@ -1,0 +1,16 @@
+ply
+format ascii 1.0
+comment Me088: connectivity duplicate triangle edges: t0 and t1 are exact duplicates — same vertex indices (v0,v1,v2)
+comment defect_class: duplicate_triangle
+element vertex 3
+property float x
+property float y
+property float z
+element face 2
+property list uchar int vertex_indices
+end_header
+0 0 0
+1 0 0
+0.5 1 0
+3 0 1 2
+3 0 1 2

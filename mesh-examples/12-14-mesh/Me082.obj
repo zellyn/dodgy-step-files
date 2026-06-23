@@ -1,0 +1,7 @@
+# Me082: connectivity null edge endpoint: degenerate triangle [v0,v0,v2] has zero-length self-loop edge
+# defect_class: degenerate_triangle
+v 0 0 0
+v 1 0 0
+v 0.5 1 0
+f 1 2 3
+f 1 1 3

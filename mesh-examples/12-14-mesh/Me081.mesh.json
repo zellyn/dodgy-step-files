@@ -1,0 +1,53 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      1.0,
+      0.0
+    ],
+    [
+      0.0,
+      1.0,
+      0.0
+    ],
+    [
+      0.5,
+      0.5,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      2,
+      3
+    ]
+  ],
+  "metadata": {
+    "id": "Me081",
+    "schema_version": 0,
+    "defect_class": "isolated_vertex",
+    "title": "connectivity null edge ref: interior orphan vertex v4 at centroid, no triangles reference it",
+    "assertions": [
+      {
+        "kind": "isolated_vertex",
+        "vertex": 4
+      }
+    ]
+  }
+}

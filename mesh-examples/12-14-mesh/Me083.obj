@@ -1,0 +1,8 @@
+# Me083: connectivity coincident edge endpoints: edge (v2,v3) has zero length — both at (0,0,1)
+# defect_class: near_coincident_vertex
+v 0 0 0
+v 1 0 0
+v 0 0 1
+v 0 0 1
+f 1 2 3
+f 1 3 4
