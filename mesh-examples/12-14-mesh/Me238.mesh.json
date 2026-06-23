@@ -1,0 +1,63 @@
+{
+  "vertices": [
+    [
+      1.0,
+      0.0,
+      2.0
+    ],
+    [
+      1.0,
+      0.0,
+      2.0
+    ],
+    [
+      1.0,
+      0.0,
+      2.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ]
+  ],
+  "metadata": {
+    "id": "Me238",
+    "schema_version": 0,
+    "defect_class": "topTriangle_fallback_reference_edge",
+    "title": "topTriangle_fallback_reference_edge: fully degenerate triangle forces fe=NULL; Branch 9 uses hv->e0",
+    "assertions": [
+      {
+        "kind": "vertex_pair_distance_lt",
+        "pair": [
+          0,
+          1
+        ],
+        "lt": 1e-09
+      },
+      {
+        "kind": "vertex_pair_distance_lt",
+        "pair": [
+          1,
+          2
+        ],
+        "lt": 1e-09
+      },
+      {
+        "kind": "vertex_pair_distance_lt",
+        "pair": [
+          0,
+          2
+        ],
+        "lt": 1e-09
+      },
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 0,
+        "lt": 1e-09
+      }
+    ]
+  }
+}

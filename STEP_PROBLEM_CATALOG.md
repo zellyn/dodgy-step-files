@@ -33883,6 +33883,155 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me228.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me230 — topTriangle_component_flood_fill: BFS enqueues adjacent unvisited triangle
+- **Category**: §12.14 mesh defects (sub-class: topTriangle / component-flood-fill)
+- **Sources**: MeshFix `Basic_TMesh.topTriangle` Branch 1 (*component_flood_fill*: `!IS_BIT(t1,2)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing one interior edge (v1,v2). BFS from t0 finds t1 via the shared edge — Branch 1 fires when t1 is not yet marked BIT 2. Euler V=4 E=5 F=2 chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1.5,1,0); t0=(v0,v1,v2), t1=(v1,v3,v2).
+- **Expected kernel behavior**: BFS marks t1 via Branch 1; both triangles in same component.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me230.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me231 — topTriangle_vertex_z_collection_v1: v1 appended to z-scan list (unvisited)
+- **Category**: §12.14 mesh defects (sub-class: topTriangle / vertex-z-collection-v1)
+- **Sources**: MeshFix `Basic_TMesh.topTriangle` Branch 2 (*vertex_z_collection_v1*: `!IS_VISITED(v1)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Single isolated triangle with v1 as a flat base vertex (z=0) and v2 as the highest vertex (z=1). Branch 2 fires when v1 (first vertex) is first encountered in BFS and added to vlist. All edges are boundary n=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,0,1); t0=(v0,v1,v2).
+- **Expected kernel behavior**: v1 marked VISITED and appended to vlist by Branch 2.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2]`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=2.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me231.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me232 — topTriangle_vertex_z_collection_v2: v2 appended to z-scan list (unvisited)
+- **Category**: §12.14 mesh defects (sub-class: topTriangle / vertex-z-collection-v2)
+- **Sources**: MeshFix `Basic_TMesh.topTriangle` Branch 3 (*vertex_z_collection_v2*: `!IS_VISITED(v2)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected triangles sharing only vertex v1. t0 has v2 as a high-z apex (z=2). When BFS processes t0, v2 is the second vertex (MeshFix triple index 2) and is unvisited — Branch 3 fires. t1 is unreachable from t0 (no shared edge).
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,0,2), v3=(2,0,0), v4=(1.5,0,1); t0=(v0,v1,v2), t1=(v1,v3,v4).
+- **Expected kernel behavior**: v2 collected into vlist by Branch 3; t1 unreachable from t0.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `triangle_not_reachable_from target=1 source=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me232.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me233 — topTriangle_vertex_z_collection_v3: v3 appended to z-scan list (unvisited)
+- **Category**: §12.14 mesh defects (sub-class: topTriangle / vertex-z-collection-v3)
+- **Sources**: MeshFix `Basic_TMesh.topTriangle` Branch 4 (*vertex_z_collection_v3*: `!IS_VISITED(v3)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing edge (v0,v1). t0=(v0,v1,v2) is the seed; v0,v1,v2 are collected from t0. When BFS processes t1=(v0,v3,v1), v0 and v1 are already visited; v3 (z=2, the highest vertex) is unvisited — Branch 4 fires.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(0,0,2); t0=(v0,v1,v2), t1=(v0,v3,v1).
+- **Expected kernel behavior**: v3 collected by Branch 4 (third vertex); hv=v3 (z=2).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me233.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me234 — topTriangle_edge_collection_e1: e1 appended to slope-candidate list (unvisited)
+- **Category**: §12.14 mesh defects (sub-class: topTriangle / edge-collection-e1)
+- **Sources**: MeshFix `Basic_TMesh.topTriangle` Branch 5 (*edge_collection_e1*: `!IS_VISITED(t->e1)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing edge (v1,v2) with apex v2 at z=2. When BFS processes t0, edge e1=(v0,v1) is unvisited — Branch 5 fires, marking e1 and adding it to elist. v2 is the highest vertex; edges incident on v2 pass the Branch 7 filter.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,0,2), v3=(3,0,2); t0=(v0,v1,v2), t1=(v1,v3,v2).
+- **Expected kernel behavior**: e1=(v0,v1) appended to elist by Branch 5; elist later scanned for steepest edge from hv=v2.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me234.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me235 — topTriangle_highest_vertex_search: four staircase z-levels; v3 (z=3) becomes hv
+- **Category**: §12.14 mesh defects (sub-class: topTriangle / highest-vertex-search)
+- **Sources**: MeshFix `Basic_TMesh.topTriangle` Branch 6 (*highest_vertex_search*: `(az = v->z) > Mz`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four vertices at z=0,1,2,3 (staircase). Branch 6 fires three times during vlist scan as each z-level beats the running maximum. Final hv=v3 (z=3). Two triangles share edge (v1,v3); all four vertices collected into vlist.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,1), v2=(2,0,2), v3=(3,0,3); t0=(v0,v1,v3), t1=(v1,v2,v3).
+- **Expected kernel behavior**: Branch 6 fires three times; hv=v3 (z=3).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[2,3] lt=2.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me235.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me236 — topTriangle_steepest_edge_filter: edges incident on hv=v2 pass hasVertex+nonzero filter
+- **Category**: §12.14 mesh defects (sub-class: topTriangle / steepest-edge-filter)
+- **Sources**: MeshFix `Basic_TMesh.topTriangle` Branch 7 (*steepest_edge_filter*: `e->hasVertex(hv) && e->length() != 0`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Single triangle with apex v2 at z=3. elist contains all three edges; only the two edges incident on hv=v2 pass Branch 7. The base edge (v0,v1) is rejected because it does not touch hv.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,0,3); t0=(v0,v1,v2).
+- **Expected kernel behavior**: (v0,v1) fails hasVertex(hv); (v0,v2) and (v1,v2) pass; Branch 8 selects steepest.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2]`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,2] lt=4.0`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,2] lt=4.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me236.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me237 — topTriangle_steepest_edge_selection: steeper edge (v1,v2) wins Branch 8 slope comparison
+- **Category**: §12.14 mesh defects (sub-class: topTriangle / steepest-edge-selection)
+- **Sources**: MeshFix `Basic_TMesh.topTriangle` Branch 8 (*steepest_edge_selection*: `(az = (hv->z - e->oppositeVertex(hv)->z) / e->length()) < Ms`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Single triangle with apex v2 at z=4. Two candidate edges incident on hv=v2: (v0,v2) slope≈0.970 and (v1,v2) slope≈0.894. Branch 8 fires twice; the second fire (v1,v2 slope < current Ms) updates fe to (v1,v2) as steepest.
+- **Reproducer recipe**: v0=(0,0,0), v1=(0,0,2), v2=(1,0,4); t0=(v0,v1,v2).
+- **Expected kernel behavior**: Branch 8 fires for (v1,v2) with slope<Ms; fe=(v1,v2) selected.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2]`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,2] lt=3.0`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,2] lt=5.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me237.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me238 — topTriangle_fallback_reference_edge: fully degenerate triangle forces fe=NULL; Branch 9 uses hv->e0
+- **Category**: §12.14 mesh defects (sub-class: topTriangle / fallback-reference-edge)
+- **Sources**: MeshFix `Basic_TMesh.topTriangle` Branch 9 (*fallback_reference_edge*: `if (fe == NULL) fe = hv->e0`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Fully degenerate triangle — all three vertices coincident at (1,0,2), zero area, all edge lengths zero. All edges fail Branch 7 (length==0), so fe stays NULL. Branch 9 fires: fe=hv->e0 (the vertex's stored reference edge).
+- **Reproducer recipe**: v0=v1=v2=(1,0,2); t0=(v0,v1,v2).
+- **Expected kernel behavior**: No edge passes Branch 7; fe=NULL → Branch 9: fe=hv->e0.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,2] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,2] lt=1e-09`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-09`
+- **Fixture path**: mesh-examples/12-14-mesh/Me238.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me239 — topTriangle_degenerate_edge_check: steepest edge is boundary; topTriangle returns NULL
+- **Category**: §12.14 mesh defects (sub-class: topTriangle / degenerate-edge-check)
+- **Sources**: MeshFix `Basic_TMesh.topTriangle` Branch 10 (*degenerate_edge_check*: `fe->t1 == NULL || fe->t2 == NULL`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Single open triangle with apex v2 at z=3. All three edges are boundary (n=1). The steepest descending edge from hv=v2 is one of (v0,v2) or (v1,v2), both boundary. Branch 10 fires: fe->t2==NULL → topTriangle returns NULL.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,0,3); t0=(v0,v1,v2).
+- **Expected kernel behavior**: steepest fe is boundary (t2==NULL); topTriangle returns NULL.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2]`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,2] lt=4.0`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,2] lt=4.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me239.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me210 — cutAndStitch_duplicate_singular_edge: BIT-5 non-manifold edge duplicated before stitching
 - **Category**: §12.14 mesh defects (sub-class: cutAndStitch / duplicate-singular-edge)
 - **Sources**: MeshFix `Basic_TMesh.cutAndStitch` Branch 1 (*DUPLICATE_SINGULAR_EDGE*: `if (e2 = T->duplicateEdge(e1)) MARK_BIT(e2, 5)`); `MESH_HEAL_COVERAGE.md`.

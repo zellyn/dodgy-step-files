@@ -3677,48 +3677,40 @@ Fixture IDs: Me200 Me201 Me202 Me203 Me204 Me205 Me206 Me207 Me208 Me209
   - Repair action: Transfer original triangle's mask to nt2
 
 ##### `Basic_TMesh.topTriangle` — lines 1686–1730
-(10 branches; all UNCOVERED — no mesh fixtures exist yet)
+(10 branches; ALL COVERED by Me230–Me239, wave 9A)
 
-- **Branch 1** @ line 1697 — *component_flood_fill*
+- **Branch 1** @ line 1697 — *component_flood_fill* — COVERED (Me230: two triangles sharing edge; BFS enqueues neighbor via Branch 1)
   - What it tests: Triangle not yet visited in component
   - Repair action: Add to BFS queue and mark bit 2
-  - Suggested fixture: defect mentioning '!IS_BIT(t1,2)', '!IS_BIT(t2,2)', '!IS_BIT(t3,2)'
-- **Branch 2** @ line 1702 — *vertex_z_collection_v1*
+- **Branch 2** @ line 1702 — *vertex_z_collection_v1* — COVERED (Me231: single triangle; v1 unvisited at BFS time; appended to vlist)
   - What it tests: v1 not yet marked in component
   - Repair action: Mark VISITED, add to vlist for z-coordinate scan
-  - Suggested fixture: defect mentioning '!IS_VISITED(v1)'
-- **Branch 3** @ line 1703 — *vertex_z_collection_v2*
+- **Branch 3** @ line 1703 — *vertex_z_collection_v2* — COVERED (Me232: two disconnected triangles sharing only vertex v1; v2 of t0 is unvisited)
   - What it tests: v2 not yet marked in component
   - Repair action: Mark VISITED, add to vlist
-  - Suggested fixture: defect mentioning '!IS_VISITED(v2)'
-- **Branch 4** @ line 1704 — *vertex_z_collection_v3*
+- **Branch 4** @ line 1704 — *vertex_z_collection_v3* — COVERED (Me233: two triangles sharing edge (v0,v1); v3 of t1 is unvisited when t1 is processed)
   - What it tests: v3 not yet marked in component
   - Repair action: Mark VISITED, add to vlist
-  - Suggested fixture: defect mentioning '!IS_VISITED(v3)'
-- **Branch 5** @ line 1706 — *edge_collection_e1*
+- **Branch 5** @ line 1706 — *edge_collection_e1* — COVERED (Me234: two-triangle strip; e1=(v0,v1) of t0 is unvisited and added to elist)
   - What it tests: e1 not yet marked in component
   - Repair action: Mark VISITED, add to elist for slope scan
-  - Suggested fixture: defect mentioning '!IS_VISITED(t->e1)'
-- **Branch 6** @ line 1717 — *highest_vertex_search*
+- **Branch 6** @ line 1717 — *highest_vertex_search* — COVERED (Me235: four staircase z-levels; Branch 6 fires three times; hv=v3 z=3)
   - What it tests: Vertex has z-coordinate greater than current max
   - Repair action: Update hv to highest vertex, set Mz
-  - Suggested fixture: defect mentioning 'az = v->z) > Mz'
-- **Branch 7** @ line 1719 — *steepest_edge_filter*
+- **Branch 7** @ line 1719 — *steepest_edge_filter* — COVERED (Me236: single triangle; (v0,v1) base rejected; (v0,v2) and (v1,v2) pass hasVertex+length>0)
   - What it tests: Edge has highest vertex endpoint and non-zero length
   - Repair action: Add to slope-calculation candidates
-  - Suggested fixture: defect mentioning 'e->hasVertex(hv) && e->length() != 0'
-- **Branch 8** @ line 1723 — *steepest_edge_selection*
+- **Branch 8** @ line 1723 — *steepest_edge_selection* — COVERED (Me237: single triangle; (v1,v2) slope≈0.894 < (v0,v2) slope≈0.970; Branch 8 updates fe)
   - What it tests: Edge slope less than current minimum (steepest)
   - Repair action: Update fe to steepest descending edge
-  - Suggested fixture: defect mentioning '(az = (hv->z - e->oppositeVertex'
-- **Branch 9** @ line 1726 — *fallback_reference_edge*
+- **Branch 9** @ line 1726 — *fallback_reference_edge* — COVERED (Me238: fully degenerate triangle; all edges zero-length; Branch 7 rejects all; fe=NULL; Branch 9: fe=hv->e0)
   - What it tests: No steepest edge found (fe == NULL)
   - Repair action: Use vertex default e0 as fallback
-  - Suggested fixture: defect mentioning 'if (fe == NULL) fe = hv->e0'
-- **Branch 10** @ line 1727 — *degenerate_edge_check*
+- **Branch 10** @ line 1727 — *degenerate_edge_check* — COVERED (Me239: single open triangle; steepest edge is boundary n=1; fe->t2==NULL; topTriangle returns NULL)
   - What it tests: Edge is boundary (t1 or t2 NULL)
   - Repair action: Return NULL - topology degeneracy
-  - Suggested fixture: defect mentioning 'fe->t1 == NULL || fe->t2 == NULL'
+
+Fixture IDs: Me230 Me231 Me232 Me233 Me234 Me235 Me236 Me237 Me238 Me239
 
 ##### `Basic_TMesh.unlinkTriangle` — lines 463–523
 (13 branches; 10 COVERED by Me100–Me109; 3 SKIPPED — see notes)
