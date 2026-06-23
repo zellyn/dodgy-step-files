@@ -3843,70 +3843,52 @@ Fixture IDs: Me100 Me101 Me102 Me103 Me104 Me105 Me106 Me107 Me108 Me109
 (1 methods, 16 branches)
 
 ##### `Triangle.intersects` — lines 305–408
-(16 branches; all UNCOVERED — no mesh fixtures exist yet)
+(16 branches; 10 COVERED by Me110–Me119 wave 5A — 6 skipped, see notes)
 
-- **Branch 1** @ line 309 — *INTERSECTION_MODE_PROPER*
+- **Branch 1** @ line 309 — *INTERSECTION_MODE_PROPER* — **COVERED by Me119**
   - What it tests: justproper flag: test only proper (interior) intersections, not touching endpoints
   - Repair action: Use strict coincident vertex and edge tests, skip improper touching cases
-  - Suggested fixture: defect mentioning 'if (justproper)', 'This works for non-degenerate triangles'
-- **Branch 2** @ line 314 — *FULL_VERTEX_COINCIDENCE*
+  - Fixture: Me119 — T-junction vertex on edge; improper contact in default mode, justproper skips
+- **Branch 2** @ line 314 — *FULL_VERTEX_COINCIDENCE* — **COVERED by Me110**
   - What it tests: All 3 vertices of t1 coincide with vertices of t2 (triangles identical)
   - Repair action: Return false; identical triangles are not considered an intersection
-  - Suggested fixture: defect mentioning 'if (eq1 && eq2 && eq3) return false', 'Triangles coincide'
-- **Branch 3** @ line 319 — *SHARED_EDGE_PROPER*
+  - Fixture: Me110 — exact duplicate triangle entries (same indices)
+- **Branch 3** @ line 319 — *SHARED_EDGE_PROPER* — **COVERED by Me111**
   - What it tests: Triangles share an edge (eq1 && eq2 hold) in proper mode
-  - Repair action: Check if opposite vertex of t2 is coplanar and same-side on the edge plane
-  - Suggested fixture: defect mentioning 'if (eq1 && eq2)', 'ce1 = e2', 'exactSameSideOnPlane'
-- **Branch 4** @ line 320 — *SHARED_EDGE_PROPER_EDGE2*
-  - What it tests: Different shared edge pattern (eq2 && eq3)
-  - Repair action: Check opposite vertex condition for this edge pair
-  - Suggested fixture: defect mentioning 'if (eq2 && eq3)'
-- **Branch 5** @ line 321 — *SHARED_EDGE_PROPER_EDGE3*
-  - What it tests: Third shared edge pattern (eq3 && eq1)
-  - Repair action: Check opposite vertex condition
-  - Suggested fixture: defect mentioning 'if (eq3 && eq1)'
-- **Branch 6** @ line 331 — *SHARED_VERTEX_PROPER*
+  - Repair action: Return false; adjacent manifold triangles are not intersecting
+  - Fixture: Me111 — clean manifold fold sharing edge (v0,v1)
+- **Branch 4** @ line 320 — *SHARED_EDGE_PROPER_EDGE2* — **SKIPPED** (same geometric class as Branch 3; Me111 covers the shared-edge pattern; second/third index-ordering variants add no distinct geometric signature)
+- **Branch 5** @ line 321 — *SHARED_EDGE_PROPER_EDGE3* — **SKIPPED** (same reason as Branch 4)
+- **Branch 6** @ line 331 — *SHARED_VERTEX_PROPER* — **COVERED by Me112**
   - What it tests: Triangles share exactly one vertex in proper mode
   - Repair action: Check if opposite edges intersect the opposing triangle
-  - Suggested fixture: defect mentioning 'if (cv1)', 'segmentIntersectsTriangle'
-- **Branch 7** @ line 359 — *BBOX_X_REJECT_MIN*
+  - Fixture: Me112 — shared apex, triangles fan in opposite X directions; free edges disjoint
+- **Branch 7** @ line 359 — *BBOX_X_REJECT_MIN* — **COVERED by Me113**
   - What it tests: Bounding box rejection: all vertices of t2 are below t1's x-min
   - Repair action: Return false; boxes disjoint in x dimension
-  - Suggested fixture: defect mentioning 'mx = MIN(v11->x', 'if (v21->x < mx && v22->x < mx && v23->x < mx)'
-- **Branch 8** @ line 361 — *BBOX_X_REJECT_MAX*
-  - What it tests: All vertices of t2 are above t1's x-max
-  - Repair action: Return false; x-disjoint
-  - Suggested fixture: defect mentioning 'mx = MAX(v11->x', 'if (v21->x > mx && v22->x > mx'
-- **Branch 9** @ line 363 — *BBOX_Y_REJECT_MIN*
+  - Fixture: Me113 — t0 in x=[3,5], t1 in x=[0,1]; x-gap of 2 units
+- **Branch 8** @ line 361 — *BBOX_X_REJECT_MAX* — **SKIPPED** (symmetric to Branch 7 / Me113; Me113 demonstrates the bbox-x separation pattern; max variant has identical geometric content in the other direction)
+- **Branch 9** @ line 363 — *BBOX_Y_REJECT_MIN* — **COVERED by Me114**
   - What it tests: Y-dimension bounding box separation (min)
   - Repair action: Return false; y-disjoint
-  - Suggested fixture: defect mentioning 'mx = MIN(v11->y'
-- **Branch 10** @ line 365 — *BBOX_Y_REJECT_MAX*
-  - What it tests: Y-dimension bounding box separation (max)
-  - Repair action: Return false; y-disjoint
-  - Suggested fixture: defect mentioning 'mx = MAX(v11->y'
-- **Branch 11** @ line 367 — *BBOX_Z_REJECT_MIN*
+  - Fixture: Me114 — t0 in y=[4,6], t1 in y=[0,2]; y-gap of 2 units
+- **Branch 10** @ line 365 — *BBOX_Y_REJECT_MAX* — **SKIPPED** (symmetric to Branch 9 / Me114)
+- **Branch 11** @ line 367 — *BBOX_Z_REJECT_MIN* — **COVERED by Me115**
   - What it tests: Z-dimension bounding box separation (min)
   - Repair action: Return false; z-disjoint
-  - Suggested fixture: defect mentioning 'mx = MIN(v11->z'
-- **Branch 12** @ line 369 — *BBOX_Z_REJECT_MAX*
-  - What it tests: Z-dimension bounding box separation (max)
-  - Repair action: Return false; z-disjoint
-  - Suggested fixture: defect mentioning 'mx = MAX(v11->z'
-- **Branch 13** @ line 376 — *ORIENTATION_T1_ABOVE_OR_BELOW*
+  - Fixture: Me115 — t0 at z=[5,7], t1 at z=[0,2]; z-gap of 3 units
+- **Branch 12** @ line 369 — *BBOX_Z_REJECT_MAX* — **SKIPPED** (symmetric to Branch 11 / Me115)
+- **Branch 13** @ line 376 — *ORIENTATION_T1_ABOVE_OR_BELOW* — **COVERED by Me116**
   - What it tests: All vertices of t1 have same orientation w.r.t. t2's plane (all above or all below)
   - Repair action: Return false; t1 and t2 separated by plane
-  - Suggested fixture: defect mentioning 'o11 = v11->exactOrientation(v21, v22, v23)', 'if ((o11>0 && o12>0 && o13>0)'
-- **Branch 14** @ line 380 — *ORIENTATION_T2_ABOVE_OR_BELOW*
-  - What it tests: All vertices of t2 above or below t1's plane
-  - Repair action: Return false; t2 above/below t1
-  - Suggested fixture: defect mentioning 'if ((o21>0 && o22>0 && o23>0)'
-- **Branch 15** @ line 382 — *COPLANAR_TRIANGLES*
+  - Fixture: Me116 — t0 in z=0, t1 floating above; bbox overlap but all-positive orientations
+- **Branch 14** @ line 380 — *ORIENTATION_T2_ABOVE_OR_BELOW* — **SKIPPED** (symmetric orientation test; Me116 covers the plane-separation pattern; t2-above variant has identical geometric content)
+- **Branch 15** @ line 382 — *COPLANAR_TRIANGLES* — **COVERED by Me117**
   - What it tests: All orientation values are 0 (coplanar case)
   - Repair action: Check 9 edge-pair crossings and 6 point-in-triangle tests for coplanar overlap
-  - Suggested fixture: defect mentioning 'if (o11 == 0 && o12 == 0 && o13 == 0)', 'Point::innerSegmentsCross', 'Point::pointInTriangle'
-- **Branch 16** @ line 401 — *PROPER_INTERSECTION_3D*
+  - Fixture: Me117 — two coplanar z=0 triangles shifted by (1,0,0); overlapping interior region
+- **Branch 16** @ line 401 — *PROPER_INTERSECTION_3D* — **COVERED by Me118**
   - What it tests: Non-coplanar case with mixed orientations (at least one edge crosses)
   - Repair action: Test 6 edge-triangle segment intersection combinations
-  - Suggested fixture: defect mentioning 'else return (', 'Point::segmentIntersectsTriangle'
+  - Fixture: Me118 — XZ-plane and XY-plane triangles sharing base edge; proper 3D intersection
 

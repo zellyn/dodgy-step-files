@@ -1,0 +1,61 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      5.0
+    ],
+    [
+      1.0,
+      0.0,
+      5.0
+    ],
+    [
+      0.5,
+      1.0,
+      7.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      2.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      3,
+      4,
+      5
+    ]
+  ],
+  "metadata": {
+    "id": "Me115",
+    "schema_version": 0,
+    "defect_class": "mesh_spatially_separated_z",
+    "title": "intersects_bbox_z_reject_min: t2 entirely below t1's z-min bounding-box fast-reject",
+    "assertions": [
+      {
+        "kind": "triangles_do_not_intersect",
+        "triangles": [
+          0,
+          1
+        ]
+      }
+    ]
+  }
+}

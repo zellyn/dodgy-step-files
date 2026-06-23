@@ -127,6 +127,19 @@ class MeshFile:
             "triangles": [int(ta), int(tb)],
         })
 
+    def assert_triangles_do_not_intersect(self, ta: int, tb: int) -> None:
+        """Catalog triangles ``ta`` and ``tb`` as geometrically
+        non-intersecting — the MeshFix ``intersects`` predicate should
+        return false for this pair. Covers branches that fast-reject:
+        full vertex coincidence (Branch 2), shared edge (Branches 3–5),
+        shared single vertex with no edge crossing (Branch 6), bounding-box
+        separation (Branches 7–12), and orientation separation (Branches 13–14).
+        """
+        self.assertions.append({
+            "kind": "triangles_do_not_intersect",
+            "triangles": [int(ta), int(tb)],
+        })
+
     def assert_isolated_vertex(self, v: int) -> None:
         """Catalog vertex ``v`` as not referenced by any triangle
         (isolated-vertex defect)."""

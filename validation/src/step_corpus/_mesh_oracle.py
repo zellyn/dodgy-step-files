@@ -284,6 +284,18 @@ def _check_assertion(assertion: dict, vertices: list, triangles: list) -> dict:
             "status": "pass" if intersects else "fail",
             "detail": f"tri-tri intersection {ta} vs {tb}: {'crosses' if intersects else 'no cross'}",
         }
+    if kind == "triangles_do_not_intersect":
+        ta, tb = assertion["triangles"]
+        a = triangles[ta]
+        b = triangles[tb]
+        intersects = _triangles_intersect(
+            vertices[a[0]], vertices[a[1]], vertices[a[2]],
+            vertices[b[0]], vertices[b[1]], vertices[b[2]],
+        )
+        return {
+            "status": "pass" if not intersects else "fail",
+            "detail": f"tri-tri non-intersection {ta} vs {tb}: {'no cross (expected)' if not intersects else 'unexpectedly crosses'}",
+        }
     if kind == "isolated_vertex":
         v = assertion["vertex"]
         used = {idx for tri in triangles for idx in tri}

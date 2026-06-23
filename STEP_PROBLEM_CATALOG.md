@@ -32530,6 +32530,117 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me109.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me110 — intersects_full_vertex_coincidence: exact duplicate triangles — Branch 2 returns false
+- **Category**: §12.14 mesh defects (sub-class: intersects-predicate / full-vertex-coincidence)
+- **Sources**: MeshFix `Triangle.intersects` Branch 2 (*FULL_VERTEX_COINCIDENCE*: `if (eq1 && eq2 && eq3) return false`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: two triangle entries that reference the exact same three vertex indices (a true duplicate). MeshFix's `intersects` predicate fast-exits at Branch 2 before running any geometry test — identical triangles are not considered a self-intersection; they are a duplicate-triangle defect handled by the merge pass. Each edge is shared by exactly 2 (both copies).
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0). t0=(v0,v1,v2), t1=(v0,v1,v2) — same indices.
+- **Expected kernel behavior**: detect as duplicate-triangle defect (merge-duplicate-polygons path), not as self-intersection.
+- **Mesh assertion**: `duplicate_triangle_pair triangles=[0,1]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me110.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me111 — intersects_shared_edge_proper: manifold adjacent triangles sharing an edge — Branch 3 returns false
+- **Category**: §12.14 mesh defects (sub-class: intersects-predicate / shared-edge-proper)
+- **Sources**: MeshFix `Triangle.intersects` Branch 3 (*SHARED_EDGE_PROPER*: `if (eq1 && eq2)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: two triangles forming a clean manifold fold sharing edge (v0,v1) — standard two-triangle patch. MeshFix Branch 3 recognizes the shared edge and returns false without running the full geometric test. The free vertices (v2 in XZ plane, v3 in XY plane) are on non-intersecting sides. This fixture documents that SI-repair tools must not flag every manifold face adjacency as an intersection.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,0,1), v3=(0.5,1,0). t0=(v0,v1,v2) [XZ plane], t1=(v0,v1,v3) [XY plane].
+- **Expected kernel behavior**: recognize shared edge via Branch 3; return false; do not trigger SI repair on this pair.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me111.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me112 — intersects_shared_vertex_proper: shared-apex triangles pointing in opposite directions — Branch 6 returns false
+- **Category**: §12.14 mesh defects (sub-class: intersects-predicate / shared-vertex-proper)
+- **Sources**: MeshFix `Triangle.intersects` Branch 6 (*SHARED_VERTEX_PROPER*: `if (cv1) segmentIntersectsTriangle(…)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: two triangles that share exactly one vertex (v0 at the origin) and fan in opposite X directions — t0 fans into +X, t1 fans into −X. MeshFix Branch 6 checks whether the opposite edge of each triangle (the free edge not incident on the shared vertex) pierces the interior of the other triangle. Since the two free edges are spatially disjoint, neither pierces the opposing triangle and the predicate returns false.
+- **Reproducer recipe**: shared apex v0=(0,0,0). t0: (v0, (2,1,0), (2,−1,0)). t1: (v0, (−2,1,0), (−2,−1,0)).
+- **Expected kernel behavior**: recognize shared-vertex topology; check free-edge vs opposing-triangle intersection; return false since free edges are disjoint.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `triangles_do_not_intersect triangles=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me112.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me113 — intersects_bbox_x_reject_min: t2 entirely left of t1's x-min — Branch 7 fast-reject
+- **Category**: §12.14 mesh defects (sub-class: intersects-predicate / bbox-x-reject-min)
+- **Sources**: MeshFix `Triangle.intersects` Branch 7 (*BBOX_X_REJECT_MIN*: `if (v21->x < mx && …) return false`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: t0 occupies x ∈ [3,5] and t1 occupies x ∈ [0,1]. All three vertices of t1 have x-coordinate strictly less than t0's x-minimum (mx=3). MeshFix exits immediately with false before any plane-orientation or segment tests. Models where imported meshes have spatially disjoint parts must not have SI falsely reported.
+- **Reproducer recipe**: t0: (3,0,0),(5,0,0),(4,2,0). t1: (0,0,0),(1,0,0),(0.5,2,0). x-gap of 2 units.
+- **Expected kernel behavior**: bounding-box x-min fast-reject returns false; no intersection.
+- **Mesh assertion**: `triangles_do_not_intersect triangles=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me113.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me114 — intersects_bbox_y_reject_min: t2 entirely below t1's y-min — Branch 9 fast-reject
+- **Category**: §12.14 mesh defects (sub-class: intersects-predicate / bbox-y-reject-min)
+- **Sources**: MeshFix `Triangle.intersects` Branch 9 (*BBOX_Y_REJECT_MIN*: `if (v21->y < mx && …) return false`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: t0 occupies y ∈ [4,6] and t1 occupies y ∈ [0,2]. All three vertices of t1 have y-coordinate strictly less than t0's y-minimum (mx=4). Y-direction bounding-box fast-reject.
+- **Reproducer recipe**: t0: (0,4,0),(2,4,0),(1,6,0). t1: (0,0,0),(2,0,0),(1,2,0). y-gap of 2 units.
+- **Expected kernel behavior**: bounding-box y-min fast-reject returns false; no intersection.
+- **Mesh assertion**: `triangles_do_not_intersect triangles=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me114.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me115 — intersects_bbox_z_reject_min: t2 entirely below t1's z-min — Branch 11 fast-reject
+- **Category**: §12.14 mesh defects (sub-class: intersects-predicate / bbox-z-reject-min)
+- **Sources**: MeshFix `Triangle.intersects` Branch 11 (*BBOX_Z_REJECT_MIN*: `if (v21->z < mx && …) return false`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: t0 is an elevated triangle (z ∈ [5,7]) and t1 is a ground-level triangle (z ∈ [0,2]). All three vertices of t1 have z < 5 = t0's z-minimum. Z-direction bounding-box fast-reject.
+- **Reproducer recipe**: t0: (0,0,5),(1,0,5),(0.5,1,7). t1: (0,0,0),(1,0,0),(0.5,1,2). z-gap of 3 units.
+- **Expected kernel behavior**: bounding-box z-min fast-reject returns false; no intersection.
+- **Mesh assertion**: `triangles_do_not_intersect triangles=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me115.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me116 — intersects_orientation_t1_above_plane: t1 entirely above t0's plane — Branch 13 fast-reject
+- **Category**: §12.14 mesh defects (sub-class: intersects-predicate / orientation-all-above-plane)
+- **Sources**: MeshFix `Triangle.intersects` Branch 13 (*ORIENTATION_T1_ABOVE_OR_BELOW*: `if ((o11>0 && o12>0 && o13>0) || (o11<0 && o12<0 && o13<0)) return false`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: t0 lies in z=0 and t1 is a triangle whose all three vertices have z > 0 — all strictly above t0's plane. The orientation tests o11, o12, o13 are all positive, triggering Branch 13 to return false before any intersection-line or segment tests. Bounding boxes pass (X and Y ranges overlap) so the BBOX tests don't catch it — only the plane-orientation check does.
+- **Reproducer recipe**: t0: (0,0,0),(2,0,0),(1,2,0) in z=0. t1: (0,1,2),(2,1,2),(1,3,4) — all z≥2.
+- **Expected kernel behavior**: orientation-all-same-side fast-reject returns false; no intersection.
+- **Mesh assertion**: `triangles_do_not_intersect triangles=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me116.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me117 — intersects_coplanar_overlap: coplanar triangles with overlapping interiors — Branch 15 fires
+- **Category**: §12.14 mesh defects (sub-class: intersects-predicate / coplanar-overlap)
+- **Sources**: MeshFix `Triangle.intersects` Branch 15 (*COPLANAR_TRIANGLES*: `if (o11==0 && o12==0 && o13==0)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: two coplanar triangles in z=0 whose 2D projections overlap with positive area. All orientation values are zero (t1's vertices all lie in t0's plane), triggering Branch 15's coplanar fallback using 9 edge-pair crossing tests and 6 point-in-triangle containment tests. The 2D SAT finds no separating axis — confirmed intersection. t0=(0,0,0),(2,0,0),(0,2,0); t1=(1,0,0),(3,0,0),(1,2,0): overlap region is the triangle between (1,0,0),(1,2,0),(2,0,0).
+- **Reproducer recipe**: t0: (0,0,0),(2,0,0),(0,2,0). t1: (1,0,0),(3,0,0),(1,2,0). Both in z=0.
+- **Expected kernel behavior**: detect coplanar 2D overlap via Branch 15; flag as self-intersection.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me117.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me118 — intersects_proper_3d: non-coplanar triangles with 3D interior crossing — Branch 16 fires
+- **Category**: §12.14 mesh defects (sub-class: intersects-predicate / proper-intersection-3d)
+- **Sources**: MeshFix `Triangle.intersects` Branch 16 (*PROPER_INTERSECTION_3D*: `else return (segmentIntersectsTriangle(…) || …)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: t0 lies in the XZ plane (y=0) and t1 lies in the XY plane (z=0), both sharing base edge (v0,v1) along the X axis from −1 to +1. The free vertices (v2=(0,0,2) and v3=(0,2,0)) are strictly off each other's plane with mixed orientation signs. Branch 16 fires the six segment-triangle tests; the shared base edge satisfies at least one test confirming proper intersection.
+- **Reproducer recipe**: v0=(−1,0,0), v1=(1,0,0), v2=(0,0,2), v3=(0,2,0). t0=(v0,v1,v2) [XZ], t1=(v0,v1,v3) [XY].
+- **Expected kernel behavior**: detect non-coplanar proper 3D intersection via Branch 16 segment tests.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me118.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me119 — intersects_proper_mode_endpoint_touch: T-junction vertex on edge — improper contact
+- **Category**: §12.14 mesh defects (sub-class: intersects-predicate / proper-mode-endpoint-touch)
+- **Sources**: MeshFix `Triangle.intersects` Branch 1 (*INTERSECTION_MODE_PROPER*: `if (justproper)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: v3=(1,0,0) — the first vertex of t1 — lies exactly on the midpoint of edge (v0,v1) of t0 (T-junction geometry). In non-justproper mode this contact is an improper intersection detected by the coplanar-fallback 2D SAT. In justproper mode Branch 1 gates whether endpoint-only touches count; strict interior crossings are not present here, so justproper=true would return false. The fixture captures the T-junction geometry that activates the Branch 1 decision.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0). v3=(1,0,0) [midpoint of v0→v1], v4=(0,2,0), v5=(2,2,0). t0=(v0,v1,v2), t1=(v3,v4,v5).
+- **Expected kernel behavior**: in default (non-justproper) mode, flag as improper intersection; in justproper mode skip.
+- **Mesh assertion**: `vertex_on_edge vertex=3 edge=[0,1]`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me119.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Wr052 — Writer emits EDGE_CURVE backed by untrimmed LINE entity
 - **Category**: §12.13 writer-pathology (sub-class: unbounded-curve emission)
 - **Sources**: Pattern-mined from OCCT/tests/bugs/step/bug32817_1 (LGPL-clean — pattern only, no bytes copied). OCCT method `STEPControl_Writer::Transfer` on a single-line edge.
