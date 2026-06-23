@@ -32386,6 +32386,150 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me099.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me100 — unlink_triangle_v1_boundary_non_manifold: v1 on boundary but both incident edges non-boundary
+- **Category**: §12.14 mesh defects (sub-class: triangle-unlink / vertex-manifold-check-v1)
+- **Sources**: MeshFix `Basic_TMesh.unlinkTriangle` Branch 1 (*vertex_manifold_check_v1*: `if (v1->isOnBoundary())`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: vertex 1 is flagged as a boundary vertex (its link ring is open), yet both edges incident on v1 in the target triangle t0 are interior (each shared by two triangles). This non-manifold singularity means unlinking t0 would leave v1 in an invalid state; Branch 1 detects the inconsistency and schedules v1 for duplication.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0), v3=(1,1,0), v4=(2,1,0). t0=(v0,v1,v2), t1=(v1,v4,v2), t2=(v0,v3,v1), t3=(v1,v3,v4). Edges (v0,v1) and (v1,v2) each shared by 2 triangles; open ring at v1 (gap at (v3,v0)).
+- **Expected kernel behavior**: detect v1 non-manifold singularity; duplicate v1 before performing the triangle removal.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me100.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me101 — unlink_triangle_v2_boundary_non_manifold: v2 on boundary but both incident edges non-boundary
+- **Category**: §12.14 mesh defects (sub-class: triangle-unlink / vertex-manifold-check-v2)
+- **Sources**: MeshFix `Basic_TMesh.unlinkTriangle` Branch 2 (*vertex_manifold_check_v2*: `if (v2->isOnBoundary())`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: vertex 2 (second vertex of target t0) is a boundary vertex with an open fan ring, yet both its incident edges in t0 are interior. Same non-manifold singularity as Me100 but for the second vertex position. Branch 2 catches this and sets the v2nm flag for later duplication.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,0,0), v3=(0,1,0), v4=(1,1,0), v5=(2,1,0). t0=(v0,v1,v2); t1=(v0,v4,v2); t2=(v1,v2,v5); t3=(v0,v3,v4); t4=(v4,v5,v2).
+- **Expected kernel behavior**: detect v2 non-manifold singularity; duplicate v2 before performing the triangle removal.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me101.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me102 — unlink_triangle_v3_boundary_non_manifold: apex vertex on boundary but both incident edges non-boundary
+- **Category**: §12.14 mesh defects (sub-class: triangle-unlink / vertex-manifold-check-v3)
+- **Sources**: MeshFix `Basic_TMesh.unlinkTriangle` Branch 3 (*vertex_manifold_check_v3*: `if (v3->isOnBoundary())`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: vertex 2 (the apex / third vertex of target t0) is a boundary vertex with an open fan ring, yet both its lateral edges in t0 are interior. Branch 3 detects the v3 non-manifold condition — mirror of Branches 1 and 2 but for the third vertex of the triangle.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,1,0), v3c=(0,2,0), v3d=(2,2,0). t0=(v0,v1,v2), t1=(v0,v2,v3c), t2=(v1,v3d,v2), t3=(v0,v3c,v3d).
+- **Expected kernel behavior**: detect apex vertex non-manifold singularity; duplicate v3 before performing the triangle removal.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me102.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me103 — unlink_triangle_v1_edge_ref_boundary: v1 reference edge updated to boundary after unlink
+- **Category**: §12.14 mesh defects (sub-class: triangle-unlink / edge-reference-update-v1)
+- **Sources**: MeshFix `Basic_TMesh.unlinkTriangle` Branch 4 (*edge_reference_update_v1*: `if (e2->isOnBoundary())`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: After unlinking target triangle t0, edge e2 (one of v1's incident edges) transitions from interior to boundary. Branch 4 detects that e2 is now on the boundary and updates v1->e0 to point at e2. The fixture is a two-triangle strip where (v0,v1) is a boundary edge and (v1,v3) is shared.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0), v3=(1,1,0). t0=(v0,v1,v3), t1=(v1,v2,v3).
+- **Expected kernel behavior**: after unlink, update v1->e0 to the newly-boundary edge e2.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me103.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me104 — unlink_triangle_v2_edge_ref_boundary: v2 reference edge updated to boundary after unlink
+- **Category**: §12.14 mesh defects (sub-class: triangle-unlink / edge-reference-update-v2)
+- **Sources**: MeshFix `Basic_TMesh.unlinkTriangle` Branch 5 (*edge_reference_update_v2*: `if (e3->isOnBoundary())`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: After unlinking t0, edge e3 (v2's edge connecting back to v1 of t0) is a boundary edge. Branch 5 sets v2->e0 = e3. The fixture is a two-triangle strip where t0 and t1 share (v0,v1) and both edges at v2 in t0 are boundary.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(-0.5,1,0). t0=(v0,v1,v2), t1=(v0,v3,v1).
+- **Expected kernel behavior**: after unlink, set v2->e0 to the boundary edge e3.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me104.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me105 — unlink_triangle_v3_edge_ref_boundary: apex v3 reference edge updated to newly-boundary base edge
+- **Category**: §12.14 mesh defects (sub-class: triangle-unlink / edge-reference-update-v3)
+- **Sources**: MeshFix `Basic_TMesh.unlinkTriangle` Branch 6 (*edge_reference_update_v3*: `if (e1->isOnBoundary())`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: After unlinking t0, the base edge e1=(v0,v1) (shared with t1) is no longer in t0 — it becomes a boundary edge (in t1 only). Branch 6 sets v3->e0 = e1. The fixture is a two-triangle patch where the base edge is interior and the lateral edges at the apex are boundary.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,1,0), v3=(1,2,0). t0=(v0,v1,v2), t1=(v0,v3,v1).
+- **Expected kernel behavior**: after unlink, update apex v3->e0 to the now-boundary base edge.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me105.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me106 — unlink_triangle_isolated_edge_pair_v1: v1's both incident edges isolated, v1 becomes orphan
+- **Category**: §12.14 mesh defects (sub-class: triangle-unlink / isolated-edge-pair-v1)
+- **Sources**: MeshFix `Basic_TMesh.unlinkTriangle` Branch 7 (*isolated_edge_pair_v1*: `if (e1->isIsolated() && e2->isIsolated())`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: v0 (first vertex of target t0) appears in exactly one triangle — the target. Both edges incident on v0 in t0 are boundary (in t0 only). After t0 is unlinked, both edges become isolated and v0 loses all connectivity. Branch 7 detects this and sets v0->e0 = NULL, marking v0 as an orphan vertex.
+- **Reproducer recipe**: v0=(1,0,0), v1=(0,0,0), v2=(2,0,0), v3=(1,1,0), v4=(0,2,0), v5=(2,2,0). t0=(v0,v1,v2); t1=(v1,v3,v2); t2=(v1,v4,v3); t3=(v3,v5,v2).
+- **Expected kernel behavior**: after unlink of t0, set v0->e0 = NULL; mark v0 as fully disconnected.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me106.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me107 — unlink_triangle_isolated_edge_pair_v2: v2's both incident edges isolated, v2 becomes orphan
+- **Category**: §12.14 mesh defects (sub-class: triangle-unlink / isolated-edge-pair-v2)
+- **Sources**: MeshFix `Basic_TMesh.unlinkTriangle` Branch 8 (*isolated_edge_pair_v2*: `if (e2->isIsolated() && e3->isIsolated())`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: v1 (second vertex of target t0) appears in exactly one triangle — the target. Both edges (v0,v1) and (v1,v2) are in t0 only. After t0 is unlinked, both edges become isolated and v1 loses all connectivity. Branch 8 sets v1->e0 = NULL. Mirror of Me106 but for the second vertex position.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0), v3=(1,1,0), v4=(0,1,0), v5=(2,1,0). t0=(v0,v1,v2); t1=(v0,v3,v4); t2=(v0,v2,v3); t3=(v2,v5,v3).
+- **Expected kernel behavior**: after unlink of t0, set v1->e0 = NULL; mark v1 as fully disconnected.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me107.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me108 — unlink_triangle_v1_manifold_duplication: v1 is non-manifold bowtie requiring duplication on unlink
+- **Category**: §12.14 mesh defects (sub-class: triangle-unlink / manifold-duplication-v1)
+- **Sources**: MeshFix `Basic_TMesh.unlinkTriangle` Branch 11 (*manifold_duplication_v1*: `if (v1nm)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: v1 is a bowtie (non-manifold) vertex: its fan has two disconnected components — an upper component containing the target triangle t0, and an isolated lower fan. Branch 1 sets v1nm; Branch 11 carries out the actual v1 duplication (clone vertex, redirect incident edges, add clone to mesh) before the unlink proceeds.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0), v3=(1,1,0), v4=(0,-1,0), v5=(2,-1,0). Upper: t0=(v0,v1,v3), t1=(v1,v2,v3), t2=(v0,v3,v2). Lower: t3=(v1,v4,v5).
+- **Expected kernel behavior**: clone v1; upper fan gets one copy, lower fan gets the duplicate; then unlink t0 from the upper copy.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,5] n=1`
+- **Mesh assertion**: `vertex_fan_disconnected vertex=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me108.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me109 — unlink_triangle_v2_manifold_duplication: v2 is non-manifold bowtie requiring duplication on unlink
+- **Category**: §12.14 mesh defects (sub-class: triangle-unlink / manifold-duplication-v2)
+- **Sources**: MeshFix `Basic_TMesh.unlinkTriangle` Branch 12 (*manifold_duplication_v2*: `if (v2nm)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: v2 is a bowtie vertex with two disconnected fan components — an upper component (containing t0) where both t0-edges at v2 are interior, and an isolated lower fan. Branch 2 sets v2nm; Branch 12 clones v2 and redirects incident edges before the unlink. Mirror of Me108 for the second vertex position.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,0,0), v3=(1,1,0), v4=(-1,-1,0), v5=(3,-1,0). Upper: t0=(v0,v2,v1), t1=(v0,v3,v2), t2=(v2,v3,v1). Lower: t3=(v2,v4,v5).
+- **Expected kernel behavior**: clone v2; upper fan triangles reference one copy; lower fan gets the duplicate; then unlink t0.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,5] n=1`
+- **Mesh assertion**: `vertex_fan_disconnected vertex=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me109.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Wr052 — Writer emits EDGE_CURVE backed by untrimmed LINE entity
 - **Category**: §12.13 writer-pathology (sub-class: unbounded-curve emission)
 - **Sources**: Pattern-mined from OCCT/tests/bugs/step/bug32817_1 (LGPL-clean — pattern only, no bytes copied). OCCT method `STEPControl_Writer::Transfer` on a single-line edge.

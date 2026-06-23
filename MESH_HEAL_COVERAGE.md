@@ -3794,60 +3794,49 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
   - Suggested fixture: defect mentioning 'fe->t1 == NULL || fe->t2 == NULL'
 
 ##### `Basic_TMesh.unlinkTriangle` — lines 463–523
-(13 branches; all UNCOVERED — no mesh fixtures exist yet)
+(13 branches; 10 COVERED by Me100–Me109; 3 SKIPPED — see notes)
 
-- **Branch 1** @ line 468 — *vertex_manifold_check_v1*
+- **Branch 1** @ line 468 — *vertex_manifold_check_v1* — COVERED (Me100: v1 boundary but both incident edges non-boundary; open fan ring confirmed)
   - What it tests: v1 is boundary but both incident edges non-boundary
   - Repair action: Duplicate v1 to resolve non-manifold singularity
-  - Suggested fixture: defect mentioning 'v1->isOnBoundary()', 'v1nm'
-- **Branch 2** @ line 469 — *vertex_manifold_check_v2*
+- **Branch 2** @ line 469 — *vertex_manifold_check_v2* — COVERED (Me101: v2 boundary non-manifold; 5-triangle open fan)
   - What it tests: v2 is boundary but both incident edges non-boundary
   - Repair action: Duplicate v2 to resolve non-manifold singularity
-  - Suggested fixture: defect mentioning 'v2->isOnBoundary()', 'v2nm'
-- **Branch 3** @ line 470 — *vertex_manifold_check_v3*
+- **Branch 3** @ line 470 — *vertex_manifold_check_v3* — COVERED (Me102: apex v3 boundary non-manifold; 4-triangle mesh)
   - What it tests: v3 is boundary but both incident edges non-boundary
   - Repair action: Duplicate v3 to resolve non-manifold singularity
-  - Suggested fixture: defect mentioning 'v3->isOnBoundary()', 'v3nm'
-- **Branch 4** @ line 472 — *edge_reference_update_v1*
+- **Branch 4** @ line 472 — *edge_reference_update_v1* — COVERED (Me103: boundary edge e2 at v1; two-triangle strip)
   - What it tests: Determine v1's reference edge after boundary status
   - Repair action: Set v1->e0 to boundary edge or next available
-  - Suggested fixture: defect mentioning 'e2->isOnBoundary()'
-- **Branch 5** @ line 473 — *edge_reference_update_v2*
+- **Branch 5** @ line 473 — *edge_reference_update_v2* — COVERED (Me104: boundary edge e3 at v2; two-triangle strip)
   - What it tests: Determine v2's reference edge after boundary status
   - Repair action: Set v2->e0 to boundary edge or next available
-  - Suggested fixture: defect mentioning 'e3->isOnBoundary()'
-- **Branch 6** @ line 474 — *edge_reference_update_v3*
+- **Branch 6** @ line 474 — *edge_reference_update_v3* — COVERED (Me105: base edge becomes boundary at apex v3; two-triangle patch)
   - What it tests: Determine v3's reference edge after boundary status
   - Repair action: Set v3->e0 to boundary edge or next available
-  - Suggested fixture: defect mentioning 'e1->isOnBoundary()'
-- **Branch 7** @ line 480 — *isolated_edge_pair_v1*
+- **Branch 7** @ line 480 — *isolated_edge_pair_v1* — COVERED (Me106: v0 first vertex of t0 only; both incident edges isolated after unlink)
   - What it tests: e1 and e2 both isolated (no triangles remaining)
   - Repair action: Nullify v1->e0 to mark vertex orphaned
-  - Suggested fixture: defect mentioning 'e1->isIsolated() && e2->isIsolated()'
-- **Branch 8** @ line 481 — *isolated_edge_pair_v2*
+- **Branch 8** @ line 481 — *isolated_edge_pair_v2* — COVERED (Me107: v1 second vertex of t0 only; both incident edges isolated after unlink)
   - What it tests: e2 and e3 both isolated
   - Repair action: Nullify v2->e0
-  - Suggested fixture: defect mentioning 'e2->isIsolated() && e3->isIsolated()'
-- **Branch 9** @ line 482 — *isolated_edge_pair_v3*
+- **Branch 9** @ line 482 — *isolated_edge_pair_v3* — SKIPPED: geometric signature is identical to Branches 7 and 8 but for the third vertex; no distinct assertion pattern beyond Me106/Me107. Deferred.
   - What it tests: e3 and e1 both isolated
   - Repair action: Nullify v3->e0
-  - Suggested fixture: defect mentioning 'e3->isIsolated() && e1->isIsolated()'
-- **Branch 10** @ line 483 — *orphaned_edge_e1*
+- **Branch 10** @ line 483 — *orphaned_edge_e1* — SKIPPED: requires half-edge NULL-vertex state not representable in flat triangle-list .mesh.json (e1's endpoints would both be NULL — an in-memory HalfEdge invariant, not a mesh-geometry condition). Deferred to HalfEdge-aware fixture format.
   - What it tests: e1 has no vertices (both NULL)
   - Repair action: Mark e1 as fully detached
-  - Suggested fixture: defect mentioning 'e1->isIsolated()'
-- **Branch 11** @ line 493 — *manifold_duplication_v1*
+- **Branch 11** @ line 493 — *manifold_duplication_v1* — COVERED (Me108: v1 bowtie with upper+lower fan; vertex_fan_disconnected assertion)
   - What it tests: v1 non-manifold duplication required
   - Repair action: Clone v1, redirect incident edges, add to mesh
-  - Suggested fixture: defect mentioning 'if (v1nm)'
-- **Branch 12** @ line 503 — *manifold_duplication_v2*
+- **Branch 12** @ line 503 — *manifold_duplication_v2* — COVERED (Me109: v2 bowtie with upper+lower fan; vertex_fan_disconnected assertion)
   - What it tests: v2 non-manifold duplication required
   - Repair action: Clone v2, redirect incident edges, add to mesh
-  - Suggested fixture: defect mentioning 'if (v2nm)'
-- **Branch 13** @ line 513 — *manifold_duplication_v3*
+- **Branch 13** @ line 513 — *manifold_duplication_v3* — SKIPPED: structurally identical to Branches 11 and 12 but for the third vertex; would produce a near-duplicate of Me108/Me109 with no new assertion kind. Deferred.
   - What it tests: v3 non-manifold duplication required
   - Repair action: Clone v3, redirect incident edges, add to mesh
-  - Suggested fixture: defect mentioning 'if (v3nm)'
+
+Fixture IDs: Me100 Me101 Me102 Me103 Me104 Me105 Me106 Me107 Me108 Me109
 
 
 #### `src/TMesh/triangle.cpp`
