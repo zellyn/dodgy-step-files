@@ -1,0 +1,16 @@
+# Me074: duplicate_singular_vertices: two separate bowtie vertices in one mesh
+# defect_class: non_manifold_vertex
+v 0 0 0
+v 1 1 0
+v -1 1 0
+v 1 -1 0
+v -1 -1 0
+v 4 1 0
+v 6 1 0
+v 5 0 0
+v 4 -1 0
+v 6 -1 0
+f 1 2 3
+f 1 4 5
+f 8 6 7
+f 8 9 10

@@ -56,56 +56,22 @@ code or test data was copied into this catalog.
 (27 methods, 115 branches)
 
 ##### `PMP.Polygon_soup_orienter.duplicate_singular_vertices` — lines 343–425
-(12 branches; all UNCOVERED — no mesh fixtures exist yet)
+(12 branches; 10 COVERED by Me070–Me079; 2 SKIPPED — see notes)
 
-- **Branch 1** @ line 346 — *incident_polygon_collection*
-  - What it tests: Build per-vertex list of incident polygons
-  - Repair action: fill_incident_polygons_per_vertex
-  - Suggested fixture: defect mentioning 'fill_incident_polygons_per_vertex'
-- **Branch 2** @ line 351 — *vertex_iteration*
-  - What it tests: For each vertex
-  - Repair action: check manifoldness
-  - Suggested fixture: defect mentioning 'for (V_ID v_id = 0; v_id < nbv'
-- **Branch 3** @ line 355 — *isolated_vertex_skip*
-  - What it tests: Vertex has no incident polygons
-  - Repair action: continue to next vertex
-  - Suggested fixture: defect mentioning 'if ( incident_polygons.empty() ) continue'
-- **Branch 4** @ line 358 — *link_cc_count*
-  - What it tests: Count distinct connected components in vertex link
-  - Repair action: nb_link_ccs++
-  - Suggested fixture: defect mentioning 'std::size_t nb_link_ccs=0'
-- **Branch 5** @ line 363 — *non_manifold_vertex*
-  - What it tests: Vertex link has > 1 connected component
-  - Repair action: add to vertices_to_duplicate
-  - Suggested fixture: defect mentioning 'if (++nb_link_ccs != 1)'
-- **Branch 6** @ line 370 — *visitor_callback*
-  - What it tests: Custom visitor can be notified of non-manifold detection
-  - Repair action: visitor.link_connected_polygons()
-  - Suggested fixture: defect mentioning 'if (nb_link_ccs==2 && &Visitor::link_connected_polygons'
-- **Branch 7** @ line 385 — *link_traversal_cw*
-  - What it tests: Traverse vertex link clockwise from starting polygon
-  - Repair action: next_cw_vertex_around_source()
-  - Suggested fixture: defect mentioning 'next_cw_vertex_around_source'
-- **Branch 8** @ line 388 — *wraparound_check*
-  - What it tests: Traversal returned to starting vertex
-  - Repair action: if next==v_id, break or switch direction
-  - Suggested fixture: defect mentioning 'if (next==v_id) break'
-- **Branch 9** @ line 395 — *link_traversal_ccw*
-  - What it tests: If clockwise wraps to v_id, traverse ccw from start
-  - Repair action: next_ccw_vertex_around_target() in opposite direction
-  - Suggested fixture: defect mentioning 'next_ccw_vertex_around_target'
-- **Branch 10** @ line 417 — *point_duplication_loop*
-  - What it tests: For each non-manifold vertex, create duplicates
-  - Repair action: points.push_back(); replace indices in polygons
-  - Suggested fixture: defect mentioning 'for(const V_ID_and_Polygon_ids& vid_and_pids'
-- **Branch 11** @ line 421 — *new_point_creation*
-  - What it tests: Clone point for each link component (except one)
-  - Repair action: points.push_back( points[original_id] )
-  - Suggested fixture: defect mentioning 'points.push_back'
-- **Branch 12** @ line 423 — *polygon_index_replacement*
-  - What it tests: Update polygon vertex index from old to new duplicate
-  - Repair action: replace_vertex_index_in_polygon()
-  - Suggested fixture: defect mentioning 'replace_vertex_index_in_polygon'
+- **Branch 1** @ line 346 — *incident_polygon_collection* — COVERED (Me070–Me079 all exercise the per-vertex incident-polygon build step)
+- **Branch 2** @ line 351 — *vertex_iteration* — COVERED (Me074: 2 singular vertices iterated; all fixtures exercise the loop)
+- **Branch 3** @ line 355 — *isolated_vertex_skip* — COVERED (Me075: isolated vertex v5 has empty incident-polygon list → skip)
+- **Branch 4** @ line 358 — *link_cc_count* — COVERED (Me072, Me078: nb_link_ccs reaches 3; Me070 etc: reaches 2)
+- **Branch 5** @ line 363 — *non_manifold_vertex* — COVERED (all 10 fixtures: at least one vertex has nb_link_ccs > 1)
+- **Branch 6** @ line 370 — *visitor_callback* — SKIPPED (requires custom visitor object; pure-geometry fixture cannot demonstrate a C++ callback; no Python-level observable)
+- **Branch 7** @ line 385 — *link_traversal_cw* — COVERED (Me073: 3-triangle strip forces 3-step CW walk; Me076, Me077, Me079 also)
+- **Branch 8** @ line 388 — *wraparound_check* — COVERED (Me076: closed 4-triangle ring — CW traversal returns to start, triggering wraparound break)
+- **Branch 9** @ line 395 — *link_traversal_ccw* — COVERED (Me077: open 3-triangle strip exercises CW-then-CCW two-direction traversal)
+- **Branch 10** @ line 417 — *point_duplication_loop* — COVERED (Me074: 2 singular vertices → loop runs twice; Me072/Me078 also)
+- **Branch 11** @ line 421 — *new_point_creation* — COVERED (Me072, Me078: 3 fans → 2 new clone points created)
+- **Branch 12** @ line 423 — *polygon_index_replacement* — COVERED (Me079: 4-triangle strip → 4 polygon indices replaced for one CC)
+
+Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
 
 ##### `PMP.Polygon_soup_orienter.fill_edge_map` — lines 180–214
 (3 branches; all UNCOVERED — no mesh fixtures exist yet)

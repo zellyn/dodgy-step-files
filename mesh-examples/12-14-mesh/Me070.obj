@@ -1,0 +1,9 @@
+# Me070: duplicate_singular_vertices: minimal bowtie — 2-fan vertex in XY plane
+# defect_class: non_manifold_vertex
+v 0 0 0
+v 1 1 0
+v -1 1 0
+v 1 -1 0
+v -1 -1 0
+f 1 2 3
+f 1 4 5

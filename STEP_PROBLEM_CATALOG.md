@@ -31746,6 +31746,154 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me049.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me070 — duplicate_singular_vertices: minimal bowtie — 2-fan vertex in XY plane
+- **Category**: §12.14 mesh defects (sub-class: non-manifold vertex / singular vertex)
+- **Sources**: CGAL `PMP.Polygon_soup_orienter.duplicate_singular_vertices` Branches 1–5 (*incident_polygon_collection*, *vertex_iteration*, *link_cc_count*, *non_manifold_vertex*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: vertex 0 is a singular (bowtie) vertex in the XY plane. Two triangles — upper fan (v0,v1,v2) and lower fan (v0,v3,v4) — share only v0 with no shared edge. The vertex link has 2 connected components; removing v0 disconnects the neighborhood. All four edges at v0 are boundary edges (incident on 1 triangle each). The duplicate_singular_vertices algorithm detects nb_link_ccs=2 and marks v0 for duplication.
+- **Reproducer recipe**: 5 vertices; t0=(v0,v1,v2) with v1=(1,1,0), v2=(-1,1,0); t1=(v0,v3,v4) with v3=(1,-1,0), v4=(-1,-1,0); no shared edge between t0 and t1.
+- **Expected kernel behavior**: split v0 into two copies — one per fan — making each fan locally manifold; total vertex count increases by 1.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me070.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me071 — duplicate_singular_vertices: 3D bowtie — two fans in orthogonal planes
+- **Category**: §12.14 mesh defects (sub-class: non-manifold vertex / singular vertex)
+- **Sources**: CGAL `PMP.Polygon_soup_orienter.duplicate_singular_vertices` Branch 5 (*non_manifold_vertex*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: vertex 0 is a singular (bowtie) vertex where the two triangle fans lie in orthogonal planes (XY and XZ). Upper fan (v0,v1,v2) lies in the XY plane; side fan (v0,v3,v4) lies in the XZ plane. The two fans share only v0; the vertex link has 2 CCs. Unlike Me070 (flat bowtie), the fans project differently on every coordinate axis, stressing 3D link-CC traversal.
+- **Reproducer recipe**: v1=(1,1,0), v2=(-1,1,0) in XY fan; v3=(1,0,1), v4=(-1,0,1) in XZ fan; share only v0=(0,0,0).
+- **Expected kernel behavior**: split v0 into two copies (one per fan); each resulting copy is a locally manifold vertex.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me071.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me072 — duplicate_singular_vertices: triple-fan vertex — 3 disjoint link CCs at v0
+- **Category**: §12.14 mesh defects (sub-class: non-manifold vertex / singular vertex)
+- **Sources**: CGAL `PMP.Polygon_soup_orienter.duplicate_singular_vertices` Branches 4–5 (*link_cc_count*: nb_link_ccs increments to 3; *non_manifold_vertex*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: vertex 0 has three completely disjoint triangle fans meeting at it (a triple bowtie). Fan A (z=0 half-plane), Fan B (−y half), Fan C (XZ plane). nb_link_ccs reaches 3 — beyond 2 — exercising the increment logic in Branch 4. After repair, 2 new duplicate points are created and 3 polygon references replaced.
+- **Reproducer recipe**: 3 independent triangles all referencing v0=(0,0,0); outer vertices in three separate spatial half-spaces so no fan shares any edge with another.
+- **Expected kernel behavior**: split v0 into 3 copies; each fan gets its own vertex; total vertex count increases by 2.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=1`
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me072.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me073 — duplicate_singular_vertices: bowtie with 3-triangle upper fan and 1-triangle lower fan
+- **Category**: §12.14 mesh defects (sub-class: non-manifold vertex / singular vertex)
+- **Sources**: CGAL `PMP.Polygon_soup_orienter.duplicate_singular_vertices` Branch 7 (*link_traversal_cw*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: vertex 0 is a singular vertex whose upper fan is a 3-triangle open strip (t0, t1, t2 sharing edges (v0,v2) and (v0,v3) at v0) and whose lower fan is a single isolated triangle (t3). The CW traversal of the link must make 3 steps through the strip before reaching the strip boundary, then sees no further adjacent triangles on that side, confirming 1 CC. The isolated lower triangle forms the second CC.
+- **Reproducer recipe**: v0=(0,0,0); outer rim v1=(-1,1,0), v2=(0,1,0), v3=(1,1,0), v4=(2,0,0); strip t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v4); isolated t3=(v0,v5,v6) with v5=(1,-1,0), v6=(-1,-1,0).
+- **Expected kernel behavior**: split v0 into 2 copies; upper strip retains one copy; lower fan gets the duplicate.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,6] n=1`
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me073.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me074 — duplicate_singular_vertices: two separate bowtie vertices in one mesh
+- **Category**: §12.14 mesh defects (sub-class: non-manifold vertex / singular vertex)
+- **Sources**: CGAL `PMP.Polygon_soup_orienter.duplicate_singular_vertices` Branch 2 (*vertex_iteration*), Branch 10 (*point_duplication_loop*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: two geometrically separated bowtie vertices (v0 near origin, v7 near x=5) each have 2 link CCs. The vertex_iteration loop (Branch 2) visits both and marks both for duplication. The point_duplication_loop (Branch 10) processes both entries, creating 2 new duplicate points in total. The two bowties are completely independent.
+- **Reproducer recipe**: 10 vertices; bowtie 1 centered at v0=(0,0,0) with 4 outer vertices; bowtie 2 centered at v7=(5,0,0) with 4 outer vertices; 4 triangles total (2 per bowtie).
+- **Expected kernel behavior**: split v0 and v7 each into 2 copies; total vertex count increases by 2.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,7] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[7,8] n=1`
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Mesh assertion**: `vertex_fan_disconnected vertex=7`
+- **Fixture path**: mesh-examples/12-14-mesh/Me074.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me075 — duplicate_singular_vertices: bowtie vertex plus isolated (unreferenced) neighbor vertex
+- **Category**: §12.14 mesh defects (sub-class: non-manifold vertex / singular vertex)
+- **Sources**: CGAL `PMP.Polygon_soup_orienter.duplicate_singular_vertices` Branch 3 (*isolated_vertex_skip*), Branch 5 (*non_manifold_vertex*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: vertex 0 is a singular bowtie vertex (2 link CCs) and vertex 5 is an isolated vertex not referenced by any triangle. When the algorithm iterates over vertices (Branch 2) and reaches v5, its incident-polygon list is empty, so Branch 3 (*isolated_vertex_skip*: `if (incident_polygons.empty()) continue`) fires and v5 is skipped. Meanwhile v0 is correctly marked for duplication.
+- **Reproducer recipe**: 6 vertices; 2 triangles forming a bowtie at v0; v5=(3,0,0) is not referenced by any triangle.
+- **Expected kernel behavior**: split v0; leave v5 in place (isolated vertex handling is a separate concern); total vertex count increases by 1.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Mesh assertion**: `isolated_vertex vertex=5`
+- **Fixture path**: mesh-examples/12-14-mesh/Me075.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me076 — duplicate_singular_vertices: closed-ring upper fan plus open lower fan at bowtie vertex
+- **Category**: §12.14 mesh defects (sub-class: non-manifold vertex / singular vertex)
+- **Sources**: CGAL `PMP.Polygon_soup_orienter.duplicate_singular_vertices` Branch 7 (*link_traversal_cw*), Branch 8 (*wraparound_check*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: vertex 0 is a singular vertex. The upper fan is a **closed** 4-triangle ring (all edges at v0 shared by exactly 2 ring triangles; no boundary at v0 within the ring). The lower fan is a single isolated triangle. CW traversal of the closed ring returns to the starting polygon — Branch 8 (*wraparound_check*: `if (next==v_id) break`) fires to terminate the first CC. The isolated lower triangle then forms the second CC.
+- **Reproducer recipe**: closed ring t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v4), t3=(v0,v4,v1) with outer rim at radius 2; isolated t4=(v0,v5,v6) with v5,v6 at y=−4.
+- **Expected kernel behavior**: split v0 into 2 copies; ring retains one; isolated lower fan gets the duplicate.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,6] n=1`
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me076.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me077 — duplicate_singular_vertices: open-strip fan (CW+CCW traversal) plus isolated lower fan
+- **Category**: §12.14 mesh defects (sub-class: non-manifold vertex / singular vertex)
+- **Sources**: CGAL `PMP.Polygon_soup_orienter.duplicate_singular_vertices` Branch 7 (*link_traversal_cw*), Branch 9 (*link_traversal_ccw*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: vertex 0 is a singular vertex. The upper fan is an open strip of 3 triangles (boundary edges at both ends of the strip, interior shared edges in the middle). CW traversal from the starting triangle reaches one strip boundary but must then switch to CCW traversal (Branch 9: `next_ccw_vertex_around_target`) to visit the triangle on the other side. The lower fan is a separate isolated triangle.
+- **Reproducer recipe**: v0=(0,0,0); strip: t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v4) with outer vertices at y=1; isolated: t3=(v0,v5,v6) at y=−1.
+- **Expected kernel behavior**: split v0 into 2 copies; strip group gets one; lower fan gets the duplicate.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,6] n=1`
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me077.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me078 — duplicate_singular_vertices: 3-fan vertex requiring 2 new duplicate points
+- **Category**: §12.14 mesh defects (sub-class: non-manifold vertex / singular vertex)
+- **Sources**: CGAL `PMP.Polygon_soup_orienter.duplicate_singular_vertices` Branch 11 (*new_point_creation*: points.push_back twice), Branch 12 (*polygon_index_replacement*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: vertex 0 is a singular vertex with 3 link CCs (three fans at different Z heights: z=0, z=2, z=4). After repair, the point_duplication_loop creates 2 new clone points (Branch 11 fires twice) and the polygon_index_replacement sub-pass (Branch 12) updates 2 triangle references. The fixture stresses the multi-duplication path in a fully 3D configuration.
+- **Reproducer recipe**: v0=(0,0,0); fan A at z=0 (v1,v2); fan B at z=2 (v3,v4); fan C at z=4 (v5,v6); 3 triangles total, no shared edges.
+- **Expected kernel behavior**: split v0 into 3 copies; fan A retains original; fans B and C receive the 2 new clones; vertex count increases by 2.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,6] n=1`
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me078.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me079 — duplicate_singular_vertices: 4-triangle open-strip fan plus isolated lower fan at bowtie vertex
+- **Category**: §12.14 mesh defects (sub-class: non-manifold vertex / singular vertex)
+- **Sources**: CGAL `PMP.Polygon_soup_orienter.duplicate_singular_vertices` Branch 12 (*polygon_index_replacement*: 4 polygon entries updated); `MESH_HEAL_COVERAGE.md`.
+- **Description**: vertex 0 is a singular vertex with 2 link CCs. The upper fan is a 4-triangle open strip — all 4 triangles reference v0 and share 3 interior edges at v0 ((v0,v2), (v0,v3), (v0,v4)). The lower fan is a single isolated triangle. This stresses Branch 12 (*polygon_index_replacement*): after duplication, the polygon_index_replacement sub-pass must update v0's index in all 4 strip triangles, not just 1.
+- **Reproducer recipe**: v0=(0,0,0); strip outer rim: v1=(-2,1,0), v2=(-1,1,0), v3=(0,1.5,0), v4=(1,1,0), v5=(2,1,0); strip: t0–t3; isolated lower: t4=(v0,v6,v7) with v6=(1,-1,0), v7=(-1,-1,0).
+- **Expected kernel behavior**: split v0 into 2 copies; 4 strip triangles reference one copy; lower fan triangle references the duplicate.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,7] n=1`
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me079.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Wr052 — Writer emits EDGE_CURVE backed by untrimmed LINE entity
 - **Category**: §12.13 writer-pathology (sub-class: unbounded-curve emission)
 - **Sources**: Pattern-mined from OCCT/tests/bugs/step/bug32817_1 (LGPL-clean — pattern only, no bytes copied). OCCT method `STEPControl_Writer::Transfer` on a single-line edge.

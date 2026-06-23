@@ -1,0 +1,14 @@
+# Me076: duplicate_singular_vertices: closed-ring upper fan plus open lower fan at bowtie vertex
+# defect_class: non_manifold_vertex
+v 0 0 0
+v 0 2 0
+v 2 0 0
+v 0 -2 0
+v -2 0 0
+v 1 -4 0
+v -1 -4 0
+f 1 2 3
+f 1 3 4
+f 1 4 5
+f 1 5 2
+f 1 6 7

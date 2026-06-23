@@ -1,0 +1,9 @@
+# Me071: duplicate_singular_vertices: 3D bowtie — two fans in orthogonal planes
+# defect_class: non_manifold_vertex
+v 0 0 0
+v 1 1 0
+v -1 1 0
+v 1 0 1
+v -1 0 1
+f 1 2 3
+f 1 4 5

@@ -1,0 +1,124 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      1.0,
+      0.0
+    ],
+    [
+      -1.0,
+      1.0,
+      0.0
+    ],
+    [
+      1.0,
+      -1.0,
+      0.0
+    ],
+    [
+      -1.0,
+      -1.0,
+      0.0
+    ],
+    [
+      4.0,
+      1.0,
+      0.0
+    ],
+    [
+      6.0,
+      1.0,
+      0.0
+    ],
+    [
+      5.0,
+      0.0,
+      0.0
+    ],
+    [
+      4.0,
+      -1.0,
+      0.0
+    ],
+    [
+      6.0,
+      -1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      3,
+      4
+    ],
+    [
+      7,
+      5,
+      6
+    ],
+    [
+      7,
+      8,
+      9
+    ]
+  ],
+  "metadata": {
+    "id": "Me074",
+    "schema_version": 0,
+    "defect_class": "non_manifold_vertex",
+    "title": "duplicate_singular_vertices: two separate bowtie vertices in one mesh",
+    "assertions": [
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          1
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          3
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          5,
+          7
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          7,
+          8
+        ],
+        "n": 1
+      },
+      {
+        "kind": "vertex_fan_disconnected",
+        "vertex": 0
+      },
+      {
+        "kind": "vertex_fan_disconnected",
+        "vertex": 7
+      }
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+ply
+format ascii 1.0
+comment Me078: duplicate_singular_vertices: 3-fan vertex requiring 2 new duplicate points
+comment defect_class: non_manifold_vertex
+element vertex 7
+property float x
+property float y
+property float z
+element face 3
+property list uchar int vertex_indices
+end_header
+0 0 0
+1 1 0
+-1 1 0
+1 1 2
+-1 1 2
+1 1 4
+-1 1 4
+3 0 1 2
+3 0 3 4
+3 0 5 6

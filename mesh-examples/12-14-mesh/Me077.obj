@@ -1,0 +1,13 @@
+# Me077: duplicate_singular_vertices: open-strip fan (CW+CCW traversal) plus isolated lower fan
+# defect_class: non_manifold_vertex
+v 0 0 0
+v -2 1 0
+v -1 1 0
+v 0 1.5 0
+v 1 1 0
+v 1 -1 0
+v -1 -1 0
+f 1 2 3
+f 1 3 4
+f 1 4 5
+f 1 6 7
