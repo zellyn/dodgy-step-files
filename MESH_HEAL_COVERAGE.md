@@ -868,24 +868,24 @@ code or test data was copied into this catalog.
 (11 methods, 30 branches)
 
 ##### `PMP.compatible_orientations` — lines 1179–1337
-(4 branches; all UNCOVERED — no mesh fixtures exist yet)
+(4 branches; ALL COVERED — Me046–Me049)
 
-- **Branch 1** @ line 1220 — *cyclic_orientation_flip*
+- **Branch 1** @ line 1220 — *cyclic_orientation_flip* — **Me046**
   - What it tests: odd/even flip path around cycle
   - Repair action: mark_faces_for_flipping
-  - Suggested fixture: defect mentioning 'fbm.set', 'flip_count'
-- **Branch 2** @ line 1260 — *non_manifold_edge*
+  - Fixture: Me046 — pentagon fan, tri4 wound CW, antiparallel to tri0 and tri3
+- **Branch 2** @ line 1260 — *non_manifold_edge* — **Me047**
   - What it tests: edge manifold property
   - Repair action: return_false_non_compatible
-  - Suggested fixture: defect mentioning 'is_non_manifold'
-- **Branch 3** @ line 1290 — *orientation_conflict*
+  - Fixture: Me047 — edge (v0,v1) shared by 3 triangles
+- **Branch 3** @ line 1290 — *orientation_conflict* — **Me048**
   - What it tests: conflicting orientation constraints
   - Repair action: propagate_incompatibility
-  - Suggested fixture: defect mentioning 'incompatible_orientation'
-- **Branch 4** @ line 1310 — *boundary_cycle_traversal*
+  - Fixture: Me048 — two CCW chains bridged to one CW chain; adjacent normals antiparallel
+- **Branch 4** @ line 1310 — *boundary_cycle_traversal* — **Me049**
   - What it tests: consistent boundary traversal
   - Repair action: advance_halfedge
-  - Suggested fixture: defect mentioning 'next_on_border'
+  - Fixture: Me049 — open mesh with two boundary loops; interior edge (v1,v5) shared by 2
 
 ##### `PMP.does_bound_a_volume` — lines 913–930
 (3 branches; all UNCOVERED — no mesh fixtures exist yet)

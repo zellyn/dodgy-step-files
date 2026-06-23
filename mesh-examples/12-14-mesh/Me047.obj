@@ -1,0 +1,10 @@
+# Me047: non-manifold edge shared by 3 triangles blocks compatible_orientations
+# defect_class: non_manifold_edge
+v 0 0 0
+v 1 0 0
+v 0.5 1 0
+v 0.5 -1 0
+v 0.5 0 1
+f 1 2 3
+f 1 2 4
+f 1 2 5

@@ -1,0 +1,13 @@
+# Me046: cyclic orientation flip: odd-parity ring blocks compatible_orientations
+# defect_class: cyclic_orientation_conflict
+v 0 0 0
+v 0 1 0
+v -1 0 0
+v -0.5 -1 0
+v 0.5 -1 0
+v 1 0 0
+f 1 2 3
+f 1 3 4
+f 1 4 5
+f 1 5 6
+f 1 2 6

@@ -31702,6 +31702,50 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me045.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me046 — cyclic orientation flip: odd-parity ring blocks compatible_orientations
+- **Category**: §12.14 mesh defects (sub-class: orientation/cyclic-parity)
+- **Sources**: CGAL `PMP.compatible_orientations` Branch 1 @ line 1220 (*cyclic_orientation_flip*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: a fan of 5 triangles sharing a hub vertex forms a ring. Triangles 0–3 are wound CCW (normal +Z); triangle 4 bridges back to close the ring but is wound CW (normal -Z). The BFS spanning-tree flip_count around the back edge is odd, so no globally consistent orientation assignment exists. Triangle 4 shares edge {hub,v0} with tri 0 and edge {hub,v4} with tri 3; both pairs have antiparallel normals.
+- **Reproducer recipe**: hub=(0,0,0); pentagon rim v0–v4 in XY plane; tri0–tri3 wound CCW; tri4=(hub,v0,v4) wound CW → normal -Z.
+- **Expected kernel behavior**: detect odd parity around the back-edge of the BFS spanning tree; mark mesh as non-orientable; report orientation incompatibility.
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[4,0]`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[4,3]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me046.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me047 — non-manifold edge shared by 3 triangles blocks compatible_orientations
+- **Category**: §12.14 mesh defects (sub-class: orientation/non-manifold-edge)
+- **Sources**: CGAL `PMP.compatible_orientations` Branch 2 @ line 1260 (*non_manifold_edge*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: edge (v0,v1) is incident on 3 triangles (three distinct third vertices above, below, and out of the XZ plane). In a manifold mesh each edge has exactly 2 incident faces; the is_non_manifold check in compatible_orientations fires and the algorithm returns false — consistent global orientation is impossible when a halfedge structure is undefined.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0); three triangles sharing that edge with third vertices at (0.5,1,0), (0.5,-1,0), (0.5,0,1).
+- **Expected kernel behavior**: detect the non-manifold edge; return false from compatible_orientations without attempting BFS propagation.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=3`
+- **Fixture path**: mesh-examples/12-14-mesh/Me047.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me048 — orientation constraint conflict: two consistently wound chains are mutually incompatible
+- **Category**: §12.14 mesh defects (sub-class: orientation/propagation-conflict)
+- **Sources**: CGAL `PMP.compatible_orientations` Branch 3 @ line 1290 (*orientation_conflict*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: chain A (triangles 0–1, CCW, normal +Z) and chain B (triangles 2–3, CW, normal -Z) are each internally consistent but share edge {v2,v3}. BFS propagation from chain A assigns +Z to the shared-edge neighbor (tri 2), but tri 2 already carries a -Z label from its own chain's propagation — the incompatibility is flagged. The edge is manifold (exactly 2 incident triangles) so this is a pure orientation conflict, not a topology defect.
+- **Reproducer recipe**: 6 vertices in two rows (y=0,1,2); chain A CCW in lower half; chain B CW in upper half; tri1 and tri2 share edge {(1,1,0),(0,1,0)}.
+- **Expected kernel behavior**: detect antiparallel normals across the shared edge during BFS propagation; mark mesh as non-orientable.
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[1,2]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me048.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me049 — boundary halfedge traversal: next_on_border walk around open mesh boundary
+- **Category**: §12.14 mesh defects (sub-class: orientation/boundary-traversal)
+- **Sources**: CGAL `PMP.compatible_orientations` Branch 4 @ line 1310 (*boundary_cycle_traversal*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: an open mesh of 3 triangles has two distinct boundary loops. Triangle 0 is isolated on the left (boundary loop A: v0–v1–v3). Triangles 1 and 2 form a connected patch on the right sharing one interior edge (v1,v5) (boundary loop B: v1–v2–v5–v4). The compatible_orientations BFS must correctly advance along boundary halfedges (next_on_border) when it reaches a boundary edge, so it does not confuse a boundary with an unvisited interior face.
+- **Reproducer recipe**: 6 vertices in a 2×3 grid; tri0=(v0,v1,v3), tri1=(v1,v2,v5), tri2=(v1,v5,v4); edge (v1,v5) is interior (shared by 2); all other edges are boundary (shared by 1).
+- **Expected kernel behavior**: correctly traverse both boundary loops during BFS; consistently orient all 3 triangles (they are all CCW +Z, no conflict).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,5] n=2`
+- **Mesh assertion**: `hole_boundary loop=[0,1,3]`
+- **Mesh assertion**: `hole_boundary loop=[1,2,5,4]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me049.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Wr052 — Writer emits EDGE_CURVE backed by untrimmed LINE entity
 - **Category**: §12.13 writer-pathology (sub-class: unbounded-curve emission)
 - **Sources**: Pattern-mined from OCCT/tests/bugs/step/bug32817_1 (LGPL-clean — pattern only, no bytes copied). OCCT method `STEPControl_Writer::Transfer` on a single-line edge.

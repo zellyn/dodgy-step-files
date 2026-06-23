@@ -1,0 +1,12 @@
+# Me048: orientation constraint conflict: two consistently wound chains are mutually incompatible
+# defect_class: orientation_conflict
+v 0 0 0
+v 1 0 0
+v 1 1 0
+v 0 1 0
+v 0 2 0
+v 1 2 0
+f 1 2 3
+f 1 3 4
+f 4 6 3
+f 4 5 6
