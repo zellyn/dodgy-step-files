@@ -1,0 +1,77 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      3.0,
+      0.0,
+      0.0
+    ],
+    [
+      4.0,
+      0.0,
+      0.0
+    ],
+    [
+      3.5,
+      1.0,
+      0.0
+    ],
+    [
+      10.0,
+      0.0,
+      0.0
+    ],
+    [
+      10.0,
+      1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      3,
+      4,
+      5
+    ]
+  ],
+  "metadata": {
+    "id": "Me363",
+    "schema_version": 0,
+    "defect_class": "isolated_vertex",
+    "title": "remove_isolated_points_early_termination: two trailing orphans; i>=first_unused_pos break fires",
+    "assertions": [
+      {
+        "kind": "isolated_vertex",
+        "vertex": 6
+      },
+      {
+        "kind": "isolated_vertex",
+        "vertex": 7
+      },
+      {
+        "kind": "triangle_not_reachable_from",
+        "target": 1,
+        "source": 0
+      }
+    ]
+  }
+}

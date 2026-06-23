@@ -490,36 +490,29 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
   - Suggested fixture: defect mentioning 'polygons.erase'
 
 ##### `PMP.remove_isolated_points_in_polygon_soup` — lines 404–487
-(7 branches; all UNCOVERED — no mesh fixtures exist yet)
+(7 branches; **COVERED** — Me360–Me366 — wave 13B, 2026-06-21)
 
-- **Branch 1** @ line 410 — *empty_input*
+- **Branch 1** @ line 410 — *empty_input* → **Me360**
   - What it tests: Empty points container
   - Repair action: return 0; skip processing
-  - Suggested fixture: defect mentioning 'if(points.empty())', 'return 0'
-- **Branch 2** @ line 420 — *point_usage_scan*
+- **Branch 2** @ line 420 — *point_usage_scan* → **Me361**
   - What it tests: Iterate all polygons to mark visited points
   - Repair action: update visited[] bitset
-  - Suggested fixture: defect mentioning 'for(P_ID polygon_index', 'visited[polygon[i]] = true'
-- **Branch 3** @ line 430 — *unused_point_detection*
+- **Branch 3** @ line 430 — *unused_point_detection* → **Me362**
   - What it tests: Iterate through visited[] to find unused indices
   - Repair action: on unvisited point, swap to end-of-keep region
-  - Suggested fixture: defect mentioning 'if(!visited[i])', 'std::swap(points[swap_position], points[i])'
-- **Branch 4** @ line 432 — *early_termination*
+- **Branch 4** @ line 432 — *early_termination* → **Me363**
   - What it tests: Current index exceeds first_unused_pos boundary
   - Repair action: break nested loop
-  - Suggested fixture: defect mentioning 'if(i >= first_unused_pos)', 'break'
-- **Branch 5** @ line 462 — *removal_count_check*
+- **Branch 5** @ line 462 — *removal_count_check* → **Me364**
   - What it tests: Zero points were removed
   - Repair action: early return without erase/remap
-  - Suggested fixture: defect mentioning 'if(removed_points_n == 0)'
-- **Branch 6** @ line 468 — *physical_erase*
+- **Branch 6** @ line 468 — *physical_erase* → **Me365**
   - What it tests: Erase unused point portion from container
   - Repair action: points.erase() tail segment
-  - Suggested fixture: defect mentioning 'points.erase'
-- **Branch 7** @ line 471 — *index_remapping*
+- **Branch 7** @ line 471 — *index_remapping* → **Me366**
   - What it tests: Renumber polygon vertex indices after point removal
   - Repair action: polygon[i] = id_remapping[polygon[i]]
-  - Suggested fixture: defect mentioning 'id_remapping[polygon[i]]'
 
 ##### `PMP.simplify_polygons_in_polygon_soup` — lines 156–181
 (4 branches; all UNCOVERED — no mesh fixtures exist yet)

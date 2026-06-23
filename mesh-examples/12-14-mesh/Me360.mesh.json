@@ -1,0 +1,19 @@
+{
+  "vertices": [],
+  "triangles": [],
+  "metadata": {
+    "id": "Me360",
+    "schema_version": 0,
+    "defect_class": "isolated_vertex",
+    "title": "remove_isolated_points_empty_input: empty vertex list triggers early return with 0 removed",
+    "assertions": [
+      {
+        "kind": "euler_characteristic",
+        "v": 0,
+        "e": 0,
+        "f": 0,
+        "chi": 0
+      }
+    ]
+  }
+}

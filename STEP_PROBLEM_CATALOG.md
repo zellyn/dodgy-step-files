@@ -35906,6 +35906,99 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me347.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me360 — remove_isolated_points_empty_input: empty vertex list triggers early return with 0 removed
+- **Category**: §12.14 mesh defects (sub-class: isolated_vertex / remove-isolated-points-in-polygon-soup)
+- **Sources**: CGAL PMP `remove_isolated_points_in_polygon_soup` Branch 1 (*empty_input*: `if(points.empty()) return 0;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Completely empty polygon soup — 0 vertices, 0 triangles. The function detects the empty points container immediately and returns 0 without touching polygons. Branch 1 exercises the short-circuit path so that no detection or erase phases execute.
+- **Reproducer recipe**: No vertices, no triangles; euler_characteristic v=0 e=0 f=0 chi=0.
+- **Expected kernel behavior**: Branch 1 fires; function returns 0 immediately; downstream remap and erase steps never reached.
+- **Mesh assertion**: `euler_characteristic v=0 e=0 f=0 chi=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me360.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me361 — remove_isolated_points_usage_scan: all vertices referenced; visited[] fully populated by polygon scan
+- **Category**: §12.14 mesh defects (sub-class: isolated_vertex / remove-isolated-points-in-polygon-soup)
+- **Sources**: CGAL PMP `remove_isolated_points_in_polygon_soup` Branch 2 (*point_usage_scan*: `for(P_ID polygon_index=0; ...) { visited[polygon[i]] = true; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A single valid triangle (v0,v1,v2) where all 3 vertices are referenced. The polygon scan iterates over the one triangle and marks visited[0], visited[1], visited[2]. No isolated vertices exist so removed_points_n ends at 0 and the removal_count_check fires next.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0); t0=(v0,v1,v2); all edges n=1; euler v=3 e=3 f=1 chi=1.
+- **Expected kernel behavior**: Branch 2 inner loop body fires 3 times; visited fully populated; removed_points_n==0.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `euler_characteristic v=3 e=3 f=1 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me361.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me362 — remove_isolated_points_unused_detection: isolated v3 found by !visited[i] and swapped toward tail
+- **Category**: §12.14 mesh defects (sub-class: isolated_vertex / remove-isolated-points-in-polygon-soup)
+- **Sources**: CGAL PMP `remove_isolated_points_in_polygon_soup` Branch 3 (*unused_point_detection*: `if(!visited[i]) { std::swap(points[swap_position], points[i]); ... }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A single triangle (v0,v1,v2) plus one isolated vertex v3=(5,5,5). After the usage scan, visited[3]=false. The detection loop finds i=3 unvisited, executes the swap, and increments removed_points_n. Branch 3 fires exactly once for the single orphan.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(5,5,5); t0=(v0,v1,v2); assert_isolated_vertex(3); all edges n=1.
+- **Expected kernel behavior**: Branch 3 fires once; removed_points_n=1; physical erase follows.
+- **Mesh assertion**: `isolated_vertex vertex=3`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me362.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me363 — remove_isolated_points_early_termination: two trailing orphans; i>=first_unused_pos break fires
+- **Category**: §12.14 mesh defects (sub-class: isolated_vertex / remove-isolated-points-in-polygon-soup)
+- **Sources**: CGAL PMP `remove_isolated_points_in_polygon_soup` Branch 4 (*early_termination*: `if(i >= first_unused_pos) break;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected valid triangles (t0, t1) using vertices 0–5, plus two trailing isolated vertices v6 and v7 at indices 6 and 7. After the swap of v6, swap_position drops to 6; on the next iteration i=7 is now >= first_unused_pos (7 after swap adjustment) so the inner loop breaks. Branch 4 exercises the boundary-check break.
+- **Reproducer recipe**: v0..v5 form two triangles; v6=(10,0,0), v7=(10,1,0) isolated; assert_isolated_vertex(6); assert_isolated_vertex(7); triangles not reachable from each other.
+- **Expected kernel behavior**: Branch 4 break fires during detection scan; removed_points_n=2; erase and remap follow.
+- **Mesh assertion**: `isolated_vertex vertex=6`
+- **Mesh assertion**: `isolated_vertex vertex=7`
+- **Mesh assertion**: `triangle_not_reachable_from source=0 target=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me363.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me364 — remove_isolated_points_removal_count_check: closed tetrahedron; removed_points_n==0 triggers early return
+- **Category**: §12.14 mesh defects (sub-class: isolated_vertex / remove-isolated-points-in-polygon-soup)
+- **Sources**: CGAL PMP `remove_isolated_points_in_polygon_soup` Branch 5 (*removal_count_check*: `if(removed_points_n == 0) return 0;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A closed, fully manifold tetrahedron — 4 vertices, 4 triangles, every vertex referenced by 3 triangles. No isolated vertices exist so removed_points_n==0 after the detection loop. Branch 5 fires and the function returns 0 without executing erase or remap.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,0.333,1); 4 outward-winding faces; all edges n=2; euler v=4 e=6 f=4 chi=2.
+- **Expected kernel behavior**: Branch 5 fires; function returns 0; erase and remap steps skipped.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me364.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me365 — remove_isolated_points_physical_erase: two orphan tail vertices erased from points container
+- **Category**: §12.14 mesh defects (sub-class: isolated_vertex / remove-isolated-points-in-polygon-soup)
+- **Sources**: CGAL PMP `remove_isolated_points_in_polygon_soup` Branch 6 (*physical_erase*: `points.erase(points.begin() + (points.size() - removed_points_n), points.end())`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A quad (two triangles sharing diagonal) with vertices v0–v3, plus two isolated vertices v4=(8,8,0) and v5=(9,9,0) appended at the end of the vertex list. After detection swaps v4 and v5 into the tail, Branch 6 erases the last 2 entries from the points container, leaving a clean 4-vertex soup.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(1,1,0), v3=(0,1,0), v4=(8,8,0), v5=(9,9,0); t0=(v0,v1,v2), t1=(v0,v2,v3); isolated_vertex(4); isolated_vertex(5); diagonal edge [0,2] n=2.
+- **Expected kernel behavior**: Branch 6 fires; points.erase removes 2 tail entries; remap follows for the 4 surviving vertices.
+- **Mesh assertion**: `isolated_vertex vertex=4`
+- **Mesh assertion**: `isolated_vertex vertex=5`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me365.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me366 — remove_isolated_points_index_remapping: isolated vertex at non-tail position forces non-trivial index remap
+- **Category**: §12.14 mesh defects (sub-class: isolated_vertex / remove-isolated-points-in-polygon-soup)
+- **Sources**: CGAL PMP `remove_isolated_points_in_polygon_soup` Branch 7 (*index_remapping*: `polygon[i] = id_remapping[polygon[i]]`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four vertices where index 1 (v_iso) is isolated and the triangle references indices 0, 2, 3. After the swap phase moves v_iso to the tail and a referenced vertex fills index 1, the remap step must update every polygon reference to use the new compacted indices. Branch 7 inner loop fires for each vertex in each polygon.
+- **Reproducer recipe**: v0=(0,0,0) idx=0, v_iso=(5,5,5) idx=1, v1=(1,0,0) idx=2, v2=(0.5,1,0) idx=3; t0=(0,2,3); assert_isolated_vertex(1); all triangle edges n=1.
+- **Expected kernel behavior**: Branch 7 fires 3 times (one per polygon vertex); indices remapped from {0,2,3} → {0,1,2} after compact; v_iso erased.
+- **Mesh assertion**: `isolated_vertex vertex=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me366.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me290 — connected_components iteration_construct: outer for-loop visits three isolated triangle components
 - **Category**: §12.14 mesh defects (sub-class: disconnected_components / connected-components-labelling)
 - **Sources**: CGAL `PMP.connected_components` Branch 1 @ line 224 (*Iteration_construct*); `MESH_HEAL_COVERAGE.md`.
