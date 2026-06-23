@@ -35070,6 +35070,131 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me258.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me260 — range_with_face_set link_condition_ok: zero-length edge satisfies link condition for direct collapse
+- **Category**: §12.14 mesh defects (sub-class: degenerate_edge / range-with-face-set)
+- **Sources**: CGAL `PMP.remove_degenerate_edges.range_with_face_set` Branch 1 @ line 1558 (*zero_length_link_condition_ok*: `does_satisfy_link_condition` true → `collapse_edge`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 3-triangle fan with a near-degenerate interior edge (v0,v1) where v0≈v1 (distance≈1e-10). The edge is shared by 2 triangles (interior). The link condition is satisfied: the neighbourhoods of v0 and v1, excluding the degenerate edge, form a single connected region, so Branch 1 directly collapses the edge via Euler::collapse_edge.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1e-10,0,0), v2=(1,1,0), v3=(-1,1,0). t0=(v0,v1,v2), t1=(v1,v0,v3), t2=(v0,v2,v3).
+- **Expected kernel behavior**: does_satisfy_link_condition=true → collapse_edge directly removes the degenerate edge.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=1e-09`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me260.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me261 — range_with_face_set link_condition_violated: zero-length edge with shared neighbours fails link condition
+- **Category**: §12.14 mesh defects (sub-class: degenerate_edge / range-with-face-set)
+- **Sources**: CGAL `PMP.remove_degenerate_edges.range_with_face_set` Branch 2 @ line 1581 (*zero_length_link_condition_violated*: `does_satisfy_link_condition` false → `remove_a_border_edge` or complex path); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A flat diamond mesh (v0≈v1, both connecting to same vertices v2 and v3). The edge (v0,v1) is interior (n=2). Because both link rings share v2 and v3, the link condition is violated: collapsing would create a non-manifold vertex. Both triangles have near-zero area. Branch 2 fires: does_satisfy_link_condition=false → complex removal.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1e-10,0,0), v2=(0,1,0), v3=(0,-1,0). t0=(v0,v1,v2), t1=(v1,v0,v3).
+- **Expected kernel behavior**: does_satisfy_link_condition=false → escalate to marked_faces/remove_a_border_edge path.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=1e-09`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-07`
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-07`
+- **Fixture path**: mesh-examples/12-14-mesh/Me261.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me262 — range_with_face_set border_triangle_hole: degenerate border edge bounds 3-edge hole → fill_hole
+- **Category**: §12.14 mesh defects (sub-class: degenerate_edge / range-with-face-set)
+- **Sources**: CGAL `PMP.remove_degenerate_edges.range_with_face_set` Branch 3 @ line 1585 (*border_edge_triangle_hole*: `is_border` + `is_triangle(hd` → `fill_hole`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 3-triangle patch with a triangular hole. The hole boundary is (v0→v1→v2→v0): edge (v0,v1) is a degenerate border edge (v0≈v1, n=1). The 3-edge hole is detected and Branch 3 calls Euler::fill_hole to close it, removing the degenerate border edge.
+- **Reproducer recipe**: hole vertices v0=(0,0,0), v1=(1e-10,0,0), v2=(0.5,1,0); outer: v3,v4,v5. Three surrounding triangles, hole boundary [v0,v1,v2].
+- **Expected kernel behavior**: is_border=true, is_triangle(hole_boundary)=true → fill_hole closes the 3-edge hole.
+- **Mesh assertion**: `hole_boundary loop=[0,1,2]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=1e-09`
+- **Fixture path**: mesh-examples/12-14-mesh/Me262.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me263 — range_with_face_set preserve_genus: degenerate border edge in 3-edge hole; genus preservation blocks fill_hole
+- **Category**: §12.14 mesh defects (sub-class: degenerate_edge / range-with-face-set)
+- **Sources**: CGAL `PMP.remove_degenerate_edges.range_with_face_set` Branch 4 @ line 1591 (*preserve_genus*: `preserve_genus=true` blocks `fill_hole`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 6-triangle patch with a triangular hole (v0,v1,v2) where v0≈v1 is a degenerate border edge. Unlike Branch 3, the preserve_genus option is active: filling the hole would alter topology, so Branch 4 sets all_removed=false and skips the fill. Same geometric hole pattern as Me262 but in a larger patch context.
+- **Reproducer recipe**: hole vertices v0=(0,0,0), v1=(1e-10,0,0), v2=(0.5,1,0); 6 surrounding triangles using v3,v4,v5,v6,v7; hole boundary [v0,v1,v2] intact.
+- **Expected kernel behavior**: preserve_genus=true → skip fill_hole, mark all_removed=false.
+- **Mesh assertion**: `hole_boundary loop=[0,1,2]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=1e-09`
+- **Fixture path**: mesh-examples/12-14-mesh/Me263.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me264 — range_with_face_set both_on_boundary: near-zero interior edge with both endpoints on mesh border → impossible=true
+- **Category**: §12.14 mesh defects (sub-class: degenerate_edge / range-with-face-set)
+- **Sources**: CGAL `PMP.remove_degenerate_edges.range_with_face_set` Branch 5 @ line 1630 (*both_endpoints_on_boundary*: `impossible = true`, `halfedges_around`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: An open rectangular strip of 4 triangles. The near-degenerate edge (v0,v1) with v0≈v1 is interior (n=2), but both v0 and v1 are also boundary vertices (each incident on at least one border edge). Collapsing this edge would disconnect the boundary, so Branch 5 marks impossible=true and uses halfedges_around to scan the neighbourhood.
+- **Reproducer recipe**: v0=(0,0.5,0), v1=(1e-10,0.5,0), v2-v5 as boundary corners. t0=(v2,v3,v0), t1=(v3,v1,v0), t2=(v0,v1,v4), t3=(v1,v5,v4).
+- **Expected kernel behavior**: both endpoints on boundary → impossible=true; edge removal skipped.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=1e-09`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,0] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,5] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me264.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me265 — range_with_face_set marked_faces_topological_disk: non-link-condition edge removed via face-marking + disk validation
+- **Category**: §12.14 mesh defects (sub-class: degenerate_edge / range-with-face-set)
+- **Sources**: CGAL `PMP.remove_degenerate_edges.range_with_face_set` Branch 6 @ line 1678 (*non_link_condition_marked_faces*: mark faces, validate topological disk, `add_center_vertex`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 6-triangle diamond mesh with a near-degenerate edge (v0,v1) where both link rings share outer vertices v2 and v3 (link condition violated). The surrounding 6 faces form a topological disk (Euler chi=1). Branch 6 marks these faces, validates the disk, and uses add_center_vertex to star-fill the hole.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1e-10,0,0), v2=(0,1,0), v3=(0,-1,0), v4=(-1,0,0), v5=(1,0,0). 6 triangles: t0-t5 forming a complete diamond.
+- **Expected kernel behavior**: link condition violated; marked_faces form topological disk (chi=1); add_center_vertex fills the hole.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=1e-09`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-07`
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-07`
+- **Mesh assertion**: `euler_characteristic v=6 e=11 f=6 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me265.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me266 — range_with_face_set nonmanifold_marked_region: bowtie vertex in neighbourhood triggers nb_cc!=1 expansion
+- **Category**: §12.14 mesh defects (sub-class: degenerate_edge / range-with-face-set)
+- **Sources**: CGAL `PMP.remove_degenerate_edges.range_with_face_set` Branch 7 @ line 1741 (*nonmanifold_marked_region*: `nb_cc != 1`, `exploration_finished=false` → mark additional small components); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 6-triangle mesh where the degenerate edge (v0,v1) neighbourhood contains a bowtie vertex v4. When the initial marked face set is collected, the boundary of the marked region has a non-manifold vertex (v4 appears in two disconnected fans). Branch 7 detects nb_cc != 1 and expands the marked set to include the additional connected component adjacent to v4.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1e-10,0,0), v4=(1,0,0) bowtie. t0=(v0,v1,v2), t1=(v1,v3,v2), t2=(v1,v4,v3) (upper fan), t3=(v1,v0,v5), t4=(v0,v6,v5), t5=(v4,v6,v0) (lower fan — v4 not edge-connected to upper).
+- **Expected kernel behavior**: nb_cc != 1 in marked region boundary; expand marked_faces to include small components adjacent to bowtie vertex v4.
+- **Mesh assertion**: `vertex_fan_disconnected vertex=4`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=1e-09`
+- **Fixture path**: mesh-examples/12-14-mesh/Me266.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me267 — range_with_face_set not_topological_disk_after_expansion: marked region forms cylinder → disk test fails → skip
+- **Category**: §12.14 mesh defects (sub-class: degenerate_edge / range-with-face-set)
+- **Sources**: CGAL `PMP.remove_degenerate_edges.range_with_face_set` Branch 8 @ line 1846 (*not_topological_disk_after_expansion*: `is_selection_a_topological_disk` false → `continue`/skip); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 6-triangle cylinder (two open boundary rings) with the degenerate edge (v0,v1) on the top ring. The cylinder's Euler characteristic chi=0 (two boundary loops). When the marked faces form this cylindrical region, is_selection_a_topological_disk returns false (chi≠1), so Branch 8 skips removal and marks all_removed=false.
+- **Reproducer recipe**: top ring v0=(0,1,1), v1=(1e-10,1,1), v2=(1,0,1); bottom ring v3,v4,v5. 6 triangles forming a cylinder. chi=0.
+- **Expected kernel behavior**: is_selection_a_topological_disk=false (chi=0 ≠ 1); skip removal.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=1e-09`
+- **Mesh assertion**: `euler_characteristic v=6 e=12 f=6 chi=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me267.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me268 — range_with_face_set whole_component_selected: single-triangle component with degenerate edge → border.empty() → skip
+- **Category**: §12.14 mesh defects (sub-class: degenerate_edge / range-with-face-set)
+- **Sources**: CGAL `PMP.remove_degenerate_edges.range_with_face_set` Branch 9 @ line 1704 (*whole_connected_component_selected*: `border.empty()` → skip entire component); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected components: a 3-triangle patch (component A, no defects) and a single isolated triangle (component B) with a near-degenerate border edge (v4,v5) where v4≈v5. Component B is the entire connected component. When the algorithm marks the face containing the degenerate edge, it marks the ENTIRE component B — border.empty() is true, so Branch 9 skips removal.
+- **Reproducer recipe**: component A: v0-v3, t0-t2 (3-triangle patch); component B: v4=(10,0,0), v5=(10+1e-10,0,0), v6=(10.5,1,0), t3=(v4,v5,v6). Component B unreachable from t0.
+- **Expected kernel behavior**: marking face in single-triangle component → border.empty() → skip.
+- **Mesh assertion**: `triangle_not_reachable_from target=3 source=0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[4,5] lt=1e-09`
+- **Mesh assertion**: `triangle_area_lt triangle=3 lt=1e-08`
+- **Fixture path**: mesh-examples/12-14-mesh/Me268.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me269 — range_with_face_set border_edge_cycle: annular mesh with inner hole; degenerate inner-boundary edge → cycle of border edges → skip
+- **Category**: §12.14 mesh defects (sub-class: degenerate_edge / range-with-face-set)
+- **Sources**: CGAL `PMP.remove_degenerate_edges.range_with_face_set` Branch 10 @ line 1778 (*border_edge_cycle*: `index != nb_cc` → cycle of border edges detected → skip); `MESH_HEAL_COVERAGE.md`.
+- **Description**: An 8-triangle flat annular ring with outer boundary (v0-v3) and inner hole boundary (v4-v7). The degenerate edge (v4,v5) with v4≈v5 is on the inner hole boundary (n=1). The annular region has Euler chi=0 (two boundary loops). When the algorithm processes the marked region, the union-find detects index != nb_cc: the inner hole forms a closed cycle of border edges (nested hole), so Branch 10 skips the removal.
+- **Reproducer recipe**: outer square v0-v3 at radius 2, inner square v4=(−0.5,−0.5,0), v5=(−0.5+1e-10,−0.5,0), v6=(0.5,−0.5,0), v7=(0,0.5,0). 8 triangles forming ring. chi=0.
+- **Expected kernel behavior**: inner hole boundary forms a cycle (index != nb_cc); skip removal.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[4,5] lt=1e-09`
+- **Mesh assertion**: `euler_characteristic v=8 e=16 f=8 chi=0`
+- **Mesh assertion**: `hole_boundary loop=[4,5,6,7]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me269.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me280 — checkGeometry_memory_alloc_fail_vertices: near-coincident vertex pair, alloc guard (Branch 1)
 - **Category**: §12.14 mesh defects (sub-class: checkGeometry / coincident-vertex-alloc-guard)
 - **Sources**: MeshFix `checkAndRepair::checkGeometry` Branch 1 (*MEMORY_ALLOCATION_FAILURE*: vertex array alloc fails, skip coincident-vertex scan); `MESH_HEAL_COVERAGE.md`.

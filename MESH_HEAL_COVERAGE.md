@@ -1364,7 +1364,7 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
   - Suggested fixture: defect mentioning 'std::set<face_descriptor> face_set'
 
 ##### `PMP.remove_degenerate_edges.range_with_face_set` — lines 1750–2122
-(10 branches; all UNCOVERED — no mesh fixtures exist yet)
+(10 branches; ALL COVERED — Me260–Me269 wave 10A)
 
 - **Branch 1** @ line 1558 — *Zero-length edge (link condition OK)*
   - What it tests: Degenerate edge satisfies link condition

@@ -1,0 +1,95 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      0.0,
+      1.0,
+      0.0
+    ],
+    [
+      10.0,
+      0.0,
+      0.0
+    ],
+    [
+      10.0000000001,
+      0.0,
+      0.0
+    ],
+    [
+      10.5,
+      1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      2,
+      3
+    ],
+    [
+      1,
+      3,
+      2
+    ],
+    [
+      4,
+      5,
+      6
+    ]
+  ],
+  "metadata": {
+    "id": "Me268",
+    "schema_version": 0,
+    "defect_class": "degenerate_edge",
+    "title": "range_with_face_set whole_component_selected: single-triangle component with degenerate edge \u2192 border.empty() \u2192 skip",
+    "assertions": [
+      {
+        "kind": "triangle_not_reachable_from",
+        "target": 3,
+        "source": 0
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          4,
+          5
+        ],
+        "n": 1
+      },
+      {
+        "kind": "vertex_pair_distance_lt",
+        "pair": [
+          4,
+          5
+        ],
+        "lt": 1e-09
+      },
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 3,
+        "lt": 1e-08
+      }
+    ]
+  }
+}
