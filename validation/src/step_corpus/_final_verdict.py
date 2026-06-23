@@ -116,10 +116,33 @@ def classify(prefix_id: str, v2_data: dict, cat_block: str) -> tuple[str, str]:
         "reject", "fails to parse", "must reject", "should reject",
         "syntax error", "lexer rejects", "strict reject",
     ])
-    claim_crash = any(s in cat_lower for s in [
-        "crash", "segfault", "exception", "abort", "null deref",
+    # Crash-claim heuristic: trigger when the catalog explicitly says the
+    # kernel crashes/segfaults on the input. Defensive uses ("without
+    # crashing", "prevents segfault", "abort iteration if epsilon", "no
+    # early abort") do NOT constitute a crash claim — strip those before
+    # scanning so they don't false-positive as claim_crash.
+    _crash_negatives = [
+        "without crashing", "prevents segfault", "no crash",
+        "abort iteration", "premature abort", "early abort",
+        "no early abort", "if discriminant", "if normal magnitude",
+        "abort decoding", "abort threshold", "aborts too",
+        "without aborting", "no abort",
+        # "without null check, segfault on ..." is a defensive description of
+        # what would happen without the existing guard, not a claim that the
+        # kernel crashes today. Strip the whole defensive clause.
+        "without null check, segfault", "without null check segfault",
+        "without null-check, segfault", "would segfault", "could segfault",
+        "may segfault", "might segfault",
+    ]
+    _scan_text = cat_lower
+    for neg in _crash_negatives:
+        _scan_text = _scan_text.replace(neg, "")
+    # "abort" alone is ambiguous (algorithmic abort, abort threshold, etc.)
+    # so it's NOT in the trigger list — only kernel-crash-specific phrases.
+    claim_crash = any(s in _scan_text for s in [
+        "crash", "segfault", "exception", "null deref",
         "buffer overflow", "out of bounds", "type confusion",
-        "use-after-free", "infinite loop",
+        "use-after-free", "infinite loop", "stack overflow",
     ])
     claim_empty_or_partial = any(s in cat_lower for s in [
         "no shape", "empty", "n_roots=0", "transfer fails",

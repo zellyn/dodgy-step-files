@@ -1,7 +1,7 @@
 # §4-tolerance — validate2 verdicts
 
 Generated from `/tmp/cad-v2-out/12-4-tolerance/*.json` via subprocess-isolated multi-oracle validator.
-Total: 194  CONFIRMED: 193  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
+Total: 194  CONFIRMED: 194  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
 
 ## Per-file
 `N001` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
@@ -162,7 +162,7 @@ Total: 194  CONFIRMED: 193  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
 `N157` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
 `N158` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
 `N159` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`N160` **CONFIRMED-WEAK** — occt=empty gmsh=empty ifc=schema_n/a — silent-empty where catalog cites crash; specific path not exercised
+`N160` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
 `N161` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
 `N162` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
 `N163` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
@@ -200,5 +200,4 @@ Total: 194  CONFIRMED: 193  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
 `Tb024` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
 
 ## Summary
-- CONFIRMED: 193
-- CONFIRMED-WEAK: 1
+- CONFIRMED: 194

@@ -1,7 +1,7 @@
 # §1a-encoding — validate2 verdicts
 
 Generated from `/tmp/cad-v2-out/12-1a-encoding/*.json` via subprocess-isolated multi-oracle validator.
-Total: 57  CONFIRMED: 56  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
+Total: 57  CONFIRMED: 57  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
 
 ## Per-file
 `Le001` **CONFIRMED** — occt=reject gmsh=reject ifc=reject — clean rejection by all parsers
@@ -52,7 +52,7 @@ Total: 57  CONFIRMED: 56  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
 `Le049` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
 `Le050.input` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
 `Le050` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
-`Le051` **CONFIRMED-WEAK** — occt=empty gmsh=empty ifc=schema_n/a — silent-empty where catalog cites crash; specific path not exercised
+`Le051` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
 `Le052` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
 `Le053` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
 `Le054` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
@@ -63,5 +63,4 @@ Total: 57  CONFIRMED: 56  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
 `Le059` **CONFIRMED** — occt=shape(1) gmsh=shape(1) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
 
 ## Summary
-- CONFIRMED: 56
-- CONFIRMED-WEAK: 1
+- CONFIRMED: 57
