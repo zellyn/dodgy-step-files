@@ -74,6 +74,158 @@ def _triangle_adjacency(triangles: list[list[int]]) -> dict[tuple[int, int], lis
     return adj
 
 
+def _triangles_intersect(
+    a0: list[float], a1: list[float], a2: list[float],
+    b0: list[float], b1: list[float], b2: list[float],
+    eps: float = 1e-12,
+) -> bool:
+    """Triangle-triangle intersection (Möller 1997).
+
+    Returns True iff the two triangles share a 1D or 2D set of points other
+    than purely a shared vertex or a fully-shared edge with no interior
+    crossing. Designed for defect detection on .mesh.json fixtures, not
+    for general computational-geometry use — coplanar pairs are flagged
+    as intersecting when their 2D projections overlap with positive area.
+
+    Algorithm sketch:
+      * Compute plane equation of triangle B (normal Nb, offset db).
+      * Signed distances d_A_i of triangle A's vertices to plane B.
+      * If all d_A have the same sign (and none zero), A is on one side
+        of plane B → no intersection.
+      * Mirror check for triangle A's plane vs B.
+      * Otherwise compute the line L = plane_A ∩ plane_B; project the
+        portion of each triangle that crosses its other-plane onto L,
+        yielding two parametric intervals [t1, t2]; intersection iff
+        the intervals overlap with positive length.
+      * Coplanar case (Nb·Na nearly parallel + distance ≈ 0): fall back
+        to 2D containment test.
+    """
+    def _sub(p, q):
+        return [p[0] - q[0], p[1] - q[1], p[2] - q[2]]
+
+    def _cross(u, v):
+        return [u[1] * v[2] - u[2] * v[1],
+                u[2] * v[0] - u[0] * v[2],
+                u[0] * v[1] - u[1] * v[0]]
+
+    def _dot(u, v):
+        return u[0] * v[0] + u[1] * v[1] + u[2] * v[2]
+
+    def _signed_dist(p, n, d):
+        return n[0] * p[0] + n[1] * p[1] + n[2] * p[2] - d
+
+    # Plane of triangle B
+    nb = _cross(_sub(b1, b0), _sub(b2, b0))
+    db = _dot(nb, b0)
+    da0 = _signed_dist(a0, nb, db)
+    da1 = _signed_dist(a1, nb, db)
+    da2 = _signed_dist(a2, nb, db)
+    # Snap tiny distances to zero
+    if abs(da0) < eps: da0 = 0.0
+    if abs(da1) < eps: da1 = 0.0
+    if abs(da2) < eps: da2 = 0.0
+    if da0 * da1 > 0 and da0 * da2 > 0:
+        # All A vertices strictly on the same side of plane B → no cross.
+        return False
+
+    # Plane of triangle A
+    na = _cross(_sub(a1, a0), _sub(a2, a0))
+    da = _dot(na, a0)
+    db0 = _signed_dist(b0, na, da)
+    db1 = _signed_dist(b1, na, da)
+    db2 = _signed_dist(b2, na, da)
+    if abs(db0) < eps: db0 = 0.0
+    if abs(db1) < eps: db1 = 0.0
+    if abs(db2) < eps: db2 = 0.0
+    if db0 * db1 > 0 and db0 * db2 > 0:
+        return False
+
+    # Coplanar fallback: planes are parallel and the offset ≈ 0.
+    # Project to a 2D coordinate frame and test 2D triangle overlap.
+    D = _cross(na, nb)
+    if _dot(D, D) < eps:
+        # Coplanar. Pick the axis-aligned plane with largest normal
+        # component to drop one coordinate.
+        ax = max(range(3), key=lambda i: abs(na[i]))
+        i1, i2 = [j for j in range(3) if j != ax]
+
+        def _proj(p):
+            return (p[i1], p[i2])
+
+        return _tri2d_overlap([_proj(a0), _proj(a1), _proj(a2)],
+                              [_proj(b0), _proj(b1), _proj(b2)], eps)
+
+    # Compute the parametric intervals along L = plane_A ∩ plane_B.
+    # Choose the dominant axis of D for projection.
+    ax = max(range(3), key=lambda i: abs(D[i]))
+    p_a = (a0[ax], a1[ax], a2[ax])
+    p_b = (b0[ax], b1[ax], b2[ax])
+    t_a = _interval(p_a, (da0, da1, da2))
+    t_b = _interval(p_b, (db0, db1, db2))
+    if t_a is None or t_b is None:
+        return False
+    lo = max(t_a[0], t_b[0])
+    hi = min(t_a[1], t_b[1])
+    # Positive-length overlap → real intersection.
+    return hi - lo > eps
+
+
+def _interval(proj: tuple, dist: tuple) -> tuple[float, float] | None:
+    """Compute scalar interval [tmin, tmax] where the triangle crosses the
+    other plane, projected along the chosen axis.
+
+    The two endpoints of the intersection line segment lie on the
+    triangle edges whose endpoints have opposite signs of `dist` (or
+    where one endpoint has dist == 0).
+    """
+    crossings: list[float] = []
+    for i in range(3):
+        j = (i + 1) % 3
+        di, dj = dist[i], dist[j]
+        pi, pj = proj[i], proj[j]
+        if di == 0 and dj == 0:
+            # Edge lies in the other plane — both endpoints are crossings.
+            crossings.append(pi)
+            crossings.append(pj)
+        elif di == 0:
+            crossings.append(pi)
+        elif di * dj < 0:
+            # Strict sign change → linear interp to find the zero crossing.
+            t = di / (di - dj)
+            crossings.append(pi + t * (pj - pi))
+    if not crossings:
+        return None
+    return (min(crossings), max(crossings))
+
+
+def _tri2d_overlap(a: list, b: list, eps: float) -> bool:
+    """Coplanar fallback: 2D triangle-triangle overlap (SAT)."""
+    def _edge_cross(p, q, r):
+        # 2D z-component of (q-p) × (r-p)
+        return (q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0])
+
+    def _proj_extent(tri, axis):
+        # Project triangle vertices onto axis (a 2D unit-ish vector); return [min, max].
+        ps = [v[0] * axis[0] + v[1] * axis[1] for v in tri]
+        return min(ps), max(ps)
+
+    # Separating-Axis test: for each edge of each triangle, normal axis.
+    for tri in (a, b):
+        for i in range(3):
+            p, q = tri[i], tri[(i + 1) % 3]
+            edge = (q[0] - p[0], q[1] - p[1])
+            axis = (-edge[1], edge[0])  # 2D normal
+            a_lo, a_hi = _proj_extent(a, axis)
+            b_lo, b_hi = _proj_extent(b, axis)
+            # Strict-less-or-equal: a "just touching at a vertex" coplanar
+            # pair has a_hi == b_lo on the separating axis; we want to
+            # reject those as non-intersecting since the shared point
+            # alone isn't a defect.
+            if a_hi <= b_lo + eps or b_hi <= a_lo + eps:
+                return False
+    return True
+
+
 def _check_assertion(assertion: dict, vertices: list, triangles: list) -> dict:
     """Return {status: pass|fail|unknown, detail: str}."""
     kind = assertion.get("kind")
@@ -121,12 +273,16 @@ def _check_assertion(assertion: dict, vertices: list, triangles: list) -> dict:
             "detail": "boundary edges incident-on-1" if not bad else "; ".join(bad),
         }
     if kind == "triangles_self_intersect":
-        # Pure-Python tri-tri intersection is non-trivial; we mark this as
-        # "unknown" for now and defer to a CGAL PMP wrapper.
         ta, tb = assertion["triangles"]
+        a = triangles[ta]
+        b = triangles[tb]
+        intersects = _triangles_intersect(
+            vertices[a[0]], vertices[a[1]], vertices[a[2]],
+            vertices[b[0]], vertices[b[1]], vertices[b[2]],
+        )
         return {
-            "status": "unknown",
-            "detail": f"tri-tri intersection {ta} vs {tb} requires CGAL oracle",
+            "status": "pass" if intersects else "fail",
+            "detail": f"tri-tri intersection {ta} vs {tb}: {'crosses' if intersects else 'no cross'}",
         }
     if kind == "isolated_vertex":
         v = assertion["vertex"]
