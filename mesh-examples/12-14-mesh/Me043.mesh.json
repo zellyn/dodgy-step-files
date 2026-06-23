@@ -1,0 +1,69 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      0.5,
+      -1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      3,
+      1
+    ]
+  ],
+  "metadata": {
+    "id": "Me043",
+    "schema_version": 0,
+    "defect_class": "duplicate_triangles",
+    "title": "duplicate_polygons treated_skip: shared polygon in two groups, skip on second pass",
+    "assertions": [
+      {
+        "kind": "duplicate_polygon_group",
+        "triangles": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "n": 4
+      }
+    ]
+  }
+}

@@ -144,6 +144,33 @@ class MeshFile:
             "triangles": [int(ta), int(tb)],
         })
 
+    def assert_duplicate_polygon_group(self, triangles: list[int], n: int) -> None:
+        """Catalog ``n`` triangles in ``triangles`` as all sharing an identical
+        canonical vertex-index set (merge_duplicate_polygons group defect).
+        The oracle checks that len(triangles)==n and that every triangle in
+        the group maps to the same sorted triple.
+
+        Source: CGAL PMP.merge_duplicate_polygons_in_polygon_soup —
+        *duplicate_collection* branch (line 971)."""
+        self.assertions.append({
+            "kind": "duplicate_polygon_group",
+            "triangles": [int(t) for t in triangles],
+            "n": int(n),
+        })
+
+    def assert_reversed_polygon_pair(self, ta: int, tb: int) -> None:
+        """Catalog triangles ``ta`` and ``tb`` as having identical vertex-index
+        sets but in *opposite* winding order (orientation-reversed duplicate).
+        The oracle checks that sorted(t_a) == sorted(t_b) but the raw triples
+        have opposite handedness.
+
+        Source: CGAL PMP.merge_duplicate_polygons_in_polygon_soup —
+        *orientation_requirement* branch (line 955)."""
+        self.assertions.append({
+            "kind": "reversed_polygon_pair",
+            "triangles": [int(ta), int(tb)],
+        })
+
     def assert_triangle_normal_z_negative(self, idx: int) -> None:
         """Catalog triangle ``idx`` as having a normal whose Z component is
         negative — evidence of CW (inward) winding for faces in the XY plane

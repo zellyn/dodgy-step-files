@@ -1,0 +1,18 @@
+ply
+format ascii 1.0
+comment Me041: duplicate_polygons keep_decision ERASE_ALL: both copies scheduled for removal
+comment defect_class: duplicate_triangles
+element vertex 4
+property float x
+property float y
+property float z
+element face 3
+property list uchar int vertex_indices
+end_header
+0 0 0
+1 0 0
+0.5 1 0
+0.5 -1 0
+3 0 1 2
+3 0 1 2
+3 0 3 1

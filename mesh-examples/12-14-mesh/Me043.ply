@@ -1,0 +1,20 @@
+ply
+format ascii 1.0
+comment Me043: duplicate_polygons treated_skip: shared polygon in two groups, skip on second pass
+comment defect_class: duplicate_triangles
+element vertex 4
+property float x
+property float y
+property float z
+element face 5
+property list uchar int vertex_indices
+end_header
+0 0 0
+1 0 0
+0.5 1 0
+0.5 -1 0
+3 0 1 2
+3 0 1 2
+3 0 1 2
+3 0 1 2
+3 0 3 1

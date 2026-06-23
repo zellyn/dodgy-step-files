@@ -412,6 +412,48 @@ def _check_assertion(assertion: dict, vertices: list, triangles: list) -> dict:
             "status": "pass" if not reachable else "fail",
             "detail": f"triangle {target} {'reachable' if reachable else 'not reachable'} from {source}",
         }
+    if kind == "duplicate_polygon_group":
+        group = assertion["triangles"]
+        expected_n = assertion["n"]
+        if len(group) != expected_n:
+            return {
+                "status": "fail",
+                "detail": f"group lists {len(group)} triangles but n={expected_n}",
+            }
+        keys = [tuple(sorted(triangles[ti])) for ti in group]
+        all_same = len(set(keys)) == 1
+        return {
+            "status": "pass" if all_same else "fail",
+            "detail": (f"group {group}: all share key {keys[0]}" if all_same
+                       else f"group {group}: distinct keys {keys}"),
+        }
+    if kind == "reversed_polygon_pair":
+        ta, tb = assertion["triangles"]
+        tri_a = triangles[ta]
+        tri_b = triangles[tb]
+        key_a = tuple(sorted(tri_a))
+        key_b = tuple(sorted(tri_b))
+        if key_a != key_b:
+            return {
+                "status": "fail",
+                "detail": f"triangles {ta} and {tb} have different vertex sets: {key_a} vs {key_b}",
+            }
+        # Check opposite winding: if same winding, cyclic rotation of a matches b.
+        def _canonical_cycle(t):
+            # Smallest-first cyclic rotation.
+            m = min(range(3), key=lambda i: t[i])
+            return (t[m], t[(m+1) % 3], t[(m+2) % 3])
+        ca = _canonical_cycle(tri_a)
+        cb = _canonical_cycle(tri_b)
+        same_winding = ca == cb
+        # Opposite winding means cb is the reverse: ca == (ca[0], ca[2], ca[1]) cycle.
+        rev_ca = (ca[0], ca[2], ca[1])
+        opposite_winding = _canonical_cycle(list(rev_ca)) == cb or rev_ca == cb
+        return {
+            "status": "pass" if (key_a == key_b and not same_winding) else "fail",
+            "detail": (f"triangles {ta} and {tb}: same_vertex_set=True, same_winding={same_winding}"
+                       f" tri_a={tri_a} tri_b={tri_b}"),
+        }
     return {"status": "unknown", "detail": f"unknown assertion kind {kind!r}"}
 
 

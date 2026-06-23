@@ -1,0 +1,73 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      1.5,
+      1.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      1,
+      3,
+      2
+    ],
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      1,
+      4,
+      3
+    ],
+    [
+      0,
+      1,
+      2
+    ]
+  ],
+  "metadata": {
+    "id": "Me044",
+    "schema_version": 0,
+    "defect_class": "duplicate_triangles",
+    "title": "duplicate_polygons swap_to_end: duplicate swapped to back then erased",
+    "assertions": [
+      {
+        "kind": "duplicate_polygon_group",
+        "triangles": [
+          0,
+          2,
+          4
+        ],
+        "n": 3
+      }
+    ]
+  }
+}

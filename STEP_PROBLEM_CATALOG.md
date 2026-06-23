@@ -31471,6 +31471,109 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me025.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me036 — duplicate_polygons KEEP_ONE: three identical triangles, keep one remove two
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 1 @ line 946 (*erase_policy_selection*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: a polygon soup of 4 triangles contains three copies of the same triangle (0,1,2). With erase_policy=KEEP_ONE the healer retains exactly one and removes two. The erase_policy named-parameter selection branch is exercised.
+- **Reproducer recipe**: vertices at (0,0,0), (1,0,0), (0.5,1,0), (1.5,1,0); triangles: (0,1,2)×3 then (1,3,2).
+- **Expected kernel behavior**: detect group of 3 identical polygons; apply KEEP_ONE → remove 2 duplicates; polygon count 4→2.
+- **Mesh assertion**: `duplicate_polygon_group triangles=[0,1,2] n=3`
+- **Fixture path**: mesh-examples/12-14-mesh/Me036.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me037 — duplicate_polygons orientation_requirement: reversed-winding pair
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 2 @ line 955 (*orientation_requirement*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: triangle 0 is (0,1,2) and triangle 1 is (0,2,1) — identical vertex sets but opposite winding. The require_same_orientation named-parameter controls whether the healer classifies these as duplicates (false) or distinct (true).
+- **Reproducer recipe**: vertices at (0,0,0), (1,0,0), (0.5,1,0), (0.5,-1,0); tri0=(0,1,2) CCW; tri1=(0,2,1) CW.
+- **Expected kernel behavior**: with require_same_orientation=false → merge pair as duplicates; with require_same_orientation=true → treat as distinct (no merge).
+- **Mesh assertion**: `reversed_polygon_pair triangles=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me037.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me038 — duplicate_polygons duplicate_collection: two independent duplicate groups
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 3 @ line 971 (*duplicate_collection*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: 6-triangle soup with two spatially disjoint duplicate pairs. Group A = {tri0, tri1} sharing key (0,1,2); Group B = {tri3, tri4} sharing key (3,4,5). The hash+equality scan must collect both groups before any removal begins.
+- **Reproducer recipe**: two separate triangles each duplicated; two clean singletons between them.
+- **Expected kernel behavior**: collect two separate duplicate groups; merge each independently.
+- **Mesh assertion**: `duplicate_polygon_group triangles=[0,1] n=2`
+- **Mesh assertion**: `duplicate_polygon_group triangles=[3,4] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me038.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me039 — duplicate_polygons early_exit_empty: all-distinct polygon soup, no duplicates
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 4 @ line 973 (*early_exit_empty*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: a clean 3-triangle manifold patch with entirely distinct vertex sets. The duplicate collector finds no groups; the function immediately returns 0 without entering any removal loop. Exercises the fast-path branch.
+- **Reproducer recipe**: 4 vertices forming a rectangular patch split into 3 distinct triangles; no shared triple.
+- **Expected kernel behavior**: find no duplicate polygons; return 0 immediately without any swap or erase.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me039.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me040 — duplicate_polygons duplicate_group_iteration: three separate duplicate groups
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 5 @ line 996 (*duplicate_group_iteration*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: 6-triangle soup with three independent duplicate pairs (A, B, C each 2 copies). Forces the outer while(!all_duplicate_polygons.empty()) loop to iterate three times, once per group.
+- **Reproducer recipe**: three distinct triangle shapes each duplicated; groups at x=0, x=2, x=4.
+- **Expected kernel behavior**: iterate outer loop 3 times; process one group per iteration; reduce 6 triangles to 3.
+- **Mesh assertion**: `duplicate_polygon_group triangles=[0,1] n=2`
+- **Mesh assertion**: `duplicate_polygon_group triangles=[2,3] n=2`
+- **Mesh assertion**: `duplicate_polygon_group triangles=[4,5] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me040.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me041 — duplicate_polygons keep_decision ERASE_ALL: both copies scheduled for removal
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 6 @ line 1001 (*keep_decision*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: with erase_policy=ERASE_ALL the keep-index i is set to 0, meaning ALL copies of a duplicate group are erased including the one that KEEP_ONE would retain. The fixture has two identical triangles; both are scheduled for removal.
+- **Reproducer recipe**: two copies of (0,1,2) plus one clean lower triangle; ERASE_ALL removes both leaving only the clean triangle.
+- **Expected kernel behavior**: set i=0 for the group; schedule all 2 copies for removal; erase both; result has 1 triangle.
+- **Mesh assertion**: `duplicate_polygon_group triangles=[0,1] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me041.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me042 — duplicate_polygons removal_iteration: 4-copy group, inner loop runs 3 times
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 7 @ line 1004 (*removal_iteration*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: a group of 4 identical triangles forces the inner for-loop (for(; i<duplicate_polygons.size(); ++i)) to iterate 3 times under KEEP_ONE (i starts at 1, removes indices at positions 1, 2, 3 while keeping position 0).
+- **Reproducer recipe**: 4 copies of (0,1,2) plus one clean neighbour; the inner removal loop body fires 3 times.
+- **Expected kernel behavior**: inner loop iterates 3 times; 3 polygons swapped-to-end; erase reduces count from 5 to 2.
+- **Mesh assertion**: `duplicate_polygon_group triangles=[0,1,2,3] n=4`
+- **Fixture path**: mesh-examples/12-14-mesh/Me042.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me043 — duplicate_polygons treated_skip: shared polygon in two groups, skip on second pass
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 8 @ line 1007 (*treated_skip*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: 4 identical triangles form one group. When the inner removal loop processes a polygon that was already swapped-to-end (marked treated) by a prior iteration, it hits the if(treated[polygon_to_remove_id]) continue guard and skips it without double-processing.
+- **Reproducer recipe**: 4 copies of (0,1,2) plus clean triangle; treated[] bit-vector prevents any polygon being swapped twice.
+- **Expected kernel behavior**: treated[] guard fires for any polygon already in removal zone; continue skips it cleanly.
+- **Mesh assertion**: `duplicate_polygon_group triangles=[0,1,2,3] n=4`
+- **Fixture path**: mesh-examples/12-14-mesh/Me043.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me044 — duplicate_polygons swap_to_end: duplicate swapped to back then erased
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 9 @ line 1026 (*swap_to_end*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: 5-triangle soup with 3 copies of (0,1,2) interleaved with 2 clean triangles. Each duplicate copy is moved to the back partition via std::swap before erase(), so after swapping a clean polygon fills the old duplicate slot. Tests the swap mechanism's correctness in a non-contiguous duplicate layout.
+- **Reproducer recipe**: tri order = dup, clean, dup, clean, dup; duplicates at positions 0, 2, 4; swaps move them to back.
+- **Expected kernel behavior**: 3 swaps move duplicates to positions 2,3,4 (back region); erase shrinks from 5 to 2.
+- **Mesh assertion**: `duplicate_polygon_group triangles=[0,2,4] n=3`
+- **Fixture path**: mesh-examples/12-14-mesh/Me044.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me045 — duplicate_polygons mark_treated+final_erase: KEEP_ONE_IF_ODD with 3 copies
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 10 @ line 1029 (*mark_treated*) and Branch 11 @ line 1035 (*final_erase*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: 5-triangle soup with 3 copies of (0,1,2). With KEEP_ONE_IF_ODD, size%2==1 so 1 copy is kept; treated[] is set true for the 2 removed copies; polygons.erase(first, end()) physically shrinks the container from 5 to 3 triangles. Exercises both the mark_treated bit-write and the final container erase together.
+- **Reproducer recipe**: 3 copies of (0,1,2) then 2 distinct clean triangles; KEEP_ONE_IF_ODD keeps 1, treated[] marks 2, erase fires once.
+- **Expected kernel behavior**: treated[] set for 2 polygons; single erase() call removes back region; result = 3 triangles.
+- **Mesh assertion**: `duplicate_polygon_group triangles=[0,1,2] n=3`
+- **Fixture path**: mesh-examples/12-14-mesh/Me045.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Wr052 — Writer emits EDGE_CURVE backed by untrimmed LINE entity
 - **Category**: §12.13 writer-pathology (sub-class: unbounded-curve emission)
 - **Sources**: Pattern-mined from OCCT/tests/bugs/step/bug32817_1 (LGPL-clean — pattern only, no bytes copied). OCCT method `STEPControl_Writer::Transfer` on a single-line edge.

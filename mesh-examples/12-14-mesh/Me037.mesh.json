@@ -1,0 +1,56 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      0.5,
+      -1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      2,
+      1
+    ],
+    [
+      0,
+      3,
+      1
+    ]
+  ],
+  "metadata": {
+    "id": "Me037",
+    "schema_version": 0,
+    "defect_class": "duplicate_triangles",
+    "title": "duplicate_polygons orientation_requirement: reversed-winding pair",
+    "assertions": [
+      {
+        "kind": "reversed_polygon_pair",
+        "triangles": [
+          0,
+          1
+        ]
+      }
+    ]
+  }
+}

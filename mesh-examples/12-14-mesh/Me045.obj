@@ -1,0 +1,12 @@
+# Me045: duplicate_polygons mark_treated+final_erase: KEEP_ONE_IF_ODD with 3 copies
+# defect_class: duplicate_triangles
+v 0 0 0
+v 1 0 0
+v 0.5 1 0
+v 1.5 1 0
+v 2 0 0
+f 1 2 3
+f 1 2 3
+f 1 2 3
+f 2 4 3
+f 4 5 3

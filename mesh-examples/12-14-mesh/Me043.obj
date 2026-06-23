@@ -1,0 +1,11 @@
+# Me043: duplicate_polygons treated_skip: shared polygon in two groups, skip on second pass
+# defect_class: duplicate_triangles
+v 0 0 0
+v 1 0 0
+v 0.5 1 0
+v 0.5 -1 0
+f 1 2 3
+f 1 2 3
+f 1 2 3
+f 1 2 3
+f 1 4 2
