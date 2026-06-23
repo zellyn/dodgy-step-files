@@ -32781,6 +32781,139 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me139.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me150 — flipNormals_triangle_invert_guard: seed triangle has bit 6 clear, CW winding inverted
+- **Category**: §12.14 mesh defects (sub-class: flip-normals / triangle invert guard)
+- **Sources**: MeshFix `Basic_TMesh.flipNormals` Branch 1 (*triangle_invert_guard*: `!IS_BIT(t,6)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A single isolated CW triangle in the XY plane. Its normal points in the -Z direction (inward). flipNormals dequeues it, checks bit 6 is clear (Branch 1 fires), inverts the winding, and marks bit 6.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0); triangle (v0,v2,v1) — CW ordering gives normal -Z.
+- **Expected kernel behavior**: flipNormals inverts triangle winding when bit 6 is unset.
+- **Mesh assertion**: `triangle_normal_z_negative triangle=0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me150.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me151 — flipNormals_neighbor_enqueue_t1: t1 neighbor CW, enqueued for flip propagation
+- **Category**: §12.14 mesh defects (sub-class: flip-normals / neighbor enqueue t1)
+- **Sources**: MeshFix `Basic_TMesh.flipNormals` Branch 2 (*neighbor_enqueue_t1*: `t1 != NULL && !IS_BIT(t1,6)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two adjacent CW triangles sharing edge (v0,v1). After flipping the seed t0, flipNormals finds the t1-slot neighbor also has bit 6 clear and enqueues it. Both triangles have -Z normals before repair.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,-1,0); t0=(v0,v2,v1) CW, t1=(v0,v1,v3) CW; shared edge (v0,v1).
+- **Expected kernel behavior**: t1 neighbor enqueued for flipping via Branch 2 when bit 6 unset.
+- **Mesh assertion**: `triangle_normal_z_negative triangle=0`
+- **Mesh assertion**: `triangle_normal_z_negative triangle=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me151.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me152 — flipNormals_neighbor_enqueue_t2: t2 neighbor CW, enqueued for flip propagation
+- **Category**: §12.14 mesh defects (sub-class: flip-normals / neighbor enqueue t2)
+- **Sources**: MeshFix `Basic_TMesh.flipNormals` Branch 3 (*neighbor_enqueue_t2*: `t2 != NULL && !IS_BIT(t2,6)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two adjacent CW triangles sharing edge (v0,v2). The t2-slot neighbor of the seed also has bit 6 clear; Branch 3 fires to enqueue it. Both triangles have -Z normals before repair.
+- **Reproducer recipe**: hub=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(-1,0,0); t0=(hub,v2,v1) CW, t1=(hub,v3,v2) CW; shared edge (hub,v2).
+- **Expected kernel behavior**: t2 neighbor enqueued for flipping via Branch 3 when bit 6 unset.
+- **Mesh assertion**: `triangle_normal_z_negative triangle=0`
+- **Mesh assertion**: `triangle_normal_z_negative triangle=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me152.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me153 — flipNormals_neighbor_enqueue_t3: t3 neighbor CW, all four-spoke fan triangles inverted
+- **Category**: §12.14 mesh defects (sub-class: flip-normals / neighbor enqueue t3)
+- **Sources**: MeshFix `Basic_TMesh.flipNormals` Branch 4 (*neighbor_enqueue_t3*: `t3 != NULL && !IS_BIT(t3,6)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four-spoke CW fan around a hub vertex. All four triangles have -Z normals. flipNormals propagates through all three neighbor slots (t1, t2, t3); Branch 4 fires for the t3-slot neighbor across the hub-v1 edge.
+- **Reproducer recipe**: hub=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(-1,0,0), v4=(0,-1,0); all four fan triangles CW.
+- **Expected kernel behavior**: t3 neighbor enqueued for flipping via Branch 4 when bit 6 unset.
+- **Mesh assertion**: `triangle_normal_z_negative triangle=0`
+- **Mesh assertion**: `triangle_normal_z_negative triangle=1`
+- **Mesh assertion**: `triangle_normal_z_negative triangle=2`
+- **Mesh assertion**: `triangle_normal_z_negative triangle=3`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me153.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me154 — flipNormals_edge_orientation_e1: e1 reversed when triangle winding is inverted
+- **Category**: §12.14 mesh defects (sub-class: flip-normals / edge orientation e1)
+- **Sources**: MeshFix `Basic_TMesh.flipNormals` Branch 5 (*edge_orientation_e1*: `!IS_BIT(t->e1,6)`, `p_swap`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two adjacent CW triangles. The seed triangle's e1 directed edge has not yet been reversed (bit 6 clear). flipNormals swaps e1's vertex endpoints to match the new CCW winding and marks e1's bit 6. Branch 5 fires for the e1 slot.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,1,0), v3=(1,-1,0); t0=(v0,v2,v1) CW, t1=(v0,v1,v3) CW; shared edge (v0,v1).
+- **Expected kernel behavior**: e1 vertex endpoints swapped to match inverted winding; bit 6 marked on e1.
+- **Mesh assertion**: `triangle_normal_z_negative triangle=0`
+- **Mesh assertion**: `triangle_normal_z_negative triangle=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me154.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me155 — flipNormals_edge_orientation_e2: e2 reversed when triangle winding is inverted
+- **Category**: §12.14 mesh defects (sub-class: flip-normals / edge orientation e2)
+- **Sources**: MeshFix `Basic_TMesh.flipNormals` Branch 6 (*edge_orientation_e2*: `!IS_BIT(t->e2,6)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two adjacent CW triangles sharing edge (v1,v2). The seed triangle's e2 directed edge (v2→v1 in CW order) has not yet been reversed. flipNormals swaps e2's vertex endpoints to match the new CCW winding. Branch 6 fires for the e2 slot.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(1,1,0), v3=(0,1,0); t0=(v0,v2,v1) CW, t1=(v1,v3,v2) CW; shared edge (v1,v2).
+- **Expected kernel behavior**: e2 vertex endpoints swapped; bit 6 marked on e2.
+- **Mesh assertion**: `triangle_normal_z_negative triangle=0`
+- **Mesh assertion**: `triangle_normal_z_negative triangle=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me155.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me156 — flipNormals_edge_orientation_e3: e3 reversed when triangle winding is inverted
+- **Category**: §12.14 mesh defects (sub-class: flip-normals / edge orientation e3)
+- **Sources**: MeshFix `Basic_TMesh.flipNormals` Branch 7 (*edge_orientation_e3*: `!IS_BIT(t->e3,6)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two adjacent CW triangles sharing edge (v0,v1). This edge is the closing edge e3 of the seed triangle (v1→v0 in CW order). flipNormals swaps e3's vertex endpoints to match the new CCW winding. Branch 7 fires for the e3 slot.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1.5,1,0); t0=(v0,v2,v1) CW, t1=(v1,v0,v3) CW; shared edge (v0,v1) = e3 of t0.
+- **Expected kernel behavior**: e3 vertex endpoints swapped; bit 6 marked on e3.
+- **Mesh assertion**: `triangle_normal_z_negative triangle=0`
+- **Mesh assertion**: `triangle_normal_z_negative triangle=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me156.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me157 — flipNormals_flip_propagation_guard: second-pass cleanup iterates already-flipped triangles
+- **Category**: §12.14 mesh defects (sub-class: flip-normals / flip propagation guard)
+- **Sources**: MeshFix `Basic_TMesh.flipNormals` Branch 8 (*flip_propagation_guard*: `IS_BIT(t,6)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A fully-inverted closed tetrahedron. All four faces are CW. After pass 1 flips all faces (bit 6 set on each), pass 2 iterates over all triangles; Branch 8 fires for each (bit 6 set) and enqueues neighbors for bit-clearing.
+- **Reproducer recipe**: standard tetrahedron v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,0.5,1); all four faces wound CW.
+- **Expected kernel behavior**: pass 2 fires Branch 8 for each triangle that has bit 6 set; enqueues neighbors for cleanup.
+- **Mesh assertion**: `triangle_normal_z_negative triangle=0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me157.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me158 — flipNormals_neighbor_unmark_t1: t1 flip-bit cleared in cleanup pass
+- **Category**: §12.14 mesh defects (sub-class: flip-normals / neighbor unmark t1)
+- **Sources**: MeshFix `Basic_TMesh.flipNormals` Branch 9 (*neighbor_unmark_t1*: `IS_BIT(t1,6)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two adjacent CW triangles sharing edge (v0,v1). After pass 1 flips both, pass 2 processes the seed (Branch 8) and finds the t1-slot neighbor also has bit 6 set (Branch 9); it unmarks t1 and enqueues it for further cleanup.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,-1,0); t0=(v0,v2,v1) CW, t1=(v0,v1,v3) CW; shared edge (v0,v1).
+- **Expected kernel behavior**: Branch 9 fires when t1 neighbor's bit 6 is set; t1 unmark and enqueue for cleanup.
+- **Mesh assertion**: `triangle_normal_z_negative triangle=0`
+- **Mesh assertion**: `triangle_normal_z_negative triangle=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me158.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me159 — flipNormals_edge_unmark_cleanup: edge bit 6 cleared on all edges in second cleanup pass
+- **Category**: §12.14 mesh defects (sub-class: flip-normals / edge unmark cleanup)
+- **Sources**: MeshFix `Basic_TMesh.flipNormals` Branch 10 (*edge_unmark_cleanup*: `UNMARK_BIT(t->e1,6)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three CW triangles sharing a hub vertex. After pass 1 flips all triangles and marks all edge flip bits, pass 2 fires Branch 10 to unmark bit 6 on e1, e2, and e3 of each triangle, completing the cleanup.
+- **Reproducer recipe**: hub=(0,0,0), v0=(1,0,0), v1=(0,1,0), v2=(-1,0.5,0); t0=(hub,v1,v0) CW, t1=(hub,v2,v1) CW, t2=(hub,v2,v0) CW; all hub spokes interior.
+- **Expected kernel behavior**: Branch 10 clears bit 6 on all three edges of each flipped triangle in pass 2.
+- **Mesh assertion**: `triangle_normal_z_negative triangle=0`
+- **Mesh assertion**: `triangle_normal_z_negative triangle=1`
+- **Mesh assertion**: `triangle_normal_z_negative triangle=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me159.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me120 — inverse_collapse_right_triangle_e2: ta1 exists on right side of split edge e2
 - **Category**: §12.14 mesh defects (sub-class: inverse-collapse / right-triangle-e2)
 - **Sources**: MeshFix `Vertex.inverseCollapse` Branch 1 (*right_triangle_e2*: `ta1 = e2->rightTriangle(this)`); `MESH_HEAL_COVERAGE.md`.

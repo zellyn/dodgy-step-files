@@ -3302,48 +3302,48 @@ Fixture IDs: Me130 Me131 Me132 Me133 Me134 Me135 Me136 Me137 Me138 Me139
   - Suggested fixture: defect mentioning 'd_boundaries = d_handles = d_shells = 0'
 
 ##### `Basic_TMesh.flipNormals` — lines 1639–1681
-(10 branches; all UNCOVERED — no mesh fixtures exist yet)
+(10 branches; ALL COVERED — Me150–Me159, wave 6B)
 
-- **Branch 1** @ line 1648 — *triangle_invert_guard*
+- **Branch 1** @ line 1648 — *triangle_invert_guard* → **Me150**
   - What it tests: Triangle not yet flipped (bit 6 unset)
   - Repair action: Invert orientation and enqueue neighbors
-  - Suggested fixture: defect mentioning '!IS_BIT(t,6)'
-- **Branch 2** @ line 1652 — *neighbor_enqueue_t1*
+  - Fixture: Me150 — single CW triangle; '!IS_BIT(t,6)'
+- **Branch 2** @ line 1652 — *neighbor_enqueue_t1* → **Me151**
   - What it tests: t1 exists and not yet flipped
   - Repair action: Add t1 to todo queue for propagation
-  - Suggested fixture: defect mentioning 't1 != NULL && !IS_BIT(t1,6)'
-- **Branch 3** @ line 1653 — *neighbor_enqueue_t2*
+  - Fixture: Me151 — two adjacent CW triangles, t1-slot neighbor; 't1 != NULL && !IS_BIT(t1,6)'
+- **Branch 3** @ line 1653 — *neighbor_enqueue_t2* → **Me152**
   - What it tests: t2 exists and not yet flipped
   - Repair action: Add t2 to todo queue
-  - Suggested fixture: defect mentioning 't2 != NULL && !IS_BIT(t2,6)'
-- **Branch 4** @ line 1654 — *neighbor_enqueue_t3*
+  - Fixture: Me152 — two adjacent CW triangles, t2-slot neighbor; 't2 != NULL && !IS_BIT(t2,6)'
+- **Branch 4** @ line 1654 — *neighbor_enqueue_t3* → **Me153**
   - What it tests: t3 exists and not yet flipped
   - Repair action: Add t3 to todo queue
-  - Suggested fixture: defect mentioning 't3 != NULL && !IS_BIT(t3,6)'
-- **Branch 5** @ line 1657 — *edge_orientation_e1*
+  - Fixture: Me153 — four-spoke CW fan, t3-slot neighbor; 't3 != NULL && !IS_BIT(t3,6)'
+- **Branch 5** @ line 1657 — *edge_orientation_e1* → **Me154**
   - What it tests: e1 not yet reversed (bit 6 unset)
   - Repair action: Swap e1 vertex endpoints to match new orientation
-  - Suggested fixture: defect mentioning '!IS_BIT(t->e1,6)', 'p_swap'
-- **Branch 6** @ line 1658 — *edge_orientation_e2*
+  - Fixture: Me154 — two adjacent CW triangles, e1 boundary edge; '!IS_BIT(t->e1,6)', 'p_swap'
+- **Branch 6** @ line 1658 — *edge_orientation_e2* → **Me155**
   - What it tests: e2 not yet reversed
   - Repair action: Swap e2 vertex endpoints
-  - Suggested fixture: defect mentioning '!IS_BIT(t->e2,6)'
-- **Branch 7** @ line 1659 — *edge_orientation_e3*
+  - Fixture: Me155 — two adjacent CW triangles, e2 interior edge; '!IS_BIT(t->e2,6)'
+- **Branch 7** @ line 1659 — *edge_orientation_e3* → **Me156**
   - What it tests: e3 not yet reversed
   - Repair action: Swap e3 vertex endpoints
-  - Suggested fixture: defect mentioning '!IS_BIT(t->e3,6)'
-- **Branch 8** @ line 1669 — *flip_propagation_guard*
+  - Fixture: Me156 — two adjacent CW triangles, e3 closing edge; '!IS_BIT(t->e3,6)'
+- **Branch 8** @ line 1669 — *flip_propagation_guard* → **Me157**
   - What it tests: Triangle was flipped (bit 6 set) in first pass
   - Repair action: Enqueue already-flipped neighbors for cleanup
-  - Suggested fixture: defect mentioning 'IS_BIT(t,6)'
-- **Branch 9** @ line 1673 — *neighbor_unmark_t1*
+  - Fixture: Me157 — CW tetrahedron; all faces flipped in pass 1; 'IS_BIT(t,6)'
+- **Branch 9** @ line 1673 — *neighbor_unmark_t1* → **Me158**
   - What it tests: t1 was flipped (bit 6 set)
   - Repair action: Unmark t1 and enqueue for cleanup
-  - Suggested fixture: defect mentioning 'IS_BIT(t1,6)'
-- **Branch 10** @ line 1677 — *edge_unmark_cleanup*
+  - Fixture: Me158 — two adjacent CW triangles; both flipped; 'IS_BIT(t1,6)'
+- **Branch 10** @ line 1677 — *edge_unmark_cleanup* → **Me159**
   - What it tests: Edge flip bit set in first pass
   - Repair action: Unmark edges in cleanup phase
-  - Suggested fixture: defect mentioning 'UNMARK_BIT(t->e1,6)'
+  - Fixture: Me159 — three-spoke CW fan; all edge bits cleared; 'UNMARK_BIT(t->e1,6)'
 
 ##### `Basic_TMesh.invertSelection` — lines 739–764
 (6 branches; all UNCOVERED — no mesh fixtures exist yet)
