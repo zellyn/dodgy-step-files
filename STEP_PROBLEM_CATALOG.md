@@ -32781,6 +32781,135 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me139.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me140 — isInnerPoint_empty_mesh: no triangles, T.numels()==0, early return false
+- **Category**: §12.14 mesh defects (sub-class: isInnerPoint / empty mesh)
+- **Sources**: MeshFix `Basic_TMesh.isInnerPoint` Branch 1 (*empty_mesh*: `if (!T.numels()) return false`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A mesh containing only a single isolated vertex with no triangles. isInnerPoint's first guard checks T.numels(); with zero triangles the predicate returns false immediately for any query point. The isolated vertex is not referenced by any triangle.
+- **Reproducer recipe**: v0=(0,0,0); no triangles.
+- **Expected kernel behavior**: isInnerPoint returns false without entering the triangle loop.
+- **Mesh assertion**: `isolated_vertex vertex=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me140.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me141 — isInnerPoint_yz_bbox_reject: query point outside triangle Y-Z bounding box, skip branch fires
+- **Category**: §12.14 mesh defects (sub-class: isInnerPoint / Y-Z bounding box rejection)
+- **Sources**: MeshFix `Basic_TMesh.isInnerPoint` Branch 2 (*yz_bounding_box_reject*: `if (v1->y > p.y || ...) continue`) and Branch 3 (*z-axis bbox*: `if (v1->z > p.z || ...) continue`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A single open triangle in the XY-plane (y in [0,2], z=0). A query point at y=5 or z=5 lies outside the triangle's Y-Z bounding box; isInnerPoint skips the triangle without computing any intersection.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0); t0=(v0,v1,v2).
+- **Expected kernel behavior**: for query p with p.y > 2 or p.z > 0, the Y-Z bbox test fires and the triangle is skipped.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me141.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me142 — isInnerPoint_degenerate_triangle: collinear vertices give o1=o2=o3=0, skip branch fires
+- **Category**: §12.14 mesh defects (sub-class: isInnerPoint / degenerate collinear triangle)
+- **Sources**: MeshFix `Basic_TMesh.isInnerPoint` Branch 4 (*degenerate_triangle*: `if (o1 == 0 && o2 == 0 && o3 == 0) continue`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three collinear vertices (all on the x-axis) form a zero-area degenerate triangle. All three 2D orientation values are zero, so isInnerPoint skips this triangle. The middle vertex v1 lies exactly on the segment between v0 and v2.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0); t0=(v0,v1,v2).
+- **Expected kernel behavior**: o1=o2=o3=0 for any query point; degenerate triangle is skipped.
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-09`
+- **Mesh assertion**: `vertex_on_edge vertex=1 edge=[0,2]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me142.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me143 — isInnerPoint_point_on_v2_vertex: query point coincides with v2, o1=o2=0, closest_vertex set
+- **Category**: §12.14 mesh defects (sub-class: isInnerPoint / point-on-vertex v2)
+- **Sources**: MeshFix `Basic_TMesh.isInnerPoint` Branch 5 (*point_on_vertex*: `if (o1 == 0 && o2 == 0) { closest_vertex = v2; }`) and Branch 6 (*point_on_vertex_exact*: `if (ad == 0) return false`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles (t0 and t1) sharing edge (v0,v1), with v2 and v3 placed at the same position (0.5,1,0). A query at v2's coordinates causes o1=o2=0 in Branch 5; isInnerPoint records this vertex as closest and returns false.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,1,0); t0=(v0,v1,v2), t1=(v0,v1,v3).
+- **Expected kernel behavior**: query at (0.5,1,0) gives o1=o2=0; Branch 5 fires, closest_vertex=v2, return false.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[2,3] lt=1e-09`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me143.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me144 — isInnerPoint_point_on_v1_vertex: query point coincides with v1, o1=o3=0, closest_vertex=v1
+- **Category**: §12.14 mesh defects (sub-class: isInnerPoint / point-on-vertex v1)
+- **Sources**: MeshFix `Basic_TMesh.isInnerPoint` Branch 7 (*point_on_vertex*: `if (o1 == 0 && o3 == 0) { closest_vertex = v1; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing edge (v1,v2), with v3 at the same position as v1=(2,0,0). A query at v1's coordinates causes o1=o3=0; isInnerPoint's Branch 7 records v1 as closest vertex. Distinct from Branch 5 which fires for v2 coincidence (o1=o2=0).
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(2,0,0); t0=(v0,v1,v2), t1=(v1,v2,v3).
+- **Expected kernel behavior**: query at (2,0,0) gives o1=o3=0 for triangle t0; Branch 7 fires, closest_vertex=v1.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,3] lt=1e-09`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me144.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me145 — isInnerPoint_point_on_v3_vertex: query point coincides with v3, o2=o3=0, closest_vertex=v3
+- **Category**: §12.14 mesh defects (sub-class: isInnerPoint / point-on-vertex v3)
+- **Sources**: MeshFix `Basic_TMesh.isInnerPoint` Branch 8 (*point_on_vertex*: `if (o2 == 0 && o3 == 0) { closest_vertex = v3; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Triangle t0=(v0,v1,v2) plus degenerate t1=(v0,v2,v3) where v3 is at the same position as v2=(1,2,0). A query at the apex position causes o2=o3=0 for Branch 8. Triangle t1 has zero area since v2 and v3 coincide.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(1,2,0); t0=(v0,v1,v2), t1=(v0,v2,v3).
+- **Expected kernel behavior**: query at (1,2,0) gives o2=o3=0 for the triangle; Branch 8 fires, closest_vertex=v3.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[2,3] lt=1e-09`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-09`
+- **Fixture path**: mesh-examples/12-14-mesh/Me145.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me146 — isInnerPoint_point_on_edge: query at edge midpoint gives one orientation=0, edge-intersection branch fires
+- **Category**: §12.14 mesh defects (sub-class: isInnerPoint / point-on-edge interior)
+- **Sources**: MeshFix `Basic_TMesh.isInnerPoint` Branch 9 (*point_on_edge*: `if (o1 == 0 || o2 == 0 || o3 == 0) { select edge; lineLineIntersection(...) }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: T-junction where vertex v3=(0.5,0,0) lies exactly on the interior of edge (v0,v2) of triangle t0. A query at v3's coordinates gives exactly one orientation value of zero for triangle t0's projected edges. isInnerPoint selects that edge and calls lineLineIntersection to find the boundary crossing X-coordinate.
+- **Reproducer recipe**: v0=(0,0,0), v1=(0.5,1,0), v2=(1,0,0), v3=(0.5,0,0), v4=(0.5,-1,0); t0=(v0,v1,v2), t1=(v0,v4,v3), t2=(v3,v4,v2).
+- **Expected kernel behavior**: query at (0.5,0,0) gives o_edge=0 for the edge containing v3; Branch 9 fires.
+- **Mesh assertion**: `vertex_on_edge vertex=3 edge=[0,2]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me146.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me147 — isInnerPoint_point_in_triangle: all orientations positive, linePlaneIntersection fires
+- **Category**: §12.14 mesh defects (sub-class: isInnerPoint / point strictly inside triangle)
+- **Sources**: MeshFix `Basic_TMesh.isInnerPoint` Branch 12 (*point_in_triangle*: `if (o1 > 0 && o2 > 0 && o3 > 0) { linePlaneIntersection(...); }`) and Branch 13 (*point_on_triangle_exact*: `if (ad == 0) return false`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A closed tetrahedron (4 triangles, all edges interior, fully watertight). A query at the centroid has all three positive orientations for the base triangle; isInnerPoint calls linePlaneIntersection and counts the crossing. Every edge is shared by exactly 2 triangles, confirming a valid closed mesh.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(1,0.67,1.5); t0=(v0,v2,v1), t1=(v0,v1,v3), t2=(v1,v2,v3), t3=(v2,v0,v3).
+- **Expected kernel behavior**: query at centroid has o1>0, o2>0, o3>0 for t0; Branch 12 fires, linePlaneIntersection called.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me147.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me148 — isInnerPoint_closest_is_edge_boundary: closest ray-hit is a boundary edge, isOnBoundary() true, return false
+- **Category**: §12.14 mesh defects (sub-class: isInnerPoint / closest-is-edge boundary)
+- **Sources**: MeshFix `Basic_TMesh.isInnerPoint` Branch 15 (*closest_is_edge*: `if (closest_edge != NULL)`) and Branch 16 (*edge_on_boundary*: `if (closest_edge->isOnBoundary()) return false`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: An open mesh of two triangles sharing interior edge (v0,v1). The four outer edges are mesh boundaries (each incident on exactly 1 triangle). When the closest ray-hit lies on a boundary edge, isOnBoundary() returns true and isInnerPoint returns false without ambiguity.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,1,0), v3=(1,-1,0); t0=(v0,v2,v1), t1=(v0,v1,v3).
+- **Expected kernel behavior**: if query projects onto a boundary edge, Branch 16 fires, return false.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,2,1,3]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me148.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me149 — isInnerPoint_closest_is_triangle: ray hits triangle interior, sign(normal.x) determines inside/outside
+- **Category**: §12.14 mesh defects (sub-class: isInnerPoint / closest-is-triangle interior)
+- **Sources**: MeshFix `Basic_TMesh.isInnerPoint` Branch 18 (*closest_is_triangle*: `if (closest_triangle != NULL) return (closest_triangle->getVector().x > 0)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A closed watertight wedge (4 lateral faces + 2 base triangles, all 9 edges interior). When the closest ray-crossing point is strictly interior to a triangle, isInnerPoint returns the sign of that triangle's normal X-component. The mesh is fully closed: every edge is shared by exactly 2 triangles, confirming no boundary exists.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(2,0,1), v3=(0,0,1), v4=(1,2,0.5); 6 triangles forming a closed wedge.
+- **Expected kernel behavior**: query at centroid hits a triangle interior; Branch 18 fires, return sign(getVector().x).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me149.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me150 — flipNormals_triangle_invert_guard: seed triangle has bit 6 clear, CW winding inverted
 - **Category**: §12.14 mesh defects (sub-class: flip-normals / triangle invert guard)
 - **Sources**: MeshFix `Basic_TMesh.flipNormals` Branch 1 (*triangle_invert_guard*: `!IS_BIT(t,6)`); `MESH_HEAL_COVERAGE.md`.

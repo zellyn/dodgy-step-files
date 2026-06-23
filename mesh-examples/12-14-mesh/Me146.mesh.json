@@ -1,0 +1,62 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      -1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      4,
+      3
+    ],
+    [
+      3,
+      4,
+      2
+    ]
+  ],
+  "metadata": {
+    "id": "Me146",
+    "schema_version": 0,
+    "defect_class": "isInnerPoint_point_on_edge",
+    "title": "isInnerPoint_point_on_edge: query at midpoint of edge gives one orientation=0, edge-intersection branch fires",
+    "assertions": [
+      {
+        "kind": "vertex_on_edge",
+        "vertex": 3,
+        "edge": [
+          0,
+          2
+        ]
+      }
+    ]
+  }
+}

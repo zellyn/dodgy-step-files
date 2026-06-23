@@ -1,0 +1,22 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ]
+  ],
+  "triangles": [],
+  "metadata": {
+    "id": "Me140",
+    "schema_version": 0,
+    "defect_class": "isolated_vertex",
+    "title": "isInnerPoint_empty_mesh: no triangles \u2192 T.numels()==0, early return false",
+    "assertions": [
+      {
+        "kind": "isolated_vertex",
+        "vertex": 0
+      }
+    ]
+  }
+}

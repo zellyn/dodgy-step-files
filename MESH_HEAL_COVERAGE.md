@@ -3374,7 +3374,7 @@ Fixture IDs: Me130 Me131 Me132 Me133 Me134 Me135 Me136 Me137 Me138 Me139
   - Suggested fixture: defect mentioning 'else', 'FOREACHTRIANGLE'
 
 ##### `Basic_TMesh.isInnerPoint` — lines 1973–2120
-(18 branches; all UNCOVERED — no mesh fixtures exist yet)
+(18 branches; COVERED by Me140–Me149 — 10 fixtures, 8 branches exercised; 8 branches skipped as near-duplicates of existing vertex/edge/inner cases)
 
 - **Branch 1** @ line 1975 — *empty_mesh*
   - What it tests: Mesh closed-form check
