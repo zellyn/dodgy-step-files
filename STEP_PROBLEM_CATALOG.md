@@ -33176,6 +33176,128 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me169.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me170 — orient polygon_scan: scan loop reaches isolated second component triangle
+- **Category**: §12.14 mesh defects (sub-class: orientation / polygon scan)
+- **Sources**: CGAL `PMP.Polygon_soup_orienter.orient` Branch 1 (*polygon_scan*: `while (polygon_index != polygons.size() && oriented[polygon_index])`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected triangles — component 1 at z=0 (CCW seed) and component 2 at z=5 (CW defect). The orient polygon_scan loop must increment polygon_index past the already-oriented seed to find the second unoriented polygon. Without Branch 1, the CW triangle in the second component would never be reached.
+- **Reproducer recipe**: t0=(v0,v1,v2) at z=0 CCW; t1=(v3,v5,v4) at z=5 CW (no shared edges between components).
+- **Expected kernel behavior**: polygon_scan increments polygon_index until the second unoriented polygon is found; orient reverses it.
+- **Mesh assertion**: `triangle_not_reachable_from target=1 source=0`
+- **Mesh assertion**: `triangle_normal_z_negative triangle=1`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me170.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me171 — orient component_init: seed polygon pushed to DFS stack, starts orientation propagation
+- **Category**: §12.14 mesh defects (sub-class: orientation / component init)
+- **Sources**: CGAL `PMP.Polygon_soup_orienter.orient` Branch 2 (*component_init*: `oriented[polygon_index] = true; stack.push(polygon_index)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A three-triangle horizontal strip. Triangle t0 is the seed polygon that Branch 2 marks as oriented (oriented[polygon_index]=true) and pushes onto the DFS stack. Without this initialization step, the DFS never starts. Triangle t1 is CW (defect) and is reached from t0 once the stack is non-empty.
+- **Reproducer recipe**: t0=(v0,v1,v4) CCW; t1=(v1,v4,v5) CW; t2=(v1,v2,v5) CCW; t1 shares edge (v1,v4) with t0.
+- **Expected kernel behavior**: component_init seeds t0, pushes it; DFS then finds t1 and applies orientation_reversal.
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,1]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,5] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me171.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me172 — orient dfs_traversal: DFS stack processes all 4 fan triangles from single seed
+- **Category**: §12.14 mesh defects (sub-class: orientation / DFS traversal)
+- **Sources**: CGAL `PMP.Polygon_soup_orienter.orient` Branch 3 (*dfs_traversal*: `while(! stack.empty())`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four triangles arranged in a fan around hub vertex v0. The DFS traversal (Branch 3) pops from the stack iteratively until all four fan triangles are processed. All four are consistently CCW (+Z normals). The fixture verifies that internal fan edges are each shared by exactly 2 triangles — confirming connectivity through the DFS.
+- **Reproducer recipe**: hub=(0,0,0); rim v1=(1,0,0), v2=(0,1,0), v3=(-1,0,0), v4=(0,-1,0); t0=(hub,v1,v2), t1=(hub,v2,v3), t2=(hub,v3,v4), t3=(hub,v4,v1) all CCW.
+- **Expected kernel behavior**: DFS stack pops hub fan triangles; all four become oriented; stack empties only after all are processed.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me172.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me173 — orient edge_iteration: per-edge scan of patch finds defect triangle via edge loop
+- **Category**: §12.14 mesh defects (sub-class: orientation / edge iteration)
+- **Sources**: CGAL `PMP.Polygon_soup_orienter.orient` Branch 4 (*edge_iteration*: `for(P_ID ih = 0; ih < size; ++ih)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 2×2 quad patch of 4 triangles. The orient DFS, having seeded on t0, iterates all 3 edges of t0 (Branch 4 fires 3 times). On one of those edges it finds t1 (CCW, consistent); on another it discovers t3 (CW, the defect). Branch 4 fires once per edge of the current polygon.
+- **Reproducer recipe**: 3×2 vertex grid; t0=(v0,v1,v3) CCW; t1=(v1,v4,v3) CCW; t2=(v1,v2,v5) CCW; t3=(v2,v1,v4) CW.
+- **Expected kernel behavior**: edge_iteration visits all edges of the seed; finds t3 with inconsistent winding; triggers orientation_reversal.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[2,3]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[1,3]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me173.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me174 — orient marked_edge_skip: non-manifold edge marked; orientation skip continues past it
+- **Category**: §12.14 mesh defects (sub-class: orientation / marked edge skip)
+- **Sources**: CGAL `PMP.Polygon_soup_orienter.orient` Branch 5 (*marked_edge_skip*: `if( is_edge_marked(i1,i2,marked_edges) ) continue`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangles share edge (v0,v1) — a genuine non-manifold edge. When the orient DFS encounters this edge, it is marked as non-manifold/conflicting and Branch 5 fires: the orient loop continues without propagating orientation across the marked edge. This prevents the non-manifold ambiguity from contaminating the rest of the orientation pass.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,-1,0), v4=(0.5,0,1); t0=(v0,v1,v2), t1=(v0,v1,v3), t2=(v0,v1,v4).
+- **Expected kernel behavior**: non-manifold edge (v0,v1) is marked; orient skips it via Branch 5 continue; the three triangles may end up in separate orientation groups.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=3`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me174.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me175 — orient same_orientation_edge: shared edge traversed in same direction by both triangles
+- **Category**: §12.14 mesh defects (sub-class: orientation / same-orientation edge)
+- **Sources**: CGAL `PMP.Polygon_soup_orienter.orient` Branch 6 (*same_orientation_edge*: `Edge_map_iterator it_same_orient`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two adjacent triangles both traverse their shared edge in the same directed sense (v0→v1). In a correctly oriented 2-manifold, adjacent triangles must traverse their shared edge in opposite directions. Both triangles having the directed edge v0→v1 fills the same-orientation bucket; Branch 6 fires when that bucket is non-empty.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,-1,0); t0=(v0,v1,v2) CCW (+Z); t1=(v0,v1,v3) (same directed edge v0→v1, normal -Z).
+- **Expected kernel behavior**: same-direction edge (v0→v1) detected in both triangles; orient marks the edge and flags an orientation incompatibility.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me175.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me176 — orient multi_neighbor_same_orient: same directed edge in >1 incident polygon same-direction map
+- **Category**: §12.14 mesh defects (sub-class: orientation / multi-neighbor same-orient)
+- **Sources**: CGAL `PMP.Polygon_soup_orienter.orient` Branch 7 (*multi_neighbor_same_orient*: `if (it_same_orient->second.size() > 1)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangles all include directed half-edge v0→v1 as their first edge. The same-orientation edge map bucket for (v0→v1) collects all three — size 3 > 1 — which fires Branch 7. This is the orient-specific flavor of a non-manifold edge where the problem is same-direction traversal from multiple polygons, not just manifold count.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,-1,0), v4=(0.5,0,1); t0=(v0,v1,v2), t1=(v0,v1,v3), t2=(v0,v1,v4) — all start with directed v0→v1.
+- **Expected kernel behavior**: same-orient bucket size > 1 detected; orient marks edges conflicting; no single orientation reversal can resolve the multi-neighbor ambiguity.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=3`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me176.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me177 — orient orientation_conflict: oriented neighbor found incompatibly wound, edge marked as conflict
+- **Category**: §12.14 mesh defects (sub-class: orientation / orientation conflict)
+- **Sources**: CGAL `PMP.Polygon_soup_orienter.orient` Branch 8 (*orientation_conflict*: `if(oriented[index])`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 4-triangle cross where hub triangle t0 (CCW seed) and neighbors t1, t2 are consistently CCW. Triangle t3 (CW) shares edges with both t0 and t2 but has incompatible winding. When the DFS processes t3's edges, it finds t0 and t2 already oriented (oriented[index]==true) but inconsistent — Branch 8 fires and the conflicting edges are marked rather than reversed.
+- **Reproducer recipe**: hub=(0,0,0); t0=(hub,v1,v2) CCW; t1=(hub,v2,v3) CCW; t2=(hub,v3,v4) CCW; t3=(hub,v1,v4) CW.
+- **Expected kernel behavior**: DFS finds already-oriented t0 and t2 incompatible with t3; Branch 8 marks those edges as conflict; t3 remains inconsistently wound.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,3]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[2,3]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me177.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me178 — orient orientation_reversal: unoriented CW neighbor reversed by inverse_orientation to match CCW seed
+- **Category**: §12.14 mesh defects (sub-class: orientation / orientation reversal)
+- **Sources**: CGAL `PMP.Polygon_soup_orienter.orient` Branch 9 (*orientation_reversal*: `inverse_orientation(index); push to stack`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 3-triangle chain — t0 (CCW seed), t1 (CW, adjacent to t0, the reversal target), t2 (CCW, adjacent to t1). When the DFS pops t0 and walks to t1, t1 is not yet oriented and its winding is inconsistent. Branch 9 fires: inverse_orientation(t1) reverses it in-place and pushes it onto the DFS stack.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1.5,1,0), v4=(2,0,0); t0=(v0,v1,v2) CCW; t1=(v1,v0,v3) CW; t2=(v1,v4,v3) CCW.
+- **Expected kernel behavior**: inverse_orientation applied to t1; t1 winding reversed to match t0; t1 pushed onto DFS stack; t2 then oriented consistently from t1.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,1]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me178.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me179 — orient opposite_orientation_edge: reverse-direction shared edge correctly pairs two CCW triangles
+- **Category**: §12.14 mesh defects (sub-class: orientation / opposite-orientation edge)
+- **Sources**: CGAL `PMP.Polygon_soup_orienter.orient` Branch 10 (*opposite_orientation_edge*: `if( it_other_orient != edges[i2].end() )`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two consistently CCW triangles share edge {v0,v1} with opposite directed traversal — t0 uses directed edge v0→v1; t1 uses directed edge v1→v0. This is the correct manifold pairing. Branch 10 fires when the orient DFS checks the reverse-direction edge map and finds a unique neighbor. A third CW triangle (t2) is added to demonstrate the inconsistency that Branch 10 avoids.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,-1,0), v4=(0.5,2,0); t0=(v0,v1,v2) CCW; t1=(v1,v0,v3) CCW (opposite directed shared edge); t2=(v0,v4,v2) CW (contrast defect).
+- **Expected kernel behavior**: opposite-direction edge recognized as correct pairing by Branch 10; t1 pushed as consistently oriented; t2 detected as inconsistent.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `triangle_normal_z_negative triangle=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,2]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me179.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me180 — split_edge_point_equals_v1: split point coincides with v1, early return
 - **Category**: §12.14 mesh defects (sub-class: splitEdge / degenerate)
 - **Sources**: MeshFix `Basic_TMesh.splitEdge` Branch 1 (*point_equals_v1*: `(*p)==(*(e->v1))`); `MESH_HEAL_COVERAGE.md`.

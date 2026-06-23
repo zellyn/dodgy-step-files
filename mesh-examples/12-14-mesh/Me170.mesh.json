@@ -1,0 +1,70 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      5.0
+    ],
+    [
+      1.0,
+      0.0,
+      5.0
+    ],
+    [
+      0.5,
+      1.0,
+      5.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      3,
+      5,
+      4
+    ]
+  ],
+  "metadata": {
+    "id": "Me170",
+    "schema_version": 0,
+    "defect_class": "inconsistent_winding",
+    "title": "orient polygon_scan: scan loop reaches isolated second component triangle",
+    "assertions": [
+      {
+        "kind": "triangle_not_reachable_from",
+        "target": 1,
+        "source": 0
+      },
+      {
+        "kind": "triangle_normal_z_negative",
+        "triangle": 1
+      },
+      {
+        "kind": "adjacent_triangles_inconsistent_winding",
+        "triangles": [
+          0,
+          1
+        ]
+      }
+    ]
+  }
+}

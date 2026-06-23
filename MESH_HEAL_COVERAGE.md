@@ -90,49 +90,49 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
   - Suggested fixture: defect mentioning 'visitor.non_manifold_edge'
 
 ##### `PMP.Polygon_soup_orienter.orient` — lines 235–336
-(11 branches; all UNCOVERED — no mesh fixtures exist yet)
+(11 branches; 10 COVERED by Me170–Me179 — wave 7A; Branch 11 *neighbor_skip* subsumed by Me179)
 
-- **Branch 1** @ line 247 — *polygon_scan*
+- **Branch 1** @ line 247 — *polygon_scan* — **Me170**
   - What it tests: Find next unoriented polygon
   - Repair action: increment polygon_index; break when all oriented
   - Suggested fixture: defect mentioning 'while (polygon_index != polygons.size() && oriented[polygon_index])'
-- **Branch 2** @ line 258 — *component_init*
+- **Branch 2** @ line 258 — *component_init* — **Me171**
   - What it tests: Mark found polygon as oriented and push to stack
   - Repair action: oriented[polygon_index] = true; stack.push(polygon_index)
   - Suggested fixture: defect mentioning 'oriented[polygon_index] = true'
-- **Branch 3** @ line 260 — *dfs_traversal*
+- **Branch 3** @ line 260 — *dfs_traversal* — **Me172**
   - What it tests: Process polygons in connected component via DFS
   - Repair action: while (!stack.empty())
   - Suggested fixture: defect mentioning 'while(! stack.empty() )'
-- **Branch 4** @ line 268 — *edge_iteration*
+- **Branch 4** @ line 268 — *edge_iteration* — **Me173**
   - What it tests: For each edge of current polygon
   - Repair action: check if edge is manifold and consistent
   - Suggested fixture: defect mentioning 'for(P_ID ih = 0 ; ih < size'
-- **Branch 5** @ line 274 — *marked_edge_skip*
+- **Branch 5** @ line 274 — *marked_edge_skip* — **Me174**
   - What it tests: Edge marked as non-manifold or conflicting
   - Repair action: continue to next edge
   - Suggested fixture: defect mentioning 'if( is_edge_marked(i1,i2,marked_edges) ) continue'
-- **Branch 6** @ line 277 — *same_orientation_edge*
+- **Branch 6** @ line 277 — *same_orientation_edge* — **Me175**
   - What it tests: Check edge (i1->i2) for same-orientation neighbors
   - Repair action: if found, check orientation compatibility
   - Suggested fixture: defect mentioning 'Edge_map_iterator it_same_orient'
-- **Branch 7** @ line 285 — *multi_neighbor_same_orient*
+- **Branch 7** @ line 285 — *multi_neighbor_same_orient* — **Me176**
   - What it tests: Edge has > 1 incident polygon with same orientation
   - Repair action: reverse one polygon's orientation or mark edge
   - Suggested fixture: defect mentioning 'if (it_same_orient->second.size() > 1)'
-- **Branch 8** @ line 292 — *orientation_conflict*
+- **Branch 8** @ line 292 — *orientation_conflict* — **Me177**
   - What it tests: Neighbor polygon already oriented but incompatibly
   - Repair action: mark edge; don't reverse
   - Suggested fixture: defect mentioning 'if(oriented[index])'
-- **Branch 9** @ line 299 — *orientation_reversal*
+- **Branch 9** @ line 299 — *orientation_reversal* — **Me178**
   - What it tests: Neighbor not yet oriented, reverse it for consistency
   - Repair action: inverse_orientation(index); push to stack
   - Suggested fixture: defect mentioning 'inverse_orientation(index)'
-- **Branch 10** @ line 321 — *opposite_orientation_edge*
+- **Branch 10** @ line 321 — *opposite_orientation_edge* — **Me179**
   - What it tests: Check for edge (i2->i1) indicating opposite orientation
   - Repair action: if both neighbors exist and unique, push unoriented one
   - Suggested fixture: defect mentioning 'if( it_other_orient != edges[i2].end() )'
-- **Branch 11** @ line 327 — *neighbor_skip*
+- **Branch 11** @ line 327 — *neighbor_skip* — subsumed by Me179 (correctly-oriented neighbor in opposite-direction pairing)
   - What it tests: Neighbor already oriented correctly
   - Repair action: continue to next edge
   - Suggested fixture: defect mentioning 'if(oriented[index]) continue'

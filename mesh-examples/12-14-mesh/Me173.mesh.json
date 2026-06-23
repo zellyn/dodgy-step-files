@@ -1,0 +1,102 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      1.0,
+      0.0
+    ],
+    [
+      1.0,
+      1.0,
+      0.0
+    ],
+    [
+      2.0,
+      1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      3
+    ],
+    [
+      1,
+      4,
+      3
+    ],
+    [
+      1,
+      2,
+      5
+    ],
+    [
+      2,
+      1,
+      4
+    ]
+  ],
+  "metadata": {
+    "id": "Me173",
+    "schema_version": 0,
+    "defect_class": "inconsistent_winding",
+    "title": "orient edge_iteration: per-edge scan of patch finds defect triangle via edge loop",
+    "assertions": [
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          3
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          2
+        ],
+        "n": 2
+      },
+      {
+        "kind": "adjacent_triangles_inconsistent_winding",
+        "triangles": [
+          2,
+          3
+        ]
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          4
+        ],
+        "n": 2
+      },
+      {
+        "kind": "adjacent_triangles_inconsistent_winding",
+        "triangles": [
+          1,
+          3
+        ]
+      }
+    ]
+  }
+}

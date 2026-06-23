@@ -1,0 +1,81 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      0.5,
+      -1.0,
+      0.0
+    ],
+    [
+      0.5,
+      2.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      1,
+      0,
+      3
+    ],
+    [
+      0,
+      4,
+      2
+    ]
+  ],
+  "metadata": {
+    "id": "Me179",
+    "schema_version": 0,
+    "defect_class": "inconsistent_winding",
+    "title": "orient opposite_orientation_edge: reverse-direction shared edge correctly pairs two CCW triangles",
+    "assertions": [
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          1
+        ],
+        "n": 2
+      },
+      {
+        "kind": "triangle_normal_z_negative",
+        "triangle": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          2
+        ],
+        "n": 2
+      },
+      {
+        "kind": "adjacent_triangles_inconsistent_winding",
+        "triangles": [
+          0,
+          2
+        ]
+      }
+    ]
+  }
+}

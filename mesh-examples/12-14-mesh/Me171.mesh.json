@@ -1,0 +1,87 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      3.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      1.5,
+      1.0,
+      0.0
+    ],
+    [
+      2.5,
+      1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      4
+    ],
+    [
+      1,
+      4,
+      5
+    ],
+    [
+      1,
+      2,
+      5
+    ]
+  ],
+  "metadata": {
+    "id": "Me171",
+    "schema_version": 0,
+    "defect_class": "inconsistent_winding",
+    "title": "orient component_init: seed polygon pushed to DFS stack, starts orientation propagation",
+    "assertions": [
+      {
+        "kind": "adjacent_triangles_inconsistent_winding",
+        "triangles": [
+          0,
+          1
+        ]
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          4
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          5
+        ],
+        "n": 2
+      }
+    ]
+  }
+}
