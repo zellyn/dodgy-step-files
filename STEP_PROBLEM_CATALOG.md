@@ -33176,6 +33176,160 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me169.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me180 — split_edge_point_equals_v1: split point coincides with v1, early return
+- **Category**: §12.14 mesh defects (sub-class: splitEdge / degenerate)
+- **Sources**: MeshFix `Basic_TMesh.splitEdge` Branch 1 (*point_equals_v1*: `(*p)==(*(e->v1))`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A single open triangle t0=(v0,v1,v2). Vertex vp=(0,0,0) is coincident with v0 (the proposed split point p equals edge endpoint v1 in MeshFix naming). splitEdge detects (*p)==(*(e->v1)) and returns v1 without creating any new geometry.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), vp=(0,0,0); t0=(v0,v1,v2). vp coincident with v0.
+- **Expected kernel behavior**: splitEdge returns e->v1 immediately; no new vertex, edge, or triangle is created.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,3] lt=1e-09`
+- **Fixture path**: mesh-examples/12-14-mesh/Me180.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me181 — split_edge_point_equals_v2: split point coincides with v2, early return
+- **Category**: §12.14 mesh defects (sub-class: splitEdge / degenerate)
+- **Sources**: MeshFix `Basic_TMesh.splitEdge` Branch 2 (*point_equals_v2*: `(*p)==(*(e->v2))`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A single open triangle t0=(v0,v1,v2). Vertex vp=(1,0,0) is coincident with v1 (the proposed split point p equals edge endpoint v2 in MeshFix naming). splitEdge detects (*p)==(*(e->v2)) and returns v2 without creating any new geometry.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), vp=(1,0,0); t0=(v0,v1,v2). vp coincident with v1.
+- **Expected kernel behavior**: splitEdge returns e->v2 immediately; no new vertex, edge, or triangle is created.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,3] lt=1e-09`
+- **Fixture path**: mesh-examples/12-14-mesh/Me181.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me182 — split_edge_opposite_vertex_t1: t1 exists, v3 extracted as oppositeVertex
+- **Category**: §12.14 mesh defects (sub-class: splitEdge / boundary)
+- **Sources**: MeshFix `Basic_TMesh.splitEdge` Branch 3 (*opposite_vertex_t1*: `v3 = e->t1->oppositeVertex(e)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A boundary edge e=(v0,v1) with one incident triangle t0=(v0,v1,v2). e->t1=t0 is non-NULL so v3=v2 is extracted as the vertex opposite to e in t1. A proposed split midpoint vn=(1,0,0) lies on e. t2 is NULL (boundary edge).
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,1,0), vn=(1,0,0); t0=(v0,v1,v2). vn on edge (v0,v1).
+- **Expected kernel behavior**: e->t1 != NULL → v3 = e->t1->oppositeVertex(e) = v2; t2 is NULL so v4 is skipped.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `vertex_on_edge vertex=3 edge=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me182.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me183 — split_edge_opposite_vertex_t2: t2 exists, v4 extracted as oppositeVertex
+- **Category**: §12.14 mesh defects (sub-class: splitEdge / interior)
+- **Sources**: MeshFix `Basic_TMesh.splitEdge` Branch 4 (*opposite_vertex_t2*: `v4 = e->t2->oppositeVertex(e)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: An interior edge e=(v0,v1) shared by two triangles forming a diamond: t0=(v0,v1,v2) above and t1=(v0,v3,v1) below. Both t1 and t2 are non-NULL so both v3=v2 and v4=v3 are extracted. e is interior (n=2).
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,1,0), v3=(1,-1,0); t0=(v0,v1,v2), t1=(v0,v3,v1).
+- **Expected kernel behavior**: e->t2 != NULL → v4 = e->t2->oppositeVertex(e) = v3 (below); both opposite vertices extracted before split.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me183.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me184 — split_edge_new_edge_t1_creation: ne1=(vn,v3) created after boundary edge split
+- **Category**: §12.14 mesh defects (sub-class: splitEdge / boundary)
+- **Sources**: MeshFix `Basic_TMesh.splitEdge` Branch 5 (*new_edge_t1_creation*: `ne1 = newEdge(v, v3)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Post-split state of a boundary edge e=(v0,v1) at midpoint vn=(1,0,0). New edge ne1=(vn,v2) is created connecting the split vertex to v3=v2. ne1 is interior (n=2), shared by the trimmed t1=(v0,vn,v2) and new triangle nt1=(vn,v1,v2).
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,1,0), vn=(1,0,0); t0=(v0,vn,v2), t1=(vn,v1,v2).
+- **Expected kernel behavior**: ne1=newEdge(vn,v3) created; ne1 is interior shared by trimmed t1 and nt1.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `vertex_on_edge vertex=3 edge=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me184.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me185 — split_edge_new_edge_t2_creation: ne2=(vn,v4) created after interior edge split
+- **Category**: §12.14 mesh defects (sub-class: splitEdge / interior)
+- **Sources**: MeshFix `Basic_TMesh.splitEdge` Branch 6 (*new_edge_t2_creation*: `ne2 = newEdge(v, v4)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Post-split state of interior edge e=(v0,v1) at midpoint vn=(1,0,0). Both ne1=(vn,v2) and ne2=(vn,v3) are created. ne2 is interior (n=2), shared by the trimmed t2=(v0,v3,vn) and new triangle nt2=(vn,v3,v1). All four sub-triangles present.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,1,0), v3=(1,-1,0), vn=(1,0,0); t0=(v0,vn,v2), t1=(vn,v1,v2), t2=(v0,v3,vn), t3=(vn,v3,v1).
+- **Expected kernel behavior**: ne2=newEdge(vn,v4) created; ne2 is interior shared by trimmed t2 and nt2.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `vertex_on_edge vertex=4 edge=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me185.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me186 — split_edge_new_triangle_t1: nt1 created on t1 side after boundary edge split
+- **Category**: §12.14 mesh defects (sub-class: splitEdge / boundary)
+- **Sources**: MeshFix `Basic_TMesh.splitEdge` Branch 7 (*new_triangle_t1*: `nt1 = newTriangle(...)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Post-split boundary-edge configuration: v0=(0,0,0), v1=(3,0,0), v2=(1.5,2,0), vn=(1.5,0,0). Original t1 split into trimmed t0=(v0,vn,v2) and nt1=(vn,v1,v2). ne1=(vn,v2) is interior (n=2). Only t1 side (t2=NULL).
+- **Reproducer recipe**: v0=(0,0,0), v1=(3,0,0), v2=(1.5,2,0), vn=(1.5,0,0); t0=(v0,vn,v2), t1=(vn,v1,v2).
+- **Expected kernel behavior**: nt1=newTriangle(vn,v1,v3) allocated and inserted; ne1 becomes interior.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `vertex_on_edge vertex=3 edge=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me186.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me187 — split_edge_new_triangle_t2: nt2 created on t2 side after interior edge split
+- **Category**: §12.14 mesh defects (sub-class: splitEdge / interior)
+- **Sources**: MeshFix `Basic_TMesh.splitEdge` Branch 8 (*new_triangle_t2*: `nt2 = newTriangle(...)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Post-split interior diamond: v0=(0,0,0), v1=(4,0,0), v2=(2,2,0), v3=(2,-2,0), vn=(2,0,0). Four triangles: t0=(v0,vn,v2), t1=(vn,v1,v2), t2=(v0,v3,vn), t3=(vn,v3,v1). nt2=t3 is created by Branch 8 on the t2 side of the split.
+- **Reproducer recipe**: v0=(0,0,0), v1=(4,0,0), v2=(2,2,0), v3=(2,-2,0), vn=(2,0,0); four sub-triangles as above.
+- **Expected kernel behavior**: nt2=newTriangle(vn,v4,v2) allocated; ne2=(vn,v3) becomes interior (n=2).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `vertex_on_edge vertex=4 edge=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me187.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me188 — split_edge_mask_preservation: mask bits copied to ne1/ne2/nt1/nt2 after split
+- **Category**: §12.14 mesh defects (sub-class: splitEdge / interior)
+- **Sources**: MeshFix `Basic_TMesh.splitEdge` Branch 9 (*mask_preservation*: `if (copy_mask) { ne1->mask = e->mask; ... }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Post-split rotated diamond: v0=(0,1,0), v1=(0,-1,0), v2=(-1,0,0), v3=(1,0,0), vn=(0,0,0). Vertical edge (v0,v1) split at vn. Four sub-triangles. Both ne1=(vn,v2) and ne2=(vn,v3) are interior (n=2), confirming the new elements are correctly registered for mask propagation.
+- **Reproducer recipe**: v0=(0,1,0), v1=(0,-1,0), v2=(-1,0,0), v3=(1,0,0), vn=(0,0,0); t0=(v0,vn,v2), t1=(vn,v1,v2), t2=(v0,v3,vn), t3=(vn,v3,v1).
+- **Expected kernel behavior**: copy_mask=true → ne1->mask=e->mask, ne2->mask=e->mask, nt1->mask=t1->mask, nt2->mask=t2->mask; all new elements carry the original mask bits.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `vertex_on_edge vertex=4 edge=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me188.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me189 — split_edge_list_appends: V/E/T appendHead adds new vertex, edges, triangles
+- **Category**: §12.14 mesh defects (sub-class: splitEdge / boundary)
+- **Sources**: MeshFix `Basic_TMesh.splitEdge` Branch 10 (*list_appends*: `V.appendHead(v); E.appendHead(ne1); T.appendHead(nt1)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: 3-triangle strip where a boundary edge e=(v0,v1) is split at midpoint vn=(1,0,0). Post-split: t0=(v0,vn,v2), t1=(vn,v1,v2), t2=(v1,v3,v2). ne1=(vn,v2) is the new edge appended to E; nt1=t1 is appended to T; vn is appended to V. Edge (v1,v2) is interior (n=2), shared between nt1 and the neighbor t2.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(3,2,0), vn=(1,0,0); t0=(v0,vn,v2), t1=(vn,v1,v2), t2=(v1,v3,v2).
+- **Expected kernel behavior**: V.appendHead(vn), E.appendHead(ne1), T.appendHead(nt1) registers all new elements in the mesh lists for subsequent passes.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `vertex_on_edge vertex=4 edge=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me189.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me190 — splitTriangle_new_triangle_from_e3_e1: first child triangle nt1 connects nv to v2-v0 side
 - **Category**: §12.14 mesh defects (sub-class: split-triangle / new-triangle-nt1)
 - **Sources**: MeshFix `Basic_TMesh.splitTriangle` Branch 1 (*new_triangle_from_e3_e1*: `nt1 = newTriangle(nv, v3, v1)`); `MESH_HEAL_COVERAGE.md`.

@@ -3610,48 +3610,38 @@ Fixture IDs: Me130 Me131 Me132 Me133 Me134 Me135 Me136 Me137 Me138 Me139
   - Suggested fixture: defect mentioning 'TriangulateHole(e, vl)'
 
 ##### `Basic_TMesh.splitEdge` — lines 1861–1902
-(10 branches; all UNCOVERED — no mesh fixtures exist yet)
+(10 branches; ALL COVERED by Me180–Me189 — wave 7B, 2026-06-21)
 
-- **Branch 1** @ line 1863 — *point_equals_v1*
+- **Branch 1** @ line 1863 — *point_equals_v1* — COVERED (Me180: split point vp coincident with v0=e->v1; early return)
   - What it tests: Point p coincides with edge's v1
   - Repair action: Return v1 without split - degenerate case
-  - Suggested fixture: defect mentioning '(*p)==(*(e->v1))'
-- **Branch 2** @ line 1864 — *point_equals_v2*
+- **Branch 2** @ line 1864 — *point_equals_v2* — COVERED (Me181: split point vp coincident with v1=e->v2; early return)
   - What it tests: Point p coincides with edge's v2
   - Repair action: Return v2 without split
-  - Suggested fixture: defect mentioning '(*p)==(*(e->v2))'
-- **Branch 3** @ line 1865 — *opposite_vertex_t1*
+- **Branch 3** @ line 1865 — *opposite_vertex_t1* — COVERED (Me182: boundary edge t0; t1=t0 non-NULL; vn on edge shows midpoint)
   - What it tests: e->t1 exists (edge has triangle on one side)
   - Repair action: Get v3 (opposite to edge) from t1
-  - Suggested fixture: defect mentioning 'e->t1 != NULL'
-- **Branch 4** @ line 1866 — *opposite_vertex_t2*
+- **Branch 4** @ line 1866 — *opposite_vertex_t2* — COVERED (Me183: interior diamond edge n=2; both t1 and t2 non-NULL; v4 extracted)
   - What it tests: e->t2 exists (edge has triangle on other side)
   - Repair action: Get v4 (opposite to edge) from t2
-  - Suggested fixture: defect mentioning 'e->t2 != NULL'
-- **Branch 5** @ line 1871 — *new_edge_t1_creation*
+- **Branch 5** @ line 1871 — *new_edge_t1_creation* — COVERED (Me184: post-split boundary; ne1=(vn,v2) interior n=2)
   - What it tests: t1 exists - need new edge from new vertex to v3
   - Repair action: Create edge ne1 connecting split point to v3
-  - Suggested fixture: defect mentioning 'e->t1 != NULL'
-- **Branch 6** @ line 1872 — *new_edge_t2_creation*
+- **Branch 6** @ line 1872 — *new_edge_t2_creation* — COVERED (Me185: post-split interior diamond; ne2=(vn,v3) interior n=2)
   - What it tests: t2 exists - need new edge from new vertex to v4
   - Repair action: Create edge ne2 connecting split point to v4
-  - Suggested fixture: defect mentioning 'e->t2 != NULL'
-- **Branch 7** @ line 1873 — *new_triangle_t1*
+- **Branch 7** @ line 1873 — *new_triangle_t1* — COVERED (Me186: post-split boundary; nt1=(vn,v1,v2) present; ne1 interior)
   - What it tests: t1 exists - need new triangle on one side of split
   - Repair action: Create triangle nt1 with new edges
-  - Suggested fixture: defect mentioning 'e->t1 != NULL'
-- **Branch 8** @ line 1874 — *new_triangle_t2*
+- **Branch 8** @ line 1874 — *new_triangle_t2* — COVERED (Me187: post-split interior; nt2=(vn,v3,v1) present; ne2 interior)
   - What it tests: t2 exists - need new triangle on other side
   - Repair action: Create triangle nt2 with new edges
-  - Suggested fixture: defect mentioning 'e->t2 != NULL'
-- **Branch 9** @ line 1887 — *mask_preservation*
+- **Branch 9** @ line 1887 — *mask_preservation* — COVERED (Me188: rotated diamond; ne1/ne2 interior confirming new elements registered for mask copy)
   - What it tests: copy_mask flag set for attribute transfer
   - Repair action: Propagate edge/triangle mask to new elements
-  - Suggested fixture: defect mentioning 'if (copy_mask)'
-- **Branch 10** @ line 1894 — *list_appends*
+- **Branch 10** @ line 1894 — *list_appends* — COVERED (Me189: 3-triangle strip; vn/ne1/nt1 all appended; ne1 interior n=2)
   - What it tests: New vertex/edges/triangles created
   - Repair action: Add all new elements to mesh lists (V, E, T)
-  - Suggested fixture: defect mentioning 'V.appendHead(v)'
 
 ##### `Basic_TMesh.splitTriangle` — lines 1909–1944
 (9 branches; ALL COVERED by Me190–Me198 — wave 7C)
