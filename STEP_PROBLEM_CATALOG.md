@@ -32240,6 +32240,152 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me089.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me090 — edge_collapse_boundary_validity: both collapse endpoints on mesh boundary
+- **Category**: §12.14 mesh defects (sub-class: edge-collapse / boundary-validity)
+- **Sources**: MeshFix `Edge.collapseOnV1` Branch 3 (*BOUNDARY_EDGE_COLLAPSE_VALIDITY*: both v1 and v2 are boundary vertices, collapse blocked); `MESH_HEAL_COVERAGE.md`.
+- **Description**: edge (v0, v1) connects two boundary vertices in an open quad strip. Both endpoints sit on the boundary edge-loop; collapsing would pinch the boundary into a figure-eight, creating a non-manifold vertex. MeshFix returns NULL from collapseOnV1 when both endpoints are on the boundary without a valid collapse configuration.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(1,1,0); t0=(v0,v1,v3), t1=(v0,v3,v2); all four edges of the quad are boundary edges; both v0 and v1 are boundary vertices.
+- **Expected kernel behavior**: block the collapse; no merge should be performed on this edge pair.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=2.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me090.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me091 — edge_collapse_degenerate_t1_side: collapsing edge creates duplicate triangle on t1 side
+- **Category**: §12.14 mesh defects (sub-class: edge-collapse / degenerate-double-triangle)
+- **Sources**: MeshFix `Edge.collapseOnV1` Branch 4 (*DEGENERATE_DOUBLE_TRIANGLE*: ta1 and ta2 share same opposite vertex); `MESH_HEAL_COVERAGE.md`.
+- **Description**: edge (v0, v1) is a boundary edge; the two neighbors of the t1 triangle (ta1 and ta2) both have the same apex vertex (v3). Collapsing v0 onto v1 would cause ta1 and ta2 to become identical triangles — a degenerate duplicate. MeshFix detects this via `ta1->oppositeVertex(e1) == ta2->oppositeVertex(e2)` and returns NULL.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,-1,0); t0=(v0,v1,v2) [t1]; ta1=(v1,v3,v2); ta2=(v2,v3,v0); v4=(1.5,-2,0) extra vertex.
+- **Expected kernel behavior**: block the collapse; merging would produce a duplicate face.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=2.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me091.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me092 — edge_collapse_degenerate_t2_side: collapsing edge creates duplicate triangle on t2 side
+- **Category**: §12.14 mesh defects (sub-class: edge-collapse / degenerate-double-triangle)
+- **Sources**: MeshFix `Edge.collapseOnV1` Branch 5 (*DEGENERATE_DOUBLE_TRIANGLE_T2*: ta3 and ta4 share same opposite vertex); `MESH_HEAL_COVERAGE.md`.
+- **Description**: edge (v0, v1) is interior (shared by 2 triangles: t1 above, t2 below). The t2 side has two neighbors (ta3 and ta4) that both point to the same opposite vertex v_mid. Collapsing v0 onto v1 would make ta3 and ta4 become identical, a degenerate duplicate on the t2 side. Symmetric counterpart to Me091 (Branch 4).
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v_top=(1,2,0), v_bot=(1,-2,0), v_mid=(3,-1,0); t0=(v0,v_top,v1), t1=(v0,v1,v_bot), ta3=(v1,v_mid,v_bot), ta4=(v_bot,v_mid,v0).
+- **Expected kernel behavior**: block the collapse; merging would produce a duplicate face on the t2 side.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=3.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me092.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me093 — edge_collapse_single_sided_t1: t1 has no external neighbors (ta1=NULL, ta2=NULL)
+- **Category**: §12.14 mesh defects (sub-class: edge-collapse / vertex-anchor-selection)
+- **Sources**: MeshFix `Edge.collapseOnV1` Branch 6 (*VERTEX_ANCHOR_EDGE_SELECTION*: ta1==NULL and ta2==NULL so v1->e0=e3); `MESH_HEAL_COVERAGE.md`.
+- **Description**: edge (v0, v1) is interior; t1 (upper triangle) has no external neighbors — both e1=(v1,v2) and e2=(v2,v0) are boundary edges (ta1=NULL, ta2=NULL). When this collapse fires, MeshFix must select v1's post-collapse anchor from the t2 side (e3), not the t1 side. The fixture captures the minimal two-triangle mesh where this anchor-selection branch fires.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,-1,0); t0=(v0,v1,v2) [fully boundary except (v0,v1)], t1=(v0,v3,v1).
+- **Expected kernel behavior**: collapse proceeds; v1 anchor set to e3 (the t2-side edge).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=2.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me093.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me094 — edge_collapse_pinch_detect: v0 neighbor already connected to v1, collapse blocked
+- **Category**: §12.14 mesh defects (sub-class: edge-collapse / pinch-detection)
+- **Sources**: MeshFix `Edge.collapseOnV1` Branch 8 (*PINCH_DETECT_ON_V2*: tv->getEdge(v1) != NULL for a neighbor tv of v0 other than the collapse apices); `MESH_HEAL_COVERAGE.md`.
+- **Description**: v0 and v1 are connected by an interior edge (the collapse candidate). Additionally v5 is a neighbor of v0 (via t_left) AND is already connected to v1 (via t_right). Merging v0 into v1 would create two edges between v1 and v5 — a duplicate/pinch edge. MeshFix detects this in the v2-neighbor-loop and returns NULL.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(1,-2,0), v5=(2,1,0); t_top=(v0,v1,v2), t_bot=(v0,v3,v1), t_left=(v0,v5,v2), t_right=(v1,v2,v5).
+- **Expected kernel behavior**: block the collapse; would create a duplicate (pinch) edge between v1 and v5.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me094.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me095 — edge_collapse_vertex_merge: near-coincident v0 and v1, 3-triangle fan on v0
+- **Category**: §12.14 mesh defects (sub-class: edge-collapse / vertex-merge)
+- **Sources**: MeshFix `Edge.collapseOnV1` Branch 9 (*VERTEX_MERGE*: `e->replaceVertex(v2, v1)` for all edges incident to v2); `MESH_HEAL_COVERAGE.md`.
+- **Description**: v0 and v1 are 1e-6 apart — sub-tolerance near-coincident. v0 is shared by 3 triangles forming a small fan. The collapse's vertex-merge sub-pass must re-route every edge formerly incident to v0 to point at v1 instead. This exercises the `replaceVertex` loop with a 3-edge one-ring.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1e-6,0,0), v2=(0,1,0), v3=(1,1,0), v4=(1,0,0); t0=(v0,v1,v3), t1=(v0,v3,v2), t2=(v0,v4,v1).
+- **Expected kernel behavior**: merge v0 into v1; re-route 3 triangle references from v0 to v1.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=1e-05`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me095.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me096 — edge_collapse_adjacency_repair: near-coincident vertices with bilateral neighbors
+- **Category**: §12.14 mesh defects (sub-class: edge-collapse / triangle-adjacency-repair)
+- **Sources**: MeshFix `Edge.collapseOnV1` Branch 10 (*TRIANGLE_ADJACENCY_REPAIR*: `e2->replaceTriangle(t1, ta1)` and `e3->replaceTriangle(t2, ta4)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: v0 and v1 are 2e-6 apart. The collapse edge is interior, with neighbors on both sides: ta1 is adjacent to t1 on the (v1,v2) edge, and ta4 is adjacent to t2 on the (v1,v3) edge. After collapse, these neighbors must be re-wired to each other through updated adjacency pointers. This exercises the bilateral adjacency-repair branch.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2e-6,0,0), v2=(0,1,0), v3=(0,-1,0), v4=(1,1,0), v5=(1,-1,0); t0=(v0,v1,v2) [t1], t1=(v0,v3,v1) [t2], ta1=(v1,v4,v2), ta4=(v3,v1,v5).
+- **Expected kernel behavior**: merge v0 into v1; re-wire ta1 and ta4 via updated e2/e3 adjacency.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=1e-05`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me096.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me097 — edge_collapse_orphan_vertex: isolated vertex left behind by collapse cleanup
+- **Category**: §12.14 mesh defects (sub-class: edge-collapse / orphan-vertex)
+- **Sources**: MeshFix `Edge.collapseOnV1` Branch 12 (*MARK_UNLINKED_V2*: `v2->e0 = NULL`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: v0 is an isolated (unreferenced) vertex — the state MeshFix leaves behind when Branch 12 marks v2 unlinked after a collapse (`v2->e0 = NULL`). The mesh retains the vertex record but no triangle references it. The fixture captures this post-collapse orphan state directly.
+- **Reproducer recipe**: v0=(5,5,0) [isolated]; v1=(0,0,0), v2=(1,0,0), v3=(0.5,1,0), v4=(0.5,-1,0); t0=(v1,v2,v3), t1=(v1,v4,v2). v0 has no triangle references.
+- **Expected kernel behavior**: detect and remove the isolated vertex (garbage-collect the orphan).
+- **Mesh assertion**: `isolated_vertex vertex=0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me097.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me098 — edge_collapse_orphan_edge_e2: e2 has no neighbors (ta2=NULL), becomes orphan post-collapse
+- **Category**: §12.14 mesh defects (sub-class: edge-collapse / orphan-edge-cleanup)
+- **Sources**: MeshFix `Edge.collapseOnV1` Branch 14 (*ORPHAN_EDGE_CLEANUP_E2*: `if (e2 != NULL && e2->t1 == NULL && e2->t2 == NULL)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: edge (v0, v1) is interior. t1's neighbor edge e2=(v0,v2) has no opposite triangle (ta2=NULL) — it is a boundary edge. After collapsing v0 onto v1 and removing t1, e2 has no incident triangles and becomes an orphan. MeshFix Branch 14 detects this and frees e2, nulling v3's anchor. v2 lies almost directly above v0 (nearly degenerate e2 in x).
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(1e-7,1,0), v3=(0.5,-1,0), v4=(1.5,-1,0); t0=(v0,v1,v2) [t1, e2=(v0,v2) boundary], t1=(v0,v3,v1) [t2], ta4=(v1,v4,v3).
+- **Expected kernel behavior**: after collapsing (v0,v1): free orphan edge e2 and null v2's anchor edge pointer.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,2] lt=1.5`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me098.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me099 — edge_collapse_orphan_edge_e3: e3 has no neighbors (ta3=NULL), becomes orphan post-collapse
+- **Category**: §12.14 mesh defects (sub-class: edge-collapse / orphan-edge-cleanup)
+- **Sources**: MeshFix `Edge.collapseOnV1` Branch 15 (*ORPHAN_EDGE_CLEANUP_E3*: `if (e3 != NULL && e3->t1 == NULL && e3->t2 == NULL)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: edge (v0, v1) is interior. t2's boundary edge e3=(v1,v3) has no opposite triangle (ta3=NULL). After collapsing v0 onto v1 and removing t2, e3 has no incident triangles — it becomes an orphan. MeshFix Branch 15 detects this and frees e3, nulling v4's anchor. Symmetric counterpart to Me098 (Branch 14): Me098 exercises the e2-orphan on the t1 side; Me099 exercises the e3-orphan on the t2 side.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,-1,0), v4=(1.5,1,0); t0=(v0,v1,v2) [t1], t1=(v0,v3,v1) [t2, e3=(v1,v3) boundary], ta1=(v1,v4,v2).
+- **Expected kernel behavior**: after collapsing (v0,v1): free orphan edge e3 and null v3's anchor edge pointer.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=2.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me099.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Wr052 — Writer emits EDGE_CURVE backed by untrimmed LINE entity
 - **Category**: §12.13 writer-pathology (sub-class: unbounded-curve emission)
 - **Sources**: Pattern-mined from OCCT/tests/bugs/step/bug32817_1 (LGPL-clean — pattern only, no bytes copied). OCCT method `STEPControl_Writer::Transfer` on a single-line edge.

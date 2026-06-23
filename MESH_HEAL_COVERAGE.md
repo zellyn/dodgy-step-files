@@ -3018,65 +3018,65 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
 (3 methods, 31 branches)
 
 ##### `Edge.collapseOnV1` — lines 169–238
-(15 branches; all UNCOVERED — no mesh fixtures exist yet)
+(15 branches; 10 COVERED via Me090–Me099 [wave 4B]; 5 deferred)
 
-- **Branch 1** @ line 176 — *EXTRACT_T1_EDGES_AND_NEIGHBORS*
+- **Branch 1** @ line 176 — *EXTRACT_T1_EDGES_AND_NEIGHBORS* — DEFERRED (topology-extraction only; covered implicitly by any collapse fixture)
   - What it tests: If t1 exists, extract its next and prev edges (e1, e2) and their opposite triangles (ta1, ta2)
   - Repair action: Compute local topology of t1 neighborhood; set NULL if t1 is absent
   - Suggested fixture: defect mentioning 'Edge *e1 = (t1 != NULL)?(t1->nextEdge(this)):(NULL)', 'Triangle *ta1'
-- **Branch 2** @ line 178 — *EXTRACT_T2_EDGES_AND_NEIGHBORS*
+- **Branch 2** @ line 178 — *EXTRACT_T2_EDGES_AND_NEIGHBORS* — DEFERRED (topology-extraction only; covered implicitly by any collapse fixture)
   - What it tests: If t2 exists, extract edges e3, e4 and opposite triangles ta3, ta4
   - Repair action: Compute local topology of t2 neighborhood
   - Suggested fixture: defect mentioning 'Edge *e3 = (t2 != NULL)?(t2->nextEdge(this)):(NULL)'
-- **Branch 3** @ line 187 — *BOUNDARY_EDGE_COLLAPSE_VALIDITY*
+- **Branch 3** @ line 187 — *BOUNDARY_EDGE_COLLAPSE_VALIDITY* — **COVERED** → Me090
   - What it tests: Both edge endpoints are boundary vertices; check that adjacent triangles form valid collapse
   - Repair action: Return NULL if collapse would create non-manifold configuration on boundary
   - Suggested fixture: defect mentioning 'if (v1->isOnBoundary() && v2->isOnBoundary())', '!ta3 && !ta4'
-- **Branch 4** @ line 190 — *DEGENERATE_DOUBLE_TRIANGLE*
+- **Branch 4** @ line 190 — *DEGENERATE_DOUBLE_TRIANGLE* — **COVERED** → Me091
   - What it tests: ta1 and ta2 are both non-null and share opposite vertex (would create duplicate edge)
   - Repair action: Return NULL; collapse would degenerate
   - Suggested fixture: defect mentioning 'if (ta1 != NULL && ta2 != NULL && ta1->oppositeVertex(e1) == ta2->oppositeVertex(e2)'
-- **Branch 5** @ line 192 — *DEGENERATE_DOUBLE_TRIANGLE_T2*
+- **Branch 5** @ line 192 — *DEGENERATE_DOUBLE_TRIANGLE_T2* — **COVERED** → Me092
   - What it tests: Similar degeneracy check for ta3 and ta4 (t2 side)
   - Repair action: Return NULL if would create duplicate
   - Suggested fixture: defect mentioning 'if (ta3 != NULL && ta4 != NULL'
-- **Branch 6** @ line 195 — *VERTEX_ANCHOR_EDGE_SELECTION*
+- **Branch 6** @ line 195 — *VERTEX_ANCHOR_EDGE_SELECTION* — **COVERED** → Me093
   - What it tests: Choose edge reference for v1 post-collapse based on boundary topology
   - Repair action: v1->e0 = e3 (t2 side) if both t1 neighbors absent, else e2
   - Suggested fixture: defect mentioning 'if (ta1 == NULL && ta2 == NULL) v1->e0 = e3', 'else v1->e0 = e2'
-- **Branch 7** @ line 198 — *NEIGHBOR_ANCHOR_UPDATE*
+- **Branch 7** @ line 198 — *NEIGHBOR_ANCHOR_UPDATE* — DEFERRED (anchor update; covered implicitly by Me093/Me096)
   - What it tests: Update edge anchors for opposite vertices v3 and v4 in collapsed configuration
   - Repair action: v3->e0 = e2; v4->e0 = e3
   - Suggested fixture: defect mentioning 'if (v3 != NULL) v3->e0 = e2'
-- **Branch 8** @ line 201 — *PINCH_DETECT_ON_V2*
+- **Branch 8** @ line 201 — *PINCH_DETECT_ON_V2* — **COVERED** → Me094
   - What it tests: Check if merging v2 into v1 would create a pinch (duplicate edge)
   - Repair action: Return NULL if v2 has neighbor tv that already connects to v1
   - Suggested fixture: defect mentioning 'tv->getEdge(v1) != NULL', 'tv != v3 && tv != v4'
-- **Branch 9** @ line 207 — *VERTEX_MERGE*
+- **Branch 9** @ line 207 — *VERTEX_MERGE* — **COVERED** → Me095
   - What it tests: Merge all edges of v2 into v1
   - Repair action: e->replaceVertex(v2, v1) for all edges incident to v2
   - Suggested fixture: defect mentioning 'e->replaceVertex(v2, v1)'
-- **Branch 10** @ line 210 — *TRIANGLE_ADJACENCY_REPAIR*
+- **Branch 10** @ line 210 — *TRIANGLE_ADJACENCY_REPAIR* — **COVERED** → Me096
   - What it tests: Repair adjacency: replace t1 link in e2 with ta1, and t2 link in e3 with ta4
   - Repair action: e2->replaceTriangle(t1, ta1); e3->replaceTriangle(t2, ta4)
   - Suggested fixture: defect mentioning 'if (e2 != NULL) e2->replaceTriangle(t1, ta1)'
-- **Branch 11** @ line 213 — *OPPOSITE_TRIANGLE_REPAIR*
+- **Branch 11** @ line 213 — *OPPOSITE_TRIANGLE_REPAIR* — DEFERRED (edge-in-triangle replacement; covered implicitly by Me096)
   - What it tests: Repair edges in the opposite triangles (ta1, ta4) that were adjacent to e1, e4
   - Repair action: ta1->replaceEdge(e1, e2); ta4->replaceEdge(e4, e3)
   - Suggested fixture: defect mentioning 'if (ta1 != NULL) ta1->replaceEdge(e1, e2)'
-- **Branch 12** @ line 216 — *MARK_UNLINKED_V2*
+- **Branch 12** @ line 216 — *MARK_UNLINKED_V2* — **COVERED** → Me097
   - What it tests: Mark v2 for deletion (will be unlinked post-collapse)
   - Repair action: v2->e0 = NULL
   - Suggested fixture: defect mentioning 'v2->e0 = NULL'
-- **Branch 13** @ line 217 — *MARK_UNLINKED_EDGES*
+- **Branch 13** @ line 217 — *MARK_UNLINKED_EDGES* — DEFERRED (mark-for-delete bookkeeping; captured by Me097/Me098/Me099 topology context)
   - What it tests: Mark incident edges of collapsed triangles for deletion
   - Repair action: e4->v1 = e4->v2 = NULL; e1->v1 = e1->v2 = NULL; mark t1, t2 edges as NULL
   - Suggested fixture: defect mentioning 'if (e4 != NULL) e4->v1 = e4->v2 = NULL'
-- **Branch 14** @ line 222 — *ORPHAN_EDGE_CLEANUP_E2*
+- **Branch 14** @ line 222 — *ORPHAN_EDGE_CLEANUP_E2* — **COVERED** → Me098
   - What it tests: If e2 becomes unlinked (no incident triangles) after collapse, mark for deletion
   - Repair action: Free e2, null v3 anchor
   - Suggested fixture: defect mentioning 'if (e2 != NULL && e2->t1 == NULL && e2->t2 == NULL)'
-- **Branch 15** @ line 227 — *ORPHAN_EDGE_CLEANUP_E3*
+- **Branch 15** @ line 227 — *ORPHAN_EDGE_CLEANUP_E3* — **COVERED** → Me099
   - What it tests: If e3 becomes unlinked after collapse, mark for deletion
   - Repair action: Free e3, null v4 anchor
   - Suggested fixture: defect mentioning 'if (e3 != NULL && e3->t1 == NULL && e3->t2 == NULL)'
