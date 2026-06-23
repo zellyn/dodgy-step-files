@@ -1,0 +1,62 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      3,
+      2
+    ],
+    [
+      0,
+      1,
+      2
+    ]
+  ],
+  "metadata": {
+    "id": "Me132",
+    "schema_version": 0,
+    "defect_class": "redundant_vertex_removal_degenerate_neighbor",
+    "title": "removeIfRedundant_degenerate_neighbor_triangle: collinear incident triangle blocks vertex removal",
+    "assertions": [
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 1,
+        "lt": 1e-09
+      },
+      {
+        "kind": "vertex_on_edge",
+        "vertex": 2,
+        "edge": [
+          0,
+          1
+        ]
+      },
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 0,
+        "lt": 1.0
+      }
+    ]
+  }
+}

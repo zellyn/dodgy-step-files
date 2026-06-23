@@ -1,0 +1,119 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      1.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      -1.0,
+      0.0
+    ],
+    [
+      4.0,
+      0.0,
+      0.0
+    ],
+    [
+      3.0,
+      1.0,
+      0.0
+    ],
+    [
+      3.0,
+      -1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      2,
+      3
+    ],
+    [
+      2,
+      1,
+      5
+    ],
+    [
+      2,
+      5,
+      4
+    ],
+    [
+      2,
+      4,
+      6
+    ],
+    [
+      3,
+      2,
+      6
+    ]
+  ],
+  "metadata": {
+    "id": "Me135",
+    "schema_version": 0,
+    "defect_class": "redundant_vertex_double_flat_e1_e2_removal",
+    "title": "removeIfRedundant_double_flat_second_edge_removal: DoubleFlat vertex with both e1 and e2 removed from candidate list",
+    "assertions": [
+      {
+        "kind": "vertex_on_edge",
+        "vertex": 2,
+        "edge": [
+          0,
+          4
+        ]
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          2
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          2,
+          3
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          2
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          2,
+          4
+        ],
+        "n": 2
+      }
+    ]
+  }
+}

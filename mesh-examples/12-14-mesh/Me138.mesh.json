@@ -1,0 +1,84 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      1.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      4.0,
+      0.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      2,
+      3
+    ]
+  ],
+  "metadata": {
+    "id": "Me138",
+    "schema_version": 0,
+    "defect_class": "redundant_vertex_double_flat_edge_selection",
+    "title": "removeIfRedundant_double_flat_edge_selection: e1 preferred as collapse edge when e2 is absent",
+    "assertions": [
+      {
+        "kind": "vertex_on_edge",
+        "vertex": 2,
+        "edge": [
+          0,
+          3
+        ]
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          2
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          2
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          2,
+          3
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          3
+        ],
+        "n": 1
+      }
+    ]
+  }
+}

@@ -1965,48 +1965,20 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
   - Suggested fixture: defect mentioning 'exactMisalignment', 'oppositeVertex'
 
 ##### `Vertex.removeIfRedundant` — lines 343–396
-(10 branches; all UNCOVERED — no mesh fixtures exist yet)
+(10 branches; all COVERED by Me130–Me139 — wave 5C, 2026-06-21)
 
-- **Branch 1** @ line 346 — *not_double_flat*
-  - What it tests: Vertex is not DoubleFlat or Flat
-  - Repair action: Return false - redundancy check fails
-  - Suggested fixture: defect mentioning '!isDoubleFlat'
-- **Branch 2** @ line 352 — *check_neighborhood_flag*
-  - What it tests: Neighborhood health check enabled
-  - Repair action: Get vertex triangles VT() and validate none are degenerate
-  - Suggested fixture: defect mentioning 'if (check_neighborhood)'
-- **Branch 3** @ line 356 — *degenerate_neighbor_triangle*
-  - What it tests: Incident triangle is exactly degenerate
-  - Repair action: Return false - cannot remove vertex near degeneracy
-  - Suggested fixture: defect mentioning 'isExactlyDegenerate()'
-- **Branch 4** @ line 359 — *overlapping_incident_edge*
-  - What it tests: Any incident edge overlaps with others
-  - Repair action: Return false - edge topology too complex
-  - Suggested fixture: defect mentioning 'e->overlaps()'
-- **Branch 5** @ line 362 — *double_flat_edge_removal*
-  - What it tests: e1 != NULL from DoubleFlat case
-  - Repair action: Remove e1 from edge list for processing
-  - Suggested fixture: defect mentioning 've->removeNode(e1)'
-- **Branch 6** @ line 363 — *double_flat_second_edge_removal*
-  - What it tests: e2 != NULL from DoubleFlat case
-  - Repair action: Remove e2 from edge list
-  - Suggested fixture: defect mentioning 've->removeNode(e2)'
-- **Branch 7** @ line 364 — *opposite_vertex_coincidence*
-  - What it tests: Both e1 and e2 opposite vertices identical
-  - Repair action: Return false - collapsed endpoints violate topology
-  - Suggested fixture: defect mentioning '*e1->oppositeVertex(this) == *e2->oppositeVertex(this)'
-- **Branch 8** @ line 372 — *?*
-  - What it tests: Opposite vertices on opposite sides of plane
-  - Repair action: Perform edge swap if valid; else fail
-  - Suggested fixture: defect mentioning 'exactSameSideOnPlane', 'e->swap()'
-- **Branch 9** @ line 382 — *double_flat_edge_selection*
-  - What it tests: e1 != NULL selects it; else scan remaining edges
-  - Repair action: Pick collapse edge: prefer e1, or scan for misalignment
-  - Suggested fixture: defect mentioning 'if (e1 != NULL) e = e1'
-- **Branch 10** @ line 394 — *collapse_failure*
-  - What it tests: Edge collapse failed (NULL returned)
-  - Repair action: Return false on collapse failure
-  - Suggested fixture: defect mentioning 'e->collapseOnV1() == NULL'
+- **Branch 1** @ line 346 — *not_double_flat* — COVERED (Me130: pyramid apex with non-planar 3D fan; edge_shared_by_n_triangles assertions on all apex edges)
+- **Branch 2** @ line 352 — *check_neighborhood_flag* — COVERED (Me131: interior vertex with three healthy non-degenerate incident triangles; edge sharing + area assertions)
+- **Branch 3** @ line 356 — *degenerate_neighbor_triangle* — COVERED (Me132: collinear vertex v2 midpoint of v0-v1 makes t1 exactly degenerate; triangle_area_lt + vertex_on_edge)
+- **Branch 4** @ line 359 — *overlapping_incident_edge* — COVERED (Me133: T-junction with v2 on long edge v0-v1 of t2; vertex_on_edge + edge sharing)
+- **Branch 5** @ line 362 — *double_flat_edge_removal* — COVERED (Me134: DoubleFlat vertex v2 on x-axis with single ridge e1=(v1,v2); vertex_on_edge + all-interior fan edges)
+- **Branch 6** @ line 363 — *double_flat_second_edge_removal* — COVERED (Me135: DoubleFlat vertex v2 with symmetric ridges v1 and v3, both e1 and e2 present; vertex_on_edge + four interior fan edges)
+- **Branch 7** @ line 364 — *opposite_vertex_coincidence* — COVERED (Me136: DoubleFlat v2 where e1 and e2 lead to coincident position (v1 and v3 same coords); vertex_pair_distance_lt + vertex_on_edge)
+- **Branch 8** @ line 372 — *?* — COVERED (Me137: opposite vertices v0 above and v3 below the collapse axis; adjacent_triangles_inconsistent_winding + edge sharing)
+- **Branch 9** @ line 382 — *double_flat_edge_selection* — COVERED (Me138: Flat vertex v2 with single ridge e1=(v1,v2) and no e2; vertex_on_edge + edge boundary assertions)
+- **Branch 10** @ line 394 — *collapse_failure* — COVERED (Me139: interior vertex v4 enclosed by closed 4-triangle fan; all-interior fan edges confirm link-condition failure)
+
+Fixture IDs: Me130 Me131 Me132 Me133 Me134 Me135 Me136 Me137 Me138 Me139
 
 ##### `Vertex.zip` — lines 558–587
 (10 branches; all UNCOVERED — no mesh fixtures exist yet)

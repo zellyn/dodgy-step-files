@@ -32641,6 +32641,146 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me119.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me130 — removeIfRedundant_not_double_flat: apex vertex has non-planar 3D fan, removal blocked
+- **Category**: §12.14 mesh defects (sub-class: redundant-vertex removal / not-flat)
+- **Sources**: MeshFix `Vertex.removeIfRedundant` Branch 1 (*not_double_flat*: `if (!isDoubleFlat && !isFlat(...))`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Pyramid apex vertex v4 sits at (0.5,0.5,1) above a square base. Its four incident triangles form a non-planar 3D fan. The vertex is neither DoubleFlat nor Flat, so removeIfRedundant immediately returns false at Branch 1 — the vertex is non-redundant.
+- **Reproducer recipe**: base v0=(0,0,0), v1=(1,0,0), v2=(1,1,0), v3=(0,1,0); apex v4=(0.5,0.5,1). Pyramid faces: t0=(v0,v1,v4), t1=(v1,v2,v4), t2=(v2,v3,v4), t3=(v3,v0,v4).
+- **Expected kernel behavior**: removeIfRedundant returns false; apex is not removed.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me130.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me131 — removeIfRedundant_check_neighborhood: vertex with healthy non-degenerate incident triangles
+- **Category**: §12.14 mesh defects (sub-class: redundant-vertex removal / neighborhood check)
+- **Sources**: MeshFix `Vertex.removeIfRedundant` Branch 2 (*check_neighborhood_flag*: `if (check_neighborhood)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Interior vertex v3=(2,1,0) has three incident triangles all with positive area. When check_neighborhood is enabled, the algorithm scans via VT() and finds no degenerate triangle; the neighborhood check passes without returning false.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(4,0,0), v3=(2,1,0), v4=(0,2,0). Fan: t0=(v0,v1,v3), t1=(v1,v2,v3), t2=(v4,v0,v3).
+- **Expected kernel behavior**: neighborhood check passes; algorithm continues to DoubleFlat/Flat evaluation.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=2.0`
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=2.0`
+- **Mesh assertion**: `triangle_area_lt triangle=2 lt=4.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me131.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me132 — removeIfRedundant_degenerate_neighbor_triangle: collinear incident triangle blocks vertex removal
+- **Category**: §12.14 mesh defects (sub-class: redundant-vertex removal / degenerate neighbor)
+- **Sources**: MeshFix `Vertex.removeIfRedundant` Branch 3 (*degenerate_neighbor_triangle*: `if (t->isExactlyDegenerate())`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Vertex v2=(1,0,0) lies exactly on segment v0-v1, making triangle t1=(v0,v1,v2) exactly degenerate (zero area). During the neighborhood check, isExactlyDegenerate() fires on t1 and removeIfRedundant returns false — the vertex cannot be safely removed near a collapsed triangle.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,0,0) [midpoint], v3=(1,1,0). t0=(v0,v3,v2) healthy; t1=(v0,v1,v2) degenerate (collinear).
+- **Expected kernel behavior**: isExactlyDegenerate() fires on t1; removeIfRedundant returns false.
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-9`
+- **Mesh assertion**: `vertex_on_edge vertex=2 edge=[0,1]`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me132.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me133 — removeIfRedundant_overlapping_incident_edge: incident edge collinear-overlap blocks vertex removal
+- **Category**: §12.14 mesh defects (sub-class: redundant-vertex removal / edge overlap)
+- **Sources**: MeshFix `Vertex.removeIfRedundant` Branch 4 (*overlapping_incident_edge*: `if (e->overlaps())`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Vertex v2=(1,0,0) lies on segment v0-v1 in the mesh. The incident edge (v0,v2) overlaps with edge (v0,v1) which is part of triangle t2. e->overlaps() returns true and removeIfRedundant returns false because the edge topology is too complex for a safe vertex collapse.
+- **Reproducer recipe**: v0=(0,0,0), v1=(3,0,0), v2=(1,0,0), v3=(0,1,0), v4=(3,1,0). t0=(v0,v2,v3), t1=(v2,v1,v4), t2=(v0,v1,v3) — t2 has long edge (v0,v1) that contains v2.
+- **Expected kernel behavior**: e->overlaps() fires; removeIfRedundant returns false.
+- **Mesh assertion**: `vertex_on_edge vertex=2 edge=[0,1]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me133.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me134 — removeIfRedundant_double_flat_edge_removal: DoubleFlat vertex has e1 removed from collapse candidates
+- **Category**: §12.14 mesh defects (sub-class: redundant-vertex removal / DoubleFlat e1)
+- **Sources**: MeshFix `Vertex.removeIfRedundant` Branch 5 (*double_flat_edge_removal*: `if (e1 != NULL) ve->removeNode(e1)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Vertex v2=(2,0,0) is collinear with v0 and v4 on the x-axis (DoubleFlat). Its fan has four triangles, two on each side. The ridge edge e1=(v1,v2) is identified at classification; Branch 5 removes e1 from the candidate set so it won't be chosen as the collapse edge.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,1,0), v2=(2,0,0), v3=(1,-1,0), v4=(4,0,0). t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v2,v1,v4), t3=(v2,v4,v3).
+- **Expected kernel behavior**: e1=(v1,v2) removed from candidate list; collapse continues with remaining edges.
+- **Mesh assertion**: `vertex_on_edge vertex=2 edge=[0,4]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me134.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me135 — removeIfRedundant_double_flat_second_edge_removal: DoubleFlat vertex has both e1 and e2 removed from candidate list
+- **Category**: §12.14 mesh defects (sub-class: redundant-vertex removal / DoubleFlat e1+e2)
+- **Sources**: MeshFix `Vertex.removeIfRedundant` Branch 6 (*double_flat_second_edge_removal*: `if (e2 != NULL) ve->removeNode(e2)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Vertex v2=(2,0,0) is DoubleFlat with two symmetric ridge neighbors v1 and v3 on either side of the axis. Both e1=(v1,v2) and e2=(v2,v3) are non-NULL; Branch 5 removes e1, Branch 6 removes e2, leaving only the axis edges (v0,v2) and (v2,v4) as collapse candidates.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,1,0), v2=(2,0,0), v3=(1,-1,0), v4=(4,0,0), v5=(3,1,0), v6=(3,-1,0). Six triangles in double-sided fan.
+- **Expected kernel behavior**: both e1 and e2 removed from candidate set.
+- **Mesh assertion**: `vertex_on_edge vertex=2 edge=[0,4]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me135.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me136 — removeIfRedundant_opposite_vertex_coincidence: DoubleFlat e1 and e2 share coincident opposite vertex
+- **Category**: §12.14 mesh defects (sub-class: redundant-vertex removal / coincident opposite vertex)
+- **Sources**: MeshFix `Vertex.removeIfRedundant` Branch 7 (*opposite_vertex_coincidence*: `if (*e1->oppositeVertex(this) == *e2->oppositeVertex(this)) return false`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Vertex v2=(2,0,0) is DoubleFlat. Ridge edges e1=(v1,v2) and e2=(v2,v3) both lead to the same 3D position (v1 and v3 are at (1,1,0)). The opposite vertices coincide, meaning collapse would create a degenerate element. Branch 7 detects this and returns false.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,1,0), v2=(2,0,0), v3=(1,1,0) [duplicate of v1 coords], v4=(4,0,0). t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v2,v1,v4), t3=(v2,v4,v3).
+- **Expected kernel behavior**: opposite vertices coincide; removeIfRedundant returns false.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,3] lt=1e-9`
+- **Mesh assertion**: `vertex_on_edge vertex=2 edge=[0,4]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me136.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me137 — removeIfRedundant_opposite_vertices_side_check: opposite vertices on opposite sides trigger edge swap before collapse
+- **Category**: §12.14 mesh defects (sub-class: redundant-vertex removal / side-check edge swap)
+- **Sources**: MeshFix `Vertex.removeIfRedundant` Branch 8 (*?*: `if (!exactSameSideOnPlane(...)) { e->swap() ... }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Vertex v2=(3,0,0) is DoubleFlat. The collapse candidate edge (v1,v2) is flanked by t0=(v0,v1,v2) whose opposite vertex v0=(0,2,0) is above the x-axis, and t1=(v1,v2,v3) whose opposite vertex v3=(2,-1,0) is below it. Opposite vertices are on opposite sides of the edge plane; exactSameSideOnPlane returns false and an edge swap is attempted.
+- **Reproducer recipe**: v0=(0,2,0), v1=(1,0,0), v2=(3,0,0), v3=(2,-1,0), v4=(5,0,0). t0=(v0,v1,v2), t1=(v1,v2,v3), t2=(v2,v3,v4). Normals of t0 and t1 are antiparallel.
+- **Expected kernel behavior**: side check fails; edge swap attempted on collapse candidate.
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,1]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me137.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me138 — removeIfRedundant_double_flat_edge_selection: e1 preferred as collapse edge when e2 absent
+- **Category**: §12.14 mesh defects (sub-class: redundant-vertex removal / edge selection)
+- **Sources**: MeshFix `Vertex.removeIfRedundant` Branch 9 (*double_flat_edge_selection*: `if (e1 != NULL) e = e1`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Vertex v2=(2,0,0) is Flat (one-sided ridge, e2 is NULL). The ridge edge e1=(v1,v2) is identified. Branch 9 fires the 'e = e1' path, directly selecting e1 as the collapse edge without scanning the remaining candidates.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,1,0), v2=(2,0,0), v3=(4,0,0). t0=(v0,v1,v2), t1=(v0,v2,v3). v2 is on segment v0-v3; only one ridge edge e1=(v1,v2).
+- **Expected kernel behavior**: e1 preferred; collapse edge selected without scanning.
+- **Mesh assertion**: `vertex_on_edge vertex=2 edge=[0,3]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me138.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me139 — removeIfRedundant_collapse_failure: edge collapse returns NULL, vertex removal blocked
+- **Category**: §12.14 mesh defects (sub-class: redundant-vertex removal / collapse failure)
+- **Sources**: MeshFix `Vertex.removeIfRedundant` Branch 10 (*collapse_failure*: `if ((result = e->collapseOnV1()) == NULL) return false`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Interior vertex v4=(0,0.8,0) is enclosed by a closed fan of 4 triangles (all fan edges interior). Collapsing v4 onto any outer vertex would violate the link condition because the outer vertices are already mutually adjacent, producing a non-manifold or degenerate result. collapseOnV1() returns NULL and removeIfRedundant returns false.
+- **Reproducer recipe**: outer ring v0=(0,0,0), v1=(1,1,0), v2=(0,2,0), v3=(-1,1,0); interior v4=(0,0.8,0). Fan: t0=(v0,v1,v4), t1=(v1,v2,v4), t2=(v2,v3,v4), t3=(v3,v0,v4).
+- **Expected kernel behavior**: collapseOnV1() returns NULL; removeIfRedundant returns false.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,0] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me139.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Wr052 — Writer emits EDGE_CURVE backed by untrimmed LINE entity
 - **Category**: §12.13 writer-pathology (sub-class: unbounded-curve emission)
 - **Sources**: Pattern-mined from OCCT/tests/bugs/step/bug32817_1 (LGPL-clean — pattern only, no bytes copied). OCCT method `STEPControl_Writer::Transfer` on a single-line edge.
