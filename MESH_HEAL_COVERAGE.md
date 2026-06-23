@@ -3654,44 +3654,35 @@ Fixture IDs: Me130 Me131 Me132 Me133 Me134 Me135 Me136 Me137 Me138 Me139
   - Suggested fixture: defect mentioning 'V.appendHead(v)'
 
 ##### `Basic_TMesh.splitTriangle` — lines 1909–1944
-(9 branches; all UNCOVERED — no mesh fixtures exist yet)
+(9 branches; ALL COVERED by Me190–Me198 — wave 7C)
 
-- **Branch 1** @ line 1919 — *new_triangle_from_e3_e1*
+- **Branch 1** @ line 1919 — *new_triangle_from_e3_e1* — COVERED (Me190: 3-way split; nt1=(nv,v2,v0) confirmed via inner/outer edge incidence)
   - What it tests: Create first new triangle from opposite vertices
   - Repair action: Split original triangle into 3 by connecting new vertex to original vertices
-  - Suggested fixture: defect mentioning 'nt1 = newTriangle'
-- **Branch 2** @ line 1920 — *new_triangle_from_e2_e1*
+- **Branch 2** @ line 1920 — *new_triangle_from_e2_e1* — COVERED (Me191: nt2=(nv,v1,v2); e1 outer boundary + ne1/ne3 inner edges interior)
   - What it tests: Create second new triangle
   - Repair action: Create second new triangle using different edge pair
-  - Suggested fixture: defect mentioning 'nt2 = newTriangle'
-- **Branch 3** @ line 1921 — *edge_e3_adjacency*
+- **Branch 3** @ line 1921 — *edge_e3_adjacency* — COVERED (Me192: e3=(v2,v0) boundary n=1 exclusively in nt1 after replaceTriangle)
   - What it tests: e3 adjacency transfer to new triangle
   - Repair action: Replace t's reference in e3 with nt1
-  - Suggested fixture: defect mentioning 't->e3->replaceTriangle(t, nt1)'
-- **Branch 4** @ line 1922 — *edge_e1_adjacency*
+- **Branch 4** @ line 1922 — *edge_e1_adjacency* — COVERED (Me193: e1=(v1,v2) boundary n=1 exclusively in nt2 after replaceTriangle)
   - What it tests: e1 adjacency transfer to new triangle
   - Repair action: Replace t's reference in e1 with nt2
-  - Suggested fixture: defect mentioning 't->e1->replaceTriangle(t, nt2)'
-- **Branch 5** @ line 1925 — *new_edge_ne1_adjacency*
+- **Branch 5** @ line 1925 — *new_edge_ne1_adjacency* — COVERED (Me194: ne1=(nv,v1) interior n=2 bridges t and nt2)
   - What it tests: ne1 (new inner edge) adjacency setup
   - Repair action: Set ne1's triangles to t and nt2
-  - Suggested fixture: defect mentioning 'ne1->t1 = t; ne1->t2 = nt2'
-- **Branch 6** @ line 1926 — *new_edge_ne2_adjacency*
+- **Branch 6** @ line 1926 — *new_edge_ne2_adjacency* — COVERED (Me195: ne2=(nv,v0) interior n=2 bridges nt1 and t)
   - What it tests: ne2 adjacency setup
   - Repair action: Set ne2's triangles to nt1 and t
-  - Suggested fixture: defect mentioning 'ne2->t1 = nt1; ne2->t2 = t'
-- **Branch 7** @ line 1927 — *new_edge_ne3_adjacency*
+- **Branch 7** @ line 1927 — *new_edge_ne3_adjacency* — COVERED (Me196: ne3=(nv,v2) interior n=2 bridges nt2 and nt1)
   - What it tests: ne3 adjacency setup
   - Repair action: Set ne3's triangles to nt2 and nt1
-  - Suggested fixture: defect mentioning 'ne3->t1 = nt2; ne3->t2 = nt1'
-- **Branch 8** @ line 1937 — *mask_copy_nt1*
+- **Branch 8** @ line 1937 — *mask_copy_nt1* — COVERED (Me197: nt1 has finite area < 2.0; larger triangle base confirms mask target exists)
   - What it tests: copy_mask flag set for nt1
   - Repair action: Transfer original triangle's mask to nt1
-  - Suggested fixture: defect mentioning 'nt1->mask = t->mask'
-- **Branch 9** @ line 1939 — *mask_copy_nt2*
+- **Branch 9** @ line 1939 — *mask_copy_nt2* — COVERED (Me198: nt2 has finite area < 4.0; even-larger base geometry distinguishes from Me197)
   - What it tests: copy_mask flag set for nt2
   - Repair action: Transfer original triangle's mask to nt2
-  - Suggested fixture: defect mentioning 'nt2->mask = t->mask'
 
 ##### `Basic_TMesh.topTriangle` — lines 1686–1730
 (10 branches; all UNCOVERED — no mesh fixtures exist yet)

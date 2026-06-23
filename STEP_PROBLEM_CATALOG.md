@@ -33176,6 +33176,146 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me169.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me190 — splitTriangle_new_triangle_from_e3_e1: first child triangle nt1 connects nv to v2-v0 side
+- **Category**: §12.14 mesh defects (sub-class: split-triangle / new-triangle-nt1)
+- **Sources**: MeshFix `Basic_TMesh.splitTriangle` Branch 1 (*new_triangle_from_e3_e1*: `nt1 = newTriangle(nv, v3, v1)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A new vertex nv is inserted inside triangle t(v0,v1,v2), splitting it into 3 children. nt1 is created from the e3/e1 corner connecting nv to v2 and v0. All three inner edges through nv are interior (n=2); all three outer edges are boundary (n=1).
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), nv=(1,0.7,0); t=(v0,v1,nv), nt1=(nv,v2,v0), nt2=(nv,v1,v2).
+- **Expected kernel behavior**: nt1 allocated at line 1919; e3 outer edge re-wired to nt1; all inner edges interior.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me190.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me191 — splitTriangle_new_triangle_from_e2_e1: second child triangle nt2 connects nv to v1-v2 side
+- **Category**: §12.14 mesh defects (sub-class: split-triangle / new-triangle-nt2)
+- **Sources**: MeshFix `Basic_TMesh.splitTriangle` Branch 2 (*new_triangle_from_e2_e1*: `nt2 = newTriangle(nv, v2, v1)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: After nt1, the second new child triangle nt2 is created from the e1/e2 corner. nt2 uses nv, v1, and v2 — it inherits the e1 outer edge. The ne1 inner edge (nv,v1) is shared between t and nt2; ne3 (nv,v2) between nt1 and nt2.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), nv=(1,0.7,0); t=(v0,v1,nv), nt1=(nv,v2,v0), nt2=(nv,v1,v2).
+- **Expected kernel behavior**: nt2 allocated at line 1920; e1 outer edge re-wired to nt2.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me191.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me192 — splitTriangle_edge_e3_adjacency: outer edge e3 re-assigned from t to nt1
+- **Category**: §12.14 mesh defects (sub-class: split-triangle / edge-adjacency-e3)
+- **Sources**: MeshFix `Basic_TMesh.splitTriangle` Branch 3 (*edge_e3_adjacency*: `t->e3->replaceTriangle(t, nt1)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Original triangle t's e3 edge (v2-v0 side) is re-wired from t to nt1 after the split. The geometry confirms e3=(v2,v0) is a boundary edge (n=1) exclusively owned by nt1, not by the original t slot.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), nv=(1,0.7,0); t=(v0,v1,nv), nt1=(nv,v2,v0), nt2=(nv,v1,v2).
+- **Expected kernel behavior**: replaceTriangle(t, nt1) on e3 re-routes e3's adjacency to nt1.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me192.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me193 — splitTriangle_edge_e1_adjacency: outer edge e1 re-assigned from t to nt2
+- **Category**: §12.14 mesh defects (sub-class: split-triangle / edge-adjacency-e1)
+- **Sources**: MeshFix `Basic_TMesh.splitTriangle` Branch 4 (*edge_e1_adjacency*: `t->e1->replaceTriangle(t, nt2)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Original triangle t's e1 edge (v1-v2 side) is re-wired from t to nt2. The geometry confirms e1=(v1,v2) is boundary (n=1) exclusively owned by nt2.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), nv=(1,0.7,0); t=(v0,v1,nv), nt1=(nv,v2,v0), nt2=(nv,v1,v2).
+- **Expected kernel behavior**: replaceTriangle(t, nt2) on e1 re-routes e1's adjacency to nt2.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me193.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me194 — splitTriangle_new_edge_ne1_adjacency: inner edge ne1=(nv,v1) bridges t and nt2
+- **Category**: §12.14 mesh defects (sub-class: split-triangle / inner-edge-ne1)
+- **Sources**: MeshFix `Basic_TMesh.splitTriangle` Branch 5 (*new_edge_ne1_adjacency*: `ne1->t1 = t; ne1->t2 = nt2`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: New inner edge ne1=(nv,v1) has its two triangle slots set to t (original) and nt2. Without this wiring, t and nt2 would not recognise each other as neighbours, leaving a crack along ne1. The geometry confirms ne1 is interior (n=2).
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), nv=(1,0.7,0); t=(v0,v1,nv), nt1=(nv,v2,v0), nt2=(nv,v1,v2).
+- **Expected kernel behavior**: ne1->t1 = t; ne1->t2 = nt2 — inner edge bridges original slot and second child.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me194.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me195 — splitTriangle_new_edge_ne2_adjacency: inner edge ne2=(nv,v0) bridges nt1 and t
+- **Category**: §12.14 mesh defects (sub-class: split-triangle / inner-edge-ne2)
+- **Sources**: MeshFix `Basic_TMesh.splitTriangle` Branch 6 (*new_edge_ne2_adjacency*: `ne2->t1 = nt1; ne2->t2 = t`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: New inner edge ne2=(nv,v0) has its slots set to nt1 and t. This stitches nt1 and the original slot together. The geometry confirms ne2=(nv,v0) is interior (n=2).
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), nv=(1,0.7,0); t=(v0,v1,nv), nt1=(nv,v2,v0), nt2=(nv,v1,v2).
+- **Expected kernel behavior**: ne2->t1 = nt1; ne2->t2 = t — inner edge bridges first child and original slot.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me195.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me196 — splitTriangle_new_edge_ne3_adjacency: inner edge ne3=(nv,v2) bridges nt2 and nt1
+- **Category**: §12.14 mesh defects (sub-class: split-triangle / inner-edge-ne3)
+- **Sources**: MeshFix `Basic_TMesh.splitTriangle` Branch 7 (*new_edge_ne3_adjacency*: `ne3->t1 = nt2; ne3->t2 = nt1`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: New inner edge ne3=(nv,v2) bridges the two new child triangles nt2 and nt1, completing the 3-way split. Without this wiring, nt1 and nt2 would form a crack. The geometry confirms ne3=(nv,v2) is interior (n=2).
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), nv=(1,0.7,0); t=(v0,v1,nv), nt1=(nv,v2,v0), nt2=(nv,v1,v2).
+- **Expected kernel behavior**: ne3->t1 = nt2; ne3->t2 = nt1 — inner edge bridges the two new child triangles.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me196.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me197 — splitTriangle_mask_copy_nt1: mask propagated from original t to first new child nt1
+- **Category**: §12.14 mesh defects (sub-class: split-triangle / mask-propagation-nt1)
+- **Sources**: MeshFix `Basic_TMesh.splitTriangle` Branch 8 (*mask_copy_nt1*: `nt1->mask = t->mask`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: When copy_mask is set, original triangle t's mask bits are copied to nt1. nt1 must be a real finite-area child triangle for the mask to have a target. Geometry uses a larger triangle (area=3.0); each child area ~1.0, confirmed by triangle_area_lt < 2.0.
+- **Reproducer recipe**: v0=(0,0,0), v1=(3,0,0), v2=(1.5,2,0), nv=(1.5,0.8,0); t=(v0,v1,nv), nt1=(nv,v2,v0), nt2=(nv,v1,v2).
+- **Expected kernel behavior**: nt1->mask = t->mask when copy_mask flag is set.
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=2.0`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=2.0`
+- **Mesh assertion**: `triangle_area_lt triangle=2 lt=2.0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me197.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me198 — splitTriangle_mask_copy_nt2: mask propagated from original t to second new child nt2
+- **Category**: §12.14 mesh defects (sub-class: split-triangle / mask-propagation-nt2)
+- **Sources**: MeshFix `Basic_TMesh.splitTriangle` Branch 9 (*mask_copy_nt2*: `nt2->mask = t->mask`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: When copy_mask is set, original triangle t's mask bits are also copied to nt2. Symmetric to Branch 8 but for the second child. Geometry uses an even larger triangle (area=6.0); each child ~2.0, confirmed by triangle_area_lt < 4.0.
+- **Reproducer recipe**: v0=(0,0,0), v1=(4,0,0), v2=(2,3,0), nv=(2,1.2,0); t=(v0,v1,nv), nt1=(nv,v2,v0), nt2=(nv,v1,v2).
+- **Expected kernel behavior**: nt2->mask = t->mask when copy_mask flag is set.
+- **Mesh assertion**: `triangle_area_lt triangle=2 lt=4.0`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=4.0`
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=4.0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me198.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me120 — inverse_collapse_right_triangle_e2: ta1 exists on right side of split edge e2
 - **Category**: §12.14 mesh defects (sub-class: inverse-collapse / right-triangle-e2)
 - **Sources**: MeshFix `Vertex.inverseCollapse` Branch 1 (*right_triangle_e2*: `ta1 = e2->rightTriangle(this)`); `MESH_HEAL_COVERAGE.md`.

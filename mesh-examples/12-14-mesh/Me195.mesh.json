@@ -1,0 +1,97 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      2.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.7,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      3
+    ],
+    [
+      3,
+      2,
+      0
+    ],
+    [
+      3,
+      1,
+      2
+    ]
+  ],
+  "metadata": {
+    "id": "Me195",
+    "schema_version": 0,
+    "defect_class": "split_triangle_inner_edge_adjacency",
+    "title": "splitTriangle_new_edge_ne2_adjacency: inner edge ne2=(nv,v0) bridges nt1 and t",
+    "assertions": [
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          3
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          3
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          2,
+          3
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          1
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          2
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          2
+        ],
+        "n": 1
+      }
+    ]
+  }
+}
