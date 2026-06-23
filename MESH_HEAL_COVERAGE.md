@@ -3026,45 +3026,45 @@ Fixture IDs: Me130 Me131 Me132 Me133 Me134 Me135 Me136 Me137 Me138 Me139
   - Suggested fixture: defect mentioning 'if (e3 != NULL && e3->t1 == NULL && e3->t2 == NULL)'
 
 ##### `Edge.stitch` — lines 366–396
-(10 branches; all UNCOVERED — no mesh fixtures exist yet)
+(10 branches; all COVERED by Me160–Me169 wave 6C)
 
-- **Branch 1** @ line 369 — *BOUNDARY_EDGE_REQUIREMENT*
+- **Branch 1** @ line 369 — *BOUNDARY_EDGE_REQUIREMENT* — **COVERED** → Me160
   - What it tests: Edge must be on boundary (no interior edge stitching)
   - Repair action: Return false if edge is interior (has two triangles)
   - Suggested fixture: defect mentioning 'if (!isOnBoundary()) return 0'
-- **Branch 2** @ line 371 — *STITCH_START_TRIANGLE*
+- **Branch 2** @ line 371 — *STITCH_START_TRIANGLE* — **COVERED** → Me161
   - What it tests: Identify starting triangle (t0) from the single or first incident triangle
   - Repair action: t0 = (t1 != NULL) ? (t1) : (t2)
   - Suggested fixture: defect mentioning 'Triangle *t, *t0 = (t1 != NULL) ? (t1) : (t2)'
-- **Branch 3** @ line 375 — *BOUNDARY_WALK_V1*
+- **Branch 3** @ line 375 — *BOUNDARY_WALK_V1* — **COVERED** → Me162
   - What it tests: Walk boundary from v1 along edge loop until reaching a candidate stitch edge
   - Repair action: Traverse t->nextEdge() chain to find geometrically coincident boundary edge
   - Suggested fixture: defect mentioning 'for (v0 = v1; v0 != NULL', 't = e1->oppositeTriangle(t)'
-- **Branch 4** @ line 375 — *BOUNDARY_WALK_V2*
+- **Branch 4** @ line 375 — *BOUNDARY_WALK_V2* — **COVERED** → Me163
   - What it tests: Walk boundary from v2 if walk from v1 fails
   - Repair action: Repeat walk starting from v2 endpoint
   - Suggested fixture: defect mentioning 'v0 = ((v0 == v1) ? (v2) : (NULL))'
-- **Branch 5** @ line 384 — *STITCH_CANDIDATE_FOUND*
+- **Branch 5** @ line 384 — *STITCH_CANDIDATE_FOUND* — **COVERED** → Me164
   - What it tests: Walking boundary found edge e1 whose opposite vertex matches this edge's opposite vertex at v0
   - Repair action: Merge the boundary chains by stitching: replace e1 with this in opposing triangle
   - Suggested fixture: defect mentioning 'if (e1->oppositeVertex(v0) == oppositeVertex(v0))'
-- **Branch 6** @ line 386 — *STITCH_TRIANGLE_MERGER*
+- **Branch 6** @ line 386 — *STITCH_TRIANGLE_MERGER* — **COVERED** → Me165
   - What it tests: Stitch found: get the triangle t from e1 (whichever side is available)
   - Repair action: t = (e1->t1 != NULL) ? (e1->t1) : (e1->t2)
   - Suggested fixture: defect mentioning 't = (e1->t1 != NULL) ? (e1->t1) : (e1->t2)'
-- **Branch 7** @ line 387 — *STITCH_EDGE_REPLACEMENT*
+- **Branch 7** @ line 387 — *STITCH_EDGE_REPLACEMENT* — **COVERED** → Me166
   - What it tests: Replace e1 in t with this edge to join boundary chains
   - Repair action: t->replaceEdge(e1, this)
   - Suggested fixture: defect mentioning 't->replaceEdge(e1, this)'
-- **Branch 8** @ line 388 — *STITCH_ANCHOR_UPDATE*
+- **Branch 8** @ line 388 — *STITCH_ANCHOR_UPDATE* — **COVERED** → Me167
   - What it tests: After stitch, update vertex anchors to this edge
   - Repair action: v1->e0 = v2->e0 = this
   - Suggested fixture: defect mentioning 'v1->e0 = v2->e0 = this'
-- **Branch 9** @ line 389 — *STITCH_ORPHAN_EDGE*
+- **Branch 9** @ line 389 — *STITCH_ORPHAN_EDGE* — **COVERED** → Me168
   - What it tests: Mark stitched edge e1 as unlinked (no longer part of mesh)
   - Repair action: e1->v1 = e1->v2 = NULL
   - Suggested fixture: defect mentioning 'e1->v1 = e1->v2 = NULL'
-- **Branch 10** @ line 390 — *STITCH_INTERIOR_CONVERSION*
+- **Branch 10** @ line 390 — *STITCH_INTERIOR_CONVERSION* — **COVERED** → Me169
   - What it tests: This edge transitions from boundary to interior (now has two incident triangles)
   - Repair action: replaceTriangle(NULL, t) to add t as the second triangle
   - Suggested fixture: defect mentioning 'replaceTriangle(NULL, t)'

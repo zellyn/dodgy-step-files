@@ -32914,6 +32914,139 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me159.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me160 — stitch_boundary_edge_requirement: interior edge rejected for boundary stitching
+- **Category**: §12.14 mesh defects (sub-class: boundary stitching / interior-edge rejection)
+- **Sources**: MeshFix `Edge.stitch` Branch 1 (*BOUNDARY_EDGE_REQUIREMENT*: `if (!isOnBoundary()) return 0`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two adjacent triangles share an interior edge (v0,v2) incident on 2 triangles. Calling Edge.stitch() on this interior edge triggers Branch 1 which immediately returns false — only boundary edges are eligible.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(-0.5,1,0); t0=(v0,v1,v2), t1=(v0,v2,v3). Edge (v0,v2) interior (n=2).
+- **Expected kernel behavior**: Edge.stitch() returns false at Branch 1 ('if (!isOnBoundary()) return 0').
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me160.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me161 — stitch_start_triangle_t1: boundary edge with t1 occupied selects t1 as walk start
+- **Category**: §12.14 mesh defects (sub-class: boundary stitching / start-triangle selection)
+- **Sources**: MeshFix `Edge.stitch` Branch 2 (*STITCH_START_TRIANGLE*: `t0 = (t1 != NULL) ? (t1) : (t2)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two separate open patches with coincident boundary edges. The stitch edge's t1 slot is occupied; Branch 2 selects t1 as the boundary walk start. Near-coincident vertex pairs confirm the unstitched gap.
+- **Reproducer recipe**: Patch A: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), t0=(v0,v1,v2). Patch B: v3=(0,0,0), v4=(1,0,0), v5=(0.5,-1,0), t1=(v3,v4,v5).
+- **Expected kernel behavior**: t0 = t1 (non-NULL); boundary walk begins from Patch A's triangle.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,3] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-09`
+- **Fixture path**: mesh-examples/12-14-mesh/Me161.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me162 — stitch_boundary_walk_v1: boundary chain walk from v1 traverses to find coincident candidate
+- **Category**: §12.14 mesh defects (sub-class: boundary stitching / boundary walk v1)
+- **Sources**: MeshFix `Edge.stitch` Branch 3 (*BOUNDARY_WALK_V1*: `for (v0 = v1; v0 != NULL`, `t = e1->oppositeTriangle(t)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three-triangle strip. Patch A has two connected triangles sharing interior (v1,v2). Patch B has one triangle with boundary (v4,v5) coincident to (v1,v2). The v1-side walk traverses the boundary chain to find the candidate on Patch B.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1.5,1,0); t0=(v0,v1,v2), t1=(v1,v3,v2). Patch B: v4=(1,0,0), v5=(0.5,1,0), v6=(2,0.5,0); t2=(v4,v5,v6).
+- **Expected kernel behavior**: walk from v1 finds e1=(v4,v5) whose opposite vertex matches; candidate confirmed.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[2,5] lt=1e-09`
+- **Fixture path**: mesh-examples/12-14-mesh/Me162.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me163 — stitch_boundary_walk_v2: v1 walk fails, boundary walk retries from v2 to find coincident edge
+- **Category**: §12.14 mesh defects (sub-class: boundary stitching / boundary walk v2 retry)
+- **Sources**: MeshFix `Edge.stitch` Branch 4 (*BOUNDARY_WALK_V2*: `v0 = ((v0 == v1) ? (v2) : (NULL))`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Asymmetric three-triangle strip. The coincident boundary edge is only reachable from the v2 endpoint. The v1-side walk dead-ends (blocked by interior edge v0,v2); Branch 4 resets the walk anchor to v2 and finds the candidate on Patch B from there.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,1,0), v3=(-1,0,0); t0=(v0,v1,v2), t1=(v0,v3,v2). Patch B: v4=(1,1,0), v5=(2,0,0), v6=(1.5,2,0); t2=(v4,v5,v6).
+- **Expected kernel behavior**: v1 walk blocked by interior (v0,v2); retry from v2 finds candidate (v4,v5).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[2,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,5] lt=1e-09`
+- **Fixture path**: mesh-examples/12-14-mesh/Me163.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me164 — stitch_candidate_found: opposite-vertex match confirms coincident boundary edge pair for stitching
+- **Category**: §12.14 mesh defects (sub-class: boundary stitching / candidate found)
+- **Sources**: MeshFix `Edge.stitch` Branch 5 (*STITCH_CANDIDATE_FOUND*: `if (e1->oppositeVertex(v0) == oppositeVertex(v0))`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two fully coincident open triangles. The boundary walk reaches candidate e1 and tests whether e1's opposite vertex (coincident to v2) matches this edge's own opposite vertex (v2). The match triggers Branch 5 (candidate confirmed); stitch proceeds.
+- **Reproducer recipe**: Patch A: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0); t0=(v0,v1,v2). Patch B: v3=(0,0,0), v4=(1,0,0), v5=(0.5,1,0); t1=(v3,v4,v5).
+- **Expected kernel behavior**: e1->oppositeVertex(v0) == v5 (coincident to v2) → candidate confirmed; stitch proceeds.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,3] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[2,5] lt=1e-09`
+- **Fixture path**: mesh-examples/12-14-mesh/Me164.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me165 — stitch_triangle_merger_t1: candidate stitch edge e1 has incident triangle in t1 slot
+- **Category**: §12.14 mesh defects (sub-class: boundary stitching / triangle merger t1 branch)
+- **Sources**: MeshFix `Edge.stitch` Branch 6 (*STITCH_TRIANGLE_MERGER*: `t = (e1->t1 != NULL) ? (e1->t1) : (e1->t2)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three-triangle strip: Patch A has two connected triangles sharing interior (v1,v2). Patch B is a single isolated triangle with boundary (v4,v5) coincident to (v1,v2). e1's incident triangle is in its t1 slot; Branch 6 selects e1->t1 as the merge target.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1.5,1,0); t0=(v0,v1,v2), t1=(v1,v3,v2). Patch B: v4=(1,0,0), v5=(0.5,1,0), v6=(2,0.5,0); t2=(v4,v5,v6).
+- **Expected kernel behavior**: e1->t1 is non-NULL → t = e1->t1; merge uses t1 slot.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[2,5] lt=1e-09`
+- **Fixture path**: mesh-examples/12-14-mesh/Me165.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me166 — stitch_edge_replacement: candidate edge e1 replaced by stitch edge in triangle t via replaceEdge
+- **Category**: §12.14 mesh defects (sub-class: boundary stitching / edge replacement)
+- **Sources**: MeshFix `Edge.stitch` Branch 7 (*STITCH_EDGE_REPLACEMENT*: `t->replaceEdge(e1, this)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two open triangles with coincident boundary seam. Branch 7 calls t->replaceEdge(e1, this) to topologically wire Patch B's triangle onto the stitch edge, joining the two boundary chains. Fixture captures pre-stitch state.
+- **Reproducer recipe**: Patch A: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0); t0=(v0,v1,v2). Patch B: v3=(0,0,0), v4=(1,0,0), v5=(0.5,-1,0); t1=(v3,v4,v5).
+- **Expected kernel behavior**: t->replaceEdge(e1=(v3,v4), this=(v0,v1)) joins Patch B to Patch A.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,3] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-09`
+- **Fixture path**: mesh-examples/12-14-mesh/Me166.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me167 — stitch_anchor_update: v1->e0 and v2->e0 updated to stitch edge after boundary merge
+- **Category**: §12.14 mesh defects (sub-class: boundary stitching / vertex anchor update)
+- **Sources**: MeshFix `Edge.stitch` Branch 8 (*STITCH_ANCHOR_UPDATE*: `v1->e0 = v2->e0 = this`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two open triangles with coincident boundary seam. After replaceEdge, both endpoint vertices update their e0 anchors to point to the surviving stitch edge. Branch 8 sets v1->e0 = v2->e0 = this.
+- **Reproducer recipe**: Patch A: v0=(0,0.5,0), v1=(0,0,0), v2=(1,0,0); t0=(v0,v1,v2). Patch B: v3=(0,0,0), v4=(1,0,0), v5=(0.5,-1,0); t1=(v3,v4,v5).
+- **Expected kernel behavior**: v1->e0 = v2->e0 = stitch edge; both endpoints anchored to the surviving edge.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,3] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[2,4] lt=1e-09`
+- **Fixture path**: mesh-examples/12-14-mesh/Me167.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me168 — stitch_orphan_edge: candidate e1 nulled (v1=v2=NULL) after boundary stitch to become orphaned edge
+- **Category**: §12.14 mesh defects (sub-class: boundary stitching / orphan edge creation)
+- **Sources**: MeshFix `Edge.stitch` Branch 9 (*STITCH_ORPHAN_EDGE*: `e1->v1 = e1->v2 = NULL`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two open triangles with coincident boundary seam. After stitching, candidate edge e1=(v3,v4) is de-linked by setting both vertex pointers to NULL, marking it as an orphan edge eligible for the next cleanup sweep.
+- **Reproducer recipe**: Patch A: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0); t0=(v0,v1,v2). Patch B: v3=(0,0,0), v4=(1,0,0), v5=(0.5,-1,0); t1=(v3,v4,v5).
+- **Expected kernel behavior**: e1->v1 = e1->v2 = NULL; e1 is now an unlinked orphan edge.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,3] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-09`
+- **Fixture path**: mesh-examples/12-14-mesh/Me168.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me169 — stitch_interior_conversion: stitch edge transitions from boundary (n=1) to interior (n=2) via replaceTriangle(NULL,t)
+- **Category**: §12.14 mesh defects (sub-class: boundary stitching / interior conversion)
+- **Sources**: MeshFix `Edge.stitch` Branch 10 (*STITCH_INTERIOR_CONVERSION*: `replaceTriangle(NULL, t)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two mirrored open triangles — Patch A above and Patch B below the X-axis. The stitch edge (v0,v1) starts as boundary (n=1). After stitching, replaceTriangle(NULL, t) fills the NULL slot with Patch B's triangle, making the stitch edge interior (n=2).
+- **Reproducer recipe**: Patch A: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0); t0=(v0,v1,v2). Patch B: v3=(0,0,0), v4=(1,0,0), v5=(0.5,-1,0); t1=(v3,v4,v5).
+- **Expected kernel behavior**: replaceTriangle(NULL, t1) → stitch edge transitions from boundary (n=1) to interior (n=2).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,3] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-09`
+- **Fixture path**: mesh-examples/12-14-mesh/Me169.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me120 — inverse_collapse_right_triangle_e2: ta1 exists on right side of split edge e2
 - **Category**: §12.14 mesh defects (sub-class: inverse-collapse / right-triangle-e2)
 - **Sources**: MeshFix `Vertex.inverseCollapse` Branch 1 (*right_triangle_e2*: `ta1 = e2->rightTriangle(this)`); `MESH_HEAL_COVERAGE.md`.
