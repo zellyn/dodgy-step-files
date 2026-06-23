@@ -1,0 +1,181 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.7,
+      0.7,
+      0.0
+    ],
+    [
+      0.0,
+      1.0,
+      0.0
+    ],
+    [
+      -0.5,
+      0.866,
+      0.0
+    ],
+    [
+      -1.0,
+      0.0,
+      0.0
+    ],
+    [
+      -0.5,
+      -0.866,
+      0.0
+    ],
+    [
+      0.5,
+      -0.866,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      2,
+      3
+    ],
+    [
+      0,
+      4,
+      5
+    ],
+    [
+      0,
+      6,
+      7
+    ]
+  ],
+  "metadata": {
+    "id": "Me336",
+    "schema_version": 0,
+    "defect_class": "non_manifold_edge",
+    "title": "pinch_cascade_v1: v1 still non-manifold after first merge \u2014 recursive pinch(e_1,true) fires",
+    "assertions": [
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          2
+        ],
+        "n": 2
+      },
+      {
+        "kind": "vertex_fan_disconnected",
+        "vertex": 0
+      },
+      {
+        "kind": "triangle_not_reachable_from",
+        "target": 2,
+        "source": 0
+      },
+      {
+        "kind": "triangle_not_reachable_from",
+        "target": 3,
+        "source": 0
+      },
+      {
+        "kind": "triangle_not_reachable_from",
+        "target": 3,
+        "source": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          1
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          2
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          2,
+          3
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          3
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          4
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          4,
+          5
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          5
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          6
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          6,
+          7
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          7
+        ],
+        "n": 1
+      }
+    ]
+  }
+}

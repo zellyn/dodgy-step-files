@@ -35498,6 +35498,153 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me316.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me330 — pinch_missing_info_field: non-manifold edge info list NULL — pinch returns false (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.pinch / missing-info-field)
+- **Sources**: MeshFix `Basic_TMesh.pinch` Branch 1 (*MISSING_INFO_FIELD*: `if (ee == NULL) return false`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Non-manifold edge (v0,v1) shared by 3 triangles. The edge has been identified as singular but has no grouping List cached in its info field (info==NULL). pinch() immediately returns false — it cannot split without the cached singular-edge metadata.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,-1,0), v4=(0.5,0,1); t0=(v0,v1,v2), t1=(v0,v1,v3), t2=(v0,v1,v4); assert edge (v0,v1) n=3.
+- **Expected kernel behavior**: Branch 1 fires; `if (ee == NULL) return false`; pinch aborts without modifying geometry.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=3`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me330.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me331 — pinch_non_manifold_vertex_boundary: two coincident boundary edges at shared vertex, merge (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.pinch / non-manifold-vertex-boundary)
+- **Sources**: MeshFix `Basic_TMesh.pinch` Branch 2 (*NON_MANIFOLD_VERTEX_BOUNDARY*: `e2->isOnBoundary()`, `e1->merge(e2)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangle patches whose boundary seam edges (v0,v1) and (v3,v4) are at coincident positions (v0≈v3, v1≈v4). With with_common_vertex=true, pinch() finds a boundary edge e2 from v1's ring whose opposite endpoint matches v2 of e1 — fires Branch 2 and merges the two boundary edges.
+- **Reproducer recipe**: Patch A v0=(0,0,0),v1=(1,0,0),v2=(0.5,1,0) t0=(v0,v1,v2); Patch B v3=(0,0,0),v4=(1,0,0),v5=(0.5,-1,0) t1=(v3,v4,v5); coincident pairs (v0,v3) and (v1,v4); assert t1 not reachable from t0.
+- **Expected kernel behavior**: Branch 2 fires; `e1->merge(e2)` stitches the two boundary edges; patches become connected.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,3] lt=1e-07`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-07`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `triangle_not_reachable_from target=1 source=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me331.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me332 — pinch_non_manifold_vertex_not_found: no v1-side boundary match, fallback scan from v2 (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.pinch / non-manifold-vertex-not-found)
+- **Sources**: MeshFix `Basic_TMesh.pinch` Branch 3 (*NON_MANIFOLD_VERTEX_NOT_FOUND*: `if (n == NULL) { e1->v2->e0 = e1; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Bowtie/non-manifold at v0: Fan A (two triangles sharing edge (v0,v2)) and Fan B (one isolated triangle at v0, disconnected from Fan A). The pinch scan from v1 finds no matching boundary edge; Branch 3 restarts the scan from v2 by setting v2->e0=e1.
+- **Reproducer recipe**: v0=(0,0,0) bowtie; v1=(1,0,0), v2=(0.5,1,0), v3=(-0.5,1,0), v4=(-1,0,0), v5=(-0.5,-1,0); Fan A: t0=(v0,v1,v2), t1=(v0,v2,v3); Fan B: t2=(v0,v4,v5); assert vertex_fan_disconnected v0.
+- **Expected kernel behavior**: Branch 3 fires; `e1->v2->e0 = e1` sets fallback anchor; algorithm restarts scan from v2.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me332.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me333 — pinch_interior_edge_asymmetry_t1: e1->t1 set, mirror e2->t2 found — merge resolves asymmetry (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.pinch / interior-edge-asymmetry-t1)
+- **Sources**: MeshFix `Basic_TMesh.pinch` Branch 4 (*INTERIOR_EDGE_ASYMMETRY*: `if (e1->t1 != NULL) { if (e2->t2 != NULL) { e1->merge(e2); } }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three coplanar triangles. Edge (v1,v3) is interior (n=2, shared by t0 and t1) representing e1->t1 being set. Edge (v0,v3) is interior (n=2, shared by t0 and t2) representing the mirror e2->t2. When e1->t1 != NULL, Branch 4 scans for a mirror edge with e2->t2 set, finds (v0,v3), and calls e1->merge(e2).
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0), v3=(1,1,0), v4=(0,1,0); t0=(v0,v1,v3), t1=(v1,v2,v3), t2=(v0,v3,v4); assert edges (v1,v3) n=2 and (v0,v3) n=2.
+- **Expected kernel behavior**: Branch 4 fires; mirror found with e2->t2; `e1->merge(e2)` resolves interior asymmetry.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me333.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me334 — pinch_interior_edge_asymmetry_t2: e1->t2 only, mirror e2->t1 found — merge resolves asymmetry (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.pinch / interior-edge-asymmetry-t2)
+- **Sources**: MeshFix `Basic_TMesh.pinch` Branch 5 (*INTERIOR_EDGE_ASYMMETRY*: `else { if (e2->t1 != NULL) { e1->merge(e2); } }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Bowtie at v0: two disconnected triangle fans (t0 left-fan, t1 right-fan) sharing vertex v0 but no edges. The edge of interest in e1 carries t2 only (t1==NULL); Branch 5 (else-branch of Branch 4) scans for a mirror edge e2 with e2->t1 set. Both fans' disconnection is the structural defect.
+- **Reproducer recipe**: v0=(0,0,0) bowtie; v1=(1,0,0), v2=(0.5,1,0), v3=(-1,0,0), v4=(-0.5,1,0); t0=(v1,v0,v2) left-fan; t1=(v0,v3,v4) right-fan; assert vertex_fan_disconnected v0; assert t1 not reachable from t0.
+- **Expected kernel behavior**: Branch 5 fires; `else` branch; mirror e2->t1 found; `e1->merge(e2)` resolves t2-side asymmetry.
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `triangle_not_reachable_from target=1 source=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me334.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me335 — pinch_merge_failed: non-manifold edge with 3 incident triangles, no valid mirror — pinch returns false (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.pinch / merge-failed)
+- **Sources**: MeshFix `Basic_TMesh.pinch` Branch 6 (*MERGE_FAILED*: `if (n == NULL) return false`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: T-junction: edge (v0,v1) incident on 3 triangles (fan toward v2, v3, v4). After scanning all adjacent edges from both v0 and v1 ring traversals, no boundary edge qualifies as a merge partner — n remains NULL. pinch() returns false.
+- **Reproducer recipe**: v0=(0,0,0), v1=(0,2,0), v2=(1,1,0), v3=(-1,1,0), v4=(0,1,1); t0=(v0,v1,v2), t1=(v0,v1,v3), t2=(v0,v1,v4); assert edge (v0,v1) n=3; all radial edges n=1.
+- **Expected kernel behavior**: Branch 6 fires; full ring scan exhausted; `if (n == NULL) return false`; pinch aborts.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=3`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me335.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me336 — pinch_cascade_v1: v1 still non-manifold after primary merge — recursive pinch(e_1,true) fires (Branch 7)
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.pinch / cascade-pinch-needed-v1)
+- **Sources**: MeshFix `Basic_TMesh.pinch` Branch 7 (*CASCADE_PINCH_NEEDED_V1*: `if (e_1 != NULL) pinch(e_1, true)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Vertex v0 is a triple-fan non-manifold pinch vertex. Fan A (t0,t1 sharing edge (v0,v2)), Fan B (t2 isolated at v0), Fan C (t3 isolated at v0). After the primary pinch merges Fan A with Fan B, v0 still has Fan C remaining non-manifold — Branch 7 fires to dispatch recursive pinch(e_1, true) at v0.
+- **Reproducer recipe**: v0=(0,0,0) triple-fan; Fan A: t0=(v0,v1,v2), t1=(v0,v2,v3); Fan B: t2=(v0,v4,v5); Fan C: t3=(v0,v6,v7); assert vertex_fan_disconnected v0; assert t2,t3 not reachable from t0.
+- **Expected kernel behavior**: Branch 7 fires; `if (e_1 != NULL) pinch(e_1, true)` called recursively to resolve remaining v1 non-manifold.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Mesh assertion**: `triangle_not_reachable_from target=3 source=0`
+- **Mesh assertion**: `triangle_not_reachable_from target=3 source=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[6,7] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,7] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me336.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me337 — pinch_cascade_v2: v2 still non-manifold after primary merge — recursive pinch(e_2,true) fires (Branch 8)
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.pinch / cascade-pinch-needed-v2)
+- **Sources**: MeshFix `Basic_TMesh.pinch` Branch 8 (*CASCADE_PINCH_NEEDED_V2*: `if (e_2 != NULL) pinch(e_2, true)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Mirror of Branch 7 but at the v2 endpoint. Vertex v1 (v2 in the algorithm) is a three-sector non-manifold fan: t0 includes v1, t1 is a disconnected sector at v1, t2 is a third disconnected sector. After the primary pinch resolves the defect at v0, v1 remains non-manifold — Branch 8 dispatches recursive pinch(e_2, true).
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0) cascade vertex; v2=(1,1,0), v3=(3,1,0), v4=(3,-1,0), v5=(2,-1.5,0), v6=(1,-1.5,0); t0=(v0,v1,v2), t1=(v1,v3,v4), t2=(v1,v5,v6); assert vertex_fan_disconnected v1; all triangles disconnected.
+- **Expected kernel behavior**: Branch 8 fires; `if (e_2 != NULL) pinch(e_2, true)` called recursively; cascade resolves v2-side non-manifold.
+- **Mesh assertion**: `vertex_fan_disconnected vertex=1`
+- **Mesh assertion**: `triangle_not_reachable_from target=1 source=0`
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,6] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me337.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me340 — init_info_array_allocation_triangles: duplicate triangle inflates t_info allocation size
 - **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.init / info-array-allocation)
 - **Sources**: MeshFix `Basic_TMesh.init` Branch 1 (*INFO_ARRAY_ALLOCATION_TRIANGLES*: `t_info = new void *[tin->T.numels()]`); `MESH_HEAL_COVERAGE.md`.

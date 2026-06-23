@@ -3134,40 +3134,40 @@ Fixture IDs: Me200 Me201 Me202 Me203 Me204 Me205 Me206 Me207 Me208 Me209
   - Fixture: Me218 — isolated vertex v3 not in any triangle; isolated_vertex
 
 ##### `Basic_TMesh.pinch` — lines 918–977
-(8 branches; all UNCOVERED — no mesh fixtures exist yet)
+(8 branches; ALL COVERED — wave 12B Me330–Me337)
 
-- **Branch 1** @ line 921 — *MISSING_INFO_FIELD*
+- **Branch 1** @ line 921 — *MISSING_INFO_FIELD* → **Me330**
   - What it tests: Edge e1 has no cached singular-edge-list in info field
   - Repair action: Return false (no pinch operation possible)
-  - Suggested fixture: defect mentioning 'List *ee = (List *)e1->info', 'if (ee == NULL)'
-- **Branch 2** @ line 926 — *NON_MANIFOLD_VERTEX_BOUNDARY*
+  - Fixture: Me330 — non-manifold edge (v0,v1) n=3; info==NULL; pinch returns false
+- **Branch 2** @ line 926 — *NON_MANIFOLD_VERTEX_BOUNDARY* → **Me331**
   - What it tests: Pinch with common vertex: e1->v1 has a boundary edge e2 with opposite endpoint matching e1->v2
   - Repair action: Merge e1 with e2 using e1->merge()
-  - Suggested fixture: defect mentioning 'if (with_common_vertex)', 'e2->isOnBoundary()', 'e1->merge(e2)'
-- **Branch 3** @ line 931 — *NON_MANIFOLD_VERTEX_NOT_FOUND*
+  - Fixture: Me331 — two coincident boundary edges (v0,v1)/(v3,v4) at same coords; merge stitches patches
+- **Branch 3** @ line 931 — *NON_MANIFOLD_VERTEX_NOT_FOUND* → **Me332**
   - What it tests: No matching boundary edge found from v1 perspective
   - Repair action: Fallback to search from e1->v2
-  - Suggested fixture: defect mentioning 'if (n == NULL)', 'e1->v2->e0 = e1'
-- **Branch 4** @ line 940 — *INTERIOR_EDGE_ASYMMETRY*
+  - Fixture: Me332 — bowtie v0; Fan A (t0,t1) + Fan B (t2) disconnected; v1-side scan fails; fallback from v2
+- **Branch 4** @ line 940 — *INTERIOR_EDGE_ASYMMETRY* → **Me333**
   - What it tests: Interior edge e1 with t1 attached: find mirror edge e2 with mismatched orientation
   - Repair action: Merge e1 and e2 if one is t1-incident and the other is t2-incident
-  - Suggested fixture: defect mentioning 'if (e1->t1 != NULL)', 'e2->t2 != NULL', 'e1->merge(e2)'
-- **Branch 5** @ line 944 — *INTERIOR_EDGE_ASYMMETRY*
+  - Fixture: Me333 — 3-triangle strip; (v1,v3) n=2 e1-t1 side; (v0,v3) n=2 mirror e2-t2 side; merge resolves
+- **Branch 5** @ line 944 — *INTERIOR_EDGE_ASYMMETRY* → **Me334**
   - What it tests: Interior edge e1 with only t2 attached: opposite condition
   - Repair action: Merge e1 with e2 if e2->t1 is present
-  - Suggested fixture: defect mentioning 'e2->t1 != NULL'
-- **Branch 6** @ line 949 — *MERGE_FAILED*
+  - Fixture: Me334 — bowtie v0; t0=(v1,v0,v2) t2-slot, t1=(v0,v3,v4) t1-slot; fan disconnected; merge resolves
+- **Branch 6** @ line 949 — *MERGE_FAILED* → **Me335**
   - What it tests: No valid mirror edge found (n remains NULL after loop)
   - Repair action: Return false; pinch operation aborted
-  - Suggested fixture: defect mentioning 'if (n == NULL) return false'
-- **Branch 7** @ line 956 — *CASCADE_PINCH_NEEDED_V1*
+  - Fixture: Me335 — T-junction (v0,v1) n=3; all 6 radial edges n=1; no merge partner; pinch returns false
+- **Branch 7** @ line 956 — *CASCADE_PINCH_NEEDED_V1* → **Me336**
   - What it tests: After merge, check if v1 has remaining non-manifold edges with cached info
   - Repair action: Recursively pinch(e_1, true) to resolve cascading non-manifoldness
-  - Suggested fixture: defect mentioning 'if (e_1 != NULL) pinch(e_1, true)'
-- **Branch 8** @ line 974 — *CASCADE_PINCH_NEEDED_V2*
+  - Fixture: Me336 — triple-fan v0; Fan A (t0,t1) + Fan B (t2) + Fan C (t3) disconnected; cascade fires
+- **Branch 8** @ line 974 — *CASCADE_PINCH_NEEDED_V2* → **Me337**
   - What it tests: After merge, check if v2 has remaining non-manifold edges with cached info
   - Repair action: Recursively pinch(e_2, true) to resolve cascading non-manifoldness at v2
-  - Suggested fixture: defect mentioning 'if (e_2 != NULL) pinch(e_2, true)'
+  - Fixture: Me337 — triple-fan v1; t0 + t1 + t2 all disconnected at v1; cascade at v2 fires
 
 
 #### `src/TMesh/tin.cpp`
