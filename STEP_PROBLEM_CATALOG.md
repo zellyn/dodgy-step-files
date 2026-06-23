@@ -31471,6 +31471,134 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me025.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me026 — all faces degenerate: entire mesh is zero-area collinear triangles
+- **Category**: §12.14 mesh defects (sub-class: degeneracy/all-faces)
+- **Sources**: CGAL `PMP.remove_degenerate_faces` Branch 2 @ line 2052 (*all-faces-degenerate*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: every triangle in the mesh is collinear (area exactly 0). Four triangles at y=0,1,2,3 are each three points on a horizontal line in z=0. The degenerate face set equals the full face set, triggering CGAL's remove-all-elements early-exit path (`degenerate_face_set.size() == faces_size`).
+- **Reproducer recipe**: 12 vertices on four parallel X-axis lines at y=0,1,2,3; four triangles each referencing three collinear points — every triangle has area=0.
+- **Expected kernel behavior**: detect the all-faces-degenerate condition; remove all elements without entering the main repair loop.
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-12`
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-12`
+- **Mesh assertion**: `triangle_area_lt triangle=2 lt=1e-12`
+- **Mesh assertion**: `triangle_area_lt triangle=3 lt=1e-12`
+- **Fixture path**: mesh-examples/12-14-mesh/Me026.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me027 — adjacent degenerate faces: two collinear triangles sharing an edge
+- **Category**: §12.14 mesh defects (sub-class: degeneracy/adjacent-faces)
+- **Sources**: CGAL `PMP.remove_degenerate_faces` Branch 3 @ line 2061 (*adjacent-degenerate-faces-missed*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: two collinear zero-area triangles share edge `(v1,v2)`. When repair is called on only the first triangle, the sanitize expansion walks `faces_to_visit` and must discover the adjacent degenerate triangle 1 (`is_range_full_mesh` / partial-range expansion branch). Triangle 2 is a non-degenerate control.
+- **Reproducer recipe**: four collinear vertices at x=0,1,2,3 (y=z=0); triangle 0 = `(v0,v1,v2)`, triangle 1 = `(v1,v2,v3)`, sharing edge `(1,2)`. Triangle 2 = clean control at y=1.
+- **Expected kernel behavior**: discover both adjacent degenerate faces in a single expansion pass; remove as a connected group.
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-12`
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me027.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me028 — border degenerate face: collinear zero-area triangle on open boundary
+- **Category**: §12.14 mesh defects (sub-class: degeneracy/border-face)
+- **Sources**: CGAL `PMP.remove_degenerate_faces` Branch 5 @ line 2118 (*border-degenerate-face*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: triangle 1 is a zero-area collinear triangle whose three edges are all boundary edges (each incident on exactly 1 face). It is isolated at the mesh boundary — the `is_border(opposite)` / `border_deg_faces` branch. Triangle 0 is a non-degenerate open-boundary control.
+- **Reproducer recipe**: triangle 0 = `(v0,v1,v2)` with non-collinear vertices; triangle 1 = `(v3,v4,v5)` with v3=(3,0,0), v4=(4,0,0), v5=(5,0,0) — collinear on the X axis, all edges boundary.
+- **Expected kernel behavior**: detect degenerate face on mesh boundary; handle via `border_deg_faces` queue separately from interior face removal.
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me028.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me029 — degenerate edge in face: triangle with a zero-length edge
+- **Category**: §12.14 mesh defects (sub-class: degeneracy/zero-length-edge)
+- **Sources**: CGAL `PMP.remove_degenerate_faces` Branch 6 @ line 2170 (*degenerate-edge-in-degenerate-face*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: triangle 1 contains a zero-length edge — vertices 3 and 4 share the exact same coordinates `(0.5, 1.0, 0.0)`. The edge `(v3,v4)` has length 0. CGAL `is_degenerate_edge` fires and `remove_degenerate_edges` is invoked before face removal. The triangle collapses to a line segment from the merged point to v5.
+- **Reproducer recipe**: triangle 0 = clean control; triangle 1 = `(v3,v4,v5)` where v3=(0.5,1,0) and v4=(0.5,1,0) (identical coordinates, distinct indices) and v5=(2,0,0).
+- **Expected kernel behavior**: detect zero-length edge `(v3,v4)` via `is_degenerate_edge`; invoke `remove_degenerate_edges` before attempting face-level Euler operators.
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-12`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[3,4] lt=1e-12`
+- **Fixture path**: mesh-examples/12-14-mesh/Me029.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me030 — degree-3 vertex cap: apex with exactly 3 incident triangles
+- **Category**: §12.14 mesh defects (sub-class: degeneracy/degree-3-cap)
+- **Sources**: CGAL `PMP.remove_degenerate_faces` Branch 7 @ line 2186 (*degree-3-vertex-in-cap*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: vertex 0 (the apex) is shared by exactly 3 triangles forming a nearly flat cap. CGAL detects the `degree==3` condition and removes the center vertex via `Euler::remove_center_vertex`, collapsing the 3 faces into a single triangle. The apex is at z=0.0001, making the cap almost planar.
+- **Reproducer recipe**: apex at `(0.5,0.333,0.0001)`; base triangle `vA=(0,0,0), vB=(1,0,0), vC=(0.5,0.666,0)`. Three fan triangles: `(apex,vA,vB)`, `(apex,vB,vC)`, `(apex,vC,vA)`. Apex has degree 3; each apex-to-base edge is shared by exactly 2 triangles; each outer base edge is a boundary edge.
+- **Expected kernel behavior**: detect degree-3 center vertex in cap; invoke `Euler::remove_center_vertex`; merge the 3 faces into the outer boundary triangle.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me030.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me031 — isolated degenerate face among healthy neighbors: flip-candidate branch
+- **Category**: §12.14 mesh defects (sub-class: degeneracy/isolated-flip-candidate)
+- **Sources**: CGAL `PMP.remove_degenerate_faces` Branch 8 @ line 2244 (*single-isolated-degenerate-face*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: a single zero-area collinear triangle (face 2) is surrounded by 4 non-degenerate fan triangles. No adjacent degenerate face exists, so `detect_cc_of_degenerate_triangles==false`. CGAL then attempts a longest-edge flip on the isolated face instead of collecting a connected component. Faces 0,1,3,4 are healthy fan triangles around the origin; face 2 = `(hub, collinear_a, collinear_b)` along the X axis.
+- **Reproducer recipe**: hub at `(0,0,0)`; 5 outer ring vertices (pentagon at unit radius); 4 normal fan triangles; face 2 uses collinear_a=(1,0,0) and collinear_b=(2,0,0) — degenerate along X.
+- **Expected kernel behavior**: detect isolated degenerate face with no degenerate neighbors; attempt longest-edge flip; apply or skip based on flip feasibility.
+- **Mesh assertion**: `triangle_area_lt triangle=2 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,7] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me031.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me032 — connected component of collinear faces: 3-triangle degenerate strip
+- **Category**: §12.14 mesh defects (sub-class: degeneracy/collinear-cc)
+- **Sources**: CGAL `PMP.remove_degenerate_faces` Branch 9 @ line 2319 (*connected-component-of-collinear-faces*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: three collinear zero-area triangles share edges and form a single connected component (`cc_faces`). All four vertices are on the X axis at x=0,1,2,3. Faces 0,1,2 are mutually connected via shared edges and form a degenerate disk-like component whose `boundary_hedges` can be collected for removal.
+- **Reproducer recipe**: v0-v3 collinear at x=0..3; face 0=`(v0,v1,v2)`, face 1=`(v1,v2,v3)`, face 2=`(v0,v2,v3)`; edge `(v1,v2)` shared by faces 0,1; edge `(v0,v2)` shared by faces 0,2; edge `(v2,v3)` shared by faces 1,2. Face 3 is a clean control.
+- **Expected kernel behavior**: collect cc_faces = {0,1,2}; walk boundary_hedges; attempt component removal as degenerate disk.
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-12`
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-12`
+- **Mesh assertion**: `triangle_area_lt triangle=2 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me032.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me033 — non-disk degenerate CC: collinear cluster with non-disk topology
+- **Category**: §12.14 mesh defects (sub-class: degeneracy/non-disk-cc)
+- **Sources**: CGAL `PMP.remove_degenerate_faces` Branch 10 @ line 2407 (*non-disk-topology-in-component*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: six collinear zero-area triangles are connected in a pattern that fails the topological disk test (v-e+f ≠ 1). Faces 0–3 form a linear strip; faces 4 and 5 add skip-one diagonal connections, creating a non-contractible loop in the cluster. CGAL marks the component as unremovable and continues the outer repair loop.
+- **Reproducer recipe**: v0-v5 at x=0..5 on the X axis; faces 0=`(v0,v1,v2)`, 1=`(v1,v2,v3)`, 2=`(v2,v3,v4)`, 3=`(v3,v4,v5)`, 4=`(v0,v2,v4)`, 5=`(v1,v3,v5)` — all zero area; interior edges `(v1,v2)`, `(v2,v3)`, `(v3,v4)` each shared by 2 faces.
+- **Expected kernel behavior**: collect degenerate CC; compute v-e+f; detect non-disk topology; skip removal and mark as unremovable.
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-12`
+- **Mesh assertion**: `triangle_area_lt triangle=5 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me033.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me034 — flip-impossible degenerate: edge shared 3-way, face removal fallback
+- **Category**: §12.14 mesh defects (sub-class: degeneracy/flip-impossible)
+- **Sources**: CGAL `PMP.remove_degenerate_faces` Branch 12 @ line 2256 (*edge-flip-impossible*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: a diamond quad (v0=top, v1=left, v2=bottom, v3=right) is split by two clean triangles along diagonal `(v1,v3)`. A degenerate collinear triangle (face 2) also uses edge `(v1,v3)` — the diagonal is now 3-way shared. CGAL attempts to flip the degenerate face's longest edge, but `(v1,v3)` already exists, making the flip impossible. The face is removed directly; `all_removed=false`.
+- **Reproducer recipe**: v0=(0.5,1,0), v1=(0,0,0), v2=(0.5,-1,0), v3=(1,0,0), v4=(0.5,0,0); face 0=`(v0,v1,v3)`, face 1=`(v2,v3,v1)`, face 2=`(v1,v4,v3)` — collinear degenerate; edge `(v1,v3)` shared by all three.
+- **Expected kernel behavior**: detect flip-impossible condition for edge `(v1,v3)`; fall back to direct face removal; flag `all_removed=false`.
+- **Mesh assertion**: `triangle_area_lt triangle=2 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=3`
+- **Fixture path**: mesh-examples/12-14-mesh/Me034.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me035 — border face removal: degenerate triangle on open boundary, direct remove_face
+- **Category**: §12.14 mesh defects (sub-class: degeneracy/border-face-removal)
+- **Sources**: CGAL `PMP.remove_degenerate_faces` Branch 13 @ line 2292 (*border-face-removal*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: a manifold strip of 3 clean triangles has an open boundary. A degenerate collinear triangle (face 3) is attached at the open boundary edge `(v3,v4)`. The opposite face across its longest edge is a null face (`GT::null_face()` — a true boundary). No flip is possible; CGAL removes the face directly via `remove_face`.
+- **Reproducer recipe**: strip of 3 clean triangles `(v0,v1,v2)`, `(v1,v3,v2)`, `(v1,v4,v3)`; degenerate face 3 = `(v3,v5,v4)` where v3=(1.5,1,0), v5=(1.75,0.5,0), v4=(2,0,0) — v5 is the midpoint of `(v3,v4)` so the three are collinear; face 3 shares edge `(v3,v4)` with face 2 but its remaining edges are boundary.
+- **Expected kernel behavior**: detect boundary face with null opposite; skip flip; invoke `remove_face` directly.
+- **Mesh assertion**: `triangle_area_lt triangle=3 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me035.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me036 — duplicate_polygons KEEP_ONE: three identical triangles, keep one remove two
 - **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
 - **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 1 @ line 946 (*erase_policy_selection*); `MESH_HEAL_COVERAGE.md`.

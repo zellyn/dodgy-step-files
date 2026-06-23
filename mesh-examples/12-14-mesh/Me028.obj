@@ -1,0 +1,10 @@
+# Me028: border degenerate face: collinear zero-area triangle on open boundary
+# defect_class: degenerate_triangle
+v 0 0 0
+v 1 0 0
+v 0.5 1 0
+v 3 0 0
+v 4 0 0
+v 5 0 0
+f 1 2 3
+f 4 5 6

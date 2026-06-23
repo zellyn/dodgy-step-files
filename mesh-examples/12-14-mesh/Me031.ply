@@ -1,0 +1,24 @@
+ply
+format ascii 1.0
+comment Me031: isolated degenerate face among healthy neighbors — flip-candidate branch
+comment defect_class: degenerate_triangle
+element vertex 8
+property float x
+property float y
+property float z
+element face 5
+property list uchar int vertex_indices
+end_header
+0 0 0
+1 0 0
+0.309016994375 0.951056516295 0
+-0.809016994375 0.587785252292 0
+-0.809016994375 -0.587785252292 0
+0.309016994375 -0.951056516295 0
+1 0 0
+2 0 0
+3 0 1 2
+3 0 2 3
+3 0 6 7
+3 0 3 4
+3 0 4 5

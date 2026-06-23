@@ -1,0 +1,67 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      3,
+      4,
+      5
+    ]
+  ],
+  "metadata": {
+    "id": "Me029",
+    "schema_version": 0,
+    "defect_class": "degenerate_triangle",
+    "title": "degenerate edge in face: triangle with a zero-length edge (v3==v4 coordinates)",
+    "assertions": [
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 1,
+        "lt": 1e-12
+      },
+      {
+        "kind": "vertex_pair_distance_lt",
+        "pair": [
+          3,
+          4
+        ],
+        "lt": 1e-12
+      }
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+# Me027: adjacent degenerate faces: two collinear triangles sharing an edge — expansion branch
+# defect_class: degenerate_triangle
+v 0 0 0
+v 1 0 0
+v 2 0 0
+v 3 0 0
+v 0 0 0
+v 1 0 0
+v 0.5 1 0
+f 1 2 3
+f 2 3 4
+f 5 6 7

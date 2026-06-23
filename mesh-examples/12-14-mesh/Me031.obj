@@ -1,0 +1,15 @@
+# Me031: isolated degenerate face among healthy neighbors — flip-candidate branch
+# defect_class: degenerate_triangle
+v 0 0 0
+v 1 0 0
+v 0.309016994375 0.951056516295 0
+v -0.809016994375 0.587785252292 0
+v -0.809016994375 -0.587785252292 0
+v 0.309016994375 -0.951056516295 0
+v 1 0 0
+v 2 0 0
+f 1 2 3
+f 1 3 4
+f 1 7 8
+f 1 4 5
+f 1 5 6

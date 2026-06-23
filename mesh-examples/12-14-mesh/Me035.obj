@@ -1,0 +1,12 @@
+# Me035: border face removal: degenerate triangle on open boundary — direct remove_face
+# defect_class: degenerate_triangle
+v 0 0 0
+v 1 0 0
+v 0.5 1 0
+v 1.5 1 0
+v 2 0 0
+v 1.75 0.5 0
+f 1 2 3
+f 2 4 3
+f 2 5 4
+f 4 6 5

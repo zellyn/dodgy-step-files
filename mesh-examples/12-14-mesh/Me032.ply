@@ -1,0 +1,22 @@
+ply
+format ascii 1.0
+comment Me032: connected component of collinear faces: 3-triangle degenerate strip
+comment defect_class: degenerate_triangle
+element vertex 7
+property float x
+property float y
+property float z
+element face 4
+property list uchar int vertex_indices
+end_header
+0 0 0
+1 0 0
+2 0 0
+3 0 0
+0 2 0
+1 2 0
+0.5 3 0
+3 0 1 2
+3 1 2 3
+3 0 2 3
+3 4 5 6
