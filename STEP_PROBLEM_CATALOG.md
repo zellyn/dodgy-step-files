@@ -33883,6 +33883,119 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me228.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me240 — negligible_size area_threshold_default: tiny component below bbox-derived area threshold
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / negligible-size)
+- **Sources**: CGAL `PMP.remove_connected_components_of_negligible_size` Branch 1 @ line 180 (*area-threshold-default-inference*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected components: a 4-triangle patch near the origin (component A) and a microscopic triangle at (10,10,0) with area ≈ 5e-5 (component B). When no explicit area threshold is supplied, Branch 1 computes `area_threshold = 0.01 * bbox_diagonal^2`. The tiny triangle's area is far below this default, so component B would be removed. Exercises `is_default_area_threshold` / `bbox_diagonal` inference path.
+- **Reproducer recipe**: v0-v4 form a pyramid patch (t0-t3); v5=(10,10,0), v6=(10.01,10,0), v7=(10,10.01,0) form the micro-triangle t4 (area≈5e-5).
+- **Expected kernel behavior**: infer area_threshold from bbox diagonal; micro-component area < threshold → flagged for removal.
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Mesh assertion**: `triangle_area_lt triangle=4 lt=0.001`
+- **Fixture path**: mesh-examples/12-14-mesh/Me240.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me241 — negligible_size volume_threshold_default: tiny closed component below bbox-derived volume threshold
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / negligible-size)
+- **Sources**: CGAL `PMP.remove_connected_components_of_negligible_size` Branch 2 @ line 181 (*volume-threshold-default-inference*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected closed components: a unit tetrahedron (component A) and a micro-tetrahedron at (20,20,20) with edge length 0.001 (volume ≈ 1.18e-10, component B). When no explicit volume threshold is supplied, Branch 2 computes `volume_threshold = 0.01 * bbox_diagonal^3`. Component B's volume is far below this default. Exercises `is_default_volume_threshold` / `bbox_diagonal` inference.
+- **Reproducer recipe**: unit tetrahedron at origin (t0-t3); micro-tetrahedron at (20,20,20) with s=0.001 (t4-t7).
+- **Expected kernel behavior**: infer volume_threshold from bbox diagonal; micro-component volume < threshold → flagged for removal.
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Mesh assertion**: `triangle_area_lt triangle=4 lt=1e-06`
+- **Mesh assertion**: `triangle_area_lt triangle=5 lt=1e-06`
+- **Fixture path**: mesh-examples/12-14-mesh/Me241.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me242 — negligible_size area_check: use_areas=true; small component below explicit area_threshold
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / negligible-size)
+- **Sources**: CGAL `PMP.remove_connected_components_of_negligible_size` Branch 3 @ line 223 (*area-check-applicability*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected components: a 4-triangle unit square (component A, area=2.0) and a tiny triangle at (10,10,0) with side 0.03 (area≈4.5e-4, component B). With explicit area_threshold=0.01, `use_areas` is true and Branch 3 (`if (use_areas)`) enables area-based per-component evaluation. Component B falls below threshold.
+- **Reproducer recipe**: v0-v5 form a 4-triangle unit-square patch (t0-t3); v6=(10,10,0), v7=(10.03,10,0), v8=(10,10.03,0) form the tiny triangle t4 (area≈4.5e-4).
+- **Expected kernel behavior**: use_areas=true; component areas computed; component B area < threshold → removed.
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Mesh assertion**: `triangle_area_lt triangle=4 lt=0.001`
+- **Fixture path**: mesh-examples/12-14-mesh/Me242.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me243 — negligible_size volume_check: use_volumes=true; tiny closed component below explicit volume_threshold
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / negligible-size)
+- **Sources**: CGAL `PMP.remove_connected_components_of_negligible_size` Branch 4 @ line 224 (*volume-check-applicability*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected closed components: a unit tetrahedron (component A, volume≈0.118) and a micro-tetrahedron at (15,15,15) with edge length 0.05 (volume≈1.47e-5, component B). With explicit volume_threshold=1e-3, `use_volumes` is true and Branch 4 (`if (use_volumes)`) enables volume-based per-component evaluation. Component B falls below threshold.
+- **Reproducer recipe**: unit tetrahedron at origin (t0-t3); micro-tetrahedron at (15,15,15) with s=0.05 (t4-t7).
+- **Expected kernel behavior**: use_volumes=true; component B is closed and volume < threshold → removed.
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Mesh assertion**: `triangle_area_lt triangle=4 lt=0.005`
+- **Mesh assertion**: `triangle_area_lt triangle=5 lt=0.005`
+- **Fixture path**: mesh-examples/12-14-mesh/Me243.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me244 — negligible_size no_criteria: !use_areas && !use_volumes → early return 0
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / negligible-size)
+- **Sources**: CGAL `PMP.remove_connected_components_of_negligible_size` Branch 5 @ line 226 (*threshold-criteria-absence*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected components: a unit-square patch (component A) and a tiny triangle at (50,50,0) (component B, area≈5e-5). When both area_threshold=0 and volume_threshold=0, neither `use_areas` nor `use_volumes` is set; Branch 5 (`if (!use_areas && !use_volumes) return 0`) fires immediately without any component being removed.
+- **Reproducer recipe**: two unit-square triangles (t0-t1); micro-triangle at (50,50,0) with side 0.01 (t2, area≈5e-5).
+- **Expected kernel behavior**: !use_areas && !use_volumes → return 0 before any computation; no removal occurs.
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Mesh assertion**: `triangle_area_lt triangle=2 lt=0.001`
+- **Fixture path**: mesh-examples/12-14-mesh/Me244.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me245 — negligible_size dry_run: collect-only mode; micro-component identified but mesh not mutated
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / negligible-size)
+- **Sources**: CGAL `PMP.remove_connected_components_of_negligible_size` Branch 6 @ line 237 (*dry-run-vs-mutation*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected components: a unit-square patch (component A) and a tiny triangle at (30,30,0) (component B, area≈5e-5). With `dry_run=true`, Branch 6 (`if (dry_run)`) collects removable faces into the output iterator but does NOT call `remove_faces` — the mesh remains intact. Only the count of removable faces is returned.
+- **Reproducer recipe**: two unit-square triangles (t0-t1); micro-triangle at (30,30,0) with side 0.01 (t2, area≈5e-5).
+- **Expected kernel behavior**: dry_run=true → collect but do not remove; mesh unchanged after call.
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Mesh assertion**: `triangle_area_lt triangle=2 lt=0.001`
+- **Fixture path**: mesh-examples/12-14-mesh/Me245.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me246 — negligible_size open_component: border edges detected; cc_closeness=false skips volume
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / negligible-size)
+- **Sources**: CGAL `PMP.remove_connected_components_of_negligible_size` Branch 7 @ line 265 (*volume-computation-closedness*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected components: a closed tetrahedron at the origin (component A, no border edges) and an open two-triangle strip at (10,10,10) with four boundary edges (component B). Branch 7 detects `is_border(h, tmesh)` for component B and sets `cc_closeness[B]=false`, preventing volume computation for that open surface.
+- **Reproducer recipe**: unit tetrahedron (t0-t3); open strip at (10,10,10): v4=(10,10,10), v5=(11,10,10), v6=(10.5,11,10), v7=(11.5,11,10); t4=(v4,v5,v6), t5=(v5,v7,v6) — shared edge (v5,v6); 4 boundary edges.
+- **Expected kernel behavior**: is_border detected for open strip; cc_closeness=false → volume skipped for component B.
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,7] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[6,7] n=1`
+- **Mesh assertion**: `hole_boundary loop=[4,5,7,6]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me246.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me247 — negligible_size volume_skip_open: non-closed component skips volume via !cc_closeness[i]
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / negligible-size)
+- **Sources**: CGAL `PMP.remove_connected_components_of_negligible_size` Branch 8 @ line 279 (*closed-component-volume-skip*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected components: a closed tetrahedron at origin (component A) and a small open two-triangle patch at (8,8,8) with boundary edges (component B). Branch 8 (`if (!cc_closeness[i]) continue`) skips volume computation for component B since it was marked non-closed by Branch 7. Component B is still removable by area criterion.
+- **Reproducer recipe**: unit tetrahedron (t0-t3); small open patch at (8,8,8): v4=(8,8,8), v5=(8.02,8,8), v6=(8.01,8.02,8), v7=(8.03,8.02,8); t4=(v4,v5,v6), t5=(v5,v7,v6) — shared edge (v5,v6); boundary loop [v4,v5,v7,v6].
+- **Expected kernel behavior**: !cc_closeness[i] → continue; volume loop skipped for open component; area criterion still applies.
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,6] n=2`
+- **Mesh assertion**: `hole_boundary loop=[4,5,7,6]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,6] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me247.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me248 — negligible_size removal_logic: tiny closed component satisfies area-or-volume removal OR-condition
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / negligible-size)
+- **Sources**: CGAL `PMP.remove_connected_components_of_negligible_size` Branch 9 @ line 316 (*area-or-volume-removal-logic*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected components: a unit tetrahedron at origin (component A, large) and a micro-tetrahedron at (5,5,5) with edge length 0.02 (component B). Component B satisfies both criteria: total face area ≈ 6.93e-4 < area_threshold 0.01, and volume ≈ 4.71e-8 < volume_threshold 1e-4. Branch 9's OR-condition fires: `(use_volumes && cc_closeness[i] && component_volumes[i] <= volume_threshold) || (use_areas && component_areas[i] <= area_threshold)`.
+- **Reproducer recipe**: unit tetrahedron (t0-t3); micro-tetrahedron at (5,5,5) with s=0.02 (t4-t7). Combined mesh: V=8, E=12, F=8, chi=4.
+- **Expected kernel behavior**: both area and volume criteria satisfied for component B → flagged for removal; Euler char V=8, E=12, F=8, chi=4.
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Mesh assertion**: `triangle_area_lt triangle=4 lt=0.001`
+- **Mesh assertion**: `triangle_area_lt triangle=5 lt=0.001`
+- **Mesh assertion**: `triangle_area_lt triangle=6 lt=0.001`
+- **Mesh assertion**: `triangle_area_lt triangle=7 lt=0.001`
+- **Mesh assertion**: `euler_characteristic v=8 e=12 f=8 chi=4`
+- **Fixture path**: mesh-examples/12-14-mesh/Me248.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me230 — topTriangle_component_flood_fill: BFS enqueues adjacent unvisited triangle
 - **Category**: §12.14 mesh defects (sub-class: topTriangle / component-flood-fill)
 - **Sources**: MeshFix `Basic_TMesh.topTriangle` Branch 1 (*component_flood_fill*: `!IS_BIT(t1,2)`); `MESH_HEAL_COVERAGE.md`.

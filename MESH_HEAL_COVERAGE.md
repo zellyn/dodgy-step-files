@@ -667,44 +667,44 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
   - Suggested fixture: defect mentioning 'if (i==0)', 'vh[1]=f[i]', 'vh[2]=f[(i+1)%3]'
 
 ##### `PMP.remove_connected_components_of_negligible_size` — lines 154–346
-(9 branches; all UNCOVERED — no mesh fixtures exist yet)
+(9 branches; ALL COVERED — Me240–Me248)
 
-- **Branch 1** @ line 180 — *area-threshold-default-inference*
+- **Branch 1** @ line 180 — *area-threshold-default-inference* — **Me240**
   - What it tests: whether area_threshold was supplied or must be computed from bbox
   - Repair action: compute 1% of bbox-diagonal-squared vs use explicit threshold
-  - Suggested fixture: defect mentioning 'is_default_area_threshold', 'bbox_diagonal'
-- **Branch 2** @ line 181 — *volume-threshold-default-inference*
+  - Fixture: Me240 — pyramid patch + micro-triangle at (10,10,0); default area threshold inferred from bbox diagonal
+- **Branch 2** @ line 181 — *volume-threshold-default-inference* — **Me241**
   - What it tests: whether volume_threshold was supplied or must be computed from bbox
   - Repair action: compute 1% of bbox-diagonal-cubed vs use explicit threshold
-  - Suggested fixture: defect mentioning 'is_default_volume_threshold', 'bbox_diagonal'
-- **Branch 3** @ line 223 — *area-check-applicability*
+  - Fixture: Me241 — unit tetrahedron + micro-tetrahedron at (20,20,20) with s=0.001; default volume threshold inferred from bbox
+- **Branch 3** @ line 223 — *area-check-applicability* — **Me242**
   - What it tests: whether area-based thresholding is enabled (non-zero or default)
   - Repair action: include area criterion in component-removal decision vs skip
-  - Suggested fixture: defect mentioning 'use_areas', 'area_threshold > 0'
-- **Branch 4** @ line 224 — *volume-check-applicability*
+  - Fixture: Me242 — 4-triangle unit-square patch + tiny triangle at (10,10,0); explicit area_threshold=0.01 → use_areas=true
+- **Branch 4** @ line 224 — *volume-check-applicability* — **Me243**
   - What it tests: whether volume-based thresholding is enabled (non-zero or default)
   - Repair action: include volume criterion in component-removal decision vs skip
-  - Suggested fixture: defect mentioning 'use_volumes', 'volume_threshold > 0'
-- **Branch 5** @ line 226 — *threshold-criteria-absence*
+  - Fixture: Me243 — unit tetrahedron + micro-tetrahedron at (15,15,15) with s=0.05; explicit volume_threshold=1e-3 → use_volumes=true
+- **Branch 5** @ line 226 — *threshold-criteria-absence* — **Me244**
   - What it tests: whether both area and volume thresholds are disabled
   - Repair action: return 0 (no removal) vs continue to computation
-  - Suggested fixture: defect mentioning '!use_areas && !use_volumes'
-- **Branch 6** @ line 237 — *dry-run-vs-mutation*
+  - Fixture: Me244 — unit square + micro-triangle at (50,50,0); both thresholds=0 → !use_areas && !use_volumes → return 0
+- **Branch 6** @ line 237 — *dry-run-vs-mutation* — **Me245**
   - What it tests: whether dry_run parameter is true (non-destructive mode)
   - Repair action: collect removable faces only vs actually remove them
-  - Suggested fixture: defect mentioning 'dry_run'
-- **Branch 7** @ line 265 — *volume-computation-closedness*
+  - Fixture: Me245 — unit square + micro-triangle at (30,30,0); dry_run=true → collect only, no removal
+- **Branch 7** @ line 265 — *volume-computation-closedness* — **Me246**
   - What it tests: whether each connected component is topologically closed (no border edges)
   - Repair action: mark as non-closed and skip volume computation vs include in volume calc
-  - Suggested fixture: defect mentioning 'is_border', 'cc_closeness'
-- **Branch 8** @ line 279 — *closed-component-volume-skip*
+  - Fixture: Me246 — closed tetrahedron + open two-triangle strip at (10,10,10); is_border detected → cc_closeness=false
+- **Branch 8** @ line 279 — *closed-component-volume-skip* — **Me247**
   - What it tests: whether a component is known to be non-closed before volume computation
   - Repair action: skip volume computation for open components
-  - Suggested fixture: defect mentioning '!cc_closeness[i]', 'continue'
-- **Branch 9** @ line 316 — *area-or-volume-removal-logic*
+  - Fixture: Me247 — closed tetrahedron + small open patch at (8,8,8); !cc_closeness[i] → continue; volume skipped
+- **Branch 9** @ line 316 — *area-or-volume-removal-logic* — **Me248**
   - What it tests: whether a component satisfies either volume-small (if closed) or area-small criterion
   - Repair action: mark for removal if either threshold exceeded
-  - Suggested fixture: defect mentioning '(use_volumes && cc_closeness[i] && component_volumes[i] <= volume_threshold)', '(use_areas && component_areas[i] <= area_threshold)'
+  - Fixture: Me248 — unit tetrahedron + micro-tetrahedron at (5,5,5) with s=0.02; both area AND volume criteria satisfied → OR-condition fires
 
 ##### `PMP.remove_self_intersections` — lines 2356–2527
 (15 branches; all UNCOVERED — no mesh fixtures exist yet)

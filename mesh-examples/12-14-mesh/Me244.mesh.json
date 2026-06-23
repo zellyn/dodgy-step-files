@@ -1,0 +1,74 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      1.0,
+      0.0
+    ],
+    [
+      0.0,
+      1.0,
+      0.0
+    ],
+    [
+      50.0,
+      50.0,
+      0.0
+    ],
+    [
+      50.01,
+      50.0,
+      0.0
+    ],
+    [
+      50.0,
+      50.01,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      2,
+      3
+    ],
+    [
+      4,
+      5,
+      6
+    ]
+  ],
+  "metadata": {
+    "id": "Me244",
+    "schema_version": 0,
+    "defect_class": "disconnected_components",
+    "title": "negligible_size no_criteria: !use_areas && !use_volumes \u2192 early return 0",
+    "assertions": [
+      {
+        "kind": "triangle_not_reachable_from",
+        "target": 2,
+        "source": 0
+      },
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 2,
+        "lt": 0.001
+      }
+    ]
+  }
+}

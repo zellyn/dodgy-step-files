@@ -1,0 +1,122 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      0.5,
+      0.333,
+      0.816
+    ],
+    [
+      8.0,
+      8.0,
+      8.0
+    ],
+    [
+      8.02,
+      8.0,
+      8.0
+    ],
+    [
+      8.01,
+      8.02,
+      8.0
+    ],
+    [
+      8.03,
+      8.02,
+      8.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      2,
+      1
+    ],
+    [
+      0,
+      1,
+      3
+    ],
+    [
+      1,
+      2,
+      3
+    ],
+    [
+      0,
+      3,
+      2
+    ],
+    [
+      4,
+      5,
+      6
+    ],
+    [
+      5,
+      7,
+      6
+    ]
+  ],
+  "metadata": {
+    "id": "Me247",
+    "schema_version": 0,
+    "defect_class": "disconnected_components",
+    "title": "negligible_size volume_skip_open: non-closed component skips volume via !cc_closeness[i]",
+    "assertions": [
+      {
+        "kind": "triangle_not_reachable_from",
+        "target": 4,
+        "source": 0
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          5,
+          6
+        ],
+        "n": 2
+      },
+      {
+        "kind": "hole_boundary",
+        "loop": [
+          4,
+          5,
+          7,
+          6
+        ]
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          4,
+          5
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          4,
+          6
+        ],
+        "n": 1
+      }
+    ]
+  }
+}

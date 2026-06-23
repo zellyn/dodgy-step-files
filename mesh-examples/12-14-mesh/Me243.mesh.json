@@ -1,0 +1,109 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      0.5,
+      0.333,
+      0.816
+    ],
+    [
+      15.0,
+      15.0,
+      15.0
+    ],
+    [
+      15.05,
+      15.0,
+      15.0
+    ],
+    [
+      15.025,
+      15.05,
+      15.0
+    ],
+    [
+      15.025,
+      15.016666666666667,
+      15.0408
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      2,
+      1
+    ],
+    [
+      0,
+      1,
+      3
+    ],
+    [
+      1,
+      2,
+      3
+    ],
+    [
+      0,
+      3,
+      2
+    ],
+    [
+      4,
+      6,
+      5
+    ],
+    [
+      4,
+      5,
+      7
+    ],
+    [
+      5,
+      6,
+      7
+    ],
+    [
+      4,
+      7,
+      6
+    ]
+  ],
+  "metadata": {
+    "id": "Me243",
+    "schema_version": 0,
+    "defect_class": "disconnected_components",
+    "title": "negligible_size volume_check: use_volumes=true; tiny closed component below explicit volume_threshold",
+    "assertions": [
+      {
+        "kind": "triangle_not_reachable_from",
+        "target": 4,
+        "source": 0
+      },
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 4,
+        "lt": 0.005
+      },
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 5,
+        "lt": 0.005
+      }
+    ]
+  }
+}
