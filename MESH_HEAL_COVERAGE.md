@@ -162,7 +162,7 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
   - Suggested fixture: defect mentioning 'null_face', 'opposite'
 
 ##### `PMP.connected_components` — lines 198–248
-(8 branches; all UNCOVERED — no mesh fixtures exist yet)
+(8 branches; ALL COVERED — Me290–Me297)
 
 - **Branch 1** @ line 224 — *Iteration_construct*
   - What it tests: Loop over range

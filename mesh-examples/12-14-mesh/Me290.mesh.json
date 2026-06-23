@@ -1,0 +1,89 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      50.0,
+      0.0,
+      0.0
+    ],
+    [
+      51.0,
+      0.0,
+      0.0
+    ],
+    [
+      50.5,
+      1.0,
+      0.0
+    ],
+    [
+      100.0,
+      0.0,
+      0.0
+    ],
+    [
+      101.0,
+      0.0,
+      0.0
+    ],
+    [
+      100.5,
+      1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      3,
+      4,
+      5
+    ],
+    [
+      6,
+      7,
+      8
+    ]
+  ],
+  "metadata": {
+    "id": "Me290",
+    "schema_version": 0,
+    "defect_class": "disconnected_components",
+    "title": "connected_components iteration_construct: outer for-loop visits three isolated triangle components",
+    "assertions": [
+      {
+        "kind": "triangle_not_reachable_from",
+        "target": 1,
+        "source": 0
+      },
+      {
+        "kind": "triangle_not_reachable_from",
+        "target": 2,
+        "source": 0
+      },
+      {
+        "kind": "triangle_not_reachable_from",
+        "target": 2,
+        "source": 1
+      }
+    ]
+  }
+}

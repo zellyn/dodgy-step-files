@@ -35497,3 +35497,121 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=7 e=12 f=6 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me316.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me290 — connected_components iteration_construct: outer for-loop visits three isolated triangle components
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / connected-components-labelling)
+- **Sources**: CGAL `PMP.connected_components` Branch 1 @ line 224 (*Iteration_construct*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three fully isolated single-triangle components (A at origin, B at x=50, C at x=100), sharing no edges or vertices. The outer for-loop in PMP.connected_components must iterate over all faces to seed a new BFS from each unhandled component. All three disconnected triangles force Branch 1 to fire three times.
+- **Reproducer recipe**: t0=(v0,v1,v2) at origin; t1=(v3,v4,v5) at x=50; t2=(v6,v7,v8) at x=100. No shared edges.
+- **Expected kernel behavior**: outer for-loop seeds 3 BFS traversals; assigns CC labels 0, 1, 2 to t0, t1, t2 respectively.
+- **Mesh assertion**: `triangle_not_reachable_from target=1 source=0`
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me290.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me291 — connected_components visited_face_dedup_outer: multi-face CC followed by isolated face exercises handled[] skip
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / connected-components-labelling)
+- **Sources**: CGAL `PMP.connected_components` Branch 2 @ line 226 (*Visited_vertex_dedup*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Component A is a 4-triangle pyramid fan (faces 0-3) all sharing apex v4; Component B is one isolated triangle (face 4). After BFS labels all 4 faces of A as handled, the outer for-loop finds face 4 unhandled (Branch 2 `!handled[get(fimap,f)]` fires) and seeds a new BFS.
+- **Reproducer recipe**: v0-v3 square base; v4 apex; t0=(v0,v1,v4), t1=(v1,v2,v4), t2=(v2,v3,v4), t3=(v3,v0,v4). t4=(v5,v6,v7) far away.
+- **Expected kernel behavior**: BFS from t0 labels t0-t3 handled; outer loop finds t4 unhandled and labels it CC 1.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=2`
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me291.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me292 — connected_components loop_control: 6-triangle fan forces BFS while-loop to cycle until exhausted
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / connected-components-labelling)
+- **Sources**: CGAL `PMP.connected_components` Branch 3 @ line 229 (*Loop_control*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Component A is a 6-triangle fan around a common apex (faces 0-5). The BFS while-loop starting from face 0 must cycle 6 times before the queue drains. An isolated triangle (face 6) forms component B.
+- **Reproducer recipe**: p0..p6 base vertices; apex at (3,3,0). tri[i]=(p[i],p[i+1],apex) for i=0..5. Isolated iso=(q0,q1,q2) at x=50.
+- **Expected kernel behavior**: BFS while-loop runs 6 iterations for component A; outer loop then seeds component B.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,7] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,7] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,7] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,7] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,7] n=2`
+- **Mesh assertion**: `triangle_not_reachable_from target=6 source=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me292.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me293 — connected_components visited_face_dedup_inner: diamond mesh where face f3 is discoverable from two BFS paths
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / connected-components-labelling)
+- **Sources**: CGAL `PMP.connected_components` Branch 4 @ line 234 (*Visited_vertex_dedup*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A diamond of 4 triangles (f0=top-left, f1=top-right, f2=bottom-left, f3=bottom-right) sharing central vertex v4. BFS from f0 discovers f1 and f2. Both f1 and f2 discover f3 — it is pushed to the BFS queue twice. Branch 4's `!handled[fq_id]` guard fires on the second encounter and skips re-labelling. An isolated triangle forms a second CC.
+- **Reproducer recipe**: v0=(1,2,0), v1=(0,0,0), v2=(2,0,0), v3=(1,-2,0), v4=(1,0,0). f0=(v0,v1,v4), f1=(v0,v4,v2), f2=(v1,v3,v4), f3=(v4,v3,v2). Isolated triangle at x=10.
+- **Expected kernel behavior**: f3 pushed twice to BFS queue; Branch 4 fires on second encounter and skips re-labelling.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me293.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me294 — connected_components inner_halfedge_iteration: center triangle discovers 3 neighbors via 3 halfedges
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / connected-components-labelling)
+- **Sources**: CGAL `PMP.connected_components` Branch 5 @ line 237 (*Iteration_construct*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A hexagonal fan: center triangle (face 0) surrounded by 3 inner rim triangles (faces 1-3), each with one outer triangle (faces 4-6). When BFS processes the center triangle, the inner for-loop over halfedges (Branch 5) iterates all 3 halfedges, discovering all 3 rim neighbors. An isolated noise triangle (face 7) forms a second CC.
+- **Reproducer recipe**: c0=(0,0,0), c1=(2,0,0), c2=(1,2,0); r0=(1,-2,0), r1=(3,1,0), r2=(-1,1,0); ro0=(-1,-2,0), ro1=(4,-1,0), ro2=(-2,3,0). center=(c0,c1,c2); rims and outers adjacent. Isolated noise at x=20.
+- **Expected kernel behavior**: BFS inner for-loop cycles 3 times per face; center's 3 halfedges discover 3 rim neighbors in one pass.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,5] n=2`
+- **Mesh assertion**: `triangle_not_reachable_from target=7 source=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me294.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me295 — connected_components logic_guard_ecmap: constrained interior edge creates CC boundary
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / connected-components-labelling)
+- **Sources**: CGAL `PMP.connected_components` Branch 6 @ line 239 (*Logic_guard*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles t0=(v0,v1,v2) and t1=(v0,v2,v3) share interior edge (v0,v2). When that edge is marked constrained in the ecmap, Branch 6's `get(ecmap, edge(h, pmesh))` check returns true and BFS does not cross it — each triangle becomes its own CC. Two additional isolated triangles complete the multi-CC scenario.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(1,1,0), v3=(0,1,0). t0=(v0,v1,v2); t1=(v0,v2,v3). Shared edge (v0,v2). Isolated t2 at x=5, t3 at x=10.
+- **Expected kernel behavior**: Branch 6 checks ecmap; constrained edge prevents BFS crossing; t0 and t1 receive different CC labels.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Mesh assertion**: `triangle_not_reachable_from target=3 source=0`
+- **Mesh assertion**: `triangle_not_reachable_from target=3 source=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me295.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me296 — connected_components null_face_check: open patch — BFS hits boundary halfedges with no opposite face
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / connected-components-labelling)
+- **Sources**: CGAL `PMP.connected_components` Branch 7 @ line 242 (*Null_face_check*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: An open 4-triangle patch (2x2 square subdivided through center vertex v4). Interior edges are shared by 2 triangles; all 4 outer boundary edges are incident on exactly 1 triangle — their opposite halfedge has GT::null_face(). BFS must invoke Branch 7 to skip null-face opposites. An isolated triangle (face 4) forms a second CC.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(2,2,0), v3=(0,2,0), v4=(1,1,0). t0=(v0,v1,v4); t1=(v1,v2,v4); t2=(v2,v3,v4); t3=(v3,v0,v4). Isolated t4 at x=10.
+- **Expected kernel behavior**: BFS visits boundary halfedges; Branch 7 guard skips GT::null_face() opposites without crash.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me296.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me297 — connected_components visited_face_dedup_cross_halfedge: hub-and-spoke mesh — BFS skips already-handled opposite faces
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / connected-components-labelling)
+- **Sources**: CGAL `PMP.connected_components` Branch 8 @ line 244 (*Visited_vertex_dedup*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A hub-and-spoke mesh: center triangle t0 adjacent to 3 rim triangles (t1-t3), each with one outer triangle (t4-t6). BFS from t0 pushes t1, t2, t3. When BFS processes t1, one halfedge leads back to t0 (already handled) — Branch 8's `!handled[get(fimap,fqo)]` guard fires and skips re-queuing. An isolated triangle (t7) forms a second CC.
+- **Reproducer recipe**: c0=(0,0,0), c1=(2,0,0), c2=(1,2,0); r0=(1,-2,0), r1=(3.5,1,0), r2=(-1.5,1,0); o0=(0,-3.5,0), o1=(4.5,-1,0), o2=(-3,2,0). t0=(c0,c1,c2); t1=(c0,r0,c1); t2=(c1,r1,c2); t3=(c2,r2,c0); t4=(c0,o0,r0); t5=(c1,r1,o1); t6=(c2,o2,r2). Isolated t7 at x=20.
+- **Expected kernel behavior**: rim triangles' back-halfedges to hub trigger Branch 8; already-handled hub face is skipped without re-queuing.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,5] n=2`
+- **Mesh assertion**: `triangle_not_reachable_from target=7 source=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me297.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
