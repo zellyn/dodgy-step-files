@@ -31746,6 +31746,123 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me049.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me060 — pinch_detection: hexagon (v0,v1,v2,v0,v3,v4) — v0 repeated at position 3
+- **Category**: §12.14 mesh defects (sub-class: pinched-polygon/pinch-detection)
+- **Sources**: CGAL `PMP.split_pinched_polygons_in_polygon_soup` Branch 5 @ line 241 (*pinch_detection*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: a 6-vertex polygon has its first vertex (v0) repeated at position 3, forming a figure-8 pinch. When the unique_points.insert() call fails at position 3, pinch_detection fires. The polygon splits into two triangles (v0,v1,v2) and (v0,v3,v4). Both sub-triangles meet at the pinch vertex v0, whose fan is disconnected — the two triangles share no edge, only the hub vertex.
+- **Reproducer recipe**: 5 vertices; hexagon index sequence (v0,v1,v2,v0,v3,v4); render as two triangles sharing only v0.
+- **Expected kernel behavior**: detect the failed insert at position 3; split into sub-polygon 1 (v0,v1,v2) and sub-polygon 2 (v0,v3,v4); push both to clean polygon list.
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Mesh assertion**: `triangle_not_reachable_from target=1 source=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me060.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me061 — split_polygon_1: heptagon pinched at v1 (positions 1 and 4) → triangle + quad
+- **Category**: §12.14 mesh defects (sub-class: pinched-polygon/split-polygon-1)
+- **Sources**: CGAL `PMP.split_pinched_polygons_in_polygon_soup` Branch 7 @ line 252 (*split_polygon_1*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: a 7-vertex polygon (v0,v1,v2,v3,v1,v4,v5) has v1 at positions 1 and 4. Branch 7 fires: split_polygon_1 = polygon[prev_id..i] = (v1,v2,v3,v1) which simplifies to triangle (v1,v2,v3). Branch 8 fires: split_polygon_2 = (v0,v1,v4,v5) [quad → 2 triangles]. The pinch vertex v1 connects both sub-polygon groups; its fan is disconnected.
+- **Reproducer recipe**: 6 vertices; heptagon (v0,v1,v2,v3,v1,v4,v5); triangle (v1,v2,v3) + quad (v0,v1,v4,v5).
+- **Expected kernel behavior**: slice polygon[1..4] to form first sub-polygon (triangle); wrap remainder into second sub-polygon (quad); push_back second.
+- **Mesh assertion**: `vertex_fan_disconnected vertex=1`
+- **Mesh assertion**: `triangle_not_reachable_from target=0 source=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me061.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me062 — polygon_replacement+new_polygon_append: heptagon (v0..v3,v0,v4,v5) → quad+triangle
+- **Category**: §12.14 mesh defects (sub-class: pinched-polygon/polygon-replacement)
+- **Sources**: CGAL `PMP.split_pinched_polygons_in_polygon_soup` Branches 9+10 @ lines 268–269 (*polygon_replacement*, *new_polygon_append*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: a 7-vertex polygon (v0,v1,v2,v3,v0,v4,v5) has v0 at positions 0 and 4. After split, Branch 9 fires: std::swap(polygon, split_polygon_1) replaces the current slot with quad (v0,v1,v2,v3). Branch 10 fires: polygons.push_back(split_polygon_2) appends triangle (v0,v4,v5). The pinch hub v0 links the quad (2 triangles) and the appended triangle.
+- **Reproducer recipe**: 6 vertices; heptagon (v0,v1,v2,v3,v0,v4,v5); quad triangulated as t0=(v0,v1,v2) t1=(v0,v2,v3); appended triangle t2=(v0,v4,v5).
+- **Expected kernel behavior**: swap original slot with split_polygon_1 (quad); immediately push_back split_polygon_2 (triangle) for re-processing.
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me062.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me063 — loop_break: polygon with two potential pinches; first pinch triggers break
+- **Category**: §12.14 mesh defects (sub-class: pinched-polygon/loop-break)
+- **Sources**: CGAL `PMP.split_pinched_polygons_in_polygon_soup` Branch 11 @ line 272 (*loop_break*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: a 7-vertex polygon (v0,v1,v2,v0,v3,v4,v5) has v0 at positions 0 and 3. The inner scan finds the pinch at position 3 and immediately breaks (Branch 11). A later potential pinch at a higher position is never scanned in this pass. split_polygon_1=(v0,v1,v2) is the immediate triangle; split_polygon_2=(v0,v3,v4,v5) is a clean quad pushed back for re-processing.
+- **Reproducer recipe**: 6 vertices; polygon (v0,v1,v2,v0,v3,v4,v5); after break: triangle (v0,v1,v2) + clean quad (v0,v3,v4,v5).
+- **Expected kernel behavior**: inner loop breaks immediately upon first failed insert; does not continue scanning for further pinches in the same polygon pass.
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Mesh assertion**: `triangle_not_reachable_from target=0 source=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me063.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me064 — small_polygon_skip: triangle (<=3 verts) skipped; adjacent hexagon is pinched
+- **Category**: §12.14 mesh defects (sub-class: pinched-polygon/small-polygon-skip)
+- **Sources**: CGAL `PMP.split_pinched_polygons_in_polygon_soup` Branch 2 @ line 225 (*small_polygon_skip*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: the polygon soup has a clean triangle (3 vertices — cannot be pinched) and a pinched hexagon. Branch 2 fires for the triangle: `if(ini_polygon_size <= 3)` is true, so it is skipped with `continue`. Only the hexagon (v3,v4,v5,v3,v6,v7) is scanned and split into (v3,v4,v5) and (v3,v6,v7).
+- **Reproducer recipe**: 8 vertices; polygon 0 = clean triangle (v0,v1,v2); polygon 1 = hexagon (v3,v4,v5,v3,v6,v7) with v3 repeated.
+- **Expected kernel behavior**: skip polygon 0 (size ≤ 3); scan and split polygon 1 at v3; push_back the second sub-triangle.
+- **Mesh assertion**: `triangle_not_reachable_from target=0 source=1`
+- **Mesh assertion**: `vertex_fan_disconnected vertex=3`
+- **Fixture path**: mesh-examples/12-14-mesh/Me064.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me065 — dynamic_polygon_iteration: double-pinched 9-gon grows polygon list via push_back cascade
+- **Category**: §12.14 mesh defects (sub-class: pinched-polygon/dynamic-polygon-iteration)
+- **Sources**: CGAL `PMP.split_pinched_polygons_in_polygon_soup` Branch 1 @ line 215 (*dynamic_polygon_iteration*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: a 9-vertex polygon has v0 at positions 0, 3, and 6. The inner loop breaks at the first pinch (position 3), splits into triangle (v0,v1,v2) and a new pinched hexagon (v0,v3,v4,v0,v5,v6) pushed back. The outer loop re-evaluates polygons.size() (Branch 1) and finds the new entry, then processes it to produce two more triangles. All three final triangles share only the hub v0 with a three-way disconnected fan.
+- **Reproducer recipe**: 7 vertices; original polygon has v0 thrice; after two split passes: triangles (v0,v1,v2), (v0,v3,v4), (v0,v5,v6).
+- **Expected kernel behavior**: outer loop uses polygons.size() as upper bound, not a fixed snapshot; grows to process push_back'd polygons in subsequent iterations.
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Mesh assertion**: `triangle_not_reachable_from target=1 source=0`
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me065.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me066 — point_uniqueness_check: 7-gon (v0..v4,v2,v5) — pinch found at map position 5
+- **Category**: §12.14 mesh defects (sub-class: pinched-polygon/point-uniqueness-check)
+- **Sources**: CGAL `PMP.split_pinched_polygons_in_polygon_soup` Branch 4 @ line 234 (*point_uniqueness_check*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: a 7-vertex polygon (v0,v1,v2,v3,v4,v2,v5) has v2 at positions 2 and 5. The unique_points map builds up through positions 0–4 (all successful inserts, each triggering Branch 4). At position 5, v2's insert fails → pinch detected. split_polygon_1=(v2,v3,v4) [triangle]; split_polygon_2=(v2,v5,v0,v1) [quad → 2 triangles]. Five successful insert calls before the failure demonstrate Branch 4's repeated firing.
+- **Reproducer recipe**: 6 vertices; heptagon (v0,v1,v2,v3,v4,v2,v5); v2 at positions 2 and 5.
+- **Expected kernel behavior**: insert vertices 0–4 into unique_points without failure; fail at position 5; split at prev_id=2.
+- **Mesh assertion**: `vertex_fan_disconnected vertex=2`
+- **Mesh assertion**: `triangle_not_reachable_from target=0 source=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me066.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me067 — pinch_split_boundary: 8-gon with pinch at positions 1 and 6 → pentagon + triangle
+- **Category**: §12.14 mesh defects (sub-class: pinched-polygon/pinch-split-boundary)
+- **Sources**: CGAL `PMP.split_pinched_polygons_in_polygon_soup` Branch 6 @ line 249 (*pinch_split_boundary*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: an 8-vertex polygon (v0,v1,v2,v3,v4,v5,v1,v6) has v1 at positions 1 and 6. Branch 6 fires: prev_id = is_insert_successful.first->second = 1. split_polygon_1 = polygon[1..6] = (v1,v2,v3,v4,v5) [pentagon → 3 triangles via fan]. split_polygon_2 = polygon[6..7]+polygon[0..1] = (v1,v6,v0) [triangle]. The map lookup at a large distance (5 positions back) exercises the prev_id retrieval.
+- **Reproducer recipe**: 7 vertices; octagon (v0,v1,v2,v3,v4,v5,v1,v6); v1 first seen at position 1, repeated at position 6.
+- **Expected kernel behavior**: look up prev_id=1 from unique_points map; slice polygon[1..6] for first sub-polygon; wrap remainder for second.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `vertex_fan_disconnected vertex=1`
+- **Mesh assertion**: `triangle_not_reachable_from target=3 source=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me067.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me068 — pinch_detection: 4-vertex polygon (v0,v1,v2,v0) — minimum pinchable; yields one triangle
+- **Category**: §12.14 mesh defects (sub-class: pinched-polygon/minimum-pinchable)
+- **Sources**: CGAL `PMP.split_pinched_polygons_in_polygon_soup` Branch 5 @ line 241 (*pinch_detection*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: a 4-vertex polygon (v0,v1,v2,v0) is the minimum-size polygon that can be pinched (Branch 2 skips ≤3 vertices). v0 is repeated at positions 0 and 3. split_polygon_1 = (v0,v1,v2,v0) → simplify → (v0,v1,v2) [triangle]. split_polygon_2 = (v0) [trivial, skipped by small_polygon_skip]. A clean companion triangle is also in the soup, exercising the iteration past the split result.
+- **Reproducer recipe**: 6 vertices; polygon 0 = 4-vertex pinched (v0,v1,v2,v0); polygon 1 = clean triangle (v3,v4,v5).
+- **Expected kernel behavior**: detect v0 repetition at position 3; split to triangle + trivial 1-vertex polygon; discard trivial sub-polygon via Branch 2.
+- **Mesh assertion**: `triangle_not_reachable_from target=1 source=0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me068.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me069 — new_polygon_append cascade: two independently pinched hexagons each trigger push_back
+- **Category**: §12.14 mesh defects (sub-class: pinched-polygon/new-polygon-append)
+- **Sources**: CGAL `PMP.split_pinched_polygons_in_polygon_soup` Branch 10 @ line 269 (*new_polygon_append*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: the polygon soup contains two independently pinched hexagons. Polygon 0 = (v0,v1,v2,v0,v3,v4) and Polygon 1 = (v5,v6,v7,v5,v8,v9). Each triggers Branch 10 separately: push_back of the second sub-triangle. Both pinch hubs (v0 and v5) end up with disconnected vertex fans. The two polygon groups are completely disconnected from each other.
+- **Reproducer recipe**: 10 vertices; two hexagons 5 units apart in X; each splits into two triangles via push_back.
+- **Expected kernel behavior**: process polygon 0 → push_back split_polygon_2 (t1); continue to polygon 1 → push_back its split_polygon_2 (t3); then process both appended triangles (clean → skip).
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Mesh assertion**: `vertex_fan_disconnected vertex=5`
+- **Mesh assertion**: `triangle_not_reachable_from target=1 source=0`
+- **Mesh assertion**: `triangle_not_reachable_from target=3 source=2`
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me069.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me070 — duplicate_singular_vertices: minimal bowtie — 2-fan vertex in XY plane
 - **Category**: §12.14 mesh defects (sub-class: non-manifold vertex / singular vertex)
 - **Sources**: CGAL `PMP.Polygon_soup_orienter.duplicate_singular_vertices` Branches 1–5 (*incident_polygon_collection*, *vertex_iteration*, *link_cc_count*, *non_manifold_vertex*); `MESH_HEAL_COVERAGE.md`.

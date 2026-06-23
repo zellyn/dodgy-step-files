@@ -542,52 +542,41 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
   - Suggested fixture: defect mentioning '++simplified_polygons_n'
 
 ##### `PMP.split_pinched_polygons_in_polygon_soup` — lines 201–278
-(11 branches; all UNCOVERED — no mesh fixtures exist yet)
+(11 branches; **COVERED** — Me060–Me069)
 
-- **Branch 1** @ line 215 — *dynamic_polygon_iteration*
+- **Branch 1** @ line 215 — *dynamic_polygon_iteration* → **Me065**
   - What it tests: Iterate through polygons with dynamic size (new ones added during loop)
   - Repair action: re-evaluate polygons.size() each iteration
-  - Suggested fixture: defect mentioning 'for(P_ID polygon_index=0; polygon_index < polygons.size()'
-- **Branch 2** @ line 225 — *small_polygon_skip*
+- **Branch 2** @ line 225 — *small_polygon_skip* → **Me064**
   - What it tests: Polygon has 3 or fewer points (can't be pinched)
   - Repair action: continue to next polygon
-  - Suggested fixture: defect mentioning 'if(ini_polygon_size <= 3)'
-- **Branch 3** @ line 229 — *precondition_check*
+- **Branch 3** @ line 229 — *precondition_check* — SKIPPED (CGAL_assertion internal; not observable from geometry)
   - What it tests: Polygon must not have consecutive duplicates
   - Repair action: CGAL_assertion fails if violated
-  - Suggested fixture: defect mentioning 'CGAL_assertion(!simplify_polygon'
-- **Branch 4** @ line 234 — *point_uniqueness_check*
+- **Branch 4** @ line 234 — *point_uniqueness_check* → **Me066**
   - What it tests: For each point in polygon, check if already encountered
   - Repair action: insert into unique_points map
-  - Suggested fixture: defect mentioning 'unique_points.insert', 'is_insert_successful'
-- **Branch 5** @ line 241 — *pinch_detection*
+- **Branch 5** @ line 241 — *pinch_detection* → **Me060**, **Me068**
   - What it tests: Insert failed - point seen before in this polygon
   - Repair action: split polygon at that point
-  - Suggested fixture: defect mentioning 'if(!is_insert_successful.second)'
-- **Branch 6** @ line 249 — *pinch_split_boundary*
+- **Branch 6** @ line 249 — *pinch_split_boundary* → **Me067**
   - What it tests: Locate previous occurrence of pinched point
   - Repair action: prev_id = is_insert_successful.first->second
-  - Suggested fixture: defect mentioning 'const std::size_t prev_id'
-- **Branch 7** @ line 252 — *split_polygon_1*
+- **Branch 7** @ line 252 — *split_polygon_1* → **Me061**
   - What it tests: Create first sub-polygon from prev_id to current index
   - Repair action: Polygon_3 split_polygon_1(polygon.begin() + prev_id, ...)
-  - Suggested fixture: defect mentioning 'Polygon_3 split_polygon_1'
-- **Branch 8** @ line 255 — *split_polygon_2*
+- **Branch 8** @ line 255 — *split_polygon_2* → **Me061** (paired with Branch 7)
   - What it tests: Create second sub-polygon wrapping around the pinch
   - Repair action: Combine begin..prev_id and i..end segments
-  - Suggested fixture: defect mentioning 'Polygon_3 split_polygon_2'
-- **Branch 9** @ line 268 — *polygon_replacement*
+- **Branch 9** @ line 268 — *polygon_replacement* → **Me062**
   - What it tests: Swap original with first sub-polygon
   - Repair action: std::swap(polygon, split_polygon_1)
-  - Suggested fixture: defect mentioning 'std::swap(polygon, split_polygon_1)'
-- **Branch 10** @ line 269 — *new_polygon_append*
+- **Branch 10** @ line 269 — *new_polygon_append* → **Me062**, **Me063**, **Me069**
   - What it tests: Append second sub-polygon for re-processing
   - Repair action: polygons.push_back(split_polygon_2)
-  - Suggested fixture: defect mentioning 'polygons.push_back(split_polygon_2)'
-- **Branch 11** @ line 272 — *loop_break*
+- **Branch 11** @ line 272 — *loop_break* → **Me063**
   - What it tests: Exit inner loop after split detected
   - Repair action: break to next polygon iteration
-  - Suggested fixture: defect mentioning 'break;'
 
 
 #### `(multiple: repair_self_intersections.h, self_intersections.h, autorefinement.h, repair.h)`

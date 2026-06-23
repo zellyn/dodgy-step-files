@@ -1,0 +1,78 @@
+{
+  "vertices": [
+    [
+      5.0,
+      0.0,
+      0.0
+    ],
+    [
+      6.0,
+      0.0,
+      0.0
+    ],
+    [
+      5.5,
+      1.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      -1.0,
+      0.0,
+      0.0
+    ],
+    [
+      -0.5,
+      1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      3,
+      4,
+      5
+    ],
+    [
+      3,
+      6,
+      7
+    ]
+  ],
+  "metadata": {
+    "id": "Me064",
+    "schema_version": 0,
+    "defect_class": "pinched_polygon",
+    "title": "small_polygon_skip: triangle (<=3 verts) skipped; adjacent hexagon is pinched",
+    "assertions": [
+      {
+        "kind": "triangle_not_reachable_from",
+        "target": 0,
+        "source": 1
+      },
+      {
+        "kind": "vertex_fan_disconnected",
+        "vertex": 3
+      }
+    ]
+  }
+}

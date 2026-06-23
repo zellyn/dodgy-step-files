@@ -1,0 +1,107 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      -1.0,
+      0.0,
+      0.0
+    ],
+    [
+      -0.5,
+      1.0,
+      0.0
+    ],
+    [
+      5.0,
+      0.0,
+      0.0
+    ],
+    [
+      6.0,
+      0.0,
+      0.0
+    ],
+    [
+      5.5,
+      1.0,
+      0.0
+    ],
+    [
+      4.0,
+      0.0,
+      0.0
+    ],
+    [
+      4.5,
+      1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      3,
+      4
+    ],
+    [
+      5,
+      6,
+      7
+    ],
+    [
+      5,
+      8,
+      9
+    ]
+  ],
+  "metadata": {
+    "id": "Me069",
+    "schema_version": 0,
+    "defect_class": "pinched_polygon",
+    "title": "new_polygon_append cascade: two independently pinched hexagons each trigger push_back",
+    "assertions": [
+      {
+        "kind": "vertex_fan_disconnected",
+        "vertex": 0
+      },
+      {
+        "kind": "vertex_fan_disconnected",
+        "vertex": 5
+      },
+      {
+        "kind": "triangle_not_reachable_from",
+        "target": 1,
+        "source": 0
+      },
+      {
+        "kind": "triangle_not_reachable_from",
+        "target": 3,
+        "source": 2
+      },
+      {
+        "kind": "triangle_not_reachable_from",
+        "target": 2,
+        "source": 0
+      }
+    ]
+  }
+}

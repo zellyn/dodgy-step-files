@@ -1,0 +1,68 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.5,
+      1.0,
+      0.0
+    ],
+    [
+      1.5,
+      1.5,
+      0.0
+    ],
+    [
+      1.0,
+      -1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      2,
+      3,
+      4
+    ],
+    [
+      2,
+      5,
+      0
+    ],
+    [
+      2,
+      0,
+      1
+    ]
+  ],
+  "metadata": {
+    "id": "Me066",
+    "schema_version": 0,
+    "defect_class": "pinched_polygon",
+    "title": "point_uniqueness_check: 7-gon (v0..v4,v2,v5) \u2014 pinch found at map position 5",
+    "assertions": [
+      {
+        "kind": "vertex_fan_disconnected",
+        "vertex": 2
+      },
+      {
+        "kind": "triangle_not_reachable_from",
+        "target": 0,
+        "source": 1
+      }
+    ]
+  }
+}

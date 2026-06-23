@@ -1,0 +1,68 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.5,
+      1.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.5,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      1,
+      2,
+      3
+    ],
+    [
+      0,
+      1,
+      4
+    ],
+    [
+      0,
+      4,
+      5
+    ]
+  ],
+  "metadata": {
+    "id": "Me061",
+    "schema_version": 0,
+    "defect_class": "pinched_polygon",
+    "title": "split_polygon_1: heptagon pinched at v1 (pos 1 and 4) \u2192 triangle + quad sub-polygons",
+    "assertions": [
+      {
+        "kind": "vertex_fan_disconnected",
+        "vertex": 1
+      },
+      {
+        "kind": "triangle_not_reachable_from",
+        "target": 0,
+        "source": 1
+      }
+    ]
+  }
+}

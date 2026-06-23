@@ -1,0 +1,68 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      -0.5,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.5,
+      0.0
+    ],
+    [
+      -1.0,
+      -0.5,
+      0.0
+    ],
+    [
+      -1.0,
+      0.5,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      2,
+      3
+    ],
+    [
+      0,
+      4,
+      5
+    ]
+  ],
+  "metadata": {
+    "id": "Me062",
+    "schema_version": 0,
+    "defect_class": "pinched_polygon",
+    "title": "polygon_replacement+new_polygon_append: heptagon (v0..v3,v0,v4,v5) \u2192 quad+triangle",
+    "assertions": [
+      {
+        "kind": "vertex_fan_disconnected",
+        "vertex": 0
+      },
+      {
+        "kind": "triangle_not_reachable_from",
+        "target": 2,
+        "source": 0
+      }
+    ]
+  }
+}

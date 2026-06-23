@@ -1,0 +1,58 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      -1.0,
+      0.0,
+      0.0
+    ],
+    [
+      -0.5,
+      1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      3,
+      4
+    ]
+  ],
+  "metadata": {
+    "id": "Me060",
+    "schema_version": 0,
+    "defect_class": "pinched_polygon",
+    "title": "pinch_detection: hexagon (v0,v1,v2,v0,v3,v4) \u2014 v0 repeated at position 3",
+    "assertions": [
+      {
+        "kind": "vertex_fan_disconnected",
+        "vertex": 0
+      },
+      {
+        "kind": "triangle_not_reachable_from",
+        "target": 1,
+        "source": 0
+      }
+    ]
+  }
+}

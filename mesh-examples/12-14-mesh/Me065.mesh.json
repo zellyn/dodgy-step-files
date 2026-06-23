@@ -1,0 +1,78 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.7,
+      0.7,
+      0.0
+    ],
+    [
+      0.0,
+      1.0,
+      0.0
+    ],
+    [
+      -0.7,
+      0.7,
+      0.0
+    ],
+    [
+      -1.0,
+      0.0,
+      0.0
+    ],
+    [
+      -0.7,
+      -0.7,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      3,
+      4
+    ],
+    [
+      0,
+      5,
+      6
+    ]
+  ],
+  "metadata": {
+    "id": "Me065",
+    "schema_version": 0,
+    "defect_class": "pinched_polygon",
+    "title": "dynamic_polygon_iteration: double-pinched 9-gon grows polygon list via push_back cascade",
+    "assertions": [
+      {
+        "kind": "vertex_fan_disconnected",
+        "vertex": 0
+      },
+      {
+        "kind": "triangle_not_reachable_from",
+        "target": 1,
+        "source": 0
+      },
+      {
+        "kind": "triangle_not_reachable_from",
+        "target": 2,
+        "source": 0
+      }
+    ]
+  }
+}
