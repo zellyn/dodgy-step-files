@@ -135,6 +135,72 @@ class MeshFile:
             "vertex": int(v),
         })
 
+    def assert_duplicate_triangle_pair(self, ta: int, tb: int) -> None:
+        """Catalog triangles ``ta`` and ``tb`` as having identical
+        vertex-index sets (duplicate-triangle defect). The oracle compares
+        sorted vertex triples so rotation/reflection are also caught."""
+        self.assertions.append({
+            "kind": "duplicate_triangle_pair",
+            "triangles": [int(ta), int(tb)],
+        })
+
+    def assert_triangle_normal_z_negative(self, idx: int) -> None:
+        """Catalog triangle ``idx`` as having a normal whose Z component is
+        negative — evidence of CW (inward) winding for faces in the XY plane
+        (inverted-normals defect)."""
+        self.assertions.append({
+            "kind": "triangle_normal_z_negative",
+            "triangle": int(idx),
+        })
+
+    def assert_vertex_on_edge(self, v: int, a: int, b: int) -> None:
+        """Catalog vertex ``v`` as lying exactly on the line segment between
+        vertices ``a`` and ``b`` (T-junction defect). The oracle checks that
+        the cross product (v-a)×(b-a) is zero and v is between a and b."""
+        self.assertions.append({
+            "kind": "vertex_on_edge",
+            "vertex": int(v),
+            "edge": [int(a), int(b)],
+        })
+
+    def assert_triangle_aspect_ratio_gt(self, idx: int, gt: float) -> None:
+        """Catalog triangle ``idx`` as having aspect ratio (longest edge /
+        shortest altitude) greater than ``gt`` (needle/sliver defect)."""
+        self.assertions.append({
+            "kind": "triangle_aspect_ratio_gt",
+            "triangle": int(idx),
+            "gt": float(gt),
+        })
+
+    def assert_vertex_fan_disconnected(self, v: int) -> None:
+        """Catalog vertex ``v`` as having a disconnected triangle fan —
+        i.e. the triangles incident on ``v`` form two or more groups with
+        no shared edge between groups (non-manifold-vertex / bowtie defect)."""
+        self.assertions.append({
+            "kind": "vertex_fan_disconnected",
+            "vertex": int(v),
+        })
+
+    def assert_adjacent_triangles_inconsistent_winding(self, ta: int, tb: int) -> None:
+        """Catalog triangles ``ta`` and ``tb`` as sharing an edge but having
+        antiparallel normals (inconsistent-face-orientation defect). The
+        oracle computes both normals and checks that their dot product is
+        negative."""
+        self.assertions.append({
+            "kind": "adjacent_triangles_inconsistent_winding",
+            "triangles": [int(ta), int(tb)],
+        })
+
+    def assert_triangle_not_reachable_from(self, target: int, source: int) -> None:
+        """Catalog triangle ``target`` as unreachable from ``source`` by
+        walking shared edges (disconnected-component defect). The oracle does
+        a BFS/DFS from ``source`` and verifies ``target`` is never visited."""
+        self.assertions.append({
+            "kind": "triangle_not_reachable_from",
+            "target": int(target),
+            "source": int(source),
+        })
+
     # ----- Serialization -----
 
     def to_dict(self) -> dict[str, Any]:

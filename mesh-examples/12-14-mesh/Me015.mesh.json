@@ -1,0 +1,44 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      1,
+      1,
+      2
+    ]
+  ],
+  "metadata": {
+    "id": "Me015",
+    "schema_version": 0,
+    "defect_class": "polygon_with_repeated_vertex",
+    "title": "polygon with repeated vertex: triangle 1 is (v1, v1, v2) \u2014 degenerate",
+    "assertions": [
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 1,
+        "lt": 1e-12
+      }
+    ]
+  }
+}

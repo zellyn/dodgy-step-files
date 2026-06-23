@@ -1,0 +1,9 @@
+# Me006: duplicate triangle: triangles 1 and 2 share identical vertex tuple
+# defect_class: duplicate_triangles
+v 0 0 0
+v 1 0 0
+v 0.5 1 0
+v 0.5 -1 0
+f 1 4 2
+f 1 2 3
+f 1 2 3

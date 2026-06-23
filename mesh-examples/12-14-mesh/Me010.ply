@@ -1,0 +1,19 @@
+ply
+format ascii 1.0
+comment Me010: sliver triangle: aspect ratio > 500, needle aligned along X
+comment defect_class: needle_triangle
+element vertex 6
+property float x
+property float y
+property float z
+element face 2
+property list uchar int vertex_indices
+end_header
+0 0 0
+1 0 0
+0.5 1 0
+0 -1 0
+1 -1 0
+0.5 -0.999 0
+3 0 1 2
+3 3 4 5

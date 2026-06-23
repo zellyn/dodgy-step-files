@@ -52,9 +52,26 @@ def _triangle_area(p0: list[float], p1: list[float], p2: list[float]) -> float:
     return 0.5 * math.sqrt(cx * cx + cy * cy + cz * cz)
 
 
+def _triangle_normal(p0: list[float], p1: list[float], p2: list[float]) -> tuple[float, float, float]:
+    """Return the (un-normalized) normal vector (cross product) of a triangle."""
+    ux, uy, uz = p1[0] - p0[0], p1[1] - p0[1], p1[2] - p0[2]
+    vx, vy, vz = p2[0] - p0[0], p2[1] - p0[1], p2[2] - p0[2]
+    return (uy * vz - uz * vy, uz * vx - ux * vz, ux * vy - uy * vx)
+
+
 def _vertex_distance(p0: list[float], p1: list[float]) -> float:
     dx, dy, dz = p1[0] - p0[0], p1[1] - p0[1], p1[2] - p0[2]
     return math.sqrt(dx * dx + dy * dy + dz * dz)
+
+
+def _triangle_adjacency(triangles: list[list[int]]) -> dict[tuple[int, int], list[int]]:
+    """Map each canonical edge to the list of triangle indices incident on it."""
+    adj: dict[tuple[int, int], list[int]] = {}
+    for ti, tri in enumerate(triangles):
+        for a, b in ((tri[0], tri[1]), (tri[1], tri[2]), (tri[2], tri[0])):
+            edge = (min(a, b), max(a, b))
+            adj.setdefault(edge, []).append(ti)
+    return adj
 
 
 def _check_assertion(assertion: dict, vertices: list, triangles: list) -> dict:
@@ -117,6 +134,127 @@ def _check_assertion(assertion: dict, vertices: list, triangles: list) -> dict:
         return {
             "status": "pass" if v not in used else "fail",
             "detail": f"vertex {v} {'unreferenced' if v not in used else 'in triangles'}",
+        }
+    if kind == "duplicate_triangle_pair":
+        ta, tb = assertion["triangles"]
+        key_a = tuple(sorted(triangles[ta]))
+        key_b = tuple(sorted(triangles[tb]))
+        match = key_a == key_b
+        return {
+            "status": "pass" if match else "fail",
+            "detail": f"triangle {ta} sorted={key_a}, triangle {tb} sorted={key_b}",
+        }
+    if kind == "triangle_normal_z_negative":
+        idx = assertion["triangle"]
+        tri = triangles[idx]
+        nx, ny, nz = _triangle_normal(vertices[tri[0]], vertices[tri[1]], vertices[tri[2]])
+        return {
+            "status": "pass" if nz < 0.0 else "fail",
+            "detail": f"triangle {idx} normal z={nz:.6g} (expected < 0)",
+        }
+    if kind == "vertex_on_edge":
+        v = assertion["vertex"]
+        a, b = assertion["edge"]
+        pv, pa, pb = vertices[v], vertices[a], vertices[b]
+        # (pv - pa) × (pb - pa) must be ~zero, and t ∈ [0,1].
+        dx, dy, dz = pb[0] - pa[0], pb[1] - pa[1], pb[2] - pa[2]
+        ex, ey, ez = pv[0] - pa[0], pv[1] - pa[1], pv[2] - pa[2]
+        cx = ey * dz - ez * dy
+        cy = ez * dx - ex * dz
+        cz = ex * dy - ey * dx
+        cross_len = math.sqrt(cx * cx + cy * cy + cz * cz)
+        edge_len = math.sqrt(dx * dx + dy * dy + dz * dz)
+        # t = (pv-pa)·(pb-pa) / |pb-pa|²
+        dot = ex * dx + ey * dy + ez * dz
+        t = dot / (dx * dx + dy * dy + dz * dz) if edge_len > 0 else -1.0
+        on_line = cross_len < 1e-9 * max(edge_len, 1.0)
+        in_range = 0.0 <= t <= 1.0
+        return {
+            "status": "pass" if (on_line and in_range) else "fail",
+            "detail": (f"vertex {v} on edge ({a},{b}): cross_len={cross_len:.3g} t={t:.4g}"
+                       f" on_line={on_line} in_range={in_range}"),
+        }
+    if kind == "triangle_aspect_ratio_gt":
+        idx = assertion["triangle"]
+        gt = assertion["gt"]
+        tri = triangles[idx]
+        p0, p1, p2 = vertices[tri[0]], vertices[tri[1]], vertices[tri[2]]
+        area = _triangle_area(p0, p1, p2)
+        e0 = _vertex_distance(p0, p1)
+        e1 = _vertex_distance(p1, p2)
+        e2 = _vertex_distance(p2, p0)
+        longest = max(e0, e1, e2)
+        # Aspect ratio: longest_edge / (2 * inradius) where inradius = area / s,
+        # s = semi-perimeter. Equivalently: longest * (e0+e1+e2) / (4 * area).
+        s = (e0 + e1 + e2)
+        if area < 1e-30:
+            ratio = float("inf")
+        else:
+            ratio = longest * s / (4.0 * area)
+        return {
+            "status": "pass" if ratio > gt else "fail",
+            "detail": f"triangle {idx} aspect_ratio={ratio:.4g} (expected > {gt})",
+        }
+    if kind == "vertex_fan_disconnected":
+        v = assertion["vertex"]
+        # Build list of triangles incident on v.
+        incident = [ti for ti, tri in enumerate(triangles) if v in tri]
+        if len(incident) < 2:
+            return {
+                "status": "fail",
+                "detail": f"vertex {v} has only {len(incident)} incident triangle(s); bowtie needs ≥2",
+            }
+        # BFS over incident triangles connected by shared non-v edges.
+        adj = _triangle_adjacency(triangles)
+        visited = {incident[0]}
+        queue = [incident[0]]
+        while queue:
+            ti = queue.pop()
+            for a, b in ((triangles[ti][0], triangles[ti][1]),
+                          (triangles[ti][1], triangles[ti][2]),
+                          (triangles[ti][2], triangles[ti][0])):
+                edge = (min(a, b), max(a, b))
+                for nb in adj.get(edge, []):
+                    if nb in incident and nb not in visited:
+                        visited.add(nb)
+                        queue.append(nb)
+        disconnected = len(visited) < len(incident)
+        return {
+            "status": "pass" if disconnected else "fail",
+            "detail": (f"vertex {v}: {len(incident)} incident triangles, "
+                       f"{len(visited)} reachable from first → "
+                       f"{'disconnected fan' if disconnected else 'fully connected fan'}"),
+        }
+    if kind == "adjacent_triangles_inconsistent_winding":
+        ta, tb = assertion["triangles"]
+        tri_a, tri_b = triangles[ta], triangles[tb]
+        na = _triangle_normal(vertices[tri_a[0]], vertices[tri_a[1]], vertices[tri_a[2]])
+        nb = _triangle_normal(vertices[tri_b[0]], vertices[tri_b[1]], vertices[tri_b[2]])
+        dot = na[0] * nb[0] + na[1] * nb[1] + na[2] * nb[2]
+        return {
+            "status": "pass" if dot < 0.0 else "fail",
+            "detail": f"triangles {ta} and {tb} normal dot={dot:.6g} (expected < 0 for inconsistent winding)",
+        }
+    if kind == "triangle_not_reachable_from":
+        source = assertion["source"]
+        target = assertion["target"]
+        adj = _triangle_adjacency(triangles)
+        visited = {source}
+        queue = [source]
+        while queue:
+            ti = queue.pop()
+            for a, b in ((triangles[ti][0], triangles[ti][1]),
+                          (triangles[ti][1], triangles[ti][2]),
+                          (triangles[ti][2], triangles[ti][0])):
+                edge = (min(a, b), max(a, b))
+                for nb in adj.get(edge, []):
+                    if nb not in visited:
+                        visited.add(nb)
+                        queue.append(nb)
+        reachable = target in visited
+        return {
+            "status": "pass" if not reachable else "fail",
+            "detail": f"triangle {target} {'reachable' if reachable else 'not reachable'} from {source}",
         }
     return {"status": "unknown", "detail": f"unknown assertion kind {kind!r}"}
 

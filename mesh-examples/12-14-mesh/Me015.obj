@@ -1,0 +1,7 @@
+# Me015: polygon with repeated vertex: triangle 1 is (v1, v1, v2) — degenerate
+# defect_class: polygon_with_repeated_vertex
+v 0 0 0
+v 1 0 0
+v 0.5 1 0
+f 1 2 3
+f 2 2 3

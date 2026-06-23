@@ -1,0 +1,64 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0
+    ],
+    [
+      1.0,
+      -1.0,
+      0.0
+    ],
+    [
+      0.5,
+      -0.999,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      3,
+      4,
+      5
+    ]
+  ],
+  "metadata": {
+    "id": "Me010",
+    "schema_version": 0,
+    "defect_class": "needle_triangle",
+    "title": "sliver triangle: aspect ratio > 500, needle aligned along X",
+    "assertions": [
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 1,
+        "lt": 0.001
+      },
+      {
+        "kind": "triangle_aspect_ratio_gt",
+        "triangle": 1,
+        "gt": 100.0
+      }
+    ]
+  }
+}

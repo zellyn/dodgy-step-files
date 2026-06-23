@@ -1,0 +1,62 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      -1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      4,
+      3
+    ],
+    [
+      3,
+      4,
+      2
+    ]
+  ],
+  "metadata": {
+    "id": "Me009",
+    "schema_version": 0,
+    "defect_class": "t_junction",
+    "title": "T-junction: vertex 3 lies on edge (v0,v2) of triangle 0 but is not listed in it",
+    "assertions": [
+      {
+        "kind": "vertex_on_edge",
+        "vertex": 3,
+        "edge": [
+          0,
+          2
+        ]
+      }
+    ]
+  }
+}

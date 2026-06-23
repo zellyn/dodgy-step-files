@@ -1,0 +1,43 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      5.0,
+      5.0,
+      5.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ]
+  ],
+  "metadata": {
+    "id": "Me008",
+    "schema_version": 0,
+    "defect_class": "isolated_vertex",
+    "title": "isolated vertex: vertex 3 has no incident triangle",
+    "assertions": [
+      {
+        "kind": "isolated_vertex",
+        "vertex": 3
+      }
+    ]
+  }
+}

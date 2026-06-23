@@ -1,0 +1,10 @@
+# Me009: T-junction: vertex 3 lies on edge (v0,v2) of triangle 0 but is not listed in it
+# defect_class: t_junction
+v 0 0 0
+v 0.5 1 0
+v 1 0 0
+v 0.5 0 0
+v 0.5 -1 0
+f 1 2 3
+f 1 5 4
+f 4 5 3

@@ -1,0 +1,9 @@
+# Me011: non-manifold vertex (bowtie): two triangle fans share only vertex 0
+# defect_class: non_manifold_vertex
+v 0 0 0
+v 1 1 0
+v -1 1 0
+v 1 -1 0
+v -1 -1 0
+f 1 2 3
+f 1 4 5

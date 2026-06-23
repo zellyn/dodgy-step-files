@@ -1,0 +1,10 @@
+# Me007: inverted normals: tetrahedron with all faces wound inward (CW)
+# defect_class: inverted_normals
+v 0 0 0
+v 1 0 0
+v 0.5 1 0
+v 0.5 0.5 1
+f 1 3 2
+f 1 4 3
+f 1 2 4
+f 2 3 4

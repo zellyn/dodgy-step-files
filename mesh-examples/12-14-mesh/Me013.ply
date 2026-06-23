@@ -1,0 +1,23 @@
+ply
+format ascii 1.0
+comment Me013: boundary gap (thin): two patches share near-coincident boundary displaced by 2e-7
+comment defect_class: boundary_gap_thin
+element vertex 8
+property float x
+property float y
+property float z
+element face 4
+property list uchar int vertex_indices
+end_header
+0 0 0
+1 0 0
+1 1 0
+0 1 0
+1.0000002 0 0
+1.0000002 1 0
+2 0 0
+2 1 0
+3 0 1 2
+3 0 2 3
+3 4 6 7
+3 4 7 5

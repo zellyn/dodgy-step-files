@@ -31263,6 +31263,106 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me005.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me006 — duplicate triangles: two triangles with identical vertex tuples
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: `MESH_DEFECT_TAXONOMY.md` #1 (`duplicate_triangles`); CGAL `merge_duplicate_polygons_in_polygon_soup`; MeshFix `removeDuplicatedTriangles`.
+- **Description**: triangles 1 and 2 in the list both reference vertex indices `(0, 1, 2)` in the same winding order. Redundant faces inflate face counts, break Euler characteristic checks (χ = V − E + F loses a face without losing edges), and cause double-lighting artefacts in rendering pipelines.
+- **Reproducer recipe**: 4 vertices; face 0 = `(0,3,1)` (control); face 1 = `(0,1,2)`; face 2 = `(0,1,2)` — exact copy of face 1.
+- **Expected kernel behavior**: detect and remove the duplicate face; CGAL and MeshFix both handle this in their polygon-soup repair passes.
+- **Mesh assertion**: `duplicate_triangle_pair triangles=[1, 2]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me006.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me007 — inverted normals: tetrahedron with all faces wound inward (CW)
+- **Category**: §12.14 mesh defects (sub-class: orientation/inverted)
+- **Sources**: `MESH_DEFECT_TAXONOMY.md` #14 (`inverted_normals`); CGAL `is_outward_oriented`, `orient_to_bound_a_volume`; MeshFix `forceNormalConsistence`.
+- **Description**: a closed tetrahedron whose four faces are all wound clockwise when viewed from outside. The mesh is topologically valid and manifold, but every face normal points inward; the implied signed volume is negative. CGAL `is_outward_oriented` returns False; `orient_to_bound_a_volume` must flip all faces.
+- **Reproducer recipe**: standard tetrahedron with vertices at `(0,0,0), (1,0,0), (0.5,1,0), (0.5,0.5,1)`; every face has its last two vertices swapped relative to CCW order, so all normals point inward.
+- **Expected kernel behavior**: detect inward orientation via signed-volume test and flip all faces; never treat an inward-wound mesh as a valid solid.
+- **Mesh assertion**: `triangle_normal_z_negative triangle=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me007.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me008 — isolated vertex: vertex 3 has no incident triangle
+- **Category**: §12.14 mesh defects (sub-class: topology/isolated)
+- **Sources**: `MESH_DEFECT_TAXONOMY.md` #8 (`isolated_vertex`); CGAL `remove_isolated_vertices`, `remove_isolated_points_in_polygon_soup`.
+- **Description**: vertex 3 at `(5,5,5)` is present in the vertex list but is not referenced by any triangle. It pollutes vertex-count-based Euler characteristic checks and wastes memory in index structures. CGAL `remove_isolated_vertices` silently removes it.
+- **Reproducer recipe**: 4 vertices; single triangle referencing vertices 0, 1, 2; vertex 3 is an orphan unreferenced by any face.
+- **Expected kernel behavior**: detect unreferenced vertices and remove them or report them separately from mesh topology checks.
+- **Mesh assertion**: `isolated_vertex vertex=3`
+- **Fixture path**: mesh-examples/12-14-mesh/Me008.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me009 — T-junction: vertex 3 lies exactly on edge (v0, v2) of triangle 0
+- **Category**: §12.14 mesh defects (sub-class: precision/T-junction)
+- **Sources**: `MESH_DEFECT_TAXONOMY.md` #22 (`t_junction`); CGAL `Snapping::snap`; MeshFix `meshclean` (partial).
+- **Description**: vertex 3 is the exact midpoint of the segment from `v0=(0,0,0)` to `v2=(1,0,0)`, which is an edge of triangle 0. Triangles 1 and 2 meet at v3 on the opposite side, but triangle 0 has no knowledge of v3 — its edge `(v0, v2)` passes through v3 without listing it. This causes topological cracks in shading and CSG, as the patch boundary on one side does not match the topology on the other.
+- **Reproducer recipe**: triangle 0 = `(v0, v1, v2)`; v3 = midpoint of `(v0, v2)`; triangle 1 = `(v0, v4, v3)`; triangle 2 = `(v3, v4, v2)`.
+- **Expected kernel behavior**: detect that v3 lies on edge `(v0, v2)` and split that edge to insert v3, creating a topologically watertight seam.
+- **Mesh assertion**: `vertex_on_edge vertex=3 edge=[0, 2]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me009.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me010 — sliver triangle: aspect ratio > 100, needle aligned along X
+- **Category**: §12.14 mesh defects (sub-class: degeneracy/needle)
+- **Sources**: `MESH_DEFECT_TAXONOMY.md` #5 (`needle_triangle`); CGAL `is_needle_triangle_face`, `remove_almost_degenerate_faces`; MeshFix `strongDegeneracyRemoval`.
+- **Description**: triangle 1 is a needle-sliver with base ~1.0 unit and altitude 0.001 units, giving aspect ratio (longest-edge × semi-perimeter / (4 × area)) ≈ 500. The face normal is numerically unstable; barycentric computations and normal interpolation will amplify floating-point error. CGAL `is_needle_triangle_face` flags it; `remove_almost_degenerate_faces` collapses it.
+- **Reproducer recipe**: clean control triangle `(0,0,0),(1,0,0),(0.5,1,0)`; needle triangle `(0,-1,0),(1,-1,0),(0.5,-0.999,0)` — base 1.0, altitude 0.001.
+- **Expected kernel behavior**: detect triangles with aspect ratio above threshold and either collapse the short edge or split the long one.
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-3`; `triangle_aspect_ratio_gt triangle=1 gt=100.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me010.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me011 — non-manifold vertex (bowtie): two triangle fans share only vertex 0
+- **Category**: §12.14 mesh defects (sub-class: topology/non-manifold)
+- **Sources**: `MESH_DEFECT_TAXONOMY.md` #10 (`non_manifold_vertex`); CGAL `duplicate_non_manifold_vertices`; MeshFix `duplicateNonManifoldVertices`.
+- **Description**: vertex 0 is a "bowtie" or "pinch" vertex — two triangles share it but no edge connects them through it. The local triangle fan splits into two disconnected groups; half-edge data structures that assume a 2-manifold vertex star will corrupt their fan traversal. CGAL `duplicate_non_manifold_vertices` splits v0 into two copies, one per fan.
+- **Reproducer recipe**: vertex 0 at origin; upper fan triangle `(0,1,2)` with v1=(1,1,0), v2=(-1,1,0); lower fan triangle `(0,3,4)` with v3=(1,-1,0), v4=(-1,-1,0) — no shared edge, only shared vertex 0.
+- **Expected kernel behavior**: detect disconnected vertex fans and duplicate the pinch vertex; treat each fan as a separate surface patch.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`; `edge_shared_by_n_triangles edge=[0,3] n=1`; `vertex_fan_disconnected vertex=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me011.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me012 — inconsistent face orientation: triangle 2 wound CW inside CCW mesh
+- **Category**: §12.14 mesh defects (sub-class: orientation/inconsistent)
+- **Sources**: `MESH_DEFECT_TAXONOMY.md` #26 (`flipped_face_in_otherwise_consistent_mesh`), also #13 (`inconsistent_face_orientation`); CGAL `orient`, `reverse_face_orientations`; MeshFix `forceNormalConsistence`.
+- **Description**: a 4-triangle patch has three faces wound CCW (normal +Z) and one face wound CW (normal -Z). Triangles 2 and 3 share edge `(v1,v5)` but their normals are antiparallel (dot product < 0), causing a visible seam in shading and incorrect CSG Boolean results.
+- **Reproducer recipe**: 6 vertices on a 2×2 grid; face 0 = `(v0,v1,v3)`, face 1 = `(v1,v4,v3)` — both CCW; face 2 = `(v1,v5,v2)` — CW (swapped from `(v1,v2,v5)`); face 3 = `(v1,v5,v4)` — CCW. Faces 2 and 3 share edge `(v1,v5)` with opposite normals.
+- **Expected kernel behavior**: propagate consistent orientation (e.g. BFS from any seed face) and flip triangle 2 to match its neighbors.
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[2, 3]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me012.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me013 — boundary gap (thin): two patches share near-coincident boundary displaced by 2e-7
+- **Category**: §12.14 mesh defects (sub-class: precision/gap)
+- **Sources**: `MESH_DEFECT_TAXONOMY.md` #12 (`boundary_gap_thin`); CGAL `stitch_borders`, `merge_duplicated_vertices_in_boundary_cycles`; MeshFix `mergeCoincidentEdges`.
+- **Description**: patch A (faces 0-1) and patch B (faces 2-3) share a boundary that should be welded along x=1. The boundary vertices on patch B (`v4, v5`) are displaced from their counterparts on patch A (`v1, v2`) by 2e-7 in X — half the typical CAD tolerance of 1e-6 — leaving a topological crack. Each patch has an open boundary cycle incident to only one face.
+- **Reproducer recipe**: patch A uses vertices `(0,0,0),(1,0,0),(1,1,0),(0,1,0)`; patch B uses vertices `(1+2e-7,0,0),(1+2e-7,1,0),(2,0,0),(2,1,0)`. Boundary edges `(v1,v2)` and `(v4,v5)` are 2e-7 apart.
+- **Expected kernel behavior**: snap eps-coincident boundary vertices together and stitch the boundary cycles into a watertight seam.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-6`; `vertex_pair_distance_lt pair=[2,5] lt=1e-6`; `edge_shared_by_n_triangles edge=[1,2] n=1`; `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me013.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me014 — disconnected components: large patch plus tiny noise triangle 100 units away
+- **Category**: §12.14 mesh defects (sub-class: topology/disconnected)
+- **Sources**: `MESH_DEFECT_TAXONOMY.md` #17 (`disconnected_components`); CGAL `keep_largest_connected_components`, `remove_connected_components_of_negligible_size`; MeshFix `removeSmallestComponents`.
+- **Description**: faces 0-3 form a closed pyramid patch near the origin; face 4 is a tiny triangle at `(100,100,100)` with no shared vertices or edges connecting it to the first shell. Shell traversal from face 0 can never reach face 4 by shared-edge walk; the component is a floating noise island common in scan-reconstruction output.
+- **Reproducer recipe**: pyramid: 5 vertices, 4 triangles (v0-v4); noise: 3 vertices at `(100,100,100)`, `(100.01,100,100)`, `(100,100.01,100)`, 1 triangle — no shared elements.
+- **Expected kernel behavior**: identify connected components, compute per-component area or volume, and remove components below a negligible-size threshold.
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me014.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me015 — polygon with repeated vertex: triangle 1 lists vertex 1 twice
+- **Category**: §12.14 mesh defects (sub-class: degeneracy/repeated-index)
+- **Sources**: `MESH_DEFECT_TAXONOMY.md` #21 (`polygon_with_repeated_vertex`); CGAL `repair_polygon_soup`.
+- **Description**: triangle 1 has vertex index list `(1, 1, 2)` — vertex 1 appears twice. The face collapses to a line segment with zero area and undefined normal. Every traversal that assumes `i0 ≠ i1 ≠ i2` will produce undefined normals or divide-by-zero in barycentric coordinate computations. CGAL `repair_polygon_soup` detects and removes polygons with repeated indices.
+- **Reproducer recipe**: 3 vertices; face 0 = `(0,1,2)` (clean control); face 1 = `(1,1,2)` — vertex 1 appears at both positions 0 and 1.
+- **Expected kernel behavior**: scan face index lists for repeated entries and remove or split the degenerate face before any normal or barycentric computation.
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-12`
+- **Fixture path**: mesh-examples/12-14-mesh/Me015.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Wr052 — Writer emits EDGE_CURVE backed by untrimmed LINE entity
 - **Category**: §12.13 writer-pathology (sub-class: unbounded-curve emission)
 - **Sources**: Pattern-mined from OCCT/tests/bugs/step/bug32817_1 (LGPL-clean — pattern only, no bytes copied). OCCT method `STEPControl_Writer::Transfer` on a single-line edge.

@@ -1,0 +1,56 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      0.5,
+      -1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      3,
+      1
+    ],
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      1,
+      2
+    ]
+  ],
+  "metadata": {
+    "id": "Me006",
+    "schema_version": 0,
+    "defect_class": "duplicate_triangles",
+    "title": "duplicate triangle: triangles 1 and 2 share identical vertex tuple",
+    "assertions": [
+      {
+        "kind": "duplicate_triangle_pair",
+        "triangles": [
+          1,
+          2
+        ]
+      }
+    ]
+  }
+}
