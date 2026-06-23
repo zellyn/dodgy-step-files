@@ -1536,7 +1536,7 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
   - Suggested fixture: defect mentioning 'GetGeomTraits', 'geom_traits'
 
 ##### `triangulate_hole_polyline.with_third_points` — lines 719–801
-(9 branches; all UNCOVERED — no mesh fixtures exist yet)
+(9 branches; ALL COVERED — Me320–Me328 wave 12A)
 
 - **Branch 1** @ line 729 — *empty_input_guard*
   - What it tests: Zero-point hole boundary

@@ -35498,6 +35498,147 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me316.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me320 — with_third_points_empty_input_guard: zero-point hole boundary returns output iterator unchanged (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: holeFilling / triangulate_hole_polyline / with_third_points / empty-input-guard)
+- **Sources**: CGAL PMP `triangulate_hole_polyline.with_third_points` Branch 1 (*empty_input_guard*: `if (points.empty()) return out;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A single isolated vertex with no triangles — the mesh state when the hole-boundary polyline has zero points. When points.empty() is true the function returns the output iterator unchanged and no triangles are created. Branch 1 fires immediately on entry.
+- **Reproducer recipe**: v0=(0,0,0); no triangles; assert_isolated_vertex(0); euler v=1 e=0 f=0 chi=1.
+- **Expected kernel behavior**: Branch 1 fires; output iterator returned unchanged; no triangulation performed.
+- **Mesh assertion**: `isolated_vertex vertex=0`
+- **Mesh assertion**: `euler_characteristic v=1 e=0 f=0 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me320.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me321 — with_third_points_cdt2_compile_disabled: CGAL_HOLE_FILLING_DO_NOT_USE_CDT2 skips CDT2 path (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: holeFilling / triangulate_hole_polyline / with_third_points / compile-time-feature-disable-cdt2)
+- **Sources**: CGAL PMP `triangulate_hole_polyline.with_third_points` Branch 2 (*compile_time_feature_disable*: `#ifndef CGAL_HOLE_FILLING_DO_NOT_USE_CDT2`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A single open triangle (v0,v1,v2) with all three edges as boundary edges — representing the triangular hole that CDT2 would normally fill. When CGAL_HOLE_FILLING_DO_NOT_USE_CDT2 is defined at compile-time the entire CDT2 code block is skipped; only the DT3/cubic fallback remains active.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,1,0); t0=(v0,v1,v2); boundary edges n=1; hole_boundary [v0,v1,v2]; euler v=3 e=3 f=1 chi=1.
+- **Expected kernel behavior**: Branch 2 fires (ifndef); CDT2 block omitted; fallback used for all hole-filling.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2]`
+- **Mesh assertion**: `euler_characteristic v=3 e=3 f=1 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me321.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me322 — with_third_points_dt3_compile_disabled: CGAL_HOLE_FILLING_DO_NOT_USE_DT3 forces use_dt3=false (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: holeFilling / triangulate_hole_polyline / with_third_points / compile-time-feature-disable-dt3)
+- **Sources**: CGAL PMP `triangulate_hole_polyline.with_third_points` Branch 3 (*compile_time_feature_disable*: `#ifdef CGAL_HOLE_FILLING_DO_NOT_USE_DT3` → `use_dt3 = false`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 2-triangle mesh (two triangles filling a quad, sharing diagonal v1-v3) — the minimal mesh where use_dt3 would matter. When CGAL_HOLE_FILLING_DO_NOT_USE_DT3 is defined, use_dt3 is set to false unconditionally, forcing the cubic algorithm for all hole filling regardless of caller preference. The quad hole [v0,v1,v2,v3] would be passed to the fallback path.
+- **Reproducer recipe**: v0=(0,0,0), v1=(3,0,0), v2=(3,2,0), v3=(0,2,0); t0=(v0,v1,v3), t1=(v1,v2,v3); diagonal (v1,v3) n=2; outer edges n=1; hole_boundary [v0,v1,v2,v3]; euler v=4 e=5 f=2 chi=1.
+- **Expected kernel behavior**: Branch 3 fires; use_dt3 set false; cubic algorithm used for fallback.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2,3]`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me322.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me323 — with_third_points_visitor_optional: Default_visitor substituted when visitor param absent (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: holeFilling / triangulate_hole_polyline / with_third_points / visitor-parameter-optional)
+- **Sources**: CGAL PMP `triangulate_hole_polyline.with_third_points` Branch 4 (*visitor_parameter_optional*: `GetVisitor::type visitor = choose_parameter(…, Default_visitor())`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 5-triangle fan around hub v5=(0,0,0) with outer pentagon vertices v0-v4. The fan has a pentagonal hole [v0..v4] as its open outer boundary. When no visitor is provided, CGAL substitutes Default_visitor (no-op) via choose_parameter; the visitor is then wrapped into Is_valid_compose for triangle filtering.
+- **Reproducer recipe**: v0-v4 at unit-circle pentagon; v5=(0,0,0) hub; 5 fan triangles; hub spokes n=2; outer edges n=1; hole_boundary [v0,v1,v2,v3,v4]; euler v=6 e=10 f=5 chi=1.
+- **Expected kernel behavior**: Branch 4 fires; Default_visitor substituted; Is_valid_compose wraps it with Is_not_degenerate_triangle.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2,3,4]`
+- **Mesh assertion**: `euler_characteristic v=6 e=10 f=5 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me323.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me324 — with_third_points_triangle_validity_check: Is_not_degenerate_triangle rejects zero-area candidate (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: holeFilling / triangulate_hole_polyline / with_third_points / triangle-validity-check)
+- **Sources**: CGAL PMP `triangulate_hole_polyline.with_third_points` Branch 5 (*triangle_validity_check*: `Is_not_degenerate_triangle is_not_degenerate; Is_valid_compose<…> is_valid(is_not_degenerate, visitor)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three collinear vertices v0=(0,0,0), v1=(1,0,0), v2=(2,0,0) forming a single degenerate zero-area triangle. Any triangulation candidate for this hole produces a zero-area triangle; Is_not_degenerate_triangle rejects all such candidates. Branch 5 fires when the Is_valid_compose functor is constructed with the base degenerate-triangle predicate.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0); t0=(v0,v1,v2); all edges n=1; triangle_area_lt t0 < 1e-12; euler v=3 e=3 f=1 chi=1.
+- **Expected kernel behavior**: Branch 5 fires on construction; Is_not_degenerate_triangle rejects the degenerate candidate; triangulation returns empty.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-12`
+- **Mesh assertion**: `euler_characteristic v=3 e=3 f=1 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me324.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me325 — with_third_points_cost_function_strategy: Weight_min_max_dihedral_and_area scores needle triangle poorly (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: holeFilling / triangulate_hole_polyline / with_third_points / cost-function-strategy)
+- **Sources**: CGAL PMP `triangulate_hole_polyline.with_third_points` Branch 6 (*cost_function_strategy*: `Weight_calculator<…, Weight_min_max_dihedral_and_area> weight_calculator(is_valid)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A needle/sliver triangle v0=(0,0,0), v1=(100,0,0), v2=(50,0.01,0) — extremely long base (100 units) and tiny height (0.01 units), producing aspect ratio ~10000. Weight_min_max_dihedral_and_area assigns high cost to such triangles; Weight_calculator wraps is_valid to score and compare candidate triangulations, steering the algorithm away from sliver triangles. Branch 6 fires when weight_calculator is constructed.
+- **Reproducer recipe**: v0=(0,0,0), v1=(100,0,0), v2=(50,0.01,0); t0=(v0,v1,v2); edges n=1; triangle_aspect_ratio_gt t0 > 100; euler v=3 e=3 f=1 chi=1.
+- **Expected kernel behavior**: Branch 6 fires on construction; Weight_min_max_dihedral_and_area assigns high cost; algorithm avoids sliver configurations.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `triangle_aspect_ratio_gt triangle=0 gt=100.0`
+- **Mesh assertion**: `euler_characteristic v=3 e=3 f=1 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me325.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me326 — with_third_points_cdt2_path_conditional: CDT path fills planar triangular hole with all boundary edges present (Branch 7)
+- **Category**: §12.14 mesh defects (sub-class: holeFilling / triangulate_hole_polyline / with_third_points / cdt2-path-conditional)
+- **Sources**: CGAL PMP `triangulate_hole_polyline.with_third_points` Branch 7 (*cdt2_path_conditional*: `if (use_cdt) { triangulate_hole_polyline_with_cdt(…, max_squared_distance); if (success) return out; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three "hat" triangles surround a triangular interior hole [v0,v1,v2]. Each hat triangle (t0=(v0,v3,v1), t1=(v1,v4,v2), t2=(v2,v5,v0)) covers one boundary edge of the hole; the inner edges v0-v1, v1-v2, v0-v2 are each incident on exactly 1 triangle. With use_cdt=true, CGAL computes max_squared_distance from the bounding box diagonal and calls triangulate_hole_polyline_with_cdt; on success it returns early without reaching the DT3/cubic fallback. Branch 7 fires when the if(use_cdt) condition is entered.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,0.866,0), v3=(-0.3,-0.3,0), v4=(1.3,-0.3,0), v5=(0.5,1.2,0); 3 hat triangles; inner edges n=1; hole_boundary [v0,v1,v2]; outer hat edges n=1; euler v=6 e=9 f=3 chi=0.
+- **Expected kernel behavior**: Branch 7 fires; max_squared_distance from bbox; CDT fills triangular hole; returns early.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=1`
+- **Mesh assertion**: `euler_characteristic v=6 e=9 f=3 chi=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me326.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me327 — with_third_points_threshold_override: auto bbox threshold too small for wide flat hole; user override needed (Branch 8)
+- **Category**: §12.14 mesh defects (sub-class: holeFilling / triangulate_hole_polyline / with_third_points / threshold-override)
+- **Sources**: CGAL PMP `triangulate_hole_polyline.with_third_points` Branch 8 (*threshold_override*: `const FT squared_dist = (threshold_distance < 0) ? default_squared_distance : threshold_distance * threshold_distance`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A wide flat triangle v0=(0,0,0), v1=(10,0,0), v2=(5,0.2,0) — width 10, height 0.2. The bbox height is 0.2 so default_squared_distance = (0.2/4)^2 = 0.0025. The hole diameter squared is ~100, which vastly exceeds the auto threshold — CDT would reject all candidates. By passing threshold_distance >= 10, the user overrides the default and CDT succeeds. Branch 8 fires when threshold_distance >= 0.
+- **Reproducer recipe**: v0=(0,0,0), v1=(10,0,0), v2=(5,0.2,0); t0=(v0,v1,v2); all edges n=1; hole_boundary [v0,v1,v2]; triangle_aspect_ratio_gt t0 > 10; euler v=3 e=3 f=1 chi=1.
+- **Expected kernel behavior**: Branch 8 fires; user threshold squared and used; CDT distance filter uses provided value instead of bbox heuristic.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2]`
+- **Mesh assertion**: `triangle_aspect_ratio_gt triangle=0 gt=10.0`
+- **Mesh assertion**: `euler_characteristic v=3 e=3 f=1 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me327.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me328 — with_third_points_fallback_dt3_or_cubic: CDT fails on non-planar hole; DT3/cubic fallback fires (Branch 9)
+- **Category**: §12.14 mesh defects (sub-class: holeFilling / triangulate_hole_polyline / with_third_points / fallback-dt3-or-cubic)
+- **Sources**: CGAL PMP `triangulate_hole_polyline.with_third_points` Branch 9 (*fallback_to_dt3_or_cubic*: `triangulate_hole_polyline(points, third_points, out, weight_calculator, use_dt3, do_not_use_cubic_algorithm, …)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles covering a non-planar saddle quad: v0=(0,0,0), v1=(2,0,1), v2=(2,2,0), v3=(0,2,1). Vertices alternate between z=0 and z=1, making the quad non-planar. CDT fails on non-planar holes; the code falls through to the DT3/cubic fallback call with the use_dt3 and do_not_use_cubic_algorithm flags. The two surrounding triangles t0=(v0,v1,v3) and t1=(v1,v2,v3) share diagonal v1-v3; the remaining quad boundary [v0,v1,v2,v3] is the non-planar hole. Branch 9 fires when the DT3/cubic fallback is reached.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,1), v2=(2,2,0), v3=(0,2,1); t0=(v0,v1,v3), t1=(v1,v2,v3); diagonal (v1,v3) n=2; outer edges n=1; hole_boundary [v0,v1,v2,v3]; euler v=4 e=5 f=2 chi=1.
+- **Expected kernel behavior**: Branch 9 fires after CDT failure; triangulate_hole_polyline called with use_dt3 and do_not_use_cubic flags; DT3 or cubic algorithm fills the non-planar hole.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2,3]`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me328.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me330 — pinch_missing_info_field: non-manifold edge info list NULL — pinch returns false (Branch 1)
 - **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.pinch / missing-info-field)
 - **Sources**: MeshFix `Basic_TMesh.pinch` Branch 1 (*MISSING_INFO_FIELD*: `if (ee == NULL) return false`); `MESH_HEAL_COVERAGE.md`.
