@@ -771,52 +771,52 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
   - Suggested fixture: defect mentioning 'something_was_done', 'faces_to_treat.swap'
 
 ##### `PMP.self_intersections_impl` — lines 343–523
-(11 branches; all UNCOVERED — no mesh fixtures exist yet)
+(11 branches; 10 covered by Me050–Me059; 1 skipped — Branch 5 TBB-availability-guard is compile-time link flag, not a geometry property)
 
-- **Branch 1** @ line 371 — *output-count-limit-applicability*
+- **Branch 1** @ line 371 — *output-count-limit-applicability* — **Me051**
   - What it tests: whether maximum_number named parameter was supplied
   - Repair action: enable early termination counter vs uncapped collection
-  - Suggested fixture: defect mentioning 'is_default_parameter', 'maximum_number_t'
-- **Branch 2** @ line 373 — *zero-limit-trivial-rejection*
+  - Fixture: Me051 — two SI pairs at x=0 and x=10; limit=1 stops after pair A
+- **Branch 2** @ line 373 — *zero-limit-trivial-rejection* — **Me052**
   - What it tests: whether supplied maximum_number is exactly 0 (vacuous case)
   - Repair action: return immediately without processing vs continue
-  - Suggested fixture: defect mentioning 'do_limit && maximum_number == 0'
-- **Branch 3** @ line 400 — *degenerate-face-vs-real-si*
+  - Fixture: Me052 — one SI pair present; limit=0 returns immediately with empty output
+- **Branch 3** @ line 400 — *degenerate-face-vs-real-si* — **Me050**
   - What it tests: whether a face is degenerate (collinear vertices) or forms a valid triangle
   - Repair action: report (f,f) pair or create bbox vs skip box creation
-  - Suggested fixture: defect mentioning 'collinear', 'throw_on_SI'
-- **Branch 4** @ line 402 — *throw-vs-accumulate-exception-mode*
+  - Fixture: Me050 — tri0 is collinear (area=0); SI-impl reports (tri0,tri0) self-pair
+- **Branch 4** @ line 402 — *throw-vs-accumulate-exception-mode* — **Me053**
   - What it tests: whether throw_on_SI flag is set for early termination on first intersection
   - Repair action: throw exception vs append to output iterator
-  - Suggested fixture: defect mentioning 'throw_on_SI', 'Throw_at_output_exception'
-- **Branch 5** @ line 435 — *tbb-availability-guard*
+  - Fixture: Me053 — single XY/XZ crossing pair; throw_on_SI fires on first hit
+- **Branch 5** @ line 435 — *tbb-availability-guard* — SKIPPED
   - What it tests: whether TBB was linked and Parallel_tag was requested
   - Repair action: branch to parallel implementation vs sequential fallback
-  - Suggested fixture: defect mentioning 'CGAL_LINKED_WITH_TBB', 'std::is_convertible<ConcurrencyTag, Parallel_tag>'
-- **Branch 6** @ line 457 — *throw-vs-collect-in-parallel*
+  - Skip reason: compile-time link flag (CGAL_LINKED_WITH_TBB), not a geometry property; same mesh geometry as B6/B7
+- **Branch 6** @ line 457 — *throw-vs-collect-in-parallel* — **Me057**
   - What it tests: whether throw_on_SI requires early termination in parallel code
   - Repair action: use throwing filter vs concurrent vector accumulation
-  - Suggested fixture: defect mentioning 'throw_on_SI', 'CGAL::box_self_intersection_d'
-- **Branch 7** @ line 459 — *output-limit-in-parallel*
+  - Fixture: Me057 — two SI pairs at y=0 and y=8; parallel throw_on_SI fires on first hit
+- **Branch 7** @ line 459 — *output-limit-in-parallel* — **Me058**
   - What it tests: whether count-based limit must be enforced during parallel execution
   - Repair action: wrap output with counter functor vs direct callback
-  - Suggested fixture: defect mentioning 'do_limit', 'Throw_functor', 'atomic_counter'
-- **Branch 8** @ line 469 — *catch-limit-exception-recovery*
+  - Fixture: Me058 — four SI pairs along Z-axis; atomic counter fires at limit=3
+- **Branch 8** @ line 469 — *catch-limit-exception-recovery* — **Me059**
   - What it tests: whether output-limit exception was caught during parallel execution
   - Repair action: copy accumulated pairs sequentially and exit vs continue
-  - Suggested fixture: defect mentioning 'catch', 'Throw_at_output_exception'
-- **Branch 9** @ line 495 — *throw-vs-collect-in-sequential*
+  - Fixture: Me059 — five SI pairs along X-axis; parallel catch block fires at limit=4
+- **Branch 9** @ line 495 — *throw-vs-collect-in-sequential* — **Me054**
   - What it tests: whether throw_on_SI requires early termination in sequential code
   - Repair action: use throwing filter vs standard callback
-  - Suggested fixture: defect mentioning 'throw_on_SI', 'throwing_filter'
-- **Branch 10** @ line 497 — *output-limit-in-sequential*
+  - Fixture: Me054 — two SI pairs; sequential throw_on_SI fires on pair A before pair B
+- **Branch 10** @ line 497 — *output-limit-in-sequential* — **Me055**
   - What it tests: whether count-based limit must be enforced during sequential execution
   - Repair action: wrap output with counter lambda vs direct callback
-  - Suggested fixture: defect mentioning 'do_limit', 'Count_and_throw_filter'
-- **Branch 11** @ line 510 — *catch-limit-exception-recovery-sequential*
+  - Fixture: Me055 — three SI pairs; Count_and_throw_filter fires at limit=2
+- **Branch 11** @ line 510 — *catch-limit-exception-recovery-sequential* — **Me056**
   - What it tests: whether output-limit exception was caught during sequential execution
   - Repair action: return early vs continue processing
-  - Suggested fixture: defect mentioning 'catch', 'Throw_at_output_exception'
+  - Fixture: Me056 — four SI pairs; sequential catch block fires at limit=3
 
 
 #### `(multiple: shape_predicates.h, connected_components.h, polygon_soup_self_intersections.h, orient_polygon_soup_extension.h, polygon_soup_to_polygon_mesh.h, orientation.h, repair.h)`

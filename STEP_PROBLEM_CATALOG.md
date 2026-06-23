@@ -31746,6 +31746,121 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me049.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me050 — degenerate collinear face: SI-impl reports (f,f) self-pair instead of building AABB bbox
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/degenerate-face)
+- **Sources**: CGAL `PMP.self_intersections_impl` Branch 3 @ line 400 (*degenerate-face-vs-real-si*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: triangle 0 is collinear (all three vertices on the X-axis, zero area). CGAL self_intersections_impl tests each face for degeneracy before inserting it into the AABB tree: a collinear face is reported as a (f, f) self-pair rather than entering the spatial index. Triangle 1 is a valid reference triangle.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0) collinear; tri0=(v0,v1,v2) degenerate. Triangle 1 is a spatially separate valid triangle.
+- **Expected kernel behavior**: detect (tri0, tri0) as a degenerate self-pair; skip AABB bbox creation for tri0.
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-9`
+- **Fixture path**: mesh-examples/12-14-mesh/Me050.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me051 — two SI pairs: maximum_number count-limit parameter is applicable
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/count-limit)
+- **Sources**: CGAL `PMP.self_intersections_impl` Branch 1 @ line 371 (*output-count-limit-applicability*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: two independent crossing triangle pairs at x=0 and x=10. When `maximum_number` NP is supplied, self_intersections_impl activates an early-termination counter. With limit=1 only pair A would be reported; the fixture provides both pairs to exercise the is_default_parameter check.
+- **Reproducer recipe**: pair A — apex (0,0,0) with XY-plane tri0 and XZ-plane tri1; pair B — apex (10,0,0) with XY tri2 and XZ tri3. Well-separated spatially.
+- **Expected kernel behavior**: with limit=1, stop after reporting pair A; uncapped, report both.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `triangles_self_intersect triangles=[2,3]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me051.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me052 — zero-limit trivial rejection: maximum_number=0 returns immediately with no output
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/zero-limit)
+- **Sources**: CGAL `PMP.self_intersections_impl` Branch 2 @ line 373 (*zero-limit-trivial-rejection*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: one crossing pair is present (XY triangle pierced by a tilted triangle). When `maximum_number == 0`, self_intersections_impl returns immediately before processing any face, producing empty output even though a real intersection exists. The fixture provides the geometry that would be returned under any positive limit.
+- **Reproducer recipe**: tri0=(0,0,0),(2,0,0),(1,2,0) in XY plane; tri1=(1,0.5,-1),(1,0.5,1),(3,0.5,0) tilted so edge v3–v4 pierces tri0's interior.
+- **Expected kernel behavior**: limit=0 → immediate empty return; limit≥1 → report the pair.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me052.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me053 — throw_on_SI mode: single crossing pair fires Throw_at_output_exception on first hit
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/throw-mode)
+- **Sources**: CGAL `PMP.self_intersections_impl` Branch 4 @ line 402 (*throw-vs-accumulate-exception-mode*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: single pair of crossing triangles (XY plane and XZ plane sharing apex). When `throw_on_SI` is set, this pair raises `Throw_at_output_exception` rather than appending to the output iterator. Minimal geometry to fire Branch 4; used by callers that only need boolean SI presence.
+- **Reproducer recipe**: v0=(0,0,0) apex; tri0=(v0,v1,v2) XY plane; tri1=(v0,v3,v4) XZ plane; edge v3–v4 crosses tri0's interior along the X-axis.
+- **Expected kernel behavior**: under throw_on_SI raise exception on this pair; under accumulate mode append (tri0,tri1).
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me053.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me054 — sequential throw_on_SI: first of two pairs triggers early exit in sequential AABB path
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/sequential-throw)
+- **Sources**: CGAL `PMP.self_intersections_impl` Branch 9 @ line 495 (*throw-vs-collect-in-sequential*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: two independent crossing pairs (pair A at origin, pair B at y=5). In the sequential (non-TBB) path, `throw_on_SI` wraps the AABB callback in a `throwing_filter`; finding pair A raises the exception before pair B is ever inspected.
+- **Reproducer recipe**: pair A — apex (0,0,0) XY tri0 and XZ tri1; pair B — apex (0,5,0) XY tri2 and XZ tri3 offset in Y.
+- **Expected kernel behavior**: sequential throw_on_SI fires on pair A; pair B never reported.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `triangles_self_intersect triangles=[2,3]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me054.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me055 — sequential count-limit: 3 SI pairs; Count_and_throw_filter fires after pair 2
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/sequential-count-limit)
+- **Sources**: CGAL `PMP.self_intersections_impl` Branch 10 @ line 497 (*output-limit-in-sequential*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: three spatially separated crossing pairs at x=0, x=10, x=20. In sequential mode with `do_limit`, the callback is wrapped in a `Count_and_throw_filter`; after `maximum_number` pairs are recorded it throws. With limit=2, pair C (x=20) is never returned.
+- **Reproducer recipe**: three pairs of XY/XZ crossing triangles with apexes at x=0, 10, 20. Each shares an apex and crosses along the X-direction.
+- **Expected kernel behavior**: collect pairs A and B (limit=2); catch exception and return without pair C.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `triangles_self_intersect triangles=[2,3]`
+- **Mesh assertion**: `triangles_self_intersect triangles=[4,5]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me055.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me056 — sequential catch-limit: 4 SI pairs; exception caught after Count_and_throw_filter fires
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/sequential-catch-limit)
+- **Sources**: CGAL `PMP.self_intersections_impl` Branch 11 @ line 510 (*catch-limit-exception-recovery-sequential*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: four crossing pairs at x=0, 10, 20, 30. The sequential count filter fires during pair 4 (limit=3). Branch 11 is the catch block that copies accumulated pairs to the output and returns early.
+- **Reproducer recipe**: four pairs of XY/XZ crossing triangles at x=0, 10, 20, 30 via `_pair(m, ox)` helper.
+- **Expected kernel behavior**: collect pairs 1–3; catch exception; copy to output and return before pair 4.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `triangles_self_intersect triangles=[2,3]`
+- **Mesh assertion**: `triangles_self_intersect triangles=[4,5]`
+- **Mesh assertion**: `triangles_self_intersect triangles=[6,7]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me056.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me057 — parallel throw_on_SI: two crossing pairs; TBB callback fires Throw_at_output_exception
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/parallel-throw)
+- **Sources**: CGAL `PMP.self_intersections_impl` Branch 6 @ line 457 (*throw-vs-collect-in-parallel*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: two independent crossing pairs (pair A at y=0, pair B at y=8). In the parallel (TBB-enabled) path, `throw_on_SI` wraps the `box_self_intersection_d` callback in a throwing filter; whichever TBB thread finds the first intersection raises the exception.
+- **Reproducer recipe**: pair A — apex (0,0,0) XY tri0 and XZ tri1; pair B — apex (0,8,0) XY tri2 and XZ tri3 offset in Y.
+- **Expected kernel behavior**: parallel throw_on_SI fires on whichever pair a TBB thread encounters first; other pair never reported.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `triangles_self_intersect triangles=[2,3]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me057.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me058 — parallel count-limit: 4 SI pairs; atomic counter fires Throw_functor at limit 3
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/parallel-count-limit)
+- **Sources**: CGAL `PMP.self_intersections_impl` Branch 7 @ line 459 (*output-limit-in-parallel*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: four crossing pairs along the Z-axis (z=0, 10, 20, 30). In parallel mode with `do_limit`, the output callback is wrapped with a `Throw_functor + atomic_counter`; when any TBB thread causes the counter to reach `maximum_number`, the functor throws. With limit=3, pair D (z=30) triggers the atomic counter.
+- **Reproducer recipe**: four pairs of XY/XZ crossing triangles at z=0, 10, 20, 30 via `_pair(m, oz)` helper. Z-axis spread gives distinct AABB boxes.
+- **Expected kernel behavior**: parallel atomic counter fires at limit=3; TBB thread hitting pair D throws.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `triangles_self_intersect triangles=[2,3]`
+- **Mesh assertion**: `triangles_self_intersect triangles=[4,5]`
+- **Mesh assertion**: `triangles_self_intersect triangles=[6,7]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me058.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me059 — parallel catch-limit: 5 SI pairs; exception caught after atomic counter fires at limit 4
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/parallel-catch-limit)
+- **Sources**: CGAL `PMP.self_intersections_impl` Branch 8 @ line 469 (*catch-limit-exception-recovery*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: five crossing pairs along the X-axis (x=0, 10, 20, 30, 40). In the parallel path, Branch 8 is the catch block for `Throw_at_output_exception` thrown by the atomic counter after `maximum_number` pairs accumulate. The catch block copies pairs from the concurrent accumulator to the output iterator and returns. Pair E (x=40) triggers the catch.
+- **Reproducer recipe**: five pairs of XY/XZ crossing triangles at x=0, 10, 20, 30, 40 via `_pair(m, ox)` helper.
+- **Expected kernel behavior**: parallel catch block copies pairs 1–4; returns before pair E is appended.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `triangles_self_intersect triangles=[2,3]`
+- **Mesh assertion**: `triangles_self_intersect triangles=[4,5]`
+- **Mesh assertion**: `triangles_self_intersect triangles=[6,7]`
+- **Mesh assertion**: `triangles_self_intersect triangles=[8,9]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me059.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me060 — pinch_detection: hexagon (v0,v1,v2,v0,v3,v4) — v0 repeated at position 3
 - **Category**: §12.14 mesh defects (sub-class: pinched-polygon/pinch-detection)
 - **Sources**: CGAL `PMP.split_pinched_polygons_in_polygon_soup` Branch 5 @ line 241 (*pinch_detection*); `MESH_HEAL_COVERAGE.md`.

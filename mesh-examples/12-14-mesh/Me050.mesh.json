@@ -1,0 +1,59 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      5.0,
+      0.0,
+      0.0
+    ],
+    [
+      6.0,
+      1.0,
+      0.0
+    ],
+    [
+      6.0,
+      -1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      3,
+      4,
+      5
+    ]
+  ],
+  "metadata": {
+    "id": "Me050",
+    "schema_version": 0,
+    "defect_class": "self_intersection_degenerate_face",
+    "title": "Degenerate collinear face: SI-impl detects (f,f) self-pair",
+    "assertions": [
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 0,
+        "lt": 1e-09
+      }
+    ]
+  }
+}
