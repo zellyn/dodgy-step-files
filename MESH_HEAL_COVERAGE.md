@@ -3512,44 +3512,35 @@ Fixture IDs: Me200 Me201 Me202 Me203 Me204 Me205 Me206 Me207 Me208 Me209
   - Suggested fixture: defect mentioning 'totits >= 10', 'warning'
 
 ##### `Basic_TMesh.openToDisk` — lines 1787–1856
-(9 branches; all UNCOVERED — no mesh fixtures exist yet)
+(9 branches; ALL COVERED by Me250–Me258 — wave 9C, 2026-06-21)
 
-- **Branch 1** @ line 1801 — *boundary_traversal_edge1*
+- **Branch 1** @ line 1801 — *boundary_traversal_edge1* — COVERED (Me250: 3-triangle strip; BFS from t0 pushes t1 via e1 shared edge v1-v2)
   - What it tests: Neighbor triangle via e1 not yet visited
   - Repair action: Add unvisited neighbor to traversal and mark edge
-  - Suggested fixture: defect mentioning 't->t1() != NULL && !IS_BIT(s,3)', 'MARK_BIT'
-- **Branch 2** @ line 1803 — *boundary_traversal_edge2*
+- **Branch 2** @ line 1803 — *boundary_traversal_edge2* — COVERED (Me251: 3-triangle fan; BFS discovers t1 via interior edge (v0,v2))
   - What it tests: Neighbor triangle via e2 not yet visited
   - Repair action: Add unvisited neighbor to traversal and mark edge
-  - Suggested fixture: defect mentioning 't->t2() != NULL && !IS_BIT(s,3)'
-- **Branch 3** @ line 1805 — *boundary_traversal_edge3*
+- **Branch 3** @ line 1805 — *boundary_traversal_edge3* — COVERED (Me252: 4-triangle open fan; BFS discovers each next triangle via e3 closing edge)
   - What it tests: Neighbor triangle via e3 not yet visited
   - Repair action: Add unvisited neighbor to traversal and mark edge
-  - Suggested fixture: defect mentioning 't->t3() != NULL && !IS_BIT(s,3)'
-- **Branch 4** @ line 1818 — *leaf_boundary_vertex*
+- **Branch 4** @ line 1818 — *leaf_boundary_vertex* — COVERED (Me253: L-shaped 3-triangle strip; corner v0 has minimum boundary connectivity and is chosen as BFS root)
   - What it tests: Vertex with only one incident boundary edge
   - Repair action: Select as root for spanning tree traversal
-  - Suggested fixture: defect mentioning 'numels()==1', 'appendHead'
-- **Branch 5** @ line 1819 — *no_leaf_found*
+- **Branch 5** @ line 1819 — *no_leaf_found* — COVERED (Me254: closed tetrahedron; no boundary edges → no leaf vertex found → TMeshError)
   - What it tests: No leaf boundary vertices exist
   - Repair action: Error: cannot find spanning tree root
-  - Suggested fixture: defect mentioning '!triList.numels()', 'error'
-- **Branch 6** @ line 1825 — *boundary_edge_exists*
+- **Branch 6** @ line 1825 — *boundary_edge_exists* — COVERED (Me255: 2-triangle quad strip; spanning tree traversal steps via boundary edges each triggering Branch 6)
   - What it tests: Vertex has pending boundary edges in traversal
   - Repair action: Process edge: mark it, move to opposite vertex
-  - Suggested fixture: defect mentioning 've->numels()', 'MARK_BIT'
-- **Branch 7** @ line 1835 — *vertex_cycle_closure*
+- **Branch 7** @ line 1835 — *vertex_cycle_closure* — COVERED (Me256: triangulated annulus with two boundary loops; Branch 7 fires on inner cycle close and again on outer cycle close)
   - What it tests: Vertex has no more boundary edges (cycle closing)
   - Repair action: Unmarked two edges and readd for next cycle
-  - Suggested fixture: defect mentioning 'else', 'UNMARK_BIT'
-- **Branch 8** @ line 1844 — *non_boundary_edge_dup*
+- **Branch 8** @ line 1844 — *non_boundary_edge_dup* — COVERED (Me257: 3×3 torus grid, chi=0; all edges interior; Branch 8 fires to duplicate cut edges and open handles)
   - What it tests: Interior edge not yet marked in spanning tree
   - Repair action: Duplicate edge to convert mesh to disk topology
-  - Suggested fixture: defect mentioning '!IS_BIT(e, 3) && !e->isOnBoundary()', 'newEdge'
-- **Branch 9** @ line 1854 — *manifold_fixup*
+- **Branch 9** @ line 1854 — *manifold_fixup* — COVERED (Me258: bowtie/hourglass mesh; vertex v0 has disconnected fan requiring duplicateNonManifoldVertices)
   - What it tests: Mesh duplication required after disk conversion
   - Repair action: Call duplicateNonManifoldVertices to resolve singularities
-  - Suggested fixture: defect mentioning 'duplicateNonManifoldVertices()', 'final cleanup'
 
 ##### `Basic_TMesh.removeRegion` — lines 1187–1217
 (5 branches; all UNCOVERED — no mesh fixtures exist yet)

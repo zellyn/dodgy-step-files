@@ -34906,3 +34906,166 @@ exercised against CGAL PMP / MeshFix.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Round-tripping through a non-STEP mesh format loses colour/grouping; downstream MCAD inspection has no anchor for material/component identity.
+
+### Me250 — openToDisk_boundary_traversal_edge1: BFS queues neighbor via e1 shared edge (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: openToDisk / boundary-traversal-edge1)
+- **Sources**: MeshFix `Basic_TMesh.openToDisk` Branch 1 (*boundary_traversal_edge1*: `t->t1() != NULL && !IS_BIT(s,3)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 3-triangle strip where each triangle has a valid e1-neighbor. During BFS traversal in openToDisk, the unvisited e1-neighbor is appended to the traversal queue and marked visited (BIT 3). Interior edges (1,2) and (1,3) are each shared by 2 triangles; 5 boundary edges form the open strip perimeter.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1.5,1,0), v4=(2,0,0); t0=(v0,v1,v2), t1=(v1,v3,v2), t2=(v1,v4,v3).
+- **Expected kernel behavior**: BFS from t0 pushes t1 via e1 (edge v1-v2); BFS from t1 pushes t2 via e1 (edge v1-v3).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,4,3,2]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me250.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me251 — openToDisk_boundary_traversal_edge2: BFS queues neighbor via e2 shared edge (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: openToDisk / boundary-traversal-edge2)
+- **Sources**: MeshFix `Basic_TMesh.openToDisk` Branch 2 (*boundary_traversal_edge2*: `t->t2() != NULL && !IS_BIT(s,3)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 3-triangle fan around a center vertex v0. BFS traversal finds unvisited e2-neighbors by traversing the interior edges (v0,v2) and (v0,v3), each shared by 2 triangles. Five boundary edges form the open fan perimeter.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(-0.5,1,0), v4=(-1,0,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v4).
+- **Expected kernel behavior**: BFS from t0 pushes t1 via shared interior edge (v0,v2); BFS from t1 pushes t2 via (v0,v3).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2,3,4]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me251.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me252 — openToDisk_boundary_traversal_edge3: BFS queues neighbor via e3 shared edge (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: openToDisk / boundary-traversal-edge3)
+- **Sources**: MeshFix `Basic_TMesh.openToDisk` Branch 3 (*boundary_traversal_edge3*: `t->t3() != NULL && !IS_BIT(s,3)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 4-triangle open fan around center vertex v0. BFS traversal finds unvisited e3-neighbors via interior edges (v0,v2), (v0,v3), (v0,v4) — each the closing edge (e3) of its triangle and the opening edge (e1) of the next. Six boundary edges form the open fan perimeter.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(-1,0,0), v4=(0,-1,0), v5=(1,-0.5,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v4), t3=(v0,v4,v5).
+- **Expected kernel behavior**: BFS from t0 pushes t1 via e3=(v2,v0); from t1 pushes t2 via e3=(v3,v0); from t2 pushes t3 via e3=(v4,v0).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2,3,4,5]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me252.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me253 — openToDisk_leaf_boundary_vertex: corner vertex with minimum boundary valence chosen as BFS root (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: openToDisk / leaf-boundary-vertex)
+- **Sources**: MeshFix `Basic_TMesh.openToDisk` Branch 4 (*leaf_boundary_vertex*: `numels()==1`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 3-triangle L-shaped strip. After BFS labels all boundary edges, openToDisk scans for a boundary vertex with numels()==1 (leaf: only one pending boundary edge in the spanning tree). The corner vertex v0 has the minimum boundary connectivity and serves as the natural BFS root. Interior edges (1,2) and (2,3) are each n=2; five boundary edges form the open strip.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1.5,1,0), v4=(1,2,0); t0=(v0,v1,v2), t1=(v1,v3,v2), t2=(v2,v3,v4).
+- **Expected kernel behavior**: openToDisk selects v0 as spanning tree root (leaf vertex with minimum boundary edge count).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,3,4,2]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me253.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me254 — openToDisk_no_leaf_found: closed tetrahedron has no boundary — error (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: openToDisk / no-leaf-found)
+- **Sources**: MeshFix `Basic_TMesh.openToDisk` Branch 5 (*no_leaf_found*: `!triList.numels()`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A closed tetrahedron — genus 0, no boundary. Every edge is shared by exactly 2 triangles; no boundary edges exist anywhere. When openToDisk scans for a leaf boundary vertex (numels()==1), it finds none and raises TMeshError. V=4, E=6, F=4, chi=2.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,0.5,1); t0=(v0,v2,v1), t1=(v0,v1,v3), t2=(v1,v2,v3), t3=(v2,v0,v3).
+- **Expected kernel behavior**: No leaf vertex found → TMeshError raised ("cannot find spanning tree root").
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me254.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me255 — openToDisk_boundary_edge_exists: spanning tree processes pending boundary edge (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: openToDisk / boundary-edge-exists)
+- **Sources**: MeshFix `Basic_TMesh.openToDisk` Branch 6 (*boundary_edge_exists*: `ve->numels()`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 2-triangle quad strip (same topology as Me228). The spanning tree traversal processes boundary edges one at a time from the root vertex. Branch 6 fires for each step that finds a pending boundary edge — marking it (MARK_BIT) and advancing to the opposite vertex. The 4-edge boundary loop yields 3 Branch-6 firings before Branch 7 closes the cycle.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1.5,1,0); t0=(v0,v1,v2), t1=(v1,v3,v2).
+- **Expected kernel behavior**: Traversal steps: (v0→v1) MARK, (v1→v3) MARK, (v3→v2) MARK, (v2→v0) → Branch 7 cycle close.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,3,2]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me255.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me256 — openToDisk_vertex_cycle_closure: two boundary loops force Branch 7 twice (Branch 7)
+- **Category**: §12.14 mesh defects (sub-class: openToDisk / vertex-cycle-closure)
+- **Sources**: MeshFix `Basic_TMesh.openToDisk` Branch 7 (*vertex_cycle_closure*: `UNMARK_BIT` + re-append); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A triangulated annulus (6 triangles) with two boundary loops: inner triangular hole (i0,i1,i2) and outer triangular rim (o0,o1,o2). Branch 7 fires when the spanning tree traversal exhausts all pending boundary edges at a vertex. It fires once when the inner cycle closes and again when the outer cycle closes. The algorithm unmarks two edges and re-queues the vertex to handle the second loop.
+- **Reproducer recipe**: i0=(0,0,0), i1=(1,0,0), i2=(0.5,0.87,0), o0=(-0.5,-0.87,0), o1=(1.5,-0.87,0), o2=(0.5,1.73,0); 6 annulus triangles via 3 strip pairs (bottom/right/left sides).
+- **Expected kernel behavior**: Branch 7 fires on inner cycle closure; then outer cycle traversal begins via Branch 6; Branch 7 fires again on outer cycle closure.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=2`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2]`
+- **Mesh assertion**: `hole_boundary loop=[3,5,4]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me256.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me257 — openToDisk_non_boundary_edge_dup: torus (chi=0) — interior edges duplicated to cut to disk (Branch 8)
+- **Category**: §12.14 mesh defects (sub-class: openToDisk / non-boundary-edge-dup)
+- **Sources**: MeshFix `Basic_TMesh.openToDisk` Branch 8 (*non_boundary_edge_dup*: `!IS_BIT(e,3) && !e->isOnBoundary()`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 3×3 toroidal grid (9 vertices, 18 triangles, 27 edges, chi=0). The torus has no boundary and one handle (genus 1). openToDisk must duplicate interior edges not in the spanning tree — one for each handle — to topologically cut the surface to a disk. All edges are interior (n=2); Branch 8 fires when each such cut edge is found and duplicated via newEdge.
+- **Reproducer recipe**: 9-vertex flat grid with wrap-around identification in both axes; 18 triangles (2 per square); all edges shared by exactly 2 triangles; V-E+F=9-27+18=0.
+- **Expected kernel behavior**: openToDisk finds 2 interior non-spanning-tree edges; duplicates each (Branch 8 fires twice) to reduce genus by 1 per cut.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=2`
+- **Mesh assertion**: `euler_characteristic v=9 e=27 f=18 chi=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me257.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me258 — openToDisk_manifold_fixup: bowtie vertex requires duplicateNonManifoldVertices (Branch 9)
+- **Category**: §12.14 mesh defects (sub-class: openToDisk / manifold-fixup)
+- **Sources**: MeshFix `Basic_TMesh.openToDisk` Branch 9 (*manifold_fixup*: `duplicateNonManifoldVertices()`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A bowtie/hourglass mesh: vertex v0 (index 0) is incident on two triangle fans {t0,t1} (upper) and {t2,t3} (lower) that share only v0 and no edge. This is the non-manifold vertex pattern produced by openToDisk after edge duplication. Branch 9 calls duplicateNonManifoldVertices to split v0 into two distinct vertices and restore manifoldness. Interior edges (0,2) and (0,5) are each n=2; all outer edges are boundary n=1.
+- **Reproducer recipe**: v0=(0,0,0); upper fan v1=(1,1,0), v2=(0,2,0), v3=(-1,1,0); lower fan v4=(1,-1,0), v5=(0,-2,0), v6=(-1,-1,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v4,v5), t3=(v0,v5,v6).
+- **Expected kernel behavior**: duplicateNonManifoldVertices splits v0 into v0_a (upper fan) and v0_b (lower fan) — vertex fan becomes connected.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,6] n=1`
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me258.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
