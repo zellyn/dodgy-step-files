@@ -1,0 +1,76 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      5.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      5.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ]
+  ],
+  "metadata": {
+    "id": "Me341",
+    "schema_version": 0,
+    "defect_class": "isolated_vertex",
+    "title": "init_vertex_copy_iteration: 2 isolated vertices in vertex list drive FOREACHVVVERTEX over 5 entries",
+    "assertions": [
+      {
+        "kind": "isolated_vertex",
+        "vertex": 3
+      },
+      {
+        "kind": "isolated_vertex",
+        "vertex": 4
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          1
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          2
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          2
+        ],
+        "n": 1
+      }
+    ]
+  }
+}

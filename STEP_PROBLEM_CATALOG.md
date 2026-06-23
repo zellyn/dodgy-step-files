@@ -35498,6 +35498,126 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me316.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me340 — init_info_array_allocation_triangles: duplicate triangle inflates t_info allocation size
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.init / info-array-allocation)
+- **Sources**: MeshFix `Basic_TMesh.init` Branch 1 (*INFO_ARRAY_ALLOCATION_TRIANGLES*: `t_info = new void *[tin->T.numels()]`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 3-triangle mesh where t0 and t2 are exact duplicates of each other (same vertex set (v0,v1,v2)). The init call sizes t_info to 3 (T.numels()), but only 2 unique triangular faces exist. The inflated triangle count causes the allocated buffer to be larger than the real topology needs — an over-allocation defect triggered by duplicate triangles.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(1,1,0), v3=(0,1,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v1,v2); assert_duplicate_triangle_pair(0,2); edge (v0,v2) shared n=3; edge (v0,v1) shared n=2.
+- **Expected kernel behavior**: Branch 1 fires once; t_info allocated for 3 entries even though 2 unique faces exist; downstream Euler checks are off by 1.
+- **Mesh assertion**: `duplicate_triangle_pair triangles=[0,2]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=3`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me340.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me341 — init_vertex_copy_iteration: 2 isolated vertices drive FOREACHVVVERTEX over 5 entries
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.init / vertex-copy-iteration)
+- **Sources**: MeshFix `Basic_TMesh.init` Branch 2 (*VERTEX_COPY_ITERATION*: `FOREACHVVVERTEX((&tin->V), v, n) { newVertex(...); v->info = nv; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A single triangle (v0,v1,v2) plus 2 isolated orphan vertices v3 and v4 not referenced by any triangle. The FOREACHVVVERTEX loop iterates all 5 vertex list entries and creates clone nodes for each — including the 2 orphans. Init faithfully clones the isolated vertices, leaving them orphan in the cloned mesh too.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0); v3=(5,0,0), v4=(0,5,0); t0=(v0,v1,v2); assert_isolated_vertex(3); assert_isolated_vertex(4); all triangle edges n=1.
+- **Expected kernel behavior**: Branch 2 fires 5 times; clone mesh inherits both isolated vertices; downstream removeVertices must clean them up.
+- **Mesh assertion**: `isolated_vertex vertex=3`
+- **Mesh assertion**: `isolated_vertex vertex=4`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me341.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me342 — init_edge_copy_iteration: non-manifold edge forces FOREACHVEEDGE to copy over-incident edge entry
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.init / edge-copy-iteration)
+- **Sources**: MeshFix `Basic_TMesh.init` Branch 3 (*EDGE_COPY_ITERATION*: `FOREACHVEEDGE((&tin->E), e, n) { newEdge(...); e->info = ne; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangles sharing a single non-manifold edge (v0,v2): t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v2,v4). The FOREACHVEEDGE loop copies every edge object including the over-incident (v0,v2) entry that has 3 incident triangles — more than the t1/t2 pair can represent. The clone inherits the inconsistent edge reference.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(0,0,1), v4=(-1,0,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v2,v4); edge (v0,v2) shared n=3.
+- **Expected kernel behavior**: Branch 3 fires for all edges including (v0,v2); clone edge has over-incident t1/t2 — triggers non-manifold flag downstream.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=3`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me342.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me343 — init_triangle_copy_iteration: degenerate zero-area triangle forces FOREACHVTTRIANGLE over 2 entries
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.init / triangle-copy-iteration)
+- **Sources**: MeshFix `Basic_TMesh.init` Branch 4 (*TRIANGLE_COPY_ITERATION*: `FOREACHVTTRIANGLE((&tin->T), t, n) { newTriangle(...); t->info = nt; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 2-triangle mesh: t0=(v0,v3,v1) is valid; t1=(v0,v1,v2) is degenerate — v0=(0,0,0), v1=(1,0,0), v2=(2,0,0) are collinear, yielding zero area. The FOREACHVTTRIANGLE loop copies all 2 triangle entries including the degenerate one; the clone inherits the zero-area face.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0), v3=(0.5,1,0); t0=(v0,v3,v1), t1=(v0,v1,v2); assert_triangle_area_lt(1, 1e-9); edge (v0,v1) n=2.
+- **Expected kernel behavior**: Branch 4 fires for both triangles; clone mesh contains the degenerate triangle; healer must detect and remove it post-init.
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-09`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me343.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me344 — init_vertex_edge_reference_link: bowtie vertex e0 links into only one disconnected fan group
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.init / vertex-edge-reference-link)
+- **Sources**: MeshFix `Basic_TMesh.init` Branch 5 (*VERTEX_EDGE_REFERENCE_LINK*: `((Vertex *)v->info)->e0 = (Edge *)v->e0->info`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A bowtie (non-manifold vertex) where hub v4=(0,0,0) is shared by two triangle fans that share no edge: fan A (t0=(v0,v1,v4)) and fan B (t1=(v2,v3,v4)). When init reconstructs the clone, the clone v4->e0 can only point to one of the two fan groups — the clone inherits the broken vertex-edge reference that leaves one fan group unreachable from v4.
+- **Reproducer recipe**: v0=(-1,-1,0), v1=(1,-1,0), v2=(-1,1,0), v3=(1,1,0), v4=(0,0,0); t0=(v0,v1,v4), t1=(v2,v3,v4); assert_vertex_fan_disconnected(4); all edges n=1.
+- **Expected kernel behavior**: Branch 5 fires for each vertex; v4->e0 in the clone points to one fan only; non-manifold-vertex flag triggered downstream.
+- **Mesh assertion**: `vertex_fan_disconnected vertex=4`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me344.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me345 — init_edge_triangle_reference_link: open-boundary mesh forces clone edge t1/t2 pointers during init
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.init / edge-triangle-reference-link)
+- **Sources**: MeshFix `Basic_TMesh.init` Branch 6 (*EDGE_TRIANGLE_REFERENCE_LINK*: `((Edge *)e->info)->t1 = (e->t1)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two adjacent triangles forming a quad split with an open boundary (4 boundary edges). When init reconstructs the clone, boundary edges must have t2==NULL; the shared interior edge (v0,v2) must have both t1 and t2 set. Branch 6 exercises the t1/t2 pointer reconstruction for all 5 edges.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(1,1,0), v3=(0,1,0); t0=(v0,v1,v2), t1=(v0,v2,v3); edge (v0,v2) n=2; boundary edges n=1; hole_boundary [v0,v1,v2,v3]; euler chi=1.
+- **Expected kernel behavior**: Branch 6 fires for all 5 edges; interior clone edge gets both triangle pointers; boundary clone edges get t1=triangle and t2=NULL.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2,3]`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me345.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me346 — init_info_preservation_flag: near-coincident vertex pair forces clone_info to copy degenerate triangle info pointer
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.init / info-preservation-flag)
+- **Sources**: MeshFix `Basic_TMesh.init` Branch 7 (*INFO_PRESERVATION_FLAG*: `if (clone_info) { nt->info = t->info; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 2-triangle mesh: t0=(v0,v1,v3) is valid; t1=(v0,v1,v2) is near-degenerate — v1=(1,0,0) and v2=(1+1e-8,0,0) are sub-tolerance coincident, making t1 effectively zero-area. When a healer calls init with clone_info=true, each triangle's void* info pointer is copied to the clone — including the degenerate triangle's info, which may hold a repair tag or be NULL.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(1+1e-8,0,0), v3=(0.5,1,0); t0=(v0,v1,v3), t1=(v0,v1,v2); assert_vertex_pair_distance_lt(1,2,1e-6); assert_triangle_area_lt(1,1e-9).
+- **Expected kernel behavior**: Branch 7 fires when clone_info=true; degenerate t1's info pointer is copied to clone triangle; healer must not rely on info being clean post-init.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,2] lt=1e-06`
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-09`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me346.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me347 — init_topology_invalidation: two disconnected open shells require d_boundaries/d_shells/d_handles recompute after init
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.init / topology-invalidation)
+- **Sources**: MeshFix `Basic_TMesh.init` Branch 8 (*TOPOLOGY_INVALIDATION*: `d_boundaries = d_handles = d_shells = 1`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two fully disconnected single-triangle components (shells A and B) at x=0 and x=10. Both have open boundaries (each edge n=1) and neither has handles (genus 0). At the end of init, all three topology-cache flags are set dirty: d_boundaries (both shells are open), d_shells (2 separate components), d_handles (evaluated as 0 for each). This exercises the invalidation of all three caches simultaneously.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0); v3=(10,0,0), v4=(11,0,0), v5=(10.5,1,0); t0=(v0,v1,v2), t1=(v3,v4,v5); all edges n=1; triangle_not_reachable_from(target=1,source=0); euler chi=2.
+- **Expected kernel behavior**: Branch 8 fires once at end of init; all three topology flags set dirty; lazy-recompute triggered on first call to d_boundaries/d_shells/d_handles query.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=1`
+- **Mesh assertion**: `triangle_not_reachable_from source=0 target=1`
+- **Mesh assertion**: `euler_characteristic v=6 e=6 f=2 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me347.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me290 — connected_components iteration_construct: outer for-loop visits three isolated triangle components
 - **Category**: §12.14 mesh defects (sub-class: disconnected_components / connected-components-labelling)
 - **Sources**: CGAL `PMP.connected_components` Branch 1 @ line 224 (*Iteration_construct*); `MESH_HEAL_COVERAGE.md`.

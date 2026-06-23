@@ -1754,40 +1754,16 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
   - Suggested fixture: defect mentioning 'FOREACHVERTEX(v, n) UNMARK_VISIT(v)'
 
 ##### `Basic_TMesh.init` — lines 181–226
-(8 branches; all UNCOVERED — no mesh fixtures exist yet)
+(8 branches; ALL COVERED — wave 12C Me340–Me347)
 
-- **Branch 1** @ line 190 — *info_array_allocation_triangles*
-  - What it tests: Allocate array for triangle info pointers
-  - Repair action: Create t_info array of size numels()
-  - Suggested fixture: defect mentioning 't_info = new void *[tin->T.numels()]'
-- **Branch 2** @ line 197 — *vertex_copy_iteration*
-  - What it tests: Iterate through source mesh vertices
-  - Repair action: Create new vertices and link via info field
-  - Suggested fixture: defect mentioning 'FOREACHVVVERTEX', 'newVertex'
-- **Branch 3** @ line 202 — *edge_copy_iteration*
-  - What it tests: Iterate through source mesh edges
-  - Repair action: Create new edges with redirected vertex refs
-  - Suggested fixture: defect mentioning 'FOREACHVEEDGE', 'newEdge'
-- **Branch 4** @ line 205 — *triangle_copy_iteration*
-  - What it tests: Iterate through source mesh triangles
-  - Repair action: Create new triangles with redirected edge refs
-  - Suggested fixture: defect mentioning 'FOREACHVTTRIANGLE', 'newTriangle'
-- **Branch 5** @ line 208 — *vertex_edge_reference_link*
-  - What it tests: Link copied vertex e0 to copied edge
-  - Repair action: Set new vertex->e0 to copied edge
-  - Suggested fixture: defect mentioning '((Vertex *)v->info)->e0 = (Edge *)v->e0->info'
-- **Branch 6** @ line 210 — *edge_triangle_reference_link*
-  - What it tests: Link copied edge to copied triangles
-  - Repair action: Set edge t1/t2 to copied triangles
-  - Suggested fixture: defect mentioning '((Edge *)e->info)->t1 = (e->t1)'
-- **Branch 7** @ line 217 — *info_preservation_flag*
-  - What it tests: clone_info flag set to preserve pointers
-  - Repair action: Copy info pointers from source to clone mesh
-  - Suggested fixture: defect mentioning 'if (clone_info)'
-- **Branch 8** @ line 225 — *topology_invalidation*
-  - What it tests: Mark topology dirty after initialization
-  - Repair action: Set d_boundaries, d_handles, d_shells flags
-  - Suggested fixture: defect mentioning 'd_boundaries = d_handles = d_shells = 1'
+- **Branch 1** @ line 190 — *info_array_allocation_triangles* — COVERED (Me340: duplicate triangle inflates T.numels(); t_info over-allocated)
+- **Branch 2** @ line 197 — *vertex_copy_iteration* — COVERED (Me341: 2 isolated orphan vertices in vertex list; FOREACHVVVERTEX iterates 5 entries)
+- **Branch 3** @ line 202 — *edge_copy_iteration* — COVERED (Me342: non-manifold edge shared by 3 triangles; FOREACHVEEDGE copies over-incident edge entry)
+- **Branch 4** @ line 205 — *triangle_copy_iteration* — COVERED (Me343: degenerate zero-area collinear triangle; FOREACHVTTRIANGLE copies all 2 entries)
+- **Branch 5** @ line 208 — *vertex_edge_reference_link* — COVERED (Me344: bowtie vertex v4 with disconnected fan; clone v4->e0 links into only one fan group)
+- **Branch 6** @ line 210 — *edge_triangle_reference_link* — COVERED (Me345: open-boundary quad-split; boundary clone edges get t2=NULL, interior edge gets both)
+- **Branch 7** @ line 217 — *info_preservation_flag* — COVERED (Me346: near-coincident vertex makes t1 near-degenerate; clone_info copies degenerate triangle's info pointer)
+- **Branch 8** @ line 225 — *topology_invalidation* — COVERED (Me347: 2 disconnected open shells; all three d_boundaries/d_handles/d_shells set dirty at end of init)
 
 ##### `Basic_TMesh.removeEdges` — lines 573–595
 (5 branches; all UNCOVERED — no mesh fixtures exist yet)
