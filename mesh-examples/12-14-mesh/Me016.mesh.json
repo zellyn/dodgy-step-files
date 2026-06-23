@@ -1,0 +1,90 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      1.0,
+      0.0
+    ],
+    [
+      -2.0,
+      0.0,
+      0.0
+    ],
+    [
+      -2.0,
+      1.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.5,
+      -1.0
+    ],
+    [
+      0.0,
+      0.5,
+      1.0
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0
+    ],
+    [
+      1.5,
+      0.5,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      3,
+      4
+    ],
+    [
+      0,
+      5,
+      6
+    ],
+    [
+      0,
+      7,
+      8
+    ]
+  ],
+  "metadata": {
+    "id": "Me016",
+    "schema_version": 0,
+    "defect_class": "self_intersection_non_manifold_vertex",
+    "title": "SI + non-manifold bowtie vertex: genus-preservation decision",
+    "assertions": [
+      {
+        "kind": "vertex_fan_disconnected",
+        "vertex": 0
+      },
+      {
+        "kind": "triangles_self_intersect",
+        "triangles": [
+          0,
+          3
+        ]
+      }
+    ]
+  }
+}

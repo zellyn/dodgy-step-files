@@ -1,0 +1,17 @@
+# Me023: SI pair surrounded by expansion belt: expand_face_selection branch
+# defect_class: self_intersection_expansion_needed
+v 0 0 0
+v 1 1 0
+v 1 -1 0
+v 1 0 1
+v 1 0 -1
+v 2 1 0
+v 2 -1 0
+v 2 0 1.5
+v 2 0 -1.5
+f 1 2 3
+f 1 4 5
+f 2 6 3
+f 4 8 5
+f 2 4 6
+f 3 5 7

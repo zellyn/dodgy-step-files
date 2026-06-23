@@ -1,0 +1,21 @@
+ply
+format ascii 1.0
+comment Me021: SI near sharp dihedral feature: constrain_sharp_edges branch
+comment defect_class: self_intersection_sharp_edge
+element vertex 7
+property float x
+property float y
+property float z
+element face 3
+property list uchar int vertex_indices
+end_header
+0 0 0
+1 0 0
+1 2 0
+0.00137046524543 1 0.0523359562429
+0.5 1 0.8
+0.5 1 -0.5
+0.5 0 0
+3 0 1 2
+3 1 2 3
+3 4 5 6

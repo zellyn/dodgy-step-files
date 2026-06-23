@@ -1,0 +1,79 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      2.0,
+      0.0
+    ],
+    [
+      0.0013704652454261668,
+      1.0,
+      0.05233595624294381
+    ],
+    [
+      0.5,
+      1.0,
+      0.8
+    ],
+    [
+      0.5,
+      1.0,
+      -0.5
+    ],
+    [
+      0.5,
+      0.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      1,
+      2,
+      3
+    ],
+    [
+      4,
+      5,
+      6
+    ]
+  ],
+  "metadata": {
+    "id": "Me021",
+    "schema_version": 0,
+    "defect_class": "self_intersection_sharp_edge",
+    "title": "SI near sharp dihedral feature: constrain_sharp_edges branch",
+    "assertions": [
+      {
+        "kind": "triangles_self_intersect",
+        "triangles": [
+          0,
+          2
+        ]
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          2
+        ],
+        "n": 2
+      }
+    ]
+  }
+}

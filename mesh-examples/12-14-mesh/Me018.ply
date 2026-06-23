@@ -1,0 +1,21 @@
+ply
+format ascii 1.0
+comment Me018: SI pocket with displaced apex piercing flat patch: use_smoothing branch
+comment defect_class: self_intersection_smoothable
+element vertex 7
+property float x
+property float y
+property float z
+element face 3
+property list uchar int vertex_indices
+end_header
+0 0 0
+2 0 0
+2 2 0
+0 2 0
+1 -0.5 0.5
+1 2.5 0.5
+1 1 -0.5
+3 0 1 2
+3 0 2 3
+3 4 5 6

@@ -1,0 +1,71 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      2.0,
+      0.0
+    ],
+    [
+      0.0,
+      2.0,
+      0.0
+    ],
+    [
+      1.0,
+      -0.5,
+      0.5
+    ],
+    [
+      1.0,
+      2.5,
+      0.5
+    ],
+    [
+      1.0,
+      1.0,
+      -0.5
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      2,
+      3
+    ],
+    [
+      4,
+      5,
+      6
+    ]
+  ],
+  "metadata": {
+    "id": "Me018",
+    "schema_version": 0,
+    "defect_class": "self_intersection_smoothable",
+    "title": "SI pocket with displaced apex piercing flat patch: use_smoothing branch",
+    "assertions": [
+      {
+        "kind": "triangles_self_intersect",
+        "triangles": [
+          0,
+          2
+        ]
+      }
+    ]
+  }
+}

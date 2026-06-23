@@ -1,0 +1,15 @@
+# Me017: SI in CC-A only; clean CC-B disconnected: treat_all_CCs decision
+# defect_class: self_intersection_multi_cc
+v 0 0 0
+v 1 1 0
+v 1 -1 0
+v 1 0 1
+v 1 0 -1
+v 0 50 0
+v 1 50 0
+v 1 51 0
+v 0 51 0
+f 1 2 3
+f 1 4 5
+f 6 7 8
+f 6 8 9

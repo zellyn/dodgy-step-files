@@ -1,0 +1,26 @@
+ply
+format ascii 1.0
+comment Me019: SI region with degenerate zero-area faces: faces_to_treat empties after removal
+comment defect_class: self_intersection_degenerate_cluster
+element vertex 11
+property float x
+property float y
+property float z
+element face 4
+property list uchar int vertex_indices
+end_header
+0 0 0
+1 0 0
+0.5 1 0
+0.2 0 0
+0.8 0 0
+0.5 0 0
+0 0 1
+0 1 0
+0 0 0.2
+0 0 0.8
+0 0 0.5
+3 0 1 2
+3 3 4 5
+3 0 6 7
+3 8 9 10

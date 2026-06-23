@@ -1,0 +1,88 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      2.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.5,
+      -1.0
+    ],
+    [
+      0.5,
+      1.0,
+      1.0
+    ],
+    [
+      1.5,
+      1.0,
+      1.0
+    ],
+    [
+      1.0,
+      1.0,
+      -0.8
+    ],
+    [
+      0.3,
+      0.3,
+      0.8
+    ],
+    [
+      1.7,
+      0.3,
+      0.8
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      3,
+      4,
+      5
+    ],
+    [
+      6,
+      7,
+      8
+    ]
+  ],
+  "metadata": {
+    "id": "Me025",
+    "schema_version": 0,
+    "defect_class": "self_intersection_convergence_stall",
+    "title": "dual persistent SI piercers: something_was_done=false convergence stall",
+    "assertions": [
+      {
+        "kind": "triangles_self_intersect",
+        "triangles": [
+          0,
+          1
+        ]
+      },
+      {
+        "kind": "triangles_self_intersect",
+        "triangles": [
+          0,
+          2
+        ]
+      }
+    ]
+  }
+}

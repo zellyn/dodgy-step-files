@@ -31363,6 +31363,114 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me015.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me016 — SI + non-manifold bowtie vertex: genus-preservation decision
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/non-manifold-vertex)
+- **Sources**: CGAL `PMP.remove_self_intersections` Branch 1 @ line 2379 (*genus-preservation-requirement*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: vertex 0 is a bowtie hub shared by two disconnected triangle fans (fan A = triangles 0,1 in the z=0 plane; fan B = triangles 2,3). Triangles 0 and 3 are coplanar with overlapping interiors — a coplanar self-intersection. The hub's vertex fan is disconnected (non-manifold vertex). Self-intersection removal must decide whether to preserve topological genus by duplicating the hub vertex before hole-filling (preserve_genus NP).
+- **Reproducer recipe**: 9 vertices; hub at origin; fan A right = `(hub, a0, a1)`, fan A left = `(hub, a2, a3)` in z=0; fan B = `(hub, b0, b1)` spanning z=-1..+1, `(hub, b2, b3)` coplanar with fan A and overlapping tri 0.
+- **Expected kernel behavior**: detect vertex-fan disconnection; either duplicate hub to restore manifold topology or route to complex handler before SI removal.
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,3]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me016.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me017 — SI in CC-A; clean CC-B disconnected: treat_all_CCs decision
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/multi-connected-component)
+- **Sources**: CGAL `PMP.remove_self_intersections` Branch 2 @ line 2383 (*treatment-scope-selection*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: two fully disconnected connected components with no shared vertices. CC A (triangles 0,1) has an internal self-intersection: XY triangle 0 and XZ triangle 1 cross along the X axis. CC B (triangles 2,3) is a clean flat quad 50 units away. The treat_all_CCs parameter controls whether CC B is also processed or skipped because it has no internal SI.
+- **Reproducer recipe**: CC A = crossing XY/XZ triangles sharing apex at origin; CC B = clean quad at y=50. No shared vertices between CCs.
+- **Expected kernel behavior**: detect SI only in CC A; when treat_all_CCs=false, skip CC B; when true, also validate CC B.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me017.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me018 — SI pocket with displaced apex piercing flat patch: use_smoothing branch
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/smoothable)
+- **Sources**: CGAL `PMP.remove_self_intersections` Branch 3 @ line 2397 (*smoothing-phase-strategy*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: triangles 0 and 1 form a flat patch in the z=0 plane. Triangle 2 is an intruding element whose apex (vertex 6) has been displaced to z=-0.5 — below the patch. The intruder's upper vertices are at z=+0.5, so it slices through the patch. Moving the apex back to z≈0 via a smoothing pass would fix the SI without topological remeshing, making this an ideal candidate for the use_smoothing repair branch.
+- **Reproducer recipe**: patch = two triangles from quad `(0,0,0),(2,0,0),(2,2,0),(0,2,0)`; intruder apex at `(1,1,-0.5)`, base at `(1,-0.5,0.5)` and `(1,2.5,0.5)`.
+- **Expected kernel behavior**: detect the self-intersection between the patch and the intruder; use vertex-smoothing on the displaced apex to lift it back above z=0.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,2]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me018.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me019 — SI region with degenerate zero-area faces: faces_to_treat empties after removal
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/degenerate-cluster)
+- **Sources**: CGAL `PMP.remove_self_intersections` Branch 5 @ line 2463 (*face-selection-emptiness-detection*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: the mesh contains both valid triangles (0 and 2) and zero-area collinear-vertex triangles (1 and 3). The degenerate triangles represent the "blocking" elements left after a partial SI-heal pass. When a healer removes the zero-area faces first, the faces_to_treat set becomes empty, triggering the early-exit branch rather than an SI recomputation.
+- **Reproducer recipe**: 4 triangles; tri 0 valid in z=0 plane; tri 1 = three collinear points along X axis (area=0); tri 2 valid in x=0 plane; tri 3 = three collinear points along Z axis (area=0).
+- **Expected kernel behavior**: detect zero-area faces and remove them; after removal the candidate set is empty — exit the SI loop rather than recompute.
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-12`
+- **Mesh assertion**: `triangle_area_lt triangle=3 lt=1e-12`
+- **Fixture path**: mesh-examples/12-14-mesh/Me019.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me020 — internal SI in CC-A; CC-B clean: internal-vs-external SI classification
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/internal-cc)
+- **Sources**: CGAL `PMP.remove_self_intersections` Branch 6 @ line 2150 (*internal-vs-external-si-classification*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: two disconnected connected components. CC A (triangles 0,1) has a self-intersection internal to that CC (XY and XZ triangles crossing at the shared apex). CC B (triangles 2,3) is a clean flat quad 30 units away. The classification branch distinguishes internal SI (within a single CC) from external SI (across CCs). When treat_all_CCs=false, CC B is skipped; the oracle fixture confirms the SI is purely internal.
+- **Reproducer recipe**: CC A = crossing XY/XZ pair at origin; CC B = clean quad at y=30. No shared vertices.
+- **Expected kernel behavior**: classify SI as internal to CC A; skip CC B when treat_all_CCs=false; apply hole-fill only to CC A.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me020.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me021 — SI near sharp dihedral feature: constrain_sharp_edges branch
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/sharp-edge)
+- **Sources**: CGAL `PMP.remove_self_intersections` Branch 9 @ line 2196 (*constraint-preservation-mode*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: triangles 0 and 1 share edge (v1,v2) at a near-180° dihedral (177°) — a sharp feature fold. Triangle 2 is an intruding element that self-intersects triangle 0 by spanning from z=+0.8 to z=-0.5. A smoothing repair that ignores the sharp-edge constraint would flatten the fold (destroying the feature); the constrain_sharp_edges / strong_dihedral_angle branch preserves it.
+- **Reproducer recipe**: tri 0 = `(0,0,0),(1,0,0),(1,2,0)` in z=0; tri 1 shares edge `(1,0,0)-(1,2,0)` at 177° dihedral; tri 2 = intruder with apex at z=-0.5 crossing the patch.
+- **Expected kernel behavior**: detect sharp feature edge; constrain it during smoothing; resolve SI without collapsing the fold.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,2]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me021.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me022 — SI in annular ring (chi=0 topology): complex-topology handler branch
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/ring-topology)
+- **Sources**: CGAL `PMP.remove_self_intersections` Branch 11 @ line 2264 (*topology-genus-classification*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: a ring of 6 triangles forms an annular band with two boundary loops (inner at r=0.5, outer at r=1.5). Euler characteristic χ = V−E+F = 6−12+6 = 0 (not 1; not a disk). An intruding 7th triangle self-intersects the ring by passing through the centroid of tri 0. The SI removal expansion includes the whole ring, whose non-disk topology triggers the complex-topology handler branch.
+- **Reproducer recipe**: 6 inner/outer vertex pairs at 120° intervals; 6 ring triangles; 1 intruder whose apex is at the centroid of tri 0 spanning z=±1.
+- **Expected kernel behavior**: detect euler_characteristic_of_selection ≠ 1; route to handle_CC_with_complex_topology rather than simple hole-fill.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,6]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me022.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me023 — SI pair surrounded by expansion belt: expand_face_selection branch
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/expansion-needed)
+- **Sources**: CGAL `PMP.remove_self_intersections` Branch 12 @ line 2041 (*expansion-step-depth-control*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: triangles 0 and 1 cross at the center (XY and XZ planes). Triangles 2–5 form a surrounding belt sharing edges with the center pair. The center pair alone has non-disk topology; only after expanding by 2 topological steps (step > 0) does the selection become disk-fillable. This exercises the expand_face_selection loop that iteratively grows the face set.
+- **Reproducer recipe**: center crossing pair (no shared vertices except apex); 4 belt triangles each sharing one edge with a center triangle; no isolated vertices.
+- **Expected kernel behavior**: detect that the initial SI region is not disk-fillable; expand by step parameter; include belt triangles before hole-filling.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me023.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me024 — SI with singleton compactified region: cc_faces.size()==1 branch
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/singleton-cc)
+- **Sources**: CGAL `PMP.remove_self_intersections` Branch 14 @ line 2135 (*singleton-cc-rejection*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: exactly two triangles form a minimal crossing pair (XY and XZ planes, shared apex at origin), with no surrounding belt or context triangles. After bounding-box compactification the candidate CC has exactly one face — `cc_faces.size() == 1` — and the algorithm skips further processing (continue in the main loop) because there is no hole topology to fill.
+- **Reproducer recipe**: 5 vertices; tri 0 = `(0,0,0),(1,1,0),(1,-1,0)` in XY; tri 1 = `(0,0,0),(1,0,1),(1,0,-1)` in XZ. No additional faces.
+- **Expected kernel behavior**: detect SI; attempt compactification; find singleton CC; skip hole-fill; log the stall condition.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me024.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me025 — dual persistent SI piercers: something_was_done=false convergence stall
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/convergence-stall)
+- **Sources**: CGAL `PMP.remove_self_intersections` Branch 15 @ line 2311 (*iteration-convergence-stalling-detection*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: a large base triangle (tri 0) in the z=0 plane is pierced by two independent intruding triangles at different locations. Each intruder has its apex below z=0. No single hole-fill pass resolves both crossings simultaneously: fixing one does not affect the other, so `something_was_done` stays false after each pass. The stall detector fires, restores the face list, and exits the iteration to avoid an infinite loop.
+- **Reproducer recipe**: tri 0 = large flat triangle; tri 1 = intruder with apex at `(1,0.5,-1)` and base above z=0; tri 2 = second intruder with apex at `(1,1,-0.8)` and base above z=0.
+- **Expected kernel behavior**: detect two independent SI crossings; attempt hole-fill; detect no topology change (something_was_done=false); restore faces_to_treat and exit iteration.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,2]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me025.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Wr052 — Writer emits EDGE_CURVE backed by untrimmed LINE entity
 - **Category**: §12.13 writer-pathology (sub-class: unbounded-curve emission)
 - **Sources**: Pattern-mined from OCCT/tests/bugs/step/bug32817_1 (LGPL-clean — pattern only, no bytes copied). OCCT method `STEPControl_Writer::Transfer` on a single-line edge.

@@ -1,0 +1,12 @@
+# Me021: SI near sharp dihedral feature: constrain_sharp_edges branch
+# defect_class: self_intersection_sharp_edge
+v 0 0 0
+v 1 0 0
+v 1 2 0
+v 0.00137046524543 1 0.0523359562429
+v 0.5 1 0.8
+v 0.5 1 -0.5
+v 0.5 0 0
+f 1 2 3
+f 2 3 4
+f 5 6 7

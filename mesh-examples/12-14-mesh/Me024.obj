@@ -1,0 +1,9 @@
+# Me024: SI with singleton compactified region: cc_faces.size()==1 branch
+# defect_class: self_intersection_singleton_cc
+v 0 0 0
+v 1 1 0
+v 1 -1 0
+v 1 0 1
+v 1 0 -1
+f 1 2 3
+f 1 4 5

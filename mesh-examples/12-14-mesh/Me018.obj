@@ -1,0 +1,12 @@
+# Me018: SI pocket with displaced apex piercing flat patch: use_smoothing branch
+# defect_class: self_intersection_smoothable
+v 0 0 0
+v 2 0 0
+v 2 2 0
+v 0 2 0
+v 1 -0.5 0.5
+v 1 2.5 0.5
+v 1 1 -0.5
+f 1 2 3
+f 1 3 4
+f 5 6 7

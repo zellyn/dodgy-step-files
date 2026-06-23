@@ -1,0 +1,99 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      0.2,
+      0.0,
+      0.0
+    ],
+    [
+      0.8,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      1.0
+    ],
+    [
+      0.0,
+      1.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.2
+    ],
+    [
+      0.0,
+      0.0,
+      0.8
+    ],
+    [
+      0.0,
+      0.0,
+      0.5
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      3,
+      4,
+      5
+    ],
+    [
+      0,
+      6,
+      7
+    ],
+    [
+      8,
+      9,
+      10
+    ]
+  ],
+  "metadata": {
+    "id": "Me019",
+    "schema_version": 0,
+    "defect_class": "self_intersection_degenerate_cluster",
+    "title": "SI region with degenerate zero-area faces: faces_to_treat empties after removal",
+    "assertions": [
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 1,
+        "lt": 1e-12
+      },
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 3,
+        "lt": 1e-12
+      }
+    ]
+  }
+}

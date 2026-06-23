@@ -1,0 +1,18 @@
+# Me022: SI in annular ring (chi=0 topology): complex-topology handler branch
+# defect_class: self_intersection_ring_topology
+v 0.5 0 0
+v 1.5 0 0
+v -0.25 0.433012701892 0
+v -0.75 1.29903810568 0
+v -0.25 -0.433012701892 0
+v -0.75 -1.29903810568 0
+v 0.416666666667 0.433333333333 1
+v 0.416666666667 0.433333333333 -1
+v 1.41666666667 0.433333333333 0
+f 1 2 4
+f 1 4 3
+f 3 4 6
+f 3 6 5
+f 5 6 2
+f 5 2 1
+f 7 8 9

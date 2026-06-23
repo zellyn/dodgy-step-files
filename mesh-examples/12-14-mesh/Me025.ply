@@ -1,0 +1,23 @@
+ply
+format ascii 1.0
+comment Me025: dual persistent SI piercers: something_was_done=false convergence stall
+comment defect_class: self_intersection_convergence_stall
+element vertex 9
+property float x
+property float y
+property float z
+element face 3
+property list uchar int vertex_indices
+end_header
+0 0 0
+2 0 0
+1 2 0
+1 0.5 -1
+0.5 1 1
+1.5 1 1
+1 1 -0.8
+0.3 0.3 0.8
+1.7 0.3 0.8
+3 0 1 2
+3 3 4 5
+3 6 7 8

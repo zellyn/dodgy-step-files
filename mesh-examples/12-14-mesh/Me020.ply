@@ -1,0 +1,24 @@
+ply
+format ascii 1.0
+comment Me020: internal SI in CC-A only; CC-B clean: internal-vs-external SI classification
+comment defect_class: self_intersection_internal_cc
+element vertex 9
+property float x
+property float y
+property float z
+element face 4
+property list uchar int vertex_indices
+end_header
+0 0 0
+1 1 0
+1 -1 0
+1 0 1
+1 0 -1
+0 30 0
+1 30 0
+1 31 0
+0 31 0
+3 0 1 2
+3 0 3 4
+3 5 6 7
+3 5 7 8
