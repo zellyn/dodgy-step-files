@@ -34,8 +34,8 @@ DATA;
 #35=DIRECTION('x_axis',(1.,0.,0.));
 #36=AXIS2_PLACEMENT_3D('face_placement',#30,#34,#35);
 #37=PLANE('face_plane',#36);
-/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
-/* (TRIANGULATED_FACE + ADVANCED_FACE both referenced; writer drops tessellation) */
+/* GEOMETRIC_CURVE_SET is model entity; TRIANGULATED_FACE inside causes OCC signal(11) */
+/* (TRIANGULATED_FACE in GEOMETRIC_CURVE_SET; writer drops tessellation on write) */
 #50=GEOMETRIC_CURVE_SET('pretessellated-geometry-skipped-on-write',
   (#21,#20,#36,#37,#30,#31,#32,#33));
 /* PRODUCT chain */

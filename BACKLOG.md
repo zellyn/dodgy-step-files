@@ -41,6 +41,10 @@ under the quality bar; the local file changes were rolled back rather
 than committed. New strategy: Sonnet-generates instead of Haiku-generates.
 **Last touched:** 2026-06-19.
 
+**Deferred (Q5 recon 2026-06-23 — oracle-active M-fixtures with oracle-invisible defect bytes):**
+- M011: GVP inflation defect — the defect bytes are PROPERTY_DEFINITION_REPRESENTATION data (inflated volume=1.5, centroid offset) that OCC never reads during shape load; cube BRep is valid and always loads shape(1)/shape(1); byte mutations to the GVP section are oracle-invisible; only surrounding cube geometry mutations change tier-3 fingerprint. Defect is CONFIRMED in the valid cube + GVP chain (which carries the claim); cannot make the GVP values oracle-visible without adding a GVP checker that rejects on mismatch (OCC doesn't have one). Logged 2026-06-23.
+- M014: GISU wrong-representation defect — the defect byte is the GISU.used_representation reference (#520 instead of #620); OCC silently heals/ignores the broken PMI link and loads shape(1)/shape(1); the broken GISU reference (#700 entity) is never checked during BRep load; byte mutations to the GISU or CGR section are oracle-invisible. Same structural limitation as M011: metadata-only, PMI checker would need to reject for mutation to flip. Logged 2026-06-23.
+
 **Deferred (need bespoke regen per mechanism — not generic C-1 break):**
 - Gp066: FixSameParameter selection-bias algorithm bug — cannot embed algorithmic selection in static STEP geometry; bytes can only encode the post-bug result (broken curve), not the trigger.
 - Logged 2026-06-19 after Sonnet indep verify caught batch-7 mechanism mismatches.

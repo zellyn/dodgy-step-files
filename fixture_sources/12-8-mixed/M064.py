@@ -12,8 +12,10 @@ Byte assertions:
   contains(b'no_uncertainty')
   count_entity_def(b'UNCERTAINTY_MEASURE_WITH_UNIT') == 0
 
-Tier-3: shape_null == True
-Expected: occt=empty/empty gmsh=empty ifc=schema_n/a
+Tier-3: n_faces_total == 0
+Tier-3: n_edges_total >= 1
+Tier-3: parametric.uncertainty_values == []
+Expected: occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a
 """
 from pathlib import Path
 from step_corpus.step_builder import StepFile
@@ -34,8 +36,8 @@ f = StepFile(
         "causing geometry joins to fail; models needing looser tolerance are also wrong; "
         "kernel must heal and accept: compute uncertainty from geometry-extent and entity "
         "tolerances; warn that no uncertainty was declared; "
-        "OCC silently accepts (no diagnostic, empty result); "
-        "GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty; "
+        "OCC silently accepts (no diagnostic, loads wire as shape(1)); "
+        "GEOMETRIC_CURVE_SET IS the model entity — OCC loads edges/wire as shape(1)/shape(1); "
         "synonyms: uncertainty defaulted, precision guessed, no tolerance in file, "
         "kernel-default precision used, UNCERTAINTY_MEASURE missing"
     ),
@@ -91,7 +93,7 @@ def _render_m064() -> str:
     lines.append("#23=DIRECTION('x_axis',(1.,0.,0.));")
     lines.append("#24=AXIS2_PLACEMENT_3D('placement',#20,#22,#23);")
     lines.append("#25=CIRCLE('edge_circle',#24,25.);")
-    lines.append("/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */")
+    lines.append("/* GEOMETRIC_CURVE_SET IS the model entity — OCC loads wire/edges as shape(1) */")
     lines.append("#26=GEOMETRIC_CURVE_SET('geometric-context-missing-uncertainty-measure-with-unit',(#24,#25,#20,#21));")
     lines.append("/* Minimal PRODUCT chain — no UNCERTAINTY_MEASURE_WITH_UNIT emitted */")
     lines.append("#30=APPLICATION_CONTEXT('mechanical design');")

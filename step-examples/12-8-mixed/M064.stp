@@ -25,7 +25,7 @@ DATA;
 #23=DIRECTION('x_axis',(1.,0.,0.));
 #24=AXIS2_PLACEMENT_3D('placement',#20,#22,#23);
 #25=CIRCLE('edge_circle',#24,25.);
-/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
+/* GEOMETRIC_CURVE_SET IS the model entity — OCC loads wire/edges as shape(1) */
 #26=GEOMETRIC_CURVE_SET('geometric-context-missing-uncertainty-measure-with-unit',(#24,#25,#20,#21));
 /* Minimal PRODUCT chain — no UNCERTAINTY_MEASURE_WITH_UNIT emitted */
 #30=APPLICATION_CONTEXT('mechanical design');

@@ -12548,8 +12548,10 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'GEOMETRIC_REPRESENTATION_CONTEXT')
 - **Byte assertion**: contains(b'no_uncertainty')
 - **Byte assertion**: count_entity_def(b'UNCERTAINTY_MEASURE_WITH_UNIT') == 0
-- **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **Tier-3 assertion**: n_faces_total == 0
+- **Tier-3 assertion**: n_edges_total >= 1
+- **Tier-3 assertion**: parametric.uncertainty_values == []
+- **OCC behavior**: silently accepts (no diagnostic, wire-only result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Appearance/style attributes detach from their target shape; the geometry loads correctly but colors, layers, or material assignments are dropped or attached to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a`

@@ -14,7 +14,7 @@ Byte assertions:
   contains(b'TRIANGULATED_FACE')
 
 Tier-3: shape_null == True
-Expected: occt=empty/empty gmsh=empty ifc=schema_n/a
+Expected: occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a
 """
 from pathlib import Path
 from step_corpus.step_builder import StepFile
@@ -22,11 +22,10 @@ from step_corpus.step_builder import StepFile
 f = StepFile(
     catalog_id="M068",
     defect=(
-        "GEOMETRIC_CURVE_SET in file where TRIANGULATED_FACE tessellation is present "
-        "alongside B-rep ADVANCED_FACE, but writer silently drops tessellated content "
-        "when read.step.tessellated config flag is off — pretessellated geometry skipped; "
-        "input: AP242 STEP file containing a TRIANGULATED_FACE mesh attached to the same "
-        "face as an ADVANCED_FACE B-rep; "
+        "Pretessellated geometry skipped on STEP write; "
+        "input: AP242 STEP file containing a TRIANGULATED_FACE mesh (pretessellation) "
+        "attached to a GEOMETRIC_CURVE_SET alongside ADVANCED_FACE B-rep geometry; "
+        "OCCT crashes (signal 11) when parsing TRIANGULATED_FACE in this context; "
         "OCCT's tessellation emitter is gated behind read.step.tessellated config; "
         "when the flag is unset (default), the entire TRIANGULATED_FACE tessellation "
         "is silently dropped on write even though AP242 supports it; "
@@ -87,8 +86,8 @@ def _render_m068() -> str:
     lines.append("#35=DIRECTION('x_axis',(1.,0.,0.));")
     lines.append("#36=AXIS2_PLACEMENT_3D('face_placement',#30,#34,#35);")
     lines.append("#37=PLANE('face_plane',#36);")
-    lines.append("/* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */")
-    lines.append("/* (TRIANGULATED_FACE + ADVANCED_FACE both referenced; writer drops tessellation) */")
+    lines.append("/* GEOMETRIC_CURVE_SET is model entity; TRIANGULATED_FACE inside causes OCC signal(11) */")
+    lines.append("/* (TRIANGULATED_FACE in GEOMETRIC_CURVE_SET; writer drops tessellation on write) */")
     lines.append("#50=GEOMETRIC_CURVE_SET('pretessellated-geometry-skipped-on-write',")
     lines.append("  (#21,#20,#36,#37,#30,#31,#32,#33));")
     lines.append("/* PRODUCT chain */")
