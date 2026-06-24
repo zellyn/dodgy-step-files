@@ -37,7 +37,10 @@
       "performance"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Multi-GB Creo AP242 assemblies trigger unbounded receiver memory"
   },
@@ -72,7 +75,8 @@
       "performance"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Quadratic-cost STEP write on dense forward-reference `VERTEX_POINT` / `EDGE_CURVE` / `ADVANCED_FACE` web (200k-entity scale)"
   },
@@ -107,7 +111,8 @@
       "performance"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "50-second read on a 20 MB STEP: forward-reference DATA section forces multi-pass resolution (single-threaded)"
   },
@@ -143,7 +148,9 @@
       "performance"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_edges_total == 15",
+      "n_vertices_total == 15"
     ],
     "title": "Slow STEP import on geometric-set-heavy file"
   },
@@ -180,7 +187,8 @@
       "performance"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Quadratic self-intersection check dominates STEP read on perforated sheets"
   },
@@ -215,7 +223,8 @@
       "performance"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "`ADVANCED_FACE` with many circular inner `FACE_BOUND` holes triggers eager UV-bounds wire-walk on every type-only surface query"
   },
@@ -258,7 +267,10 @@
       "performance"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 100",
+      "n_edges_total == 400",
+      "n_vertices_total == 800"
     ],
     "title": "Stack overflow on huge faces-per-shell counts"
   },
@@ -297,7 +309,8 @@
       "performance"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Stack overflow when meshing with TBB pool from STEP import"
   },
@@ -8307,7 +8320,10 @@
       "writer"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 1",
+      "n_vertices_total == 2"
     ],
     "title": "Writer emits EDGE_CURVE backed by untrimmed LINE entity"
   },
@@ -8345,7 +8361,10 @@
       "writer"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 2",
+      "n_edges_total == 6",
+      "n_vertices_total == 12"
     ],
     "title": "Toroidal-surface portion of fused solid corrupted on STEP round-trip"
   },
@@ -34571,7 +34590,8 @@
       "encoding"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "German umlauts in `PRODUCT.name` mis-decoded by reader (Latin-1/UTF-8 confusion)"
   },
@@ -38110,7 +38130,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 1",
+      "n_vertices_total == 2"
     ],
     "title": "Pcurve endpoints disagree with edge vertex 3D positions"
   },
@@ -38152,7 +38175,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 1",
+      "n_vertices_total == 2"
     ],
     "title": "Pcurve with single-pole apex on sphere/cone (singularity)"
   },
@@ -38192,7 +38218,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 1",
+      "n_vertices_total == 2"
     ],
     "title": "Edge parameter range outside the pcurve's natural domain"
   },
@@ -38232,7 +38261,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 1",
+      "n_vertices_total == 2"
     ],
     "title": "Pcurve oscillations producing wire-intersector corruption"
   },
@@ -38273,7 +38305,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 1",
+      "n_vertices_total == 2"
     ],
     "title": "Surface_curve.associated_geometry contains a 3D curve in lieu of pcurve"
   },
@@ -38312,7 +38347,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 1",
+      "n_vertices_total == 2"
     ],
     "title": "Seam curve with same pcurve referenced twice"
   },
@@ -38351,7 +38389,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 1",
+      "n_vertices_total == 2"
     ],
     "title": "`SURFACE_CURVE` / seam-curve `associated_geometry` list contains a null `$` entry"
   },
@@ -38391,7 +38432,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "CATIA \"like-seam\": two pcurves on same near-closed `B_SPLINE_SURFACE_WITH_KNOTS`"
   },
@@ -38431,7 +38475,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Shared pcurve across multiple edges (SYRKO)"
   },
@@ -38469,7 +38516,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 1",
+      "n_vertices_total == 2"
     ],
     "title": "Pcurve/3D-curve trimming failure (\"Trimming of 2D curve failed\")"
   },
@@ -38509,7 +38559,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 1",
+      "n_vertices_total == 2"
     ],
     "title": "Pcurve in shifted/transformed UV frame relative to host surface"
   },
@@ -38543,7 +38596,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 1",
+      "n_vertices_total == 2"
     ],
     "title": "Pcurve gaps / nearly-duplicate pcurves near periodic boundary after `B_SPLINE_SURFACE` conversion"
   },
@@ -38620,7 +38676,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 2",
+      "n_vertices_total == 4"
     ],
     "title": "2D gap between adjacent edges in wire — pcurves disagree in UV"
   },
@@ -38661,7 +38720,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 1",
+      "n_vertices_total == 2"
     ],
     "title": "3D curve and pcurve on same edge disagree about edge location (skewed/off-unit pcurve `LINE`)"
   },
@@ -38705,7 +38767,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 1",
+      "n_vertices_total == 2"
     ],
     "title": "`EDGE_CURVE` `SameParameter=.T.` asserted but 3D curve and pcurve use different parameterisations (degenerate B-spline pcurve)"
   },
@@ -38744,7 +38809,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Point-projection onto trimmed periodic `CYLINDRICAL_SURFACE` returns UV outside trimmed band (pcurve start parameter shifted by period)"
   },
@@ -38784,7 +38852,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 1",
+      "n_vertices_total == 2"
     ],
     "title": "Pcurve refit after non-uniform scale produces large errors"
   },
@@ -38824,7 +38895,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 3",
+      "n_vertices_total == 6"
     ],
     "title": "`EDGE_LOOP` contour not closed in UV (Jordan-curve violation across periodic-surface seam)"
   },
@@ -38864,7 +38938,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Closed-face splitter leaves new pcurves out of sync with 3D curves on `CYLINDRICAL_SURFACE`"
   },
@@ -38904,7 +38981,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 2",
+      "n_vertices_total == 4"
     ],
     "title": "Wire crosses periodic-surface seam without an explicit seam edge (pcurve trim range vs vertex angular position mismatch)"
   },
@@ -38940,7 +39020,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Period-shift fix on revolved face leaves wire in inconsistent UV band, blocks meshing"
   },
@@ -38978,7 +39061,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Bent / polyline-form `B_SPLINE` pcurve from PRO/E IGES requires protective handling"
   },
@@ -39016,7 +39102,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 2",
+      "n_edges_total == 8",
+      "n_vertices_total == 16"
     ],
     "title": "Cylinder represented twice as duplicate `CYLINDRICAL_SURFACE` instances loses analytic identity"
   },
@@ -39088,7 +39177,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1"
     ],
     "title": "Composite curve segments do not meet within connectivity tolerance"
   },
@@ -39124,7 +39214,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Edge has 3D curve but no pcurve, requiring projection onto host surface"
   },
@@ -39164,7 +39257,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Pcurve shifting on non-periodic surface produces wrong result"
   },
@@ -39204,7 +39300,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Pcurve projection produces infinite line instead of bounded"
   },
@@ -39245,7 +39344,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Vertex 3D point and pcurve do not match within tolerance"
   },
@@ -39288,7 +39390,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Pcurve projection unstable on closed B-spline curve"
   },
@@ -40178,7 +40283,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "ShapeFix_Edge.FixSameParameter selection-bias tolerance comparison"
   },
@@ -40277,7 +40383,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 5",
+      "n_vertices_total == 10"
     ],
     "title": "ShapeAnalysis_Edge.CheckOverlapping common-sub-pattern miss"
   },
@@ -41459,7 +41568,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "ShapeAnalysis_Edge.CheckOverlapping zero-tolerance-overlap"
   },
@@ -41558,7 +41668,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "CheckPCurveRange B-spline-out-of-knot"
   },
@@ -42872,7 +42983,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "D3 third derivative zero; falls back to line endpoints"
   },
@@ -42971,7 +43085,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "ShapeAnalysis_Edge.CheckPCurveRange periodic_range_semantics"
   },
@@ -43678,7 +43793,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "RATIONAL_BSPLINE_CURVE / SURFACE with `NbWeights ≠ NbControlPoints`"
   },
@@ -43782,7 +43898,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Under-sampled `B_SPLINE_CURVE_WITH_KNOTS` for long helical thread (Creo relative-accuracy tessellation)"
   },
@@ -43820,7 +43937,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "High-curvature curves: knot multiplicity at full degree producing near-cusps"
   },
@@ -44088,7 +44206,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 0"
     ],
     "title": "Rational `B_SPLINE_SURFACE_WITH_KNOTS` that is actually a `SURFACE_OF_REVOLUTION` (sqrt(2)/2 weights, 360° sweep)"
   },
@@ -44275,7 +44394,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 0"
     ],
     "title": "Spline approximation of analytic primitive (sender philosophy)"
   },
@@ -44314,7 +44434,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 0"
     ],
     "title": "`OFFSET_SURFACE` of complex BSpline base fails parsing only when wrapped"
   },
@@ -44351,7 +44472,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1"
     ],
     "title": "STEP→BREP silently injects new `B_SPLINE_CURVE_WITH_KNOTS` (analytic `CIRCLE` cylinder cap edges replaced)"
   },
@@ -44388,7 +44510,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1"
     ],
     "title": "Self-intersecting `B_SPLINE_CURVE_WITH_KNOTS` edge (figure-eight or fold; coincident first/last control points)"
   },
@@ -44724,7 +44847,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 0"
     ],
     "title": "`B_SPLINE_SURFACE_WITH_KNOTS` V knot vector strictly descending"
   },
@@ -45199,7 +45323,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 0"
     ],
     "title": "ShapeUpgrade_SplitSurface.SetUSplitValues empty parameter list"
   },
@@ -45232,7 +45357,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1"
     ],
     "title": "ShapeAnalysis_Curve.GetSamplePoints offset/trimmed recursion depth"
   },
@@ -45298,7 +45424,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1"
     ],
     "title": "ShapeAnalysis_Curve.IsPlanar weighted BSpline poles threshold false positive"
   },
@@ -45331,7 +45458,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "ShapeAnalysis_Curve.IsPlanar BSpline dispatch false-negative"
   },
@@ -45429,7 +45559,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "ShapeAnalysis_Curve.GetSamplePoints high-radius full-circle 360K cap"
   },
@@ -45527,7 +45660,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "ShapeUpgrade_ConvertCurve2dToBezier loop-variable persistence"
   },
@@ -45560,7 +45696,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "ShapeAnalysis_Curve.GetSamplePoints (3D 2pt LINE shortcut)"
   },
@@ -45626,7 +45765,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1"
     ],
     "title": "ShapeAnalysis_Curve.GetSamplePoints rational pole density"
   },
@@ -45692,7 +45832,9 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_edges_total == 2",
+      "n_vertices_total == 4"
     ],
     "title": "ShapeUpgrade_ConvertSurfaceToBezierBasis BSpline-of-BSpline"
   },
@@ -45725,7 +45867,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1"
     ],
     "title": "ShapeAnalysis_Curve.IsPlanar OffsetCurve detection failure"
   },
@@ -45791,7 +45934,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 2",
+      "n_edges_total == 6",
+      "n_vertices_total == 12"
     ],
     "title": "ShapeAnalysis_Curve.FillBndBox elliptic-arc midpoint sampling"
   },
@@ -45857,7 +46003,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "ShapeUpgrade_ConvertCurve2dToBezier weight-based delegation"
   },
@@ -46418,7 +46567,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 9"
     ],
     "title": "ShapeUpgrade_SplitSurface.SetUSplitValues neg-zero"
   },
@@ -46484,7 +46636,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 3",
+      "n_vertices_total == 6"
     ],
     "title": "ShapeUpgrade_SplitSurface non-rectangular-region"
   },
@@ -51481,7 +51636,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 4"
     ],
     "title": "ShapeAnalysis_Surface.IsVClosed midpoint sampling on torus"
   },
@@ -51514,7 +51670,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 10"
     ],
     "title": "ShapeAnalysis_Surface.ValueOfUV near-tangent surface"
   },
@@ -51547,7 +51706,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 11"
     ],
     "title": "ShapeAnalysis_Surface.SortSingularities cone vs cylinder differing singularities"
   },
@@ -51580,7 +51742,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 3"
     ],
     "title": "ShapeUpgrade_ConvertSurfaceToBezierBasis offset surface with negative distance"
   },
@@ -51613,7 +51776,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 4"
     ],
     "title": "ShapeAnalysis_Surface.UVFromIso boundary U-iso failure"
   },
@@ -51745,7 +51909,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 1",
+      "n_vertices_total == 2"
     ],
     "title": "ShapeAnalysis_Surface.ValueOfUV bounded surface Newton overflow"
   },
@@ -51811,7 +51978,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 5"
     ],
     "title": "Plane Singularity Misclassification"
   },
@@ -51844,7 +52012,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 4"
     ],
     "title": "Cylindrical Surface Seam-Aware Split"
   },
@@ -51877,7 +52046,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 11"
     ],
     "title": "Newton Fallback Comparison Bias"
   },
@@ -51910,7 +52082,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 3"
     ],
     "title": "Newton Discriminant Near-Zero Abort"
   },
@@ -51943,7 +52116,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 4"
     ],
     "title": "Offset-of-Offset Sign Error"
   },
@@ -54373,7 +54547,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 2",
+      "n_vertices_total == 4"
     ],
     "title": "ShapeFix_Face.FixWireTool"
   },
@@ -55231,7 +55408,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "ConicalSurface Apex Singularity"
   },
@@ -56515,7 +56695,10 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 3",
+      "n_edges_total == 12",
+      "n_vertices_total == 24"
     ],
     "title": "Three or more faces share a boundary edge after sewing (non-manifold result)"
   },
@@ -56551,7 +56734,10 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Sliver face silently dropped by sewing"
   },
@@ -56624,7 +56810,10 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Fast-sewing face has null surface reference"
   },
@@ -56662,7 +56851,10 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Fast-sewing face host surface has infinite extent"
   },
@@ -56698,7 +56890,10 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Fast-sewing face whose parametric bounds are tighter than surface natural bounds"
   },
@@ -59153,7 +59348,10 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 6",
+      "n_edges_total == 24",
+      "n_vertices_total == 48"
     ],
     "title": "Same `CLOSED_SHELL` referenced from two `MANIFOLD_SOLID_BREP` entities"
   },
@@ -59192,7 +59390,10 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 12",
+      "n_edges_total == 48",
+      "n_vertices_total == 96"
     ],
     "title": "Inner void shell extends beyond outer shell extent (void poking through)"
   },
@@ -72652,7 +72853,10 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 5",
+      "n_vertices_total == 10"
     ],
     "title": "ShapeFix_Wire.FixShifted seam-vertex-position-mismatch"
   },
@@ -72983,7 +73187,10 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 2",
+      "n_vertices_total == 4"
     ],
     "title": "ShapeFix_IntersectionTool FindVertAndSplitEdge endpoint selection"
   },
@@ -76929,7 +77136,8 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1"
     ],
     "title": "`CURVE_BOUNDED_SURFACE.implicit_outer = .U.` (unset BOOLEAN) leaves boundary semantics ambiguous (BRL-CAD step-g)"
   },
@@ -83986,7 +84194,8 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Tolerance type entity coverage: AP242 tolerance entities dropped on import"
   },
@@ -84025,7 +84234,8 @@
       "units"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Tolerance value polymorphic encoding (`MeasureRepresentationItem` vs plain measure)"
   },
@@ -84064,7 +84274,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "`+/-` tolerance bounds inverted, equal, or wrong measure type"
   },
@@ -84103,7 +84314,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Default tolerance precision: missing decimal-place qualifier"
   },
@@ -86281,7 +86493,8 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "ShapeAnalysis_ShapeTolerance.GlobalTolerance empty-shape"
   },
@@ -88127,7 +88340,10 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 2",
+      "n_vertices_total == 4"
     ],
     "title": "`ShapeUpgrade_UnifySameDomain.MergeSubSeq.circle_spatial_closure_tolerance`"
   },
@@ -91050,7 +91266,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Duplicated component instances collapsed to a single transform on export"
   },
@@ -91088,7 +91307,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Hidden / suppressed bodies leak into export, or are dropped silently"
   },
@@ -91129,7 +91351,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Empty / phantom assembly nodes (PRODUCT_DEFINITION with no shape)"
   },
@@ -91166,7 +91391,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "`NEXT_ASSEMBLY_USAGE_OCCURRENCE` references missing `PRODUCT_DEFINITION` (unresolved NAUO target)"
   },
@@ -91206,7 +91434,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Lost assembly hierarchy on round-trip (flatten to single CATPart / single solid)"
   },
@@ -91244,7 +91475,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Components collapse to (0,0,0) / placement transforms lost"
   },
@@ -91283,7 +91517,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "SHAPE_REPRESENTATION_RELATIONSHIP with swapped/mixed rep_1/rep_2 axis placements"
   },
@@ -91321,7 +91558,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "AP242 Ed.2 widened SELECT for product_definition_relationship.related/relating"
   },
@@ -91360,7 +91600,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "NAUO references PRODUCT_DEFINITION_SHAPE instead of PRODUCT_DEFINITION"
   },
@@ -91401,7 +91644,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "NAUO instance name lost on round-trip / re-export"
   },
@@ -91439,7 +91685,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Naming collision: same component referenced by colliding `PRODUCT.name` across sub-assemblies"
   },
@@ -91481,7 +91730,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Self-reference / cyclic external file reference"
   },
@@ -91522,7 +91774,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "STEP assembly reader returns success even when external-reference files are missing"
   },
@@ -91558,7 +91813,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "EXTERNAL_ANCHOR uniqueness (1:1 anchor↔entity) violated; orphan EER source"
   },
@@ -91597,7 +91855,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "UDA on multi-level reference designator (MLRD) ignored"
   },
@@ -91910,7 +92171,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "`MAPPED_ITEM` `AXIS2_PLACEMENT_3D` with left-handed (mirrored, negative-determinant) frame"
   },
@@ -91949,7 +92213,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Names with special / non-ASCII / encoded characters lost or corrupted"
   },
@@ -91987,7 +92254,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Quadratic-time assembly graph traversal: many `NEXT_ASSEMBLY_USAGE_OCCURRENCE` siblings share a single leaf `PRODUCT_DEFINITION`"
   },
@@ -92025,7 +92295,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Reference loss when defeaturing / simplifying for CAE"
   },
@@ -92065,7 +92338,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "User-Defined Attribute (UDA) target-binding inconsistency"
   },
@@ -92105,7 +92381,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Edition-mixed Part 21 file (header schema vs instance schema)"
   },
@@ -92144,7 +92423,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Schema migration: retired AP214/AP203 kinematics entities"
   },
@@ -92182,7 +92464,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Schema migration: enum-value reordering between AP242 Ed.2 and Ed.3"
   },
@@ -92220,7 +92505,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "`applied_external_identification_assignment` /`product_definition_with_associated_documents` name dropped"
   },
@@ -92260,7 +92548,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "CheckSRRReversesNAUO segfault on SDR with SHAPE_ASPECT instead of PROPERTY_DEFINITION"
   },
@@ -92298,7 +92589,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Product with both sub-assemblies and direct shape"
   },
@@ -92336,7 +92630,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Hybrid AP203 (≤1998) using ShapeAspect-attached SDR"
   },
@@ -92411,7 +92708,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Constructive Geometry Representation Relationship — assembly axis placements"
   },
@@ -92453,7 +92753,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 6",
+      "n_edges_total == 24",
+      "n_vertices_total == 48"
     ],
     "title": "Subshape names not transferred on STEP import"
   },
@@ -92494,7 +92797,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Empty `AppliedGroupAssignment` raises exception in writer"
   },
@@ -92532,7 +92838,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "`UpdateAssemblies` produces wrong compounds for located roots"
   },
@@ -92616,7 +92925,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Color of root label not exported through XCAF"
   },
@@ -92652,7 +92964,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Material with zero density blocks STEP write"
   },
@@ -92688,7 +93003,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Layers not imported from STEP file"
   },
@@ -92724,7 +93042,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Visibility flag of free shapes lost on STEP write"
   },
@@ -92840,7 +93161,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Texture lost when saving binary XBF after STEP import"
   },
@@ -92880,7 +93204,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Free-shape-after-import is empty"
   },
@@ -92918,7 +93245,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "General attributes (AP242 GENERAL_PROPERTY) dropped on import"
   },
@@ -92960,7 +93290,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Sub-assembly extraction loses XDE attributes"
   },
@@ -92996,7 +93329,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Compound-with-vertex emitted as empty in non-manifold export"
   },
@@ -93038,7 +93374,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 2",
+      "n_edges_total == 8",
+      "n_vertices_total == 16"
     ],
     "title": "Visibility / colour ignored for sub-shapes by `XCAFPrs_AISObject`"
   },
@@ -93079,7 +93418,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Hierarchy & colours lost on partial-document IGES/STEP write"
   },
@@ -93120,7 +93462,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Material attribute overridden by generic colour on round-trip"
   },
@@ -93155,7 +93500,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Big-path STEP write fails with name >150 characters"
   },
@@ -93194,7 +93542,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 1",
+      "n_vertices_total == 2"
     ],
     "title": "STEP exporter generates bad geometry for revolution / extrusion since 7.4.0"
   },
@@ -93231,7 +93582,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "STEP exporter writes untrimmed curve where trimmed expected"
   },
@@ -93268,7 +93622,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 2",
+      "n_edges_total == 8",
+      "n_vertices_total == 16"
     ],
     "title": "STEP exporter loses `COMPSOLID` in nonmanifold writes"
   },
@@ -93305,7 +93662,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Step exporter not respecting `write.step.schema` configuration"
   },
@@ -93384,7 +93744,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Empty assembly causes writer to throw"
   },
@@ -93424,7 +93787,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 2",
+      "n_edges_total == 8",
+      "n_vertices_total == 16"
     ],
     "title": "Sub-shape names lost in non-manifold STEP output"
   },
@@ -93464,7 +93830,8 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1"
     ],
     "title": "STEP export of a part with a fillet/round generates malformed shape on receiver"
   },
@@ -93504,7 +93871,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "`STEPCAFControl_Writer` skips a shape when it has identity location and partner shapes have non-identity locations"
   },
@@ -93544,7 +93914,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Error transferring `.stp` model from `STEPCAFControl_Reader` to OCAF document"
   },
@@ -93582,7 +93955,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Writer-emitted STEP cannot be re-imported by the same writing process (round-trip refused)"
   },
@@ -93658,7 +94034,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 2",
+      "n_edges_total == 8",
+      "n_vertices_total == 16"
     ],
     "title": "Importer routes Assembly-module assemblies into Part containers (Assembly graph lost)"
   },
@@ -93777,7 +94156,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 2",
+      "n_edges_total == 8",
+      "n_vertices_total == 16"
     ],
     "title": "Geometry imports correctly but every face arrives with no colour assigned"
   },
@@ -93819,7 +94201,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Exception raised during STEP write with `ExternalReferences` mode in XDE document"
   },
@@ -93859,7 +94244,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Regression OCC 6.9.1 → 7.4.0: colours stop appearing on certain STEP files"
   },
@@ -93900,7 +94288,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Access violation in `StepVisual_PresentationStyleAssignment` while translating STEP file"
   },
@@ -93942,7 +94333,10 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "`BinXCAF` regression: documents with colour cannot be re-loaded after save"
   },
@@ -94160,7 +94554,8 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Schema variant: CONFIG_CONTROL_DESIGN with no PRODUCT entity"
   },
@@ -94196,7 +94591,8 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Non-UTF-8 (GB18030 / locale code page) in string literals"
   },
@@ -94231,7 +94627,8 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Control characters / illegal-XML bytes in name strings corrupt downstream documents"
   },
@@ -94305,7 +94702,9 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_edges_total == 1",
+      "n_vertices_total == 2"
     ],
     "title": "360° revolution of arc-of-ellipse produces self-intersecting solid"
   },
@@ -94377,7 +94776,9 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_edges_total == 1",
+      "n_vertices_total == 2"
     ],
     "title": "Long helix represented as huge B-spline causes catastrophic import time"
   },
@@ -94453,7 +94854,8 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Standalone AXIS2_PLACEMENT_3D entities silently dropped"
   },
@@ -94490,7 +94892,8 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "AP242 PMI / GD&T / kinematics annotations silently discarded"
   },
@@ -94526,7 +94929,8 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "STEP-XML (`.stpx`) and compressed (`.stpz`) variants unsupported"
   },
@@ -94563,7 +94967,8 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "AP203-claimed file uses AP214/AP242-only entities"
   },
@@ -94600,7 +95005,8 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "`PCURVE` start point shifted in V from 3D `EDGE_CURVE` lift (UV drift beyond tolerance after Boolean)"
   },
@@ -94674,7 +95080,8 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Pre-Boolean operands shipped alongside result solid"
   },
@@ -94711,7 +95118,8 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Free wires in a top-level COMPOUND silently dropped"
   },
@@ -94748,7 +95156,8 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Improper rotation (negative determinant) in `AXIS2_PLACEMENT_3D`"
   },
@@ -94786,7 +95195,8 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Default-emitted full transparency renders objects invisible"
   },
@@ -94859,7 +95269,8 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Helical seam degeneracy from arc-by-3-points + 360° revolve"
   },
@@ -94934,7 +95345,8 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Flattened sub-assembly hierarchy after merge"
   },
@@ -94971,7 +95383,8 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Body name overwritten by last-operation label on export"
   },
@@ -95007,7 +95420,8 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "`LENGTH_UNIT(.MILLI., .METRE.)` context but `CARTESIAN_POINT` coordinates pre-scaled ×1000 (global OCCT unit setting contaminated across in-process clients)"
   },
@@ -95045,7 +95459,8 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Boolean-history Faces with degenerate hole-loop pcurves crash writer"
   },
@@ -95082,7 +95497,8 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Empty/null shape entries in OCAF document corrupt writer"
   },
@@ -95160,7 +95576,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Blank/hidden dimensions exported as semantic dimensions"
   },
@@ -95198,7 +95615,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Stacked vs composite tolerance frames mis-tagged"
   },
@@ -95236,7 +95654,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Non-coplanar leader collapsed onto annotation plane loses attachment"
   },
@@ -95273,7 +95692,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Mixing Polyline and Tessellated PMI presentation in one file"
   },
@@ -95311,7 +95731,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Saved-view name location ambiguous (camera_model_d3 vs model_geometric_view)"
   },
@@ -95350,7 +95771,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Tolerance precision: missing decimal-place qualifier fallback chain"
   },
@@ -95387,7 +95809,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Rounding mode unspecified (ASME banker's vs ISO half-up)"
   },
@@ -95427,7 +95850,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Tolerance zone form name from AP242 Ed.2 used in Ed.1 file"
   },
@@ -95464,7 +95888,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Identical id_attribute reused across shape_aspect / dimensional_location / dimensional_size / shape_aspect_relationship"
   },
@@ -95505,7 +95930,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Counterbore/countersink emitted as separate dimensions with no compound link"
   },
@@ -95543,7 +95969,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "annotation_plane: plane vs planar_box ambiguity"
   },
@@ -95581,7 +96008,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Annotation geometry must be in plane PARALLEL to annotation_plane (small offset)"
   },
@@ -95621,7 +96049,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Saved-view supplemental geometry split via \"supplemental geometry subset\""
   },
@@ -95658,7 +96087,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Identical Graphic PMI duplicated across saved views"
   },
@@ -95696,7 +96126,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "camera_model_d3 viewpoint not modeled per RP §9"
   },
@@ -95733,7 +96164,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Saved view missing required mapped_item"
   },
@@ -95773,7 +96205,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Duplicate UUID on multiple identified_item"
   },
@@ -95813,7 +96246,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Multiple UUIDs for the same identified_item"
   },
@@ -95852,7 +96286,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Illegal characters inside a UUID value"
   },
@@ -95891,7 +96326,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Datum reference frame contains identical datums"
   },
@@ -95930,7 +96366,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Datum letters not unique within product"
   },
@@ -95969,7 +96406,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "datum_reference (legacy) used instead of datum_system in AP242"
   },
@@ -96008,7 +96446,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "common_datum vs common_datum_list (multi-feature datum)"
   },
@@ -96046,7 +96485,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Datum system carries mixed Datum_System / Datum_Reference SELECT array"
   },
@@ -96084,7 +96524,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Negative projected tolerance zone length"
   },
@@ -96121,7 +96562,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Projected zone projection_end is not a plane"
   },
@@ -96158,7 +96600,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Datum target dimension equals zero"
   },
@@ -96231,7 +96674,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "placed_datum_target_feature shared DatumTargetType_Area null deref"
   },
@@ -96268,7 +96712,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "relating_shape_aspect / related_shape_aspect reversed"
   },
@@ -96306,7 +96751,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "shape_aspect.product_definitional flag wrong polarity"
   },
@@ -96343,7 +96789,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Multiple plus_minus_tolerance on a single dimension"
   },
@@ -96417,7 +96864,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Empty semantic-text string in PMI"
   },
@@ -96456,7 +96904,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Lower-case relation names where RP requires lower-case keywords"
   },
@@ -96530,7 +96979,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Graphic-only PMI with no semantic backing"
   },
@@ -96567,7 +97017,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "characterized_object with non-PMI draughting subtypes for graphic PMI"
   },
@@ -96606,7 +97057,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Annotation has no annotation_plane"
   },
@@ -96643,7 +97095,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Graphic PMI annotation missing color"
   },
@@ -96719,7 +97172,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "annotation_curve_occurrence leader with single point"
   },
@@ -96756,7 +97210,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "basis_curve for leader/annotation not on allowed list"
   },
@@ -96796,7 +97251,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "AP242 hole feature missing required attribute / inconsistent dims"
   },
@@ -96833,7 +97289,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Tessellated alongside curve annotations for the same callout (AP242 ed2 conflict)"
   },
@@ -96910,7 +97367,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "PMI visibility / configuration loss across saved views"
   },
@@ -96987,7 +97445,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Tolerance datum description NULL on re-export"
   },
@@ -97095,7 +97554,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "FILE_DESCRIPTION missing references to CAx-IF Recommended Practices"
   },
@@ -97135,7 +97595,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "DDP / EER cross-file PMI references break on repackaging"
   },
@@ -97174,7 +97635,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Compound-feature semantics (HTC counterbore/countersink/counterdrill) per Hole RP"
   },
@@ -97213,7 +97675,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "`'INCH'` named differently on conversion_based_unit"
   },
@@ -97252,7 +97715,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Annotation_plane orientation flipped on import (mirror determinant)"
   },
@@ -97290,7 +97754,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "`DIMENSIONAL_LOCATION_WITH_PATH` whose path connects unrelated shape aspects"
   },
@@ -97330,7 +97795,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "`GEOMETRIC_TOLERANCE_RELATIONSHIP` cycle (A→B→C→A)"
   },
@@ -97370,7 +97836,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "`PROJECTED_ZONE_DEFINITION` with zero offset"
   },
@@ -97407,7 +97874,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "`DIMENSION_PAIR` with mismatched units between paired members"
   },
@@ -97446,7 +97914,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Compound feature with self-referential pattern membership"
   },
@@ -97485,7 +97954,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Hole feature whose `depth` exceeds host-part bounding-box thickness"
   },
@@ -97523,7 +97993,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "`KINEMATIC_JOINT` referencing the same link as both ends (self-loop)"
   },
@@ -97560,7 +98031,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Composite-property layer stack with contradictory material attributes"
   },
@@ -97600,7 +98072,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "PMI text values wrong when document LENGTH_UNIT is METRE but DIMENSIONAL_VALUE is in inches/mm without unit conversion"
   },
@@ -97637,7 +98110,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "PMI text location wrong after import"
   },
@@ -97715,7 +98189,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "GD&T tolerance frame missing tolerance-zone plane reference"
   },
@@ -97753,7 +98228,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "GD&T saved-views label name silently emptied"
   },
@@ -97794,7 +98270,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Saved-views and clipping planes lost on STEP read"
   },
@@ -97869,7 +98346,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Coordinate-system connection points for dimensions missing"
   },
@@ -97908,7 +98386,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Dimension names dropped on round-trip"
   },
@@ -97947,7 +98426,8 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Empty IGES/STEP write loses general attributes"
   },
@@ -98127,7 +98607,10 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Persistent UUID lost on round-trip (PMI association breaks)"
   },
@@ -98297,7 +98780,10 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "XCAF GD&T data does not round-trip to STEP AP242 PMI"
   },
@@ -100320,7 +100806,8 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 0"
     ],
     "title": "Free-edge tessellated shell cannot use tessellated_connecting_edge"
   },
@@ -100356,7 +100843,8 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 0"
     ],
     "title": "Watertightness lost when each tessellated face has its own coordinates_list"
   },
@@ -100431,7 +100919,8 @@
       "syntax"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 6"
     ],
     "title": "integer_representation_item serialized without trailing decimal point"
   },
@@ -100507,7 +100996,8 @@
       "round-trip"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_edges_total == 1"
     ],
     "title": "Bound vs. unbound supplemental elements (planes, lines)"
   },
@@ -100774,7 +101264,8 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 0"
     ],
     "title": "Tessellated geometry without a styled_item (no color)"
   },
@@ -101391,7 +101882,10 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Constructive geometry / supplemental geometry not allowed type"
   },
@@ -101624,7 +102118,8 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "STYLED_ITEM.item is NULL or unresolved"
   },
@@ -101745,7 +102240,8 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 3"
     ],
     "title": "Layer with empty/duplicate name colliding with another"
   },
@@ -101786,7 +102282,8 @@
       "crash"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Empty DRAUGHTING_MODEL / PRESENTATION_LAYER_ASSIGNMENT"
   },
@@ -101899,7 +102396,8 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 4"
     ],
     "title": "Texture / bitmap (IMAGE_TEXTURE / TEXTURE_MAPPING) loss on translation"
   },
@@ -102020,7 +102518,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 4"
     ],
     "title": "Composite material LLAI (Limited Length / Area Indicator) gaps"
   },
@@ -102256,7 +102755,8 @@
       "round-trip"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "Tessellation export missing or conflicting with B-rep representation"
   },
@@ -102335,7 +102835,9 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_edges_total == 1",
+      "n_vertices_total == 2"
     ],
     "title": "File mixing AP203 schema declaration with AP214-only entity types in DATA"
   },
@@ -102449,7 +102951,8 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 3"
     ],
     "title": "Scaling-factor encoded as non-unit DIRECTION ratios in AXIS2_PLACEMENT_3D / ITEM_DEFINED_TRANSFORMATION skipped on write"
   },
@@ -102522,7 +103025,8 @@
       "units"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 3"
     ],
     "title": "Entity has no unit context; defaults silently applied"
   },
@@ -102597,7 +103101,8 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 3"
     ],
     "title": "Product has both sub-assemblies and a directly-assigned shape"
   },
@@ -106052,7 +106557,8 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "AP210 solder mask covers a pad that should be exposed"
   },
@@ -107318,7 +107824,10 @@
       "round-trip"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8"
     ],
     "title": "Compound with free VERTEX_POINT silently dropped on STEP export"
   },
@@ -107788,7 +108297,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_edges_total == 1"
     ],
     "title": "Pipe section plane does not intersect the guide curve"
   },
@@ -107824,7 +108334,8 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_edges_total == 2"
     ],
     "title": "Pipe section drifts beyond auxiliary spine reach (impossible contact)"
   },
@@ -108041,7 +108552,9 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_edges_total == 2",
+      "n_vertices_total == 4"
     ],
     "title": "MakeEvolved: profile sweep along a non-planar spine self-intersects"
   },
@@ -108077,7 +108590,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_edges_total == 1"
     ],
     "title": "Normal projection: source curve has no projection on target surface"
   },
@@ -108112,7 +108626,8 @@
       "units"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_edges_total == 2"
     ],
     "title": "FindContigousEdges: paired LINEs/VECTORs from sewing have unequal parameter lengths (unit vs non-unit DIRECTION) for the same 3D extent"
   },

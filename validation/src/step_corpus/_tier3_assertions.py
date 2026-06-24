@@ -174,7 +174,14 @@ def check_entry(entry: dict, md_text: str = "") -> list[dict[str, Any]]:
             "reason": str(t3p),
         } for a in asserts]
     try:
-        tier3 = json.loads(t3p.read_text())
+        raw = t3p.read_text()
+        # Strip ANSI escape codes emitted by OCCT diagnostics on stdout
+        raw = re.sub(r"\x1b\[[0-9;]*m", "", raw)
+        # Skip any non-JSON prefix lines (e.g., "*** ERR ..." diagnostic lines)
+        idx = raw.find("{")
+        if idx > 0:
+            raw = raw[idx:]
+        tier3 = json.loads(raw)
     except (json.JSONDecodeError, ValueError) as exc:
         return [{
             "id": entry["id"],

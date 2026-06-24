@@ -46,7 +46,12 @@ def run_one(args):
                 timeout=60,
             )
             if tier3_proc.returncode == 0 and tier3_proc.stdout:
-                tier3_path.write_text(tier3_proc.stdout)
+                # Strip ANSI escape codes emitted by OCCT diagnostics on stdout
+                import re as _re
+                clean_out = _re.sub(r"\x1b\[[0-9;]*m", "", tier3_proc.stdout)
+                # Skip non-JSON prefix lines; find first {
+                idx = clean_out.find("{")
+                tier3_path.write_text(clean_out[idx:] if idx >= 0 else clean_out)
             else:
                 # Record the crash/failure status; useful as a defect signal too.
                 tier3_path.write_text(f'{{"status": "tier3_failed", "rc": {tier3_proc.returncode}}}')
