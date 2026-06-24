@@ -36592,3 +36592,58 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me770 — is_needle_triangle_face aspect_ratio_below_threshold: near-equilateral triangle; aspect ratio < needle threshold; res==-1 returns null_halfedge (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: needle-triangle / well-formed non-needle)
+- **Sources**: CGAL PMP `PMP.is_needle_triangle_face` Branch 1 (*aspect_ratio_extreme*: `if(res == -1) return halfedge_descriptor();`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Single near-equilateral triangle: v0=(0,0,0), v1=(1,0,0), v2=(0.5,0.866,0). All three edge lengths ≈ 1.0; aspect ratio ≈ 1.15, well under the CGAL default needle threshold (~4.0). The function computes the shortest edge (res==-1 when no edge is pathologically short relative to altitudes), and returns a null halfedge indicating the face is NOT a needle. Branch 1 fires. All three edges are boundary edges (open single triangle). Euler: V=3, E=3, F=1, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,0.866,0); t0=(v0,v1,v2); assert all edges shared n=1; assert euler V=3,E=3,F=1,chi=1.
+- **Expected kernel behavior**: Branch 1 fires (res==-1); is_needle_triangle_face returns null_halfedge — face is well-formed, not a needle.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `euler_characteristic v=3 e=3 f=1 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me770.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me771 — is_needle_triangle_face shortest_edge_e0: needle triangle v0-v1 base 0.01; e0 shortest; res==0 returns h (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: needle-triangle / shortest-at-e0)
+- **Sources**: CGAL PMP `PMP.is_needle_triangle_face` Branch 2 (*aspect_ratio_extreme*: `if(res == 0) return h;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Single needle triangle: v0=(0,0,0), v1=(0.01,0,0), v2=(50,1,0). Edge e0=h (v0→v1) has length 0.01 — the shortest of the three edges. Edges e1 (v1→v2) and e2 (v2→v0) each have length ≈ 50. Aspect ratio ≈ 250000, far above threshold. is_needle_triangle_face returns h (the halfedge corresponding to e0, the shortest edge). Branch 2 fires: res==0. All edges are boundary edges; Euler: V=3, E=3, F=1, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(0.01,0,0), v2=(50,1,0); t0=(v0,v1,v2); e0 length=0.01 < e1≈e2≈50; assert aspect_ratio_gt(t0,1000); assert euler V=3,E=3,F=1,chi=1.
+- **Expected kernel behavior**: Branch 2 fires (res==0); is_needle_triangle_face returns h — the halfedge for the shortest edge e0 (v0→v1).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `triangle_aspect_ratio_gt triangle=0 gt=1000.0`
+- **Mesh assertion**: `euler_characteristic v=3 e=3 f=1 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me771.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me772 — is_needle_triangle_face shortest_edge_e1: needle triangle v1-v2 base 0.01; e1 shortest; res==1 returns next(h,tm) (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: needle-triangle / shortest-at-e1)
+- **Sources**: CGAL PMP `PMP.is_needle_triangle_face` Branch 3 (*aspect_ratio_extreme*: `else if(res == 1) return next(h,tm);`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Single needle triangle: v0=(0,1,0), v1=(50,0,0), v2=(50.01,0,0). Edge e1=next(h) (v1→v2) has length 0.01 — the shortest. Edges e0 (v0→v1) and e2 (v2→v0) each have length ≈ 50.01. Aspect ratio ≈ 250050, far above threshold. is_needle_triangle_face returns next(h,tm) (the halfedge corresponding to e1, the shortest edge). Branch 3 fires: res==1. All edges are boundary edges; Euler: V=3, E=3, F=1, chi=1.
+- **Reproducer recipe**: v0=(0,1,0), v1=(50,0,0), v2=(50.01,0,0); t0=(v0,v1,v2); e1=next(h) length=0.01 < e0≈e2≈50.01; assert aspect_ratio_gt(t0,1000); assert euler V=3,E=3,F=1,chi=1.
+- **Expected kernel behavior**: Branch 3 fires (res==1); is_needle_triangle_face returns next(h,tm) — the halfedge for the shortest edge e1 (v1→v2).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `triangle_aspect_ratio_gt triangle=0 gt=1000.0`
+- **Mesh assertion**: `euler_characteristic v=3 e=3 f=1 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me772.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me773 — is_needle_triangle_face shortest_edge_e2: needle triangle v2-v0 base 0.01; e2 shortest; res==2 returns prev(h,tm) (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: needle-triangle / shortest-at-e2)
+- **Sources**: CGAL PMP `PMP.is_needle_triangle_face` Branch 4 (*aspect_ratio_extreme*: `else return prev(h,tm);` // res==2); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Single needle triangle: v0=(0,0,0), v1=(50,1,0), v2=(0.01,0,0). Edge e2=prev(h) (v2→v0) has length 0.01 — the shortest. Edges e0 (v0→v1) and e1 (v1→v2) each have length ≈ 50.01 and ≈ 50.0 respectively. Aspect ratio ≈ 250050, far above threshold. is_needle_triangle_face returns prev(h,tm) (the halfedge corresponding to e2, the shortest edge). Branch 4 fires: res==2 (implicit else). All edges are boundary edges; Euler: V=3, E=3, F=1, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(50,1,0), v2=(0.01,0,0); t0=(v0,v1,v2); e2=prev(h) length=0.01 < e0≈e1≈50; assert aspect_ratio_gt(t0,1000); assert euler V=3,E=3,F=1,chi=1.
+- **Expected kernel behavior**: Branch 4 fires (res==2, implicit else); is_needle_triangle_face returns prev(h,tm) — the halfedge for the shortest edge e2 (v2→v0).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `triangle_aspect_ratio_gt triangle=0 gt=1000.0`
+- **Mesh assertion**: `euler_characteristic v=3 e=3 f=1 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me773.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder

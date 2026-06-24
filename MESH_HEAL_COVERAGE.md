@@ -877,24 +877,26 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
   - Suggested fixture: defect mentioning 'traits.equal_3_object()', 'source(e,pm)', 'target(e,pm)'
 
 ##### `PMP.is_needle_triangle_face` — lines 399–435
-(4 branches; all UNCOVERED — no mesh fixtures exist yet)
+(4 branches; 4 COVERED — Me770–Me773 wave 27A)
 
-- **Branch 1** @ line 428 — *aspect_ratio_extreme*
+- **Branch 1** @ line 428 — *aspect_ratio_extreme* — **COVERED by Me770**
   - What it tests: aspect ratio < threshold (not needle)
   - Repair action: return_null_halfedge
-  - Suggested fixture: defect mentioning 'res == -1', 'null_halfedge()'
-- **Branch 2** @ line 430 — *aspect_ratio_extreme*
+  - Fixture: Me770 — near-equilateral triangle; aspect ratio ≈ 1.15 < threshold; res==-1 returns null_halfedge
+- **Branch 2** @ line 430 — *aspect_ratio_extreme* — **COVERED by Me771**
   - What it tests: shortest edge is e0
   - Repair action: return_shortest_edge
-  - Suggested fixture: defect mentioning 'res == 0', 'return h'
-- **Branch 3** @ line 432 — *aspect_ratio_extreme*
+  - Fixture: Me771 — needle triangle v0-v1 base 0.01; e0 shortest; res==0 returns h
+- **Branch 3** @ line 432 — *aspect_ratio_extreme* — **COVERED by Me772**
   - What it tests: shortest edge is e1
   - Repair action: return_shortest_edge
-  - Suggested fixture: defect mentioning 'res == 1', 'next(h,tm)'
-- **Branch 4** @ line 434 — *aspect_ratio_extreme*
+  - Fixture: Me772 — needle triangle v1-v2 base 0.01; e1 shortest; res==1 returns next(h,tm)
+- **Branch 4** @ line 434 — *aspect_ratio_extreme* — **COVERED by Me773**
   - What it tests: shortest edge is e2
   - Repair action: return_shortest_edge
-  - Suggested fixture: defect mentioning 'prev(h,tm)'
+  - Fixture: Me773 — needle triangle v2-v0 base 0.01; e2 shortest; res==2 returns prev(h,tm)
+
+Fixture IDs: Me770 Me771 Me772 Me773
 
 ##### `PMP.is_polygon_soup_a_polygon_mesh` — lines 190–232
 (3 branches; all UNCOVERED — no mesh fixtures exist yet)
