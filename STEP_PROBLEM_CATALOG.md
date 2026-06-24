@@ -36647,3 +36647,49 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=3 e=3 f=1 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me773.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me780 — polygon_soup_to_polygon_mesh orientation_inconsistency: adjacent t0=(v0,v1,v2) CCW and t1=(v1,v3,v2) opposing winding trigger orient_polygon_soup (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: inconsistent-winding / polygon-soup-orientation)
+- **Sources**: CGAL PMP `PMP.polygon_soup_to_polygon_mesh` Branch 1 (*orientation_inconsistency*: `if(!PMP::orient_polygon_soup(points, polygons)) { ... }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two adjacent triangles sharing edge (v1,v2) with opposing winding. Triangle t0=(v0,v1,v2) has normal +Z (CCW). Triangle t1=(v1,v3,v2) has normal −Z, making the polygon soup orientation inconsistent across the shared edge. The soup-to-mesh converter must call orient_polygon_soup before building the half-edge structure → Branch 1 fires. Shared edge (v1,v2) n=2; four boundary edges n=1. Euler: V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(1,1,0), v3=(0,1,0); t0=(v0,v1,v2) CCW normal +Z; t1=(v1,v3,v2) normal −Z; assert_edge_shared(v1,v2,2); boundary edges n=1; adjacent_triangles_inconsistent_winding(t0,t1); euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 1 fires; orient_polygon_soup is called to rewind t1 so that the shared edge is traversed in opposite directions by the two adjacent polygons; conversion then proceeds.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,1]`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me780.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me781 — polygon_soup_to_polygon_mesh point_to_vertex_output_iterator: clean consistent-winding 2-triangle soup; point→vertex index map recorded for p0-p3 (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: polygon-soup-correspondence / point-vertex-map)
+- **Sources**: CGAL PMP `PMP.polygon_soup_to_polygon_mesh` Branch 2 (*point_to_vertex_output_iterator*: `if(point_to_vertex_output_iterator != boost::none) { ... }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A minimal consistently wound polygon soup of four vertices and two triangles sharing interior edge (p1,p2). Soup is already correctly oriented — no orient_polygon_soup is needed. When the caller supplies a point_to_vertex_output_iterator, Branch 2 fires: after conversion, the algorithm iterates soup points and emits (soup_point_index → mesh_vertex_descriptor) pairs for p0→v0, p1→v1, p2→v2, p3→v3. Interior edge (p1,p2) n=2; four boundary edges n=1. Euler: V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: p0=(0,0,0), p1=(2,0,0), p2=(1,1,0), p3=(2,1,0); t0=(p0,p1,p2) CCW; t1=(p1,p3,p2) CCW; assert_edge_shared(p1,p2,2); boundary edges n=1; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 2 fires; point_to_vertex map populated with 4 entries (p0→v0, p1→v1, p2→v2, p3→v3) after soup-to-mesh conversion.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me781.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me782 — polygon_soup_to_polygon_mesh polygon_to_face_output_iterator: clean consistent-winding 2-triangle soup; polygon→face descriptor map recorded for t0,t1 (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: polygon-soup-correspondence / polygon-face-map)
+- **Sources**: CGAL PMP `PMP.polygon_soup_to_polygon_mesh` Branch 3 (*polygon_to_face_output_iterator*: `if(polygon_to_face_output_iterator != boost::none) { ... }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A minimal consistently wound polygon soup of four vertices and two triangles sharing interior edge (q1,q2). Soup is already correctly oriented. When the caller supplies a polygon_to_face_output_iterator, Branch 3 fires: after conversion, the algorithm iterates soup polygons and emits (soup_polygon_index → mesh_face_descriptor) pairs for polygon 0→face f0 and polygon 1→face f1. Analogous to Me781 but for the face map rather than vertex map. Interior edge (q1,q2) n=2; four boundary edges n=1. Euler: V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: q0=(0,0,0), q1=(1,0,0), q2=(0.5,1,0), q3=(1.5,1,0); t0=(q0,q1,q2) CCW; t1=(q1,q3,q2) CCW; assert_edge_shared(q1,q2,2); boundary edges n=1; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 3 fires; polygon_to_face map populated with 2 entries (polygon 0→face f0, polygon 1→face f1) after soup-to-mesh conversion.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me782.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
