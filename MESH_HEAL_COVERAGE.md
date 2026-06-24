@@ -6,13 +6,13 @@ mesh-repair libraries, analogous to the OCCT deep-pass at
 ~13 Haiku worker agents fetching upstream `.cpp`/`.h` files and
 enumerating per-method repair branches.
 
-**Coverage status: ~0%.** This catalog currently has effectively
-no mesh fixtures — the entries below are a punch list of repair
-operations a future mesh sub-corpus must exercise. The original
-[`MESH_DEFECT_TAXONOMY.md`](MESH_DEFECT_TAXONOMY.md) survey)
-recommended the mesh sub-catalog live in a separate repo at
-`github.com/zellyn/dodgy-mesh-files`; this coverage map should
-guide that repo's first fixture batches.
+**Coverage status: ~44% methods covered (waves 1–41, 2026-06-23).**
+760 mesh fixtures (Me001–Me1182) shipped across 41 waves covering
+115+ methods. Per-method breakdown: 48 fully covered, 19 partially
+covered (some branches skipped), 84 uncovered. The mesh sub-corpus
+lives in `mesh-examples/12-14-mesh/` in this repo (not a separate
+repo as originally planned). The entries below are the authoritative
+per-method coverage punch list.
 
 ## Totals
 
@@ -703,8 +703,7 @@ Fixture IDs: Me750 Me751 Me752 Me753
   - Fixture: Me248 — unit tetrahedron + micro-tetrahedron at (5,5,5) with s=0.02; both area AND volume criteria satisfied → OR-condition fires
 
 ##### `PMP.remove_self_intersections` — lines 2356–2527
-(15 branches; 10 covered — Me1110–Me1114 cover branches 1–5; Me1120–Me1124 cover branches 6–10; branches 11–15 UNCOVERED)
-(15 branches; Branches 11-15 covered by Me1130-Me1134; Branches 1-10 covered by wave 38B/38C Me1110-Me1124)
+(15 branches; ALL COVERED — Me1110–Me1114 cover branches 1–5 [wave 38B]; Me1120–Me1124 cover branches 6–10 [wave 38C]; Me1130–Me1134 cover branches 11–15 [wave 39A])
 
 - **Branch 1** @ line 2379 — *genus-preservation-requirement* — **Me1110**
   - What it tests: whether to preserve topological genus (preserve_genus NP)

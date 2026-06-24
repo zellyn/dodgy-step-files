@@ -4,19 +4,20 @@ A single-page tour of what's inside, what holds up under adversarial validation,
 
 ## Top-line stats
 
-_Refreshed 2026-06-19. Many "best-effort current" metrics below were
+_Refreshed 2026-06-23. Many "best-effort current" metrics below were
 last computed at the noted timestamps; rerun the validators (commands
 at the bottom) to recompute._
 
 | Metric | Value |
 |---|---:|
-| Catalog entries | **2,347** |
-| Active fixtures (`.stp` files) | **2,347** (+ 7 sibling-input fixtures) |
+| Catalog entries | **3,086** (≈2,355 STEP + **731** mesh entries Me001–Me1182 — 41 mesh waves, 2026-06-23) |
+| Active fixtures (`.stp` files) | **2,350** STEP (+ 7 sibling-input fixtures) |
 | Quarantined (preserved as evidence; replaced in active corpus) | **150** (84 early-waves + 66 phase_F_boilerplate) |
-| Mesh fixtures (§12-14 mesh corpus) | **5** seed fixtures via Python builder + JSON/OBJ/PLY co-emit + pure-Python oracle |
+| Mesh fixtures (§12-14 mesh corpus) | **760** `.mesh.json` fixtures (Me001–Me1182) via Python builder + JSON/OBJ/PLY co-emit + pure-Python oracle — waves 1–41 |
 | Adversarial-verification sweep (2026-06-18, full corpus) | **2,280 / 2,309** (98.7 %) verified VALID; 23 CONFIRMED_WEAK; 0 CONFIRMED_INVALID after regen |
-| CONFIRMED (Expected-validation line matches live oracle output) | **2337 / 2349** (99.49 %) per `_final_verdict` 2026-06-19; 12 WEAK, 0 ERROR |
-| Expected validation coverage | **2342 / 2347** (99.8 %) — remaining 5 are Me* mesh fixtures (different oracle) |
+| CONFIRMED (Expected-validation line matches live oracle output) | **2337 / 2349** (99.49 %) per `_final_verdict` 2026-06-19; 12 WEAK, 0 ERROR — rerun pending against expanded corpus |
+| Expected validation coverage | **2342 / 2347** (99.8 %) for STEP entries — mesh fixtures use separate mesh oracle |
+| Q5 stale-assertion fixes (3 sweeps, 2026-06-22/23) | **362** tier-3 / byte assertions refreshed to live-oracle baselines — eliminated all DRIFT in oracle-active subset |
 | Machine-checkable **tier-3** assertions in catalog | ≥**2,184** entries (93.1 % coverage; CI ratchet floor at 90 %) |
 | Machine-checkable **byte** assertions in catalog | ≥**2,347** across ≥**1,056** entries |
 | Total machine-checkable invariants | ≥**4,915** |
@@ -33,10 +34,10 @@ at the bottom) to recompute._
 | Sibling-input fixtures for `requires-sibling-pair` entries | **7** (Le036, Le049, Le050, Ps011, A074, Pmi090, Wr043) |
 | External-kernel cross-validation (pure-Python ISO 10303-21 strict vs OCCT) | **94.7 %** agree-accept; 22 OCC-silently-heals; 8 OCC-stricter-than-spec; 16 spec-clean OCC crashes |
 | Manifold-validity oracle (manifold3d on tessellated geometry) | 70 `empty_mesh` (sub-tolerance) · 139 `not_manifold` · 22 segfault-during-tessellation · 769 no-shapes-loaded |
-| Silent-empty oracle baseline (evidence = byte-review, not oracle) | **755 / 1282** (~59 %) |
-| Oracle-active subset (loads-with-shapes / crashes / rejects / non-silent diagnostic) | **266** |
+| Silent-empty oracle baseline (evidence = byte-review, not oracle) | **755 / 1282** (~59 %) in legacy cohort; proportion lower in expanded corpus due to more oracle-active STEP entries and separate mesh oracle |
+| Oracle-active subset (loads-with-shapes / crashes / rejects / non-silent diagnostic) | **266** STEP (exact rerun pending against 2350-entry corpus) |
 | Confirmed OCC segfault fixtures | **25** |
-| Structural-mutation detection on silent-empty subset | **9.9 %** (88 % structurally inert under #N reference swap; the catalog's biggest open quality gap, mitigated by PRODUCT-wrap which moves fixtures into oracle-active) |
+| Structural-mutation detection on silent-empty subset | **9.9 %** detection rate on silent-empty (88 % structurally inert under #N reference swap); mitigated by PRODUCT-wrap; **362 Q5 stale-assertion fixes** tightened oracle-active detection rate |
 | Format-invariance test (whitespace/CRLF/comment-strip robust) | **98.0 %** invariant |
 | Cross-fixture similarity audit (BM25, threshold 0.6) | 45 high-similarity pairs all linked bidirectionally; **0 unlinked** |
 | Catalog claim formalization (auto-extracted outcome tags) | **604** entries tagged with allowed/disallowed outcomes |
@@ -72,33 +73,35 @@ Each section maps to one fixture directory under `step-examples/` (or
 
 | Section | Section dir | Fixtures |
 |---|---|---:|
-| §12.1a encoding | 12-1a-encoding | 54 |
-| §12.1b header | 12-1b-header | 44 |
+| §12.1a encoding | 12-1a-encoding | 57 |
+| §12.1b header | 12-1b-header | 45 |
 | §12.1c syntax | 12-1c-syntax | 46 |
 | §12.2a pcurves | 12-2a-pcurves | 163 |
 | §12.2b NURBS | 12-2b-nurbs | 167 |
 | §12.2c surfaces | 12-2c-surfaces | 177 |
-| §12.3a shells | 12-3a-shells | 259 |
-| §12.3b wires | 12-3b-wires | 268 |
-| §12.3c faces | 12-3c-faces | 256 |
-| §12.4 tolerance | 12-4-tolerance | 192 |
-| §12.5 units | 12-5-units | 34 |
-| §12.6 assembly | 12-6-assembly | 101 |
-| §12.7 PMI | 12-7-pmi | 121 |
+| §12.3a shells | 12-3a-shells | 263 |
+| §12.3b wires | 12-3b-wires | 269 |
+| §12.3c faces | 12-3c-faces | 259 |
+| §12.4 tolerance | 12-4-tolerance | 194 |
+| §12.5 units | 12-5-units | 37 |
+| §12.6 assembly | 12-6-assembly | 108 |
+| §12.7 PMI | 12-7-pmi | 122 |
 | §12.8 mixed | 12-8-mixed | 217 |
-| §12.10 perf | 12-10-perf | 35 |
-| §12.11 adversarial | 12-11-adversarial | 74 |
+| §12.10 perf | 12-10-perf | 37 |
+| §12.11 adversarial | 12-11-adversarial | 82 |
 | §12.12 cross-product | 12-12-cross-product | 44 |
-| §12.13 writer-pathology | 12-13-writer-pathology | 52 |
-| §12.14 mesh | 12-14-mesh | 5 |
-| **Total** | | **2309** |
+| §12.13 writer-pathology | 12-13-writer-pathology | 63 |
+| §12.14 mesh | 12-14-mesh | 760 (Me001–Me1182; waves 1–41) |
+| **Total** | | **3,110** STEP+mesh (2,350 STEP + 760 mesh) |
 
 Per-section CONFIRMED/WEAK breakdown last computed under the old
 1082-entry corpus; rerun `_final_verdict` to recompute against
-the current 2309-fixture set. The full-corpus adversarial sweep
+the current 2350-STEP-fixture set. The full-corpus adversarial sweep
 (2026-06-18) found 2280/2309 (98.7%) VALID; the per-section
 distribution of weak fixtures was concentrated in §12.2b NURBS
-and §12.2c surfaces (now all regenerated — see DONE.md).
+and §12.2c surfaces (now all regenerated — see DONE.md). Mesh
+fixtures (§12.14) use a separate oracle; CONFIRMED metric covers
+STEP entries only. 362 Q5 stale-assertion fixes applied 2026-06-22/23.
 
 ## Most interesting findings
 

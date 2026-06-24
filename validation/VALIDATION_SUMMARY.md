@@ -1,19 +1,18 @@
 # STEP Corpus — Validation Summary
 
-_Refreshed 2026-06-19. Subsidiary numbers below predate the
-corpus-wide adversarial sweep + B2 tier-3 harvest; rerun the
-validators (see commands at the bottom of `../QUALITY_DASHBOARD.md`)
-to recompute._
+_Refreshed 2026-06-23. Subsidiary numbers below partially predate the
+corpus expansion; rerun the validators (see commands at the bottom of
+`../QUALITY_DASHBOARD.md`) to recompute exact per-section breakdowns._
 
 ## Headline
 
-**2329 catalog entries (2324 STEP fixtures + 5 mesh + 7 sibling-input).**
+**3,086 catalog entries (2,350 STEP fixtures + 760 mesh [Me001–Me1182, waves 1–41] + 7 sibling-input).**
 **Multiple independent confidence signals:**
 
 | Signal | Subset | Result |
 |---|---|---|
 | Adversarial-verification sweep (Haiku→Sonnet two-pass, 2026-06-18) | 2309 STEP fixtures | **2280 VALID (98.7%)** · 23 weak (all regen'd) · 0 confirmed-invalid after regen |
-| Tier-3 assertion coverage | 2329 catalog entries | **1986 entries (85.3%)** carry at least one tier-3 assertion · 2568 total assertions · CI-locked at ≥90% on the §12.1–§12.13 STEP subset via `test_tier3_coverage_ratchet.py` |
+| Tier-3 assertion coverage | 3086 catalog entries (STEP subset CI-locked) | **≥2,184 STEP entries (93.1%)** carry at least one tier-3 assertion · CI-locked at ≥90% on the §12.1–§12.13 STEP subset via `test_tier3_coverage_ratchet.py`; 362 Q5 stale assertions refreshed 2026-06-22/23 |
 | Cross-kernel oracle inventory | full corpus | OCCT (heal on/off), gmsh (autofix on/off), ifcopenshell, part21_strict, manifold, OCAF, **solvespace** (new, install-optional) |
 | Catalog ↔ live-oracle agreement (DRIFT detection) | last run on 1082-corpus | 1281 CONFIRMED · 9 CONFIRMED-WEAK · 0 DRIFT (rerun pending against current 2313-corpus) |
 | Schema-vocabulary oracle (FILE_SCHEMA vs entity vocabulary) | full corpus | 8 EXEMPT_SCHEMA_MISMATCH (catalog-claim-IS-mismatch, all witnessed) · 0 unexpected · pytest-locked |
@@ -50,7 +49,7 @@ behavior and fails CI on mismatch; that's its load-bearing role.
 
 ## Verdict matrix
 
-_Refreshed 2026-06-19 after the catalog-hygiene cleanup + Tsh074-083 cache refill._
+_Last full run 2026-06-19 (STEP entries only — rerun pending against 2350-entry corpus). Mesh entries (§12.14) use separate mesh oracle; not included in verdict matrix._
 
 | Verdict | Count | % |
 |---|---:|---:|
@@ -92,26 +91,30 @@ fixture-scale silent-empty is the correct manifestation.
 
 ## Per-section table
 
-| Section | Fixtures | CONFIRMED | WEAK |
+_Fixture counts refreshed 2026-06-23. CONFIRMED/WEAK breakdown is from the
+2026-06-19 run (1082-entry corpus basis); rerun `_final_verdict` to update._
+
+| Section | Fixtures (current) | CONFIRMED | WEAK |
 |---|---:|---:|---:|
-| §12.1a encoding | 56 | 55 | 1 |
-| §12.1b header | 43 | 43 | 0 |
-| §12.1c syntax | 45 | 45 | 0 |
-| §12.2a pcurves | 32 | 31 | 1 |
-| §12.2b NURBS | 31 | 30 | 1 |
-| §12.2c surfaces | 49 | 49 | 0 |
-| §12.3a shells | 99 | 99 | 0 |
-| §12.3b wires | 90 | 90 | 0 |
-| §12.3c faces | 76 | 76 | 0 |
-| §12.4 tolerance | 70 | 70 | 0 |
-| §12.5 units | 31 | 31 | 0 |
-| §12.6 assembly | 89 | 87 | 2 |
-| §12.7 PMI | 83 | 83 | 0 |
-| §12.8 mixed | 118 | 117 | 1 |
-| §12.10 perf | 32 | 28 | 4 |
-| §12.11 adversarial | 70 | 62 | 8 |
-| §12.12 cross-product | 24 | 24 | 0 |
-| §12.13 writer-pathology | 44 | 44 | 0 |
+| §12.1a encoding | 57 | 55 | 1 |
+| §12.1b header | 45 | 43 | 0 |
+| §12.1c syntax | 46 | 45 | 0 |
+| §12.2a pcurves | 163 | 31 | 1 |
+| §12.2b NURBS | 167 | 30 | 1 |
+| §12.2c surfaces | 177 | 49 | 0 |
+| §12.3a shells | 263 | 99 | 0 |
+| §12.3b wires | 269 | 90 | 0 |
+| §12.3c faces | 259 | 76 | 0 |
+| §12.4 tolerance | 194 | 70 | 0 |
+| §12.5 units | 37 | 31 | 0 |
+| §12.6 assembly | 108 | 87 | 2 |
+| §12.7 PMI | 122 | 83 | 0 |
+| §12.8 mixed | 217 | 117 | 1 |
+| §12.10 perf | 37 | 28 | 4 |
+| §12.11 adversarial | 82 | 62 | 8 |
+| §12.12 cross-product | 44 | 24 | 0 |
+| §12.13 writer-pathology | 63 | 44 | 0 |
+| §12.14 mesh | 760 (Me001–Me1182) | separate mesh oracle | — |
 
 ## Tooling
 
