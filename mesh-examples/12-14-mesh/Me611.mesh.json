@@ -1,0 +1,44 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      10.0,
+      0.0,
+      0.0
+    ],
+    [
+      5.0,
+      0.05,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ]
+  ],
+  "metadata": {
+    "id": "Me611",
+    "schema_version": 0,
+    "defect_class": "cap_triangle",
+    "title": "is_cap_triangle_face cap_scalar_product: near-180-degree cap vertex v2 at (5,0.05,0) above base (v0,v1); scalar-product cap-detection Branch 2 fires",
+    "assertions": [
+      {
+        "kind": "triangle_aspect_ratio_gt",
+        "triangle": 0,
+        "gt": 100.0
+      },
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 0,
+        "lt": 1.0
+      }
+    ]
+  }
+}
