@@ -1,0 +1,311 @@
+{
+  "vertices": [
+    [
+      0.0,
+      1.0,
+      0.0
+    ],
+    [
+      2.0,
+      1.0,
+      0.0
+    ],
+    [
+      4.0,
+      1.0,
+      0.0
+    ],
+    [
+      6.0,
+      1.0,
+      0.0
+    ],
+    [
+      8.0,
+      1.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      5,
+      1
+    ],
+    [
+      1,
+      6,
+      2
+    ],
+    [
+      2,
+      7,
+      3
+    ],
+    [
+      3,
+      8,
+      4
+    ],
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      2,
+      3
+    ],
+    [
+      0,
+      3,
+      4
+    ]
+  ],
+  "metadata": {
+    "id": "Me494",
+    "schema_version": 0,
+    "defect_class": "near_coincident_vertex",
+    "title": "sanitize_candidates recursive_resanitization: four coincident vertices r0==r1==r2==r3 at (1,0,0) create 3 overlapping groups; erase triggers recursive sanitize_candidates call (Branch 5)",
+    "assertions": [
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          1
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          2
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          2
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          2,
+          3
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          3
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          3,
+          4
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          5
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          5
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          6
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          2,
+          6
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          2,
+          7
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          3,
+          7
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          3,
+          8
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          4,
+          8
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          4
+        ],
+        "n": 1
+      },
+      {
+        "kind": "vertex_pair_distance_lt",
+        "pair": [
+          5,
+          6
+        ],
+        "lt": 1e-09
+      },
+      {
+        "kind": "vertex_pair_distance_lt",
+        "pair": [
+          5,
+          7
+        ],
+        "lt": 1e-09
+      },
+      {
+        "kind": "vertex_pair_distance_lt",
+        "pair": [
+          5,
+          8
+        ],
+        "lt": 1e-09
+      },
+      {
+        "kind": "vertex_pair_distance_lt",
+        "pair": [
+          6,
+          7
+        ],
+        "lt": 1e-09
+      },
+      {
+        "kind": "vertex_pair_distance_lt",
+        "pair": [
+          6,
+          8
+        ],
+        "lt": 1e-09
+      },
+      {
+        "kind": "vertex_pair_distance_lt",
+        "pair": [
+          7,
+          8
+        ],
+        "lt": 1e-09
+      },
+      {
+        "kind": "vertex_pair_no_shared_triangle",
+        "pair": [
+          5,
+          6
+        ]
+      },
+      {
+        "kind": "vertex_pair_no_shared_triangle",
+        "pair": [
+          5,
+          7
+        ]
+      },
+      {
+        "kind": "vertex_pair_no_shared_triangle",
+        "pair": [
+          5,
+          8
+        ]
+      },
+      {
+        "kind": "vertex_pair_no_shared_triangle",
+        "pair": [
+          6,
+          7
+        ]
+      },
+      {
+        "kind": "vertex_pair_no_shared_triangle",
+        "pair": [
+          6,
+          8
+        ]
+      },
+      {
+        "kind": "vertex_pair_no_shared_triangle",
+        "pair": [
+          7,
+          8
+        ]
+      },
+      {
+        "kind": "euler_characteristic",
+        "v": 9,
+        "e": 15,
+        "f": 7,
+        "chi": 1
+      }
+    ]
+  }
+}
