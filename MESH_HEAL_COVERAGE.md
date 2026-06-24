@@ -426,25 +426,25 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
   - Suggested fixture: defect mentioning 'merge_duplicated_vertices_in_boundary_cycle'
 
 ##### `PMP.orient_polygon_soup` — lines 543–564
-(5 branches; all UNCOVERED — no mesh fixtures exist yet)
+(5 branches; all COVERED — Me940–Me944)
 
-- **Branch 1** @ line 556 — *initial_point_count*
+- **Branch 1** @ line 556 — *initial_point_count* — **Me940**
   - What it tests: Capture initial point count for non-manifoldness detection
   - Repair action: store in initial_nb_pts
   - Suggested fixture: defect mentioning 'std::size_t initial_nb_pts = points.size()'
-- **Branch 2** @ line 559 — *edge_map_fill*
+- **Branch 2** @ line 559 — *edge_map_fill* — **Me941**
   - What it tests: Build edge-to-polygon mapping and detect non-manifold edges
   - Repair action: orienter.fill_edge_map()
   - Suggested fixture: defect mentioning 'orienter.fill_edge_map()'
-- **Branch 3** @ line 560 — *polygon_orientation_pass*
+- **Branch 3** @ line 560 — *polygon_orientation_pass* — **Me942**
   - What it tests: DFS traversal of polygon dual graph to reorient polygons consistently
   - Repair action: orienter.orient()
   - Suggested fixture: defect mentioning 'orienter.orient()'
-- **Branch 4** @ line 561 — *vertex_duplication*
+- **Branch 4** @ line 561 — *vertex_duplication* — **Me943**
   - What it tests: Duplicate non-manifold vertices to ensure manifold topology
   - Repair action: orienter.duplicate_singular_vertices()
   - Suggested fixture: defect mentioning 'orienter.duplicate_singular_vertices()'
-- **Branch 5** @ line 563 — *manifoldness_check*
+- **Branch 5** @ line 563 — *manifoldness_check* — **Me944**
   - What it tests: Check if new points were added (indicates non-manifold input)
   - Repair action: return (initial_nb_pts==points.size())
   - Suggested fixture: defect mentioning 'return initial_nb_pts==points.size()'

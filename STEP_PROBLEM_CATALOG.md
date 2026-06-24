@@ -37284,6 +37284,49 @@ exercised against CGAL PMP / MeshFix.
 - **Description**: Fully closed 4-triangle mesh (3-triangle fan + 1 back-face triangle). Every edge is shared by exactly 2 triangles — no boundary edge exists anywhere in the mesh. Any edge passed as seed to TriangulateHole immediately fails the isOnBoundary() check → Branch 1 fires and fills are refused. All 6 edges n=2. Euler: V=4, E=6, F=4, chi=2 (closed surface).
 - **Reproducer recipe**: v0=(0,0,0), v1=(3,0,0), v2=(1.5,2,0), v3=(1.5,0.8,0); t0=(v0,v1,v3), t1=(v1,v2,v3), t2=(v2,v0,v3), t3=(v0,v2,v1); all edges n=2; euler V=4,E=6,F=4,chi=2.
 - **Expected kernel behavior**: Branch 1 fires; TriangulateHole returns 0 immediately; no fill triangles created.
+### Me920 — keep_largest component_count_mismatch: desired_num > total_components → return 0
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / keep-largest)
+- **Sources**: CGAL `PMP.keep_largest_connected_components` Branch 1 @ line 401 (*component_count_mismatch*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A single connected 3-triangle L-shaped patch (one component). When a caller requests desired_num=5 components to keep but the mesh has only 1, Branch 1 fires: `if (nb_to_keep >= num_components) return 0`. No faces are removed because the requested count already exceeds what exists. The nb_components_to_keep > total_components condition is the defect trigger.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(1,1,0), v3=(0,1,0), v4=(2,0,0); t0=(v0,v1,v2), t1=(v0,v2,v3) [share (v0,v2)], t2=(v1,v4,v2) [share (v1,v2) with t0]. One connected component only.
+- **Expected kernel behavior**: nb_components_to_keep (5) >= num_components (1) → return 0 immediately without any removal.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `euler_characteristic v=5 e=7 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me920.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me921 — keep_largest component_size_criterion: face_size >= threshold retains large component
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / keep-largest)
+- **Sources**: CGAL `PMP.keep_largest_connected_components` Branch 2 @ line 410 (*component_size_criterion*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected components of markedly different face counts. Component A is a 4-triangle unit-square+apex patch near the origin (face_size=4). Component B is a single micro-triangle at (10,10,0) with area≈5e-5 (face_size=1). With desired_num=1, Branch 2 sorts components by `Face_size` property-map value and marks component B (smaller) for removal while retaining component A (larger).
+- **Reproducer recipe**: v0-v4 form a 4-triangle patch (t0-t3); v5=(10,10,0), v6=(10.01,10,0), v7=(10,10.01,0) form micro-triangle t4 (area≈5e-5). t4 unreachable from t0.
+- **Expected kernel behavior**: face_size sorted; component B (size 1) < component A (size 4) → component B marked for removal; Branch 2 keeps component A.
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Mesh assertion**: `triangle_area_lt triangle=4 lt=0.001`
+- **Fixture path**: mesh-examples/12-14-mesh/Me921.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me922 — keep_largest dry_run_mode: dry_run=true; component identified but mesh not mutated
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / keep-largest)
+- **Sources**: CGAL `PMP.keep_largest_connected_components` Branch 3 @ line 419 (*dry_run_mode*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected components — a large 3-triangle connected strip (component A) and a tiny 1-triangle micro-patch at (20,20,0) (component B, area≈5e-5). With desired_num=1 and dry_run=true, Branch 3 identifies component B as a removal candidate but does NOT invoke `remove_connected_components`. The mesh is left intact; the function returns the count of faces that would have been removed.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(1,1,0), v3=(0,1,0), v4=(2,1,0) form 3-triangle strip (t0-t2, sharing edges); v5=(20,20,0), v6=(20.01,20,0), v7=(20,20.01,0) form micro-triangle t3 (area≈5e-5). t3 unreachable from t0.
+- **Expected kernel behavior**: dry_run=true → identify removable faces for component B, populate output iterator, skip remove_connected_components; mesh unchanged.
+- **Mesh assertion**: `triangle_not_reachable_from target=3 source=0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `triangle_area_lt triangle=3 lt=0.001`
+- **Fixture path**: mesh-examples/12-14-mesh/Me922.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me923 — keep_largest output_iterator_presence: removed component faces recorded via output_iterator
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / keep-largest)
+- **Sources**: CGAL `PMP.keep_largest_connected_components` Branch 4 @ line 421 (*output_iterator_presence*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected components — a closed 4-triangle tetrahedron (component A, large) and a 2-triangle open strip at (15,15,0) (component B, small). With desired_num=1 and a live output_iterator (not emptyset_iterator), Branch 4 populates the iterator with component B's 2 face descriptors before removing them, enabling the caller to inspect what was discarded.
+- **Reproducer recipe**: unit tetrahedron (t0-t3, closed, all 6 edges shared by 2 triangles); open strip at (15,15,0): v4=(15,15,0), v5=(16,15,0), v6=(15.5,16,0), v7=(16.5,16,0); t4=(v4,v5,v6), t5=(v5,v7,v6) share edge (v5,v6). t4 unreachable from t0.
+- **Expected kernel behavior**: output_iterator != emptyset_iterator → Branch 4 fires; component B face descriptors written to iterator; remove_connected_components then removes them.
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
@@ -38624,6 +38667,27 @@ exercised against CGAL PMP / MeshFix.
 - **Description**: A 5-triangle fan around central vertex v0, forming a pentagonal open disk. All 5 spoke edges (v0,vi) are interior (n=2, shared by consecutive fan triangles). The ring boundary edges (v1-v2, …, v5-v1) are n=1. Since all triangles are IS_VISITED and all spoke edges have t2 non-NULL, the MARK_VISIT branch fires for both new sub-triangles after every interior-edge split. Euler: V=6, E=10, F=5, chi=1.
 - **Reproducer recipe**: v0=(0.5,0.5,0) hub; v1–v5 form a pentagon; t0=(0,1,2), t1=(0,2,3), t2=(0,3,4), t3=(0,4,5), t4=(0,5,1); all (v0,vi) assert_edge_shared n=2; ring edges n=1; euler V=6,E=10,F=5,chi=1.
 - **Expected kernel behavior**: Branch 5 fires for each interior spoke-edge split; ls->e->t2 is non-NULL for all 5 spokes; MARK_VISIT(ls->t1) and MARK_VISIT(ls->t2) are both called → 10 new sub-triangles all marked visited.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,6] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me923.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me940 — orient_polygon_soup initial_point_count: initial_nb_pts = points.size() = 4 captured at entry (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: inconsistent-face-orientation / polygon-soup-orientation)
+- **Sources**: CGAL PMP `PMP.orient_polygon_soup` Branch 1 (*initial_point_count*: `std::size_t initial_nb_pts = points.size();` @ line 556); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing interior edge (p1,p2) — a minimal open-disk polygon soup. Any non-empty soup triggers `initial_nb_pts = points.size()` at line 556. This four-vertex, two-triangle strip has exactly 4 points; the captured count is compared against points.size() at the end of the function to detect whether vertex duplication was needed. No duplication needed (manifold), so the function returns true. Euler: V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: p0=(0,0,0), p1=(1,0,0), p2=(0.5,1,0), p3=(1.5,1,0); t0=(p0,p1,p2), t1=(p1,p3,p2); assert_edge_shared(p1,p2,2); four boundary edges n=1; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 1 fires for any non-empty soup; initial_nb_pts stores 4. orient_polygon_soup completes with no vertex duplication; returns true.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me940.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me941 — orient_polygon_soup edge_map_fill: four-triangle fan; orienter.fill_edge_map() populates 4 interior shared edges (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: inconsistent-face-orientation / polygon-soup-orientation)
+- **Sources**: CGAL PMP `PMP.orient_polygon_soup` Branch 2 (*edge_map_fill*: `orienter.fill_edge_map();` @ line 559); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four-triangle fan around hub vertex v0=(0,0,0) with rim vertices at the cardinal points. Each spoke edge (v0,v1), (v0,v2), (v0,v3), (v0,v4) is shared by exactly 2 triangles; four outer boundary edges are n=1. fill_edge_map() inserts directed half-edge pairs for all four interior spoke edges, building the adjacency map used by the subsequent orient() DFS pass. All triangles are wound CCW — no orientation correction needed. Euler: V=5, E=8, F=4, chi=1.
+- **Reproducer recipe**: v0=(0,0,0) hub; v1=(1,0,0), v2=(0,1,0), v3=(-1,0,0), v4=(0,-1,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v4), t3=(v0,v4,v1); four interior spoke edges n=2; four outer rim edges n=1; euler V=5,E=8,F=4,chi=1.
+- **Expected kernel behavior**: Branch 2 fires; fill_edge_map() populates 4 interior directed-edge entries. orient() finds consistent winding; duplicate_singular_vertices() finds no singular vertices; returns true.
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
@@ -39915,4 +39979,42 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
 - **Mesh assertion**: `triangles_self_intersect triangles=[0,2]`
 - **Fixture path**: mesh-examples/12-14-mesh/Me912.mesh.json
+- **Mesh assertion**: `euler_characteristic v=5 e=8 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me941.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me942 — orient_polygon_soup polygon_orientation_pass: t0 CCW + t1 CW share edge (v1,v2); orienter.orient() flips t1 via DFS (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: inconsistent-face-orientation / polygon-soup-orientation)
+- **Sources**: CGAL PMP `PMP.orient_polygon_soup` Branch 3 (*polygon_orientation_pass*: `orienter.orient();` @ line 560); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing edge (v1,v2). t0=(v0,v1,v2) is wound CCW (normal +Z); t1=(v1,v2,v3) is wound CW (normal −Z). The DFS orientation pass starts at t0 and walks to t1 via their shared edge. At the shared edge it detects the inconsistency (same directed half-edge appears on both sides) and flips t1's vertex order to restore CCW winding. orienter.orient() is the mechanism that enacts this fix. Euler: V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1.5,1,0); t0=(v0,v1,v2) CCW; t1=(v1,v2,v3) CW; assert_adjacent_triangles_inconsistent_winding(t0,t1); assert_edge_shared(v1,v2,2); euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 3 fires; orient() DFS walks from t0 to t1 via edge (v1,v2), detects opposite winding, flips t1 to CCW. Result: consistently oriented manifold mesh.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0, 1]`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me942.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me943 — orient_polygon_soup vertex_duplication: bowtie at v0; orienter.duplicate_singular_vertices() splits v0 into 2 copies (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: non-manifold-vertex / polygon-soup-orientation)
+- **Sources**: CGAL PMP `PMP.orient_polygon_soup` Branch 4 (*vertex_duplication*: `orienter.duplicate_singular_vertices();` @ line 561); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing only vertex v0=(0,0,0) — a classic bowtie. t0=(v0,v1,v2) forms the upper fan; t1=(v0,v3,v4) forms the lower fan. v0's incident triangles split into two disconnected groups with no shared edge at v0. duplicate_singular_vertices() detects this singular vertex and inserts a new copy of v0's coordinate into the points array (one copy per fan), incrementing points.size() by 1. The manifoldness_check will then return false. Euler before duplication: V=5, E=4 (all boundary), F=2.
+- **Reproducer recipe**: v0=(0,0,0) bowtie hub; v1=(1,1,0), v2=(-1,1,0) upper fan; v3=(1,-1,0), v4=(-1,-1,0) lower fan; t0=(v0,v1,v2), t1=(v0,v3,v4); assert_vertex_fan_disconnected(v0); four hub boundary edges n=1 each.
+- **Expected kernel behavior**: Branch 4 fires; duplicate_singular_vertices() adds 1 new point at (0,0,0); lower fan's polygon is updated to reference the new index. orient_polygon_soup returns false (points grew).
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me943.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me944 — orient_polygon_soup manifoldness_check: clean 3-triangle manifold strip; initial_nb_pts==points.size()==5 → returns true (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: inconsistent-face-orientation / polygon-soup-orientation)
+- **Sources**: CGAL PMP `PMP.orient_polygon_soup` Branch 5 (*manifoldness_check*: `return initial_nb_pts == points.size();` @ line 563); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three CCW-wound triangles forming a connected, manifold strip. t0=(v0,v1,v3), t1=(v1,v4,v3), t2=(v1,v2,v4). Shared edges (v1,v3) and (v1,v4) each appear in exactly 2 triangles. All vertices have a connected fan. After orient_polygon_soup completes: fill_edge_map() records 2 interior edges; orient() finds consistent winding (no flips); duplicate_singular_vertices() finds no singular vertices (no new points added). At return: initial_nb_pts==5==points.size() → function returns true (the mesh is manifold-after-orientation). Euler: V=5, E=7, F=3, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0), v3=(0.5,1,0), v4=(1.5,1,0); t0=(v0,v1,v3), t1=(v1,v4,v3), t2=(v1,v2,v4) all CCW; assert_edge_shared(v1,v3,2), assert_edge_shared(v1,v4,2); euler V=5,E=7,F=3,chi=1.
+- **Expected kernel behavior**: Branch 5 fires; manifoldness_check returns true because no vertex duplication was needed. The soup was already manifold and consistently oriented.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `euler_characteristic v=5 e=7 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me944.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
