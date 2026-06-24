@@ -36592,3 +36592,69 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me650 — removeEdges list_head_initialization: non-empty mesh; E.head() initialises traversal pointer at first edge (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: orphaned-edge / list-traversal-init)
+- **Sources**: MeshFix `Basic_TMesh.removeEdges` Branch 1 (*list_head_initialization*: `n = E.head()`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 3-triangle fan sharing hub vertex v0 provides a non-empty edge list. E.head() returns the first edge in the doubly-linked list, initialising the traversal pointer n and entering the scan loop that searches for orphaned edges. Interior edges (v0,v1), (v0,v2), (v0,v3) are each n=2; three rim edges are n=1. Euler: V=4, E=6, F=3, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(-1,2,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v1); hub edges n=2; rim edges n=1; euler V=4,E=6,F=3,chi=1.
+- **Expected kernel behavior**: Branch 1 fires; n is set to E.head() (the first valid edge node); the while-loop scan begins from that edge.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me650.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me651 — removeEdges null_vertex_v1: degenerate edge with v1 coincident to v0 at (0,0,0); proxy for e->v1==NULL (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: orphaned-edge / null-vertex-v1)
+- **Sources**: MeshFix `Basic_TMesh.removeEdges` Branch 2 (*null_vertex_v1*: `if (e->v1 == NULL || e->v2 == NULL)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A degenerate triangle t0=(v0,v1,v2) where v0 and v1 are coincident at (0,0,0) is the geometric proxy for an edge whose v1 pointer has been nulled. The collapsed edge (v0,v1) has zero length; t0 has zero area. A second well-formed triangle t1=(v0,v2,v3) provides context. The null-v1 branch of the condition fires when the traversal reaches this edge. Interior edge (v0,v2) is n=2; all others n=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(0,0,0) [=v0], v2=(2,1,0), v3=(1,2,0); t0=(v0,v1,v2), t1=(v0,v2,v3); vertex_pair_distance_lt(v0,v1,1e-9); triangle_area_lt(t0,1e-9); edge_shared(v0,v2,2); outer edges n=1.
+- **Expected kernel behavior**: Branch 2 fires when traversal reaches the (v0,v1) edge; its v1 pointer is effectively null (coincident proxy); edge is flagged for E.removeCell.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=1e-09`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-09`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me651.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me652 — removeEdges null_vertex_v2: degenerate edge with v2 coincident to v1 at (3,0,0); proxy for e->v2==NULL (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: orphaned-edge / null-vertex-v2)
+- **Sources**: MeshFix `Basic_TMesh.removeEdges` Branch 3 (*null_vertex_v2*: `|| e->v2 == NULL`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A degenerate triangle t0=(v0,v1,v2) where v1 and v2 are coincident at (3,0,0) is the geometric proxy for an edge whose v2 pointer has been nulled. The collapsed edge (v1,v2) has zero length; t0 has zero area. A second well-formed triangle t1=(v0,v1,v3) provides context. The null-v2 branch of the OR fires when the traversal reaches this edge; v0 is well-formed but v2 is effectively absent. Interior edge (v0,v1) is n=2; all others n=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(3,0,0), v2=(3,0,0) [=v1], v3=(1,2,0); t0=(v0,v1,v2), t1=(v0,v1,v3); vertex_pair_distance_lt(v1,v2,1e-9); triangle_area_lt(t0,1e-9); edge_shared(v0,v1,2); outer edges n=1.
+- **Expected kernel behavior**: Branch 3 fires when traversal reaches (v1,v2); v1 is valid but v2 is null (coincident proxy); edge is flagged for E.removeCell.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,2] lt=1e-09`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-09`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me652.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me653 — removeEdges edge_removal: zero-length edge (v0==v1 at (1,1,0)) in degenerate triangle; E.removeCell+delete path (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: orphaned-edge / removeCell-delete)
+- **Sources**: MeshFix `Basic_TMesh.removeEdges` Branch 4 (*edge_removal*: `E.removeCell(e); delete e;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A degenerate triangle t0=(v0,v1,v2) where v0 and v1 coincide at (1,1,0) contains a zero-length edge (v0,v1). After the null-vertex check flags this edge, Branch 4 executes E.removeCell(e) to unlink it from the doubly-linked edge list and then deletes it. Two additional well-formed triangles t1=(v2,v3,v4) and t2=(v2,v4,v0) provide a surrounding mesh region. Interior shared edge (v2,v4) is n=2.
+- **Reproducer recipe**: v0=(1,1,0), v1=(1,1,0) [=v0], v2=(3,0,0), v3=(3,2,0), v4=(5,1,0); t0=(v0,v1,v2), t1=(v2,v3,v4), t2=(v2,v4,v0); vertex_pair_distance_lt(v0,v1,1e-9); triangle_area_lt(t0,1e-9); edge_shared(v2,v4,2); edge_shared(v0,v1,1).
+- **Expected kernel behavior**: Branch 4 fires; E.removeCell(e) unlinks the zero-length edge from the list; delete e frees the edge node; traversal continues via pre-saved next pointer n.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=1e-09`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-09`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me653.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me654 — removeEdges topology_invalidation: two disconnected shells; orphaned edge (a0==a1) triggers d_boundaries=d_handles=d_shells=1 (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: orphaned-edge / topology-dirty-flags)
+- **Sources**: MeshFix `Basic_TMesh.removeEdges` Branch 5 (*topology_invalidation*: `d_boundaries = d_handles = d_shells = 1`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected open shells: Shell A has a single degenerate triangle ta0=(a0,a1,a2) where a0 and a1 coincide at (0,0,0) (the orphaned edge); Shell B has a clean pair of triangles tb0=(b0,b1,b2) and tb1=(b0,b2,b3) well-separated at x≥6. After E.removeCell removes the orphaned edge from Shell A, all cached topology metrics (d_boundaries, d_handles, d_shells) are invalidated — Branch 5 fires. The two-shell structure ensures d_shells was non-trivially stale. Interior edge (b0,b2) in Shell B is n=2; a2 and b0 share no triangle.
+- **Reproducer recipe**: a0=(0,0,0), a1=(0,0,0) [=a0], a2=(2,1,0), b0=(6,0,0), b1=(8,0,0), b2=(7,2,0), b3=(6,2,0); ta0=(a0,a1,a2), tb0=(b0,b1,b2), tb1=(b0,b2,b3); vertex_pair_distance_lt(a0,a1,1e-9); triangle_area_lt(ta0,1e-9); edge_shared(a0,a1,1); edge_shared(b0,b2,2); vertex_pair_no_shared_triangle(a2,b0).
+- **Expected kernel behavior**: Branch 5 fires after removeCell; d_boundaries = d_handles = d_shells = 1 marks all three topology caches as stale; subsequent topology queries will recompute from scratch.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=1e-09`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-09`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=2`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[2,3]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me654.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
