@@ -1,0 +1,118 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      0.866,
+      0.0
+    ],
+    [
+      0.5,
+      0.289,
+      0.816
+    ],
+    [
+      10.0,
+      10.0,
+      10.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      1,
+      3
+    ],
+    [
+      1,
+      2,
+      3
+    ],
+    [
+      0,
+      2,
+      3
+    ]
+  ],
+  "metadata": {
+    "id": "Me713",
+    "schema_version": 0,
+    "defect_class": "isolated_vertex",
+    "title": "Basic_TMesh.removeVertices topology_invalidation: d_boundaries=d_handles=d_shells=1 after isolated v4 removed (Branch 4)",
+    "assertions": [
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          1
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          2
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          2
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          3
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          3
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          2,
+          3
+        ],
+        "n": 2
+      },
+      {
+        "kind": "isolated_vertex",
+        "vertex": 4
+      },
+      {
+        "kind": "euler_characteristic",
+        "v": 4,
+        "e": 6,
+        "f": 4,
+        "chi": 2
+      }
+    ]
+  }
+}

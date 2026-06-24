@@ -36592,3 +36592,62 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me710 — Basic_TMesh.removeVertices list_head_initialization: V.head() called on 3-vertex mesh; traversal begins (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: isolated_vertex / Basic_TMesh.removeVertices)
+- **Sources**: MeshFix `Basic_TMesh.removeVertices` Branch 1 (*list_head_initialization*: `n = V.head();`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Minimal valid triangle (v0,v1,v2). removeVertices initializes the traversal pointer by calling V.head() on the non-empty vertex list. The loop then walks all three vertices without removing any. list_head_initialization fires as soon as the traversal begins.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0); t0=(v0,v1,v2); all three boundary edges n=1; euler V=3,E=3,F=1,chi=1.
+- **Expected kernel behavior**: Branch 1 fires; n is set to V.head(); while-loop begins walking the vertex list.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `euler_characteristic v=3 e=3 f=1 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me710.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me711 — Basic_TMesh.removeVertices orphan_vertex_check: isolated vertex v4 has e0==NULL; check fires (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: isolated_vertex / Basic_TMesh.removeVertices)
+- **Sources**: MeshFix `Basic_TMesh.removeVertices` Branch 2 (*orphan_vertex_check*: `if (v->e0 == NULL)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing a diagonal (v0,v2) forming a quad, plus isolated vertex v4=(5,5,0) appended to the list. removeVertices traverses the vertex list and encounters v4; since v4 has no incident edge (e0==NULL) the orphan check evaluates true.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(1,1,0), v3=(0,1,0) — quad; v4=(5,5,0) isolated; t0=(v0,v1,v2), t1=(v0,v2,v3); diagonal n=2; four boundary edges n=1; isolated_vertex(v4).
+- **Expected kernel behavior**: Branch 2 fires when v4 is encountered; e0==NULL evaluates true; v4 is queued for removal.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `isolated_vertex vertex=4`
+- **Fixture path**: mesh-examples/12-14-mesh/Me711.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me712 — Basic_TMesh.removeVertices vertex_removal: V.removeCell+delete fires for each of 2 isolated vertices v3,v4 (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: isolated_vertex / Basic_TMesh.removeVertices)
+- **Sources**: MeshFix `Basic_TMesh.removeVertices` Branch 3 (*vertex_removal*: `n = V.removeCell(v); delete v;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Single triangle (v0,v1,v2) plus two isolated vertices v3=(3,3,0) and v4=(4,4,0). removeVertices finds both with e0==NULL, calls V.removeCell and delete for each. The removal step executes twice, exercising the vertex_removal branch.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0); t0=(v0,v1,v2); boundary edges n=1; isolated_vertex(v3); isolated_vertex(v4).
+- **Expected kernel behavior**: Branch 3 fires twice; V.removeCell unlinks each isolated vertex from the list; delete frees the memory; traversal continues via returned pointer n.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `isolated_vertex vertex=3`
+- **Mesh assertion**: `isolated_vertex vertex=4`
+- **Fixture path**: mesh-examples/12-14-mesh/Me712.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me713 — Basic_TMesh.removeVertices topology_invalidation: d_boundaries=d_handles=d_shells=1 after isolated v4 removed (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: isolated_vertex / Basic_TMesh.removeVertices)
+- **Sources**: MeshFix `Basic_TMesh.removeVertices` Branch 4 (*topology_invalidation*: `d_boundaries = d_handles = d_shells = 1;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Closed tetrahedron (v0-v3, 4 triangles, 6 edges, chi=2) plus isolated vertex v4=(10,10,10). removeVertices removes v4, the removal count is non-zero, and the post-loop dirty-flag assignment fires, marking all cached topology metrics for recomputation.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,0.866,0), v3=(0.5,0.289,0.816) — tetrahedron; v4=(10,10,10) isolated; 4 triangles; all 6 tetrahedron edges n=2; isolated_vertex(v4); euler V=4,E=6,F=4,chi=2.
+- **Expected kernel behavior**: Branch 4 fires after v4 is removed; d_boundaries, d_handles, and d_shells are all set to 1; cached topology is invalidated.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `isolated_vertex vertex=4`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me713.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
