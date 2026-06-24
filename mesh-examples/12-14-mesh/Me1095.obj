@@ -1,0 +1,10 @@
+# Me1095: flip-impossible degenerate: longest-edge diagonal already 3-way shared — removal fallback
+# defect_class: degenerate_triangle
+v 0 0 0
+v 2 0 0
+v 1 1 0
+v 1 -1 0
+v 1 0 0
+f 1 3 2
+f 1 2 4
+f 1 5 2

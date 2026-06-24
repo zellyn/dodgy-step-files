@@ -1,0 +1,10 @@
+# Me1093: non-disk degenerate CC: collinear ring χ=2≠1, topology check fails (Branch 10)
+# defect_class: degenerate_triangle
+v 0 0 0
+v 1 0 0
+v 2 0 0
+v 3 0 0
+f 1 2 3
+f 2 3 4
+f 1 3 4
+f 1 2 4

@@ -1,0 +1,18 @@
+ply
+format ascii 1.0
+comment Me1090: degree-3 vertex cap: apex degree==3 in flat fan — remove_center_vertex branch
+comment defect_class: degenerate_triangle
+element vertex 4
+property float x
+property float y
+property float z
+element face 3
+property list uchar int vertex_indices
+end_header
+0.5 0.289 0.0001
+0 0 0
+1 0 0
+0.5 0.577 0
+3 0 1 2
+3 0 2 3
+3 0 3 1

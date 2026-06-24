@@ -1,0 +1,9 @@
+# Me1094: non-monotone boundary: degenerate CC boundary reverses along line — skip removal
+# defect_class: degenerate_triangle
+v 0 0 0
+v 1 0 0
+v 2 0 0
+v 3 0 0
+f 1 2 3
+f 1 4 3
+f 1 2 4

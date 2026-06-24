@@ -1401,60 +1401,62 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
   - Suggested fixture: defect mentioning 'index != nb_cc', 'cycle of border edges'
 
 ##### `PMP.remove_degenerate_faces` — lines 2164–2589
-(13 branches; all UNCOVERED — no mesh fixtures exist yet)
+(13 branches; 12 COVERED by Me026–Me035 + Me1090–Me1096; Branch 1 UNCOVERED)
 
-- **Branch 1** @ line 2049 — *No degenerate faces*
+- **Branch 1** @ line 2049 — *No degenerate faces* — UNCOVERED
   - What it tests: Input face set is empty
   - Repair action: Return true immediately
   - Suggested fixture: defect mentioning 'degenerate_face_set.empty()'
-- **Branch 2** @ line 2052 — *All faces degenerate*
+- **Branch 2** @ line 2052 — *All faces degenerate* — COVERED (Me026)
   - What it tests: Entire mesh is degenerate
   - Repair action: Remove all elements
   - Suggested fixture: defect mentioning 'degenerate_face_set.size() == faces_size'
-- **Branch 3** @ line 2061 — *Adjacent degenerate faces missed*
+- **Branch 3** @ line 2061 — *Adjacent degenerate faces missed* — COVERED (Me027)
   - What it tests: Input range is partial, need to sanitize
   - Repair action: Expand set to include connected degenerate neighbors
   - Suggested fixture: defect mentioning 'is_range_full_mesh', 'faces_to_visit'
-- **Branch 4** @ line 2078 — *Null-edge face detection*
+- **Branch 4** @ line 2078 — *Null-edge face detection* — UNCOVERED
   - What it tests: After edge removal, new degenerate faces appear
   - Repair action: Add newly degenerate faces to set
   - Suggested fixture: defect mentioning 'is_degenerate_triangle_face(adj_fd', 'faces_to_visit'
-- **Branch 5** @ line 2118 — *Border degenerate face*
+- **Branch 5** @ line 2118 — *Border degenerate face* — COVERED (Me028)
   - What it tests: Degenerate triangle on mesh boundary
   - Repair action: Handle separately from interior faces
   - Suggested fixture: defect mentioning 'is_border(opposite', 'border_deg_faces'
-- **Branch 6** @ line 2170 — *Degenerate edge in degenerate face*
+- **Branch 6** @ line 2170 — *Degenerate edge in degenerate face* — COVERED (Me029)
   - What it tests: Face has zero-length edge
   - Repair action: Remove degenerate edges first
   - Suggested fixture: defect mentioning 'is_degenerate_edge', 'remove_degenerate_edges'
-- **Branch 7** @ line 2186 — *Degree-3 vertex in cap*
+- **Branch 7** @ line 2186 — *Degree-3 vertex in cap* — COVERED (Me030, Me1090)
   - What it tests: Vertex with 3 neighbors is center of near-cap
   - Repair action: Remove center vertex via Euler operator
   - Suggested fixture: defect mentioning 'degree == 3', 'remove_center_vertex'
-- **Branch 8** @ line 2244 — *Single isolated degenerate face*
+- **Branch 8** @ line 2244 — *Single isolated degenerate face* — COVERED (Me031, Me1091)
   - What it tests: No adjacent degenerate faces detected
   - Repair action: Flip longest edge instead of region removal
   - Suggested fixture: defect mentioning 'detect_cc_of_degenerate_triangles = false', 'flip'
-- **Branch 9** @ line 2319 — *Connected component of collinear faces*
+- **Branch 9** @ line 2319 — *Connected component of collinear faces* — COVERED (Me032, Me1092)
   - What it tests: Multiple adjacent degenerate triangles share vertices
   - Repair action: Collect connected component and remove as disk
   - Suggested fixture: defect mentioning 'cc_faces', 'boundary_hedges'
-- **Branch 10** @ line 2407 — *Non-disk topology in component*
+- **Branch 10** @ line 2407 — *Non-disk topology in component* — COVERED (Me033, Me1093)
   - What it tests: Degenerate face group doesn't form topological disk
   - Repair action: Mark as unremovable, continue loop
   - Suggested fixture: defect mentioning 'v-e+f = 1', 'not a topological disk'
-- **Branch 11** @ line 2464 — *Non-monotone boundary*
+- **Branch 11** @ line 2464 — *Non-monotone boundary* — COVERED (Me1094)
   - What it tests: Boundary points don't sort monotonically along line
   - Repair action: Skip component removal
   - Suggested fixture: defect mentioning 'non_monotone_border', 'WARNING'
-- **Branch 12** @ line 2256 — *Edge flip impossible*
+- **Branch 12** @ line 2256 — *Edge flip impossible* — COVERED (Me034, Me1095)
   - What it tests: Flip would create pre-existing edge
   - Repair action: Remove face instead, mark success uncertain
   - Suggested fixture: defect mentioning 'flip is not possible', 'all_removed = false'
-- **Branch 13** @ line 2292 — *Border face removal*
+- **Branch 13** @ line 2292 — *Border face removal* — COVERED (Me035, Me1096)
   - What it tests: Degenerate face on boundary
   - Repair action: Remove face directly without flip
   - Suggested fixture: defect mentioning 'opposite_face == GT::null_face()', 'remove_face'
+
+Fixture IDs: Me026 Me027 Me028 Me029 Me030 Me031 Me032 Me033 Me034 Me035 Me1090 Me1091 Me1092 Me1093 Me1094 Me1095 Me1096
 
 
 #### `PMP_Mesh_repair/include/CGAL/Polygon_mesh_processing/triangulate_hole.h`
