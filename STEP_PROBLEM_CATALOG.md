@@ -36592,3 +36592,98 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me410 — refineSelectedHolePatches_region_initialization: t0 pre-selected; BFS builds visited region from seed (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: hole-fill refinement / region-initialization)
+- **Sources**: MeshFix `holeFilling::refineSelectedHolePatches` Branch 1 (*REGION_INITIALIZATION*: `if (IS_VISITED(t0)) { UNMARK_VISIT(t0); ... }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Five triangles forming a connected hole-fill patch (4-triangle fan around hub v0 plus one extra outer triangle). t0=(v0,v1,v2) is the BFS seed (pre-selected/IS_VISITED). BFS propagates via 5 interior edges (hub spokes plus one extra) to reach all 5 region triangles. Interior edges (n=2): (v0,v1),(v0,v2),(v0,v3),(v0,v4),(v1,v4). Outer boundary edges (n=1): (v1,v2),(v2,v3),(v3,v4),(v1,v5),(v5,v4). Euler: V=6, E=10, F=5, chi=1.
+- **Reproducer recipe**: v0=(1,1,0) hub; v1=(0,1,0), v2=(1,2,0), v3=(2,1,0), v4=(1,0,0), v5=(0,0,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v4), t3=(v0,v4,v1), t4=(v1,v5,v4); assert interior edges n=2; boundary edges n=1; euler V=6,E=10,F=5,chi=1.
+- **Expected kernel behavior**: Branch 1 fires on t0 (IS_VISITED); t0 unmarked and used as BFS seed; BFS expands via interior edges to collect all 5 region triangles into the refinement patch.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `euler_characteristic v=6 e=10 f=5 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me410.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me411 — refineSelectedHolePatches_edge_first_occurrence: edge not yet visited; marked with BIT5 and added to all_edges (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: hole-fill refinement / edge-first-occurrence)
+- **Sources**: MeshFix `holeFilling::refineSelectedHolePatches` Branch 2 (*EDGE_FIRST_OCCURRENCE*: `if (!IS_BIT(e, 5)) { MARK_BIT(e, 5); all_edges.appendHead(e); }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four triangles in a 3x2 grid strip (v0–v5). As the algorithm traverses each triangle's edges, every edge is seen for the first time with BIT5 clear — Branch 2 fires, setting BIT5 and appending to all_edges. Interior edges (n=2): (v1,v3),(v1,v4),(v2,v4) — each triggers Branch 2 on first pass then Branch 3 on second. Boundary edges (n=1): (v0,v1),(v0,v3),(v3,v4),(v1,v2),(v4,v5),(v2,v5) — each triggers Branch 2 once and is never revisited. Euler: V=6, E=9, F=4, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0), v3=(0,1,0), v4=(1,1,0), v5=(2,1,0); t0=(v0,v1,v3), t1=(v1,v4,v3), t2=(v1,v2,v4), t3=(v2,v5,v4); assert interior (v1,v3),(v1,v4),(v2,v4) n=2; boundary edges n=1; euler V=6,E=9,F=4,chi=1.
+- **Expected kernel behavior**: Branch 2 fires for each edge on its first traversal; 9 total first-occurrence events; interior edges later fire Branch 3 on second traversal.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
+- **Mesh assertion**: `euler_characteristic v=6 e=9 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me411.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me412 — refineSelectedHolePatches_edge_interior_detection: shared edge seen twice; cleared from BIT5, added to interior_edges (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: hole-fill refinement / edge-interior-detection)
+- **Sources**: MeshFix `holeFilling::refineSelectedHolePatches` Branch 3 (*EDGE_INTERIOR_DETECTION*: `else { UNMARK_BIT(e, 5); interior_edges.appendHead(e); }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangles in an L-shape (v0–v4). Two interior edges (v1,v2) and (v2,v3) are each traversed twice during the region walk. On first traversal BIT5 is set (Branch 2); on second traversal BIT5 is already set → Branch 3 fires: BIT5 is cleared and the edge is added to interior_edges (excluded from sigma averaging). Boundary edges (n=1): (v0,v1),(v0,v2),(v1,v3),(v3,v4),(v2,v4). Euler: V=5, E=7, F=3, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(1,1,0), v3=(2,0,0), v4=(2,1,0); t0=(v0,v1,v2), t1=(v1,v3,v2), t2=(v2,v3,v4); assert (v1,v2) n=2, (v2,v3) n=2; boundary edges n=1; euler V=5,E=7,F=3,chi=1.
+- **Expected kernel behavior**: Branch 3 fires twice — once for (v1,v2) and once for (v2,v3); both cleared from BIT5 and moved to interior_edges, removing them from sigma computation.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=5 e=7 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me412.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me413 — refineSelectedHolePatches_edge_length_averaging: non-interior boundary edges summed to compute sigma (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: hole-fill refinement / edge-length-averaging)
+- **Sources**: MeshFix `holeFilling::refineSelectedHolePatches` Branch 4 (*EDGE_LENGTH_AVERAGING*: `sigma += e->length(); noe++`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four triangles on a 3x2 grid (v0–v5) with 3 interior edges and 6 boundary edges. Interior edges (v0,v4),(v1,v4),(v2,v4) are excluded from sigma. The 6 boundary edges each have length 1.0; Branch 4 fires 6 times, accumulating sigma=6.0, noe=6, average=1.0. This average length becomes the density threshold (sigma/noe=1.0) used in the Branch 5 vertex-split density check. Euler: V=6, E=9, F=4, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0), v3=(0,1,0), v4=(1,1,0), v5=(2,1,0); t0=(v0,v1,v4), t1=(v0,v4,v3), t2=(v1,v2,v4), t3=(v2,v5,v4); interior (v0,v4),(v1,v4),(v2,v4) n=2; boundary edges length=1.0 n=1; euler V=6,E=9,F=4,chi=1.
+- **Expected kernel behavior**: Branch 4 fires for each of the 6 boundary edges; sigma accumulates to 6.0; noe=6; sigma/noe=1.0 becomes the vertex-split threshold.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=6 e=9 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me413.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me414 — refineSelectedHolePatches_vertex_split_density_check: large sparse triangle; all dv>sigma → centroid vertex inserted (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: hole-fill refinement / vertex-split-density)
+- **Sources**: MeshFix `holeFilling::refineSelectedHolePatches` Branch 5 (*VERTEX_SPLIT_DENSITY_CHECK*: `if (dv1>sigma && dv1>sv1 && dv2>sigma && dv2>sv2 && dv3>sigma && dv3>sv3) { splitTriangle(t, centroid); nnt++; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Single large triangle v0=(0,0,0), v1=(6,0,0), v2=(3,5,0). Centroid at (3, 5/3, 0). Vertex-to-centroid distances: dv0≈3.43, dv1≈3.43, dv2≈3.33 — all greatly exceed any plausible sigma≈1.0 and local average sv. All three density conditions satisfied → Branch 5 fires, centroid vertex inserted, nnt incremented. Aspect ratio ≈1.77 confirms sparseness. Euler: V=3, E=3, F=1, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(6,0,0), v2=(3,5,0); t0=(v0,v1,v2); all 3 edges boundary (n=1); assert_triangle_aspect_ratio_gt(t0, 1.5); euler V=3,E=3,F=1,chi=1.
+- **Expected kernel behavior**: Branch 5 fires for t0; centroid=(3,5/3,0) inserted as new vertex; splitTriangle called; nnt incremented; next iteration finds pnnt != nnt (no convergence yet).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `triangle_aspect_ratio_gt triangle=0 gt=1.5`
+- **Mesh assertion**: `euler_characteristic v=3 e=3 f=1 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me414.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me415 — refineSelectedHolePatches_edge_swap_delaunay_improvement: long diagonal satisfies swap condition; swap accepted (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: hole-fill refinement / edge-swap-Delaunay)
+- **Sources**: MeshFix `holeFilling::refineSelectedHolePatches` Branch 6 (*EDGE_SWAP_DELAUNAY_IMPROVEMENT*: `if (e->squaredLength() >= l*0.999999) { e->swap(1); ... }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles t0=(v0,v1,v3) and t1=(v1,v2,v3) sharing diagonal (v1,v3). The current diagonal (v1,v3) has squared length 10; the alternative diagonal (v0,v2) has squared length 5. Condition: squaredLength(v1,v3)=10 >= 5*0.999999 → TRUE → Branch 6: swap is accepted (e->swap(1)); swapped diagonal (v0,v2) is shorter (≈2.24 < ≈3.16). Euler: V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(3,0,0), v2=(1,2,0), v3=(0,1,0); t0=(v0,v1,v3), t1=(v1,v2,v3); assert (v1,v3) n=2; boundary edges n=1; assert_vertex_pair_distance_lt(v0,v2,2.5); euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 6 fires; squaredLength(v1,v3)=10 >= 5*0.999999; e->swap(1) executed; new diagonal (v0,v2) is shorter; neighboring edges added to swap list for further improvement.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,2] lt=2.5`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me415.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me416 — refineSelectedHolePatches_vertex_insertion_convergence: no new vertices in iteration; pnnt==nnt triggers gits++ (Branch 7)
+- **Category**: §12.14 mesh defects (sub-class: hole-fill refinement / vertex-insertion-convergence)
+- **Sources**: MeshFix `holeFilling::refineSelectedHolePatches` Branch 7 (*VERTEX_INSERTION_CONVERGENCE*: `if (pnnt == nnt) gits++; if (gits >= 10) break;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four small triangles in a fan around hub v4=(0.5,0.5,0) with unit outer edges. Outer boundary edges are each 1.0 → sigma=1.0. Hub spoke lengths ≈0.707; vertex-to-centroid distances ≈0.527 < sigma=1.0 for all triangles. All density checks fail → no centroid vertex inserted → nnt==pnnt → Branch 7: gits incremented. After 10 consecutive empty iterations the loop breaks. Hub-spoke distances <0.8 confirm vertex proximity to centroid. Euler: V=5, E=8, F=4, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(1,1,0), v3=(0,1,0), v4=(0.5,0.5,0); t0=(v0,v1,v4), t1=(v1,v2,v4), t2=(v2,v3,v4), t3=(v3,v0,v4); hub spokes n=2; outer edges n=1; assert_vertex_pair_distance_lt(v0,v4,0.8)×4; euler V=5,E=8,F=4,chi=1.
+- **Expected kernel behavior**: Branch 7 fires each iteration: all dv < sigma → no splitTriangle → nnt unchanged → pnnt==nnt → gits++; after 10 iterations gits reaches 10 and the refinement loop exits.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,4] lt=0.8`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=0.8`
+- **Mesh assertion**: `euler_characteristic v=5 e=8 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me416.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder

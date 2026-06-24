@@ -1,0 +1,8 @@
+# Me415: refineSelectedHolePatches_edge_swap_delaunay_improvement: long diagonal satisfies swap condition, swap accepted (Branch 6)
+# defect_class: hole_in_hull
+v 0 0 0
+v 3 0 0
+v 1 2 0
+v 0 1 0
+f 1 2 4
+f 2 3 4
