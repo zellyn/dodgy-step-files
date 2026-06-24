@@ -2736,20 +2736,20 @@ Fixture IDs: Me200 Me201 Me202 Me203 Me204 Me205 Me206 Me207 Me208 Me209
   - Suggested fixture: defect mentioning 'growSelection()', 'for (n=1'
 
 ##### `di_cell.selectIntersections` — lines 107–129
-(3 branches; all UNCOVERED — no mesh fixtures exist yet)
+(3 branches; ALL COVERED — Me910–Me912)
 
-- **Branch 1** @ line 119 — *Redundant pair-test detection*
+- **Branch 1** @ line 119 — *Redundant pair-test detection* — **Me910**
   - What it tests: Whether a triangle pair was already tested in another cell
   - Repair action: Skip test if pair cached; otherwise perform full intersection test
-  - Suggested fixture: defect mentioning 't->info', 'containsNode'
-- **Branch 2** @ line 121 — *Proper vs improper intersection*
+  - Fixture: Me910 — two crossing triangles straddling y=0 boundary; same pair seen in two cells; t->info->containsNode(t1)==true → skip
+- **Branch 2** @ line 121 — *Proper vs improper intersection* — **Me911**
   - What it tests: Intersection type classification: proper (transverse) vs improper (touching)
   - Repair action: Mark triangles as intersecting based on justproper flag
-  - Suggested fixture: defect mentioning 'justproper', 'intersects'
-- **Branch 3** @ line 124 — *Info-list initialization*
+  - Fixture: Me911 — touching shared-vertex pair (improper, skipped by justproper=true); separate transverse pair (proper, collected)
+- **Branch 3** @ line 124 — *Info-list initialization* — **Me912**
   - What it tests: Whether triangle already has an intersection info list attached
   - Repair action: Reuse existing list or create new; append opposite triangle
-  - Suggested fixture: defect mentioning 't->info != NULL', 'new List'
+  - Fixture: Me912 — hub t0 intersects t1 (NULL→new List) then t2 (reuse existing list); both paths of Branch 3 exercised
 
 ##### `mc_cell.lookdown` — lines 106–135
 (2 branches; all UNCOVERED — no mesh fixtures exist yet)

@@ -1,0 +1,109 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      4.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      4.0,
+      0.0
+    ],
+    [
+      1.0,
+      1.0,
+      -1.0
+    ],
+    [
+      1.0,
+      1.0,
+      1.0
+    ],
+    [
+      -1.0,
+      3.0,
+      0.0
+    ],
+    [
+      3.0,
+      1.0,
+      -1.0
+    ],
+    [
+      3.0,
+      1.0,
+      1.0
+    ],
+    [
+      5.0,
+      3.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      3,
+      4,
+      5
+    ],
+    [
+      6,
+      7,
+      8
+    ]
+  ],
+  "metadata": {
+    "id": "Me912",
+    "schema_version": 0,
+    "defect_class": "self_intersection_face_pair",
+    "title": "di_cell.selectIntersections info-list-init: hub t0 intersects t1 (NULL\u2192new List) then t2 (reuse list); both info-list paths exercised (Branch 3)",
+    "assertions": [
+      {
+        "kind": "vertex_pair_no_shared_triangle",
+        "pair": [
+          0,
+          3
+        ]
+      },
+      {
+        "kind": "vertex_pair_no_shared_triangle",
+        "pair": [
+          0,
+          6
+        ]
+      },
+      {
+        "kind": "vertex_pair_no_shared_triangle",
+        "pair": [
+          3,
+          6
+        ]
+      },
+      {
+        "kind": "triangles_self_intersect",
+        "triangles": [
+          0,
+          1
+        ]
+      },
+      {
+        "kind": "triangles_self_intersect",
+        "triangles": [
+          0,
+          2
+        ]
+      }
+    ]
+  }
+}

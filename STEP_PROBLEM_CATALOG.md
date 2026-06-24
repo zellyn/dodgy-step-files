@@ -36675,3 +36675,44 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me902.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me910 — di_cell.selectIntersections redundant-pair-test-detection: crossing pair cached in t->info; containsNode returns true → second-cell test skipped (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: di_cell / redundant-pair-test-detection)
+- **Sources**: MeshFix `di_cell.selectIntersections` Branch 1 (*Redundant pair-test detection*: `t->info != NULL && t->info->containsNode(s) → continue`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles with a proper transverse self-intersection whose bounding boxes straddle the octree cell boundary at y=0. t0=(-1,0,0),(1,0,0),(0,0,2) in the XZ plane; t1=(0,-1,1),(0,1,1),(2,0,1) crossing at z=1. Edge (v3,v4) of t1 pierces t0's interior; edge (v1,v2) of t0 pierces t1's interior. Because both triangles appear on both sides of y=0, di_cell.selectIntersections encounters the same (t0,t1) pair in two cells. On the second encounter t0->info already contains a node for t1 → containsNode(t1)==true → Branch 1 fires and the re-test is skipped.
+- **Reproducer recipe**: v0=(-1,0,0), v1=(1,0,0), v2=(0,0,2); v3=(0,-1,1), v4=(0,1,1), v5=(2,0,1); t0=(v0,v1,v2), t1=(v3,v4,v5); assert_vertex_pair_no_shared_triangle(v0,v3); assert_vertex_pair_no_shared_triangle(v1,v4); assert_triangles_self_intersect(0,1).
+- **Expected kernel behavior**: Branch 1 fires on second cell encounter; containsNode(t1)==true → continue; duplicate intersection test skipped.
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[0,3]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,4]`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me910.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me911 — di_cell.selectIntersections proper-vs-improper-intersection: justproper flag; touching shared-vertex pair is improper; transverse crossing is proper (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: di_cell / proper-vs-improper-intersection)
+- **Sources**: MeshFix `di_cell.selectIntersections` Branch 2 (*Proper vs improper intersection*: `!t->intersects(s, justproper) → continue`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three-triangle mesh demonstrating both sides of the justproper branch. t0=(v0=(0,0,0), v1=(1,1,0), v2=(2,0,0)) is a flat hub in the XY plane. t1=(v2,v3=(3,1,0),v4=(4,0,0)) shares only vertex v2 with t0 — a touching-only (improper) contact; their interiors are disjoint. t2=(v5=(1,0.3,-1), v6=(1,0.3,1), v7=(4,0,0)) has edge (v5,v6) passing through t0's interior at (1,0.3,0) — a proper transverse crossing. With justproper=true, (t0,t1) is skipped (improper); (t0,t2) is collected (proper). Branch 2 discriminates these two cases.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,1,0), v2=(2,0,0), v3=(3,1,0), v4=(4,0,0), v5=(1,0.3,-1), v6=(1,0.3,1), v7=(4,0,0); t0=(v0,v1,v2), t1=(v2,v3,v4), t2=(v5,v6,v7); assert_triangles_do_not_intersect(0,1); assert_triangles_self_intersect(0,2).
+- **Expected kernel behavior**: Branch 2 fires for (t0,t1): justproper=true, touching-only → continue; (t0,t2) passes: transverse → collected as SI.
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[0,3]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,4]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[0,5]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,6]`
+- **Mesh assertion**: `triangles_do_not_intersect triangles=[0,1]`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,2]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me911.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me912 — di_cell.selectIntersections info-list-initialization: hub triangle intersects two others; NULL→new List then reuse (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: di_cell / info-list-initialization)
+- **Sources**: MeshFix `di_cell.selectIntersections` Branch 3 (*Info-list initialization*: `t->info == NULL → new List; t->info->appendHead(s)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three-triangle mesh with a central hub t0=(v0=(0,0,0), v1=(4,0,0), v2=(2,4,0)) — a large flat triangle in the XY plane. t1=(v3=(1,1,-1), v4=(1,1,1), v5=(-1,3,0)): edge (v3,v4) pierces t0's interior at (1,1,0). t2=(v6=(3,1,-1), v7=(3,1,1), v8=(5,3,0)): edge (v6,v7) pierces t0's interior at (3,1,0). All three triangles have disjoint vertex sets. When di_cell.selectIntersections records t0's first SI partner (t1), t0->info == NULL → allocates a new List (Branch 3 init). When recording the second partner (t2), t0->info != NULL → appends to the existing list (Branch 3 reuse). Both info-list paths exercised.
+- **Reproducer recipe**: v0=(0,0,0), v1=(4,0,0), v2=(2,4,0); v3=(1,1,-1), v4=(1,1,1), v5=(-1,3,0); v6=(3,1,-1), v7=(3,1,1), v8=(5,3,0); t0=(v0,v1,v2), t1=(v3,v4,v5), t2=(v6,v7,v8); assert_triangles_self_intersect(0,1); assert_triangles_self_intersect(0,2).
+- **Expected kernel behavior**: Branch 3 fires twice: first for t1 (NULL → new List), then for t2 (not NULL → appendHead reuses list). Both intersection records stored in t0->info.
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[0,3]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[0,6]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[3,6]`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,2]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me912.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
