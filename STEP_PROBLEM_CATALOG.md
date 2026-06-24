@@ -38306,6 +38306,74 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+### Me800 — is_polygon_soup_a_polygon_mesh duplicate_vertex_in_polygon: triangle [v0,v1,v0] has repeated vertex index (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: polygon-soup-validity / duplicate-vertex-in-polygon)
+- **Sources**: CGAL PMP `PMP.is_polygon_soup_a_polygon_mesh` Branch 1 (*duplicate_vertex_in_polygon*: `for(std::size_t j=0;j<polygon.size();++j){ if(polygon[j]==polygon[k]) return false; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three-triangle soup with one collapsed polygon. Triangle t0 is [v0, v1, v0] — vertex index 0 appears at positions 0 and 2. The inner loop over index pairs detects this repeated index and returns false immediately, without inspecting the rest of the soup. Triangles t1 and t2 form a valid manifold pair (edge (v1,v2) shared n=2) to show the surrounding geometry is otherwise ordinary. t0 has zero area because two corners coincide at the same point.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1.5,1,0); t0=(v0,v1,v0) collapsed, t1=(v0,v1,v2), t2=(v1,v3,v2); assert_triangle_area_lt(0,1e-9); assert_edge_shared(v1,v2,2).
+- **Expected kernel behavior**: Branch 1 fires on polygon t0; is_polygon_soup_a_polygon_mesh returns false; the soup is rejected as non-mesh-representable due to the self-repeated vertex.
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-09`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me800.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me801 — is_polygon_soup_a_polygon_mesh non_manifold_edge: edge (v0,v1) shared by 3 triangles marks edge singular (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: polygon-soup-validity / non-manifold-edge)
+- **Sources**: CGAL PMP `PMP.is_polygon_soup_a_polygon_mesh` Branch 2 (*non_manifold_edge*: `if(it->second.size() > 2){ ...; marked_edges.insert(edge); }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangles all sharing edge (v0, v1). After the index-duplicate check passes for each polygon, the validator builds an edge-to-polygon map. Edge (v0,v1) is incident on all three triangles — exceeding the manifold maximum of two — so it is inserted into marked_edges as a singular (non-manifold) edge. Each triangle fans to a distinct apex (v2 above XZ, v3 below XZ, v4 out of plane) so the non-manifold edge is the only defect.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,-1,0), v4=(0.5,0,1); t0=(v0,v1,v2), t1=(v0,v1,v3), t2=(v0,v1,v4); assert_edge_shared(v0,v1,3).
+- **Expected kernel behavior**: Branch 2 fires; edge (v0,v1) is inserted into marked_edges; is_polygon_soup_a_polygon_mesh returns false (or reports non-manifold) for this soup.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=3`
+- **Fixture path**: mesh-examples/12-14-mesh/Me801.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me802 — is_polygon_soup_a_polygon_mesh orientation_consistency: t0 and t1 both traverse halfedge v1→v2; fill_edge_map returns INCOMPATIBLE_ORIENTATION (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: polygon-soup-validity / orientation-consistency)
+- **Sources**: CGAL PMP `PMP.is_polygon_soup_a_polygon_mesh` Branch 3 (*orientation_consistency*: `if(fill_edge_map(polygon,edge_map)==INCOMPATIBLE_ORIENTATION) return false;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing physical edge {v1, v2} but both traversing it in the same directed order (v1→v2). fill_edge_map records each polygon's directed halfedges. When both t0=(v0,v1,v2) and t1=(v3,v1,v2) emit the same directed halfedge v1→v2, the map detects a collision and returns INCOMPATIBLE_ORIENTATION — the soup cannot be given a consistent orientation. The two normals point in opposite Z directions (dot product = -1) confirming the winding inconsistency.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1.5,1,0); t0=(v0,v1,v2), t1=(v3,v1,v2); both emit halfedge v1→v2; assert_adjacent_triangles_inconsistent_winding(0,1).
+- **Expected kernel behavior**: Branch 3 fires; fill_edge_map returns INCOMPATIBLE_ORIENTATION for polygon t1; is_polygon_soup_a_polygon_mesh returns false; the soup is rejected as orientation-inconsistent.
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me802.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me810 — StarTriangulateHole_edge_not_on_boundary: closed tetrahedron; every edge n==2; !e->isOnBoundary() returns 0 (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: hole-filling / edge-not-on-boundary)
+- **Sources**: MeshFix `Basic_TMesh.StarTriangulateHole` Branch 1 (*EDGE_NOT_ON_BOUNDARY*: `if (!e->isOnBoundary()) return 0;` @ line 48); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A tetrahedron (4 vertices, 4 triangles, 6 edges) forms a fully closed genus-0 surface. Every edge is shared by exactly 2 triangles; there are no boundary edges. When StarTriangulateHole is called with any edge, the guard `!e->isOnBoundary()` fires immediately and the function returns 0 without filling anything. All six edges assert n==2; Euler chi=2 confirms closed surface.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,0.333,1); t0=(v0,v2,v1), t1=(v0,v1,v3), t2=(v0,v3,v2), t3=(v1,v2,v3); all 6 edges assert n==2; euler V=4,E=6,F=4,chi=2.
+- **Expected kernel behavior**: Branch 1 fires; `!e->isOnBoundary()` is true for every edge; StarTriangulateHole returns 0 without inserting any vertex or triangle.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me810.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me811 — StarTriangulateHole_boundary_loop_closure: 3-vertex hole in fan mesh; nextOnBoundary traversal returns to start; v==e->v1 exits loop (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: hole-filling / boundary-loop-closure)
+- **Sources**: MeshFix `Basic_TMesh.StarTriangulateHole` Branch 2 (*BOUNDARY_LOOP_CLOSURE*: `do { … e = nextOnBoundary(e); } while (v != e->v1);` @ line 62); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 4-sector fan from hub h=(1,1,0) with rim vertices r0..r3, but sector (h,r3,r0) omitted. This leaves a 3-vertex / 3-edge boundary loop: h → r0 → r3 → h. Three nextOnBoundary steps complete the traversal; when the loop condition `v != e->v1` becomes false, Branch 2 exits and the full boundary vertex list is collected. Hub edges h-r1 and h-r2 are interior (n=2); all three hole-boundary edges are n=1. Euler V=5,E=8,F=3,chi=0.
+- **Reproducer recipe**: h=(1,1,0) [idx 0], r0=(0,0,0) [1], r1=(2,0,0) [2], r2=(2,2,0) [3], r3=(0,2,0) [4]; t0=(h,r0,r1), t1=(h,r1,r2), t2=(h,r2,r3); hole boundary edges: (h,r3)=[0,4], (r3,r0)=[1,4], (r0,h)=[0,1] all n=1; euler V=5,E=8,F=3,chi=0.
+- **Expected kernel behavior**: Branch 2 fires after 3 nextOnBoundary iterations; traversal returns to e->v1 (start vertex); boundary loop [h, r0, r3] collected and ready for barycenter accumulation.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=5 e=8 f=3 chi=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me811.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me812 — StarTriangulateHole_barycenter_computation: 5-vertex pentagonal hole; np=np+(*v) accumulates all 5 boundary vertices; barycenter placed at centroid (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: hole-filling / barycenter-computation)
+- **Sources**: MeshFix `Basic_TMesh.StarTriangulateHole` Branch 3 (*BARYCENTER_COMPUTATION*: `np = np + (*v); np_count++;` followed by `np /= np_count;` @ line 66); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two concentric pentagons (outer R=3, inner R=1) joined by 10 triangles (2 per trapezoid sector). The inner pentagon is unfilled — a 5-vertex / 5-edge boundary loop (i0..i4). StarTriangulateHole processes the inner boundary: np = np + (*v) executes 5 times (once per inner vertex i0..i4) before dividing by 5 to compute the centroid at (0,0,0). All 5 inner boundary edges assert n=1; all 5 straight spokes ok-ik assert n=2; Euler V=10,E=20,F=10,chi=0.
+- **Reproducer recipe**: outer ring R=3 (o0..o4 = vertices 0..4, equally spaced), inner ring R=1 (i0..i4 = vertices 5..9); 10 triangles (ok, o(k+1), i(k+1)) and (ok, i(k+1), ik) for k in 0..4; inner edges (5,6),(6,7),(7,8),(8,9),(5,9) all n=1; straight spokes (0,5),(1,6),(2,7),(3,8),(4,9) all n=2; euler V=10,E=20,F=10,chi=0.
+- **Expected kernel behavior**: Branch 3 fires; accumulator np visits i0..i4 in boundary order (5 iterations); np divided by 5 gives centroid (0,0,0); a new apex vertex is created at centroid and 5 fan triangles fill the hole.
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,6] n=1`
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[6,7] n=1`
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[7,8] n=1`
@@ -39413,4 +39481,45 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,3]`
 - **Mesh assertion**: `euler_characteristic v=7 e=9 f=3 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me792.mesh.json
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,7] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,8] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,9] n=2`
+- **Mesh assertion**: `euler_characteristic v=10 e=20 f=10 chi=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me812.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me820 — does_polygon_soup_self_intersect_duplicate_point_presence: coincident v0==v3 at (0,0,0); merge_duplicate_points fires before SI check (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: polygon-soup-self-intersection / duplicate-point-presence)
+- **Sources**: CGAL PMP `does_polygon_soup_self_intersect` Branch 1 (*duplicate_point_presence*: `merge_duplicate_points_in_polygon_soup` call fires when coincident-coordinate vertex pair exists); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles in a flat XY soup where vertex v3=(0,0,0) is a second copy of v0=(0,0,0) with a distinct index. The merge step collapses v3 to v0 before any SI check — Branch 1 fires whenever the de-duplication does real work. The fixture records the spatial coincidence (distance < 1e-9) and the absence of a shared triangle for the pair, confirming they are identical coordinates but topologically separate entries.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(0,0,0) [=v0]; t0=(v0,v1,v2), t1=(v3,v2,v1); assert_vertex_pair_distance_lt(0,3,1e-9); assert_vertex_pair_no_shared_triangle(0,3).
+- **Expected kernel behavior**: Branch 1 fires; merge_duplicate_points_in_polygon_soup remaps v3→v0; de-duplicated soup has 3 unique points; SI check proceeds on merged soup.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,3] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[0,3]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me820.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me821 — does_polygon_soup_self_intersect_polygon_type_mixed: needle triangle (aspect >> 1) simulates non-triangle-polygon pre-condition; triangulate_polygons branch fires (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: polygon-soup-self-intersection / polygon-type-mixed)
+- **Sources**: CGAL PMP `does_polygon_soup_self_intersect` Branch 2 (*polygon_type_mixed*: `if(polygon.size() != std::size_t(3))` → `triangulate_polygons` call); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A two-triangle soup where the first triangle (v0,v1,v2) is a maximally needle-shaped element with base 10 and height 1e-4, giving an aspect ratio >1e5. In the actual CGAL branch, non-triangle polygons (quads, pentagons) trigger the `triangulate_polygons` call; the needle triangle simulates the degenerate geometry that would result from naively ear-clipping a thin quad. The aspect_ratio_gt assertion records the polygon_type_mixed pre-condition.  The second clean triangle confirms no SI.
+- **Reproducer recipe**: v0=(0,0,0), v1=(10,0,0), v2=(5,1e-4,0); t0=(v0,v1,v2) needle; v3=(0,2,0), v4=(1,2,0), v5=(0,3,0); t1=(v3,v4,v5) clean; assert_triangle_aspect_ratio_gt(0,1000.0); assert_triangles_do_not_intersect(0,1).
+- **Expected kernel behavior**: Branch 2 fires on polygon size != 3; triangulate_polygons converts soup to all-triangle representation; SI check proceeds on triangulated soup.
+- **Mesh assertion**: `triangle_aspect_ratio_gt triangle=0 gt=1000.0`
+- **Mesh assertion**: `triangles_do_not_intersect triangles=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me821.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me822 — does_polygon_soup_self_intersect_intersection_detection: crossing XY/XZ triangle pair in soup triggers triangle_soup_self_intersections (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: polygon-soup-self-intersection / intersection-detection)
+- **Sources**: CGAL PMP `does_polygon_soup_self_intersect` Branch 3 (*intersection_detection*: `triangle_soup_self_intersections(points, triangles, …)` returns non-empty); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four triangles in a polygon soup: a crossing XY/XZ pair (t0 and t1 sharing apex v0=(0,0,0)) that geometrically pierce each other, plus two clean companion triangles 20 units away. The crossing pair causes `triangle_soup_self_intersections` to return a non-empty result — Branch 3 fires and the function reports that the soup self-intersects. The clean companions confirm the SI is localised to the two crossing triangles.
+- **Reproducer recipe**: v0=(0,0,0) apex; v1=(1,1,0), v2=(1,-1,0) XY fan; v3=(1,0,1), v4=(1,0,-1) XZ fan; t0=(v0,v1,v2), t1=(v0,v3,v4); clean t2,t3 at y≥20; assert_triangles_self_intersect(0,1); assert_triangles_do_not_intersect(2,3); assert_triangle_not_reachable_from(2,0).
+- **Expected kernel behavior**: Branch 3 fires; triangle_soup_self_intersections detects the crossing pair; function returns true (soup has SI).
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `triangles_do_not_intersect triangles=[2,3]`
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me822.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder

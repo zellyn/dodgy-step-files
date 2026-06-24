@@ -1,0 +1,241 @@
+{
+  "vertices": [
+    [
+      3.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.927051,
+      2.85317,
+      0.0
+    ],
+    [
+      -2.427051,
+      1.763356,
+      0.0
+    ],
+    [
+      -2.427051,
+      -1.763356,
+      0.0
+    ],
+    [
+      0.927051,
+      -2.85317,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.309017,
+      0.951057,
+      0.0
+    ],
+    [
+      -0.809017,
+      0.587785,
+      0.0
+    ],
+    [
+      -0.809017,
+      -0.587785,
+      0.0
+    ],
+    [
+      0.309017,
+      -0.951057,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      6
+    ],
+    [
+      0,
+      6,
+      5
+    ],
+    [
+      1,
+      2,
+      7
+    ],
+    [
+      1,
+      7,
+      6
+    ],
+    [
+      2,
+      3,
+      8
+    ],
+    [
+      2,
+      8,
+      7
+    ],
+    [
+      3,
+      4,
+      9
+    ],
+    [
+      3,
+      9,
+      8
+    ],
+    [
+      4,
+      0,
+      5
+    ],
+    [
+      4,
+      5,
+      9
+    ]
+  ],
+  "metadata": {
+    "id": "Me812",
+    "schema_version": 0,
+    "defect_class": "star_triangulate_hole_barycenter_computation",
+    "title": "StarTriangulateHole_barycenter_computation: 5-vertex hole; np=np+(*v) accumulates 5 boundary vertices for barycenter (Branch 3)",
+    "assertions": [
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          5,
+          6
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          6,
+          7
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          7,
+          8
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          8,
+          9
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          5,
+          9
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          5
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          6
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          2,
+          7
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          3,
+          8
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          4,
+          9
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          1
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          2
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          2,
+          3
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          3,
+          4
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          4
+        ],
+        "n": 1
+      },
+      {
+        "kind": "euler_characteristic",
+        "v": 10,
+        "e": 20,
+        "f": 10,
+        "chi": 0
+      }
+    ]
+  }
+}

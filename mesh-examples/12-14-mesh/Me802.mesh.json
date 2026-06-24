@@ -1,0 +1,51 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      1.5,
+      1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      3,
+      1,
+      2
+    ]
+  ],
+  "metadata": {
+    "id": "Me802",
+    "schema_version": 0,
+    "defect_class": "inconsistent_face_orientation",
+    "title": "is_polygon_soup_a_polygon_mesh orientation_consistency: t0 and t1 both traverse halfedge v1\u2192v2; fill_edge_map returns INCOMPATIBLE_ORIENTATION (Branch 3)",
+    "assertions": [
+      {
+        "kind": "adjacent_triangles_inconsistent_winding",
+        "triangles": [
+          0,
+          1
+        ]
+      }
+    ]
+  }
+}
