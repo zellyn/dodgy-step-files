@@ -21799,17 +21799,17 @@ B-spline curve with last pole within 1e-3 of first pole triggers false-negative 
 
 2-point sampling on high-curvature S-curve misses inflection peak; bounding box omits Z-coordinate extremum, breaking downstream extent calculations.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gn041 — ShapeAnalysis_Surface.NextValueOfUV C0-knot Newton convergence
 
 B-spline surface with C0 discontinuity at interior U-knot (multiplicity=degree) causes Newton iteration to converge to wrong-side solution due to derivative invalidity at knot.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn042 — ShapeUpgrade_ConvertSurfaceToBezierBasis double-knot thin patch
 
 B-spline surface with double knot (multiplicity=2) at interior U-position yields degenerate Bezier patches after knot insertion; extent filter fails removal.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn043 — ShapeAnalysis_Curve.GetSamplePoints rational curve 4x amplification
 
 Rational B-spline with non-uniform weights (1.0, 2.0 variation) triggers 4x sample-count amplification via denominator pre-image expansion; excessive overhead during healing.
@@ -21818,12 +21818,12 @@ Rational B-spline with non-uniform weights (1.0, 2.0 variation) triggers 4x samp
 
 2D B-spline curve of degree 1 with 3 control points. Degree-elevation logic should elevate to degree 3 before Bezier extraction but skips this step when input degree equals 1, causing downstream conversion failures.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Gn045 — ShapeUpgrade_SplitSurface.Init split-parameters validation out-of-domain
 
 B-spline surface with split request using u_split values outside [u_min, u_max]. Init() must reject these values but currently accepts them, producing empty patches instead of raising validation error.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 ### Gn046 — ShapeAnalysis_Curve.IsPlanar near-coplanar at tolerance boundary
 
 4-point cubic B-spline where 3 control points are coplanar and the 4th is offset by exactly 1.0E-7 (planarity tolerance). IsPlanar() returns true at the tolerance boundary despite curve being technically non-planar.
@@ -21849,13 +21849,13 @@ B-spline curve with one parameter (U_MAX) set to infinity sentinel value (`1.797
 Valid B-spline surface (degree 2×2, 3×4 control net) fed to SetUSplitValues with empty split parameter list. Code initializes without diagnostic message and produces no surface splits. Lacks error signaling for degenerate input.
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 0
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn051 — ShapeAnalysis_Curve.GetSamplePoints offset/trimmed recursion depth
 
 Curve nesting: `OFFSET_CURVE(TRIMMED_CURVE(B_SPLINE))` with 0.5mm offset on trimmed domain [0.25, 0.75]. GetSamplePoints recursion selects incorrect sample density when unwrapping nested derivative curves; interior evaluation may fail.
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 ### Gn052 — ShapeUpgrade_ConvertSurfaceToBezierBasis knot-multiplicity C0 boundary
 
 B-spline surface (degree 3×3) with interior V-knot at 0.5 where multiplicity equals degree (4,3,4 pattern), creating C0 continuity. Converter re-inserts at this boundary despite already full multiplicity; spurious subdivisions follow.
@@ -21866,7 +21866,7 @@ B-spline surface (degree 3×3) with interior V-knot at 0.5 where multiplicity eq
 4-point rational B-spline with weights [1,1,8,1] and poles within ±0.02mm of XY plane. Curve interior (midspan) evaluates 1.2mm off-plane due to weight amplification; IsPlanar checks only control-point distance to plane, missing interior deviation.
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 ### Gn054 — ShapeAnalysis_Curve.IsPlanar BSpline dispatch false-negative
 
 B-spline degree-3 curve with poles clustered in XY plane but high-curvature interior sections bow out to Z=5. IsPlanar samples only poles; threshold check fails when interior geometry dominates. Validates2 passes; tier-3 lint should flag.
@@ -21874,7 +21874,7 @@ B-spline degree-3 curve with poles clustered in XY plane but high-curvature inte
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=reject`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gn055 — ShapeUpgrade_SplitSurface knot-spec mismatch on QUASI_UNIFORM
 
 Degree-2 B-spline surface marked `.QUASI_UNIFORM_KNOTS.` but knot vectors are piecewise (0.0, 0.25, 0.75, 1.0) and (0.0, 0.4, 0.6, 1.0). Init dispatch recognizes form tag and skips careful split logic, causing incorrect patch extraction.
@@ -21883,7 +21883,7 @@ Degree-2 B-spline surface marked `.QUASI_UNIFORM_KNOTS.` but knot vectors are pi
 
 Degree-2 B-spline with knot exactly at t=0.5 (multiplicity 1 in interior). Exact-mode FillBndBox samples both sides of knot but clamps result at knot value, missing parabolic peak at t=0.5 (0.5, ±0.5, 0).
 - **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=reject`
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gn057 — ShapeAnalysis_Curve.GetSamplePoints high-radius full-circle 360K cap
 
 Full-circle CIRCLE entity with radius 1,000,000 meters. GetSamplePoints caps at 360 samples; 1-degree resolution insufficient to detect near-tangent intersections in high-curvature regions.
@@ -21891,7 +21891,7 @@ Full-circle CIRCLE entity with radius 1,000,000 meters. GetSamplePoints caps at 
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=reject`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a`
 ### Gn058 — ShapeUpgrade_ConvertSurfaceToBezierBasis symmetric-knot asymmetric extraction
 
 Degree-2 B-spline surface with symmetric knot vectors (0.0, 0.5, 1.0) in both U and V. Extraction algorithm applies knot insertions in order-dependent sequence, producing asymmetric Bezier patches despite symmetric input structure.
@@ -21900,7 +21900,7 @@ Degree-2 B-spline surface with symmetric knot vectors (0.0, 0.5, 1.0) in both U 
 
 Non-uniform B-spline with sharp peak at u=0.5. Fixed-step extremum search overshoots peak; bbox too small at cusp. Captures defect in FillBndBox where SearchForExtremum skips the actual extremum due to coarse step size.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gn060 — ShapeUpgrade_ConvertCurve2dToBezier loop-variable persistence
 
 2D B-spline with 6+ segments (degree 2, 9 control points). Loop variable j1 doesn't reset between outer iterations, causing patch skip during C0→Bezier decomposition. Knot multiplicities create multiple continuity breaks.
@@ -21908,7 +21908,7 @@ Non-uniform B-spline with sharp peak at u=0.5. Fixed-step extremum search oversh
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gn061 — ShapeAnalysis_Curve.GetSamplePoints (3D 2pt LINE shortcut)
 
 LINE trimmed to [2.0, 8.0] on 10-unit baseline. 2-point shortcut samples only trimmed endpoints, missing midspan information (u=5.0) used by downstream healing for curvature/degeneracy detection.
@@ -21916,7 +21916,7 @@ LINE trimmed to [2.0, 8.0] on 10-unit baseline. 2-point shortcut samples only tr
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gn062 — ShapeUpgrade_SplitSurface.SetVSplitValues out-of-order
 
 Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split values passed as [1.0, 0.5, 0.2] without sort, Init produces inverted sub-patches with swapped parameter ranges.
@@ -21927,7 +21927,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 5-control-point NURBS with weight 150.0 at midpoint (u=0.5), creating extreme cusp. Sample density doesn't scale with pole weight; uniform grid misses the sharp feature pulled by high-weight pole.
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 ### Gn064 — ShapeAnalysis_Curve.IsClosed periodic vs closed semantic
 
 **Defect:** B-spline curve with periodic flag (`periodic=TRUE`) but the control polygon doesn't close (first pole ≠ last pole). IsClosed reports closed because it only checks the periodic tag, not geometric closure.
@@ -21935,7 +21935,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 **Trigger:** ShapeAnalysis_Curve::IsClosed() on periodic BSpline with non-closing poles.
 
 - **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=accept(0)`
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gn065 — ShapeUpgrade_ConvertSurfaceToBezierBasis BSpline-of-BSpline
 
 **Defect:** Composite curve where one segment is a TRIMMED BSpline wrapping another BSpline. Bezier conversion's recursion misclassifies the wrapped form during basis conversion.
@@ -21954,7 +21954,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=accept(0)`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 ### Gn067 — ShapeUpgrade_SplitSurface degree mismatch
 
 **Defect:** B-spline surface with u_degree=2, v_degree=4. SplitSurface assumes equal degrees and reuses u_degree for v-split logic, causing knot vector misalignment.
@@ -21962,7 +21962,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 **Trigger:** ShapeUpgrade_SplitSurface on surfaces with unequal u/v degrees.
 
 - **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=accept(0)`
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gn068 — ShapeAnalysis_Curve.FillBndBox elliptic-arc midpoint sampling
 
 **Defect:** Trimmed ELLIPSE arc with high aspect ratio. FillBndBox samples midpoint at π/2 (correct for unit ellipse), but actual Y-max is at a different parameter for high-eccentricity ellipses.
@@ -21972,7 +21972,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 - **Tier-3 assertion**: n_faces_total == 2
 - **Tier-3 assertion**: n_edges_total == 6
 - **Tier-3 assertion**: n_vertices_total == 12
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=accept(0)`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a`
 ### Gn069 — ShapeAnalysis_Curve.GetSamplePoints BSpline knot-aware sampling
 
 **Falsifiable claim:** A B-spline curve with interior knots closely spaced at (0.5, 0.51, 0.52) over-densifies the sample point set, producing hundreds of samples in the 0.01-width region instead of proportional adaptive sampling across the full domain.
@@ -21993,7 +21993,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gn071 — ShapeAnalysis_Curve.IsClosed BezierCurve check
 
 **Falsifiable claim:** A BEZIER_CURVE entity with matching first and last poles (closure property) is evaluated using B-spline closure semantics, returning false despite satisfying Bezier-specific closure.
@@ -22020,7 +22020,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 
 **Defect axis:** `input-shape`
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 ### Gn074 — ShapeUpgrade_ConvertSurfaceToBezierBasis degree truncation
 
 **Defect axis:** kernel-pair  
@@ -22036,7 +22036,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 **Minimal reproducer:** B-spline degree-3 curve with sharp curvature peak between interior knots. Approximation-mode uses discrete sampling instead of exact control-polygon analysis, reporting bbox ~10% smaller than actual.
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a`
 ### Gn076 — ShapeUpgrade_SplitSurface u-multiplicity loss
 
 **Defect axis:** split-validation  
@@ -22052,21 +22052,21 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 **Minimal reproducer:** B-spline degree-2 curve with control polygon [P0,P1,P2,P3,P4] where P4=P0 (closes) but P2 direction-reversal causes self-intersection. IsClosed reports closed but misses crossing.
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gn078 — ShapeUpgrade_ConvertCurve2dToBezier double-degree-elevation knot error
 
 **Defect axis:** curve-type-handling  
 **False-claim:** ConvertCurve2dToBezier correctly handles multi-step degree elevation.  
 **Minimal reproducer:** 2D B-spline degree-2 curve (6 control points) elevated to degree 4. Algorithm assumes single-step elevation and produces incorrect knot vector; correct path is 2→3→4 (two steps).
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gn079 — ShapeAnalysis_Curve.IsPlanar BSpline interior bow
 
 **Defect**: Degree-3 B-spline with 5 control points nominally planar but interior control point deviates 2mm perpendicular to plane. IsPlanar evaluates only at control point parameter values, missing interior curvature deviation.
 
 **Fixture**: Curve with endpoints at z=0, interior pole at z=2mm; all other poles in z=0 plane.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gn080 — ShapeUpgrade_SplitSurface.SetUSplitValues duplicate dedup
 
 **Defect**: Split parameter array [0.3, 0.3, 0.7] deduplicates but removes wrong copy, producing incorrect patch grid topology.
@@ -22080,7 +22080,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 
 **Fixture**: Micro-scale CIRCLE trimmed to full range; parametrization [0, 2π].
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a`
 ### Gn082 — ShapeUpgrade_ConvertSurfaceToBezierBasis multi-patch seam drift
 
 **Defect**: B-spline surface with interior knots in both U and V converts to N×M Bezier grid with seam tolerance mismatch between adjacent patches.
@@ -22104,7 +22104,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 **File:** Gn084.stp
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gn085 — ShapeUpgrade_ConvertSurfaceToBezierBasis cylinder-conversion
 
 **Defect:** Cylinder converted to Bezier patches; the resulting 4 Bezier patches have weights but conversion doesn't propagate the rational weights from the cylinder's analytic form.
@@ -22114,7 +22114,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 **File:** Gn085.stp
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn086 — ShapeAnalysis_Curve.GetSamplePoints helix-sampling
 
 **Defect:** GetSamplePoints determines sample count based on parameter range but not on curvature; long-pitch helix gets too few samples for mid-pitch deviation.
@@ -22124,7 +22124,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 **File:** Gn086.stp
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a`
 ### Gn087 — ShapeUpgrade_SplitSurface.SetUSplitValues neg-zero
 
 **Defect:** Split values containing -0.0; the dedup logic doesn't treat -0.0 == 0.0 and produces a spurious "split" at the boundary.
@@ -22137,7 +22137,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 9
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gn088 — ShapeAnalysis_Curve.IsClosed B-spline open-via-knots
 
 **Defect:** B-spline whose control polygon closes but the knot vector is clamped with multiplicity degree+1 at endpoints (intentionally open); IsClosed reports closed based on polygon.
@@ -22146,7 +22146,7 @@ Bi-quadratic B-spline surface (3×3 control points, degree 2×2). When split val
 
 **File:** Gn088.stp
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a`
 ### Gn089 — ShapeUpgrade_SplitSurface non-rectangular-region
 
 Defect: B-spline surface trimmed to non-rectangular region (triangular trim); SplitSurface attempts axis-aligned split but the trim breaks the assumption. Fixture: degree-3 degree-2 surface with 4x3 control points, trimmed boundary defining a triangular region within parameter space.
@@ -22159,22 +22159,22 @@ Defect: B-spline surface trimmed to non-rectangular region (triangular trim); Sp
 
 Defect: B-spline with one control point having Z=NaN; IsPlanar's pole sampling produces NaN result, which IEEE compare-with-zero returns false (so "is planar" reported). Fixture: degree-3 curve with 6 control points; middle pole has Z=1.0E+100 to simulate NaN behavior.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Gn091 — ShapeUpgrade_ConvertCurve2dToBezier endpoint-pole-multiplicity
 
 Defect: 2D B-spline whose endpoint knot multiplicity is degree (open), but inner multiplicity is also degree (C0 break); converter expects only-endpoint-clamped. Fixture: degree-3 2D curve with 7 control points, knot multiplicities (4,3,3,4).
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Gn092 — ShapeAnalysis_Curve.GetSamplePoints offset-curve sample-density
 
 Defect: OFFSET_CURVE wrapping a B-spline; sample density inherited from base curve doesn't account for offset's local curvature change. Fixture: degree-3 B-spline with 8 control points wrapped by OFFSET_CURVE with 1.5mm offset in Z direction.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Gn093 — ShapeUpgrade_ConvertSurfaceToBezierBasis u-and-v-knot-asymmetry
 
 Defect: Surface with u_degree=3, v_degree=5 and asymmetric knot multiplicities; conversion's symmetric assumption produces wrong Bezier patch count in U vs V. Fixture: 4x6 control point grid, degree-3 in U, degree-5 in V, knot multiplicities (3,1,3) in U and (5,1,5) in V.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gn094 — ShapeAnalysis_Curve.IsClosed degree-0-curve
 
 Defect: B-spline of degree 0 (piecewise constant); `IsClosed` reports false but the curve has no meaningful direction, so closed-vs-open is ill-defined. A degree-0 B-spline is piecewise constant segments with no tangent or direction. The `IsClosed` logic assumes non-zero degree and fails to handle the degenerate case properly.
@@ -22188,28 +22188,28 @@ Defect: Degenerate B-spline surface with only 1 control point (collapsed to a si
 
 **Minimal reproducer**: `B_SPLINE_SURFACE_WITH_KNOTS` degree (3,3), 1 control point, knot multiplicities (2,2) on both axes.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn096 — ShapeAnalysis_Curve.FillBndBox infinite-bbox
 
 Defect: Curve with NaN/inf control points; `FillBndBox` returns an unbounded bbox without flagging the invalid input. At least one control point contains inf or NaN coordinate, causing bbox calculation to fail silently and produce an infinite or undefined bounding box.
 
 **Minimal reproducer**: Degree-3 B-spline with 4 control points, one having Z coordinate = 1.0E308 (infinity).
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Gn097 — ShapeUpgrade_SplitSurface.Init duplicate-split-values
 
 Defect: Call `Init` with duplicate split parameters [0.5, 0.5, 0.5]; dedup logic doesn't fully collapse, leaving phantom splits. The surface is split at the same parameter value multiple times, and the deduplication logic fails to fully remove redundant split locations.
 
 **Minimal reproducer**: Degree (2,2) surface with interior knot at 0.5 on both axes; `Init` called with triplicate U-split [0.5, 0.5, 0.5].
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gn098 — ShapeAnalysis_Curve.IsPlanar exactly-2-points
 
 Defect: B-spline with only 2 control points (degree 1 line); `IsPlanar`'s pole-sampling test trivially passes (line is in infinite planes), reporting planar with default plane. A 2-point degree-1 curve is a line segment lying in infinitely many planes; auto-selecting a default plane without explicit user direction is ambiguous.
 
 **Minimal reproducer**: Degree-1 B-spline with exactly 2 control points (0,0,0) and (1,0,0), knot multiplicities (2,2).
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a`
 ### Gn099 — ShapeAnalysis_Curve.GetSamplePoints conic-arc rational-weight cap
 
 Degree-2 rational B-spline (circular arc) with weight pole at t=0.5. GetSamplePoints uses degree-3 sample count for the degree-2 curve, resulting in sparse sampling that misses curvature extrema near the rational weight concentration zone.
@@ -22217,7 +22217,7 @@ Degree-2 rational B-spline (circular arc) with weight pole at t=0.5. GetSamplePo
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2b-nurbs/Gn099.stp`
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gn100 — ShapeUpgrade_SplitSurface high-multiplicity-clamp
 
 B-spline surface with U knot multiplicity vector (4,4,4), degree 3, and only 3 control points (fully-clamped configuration: multiplicity = degree + 1). SplitSurface attempts splitting at interior knot positions but fails because the high multiplicity prevents proper subdivision, producing empty or degenerate patches.
@@ -22225,7 +22225,7 @@ B-spline surface with U knot multiplicity vector (4,4,4), degree 3, and only 3 c
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2b-nurbs/Gn100.stp`
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn101 — ShapeAnalysis_Curve.IsClosed COMPOSITE_CURVE with-discontinuity
 
 Composite curve with 3 segments where segment 2 starts at (1.1, 0.1, 0) but segment 1 ends at (1.0, 0.0, 0)—a 0.15-unit gap. Segment 3 loops back to origin. IsClosed only checks the global endpoint pair (first=last), missing the internal discontinuity at segment boundaries.
@@ -22233,7 +22233,7 @@ Composite curve with 3 segments where segment 2 starts at (1.1, 0.1, 0) but segm
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2b-nurbs/Gn101.stp`
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gn102 — ShapeUpgrade_ConvertCurve2dToBezier degree-elevation-skip
 
 Degree-0 B-spline (piecewise constant function). When degree-elevation code computes `target_degree - 0`, it produces negative values in certain code paths, causing integer underflow or division errors. Special-case handling for low-degree curves is missing.
@@ -22248,7 +22248,7 @@ Composite curve mixing a degree-3 B-spline segment (requires 4 samples) with a d
 
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2b-nurbs/Gn103.stp`
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gn104 — trimmed-recursion on B-spline
 Defect: ShapeUpgrade_SplitSurfaceContinuity.Compute recursively subdivides trimmed B-spline ignoring trim bounds, producing overlapping sub-patches.
 - **Tier-3 assertion**: n_faces_total == 1
@@ -22271,52 +22271,52 @@ Defect: ShapeUpgrade_SplitSurface.Init silently accepts inverted bounds (u_min >
 
 Non-rational B-spline degree-4 curve with control polygon ostensibly coplanar but interior sampled values bow out 0.15 units. Pole-sampling strategy in IsPlanar misses interior bulge; detects polygon but not actual curve geometry.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Gn110 — ShapeUpgrade_ConvertSurfaceToBezierBasis bezier-with-trim
 
 BEZIER_SURFACE wrapped in RECTANGULAR_TRIMMED_SURFACE via FACE_BOUND. Conversion logic treats as untrimmed (uses base knot vector [4,4] on both directions, spans 0.0..1.0) and ignores trim loop (0.25..0.75 square); produces wrong patches outside trim.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn111 — ShapeAnalysis_Curve.GetSamplePoints cubic-with-flat-region
 
 Cubic B-spline with control points #3, #4, #5 collinear (flat plateau from t=0.4 to t=0.7). Sampler under-weights this region (zero second derivative); coarse knot insertion misses inflection transition.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Gn112 — ShapeUpgrade_SplitSurface.Init split-at-knot
 
 Curve knot vector has interior knot at t=0.5 with multiplicity 2. Init's split request at t=0.5 triggers phantom boost (attempts insertion into already-multiplied knot); creates spurious Bezier segment boundary.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Gn113 — ShapeAnalysis_Curve.IsClosed periodic-with-knot-asymmetry
 
 B-spline with periodic flag (.T.) but knot multiplicities at endpoints differ: u_min has multiplicity 2, u_max has multiplicity 2 but computed span widths asymmetric. IsClosed reports .T. based on flag, ignoring asymmetry in knot partition.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a`
 ### Gn114 — ShapeAnalysis_Curve.IsClosed knot-vector-not-symmetric
 
 Closed B-spline curve (degree 3, 7 control points) with asymmetric knot multiplicities at endpoints (multiplicity 2 at start, 2 at end). Poles form a closed loop but knot vector lacks symmetry. IsClosed incorrectly reports closed based on pole coincidence while downstream code assumes symmetric knot structure.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a`
 ### Gn115 — ShapeUpgrade_ConvertSurfaceToBezierBasis non-uniform-degree
 
 B-spline surface with highly disparate degrees: U direction degree 5, V direction degree 1. Control point layout (7×2) creates vastly different patch sizes when converted to Bezier basis. Tests Init's assumption of uniform degree across dimensions.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn116 — ShapeAnalysis_Curve.GetSamplePoints near-collinear-poles
 
 B-spline curve (degree 3, 5 control points) with poles nearly collinear in XY plane (offsets ~1e-5 in Y). Sampler detects "almost linear" geometry and returns minimal sample count, failing to discretize the sparse curvature information.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Gn117 — ShapeUpgrade_SplitSurface with-rational-and-non-rational-mixed
 
 Rational B-spline surface (degree 2×1) with mixed rationality: weights specified (rational in U) but V direction non-rational. Init's split logic assumes uniform rationality and produces incorrect patch boundaries.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn118 — ShapeAnalysis_Curve.IsPlanar two-points-and-one-offset
 
 Degenerate B-spline curve (degree 2, 3 points) where first two poles are coincident and third is spatially offset. IsPlanar's degenerate-input handler produces a verdict but computes a meaningless "plane" from insufficient independent points.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Gn119 — ShapeAnalysis_Curve.GetSamplePoints with-clustered-knots
 
 **Defect:** B-spline curve degree 3, 8 control points, with 5 knots clustered within parameter range [0.20025, 0.20100] (width 0.001). GetSamplePoints over-counts samples in the cluster region, causing excessive subdivision or missed coarse regions.
@@ -22324,7 +22324,7 @@ Degenerate B-spline curve (degree 2, 3 points) where first two poles are coincid
 **Geometry:** Cubic B-spline with control polygon (0,0,0)→(4,2,0). Interior knots at {0.2, 0.20025, 0.2005, 0.200750, 0.20100, 0.8}.
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Gn120 — ShapeUpgrade_ConvertSurfaceToBezierBasis with-clamped-knots-degenerate
 
 **Defect:** B-spline surface, degree (2,2), where U-direction knots are clamped (multiplicity at endpoints = degree+1) but V-direction knots are unclamped. Conversion to Bezier basis applies different logic per direction, causing inconsistent patch decomposition.
@@ -22332,7 +22332,7 @@ Degenerate B-spline curve (degree 2, 3 points) where first two poles are coincid
 **Geometry:** 4×2 control grid, U knots clamped {0.0, 0.0, 0.0, 1.0, 1.0, 1.0}, V knots unclamped {0.1, 0.2, 0.3}.
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn121 — ShapeAnalysis_Curve.IsPlanar B-spline-of-degree-1
 
 **Defect:** Degree-1 B-spline (piecewise linear) with control polygon bent out of plane. IsPlanar returns true trivially (linearity ≠ planarity) but endpoint test misses mid-segment deviation.
@@ -22340,7 +22340,7 @@ Degenerate B-spline curve (degree 2, 3 points) where first two poles are coincid
 **Geometry:** 5-point degree-1 B-spline: (0,0,0)→(1,0,0)→(2,1,1)→(3,0,0)→(4,0,0). Point #22 at (2,1,1) lifts the control polygon out XY plane.
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Gn122 — ShapeUpgrade_SplitSurface.Init with-control-net-collapsed
 
 **Defect:** B-spline surface whose first 6 control points map to a single location (1,1,1); remaining 2 points at (2,2,2). Split initialization logic skips validation of degenerate control nets, allowing invalid surface to proceed to splitting algorithm.
@@ -22348,39 +22348,39 @@ Degenerate B-spline curve (degree 2, 3 points) where first two poles are coincid
 **Geometry:** 4×2 surface, degree (2,2), 8 control points collapsed to 2 unique positions.
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn123 — ShapeAnalysis_Curve.IsClosed COMPOSITE_CURVE with-direction-reversal
 
 **Defect:** Composite curve with 2 line segments: first forward (0,0,0)→(2,0,0), second reversed (2,0,0)→(0,0,0). IsClosed checks endpoint coincidence but ignores direction reversal, missing topological mismatch.
 
 **Geometry:** Two lines, segment 1 direction (1,0,0), segment 2 direction (-1,0,0) with REVERSE sense flag.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gn124 — ShapeAnalysis_Curve.FillBndBox with-degenerate-segments
 
 Composite curve containing a degenerate segment (zero-length). FillBndBox samples all segments including the degenerate one, causing the bounding box to contain a collapsed axis. Downstream code assumes all bbox axes span non-zero ranges.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gn125 — ShapeUpgrade_SplitSurface.SetVSplitValues partial-domain
 
 BSpline surface with full V domain [0,1]. Split values provided only for partial range [0.3, 0.7]. SetVSplitValues clips silently, leaving V ranges [0, 0.3) and (0.7, 1] unprocessed and unsplit.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gn126 — ShapeAnalysis_Curve.GetSamplePoints CIRCLE with-trim-near-2π
 
 Trimmed circle with parameters [0.001, 2π-0.001]. GetSamplePoints uses 360-degree cap for sampling, but the trim removes start/end points, leaving a tiny gap that the sampling grid misses.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a`
 ### Gn127 — ShapeUpgrade_ConvertCurve2dToBezier with-already-bezier
 
 Degree-3 Bezier curve (already in Bezier form). ConvertCurve2dToBezier should be a no-op but instead elevates the degree and replicates control points unnecessarily.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Gn128 — ShapeAnalysis_Curve.IsClosed B-spline with-identical-knots-different-poles
 
 Periodic B-spline with knot parameters identical at boundaries but control poles differing by 1e-3. IsClosed checks knot equality only and reports true, but geometry gap persists at closure point.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a`
 ### Gn129 — Geom_BSplineSurface periodic-U-closure weight-extraction
 - **Category**: §12.2b NURBS
 - **Sources**: OCCT/see OCCT/v3
@@ -22391,7 +22391,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Fixture path**: step-examples/12-2b-nurbs/Gn129.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn130 — ShapeUpgrade_ConvertCurveToBezier non-uniform-knots tail-degenerate
 - **Category**: §12.2b NURBS
 - **Sources**: OCCT/see OCCT/v3
@@ -22402,7 +22402,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Fixture path**: step-examples/12-2b-nurbs/Gn130.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn131 — ShapeFix_ComposeShell.SplitOnEdges B-spline pcurve tangent-mismatch
 - **Category**: §12.2b NURBS
 - **Sources**: OCCT/see OCCT/v3
@@ -22413,7 +22413,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Fixture path**: step-examples/12-2b-nurbs/Gn131.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gn132 — Geom_BSplineCurve.IncreaseDegree weight-redistribution asymmetry
 - **Category**: §12.2b NURBS
 - **Sources**: OCCT/see OCCT/v3
@@ -22424,7 +22424,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Fixture path**: step-examples/12-2b-nurbs/Gn132.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn133 — ShapeAnalysis_Curve.CheckOffsetCurve knot-ratio-overflow degenerate-segment
 - **Category**: §12.2b NURBS
 - **Sources**: OCCT/see OCCT/v3
@@ -22435,7 +22435,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Fixture path**: step-examples/12-2b-nurbs/Gn133.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn134 — NURBS weight array uniform propagation
 - **Category**: §12.2b NURBS (sub-class: ConvertSurfaceToBezierBasis)
 - **Sources**: OCCT/ShapeUpgrade_ConvertSurfaceToBezierBasis
@@ -22457,7 +22457,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Fixture path**: step-examples/12-2b-nurbs/Gn135.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn136 — NURBS iterator loop boundary fault in split
 - **Category**: §12.2b NURBS (sub-class: ShapeUpgrade_ConvertSurfaceToBezierBasis.Build)
 - **Sources**: OCCT/ShapeUpgrade_ConvertSurfaceToBezierBasis
@@ -22468,7 +22468,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Fixture path**: step-examples/12-2b-nurbs/Gn136.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn137 — B-spline curve precision asymmetry in split
 - **Category**: §12.2b NURBS (sub-class: ShapeUpgrade_ConvertSurfaceToBezierBasis.Build)
 - **Sources**: OCCT/ShapeUpgrade_ConvertSurfaceToBezierBasis
@@ -22479,7 +22479,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Fixture path**: step-examples/12-2b-nurbs/Gn137.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn138 — NURBS trimmed surface Bezier basis delegation
 - **Category**: §12.2b NURBS (sub-class: ConvertSurfaceToBezierBasis.Compute)
 - **Sources**: OCCT/ShapeUpgrade_ConvertSurfaceToBezierBasis
@@ -22490,7 +22490,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Fixture path**: step-examples/12-2b-nurbs/Gn138.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn139 — TrimmedCurve Wrapping Periodic B-spline
 - **Category**: §12.2b NURBS
 - **Sources**: OCCT/v3 NURBS branches
@@ -22501,7 +22501,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Fixture path**: step-examples/12-2b-nurbs/Gn139.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn140 — U-Periodic Surface with V-Bounds Check Mismatch
 - **Category**: §12.2b NURBS
 - **Sources**: OCCT/v3 NURBS branches
@@ -22512,7 +22512,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Fixture path**: step-examples/12-2b-nurbs/Gn140.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn141 — High V-Multiplicity Continuity Gap
 - **Category**: §12.2b NURBS
 - **Sources**: OCCT/v3 NURBS branches
@@ -22523,7 +22523,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Fixture path**: step-examples/12-2b-nurbs/Gn141.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn142 — Large Pole-Count Surface Sampling Threshold
 - **Category**: §12.2b NURBS
 - **Sources**: OCCT/v3 NURBS branches
@@ -22534,7 +22534,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Fixture path**: step-examples/12-2b-nurbs/Gn142.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn143 — RectangularTrimmedSurface Basis Unwrap Null-Check
 - **Category**: §12.2b NURBS
 - **Sources**: OCCT/v3 NURBS branches
@@ -22545,63 +22545,63 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Fixture path**: step-examples/12-2b-nurbs/Gn143.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gn144 — Periodic knot-vector closure mismatch
 - **Defect**: Periodic BSpline surface (.T. in U) with open-clamped knot vector. Knot multiplicities (3,3) conflict with 4-pole periodic topology. Healing must validate periodic flag consistency.
 - **Surface**: Degree 2×2, 4×3 poles, U periodic-marked but non-periodic knots.
 - **Knot arithmetic**: 4 poles U + degree 2 → 7 needed; (3,3) only sums to 6. Mismatch triggers closure-check logic against invalid knot structure.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn145 — Interior knot multiplicity C(-1) discontinuity
 - **Defect**: Interior knot at u=0.5 with multiplicity 3 (degree+1), creating cusp discontinuity. Healing must detect high-multiplicity interior knots and consider splitting or elevation.
 - **Surface**: Degree 2×2, 5×3 poles. U knot vector (0,0,0, 0.5,0.5,0.5, 1,1) forces C(-1) at interior.
 - **Knot arithmetic**: 5 poles + degree 2 → 8 mults. (3,3,3) sums to 9 (one too many); (3,2,3) correct, interior mult 2 → C0.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn146 — Rational NURBS singular weight
 - **Defect**: Rational BSpline surface (weights present) with singular weight 0.0 at middle pole. Weighted control point effectively removed; healing must detect and handle weight singularities.
 - **Surface**: Degree 2×2, 3×3 poles. Weights: (1,1,1), (1,0,1), (1,1,1). Center pole vanishes geometrically.
 - **Knot arithmetic**: 3 poles both directions + degree 2 → (3,3) both directions. Correct counts but rational flag exposes weight pathology.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn147 — Stripe singularity (collapsed pole row)
 - **Defect**: All V-poles in middle U-row collapsed to single point (1.0, *, 0.5). Creates stripe singularity (entire row degenerates to line). Healing detects via pole-distance analysis.
 - **Surface**: Degree 2×2, 3×4 poles. Middle row all at (1.0, y, 0.5) across V.
 - **Knot arithmetic**: 3 poles U → (3,3); 4 poles V → (4,3); both correct. Stripe defect implicit in pole coordinates, not explicit knot structure.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gn148 — Ill-conditioned knot distribution
 - **Defect**: Interior knots clustered near 0 (0.001, 0.002) while boundary spans [0, 1]. Ratio >1000:1 causes numerical instability in fitting and evaluation. Healing must detect and reparametrize.
 - **Surface**: Degree 2×2, 4×3 poles. U knots (0,0,0, 0.001,0.002, 1,1) create extreme clustering.
 - **Knot arithmetic**: 4 poles U + degree 2 → 7 mults. (3,2,2) sums to 7. Correct structure but bad spacing triggers IsBad flag for arc-length reparametrization.
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn149 — Rational weight singularity detection
 B_SPLINE_SURFACE_WITH_KNOTS (3×3 control net, U-degree 2, V-degree 2). Rational weights array includes zero weight at middle pole (p11=0.0). Defect: denominator singularity in rational basis function evaluation. Healing must clamp weights to [eps, 1]. Knot arithmetic: 3+2+1=6 per direction. Invariants: three-arg LINE reference, DIRECTION ratios unit.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn150 — Trimmed periodic basis unwrap
 B_SPLINE_CURVE_WITH_KNOTS (degree 3, 5 poles, periodic closure .T.). Full domain [0, 2π]. Wrapped in Geom_TrimmedCurve concept at [0.2, 2.8]. Defect: SameParameter healing without periodic-wrapping detection incorrectly clamps parameters to trim bounds, losing closed semantics. Healing must detect Geom_TrimmedCurve + periodic basis + skip clamping. Knot sum 4+2+2+2+4=14 (periodic accounting). Invariants: DIRECTION unit ratios.
 - **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gn151 — B-spline C0 interior knot discontinuity
 B_SPLINE_CURVE_WITH_KNOTS (degree 3, 5 poles). Interior knot at parameter 0.5 with multiplicity 4 (=degree). Defect: C0 discontinuity (tangent jump). Knot arithmetic: 4+4+1=9 ✓. Healing must detect via Geom2dConvert::C0BSplineToC1 and upgrade continuity. No forward refs. Invariants: DIRECTION unit.
 - **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gn152 — Knot ratio anomaly post-C0→C1 upgrade
 B_SPLINE_CURVE_WITH_KNOTS (degree 2, 6 poles). Clustered interior knots: [0.01, 0.02] vs [0.98, 1.0] ratio >100:1. Defect: after C0->C1 upgrade, knot spacing becomes ill-conditioned (IsBad flag true). Healing must detect via ratio criterion (>10) and apply arc-length reparametrization (Approx_CurvilinearParameter). Knot sum 3+3+2+1=9 ✓. DIRECTION unit ratios.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gn153 — Periodic B-spline origin re-anchor post-upgrade
 B_SPLINE_CURVE_WITH_KNOTS (degree 2, 4 poles, periodic .T., closed loop). Interior knot at 0.5. Defect: after Geom2dConvert::C0BSplineToC1 upgrade, parametrization origin shifts; D0(FirstParameter) changes. Healing must re-anchor via SetOrigin to preserve continuity across period. Knot sum 3+2+1=6 ✓. Invariants: DIRECTION unit, no forward refs, three-arg LINE.
 
 - **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gn154 — Rational B-spline with zero-weight pole singularity
 Minimal reproducer: RATIONAL_B_SPLINE_SURFACE, 3×3 control net, degree (2,2). Interior pole P[1,1] has weight w=0. Knot structure: U,V multiplicities (3,3)/(3,3), fully clamped. Healing challenge: weight=0 creates homogeneous singularity (w=0 in rational plane); rational evaluation undefined at that pole. Expected: flag pole degenerate or skip in geometric computation.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn155 — Interior B-spline knot multiplicity equals degree (C1 discontinuity)
 Minimal reproducer: B_SPLINE_SURFACE_WITH_KNOTS, degree (3,2), 4 poles in U, 3 in V. U-knots: (0, 0, 0, 0, 0.5, 0.5, 0.5, 1.0) with multiplicities (4,3,1). Interior knot at 0.5 has multiplicity=3=degree_U, creating C1 (tangent continuous) but not C2 discontinuity. Healing challenge: loss of curvature continuity; evaluation at that knot span yields discontinuous second derivative. Expected: detect and flag or apply knot removal to restore C2.
 - **Tier-3 assertion**: load == "ok"
@@ -22609,7 +22609,7 @@ Minimal reproducer: B_SPLINE_SURFACE_WITH_KNOTS, degree (3,2), 4 poles in U, 3 i
 ### Gn156 — Periodic B-spline with non-closing control polygon, origin-shift risk
 Minimal reproducer: B_SPLINE_CURVE_WITH_KNOTS, degree 2, 5 poles marked periodic (.T.), but P[0]=(1,0,0)≠P[4]=(0.9,−0.1,0). Knot structure: multiplicities (2,2,2,1), sum=7=n+d for periodic. Closed-curve claim violated; polygon open. Healing challenge: post-upgrade (Geom2dConvert C0→C1), periodic origin may shift without SetOrigin re-anchor. Expected: enforce closure or strip periodicity; re-anchor origin after continuity upgrade.
 - **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gn157 — Rational B-spline with extreme weight ratio (1e4), numerical conditioning
 Minimal reproducer: RATIONAL_B_SPLINE_SURFACE, 3×2 control net, degree (2,1). Weights: (1.0, 10000.0, 1.0, 1.0, 1.0, 1.0) span 4 orders of magnitude. Knot structure: U,V multiplicities (3,3)/(2,2), fully clamped. Healing challenge: weight ratio 10000:1 escalates condition number in rational basis function evaluation; numerical instability in homogeneous coordinate normalization. Expected: rescale weights toward unity or flag ill-conditioning.
 - **Tier-3 assertion**: load == "ok"
@@ -22617,53 +22617,53 @@ Minimal reproducer: RATIONAL_B_SPLINE_SURFACE, 3×2 control net, degree (2,1). W
 ### Gn158 — B-spline curve with clustered interior knots, condition-number escalation
 Minimal reproducer: B_SPLINE_CURVE_WITH_KNOTS, degree 3, 7 poles. Interior knots clustered: 0.5, 0.501, 0.502 (spacing ~0.001). Knot multiplicities (4,1,1,1,4), sum=11=n+d+1. Healing challenge: tight knot spacing (ratio ~0.001:0.5) creates ill-conditioned basis matrix; conditioning number grows exponentially with clustering. Expected: detect knot clustering and apply knot removal or uniform reparametrization.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gn159 — B-spline surface with collapsed U-boundary pole (pin-face singularity)
 
 Defect: 4x3 NURBS surface (U-degree 2, V-degree 2); last U-row poles all at (3.0,1.5,0.0). CheckPin detects singularity; FixPinFace unimplemented. Falsifiable: pin-face repair must flatten degenerate boundary edge.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn160 — Periodic B-spline curve with parameter wrapping
 
 Defect: 5-pole closed curve (degree 2, periodic); period=1.0. Projection parameter may exceed definition range [0,1) after wrapping. Falsifiable: theProjParam validation must enforce domain bounds in periodic NURBS.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gn161 — B-spline surface with asymmetric pole clustering
 
 Defect: 5x2 NURBS (U-degree 2, V-degree 1); dense U-boundary clustering at (0.9,0.95,1.0) with sparse V direction (2 poles only). CheckSmallFace boundary-focused IsoStat must detect asymmetric singularities. Falsifiable: pole-grid boundary scan catches strips missed by interior iteration.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 ### Gn162 — B-spline curve with interior knot over-multiplicity
 
 Defect: 6-pole curve (degree 3); interior knot at 0.5 has multiplicity 4 (degree+1). Creates geometric discontinuity at interior point. Falsifiable: knot removal must repair interior clamping that violates smoothness.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gn163 — B-spline surface with degenerate patch from split
 
 Defect: 3x3 NURBS (U-degree 2, V-degree 2); middle U-row poles near-identical (1.5,1.5,0.01). SplitSurface produces zero-area or empty patches. Falsifiable: patch validation rejects degenerate outputs from split operations.
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Gn164 — Rational BSpline Closure Detection Bypass
 Rational surface with varying weights requires knot-aware grid sampling, not pole-based shortcut. ShapeAnalysis_Surface.IsURational() gate bypassed.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn165 — Ill-Conditioned Knot Spacing (44:1 Ratio)
 Clustered interior knots create numerical instability. BRepLib::SameParameter knot anomaly detection (critratio > 10) triggers arc-length reparametrization.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 ### Gn166 — Boundary Pole Singularity (First Row)
 U-boundary poles coalesce; ShapeAnalysis_CheckSmallFace.CheckPin must iterate boundary rows via IsoStat, not interior poles.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 ### Gn167 — Non-Planar Degree-4 BSpline
 Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis_Curve.IsPlanar pole-sufficiency false positive.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Gn168 — Interior C0 Discontinuity (Tangent Jump)
 2D B-spline with C0 (positional) but not C1 (tangent) at u=0.5. BRepLib::SameParameter invokes Geom2dConvert::C0BSplineToC1 healing.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Gn169 — Rational B-spline with weight singularity near origin
 - **Category**: §12.2b NURBS
 - **Sources**: OCCT/ShapeUpgrade_SplitSurfaceContinuity, GeomAPI_ProjectPointOnCurve
@@ -23737,7 +23737,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Description**: Conical face with apex below wire bounds. When apex V parameter sits outside wire V-range and isUDecrease=false, apex curve direction and conditional wire reversal produce inconsistent orientation. Wire reversal triggered at line 3204 but apex curve construction does not account for actual wire topology.
 - **Reproducer recipe**: Cone geometry with semi-angle ~0.52 rad, apex at V=-1; wire wrapping cone at V=1..3 with non-decreasing U. FixPeriodicDegenerated applies apex curve construction and conditionally reverses wire when apex below wire lower bound.
 - **Expected kernel behavior**: OCCT healing should detect apex positioning, build correct downward apex curve, and reverse wire orientation consistently. Failure: wire reversal applied but apex curve direction remains inconsistent.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a`
 - **Tier-3 assertion**: n_faces_total == 3
 
 ### Tfa072 — ShapeFix_FixSmallFace.ReplaceVerticesInCaseOfSpot coherence
@@ -23746,7 +23746,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Description**: Pin-face (spot face) with vertices clustered near origin. Wire-existence check (isWir=true) insufficient to guarantee all face edges belong to wire topology. Tolerance-drift on vertex replacement: computed tolerance may leave original vertices outside enclosing sphere when tolerance is not scaled consistently.
 - **Reproducer recipe**: Spot face on plane with 3 vertices clustered at ~0.001 unit radius from origin; one vertex at tol=0.001, another at tol=0.0001. Mean position computed without tolerance weighting; tolerance closure fails to enclose all vertices.
 - **Expected kernel behavior**: Kernel should validate wire existence exhaustively (all edges in face belong to wire), then compute vertex mean with tolerance scaling that encloses all originals. Failure: tolerance drift allows vertices outside enclosing ball.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 - **Tier-3 assertion**: n_faces_total == 5
 
 ### Tfa073 — ShapeFix_FixSmallFace.ComputeSharedEdgeForStripFace asymmetry
@@ -23764,7 +23764,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Description**: Face with two identical edges [E, E] at FORWARD orientation in single 2-edge wire. Orientation mismatch detection (line 2876) fails to recognize that both edges are identical at same orientation, allowing coincident-edge pattern to pass unmerged.
 - **Reproducer recipe**: Single PLANE face with 2-edge wire containing identical edge E at FORWARD orientation twice. Pattern should trigger merge but orientation check at 2876 does not correctly identify matching orientation.
 - **Expected kernel behavior**: When E1==E2 and both at FORWARD, wires should be merged into single wire. Failure: orientation sensitivity rejects merge even though orientations match.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(12) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 - **Tier-3 assertion**: n_faces_total == 2
 
 ### Tfa075 — ShapeFix_ComposeShell.MakeFacesOnPatch fallback resolution
@@ -23791,7 +23791,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 **Expected validation**: CheckSplittingVertices should report vertex count increases; no degenerate inner loops introduced; edge loop closure maintained.
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 ### Tfa077 — FixSmallAreaWire small-area early-exit
 
 **Category**: §12.3c Face Topology — ShapeFix_Face Wire Removal
@@ -23807,7 +23807,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 **Expected validation**: Wire count should decrease; no outer bound remains; face should be marked for deletion or context cleanup.
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 ### Tfa078 — FixLoopWire intersecting-loops merge
 
 **Category**: §12.3c Face Topology — ShapeFix_Face Loop Merging
@@ -23823,7 +23823,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 **Expected validation**: Edge loop closure maintained; no gap-at-merge introduced; self-touch validation catches tangent point as potential singularity.
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(42) ifc=schema_n/a`
 ### Tfa079 — CheckSplittingVertices vertex-on-edge midspan
 
 **Category**: §12.3c Face Topology — ShapeAnalysis_CheckSmallFace Vertex Detection
@@ -23839,7 +23839,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 **Expected validation**: Splitting vertex count > 0; parameter values in (0, 1) exclusive; distances below tolerance.
 
 - **Tier-3 assertion**: n_faces_total == 6
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(14) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(33) ifc=schema_n/a`
 ### Tfa080 — CheckTwisted normal-inversion
 
 **Category**: §12.3c Face Topology — ShapeAnalysis_CheckSmallFace Twist Detection
@@ -23854,11 +23854,11 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 
 **Expected validation**: Twist flag set to true; interior point count > threshold; at least one scalar product < 0 at non-boundary location.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 ### Tfa081 — ShapeFix_Face.FixOrientation reversed-normal heal
 Face with inward-pointing surface normal (same_sense=.F.). Healer detects via outer-wire winding direction and flips to outward orientation. Planar square boundary, defect is orientation flag mismatch.
 - **Tier-3 assertion**: n_faces_total == 6
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 ### Tfa082 — ShapeAnalysis_CheckSmallFace.CheckPin pin-direction classification
 Planar face with sharp pin singularity along V parametric axis (vertical). Classifier assumes pin aligns with U-parameter axis; axis-agnostic detection required. NURBS 3x2 poles with near-zero angle at boundary.
 - **Tier-3 assertion**: load == "ok"
@@ -23866,11 +23866,11 @@ Planar face with sharp pin singularity along V parametric axis (vertical). Class
 ### Tfa083 — ShapeFix_Face.FixNotchedEdges near-tangent notch detection
 Face boundary with two consecutive edges forming 179.8-degree angle (near-reversal notch). Tangent-angle comparison fails for near-tangent threshold. Small notch bulge on bottom edge of rectangle.
 - **Tier-3 assertion**: n_faces_total == 9
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(45) ifc=schema_n/a`
 ### Tfa084 — ShapeAnalysis_FreeBoundsProperties.CheckNotches gap-after-fix
 Rectangular face with interior notch that, when removed, leaves 0.1-unit gap between surviving edges. CheckNotches must flag orphaned gaps as invalid; defect: gap detection skipped.
 - **Tier-3 assertion**: n_faces_total == 6
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(36) ifc=schema_n/a`
 ### Tfa085 — ShapeFix_Face.FixSplitFace split-result multiplicity
 Rectangular face with two parallel interior edges (at X=3, X=7) creating 3 sub-zones. FixSplitFace loop assumes binary split and misses zones beyond the first pair. Represented as single face with two inner bounds.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
@@ -23880,7 +23880,7 @@ Face with three wires sharing a coincident edge. FixWiresTwoCoincEdges only hand
 ### Tfa087 — ShapeAnalysis_CheckSmallFace.CheckStripEdges: aspect-ratio threshold
 Face with aspect ratio exactly equal to the strip-detection threshold (100.0). Non-strict comparison (≤ instead of <) misclassifies as strip when it should not. Very thin rectangle 100.0 × 1.0 on plane.
 - **Tier-3 assertion**: n_faces_total == 6
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 ### Tfa088 — ShapeFix_Face.FixAddNaturalBound: sphere natural boundary
 Full-sphere face (complete spherical surface) requesting natural boundary correction. The code attempts to construct a single-edge bound when a "no-boundary" representation should be used. Sphere radius 5.0 centered at origin.
 - **Tier-3 assertion**: n_faces_total == 1
@@ -23888,7 +23888,7 @@ Full-sphere face (complete spherical surface) requesting natural boundary correc
 ### Tfa089 — ShapeAnalysis_CheckSmallFace.CheckSpotFace: tolerance scaling
 Face slightly larger than the spot threshold (0.1 × 0.1 square) but with vertex tolerances (0.05) larger than the face dimension. Tolerance-scaled spot comparison incorrectly misclassifies as spot face.
 - **Tier-3 assertion**: n_faces_total == 6
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 ### Tfa090 — ShapeFix_Face.Perform: mode-flag ordering
 Face with reversed outer orientation and incomplete inner bound (missing closing edge). Mode-flag order in Perform prevents FixNaturalBound from running before FixOrientation, blocking proper edge-completion and orientation correction sequence. Square 5.0 × 5.0 with 1.0 × 1.0 incomplete hole.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
@@ -23913,7 +23913,7 @@ Face whose BSpline surface has both convex and concave regions (hyperbolic parab
 **Test corpus:** wave 12 – shape-healing face coverage  
 
 - **Tier-3 assertion**: n_faces_total == 6
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(12) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 ### Tfa093 — ShapeFix_Face.FixSmallAreaWire interior-wire skip
 
 Face has two inner wires: one normal (1.0 m²) and one TINY (0.0025 m²). FixSmallAreaWire should remove small wires below threshold, but the threshold check incorrectly only applies to outer wires. Inner wires are not inspected.
@@ -23936,7 +23936,7 @@ Outer wire passes through a vertex that is the endpoint of an inner wire, creati
 **Test corpus:** wave 12 – shape-healing face coverage  
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(46) ifc=schema_n/a`
 ### Tfa095 — ShapeFix_Face.FixPeriodicDegenerated SURFACE_OF_REVOLUTION apex
 
 Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge at v=0 (rotation axis). FixPeriodicDegenerated must handle the revolution-axis degenerate edge differently from cone apex. Revolution surfaces pinch at v=0 to a line on the rotation axis.
@@ -23956,7 +23956,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 **Expected behavior**: Diagnostic or corrective handling of degenerate outer wires; never silent skip.
 
 - **Tier-3 assertion**: n_faces_total == 6
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(26) ifc=schema_n/a`
 ### Tfa097 — ShapeAnalysis_CheckSmallFace.CheckPinFace blunt-pin classification
 
 **Defect**: Face with a pin (tapering region) at ~10° internal angle, not sharp. `CheckPinFace`'s angle threshold (typically M_PI/6 ≈ 30°) misclassifies blunt pins as sharp features.
@@ -23966,7 +23966,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 **Expected behavior**: Angular classification correctly distinguishes blunt (~10°) pins from sharp (>30°) features.
 
 - **Tier-3 assertion**: n_faces_total == 5
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(21) ifc=schema_n/a`
 ### Tfa098 — ShapeFix_Face.FixSplitFace null-line
 
 **Defect**: Face split by a LINE edge whose geometry has been internally replaced with null. `FixSplitFace` doesn't validate the splitter, causing null-deref or silent corruption.
@@ -23986,7 +23986,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 **Expected behavior**: Correct detection of v-parameter inversion on cones; flag as twisted or auto-reorient.
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tfa100 — ShapeFix_Face.FixWiresTwoCoincEdges with seam
 
 **Defect**: Face on cylinder with two wires both containing the cylinder's seam edge (u=0/2π boundary). `FixWiresTwoCoincEdges` treats seams differently than regular edges and misses the duplicate coincidence.
@@ -23995,7 +23995,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 
 **Expected behavior**: Seam edges flagged as coincident across wires; merge or diagnostic error raised.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(22) ifc=schema_n/a`
 ### Tfa101 — ShapeFix_Face.FixAddNaturalBound torus complete-surface
 
 **Defect**: Full torus surface needing natural boundary insertion; the boundary inserter must produce two boundary loops (interior+exterior) but only constructs one, leaving the complete surface un-bounded.
@@ -24004,7 +24004,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 
 **Geometry**: Toroidal surface (major radius 5.0, minor radius 1.0) with placeholder boundary edges forming a minimal closed loop.
 - **Tier-3 assertion**: n_faces_total == 2
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tfa102 — ShapeAnalysis_CheckSmallFace.CheckSmallArea aspect-ratio infinite
 
 **Defect**: Face with one dimension at 1000.0 and another at 0.0001; aspect-ratio overflow in CheckSmallArea's classification logic.
@@ -24013,7 +24013,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 
 **Geometry**: Plane with an extremely thin rectangle (1000.0 × 0.0001) to trigger aspect-ratio calculation overflow.
 - **Tier-3 assertion**: n_faces_total == 6
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 ### Tfa103 — ShapeFix_Face.FixPeriodicDegenerated apex-at-V-min
 
 **Defect**: Surface-of-revolution with apex at v_min (instead of v_max); the degenerate-edge insertion logic only handles v_max apex.
@@ -24022,7 +24022,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 
 **Geometry**: Conical surface with apex at v_min (v=0) and a 5-vertex wire encircling at v=5.0 (away from apex).
 - **Tier-3 assertion**: n_faces_total == 2
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(12) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(25) ifc=schema_n/a`
 ### Tfa104 — ShapeAnalysis_CheckSmallFace.CheckSplittingVertices NM-vertex
 
 **Defect**: Face with a non-manifold vertex (used by 3+ edges); CheckSplittingVertices' splitting plan only handles 2-edge incidence.
@@ -24031,7 +24031,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 
 **Geometry**: Planar face with 3 triangular sub-regions sharing a central vertex (non-manifold, 3-edge incidence).
 - **Tier-3 assertion**: n_faces_total == 2
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tfa105 — ShapeFix_Face.FixSmallAreaWire seam-aware
 
 **Defect**: Face whose small inner wire crosses the host surface seam; FixSmallAreaWire's area calculation doesn't account for seam wrapping.
@@ -24084,7 +24084,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3c-faces/Tfa109.stp`
 
 - **Tier-3 assertion**: n_faces_total == 5
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(21) ifc=schema_n/a`
 ### Tfa110 — Single-edge circular wire orientation ambiguity
 
 **Defect**: Face with a wire that is a single closed curve (circle). FixOrientation's winding-direction test assumes polygonal vertex sequences and has no well-defined inside/outside for a single-edge planar loop without topological context.
@@ -24098,7 +24098,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 
 **Coverage**: 5 fixtures synthesized per OCCT_HEAL_COVERAGE_V3.md wave 21 specifications. All fixtures conform to mandatory PRODUCT chain and STEP-AP structure.
 - **Tier-3 assertion**: n_faces_total == 3
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a`
 ### Tfa111 — ShapeFix_Face.FixSmallAreaWire mixed-context
 
 **Defect**: Face with small inner wire AND large inner wire; FixSmallAreaWire removes small one but accidentally disturbs the large one's vertex references. Mixed-context scenario tests the vertex-index corruption introduced when small-wire removal accidentally mutates large-wire edges' vertex pointers.
@@ -24110,7 +24110,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 **Sources**: OCCT `ShapeFix_Face::FixSmallAreaWire` (~line 2332); `ShapeAnalysis_CheckSmallFace` threshold logic.
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(50) ifc=schema_n/a`
 ### Tfa112 — ShapeAnalysis_CheckSmallFace.CheckTwisted bspline-saddle
 
 **Defect**: Face on B-spline surface with saddle topology (negative Gaussian curvature); CheckTwisted's normal-direction test confuses positive/negative curvature regions. Saddle surface (z = x²−y²) has opposite normal orientation in different (u,v) quadrants. CheckTwisted's scalar-product test misclassifies this as a twisted/inverted face rather than recognizing legitimate saddle geometry.
@@ -24122,7 +24122,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 **Sources**: OCCT `ShapeAnalysis_CheckSmallFace::CheckTwisted` (~line 975); scalar-product normal-inversion test.
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 ### Tfa113 — ShapeFix_Face.FixOrientation 8-face polyhedron
 
 **Defect**: Face is one of 8 faces in a polyhedron (cube); orientation propagation traverses the 8-face cycle and an off-by-one loop boundary error leaves one face inverted. The last face in the iteration loop fails to get fixed due to termination condition.
@@ -24134,7 +24134,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 **Sources**: OCCT `ShapeFix_Face::FixOrientation` (~line TBD); face-cycle traversal loop termination.
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 ### Tfa114 — ShapeAnalysis_CheckSmallFace.CheckSpotFace zero-radius
 
 **Defect**: Face whose enclosing circle radius is exactly 0.0 (all vertices at the same point); CheckSpotFace returns "definitely a spot" but the geometry is degenerate beyond meaningful classification. Bounding radius calculation produces zero; classification fails on degenerate case.
@@ -24146,7 +24146,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 **Sources**: OCCT `ShapeAnalysis_CheckSmallFace::CheckSpotFace` (~line 73); bounding-circle computation and radius threshold.
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a`
 ### Tfa115 — ShapeFix_Face.FixPeriodicDegenerated revolution-axis edge
 
 **Defect**: Surface of revolution where the rotation axis intersects the face; FixPeriodicDegenerated misplaces the apex curve for the degenerate edge. Revolution surfaces pinch to a line on the axis (at v=0). Edge construction and orientation logic must distinguish this line-pinch from cone apex (point-pinch).
@@ -24180,7 +24180,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 **Search anchors:** 'CheckSplittingVertices', 'degenerate edge', 'T-vertex', 'zero-length'
 
 - **Tier-3 assertion**: n_faces_total == 2
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a`
 ### Tfa118 — ShapeFix_Face.FixSplitFace line-tangent-to-wire
 
 **Defect:** Face split by LINE tangent to outer wire (single-point contact); FixSplitFace reports success but produces zero new faces.
@@ -24213,7 +24213,7 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 
 **Search anchors:** 'FixAddNaturalBound', 'CONICAL_SURFACE', 'trimmed bounds', 'natural boundary'
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tfa121 — ShapeFix_Face.FixWiresTwoCoincEdges different-host-surfaces
 Face with two wires whose edges geometrically coincide in 3D but reside on different planes (one on PLANE, one on offset plane). FixWiresTwoCoincEdges checks only 3D coincidence and misses surface mismatch when merging coincident edges.
 - **Tier-3 assertion**: shape_null == True
@@ -24267,7 +24267,7 @@ Vertex positioned at exact midpoint of a B-spline edge (not a LINE). CheckSplitt
 
 Face declares two outer-wire candidates: one large (20×20) and one tiny (0.2×0.2) with no nesting relationship. FixSmallAreaWire's outer-vs-inner detection heuristic selects tiny wire as outer because it processes area-sorted list incorrectly. Reproducer: single plane face with two disjoint FACE_OUTER_BOUND entries of vastly different scales.
 - **Tier-3 assertion**: n_faces_total == 7
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 ### Tfa131 — FixWiresTwoCoincEdges crossing-wires-coincident-segment
 
 Face with two wires sharing a coincident edge segment. The method cannot decide which wire owns the shared edge, triggering the core defect where wires with identical edge geometry at FORWARD orientation should merge but classification logic fails on multi-wire faces with crossed topology.
@@ -24322,7 +24322,7 @@ Face with three small inner wires (areas 0.01, 0.0225, 0.04) on a 20×20 outer s
 **Taxonomy:** OCCT heal logic, edge-case boundary condition detection.
 
 - **Tier-3 assertion**: n_faces_total == 6
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Tfa137 — ShapeAnalysis_CheckSmallFace.CheckTwisted face-with-hole
 
 **Defect:** ShapeAnalysis_CheckSmallFace::CheckTwisted classifies face twist using only the outer wire's winding contribution for inside/outside tests. Missing hole's counter-winding causes misclassification of faces with complex topology.
@@ -24390,7 +24390,7 @@ Planar face (10×10 square) with two interior splitter wires: vertical line (x=2
 **Expected vs Actual**: FixOrientation should detect correct 3D winding and leave wire unchanged. If algorithm relies only on parametric (u,v) tests, it may incorrectly classify wire as reversed.
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 ### Tfa147 — ShapeAnalysis_CheckSmallFace.CheckTwisted face-on-plane
 
 **Defect**: Small face on PLANE; CheckTwisted's tangent-test for twist doesn't make sense for planes but produces a deterministic verdict anyway.
@@ -24400,7 +24400,7 @@ Planar face (10×10 square) with two interior splitter wires: vertical line (x=2
 **Expected vs Actual**: CheckTwisted should skip or return false for planar faces since twist is undefined. If algorithm applies twist test to planes, it produces spurious TWISTED verdict.
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 ### Tfa148 — ShapeFix_Face.FixSmallAreaWire min-area-threshold-collision
 
 **Defect**: Wire area exactly equals min threshold; FixSmallAreaWire's non-strict comparison removes or keeps depending on FP precision.
@@ -24410,7 +24410,7 @@ Planar face (10×10 square) with two interior splitter wires: vertical line (x=2
 **Expected vs Actual**: Non-strict comparison (area <= threshold) removes wire; strict (area < threshold) keeps it. Floating-point rounding near threshold causes non-deterministic behavior.
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(34) ifc=schema_n/a`
 ### Tfa149 — ShapeAnalysis_CheckSmallFace.CheckSplittingVertices wire-not-closed
 
 **Defect**: Wire that isn't closed (open path); CheckSplittingVertices produces a verdict on the open path even though splitting-vertex semantics requires closure.
@@ -24420,7 +24420,7 @@ Planar face (10×10 square) with two interior splitter wires: vertical line (x=2
 **Expected vs Actual**: CheckSplittingVertices should fail or skip open wires since splitting-vertex analysis assumes topological closure. If algorithm proceeds on open wire, it generates inconsistent verdicts.
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Tfa150 — ShapeFix_Face.FixPeriodicDegenerated B-spline-revolution
 
 **Defect**: Surface is B-spline approximating a revolution; FixPeriodicDegenerated's apex-construction logic assumes analytic revolution not B-spline.
@@ -24429,32 +24429,32 @@ Planar face (10×10 square) with two interior splitter wires: vertical line (x=2
 
 **Expected vs Actual**: FixPeriodicDegenerated should construct apex curve and adjust wire orientation assuming conic geometry. If algorithm assumes analytic properties (e.g., GetCone()), it fails on B-spline and returns error or applies wrong transformation.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 ### Tfa151 — ShapeFix_Face.FixLoopWire one-inner-touches-outer
 
 Inner wire has a vertex that coincides with the outer wire. FixLoopWire's nested-loop assumption that inner loops never touch outer geometry fails, causing incorrect topology repair.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(35) ifc=schema_n/a`
 ### Tfa152 — ShapeAnalysis_CheckSmallFace.CheckSpotFace exactly-zero-area
 
 Face with degenerate geometry producing area=0.0. CheckSpotFace's threshold check treats zero area as "definitely small" without distinguishing manufacturing tolerance from true degeneracy.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 ### Tfa153 — ShapeFix_Face.FixSmallAreaWire computational-overflow
 
 Face with very large vertex coordinates (1e15). FixSmallAreaWire's area calculation overflows float precision when scaling by coordinates near machine limits.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=empty/empty gmsh=reject ifc=schema_n/a`
 ### Tfa154 — ShapeAnalysis_CheckSmallFace.CheckTwisted disconnected-wire-region
 
 Face whose wire has a disconnected region (open chain inside an otherwise closed wire). CheckTwisted doesn't handle disconnect; assumes all edges in outer bound form a single topological cycle.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Tfa155 — ShapeFix_Face.FixOrientation seam-vertex-shared
 
 Face on cylinder where two wires both start at the seam vertex. FixOrientation's winding test gets confused by the shared seam; both loops anchor to identical XYZ coordinate.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Tfa156 — ShapeFix_Face.FixSmallAreaWire wire-with-tangent-edges
 Face with outer wire and inner wire whose edges form a tangent smooth curve. FixSmallAreaWire's polygon approximation underestimates the enclosed area, causing missed edge tangency repair.
 - **Tier-3 assertion**: shape_null == True
@@ -24479,27 +24479,27 @@ Face with inner wire (hole) fully inside outer wire; inner wire's bottom edge is
 
 Face with exactly one loop (outer boundary only). FixOrientation's containment-check logic assumes multiple wires exist for inner-bound detection; single-wire case short-circuits when comparing against non-existent inner wires, failing to validate self-orientation. Triggers via Tfa161.stp (AUTOMOTIVE_DESIGN schema, PLANE surface, rectangular loop).
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tfa162 — ShapeAnalysis_CheckSmallFace.CheckSpotFace negative-area-detection
 
 Face with vertices ordered to produce negative signed area (CCW instead of CW on plane-like surface). CheckSpotFace calculates bounding-box area and applies absolute-value masking, hiding the orientation error. Minimal reproducer uses PLANE surface, reversed face orientation (.F.), quad loop with swapped point order to trigger negative area calculation.
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tfa163 — ShapeFix_Face.FixSplitFace splitter-along-edge
 
 Face with splitter line (virtual dividing edge) that geometrically coincides with existing outer boundary edge. FixSplitFace fails to detect coincidence and produces duplicate faces instead of merging. Fixture: rectangular face (2.0 x 1.0 PLANE) simulates scenario where splitter at interior u=1.0 aligns with outer edge.
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a`
 ### Tfa164 — ShapeAnalysis_CheckSmallFace.CheckPin two-pins-on-one-face
 
 Face with two thin pin extensions (small protruding edges) at different locations. CheckPin iterates pole-grid once, reports first pin, then halts—missing second pin. Fixture: 1.0 x 1.0 rectangular loop with two degenerate pin-like edges appended (0.5 x 0.001 and parallel), triggering missed-detection at iteration boundary.
 - **Tier-3 assertion**: n_faces_total == 2
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(38) ifc=schema_n/a`
 ### Tfa165 — ShapeFix_Face.FixAddNaturalBound subsurface
 
 Face defined on trimmed subset of larger PLANE surface; actual wire bounds (0.5..1.5 in both u,v) are interior to surface's natural domain (infinite plane). FixAddNaturalBound applies natural-bound logic using larger surface's domain, not trimmed boundaries, producing inconsistent bounds. Fixture: unit square at (0.5..1.5, 0.5..1.5) on infinite plane.
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tfa166 — ShapeFix_Face.FixSmallAreaWire negative-area-from-orientation
 
 Wire with incorrect traversal direction producing negative signed area. Inner hole traversed counter-clockwise instead of clockwise; FixSmallAreaWire uses absolute value during area check but fails to correct wire orientation before returning, leaving the face with an incorrectly-oriented inner bound.
@@ -24552,7 +24552,7 @@ Natural boundary construction where the computed boundary curve fails to close (
 **Status:** VALID  
 **File:** `Tfa176.stp`
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(102) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(203) ifc=schema_n/a`
 ### Tfa177 — ShapeAnalysis_CheckSmallFace.CheckPin near-zero-tip-angle
 
 **Class:** Classification logic failure on degenerate geometry  
@@ -24597,22 +24597,22 @@ Natural boundary construction where the computed boundary curve fails to close (
 
 Face with rectangular outer boundary and inner rectangular wire with open-ended tail segment extending outward. Triggers FixLoopWire closure check failure: tail prevents wire closure detection, produces invalid wire. Tests polygon closure assumption in degenerate tail scenarios.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(19) ifc=schema_n/a`
 ### Tfa182 — ShapeAnalysis_CheckSmallFace.CheckSmallArea polygon-vs-curve
 
 Wire boundary with curved edges (circular arcs) and rectangular hole wire. CheckSmallArea approximates wire as polygon from vertices only, missing actual enclosed area from arc bulge. Exposes gap between linear vertex approximation and true curved-edge geometry. Small area check fails on actual bounds.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a`
 ### Tfa183 — ShapeFix_Face.FixSplitFace splitter-extends-beyond-face
 
 Rectangular face with LINE splitter whose endpoints (-2,5,0)→(12,5,0) extend outside face bounds (0-10,0-10). FixSplitFace clips to face boundary but mishandles clip-point determination. Tests robustness of clipping logic when splitter extends beyond face extent.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(22) ifc=schema_n/a`
 ### Tfa184 — ShapeAnalysis_CheckSmallFace.CheckTwisted face-on-cone-apex
 
 Face on conical surface with apex at origin. Wire passes through cone apex point where surface normal is undefined (apex singularity). CheckTwisted's normal-direction test fails: no valid normal at apex. Tests degenerate surface point handling in twisted-face detection.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a`
 ### Tfa185 — ShapeFix_Face.FixAddNaturalBound surface-with-discontinuity
 
 Face on plane with C0 discontinuity in parameter domain (split at u=5.0). Inner boundary wire spans discontinuity. FixAddNaturalBound attempts to bridge discontinuity but produces wrong boundary topology. Tests parameter-domain discontinuity handling in natural boundary reconstruction.
@@ -24681,30 +24681,30 @@ Face on plane with C0 discontinuity in parameter domain (split at u=5.0). Inner 
 Face with 3 rectangular inner wires (0.2×0.15, 0.2×0.05, 0.2×0.15 units) positioned at distinct vertices of outer 1×1 square. All inner loops touch outer boundary at single vertices; FixLoopWire processes sequentially with ownership cascading. Defect: wire reordering cascades corruption when processing 2nd and 3rd inner wires due to improper edge-ownership tracking across loop merges.
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(36) ifc=schema_n/a`
 ### Tfa192 — ShapeAnalysis_CheckSmallFace.CheckPin three-way-pin-asymmetric
 
 Face with three pins of different heights projecting from center into face. Pin dimensions: (0.1×0.01), (0.2×0.005), (0.1×0.002) units. CheckPin reports largest pin (0.2×0.005) only, missing the two smaller pins due to early-exit logic that doesn't aggregate all singularities.
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(39) ifc=schema_n/a`
 ### Tfa193 — ShapeFix_Face.FixSmallAreaWire wire-equal-to-face-area
 
 Outer boundary 4×4 units, inner wire 2×2 units (area=4). Wire area numerically equals face area due to combined tolerance accumulation. FixSmallAreaWire's comparison logic is non-deterministic at equality boundary; floating-point rounding causes spurious acceptance/rejection.
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a`
 ### Tfa194 — ShapeAnalysis_CheckSmallFace.CheckSpotFace face-with-bbox-much-larger
 
 Outer boundary 200×200 units with inner rectangle 100×100 units (50-150 on each axis), but placement yields bounding box extrapolation to full outer extent. CheckSpotFace's 3D bbox-based heuristic misclassifies tight inner geometry as spot-like due to bbox >> actual face extent.
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a`
 ### Tfa195 — ShapeFix_Face.FixOrientation face-on-curved-vs-planar
 
 Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's winding tests yield opposite results for equivalent topology: planar face correctly detects inner winding direction, but B-spline approximation of same geometry yields reversed classification due to numerical drift in normal computation.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a`
 ### Tfa196 — ShapeAnalysis_Surface.ComputeSingularities toroidal-pinch
 - **Category**: §12.3c faces (sub-class: surface singularity detection)
 - **Sources**: OCCT/ShapeAnalysis_Surface.ComputeSingularities (toroidal-pinch-singularities branch)
@@ -24715,7 +24715,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Fixture path**: step-examples/12-3c-faces/Tfa196.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tfa197 — ShapeAnalysis_Surface.IsUClosed bspline-periodic-u
 - **Category**: §12.3c faces (sub-class: periodic surface closure check)
 - **Sources**: OCCT/ShapeAnalysis_Surface.IsUClosed (bspline-periodic-u branch)
@@ -24726,7 +24726,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Fixture path**: step-examples/12-3c-faces/Tfa197.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Tfa198 — ShapeAnalysis_FreeBoundsProperties.CheckNotches gap-after-fix
 - **Category**: §12.3c faces (sub-class: gap detection in free bounds)
 - **Sources**: OCCT/ShapeAnalysis_FreeBoundsProperties.CheckNotches (gap-after-fix branch)
@@ -24737,7 +24737,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Fixture path**: step-examples/12-3c-faces/Tfa198.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tfa199 — ShapeFix_Face.FixMissingSeam seam-detection
 - **Category**: §12.3c faces (sub-class: periodic surface seam reconstruction)
 - **Sources**: OCCT/ShapeFix_Face.FixMissingSeam (seam-detection method)
@@ -24748,7 +24748,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Fixture path**: step-examples/12-3c-faces/Tfa199.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Tfa200 — ShapeAnalysis_Surface.DegeneratedValues cone-apex-degeneracy
 - **Category**: §12.3c faces (sub-class: cone surface apex degeneracy)
 - **Sources**: OCCT/ShapeAnalysis_Surface.DegeneratedValues (cone-apex-degeneracy branch)
@@ -24759,7 +24759,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Fixture path**: step-examples/12-3c-faces/Tfa200.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Tfa201 — CheckSpotFace parametric interior singularity
 - **Category**: §12.3c faces (sub-class: spot-detection)
 - **Sources**: OCCT/ShapeAnalysis_CheckSmallFace.CheckSpotFace_at235 (line 246)
@@ -24770,7 +24770,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Fixture path**: step-examples/12-3c-faces/Tfa201.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tfa202 — CheckTwisted normal inversion on elementary
 - **Category**: §12.3c faces (sub-class: twisted-face)
 - **Sources**: OCCT/ShapeAnalysis_CheckSmallFace.CheckTwisted_at975 (line 1015)
@@ -24781,7 +24781,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Fixture path**: step-examples/12-3c-faces/Tfa202.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Tfa203 — FixMissingSeam null surface guard
 - **Category**: §12.3c faces (sub-class: seam-synthesis)
 - **Sources**: OCCT/ShapeFix_Face.FixMissingSeam (line 1724)
@@ -24792,7 +24792,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Fixture path**: step-examples/12-3c-faces/Tfa203.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(12) ifc=schema_n/a`
 ### Tfa204 — FixLoopWire closed topology reordering
 - **Category**: §12.3c faces (sub-class: wire-topology)
 - **Sources**: OCCT/ShapeFix_Face.FixLoopWire (line 2534)
@@ -24803,7 +24803,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Fixture path**: step-examples/12-3c-faces/Tfa204.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tfa205 — FixAddNaturalBound cone apex degenerate
 - **Category**: §12.3c faces (sub-class: natural-bound)
 - **Sources**: OCCT/ShapeFix_Face.FixAddNaturalBound (line 1744)
@@ -24814,7 +24814,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Fixture path**: step-examples/12-3c-faces/Tfa205.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
 ### Tfa206 — FixOrientation TinyWireFiltering single-edge degenerate
 - **Category**: §12.3c faces (sub-class: wire-orientation)
 - **Sources**: OCCT/ShapeFix_Face.FixOrientation.TinyWireFiltering (line 1185–1225)
@@ -24825,7 +24825,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Fixture path**: step-examples/12-3c-faces/Tfa206.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tfa207 — FixOrientation PeriodicBoundingBoxShift torus seam wrapping
 - **Category**: §12.3c faces (sub-class: periodic-surface)
 - **Sources**: OCCT/ShapeFix_Face.FixOrientation.PeriodicBoundingBoxShift (line 1295–1310)
@@ -24836,7 +24836,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Fixture path**: step-examples/12-3c-faces/Tfa207.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(22) ifc=schema_n/a`
 ### Tfa208 — FixSmallAreaWire undersized perimeter degenerate loop
 - **Category**: §12.3c faces (sub-class: small-area-wire)
 - **Sources**: OCCT/ShapeFix_Face.FixSmallAreaWire (line 2483–2550)
@@ -24847,7 +24847,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Fixture path**: step-examples/12-3c-faces/Tfa208.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a`
 ### Tfa209 — FixWiresTwoCoincEdges duplicate coincident edges
 - **Category**: §12.3c faces (sub-class: edge-redundancy)
 - **Sources**: OCCT/ShapeFix_Face.FixWiresTwoCoincEdges (line 2669–2726)
@@ -24858,7 +24858,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Fixture path**: step-examples/12-3c-faces/Tfa209.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tfa210 — FixSplitFace multi-loop split on disconnected wires
 - **Category**: §12.3c faces (sub-class: split-face)
 - **Sources**: OCCT/ShapeFix_Face.FixSplitFace_at2908 (line 2908–2930)
@@ -24869,7 +24869,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Fixture path**: step-examples/12-3c-faces/Tfa210.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(25) ifc=schema_n/a`
 ### Tfa211 — ShapeFix_Face.FixMissingSeam.null-surface-guard
 
 **Category**: Face healing / Missing seam detection
@@ -24888,7 +24888,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 
 **Fixture kind**: Face-only model; quad EDGE_LOOP on null surface.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tfa212 — ShapeFix_Face.FixMissingSeam.bspline-non-periodic-rejection
 
 **Category**: Face healing / B-spline periodicity
@@ -24907,7 +24907,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 
 **Fixture kind**: Face-only model; quad EDGE_LOOP on non-periodic B-spline surface.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tfa213 — ShapeFix_Face.FixMissingSeam.infinite-bounds-fallback
 
 **Category**: Face healing / Infinite surface bounds
@@ -24926,7 +24926,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 
 **Fixture kind**: Face-only model; partial quad wire on cylindrical surface.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Tfa214 — ShapeFix_Face.FixMissingSeam.degenerate-wire-consolidation
 
 **Category**: Face healing / Degenerate edge consolidation
@@ -24945,7 +24945,7 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 
 **Fixture kind**: Face-only model; degenerate quad EDGE_LOOP with micro-edges on B-spline surface.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tfa215 — ShapeFix_Face.FixMissingSeam.orientation-correction-partial-closure
 
 **Category**: Face healing / Partial-closure orientation
@@ -24964,114 +24964,114 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 
 **Fixture kind**: Face-only model; quad EDGE_LOOP with mixed orientation on toroidal surface.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a`
 ### Tfa216 — seam_detection_orientation_loss
 
 **Defect**: Edge reversal in seam detection without forward-flag update (line 1829, UnionPCurves).
 **Minimal reproducer**: Build seam edge on periodic surface; set isForward=true; reverse edge; isForward tracking stale; accumulated pcurve orientation corrupted.
 **Healing path**: Capture isForward after seam reversal branch; validate forward-flag consistency across seam edges.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 ### Tfa217 — curve_copy_trimming
 
 **Defect**: Nested TrimmedCurve BasisCurve extraction loses inner bounds (line 1876, UnionPCurves).
 **Minimal reproducer**: TrimmedCurve(TrimmedCurve(Line, [5,15]), [8,12]) unwrapped to outer level; inner [5,15] lost; effective range becomes [8,12].
 **Healing path**: Detect nesting depth; recursively extract all bound layers; reconstruct proper trim envelope.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tfa218 — circle_parameter
 
 **Defect**: Circle parameter wraparound fails; periodic domain spanning 2π boundary produces inverted range (line 1930, UnionPCurves).
 **Minimal reproducer**: Edge on torus spanning seam 6.0→0.5 (wrapping); aNewF=6.0, aNewL=0.5; swap reverses to [0.5,6.0]; range invalid.
 **Healing path**: Detect wraparound via ElCLib parameter comparison; normalize range modulo 2π; preserve interval sense.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 ### Tfa219 — vertex_tolerance_mismatch
 
 **Defect**: Vertex tolerance inconsistency in edge chain appended without hierarchy validation (line 1971, UnionPCurves).
 **Minimal reproducer**: Edge chain with vertices aTol[0]=0.001, aTol[1]=10.0; no synchronization; ConcatC1 receives heterogeneous tolerance array.
 **Healing path**: Validate tolerance hierarchy before accumulation; cap per-vertex tolerance to cumulative aMaxTol; synchronize tolerance state.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Tfa220 — concat_result_truncation
 
 **Defect**: ConcatC1 output array validation skipped; incompatible fragments force-merged (line 2037, UnionPCurves).
 **Minimal reproducer**: Feed Line+Circle with large gap; ConcatC1 produces 2 fragments; code iterates Add() anyway; artificial continuity created.
 **Healing path**: Check concatc2d quality before merge; skip low-quality fragments; fail gracefully if ConcatC1 < threshold coherence.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a`
 ### Tfa221 — FixMissingSeam.null-surface-guard
 Degenerated torus (R=0.5, r=1.0); single EDGE_LOOP with 4 lines; tests null-surface guard at ShapeFix_Face.cxx:1724. Defect: if mySurf.IsNull() guard omitted, null dereference at IsUClosed(). Canonical PRODUCT chain; DIRECTION ratios unit magnitude.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(329) ifc=schema_n/a`
 ### Tfa222 — FixMissingSeam.no-closure-early-exit
 Open BSpline surface (unclosed U, V); single EDGE_LOOP with 2 rational B-spline edges; tests early exit when surface open in both directions (line 1732). Defect: without early return, kernel attempts seam insertion on non-closed surface. Fully ISO-compliant.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tfa223 — FixMissingSeam.infinite-bounds-fallback
 Conical surface (apex at origin, semi-angle 0.5); single degenerated EDGE_LOOP (cone-tip); tests infinite-bounds fallback at line 1759. Defect: infinite U/V bounds bypass wire-bound substitution, causing NaN in seam-placement arithmetic.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
 ### Tfa224 — FixMissingSeam.degenerate-wire-consolidation
 Sphere with 3 degenerate wires (zero-extent edges at same vertex); multi-bound face (outer + 2 holes); tests degenerate-wire removal at line 1872. Defect: without consolidation, degenerated seams collapse to singularity.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tfa225 — FixMissingSeam.seam-boundary-clamping
 U-closed BSpline surface; 2-edge loop with period-wrap geometry; tests seam-boundary clamping at line 2224. Defect: out-of-bounds seam placement (u > 2π) bypasses AdjustToPeriod, producing invalid parameter range.
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Tfa226 — ShapeFix_Face.Add.null-wire-guard
 Fresh null-wire guard in Add() prevents null-reference corruption; wire validation before topology merge.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Tfa227 — ShapeFix_Face.ClearModes.init-all-modes
 Mode-flag initialization (-1 default) prevents undefined comparisons in NeedFix(); healer state precondition.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 ### Tfa228 — ShapeFix_Face.FixAddNaturalBound.null-surface-guard
 Null-surface early return avoids processing on invalid face geometry; boundary insertion guard.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 ### Tfa229 — ShapeFix_Face.FixLoopWire.orientation-handling
 Seam-edge reversal for dual-edge UV-periodic representation; non-seam edges skip reversal logic.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Tfa230 — ShapeFix_Face.FixLoopWire.wire-topology
 Closed-wire reorder via FixReorder vs. open-wire append; topology-driven dispatch path.
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a`
 ### Tfa231 — FixSmallAreaWire shape-type filter
 
 Small-area wire detection via sub-shape-type and orientation validation. Planar face with outer loop (3×3 unit boundary) and inner loop (0.05×0.05 unit hole) to exercise the shape-type-filter defect. Tests early rejection of non-WIRE or invalid-orientation sub-shapes.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a`
 ### Tfa232 — FixWiresTwoCoincEdges FORWARD orientation dispatch
 
 Coincident-edge pair detection on 4-edge wire with duplicate geometry edges (edge_c and edge_d both curve 1→1 at identical path). Tests FORWARD/REVERSED orientation filter preventing false detection on reversed duplicates.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tfa233 — FixPeriodicDegenerated context transformation
 
 Periodic surface (SURFACE_OF_REVOLUTION) with B-spline profile curve and degenerate seam closure. Tests context-aware transformation dispatch when healing context is non-null; validates Context().IsNull() check and Apply() invocation.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa234 — FixAddNaturalBound seam-edge exclusion
 
 Single-period cylindrical face with degenerate bottom/top loops and explicit seam edge. Tests natural-boundary rejection logic when seam-edge is present; validates myFixAddNaturalBoundMode conditional handling.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Tfa235 — FixMissingSeam P-curve absence on torus
 
 TOROIDAL_SURFACE face with U-seam loop traversing toroidal topology; missing P-curve geometry on seam edge. Tests P-curve lookup failure path and early abort before seam insertion.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
 ### Tfa236 — ShapeFix_Face.FixOrientation
 
 Wire-sense correction via face-surface normal evaluation; manifold compatibility validation on planar outer boundary.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tfa237 — ShapeFix_Face.SplitEdge (line-2653)
 
 Edge-division on non-manifold geometry; curve parameterization via vertical spine through cylindrical seam topology.
@@ -25081,38 +25081,38 @@ Edge-division on non-manifold geometry; curve parameterization via vertical spin
 
 Multi-point edge subdivision; overlapping parameter intervals via meridian B-spline and closing circle on spherical patch.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a`
 ### Tfa239 — ShapeFix_Face.FixSplitFace (line-2908)
 
 Multi-wire face splitting; sub-face reconstruction via outer loop + inner hole on rational B-spline surface.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a`
 ### Tfa240 — ShapeFix_Face.Perform (line-346)
 
 Integrated face-healing pipeline; mode-dependent cascade via base-slant-apex decomposition on conical degenerate closure.
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a`
 ### Tfa241 — `ShapeFix_Face.FixOrientation.WireBoundingBoxComputation`
 em-dash Periodic bounding-box centering on first-wire midpoint for toroidal containment checks. Two concentric wires on torus; without anchor uMiddle/vMiddle, secondary wire box shifts unanchored relative to first → false containment classification.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(26) ifc=schema_n/a`
 ### Tfa242 — `ShapeFix_Face.FixOrientation.PeriodicBoundingBoxShift`
 em-dash Seam-crossing wire adjustment via `ShapeAnalysis::AdjustByPeriod()`. Wires wrapping across torus seam (u≈0) at opposite ends; without periodic shift, bounding boxes classified as disjoint despite containment.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(26) ifc=schema_n/a`
 ### Tfa243 — `ShapeFix_Face.FixOrientation.ToroidalDiagonalShift`
 em-dash 2×2 grid of diagonal period wraps (±uRange, ±vRange) for toroidal surfaces. Outer loop near corner (u≈0, v≈0), inner loop near opposite corner (u≈2π, v≈π); without diagonal enumeration, single u-shift succeeds but v-shift overrides it.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 ### Tfa244 — `ShapeFix_Face.FixLoopWire.FLW-007`
 em-dash Two-common-vertex wire-pair merging (greedy immediate consolidation). Three open wires with first two sharing both endpoints → merged before third; defect: if first two should not merge, third wire processed alone via fallback.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(20) ifc=schema_n/a`
 ### Tfa245 — `ShapeFix_Face.FixMissingSeam.sphere-apex-edge-synthesis`
 em-dash Degenerated synthetic edge synthesis at sphere pole. Single wire at equator on sphere (U-open); without synthetic degenerated edge at pole (v=π/2), topology incomplete; with synthesis, seam closure via pole boundary.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 ### Hea016 — Empty solid output from STEP export of complex body, despite STL succeeding
 - **Category**: §12.3c faces / shape healing
 - **Sources**: FreeCAD #20396; bug-reporter language: "Models exported to STEP crash or produce empty objects", "appears to export fine but results in an empty object", "STL and 3MF export work, STEP doesn't".
@@ -25230,7 +25230,7 @@ em-dash Degenerated synthetic edge synthesis at sphere pole. Single wire at equa
 - **Description**: FixDegenerated exhibits modulo-index boundary logic when inserting degenerate edges at wire-end. Without closure validation, inserting at position (n % wire_size) constructs invalid topology by wrapping the insertion point. Wire with degenerate segment at end-boundary causes index wraparound, potentially replicating edges or creating orphaned topology.
 - **Reproducer recipe**: Wire with 3 edges (E1, E3 normal; E2_degen at index 2, connecting P2->P2 with zero-length geometry). Call FixDegenerated; index modulo n=2 wraps to unexpected position.
 - **Expected kernel behavior**: Reject or heal by either removing degenerate or correctly inserting at end without wraparound.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 - **Tier-3 assertion**: n_faces_total == 1
 
 ### Twi103 — ShapeFix_Wire.FixSelfIntersectingEdge 30-iteration convergence silently exits
@@ -25239,7 +25239,7 @@ em-dash Degenerated synthetic edge synthesis at sphere pole. Single wire at equa
 - **Description**: FixSelfIntersectingEdge implements hard 30-iteration limit for self-intersection repair convergence. Persistent intersections after 30 iterations cause silent exit without reporting failure status or incomplete repair. Pathological wire geometry with unresolvable self-intersections (e.g., topologically required crossing) fails without diagnostic.
 - **Reproducer recipe**: Wire with S-curve self-intersecting topology at 4 edges (forming two crossing pairs). Each repair iteration shifts vertices without resolving underlying topology. After 30 iterations, algorithm exits and returns success despite unresolved intersections.
 - **Expected kernel behavior**: Exit with error status or diagnostic indicating convergence failure, not silent acceptance.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(22) ifc=schema_n/a`
 - **Tier-3 assertion**: n_faces_total == 3
 
 ### Twi104 — ShapeAnalysis_Wire.CheckTail misclassifies degenerate orientation
@@ -25257,7 +25257,7 @@ em-dash Degenerated synthetic edge synthesis at sphere pole. Single wire at equa
 - **Description**: CheckIntersectingEdges detects non-adjacent edge intersections by 2D parametric intersection followed by 3D vertex-tolerance distance check (line 1645, OK1/OK2). When non-adjacent edges' parametric intersection maps to spatial point in seam-edge gap (vertex offset region), tolerance filtering fails to detect genuine intersection. Gap magnitude typically < vertex tolerance but > parametric precision.
 - **Reproducer recipe**: Wire with 4 edges where E1 horizontal; E3 diagonal intersecting E1 in space; E2, E4 create seam offset at vertex. Intersection point falls in 0.05 unit spatial gap with 0.1 unit vertex tolerance. CheckIntersectingEdges misses intersection at line 1645.
 - **Expected kernel behavior**: Detect intersection despite seam-gap offset; report or repair.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a`
 - **Tier-3 assertion**: n_faces_total == 2
 
 ### Twi106 — ShapeFix_Wire.FixIntersectingEdges accumulation cascade without upper bound
@@ -25266,7 +25266,7 @@ em-dash Degenerated synthetic edge synthesis at sphere pole. Single wire at equa
 - **Description**: FixIntersectingEdges repairs wire self-intersections by splitting and re-ordering edges. Multiple intersection points without upper-bound tolerance enforcement cause accumulation cascade: each split generates additional vertices; re-insertion may create new intersections at previously-clean edge pairs. Wire with 5+ edges in cascading zigzag pattern exhibits unbounded vertex accumulation or silent partial repair.
 - **Reproducer recipe**: Wire with 5 edges (P0->P1->P2->P3->P4->P0) in zigzag: E2 crosses E1; E3 crosses E2; E4 crosses E3; E5 crosses E4 and E1. FixIntersectingEdges splits each; split vertices create new intersection cascade between E4 and newly-split E2. Iteration limit or tolerance cap never enforced.
 - **Expected kernel behavior**: Bound repair iterations and enforce that tolerance does not grow with each split; reject if unresolvable.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(39) ifc=schema_n/a`
 - **Tier-3 assertion**: n_faces_total == 6
 
 ### Twi107 — FixReorder Mode-Cascade
@@ -25274,7 +25274,7 @@ em-dash Degenerated synthetic edge synthesis at sphere pole. Single wire at equa
 **Pattern**: 5-edge closed loop on plane; deliberate edge order reversal triggers reorder impossibility.
 **Coverage**: SF_Perform_002 (mode_override_cascade), SF_Perform_003 (conditional_skip_wrong), SF_Perform_004 (dependency_coupling).
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a`
 ### Twi108 — FixGaps3d 3D-Gap Repair
 **Defect**: Wire with adjacent edges missing exactly (gap ~0.05 unit in Z between P1 and P2 vertices). Vertex-tolerance ball overlap but distance exceeds Confusion threshold.
 **Pattern**: 4-edge planar loop with deliberate Z-offset at P2 to force FixGaps3d bridge repair.
@@ -25286,7 +25286,7 @@ em-dash Degenerated synthetic edge synthesis at sphere pole. Single wire at equa
 **Pattern**: 4-edge closed loop on CYLINDRICAL_SURFACE; E3 pcurve uses u∈[8.06, 8.06] (shifted) instead of u∈[0.78, 0.78] (true).
 **Coverage**: ShapeFix_Wire.FixShifted periodic surface parameter normalization.
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Twi110 — CheckEdgeCurves 3D-vs-2D Coherence
 **Defect**: Cylindrical wire where edge E3 3D curve (LINE P2→P3) is geometrically correct but pcurve maps to surface parameters (u, v) that evaluate to misaligned 3D point, failing curve/pcurve coherence.
 **Pattern**: 4-edge cylindrical loop; E3 pcurve v-extent artificially expanded to -5.0 to break sampling alignment.
@@ -25302,7 +25302,7 @@ em-dash Degenerated synthetic edge synthesis at sphere pole. Single wire at equa
 
 Wire on cylindrical surface with consecutive edges' parametric curves (pcurves) leaving a 2D gap in the parameter domain. First edge pcurve ranges [0.0, 1.0], second edge pcurve starts at [1.01, ...], creating a 0.01-unit discontinuity. FixGaps2d should bridge with a new pcurve segment to restore continuity.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Twi113 — ShapeAnalysis_Wire.CheckOuterBound outer-bound mis-identification
 
 Face with multiple wires where the loop with largest enclosed area (20×20 outer rectangle) is not tagged as FACE_OUTER_BOUND; smaller hole loop (4×4) is present. CheckOuterBound should detect the outer rectangle as the true boundary and flag misidentification.
@@ -25517,7 +25517,7 @@ Wire contains a LINE edge that intersects a CIRCLE arc edge. FixIntersectingEdge
 **Root cause**: Parameter extraction at line 3026 uses conditional ternary without validating parameter space; arc parametrization is non-linear
 
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Twi153 — ShapeAnalysis_Wire.CheckIntersectingEdges B-spline self-intersection
 
 B-spline edge has a self-intersection (loops back on itself). CheckIntersectingEdges treats each edge as injective mapping from parameter to curve point, missing intra-edge intersections since loop only compares pairs of distinct edges.
@@ -25527,7 +25527,7 @@ B-spline edge has a self-intersection (loops back on itself). CheckIntersectingE
 **Root cause**: Pairwise edge comparison at line 1563 does not test edge against itself; no injection assumption validation
 
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 ### Twi154 — ShapeFix_Wire.FixSeam edge-direction reversed
 
 Wire on cylindrical surface with seam edge in reverse (.F.) orientation. FixSeam assumes forward orientation (.T.) and applies period correction unconditionally. Reversed edges have opposite parameter direction; period shift moves backward instead.
@@ -25558,7 +25558,7 @@ Wire contains same edge twice with forward and reverse orientations. FixReorder 
 ### Twi157 — ShapeAnalysis_Wire.CheckSelfIntersection figure-8 wire
 Wire whose path forms a figure-8 (crosses itself at one point). CheckSelfIntersection must detect the crossing at the self-intersection point where the two lobes meet.
 - **Tier-3 assertion**: n_faces_total == 2
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a`
 ### Twi158 — ShapeFix_Wire.FixGaps2d 2D-gap on periodic surface
 Wire on cylindrical surface where 2D pcurves leave a gap exactly at u=0 (the seam). FixGaps2d's gap-bridging fails to handle seam-crossing correctly.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
@@ -25569,11 +25569,11 @@ Wire on cylindrical surface where 2D pcurves leave a gap exactly at u=0 (the sea
 ### Twi160 — ShapeFix_Wire.FixLacking degenerate-vertex-gap
 Wire missing an edge between v1 and v2 where dist(v1,v2) < Confusion (effectively coincident). FixLacking inserts a degenerate edge but the construction has wrong direction.
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 ### Twi161 — ShapeAnalysis_Wire.CheckGap2d on B-spline pcurve
 Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoints but start/end pole positions may differ, leaving a gap in connectivity.
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 ### Twi162 — ShapeFix_Wire.FixIntersectingEdges 3-edge-mutual-intersection
 **Axis**: `healer-state` | **Kind**: `fixture`  
 **Brief**: Wire with 3 edges mutually intersecting at single point (star geometry); FixIntersectingEdges splits pairwise and produces inconsistent topology.  
@@ -25581,7 +25581,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 **Reproducer**: Three line segments (horizontal, vertical, diagonal) passing through (5,5,0); wire loop enclosing all three. FixIntersectingEdges should split pairwise but create invalid vertex/edge correspondence.  
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi162.stp`
 - **Tier-3 assertion**: n_faces_total == 2
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a`
 ### Twi163 — ShapeAnalysis_Wire.CheckIntersectingEdges trimmed-edges-overlap-base-curve
 **Axis**: `conformance-probe` | **Kind**: `fixture`  
 **Brief**: Two edges sharing same base B-spline curve with overlapping trim ranges; CheckIntersectingEdges should report overlap but may miss it.  
@@ -25589,7 +25589,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 **Reproducer**: Degree-3 B-spline base curve; two EDGE_CURVEs both reference it with parameter ranges [0.0, 0.6] and [0.4, 0.9]. CheckIntersectingEdges must detect overlap.  
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi163.stp`
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Twi164 — ShapeFix_Wire.FixReorder algorithm-cycle
 **Axis**: `healer-state` | **Kind**: `fixture`  
 **Brief**: Wire where reorder algorithm reaches cycle: edge X must come before Y but Y also requires X-first; algorithm doesn't detect and loops.  
@@ -25597,7 +25597,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 **Reproducer**: Four-edge diamond (v0→v1→v2→v3→v0) with near-tangent junctions creating bi-directional ordering constraints. FixReorder should detect cycle and exit gracefully.  
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi164.stp`
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Twi165 — ShapeAnalysis_Wire.CheckTail B-spline subdivided
 **Axis**: `healer-state` | **Kind**: `fixture`  
 **Brief**: Last edge is B-spline subdivided into multiple sub-curves; CheckTail's tangent-discontinuity test fires on every sub-curve boundary.  
@@ -25605,7 +25605,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 **Reproducer**: Straight edge followed by three B-spline sub-curves (representing subdivided single curve), each with C1 discontinuity at junction. CheckTail should not fire on subdivisions of single logical edge.  
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi165.stp`
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Twi166 — ShapeFix_Wire.FixSelfIntersectingEdge near-grazing
 **Axis**: `input-shape` | **Kind**: `fixture`  
 **Brief**: Single edge with two near-coincident points (self-intersection within Confusion); FixSelfIntersectingEdge tries to split at near-degenerate point.  
@@ -25613,7 +25613,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 **Reproducer**: B-spline curve looping back on itself with endpoints separated by 0.0001 unit, creating near-intersection within default Confusion (~1e-7). FixSelfIntersectingEdge must skip or merge degenerate splits.  
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi166.stp`
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 ### Twi167 — ShapeFix_Wire.FixIntersectingEdges loop-collapse
 
 **Defect class**: Wire self-correction boundary case  
@@ -25748,7 +25748,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Fixture kind**: `STEP_STANDALONE`  
 **Schema**: `AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }`
 - **Tier-3 assertion**: n_faces_total == 2
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a`
 ### Twi184 — ShapeFix_Wire.FixConnected zero-length-edge-between
 
 **Defect axis**: `topology`  
@@ -25836,7 +25836,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Test hook**: Invoke FixGaps2d; verify bridge edge's 3D points fail surface containment check.
 
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Twi193 — CheckOrder index-mode-clash
 
 **Defect**: ShapeAnalysis_Wire.CheckOrder fails to detect when edge[0]'s natural parametric order (forward traversal in 3D) differs from edge[0]'s pcurve order on a periodic surface seam.
@@ -25846,7 +25846,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Test hook**: Wire on cylinder crossing seam; CheckOrder(theMode3D=true) should detect reordering needed but doesn't.
 
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Twi194 — FixIntersectingEdges shared-vertex-misclassification
 
 **Defect**: ShapeFix_Wire.FixIntersectingEdges incorrectly treats two edges sharing a common endpoint vertex as intersecting because their 2D parameter spaces overlap.
@@ -25875,7 +25875,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 
 **Test hook**: Wire with non-degenerate 3D edge but zero-length trim; FixDegenerated should detect but doesn't flag for removal.
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 ### Twi197 — ShapeFix_Wire.FixTails iteration-with-removal
 
 **Defect**: Wire with multiple tail candidates; FixTails removes one tail and iterator gets invalidated.
@@ -25950,7 +25950,7 @@ Wire's last edge is a B-spline with smoothly decreasing magnitude approaching ze
 **Fixture:** `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi203.stp`
 
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Twi204 — ShapeFix_Wire.FixIntersectingEdges 3-edges-at-vertex
 
 Three edges meeting at single point (star configuration). FixIntersectingEdges pairwise comparison reports 3 intersections at same point but they're vertex contact, not crossings.
@@ -25958,7 +25958,7 @@ Three edges meeting at single point (star configuration). FixIntersectingEdges p
 **Fixture:** `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi204.stp`
 
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 ### Twi205 — ShapeAnalysis_Wire.CheckIntersectingEdges B-spline-tangent-touch
 
 Two B-spline edges touching tangentially (single point, no crossing). CheckIntersectingEdges reports intersection despite no transverse crossing.
@@ -25966,14 +25966,14 @@ Two B-spline edges touching tangentially (single point, no crossing). CheckInter
 **Fixture:** `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi205.stp`
 
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Twi206 — ShapeFix_Wire.FixSelfIntersectingEdge cusp-at-vertex
 
 Single edge with cusp at start vertex. FixSelfIntersectingEdge tries to split at cusp but cusp coincides with endpoint, preventing proper healing.
 
 **Fixture:** `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi206.stp`
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Twi207 — ShapeFix_Wire.FixGaps2d gap-at-knot-discontinuity
 
 **Defect**: Wire on B-spline surface where pcurves leave gaps exactly at knot lines. B-spline basis discontinuities at knot values cause parametric space jumps. Edge1 pcurve ends at knot u=1.5 with endpoint (1.5, 5.0). Edge2 pcurve starts at u=1.5 but v=5.01 due to B-spline singularity. FixGaps2d's bridging logic attempts straight-line splice across knot boundary, invalid for B-spline surface topology.
@@ -26065,7 +26065,7 @@ Single edge with cusp at start vertex. FixSelfIntersectingEdge tries to split at
 ### Twi217 — ShapeFix_Wire.FixSeam pcurve-direction-not-matching-3d
 Seam edge where parametric curve direction (u-orientation) differs from 3D curve direction. FixSeam corrects PCurve but the original 3D curve becomes orphaned/unreferenced.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Twi218 — ShapeAnalysis_Wire.CheckShapeConnect with-degenerate-vertex
 Wire's start vertex is degenerate (zero-radius circle = point). CheckShapeConnect uses vertex coordinates from BRep_Tool::Pnt(), not topology, causing false results on degenerate endpoints.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
@@ -26078,7 +26078,7 @@ Wire missing an edge where the missing edge would be degenerate (zero length). C
 ### Twi221 — ShapeFix_Wire.FixDummySeam non-canonical-seam-position
 Surface with seam at u=π/4 (not standard 0 or 2π). FixDummySeam's heuristic assumes canonical seam positions only and fails on non-standard placements.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Twi222 — ShapeFix_Wire.FixTails consecutive-removal
 
 **Defect**: Wire with 3+ small tail edges at different positions. When FixTails removes the first tail, the wire topology changes, causing the second tail's classification to change. The sequential removal alters edge indices dynamically, but the analyzer does not re-evaluate tail status after each removal.
@@ -26157,7 +26157,7 @@ Wire forming a figure-8 pattern (two loops meeting at pinch vertex). The 3D wind
 
 Wire containing a vertex at exactly the origin (0,0,0). FixDegenerated's vertex-distance test uses absolute comparison and treats the origin specially, failing to recognize degenerate edges incident to it.
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Twi235 — ShapeAnalysis_Wire.CheckTail B-spline-tangent-mismatch
 
 Wire's tail edge has tangent at start that doesn't match the previous edge's tangent at end, forming a sharp corner. CheckTail's smooth-only assumption misses this case when B-splines are involved.
@@ -26167,7 +26167,7 @@ Wire's tail edge has tangent at start that doesn't match the previous edge's tan
 
 Wire has a 3D gap at a junction (endpoints separated by ~1e-8, within tolerance). FixGaps3d attempts to bridge by creating a new edge, but the bridge itself becomes degenerate with coincident or near-coincident endpoints.
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 ### Twi237 — ShapeFix_Wire.FixSmall edge-coalescing tolerance
 - **Category**: §12.3b wires (sub-class: size-threshold)
 - **Sources**: OCCT/ShapeFix_Wire.FixSmall (line 539)
@@ -26497,7 +26497,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 - **Trigger**: Midpoint sample in IsUClosed detects pole mismatch despite knot structure
 - **Expected healing**: Surface marked as non-closed; subsequent passes may split or reject
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs060 — Spherical surface pole singularity detection
 - **Defect class**: `ShapeAnalysis_Surface.ComputeSingularities`
 - **Probe method**: `ComputeSingularities_at182`
@@ -26506,7 +26506,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 - **Trigger**: Gradient analysis of surface position; normal becomes degenerate at poles
 - **Expected healing**: Poles marked in singularity map; edge loops adjusted to avoid pole crossing
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs061 — B-spline surface normal degeneracy at cusp
 - **Defect class**: `ShapeAnalysis_Surface.SurfaceNewton`
 - **Probe method**: `SurfaceNewton_at1069`
@@ -26515,7 +26515,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 - **Trigger**: Newton iteration for closest-point projection diverges when normal is near-zero
 - **Expected healing**: Projection fails; surface may be rejected or split at cusp
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs062 — Trimmed cylinder ValueOfUV dispatch
 - **Defect class**: `ShapeAnalysis_Surface.ValueOfUV`
 - **Probe method**: `ValueOfUV_at1246`
@@ -26524,7 +26524,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 - **Trigger**: Inversion of 3D point to (u,v) produces parameters outside trim domain
 - **Expected healing**: Out-of-bounds (u,v) detected; point re-projected or clamped to trim
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs063 — Trimmed offset surface Bezier delegation
 - **Defect class**: `ShapeUpgrade_ConvertSurfaceToBezierBasis.Compute`
 - **Probe method**: `Compute_at58` (wrapper-delegation branch)
@@ -26533,7 +26533,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 - **Trigger**: Bezier decomposition ignores trim parameters and offset displacement
 - **Expected healing**: Conversion result is untrimmed and unoff-set; healer must reject or reapply constraints
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs064 — ShapeAnalysis_Surface.IsVClosed midpoint sampling on torus
 
 **Category**: §12.2c — Surface singularity & closure analysis  
@@ -26551,7 +26551,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 4
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=accept(0)`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
 ### Gs065 — ShapeAnalysis_Surface.ValueOfUV near-tangent surface
 
 **Category**: §12.2c — Surface projection & tangency  
@@ -26571,7 +26571,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 10
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=accept(0)`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs066 — ShapeAnalysis_Surface.SortSingularities cone vs cylinder differing singularities
 
 **Category**: §12.2c — Singularity classification  
@@ -26591,7 +26591,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 11
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=accept(0)`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs067 — ShapeUpgrade_ConvertSurfaceToBezierBasis offset surface with negative distance
 
 **Category**: §12.2c — Offset surface conversion  
@@ -26609,7 +26609,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 3
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=accept(0)`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 ### Gs068 — ShapeAnalysis_Surface.UVFromIso boundary U-iso failure
 
 **Category**: §12.2c — Iso-curve projection  
@@ -26626,7 +26626,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 **Expected validation**: Reject out-of-bounds iso request; signal error rather than produce uninitialized result.
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 4
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=accept(0)`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
 ### Gs069 — ShapeAnalysis_Surface.IsDegenerated zero-length axis
 
 **Source**: OCCT_HEAL_COVERAGE_V3.md §12.2c
@@ -26638,7 +26638,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2c-surfaces/Gs069.stp`
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs070 — ShapeUpgrade_SplitSurfaceContinuity.Compute trimmed-fallback
 
 **Source**: OCCT_HEAL_COVERAGE_V3.md §12.2c (derived)
@@ -26650,7 +26650,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2c-surfaces/Gs070.stp`
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs071 — ShapeAnalysis_Surface.ProjectDegenerated even-redistribution
 
 **Source**: OCCT_HEAL_COVERAGE_V3.md §12.2c
@@ -26662,7 +26662,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2c-surfaces/Gs071.stp`
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a`
 ### Gs072 — ShapeAnalysis_Surface.ValueOfUV bounded surface Newton overflow
 
 **Source**: OCCT_HEAL_COVERAGE_V3.md §12.2c (derived)
@@ -26688,7 +26688,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2c-surfaces/Gs073.stp`
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs074 — Plane Singularity Misclassification
 
 **Sources:** ShapeAnalysis_Surface.Singularity (OCCT)  
@@ -26699,7 +26699,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 5
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 ### Gs075 — Cylindrical Surface Seam-Aware Split
 
 **Sources:** ShapeUpgrade_ClosedFaceDivide.SplitSurface (OCCT)  
@@ -26710,7 +26710,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 4
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
 ### Gs076 — Newton Fallback Comparison Bias
 
 **Sources:** ShapeAnalysis_Surface.NextValueOfUV (OCCT)  
@@ -26723,7 +26723,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 11
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs077 — Newton Discriminant Near-Zero Abort
 
 **Sources:** ShapeAnalysis_Surface.SurfaceNewton (OCCT)  
@@ -26734,7 +26734,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 3
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 ### Gs078 — Offset-of-Offset Sign Error
 
 **Sources:** ShapeUpgrade_ConvertSurfaceToBezierBasis (OCCT)  
@@ -26744,32 +26744,32 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 **Expected validation:** PASS: Correct offset accumulation; FAIL: Sign flip or coordinate mismatch.
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 4
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
 ### Gs079 — ShapeAnalysis_Surface.UVFromIso periodic reset
 
 B_SPLINE_SURFACE_WITH_KNOTS, U-periodic (periodic_u=.T.), u_upper=2π. Reproduces silent wraparound when querying u_iso=2π that maps to u_iso=0, breaking downstream code expecting original parameter.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs080 — ShapeUpgrade_FaceDivide.SplitSurface boundary-merge
 
 B_SPLINE_SURFACE with internal knot at natural face boundary. SplitSurface splits at boundary-coincident knot, producing degenerate sub-face with coincident control points.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs081 — ShapeAnalysis_Surface.IsUClosed extrusion-base form
 
 SURFACE_OF_LINEAR_EXTRUSION with open parabolic base curve. IsUClosed correctly returns false but loses extrusion-axis closure metadata needed by downstream processors.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs082 — ShapeAnalysis_Surface.NextValueOfUV curvature step-size
 
 B_SPLINE_SURFACE with sharp peak (Z=5.0 at center). Newton iteration for surface point location exhibits curvature-driven step collapse below epsilon tolerance before convergence.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs083 — ShapeUpgrade_ConvertSurfaceToBezierBasis quasi-uniform vs non-uniform mismatch
 
 B_SPLINE_SURFACE_WITH_KNOTS declared form='.QUASI_UNIFORM_KNOTS.' but actual knots are non-uniform. Bezier converter follows form tag and produces incorrect patch geometry.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs084 — ShapeAnalysis_Surface.IsDegenerated bounded-surface zero-area
 
 RECTANGULAR_TRIMMED_SURFACE with u1==u2 (zero-width trim). IsDegenerated parameter-difference check fails to detect zero area. Fixture uses B-spline base with trimmed surface u∈[0,0].
@@ -26798,23 +26798,23 @@ CYLINDRICAL_SURFACE split at u=0 (seam). SplitSurface produces two identical pat
 ### Gs089 — ShapeAnalysis_Surface.UVFromIso B-spline midspan failure
 B-spline surface with interior knot at u=0.5 in iso-curve at v=0.5. Bisection algorithm in UVFromIso converges on wrong side of knot, returning incorrect UV parameters.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs090 — ShapeUpgrade_ConvertSurfaceToBezierBasis thin-patch elimination threshold
 Bezier surface with near-collinear control points (width 1e-9). Absolute area comparison fails to eliminate degenerate patch; needs normalized area threshold.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs091 — ShapeAnalysis_Surface.IsUClosed B-spline rational weights
 Rational B-spline surface with asymmetric weights at U closure (first=1.0, last=2.0). Weighted projection differs from geometric distance; closure detection misses boundary condition.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs092 — ShapeAnalysis_Surface.ComputeBoundIsos extrusion-direction reset
 Surface of linear extrusion with non-unit direction vector (2.0,0.0,0.0). Cached BoundIsos reflect pre-normalization range; recomputation fails to invalidate cache.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs093 — ShapeUpgrade_SplitSurface BSpline irregular knots
 B-spline surface with irregular V knot multiplicities (3,1,3) on 4 control points. SplitSurface assumes uniform multiplicities, causing over-subdivision and invalid knot structure.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs094 — ShapeAnalysis_Surface.UVFromIso parameter-clamp underflow
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -26826,7 +26826,7 @@ causing incorrect parameter mapping on extremely narrow domains.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs094.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs095 — ShapeUpgrade_ConvertSurfaceToBezierBasis sphere
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -26838,7 +26838,7 @@ but pole regions become degenerate Bezier patches with zero-area. Control points
 - **Fixture path**: step-examples/12-2c-surfaces/Gs095.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs096 — ShapeAnalysis_Surface.ComputeSingularities torus pinch
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -26850,7 +26850,7 @@ creating a pinch point where the surface crosses itself.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs096.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 ### Gs097 — ShapeUpgrade_FaceDivideArea.Perform threshold reset
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -26861,7 +26861,7 @@ creating a pinch point where the surface crosses itself.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs097.stp
 - **Fixture kind**: scaffold (kernel-test-pair: shape only; runtime invocation required to reproduce)
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs098 — ShapeAnalysis_Surface.IsDegenerated revolution-axis-on-curve
 - **Category**: §12.2c surfaces (sub-class: curve)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -26873,7 +26873,7 @@ missing the degenerate apex singularity.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs098.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Gs099 — Sphere pole singularity: iso-curve sampling misses pole
 - **Category**: §12.2c surfaces (sub-class: curve)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -26887,7 +26887,7 @@ sampling fails to detect singular points at poles.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs099.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a`
 ### Gs100 — SplitSurface trim-aware split: splits base not trimmed wrapper
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -26899,7 +26899,7 @@ by extracting and splitting the base surface, ignoring the trim bounds. Result: 
 - **Fixture path**: step-examples/12-2c-surfaces/Gs100.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs101 — ShapeAnalysis_Surface.ValueOfUV: antipodal sphere convergence failure
 - **Category**: §12.2c surfaces (sub-class: surface)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -26912,7 +26912,7 @@ Newton initializes on the wrong sheet and converges to wrong root.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs101.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a`
 ### Gs102 — ConvertSurfaceToBezierBasis: Bezier passthrough produces re-extracted copy
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -26925,7 +26925,7 @@ reconstructs Bezier, producing numerically different (re-extracted) surface.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs102.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs103 — IsUClosed: periodic-vs-closed semantic mismatch
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -26937,7 +26937,7 @@ reconstructs Bezier, producing numerically different (re-extracted) surface.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs103.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs104 — SURFACE_OF_REVOLUTION with profile-on-axis
 - **Category**: §12.2c surfaces (sub-class: curve)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -26951,7 +26951,7 @@ not properly classified as singular.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs104.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Gs105 — FaceDivide crossing-curves defect
 - **Category**: §12.2c surfaces (sub-class: curve)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -26964,7 +26964,7 @@ splitter curves and produces overlapping sub-faces on same surface.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs105.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a`
 ### Gs106 — Concentrated-poles surface with Newton underflow
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -26978,7 +26978,7 @@ at.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs106.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs107 — Closed-surface preservation in Bezier conversion
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -26991,7 +26991,7 @@ Bezier patches don't maintain seam closure or periodic boundary conditions.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs107.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 ### Gs108 — Singularity boundary classification error
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -27004,7 +27004,7 @@ the analyzer treats the boundary as exclusive, misclassifying interior vs.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs108.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
 ### Gs109 — ShapeAnalysis_Surface.UVFromIso v-iso-at-pole
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -27018,7 +27018,7 @@ UVFromIso accepts the.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs109.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
 ### Gs110 — ShapeUpgrade_SplitSurface.SetUSplitValues count-mismatch
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -27032,7 +27032,7 @@ allocation expects 2; the 3rd value is ignored.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs110.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(25) ifc=schema_n/a`
 ### Gs111 — ShapeAnalysis_Surface.IsDegenerated SURFACE_OF_LINEAR_EXTRUSION zero-extrusion
 - **Category**: §12.2c surfaces (sub-class: curve)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -27045,7 +27045,7 @@ which returns positive value for zero VECTOR magnitude due to sign bug. Reproduc
 - **Fixture path**: step-examples/12-2c-surfaces/Gs111.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 ### Gs112 — ShapeUpgrade_ConvertSurfaceToBezierBasis cone-with-trim
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -27059,7 +27059,7 @@ cone; conversion to Bezier.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs112.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs113 — ShapeAnalysis_Surface.ComputeBoundIsos negative-trim
 - **Category**: §12.2c surfaces (sub-class: curve)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -27073,7 +27073,7 @@ v_max=0.0); ComputeBoundIsos generates iso curves with.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs113.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs114 — B-spline surface
 - **Category**: §12.2c surfaces (sub-class: b-spline)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -27083,7 +27083,7 @@ v_max=0.0); ComputeBoundIsos generates iso curves with.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs114.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
 ### Gs115 — B-spline surface
 - **Category**: §12.2c surfaces (sub-class: b-spline)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -27093,7 +27093,7 @@ v_max=0.0); ComputeBoundIsos generates iso curves with.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs115.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs116 — B-spline surface
 - **Category**: §12.2c surfaces (sub-class: b-spline)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -27103,7 +27103,7 @@ v_max=0.0); ComputeBoundIsos generates iso curves with.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs116.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs117 — B-spline surface
 - **Category**: §12.2c surfaces (sub-class: b-spline)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -27113,7 +27113,7 @@ v_max=0.0); ComputeBoundIsos generates iso curves with.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs117.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs118 — B-spline surface
 - **Category**: §12.2c surfaces (sub-class: b-spline)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -27123,7 +27123,7 @@ v_max=0.0); ComputeBoundIsos generates iso curves with.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs118.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs119 — CONICAL_SURFACE with zero radius (degenerate point)
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -27135,7 +27135,7 @@ cone with radius 0 and arbitrary semi-angle (effectively a degenerate point). Is
 - **Fixture path**: step-examples/12-2c-surfaces/Gs119.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 ### Gs120 — FaceDivide splitter curve tangent to boundary (zero-area sub-face)
 - **Category**: §12.2c surfaces (sub-class: curve)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -27147,7 +27147,7 @@ when splitter curve is tangent to face boundary at a single point. The division 
 - **Fixture path**: step-examples/12-2c-surfaces/Gs120.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Gs121 — SurfaceNewton trapped in local minimum of distance function
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -27159,7 +27159,7 @@ when the surface has multiple local minima of the distance function. Newton iter
 - **Fixture path**: step-examples/12-2c-surfaces/Gs121.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs122 — Rational B-spline surface with zero weight (degenerate interior)
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -27171,7 +27171,7 @@ where one weight is 0, producing degenerate interior region. The split operation
 - **Fixture path**: step-examples/12-2c-surfaces/Gs122.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs123 — TOROIDAL_SURFACE with major_radius < minor_radius (self-intersecting)
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -27184,7 +27184,7 @@ touches itself) but IsVClosed doesn't detect the invalid configuration.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs123.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
 ### Gs124 — B-SPLINE_SURFACE with u_periodic flag but non-coincident poles
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -27198,7 +27198,7 @@ have geometrically coincident boundaries.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs124.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs125 — B-SPLINE_SURFACE with very wide U domain
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -27212,7 +27212,7 @@ parameter range of 1.0, causing memory bloat and numerical issues.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs125.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs126 — B-SPLINE_SURFACE with high-curvature Newton singularity
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -27226,7 +27226,7 @@ incorrect UV projections and surface reference failures.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs126.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs127 — B-SPLINE_SURFACE with degenerate edge after split
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -27240,7 +27240,7 @@ to reference invalid surface boundaries.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs127.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Gs128 — TOROIDAL_SURFACE with v-closed property and u-iso wraparound
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -27254,7 +27254,7 @@ with v-iso and produces incorrect parameter projection.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs128.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs129 — CYLINDRICAL_SURFACE with non-unit radius underflowing tolerance check
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -27268,7 +27268,7 @@ causing the method to incorrectly report closure even when the.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs129.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 ### Gs130 — FACE with trim coincident to existing split edge
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -27282,7 +27282,7 @@ area or degenerate bounds.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs130.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 ### Gs131 — TOROIDAL_SURFACE with Newton iteration near convergence
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -27297,7 +27297,7 @@ the.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs131.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
 ### Gs132 — TOROIDAL_SURFACE wrongly elevated to non-analytic Bezier
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -27311,7 +27311,7 @@ producing a non-analytic BSpline surface with wrong continuity class.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs132.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
 ### Gs133 — CYLINDRICAL_SURFACE degenerate edge with sub-optimal projection
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -27326,7 +27326,7 @@ fails to minimize the.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs133.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs134 — ShapeAnalysis_Surface.UVFromIso intermediate-bounce
 - **Category**: §12.2c surfaces (sub-class: face)
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
@@ -27398,7 +27398,7 @@ trimming or intersection operations assume richer surface.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs139.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 ### Gs140 — IsVClosed Bezier pole-coincidence shortcut
 - **Category**: §12.2c surfaces (sub-class: ShapeAnalysis_Surface closure detection)
 - **Sources**: OCCT/ShapeAnalysis_Surface.cxx (line 995)
@@ -27420,7 +27420,7 @@ trimming or intersection operations assume richer surface.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs141.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs142 — Segment rational-weight singularity
 - **Category**: §12.2c surfaces (sub-class: ShapeUpgrade_Surface splitting)
 - **Sources**: OCCT/ShapeUpgrade_Surface.cxx (line 450)
@@ -27431,7 +27431,7 @@ trimming or intersection operations assume richer surface.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs142.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs143 — MakeBSpline grid-sampling false periodicity
 - **Category**: §12.2c surfaces (sub-class: ShapeConstruct_Surface grid reconstruction)
 - **Sources**: OCCT/ShapeConstruct_Surface.cxx (line 310)
@@ -27442,7 +27442,7 @@ trimming or intersection operations assume richer surface.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs143.stp
 - **Fixture kind**: scaffold (kernel-test-pair: shape only; runtime invocation required to reproduce)
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs144 — ComputeBoxes null-ISO silent skip
 
 - **Category**: §12.2c surfaces (sub-class: boundary computation)
@@ -27454,7 +27454,7 @@ trimming or intersection operations assume richer surface.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs144.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs145 — ProjectDegenerated lazy singularity init
 
 - **Category**: §12.2c surfaces (sub-class: singularity projection)
@@ -27466,7 +27466,7 @@ trimming or intersection operations assume richer surface.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs145.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs146 — SurfaceNewton zero-normal break
 
 - **Category**: §12.2c surfaces (sub-class: iterative projection)
@@ -27478,7 +27478,7 @@ trimming or intersection operations assume richer surface.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs146.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs147 — ValueOfUV projection beyond bound
 
 - **Category**: §12.2c surfaces (sub-class: uv mapping)
@@ -27490,7 +27490,7 @@ trimming or intersection operations assume richer surface.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs147.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs148 — DegeneratedValues singularity gap classification
 
 - **Category**: §12.2c surfaces (sub-class: degeneracy detection)
@@ -27503,19 +27503,19 @@ trimming or intersection operations assume richer surface.
 - **Fixture kind**: scaffold
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs149 — ShapeAnalysis_Surface.IsUVBounded
 **Defect**: Parameter gap classification on trimmed B-spline surfaces with inverted or missing bounds.
 **Geometry**: B_SPLINE_SURFACE_WITH_KNOTS (3x2, deg 2u/1v) trimmed to u:[0.5,2.5] v:[0.2,0.8].
 **Test**: Verify IsUVBounded correctly identifies bounded status despite inverted or malformed trim.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs150 — ShapeConstruct_Surface.AdjustByTransformation
 **Defect**: Placement inconsistency after coordinate system transformation on cylindrical surface.
 **Geometry**: CYLINDRICAL_SURFACE (radius 2.5) with offset AXIS2_PLACEMENT_3D at (1,2,3).
 **Test**: Verify surface parameterization remains coherent after transformation adjustment.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs151 — ShapeFix_Face.FixWireTool
 **Defect**: Seam edge consolidation failure on toroidal closed surfaces (duplicate/malformed wires).
 **Geometry**: TOROIDAL_SURFACE (major 5.0, minor 2.0) with u/v-periodic bounds.
@@ -27530,117 +27530,117 @@ trimming or intersection operations assume richer surface.
 **Geometry**: B_SPLINE_SURFACE_WITH_KNOTS (4x4, deg 3/3) trimmed to u:[1.0,3.0] v:[1.5,3.5].
 **Test**: Verify split patches respect trim bounds and maintain G1 continuity.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs153 — ShapeAnalysis_Surface.CalcMaxDegree
 **Defect**: Knot multiplicity mismatch (sum != n+p+1) causes incorrect effective degree computation.
 **Geometry**: B_SPLINE_SURFACE_WITH_KNOTS (3x3, deg 2/2) with intentionally mismatched knots.
 **Test**: Verify CalcMaxDegree detects and handles knot-count inconsistency gracefully.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(12) ifc=schema_n/a`
 ### Gs154 — CheckSmall weak tolerance comparison
 ShapeAnalysis_WireVertex::CheckSmall uses undocumented internal threshold independent of schema tolerance. Closely-spaced vertices (within declared tolerance) may be spuriously marked degenerate, causing edge collapse in healing.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a`
 ### Gs155 — CopyTrimmedSurface uv-param loss
 ShapeUpgrade_ShapeCopyTool::CopyTrimmedSurface on TOROIDAL_SURFACE loses parametrization bounds in copy. RECTANGULAR_TRIMMED_SURFACE trim range becomes semantically invalid, breaking topology.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a`
 ### Gs156 — EditVertex ordering corruption
 ShapeExtend_WireData::EditVertex corrupts edge-to-vertex connectivity during in-place reorder. Multi-edge wires with shared vertices break EDGE_LOOP closure invariants.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 ### Gs157 — GetSurfaceType misidentification via precision
 ShapeAnalysis_Geom::GetSurfaceType uses fixed classification thresholds independent of model scale. CONICAL_SURFACE near-cylindrical cases misclassified, triggering wrong healing path.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs158 — AddFace null geometry propagation
 BRepBuilderAPI_Sewing::AddFace does not validate non-null surface reference on ADVANCED_FACE. Invalid geometry propagates silently, breaking shell coherence.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs159 — RectangularTrimmedSurface null-basis unwrap
 **Defect**: GeomAdaptor_Surface unwraps trimmed surfaces without null-checking BasisSurface result. Unwrap-null handling in GeomAdaptor_Surface constructor passes null to downstream classifier, triggering undefined behavior.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs160 — GeomAdaptor_Surface offset-surface misclassification
 **Defect**: Type switch covers 5 standard types (plane, cylinder, cone, sphere, torus) but omits offset-surface branch. Offset surfaces fall to default case (LOther), losing semantic grouping and confusing downstream algorithms expecting elementary surfaces.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs161 — Face with null geometric surface
 **Defect**: Face with null surface is silently dropped from partitioned output lists without error logging or recovery. Geometry loss in healing workflows that partition by surface type (SF-003).
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs162 — Surface C0 in single direction undetected
 **Defect**: ShapeUpgrade continuity check uses AND logic (C1 in both U and V required) instead of OR. Surfaces discontinuous in only one direction are not flagged as C0. Requires B-spline with C1-U, C0-V knot multiplicity.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs163 — ShapeUpgrade large-pole B-spline threshold
 **Defect**: ShapeUpgrade observer tracks pole count exceeding 8192 (NbUPoles × NbVPoles) but threshold is hardcoded without justification. Surfaces near boundary not flagged; downstream algorithms may fail on unexpectedly large interpolation tasks.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs164 — BezierSurface pole extraction dispatch
 
 ShapeUpgrade_ShapeCopy dispatches pole extraction to BSplineSurface or BezierSurface. Missing mutual exclusion: surfaces classified as both offset-like and Bezier-like may be counted twice. Fixture: BEZIER_SURFACE 5x5 poles; observer myNbBezierSurf incremented exactly once.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs165 — OffsetSurface detection and collection mode
 
 ShapeUpgrade observer detects OffsetSurface via IsKind check; missing mode guard causes offset faces collected regardless of myOffsetSurfaceMode setting. Fixture: OFFSET_SURFACE 0.5 offset from PLANE_SURFACE; verify myNbOffsetSurf > 0 and collection behavior.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs166 — SurfaceOfRevolution V-closed seam edge gap
 
 ShapeAnalysis_Sewing.IsVClosedSurface checks V-parameter overlap on revolution surfaces. Edge pairs separated by gap > 0 may bypass overlap validation; no explicit distance check confirms closure. Fixture: SURFACE_OF_REVOLUTION with closed basis; separated edge U-parameters; verify V-closure validation.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 ### Gs167 — RectangularTrimmedSurface null basis detection
 
 ShapeUpgrade_ShapeCopy calls BasisSurface() without null check. If basis is null (malformed), down_cast succeeds but result overwritten to null; downstream GeomAdaptor_Surface(null) invokes undefined behavior. Fixture: RECTANGULAR_TRIMMED_SURFACE with basis; verify null-safety on extraction.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs168 — B-spline C0 continuity asymmetric detection
 
 ShapeUpgrade observer flags C0 surfaces via !(IsCNu(1) && IsCNv(1)). Asymmetry: if U is C1 but V is C0, flag increments; if V is C1 and U is C0, detection may skip. Fixture: B-SPLINE_SURFACE C0 in U-direction (C1 in V); verify myNbC0Surfaces incremented.
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs169 — ShapeAnalysis_Surface: rational surface knot-unaware sampling gap
 
 Rational B-spline with triple knot at u=1.0; grid sampling omits knot-position guards, missing curvature discontinuity. Defect: knot multiplicity not honored in evaluation grid.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs170 — ShapeAnalysis_Surface: trimmed surface closure validation skip
 
 RECTANGULAR_TRIMMED_SURFACE on U-periodic base (u-span trim crosses seam); closure check absent, UV domain treated as continuous. Defect: no closure-aware parameterization guard.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs171 — ShapeAnalysis_Surface: surface domain mismatch on projection result
 
 NextValueOfUV returns UV outside RECTANGULAR_TRIMMED_SURFACE domain bounds [0.2,0.8]²; bounds-check missing on result validation. Defect: unchecked UV parameter alignment.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs172 — ShapeAnalysis_Surface: degenerate surface derivative guard omission
 
 Collapsed B-spline (all poles Z=0, D1≈0) triggers division by zero in normal-projection logic. Defect: zero-magnitude derivative not guarded before evaluation.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs173 — ShapeUpgrade_ShapeCopy: offset surface mode coverage validation omission
 
 OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffsetSurfaceMode enabled without scope/extent check. Defect: offset face coverage unchecked during collection.
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs174 — SphericalSurface Pole Singularities
 **Defect**: `ShapeAnalysis_Surface.ComputeSingularities.spherical-pole-singularities` — Fails to detect both north/south poles when singularities cached. Sphere (radius 1.0); both V-closed vertex loops. Healing detects dual poles; without fix myUIsoDeg=false at each.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 ### Gs175 — ToroidalSurface Dual-Pinch Singularities
 **Defect**: `ShapeAnalysis_Surface.ComputeSingularities.toroidal-pinch-singularities` — Dual pinch detection omitted when majorR>minorR. Torus (majorR=3.0, minorR=1.5); expects 2 singularities at angular positions. Without: reports 1 pinch; missing inner-radius collapse.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Gs176 — RectangularTrimmedSurface Null Basis
 **Defect**: `Geom_RectangularTrimmedSurface.BasisSurface unwrap` — Down_cast succeeds; null check skipped on BasisSurface() result. Trimmed B-spline (3×3, deg-2); null basis overwrite triggers undefined GeomAdaptor behavior.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs177 — ConicalSurface Apex Singularity
 **Defect**: `ShapeAnalysis_Surface.ComputeSingularities.conic-apex-singularity` — Apex at v-parameter undetected. Cone (π/4 semi-angle, refRad 1.0); singularity point matches 3D apex. Without: healing misses cone-collapse degeneracy.
 - **Tier-3 assertion**: shape_null == False
@@ -27652,7 +27652,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 **Defect**: `ShapeAnalysis_Surface.ComputeSingularities.bounded-surface-edge-singularities` — 4-edge midpoint sampling omitted. OffsetSurface (0.5 offset from plane); corner distances capture collapse signature. Without: edge-tangency anomalies undetected.
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs179 — ShapeAnalysis_Surface.BSplineBoundaries rational-knot-sum validation omission
 
 | Field | Value |
@@ -29138,7 +29138,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Description**: Conical surface with an edge running vertically from the cone apex. The pcurve at the apex degenerates to the single line u=0 (axis of revolution). FixAddPCurve must construct the degenerate pcurve correctly rather than skipping or producing an invalid representation.
 - **Reproducer recipe**: see `step-examples/12-2a-pcurves/Gp048.stp`; the fixture file's top comment names the specific OCCT method and line range.
 - **Expected kernel behavior**: detect or heal per the named OCCT branch; the fixture demonstrates the buggy input pattern.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a`
 - **Tier-3 assertion**: load == "ok"
 
 ### Gp049 — ShapeAnalysis_Edge.CheckOverlapping arc-length vs parameter-space
@@ -29155,7 +29155,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Description**: Edge with high-degree B-spline 3D curve (degree 3, 10 control points, 11-knot vector) paired with a simple degree-2 PCURVE B-spline (3 control points). The knot-domain mismatch triggers recursive SameRange refinement; on deep nesting the recursion consumes stack depth before convergence.
 - **Reproducer recipe**: see `step-examples/12-2a-pcurves/Gp050.stp`; the fixture file's top comment names the specific OCCT method and line range.
 - **Expected kernel behavior**: detect or heal per the named OCCT branch; the fixture demonstrates the buggy input pattern.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 - **Tier-3 assertion**: load == "ok"
 
 ### Gp051 — ShapeAnalysis_Edge.GetEndTangent2d B-spline endpoint tangent divergence
@@ -29165,7 +29165,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Description**: B-spline pcurve with degree=1 on non-uniform knot vector [0, 0.5, 1.5, 2.5, 5]. Endpoint tangent computation uses control polygon direction instead of analytic 2D tangent, causing divergence on non-uniform knots.
 - **Reproducer recipe**: Load edge with degree-1 B-spline pcurve, non-uniform knots. Query endpoint tangent via GetEndTangent2d. Compare control polygon slope vs. analytic derivative.
 - **Expected kernel behavior**: EndTangent2d should return analytic tangent at endpoint, not control polygon direction. Non-uniform knots magnify divergence.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Tier-3 assertion**: load == "ok"
 
 ### Gp052 — ShapeFix_Edge.FixSameParameter copyedge stale range
@@ -29175,7 +29175,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Description**: When SameParameter copies edge into new TEdge, the new edge's vertex parameter range references OLD curve domain (5, 10) instead of NEW reparametrized domain (0, 1). Mismatch between 3D curve domain and pcurve range.
 - **Reproducer recipe**: Create edge with 3D curve parametrized (0, 1), pcurve domain (5, 10). Call FixSameParameter. Verify new TEdge retains stale (5, 10) range instead of reparametrized (0, 1).
 - **Expected kernel behavior**: After reparametrization via GeomLib::SameRange, new edge's pcurve range must match 3D curve domain.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Tier-3 assertion**: load == "ok"
 
 ### Gp053 — ShapeAnalysis_Edge.CheckVerticesWithPCurve start vs end asymmetry
@@ -29185,7 +29185,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Description**: ShapeAnalysis_Edge::CheckVerticesWithPCurve applies asymmetric thresholds between start- and end-vertex checks. With vp_tol(start) > vp_tol(end) on the same edge, the start check passes while the end check fails — same geometric configuration, same pcurve. The fixture provides the geometric setup (degree-2 B-spline pcurve, well-separated vertices on a planar carrier); the tolerance asymmetry is induced at the kernel-call level after load.
 - **Reproducer recipe**: Load this fixture, then programmatically set the OCCT TopoDS_Vertex tolerances (e.g. via BRep_Builder::UpdateVertex) so vp_tol(start)=0.01 > vp_tol(end)=0.001 before calling CheckVerticesWithPCurve. The static STEP carries only the geometry; the asymmetric-check failure is observable via runtime tolerance manipulation on the loaded shape.
 - **Expected kernel behavior**: Vertex tolerance checks should be symmetric. Both start and end should pass or fail under identical geometric conditions with consistent tolerance application.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Tier-3 assertion**: load == "ok"
 
 ### Gp054 — ShapeFix_Edge.FixReversed2d non-B-spline pcurve
@@ -29195,7 +29195,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Description**: FixReversed2d special-cases B-spline reversal but doesn't handle TRIMMED_CURVE wrapping a LINE. Reversal of trimmed-line pcurves leaves parameter range unflipped, creating inconsistent direction vs. range mapping.
 - **Reproducer recipe**: Create edge with TRIMMED_CURVE(LINE, [0, 50]) as pcurve. Mark edge as needing reversal. Call FixReversed2d. Verify trimmed-line pcurve range inverted (50, 0) instead of remaining (0, 50).
 - **Expected kernel behavior**: Reversal should handle all pcurve types uniformly, including trimmed curves. Parameter range must flip alongside direction reversal.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Tier-3 assertion**: load == "ok"
 
 ### Gp055 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve uniformly sampled miss
@@ -29205,7 +29205,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Description**: 3D curve with reparametrization (clustered knots at [0, 0.1, 0.5, 0.9, 1.0]) exhibiting slow start and fast end. Uniform parameter sampling misses high-curvature region compressed into u ∈ [0, 0.1].
 - **Reproducer recipe**: Create edge curve B-spline with non-uniform knots, high curvature near u=0.05. Use pcurve with matching knot clustering. Call CheckCurve3dWithPCurve with default uniform sampling. Verify high-curvature region undetected.
 - **Expected kernel behavior**: Curve-pcurve consistency check should use adaptive or knot-aware sampling to capture high-curvature regions, especially near clustered knots.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Tier-3 assertion**: load == "ok"
 
 ### Gp056 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve LOCATION transformation
@@ -29226,7 +29226,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 **Description**: Edge has only 2D pcurve on trimmed face; FixAddCurve3d builds 3D curve from pcurve but ignores face trim bounds, extending past boundary.  
 **Reproducer**: Create rectangular-trimmed surface; edge with pcurve beyond trim limits; call FixAddCurve3d; verify 3D curve respects trim range.  
 **Expected kernel behavior**: FixAddCurve3d clips generated 3D curve to face trim extent before assignment.  
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=accept(0)`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 
 - **Tier-3 assertion**: load == "ok"
 
@@ -29264,15 +29264,15 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 ### Gp061 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve sample-count threshold
 Very short edge (0.001 units on cylindrical surface) triggers sample-count collapse to 2, skipping midspan validation between 3D curve and pcurve. Reproduces OCCT scaling logic that reduces samples below viable threshold for short edges.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 ### Gp062 — ShapeFix_Edge.FixAddPCurve trimmed-surface boundary
 Edge on RECTANGULAR_TRIMMED_SURFACE (u,v ∈ [0,1]) with 3D endpoint at (1.0, 1.1, 0.0), extending beyond v_max trim boundary. FixAddPCurve constructs pcurve without validating trim window constraints.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Gp063 — ShapeAnalysis_Edge.CheckOverlapping bounded-curve trim
 Two edges share identical 3D line but with non-overlapping parameter ranges: edge1 covers parameter [0,5], edge2 covers [10,15]. CheckOverlapping fails to intersect trim domains and falsely reports overlap.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Gp064 — ShapeFix_Edge.FixRemovePCurve degenerate-on-cone
 Edge at cone apex where 3D curve has zero length (degenerate point). PCurve is parametrically valid but references degenerate geometry. FixRemovePCurve removes pcurve, leaving only unusable zero-length 3D curve.
 - **Tier-3 assertion**: shape_null == True
@@ -29291,7 +29291,7 @@ Pcurve as POLYLINE with 5 control points: (0,0)→(0.5,0)→(1,1)→(2,0.5)→(5
 
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 ### Gp067 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve trimmed-bspline misclassification
 
 **Defect**: Edge whose 3D curve is a `TRIMMED_CURVE` wrapping a BSpline; the trim window restricts to a portion where the PCurve mismatch is hidden, causing misclassification (edge marked OK when it should be flagged).
@@ -29406,19 +29406,19 @@ Periodic surface edge whose 3D and 2D parameters disagree by exactly 2π (one fu
 ### Gp082 — FixAddCurve3d trim-domain extension
 Edge on trimmed surface where the natural 3D-from-pcurve curve extends past the trim boundary; FixAddCurve3d builds the full extent instead of respecting trim domain.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=accept(0)`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp083 — CheckOverlapping period-shifted edges
 Two edges on periodic surface where their 3D geometry coincides but their 2D pcurves are in different periods (offset by 2π); CheckOverlapping reports them as non-overlapping.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=accept(0)`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Gp084 — FixSameParameter cone-apex singularity tolerance
 Edge near cone apex where geometric tolerance diverges due to apex singularity; FixSameParameter clamps tolerance and produces incorrect magnitude without accounting for local metric scaling.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=accept(0)`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp085 — GetEndTangent2d ellipse derivative asymmetry
 P-curve is an ELLIPSE entity; GetEndTangent2d uses finite-difference fallback whose result depends on parameter direction (increasing vs decreasing); assumes parameter increases only.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=accept(0)`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp086 — CheckPCurveRange domain-larger-than-3D
 
 Edge with B-spline 3D curve spanning [0,5] but B-spline pcurve spanning [0,10]. CheckPCurveRange validates pcurve range against basis curve bounds; this fixture exposes out-of-bounds pcurve parameter range. Defect: analyzer fails to flag domain overspanning on non-periodic curves.
@@ -29447,23 +29447,23 @@ Two edges on same plane: one is LINE, other is B-spline degree-1 with control po
 ### Gp091 — ShapeFix_Edge.FixSameParameter pcurve absent
 Edge with 3D curve but missing pcurve entirely; FixSameParameter attempts SameParameter calculation on null pcurve, producing NaN tolerance. Fixture has LINE edge without pcurve on PLANE face.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp092 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve degenerate-pcurve
 Edge whose pcurve degenerates to single point; CheckCurve3dWithPCurve treats degenerate as trivially agreeing with 3D curve. Fixture has LINE edge with B_SPLINE_CURVE pcurve parametrized to single point [0,0].
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp093 — ShapeFix_Edge.FixAddPCurve construct-on-conical-surface near-apex
 Edge near cone apex where (u,v) projection is mathematically unstable; FixAddPCurve constructs pcurve with NaN coordinates. Fixture has LINE edge on CONICAL_SURFACE at apex singularity (parameter space [0.001,0.001]→[0.002,0.002]).
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp094 — ShapeAnalysis_Edge.CheckOverlapping curves-tangent-at-endpoint
 Two edges meeting tangentially at shared endpoint; CheckOverlapping's interior-intersection test ignores boundary tangency. Fixture has LINE+B_SPLINE_CURVE edges meeting at common vertex with tangent alignment.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a`
 ### Gp095 — ShapeFix_Edge.FixVertexTolerance face-vertex-conflict
 Vertex shared by two faces with conflicting tolerance requirements; FixVertexTolerance picks first face's requirement, ignoring second. Fixture has vertex #31 on two PLANE faces with independent BRep_Tool::Tolerance() values.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 ### Gp096 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve direction-reversed-but-coincident
 
 Edge whose 3D curve and pcurve trace the same geometric path but with reversed parameter direction. CheckCurve3dWithPCurve evaluates same-direction samples and reports mismatch, failing to detect reversal as intentional conformance.
@@ -29522,7 +29522,7 @@ Edge on torus near minor radius singularity (v ≈ 0). 3D curve is spiral. FixAd
 
 Plane edge with 3D circle arc from parameter 0.5 to 6.0 rad (outside [0, 2π]). PCurve is untrimmed circle [0, 2π]. CheckPCurveRange fails to detect parameter range mismatch between pcurve domain and edge vertex parameters.
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp104 — ShapeFix_Edge.FixSameParameter offset-curve-3d
 
 Plane edge whose 3D curve is OFFSET_CURVE (0.2 offset from base B-spline). PCurve is B-spline matching base, not offset. FixSameParameter doesn't propagate offset distance into SameParameter tolerance calculation; edge marked SameParameter=true despite offset mismatch.
@@ -29532,7 +29532,7 @@ Plane edge whose 3D curve is OFFSET_CURVE (0.2 offset from base B-spline). PCurv
 Two edges with literally coincident 3D geometry (identical LINE 0→5 in x-axis, identical pcurves). Both reference same plane surface. CheckOverlapping with zero tolerance reports non-overlapping due to floating-point comparison; misses exact coincidence.
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 ### Gp106 — CheckSameParameter spline-vs-spline-shifted
 
 Edge with B-spline 3D curve and B-spline pcurve; pcurve's parameter range [1,2] is shifted 1.0 unit from 3D curve [0,1]. CheckSameParameter compares raw ranges and reports false mismatch despite representing identical geometry.
@@ -29548,7 +29548,7 @@ Edge whose 3D curve is B-spline of degree 0 (control-point-only, no smoothing). 
 Pcurve B-spline with knot range [0,5] used on edge parametrized [-1,6]. CheckPCurveRange fails to detect and report that pcurve evaluation falls outside valid knot domain.
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 ### Gp109 — FixReversed2d composite-pcurve
 
 Pcurve is COMPOSITE_CURVE with two line segments. FixReversed2d reverses parameter direction but leaves segment order unchanged, producing invalid geometry.
@@ -29563,7 +29563,7 @@ Pcurve B-spline with zero tangent derivative at endpoint (last two control point
 
 3D curve range [0,1] and pcurve range [0.2, 0.8] cover different portions. CheckCurve3dWithPCurve samples uniform parameter space and compares wrong portions of geometry.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp112 — ShapeFix_Edge.FixAddPCurve scaled-surface
 
 Edge on surface with internal scaling transformation. FixAddPCurve constructs pcurve in original coordinate system instead of the scaled one, creating geometric inconsistency.
@@ -29576,20 +29576,20 @@ Two edges with equivalent geometry but different curve types: one LINE and one B
 
 Closed 3D curve (circle) but pcurve is non-periodic line on plane. FixSameParameter forces periodicity mismatch between 3D and parametric representations.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp115 — ShapeAnalysis_Edge.GetEndTangent2d tangent-mid-knot
 
 Pcurve B-spline with knot at exact endpoint. GetEndTangent2d evaluates derivative at knot which produces discontinuous tangent result at boundary.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp116 — Sphere pole singularity in pcurve
 ShapeAnalysis_Edge.CheckCurve3dWithPCurve fails when pcurve passes through sphere pole (u=π/2) where tangent is undefined. Sampling uses NaN comparisons that can fail.
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a`
 ### Gp117 — Closed pcurve, open 3D curve mismatch
 ShapeFix_Edge.FixAddCurve3d constructs wrong 3D curve when pcurve is closed circle but edge is open. Closure doesn't match edge vertices.
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp118 — Very-many-samples high-curvature edge
 ShapeAnalysis_Edge.CheckCurve3dWithPCurve under-samples long B-spline with sharp oscillations; log-scaling still misses fine features.
 - **Tier-3 assertion**: shape_null == True
@@ -29597,36 +29597,36 @@ ShapeAnalysis_Edge.CheckCurve3dWithPCurve under-samples long B-spline with sharp
 ### Gp119 — Cylinder seam-edge pcurve ambiguity
 ShapeFix_Edge.FixSameParameter handles seam edge (u=0 vs u=2π) ambiguously; pcurve parameter mismatch between 0 and 2π.
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp120 — Composite pcurve tangent discontinuity
 ShapeAnalysis_Edge.GetEndTangent2d fails on COMPOSITE_CURVE with G0 continuity; tangent jump at segment join causes discontinuity.
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp121 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve OFFSET_CURVE
 
 Edge with 3D OFFSET_CURVE wrapping a line. CheckCurve3dWithPCurve samples but offset application uses base-curve normal, ignoring offset distance.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp122 — ShapeFix_Edge.FixAddPCurve B-spline-on-trimmed-surface
 
 Edge on RECTANGULAR_TRIMMED_SURFACE wrapping B-spline. FixAddPCurve constructs pcurve in base-surface coords, missing trim translation.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp123 — ShapeAnalysis_Edge.CheckPCurveRange CIRCLE with-large-radius
 
 Pcurve is CIRCLE with radius 1e6 but edge parameters [0, 0.001]. CheckPCurveRange's tolerance check uses absolute parameter not arc-length.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp124 — ShapeFix_Edge.FixReversed2d HYPERBOLA
 
 Pcurve is HYPERBOLA with reversed edge orientation. FixReversed2d's reversal doesn't handle asymptote-direction invariant.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp125 — ShapeAnalysis_Edge.GetEndTangent2d at-trim-boundary
 
 Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim boundary, producing wrong direction.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp126 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve plane-projection mismatch
 - **Category**: §12.2a pcurves
 - **Sources**: OCCT/ShapeAnalysis_Edge::CheckCurve3dWithPCurve
@@ -29767,7 +29767,7 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Fixture path**: step-examples/12-2a-pcurves/Gp138.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Gp139 — BRepBuilderAPI_Sewing.SameParameterEdge.seam-dual-pcurve-extraction
 - **Category**: §12.2a pcurves
 - **Sources**: OCCT/BRepBuilderAPI_Sewing
@@ -29878,7 +29878,7 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp149 — Straight-line tangent magnitude zero; complete tangent degeneracy
 - **Category**: §12.2a pcurves
 - **Sources**: OCCT/ShapeAnalysis_Edge.GetEndTangent2d
@@ -29906,7 +29906,7 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 Periodic P-curve with parameter range straddling 2π boundary; validation assumes wrap-around is intentional without detecting non-monotonic parametrization. Reproduces OCCT line 1007 defect.
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 ### Gp152 — ShapeAnalysis_Edge.CheckVerticesWithPCurve location_transformation_semantics
 Edge bound to surface with non-identity location; P-curve endpoint transform omitted from vertex distance check. Analyzer fails to apply surface location xform to V1/V2 projections. Reproduces line 539 defect.
 - **Tier-3 assertion**: shape_null == True
@@ -29918,7 +29918,7 @@ Edge bound to surface with non-identity location; P-curve endpoint transform omi
 ### Gp154 — ShapeAnalysis_Edge.CheckVerticesWithPCurve selective_vertex_checking
 First vertex offset from 3D curve start; distance check omitted when vtx==2 parameter set. Analyzer masks V1 discrepancy while checking V2. Reproduces line 533 defect.
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp155 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve pcurve_extraction_failure
 Empty P-curve representation with null curve data; extraction fails silently at FAIL1 status. Analyzer masks missing parametric curve without reporting diagnostic. Reproduces line 391 defect.
 - **Tier-3 assertion**: shape_null == True
@@ -29930,20 +29930,20 @@ Parameter delta below Precision::PConfusion skips tangent difference computation
 ### Gp157 — ShapeAnalysis_Surface.ProjectDegenerated `lazy-singularity-init`
 Projector proceeds without triggering ComputeSingularities. Degenerate edge-points near apex project incorrectly; singularity loci undetected. Cone surface with edge approaching apex singularity at u=0.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp158 — ShapeAnalysis_Surface.ProjectDegenerated `whole-edge-degenerate`
 All pcurve points collapse to singularity; even-spacing fallback not triggered. Inconsistent parametric values remain unmapped. Cone with entire pcurve at u=0 (apex), varying v ∈ [0, 1].
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a`
 ### Gp159 — ShapeAnalysis_Surface.ProjectDegenerated `partial-edge-collapse`
 First half of pcurve near singularity not collapsed to parameter. Mixed degenerate/non-degenerate segment fails healing signal propagation. Sphere with pcurve starting at pole (u≈0.01), ending equator (u=0.5).
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp160 — ShapeAnalysis_Surface.ProjectDegenerated `singularity-tolerance-threshold`
 Singularity tolerance exceeds requested precision; tolerance filter passes high-tolerance singularities. Degenerate points project onto cone apex with unvalidated precision consistency. Cone with gradient approach toward u=0 singularity.
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp161 — seam_detection_1843
 
 Seam edge with unreversed pcurve equality check without parametric domain validation. BSpline surface with dual pcurves; orientation loss on merge. Line 1843: `aFaceSeq.Length() == 1` check branches onto unreversed equality without orientation tracking.
@@ -29985,7 +29985,7 @@ Toroidal surface with meridian edge. Singularities computed lazily without reval
 ### Gp169 — `ProjectDegenerated.dual-distance-logic`
 B-spline surface with 3D curve initial gap. Pcurve distance metrics inconsistently recompute; direct vs. recomputed gap comparison diverges.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp170 — `ProjectDegenerated.iso-flag-unvalidated`
 Planar surface with U-iso degenerate edge. U-constant pcurve lacks coordinate-axis consistency check; flag used without validation.
 - **Tier-3 assertion**: shape_null == True
@@ -30451,7 +30451,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 **Source**: OCCT_HEAL_COVERAGE_V3.md § BRepLib.UpdateEdgeTol (UET-002, low-confidence)
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N082 — ShapeAnalysis_ShapeTolerance.AddTolerance shape-type membership
 
 **Defect**: AddTolerance(shape, type) where type is COMPOUND; AddTolerance's iteration counts each sub-shape's tolerance once per containment level, leading to phantom double-counts in nested structures.
@@ -30461,7 +30461,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 **Source**: OCCT_HEAL_COVERAGE_V3.md § ShapeAnalysis_ShapeTolerance.AddTolerance_at240
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=accept(0)`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 ### N083 — ShapeFix_ShapeTolerance.SetTolerance compound + nested
 
 **Defect**: SetTolerance(compound) doesn't propagate tolerance into nested solids' shells. Recursive descent stops before internal shell traversal, leaving nested geometry uncorrected.
@@ -30471,7 +30471,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 **Source**: OCCT_HEAL_COVERAGE_V3.md § ShapeFix_ShapeTolerance.SetTolerance_at145 (recursive_double_mutation)
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N084 — BRepLib.UpdateInnerTolerances degenerate-edge postcondition
 
 **Defect**: Degenerate edge check skips tolerance update; vertex distances still computed and updated post-loop. Loop exits on degeneracy but vertices V1, V2 at lines 85-98 still receive UpdateVertex calls with undefined End1/End2 values.
@@ -30481,7 +30481,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 **Source**: OCCT_HEAL_COVERAGE_V3.md § BRepLib.UpdateInnerTolerances (UIT-001)
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N085 — ShapeAnalysis_Edge.CheckPoints precision-asymmetry
 
 **Defect**: Vertex tolerances differ by 10x; CheckPoints averages the precision implicitly, using a single tolerance for both sides. Condition P1A.SquareDistance(P2A) <= preci1² && P1B.SquareDistance(P2B) <= preci2² conflates two independent tolerances; no mixed-tolerance path.
@@ -30490,7 +30490,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 
 **Source**: OCCT_HEAL_COVERAGE_V3.md § ShapeAnalysis_Edge.CheckPoints_at435 (SQUARED_DISTANCE_THRESHOLD)
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N086 — Closed BSpline SameParameter wrapping
 ShapeFix_Edge.FixSameParameter fails to account for parameter wrapping in periodic B-splines. Computes SameParameter assuming open curve; closed spline edges with v ∈ [0,2π) incorrectly flagged as non-same-parameter when edge uses modulo arithmetic.
 - **Tier-3 assertion**: n_faces_total == 1
@@ -30520,7 +30520,7 @@ ShapeAnalysis_ShapeTolerance.GlobalTolerance mode=2 (weighted average) counts fo
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N091.stp`
 
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a`
 ### N092 — ShapeAnalysis_ShapeTolerance.AddTolerance type-mismatch
 
 **Defect**: AddTolerance(shape, tol, TopAbs_FACE) silently skips WIRE entries during iteration. Tolerance accumulation incomplete; downstream algorithms receive partial state.
@@ -30540,7 +30540,7 @@ ShapeAnalysis_ShapeTolerance.GlobalTolerance mode=2 (weighted average) counts fo
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N093.stp`
 
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N094 — ShapeFix_Edge.FixVertexTolerance precision-floor
 
 **Defect**: Shared vertex used by edges with tolerance extremes (1e-10 and 1e-3). FixVertexTolerance computes harmonic mean that underflows to 0, violating invariant tol(vertex) >= max(tol(edges)).
@@ -30550,7 +30550,7 @@ ShapeAnalysis_ShapeTolerance.GlobalTolerance mode=2 (weighted average) counts fo
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N094.stp`
 
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N095 — ShapeAnalysis_Edge.CheckPoints tolerance-aware-distance
 
 **Defect**: CheckPoints uses min(preci1, preci2) as single symmetric threshold. Should apply directional asymmetric bounds; preci1 and preci2 represent endpoint-specific precision contexts.
@@ -30559,7 +30559,7 @@ ShapeAnalysis_ShapeTolerance.GlobalTolerance mode=2 (weighted average) counts fo
 
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N095.stp`
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N096 — BRepLib.UpdateInnerTolerances cone-apex-singularity
 
 **Defect**: Edge passes through cone apex where curvature → ∞; UpdateInnerTolerances samples near singularity, Epsilon(aDist) diverges, producing unbounded tolerance. Algorithm lacks guard against singular points.
@@ -30590,7 +30590,7 @@ ShapeAnalysis_ShapeTolerance.GlobalTolerance mode=2 (weighted average) counts fo
 
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 ### N099 — BRepLib.UpdateEdgeTol multi-face-edge buffer overflow
 
 **Defect**: Edge shared by 6+ faces; UpdateEdgeTol samples face-edge intersections in a loop with hardcoded buffer (space for ≤4 faces). Count of 6 overflows array, causing memory corruption or silent data loss.
@@ -30617,23 +30617,23 @@ Average threshold ≈ 0.5. E1 fails individual but passes average. E2 passes ind
 ### N101 — ShapeFix_Edge.FixVertexTolerance reset-on-fix
 Vertex tolerance escalated during initial edge check, then silently reset to base value when FixVertexTolerance executes. Defect: no error on tolerance loss; downstream checks see degraded tolerance state and fail inconsistently.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N102 — ShapeAnalysis_Edge.CheckOverlapping multi-curve three-way overlap
 Three edges share identical 3D LINE geometry. CheckOverlapping designed for pairwise comparison; three-way case produces inconsistent verdicts (edge 1-2 vs 2-3 vs 1-3). Defect: voting inconsistency in overlap classification.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N103 — BRepLib.UpdateEdgeTol negative-coverage sparse sampling
 Edge tolerance recomputed via interpolation across sampled sub-regions. Sparse sampling leaves gaps with zero coverage; interpolation breaks down, produces NaN or infinite tolerance in unsampled zone. Defect: interpolation instability on sparse sample sets.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N104 — ShapeFix_ShapeTolerance.SetTolerance applied-to-frozen-shape
 SetTolerance called on shape already marked immutable by downstream API (e.g., post-validate). Modification executes silently without error; tolerance state becomes corrupt (cached vs. actual mismatch). Defect: no precondition validation; silent state mutation.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N105 — ShapeAnalysis_Edge.CheckOverlapping coincident-but-different-direction
 Two edges geometrically coincident but opposite-directed (edge 1: v1→v2, edge 2: v2→v1). CheckOverlapping reports 3D overlap, but direction-strict check fails. Defect: direction invariance missing; conflicting verdicts on same geometry.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N106 — ShapeFix_Edge.FixVertexTolerance vertex-on-singular-surface
 
 Vertex tolerance evaluation on cone apex (singular surface point). FixVertexTolerance evaluates surface curvature at apex, producing unbounded tolerance due to infinite curvature. Edge from apex to base point on cone surface with parametric tolerance inference. Tests geometry curvature singularity handling.
@@ -30643,22 +30643,22 @@ Vertex tolerance evaluation on cone apex (singular surface point). FixVertexTole
 
 AddTolerance call updates internal history list; list pointer becomes stale after first update. Closed rectangular face with four edges on plane. Triggers history tracking mechanism during tolerance accumulation across recursive shape graph traversal.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N108 — BRepLib.SameRange clamped-range
 
 SameRange called on edge with parameter range [0.999, 1.001] near parametric boundary. Rounding logic fails to detect range adjustment needed; function returns success without actual parameter synchronization. Linear edge on plane tests range clamping behavior.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N109 — ShapeFix_ShapeTolerance.SetTolerance with-cyclic-reference
 
 Shape with cyclic reference in sub-shape graph; SetTolerance recursion lacks cycle detection and loops indefinitely. Closed rectangular face referenced twice in shell structure to create circular topology. Tests recursion termination condition.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N110 — ShapeAnalysis_Edge.CheckPoints precision-vs-projection-distance
 
 CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 internally. Verdict based on smaller internal threshold contradicts caller's tolerance specification. Long linear edge (100mm) tests precision asymmetry in point-pair distance evaluation.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N111 — FixVertexTolerance vertex-tolerance-from-tessellation
 **Defect**: ShapeFix_Edge.FixVertexTolerance computes vertex tolerance from tessellation that's been internally simplified; uses simplified mesh tolerance instead of original geometry.
 **Pattern**: Single-face shell with edge; UNCERTAINTY_MEASURE_WITH_UNIT set to 1.23E-7 (tessellation-derived tolerance).
@@ -30695,28 +30695,28 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 
 **Reproducer**: Star topology with a central hub vertex (#11) shared by 4 radial edges, each demanding a different tolerance (1e-2, 1e-3, 1e-4, 1e-5). The algorithm processes edges in order, overwriting the hub's tolerance 4 times. Downstream operations see only the last (1e-5) value instead of the maximum required (1e-2).
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N117 — ShapeAnalysis_Edge.CheckOverlapping mixed-curve-orientation
 
 **Defect**: Overlapping edges where one is traversed forward and the other backward (geometrically identical path); `CheckOverlapping`'s directional test compares tangent directions and reports no overlap when they differ, even though the 3D curves are coincident. This masks topology errors where duplicate geometry should be detected.
 
 **Reproducer**: Two identical line segments (0,0,0) to (10,0,0), one with EDGE_CURVE forward direction (+X), one backward (−X direction). Both form a wire boundary loop. The directional mismatch causes the overlap check to return false negative.
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N118 — BRepLib.UpdateEdgeTol with-pcurve-discontinuity
 
 **Defect**: Edge whose pcurve has a C0 discontinuity in the middle; `UpdateEdgeTol` samples uniformly and the discontinuity contaminates one sample's tolerance calculation, inflating the entire edge tolerance to hide the discontinuity instead of reporting healing failure.
 
 **Reproducer**: Single edge spanning (0,0,0) to (10,0,0) in 3D with a composite pcurve consisting of two B-spline segments meeting at u=0.5. Segment A ends at (5.0, 0.0) in uv; segment B begins at (5.0, 0.5)—a 0.5-unit jump in v. Uniform sampling hits this discontinuity and inflates the edge tolerance to 0.5 rather than reporting the gap.
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N119 — ShapeFix_ShapeTolerance.LimitTolerance with-very-large-shape
 
 **Defect**: Shape with coordinates at 1e10 scale; `LimitTolerance`'s relative comparison underflows because input tolerance has no scale awareness. A tolerance of 1.0 is reasonable for coords at 1e10 (relative precision 1e−10), but relative checks like `(tol / MAX_COORD)` underflow to zero, causing the method to reject valid tolerances and report spurious violations.
 
 **Reproducer**: Single edge at (1e10, 1e10, 1e10) to (1e10, 1e10+1, 1e10) with nominal tolerance 1.0 in the uncertainty context. LimitTolerance's internal relative ratio test underflows, flagging this as an invalid tolerance configuration.
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N120 — ShapeAnalysis_ShapeTolerance.GlobalTolerance averaging-over-empty
 
 **Defect**: Call `GlobalTolerance` with mode=avg on a shape containing no vertices/edges of the requested type; division-by-zero produces NaN. The method accumulates sum across elements and divides by count at the end, but does not guard against empty iteration.
@@ -30736,21 +30736,21 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 **Input pattern:** Edge with parametric sample points; precision parameter initialized to 0.0 or missing  
 **Triggering condition:** NaN comparisons in point validation loop; `dist > NaN` always false, skipping tolerance checks
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### N123 — BRepLib.UpdateEdgeTol with-edge-on-degenerate-surface
 
 **Defect category:** Surface singularity / numeric stability  
 **Input pattern:** Edge on conical surface at apex (parametric u=0, degenerate parametric domain)  
 **Triggering condition:** Sampling edge at parametric intervals produces zero-length derivatives on degenerate patch; division-by-zero or normalization singularity
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### N124 — ShapeFix_ShapeTolerance.SetTolerance recursion-stack-overflow
 
 **Defect category:** Recursion depth control  
 **Input pattern:** Deeply nested COMPOUND_SHAPE structure (50+ levels of nesting)  
 **Triggering condition:** SetTolerance recurses on compound children without stack depth guard; uncontrolled recursion exhausts stack
 - **Tier-3 assertion**: n_faces_total == 1
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### N125 — ShapeAnalysis_ShapeTolerance.AddTolerance concurrent-modification
 
 **Defect category:** Iterator invalidation / concurrent modification  
@@ -30823,7 +30823,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Fixture path**: step-examples/12-4-tolerance/N131.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N132 — ShapeFix_ShapeTolerance ambiguous equality bound
 - **Category**: §12.4 tolerance (sub-class: limit_tolerance)
 - **Sources**: OCCT/ShapeFix_ShapeTolerance.cxx:45
@@ -30834,7 +30834,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Fixture path**: step-examples/12-4-tolerance/N132.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N133 — ShapeFix_ShapeTolerance negative precision acceptance
 - **Category**: §12.4 tolerance (sub-class: input_validation)
 - **Sources**: OCCT/ShapeFix_ShapeTolerance.cxx:148
@@ -30845,7 +30845,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Fixture path**: step-examples/12-4-tolerance/N133.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N134 — ShapeFix_ShapeTolerance shared vertex double mutation
 - **Category**: §12.4 tolerance (sub-class: recursive_application)
 - **Sources**: OCCT/ShapeFix_ShapeTolerance.cxx:98
@@ -30856,7 +30856,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Fixture path**: step-examples/12-4-tolerance/N134.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N135 — ShapeAnalysis_ShapeTolerance missing face validity check
 - **Category**: §12.4 tolerance (sub-class: state_validation)
 - **Sources**: OCCT/ShapeAnalysis_ShapeTolerance.cxx:87
@@ -30868,35 +30868,35 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Fixture kind**: scaffold
 
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N136 — ShapeAnalysis_ShapeTolerance.MaxTolerance.unbounded_edge_iteration
 - **Pattern**: Tolerance accumulation without parameterization bounds validation
 - **Trigger**: Infinite curve ranges in edge iteration; no overflow guard
 - **Impact**: Spurious max-tolerance values mask real violations
 - **Axiom**: Edge iteration MUST check bounds before range access
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N137 — BRepBuilderAPI_Sewing.AnalysisNearestEdges.distance_tolerance_filter_bypass
 - **Pattern**: Missing distance threshold check on candidate filtering
 - **Trigger**: arrDist(n) > tolerance not validated; tabDst index unprotected
 - **Impact**: Out-of-tolerance edges pass as false matches (distance=0.5, tol=0.1)
 - **Axiom**: All distance candidates MUST be filtered against tolerance ceiling
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N138 — ShapeAnalysis_Edge.CheckPoints.tolerance_conservatism_fail
 - **Pattern**: Conservative tolerance selection without endpoint validation
 - **Trigger**: Tightest precision bound chosen (1e-8) but not enforced on both endpoints
 - **Impact**: Precision-varying edges (5e-7 sep > 1e-8 tol) incorrectly rejected
 - **Axiom**: Conservative tolerance selection MUST validate all endpoints within bound
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N139 — ShapeAnalysis_ShapeTolerance.OuterWire.tolerance_layer_recursion
 - **Pattern**: Nested wire tolerance scaling without recursion depth tracking
 - **Trigger**: Circular wire references with tolerance propagation; no cycle counter
 - **Impact**: Stack exhaustion or infinite loops in tolerance validation chains
 - **Axiom**: Tolerance layer traversal MUST include depth limits and cycle detection
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N140 — ShapeAnalysis_Surface.Continuity.tolerance_interval_mismatch
 - **Pattern**: Surface continuity check omits boundary tolerance scaling
 - **Trigger**: Parameter interval alignment (gap=0.001 vs tol base=1e-7) ignores scale
@@ -30909,7 +30909,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - No forward references
 - ISO-10303-21 header line 1
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N141 — ShapeFix_IntersectionTool.FixIntEdges tolerance_selection
 
 - **Defect**: Vertex tolerance initialized from V1 without considering V2 tolerance level.

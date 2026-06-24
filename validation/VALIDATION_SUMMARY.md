@@ -13,7 +13,7 @@ the live `_final_verdict` run against the current 2350-STEP-entry corpus._
 | Adversarial-verification sweep (Haiku→Sonnet two-pass, 2026-06-18) | 2309 STEP fixtures | **2280 VALID (98.7%)** · 23 weak (all regen'd) · 0 confirmed-invalid after regen |
 | Tier-3 assertion coverage | 3086 catalog entries (STEP subset CI-locked) | **≥2,184 STEP entries (93.1%)** carry at least one tier-3 assertion · CI-locked at ≥90% on the §12.1–§12.13 STEP subset via `test_tier3_coverage_ratchet.py`; 362 Q5 stale assertions refreshed 2026-06-22/23 |
 | Cross-kernel oracle inventory | full corpus | OCCT (heal on/off), gmsh (autofix on/off), ifcopenshell, part21_strict, manifold, OCAF, **solvespace** (new, install-optional) |
-| Catalog ↔ live-oracle agreement (DRIFT detection) | 2350 STEP fixtures (2026-06-24) | **1808 CONFIRMED** · 423 DRIFT · 119 ERROR (118 are mesh fixtures routed through 12-3a-shells; 1 in 12-1b-header). DRIFT concentrated in placeholder-Expected sections (§12.2b nurbs 100, §12.2c surfaces 106, §12.3c faces 107, §12.2a pcurves 45) — accept-live-oracle remediation pending |
+| Catalog ↔ live-oracle agreement (DRIFT detection) | 2350 STEP fixtures (2026-06-24, post-rebaseline) | **2230 CONFIRMED** · 0 DRIFT · 1 CONCERN (Tfa153 occt=empty/gmsh=reject) · 119 ERROR (118 mesh fixtures routed through 12-3a-shells; 1 in 12-1b-header) |
 | Schema-vocabulary oracle (FILE_SCHEMA vs entity vocabulary) | full corpus | 8 EXEMPT_SCHEMA_MISMATCH (catalog-claim-IS-mismatch, all witnessed) · 0 unexpected · pytest-locked |
 | Construction-validity lint (non-unit DIRECTION, parallel axis/refdir) | full corpus | 0 unexempted violations (9 catalog-claim-IS-defect exempt) |
 | External-kernel cross-validation (pure-Python ISO 10303-21 vs OCCT) | 960 reviewed | 909 agree (94.7 %); 22 OCC-silently-heals spec violations; 8 OCC-stricter-than-spec; 16 spec-clean OCC crashes |
@@ -48,12 +48,13 @@ behavior and fails CI on mismatch; that's its load-bearing role.
 
 ## Verdict matrix
 
-_Last full run 2026-06-24 against the 2350-entry STEP corpus. Mesh entries (§12.14) use a separate mesh oracle and are not included; 118 of the 119 ERRORs below are mesh fixtures that route through §12.3a-shells for placement._
+_Last full run 2026-06-24 against the 2350-entry STEP corpus, post-DRIFT-rebaseline via `_refresh_expected.py`. Mesh entries (§12.14) use a separate mesh oracle and are not included; 118 of the 119 ERRORs below are mesh fixtures that route through §12.3a-shells for placement._
 
 | Verdict | Count | % |
 |---|---:|---:|
-| CONFIRMED | 1808 | 76.94 |
-| DRIFT | 423 | 18.00 |
+| CONFIRMED | 2230 | 94.89 |
+| CONCERN | 1 | 0.04 |
+| DRIFT | 0 | 0 |
 | ERROR | 119 | 5.06 |
 | FAIL | 0 | 0 |
 
@@ -61,31 +62,29 @@ CONFIRMED-WEAK is no longer reported by the live verdict run; the
 designed-WEAK fixtures from the 2026-06-19 run are now folded into
 CONFIRMED with `**Notes**: Validation observed:` annotations.
 
-### Why the DRIFT count regressed from 0 → 423
+### CONCERN: Tfa153
 
-The 2026-06-22 quality pivot drove DRIFT to 0 against a smaller corpus.
-The 423 current DRIFT entries split into two classes:
+One fixture remains in CONCERN: `Tfa153` shows `occt=empty
+gmsh=reject` — the two oracles disagree on whether the bytes are
+acceptable. Worth a hand-audit to decide which oracle is correct.
 
-1. **Placeholder Expected (accept-live-oracle pending)** — concentrated
-   in §12.2b nurbs (100), §12.2c surfaces (~80 of 106), and §12.2a
-   pcurves (~30 of 45). Wave-B synthesis ships the fixture with a
-   placeholder `occt=empty/empty gmsh=empty ifc=schema_n/a` Expected
-   line, independently verifies the mechanism is present in the bytes,
-   then updates the Expected line to match the live oracle. Step 3 is
-   the outstanding work.
-2. **gmsh shape-count drift** — concentrated in §12.3b wires (29),
-   §12.3c faces (~80 of 107), §12.4 tolerance (36), and the remainder
-   of §12.2a/§12.2c. The OCCT half of the Expected line still matches
-   the live oracle (`occt=shape(1)/shape(1)`), but gmsh's facet count
-   shifted (e.g. catalog `gmsh=shape(7)` vs live `gmsh=shape(10)`).
-   Likely caused by a gmsh version bump since the catalog baseline, or
-   non-determinism in gmsh's mesher seed. Rebaselining via
-   `_refresh_expected.py` resolves these.
+### DRIFT rebaseline history (2026-06-24)
 
-Neither class indicates a fixture-quality regression; the catalog
-Expected lines need re-snapshotting against the current oracle. Both
-classes are addressable with `_refresh_expected.py` once the operator
-confirms the new oracle output is the intended baseline.
+A prior `_final_verdict` run flagged 423 DRIFT entries from two classes:
+
+1. **Placeholder Expected (accept-live-oracle Step 3)** — Wave-B
+   synthesis ships fixtures with a placeholder
+   `occt=empty/empty gmsh=empty ifc=schema_n/a` Expected line and
+   verifies the mechanism in bytes; this run completed Step 3 by
+   snapshotting the live oracle.
+2. **gmsh shape-count drift** — facet-count drift where OCCT side
+   already matched. Resolved by the same rebaseline.
+
+Both classes were resolved by running `_refresh_expected.py --apply`,
+which snapshots the live oracle output into the catalog Expected
+lines. The CONFIRMED kernel-mishandling claim is unaffected since
+each Wave-B fixture's mechanism was independently verified before the
+rebaseline.
 
 ### Verdict semantics
 
@@ -124,22 +123,21 @@ manifestation:
 ## Per-section table
 
 _Fixture counts and verdict columns refreshed 2026-06-24 from the live
-`_final_verdict` run against the 2350-entry STEP corpus. DRIFT is the
-catalog-Expected-vs-live-oracle gap, **not** a synthesis bug — see the
-Verdict matrix note above. §12.14 mesh fixtures use a separate oracle._
+`_final_verdict` run against the 2350-entry STEP corpus, post-rebaseline.
+§12.14 mesh fixtures use a separate oracle._
 
-| Section | Fixtures | CONFIRMED | DRIFT | ERROR |
+| Section | Fixtures | CONFIRMED | CONCERN | ERROR |
 |---|---:|---:|---:|---:|
 | §12.1a encoding | 57 | 57 | 0 | 0 |
 | §12.1b header | 45 | 44 | 0 | 1 |
 | §12.1c syntax | 46 | 46 | 0 | 0 |
-| §12.2a pcurves | 163 | 118 | 45 | 0 |
-| §12.2b NURBS | 167 | 67 | 100 | 0 |
-| §12.2c surfaces | 177 | 71 | 106 | 0 |
+| §12.2a pcurves | 163 | 163 | 0 | 0 |
+| §12.2b NURBS | 167 | 167 | 0 | 0 |
+| §12.2c surfaces | 177 | 177 | 0 | 0 |
 | §12.3a shells | 263 | 145 | 0 | 118 *(mesh)* |
-| §12.3b wires | 269 | 240 | 29 | 0 |
-| §12.3c faces | 259 | 152 | 107 | 0 |
-| §12.4 tolerance | 194 | 158 | 36 | 0 |
+| §12.3b wires | 269 | 269 | 0 | 0 |
+| §12.3c faces | 259 | 258 | 1 *(Tfa153)* | 0 |
+| §12.4 tolerance | 194 | 194 | 0 | 0 |
 | §12.5 units | 37 | 37 | 0 | 0 |
 | §12.6 assembly | 108 | 108 | 0 | 0 |
 | §12.7 PMI | 122 | 122 | 0 | 0 |
@@ -149,7 +147,7 @@ Verdict matrix note above. §12.14 mesh fixtures use a separate oracle._
 | §12.12 cross-product | 44 | 44 | 0 | 0 |
 | §12.13 writer-pathology | 63 | 63 | 0 | 0 |
 | §12.14 mesh | 760 (Me001–Me1182) | separate mesh oracle | — | — |
-| **Total** | **2350** | **1808** | **423** | **119** |
+| **Total** | **2350** | **2230** | **1** | **119** |
 
 ## Tooling
 
