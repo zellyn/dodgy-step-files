@@ -58905,7 +58905,7 @@
   },
   {
     "byte_assertions": [
-      "count_entity_def(b'ADVANCED_FACE') == 1"
+      "count_entity_def(b'ADVANCED_FACE') == 2"
     ],
     "category": "§12.3a shells/orientation",
     "closure_defect": null,

@@ -19447,7 +19447,7 @@ _Section summary: 41 entries._
  must terminate (use vertex+direction or edge+direction in the visited
  map); reject pathological wires before iterating.
 - **Notes**: **See also**: Twi076, Tsh056b. Synonyms: "face merge hangs on figure-eight wire", "infinite loop in unifier on non-simple wire", "edge walker stuck on pinched face", "non-simple wire causes hang", "face merge fails to terminate".
-- **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
+- **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
 - **Tier-3 assertion**: n_faces_total == 2
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
