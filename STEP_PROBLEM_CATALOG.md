@@ -36783,3 +36783,91 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=4 e=6 f=3 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me585.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me560 — loopSubdivision midpoint_vs_full_relaxation: central vertex v6 fully interior; eligible for Loop-scheme vertex relaxation (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: loop-subdivision / vertex-relaxation)
+- **Sources**: MeshFix `Basic_TMesh.loopSubdivision` Branch 1 (*midpoint_vs_full_relaxation*: `if(!loopRelaxOriginal) { /* skip */ } else { v->x=…; v->y=…; v->z=…; }`) @ line 106; `MESH_HEAL_COVERAGE.md`.
+- **Description**: A hexagonal fan of 6 triangles (t0–t5) around a central fully-interior vertex v6. All 6 spoke edges (v6,vi) are interior (n=2); all 6 perimeter edges are boundary (n=1). v6 has no boundary-edge incidence, so it is fully interior and eligible for Loop-scheme position relaxation (the loopRelaxOriginal=true branch). Euler: V=7, E=12, F=6, chi=1.
+- **Reproducer recipe**: v0–v5 form a regular hexagonal boundary ring; v6=(0.5,0.866,0) at centre; 6 fan triangles (vi,v[i+1],v6); all (vi,v6) assert_edge_shared n=2; all (vi,v[i+1]) assert_edge_shared n=1; euler V=7,E=12,F=6,chi=1.
+- **Expected kernel behavior**: Branch 1 fires for v6; loopRelaxOriginal=true path updates v6 position using Loop's β-weighted average of its 6 neighbours; midpoint-only path (loopRelaxOriginal=false) would leave v6 unchanged.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,6] n=2`
+- **Mesh assertion**: `euler_characteristic v=7 e=12 f=6 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me560.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me561 — loopSubdivision selection_constrained_vs_global: selected patch t0+t1+t2 vs unselected t3+t4; bridge edges n=2 (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: loop-subdivision / partial-selection)
+- **Sources**: MeshFix `Basic_TMesh.loopSubdivision` Branch 2 (*selection_constrained_vs_global*: `if(is_selection) { if(!IS_VISITED(t)) continue; }`) @ line 108; `MESH_HEAL_COVERAGE.md`.
+- **Description**: Five triangles split into a selected patch (t0,t1,t2 — IS_VISITED) and an unselected patch (t3,t4). Bridge edges (v1,v4) and (v3,v4) are interior (n=2) crossing the selection boundary; within each patch, shared edges are also n=2. Only the selected triangles' edge-visits fire the subdivision mark; unselected triangles' edges are skipped by the is_selection branch. Euler: V=6, E=10, F=5, chi=1.
+- **Reproducer recipe**: v0–v5 placed in two-group layout; t0=(0,1,2), t1=(1,3,2), t2=(1,3,4) selected; t3=(3,4,5), t4=(1,4,5) unselected; assert_edge_shared(v3,v4,2), assert_edge_shared(v1,v4,2) as bridge edges; euler V=6,E=10,F=5,chi=1.
+- **Expected kernel behavior**: Branch 2 fires for t3 and t4 (is_selection=true, IS_VISITED=false → continue); only t0,t1,t2 edges are marked for subdivision; partial-subdivision result is produced.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=6 e=10 f=5 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me561.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me562 — loopSubdivision sharp_edge_preservation: t0/t1 share crease edge (v1,v2) with steep dihedral; IS_SHARPEDGE branch triggered (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: loop-subdivision / sharp-crease)
+- **Sources**: MeshFix `Basic_TMesh.loopSubdivision` Branch 3 (*sharp_edge_preservation*: `if(IS_SHARPEDGE(e)) { detected_sharp = 1; }`) @ line 115; `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangles (t0 flat in XY, t1 folded steeply downward, t2 extending t1). t0 normal=(0,0,+1); t1=(v2,v1,v3) normal dot-product with t0 ≈ −0.35 (normals anti-parallel → inconsistent winding). The shared edge (v1,v2) is the crease with a dihedral angle ~110° (far above the 60° IS_SHARPEDGE threshold). t1 and t2 share interior edge (v1,v3) n=2. Euler: V=5, E=7, F=3, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0) flat; v3=(1,−0.5,−3) below plane; v4=(3,−0.5,−1.5) extension; t0=(v0,v1,v2), t1=(v2,v1,v3), t2=(v1,v4,v3); assert_edge_shared(v1,v2,2); adjacent_triangles_inconsistent_winding(t0,t1); euler V=5,E=7,F=3,chi=1.
+- **Expected kernel behavior**: Branch 3 fires on edge (v1,v2); IS_SHARPEDGE returns true; detected_sharp is set to 1; subdivision proceeds but sharp-edge warning is logged.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,1]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=5 e=7 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me562.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me563 — loopSubdivision boundary_vs_interior_edge_split: 4-triangle strip mixing n=1 boundary and n=2 interior edges (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: loop-subdivision / boundary-split)
+- **Sources**: MeshFix `Basic_TMesh.loopSubdivision` Branch 4 (*boundary_vs_interior_edge_split*: `if(e->isOnBoundary()) { /* midpoint */ } else { /* Loop weights, k */ }`) @ line 125; `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 2×2 strip of 4 triangles (t0–t3). Interior shared edges (v1,v2), (v1,v4), (v3,v4) are n=2 — split using Loop-scheme weights with valence k. Perimeter edges (v0,v1), (v0,v2), (v2,v4), (v4,v5), (v3,v5), (v1,v3) are n=1 — split using simple midpoint. Both sub-branches of isOnBoundary() fire during subdivision. Euler: V=6, E=9, F=4, chi=1.
+- **Reproducer recipe**: v0=(0,2,0), v1=(1,2,0), v2=(0,0,0), v3=(2,2,0), v4=(1,0,0), v5=(2,0,0); t0=(0,1,2), t1=(1,4,2), t2=(1,3,4), t3=(3,5,4); interior edges n=2; boundary edges n=1; euler V=6,E=9,F=4,chi=1.
+- **Expected kernel behavior**: Branch 4 fires twice per edge traversal — once with isOnBoundary()=true (midpoint used) for the 6 perimeter edges, once with false (Loop weights computed) for the 3 interior edges.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `euler_characteristic v=6 e=9 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me563.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me564 — loopSubdivision triangle_topology_after_split: 5-triangle fan; all spoke edges interior (n=2); MARK_VISIT fires on both new sub-triangles per split (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: loop-subdivision / sub-triangle-marking)
+- **Sources**: MeshFix `Basic_TMesh.loopSubdivision` Branch 5 (*triangle_topology_after_split*: `if(ls->e->t2 != NULL) { MARK_VISIT(ls->t1); MARK_VISIT(ls->t2); }`) @ line 131; `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 5-triangle fan around central vertex v0, forming a pentagonal open disk. All 5 spoke edges (v0,vi) are interior (n=2, shared by consecutive fan triangles). The ring boundary edges (v1-v2, …, v5-v1) are n=1. Since all triangles are IS_VISITED and all spoke edges have t2 non-NULL, the MARK_VISIT branch fires for both new sub-triangles after every interior-edge split. Euler: V=6, E=10, F=5, chi=1.
+- **Reproducer recipe**: v0=(0.5,0.5,0) hub; v1–v5 form a pentagon; t0=(0,1,2), t1=(0,2,3), t2=(0,3,4), t3=(0,4,5), t4=(0,5,1); all (v0,vi) assert_edge_shared n=2; ring edges n=1; euler V=6,E=10,F=5,chi=1.
+- **Expected kernel behavior**: Branch 5 fires for each interior spoke-edge split; ls->e->t2 is non-NULL for all 5 spokes; MARK_VISIT(ls->t1) and MARK_VISIT(ls->t2) are both called → 10 new sub-triangles all marked visited.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=2`
+- **Mesh assertion**: `euler_characteristic v=6 e=10 f=5 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me564.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me565 — loopSubdivision edge_swap_candidacy: diagonal (v2,v3) connects new midpoint v2 to old vertex v3; poor aspect ratio motivates IS_VISITED2 swap (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: loop-subdivision / post-split-swap)
+- **Sources**: MeshFix `Basic_TMesh.loopSubdivision` Branch 6 (*edge_swap_candidacy*: `if(IS_VISITED2(e->v1) != IS_VISITED2(e->v2)) { e->swap(); }`) @ line 151; `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four triangles (t0–t3) arranged around a swap-candidate diagonal (v2,v3). v2=(1,0.1,0) is a near-base midpoint vertex (the IS_VISITED2 newly-inserted vertex after split); v3=(1,2,0) is an original old vertex. The diagonal (v2,v3) is interior (n=2, shared by t1 and t2). t0=(v0,v1,v2) is a very thin triangle (height≈0.1, base=2.0) with aspect ratio > 4; this poor quality motivates the post-split edge swap when IS_VISITED2(v2)≠IS_VISITED2(v3). Euler: V=5, E=8, F=4, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,0.1,0) midpoint, v3=(1,2,0) apex, v4=(0,2,0); t0=(0,1,2), t1=(1,3,2), t2=(0,2,3), t3=(0,3,4); assert_edge_shared(v2,v3,2) swap-candidate; assert_triangle_aspect_ratio_gt(t0,4.0); euler V=5,E=8,F=4,chi=1.
+- **Expected kernel behavior**: Branch 6 fires on edge (v2,v3); IS_VISITED2(v2)=true (new midpoint), IS_VISITED2(v3)=false (original vertex); condition true → e->swap() called to improve aspect ratios.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `triangle_aspect_ratio_gt triangle=0 gt=4.0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=5 e=8 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me565.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
