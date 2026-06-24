@@ -1,0 +1,137 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      -1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      3,
+      4,
+      5
+    ]
+  ],
+  "metadata": {
+    "id": "Me1045",
+    "schema_version": 0,
+    "defect_class": "boundary_gap_thin",
+    "title": "stitch_borders halfedge-pair-orientation: hd_kpr canonical swap fires for non-canonical halfedge pair; two patches with reversed coincident boundary edge",
+    "assertions": [
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          1
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          2
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          2
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          3,
+          4
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          4,
+          5
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          3,
+          5
+        ],
+        "n": 1
+      },
+      {
+        "kind": "vertex_pair_distance_lt",
+        "pair": [
+          0,
+          4
+        ],
+        "lt": 1e-09
+      },
+      {
+        "kind": "vertex_pair_distance_lt",
+        "pair": [
+          1,
+          3
+        ],
+        "lt": 1e-09
+      },
+      {
+        "kind": "vertex_pair_no_shared_triangle",
+        "pair": [
+          0,
+          4
+        ]
+      },
+      {
+        "kind": "vertex_pair_no_shared_triangle",
+        "pair": [
+          1,
+          3
+        ]
+      },
+      {
+        "kind": "triangle_not_reachable_from",
+        "target": 1,
+        "source": 0
+      }
+    ]
+  }
+}

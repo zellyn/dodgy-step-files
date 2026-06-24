@@ -1,0 +1,96 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      3.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.5,
+      1.0,
+      0.0
+    ],
+    [
+      0.5,
+      -1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      3,
+      4,
+      5
+    ],
+    [
+      3,
+      4,
+      5
+    ],
+    [
+      0,
+      1,
+      6
+    ]
+  ],
+  "metadata": {
+    "id": "Me1050",
+    "schema_version": 0,
+    "defect_class": "duplicate_triangles",
+    "title": "merge_duplicate_polygons erase_policy_selection KEEP_ONE_IF_ODD: 3-copy group (odd\u2192keep1) + 2-copy group (even\u2192erase all) (Branch 1)",
+    "assertions": [
+      {
+        "kind": "duplicate_polygon_group",
+        "triangles": [
+          0,
+          1,
+          2
+        ],
+        "n": 3
+      },
+      {
+        "kind": "duplicate_polygon_group",
+        "triangles": [
+          3,
+          4
+        ],
+        "n": 2
+      }
+    ]
+  }
+}

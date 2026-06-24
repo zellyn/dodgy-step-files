@@ -40527,4 +40527,225 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me1032.mesh.json
+### Me1040 — stitch_borders border-component-independence: per_cc routing dispatches per-component vs global; two disconnected open patches (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: boundary_gap_thin / per-component-routing)
+- **Sources**: CGAL PMP `PMP.stitch_borders (internal dispatcher)` Branch 1 (*border-component-independence*: `if (per_cc) { ... border_edges_per_cc ... } else { border_edges ... }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected two-triangle open strips (Component A at x=0-1.5 and Component B at x=3-4.5). Each strip shares one interior edge and has four boundary edges. The mesh has two connected components (CC), so per_cc=true routes the dispatcher to per-component border-edge collection rather than the global pass. Branch 1 fires when per_cc is evaluated. Interior edges (v1,v2) and (v5,v6) are n=2; all outer boundary edges are n=1. Euler: V=8, E=10, F=4, chi=2.
+- **Reproducer recipe**: Component A: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1.5,1,0), t0=(v0,v1,v2), t1=(v1,v3,v2); Component B: v4=(3,0,0), v5=(4,0,0), v6=(3.5,1,0), v7=(4.5,1,0), t2=(v4,v5,v6), t3=(v5,v7,v6); no shared vertices; triangle_not_reachable_from(t2,t0); euler V=8,E=10,F=4,chi=2.
+- **Expected kernel behavior**: Branch 1 fires; per_cc=true routes border collection to per-component mode, populating separate border_edges_per_cc slots for each CC.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,6] n=2`
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Mesh assertion**: `euler_characteristic v=8 e=10 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1040.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1041 — stitch_borders non-border-edge-skip: is_border check skips interior halfedges; open fan mesh with mixed interior/boundary edges (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: boundary_gap_thin / interior-edge-skip)
+- **Sources**: CGAL PMP `PMP.stitch_borders (internal dispatcher)` Branch 2 (*non-border-edge-skip*: `if (!is_border(h, mesh)) continue;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A two-triangle open fan around hub vertex v0=(0,0,0). Triangle t0=(v0,v1,v2) and t1=(v0,v2,v3) share interior edge (v0,v2) (n=2). The mesh has 4 boundary edges and 1 interior edge. When the dispatcher iterates over all halfedges to collect border edges, it encounters the interior halfedges of (v0,v2) and calls continue to skip them — Branch 2 fires for each non-border halfedge. The boundary halfedges are collected; the interior one is skipped. Euler: V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(-1,0,0); t0=(v0,v1,v2), t1=(v0,v2,v3); assert_edge_shared(v0,v2,2); boundary edges n=1; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 2 fires for each of the 2 interior halfedges of (v0,v2); is_border returns false → continue; 8 boundary halfedges are collected.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1041.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1042 — stitch_borders per-component-boundary-segregation: border_edges_per_cc appends boundary halfedge to per-CC slot; three disconnected open triangles (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: boundary_gap_thin / per-cc-segregation)
+- **Sources**: CGAL PMP `PMP.stitch_borders (internal dispatcher)` Branch 3 (*per-component-boundary-segregation*: `border_edges_per_cc[cc_ids[face(h,mesh)]].push_back(h);`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three disconnected isolated triangles forming three separate connected components. Component A: t0=(v0,v1,v2); Component B: t1=(v3,v4,v5); Component C: t2=(v6,v7,v8). All 9 edges are boundary (n=1); no interior edges. With per_cc=true, each boundary halfedge is appended to its component's slot in border_edges_per_cc, producing three separate boundary lists. Branch 3 fires once for each boundary halfedge when per_cc=true. Euler: V=9, E=9, F=3, chi=3.
+- **Reproducer recipe**: Component A: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), t0=(v0,v1,v2); Component B: v3=(3,0,0), v4=(4,0,0), v5=(3.5,1,0), t1=(v3,v4,v5); Component C: v6=(6,0,0), v7=(7,0,0), v8=(6.5,1,0), t2=(v6,v7,v8); no shared vertices; triangle_not_reachable_from(t1,t0); euler V=9,E=9,F=3,chi=3.
+- **Expected kernel behavior**: Branch 3 fires for each boundary halfedge; cc_ids lookup routes each halfedge to its component's border_edges_per_cc slot; three distinct lists are populated.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[6,7] n=1`
+- **Mesh assertion**: `triangle_not_reachable_from target=1 source=0`
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Mesh assertion**: `euler_characteristic v=9 e=9 f=3 chi=3`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1042.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1043 — stitch_borders processing-strategy-dispatch: per_cc for-loop iterates over num_cc=2 connected components; two open two-triangle patches (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: boundary_gap_thin / per-cc-dispatch)
+- **Sources**: CGAL PMP `PMP.stitch_borders (internal dispatcher)` Branch 4 (*processing-strategy-dispatch*: `if (per_cc) { for (std::size_t i = 0; i < num_cc; ++i) { ... } }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected two-triangle open strips. Component A (t0,t1) sharing (v1,v2) interior, and Component B (t2,t3) sharing (v5,v6) interior. With per_cc=true and num_cc=2, the dispatcher enters a for-loop over the two components, invoking the stitch logic for each component's border_edges_per_cc slot independently. Branch 4 fires at the for-loop boundary check (i < num_cc), executing twice. Euler: V=8, E=10, F=4, chi=2.
+- **Reproducer recipe**: Component A: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1.5,1,0), t0=(v0,v1,v2), t1=(v1,v3,v2); Component B: v4=(4,0,0), v5=(5,0,0), v6=(4.5,1,0), v7=(5.5,1,0), t2=(v4,v5,v6), t3=(v5,v7,v6); triangle_not_reachable_from(t2,t0); euler V=8,E=10,F=4,chi=2.
+- **Expected kernel behavior**: Branch 4 fires; for-loop iterates i=0 and i=1 (num_cc=2), processing each component's border edge list in sequence.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,6] n=2`
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Mesh assertion**: `euler_characteristic v=8 e=10 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1043.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1044 — stitch_borders non-manifold-pair-filter: manifold_halfedge_pairs filter rejects candidate that would create edge shared by 3 triangles (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: non_manifold_edge / manifold-pair-filter)
+- **Sources**: CGAL PMP `PMP.stitch_borders (internal dispatcher)` Branch 5 (*non-manifold-pair-filter*: `manifold_halfedge_pairs(pairs, mesh);`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangles where t0=(v0,v1,v2) and t2=(v0,v6,v1) already share edge (v0,v1) making it interior (n=2). Triangle t1=(v3,v4,v5) is a coincident ghost with v3≈v0, v4≈v1, v5≈v2. A candidate stitch of t1's boundary edge (v3,v4) onto (v0,v1) would create a non-manifold edge (n=3). The manifold_halfedge_pairs filter rejects this pair. Branch 5 fires when the filter evaluates and rejects the non-manifold candidate.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0,0,0)[=v0], v4=(1,0,0)[=v1], v5=(0.5,1,0)[=v2], v6=(0.5,-1,0); t0=(v0,v1,v2), t1=(v3,v4,v5), t2=(v0,v6,v1); assert_edge_shared(v0,v1,2); vertex_pair_distance_lt(v0,v3,1e-9); vertex_pair_distance_lt(v1,v4,1e-9).
+- **Expected kernel behavior**: Branch 5 fires; manifold_halfedge_pairs evaluates the candidate pair (h on (v3,v4), h' on (v0,v1)) and rejects it because stitching would create an edge shared by 3 triangles.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,3] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[2,5] lt=1e-09`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1044.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1045 — stitch_borders halfedge-pair-orientation: hd_kpr canonical swap fires for non-canonical halfedge pair; two patches with reversed coincident boundary edge (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: boundary_gap_thin / halfedge-orientation)
+- **Sources**: CGAL PMP `PMP.stitch_borders (internal dispatcher)` Branch 6 (*halfedge-pair-orientation*: `if (hd_kpr(hp.second, hp.first)) std::swap(hp.first, hp.second);`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected open triangles with a coincident seam edge in reversed orientation. Patch A: t0=(v0,v1,v2) with seam edge boundary halfedge along (v0,v1). Patch B: t1=(v3,v4,v5) where v3≈v1 and v4≈v0 — the seam edge on Patch B traverses (v3,v4)=(v1',v0'), opposite direction to (v0,v1). The discovered halfedge pair may have the Patch B halfedge as hp.first and Patch A as hp.second. If hd_kpr(hp.second,hp.first) is true, the swap fires to enforce canonical ordering. Branch 6 fires for this orientation check. Coincident pairs: v0≈v4, v1≈v3.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1,0,0)[=v1], v4=(0,0,0)[=v0], v5=(0.5,-1,0); t0=(v0,v1,v2), t1=(v3,v4,v5); vertex_pair_distance_lt(v0,v4,1e-9); vertex_pair_distance_lt(v1,v3,1e-9); vertex_pair_no_shared_triangle(v0,v4); triangle_not_reachable_from(t1,t0).
+- **Expected kernel behavior**: Branch 6 fires; hd_kpr comparator evaluates pair orientation; swap is performed to place the canonically smaller halfedge descriptor as hp.first.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,3] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[0,4]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,3]`
+- **Mesh assertion**: `triangle_not_reachable_from target=1 source=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1045.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1046 — stitch_borders single-pass-manifold-filtering: global mode (per_cc=false) single CC; manifold_halfedge_pairs called once for all collected pairs (Branch 7)
+- **Category**: §12.14 mesh defects (sub-class: boundary_gap_thin / global-manifold-filter)
+- **Sources**: CGAL PMP `PMP.stitch_borders (internal dispatcher)` Branch 7 (*single-pass-manifold-filtering*: `else { manifold_halfedge_pairs(pairs, mesh); ... }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A single connected component with three triangles: t0=(v0,v1,v2), t1=(v1,v3,v2) sharing interior edge (v1,v2) (n=2), and t2=(v1,v4,v5) connected via shared vertex v1. Vertices v4≈v2 and v5≈v3 are coincident with boundary vertices, forming a stitchable seam. With per_cc=false (single CC, else branch), the dispatcher collects all border halfedges globally and calls manifold_halfedge_pairs once for all candidate pairs. Branch 7 fires when the else branch is entered. Euler: V=6, E=8, F=3, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1.5,0,0), v4=(0.5,1,0)[=v2], v5=(1.5,0,0)[=v3]; t0=(v0,v1,v2), t1=(v1,v3,v2), t2=(v1,v4,v5); assert_edge_shared(v1,v2,2); vertex_pair_distance_lt(v2,v4,1e-9); vertex_pair_distance_lt(v3,v5,1e-9); vertex_pair_no_shared_triangle(v2,v4); euler V=6,E=8,F=3,chi=1.
+- **Expected kernel behavior**: Branch 7 fires; else path taken (per_cc=false); single global manifold_halfedge_pairs call filters all collected pairs at once before stitching.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[2,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[3,5] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[2,4]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[3,5]`
+- **Mesh assertion**: `euler_characteristic v=6 e=8 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1046.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1050 — merge_duplicate_polygons erase_policy_selection KEEP_ONE_IF_ODD: 3-copy group (odd→keep1) + 2-copy group (even→erase all) (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 1 @ line 946 (*erase_policy_selection*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: a 6-triangle polygon soup with two duplicate groups: group A = 3 identical copies of (0,1,2) and group B = 2 identical copies of (3,4,5). Under KEEP_ONE_IF_ODD (size%2): odd group A keeps 1 and removes 2; even group B erases all 2. The erase_policy named-parameter selection branch fires before any polygon is inspected.
+- **Reproducer recipe**: upper-left v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0) × 3 copies; upper-right v3=(2,0,0), v4=(3,0,0), v5=(2.5,1,0) × 2 copies; clean singleton (v0,v1,v6) where v6=(0.5,-1,0).
+- **Expected kernel behavior**: erase_policy named parameter is resolved first; KEEP_ONE_IF_ODD: group A (size 3, odd) → i=1, keep 1 copy; group B (size 2, even) → i=0, erase all.
+- **Mesh assertion**: `duplicate_polygon_group triangles=[0,1,2] n=3`
+- **Mesh assertion**: `duplicate_polygon_group triangles=[3,4] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1050.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1051 — merge_duplicate_polygons orientation_requirement: two reversed-winding pairs; same_orientation flag controls merge (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 2 @ line 955 (*orientation_requirement*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: a 5-triangle soup with two independent reversed-winding pairs. Pair A: tri0=(v0,v1,v2) CCW and tri1=(v0,v2,v1) CW. Pair B: tri2=(v3,v4,v5) CCW and tri3=(v3,v5,v4) CW. With require_same_orientation=false both pairs are merged; with require_same_orientation=true neither is merged. A clean singleton tri4=(v0,v1,v6) exercises no duplicate path.
+- **Reproducer recipe**: left pair v0=(0,0,0),v1=(1,0,0),v2=(0.5,1,0); right pair v3=(2,0,0),v4=(3,0,0),v5=(2.5,1,0); singleton v6=(1.5,-1,0); two CCW+CW triangle pairs.
+- **Expected kernel behavior**: same_orientation flag consulted per-polygon-pair; false → treat reversed copies as duplicates; true → treat as distinct; two pairs present to stress the flag.
+- **Mesh assertion**: `reversed_polygon_pair triangles=[0,1]`
+- **Mesh assertion**: `reversed_polygon_pair triangles=[2,3]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1051.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1052 — merge_duplicate_polygons duplicate_collection: 4-copy group A + 3-copy group B; hash+equality scan collects both (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 3 @ line 971 (*duplicate_collection*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: an 8-triangle polygon soup with a 4-copy group (tri0-tri3 all (0,1,2)) and a 3-copy group (tri5-tri7 all (3,4,5)), plus a clean singleton bridge tri4=(v2,v6,v3). The hash+equality collection step must build both groups correctly before any removal begins, exercising the scan for groups of different sizes.
+- **Reproducer recipe**: v0=(0,0,0),v1=(1,0,0),v2=(0.5,1,0) × 4 copies; v3=(2,0,0),v4=(3,0,0),v5=(2.5,1,0) × 3 copies; singleton bridge v6=(1.5,0,0).
+- **Expected kernel behavior**: collect two groups of sizes 4 and 3; process each independently.
+- **Mesh assertion**: `duplicate_polygon_group triangles=[0,1,2,3] n=4`
+- **Mesh assertion**: `duplicate_polygon_group triangles=[5,6,7] n=3`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1052.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1053 — merge_duplicate_polygons early_exit_empty: 4-triangle partial-tetrahedron soup with all-distinct vertex triples; returns 0 immediately (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 4 @ line 973 (*early_exit_empty*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: a closed 4-triangle tetrahedron mesh where every face has a distinct vertex-index triple. The duplicate-collection step finds zero groups; all_duplicate_polygons.empty() is true; the function returns 0 immediately. All 6 edges are shared by exactly 2 triangles, confirming manifold topology with no repeated face.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,0,2), v3=(1,2,1); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v1,v3,v2), t3=(v0,v3,v1); closed tetrahedron.
+- **Expected kernel behavior**: early-exit branch fires; 0 returned; no polygon is swapped or erased.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1053.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1054 — merge_duplicate_polygons duplicate_group_iteration: 4 independent duplicate pairs; outer while loop iterates 4 times (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 5 @ line 996 (*duplicate_group_iteration*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: an 8-triangle polygon soup with 4 independent duplicate pairs: group A={tri0,tri1} both (a0,a1,a2), group B={tri2,tri3} both (b0,b1,b2), group C={tri4,tri5} both (c0,c1,c2), group D={tri6,tri7} both (d0,d1,d2). Forces the outer while(!all_duplicate_polygons.empty()) loop to iterate 4 times (one per group). More groups than Me040's 3 to provide stronger iteration coverage.
+- **Reproducer recipe**: 4 disjoint triangle shapes at x=0,2,4,6, each duplicated; no singletons.
+- **Expected kernel behavior**: outer loop iterates 4 times; 8 triangles reduced to 4.
+- **Mesh assertion**: `duplicate_polygon_group triangles=[0,1] n=2`
+- **Mesh assertion**: `duplicate_polygon_group triangles=[2,3] n=2`
+- **Mesh assertion**: `duplicate_polygon_group triangles=[4,5] n=2`
+- **Mesh assertion**: `duplicate_polygon_group triangles=[6,7] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1054.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1055 — merge_duplicate_polygons keep_decision KEEP_ONE: 5-copy group; i=1 retains copy 0, removes copies 1-4 (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 6 @ line 1001 (*keep_decision*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: a 6-triangle polygon soup with a 5-copy group of triangle (v0,v1,v2) plus a clean singleton. With erase_policy=KEEP_ONE, the keep_decision branch sets i=1 (the KEEP_ONE arm of the ternary), retaining copy 0 and scheduling copies 1-4 for removal. Larger group (5 copies) than Me041 (2 copies) to emphasize that i=1 regardless of group size.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0); 5 identical triangles (v0,v1,v2); clean lower singleton (v0,v1,v3) where v3=(1,-1.5,0).
+- **Expected kernel behavior**: keep_decision branch fires; i set to 1; inner loop removes 4 copies (indices 1-4); result: 2 triangles remain.
+- **Mesh assertion**: `duplicate_polygon_group triangles=[0,1,2,3,4] n=5`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1055.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1060 — duplicate_polygons removal_iteration: 5-copy group, inner loop runs 4 times (Branch 7)
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 7 @ line 1004 (*removal_iteration*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A group of 5 identical triangles all sharing canonical vertex-index tuple (0,1,2) forces the inner removal for-loop (for(; i<duplicate_polygons.size(); ++i)) to iterate 4 times under KEEP_ONE — i starts at 1, removing positions 1-4 while keeping position 0. The 6-triangle soup shrinks to 2 after merging (1 kept + 1 clean neighbour).
+- **Reproducer recipe**: 5 copies of (0,1,2) plus one clean neighbour triangle (1,3,2); the inner loop body fires 4 times, one per removal candidate.
+- **Expected kernel behavior**: inner loop iterates 4 times; 4 polygons swapped-to-end; erase reduces count from 6 to 2.
+- **Mesh assertion**: `duplicate_polygon_group triangles=[0,1,2,3,4] n=5`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1060.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1061 — duplicate_polygons treated_skip: two independent duplicate groups; second group hits treated[] continue guard (Branch 8)
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 8 @ line 1007 (*treated_skip*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Polygon soup with two separate duplicate groups: Group A = {tri 0, tri 1, tri 2} all with key (0,1,2); Group B = {tri 3, tri 4} all with key (2,3,4). Under KEEP_ONE, group A marks tris 1 and 2 as treated. When the outer while-loop then processes group B, the if(treated[polygon_to_remove_id]) continue guard can fire for any polygon whose id was already marked treated by group A's pass. The two-group layout directly exercises the cross-group guard protection.
+- **Reproducer recipe**: 3 copies of (v0,v1,v2) + 2 copies of (v2,v3,v4) + 1 clean singleton; two assert_duplicate_polygon_group calls.
+- **Expected kernel behavior**: treated[] guard fires when processing overlapping polygon-id ranges; group B removal skips any already-treated ids cleanly.
+- **Mesh assertion**: `duplicate_polygon_group triangles=[0,1,2] n=3`
+- **Mesh assertion**: `duplicate_polygon_group triangles=[3,4] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1061.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1062 — duplicate_polygons swap_to_end: 3 duplicates at non-contiguous positions 0,2,5; swap_position diverges from polygon_to_remove_pos (Branch 9)
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 9 @ line 1026 (*swap_to_end*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 6-triangle soup with 3 copies of triangle (0,1,2) at non-contiguous positions 0, 2, and 5. The swap_to_end mechanism starts swap_position at the last index and moves backward; each duplicate at polygon_to_remove_pos is swapped with the current swap_position so that duplicates accumulate at the back partition. Because the duplicates are non-contiguous, the swap_position and polygon_to_remove_pos differ on each swap, fully exercising std::swap(polygons[swap_position], polygons[polygon_to_remove_pos]).
+- **Reproducer recipe**: tri order = dup(0), clean, dup(2), clean, clean, dup(5); three swap operations move them to back positions 3,4,5; erase shrinks from 6 to 3.
+- **Expected kernel behavior**: 3 swaps with divergent indices; after erase the 3 surviving triangles are the clean ones.
+- **Mesh assertion**: `duplicate_polygon_group triangles=[0,2,5] n=3`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1062.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1063 — duplicate_polygons mark_treated: two groups; treated[] bit written for each removed polygon across both groups (Branch 10)
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 10 @ line 1029 (*mark_treated*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Polygon soup with two separate duplicate groups: Group A = {tri 0, tri 1, tri 2} with key (0,1,2); Group B = {tri 3, tri 4} with key (0,2,3). After group A is processed with KEEP_ONE, treated[1]=true and treated[2]=true are written (Branch 10 fires twice). When group B is processed, treated[4]=true is written for the group B removal. A total of 3 treated[] bit-writes occur — one per removed polygon across both groups. The fixture confirms that treated[] marks are written at line 1029 for every polygon moved to the back region.
+- **Reproducer recipe**: 3 copies of (v0,v1,v2) + 2 copies of (v0,v2,v3) + 1 clean singleton; 3 treated[] writes total; erase shrinks from 6 to 3.
+- **Expected kernel behavior**: treated[1]=true, treated[2]=true (group A); treated[4]=true (group B); single erase removes 3 polygons.
+- **Mesh assertion**: `duplicate_polygon_group triangles=[0,1,2] n=3`
+- **Mesh assertion**: `duplicate_polygon_group triangles=[3,4] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1063.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1064 — duplicate_polygons final_erase: two groups (sizes 2 and 3) both removed by single polygons.erase() call (Branch 11)
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 11 @ line 1035 (*final_erase*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Polygon soup with two separate duplicate groups: Group A = {tri 0, tri 1} with key (0,1,2) — 2 copies; Group B = {tri 3, tri 4, tri 5} with key (0,1,3) — 3 copies. After the outer while-loop processes both groups and swap_to_end has accumulated 3 removal candidates in the back region, the single polygons.erase(first, polygons.end()) call at line 1035 removes all of them in one O(k) resize. The container shrinks from 6 triangles to 3 (1 survivor per group + 1 clean singleton). Tests that erase() handles the combined back region from multiple groups in one shot.
+- **Reproducer recipe**: 2 copies of (v0,v1,v2) + 1 clean + 3 copies of (v0,v1,v3); single erase() after both groups processed; result = 3 triangles.
+- **Expected kernel behavior**: erase() called exactly once at line 1035; removes 3 polygons from combined back region; result has 3 triangles.
+- **Mesh assertion**: `duplicate_polygon_group triangles=[0,1] n=2`
+- **Mesh assertion**: `duplicate_polygon_group triangles=[3,4,5] n=3`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1064.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
