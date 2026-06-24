@@ -36593,6 +36593,69 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me660 — merge_duplicate_points_in_polygon_soup empty_input: zero-polygon soup; ini_points_n==0 causes immediate return; single isolated vertex as structural contrast (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: isolated-vertex / empty-polygon-soup)
+- **Sources**: CGAL PMP `PMP.merge_duplicate_points_in_polygon_soup` Branch 1 (*empty_input*: `const std::size_t ini_points_n = points.size(); if(ini_points_n == 0) return;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A polygon soup with zero polygons causes immediate return at line 538 — no deduplication scan, no unique-point accumulation, no index remapping. Fixture uses a single isolated vertex with no triangles as the structural contrast: the vertex proves vertex storage is present, but the empty polygon list means ini_points_n==0 and Branch 1 fires. The isolated_vertex assertion documents that v0 is unreferenced by any polygon.
+- **Reproducer recipe**: v0=(0,0,0); no triangles; assert_isolated_vertex(v0).
+- **Expected kernel behavior**: Branch 1 fires; algorithm returns immediately; polygon soup remains unchanged; no point_to_id map is constructed; no unique_points list is populated.
+- **Mesh assertion**: `isolated_vertex vertex=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me660.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me661 — merge_duplicate_points_in_polygon_soup point_dedup_scan: coincident p1==p3 at (1,0,0); second insert into point_to_id fails (is_insert_successful==false) (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: near-coincident-vertex / point-dedup-scan)
+- **Sources**: CGAL PMP `PMP.merge_duplicate_points_in_polygon_soup` Branch 2 (*point_dedup_scan*: `for(std::size_t i=0; i<ini_points_n; ++i) { auto [id, is_insert_successful] = point_to_id.insert(...); }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing interior edge (p0,p2). Boundary vertices p1 and p3 both sit at (1,0,0) but are distinct indices. During the dedup scan (Branch 2), the loop processes p1 first (insert succeeds, is_insert_successful==true), then processes p3 (insert fails, is_insert_successful==false) — the duplicate is recorded in point_index[3]=point_index[1]. Interior edge (p0,p2) n=2; four outer edges n=1. Euler: V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: p0=(0,0,0), p1=(1,0,0), p2=(0.5,1,0), p3=(1,0,0) [=p1]; t0=(p0,p1,p2), t1=(p0,p2,p3); assert_edge_shared(p0,p2,2); outer edges n=1; vertex_pair_distance_lt(p1,p3,1e-9); vertex_pair_no_shared_triangle(p1,p3); euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 2 fires; scan iterates 4 points; second insert for p3 fails (is_insert_successful==false); point_index[3] set to existing id of p1; unique_points.size()==3 < ini_points_n==4.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,3] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,3]`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me661.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me662 — merge_duplicate_points_in_polygon_soup new_unique_point: all four vertices distinct; every insert succeeds and id==unique_points.size() fires for each (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: near-coincident-vertex / new-unique-point)
+- **Sources**: CGAL PMP `PMP.merge_duplicate_points_in_polygon_soup` Branch 3 (*new_unique_point*: `if(id == unique_points.size()) { unique_points.push_back(points[i]); }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing interior edge (q0,q2) with four distinct vertex coordinates. Every point insert into the coordinate-keyed map succeeds; for each insertion id equals unique_points.size() so the point is pushed to unique_points (Branch 3 fires 4 times). After the scan, unique_points.size()==4==ini_points_n so no remapping is needed. Interior edge (q0,q2) n=2; four outer edges n=1. Euler: V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: q0=(0,0,0), q1=(2,0,0), q2=(1,2,0), q3=(0,2,0); t0=(q0,q1,q2), t1=(q0,q2,q3); assert_edge_shared(q0,q2,2); outer edges n=1; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 3 fires once per vertex (4 times); all inserts succeed; unique_points.size()==ini_points_n==4; merge_needed_check (Branch 4) does NOT fire; polygon indices unchanged.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me662.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me663 — merge_duplicate_points_in_polygon_soup merge_needed_check: 5 input points but 4 unique (u1==u4 at (1,0,0)); unique_points.size()!=ini_points_n triggers remap (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: near-coincident-vertex / merge-needed-check)
+- **Sources**: CGAL PMP `PMP.merge_duplicate_points_in_polygon_soup` Branch 4 (*merge_needed_check*: `if(unique_points.size() != ini_points_n) { ... perform remap ... }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangles with 5 input vertices containing one coincident pair (u1 and u4 both at (1,0,0)). After the dedup scan, unique_points has 4 entries (the duplicate pair maps to one id), so unique_points.size()==4 != ini_points_n==5 → Branch 4 fires, triggering the remap path. Interior edges (u0,u2) and (u2,u4) n=2; five outer edges n=1. Euler: V=5, E=7, F=3, chi=1.
+- **Reproducer recipe**: u0=(0,0,0), u1=(1,0,0), u2=(0.5,1,0), u3=(1.5,1,0), u4=(1,0,0) [=u1]; t0=(u0,u1,u2), t1=(u2,u4,u3), t2=(u0,u2,u4); interior edges n=2; outer edges n=1; vertex_pair_distance_lt(u1,u4,1e-9); vertex_pair_no_shared_triangle(u1,u4); euler V=5,E=7,F=3,chi=1.
+- **Expected kernel behavior**: Branch 4 fires; unique_points.size()==4 != ini_points_n==5; remap phase is entered; all polygon vertex indices rewritten via point_index[].
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,4]`
+- **Mesh assertion**: `euler_characteristic v=5 e=7 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me663.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me664 — merge_duplicate_points_in_polygon_soup polygon_remap: w1==w4 at (1,0,0); point_index[4] remapped to 1; polygon[i]=point_index[polygon[i]] rewrites t2 and t3 (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: near-coincident-vertex / polygon-index-remap)
+- **Sources**: CGAL PMP `PMP.merge_duplicate_points_in_polygon_soup` Branch 5 (*polygon_remap*: `for(P_ID polygon_index=0; polygon_index<polygons.size(); ++polygon_index) { auto& polygon = polygons[polygon_index]; for(std::size_t i=0; i<polygon.size(); ++i) polygon[i] = point_index[polygon[i]]; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four triangles with 6 input vertices. w1 and w4 both sit at (1,0,0); point_index[4] is set to point_index[1] during the dedup scan. The polygon remap loop (Branch 5) then iterates every polygon and every vertex index, replacing index 4 with 1 in triangles t2 and t3. Interior edges (w1,w2), (w2,w3), (w3,w4) n=2; six outer edges n=1. Euler: V=6, E=9, F=4, chi=1.
+- **Reproducer recipe**: w0=(0,0,0), w1=(1,0,0), w2=(0.5,1,0), w3=(1.5,1,0), w4=(1,0,0) [=w1], w5=(2,0,0); t0=(w0,w1,w2), t1=(w1,w3,w2), t2=(w4,w5,w3), t3=(w4,w3,w2); interior edges n=2; outer edges n=1; vertex_pair_distance_lt(w1,w4,1e-9); vertex_pair_no_shared_triangle(w1,w4); euler V=6,E=9,F=4,chi=1.
+- **Expected kernel behavior**: Branch 5 fires; polygon_remap loop processes all 4 polygons; t2 index 4 rewritten to 1 and t3 index 4 rewritten to 1; unique polygon soup with 5 distinct coordinate entries produced.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,4]`
+- **Mesh assertion**: `euler_characteristic v=6 e=9 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me664.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me670 — mergeCoincidentEdges BOUNDARY_VERTEX_CLASSIFICATION: open mesh; every edge n=1 triggers MARK_BIT(v,5) on both endpoints (Branch 1)
 - **Category**: §12.14 mesh defects (sub-class: open-boundary / vertex-classification)
 - **Sources**: MeshFix `checkAndRepair::mergeCoincidentEdges` Branch 1 (*BOUNDARY_VERTEX_CLASSIFICATION*: `MARK_BIT(e->v1, 5);` — each boundary edge marks both endpoint vertices with BIT 5 for subsequent `isOnBoundary` lookup); `MESH_HEAL_COVERAGE.md`.
