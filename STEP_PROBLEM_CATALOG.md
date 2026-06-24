@@ -36753,3 +36753,102 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=7 e=12 f=6 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me634.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me640 — holeFilling::fillSmallBoundaries SELECTION_PRESENT: IS_VISITED triangles mark vertices, constraining fill to unselected region (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: hole-filling / selection-constrained fill)
+- **Sources**: MeshFix `holeFilling::fillSmallBoundaries` Branch 1 (*SELECTION_PRESENT*: `if (IS_VISITED(t)) { ... }`); `MESH_HEAL_COVERAGE.md` lines 2437–2459.
+- **Description**: Mesh with two disjoint regions. A 3-triangle fan (ts0-ts2, vertices s0-s3 with interior sc) forms the selected (IS_VISITED) patch; all three interior edges from sc are n=2. A separate 7-triangle hole-frame region (tf0-tf6, vertices h0-h3, hc0-hc2) surrounds a triangular hole (hc0,hc1,hc2) whose three boundary edges are each n=1. Branch 1 fires because ts0 is IS_VISITED; surrounding vertices are marked to constrain fill. The triangular hole (hc0-hc1-hc2) with edges (8,9), (9,10), (8,10) each n=1 is the fill candidate.
+- **Reproducer recipe**: s0=(0,0,0),s1=(2,0,0),s2=(1,2,0),sc=(1,0.7,0); fan ts0=(s0,s1,sc),ts1=(s1,s2,sc),ts2=(s2,s0,sc); h0=(5,0,0),h1=(7,0,0),h2=(8,2,0),h3=(4,2,0); hc0=(6,0.5,0),hc1=(7,1.5,0),hc2=(5,1.5,0); 7 frame triangles; hole edges (hc0,hc1),(hc1,hc2),(hc0,hc2) each n=1; fan interior edges n=2.
+- **Expected kernel behavior**: Branch 1 fires; IS_VISITED scan marks s0,s1,s2,sc; fill is constrained away from selected-patch boundary; triangular hole (hc0,hc1,hc2) is fill candidate.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `hole_boundary loop=[8,9,10]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[8,9] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[9,10] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[8,10] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me640.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me641 — holeFilling::fillSmallBoundaries VERTEX_ON_BOUNDARY: v->isOnBoundary() true for v3 on hole boundary; grd incremented (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: hole-filling / boundary-vertex count)
+- **Sources**: MeshFix `holeFilling::fillSmallBoundaries` Branch 2 (*VERTEX_ON_BOUNDARY*: `if (v->isOnBoundary()) { ... }`); `MESH_HEAL_COVERAGE.md` lines 2437–2459.
+- **Description**: Five-triangle open strip (t0-t4) with vertices v0-v5. The triangular hole (v3,v4,v5) is absent: hole edges (v3,v4) n=1 and (v4,v5) n=1 confirm the opening. Vertex v3 sits at the intersection of the hole boundary and the outer mesh boundary; (v0,v3) n=1 confirms v3->isOnBoundary(). When fillSmallBoundaries traverses the hole boundary loop and encounters v3, Branch 2 fires and the boundary-edge count grd is incremented. Interior edges: (v0,v1) n=2, (v1,v2) n=2, (v1,v3) n=2, (v1,v4) n=2, (v2,v4) n=2.
+- **Reproducer recipe**: v0=(0,0,0),v1=(2,0,0),v2=(4,0,0),v3=(1,2,0),v4=(3,2,0),v5=(2,4,0); t0=(v0,v1,v3),t1=(v1,v2,v4),t2=(v1,v3,v4),t3=(v2,v4,v5),t4=(v0,v2,v1); hole boundary (v3,v4,v5); (v3,v4) n=1; (v4,v5) n=1; (v0,v3) n=1.
+- **Expected kernel behavior**: Branch 2 fires for v3 (and v4) during boundary traversal; grd is incremented for each boundary vertex encountered on the hole loop.
+- **Mesh assertion**: `hole_boundary loop=[3,4,5]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me641.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me642 — holeFilling::fillSmallBoundaries BOUNDARY_CROSSING_CONSTRAINT: IS_BIT(h0,6) set; grd forced to nbe+1; hole traversal aborted (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: hole-filling / selection-boundary crossing)
+- **Sources**: MeshFix `holeFilling::fillSmallBoundaries` Branch 3 (*BOUNDARY_CROSSING_CONSTRAINT*: `if (IS_BIT(w, 6)) { grd = nbe + 1; break; }`); `MESH_HEAL_COVERAGE.md` lines 2437–2459.
+- **Description**: Seven-triangle mesh with two regions sharing vertex h0. Selected triangles ts0=(s0,s1,h0) and ts1=(s0,h0,s2) make h0 selection-adjacent; Branch 1 sets IS_BIT(h0,6). Three frame triangles tf0=(h0,h1,a), tf1=(h1,h2,a), tf2=(h2,h0,a) surround a triangular hole (h0,h1,h2). When fillSmallBoundaries traverses the hole boundary loop and visits h0, Branch 3 fires: IS_BIT(h0,6) is set so grd is forced to nbe+1 and the loop breaks — this hole is skipped. Hole boundary edges (h0,h1),(h1,h2),(h0,h2) all n=1. Frame interior edges (h0,a),(h1,a),(h2,a) n=2. Selected-patch edge (s0,h0) n=2.
+- **Reproducer recipe**: h0=(1,2,0),h1=(0,0,0),h2=(2,0,0),a=(1,-1,0); ts0=(s0,s1,h0),ts1=(s0,h0,s2) selected; tf0=(h0,h1,a),tf1=(h1,h2,a),tf2=(h2,h0,a) unselected; hole edges n=1; frame interior edges n=2; s0=(0,3,0),s1=(-1,1,0),s2=(2,3,0).
+- **Expected kernel behavior**: Branch 3 fires when boundary traversal reaches h0 (IS_BIT(h0,6) true); grd is set to nbe+1; inner loop breaks; hole is excluded from fill list.
+- **Mesh assertion**: `hole_boundary loop=[0,1,2]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me642.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me643 — holeFilling::fillSmallBoundaries SMALL_BOUNDARY_THRESHOLD: 3-edge triangular hole; grd=3 <= nbe; added to fill list bdrs (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: hole-filling / small-hole threshold)
+- **Sources**: MeshFix `holeFilling::fillSmallBoundaries` Branch 4 (*SMALL_BOUNDARY_THRESHOLD*: `if (grd <= nbe) { bdrs.appendHead(e); }`); `MESH_HEAL_COVERAGE.md` lines 2437–2459.
+- **Description**: Three frame triangles (tf0-tf2) surrounding a triangular hole (h0,h1,h2) with no selected triangles and no marked vertices. tf0=(h0,h1,fa), tf1=(h1,h2,f1), tf2=(h2,h0,f0) each contribute one hole-boundary edge (n=1). All three hole edges (h0,h1),(h1,h2),(h0,h2) are n=1; no interior (n=2) edges exist. After traversing the 3-edge boundary loop, grd=3 satisfies grd<=nbe (MeshFix default nbe=3), so bdrs.appendHead(e) fires (Branch 4). This is the minimal hole size that passes the threshold. Euler: V=6, E=9, F=3, chi=0 (three disjoint-boundary-sharing triangles).
+- **Reproducer recipe**: h0=(0,0,0),h1=(2,0,0),h2=(1,2,0); f0=(-1.5,1,0),f1=(3.5,1,0),fa=(1,-1.5,0); tf0=(h0,h1,fa),tf1=(h1,h2,f1),tf2=(h2,h0,f0); all 9 edges n=1; euler V=6,E=9,F=3,chi=0.
+- **Expected kernel behavior**: Branch 4 fires; grd=3 passes the <= nbe test; bdrs.appendHead records the hole starting edge; hole (h0,h1,h2) is queued for TriangulateHole.
+- **Mesh assertion**: `hole_boundary loop=[0,1,2]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=6 e=9 f=3 chi=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me643.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me644 — holeFilling::fillSmallBoundaries PATCH_TRIANGULATION_WITH_REFINEMENT: 4-edge hole filled by TriangulateHole; Steiner point sc inserted by refineSelectedHolePatches (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: hole-filling / patch triangulation with refinement)
+- **Sources**: MeshFix `holeFilling::fillSmallBoundaries` Branch 5 (*PATCH_TRIANGULATION_WITH_REFINEMENT*: `if (TriangulateHole(e, ...) && refine_patches) { refineSelectedHolePatches(...); }`); `MESH_HEAL_COVERAGE.md` lines 2437–2459.
+- **Description**: Post-fill state of a 4-edge quadrilateral hole (h0,h1,h2,h3). Four frame triangles (tf0-tf3) provide context; four fill triangles (tp0-tp3) inserted by TriangulateHole form a fan around Steiner point sc=(1.5,1.5,0) at the patch centroid. refineSelectedHolePatches was called (refine_patches=true) after TriangulateHole succeeded → Branch 5. All four edges from sc are interior (n=2), confirming the Steiner-point refinement. The four former hole-boundary edges (h0,h1),(h1,h2),(h2,h3),(h3,h0) are now interior (n=2) shared by frame+fill triangles. Eight outer frame edges are boundary (n=1). Euler: V=9, E=16, F=8, chi=1 (open disk).
+- **Reproducer recipe**: h0=(0,0,0),h1=(3,0,0),h2=(3,3,0),h3=(0,3,0); f0=(1.5,-2,0),f1=(5,1.5,0),f2=(1.5,5,0),f3=(-2,1.5,0); sc=(1.5,1.5,0); tf0=(h0,h1,f0),tf1=(h1,h2,f1),tf2=(h2,h3,f2),tf3=(h3,h0,f3); tp0=(h0,h1,sc),tp1=(h1,h2,sc),tp2=(h2,h3,sc),tp3=(h3,h0,sc); hole-boundary edges n=2; sc-spoke edges n=2; frame outer edges n=1; euler V=9,E=16,F=8,chi=1.
+- **Expected kernel behavior**: Branch 5 fires; TriangulateHole fills the 4-edge hole and returns success; refineSelectedHolePatches runs with num_samples, max_iters, convergence parameters; sc is the Steiner point inserted by refinement.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,8] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,8] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,8] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,8] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,7] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,7] n=1`
+- **Mesh assertion**: `euler_characteristic v=9 e=16 f=8 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me644.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
