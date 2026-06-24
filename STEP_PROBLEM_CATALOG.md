@@ -36662,3 +36662,51 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `triangles_do_not_intersect triangles=[4,5]`
 - **Fixture path**: mesh-examples/12-14-mesh/Me872.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me880 — duplicateNonManifoldVertices NONMANIFOLD_VERTEX_AT_V1: bowtie vertex v0 missing from edge VE list (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: non-manifold-vertex / VE-list-v1)
+- **Sources**: MeshFix `checkAndRepair::duplicateNonManifoldVertices` Branch 1 (*NONMANIFOLD_VERTEX_AT_V1*: `if (e->v1->VE()->containsNode(e) == NULL)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Vertex v0 is a bowtie (non-manifold) vertex whose triangle fan splits into two disconnected components: an upper fan (t0, t1 sharing interior edge (v0,v3)) and a lower fan (t2, t3 sharing interior edge (v0,v6)). When the repair loop iterates over edges of the lower fan and tests `e->v1->VE()->containsNode(e)`, the VE list only knows about the upper fan because v0 is non-manifold — containsNode returns NULL and Branch 1 fires, duplicating v0 so each fan receives its own copy. All four boundary edges at v0 are n=1; interior fan edges (v0,v3) and (v0,v6) are n=2.
+- **Reproducer recipe**: v0=(0,0,0) bowtie; upper fan v1=(1,1,0), v2=(-1,1,0), v3=(0,2,0), t0=(v0,v1,v3), t1=(v0,v3,v2); lower fan v4=(1,-1,0), v5=(-1,-1,0), v6=(0,-2,0), t2=(v0,v6,v4), t3=(v0,v5,v6); assert_edge_shared(v0,v3,2), (v0,v6,2); boundary edges (v0,v1),(v0,v2),(v0,v4),(v0,v5) each n=1; assert_vertex_fan_disconnected(v0).
+- **Expected kernel behavior**: Branch 1 fires for edges in the lower fan whose v1==v0; v0 is duplicated; redirect incidents; topology updated.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=1`
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me880.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me881 — duplicateNonManifoldVertices NONMANIFOLD_VERTEX_AT_V2: bowtie vertex v0 missing from edge VE list as v2 (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: non-manifold-vertex / VE-list-v2)
+- **Sources**: MeshFix `checkAndRepair::duplicateNonManifoldVertices` Branch 2 (*NONMANIFOLD_VERTEX_AT_V2*: `if (e->v2->VE()->containsNode(e) == NULL)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Vertex v0 is a bowtie (non-manifold) vertex whose fan splits into a right fan (t0, t1 sharing interior edge (v0,v3)) and a left fan (t2, t3 sharing interior edge (v0,v6)). When the repair loop tests `e->v2->VE()->containsNode(e)` for edges in the left fan where v0 is the second endpoint (v2), the VE list only contains edges from the right fan and containsNode returns NULL — Branch 2 fires, duplicating v0 as v2 and redirecting left-fan edges to the new copy. All four boundary edges at v0 are n=1.
+- **Reproducer recipe**: v0=(0,0,0) bowtie; right fan v1=(2,1,0), v2=(2,-1,0), v3=(3,0,0), t0=(v1,v0,v3), t1=(v3,v0,v2); left fan v4=(-2,1,0), v5=(-2,-1,0), v6=(-3,0,0), t2=(v4,v6,v0), t3=(v0,v6,v5); assert_edge_shared(v0,v3,2), (v0,v6,2); boundary (v0,v1),(v0,v2),(v0,v4),(v0,v5) each n=1; assert_vertex_fan_disconnected(v0).
+- **Expected kernel behavior**: Branch 2 fires for edges in the left fan whose v2==v0; v0 duplicated as the v2-side copy; redirect incidents; topology updated.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=1`
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me881.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me882 — duplicateNonManifoldVertices NONMANIFOLD_VERTICES_PRESENT: at least one non-manifold vertex found; dv>0 marks topology dirty (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: non-manifold-vertex / topology-dirty)
+- **Sources**: MeshFix `checkAndRepair::duplicateNonManifoldVertices` Branch 3 (*NONMANIFOLD_VERTICES_PRESENT*: `if (dv) { d_boundaries = d_handles = d_shells = 1; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Minimal two-triangle bowtie: v0=(0,0,0) is the shared non-manifold vertex, upper fan t0=(v0,v1,v2) and lower fan t1=(v0,v3,v4) share only v0 with no connecting edge. After the repair loop processes all edges, dv is incremented for v0 (at least one non-manifold vertex found), so the post-loop branch `if (dv)` fires: d_boundaries, d_handles, and d_shells are each set to 1, forcing topology recomputation. All four boundary edges at v0 are n=1; the two fans are structurally unreachable from each other.
+- **Reproducer recipe**: v0=(0,0,0); v1=(1,1,0), v2=(-1,1,0), t0=(v0,v1,v2); v3=(1,-1,0), v4=(-1,-1,0), t1=(v0,v3,v4); boundary edges (v0,v1),(v0,v2),(v0,v3),(v0,v4) each n=1; no edge (v1,v3) or (v2,v4); assert_vertex_fan_disconnected(v0).
+- **Expected kernel behavior**: Branch 3 fires after the repair loop; dv >= 1 so `if (dv)` is true; d_boundaries = d_handles = d_shells = 1; topology counts invalidated for recomputation.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=0`
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me882.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
