@@ -36624,6 +36624,57 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me802.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me810 — StarTriangulateHole_edge_not_on_boundary: closed tetrahedron; every edge n==2; !e->isOnBoundary() returns 0 (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: hole-filling / edge-not-on-boundary)
+- **Sources**: MeshFix `Basic_TMesh.StarTriangulateHole` Branch 1 (*EDGE_NOT_ON_BOUNDARY*: `if (!e->isOnBoundary()) return 0;` @ line 48); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A tetrahedron (4 vertices, 4 triangles, 6 edges) forms a fully closed genus-0 surface. Every edge is shared by exactly 2 triangles; there are no boundary edges. When StarTriangulateHole is called with any edge, the guard `!e->isOnBoundary()` fires immediately and the function returns 0 without filling anything. All six edges assert n==2; Euler chi=2 confirms closed surface.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,0.333,1); t0=(v0,v2,v1), t1=(v0,v1,v3), t2=(v0,v3,v2), t3=(v1,v2,v3); all 6 edges assert n==2; euler V=4,E=6,F=4,chi=2.
+- **Expected kernel behavior**: Branch 1 fires; `!e->isOnBoundary()` is true for every edge; StarTriangulateHole returns 0 without inserting any vertex or triangle.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me810.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me811 — StarTriangulateHole_boundary_loop_closure: 3-vertex hole in fan mesh; nextOnBoundary traversal returns to start; v==e->v1 exits loop (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: hole-filling / boundary-loop-closure)
+- **Sources**: MeshFix `Basic_TMesh.StarTriangulateHole` Branch 2 (*BOUNDARY_LOOP_CLOSURE*: `do { … e = nextOnBoundary(e); } while (v != e->v1);` @ line 62); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 4-sector fan from hub h=(1,1,0) with rim vertices r0..r3, but sector (h,r3,r0) omitted. This leaves a 3-vertex / 3-edge boundary loop: h → r0 → r3 → h. Three nextOnBoundary steps complete the traversal; when the loop condition `v != e->v1` becomes false, Branch 2 exits and the full boundary vertex list is collected. Hub edges h-r1 and h-r2 are interior (n=2); all three hole-boundary edges are n=1. Euler V=5,E=8,F=3,chi=0.
+- **Reproducer recipe**: h=(1,1,0) [idx 0], r0=(0,0,0) [1], r1=(2,0,0) [2], r2=(2,2,0) [3], r3=(0,2,0) [4]; t0=(h,r0,r1), t1=(h,r1,r2), t2=(h,r2,r3); hole boundary edges: (h,r3)=[0,4], (r3,r0)=[1,4], (r0,h)=[0,1] all n=1; euler V=5,E=8,F=3,chi=0.
+- **Expected kernel behavior**: Branch 2 fires after 3 nextOnBoundary iterations; traversal returns to e->v1 (start vertex); boundary loop [h, r0, r3] collected and ready for barycenter accumulation.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=5 e=8 f=3 chi=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me811.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me812 — StarTriangulateHole_barycenter_computation: 5-vertex pentagonal hole; np=np+(*v) accumulates all 5 boundary vertices; barycenter placed at centroid (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: hole-filling / barycenter-computation)
+- **Sources**: MeshFix `Basic_TMesh.StarTriangulateHole` Branch 3 (*BARYCENTER_COMPUTATION*: `np = np + (*v); np_count++;` followed by `np /= np_count;` @ line 66); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two concentric pentagons (outer R=3, inner R=1) joined by 10 triangles (2 per trapezoid sector). The inner pentagon is unfilled — a 5-vertex / 5-edge boundary loop (i0..i4). StarTriangulateHole processes the inner boundary: np = np + (*v) executes 5 times (once per inner vertex i0..i4) before dividing by 5 to compute the centroid at (0,0,0). All 5 inner boundary edges assert n=1; all 5 straight spokes ok-ik assert n=2; Euler V=10,E=20,F=10,chi=0.
+- **Reproducer recipe**: outer ring R=3 (o0..o4 = vertices 0..4, equally spaced), inner ring R=1 (i0..i4 = vertices 5..9); 10 triangles (ok, o(k+1), i(k+1)) and (ok, i(k+1), ik) for k in 0..4; inner edges (5,6),(6,7),(7,8),(8,9),(5,9) all n=1; straight spokes (0,5),(1,6),(2,7),(3,8),(4,9) all n=2; euler V=10,E=20,F=10,chi=0.
+- **Expected kernel behavior**: Branch 3 fires; accumulator np visits i0..i4 in boundary order (5 iterations); np divided by 5 gives centroid (0,0,0); a new apex vertex is created at centroid and 5 fan triangles fill the hole.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[6,7] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[7,8] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[8,9] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,9] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,7] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,8] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,9] n=2`
+- **Mesh assertion**: `euler_characteristic v=10 e=20 f=10 chi=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me812.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me820 — does_polygon_soup_self_intersect_duplicate_point_presence: coincident v0==v3 at (0,0,0); merge_duplicate_points fires before SI check (Branch 1)
 - **Category**: §12.14 mesh defects (sub-class: polygon-soup-self-intersection / duplicate-point-presence)
 - **Sources**: CGAL PMP `does_polygon_soup_self_intersect` Branch 1 (*duplicate_point_presence*: `merge_duplicate_points_in_polygon_soup` call fires when coincident-coordinate vertex pair exists); `MESH_HEAL_COVERAGE.md`.

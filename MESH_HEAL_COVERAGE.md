@@ -2347,20 +2347,20 @@ Fixture IDs: Me200 Me201 Me202 Me203 Me204 Me205 Me206 Me207 Me208 Me209
   - Suggested fixture: defect mentioning 'd_boundaries = d_handles = d_shells = 1'
 
 ##### `holeFilling::StarTriangulateHole` — lines 46–93
-(3 branches; all UNCOVERED — no mesh fixtures exist yet)
+(3 branches; all COVERED — wave 28B: Me810, Me811, Me812)
 
-- **Branch 1** @ line 48 — *EDGE_NOT_ON_BOUNDARY*
+- **Branch 1** @ line 48 — *EDGE_NOT_ON_BOUNDARY* — **COVERED by Me810**
   - What it tests: Input edge is not a boundary edge
   - Repair action: Return 0; no hole to fill
-  - Suggested fixture: defect mentioning '!e->isOnBoundary()'
-- **Branch 2** @ line 62 — *BOUNDARY_LOOP_CLOSURE*
+  - Fixture: Me810 (closed tetrahedron; all edges n==2; !e->isOnBoundary() fires)
+- **Branch 2** @ line 62 — *BOUNDARY_LOOP_CLOSURE* — **COVERED by Me811**
   - What it tests: Traversal returns to start vertex
   - Repair action: Collect all boundary vertices in loop
-  - Suggested fixture: defect mentioning 'v != e->v1', 'nextOnBoundary'
-- **Branch 3** @ line 66 — *BARYCENTER_COMPUTATION*
+  - Fixture: Me811 (4-sector fan, one sector omitted; 3-vertex hole; v==e->v1 exits loop)
+- **Branch 3** @ line 66 — *BARYCENTER_COMPUTATION* — **COVERED by Me812**
   - What it tests: Accumulate all boundary vertex coordinates
   - Repair action: Sum positions; divide by count for barycenter
-  - Suggested fixture: defect mentioning 'np = np+(*v)'
+  - Fixture: Me812 (two concentric pentagons; 5-vertex inner hole; np=np+(*v) fires 5 times)
 
 ##### `holeFilling::TriangulateHole@L157` — lines 157–292
 (6 branches; all UNCOVERED — no mesh fixtures exist yet)
