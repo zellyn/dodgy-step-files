@@ -1,0 +1,20 @@
+ply
+format ascii 1.0
+comment Me1182: triangulate_hole.main geometry_traits_deduction: GetGeomTraits deduces traits from point type; triangular hole; default deduction path (Branch 6)
+comment defect_class: boundary_hole
+element vertex 6
+property float x
+property float y
+property float z
+element face 3
+property list uchar int vertex_indices
+end_header
+0 0 0
+3 0 0
+1.5 2.6 0
+1.5 -1.5 0
+4.5 1 0
+-1.5 1 0
+3 0 3 1
+3 1 4 2
+3 2 5 0

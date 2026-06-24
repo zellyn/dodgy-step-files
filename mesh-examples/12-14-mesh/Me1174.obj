@@ -1,0 +1,8 @@
+# Me1174: Basic_TMesh.forceNormalConsistence adjacent_triangle_missing: e->t2 not NULL fires propagation to neighbor; two-triangle manifold (Branch 2)
+# defect_class: inverted_normal
+v 0 0 0
+v 1 0 0
+v 0.5 1 0
+v 0 1 0
+f 1 2 3
+f 3 2 4

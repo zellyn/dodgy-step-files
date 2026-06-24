@@ -1,0 +1,12 @@
+# Me1172: fill_edge_map non_manifold_visitor_callback: four polys share one edge; visitor.non_manifold_edge fired (Branch 3)
+# defect_class: non_manifold_edge
+v 0 0 0
+v 1 0 0
+v 0.5 1 0
+v 0.5 -1 0
+v 0.5 2 0
+v 0.5 -2 0
+f 1 2 3
+f 1 2 4
+f 2 1 5
+f 2 1 6

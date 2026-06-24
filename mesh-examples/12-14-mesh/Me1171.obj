@@ -1,0 +1,10 @@
+# Me1171: fill_edge_map non_manifold_detection: three polygons share directed edge v0→v1; nb_edges=3 > 2 fires Branch 2
+# defect_class: non_manifold_edge
+v 0 0 0
+v 1 0 0
+v 0.5 1 0
+v 0.5 -1 0
+v 0.5 0.5 0
+f 1 2 3
+f 1 2 4
+f 1 2 5

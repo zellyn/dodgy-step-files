@@ -74,20 +74,22 @@ code or test data was copied into this catalog.
 Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
 
 ##### `PMP.Polygon_soup_orienter.fill_edge_map` — lines 180–214
-(3 branches; all UNCOVERED — no mesh fixtures exist yet)
+(3 branches; ALL COVERED by Me1170–Me1172 — wave 41, 2026-06-23)
 
-- **Branch 1** @ line 182 — *edge_recording*
+- **Branch 1** @ line 182 — *edge_recording* — **Me1170**
   - What it tests: For each polygon edge, record polygon in edge map
   - Repair action: edges[i0][i1].insert(polygon_id)
-  - Suggested fixture: defect mentioning 'edges[i0][i1].insert(i)'
-- **Branch 2** @ line 201 — *non_manifold_detection*
+  - Fixture: Me1170 — two-triangle manifold soup; edges[v1][v2].insert(t0_id) and edges[v2][v1].insert(t1_id) both fire
+- **Branch 2** @ line 201 — *non_manifold_detection* — **Me1171**
   - What it tests: Count incoming/outgoing edges at each directed edge
   - Repair action: if nb_edges > 2, mark as non-manifold
-  - Suggested fixture: defect mentioning 'if (nb_edges > 2)'
-- **Branch 3** @ line 209 — *non_manifold_visitor_callback*
+  - Fixture: Me1171 — three triangles sharing directed edge v0→v1; edges[0][1].size()==3 > 2 triggers non-manifold flag
+- **Branch 3** @ line 209 — *non_manifold_visitor_callback* — **Me1172**
   - What it tests: Invoke visitor for non-manifold edge discovery
   - Repair action: visitor.non_manifold_edge(i0, i1, nb_edges)
-  - Suggested fixture: defect mentioning 'visitor.non_manifold_edge'
+  - Fixture: Me1172 — four triangles sharing one edge (2 per direction); nb_edges=4 triggers visitor.non_manifold_edge(0,1,4)
+
+Fixture IDs: Me1170 Me1171 Me1172
 
 ##### `PMP.Polygon_soup_orienter.orient` — lines 235–336
 (11 branches; 10 COVERED by Me170–Me179 — wave 7A; Branch 11 *neighbor_skip* subsumed by Me179)
@@ -1514,32 +1516,34 @@ Fixture IDs: Me1161 Me1162 Me1163 Me1164 Me1165
   - Suggested fixture: defect mentioning 'CGAL_DEPRECATED', 'CGAL_NO_DEPRECATED_CODE'
 
 ##### `triangulate_hole.main` — lines 165–236
-(6 branches; all UNCOVERED — no mesh fixtures exist yet)
+(6 branches; ALL COVERED by Me1177–Me1182 — wave 41, 2026-06-23)
 
-- **Branch 1** @ line 184 — *compile_time_feature_disable*
+- **Branch 1** @ line 184 — *compile_time_feature_disable* — **Me1177**
   - What it tests: Whether 3D Delaunay triangulation is disabled at compile-time
   - Repair action: Conditionally disable DT3 path if CGAL_HOLE_FILLING_DO_NOT_USE_DT3 is defined
-  - Suggested fixture: defect mentioning 'CGAL_HOLE_FILLING_DO_NOT_USE_DT3', 'use_dt3'
-- **Branch 2** @ line 192 — *compile_time_feature_disable*
+  - Fixture: Me1177 — triangular hole with 3 hat triangles; CGAL_HOLE_FILLING_DO_NOT_USE_DT3 fires use_dt3=false
+- **Branch 2** @ line 192 — *compile_time_feature_disable* — **Me1178**
   - What it tests: Whether 2D CDT is disabled at compile-time
   - Repair action: Conditionally disable CDT2 path if CGAL_HOLE_FILLING_DO_NOT_USE_CDT2 is defined
-  - Suggested fixture: defect mentioning 'CGAL_HOLE_FILLING_DO_NOT_USE_CDT2', 'use_cdt'
-- **Branch 3** @ line 200 — *planarity_check_needed*
+  - Fixture: Me1178 — quad hole with 4 hat triangles; CGAL_HOLE_FILLING_DO_NOT_USE_CDT2 fires use_cdt=false
+- **Branch 3** @ line 200 — *planarity_check_needed* — **Me1179**
   - What it tests: Whether hole boundary is planar enough for 2D CDT projection
   - Repair action: If use_cdt=true: compute hole boundary bbox and threshold distance for planarity test
-  - Suggested fixture: defect mentioning 'max_squared_distance', 'threshold_distance', 'bounding_box'
-- **Branch 4** @ line 217 — *threshold_override*
+  - Fixture: Me1179 — planar pentagon hole; all vertices z=0; bbox+max_squared_distance=0 passes planarity check
+- **Branch 4** @ line 217 — *threshold_override* — **Me1180**
   - What it tests: User-provided threshold_distance parameter vs default
   - Repair action: Use user-provided threshold or compute 1/4 bbox height
-  - Suggested fixture: defect mentioning 'threshold_distance', 'default_squared_distance'
-- **Branch 5** @ line 225 — *algorithm_fallback_strategy*
+  - Fixture: Me1180 — hexagonal hole; explicit threshold_distance parameter replaces bbox-height default
+- **Branch 5** @ line 225 — *algorithm_fallback_strategy* — **Me1181**
   - What it tests: Sequence of three triangulation algorithms with fallback
   - Repair action: Delegate to internal::triangulate_hole_polygon_mesh with use_dt3, use_cdt, do_not_use_cubic flags controlling fallback chain
-  - Suggested fixture: defect mentioning 'internal::triangulate_hole_polygon_mesh', 'use_dt3', 'use_cdt'
-- **Branch 6** @ line 231 — *geometry_traits_deduction*
+  - Fixture: Me1181 — non-planar quad hole (q3 at z=1); CDT2 planarity fails; DT3 fallback via internal dispatch
+- **Branch 6** @ line 231 — *geometry_traits_deduction* — **Me1182**
   - What it tests: Explicit vs deduced geometric traits
   - Repair action: If geom_traits param provided use it; else CGAL::Kernel_traits deduces from point type
-  - Suggested fixture: defect mentioning 'GetGeomTraits', 'geom_traits'
+  - Fixture: Me1182 — triangular hole; no explicit geom_traits; GetGeomTraits deduces from PolygonMesh::Point
+
+Fixture IDs: Me1177 Me1178 Me1179 Me1180 Me1181 Me1182
 
 ##### `triangulate_hole_polyline.with_third_points` — lines 719–801
 (9 branches; ALL COVERED — Me320–Me328 wave 12A)
@@ -1994,24 +1998,26 @@ Fixture IDs: Me200 Me201 Me202 Me203 Me204 Me205 Me206 Me207 Me208 Me209
 Fixture IDs: Me950 Me951 Me952 Me953 Me954 Me955 Me956
 
 ##### `Basic_TMesh.forceNormalConsistence` — lines 923–988
-(4 branches; all UNCOVERED — no mesh fixtures exist yet)
+(4 branches; ALL COVERED by Me1173–Me1176 — wave 41, 2026-06-23)
 
-- **Branch 1** @ line 929 — *non_orientable_surface*
+- **Branch 1** @ line 929 — *non_orientable_surface* — **Me1173**
   - What it tests: triangle already marked in orientation pass
   - Repair action: return without propagating
-  - Suggested fixture: defect mentioning 'isDMark'
-- **Branch 2** @ line 950 — *adjacent_triangle_missing*
+  - Fixture: Me1173 — tetrahedron with all consistent normals; recursive propagation re-encounters t0 (isDMark); early return fires
+- **Branch 2** @ line 950 — *adjacent_triangle_missing* — **Me1174**
   - What it tests: adjacent triangle exists at edge e->t2
   - Repair action: skip orientation propagation for that edge
-  - Suggested fixture: defect mentioning 'e->t2 != NULL'
-- **Branch 3** @ line 955 — *orientation_conflict*
+  - Fixture: Me1174 — two-triangle manifold strip; shared edge has e->t2=t1 (not NULL); propagation continues to neighbor
+- **Branch 3** @ line 955 — *orientation_conflict* — **Me1175**
   - What it tests: adjacent triangle has opposite orientation
   - Repair action: cut seam and record for stitching
-  - Suggested fixture: defect mentioning '!e->isBoundary', 'swap'
-- **Branch 4** @ line 975 — *recursion_base_case*
+  - Fixture: Me1175 — t0=(v0,v1,v2) CCW normal +Z and t1=(v2,v1,v3) CW normal -Z; tmp1*tmp2<0 fires seam cut
+- **Branch 4** @ line 975 — *recursion_base_case* — **Me1176**
   - What it tests: recursive propagation halts on marked triangles
   - Repair action: stop recursion at boundary of marked set
-  - Suggested fixture: defect mentioning 'forceNormalConsistence'
+  - Fixture: Me1176 — 3-fan around v0; recursive calls to already-marked triangles halt via Branch 1; Branch 4 (call site) fires repeatedly
+
+Fixture IDs: Me1173 Me1174 Me1175 Me1176
 
 ##### `Basic_TMesh.removeSmallestComponents@L780` — lines 780–856
 (3 branches; all UNCOVERED — no mesh fixtures exist yet)

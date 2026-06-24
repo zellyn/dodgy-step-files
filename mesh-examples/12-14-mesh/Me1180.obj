@@ -1,0 +1,20 @@
+# Me1180: triangulate_hole.main threshold_override: explicit threshold_distance parameter detected and used instead of bbox default; hexagonal hole (Branch 4)
+# defect_class: boundary_hole
+v 1 0 0
+v 0.5 0.866025403784 0
+v -0.5 0.866025403784 0
+v -1 1.22464679915e-16 0
+v -0.5 -0.866025403784 0
+v 0.5 -0.866025403784 0
+v 2 0 0
+v 1 1.73205080757 0
+v -1 1.73205080757 0
+v -2 2.44929359829e-16 0
+v -1 -1.73205080757 0
+v 1 -1.73205080757 0
+f 1 7 2
+f 2 8 3
+f 3 9 4
+f 4 10 5
+f 5 11 6
+f 6 12 1

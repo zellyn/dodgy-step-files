@@ -41618,3 +41618,258 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=6 e=9 f=3 chi=0`
 - **Fixture path**: mesh-examples/12-14-mesh/Me1165.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1170 — fill_edge_map edge_recording: per-edge polygon-id insertion into directed edge map; two-triangle manifold soup (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: non_manifold_edge / fill-edge-map-recording)
+- **Sources**: CGAL PMP `PMP.Polygon_soup_orienter.fill_edge_map` Branch 1 (*edge_recording*: `edges[i0][i1].insert(polygon_id)` @ line 182); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A minimal two-triangle manifold polygon soup — t0=(v0,v1,v2) and t1=(v2,v1,v3) sharing undirected edge v1-v2. When fill_edge_map processes this soup, it calls edges[i0][i1].insert(polygon_id) for each directed edge of each polygon (Branch 1 fires for all 5 directed edge insertions). The shared undirected edge v1-v2 appears as directed (v1,v2) in t0 and directed (v2,v1) in t1 — two distinct entries. No non-manifold detection fires since each directed edge has at most one polygon. V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1.5,1,0); t0=(v0,v1,v2), t1=(v2,v1,v3); shared interior edge v1-v2 n=2; four boundary edges n=1; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 1 fires for every directed edge insertion; edges[v1][v2] gets polygon_id=0, edges[v2][v1] gets polygon_id=1; no non-manifold threshold exceeded.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1170.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1171 — fill_edge_map non_manifold_detection: three polygons share directed edge v0→v1; nb_edges=3 > 2 triggers non-manifold flag (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: non_manifold_edge / fill-edge-map-nonmanifold)
+- **Sources**: CGAL PMP `PMP.Polygon_soup_orienter.fill_edge_map` Branch 2 (*non_manifold_detection*: `if (nb_edges > 2) {` @ line 201); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangles — t0=(v0,v1,v2), t1=(v0,v1,v3), t2=(v0,v1,v4) — all claiming the same directed edge v0→v1. After fill_edge_map records all polygon ids into edges[0][1], the count nb_edges=3 exceeds the manifold threshold of 2 (Branch 2 fires). The edge is flagged as non-manifold. V=5, E=7, F=3, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,-1,0), v4=(0.5,0.5,0); t0=(v0,v1,v2), t1=(v0,v1,v3), t2=(v0,v1,v4); edge v0-v1 n=3 (non-manifold); euler V=5,E=7,F=3,chi=1.
+- **Expected kernel behavior**: Branch 2 fires; edges[0][1].size()==3 > 2; edge marked non-manifold.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=3`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `euler_characteristic v=5 e=7 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1171.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1172 — fill_edge_map non_manifold_visitor_callback: four polygons share one undirected edge; visitor.non_manifold_edge callback fired (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: non_manifold_edge / fill-edge-map-visitor)
+- **Sources**: CGAL PMP `PMP.Polygon_soup_orienter.fill_edge_map` Branch 3 (*non_manifold_visitor_callback*: `visitor.non_manifold_edge(i0, i1, nb_edges)` @ line 209); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four triangles sharing one undirected edge: t0=(v0,v1,v2) and t1=(v0,v1,v3) claim directed v0→v1; t2=(v1,v0,v4) and t3=(v1,v0,v5) claim directed v1→v0. Combined nb_edges=4 > 2 triggers Branch 2 (detection) then Branch 3 (visitor callback visitor.non_manifold_edge(0,1,4)). V=6, E=9, F=4, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,-1,0), v4=(0.5,2,0), v5=(0.5,-2,0); t0=(v0,v1,v2), t1=(v0,v1,v3), t2=(v1,v0,v4), t3=(v1,v0,v5); edge v0-v1 n=4; euler V=6,E=9,F=4,chi=1.
+- **Expected kernel behavior**: Branch 2 detects nb_edges=4 > 2; Branch 3 fires visitor.non_manifold_edge(0,1,4).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=4`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,5] n=1`
+- **Mesh assertion**: `euler_characteristic v=6 e=9 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1172.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1173 — Basic_TMesh.forceNormalConsistence non_orientable_surface: already-marked triangle causes early return; tetrahedron all-consistent normals (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: inverted_normal / force-normal-consistence-marked)
+- **Sources**: MeshFix `Basic_TMesh.forceNormalConsistence` Branch 1 (*non_orientable_surface*: `if (isDMark(t)) return r;` @ line 929); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A closed tetrahedron with all four triangles consistently oriented (CCW normals pointing outward). When forceNormalConsistence propagates from t0 to neighbors and eventually back to t0, the isDMark(t0)==true guard fires (Branch 1), returning immediately without re-processing. This prevents infinite recursion in the orientation propagation. V=4, E=6, F=4, chi=2.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,0.87,0), v3=(0.5,0.29,0.82); t0=(v0,v2,v1), t1=(v0,v1,v3), t2=(v1,v2,v3), t3=(v0,v3,v2); all edges n=2; euler V=4,E=6,F=4,chi=2.
+- **Expected kernel behavior**: Branch 1 fires when recursive propagation re-encounters already-marked triangles; recursion terminates; r returned unchanged.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1173.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1174 — Basic_TMesh.forceNormalConsistence adjacent_triangle_missing: e->t2 not NULL fires propagation to consistent neighbor (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: inverted_normal / force-normal-consistence-propagate)
+- **Sources**: MeshFix `Basic_TMesh.forceNormalConsistence` Branch 2 (*adjacent_triangle_missing*: `if (e->t2 != NULL) {` @ line 950); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two CCW-oriented triangles sharing interior edge v1-v2 — t0=(v0,v1,v2) and t1=(v2,v1,v3), both with normal +Z. The shared edge has e->t2=t1 (not NULL), so Branch 2 fires when forceNormalConsistence processes t0's edges. Propagation continues to t1 for orientation consistency check. Since both are consistent, no seam is cut. V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0,1,0); t0=(v0,v1,v2) CCW, t1=(v2,v1,v3) CCW; shared edge v1-v2 n=2; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 2 fires; e->t2 (pointing to t1) is not NULL; orientation consistency check proceeds; consistent normals detected; no seam cut.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1174.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1175 — Basic_TMesh.forceNormalConsistence orientation_conflict: antiparallel normals on shared edge fire seam cut; inconsistent winding (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: inverted_normal / force-normal-consistence-seam)
+- **Sources**: MeshFix `Basic_TMesh.forceNormalConsistence` Branch 3 (*orientation_conflict*: `if (tmp1*tmp2 < 0) { newEdge(...); wrn++; }` @ line 955); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two adjacent triangles sharing edge v1-v2 with opposite orientations — t0=(v0,v1,v2) has normal +Z (CCW) while t1=(v2,v1,v3) has normal -Z (CW). When forceNormalConsistence propagates from t0, it computes orientation products tmp1 and tmp2; tmp1*tmp2 < 0 (Branch 3 fires). A new edge is created to cut the seam, and wrn is incremented. V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0,1,0); t0=(v0,v1,v2) CCW +Z, t1=(v2,v1,v3) CW -Z; shared edge v1-v2 n=2; adjacent normals antiparallel; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 3 fires; tmp1*tmp2 < 0 for shared edge; newEdge(e->v2,e->v1) creates seam edge; wrn incremented; r|=2 on return.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,1]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1175.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1176 — Basic_TMesh.forceNormalConsistence recursion_base_case: recursive propagation halts at already-marked triangles; 3-fan all consistent (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: inverted_normal / force-normal-consistence-recurse)
+- **Sources**: MeshFix `Basic_TMesh.forceNormalConsistence` Branch 4 (*recursion_base_case*: `forceNormalConsistence(t1, ...)` recursive call @ line 975); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 3-triangle fan around central vertex v0 — all consistently oriented CCW. forceNormalConsistence is called on t0, recursively propagates to t1 and t2. From t1, the recursive call to t0 hits Branch 1 (isDMark); from t2, recursive calls to t0 and t1 both hit Branch 1. Branch 4 (the recursive call site) fires multiple times, with Branch 1 providing termination. V=4, E=6, F=3, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(-1,0,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v1); three interior fan edges n=2; three outer edges n=1; euler V=4,E=6,F=3,chi=1.
+- **Expected kernel behavior**: Branch 4 fires repeatedly; recursive calls propagate orientation; Branch 1 halts each re-encounter of marked triangles; all normals confirmed consistent.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1176.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1177 — triangulate_hole.main compile_time_feature_disable DT3: CGAL_HOLE_FILLING_DO_NOT_USE_DT3 sets use_dt3=false; triangular hole boundary (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: boundary_hole / triangulate-hole-no-dt3)
+- **Sources**: CGAL PMP `triangulate_hole.main` Branch 1 (*compile_time_feature_disable*: `#ifdef CGAL_HOLE_FILLING_DO_NOT_USE_DT3 use_dt3 = false; #endif` @ line 184); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A triangular hole bordered by three hat-triangles. Branch 1 fires at compile time when CGAL_HOLE_FILLING_DO_NOT_USE_DT3 is defined; use_dt3 is forced to false, routing hole triangulation away from 3D Delaunay toward CDT2 or cubic fallback. The runtime fixture carries the minimal hole geometry that triangulate_hole.main processes. V=6, E=9, F=3, chi=0.
+- **Reproducer recipe**: Hole corners h0=(0,0,0), h1=(2,0,0), h2=(1,1.73,0); hat outer o0=(1,-1,0), o1=(3,1,0), o2=(-1,1,0); t0=(h0,o0,h1), t1=(h1,o1,h2), t2=(h2,o2,h0); hole edges n=1; hole_boundary [h0,h1,h2]; euler V=6,E=9,F=3,chi=0.
+- **Expected kernel behavior**: Branch 1 fires; CGAL_HOLE_FILLING_DO_NOT_USE_DT3 macro disables DT3 path; use_dt3=false; triangulation falls back to CDT2 or cubic algorithm.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `hole_boundary vertices=[0,1,2]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=1`
+- **Mesh assertion**: `euler_characteristic v=6 e=9 f=3 chi=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1177.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1178 — triangulate_hole.main compile_time_feature_disable CDT2: CGAL_HOLE_FILLING_DO_NOT_USE_CDT2 sets use_cdt=false; quad hole boundary (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: boundary_hole / triangulate-hole-no-cdt2)
+- **Sources**: CGAL PMP `triangulate_hole.main` Branch 2 (*compile_time_feature_disable*: `#ifdef CGAL_HOLE_FILLING_DO_NOT_USE_CDT2 use_cdt = false; #endif` @ line 192); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A quadrilateral hole bordered by four hat-triangles. Branch 2 fires at compile time when CGAL_HOLE_FILLING_DO_NOT_USE_CDT2 is defined; use_cdt is forced to false, bypassing the 2D CDT shortcut. The planarity check (Branch 3) is skipped, routing directly to DT3 or cubic. V=8, E=12, F=4, chi=0.
+- **Reproducer recipe**: Hole corners q0=(0,0,0), q1=(2,0,0), q2=(2,2,0), q3=(0,2,0); hat outer o0=(1,-1,0), o1=(3,1,0), o2=(1,3,0), o3=(-1,1,0); four hat tris; hole edges n=1; hole_boundary [q0,q1,q2,q3]; euler V=8,E=12,F=4,chi=0.
+- **Expected kernel behavior**: Branch 2 fires; CGAL_HOLE_FILLING_DO_NOT_USE_CDT2 forces use_cdt=false; CDT2 path bypassed; DT3 or cubic used for hole filling.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `hole_boundary vertices=[0,1,2,3]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,7] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,7] n=1`
+- **Mesh assertion**: `euler_characteristic v=8 e=12 f=4 chi=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1178.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1179 — triangulate_hole.main planarity_check_needed: bbox+max_squared_distance computation for CDT2 planarity test; planar pentagon hole (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: boundary_hole / triangulate-hole-planarity)
+- **Sources**: CGAL PMP `triangulate_hole.main` Branch 3 (*planarity_check_needed*: `double max_squared_distance = 0; ...` @ line 200); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A planar regular pentagon hole bordered by five hat-triangles. When use_cdt is true, Branch 3 fires as triangulate_hole.main computes the bounding box of the hole boundary and measures max_squared_distance from each vertex to the fit plane. All pentagon corners lie on z=0, so max_squared_distance=0.0, which is below any positive threshold. CDT2 is eligible. V=10, E=15, F=5, chi=0.
+- **Reproducer recipe**: Pentagon corners p0=(0,0,0), p1=(2,0,0), p2=(2.6,1.9,0), p3=(1,3.1,0), p4=(-0.6,1.9,0); five hat outer vertices; five hat tris; hole_boundary [p0,p1,p2,p3,p4]; euler V=10,E=15,F=5,chi=0.
+- **Expected kernel behavior**: Branch 3 fires; bbox computed; max_squared_distance=0 (planar boundary); CDT2 planarity check passes; 2D CDT path eligible.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `hole_boundary vertices=[0,1,2,3,4]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,7] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,7] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,8] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,8] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,9] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,9] n=1`
+- **Mesh assertion**: `euler_characteristic v=10 e=15 f=5 chi=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1179.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1180 — triangulate_hole.main threshold_override: explicit threshold_distance named parameter overrides bbox-computed default; hexagonal hole (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: boundary_hole / triangulate-hole-threshold)
+- **Sources**: CGAL PMP `triangulate_hole.main` Branch 4 (*threshold_override*: `if(get_parameter(np, internal_np::threshold_distance) != ...) {` @ line 217); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A planar regular hexagonal hole bordered by six hat-triangles. When the caller provides an explicit threshold_distance named parameter, Branch 4 fires and the user-supplied value replaces the default bbox-height-based computation. The hex corners all lie on z=0 (planar), so any positive threshold enables CDT2. Branch 4 fires before the CDT2 path selection. V=12, E=18, F=6, chi=0.
+- **Reproducer recipe**: Hex corners r0..r5 at unit radius z=0; hat outer o0..o5 at radius 2; six hat tris; hole_boundary [r0,r1,r2,r3,r4,r5]; euler V=12,E=18,F=6,chi=0.
+- **Expected kernel behavior**: Branch 4 fires; get_parameter detects explicit threshold_distance; user value used instead of bbox height; CDT2 planarity gate uses explicit threshold.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=1`
+- **Mesh assertion**: `hole_boundary vertices=[0,1,2,3,4,5]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,7] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,7] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,8] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,8] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,9] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,9] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,10] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,10] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,11] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,11] n=1`
+- **Mesh assertion**: `euler_characteristic v=12 e=18 f=6 chi=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1180.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1181 — triangulate_hole.main algorithm_fallback_strategy: non-planar hole triggers DT3 fallback; delegation to internal with use_dt3/use_cdt flags (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: boundary_hole / triangulate-hole-dt3-fallback)
+- **Sources**: CGAL PMP `triangulate_hole.main` Branch 5 (*algorithm_fallback_strategy*: `internal::triangulate_hole_polygon_mesh(pm, h, out, use_dt3, use_cdt, ...)` @ line 225); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A non-planar quadrilateral hole — q3 is lifted to z=1 while the other three corners are in z=0. The planarity check measures max_squared_distance > 0, failing the CDT2 threshold. Branch 5 fires when triangulate_hole delegates to internal::triangulate_hole_polygon_mesh with use_dt3=true, use_cdt=false. The non-planar geometry ensures the 3D-DT fallback path is taken. V=8, E=12, F=4, chi=0.
+- **Reproducer recipe**: Hole corners q0=(0,0,0), q1=(2,0,0), q2=(2,2,0), q3=(1,1,1); hat outer o0=(1,-1,0), o1=(3,1,0), o2=(1.5,3,0), o3=(-1,0.5,0.5); four hat tris; non-planar hole; hole_boundary [q0,q1,q2,q3]; euler V=8,E=12,F=4,chi=0.
+- **Expected kernel behavior**: Branch 5 fires; non-planar boundary fails CDT2 planarity gate; internal::triangulate_hole_polygon_mesh called with use_dt3=true, use_cdt=false; DT3 fills the non-planar hole.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `hole_boundary vertices=[0,1,2,3]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,7] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,7] n=1`
+- **Mesh assertion**: `euler_characteristic v=8 e=12 f=4 chi=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1181.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1182 — triangulate_hole.main geometry_traits_deduction: GetGeomTraits deduces traits from point type; triangular hole; default traits path (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: boundary_hole / triangulate-hole-traits)
+- **Sources**: CGAL PMP `triangulate_hole.main` Branch 6 (*geometry_traits_deduction*: `typename GetGeomTraits<PolygonMesh, NamedParameters>::type GT;` @ line 231); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A triangular hole bordered by three hat-triangles. Branch 6 fires when the caller does not supply an explicit geom_traits parameter — the common case. GetGeomTraits applies CGAL::Kernel_traits to deduce the geometry kernel from the PolygonMesh point type. This is the standard calling convention for triangulate_hole. V=6, E=9, F=3, chi=0.
+- **Reproducer recipe**: Hole corners a0=(0,0,0), a1=(3,0,0), a2=(1.5,2.6,0); hat outer b0=(1.5,-1.5,0), b1=(4.5,1,0), b2=(-1.5,1,0); t0=(a0,b0,a1), t1=(a1,b1,a2), t2=(a2,b2,a0); hole edges n=1; hole_boundary [a0,a1,a2]; euler V=6,E=9,F=3,chi=0.
+- **Expected kernel behavior**: Branch 6 fires; no explicit geom_traits parameter; GetGeomTraits deduces GT from PolygonMesh::Point via Kernel_traits; deduced traits used for all geometric predicates.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `hole_boundary vertices=[0,1,2]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=1`
+- **Mesh assertion**: `euler_characteristic v=6 e=9 f=3 chi=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1182.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder

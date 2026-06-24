@@ -1,0 +1,9 @@
+# Me1176: Basic_TMesh.forceNormalConsistence recursion_base_case: recursive call halts at already-marked triangles; 3-fan all consistent (Branch 4)
+# defect_class: inverted_normal
+v 0 0 0
+v 1 0 0
+v 0 1 0
+v -1 0 0
+f 1 2 3
+f 1 3 4
+f 1 4 2

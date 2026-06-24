@@ -1,0 +1,19 @@
+ply
+format ascii 1.0
+comment Me1171: fill_edge_map non_manifold_detection: three polygons share directed edge v0→v1; nb_edges=3 > 2 fires Branch 2
+comment defect_class: non_manifold_edge
+element vertex 5
+property float x
+property float y
+property float z
+element face 3
+property list uchar int vertex_indices
+end_header
+0 0 0
+1 0 0
+0.5 1 0
+0.5 -1 0
+0.5 0.5 0
+3 0 1 2
+3 0 1 3
+3 0 1 4

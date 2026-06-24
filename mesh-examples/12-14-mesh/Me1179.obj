@@ -1,0 +1,17 @@
+# Me1179: triangulate_hole.main planarity_check_needed: bbox+max_squared_distance computed for CDT2 planarity test; planar pentagon hole (Branch 3)
+# defect_class: boundary_hole
+v 0 0 0
+v 2 0 0
+v 2.6 1.9 0
+v 1 3.1 0
+v -0.6 1.9 0
+v 1 -1.2 0
+v 3.6 0.8 0
+v 3 3 0
+v 1 4.3 0
+v -1.6 3 0
+f 1 6 2
+f 2 7 3
+f 3 8 4
+f 4 9 5
+f 5 10 1

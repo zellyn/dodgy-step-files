@@ -1,0 +1,8 @@
+# Me1175: Basic_TMesh.forceNormalConsistence orientation_conflict: antiparallel normals on shared edge fire seam cut; inconsistent winding (Branch 3)
+# defect_class: inverted_normal
+v 0 0 0
+v 1 0 0
+v 0.5 1 0
+v 0 1 0
+f 1 2 3
+f 3 2 4

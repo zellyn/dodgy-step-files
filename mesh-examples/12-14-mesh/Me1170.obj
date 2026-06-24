@@ -1,0 +1,8 @@
+# Me1170: fill_edge_map edge_recording: per-edge insertion into polygon map; two-triangle manifold soup (Branch 1)
+# defect_class: non_manifold_edge
+v 0 0 0
+v 1 0 0
+v 0.5 1 0
+v 1.5 1 0
+f 1 2 3
+f 3 2 4

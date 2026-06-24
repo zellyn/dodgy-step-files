@@ -1,0 +1,11 @@
+# Me1177: triangulate_hole.main compile_time_feature_disable DT3: CGAL_HOLE_FILLING_DO_NOT_USE_DT3 sets use_dt3=false; triangular hole boundary (Branch 1)
+# defect_class: boundary_hole
+v 0 0 0
+v 2 0 0
+v 1 1.73 0
+v 1 -1 0
+v 3 1 0
+v -1 1 0
+f 1 4 2
+f 2 5 3
+f 3 6 1

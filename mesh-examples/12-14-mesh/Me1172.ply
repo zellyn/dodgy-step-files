@@ -1,0 +1,21 @@
+ply
+format ascii 1.0
+comment Me1172: fill_edge_map non_manifold_visitor_callback: four polys share one edge; visitor.non_manifold_edge fired (Branch 3)
+comment defect_class: non_manifold_edge
+element vertex 6
+property float x
+property float y
+property float z
+element face 4
+property list uchar int vertex_indices
+end_header
+0 0 0
+1 0 0
+0.5 1 0
+0.5 -1 0
+0.5 2 0
+0.5 -2 0
+3 0 1 2
+3 0 1 3
+3 1 0 4
+3 1 0 5

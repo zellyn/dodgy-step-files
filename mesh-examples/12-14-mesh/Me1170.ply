@@ -1,0 +1,17 @@
+ply
+format ascii 1.0
+comment Me1170: fill_edge_map edge_recording: per-edge insertion into polygon map; two-triangle manifold soup (Branch 1)
+comment defect_class: non_manifold_edge
+element vertex 4
+property float x
+property float y
+property float z
+element face 2
+property list uchar int vertex_indices
+end_header
+0 0 0
+1 0 0
+0.5 1 0
+1.5 1 0
+3 0 1 2
+3 2 1 3
