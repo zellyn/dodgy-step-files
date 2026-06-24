@@ -83945,7 +83945,10 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 2",
+      "n_edges_total == 8",
+      "n_vertices_total == 16"
     ],
     "title": "Surface discontinuities introduced by translation (G0/G1/G2 break at shared edges)"
   },
@@ -84211,7 +84214,10 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_faces_total == 2",
+      "n_edges_total == 8",
+      "n_vertices_total == 16"
     ],
     "title": "Patrikalakis interval-solid violation: face-pair gap exceeds bound"
   },
@@ -100577,7 +100583,7 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False"
     ],
     "title": "tessellated_constructive_geometry_representation requires AP242 Ed.4"
   },
@@ -102661,7 +102667,8 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 2"
     ],
     "title": "Transformation relation creation failed (AXIS2_PLACEMENT_3D with zero-vector DIRECTION ratios in ITEM_DEFINED_TRANSFORMATION); placement falls back to identity"
   },
@@ -102929,7 +102936,8 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "AP238 left-handed setup coordinate frame on multi-axis machine"
   },
@@ -103376,7 +103384,9 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_edges_total == 1",
+      "n_vertices_total == 3"
     ],
     "title": "AP210 via drilled outside the conductor / board outline"
   },
@@ -103450,7 +103460,9 @@
       "units"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_edges_total == 1",
+      "n_vertices_total == 6"
     ],
     "title": "AP210 etherometric vs metric measurement context confusion"
   },
@@ -103559,7 +103571,9 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_edges_total == 2",
+      "n_vertices_total == 6"
     ],
     "title": "AP210 conductor trace exits the board outline"
   },
@@ -104000,7 +104014,9 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_edges_total == 1",
+      "n_vertices_total == 2"
     ],
     "title": "AP238 tool trajectory passes through workpiece body before designated cut"
   },
@@ -104262,7 +104278,8 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "AP209 ply orientation vector not normalized"
   },
@@ -104629,7 +104646,8 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "AP209 symmetry plane not perpendicular to a coordinate axis"
   },
@@ -105495,7 +105513,8 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "AP210 vias declared with stack-up positions out of board-layer order"
   },
@@ -105610,7 +105629,8 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "AP210 drill diameter exceeds pad diameter (annular ring inverted)"
   },
@@ -105648,7 +105668,8 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "AP210 surface-mount component oriented on wrong board side"
   },
@@ -105723,7 +105744,8 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 4"
     ],
     "title": "AP210 component pin numbering doesn't match physical pin sequence"
   },
@@ -105913,7 +105935,8 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 4"
     ],
     "title": "AP210 placement footprint pin count conflicts with library footprint"
   },
@@ -105951,7 +105974,8 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 2"
     ],
     "title": "AP210 net connectivity ends at a non-pin element"
   },
@@ -105989,7 +106013,8 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "AP210 power net carries only mechanical placement constraint"
   },
@@ -106103,7 +106128,8 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 4"
     ],
     "title": "AP210 connector keying / polarization missing"
   },
@@ -106641,7 +106667,9 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_edges_total == 1",
+      "n_vertices_total == 2"
     ],
     "title": "AP238 milling_toolpath consecutive points spaced beyond tool diameter"
   },

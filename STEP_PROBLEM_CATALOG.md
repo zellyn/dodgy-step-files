@@ -4614,7 +4614,10 @@ _Section summary: 70 entries._
 - **Severity**: P1
 - **Byte assertion**: count_entity_def(b'B_SPLINE_SURFACE_WITH_KNOTS') == 2
 - **Byte assertion**: contains(b'1.0E-5')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_faces_total == 2
+- **Tier-3 assertion**: n_edges_total == 8
+- **Tier-3 assertion**: n_vertices_total == 16
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 
@@ -4723,7 +4726,10 @@ _Section summary: 70 entries._
 - **Notes**: Synonyms: "face-pair gap exceeds interval bound", "model not watertight by interval-solid metric", "shared edge gap larger than interval radius", "interval-solid validity violated".
 - **Byte assertion**: count_entity_def(b'B_SPLINE_SURFACE_WITH_KNOTS') == 2
 - **Byte assertion**: contains(b'1.0E-5')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_faces_total == 2
+- **Tier-3 assertion**: n_edges_total == 8
+- **Tier-3 assertion**: n_vertices_total == 16
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 
@@ -10119,7 +10125,8 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'MACHINING_WORKINGSTEP')
 - **Byte assertion**: contains(b'SETUP')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_vertices_total == 1
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10422,7 +10429,9 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: contains(b'VIA_DEFINITION')
 - **Byte assertion**: contains(b'LAMINATE_OR_PLY_DEFINITION')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_edges_total == 1
+- **Tier-3 assertion**: n_vertices_total == 3
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10471,7 +10480,9 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: contains(b'PLY_BOUNDARY_REPRESENTATION')
 - **Byte assertion**: contains(b'LAMINATE_OR_PLY_DEFINITION')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_edges_total == 1
+- **Tier-3 assertion**: n_vertices_total == 6
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10545,7 +10556,9 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: contains(b'CONDUCTOR_TRACK_PROFILE')
 - **Byte assertion**: contains(b'PLY_BOUNDARY_REPRESENTATION')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_edges_total == 2
+- **Tier-3 assertion**: n_vertices_total == 6
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10880,7 +10893,9 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  "missing retract".
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'TRAJECTORY')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_edges_total == 1
+- **Tier-3 assertion**: n_vertices_total == 2
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11072,7 +11087,8 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'DIRECTION')
 - **Byte assertion**: contains(b'(2.0,0.0,0.0)')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_vertices_total == 1
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11345,7 +11361,8 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'SINGLE_POINT_CONSTRAINT')
 - **Byte assertion**: contains(b'(0.5,0.5,0.707)')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_vertices_total == 1
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -12004,7 +12021,8 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: contains(b'VIA_DEFINITION')
 - **Byte assertion**: contains(b'LAMINATE_TABLE')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_vertices_total == 1
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -12093,7 +12111,8 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: contains(b'VIA_DEFINITION')
 - **Byte assertion**: contains(b'pad_diameter')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_vertices_total == 1
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -12123,7 +12142,8 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: contains(b'AXIS2_PLACEMENT_3D')
 - **Byte assertion**: contains(b'TOP_ONLY')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_vertices_total == 1
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -12177,7 +12197,8 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  inverted".
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: count_entity_def(b'TERMINAL') >= 4
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_vertices_total == 4
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -12319,7 +12340,8 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
 - **Byte assertion**: contains(b'library_pin_count')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_vertices_total == 4
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -12347,7 +12369,8 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: contains(b'NETWORK_NODE')
 - **Byte assertion**: contains(b'CARTESIAN_POINT')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_vertices_total == 2
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -12376,7 +12399,8 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: contains(b"NETWORK('PWR_5V'")
 - **Byte assertion**: contains(b'mechanical_placement_constraint')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_vertices_total == 1
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -12462,7 +12486,8 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: contains(b'PWR_HDR_4')
 - **Byte assertion**: count_entity_def(b'TERMINAL') >= 4
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_vertices_total == 4
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -12601,7 +12626,8 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "child at origin bug", "STEP transformation creation failed", "child placement wrong", "ITEM_DEFINED_TRANSFORMATION fell back to identity", "zero-vector DIRECTION in placement". **OCC behavior**: silently substitutes the identity placement when the transformation reference cannot be resolved, leaving children at the origin without a diagnostic; kernel mishandling; the catalog above forbids silent identity-substitution.
 - **Byte assertion**: contains(b'ITEM_DEFINED_TRANSFORMATION')
 - **Byte assertion**: matches(rb'DIRECTION\(\'zero_vec\',\(0\.0,0\.0,0\.0\)\)')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_vertices_total == 2
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M067.stp
@@ -13782,7 +13808,7 @@ _Section summary: 52 entries._
 - **Notes**: Synonyms: "TCGR requires AP242 Ed.4", "tessellated supplemental geometry rejected", "AP242 edition too old for TCGR", "schema-version vs entity-vocabulary disagreement".
 - **Byte assertion**: contains(b'TESSELLATED_CONSTRUCTIVE_GEOMETRY_REPRESENTATION')
 - **Byte assertion**: contains(b'442 2 1 4')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: shape_null == False
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
@@ -30955,7 +30981,9 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'MILLING_TOOLPATH')
 - **Byte assertion**: contains(b'MILLING_CUTTING_TOOL')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_edges_total == 1
+- **Tier-3 assertion**: n_vertices_total == 2
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M173.stp
