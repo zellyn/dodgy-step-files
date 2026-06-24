@@ -1,0 +1,22 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ]
+  ],
+  "triangles": [],
+  "metadata": {
+    "id": "Me660",
+    "schema_version": 0,
+    "defect_class": "isolated_vertex",
+    "title": "merge_duplicate_points_in_polygon_soup empty_input: zero-polygon soup; ini_points_n==0 causes immediate return; single isolated vertex as structural contrast (Branch 1)",
+    "assertions": [
+      {
+        "kind": "isolated_vertex",
+        "vertex": 0
+      }
+    ]
+  }
+}
