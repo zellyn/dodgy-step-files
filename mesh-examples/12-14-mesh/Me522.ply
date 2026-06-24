@@ -1,0 +1,24 @@
+ply
+format ascii 1.0
+comment Me522: iterativeEdgeSwaps convergence_iteration: multi-pass swap loop (totits++ < 10) across 6-triangle grid requiring multiple iterations (Branch 3)
+comment defect_class: mesh_optimization
+element vertex 7
+property float x
+property float y
+property float z
+element face 6
+property list uchar int vertex_indices
+end_header
+0 0 0
+1 0 0
+2 0 0
+0 1 0
+1 1 0
+2 1 0
+1 2 0
+3 0 1 3
+3 1 4 3
+3 1 2 4
+3 2 5 4
+3 3 4 6
+3 4 5 6

@@ -1,0 +1,12 @@
+# Me520: iterativeEdgeSwaps selection_exists: partial selection of triangles restricts swaps to IS_VISITED region (Branch 1)
+# defect_class: mesh_optimization
+v 0 0 0
+v 1 0 0
+v 0.5 1 0
+v 1.5 1 0
+v 2 0 0
+v 1 2 0
+f 1 2 3
+f 2 4 3
+f 2 5 4
+f 4 6 3

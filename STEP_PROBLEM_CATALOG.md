@@ -37455,4 +37455,274 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `hole_boundary loop=[0,1,2,3]`
 - **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me475.mesh.json
+### Me500 — remove_almost_degenerate_faces needle_triangle: extreme edge-length ratio 1000:1 triggers is_needle_triangle_face (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: almost-degenerate-face / needle-triangle)
+- **Sources**: CGAL PMP `PMP.remove_almost_degenerate_faces.face_range` Branch 1 (*Needle triangle*: `if(is_needle_triangle_face(...))` @ line 1022); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A needle triangle with short edge v0-v1=0.001 and long edges v0-v2≈v1-v2≈1.0. Edge-length ratio 1000:1 exceeds the default needle threshold (~0.04), triggering is_needle_triangle_face. The algorithm would collapse the shortest edge. Two healthy support triangles below provide topological context. Aspect ratio ≈ 1155.
+- **Reproducer recipe**: v0=(0,0,0), v1=(0.001,0,0), v2=(0.5,0.866,0), v3=(0,-0.5,0), v4=(0.001,-0.5,0); t0=(v0,v1,v2) needle; t1=(v0,v3,v1), t2=(v3,v4,v1) support; vertex_pair_distance_lt(v0,v1,0.002); triangle_area_lt(0,0.01); triangle_aspect_ratio_gt(0,100).
+- **Expected kernel behavior**: is_needle_triangle_face fires for t0; collapse of edge v0-v1 attempted.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=0.002`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=0.01`
+- **Mesh assertion**: `triangle_aspect_ratio_gt triangle=0 gt=100.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me500.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me501 — remove_almost_degenerate_faces needle_non_collapsible: extra shared neighbor violates link condition; flip path (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: almost-degenerate-face / needle-non-collapsible)
+- **Sources**: CGAL PMP `PMP.remove_almost_degenerate_faces.face_range` Branch 2 (*Needle non-collapsible*: `if(!CGAL::Euler::does_satisfy_link_condition(...))` @ line 1031); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Needle triangle t0=(v0,v1,v2) with short interior edge v0-v1=0.001. Below-neighbor t1=(v1,v0,v3) shares the short edge (making it interior, n=2), so link(edge)={v2,v3}. Flanking triangles t2=(v0,v4,v2) and t3=(v1,v2,v4) introduce v4 as an extra common neighbor of both v0 and v1. link(v0)∩link(v1)={v2,v3,v4} ⊋ {v2,v3} → link condition fails → flip path.
+- **Reproducer recipe**: v0=(0,0,0), v1=(0.001,0,0), v2=(0.5,0.866,0), v3=(0.5,-0.866,0), v4=(1,0,0); t0=(v0,v1,v2), t1=(v1,v0,v3), t2=(v0,v4,v2), t3=(v1,v2,v4); edge_shared(v0,v1,2); vertex_pair_distance_lt(v0,v1,0.002); triangle_area_lt(0,0.01); triangle_aspect_ratio_gt(0,100).
+- **Expected kernel behavior**: Branch 2 fires; does_satisfy_link_condition returns false for v0-v1 collapse; algorithm switches to flip.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=0.002`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=0.01`
+- **Mesh assertion**: `triangle_aspect_ratio_gt triangle=0 gt=100.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me501.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me502 — remove_almost_degenerate_faces border_edge_needle: short edge on open boundary; Euler::remove_face path (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: almost-degenerate-face / border-edge-needle)
+- **Sources**: CGAL PMP `PMP.remove_almost_degenerate_faces.face_range` Branch 3 (*Border edge needle*: `if(is_border(get(halfedge_map, min_edge), tmesh))` @ line 1055); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Needle triangle t0=(v0,v1,v2) with short boundary edge v0-v1=0.001 (n=1). The long edges v0-v2 and v1-v2 are each shared with flanking healthy triangles (n=2). The shortest edge is a border halfedge → is_border returns true → algorithm calls Euler::remove_face to delete the needle triangle instead of collapsing through a boundary edge.
+- **Reproducer recipe**: v0=(0,0,0), v1=(0.001,0,0), v2=(0.5,0.866,0), v3=(1,0.866,0), v4=(-0.5,0.866,0); t0=(v0,v1,v2) needle; t1=(v1,v3,v2), t2=(v2,v4,v0) flanks; edge_shared(v0,v1,1); edge_shared(v1,v2,2); edge_shared(v0,v2,2); vertex_pair_distance_lt(v0,v1,0.002); triangle_area_lt(0,0.01); triangle_aspect_ratio_gt(0,100).
+- **Expected kernel behavior**: Branch 3 fires; is_border(min_edge) true; Euler::remove_face removes the needle triangle.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=0.002`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=0.01`
+- **Mesh assertion**: `triangle_aspect_ratio_gt triangle=0 gt=100.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me502.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me503 — remove_almost_degenerate_faces needle_flip_impossible: flip target edge already exists; deferred (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: almost-degenerate-face / needle-flip-impossible)
+- **Sources**: CGAL PMP `PMP.remove_almost_degenerate_faces.face_range` Branch 4 (*Needle flip impossible*: `if(halfedge(w, x, tmesh).second)` @ line 1087); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Needle t0=(v0,v1,v2) with short interior edge v0-v1=0.001 shared by below-neighbor t1=(v1,v0,v3). Flipping v0-v1 in the t0/t1 pair would create edge v2-v3, but blocking triangle t2=(v2,v3,v4) already introduces edge v2-v3 (n=1 boundary). halfedge(v2,v3) exists → flip would create a duplicate edge → Branch 4 fires; face is marked for deferred processing.
+- **Reproducer recipe**: v0=(0,0,0), v1=(0.001,0,0), v2=(0.5,0.866,0), v3=(0.5,-0.866,0), v4=(1,0,0); t0=(v0,v1,v2), t1=(v1,v0,v3), t2=(v2,v3,v4); edge_shared(v0,v1,2); edge_shared(v2,v3,1); vertex_pair_distance_lt(v0,v1,0.002); triangle_area_lt(0,0.01); triangle_aspect_ratio_gt(0,100).
+- **Expected kernel behavior**: Branch 4 fires; halfedge(v2,v3) lookup succeeds; face is skipped/deferred.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=0.002`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=0.01`
+- **Mesh assertion**: `triangle_aspect_ratio_gt triangle=0 gt=100.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me503.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me504 — remove_almost_degenerate_faces cap_triangle: angle at v2 ≈ 180° triggers is_cap_triangle_face (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: almost-degenerate-face / cap-triangle)
+- **Sources**: CGAL PMP `PMP.remove_almost_degenerate_faces.face_range` Branch 5 (*Cap triangle*: `if(is_cap_triangle_face(...))` @ line 1005); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Cap triangle t0=(v0,v1,v2) where v0=(0,0,0), v1=(2,0,0), v2=(1,0.0001,0). The cap vertex v2 is only 0.0001 above the midpoint of base v0-v1. The angle at v2 is arccos(≈-1)≈180°, exceeding the cap threshold (cos(170°)≈-0.985). Area=0.0001, aspect ratio≈20000. Two healthy support triangles complete the patch below.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,0.0001,0), v3=(0,-1,0), v4=(2,-1,0); t0=(v0,v1,v2) cap; t1=(v0,v3,v4), t2=(v0,v4,v1) support; triangle_area_lt(0,0.001); triangle_aspect_ratio_gt(0,1000).
+- **Expected kernel behavior**: is_cap_triangle_face fires for t0; face is marked for edge flip.
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=0.001`
+- **Mesh assertion**: `triangle_aspect_ratio_gt triangle=0 gt=1000.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me504.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me505 — remove_almost_degenerate_faces cap_border_edge: cap long base on boundary; remove_face path (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: almost-degenerate-face / cap-border-edge)
+- **Sources**: CGAL PMP `PMP.remove_almost_degenerate_faces.face_range` Branch 6 (*Cap with border edge*: `if(is_border(opposite(halfedge(cap_v, tmesh), tmesh), tmesh))` @ line 1031); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Cap triangle t0=(v0,v1,v2) with v2=(1,0.0001,0) as cap vertex. The long opposite base edge v0-v1 (length 2.0) is a boundary edge (n=1). The cap's long edges v0-v2 and v1-v2 are shared with upper support triangles (n=2). is_border returns true for the opposite halfedge of the cap vertex → algorithm removes the face.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,0.0001,0), v3=(0,1,0), v4=(2,1,0); t0=(v0,v1,v2) cap; t1=(v0,v2,v3), t2=(v3,v2,v4), t3=(v2,v1,v4) support; edge_shared(v0,v1,1); edge_shared(v0,v2,2); edge_shared(v1,v2,2); triangle_area_lt(0,0.001); triangle_aspect_ratio_gt(0,1000).
+- **Expected kernel behavior**: Branch 6 fires; is_border(opposite(cap_halfedge)) true; face removed.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=0.001`
+- **Mesh assertion**: `triangle_aspect_ratio_gt triangle=0 gt=1000.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me505.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me506 — remove_almost_degenerate_faces cap_flip_fails: existing edge v2-v3 blocks flip; collapse fallback (Branch 7)
+- **Category**: §12.14 mesh defects (sub-class: almost-degenerate-face / cap-flip-fails)
+- **Sources**: CGAL PMP `PMP.remove_almost_degenerate_faces.face_range` Branch 7 (*Cap flip fails*: `if(!CGAL::Euler::does_satisfy_link_condition(flip_halfedge, tmesh))` @ line 1059); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Cap triangle t0=(v0,v1,v2) with v2=(1,0.0001,0) as cap vertex. Interior base v0-v1 (n=2) is shared with below-neighbor t1=(v1,v0,v3). Flipping v0-v1 would create edge v2-v3, but blocking triangle t2=(v2,v3,v4) already introduces v2-v3 as a boundary edge (n=1). The link condition for the flip fails → algorithm collapses a cap edge instead.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,0.0001,0), v3=(1,-1,0), v4=(0.5,-0.5,0); t0=(v0,v1,v2), t1=(v1,v0,v3), t2=(v2,v3,v4), t3=(v0,v4,v2); edge_shared(v0,v1,2); edge_shared(v2,v3,1); triangle_area_lt(0,0.001); triangle_aspect_ratio_gt(0,1000).
+- **Expected kernel behavior**: Branch 7 fires; does_satisfy_link_condition(flip_edge) false; collapse fallback attempted on a cap edge.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=0.001`
+- **Mesh assertion**: `triangle_aspect_ratio_gt triangle=0 gt=1000.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me506.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me507 — remove_almost_degenerate_faces no_progress: clean mesh; something_was_done stays false; loop returns false (Branch 8)
+- **Category**: §12.14 mesh defects (sub-class: almost-degenerate-face / no-progress)
+- **Sources**: CGAL PMP `PMP.remove_almost_degenerate_faces.face_range` Branch 8 (*No progress*: `if(!something_was_done) return false;` @ line 1118); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A clean, well-formed two-triangle quad mesh with no needles or caps. Both triangles (t0, t1) are right-isosceles with edge-length ratio sqrt(2)/1≈1.414 (well above needle threshold ~0.04) and max angle 90° (well below cap threshold 170°). The repair loop iterates over all faces, makes no repairs, and returns false. Negative-contrast fixture asserting the branch that fires only when the mesh is already clean.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(1,1,0), v3=(0,1,0); t0=(v0,v1,v2), t1=(v0,v2,v3); both area=0.5; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 8 fires; no face is touched; function returns false.
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1.0`
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1.0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me507.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me510 — Edge.swap EDGE_SWAP_SAFE_VALIDITY: boundary edge (n=1, t2==NULL) blocks safe-mode swap; all three edges are boundary (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: edge-swap / safe-validity-check)
+- **Sources**: MeshFix `Edge.swap` Branch 1 (*EDGE_SWAP_SAFE_VALIDITY*: `if (!fast && (t1 == NULL || t2 == NULL || getCommonEdge(...) != NULL)) return false`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A single triangle whose three edges are all boundary edges (each shared by n=1 triangle, i.e., t2==NULL). Calling Edge.swap in safe mode on any of these edges immediately returns false because the null-t2 guard fires (Branch 1). This is the minimal configuration that blocks an edge swap at the safe-mode validity check.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0); t0=(v0,v1,v2); assert_edge_shared for all three edges with n=1; euler V=3,E=3,F=1,chi=1.
+- **Expected kernel behavior**: Branch 1 fires; swap returns false immediately because t2==NULL for every candidate edge; no topology mutation occurs.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `euler_characteristic v=3 e=3 f=1 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me510.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me511 — Edge.swap EDGE_TOPOLOGY_EXTRACTION: interior diagonal (v0,v2) with two incident triangles; e1=nextEdge(t0) and e3=nextEdge(t1) extracted for cycle replacement (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: edge-swap / topology-extraction)
+- **Sources**: MeshFix `Edge.swap` Branch 2 (*EDGE_TOPOLOGY_EXTRACTION*: `Edge *e1 = t1->nextEdge(this); Edge *e3 = t2->nextEdge(this)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A minimal 2-triangle quad (4 vertices, 5 edges) sharing interior diagonal (v0,v2) with n=2. The swap algorithm enters Branch 2 immediately for any swappable interior edge, extracting the next edges e1 from t0 and e3 from t1 in each triangle's winding order. These extracted edges will be cross-assigned between the two triangles in the replacement step.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(-0.5,0.5,0); t0=(v0,v1,v2), t1=(v0,v2,v3); assert_edge_shared(v0,v2,2); four outer edges n=1; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 2 fires; e1=t0->nextEdge(diagonal) and e3=t1->nextEdge(diagonal) are extracted; the two outer next-edges are prepared for swapping into the new triangle edge cycles.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me511.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me512 — Edge.swap EDGE_ENDPOINT_SWAP: diagonal endpoints updated from (v0,v2) to opposite vertices (v1,v3); post-swap diagonal spans longer distance across quad (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: edge-swap / endpoint-update)
+- **Sources**: MeshFix `Edge.swap` Branch 3 (*EDGE_ENDPOINT_SWAP*: `v1 = t2->oppositeVertex(this); v2 = t1->oppositeVertex(this)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 2-triangle quad with interior diagonal (v0,v2). The diagonal endpoints are updated in-place to point to the two opposite vertices: v1=(2,0,0) and v3=(0,2,0). The pre-swap diagonal (v0,v2) has length sqrt(2) and no edge (v1,v3) exists yet (n=0). After the swap the diagonal spans the longer perpendicular, length sqrt(8).
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,1,0), v3=(0,2,0); t0=(v0,v1,v2), t1=(v0,v2,v3); assert_edge_shared(v0,v2,2); vertex_pair_distance_lt(v0,v2,1.5); assert_edge_shared(v1,v3,0); four outer edges n=1; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 3 fires; v1 and v2 of the edge object are overwritten with t2->oppositeVertex and t1->oppositeVertex respectively; the edge now spans (v1,v3) — the perpendicular diagonal.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,2] lt=1.5`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=0`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me512.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me513 — Edge.swap TRIANGLE_EDGE_REPLACEMENT: right-angle quad; t1->replaceEdge(e1,e3) and t2->replaceEdge(e3,e1) cross-links outer edges into new triangles (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: edge-swap / triangle-edge-replacement)
+- **Sources**: MeshFix `Edge.swap` Branch 4 (*TRIANGLE_EDGE_REPLACEMENT*: `t1->replaceEdge(e1, e3); t2->replaceEdge(e3, e1)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A right-angle square quad (4 vertices at unit corners) split by diagonal (v0,v2) into t0=(v0,v1,v2) and t1=(v0,v2,v3). After endpoint swap, Branch 4 cross-assigns the outer edges: t0 replaces e1 with e3 (gaining e3 from the other triangle), and t1 replaces e3 with e1. No pre-existing edge (v1,v3) exists (n=0) before the swap.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(1,1,0), v3=(0,1,0); t0=(v0,v1,v2), t1=(v0,v2,v3); assert_edge_shared(v0,v2,2); four outer square edges n=1; assert_edge_shared(v1,v3,0); euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 4 fires; t1->replaceEdge(e1, e3) reassigns e1 to point to t2 and e3 to point to t1; both triangles' edge cycles are updated to reflect the new diagonal (v1,v3).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=0`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me513.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me514 — Edge.swap TRIANGLE_ORIENTATION_FLIP: inconsistent winding across shared diagonal (v0,v2); both triangles traverse v2→v0, n0=+z n1=-z; t1.invert()+t2.invert() restore consistency (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: edge-swap / orientation-flip)
+- **Sources**: MeshFix `Edge.swap` Branch 5 (*TRIANGLE_ORIENTATION_FLIP*: `t1->invert(); t2->invert()`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 2-triangle quad capturing the intermediate post-endpoint-swap, pre-invert defect state. Both triangles t0=(v0,v1,v2) and t1=(v3,v2,v0) traverse shared diagonal (v0,v2) in the same direction (v2→v0), giving t0 a +z normal and t1 a -z normal (dot=-0.75 < 0). The invert() calls on both triangles after edge replacement restore consistent winding.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,-1,0), v2=(0.5,1,0), v3=(0,1,0); t0=(v0,v1,v2), t1=(v3,v2,v0); assert_edge_shared(v0,v2,2); assert_adjacent_triangles_inconsistent_winding(0,1); four outer edges n=1; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 5 fires; t1->invert() and t2->invert() flip the vertex winding order of both new triangles; resulting mesh has consistent normals (all +z after inversion).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,1]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me514.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me515 — Edge.swap INCIDENT_EDGE_UPDATE_E1: outer edges e1=(v1,v2) and e3=(v2,v3) each incident on one triangle; e1->replaceTriangle(t1,t2) and e3->replaceTriangle(t2,t1) complete adjacency update (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: edge-swap / incident-edge-adjacency-update)
+- **Sources**: MeshFix `Edge.swap` Branch 6 (*INCIDENT_EDGE_UPDATE_E1*: `e1->replaceTriangle(t1, t2); e3->replaceTriangle(t2, t1)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 2-triangle quad sharing interior diagonal (v0,v2). The outer edges e1=(v1,v2) and e3=(v2,v3) each have n=1 (one incident triangle). Branch 6 fires as the final step of the swap, calling replaceTriangle on e1 and e3 to update their incident-triangle links: e1 loses t0 and gains the new t1, and e3 loses t1 and gains the new t0. The pre-swap diagonal has no (v1,v3) edge (n=0).
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(-0.5,0.5,0); t0=(v0,v1,v2), t1=(v0,v2,v3); assert_edge_shared(v0,v2,2); assert_edge_shared(v1,v2,1); assert_edge_shared(v2,v3,1); assert_edge_shared(v1,v3,0); other boundary edges n=1; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 6 fires; e1->replaceTriangle(t1,t2) and e3->replaceTriangle(t2,t1) update the half-edge adjacency so that the outer edges are correctly linked to their new owning triangles after the diagonal flip.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=0`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me515.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me520 — iterativeEdgeSwaps selection_exists: partial selection of triangles; swaps restricted to IS_VISITED region (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: mesh-optimization / iterative-edge-swaps / selection)
+- **Sources**: MeshFix `Basic_TMesh.iterativeEdgeSwaps` Branch 1 (*selection_exists*: `if (IS_VISITED(t)) selection = 1;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Six-vertex, four-triangle mesh with two adjacent quads. The left quad (t0, t1) represents the "selected" region (IS_VISITED). When iterativeEdgeSwaps scans all triangles and finds at least one with IS_VISITED set, it sets `selection=1` (Branch 1 fires) and subsequent edge-swap candidates are restricted to the selected region only. The interior edge (v1,v2) is shared by t0 and t1 (within selection); (v1,v3) crosses the selection boundary. Three interior edges (n=2); six boundary edges (n=1).
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1.5,1,0), v4=(2,0,0), v5=(1,2,0); t0=(v0,v1,v2), t1=(v1,v3,v2) [selected], t2=(v1,v4,v3), t3=(v3,v5,v2); assert_edge_shared(v1,v2,2), (v1,v3,2), (v2,v3,2); boundary edges n=1.
+- **Expected kernel behavior**: Branch 1 fires; `selection` variable set to 1; subsequent edge swap candidates are only enqueued from triangles where IS_VISITED(t) is true.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me520.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me521 — iterativeEdgeSwaps swap_candidate_filter: interior non-sharp non-boundary edge qualifies for swap queue (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: mesh-optimization / iterative-edge-swaps / candidate-filter)
+- **Sources**: MeshFix `Basic_TMesh.iterativeEdgeSwaps` Branch 2 (*swap_candidate_filter*: `if (!IS_SHARPEDGE(e) && !e->isOnBoundary()) swaps.appendHead(e);`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Minimal planar quad split by diagonal (v1,v2). The shared interior edge (v1,v2) is not flagged IS_SHARPEDGE and is not on the boundary (shared by 2 triangles) — it satisfies all three conditions and enters the swap candidate list (Branch 2 fires). All four outer edges are boundary (n=1). Euler: V=4, E=5, F=2, chi=1 (open disk).
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(1,1,0); t0=(v0,v1,v2), t1=(v1,v3,v2); assert_edge_shared(v1,v2,2); boundary edges n=1 each; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 2 fires; edge (v1,v2) satisfies `!IS_SHARPEDGE && !isOnBoundary()` and is appended to the `swaps` candidate list for Delaunay flip evaluation.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me521.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me522 — iterativeEdgeSwaps convergence_iteration: multi-pass swap loop (totits++ < 10) across 6-triangle grid (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: mesh-optimization / iterative-edge-swaps / convergence-loop)
+- **Sources**: MeshFix `Basic_TMesh.iterativeEdgeSwaps` Branch 3 (*convergence_iteration*: `while (swaps && totits++ < 10) { ... }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Seven-vertex, six-triangle 2×2 grid with apex. Interior edges (v1,v3) and (v2,v4) are sub-optimal diagonals (non-Delaunay); swapping them generates new candidate edges in adjacent quads, requiring a second pass. The outer while loop fires at least twice (totits > 1) before the queue drains, exercising the convergence_iteration branch. Four interior edges (n=2); six boundary edges (n=1). Euler: V=7, E=12, F=6, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0), v3=(0,1,0), v4=(1,1,0), v5=(2,1,0), v6=(1,2,0); t0=(v0,v1,v3), t1=(v1,v4,v3), t2=(v1,v2,v4), t3=(v2,v5,v4), t4=(v3,v4,v6), t5=(v4,v5,v6); interior edges (v1,v3),(v2,v4),(v3,v4),(v4,v5) n=2; euler V=7,E=12,F=6,chi=1.
+- **Expected kernel behavior**: Branch 3 fires at least twice; `totits` increments each pass; swap of (v1,v3) re-queues adjacent edges; second pass needed before convergence.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
+- **Mesh assertion**: `euler_characteristic v=7 e=12 f=6 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me522.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me523 — iterativeEdgeSwaps swap_improves_angle: thin non-Delaunay quad; flip of long diagonal improves min angle (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: mesh-optimization / iterative-edge-swaps / swap-accepted)
+- **Sources**: MeshFix `Basic_TMesh.iterativeEdgeSwaps` Branch 4 (*swap_improves_angle*: `if (e->swap() && delaunayMinAngle improved) ...`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A tall thin quad with vertices v0=(0,0,0), v1=(4,0,0) (horizontal tips) and v2=(2,3,0), v3=(2,-3,0) (vertical apices). The current triangulation uses the long vertical diagonal (v2,v3) as the shared edge, creating two elongated triangles with very small minimum angles (aspect ratio > 2). Flipping to the horizontal diagonal (v0,v1) would produce two better-balanced triangles with larger minimum angles — the swap is accepted. Both triangles have high aspect ratio before the swap. Euler: V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(4,0,0), v2=(2,3,0), v3=(2,-3,0); t0=(v0,v2,v3), t1=(v2,v1,v3); assert_edge_shared(v2,v3,2); assert_triangle_aspect_ratio_gt(t0,2.0), (t1,2.0); euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 4 fires; swap of (v2,v3) to (v0,v1) succeeds; min-angle test passes (new min angle > old min angle); adjacent edges of the swapped quad added to candidate queue.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `triangle_aspect_ratio_gt triangle=0 gt=2.0`
+- **Mesh assertion**: `triangle_aspect_ratio_gt triangle=1 gt=2.0`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me523.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me524 — iterativeEdgeSwaps swap_norm_alignment: non-planar fold; adjacent triangles have anti-parallel normals, swap rejected (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: mesh-optimization / iterative-edge-swaps / swap-rejected)
+- **Sources**: MeshFix `Basic_TMesh.iterativeEdgeSwaps` Branch 5 (*swap_norm_alignment*: `else if (nor*e->t1->getNormal() <= 0) { e->swap(1); }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A non-planar "book" configuration: spine edge (v0,v1) is shared by t0=(v0,v1,v2) and t1=(v1,v3,v0). The two pages fold in opposite directions — t0 normal is (-0.707,0,+0.707) and t1 normal is (+0.707,0,-0.707), dot product = -1 (anti-parallel). After any swap attempt, the new triangle's normal would diverge from the pre-swap orientation (`nor*getNormal() <= 0`), so the swap is undone. The `adjacent_triangles_inconsistent_winding` assertion captures this anti-parallel condition. Euler: V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: v0=(0,1,0), v1=(0,-1,0), v2=(1,0,1), v3=(-1,0,-1); t0=(v0,v1,v2), t1=(v1,v3,v0); assert_edge_shared(v0,v1,2); assert_adjacent_triangles_inconsistent_winding(t0,t1); euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 5 fires; after swap attempt, `nor*e->t1->getNormal() <= 0` holds because normals are anti-parallel; swap(1) reverses the flip; edge left unchanged.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,1]`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me524.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me525 — iterativeEdgeSwaps convergence_fail: 4-triangle symmetric fan oscillates swap queue; totits reaches 10 (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: mesh-optimization / iterative-edge-swaps / convergence-failure)
+- **Sources**: MeshFix `Basic_TMesh.iterativeEdgeSwaps` Branch 6 (*convergence_fail*: `if (totits >= 10) TMesh::warning("..."); return totits;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A unit square with a center vertex v4=(1,1,0) connected to all four corners, forming four symmetric triangles. All four spoke edges (v0,v4),(v1,v4),(v2,v4),(v3,v4) are interior (n=2). The configuration is exactly Delaunay-neutral: swapping any spoke replaces it with a cross-diagonal that immediately re-creates a non-Delaunay condition in the adjacent quad. The swap queue oscillates: it never empties, so `totits` reaches 10 and Branch 6 fires with a warning. All four outer boundary edges are n=1. Euler: V=5, E=8, F=4, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(2,2,0), v3=(0,2,0), v4=(1,1,0); t0=(v0,v1,v4), t1=(v1,v2,v4), t2=(v2,v3,v4), t3=(v3,v0,v4); all spoke edges n=2; outer edges n=1; euler V=5,E=8,F=4,chi=1.
+- **Expected kernel behavior**: Branch 6 fires; `totits` increments to 10 before the swap queue drains; `TMesh::warning` issued; function returns totits (10) rather than 0.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=2`
+- **Mesh assertion**: `euler_characteristic v=5 e=8 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me525.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder

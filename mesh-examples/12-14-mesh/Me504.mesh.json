@@ -1,0 +1,64 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0001,
+      0.0
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0
+    ],
+    [
+      2.0,
+      -1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      3,
+      4
+    ],
+    [
+      0,
+      4,
+      1
+    ]
+  ],
+  "metadata": {
+    "id": "Me504",
+    "schema_version": 0,
+    "defect_class": "cap_triangle",
+    "title": "remove_almost_degenerate_faces cap_triangle: v2=(1,0.0001,0) almost on base v0-v1; angle at v2 \u2248180\u00b0 triggers is_cap_triangle_face (Branch 5)",
+    "assertions": [
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 0,
+        "lt": 0.001
+      },
+      {
+        "kind": "triangle_aspect_ratio_gt",
+        "triangle": 0,
+        "gt": 1000.0
+      }
+    ]
+  }
+}
