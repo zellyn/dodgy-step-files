@@ -36672,3 +36672,40 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=9 e=12 f=5 chi=2`
 - **Fixture path**: mesh-examples/12-14-mesh/Me1002.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me990 — orient_triangle_soup_with_reference_triangle_mesh concurrency_strategy: Sequential_tag / Parallel_tag dispatch before per-triangle orientation loop (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: soup-orientation / concurrency-strategy)
+- **Sources**: CGAL PMP `PMP.orient_triangle_soup_with_reference_triangle_mesh` Branch 1 (*concurrency_strategy*: Concurrency_tag routing @ line 280); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Triangle soup of three faces over a flat quad region (vertices s0–s4 in XY plane), with soup_t2=(s4,s2,s3) wound CW (normal −Z, misoriented). Reference mesh of two consistently CCW triangles (r0–r3). The Concurrency_tag dispatch at line 280 fires for any non-empty soup before per-triangle orientation queries begin — Branch 1 executes. Adjacent soup triangles t1 and t2 share edge (s2,s4) but have antiparallel normals. Reference triangles share interior edge (r0,r2). Full mesh: V=9, E=12, F=5, χ=2.
+- **Reproducer recipe**: s0=(0,0,0), s1=(2,0,0), s2=(1,1,0), s3=(2,2,0), s4=(0,2,0); soup_t0=(s0,s1,s2) CCW, soup_t1=(s0,s2,s4) CCW, soup_t2=(s4,s2,s3) CW; r0=(0,0,0), r1=(2,0,0), r2=(2,2,0), r3=(0,2,0); ref_t0=(r0,r1,r2) CCW, ref_t1=(r0,r2,r3) CCW; assert_adjacent_triangles_inconsistent_winding(t1,t2); assert_edge_shared(r0,r2,2); assert_euler(9,12,5,2).
+- **Expected kernel behavior**: Branch 1 fires first (Concurrency_tag dispatch); subsequent AABB tree and closest-face queries orient soup_t2 to match reference +Z normal.
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[1, 2]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5, 7] n=2`
+- **Mesh assertion**: `euler_characteristic v=9 e=12 f=5 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me990.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me991 — orient_triangle_soup_with_reference_triangle_mesh aabb_tree_construction: AABB tree built from non-empty reference mesh with clear bounding box (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: soup-orientation / aabb-tree-construction)
+- **Sources**: CGAL PMP `PMP.orient_triangle_soup_with_reference_triangle_mesh` Branch 2 (*aabb_tree_construction*: AABB_tree over reference faces @ line 300); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Reference mesh of two spatially separated triangles spanning x=[0,3], y=[0,3], z=[0,1] (ref_t0 at z=0, ref_t1 at z=1) — clear bounding volume for AABB tree internal node construction. Soup of two triangles at z=0.5 between the reference layers; soup_t1=(s3,s5,s4) is wound CW (normal −Z, defect). Branch 2 fires when the AABB_tree constructor processes the non-empty reference face list. Full mesh: V=12, E=12, F=4, χ=4 (four disjoint triangle groups).
+- **Reproducer recipe**: r0–r2 at z=0 CCW, r3–r5 at z=1 CCW; s0=(0,0,.5), s1=(2,0,.5), s2=(0,2,.5) soup_t0 CCW; s3=(1,0,.5), s4=(3,0,.5), s5=(1,3,.5) soup_t1 CW; assert_triangle_normal_z_negative(3); assert_edge_shared(r0,r1,1); assert_edge_shared(r3,r4,1); euler(12,12,4,4).
+- **Expected kernel behavior**: Branch 2 fires when reference mesh has ≥1 face; AABB_tree builds bounding-box nodes over ref_t0 and ref_t1; closest_point_and_primitive returns ref_t0 or ref_t1 for each soup face query.
+- **Mesh assertion**: `triangle_normal_z_negative triangle=3`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3, 4] n=1`
+- **Mesh assertion**: `euler_characteristic v=12 e=12 f=4 chi=4`
+- **Fixture path**: mesh-examples/12-14-mesh/Me991.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me992 — orient_triangle_soup_with_reference_triangle_mesh triangle_degeneracy: collinear degenerate reference triangle skipped by is_degenerate_triangle_face (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: soup-orientation / degenerate-reference-triangle)
+- **Sources**: CGAL PMP `PMP.orient_triangle_soup_with_reference_triangle_mesh` Branch 3 (*triangle_degeneracy*: `is_degenerate_triangle_face` check @ line 315); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Reference mesh with two faces: ref_t0=(r0,r1,r2) valid triangle (CCW, area=2.0) and ref_degen=(d0,d1,d2) with all three vertices collinear on the X-axis (area=0). is_degenerate_triangle_face returns true for ref_degen — Branch 3 fires (continue/skip). Soup of two triangles: soup_t0 correctly oriented CCW (+Z), soup_t1 wound CW (−Z, misoriented defect). The degenerate triangle witness is confirmed by triangle_area_lt and vertex_on_edge (d1 lies on segment d0→d2).
+- **Reproducer recipe**: r0=(0,0,0), r1=(2,0,0), r2=(1,2,0) valid ref; d0=(0,0,0), d1=(1,0,0), d2=(2,0,0) degen ref (collinear X-axis); s0–s2 soup_t0 CCW; s3–s5 soup_t1 CW; assert_triangle_area_lt(1,1e-9); assert_triangle_normal_z_negative(3); assert_vertex_on_edge(4,[3,5]).
+- **Expected kernel behavior**: Branch 3 fires when is_degenerate_triangle_face(ref_degen) returns true; ref_degen is skipped (continue); ref_t0 is used to orient soup_t1 (negative dot product → flip winding).
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-09`
+- **Mesh assertion**: `triangle_normal_z_negative triangle=3`
+- **Mesh assertion**: `vertex_on_edge vertex=4 edge=[3, 5]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me992.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder

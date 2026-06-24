@@ -1,0 +1,111 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      2.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      2.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      2.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      3,
+      4,
+      5
+    ],
+    [
+      6,
+      7,
+      8
+    ],
+    [
+      9,
+      10,
+      11
+    ]
+  ],
+  "metadata": {
+    "id": "Me992",
+    "schema_version": 0,
+    "defect_class": "soup_orientation_degenerate_reference",
+    "title": "orient_triangle_soup_with_reference_triangle_mesh triangle_degeneracy: collinear degenerate reference triangle skipped by is_degenerate_triangle_face (Branch 3)",
+    "assertions": [
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 1,
+        "lt": 1e-09
+      },
+      {
+        "kind": "triangle_normal_z_negative",
+        "triangle": 3
+      },
+      {
+        "kind": "vertex_on_edge",
+        "vertex": 4,
+        "edge": [
+          3,
+          5
+        ]
+      }
+    ]
+  }
+}
