@@ -36593,6 +36593,65 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me740 — TriangulateHole_L439_edge_not_on_boundary: closed tetrahedral mesh; every edge interior (n=2); !e->isOnBoundary() fires; returns 0 (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: hole-filling / closed-mesh-rejected)
+- **Sources**: MeshFix `holeFilling::TriangulateHole` Branch 1 (*EDGE_NOT_ON_BOUNDARY*: `if (!e->isOnBoundary()) return 0`) @ line 441; `MESH_HEAL_COVERAGE.md`.
+- **Description**: A closed unit tetrahedron (4 faces, 6 edges, all interior n=2, no boundary). When the hole-filler calls TriangulateHole(e,...) with any edge of this mesh, Branch 1 fires because !e->isOnBoundary() is true — the mesh has no boundary at all. The function immediately returns 0. Euler: V=4, E=6, F=4, chi=2 (closed sphere topology).
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,0.866,0), v3=(0.5,0.289,0.816); four faces (v0,v2,v1),(v0,v1,v3),(v1,v2,v3),(v0,v3,v2); all 6 edges n=2; euler V=4,E=6,F=4,chi=2.
+- **Expected kernel behavior**: Branch 1 fires; !e->isOnBoundary() is true for every edge; TriangulateHole@L439 returns 0 immediately.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me740.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me741 — TriangulateHole_L439_single_vertex_hole: 3-edge boundary loop; nextEdge and prevEdge both boundary; single-vertex hole cannot be triangulated; return 0 (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: hole-filling / single-vertex-hole)
+- **Sources**: MeshFix `holeFilling::TriangulateHole` Branch 2 (*SINGLE_VERTEX_HOLE*: `if (nextEdge(e)->isOnBoundary() && prevEdge(e)->isOnBoundary()) return 0`) @ line 453; `MESH_HEAL_COVERAGE.md`.
+- **Description**: A single open equilateral triangle t0=(v0,v1,v2) whose all three edges are boundary (n=1). The hole loop v0→v1→v2→v0 has exactly 3 edges, so for seed edge e=(v0,v1): nextEdge(e)=(v1,v2) is boundary and prevEdge(e)=(v2,v0) is boundary. Branch 2 detects this degenerate single-vertex hole and returns 0. A second isolated triangle t1=(v3,v4,v5) provides non-trivial mesh context.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,1.732,0); t0=(v0,v1,v2); all edges n=1; assert_hole_boundary([v0,v1,v2]).
+- **Expected kernel behavior**: Branch 2 fires; for any seed edge e in the 3-edge loop, both nextEdge(e) and prevEdge(e) are boundary; returns 0 without triangulating.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me741.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me742 — TriangulateHole_L439_angle_computation_failure: 4-vertex collinear hole boundary; interior angles at h1,h2 are 180 deg; gang stays DBL_MAX; return 0 (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: hole-filling / degenerate-collinear-hole)
+- **Sources**: MeshFix `holeFilling::TriangulateHole` Branch 3 (*ANGLE_COMPUTATION_FAILURE*: `if (gang == DBL_MAX) { ... unmark; unlink; return 0; }`) @ line 467; `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four collinear hole-boundary vertices h0=(0,0,0), h1=(1,0,0), h2=(2,0,0), h3=(3,0,0) all on the X-axis form a closed loop h0→h1→h2→h3→h0. A top fan (3 triangles sharing apex fa=(1.5,2,0)) and one bottom bridge triangle (apex fb=(1.5,-1,0)) frame the hole. The internal angles at h1 and h2 are 180° (collinear), so no valid triangulation vertex exists. gang stays at DBL_MAX → Branch 3 fires, vertices are unmarked, created triangles unlinked, and 0 is returned.
+- **Reproducer recipe**: h0=(0,0,0), h1=(1,0,0), h2=(2,0,0), h3=(3,0,0), fa=(1.5,2,0), fb=(1.5,-1,0); top fan t0=(h0,h1,fa), t1=(h1,h2,fa), t2=(h2,h3,fa); bridge t3=(h3,h0,fb); interior (h1,fa) and (h2,fa) n=2; hole loop boundary edges n=1; assert_hole_boundary([h0,h1,h2,h3]); euler V=6,E=10,F=4,chi=0.
+- **Expected kernel behavior**: Branch 3 fires; gang==DBL_MAX; hole vertices unmarked; newly linked triangles unlinked; function returns 0.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2,3]`
+- **Mesh assertion**: `euler_characteristic v=6 e=10 f=4 chi=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me742.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me743 — TriangulateHole_L439_euler_edge_triangle_failure: proposed triangle edges already interior (n=2); EulerEdgeTriangle returns NULL; MARK_BIT(v,5); continue (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: hole-filling / euler-op-topology-conflict)
+- **Sources**: MeshFix `holeFilling::TriangulateHole` Branch 4 (*EULER_EDGE_TRIANGLE_FAILURE*: `if (EulerEdgeTriangle(e1,e2)==NULL) { MARK_BIT(v,5); continue; }`) @ line 480; `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 7-vertex mesh where the candidate filling vertex v2=(1,2,0) is already connected to both endpoints of the seed boundary edge v0=(0,0,0) and v1=(2,0,0) via interior edges (v0,v2) and (v1,v2), each n=2. When the hole-fill algorithm selects v2 as the smallest-angle vertex and calls EulerEdgeTriangle(e1,e2), the Euler operation returns NULL because the proposed new triangle edges duplicate existing interior topology. Branch 4 fires: MARK_BIT(v2,5) marks v2 as bad and the search continues. Seed edge (v0,v1) n=1; interior edges (v0,v2),(v1,v2),(v2,v3) each n=2. Euler: V=7, E=12, F=5, chi=0.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(1,1,0), v4=(1,-1,0), v5=(-1,1,0), v6=(3,1,0); t0=(v0,v1,v4), t1=(v0,v3,v2), t2=(v1,v2,v3), t3=(v0,v2,v5), t4=(v1,v6,v2); edge (v0,v1) n=1; edges (v0,v2),(v1,v2),(v2,v3) n=2; euler V=7,E=12,F=5,chi=0.
+- **Expected kernel behavior**: Branch 4 fires; EulerEdgeTriangle(e1,e2)==NULL; MARK_BIT(v2,5); hole-fill loop continues to next candidate.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=7 e=12 f=5 chi=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me743.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me750 — simplify_polygons_in_polygon_soup polygon_iteration: for-loop body entered for each of 2 polygons in soup (Branch 1)
 - **Category**: §12.14 mesh defects (sub-class: degenerate-triangle / polygon-soup-iteration)
 - **Sources**: CGAL PMP `PMP.simplify_polygons_in_polygon_soup` Branch 1 (*polygon_iteration*: `for(P_ID polygon_index = 0; polygon_index < polygons.size(); ++polygon_index) { auto& polygon = polygons[polygon_index]; ... }`); `MESH_HEAL_COVERAGE.md`.
