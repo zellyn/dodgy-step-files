@@ -36592,3 +36592,101 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me630 — growSelection selected_triangle_vertex_mark: IS_VISITED(t0) marks v0,v1,v2; 4-triangle fan with shared interior vertex (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: selection-grow / vertex-marking propagation)
+- **Sources**: MeshFix `Basic_TMesh.growSelection` Branch 1 (*selected_triangle_vertex_mark*: `if (IS_VISITED(t)) { MARK_VISIT(v1); MARK_VISIT(v2); MARK_VISIT(v3); }`); `MESH_HEAL_COVERAGE.md` lines 1725–1747.
+- **Description**: 4-triangle fan (t0–t3) sharing central interior vertex v0. Triangle t0 is pre-selected (IS_VISITED); the first pass of growSelection detects IS_VISITED(t0) = true → Branch 1 fires and marks v0, v1, v2 as VISITED vertices. The three MARK_VISIT calls on t0's vertices create the propagation frontier for the second pass. All four fan interior edges (v0,v1), (v0,v2), (v0,v3), (v0,v4) are shared by exactly 2 triangles; rim edges are boundary (n=1). Euler: V=5, E=8, F=4, chi=1.
+- **Reproducer recipe**: v0=(0,0,0) central, v1–v4 rim; t0=(v0,v1,v2) selected; t1=(v0,v2,v3), t2=(v0,v3,v4), t3=(v0,v4,v1) unselected; assert_edge_shared on all 4 fan edges n=2 and 4 rim edges n=1; euler V=5,E=8,F=4,chi=1.
+- **Expected kernel behavior**: Branch 1 fires for t0; v0, v1, v2 receive MARK_VISIT; second pass then propagates selection to t1 and t3 (sharing marked vertices). Cleanup (Branch 5) unmarks all 5 vertices.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `euler_characteristic v=5 e=8 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me630.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me631 — growSelection vertex_marking: MARK_VISIT(v1); MARK_VISIT(v2); MARK_VISIT(v3) on t0's three vertices; 5-triangle fan (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: selection-grow / vertex-marking propagation)
+- **Sources**: MeshFix `Basic_TMesh.growSelection` Branch 2 (*vertex_marking*: `MARK_VISIT(v1); MARK_VISIT(v2); MARK_VISIT(v3);`); `MESH_HEAL_COVERAGE.md` lines 1725–1747.
+- **Description**: 5-triangle mesh: a 4-triangle fan (t0–t3) around interior vertex v0, plus an extra triangle t4=(v1,v2,v5) sharing edge (v1,v2) with the pre-selected seed t0. The fixture emphasizes that three separate MARK_VISIT calls execute — one each for v0, v1, v2 — when the IS_VISITED(t0) block fires. All four fan interior edges share n=2; edge (v1,v2) is shared by t0 and t4 (n=2), so both v1 and v2 carry marks that t4 can be grown into. Euler: V=6, E=10, F=5, chi=1.
+- **Reproducer recipe**: v0=(0,0,0) interior, v1–v4 fan rim, v5=(2,2,0) extra; t0=(v0,v1,v2) selected; t1=(v0,v2,v3), t2=(v0,v3,v4), t3=(v0,v4,v1) fan neighbors; t4=(v1,v2,v5) extra neighbor; assert 4 fan edges n=2, edge(v1,v2) n=2, 5 boundary edges n=1; euler V=6,E=10,F=5,chi=1.
+- **Expected kernel behavior**: Branch 2 fires three times (MARK_VISIT(v0), MARK_VISIT(v1), MARK_VISIT(v2)); second pass selects t1, t3, t4 via their marked shared vertices; Branch 5 cleanup unmarks all 6 vertices.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,5] n=1`
+- **Mesh assertion**: `euler_characteristic v=6 e=10 f=5 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me631.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me632 — growSelection unselected_triangle_neighbor_check: !IS_VISITED(t1) and !IS_VISITED(t2) both enter Branch 3; 3-triangle strip with selected seed t0 (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: selection-grow / unselected-triangle scanning)
+- **Sources**: MeshFix `Basic_TMesh.growSelection` Branch 3 (*unselected_triangle_neighbor_check*: `if (!IS_VISITED(t)) { if (IS_VISITED(v1) || IS_VISITED(v2) || IS_VISITED(v3)) … }`); `MESH_HEAL_COVERAGE.md` lines 1725–1747.
+- **Description**: 3-triangle strip: t0=(v0,v1,v2) is the pre-selected seed; t1=(v1,v2,v3) shares edge (v1,v2) with t0; t2=(v3,v4,v5) shares only vertex v3 with t1 and no marked vertex with t0. After the first pass marks v0,v1,v2 from t0, the second pass iterates t1 and t2: both have !IS_VISITED(t) = true → Branch 3 fires for each. For t1 the inner check succeeds (v1 and v2 are marked) → also fires Branch 4. For t2 the inner check fails (v3,v4,v5 not marked). Edge (v1,v2) is shared by t0 and t1 (n=2); all other edges are boundary (n=1). Euler: V=6, E=8, F=3, chi=1.
+- **Reproducer recipe**: v0–v2=(0,0,0),(1,0,0),(0,1,0); v3=(1,1,0); v4=(2,0,0); v5=(2,1,0); t0 selected; t1 unselected sharing edge (v1,v2); t2 unselected sharing only vertex v3; assert_edge_shared(v1,v2,2); boundary edges n=1; euler V=6,E=8,F=3,chi=1.
+- **Expected kernel behavior**: Branch 3 fires for t1 and t2 (both unselected). Branch 4 additionally fires for t1 (IS_VISITED(v1)||IS_VISITED(v2) = true) → t1 selected; t2 stays unselected. Branch 5 unmarks v0–v5.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `euler_characteristic v=6 e=8 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me632.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me633 — growSelection vertex_neighbor_selection: IS_VISITED(v2) selects t1 (vertex-only touch); IS_VISITED(v0)||IS_VISITED(v1) selects t2 (shared edge); 4-triangle mesh (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: selection-grow / vertex-neighbor selection)
+- **Sources**: MeshFix `Basic_TMesh.growSelection` Branch 4 (*vertex_neighbor_selection*: `if (IS_VISITED(v1) || IS_VISITED(v2) || IS_VISITED(v3)) { MARK_VISIT(t); ns++; }`); `MESH_HEAL_COVERAGE.md` lines 1725–1747.
+- **Description**: 4-triangle mesh demonstrating two distinct vertex-sharing patterns that trigger Branch 4. Seed t0=(v0,v1,v2) is selected; first pass marks v0, v1, v2. In the second pass: t1=(v2,v3,v4) is unselected and touches t0 at v2 only (no shared edge) — IS_VISITED(v2) = true → Branch 4 fires and selects t1. t2=(v0,v1,v5) shares edge (v0,v1) with t0 — IS_VISITED(v0)||IS_VISITED(v1) = true → Branch 4 selects t2. t3=(v3,v4,v6) has no marked vertex → Branch 4 check fails, t3 remains unselected. Edge (v0,v1) n=2 (t0,t2); edge (v3,v4) n=2 (t1,t3); all other edges boundary. Euler: V=7, E=10, F=4, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(1,3,0), v4=(3,1,0), v5=(-1,1,0), v6=(3,3,0); t0 selected; t1 unselected vertex-touch at v2; t2 unselected shared-edge (v0,v1); t3 unselected no marked vertex; assert_edge_shared(v0,v1,2); assert_edge_shared(v3,v4,2); euler V=7,E=10,F=4,chi=1.
+- **Expected kernel behavior**: Branch 4 fires for t1 (IS_VISITED(v2)) and t2 (IS_VISITED(v0)||v1); ns incremented twice; t3 skipped. Branch 5 unmarks v0–v6.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,6] n=1`
+- **Mesh assertion**: `euler_characteristic v=7 e=10 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me633.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me634 — growSelection vertex_unmark_cleanup: FOREACHVERTEX UNMARK_VISIT fires 7 times after grow; 6-triangle fan around central v0 (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: selection-grow / vertex-unmark cleanup)
+- **Sources**: MeshFix `Basic_TMesh.growSelection` Branch 5 (*vertex_unmark_cleanup*: `FOREACHVERTEX(v, n) UNMARK_VISIT(v);`); `MESH_HEAL_COVERAGE.md` lines 1725–1747.
+- **Description**: 6-triangle fan (t0–t5) sharing central interior vertex v0 and outer rim vertices v1–v6. Triangle t0 is pre-selected; first pass marks v0, v1, v2 (t0's vertices). Second pass selects t1=(v0,v2,v3) and t5=(v0,v6,v1) via shared marked vertices. The cleanup pass (Branch 5) then executes UNMARK_VISIT for all 7 vertices (v0–v6), firing Branch 5 exactly 7 times. All 6 fan interior edges (v0,v_i) are shared by 2 triangles; 6 outer rim edges are boundary (n=1). Euler: V=7, E=12, F=6, chi=1 (open disk).
+- **Reproducer recipe**: v0=(0,0,0) central; v1=(2,0,0), v2=(1,1,0), v3=(0,2,0), v4=(-1,1,0), v5=(-2,0,0), v6=(0,-1,0); t0 selected; t1–t5 unselected; 6 fan edges n=2; 6 rim edges n=1; euler V=7,E=12,F=6,chi=1.
+- **Expected kernel behavior**: Branch 5 fires 7 times (once per vertex v0–v6); all temporary vertex VISITED marks cleared after selection-grow completes.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,6] n=1`
+- **Mesh assertion**: `euler_characteristic v=7 e=12 f=6 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me634.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
