@@ -36779,3 +36779,131 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `adjacent_triangles_normal_dot_gt triangles=[0,2] threshold=0.99`
 - **Fixture path**: mesh-examples/12-14-mesh/Me426.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me430 — forceNormalConsistence t1-inconsistent: adjacent triangle flipped across shared edge e1; antiparallel normal → t1->invert() (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: inconsistent-face-orientation / adjacent-normal-t1)
+- **Sources**: MeshFix `checkAndRepair::forceNormalConsistence` Branch 1 (*ADJACENT_NORMAL_T1_INCONSISTENT*: `if (!t->checkAdjNor(t1)) { t1->invert(); r=1; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing edge (v0,v1). Both list the shared edge in the SAME direction (v0→v1), producing antiparallel normals: t0=(v0,v1,v2) has normal +z; t1=(v0,v1,v3) has normal −z. In a correctly-oriented manifold, the second triangle should list the edge in the opposite sense (v1→v0). The same-direction traversal means checkAdjNor(t1) returns false → Branch 1 fires t1->invert(). Shared edge (v0,v1) n=2; four boundary edges n=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,-1,0); t0=(v0,v1,v2), t1=(v0,v1,v3); assert_edge_shared(v0,v1,2); assert_adjacent_triangles_inconsistent_winding(0,1); boundary edges n=1.
+- **Expected kernel behavior**: Branch 1 fires; t1->invert() reverses t1's winding from (v0,v1,v3) to (v3,v1,v0), aligning its normal with t0's +z normal. r=1 signals a fix was made.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,1]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me430.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me431 — forceNormalConsistence t2-inconsistent: adjacent triangle flipped across shared edge e2; antiparallel normal → t2->invert() (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: inconsistent-face-orientation / adjacent-normal-t2)
+- **Sources**: MeshFix `checkAndRepair::forceNormalConsistence` Branch 2 (*ADJACENT_NORMAL_T2_INCONSISTENT*: `if (!t->checkAdjNor(t2)) { t2->invert(); }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangles. t0=(v0,v1,v2) is the reference (+z normal). t1=(v1,v0,v3) shares edge (v0,v1) in the correct opposite sense (v1→v0) → consistent +z normal. t2=(v1,v2,v4) shares edge (v1,v2) in the SAME sense as t0 (both v1→v2), giving t2 a −z normal — ADJACENT_NORMAL_T2_INCONSISTENT. The inconsistency is on the SECOND edge checked (e2), triggering Branch 2. V=5, two interior edges n=2, five boundary edges n=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(1,-1,0), v4=(0.5,2,0); t0=(v0,v1,v2), t1=(v1,v0,v3), t2=(v1,v2,v4); assert_edge_shared(v0,v1,2); assert_edge_shared(v1,v2,2); assert_adjacent_triangles_inconsistent_winding(0,2); boundary edges n=1.
+- **Expected kernel behavior**: Branch 2 fires; t2->invert() reverses t2's winding to align its normal with t0's +z orientation.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,2]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me431.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me432 — forceNormalConsistence t3-inconsistent: adjacent triangle flipped across shared edge e3; antiparallel normal → t3->invert() (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: inconsistent-face-orientation / adjacent-normal-t3)
+- **Sources**: MeshFix `checkAndRepair::forceNormalConsistence` Branch 3 (*ADJACENT_NORMAL_T3_INCONSISTENT*: `if (!t->checkAdjNor(t3)) { t3->invert(); }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four triangles. t0=(v0,v1,v2) is the reference (+z normal, edges e1=(v0,v1), e2=(v1,v2), e3=(v2,v0)). t1=(v1,v0,v3) shares e1 in opposite sense → consistent +z. t2=(v2,v1,v4) shares e2 in opposite sense → consistent +z. t3=(v2,v0,v5) shares e3 in SAME sense as t0 (both list v2→v0 direction) → normal −z: ADJACENT_NORMAL_T3_INCONSISTENT. Branch 3 fires on the THIRD neighbour check. V=6, three interior edges n=2, six boundary edges n=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(3,-1,0), v4=(2,3,0), v5=(-1,1,0); t0=(v0,v1,v2), t1=(v1,v0,v3), t2=(v2,v1,v4), t3=(v2,v0,v5); interior edges (v0,v1),(v1,v2),(v0,v2) n=2; assert_adjacent_triangles_inconsistent_winding(0,3).
+- **Expected kernel behavior**: Branch 3 fires; t3->invert() reverses t3's winding to align its normal with t0's +z orientation; r=1 signals a fix.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,3]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,5] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me432.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me433 — forceNormalConsistence boundary-edge-detected: open mesh; isOnBoundary() true → isclosed cleared (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: hole-in-hull / boundary-edge-detection)
+- **Sources**: MeshFix `checkAndRepair::forceNormalConsistence` Branch 4 (*BOUNDARY_EDGE_DETECTED*: `if (e->isOnBoundary()) { isclosed = false; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four triangles forming an open two-square strip (L-shape). t0=(v0,v1,v3) and t1=(v0,v3,v2) form the left square; t2=(v1,v4,v5) and t3=(v1,v5,v3) form the right square. All triangles have +z normal (consistently oriented). Three interior edges are n=2: (v0,v3), (v1,v3), (v1,v5). Six boundary edges are n=1: (v0,v1),(v0,v2),(v2,v3),(v1,v4),(v4,v5),(v3,v5). forceNormalConsistence finds these boundary edges and sets isclosed=false → Branch 4. The hole_boundary oracle assertion confirms the boundary loop.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(1,1,0), v4=(2,0,0), v5=(2,1,0); t0=(v0,v1,v3), t1=(v0,v3,v2), t2=(v1,v4,v5), t3=(v1,v5,v3); interior edges n=2; boundary edges n=1; hole_boundary([v0,v1,v4,v5,v3,v2]).
+- **Expected kernel behavior**: Branch 4 fires on every boundary edge; isclosed is cleared; the return value indicates an open mesh.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,4,5,3,2]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me433.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me434 — forceNormalConsistence non-orientable-seam: seam edge traversed in same direction by both adjacent triangles; tmp1*tmp2<0 → newEdge cut (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: non-orientable-seam / Möbius-topology)
+- **Sources**: MeshFix `checkAndRepair::forceNormalConsistence` Branch 5 (*NON_ORIENTABLE_SEAM*: `if (tmp1*tmp2 < 0) { newEdge(e->v2, e->v1); wrn++; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four triangles forming a closed surface (V=4, E=6, F=4, chi=2) with one non-orientable seam. Seam edge (v0,v1) is shared by t0=(v0,v1,v2) and t1=(v0,v1,v3) — BOTH list the edge as v0→v1 (same direction). In a correctly-oriented manifold, one should go v0→v1 and the other v1→v0. The sign product tmp1*tmp2 < 0 because the edge orientation is contradictory relative to the face normals: t0 has +z normal and t3=(v2,v0,v3) has −z normal (dot t0,t3 = −1). The propagator creates a new cut edge via newEdge(e->v2, e->v1) and increments wrn. All 6 edges are interior (n=2); no boundary.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(1,1,0), v3=(0,1,0); t0=(v0,v1,v2), t1=(v0,v1,v3), t2=(v1,v2,v3), t3=(v2,v0,v3); assert_edge_shared(v0,v1,2); assert_adjacent_triangles_inconsistent_winding(0,3); all 6 edges n=2; euler V=4,E=6,F=4,chi=2.
+- **Expected kernel behavior**: Branch 5 fires; newEdge(e->v2, e->v1) creates a cut along the seam; wrn is incremented (to be checked by Branch 7).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,3]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me434.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me435 — forceNormalConsistence vertex-order-correction: half-edge direction misaligned with triangle winding; tmp==-1 → p_swap (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: inconsistent-face-orientation / vertex-order-correction)
+- **Sources**: MeshFix `checkAndRepair::forceNormalConsistence` Branch 6 (*VERTEX_ORDER_CORRECTION*: `if (tmp1 == -1 || tmp2 == -1) { p_swap(e->v1, e->v2); }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three consistently-oriented triangles (all +z normals) forming an open strip. t0=(v0,v1,v2), t1=(v1,v3,v2), t2=(v1,v4,v3). t0 and t1 share edge (v1,v2) in opposite senses (manifold-correct), but the half-edge's stored v1/v2 direction doesn't match the propagator's traversal convention → tmp1==-1 triggers p_swap. t1 and t2 share edge (v1,v3) similarly. All normals are +z (dot > 0.99 for both adjacent pairs). Two interior edges n=2; five boundary edges n=1. VERTEX_ORDER_CORRECTION is distinguished from Branches 1-3 (triangle inversion) by producing consistent normals (dot > 0) rather than antiparallel ones.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1.5,1,0), v4=(2,0,0); t0=(v0,v1,v2), t1=(v1,v3,v2), t2=(v1,v4,v3); interior edges (v1,v2),(v1,v3) n=2; assert_adjacent_triangles_normal_dot_gt(0,1,0.99); assert_adjacent_triangles_normal_dot_gt(1,2,0.99).
+- **Expected kernel behavior**: Branch 6 fires; p_swap(e->v1, e->v2) corrects the half-edge's stored direction to match the adjacent triangle's winding expectation.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `adjacent_triangles_normal_dot_gt triangles=[0,1] threshold=0.99`
+- **Mesh assertion**: `adjacent_triangles_normal_dot_gt triangles=[1,2] threshold=0.99`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me435.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me436 — forceNormalConsistence non-orientable-mesh: wrn=2>0 from two seam cuts → topology dirty, r|=2 (Branch 7)
+- **Category**: §12.14 mesh defects (sub-class: non-orientable-mesh / topology-dirty)
+- **Sources**: MeshFix `checkAndRepair::forceNormalConsistence` Branch 7 (*NON_ORIENTABLE_MESH*: `if (wrn > 0) { … r |= 2; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Six triangles and 6 vertices forming two independent non-orientable seam pairs (wrn accumulates to 2). Seam A: edge (v0,v1) shared by t0=(v0,v1,v2) [+z] and t1=(v0,v1,v3) [−z] — same-direction traversal (Branch 5 fires, wrn++). Seam B: edge (v4,v5) shared by t3=(v4,v5,v2) [+z] and t4=(v4,v5,v3) [−z] — same-direction traversal (Branch 5 fires again, wrn++). Connector triangles t2=(v1,v2,v3) and t5=(v5,v2,v3) complete the mesh. After processing all edges, wrn=2>0 → Branch 7 fires: topology is marked dirty and r|=2 is returned. Each seam produces antiparallel normals confirmed by the oracle.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(1,-2,0), v4=(5,0,0), v5=(7,0,0); t0=(v0,v1,v2), t1=(v0,v1,v3), t2=(v1,v2,v3), t3=(v4,v5,v2), t4=(v4,v5,v3), t5=(v5,v2,v3); assert_edge_shared(v0,v1,2); assert_edge_shared(v4,v5,2); assert_adjacent_triangles_inconsistent_winding(0,1); assert_adjacent_triangles_inconsistent_winding(3,4).
+- **Expected kernel behavior**: Branch 5 fires twice (once per seam edge), incrementing wrn to 2. After the edge loop, Branch 7 fires: mesh topology is marked dirty and the return value has bit 2 set (r |= 2) indicating a non-orientable mesh.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=2`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,1]`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[3,4]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me436.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
