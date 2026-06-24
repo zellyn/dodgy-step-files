@@ -36593,6 +36593,48 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me1020 — compatible_orientations nesting-constraint detector: usage-mode-dispatch on single closed component
+- **Category**: §12.14 mesh defects (sub-class: orientation/nesting-constraint/mode-dispatch)
+- **Sources**: CGAL `PMP.compatible_orientations (nesting-constraint detector)` Branch 1 @ line 1182 (*usage-mode-dispatch*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A single closed tetrahedral mesh (unit edge length, genus 0, χ=2). The nesting-constraint detector checks `used_as_a_predicate` / `output_mode` at entry to decide whether to populate a per-face bit-vector or return a single boolean result. A closed manifold mesh with one connected component exercises this dispatch code path. All four faces are consistently outward-wound; all six edges are shared by exactly 2 triangles. The single component means the nesting loop is trivially bypassed, placing observable weight on the Branch 1 dispatch.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,0.866,0), v3=(0.5,0.2887,0.8165); four outward-wound faces; all 6 edges shared n=2; euler V=4, E=6, F=4, chi=2.
+- **Expected kernel behavior**: Branch 1 fires at entry; output_mode dispatch routes to bit-vector or predicate path; single component means nesting map is empty so Branch 2 and Branch 3 are bypassed.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1020.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1021 — compatible_orientations nesting-constraint detector: nested_cc_per_cc_shared non-empty (two nested closed tetrahedra)
+- **Category**: §12.14 mesh defects (sub-class: orientation/nesting-constraint/nested-component)
+- **Sources**: CGAL `PMP.compatible_orientations (nesting-constraint detector)` Branch 2 @ line 1192 (*nested-component-existence*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two closed tetrahedral components — a large outer tetrahedron (edge length 4) and a small inner tetrahedron (edge length 0.5) geometrically contained inside the outer one. The inner component's vertices are all within the outer tetrahedron's volume. The CGAL point-in-polyhedron test establishes a nesting relationship and populates `nested_cc_per_cc_shared`, causing Branch 2 (*nested-component-existence*) to be entered rather than skipped. Both components are closed manifold surfaces (each χ=2); combined χ=4. The two components are topologically disconnected.
+- **Reproducer recipe**: Outer: v0=(0,0,0), v1=(4,0,0), v2=(2,3.464,0), v3=(2,1.155,3.266), four outward faces. Inner: i0=(1.75,1.2,0.9), i1=(2.25,1.2,0.9), i2=(2.0,1.633,0.9), i3=(2.0,1.344,1.309), four outward faces. assert_triangle_not_reachable_from(t4,t0); euler V=8, E=12, F=8, chi=4.
+- **Expected kernel behavior**: Branch 2 fires; nested_cc_per_cc_shared is non-empty (inner component detected as nested inside outer); detector proceeds to nesting-level computation and orientation check.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=2`
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Mesh assertion**: `euler_characteristic v=8 e=12 f=8 chi=4`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1021.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1022 — compatible_orientations nesting-constraint detector: nesting_levels[child]==parent+1 direct parent-child relationship
+- **Category**: §12.14 mesh defects (sub-class: orientation/nesting-constraint/nesting-level)
+- **Sources**: CGAL `PMP.compatible_orientations (nesting-constraint detector)` Branch 3 @ line 1204 (*direct-nesting-level-match*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two closed tetrahedral components at distinct nesting levels. The outer tetrahedron (edge length 6) is the root component at nesting level 0. The inner tetrahedron (edge length 0.6) is directly nested inside at nesting level 1. No intermediate shell exists between them — the nesting level difference is exactly +1, satisfying `nesting_levels[child] == nesting_levels[parent] + 1`. Branch 3 (*direct-nesting-level-match*) fires and the detector marks faces for potential winding-order flip to achieve orientation compatibility across the nesting boundary.
+- **Reproducer recipe**: Outer: v0=(0,0,0), v1=(6,0,0), v2=(3,5.196,0), v3=(3,1.732,4.899), four outward faces. Inner: i0=(2.7,1.732,1.225), i1=(3.3,1.732,1.225), i2=(3.0,2.252,1.225), i3=(3.0,1.924,1.714), centered at outer centroid. assert_triangle_not_reachable_from(t4,t0); euler V=8, E=12, F=8, chi=4.
+- **Expected kernel behavior**: Branch 3 fires; nesting_levels[inner]==0+1 is confirmed; detector marks faces of the inner component for potential flip to ensure compatible outward/inward winding convention at the nesting boundary.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=2`
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Mesh assertion**: `euler_characteristic v=8 e=12 f=8 chi=4`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1022.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me1030 — split_connected_components component_subdivision: two disconnected triangles each extracted to a new mesh (Branch 1)
 - **Category**: §12.14 mesh defects (sub-class: disconnected_components / split-connected-components)
 - **Sources**: CGAL PMP `PMP.split_connected_components` Branch 1 (*component_subdivision*: `extract_to_new_mesh(cc_meshes[i], ...)`); `MESH_HEAL_COVERAGE.md`.

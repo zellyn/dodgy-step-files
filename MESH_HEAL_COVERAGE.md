@@ -982,17 +982,17 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
 (9 methods, 30 branches)
 
 ##### `PMP.compatible_orientations (nesting-constraint detector)` — lines 1179–1337
-(3 branches; all UNCOVERED — no mesh fixtures exist yet)
+(3 branches; all COVERED — Me1020, Me1021, Me1022)
 
-- **Branch 1** @ line 1182 — *usage-mode-dispatch*
+- **Branch 1** @ line 1182 — *usage-mode-dispatch* — **Me1020**
   - What it tests: Route output to bit-vector or boolean result
   - Repair action: either populate per-face bit-map or return single bool
   - Suggested fixture: defect mentioning 'used_as_a_predicate', 'output_mode'
-- **Branch 2** @ line 1192 — *nested-component-existence*
+- **Branch 2** @ line 1192 — *nested-component-existence* — **Me1021**
   - What it tests: Check for non-empty nesting relationships among components
   - Repair action: skip components with no nesting constraints
   - Suggested fixture: defect mentioning 'nested_cc_per_cc_shared', 'empty'
-- **Branch 3** @ line 1204 — *direct-nesting-level-match*
+- **Branch 3** @ line 1204 — *direct-nesting-level-match* — **Me1022**
   - What it tests: Detect direct parent-child relationship (nesting level +1)
   - Repair action: mark faces for potential flip to enable stitching compatibility
   - Suggested fixture: defect mentioning 'nesting_levels', '+1', 'parent-child'
