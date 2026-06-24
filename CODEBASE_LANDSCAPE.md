@@ -10,7 +10,38 @@ for each project. Rankings are based on (a) breadth of the project's repair-surf
 (b) how distinct its defect domain is from OCCT/MeshFix/CGAL PMP, and
 (c) availability of self-describing prose (header docs, manual pages, named operators).
 
-**Date.** 2026-06-14.
+**Date.** 2026-06-14 (refreshed 2026-06-24 with coverage status).
+
+---
+
+## Coverage status snapshot — 2026-06-24
+
+Progress since the landscape was first drafted:
+
+- **OCCT (TKShHealing + BRepLib + BRepBuilderAPI_Sewing + ShapeCustom/Extend/Process):**
+  per-method deep-pass enumerated 317 methods + 3399 repair branches.
+  867 branches covered (25.5%). See `OCCT_HEAL_COVERAGE_V2.md`.
+- **CGAL PMP + MeshFix (item #3 from the priorities list):** mesh
+  waves 1–41 shipped 760 fixtures covering 115+/151 methods (~44%).
+  Sub-corpus lives in `mesh-examples/12-14-mesh/`. See
+  `MESH_HEAL_COVERAGE.md`. **This addresses priority #3 below;
+  consider it substantively covered, with deferrable depth gaps logged
+  per-method.**
+- **Issue-tracker mining (B4):** waves 1–3 against FreeCAD, solvespace,
+  pythonocc-core, cascadio, KiCad, CadQuery, Blender STEP-addon, etc.
+  Yielded 35 NOVEL synthesized fixtures total; saturation signal at
+  9.3% yield in wave 3. See BACKLOG.md B4.
+- **Total corpus:** 3,086 catalog entries (2,350 STEP + 760 mesh +
+  small sibling-input). See VALIDATION_SUMMARY.md for verdict matrix.
+- **Quality state:** post-rebaseline `_final_verdict` reports
+  2230 CONFIRMED · 1 CONCERN (documented) · 0 DRIFT · 119 ERROR (mesh
+  routing). DRIFT-rebaseline workflow now documented in user memory.
+
+**Still untouched from the priorities list:** vcglib/MeshLab,
+VTK, assimp, lib3mf, admesh, Blender bmesh, fTetWild, Manifold issue
+tracker, ifcopenshell `ifcpatch`. These remain the highest-EV
+next targets if/when the corpus is ready for breadth expansion beyond
+the OCCT/MeshFix/CGAL baseline.
 
 ---
 

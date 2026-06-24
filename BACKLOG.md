@@ -290,12 +290,15 @@ new flaky-CI surface.
 
 ### Q2 — Stale-doc refresh
 
-- [x] `QUALITY_DASHBOARD.md` — refreshed 2026-06-19 to 2329 entries.
-      Commit `4c3f1d7`.
-- [ ] `CODEBASE_LANDSCAPE.md` — last updated 2026-06-15, hasn't seen the
-      corpus-wide adversarial sweep or the builder extensions.
-- [x] `validation/VALIDATION_SUMMARY.md` — refreshed 2026-06-19.
-      Commit `4c3f1d7`.
+- [x] `QUALITY_DASHBOARD.md` — refreshed 2026-06-19 to 2329 entries
+      (commit `4c3f1d7`); re-refreshed 2026-06-24 with mesh+Q5 progress
+      (commit `07f37ab`).
+- [x] `CODEBASE_LANDSCAPE.md` — coverage-status addendum added 2026-06-24
+      noting OCCT v2 + MeshFix/CGAL PMP + B4 mining progress; priority
+      #3 (CGAL PMP deeper pass) marked substantively covered.
+- [x] `validation/VALIDATION_SUMMARY.md` — refreshed 2026-06-19
+      (commit `4c3f1d7`); re-refreshed 2026-06-24 with live
+      `_final_verdict` numbers + post-rebaseline verdict matrix.
 
 ### Q3 — Phase 7 backlog (75-fixture A6 audit groups)
 
