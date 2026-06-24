@@ -1,0 +1,63 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      2.0,
+      0.0
+    ],
+    [
+      -2.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      -2.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      3,
+      4
+    ]
+  ],
+  "metadata": {
+    "id": "Me393",
+    "schema_version": 0,
+    "defect_class": "shared_vertex_adjacent_faces",
+    "title": "do_faces_intersect shared-vertex-only: one shared vertex, no shared edge, no geometric SI (Branch 4)",
+    "assertions": [
+      {
+        "kind": "vertex_pair_no_shared_triangle",
+        "pair": [
+          1,
+          3
+        ]
+      },
+      {
+        "kind": "triangles_do_not_intersect",
+        "triangles": [
+          0,
+          1
+        ]
+      }
+    ]
+  }
+}

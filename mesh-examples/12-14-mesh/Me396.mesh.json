@@ -1,0 +1,73 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      1.5,
+      1.0,
+      0.0
+    ],
+    [
+      2.5,
+      1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      3
+    ],
+    [
+      2,
+      3,
+      4
+    ],
+    [
+      4,
+      5,
+      2
+    ]
+  ],
+  "metadata": {
+    "id": "Me396",
+    "schema_version": 0,
+    "defect_class": "shared_vertex_adjacent_faces",
+    "title": "do_faces_intersect edge-orientation-search: i==0 shared-vertex permutation path; strip of 3 non-intersecting triangles (Branch 7)",
+    "assertions": [
+      {
+        "kind": "triangles_do_not_intersect",
+        "triangles": [
+          0,
+          1
+        ]
+      },
+      {
+        "kind": "triangles_do_not_intersect",
+        "triangles": [
+          0,
+          2
+        ]
+      }
+    ]
+  }
+}

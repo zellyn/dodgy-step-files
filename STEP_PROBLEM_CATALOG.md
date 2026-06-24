@@ -36422,3 +36422,79 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
 - **Fixture path**: mesh-examples/12-14-mesh/Me386.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me390 — do_faces_intersect_shared_edge_incident_vertex: coplanar triangles sharing full edge with overlapping interiors (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: do_faces_intersect / shared-edge-vs-incident-vertex)
+- **Sources**: CGAL PMP `do_faces_intersect` Branch 1 (*shared-edge-vs-incident-vertex*: `faces_have_a_shared_edge → coplanar+overlap check`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two coplanar triangles sharing the full edge (v0,v1). The second triangle's apex v3=(1,1,0) lies strictly inside the first triangle's interior. Branch 1 fires when `faces_have_a_shared_edge` is true — routing to the coplanar + overlap test, which detects the interior overlap as a self-intersection. The shared edge (v0,v1) is incident on both triangles (n=2).
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(0,2,0), v3=(1,1,0); t0=(v0,v1,v2), t1=(v0,v1,v3); assert_edge_shared(v0,v1,2); assert_triangles_self_intersect(0,1).
+- **Expected kernel behavior**: Branch 1 fires on shared-edge detection; coplanar overlap test confirms interior overlap → reports self-intersection.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me390.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me391 — do_faces_intersect_identical_face_soup_deduplication: two identical triangles in soup mode — deduplication target, not SI (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: do_faces_intersect / identical-face-soup-deduplication)
+- **Sources**: CGAL PMP `do_faces_intersect` Branch 2 (*identical-face-soup-deduplication*: `allow_identical_face && verts[2]==verts[3] → return false`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles with identical vertex indices (v0,v1,v2) appearing twice. In soup mode (allow_identical_face=true), identical faces are classified as deduplication targets, not self-intersections — Branch 2 returns false. The `duplicate_triangle_pair` assertion confirms the oracle detects the identical geometry.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0); t0=(v0,v1,v2), t1=(v0,v1,v2); assert_duplicate_triangle_pair(0,1).
+- **Expected kernel behavior**: Branch 2 fires; soup mode suppresses SI classification for identical faces; function returns false.
+- **Mesh assertion**: `duplicate_triangle_pair triangles=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me391.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me392 — do_faces_intersect_shared_edge_coplanarity_orientation: coplanar same-orientation faces sharing edge — overlapping SI (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: do_faces_intersect / shared-edge-coplanarity-orientation)
+- **Sources**: CGAL PMP `do_faces_intersect` Branch 3 (*shared-edge-coplanarity-orientation*: `coplanar && orientation==CGAL::POSITIVE → overlapping SI`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two coplanar triangles sharing edge (v0,v1), both with normals pointing +Z (same orientation: CGAL::POSITIVE). The smaller triangle's apex v3=(1.5,1,0) lies inside the larger triangle's interior. Branch 3 fires after detecting shared-edge coplanarity and same normal orientation — classifying this as an overlapping self-intersection. The shared edge (v0,v1) is incident on both triangles (n=2).
+- **Reproducer recipe**: v0=(0,0,0), v1=(3,0,0), v2=(1.5,3,0), v3=(1.5,1,0); t0=(v0,v1,v2), t1=(v0,v1,v3); assert_edge_shared(v0,v1,2); assert_triangles_self_intersect(0,1).
+- **Expected kernel behavior**: Branch 3 fires; coplanar+same-orientation+overlapping → classified as SI.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me392.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me393 — do_faces_intersect_shared_vertex_presence_detection: one shared vertex, no shared edge, no geometric SI (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: do_faces_intersect / shared-vertex-presence-detection)
+- **Sources**: CGAL PMP `do_faces_intersect` Branch 4 (*shared-vertex-presence-detection*: `hv[i] == gv[j] → segment-triangle tests`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles meeting at exactly one vertex v0=(0,0,0) with no shared edge. t0 is in the first quadrant (v1=(2,0,0), v2=(0,2,0)) and t1 is in the third quadrant (v3=(-2,0,0), v4=(0,-2,0)), so their interiors are completely disjoint. Branch 4 detects the shared vertex (hv[i]==gv[j]) and routes to segment-triangle tests; the result is no intersection.
+- **Reproducer recipe**: v0=(0,0,0) shared; v1=(2,0,0), v2=(0,2,0); v3=(-2,0,0), v4=(0,-2,0); t0=(v0,v1,v2), t1=(v0,v3,v4); assert_vertex_pair_no_shared_triangle(v1,v3); assert_triangles_do_not_intersect(0,1).
+- **Expected kernel behavior**: Branch 4 detects shared vertex; segment tests confirm no SI; returns false.
+- **Mesh assertion**: `vertex_pair_no_shared_triangle vertices=[1,3]`
+- **Mesh assertion**: `triangles_do_not_intersect triangles=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me393.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me394 — do_faces_intersect_opposite_segment_triangle_containment: shared-vertex pair where opposite segment pierces other triangle (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: do_faces_intersect / opposite-segment-vs-triangle-containment)
+- **Sources**: CGAL PMP `do_faces_intersect` Branch 5 (*opposite-segment-vs-triangle-containment*: `do_intersect(t1, s2) || do_intersect(t2, s1)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing vertex v0=(0,0,0). t0 lies in the XY plane: (v0, v1=(2,0,0), v2=(0,2,0)). t1 is near-vertical: (v0, v3=(1,1,-1), v4=(1,1,1)). The edge opposite to v0 in t1 — the segment (v3,v4) — passes through t0's interior at (1,1,0). Branch 5 detects this: `do_intersect(t0, segment(v3,v4))` returns true → SI confirmed.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(0,2,0), v3=(1,1,-1), v4=(1,1,1); t0=(v0,v1,v2), t1=(v0,v3,v4); assert_triangles_self_intersect(0,1).
+- **Expected kernel behavior**: Branch 5 fires; segment (v3,v4) intersects t0's interior → returns true (SI detected).
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me394.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me395 — do_faces_intersect_full_geometric_triangle_si: no shared vertex or edge, pure geometric crossing (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: do_faces_intersect / full-geometric-triangle-si)
+- **Sources**: CGAL PMP `do_faces_intersect` Branch 6 (*full-geometric-triangle-si*: `do_intersect(th, tg)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles with completely disjoint vertex sets that cross geometrically. t0 lies in the XY plane: (v0=(0,0,0), v1=(3,0,0), v2=(0,3,0)). t1 is near-vertical with vertices (v3=(1,1,-2), v4=(1,1,2), v5=(5,5,0)) — the edge (v3,v4) pierces t0's interior at (1,1,0). No shared vertices or edges. Branch 6 executes the full `do_intersect(th, tg)` geometric test and returns true.
+- **Reproducer recipe**: v0=(0,0,0), v1=(3,0,0), v2=(0,3,0); v3=(1,1,-2), v4=(1,1,2), v5=(5,5,0); t0=(v0,v1,v2), t1=(v3,v4,v5); assert_vertex_pair_no_shared_triangle(v0,v3); assert_vertex_pair_no_shared_triangle(v1,v4); assert_triangles_self_intersect(0,1).
+- **Expected kernel behavior**: Branch 6 fires; pure geometric test do_intersect(th,tg) returns true → SI reported.
+- **Mesh assertion**: `vertex_pair_no_shared_triangle vertices=[0,3]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle vertices=[1,4]`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me395.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me396 — do_faces_intersect_edge_orientation_search_mode: i==0 shared-vertex permutation path, strip of non-intersecting triangles (Branch 7)
+- **Category**: §12.14 mesh defects (sub-class: do_faces_intersect / edge-orientation-search-mode)
+- **Sources**: CGAL PMP `do_faces_intersect` Branch 7 (*edge-orientation-search-mode*: `if (i==0) { vh[1]=f[i]; vh[2]=f[(i+1)%3] }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangles arranged as a linear strip. t0=(v0,v1,v3) and t1=(v2,v3,v4) share vertex v3, which is at index position 0 in t1 — triggering the i==0 branch that assigns vh[1]=f[0] and vh[2]=f[1] for edge-orientation derivation. t1 and t2 similarly share v4 at index 0. All triangle pairs have non-intersecting geometries; the permutation search terminates correctly and the segment tests confirm no SI.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0), v3=(0.5,1,0), v4=(1.5,1,0), v5=(2.5,1,0); t0=(v0,v1,v3), t1=(v2,v3,v4), t2=(v4,v5,v2); assert_triangles_do_not_intersect(0,1); assert_triangles_do_not_intersect(0,2).
+- **Expected kernel behavior**: Branch 7 (i==0 permutation) fires during shared-vertex search for (t0,t1) and (t1,t2); edge orientation correctly extracted; segment tests confirm no SI.
+- **Mesh assertion**: `triangles_do_not_intersect triangles=[0,1]`
+- **Mesh assertion**: `triangles_do_not_intersect triangles=[0,2]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me396.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder

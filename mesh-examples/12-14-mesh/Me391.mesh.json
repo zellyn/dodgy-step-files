@@ -1,0 +1,46 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      1,
+      2
+    ]
+  ],
+  "metadata": {
+    "id": "Me391",
+    "schema_version": 0,
+    "defect_class": "duplicate_face_pair",
+    "title": "do_faces_intersect soup-mode: two identical triangles (same vertices) \u2014 soup deduplication target, not SI",
+    "assertions": [
+      {
+        "kind": "duplicate_triangle_pair",
+        "triangles": [
+          0,
+          1
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      3.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      3.0,
+      0.0
+    ],
+    [
+      1.0,
+      1.0,
+      -2.0
+    ],
+    [
+      1.0,
+      1.0,
+      2.0
+    ],
+    [
+      5.0,
+      5.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      3,
+      4,
+      5
+    ]
+  ],
+  "metadata": {
+    "id": "Me395",
+    "schema_version": 0,
+    "defect_class": "self_intersection_face_pair",
+    "title": "do_faces_intersect full-geometric-SI: no shared vertex or edge, triangles cross geometrically (Branch 6)",
+    "assertions": [
+      {
+        "kind": "vertex_pair_no_shared_triangle",
+        "pair": [
+          0,
+          3
+        ]
+      },
+      {
+        "kind": "vertex_pair_no_shared_triangle",
+        "pair": [
+          1,
+          4
+        ]
+      },
+      {
+        "kind": "triangles_self_intersect",
+        "triangles": [
+          0,
+          1
+        ]
+      }
+    ]
+  }
+}
