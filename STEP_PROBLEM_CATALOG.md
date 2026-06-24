@@ -36649,6 +36649,107 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me1134.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me1140 — volume_connected_components self_intersection_detection: eight-triangle closed shell where cap faces (z=1 plane vs y=1 plane) cross with no shared vertex; does_self_intersect fires (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: self_intersection / volume-component-SI)
+- **Sources**: CGAL PMP `PMP.volume_connected_components` Branch 1 (*self_intersection_detection*: `if(PMP::does_self_intersect(cc, pmesh, np)) { output.self_intersecting.push_back(cc); continue; }` @ line 570); `MESH_HEAL_COVERAGE.md`.
+- **Description**: An 8-triangle closed manifold (V=6, E=12, F=8, χ=2) formed by two "crossing cap" triangles connected by a 6-triangle band. The P-cap (t0) lies in z=1 plane and the Q-cap (t1) lies in y=1 plane; they share no vertices. Their planes intersect along the line {(x,1,1)}: the segment from (1,1,1) to (2,1,1) lies inside t0 and on the boundary of t1, making the triangles geometrically self-intersecting. The 6 band triangles pair each P-edge to the corresponding Q-edge, ensuring all 12 edges are shared by exactly 2 faces (closed manifold). does_self_intersect detects the crossing cap pair → Branch 1 fires before volume analysis.
+- **Reproducer recipe**: p0=(0,0,1), p1=(4,0,1), p2=(2,4,1) (z=1 plane); q0=(2,1,0), q1=(2,1,4), q2=(0,1,2) (y=1 plane); t0=(p0,p1,p2), t1=(q0,q2,q1); band: t2=(p0,p1,q0), t3=(p1,q1,q0), t4=(p1,p2,q1), t5=(p2,q2,q1), t6=(p2,p0,q2), t7=(p0,q0,q2); all 12 edges shared by 2; assert_triangles_self_intersect(t0,t1); euler V=6,E=12,F=8,chi=2.
+- **Expected kernel behavior**: Branch 1 fires; does_self_intersect returns true for the component; it is appended to output.self_intersecting and skipped in volume/nesting analysis.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1, 2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3, 4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4, 5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3, 5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1, 3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1, 4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2, 4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2, 5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 3] n=2`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0, 1]`
+- **Mesh assertion**: `euler_characteristic v=6 e=12 f=8 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1140.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1141 — volume_connected_components boundary_component_detection: two-triangle flat patch with four boundary edges; !is_closed fires before volume analysis (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: boundary_hole / volume-component-open-mesh)
+- **Sources**: CGAL PMP `PMP.volume_connected_components` Branch 2 (*boundary_component_detection*: `if(!PMP::is_closed(cc, pmesh)) { output.boundary_components.push_back(cc); continue; }` @ line 600); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A flat two-triangle patch sharing one interior edge (v1,v2). All four outer edges are boundary (incident to only one face). The component is connected and non-self-intersecting, but is_closed returns false because boundary halfedges with no opposite face exist. After the SI check passes (no crossing pairs), is_closed is evaluated → returns false → Branch 2 fires and the component is recorded as boundary_error, excluded from volume analysis.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(3,2,0); t0=(v0,v1,v2), t1=(v1,v3,v2); interior edge (v1,v2) n=2; outer edges n=1; hole_boundary [v0,v1,v3,v2]; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 2 fires; !is_closed(cc) is true (boundary edges exist); component is appended to output.boundary_components and skipped in orientation/nesting checks.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1, 2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1, 3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2, 3] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0, 1, 3, 2]`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1141.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1142 — volume_connected_components orientation_consistency: closed tetrahedron with one CW-wound face; is_outward_oriented fails; orientation_error flagged (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: inconsistent_face_orientation / volume-component-orientation)
+- **Sources**: CGAL PMP `PMP.volume_connected_components` Branch 3 (*orientation_consistency*: `if(!PMP::is_outward_oriented(cc, pmesh, np)) { output.orientation_errors.push_back(cc); continue; }` @ line 640); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A closed tetrahedron (V=4, E=6, F=4, χ=2) with three correctly CCW-wound faces (outward normals) and one face wound CW (inward normal — the defect). The CW face (t3) traverses its shared edges in the same direction as its neighbors instead of opposite, violating orientation consistency. The component is closed (no boundary edges) and passes the SI check, but is_outward_oriented detects the inward-pointing face via inside-outside volume test → Branch 3 fires.
+- **Reproducer recipe**: v0=(0,0,0), v1=(3,0,0), v2=(1.5,3,0), v3=(1.5,1,2); t0=(v0,v2,v1), t1=(v0,v1,v3), t2=(v1,v2,v3) wound CCW; t3=(v0,v2,v3) wound CW (FLIPPED — should be (v0,v3,v2)); all 6 edges n=2; euler V=4,E=6,F=4,chi=2.
+- **Expected kernel behavior**: Branch 3 fires; is_outward_oriented returns false because t3's normal points into the tetrahedron interior; component is appended to output.orientation_errors.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1, 2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1, 3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2, 3] n=2`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1142.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1143 — volume_connected_components nesting_depth_assignment: inner tetrahedron nested inside outer; ray-casting parity assigns volume_id=2 to inner component (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: nested_volume_components / nesting-depth)
+- **Sources**: CGAL PMP `PMP.volume_connected_components` Branch 4 (*nesting_depth_assignment*: `volume_id[cc] = 2 * parent_depth + (is_outer_volume ? 0 : 1)` @ line 720); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two nested closed tetrahedra — an outer large tetrahedron (O: V=4, E=6, F=4) enclosing an inner small tetrahedron (I: V=4, E=6, F=4), with no shared vertices. Both are closed, non-self-intersecting, and consistently oriented with outward normals. Ray-casting from inside the inner tet crosses 2 surfaces (inner face + outer face) → even parity → inner component is at nesting depth 1. Branch 4 assigns volume_id=2 to the inner component (depth=1, outer face of inner volume) after identifying the outer tet as its parent. Combined: V=8, E=12, F=8, χ=4.
+- **Reproducer recipe**: outer O0=(0,0,0), O1=(8,0,0), O2=(4,8,0), O3=(4,4,8); ot0=(O0,O2,O1), ot1=(O0,O1,O3), ot2=(O1,O2,O3), ot3=(O2,O0,O3). Inner I0=(2,1,1), I1=(4,1,1), I2=(3,3,1), I3=(3,2,3); it0=(I0,I2,I1), it1=(I0,I1,I3), it2=(I1,I2,I3), it3=(I2,I0,I3). All 12 edges n=2; triangle_not_reachable_from(it0, ot0); euler V=8,E=12,F=8,chi=4.
+- **Expected kernel behavior**: Branch 4 fires; inner component gets parent=outer and nesting depth=1; volume_id=2 assigned to the inner shell; outer shell gets volume_id=0.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1, 2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1, 3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2, 3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4, 5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4, 6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5, 6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4, 7] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5, 7] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[6, 7] n=2`
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Mesh assertion**: `euler_characteristic v=8 e=12 f=8 chi=4`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1143.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1144 — volume_connected_components nested_component_orientation: inner tetrahedron has same outward orientation as outer; nesting invariant violated; nested_orientation_error flagged (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: nested_orientation_mismatch / volume-component-child-orientation)
+- **Sources**: CGAL PMP `PMP.volume_connected_components` Branch 5 (*nested_component_orientation*: `if(is_outer_volume == PMP::is_outward_oriented(child_cc, pmesh, np)) { output.nested_orientation_errors.push_back(child_cc); continue; }` @ line 800); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two nested closed tetrahedra — outer (correct outward-normal winding) and inner (same outward-normal winding — the defect). For a correctly nested inner shell the normals should point INWARD (opposite to the outer parent), creating a "bounded volume" between the two shells. Instead, the inner tet uses the same CCW-from-outside winding as the outer tet. After nesting depth is assigned (Branch 4), Branch 5 checks whether child orientation is opposite to parent; since both have outward normals (is_outer_volume matches is_outward_oriented), the invariant is violated → Branch 5 fires.
+- **Reproducer recipe**: outer O0=(0,0,0), O1=(8,0,0), O2=(4,8,0), O3=(4,4,8) wound CCW (outward); inner I0=(2,1,1), I1=(4,1,1), I2=(3,3,1), I3=(3,2,3) also wound CCW (outward — same orientation as outer, NOT the required inward). All 12 edges n=2; triangle_not_reachable_from(it0, ot0); euler V=8,E=12,F=8,chi=4.
+- **Expected kernel behavior**: Branch 5 fires; is_outward_oriented(inner) == is_outer_volume (both true) → orientation invariant violated; inner component appended to output.nested_orientation_errors.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1, 2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1, 3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2, 3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4, 5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4, 6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5, 6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4, 7] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5, 7] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[6, 7] n=2`
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Mesh assertion**: `euler_characteristic v=8 e=12 f=8 chi=4`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1144.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me1150 — is_degenerate_edge equal_points: endpoint positions identical (zero-length edge between v0==v1) (Branch 1)
 - **Category**: §12.14 mesh defects (sub-class: degenerate_edge / zero-length-edge)
 - **Sources**: CGAL PMP `PMP.is_degenerate_edge` Branch 1 (*equal_points*: `if(get(vpm, source(e, tm)) == get(vpm, target(e, tm))) return true`); `MESH_HEAL_COVERAGE.md`.

@@ -1233,28 +1233,28 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
   - Suggested fixture: defect mentioning 'parent_component'
 
 ##### `PMP.volume_connected_components` — lines 518–876
-(5 branches; all UNCOVERED — no mesh fixtures exist yet)
+(5 branches; all COVERED — wave 39B, fixtures Me1140–Me1144)
 
-- **Branch 1** @ line 570 — *self_intersection_detection*
+- **Branch 1** @ line 570 — *self_intersection_detection* — **Me1140**
   - What it tests: faces have ray-casting sign inconsistency
   - Repair action: flag self-intersection error
-  - Suggested fixture: defect mentioning 'self_intersecting'
-- **Branch 2** @ line 600 — *boundary_component_detection*
+  - Fixture: 8-triangle closed shell with crossing cap faces (z=1 plane vs y=1 plane); does_self_intersect fires
+- **Branch 2** @ line 600 — *boundary_component_detection* — **Me1141**
   - What it tests: component is open with boundary edges
   - Repair action: flag boundary_error
-  - Suggested fixture: defect mentioning 'is_closed'
-- **Branch 3** @ line 640 — *orientation_consistency*
+  - Fixture: two-triangle flat patch; 4 boundary edges; !is_closed fires
+- **Branch 3** @ line 640 — *orientation_consistency* — **Me1142**
   - What it tests: interior and exterior faces share consistent normal orientation
   - Repair action: flag orientation_error
-  - Suggested fixture: defect mentioning 'normal consistency'
-- **Branch 4** @ line 720 — *nesting_depth_assignment*
+  - Fixture: closed tetrahedron with one CW-wound face; is_outward_oriented fails
+- **Branch 4** @ line 720 — *nesting_depth_assignment* — **Me1143**
   - What it tests: ray-casting parity determines depth
   - Repair action: assign volume_id based on depth and parent
-  - Suggested fixture: defect mentioning 'volume_id'
-- **Branch 5** @ line 800 — *nested_component_orientation*
+  - Fixture: inner tetrahedron nested inside outer; ray-casting parity assigns volume_id=2 to inner
+- **Branch 5** @ line 800 — *nested_component_orientation* — **Me1144**
   - What it tests: child components have opposite parent orientation
   - Repair action: validate nesting invariant
-  - Suggested fixture: defect mentioning 'parent'
+  - Fixture: inner tetrahedron has same outward orientation as outer (defect); nesting invariant violated
 
 
 #### `PMP_Mesh_repair/include/CGAL/Polygon_mesh_processing/repair_degeneracies.h`
