@@ -36836,9 +36836,10 @@ exercised against CGAL PMP / MeshFix.
 - **Category**: §12.14 mesh defects (sub-class: rebuild-connectivity / degenerate-triangle-duplicate-vertex)
 - **Sources**: MeshFix `checkAndRepair::rebuildConnectivity` Branch 5 (*DEGENERATE_TRIANGLE_DUPLICATE_VERTEX*: `if (v1!=v2 && v2!=v3 && v1!=v3) { …add… } else { …discard… }`); `MESH_HEAL_COVERAGE.md`.
 - **Description**: Two valid triangles (t0, t1) plus one collapsed/degenerate triangle t2. In t2, vertices r0 and r2 share identical coordinates (0,0,0) but are distinct mesh indices. After Branch 2 unification (r2->info=r0), the triangle rebuild loop resolves both to r0, yielding v1==v2 for t2. The pairwise-distinct check fails and t2 is discarded rather than added to the rebuilt mesh → Branch 5 fires. The valid triangles share edge (r1,r3) (n=2); four boundary edges n=1; t2 has zero area.
-- **Reproducer recipe**: r0=(0,0,0), r1=(2,0,0), r2=(0,0,0) [=r0], r3=(1,2,0), r4=(3,2,0); t0=(r0,r1,r3), t1=(r1,r4,r3), t2=(r0,r2,r3) [degenerate]; assert_edge_shared(r1,r3,2); boundary edges n=1; triangle_area_lt(t2,1e-9); vertex_pair_distance_lt(r0,r2,1e-9).
+- **Reproducer recipe**: r0=(0,0,0), r1=(2,0,0), r2=(0,0,0) [=r0], r3=(1,2,0), r4=(3,2,0); t0=(r0,r1,r3), t1=(r1,r4,r3), t2=(r0,r2,r3) [degenerate]; assert_edge_shared(r1,r3,2); assert_edge_shared(r0,r3,2) [shared by t0 and degenerate t2]; other boundary edges n=1; triangle_area_lt(t2,1e-9); vertex_pair_distance_lt(r0,r2,1e-9).
 - **Expected kernel behavior**: Branch 5 fires for t2; v1==v2 after unification (both r0); triangle is silently skipped; rebuilt mesh contains only t0 and t1.
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
 - **Mesh assertion**: `triangle_area_lt triangle=2 lt=1e-09`
 - **Mesh assertion**: `vertex_pair_distance_lt pair=[0,2] lt=1e-09`
 - **Fixture path**: mesh-examples/12-14-mesh/Me554.mesh.json
