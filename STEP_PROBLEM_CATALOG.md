@@ -36593,6 +36593,51 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me890 — merge_duplicated_vertices_in_boundary_cycles boundary_cycle_discovery: open mesh; extract_boundary_cycles finds 1 boundary cycle; coincident v1==v3 at (2,0,0) (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: coincident-boundary-vertex / multi-cycle-dispatch)
+- **Sources**: CGAL PMP `PMP.merge_duplicated_vertices_in_boundary_cycles` Branch 1 (*boundary_cycle_discovery*: `extract_boundary_cycles(pm, std::back_inserter(cycles))`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four triangles forming an open diamond-shaped disk with one boundary cycle. Boundary vertices v1 (index 1) and v3 (index 3) both sit at (2.0, 0.0, 0.0) but are topologically distinct. The multi-cycle dispatcher calls extract_boundary_cycles, which populates the cycles vector with one representative halfedge → Branch 1 fires. Interior edges (v0,v2), (v2,v4), (v2,v5) are n=2; six outer boundary edges are n=1. Euler: V=6, E=9, F=4, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,1,0), v3=(2,0,0) [=v1], v4=(3,1,0), v5=(2,2,0); t0=(v0,v1,v2), t1=(v2,v3,v4), t2=(v0,v2,v5), t3=(v2,v4,v5); interior edges n=2; boundary edges n=1; vertex_pair_distance_lt(v1,v3,1e-9); vertex_pair_no_shared_triangle(v1,v3); euler V=6,E=9,F=4,chi=1.
+- **Expected kernel behavior**: Branch 1 fires; extract_boundary_cycles traverses the single open boundary loop and inserts one halfedge representative into cycles; cycles.size()==1 before the for-loop executes.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,3] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,3]`
+- **Mesh assertion**: `euler_characteristic v=6 e=9 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me890.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me891 — merge_duplicated_vertices_in_boundary_cycles cycle_iteration: 2-patch mesh; extract_boundary_cycles finds 2 boundary cycles; for-loop iterates both; coincident pairs on each (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: coincident-boundary-vertex / multi-cycle-dispatch)
+- **Sources**: CGAL PMP `PMP.merge_duplicated_vertices_in_boundary_cycles` Branch 2 (*cycle_iteration*: `for(halfedge_descriptor h : cycles) merge_duplicated_vertices_in_boundary_cycle(h, pm, np)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disjoint open-disk patches (4 triangles total) in the same mesh object, forming two independent boundary cycles. Patch A: a0-a1-a2-a3 with a1 and a3 coincident at (1,0,0). Patch B: b0-b1-b2-b3 with b1 and b3 coincident at (4,0,0). extract_boundary_cycles finds two cycles (one per patch); the for-loop iterates twice, calling merge_duplicated_vertices_in_boundary_cycle for each → Branch 2 fires on both iterations. Each patch: interior edge n=2, four boundary edges n=1. Euler: V=8, E=10, F=4, chi=2 (two disjoint open disks).
+- **Reproducer recipe**: Patch A: a0=(0,0,0), a1=(1,0,0), a2=(0.5,1,0), a3=(1,0,0) [=a1]; t0=(a0,a1,a2), t1=(a0,a2,a3). Patch B: b0=(3,0,0), b1=(4,0,0), b2=(3.5,1,0), b3=(4,0,0) [=b1]; t2=(b0,b1,b2), t3=(b0,b2,b3). Interior edges n=2; boundary edges n=1; coincident pairs vertex_pair_distance_lt(a1,a3,1e-9) and vertex_pair_distance_lt(b1,b3,1e-9); euler V=8,E=10,F=4,chi=2.
+- **Expected kernel behavior**: Branch 2 fires; for-loop body executes twice (once per patch); merge_duplicated_vertices_in_boundary_cycle is invoked with the representative halfedge of each boundary cycle independently.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,6] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,3] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[5,7] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,3]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[5,7]`
+- **Mesh assertion**: `euler_characteristic v=8 e=10 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me891.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me892 — merge_duplicated_vertices_in_boundary_cycles merge_delegation/closed_mesh_noop: closed tetrahedron; all edges n=2; extract_boundary_cycles returns empty; for-loop never executes (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: coincident-boundary-vertex / multi-cycle-dispatch)
+- **Sources**: CGAL PMP `PMP.merge_duplicated_vertices_in_boundary_cycles` Branch 3 (*merge_delegation*: body of `for(halfedge_descriptor h : cycles) merge_duplicated_vertices_in_boundary_cycle(h, pm, np)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A valid closed tetrahedron — four triangles, four vertices, all six edges each shared by exactly 2 triangles. No boundary halfedge exists, so extract_boundary_cycles returns an empty cycles vector. The for-loop body (which delegates to merge_duplicated_vertices_in_boundary_cycle) never executes — the function is a no-op for closed meshes. This is the reference closed-mesh path for Branch 3. Euler: V=4, E=6, F=4, chi=2 (closed genus-0 surface / sphere topology).
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,sqrt(3)/2,0), v3=(0.5,sqrt(3)/6,sqrt(6)/3); t0=(v0,v1,v2), t1=(v0,v3,v1), t2=(v0,v2,v3), t3=(v1,v3,v2); all six edges assert_edge_shared n=2; euler V=4,E=6,F=4,chi=2.
+- **Expected kernel behavior**: Branch 3 is the no-op path; extract_boundary_cycles returns empty; the for-loop runs zero iterations; merge_duplicated_vertices_in_boundary_cycle is never called; mesh is returned unchanged.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me892.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me900 — orient_triangle_soup_with_reference_triangle_soup reference_degenerate_triangle: collinear reference triangle (area=0) skipped by is_degenerate check; only valid reference face used (Branch 1)
 - **Category**: §12.14 mesh defects (sub-class: degenerate-reference-triangle / orientation-alignment)
 - **Sources**: CGAL PMP `PMP.orient_triangle_soup_with_reference_triangle_soup` Branch 1 (*reference_degenerate_triangle*: `if (is_degenerate(ref_triangle)) continue;`); `MESH_HEAL_COVERAGE.md`.

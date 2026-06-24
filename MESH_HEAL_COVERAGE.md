@@ -410,17 +410,17 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
   - Suggested fixture: defect mentioning 'while(start!=h)', 'h=next(h, pm)'
 
 ##### `PMP.merge_duplicated_vertices_in_boundary_cycles` — lines 345–355
-(3 branches; all UNCOVERED — no mesh fixtures exist yet)
+(3 branches; ALL COVERED — wave 31A)
 
-- **Branch 1** @ line 351 — *boundary_cycle_discovery*
+- **Branch 1** @ line 351 — *boundary_cycle_discovery* — **Me890**
   - What it tests: Extract all boundary cycles from mesh
   - Repair action: populate cycles vector
   - Suggested fixture: defect mentioning 'extract_boundary_cycles', 'std::back_inserter'
-- **Branch 2** @ line 353 — *cycle_iteration*
+- **Branch 2** @ line 353 — *cycle_iteration* — **Me891**
   - What it tests: For each boundary cycle found, invoke single-cycle merge
   - Repair action: apply merge_duplicated_vertices_in_boundary_cycle to each
   - Suggested fixture: defect mentioning 'for(halfedge_descriptor h : cycles)'
-- **Branch 3** @ line 354 — *merge_delegation*
+- **Branch 3** @ line 354 — *merge_delegation* — **Me892**
   - What it tests: Empty cycles vector (no boundaries)
   - Repair action: no-op if mesh is closed
   - Suggested fixture: defect mentioning 'merge_duplicated_vertices_in_boundary_cycle'
