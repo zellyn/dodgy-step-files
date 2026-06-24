@@ -41454,3 +41454,167 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=6 e=6 f=2 chi=2`
 - **Fixture path**: mesh-examples/12-14-mesh/Me1154.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1155 — PMP.orient component_orientation_selection: outward_orientation flag evaluated for CW-wound closed tetrahedron (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: inverted_normals / orient-component-orientation-selection)
+- **Sources**: CGAL PMP `PMP.orient` Branch 1 (*component_orientation_selection*: `if(outward_orientation(np)) orient_outward(cc); else orient_inward(cc);` @ line 375); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A closed tetrahedron whose four faces are all wound clockwise when viewed from outside, giving inward-pointing normals. `PMP.orient` evaluates the outward_orientation named parameter for the single connected component — Branch 1 fires — then flips all four faces so normals point outward. V=4, E=6, F=4, chi=2.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,0.866,0), v3=(0.5,0.289,0.816); CW faces t0=(v0,v2,v1), t1=(v0,v1,v3), t2=(v1,v2,v3), t3=(v2,v0,v3); all 6 edges n=2; assert_triangle_normal_z_negative(t0); euler V=4,E=6,F=4,chi=2.
+- **Expected kernel behavior**: Branch 1 fires; outward_orientation parameter evaluated; all four CW-wound faces flipped so normals point outward.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `triangle_normal_z_negative triangle=0`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1155.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1156 — PMP.orient nesting_depth_parity: inner CC depth=1 receives inward orientation; outer CC depth=0 outward (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: inverted_normals / orient-nesting-depth-parity)
+- **Sources**: CGAL PMP `PMP.orient` Branch 2 (*nesting_depth_parity*: `if(depth % 2 == 1) orient_inward(cc); else orient_outward(cc);` @ line 395); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two concentric closed tetrahedra — a large outer shell and a small inner shell nested inside it. `PMP.orient` computes nesting depth via ray casting: outer depth=0 → outward normals; inner depth=1 (odd) → inward normals. Branch 2 fires when the depth parity check is evaluated for the inner CC. Two separate components, V=8, E=12, F=8, chi=4.
+- **Reproducer recipe**: Outer a0=(0,0,0), a1=(4,0,0), a2=(2,3.46,0), a3=(2,1.15,3.27); inner b0=(1.5,0.5,0.5), b1=(2.5,0.5,0.5), b2=(2,1.87,0.5), b3=(2,1.07,1.5); both tetrahedra CCW-wound; assert_triangle_not_reachable_from(t4,t0); euler V=8,E=12,F=8,chi=4.
+- **Expected kernel behavior**: Branch 2 fires; depth parity evaluated for inner CC (depth=1, odd); inner CC oriented inward; outer CC oriented outward.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=2`
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Mesh assertion**: `euler_characteristic v=8 e=12 f=8 chi=4`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1156.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1157 — PMP.orient component_orientation_consistency: open strip with 4 boundary edges; is_closed=false; component skipped by orient (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: inverted_normals / orient-orientation-consistency)
+- **Sources**: CGAL PMP `PMP.orient` Branch 3 (*component_orientation_consistency*: `if(!PMP::is_closed(mesh)) { skip_component(); continue; }` @ line 410); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A two-triangle open strip (topological disk) with four boundary edges. `PMP.orient` evaluates is_closed for this component, finds boundary halfedges, and skips the component (Branch 3 fires) since open meshes have no well-defined inside/outside. V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1.5,1,0); t0=(v0,v1,v2), t1=(v1,v3,v2); interior edge (v1,v2) n=2; boundary edges n=1; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 3 fires; is_closed returns false for the open strip; orient skips the component; mesh winding unchanged.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1157.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1158 — PMP.orient_to_bound_a_volume single_component_trivial: single CW-wound closed tetrahedron; num_components==1 fast-path (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: inverted_normals / orient-to-bound-a-volume-single-component)
+- **Sources**: CGAL PMP `PMP.orient_to_bound_a_volume` Branch 1 (*single_component_trivial*: `if(num_components == 1) { orient_to_bound_a_volume_single(mesh, np); return; }` @ line 975); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A single closed tetrahedron with CW-wound faces (inward normals). `orient_to_bound_a_volume` detects num_components=1, takes the trivial single-component fast-path (Branch 1), and flips all faces outward without running nesting analysis. V=4, E=6, F=4, chi=2.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,0.866,0), v3=(0.5,0.289,0.816); CW faces t0=(v0,v2,v1), t1=(v0,v1,v3), t2=(v1,v2,v3), t3=(v2,v0,v3); all 6 edges n=2; assert_triangle_normal_z_negative(t0); euler V=4,E=6,F=4,chi=2.
+- **Expected kernel behavior**: Branch 1 fires; num_components==1 triggers fast-path; all faces flipped outward; no ray casting performed.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `triangle_normal_z_negative triangle=0`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1158.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1159 — PMP.orient_to_bound_a_volume nesting_depth_calculation: ray casting counts intersection parity for inner CC nested inside outer (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: inverted_normals / orient-to-bound-a-volume-nesting-depth)
+- **Sources**: CGAL PMP `PMP.orient_to_bound_a_volume` Branch 2 (*nesting_depth_calculation*: `nesting_level = count_intersections_along_ray(cc, all_ccs);` @ line 990); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two concentric closed tetrahedra (inner nested inside outer). orient_to_bound_a_volume detects 2 components, fires Branch 2 to compute nesting depth via ray casting: a ray from the inner component crosses the outer shell once (odd), confirming nesting. V=8, E=12, F=8, chi=4.
+- **Reproducer recipe**: Outer a0=(0,0,0), a1=(6,0,0), a2=(3,5.2,0), a3=(3,1.73,4.9); inner b0=(2,1,0.5), b1=(4,1,0.5), b2=(3,3,0.5), b3=(3,1.5,2.5); both CCW-wound; assert_triangle_not_reachable_from(t4,t0); euler V=8,E=12,F=8,chi=4.
+- **Expected kernel behavior**: Branch 2 fires; ray from inner CC intersects outer shell once (parity=odd); inner CC identified as nested; nesting depth assigned.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=2`
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Mesh assertion**: `euler_characteristic v=8 e=12 f=8 chi=4`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1159.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1160 — PMP.orient_to_bound_a_volume parent_child_orientation_rule: inner CC depth=1 flipped opposite to outer parent shell (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: inverted_normals / orient-to-bound-a-volume-parent-child)
+- **Sources**: CGAL PMP `PMP.orient_to_bound_a_volume` Branch 3 (*parent_child_orientation_rule*: `if(is_on_bounded_side(parent_cc, cc)) flip_orientation(cc);` @ line 1005); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two concentric closed tetrahedra (outer parent + inner child). After depth computation, orient_to_bound_a_volume applies the parent-child orientation rule: the child (inner, depth=1) must face opposite to its parent (outer, depth=0). Branch 3 fires when the child CC is flipped to inward normals. V=8, E=12, F=8, chi=4.
+- **Reproducer recipe**: Outer c0=(0,0,0), c1=(8,0,0), c2=(4,6.93,0), c3=(4,2.31,6.53); inner d0=(2.5,1,0.7), d1=(5.5,1,0.7), d2=(4,4.5,0.7), d3=(4,2.2,3.5); both CCW-wound; assert_triangle_not_reachable_from(t4,t0); euler V=8,E=12,F=8,chi=4.
+- **Expected kernel behavior**: Branch 3 fires; inner CC identified as child of outer; child orientation flipped inward (opposite to parent outward normals).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=2`
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Mesh assertion**: `euler_characteristic v=8 e=12 f=8 chi=4`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1160.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1161 — triangulate_and_refine_hole.main output_iterator_choice face: Emptyset_iterator substituted when face_output_iterator absent; 3-edge triangular hole (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: boundary_hole / triangulate-and-refine-hole-face-output)
+- **Sources**: CGAL PMP `triangulate_and_refine_hole.main` Branch 1 (*output_iterator_choice*: `face_out = choose_parameter(get_parameter(np, internal_np::face_output_iterator), Emptyset_iterator());` @ line 381); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A triangular hole bordered by three hat-triangles. When no face_output_iterator is supplied, Branch 1 fires and Emptyset_iterator is substituted so new face descriptors are silently discarded. The 3-edge hole boundary is a minimal fill scenario. V=6, E=9, F=3, chi=0.
+- **Reproducer recipe**: Hole corners h0=(0,0,0), h1=(2,0,0), h2=(1,1.73,0); hat outer h3=(1,-1,0), h4=(3,1,0), h5=(-1,1,0); t0=(h0,h3,h1), t1=(h1,h4,h2), t2=(h2,h5,h0); hole edges n=1; hole_boundary [h0,h1,h2]; euler V=6,E=9,F=3,chi=0.
+- **Expected kernel behavior**: Branch 1 fires; face_output_iterator absent → Emptyset_iterator substituted; triangulate_hole fills the 3-edge hole; new face descriptors discarded.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `hole_boundary vertices=[0,1,2]`
+- **Mesh assertion**: `euler_characteristic v=6 e=9 f=3 chi=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1161.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1162 — triangulate_and_refine_hole.main output_iterator_choice vertex: Emptyset_iterator substituted when vertex_output_iterator absent; 4-edge quad hole (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: boundary_hole / triangulate-and-refine-hole-vertex-output)
+- **Sources**: CGAL PMP `triangulate_and_refine_hole.main` Branch 2 (*output_iterator_choice*: `vertex_out = choose_parameter(get_parameter(np, internal_np::vertex_output_iterator), Emptyset_iterator());` @ line 387); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A quadrilateral hole bordered by four hat-triangles. When no vertex_output_iterator is supplied, Branch 2 fires and Emptyset_iterator is substituted so any Steiner vertices inserted during refinement are silently discarded. V=8, E=12, F=4, chi=0.
+- **Reproducer recipe**: Hole corners q0=(0,0,0), q1=(2,0,0), q2=(2,2,0), q3=(0,2,0); hat outer q4=(1,-1,0), q5=(3,1,0), q6=(1,3,0), q7=(-1,1,0); four hat tris; hole edges n=1; hole_boundary [q0,q1,q2,q3]; euler V=8,E=12,F=4,chi=0.
+- **Expected kernel behavior**: Branch 2 fires; vertex_output_iterator absent → Emptyset_iterator substituted; Steiner vertex descriptors from refine() are discarded.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `hole_boundary vertices=[0,1,2,3]`
+- **Mesh assertion**: `euler_characteristic v=8 e=12 f=4 chi=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1162.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1163 — triangulate_and_refine_hole.main triangulation_failure_handling: 5-edge hole; triangulate_hole fills patch; refine runs on non-empty result (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: boundary_hole / triangulate-and-refine-hole-triangulation-fill)
+- **Sources**: CGAL PMP `triangulate_and_refine_hole.main` Branch 3 (*triangulation_failure_handling*: `triangulate_hole(mesh, border_halfedge, std::back_inserter(patch_facets), ...);` @ line 394); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A pentagonal hole bordered by five hat-triangles. triangulate_and_refine_hole calls triangulate_hole first (Branch 3 fires), collecting 3 new face descriptors in patch_facets. The patch is non-empty so refine proceeds on it. V=10, E=15, F=5, chi=0.
+- **Reproducer recipe**: Pentagon corners p0=(0,0,0), p1=(2,0,0), p2=(2.6,1.9,0), p3=(1,3,0), p4=(-0.6,1.9,0); hat outer p5..p9; five hat tris; hole edges n=1; hole_boundary [p0,p1,p2,p3,p4]; euler V=10,E=15,F=5,chi=0.
+- **Expected kernel behavior**: Branch 3 fires; triangulate_hole called with back_inserter into patch_facets; 3 new faces fill the 5-edge hole; patch_facets non-empty; refine runs on the patch.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `hole_boundary vertices=[0,1,2,3,4]`
+- **Mesh assertion**: `euler_characteristic v=10 e=15 f=5 chi=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1163.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1164 — triangulate_and_refine_hole.main visitor_callback_optional: Default_visitor substituted; 6-edge hex hole; start/end_refine_phase no-ops (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: boundary_hole / triangulate-and-refine-hole-visitor)
+- **Sources**: CGAL PMP `triangulate_and_refine_hole.main` Branch 4 (*visitor_callback_optional*: `GetVisitor::type visitor = choose_parameter(get_parameter(np, internal_np::visitor), Default_visitor());` @ line 402); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A hexagonal hole bordered by six hat-triangles. When no visitor is supplied, Branch 4 fires and Default_visitor (no-op) is substituted so start_refine_phase/end_refine_phase callbacks are harmless no-ops. V=12, E=18, F=6, chi=0.
+- **Reproducer recipe**: Hex corners r0=(1,0,0)..r5=(0.5,0.87,0); hat outer r6..r11; six hat tris; hex hole edges n=1; hole_boundary [r0,r1,r2,r3,r4,r5]; euler V=12,E=18,F=6,chi=0.
+- **Expected kernel behavior**: Branch 4 fires; visitor parameter absent → Default_visitor substituted; start/end_refine_phase callbacks invoked as no-ops; triangulate+refine runs normally.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=1`
+- **Mesh assertion**: `hole_boundary vertices=[0,1,2,3,4,5]`
+- **Mesh assertion**: `euler_characteristic v=12 e=18 f=6 chi=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1164.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1165 — triangulate_and_refine_hole.main density_control_parameterization: density_control_factor forwarded to refine(); triangular hole; Steiner insertion controlled (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: boundary_hole / triangulate-and-refine-hole-density-control)
+- **Sources**: CGAL PMP `triangulate_and_refine_hole.main` Branch 5 (*density_control_parameterization*: `refine(mesh, patch_facets.begin(), patch_facets.end(), std::back_inserter(patch_facets), vertex_out, density_control_factor(choose_parameter(...)));` @ line 404); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A triangular hole bordered by three hat-triangles. Branch 5 fires when density_control_factor is forwarded from the outer function parameters to refine(). The factor controls how aggressively Steiner vertices are inserted to improve aspect ratios. V=6, E=9, F=3, chi=0.
+- **Reproducer recipe**: Equilateral hole corners s0=(0,0,0), s1=(3,0,0), s2=(1.5,2.6,0); hat outer s3=(1.5,-1.5,0), s4=(4.5,1,0), s5=(-1.5,1,0); t0=(s0,s3,s1), t1=(s1,s4,s2), t2=(s2,s5,s0); hole edges n=1; hole_boundary [s0,s1,s2]; euler V=6,E=9,F=3,chi=0.
+- **Expected kernel behavior**: Branch 5 fires; density_control_factor parameter resolved and forwarded to refine(); Steiner vertex insertion density controlled by the factor.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `hole_boundary vertices=[0,1,2]`
+- **Mesh assertion**: `euler_characteristic v=6 e=9 f=3 chi=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1165.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder

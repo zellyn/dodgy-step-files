@@ -1206,36 +1206,40 @@ Fixture IDs: Me790 Me791 Me792
   - Fixture: mesh-examples/12-14-mesh/Me982.mesh.json
 
 ##### `PMP.orient` — lines 361–420
-(3 branches; all UNCOVERED — no mesh fixtures exist yet)
+(3 branches; ALL COVERED by Me1155–Me1157 — wave 40, 2026-06-23)
 
-- **Branch 1** @ line 375 — *component_orientation_selection*
+- **Branch 1** @ line 375 — *component_orientation_selection* — **Me1155**
   - What it tests: outward_orientation parameter value
   - Repair action: orient component inward or outward
-  - Suggested fixture: defect mentioning 'outward_orientation'
-- **Branch 2** @ line 395 — *nesting_depth_parity*
+  - Fixture: CW-wound closed tetrahedron; outward_orientation flag evaluated; all faces flipped outward
+- **Branch 2** @ line 395 — *nesting_depth_parity* — **Me1156**
   - What it tests: component nesting level odd or even
   - Repair action: determine orientation based on depth
-  - Suggested fixture: defect mentioning 'nesting_depth'
-- **Branch 3** @ line 410 — *component_orientation_consistency*
+  - Fixture: two concentric tetrahedra; inner CC depth=1 (odd) → inward; outer depth=0 → outward
+- **Branch 3** @ line 410 — *component_orientation_consistency* — **Me1157**
   - What it tests: component is closed and orientable
   - Repair action: skip non-closed components
-  - Suggested fixture: defect mentioning 'is_closed'
+  - Fixture: two-triangle open strip with 4 boundary edges; is_closed=false; component skipped
+
+Fixture IDs: Me1155 Me1156 Me1157
 
 ##### `PMP.orient_to_bound_a_volume` — lines 955–1013
-(3 branches; all UNCOVERED — no mesh fixtures exist yet)
+(3 branches; ALL COVERED by Me1158–Me1160 — wave 40, 2026-06-23)
 
-- **Branch 1** @ line 975 — *single_component_trivial*
+- **Branch 1** @ line 975 — *single_component_trivial* — **Me1158**
   - What it tests: mesh has one connected component
   - Repair action: orient single component outward
-  - Suggested fixture: defect mentioning 'num_components == 1'
-- **Branch 2** @ line 990 — *nesting_depth_calculation*
+  - Fixture: single CW-wound closed tetrahedron; num_components==1 fast-path fires; no ray casting
+- **Branch 2** @ line 990 — *nesting_depth_calculation* — **Me1159**
   - What it tests: component nesting level determined via ray casting
   - Repair action: count ray-intersection parity
-  - Suggested fixture: defect mentioning 'nesting_level'
-- **Branch 3** @ line 1005 — *parent_child_orientation_rule*
+  - Fixture: two concentric tetrahedra; ray from inner CC crosses outer shell once (parity=odd); depth assigned
+- **Branch 3** @ line 1005 — *parent_child_orientation_rule* — **Me1160**
   - What it tests: component nesting relationship to parent
   - Repair action: orient child opposite to parent
-  - Suggested fixture: defect mentioning 'parent_component'
+  - Fixture: outer parent tetrahedron + inner child; child flipped inward (opposite parent outward)
+
+Fixture IDs: Me1158 Me1159 Me1160
 
 ##### `PMP.volume_connected_components` — lines 518–876
 (5 branches; all COVERED — wave 39B, fixtures Me1140–Me1144)
@@ -1476,28 +1480,30 @@ Fixture IDs: Me026 Me027 Me028 Me029 Me030 Me031 Me032 Me033 Me034 Me035 Me1090 
   - Suggested fixture: defect mentioning 'CGAL_DEPRECATED', 'CGAL_NO_DEPRECATED_CODE'
 
 ##### `triangulate_and_refine_hole.main` — lines 370–407
-(5 branches; all UNCOVERED — no mesh fixtures exist yet)
+(5 branches; ALL COVERED by Me1161–Me1165 — wave 40, 2026-06-23)
 
-- **Branch 1** @ line 381 — *output_iterator_choice*
+- **Branch 1** @ line 381 — *output_iterator_choice* — **Me1161**
   - What it tests: face_output_iterator parameter presence/absence
   - Repair action: If provided use it; else use Emptyset_iterator (discards faces)
-  - Suggested fixture: defect mentioning 'face_output_iterator_t', 'Lookup_named_param_def'
-- **Branch 2** @ line 387 — *output_iterator_choice*
+  - Fixture: 3-edge triangular hole; no face_output_iterator supplied; Emptyset_iterator substituted
+- **Branch 2** @ line 387 — *output_iterator_choice* — **Me1162**
   - What it tests: vertex_output_iterator parameter presence/absence
   - Repair action: If provided use it; else use Emptyset_iterator (discards vertices)
-  - Suggested fixture: defect mentioning 'vertex_output_iterator_t', 'Emptyset_iterator'
-- **Branch 3** @ line 394 — *triangulation_failure_handling*
+  - Fixture: 4-edge quad hole; no vertex_output_iterator supplied; Emptyset_iterator substituted for refine Steiner vertices
+- **Branch 3** @ line 394 — *triangulation_failure_handling* — **Me1163**
   - What it tests: Whether triangulate_hole succeeds before refine
   - Repair action: Silently continues even if no patch created; refine is no-op on empty patch
-  - Suggested fixture: defect mentioning 'triangulate_hole', 'std::back_inserter'
-- **Branch 4** @ line 402 — *visitor_callback_optional*
+  - Fixture: 5-edge pentagonal hole; triangulate_hole fills 3 new faces; patch_facets non-empty; refine proceeds
+- **Branch 4** @ line 402 — *visitor_callback_optional* — **Me1164**
   - What it tests: Visitor parameter presence for phase tracking
   - Repair action: Use provided visitor or Default_visitor (no-op); invoke start/end_refine_phase callbacks
-  - Suggested fixture: defect mentioning 'visitor_t', 'start_refine_phase', 'Default_visitor'
-- **Branch 5** @ line 404 — *density_control_parameterization*
+  - Fixture: 6-edge hexagonal hole; no visitor supplied; Default_visitor substituted; phase callbacks are no-ops
+- **Branch 5** @ line 404 — *density_control_parameterization* — **Me1165**
   - What it tests: density_control_factor parameter forwarding to refine()
   - Repair action: Pass all parameters (including density_control_factor) to refine() function
-  - Suggested fixture: defect mentioning 'density_control_factor', 'refine'
+  - Fixture: triangular hole; density_control_factor forwarded from outer NP to refine() call
+
+Fixture IDs: Me1161 Me1162 Me1163 Me1164 Me1165
 
 ##### `triangulate_hole.deprecated_overload` — lines 254–265
 (1 branches; all UNCOVERED — no mesh fixtures exist yet)
