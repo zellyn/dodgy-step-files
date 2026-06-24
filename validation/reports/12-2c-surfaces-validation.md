@@ -1,7 +1,7 @@
 # §2c-surfaces — validate2 verdicts
 
 Generated from `/tmp/cad-v2-out/12-2c-surfaces/*.json` via subprocess-isolated multi-oracle validator.
-Total: 177  CONFIRMED: 177  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
+Total: 177  CONFIRMED: 71  CONCERN: 0  FAIL: 0  DRIFT: 106  MERGED: 0  ERROR: 0
 
 ## Per-file
 `Gb001` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
@@ -56,126 +56,126 @@ Total: 177  CONFIRMED: 177  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
 `Gs056` **CONFIRMED** — occt=shape(1) gmsh=shape(10) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
 `Gs057` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
 `Gs058` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
-`Gs059` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs060` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs061` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs062` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs063` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs064` **CONFIRMED** — occt=empty gmsh=empty ifc=accept(0) — silent acceptance / no transfer (default for fixture-style)
-`Gs065` **CONFIRMED** — occt=empty gmsh=empty ifc=accept(0) — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs066` **CONFIRMED** — occt=empty gmsh=empty ifc=accept(0) — silent acceptance / no transfer (default for fixture-style)
-`Gs067` **CONFIRMED** — occt=empty gmsh=empty ifc=accept(0) — silent acceptance matches catalog defect class
-`Gs068` **CONFIRMED** — occt=empty gmsh=empty ifc=accept(0) — silent acceptance matches catalog defect class
-`Gs069` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs070` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs071` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
+`Gs059` **DRIFT** — occt=shape(1) gmsh=empty ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a'
+`Gs060` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs061` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs062` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs063` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs064` **DRIFT** — occt=shape(1) gmsh=shape(4) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=accept(0)' live='occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a'
+`Gs065` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=accept(0)' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs066` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=accept(0)' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs067` **DRIFT** — occt=shape(1) gmsh=shape(3) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=accept(0)' live='occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a'
+`Gs068` **DRIFT** — occt=shape(1) gmsh=shape(4) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=accept(0)' live='occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a'
+`Gs069` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs070` **DRIFT** — occt=shape(1) gmsh=empty ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a'
+`Gs071` **DRIFT** — occt=shape(1) gmsh=shape(8) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a'
 `Gs072` **CONFIRMED** — occt=shape(1) gmsh=shape(3) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
-`Gs073` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs074` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs075` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs076` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs077` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs078` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs079` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
-`Gs080` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs081` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs082` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs083` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
+`Gs073` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs074` **DRIFT** — occt=shape(1) gmsh=shape(5) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a'
+`Gs075` **DRIFT** — occt=shape(1) gmsh=shape(4) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a'
+`Gs076` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs077` **DRIFT** — occt=shape(1) gmsh=shape(3) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a'
+`Gs078` **DRIFT** — occt=shape(1) gmsh=shape(4) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a'
+`Gs079` **DRIFT** — occt=shape(1) gmsh=empty ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a'
+`Gs080` **DRIFT** — occt=shape(1) gmsh=empty ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a'
+`Gs081` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs082` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs083` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
 `Gs084` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
 `Gs085` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
 `Gs086` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
 `Gs087` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
 `Gs088` **CONFIRMED** — occt=shape(1) gmsh=reject ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
-`Gs089` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs090` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs091` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs092` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs093` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs094` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs095` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs096` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (entity-level defect)
-`Gs097` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs098` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs099` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs100` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs101` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs102` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs103` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs104` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs105` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs106` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs107` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs108` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs109` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs110` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
-`Gs111` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs112` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs113` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs114` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs115` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs116` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs117` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs118` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs119` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs120` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs121` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs122` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs123` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (entity-level defect)
-`Gs124` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs125` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs126` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs127` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs128` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs129` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs130` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs131` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs132` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Gs133` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
+`Gs089` **DRIFT** — occt=shape(1) gmsh=empty ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a'
+`Gs090` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs091` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs092` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs093` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs094` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs095` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs096` **DRIFT** — occt=shape(1) gmsh=shape(15) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a'
+`Gs097` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs098` **DRIFT** — occt=shape(1) gmsh=shape(7) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a'
+`Gs099` **DRIFT** — occt=shape(1) gmsh=shape(8) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a'
+`Gs100` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs101` **DRIFT** — occt=shape(1) gmsh=shape(8) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a'
+`Gs102` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs103` **DRIFT** — occt=shape(1) gmsh=empty ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a'
+`Gs104` **DRIFT** — occt=shape(1) gmsh=shape(7) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a'
+`Gs105` **DRIFT** — occt=shape(1) gmsh=shape(13) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a'
+`Gs106` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs107` **DRIFT** — occt=shape(1) gmsh=shape(3) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a'
+`Gs108` **DRIFT** — occt=shape(1) gmsh=shape(6) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a'
+`Gs109` **DRIFT** — occt=shape(1) gmsh=shape(6) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a'
+`Gs110` **DRIFT** — occt=shape(1) gmsh=shape(25) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(25) ifc=schema_n/a'
+`Gs111` **DRIFT** — occt=shape(1) gmsh=shape(5) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a'
+`Gs112` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs113` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs114` **DRIFT** — occt=shape(1) gmsh=shape(4) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a'
+`Gs115` **DRIFT** — occt=shape(1) gmsh=empty ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a'
+`Gs116` **DRIFT** — occt=shape(1) gmsh=empty ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a'
+`Gs117` **DRIFT** — occt=shape(1) gmsh=empty ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a'
+`Gs118` **DRIFT** — occt=shape(1) gmsh=empty ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a'
+`Gs119` **DRIFT** — occt=shape(1) gmsh=shape(5) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a'
+`Gs120` **DRIFT** — occt=shape(1) gmsh=shape(7) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a'
+`Gs121` **DRIFT** — occt=shape(1) gmsh=empty ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a'
+`Gs122` **DRIFT** — occt=shape(1) gmsh=empty ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a'
+`Gs123` **DRIFT** — occt=shape(1) gmsh=shape(4) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a'
+`Gs124` **DRIFT** — occt=shape(1) gmsh=empty ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a'
+`Gs125` **DRIFT** — occt=shape(1) gmsh=empty ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a'
+`Gs126` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs127` **DRIFT** — occt=shape(1) gmsh=shape(7) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a'
+`Gs128` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs129` **DRIFT** — occt=shape(1) gmsh=shape(1) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a'
+`Gs130` **DRIFT** — occt=shape(1) gmsh=shape(5) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a'
+`Gs131` **DRIFT** — occt=shape(1) gmsh=shape(4) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a'
+`Gs132` **DRIFT** — occt=shape(1) gmsh=shape(4) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a'
+`Gs133` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
 `Gs134` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
 `Gs135` **CONFIRMED** — occt=shape(1) gmsh=reject ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
 `Gs136` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
 `Gs137` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
 `Gs138` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
-`Gs139` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
+`Gs139` **DRIFT** — occt=shape(1) gmsh=shape(1) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a'
 `Gs140` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
-`Gs141` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs142` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs143` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs144` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
-`Gs145` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs146` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs147` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
-`Gs148` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs149` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs150` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
+`Gs141` **DRIFT** — occt=shape(1) gmsh=empty ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a'
+`Gs142` **DRIFT** — occt=shape(1) gmsh=empty ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a'
+`Gs143` **DRIFT** — occt=shape(1) gmsh=empty ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a'
+`Gs144` **DRIFT** — occt=shape(1) gmsh=empty ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a'
+`Gs145` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs146` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs147` **DRIFT** — occt=shape(1) gmsh=empty ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a'
+`Gs148` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs149` **DRIFT** — occt=shape(1) gmsh=empty ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a'
+`Gs150` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
 `Gs151` **CONFIRMED** — occt=shape(1) gmsh=shape(3) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
-`Gs152` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs153` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs154` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs155` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs156` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (entity-level defect)
-`Gs157` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs158` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
-`Gs159` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs160` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs161` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
-`Gs162` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs163` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs164` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs165` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs166` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs167` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs168` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs169` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs170` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs171` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs172` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs173` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs174` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs175` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Gs176` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
+`Gs152` **DRIFT** — occt=shape(1) gmsh=empty ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a'
+`Gs153` **DRIFT** — occt=shape(1) gmsh=shape(12) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(12) ifc=schema_n/a'
+`Gs154` **DRIFT** — occt=shape(1) gmsh=shape(11) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a'
+`Gs155` **DRIFT** — occt=shape(1) gmsh=shape(17) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a'
+`Gs156` **DRIFT** — occt=shape(1) gmsh=shape(1) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a'
+`Gs157` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs158` **DRIFT** — occt=shape(1) gmsh=empty ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a'
+`Gs159` **DRIFT** — occt=shape(1) gmsh=empty ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a'
+`Gs160` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs161` **DRIFT** — occt=shape(1) gmsh=empty ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a'
+`Gs162` **DRIFT** — occt=shape(1) gmsh=empty ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a'
+`Gs163` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs164` **DRIFT** — occt=shape(1) gmsh=empty ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a'
+`Gs165` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs166` **DRIFT** — occt=shape(1) gmsh=shape(5) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a'
+`Gs167` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs168` **DRIFT** — occt=shape(1) gmsh=empty ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a'
+`Gs169` **DRIFT** — occt=shape(1) gmsh=empty ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a'
+`Gs170` **DRIFT** — occt=shape(1) gmsh=empty ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a'
+`Gs171` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs172` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs173` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Gs174` **DRIFT** — occt=shape(1) gmsh=shape(15) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a'
+`Gs175` **DRIFT** — occt=shape(1) gmsh=reject ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a'
+`Gs176` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
 `Gs177` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
-`Gs178` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
+`Gs178` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=empty/empty gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
 `Gs179` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
 `Gs180` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
 `Gs181` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
@@ -183,4 +183,5 @@ Total: 177  CONFIRMED: 177  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
 `Gs183` **CONFIRMED** — occt=shape(1) gmsh=reject ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
 
 ## Summary
-- CONFIRMED: 177
+- CONFIRMED: 71
+- DRIFT: 106

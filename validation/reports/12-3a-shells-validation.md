@@ -1,7 +1,7 @@
 # §3a-shells — validate2 verdicts
 
 Generated from `/tmp/cad-v2-out/12-3a-shells/*.json` via subprocess-isolated multi-oracle validator.
-Total: 263  CONFIRMED: 263  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
+Total: 263  CONFIRMED: 145  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 118
 
 ## Per-file
 `Bo001` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
@@ -104,45 +104,45 @@ Total: 263  CONFIRMED: 263  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
 `Tsh066` **CONFIRMED** — occt=shape(1) gmsh=shape(54) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
 `Tsh067` **CONFIRMED** — occt=shape(1) gmsh=shape(108) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
 `Tsh068` **CONFIRMED** — occt=shape(1) gmsh=shape(18) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh069` **CONFIRMED** — occt=shape(1) gmsh=shape(14) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh070` **CONFIRMED** — occt=shape(1) gmsh=shape(15) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh071` **CONFIRMED** — occt=shape(1) gmsh=shape(13) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh072` **CONFIRMED** — occt=shape(1) gmsh=shape(15) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh073` **CONFIRMED** — occt=shape(1) gmsh=shape(18) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh074` **CONFIRMED** — occt=shape(1) gmsh=shape(10) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh075` **CONFIRMED** — occt=shape(1) gmsh=reject ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh076` **CONFIRMED** — occt=shape(1) gmsh=shape(27) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh077` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh078` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh079` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=accept(0) — geometry loaded (shape(1)); entity-level defect
-`Tsh080` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=accept(0) — geometry loaded (shape(1)); entity-level defect
-`Tsh081` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=accept(0) — geometry loaded (shape(1)); entity-level defect
-`Tsh082` **CONFIRMED** — occt=shape(1) gmsh=shape(18) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh083` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=accept(0) — geometry loaded (shape(1)); entity-level defect
-`Tsh084` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=accept(0) — geometry loaded (shape(1)); entity-level defect
-`Tsh085` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=accept(0) — geometry loaded (shape(1)); entity-level defect
-`Tsh086` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=accept(0) — geometry loaded (shape(1)); entity-level defect
-`Tsh087` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=accept(0) — geometry loaded (shape(1)); entity-level defect
-`Tsh088` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=accept(0) — geometry loaded (shape(1)); entity-level defect
-`Tsh089` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=accept(0) — geometry loaded (shape(1)); consumer-side or round-trip defect
-`Tsh090` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=accept(0) — geometry loaded (shape(1)); entity-level defect
-`Tsh091` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=accept(0) — geometry loaded (shape(1)); entity-level defect
-`Tsh092` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=accept(0) — geometry loaded (shape(1)); entity-level defect
-`Tsh093` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=accept(0) — geometry loaded (shape(1)); entity-level defect
-`Tsh094` **CONFIRMED** — occt=shape(1) gmsh=shape(10) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh095` **CONFIRMED** — occt=shape(1) gmsh=shape(18) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh096` **CONFIRMED** — occt=shape(1) gmsh=shape(10) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh097` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (entity-level defect)
-`Tsh098` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh099` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh100` **CONFIRMED** — occt=shape(1) gmsh=reject ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh101` **CONFIRMED** — occt=shape(1) gmsh=shape(16) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh102` **CONFIRMED** — occt=shape(1) gmsh=shape(36) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh103` **CONFIRMED** — occt=shape(1) gmsh=shape(18) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh104` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh105` **CONFIRMED** — occt=shape(1) gmsh=shape(18) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
+`Tsh069` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh069.json
+`Tsh070` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh070.json
+`Tsh071` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh071.json
+`Tsh072` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh072.json
+`Tsh073` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh073.json
+`Tsh074` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh074.json
+`Tsh075` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh075.json
+`Tsh076` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh076.json
+`Tsh077` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh077.json
+`Tsh078` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh078.json
+`Tsh079` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh079.json
+`Tsh080` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh080.json
+`Tsh081` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh081.json
+`Tsh082` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh082.json
+`Tsh083` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh083.json
+`Tsh084` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh084.json
+`Tsh085` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh085.json
+`Tsh086` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh086.json
+`Tsh087` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh087.json
+`Tsh088` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh088.json
+`Tsh089` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh089.json
+`Tsh090` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh090.json
+`Tsh091` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh091.json
+`Tsh092` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh092.json
+`Tsh093` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh093.json
+`Tsh094` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh094.json
+`Tsh095` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh095.json
+`Tsh096` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh096.json
+`Tsh097` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh097.json
+`Tsh098` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh098.json
+`Tsh099` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh099.json
+`Tsh100` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh100.json
+`Tsh101` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh101.json
+`Tsh102` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh102.json
+`Tsh103` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh103.json
+`Tsh104` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh104.json
+`Tsh105` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh105.json
 `Tsh106` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
-`Tsh107` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (entity-level defect)
+`Tsh107` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh107.json
 `Tsh108` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
 `Tsh109` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
 `Tsh110` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
@@ -164,76 +164,76 @@ Total: 263  CONFIRMED: 263  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
 `Tsh126` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
 `Tsh127` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
 `Tsh128` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
-`Tsh129` **CONFIRMED** — occt=shape(1) gmsh=shape(18) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh130` **CONFIRMED** — occt=shape(1) gmsh=reject ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh131` **CONFIRMED** — occt=shape(1) gmsh=reject ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh132` **CONFIRMED** — occt=shape(1) gmsh=shape(36) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh133` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh134` **CONFIRMED** — occt=shape(1) gmsh=shape(18) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh135` **CONFIRMED** — occt=shape(1) gmsh=shape(14) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh136` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh137` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh138` **CONFIRMED** — occt=shape(1) gmsh=shape(15) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
+`Tsh129` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh129.json
+`Tsh130` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh130.json
+`Tsh131` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh131.json
+`Tsh132` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh132.json
+`Tsh133` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh133.json
+`Tsh134` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh134.json
+`Tsh135` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh135.json
+`Tsh136` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh136.json
+`Tsh137` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh137.json
+`Tsh138` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh138.json
 `Tsh139` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
 `Tsh140` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
-`Tsh141` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh142` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh143` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh144` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh145` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh146` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh147` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh148` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
+`Tsh141` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh141.json
+`Tsh142` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh142.json
+`Tsh143` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh143.json
+`Tsh144` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh144.json
+`Tsh145` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh145.json
+`Tsh146` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh146.json
+`Tsh147` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh147.json
+`Tsh148` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh148.json
 `Tsh149` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
-`Tsh150` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh151` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh152` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh153` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh154` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh155` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
+`Tsh150` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh150.json
+`Tsh151` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh151.json
+`Tsh152` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh152.json
+`Tsh153` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh153.json
+`Tsh154` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh154.json
+`Tsh155` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh155.json
 `Tsh156` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
-`Tsh157` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
+`Tsh157` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh157.json
 `Tsh158` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
 `Tsh159` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
-`Tsh160` **CONFIRMED** — occt=shape(1) gmsh=shape(26) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
+`Tsh160` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh160.json
 `Tsh161` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
 `Tsh162` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
 `Tsh163` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
-`Tsh164` **CONFIRMED** — occt=shape(1) gmsh=shape(15) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh165` **CONFIRMED** — occt=shape(1) gmsh=shape(27) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh166` **CONFIRMED** — occt=shape(1) gmsh=shape(10) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh167` **CONFIRMED** — occt=shape(1) gmsh=shape(10) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh168` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh169` **CONFIRMED** — occt=shape(1) gmsh=shape(18) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh170` **CONFIRMED** — occt=shape(1) gmsh=shape(15) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh171` **CONFIRMED** — occt=shape(1) gmsh=shape(18) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
+`Tsh164` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh164.json
+`Tsh165` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh165.json
+`Tsh166` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh166.json
+`Tsh167` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh167.json
+`Tsh168` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh168.json
+`Tsh169` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh169.json
+`Tsh170` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh170.json
+`Tsh171` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh171.json
 `Tsh172` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
-`Tsh173` **CONFIRMED** — occt=shape(1) gmsh=shape(18) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh174` **CONFIRMED** — occt=shape(1) gmsh=shape(8) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh175` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (entity-level defect)
-`Tsh176` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (entity-level defect)
-`Tsh177` **CONFIRMED** — occt=shape(1) gmsh=shape(8) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh178` **CONFIRMED** — occt=shape(1) gmsh=shape(7) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh179` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (entity-level defect)
-`Tsh180` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh181` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh182` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh183` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh184` **CONFIRMED** — occt=shape(1) gmsh=reject ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh185` **CONFIRMED** — occt=shape(1) gmsh=reject ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh186` **CONFIRMED** — occt=shape(1) gmsh=reject ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh187` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (entity-level defect)
-`Tsh188` **CONFIRMED** — occt=shape(1) gmsh=reject ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh189` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (entity-level defect)
-`Tsh190` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (entity-level defect)
-`Tsh191` **CONFIRMED** — occt=shape(1) gmsh=reject ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh192` **CONFIRMED** — occt=shape(1) gmsh=reject ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh193` **CONFIRMED** — occt=shape(1) gmsh=shape(18) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh194` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh195` **CONFIRMED** — occt=shape(1) gmsh=shape(10) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh196` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh197` **CONFIRMED** — occt=shape(1) gmsh=shape(18) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh198` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
+`Tsh173` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh173.json
+`Tsh174` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh174.json
+`Tsh175` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh175.json
+`Tsh176` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh176.json
+`Tsh177` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh177.json
+`Tsh178` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh178.json
+`Tsh179` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh179.json
+`Tsh180` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh180.json
+`Tsh181` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh181.json
+`Tsh182` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh182.json
+`Tsh183` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh183.json
+`Tsh184` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh184.json
+`Tsh185` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh185.json
+`Tsh186` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh186.json
+`Tsh187` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh187.json
+`Tsh188` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh188.json
+`Tsh189` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh189.json
+`Tsh190` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh190.json
+`Tsh191` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh191.json
+`Tsh192` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh192.json
+`Tsh193` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh193.json
+`Tsh194` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh194.json
+`Tsh195` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh195.json
+`Tsh196` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh196.json
+`Tsh197` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh197.json
+`Tsh198` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh198.json
 `Tsh199` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
 `Tsh200` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
 `Tsh201` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
@@ -244,29 +244,30 @@ Total: 263  CONFIRMED: 263  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
 `Tsh206` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
 `Tsh207` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
 `Tsh208` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
-`Tsh209` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh210` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh211` **CONFIRMED** — occt=shape(1) gmsh=shape(10) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh212` **CONFIRMED** — occt=shape(1) gmsh=shape(17) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh213` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh214` **CONFIRMED** — occt=shape(1) gmsh=shape(10) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh215` **CONFIRMED** — occt=shape(1) gmsh=shape(7) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh216` **CONFIRMED** — occt=shape(1) gmsh=shape(17) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh217` **CONFIRMED** — occt=shape(1) gmsh=shape(12) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh218` **CONFIRMED** — occt=shape(1) gmsh=shape(14) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh219` **CONFIRMED** — occt=shape(1) gmsh=shape(19) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh220` **CONFIRMED** — occt=shape(1) gmsh=shape(3) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh221` **CONFIRMED** — occt=shape(1) gmsh=shape(10) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
-`Tsh222` **CONFIRMED** — occt=shape(1) gmsh=reject ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh223` **CONFIRMED** — occt=shape(1) gmsh=shape(14) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh224` **CONFIRMED** — occt=shape(1) gmsh=shape(18) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh225` **CONFIRMED** — occt=shape(1) gmsh=shape(11) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh226` **CONFIRMED** — occt=shape(1) gmsh=shape(18) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh227` **CONFIRMED** — occt=shape(1) gmsh=shape(18) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Tsh228` **CONFIRMED** — occt=shape(1) gmsh=shape(17) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
+`Tsh209` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh209.json
+`Tsh210` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh210.json
+`Tsh211` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh211.json
+`Tsh212` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh212.json
+`Tsh213` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh213.json
+`Tsh214` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh214.json
+`Tsh215` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh215.json
+`Tsh216` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh216.json
+`Tsh217` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh217.json
+`Tsh218` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh218.json
+`Tsh219` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh219.json
+`Tsh220` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh220.json
+`Tsh221` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh221.json
+`Tsh222` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh222.json
+`Tsh223` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh223.json
+`Tsh224` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh224.json
+`Tsh225` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh225.json
+`Tsh226` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh226.json
+`Tsh227` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh227.json
+`Tsh228` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-3a-shells/Tsh228.json
 `Tsh229` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
 `Tsh230` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
 `Tsh231` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
 
 ## Summary
-- CONFIRMED: 263
+- CONFIRMED: 145
+- ERROR: 118

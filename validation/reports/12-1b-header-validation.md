@@ -1,7 +1,7 @@
 # §1b-header — validate2 verdicts
 
 Generated from `/tmp/cad-v2-out/12-1b-header/*.json` via subprocess-isolated multi-oracle validator.
-Total: 45  CONFIRMED: 45  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
+Total: 45  CONFIRMED: 44  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 1
 
 ## Per-file
 `Lh002` **CONFIRMED** — occt=reject gmsh=reject ifc=schema_n/a — clean rejection by all parsers
@@ -47,8 +47,9 @@ Total: 45  CONFIRMED: 45  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
 `Lh045` **CONFIRMED** — occt=reject gmsh=reject ifc=schema_n/a — clean rejection by all parsers
 `Lh046` **CONFIRMED** — occt=empty gmsh=empty ifc=reject — silent acceptance where catalog requires rejection (leaky-tolerance)
 `Lh047` **CONFIRMED** — occt=empty gmsh=empty ifc=reject — silent acceptance where catalog requires rejection (leaky-tolerance)
-`Lh048` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
+`Lh048` **ERROR** — <no data> — no validate2 output at /tmp/cad-v2-out/12-1b-header/Lh048.json
 `Lh049` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
 
 ## Summary
-- CONFIRMED: 45
+- CONFIRMED: 44
+- ERROR: 1

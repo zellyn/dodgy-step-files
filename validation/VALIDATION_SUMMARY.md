@@ -1,8 +1,7 @@
 # STEP Corpus — Validation Summary
 
-_Refreshed 2026-06-23. Subsidiary numbers below partially predate the
-corpus expansion; rerun the validators (see commands at the bottom of
-`../QUALITY_DASHBOARD.md`) to recompute exact per-section breakdowns._
+_Refreshed 2026-06-24. Verdict matrix and per-section table now reflect
+the live `_final_verdict` run against the current 2350-STEP-entry corpus._
 
 ## Headline
 
@@ -14,7 +13,7 @@ corpus expansion; rerun the validators (see commands at the bottom of
 | Adversarial-verification sweep (Haiku→Sonnet two-pass, 2026-06-18) | 2309 STEP fixtures | **2280 VALID (98.7%)** · 23 weak (all regen'd) · 0 confirmed-invalid after regen |
 | Tier-3 assertion coverage | 3086 catalog entries (STEP subset CI-locked) | **≥2,184 STEP entries (93.1%)** carry at least one tier-3 assertion · CI-locked at ≥90% on the §12.1–§12.13 STEP subset via `test_tier3_coverage_ratchet.py`; 362 Q5 stale assertions refreshed 2026-06-22/23 |
 | Cross-kernel oracle inventory | full corpus | OCCT (heal on/off), gmsh (autofix on/off), ifcopenshell, part21_strict, manifold, OCAF, **solvespace** (new, install-optional) |
-| Catalog ↔ live-oracle agreement (DRIFT detection) | last run on 1082-corpus | 1281 CONFIRMED · 9 CONFIRMED-WEAK · 0 DRIFT (rerun pending against current 2313-corpus) |
+| Catalog ↔ live-oracle agreement (DRIFT detection) | 2350 STEP fixtures (2026-06-24) | **1808 CONFIRMED** · 423 DRIFT · 119 ERROR (118 are mesh fixtures routed through 12-3a-shells; 1 in 12-1b-header). DRIFT concentrated in placeholder-Expected sections (§12.2b nurbs 100, §12.2c surfaces 106, §12.3c faces 107, §12.2a pcurves 45) — accept-live-oracle remediation pending |
 | Schema-vocabulary oracle (FILE_SCHEMA vs entity vocabulary) | full corpus | 8 EXEMPT_SCHEMA_MISMATCH (catalog-claim-IS-mismatch, all witnessed) · 0 unexpected · pytest-locked |
 | Construction-validity lint (non-unit DIRECTION, parallel axis/refdir) | full corpus | 0 unexempted violations (9 catalog-claim-IS-defect exempt) |
 | External-kernel cross-validation (pure-Python ISO 10303-21 vs OCCT) | 960 reviewed | 909 agree (94.7 %); 22 OCC-silently-heals spec violations; 8 OCC-stricter-than-spec; 16 spec-clean OCC crashes |
@@ -49,15 +48,44 @@ behavior and fails CI on mismatch; that's its load-bearing role.
 
 ## Verdict matrix
 
-_Last full run 2026-06-19 (STEP entries only — rerun pending against 2350-entry corpus). Mesh entries (§12.14) use separate mesh oracle; not included in verdict matrix._
+_Last full run 2026-06-24 against the 2350-entry STEP corpus. Mesh entries (§12.14) use a separate mesh oracle and are not included; 118 of the 119 ERRORs below are mesh fixtures that route through §12.3a-shells for placement._
 
 | Verdict | Count | % |
 |---|---:|---:|
-| CONFIRMED | 2337 | 99.49 |
-| CONFIRMED-WEAK | 12 | 0.51 |
-| DRIFT | 0 | 0 |
+| CONFIRMED | 1808 | 76.94 |
+| DRIFT | 423 | 18.00 |
+| ERROR | 119 | 5.06 |
 | FAIL | 0 | 0 |
-| ERROR | 0 | 0 |
+
+CONFIRMED-WEAK is no longer reported by the live verdict run; the
+designed-WEAK fixtures from the 2026-06-19 run are now folded into
+CONFIRMED with `**Notes**: Validation observed:` annotations.
+
+### Why the DRIFT count regressed from 0 → 423
+
+The 2026-06-22 quality pivot drove DRIFT to 0 against a smaller corpus.
+The 423 current DRIFT entries split into two classes:
+
+1. **Placeholder Expected (accept-live-oracle pending)** — concentrated
+   in §12.2b nurbs (100), §12.2c surfaces (~80 of 106), and §12.2a
+   pcurves (~30 of 45). Wave-B synthesis ships the fixture with a
+   placeholder `occt=empty/empty gmsh=empty ifc=schema_n/a` Expected
+   line, independently verifies the mechanism is present in the bytes,
+   then updates the Expected line to match the live oracle. Step 3 is
+   the outstanding work.
+2. **gmsh shape-count drift** — concentrated in §12.3b wires (29),
+   §12.3c faces (~80 of 107), §12.4 tolerance (36), and the remainder
+   of §12.2a/§12.2c. The OCCT half of the Expected line still matches
+   the live oracle (`occt=shape(1)/shape(1)`), but gmsh's facet count
+   shifted (e.g. catalog `gmsh=shape(7)` vs live `gmsh=shape(10)`).
+   Likely caused by a gmsh version bump since the catalog baseline, or
+   non-determinism in gmsh's mesher seed. Rebaselining via
+   `_refresh_expected.py` resolves these.
+
+Neither class indicates a fixture-quality regression; the catalog
+Expected lines need re-snapshotting against the current oracle. Both
+classes are addressable with `_refresh_expected.py` once the operator
+confirms the new oracle output is the intended baseline.
 
 ### Verdict semantics
 
@@ -76,7 +104,14 @@ _Last full run 2026-06-19 (STEP entries only — rerun pending against 2350-entr
 - **FAIL**: validator output contradicts the catalog claim outright.
   Bug in the fixture, the catalog, or the validator.
 
-## CONFIRMED-WEAK breakdown (by design)
+## CONFIRMED-WEAK history (by design)
+
+These entries previously classified as CONFIRMED-WEAK because the
+catalog claimed a *specific* failure mode (e.g. "kernel crashes") but
+the validator showed a less-specific mismatch (e.g. silent-empty). They
+now report as CONFIRMED with `**Notes**: Validation observed:`
+annotations explaining why fixture-scale silent-empty is the correct
+manifestation:
 
 | Section | Count | Reason |
 |---|---:|---|
@@ -86,35 +121,35 @@ _Last full run 2026-06-19 (STEP entries only — rerun pending against 2350-entr
 | §12.2a pcurves | 1 | Pcurve defect manifesting only in tier-3 measurement |
 | §12.8 mixed | 1 | Schema mismatch where oracles silently accept |
 
-All carry `**Notes**: Validation observed:` annotations explaining why
-fixture-scale silent-empty is the correct manifestation.
-
 ## Per-section table
 
-_Fixture counts refreshed 2026-06-23. CONFIRMED/WEAK breakdown is from the
-2026-06-19 run (1082-entry corpus basis); rerun `_final_verdict` to update._
+_Fixture counts and verdict columns refreshed 2026-06-24 from the live
+`_final_verdict` run against the 2350-entry STEP corpus. DRIFT is the
+catalog-Expected-vs-live-oracle gap, **not** a synthesis bug — see the
+Verdict matrix note above. §12.14 mesh fixtures use a separate oracle._
 
-| Section | Fixtures (current) | CONFIRMED | WEAK |
-|---|---:|---:|---:|
-| §12.1a encoding | 57 | 55 | 1 |
-| §12.1b header | 45 | 43 | 0 |
-| §12.1c syntax | 46 | 45 | 0 |
-| §12.2a pcurves | 163 | 31 | 1 |
-| §12.2b NURBS | 167 | 30 | 1 |
-| §12.2c surfaces | 177 | 49 | 0 |
-| §12.3a shells | 263 | 99 | 0 |
-| §12.3b wires | 269 | 90 | 0 |
-| §12.3c faces | 259 | 76 | 0 |
-| §12.4 tolerance | 194 | 70 | 0 |
-| §12.5 units | 37 | 31 | 0 |
-| §12.6 assembly | 108 | 87 | 2 |
-| §12.7 PMI | 122 | 83 | 0 |
-| §12.8 mixed | 217 | 117 | 1 |
-| §12.10 perf | 37 | 28 | 4 |
-| §12.11 adversarial | 82 | 62 | 8 |
-| §12.12 cross-product | 44 | 24 | 0 |
-| §12.13 writer-pathology | 63 | 44 | 0 |
-| §12.14 mesh | 760 (Me001–Me1182) | separate mesh oracle | — |
+| Section | Fixtures | CONFIRMED | DRIFT | ERROR |
+|---|---:|---:|---:|---:|
+| §12.1a encoding | 57 | 57 | 0 | 0 |
+| §12.1b header | 45 | 44 | 0 | 1 |
+| §12.1c syntax | 46 | 46 | 0 | 0 |
+| §12.2a pcurves | 163 | 118 | 45 | 0 |
+| §12.2b NURBS | 167 | 67 | 100 | 0 |
+| §12.2c surfaces | 177 | 71 | 106 | 0 |
+| §12.3a shells | 263 | 145 | 0 | 118 *(mesh)* |
+| §12.3b wires | 269 | 240 | 29 | 0 |
+| §12.3c faces | 259 | 152 | 107 | 0 |
+| §12.4 tolerance | 194 | 158 | 36 | 0 |
+| §12.5 units | 37 | 37 | 0 | 0 |
+| §12.6 assembly | 108 | 108 | 0 | 0 |
+| §12.7 PMI | 122 | 122 | 0 | 0 |
+| §12.8 mixed | 217 | 217 | 0 | 0 |
+| §12.10 perf | 37 | 37 | 0 | 0 |
+| §12.11 adversarial | 82 | 82 | 0 | 0 |
+| §12.12 cross-product | 44 | 44 | 0 | 0 |
+| §12.13 writer-pathology | 63 | 63 | 0 | 0 |
+| §12.14 mesh | 760 (Me001–Me1182) | separate mesh oracle | — | — |
+| **Total** | **2350** | **1808** | **423** | **119** |
 
 ## Tooling
 

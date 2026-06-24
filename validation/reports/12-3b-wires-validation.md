@@ -1,7 +1,7 @@
 # §3b-wires — validate2 verdicts
 
 Generated from `/tmp/cad-v2-out/12-3b-wires/*.json` via subprocess-isolated multi-oracle validator.
-Total: 269  CONFIRMED: 269  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
+Total: 269  CONFIRMED: 240  CONCERN: 0  FAIL: 0  DRIFT: 29  MERGED: 0  ERROR: 0
 
 ## Per-file
 `Twi001` **CONFIRMED** — occt=shape(1) gmsh=shape(1) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
@@ -97,17 +97,17 @@ Total: 269  CONFIRMED: 269  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
 `Twi099` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
 `Twi100` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
 `Twi101` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
-`Twi102` **CONFIRMED** — occt=shape(1) gmsh=shape(1) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
-`Twi103` **CONFIRMED** — occt=shape(1) gmsh=shape(13) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
+`Twi102` **DRIFT** — occt=shape(1) gmsh=reject ifc=schema_n/a — validator output changed: catalog='occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a'
+`Twi103` **DRIFT** — occt=shape(1) gmsh=shape(22) ifc=schema_n/a — validator output changed: catalog='occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(22) ifc=schema_n/a'
 `Twi104` **CONFIRMED** — occt=shape(1) gmsh=shape(11) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
-`Twi105` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
-`Twi106` **CONFIRMED** — occt=shape(1) gmsh=shape(13) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
-`Twi107` **CONFIRMED** — occt=shape(1) gmsh=shape(1) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
+`Twi105` **DRIFT** — occt=shape(1) gmsh=shape(13) ifc=schema_n/a — validator output changed: catalog='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a'
+`Twi106` **DRIFT** — occt=shape(1) gmsh=shape(39) ifc=schema_n/a — validator output changed: catalog='occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(39) ifc=schema_n/a'
+`Twi107` **DRIFT** — occt=shape(1) gmsh=shape(11) ifc=schema_n/a — validator output changed: catalog='occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a'
 `Twi108` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
-`Twi109` **CONFIRMED** — occt=shape(1) gmsh=shape(7) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
+`Twi109` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
 `Twi110` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
 `Twi111` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
-`Twi112` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
+`Twi112` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
 `Twi113` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
 `Twi114` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
 `Twi115` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance matches catalog defect class
@@ -147,21 +147,21 @@ Total: 269  CONFIRMED: 269  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
 `Twi149` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
 `Twi150` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
 `Twi151` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
-`Twi152` **CONFIRMED** — occt=shape(1) gmsh=reject ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
-`Twi153` **CONFIRMED** — occt=shape(1) gmsh=shape(4) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
+`Twi152` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Twi153` **DRIFT** — occt=shape(1) gmsh=shape(3) ifc=schema_n/a — validator output changed: catalog='occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a'
 `Twi154` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
 `Twi155` **CONFIRMED** — occt=shape(1) gmsh=shape(7) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
 `Twi156` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
-`Twi157` **CONFIRMED** — occt=shape(1) gmsh=shape(5) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
+`Twi157` **DRIFT** — occt=shape(1) gmsh=shape(13) ifc=schema_n/a — validator output changed: catalog='occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a'
 `Twi158` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
 `Twi159` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
-`Twi160` **CONFIRMED** — occt=shape(1) gmsh=shape(1) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
-`Twi161` **CONFIRMED** — occt=shape(1) gmsh=reject ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
-`Twi162` **CONFIRMED** — occt=shape(1) gmsh=reject ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
-`Twi163` **CONFIRMED** — occt=shape(1) gmsh=shape(1) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
-`Twi164` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
-`Twi165` **CONFIRMED** — occt=shape(1) gmsh=shape(1) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
-`Twi166` **CONFIRMED** — occt=shape(1) gmsh=shape(1) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
+`Twi160` **DRIFT** — occt=shape(1) gmsh=shape(3) ifc=schema_n/a — validator output changed: catalog='occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a'
+`Twi161` **DRIFT** — occt=shape(1) gmsh=shape(5) ifc=schema_n/a — validator output changed: catalog='occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a'
+`Twi162` **DRIFT** — occt=shape(1) gmsh=shape(13) ifc=schema_n/a — validator output changed: catalog='occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a'
+`Twi163` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Twi164` **DRIFT** — occt=shape(1) gmsh=reject ifc=schema_n/a — validator output changed: catalog='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a'
+`Twi165` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Twi166` **DRIFT** — occt=shape(1) gmsh=shape(5) ifc=schema_n/a — validator output changed: catalog='occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a'
 `Twi167` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
 `Twi168` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
 `Twi169` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
@@ -178,7 +178,7 @@ Total: 269  CONFIRMED: 269  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
 `Twi180` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
 `Twi181` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
 `Twi182` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Twi183` **CONFIRMED** — occt=shape(1) gmsh=shape(11) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
+`Twi183` **DRIFT** — occt=shape(1) gmsh=shape(13) ifc=schema_n/a — validator output changed: catalog='occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a'
 `Twi184` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
 `Twi185` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (entity-level defect)
 `Twi186` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
@@ -187,21 +187,21 @@ Total: 269  CONFIRMED: 269  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
 `Twi189` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
 `Twi190` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
 `Twi191` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Twi192` **CONFIRMED** — occt=shape(1) gmsh=reject ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
-`Twi193` **CONFIRMED** — occt=shape(1) gmsh=reject ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
+`Twi192` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
+`Twi193` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
 `Twi194` **CONFIRMED** — occt=shape(1) gmsh=shape(7) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
 `Twi195` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
-`Twi196` **CONFIRMED** — occt=shape(1) gmsh=shape(5) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
+`Twi196` **DRIFT** — occt=shape(1) gmsh=shape(1) ifc=schema_n/a — validator output changed: catalog='occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a'
 `Twi197` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
 `Twi198` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (entity-level defect)
 `Twi199` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
 `Twi200` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (entity-level defect)
 `Twi201` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
 `Twi202` **CONFIRMED** — occt=shape(1) gmsh=reject ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
-`Twi203` **CONFIRMED** — occt=shape(1) gmsh=shape(1) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
-`Twi204` **CONFIRMED** — occt=shape(1) gmsh=reject ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
-`Twi205` **CONFIRMED** — occt=shape(1) gmsh=shape(1) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
-`Twi206` **CONFIRMED** — occt=shape(1) gmsh=shape(1) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
+`Twi203` **DRIFT** — occt=shape(1) gmsh=shape(7) ifc=schema_n/a — validator output changed: catalog='occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a'
+`Twi204` **DRIFT** — occt=shape(1) gmsh=shape(1) ifc=schema_n/a — validator output changed: catalog='occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a'
+`Twi205` **DRIFT** — occt=shape(1) gmsh=shape(7) ifc=schema_n/a — validator output changed: catalog='occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a'
+`Twi206` **DRIFT** — occt=shape(1) gmsh=shape(7) ifc=schema_n/a — validator output changed: catalog='occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a'
 `Twi207` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
 `Twi208` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
 `Twi209` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
@@ -212,11 +212,11 @@ Total: 269  CONFIRMED: 269  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
 `Twi214` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (entity-level defect)
 `Twi215` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
 `Twi216` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Twi217` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
+`Twi217` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
 `Twi218` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
 `Twi219` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
 `Twi220` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
-`Twi221` **CONFIRMED** — occt=shape(1) gmsh=empty ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
+`Twi221` **DRIFT** — occt=shape(1) gmsh=shape(7) ifc=schema_n/a — validator output changed: catalog='occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a'
 `Twi222` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
 `Twi223` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
 `Twi224` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
@@ -229,9 +229,9 @@ Total: 269  CONFIRMED: 269  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
 `Twi231` **CONFIRMED** — occt=signal(11) gmsh=signal(11) ifc=schema_n/a — OCCT segfault — defect stronger than catalog wording (see Notes)
 `Twi232` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
 `Twi233` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Twi234` **CONFIRMED** — occt=shape(1) gmsh=shape(7) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
+`Twi234` **DRIFT** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — validator output changed: catalog='occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a'
 `Twi235` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
-`Twi236` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); consumer-side or round-trip defect
+`Twi236` **DRIFT** — occt=shape(1) gmsh=shape(1) ifc=schema_n/a — validator output changed: catalog='occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a' live='occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a'
 `Twi237` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance / no transfer (default for fixture-style)
 `Twi238` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
 `Twi239` **CONFIRMED** — occt=empty gmsh=empty ifc=schema_n/a — silent acceptance where catalog requires rejection (leaky-tolerance)
@@ -275,4 +275,5 @@ Total: 269  CONFIRMED: 269  CONCERN: 0  FAIL: 0  DRIFT: 0  MERGED: 0  ERROR: 0
 `Twi277` **CONFIRMED** — occt=shape(1) gmsh=shape(9) ifc=schema_n/a — geometry loaded (shape(1)); entity-level defect
 
 ## Summary
-- CONFIRMED: 269
+- CONFIRMED: 240
+- DRIFT: 29
