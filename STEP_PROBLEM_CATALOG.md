@@ -36592,3 +36592,58 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me750 — simplify_polygons_in_polygon_soup polygon_iteration: for-loop body entered for each of 2 polygons in soup (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: degenerate-triangle / polygon-soup-iteration)
+- **Sources**: CGAL PMP `PMP.simplify_polygons_in_polygon_soup` Branch 1 (*polygon_iteration*: `for(P_ID polygon_index = 0; polygon_index < polygons.size(); ++polygon_index) { auto& polygon = polygons[polygon_index]; ... }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two clean triangles (v0,v1,v2) and (v0,v2,v3) sharing interior edge (v0,v2). The polygon soup contains 2 entries; the outer for-loop body fires once for each. Both polygons have distinct consecutive vertex indices so simplify_polygon() returns 0 for each; simplified_polygons_n stays 0 after the full pass. Interior edge (v0,v2) n=2; four boundary edges n=1. Euler: V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(2,0,0); t0=(v0,v1,v2), t1=(v0,v2,v3); assert_edge_shared(v0,v2,2); four boundary edges n=1; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 1 fires twice (once per polygon); no simplification needed; loop exits with simplified_polygons_n=0.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me750.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me751 — simplify_polygons_in_polygon_soup degenerate_polygon_skip: all-same-index triangle (v0,v0,v0) represents size-1 polygon; continue fired (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: degenerate-triangle / polygon-soup-skip)
+- **Sources**: CGAL PMP `PMP.simplify_polygons_in_polygon_soup` Branch 2 (*degenerate_polygon_skip*: `if(polygon.size() <= 1) continue;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Polygon soup containing one fully-degenerate entry (v0,v0,v0) — all three indices reference the same vertex, representing a polygon that has been collapsed to a single locus. This proxies a size-1 polygon soup entry (the state reached after simplify_polygon reduces [v0,v0,v0] → [v0]). The skip guard fires for this entry so simplify_polygon() is never called on degenerate input. A second clean triangle (v1,v2,v3) is present to exercise Branch 1 on a non-degenerate polygon.
+- **Reproducer recipe**: v0=(0,0,0); t_degen=(v0,v0,v0) [all-same indices]; v1=(3,0,0), v2=(4,0,0), v3=(3.5,1,0); t_clean=(v1,v2,v3); assert_triangle_area_lt(t_degen,1e-12); three boundary edges on t_clean n=1.
+- **Expected kernel behavior**: Branch 2 fires for t_degen (size <= 1 proxy); Branch 1 fires for t_clean; simplified_polygons_n=0.
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me751.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me752 — simplify_polygons_in_polygon_soup consecutive_duplicate_removal: triangle (v0,v0,v1) has consecutive duplicate at index 0-1; simplify_polygon erases copy (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: degenerate-triangle / consecutive-duplicate-vertex)
+- **Sources**: CGAL PMP `PMP.simplify_polygons_in_polygon_soup` Branch 3 (*consecutive_duplicate_removal*: `simplify_polygon(points, polygon, traits)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Polygon soup with one defect triangle [v0,v0,v1] — the first two consecutive indices are identical (positions 0 and 1). simplify_polygon() finds the pair, erases one copy of v0, and reduces the polygon to [v0,v1] (a degenerate edge-polygon of size 2). Branch 3 fires when simplify_polygon is called and finds the consecutive duplicate. A second clean triangle (v2,v3,v4) is present to exercise Branch 1. Defect edge (v0,v1) n=1; clean triangle boundary edges n=1 each.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0); t_defect=(v0,v0,v1) [index list 0,0,1; consecutive dup at 0-1]; v2=(3,0,0), v3=(4,0,0), v4=(3.5,1,0); t_clean=(v2,v3,v4); assert_triangle_area_lt(t_defect,1e-12); assert_edge_shared(v0,v1,1); three clean boundary edges n=1.
+- **Expected kernel behavior**: Branch 3 fires for t_defect; simplify_polygon removes one v0; polygon reduced to [v0,v1]; simplified_polygons_n not incremented (simplify_polygon return value handling in Branch 4).
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me752.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me753 — simplify_polygons_in_polygon_soup modification_count: two consecutive-duplicate triangles each fire simplify_polygon; simplified_polygons_n incremented twice (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: degenerate-triangle / modification-counter)
+- **Sources**: CGAL PMP `PMP.simplify_polygons_in_polygon_soup` Branch 4 (*modification_count*: `if(simplify_polygon(points, polygon, traits) != 0) ++simplified_polygons_n;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Polygon soup with two consecutive-duplicate defect triangles: t_a=[v0,v0,v1] (dup at positions 0-1) and t_b=[v2,v3,v3] (dup at positions 1-2). For each triangle, simplify_polygon() finds and removes one consecutive duplicate and returns 1 (non-zero), causing ++simplified_polygons_n to fire. Branch 4 fires twice, incrementing the counter to 2. Both defect triangles have zero area. Defect edges (v0,v1) and (v2,v3) each appear once.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0); t_a=(v0,v0,v1) [index list 0,0,1]; v2=(3,0,0), v3=(4,0,0); t_b=(v2,v3,v3) [index list 2,3,3]; assert_triangle_area_lt(t_a,1e-12); assert_triangle_area_lt(t_b,1e-12); assert_edge_shared(v0,v1,1); assert_edge_shared(v2,v3,1).
+- **Expected kernel behavior**: Branch 4 fires twice; simplified_polygons_n=2 after full pass; t_a reduced to [v0,v1]; t_b reduced to [v2,v3].
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-12`
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me753.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
