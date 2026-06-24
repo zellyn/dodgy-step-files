@@ -1,0 +1,71 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      1.0,
+      0.0
+    ],
+    [
+      10.0,
+      0.0,
+      0.0
+    ],
+    [
+      10.0,
+      0.0001,
+      0.0
+    ],
+    [
+      10.0,
+      0.0,
+      0.0001
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      3,
+      4,
+      5
+    ]
+  ],
+  "metadata": {
+    "id": "Me980",
+    "schema_version": 0,
+    "defect_class": "multi_component_area_imbalance",
+    "title": "merge_reversible_connected_components component_area_filter: micro-triangle CC-B (area\u22485e-9) below threshold; marked as mergeable (Branch 1)",
+    "assertions": [
+      {
+        "kind": "triangle_not_reachable_from",
+        "target": 1,
+        "source": 0
+      },
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 1,
+        "lt": 1e-07
+      },
+      {
+        "kind": "euler_characteristic",
+        "v": 6,
+        "e": 6,
+        "f": 2,
+        "chi": 2
+      }
+    ]
+  }
+}

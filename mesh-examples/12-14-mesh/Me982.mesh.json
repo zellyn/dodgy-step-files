@@ -1,0 +1,81 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.5,
+      1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      3,
+      4,
+      5
+    ]
+  ],
+  "metadata": {
+    "id": "Me982",
+    "schema_version": 0,
+    "defect_class": "near_coincident_vertex",
+    "title": "merge_reversible_connected_components stitching_compatibility_check: border edge a1\u2013a2 and b0 endpoint coincident; stitch_borders welds components (Branch 3)",
+    "assertions": [
+      {
+        "kind": "triangle_not_reachable_from",
+        "target": 1,
+        "source": 0
+      },
+      {
+        "kind": "vertex_pair_distance_lt",
+        "pair": [
+          1,
+          3
+        ],
+        "lt": 1e-09
+      },
+      {
+        "kind": "vertex_pair_no_shared_triangle",
+        "pair": [
+          1,
+          3
+        ]
+      },
+      {
+        "kind": "euler_characteristic",
+        "v": 6,
+        "e": 6,
+        "f": 2,
+        "chi": 2
+      }
+    ]
+  }
+}

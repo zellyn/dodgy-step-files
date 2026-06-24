@@ -1,0 +1,106 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      1.0,
+      0.0
+    ],
+    [
+      2.0,
+      2.0,
+      0.0
+    ],
+    [
+      0.0,
+      2.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      2.0,
+      0.0
+    ],
+    [
+      0.0,
+      2.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      2,
+      4
+    ],
+    [
+      4,
+      2,
+      3
+    ],
+    [
+      5,
+      6,
+      7
+    ],
+    [
+      5,
+      7,
+      8
+    ]
+  ],
+  "metadata": {
+    "id": "Me990",
+    "schema_version": 0,
+    "defect_class": "soup_orientation_concurrency_strategy",
+    "title": "orient_triangle_soup_with_reference_triangle_mesh concurrency_strategy: Sequential_tag / Parallel_tag dispatch before per-triangle orientation loop (Branch 1)",
+    "assertions": [
+      {
+        "kind": "adjacent_triangles_inconsistent_winding",
+        "triangles": [
+          1,
+          2
+        ]
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          5,
+          7
+        ],
+        "n": 2
+      },
+      {
+        "kind": "euler_characteristic",
+        "v": 9,
+        "e": 12,
+        "f": 5,
+        "chi": 2
+      }
+    ]
+  }
+}

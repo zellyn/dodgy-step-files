@@ -40261,4 +40261,119 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
 - **Mesh assertion**: `euler_characteristic v=6 e=9 f=4 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me975.mesh.json
+### Me980 — merge_reversible_connected_components component_area_filter: micro-triangle CC-B (area≈5e-9) below threshold; marked as mergeable (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: multi-component / area-filter)
+- **Sources**: CGAL PMP `PMP.merge_reversible_connected_components` Branch 1 (*component_area_filter*: `if (component.area() < area_threshold) { mark_as_mergeable(component); }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected connected components: CC-A is a single large triangle (vertices at (0,0,0),(1,0,0),(0,1,0); area=0.5) and CC-B is a micro-triangle at (10,0,0) with side length 1e-4 (area≈5e-9). CC-B falls below any reasonable area threshold, so the component_area_filter branch fires and marks CC-B as a merge candidate. CC-A and CC-B share no edges. Euler: V=6, E=6, F=2, chi=2.
+- **Reproducer recipe**: a0=(0,0,0), a1=(1,0,0), a2=(0,1,0); b0=(10,0,0), b1=(10,1e-4,0), b2=(10,0,1e-4); t0=(a0,a1,a2); t1=(b0,b1,b2); assert_triangle_not_reachable_from(1,0); assert_triangle_area_lt(1,1e-7); euler V=6,E=6,F=2,chi=2.
+- **Expected kernel behavior**: Branch 1 fires on CC-B; component_area_filter marks the micro-triangle component as reversible/mergeable because its area is below threshold.
+- **Mesh assertion**: `triangle_not_reachable_from target=1 source=0`
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-07`
+- **Mesh assertion**: `euler_characteristic v=6 e=6 f=2 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me980.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me981 — merge_reversible_connected_components orientation_flip_feasibility: Patch-B wound CW vs Patch-A CCW; flip Patch-B enables stitch (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: multi-component / orientation-flip)
+- **Sources**: CGAL PMP `PMP.merge_reversible_connected_components` Branch 2 (*orientation_flip_feasibility*: `if (can_stitch_after_flip(component_A, component_B)) { reverse_face_orientations(component_A); stitch(...); }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected flat quad patches (each two triangles). Patch A at z=0 is wound CCW (normal=+Z). Patch B at z=0.001 covers the same XY rectangle but wound CW (normal=-Z; inverted). Their boundary loops are geometrically coincident after flip. The orientation_flip_feasibility branch fires: flipping Patch B's winding makes its border halfedges align with Patch A's, enabling stitch_borders to merge them. Interior diagonal of each patch shared by 2 triangles. Euler: V=8, E=10, F=4, chi=2.
+- **Reproducer recipe**: a0-a3 at z=0 CCW; b0-b3 at z=0.001 CW (t2,t3 reversed winding); assert_triangle_not_reachable_from(2,0); assert_edge_shared(a0,a2,2); assert_edge_shared(b0,b2,2); assert_triangle_normal_z_negative(2); euler V=8,E=10,F=4,chi=2.
+- **Expected kernel behavior**: Branch 2 fires; can_stitch_after_flip returns true because reversing Patch B's winding aligns its boundary halfedges with Patch A's boundary; reverse_face_orientations + stitch_borders merge the two components.
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,6] n=2`
+- **Mesh assertion**: `triangle_normal_z_negative triangle=2`
+- **Mesh assertion**: `euler_characteristic v=8 e=10 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me981.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me982 — merge_reversible_connected_components stitching_compatibility_check: border edge endpoint coincident at (1,0,0); stitch_borders welds components (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: multi-component / stitch-compatibility)
+- **Sources**: CGAL PMP `PMP.merge_reversible_connected_components` Branch 3 (*stitching_compatibility_check*: `for (halfedge h : border_halfedges(component)) { if (compatible_for_stitch(h, candidate)) { stitch_borders(...); } }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two open triangle patches with no shared edge structure. Patch A: triangle (a0,a1,a2) with a1 at (1,0,0). Patch B: triangle (b0,b1,b2) with b0 also at (1,0,0). Vertices a1 (index 1) and b0 (index 3) are distinct entries at the same coordinate — the half-edge structure has no connection, so components are disconnected. The stitching_compatibility_check branch fires when it detects that border halfedge endpoints of Patch A and Patch B are geometrically coincident (distance=0 < tolerance); stitch_borders merges a1/b0. Euler: V=6, E=6, F=2, chi=2.
+- **Reproducer recipe**: a0=(0,0,0), a1=(1,0,0), a2=(0.5,1,0); b0=(1,0,0)[=a1], b1=(2,0,0), b2=(1.5,1,0); t0=(a0,a1,a2), t1=(b0,b1,b2); assert_triangle_not_reachable_from(1,0); assert_vertex_pair_distance_lt(1,3,1e-9); assert_vertex_pair_no_shared_triangle(1,3); euler V=6,E=6,F=2,chi=2.
+- **Expected kernel behavior**: Branch 3 fires; compatible_for_stitch passes for the (a1,b0) border halfedge pair; stitch_borders merges vertices 1 and 3 and joins the two triangles into a single connected surface.
+- **Mesh assertion**: `triangle_not_reachable_from target=1 source=0`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,3] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,3]`
+- **Mesh assertion**: `euler_characteristic v=6 e=6 f=2 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me982.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1000 — remove_connected_components.by_face_range Iteration_construct: loop enters for each face in range; 3-triangle component A + isolated triangle B (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / face-range-iteration)
+- **Sources**: CGAL PMP `PMP.remove_connected_components.by_face_range` Branch 1 (*Iteration_construct*: `for(face_descriptor fd : face_range) { ... }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected components: Component A is a 3-triangle open fan around hub v0=(0,0,0) with rim vertices v1-v4; Component B is a single isolated triangle (t3) with vertices v5-v7 at x=10. The face_range covers all four faces; Branch 1 fires as the loop body is entered for each face in the range. The face_range-based API is exercised with a multi-face range — the loop construct fires on face descriptors for t0 through t3. Component B is unreachable from A. Interior edges v0-v2 and v0-v3 are shared by 2 triangles each; all boundary edges are n=1. Euler: V=8, E=10, F=4, chi=2.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(-1,0,0), v4=(0,-1,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v4); v5=(10,0,0), v6=(11,0,0), v7=(10,1,0); t3=(v5,v6,v7); triangle_not_reachable_from(3,0); interior edges v0-v2, v0-v3 n=2; euler V=8,E=10,F=4,chi=2.
+- **Expected kernel behavior**: Branch 1 fires; loop body entered 4 times (once per face in face_range); per-face connected-component removal logic applied to t0-t3 in sequence.
+- **Mesh assertion**: `triangle_not_reachable_from target=3 source=0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=8 e=10 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1000.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1001 — remove_connected_components.by_face_range Logic_guard: unconstrained vertices (!get(is_cst,v)) in face_range; 4-tri component A + 2-tri unconstrained component B (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / unconstrained-vertex-removal)
+- **Sources**: CGAL PMP `PMP.remove_connected_components.by_face_range` Branch 2 (*Logic_guard*: `if(!get(is_cst, v)) { remove_face(fd, pmesh); ... }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected components. Component A is a 4-triangle closed fan around hub v0=(0,0,0) with rim vertices v1-v4 (all hub edges shared by 2 triangles). Component B is a 2-triangle rectangular patch at x=20 with vertices v5-v8; all of B's vertices are unconstrained. When the face_range covers B's faces (t4, t5), each incident vertex v satisfies !get(is_cst, v) == true, firing Branch 2 for unconditional face removal. B is unreachable from A. Shared diagonal v6-v7 in B is n=2; all other B edges are n=1. Euler: V=9, E=13, F=6, chi=2.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(-1,0,0), v4=(0,-1,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v4), t3=(v0,v4,v1); v5=(20,0,0), v6=(21,0,0), v7=(20,1,0), v8=(21,1,0); t4=(v5,v6,v7), t5=(v6,v8,v7); triangle_not_reachable_from(4,0); hub edges A n=2; diagonal v6-v7 n=2; euler V=9,E=13,F=6,chi=2.
+- **Expected kernel behavior**: Branch 2 fires; !get(is_cst, v) is true for every vertex in t4 and t5; faces removed unconditionally from the mesh.
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Mesh assertion**: `triangle_not_reachable_from target=5 source=0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[6,7] n=2`
+- **Mesh assertion**: `euler_characteristic v=9 e=13 f=6 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1001.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1002 — remove_connected_components.by_face_range Alternative_path: constrained vertex v7 triggers else fallback; 2-tri component A + 3-tri component B with constraint (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / constrained-vertex-fallback)
+- **Sources**: CGAL PMP `PMP.remove_connected_components.by_face_range` Branch 3 (*Alternative_path*: `} else { ... } // constraint-respecting fallback`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected components. Component A is a 2-triangle fan around hub v0=(0,0,0) with rim vertices v1-v3. Component B is a 3-triangle strip at x=10 with vertices v4-v8, where v7=(10,1,0) is the constrained vertex (get(is_cst, v7)==true). All three of B's triangles (t2, t3, t4) are incident on v7. When the face_range covers t2-t4, the algorithm tests is_cst on each incident vertex; v7 is constrained, so those faces take the else fallback path (Branch 3) rather than Branch 2's unconditional removal. B is unreachable from A. Shared edges v4-v7 and v5-v7 in B are n=2; all other edges n=1. Euler: V=9, E=12, F=5, chi=2.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(-1,0,0); t0=(v0,v1,v2), t1=(v0,v2,v3); v4=(10,0,0), v5=(11,0,0), v6=(11,1,0), v7=(10,1,0) [constrained], v8=(10,2,0); t2=(v4,v5,v7), t3=(v5,v6,v7), t4=(v4,v7,v8); triangle_not_reachable_from(2,0); edges v4-v7 and v5-v7 n=2; euler V=9,E=12,F=5,chi=2.
+- **Expected kernel behavior**: Branch 3 fires; get(is_cst, v7)==true for faces t2, t3, t4; else fallback executes instead of unconditional remove; constrained boundary is preserved.
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,7] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,7] n=2`
+- **Mesh assertion**: `euler_characteristic v=9 e=12 f=5 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1002.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me990 — orient_triangle_soup_with_reference_triangle_mesh concurrency_strategy: Sequential_tag / Parallel_tag dispatch before per-triangle orientation loop (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: soup-orientation / concurrency-strategy)
+- **Sources**: CGAL PMP `PMP.orient_triangle_soup_with_reference_triangle_mesh` Branch 1 (*concurrency_strategy*: Concurrency_tag routing @ line 280); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Triangle soup of three faces over a flat quad region (vertices s0–s4 in XY plane), with soup_t2=(s4,s2,s3) wound CW (normal −Z, misoriented). Reference mesh of two consistently CCW triangles (r0–r3). The Concurrency_tag dispatch at line 280 fires for any non-empty soup before per-triangle orientation queries begin — Branch 1 executes. Adjacent soup triangles t1 and t2 share edge (s2,s4) but have antiparallel normals. Reference triangles share interior edge (r0,r2). Full mesh: V=9, E=12, F=5, χ=2.
+- **Reproducer recipe**: s0=(0,0,0), s1=(2,0,0), s2=(1,1,0), s3=(2,2,0), s4=(0,2,0); soup_t0=(s0,s1,s2) CCW, soup_t1=(s0,s2,s4) CCW, soup_t2=(s4,s2,s3) CW; r0=(0,0,0), r1=(2,0,0), r2=(2,2,0), r3=(0,2,0); ref_t0=(r0,r1,r2) CCW, ref_t1=(r0,r2,r3) CCW; assert_adjacent_triangles_inconsistent_winding(t1,t2); assert_edge_shared(r0,r2,2); assert_euler(9,12,5,2).
+- **Expected kernel behavior**: Branch 1 fires first (Concurrency_tag dispatch); subsequent AABB tree and closest-face queries orient soup_t2 to match reference +Z normal.
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[1, 2]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5, 7] n=2`
+- **Mesh assertion**: `euler_characteristic v=9 e=12 f=5 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me990.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me991 — orient_triangle_soup_with_reference_triangle_mesh aabb_tree_construction: AABB tree built from non-empty reference mesh with clear bounding box (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: soup-orientation / aabb-tree-construction)
+- **Sources**: CGAL PMP `PMP.orient_triangle_soup_with_reference_triangle_mesh` Branch 2 (*aabb_tree_construction*: AABB_tree over reference faces @ line 300); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Reference mesh of two spatially separated triangles spanning x=[0,3], y=[0,3], z=[0,1] (ref_t0 at z=0, ref_t1 at z=1) — clear bounding volume for AABB tree internal node construction. Soup of two triangles at z=0.5 between the reference layers; soup_t1=(s3,s5,s4) is wound CW (normal −Z, defect). Branch 2 fires when the AABB_tree constructor processes the non-empty reference face list. Full mesh: V=12, E=12, F=4, χ=4 (four disjoint triangle groups).
+- **Reproducer recipe**: r0–r2 at z=0 CCW, r3–r5 at z=1 CCW; s0=(0,0,.5), s1=(2,0,.5), s2=(0,2,.5) soup_t0 CCW; s3=(1,0,.5), s4=(3,0,.5), s5=(1,3,.5) soup_t1 CW; assert_triangle_normal_z_negative(3); assert_edge_shared(r0,r1,1); assert_edge_shared(r3,r4,1); euler(12,12,4,4).
+- **Expected kernel behavior**: Branch 2 fires when reference mesh has ≥1 face; AABB_tree builds bounding-box nodes over ref_t0 and ref_t1; closest_point_and_primitive returns ref_t0 or ref_t1 for each soup face query.
+- **Mesh assertion**: `triangle_normal_z_negative triangle=3`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3, 4] n=1`
+- **Mesh assertion**: `euler_characteristic v=12 e=12 f=4 chi=4`
+- **Fixture path**: mesh-examples/12-14-mesh/Me991.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me992 — orient_triangle_soup_with_reference_triangle_mesh triangle_degeneracy: collinear degenerate reference triangle skipped by is_degenerate_triangle_face (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: soup-orientation / degenerate-reference-triangle)
+- **Sources**: CGAL PMP `PMP.orient_triangle_soup_with_reference_triangle_mesh` Branch 3 (*triangle_degeneracy*: `is_degenerate_triangle_face` check @ line 315); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Reference mesh with two faces: ref_t0=(r0,r1,r2) valid triangle (CCW, area=2.0) and ref_degen=(d0,d1,d2) with all three vertices collinear on the X-axis (area=0). is_degenerate_triangle_face returns true for ref_degen — Branch 3 fires (continue/skip). Soup of two triangles: soup_t0 correctly oriented CCW (+Z), soup_t1 wound CW (−Z, misoriented defect). The degenerate triangle witness is confirmed by triangle_area_lt and vertex_on_edge (d1 lies on segment d0→d2).
+- **Reproducer recipe**: r0=(0,0,0), r1=(2,0,0), r2=(1,2,0) valid ref; d0=(0,0,0), d1=(1,0,0), d2=(2,0,0) degen ref (collinear X-axis); s0–s2 soup_t0 CCW; s3–s5 soup_t1 CW; assert_triangle_area_lt(1,1e-9); assert_triangle_normal_z_negative(3); assert_vertex_on_edge(4,[3,5]).
+- **Expected kernel behavior**: Branch 3 fires when is_degenerate_triangle_face(ref_degen) returns true; ref_degen is skipped (continue); ref_t0 is used to orient soup_t1 (negative dot product → flip winding).
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-09`
+- **Mesh assertion**: `triangle_normal_z_negative triangle=3`
+- **Mesh assertion**: `vertex_on_edge vertex=4 edge=[3, 5]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me992.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
