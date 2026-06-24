@@ -36592,3 +36592,95 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me960 — CreateUnorientedTriangle_e1_slot_check: e1's first free t-slot (t1 or t2) assigned without orientation
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.CreateUnorientedTriangle / e1-slot-check)
+- **Sources**: MeshFix `Basic_TMesh.CreateUnorientedTriangle` Branch 1 (*e1_slot_check*: `if (e1->t1 == NULL) at1 = &(e1->t1); else if (e1->t2 == NULL) at1 = &(e1->t2)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangles sharing edges that exercise both the primary (t1 NULL) and else-if (t2 NULL) paths of Branch 1 for e1. t0=(v0,v1,v2) and t1=(v1,v3,v2) fill both slots of edge (v1,v2); tf=(v0,v2,v3) uses a fresh e1=(v0,v2) via the primary path. Unlike CreateTriangle no orientation commonVertex test is performed — slot assignment depends solely on availability.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(3,2,0); t0=(v0,v1,v2), t1=(v1,v3,v2), tf=(v0,v2,v3). Assert edge(v1,v2) n=2, edge(v0,v2) n=2, edge(v2,v3) n=2, boundary edges n=1.
+- **Expected kernel behavior**: Branch 1 fires for each creation; t1 path used when slot free, t2 path used when t1 occupied; no orientation gating.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me960.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me961 — CreateUnorientedTriangle_e2_slot_check: e2's first free t-slot (t1 or t2) assigned without orientation
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.CreateUnorientedTriangle / e2-slot-check)
+- **Sources**: MeshFix `Basic_TMesh.CreateUnorientedTriangle` Branch 2 (*e2_slot_check*: `if (e2->t1 == NULL) at2 = &(e2->t1); else if (e2->t2 == NULL) at2 = &(e2->t2)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing diagonal (v0,v2) of a rectangle. The first creation uses t1 (primary path for Branch 2 on e2); the second uses t2 (else-if path, since t1 is occupied). Euler: V=4, E=5, F=2, chi=1. No orientation check — slot-first assignment only.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(2,2,0), v3=(0,2,0); t0=(v0,v1,v2), t1=(v0,v2,v3). Assert edge(v0,v2) n=2, boundary edges n=1; euler v=4 e=5 f=2 chi=1.
+- **Expected kernel behavior**: Branch 2 fires; t1 assigned on first creation, t2 on second; diagonal (v0,v2) becomes interior.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me961.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me962 — CreateUnorientedTriangle_e3_slot_check: e3's first free t-slot (t1 or t2) assigned without orientation
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.CreateUnorientedTriangle / e3-slot-check)
+- **Sources**: MeshFix `Basic_TMesh.CreateUnorientedTriangle` Branch 3 (*e3_slot_check*: `if (e3->t1 == NULL) at3 = &(e3->t1); else if (e3->t2 == NULL) at3 = &(e3->t2)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangles forming a closed fan around center v0=(1,1,0). Each creation exercises Branch 3's e3 slot logic: fresh spokes use the t1 path; a shared spoke (already t1 occupied) uses the t2 path. All radial spokes become interior (n=2). Euler: V=4, E=6, F=3, chi=1.
+- **Reproducer recipe**: v0=(1,1,0), v1=(0,0,0), v2=(2,0,0), v3=(2,2,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v1). Assert spokes n=2, rim n=1; euler v=4 e=6 f=3 chi=1.
+- **Expected kernel behavior**: Branch 3 fires for each creation; t1 path on fresh spokes, t2 path on shared spokes.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me962.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me963 — CreateUnorientedTriangle_unoriented_creation: newTriangle(e1,e2,e3) without orientation check
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.CreateUnorientedTriangle / unoriented-triangle-creation)
+- **Sources**: MeshFix `Basic_TMesh.CreateUnorientedTriangle` Branch 4 (*unoriented_triangle_creation*: `tt = newTriangle(e1,e2,e3)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Single freshly created unoriented triangle tf=(v0,v1,v2) with all three boundary edges (n=1). Unlike CreateTriangle (Me353), no winding/orientation validation precedes the newTriangle call. The triangle has area≈1.732 (equilateral, side=2). All three edges have one slot occupied (t1 primary path from Branch 1-3).
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,1.732,0); tf=(v0,v1,v2). All edges n=1; triangle_area_lt(tf, 5.0).
+- **Expected kernel behavior**: Branch 4 fires; tt object instantiated from e1,e2,e3 without orientation check; all edges n=1.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=5.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me963.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me964 — CreateUnorientedTriangle_triangle_adjacency_assignment: *at1=*at2=*at3=tt links edge slots to triangle
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.CreateUnorientedTriangle / adjacency-assignment)
+- **Sources**: MeshFix `Basic_TMesh.CreateUnorientedTriangle` Branch 5 (*triangle_adjacency_assignment*: `*at1 = *at2 = *at3 = tt`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing diagonal (v0,v2) of a 3×3 square. First CreateUnorientedTriangle wrote t0 into e_diag->t1; second wrote t1 into e_diag->t2. The n=2 on the diagonal confirms both *at= assignments fired through the unoriented code path. Euler: V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(3,0,0), v2=(3,3,0), v3=(0,3,0); t0=(v0,v1,v2), t1=(v0,v2,v3). edge(v0,v2) n=2; boundary edges n=1; euler v=4 e=5 f=2 chi=1.
+- **Expected kernel behavior**: Branch 5 fires for each creation; diagonal edge fully occupied after both *at= assignments.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me964.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me965 — CreateUnorientedTriangle_mesh_list_append: T.appendHead(tt) inserts triangle into list T
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.CreateUnorientedTriangle / mesh-list-append)
+- **Sources**: MeshFix `Basic_TMesh.CreateUnorientedTriangle` Branch 6 (*mesh_list_append*: `T.appendHead(tt)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four fan triangles around center v0=(1,1,0), each added by CreateUnorientedTriangle's T.appendHead call. All four appear in the mesh list (Euler: V=5, E=8, F=4, chi=1). Interior fan spokes (n=2) prove each triangle is fully registered in T. Unlike Me355 (CreateTriangle fan of 3), this uses 4 triangles to cover the unoriented path distinctly.
+- **Reproducer recipe**: v0=(1,1,0), v1=(0,0,0), v2=(2,0,0), v3=(2,2,0), v4=(0,2,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v4), t3=(v0,v4,v1). Spokes n=2; rim n=1; euler v=5 e=8 f=4 chi=1.
+- **Expected kernel behavior**: Branch 6 fires 4 times; all four triangles in T; mesh iteration reaches all F=4 faces.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `euler_characteristic v=5 e=8 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me965.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
