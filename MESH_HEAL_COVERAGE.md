@@ -478,16 +478,14 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
   - Suggested fixture: defect mentioning 'halfedge(w,'
 
 ##### `PMP.remove_invalid_polygons_in_polygon_soup` — lines 295–321
-(2 branches; all UNCOVERED — no mesh fixtures exist yet)
+(2 branches; **COVERED** — Me1031–Me1032 — wave 35C, 2026-06-23)
 
-- **Branch 1** @ line 298 — *degenerate_polygon_filter*
-  - What it tests: Polygon size <= 2
+- **Branch 1** @ line 298 — *degenerate_polygon_filter* → **Me1031**
+  - What it tests: Polygon size <= 2 (or has_duplicate_vertex)
   - Repair action: std::remove_if predicate returns true; polygon marked for erase
-  - Suggested fixture: defect mentioning 'std::remove_if', 'polygon.size() <= 2'
-- **Branch 2** @ line 311 — *erase_execution*
+- **Branch 2** @ line 311 — *erase_execution* → **Me1032**
   - What it tests: Remove all invalid polygons from container
   - Repair action: polygons.erase(rit, polygons.end())
-  - Suggested fixture: defect mentioning 'polygons.erase'
 
 ##### `PMP.remove_isolated_points_in_polygon_soup` — lines 404–487
 (7 branches; **COVERED** — Me360–Me366 — wave 13B, 2026-06-21)
@@ -979,29 +977,28 @@ Fixture IDs: Me770 Me771 Me772 Me773
   - Suggested fixture: defect mentioning 'degree(v,pmesh)==0', 'remove_vertex'
 
 ##### `PMP.split_connected_components` — lines 940–957
-(1 branches; all UNCOVERED — no mesh fixtures exist yet)
+(1 branch; **COVERED** — Me1030 — wave 35C, 2026-06-23)
 
-- **Branch 1** @ line 945 — *component_subdivision*
+- **Branch 1** @ line 945 — *component_subdivision* → **Me1030**
   - What it tests: each connected component isolated
   - Repair action: extract_to_new_mesh
-  - Suggested fixture: defect mentioning 'connected_component', 'cc_meshes'
 
 
 #### `(unknown)`
 (9 methods, 30 branches)
 
 ##### `PMP.compatible_orientations (nesting-constraint detector)` — lines 1179–1337
-(3 branches; all UNCOVERED — no mesh fixtures exist yet)
+(3 branches; all COVERED — Me1020, Me1021, Me1022)
 
-- **Branch 1** @ line 1182 — *usage-mode-dispatch*
+- **Branch 1** @ line 1182 — *usage-mode-dispatch* — **Me1020**
   - What it tests: Route output to bit-vector or boolean result
   - Repair action: either populate per-face bit-map or return single bool
   - Suggested fixture: defect mentioning 'used_as_a_predicate', 'output_mode'
-- **Branch 2** @ line 1192 — *nested-component-existence*
+- **Branch 2** @ line 1192 — *nested-component-existence* — **Me1021**
   - What it tests: Check for non-empty nesting relationships among components
   - Repair action: skip components with no nesting constraints
   - Suggested fixture: defect mentioning 'nested_cc_per_cc_shared', 'empty'
-- **Branch 3** @ line 1204 — *direct-nesting-level-match*
+- **Branch 3** @ line 1204 — *direct-nesting-level-match* — **Me1022**
   - What it tests: Detect direct parent-child relationship (nesting level +1)
   - Repair action: mark faces for potential flip to enable stitching compatibility
   - Suggested fixture: defect mentioning 'nesting_levels', '+1', 'parent-child'

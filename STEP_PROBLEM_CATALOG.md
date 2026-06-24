@@ -40376,4 +40376,155 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `triangle_normal_z_negative triangle=3`
 - **Mesh assertion**: `vertex_on_edge vertex=4 edge=[3, 5]`
 - **Fixture path**: mesh-examples/12-14-mesh/Me992.mesh.json
+### Me1010 — run_stitch_borders vertex-merge-necessity: h1_tgt representative differs from v_to_keep; redirect to master (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: open_boundary_stitch_gap / border-vertex-union-find)
+- **Sources**: CGAL PMP `PMP.run_stitch_borders` Branch 1 (*vertex-merge-necessity*: `if(get(uvpm, h1_tgt) != get(uvpm, v_to_keep))`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two open rectangular patches (A: t0=(v0,v1,v2), t1=(v0,v2,v3); B: t2=(v4,v6,v7), t3=(v4,v7,v5)) with coincident boundary seam. Patch A's right seam edge (v1,v2) and patch B's left seam edge (v4,v5) are geometrically identical but stored as distinct vertex indices. When run_stitch_borders processes the halfedge pair (h1: v0→v1 in A, h2: v5→v4 in B), h1_tgt=v1 has its own union-find representative while v_to_keep=v4; they differ, so Branch 1 fires and redirects all halfedges at v1's old rep to the master. Coincident pairs: v1==v4 at (1,0,0), v2==v5 at (1,1,0). Each seam edge on 1 triangle. Euler: V=8, E=10, F=4, chi=2.
+- **Reproducer recipe**: Patch A: v0=(0,0,0), v1=(1,0,0), v2=(1,1,0), v3=(0,1,0); t0=(v0,v1,v2), t1=(v0,v2,v3). Patch B: v4=(1,0,0), v5=(1,1,0), v6=(2,0,0), v7=(2,1,0); t2=(v4,v6,v7), t3=(v4,v7,v5). edge_shared(v1,v2,1); edge_shared(v4,v5,1); vertex_pair_distance_lt(v1,v4,1e-9); vertex_pair_distance_lt(v2,v5,1e-9); no_shared_triangle(v1,v4); no_shared_triangle(v2,v5); euler V=8,E=10,F=4,chi=2.
+- **Expected kernel behavior**: Branch 1 fires; the union-find representative of h1_tgt is different from v_to_keep, so all halfedges currently pointing at h1_tgt's old representative vertex are redirected to v_to_keep (the patch B counterpart), unifying the two vertex records.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[2,5] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,4]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[2,5]`
+- **Mesh assertion**: `euler_characteristic v=8 e=10 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1010.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1011 — run_stitch_borders second-vertex-pair-distinct: h2_src representative differs from h1_tgt master; conditional merge fires (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: open_boundary_stitch_gap / border-vertex-union-find)
+- **Sources**: CGAL PMP `PMP.run_stitch_borders` Branch 2 (*second-vertex-pair-distinct*: `if(get(uvpm, h2_src) != get(uvpm, h1_tgt))`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two open V-shaped patches sharing a two-segment horizontal seam. Patch A: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0), v3=(1,1,0); t0=(v0,v1,v3), t1=(v1,v2,v3). Patch B: v4=(0,0,0), v5=(1,0,0), v6=(2,0,0), v7=(1,-1,0); t2=(v4,v7,v5), t3=(v5,v7,v6). The seam spans two edges (v0,v1)/(v4,v5) and (v1,v2)/(v5,v6). When processing halfedge h1 (A: v0→v1), h2_src=v5 at (1,0,0) is B's counterpart to h1_tgt=v1. Since v5 starts with its own union-find representative distinct from v1's master, Branch 2 fires and merges h2_src into h1_tgt's master. Three coincident pairs: v0==v4, v1==v5, v2==v6. Euler: V=8, E=10, F=4, chi=2.
+- **Reproducer recipe**: Patch A: v0-v3 with t0=(v0,v1,v3), t1=(v1,v2,v3). Patch B: v4-v7 with t2=(v4,v7,v5), t3=(v5,v7,v6). edge_shared(v0,v1,1); edge_shared(v1,v2,1); edge_shared(v4,v5,1); edge_shared(v5,v6,1); vertex_pair_distance_lt pairs (v0,v4), (v1,v5), (v2,v6) lt=1e-9; no_shared_triangle pairs; euler V=8,E=10,F=4,chi=2.
+- **Expected kernel behavior**: Branch 2 fires; h2_src's initial representative differs from h1_tgt's master, so the union-find merges h2_src into that master, ensuring the two vertex records on B's side of the seam midpoint are unified.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,6] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,5] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[2,6] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[0,4]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,5]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[2,6]`
+- **Mesh assertion**: `euler_characteristic v=8 e=10 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1011.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1012 — run_stitch_borders second-target-merge-necessity: h2_tgt representative differs from second-endpoint master; union_find merge fires (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: open_boundary_stitch_gap / border-vertex-union-find)
+- **Sources**: CGAL PMP `PMP.run_stitch_borders` Branch 3 (*second-target-merge-necessity*: `if(get(uvpm, h2_tgt) != get(uvpm, v_to_keep))`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two open patches with different fan sizes sharing a single-edge seam. Patch A (three-triangle fan above y=0): v0=(0,0,0), v1=(1,0,0), v2=(-0.5,0,0), v3=(1.5,0,0), v4=(0.5,1,0); t0=(v0,v1,v4), t1=(v2,v0,v4), t2=(v1,v3,v4). Patch B (two triangles below y=0): v5=(0,0,0), v6=(1,0,0), v7=(-0.5,0,0), v8=(0.5,-1,0); t3=(v6,v5,v8), t4=(v5,v7,v8). Seam edge: (v0,v1) in A, (v5,v6) in B. When h1 runs v0→v1 and h2 runs v6→v5, h2_tgt=v5 at (0,0,0) has its own representative distinct from the master for v0's seam position; Branch 3 fires and merges h2_tgt into that master. Euler: V=9, E=12, F=5, chi=2.
+- **Reproducer recipe**: Patch A V=5: v0=(0,0,0), v1=(1,0,0), v2=(-0.5,0,0), v3=(1.5,0,0), v4=(0.5,1,0). Patch B V=4: v5=(0,0,0), v6=(1,0,0), v7=(-0.5,0,0), v8=(0.5,-1,0). Triangles as in source. edge_shared(v0,v1,1); edge_shared(v5,v6,1); vertex_pair_distance_lt(v0,v5,1e-9); vertex_pair_distance_lt(v1,v6,1e-9); no_shared_triangle(v0,v5); no_shared_triangle(v1,v6); euler V=9,E=12,F=5,chi=2.
+- **Expected kernel behavior**: Branch 3 fires; h2_tgt's union-find representative is distinct from the second-endpoint master v_to_keep_2, so all halfedges at h2_tgt's old representative are redirected to v_to_keep_2, completing the second-vertex stitch operation.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,6] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,5] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,6] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[0,5]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,6]`
+- **Mesh assertion**: `euler_characteristic v=9 e=12 f=5 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1012.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1013 — run_stitch_borders opposite-edge-source-merge: h1_src representative distinct from h2_tgt master; merge completes two-endpoint stitch (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: open_boundary_stitch_gap / border-vertex-union-find)
+- **Sources**: CGAL PMP `PMP.run_stitch_borders` Branch 4 (*opposite-edge-source-merge*: `if(get(uvpm, h1_src) != get(uvpm, v_to_keep_2))`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two open rectangular patches meeting at a horizontal seam along y=0. Patch A (above): v0=(0,0,0), v1=(2,0,0), v2=(0,2,0), v3=(2,2,0); t0=(v0,v1,v3), t1=(v0,v3,v2). Patch B (below): v4=(0,0,0), v5=(2,0,0), v6=(0,-2,0), v7=(2,-2,0); t2=(v5,v4,v6), t3=(v5,v6,v7). Seam edge: (v0,v1) open in A, (v4,v5) open in B. Halfedge h1 runs v0→v1 in A; h2 runs v5→v4 in B. After Branches 1-3 handle h1_tgt=v1 and h2_tgt=v4, Branch 4 checks h1_src=v0: its union-find representative is distinct from the master assigned to v_to_keep_2=v4, so Branch 4 fires and merges v0 into v4's master, completing the full two-endpoint stitching. Coincident pairs: v0==v4 at (0,0,0), v1==v5 at (2,0,0). Euler: V=8, E=10, F=4, chi=2.
+- **Reproducer recipe**: Patch A: v0=(0,0,0), v1=(2,0,0), v2=(0,2,0), v3=(2,2,0); t0=(v0,v1,v3), t1=(v0,v3,v2). Patch B: v4=(0,0,0), v5=(2,0,0), v6=(0,-2,0), v7=(2,-2,0); t2=(v5,v4,v6), t3=(v5,v6,v7). edge_shared(v0,v1,1); edge_shared(v4,v5,1); vertex_pair_distance_lt(v0,v4,1e-9); vertex_pair_distance_lt(v1,v5,1e-9); no_shared_triangle pairs; euler V=8,E=10,F=4,chi=2.
+- **Expected kernel behavior**: Branch 4 fires; h1_src (v0 in patch A) has its own union-find representative distinct from the master assigned to h2_tgt (v4 in patch B). The union-find merges h1_src into v_to_keep_2, completing the stitch of both boundary vertices for this halfedge pair.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,5] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[0,4]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,5]`
+- **Mesh assertion**: `euler_characteristic v=8 e=10 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1013.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1020 — compatible_orientations nesting-constraint detector: usage-mode-dispatch on single closed component
+- **Category**: §12.14 mesh defects (sub-class: orientation/nesting-constraint/mode-dispatch)
+- **Sources**: CGAL `PMP.compatible_orientations (nesting-constraint detector)` Branch 1 @ line 1182 (*usage-mode-dispatch*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A single closed tetrahedral mesh (unit edge length, genus 0, χ=2). The nesting-constraint detector checks `used_as_a_predicate` / `output_mode` at entry to decide whether to populate a per-face bit-vector or return a single boolean result. A closed manifold mesh with one connected component exercises this dispatch code path. All four faces are consistently outward-wound; all six edges are shared by exactly 2 triangles. The single component means the nesting loop is trivially bypassed, placing observable weight on the Branch 1 dispatch.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,0.866,0), v3=(0.5,0.2887,0.8165); four outward-wound faces; all 6 edges shared n=2; euler V=4, E=6, F=4, chi=2.
+- **Expected kernel behavior**: Branch 1 fires at entry; output_mode dispatch routes to bit-vector or predicate path; single component means nesting map is empty so Branch 2 and Branch 3 are bypassed.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1020.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1021 — compatible_orientations nesting-constraint detector: nested_cc_per_cc_shared non-empty (two nested closed tetrahedra)
+- **Category**: §12.14 mesh defects (sub-class: orientation/nesting-constraint/nested-component)
+- **Sources**: CGAL `PMP.compatible_orientations (nesting-constraint detector)` Branch 2 @ line 1192 (*nested-component-existence*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two closed tetrahedral components — a large outer tetrahedron (edge length 4) and a small inner tetrahedron (edge length 0.5) geometrically contained inside the outer one. The inner component's vertices are all within the outer tetrahedron's volume. The CGAL point-in-polyhedron test establishes a nesting relationship and populates `nested_cc_per_cc_shared`, causing Branch 2 (*nested-component-existence*) to be entered rather than skipped. Both components are closed manifold surfaces (each χ=2); combined χ=4. The two components are topologically disconnected.
+- **Reproducer recipe**: Outer: v0=(0,0,0), v1=(4,0,0), v2=(2,3.464,0), v3=(2,1.155,3.266), four outward faces. Inner: i0=(1.75,1.2,0.9), i1=(2.25,1.2,0.9), i2=(2.0,1.633,0.9), i3=(2.0,1.344,1.309), four outward faces. assert_triangle_not_reachable_from(t4,t0); euler V=8, E=12, F=8, chi=4.
+- **Expected kernel behavior**: Branch 2 fires; nested_cc_per_cc_shared is non-empty (inner component detected as nested inside outer); detector proceeds to nesting-level computation and orientation check.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=2`
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Mesh assertion**: `euler_characteristic v=8 e=12 f=8 chi=4`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1021.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1022 — compatible_orientations nesting-constraint detector: nesting_levels[child]==parent+1 direct parent-child relationship
+- **Category**: §12.14 mesh defects (sub-class: orientation/nesting-constraint/nesting-level)
+- **Sources**: CGAL `PMP.compatible_orientations (nesting-constraint detector)` Branch 3 @ line 1204 (*direct-nesting-level-match*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two closed tetrahedral components at distinct nesting levels. The outer tetrahedron (edge length 6) is the root component at nesting level 0. The inner tetrahedron (edge length 0.6) is directly nested inside at nesting level 1. No intermediate shell exists between them — the nesting level difference is exactly +1, satisfying `nesting_levels[child] == nesting_levels[parent] + 1`. Branch 3 (*direct-nesting-level-match*) fires and the detector marks faces for potential winding-order flip to achieve orientation compatibility across the nesting boundary.
+- **Reproducer recipe**: Outer: v0=(0,0,0), v1=(6,0,0), v2=(3,5.196,0), v3=(3,1.732,4.899), four outward faces. Inner: i0=(2.7,1.732,1.225), i1=(3.3,1.732,1.225), i2=(3.0,2.252,1.225), i3=(3.0,1.924,1.714), centered at outer centroid. assert_triangle_not_reachable_from(t4,t0); euler V=8, E=12, F=8, chi=4.
+- **Expected kernel behavior**: Branch 3 fires; nesting_levels[inner]==0+1 is confirmed; detector marks faces of the inner component for potential flip to ensure compatible outward/inward winding convention at the nesting boundary.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=2`
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Mesh assertion**: `euler_characteristic v=8 e=12 f=8 chi=4`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1022.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1030 — split_connected_components component_subdivision: two disconnected triangles each extracted to a new mesh (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / split-connected-components)
+- **Sources**: CGAL PMP `PMP.split_connected_components` Branch 1 (*component_subdivision*: `extract_to_new_mesh(cc_meshes[i], ...)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two isolated triangles in one polygon mesh — Component A near the origin (v0–v2), Component B 50 units away (v3–v5). No shared edges or vertices. split_connected_components iterates both CC labels and calls extract_to_new_mesh for each, producing two independent output meshes. t1 is unreachable from t0. Euler: V=6, E=6, F=2, chi=2.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), t0=(v0,v1,v2); v3=(50,0,0), v4=(51,0,0), v5=(50.5,1,0), t1=(v3,v4,v5); all 6 edges n=1; assert_triangle_not_reachable_from(t1,t0); euler V=6,E=6,F=2,chi=2.
+- **Expected kernel behavior**: Branch 1 fires; split_connected_components enumerates two CC labels, calls extract_to_new_mesh twice, and returns two single-triangle meshes.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=1`
+- **Mesh assertion**: `triangle_not_reachable_from target=1 source=0`
+- **Mesh assertion**: `euler_characteristic v=6 e=6 f=2 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1030.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1031 — remove_invalid_polygons_degenerate_filter: duplicate-vertex triangle [v0,v0,v1] triggers remove_if predicate (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: degenerate_triangle / remove-invalid-polygons-in-polygon-soup)
+- **Sources**: CGAL PMP `PMP.remove_invalid_polygons_in_polygon_soup` Branch 1 (*degenerate_polygon_filter*: `std::remove_if` predicate returns true for `has_duplicate_vertex(polygon)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Polygon soup containing one valid triangle (v0,v1,v2) and one degenerate triangle with repeated vertex index [v0,v0,v1]. The repeated-vertex face is structurally a 2-vertex polygon; remove_if's predicate evaluates has_duplicate_vertex and returns true, marking it for erasure. Branch 1 fires. Triangle t1 has zero area because two indices are identical.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0); t0=(v0,v1,v2) valid; t1=(v0,v0,v1) degenerate; assert_triangle_area_lt(t1,1e-9); edges (v0,v2) and (v1,v2) each n=1.
+- **Expected kernel behavior**: Branch 1 fires; remove_if predicate returns true for t1; t1 is moved to the tail of the polygon container for subsequent erase.
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-09`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1031.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1032 — remove_invalid_polygons_erase_execution: two degenerate triangles erased by polygons.erase(rit, end()); two valid triangles remain (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: degenerate_triangle / remove-invalid-polygons-in-polygon-soup)
+- **Sources**: CGAL PMP `PMP.remove_invalid_polygons_in_polygon_soup` Branch 2 (*erase_execution*: `polygons.erase(rit, polygons.end())`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Polygon soup with two valid triangles (t0=(v0,v1,v2), t1=(v1,v3,v2)) and two degenerate triangles with duplicate vertex indices (t2=[v0,v0,v1], t3=[v1,v1,v2]). Both degenerate faces are flagged by the Branch 1 predicate and moved to the tail by remove_if. Branch 2 then calls polygons.erase(rit, end()), permanently truncating the container. The clean outer boundary edges (v0-v2, v1-v3, v2-v3) each have n=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(3,0,0); t0=(v0,v1,v2), t1=(v1,v3,v2); t2=(v0,v0,v1), t3=(v1,v1,v2); assert_triangle_area_lt(t2,1e-9); assert_triangle_area_lt(t3,1e-9); edges (v0,v2), (v1,v3), (v2,v3) each n=1.
+- **Expected kernel behavior**: Branch 2 fires; polygons.erase removes both degenerate faces; remaining container holds only the two valid triangles t0 and t1.
+- **Mesh assertion**: `triangle_area_lt triangle=2 lt=1e-09`
+- **Mesh assertion**: `triangle_area_lt triangle=3 lt=1e-09`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1032.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder

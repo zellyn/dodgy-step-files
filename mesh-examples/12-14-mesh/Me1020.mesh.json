@@ -1,0 +1,109 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      0.866,
+      0.0
+    ],
+    [
+      0.5,
+      0.2887,
+      0.8165
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      2,
+      1
+    ],
+    [
+      0,
+      1,
+      3
+    ],
+    [
+      1,
+      2,
+      3
+    ],
+    [
+      0,
+      3,
+      2
+    ]
+  ],
+  "metadata": {
+    "id": "Me1020",
+    "schema_version": 0,
+    "defect_class": "orientation_mode_dispatch",
+    "title": "compatible_orientations nesting-constraint detector: usage-mode-dispatch on single closed component",
+    "assertions": [
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          1
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          2
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          3
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          2
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          3
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          2,
+          3
+        ],
+        "n": 2
+      },
+      {
+        "kind": "euler_characteristic",
+        "v": 4,
+        "e": 6,
+        "f": 4,
+        "chi": 2
+      }
+    ]
+  }
+}

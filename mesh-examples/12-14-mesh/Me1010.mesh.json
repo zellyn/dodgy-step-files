@@ -1,0 +1,127 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      1.0,
+      0.0
+    ],
+    [
+      0.0,
+      1.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      1.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      2,
+      3
+    ],
+    [
+      4,
+      6,
+      7
+    ],
+    [
+      4,
+      7,
+      5
+    ]
+  ],
+  "metadata": {
+    "id": "Me1010",
+    "schema_version": 0,
+    "defect_class": "open_boundary_stitch_gap",
+    "title": "run_stitch_borders vertex-merge-necessity: h1_tgt representative differs from v_to_keep; redirect to master (Branch 1)",
+    "assertions": [
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          2
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          4,
+          5
+        ],
+        "n": 1
+      },
+      {
+        "kind": "vertex_pair_distance_lt",
+        "pair": [
+          1,
+          4
+        ],
+        "lt": 1e-09
+      },
+      {
+        "kind": "vertex_pair_distance_lt",
+        "pair": [
+          2,
+          5
+        ],
+        "lt": 1e-09
+      },
+      {
+        "kind": "vertex_pair_no_shared_triangle",
+        "pair": [
+          1,
+          4
+        ]
+      },
+      {
+        "kind": "vertex_pair_no_shared_triangle",
+        "pair": [
+          2,
+          5
+        ]
+      },
+      {
+        "kind": "euler_characteristic",
+        "v": 8,
+        "e": 10,
+        "f": 4,
+        "chi": 2
+      }
+    ]
+  }
+}
