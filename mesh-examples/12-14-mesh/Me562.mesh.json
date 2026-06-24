@@ -1,0 +1,124 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      2.0,
+      0.0
+    ],
+    [
+      1.0,
+      -0.5,
+      -3.0
+    ],
+    [
+      3.0,
+      -0.5,
+      -1.5
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      2,
+      1,
+      3
+    ],
+    [
+      1,
+      4,
+      3
+    ]
+  ],
+  "metadata": {
+    "id": "Me562",
+    "schema_version": 0,
+    "defect_class": "loop_subdivision",
+    "title": "loopSubdivision sharp_edge_preservation: t0 and t1 share crease edge (v1,v2) with steep dihedral; IS_SHARPEDGE branch triggered (Branch 3)",
+    "assertions": [
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          2
+        ],
+        "n": 2
+      },
+      {
+        "kind": "adjacent_triangles_inconsistent_winding",
+        "triangles": [
+          0,
+          1
+        ]
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          3
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          1
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          2
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          2,
+          3
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          3,
+          4
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          4
+        ],
+        "n": 1
+      },
+      {
+        "kind": "euler_characteristic",
+        "v": 5,
+        "e": 7,
+        "f": 3,
+        "chi": 1
+      }
+    ]
+  }
+}

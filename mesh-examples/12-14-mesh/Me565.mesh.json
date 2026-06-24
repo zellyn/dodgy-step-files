@@ -1,0 +1,135 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.1,
+      0.0
+    ],
+    [
+      1.0,
+      2.0,
+      0.0
+    ],
+    [
+      0.0,
+      2.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      1,
+      3,
+      2
+    ],
+    [
+      0,
+      2,
+      3
+    ],
+    [
+      0,
+      3,
+      4
+    ]
+  ],
+  "metadata": {
+    "id": "Me565",
+    "schema_version": 0,
+    "defect_class": "loop_subdivision",
+    "title": "loopSubdivision edge_swap_candidacy: diagonal (v2,v3) connects new midpoint v2 to old vertex v3; poor aspect ratio motivates IS_VISITED2 swap (Branch 6)",
+    "assertions": [
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          2,
+          3
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          2
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          2
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          3
+        ],
+        "n": 2
+      },
+      {
+        "kind": "triangle_aspect_ratio_gt",
+        "triangle": 0,
+        "gt": 4.0
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          1
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          3
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          3,
+          4
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          4
+        ],
+        "n": 1
+      },
+      {
+        "kind": "euler_characteristic",
+        "v": 5,
+        "e": 8,
+        "f": 4,
+        "chi": 1
+      }
+    ]
+  }
+}
