@@ -450,17 +450,17 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
   - Suggested fixture: defect mentioning 'return initial_nb_pts==points.size()'
 
 ##### `PMP.remove_connected_components.by_face_range` — lines 739–767
-(3 branches; all UNCOVERED — no mesh fixtures exist yet)
+(3 branches; **COVERED** — Me1000–Me1002 — wave 34C, 2026-06-23)
 
-- **Branch 1** @ line 740 — *Iteration_construct*
+- **Branch 1** @ line 740 — *Iteration_construct* → **Me1000**
   - What it tests: Loop over range
   - Repair action: Process collection elements
   - Suggested fixture: defect mentioning 'for'
-- **Branch 2** @ line 741 — *Logic_guard*
+- **Branch 2** @ line 741 — *Logic_guard* → **Me1001**
   - What it tests: Tests: !get(is_cst, v
   - Repair action: Conditional branching
   - Suggested fixture: defect mentioning '!get(is_cst,'
-- **Branch 3** @ line 743 — *Alternative_path*
+- **Branch 3** @ line 743 — *Alternative_path* → **Me1002**
   - What it tests: Fallback case handling
   - Repair action: Execute alternative repair
   - Suggested fixture: defect mentioning 'else'

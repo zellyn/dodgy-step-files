@@ -1,0 +1,197 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      1.0,
+      0.0
+    ],
+    [
+      -1.0,
+      0.0,
+      0.0
+    ],
+    [
+      10.0,
+      0.0,
+      0.0
+    ],
+    [
+      11.0,
+      0.0,
+      0.0
+    ],
+    [
+      11.0,
+      1.0,
+      0.0
+    ],
+    [
+      10.0,
+      1.0,
+      0.0
+    ],
+    [
+      10.0,
+      2.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      2,
+      3
+    ],
+    [
+      4,
+      5,
+      7
+    ],
+    [
+      5,
+      6,
+      7
+    ],
+    [
+      4,
+      7,
+      8
+    ]
+  ],
+  "metadata": {
+    "id": "Me1002",
+    "schema_version": 0,
+    "defect_class": "disconnected_components",
+    "title": "remove_connected_components.by_face_range Alternative_path: constrained vertex v7 in face_range triggers else fallback; 2-tri component A + 3-tri component B with constraint (Branch 3)",
+    "assertions": [
+      {
+        "kind": "triangle_not_reachable_from",
+        "target": 2,
+        "source": 0
+      },
+      {
+        "kind": "triangle_not_reachable_from",
+        "target": 4,
+        "source": 0
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          2
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          1
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          2
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          3
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          2,
+          3
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          4,
+          7
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          5,
+          7
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          4,
+          5
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          5,
+          6
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          6,
+          7
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          7,
+          8
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          4,
+          8
+        ],
+        "n": 1
+      },
+      {
+        "kind": "euler_characteristic",
+        "v": 9,
+        "e": 12,
+        "f": 5,
+        "chi": 2
+      }
+    ]
+  }
+}

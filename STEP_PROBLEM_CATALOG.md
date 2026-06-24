@@ -36631,3 +36631,44 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=6 e=6 f=2 chi=2`
 - **Fixture path**: mesh-examples/12-14-mesh/Me982.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1000 — remove_connected_components.by_face_range Iteration_construct: loop enters for each face in range; 3-triangle component A + isolated triangle B (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / face-range-iteration)
+- **Sources**: CGAL PMP `PMP.remove_connected_components.by_face_range` Branch 1 (*Iteration_construct*: `for(face_descriptor fd : face_range) { ... }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected components: Component A is a 3-triangle open fan around hub v0=(0,0,0) with rim vertices v1-v4; Component B is a single isolated triangle (t3) with vertices v5-v7 at x=10. The face_range covers all four faces; Branch 1 fires as the loop body is entered for each face in the range. The face_range-based API is exercised with a multi-face range — the loop construct fires on face descriptors for t0 through t3. Component B is unreachable from A. Interior edges v0-v2 and v0-v3 are shared by 2 triangles each; all boundary edges are n=1. Euler: V=8, E=10, F=4, chi=2.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(-1,0,0), v4=(0,-1,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v4); v5=(10,0,0), v6=(11,0,0), v7=(10,1,0); t3=(v5,v6,v7); triangle_not_reachable_from(3,0); interior edges v0-v2, v0-v3 n=2; euler V=8,E=10,F=4,chi=2.
+- **Expected kernel behavior**: Branch 1 fires; loop body entered 4 times (once per face in face_range); per-face connected-component removal logic applied to t0-t3 in sequence.
+- **Mesh assertion**: `triangle_not_reachable_from target=3 source=0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=8 e=10 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1000.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1001 — remove_connected_components.by_face_range Logic_guard: unconstrained vertices (!get(is_cst,v)) in face_range; 4-tri component A + 2-tri unconstrained component B (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / unconstrained-vertex-removal)
+- **Sources**: CGAL PMP `PMP.remove_connected_components.by_face_range` Branch 2 (*Logic_guard*: `if(!get(is_cst, v)) { remove_face(fd, pmesh); ... }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected components. Component A is a 4-triangle closed fan around hub v0=(0,0,0) with rim vertices v1-v4 (all hub edges shared by 2 triangles). Component B is a 2-triangle rectangular patch at x=20 with vertices v5-v8; all of B's vertices are unconstrained. When the face_range covers B's faces (t4, t5), each incident vertex v satisfies !get(is_cst, v) == true, firing Branch 2 for unconditional face removal. B is unreachable from A. Shared diagonal v6-v7 in B is n=2; all other B edges are n=1. Euler: V=9, E=13, F=6, chi=2.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(-1,0,0), v4=(0,-1,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v4), t3=(v0,v4,v1); v5=(20,0,0), v6=(21,0,0), v7=(20,1,0), v8=(21,1,0); t4=(v5,v6,v7), t5=(v6,v8,v7); triangle_not_reachable_from(4,0); hub edges A n=2; diagonal v6-v7 n=2; euler V=9,E=13,F=6,chi=2.
+- **Expected kernel behavior**: Branch 2 fires; !get(is_cst, v) is true for every vertex in t4 and t5; faces removed unconditionally from the mesh.
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Mesh assertion**: `triangle_not_reachable_from target=5 source=0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[6,7] n=2`
+- **Mesh assertion**: `euler_characteristic v=9 e=13 f=6 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1001.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1002 — remove_connected_components.by_face_range Alternative_path: constrained vertex v7 triggers else fallback; 2-tri component A + 3-tri component B with constraint (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / constrained-vertex-fallback)
+- **Sources**: CGAL PMP `PMP.remove_connected_components.by_face_range` Branch 3 (*Alternative_path*: `} else { ... } // constraint-respecting fallback`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected components. Component A is a 2-triangle fan around hub v0=(0,0,0) with rim vertices v1-v3. Component B is a 3-triangle strip at x=10 with vertices v4-v8, where v7=(10,1,0) is the constrained vertex (get(is_cst, v7)==true). All three of B's triangles (t2, t3, t4) are incident on v7. When the face_range covers t2-t4, the algorithm tests is_cst on each incident vertex; v7 is constrained, so those faces take the else fallback path (Branch 3) rather than Branch 2's unconditional removal. B is unreachable from A. Shared edges v4-v7 and v5-v7 in B are n=2; all other edges n=1. Euler: V=9, E=12, F=5, chi=2.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(-1,0,0); t0=(v0,v1,v2), t1=(v0,v2,v3); v4=(10,0,0), v5=(11,0,0), v6=(11,1,0), v7=(10,1,0) [constrained], v8=(10,2,0); t2=(v4,v5,v7), t3=(v5,v6,v7), t4=(v4,v7,v8); triangle_not_reachable_from(2,0); edges v4-v7 and v5-v7 n=2; euler V=9,E=12,F=5,chi=2.
+- **Expected kernel behavior**: Branch 3 fires; get(is_cst, v7)==true for faces t2, t3, t4; else fallback executes instead of unconditional remove; constrained boundary is preserved.
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,7] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,7] n=2`
+- **Mesh assertion**: `euler_characteristic v=9 e=12 f=5 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1002.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
