@@ -36617,20 +36617,20 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me731.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
-### Me732 — checkAndRepair::meshclean BOTH_PASSES_SUCCEEDED: clean tetrahedron; ni=true, nd=true, no residual degeneracy (branch 3)
+### Me732 — checkAndRepair::meshclean BOTH_PASSES_SUCCEEDED: two clean separated triangles; ni=true, nd=true, both passes trivially succeed (branch 3)
 - **Category**: §12.14 mesh defects (sub-class: self-intersection / clean-mesh-both-passes)
 - **Sources**: MeshFix `checkAndRepair::meshclean` Branch 3 (*BOTH_PASSES_FAILED* name is a misnomer — fires when `if (ni && nd)`, both passes succeeded); `MESH_HEAL_COVERAGE.md`.
-- **Description**: Four vertices; four triangles forming a clean closed tetrahedron. No degenerate faces (all areas > 0), no self-intersections. Both strongDegeneracyRemoval and strongIntersectionRemoval complete trivially (nothing to repair) → return true → ni=true, nd=true → `if (ni && nd)` branch fires → kernel checks for residual degeneracies, finds none, returns true. Euler: V=4, E=6, F=4, chi=2 (genus-0 sphere).
-- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(1,1,2); t0=(v0,v1,v2), t1=(v0,v1,v3), t2=(v1,v2,v3), t3=(v0,v3,v2); all 6 edges shared by n=2; no SI; euler V=4,E=6,F=4,chi=2.
+- **Description**: Six vertices; two triangles in two disconnected connected components (CC A in Z=0 plane; CC B in Z=10 plane). No degenerate faces (all areas > 0), no self-intersections. Both strongDegeneracyRemoval and strongIntersectionRemoval complete trivially (nothing to repair) → return true → ni=true, nd=true → `if (ni && nd)` branch fires → kernel checks for residual degeneracies, finds none, returns true (full success). CC B is unreachable from CC A. All six edges have n=1 (boundary-only mesh).
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0) [CC A]; v3=(0,0,10), v4=(2,0,10), v5=(1,2,10) [CC B]; t0=(v0,v1,v2), t1=(v3,v4,v5); assert_triangles_do_not_intersect(0,1); assert_triangle_not_reachable_from(1,0); all edges n=1.
 - **Expected kernel behavior**: Both repair passes return true immediately; `if (ni && nd)` branch fires; isExactlyDegenerate returns false for all faces; meshclean returns true (full success).
-- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
-- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
-- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
-- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
-- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
-- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
 - **Mesh assertion**: `triangles_do_not_intersect triangles=[0,1]`
-- **Mesh assertion**: `euler_characteristic v=4 e=6 f=4 chi=2`
+- **Mesh assertion**: `triangle_not_reachable_from target=1 source=0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me732.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
