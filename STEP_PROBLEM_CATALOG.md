@@ -36593,6 +36593,62 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me1130 — SI in annular strip (chi=0): euler_characteristic != 1 complex-topology branch
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/ring-topology)
+- **Sources**: CGAL `PMP.remove_self_intersections` Branch 11 @ line 2264 (*topology-genus-classification*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: a 4-sector annular strip of 8 triangles (inner boundary at r=0.5, outer at r=1.5, all at z=0) has two distinct boundary loops, giving Euler characteristic chi = V - E + F = 8 - 16 + 8 = 0 (not 1; not a disk). An intruder triangle (tri 8) pierces sector-0 by passing through its centroid with z straddling +/-1. The SI expansion includes the full annular strip; its non-disk topology (chi=0) forces handle_CC_with_complex_topology.
+- **Reproducer recipe**: 4-sector ring: inner[i] = (0.5*cos(i*pi/2), 0.5*sin(i*pi/2), 0), outer[i] = (1.5*cos(i*pi/2), 1.5*sin(i*pi/2), 0); 8 ring triangles (2 per sector); 1 intruder whose apex is at centroid of sector-0 lower tri, spanning z=+/-1.
+- **Expected kernel behavior**: detect euler_characteristic_of_selection = 0 != 1; route to handle_CC_with_complex_topology rather than simple hole-fill.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,8]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1130.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1131 — SI pair needing 2-ring expansion: expand_face_selection step>0 branch
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/expansion-needed)
+- **Sources**: CGAL `PMP.remove_self_intersections` Branch 12 @ line 2041 (*expansion-step-depth-control*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: tris 0 and 1 form a center crossing pair (XY and XZ planes, shared apex at origin). Tris 2-5 form an inner belt sharing edges with the center pair; this selection is still not disk-fillable. Only after adding the outer belt (tris 6-9) does the total selection become topologically a disk (chi=1), enabling hole-fill at step=2. This exercises the iterative expand_face_selection loop that expands the face set by multiple topological rings before attempting repair.
+- **Reproducer recipe**: center crossing pair (tris 0-1); inner belt at radius 2.0 (tris 2-5, 4 triangles sharing edges with center pair); outer belt at radius 3.0 (tris 6-9, 4 triangles extending the selection to a disk).
+- **Expected kernel behavior**: detect that initial SI region is not disk-fillable; iterate expand_face_selection with step > 0 to include 2 rings; hole-fill once disk topology is achieved.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,7] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1131.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1132 — SI in 45-degree-rotated diamond mesh: OBB Aff_transformation branch
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/obb-transform)
+- **Sources**: CGAL `PMP.remove_self_intersections` Branch 13 @ line 2069 (*bounding-box-obb-transform-applicability*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: a diamond-shaped mesh (4 triangles fan around center, rotated 45 degrees so principal axes are diagonal) lies in the z=0 plane with vertices at cardinal diagonals (distance sqrt(2) from center). An intruder triangle (tri 4) pierces the NE quadrant (tri 0) by passing through its centroid. Because the mesh is not axis-aligned, an axis-aligned bounding box is substantially larger than the oriented bounding box. When CGAL_PMP_REPAIR_SI_USE_OBB is enabled, remove_self_intersections computes oriented_bounding_box and Aff_transformation to align the mesh with its principal axes before compactifying the SI region.
+- **Reproducer recipe**: center v0=(0,0,0); cardinal diagonal vertices at (sqrt2,0,0), (0,sqrt2,0), (-sqrt2,0,0), (0,-sqrt2,0); 4 quadrant triangles; 1 intruder at NE centroid spanning z=+/-1.
+- **Expected kernel behavior**: detect non-axis-aligned orientation; compute oriented_bounding_box; apply Aff_transformation; proceed with OBB-compactified SI region.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,4]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1132.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1133 — SI with singleton compactified region (cc_faces.size()==1): skip branch
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/singleton-cc)
+- **Sources**: CGAL `PMP.remove_self_intersections` Branch 14 @ line 2135 (*singleton-cc-rejection*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: two triangles form a minimal crossing pair with no surrounding belt. Tri 0 lies in the XY-ish plane (apex at (0.5,0.5,0), base at (1.5,1.5,0) and (1.5,-0.5,0)). Tri 1 pierces tri 0 by straddling z=0 through its centroid (~(1.167,0.5,0)). After bounding-box compactification the candidate CC has exactly one face (cc_faces.size()==1), and the algorithm issues a `continue`, skipping hole-fill because there is no surrounding hole topology. Distinct apex position from Me024 to exercise the branch independently.
+- **Reproducer recipe**: tri 0 = (0.5,0.5,0),(1.5,1.5,0),(1.5,-0.5,0); tri 1 = intruder at centroid spanning z=+/-1 with third vertex at (2.0,0.5,0). No additional faces.
+- **Expected kernel behavior**: detect SI; attempt compactification; find singleton CC (size==1); issue continue; skip hole-fill.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1133.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1134 — three independent SI piercers: something_was_done=false convergence stall
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/convergence-stall)
+- **Sources**: CGAL `PMP.remove_self_intersections` Branch 15 @ line 2311 (*iteration-convergence-stalling-detection*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: a large base triangle (tri 0) in the z=0 plane is pierced by three independent intruders (tris 1, 2, 3) at well-separated locations (left, center, right). Each intruder has its apex below z=0 and its upper base above z=0, crossing tri 0 at a distinct point. No single hole-fill pass resolves all three crossings simultaneously; after each individual pass, `something_was_done` stays false. The stall-detector fires, calling `faces_to_treat.swap` to restore the previous face list and exiting the iteration. Three piercers make the stall more robust than Me025's two-piercer configuration.
+- **Reproducer recipe**: tri 0 = large flat triangle (0,0,0)-(3,0,0)-(1.5,3,0); tri 1 = left intruder apex (0.8,0.5,-1), base above z=0; tri 2 = center intruder apex (1.5,1.0,-1), base above z=0; tri 3 = right intruder apex (2.3,0.5,-0.8), base above z=0.
+- **Expected kernel behavior**: detect three independent SI crossings; attempt hole-fill; detect no topology change (something_was_done=false); restore faces_to_treat via swap and exit iteration.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,2]`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,3]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1134.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me1150 — is_degenerate_edge equal_points: endpoint positions identical (zero-length edge between v0==v1) (Branch 1)
 - **Category**: §12.14 mesh defects (sub-class: degenerate_edge / zero-length-edge)
 - **Sources**: CGAL PMP `PMP.is_degenerate_edge` Branch 1 (*equal_points*: `if(get(vpm, source(e, tm)) == get(vpm, target(e, tm))) return true`); `MESH_HEAL_COVERAGE.md`.

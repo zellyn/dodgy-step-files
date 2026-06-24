@@ -1,0 +1,22 @@
+# Me1130: SI in annular strip (chi=0): euler_characteristic != 1 complex-topology branch
+# defect_class: self_intersection_ring_topology
+v 0.5 0 0
+v 1.5 0 0
+v 3.06161699787e-17 0.5 0
+v 9.18485099361e-17 1.5 0
+v -0.5 6.12323399574e-17 0
+v -1.5 1.83697019872e-16 0
+v -9.18485099361e-17 -0.5 0
+v -2.75545529808e-16 -1.5 0
+v 0.666666666667 0.5 1
+v 0.666666666667 0.5 -1
+v 1.86666666667 0.5 0
+f 1 2 4
+f 1 4 3
+f 3 4 6
+f 3 6 5
+f 5 6 8
+f 5 8 7
+f 7 8 2
+f 7 2 1
+f 9 10 11

@@ -701,7 +701,7 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
   - Fixture: Me248 — unit tetrahedron + micro-tetrahedron at (5,5,5) with s=0.02; both area AND volume criteria satisfied → OR-condition fires
 
 ##### `PMP.remove_self_intersections` — lines 2356–2527
-(15 branches; all UNCOVERED — no mesh fixtures exist yet)
+(15 branches; Branches 11-15 covered by Me1130-Me1134; Branches 1-10 covered by wave 38B/38C Me1110-Me1124)
 
 - **Branch 1** @ line 2379 — *genus-preservation-requirement*
   - What it tests: whether to preserve topological genus (preserve_genus NP)
@@ -743,26 +743,26 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
   - What it tests: whether constrained smoothing failed and needs re-attempt without constraints
   - Repair action: retry smoothing without sharp-edge constraints
   - Suggested fixture: defect mentioning 'fixed_by_smoothing', 'constrain_sharp_edges'
-- **Branch 11** @ line 2264 — *topology-genus-classification*
+- **Branch 11** @ line 2264 — *topology-genus-classification* — **Me1130**
   - What it tests: whether selected CC is topologically a disk (chi=1) or has higher genus/holes
   - Repair action: branch to complex-topology handler vs disk-hole-filling
-  - Suggested fixture: defect mentioning 'euler_characteristic_of_selection', 'handle_CC_with_complex_topology'
-- **Branch 12** @ line 2041 — *expansion-step-depth-control*
+  - Fixture: Me1130 — 4-sector annular strip with intruder; chi=0 (two boundary loops) routes to complex-topology handler
+- **Branch 12** @ line 2041 — *expansion-step-depth-control* — **Me1131**
   - What it tests: whether to expand face selection by multiple topological layers (step > 0)
   - Repair action: iteratively expand neighborhood vs work on initial SI region only
-  - Suggested fixture: defect mentioning 'step', 'expand_face_selection'
-- **Branch 13** @ line 2069 — *bounding-box-obb-transform-applicability*
+  - Fixture: Me1131 — center SI pair needs 2-ring expansion (inner belt + outer belt) before disk-fillable
+- **Branch 13** @ line 2069 — *bounding-box-obb-transform-applicability* — **Me1132**
   - What it tests: whether oriented-bounding-box compactification is enabled (CGAL_PMP_REPAIR_SI_USE_OBB)
   - Repair action: use OBB-based selection vs axis-aligned-box selection
-  - Suggested fixture: defect mentioning 'oriented_bounding_box', 'Aff_transformation'
-- **Branch 14** @ line 2135 — *singleton-cc-rejection*
+  - Fixture: Me1132 — diamond mesh rotated 45 degrees; OBB substantially tighter than axis-aligned box; Aff_transformation applied
+- **Branch 14** @ line 2135 — *singleton-cc-rejection* — **Me1133**
   - What it tests: whether compactified region consists of single face only
   - Repair action: skip further processing (no topology to heal)
-  - Suggested fixture: defect mentioning 'cc_faces.size() == 1', 'continue'
-- **Branch 15** @ line 2311 — *iteration-convergence-stalling-detection*
+  - Fixture: Me1133 — minimal 2-triangle crossing with no belt; cc_faces.size()==1 triggers skip
+- **Branch 15** @ line 2311 — *iteration-convergence-stalling-detection* — **Me1134**
   - What it tests: whether the current step changed the mesh topology at all
   - Repair action: restore face list and skip SI recomputation vs recompute with new config
-  - Suggested fixture: defect mentioning 'something_was_done', 'faces_to_treat.swap'
+  - Fixture: Me1134 — three independent intruders on large base triangle; something_was_done=false; faces_to_treat.swap restores list
 
 ##### `PMP.self_intersections_impl` — lines 343–523
 (11 branches; 10 covered by Me050–Me059; 1 skipped — Branch 5 TBB-availability-guard is compile-time link flag, not a geometry property)
