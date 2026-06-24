@@ -36689,3 +36689,107 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[6,8] n=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me456.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me460 — selectConnectedComponent seed_enqueue: todo.appendHead(t0) initializes BFS from seed triangle (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / selectConnectedComponent-seed-enqueue)
+- **Sources**: MeshFix `Basic_TMesh.selectConnectedComponent` Branch 1 (*seed_enqueue*: `todo.appendHead(t0)` @ line 1070); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangles forming a single connected component (v0–v3 with hub edges (v0,v1) and (v0,v2) each shared by 2 triangles). The seed triangle t0=(v0,v1,v2) is enqueued unconditionally as the first BFS step. The two neighbors t1=(v1,v0,v3) and t2=(v0,v2,v3) are reachable in one BFS hop. Interior edges (v0,v1) n=2, (v0,v2) n=2; boundary edge (v1,v3) n=1. Euler: V=4, E=6, F=3, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,-1,0); t0=(v0,v1,v2), t1=(v1,v0,v3), t2=(v0,v2,v3); assert_edge_shared(v0,v1,2); assert_edge_shared(v0,v2,2); euler V=4,E=6,F=3,chi=1.
+- **Expected kernel behavior**: Branch 1 fires immediately; t0 is pushed onto todo; subsequent BFS dequeues process t1 and t2, marking all 3 triangles visited (ns=3).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me460.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me461 — selectConnectedComponent unvisited_triangle_check: BFS skips already-marked triangle on second dequeue (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / selectConnectedComponent-visited-guard)
+- **Sources**: MeshFix `Basic_TMesh.selectConnectedComponent` Branch 2 (*unvisited_triangle_check*: `if (!IS_VISITED(t))` @ line 1074); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four-triangle pinwheel fan around center vertex vc. Seed is t0=(v0,v1,vc). The triangle t3=(v3,v0,vc) is adjacent to both t0 (via spoke v0,vc) and t2 (via spoke v3,vc), so it is enqueued twice during BFS. When t3 is dequeued the second time IS_VISITED(t3) is true and Branch 2 skips processing. All 4 spoke edges (v0-vc, v1-vc, v2-vc, v3-vc) n=2; all 4 rim edges n=1. Euler: V=5, E=8, F=4, chi=1.
+- **Reproducer recipe**: vc=(0,0,0), v0=(0,2,0), v1=(-2,0,0), v2=(0,-2,0), v3=(2,0,0); t0=(v0,v1,vc), t1=(v1,v2,vc), t2=(v2,v3,vc), t3=(v3,v0,vc); all 4 spoke edges n=2; all 4 rim edges n=1; euler V=5,E=8,F=4,chi=1.
+- **Expected kernel behavior**: Branch 2 fires when t3 is dequeued the second time (enqueued by both t0 and t2); IS_VISITED guard returns true; inner block (enqueue neighbors + mark) is skipped.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `euler_characteristic v=5 e=8 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me461.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me462 — selectConnectedComponent neighbor_t1_enqueue: BFS enqueues t1 across non-sharp edge e1 (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / selectConnectedComponent-t1-enqueue)
+- **Sources**: MeshFix `Basic_TMesh.selectConnectedComponent` Branch 3 (*neighbor_t1_enqueue*: `if (t1 != NULL && !IS_VISITED(t1) && (!sos || !IS_SHARPEDGE(t->e1)))` @ line 1078); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing interior edge (v0,v2) — the e1 edge of seed triangle t0=(v0,v1,v2). The neighbor t1=(v2,v0,v3) is the t1-neighbor of t0. With sos=false (default BFS call), Branch 3 fires and t1 is enqueued regardless of sharp-edge flags. Interior edge (v0,v2) n=2; four boundary edges n=1. Euler: V=4, E=5, F=2, chi=1. Note: IS_SHARPEDGE runtime flag is not representable in fixture schema; this documents the non-sharp topological precondition.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(-1,1,0); t0=(v0,v1,v2), t1=(v2,v0,v3); assert_edge_shared(v0,v2,2); four outer edges n=1; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 3 fires when t0 is dequeued; t1 (across e1 = (v0,v2)) is non-NULL, unvisited, and e1 is not sharp → t1 appended to todo.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me462.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me463 — selectConnectedComponent neighbor_t2_enqueue: BFS enqueues t2 across non-sharp edge e2 (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / selectConnectedComponent-t2-enqueue)
+- **Sources**: MeshFix `Basic_TMesh.selectConnectedComponent` Branch 4 (*neighbor_t2_enqueue*: `if (t2 != NULL && !IS_VISITED(t2) && (!sos || !IS_SHARPEDGE(t->e2)))` @ line 1079); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangles where the seed t0=(v0,v1,v2) has neighbors across both its e1-edge (v1,v2) and its e2-edge (v0,v1). The t2-neighbor of t0 across e2=(v0,v1) is fixture triangle t1=(v1,v0,v3). Interior edges (v0,v1) n=2, (v1,v2) n=2; five boundary edges n=1. Euler: V=5, E=7, F=3, chi=1. Note: IS_SHARPEDGE flag is runtime-only; fixture shows non-sharp topological precondition.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(1,-2,0), v4=(3,1,0); t0=(v0,v1,v2), t1=(v1,v0,v3) [t2-neighbor of t0 via e2=(v0,v1)], t2=(v1,v2,v4) [t1-neighbor of t0 via e1=(v1,v2)]; euler V=5,E=7,F=3,chi=1.
+- **Expected kernel behavior**: Branch 4 fires when t0 is dequeued; t2 (across e2 = (v0,v1)) is non-NULL, unvisited, and e2 is not sharp → appended to todo.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `euler_characteristic v=5 e=7 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me463.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me464 — selectConnectedComponent neighbor_t3_enqueue: BFS enqueues t3 across non-sharp edge e3 (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / selectConnectedComponent-t3-enqueue)
+- **Sources**: MeshFix `Basic_TMesh.selectConnectedComponent` Branch 5 (*neighbor_t3_enqueue*: `if (t3 != NULL && !IS_VISITED(t3) && (!sos || !IS_SHARPEDGE(t->e3)))` @ line 1080); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four triangles — seed t0=(v0,v1,v2) with all three edge-neighbors present. The t3-neighbor across e3=(v1,v2) is fixture triangle t3_nbr=(v2,v1,v5). All three edges of t0 are interior (n=2); six outer boundary edges n=1. Euler: V=6, E=9, F=4, chi=1. Note: with sos=true and SHARPEDGE(e3)=true, t3_nbr would be isolated as a separate component; this fixture shows the non-blocked traversal.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(-1,1,0), v4=(1,-2,0), v5=(3.5,1.5,0); t0=(v0,v1,v2) [seed], t1_nbr=(v2,v0,v3) [e1-neighbor], t2_nbr=(v1,v0,v4) [e2-neighbor], t3_nbr=(v2,v1,v5) [e3-neighbor, Branch 5 target]; all three t0 edges n=2; six outer edges n=1; euler V=6,E=9,F=4,chi=1.
+- **Expected kernel behavior**: Branch 5 fires when t0 is dequeued; t3_nbr (across e3=(v1,v2)) is non-NULL, unvisited, and e3 not sharp → appended to todo. If sos=true and e3 were sharp, Branch 5 would be skipped and t3_nbr would remain unvisited.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,5] n=1`
+- **Mesh assertion**: `euler_characteristic v=6 e=9 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me464.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me465 — selectConnectedComponent mark_and_count: MARK_VISIT(t);ns++ fires for each BFS-processed triangle (ns=4) (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / selectConnectedComponent-mark-and-count)
+- **Sources**: MeshFix `Basic_TMesh.selectConnectedComponent` Branch 6 (*mark_and_count*: `MARK_VISIT(t); ns++` @ line 1082); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four triangles in a 2×2 grid (two quads, each split diagonally). Vertices v0-v5 on a unit grid. BFS from t0=(v0,v1,v3) visits all 4 triangles in order: t0→t1→t2→t3; MARK_VISIT + ns++ fires 4 times → ns=4 at termination. Interior shared edges (v1,v3) n=2, (v1,v4) n=2, (v2,v4) n=2; six boundary edges n=1. All adjacent triangle pairs have consistent upward normal (dot>0.9). Euler: V=6, E=9, F=4, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0), v3=(0,1,0), v4=(1,1,0), v5=(2,1,0); t0=(v0,v1,v3), t1=(v1,v4,v3), t2=(v1,v2,v4), t3=(v2,v5,v4); interior edges (v1,v3),(v1,v4),(v2,v4) n=2; boundary edges n=1; assert adjacent_triangles_normal_dot_gt for each adjacent pair; euler V=6,E=9,F=4,chi=1.
+- **Expected kernel behavior**: Branch 6 fires 4 times (once per triangle); final ns=4 representing the single connected component's triangle count.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `adjacent_triangles_normal_dot_gt triangles=[0,1] threshold=0.9`
+- **Mesh assertion**: `adjacent_triangles_normal_dot_gt triangles=[1,2] threshold=0.9`
+- **Mesh assertion**: `adjacent_triangles_normal_dot_gt triangles=[2,3] threshold=0.9`
+- **Mesh assertion**: `euler_characteristic v=6 e=9 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me465.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
