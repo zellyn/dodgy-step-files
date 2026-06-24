@@ -1,0 +1,77 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      1.0,
+      0.0
+    ],
+    [
+      3.0,
+      1.0,
+      0.0
+    ],
+    [
+      4.0,
+      0.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      1,
+      3,
+      2
+    ],
+    [
+      1,
+      4,
+      3
+    ]
+  ],
+  "metadata": {
+    "id": "Me1080",
+    "schema_version": 0,
+    "defect_class": "degenerate_triangle",
+    "title": "remove_degenerate_faces no_degenerate_faces: three non-degenerate triangles; degenerate_face_set.empty() early return (Branch 1)",
+    "assertions": [
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          2
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          3
+        ],
+        "n": 2
+      },
+      {
+        "kind": "euler_characteristic",
+        "v": 5,
+        "e": 7,
+        "f": 3,
+        "chi": 1
+      }
+    ]
+  }
+}
