@@ -1185,20 +1185,20 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
 (4 methods, 14 branches)
 
 ##### `PMP.merge_reversible_connected_components` — lines 1019–1141
-(3 branches; all UNCOVERED — no mesh fixtures exist yet)
+(3 branches; all COVERED — wave 34A)
 
-- **Branch 1** @ line 1050 — *component_area_filter*
+- **Branch 1** @ line 1050 — *component_area_filter* — **Me980**
   - What it tests: component area below threshold
   - Repair action: mark small components as mergeable
-  - Suggested fixture: defect mentioning 'component.area()'
-- **Branch 2** @ line 1080 — *orientation_flip_feasibility*
+  - Fixture: mesh-examples/12-14-mesh/Me980.mesh.json
+- **Branch 2** @ line 1080 — *orientation_flip_feasibility* — **Me981**
   - What it tests: flipping component enables boundary stitching
   - Repair action: flip component orientation and stitch
-  - Suggested fixture: defect mentioning 'reverse_face_orientations', 'stitch'
-- **Branch 3** @ line 1110 — *stitching_compatibility_check*
+  - Fixture: mesh-examples/12-14-mesh/Me981.mesh.json
+- **Branch 3** @ line 1110 — *stitching_compatibility_check* — **Me982**
   - What it tests: border halfedges are geometrically compatible
   - Repair action: merge vertices only if compatible
-  - Suggested fixture: defect mentioning 'stitch_borders'
+  - Fixture: mesh-examples/12-14-mesh/Me982.mesh.json
 
 ##### `PMP.orient` — lines 361–420
 (3 branches; all UNCOVERED — no mesh fixtures exist yet)

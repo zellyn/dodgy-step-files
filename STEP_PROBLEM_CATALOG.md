@@ -36592,3 +36592,42 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me980 — merge_reversible_connected_components component_area_filter: micro-triangle CC-B (area≈5e-9) below threshold; marked as mergeable (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: multi-component / area-filter)
+- **Sources**: CGAL PMP `PMP.merge_reversible_connected_components` Branch 1 (*component_area_filter*: `if (component.area() < area_threshold) { mark_as_mergeable(component); }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected connected components: CC-A is a single large triangle (vertices at (0,0,0),(1,0,0),(0,1,0); area=0.5) and CC-B is a micro-triangle at (10,0,0) with side length 1e-4 (area≈5e-9). CC-B falls below any reasonable area threshold, so the component_area_filter branch fires and marks CC-B as a merge candidate. CC-A and CC-B share no edges. Euler: V=6, E=6, F=2, chi=2.
+- **Reproducer recipe**: a0=(0,0,0), a1=(1,0,0), a2=(0,1,0); b0=(10,0,0), b1=(10,1e-4,0), b2=(10,0,1e-4); t0=(a0,a1,a2); t1=(b0,b1,b2); assert_triangle_not_reachable_from(1,0); assert_triangle_area_lt(1,1e-7); euler V=6,E=6,F=2,chi=2.
+- **Expected kernel behavior**: Branch 1 fires on CC-B; component_area_filter marks the micro-triangle component as reversible/mergeable because its area is below threshold.
+- **Mesh assertion**: `triangle_not_reachable_from target=1 source=0`
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-07`
+- **Mesh assertion**: `euler_characteristic v=6 e=6 f=2 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me980.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me981 — merge_reversible_connected_components orientation_flip_feasibility: Patch-B wound CW vs Patch-A CCW; flip Patch-B enables stitch (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: multi-component / orientation-flip)
+- **Sources**: CGAL PMP `PMP.merge_reversible_connected_components` Branch 2 (*orientation_flip_feasibility*: `if (can_stitch_after_flip(component_A, component_B)) { reverse_face_orientations(component_A); stitch(...); }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected flat quad patches (each two triangles). Patch A at z=0 is wound CCW (normal=+Z). Patch B at z=0.001 covers the same XY rectangle but wound CW (normal=-Z; inverted). Their boundary loops are geometrically coincident after flip. The orientation_flip_feasibility branch fires: flipping Patch B's winding makes its border halfedges align with Patch A's, enabling stitch_borders to merge them. Interior diagonal of each patch shared by 2 triangles. Euler: V=8, E=10, F=4, chi=2.
+- **Reproducer recipe**: a0-a3 at z=0 CCW; b0-b3 at z=0.001 CW (t2,t3 reversed winding); assert_triangle_not_reachable_from(2,0); assert_edge_shared(a0,a2,2); assert_edge_shared(b0,b2,2); assert_triangle_normal_z_negative(2); euler V=8,E=10,F=4,chi=2.
+- **Expected kernel behavior**: Branch 2 fires; can_stitch_after_flip returns true because reversing Patch B's winding aligns its boundary halfedges with Patch A's boundary; reverse_face_orientations + stitch_borders merge the two components.
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,6] n=2`
+- **Mesh assertion**: `triangle_normal_z_negative triangle=2`
+- **Mesh assertion**: `euler_characteristic v=8 e=10 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me981.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me982 — merge_reversible_connected_components stitching_compatibility_check: border edge endpoint coincident at (1,0,0); stitch_borders welds components (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: multi-component / stitch-compatibility)
+- **Sources**: CGAL PMP `PMP.merge_reversible_connected_components` Branch 3 (*stitching_compatibility_check*: `for (halfedge h : border_halfedges(component)) { if (compatible_for_stitch(h, candidate)) { stitch_borders(...); } }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two open triangle patches with no shared edge structure. Patch A: triangle (a0,a1,a2) with a1 at (1,0,0). Patch B: triangle (b0,b1,b2) with b0 also at (1,0,0). Vertices a1 (index 1) and b0 (index 3) are distinct entries at the same coordinate — the half-edge structure has no connection, so components are disconnected. The stitching_compatibility_check branch fires when it detects that border halfedge endpoints of Patch A and Patch B are geometrically coincident (distance=0 < tolerance); stitch_borders merges a1/b0. Euler: V=6, E=6, F=2, chi=2.
+- **Reproducer recipe**: a0=(0,0,0), a1=(1,0,0), a2=(0.5,1,0); b0=(1,0,0)[=a1], b1=(2,0,0), b2=(1.5,1,0); t0=(a0,a1,a2), t1=(b0,b1,b2); assert_triangle_not_reachable_from(1,0); assert_vertex_pair_distance_lt(1,3,1e-9); assert_vertex_pair_no_shared_triangle(1,3); euler V=6,E=6,F=2,chi=2.
+- **Expected kernel behavior**: Branch 3 fires; compatible_for_stitch passes for the (a1,b0) border halfedge pair; stitch_borders merges vertices 1 and 3 and joins the two triangles into a single connected surface.
+- **Mesh assertion**: `triangle_not_reachable_from target=1 source=0`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,3] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,3]`
+- **Mesh assertion**: `euler_characteristic v=6 e=6 f=2 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me982.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
