@@ -36592,3 +36592,73 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me860 — strongIntersectionRemoval intersection-detection trigger: selectIntersectingTriangles non-empty; enters removal loop (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/si-detection-trigger)
+- **Sources**: MeshFix `Basic_TMesh.strongIntersectionRemoval` Branch 1 @ line 381 (*Intersection-detection trigger*: `selectIntersectingTriangles()` returns non-empty); `MESH_HEAL_COVERAGE.md`.
+- **Description**: triangle 0 is a flat base in the XY plane. Triangle 1 is an intruder spanning from z=+1 to z=-1, piercing triangle 0 through its interior. Two additional clean triangles (2 and 3) form a separate connected component 30 units away. The presence of at least one SI pair causes `selectIntersectingTriangles()` to return a non-empty set, exercising Branch 1 where the removal loop is entered rather than exiting with immediate success.
+- **Reproducer recipe**: tri 0 = `(0,0,0),(2,0,0),(1,2,0)` in XY; tri 1 = `(1,0.8,1),(1,0.8,-1),(0,0.8,0)` straddling z=0; tris 2-3 = clean quad at y=30.
+- **Expected kernel behavior**: selectIntersectingTriangles returns {tri 0, tri 1}; removal loop entered; at least one iteration of SI repair runs.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `triangles_do_not_intersect triangles=[2,3]`
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me860.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me861 — strongIntersectionRemoval iteration limit: dual persistent SI piercers exhaust max_iters (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/iteration-limit)
+- **Sources**: MeshFix `Basic_TMesh.strongIntersectionRemoval` Branch 2 @ line 381 (*Iteration limit*: `max_iters / iter_count exceeded`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: triangle 0 is a large flat base in the XY plane. Triangle 1 is an independent intruder piercing triangle 0 near the left. Triangle 2 is a second independent intruder piercing triangle 0 near the right, sharing no vertices with either triangle 0 or triangle 1. Because the two crossing sites are independent, no single repair pass resolves both simultaneously — the configuration is persistently self-intersecting across iterations. This dual-persistent SI arrangement exhausts the `max_iters` budget, triggering Branch 2.
+- **Reproducer recipe**: tri 0 = `(0,0,0),(4,0,0),(2,4,0)` in XY; tri 1 = `(0.8,1.5,-1.5),(0.8,1.5,1.5),(2,1.5,0)` left intruder; tri 2 = `(3,1.5,-1.5),(3,1.5,1.5),(1.5,1.5,0)` right intruder.
+- **Expected kernel behavior**: iter_count increments past max_iters without reducing the SI count; Branch 2 exits the loop with failure status (intersections remain).
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,2]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me861.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me862 — strongIntersectionRemoval selection-growth depth: multi-ring growSelection expansion for n=1,2,... (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/selection-growth-depth)
+- **Sources**: MeshFix `Basic_TMesh.strongIntersectionRemoval` Branch 3 @ line 383 (*Selection-growth depth*: `for (n=1...) growSelection` ring expansion); `MESH_HEAL_COVERAGE.md`.
+- **Description**: triangles 0 and 1 form a core SI pair (base in XY plane + intruder spanning z=±1.5). Triangles 2–5 form a first-ring belt of 4 triangles sharing edges with triangle 0. Triangles 6–9 form a second-ring belt sharing edges with the first ring. The multi-ring surrounding belt means a single `growSelection(1)` call does not capture enough context; the growth must reach ring 2 (n=2) before the selected region is large enough for repair. On each successive repair pass n is incremented, exercising Branch 3.
+- **Reproducer recipe**: core pair at origin; ring-1 = 4 triangles sharing each edge of tri 0; ring-2 = 4 triangles extending from ring-1 outward; edge (v0,v1) shared by 3 triangles (tris 0, 2, 5); ring-boundary edges shared by exactly 2 triangles.
+- **Expected kernel behavior**: first pass growSelection(n=1) captures ring-1 but insufficient; second pass growSelection(n=2) captures ring-2; with fuller context selection the repair proceeds.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=3`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,7] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me862.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me870 — selectIntersectingTriangles selected-vs-full-mesh: isSelection restricts spatial scan to pre-selected intersecting pair (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: self-intersection / spatial-partition-selection)
+- **Sources**: MeshFix `Basic_TMesh.selectIntersectingTriangles` Branch 1 (*Selected-vs-full-mesh*: `if (isSelection) { selT = ...; selV = ...; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four triangles total: two pre-selected crossing triangles (t0 in XY plane, t1 in XZ plane, sharing apex at origin) and two clean unselected triangles far away at X=10. isSelection=true causes the spatial-partition cell builder to iterate only over {t0,t1} (the selT/selV subset) rather than all four triangles. The crossing pair produces a genuine SI on the positive X half-axis. The unselected pair is spatially disjoint (bounding boxes X=10..12 vs X=0..2).
+- **Reproducer recipe**: v0=(0,0,0) shared apex; v1=(2,1,0), v2=(2,-1,0) for t0 (XY plane); v3=(2,0,1), v4=(2,0,-1) for t1 (XZ plane); t0=(v0,v1,v2), t1=(v0,v3,v4) → assert_triangles_self_intersect(t0,t1); clean pair t2=(v5,v6,v7) at X=10, t3=(v8,v9,v10) at X=10 → assert_triangles_do_not_intersect(t2,t3).
+- **Expected kernel behavior**: Branch 1 fires; isSelection=true restricts cell population to selT={t0,t1} and selV={v0..v4}; spatial scan never visits t2/t3; SI is detected only within the selection.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `triangles_do_not_intersect triangles=[2,3]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me870.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me871 — selectIntersectingTriangles cell-saturation: 15-triangle dense cluster forces DI_MAX_TRIS_PER_CELL subdivision; embedded SI pair (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: self-intersection / spatial-cell-saturation)
+- **Sources**: MeshFix `Basic_TMesh.selectIntersectingTriangles` Branch 2 (*Cell-saturation threshold*: `if (n_cells > DI_MAX_NUMBER_OF_CELLS || tris_per_cell > DI_MAX_TRIS_PER_CELL) { subdivide }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: 15 flat radial triangles all sharing the origin as apex, with outer vertices packed in a 0.1-radius circle in the XY plane. All 15 triangles' bounding boxes heavily overlap in the same tiny spatial region, saturating a single partition cell above the per-cell triangle density threshold. One oblique crossing triangle (sharing apex and outer[0], rising in Z to v_up=(0.05,0,0.1)) intersects the flat fan. The dense bounding-box overlap forces the cell-saturation branch, triggering subdivision rather than direct pair testing.
+- **Reproducer recipe**: apex=(0,0,0); 15 outer vertices at radius 0.1 evenly spaced in XY; v_up=(0.05,0,0.1); 15 flat radial triangles (apex,outer[i],outer[i+1 mod 15]) + 1 crossing triangle (apex,outer[0],v_up); assert_triangles_self_intersect(tris[0],t_cross); assert_triangles_do_not_intersect(tris[1],tris[2]).
+- **Expected kernel behavior**: Branch 2 fires; the dense cluster's cell is detected as saturated (tris_per_cell > DI_MAX_TRIS_PER_CELL or n_cells ceiling hit); cell is subdivided at midpoint rather than used directly; SI between tris[0] and t_cross is ultimately detected after subdivision.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,15]`
+- **Mesh assertion**: `triangles_do_not_intersect triangles=[1,2]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me871.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me872 — selectIntersectingTriangles spatial-recursion vs termination: fork() at outer cells then todo.appendTail at leaf cell containing SI pair (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: self-intersection / spatial-partition-recursion)
+- **Sources**: MeshFix `Basic_TMesh.selectIntersectingTriangles` Branch 3 (*Spatial recursion vs termination*: `if (condition) { fork(); } else { todo.appendTail(cell); }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two crossing triangles (t0 diagonal in XY, t1 in XZ plane, both sharing apex at origin) embedded in a scene with six surrounding triangles distributed across distinct spatial quadrants. The surrounding triangles populate the outer partition cells (fork() fires when those cells are too large), while the SI pair (t0,t1) ends up in a leaf cell that is small enough to trigger todo.appendTail. Two near-core triangles also exercise the fork→appendTail recursion path at an intermediate level.
+- **Reproducer recipe**: v0=(0,0,0); v1=(3,3,0), v2=(3,0,0) for t0; v3=(3,0,3), v4=(3,0,-1) for t1; t0=(v0,v1,v2), t1=(v0,v3,v4) → assert_triangles_self_intersect(t0,t1); four outer-quadrant triangles at ±3..7 in X/Y/Z → assert_triangles_do_not_intersect pairs; two near-core triangles (t6,t7) adjacent to SI pair.
+- **Expected kernel behavior**: Branch 3 fires repeatedly as partition recurses; fork() called for outer and intermediate cells; todo.appendTail called once a leaf cell containing the SI pair (t0,t1) is reached; pair-testing at the leaf detects the crossing.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `triangles_do_not_intersect triangles=[2,3]`
+- **Mesh assertion**: `triangles_do_not_intersect triangles=[4,5]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me872.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
