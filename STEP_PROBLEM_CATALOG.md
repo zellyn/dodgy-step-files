@@ -36593,6 +36593,74 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me1010 — run_stitch_borders vertex-merge-necessity: h1_tgt representative differs from v_to_keep; redirect to master (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: open_boundary_stitch_gap / border-vertex-union-find)
+- **Sources**: CGAL PMP `PMP.run_stitch_borders` Branch 1 (*vertex-merge-necessity*: `if(get(uvpm, h1_tgt) != get(uvpm, v_to_keep))`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two open rectangular patches (A: t0=(v0,v1,v2), t1=(v0,v2,v3); B: t2=(v4,v6,v7), t3=(v4,v7,v5)) with coincident boundary seam. Patch A's right seam edge (v1,v2) and patch B's left seam edge (v4,v5) are geometrically identical but stored as distinct vertex indices. When run_stitch_borders processes the halfedge pair (h1: v0→v1 in A, h2: v5→v4 in B), h1_tgt=v1 has its own union-find representative while v_to_keep=v4; they differ, so Branch 1 fires and redirects all halfedges at v1's old rep to the master. Coincident pairs: v1==v4 at (1,0,0), v2==v5 at (1,1,0). Each seam edge on 1 triangle. Euler: V=8, E=10, F=4, chi=2.
+- **Reproducer recipe**: Patch A: v0=(0,0,0), v1=(1,0,0), v2=(1,1,0), v3=(0,1,0); t0=(v0,v1,v2), t1=(v0,v2,v3). Patch B: v4=(1,0,0), v5=(1,1,0), v6=(2,0,0), v7=(2,1,0); t2=(v4,v6,v7), t3=(v4,v7,v5). edge_shared(v1,v2,1); edge_shared(v4,v5,1); vertex_pair_distance_lt(v1,v4,1e-9); vertex_pair_distance_lt(v2,v5,1e-9); no_shared_triangle(v1,v4); no_shared_triangle(v2,v5); euler V=8,E=10,F=4,chi=2.
+- **Expected kernel behavior**: Branch 1 fires; the union-find representative of h1_tgt is different from v_to_keep, so all halfedges currently pointing at h1_tgt's old representative vertex are redirected to v_to_keep (the patch B counterpart), unifying the two vertex records.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[2,5] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,4]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[2,5]`
+- **Mesh assertion**: `euler_characteristic v=8 e=10 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1010.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1011 — run_stitch_borders second-vertex-pair-distinct: h2_src representative differs from h1_tgt master; conditional merge fires (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: open_boundary_stitch_gap / border-vertex-union-find)
+- **Sources**: CGAL PMP `PMP.run_stitch_borders` Branch 2 (*second-vertex-pair-distinct*: `if(get(uvpm, h2_src) != get(uvpm, h1_tgt))`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two open V-shaped patches sharing a two-segment horizontal seam. Patch A: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0), v3=(1,1,0); t0=(v0,v1,v3), t1=(v1,v2,v3). Patch B: v4=(0,0,0), v5=(1,0,0), v6=(2,0,0), v7=(1,-1,0); t2=(v4,v7,v5), t3=(v5,v7,v6). The seam spans two edges (v0,v1)/(v4,v5) and (v1,v2)/(v5,v6). When processing halfedge h1 (A: v0→v1), h2_src=v5 at (1,0,0) is B's counterpart to h1_tgt=v1. Since v5 starts with its own union-find representative distinct from v1's master, Branch 2 fires and merges h2_src into h1_tgt's master. Three coincident pairs: v0==v4, v1==v5, v2==v6. Euler: V=8, E=10, F=4, chi=2.
+- **Reproducer recipe**: Patch A: v0-v3 with t0=(v0,v1,v3), t1=(v1,v2,v3). Patch B: v4-v7 with t2=(v4,v7,v5), t3=(v5,v7,v6). edge_shared(v0,v1,1); edge_shared(v1,v2,1); edge_shared(v4,v5,1); edge_shared(v5,v6,1); vertex_pair_distance_lt pairs (v0,v4), (v1,v5), (v2,v6) lt=1e-9; no_shared_triangle pairs; euler V=8,E=10,F=4,chi=2.
+- **Expected kernel behavior**: Branch 2 fires; h2_src's initial representative differs from h1_tgt's master, so the union-find merges h2_src into that master, ensuring the two vertex records on B's side of the seam midpoint are unified.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,6] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,5] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[2,6] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[0,4]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,5]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[2,6]`
+- **Mesh assertion**: `euler_characteristic v=8 e=10 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1011.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1012 — run_stitch_borders second-target-merge-necessity: h2_tgt representative differs from second-endpoint master; union_find merge fires (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: open_boundary_stitch_gap / border-vertex-union-find)
+- **Sources**: CGAL PMP `PMP.run_stitch_borders` Branch 3 (*second-target-merge-necessity*: `if(get(uvpm, h2_tgt) != get(uvpm, v_to_keep))`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two open patches with different fan sizes sharing a single-edge seam. Patch A (three-triangle fan above y=0): v0=(0,0,0), v1=(1,0,0), v2=(-0.5,0,0), v3=(1.5,0,0), v4=(0.5,1,0); t0=(v0,v1,v4), t1=(v2,v0,v4), t2=(v1,v3,v4). Patch B (two triangles below y=0): v5=(0,0,0), v6=(1,0,0), v7=(-0.5,0,0), v8=(0.5,-1,0); t3=(v6,v5,v8), t4=(v5,v7,v8). Seam edge: (v0,v1) in A, (v5,v6) in B. When h1 runs v0→v1 and h2 runs v6→v5, h2_tgt=v5 at (0,0,0) has its own representative distinct from the master for v0's seam position; Branch 3 fires and merges h2_tgt into that master. Euler: V=9, E=12, F=5, chi=2.
+- **Reproducer recipe**: Patch A V=5: v0=(0,0,0), v1=(1,0,0), v2=(-0.5,0,0), v3=(1.5,0,0), v4=(0.5,1,0). Patch B V=4: v5=(0,0,0), v6=(1,0,0), v7=(-0.5,0,0), v8=(0.5,-1,0). Triangles as in source. edge_shared(v0,v1,1); edge_shared(v5,v6,1); vertex_pair_distance_lt(v0,v5,1e-9); vertex_pair_distance_lt(v1,v6,1e-9); no_shared_triangle(v0,v5); no_shared_triangle(v1,v6); euler V=9,E=12,F=5,chi=2.
+- **Expected kernel behavior**: Branch 3 fires; h2_tgt's union-find representative is distinct from the second-endpoint master v_to_keep_2, so all halfedges at h2_tgt's old representative are redirected to v_to_keep_2, completing the second-vertex stitch operation.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,6] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,5] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,6] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[0,5]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,6]`
+- **Mesh assertion**: `euler_characteristic v=9 e=12 f=5 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1012.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1013 — run_stitch_borders opposite-edge-source-merge: h1_src representative distinct from h2_tgt master; merge completes two-endpoint stitch (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: open_boundary_stitch_gap / border-vertex-union-find)
+- **Sources**: CGAL PMP `PMP.run_stitch_borders` Branch 4 (*opposite-edge-source-merge*: `if(get(uvpm, h1_src) != get(uvpm, v_to_keep_2))`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two open rectangular patches meeting at a horizontal seam along y=0. Patch A (above): v0=(0,0,0), v1=(2,0,0), v2=(0,2,0), v3=(2,2,0); t0=(v0,v1,v3), t1=(v0,v3,v2). Patch B (below): v4=(0,0,0), v5=(2,0,0), v6=(0,-2,0), v7=(2,-2,0); t2=(v5,v4,v6), t3=(v5,v6,v7). Seam edge: (v0,v1) open in A, (v4,v5) open in B. Halfedge h1 runs v0→v1 in A; h2 runs v5→v4 in B. After Branches 1-3 handle h1_tgt=v1 and h2_tgt=v4, Branch 4 checks h1_src=v0: its union-find representative is distinct from the master assigned to v_to_keep_2=v4, so Branch 4 fires and merges v0 into v4's master, completing the full two-endpoint stitching. Coincident pairs: v0==v4 at (0,0,0), v1==v5 at (2,0,0). Euler: V=8, E=10, F=4, chi=2.
+- **Reproducer recipe**: Patch A: v0=(0,0,0), v1=(2,0,0), v2=(0,2,0), v3=(2,2,0); t0=(v0,v1,v3), t1=(v0,v3,v2). Patch B: v4=(0,0,0), v5=(2,0,0), v6=(0,-2,0), v7=(2,-2,0); t2=(v5,v4,v6), t3=(v5,v6,v7). edge_shared(v0,v1,1); edge_shared(v4,v5,1); vertex_pair_distance_lt(v0,v4,1e-9); vertex_pair_distance_lt(v1,v5,1e-9); no_shared_triangle pairs; euler V=8,E=10,F=4,chi=2.
+- **Expected kernel behavior**: Branch 4 fires; h1_src (v0 in patch A) has its own union-find representative distinct from the master assigned to h2_tgt (v4 in patch B). The union-find merges h1_src into v_to_keep_2, completing the stitch of both boundary vertices for this halfedge pair.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,5] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[0,4]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,5]`
+- **Mesh assertion**: `euler_characteristic v=8 e=10 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1013.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me1020 — compatible_orientations nesting-constraint detector: usage-mode-dispatch on single closed component
 - **Category**: §12.14 mesh defects (sub-class: orientation/nesting-constraint/mode-dispatch)
 - **Sources**: CGAL `PMP.compatible_orientations (nesting-constraint detector)` Branch 1 @ line 1182 (*usage-mode-dispatch*); `MESH_HEAL_COVERAGE.md`.
