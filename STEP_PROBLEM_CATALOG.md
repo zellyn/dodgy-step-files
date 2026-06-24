@@ -36593,6 +36593,37 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me800 — is_polygon_soup_a_polygon_mesh duplicate_vertex_in_polygon: triangle [v0,v1,v0] has repeated vertex index (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: polygon-soup-validity / duplicate-vertex-in-polygon)
+- **Sources**: CGAL PMP `PMP.is_polygon_soup_a_polygon_mesh` Branch 1 (*duplicate_vertex_in_polygon*: `for(std::size_t j=0;j<polygon.size();++j){ if(polygon[j]==polygon[k]) return false; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three-triangle soup with one collapsed polygon. Triangle t0 is [v0, v1, v0] — vertex index 0 appears at positions 0 and 2. The inner loop over index pairs detects this repeated index and returns false immediately, without inspecting the rest of the soup. Triangles t1 and t2 form a valid manifold pair (edge (v1,v2) shared n=2) to show the surrounding geometry is otherwise ordinary. t0 has zero area because two corners coincide at the same point.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1.5,1,0); t0=(v0,v1,v0) collapsed, t1=(v0,v1,v2), t2=(v1,v3,v2); assert_triangle_area_lt(0,1e-9); assert_edge_shared(v1,v2,2).
+- **Expected kernel behavior**: Branch 1 fires on polygon t0; is_polygon_soup_a_polygon_mesh returns false; the soup is rejected as non-mesh-representable due to the self-repeated vertex.
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-09`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me800.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me801 — is_polygon_soup_a_polygon_mesh non_manifold_edge: edge (v0,v1) shared by 3 triangles marks edge singular (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: polygon-soup-validity / non-manifold-edge)
+- **Sources**: CGAL PMP `PMP.is_polygon_soup_a_polygon_mesh` Branch 2 (*non_manifold_edge*: `if(it->second.size() > 2){ ...; marked_edges.insert(edge); }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangles all sharing edge (v0, v1). After the index-duplicate check passes for each polygon, the validator builds an edge-to-polygon map. Edge (v0,v1) is incident on all three triangles — exceeding the manifold maximum of two — so it is inserted into marked_edges as a singular (non-manifold) edge. Each triangle fans to a distinct apex (v2 above XZ, v3 below XZ, v4 out of plane) so the non-manifold edge is the only defect.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,-1,0), v4=(0.5,0,1); t0=(v0,v1,v2), t1=(v0,v1,v3), t2=(v0,v1,v4); assert_edge_shared(v0,v1,3).
+- **Expected kernel behavior**: Branch 2 fires; edge (v0,v1) is inserted into marked_edges; is_polygon_soup_a_polygon_mesh returns false (or reports non-manifold) for this soup.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=3`
+- **Fixture path**: mesh-examples/12-14-mesh/Me801.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me802 — is_polygon_soup_a_polygon_mesh orientation_consistency: t0 and t1 both traverse halfedge v1→v2; fill_edge_map returns INCOMPATIBLE_ORIENTATION (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: polygon-soup-validity / orientation-consistency)
+- **Sources**: CGAL PMP `PMP.is_polygon_soup_a_polygon_mesh` Branch 3 (*orientation_consistency*: `if(fill_edge_map(polygon,edge_map)==INCOMPATIBLE_ORIENTATION) return false;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing physical edge {v1, v2} but both traversing it in the same directed order (v1→v2). fill_edge_map records each polygon's directed halfedges. When both t0=(v0,v1,v2) and t1=(v3,v1,v2) emit the same directed halfedge v1→v2, the map detects a collision and returns INCOMPATIBLE_ORIENTATION — the soup cannot be given a consistent orientation. The two normals point in opposite Z directions (dot product = -1) confirming the winding inconsistency.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1.5,1,0); t0=(v0,v1,v2), t1=(v3,v1,v2); both emit halfedge v1→v2; assert_adjacent_triangles_inconsistent_winding(0,1).
+- **Expected kernel behavior**: Branch 3 fires; fill_edge_map returns INCOMPATIBLE_ORIENTATION for polygon t1; is_polygon_soup_a_polygon_mesh returns false; the soup is rejected as orientation-inconsistent.
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me802.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me820 — does_polygon_soup_self_intersect_duplicate_point_presence: coincident v0==v3 at (0,0,0); merge_duplicate_points fires before SI check (Branch 1)
 - **Category**: §12.14 mesh defects (sub-class: polygon-soup-self-intersection / duplicate-point-presence)
 - **Sources**: CGAL PMP `does_polygon_soup_self_intersect` Branch 1 (*duplicate_point_presence*: `merge_duplicate_points_in_polygon_soup` call fires when coincident-coordinate vertex pair exists); `MESH_HEAL_COVERAGE.md`.
