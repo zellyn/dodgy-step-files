@@ -1,0 +1,10 @@
+# Me412: refineSelectedHolePatches_edge_interior_detection: shared edge seen twice cleared from BIT5, added to interior_edges (Branch 3)
+# defect_class: hole_in_hull
+v 0 0 0
+v 1 0 0
+v 1 1 0
+v 2 0 0
+v 2 1 0
+f 1 2 3
+f 2 4 3
+f 3 4 5

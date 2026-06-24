@@ -1,0 +1,6 @@
+# Me414: refineSelectedHolePatches_vertex_split_density_check: large sparse triangle triggers centroid insertion (Branch 5)
+# defect_class: hole_in_hull
+v 0 0 0
+v 6 0 0
+v 3 5 0
+f 1 2 3

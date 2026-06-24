@@ -1,0 +1,22 @@
+ply
+format ascii 1.0
+comment Me410: refineSelectedHolePatches_region_initialization: BFS builds hole-fill region from pre-selected t0 (Branch 1)
+comment defect_class: hole_in_hull
+element vertex 6
+property float x
+property float y
+property float z
+element face 5
+property list uchar int vertex_indices
+end_header
+1 1 0
+0 1 0
+1 2 0
+2 1 0
+1 0 0
+0 0 0
+3 0 1 2
+3 0 2 3
+3 0 3 4
+3 0 4 1
+3 1 5 4

@@ -36592,3 +36592,318 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me410 — refineSelectedHolePatches_region_initialization: t0 pre-selected; BFS builds visited region from seed (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: hole-fill refinement / region-initialization)
+- **Sources**: MeshFix `holeFilling::refineSelectedHolePatches` Branch 1 (*REGION_INITIALIZATION*: `if (IS_VISITED(t0)) { UNMARK_VISIT(t0); ... }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Five triangles forming a connected hole-fill patch (4-triangle fan around hub v0 plus one extra outer triangle). t0=(v0,v1,v2) is the BFS seed (pre-selected/IS_VISITED). BFS propagates via 5 interior edges (hub spokes plus one extra) to reach all 5 region triangles. Interior edges (n=2): (v0,v1),(v0,v2),(v0,v3),(v0,v4),(v1,v4). Outer boundary edges (n=1): (v1,v2),(v2,v3),(v3,v4),(v1,v5),(v5,v4). Euler: V=6, E=10, F=5, chi=1.
+- **Reproducer recipe**: v0=(1,1,0) hub; v1=(0,1,0), v2=(1,2,0), v3=(2,1,0), v4=(1,0,0), v5=(0,0,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v4), t3=(v0,v4,v1), t4=(v1,v5,v4); assert interior edges n=2; boundary edges n=1; euler V=6,E=10,F=5,chi=1.
+- **Expected kernel behavior**: Branch 1 fires on t0 (IS_VISITED); t0 unmarked and used as BFS seed; BFS expands via interior edges to collect all 5 region triangles into the refinement patch.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `euler_characteristic v=6 e=10 f=5 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me410.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me411 — refineSelectedHolePatches_edge_first_occurrence: edge not yet visited; marked with BIT5 and added to all_edges (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: hole-fill refinement / edge-first-occurrence)
+- **Sources**: MeshFix `holeFilling::refineSelectedHolePatches` Branch 2 (*EDGE_FIRST_OCCURRENCE*: `if (!IS_BIT(e, 5)) { MARK_BIT(e, 5); all_edges.appendHead(e); }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four triangles in a 3x2 grid strip (v0–v5). As the algorithm traverses each triangle's edges, every edge is seen for the first time with BIT5 clear — Branch 2 fires, setting BIT5 and appending to all_edges. Interior edges (n=2): (v1,v3),(v1,v4),(v2,v4) — each triggers Branch 2 on first pass then Branch 3 on second. Boundary edges (n=1): (v0,v1),(v0,v3),(v3,v4),(v1,v2),(v4,v5),(v2,v5) — each triggers Branch 2 once and is never revisited. Euler: V=6, E=9, F=4, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0), v3=(0,1,0), v4=(1,1,0), v5=(2,1,0); t0=(v0,v1,v3), t1=(v1,v4,v3), t2=(v1,v2,v4), t3=(v2,v5,v4); assert interior (v1,v3),(v1,v4),(v2,v4) n=2; boundary edges n=1; euler V=6,E=9,F=4,chi=1.
+- **Expected kernel behavior**: Branch 2 fires for each edge on its first traversal; 9 total first-occurrence events; interior edges later fire Branch 3 on second traversal.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
+- **Mesh assertion**: `euler_characteristic v=6 e=9 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me411.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me412 — refineSelectedHolePatches_edge_interior_detection: shared edge seen twice; cleared from BIT5, added to interior_edges (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: hole-fill refinement / edge-interior-detection)
+- **Sources**: MeshFix `holeFilling::refineSelectedHolePatches` Branch 3 (*EDGE_INTERIOR_DETECTION*: `else { UNMARK_BIT(e, 5); interior_edges.appendHead(e); }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangles in an L-shape (v0–v4). Two interior edges (v1,v2) and (v2,v3) are each traversed twice during the region walk. On first traversal BIT5 is set (Branch 2); on second traversal BIT5 is already set → Branch 3 fires: BIT5 is cleared and the edge is added to interior_edges (excluded from sigma averaging). Boundary edges (n=1): (v0,v1),(v0,v2),(v1,v3),(v3,v4),(v2,v4). Euler: V=5, E=7, F=3, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(1,1,0), v3=(2,0,0), v4=(2,1,0); t0=(v0,v1,v2), t1=(v1,v3,v2), t2=(v2,v3,v4); assert (v1,v2) n=2, (v2,v3) n=2; boundary edges n=1; euler V=5,E=7,F=3,chi=1.
+- **Expected kernel behavior**: Branch 3 fires twice — once for (v1,v2) and once for (v2,v3); both cleared from BIT5 and moved to interior_edges, removing them from sigma computation.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=5 e=7 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me412.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me413 — refineSelectedHolePatches_edge_length_averaging: non-interior boundary edges summed to compute sigma (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: hole-fill refinement / edge-length-averaging)
+- **Sources**: MeshFix `holeFilling::refineSelectedHolePatches` Branch 4 (*EDGE_LENGTH_AVERAGING*: `sigma += e->length(); noe++`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four triangles on a 3x2 grid (v0–v5) with 3 interior edges and 6 boundary edges. Interior edges (v0,v4),(v1,v4),(v2,v4) are excluded from sigma. The 6 boundary edges each have length 1.0; Branch 4 fires 6 times, accumulating sigma=6.0, noe=6, average=1.0. This average length becomes the density threshold (sigma/noe=1.0) used in the Branch 5 vertex-split density check. Euler: V=6, E=9, F=4, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0), v3=(0,1,0), v4=(1,1,0), v5=(2,1,0); t0=(v0,v1,v4), t1=(v0,v4,v3), t2=(v1,v2,v4), t3=(v2,v5,v4); interior (v0,v4),(v1,v4),(v2,v4) n=2; boundary edges length=1.0 n=1; euler V=6,E=9,F=4,chi=1.
+- **Expected kernel behavior**: Branch 4 fires for each of the 6 boundary edges; sigma accumulates to 6.0; noe=6; sigma/noe=1.0 becomes the vertex-split threshold.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=6 e=9 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me413.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me414 — refineSelectedHolePatches_vertex_split_density_check: large sparse triangle; all dv>sigma → centroid vertex inserted (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: hole-fill refinement / vertex-split-density)
+- **Sources**: MeshFix `holeFilling::refineSelectedHolePatches` Branch 5 (*VERTEX_SPLIT_DENSITY_CHECK*: `if (dv1>sigma && dv1>sv1 && dv2>sigma && dv2>sv2 && dv3>sigma && dv3>sv3) { splitTriangle(t, centroid); nnt++; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Single large triangle v0=(0,0,0), v1=(6,0,0), v2=(3,5,0). Centroid at (3, 5/3, 0). Vertex-to-centroid distances: dv0≈3.43, dv1≈3.43, dv2≈3.33 — all greatly exceed any plausible sigma≈1.0 and local average sv. All three density conditions satisfied → Branch 5 fires, centroid vertex inserted, nnt incremented. Aspect ratio ≈1.77 confirms sparseness. Euler: V=3, E=3, F=1, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(6,0,0), v2=(3,5,0); t0=(v0,v1,v2); all 3 edges boundary (n=1); assert_triangle_aspect_ratio_gt(t0, 1.5); euler V=3,E=3,F=1,chi=1.
+- **Expected kernel behavior**: Branch 5 fires for t0; centroid=(3,5/3,0) inserted as new vertex; splitTriangle called; nnt incremented; next iteration finds pnnt != nnt (no convergence yet).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `triangle_aspect_ratio_gt triangle=0 gt=1.5`
+- **Mesh assertion**: `euler_characteristic v=3 e=3 f=1 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me414.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me415 — refineSelectedHolePatches_edge_swap_delaunay_improvement: long diagonal satisfies swap condition; swap accepted (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: hole-fill refinement / edge-swap-Delaunay)
+- **Sources**: MeshFix `holeFilling::refineSelectedHolePatches` Branch 6 (*EDGE_SWAP_DELAUNAY_IMPROVEMENT*: `if (e->squaredLength() >= l*0.999999) { e->swap(1); ... }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles t0=(v0,v1,v3) and t1=(v1,v2,v3) sharing diagonal (v1,v3). The current diagonal (v1,v3) has squared length 10; the alternative diagonal (v0,v2) has squared length 5. Condition: squaredLength(v1,v3)=10 >= 5*0.999999 → TRUE → Branch 6: swap is accepted (e->swap(1)); swapped diagonal (v0,v2) is shorter (≈2.24 < ≈3.16). Euler: V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(3,0,0), v2=(1,2,0), v3=(0,1,0); t0=(v0,v1,v3), t1=(v1,v2,v3); assert (v1,v3) n=2; boundary edges n=1; assert_vertex_pair_distance_lt(v0,v2,2.5); euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 6 fires; squaredLength(v1,v3)=10 >= 5*0.999999; e->swap(1) executed; new diagonal (v0,v2) is shorter; neighboring edges added to swap list for further improvement.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,2] lt=2.5`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me415.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me416 — refineSelectedHolePatches_vertex_insertion_convergence: no new vertices in iteration; pnnt==nnt triggers gits++ (Branch 7)
+- **Category**: §12.14 mesh defects (sub-class: hole-fill refinement / vertex-insertion-convergence)
+- **Sources**: MeshFix `holeFilling::refineSelectedHolePatches` Branch 7 (*VERTEX_INSERTION_CONVERGENCE*: `if (pnnt == nnt) gits++; if (gits >= 10) break;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four small triangles in a fan around hub v4=(0.5,0.5,0) with unit outer edges. Outer boundary edges are each 1.0 → sigma=1.0. Hub spoke lengths ≈0.707; vertex-to-centroid distances ≈0.527 < sigma=1.0 for all triangles. All density checks fail → no centroid vertex inserted → nnt==pnnt → Branch 7: gits incremented. After 10 consecutive empty iterations the loop breaks. Hub-spoke distances <0.8 confirm vertex proximity to centroid. Euler: V=5, E=8, F=4, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(1,1,0), v3=(0,1,0), v4=(0.5,0.5,0); t0=(v0,v1,v4), t1=(v1,v2,v4), t2=(v2,v3,v4), t3=(v3,v0,v4); hub spokes n=2; outer edges n=1; assert_vertex_pair_distance_lt(v0,v4,0.8)×4; euler V=5,E=8,F=4,chi=1.
+- **Expected kernel behavior**: Branch 7 fires each iteration: all dv < sigma → no splitTriangle → nnt unchanged → pnnt==nnt → gits++; after 10 iterations gits reaches 10 and the refinement loop exits.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,4] lt=0.8`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=0.8`
+- **Mesh assertion**: `euler_characteristic v=5 e=8 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me416.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me420 — removeOverlappingTriangles_overlapping_edge_swappable: two coplanar triangles sharing edge; swap resolves overlap (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: overlapping-triangles / edge-swap-success)
+- **Sources**: MeshFix `checkAndRepair::removeOverlappingTriangles` Branch 1 (*OVERLAPPING_EDGE_SWAPPABLE*: `if (!e->swap()) { … }` — swap returns 0/success); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two coplanar triangles in the XY plane sharing edge (v0,v1). t0=(v0,v1,v2) is the large triangle with apex v2=(0,2,0); t1=(v0,v1,v3) has apex v3=(1,1,0) strictly inside t0's area making their interiors overlap. The edge swap replaces (v0,v1) with the diagonal (v2,v3), producing two non-overlapping triangles. Branch 1 fires because `e->swap()` returns 0 (success) and no post-swap side-effect check is needed.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(0,2,0), v3=(1,1,0); t0=(v0,v1,v2), t1=(v0,v1,v3); assert_edge_shared(v0,v1,2); assert_triangles_self_intersect(0,1); assert_adjacent_triangles_normal_dot_gt(0,1,0.99).
+- **Expected kernel behavior**: Branch 1 fires; `e->swap()` replaces shared edge (v0,v1) with diagonal (v2,v3); no degeneracy or secondary overlap; repair completes in one pass.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `adjacent_triangles_normal_dot_gt triangles=[0,1] threshold=0.99`
+- **Fixture path**: mesh-examples/12-14-mesh/Me420.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me421 — removeOverlappingTriangles_swap_creates_degeneracy: post-swap triangle collinear; undo swap (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: overlapping-triangles / swap-degeneracy)
+- **Sources**: MeshFix `checkAndRepair::removeOverlappingTriangles` Branch 2 (*SWAP_CREATES_DEGENERACY*: `else if (e->t1->isExactlyDegenerate() || e->t2->isExactlyDegenerate())`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two coplanar triangles sharing edge (v0=(0,0,0), v1=(2,0,0)). t0 has apex v2=(0,2,0); t1 has apex v3=(0,1,0), which is inside t0 → overlap. Crucially v0, v2, and v3 are all on the y-axis (x=0): after swapping (v0,v1) to (v2,v3), the new triangle (v0,v2,v3) has all three vertices collinear (x=0) → zero area → exactly degenerate. Branch 2 detects this and undoes the swap via `e->swap(1)`.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(0,2,0), v3=(0,1,0); t0=(v0,v1,v2), t1=(v0,v1,v3); assert_edge_shared(v0,v1,2); assert_triangles_self_intersect(0,1); assert_vertex_on_edge(v3,v0,v2); assert_adjacent_triangles_normal_dot_gt(0,1,0.99).
+- **Expected kernel behavior**: Branch 2 fires; `e->t1->isExactlyDegenerate()` evaluates true for the post-swap triangle (v0,v2,v3) because v3 lies on segment v0–v2; swap is undone.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `vertex_on_edge vertex=3 edge=[0,2]`
+- **Mesh assertion**: `adjacent_triangles_normal_dot_gt triangles=[0,1] threshold=0.99`
+- **Fixture path**: mesh-examples/12-14-mesh/Me421.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me422 — removeOverlappingTriangles_swap_creates_neighbor_overlap_next: post-swap nextEdge(t1) overlaps neighbor; undo (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: overlapping-triangles / swap-next-edge-side-effect)
+- **Sources**: MeshFix `checkAndRepair::removeOverlappingTriangles` Branch 3 (*SWAP_CREATES_NEIGHBOR_OVERLAP_NEXT*: `else if (e->nextEdge(e)->overlaps())`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three coplanar triangles. t0=(v0,v1,v2) and t1=(v0,v1,v3) share overlapping edge (v0=(0,0), v1=(3,0)); v3=(1.5,1) is inside t0 → primary overlap. t2=(v1,v3,v4) with v4=(2.5,1) neighbors t1 via edge (v1,v3) (t1's next-edge after e). After swapping (v0,v1) to (v2,v3), the new t1=(v0,v2,v3) would have its next-edge neighbor t2 in an overlapping arrangement — Branch 3 fires, swap is undone.
+- **Reproducer recipe**: v0=(0,0,0), v1=(3,0,0), v2=(1.5,3,0), v3=(1.5,1,0), v4=(2.5,1,0); t0=(v0,v1,v2), t1=(v0,v1,v3), t2=(v1,v3,v4); assert_edge_shared(v0,v1,2); assert_edge_shared(v1,v3,2); assert_triangles_self_intersect(0,1); assert_adjacent_triangles_normal_dot_gt(0,1,0.99).
+- **Expected kernel behavior**: Branch 3 fires; after swap, `e->nextEdge(e)->overlaps()` evaluates true for the new t1's next-edge vs t2; swap is undone via `e->swap(1)`.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `adjacent_triangles_normal_dot_gt triangles=[0,1] threshold=0.99`
+- **Fixture path**: mesh-examples/12-14-mesh/Me422.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me423 — removeOverlappingTriangles_swap_creates_neighbor_overlap_prev: post-swap prevEdge(t1) overlaps neighbor; undo (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: overlapping-triangles / swap-prev-edge-side-effect)
+- **Sources**: MeshFix `checkAndRepair::removeOverlappingTriangles` Branch 4 (*SWAP_CREATES_NEIGHBOR_OVERLAP_PREV*: `else if (e->prevEdge(e)->overlaps())`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three coplanar triangles. t0=(v0,v1,v2) and t1=(v0,v1,v3) share overlapping edge (v0=(0,0), v1=(3,0)); v3=(1.5,1) is inside t0 → primary overlap. t2=(v3,v0,v4) with v4=(−0.5,0.5) neighbors t1 via edge (v3,v0) (t1's prev-edge before e). After swapping (v0,v1) to (v2,v3), the new t1=(v0,v2,v3) would have its prev-edge (v3,v0) neighbor t2 in an overlapping arrangement — Branch 4 fires, swap is undone.
+- **Reproducer recipe**: v0=(0,0,0), v1=(3,0,0), v2=(1.5,3,0), v3=(1.5,1,0), v4=(−0.5,0.5,0); t0=(v0,v1,v2), t1=(v0,v1,v3), t2=(v3,v0,v4); assert_edge_shared(v0,v1,2); assert_edge_shared(v0,v3,2); assert_triangles_self_intersect(0,1); assert_adjacent_triangles_normal_dot_gt(0,1,0.99).
+- **Expected kernel behavior**: Branch 4 fires; after swap, `e->prevEdge(e)->overlaps()` evaluates true for the new t1's prev-edge vs t2; swap is undone.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `adjacent_triangles_normal_dot_gt triangles=[0,1] threshold=0.99`
+- **Fixture path**: mesh-examples/12-14-mesh/Me423.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me424 — removeOverlappingTriangles_swap_creates_t2_overlap_next: post-swap t2->nextEdge overlaps neighbor; undo (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: overlapping-triangles / swap-t2-next-edge-side-effect)
+- **Sources**: MeshFix `checkAndRepair::removeOverlappingTriangles` Branch 5 (*SWAP_CREATES_T2_OVERLAP_NEXT*: `else if (e->t2->nextEdge(e)->overlaps())`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three coplanar triangles. t0=(v0,v1,v2) and t1=(v0,v1,v3) share overlapping edge (v0=(0,0), v1=(3,0)); v3=(1.5,1) is inside t0 → primary overlap. t3=(v2,v3,v4) with v4=(2,2) neighbors the second incident triangle of the edge via the post-swap edge (v2,v3) (that triangle's next-edge). After swapping, the new t2-side triangle's next-edge overlaps t3 → Branch 5 fires, swap is undone.
+- **Reproducer recipe**: v0=(0,0,0), v1=(3,0,0), v2=(1.5,3,0), v3=(1.5,1,0), v4=(2,2,0); t0=(v0,v1,v2), t1=(v0,v1,v3), t3=(v2,v3,v4); assert_edge_shared(v0,v1,2); assert_edge_shared(v2,v3,1); assert_triangles_self_intersect(0,1); assert_adjacent_triangles_normal_dot_gt(0,1,0.99).
+- **Expected kernel behavior**: Branch 5 fires; after swap, `e->t2->nextEdge(e)->overlaps()` evaluates true; swap is undone via `e->swap(1)`.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `adjacent_triangles_normal_dot_gt triangles=[0,1] threshold=0.99`
+- **Fixture path**: mesh-examples/12-14-mesh/Me424.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me425 — removeOverlappingTriangles_swap_creates_t2_overlap_prev: post-swap t2->prevEdge overlaps neighbor; undo (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: overlapping-triangles / swap-t2-prev-edge-side-effect)
+- **Sources**: MeshFix `checkAndRepair::removeOverlappingTriangles` Branch 6 (*SWAP_CREATES_T2_OVERLAP_PREV*: `else if (e->t2->prevEdge(e)->overlaps())`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three coplanar triangles. t0=(v0,v1,v2) and t1=(v0,v1,v3) share overlapping edge (v0=(0,0), v1=(3,0)); v3=(1.5,1) is inside t0 → primary overlap. t3=(v1,v2,v4) with v4=(2.5,2) neighbors t0 via edge (v1,v2) (the prev-edge of the second incident triangle when traversed from the swapped position). After swapping, the new t2-side triangle's prev-edge would overlap t3 → Branch 6 fires, swap is undone.
+- **Reproducer recipe**: v0=(0,0,0), v1=(3,0,0), v2=(1.5,3,0), v3=(1.5,1,0), v4=(2.5,2,0); t0=(v0,v1,v2), t1=(v0,v1,v3), t3=(v1,v2,v4); assert_edge_shared(v0,v1,2); assert_edge_shared(v1,v2,2); assert_triangles_self_intersect(0,1); assert_adjacent_triangles_normal_dot_gt(0,1,0.99).
+- **Expected kernel behavior**: Branch 6 fires; after swap, `e->t2->prevEdge(e)->overlaps()` evaluates true; swap is undone via `e->swap(1)`.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `adjacent_triangles_normal_dot_gt triangles=[0,1] threshold=0.99`
+- **Fixture path**: mesh-examples/12-14-mesh/Me425.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me426 — removeOverlappingTriangles_unresolvable_overlap: multi-overlap tangle; both triangles unlinked (Branch 7)
+- **Category**: §12.14 mesh defects (sub-class: overlapping-triangles / unresolvable-unlink)
+- **Sources**: MeshFix `checkAndRepair::removeOverlappingTriangles` Branch 7 (*UNRESOLVABLE_OVERLAP*: `unlinkTriangle(t1); unlinkTriangle(t2); nr++;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three coplanar triangles forming a multi-overlap tangle. t0=(v0,v1,v2) is the large outer triangle (vertices (0,0)-(4,0)-(2,4)). t1=(v0,v1,v3) shares edge (v0,v1) with t0; v3=(2,2) is inside t0 → first overlapping pair. t2=(v0,v4,v2) shares edge (v0,v2) with t0; v4=(2,3) is inside t0 → second overlapping pair. Whichever overlap is addressed first by swapping, the other persists and creates a cascading condition where the swap cannot cleanly resolve the tangle — both triangles of the first pair must be unlinked.
+- **Reproducer recipe**: v0=(0,0,0), v1=(4,0,0), v2=(2,4,0), v3=(2,2,0), v4=(2,3,0); t0=(v0,v1,v2), t1=(v0,v1,v3), t2=(v0,v4,v2); assert_edge_shared(v0,v1,2); assert_edge_shared(v0,v2,2); assert_triangles_self_intersect(0,1); assert_triangles_self_intersect(0,2); assert_adjacent_triangles_normal_dot_gt(0,1,0.99); assert_adjacent_triangles_normal_dot_gt(0,2,0.99).
+- **Expected kernel behavior**: Branch 7 fires; no successful swap path exists that resolves both overlaps; `unlinkTriangle(t1); unlinkTriangle(t2)` removes both triangles from the mesh and increments the removed-triangle counter.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,2]`
+- **Mesh assertion**: `adjacent_triangles_normal_dot_gt triangles=[0,1] threshold=0.99`
+- **Mesh assertion**: `adjacent_triangles_normal_dot_gt triangles=[0,2] threshold=0.99`
+- **Fixture path**: mesh-examples/12-14-mesh/Me426.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me430 — forceNormalConsistence t1-inconsistent: adjacent triangle flipped across shared edge e1; antiparallel normal → t1->invert() (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: inconsistent-face-orientation / adjacent-normal-t1)
+- **Sources**: MeshFix `checkAndRepair::forceNormalConsistence` Branch 1 (*ADJACENT_NORMAL_T1_INCONSISTENT*: `if (!t->checkAdjNor(t1)) { t1->invert(); r=1; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing edge (v0,v1). Both list the shared edge in the SAME direction (v0→v1), producing antiparallel normals: t0=(v0,v1,v2) has normal +z; t1=(v0,v1,v3) has normal −z. In a correctly-oriented manifold, the second triangle should list the edge in the opposite sense (v1→v0). The same-direction traversal means checkAdjNor(t1) returns false → Branch 1 fires t1->invert(). Shared edge (v0,v1) n=2; four boundary edges n=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,-1,0); t0=(v0,v1,v2), t1=(v0,v1,v3); assert_edge_shared(v0,v1,2); assert_adjacent_triangles_inconsistent_winding(0,1); boundary edges n=1.
+- **Expected kernel behavior**: Branch 1 fires; t1->invert() reverses t1's winding from (v0,v1,v3) to (v3,v1,v0), aligning its normal with t0's +z normal. r=1 signals a fix was made.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,1]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me430.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me431 — forceNormalConsistence t2-inconsistent: adjacent triangle flipped across shared edge e2; antiparallel normal → t2->invert() (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: inconsistent-face-orientation / adjacent-normal-t2)
+- **Sources**: MeshFix `checkAndRepair::forceNormalConsistence` Branch 2 (*ADJACENT_NORMAL_T2_INCONSISTENT*: `if (!t->checkAdjNor(t2)) { t2->invert(); }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangles. t0=(v0,v1,v2) is the reference (+z normal). t1=(v1,v0,v3) shares edge (v0,v1) in the correct opposite sense (v1→v0) → consistent +z normal. t2=(v1,v2,v4) shares edge (v1,v2) in the SAME sense as t0 (both v1→v2), giving t2 a −z normal — ADJACENT_NORMAL_T2_INCONSISTENT. The inconsistency is on the SECOND edge checked (e2), triggering Branch 2. V=5, two interior edges n=2, five boundary edges n=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(1,-1,0), v4=(0.5,2,0); t0=(v0,v1,v2), t1=(v1,v0,v3), t2=(v1,v2,v4); assert_edge_shared(v0,v1,2); assert_edge_shared(v1,v2,2); assert_adjacent_triangles_inconsistent_winding(0,2); boundary edges n=1.
+- **Expected kernel behavior**: Branch 2 fires; t2->invert() reverses t2's winding to align its normal with t0's +z orientation.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,2]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me431.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me432 — forceNormalConsistence t3-inconsistent: adjacent triangle flipped across shared edge e3; antiparallel normal → t3->invert() (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: inconsistent-face-orientation / adjacent-normal-t3)
+- **Sources**: MeshFix `checkAndRepair::forceNormalConsistence` Branch 3 (*ADJACENT_NORMAL_T3_INCONSISTENT*: `if (!t->checkAdjNor(t3)) { t3->invert(); }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four triangles. t0=(v0,v1,v2) is the reference (+z normal, edges e1=(v0,v1), e2=(v1,v2), e3=(v2,v0)). t1=(v1,v0,v3) shares e1 in opposite sense → consistent +z. t2=(v2,v1,v4) shares e2 in opposite sense → consistent +z. t3=(v2,v0,v5) shares e3 in SAME sense as t0 (both list v2→v0 direction) → normal −z: ADJACENT_NORMAL_T3_INCONSISTENT. Branch 3 fires on the THIRD neighbour check. V=6, three interior edges n=2, six boundary edges n=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(3,-1,0), v4=(2,3,0), v5=(-1,1,0); t0=(v0,v1,v2), t1=(v1,v0,v3), t2=(v2,v1,v4), t3=(v2,v0,v5); interior edges (v0,v1),(v1,v2),(v0,v2) n=2; assert_adjacent_triangles_inconsistent_winding(0,3).
+- **Expected kernel behavior**: Branch 3 fires; t3->invert() reverses t3's winding to align its normal with t0's +z orientation; r=1 signals a fix.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,3]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,5] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me432.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me433 — forceNormalConsistence boundary-edge-detected: open mesh; isOnBoundary() true → isclosed cleared (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: hole-in-hull / boundary-edge-detection)
+- **Sources**: MeshFix `checkAndRepair::forceNormalConsistence` Branch 4 (*BOUNDARY_EDGE_DETECTED*: `if (e->isOnBoundary()) { isclosed = false; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four triangles forming an open two-square strip (L-shape). t0=(v0,v1,v3) and t1=(v0,v3,v2) form the left square; t2=(v1,v4,v5) and t3=(v1,v5,v3) form the right square. All triangles have +z normal (consistently oriented). Three interior edges are n=2: (v0,v3), (v1,v3), (v1,v5). Six boundary edges are n=1: (v0,v1),(v0,v2),(v2,v3),(v1,v4),(v4,v5),(v3,v5). forceNormalConsistence finds these boundary edges and sets isclosed=false → Branch 4. The hole_boundary oracle assertion confirms the boundary loop.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(1,1,0), v4=(2,0,0), v5=(2,1,0); t0=(v0,v1,v3), t1=(v0,v3,v2), t2=(v1,v4,v5), t3=(v1,v5,v3); interior edges n=2; boundary edges n=1; hole_boundary([v0,v1,v4,v5,v3,v2]).
+- **Expected kernel behavior**: Branch 4 fires on every boundary edge; isclosed is cleared; the return value indicates an open mesh.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,4,5,3,2]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me433.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me434 — forceNormalConsistence non-orientable-seam: seam edge traversed in same direction by both adjacent triangles; tmp1*tmp2<0 → newEdge cut (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: non-orientable-seam / Möbius-topology)
+- **Sources**: MeshFix `checkAndRepair::forceNormalConsistence` Branch 5 (*NON_ORIENTABLE_SEAM*: `if (tmp1*tmp2 < 0) { newEdge(e->v2, e->v1); wrn++; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four triangles forming a closed surface (V=4, E=6, F=4, chi=2) with one non-orientable seam. Seam edge (v0,v1) is shared by t0=(v0,v1,v2) and t1=(v0,v1,v3) — BOTH list the edge as v0→v1 (same direction). In a correctly-oriented manifold, one should go v0→v1 and the other v1→v0. The sign product tmp1*tmp2 < 0 because the edge orientation is contradictory relative to the face normals: t0 has +z normal and t3=(v2,v0,v3) has −z normal (dot t0,t3 = −1). The propagator creates a new cut edge via newEdge(e->v2, e->v1) and increments wrn. All 6 edges are interior (n=2); no boundary.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(1,1,0), v3=(0,1,0); t0=(v0,v1,v2), t1=(v0,v1,v3), t2=(v1,v2,v3), t3=(v2,v0,v3); assert_edge_shared(v0,v1,2); assert_adjacent_triangles_inconsistent_winding(0,3); all 6 edges n=2; euler V=4,E=6,F=4,chi=2.
+- **Expected kernel behavior**: Branch 5 fires; newEdge(e->v2, e->v1) creates a cut along the seam; wrn is incremented (to be checked by Branch 7).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,3]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me434.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me435 — forceNormalConsistence vertex-order-correction: half-edge direction misaligned with triangle winding; tmp==-1 → p_swap (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: inconsistent-face-orientation / vertex-order-correction)
+- **Sources**: MeshFix `checkAndRepair::forceNormalConsistence` Branch 6 (*VERTEX_ORDER_CORRECTION*: `if (tmp1 == -1 || tmp2 == -1) { p_swap(e->v1, e->v2); }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three consistently-oriented triangles (all +z normals) forming an open strip. t0=(v0,v1,v2), t1=(v1,v3,v2), t2=(v1,v4,v3). t0 and t1 share edge (v1,v2) in opposite senses (manifold-correct), but the half-edge's stored v1/v2 direction doesn't match the propagator's traversal convention → tmp1==-1 triggers p_swap. t1 and t2 share edge (v1,v3) similarly. All normals are +z (dot > 0.99 for both adjacent pairs). Two interior edges n=2; five boundary edges n=1. VERTEX_ORDER_CORRECTION is distinguished from Branches 1-3 (triangle inversion) by producing consistent normals (dot > 0) rather than antiparallel ones.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1.5,1,0), v4=(2,0,0); t0=(v0,v1,v2), t1=(v1,v3,v2), t2=(v1,v4,v3); interior edges (v1,v2),(v1,v3) n=2; assert_adjacent_triangles_normal_dot_gt(0,1,0.99); assert_adjacent_triangles_normal_dot_gt(1,2,0.99).
+- **Expected kernel behavior**: Branch 6 fires; p_swap(e->v1, e->v2) corrects the half-edge's stored direction to match the adjacent triangle's winding expectation.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `adjacent_triangles_normal_dot_gt triangles=[0,1] threshold=0.99`
+- **Mesh assertion**: `adjacent_triangles_normal_dot_gt triangles=[1,2] threshold=0.99`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me435.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me436 — forceNormalConsistence non-orientable-mesh: wrn=2>0 from two seam cuts → topology dirty, r|=2 (Branch 7)
+- **Category**: §12.14 mesh defects (sub-class: non-orientable-mesh / topology-dirty)
+- **Sources**: MeshFix `checkAndRepair::forceNormalConsistence` Branch 7 (*NON_ORIENTABLE_MESH*: `if (wrn > 0) { … r |= 2; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Six triangles and 6 vertices forming two independent non-orientable seam pairs (wrn accumulates to 2). Seam A: edge (v0,v1) shared by t0=(v0,v1,v2) [+z] and t1=(v0,v1,v3) [−z] — same-direction traversal (Branch 5 fires, wrn++). Seam B: edge (v4,v5) shared by t3=(v4,v5,v2) [+z] and t4=(v4,v5,v3) [−z] — same-direction traversal (Branch 5 fires again, wrn++). Connector triangles t2=(v1,v2,v3) and t5=(v5,v2,v3) complete the mesh. After processing all edges, wrn=2>0 → Branch 7 fires: topology is marked dirty and r|=2 is returned. Each seam produces antiparallel normals confirmed by the oracle.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(1,-2,0), v4=(5,0,0), v5=(7,0,0); t0=(v0,v1,v2), t1=(v0,v1,v3), t2=(v1,v2,v3), t3=(v4,v5,v2), t4=(v4,v5,v3), t5=(v5,v2,v3); assert_edge_shared(v0,v1,2); assert_edge_shared(v4,v5,2); assert_adjacent_triangles_inconsistent_winding(0,1); assert_adjacent_triangles_inconsistent_winding(3,4).
+- **Expected kernel behavior**: Branch 5 fires twice (once per seam edge), incrementing wrn to 2. After the edge loop, Branch 7 fires: mesh topology is marked dirty and the return value has bit 2 set (r |= 2) indicating a non-orientable mesh.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=2`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,1]`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[3,4]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me436.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+

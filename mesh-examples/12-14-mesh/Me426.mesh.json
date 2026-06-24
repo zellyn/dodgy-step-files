@@ -1,0 +1,100 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      4.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      4.0,
+      0.0
+    ],
+    [
+      2.0,
+      2.0,
+      0.0
+    ],
+    [
+      2.0,
+      3.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      1,
+      3
+    ],
+    [
+      0,
+      4,
+      2
+    ]
+  ],
+  "metadata": {
+    "id": "Me426",
+    "schema_version": 0,
+    "defect_class": "overlapping_triangles",
+    "title": "removeOverlappingTriangles UNRESOLVABLE_OVERLAP: multi-overlap tangle; both triangles unlinked (Branch 7)",
+    "assertions": [
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          1
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          2
+        ],
+        "n": 2
+      },
+      {
+        "kind": "triangles_self_intersect",
+        "triangles": [
+          0,
+          1
+        ]
+      },
+      {
+        "kind": "triangles_self_intersect",
+        "triangles": [
+          0,
+          2
+        ]
+      },
+      {
+        "kind": "adjacent_triangles_normal_dot_gt",
+        "triangles": [
+          0,
+          1
+        ],
+        "threshold": 0.99
+      },
+      {
+        "kind": "adjacent_triangles_normal_dot_gt",
+        "triangles": [
+          0,
+          2
+        ],
+        "threshold": 0.99
+      }
+    ]
+  }
+}
