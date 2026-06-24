@@ -36592,3 +36592,85 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me570 — Basic_TMesh.invertSelection seed_provided: t0 != NULL; BFS component-local invert from seed triangle (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: selection-toggle / seed-provided)
+- **Sources**: MeshFix `Basic_TMesh.invertSelection` Branch 1 (*seed_provided*: `if (t0 != NULL)`) @ line 744; `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangles forming a connected strip (t0-t1 share edge v1-v2; t1-t2 share edge v1-v3). A non-NULL seed t0 is provided; the condition `if (t0 != NULL)` fires (Branch 1), routing to the BFS-based component-local toggle path. The BFS walks shared edges outward from t0, inverting VISITED marks on all reachable triangles. Interior edges (v1,v2) and (v1,v3) both n=2; five boundary edges n=1. Euler: V=5, E=7, F=3, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1.5,1,0), v4=(2,0,0); t0=(v0,v1,v2), t1=(v1,v3,v2), t2=(v1,v4,v3); assert_edge_shared(v1,v2,2); assert_edge_shared(v1,v3,2); outer edges n=1; euler V=5,E=7,F=3,chi=1.
+- **Expected kernel behavior**: Branch 1 fires; BFS starts from t0 and propagates through shared edges (v1,v2) and (v1,v3) to reach all three triangles; all VISITED marks are inverted.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=5 e=7 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me570.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me571 — Basic_TMesh.invertSelection component_invert_direction: IS_VISITED(t0)=true → unmark=true; BFS unmarks pre-marked seed component (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: selection-toggle / invert-direction)
+- **Sources**: MeshFix `Basic_TMesh.invertSelection` Branch 2 (*component_invert_direction*: `bool unmark = IS_VISITED(t0)`) @ line 748; `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four triangles forming a pinwheel fan around hub vertex v0. The seed t0 is pre-marked (IS_VISITED=true). When `bool unmark = IS_VISITED(t0)` is evaluated (Branch 2), unmark=true is set, causing the BFS to clear marks from all VISITED triangles in the component. Interior edges through v0 all n=2; four outer boundary edges n=1. Euler: V=5, E=8, F=4, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(-1,0,0), v4=(0,-1,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v4), t3=(v0,v4,v1); interior edges (v0,v1),(v0,v2),(v0,v3),(v0,v4) n=2; outer edges n=1; euler V=5,E=8,F=4,chi=1.
+- **Expected kernel behavior**: Branch 2 fires; IS_VISITED(t0)=true sets unmark=true; BFS propagates through all 4 fan triangles and unmarks each (clears VISITED bit).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `euler_characteristic v=5 e=8 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me571.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me572 — Basic_TMesh.invertSelection neighbor_t1_same_state: t1 of seed is unmarked neighbor; BFS enqueues via t1 edge path (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: selection-toggle / t1-neighbor)
+- **Sources**: MeshFix `Basic_TMesh.invertSelection` Branch 3 (*neighbor_t1_same_state*: `if (s->t1() != NULL && ((IS_VISITED(s) && unmark) || (!IS_VISITED(s) && !unmark)))`) @ line 752; `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing edge (v0,v1) — a "butterfly" shape. The seed t0=(v0,v2,v1) is dequeued; its t1 neighbor (adjacent via e1=v0-v1) is t1=(v0,v1,v3) which is also unmarked (same toggle state as unmark=false). The Branch 3 condition fires: `!IS_VISITED(t1_neighbor) && !unmark` is true; t1 is inverted and enqueued. v2 and v3 share no triangle (opposite sides of shared edge). Euler: V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,-1,0); t0=(v0,v2,v1), t1=(v0,v1,v3); assert_edge_shared(v0,v1,2); outer edges n=1; vertex_pair_no_shared_triangle(v2,v3); euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 3 fires for the seed triangle; s->t1() returns t1; same-state condition (both unmarked, unmark=false) is true; t1 is inverted and enqueued for further BFS.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[2,3]`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me572.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me573 — Basic_TMesh.invertSelection neighbor_t2_same_state: t2 of seed is unmarked neighbor; BFS enqueues via t2 edge path (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: selection-toggle / t2-neighbor)
+- **Sources**: MeshFix `Basic_TMesh.invertSelection` Branch 4 (*neighbor_t2_same_state*: `if (s->t2() != NULL && ((IS_VISITED(s) && unmark) || (!IS_VISITED(s) && !unmark)))`) @ line 754; `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three-triangle strip where the seed t0=(v0,v1,v2) connects to t1=(v1,v3,v2) via the t2 edge (e2=v1-v2). The e1 edge of t0 is a boundary (no t1 neighbor), so only the t2 path fires for the seed. t1 then connects to t2=(v1,v4,v3) via its own shared edge. v0 and v3 share no triangle; v0 and v4 share no triangle. Euler: V=5, E=7, F=3, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,1,0), v3=(3,1,0), v4=(4,0,0); t0=(v0,v1,v2), t1=(v1,v3,v2), t2=(v1,v4,v3); assert_edge_shared(v1,v2,2); assert_edge_shared(v1,v3,2); outer edges n=1; vertex_pair_no_shared_triangle(v0,v3); vertex_pair_no_shared_triangle(v0,v4); euler V=5,E=7,F=3,chi=1.
+- **Expected kernel behavior**: Branch 4 fires for t0; s->t2() returns t1 (adjacent via v1-v2); same-state condition is true; t1 is inverted and enqueued; BFS continues to t2.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[0,3]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[0,4]`
+- **Mesh assertion**: `euler_characteristic v=5 e=7 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me573.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me574 — Basic_TMesh.invertSelection neighbor_t3_same_state: t3 of seed is unmarked neighbor; BFS enqueues via t3 edge path (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: selection-toggle / t3-neighbor)
+- **Sources**: MeshFix `Basic_TMesh.invertSelection` Branch 5 (*neighbor_t3_same_state*: `if (s->t3() != NULL && ((IS_VISITED(s) && unmark) || (!IS_VISITED(s) && !unmark)))`) @ line 756; `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three-triangle strip where the seed t0=(v0,v1,v2) connects to t1=(v3,v0,v2) via the t3 edge (e3=v2-v0). The e1 and e2 edges of t0 are boundary edges (no neighbors), so only the t3 path fires for the seed. t1 then connects to t2=(v3,v4,v0) via its own shared edge (v0,v3). v1 and v4 share no triangle; v1 and v3 share no triangle. Euler: V=5, E=7, F=3, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,1,0), v3=(-1,1,0), v4=(-2,0,0); t0=(v0,v1,v2), t1=(v3,v0,v2), t2=(v3,v4,v0); assert_edge_shared(v0,v2,2); assert_edge_shared(v0,v3,2); outer edges n=1; vertex_pair_no_shared_triangle(v1,v4); vertex_pair_no_shared_triangle(v1,v3); euler V=5,E=7,F=3,chi=1.
+- **Expected kernel behavior**: Branch 5 fires for t0; s->t3() returns t1 (adjacent via v2-v0); same-state condition is true; t1 is inverted and enqueued; BFS continues to t2.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,4]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,3]`
+- **Mesh assertion**: `euler_characteristic v=5 e=7 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me574.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me575 — Basic_TMesh.invertSelection global_invert: t0==NULL; FOREACHTRIANGLE flips VISITED bit on all 4 triangles (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: selection-toggle / global-invert)
+- **Sources**: MeshFix `Basic_TMesh.invertSelection` Branch 6 (*global_invert*: `else { FOREACHTRIANGLE(t, i) MARK_VISIT(t); }`) @ line 760; `MESH_HEAL_COVERAGE.md`.
+- **Description**: A closed tetrahedron (4 triangles, V=4, E=6, F=4, chi=2). The caller passes t0=NULL; the `else` branch (Branch 6) fires and FOREACHTRIANGLE iterates all 4 triangles, flipping their VISITED bit globally without any BFS or component awareness. Every edge is shared by exactly 2 triangles (closed manifold). This is the simplest possible mesh for exercising the global-invert path.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(1,1,2); t0=(v0,v1,v2), t1=(v0,v1,v3), t2=(v1,v2,v3), t3=(v0,v2,v3); all 6 edges assert_edge_shared n=2; euler V=4,E=6,F=4,chi=2.
+- **Expected kernel behavior**: Branch 6 fires (t0==NULL else branch); FOREACHTRIANGLE visits all 4 triangles in order and inverts each VISITED flag; all triangles toggled in a single linear pass.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me575.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
