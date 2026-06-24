@@ -1,0 +1,229 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      2.0,
+      0.0
+    ],
+    [
+      0.0,
+      2.0,
+      0.0
+    ],
+    [
+      0.5,
+      0.5,
+      0.0
+    ],
+    [
+      1.5,
+      0.5,
+      0.0
+    ],
+    [
+      1.5,
+      1.5,
+      0.0
+    ],
+    [
+      0.5,
+      1.5,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      5
+    ],
+    [
+      0,
+      5,
+      4
+    ],
+    [
+      1,
+      2,
+      6
+    ],
+    [
+      1,
+      6,
+      5
+    ],
+    [
+      2,
+      3,
+      7
+    ],
+    [
+      2,
+      7,
+      6
+    ],
+    [
+      3,
+      0,
+      4
+    ],
+    [
+      3,
+      4,
+      7
+    ]
+  ],
+  "metadata": {
+    "id": "Me473",
+    "schema_version": 0,
+    "defect_class": "border_edge_region_not_topological_disk",
+    "title": "remove_a_border_edge region_not_topological_disk: 8-triangle annular ring has chi=0; is_selection_a_topological_disk returns false (Branch 4)",
+    "assertions": [
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          1
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          2
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          2,
+          3
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          3
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          4,
+          5
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          5,
+          6
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          6,
+          7
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          4,
+          7
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          4
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          5
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          5
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          6
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          2,
+          6
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          2,
+          7
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          3,
+          7
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          3,
+          4
+        ],
+        "n": 2
+      },
+      {
+        "kind": "euler_characteristic",
+        "v": 8,
+        "e": 16,
+        "f": 8,
+        "chi": 0
+      }
+    ]
+  }
+}

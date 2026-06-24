@@ -1,0 +1,60 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      1,
+      1
+    ]
+  ],
+  "metadata": {
+    "id": "Me482",
+    "schema_version": 0,
+    "defect_class": "degenerate_triangle",
+    "title": "removeTriangles null_edge_e2: triangle [v0,v1,v1] has zero-length e2 edge (v1\u2192v1), e2-NULL precondition (Branch 3)",
+    "assertions": [
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 1,
+        "lt": 1e-12
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          1
+        ],
+        "n": 1
+      },
+      {
+        "kind": "vertex_pair_distance_lt",
+        "pair": [
+          1,
+          1
+        ],
+        "lt": 1e-12
+      }
+    ]
+  }
+}

@@ -37218,4 +37218,241 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `adjacent_triangles_normal_dot_gt triangles=[2,3] threshold=0.9`
 - **Mesh assertion**: `euler_characteristic v=6 e=9 f=4 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me465.mesh.json
+### Me490 — sanitize_candidates empty_input: coincident v1==v3 share triangle t1; candidate_hedges_with_id empty on entry; return immediately (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: coincident-boundary-vertex / sanitize-candidates-empty)
+- **Sources**: CGAL PMP `PMP.internal.sanitize_candidates` Branch 1 (*empty_input*: `if(candidate_hedges_with_id.empty()) return true;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangles (t0,t1,t2) where the two coincident boundary vertices v1 and v3 at (1,0,0) share triangle t1=(v1,v3,v2). Because they share a triangle, detect_identical_mergeable_vertices filters them out before invoking sanitize_candidates; candidate_hedges_with_id is empty on entry → Branch 1 fires and the function returns true immediately. Interior edges (v0,v2) and (v1,v2) n=2; five outer boundary edges n=1. Euler: V=5, E=7, F=3, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1,0,0) [=v1 coords], v4=(1.5,1,0); t0=(v0,v1,v2), t1=(v1,v3,v2), t2=(v0,v2,v4); interior edges n=2; outer edges n=1; vertex_pair_distance_lt(v1,v3,1e-9); euler V=5,E=7,F=3,chi=1.
+- **Expected kernel behavior**: Branch 1 fires; sanitize_candidates returns true immediately because candidate_hedges_with_id.empty() is true (shared-triangle pair is pre-filtered).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,3] lt=1e-09`
+- **Mesh assertion**: `euler_characteristic v=5 e=7 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me490.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me491 — sanitize_candidates outer_group_iteration: two disjoint coincident groups (f1==f3, f2==f4); outer for-loop fires for fr_id=0 (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: coincident-boundary-vertex / sanitize-candidates-outer-loop)
+- **Sources**: CGAL PMP `PMP.internal.sanitize_candidates` Branch 2 (*outer_group_iteration*: `for(std::size_t fr_id=0, fr_end=nm_vertices_n-1; fr_id != fr_end; ++fr_id)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Five-triangle open fan from apex f6=(1.5,2,0); boundary cycle visits f0(0,0,0),f1(1,0,0),f2(2,0,0),f3(1,0,0),f4(2,0,0),f5(3,0,0). Two disjoint coincident groups: Group A (f1==f3 at (1,0,0)) and Group B (f2==f4 at (2,0,0)). Sorted index intervals are [i,i+1] and [j,j+1] with j > i+1 so no overlap; both survive. The outer for-loop executes for fr_id=0 (Group A) → Branch 2 fires. Interior spokes (f6,f1),(f6,f2),(f6,f3),(f6,f4) n=2; seven outer edges n=1. Euler: V=7, E=11, F=5, chi=1.
+- **Reproducer recipe**: f0=(0,0,0), f1=(1,0,0), f2=(2,0,0), f3=(1,0,0) [=f1], f4=(2,0,0) [=f2], f5=(3,0,0), f6=(1.5,2,0); t0=(f6,f0,f1), t1=(f6,f1,f2), t2=(f6,f2,f3), t3=(f6,f3,f4), t4=(f6,f4,f5); vertex_pair_distance_lt for both groups; euler V=7,E=11,F=5,chi=1.
+- **Expected kernel behavior**: Branch 2 fires; outer loop executes for fr_id=0; two disjoint groups both survive sanitization.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,6] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,3] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[2,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,3]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[2,4]`
+- **Mesh assertion**: `euler_characteristic v=7 e=11 f=5 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me491.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me492 — sanitize_candidates inner_group_iteration: three disjoint coincident groups (g1==g4, g2==g5, g3==g6); inner for-loop runs >1 iteration per outer step (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: coincident-boundary-vertex / sanitize-candidates-inner-loop)
+- **Sources**: CGAL PMP `PMP.internal.sanitize_candidates` Branch 3 (*inner_group_iteration*: `for(std::size_t sr_id=fr_id+1, sr_end=nm_vertices_n; sr_id != sr_end; ++sr_id)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Six-triangle open fan from apex g0=(1.5,2,0); boundary cycle visits g7(0,0,0),g1(1,0,0),g2(2,0,0),g3(3,0,0),g4(1,0,0),g5(2,0,0),g6(3,0,0). Three disjoint coincident groups: Group A (g1==g4 at (1,0,0)), Group B (g2==g5 at (2,0,0)), Group C (g3==g6 at (3,0,0)). Sorted index intervals [i,i+1],[j,j+1],[k,k+1] are pairwise disjoint; all three survive. For fr_id=0 (Group A) the inner loop runs for sr_id=1 (vs B) AND sr_id=2 (vs C) — more than one inner iteration → Branch 3 fires. Interior spokes (g0,g1)...(g0,g5) n=2; eight outer edges n=1. Euler: V=8, E=13, F=6, chi=1.
+- **Reproducer recipe**: g7=(0,0,0), g1=(1,0,0), g2=(2,0,0), g3=(3,0,0), g4=(1,0,0)[=g1], g5=(2,0,0)[=g2], g6=(3,0,0)[=g3], g0=(1.5,2,0); t0=(g0,g7,g1)..t5=(g0,g5,g6); 6 triangles (no closing triangle); vertex_pair assertions for all 3 groups; euler V=8,E=13,F=6,chi=1.
+- **Expected kernel behavior**: Branch 3 fires; inner loop executes twice for fr_id=0 (sr_id=1 and sr_id=2); all three groups are disjoint and survive.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,7] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[2,5] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[3,6] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,4]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[2,5]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[3,6]`
+- **Mesh assertion**: `euler_characteristic v=8 e=13 f=6 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me492.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me493 — sanitize_candidates interval_overlap_detection: three coincident boundary vertices p0==p1==p2 at (1,0,0) produce overlapping group index ranges; erase triggered (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: coincident-boundary-vertex / sanitize-candidates-overlap-erase)
+- **Sources**: CGAL PMP `PMP.internal.sanitize_candidates` Branch 4 (*interval_overlap_detection*: `if((second_left < first_left && second_right > first_left && second_right < first_right) || …)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Five triangles (three cell + two bridge) with a single boundary cycle containing three topologically distinct vertices p0,p1,p2 all at (1,0,0). In the sorted halfedge array they land at consecutive positions i,i+1,i+2. detect_identical_mergeable_vertices creates Group A={p0,p1} (range [i,i+1]) and Group B={p1,p2} (range [i+1,i+2]). The ranges share index i+1 → overlap condition fires → Branch 4: one group is erased. Top vertices q0=(0,1,0),q1=(2,1,0),q2=(4,1,0),q3=(6,1,0); interior edges (q0,q1),(q1,q2),(q0,q2),(q2,q3) n=2; seven outer edges n=1. Euler: V=7, E=11, F=5, chi=1.
+- **Reproducer recipe**: q0=(0,1,0),q1=(2,1,0),q2=(4,1,0),q3=(6,1,0); p0=p1=p2=(1,0,0) (distinct indices); t0=(q0,p0,q1), t1=(q1,p1,q2), t2=(q2,p2,q3), t3=(q0,q1,q2), t4=(q0,q2,q3); vertex_pair assertions for all 3 pairs; euler V=7,E=11,F=5,chi=1.
+- **Expected kernel behavior**: Branch 4 fires; overlapping groups detected; one group erased; sanitize_candidates recurses (Branch 5 fires next).
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[4,5] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[4,6] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[5,6] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[4,5]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[4,6]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[5,6]`
+- **Mesh assertion**: `euler_characteristic v=7 e=11 f=5 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me493.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me494 — sanitize_candidates recursive_resanitization: four coincident vertices r0==r1==r2==r3 at (1,0,0); erase triggers recursive sanitize_candidates call (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: coincident-boundary-vertex / sanitize-candidates-recursion)
+- **Sources**: CGAL PMP `PMP.internal.sanitize_candidates` Branch 5 (*recursive_resanitization*: `candidate_hedges_with_id.erase(…); return sanitize_candidates(candidate_hedges_with_id);`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Seven triangles (four cell + three bridge) with a boundary cycle containing four distinct vertices r0,r1,r2,r3 all at (1,0,0). Sorted positions i,i+1,i+2,i+3 yield three overlapping groups: A=[i,i+1], B=[i+1,i+2], C=[i+2,i+3]. First pass of sanitize_candidates detects overlap (Branch 4), erases one group, then makes the recursive call → Branch 5 fires. The recursive call sees 2 remaining groups with disjoint intervals and terminates. Top vertices s0=(0,1,0) to s4=(8,1,0); interior edges (s0,s1),(s1,s2),(s0,s2),(s2,s3),(s0,s3),(s3,s4) n=2; nine outer edges n=1. Euler: V=9, E=15, F=7, chi=1.
+- **Reproducer recipe**: s0=(0,1,0),s1=(2,1,0),s2=(4,1,0),s3=(6,1,0),s4=(8,1,0); r0=r1=r2=r3=(1,0,0); t0=(s0,r0,s1), t1=(s1,r1,s2), t2=(s2,r2,s3), t3=(s3,r3,s4), t4=(s0,s1,s2), t5=(s0,s2,s3), t6=(s0,s3,s4); vertex_pair_distance_lt and no_shared_triangle for all 6 pairs; euler V=9,E=15,F=7,chi=1.
+- **Expected kernel behavior**: Branch 5 fires; erased group triggers recursive sanitize_candidates; second call completes without further erase.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[5,6] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[5,7] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[5,8] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[5,6]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[5,7]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[5,8]`
+- **Mesh assertion**: `euler_characteristic v=9 e=15 f=7 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me494.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me495 — sanitize_candidates range_size_comparison: three coincident boundary vertices u0==u1==u2 at (1,0,0); equal-range groups compared; second (sr_id) group erased (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: coincident-boundary-vertex / sanitize-candidates-range-compare)
+- **Sources**: CGAL PMP `PMP.internal.sanitize_candidates` Branch 6 (*range_size_comparison*: `const std::size_t first_candidates_range = candidate_hedges_with_id[fr_id].back() - …front(); … erase_id = (first_candidates_range <= second_candidates_range) ? sr_id : fr_id;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Five triangles (three cell + two bridge) with a boundary cycle containing three distinct vertices u0,u1,u2 all at (1,0,0). Sorted positions i,i+1,i+2 yield two overlapping groups: A=[i,i+1] (range=1) and B=[i+1,i+2] (range=1). The range comparison fires (Branch 6): first_candidates_range (1) <= second_candidates_range (1), so erase_id=sr_id (Group B is removed). This is the equal-range sub-path of Branch 6. Top vertices w0=(0,1,0) to w3=(6,1,0); interior edges (w0,w1),(w1,w2),(w0,w2),(w2,w3) n=2; seven outer edges n=1. Euler: V=7, E=11, F=5, chi=1.
+- **Reproducer recipe**: w0=(0,1,0),w1=(2,1,0),w2=(4,1,0),w3=(6,1,0); u0=u1=u2=(1,0,0); t0=(w0,u0,w1), t1=(w1,u1,w2), t2=(w2,u2,w3), t3=(w0,w1,w2), t4=(w0,w2,w3); vertex_pair assertions for all 3 pairs; euler V=7,E=11,F=5,chi=1.
+- **Expected kernel behavior**: Branch 6 fires; range comparison executes; equal ranges cause sr_id group to be erased; recursive call follows (Branch 5).
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[4,5] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[4,6] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[5,6] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[4,5]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[4,6]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[5,6]`
+- **Mesh assertion**: `euler_characteristic v=7 e=11 f=5 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me495.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me480 — removeTriangles list_head_initialization: BFS init from T.head() on 2-triangle open-boundary mesh (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: orphan-triangle-cleanup / list-traversal-init)
+- **Sources**: MeshFix `Basic_TMesh.removeTriangles` Branch 1 (*list_head_initialization*: `Node *n = T.head(); while (n != NULL) { t = (Triangle *)n->e; … n = n->next(); }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two healthy triangles sharing edge (v1,v2) in an open-boundary fan. Any non-empty mesh unconditionally exercises the T.head() initialization — Branch 1 fires as soon as the triangle list is non-NULL. Interior edge (v1,v2) shared by both triangles (n=2); four boundary edges each incident on one triangle (n=1). Euler: V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(2,0,0); t0=(v0,v1,v2), t1=(v1,v3,v2); assert_edge_shared(v1,v2,2); boundary edges n=1; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 1 fires unconditionally; n is initialised from T.head() and the while-loop begins traversal.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me480.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me481 — removeTriangles null_edge_e1: triangle [v0,v0,v2] has zero-length e1 edge (v0→v0), e1-NULL precondition (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: orphan-triangle-cleanup / null-edge-e1)
+- **Sources**: MeshFix `Basic_TMesh.removeTriangles` Branch 2 (*null_edge_e1*: `if (t->e1 == NULL || t->e2 == NULL || t->e3 == NULL)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Triangle t1 = [v0, v0, v2] has a self-loop on the first edge (e1): corner-0 and corner-1 are both v0. The edge v0→v0 is zero-length; any edge-validity filter upstream would set e1=NULL, causing removeTriangles Branch 2 to mark t1 for removal. t0 = [v0, v1, v2] is a healthy companion.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0); t0=(v0,v1,v2) healthy; t1=(v0,v0,v2) degenerate — e1=(v0,v0) self-loop; assert_triangle_area_lt(1,1e-12); edge_shared(v0,v0,1); vertex_pair_distance_lt(v0,v0,1e-12).
+- **Expected kernel behavior**: Branch 2 fires; t->e1 is NULL; triangle is queued for T.removeCell.
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,0] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,0] lt=1e-12`
+- **Fixture path**: mesh-examples/12-14-mesh/Me481.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me482 — removeTriangles null_edge_e2: triangle [v0,v1,v1] has zero-length e2 edge (v1→v1), e2-NULL precondition (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: orphan-triangle-cleanup / null-edge-e2)
+- **Sources**: MeshFix `Basic_TMesh.removeTriangles` Branch 3 (*null_edge_e2*: `|| t->e2 == NULL ||`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Triangle t1 = [v0, v1, v1] has a self-loop on the second edge (e2): corner-1 and corner-2 are both v1. The edge v1→v1 is zero-length; any edge-validity filter upstream would set e2=NULL, causing removeTriangles Branch 3 to mark t1 for removal. t0 = [v0, v1, v2] is a healthy companion.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0); t0=(v0,v1,v2) healthy; t1=(v0,v1,v1) degenerate — e2=(v1,v1) self-loop; assert_triangle_area_lt(1,1e-12); edge_shared(v1,v1,1); vertex_pair_distance_lt(v1,v1,1e-12).
+- **Expected kernel behavior**: Branch 3 fires; t->e2 is NULL; triangle is queued for T.removeCell.
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,1] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,1] lt=1e-12`
+- **Fixture path**: mesh-examples/12-14-mesh/Me482.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me483 — removeTriangles null_edge_e3: triangle [v0,v1,v0] has zero-length e3 edge (v0→v0), e3-NULL precondition (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: orphan-triangle-cleanup / null-edge-e3)
+- **Sources**: MeshFix `Basic_TMesh.removeTriangles` Branch 4 (*null_edge_e3*: `|| t->e3 == NULL`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Triangle t1 = [v0, v1, v0] has a self-loop on the closing edge (e3): corner-2 and corner-0 are both v0. The edge v0→v0 is zero-length; any edge-validity filter upstream would set e3=NULL, causing removeTriangles Branch 4 to mark t1 for removal. t0 = [v0, v1, v2] is a healthy companion.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0); t0=(v0,v1,v2) healthy; t1=(v0,v1,v0) degenerate — e3=(v0,v0) self-loop; assert_triangle_area_lt(1,1e-12); edge_shared(v0,v0,1); vertex_pair_distance_lt(v0,v0,1e-12).
+- **Expected kernel behavior**: Branch 4 fires; t->e3 is NULL; triangle is queued for T.removeCell.
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,0] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,0] lt=1e-12`
+- **Fixture path**: mesh-examples/12-14-mesh/Me483.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me484 — removeTriangles triangle_removal: T.removeCell+delete t; collinear t2=[v0,v1,v2] is orphan to be removed (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: orphan-triangle-cleanup / triangle-removal)
+- **Sources**: MeshFix `Basic_TMesh.removeTriangles` Branch 5 (*triangle_removal*: `T.removeCell(n); delete t;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three-triangle fan. t2 = [v0, v1, v2] is degenerate: v0=(0,0,0), v1=(2,0,0), v2=(1,0,0) are collinear on y=0, so area=0. This is the triangle that would have its edge pointer nulled upstream and then be removed by T.removeCell in Branch 5. The two healthy triangles t0=(v0,v3,v2) and t1=(v1,v2,v3) remain as survivors. v2 lies at the midpoint of segment v0-v1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,0,0) midpoint, v3=(1,1,0); t0=(v0,v3,v2) area=0.5, t1=(v1,v2,v3) area=0.5, t2=(v0,v1,v2) area=0 (collinear); assert_triangle_area_lt(2,1e-12); vertex_on_edge(v2,v0,v1); edge_shared(v0,v1,2).
+- **Expected kernel behavior**: Branch 5 fires; T.removeCell(n) unlinks t2; delete t frees memory.
+- **Mesh assertion**: `triangle_area_lt triangle=2 lt=1e-12`
+- **Mesh assertion**: `vertex_on_edge vertex=2 edge=[0,1]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me484.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me485 — removeTriangles topology_invalidation: d_boundaries=d_handles=d_shells=1 after orphan removal; clean 2-triangle survivor mesh (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: orphan-triangle-cleanup / topology-dirty-flags)
+- **Sources**: MeshFix `Basic_TMesh.removeTriangles` Branch 6 (*topology_invalidation*: `d_boundaries = d_handles = d_shells = 1;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Minimal post-cleanup mesh representing the state after removeTriangles completes: two healthy triangles forming an open-boundary quad. The topology dirty flags (d_boundaries, d_handles, d_shells) are all set to 1 after any removal, forcing recomputation on next query. Shared interior edge (v0,v3) n=2; boundary loop [v0,v1,v3,v2]; Euler V=4,E=5,F=2,chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(1,1,0); t0=(v0,v1,v3), t1=(v0,v3,v2); assert_edge_shared(v0,v3,2); assert_hole_boundary([v0,v1,v3,v2]); euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 6 fires after removal loop; d_boundaries=d_handles=d_shells=1; cached topology invalidated.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `hole_boundary loop=[0,1,3,2]`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me485.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me470 — remove_a_border_edge link_condition_satisfied: border edge (v0,v1) collapses safely; 2-triangle open strip (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: border-edge-collapse / link-condition)
+- **Sources**: CGAL PMP `PMP.remove_a_border_edge.with_sets` Branch 1 (*link_condition_satisfied*: `does_satisfy_link_condition(halfedge, tmesh)` → true; proceed with `collapse_edge`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing interior edge (v0,v2). Border edge (v0,v1) has link(v0)∩link(v1)={v2} — exactly one common neighbor — satisfying the link condition for safe collapse. Interior edge (v0,v2) n=2; four border edges n=1 each. Euler V=4,E=5,F=2,chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(-0.5,1,0); t0=(v0,v1,v2), t1=(v0,v2,v3); assert_edge_shared(v0,v2,2); border edges n=1; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 1 fires; does_satisfy_link_condition returns true; collapse_edge executes successfully reducing the face count by 1.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me470.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me471 — remove_a_border_edge link_condition_violation: border edge (v0,v1) has multiple common neighbors; collapse would break topology (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: border-edge-collapse / link-condition)
+- **Sources**: CGAL PMP `PMP.remove_a_border_edge.with_sets` Branch 2 (*link_condition_violation*: `does_satisfy_link_condition(halfedge, tmesh)` → false; mark incident faces and identify region); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangles in two disconnected fans sharing endpoints v0 and v1. t0=(v0,v1,v2) provides border edge (v0,v1). t1=(v0,v3,va) and t2=(v1,va,v3) make v3 and va common neighbors of both v0 and v1, so link(v0)∩link(v1)⊇{v2,v3,va} — multiple common neighbors — violating the link condition. Interior (v3,va) n=2; all other incident edges n=1. Euler V=5,E=8,F=3,chi=0 (two disconnected patches).
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,1,0), v3=(1,-1,0), va=(1,0,1); t0=(v0,v1,v2), t1=(v0,v3,va), t2=(v1,va,v3); assert_edge_shared(v3,va,2); assert_edge_shared(v0,v1,1); euler V=5,E=8,F=3,chi=0.
+- **Expected kernel behavior**: Branch 2 fires; does_satisfy_link_condition returns false; incident faces marked and region identified for further processing.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `euler_characteristic v=5 e=8 f=3 chi=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me471.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me472 — remove_a_border_edge boundary_reached_during_exploration: all three edges are border; region touches outer boundary immediately (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: border-edge-collapse / region-exploration)
+- **Sources**: CGAL PMP `PMP.remove_a_border_edge.with_sets` Branch 3 (*boundary_reached_during_exploration*: `is_border(opposite(h, tmesh), tmesh)` → true during BFS grow; returns null_vertex); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Single isolated triangle where all three edges are border (n=1). When BFS region expansion starts from any border edge, the opposite halfedges of the other two edges are immediately found to be border → boundary reached during exploration → abort. Hole boundary loop [v0,v1,v2]. Euler V=3,E=3,F=1,chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0); t0=(v0,v1,v2); all edges n=1; assert_hole_boundary([v0,v1,v2]); euler V=3,E=3,F=1,chi=1.
+- **Expected kernel behavior**: Branch 3 fires; BFS expansion encounters a border halfedge on the first step; function returns null_vertex without performing any removal.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2]`
+- **Mesh assertion**: `euler_characteristic v=3 e=3 f=1 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me472.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me473 — remove_a_border_edge region_not_topological_disk: 8-triangle annular ring has chi=0; is_selection_a_topological_disk returns false (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: border-edge-collapse / topological-disk-check)
+- **Sources**: CGAL PMP `PMP.remove_a_border_edge.with_sets` Branch 4 (*region_not_topological_disk*: `!is_selection_a_topological_disk(marked_faces, tmesh)` → true; skip removal, return null_vertex); `MESH_HEAL_COVERAGE.md`.
+- **Description**: 8-triangle annular ring (two concentric boundary squares v0-v3 outer, v4-v7 inner). The ring has Euler characteristic chi=0 (V=8,E=16,F=8) — an annular/non-disk topology. is_selection_a_topological_disk fails because the region has two boundary components. Outer border edges n=1; inner border edges n=1; interior diagonal edges n=2. Euler V=8,E=16,F=8,chi=0.
+- **Reproducer recipe**: outer square v0-v3, inner square v4-v7; 8 triangles as two-per-band; outer edges n=1, inner edges n=1, interior diagonals n=2; euler V=8,E=16,F=8,chi=0.
+- **Expected kernel behavior**: Branch 4 fires; is_selection_a_topological_disk returns false; removal is skipped and null_vertex is returned.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `euler_characteristic v=8 e=16 f=8 chi=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me473.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me474 — remove_a_border_edge isolated_region: 4-triangle free-floating island; all boundary edges are border; hk1 is always border (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: border-edge-collapse / isolated-region)
+- **Sources**: CGAL PMP `PMP.remove_a_border_edge.with_sets` Branch 5 (*isolated_region*: `is_border(hk1, tmesh)` → true; returns null_vertex — isolated region cannot be removed); `MESH_HEAL_COVERAGE.md`.
+- **Description**: 4-triangle 2x1 quad-strip (v0-v5) that is completely free-floating — all 6 boundary edges are border (n=1). Interior shared edges (v0,v4) n=2, (v1,v4) n=2, (v1,v5) n=2. When the algorithm walks around the region boundary, every candidate hk1 is itself a border halfedge → isolated region detected → null_vertex returned. Hole boundary [v0,v1,v2,v5,v4,v3]. Euler V=6,E=9,F=4,chi=1.
+- **Reproducer recipe**: v0=(0,0,0)…v5=(2,1,0); t0=(v0,v1,v4), t1=(v0,v4,v3), t2=(v1,v2,v5), t3=(v1,v5,v4); interior edges n=2; outer edges n=1; hole_boundary [v0,v1,v2,v5,v4,v3]; euler V=6,E=9,F=4,chi=1.
+- **Expected kernel behavior**: Branch 5 fires; is_border(hk1) returns true; function detects isolated region and returns null_vertex.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2,5,4,3]`
+- **Mesh assertion**: `euler_characteristic v=6 e=9 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me474.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me475 — remove_a_border_edge hk2_equals_hp: degree-2 apex v0 in 2-triangle fan; hk2 wraps to hp (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: border-edge-collapse / halfedge-identity)
+- **Sources**: CGAL PMP `PMP.remove_a_border_edge.with_sets` Branch 6 (*halfedge_identity_match*: `hk2 == hp` — halfedge obtained by walking around region equals halfedge at collapse target; different pointer restoration path); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing interior edge (v0,v2) around a degree-2 apex v0. t0=(v0,v1,v2) has border edge (v0,v1); t1=(v0,v2,v3) has border edge (v0,v3). With only two triangles in the fan, traversing halfedges h→hk1→hk2 from border edge (v0,v1) wraps back to hp (the collapse target halfedge) because v0's fan closes after exactly 2 steps → hk2==hp. Interior (v0,v2) n=2; border edges (v0,v1),(v0,v3),(v1,v2),(v2,v3) n=1 each. Hole boundary [v0,v1,v2,v3]. Euler V=4,E=5,F=2,chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(-1,0,0); t0=(v0,v1,v2), t1=(v0,v2,v3); assert_edge_shared(v0,v2,2); border edges n=1; hole_boundary [v0,v1,v2,v3]; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 6 fires; hk2==hp detected; algorithm follows the alternative halfedge-pointer restoration path for this degenerate fan case.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2,3]`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me475.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
