@@ -1,0 +1,103 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      1.0,
+      0.0
+    ],
+    [
+      2.0,
+      -1.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      1.0
+    ],
+    [
+      2.0,
+      0.0,
+      -1.0
+    ],
+    [
+      10.0,
+      0.0,
+      0.0
+    ],
+    [
+      12.0,
+      1.0,
+      0.0
+    ],
+    [
+      12.0,
+      -1.0,
+      0.0
+    ],
+    [
+      10.0,
+      3.0,
+      0.0
+    ],
+    [
+      12.0,
+      4.0,
+      0.0
+    ],
+    [
+      12.0,
+      2.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      3,
+      4
+    ],
+    [
+      5,
+      6,
+      7
+    ],
+    [
+      8,
+      9,
+      10
+    ]
+  ],
+  "metadata": {
+    "id": "Me870",
+    "schema_version": 0,
+    "defect_class": "self_intersection_face_pair",
+    "title": "selectIntersectingTriangles selected-vs-full-mesh: isSelection restricts spatial scan to pre-selected intersecting pair (Branch 1)",
+    "assertions": [
+      {
+        "kind": "triangles_self_intersect",
+        "triangles": [
+          0,
+          1
+        ]
+      },
+      {
+        "kind": "triangles_do_not_intersect",
+        "triangles": [
+          2,
+          3
+        ]
+      }
+    ]
+  }
+}
