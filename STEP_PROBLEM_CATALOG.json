@@ -102553,7 +102553,9 @@
       "units"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "n_faces_total == 0",
+      "n_edges_total >= 1",
+      "parametric.uncertainty_values == []"
     ],
     "title": "GEOMETRIC_REPRESENTATION_CONTEXT lacks UNCERTAINTY_MEASURE_WITH_UNIT; reader-side default precision substituted"
   },
@@ -102815,7 +102817,8 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 1"
     ],
     "title": "AP238 machining_operation references nonexistent process_aspect"
   },
@@ -104698,7 +104701,8 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_vertices_total == 5"
     ],
     "title": "AP209 ply orientation expressed in wrong reference frame"
   },
@@ -106830,7 +106834,8 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "shape_null == False",
+      "n_edges_total == 1"
     ],
     "title": "AP238 inspection_probing path passes through workpiece body"
   },

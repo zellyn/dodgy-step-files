@@ -13,8 +13,8 @@ Byte assertions:
   contains(b'STRUCTURAL_ANALYSIS_DESIGN')
   contains(b'AXIS2_PLACEMENT_3D')
 
-Tier-3: shape_null == True
-Expected: occt=empty/empty gmsh=empty ifc=schema_n/a
+Tier-3: shape_null == False, n_vertices_total == 5
+Expected: occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a
 """
 from pathlib import Path
 from step_corpus.step_builder import StepFile

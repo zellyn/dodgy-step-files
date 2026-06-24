@@ -13,8 +13,8 @@ Byte assertions:
   contains(b'INSPECTION_PROBING(')
   contains(b'probe_path_through_part')
 
-Tier-3: shape_null == True
-Expected: occt=empty/empty gmsh=empty ifc=schema_n/a
+Tier-3: shape_null == False, n_edges_total == 1
+Expected: occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a
 """
 from pathlib import Path
 from step_corpus.step_builder import StepFile

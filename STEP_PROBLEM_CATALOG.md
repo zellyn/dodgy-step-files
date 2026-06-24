@@ -10033,7 +10033,8 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'MACHINING_OPERATION')
 - **Byte assertion**: contains(b'WORKPLAN')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_vertices_total == 1
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11399,7 +11400,8 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  wrong CSYS".
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'AXIS2_PLACEMENT_3D')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_vertices_total == 5
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -31030,7 +31032,8 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'INSPECTION_PROBING(')
 - **Byte assertion**: contains(b'probe_path_through_part')
-- **Tier-3 assertion**: shape_null == True
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_edges_total == 1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M178.stp
