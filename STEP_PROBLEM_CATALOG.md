@@ -19446,8 +19446,8 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: edge-walking iterators on non-simple wires
  must terminate (use vertex+direction or edge+direction in the visited
  map); reject pathological wires before iterating.
-- **Notes**: **See also**: Twi076, Tsh056b. Synonyms: "face merge hangs on figure-eight wire", "infinite loop in unifier on non-simple wire", "edge walker stuck on pinched face", "non-simple wire causes hang", "face merge fails to terminate".
-- **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
+- **Notes**: **See also**: Twi076, Tsh056b. Synonyms: "face merge hangs on figure-eight wire", "infinite loop in unifier on non-simple wire", "edge walker stuck on pinched face", "non-simple wire causes hang", "face merge fails to terminate". Validation observed: the source bytes declare 1 ADVANCED_FACE entity, but OCCT's traversal of the non-simple figure-eight wire produces n_faces_total=2 — this divergence IS the defect (bytes/tier-3 inconsistency is intentional, allowlisted in `INCONSISTENT_CEILING` of `test_bytes_tier3_audit.py`).
+- **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
 - **Tier-3 assertion**: n_faces_total == 2
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1

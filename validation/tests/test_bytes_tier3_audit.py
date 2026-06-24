@@ -19,7 +19,14 @@ from step_corpus._bytes_tier3_audit import audit_all
 
 # Ratchet: number of `inconsistent` pair-records allowed today. Set to
 # the value observed at the time this test was authored.
-INCONSISTENT_CEILING = 0
+#
+# Bumped to 1 on 2026-06-24: Tsh056 (figure-eight wire) intentionally
+# declares 1 ADVANCED_FACE in bytes but OCCT's traversal of the
+# non-simple wire yields n_faces_total=2. The audit's heuristic
+# "tier-3 face count cannot exceed declared ADVANCED_FACE" is correct
+# for well-formed faces but doesn't model topology-induced face splits,
+# which is exactly what Tsh056 exercises as its defect mechanism.
+INCONSISTENT_CEILING = 1
 
 
 @pytest.fixture(scope="module")

@@ -58905,7 +58905,7 @@
   },
   {
     "byte_assertions": [
-      "count_entity_def(b'ADVANCED_FACE') == 2"
+      "count_entity_def(b'ADVANCED_FACE') == 1"
     ],
     "category": "§12.3a shells/orientation",
     "closure_defect": null,
@@ -58917,8 +58917,8 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh056.stp",
     "id": "Tsh056",
-    "notes": "**See also**: Twi076, Tsh056b. Synonyms: \"face merge hangs on figure-eight wire\", \"infinite loop in unifier on non-simple wire\", \"edge walker stuck on pinched face\", \"non-simple wire causes hang\", \"face merge fails to terminate\".",
-    "occ_behavior_note": null,
+    "notes": "**See also**: Twi076, Tsh056b. Synonyms: \"face merge hangs on figure-eight wire\", \"infinite loop in unifier on non-simple wire\", \"edge walker stuck on pinched face\", \"non-simple wire causes hang\", \"face merge fails to terminate\". Validation observed: the source bytes declare 1 ADVANCED_FACE entity, but OCCT's traversal of the non-simple figure-eight wire produces n_faces_total=2 — this divergence IS the defect (bytes/tier-3 inconsistency is intentional, allowlisted in `INCONSISTENT_CEILING` of `test_bytes_tier3_audit.py`).",
+    "occ_behavior_note": "the source bytes declare 1 ADVANCED_FACE entity, but OCCT's traversal of the non-simple figure-eight wire produces n_faces_total=2 — this divergence IS the defect (bytes/tier-3 inconsistency is intentional, allowlisted in `INCONSISTENT_CEILING` of `test_bytes_tier3_audit.py`).",
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
     "reproducer": "A single face whose `FACE_OUTER_BOUND` has 6 edges forming a figure-eight at one vertex (vertex `B` has 4 incident edges in the wire). Run face unification.",
