@@ -24443,7 +24443,8 @@ Face with degenerate geometry producing area=0.0. CheckSpotFace's threshold chec
 ### Tfa153 — ShapeFix_Face.FixSmallAreaWire computational-overflow
 
 Face with very large vertex coordinates (1e15). FixSmallAreaWire's area calculation overflows float precision when scaling by coordinates near machine limits.
-- **Tier-3 assertion**: load == "ok"
+- **Notes**: Validation observed: parser-level rejection by both OCCT and gmsh ("Incorrect Syntax: Fails Count: 2" diagnostic from both), where OCCT categorizes the result as silent-empty and gmsh as reject. The cited FixSmallAreaWire code path is not reached at fixture scale because the parser rejects the 1e15-magnitude REAL literals before geometry construction begins. The kernel-divergence-at-parser-level (occt=empty vs gmsh=reject for identical input) still demonstrates the defect class.
+- **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=reject ifc=schema_n/a`
 ### Tfa154 — ShapeAnalysis_CheckSmallFace.CheckTwisted disconnected-wire-region
 

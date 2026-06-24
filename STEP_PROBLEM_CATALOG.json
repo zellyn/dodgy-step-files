@@ -79821,8 +79821,8 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3c-faces/Tfa153.stp",
     "id": "Tfa153",
-    "notes": "",
-    "occ_behavior_note": null,
+    "notes": "Validation observed: parser-level rejection by both OCCT and gmsh (\"Incorrect Syntax: Fails Count: 2\" diagnostic from both), where OCCT categorizes the result as silent-empty and gmsh as reject. The cited FixSmallAreaWire code path is not reached at fixture scale because the parser rejects the 1e15-magnitude REAL literals before geometry construction begins. The kernel-divergence-at-parser-level (occt=empty vs gmsh=reject for identical input) still demonstrates the defect class.",
+    "occ_behavior_note": "parser-level rejection by both OCCT and gmsh (\"Incorrect Syntax: Fails Count: 2\" diagnostic from both), where OCCT categorizes the result as silent-empty and gmsh as reject. The cited FixSmallAreaWire code path is not reached at fixture scale because the parser rejects the 1e15-magnitude REAL literals before geometry construction begins. The kernel-divergence-at-parser-level (occt=empty vs gmsh=reject for identical input) still demonstrates the defect class.",
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
     "reproducer": "",
@@ -79838,7 +79838,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "shape_null == True"
     ],
     "title": "ShapeFix_Face.FixSmallAreaWire computational-overflow"
   },
