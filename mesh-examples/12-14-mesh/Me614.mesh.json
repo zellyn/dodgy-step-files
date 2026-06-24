@@ -1,0 +1,44 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      10.0,
+      0.0,
+      0.0
+    ],
+    [
+      5.0,
+      0.05,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ]
+  ],
+  "metadata": {
+    "id": "Me614",
+    "schema_version": 0,
+    "defect_class": "cap_triangle",
+    "title": "is_cap_triangle_face handle_triplet slot 2: cap vertex v2=(5,0.05,0) at third vertex r; angle\u2248179.7\u00b0; Branch 5 fires",
+    "assertions": [
+      {
+        "kind": "triangle_aspect_ratio_gt",
+        "triangle": 0,
+        "gt": 100.0
+      },
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 0,
+        "lt": 1.0
+      }
+    ]
+  }
+}

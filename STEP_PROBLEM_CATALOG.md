@@ -36593,6 +36593,127 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me590 — holeFilling_TriangulateHole_edge_not_on_boundary: closed mesh has no boundary edge; TriangulateHole seed fails isOnBoundary check (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: hole-fill / edge-not-on-boundary)
+- **Sources**: MeshFix `holeFilling::TriangulateHole@L157` Branch 1 (*EDGE_NOT_ON_BOUNDARY*: `!e->isOnBoundary()` → return 0); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Fully closed 4-triangle mesh (3-triangle fan + 1 back-face triangle). Every edge is shared by exactly 2 triangles — no boundary edge exists anywhere in the mesh. Any edge passed as seed to TriangulateHole immediately fails the isOnBoundary() check → Branch 1 fires and fills are refused. All 6 edges n=2. Euler: V=4, E=6, F=4, chi=2 (closed surface).
+- **Reproducer recipe**: v0=(0,0,0), v1=(3,0,0), v2=(1.5,2,0), v3=(1.5,0.8,0); t0=(v0,v1,v3), t1=(v1,v2,v3), t2=(v2,v0,v3), t3=(v0,v2,v1); all edges n=2; euler V=4,E=6,F=4,chi=2.
+- **Expected kernel behavior**: Branch 1 fires; TriangulateHole returns 0 immediately; no fill triangles created.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me590.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me591 — holeFilling_TriangulateHole_angle_computation_failure: near-collinear boundary cycle; all candidate angles == DBL_MAX; gang check fires (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: hole-fill / angle-computation-failure)
+- **Sources**: MeshFix `holeFilling::TriangulateHole@L157` Branch 2 (*ANGLE_COMPUTATION_FAILURE*: `gang == DBL_MAX` → log warning; unmark; return 0); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two-triangle mesh covering a paper-thin rectangle (4×0.005). The outer 4-vertex boundary is nearly collinear (height/width ≈ 0.00125). All 4 candidate boundary vertices sit at angles ≈ 180° — the angle computation returns DBL_MAX for each. gang remains DBL_MAX → Branch 2 fires. Shared diagonal (v0,v2) n=2; four outer edges n=1. Near-pair distances v0-v3 < 0.01, v1-v2 < 0.01. Euler: V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(4,0,0), v2=(4,0.005,0), v3=(0,0.005,0); t0=(v0,v1,v2), t1=(v0,v2,v3); shared diagonal n=2; four outer edges n=1; vertex_pair_distance_lt(v0,v3,0.01); vertex_pair_distance_lt(v1,v2,0.01); hole_boundary=[v0,v1,v2,v3]; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 2 fires; all candidate angles evaluated as DBL_MAX; gang pointer never set; warning logged; vertices unmarked; return 0.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2,3]`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,3] lt=0.01`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,2] lt=0.01`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me591.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me592 — holeFilling_TriangulateHole_euler_edge_triangle_failure: best-angle vertex v3 pinched between existing edges; EulerEdgeTriangle returns NULL; vertex marked bad (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: hole-fill / euler-edge-triangle-failure)
+- **Sources**: MeshFix `holeFilling::TriangulateHole@L157` Branch 3 (*EULER_EDGE_TRIANGLE_FAILURE*: `!EulerEdgeTriangle(e1, e2)` → MARK_BIT(v, 5); continue); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Five-vertex mesh with 4 triangles where hub vertex v3=(1,1,0) is interior (pinched). Both boundary edges incident on v3 (v2-v3 and v3-v4) are already interior edges (n=2) because a 4th triangle t3=(v2,v4,v3) pre-fills the pinch slot. EulerEdgeTriangle would attempt to create a duplicate edge → returns NULL → vertex marked bad (bit 5) → Branch 3 fires. Interior edges: (v0,v3),(v1,v3),(v2,v3),(v3,v4) n=2. Outer boundary: v0-v1, v1-v4, v2-v4, v0-v2 n=1. Outer loop: [v0,v1,v4,v2]. Euler: V=5, E=8, F=4, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(0,1,0), v3=(1,1,0), v4=(2,1,0); t0=(v0,v1,v3), t1=(v0,v3,v2), t2=(v1,v4,v3), t3=(v2,v4,v3); interior edges (v0,v3),(v1,v3),(v2,v3),(v3,v4) n=2; outer edges n=1; hole_boundary=[v0,v1,v4,v2]; euler V=5,E=8,F=4,chi=1.
+- **Expected kernel behavior**: Branch 3 fires; v3 selected as best-angle candidate; EulerEdgeTriangle(e1,e2) returns NULL; MARK_BIT(v3, 5); algorithm continues searching for next valid candidate.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,4,2]`
+- **Mesh assertion**: `euler_characteristic v=5 e=8 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me592.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me593 — holeFilling_TriangulateHole_normal_computation_failure: saddle-shaped hole boundary produces anti-parallel fill normals summing to zero; nor.isNull fires (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: hole-fill / normal-computation-failure)
+- **Sources**: MeshFix `holeFilling::TriangulateHole@L157` Branch 4 (*NORMAL_COMPUTATION_FAILURE*: `nor.isNull()` → log "Unable to compute"; return nt); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Seven-vertex mesh with 6 rim triangles around a central hexagonal hole. Boundary vertices alternate z=+0.5 and z=-0.5 forming a saddle: v0=(0,0,0.5), v1=(2,0,-0.5), v2=(3,1,0.5), v3=(2,2,-0.5), v4=(0,2,0.5), v5=(-1,1,-0.5); hub vh=(1,1,0). Any triangulation of this saddle hole produces triangles with anti-parallel normals that sum to zero → nor.isNull() → Branch 4 fires; optimization phase skipped. All 6 hub edges n=2; 6 outer boundary edges n=1. Hole boundary: [v0,v1,v2,v3,v4,v5]. Euler: V=7, E=12, F=6, chi=1.
+- **Reproducer recipe**: saddle hexagon + hub vh=(1,1,0); 6 rim triangles t0=(v0,v1,vh) through t5=(v5,v0,vh); hub edges n=2; outer edges n=1; hole_boundary=[v0..v5]; euler V=7,E=12,F=6,chi=1.
+- **Expected kernel behavior**: Branch 4 fires; fill triangles created but average normal is zero/null; warning "Unable to compute" logged; method returns nt (triangle count) without entering optimization loop.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2,3,4,5]`
+- **Mesh assertion**: `euler_characteristic v=7 e=12 f=6 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me593.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me594 — holeFilling_TriangulateHole_delaunay_constrained_swap: non-Delaunay fill diagonal triggers edge swap; sw++ fires (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: hole-fill / delaunay-constrained-swap)
+- **Sources**: MeshFix `holeFilling::TriangulateHole@L157` Branch 5 (*DELAUNAY_CONSTRAINED_SWAP*: `e1->delaunayMinAngle()` → swap; sw++); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Eight-vertex mesh: quadrilateral hole boundary v0=(0,0,0), v1=(3,0,0), v2=(2,1,0), v3=(0,1,0) with 4 outer rim triangles (one per boundary edge) plus 2 fill triangles using the non-Delaunay diagonal (v0,v2). The fill diagonal (v0,v2) produces an obtuse triangle pair; the alternative diagonal (v1,v3) gives a better minimum angle → delaunayMinAngle() returns true → swap accepted → sw++. All boundary vertices now interior (n=2 shared); 8 outer rim edges n=1. Euler: V=8, E=13, F=6, chi=1.
+- **Reproducer recipe**: v0-v3=quad hole, e0=(1.5,-1,0), e1=(4,0.5,0), e2=(1,2,0), e3=(-1,0.5,0); t0=(v0,v1,e0), t1=(v1,v2,e1), t2=(v2,v3,e2), t3=(v3,v0,e3), tf0=(v0,v1,v2), tf1=(v0,v2,v3); quad edges n=2; diagonal (v0,v2) n=2; rim outer edges n=1; euler V=8,E=13,F=6,chi=1.
+- **Expected kernel behavior**: Branch 5 fires; delaunayMinAngle() finds diagonal (v0,v2) sub-optimal; swap to (v1,v3) accepted; sw counter incremented; quality of fill triangulation improved.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,7] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,7] n=1`
+- **Mesh assertion**: `euler_characteristic v=8 e=13 f=6 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me594.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me595 — holeFilling_TriangulateHole_watson_insert_failure: L-shaped hole; interior insertion candidate falls in concave notch; watsonInsert returns NULL (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: hole-fill / watson-insert-failure)
+- **Sources**: MeshFix `holeFilling::TriangulateHole@L157` Branch 6 (*WATSON_INSERT_FAILURE*: `watsonInsert(p, ...)== NULL` → skip; continue); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Seven-vertex mesh with 5 rim triangles surrounding an L-shaped non-convex hole. Boundary: v0=(0,0,0), v1=(4,0,0), v2=(4,2,0), v3=(2,2,0) (concave corner), v4=(2,4,0), v5=(0,4,0), hub vh=(0,2,0). The concave notch at v3 means a naive fill-triangle centroid lands outside the valid triangulation domain → watsonInsert returns NULL → Branch 6 fires; interior point skipped. Interior edges: (v0,v2),(v0,v3),(v0,v5),(v3,v5) n=2. Outer rim boundary: 7 edges n=1. Hole boundary: [v0,v1,v2,v3,v4,v5]. Euler: V=7, E=11, F=5, chi=1.
+- **Reproducer recipe**: v0-v5=L-shape, vh=(0,2,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v3,v4,v5), t3=(v0,v3,v5), t4=(v0,v5,vh); interior edges n=2; outer boundary edges n=1; hole_boundary=[v0,v1,v2,v3,v4,v5]; euler V=7,E=11,F=5,chi=1.
+- **Expected kernel behavior**: Branch 6 fires; centroid of a large fill triangle computed as interior candidate p; watsonInsert(p) called; p outside non-convex domain → returns NULL; p skipped; next candidate tried.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,6] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2,3,4,5]`
+- **Mesh assertion**: `euler_characteristic v=7 e=11 f=5 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me595.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me600 — merge_duplicated_vertices_in_boundary_cycle boundary_cycle_traversal: CGAL_precondition guard passes on valid boundary halfedge; 4-edge cycle traversal begins (Branch 1)
 - **Category**: §12.14 mesh defects (sub-class: coincident-boundary-vertex / boundary-cycle-traversal)
 - **Sources**: CGAL PMP `PMP.merge_duplicated_vertices_in_boundary_cycle` Branch 1 (*boundary_cycle_traversal*: `CGAL_precondition(is_valid_halfedge_descriptor(h, pm));`); `MESH_HEAL_COVERAGE.md`.
@@ -36668,4 +36789,59 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,4]`
 - **Mesh assertion**: `euler_characteristic v=6 e=9 f=4 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me604.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me610 — is_cap_triangle_face degenerate_edge: first edge (v0,v1) has zero squared length; coincident endpoints trigger early-exit Branch 1
+- **Category**: §12.14 mesh defects (sub-class: cap-triangle / degenerate-edge)
+- **Sources**: CGAL PMP `PMP.is_cap_triangle_face` Branch 1 (*degenerate_edge*: `if(is_zero(sq_lengths[0]))`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A single degenerate triangle (v0, v1, v2) where v0 and v1 both occupy (0,0,0). The squared length of the first edge sq_lengths[0] = dist(v0,v1)^2 = 0, triggering the early-exit guard at line 460 before any cap classification is attempted. A second valid context triangle is included. Vertex pair (v0,v1) distance is zero.
+- **Reproducer recipe**: v0=(0,0,0), v1=(0,0,0), v2=(1,0,0), v3=(0,1,0), v4=(1,1,0); t0=(v0,v1,v2) degenerate; t1=(v2,v3,v4) context; assert_vertex_pair_distance_lt(v0,v1,1e-12); assert_triangle_area_lt(t0,1e-12).
+- **Expected kernel behavior**: Branch 1 fires; is_zero(sq_lengths[0]) returns true for edge (v0,v1) with coincident endpoints; cap detection exits early without classifying the triangle.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=1e-12`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-12`
+- **Fixture path**: mesh-examples/12-14-mesh/Me610.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me611 — is_cap_triangle_face cap_scalar_product: near-180-degree cap vertex v2=(5,0.05,0) above base; scalar-product cap-detection Branch 2 fires
+- **Category**: §12.14 mesh defects (sub-class: cap-triangle / scalar-product)
+- **Sources**: CGAL PMP `PMP.is_cap_triangle_face` Branch 2 (*cap_scalar_product*: `if(!neg_sp)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A single near-180° cap triangle (v0, v1, v2): v0=(0,0,0), v1=(10,0,0), v2=(5,0.05,0). The cap vertex v2 sits just 0.05 above the midpoint of the base edge, giving angle ≈ 179.7° at v2. The scalar product of the short edge vectors from v2 fires the !neg_sp cap-detection condition at line 471. The triangle has aspect ratio ≈ 200 and area ≈ 0.25.
+- **Reproducer recipe**: v0=(0,0,0), v1=(10,0,0), v2=(5,0.05,0); t0=(v0,v1,v2); assert_triangle_aspect_ratio_gt(t0,100.0); assert_triangle_area_lt(t0,1.0).
+- **Expected kernel behavior**: Branch 2 fires; !neg_sp is true (scalar product non-negative for the cap configuration); cap triangle identified with cap vertex near segment v0-v1.
+- **Mesh assertion**: `triangle_aspect_ratio_gt triangle=0 gt=100.0`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me611.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me612 — is_cap_triangle_face handle_triplet slot 0: cap vertex v0=(5,0.05,0) at halfedge source p; angle approx 179.7 degrees; Branch 3 fires
+- **Category**: §12.14 mesh defects (sub-class: cap-triangle / triplet-slot-0)
+- **Sources**: CGAL PMP `PMP.is_cap_triangle_face` Branch 3 (*handle_triplet slot 0*: `handle_triplet(p, q, r, 0)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A near-180° cap triangle stored as (v_cap, v_left, v_right) = ((5,0.05,0), (0,0,0), (10,0,0)). When traversed from the halfedge whose source is v_cap, p = v_cap is identified at slot 0. The cap vertex (angle approx 179.7°) is at p, so handle_triplet(p, q, r, 0) fires immediately. Aspect ratio approx 200; area approx 0.25.
+- **Reproducer recipe**: v_cap=(5,0.05,0), v_left=(0,0,0), v_right=(10,0,0); t0=(v_cap,v_left,v_right); assert_triangle_aspect_ratio_gt(t0,100.0); assert_triangle_area_lt(t0,1.0).
+- **Expected kernel behavior**: Branch 3 fires; handle_triplet(p,q,r,0) detects cap vertex at slot 0 (p = v_cap); slot 1 and 2 are never tried.
+- **Mesh assertion**: `triangle_aspect_ratio_gt triangle=0 gt=100.0`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me612.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me613 — is_cap_triangle_face handle_triplet slot 1: cap vertex v1=(5,0.05,0) at halfedge target q; angle approx 179.7 degrees; Branch 4 fires
+- **Category**: §12.14 mesh defects (sub-class: cap-triangle / triplet-slot-1)
+- **Sources**: CGAL PMP `PMP.is_cap_triangle_face` Branch 4 (*handle_triplet slot 1*: `handle_triplet(q, r, p, 1)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A near-180° cap triangle stored as (v_left, v_cap, v_right) = ((0,0,0), (5,0.05,0), (10,0,0)). When traversed: p = v_left (not the cap; slot 0 check fails), q = v_cap (angle approx 179.7°; slot 1 fires). handle_triplet(p,q,r,0) does not detect a cap at p; handle_triplet(q,r,p,1) then fires. Aspect ratio approx 200; area approx 0.25.
+- **Reproducer recipe**: v_left=(0,0,0), v_cap=(5,0.05,0), v_right=(10,0,0); t0=(v_left,v_cap,v_right); assert_triangle_aspect_ratio_gt(t0,100.0); assert_triangle_area_lt(t0,1.0).
+- **Expected kernel behavior**: Branch 4 fires; handle_triplet(p,q,r,0) passes (p not a cap); handle_triplet(q,r,p,1) detects cap vertex at slot 1 (q = v_cap).
+- **Mesh assertion**: `triangle_aspect_ratio_gt triangle=0 gt=100.0`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me613.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me614 — is_cap_triangle_face handle_triplet slot 2: cap vertex v2=(5,0.05,0) at third vertex r; angle approx 179.7 degrees; Branch 5 fires
+- **Category**: §12.14 mesh defects (sub-class: cap-triangle / triplet-slot-2)
+- **Sources**: CGAL PMP `PMP.is_cap_triangle_face` Branch 5 (*handle_triplet slot 2*: `handle_triplet(r, p, q, 2)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A near-180° cap triangle stored as (v_left, v_right, v_cap) = ((0,0,0), (10,0,0), (5,0.05,0)). When traversed: p = v_left (not cap; slot 0 fails), q = v_right (not cap; slot 1 fails), r = v_cap (angle approx 179.7°; slot 2 fires). Both handle_triplet(p,q,r,0) and handle_triplet(q,r,p,1) pass; handle_triplet(r,p,q,2) fires. Aspect ratio approx 200; area approx 0.25.
+- **Reproducer recipe**: v_left=(0,0,0), v_right=(10,0,0), v_cap=(5,0.05,0); t0=(v_left,v_right,v_cap); assert_triangle_aspect_ratio_gt(t0,100.0); assert_triangle_area_lt(t0,1.0).
+- **Expected kernel behavior**: Branch 5 fires; handle_triplet(p,q,r,0) and handle_triplet(q,r,p,1) both pass (neither p nor q is the cap); handle_triplet(r,p,q,2) detects cap vertex at slot 2 (r = v_cap).
+- **Mesh assertion**: `triangle_aspect_ratio_gt triangle=0 gt=100.0`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me614.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder

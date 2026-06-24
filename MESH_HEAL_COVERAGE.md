@@ -274,28 +274,28 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
   - Suggested fixture: defect mentioning 'const std::size_t first_candidates_range', 'const std::size_t second_candidates_range'
 
 ##### `PMP.is_cap_triangle_face` — lines 458–493
-(5 branches; all UNCOVERED — no mesh fixtures exist yet)
+(5 branches; ALL COVERED — Me610–Me614 — wave 21C, 2026-06-23)
 
-- **Branch 1** @ line 460 — *Logic_guard*
+- **Branch 1** @ line 460 — *degenerate_edge* — **Me610**
   - What it tests: Tests: is_zero(sq_lengths[0]
   - Repair action: Conditional branching
-  - Suggested fixture: defect mentioning 'is_zero(sq_lengths[0]'
-- **Branch 2** @ line 471 — *Logic_guard*
+  - Fixture: Me610 — degenerate triangle with v0==v1 at (0,0,0); sq_lengths[0]=0 → early exit
+- **Branch 2** @ line 471 — *cap_scalar_product* — **Me611**
   - What it tests: Tests: !neg_sp
   - Repair action: Conditional branching
-  - Suggested fixture: defect mentioning '!neg_sp'
-- **Branch 3** @ line 481 — *Logic_guard*
+  - Fixture: Me611 — cap triangle v2=(5,0.05,0) above base (0,0,0)-(10,0,0); angle≈179.7° fires !neg_sp
+- **Branch 3** @ line 481 — *handle_triplet_slot_0* — **Me612**
   - What it tests: Tests: handle_triplet(p, q, r, 0
   - Repair action: Conditional branching
-  - Suggested fixture: defect mentioning 'handle_triplet(p,'
-- **Branch 4** @ line 483 — *Logic_guard*
+  - Fixture: Me612 — cap vertex at halfedge source p=(5,0.05,0); slot 0 fires first
+- **Branch 4** @ line 483 — *handle_triplet_slot_1* — **Me613**
   - What it tests: Tests: handle_triplet(q, r, p, 1
   - Repair action: Conditional branching
-  - Suggested fixture: defect mentioning 'handle_triplet(q,'
-- **Branch 5** @ line 485 — *Logic_guard*
+  - Fixture: Me613 — cap vertex at halfedge target q=(5,0.05,0); slot 0 skipped, slot 1 fires
+- **Branch 5** @ line 485 — *handle_triplet_slot_2* — **Me614**
   - What it tests: Tests: handle_triplet(r, p, q, 2
   - Repair action: Conditional branching
-  - Suggested fixture: defect mentioning 'handle_triplet(r,'
+  - Fixture: Me614 — cap vertex at third vertex r=(5,0.05,0); slots 0 and 1 skipped, slot 2 fires
 
 ##### `PMP.is_degenerate_triangle_face` — lines 159–184
 (0 branches; all UNCOVERED — no mesh fixtures exist yet)

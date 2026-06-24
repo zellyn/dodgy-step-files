@@ -1,0 +1,62 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      1.0,
+      0.0
+    ],
+    [
+      1.0,
+      1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      2,
+      3,
+      4
+    ]
+  ],
+  "metadata": {
+    "id": "Me610",
+    "schema_version": 0,
+    "defect_class": "degenerate_triangle",
+    "title": "is_cap_triangle_face degenerate_edge: first edge (v0,v1) has zero squared length; coincident endpoints trigger early-exit Branch 1",
+    "assertions": [
+      {
+        "kind": "vertex_pair_distance_lt",
+        "pair": [
+          0,
+          1
+        ],
+        "lt": 1e-12
+      },
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 0,
+        "lt": 1e-12
+      }
+    ]
+  }
+}
