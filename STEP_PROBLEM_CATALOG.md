@@ -36664,3 +36664,77 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me485.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me470 — remove_a_border_edge link_condition_satisfied: border edge (v0,v1) collapses safely; 2-triangle open strip (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: border-edge-collapse / link-condition)
+- **Sources**: CGAL PMP `PMP.remove_a_border_edge.with_sets` Branch 1 (*link_condition_satisfied*: `does_satisfy_link_condition(halfedge, tmesh)` → true; proceed with `collapse_edge`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing interior edge (v0,v2). Border edge (v0,v1) has link(v0)∩link(v1)={v2} — exactly one common neighbor — satisfying the link condition for safe collapse. Interior edge (v0,v2) n=2; four border edges n=1 each. Euler V=4,E=5,F=2,chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(-0.5,1,0); t0=(v0,v1,v2), t1=(v0,v2,v3); assert_edge_shared(v0,v2,2); border edges n=1; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 1 fires; does_satisfy_link_condition returns true; collapse_edge executes successfully reducing the face count by 1.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me470.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me471 — remove_a_border_edge link_condition_violation: border edge (v0,v1) has multiple common neighbors; collapse would break topology (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: border-edge-collapse / link-condition)
+- **Sources**: CGAL PMP `PMP.remove_a_border_edge.with_sets` Branch 2 (*link_condition_violation*: `does_satisfy_link_condition(halfedge, tmesh)` → false; mark incident faces and identify region); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangles in two disconnected fans sharing endpoints v0 and v1. t0=(v0,v1,v2) provides border edge (v0,v1). t1=(v0,v3,va) and t2=(v1,va,v3) make v3 and va common neighbors of both v0 and v1, so link(v0)∩link(v1)⊇{v2,v3,va} — multiple common neighbors — violating the link condition. Interior (v3,va) n=2; all other incident edges n=1. Euler V=5,E=8,F=3,chi=0 (two disconnected patches).
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,1,0), v3=(1,-1,0), va=(1,0,1); t0=(v0,v1,v2), t1=(v0,v3,va), t2=(v1,va,v3); assert_edge_shared(v3,va,2); assert_edge_shared(v0,v1,1); euler V=5,E=8,F=3,chi=0.
+- **Expected kernel behavior**: Branch 2 fires; does_satisfy_link_condition returns false; incident faces marked and region identified for further processing.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `euler_characteristic v=5 e=8 f=3 chi=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me471.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me472 — remove_a_border_edge boundary_reached_during_exploration: all three edges are border; region touches outer boundary immediately (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: border-edge-collapse / region-exploration)
+- **Sources**: CGAL PMP `PMP.remove_a_border_edge.with_sets` Branch 3 (*boundary_reached_during_exploration*: `is_border(opposite(h, tmesh), tmesh)` → true during BFS grow; returns null_vertex); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Single isolated triangle where all three edges are border (n=1). When BFS region expansion starts from any border edge, the opposite halfedges of the other two edges are immediately found to be border → boundary reached during exploration → abort. Hole boundary loop [v0,v1,v2]. Euler V=3,E=3,F=1,chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0); t0=(v0,v1,v2); all edges n=1; assert_hole_boundary([v0,v1,v2]); euler V=3,E=3,F=1,chi=1.
+- **Expected kernel behavior**: Branch 3 fires; BFS expansion encounters a border halfedge on the first step; function returns null_vertex without performing any removal.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2]`
+- **Mesh assertion**: `euler_characteristic v=3 e=3 f=1 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me472.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me473 — remove_a_border_edge region_not_topological_disk: 8-triangle annular ring has chi=0; is_selection_a_topological_disk returns false (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: border-edge-collapse / topological-disk-check)
+- **Sources**: CGAL PMP `PMP.remove_a_border_edge.with_sets` Branch 4 (*region_not_topological_disk*: `!is_selection_a_topological_disk(marked_faces, tmesh)` → true; skip removal, return null_vertex); `MESH_HEAL_COVERAGE.md`.
+- **Description**: 8-triangle annular ring (two concentric boundary squares v0-v3 outer, v4-v7 inner). The ring has Euler characteristic chi=0 (V=8,E=16,F=8) — an annular/non-disk topology. is_selection_a_topological_disk fails because the region has two boundary components. Outer border edges n=1; inner border edges n=1; interior diagonal edges n=2. Euler V=8,E=16,F=8,chi=0.
+- **Reproducer recipe**: outer square v0-v3, inner square v4-v7; 8 triangles as two-per-band; outer edges n=1, inner edges n=1, interior diagonals n=2; euler V=8,E=16,F=8,chi=0.
+- **Expected kernel behavior**: Branch 4 fires; is_selection_a_topological_disk returns false; removal is skipped and null_vertex is returned.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `euler_characteristic v=8 e=16 f=8 chi=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me473.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me474 — remove_a_border_edge isolated_region: 4-triangle free-floating island; all boundary edges are border; hk1 is always border (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: border-edge-collapse / isolated-region)
+- **Sources**: CGAL PMP `PMP.remove_a_border_edge.with_sets` Branch 5 (*isolated_region*: `is_border(hk1, tmesh)` → true; returns null_vertex — isolated region cannot be removed); `MESH_HEAL_COVERAGE.md`.
+- **Description**: 4-triangle 2x1 quad-strip (v0-v5) that is completely free-floating — all 6 boundary edges are border (n=1). Interior shared edges (v0,v4) n=2, (v1,v4) n=2, (v1,v5) n=2. When the algorithm walks around the region boundary, every candidate hk1 is itself a border halfedge → isolated region detected → null_vertex returned. Hole boundary [v0,v1,v2,v5,v4,v3]. Euler V=6,E=9,F=4,chi=1.
+- **Reproducer recipe**: v0=(0,0,0)…v5=(2,1,0); t0=(v0,v1,v4), t1=(v0,v4,v3), t2=(v1,v2,v5), t3=(v1,v5,v4); interior edges n=2; outer edges n=1; hole_boundary [v0,v1,v2,v5,v4,v3]; euler V=6,E=9,F=4,chi=1.
+- **Expected kernel behavior**: Branch 5 fires; is_border(hk1) returns true; function detects isolated region and returns null_vertex.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2,5,4,3]`
+- **Mesh assertion**: `euler_characteristic v=6 e=9 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me474.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me475 — remove_a_border_edge hk2_equals_hp: degree-2 apex v0 in 2-triangle fan; hk2 wraps to hp (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: border-edge-collapse / halfedge-identity)
+- **Sources**: CGAL PMP `PMP.remove_a_border_edge.with_sets` Branch 6 (*halfedge_identity_match*: `hk2 == hp` — halfedge obtained by walking around region equals halfedge at collapse target; different pointer restoration path); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing interior edge (v0,v2) around a degree-2 apex v0. t0=(v0,v1,v2) has border edge (v0,v1); t1=(v0,v2,v3) has border edge (v0,v3). With only two triangles in the fan, traversing halfedges h→hk1→hk2 from border edge (v0,v1) wraps back to hp (the collapse target halfedge) because v0's fan closes after exactly 2 steps → hk2==hp. Interior (v0,v2) n=2; border edges (v0,v1),(v0,v3),(v1,v2),(v2,v3) n=1 each. Hole boundary [v0,v1,v2,v3]. Euler V=4,E=5,F=2,chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(-1,0,0); t0=(v0,v1,v2), t1=(v0,v2,v3); assert_edge_shared(v0,v2,2); border edges n=1; hole_boundary [v0,v1,v2,v3]; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 6 fires; hk2==hp detected; algorithm follows the alternative halfedge-pointer restoration path for this degenerate fan case.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2,3]`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me475.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
