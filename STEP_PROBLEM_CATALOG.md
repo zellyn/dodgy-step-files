@@ -36593,6 +36593,145 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me680 — TriangulateHole@L98 EDGE_NOT_ON_BOUNDARY: closed tetrahedron; all edges n==2; no boundary edge; return 0 (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: hole-filling / non-boundary-input)
+- **Sources**: MeshFix `holeFilling::TriangulateHole@L98` Branch 1 (*EDGE_NOT_ON_BOUNDARY*: `if (!e->isOnBoundary()) return 0;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Closed tetrahedron — all 6 edges are interior (each shared by exactly 2 triangles). When TriangulateHole@L98 is called with any edge of this mesh, isOnBoundary() returns false and the function returns 0 immediately. No hole-filling can proceed on a closed mesh. Euler: V=4, E=6, F=4, chi=2 (genus-0 closed surface).
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,0.5,1); t0=(v0,v2,v1), t1=(v0,v1,v3), t2=(v1,v2,v3), t3=(v0,v3,v2); all 6 edges assert_edge_shared n=2; euler V=4,E=6,F=4,chi=2.
+- **Expected kernel behavior**: Branch 1 fires; `!e->isOnBoundary()` is true for every edge; return 0 without attempting fill.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me680.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me681 — TriangulateHole@L98 ANGLE_COMPUTATION_FAILURE: gang==DBL_MAX; boundary loop v0-v1-v2 collinear (180-degree angle); all candidates degenerate; return 0 (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: hole-filling / degenerate-angle)
+- **Sources**: MeshFix `holeFilling::TriangulateHole@L98` Branch 2 (*ANGLE_COMPUTATION_FAILURE*: `if (gang == DBL_MAX) { … return 0; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Five-vertex open mesh with a quadrilateral hole boundary [v0,v1,v2,v3] where v0=(0,0,0), v1=(1,0,0), v2=(2,0,0) are collinear along the x-axis. The angle at v1 is 180 degrees, making angle computation degenerate. When TriangulateHole scans all boundary candidates, every vertex yields gang == DBL_MAX; Branch 2 fires: warning logged, return 0. Euler: V=5, E=9, F=4, chi=0.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0) [collinear], v3=(1,2,0), v4=(1,-1.5,0); t0=(v0,v1,v4), t1=(v1,v2,v4), t2=(v0,v4,v3), t3=(v2,v3,v4); hole boundary loop [v0,v1,v2,v3]; euler V=5,E=9,F=4,chi=0.
+- **Expected kernel behavior**: Branch 2 fires; gang remains DBL_MAX for all boundary candidates; "Can't complete" logged; return 0.
+- **Mesh assertion**: `hole_boundary loop=[0,1,2,3]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `euler_characteristic v=5 e=9 f=4 chi=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me681.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me682 — TriangulateHole@L98 EULER_EDGE_TRIANGLE_FAILURE: interior fan pre-uses (v0,v1); sub-hole [v1,v2,v3] fill attempt rejected; MARK_BIT(v2,5) (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: hole-filling / euler-op-conflict)
+- **Sources**: MeshFix `holeFilling::TriangulateHole@L98` Branch 3 (*EULER_EDGE_TRIANGLE_FAILURE*: `if (!EulerEdgeTriangle(e1, e2)) { MARK_BIT(v, 5); continue; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Nine-vertex mesh with a quadrilateral frame [v0,v1,v2,v3] partially filled by an interior fan (t4,t5,t6) around elevated vertex v8. The fan pre-uses edges (v0,v1) and (v3,v0) as interior (n==2), leaving a triangular sub-hole [v1,v2,v3] open. The fill attempt for sub-hole vertex v2 via EulerEdgeTriangle(e1,e2) fails because the fan topology creates a conflict with the candidate insertion; v2 is marked bad (MARK_BIT bit 5). Euler: V=9, E=16, F=7, chi=0.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(2,2,0), v3=(0,2,0), v4-v7=frame apices, v8=(1,1,0.5); t0-t3=frame, t4=(v0,v1,v8), t5=(v1,v3,v8), t6=(v3,v0,v8); sub-hole [v1,v2,v3] open; euler V=9,E=16,F=7,chi=0.
+- **Expected kernel behavior**: Branch 3 fires; EulerEdgeTriangle(e1=(v1,v2),e2=(v2,v3)) returns false; MARK_BIT(v2,5) set; continue to next candidate.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `hole_boundary loop=[1,2,3]`
+- **Mesh assertion**: `euler_characteristic v=9 e=16 f=7 chi=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me682.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me683 — TriangulateHole@L98 DELAUNAY_SWAP_IMPROVES_ANGLE: diamond hole v0-v1-v2-v3; short diagonal (v1,v3) yields needle triangles; delaunayMinAngle()<=ang; swap+fast=1 (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: hole-filling / delaunay-swap)
+- **Sources**: MeshFix `holeFilling::TriangulateHole@L98` Branch 4 (*DELAUNAY_SWAP_IMPROVES_ANGLE*: `if (e->delaunayMinAngle() <= ang) { e->swap(1); fast = 1; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Six-vertex diamond hole mesh. The hole boundary is [v0,v1,v2,v3] with v0=(-3,0,0), v1=(0,-0.1,0), v2=(3,0,0), v3=(0,0.1,0) — a very elongated diamond where v1 and v3 are only 0.2 apart in y but v0 and v2 are 6 units apart. Naive fill splits along the short diagonal (v1,v3) producing severely needle-shaped triangles. The optimization loop finds delaunayMinAngle() of the short diagonal <= ang (threshold from the adjacent wide triangle); Branch 4: swap performed, fast=1 set. Euler: V=6, E=10, F=4, chi=0.
+- **Reproducer recipe**: v0=(-3,0,0), v1=(0,-0.1,0), v2=(3,0,0), v3=(0,0.1,0), v4=(0,-2,0), v5=(0,2,0); t0=(v0,v1,v4), t1=(v1,v2,v4), t2=(v2,v3,v5), t3=(v3,v0,v5); hole boundary [v0,v1,v2,v3]; euler V=6,E=10,F=4,chi=0.
+- **Expected kernel behavior**: Branch 4 fires in post-fill optimization; delaunayMinAngle() on needle diagonal <= ang; edge->swap(1) called; fast=1 set.
+- **Mesh assertion**: `hole_boundary loop=[0,1,2,3]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=2`
+- **Mesh assertion**: `euler_characteristic v=6 e=10 f=4 chi=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me683.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me684 — TriangulateHole@L98 OPTIMIZATION_TIMEOUT: 12-gon boundary hole; swap-budget i<0; "taking too long"; break optimization (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: hole-filling / optimization-timeout)
+- **Sources**: MeshFix `holeFilling::TriangulateHole@L98` Branch 5 (*OPTIMIZATION_TIMEOUT*: `if ((i--) < 0) { JMesh::warning("Taking too long…"); break; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: 24-vertex mesh with a 12-sided polygon hole (regular dodecagon, radius 3). Twelve outer frame triangles surround the hole, each connecting two adjacent boundary vertices to a dedicated outer vertex (radius 5). The hole has 12 boundary edges — a large/complex boundary that exhausts the post-fill edge-swap optimization budget. When the countdown index i reaches negative, Branch 5 fires: a warning is logged and the optimization loop breaks early. Euler: V=24, E=36, F=12, chi=0.
+- **Reproducer recipe**: boundary[0..11] = 12-gon radius 3; frame[0..11] = outer apices radius 5; t_k=(boundary[k],boundary[k+1],frame[k]) for k=0..11; 12 boundary edges of hole each n=1; assert_hole_boundary(boundary); euler V=24,E=36,F=12,chi=0.
+- **Expected kernel behavior**: Branch 5 fires; i decremented below 0 before optimization converges; JMesh::warning("Taking too long") emitted; break exits loop.
+- **Mesh assertion**: `hole_boundary loop=[0,1,2,3,4,5,6,7,8,9,10,11]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `euler_characteristic v=24 e=36 f=12 chi=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me684.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me690 — connected_component loop_control: 5-triangle zigzag strip forces BFS while-loop to cycle 5 times
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / connected-component-BFS)
+- **Sources**: CGAL `PMP.connected_component` Branch 1 @ line 140 (*Loop_control*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A zigzag strip of 5 triangles (t0-t4) where each adjacent pair shares one interior edge. BFS seeded at t0 must iterate 5 times through the `while (!face_queue.empty())` loop before the queue drains. An isolated triangle (t5) forms a second CC. Interior edges: (b1,p0) shared by t0+t1, (b1,p1) by t1+t2, (b2,p1) by t2+t3, (b2,p2) by t3+t4.
+- **Reproducer recipe**: b0=(0,0,0), b1=(1,0,0), b2=(2,0,0), b3=(3,0,0); p0=(0.5,1,0), p1=(1.5,1,0), p2=(2.5,1,0). t0=(b0,b1,p0); t1=(b1,p1,p0); t2=(b1,b2,p1); t3=(b2,p2,p1); t4=(b2,b3,p2). iso=(q0,q1,q2) at x=20.
+- **Expected kernel behavior**: BFS while-loop runs 5 iterations for the strip component; outer BFS seeds iso as a second CC.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,6] n=2`
+- **Mesh assertion**: `triangle_not_reachable_from target=5 source=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me690.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me691 — connected_component visited_vertex_dedup: 4-triangle fan ring where f3 is reachable via two BFS paths
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / connected-component-BFS)
+- **Sources**: CGAL `PMP.connected_component` Branch 2 @ line 144 (*Visited_vertex_dedup*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four triangles arranged as a closed fan ring (f0-f3) around a center apex v4. BFS from f0 discovers f1 via (v1,v4) and f3 via (v0,v4). When BFS processes f2 it discovers f3 again (via (v3,v4)) — f3 was already inserted. Branch 2's `!already_processed.insert(seed_face)` dedup guard fires and skips re-insertion. An isolated triangle (f4) forms a second CC.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(2,2,0), v3=(0,2,0), v4=(1,1,0). f0=(v0,v1,v4); f1=(v1,v2,v4); f2=(v2,v3,v4); f3=(v3,v0,v4). iso=(w0,w1,w2) at x=10.
+- **Expected kernel behavior**: f3 discovered via two BFS paths; dedup guard fires on second encounter and skips re-insertion.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=2`
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me691.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me692 — connected_component iteration_construct: center triangle has 3 neighbors discovered via for-loop over halfedges
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / connected-component-BFS)
+- **Sources**: CGAL `PMP.connected_component` Branch 3 @ line 146 (*Iteration_construct*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 7-triangle hub: center triangle (f0) surrounded by 3 inner rim triangles (f1-f3) each with one outer triangle (f4-f6). When BFS processes the center, the `for` loop over its 3 halfedges iterates 3 times to discover f1, f2, f3. Each rim face's for-loop then discovers the outer faces. An isolated triangle (f7) forms a second CC.
+- **Reproducer recipe**: c0=(0,0,0), c1=(2,0,0), c2=(1,2,0); r0=(1,-2,0), r1=(3.5,1,0), r2=(-1.5,1,0); o0=(-0.5,-3,0), o1=(5,0,0), o2=(-3,2,0). center=(c0,c1,c2); rims share one edge each with center; outers share one edge each with rims. iso at x=20.
+- **Expected kernel behavior**: BFS for-loop cycles 3 times per face when processing the center and each rim triangle.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,5] n=2`
+- **Mesh assertion**: `triangle_not_reachable_from target=7 source=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me692.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me693 — connected_component logic_guard_ecmap: constrained edge (v0,v2) prevents BFS crossing between t0 and t1
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / connected-component-BFS)
+- **Sources**: CGAL `PMP.connected_component` Branch 4 @ line 149 (*Logic_guard*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles t0=(v0,v1,v2) and t1=(v0,v2,v3) share interior edge (v0,v2). Without a constraint they form one CC. When that edge is marked constrained in the ecmap, Branch 4's `! get(ecmap, edge(hd, pmesh))` check blocks BFS from crossing — each triangle becomes its own CC. Two additional isolated triangles (t2, t3) form extra CCs. The edge_shared assertion confirms the topological adjacency.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(1,1,0), v3=(0,1,0). t0=(v0,v1,v2); t1=(v0,v2,v3). Constraint on edge (v0,v2). Isolated t2 at x=5, t3 at x=10.
+- **Expected kernel behavior**: Branch 4 ecmap check fires on edge (v0,v2); BFS stops; t0 and t1 receive different CC labels.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Mesh assertion**: `triangle_not_reachable_from target=3 source=0`
+- **Mesh assertion**: `triangle_not_reachable_from target=3 source=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me693.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me694 — connected_component null_face_check: open-boundary mesh; BFS encounters null_face at every boundary halfedge
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / connected-component-BFS)
+- **Sources**: CGAL `PMP.connected_component` Branch 5 @ line 151 (*Null_face_check*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangles forming an open strip (t0, t1, t2) with no closed surface boundary. Interior edges: (b1,p0) shared by t0+t1; (b1,p1) shared by t1+t2. All outer rim edges are boundary halfedges whose opposite returns null_face. When BFS expands from t0, Branch 5's `neighbor != null_face` guard fires for each boundary halfedge, preventing follow. An isolated triangle (t3) forms a second CC.
+- **Reproducer recipe**: b0=(0,0,0), b1=(1,0,0), b2=(2,0,0); p0=(0.5,1,0), p1=(1.5,1,0). t0=(b0,b1,p0); t1=(b1,p1,p0); t2=(b1,b2,p1). Boundary edges: (b0,p0),(b0,b1),(p0,p1),(b2,p1),(b1,b2). iso at x=10.
+- **Expected kernel behavior**: BFS null_face guard fires for every outer boundary halfedge of the open strip; BFS stays within the 3-triangle component.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `triangle_not_reachable_from target=3 source=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me694.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me700 — bridgeBoundaries same_edge_or_non_boundary: interior edge (v0,v1) shared by 2 triangles; isOnBoundary() false, bridge returns NULL (Branch 1)
 - **Category**: §12.14 mesh defects (sub-class: boundary-bridge / non-boundary-edge-guard)
 - **Sources**: MeshFix `Basic_TMesh.bridgeBoundaries` Branch 1 (*same_edge_or_non_boundary*: `if (gve == gwe || !gve->isOnBoundary()) return NULL;`); `MESH_HEAL_COVERAGE.md`.
