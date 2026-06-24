@@ -38062,6 +38062,96 @@ exercised against CGAL PMP / MeshFix.
 - **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,1,0), v3=(1,-1,0); t0=(v0,v1,v2), t1=(v0,v3,v1); edge (v0,v1) n=2; outer edges n=1; assert_hole_boundary([v0,v2,v1,v3]); euler V=4,E=5,F=2,chi=1.
 - **Expected kernel behavior**: Branch 3 fires; gw==gvn triggers single EulerEdgeTriangle call; bridge edge returned immediately.
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+### Me1090 — degree-3 vertex cap (equilateral variant): apex degree==3, fan edges interior, outer edges boundary
+- **Category**: §12.14 mesh defects (sub-class: degeneracy/degree-3-cap)
+- **Sources**: CGAL `PMP.remove_degenerate_faces` Branch 7 @ line 2186 (*degree-3-vertex-in-cap*: `if (degree == 3) { Euler::remove_center_vertex(h, tmesh); }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: apex vertex 0 at (0.5, 0.289, 0.0001) is the center of a near-flat equilateral cap. It has exactly 3 incident triangles (faces 0, 1, 2) — degree == 3 — and each apex-to-base edge is shared by exactly 2 triangles (interior), while the 3 outer base edges are boundary (shared by 1). CGAL detects the degree==3 condition and invokes `Euler::remove_center_vertex` to collapse the 3 faces into the outer triangle.
+- **Reproducer recipe**: apex=(0.5,0.289,0.0001); base v1=(0,0,0), v2=(1,0,0), v3=(0.5,0.577,0); fan t0=(apex,v1,v2), t1=(apex,v2,v3), t2=(apex,v3,v1). Assert apex–base edges n=2 and outer base edges n=1.
+- **Expected kernel behavior**: detect degree-3 center vertex; invoke `Euler::remove_center_vertex`; merge 3 faces into outer boundary triangle.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1090.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1091 — isolated degenerate at strip boundary: single flip-candidate attached to open boundary
+- **Category**: §12.14 mesh defects (sub-class: degeneracy/isolated-flip-candidate)
+- **Sources**: CGAL `PMP.remove_degenerate_faces` Branch 8 @ line 2244 (*single-isolated-degenerate-face*: `if (!detect_cc_of_degenerate_triangles) { // flip the longest edge }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: a 3-triangle clean strip (t0,t1,t2) has an open boundary edge (v1,v4). A single degenerate collinear triangle t3=(v1,v5,v4) is attached at that boundary edge; v5=(1.5,0,0) is the midpoint of v1=(1,0,0) and v4=(2,0,0) on the X axis, making t3 zero-area. t3 has no adjacent degenerate faces, so `detect_cc_of_degenerate_triangles` remains false — CGAL enters the longest-edge flip branch.
+- **Reproducer recipe**: strip v0=(0,0,0),v1=(1,0,0),v2=(0.5,1,0),v3=(1.5,1,0),v4=(2,0,0); t0–t2 clean; degenerate t3=(v1,v5,v4) with v5=(1.5,0,0) collinear; edge (v1,v4) n=2; (v1,v5) n=1; (v4,v5) n=1.
+- **Expected kernel behavior**: detect single isolated degenerate face; set detect_cc=false; attempt longest-edge flip on t3.
+- **Mesh assertion**: `triangle_area_lt triangle=3 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1091.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1092 — collinear cc strip (5-vertex): 3-triangle connected degenerate component for disk removal
+- **Category**: §12.14 mesh defects (sub-class: degeneracy/collinear-cc)
+- **Sources**: CGAL `PMP.remove_degenerate_faces` Branch 9 @ line 2319 (*connected-component-of-collinear-faces*: `for (face_descriptor fd : cc_faces) { ... boundary_hedges ... }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: five collinear vertices v0–v4 at x=0..4 form a 3-triangle degenerate strip: t0=(v0,v1,v2), t1=(v1,v3,v2), t2=(v2,v3,v4). Adjacent pairs share internal edges (v1,v2) and (v2,v3). Two clean anchor triangles t3,t4 bound the outer hull. CGAL collects cc_faces={t0,t1,t2} and walks `boundary_hedges` to attempt disk removal.
+- **Reproducer recipe**: v0=(0,0,0)..v4=(4,0,0) collinear; t0–t2 zero-area strip; clean t3=(v0,v4,v5), t4=(v4,v0,v6) with v5=(2,2,0), v6=(2,-2,0). Edge (v1,v2) n=2; (v2,v3) n=2; outer strip edges n=1.
+- **Expected kernel behavior**: collect cc_faces; walk boundary_hedges; attempt degenerate disk removal.
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-12`
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-12`
+- **Mesh assertion**: `triangle_area_lt triangle=2 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1092.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1093 — complete K4 collinear mesh: all 4 degenerate faces form sphere topology χ=2≠1 (Branch 10)
+- **Category**: §12.14 mesh defects (sub-class: degeneracy/non-disk-cc)
+- **Sources**: CGAL `PMP.remove_degenerate_faces` Branch 10 @ line 2407 (*non-disk-topology-in-component*: `if (v - e + f != 1) { /* not a topological disk */ all_removed = false; continue; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: four collinear vertices v0–v3 at x=0..3; all C(4,3)=4 triangles formed from 3-of-4 subsets are zero-area and connected. Every edge of the complete graph K4 (6 edges) is shared by exactly 2 faces. The cluster has no boundary edges — the Euler characteristic χ=V-E+F=4-6+4=2 (sphere), not χ=1 (disk). CGAL marks the component as unremovable.
+- **Reproducer recipe**: v0=(0,0,0)..v3=(3,0,0); t0=(v0,v1,v2), t1=(v1,v2,v3), t2=(v0,v2,v3), t3=(v0,v1,v3); all 6 K4 edges n=2; Euler V=4,E=6,F=4,chi=2.
+- **Expected kernel behavior**: compute v-e+f=2≠1; mark component not a topological disk; set all_removed=false; continue outer loop.
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-12`
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-12`
+- **Mesh assertion**: `triangle_area_lt triangle=2 lt=1e-12`
+- **Mesh assertion**: `triangle_area_lt triangle=3 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1093.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1094 — non-monotone CC boundary: degenerate triangle cluster boundary reverses along axis (Branch 11)
+- **Category**: §12.14 mesh defects (sub-class: degeneracy/non-monotone-boundary)
+- **Sources**: CGAL `PMP.remove_degenerate_faces` Branch 11 @ line 2464 (*non-monotone-boundary*: `if (non_monotone_border) { /* WARNING */ all_removed = false; continue; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: four collinear vertices v0=(0,0,0), v1=(1,0,0), v2=(2,0,0), v3=(3,0,0). Three zero-area triangles t0=(v0,v1,v2), t1=(v0,v3,v2), t2=(v0,v1,v3) form a connected CC. Interior edges (v0,v1),(v0,v2),(v0,v3) each shared by 2 faces. Outer boundary edges (v1,v2),(v2,v3),(v1,v3) each shared by 1 face. The boundary traversal visits v1→v2→v3→v1 (projections 1→2→3→1): the final step 3→1 reverses, making the border non-monotone. CGAL skips removal.
+- **Reproducer recipe**: v0–v3 collinear; t0=(v0,v1,v2), t1=(v0,v3,v2), t2=(v0,v1,v3); interior edges n=2; boundary (v1,v2),(v2,v3),(v1,v3) each n=1.
+- **Expected kernel behavior**: collect CC; check border monotonicity; detect non-monotone_border; set all_removed=false; continue outer loop.
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-12`
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-12`
+- **Mesh assertion**: `triangle_area_lt triangle=2 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1094.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1095 — flip-impossible (3-way diagonal): pre-existing diagonal shared by 3 faces blocks flip (Branch 12)
+- **Category**: §12.14 mesh defects (sub-class: degeneracy/flip-impossible)
+- **Sources**: CGAL `PMP.remove_degenerate_faces` Branch 12 @ line 2256 (*edge-flip-impossible*: `if (!CGAL::Euler::can_flip_edge(h, tmesh)) { /* flip is not possible */ all_removed = false; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: a horizontal diamond (v0=left, v1=right, v2=top, v3=bottom). Two healthy triangles t0=(v0,v2,v1) and t1=(v0,v1,v3) share the diagonal edge (v0,v1). Degenerate triangle t2=(v0,v4,v1) where v4=(1,0,0) is the midpoint of v0=(0,0,0)..v1=(2,0,0) — all collinear on Y=0. Edge (v0,v1) is now 3-way shared. CGAL attempts to flip t2's longest edge (v0,v1) but the edge already exists; flip is impossible; face is removed directly; all_removed=false.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,1,0), v3=(1,-1,0), v4=(1,0,0); t0=(v0,v2,v1), t1=(v0,v1,v3), t2=(v0,v4,v1); edge (v0,v1) n=3; outer edges n=1.
+- **Expected kernel behavior**: detect flip-impossible (edge (v0,v1) already exists); fall back to direct face removal; set all_removed=false.
+- **Mesh assertion**: `triangle_area_lt triangle=2 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=3`
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
@@ -38803,6 +38893,111 @@ exercised against CGAL PMP / MeshFix.
 - **Expected kernel behavior**: Branch 3 fires twice; merge_vertices_in_range called once for {f1,f4} group and once for {f2,f5} group.
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,6] n=2`
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,6] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1095.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1096 — border face removal (open boundary): degenerate collinear triangle at open boundary, direct remove_face (Branch 13)
+- **Category**: §12.14 mesh defects (sub-class: degeneracy/border-face-removal)
+- **Sources**: CGAL `PMP.remove_degenerate_faces` Branch 13 @ line 2292 (*border-face-removal*: `if (opposite_face == GT::null_face()) { Euler::remove_face(h, tmesh); }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: a 3-triangle open strip t0=(v0,v1,v2), t1=(v1,v3,v4), t2=(v1,v4,v2). A degenerate triangle t3=(v3,v5,v4) is attached at the interior edge (v3,v4) of t1; v5=(1.25,0.75,0) is the midpoint of v3=(1.5,0.5,0) and v4=(1,1,0), making t3 zero-area. The edges (v3,v5) and (v4,v5) are true boundary edges — their opposite faces are null. CGAL detects the null opposite and removes t3 via `Euler::remove_face` directly.
+- **Reproducer recipe**: strip v0=(0,0,0),v1=(1,0,0),v2=(0.5,1,0),v3=(1.5,0.5,0),v4=(1,1,0); t0–t2 clean; t3=(v3,v5,v4) with v5=(1.25,0.75,0) collinear; edge (v3,v4) n=2; (v3,v5) n=1; (v4,v5) n=1.
+- **Expected kernel behavior**: detect boundary face with null opposite across (v3,v5) or (v4,v5); invoke `Euler::remove_face` directly.
+- **Mesh assertion**: `triangle_area_lt triangle=3 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1096.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1080 — remove_degenerate_faces no_degenerate_faces: three non-degenerate triangles; degenerate_face_set.empty() early return (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: degenerate-triangle / clean-early-return)
+- **Sources**: CGAL PMP `PMP.remove_degenerate_faces` Branch 1 (*no_degenerate_faces*: `if (degenerate_face_set.empty()) return true;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three non-degenerate triangles sharing two interior edges form a flat fan strip. Every triangle has positive area (1.0, 1.0, 1.0). When remove_degenerate_faces scans all faces, no zero-area triangle is found; degenerate_face_set remains empty and the function returns true immediately without entering the repair loop. Interior edges (v1,v2) and (v1,v3) are manifold (n=2); four outer edges are n=1. Euler: V=5, E=7, F=3, chi=1 (open disk).
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,1,0), v3=(3,1,0), v4=(4,0,0); t0=(v0,v1,v2), t1=(v1,v3,v2), t2=(v1,v4,v3); assert_edge_shared(v1,v2,2); assert_edge_shared(v1,v3,2); euler V=5,E=7,F=3,chi=1.
+- **Expected kernel behavior**: Branch 1 fires; degenerate_face_set.empty() is true; remove_degenerate_faces returns true with no modifications to the mesh.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=5 e=7 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1080.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1081 — remove_degenerate_faces all_faces_degenerate: two collinear zero-area triangles; degenerate_face_set.size()==faces_size clear-all path (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: degenerate-triangle / all-degenerate)
+- **Sources**: CGAL PMP `PMP.remove_degenerate_faces` Branch 2 (*all_faces_degenerate*: `if (degenerate_face_set.size() == faces_size) { ... clear all elements ... return true; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two independent collinear triangles: t0 has three points along y=0 (v0,v1,v2 all on x-axis) and t1 has three points along y=1 (v3,v4,v5). Both have area=0. The degenerate_face_set has 2 entries and faces_size==2; the all-degenerate early-exit clears all elements and returns true. All edges are boundary edges (n=1) since no triangles are adjacent. No shared edges between the two triangles.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0); v3=(0,1,0), v4=(1,1,0), v5=(2,1,0); t0=(v0,v1,v2), t1=(v3,v4,v5); assert_triangle_area_lt(t0,1e-12); assert_triangle_area_lt(t1,1e-12); all 6 edges n=1.
+- **Expected kernel behavior**: Branch 2 fires; degenerate_face_set.size()==faces_size==2; all vertices, edges, and faces cleared; return true without entering the main repair loop.
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-12`
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1081.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1082 — remove_degenerate_faces adjacent_degenerate_faces_missed: three collinear triangles in chain; faces_to_visit walk expands partial range (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: degenerate-triangle / adjacent-expansion)
+- **Sources**: CGAL PMP `PMP.remove_degenerate_faces` Branch 3 (*adjacent_degenerate_faces_missed*: `if (!is_range_full_mesh) { ... faces_to_visit walk ... expand degenerate set ... }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three collinear zero-area triangles (t0,t1,t2) sharing edges in a chain plus a clean control triangle (t3). t0=(v0,v1,v2) and t1=(v1,v2,v3) share edge (v1,v2); t0 and t2=(v0,v1,v3) share edge (v0,v1); t1 and t2 share edge (v1,v3). When repair is invoked with only t0 in the initial range (is_range_full_mesh=false), the faces_to_visit walk finds t1 and t2 as adjacent degenerate neighbors and expands the degenerate set → Branch 3 fires.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0), v3=(3,0,0); t0=(v0,v1,v2), t1=(v1,v2,v3), t2=(v0,v1,v3); assert_triangle_area_lt(t0,t1,t2,1e-12); assert_edge_shared(v1,v2,2); assert_edge_shared(v0,v1,2); assert_edge_shared(v1,v3,2).
+- **Expected kernel behavior**: Branch 3 fires; is_range_full_mesh is false for the initial single-triangle range; faces_to_visit walk adds t1 and t2 to the degenerate set; all three are processed together.
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-12`
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-12`
+- **Mesh assertion**: `triangle_area_lt triangle=2 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1082.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1083 — remove_degenerate_faces null_edge_face_detection: zero-length edge in t0 induces collinear degeneracy in adjacent t1; is_degenerate_triangle_face(adj_fd) fires (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: degenerate-triangle / cascading-degeneracy)
+- **Sources**: CGAL PMP `PMP.remove_degenerate_faces` Branch 4 (*null_edge_face_detection*: `if (is_degenerate_triangle_face(adj_fd, tmesh, vpm, gt)) faces_to_visit.push(adj_fd);`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two collinear triangles sharing an interior edge, where t0=(v0,v1,v2) has a zero-length edge (v1==v2 at (1,0,0)) making it immediately degenerate. The second triangle t1=(v0,v2,v3) shares edge (v0,v2) with t0; after the edge collapse of (v1,v2), t1's vertices become (0,0,0),(1,0,0),(2,0,0) — all collinear — so it becomes a cascading degenerate face. The is_degenerate_triangle_face check fires for the adjacent face adj_fd=t1 → Branch 4 pushes t1 onto faces_to_visit. Clean control triangle t2=(v4,v5,v6) provides non-degenerate context. Shared edge (v0,v2) n=2.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(1,0,0) [=v1], v3=(2,0,0); t0=(v0,v1,v2), t1=(v0,v2,v3); assert_triangle_area_lt(t0,1e-12); assert_vertex_pair_distance_lt(v1,v2,1e-12); assert_triangle_area_lt(t1,1e-12); assert_edge_shared(v0,v2,2).
+- **Expected kernel behavior**: Branch 4 fires; after processing t0 (via zero-length edge collapse), is_degenerate_triangle_face is called on the adjacent face t1; result is true → t1 is pushed onto faces_to_visit for subsequent processing.
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-12`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,2] lt=1e-12`
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1083.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1084 — remove_degenerate_faces border_degenerate_face: collinear t1 shares interior edge with clean t0; is_border(opposite) triggers border_deg_faces queuing (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: degenerate-triangle / border-face)
+- **Sources**: CGAL PMP `PMP.remove_degenerate_faces` Branch 5 (*border_degenerate_face*: `if (is_border(opposite(halfedge(f, tmesh), tmesh), tmesh)) { border_deg_faces.push(f); continue; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A clean non-degenerate triangle t0=(v0,v1,v3) with area=0.5 sharing edge (v0,v1) with a collinear degenerate triangle t1=(v0,v1,v2). The degenerate face t1 has two boundary edges: (v1,v2) and (v0,v2), each incident on only one face (n=1). When processing t1, the algorithm checks is_border for the opposite halfedges of these two edges; the check returns true → Branch 5 queues t1 in border_deg_faces for boundary-aware processing. Shared edge (v0,v1) n=2; boundary edges (v1,v2) and (v0,v2) n=1; clean triangle boundary edges (v0,v3) and (v1,v3) n=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0), v3=(0.5,1,0); t0=(v0,v1,v3), t1=(v0,v1,v2); assert_triangle_area_lt(t1,1e-12); assert_edge_shared(v0,v1,2); assert_edge_shared(v1,v2,1); assert_edge_shared(v0,v2,1); assert_edge_shared(v0,v3,1); assert_edge_shared(v1,v3,1).
+- **Expected kernel behavior**: Branch 5 fires for t1; is_border(opposite) returns true for at least one halfedge of t1; border_deg_faces.push(t1); main repair loop continues to the next face without modifying t1 immediately.
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1084.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1085 — remove_degenerate_faces degenerate_edge_in_face: needle triangle with zero-length edge (n1==n2 at (3,0,0)); is_degenerate_edge fires → remove_degenerate_edges called (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: degenerate-triangle / zero-length-edge)
+- **Sources**: CGAL PMP `PMP.remove_degenerate_faces` Branch 6 (*degenerate_edge_in_face*: `if (is_degenerate_edge(h, tmesh, vpm, gt)) { ... remove_degenerate_edges ... }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A needle triangle t0=(n0,n1,n2) where n1 and n2 both sit at (3,0,0) — a zero-length edge that makes t0 degenerate. The triangle collapses to a line segment from (0,0,0) to (3,0,0). When remove_degenerate_faces processes t0, it iterates over the triangle's halfedges and calls is_degenerate_edge for each; the (n1,n2) halfedge returns true → Branch 6 invokes remove_degenerate_edges before the face-removal Euler operators. Clean control triangle t1=(c0,c1,c2) provides non-degenerate context. All edges of t0 are boundary (n=1).
+- **Reproducer recipe**: n0=(0,0,0), n1=(3,0,0), n2=(3,0,0) [=n1]; c0=(5,0,0), c1=(6,0,0), c2=(5.5,1,0); t0=(n0,n1,n2), t1=(c0,c1,c2); assert_vertex_pair_distance_lt(n1,n2,1e-12); assert_triangle_area_lt(t0,1e-12); assert_edge_shared(n0,n1,1); assert_edge_shared(n1,n2,1); assert_edge_shared(n0,n2,1).
+- **Expected kernel behavior**: Branch 6 fires; is_degenerate_edge returns true for halfedge (n1,n2); remove_degenerate_edges is called on the mesh before the face-level Euler operators; the zero-length edge (n1,n2) is collapsed first.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,2] lt=1e-12`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1085.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1070 — filter_stitchable_pairs edge-occurrence-limit: two-patch boundary with single coincident-edge pair; count=1 boundary slots confirm manifold safety (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: coincident-boundary-vertex / stitchable-pairs-filter)
+- **Sources**: CGAL PMP `PMP.filter_stitchable_pairs (manifold validator)` Branch 1 (*edge-occurrence-limit*: `case 1` of switch on occurrence-map size per merged edge); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two separate triangular patches (A and B) with coincident boundary edges. Patch A: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0). Patch B: a0=(2,0,0), a1=(1,0,0), a2=(0,1,0) with a1≡v1 and a2≡v2. After tentative vertex merge v1→a1 and v2→a2, each remaining boundary edge in the merged occurrence map has exactly 1 halfedge → case 1 fires for each such edge, confirming manifold safety. All 6 edges are boundary (n=1). Euler: V=6, E=6, F=2, chi=2.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0); a0=(2,0,0), a1=(1,0,0), a2=(0,1,0); t0=(v0,v1,v2), t1=(a0,a1,a2); all 6 edges n=1; vertex_pair_distance_lt(v1,a1,1e-9), vertex_pair_distance_lt(v2,a2,1e-9); vertex_pair_no_shared_triangle pairs; euler V=6,E=6,F=2,chi=2.
+- **Expected kernel behavior**: Branch 1 fires; occurrence-map case 1 accepts each single-halfedge boundary slot as manifold-safe; no vertices added to unstitchable set.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
 - **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-09`
 - **Mesh assertion**: `vertex_pair_distance_lt pair=[2,5] lt=1e-09`
 - **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,4]`
@@ -40382,6 +40577,16 @@ exercised against CGAL PMP / MeshFix.
 - **Description**: Two open rectangular patches (A: t0=(v0,v1,v2), t1=(v0,v2,v3); B: t2=(v4,v6,v7), t3=(v4,v7,v5)) with coincident boundary seam. Patch A's right seam edge (v1,v2) and patch B's left seam edge (v4,v5) are geometrically identical but stored as distinct vertex indices. When run_stitch_borders processes the halfedge pair (h1: v0→v1 in A, h2: v5→v4 in B), h1_tgt=v1 has its own union-find representative while v_to_keep=v4; they differ, so Branch 1 fires and redirects all halfedges at v1's old rep to the master. Coincident pairs: v1==v4 at (1,0,0), v2==v5 at (1,1,0). Each seam edge on 1 triangle. Euler: V=8, E=10, F=4, chi=2.
 - **Reproducer recipe**: Patch A: v0=(0,0,0), v1=(1,0,0), v2=(1,1,0), v3=(0,1,0); t0=(v0,v1,v2), t1=(v0,v2,v3). Patch B: v4=(1,0,0), v5=(1,1,0), v6=(2,0,0), v7=(2,1,0); t2=(v4,v6,v7), t3=(v4,v7,v5). edge_shared(v1,v2,1); edge_shared(v4,v5,1); vertex_pair_distance_lt(v1,v4,1e-9); vertex_pair_distance_lt(v2,v5,1e-9); no_shared_triangle(v1,v4); no_shared_triangle(v2,v5); euler V=8,E=10,F=4,chi=2.
 - **Expected kernel behavior**: Branch 1 fires; the union-find representative of h1_tgt is different from v_to_keep, so all halfedges currently pointing at h1_tgt's old representative vertex are redirected to v_to_keep (the patch B counterpart), unifying the two vertex records.
+- **Mesh assertion**: `euler_characteristic v=6 e=6 f=2 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1070.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1071 — filter_stitchable_pairs border-two-edge-exception: two border halfedges on coincident boundary edge; both border → manifold-safe stitch accepted (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: coincident-boundary-vertex / stitchable-pairs-filter)
+- **Sources**: CGAL PMP `PMP.filter_stitchable_pairs (manifold validator)` Branch 2 (*border-two-edge-exception*: `case 2: if(is_border_edge(…) && is_border_edge(…)) break`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangular patches whose stitchable boundary edges are coincident. Patch A: p0=(0,0,0), p1=(1,0,0), p2=(0.5,1,0). Patch B: q0=(2,0,0), q1=(1,0,0), q2=(0.5,1,0) with q1≡p1 and q2≡p2. After vertex merge the candidate edge (p1,p2) has exactly 2 halfedges — one from each patch — and both are border edges. Branch 2 fires: is_border_edge checks both and passes, accepting the pair as manifold-safe. All 6 edges n=1 boundary. Euler: V=6, E=6, F=2, chi=2.
+- **Reproducer recipe**: p0=(0,0,0), p1=(1,0,0), p2=(0.5,1,0); q0=(2,0,0), q1=(1,0,0), q2=(0.5,1,0); t0=(p0,p1,p2), t1=(q0,q1,q2); all 6 edges n=1; vertex_pair_distance_lt(p1,q1,1e-9), vertex_pair_distance_lt(p2,q2,1e-9); vertex_pair_no_shared_triangle pairs; euler V=6,E=6,F=2,chi=2.
+- **Expected kernel behavior**: Branch 2 fires; both halfedges on the merged candidate edge are border edges; is_border_edge returns true for both → pair accepted into stitchable output.
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
 - **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-09`
@@ -40748,4 +40953,42 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `duplicate_polygon_group triangles=[0,1] n=2`
 - **Mesh assertion**: `duplicate_polygon_group triangles=[3,4,5] n=3`
 - **Fixture path**: mesh-examples/12-14-mesh/Me1064.mesh.json
+- **Mesh assertion**: `euler_characteristic v=6 e=6 f=2 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1071.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1072 — filter_stitchable_pairs multi-edge-vertex-disqualification: 3 coincident boundary halfedges on same merged edge; default case marks all vertices unstitchable (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: coincident-boundary-vertex / stitchable-pairs-filter)
+- **Sources**: CGAL PMP `PMP.filter_stitchable_pairs (manifold validator)` Branch 3 (*multi-edge-vertex-disqualification*: `default: for(auto h : it->second) { unstitchable_vertices.insert(source(h,mesh)); unstitchable_vertices.insert(target(h,mesh)); }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangular patches with a three-way coincident seam edge. Patch A: u0=(0,0,0), u1=(1,0,0), u2=(0,1,0). Patch B: b0=(2,0,0), b1=(1,0,0), b2=(0,1,0) [b1≡u1, b2≡u2]. Patch C: c0=(-1,0,0), c1=(1,0,0), c2=(0,1,0) [c1≡u1, c2≡u2]. After tentative vertex merge, the canonical edge (u1,u2) accumulates 3 halfedges (one from each patch) — non-manifold. The default case fires: all source/target vertices of the offending halfedges are inserted into unstitchable_vertices → Branch 3. All 9 edges boundary (n=1). Euler: V=9, E=9, F=3, chi=3.
+- **Reproducer recipe**: u0=(0,0,0), u1=(1,0,0), u2=(0,1,0); b0=(2,0,0), b1=(1,0,0), b2=(0,1,0); c0=(-1,0,0), c1=(1,0,0), c2=(0,1,0); t0-t2 each isolated triangles; all 9 edges n=1; vertex_pair_distance_lt for all coincident pairs; vertex_pair_no_shared_triangle; euler V=9,E=9,F=3,chi=3.
+- **Expected kernel behavior**: Branch 3 fires; default case iterates the 3 offending halfedges; source and target of each are inserted into unstitchable_vertices (up to 6 vertex indices for 3 halfedges sharing 2 endpoints).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,7] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[2,5] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[2,8] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,4]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,7]`
+- **Mesh assertion**: `euler_characteristic v=9 e=9 f=3 chi=3`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1072.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1073 — filter_stitchable_pairs vertex-pair-safety-check: contaminating triple-edge marks e1/e2 unstitchable (Branch 3); victim pair excluded because endpoint in unstitchable_vertices (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: coincident-boundary-vertex / stitchable-pairs-filter)
+- **Sources**: CGAL PMP `PMP.filter_stitchable_pairs (manifold validator)` Branch 4 (*vertex-pair-safety-check*: `if(unstitchable_vertices.count(source(p.first,mesh))||…) continue`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Five triangular patches in two groups. Contaminating group (A/B/C): three patches with coincident triple seam at (1,0,0)/(0,1,0); Branch 3 marks those seam vertices unstitchable. Victim group (D/E): two patches with coincident boundary edge at (1,0,0)/(1,2,0) — vertex h1 at (1,0,0) is coincident with the contaminated e1. The vertex-pair-safety-check iterates all candidate pairs and finds h1 in unstitchable_vertices → Branch 4 fires; the D/E pair is excluded even though it would otherwise be a valid two-border-edge stitch. All 15 edges boundary (n=1). Euler: V=15, E=15, F=5, chi=5.
+- **Reproducer recipe**: Patches A/B/C as in Me1072 (triple coincident seam at e1=(1,0,0), e2=(0,1,0)); Patch D: h0=(3,0,0), h1=(1,0,0), h2=(1,2,0); Patch E: k0=(4,0,0), k1=(1,0,0), k2=(1,2,0); h1 and k1 coincide with e1 (unstitchable); vertex_pair_distance_lt(e1,h1,1e-9); euler V=15,E=15,F=5,chi=5.
+- **Expected kernel behavior**: Branch 4 fires; victim pair (h1,h2)/(k1,k2) checked against unstitchable_vertices; h1 found in set (contaminated by Branch 3 from triple-edge seam) → pair skipped; stitchable_pairs excludes this otherwise-legal edge.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[10,11] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[13,14] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,7] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[10,13] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,10] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,4]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[10,13]`
+- **Mesh assertion**: `euler_characteristic v=15 e=15 f=5 chi=5`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1073.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
