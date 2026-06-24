@@ -36593,6 +36593,104 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me1040 — stitch_borders border-component-independence: per_cc routing dispatches per-component vs global; two disconnected open patches (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: boundary_gap_thin / per-component-routing)
+- **Sources**: CGAL PMP `PMP.stitch_borders (internal dispatcher)` Branch 1 (*border-component-independence*: `if (per_cc) { ... border_edges_per_cc ... } else { border_edges ... }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected two-triangle open strips (Component A at x=0-1.5 and Component B at x=3-4.5). Each strip shares one interior edge and has four boundary edges. The mesh has two connected components (CC), so per_cc=true routes the dispatcher to per-component border-edge collection rather than the global pass. Branch 1 fires when per_cc is evaluated. Interior edges (v1,v2) and (v5,v6) are n=2; all outer boundary edges are n=1. Euler: V=8, E=10, F=4, chi=2.
+- **Reproducer recipe**: Component A: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1.5,1,0), t0=(v0,v1,v2), t1=(v1,v3,v2); Component B: v4=(3,0,0), v5=(4,0,0), v6=(3.5,1,0), v7=(4.5,1,0), t2=(v4,v5,v6), t3=(v5,v7,v6); no shared vertices; triangle_not_reachable_from(t2,t0); euler V=8,E=10,F=4,chi=2.
+- **Expected kernel behavior**: Branch 1 fires; per_cc=true routes border collection to per-component mode, populating separate border_edges_per_cc slots for each CC.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,6] n=2`
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Mesh assertion**: `euler_characteristic v=8 e=10 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1040.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1041 — stitch_borders non-border-edge-skip: is_border check skips interior halfedges; open fan mesh with mixed interior/boundary edges (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: boundary_gap_thin / interior-edge-skip)
+- **Sources**: CGAL PMP `PMP.stitch_borders (internal dispatcher)` Branch 2 (*non-border-edge-skip*: `if (!is_border(h, mesh)) continue;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A two-triangle open fan around hub vertex v0=(0,0,0). Triangle t0=(v0,v1,v2) and t1=(v0,v2,v3) share interior edge (v0,v2) (n=2). The mesh has 4 boundary edges and 1 interior edge. When the dispatcher iterates over all halfedges to collect border edges, it encounters the interior halfedges of (v0,v2) and calls continue to skip them — Branch 2 fires for each non-border halfedge. The boundary halfedges are collected; the interior one is skipped. Euler: V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(-1,0,0); t0=(v0,v1,v2), t1=(v0,v2,v3); assert_edge_shared(v0,v2,2); boundary edges n=1; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 2 fires for each of the 2 interior halfedges of (v0,v2); is_border returns false → continue; 8 boundary halfedges are collected.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1041.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1042 — stitch_borders per-component-boundary-segregation: border_edges_per_cc appends boundary halfedge to per-CC slot; three disconnected open triangles (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: boundary_gap_thin / per-cc-segregation)
+- **Sources**: CGAL PMP `PMP.stitch_borders (internal dispatcher)` Branch 3 (*per-component-boundary-segregation*: `border_edges_per_cc[cc_ids[face(h,mesh)]].push_back(h);`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three disconnected isolated triangles forming three separate connected components. Component A: t0=(v0,v1,v2); Component B: t1=(v3,v4,v5); Component C: t2=(v6,v7,v8). All 9 edges are boundary (n=1); no interior edges. With per_cc=true, each boundary halfedge is appended to its component's slot in border_edges_per_cc, producing three separate boundary lists. Branch 3 fires once for each boundary halfedge when per_cc=true. Euler: V=9, E=9, F=3, chi=3.
+- **Reproducer recipe**: Component A: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), t0=(v0,v1,v2); Component B: v3=(3,0,0), v4=(4,0,0), v5=(3.5,1,0), t1=(v3,v4,v5); Component C: v6=(6,0,0), v7=(7,0,0), v8=(6.5,1,0), t2=(v6,v7,v8); no shared vertices; triangle_not_reachable_from(t1,t0); euler V=9,E=9,F=3,chi=3.
+- **Expected kernel behavior**: Branch 3 fires for each boundary halfedge; cc_ids lookup routes each halfedge to its component's border_edges_per_cc slot; three distinct lists are populated.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[6,7] n=1`
+- **Mesh assertion**: `triangle_not_reachable_from target=1 source=0`
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Mesh assertion**: `euler_characteristic v=9 e=9 f=3 chi=3`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1042.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1043 — stitch_borders processing-strategy-dispatch: per_cc for-loop iterates over num_cc=2 connected components; two open two-triangle patches (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: boundary_gap_thin / per-cc-dispatch)
+- **Sources**: CGAL PMP `PMP.stitch_borders (internal dispatcher)` Branch 4 (*processing-strategy-dispatch*: `if (per_cc) { for (std::size_t i = 0; i < num_cc; ++i) { ... } }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected two-triangle open strips. Component A (t0,t1) sharing (v1,v2) interior, and Component B (t2,t3) sharing (v5,v6) interior. With per_cc=true and num_cc=2, the dispatcher enters a for-loop over the two components, invoking the stitch logic for each component's border_edges_per_cc slot independently. Branch 4 fires at the for-loop boundary check (i < num_cc), executing twice. Euler: V=8, E=10, F=4, chi=2.
+- **Reproducer recipe**: Component A: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1.5,1,0), t0=(v0,v1,v2), t1=(v1,v3,v2); Component B: v4=(4,0,0), v5=(5,0,0), v6=(4.5,1,0), v7=(5.5,1,0), t2=(v4,v5,v6), t3=(v5,v7,v6); triangle_not_reachable_from(t2,t0); euler V=8,E=10,F=4,chi=2.
+- **Expected kernel behavior**: Branch 4 fires; for-loop iterates i=0 and i=1 (num_cc=2), processing each component's border edge list in sequence.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,6] n=2`
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Mesh assertion**: `euler_characteristic v=8 e=10 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1043.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1044 — stitch_borders non-manifold-pair-filter: manifold_halfedge_pairs filter rejects candidate that would create edge shared by 3 triangles (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: non_manifold_edge / manifold-pair-filter)
+- **Sources**: CGAL PMP `PMP.stitch_borders (internal dispatcher)` Branch 5 (*non-manifold-pair-filter*: `manifold_halfedge_pairs(pairs, mesh);`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangles where t0=(v0,v1,v2) and t2=(v0,v6,v1) already share edge (v0,v1) making it interior (n=2). Triangle t1=(v3,v4,v5) is a coincident ghost with v3≈v0, v4≈v1, v5≈v2. A candidate stitch of t1's boundary edge (v3,v4) onto (v0,v1) would create a non-manifold edge (n=3). The manifold_halfedge_pairs filter rejects this pair. Branch 5 fires when the filter evaluates and rejects the non-manifold candidate.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0,0,0)[=v0], v4=(1,0,0)[=v1], v5=(0.5,1,0)[=v2], v6=(0.5,-1,0); t0=(v0,v1,v2), t1=(v3,v4,v5), t2=(v0,v6,v1); assert_edge_shared(v0,v1,2); vertex_pair_distance_lt(v0,v3,1e-9); vertex_pair_distance_lt(v1,v4,1e-9).
+- **Expected kernel behavior**: Branch 5 fires; manifold_halfedge_pairs evaluates the candidate pair (h on (v3,v4), h' on (v0,v1)) and rejects it because stitching would create an edge shared by 3 triangles.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,3] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[2,5] lt=1e-09`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1044.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1045 — stitch_borders halfedge-pair-orientation: hd_kpr canonical swap fires for non-canonical halfedge pair; two patches with reversed coincident boundary edge (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: boundary_gap_thin / halfedge-orientation)
+- **Sources**: CGAL PMP `PMP.stitch_borders (internal dispatcher)` Branch 6 (*halfedge-pair-orientation*: `if (hd_kpr(hp.second, hp.first)) std::swap(hp.first, hp.second);`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected open triangles with a coincident seam edge in reversed orientation. Patch A: t0=(v0,v1,v2) with seam edge boundary halfedge along (v0,v1). Patch B: t1=(v3,v4,v5) where v3≈v1 and v4≈v0 — the seam edge on Patch B traverses (v3,v4)=(v1',v0'), opposite direction to (v0,v1). The discovered halfedge pair may have the Patch B halfedge as hp.first and Patch A as hp.second. If hd_kpr(hp.second,hp.first) is true, the swap fires to enforce canonical ordering. Branch 6 fires for this orientation check. Coincident pairs: v0≈v4, v1≈v3.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1,0,0)[=v1], v4=(0,0,0)[=v0], v5=(0.5,-1,0); t0=(v0,v1,v2), t1=(v3,v4,v5); vertex_pair_distance_lt(v0,v4,1e-9); vertex_pair_distance_lt(v1,v3,1e-9); vertex_pair_no_shared_triangle(v0,v4); triangle_not_reachable_from(t1,t0).
+- **Expected kernel behavior**: Branch 6 fires; hd_kpr comparator evaluates pair orientation; swap is performed to place the canonically smaller halfedge descriptor as hp.first.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,3] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[0,4]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,3]`
+- **Mesh assertion**: `triangle_not_reachable_from target=1 source=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1045.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1046 — stitch_borders single-pass-manifold-filtering: global mode (per_cc=false) single CC; manifold_halfedge_pairs called once for all collected pairs (Branch 7)
+- **Category**: §12.14 mesh defects (sub-class: boundary_gap_thin / global-manifold-filter)
+- **Sources**: CGAL PMP `PMP.stitch_borders (internal dispatcher)` Branch 7 (*single-pass-manifold-filtering*: `else { manifold_halfedge_pairs(pairs, mesh); ... }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A single connected component with three triangles: t0=(v0,v1,v2), t1=(v1,v3,v2) sharing interior edge (v1,v2) (n=2), and t2=(v1,v4,v5) connected via shared vertex v1. Vertices v4≈v2 and v5≈v3 are coincident with boundary vertices, forming a stitchable seam. With per_cc=false (single CC, else branch), the dispatcher collects all border halfedges globally and calls manifold_halfedge_pairs once for all candidate pairs. Branch 7 fires when the else branch is entered. Euler: V=6, E=8, F=3, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1.5,0,0), v4=(0.5,1,0)[=v2], v5=(1.5,0,0)[=v3]; t0=(v0,v1,v2), t1=(v1,v3,v2), t2=(v1,v4,v5); assert_edge_shared(v1,v2,2); vertex_pair_distance_lt(v2,v4,1e-9); vertex_pair_distance_lt(v3,v5,1e-9); vertex_pair_no_shared_triangle(v2,v4); euler V=6,E=8,F=3,chi=1.
+- **Expected kernel behavior**: Branch 7 fires; else path taken (per_cc=false); single global manifold_halfedge_pairs call filters all collected pairs at once before stitching.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[2,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[3,5] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[2,4]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[3,5]`
+- **Mesh assertion**: `euler_characteristic v=6 e=8 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1046.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me1060 — duplicate_polygons removal_iteration: 5-copy group, inner loop runs 4 times (Branch 7)
 - **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
 - **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 7 @ line 1004 (*removal_iteration*); `MESH_HEAL_COVERAGE.md`.
