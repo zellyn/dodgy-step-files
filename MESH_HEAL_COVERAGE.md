@@ -2108,20 +2108,19 @@ Fixture IDs: Me200 Me201 Me202 Me203 Me204 Me205 Me206 Me207 Me208 Me209
   - Repair action: Return edge v1; mark as coplanar overlap
 
 ##### `checkAndRepair::duplicateNonManifoldVertices` — lines 128–174
-(3 branches; all UNCOVERED — no mesh fixtures exist yet)
+(3 branches; ALL COVERED by Me880–Me882 — wave 30C, 2026-06-23)
 
-- **Branch 1** @ line 139 — *NONMANIFOLD_VERTEX_AT_V1*
+- **Branch 1** @ line 139 — *NONMANIFOLD_VERTEX_AT_V1* — COVERED (Me880: 4-triangle bowtie v0 with upper+lower fan; upper fan (v0,v3) n=2, lower fan (v0,v6) n=2; all boundary edges n=1; vertex_fan_disconnected(v0))
   - What it tests: Edge v1 has non-manifold vertex (edge not in VE list)
   - Repair action: Duplicate vertex; redirect incident edges; insert at V head
-  - Suggested fixture: defect mentioning 'containsNode(e) == NULL', 'nonManifoldVertices'
-- **Branch 2** @ line 156 — *NONMANIFOLD_VERTEX_AT_V2*
+- **Branch 2** @ line 156 — *NONMANIFOLD_VERTEX_AT_V2* — COVERED (Me881: 4-triangle bowtie v0 with right+left fan; right fan (v0,v3) n=2, left fan (v0,v6) n=2; all boundary edges n=1; vertex_fan_disconnected(v0))
   - What it tests: Edge v2 has non-manifold vertex
   - Repair action: Duplicate vertex; redirect incident edges to v2 copy
-  - Suggested fixture: defect mentioning 'containsNode(e) == NULL', 'v2'
-- **Branch 3** @ line 171 — *NONMANIFOLD_VERTICES_PRESENT*
+- **Branch 3** @ line 171 — *NONMANIFOLD_VERTICES_PRESENT* — COVERED (Me882: minimal 2-triangle bowtie v0; upper t0=(v0,v1,v2) and lower t1=(v0,v3,v4) share only v0; all 4 boundary edges n=1; vertex_fan_disconnected(v0))
   - What it tests: Any non-manifold vertices found (dv > 0)
   - Repair action: Mark topology dirty; force recomputation of boundaries/handles/shells
-  - Suggested fixture: defect mentioning 'd_boundaries = d_handles = d_shells = 1'
+
+Fixture IDs: Me880 Me881 Me882
 
 ##### `checkAndRepair::forceNormalConsistence` — lines 923–988
 (7 branches; all UNCOVERED — no mesh fixtures exist yet)
@@ -2709,36 +2708,36 @@ Fixture IDs: Me200 Me201 Me202 Me203 Me204 Me205 Me206 Me207 Me208 Me209
   - Suggested fixture: defect mentioning 'pnos', 'nos < pnos'
 
 ##### `Basic_TMesh.selectIntersectingTriangles` — lines 138–204
-(3 branches; all UNCOVERED — no mesh fixtures exist yet)
+(3 branches; ALL COVERED — Me870, Me871, Me872)
 
-- **Branch 1** @ line 149 — *Selected-vs-full-mesh*
+- **Branch 1** @ line 149 — *Selected-vs-full-mesh* — **Me870**
   - What it tests: Whether spatial partitioning filters on pre-selected triangles or processes entire mesh
   - Repair action: Build cells from either selected subset or all triangles
-  - Suggested fixture: defect mentioning 'isSelection', 'selT', 'selV'
-- **Branch 2** @ line 167 — *Cell-saturation threshold*
+  - Fixture: Me870 — isSelection restricts cell build to pre-selected {t0,t1} subset; unselected clean pair t2/t3 far away
+- **Branch 2** @ line 167 — *Cell-saturation threshold* — **Me871**
   - What it tests: When a spatial partition cell exceeds triangle density limit or cell count ceiling
   - Repair action: Subdivide cell recursively or mark for brute-force intersection test
-  - Suggested fixture: defect mentioning 'DI_MAX_NUMBER_OF_CELLS', 'tris_per_cell'
-- **Branch 3** @ line 172 — *Spatial recursion vs termination*
+  - Fixture: Me871 — 15 radial triangles in 0.1-radius cluster saturate one cell; SI pair embedded in cluster
+- **Branch 3** @ line 172 — *Spatial recursion vs termination* — **Me872**
   - What it tests: Whether cell recursion depth progresses or terminates
   - Repair action: Fork cell into two subcells or queue for intersection testing
-  - Suggested fixture: defect mentioning 'fork()', 'todo.appendTail'
+  - Fixture: Me872 — outer-quadrant triangles trigger fork(); SI pair (t0,t1) reaches leaf cell → todo.appendTail
 
 ##### `Basic_TMesh.strongIntersectionRemoval` — lines 374–393
-(3 branches; all UNCOVERED — no mesh fixtures exist yet)
+(3 branches; ALL COVERED — Me860, Me861, Me862)
 
-- **Branch 1** @ line 381 — *Intersection-detection trigger*
+- **Branch 1** @ line 381 — *Intersection-detection trigger* — **Me860**
   - What it tests: Whether any self-intersecting triangles exist
   - Repair action: Enter removal loop or exit with success
-  - Suggested fixture: defect mentioning 'selectIntersectingTriangles()'
-- **Branch 2** @ line 381 — *Iteration limit*
+  - Fixture: Me860 — flat base tri 0 + intruder tri 1 spanning z=±1; selectIntersectingTriangles returns non-empty
+- **Branch 2** @ line 381 — *Iteration limit* — **Me861**
   - What it tests: Whether iteration count exceeds maximum allowed passes
   - Repair action: Fail repair or continue another iteration
-  - Suggested fixture: defect mentioning 'max_iters', 'iter_count'
-- **Branch 3** @ line 383 — *Selection-growth depth*
+  - Fixture: Me861 — dual independent piercers (left and right) of large base tri; no single pass resolves both
+- **Branch 3** @ line 383 — *Selection-growth depth* — **Me862**
   - What it tests: Growth iterations scale with repair pass number
   - Repair action: Expand selected region by n rings where n=current iteration
-  - Suggested fixture: defect mentioning 'growSelection()', 'for (n=1'
+  - Fixture: Me862 — core SI pair with 2-ring belt; growSelection must reach ring 2 before repair is feasible
 
 ##### `di_cell.selectIntersections` — lines 107–129
 (3 branches; all UNCOVERED — no mesh fixtures exist yet)
