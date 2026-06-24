@@ -1,0 +1,85 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.001,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      0.866,
+      0.0
+    ],
+    [
+      0.5,
+      -0.866,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      1,
+      0,
+      3
+    ],
+    [
+      0,
+      4,
+      2
+    ],
+    [
+      1,
+      2,
+      4
+    ]
+  ],
+  "metadata": {
+    "id": "Me501",
+    "schema_version": 0,
+    "defect_class": "needle_triangle",
+    "title": "remove_almost_degenerate_faces needle_non_collapsible: extra shared neighbor v4 violates link condition for short edge v0-v1=0.001; flip path (Branch 2)",
+    "assertions": [
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          1
+        ],
+        "n": 2
+      },
+      {
+        "kind": "vertex_pair_distance_lt",
+        "pair": [
+          0,
+          1
+        ],
+        "lt": 0.002
+      },
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 0,
+        "lt": 0.01
+      },
+      {
+        "kind": "triangle_aspect_ratio_gt",
+        "triangle": 0,
+        "gt": 100.0
+      }
+    ]
+  }
+}

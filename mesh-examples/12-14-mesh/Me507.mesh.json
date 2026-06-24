@@ -1,0 +1,69 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      1.0,
+      0.0
+    ],
+    [
+      0.0,
+      1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      2,
+      3
+    ]
+  ],
+  "metadata": {
+    "id": "Me507",
+    "schema_version": 0,
+    "defect_class": "clean_mesh",
+    "title": "remove_almost_degenerate_faces no_progress: clean quad mesh with no needles or caps; something_was_done stays false, loop returns false (Branch 8)",
+    "assertions": [
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 0,
+        "lt": 1.0
+      },
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 1,
+        "lt": 1.0
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          2
+        ],
+        "n": 2
+      },
+      {
+        "kind": "euler_characteristic",
+        "v": 4,
+        "e": 5,
+        "f": 2,
+        "chi": 1
+      }
+    ]
+  }
+}

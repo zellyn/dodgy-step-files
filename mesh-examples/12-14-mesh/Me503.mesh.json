@@ -1,0 +1,88 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.001,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      0.866,
+      0.0
+    ],
+    [
+      0.5,
+      -0.866,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      1,
+      0,
+      3
+    ],
+    [
+      2,
+      3,
+      4
+    ]
+  ],
+  "metadata": {
+    "id": "Me503",
+    "schema_version": 0,
+    "defect_class": "needle_triangle",
+    "title": "remove_almost_degenerate_faces needle_flip_impossible: edge v2-v3 pre-exists; flip of short edge v0-v1=0.001 blocked (Branch 4)",
+    "assertions": [
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          1
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          2,
+          3
+        ],
+        "n": 1
+      },
+      {
+        "kind": "vertex_pair_distance_lt",
+        "pair": [
+          0,
+          1
+        ],
+        "lt": 0.002
+      },
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 0,
+        "lt": 0.01
+      },
+      {
+        "kind": "triangle_aspect_ratio_gt",
+        "triangle": 0,
+        "gt": 100.0
+      }
+    ]
+  }
+}

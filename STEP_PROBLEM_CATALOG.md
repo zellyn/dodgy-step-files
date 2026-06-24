@@ -36593,6 +36593,111 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me500 — remove_almost_degenerate_faces needle_triangle: extreme edge-length ratio 1000:1 triggers is_needle_triangle_face (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: almost-degenerate-face / needle-triangle)
+- **Sources**: CGAL PMP `PMP.remove_almost_degenerate_faces.face_range` Branch 1 (*Needle triangle*: `if(is_needle_triangle_face(...))` @ line 1022); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A needle triangle with short edge v0-v1=0.001 and long edges v0-v2≈v1-v2≈1.0. Edge-length ratio 1000:1 exceeds the default needle threshold (~0.04), triggering is_needle_triangle_face. The algorithm would collapse the shortest edge. Two healthy support triangles below provide topological context. Aspect ratio ≈ 1155.
+- **Reproducer recipe**: v0=(0,0,0), v1=(0.001,0,0), v2=(0.5,0.866,0), v3=(0,-0.5,0), v4=(0.001,-0.5,0); t0=(v0,v1,v2) needle; t1=(v0,v3,v1), t2=(v3,v4,v1) support; vertex_pair_distance_lt(v0,v1,0.002); triangle_area_lt(0,0.01); triangle_aspect_ratio_gt(0,100).
+- **Expected kernel behavior**: is_needle_triangle_face fires for t0; collapse of edge v0-v1 attempted.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=0.002`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=0.01`
+- **Mesh assertion**: `triangle_aspect_ratio_gt triangle=0 gt=100.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me500.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me501 — remove_almost_degenerate_faces needle_non_collapsible: extra shared neighbor violates link condition; flip path (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: almost-degenerate-face / needle-non-collapsible)
+- **Sources**: CGAL PMP `PMP.remove_almost_degenerate_faces.face_range` Branch 2 (*Needle non-collapsible*: `if(!CGAL::Euler::does_satisfy_link_condition(...))` @ line 1031); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Needle triangle t0=(v0,v1,v2) with short interior edge v0-v1=0.001. Below-neighbor t1=(v1,v0,v3) shares the short edge (making it interior, n=2), so link(edge)={v2,v3}. Flanking triangles t2=(v0,v4,v2) and t3=(v1,v2,v4) introduce v4 as an extra common neighbor of both v0 and v1. link(v0)∩link(v1)={v2,v3,v4} ⊋ {v2,v3} → link condition fails → flip path.
+- **Reproducer recipe**: v0=(0,0,0), v1=(0.001,0,0), v2=(0.5,0.866,0), v3=(0.5,-0.866,0), v4=(1,0,0); t0=(v0,v1,v2), t1=(v1,v0,v3), t2=(v0,v4,v2), t3=(v1,v2,v4); edge_shared(v0,v1,2); vertex_pair_distance_lt(v0,v1,0.002); triangle_area_lt(0,0.01); triangle_aspect_ratio_gt(0,100).
+- **Expected kernel behavior**: Branch 2 fires; does_satisfy_link_condition returns false for v0-v1 collapse; algorithm switches to flip.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=0.002`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=0.01`
+- **Mesh assertion**: `triangle_aspect_ratio_gt triangle=0 gt=100.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me501.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me502 — remove_almost_degenerate_faces border_edge_needle: short edge on open boundary; Euler::remove_face path (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: almost-degenerate-face / border-edge-needle)
+- **Sources**: CGAL PMP `PMP.remove_almost_degenerate_faces.face_range` Branch 3 (*Border edge needle*: `if(is_border(get(halfedge_map, min_edge), tmesh))` @ line 1055); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Needle triangle t0=(v0,v1,v2) with short boundary edge v0-v1=0.001 (n=1). The long edges v0-v2 and v1-v2 are each shared with flanking healthy triangles (n=2). The shortest edge is a border halfedge → is_border returns true → algorithm calls Euler::remove_face to delete the needle triangle instead of collapsing through a boundary edge.
+- **Reproducer recipe**: v0=(0,0,0), v1=(0.001,0,0), v2=(0.5,0.866,0), v3=(1,0.866,0), v4=(-0.5,0.866,0); t0=(v0,v1,v2) needle; t1=(v1,v3,v2), t2=(v2,v4,v0) flanks; edge_shared(v0,v1,1); edge_shared(v1,v2,2); edge_shared(v0,v2,2); vertex_pair_distance_lt(v0,v1,0.002); triangle_area_lt(0,0.01); triangle_aspect_ratio_gt(0,100).
+- **Expected kernel behavior**: Branch 3 fires; is_border(min_edge) true; Euler::remove_face removes the needle triangle.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=0.002`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=0.01`
+- **Mesh assertion**: `triangle_aspect_ratio_gt triangle=0 gt=100.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me502.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me503 — remove_almost_degenerate_faces needle_flip_impossible: flip target edge already exists; deferred (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: almost-degenerate-face / needle-flip-impossible)
+- **Sources**: CGAL PMP `PMP.remove_almost_degenerate_faces.face_range` Branch 4 (*Needle flip impossible*: `if(halfedge(w, x, tmesh).second)` @ line 1087); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Needle t0=(v0,v1,v2) with short interior edge v0-v1=0.001 shared by below-neighbor t1=(v1,v0,v3). Flipping v0-v1 in the t0/t1 pair would create edge v2-v3, but blocking triangle t2=(v2,v3,v4) already introduces edge v2-v3 (n=1 boundary). halfedge(v2,v3) exists → flip would create a duplicate edge → Branch 4 fires; face is marked for deferred processing.
+- **Reproducer recipe**: v0=(0,0,0), v1=(0.001,0,0), v2=(0.5,0.866,0), v3=(0.5,-0.866,0), v4=(1,0,0); t0=(v0,v1,v2), t1=(v1,v0,v3), t2=(v2,v3,v4); edge_shared(v0,v1,2); edge_shared(v2,v3,1); vertex_pair_distance_lt(v0,v1,0.002); triangle_area_lt(0,0.01); triangle_aspect_ratio_gt(0,100).
+- **Expected kernel behavior**: Branch 4 fires; halfedge(v2,v3) lookup succeeds; face is skipped/deferred.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=0.002`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=0.01`
+- **Mesh assertion**: `triangle_aspect_ratio_gt triangle=0 gt=100.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me503.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me504 — remove_almost_degenerate_faces cap_triangle: angle at v2 ≈ 180° triggers is_cap_triangle_face (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: almost-degenerate-face / cap-triangle)
+- **Sources**: CGAL PMP `PMP.remove_almost_degenerate_faces.face_range` Branch 5 (*Cap triangle*: `if(is_cap_triangle_face(...))` @ line 1005); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Cap triangle t0=(v0,v1,v2) where v0=(0,0,0), v1=(2,0,0), v2=(1,0.0001,0). The cap vertex v2 is only 0.0001 above the midpoint of base v0-v1. The angle at v2 is arccos(≈-1)≈180°, exceeding the cap threshold (cos(170°)≈-0.985). Area=0.0001, aspect ratio≈20000. Two healthy support triangles complete the patch below.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,0.0001,0), v3=(0,-1,0), v4=(2,-1,0); t0=(v0,v1,v2) cap; t1=(v0,v3,v4), t2=(v0,v4,v1) support; triangle_area_lt(0,0.001); triangle_aspect_ratio_gt(0,1000).
+- **Expected kernel behavior**: is_cap_triangle_face fires for t0; face is marked for edge flip.
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=0.001`
+- **Mesh assertion**: `triangle_aspect_ratio_gt triangle=0 gt=1000.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me504.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me505 — remove_almost_degenerate_faces cap_border_edge: cap long base on boundary; remove_face path (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: almost-degenerate-face / cap-border-edge)
+- **Sources**: CGAL PMP `PMP.remove_almost_degenerate_faces.face_range` Branch 6 (*Cap with border edge*: `if(is_border(opposite(halfedge(cap_v, tmesh), tmesh), tmesh))` @ line 1031); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Cap triangle t0=(v0,v1,v2) with v2=(1,0.0001,0) as cap vertex. The long opposite base edge v0-v1 (length 2.0) is a boundary edge (n=1). The cap's long edges v0-v2 and v1-v2 are shared with upper support triangles (n=2). is_border returns true for the opposite halfedge of the cap vertex → algorithm removes the face.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,0.0001,0), v3=(0,1,0), v4=(2,1,0); t0=(v0,v1,v2) cap; t1=(v0,v2,v3), t2=(v3,v2,v4), t3=(v2,v1,v4) support; edge_shared(v0,v1,1); edge_shared(v0,v2,2); edge_shared(v1,v2,2); triangle_area_lt(0,0.001); triangle_aspect_ratio_gt(0,1000).
+- **Expected kernel behavior**: Branch 6 fires; is_border(opposite(cap_halfedge)) true; face removed.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=0.001`
+- **Mesh assertion**: `triangle_aspect_ratio_gt triangle=0 gt=1000.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me505.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me506 — remove_almost_degenerate_faces cap_flip_fails: existing edge v2-v3 blocks flip; collapse fallback (Branch 7)
+- **Category**: §12.14 mesh defects (sub-class: almost-degenerate-face / cap-flip-fails)
+- **Sources**: CGAL PMP `PMP.remove_almost_degenerate_faces.face_range` Branch 7 (*Cap flip fails*: `if(!CGAL::Euler::does_satisfy_link_condition(flip_halfedge, tmesh))` @ line 1059); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Cap triangle t0=(v0,v1,v2) with v2=(1,0.0001,0) as cap vertex. Interior base v0-v1 (n=2) is shared with below-neighbor t1=(v1,v0,v3). Flipping v0-v1 would create edge v2-v3, but blocking triangle t2=(v2,v3,v4) already introduces v2-v3 as a boundary edge (n=1). The link condition for the flip fails → algorithm collapses a cap edge instead.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,0.0001,0), v3=(1,-1,0), v4=(0.5,-0.5,0); t0=(v0,v1,v2), t1=(v1,v0,v3), t2=(v2,v3,v4), t3=(v0,v4,v2); edge_shared(v0,v1,2); edge_shared(v2,v3,1); triangle_area_lt(0,0.001); triangle_aspect_ratio_gt(0,1000).
+- **Expected kernel behavior**: Branch 7 fires; does_satisfy_link_condition(flip_edge) false; collapse fallback attempted on a cap edge.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=0.001`
+- **Mesh assertion**: `triangle_aspect_ratio_gt triangle=0 gt=1000.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me506.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me507 — remove_almost_degenerate_faces no_progress: clean mesh; something_was_done stays false; loop returns false (Branch 8)
+- **Category**: §12.14 mesh defects (sub-class: almost-degenerate-face / no-progress)
+- **Sources**: CGAL PMP `PMP.remove_almost_degenerate_faces.face_range` Branch 8 (*No progress*: `if(!something_was_done) return false;` @ line 1118); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A clean, well-formed two-triangle quad mesh with no needles or caps. Both triangles (t0, t1) are right-isosceles with edge-length ratio sqrt(2)/1≈1.414 (well above needle threshold ~0.04) and max angle 90° (well below cap threshold 170°). The repair loop iterates over all faces, makes no repairs, and returns false. Negative-contrast fixture asserting the branch that fires only when the mesh is already clean.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(1,1,0), v3=(0,1,0); t0=(v0,v1,v2), t1=(v0,v2,v3); both area=0.5; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 8 fires; no face is touched; function returns false.
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1.0`
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1.0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me507.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me510 — Edge.swap EDGE_SWAP_SAFE_VALIDITY: boundary edge (n=1, t2==NULL) blocks safe-mode swap; all three edges are boundary (Branch 1)
 - **Category**: §12.14 mesh defects (sub-class: edge-swap / safe-validity-check)
 - **Sources**: MeshFix `Edge.swap` Branch 1 (*EDGE_SWAP_SAFE_VALIDITY*: `if (!fast && (t1 == NULL || t2 == NULL || getCommonEdge(...) != NULL)) return false`); `MESH_HEAL_COVERAGE.md`.
