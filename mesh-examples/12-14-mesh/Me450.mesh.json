@@ -1,0 +1,22 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ]
+  ],
+  "triangles": [],
+  "metadata": {
+    "id": "Me450",
+    "schema_version": 0,
+    "defect_class": "disconnected_components",
+    "title": "removeSmallestComponents area EMPTY_MESH: T.numels()==0 \u2192 return 0; no triangles to area-filter",
+    "assertions": [
+      {
+        "kind": "isolated_vertex",
+        "vertex": 0
+      }
+    ]
+  }
+}
