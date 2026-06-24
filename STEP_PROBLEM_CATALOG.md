@@ -36691,6 +36691,78 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me1046.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me1050 — merge_duplicate_polygons erase_policy_selection KEEP_ONE_IF_ODD: 3-copy group (odd→keep1) + 2-copy group (even→erase all) (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 1 @ line 946 (*erase_policy_selection*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: a 6-triangle polygon soup with two duplicate groups: group A = 3 identical copies of (0,1,2) and group B = 2 identical copies of (3,4,5). Under KEEP_ONE_IF_ODD (size%2): odd group A keeps 1 and removes 2; even group B erases all 2. The erase_policy named-parameter selection branch fires before any polygon is inspected.
+- **Reproducer recipe**: upper-left v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0) × 3 copies; upper-right v3=(2,0,0), v4=(3,0,0), v5=(2.5,1,0) × 2 copies; clean singleton (v0,v1,v6) where v6=(0.5,-1,0).
+- **Expected kernel behavior**: erase_policy named parameter is resolved first; KEEP_ONE_IF_ODD: group A (size 3, odd) → i=1, keep 1 copy; group B (size 2, even) → i=0, erase all.
+- **Mesh assertion**: `duplicate_polygon_group triangles=[0,1,2] n=3`
+- **Mesh assertion**: `duplicate_polygon_group triangles=[3,4] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1050.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1051 — merge_duplicate_polygons orientation_requirement: two reversed-winding pairs; same_orientation flag controls merge (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 2 @ line 955 (*orientation_requirement*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: a 5-triangle soup with two independent reversed-winding pairs. Pair A: tri0=(v0,v1,v2) CCW and tri1=(v0,v2,v1) CW. Pair B: tri2=(v3,v4,v5) CCW and tri3=(v3,v5,v4) CW. With require_same_orientation=false both pairs are merged; with require_same_orientation=true neither is merged. A clean singleton tri4=(v0,v1,v6) exercises no duplicate path.
+- **Reproducer recipe**: left pair v0=(0,0,0),v1=(1,0,0),v2=(0.5,1,0); right pair v3=(2,0,0),v4=(3,0,0),v5=(2.5,1,0); singleton v6=(1.5,-1,0); two CCW+CW triangle pairs.
+- **Expected kernel behavior**: same_orientation flag consulted per-polygon-pair; false → treat reversed copies as duplicates; true → treat as distinct; two pairs present to stress the flag.
+- **Mesh assertion**: `reversed_polygon_pair triangles=[0,1]`
+- **Mesh assertion**: `reversed_polygon_pair triangles=[2,3]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1051.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1052 — merge_duplicate_polygons duplicate_collection: 4-copy group A + 3-copy group B; hash+equality scan collects both (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 3 @ line 971 (*duplicate_collection*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: an 8-triangle polygon soup with a 4-copy group (tri0-tri3 all (0,1,2)) and a 3-copy group (tri5-tri7 all (3,4,5)), plus a clean singleton bridge tri4=(v2,v6,v3). The hash+equality collection step must build both groups correctly before any removal begins, exercising the scan for groups of different sizes.
+- **Reproducer recipe**: v0=(0,0,0),v1=(1,0,0),v2=(0.5,1,0) × 4 copies; v3=(2,0,0),v4=(3,0,0),v5=(2.5,1,0) × 3 copies; singleton bridge v6=(1.5,0,0).
+- **Expected kernel behavior**: collect two groups of sizes 4 and 3; process each independently.
+- **Mesh assertion**: `duplicate_polygon_group triangles=[0,1,2,3] n=4`
+- **Mesh assertion**: `duplicate_polygon_group triangles=[5,6,7] n=3`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1052.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1053 — merge_duplicate_polygons early_exit_empty: 4-triangle partial-tetrahedron soup with all-distinct vertex triples; returns 0 immediately (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 4 @ line 973 (*early_exit_empty*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: a closed 4-triangle tetrahedron mesh where every face has a distinct vertex-index triple. The duplicate-collection step finds zero groups; all_duplicate_polygons.empty() is true; the function returns 0 immediately. All 6 edges are shared by exactly 2 triangles, confirming manifold topology with no repeated face.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,0,2), v3=(1,2,1); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v1,v3,v2), t3=(v0,v3,v1); closed tetrahedron.
+- **Expected kernel behavior**: early-exit branch fires; 0 returned; no polygon is swapped or erased.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1053.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1054 — merge_duplicate_polygons duplicate_group_iteration: 4 independent duplicate pairs; outer while loop iterates 4 times (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 5 @ line 996 (*duplicate_group_iteration*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: an 8-triangle polygon soup with 4 independent duplicate pairs: group A={tri0,tri1} both (a0,a1,a2), group B={tri2,tri3} both (b0,b1,b2), group C={tri4,tri5} both (c0,c1,c2), group D={tri6,tri7} both (d0,d1,d2). Forces the outer while(!all_duplicate_polygons.empty()) loop to iterate 4 times (one per group). More groups than Me040's 3 to provide stronger iteration coverage.
+- **Reproducer recipe**: 4 disjoint triangle shapes at x=0,2,4,6, each duplicated; no singletons.
+- **Expected kernel behavior**: outer loop iterates 4 times; 8 triangles reduced to 4.
+- **Mesh assertion**: `duplicate_polygon_group triangles=[0,1] n=2`
+- **Mesh assertion**: `duplicate_polygon_group triangles=[2,3] n=2`
+- **Mesh assertion**: `duplicate_polygon_group triangles=[4,5] n=2`
+- **Mesh assertion**: `duplicate_polygon_group triangles=[6,7] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1054.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1055 — merge_duplicate_polygons keep_decision KEEP_ONE: 5-copy group; i=1 retains copy 0, removes copies 1-4 (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 6 @ line 1001 (*keep_decision*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: a 6-triangle polygon soup with a 5-copy group of triangle (v0,v1,v2) plus a clean singleton. With erase_policy=KEEP_ONE, the keep_decision branch sets i=1 (the KEEP_ONE arm of the ternary), retaining copy 0 and scheduling copies 1-4 for removal. Larger group (5 copies) than Me041 (2 copies) to emphasize that i=1 regardless of group size.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0); 5 identical triangles (v0,v1,v2); clean lower singleton (v0,v1,v3) where v3=(1,-1.5,0).
+- **Expected kernel behavior**: keep_decision branch fires; i set to 1; inner loop removes 4 copies (indices 1-4); result: 2 triangles remain.
+- **Mesh assertion**: `duplicate_polygon_group triangles=[0,1,2,3,4] n=5`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1055.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me1060 — duplicate_polygons removal_iteration: 5-copy group, inner loop runs 4 times (Branch 7)
 - **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
 - **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 7 @ line 1004 (*removal_iteration*); `MESH_HEAL_COVERAGE.md`.
