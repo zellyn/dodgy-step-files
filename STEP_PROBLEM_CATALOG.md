@@ -37206,6 +37206,9 @@ exercised against CGAL PMP / MeshFix.
 - **Expected kernel behavior**: Branch 6 fires 4 times (once per triangle); final ns=4 representing the single connected component's triangle count.
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me465.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me570 — Basic_TMesh.invertSelection seed_provided: t0 != NULL; BFS component-local invert from seed triangle (Branch 1)
 - **Category**: §12.14 mesh defects (sub-class: selection-toggle / seed-provided)
 - **Sources**: MeshFix `Basic_TMesh.invertSelection` Branch 1 (*seed_provided*: `if (t0 != NULL)`) @ line 744; `MESH_HEAL_COVERAGE.md`.
@@ -37278,12 +37281,18 @@ exercised against CGAL PMP / MeshFix.
 - **Description**: A closed tetrahedron (4 triangles, V=4, E=6, F=4, chi=2). The caller passes t0=NULL; the `else` branch (Branch 6) fires and FOREACHTRIANGLE iterates all 4 triangles, flipping their VISITED bit globally without any BFS or component awareness. Every edge is shared by exactly 2 triangles (closed manifold). This is the simplest possible mesh for exercising the global-invert path.
 - **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(1,1,2); t0=(v0,v1,v2), t1=(v0,v1,v3), t2=(v1,v2,v3), t3=(v0,v2,v3); all 6 edges assert_edge_shared n=2; euler V=4,E=6,F=4,chi=2.
 - **Expected kernel behavior**: Branch 6 fires (t0==NULL else branch); FOREACHTRIANGLE visits all 4 triangles in order and inverts each VISITED flag; all triangles toggled in a single linear pass.
+- **Fixture path**: mesh-examples/12-14-mesh/Me575.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me590 — holeFilling_TriangulateHole_edge_not_on_boundary: closed mesh has no boundary edge; TriangulateHole seed fails isOnBoundary check (Branch 1)
 - **Category**: §12.14 mesh defects (sub-class: hole-fill / edge-not-on-boundary)
 - **Sources**: MeshFix `holeFilling::TriangulateHole@L157` Branch 1 (*EDGE_NOT_ON_BOUNDARY*: `!e->isOnBoundary()` → return 0); `MESH_HEAL_COVERAGE.md`.
 - **Description**: Fully closed 4-triangle mesh (3-triangle fan + 1 back-face triangle). Every edge is shared by exactly 2 triangles — no boundary edge exists anywhere in the mesh. Any edge passed as seed to TriangulateHole immediately fails the isOnBoundary() check → Branch 1 fires and fills are refused. All 6 edges n=2. Euler: V=4, E=6, F=4, chi=2 (closed surface).
 - **Reproducer recipe**: v0=(0,0,0), v1=(3,0,0), v2=(1.5,2,0), v3=(1.5,0.8,0); t0=(v0,v1,v3), t1=(v1,v2,v3), t2=(v2,v0,v3), t3=(v0,v2,v1); all edges n=2; euler V=4,E=6,F=4,chi=2.
 - **Expected kernel behavior**: Branch 1 fires; TriangulateHole returns 0 immediately; no fill triangles created.
+- **Fixture path**: mesh-examples/12-14-mesh/Me590.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me920 — keep_largest component_count_mismatch: desired_num > total_components → return 0
 - **Category**: §12.14 mesh defects (sub-class: disconnected_components / keep-largest)
 - **Sources**: CGAL `PMP.keep_largest_connected_components` Branch 1 @ line 401 (*component_count_mismatch*); `MESH_HEAL_COVERAGE.md`.
@@ -38062,6 +38071,9 @@ exercised against CGAL PMP / MeshFix.
 - **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,1,0), v3=(1,-1,0); t0=(v0,v1,v2), t1=(v0,v3,v1); edge (v0,v1) n=2; outer edges n=1; assert_hole_boundary([v0,v2,v1,v3]); euler V=4,E=5,F=2,chi=1.
 - **Expected kernel behavior**: Branch 3 fires; gw==gvn triggers single EulerEdgeTriangle call; bridge edge returned immediately.
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me532.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me1090 — degree-3 vertex cap (equilateral variant): apex degree==3, fan edges interior, outer edges boundary
 - **Category**: §12.14 mesh defects (sub-class: degeneracy/degree-3-cap)
 - **Sources**: CGAL `PMP.remove_degenerate_faces` Branch 7 @ line 2186 (*degree-3-vertex-in-cap*: `if (degree == 3) { Euler::remove_center_vertex(h, tmesh); }`); `MESH_HEAL_COVERAGE.md`.
@@ -38167,6 +38179,9 @@ exercised against CGAL PMP / MeshFix.
 - **Description**: Triangular annulus (6 triangles) with two distinct closed boundary loops. Inner triangle hole (i0,i1,i2) — 3 boundary edges, short perimeter. Outer triangle (o0,o1,o2) — 3 boundary edges, longer perimeter. Six interior bridge edges (n=2). Branch 4 fires during perimeter measurement: the algorithm walks each boundary loop summing edge lengths (tl1 for inner, tl2 for outer) before bridging. Two hole_boundary assertions confirm the two-loop topology.
 - **Reproducer recipe**: i0=(0,0,0), i1=(1,0,0), i2=(0.5,0.87,0); o0=(-0.5,-0.87,0), o1=(1.5,-0.87,0), o2=(0.5,1.73,0); 6 annulus triangles; inner edges n=1; outer edges n=1; bridge edges n=2; assert_hole_boundary([i0,i1,i2]); assert_hole_boundary([o0,o2,o1]).
 - **Expected kernel behavior**: Branch 4 fires for each edge in both loops; tl1 accumulates inner perimeter (~2.7 units), tl2 accumulates outer perimeter (~5.2 units) before triangulation begins.
+- **Fixture path**: mesh-examples/12-14-mesh/Me533.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me730 — checkAndRepair::meshclean DEGENERACY_REMOVAL_FAILURE: zero-area collinear triangle resists strongDegeneracyRemoval (branch 1)
 - **Category**: §12.14 mesh defects (sub-class: degenerate-triangle / stubborn-degeneracy)
 - **Sources**: MeshFix `checkAndRepair::meshclean` Branch 1 (*DEGENERACY_REMOVAL_FAILURE*: `strongDegeneracyRemoval(inner_loops)` returns false, `nd=false`); `MESH_HEAL_COVERAGE.md`.
@@ -38216,6 +38231,9 @@ exercised against CGAL PMP / MeshFix.
 - **Description**: Square annulus (8 triangles) with two distinct closed boundary loops. Inner unit square (i0..i3) — 4 boundary edges. Outer 3x square (o0..o3) — 4 boundary edges. Eight interior bridge edges (n=2). Symmetric geometry: both loops have equal perimeter → cost comparison (c1 vs c2) alternates sides, exercising Branch 5 repeatedly. gv=i0 on inner loop, gw=o0 on outer loop.
 - **Reproducer recipe**: i0=(0,0,0), i1=(1,0,0), i2=(1,1,0), i3=(0,1,0); o0=(-1,-1,0), o1=(2,-1,0), o2=(2,2,0), o3=(-1,2,0); 8 annulus triangles (2 per side); inner+outer edges n=1; bridge edges n=2; assert_hole_boundary([i0,i1,i2,i3]); assert_hole_boundary([o0,o3,o2,o1]).
 - **Expected kernel behavior**: Branch 5 fires repeatedly in the triangulation loop; symmetric perimeters cause c1 and c2 to alternate; bridge triangles inserted from both loops until both are exhausted.
+- **Fixture path**: mesh-examples/12-14-mesh/Me534.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me680 — TriangulateHole@L98 EDGE_NOT_ON_BOUNDARY: closed tetrahedron; all edges n==2; no boundary edge; return 0 (Branch 1)
 - **Category**: §12.14 mesh defects (sub-class: hole-filling / non-boundary-input)
 - **Sources**: MeshFix `holeFilling::TriangulateHole@L98` Branch 1 (*EDGE_NOT_ON_BOUNDARY*: `if (!e->isOnBoundary()) return 0;`); `MESH_HEAL_COVERAGE.md`.
@@ -38439,6 +38457,9 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me535.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me800 — is_polygon_soup_a_polygon_mesh duplicate_vertex_in_polygon: triangle [v0,v1,v0] has repeated vertex index (Branch 1)
 - **Category**: §12.14 mesh defects (sub-class: polygon-soup-validity / duplicate-vertex-in-polygon)
 - **Sources**: CGAL PMP `PMP.is_polygon_soup_a_polygon_mesh` Branch 1 (*duplicate_vertex_in_polygon*: `for(std::size_t j=0;j<polygon.size();++j){ if(polygon[j]==polygon[k]) return false; }`); `MESH_HEAL_COVERAGE.md`.
@@ -38476,6 +38497,9 @@ exercised against CGAL PMP / MeshFix.
 - **Description**: A tetrahedron (4 vertices, 4 triangles, 6 edges) forms a fully closed genus-0 surface. Every edge is shared by exactly 2 triangles; there are no boundary edges. When StarTriangulateHole is called with any edge, the guard `!e->isOnBoundary()` fires immediately and the function returns 0 without filling anything. All six edges assert n==2; Euler chi=2 confirms closed surface.
 - **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,0.333,1); t0=(v0,v2,v1), t1=(v0,v1,v3), t2=(v0,v3,v2), t3=(v1,v2,v3); all 6 edges assert n==2; euler V=4,E=6,F=4,chi=2.
 - **Expected kernel behavior**: Branch 1 fires; `!e->isOnBoundary()` is true for every edge; StarTriangulateHole returns 0 without inserting any vertex or triangle.
+- **Fixture path**: mesh-examples/12-14-mesh/Me810.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me890 — merge_duplicated_vertices_in_boundary_cycles boundary_cycle_discovery: open mesh; extract_boundary_cycles finds 1 boundary cycle; coincident v1==v3 at (2,0,0) (Branch 1)
 - **Category**: §12.14 mesh defects (sub-class: coincident-boundary-vertex / multi-cycle-dispatch)
 - **Sources**: CGAL PMP `PMP.merge_duplicated_vertices_in_boundary_cycles` Branch 1 (*boundary_cycle_discovery*: `extract_boundary_cycles(pm, std::back_inserter(cycles))`); `MESH_HEAL_COVERAGE.md`.
@@ -40697,6 +40721,9 @@ exercised against CGAL PMP / MeshFix.
 - **Description**: Two isolated triangles in one polygon mesh — Component A near the origin (v0–v2), Component B 50 units away (v3–v5). No shared edges or vertices. split_connected_components iterates both CC labels and calls extract_to_new_mesh for each, producing two independent output meshes. t1 is unreachable from t0. Euler: V=6, E=6, F=2, chi=2.
 - **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), t0=(v0,v1,v2); v3=(50,0,0), v4=(51,0,0), v5=(50.5,1,0), t1=(v3,v4,v5); all 6 edges n=1; assert_triangle_not_reachable_from(t1,t0); euler V=6,E=6,F=2,chi=2.
 - **Expected kernel behavior**: Branch 1 fires; split_connected_components enumerates two CC labels, calls extract_to_new_mesh twice, and returns two single-triangle meshes.
+- **Fixture path**: mesh-examples/12-14-mesh/Me1030.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me1130 — SI in annular strip (chi=0): euler_characteristic != 1 complex-topology branch
 - **Category**: §12.14 mesh defects (sub-class: self-intersection/ring-topology)
 - **Sources**: CGAL `PMP.remove_self_intersections` Branch 11 @ line 2264 (*topology-genus-classification*); `MESH_HEAL_COVERAGE.md`.
