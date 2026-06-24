@@ -36592,3 +36592,41 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me900 — orient_triangle_soup_with_reference_triangle_soup reference_degenerate_triangle: collinear reference triangle (area=0) skipped by is_degenerate check; only valid reference face used (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: degenerate-reference-triangle / orientation-alignment)
+- **Sources**: CGAL PMP `PMP.orient_triangle_soup_with_reference_triangle_soup` Branch 1 (*reference_degenerate_triangle*: `if (is_degenerate(ref_triangle)) continue;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two non-degenerate query triangles (t0, t1) sharing interior edge (q0,q2); reference soup has one degenerate triangle (r0,r1,r2) where r2=(1,0,0) lies exactly on segment r0-r1 (area=0), plus one valid CCW reference triangle (r3,r4,r5). is_degenerate fires on the collinear reference triangle → Branch 1 skips it; only the valid reference participates in orientation alignment. Interior edge (q0,q2) n=2; four query boundary edges n=1; Euler V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: q0=(0,0,0), q1=(2,0,0), q2=(1,1,0), q3=(0,2,0); r0=(0,0,0), r1=(2,0,0), r2=(1,0,0)[collinear], r3=(0,1,0), r4=(2,1,0), r5=(1,2,0); t0=(q0,q1,q2), t1=(q0,q2,q3); t_degen=(r0,r1,r2), t_valid=(r3,r4,r5); assert_edge_shared(q0,q2,2); boundary edges n=1; assert_triangle_area_lt(t_degen,1e-9); euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 1 fires for t_degen; the degenerate reference triangle is skipped and not used as orientation reference. The valid reference triangle (t_valid) alone drives orientation alignment for both query faces.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `triangle_area_lt triangle=2 lt=1e-09`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me900.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me901 — orient_triangle_soup_with_reference_triangle_soup closest_face_search: three-sector fan; AABB closest_point_and_primitive returns valid reference face for each query centroid (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: orientation-alignment / closest-face-search)
+- **Sources**: CGAL PMP `PMP.orient_triangle_soup_with_reference_triangle_soup` Branch 2 (*closest_face_search*: `auto [closest_point, closest_prim] = tree.closest_point_and_primitive(centroid);`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three non-degenerate query triangles in a fan from hub=(0,0,0); three matching non-degenerate reference triangles at z=−1 with clear 1-to-1 spatial proximity. For each query triangle the centroid lies closest to the corresponding reference face; tree.closest_point_and_primitive returns a valid primitive → Branch 2 fires three times. Interior hub-spoke edges each n=2; three boundary outer edges n=1; Euler V=4, E=6, F=3, chi=1.
+- **Reproducer recipe**: hub=(0,0,0), a=(2,0,0), b=(-1,1.732,0), c=(-1,-1.732,0); r_hub=(0,0,-1), r_a=(2,0,-1), r_b=(-1,1.732,-1), r_c=(-1,-1.732,-1); t0=(hub,a,b), t1=(hub,b,c), t2=(hub,c,a); ref_t0=(r_hub,r_a,r_b), ref_t1=(r_hub,r_b,r_c), ref_t2=(r_hub,r_c,r_a); assert_edge_shared(hub,a,2), (hub,b,2), (hub,c,2); boundary outer edges n=1; euler V=4,E=6,F=3,chi=1.
+- **Expected kernel behavior**: Branch 2 fires for each of the three query triangles; closest_point_and_primitive returns a valid primitive (non-empty AABB result) and the corresponding reference normal is extracted for orientation comparison.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me901.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me902 — orient_triangle_soup_with_reference_triangle_soup orientation_flip_decision: t1 CW winding gives normal -Z; dot product with reference normal +Z is negative; t1 flipped (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: inverted-normal / orientation-flip-decision)
+- **Sources**: CGAL PMP `PMP.orient_triangle_soup_with_reference_triangle_soup` Branch 3 (*orientation_flip_decision*: `if (dot_product(query_normal, ref_normal) < 0) flip(query_triangle);`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two adjacent query triangles sharing interior edge (p0,p2). t0=(p0,p1,p2) is CCW (normal +Z); t1=(p2,p0,p3) is CW (normal −Z) — winding is reversed relative to t0 and the reference. Reference soup has two matching CCW triangles (ref_t0, ref_t1) at z=−1. For t1 the dot product of its normal (−Z) with the nearest reference normal (+Z) is −1 < 0 → Branch 3 fires and t1 is flipped. Interior edge (p0,p2) n=2; four boundary edges n=1; Euler V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: p0=(0,0,0), p1=(2,0,0), p2=(1,1,0), p3=(0,2,0); r0=(0,0,-1), r1=(2,0,-1), r2=(1,1,-1), r3=(0,2,-1); t0=(p0,p1,p2), t1=(p2,p0,p3); ref_t0=(r0,r1,r2), ref_t1=(r0,r2,r3); assert_edge_shared(p0,p2,2); boundary edges n=1; assert_triangle_normal_z_negative(t1); assert_adjacent_triangles_inconsistent_winding(t0,t1); euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 3 fires for t1; dot_product(t1_normal, ref_normal) = dot_product(-Z, +Z) = -1 < 0; t1 winding is reversed by the algorithm to align with the reference orientation.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `triangle_normal_z_negative triangle=1`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,1]`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me902.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder

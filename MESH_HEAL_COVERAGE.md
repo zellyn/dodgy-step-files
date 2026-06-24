@@ -1165,20 +1165,20 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
 (1 methods, 3 branches)
 
 ##### `PMP.orient_triangle_soup_with_reference_triangle_soup` — lines 131–215
-(3 branches; all UNCOVERED — no mesh fixtures exist yet)
+(3 branches; all COVERED — Me900–Me902)
 
-- **Branch 1** @ line 155 — *reference_degenerate_triangle*
+- **Branch 1** @ line 155 — *reference_degenerate_triangle* — **Me900**
   - What it tests: reference triangle is non-degenerate
   - Repair action: skip degenerate reference triangles
-  - Suggested fixture: defect mentioning 'is_degenerate'
-- **Branch 2** @ line 175 — *closest_face_search*
+  - Fixture: defect mentioning 'is_degenerate'; collinear reference triangle (area=0) skipped
+- **Branch 2** @ line 175 — *closest_face_search* — **Me901**
   - What it tests: closest_point_and_primitive result is valid
   - Repair action: use closest non-degenerate reference face
-  - Suggested fixture: defect mentioning 'closest_point_and_primitive'
-- **Branch 3** @ line 200 — *orientation_flip_decision*
+  - Fixture: defect mentioning 'closest_point_and_primitive'; three-sector fan with matching reference at z=-1
+- **Branch 3** @ line 200 — *orientation_flip_decision* — **Me902**
   - What it tests: dot product of normals determines orientation
   - Repair action: flip triangle if negative dot product
-  - Suggested fixture: defect mentioning 'dot_product'
+  - Fixture: defect mentioning 'dot_product'; t1 CW winding (normal -Z) vs reference (+Z); flip fires
 
 
 #### `PMP_Mesh_repair/include/CGAL/Polygon_mesh_processing/orientation.h`
