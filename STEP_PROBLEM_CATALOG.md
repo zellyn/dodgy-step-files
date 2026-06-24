@@ -36702,3 +36702,61 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=7 e=10 f=4 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me842.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me850 — does_bound_a_volume connectivity_broken: tetrahedron with base removed; boundary cycle present; is_closed returns false (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: open-mesh / boundary-cycle)
+- **Sources**: CGAL PMP `PMP.does_bound_a_volume` Branch 1 (*connectivity_broken*: `if(!PMP::is_closed(tmesh)) return false;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Tetrahedron with base face absent — three lateral faces (v0,v1,v3), (v1,v2,v3), (v0,v3,v2) form an open manifold. The three lateral edges (v0,v3),(v1,v3),(v2,v3) are each shared by two triangles. The three base edges (v0,v1),(v1,v2),(v0,v2) are each shared by one triangle → boundary cycle. is_closed returns false → Branch 1 fires immediately before orientation or SI are checked. Euler: V=4, E=6, F=3, chi=1 (cone / open disk).
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,0.5,1); triangles: (v0,v1,v3),(v1,v2,v3),(v0,v3,v2); lateral edges n=2; base edges n=1; hole_boundary=[v0,v1,v2]; euler V=4,E=6,F=3,chi=1.
+- **Expected kernel behavior**: Branch 1 fires; is_closed test detects boundary halfedge; does_bound_a_volume returns false without evaluating orientation or self-intersection.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2]`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me850.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me851 — does_bound_a_volume orientation_inconsistent: closed tetrahedron; base wound CW; adjacent normals antiparallel; orientation check fails (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: inconsistent-face-orientation / closed-mesh)
+- **Sources**: CGAL PMP `PMP.does_bound_a_volume` Branch 2 (*orientation_inconsistent*: after is_closed passes, orientation test fails); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Closed tetrahedron (4 vertices, 4 faces, all edges n=2) with three lateral faces wound CCW (normals outward) and base face (v0,v2,v1) wound CW. The CW base produces a normal pointing inward (-Z direction): n=(v2-v0)×(v1-v0)=(0,0,-1). Lateral face t0=(v0,v1,v3) at shared edge (v0,v1) has outward normal; dot product with base normal is negative → antiparallel → inconsistent winding. is_closed passes (chi=2); orientation check fails → Branch 2 fires. Euler: V=4, E=6, F=4, chi=2.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,0.5,1); lateral CCW: (v0,v1,v3),(v1,v2,v3),(v0,v3,v2); base CW: (v0,v2,v1); all 6 edges n=2; triangle_normal_z_negative(3); adjacent_triangles_inconsistent_winding(0,3); euler V=4,E=6,F=4,chi=2.
+- **Expected kernel behavior**: Branch 2 fires; is_closed passes; PMP orientation check detects CW base face producing antiparallel normal at shared edge; does_bound_a_volume returns false.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `triangle_normal_z_negative triangle=3`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,3]`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me851.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me852 — does_bound_a_volume self_intersection: XY/XZ crossing fans in closed 8-tri manifold; interior overlap along X-axis; does_self_intersect true (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: self-intersection / closed-mesh)
+- **Sources**: CGAL PMP `PMP.does_bound_a_volume` Branch 3 (*self_intersection*: `if(PMP::does_self_intersect(tmesh, np)) return false;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Closed 8-triangle manifold (6 vertices, 12 edges, chi=2) containing two crossing triangle fans: t0=(v0,v2,v3) lies in the XY plane (z=0), t1=(v0,v4,v5) lies in the XZ plane (y=0). They share only vertex v0=(0,0,0) but their interiors overlap along the positive X half-axis from (0,0,0) to (1,0,0) — a proper geometric self-intersection. Four cap triangles t4=(v0,v2,v4), t5=(v1,v4,v2), t6=(v0,v5,v3), t7=(v1,v3,v5) and right mirrors t2=(v1,v3,v2), t3=(v1,v5,v4) complete the closure. All 12 edges are shared by exactly 2 triangles. is_closed passes, orientation is consistent, but does_self_intersect fires for the (t0,t1) pair → Branch 3 returns false.
+- **Reproducer recipe**: v0=(0,0,0),v1=(2,0,0),v2=(1,1,0),v3=(1,-1,0),v4=(1,0,1),v5=(1,0,-1); 8 triangles; 12 edges each n=2; assert_triangles_self_intersect(0,1); euler V=6,E=12,F=8,chi=2.
+- **Expected kernel behavior**: Branch 3 fires; is_closed and orientation checks pass; does_self_intersect detects the (t0,t1) interior overlap along the X-axis; does_bound_a_volume returns false.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,5] n=2`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `euler_characteristic v=6 e=12 f=8 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me852.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
