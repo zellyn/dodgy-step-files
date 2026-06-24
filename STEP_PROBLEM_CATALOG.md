@@ -36592,3 +36592,75 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me480 — removeTriangles list_head_initialization: BFS init from T.head() on 2-triangle open-boundary mesh (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: orphan-triangle-cleanup / list-traversal-init)
+- **Sources**: MeshFix `Basic_TMesh.removeTriangles` Branch 1 (*list_head_initialization*: `Node *n = T.head(); while (n != NULL) { t = (Triangle *)n->e; … n = n->next(); }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two healthy triangles sharing edge (v1,v2) in an open-boundary fan. Any non-empty mesh unconditionally exercises the T.head() initialization — Branch 1 fires as soon as the triangle list is non-NULL. Interior edge (v1,v2) shared by both triangles (n=2); four boundary edges each incident on one triangle (n=1). Euler: V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(2,0,0); t0=(v0,v1,v2), t1=(v1,v3,v2); assert_edge_shared(v1,v2,2); boundary edges n=1; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 1 fires unconditionally; n is initialised from T.head() and the while-loop begins traversal.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me480.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me481 — removeTriangles null_edge_e1: triangle [v0,v0,v2] has zero-length e1 edge (v0→v0), e1-NULL precondition (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: orphan-triangle-cleanup / null-edge-e1)
+- **Sources**: MeshFix `Basic_TMesh.removeTriangles` Branch 2 (*null_edge_e1*: `if (t->e1 == NULL || t->e2 == NULL || t->e3 == NULL)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Triangle t1 = [v0, v0, v2] has a self-loop on the first edge (e1): corner-0 and corner-1 are both v0. The edge v0→v0 is zero-length; any edge-validity filter upstream would set e1=NULL, causing removeTriangles Branch 2 to mark t1 for removal. t0 = [v0, v1, v2] is a healthy companion.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0); t0=(v0,v1,v2) healthy; t1=(v0,v0,v2) degenerate — e1=(v0,v0) self-loop; assert_triangle_area_lt(1,1e-12); edge_shared(v0,v0,1); vertex_pair_distance_lt(v0,v0,1e-12).
+- **Expected kernel behavior**: Branch 2 fires; t->e1 is NULL; triangle is queued for T.removeCell.
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,0] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,0] lt=1e-12`
+- **Fixture path**: mesh-examples/12-14-mesh/Me481.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me482 — removeTriangles null_edge_e2: triangle [v0,v1,v1] has zero-length e2 edge (v1→v1), e2-NULL precondition (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: orphan-triangle-cleanup / null-edge-e2)
+- **Sources**: MeshFix `Basic_TMesh.removeTriangles` Branch 3 (*null_edge_e2*: `|| t->e2 == NULL ||`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Triangle t1 = [v0, v1, v1] has a self-loop on the second edge (e2): corner-1 and corner-2 are both v1. The edge v1→v1 is zero-length; any edge-validity filter upstream would set e2=NULL, causing removeTriangles Branch 3 to mark t1 for removal. t0 = [v0, v1, v2] is a healthy companion.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0); t0=(v0,v1,v2) healthy; t1=(v0,v1,v1) degenerate — e2=(v1,v1) self-loop; assert_triangle_area_lt(1,1e-12); edge_shared(v1,v1,1); vertex_pair_distance_lt(v1,v1,1e-12).
+- **Expected kernel behavior**: Branch 3 fires; t->e2 is NULL; triangle is queued for T.removeCell.
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,1] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,1] lt=1e-12`
+- **Fixture path**: mesh-examples/12-14-mesh/Me482.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me483 — removeTriangles null_edge_e3: triangle [v0,v1,v0] has zero-length e3 edge (v0→v0), e3-NULL precondition (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: orphan-triangle-cleanup / null-edge-e3)
+- **Sources**: MeshFix `Basic_TMesh.removeTriangles` Branch 4 (*null_edge_e3*: `|| t->e3 == NULL`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Triangle t1 = [v0, v1, v0] has a self-loop on the closing edge (e3): corner-2 and corner-0 are both v0. The edge v0→v0 is zero-length; any edge-validity filter upstream would set e3=NULL, causing removeTriangles Branch 4 to mark t1 for removal. t0 = [v0, v1, v2] is a healthy companion.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0); t0=(v0,v1,v2) healthy; t1=(v0,v1,v0) degenerate — e3=(v0,v0) self-loop; assert_triangle_area_lt(1,1e-12); edge_shared(v0,v0,1); vertex_pair_distance_lt(v0,v0,1e-12).
+- **Expected kernel behavior**: Branch 4 fires; t->e3 is NULL; triangle is queued for T.removeCell.
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,0] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,0] lt=1e-12`
+- **Fixture path**: mesh-examples/12-14-mesh/Me483.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me484 — removeTriangles triangle_removal: T.removeCell+delete t; collinear t2=[v0,v1,v2] is orphan to be removed (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: orphan-triangle-cleanup / triangle-removal)
+- **Sources**: MeshFix `Basic_TMesh.removeTriangles` Branch 5 (*triangle_removal*: `T.removeCell(n); delete t;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three-triangle fan. t2 = [v0, v1, v2] is degenerate: v0=(0,0,0), v1=(2,0,0), v2=(1,0,0) are collinear on y=0, so area=0. This is the triangle that would have its edge pointer nulled upstream and then be removed by T.removeCell in Branch 5. The two healthy triangles t0=(v0,v3,v2) and t1=(v1,v2,v3) remain as survivors. v2 lies at the midpoint of segment v0-v1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,0,0) midpoint, v3=(1,1,0); t0=(v0,v3,v2) area=0.5, t1=(v1,v2,v3) area=0.5, t2=(v0,v1,v2) area=0 (collinear); assert_triangle_area_lt(2,1e-12); vertex_on_edge(v2,v0,v1); edge_shared(v0,v1,2).
+- **Expected kernel behavior**: Branch 5 fires; T.removeCell(n) unlinks t2; delete t frees memory.
+- **Mesh assertion**: `triangle_area_lt triangle=2 lt=1e-12`
+- **Mesh assertion**: `vertex_on_edge vertex=2 edge=[0,1]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me484.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me485 — removeTriangles topology_invalidation: d_boundaries=d_handles=d_shells=1 after orphan removal; clean 2-triangle survivor mesh (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: orphan-triangle-cleanup / topology-dirty-flags)
+- **Sources**: MeshFix `Basic_TMesh.removeTriangles` Branch 6 (*topology_invalidation*: `d_boundaries = d_handles = d_shells = 1;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Minimal post-cleanup mesh representing the state after removeTriangles completes: two healthy triangles forming an open-boundary quad. The topology dirty flags (d_boundaries, d_handles, d_shells) are all set to 1 after any removal, forcing recomputation on next query. Shared interior edge (v0,v3) n=2; boundary loop [v0,v1,v3,v2]; Euler V=4,E=5,F=2,chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(1,1,0); t0=(v0,v1,v3), t1=(v0,v3,v2); assert_edge_shared(v0,v3,2); assert_hole_boundary([v0,v1,v3,v2]); euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 6 fires after removal loop; d_boundaries=d_handles=d_shells=1; cached topology invalidated.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `hole_boundary loop=[0,1,3,2]`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me485.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
