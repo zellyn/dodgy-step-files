@@ -1954,36 +1954,31 @@ Fixture IDs: Me200 Me201 Me202 Me203 Me204 Me205 Me206 Me207 Me208 Me209
 (3 methods, 14 branches)
 
 ##### `Basic_TMesh.checkGeometry` — lines 184–252
-(7 branches; all UNCOVERED — no mesh fixtures exist yet)
+(7 branches; ALL COVERED by Me950–Me956 — wave 33A, 2026-06-23)
 
-- **Branch 1** @ line 196 — *memory_allocation_failure*
+- **Branch 1** @ line 196 — *memory_allocation_failure* → **Me950** (near-coincident v0/v6 at distance 5e-8; alloc-guard placeholder; same geometry as Branch 2)
   - What it tests: varr null pointer check after toArray()
   - Repair action: skip coincident vertex detection
-  - Suggested fixture: defect mentioning 'Not enough memory', 'varr == NULL'
-- **Branch 2** @ line 204 — *duplicate_vertices*
+- **Branch 2** @ line 204 — *duplicate_vertices* → **Me951** (v0 and v3 both at (0,0,0), separate triangles, no shared edge)
   - What it tests: coincident vertex detection via xyzCompare
   - Repair action: log warning and continue
-  - Suggested fixture: defect mentioning 'detected coincident vertices'
-- **Branch 3** @ line 208 — *duplicate_vertex_with_edge*
+- **Branch 3** @ line 208 — *duplicate_vertex_with_edge* → **Me952** (v0=v1=(1,0,0) in triangle t1; zero-length edge (v0,v1))
   - What it tests: edge connecting coincident vertices
   - Repair action: early return v1
-  - Suggested fixture: defect mentioning 'and there is an edge connecting them'
-- **Branch 4** @ line 220 — *edge_alloc_failure*
+- **Branch 4** @ line 220 — *edge_alloc_failure* → **Me953** (coincident edge pair (v0,v1)≡(v3,v4); alloc-guard placeholder; same geometry as Branch 5)
   - What it tests: evarr null after toArray() for edges
   - Repair action: skip edge deduplication
-  - Suggested fixture: defect mentioning "Can't check for coincident edges"
-- **Branch 5** @ line 226 — *duplicate_edges*
+- **Branch 5** @ line 226 — *duplicate_edges* → **Me954** (edge (v0,v1) and (v3,v4) with v0≡v3, v1≡v4 by coordinate; distinct vertex indices)
   - What it tests: lexicographic edge comparison detects colocated edges
   - Repair action: log warning, update ret
-  - Suggested fixture: defect mentioning 'detected coincident edges'
-- **Branch 6** @ line 238 — *degenerate_angle_180_degrees*
+- **Branch 6** @ line 238 — *degenerate_angle_180_degrees* → **Me955** (p1 at middle of collinear triple; interior angle = PI; area = 0)
   - What it tests: triangle angle equals 0 or PI at v1
   - Repair action: early return v1
-  - Suggested fixture: defect mentioning 'degenerate triangle detected'
-- **Branch 7** @ line 247 — *dihedral_angle_180*
+- **Branch 7** @ line 247 — *dihedral_angle_180* → **Me956** (two CCW triangles in z=0 sharing edge (v1,v2); both normals +Z; dihedral = PI)
   - What it tests: dihedral angle check for overlapping triangles
   - Repair action: early return edge's v1
-  - Suggested fixture: defect mentioning 'overlapping triangles detected'
+
+Fixture IDs: Me950 Me951 Me952 Me953 Me954 Me955 Me956
 
 ##### `Basic_TMesh.forceNormalConsistence` — lines 923–988
 (4 branches; all UNCOVERED — no mesh fixtures exist yet)

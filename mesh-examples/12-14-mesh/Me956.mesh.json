@@ -1,0 +1,60 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      1.0,
+      0.0
+    ],
+    [
+      1.0,
+      1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      2,
+      1,
+      3
+    ]
+  ],
+  "metadata": {
+    "id": "Me956",
+    "schema_version": 0,
+    "defect_class": "overlapping_triangles",
+    "title": "Basic_TMesh.checkGeometry dihedral_angle_180: adjacent coplanar triangles sharing edge (v1,v2), dihedral = PI (Branch 7)",
+    "assertions": [
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          2
+        ],
+        "n": 2
+      },
+      {
+        "kind": "adjacent_triangles_normal_dot_gt",
+        "triangles": [
+          0,
+          1
+        ],
+        "threshold": 0.99
+      }
+    ]
+  }
+}

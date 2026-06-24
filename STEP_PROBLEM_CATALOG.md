@@ -36593,6 +36593,86 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me950 — Basic_TMesh.checkGeometry memory_allocation_failure: near-coincident vertex pair v0/v6; varr==NULL alloc guard (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.checkGeometry / coincident-vertex-alloc-guard)
+- **Sources**: MeshFix `Basic_TMesh.checkGeometry` Branch 1 (*memory_allocation_failure*: `varr == NULL`; vertex sort buffer alloc fails, skip coincident-vertex scan); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three-triangle mesh where vertex v0=(0,0,0) and vertex v6=(5e-8,0,0) are near-coincident (distance 5e-8 < 1e-7) but belong to separate triangles with no shared edge. Branch 1 fires when the sort buffer for vertex coordinates cannot be allocated — coincident-vertex scan is skipped entirely. The same geometry would be caught by Branch 2 (duplicate_vertices) if allocation succeeds. This is the alloc-guard placeholder for the 7-branch Basic_TMesh.checkGeometry variant.
+- **Reproducer recipe**: t0=(v0,v1,v2) with v0=(0,0,0); t1=(v3,v4,v5) clean; t2=(v6,v7,v8) with v6=(5e-8,0,0); assert vertex_pair_distance_lt(v0,v6,1e-7) and vertex_pair_no_shared_triangle(v0,v6).
+- **Expected kernel behavior**: Branch 1 fires on alloc failure; near-coincident vertex pair (v0,v6) would be flagged as duplicate_vertices (Branch 2) if alloc succeeds.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,6] lt=1e-07`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[0,6]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me950.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me951 — Basic_TMesh.checkGeometry duplicate_vertices: v0==v3 at (0,0,0) in separate triangles, no edge (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.checkGeometry / coincident-vertices-no-edge)
+- **Sources**: MeshFix `Basic_TMesh.checkGeometry` Branch 2 (*duplicate_vertices*: `xyzCompare` detects coincident pair, `getEdge(v2)==null`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two vertices v0 and v3 both at (0,0,0) in separate triangles with no shared edge or half-edge. In the sorted vertex array, these entries are adjacent with distance 0. Since getEdge(v3) from v0 returns null (no triangle contains both), a warning is logged and the scan continues — Branch 2 fires without early return. The function records the defect and moves on.
+- **Reproducer recipe**: t0=(v0,v1,v2) with v0=(0,0,0); t1=(v3,v4,v5) with v3=(0,0,0); no triangle references both v0 and v3; assert vertex_pair_distance_lt(v0,v3,1e-12) and vertex_pair_no_shared_triangle(v0,v3).
+- **Expected kernel behavior**: Branch 2 fires; defect logged as 'detected coincident vertices'; getEdge returns null; scan continues without early return.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,3] lt=1e-12`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[0,3]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me951.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me952 — Basic_TMesh.checkGeometry duplicate_vertex_with_edge: v0==v1 at (1,0,0), zero-length edge (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.checkGeometry / coincident-vertices-edge-present)
+- **Sources**: MeshFix `Basic_TMesh.checkGeometry` Branch 3 (*duplicate_vertex_with_edge*: `getEdge(v2)!=null`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Degenerate triangle t1 where vertices v0=(1,0,0) and v1=(1,0,0) are exactly coincident AND connected by a half-edge. Edge (v0,v1) has length 0, and the triangle has area 0. When the sorted vertex array finds v0 and v1 adjacent with distance 0, getEdge(v1) from v0 returns non-null (because t1 references both). checkGeometry returns v0 immediately as the critical defect — early return, most severe path. Clean control triangle t0 placed first for predictable indexing.
+- **Reproducer recipe**: t0=(v3,v4,v5) clean control; t1=(v0,v1,v2) with v0=v1=(1,0,0); edge (v0,v1) exists in t1 with length 0; assert vertex_pair_distance_lt(v0,v1,1e-12), triangle_area_lt(t1,1e-12), edge_shared(v0,v1,1).
+- **Expected kernel behavior**: Branch 3 fires; defect logged as 'and there is an edge connecting them'; function returns v0 immediately as defect vertex (most severe path, early return).
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[3,4] lt=1e-12`
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me952.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me953 — Basic_TMesh.checkGeometry edge_alloc_failure: coincident edge pair; evarr==NULL alloc guard (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.checkGeometry / coincident-edges-alloc-guard)
+- **Sources**: MeshFix `Basic_TMesh.checkGeometry` Branch 4 (*edge_alloc_failure*: `evarr==NULL`; edge sort buffer alloc fails, skip coincident-edge scan); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two isolated triangles where edge (v0,v1) and edge (v3,v4) are spatially coincident (v0≡v3 and v1≡v4 by coordinate) but distinct vertex indices. Branch 4 fires when the sort buffer for edge coordinates cannot be allocated — coincident-edge scan is skipped. The same geometry would trigger Branch 5 (duplicate_edges) if allocation succeeds. This is the alloc-guard placeholder for the 7-branch Basic_TMesh.checkGeometry variant.
+- **Reproducer recipe**: t0=(v0,v1,v2) with v0=(0,0,0), v1=(1,0,0); t1=(v3,v4,v5) with v3=(0,0,0), v4=(1,0,0), v5=(0.5,-1,0); assert vertex pair distances < 1e-12 and edge_pair_coincident.
+- **Expected kernel behavior**: Branch 4 fires on alloc failure; coincident edge pair would be flagged as duplicate_edges (Branch 5) if alloc succeeds.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,3] lt=1e-12`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-12`
+- **Mesh assertion**: `edge_pair_coincident edge_a=[0,1] edge_b=[3,4]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me953.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me954 — Basic_TMesh.checkGeometry duplicate_edges: edge (v0,v1) spatially coincident with (v3,v4) (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.checkGeometry / coincident-edges)
+- **Sources**: MeshFix `Basic_TMesh.checkGeometry` Branch 5 (*duplicate_edges*: lexicographic edge comparison detects colocated edges, log warning, update ret); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two isolated triangles t0=(v0,v1,v2) and t1=(v3,v4,v5) where v0≡v3=(0,0,0) and v1≡v4=(1,0,0) by coordinate but different vertex indices. After sorting all edges by endpoint coordinates, entries for (v0,v1) and (v3,v4) are adjacent with difference 0. checkGeometry logs 'detected coincident edges', marks the edge as defective, and continues (no early return). This is the successful-detection Branch 5 in the 7-branch Basic_TMesh.checkGeometry variant.
+- **Reproducer recipe**: t0=(v0,v1,v2) with v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0); t1=(v3,v4,v5) with v3=(0,0,0), v4=(1,0,0), v5=(0.5,-1,0); assert vertex pair distances < 1e-12 and edge_pair_coincident.
+- **Expected kernel behavior**: Branch 5 fires; defect logged as 'detected coincident edges'; ret updated; scan continues.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,3] lt=1e-12`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-12`
+- **Mesh assertion**: `edge_pair_coincident edge_a=[0,1] edge_b=[3,4]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me954.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me955 — Basic_TMesh.checkGeometry degenerate_angle_180_degrees: collinear triangle, interior angle PI at middle vertex (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.checkGeometry / degenerate-triangle-flat-angle)
+- **Sources**: MeshFix `Basic_TMesh.checkGeometry` Branch 6 (*degenerate_angle_180_degrees*: `getDAngle(v1)==0 || getDAngle(v1)==M_PI`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Single collinear triangle where p0=(0,0,0), p1=(1,0,0) [middle], p2=(2,0,0) are collinear along the X-axis. The interior angle at p1 (middle vertex) is exactly π (180°): the two edges from p1 to p0 and p2 are anti-parallel. Area = 0. checkGeometry detects getDAngle(p1)==M_PI and returns p1 as defective immediately. Note: the 7-branch Basic_TMesh.checkGeometry combines the 0° and π cases into a single branch (unlike the 8-branch variant which separates them).
+- **Reproducer recipe**: p0=(0,0,0), p1=(1,0,0), p2=(2,0,0); t0=(p0,p1,p2); assert triangle_area_lt(t0,1e-12); assert vertex_on_edge(p1,p0,p2).
+- **Expected kernel behavior**: Branch 6 fires; getDAngle(p1)==PI detected; defect logged as 'degenerate triangle detected'; function returns p1 as defect vertex (early return).
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-12`
+- **Mesh assertion**: `vertex_on_edge vertex=1 edge=[0,2]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me955.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me956 — Basic_TMesh.checkGeometry dihedral_angle_180: adjacent coplanar triangles sharing edge (v1,v2), dihedral = PI (Branch 7)
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.checkGeometry / overlapping-triangles-dihedral)
+- **Sources**: MeshFix `Basic_TMesh.checkGeometry` Branch 7 (*dihedral_angle_180*: `getDAngle(e->t2)==M_PI`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four vertices in the XY plane forming a planar quad. Triangles t0=(v0,v1,v2) and t1=(v2,v1,v3) share interior edge (v1,v2) and both have normal +Z (counter-clockwise winding). The dihedral angle between them is exactly π (180°) — they are coplanar and fold flat in the same direction, meaning they overlap when viewed orthogonally. checkGeometry detects getDAngle(e->t2)==M_PI and returns edge->v1 as the defective vertex immediately. Euler: V=4, E=5, F=2, chi=1 (open disk).
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(1,1,0); t0=(v0,v1,v2), t1=(v2,v1,v3); edge (v1,v2) shared by 2 triangles; both normals +Z → dihedral = PI.
+- **Expected kernel behavior**: Branch 7 fires; getDAngle(e->t2)==PI detected; defect logged as 'overlapping triangles detected'; function returns edge->v1 as defect vertex (early return).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `adjacent_triangles_normal_dot_gt triangles=[0,1] threshold=0.99`
+- **Fixture path**: mesh-examples/12-14-mesh/Me956.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me960 — CreateUnorientedTriangle_e1_slot_check: e1's first free t-slot (t1 or t2) assigned without orientation
 - **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.CreateUnorientedTriangle / e1-slot-check)
 - **Sources**: MeshFix `Basic_TMesh.CreateUnorientedTriangle` Branch 1 (*e1_slot_check*: `if (e1->t1 == NULL) at1 = &(e1->t1); else if (e1->t2 == NULL) at1 = &(e1->t2)`); `MESH_HEAL_COVERAGE.md`.
