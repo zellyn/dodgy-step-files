@@ -1147,20 +1147,19 @@ Fixture IDs: Me770 Me771 Me772 Me773
 (1 methods, 3 branches)
 
 ##### `PMP.non_manifold_vertices` — lines 242–314
-(3 branches; all UNCOVERED — no mesh fixtures exist yet)
+(3 branches; ALL COVERED by Me790–Me792 — wave 27C, 2026-06-23)
 
-- **Branch 1** @ line 260 — *nonmanifold_vertex_detection*
+- **Branch 1** @ line 260 — *nonmanifold_vertex_detection* — COVERED (Me790: bowtie hub with 2 disconnected fans; 4 border halfedges at hub; vertex_fan_disconnected + euler V=7,E=10,F=4,chi=1)
   - What it tests: vertex has multiple border halfedges
   - Repair action: emit representative from each disconnected umbrella
-  - Suggested fixture: defect mentioning 'next', 'halfedge_around_target'
-- **Branch 2** @ line 280 — *umbrella_sector_boundary*
+- **Branch 2** @ line 280 — *umbrella_sector_boundary* — COVERED (Me791: open-mesh pinch with 3-triangle sector A + 1-triangle sector B; is_border fires at sector B border halfedges; vertex_fan_disconnected + euler V=7,E=10,F=4,chi=1)
   - What it tests: halfedge is on boundary of umbrella sector
   - Repair action: mark sector boundary and advance
-  - Suggested fixture: defect mentioning 'is_border'
-- **Branch 3** @ line 295 — *visited_umbrella_detection*
+- **Branch 3** @ line 295 — *visited_umbrella_detection* — COVERED (Me792: 3-sector bowtie hub; outer loop re-encounters visited halfedges from sectors A+B; visited_set skip fires; vertex_fan_disconnected + cross-sector vertex_pair_no_shared_triangle + euler V=7,E=9,F=3,chi=1)
   - What it tests: sector already enumerated
   - Repair action: skip already-visited sectors
-  - Suggested fixture: defect mentioning 'visited_set'
+
+Fixture IDs: Me790 Me791 Me792
 
 
 #### `PMP_Mesh_repair/include/CGAL/Polygon_mesh_processing/orient_polygon_soup_extension.h`

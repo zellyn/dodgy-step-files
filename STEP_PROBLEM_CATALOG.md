@@ -36693,3 +36693,48 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me782.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me790 — PMP.non_manifold_vertices nonmanifold_vertex_detection: bowtie hub vertex with 2 disconnected umbrella sectors; 4 border halfedges at hub trigger sector enumeration (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: non-manifold-vertex / bowtie-pinch)
+- **Sources**: CGAL PMP `PMP.non_manifold_vertices` Branch 1 (*nonmanifold_vertex_detection*: `halfedge_around_target(v, tm)` detects multiple border halfedges); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Classic bowtie: pinch vertex hub=(0,0,0) shared by two completely disconnected triangle fans. Fan A (upper, y>0): t0=(hub,a0,a1), t1=(hub,a1,a2); interior edge (hub,a1) n=2. Fan B (lower, y<0): t2=(hub,b0,b1), t3=(hub,b1,b2); interior edge (hub,b1) n=2. Hub has 4 border halfedges — 2 per umbrella — forcing the algorithm to emit a representative halfedge for each sector. Branch 1 fires as the detection gate: halfedge(v,tm) is non-null so star-traversal begins. Each fan CC is isolated; hub's fan is disconnected. Euler: V=7, E=10, F=4, chi=1.
+- **Reproducer recipe**: hub=(0,0,0); a0=(1,1,0),a1=(0,1,0),a2=(-1,1,0); b0=(1,-1,0),b1=(0,-1,0),b2=(-1,-1,0); t0=(hub,a0,a1), t1=(hub,a1,a2), t2=(hub,b0,b1), t3=(hub,b1,b2); assert_edge_shared(hub,a1,2); assert_edge_shared(hub,b1,2); border hub edges n=1; assert_vertex_fan_disconnected(hub); euler V=7,E=10,F=4,chi=1.
+- **Expected kernel behavior**: Branch 1 fires; halfedge_around_target traversal detects 2 umbrella sectors (Fan A, Fan B); one representative halfedge emitted per sector for non_manifold_vertices output.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Mesh assertion**: `euler_characteristic v=7 e=10 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me790.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me791 — PMP.non_manifold_vertices umbrella_sector_boundary: open-mesh pinch vertex; border halfedge at sector boundary triggers is_border; 3-triangle sector A + 1-triangle sector B (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: non-manifold-vertex / open-mesh-sector-boundary)
+- **Sources**: CGAL PMP `PMP.non_manifold_vertices` Branch 2 (*umbrella_sector_boundary*: `if(is_border(hf, tm)) { ... }` marks sector boundary); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Pinch vertex hub=(0,0,0) with two disconnected umbrella sectors in an open mesh. Sector A is a 3-triangle open fan (t0,t1,t2) sharing interior edges (hub,a1) and (hub,a2), with border halfedges at (hub,a0) and (hub,a3). Sector B is a single isolated triangle (t3) with both hub edges being border: (hub,b0) and (hub,b1). When the algorithm walks the halfedge star and encounters a border halfedge at hub — is_border(hf,tm) fires (Branch 2) — it marks the umbrella sector boundary and advances to the next sector. Hub has 6 border halfedges. Euler: V=7, E=10, F=4, chi=1.
+- **Reproducer recipe**: hub=(0,0,0); a0=(2,1,0),a1=(1,1,0),a2=(0,1,0),a3=(-1,1,0); b0=(1,-1,0),b1=(-1,-1,0); t0=(hub,a0,a1), t1=(hub,a1,a2), t2=(hub,a2,a3), t3=(hub,b0,b1); assert_edge_shared(hub,a1,2); assert_edge_shared(hub,a2,2); border hub edges n=1 each; assert_vertex_fan_disconnected(hub); euler V=7,E=10,F=4,chi=1.
+- **Expected kernel behavior**: Branch 2 fires when is_border(hf,tm) returns true for (hub,b0) or (hub,b1); sector boundary marked; algorithm advances to enumerate next sector without re-traversing.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=1`
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Mesh assertion**: `euler_characteristic v=7 e=10 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me791.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me792 — PMP.non_manifold_vertices visited_umbrella_detection: 3-sector bowtie hub; outer loop re-encounters visited halfedges; visited_set skip fires for already-enumerated sectors (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: non-manifold-vertex / multi-sector-visited-set)
+- **Sources**: CGAL PMP `PMP.non_manifold_vertices` Branch 3 (*visited_umbrella_detection*: `if(visited.find(hf) != visited.end()) continue;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Pinch vertex hub=(0,0,0) with THREE disconnected umbrella sectors: Sector A (t0=(hub,a0,a1)), Sector B (t1=(hub,b0,b1)), Sector C (t2=(hub,c0,c1)). All hub edges are border (n=1 each). The algorithm iterates halfedges_around_target(hub) in the outer loop. After enumerating Sectors A, B, and C (adding their halfedges to visited), the outer loop re-encounters halfedges from already-visited sectors. Branch 3 fires: visited.find(hf) succeeds, and the algorithm skips the sector (continue). The 3-sector configuration ensures Branch 3 is exercised at least twice (re-encounter of A and B after C is enumerated). Euler: V=7, E=9, F=3, chi=1.
+- **Reproducer recipe**: hub=(0,0,0); a0=(1,1,0),a1=(2,0,0); b0=(-1,1,0),b1=(-2,0,0); c0=(0,-1,1),c1=(0,-1,-1); t0=(hub,a0,a1), t1=(hub,b0,b1), t2=(hub,c0,c1); all hub edges n=1; outer edges n=1; assert_vertex_fan_disconnected(hub); cross-sector vertex_pair_no_shared_triangle assertions; euler V=7,E=9,F=3,chi=1.
+- **Expected kernel behavior**: Branch 3 fires (at least twice) when outer halfedge-around-target loop re-encounters halfedges from already-enumerated Sectors A and B after Sector C is processed; visited.find() returns end() for new sector, non-end() for visited sectors triggering the skip.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=1`
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,3]`
+- **Mesh assertion**: `euler_characteristic v=7 e=9 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me792.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
