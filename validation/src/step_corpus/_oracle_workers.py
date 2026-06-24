@@ -355,6 +355,27 @@ def oracle_solvespace(path: str) -> None:
         _emit({"status": "exception", "error": str(e)[:400]})
 
 
+def oracle_brlcad(path: str) -> None:
+    """BRL-CAD cross-kernel oracle: STEP via STEPcode parser (NIST PDES,
+    fully independent of OpenCASCADE).
+
+    Install-optional: when step-g isn't in PATH, emits
+    ``{status: "not_installed"}`` quickly.
+    """
+    try:
+        from pathlib import Path as _P
+        from step_corpus._brlcad_oracle import run_brlcad
+        result = run_brlcad(_P(path), timeout_s=30)
+        _emit({
+            "status": result["status"],
+            "n_regions": result["n_regions"],
+            "stderr_tail": result["stderr_tail"],
+            "duration_ms": result["duration_ms"],
+        })
+    except Exception as e:
+        _emit({"status": "exception", "error": str(e)[:400]})
+
+
 ORACLES = {
     "ifcopenshell": oracle_ifcopenshell,
     "occt_heal_on": lambda p: oracle_occt(p, healing=True),
@@ -365,6 +386,7 @@ ORACLES = {
     "manifold": oracle_manifold,
     "ocaf": oracle_ocaf,
     "solvespace": oracle_solvespace,
+    "brlcad": oracle_brlcad,
 }
 
 

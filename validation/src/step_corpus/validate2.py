@@ -25,7 +25,7 @@ import sys
 import traceback
 from pathlib import Path
 
-ORACLES = ["ifcopenshell", "occt_heal_on", "occt_heal_off", "gmsh_autofix_on", "gmsh_autofix_off", "part21_strict", "manifold", "ocaf", "solvespace"]
+ORACLES = ["ifcopenshell", "occt_heal_on", "occt_heal_off", "gmsh_autofix_on", "gmsh_autofix_off", "part21_strict", "manifold", "ocaf", "solvespace", "brlcad"]
 
 
 def byte_signature(path: Path) -> dict:
@@ -273,6 +273,17 @@ def derive_summary(per_oracle: dict) -> dict:
         s["solvespace"] = "not_installed"
     else:
         s["solvespace"] = st
+
+    # BRL-CAD cross-kernel oracle. Compact summary form:
+    # "loaded(n_regions=N)" / "rejected" / "not_installed" / "timeout".
+    d = per_oracle.get("brlcad", {})
+    st = d.get("status", "unknown")
+    if st == "loaded":
+        s["brlcad"] = f"loaded(n_regions={d.get('n_regions', 0)})"
+    elif st == "not_installed":
+        s["brlcad"] = "not_installed"
+    else:
+        s["brlcad"] = st
 
     return s
 
