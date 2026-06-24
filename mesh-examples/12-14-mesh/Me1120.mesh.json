@@ -1,0 +1,91 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      2.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.5,
+      -1.0
+    ],
+    [
+      0.5,
+      0.5,
+      1.0
+    ],
+    [
+      1.5,
+      0.5,
+      1.0
+    ],
+    [
+      0.0,
+      20.0,
+      0.0
+    ],
+    [
+      1.0,
+      20.0,
+      0.0
+    ],
+    [
+      0.5,
+      21.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      3,
+      4,
+      5
+    ],
+    [
+      6,
+      7,
+      8
+    ]
+  ],
+  "metadata": {
+    "id": "Me1120",
+    "schema_version": 0,
+    "defect_class": "self_intersection_cross_cc",
+    "title": "cross-CC external SI: CC-A and CC-B intersect each other, no intra-CC SI",
+    "assertions": [
+      {
+        "kind": "triangles_self_intersect",
+        "triangles": [
+          0,
+          1
+        ]
+      },
+      {
+        "kind": "triangle_not_reachable_from",
+        "target": 2,
+        "source": 0
+      },
+      {
+        "kind": "triangle_not_reachable_from",
+        "target": 2,
+        "source": 1
+      }
+    ]
+  }
+}

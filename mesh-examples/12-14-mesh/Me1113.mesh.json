@@ -1,0 +1,96 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      2.0,
+      0.0
+    ],
+    [
+      1.0,
+      -1.0,
+      1.0
+    ],
+    [
+      1.0,
+      1.0,
+      -1.0
+    ],
+    [
+      5.0,
+      0.0,
+      0.0
+    ],
+    [
+      6.0,
+      1.0,
+      0.0
+    ],
+    [
+      6.0,
+      -1.0,
+      0.0
+    ],
+    [
+      4.0,
+      1.0,
+      0.0
+    ],
+    [
+      4.0,
+      -1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      3,
+      4
+    ],
+    [
+      5,
+      6,
+      7
+    ],
+    [
+      5,
+      8,
+      9
+    ]
+  ],
+  "metadata": {
+    "id": "Me1113",
+    "schema_version": 0,
+    "defect_class": "self_intersection_multi_type",
+    "title": "two SI pairs: interior crossing (must process) + corner-touch (filterable by filter NP)",
+    "assertions": [
+      {
+        "kind": "triangles_self_intersect",
+        "triangles": [
+          0,
+          1
+        ]
+      },
+      {
+        "kind": "triangle_not_reachable_from",
+        "target": 2,
+        "source": 0
+      }
+    ]
+  }
+}

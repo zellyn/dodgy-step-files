@@ -40991,4 +40991,223 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[10,13]`
 - **Mesh assertion**: `euler_characteristic v=15 e=15 f=5 chi=5`
 - **Fixture path**: mesh-examples/12-14-mesh/Me1073.mesh.json
+### Me1100 — CreateTriangleFromVertices_over_constrained_e1: e1 already has 2 triangles; IS_BIT(e1,5) triggers edge duplication (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: non-manifold-edge / over-constrained-e1)
+- **Sources**: MeshFix `Basic_TMesh.CreateTriangleFromVertices` Branch 1 (*OVER_CONSTRAINED_EDGE*) @ line 263 (`if (IS_BIT(e1, 5)) { ... }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: edge (v0,v1) is incident on three triangles — a non-manifold over-constrained configuration. t0=(v0,v1,v2) and t1=(v0,v1,v3) fill both t1/t2 slots of e1. When a third triangle t2=(v0,v1,v4) (out-of-plane apex v4) attempts to use the same edge as e1, IS_BIT(e1,5) fires (Branch 1) and CreateTriangleFromVertices duplicates e1 to avoid topological conflict. All other six edges are boundary (n=1 each).
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,-1,0), v4=(0.5,0,1); t0=(v0,v1,v2), t1=(v0,v1,v3), t2=(v0,v1,v4); edge (v0,v1) n=3; all other edges n=1.
+- **Expected kernel behavior**: IS_BIT(e1,5) is true; CreateTriangleFromVertices calls CreateEdge to duplicate e1 so t2 obtains a separate edge object; the non-manifold slot conflict is resolved before triangle creation proceeds.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=3`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1100.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1101 — CreateTriangleFromVertices_over_constrained_e2: e2 already has 2 triangles; IS_BIT(e2,5) triggers edge duplication (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: non-manifold-edge / over-constrained-e2)
+- **Sources**: MeshFix `Basic_TMesh.CreateTriangleFromVertices` Branch 2 (*OVER_CONSTRAINED_EDGE*) @ line 264 (`if (IS_BIT(e2, 5)) { ... }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: edge (v1,v2) is incident on three triangles — both t1/t2 slots of e2 are occupied. t0=(v3,v1,v2) and t1=(v4,v1,v2) fill both slots; a third triangle t2=(v5,v1,v2) (out-of-plane apex v5) triggers IS_BIT(e2,5) → Branch 2. e1 of the target triangle is distinct and not over-constrained; only e2 fires. All other six edges are boundary (n=1 each).
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(1,1,0), v3=(2,0,0), v4=(0,1,0), v5=(1,0.5,1); t0=(v3,v1,v2), t1=(v4,v1,v2), t2=(v5,v1,v2); edge (v1,v2) n=3; all other edges n=1.
+- **Expected kernel behavior**: IS_BIT(e2,5) is true; CreateTriangleFromVertices duplicates e2 so the third triangle t2 gets an independent edge object; topological conflict on e2 is resolved.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=3`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,5] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1101.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1102 — CreateTriangleFromVertices_over_constrained_e3: e3 already has 2 triangles; IS_BIT(e3,5) triggers edge duplication (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: non-manifold-edge / over-constrained-e3)
+- **Sources**: MeshFix `Basic_TMesh.CreateTriangleFromVertices` Branch 3 (*OVER_CONSTRAINED_EDGE*) @ line 265 (`if (IS_BIT(e3, 5)) { ... }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: edge (v0,v2) is incident on three triangles — both t1/t2 slots of e3 are occupied. t0=(v0,v1,v2) and t1=(v2,v0,v3) fill both slots; a third triangle t2=(v2,v0,v4) (out-of-plane apex v4) triggers IS_BIT(e3,5) → Branch 3. Edges e1 and e2 of the target triangle are distinct and not over-constrained; only e3 fires. All six non-hub edges are boundary (n=1 each).
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(1,1,0), v4=(-1,0.5,1); t0=(v0,v1,v2), t1=(v2,v0,v3), t2=(v2,v0,v4); edge (v0,v2) n=3; all other edges n=1.
+- **Expected kernel behavior**: IS_BIT(e3,5) is true; CreateTriangleFromVertices duplicates e3 so t2 receives an independent closing edge; the over-constrained e3 conflict is resolved before the triangle is linked.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=3`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1102.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1103 — CreateTriangleFromVertices_degenerate_triangle: all edges unlinked; Branch 4 null-guard frees e3
+- **Category**: §12.14 mesh defects (sub-class: degenerate-triangle / collinear-all-edges-unlinked)
+- **Sources**: MeshFix `Basic_TMesh.CreateTriangleFromVertices` Branch 4 (*DEGENERATE_TRIANGLE*) @ line 270 (`if ((t=CreateUnorientedTriangle(e1,e2,e3)) == NULL) { ... }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: triangle td=(v0,v1,v2) has three collinear vertices on the X axis — area exactly zero. CreateUnorientedTriangle returns NULL → Branch 4 fires the primary null-check guard. All three edges e1=(v0,v1), e2=(v1,v2), e3=(v0,v2) of td are freshly created with no incident triangles (unlinked). Two valid control triangles tc0=(va,v0,vb) and tc1=(va,vb,v2) share no edges with td. Branch 4 detects e3->t1==NULL && e3->t2==NULL and frees e3; the cascade continues through Branches 5 and 6 to free e2 and e1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0), va=(1,2,0), vb=(3,1,0); tc0=(va,v0,vb), tc1=(va,vb,v2); td=(v0,v1,v2) collinear; area_lt(td,1e-12); edges (v0,v1),(v1,v2),(v0,v2) all n=1; (va,vb) n=2 (shared by tc0 and tc1).
+- **Expected kernel behavior**: CreateUnorientedTriangle returns NULL; e3->t1==NULL && e3->t2==NULL → freeNode(e3); cascade frees e2 (Branch 5) and e1 (Branch 6); vertex edge-list refs cleared.
+- **Mesh assertion**: `triangle_area_lt triangle=2 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1103.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1104 — CreateTriangleFromVertices_unlinked_e2: e3 linked; e2=(v1,v2) orphan freed by Branch 5 freeNode
+- **Category**: §12.14 mesh defects (sub-class: degenerate-triangle / e2-unlinked-orphan)
+- **Sources**: MeshFix `Basic_TMesh.CreateTriangleFromVertices` Branch 5 (*UNLINKED_EDGE*) @ line 279 (`if (e2->t1 == NULL && e2->t2 == NULL) { E.freeNode(e2); ... }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: degenerate triangle td=(v0,v1,v2) has collinear vertices (Y=Z=0). CreateUnorientedTriangle returns NULL → Branch 4 null-guard fires. e3=(v0,v2) is shared with valid control triangle tc=(v0,va,v2) and is linked (n=2) — Branch 4 skips its free. e2=(v1,v2) was freshly created with no incident triangles → Branch 5 fires: e2->t1==NULL && e2->t2==NULL → freeNode(e2). e1=(v0,v1) is also unlinked → Branch 6 fires next. The defining structural difference from Me1103 is that e3 is pre-existing and linked here.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0), va=(1,1,0); tc=(v0,va,v2) valid; td=(v0,v1,v2) collinear; area_lt(td,1e-12); edge (v0,v2) n=2 (linked); (v1,v2) n=1 (e2 orphan); (v0,v1) n=1 (e1 orphan).
+- **Expected kernel behavior**: NULL return from CreateUnorientedTriangle; e3 linked → Branch 4 skips; e2->t1==NULL && e2->t2==NULL → Branch 5 frees e2; e1 unlinked → Branch 6 frees e1; vertex v->e0 refs cleared.
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1104.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1105 — CreateTriangleFromVertices_unlinked_e1: e3 and e2 linked; e1=(v0,v1) orphan freed by Branch 6 freeNode
+- **Category**: §12.14 mesh defects (sub-class: degenerate-triangle / e1-unlinked-orphan)
+- **Sources**: MeshFix `Basic_TMesh.CreateTriangleFromVertices` Branch 6 (*UNLINKED_EDGE*) @ line 286 (`if (e1->t1 == NULL && e1->t2 == NULL) { E.freeNode(e1); ... }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: degenerate triangle td=(v0,v1,v2) has collinear vertices (Y=Z=0). CreateUnorientedTriangle returns NULL → Branch 4 null-guard fires. e3=(v0,v2) is shared with tc_a=(v0,va,v2) and is linked (n=2) → Branch 4 skips. e2=(v1,v2) is shared with tc_b=(v1,vb,v2) and is linked (n=2) → Branch 5 skips. Only e1=(v0,v1) is freshly created with no incident triangles → Branch 6 fires: e1->t1==NULL && e1->t2==NULL → freeNode(e1). The structural distinction: both e2 and e3 are pre-existing linked edges; Branch 6 is the only cleanup that actually frees an edge in this configuration.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0), va=(1,2,0), vb=(1.5,2,0); tc_a=(v0,va,v2), tc_b=(v1,vb,v2); td=(v0,v1,v2) collinear; area_lt(td,1e-12); (v0,v2) n=2 (e3 linked); (v1,v2) n=2 (e2 linked); (v0,v1) n=1 (e1 orphan).
+- **Expected kernel behavior**: NULL return from CreateUnorientedTriangle; e3 linked → Branch 4 skips; e2 linked → Branch 5 skips; e1->t1==NULL && e1->t2==NULL → Branch 6 frees e1; vertex v0 and v1 edge-list refs to e1 are cleared.
+- **Mesh assertion**: `triangle_area_lt triangle=2 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1105.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1110 — pinch-neck non-manifold vertex: genus-preservation decision for SI removal
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/non-manifold-vertex)
+- **Sources**: CGAL `PMP.remove_self_intersections` Branch 1 @ line 2379 (*genus-preservation-requirement*: `if(preserve_genus) duplicate_non_manifold_vertices(…)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: vertex 0 is a pinch-neck bowtie hub shared by two disconnected triangle fans. Fan A (triangles 0,1) lies in the Z=0 plane. Fan B (triangles 2,3) lies in the Y=0 plane; triangle 3 dips below Z=0 and self-intersects triangle 0 from fan A. The hub's vertex fan is disconnected — the non-manifold precondition that preserve_genus must evaluate before SI removal can proceed.
+- **Reproducer recipe**: 8 vertices; hub at origin; fan A upper-left (hub,fa0,fa1) and lower-left (hub,fa1,fa2) in Z=0; fan B right (hub,fb0,fb1) in Y=0 and crossing (hub,fb2,fb3) cutting into Z<0; assert_vertex_fan_disconnected(0); assert_triangles_self_intersect(0,3).
+- **Expected kernel behavior**: detect disconnected vertex fan at hub; evaluate preserve_genus; when false, duplicate hub before hole-filling; when true, route to complex-topology handler.
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,3]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1110.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1111 — SI in CC-A; clean CC-B disconnected: treat_all_CCs processing-scope decision
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/multi-connected-component)
+- **Sources**: CGAL `PMP.remove_self_intersections` Branch 2 @ line 2383 (*treatment-scope-selection*: `if(treat_all_CCs) … else only_SI_CCs`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: two fully disconnected connected components with no shared vertices. CC-A (triangles 0,1): XY-plane and XZ-plane triangles that both share apex ca0 at origin — they cross along the Y=0,Z=0 line (self-intersection). CC-B (triangles 2,3): a clean flat quad at X=10, no defects. When treat_all_CCs=false, CC-B is skipped; when true, it is also validated.
+- **Reproducer recipe**: CC-A: ca0=(0,0,0), ca1=(0,2,0), ca2=(0,-2,0), ca3=(0,0,2), ca4=(0,0,-2); t0=(ca0,ca1,ca2) XY-plane, t1=(ca0,ca3,ca4) XZ-plane crossing t0. CC-B: clean quad at X=10. assert_triangles_self_intersect(0,1); assert_triangle_not_reachable_from(2,0).
+- **Expected kernel behavior**: detect SI internal to CC-A; skip CC-B when treat_all_CCs=false; process both when true.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1111.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1112 — displaced fan-apex below flat patch causing SI: use_smoothing strategy branch
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/smoothable)
+- **Sources**: CGAL `PMP.remove_self_intersections` Branch 3 @ line 2397 (*smoothing-phase-strategy*: `if(use_smoothing) remove_self_intersections_with_smoothing(…) else hole_fill(…)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: triangles 0,1,2 form a flat 3-triangle fan in the Z=0 plane around hub vertex 0. Triangle 3 is an intruder: its top vertex (v5) is correctly placed at Z=0, but its apex (v6) has been displaced to Z=-0.8, pulling it below the fan plane. This causes tri 3 to intersect tri 0. A smoothing pass that lifts v6 back to Z≈0 resolves the SI without topological changes.
+- **Reproducer recipe**: hub=(0,0,0); fan radials at r0=(1,0,0), r1=(0.5,1,0), r2=(-0.5,1,0), r3=(-1,0,0); tri 0=(hub,r0,r1), tri 1=(hub,r1,r2), tri 2=(hub,r2,r3); intruder top=(0.5,2,0), apex=(0.5,1,-0.8); tri 3=(r1,top,apex). assert_triangles_self_intersect(0,3).
+- **Expected kernel behavior**: detect SI between fan and intruder; apply vertex smoothing to move apex back toward Z=0; when use_smoothing=false, fall back to hole-filling instead.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,3]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1112.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1113 — two SI types: interior crossing + corner-touch pair filterable by filter NP
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/multi-type)
+- **Sources**: CGAL `PMP.remove_self_intersections` Branch 4 @ line 2413 (*output-filter-applicability*: `if(filter != nullptr) { if(!filter(f1,f2)) continue; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: the mesh has two self-intersection situations. Pair 1 (triangles 0,1): a full interior crossing — t0 in Z=0 and t1 tilted through it; cannot be filtered out. Pair 2 (triangles 2,3): two triangles that share only a single corner vertex (q_shared at (5,0,0)) and are otherwise disconnected — this "corner-touch" pattern is the candidate a filter predicate could exclude from the repair queue. When filter is non-null, Branch 4 is traversed to decide which pairs to skip.
+- **Reproducer recipe**: Pair 1: p0=(0,0,0), p1=(2,0,0), p2=(1,2,0), p3=(1,-1,1), p4=(1,1,-1); t0=(p0,p1,p2), t1=(p0,p3,p4). Pair 2: q_shared=(5,0,0) plus 4 flanking vertices forming t2 (right) and t3 (left) sharing only q_shared. assert_triangles_self_intersect(0,1); assert_triangle_not_reachable_from(2,0).
+- **Expected kernel behavior**: when filter is null, process all SI pairs including corner-touch; when filter excludes interior-disjoint pairs, skip Pair 2 and only repair Pair 1.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1113.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1114 — zero-area degenerate faces empty SI candidate set: faces_to_treat emptiness detection
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/degenerate-cluster)
+- **Sources**: CGAL `PMP.remove_self_intersections` Branch 5 @ line 2463 (*face-selection-emptiness-detection*: `if(faces_to_treat.empty()) { self_intersecting_faces(…); continue; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: the mesh contains two valid non-degenerate triangles (0 and 2) and two zero-area collinear-vertex triangles (1 and 3). The degenerate triangles represent topology-blocker faces that would be evicted from faces_to_treat in the prior SI iteration. When they are removed, the candidate set becomes empty, triggering the Branch 5 early-exit check rather than an SI recomputation. Triangle 1 is collinear along Y-axis; triangle 3 is collinear along X-axis.
+- **Reproducer recipe**: 12 vertices; tri 0 = valid right triangle in Z=2 plane; tri 1 = collinear (0,1,0)–(0,3,0)–(0,2,0) along Y-axis (area=0); tri 2 = valid triangle in X=3 plane; tri 3 = collinear (1,0,0)–(4,0,0)–(2.5,0,0) along X-axis (area=0). assert_triangle_area_lt(1,1e-12); assert_triangle_area_lt(3,1e-12).
+- **Expected kernel behavior**: detect zero-area faces; evict them from faces_to_treat; when set is empty, trigger Branch 5 check — exit loop early vs recompute SI.
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-12`
+- **Mesh assertion**: `triangle_area_lt triangle=3 lt=1e-12`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1114.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1120 — cross-CC external SI: CC-A and CC-B intersect each other, no intra-CC SI
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/cross-cc)
+- **Sources**: CGAL `PMP.remove_self_intersections` Branch 6 @ line 2150 (*internal-vs-external-si-classification*: `if (does_self_intersect(cc)) { ... } else { if (!treat_all_CCs) continue; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: three connected components with no shared vertices. CC-A (tri 0) is a flat triangle in the z=0 XY plane. CC-B (tri 1) pierces the z=0 plane — its apex is at z=-1 and its base is at z=+1 — crossing CC-A's tri 0. The self-intersection is external (cross-CC): neither CC has an internal SI on its own. CC-C (tri 2) is a clean isolated triangle 20 units away. Branch 6 must classify this as a cross-CC SI rather than an internal one. When treat_all_CCs=false, CC-C is correctly skipped (clean); CC-A and CC-B are both implicated by the external crossing.
+- **Reproducer recipe**: CC-A = flat triangle at z=0 (v0=(0,0,0), v1=(2,0,0), v2=(1,2,0)); CC-B = piercing triangle (v3=(1,0.5,-1), v4=(0.5,0.5,1), v5=(1.5,0.5,1)) sharing no vertices with CC-A; CC-C = clean flat triangle at y=20.
+- **Expected kernel behavior**: classify SI as cross-CC (external); implicate both CC-A and CC-B despite neither having internal SI; skip CC-C when treat_all_CCs=false.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1120.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1121 — patch vs containment envelope: intruder vertex below z=0 triggers Polyhedral_envelope check
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/envelope-violation)
+- **Sources**: CGAL `PMP.remove_self_intersections` Branch 7 @ line 2161 (*containment-envelope-enforcement*: `if (containment_epsilon > 0) { Polyhedral_envelope envelope(…); … }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: a 2×1 flat rectangular patch in the z=0 plane (4 triangles: tris 0–3) represents the base surface with its containment envelope. An intruder triangle (tri 4) self-intersects tri 0: vertices v6=(0.5,0.3,0.4) and v7=(1.0,0.3,0.4) are above the patch, while v8=(0.75,0.3,-0.4) pokes below z=0. Any repair patch generated for this SI must lie within containment_epsilon of the original surface; the below-z vertex triggers the envelope-rejection branch. Interior patch edges (v1,v4), (v0,v4), (v1,v5) are manifold (n=2); boundary edges are open (n=1).
+- **Reproducer recipe**: v0–v5 tile 2×1 rect; t0=(v0,v1,v4), t1=(v0,v4,v3), t2=(v1,v2,v5), t3=(v1,v5,v4); intruder t4=(v6,v7,v8) with v8 at z=-0.4. assert triangles_self_intersect(0,4); assert interior edges n=2.
+- **Expected kernel behavior**: detect SI (tri 0 vs tri 4); attempt patch repair; construct Polyhedral_envelope from patch; reject candidate repair that places any vertex at z<-epsilon; escalate to next strategy.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,4]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,5] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[6,7] lt=1.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1121.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1122 — local smoothing on SI-bearing CC only: treat_all_CCs=false skips clean CC-B
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/smoothing-local)
+- **Sources**: CGAL `PMP.remove_self_intersections` Branch 8 @ line 2192 (*smoothing-local-vs-global-focus*: `if (self_intersects) { do_smooth = true; } else { do_smooth = treat_all_CCs; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: two connected components. CC-A (tris 0,1,2) contains a self-intersecting intruder (tri 2) whose apex v4 is displaced to z=-0.5 below the flat base patch (tris 0,1 in z=0). CC-B (tris 3,4) is a clean flat quad 25 units away with no SI. Branch 8 conditions smoothing on internal SI presence: CC-A has self_intersects=true so do_smooth=true; CC-B has self_intersects=false so do_smooth=treat_all_CCs (false when treat_all_CCs=false). The two-CC layout ensures both arms of the branch fire in a single mesh.
+- **Reproducer recipe**: CC-A = tri 0=(v0,v1,v2), tri 1=(v1,v3,v2) sharing edge (v1,v2); intruder tri 2=(v4,v5,v6) with v4=(0.5,0.5,-0.5) crossing tri 0. CC-B = quad at y=25 (tris 3,4) with interior edge (v7,v9) n=2.
+- **Expected kernel behavior**: detect internal SI in CC-A; set do_smooth=true for CC-A; skip CC-B smoothing when treat_all_CCs=false; apply vertex smoothing to displace v4 back above z=0.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,2]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `triangle_not_reachable_from target=3 source=0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[7,9] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1122.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1123 — SI adjacent to 90-degree crease edge: constrain_sharp_edges preserves right-angle feature
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/sharp-crease)
+- **Sources**: CGAL `PMP.remove_self_intersections` Branch 9 @ line 2196 (*constraint-preservation-mode*: `if (constrain_sharp_edges) { smooth(…, strong_dihedral_angle); }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: triangles 0 (floor, z=0 plane) and 1 (wall, x=1 plane) share edge (v1,v2) at exactly 90° dihedral — a strong feature crease well above the strong_dihedral_angle threshold (≈150°). Triangle 2 is an intruder with apex v4 at z=-0.4, crossing the floor face (tri 0). Branch 9 fires because the repair region contains the sharp crease edge (v1,v2): constrain_sharp_edges=true locks (v1,v2) during smoothing to prevent the 90° corner from flattening. Outer edges of floor and wall are boundary (n=1).
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(1,1,0); floor t0=(v0,v1,v2); wall apex v3=(1,0.5,1); wall t1=(v1,v2,v3); crease (v1,v2) n=2; intruder t2=(v4,v5,v6) with v4=(0.4,0.4,-0.4), v5=(0.2,0.1,0.5), v6=(0.6,0.1,0.5).
+- **Expected kernel behavior**: detect SI between floor and intruder; identify crease edge (v1,v2) at 90° as a constraint; invoke constrained smoothing that preserves the right-angle corner.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,2]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1123.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1124 — SI under two-crease floor: constrained smoothing stalls, unconstrained fallback fires
+- **Category**: §12.14 mesh defects (sub-class: self-intersection/smoothing-fallback)
+- **Sources**: CGAL `PMP.remove_self_intersections` Branch 10 @ line 2207 (*smoothing-fallback-escalation*: `if (!fixed_by_smoothing) { smooth(…, constrain_sharp_edges=false); }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: a 4-triangle cross-shaped floor (tris 0–3, all in z=0) with two wall triangles (tris 4,5) rising at 90° from interior floor edges. Tri 4 (wall A) shares edge (v1,v4) with the floor; this edge is also shared by floor tris 0 and 2, making it non-manifold (n=3). An intruder triangle (tri 6) has apex v7 at z=-0.5 directly below the floor centre, crossing tri 0. Branch 9 (constrained smoothing) cannot resolve the SI because the non-manifold crease locks all adjacent vertices; Branch 10 fires when fixed_by_smoothing remains false — re-running without sharp-edge constraints allows v7 to be lifted above z=0.
+- **Reproducer recipe**: v0=(0,1,0), v1=(1,0,0), v2=(1,2,0), v3=(2,1,0), v4=(1,1,0) — floor vertices; t0=(v0,v1,v4), t1=(v0,v4,v2), t2=(v1,v3,v4), t3=(v4,v3,v2); wall-A t4=(v1,v4,v5) with v5=(1,0.5,1); wall-B t5=(v4,v2,v6) with v6=(1,1.5,1); intruder t6=(v7,v8,v9) with v7=(0.5,0.7,-0.5), v8=(0.2,0.4,0.5), v9=(0.8,0.4,0.5).
+- **Expected kernel behavior**: detect SI (tri 0 vs tri 6); attempt constrained smoothing (Branch 9); detect fixed_by_smoothing=false due to non-manifold crease; escalate to unconstrained fallback (Branch 10); resolve SI by relaxing constraints.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,6]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=3`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1124.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
