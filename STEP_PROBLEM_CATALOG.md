@@ -41875,3 +41875,201 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=6 e=9 f=3 chi=0`
 - **Fixture path**: mesh-examples/12-14-mesh/Me1182.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1190 — does_polygon_soup_self_intersect duplicate_point_presence: two coincident point entries trigger merge_duplicate_points before intersection test (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: near_coincident_vertex / does-polygon-soup-self-intersect-merge)
+- **Sources**: CGAL PMP `PMP.does_polygon_soup_self_intersect` Branch 1 (*duplicate_point_presence*: `merge_duplicate_points_in_polygon_soup(points, polygons, np)` @ line 40); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing a vertex described by two separate but geometrically identical point entries — v2 and v2b both at (0.5,1,0). The soup has a duplicate point: the same spatial location is indexed twice. Branch 1 (merge_duplicate_points_in_polygon_soup) must run before the self-intersection test can proceed. After merging, the two triangles share a manifold edge and do not self-intersect. V=5 (pre-merge), E=6 raw, F=2, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v2b=(0.5,1,0) [duplicate], v3=(1.5,1,0); t0=(v0,v1,v2), t1=(v2b,v1,v3); vertex_pair_distance_lt pair=[2,3] lt=1e-9; six distinct raw edges; euler V=5,E=6,F=2,chi=1.
+- **Expected kernel behavior**: Branch 1 fires; merge_duplicate_points merges v2 and v2b; after merge the soup is a 2-triangle manifold strip; does_polygon_soup_self_intersect returns false.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[2, 3] lt=1e-09`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1, 2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1, 3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1, 4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3, 4] n=1`
+- **Mesh assertion**: `euler_characteristic v=5 e=6 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1190.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1191 — does_polygon_soup_self_intersect polygon_type_mixed: quad polygon forces triangulate_polygons call before intersection test; nb_polygons != nb_triangles (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: self_intersection / does-polygon-soup-self-intersect-triangulate)
+- **Sources**: CGAL PMP `PMP.does_polygon_soup_self_intersect` Branch 2 (*polygon_type_mixed*: `if (nb_polygons != nb_triangles) triangulate_polygons(...)` @ line 45); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A polygon soup where one polygon is a quadrilateral (4 vertices) rather than a triangle. The soup has 1 quad + 1 triangle: nb_polygons=2, nb_triangles=1, so nb_polygons != nb_triangles fires Branch 2. The quad (v0,v1,v2,v3) occupies the XY plane; the triangle (v4,v5,v6) is far away at z=2 and does not intersect. After triangulate_polygons and the intersection check, the result is no self-intersection. V=7, E=8, F=3, chi=2.
+- **Reproducer recipe**: v0-v3 at z=0 forming a quad, v4-v6 at z=2 forming a separate triangle; two disconnected components; euler V=7,E=8,F=3,chi=2.
+- **Expected kernel behavior**: Branch 2 fires; triangulate_polygons converts quad to two triangles; pairwise check confirms no intersection; returns false.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1, 2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2, 3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4, 5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4, 6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5, 6] n=1`
+- **Mesh assertion**: `triangles_do_not_intersect triangles=[0, 2]`
+- **Mesh assertion**: `triangles_do_not_intersect triangles=[1, 2]`
+- **Mesh assertion**: `euler_characteristic v=7 e=8 f=3 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1191.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1192 — does_polygon_soup_self_intersect intersection_detection: two crossing triangles trigger triangle_soup_self_intersections returning non-empty; does_self_intersect=true (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: self_intersection / does-polygon-soup-self-intersect-detect)
+- **Sources**: CGAL PMP `PMP.does_polygon_soup_self_intersect` Branch 3 (*intersection_detection*: `return !triangle_soup_self_intersections(points, polygons, out, np).empty()` @ line 50); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles that cross each other in 3D. T0 lies in the XZ plane (y=0); T1 lies in the YZ plane (x=0); they share a spatial apex point (indexed separately as v2 and v5, both at (0,0,1)) and their interiors pierce each other near the origin. Branch 3 fires when triangle_soup_self_intersections returns the crossing pair, making the non-empty check true, so does_polygon_soup_self_intersect returns true. V=6, E=6, F=2.
+- **Reproducer recipe**: v0=(-1,0,0), v1=(1,0,0), v2=(0,0,1); v3=(0,-1,0), v4=(0,1,0), v5=(0,0,1); t0=(v0,v1,v2), t1=(v3,v4,v5); triangles_self_intersect; apex coincident pair; euler V=6,E=6,F=2,chi=2.
+- **Expected kernel behavior**: Branch 3 fires; triangle_soup_self_intersections returns non-empty pair {(t0,t1)}; function returns true.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0, 1]`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[2, 5] lt=1e-09`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1, 2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3, 4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3, 5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4, 5] n=1`
+- **Mesh assertion**: `euler_characteristic v=6 e=6 f=2 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1192.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1193 — is_polygon_soup_a_polygon_mesh duplicate_vertex_in_polygon: polygon (v0,v1,v0) has repeated vertex index; is_polygon_soup_a_polygon_mesh returns false (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: degenerate_triangle / is-polygon-soup-a-polygon-mesh-degenerate)
+- **Sources**: CGAL PMP `PMP.is_polygon_soup_a_polygon_mesh` Branch 1 (*duplicate_vertex_in_polygon*: `if (s.find(vid) == s.end()) ... else return false;` @ line 210); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A degenerate triangle where two vertex indices are identical — triangle (v0, v1, v0). The polygon has a repeated vertex (v0 at indices 0 and 2), making it degenerate (collapsed to a line segment, zero area). is_polygon_soup_a_polygon_mesh encounters this in the set-membership check (the second occurrence of v0 is already in the seen-set) and returns false immediately (Branch 1). A valid triangle (v0,v1,v2) is also present. V=3, E=3, F=2.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0); t_deg=(v0,v1,v0) — repeated v0, area=0; t_ok=(v0,v1,v2); euler V=3,E=3,F=2,chi=2.
+- **Expected kernel behavior**: Branch 1 fires when second occurrence of v0 is found in per-polygon seen-set; function returns false without checking further polygons.
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-09`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1, 2] n=1`
+- **Mesh assertion**: `euler_characteristic v=3 e=3 f=2 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1193.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1194 — is_polygon_soup_a_polygon_mesh non_manifold_edge: three triangles claim directed edge v0→v1; second encounter fires marked_edges guard; returns false (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: non_manifold_edge / is-polygon-soup-a-polygon-mesh-nonmanifold)
+- **Sources**: CGAL PMP `PMP.is_polygon_soup_a_polygon_mesh` Branch 2 (*non_manifold_edge*: `if (marked_edges.count(e) != 0) return false; else marked_edges.insert(e)` @ line 220); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangles all claiming the same directed edge v0→v1: t0=(v0,v1,v2), t1=(v0,v1,v3), t2=(v0,v1,v4). Each polygon adds directed edge (0,1) to the marking set. When the second triangle with directed edge v0→v1 is processed, marked_edges already contains (0,1). Branch 2 fires and the function returns false. V=5, E=7, F=3, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,-1,0), v4=(0.5,0,1); three triangles all sharing directed edge v0→v1; edge_shared n=3; euler V=5,E=7,F=3,chi=1.
+- **Expected kernel behavior**: Branch 2 fires on second encounter of directed edge (0,1) in marked_edges; function returns false (not a polygon mesh).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 1] n=3`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1, 2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1, 3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1, 4] n=1`
+- **Mesh assertion**: `euler_characteristic v=5 e=7 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1194.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1195 — is_polygon_soup_a_polygon_mesh orientation_consistency: two adjacent triangles both traverse edge v1→v2 in same direction; fill_edge_map returns non-zero; returns false (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: non_manifold_edge / is-polygon-soup-a-polygon-mesh-orientation)
+- **Sources**: CGAL PMP `PMP.is_polygon_soup_a_polygon_mesh` Branch 3 (*orientation_consistency*: `if (fill_edge_map(points, polygons) != 0) return false` @ line 227); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing edge v1-v2 but both oriented the same way (both CCW in the XY plane) — both traverse directed edge v1→v2. fill_edge_map sees directed edge (1,2) twice (from both t0 and t1), detecting a non-manifold directed edge and returning non-zero. Branch 3 fires and the function returns false. Adjacent normals are parallel (inconsistent winding). V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1.5,1,0); t0=(v0,v1,v2), t1=(v3,v1,v2) — both CCW; shared edge [1,2] n=2; adjacent_triangles_inconsistent_winding; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 3 fires; fill_edge_map detects directed edge (1,2) appearing twice; returns non-zero; is_polygon_soup_a_polygon_mesh returns false.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1, 2] n=2`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0, 1]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1, 3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2, 3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1195.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1196 — keep_largest_connected_components component_count_mismatch: desired_num=3 > nb_components=2; Branch 1 fires returning 0 removed components (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: self_intersection / keep-largest-connected-components-count-mismatch)
+- **Sources**: CGAL PMP `PMP.keep_largest_connected_components` Branch 1 (*component_count_mismatch*: `if (nb_components <= nb_components_to_keep) return 0;` @ line 401); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A mesh with exactly 2 connected components (two separate triangles at different positions), and a caller that requests keeping 3 or more — more than exist. nb_components=2 <= nb_components_to_keep=3, so Branch 1 fires immediately, returning 0 (no components removed, mesh unchanged). V=6, E=6, F=2, chi=2 (two separate discs).
+- **Reproducer recipe**: Component A: t0=(v0,v1,v2) at origin; Component B: t1=(v3,v4,v5) at x=10; triangle_not_reachable_from t1 from t0; euler V=6,E=6,F=2,chi=2.
+- **Expected kernel behavior**: Branch 1 fires; nb_components=2 <= 3; returns 0 immediately; mesh topology unchanged.
+- **Mesh assertion**: `triangle_not_reachable_from target=1 source=0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1, 2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3, 4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3, 5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4, 5] n=1`
+- **Mesh assertion**: `euler_characteristic v=6 e=6 f=2 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1196.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1197 — keep_largest_connected_components component_size_criterion: three components (4-tri, 2-tri, 1-tri); small/medium components marked for removal via face_size_pmap < threshold (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: self_intersection / keep-largest-connected-components-size-criterion)
+- **Sources**: CGAL PMP `PMP.keep_largest_connected_components` Branch 2 (*component_size_criterion*: `if (face_size_pmap[cc] < threshold) components_to_remove.insert(cc)` @ line 410); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A mesh with three connected components of different sizes: Component A has 4 triangles (largest fan), Component B has 2 triangles (medium strip), Component C has 1 triangle (smallest isolated). When keep_largest_connected_components(mesh, 1) is called, Branch 2 fires twice: once for Component C (size=1 < threshold) and once for Component B (size=2 < threshold), marking both for removal. Only Component A is kept. V=12, E=16, F=7, chi=3.
+- **Reproducer recipe**: Component A: 4-tri fan around v0; Component B: 2-tri strip at x=10; Component C: 1-tri isolated at x=20; all disconnected; euler V=12,E=16,F=7,chi=3.
+- **Expected kernel behavior**: Branch 2 fires for Components B and C; face_size_pmap[B]=2 < threshold and face_size_pmap[C]=1 < threshold; both inserted into components_to_remove.
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Mesh assertion**: `triangle_not_reachable_from target=6 source=0`
+- **Mesh assertion**: `triangle_not_reachable_from target=6 source=4`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1, 2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2, 3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3, 4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1, 4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5, 6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5, 7] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[6, 7] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[6, 8] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[7, 8] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[9, 10] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[9, 11] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[10, 11] n=1`
+- **Mesh assertion**: `euler_characteristic v=12 e=16 f=7 chi=3`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1197.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1198 — keep_largest_connected_components dry_run_mode: dry_run=true returns count of removable components without modifying mesh; 3 components, keep 1 largest (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: self_intersection / keep-largest-connected-components-dry-run)
+- **Sources**: CGAL PMP `PMP.keep_largest_connected_components` Branch 3 (*dry_run_mode*: `if (dry_run) return nb_removed;` @ line 419); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Same three-component topology as Me1197 (4-tri, 2-tri, 1-tri). Calling keep_largest_connected_components(mesh, 1, np::dry_run(true)) should return 2 (the two smaller components would be removed) without actually removing them. Branch 3 fires at the dry-run guard, skipping the actual remove_connected_components call. The mesh topology is unchanged: all 7 triangles and 12 vertices remain. V=12, E=16, F=7, chi=3.
+- **Reproducer recipe**: Same topology as Me1197; dry_run=true path: all 7 triangles present after call; triangle_not_reachable_from assertions confirm three separate components remain.
+- **Expected kernel behavior**: Branch 3 fires; function returns 2 (would-remove count) without modifying mesh; all 12 vertices and 7 triangles remain intact.
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Mesh assertion**: `triangle_not_reachable_from target=6 source=0`
+- **Mesh assertion**: `triangle_not_reachable_from target=6 source=4`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1, 2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2, 3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3, 4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1, 4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5, 6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5, 7] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[6, 7] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[6, 8] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[7, 8] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[9, 10] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[9, 11] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[10, 11] n=1`
+- **Mesh assertion**: `euler_characteristic v=12 e=16 f=7 chi=3`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1198.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1199 — keep_largest_connected_components output_iterator_presence: output_iterator records removed component ID; 2-component mesh, small component removed and its ID captured (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: self_intersection / keep-largest-connected-components-output-iterator)
+- **Sources**: CGAL PMP `PMP.keep_largest_connected_components` Branch 4 (*output_iterator_presence*: `if (out != emptyset_iterator()) *out++ = cc_id;` @ line 421); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A mesh with 2 connected components: Component A is a 3-triangle fan (large, kept); Component B is a 1-triangle isolated (small, removed). When the caller provides an output iterator (not the default emptyset_iterator), Branch 4 fires for Component B and writes its component ID into the iterator, allowing the caller to track which components were deleted. V=7, E=9, F=4, chi=2.
+- **Reproducer recipe**: Component A: 3-tri fan v0-v3 (kept); Component B: 1-tri at x=10 (removed); isolated_vertex v4 signals component B membership; triangle_not_reachable_from t3 from t0; euler V=7,E=9,F=4,chi=2.
+- **Expected kernel behavior**: Branch 4 fires for small component B; *out++=B_id records removed component ID; Component A (3 triangles) remains; Component B (1 triangle) is deleted.
+- **Mesh assertion**: `triangle_not_reachable_from target=3 source=0`
+- **Mesh assertion**: `isolated_vertex vertex=4`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0, 3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1, 2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2, 3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1, 3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4, 5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4, 6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5, 6] n=1`
+- **Mesh assertion**: `euler_characteristic v=7 e=9 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1199.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
