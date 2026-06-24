@@ -1,0 +1,8 @@
+# Me523: iterativeEdgeSwaps swap_improves_angle: thin non-Delaunay quad; flip of long diagonal (v2,v3) improves min angle (Branch 4)
+# defect_class: mesh_optimization
+v 0 0 0
+v 4 0 0
+v 2 3 0
+v 2 -3 0
+f 1 3 4
+f 3 2 4

@@ -1,0 +1,8 @@
+# Me524: iterativeEdgeSwaps swap_norm_alignment: non-planar fold; adjacent triangles have anti-parallel normals, swap rejected (Branch 5)
+# defect_class: mesh_optimization
+v 0 1 0
+v 0 -1 0
+v 1 0 1
+v -1 0 -1
+f 1 2 3
+f 2 4 1

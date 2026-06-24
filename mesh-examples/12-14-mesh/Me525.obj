@@ -1,0 +1,11 @@
+# Me525: iterativeEdgeSwaps convergence_fail: 4-triangle symmetric fan oscillates swap queue; totits reaches 10 without convergence (Branch 6)
+# defect_class: mesh_optimization
+v 0 0 0
+v 2 0 0
+v 2 2 0
+v 0 2 0
+v 1 1 0
+f 1 2 5
+f 2 3 5
+f 3 4 5
+f 4 1 5
