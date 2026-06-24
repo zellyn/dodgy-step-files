@@ -40017,4 +40017,248 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
 - **Mesh assertion**: `euler_characteristic v=5 e=7 f=3 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me944.mesh.json
+### Me950 — Basic_TMesh.checkGeometry memory_allocation_failure: near-coincident vertex pair v0/v6; varr==NULL alloc guard (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.checkGeometry / coincident-vertex-alloc-guard)
+- **Sources**: MeshFix `Basic_TMesh.checkGeometry` Branch 1 (*memory_allocation_failure*: `varr == NULL`; vertex sort buffer alloc fails, skip coincident-vertex scan); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three-triangle mesh where vertex v0=(0,0,0) and vertex v6=(5e-8,0,0) are near-coincident (distance 5e-8 < 1e-7) but belong to separate triangles with no shared edge. Branch 1 fires when the sort buffer for vertex coordinates cannot be allocated — coincident-vertex scan is skipped entirely. The same geometry would be caught by Branch 2 (duplicate_vertices) if allocation succeeds. This is the alloc-guard placeholder for the 7-branch Basic_TMesh.checkGeometry variant.
+- **Reproducer recipe**: t0=(v0,v1,v2) with v0=(0,0,0); t1=(v3,v4,v5) clean; t2=(v6,v7,v8) with v6=(5e-8,0,0); assert vertex_pair_distance_lt(v0,v6,1e-7) and vertex_pair_no_shared_triangle(v0,v6).
+- **Expected kernel behavior**: Branch 1 fires on alloc failure; near-coincident vertex pair (v0,v6) would be flagged as duplicate_vertices (Branch 2) if alloc succeeds.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,6] lt=1e-07`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[0,6]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me950.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me951 — Basic_TMesh.checkGeometry duplicate_vertices: v0==v3 at (0,0,0) in separate triangles, no edge (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.checkGeometry / coincident-vertices-no-edge)
+- **Sources**: MeshFix `Basic_TMesh.checkGeometry` Branch 2 (*duplicate_vertices*: `xyzCompare` detects coincident pair, `getEdge(v2)==null`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two vertices v0 and v3 both at (0,0,0) in separate triangles with no shared edge or half-edge. In the sorted vertex array, these entries are adjacent with distance 0. Since getEdge(v3) from v0 returns null (no triangle contains both), a warning is logged and the scan continues — Branch 2 fires without early return. The function records the defect and moves on.
+- **Reproducer recipe**: t0=(v0,v1,v2) with v0=(0,0,0); t1=(v3,v4,v5) with v3=(0,0,0); no triangle references both v0 and v3; assert vertex_pair_distance_lt(v0,v3,1e-12) and vertex_pair_no_shared_triangle(v0,v3).
+- **Expected kernel behavior**: Branch 2 fires; defect logged as 'detected coincident vertices'; getEdge returns null; scan continues without early return.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,3] lt=1e-12`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[0,3]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me951.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me952 — Basic_TMesh.checkGeometry duplicate_vertex_with_edge: v0==v1 at (1,0,0), zero-length edge (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.checkGeometry / coincident-vertices-edge-present)
+- **Sources**: MeshFix `Basic_TMesh.checkGeometry` Branch 3 (*duplicate_vertex_with_edge*: `getEdge(v2)!=null`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Degenerate triangle t1 where vertices v0=(1,0,0) and v1=(1,0,0) are exactly coincident AND connected by a half-edge. Edge (v0,v1) has length 0, and the triangle has area 0. When the sorted vertex array finds v0 and v1 adjacent with distance 0, getEdge(v1) from v0 returns non-null (because t1 references both). checkGeometry returns v0 immediately as the critical defect — early return, most severe path. Clean control triangle t0 placed first for predictable indexing.
+- **Reproducer recipe**: t0=(v3,v4,v5) clean control; t1=(v0,v1,v2) with v0=v1=(1,0,0); edge (v0,v1) exists in t1 with length 0; assert vertex_pair_distance_lt(v0,v1,1e-12), triangle_area_lt(t1,1e-12), edge_shared(v0,v1,1).
+- **Expected kernel behavior**: Branch 3 fires; defect logged as 'and there is an edge connecting them'; function returns v0 immediately as defect vertex (most severe path, early return).
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[3,4] lt=1e-12`
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-12`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me952.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me953 — Basic_TMesh.checkGeometry edge_alloc_failure: coincident edge pair; evarr==NULL alloc guard (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.checkGeometry / coincident-edges-alloc-guard)
+- **Sources**: MeshFix `Basic_TMesh.checkGeometry` Branch 4 (*edge_alloc_failure*: `evarr==NULL`; edge sort buffer alloc fails, skip coincident-edge scan); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two isolated triangles where edge (v0,v1) and edge (v3,v4) are spatially coincident (v0≡v3 and v1≡v4 by coordinate) but distinct vertex indices. Branch 4 fires when the sort buffer for edge coordinates cannot be allocated — coincident-edge scan is skipped. The same geometry would trigger Branch 5 (duplicate_edges) if allocation succeeds. This is the alloc-guard placeholder for the 7-branch Basic_TMesh.checkGeometry variant.
+- **Reproducer recipe**: t0=(v0,v1,v2) with v0=(0,0,0), v1=(1,0,0); t1=(v3,v4,v5) with v3=(0,0,0), v4=(1,0,0), v5=(0.5,-1,0); assert vertex pair distances < 1e-12 and edge_pair_coincident.
+- **Expected kernel behavior**: Branch 4 fires on alloc failure; coincident edge pair would be flagged as duplicate_edges (Branch 5) if alloc succeeds.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,3] lt=1e-12`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-12`
+- **Mesh assertion**: `edge_pair_coincident edge_a=[0,1] edge_b=[3,4]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me953.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me954 — Basic_TMesh.checkGeometry duplicate_edges: edge (v0,v1) spatially coincident with (v3,v4) (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.checkGeometry / coincident-edges)
+- **Sources**: MeshFix `Basic_TMesh.checkGeometry` Branch 5 (*duplicate_edges*: lexicographic edge comparison detects colocated edges, log warning, update ret); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two isolated triangles t0=(v0,v1,v2) and t1=(v3,v4,v5) where v0≡v3=(0,0,0) and v1≡v4=(1,0,0) by coordinate but different vertex indices. After sorting all edges by endpoint coordinates, entries for (v0,v1) and (v3,v4) are adjacent with difference 0. checkGeometry logs 'detected coincident edges', marks the edge as defective, and continues (no early return). This is the successful-detection Branch 5 in the 7-branch Basic_TMesh.checkGeometry variant.
+- **Reproducer recipe**: t0=(v0,v1,v2) with v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0); t1=(v3,v4,v5) with v3=(0,0,0), v4=(1,0,0), v5=(0.5,-1,0); assert vertex pair distances < 1e-12 and edge_pair_coincident.
+- **Expected kernel behavior**: Branch 5 fires; defect logged as 'detected coincident edges'; ret updated; scan continues.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,3] lt=1e-12`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-12`
+- **Mesh assertion**: `edge_pair_coincident edge_a=[0,1] edge_b=[3,4]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me954.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me955 — Basic_TMesh.checkGeometry degenerate_angle_180_degrees: collinear triangle, interior angle PI at middle vertex (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.checkGeometry / degenerate-triangle-flat-angle)
+- **Sources**: MeshFix `Basic_TMesh.checkGeometry` Branch 6 (*degenerate_angle_180_degrees*: `getDAngle(v1)==0 || getDAngle(v1)==M_PI`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Single collinear triangle where p0=(0,0,0), p1=(1,0,0) [middle], p2=(2,0,0) are collinear along the X-axis. The interior angle at p1 (middle vertex) is exactly π (180°): the two edges from p1 to p0 and p2 are anti-parallel. Area = 0. checkGeometry detects getDAngle(p1)==M_PI and returns p1 as defective immediately. Note: the 7-branch Basic_TMesh.checkGeometry combines the 0° and π cases into a single branch (unlike the 8-branch variant which separates them).
+- **Reproducer recipe**: p0=(0,0,0), p1=(1,0,0), p2=(2,0,0); t0=(p0,p1,p2); assert triangle_area_lt(t0,1e-12); assert vertex_on_edge(p1,p0,p2).
+- **Expected kernel behavior**: Branch 6 fires; getDAngle(p1)==PI detected; defect logged as 'degenerate triangle detected'; function returns p1 as defect vertex (early return).
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-12`
+- **Mesh assertion**: `vertex_on_edge vertex=1 edge=[0,2]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me955.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me956 — Basic_TMesh.checkGeometry dihedral_angle_180: adjacent coplanar triangles sharing edge (v1,v2), dihedral = PI (Branch 7)
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.checkGeometry / overlapping-triangles-dihedral)
+- **Sources**: MeshFix `Basic_TMesh.checkGeometry` Branch 7 (*dihedral_angle_180*: `getDAngle(e->t2)==M_PI`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four vertices in the XY plane forming a planar quad. Triangles t0=(v0,v1,v2) and t1=(v2,v1,v3) share interior edge (v1,v2) and both have normal +Z (counter-clockwise winding). The dihedral angle between them is exactly π (180°) — they are coplanar and fold flat in the same direction, meaning they overlap when viewed orthogonally. checkGeometry detects getDAngle(e->t2)==M_PI and returns edge->v1 as the defective vertex immediately. Euler: V=4, E=5, F=2, chi=1 (open disk).
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(1,1,0); t0=(v0,v1,v2), t1=(v2,v1,v3); edge (v1,v2) shared by 2 triangles; both normals +Z → dihedral = PI.
+- **Expected kernel behavior**: Branch 7 fires; getDAngle(e->t2)==PI detected; defect logged as 'overlapping triangles detected'; function returns edge->v1 as defect vertex (early return).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `adjacent_triangles_normal_dot_gt triangles=[0,1] threshold=0.99`
+- **Fixture path**: mesh-examples/12-14-mesh/Me956.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me960 — CreateUnorientedTriangle_e1_slot_check: e1's first free t-slot (t1 or t2) assigned without orientation
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.CreateUnorientedTriangle / e1-slot-check)
+- **Sources**: MeshFix `Basic_TMesh.CreateUnorientedTriangle` Branch 1 (*e1_slot_check*: `if (e1->t1 == NULL) at1 = &(e1->t1); else if (e1->t2 == NULL) at1 = &(e1->t2)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangles sharing edges that exercise both the primary (t1 NULL) and else-if (t2 NULL) paths of Branch 1 for e1. t0=(v0,v1,v2) and t1=(v1,v3,v2) fill both slots of edge (v1,v2); tf=(v0,v2,v3) uses a fresh e1=(v0,v2) via the primary path. Unlike CreateTriangle no orientation commonVertex test is performed — slot assignment depends solely on availability.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(3,2,0); t0=(v0,v1,v2), t1=(v1,v3,v2), tf=(v0,v2,v3). Assert edge(v1,v2) n=2, edge(v0,v2) n=2, edge(v2,v3) n=2, boundary edges n=1.
+- **Expected kernel behavior**: Branch 1 fires for each creation; t1 path used when slot free, t2 path used when t1 occupied; no orientation gating.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me960.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me961 — CreateUnorientedTriangle_e2_slot_check: e2's first free t-slot (t1 or t2) assigned without orientation
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.CreateUnorientedTriangle / e2-slot-check)
+- **Sources**: MeshFix `Basic_TMesh.CreateUnorientedTriangle` Branch 2 (*e2_slot_check*: `if (e2->t1 == NULL) at2 = &(e2->t1); else if (e2->t2 == NULL) at2 = &(e2->t2)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing diagonal (v0,v2) of a rectangle. The first creation uses t1 (primary path for Branch 2 on e2); the second uses t2 (else-if path, since t1 is occupied). Euler: V=4, E=5, F=2, chi=1. No orientation check — slot-first assignment only.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(2,2,0), v3=(0,2,0); t0=(v0,v1,v2), t1=(v0,v2,v3). Assert edge(v0,v2) n=2, boundary edges n=1; euler v=4 e=5 f=2 chi=1.
+- **Expected kernel behavior**: Branch 2 fires; t1 assigned on first creation, t2 on second; diagonal (v0,v2) becomes interior.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me961.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me962 — CreateUnorientedTriangle_e3_slot_check: e3's first free t-slot (t1 or t2) assigned without orientation
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.CreateUnorientedTriangle / e3-slot-check)
+- **Sources**: MeshFix `Basic_TMesh.CreateUnorientedTriangle` Branch 3 (*e3_slot_check*: `if (e3->t1 == NULL) at3 = &(e3->t1); else if (e3->t2 == NULL) at3 = &(e3->t2)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangles forming a closed fan around center v0=(1,1,0). Each creation exercises Branch 3's e3 slot logic: fresh spokes use the t1 path; a shared spoke (already t1 occupied) uses the t2 path. All radial spokes become interior (n=2). Euler: V=4, E=6, F=3, chi=1.
+- **Reproducer recipe**: v0=(1,1,0), v1=(0,0,0), v2=(2,0,0), v3=(2,2,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v1). Assert spokes n=2, rim n=1; euler v=4 e=6 f=3 chi=1.
+- **Expected kernel behavior**: Branch 3 fires for each creation; t1 path on fresh spokes, t2 path on shared spokes.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me962.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me963 — CreateUnorientedTriangle_unoriented_creation: newTriangle(e1,e2,e3) without orientation check
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.CreateUnorientedTriangle / unoriented-triangle-creation)
+- **Sources**: MeshFix `Basic_TMesh.CreateUnorientedTriangle` Branch 4 (*unoriented_triangle_creation*: `tt = newTriangle(e1,e2,e3)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Single freshly created unoriented triangle tf=(v0,v1,v2) with all three boundary edges (n=1). Unlike CreateTriangle (Me353), no winding/orientation validation precedes the newTriangle call. The triangle has area≈1.732 (equilateral, side=2). All three edges have one slot occupied (t1 primary path from Branch 1-3).
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,1.732,0); tf=(v0,v1,v2). All edges n=1; triangle_area_lt(tf, 5.0).
+- **Expected kernel behavior**: Branch 4 fires; tt object instantiated from e1,e2,e3 without orientation check; all edges n=1.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=5.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me963.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me964 — CreateUnorientedTriangle_triangle_adjacency_assignment: *at1=*at2=*at3=tt links edge slots to triangle
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.CreateUnorientedTriangle / adjacency-assignment)
+- **Sources**: MeshFix `Basic_TMesh.CreateUnorientedTriangle` Branch 5 (*triangle_adjacency_assignment*: `*at1 = *at2 = *at3 = tt`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing diagonal (v0,v2) of a 3×3 square. First CreateUnorientedTriangle wrote t0 into e_diag->t1; second wrote t1 into e_diag->t2. The n=2 on the diagonal confirms both *at= assignments fired through the unoriented code path. Euler: V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(3,0,0), v2=(3,3,0), v3=(0,3,0); t0=(v0,v1,v2), t1=(v0,v2,v3). edge(v0,v2) n=2; boundary edges n=1; euler v=4 e=5 f=2 chi=1.
+- **Expected kernel behavior**: Branch 5 fires for each creation; diagonal edge fully occupied after both *at= assignments.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me964.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me965 — CreateUnorientedTriangle_mesh_list_append: T.appendHead(tt) inserts triangle into list T
+- **Category**: §12.14 mesh defects (sub-class: Basic_TMesh.CreateUnorientedTriangle / mesh-list-append)
+- **Sources**: MeshFix `Basic_TMesh.CreateUnorientedTriangle` Branch 6 (*mesh_list_append*: `T.appendHead(tt)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four fan triangles around center v0=(1,1,0), each added by CreateUnorientedTriangle's T.appendHead call. All four appear in the mesh list (Euler: V=5, E=8, F=4, chi=1). Interior fan spokes (n=2) prove each triangle is fully registered in T. Unlike Me355 (CreateTriangle fan of 3), this uses 4 triangles to cover the unoriented path distinctly.
+- **Reproducer recipe**: v0=(1,1,0), v1=(0,0,0), v2=(2,0,0), v3=(2,2,0), v4=(0,2,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v4), t3=(v0,v4,v1). Spokes n=2; rim n=1; euler v=5 e=8 f=4 chi=1.
+- **Expected kernel behavior**: Branch 6 fires 4 times; all four triangles in T; mesh iteration reaches all F=4 faces.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `euler_characteristic v=5 e=8 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me965.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me970 — deselectConnectedComponent_seed_enqueue: todo.appendHead(t0) initializes BFS deselection from seed triangle (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: deselectConnectedComponent / BFS-init)
+- **Sources**: MeshFix `Basic_TMesh.deselectConnectedComponent` Branch 1 (*seed_enqueue*: `todo.appendHead(t0)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 3-triangle connected strip (v0-v4; t0=(v0,v1,v3), t1=(v1,v4,v3), t2=(v1,v2,v4)) where all triangles are selected. Calling deselectConnectedComponent(t0) unconditionally enqueues t0 via todo.appendHead(t0) — Branch 1 fires. The BFS then expands to t1 and t2 via the interior edges (v1,v3) and (v1,v4), deselecting all three. Interior edges each n=2; five boundary edges each n=1. Euler: V=5, E=7, F=3, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0), v3=(0.5,1,0), v4=(1.5,1,0); t0=(v0,v1,v3) seed, t1=(v1,v4,v3), t2=(v1,v2,v4); interior (v1,v3) n=2, (v1,v4) n=2; euler V=5,E=7,F=3,chi=1.
+- **Expected kernel behavior**: Branch 1 fires; todo.appendHead(t0) enqueues seed; BFS proceeds to deselect all 3 connected triangles.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `euler_characteristic v=5 e=7 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me970.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me971 — deselectConnectedComponent_visited_triangle_check: IS_VISITED(t) guard skips unselected neighbor; only t0+t1 deselected (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: deselectConnectedComponent / BFS-visited-check)
+- **Sources**: MeshFix `Basic_TMesh.deselectConnectedComponent` Branch 2 (*visited_triangle_check*: `if (IS_VISITED(t))`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 3-triangle connected strip where t0 and t1 are selected (IS_VISITED=true) but t2 is NOT selected (IS_VISITED=false). BFS starts at seed t0, expands to t1 (selected — check passes), then sees t2 (not selected — IS_VISITED check fails, skip). Only t0 and t1 are deselected (ns=2); t2 remains untouched. Interior (v1,v3) n=2, (v1,v4) n=2. Euler: V=5, E=7, F=3, chi=1.
+- **Reproducer recipe**: same strip as Me970; t0=(v0,v1,v3) selected, t1=(v1,v4,v3) selected, t2=(v1,v2,v4) NOT selected; BFS skips t2 because IS_VISITED(t2)==false.
+- **Expected kernel behavior**: Branch 2 fires for each dequeued triangle; t2 is visited but IS_VISITED is false so it is skipped; ns=2.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `euler_characteristic v=5 e=7 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me971.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me972 — deselectConnectedComponent_neighbor_t1_dequeue: t1 selected + edge (v0,v2) not sharp → todo.appendHead(t1) fires Branch 3
+- **Category**: §12.14 mesh defects (sub-class: deselectConnectedComponent / BFS-neighbor-t1)
+- **Sources**: MeshFix `Basic_TMesh.deselectConnectedComponent` Branch 3 (*neighbor_t1_dequeue*: `if (t1 != NULL && IS_VISITED(t1) && !IS_SHARPEDGE(t->e1)) todo.appendHead(t1)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two adjacent selected triangles sharing interior edge (v0,v2): t0=(v0,v1,v2) seed, t1=(v0,v2,v3) neighbor. When the BFS processes t0, it checks e1-neighbor t1 — non-NULL, IS_VISITED=true, edge not sharp — so todo.appendHead(t1) fires (Branch 3). Both triangles are deselected (ns=2). Interior edge (v0,v2) n=2; four boundary edges n=1. Euler: V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(-0.5,1,0); t0=(v0,v1,v2) seed, t1=(v0,v2,v3); interior (v0,v2) n=2; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 3 fires; t1 enqueued via todo.appendHead; ns=2 after deselecting both.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me972.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me973 — deselectConnectedComponent_neighbor_t2_dequeue: t2 selected + edge (v0,v3) not sharp → todo.appendHead(t2) fires Branch 4
+- **Category**: §12.14 mesh defects (sub-class: deselectConnectedComponent / BFS-neighbor-t2)
+- **Sources**: MeshFix `Basic_TMesh.deselectConnectedComponent` Branch 4 (*neighbor_t2_dequeue*: `if (t2 != NULL && IS_VISITED(t2) && !IS_SHARPEDGE(t->e2)) todo.appendHead(t2)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 3-triangle fan sharing hub v0=(0,0,0): t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v1). All three are selected. BFS from seed t0 checks e1-neighbor t1 (Branch 3 fires) and e2-neighbor t2 (Branch 4 fires — t2 non-NULL, selected, edge not sharp). All three triangles deselected (ns=3). Three interior spoke edges n=2; three boundary rim edges n=1. Euler: V=4, E=6, F=3, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(-1,0,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v1); spokes (v0,v1),(v0,v2),(v0,v3) each n=2; euler V=4,E=6,F=3,chi=1.
+- **Expected kernel behavior**: Branch 4 fires when BFS processes t0 and enqueues t2 via e2; ns=3.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me973.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me974 — deselectConnectedComponent_neighbor_t3_dequeue: t3 selected + edge (v1,v2) not sharp → todo.appendHead(t3) fires Branch 5
+- **Category**: §12.14 mesh defects (sub-class: deselectConnectedComponent / BFS-neighbor-t3)
+- **Sources**: MeshFix `Basic_TMesh.deselectConnectedComponent` Branch 5 (*neighbor_t3_dequeue*: `if (t3 != NULL && IS_VISITED(t3) && !IS_SHARPEDGE(t->e3)) todo.appendHead(t3)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 4-triangle mesh with central vertex v2=(1,1,0). All four triangles are selected. BFS from seed t0=(v0,v1,v2) checks e3-neighbor t3=(v2,v3,v5) across edge (v1,v2) — non-NULL, selected, not sharp — Branch 5 fires. All 4 triangles deselected (ns=4). Interior shared edges: (v1,v2) n=2, (v0,v2) n=2, (v2,v3) n=2. Boundary edges n=1. Euler: V=6, E=9, F=4, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,1,0), v3=(3,1,0), v4=(0,2,0), v5=(2,2,0); t0=(v0,v1,v2) seed, t1=(v1,v3,v2), t2=(v0,v2,v4), t3=(v2,v3,v5); interior (v1,v2) n=2, (v0,v2) n=2, (v2,v3) n=2; euler V=6,E=9,F=4,chi=1.
+- **Expected kernel behavior**: Branch 5 fires when BFS processes t0 and enqueues t3 via e3; ns=4.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `euler_characteristic v=6 e=9 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me974.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me975 — deselectConnectedComponent_unmark_and_count: UNMARK_VISIT(t); ns++ fires 4 times across all-selected 4-triangle patch (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: deselectConnectedComponent / unmark-and-count)
+- **Sources**: MeshFix `Basic_TMesh.deselectConnectedComponent` Branch 6 (*unmark_and_count*: `UNMARK_VISIT(t); ns++`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 4-triangle patch sharing hub v4=(1,1,0), all four triangles selected. BFS from seed t0=(v0,v1,v4) visits all 4 triangles; each time UNMARK_VISIT(t) clears the VISITED bit and ns++ increments. Branch 6 fires 4 times; deselectConnectedComponent returns ns=4. Interior spokes (v0,v4), (v1,v4), (v2,v4) each n=2; six boundary edges n=1. Euler: V=6, E=9, F=4, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0), v3=(0,1,0), v4=(1,1,0), v5=(2,1,0); t0=(v0,v1,v4) seed, t1=(v0,v4,v3), t2=(v1,v2,v4), t3=(v2,v5,v4); spokes (v0,v4),(v1,v4),(v2,v4) each n=2; euler V=6,E=9,F=4,chi=1.
+- **Expected kernel behavior**: Branch 6 fires once per triangle; UNMARK_VISIT clears selection bit; ns incremented for each; returns ns=4.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
+- **Mesh assertion**: `euler_characteristic v=6 e=9 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me975.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder

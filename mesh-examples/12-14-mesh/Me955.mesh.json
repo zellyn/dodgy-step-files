@@ -1,0 +1,47 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ]
+  ],
+  "metadata": {
+    "id": "Me955",
+    "schema_version": 0,
+    "defect_class": "degenerate_triangle",
+    "title": "Basic_TMesh.checkGeometry degenerate_angle_180_degrees: collinear triangle, interior angle PI at middle vertex (Branch 6)",
+    "assertions": [
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 0,
+        "lt": 1e-12
+      },
+      {
+        "kind": "vertex_on_edge",
+        "vertex": 1,
+        "edge": [
+          0,
+          2
+        ]
+      }
+    ]
+  }
+}
