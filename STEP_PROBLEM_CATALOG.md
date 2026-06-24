@@ -36593,6 +36593,59 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me730 — checkAndRepair::meshclean DEGENERACY_REMOVAL_FAILURE: zero-area collinear triangle resists strongDegeneracyRemoval (branch 1)
+- **Category**: §12.14 mesh defects (sub-class: degenerate-triangle / stubborn-degeneracy)
+- **Sources**: MeshFix `checkAndRepair::meshclean` Branch 1 (*DEGENERACY_REMOVAL_FAILURE*: `strongDegeneracyRemoval(inner_loops)` returns false, `nd=false`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Five vertices; five triangles. Triangle t0=(v0,v1,v2) is degenerate — v0=(0,0,0), v1=(1,0,0), v2=(2,0,0) are collinear at Y=0, giving area=0. Four surrounding non-degenerate triangles (t1-t4) lock the degenerate face in place: the degenerate t0 contributes to non-manifold edges — (v0,v1) is shared by t0+t1+t3 (n=3) and (v1,v2) is shared by t0+t2+t4 (n=3) — preventing a safe collapse. strongDegeneracyRemoval exceeds its iteration budget → returns false → nd=false → Branch 1 fires.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0) [collinear], v3=(1,-1,0), v4=(1,1,0); t0=(v0,v1,v2) degenerate; t1=(v0,v3,v1), t2=(v1,v3,v2), t3=(v0,v1,v4), t4=(v1,v2,v4); assert_triangle_area_lt(0, 1e-9); assert_edge_shared(v0,v1,3); assert_edge_shared(v1,v2,3).
+- **Expected kernel behavior**: strongDegeneracyRemoval iterates but cannot collapse t0 (topology lock); returns false; nd set to false; meshclean continues with intersection removal pass.
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-09`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=3`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=3`
+- **Fixture path**: mesh-examples/12-14-mesh/Me730.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me731 — checkAndRepair::meshclean INTERSECTION_REMOVAL_FAILURE: overlapping coplanar triangle pair resists strongIntersectionRemoval (branch 2)
+- **Category**: §12.14 mesh defects (sub-class: self-intersection / stubborn-intersection)
+- **Sources**: MeshFix `checkAndRepair::meshclean` Branch 2 (*INTERSECTION_REMOVAL_FAILURE*: `strongIntersectionRemoval(inner_loops)` returns false, `ni=false`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Six vertices; two coplanar triangles. t0=(v0,v1,v2) with v0=(0,0,0), v1=(2,0,0), v2=(1,2,0) and t1=(v3,v4,v5) with v3=(1,0,0), v4=(3,0,0), v5=(2,2,0) overlap in the central strip X∈[1,2]. The triangles share no edge and form separate connected components, so any collapse of the overlap creates a new degenerate face, causing the repair to cycle until the iteration budget is exhausted → strongIntersectionRemoval returns false → ni=false → Branch 2 fires.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(1,0,0), v4=(3,0,0), v5=(2,2,0); t0=(v0,v1,v2), t1=(v3,v4,v5); assert_triangles_self_intersect(0,1); boundary edges n=1 each.
+- **Expected kernel behavior**: strongIntersectionRemoval iterates but cannot resolve the overlapping coplanar pair; returns false; ni set to false; meshclean records incomplete repair.
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me731.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me732 — checkAndRepair::meshclean BOTH_PASSES_SUCCEEDED: clean tetrahedron; ni=true, nd=true, no residual degeneracy (branch 3)
+- **Category**: §12.14 mesh defects (sub-class: self-intersection / clean-mesh-both-passes)
+- **Sources**: MeshFix `checkAndRepair::meshclean` Branch 3 (*BOTH_PASSES_FAILED* name is a misnomer — fires when `if (ni && nd)`, both passes succeeded); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four vertices; four triangles forming a clean closed tetrahedron. No degenerate faces (all areas > 0), no self-intersections. Both strongDegeneracyRemoval and strongIntersectionRemoval complete trivially (nothing to repair) → return true → ni=true, nd=true → `if (ni && nd)` branch fires → kernel checks for residual degeneracies, finds none, returns true. Euler: V=4, E=6, F=4, chi=2 (genus-0 sphere).
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(1,1,2); t0=(v0,v1,v2), t1=(v0,v1,v3), t2=(v1,v2,v3), t3=(v0,v3,v2); all 6 edges shared by n=2; no SI; euler V=4,E=6,F=4,chi=2.
+- **Expected kernel behavior**: Both repair passes return true immediately; `if (ni && nd)` branch fires; isExactlyDegenerate returns false for all faces; meshclean returns true (full success).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `triangles_do_not_intersect triangles=[0,1]`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me732.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me733 — checkAndRepair::meshclean REMAINING_DEGENERACY_AFTER_SUCCESS: residual zero-area collinear face after ni && nd succeed; ni set false (branch 4)
+- **Category**: §12.14 mesh defects (sub-class: degenerate-triangle / residual-post-repair)
+- **Sources**: MeshFix `checkAndRepair::meshclean` Branch 4 (*REMAINING_DEGENERACY_AFTER_SUCCESS*: after `if (ni && nd)`, `isExactlyDegenerate` finds a remaining face, `ni=false`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Five vertices; three triangles. t0=(v0,v1,v2) is the clean base (area=1.0); t1=(v0,v3,v4) is the degenerate residual (v0=(0,0,0), v3=(0.5,0,0), v4=(1.5,0,0) all collinear at Y=0 → area=0); t2=(v3,v1,v2) is a non-degenerate bridge. Both strongDegeneracyRemoval and strongIntersectionRemoval return true (no SI, and t1's topology causes the degeneracy removal to skip it as a boundary artifact). After `if (ni && nd)` fires, isExactlyDegenerate(t1) returns true → ni set to false → Branch 4 fires → return false (incomplete).
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,1,0), v3=(0.5,0,0), v4=(1.5,0,0); t0=(v0,v1,v2) clean, t1=(v0,v3,v4) degenerate [area=0], t2=(v3,v1,v2) clean; assert_triangle_area_lt(1, 1e-9); boundary edges (v0,v3) and (v3,v4) n=1.
+- **Expected kernel behavior**: Both passes return true (ni=nd=true); `if (ni && nd)` branch fires; isExactlyDegenerate finds t1 is degenerate; ni set to false; meshclean returns false (residual degeneracy detected).
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-09`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me733.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me710 — Basic_TMesh.removeVertices list_head_initialization: V.head() called on 3-vertex mesh; traversal begins (Branch 1)
 - **Category**: §12.14 mesh defects (sub-class: isolated_vertex / Basic_TMesh.removeVertices)
 - **Sources**: MeshFix `Basic_TMesh.removeVertices` Branch 1 (*list_head_initialization*: `n = V.head();`); `MESH_HEAL_COVERAGE.md`.
@@ -36650,4 +36703,68 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `isolated_vertex vertex=4`
 - **Mesh assertion**: `euler_characteristic v=4 e=6 f=4 chi=2`
 - **Fixture path**: mesh-examples/12-14-mesh/Me713.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me720 — Basic_TMesh.safeCoordBackApproximation overlapping-edge detection: coplanar triangles with overlapping interiors; nos counter incremented (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: self_intersection_coplanar_overlap / Basic_TMesh.safeCoordBackApproximation)
+- **Sources**: MeshFix `Basic_TMesh.safeCoordBackApproximation` Branch 1 (*overlapping-edge detection*: `nos = 0; for(e = (Edge *)T.EL.head(); e != NULL; e = e->next()) if(e->overlaps()) nos++;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two coplanar triangles in the XY plane with no shared edges whose interiors overlap: large t0=(v0,v1,v2) with area=8.0, and smaller t1=(v3,v4,v5) with area=2.0 centred inside t0. After coordinate quantization, edges of t1 return true for overlaps() — Branch 1 fires as nos is incremented.
+- **Reproducer recipe**: v0=(0,0,0), v1=(4,0,0), v2=(2,4,0); v3=(1,1,0), v4=(3,1,0), v5=(2,3,0); t0=(v0,v1,v2), t1=(v3,v4,v5); all 6 edges n=1; triangles_self_intersect(t0,t1); triangle_area_lt(t1,3.0).
+- **Expected kernel behavior**: Branch 1 fires; nos is incremented for each edge of t1 that overlaps t0's interior.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=1`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=3.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me720.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me721 — Basic_TMesh.safeCoordBackApproximation opposite-vertex selection: small-area triangle apex jittered; ov2 chosen because squaredArea(t1) < squaredArea(t0) (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: self_intersection_coplanar_overlap / Basic_TMesh.safeCoordBackApproximation)
+- **Sources**: MeshFix `Basic_TMesh.safeCoordBackApproximation` Branch 2 (*opposite-vertex selection*: `a1 = ov1->squaredTriangleArea3D(e); a2 = ov2->squaredTriangleArea3D(e); ov = (a1 < a2) ? ov1 : ov2;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two coplanar triangles sharing edge (v0,v1): large t0=(v0,v1,v2) with area=8.0, and small t1=(v0,v1,v3) with area=2.0. v3 lies inside t0's area making the interiors overlap. For the shared edge, ov1=v2 (large area side) and ov2=v3 (small area side); since a1>a2, ov=ov2=v3 — Branch 2 selects the apex of the smaller triangle for jitter.
+- **Reproducer recipe**: v0=(0,0,0), v1=(4,0,0), v2=(2,4,0), v3=(2,1,0); t0=(v0,v1,v2), t1=(v0,v1,v3); edge_shared(v0,v1,2); 4 boundary edges n=1; triangles_self_intersect(t0,t1); triangle_area_lt(t1,3.0).
+- **Expected kernel behavior**: Branch 2 fires; ov2=v3 is chosen for coordinate jitter because squaredTriangleArea3D returns a smaller value for t1 than for t0.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=3.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me721.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me722 — Basic_TMesh.safeCoordBackApproximation jitter escape condition: overlapping apex trapped inside large triangle; 26-direction jitter scan exercised (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: self_intersection_coplanar_overlap / Basic_TMesh.safeCoordBackApproximation)
+- **Sources**: MeshFix `Basic_TMesh.safeCoordBackApproximation` Branch 3 (*jitter escape condition*: `for(a=-1; a<=1; a++) for(b=-1; b<=1; b++) for(c=-1; c<=1; c++) { if(!e->overlaps()) { resolved=1; break; } else { undo; } }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three-triangle fan with a central apex v3=(3,1,0) geometrically trapped deep inside a large outer triangle t0. t0=(v0,v1,v2) has area=15, t1=(v0,v1,v3) has area=3 and overlaps t0. All 26 jitter directions are exercised because no single delta step on v3 clears the overlap — Branch 3 runs to completion without early break.
+- **Reproducer recipe**: v0=(0,0,0), v1=(6,0,0), v2=(3,5,0), v3=(3,1,0); t0=(v0,v1,v2), t1=(v0,v1,v3), t2=(v1,v2,v3); edge_shared(v0,v1,2), edge_shared(v1,v2,2); 3 boundary edges n=1; triangles_self_intersect(t0,t1); triangle_area_lt(t1,4.0).
+- **Expected kernel behavior**: Branch 3 fires; all 26 direction-vectors are tried before the jitter loop exits; overlap unresolved after full scan.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=4.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me722.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me723 — Basic_TMesh.safeCoordBackApproximation convergence check: two independent overlapping pairs; nos decreases across iterations confirming nos<pnos progress (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: self_intersection_coplanar_overlap / Basic_TMesh.safeCoordBackApproximation)
+- **Sources**: MeshFix `Basic_TMesh.safeCoordBackApproximation` Branch 4 (*convergence check*: `pnos = nos; nos = 0; ... if(nos >= pnos) break;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four triangles in the XY plane forming two independent overlapping pairs. Pair A: t0=(v0,v1,v2) large (area=8) and t1=(v0,v1,v3) small (area=2) sharing edge (v0,v1), centred at x=0. Pair B: t2=(v4,v5,v6) large (area=8) and t3=(v4,v5,v7) small (area=2) sharing edge (v4,v5), centred at x=10. After one repair iteration one pair resolves: nos drops from 2 to 1, so nos<pnos and Branch 4 continues the loop.
+- **Reproducer recipe**: v0=(0,0,0), v1=(4,0,0), v2=(2,4,0), v3=(2,1,0); v4=(10,0,0), v5=(14,0,0), v6=(12,4,0), v7=(12,1,0); 4 triangles; each pair shares its edge (n=2); outer edges n=1; triangles_self_intersect(t0,t1) and triangles_self_intersect(t2,t3); triangle_area_lt(t1,3.0) and triangle_area_lt(t3,3.0).
+- **Expected kernel behavior**: Branch 4 fires; nos<pnos after first repair pass over pair A; the outer while-loop continues to address pair B.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=2`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `triangles_self_intersect triangles=[2,3]`
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=3.0`
+- **Mesh assertion**: `triangle_area_lt triangle=3 lt=3.0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me723.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
