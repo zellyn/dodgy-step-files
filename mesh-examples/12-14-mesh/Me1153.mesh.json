@@ -1,0 +1,47 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ]
+  ],
+  "metadata": {
+    "id": "Me1153",
+    "schema_version": 0,
+    "defect_class": "degenerate_triangle",
+    "title": "is_degenerate_triangle_face collinear: zero-area triangle; all three vertices collinear on x-axis",
+    "assertions": [
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 0,
+        "lt": 1e-09
+      },
+      {
+        "kind": "vertex_on_edge",
+        "vertex": 1,
+        "edge": [
+          0,
+          2
+        ]
+      }
+    ]
+  }
+}

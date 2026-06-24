@@ -36592,3 +36592,70 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1150 — is_degenerate_edge equal_points: endpoint positions identical (zero-length edge between v0==v1) (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: degenerate_edge / zero-length-edge)
+- **Sources**: CGAL PMP `PMP.is_degenerate_edge` Branch 1 (*equal_points*: `if(get(vpm, source(e, tm)) == get(vpm, target(e, tm))) return true`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A single triangle (v0,v1,v2) where both endpoints of the first edge share the same 3D coordinate (0,0,0). v0 and v1 are topologically distinct indices but geometrically coincident; the edge v0→v1 has zero length. PMP.is_degenerate_edge fires Branch 1 (equal_points) immediately on this edge. The triangle also has zero area as a consequence. Third vertex v2=(1,0,0) prevents the face from being completely degenerate.
+- **Reproducer recipe**: v0=(0,0,0), v1=(0,0,0) [==v0], v2=(1,0,0); t0=(v0,v1,v2); assert_vertex_pair_distance_lt(v0,v1,1e-9); assert_edge_shared(v0,v1,1); assert_triangle_area_lt(t0,1e-9).
+- **Expected kernel behavior**: Branch 1 fires; source(e,tm)==target(e,tm) in coordinate space; function returns true immediately.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=1e-09`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-09`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1150.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1151 — remove_a_border_edge simple: wrapper without tracking sets (border edge removal without state tracking) (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: open_boundary / border-edge-removal)
+- **Sources**: CGAL PMP `PMP.remove_a_border_edge` Branch 1 (*simple*: overload without vertex-set or halfedge-set arguments, delegates to full form); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles (t0,t1) sharing one interior edge (v1,v2) forming an open quadrilateral fan with four border edges. The simple overload of remove_a_border_edge (no tracking-set arguments) is the entry point for callers that do not need to record modified vertices or halfedges. Interior edge (v1,v2) n=2; the four boundary edges are each n=1. Euler: V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1.5,1,0); t0=(v0,v1,v2), t1=(v1,v3,v2); assert_edge_shared(v1,v2,2); four boundary edges n=1; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 1 (simple overload) fires; no tracking sets passed; delegates to the full form which removes the specified border edge and patches the local topology.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1151.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1152 — keep_connected_components by_id: guard on halfedge(v,pmesh) (multi-component mesh selected by id) (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / keep-connected-components-by-id)
+- **Sources**: CGAL PMP `PMP.keep_connected_components` Branch 1 (*by_id*: `halfedge_descriptor h = halfedge(v, pmesh)` guard @ line 308); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected components — Component A is a two-triangle fan (t0,t1) sharing interior edge (v0,v2), and Component B is an isolated triangle (t2) at x=50. When the caller requests keeping only component A by id, the by_id branch iterates every vertex, calls halfedge(v,pmesh) for each, identifies which component it belongs to, and removes vertices/faces of discarded CCs. Interior edge (v0,v2) n=2. Combined: V=7, E=8, F=3, chi=2.
+- **Reproducer recipe**: Component A: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0,1,0), t0=(v0,v1,v2), t1=(v0,v2,v3). Component B: v4=(50,0,0), v5=(51,0,0), v6=(50.5,1,0), t2=(v4,v5,v6). assert_triangle_not_reachable_from(t2,t0); euler V=7,E=8,F=3,chi=2.
+- **Expected kernel behavior**: Branch 1 fires for each vertex in component B; halfedge(v,pmesh) returns a halfedge belonging to CC 1; those vertices are flagged for removal.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Mesh assertion**: `euler_characteristic v=7 e=8 f=3 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1152.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1153 — is_degenerate_triangle_face collinear: zero-area triangle with all three vertices collinear (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: degenerate_triangle / collinear-vertices)
+- **Sources**: CGAL PMP `PMP.is_degenerate_triangle_face` Branch 1 (*collinear*: cross-product of edge vectors is zero-length → area==0 → return true @ line 300); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A single triangle (v0,v1,v2) with all three vertices on the x-axis: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0). The cross product (v1-v0)×(v2-v0) = (1,0,0)×(2,0,0) = (0,0,0); area is exactly zero. PMP.is_degenerate_triangle_face fires Branch 1 immediately. The middle vertex v1 lies exactly on the segment v0→v2.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0); t0=(v0,v1,v2); assert_triangle_area_lt(t0,1e-9); assert_vertex_on_edge(v1,v0,v2).
+- **Expected kernel behavior**: Branch 1 fires; cross product is zero; function returns true (triangle is degenerate).
+- **Mesh assertion**: `triangle_area_lt triangle=0 lt=1e-09`
+- **Mesh assertion**: `vertex_on_edge vertex=1 edge=[0,2]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1153.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1154 — keep_connected_components by_face_range: face-range iteration path (multi-component mesh with face-range selection) (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / keep-connected-components-by-face-range)
+- **Sources**: CGAL PMP `PMP.keep_connected_components` Branch 1 (*by_face_range*: `for(face_descriptor f : face_range) { ... }` @ line 304); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected single-triangle components — Component A (t0) at origin and Component B (t1) at x=10. The face-range overload is called with a range containing only t0. The function iterates that range (Branch 1 fires), determines that t0 belongs to CC 0, marks CC 0 as kept, then removes all faces not in a kept CC (i.e. removes t1 and its vertices). All six edges are boundary (n=1). Euler: V=6, E=6, F=2, chi=2.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), t0=(v0,v1,v2); v3=(10,0,0), v4=(11,0,0), v5=(10.5,1,0), t1=(v3,v4,v5). assert_triangle_not_reachable_from(t1,t0); six boundary edges n=1; euler V=6,E=6,F=2,chi=2.
+- **Expected kernel behavior**: Branch 1 fires; the supplied face-range {t0} is iterated; CC of t0 is identified as kept; t1 and v3-v5 are removed.
+- **Mesh assertion**: `triangle_not_reachable_from target=1 source=0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=1`
+- **Mesh assertion**: `euler_characteristic v=6 e=6 f=2 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1154.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
