@@ -1,0 +1,89 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      1.0,
+      0.0
+    ],
+    [
+      0.0,
+      1.0,
+      0.0
+    ],
+    [
+      0.5,
+      0.5,
+      1.0
+    ],
+    [
+      10.0,
+      10.0,
+      0.0
+    ],
+    [
+      10.01,
+      10.0,
+      0.0
+    ],
+    [
+      10.0,
+      10.01,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      2,
+      3
+    ],
+    [
+      0,
+      1,
+      4
+    ],
+    [
+      1,
+      2,
+      4
+    ],
+    [
+      5,
+      6,
+      7
+    ]
+  ],
+  "metadata": {
+    "id": "Me921",
+    "schema_version": 0,
+    "defect_class": "disconnected_components",
+    "title": "keep_largest component_size_criterion: face_size >= threshold retains large component",
+    "assertions": [
+      {
+        "kind": "triangle_not_reachable_from",
+        "target": 4,
+        "source": 0
+      },
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 4,
+        "lt": 0.001
+      }
+    ]
+  }
+}

@@ -1,0 +1,10 @@
+# Me920: keep_largest component_count_mismatch: desired_num > total_components → return 0
+# defect_class: disconnected_components
+v 0 0 0
+v 1 0 0
+v 1 1 0
+v 0 1 0
+v 2 0 0
+f 1 2 3
+f 1 3 4
+f 2 5 3

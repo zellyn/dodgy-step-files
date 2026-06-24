@@ -36593,6 +36593,59 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me920 — keep_largest component_count_mismatch: desired_num > total_components → return 0
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / keep-largest)
+- **Sources**: CGAL `PMP.keep_largest_connected_components` Branch 1 @ line 401 (*component_count_mismatch*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A single connected 3-triangle L-shaped patch (one component). When a caller requests desired_num=5 components to keep but the mesh has only 1, Branch 1 fires: `if (nb_to_keep >= num_components) return 0`. No faces are removed because the requested count already exceeds what exists. The nb_components_to_keep > total_components condition is the defect trigger.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(1,1,0), v3=(0,1,0), v4=(2,0,0); t0=(v0,v1,v2), t1=(v0,v2,v3) [share (v0,v2)], t2=(v1,v4,v2) [share (v1,v2) with t0]. One connected component only.
+- **Expected kernel behavior**: nb_components_to_keep (5) >= num_components (1) → return 0 immediately without any removal.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `euler_characteristic v=5 e=7 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me920.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me921 — keep_largest component_size_criterion: face_size >= threshold retains large component
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / keep-largest)
+- **Sources**: CGAL `PMP.keep_largest_connected_components` Branch 2 @ line 410 (*component_size_criterion*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected components of markedly different face counts. Component A is a 4-triangle unit-square+apex patch near the origin (face_size=4). Component B is a single micro-triangle at (10,10,0) with area≈5e-5 (face_size=1). With desired_num=1, Branch 2 sorts components by `Face_size` property-map value and marks component B (smaller) for removal while retaining component A (larger).
+- **Reproducer recipe**: v0-v4 form a 4-triangle patch (t0-t3); v5=(10,10,0), v6=(10.01,10,0), v7=(10,10.01,0) form micro-triangle t4 (area≈5e-5). t4 unreachable from t0.
+- **Expected kernel behavior**: face_size sorted; component B (size 1) < component A (size 4) → component B marked for removal; Branch 2 keeps component A.
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Mesh assertion**: `triangle_area_lt triangle=4 lt=0.001`
+- **Fixture path**: mesh-examples/12-14-mesh/Me921.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me922 — keep_largest dry_run_mode: dry_run=true; component identified but mesh not mutated
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / keep-largest)
+- **Sources**: CGAL `PMP.keep_largest_connected_components` Branch 3 @ line 419 (*dry_run_mode*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected components — a large 3-triangle connected strip (component A) and a tiny 1-triangle micro-patch at (20,20,0) (component B, area≈5e-5). With desired_num=1 and dry_run=true, Branch 3 identifies component B as a removal candidate but does NOT invoke `remove_connected_components`. The mesh is left intact; the function returns the count of faces that would have been removed.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(1,1,0), v3=(0,1,0), v4=(2,1,0) form 3-triangle strip (t0-t2, sharing edges); v5=(20,20,0), v6=(20.01,20,0), v7=(20,20.01,0) form micro-triangle t3 (area≈5e-5). t3 unreachable from t0.
+- **Expected kernel behavior**: dry_run=true → identify removable faces for component B, populate output iterator, skip remove_connected_components; mesh unchanged.
+- **Mesh assertion**: `triangle_not_reachable_from target=3 source=0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `triangle_area_lt triangle=3 lt=0.001`
+- **Fixture path**: mesh-examples/12-14-mesh/Me922.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me923 — keep_largest output_iterator_presence: removed component faces recorded via output_iterator
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / keep-largest)
+- **Sources**: CGAL `PMP.keep_largest_connected_components` Branch 4 @ line 421 (*output_iterator_presence*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected components — a closed 4-triangle tetrahedron (component A, large) and a 2-triangle open strip at (15,15,0) (component B, small). With desired_num=1 and a live output_iterator (not emptyset_iterator), Branch 4 populates the iterator with component B's 2 face descriptors before removing them, enabling the caller to inspect what was discarded.
+- **Reproducer recipe**: unit tetrahedron (t0-t3, closed, all 6 edges shared by 2 triangles); open strip at (15,15,0): v4=(15,15,0), v5=(16,15,0), v6=(15.5,16,0), v7=(16.5,16,0); t4=(v4,v5,v6), t5=(v5,v7,v6) share edge (v5,v6). t4 unreachable from t0.
+- **Expected kernel behavior**: output_iterator != emptyset_iterator → Branch 4 fires; component B face descriptors written to iterator; remove_connected_components then removes them.
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,6] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me923.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me940 — orient_polygon_soup initial_point_count: initial_nb_pts = points.size() = 4 captured at entry (Branch 1)
 - **Category**: §12.14 mesh defects (sub-class: inconsistent-face-orientation / polygon-soup-orientation)
 - **Sources**: CGAL PMP `PMP.orient_polygon_soup` Branch 1 (*initial_point_count*: `std::size_t initial_nb_pts = points.size();` @ line 556); `MESH_HEAL_COVERAGE.md`.

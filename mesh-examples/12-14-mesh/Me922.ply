@@ -1,0 +1,23 @@
+ply
+format ascii 1.0
+comment Me922: keep_largest dry_run_mode: dry_run=true; component identified but mesh not mutated
+comment defect_class: disconnected_components
+element vertex 8
+property float x
+property float y
+property float z
+element face 4
+property list uchar int vertex_indices
+end_header
+0 0 0
+1 0 0
+1 1 0
+0 1 0
+2 1 0
+20 20 0
+20.01 20 0
+20 20.01 0
+3 0 1 2
+3 0 2 3
+3 2 4 3
+3 5 6 7
