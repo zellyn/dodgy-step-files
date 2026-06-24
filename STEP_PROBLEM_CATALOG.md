@@ -36592,3 +36592,56 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1060 — duplicate_polygons removal_iteration: 5-copy group, inner loop runs 4 times (Branch 7)
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 7 @ line 1004 (*removal_iteration*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A group of 5 identical triangles all sharing canonical vertex-index tuple (0,1,2) forces the inner removal for-loop (for(; i<duplicate_polygons.size(); ++i)) to iterate 4 times under KEEP_ONE — i starts at 1, removing positions 1-4 while keeping position 0. The 6-triangle soup shrinks to 2 after merging (1 kept + 1 clean neighbour).
+- **Reproducer recipe**: 5 copies of (0,1,2) plus one clean neighbour triangle (1,3,2); the inner loop body fires 4 times, one per removal candidate.
+- **Expected kernel behavior**: inner loop iterates 4 times; 4 polygons swapped-to-end; erase reduces count from 6 to 2.
+- **Mesh assertion**: `duplicate_polygon_group triangles=[0,1,2,3,4] n=5`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1060.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1061 — duplicate_polygons treated_skip: two independent duplicate groups; second group hits treated[] continue guard (Branch 8)
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 8 @ line 1007 (*treated_skip*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Polygon soup with two separate duplicate groups: Group A = {tri 0, tri 1, tri 2} all with key (0,1,2); Group B = {tri 3, tri 4} all with key (2,3,4). Under KEEP_ONE, group A marks tris 1 and 2 as treated. When the outer while-loop then processes group B, the if(treated[polygon_to_remove_id]) continue guard can fire for any polygon whose id was already marked treated by group A's pass. The two-group layout directly exercises the cross-group guard protection.
+- **Reproducer recipe**: 3 copies of (v0,v1,v2) + 2 copies of (v2,v3,v4) + 1 clean singleton; two assert_duplicate_polygon_group calls.
+- **Expected kernel behavior**: treated[] guard fires when processing overlapping polygon-id ranges; group B removal skips any already-treated ids cleanly.
+- **Mesh assertion**: `duplicate_polygon_group triangles=[0,1,2] n=3`
+- **Mesh assertion**: `duplicate_polygon_group triangles=[3,4] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1061.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1062 — duplicate_polygons swap_to_end: 3 duplicates at non-contiguous positions 0,2,5; swap_position diverges from polygon_to_remove_pos (Branch 9)
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 9 @ line 1026 (*swap_to_end*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 6-triangle soup with 3 copies of triangle (0,1,2) at non-contiguous positions 0, 2, and 5. The swap_to_end mechanism starts swap_position at the last index and moves backward; each duplicate at polygon_to_remove_pos is swapped with the current swap_position so that duplicates accumulate at the back partition. Because the duplicates are non-contiguous, the swap_position and polygon_to_remove_pos differ on each swap, fully exercising std::swap(polygons[swap_position], polygons[polygon_to_remove_pos]).
+- **Reproducer recipe**: tri order = dup(0), clean, dup(2), clean, clean, dup(5); three swap operations move them to back positions 3,4,5; erase shrinks from 6 to 3.
+- **Expected kernel behavior**: 3 swaps with divergent indices; after erase the 3 surviving triangles are the clean ones.
+- **Mesh assertion**: `duplicate_polygon_group triangles=[0,2,5] n=3`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1062.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1063 — duplicate_polygons mark_treated: two groups; treated[] bit written for each removed polygon across both groups (Branch 10)
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 10 @ line 1029 (*mark_treated*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Polygon soup with two separate duplicate groups: Group A = {tri 0, tri 1, tri 2} with key (0,1,2); Group B = {tri 3, tri 4} with key (0,2,3). After group A is processed with KEEP_ONE, treated[1]=true and treated[2]=true are written (Branch 10 fires twice). When group B is processed, treated[4]=true is written for the group B removal. A total of 3 treated[] bit-writes occur — one per removed polygon across both groups. The fixture confirms that treated[] marks are written at line 1029 for every polygon moved to the back region.
+- **Reproducer recipe**: 3 copies of (v0,v1,v2) + 2 copies of (v0,v2,v3) + 1 clean singleton; 3 treated[] writes total; erase shrinks from 6 to 3.
+- **Expected kernel behavior**: treated[1]=true, treated[2]=true (group A); treated[4]=true (group B); single erase removes 3 polygons.
+- **Mesh assertion**: `duplicate_polygon_group triangles=[0,1,2] n=3`
+- **Mesh assertion**: `duplicate_polygon_group triangles=[3,4] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1063.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1064 — duplicate_polygons final_erase: two groups (sizes 2 and 3) both removed by single polygons.erase() call (Branch 11)
+- **Category**: §12.14 mesh defects (sub-class: topology/duplicate)
+- **Sources**: CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 11 @ line 1035 (*final_erase*); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Polygon soup with two separate duplicate groups: Group A = {tri 0, tri 1} with key (0,1,2) — 2 copies; Group B = {tri 3, tri 4, tri 5} with key (0,1,3) — 3 copies. After the outer while-loop processes both groups and swap_to_end has accumulated 3 removal candidates in the back region, the single polygons.erase(first, polygons.end()) call at line 1035 removes all of them in one O(k) resize. The container shrinks from 6 triangles to 3 (1 survivor per group + 1 clean singleton). Tests that erase() handles the combined back region from multiple groups in one shot.
+- **Reproducer recipe**: 2 copies of (v0,v1,v2) + 1 clean + 3 copies of (v0,v1,v3); single erase() after both groups processed; result = 3 triangles.
+- **Expected kernel behavior**: erase() called exactly once at line 1035; removes 3 polygons from combined back region; result has 3 triangles.
+- **Mesh assertion**: `duplicate_polygon_group triangles=[0,1] n=2`
+- **Mesh assertion**: `duplicate_polygon_group triangles=[3,4,5] n=3`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1064.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder

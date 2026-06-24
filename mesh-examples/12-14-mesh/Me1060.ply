@@ -1,0 +1,21 @@
+ply
+format ascii 1.0
+comment Me1060: duplicate_polygons removal_iteration: 5-copy group, inner loop runs 4 times
+comment defect_class: duplicate_triangles
+element vertex 4
+property float x
+property float y
+property float z
+element face 6
+property list uchar int vertex_indices
+end_header
+0 0 0
+1 0 0
+0.5 1 0
+1.5 1 0
+3 0 1 2
+3 0 1 2
+3 0 1 2
+3 0 1 2
+3 0 1 2
+3 1 3 2
