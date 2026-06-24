@@ -1,0 +1,111 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      6.0,
+      0.0,
+      0.0
+    ],
+    [
+      3.0,
+      1.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      4.0,
+      0.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      3,
+      2
+    ],
+    [
+      3,
+      4,
+      2
+    ],
+    [
+      4,
+      1,
+      2
+    ]
+  ],
+  "metadata": {
+    "id": "Me541",
+    "schema_version": 0,
+    "defect_class": "degenerate_triangle_cap_geometry_ov2",
+    "title": "checkAndRepair::removeDegenerateTriangles CAP_GEOMETRY_OV2: second cap vertex ov2 also on inner segment (two adjacent T-junction caps both trigger splitEdge)",
+    "assertions": [
+      {
+        "kind": "vertex_on_edge",
+        "vertex": 3,
+        "edge": [
+          0,
+          1
+        ]
+      },
+      {
+        "kind": "vertex_on_edge",
+        "vertex": 4,
+        "edge": [
+          0,
+          1
+        ]
+      },
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 0,
+        "lt": 4.0
+      },
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 1,
+        "lt": 2.0
+      },
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 2,
+        "lt": 2.0
+      },
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 3,
+        "lt": 2.0
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          2,
+          3
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          2,
+          4
+        ],
+        "n": 2
+      }
+    ]
+  }
+}

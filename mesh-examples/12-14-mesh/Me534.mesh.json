@@ -1,0 +1,240 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      1.0,
+      0.0
+    ],
+    [
+      0.0,
+      1.0,
+      0.0
+    ],
+    [
+      -1.0,
+      -1.0,
+      0.0
+    ],
+    [
+      2.0,
+      -1.0,
+      0.0
+    ],
+    [
+      2.0,
+      2.0,
+      0.0
+    ],
+    [
+      -1.0,
+      2.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      4,
+      0,
+      1
+    ],
+    [
+      4,
+      1,
+      5
+    ],
+    [
+      5,
+      1,
+      2
+    ],
+    [
+      5,
+      2,
+      6
+    ],
+    [
+      6,
+      2,
+      3
+    ],
+    [
+      6,
+      3,
+      7
+    ],
+    [
+      7,
+      3,
+      0
+    ],
+    [
+      7,
+      0,
+      4
+    ]
+  ],
+  "metadata": {
+    "id": "Me534",
+    "schema_version": 0,
+    "defect_class": "joinBoundaryLoops_balanced_triangulation_criterion",
+    "title": "joinBoundaryLoops_BALANCED_TRIANGULATION_CRITERION: two-loop square annulus; c1 vs c2 cost alternates between loops (Branch 5)",
+    "assertions": [
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          1
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          2
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          2,
+          3
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          3
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          4,
+          5
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          5,
+          6
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          6,
+          7
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          4,
+          7
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          4
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          4
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          5
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          2,
+          5
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          2,
+          6
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          3,
+          6
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          3,
+          7
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          7
+        ],
+        "n": 2
+      },
+      {
+        "kind": "hole_boundary",
+        "loop": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "kind": "hole_boundary",
+        "loop": [
+          4,
+          7,
+          6,
+          5
+        ]
+      }
+    ]
+  }
+}
