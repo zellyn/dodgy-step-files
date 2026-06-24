@@ -515,24 +515,26 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
   - Repair action: polygon[i] = id_remapping[polygon[i]]
 
 ##### `PMP.simplify_polygons_in_polygon_soup` — lines 156–181
-(4 branches; all UNCOVERED — no mesh fixtures exist yet)
+(4 branches; **COVERED** — Me750–Me753 — wave 26B, 2026-06-23)
 
-- **Branch 1** @ line 165 — *polygon_iteration*
+- **Branch 1** @ line 165 — *polygon_iteration* → **Me750**
   - What it tests: For each polygon in soup
   - Repair action: check and simplify
-  - Suggested fixture: defect mentioning 'for(P_ID polygon_index=0'
-- **Branch 2** @ line 168 — *degenerate_polygon_skip*
+  - Fixture: Me750 — 2 clean triangles; loop body fires for each
+- **Branch 2** @ line 168 — *degenerate_polygon_skip* → **Me751**
   - What it tests: Polygon size <= 1 (degenerate)
   - Repair action: skip simplification, continue to next
-  - Suggested fixture: defect mentioning 'if(polygon.size() <= 1)', 'continue'
-- **Branch 3** @ line 171 — *consecutive_duplicate_removal*
+  - Fixture: Me751 — all-same-index triangle (v0,v0,v0) proxies size-1 polygon; continue fires
+- **Branch 3** @ line 171 — *consecutive_duplicate_removal* → **Me752**
   - What it tests: simplify_polygon() finds and removes consecutive identical vertices
   - Repair action: erase duplicate, iterate until clean
-  - Suggested fixture: defect mentioning 'simplify_polygon(points, polygon, traits)'
-- **Branch 4** @ line 172 — *modification_count*
+  - Fixture: Me752 — triangle [v0,v0,v1] has consecutive dup at positions 0-1; simplify_polygon erases copy
+- **Branch 4** @ line 172 — *modification_count* → **Me753**
   - What it tests: simplify_polygon() return value indicates change
   - Repair action: increment simplified_polygons_n counter
-  - Suggested fixture: defect mentioning '++simplified_polygons_n'
+  - Fixture: Me753 — two consecutive-duplicate triangles; simplified_polygons_n incremented twice
+
+Fixture IDs: Me750 Me751 Me752 Me753
 
 ##### `PMP.split_pinched_polygons_in_polygon_soup` — lines 201–278
 (11 branches; **COVERED** — Me060–Me069)
