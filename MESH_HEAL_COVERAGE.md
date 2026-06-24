@@ -138,25 +138,25 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
   - Suggested fixture: defect mentioning 'if(oriented[index]) continue'
 
 ##### `PMP.connected_component` — lines 132–179
-(5 branches; all UNCOVERED — no mesh fixtures exist yet)
+(5 branches; ALL COVERED — Me690–Me694)
 
-- **Branch 1** @ line 140 — *Loop_control*
+- **Branch 1** @ line 140 — *Loop_control* — **Me690**
   - What it tests: Repeat while condition holds
   - Repair action: Continue iteration or break
   - Suggested fixture: defect mentioning 'while'
-- **Branch 2** @ line 144 — *Visited_vertex_dedup*
+- **Branch 2** @ line 144 — *Visited_vertex_dedup* — **Me691**
   - What it tests: Tests: !already_processed.insert(seed_face
   - Repair action: Skip already-seen elements
   - Suggested fixture: defect mentioning 'handled[', 'already_processed'
-- **Branch 3** @ line 146 — *Iteration_construct*
+- **Branch 3** @ line 146 — *Iteration_construct* — **Me692**
   - What it tests: Loop over range
   - Repair action: Process collection elements
   - Suggested fixture: defect mentioning 'for'
-- **Branch 4** @ line 149 — *Logic_guard*
+- **Branch 4** @ line 149 — *Logic_guard* — **Me693**
   - What it tests: Tests: ! get(ecmap, edge(hd, pmesh
   - Repair action: Conditional branching
   - Suggested fixture: defect mentioning '!'
-- **Branch 5** @ line 151 — *Null_face_check*
+- **Branch 5** @ line 151 — *Null_face_check* — **Me694**
   - What it tests: Tests:  neighbor != boost::graph_traits<PolygonMesh>::nul
   - Repair action: Stop at mesh boundary
   - Suggested fixture: defect mentioning 'null_face', 'opposite'
