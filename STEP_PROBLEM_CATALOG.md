@@ -36592,3 +36592,71 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1070 — filter_stitchable_pairs edge-occurrence-limit: two-patch boundary with single coincident-edge pair; count=1 boundary slots confirm manifold safety (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: coincident-boundary-vertex / stitchable-pairs-filter)
+- **Sources**: CGAL PMP `PMP.filter_stitchable_pairs (manifold validator)` Branch 1 (*edge-occurrence-limit*: `case 1` of switch on occurrence-map size per merged edge); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two separate triangular patches (A and B) with coincident boundary edges. Patch A: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0). Patch B: a0=(2,0,0), a1=(1,0,0), a2=(0,1,0) with a1≡v1 and a2≡v2. After tentative vertex merge v1→a1 and v2→a2, each remaining boundary edge in the merged occurrence map has exactly 1 halfedge → case 1 fires for each such edge, confirming manifold safety. All 6 edges are boundary (n=1). Euler: V=6, E=6, F=2, chi=2.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0); a0=(2,0,0), a1=(1,0,0), a2=(0,1,0); t0=(v0,v1,v2), t1=(a0,a1,a2); all 6 edges n=1; vertex_pair_distance_lt(v1,a1,1e-9), vertex_pair_distance_lt(v2,a2,1e-9); vertex_pair_no_shared_triangle pairs; euler V=6,E=6,F=2,chi=2.
+- **Expected kernel behavior**: Branch 1 fires; occurrence-map case 1 accepts each single-halfedge boundary slot as manifold-safe; no vertices added to unstitchable set.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[2,5] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,4]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[2,5]`
+- **Mesh assertion**: `euler_characteristic v=6 e=6 f=2 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1070.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1071 — filter_stitchable_pairs border-two-edge-exception: two border halfedges on coincident boundary edge; both border → manifold-safe stitch accepted (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: coincident-boundary-vertex / stitchable-pairs-filter)
+- **Sources**: CGAL PMP `PMP.filter_stitchable_pairs (manifold validator)` Branch 2 (*border-two-edge-exception*: `case 2: if(is_border_edge(…) && is_border_edge(…)) break`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangular patches whose stitchable boundary edges are coincident. Patch A: p0=(0,0,0), p1=(1,0,0), p2=(0.5,1,0). Patch B: q0=(2,0,0), q1=(1,0,0), q2=(0.5,1,0) with q1≡p1 and q2≡p2. After vertex merge the candidate edge (p1,p2) has exactly 2 halfedges — one from each patch — and both are border edges. Branch 2 fires: is_border_edge checks both and passes, accepting the pair as manifold-safe. All 6 edges n=1 boundary. Euler: V=6, E=6, F=2, chi=2.
+- **Reproducer recipe**: p0=(0,0,0), p1=(1,0,0), p2=(0.5,1,0); q0=(2,0,0), q1=(1,0,0), q2=(0.5,1,0); t0=(p0,p1,p2), t1=(q0,q1,q2); all 6 edges n=1; vertex_pair_distance_lt(p1,q1,1e-9), vertex_pair_distance_lt(p2,q2,1e-9); vertex_pair_no_shared_triangle pairs; euler V=6,E=6,F=2,chi=2.
+- **Expected kernel behavior**: Branch 2 fires; both halfedges on the merged candidate edge are border edges; is_border_edge returns true for both → pair accepted into stitchable output.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[2,5] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,4]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[2,5]`
+- **Mesh assertion**: `euler_characteristic v=6 e=6 f=2 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1071.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1072 — filter_stitchable_pairs multi-edge-vertex-disqualification: 3 coincident boundary halfedges on same merged edge; default case marks all vertices unstitchable (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: coincident-boundary-vertex / stitchable-pairs-filter)
+- **Sources**: CGAL PMP `PMP.filter_stitchable_pairs (manifold validator)` Branch 3 (*multi-edge-vertex-disqualification*: `default: for(auto h : it->second) { unstitchable_vertices.insert(source(h,mesh)); unstitchable_vertices.insert(target(h,mesh)); }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangular patches with a three-way coincident seam edge. Patch A: u0=(0,0,0), u1=(1,0,0), u2=(0,1,0). Patch B: b0=(2,0,0), b1=(1,0,0), b2=(0,1,0) [b1≡u1, b2≡u2]. Patch C: c0=(-1,0,0), c1=(1,0,0), c2=(0,1,0) [c1≡u1, c2≡u2]. After tentative vertex merge, the canonical edge (u1,u2) accumulates 3 halfedges (one from each patch) — non-manifold. The default case fires: all source/target vertices of the offending halfedges are inserted into unstitchable_vertices → Branch 3. All 9 edges boundary (n=1). Euler: V=9, E=9, F=3, chi=3.
+- **Reproducer recipe**: u0=(0,0,0), u1=(1,0,0), u2=(0,1,0); b0=(2,0,0), b1=(1,0,0), b2=(0,1,0); c0=(-1,0,0), c1=(1,0,0), c2=(0,1,0); t0-t2 each isolated triangles; all 9 edges n=1; vertex_pair_distance_lt for all coincident pairs; vertex_pair_no_shared_triangle; euler V=9,E=9,F=3,chi=3.
+- **Expected kernel behavior**: Branch 3 fires; default case iterates the 3 offending halfedges; source and target of each are inserted into unstitchable_vertices (up to 6 vertex indices for 3 halfedges sharing 2 endpoints).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,7] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[2,5] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[2,8] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,4]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,7]`
+- **Mesh assertion**: `euler_characteristic v=9 e=9 f=3 chi=3`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1072.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1073 — filter_stitchable_pairs vertex-pair-safety-check: contaminating triple-edge marks e1/e2 unstitchable (Branch 3); victim pair excluded because endpoint in unstitchable_vertices (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: coincident-boundary-vertex / stitchable-pairs-filter)
+- **Sources**: CGAL PMP `PMP.filter_stitchable_pairs (manifold validator)` Branch 4 (*vertex-pair-safety-check*: `if(unstitchable_vertices.count(source(p.first,mesh))||…) continue`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Five triangular patches in two groups. Contaminating group (A/B/C): three patches with coincident triple seam at (1,0,0)/(0,1,0); Branch 3 marks those seam vertices unstitchable. Victim group (D/E): two patches with coincident boundary edge at (1,0,0)/(1,2,0) — vertex h1 at (1,0,0) is coincident with the contaminated e1. The vertex-pair-safety-check iterates all candidate pairs and finds h1 in unstitchable_vertices → Branch 4 fires; the D/E pair is excluded even though it would otherwise be a valid two-border-edge stitch. All 15 edges boundary (n=1). Euler: V=15, E=15, F=5, chi=5.
+- **Reproducer recipe**: Patches A/B/C as in Me1072 (triple coincident seam at e1=(1,0,0), e2=(0,1,0)); Patch D: h0=(3,0,0), h1=(1,0,0), h2=(1,2,0); Patch E: k0=(4,0,0), k1=(1,0,0), k2=(1,2,0); h1 and k1 coincide with e1 (unstitchable); vertex_pair_distance_lt(e1,h1,1e-9); euler V=15,E=15,F=5,chi=5.
+- **Expected kernel behavior**: Branch 4 fires; victim pair (h1,h2)/(k1,k2) checked against unstitchable_vertices; h1 found in set (contaminated by Branch 3 from triple-edge seam) → pair skipped; stitchable_pairs excludes this otherwise-legal edge.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[10,11] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[13,14] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,7] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[10,13] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,10] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,4]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[10,13]`
+- **Mesh assertion**: `euler_characteristic v=15 e=15 f=5 chi=5`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1073.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder

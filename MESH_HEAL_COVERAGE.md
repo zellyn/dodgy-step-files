@@ -1017,24 +1017,24 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
   - Suggested fixture: defect mentioning 'known_nm_vertices', 'duplicate'
 
 ##### `PMP.filter_stitchable_pairs (manifold validator)` — lines 684–780
-(4 branches; all UNCOVERED — no mesh fixtures exist yet)
+(4 branches; all COVERED — mesh wave 37A)
 
-- **Branch 1** @ line 721 — *edge-occurrence-limit*
+- **Branch 1** @ line 721 — *edge-occurrence-limit* — **Me1070**
   - What it tests: Detect if merged vertices create multi-edge (>2 halfedges per edge)
   - Repair action: mark vertices as unstitchable if edge would exceed manifold threshold
-  - Suggested fixture: defect mentioning 'it->second.size', 'case', 'edge-multiplicity'
-- **Branch 2** @ line 723 — *border-two-edge-exception*
+  - Fixture: two-patch coincident boundary; count=1 boundary slots confirm manifold safety
+- **Branch 2** @ line 723 — *border-two-edge-exception* — **Me1071**
   - What it tests: Allow two border edges (boundary-loop case)
   - Repair action: accept two-halfedge case if both are border edges
-  - Suggested fixture: defect mentioning 'is_border_edge', 'case 2', 'two-edge-loop'
-- **Branch 3** @ line 728 — *multi-edge-vertex-disqualification*
+  - Fixture: two patches with coincident edge; both halfedges are border → accepted
+- **Branch 3** @ line 728 — *multi-edge-vertex-disqualification* — **Me1072**
   - What it tests: Reject vertices incident to 3+ duplicate edges
   - Repair action: add all vertices of problematic edges to unstitchable set
-  - Suggested fixture: defect mentioning 'unstitchable_vertices', 'default', 'source/target'
-- **Branch 4** @ line 739 — *vertex-pair-safety-check*
+  - Fixture: three patches with triple-coincident seam edge; default case disqualifies all seam vertices
+- **Branch 4** @ line 739 — *vertex-pair-safety-check* — **Me1073**
   - What it tests: Verify all four vertices of halfedge pair are not unstitchable
   - Repair action: exclude pair if any vertex is marked non-manifold-safe
-  - Suggested fixture: defect mentioning 'unstitchable_vertices', 'source', 'target'
+  - Fixture: contaminating triple-edge marks seam unstitchable; victim pair excluded because endpoint in unstitchable_vertices
 
 ##### `PMP.is_non_manifold_vertex (query)` — lines 46–81
 (3 branches; all UNCOVERED — no mesh fixtures exist yet)
