@@ -36782,3 +36782,76 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `hole_boundary loop=[5,9,8,7,6]`
 - **Fixture path**: mesh-examples/12-14-mesh/Me535.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me550 — checkAndRepair::rebuildConnectivity EMPTY_MESH: single isolated vertex with no triangles; V.numels()==0 triggers early return (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: rebuild-connectivity / empty-mesh)
+- **Sources**: MeshFix `checkAndRepair::rebuildConnectivity` Branch 1 (*EMPTY_MESH*: `if (V.numels() == 0) return false;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A placeholder mesh containing exactly one isolated vertex and zero triangles. Because the triangle-vertex pool is empty (V.numels()==0), rebuildConnectivity immediately returns false without attempting any topology repair → Branch 1 fires. The single vertex at (0,0,0) is not referenced by any triangle, demonstrating the empty-connectivity case.
+- **Reproducer recipe**: v0=(0,0,0); no triangles; assert_isolated_vertex(v0).
+- **Expected kernel behavior**: Branch 1 fires; rebuildConnectivity returns false immediately; no vertex unification or edge/triangle reconstruction occurs.
+- **Mesh assertion**: `isolated_vertex vertex=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me550.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me551 — checkAndRepair::rebuildConnectivity VERTEX_GEOMETRIC_EQUALITY: v1 and v3 both at (1,0,0); v3->info set to v1 during sorted-walk (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: rebuild-connectivity / vertex-geometric-equality)
+- **Sources**: MeshFix `checkAndRepair::rebuildConnectivity` Branch 2 (*VERTEX_GEOMETRIC_EQUALITY*: `if ((*v) != (*pv)) { pv = v; } else { v->info = pv; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing interior edge (v0,v2) form an open-disk boundary cycle. Boundary vertices v1 and v3 are distinct mesh indices but share identical coordinates (1,0,0). After sorting all vertices by coordinate, the walk encounters v1 then v3 consecutively; since their coordinates are equal, the else branch fires and v3->info is set to v1 (canonical representative) → Branch 2 fires. Interior edge (v0,v2) n=2; four outer boundary edges n=1. Euler: V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(1,0,0) [=v1]; t0=(v0,v1,v2), t1=(v0,v2,v3); assert_edge_shared(v0,v2,2); outer edges n=1; vertex_pair_distance_lt(v1,v3,1e-9); vertex_pair_no_shared_triangle(v1,v3); euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 2 fires once when v3 (at (1,0,0)) follows v1 (at (1,0,0)) in the sorted vertex array; v3->info = v1 is set; the two vertices are unified to a single canonical representative.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,3] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,3]`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me551.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me552 — checkAndRepair::rebuildConnectivity VERTEX_POINTER_INDIRECTION_V1: e->v1 for p3 (=p1 at (2,0,0)) has info!=self after unification; v1 dereferenced to canonical (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: rebuild-connectivity / vertex-pointer-indirection-v1)
+- **Sources**: MeshFix `checkAndRepair::rebuildConnectivity` Branch 3 (*VERTEX_POINTER_INDIRECTION_V1*: `if (e->v1->info != e->v1) e->v1 = e->v1->info;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangles fanned around hub edge (p0,p2). Boundary vertices p1 and p3 both sit at (2,0,0) but are topologically distinct. After the Branch 2 sorted-walk, p3->info=p1. In the subsequent edge scan, any edge whose v1 endpoint is p3 detects e->v1->info != e->v1 (p3's info points to p1, not p3) → Branch 3 fires and v1 is updated to the canonical p1. Interior edge (p0,p2) is shared by all three triangles (n=3); six boundary edges n=1. Euler: V=5, E=7, F=3, chi=1.
+- **Reproducer recipe**: p0=(0,0,0), p1=(2,0,0), p2=(1,2,0), p3=(2,0,0) [=p1], p4=(0,2,0); t0=(p0,p1,p2), t1=(p0,p2,p3), t2=(p0,p4,p2); assert_edge_shared(p0,p2,3); six boundary edges n=1; vertex_pair_distance_lt(p1,p3,1e-9); vertex_pair_no_shared_triangle(p1,p3); euler V=5,E=7,F=3,chi=1.
+- **Expected kernel behavior**: Branch 3 fires for every edge referencing p3 as v1; each such edge's v1 is dereferenced to p1 (the canonical representative).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=3`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,3] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,3]`
+- **Mesh assertion**: `euler_characteristic v=5 e=7 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me552.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me553 — checkAndRepair::rebuildConnectivity VERTEX_POINTER_INDIRECTION_V2: e->v2 for q3 (=q1 at (3,0,0)) has info!=self after unification; v2 dereferenced to canonical (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: rebuild-connectivity / vertex-pointer-indirection-v2)
+- **Sources**: MeshFix `checkAndRepair::rebuildConnectivity` Branch 4 (*VERTEX_POINTER_INDIRECTION_V2*: `if (e->v2->info != e->v2) e->v2 = e->v2->info;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangles fanned around hub edge (q0,q2). Boundary vertices q1 and q3 both sit at (3,0,0) but are topologically distinct. After the Branch 2 sorted-walk, q3->info=q1. In the edge scan, any edge whose v2 endpoint is q3 detects e->v2->info != e->v2 → Branch 4 fires and v2 is updated to canonical q1. This is the symmetric counterpart to Branch 3, covering the second vertex slot of each edge. Interior edge (q0,q2) shared by all three triangles (n=3); six boundary edges n=1. Euler: V=5, E=7, F=3, chi=1.
+- **Reproducer recipe**: q0=(0,0,0), q1=(3,0,0), q2=(1.5,2,0), q3=(3,0,0) [=q1], q4=(0,3,0); t0=(q0,q1,q2), t1=(q2,q3,q0), t2=(q0,q2,q4); assert_edge_shared(q0,q2,3); six boundary edges n=1; vertex_pair_distance_lt(q1,q3,1e-9); vertex_pair_no_shared_triangle(q1,q3); euler V=5,E=7,F=3,chi=1.
+- **Expected kernel behavior**: Branch 4 fires for edges referencing q3 as v2; each such edge's v2 is dereferenced to q1 (canonical).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=3`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,3] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,3]`
+- **Mesh assertion**: `euler_characteristic v=5 e=7 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me553.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me554 — checkAndRepair::rebuildConnectivity DEGENERATE_TRIANGLE_DUPLICATE_VERTEX: t2=(r0,r2,r3) with r0==r2 at (0,0,0); v1==v2 after unification; triangle discarded (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: rebuild-connectivity / degenerate-triangle-duplicate-vertex)
+- **Sources**: MeshFix `checkAndRepair::rebuildConnectivity` Branch 5 (*DEGENERATE_TRIANGLE_DUPLICATE_VERTEX*: `if (v1!=v2 && v2!=v3 && v1!=v3) { …add… } else { …discard… }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two valid triangles (t0, t1) plus one collapsed/degenerate triangle t2. In t2, vertices r0 and r2 share identical coordinates (0,0,0) but are distinct mesh indices. After Branch 2 unification (r2->info=r0), the triangle rebuild loop resolves both to r0, yielding v1==v2 for t2. The pairwise-distinct check fails and t2 is discarded rather than added to the rebuilt mesh → Branch 5 fires. The valid triangles share edge (r1,r3) (n=2); four boundary edges n=1; t2 has zero area.
+- **Reproducer recipe**: r0=(0,0,0), r1=(2,0,0), r2=(0,0,0) [=r0], r3=(1,2,0), r4=(3,2,0); t0=(r0,r1,r3), t1=(r1,r4,r3), t2=(r0,r2,r3) [degenerate]; assert_edge_shared(r1,r3,2); boundary edges n=1; triangle_area_lt(t2,1e-9); vertex_pair_distance_lt(r0,r2,1e-9).
+- **Expected kernel behavior**: Branch 5 fires for t2; v1==v2 after unification (both r0); triangle is silently skipped; rebuilt mesh contains only t0 and t1.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `triangle_area_lt triangle=2 lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,2] lt=1e-09`
+- **Fixture path**: mesh-examples/12-14-mesh/Me554.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me555 — checkAndRepair::rebuildConnectivity FIXCONNECTIVITY_REQUESTED: two triangles sharing vertex s2 but no edge (orphan fan); fixconnectivity flag set; fixConnectivity() called (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: rebuild-connectivity / fixconnectivity-requested)
+- **Sources**: MeshFix `checkAndRepair::rebuildConnectivity` Branch 6 (*FIXCONNECTIVITY_REQUESTED*: `if (fixconnectivity) fixConnectivity();`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles (t0, t1) sharing only vertex s2 (a bowtie/orphan fan) with no shared edge between them. t0=(s0,s1,s2) and t1=(s2,s3,s4) are connected at s2 but not via a shared edge, leaving the vertex fan of s2 disconnected (two components). When checkAndRepair is called with fixconnectivity=true, rebuildConnectivity's final branch triggers fixConnectivity() to stitch the orphan half-edges → Branch 6 fires. All six edges are boundary edges (n=1); s2 has a disconnected fan; t1 is not reachable from t0 via shared-edge traversal.
+- **Reproducer recipe**: s0=(0,0,0), s1=(2,0,0), s2=(1,2,0), s3=(3,2,0), s4=(1,4,0); t0=(s0,s1,s2), t1=(s2,s3,s4); all edges n=1; assert_vertex_fan_disconnected(s2); assert_triangle_not_reachable_from(t1,t0).
+- **Expected kernel behavior**: Branch 6 fires; fixConnectivity() is called; orphan fan at s2 is stitched into manifold connectivity; the two formerly disconnected components become topologically linked.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `vertex_fan_disconnected vertex=2`
+- **Mesh assertion**: `triangle_not_reachable_from target=1 source=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me555.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
