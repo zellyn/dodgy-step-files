@@ -36593,6 +36593,99 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me510 — Edge.swap EDGE_SWAP_SAFE_VALIDITY: boundary edge (n=1, t2==NULL) blocks safe-mode swap; all three edges are boundary (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: edge-swap / safe-validity-check)
+- **Sources**: MeshFix `Edge.swap` Branch 1 (*EDGE_SWAP_SAFE_VALIDITY*: `if (!fast && (t1 == NULL || t2 == NULL || getCommonEdge(...) != NULL)) return false`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A single triangle whose three edges are all boundary edges (each shared by n=1 triangle, i.e., t2==NULL). Calling Edge.swap in safe mode on any of these edges immediately returns false because the null-t2 guard fires (Branch 1). This is the minimal configuration that blocks an edge swap at the safe-mode validity check.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0); t0=(v0,v1,v2); assert_edge_shared for all three edges with n=1; euler V=3,E=3,F=1,chi=1.
+- **Expected kernel behavior**: Branch 1 fires; swap returns false immediately because t2==NULL for every candidate edge; no topology mutation occurs.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `euler_characteristic v=3 e=3 f=1 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me510.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me511 — Edge.swap EDGE_TOPOLOGY_EXTRACTION: interior diagonal (v0,v2) with two incident triangles; e1=nextEdge(t0) and e3=nextEdge(t1) extracted for cycle replacement (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: edge-swap / topology-extraction)
+- **Sources**: MeshFix `Edge.swap` Branch 2 (*EDGE_TOPOLOGY_EXTRACTION*: `Edge *e1 = t1->nextEdge(this); Edge *e3 = t2->nextEdge(this)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A minimal 2-triangle quad (4 vertices, 5 edges) sharing interior diagonal (v0,v2) with n=2. The swap algorithm enters Branch 2 immediately for any swappable interior edge, extracting the next edges e1 from t0 and e3 from t1 in each triangle's winding order. These extracted edges will be cross-assigned between the two triangles in the replacement step.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(-0.5,0.5,0); t0=(v0,v1,v2), t1=(v0,v2,v3); assert_edge_shared(v0,v2,2); four outer edges n=1; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 2 fires; e1=t0->nextEdge(diagonal) and e3=t1->nextEdge(diagonal) are extracted; the two outer next-edges are prepared for swapping into the new triangle edge cycles.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me511.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me512 — Edge.swap EDGE_ENDPOINT_SWAP: diagonal endpoints updated from (v0,v2) to opposite vertices (v1,v3); post-swap diagonal spans longer distance across quad (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: edge-swap / endpoint-update)
+- **Sources**: MeshFix `Edge.swap` Branch 3 (*EDGE_ENDPOINT_SWAP*: `v1 = t2->oppositeVertex(this); v2 = t1->oppositeVertex(this)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 2-triangle quad with interior diagonal (v0,v2). The diagonal endpoints are updated in-place to point to the two opposite vertices: v1=(2,0,0) and v3=(0,2,0). The pre-swap diagonal (v0,v2) has length sqrt(2) and no edge (v1,v3) exists yet (n=0). After the swap the diagonal spans the longer perpendicular, length sqrt(8).
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,1,0), v3=(0,2,0); t0=(v0,v1,v2), t1=(v0,v2,v3); assert_edge_shared(v0,v2,2); vertex_pair_distance_lt(v0,v2,1.5); assert_edge_shared(v1,v3,0); four outer edges n=1; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 3 fires; v1 and v2 of the edge object are overwritten with t2->oppositeVertex and t1->oppositeVertex respectively; the edge now spans (v1,v3) — the perpendicular diagonal.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,2] lt=1.5`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=0`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me512.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me513 — Edge.swap TRIANGLE_EDGE_REPLACEMENT: right-angle quad; t1->replaceEdge(e1,e3) and t2->replaceEdge(e3,e1) cross-links outer edges into new triangles (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: edge-swap / triangle-edge-replacement)
+- **Sources**: MeshFix `Edge.swap` Branch 4 (*TRIANGLE_EDGE_REPLACEMENT*: `t1->replaceEdge(e1, e3); t2->replaceEdge(e3, e1)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A right-angle square quad (4 vertices at unit corners) split by diagonal (v0,v2) into t0=(v0,v1,v2) and t1=(v0,v2,v3). After endpoint swap, Branch 4 cross-assigns the outer edges: t0 replaces e1 with e3 (gaining e3 from the other triangle), and t1 replaces e3 with e1. No pre-existing edge (v1,v3) exists (n=0) before the swap.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(1,1,0), v3=(0,1,0); t0=(v0,v1,v2), t1=(v0,v2,v3); assert_edge_shared(v0,v2,2); four outer square edges n=1; assert_edge_shared(v1,v3,0); euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 4 fires; t1->replaceEdge(e1, e3) reassigns e1 to point to t2 and e3 to point to t1; both triangles' edge cycles are updated to reflect the new diagonal (v1,v3).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=0`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me513.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me514 — Edge.swap TRIANGLE_ORIENTATION_FLIP: inconsistent winding across shared diagonal (v0,v2); both triangles traverse v2→v0, n0=+z n1=-z; t1.invert()+t2.invert() restore consistency (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: edge-swap / orientation-flip)
+- **Sources**: MeshFix `Edge.swap` Branch 5 (*TRIANGLE_ORIENTATION_FLIP*: `t1->invert(); t2->invert()`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 2-triangle quad capturing the intermediate post-endpoint-swap, pre-invert defect state. Both triangles t0=(v0,v1,v2) and t1=(v3,v2,v0) traverse shared diagonal (v0,v2) in the same direction (v2→v0), giving t0 a +z normal and t1 a -z normal (dot=-0.75 < 0). The invert() calls on both triangles after edge replacement restore consistent winding.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,-1,0), v2=(0.5,1,0), v3=(0,1,0); t0=(v0,v1,v2), t1=(v3,v2,v0); assert_edge_shared(v0,v2,2); assert_adjacent_triangles_inconsistent_winding(0,1); four outer edges n=1; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 5 fires; t1->invert() and t2->invert() flip the vertex winding order of both new triangles; resulting mesh has consistent normals (all +z after inversion).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,1]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me514.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me515 — Edge.swap INCIDENT_EDGE_UPDATE_E1: outer edges e1=(v1,v2) and e3=(v2,v3) each incident on one triangle; e1->replaceTriangle(t1,t2) and e3->replaceTriangle(t2,t1) complete adjacency update (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: edge-swap / incident-edge-adjacency-update)
+- **Sources**: MeshFix `Edge.swap` Branch 6 (*INCIDENT_EDGE_UPDATE_E1*: `e1->replaceTriangle(t1, t2); e3->replaceTriangle(t2, t1)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 2-triangle quad sharing interior diagonal (v0,v2). The outer edges e1=(v1,v2) and e3=(v2,v3) each have n=1 (one incident triangle). Branch 6 fires as the final step of the swap, calling replaceTriangle on e1 and e3 to update their incident-triangle links: e1 loses t0 and gains the new t1, and e3 loses t1 and gains the new t0. The pre-swap diagonal has no (v1,v3) edge (n=0).
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(-0.5,0.5,0); t0=(v0,v1,v2), t1=(v0,v2,v3); assert_edge_shared(v0,v2,2); assert_edge_shared(v1,v2,1); assert_edge_shared(v2,v3,1); assert_edge_shared(v1,v3,0); other boundary edges n=1; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 6 fires; e1->replaceTriangle(t1,t2) and e3->replaceTriangle(t2,t1) update the half-edge adjacency so that the outer edges are correctly linked to their new owning triangles after the diagonal flip.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=0`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me515.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me520 — iterativeEdgeSwaps selection_exists: partial selection of triangles; swaps restricted to IS_VISITED region (Branch 1)
 - **Category**: §12.14 mesh defects (sub-class: mesh-optimization / iterative-edge-swaps / selection)
 - **Sources**: MeshFix `Basic_TMesh.iterativeEdgeSwaps` Branch 1 (*selection_exists*: `if (IS_VISITED(t)) selection = 1;`); `MESH_HEAL_COVERAGE.md`.
