@@ -1,0 +1,76 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      0.0
+    ],
+    [
+      -0.5,
+      1.0,
+      0.0
+    ],
+    [
+      -1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      2.0,
+      0.0
+    ],
+    [
+      0.5,
+      1.0,
+      -0.8
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      2,
+      3
+    ],
+    [
+      0,
+      3,
+      4
+    ],
+    [
+      2,
+      5,
+      6
+    ]
+  ],
+  "metadata": {
+    "id": "Me1112",
+    "schema_version": 0,
+    "defect_class": "self_intersection_smoothable",
+    "title": "displaced apex below flat fan causing SI: use_smoothing strategy branch",
+    "assertions": [
+      {
+        "kind": "triangles_self_intersect",
+        "triangles": [
+          0,
+          3
+        ]
+      }
+    ]
+  }
+}

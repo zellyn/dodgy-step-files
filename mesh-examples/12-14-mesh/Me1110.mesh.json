@@ -1,0 +1,85 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      -1.0,
+      1.0,
+      0.0
+    ],
+    [
+      -2.0,
+      0.0,
+      0.0
+    ],
+    [
+      -1.0,
+      -1.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      1.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      -1.0
+    ],
+    [
+      -0.5,
+      0.0,
+      -0.5
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      2,
+      3
+    ],
+    [
+      0,
+      4,
+      5
+    ],
+    [
+      0,
+      6,
+      7
+    ]
+  ],
+  "metadata": {
+    "id": "Me1110",
+    "schema_version": 0,
+    "defect_class": "self_intersection_non_manifold_vertex",
+    "title": "pinch-neck non-manifold vertex: genus-preservation decision for SI removal",
+    "assertions": [
+      {
+        "kind": "vertex_fan_disconnected",
+        "vertex": 0
+      },
+      {
+        "kind": "triangles_self_intersect",
+        "triangles": [
+          0,
+          3
+        ]
+      }
+    ]
+  }
+}

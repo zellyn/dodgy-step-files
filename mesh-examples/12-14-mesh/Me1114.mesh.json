@@ -1,0 +1,104 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      2.0
+    ],
+    [
+      1.0,
+      0.0,
+      2.0
+    ],
+    [
+      0.0,
+      1.0,
+      2.0
+    ],
+    [
+      0.0,
+      1.0,
+      0.0
+    ],
+    [
+      0.0,
+      3.0,
+      0.0
+    ],
+    [
+      0.0,
+      2.0,
+      0.0
+    ],
+    [
+      3.0,
+      0.0,
+      0.0
+    ],
+    [
+      3.0,
+      1.0,
+      0.0
+    ],
+    [
+      3.0,
+      0.5,
+      1.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      4.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.5,
+      0.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      3,
+      4,
+      5
+    ],
+    [
+      6,
+      7,
+      8
+    ],
+    [
+      9,
+      10,
+      11
+    ]
+  ],
+  "metadata": {
+    "id": "Me1114",
+    "schema_version": 0,
+    "defect_class": "self_intersection_degenerate_cluster",
+    "title": "zero-area degenerate faces empty the SI candidate set: faces_to_treat emptiness detection",
+    "assertions": [
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 1,
+        "lt": 1e-12
+      },
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 3,
+        "lt": 1e-12
+      }
+    ]
+  }
+}

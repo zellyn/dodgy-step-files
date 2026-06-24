@@ -1,0 +1,91 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      2.0,
+      0.0
+    ],
+    [
+      0.0,
+      -2.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      2.0
+    ],
+    [
+      0.0,
+      0.0,
+      -2.0
+    ],
+    [
+      10.0,
+      0.0,
+      0.0
+    ],
+    [
+      11.0,
+      0.0,
+      0.0
+    ],
+    [
+      11.0,
+      1.0,
+      0.0
+    ],
+    [
+      10.0,
+      1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      3,
+      4
+    ],
+    [
+      5,
+      6,
+      7
+    ],
+    [
+      5,
+      7,
+      8
+    ]
+  ],
+  "metadata": {
+    "id": "Me1111",
+    "schema_version": 0,
+    "defect_class": "self_intersection_multi_cc",
+    "title": "SI in CC-A; clean CC-B: treat_all_CCs processing-scope decision",
+    "assertions": [
+      {
+        "kind": "triangles_self_intersect",
+        "triangles": [
+          0,
+          1
+        ]
+      },
+      {
+        "kind": "triangle_not_reachable_from",
+        "target": 2,
+        "source": 0
+      }
+    ]
+  }
+}

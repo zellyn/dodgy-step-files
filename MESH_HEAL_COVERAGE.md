@@ -701,48 +701,48 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
   - Fixture: Me248 — unit tetrahedron + micro-tetrahedron at (5,5,5) with s=0.02; both area AND volume criteria satisfied → OR-condition fires
 
 ##### `PMP.remove_self_intersections` — lines 2356–2527
-(15 branches; all UNCOVERED — no mesh fixtures exist yet)
+(15 branches; 10 covered — Me1110–Me1114 cover branches 1–5; Me1120–Me1124 cover branches 6–10; branches 11–15 UNCOVERED)
 
-- **Branch 1** @ line 2379 — *genus-preservation-requirement*
+- **Branch 1** @ line 2379 — *genus-preservation-requirement* — **Me1110**
   - What it tests: whether to preserve topological genus (preserve_genus NP)
   - Repair action: duplicate non-manifold vertices when preserve_genus=false
-  - Suggested fixture: defect mentioning 'preserve_genus', 'duplicate_non_manifold_vertices'
-- **Branch 2** @ line 2383 — *treatment-scope-selection*
+  - Fixture: Me1110 — pinch-neck non-manifold vertex; bowtie hub with disconnected fan; preserves genus via vertex duplication
+- **Branch 2** @ line 2383 — *treatment-scope-selection* — **Me1111**
   - What it tests: whether to treat all connected components even without self-intersections (treat_all_CCs NP)
   - Repair action: process CCs regardless of internal SI presence when treat_all_CCs=true
-  - Suggested fixture: defect mentioning 'treat_all_CCs', 'apply_per_connected_component'
-- **Branch 3** @ line 2397 — *smoothing-phase-strategy*
+  - Fixture: Me1111 — SI in CC-A; clean CC-B disconnected; treat_all_CCs decision
+- **Branch 3** @ line 2397 — *smoothing-phase-strategy* — **Me1112**
   - What it tests: whether to use smoothing as a repair attempt (use_smoothing NP)
   - Repair action: branch to smoothing-based healing vs hole-filling approach
-  - Suggested fixture: defect mentioning 'use_smoothing', 'remove_self_intersections_with_smoothing'
-- **Branch 4** @ line 2413 — *output-filter-applicability*
+  - Fixture: Me1112 — displaced fan-apex below flat patch causing SI; use_smoothing strategy branch
+- **Branch 4** @ line 2413 — *output-filter-applicability* — **Me1113**
   - What it tests: whether a filter predicate is supplied to exclude certain self-intersections from processing
   - Repair action: apply filter when present to skip interior-disjoint pairs
-  - Suggested fixture: defect mentioning 'filter_output_iterator', 'filter_t'
-- **Branch 5** @ line 2463 — *face-selection-emptiness-detection*
+  - Fixture: Me1113 — two SI types (interior crossing + corner-touch pair) filterable by filter NP
+- **Branch 5** @ line 2463 — *face-selection-emptiness-detection* — **Me1114**
   - What it tests: whether previous iteration had topology blockers and no faces remain to process
   - Repair action: recompute self-intersections vs exit loop early
-  - Suggested fixture: defect mentioning 'faces_to_treat.empty', 'self_intersections'
-- **Branch 6** @ line 2150 — *internal-vs-external-si-classification*
+  - Fixture: Me1114 — zero-area degenerate faces empty SI candidate set; faces_to_treat emptiness detection
+- **Branch 6** @ line 2150 — *internal-vs-external-si-classification* — **Me1120**
   - What it tests: whether self-intersections exist within a CC or only with external CCs
   - Repair action: skip processing (treat_all_CCs=false) vs continue to hole-fill
-  - Suggested fixture: defect mentioning 'does_self_intersect', 'treat_all_CCs'
-- **Branch 7** @ line 2161 — *containment-envelope-enforcement*
+  - Fixture: Me1120 — cross-CC external SI: CC-A (z=0 flat) and CC-B (piercer) intersect each other; neither has internal SI; CC-C (clean) at y=20 skipped
+- **Branch 7** @ line 2161 — *containment-envelope-enforcement* — **Me1121**
   - What it tests: whether the input has a polyhedral containment envelope (containment_epsilon > 0)
   - Repair action: validate patch against envelope vs skip validation
-  - Suggested fixture: defect mentioning 'Polyhedral_envelope', 'containment_epsilon'
-- **Branch 8** @ line 2192 — *smoothing-local-vs-global-focus*
+  - Fixture: Me1121 — intruder vertex v8 at z=-0.4 pokes below z=0 flat 4-triangle patch; Polyhedral_envelope rejects repair patch that violates z≥0 bound
+- **Branch 8** @ line 2192 — *smoothing-local-vs-global-focus* — **Me1122**
   - What it tests: whether smoothing should only apply to SI-bearing CCs or all selected regions
   - Repair action: condition smoothing on internal SI presence
-  - Suggested fixture: defect mentioning 'use_smoothing', 'self_intersects'
-- **Branch 9** @ line 2196 — *constraint-preservation-mode*
+  - Fixture: Me1122 — CC-A has internal SI (intruder apex at z=-0.5); CC-B (y=25) is clean; treat_all_CCs=false skips smoothing on CC-B
+- **Branch 9** @ line 2196 — *constraint-preservation-mode* — **Me1123**
   - What it tests: whether to constrain high-dihedral-angle edges during smoothing (first pass)
   - Repair action: apply sharp-edge constraints vs unconstrained smoothing
-  - Suggested fixture: defect mentioning 'constrain_sharp_edges', 'strong_dihedral_angle'
-- **Branch 10** @ line 2207 — *smoothing-fallback-escalation*
+  - Fixture: Me1123 — floor (z=0) + wall (x=1) share 90° crease edge (v1,v2) n=2; intruder apex at z=-0.4 crosses floor; constrain_sharp_edges locks the right-angle crease during smoothing
+- **Branch 10** @ line 2207 — *smoothing-fallback-escalation* — **Me1124**
   - What it tests: whether constrained smoothing failed and needs re-attempt without constraints
   - Repair action: retry smoothing without sharp-edge constraints
-  - Suggested fixture: defect mentioning 'fixed_by_smoothing', 'constrain_sharp_edges'
+  - Fixture: Me1124 — 4-triangle cross floor + two 90° walls; crease edge (v1,v4) non-manifold n=3; intruder apex at z=-0.5 crosses floor; constrained pass stalls (fixed_by_smoothing=false); unconstrained fallback fires
 - **Branch 11** @ line 2264 — *topology-genus-classification*
   - What it tests: whether selected CC is topologically a disk (chi=1) or has higher genus/holes
   - Repair action: branch to complex-topology handler vs disk-hole-filling

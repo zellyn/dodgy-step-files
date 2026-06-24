@@ -20725,6 +20725,172 @@
     "title": "zero-area degenerate faces empty SI candidate set: faces_to_treat emptiness detection"
   },
   {
+    "byte_assertions": [],
+    "category": "§12.14 mesh defects (sub-class: self-intersection/cross-cc)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "three connected components with no shared vertices. CC-A (tri 0) is a flat triangle in the z=0 XY plane. CC-B (tri 1) pierces the z=0 plane — its apex is at z=-1 and its base is at z=+1 — crossing CC-A's tri 0. The self-intersection is external (cross-CC): neither CC has an internal SI on its own. CC-C (tri 2) is a clean isolated triangle 20 units away. Branch 6 must classify this as a cross-CC SI rather than an internal one. When treat_all_CCs=false, CC-C is correctly skipped (clean); CC-A and CC-B are both implicated by the external crossing.",
+    "expected_kernel_behavior": "classify SI as cross-CC (external); implicate both CC-A and CC-B despite neither having internal SI; skip CC-C when treat_all_CCs=false.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "mesh-examples/12-14-mesh/Me1120.mesh.json",
+    "id": "Me1120",
+    "notes": "",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "CC-A = flat triangle at z=0 (v0=(0,0,0), v1=(2,0,0), v2=(1,2,0)); CC-B = piercing triangle (v3=(1,0.5,-1), v4=(0.5,0.5,1), v5=(1.5,0.5,1)) sharing no vertices with CC-A; CC-C = clean flat triangle at y=20.",
+    "section": "12.14",
+    "section_dir": "12-14-mesh",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "CGAL `PMP.remove_self_intersections` Branch 6 @ line 2150 (*internal-vs-external-si-classification*: `if (does_self_intersect(cc)) { ... } else { if (!treat_all_CCs) continue",
+      "}`)",
+      "`MESH_HEAL_COVERAGE.md`."
+    ],
+    "taxonomy": [
+      "units"
+    ],
+    "tier3_assertions": [],
+    "title": "cross-CC external SI: CC-A and CC-B intersect each other, no intra-CC SI"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.14 mesh defects (sub-class: self-intersection/envelope-violation)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "a 2×1 flat rectangular patch in the z=0 plane (4 triangles: tris 0–3) represents the base surface with its containment envelope. An intruder triangle (tri 4) self-intersects tri 0: vertices v6=(0.5,0.3,0.4) and v7=(1.0,0.3,0.4) are above the patch, while v8=(0.75,0.3,-0.4) pokes below z=0. Any repair patch generated for this SI must lie within containment_epsilon of the original surface; the below-z vertex triggers the envelope-rejection branch. Interior patch edges (v1,v4), (v0,v4), (v1,v5) are manifold (n=2); boundary edges are open (n=1).",
+    "expected_kernel_behavior": "detect SI (tri 0 vs tri 4); attempt patch repair; construct Polyhedral_envelope from patch; reject candidate repair that places any vertex at z<-epsilon; escalate to next strategy.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "mesh-examples/12-14-mesh/Me1121.mesh.json",
+    "id": "Me1121",
+    "notes": "",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "v0–v5 tile 2×1 rect; t0=(v0,v1,v4), t1=(v0,v4,v3), t2=(v1,v2,v5), t3=(v1,v5,v4); intruder t4=(v6,v7,v8) with v8 at z=-0.4. assert triangles_self_intersect(0,4); assert interior edges n=2.",
+    "section": "12.14",
+    "section_dir": "12-14-mesh",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "CGAL `PMP.remove_self_intersections` Branch 7 @ line 2161 (*containment-envelope-enforcement*: `if (containment_epsilon > 0) { Polyhedral_envelope envelope(…)",
+      "… }`)",
+      "`MESH_HEAL_COVERAGE.md`."
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "patch vs containment envelope: intruder vertex below z=0 triggers Polyhedral_envelope check"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.14 mesh defects (sub-class: self-intersection/smoothing-local)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "two connected components. CC-A (tris 0,1,2) contains a self-intersecting intruder (tri 2) whose apex v4 is displaced to z=-0.5 below the flat base patch (tris 0,1 in z=0). CC-B (tris 3,4) is a clean flat quad 25 units away with no SI. Branch 8 conditions smoothing on internal SI presence: CC-A has self_intersects=true so do_smooth=true; CC-B has self_intersects=false so do_smooth=treat_all_CCs (false when treat_all_CCs=false). The two-CC layout ensures both arms of the branch fire in a single mesh.",
+    "expected_kernel_behavior": "detect internal SI in CC-A; set do_smooth=true for CC-A; skip CC-B smoothing when treat_all_CCs=false; apply vertex smoothing to displace v4 back above z=0.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "mesh-examples/12-14-mesh/Me1122.mesh.json",
+    "id": "Me1122",
+    "notes": "",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "CC-A = tri 0=(v0,v1,v2), tri 1=(v1,v3,v2) sharing edge (v1,v2); intruder tri 2=(v4,v5,v6) with v4=(0.5,0.5,-0.5) crossing tri 0. CC-B = quad at y=25 (tris 3,4) with interior edge (v7,v9) n=2.",
+    "section": "12.14",
+    "section_dir": "12-14-mesh",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "CGAL `PMP.remove_self_intersections` Branch 8 @ line 2192 (*smoothing-local-vs-global-focus*: `if (self_intersects) { do_smooth = true",
+      "} else { do_smooth = treat_all_CCs",
+      "}`)",
+      "`MESH_HEAL_COVERAGE.md`."
+    ],
+    "taxonomy": [
+      "units"
+    ],
+    "tier3_assertions": [],
+    "title": "local smoothing on SI-bearing CC only: treat_all_CCs=false skips clean CC-B"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.14 mesh defects (sub-class: self-intersection/sharp-crease)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "triangles 0 (floor, z=0 plane) and 1 (wall, x=1 plane) share edge (v1,v2) at exactly 90° dihedral — a strong feature crease well above the strong_dihedral_angle threshold (≈150°). Triangle 2 is an intruder with apex v4 at z=-0.4, crossing the floor face (tri 0). Branch 9 fires because the repair region contains the sharp crease edge (v1,v2): constrain_sharp_edges=true locks (v1,v2) during smoothing to prevent the 90° corner from flattening. Outer edges of floor and wall are boundary (n=1).",
+    "expected_kernel_behavior": "detect SI between floor and intruder; identify crease edge (v1,v2) at 90° as a constraint; invoke constrained smoothing that preserves the right-angle corner.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "mesh-examples/12-14-mesh/Me1123.mesh.json",
+    "id": "Me1123",
+    "notes": "",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "v0=(0,0,0), v1=(1,0,0), v2=(1,1,0); floor t0=(v0,v1,v2); wall apex v3=(1,0.5,1); wall t1=(v1,v2,v3); crease (v1,v2) n=2; intruder t2=(v4,v5,v6) with v4=(0.4,0.4,-0.4), v5=(0.2,0.1,0.5), v6=(0.6,0.1,0.5).",
+    "section": "12.14",
+    "section_dir": "12-14-mesh",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "CGAL `PMP.remove_self_intersections` Branch 9 @ line 2196 (*constraint-preservation-mode*: `if (constrain_sharp_edges) { smooth(…, strong_dihedral_angle)",
+      "}`)",
+      "`MESH_HEAL_COVERAGE.md`."
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "SI adjacent to 90-degree crease edge: constrain_sharp_edges preserves right-angle feature"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.14 mesh defects (sub-class: self-intersection/smoothing-fallback)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "a 4-triangle cross-shaped floor (tris 0–3, all in z=0) with two wall triangles (tris 4,5) rising at 90° from interior floor edges. Tri 4 (wall A) shares edge (v1,v4) with the floor; this edge is also shared by floor tris 0 and 2, making it non-manifold (n=3). An intruder triangle (tri 6) has apex v7 at z=-0.5 directly below the floor centre, crossing tri 0. Branch 9 (constrained smoothing) cannot resolve the SI because the non-manifold crease locks all adjacent vertices; Branch 10 fires when fixed_by_smoothing remains false — re-running without sharp-edge constraints allows v7 to be lifted above z=0.",
+    "expected_kernel_behavior": "detect SI (tri 0 vs tri 6); attempt constrained smoothing (Branch 9); detect fixed_by_smoothing=false due to non-manifold crease; escalate to unconstrained fallback (Branch 10); resolve SI by relaxing constraints.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "mesh-examples/12-14-mesh/Me1124.mesh.json",
+    "id": "Me1124",
+    "notes": "",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "v0=(0,1,0), v1=(1,0,0), v2=(1,2,0), v3=(2,1,0), v4=(1,1,0) — floor vertices; t0=(v0,v1,v4), t1=(v0,v4,v2), t2=(v1,v3,v4), t3=(v4,v3,v2); wall-A t4=(v1,v4,v5) with v5=(1,0.5,1); wall-B t5=(v4,v2,v6) with v6=(1,1.5,1); intruder t6=(v7,v8,v9) with v7=(0.5,0.7,-0.5), v8=(0.2,0.4,0.5), v9=(0.8,0.4,0.5).",
+    "section": "12.14",
+    "section_dir": "12-14-mesh",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "CGAL `PMP.remove_self_intersections` Branch 10 @ line 2207 (*smoothing-fallback-escalation*: `if (!fixed_by_smoothing) { smooth(…, constrain_sharp_edges=false)",
+      "}`)",
+      "`MESH_HEAL_COVERAGE.md`."
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "SI under two-crease floor: constrained smoothing stalls, unconstrained fallback fires"
+  },
+  {
     "byte_assertions": [
       "bytes_starts_with(b'\\xef\\xbb\\xbf')",
       "matches(rb'\\xef\\xbb\\xbf')"
