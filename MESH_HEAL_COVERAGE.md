@@ -410,17 +410,17 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
   - Suggested fixture: defect mentioning 'while(start!=h)', 'h=next(h, pm)'
 
 ##### `PMP.merge_duplicated_vertices_in_boundary_cycles` — lines 345–355
-(3 branches; all UNCOVERED — no mesh fixtures exist yet)
+(3 branches; ALL COVERED — wave 31A)
 
-- **Branch 1** @ line 351 — *boundary_cycle_discovery*
+- **Branch 1** @ line 351 — *boundary_cycle_discovery* — **Me890**
   - What it tests: Extract all boundary cycles from mesh
   - Repair action: populate cycles vector
   - Suggested fixture: defect mentioning 'extract_boundary_cycles', 'std::back_inserter'
-- **Branch 2** @ line 353 — *cycle_iteration*
+- **Branch 2** @ line 353 — *cycle_iteration* — **Me891**
   - What it tests: For each boundary cycle found, invoke single-cycle merge
   - Repair action: apply merge_duplicated_vertices_in_boundary_cycle to each
   - Suggested fixture: defect mentioning 'for(halfedge_descriptor h : cycles)'
-- **Branch 3** @ line 354 — *merge_delegation*
+- **Branch 3** @ line 354 — *merge_delegation* — **Me892**
   - What it tests: Empty cycles vector (no boundaries)
   - Repair action: no-op if mesh is closed
   - Suggested fixture: defect mentioning 'merge_duplicated_vertices_in_boundary_cycle'
@@ -1170,20 +1170,20 @@ Fixture IDs: Me790 Me791 Me792
 (1 methods, 3 branches)
 
 ##### `PMP.orient_triangle_soup_with_reference_triangle_soup` — lines 131–215
-(3 branches; all UNCOVERED — no mesh fixtures exist yet)
+(3 branches; all COVERED — Me900–Me902)
 
-- **Branch 1** @ line 155 — *reference_degenerate_triangle*
+- **Branch 1** @ line 155 — *reference_degenerate_triangle* — **Me900**
   - What it tests: reference triangle is non-degenerate
   - Repair action: skip degenerate reference triangles
-  - Suggested fixture: defect mentioning 'is_degenerate'
-- **Branch 2** @ line 175 — *closest_face_search*
+  - Fixture: defect mentioning 'is_degenerate'; collinear reference triangle (area=0) skipped
+- **Branch 2** @ line 175 — *closest_face_search* — **Me901**
   - What it tests: closest_point_and_primitive result is valid
   - Repair action: use closest non-degenerate reference face
-  - Suggested fixture: defect mentioning 'closest_point_and_primitive'
-- **Branch 3** @ line 200 — *orientation_flip_decision*
+  - Fixture: defect mentioning 'closest_point_and_primitive'; three-sector fan with matching reference at z=-1
+- **Branch 3** @ line 200 — *orientation_flip_decision* — **Me902**
   - What it tests: dot product of normals determines orientation
   - Repair action: flip triangle if negative dot product
-  - Suggested fixture: defect mentioning 'dot_product'
+  - Fixture: defect mentioning 'dot_product'; t1 CW winding (normal -Z) vs reference (+Z); flip fires
 
 
 #### `PMP_Mesh_repair/include/CGAL/Polygon_mesh_processing/orientation.h`
@@ -2740,20 +2740,20 @@ Fixture IDs: Me880 Me881 Me882
   - Fixture: Me862 — core SI pair with 2-ring belt; growSelection must reach ring 2 before repair is feasible
 
 ##### `di_cell.selectIntersections` — lines 107–129
-(3 branches; all UNCOVERED — no mesh fixtures exist yet)
+(3 branches; ALL COVERED — Me910–Me912)
 
-- **Branch 1** @ line 119 — *Redundant pair-test detection*
+- **Branch 1** @ line 119 — *Redundant pair-test detection* — **Me910**
   - What it tests: Whether a triangle pair was already tested in another cell
   - Repair action: Skip test if pair cached; otherwise perform full intersection test
-  - Suggested fixture: defect mentioning 't->info', 'containsNode'
-- **Branch 2** @ line 121 — *Proper vs improper intersection*
+  - Fixture: Me910 — two crossing triangles straddling y=0 boundary; same pair seen in two cells; t->info->containsNode(t1)==true → skip
+- **Branch 2** @ line 121 — *Proper vs improper intersection* — **Me911**
   - What it tests: Intersection type classification: proper (transverse) vs improper (touching)
   - Repair action: Mark triangles as intersecting based on justproper flag
-  - Suggested fixture: defect mentioning 'justproper', 'intersects'
-- **Branch 3** @ line 124 — *Info-list initialization*
+  - Fixture: Me911 — touching shared-vertex pair (improper, skipped by justproper=true); separate transverse pair (proper, collected)
+- **Branch 3** @ line 124 — *Info-list initialization* — **Me912**
   - What it tests: Whether triangle already has an intersection info list attached
   - Repair action: Reuse existing list or create new; append opposite triangle
-  - Suggested fixture: defect mentioning 't->info != NULL', 'new List'
+  - Fixture: Me912 — hub t0 intersects t1 (NULL→new List) then t2 (reuse existing list); both paths of Branch 3 exercised
 
 ##### `mc_cell.lookdown` — lines 106–135
 (2 branches; all UNCOVERED — no mesh fixtures exist yet)
