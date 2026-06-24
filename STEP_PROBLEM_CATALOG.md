@@ -36323,3 +36323,102 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=6 e=12 f=6 chi=0`
 - **Fixture path**: mesh-examples/12-14-mesh/Me376.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me380 — isDoubleFlat_empty_1ring: vertex has no incident edges; VE() NULL triggers Branch 1 return false
+- **Category**: §12.14 mesh defects (sub-class: isDoubleFlat / empty-1ring)
+- **Sources**: MeshFix `Vertex.isDoubleFlat` Branch 1 (*empty_1ring*: `if ((ve = VE()) == NULL) return false`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Vertex v0=(0,0,0) is listed in the mesh but referenced by no triangle. It has zero incident edges; VE() returns NULL; Branch 1 of isDoubleFlat fires immediately and returns false. The remaining vertices v1-v4 form two valid flat triangles that do not include v0.
+- **Reproducer recipe**: v0=(0,0,0) isolated; v1=(1,0,0), v2=(2,0,0), v3=(1.5,1,0), v4=(0.5,1,0); t0=(v1,v2,v3), t1=(v1,v3,v4); no triangle references v0.
+- **Expected kernel behavior**: VE() for v0 returns NULL; isDoubleFlat short-circuits at Branch 1; returns false without scanning the 1-ring.
+- **Mesh assertion**: `isolated_vertex vertex=0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me380.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me381 — isDoubleFlat_edge_convexity_nonzero_first: first non-coplanar edge found; nne incremented to 1 at Branch 2
+- **Category**: §12.14 mesh defects (sub-class: isDoubleFlat / edge-convexity-nonzero-first)
+- **Sources**: MeshFix `Vertex.isDoubleFlat` Branch 2 (*edge_convexity_nonzero_first*: `if (e->getConvexity(...) != 0) { if (nne == 0) { e1 = e; } nne++; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Vertex v0=(0,0,0) is the center of a 4-triangle open flat fan (all z=0). All interior fan edges are shared by exactly 2 triangles. During the 1-ring convexity scan, the edge (v0,v2) is the first (and in this geometry, only) edge with changed dihedral angle. Branch 2 fires when that first ridge edge is encountered, incrementing nne from 0 to 1 and recording e1. The euler characteristic is V=5, E=8, F=4, chi=1 (flat disk).
+- **Reproducer recipe**: v0=(0,0,0), v1=(-1,0,0), v2=(0,1,0), v3=(1,0,0), v4=(0,-1,0); t0=(v1,v0,v4), t1=(v0,v1,v2), t2=(v2,v3,v0), t3=(v3,v4,v0); 4-triangle flat fan with open boundary.
+- **Expected kernel behavior**: First scan iteration finds non-zero convexity at an edge; Branch 2 fires; e1 set; nne incremented to 1; scan continues.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `euler_characteristic v=5 e=8 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me381.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me382 — isDoubleFlat_edge_convexity_triple: 6-triangle fan with 3 raised outer vertices; nne exceeds 2 → Branch 3 returns false
+- **Category**: §12.14 mesh defects (sub-class: isDoubleFlat / edge-convexity-triple)
+- **Sources**: MeshFix `Vertex.isDoubleFlat` Branch 3 (*edge_convexity_triple*: `else if (nne > 2) return false`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Vertex v0=(0,0,0) is the center of a 6-triangle fan. Outer vertices alternate between flat (z=0) and raised (z≠0) positions, creating 6 ridge edges around v0. After the third ridge edge is detected (nne reaches 3), Branch 3 fires immediately and returns false — the 1-ring is too complex to be a DoubleFlat vertex.
+- **Reproducer recipe**: v0=(0,0,0); v1=(1,0,0) flat, v2=(0.5,0.87,1) raised, v3=(-1,0,0) flat, v4=(-0.5,-0.87,1) raised, v5=(0,-1,0) flat, v6=(0.87,0.5,-1) raised; 6 fan triangles; all fan edges n=2; all outer edges n=1.
+- **Expected kernel behavior**: After 3 non-coplanar edges found, nne>2; Branch 3 fires; returns false (too many ridges for DoubleFlat).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,6] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me382.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me383 — isDoubleFlat_edge_convexity_second: two ridge edges in 4-triangle fan; second triggers Branch 4 (e2 set, nne=2)
+- **Category**: §12.14 mesh defects (sub-class: isDoubleFlat / edge-convexity-second)
+- **Sources**: MeshFix `Vertex.isDoubleFlat` Branch 4 (*edge_convexity_second*: `else if (nne == 2) { e2 = e; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Vertex v0=(0,0,0.5) sits at the apex of a fold between a flat base and a raised region. Its 4-triangle fan has exactly two ridge edges — (v0,v1) and (v0,v3) — where the triangles change from flat to raised orientation. The first ridge sets e1 (Branch 2, nne=1); the second ridge sets e2 (Branch 4, nne=2). All 4 fan edges are interior; all outer edges are boundary.
+- **Reproducer recipe**: v0=(0,0,0.5), v1=(-1,0,0), v2=(0,1,0), v3=(1,0,0), v4=(0,-1,1); t0=(v1,v2,v0), t1=(v2,v3,v0), t2=(v3,v4,v0), t3=(v4,v1,v0).
+- **Expected kernel behavior**: Two ridge edges found; Branch 4 fires on second detection; e2 set; nne=2; algorithm continues to Branch 7 misalignment check.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me383.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me384 — isDoubleFlat_flat_vertex_case: all fan triangles coplanar (z=0); nne==0 → Branch 5 returns true
+- **Category**: §12.14 mesh defects (sub-class: isDoubleFlat / flat-vertex-case)
+- **Sources**: MeshFix `Vertex.isDoubleFlat` Branch 5 (*flat_vertex_case*: `if (nne == 0) return true`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Vertex v0=(0,0,0) is the center of a 4-triangle fan entirely in the z=0 plane. Every adjacent triangle pair is coplanar; all dihedral angles are flat (180°). After a complete 1-ring scan, nne remains 0. Branch 5 fires and returns true — a completely flat vertex is considered DoubleFlat (trivially, as it satisfies the flat-fold condition with no ridge violations). Euler: V=5, E=8, F=4, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(-1,0,0), v2=(0,1,0), v3=(1,0,0), v4=(0,-1,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v4), t3=(v4,v1,v0); all z=0.
+- **Expected kernel behavior**: Full 1-ring scan completes with nne==0; no ridge edges found; Branch 5 fires; returns true (flat vertex is trivially DoubleFlat).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `euler_characteristic v=5 e=8 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me384.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me385 — isDoubleFlat_singular_edge_case: open 4-triangle fan with exactly one ridge; nne==1 at end → Branch 6 returns false
+- **Category**: §12.14 mesh defects (sub-class: isDoubleFlat / singular-edge-case)
+- **Sources**: MeshFix `Vertex.isDoubleFlat` Branch 6 (*singular_edge_case*: `else if (nne == 1) return false`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Vertex v0=(0,0,0) is the center of an open 4-triangle fan. The first 3 triangles (t0-t2) are flat (z=0); the 4th triangle t3 is raised (v5 at z=1). Interior fan edge (v0,v4) — shared by flat t2 and raised t3 — is the only ridge. After a full scan nne==1 (one ridge, one coplanar cluster). Branch 6 fires and returns false: a single crease line at a vertex cannot form a valid DoubleFlat (which requires two matched ridge edges).
+- **Reproducer recipe**: v0=(0,0,0), v1=(-1,0,0), v2=(-0.5,1,0), v3=(0.5,1,0), v4=(1,0,0), v5=(1.5,0,1); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v4), t3=(v0,v4,v5); edges (v0,v1) and (v0,v5) are boundary (n=1).
+- **Expected kernel behavior**: Full scan finds exactly one interior ridge edge (v0,v4); nne==1; Branch 6 fires; returns false (singular non-manifold fold, not DoubleFlat).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me385.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me386 — isDoubleFlat_misalignment_check: v0 collinear with opposite vertices of two ridges; exactMisalignment=false → Branch 7 returns true
+- **Category**: §12.14 mesh defects (sub-class: isDoubleFlat / misalignment-check)
+- **Sources**: MeshFix `Vertex.isDoubleFlat` Branch 7 (*misalignment_check*: `return !(e1->oppositeVertex(this)->exactMisalignment(this, e2->oppositeVertex(this)))`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Vertex v0=(0,0,0) has exactly 2 ridge edges in its 4-triangle closed fan. Ridge e1=(v0,v1) leads to opposite vertex v1=(-2,0,0); ridge e2=(v0,v2) leads to opposite vertex v2=(2,0,0). Both v1, v0, v2 lie on the x-axis — they are exactly collinear. exactMisalignment(v0,v2) returns false (no misalignment); Branch 7 returns !(false) = true. The vertex IS a valid DoubleFlat. The collinearity is confirmed by assert_vertex_on_edge(v0, v1, v2).
+- **Reproducer recipe**: v0=(0,0,0), v1=(-2,0,0), v2=(2,0,0), v3=(0,1,1), v4=(0,-1,1); t0=(v1,v3,v0), t1=(v3,v2,v0), t2=(v2,v4,v0), t3=(v4,v1,v0); v0 on segment v1-v2.
+- **Expected kernel behavior**: Two ridge edges found; opposite vertices v1 and v2 are collinear with v0; exactMisalignment=false; Branch 7 returns true (confirmed DoubleFlat vertex).
+- **Mesh assertion**: `vertex_on_edge vertex=0 edge=[1,2]`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me386.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder

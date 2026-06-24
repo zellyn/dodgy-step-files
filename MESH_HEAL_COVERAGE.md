@@ -1875,36 +1875,17 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
 Fixture IDs: Me120 Me121 Me122 Me123 Me124 Me125 Me126 Me127 Me128 Me129
 
 ##### `Vertex.isDoubleFlat` — lines 320–339
-(7 branches; all UNCOVERED — no mesh fixtures exist yet)
+(7 branches; ALL COVERED by Me380–Me386 — wave 14A, 2026-06-23)
 
-- **Branch 1** @ line 323 — *empty_1ring*
-  - What it tests: Vertex edges retrieved successfully
-  - Repair action: Get vertex-edge list VE()
-  - Suggested fixture: defect mentioning 'VE()'
-- **Branch 2** @ line 328 — *edge_convexity_nonzero_first*
-  - What it tests: First non-coplanar edge found
-  - Repair action: Store first edge with nonzero convexity in e1
-  - Suggested fixture: defect mentioning 'e->getConvexity() != 0', 'nne == 1'
-- **Branch 3** @ line 331 — *edge_convexity_triple*
-  - What it tests: More than 2 non-coplanar edges exist
-  - Repair action: Return false - 1-ring too complex for DoubleFlat
-  - Suggested fixture: defect mentioning 'nne > 2'
-- **Branch 4** @ line 333 — *edge_convexity_second*
-  - What it tests: Second non-coplanar edge found
-  - Repair action: Store second edge in e2
-  - Suggested fixture: defect mentioning 'nne == 2'
-- **Branch 5** @ line 336 — *flat_vertex_case*
-  - What it tests: Zero non-coplanar edges (all edges coplanar)
-  - Repair action: Return true - vertex is completely flat
-  - Suggested fixture: defect mentioning 'nne == 0'
-- **Branch 6** @ line 337 — *singular_edge_case*
-  - What it tests: Exactly one non-coplanar edge (impossible case)
-  - Repair action: Return false - singleton non-manifold
-  - Suggested fixture: defect mentioning 'nne == 1'
-- **Branch 7** @ line 338 — *misalignment_check*
-  - What it tests: Two edges align with opposite vertices
-  - Repair action: Return opposite of exact misalignment - true if collinear
-  - Suggested fixture: defect mentioning 'exactMisalignment', 'oppositeVertex'
+- **Branch 1** @ line 323 — *empty_1ring* — COVERED (Me380: isolated vertex v0 not referenced by any triangle; assert_isolated_vertex + edge sharing on surrounding triangles)
+- **Branch 2** @ line 328 — *edge_convexity_nonzero_first* — COVERED (Me381: 4-triangle flat fan around v0; interior fan edges all n=2; euler V=5 E=8 F=4 chi=1; first ridge triggers nne=1)
+- **Branch 3** @ line 331 — *edge_convexity_triple* — COVERED (Me382: 6-triangle fan with alternating raised outer vertices; 6 ridge edges; nne reaches 3+ → Branch 3 returns false)
+- **Branch 4** @ line 333 — *edge_convexity_second* — COVERED (Me383: 4-triangle fan with exactly 2 ridge edges (v0,v1) and (v0,v3); second ridge sets e2, nne=2)
+- **Branch 5** @ line 336 — *flat_vertex_case* — COVERED (Me384: 4-triangle completely flat z=0 fan; nne stays 0; Branch 5 returns true; euler V=5 E=8 F=4 chi=1)
+- **Branch 6** @ line 337 — *singular_edge_case* — COVERED (Me385: open 4-triangle fan; 3 flat + 1 raised; single interior ridge (v0,v4); nne==1 at scan end; Branch 6 returns false)
+- **Branch 7** @ line 338 — *misalignment_check* — COVERED (Me386: 4-triangle closed fan; 2 ridge edges; opposite vertices v1=(-2,0,0) and v2=(2,0,0) collinear with v0=(0,0,0); exactMisalignment=false → Branch 7 returns true; assert_vertex_on_edge)
+
+Fixture IDs: Me380 Me381 Me382 Me383 Me384 Me385 Me386
 
 ##### `Vertex.removeIfRedundant` — lines 343–396
 (10 branches; all COVERED by Me130–Me139 — wave 5C, 2026-06-21)
