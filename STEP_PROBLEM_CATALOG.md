@@ -36593,6 +36593,85 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me670 — mergeCoincidentEdges BOUNDARY_VERTEX_CLASSIFICATION: open mesh; every edge n=1 triggers MARK_BIT(v,5) on both endpoints (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: open-boundary / vertex-classification)
+- **Sources**: MeshFix `checkAndRepair::mergeCoincidentEdges` Branch 1 (*BOUNDARY_VERTEX_CLASSIFICATION*: `MARK_BIT(e->v1, 5);` — each boundary edge marks both endpoint vertices with BIT 5 for subsequent `isOnBoundary` lookup); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disjoint triangles sharing only vertex v1 (bottom-middle) produce an open mesh with six boundary edges and zero interior edges (n=2). Every edge scan fires Branch 1, marking all five vertices with BIT 5. The absence of any n=2 edge ensures only the boundary-classification code path is exercised. Euler: V=5, E=6, F=2, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0), v3=(0,1,0), v4=(2,1,0); t0=(v0,v1,v3), t1=(v1,v2,v4); all six edges n=1; euler V=5,E=6,F=2,chi=1.
+- **Expected kernel behavior**: Branch 1 fires for all six boundary edges; all five vertices are tagged with MARK_BIT(v,5); isOnBoundary returns true for each.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `euler_characteristic v=5 e=6 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me670.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me671 — mergeCoincidentEdges VERTEX_DUPLICATION_AT_V1: boundary edge v1 has non-self info pointer (a1 coincident with b0); redirect to canonical representative (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: coincident-boundary-vertex / v1-redirect)
+- **Sources**: MeshFix `checkAndRepair::mergeCoincidentEdges` Branch 2 (*VERTEX_DUPLICATION_AT_V1*: `if (e->v1->info != e->v1)` — after vertex canonicalization, if v1's info pointer differs from v1 itself, redirect v1 to its representative); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangle patches with exactly coincident boundary vertices a1 and b0 both at (1,0,0). After coincident-vertex detection a1->info is redirected to b0 (canonical). When the boundary edge from a0 to a1 is scanned, e->v1==a1 but a1->info==b0 != a1, firing Branch 2. v1 is replaced by b0. All six edges are boundary edges (n=1). Euler: V=6, E=6, F=2, chi=2.
+- **Reproducer recipe**: a0=(0,0,0), a1=(1,0,0), a2=(0.5,1,0), b0=(1,0,0), b1=(2,0,0), b2=(1.5,1,0); t0=(a0,a1,a2), t1=(b0,b1,b2); all edges n=1; vertex_pair_distance_lt(a1,b0,1e-9); vertex_pair_no_shared_triangle(a1,b0); euler V=6,E=6,F=2,chi=2.
+- **Expected kernel behavior**: Branch 2 fires when the boundary edge with v1=a1 is scanned; a1->info=b0 != a1 so e->v1 is updated to b0 (canonical representative).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,3] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,3]`
+- **Mesh assertion**: `euler_characteristic v=6 e=6 f=2 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me671.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me672 — mergeCoincidentEdges VERTEX_DUPLICATION_AT_V2: boundary edge v2 has non-self info pointer (p1 coincident with q1); redirect to canonical representative (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: coincident-boundary-vertex / v2-redirect)
+- **Sources**: MeshFix `checkAndRepair::mergeCoincidentEdges` Branch 3 (*VERTEX_DUPLICATION_AT_V2*: `if (e->v2->info != e->v2)` — analogous to Branch 2 but for the second endpoint of the boundary edge); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Analogous to Me671 but the coincident vertex appears as v2 (the destination endpoint) of the scanned boundary edge. Vertex pair p1 and q1 both at (1,0,0); q1->info=p1 after canonicalization. When a boundary edge with v2=q1 is scanned, q1->info != q1 fires Branch 3. Euler: V=6, E=6, F=2, chi=2.
+- **Reproducer recipe**: p0=(0,0,0), p1=(1,0,0), p2=(0.5,1,0), q0=(2,0,0), q1=(1,0,0), q2=(1.5,1,0); t0=(p0,p1,p2), t1=(q0,q1,q2); all edges n=1; vertex_pair_distance_lt(p1,q1,1e-9); vertex_pair_no_shared_triangle(p1,q1); euler V=6,E=6,F=2,chi=2.
+- **Expected kernel behavior**: Branch 3 fires when the boundary edge with v2=q1 is scanned; q1->info=p1 != q1 so e->v2 is updated to p1 (canonical representative).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,4]`
+- **Mesh assertion**: `euler_characteristic v=6 e=6 f=2 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me672.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me673 — mergeCoincidentEdges EDGE_DUPLICATION_BOUNDARY: two boundary edges (c0,c1) and (d0,d1) at identical coordinates form a stitchable seam; vtxEdgeCompare selects canonical (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: coincident-boundary-vertex / duplicate-boundary-edge)
+- **Sources**: MeshFix `checkAndRepair::mergeCoincidentEdges` Branch 4 (*EDGE_DUPLICATION_BOUNDARY*: `pe = e->v1->getEdge(e->v2);` followed by vtxEdgeCompare — when two boundary edges map to the same canonical vertex pair after vertex unification, getEdge finds an existing edge pe != NULL); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Patch A has triangle (c0,c1,c2) with seam edge (c0,c1) n=1. Patch B has triangle (d0,d1,d2) with seam edge (d0,d1) n=1. c0==d0 at (0,0,0) and c1==d1 at (1,0,0) exactly. After vertex canonicalization both seam edges resolve to canonical pair (c0,c1). getEdge(c0,c1) finds pe != NULL (the existing canonical edge), triggering Branch 4. vtxEdgeCompare selects the canonical edge and redirects the duplicate. Euler: V=6, E=6, F=2, chi=2.
+- **Reproducer recipe**: c0=(0,0,0), c1=(1,0,0), c2=(0.5,1,0), d0=(0,0,0), d1=(1,0,0), d2=(0.5,-1,0); t0=(c0,c1,c2), t1=(d0,d1,d2); all edges n=1; vertex_pair_distance_lt(c0,d0,1e-9); vertex_pair_distance_lt(c1,d1,1e-9); edge_pair_coincident((c0,c1),(d0,d1)); euler V=6,E=6,F=2,chi=2.
+- **Expected kernel behavior**: Branch 4 fires; pe = e->v1->getEdge(e->v2) returns the canonical seam edge; vtxEdgeCompare runs; the duplicate seam edge has its info redirected to pe (canonical).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,3] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[0,3]`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,4]`
+- **Mesh assertion**: `edge_pair_coincident edge_a=[0,1] edge_b=[3,4] eps=1e-09`
+- **Mesh assertion**: `euler_characteristic v=6 e=6 f=2 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me673.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me674 — mergeCoincidentEdges REDUNDANT_EDGE_REMOVAL: duplicate seam edge (f0,f1) has info redirected to canonical (e0,e1); replaceEdge redirects triangle reference (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: coincident-boundary-vertex / redundant-edge-cleanup)
+- **Sources**: MeshFix `checkAndRepair::mergeCoincidentEdges` Branch 5 (*REDUNDANT_EDGE_REMOVAL*: `if (e->info != e)` — second-pass scan over all edges; edges whose info was redirected to a canonical during Branch 4 are detected here; replaceEdge redirects the triangle reference to the canonical edge, then the duplicate is nulled); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two-patch mesh where patch A has two triangles (t0, t2) and patch B has one triangle (t1). Seam edge (e0,e1)/(f0,f1) at exactly coincident coordinates. After Branch 4 processing, f0,f1 are redirected to e0,e1 and the duplicate seam edge (f0,f1) gets info=canonical_seam_edge. The second-pass scan finds this edge with e->info != e, fires Branch 5, calls replaceEdge to redirect t1's reference, and nulls out the duplicate. Interior edge (e1,e2) shared by t0 and t2 n=2. Euler: V=7, E=8, F=3, chi=2.
+- **Reproducer recipe**: e0=(0,0,0), e1=(1,0,0), e2=(0.5,1,0), f0=(0,0,0), f1=(1,0,0), f2=(0.5,-1,0), g2=(1.5,0.5,0); t0=(e0,e1,e2), t1=(f0,f1,f2), t2=(e1,g2,e2); edge_shared(e1,e2,2); seam edges n=1; vertex_pair_distance_lt(e0,f0), vertex_pair_distance_lt(e1,f1); edge_pair_coincident((e0,e1),(f0,f1)); euler V=7,E=8,F=3,chi=2.
+- **Expected kernel behavior**: Branch 5 fires for the duplicate seam edge (f0,f1) after info was redirected to canonical in Branch 4; replaceEdge updates t1's edge pointer to the canonical seam edge; duplicate edge is nulled.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,3] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[0,3]`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,4]`
+- **Mesh assertion**: `edge_pair_coincident edge_a=[0,1] edge_b=[3,4] eps=1e-09`
+- **Mesh assertion**: `euler_characteristic v=7 e=8 f=3 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me674.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me650 — removeEdges list_head_initialization: non-empty mesh; E.head() initialises traversal pointer at first edge (Branch 1)
 - **Category**: §12.14 mesh defects (sub-class: orphaned-edge / list-traversal-init)
 - **Sources**: MeshFix `Basic_TMesh.removeEdges` Branch 1 (*list_head_initialization*: `n = E.head()`); `MESH_HEAL_COVERAGE.md`.
