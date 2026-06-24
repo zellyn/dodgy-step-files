@@ -36592,3 +36592,97 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me700 — bridgeBoundaries same_edge_or_non_boundary: interior edge (v0,v1) shared by 2 triangles; isOnBoundary() false, bridge returns NULL (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: boundary-bridge / non-boundary-edge-guard)
+- **Sources**: MeshFix `Basic_TMesh.bridgeBoundaries` Branch 1 (*same_edge_or_non_boundary*: `if (gve == gwe || !gve->isOnBoundary()) return NULL;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing interior edge (v0,v1); the interior edge is incident on 2 triangles so isOnBoundary() returns false for it. A bridge attempt passing this edge as gve hits the early-return guard immediately — Branch 1 fires. Interior edge (v0,v1) n=2; four boundary edges n=1. Euler: V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(1,-2,0); t0=(v0,v1,v2), t1=(v0,v3,v1); interior edge (v0,v1) n=2; boundary edges (v1,v2),(v0,v2),(v0,v3),(v1,v3) n=1; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 1 fires; bridgeBoundaries returns NULL without creating any new geometry because the input edge is not a boundary edge.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me700.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me701 — bridgeBoundaries common_vertex_exists: boundary edges (v0,v2) and (v2,v3) share vertex v2; single-triangle EulerEdgeTriangle bridge (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: boundary-bridge / shared-vertex-single-triangle)
+- **Sources**: MeshFix `Basic_TMesh.bridgeBoundaries` Branch 2 (*common_vertex_exists*: `if ((cv = gve->commonVertex(gwe)) != NULL) { EulerEdgeTriangle(gve, gwe); return gve; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing interior edge (v1,v2); boundary edges (v0,v2) and (v2,v3) both share vertex v2. Bridge attempt with gve=(v0,v2) and gwe=(v2,v3) detects common vertex v2 → Branch 2 fires, EulerEdgeTriangle fills the notch with one new triangle (v0,v2,v3). Interior edge (v1,v2) n=2; four boundary edges n=1. The hole boundary loop is [v0,v2,v3]. Euler: V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,1,0), v3=(2,2,0); t0=(v0,v1,v2), t1=(v1,v3,v2); interior (v1,v2) n=2; boundary (v0,v1),(v0,v2),(v2,v3),(v1,v3) n=1; hole_boundary=[v0,v2,v3]; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 2 fires; commonVertex returns v2; EulerEdgeTriangle creates one new triangle bridging the V-notch; function returns gve.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,2,3]`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me701.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me702 — bridgeBoundaries gve_endpoint_selection: gve->t1 non-NULL selects gve->v1 as free endpoint; disjoint boundary edges on separate patches (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: boundary-bridge / gve-endpoint-selection)
+- **Sources**: MeshFix `Basic_TMesh.bridgeBoundaries` Branch 3 (*gve_endpoint_selection*: `v1 = (gve->t1) ? (gve->v1) : (gve->v2);`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two separate quadrilateral patches (left at x=0-1, right at x=3-4), each subdivided into two triangles. Each patch has four boundary edges; the patches are completely disconnected (no shared vertex). gve is a boundary edge from the left patch with t1 non-NULL → v1 is the free endpoint. Branch 3 fires the true arm. Interior edges (v0,v2) and (v4,v6) n=2; eight boundary edges n=1. Euler: V=8, E=10, F=4, chi=2.
+- **Reproducer recipe**: left: v0=(0,0,0),v1=(1,0,0),v2=(0.5,1,0),v3=(0,1,0); t0=(v0,v1,v2), t1=(v0,v2,v3); right: v4=(3,0,0),v5=(4,0,0),v6=(3.5,1,0),v7=(3,1,0); t2=(v4,v5,v6), t3=(v4,v6,v7); interior edges n=2; boundary edges n=1; triangle_not_reachable_from(t2,t0); euler V=8,E=10,F=4,chi=2.
+- **Expected kernel behavior**: Branch 3 fires true arm; gve->t1 is non-NULL so v1=gve->v1 (the vertex not attached to the triangle on t1 side) is selected as the anchor for the first bridge triangle.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[6,7] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,7] n=1`
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Mesh assertion**: `euler_characteristic v=8 e=10 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me702.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me703 — bridgeBoundaries gwe_endpoint_selection: gwe->t1 non-NULL selects gwe->v2 as free endpoint; disjoint boundary edges on separate patches (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: boundary-bridge / gwe-endpoint-selection)
+- **Sources**: MeshFix `Basic_TMesh.bridgeBoundaries` Branch 4 (*gwe_endpoint_selection*: `v2 = (gwe->t1) ? (gwe->v2) : (gwe->v1);`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two separate quadrilateral patches (top at y=2-3, bottom at y=0-1), each subdivided into two triangles. Patches are completely disconnected. gwe is a boundary edge from the bottom patch with t1 non-NULL → v2 is the free endpoint. Branch 4 fires the true arm (analogous to Branch 3 but for gwe). Interior edges (a0,a2) and (b0,b2) n=2; eight boundary edges n=1. Euler: V=8, E=10, F=4, chi=2.
+- **Reproducer recipe**: top: a0=(0,2,0),a1=(1,2,0),a2=(0.5,3,0),a3=(0,3,0); t0=(a0,a1,a2), t1=(a0,a2,a3); bottom: b0=(2,0,0),b1=(3,0,0),b2=(2.5,1,0),b3=(2,1,0); t2=(b0,b1,b2), t3=(b0,b2,b3); interior edges n=2; boundary edges n=1; triangle_not_reachable_from(t2,t0); euler V=8,E=10,F=4,chi=2.
+- **Expected kernel behavior**: Branch 4 fires true arm; gwe->t1 is non-NULL so v2=gwe->v2 (the vertex not attached to the triangle on t1 side) is selected as the anchor for the second bridge triangle.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[6,7] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,7] n=1`
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Mesh assertion**: `euler_characteristic v=8 e=10 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me703.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me704 — bridgeBoundaries two_triangle_bridge: disjoint boundary edges (p1,p2) and (q0,q2) bridged by CreateEdge x3 + CreateTriangle x2 (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: boundary-bridge / two-triangle-gap-fill)
+- **Sources**: MeshFix `Basic_TMesh.bridgeBoundaries` Branch 5 (*two_triangle_bridge*: `je = CreateEdge(v1, v2); je2 = CreateEdge(v2, gve->v2); je1 = CreateEdge(gwe->v1, v1); CreateTriangle(gve, je2, je); CreateTriangle(gwe, je1, je); return je;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two separate quadrilateral patches (left at x=0-1, right at x=3-4) with no shared vertices. Each patch is divided into 2 triangles; the open boundary edges (p1,p2) and (q0,q2) are spatially disjoint. bridgeBoundaries creates 3 new edges (je connecting the free endpoints, je2 and je1 connecting the other endpoints) and 2 new triangles filling the bridge quadrilateral. Interior edges (p0,p2) and (q1,q2) n=2; eight boundary edges n=1. Euler: V=8, E=10, F=4, chi=2.
+- **Reproducer recipe**: left: p0=(0,0,0),p1=(1,0.5,0),p2=(1,1.5,0),p3=(0,2,0); t0=(p0,p1,p2), t1=(p0,p2,p3); right: q0=(3,0.5,0),q1=(4,0,0),q2=(3,1.5,0),q3=(4,2,0); t2=(q0,q1,q2), t3=(q1,q3,q2); interior edges n=2; boundary edges n=1; triangle_not_reachable_from(t2,t0); euler V=8,E=10,F=4,chi=2.
+- **Expected kernel behavior**: Branch 5 fires; three CreateEdge calls and two CreateTriangle calls bridge the gap between the disjoint boundary edges; function returns je (the central connecting edge).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,7] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[6,7] n=1`
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Mesh assertion**: `euler_characteristic v=8 e=10 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me704.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
