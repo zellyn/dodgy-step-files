@@ -860,22 +860,20 @@ Fixture IDs: Me750 Me751 Me752 Me753
 Fixture IDs: Me850 Me851 Me852
 
 ##### `PMP.does_polygon_soup_self_intersect` — lines 32–60
-(3 branches; ALL COVERED by Me1190–Me1192 — wave 42, 2026-06-23)
+(3 branches; all UNCOVERED — no mesh fixtures exist yet)
 
-- **Branch 1** @ line 40 — *duplicate_point_presence* — **Me1190**
+- **Branch 1** @ line 40 — *duplicate_point_presence*
   - What it tests: points merged to detect intersection
   - Repair action: merge_duplicate_points
-  - Fixture: Me1190 — two triangles sharing apex described by duplicate point entries (v2 and v2b both at (0.5,1,0)); merge_duplicate_points fires before self-intersection test
-- **Branch 2** @ line 45 — *polygon_type_mixed* — **Me1191**
+  - Suggested fixture: defect mentioning 'merge_duplicate_points_in_polygon_soup'
+- **Branch 2** @ line 45 — *polygon_type_mixed*
   - What it tests: triangulates non-triangle polygons
   - Repair action: triangulate_polygons
-  - Fixture: Me1191 — polygon soup with one quad + one triangle; nb_polygons=2 != nb_triangles=1 triggers triangulate_polygons; two disconnected components, no self-intersection
-- **Branch 3** @ line 50 — *intersection_detection* — **Me1192**
+  - Suggested fixture: defect mentioning 'std::size_t(3)'
+- **Branch 3** @ line 50 — *intersection_detection*
   - What it tests: calls triangle soup self-intersection check
   - Repair action: detect_pairwise_triangles
-  - Fixture: Me1192 — T0 in XZ plane and T1 in YZ plane crossing at origin; triangle_soup_self_intersections returns non-empty; does_polygon_soup_self_intersect returns true
-
-Fixture IDs: Me1190 Me1191 Me1192
+  - Suggested fixture: defect mentioning 'triangle_soup_self_intersections'
 
 ##### `PMP.is_degenerate_edge` — lines 56–93
 (1 branches; all UNCOVERED — no mesh fixtures exist yet)
@@ -908,44 +906,40 @@ Fixture IDs: Me1190 Me1191 Me1192
 Fixture IDs: Me770 Me771 Me772 Me773
 
 ##### `PMP.is_polygon_soup_a_polygon_mesh` — lines 190–232
-(3 branches; ALL COVERED by Me1193–Me1195 — wave 42, 2026-06-23)
+(3 branches; all UNCOVERED — no mesh fixtures exist yet)
 
-- **Branch 1** @ line 210 — *duplicate_vertex_in_polygon* — **Me1193**
+- **Branch 1** @ line 210 — *duplicate_vertex_in_polygon*
   - What it tests: polygon has repeated vertex indices
   - Repair action: return_false
-  - Fixture: Me1193 — degenerate triangle (v0,v1,v0) with repeated vertex index 0; second occurrence of v0 found in per-polygon seen-set; returns false
-- **Branch 2** @ line 220 — *non_manifold_edge* — **Me1194**
+  - Suggested fixture: defect mentioning 'is_polygon_soup_a_polygon_mesh', 'return false'
+- **Branch 2** @ line 220 — *non_manifold_edge*
   - What it tests: edge shared by >2 polygons
   - Repair action: mark_as_non_manifold
-  - Fixture: Me1194 — three triangles all claiming directed edge v0→v1; second encounter of (0,1) in marked_edges fires Branch 2; returns false
-- **Branch 3** @ line 227 — *orientation_consistency* — **Me1195**
+  - Suggested fixture: defect mentioning 'marked_edges', 'singular'
+- **Branch 3** @ line 227 — *orientation_consistency*
   - What it tests: adjacent polygons share opposite halfedges
   - Repair action: fail_orientation_check
-  - Fixture: Me1195 — two adjacent triangles both traversing directed edge v1→v2 in same direction; fill_edge_map detects (1,2) twice; returns false
-
-Fixture IDs: Me1193 Me1194 Me1195
+  - Suggested fixture: defect mentioning 'fill_edge_map'
 
 ##### `PMP.keep_largest_connected_components` — lines 347–423
-(4 branches; ALL COVERED by Me1196–Me1199 — wave 42, 2026-06-23)
+(4 branches; all UNCOVERED — no mesh fixtures exist yet)
 
-- **Branch 1** @ line 401 — *component_count_mismatch* — **Me1196**
+- **Branch 1** @ line 401 — *component_count_mismatch*
   - What it tests: desired_num > total_components
   - Repair action: return_zero_removed
-  - Fixture: Me1196 — 2-component mesh; caller requests keeping 3 components (more than exist); nb_components=2 <= nb_components_to_keep=3; returns 0 immediately
-- **Branch 2** @ line 410 — *component_size_criterion* — **Me1197**
+  - Suggested fixture: defect mentioning 'nb_components_to_keep'
+- **Branch 2** @ line 410 — *component_size_criterion*
   - What it tests: component size >= threshold
   - Repair action: keep_or_discard_component
-  - Fixture: Me1197 — three components (4-tri, 2-tri, 1-tri); keep 1 largest; Branch 2 fires twice marking 2-tri and 1-tri for removal via face_size_pmap < threshold
-- **Branch 3** @ line 419 — *dry_run_mode* — **Me1198**
+  - Suggested fixture: defect mentioning 'face_size_pmap', 'Face_size'
+- **Branch 3** @ line 419 — *dry_run_mode*
   - What it tests: dry_run flag set
   - Repair action: skip_mesh_modification
-  - Fixture: Me1198 — same 3-component topology; dry_run=true guard fires; returns would-remove count without modifying mesh; all 7 triangles remain
-- **Branch 4** @ line 421 — *output_iterator_presence* — **Me1199**
+  - Suggested fixture: defect mentioning 'dry_run', 'true', 'false'
+- **Branch 4** @ line 421 — *output_iterator_presence*
   - What it tests: output_iterator provided
   - Repair action: record_removed_components
-  - Fixture: Me1199 — 2-component mesh (3-tri + 1-tri); output_iterator != emptyset_iterator; Branch 4 fires recording small component's ID; 1-tri component removed
-
-Fixture IDs: Me1196 Me1197 Me1198 Me1199
+  - Suggested fixture: defect mentioning 'output_iterator', 'emptyset_iterator'
 
 ##### `PMP.orient_triangle_soup_with_reference_triangle_mesh` — lines 261–330
 (3 branches; all UNCOVERED — no mesh fixtures exist yet)
