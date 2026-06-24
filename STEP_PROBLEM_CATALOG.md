@@ -36593,6 +36593,69 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
 
+### Me620 — removeRegion neighbor_t1_distance_check: seed t0 e1-neighbor t1 has opposite vertex n1 at distance sqrt(2)~1.41 from center C=(0,0,0) <= L=2.5 (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: radial-region-removal / adjacency-check)
+- **Sources**: MeshFix `Basic_TMesh.removeRegion` Branch 1 (*neighbor_t1_distance_check*: `if (!VISITED(t->t1) && s->oppositeVertex(t->e1)->distance(center) <= L)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four triangles — seed t0 shares its e1 edge (c,v0) with neighbor t1. The opposite vertex of t1 across that shared edge is n1=(1,1,0), with dist(n1,C)=sqrt(2)~1.414 <= L=2.5. When removeRegion BFS-expands from t0, it checks the e1-neighbor first; the distance condition is satisfied and t1 is added to the removal list. Interior edges: (c,v0) n=2, (c,v1) n=2, (v1,v2) n=2; outer boundary edges n=1. Euler: V=6, E=9, F=4, chi=1.
+- **Reproducer recipe**: c=(0,0,0), v0=(1,0,0), v1=(0,1,0), n1=(1,1,0), v2=(2,0,0), v3=(0,2,0); t0=(c,v0,v1), t1=(c,n1,v0), t2=(c,v1,v2), t3=(v1,v3,v2); assert_edge_shared(c,v0,2); assert_edge_shared(c,v1,2); assert_edge_shared(v1,v2,2); boundary edges n=1; vertex_pair_distance_lt(n1,c,2.5); euler V=6,E=9,F=4,chi=1.
+- **Expected kernel behavior**: Branch 1 fires; VISITED(t->t1) is false and dist(n1,C)~1.41 <= L=2.5; t1 is appended to the toRemove list.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,3] lt=2.5`
+- **Mesh assertion**: `euler_characteristic v=6 e=9 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me620.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me621 — removeRegion neighbor_t2_distance_check: seed t0 e2-neighbor t2 has opposite vertex n2 at distance sqrt(2)~1.41 from center C=(0,0,0) <= L=2.5 (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: radial-region-removal / adjacency-check)
+- **Sources**: MeshFix `Basic_TMesh.removeRegion` Branch 2 (*neighbor_t2_distance_check*: `if (!VISITED(t->t2) && s->oppositeVertex(t->e2)->distance(center) <= L)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four triangles — seed t0 shares its e2 edge (c,v1) with neighbor t2. The opposite vertex of t2 across that shared edge is n2=(-1,1,0), with dist(n2,C)=sqrt(2)~1.414 <= L=2.5. The e1 side of t0 is a boundary edge so only Branch 2 fires. Interior edges: (c,v1) n=2, (v0,v1) n=2, (v0,v2) n=2; boundary edges n=1. Euler: V=6, E=9, F=4, chi=1.
+- **Reproducer recipe**: c=(0,0,0), v0=(1,0,0), v1=(0,1,0), n2=(-1,1,0), v2=(2,1,0), v3=(1,2,0); t0=(c,v0,v1), t2=(c,v1,n2), t3=(v0,v2,v1), t4=(v0,v3,v2); assert_edge_shared(c,v1,2); assert_edge_shared(v0,v1,2); assert_edge_shared(v0,v2,2); boundary edges n=1; vertex_pair_distance_lt(n2,c,2.5); euler V=6,E=9,F=4,chi=1.
+- **Expected kernel behavior**: Branch 2 fires; VISITED(t->t2) is false and dist(n2,C)~1.41 <= L=2.5; t2 is appended to the toRemove list.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,3] lt=2.5`
+- **Mesh assertion**: `euler_characteristic v=6 e=9 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me621.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me622 — removeRegion neighbor_t3_distance_check: seed t0 e3-neighbor t3 has opposite vertex n3 at distance sqrt(2)~1.41 from center C=(0,0,0) <= L=2.5 (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: radial-region-removal / adjacency-check)
+- **Sources**: MeshFix `Basic_TMesh.removeRegion` Branch 3 (*neighbor_t3_distance_check*: `if (!VISITED(t->t3) && s->oppositeVertex(t->e3)->distance(center) <= L)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four triangles — seed t0 shares its e3 edge (v0,v1) with neighbor t3. The opposite vertex of t3 across that shared edge is n3=(1,1,0), with dist(n3,C)=sqrt(2)~1.414 <= L=2.5. The e1 and e2 sides of t0 are both boundary edges, so only Branch 3 fires. Interior edges: (v0,v1) n=2, (v0,n3) n=2, (n3,v1) n=2; boundary edges n=1. Euler: V=6, E=9, F=4, chi=1.
+- **Reproducer recipe**: v0=(1,0,0), v1=(0,1,0), c=(0,0,0), n3=(1,1,0), v2=(2,1,0), v3=(-1,2,0); t0=(c,v0,v1), t3=(v0,n3,v1), t4=(v0,v2,n3), t5=(v1,n3,v3); assert_edge_shared(v0,v1,2); assert_edge_shared(v0,n3,2); assert_edge_shared(n3,v1,2); boundary edges n=1; vertex_pair_distance_lt(n3,c,2.5); euler V=6,E=9,F=4,chi=1.
+- **Expected kernel behavior**: Branch 3 fires; VISITED(t->t3) is false and dist(n3,C)~1.41 <= L=2.5; t3 is appended to the toRemove list.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[2,3] lt=2.5`
+- **Mesh assertion**: `euler_characteristic v=6 e=9 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me622.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me623 — removeRegion region_traversal_order: 5-triangle fan all within L=3.0; BFS enqueues t0→t4 FIFO; tail-traversal processes in reverse order (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: radial-region-removal / traversal-order)
+- **Sources**: MeshFix `Basic_TMesh.removeRegion` Branch 4 (*region_traversal_order*: `for (n = toRemove.tail(); n != NULL; n = n->prev())`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Five fan triangles from hub C=(0,0,0), all rim vertices within L=3.0 (distances 2.0 or ~2.24). BFS enqueues them in FIFO order (t0→t4); the removal loop traverses from the tail in reverse-FIFO order (t4→t3→t2→t1→t0), demonstrating the deterministic reverse-traversal that Branch 4 implements. Interior spoke edges n=2; open fan edges and rim edges n=1. Euler: V=7, E=11, F=5, chi=1.
+- **Reproducer recipe**: c=(0,0,0); v0=(2,0,0), v1=(1,2,0), v2=(-1,2,0), v3=(-2,0,0), v4=(-1,-2,0), v5=(1,-2,0); t0=(c,v0,v1), t1=(c,v1,v2), t2=(c,v2,v3), t3=(c,v3,v4), t4=(c,v4,v5); interior spoke edges n=2; open fan and rim edges n=1; vertex_pair_distance_lt(vN,c,3.0) for all rim verts; euler V=7,E=11,F=5,chi=1.
+- **Expected kernel behavior**: Branch 4 fires; the toRemove list is traversed from tail (t4) to head (t0) in reverse-FIFO order; each triangle is processed for removal.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=3.0`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,2] lt=3.0`
+- **Mesh assertion**: `euler_characteristic v=7 e=11 f=5 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me623.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me624 — removeRegion triangle_unlink_removal: 3-triangle inner fan from C=(0,0,0) all within L=2.0 collected into removal region; unlinkTriangle fires for each member (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: radial-region-removal / unlink)
+- **Sources**: MeshFix `Basic_TMesh.removeRegion` Branch 5 (*triangle_unlink_removal*: `unlinkTriangle(s);`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Six triangles — three inner fan triangles t0/t1/t2 from hub C=(0,0,0) (all vertices at dist=1.0 <= L=2.0) plus three outer context triangles t3/t4/t5 (outer rim vertices at dist~2.24 > L=2.0). The BFS collects t0/t1/t2 into the removal region; the removal loop calls unlinkTriangle on each member (Branch 5 fires three times). Interior hub spokes and inner-rim-to-outer-rim edges n=2; outer boundary edges n=1. Euler: V=7, E=12, F=6, chi=1.
+- **Reproducer recipe**: c=(0,0,0); a0=(1,0,0), a1=(0,1,0), a2=(-1,0,0), b0=(2,1,0), b1=(-1,2,0), b2=(-2,-1,0); t0=(c,a0,a1), t1=(c,a1,a2), t2=(c,a2,a0), t3=(a0,b0,a1), t4=(a1,b1,a2), t5=(a2,b2,a0); interior edges n=2; outer edges n=1; vertex_pair_distance_lt(aI,c,2.0) for each inner rim; euler V=7,E=12,F=6,chi=1.
+- **Expected kernel behavior**: Branch 5 fires for each of the three inner triangles; unlinkTriangle(t0), unlinkTriangle(t1), unlinkTriangle(t2) are each called, detaching them from the mesh.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,1] lt=2.0`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,2] lt=2.0`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,3] lt=2.0`
+- **Mesh assertion**: `euler_characteristic v=7 e=12 f=6 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me624.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
 ### Me630 — growSelection selected_triangle_vertex_mark: IS_VISITED(t0) marks v0,v1,v2; 4-triangle fan with shared interior vertex (Branch 1)
 - **Category**: §12.14 mesh defects (sub-class: selection-grow / vertex-marking propagation)
 - **Sources**: MeshFix `Basic_TMesh.growSelection` Branch 1 (*selected_triangle_vertex_mark*: `if (IS_VISITED(t)) { MARK_VISIT(v1); MARK_VISIT(v2); MARK_VISIT(v3); }`); `MESH_HEAL_COVERAGE.md` lines 1725–1747.
