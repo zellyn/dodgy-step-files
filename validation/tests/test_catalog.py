@@ -68,7 +68,8 @@ def test_entry_count_in_expected_range(entries: list[dict]) -> None:
     # or someone added a whole new section.
     # Range widened 2026-06-18: v3 OCCT deep-pass + waves 53-73 synthesis
     # grew the catalog from 1,282 → 2,302 entries.
-    assert 1000 <= len(entries) <= 2500, f"unexpected entry count: {len(entries)}"
+    # Range widened 2026-06-23: mesh waves 21A/B/C added Me590-Me614 (+18 entries).
+    assert 1000 <= len(entries) <= 2750, f"unexpected entry count: {len(entries)}"
 
 
 def test_every_entry_has_required_keys(entries: list[dict]) -> None:

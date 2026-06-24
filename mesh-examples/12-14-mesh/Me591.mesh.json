@@ -1,0 +1,116 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      4.0,
+      0.0,
+      0.0
+    ],
+    [
+      4.0,
+      0.005,
+      0.0
+    ],
+    [
+      0.0,
+      0.005,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      2,
+      3
+    ]
+  ],
+  "metadata": {
+    "id": "Me591",
+    "schema_version": 0,
+    "defect_class": "hole_in_hull",
+    "title": "holeFilling_TriangulateHole_angle_computation_failure: near-collinear boundary cycle; all candidate angles == DBL_MAX; gang check fires (Branch 2)",
+    "assertions": [
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          2
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          1
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          2
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          2,
+          3
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          3
+        ],
+        "n": 1
+      },
+      {
+        "kind": "hole_boundary",
+        "loop": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "kind": "vertex_pair_distance_lt",
+        "pair": [
+          0,
+          3
+        ],
+        "lt": 0.01
+      },
+      {
+        "kind": "vertex_pair_distance_lt",
+        "pair": [
+          1,
+          2
+        ],
+        "lt": 0.01
+      },
+      {
+        "kind": "euler_characteristic",
+        "v": 4,
+        "e": 5,
+        "f": 2,
+        "chi": 1
+      }
+    ]
+  }
+}
