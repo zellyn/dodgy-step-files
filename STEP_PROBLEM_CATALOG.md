@@ -36687,3 +36687,95 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=5 e=8 f=4 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me416.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me420 — removeOverlappingTriangles_overlapping_edge_swappable: two coplanar triangles sharing edge; swap resolves overlap (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: overlapping-triangles / edge-swap-success)
+- **Sources**: MeshFix `checkAndRepair::removeOverlappingTriangles` Branch 1 (*OVERLAPPING_EDGE_SWAPPABLE*: `if (!e->swap()) { … }` — swap returns 0/success); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two coplanar triangles in the XY plane sharing edge (v0,v1). t0=(v0,v1,v2) is the large triangle with apex v2=(0,2,0); t1=(v0,v1,v3) has apex v3=(1,1,0) strictly inside t0's area making their interiors overlap. The edge swap replaces (v0,v1) with the diagonal (v2,v3), producing two non-overlapping triangles. Branch 1 fires because `e->swap()` returns 0 (success) and no post-swap side-effect check is needed.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(0,2,0), v3=(1,1,0); t0=(v0,v1,v2), t1=(v0,v1,v3); assert_edge_shared(v0,v1,2); assert_triangles_self_intersect(0,1); assert_adjacent_triangles_normal_dot_gt(0,1,0.99).
+- **Expected kernel behavior**: Branch 1 fires; `e->swap()` replaces shared edge (v0,v1) with diagonal (v2,v3); no degeneracy or secondary overlap; repair completes in one pass.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `adjacent_triangles_normal_dot_gt triangles=[0,1] threshold=0.99`
+- **Fixture path**: mesh-examples/12-14-mesh/Me420.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me421 — removeOverlappingTriangles_swap_creates_degeneracy: post-swap triangle collinear; undo swap (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: overlapping-triangles / swap-degeneracy)
+- **Sources**: MeshFix `checkAndRepair::removeOverlappingTriangles` Branch 2 (*SWAP_CREATES_DEGENERACY*: `else if (e->t1->isExactlyDegenerate() || e->t2->isExactlyDegenerate())`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two coplanar triangles sharing edge (v0=(0,0,0), v1=(2,0,0)). t0 has apex v2=(0,2,0); t1 has apex v3=(0,1,0), which is inside t0 → overlap. Crucially v0, v2, and v3 are all on the y-axis (x=0): after swapping (v0,v1) to (v2,v3), the new triangle (v0,v2,v3) has all three vertices collinear (x=0) → zero area → exactly degenerate. Branch 2 detects this and undoes the swap via `e->swap(1)`.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(0,2,0), v3=(0,1,0); t0=(v0,v1,v2), t1=(v0,v1,v3); assert_edge_shared(v0,v1,2); assert_triangles_self_intersect(0,1); assert_vertex_on_edge(v3,v0,v2); assert_adjacent_triangles_normal_dot_gt(0,1,0.99).
+- **Expected kernel behavior**: Branch 2 fires; `e->t1->isExactlyDegenerate()` evaluates true for the post-swap triangle (v0,v2,v3) because v3 lies on segment v0–v2; swap is undone.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `vertex_on_edge vertex=3 edge=[0,2]`
+- **Mesh assertion**: `adjacent_triangles_normal_dot_gt triangles=[0,1] threshold=0.99`
+- **Fixture path**: mesh-examples/12-14-mesh/Me421.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me422 — removeOverlappingTriangles_swap_creates_neighbor_overlap_next: post-swap nextEdge(t1) overlaps neighbor; undo (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: overlapping-triangles / swap-next-edge-side-effect)
+- **Sources**: MeshFix `checkAndRepair::removeOverlappingTriangles` Branch 3 (*SWAP_CREATES_NEIGHBOR_OVERLAP_NEXT*: `else if (e->nextEdge(e)->overlaps())`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three coplanar triangles. t0=(v0,v1,v2) and t1=(v0,v1,v3) share overlapping edge (v0=(0,0), v1=(3,0)); v3=(1.5,1) is inside t0 → primary overlap. t2=(v1,v3,v4) with v4=(2.5,1) neighbors t1 via edge (v1,v3) (t1's next-edge after e). After swapping (v0,v1) to (v2,v3), the new t1=(v0,v2,v3) would have its next-edge neighbor t2 in an overlapping arrangement — Branch 3 fires, swap is undone.
+- **Reproducer recipe**: v0=(0,0,0), v1=(3,0,0), v2=(1.5,3,0), v3=(1.5,1,0), v4=(2.5,1,0); t0=(v0,v1,v2), t1=(v0,v1,v3), t2=(v1,v3,v4); assert_edge_shared(v0,v1,2); assert_edge_shared(v1,v3,2); assert_triangles_self_intersect(0,1); assert_adjacent_triangles_normal_dot_gt(0,1,0.99).
+- **Expected kernel behavior**: Branch 3 fires; after swap, `e->nextEdge(e)->overlaps()` evaluates true for the new t1's next-edge vs t2; swap is undone via `e->swap(1)`.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `adjacent_triangles_normal_dot_gt triangles=[0,1] threshold=0.99`
+- **Fixture path**: mesh-examples/12-14-mesh/Me422.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me423 — removeOverlappingTriangles_swap_creates_neighbor_overlap_prev: post-swap prevEdge(t1) overlaps neighbor; undo (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: overlapping-triangles / swap-prev-edge-side-effect)
+- **Sources**: MeshFix `checkAndRepair::removeOverlappingTriangles` Branch 4 (*SWAP_CREATES_NEIGHBOR_OVERLAP_PREV*: `else if (e->prevEdge(e)->overlaps())`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three coplanar triangles. t0=(v0,v1,v2) and t1=(v0,v1,v3) share overlapping edge (v0=(0,0), v1=(3,0)); v3=(1.5,1) is inside t0 → primary overlap. t2=(v3,v0,v4) with v4=(−0.5,0.5) neighbors t1 via edge (v3,v0) (t1's prev-edge before e). After swapping (v0,v1) to (v2,v3), the new t1=(v0,v2,v3) would have its prev-edge (v3,v0) neighbor t2 in an overlapping arrangement — Branch 4 fires, swap is undone.
+- **Reproducer recipe**: v0=(0,0,0), v1=(3,0,0), v2=(1.5,3,0), v3=(1.5,1,0), v4=(−0.5,0.5,0); t0=(v0,v1,v2), t1=(v0,v1,v3), t2=(v3,v0,v4); assert_edge_shared(v0,v1,2); assert_edge_shared(v0,v3,2); assert_triangles_self_intersect(0,1); assert_adjacent_triangles_normal_dot_gt(0,1,0.99).
+- **Expected kernel behavior**: Branch 4 fires; after swap, `e->prevEdge(e)->overlaps()` evaluates true for the new t1's prev-edge vs t2; swap is undone.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `adjacent_triangles_normal_dot_gt triangles=[0,1] threshold=0.99`
+- **Fixture path**: mesh-examples/12-14-mesh/Me423.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me424 — removeOverlappingTriangles_swap_creates_t2_overlap_next: post-swap t2->nextEdge overlaps neighbor; undo (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: overlapping-triangles / swap-t2-next-edge-side-effect)
+- **Sources**: MeshFix `checkAndRepair::removeOverlappingTriangles` Branch 5 (*SWAP_CREATES_T2_OVERLAP_NEXT*: `else if (e->t2->nextEdge(e)->overlaps())`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three coplanar triangles. t0=(v0,v1,v2) and t1=(v0,v1,v3) share overlapping edge (v0=(0,0), v1=(3,0)); v3=(1.5,1) is inside t0 → primary overlap. t3=(v2,v3,v4) with v4=(2,2) neighbors the second incident triangle of the edge via the post-swap edge (v2,v3) (that triangle's next-edge). After swapping, the new t2-side triangle's next-edge overlaps t3 → Branch 5 fires, swap is undone.
+- **Reproducer recipe**: v0=(0,0,0), v1=(3,0,0), v2=(1.5,3,0), v3=(1.5,1,0), v4=(2,2,0); t0=(v0,v1,v2), t1=(v0,v1,v3), t3=(v2,v3,v4); assert_edge_shared(v0,v1,2); assert_edge_shared(v2,v3,1); assert_triangles_self_intersect(0,1); assert_adjacent_triangles_normal_dot_gt(0,1,0.99).
+- **Expected kernel behavior**: Branch 5 fires; after swap, `e->t2->nextEdge(e)->overlaps()` evaluates true; swap is undone via `e->swap(1)`.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `adjacent_triangles_normal_dot_gt triangles=[0,1] threshold=0.99`
+- **Fixture path**: mesh-examples/12-14-mesh/Me424.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me425 — removeOverlappingTriangles_swap_creates_t2_overlap_prev: post-swap t2->prevEdge overlaps neighbor; undo (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: overlapping-triangles / swap-t2-prev-edge-side-effect)
+- **Sources**: MeshFix `checkAndRepair::removeOverlappingTriangles` Branch 6 (*SWAP_CREATES_T2_OVERLAP_PREV*: `else if (e->t2->prevEdge(e)->overlaps())`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three coplanar triangles. t0=(v0,v1,v2) and t1=(v0,v1,v3) share overlapping edge (v0=(0,0), v1=(3,0)); v3=(1.5,1) is inside t0 → primary overlap. t3=(v1,v2,v4) with v4=(2.5,2) neighbors t0 via edge (v1,v2) (the prev-edge of the second incident triangle when traversed from the swapped position). After swapping, the new t2-side triangle's prev-edge would overlap t3 → Branch 6 fires, swap is undone.
+- **Reproducer recipe**: v0=(0,0,0), v1=(3,0,0), v2=(1.5,3,0), v3=(1.5,1,0), v4=(2.5,2,0); t0=(v0,v1,v2), t1=(v0,v1,v3), t3=(v1,v2,v4); assert_edge_shared(v0,v1,2); assert_edge_shared(v1,v2,2); assert_triangles_self_intersect(0,1); assert_adjacent_triangles_normal_dot_gt(0,1,0.99).
+- **Expected kernel behavior**: Branch 6 fires; after swap, `e->t2->prevEdge(e)->overlaps()` evaluates true; swap is undone via `e->swap(1)`.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `adjacent_triangles_normal_dot_gt triangles=[0,1] threshold=0.99`
+- **Fixture path**: mesh-examples/12-14-mesh/Me425.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me426 — removeOverlappingTriangles_unresolvable_overlap: multi-overlap tangle; both triangles unlinked (Branch 7)
+- **Category**: §12.14 mesh defects (sub-class: overlapping-triangles / unresolvable-unlink)
+- **Sources**: MeshFix `checkAndRepair::removeOverlappingTriangles` Branch 7 (*UNRESOLVABLE_OVERLAP*: `unlinkTriangle(t1); unlinkTriangle(t2); nr++;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three coplanar triangles forming a multi-overlap tangle. t0=(v0,v1,v2) is the large outer triangle (vertices (0,0)-(4,0)-(2,4)). t1=(v0,v1,v3) shares edge (v0,v1) with t0; v3=(2,2) is inside t0 → first overlapping pair. t2=(v0,v4,v2) shares edge (v0,v2) with t0; v4=(2,3) is inside t0 → second overlapping pair. Whichever overlap is addressed first by swapping, the other persists and creates a cascading condition where the swap cannot cleanly resolve the tangle — both triangles of the first pair must be unlinked.
+- **Reproducer recipe**: v0=(0,0,0), v1=(4,0,0), v2=(2,4,0), v3=(2,2,0), v4=(2,3,0); t0=(v0,v1,v2), t1=(v0,v1,v3), t2=(v0,v4,v2); assert_edge_shared(v0,v1,2); assert_edge_shared(v0,v2,2); assert_triangles_self_intersect(0,1); assert_triangles_self_intersect(0,2); assert_adjacent_triangles_normal_dot_gt(0,1,0.99); assert_adjacent_triangles_normal_dot_gt(0,2,0.99).
+- **Expected kernel behavior**: Branch 7 fires; no successful swap path exists that resolves both overlaps; `unlinkTriangle(t1); unlinkTriangle(t2)` removes both triangles from the mesh and increments the removed-triangle counter.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,2]`
+- **Mesh assertion**: `adjacent_triangles_normal_dot_gt triangles=[0,1] threshold=0.99`
+- **Mesh assertion**: `adjacent_triangles_normal_dot_gt triangles=[0,2] threshold=0.99`
+- **Fixture path**: mesh-examples/12-14-mesh/Me426.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
