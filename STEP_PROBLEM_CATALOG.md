@@ -36592,3 +36592,80 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me600 — merge_duplicated_vertices_in_boundary_cycle boundary_cycle_traversal: CGAL_precondition guard passes on valid boundary halfedge; 4-edge cycle traversal begins (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: coincident-boundary-vertex / boundary-cycle-traversal)
+- **Sources**: CGAL PMP `PMP.merge_duplicated_vertices_in_boundary_cycle` Branch 1 (*boundary_cycle_traversal*: `CGAL_precondition(is_valid_halfedge_descriptor(h, pm));`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing interior edge (p1,p2); four boundary edges form a quadrilateral open boundary cycle. No coincident vertices — the fixture purely demonstrates that is_valid_halfedge_descriptor passes for a well-formed boundary halfedge and the cycle traversal proceeds. Interior edge (p1,p2) n=2; four outer edges n=1. Euler: V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: p0=(0,0,0), p1=(1,0,0), p2=(0.5,1,0), p3=(1.5,1,0); t0=(p0,p1,p2), t1=(p1,p3,p2) sharing interior edge (p1,p2); assert_edge_shared(p1,p2,2); outer edges n=1; euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 1 fires (CGAL_precondition satisfied); do-while loop begins traversal of the 4-edge boundary cycle.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me600.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me601 — merge_duplicated_vertices_in_boundary_cycle vertex_detection: detect_identical_mergeable_vertices finds coincident pair e1==e4 at (2,0,0) on boundary cycle (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: coincident-boundary-vertex / vertex-detection)
+- **Sources**: CGAL PMP `PMP.merge_duplicated_vertices_in_boundary_cycle` Branch 2 (*vertex_detection*: `auto hedges_with_identical_point_target = detect_identical_mergeable_vertices(h, pm, vpm);`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangles with a pentagonal boundary cycle. Vertices e1 and e4 are both at (2,0,0) but topologically distinct. detect_identical_mergeable_vertices is called on the boundary cycle, sorts halfedges by target coordinate, and identifies the {e1, e4} coincident pair → Branch 2 fires. Interior edges (e0,e3) and (e1,e3) n=2; five outer edges n=1. Euler: V=5, E=7, F=3, chi=1.
+- **Reproducer recipe**: e0=(0,0,0), e1=(2,0,0), e2=(4,0,0), e3=(2,2,0), e4=(2,0,0)[=e1]; t0=(e0,e1,e3), t1=(e1,e2,e3), t2=(e0,e3,e4); interior edges (e0,e3) and (e1,e3) n=2; vertex_pair_distance_lt(e1,e4,1e-9); vertex_pair_no_shared_triangle(e1,e4); euler V=5,E=7,F=3,chi=1.
+- **Expected kernel behavior**: Branch 2 fires; detect_identical_mergeable_vertices returns one group {e1,e4} in hedges_with_identical_point_target.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,4]`
+- **Mesh assertion**: `euler_characteristic v=5 e=7 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me601.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me602 — merge_duplicated_vertices_in_boundary_cycle merge_iteration: for-each loop over 2 coincident groups (f1==f4 at (1,0,0) and f2==f5 at (3,0,0)) fires twice (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: coincident-boundary-vertex / merge-iteration)
+- **Sources**: CGAL PMP `PMP.merge_duplicated_vertices_in_boundary_cycle` Branch 3 (*merge_iteration*: `for(const std::vector<halfedge_descriptor>& hedges : hedges_with_identical_point_target) { merge_vertices_in_range(…); }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Five triangles fanning from apex f6 with a heptagonal boundary cycle. Two coincident-vertex groups: Group A (f1==f4 at (1,0,0)) and Group B (f2==f5 at (3,0,0)). detect_identical_mergeable_vertices returns two groups; the for-each loop fires twice — once per group — dispatching merge_vertices_in_range each time → Branch 3 fires twice. Interior edges from f6 n=2; seven outer edges n=1. Euler: V=7, E=11, F=5, chi=1.
+- **Reproducer recipe**: f0=(0,0,0), f1=(1,0,0), f2=(3,0,0), f3=(4,0,0), f4=(1,0,0)[=f1], f5=(3,0,0)[=f2], f6=(2,2,0); t0=(f6,f0,f1), t1=(f6,f1,f2), t2=(f6,f2,f3), t3=(f6,f3,f4), t4=(f6,f4,f5); interior edges (f6,f1),(f6,f2),(f6,f3),(f6,f4) n=2; two coincident pairs; euler V=7,E=11,F=5,chi=1.
+- **Expected kernel behavior**: Branch 3 fires twice; merge_vertices_in_range called once for {f1,f4} group and once for {f2,f5} group.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,6] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[2,5] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,4]`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[2,5]`
+- **Mesh assertion**: `euler_characteristic v=7 e=11 f=5 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me602.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me603 — merge_duplicated_vertices_in_boundary_cycle merge_execution: internal::merge_vertices_in_range called for single group g1==g3 at (1,0,0); topological merge fires (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: coincident-boundary-vertex / merge-execution)
+- **Sources**: CGAL PMP `PMP.merge_duplicated_vertices_in_boundary_cycle` Branch 4 (*merge_execution*: `internal::merge_vertices_in_range(hedges.begin(), hedges.end(), pm);`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing interior edge (g0,g2); boundary vertices g1 and g3 both at (1,0,0). detect_identical_mergeable_vertices returns one group {g1,g3}; the for-each loop fires once; merge_vertices_in_range is called and topologically merges g1 and g3 by redirecting halfedge links → Branch 4 fires. Interior edge (g0,g2) n=2; four outer edges n=1. Euler: V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: g0=(0,0,0), g1=(1,0,0), g2=(0.5,1,0), g3=(1,0,0)[=g1]; t0=(g0,g1,g2), t1=(g0,g2,g3); interior edge (g0,g2) n=2; vertex_pair_distance_lt(g1,g3,1e-9); vertex_pair_no_shared_triangle(g1,g3); euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 4 fires once; internal::merge_vertices_in_range collapses g3 onto g1, topologically stitching the boundary cycle.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,3] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,3]`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me603.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me604 — merge_duplicated_vertices_in_boundary_cycle halfedge_advance: do-while traverses 6-edge boundary cycle (h1==h4 at (2,0,0)); start!=h check fires 6 times (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: coincident-boundary-vertex / halfedge-advance)
+- **Sources**: CGAL PMP `PMP.merge_duplicated_vertices_in_boundary_cycle` Branch 5 (*halfedge_advance*: `h = next(h, pm); } while(start != h);`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four triangles with a hexagonal boundary cycle (6 boundary edges). Vertices h1 and h4 are coincident at (2,0,0). The do-while loop advances h via next(h,pm) at each step and checks start!=h; with a 6-edge cycle the check fires 6 times before the loop exits → Branch 5 fires 6 times. Interior edges (h1,h5),(h1,h3),(h3,h5) n=2; six outer boundary edges n=1. Euler: V=6, E=9, F=4, chi=1.
+- **Reproducer recipe**: h0=(0,0,0), h1=(2,0,0), h2=(4,0,0), h3=(3,2,0), h4=(2,0,0)[=h1], h5=(1,2,0); t0=(h0,h1,h5), t1=(h1,h2,h3), t2=(h1,h3,h5), t3=(h3,h4,h5); interior edges (h1,h5),(h1,h3),(h3,h5) n=2; outer edges n=1; vertex_pair_distance_lt(h1,h4,1e-9); euler V=6,E=9,F=4,chi=1.
+- **Expected kernel behavior**: Branch 5 fires 6 times (once per boundary halfedge); loop terminates when start==h after full traversal.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=2`
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[1,4] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,4]`
+- **Mesh assertion**: `euler_characteristic v=6 e=9 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me604.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
