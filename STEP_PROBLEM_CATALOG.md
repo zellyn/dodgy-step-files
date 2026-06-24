@@ -36674,3 +36674,112 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=4 e=6 f=4 chi=2`
 - **Fixture path**: mesh-examples/12-14-mesh/Me575.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me580 — Basic_TMesh.createSubMeshFromSelection invalid_triangle_seed: seed t0 not IS_VISITED; extraction aborts, returns NULL (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: selection / invalid-seed)
+- **Sources**: MeshFix `Basic_TMesh.createSubMeshFromSelection` Branch 1 (*invalid_triangle_seed*: `if (t0 != NULL && !IS_VISITED(t0)) return NULL`) @ line 794; `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four triangles in a connected strip (t0-t1 share edge v1,v2; t1-t2 share edge v1,v3; t2-t3 share edge v3,v4; t1-t3 also share v2,v3). Only t1 and t2 are IS_VISITED (the selection). The caller provides t0 as the seed triangle; since t0 is non-NULL but NOT visited, Branch 1 fires immediately and the extraction returns NULL. Interior edges (v1,v2),(v1,v3),(v3,v4),(v2,v3) each n=2; outer boundary edges n=1. Euler: V=5, E=8, F=4, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(3,2,0), v4=(4,0,0); t0=(v0,v1,v2), t1=(v1,v3,v2), t2=(v1,v4,v3), t3=(v2,v3,v4); interior edges n=2; outer edges n=1; euler V=5,E=8,F=4,chi=1.
+- **Expected kernel behavior**: Branch 1 fires; condition `t0 != NULL && !IS_VISITED(t0)` is true for the provided seed; extraction is aborted and NULL returned before any BFS begins.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=1`
+- **Mesh assertion**: `euler_characteristic v=5 e=8 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me580.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me581 — Basic_TMesh.createSubMeshFromSelection seed_provided: BFS from visited seed collects all visited neighbors (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: selection / seed-provided-BFS)
+- **Sources**: MeshFix `Basic_TMesh.createSubMeshFromSelection` Branch 2 (*seed_provided*: `if (t0 != NULL && IS_VISITED(t0)) { triList.appendHead(t0); … BFS … }`) @ line 801; `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four fan triangles around hub v0, with outer rim vertices v1-v5. Only t1, t2, t3 are IS_VISITED (the selection); t0 is unvisited. The caller provides t1 as the seed; since t1 is non-NULL and IS_VISITED, Branch 2 fires. BFS propagates through shared spoke edges (v0,v3) and (v0,v4) to collect t2 and t3. The selection-boundary edge (v0,v2) connects unvisited t0 to visited t1, producing a NULL adjacency in the sub-mesh at that edge. Spoke edges (v0,v2),(v0,v3),(v0,v4) n=2; boundary spokes (v0,v1),(v0,v5) n=1; all rim edges n=1. Euler: V=6, E=9, F=4, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1.5,1.5,0), v3=(0,2,0), v4=(-1.5,1.5,0), v5=(-2,0,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v4), t3=(v0,v4,v5); spoke edges n=2 (except v0,v1 and v0,v5 n=1); rim edges n=1; euler V=6,E=9,F=4,chi=1.
+- **Expected kernel behavior**: Branch 2 fires; BFS from t1 via (v0,v3) reaches t2, then via (v0,v4) reaches t3; t0 is unreachable (IS_VISITED=false blocks BFS across (v0,v2)); sub-mesh contains exactly {t1,t2,t3}.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `euler_characteristic v=6 e=9 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me581.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me582 — Basic_TMesh.createSubMeshFromSelection no_seed: NULL seed triggers global FOREACHTRIANGLE scan; two disconnected visited components collected (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: selection / no-seed-global-scan)
+- **Sources**: MeshFix `Basic_TMesh.createSubMeshFromSelection` Branch 3 (*no_seed*: `else { FOREACHTRIANGLE(t, i) if (IS_VISITED(t)) sT.appendHead(t); }`) @ line 827; `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected triangle pairs (Component A and Component B), all 4 triangles IS_VISITED. Component A: v0-v3 with tA0=(v0,v1,v2), tA1=(v3,v0,v2), interior edge (v0,v2) n=2. Component B: v4-v7 with tB0=(v4,v5,v6), tB1=(v7,v4,v6), interior edge (v4,v6) n=2. The caller passes NULL as the seed; Branch 3 fires. FOREACHTRIANGLE collects all 4 visited triangles regardless of connectivity. v1 and v5 (from different components) share no triangle, confirming disconnection. Euler: V=8, E=10, F=4, chi=2 (two separate open disks).
+- **Reproducer recipe**: Component A: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(-1,0,0); tA0=(v0,v1,v2), tA1=(v3,v0,v2). Component B: v4=(10,0,0), v5=(11,0,0), v6=(10.5,1,0), v7=(9,0,0); tB0=(v4,v5,v6), tB1=(v7,v4,v6). Interior edges n=2; all outer edges n=1; vertex_pair_no_shared_triangle(v1,v5); euler V=8,E=10,F=4,chi=2.
+- **Expected kernel behavior**: Branch 3 fires (t0==NULL); FOREACHTRIANGLE visits all 8 triangles in mesh order; the 4 IS_VISITED ones (all 4) are appended to sT; sub-mesh contains both disconnected components.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,6] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,7] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[6,7] n=1`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[1,5]`
+- **Mesh assertion**: `euler_characteristic v=8 e=10 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me582.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me583 — Basic_TMesh.createSubMeshFromSelection keep_reference: keep_ref=true preserves info pointers in extracted sub-mesh (Branch 4)
+- **Category**: §12.14 mesh defects (sub-class: selection / keep-reference)
+- **Sources**: MeshFix `Basic_TMesh.createSubMeshFromSelection` Branch 4 (*keep_reference*: `if (keep_ref) { v_info = new void*; *v_info = (*v)->info; }`) @ line 842; `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangles in a closed fan around hub v0 with rim vertices v1, v2, v3. All triangles are IS_VISITED. A seed (t0) is provided; BFS collects all 3 triangles. When keep_ref=true, Branch 4 fires for each vertex: the info pointer from the original mesh vertex is preserved in the sub-mesh vertex's info slot (rather than being cleared). Interior spoke edges (v0,v1),(v0,v2),(v0,v3) all n=2; outer rim edges n=1. Euler: V=4, E=6, F=3, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(-1,2,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v1); spoke edges (v0,v1),(v0,v2),(v0,v3) n=2; rim edges (v1,v2),(v2,v3),(v3,v1) n=1; euler V=4,E=6,F=3,chi=1.
+- **Expected kernel behavior**: Branch 4 fires for each of the 4 vertices during sub-mesh construction; `v_info = new void*; *v_info = (*v)->info` copies the original mesh's info pointer, preserving external references in the extracted sub-mesh.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me583.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me584 — Basic_TMesh.createSubMeshFromSelection edge_adjacency_boundary: selection-boundary interior edge becomes NULL adjacency in sub-mesh (Branch 5)
+- **Category**: §12.14 mesh defects (sub-class: selection / edge-adjacency-boundary)
+- **Sources**: MeshFix `Basic_TMesh.createSubMeshFromSelection` Branch 5 (*edge_adjacency_boundary*: `if (IS_VISITED(e->t1) && IS_VISITED(e->t2)) … else … = NULL`) @ line 865; `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 2×2 grid of 4 triangles arranged in two columns. Left column (t0,t1) is unvisited; right column (t2,t3) is IS_VISITED. Edge (v1,v4) is shared by unvisited t1 and visited t2 — this is the selection-boundary edge. In the full mesh this edge is interior (n=2). When the sub-mesh for {t2,t3} is built, Branch 5 fires for edge (v1,v4): IS_VISITED(t1)=false so the adjacency from t2 toward t1 is set to NULL, making (v1,v4) a boundary edge in the sub-mesh. Other interior edges: (v1,v3) n=2 within the left column; (v2,v4) n=2 within the right column. Outer edges all n=1. Euler: V=6, E=9, F=4, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(2,0,0), v3=(0,1,0), v4=(1,1,0), v5=(2,1,0); t0=(v0,v1,v3), t1=(v1,v4,v3), t2=(v1,v2,v4), t3=(v2,v5,v4); assert_edge_shared(v1,v4,2); assert_edge_shared(v1,v3,2); assert_edge_shared(v2,v4,2); outer edges n=1; euler V=6,E=9,F=4,chi=1.
+- **Expected kernel behavior**: Branch 5 fires for edge (v1,v4); IS_VISITED(t1)=false so `new_e->t2 = NULL` (or equivalent) is executed, making the right column's left boundary edge a sub-mesh boundary rather than linking to the unvisited left column.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `euler_characteristic v=6 e=9 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me584.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me585 — Basic_TMesh.createSubMeshFromSelection empty_selection: zero triangles IS_VISITED; sT.numels()==0; sub-mesh deleted, returns NULL (Branch 6)
+- **Category**: §12.14 mesh defects (sub-class: selection / empty-selection)
+- **Sources**: MeshFix `Basic_TMesh.createSubMeshFromSelection` Branch 6 (*empty_selection*: `if (!sT.numels()) { delete(tin); return NULL; }`) @ line 877; `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three triangles in a closed fan around hub v0 with rim vertices v1, v2, v3. ALL triangles are unvisited (empty selection). The caller passes NULL as the seed; the global FOREACHTRIANGLE scan (Branch 3 path) finds zero IS_VISITED triangles. sT.numels()==0 triggers Branch 6: the partially constructed sub-mesh is deleted and NULL is returned. Interior spoke edges (v0,v1),(v0,v2),(v0,v3) all n=2; outer rim edges n=1. Euler: V=4, E=6, F=3, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(-1,2,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v1); spoke edges n=2; rim edges n=1; euler V=4,E=6,F=3,chi=1.
+- **Expected kernel behavior**: Branch 6 fires; after the no-seed global scan finds no IS_VISITED triangles, sT is empty; `delete(tin)` frees the empty sub-mesh and NULL is returned to the caller.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me585.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
