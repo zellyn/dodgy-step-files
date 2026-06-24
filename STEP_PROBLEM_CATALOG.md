@@ -39522,4 +39522,170 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `triangles_do_not_intersect triangles=[2,3]`
 - **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
 - **Fixture path**: mesh-examples/12-14-mesh/Me822.mesh.json
+### Me830 — is_non_manifold_vertex border-incident-null-face: boundary vertex v0 has exactly one umbrella sector; border halfedge counted but threshold not exceeded (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: non-manifold-vertex / border-incident-null-face)
+- **Sources**: CGAL PMP `PMP.is_non_manifold_vertex` Branch 1 (*border-incident-null-face*: `if(is_border(h, tmesh)) ++border_counter`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles sharing interior edge (v0,v1). Vertex v0 is a manifold boundary vertex: its halfedge star includes boundary halfedges toward v2 and v3 (one null-face each), but all incident triangles form a single connected umbrella sector. The branch fires (border_counter is incremented) but the count does not exceed 1 — the vertex is NOT flagged as non-manifold. Euler: V=4, E=5, F=2, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,1,0), v3=(1,-1,0); t0=(v0,v1,v2), t1=(v0,v3,v1); assert_edge_shared(v0,v1,2); assert_edge_shared(v0,v2,1); assert_edge_shared(v0,v3,1); euler V=4,E=5,F=2,chi=1.
+- **Expected kernel behavior**: Branch 1 fires; border_counter incremented for halfedges at v0 pointing to v2 and v3; counter does not exceed 1 → function returns false (v0 is a regular boundary vertex).
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me830.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me831 — is_non_manifold_vertex null-face-multiplicity: bowtie hub v0 shared by two disconnected fans; border_counter>1 fires (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: non-manifold-vertex / null-face-multiplicity)
+- **Sources**: CGAL PMP `PMP.is_non_manifold_vertex` Branch 2 (*null-face-multiplicity*: `if(border_counter > 1) return true`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles (t0 upper, t1 lower) share only the apex vertex v0 — a classic bowtie/pinch-point defect. No edge is shared between the two fans. Every edge at v0 is a boundary edge (n=1), giving border_counter ≥ 2 at v0. The function reaches Branch 2 and returns true immediately: v0 is declared non-manifold. The disconnected fan assertion confirms the two disjoint umbrella sectors at v0. Euler: V=5, E=6, F=2, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,1,0), v2=(-1,1,0), v3=(1,-1,0), v4=(-1,-1,0); t0=(v0,v1,v2), t1=(v0,v3,v4); all edges n=1; assert_vertex_fan_disconnected(v0); euler V=5,E=6,F=2,chi=1.
+- **Expected kernel behavior**: Branch 2 fires; border_counter at v0 exceeds 1; is_non_manifold_vertex returns true.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Mesh assertion**: `euler_characteristic v=5 e=6 f=2 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me831.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me832 — is_non_manifold_vertex cycle-break-condition: interior vertex v0 in closed 4-triangle fan; halfedge ring completes full cycle via break (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: non-manifold-vertex / cycle-break-condition)
+- **Sources**: CGAL PMP `PMP.is_non_manifold_vertex` Branch 3 (*cycle-break-condition*: `do { … } while(h != start)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four triangles arranged as a diamond fan around central interior vertex v0. Every spoke edge at v0 is shared by two triangles (n=2); all four outer boundary edges are n=1. v0 has no incident boundary halfedge → border_counter = 0. The do-while traversal walks the complete halfedge ring around v0 (four hops) and terminates when h returns to the starting halfedge (Branch 3 cycle-break fires). The function returns false (v0 is a manifold interior vertex). Euler: V=5, E=8, F=4, chi=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(-1,0,0), v4=(0,-1,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v4), t3=(v0,v4,v1); all spokes n=2; outer ring n=1; euler V=5,E=8,F=4,chi=1.
+- **Expected kernel behavior**: Branch 3 fires; the do-while ring traversal returns to start after four iterations; border_counter remains 0 → is_non_manifold_vertex returns false.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=1`
+- **Mesh assertion**: `euler_characteristic v=5 e=8 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me832.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me840 — duplicate_non_manifold_vertices halfedge-visitation-tracking: bowtie hub visited_halfedges.insert skips already-processed halfedge ring (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: non-manifold-vertex / halfedge-visitation-tracking)
+- **Sources**: CGAL PMP `PMP.duplicate_non_manifold_vertices` Branch 1 (*halfedge-visitation-tracking*: `visited_halfedges.insert(h)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Bowtie hub vertex 0 shared by two disconnected triangle fans (Fan A: t0,t1 in z=0 right sector; Fan B: t2,t3 in z=0 left sector). Each fan has one interior edge (hub,a1) and (hub,b1) respectively; fans share only hub. When CGAL iterates halfedges around hub, Fan A's halfedges are inserted into visited_halfedges; on re-encounter during Fan B's traversal, Branch 1 fires and skips already-processed halfedges to prevent double-duplication. Euler: V=7, E=10, F=4, chi=1.
+- **Reproducer recipe**: hub=(0,0,0); a0=(2,0,0),a1=(2,1,0),a2=(1,2,0); b0=(-2,0,0),b1=(-2,1,0),b2=(-1,2,0); t0=(hub,a0,a1),t1=(hub,a1,a2),t2=(hub,b0,b1),t3=(hub,b1,b2); assert_edge_shared(hub,a1,2); assert_edge_shared(hub,b1,2); all boundary edges n=1; assert_vertex_fan_disconnected(hub); euler V=7,E=10,F=4,chi=1.
+- **Expected kernel behavior**: Branch 1 fires; visited_halfedges.insert records Fan A halfedges; when same halfedges encountered in second traversal pass, insert finds them present and processing is skipped.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,6] n=1`
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Mesh assertion**: `euler_characteristic v=7 e=10 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me840.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me841 — duplicate_non_manifold_vertices vertex-occurrence-detection: three-sector pinch hub re-encountered in visited_vertices across half-cycles; null_h sentinel fires (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: non-manifold-vertex / vertex-occurrence-detection)
+- **Sources**: CGAL PMP `PMP.duplicate_non_manifold_vertices` Branch 2 (*vertex-occurrence-detection*: `if(visited_vertices.count(v)) { ... null_h ... }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Multi-sector pinch vertex hub at origin shared by three single-triangle sectors (Fan A right: t0; Fan B top: t1; Fan C bottom: t2). No edges are shared between any two fans — each triangle is fully boundary. CGAL records hub in visited_vertices during Fan A traversal; when Fan B's cycle is entered, visited_vertices.count(hub) > 0 → Branch 2 fires, assigning null_h as the sentinel to trigger a new vertex duplication. Branch 2 fires again on the third encounter (Fan C). Euler: V=7, E=9, F=3, chi=1.
+- **Reproducer recipe**: hub=(0,0,0); a0=(2,0,0),a1=(1,1,0); b0=(0,2,0),b1=(-1,1,0); c0=(0,-2,0),c1=(1,-1,0); t0=(hub,a0,a1),t1=(hub,b0,b1),t2=(hub,c0,c1); all 9 edges n=1; assert_vertex_fan_disconnected(hub); euler V=7,E=9,F=3,chi=1.
+- **Expected kernel behavior**: Branch 2 fires on second and third encounter of hub in visited_vertices across distinct halfedge cycles; null_h sentinel used to mark start of new duplication event.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,6] n=1`
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Mesh assertion**: `euler_characteristic v=7 e=9 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me841.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me842 — duplicate_non_manifold_vertices non-manifold-class-confirmation: hub found in known_nm_vertices set; duplicate vertex operation proceeds (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: non-manifold-vertex / non-manifold-class-confirmation)
+- **Sources**: CGAL PMP `PMP.duplicate_non_manifold_vertices` Branch 3 (*non-manifold-class-confirmation*: `if(known_nm_vertices.count(v)) { duplicate... }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Pre-identified non-manifold hub vertex 0 shared by two disconnected fans in different planes (Fan A: t0,t1 in z=0; Fan B: t2,t3 in z=1). Fan A and Fan B share only hub; interior edges (hub,a1) and (hub,b1) are each n=2 within their fan. Before the duplication sweep, CGAL calls non_manifold_vertices() and populates known_nm_vertices; Branch 3 fires when known_nm_vertices.count(hub) > 0 confirms hub is genuinely non-manifold before creating a vertex copy. The z-offset between Fan A and Fan B provides spatial distinctness while keeping identical topology. Euler: V=7, E=10, F=4, chi=1.
+- **Reproducer recipe**: hub=(0,0,0); a0=(2,0,0),a1=(2,1,0),a2=(1,2,0); b0=(2,0,1),b1=(2,1,1),b2=(1,2,1); t0=(hub,a0,a1),t1=(hub,a1,a2),t2=(hub,b0,b1),t3=(hub,b1,b2); assert_edge_shared(hub,a1,2); assert_edge_shared(hub,b1,2); all boundary edges n=1; assert_vertex_fan_disconnected(hub); euler V=7,E=10,F=4,chi=1.
+- **Expected kernel behavior**: Branch 3 fires; known_nm_vertices.count(hub) returns 1; duplicate vertex created for hub to resolve non-manifold topology.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,6] n=1`
+- **Mesh assertion**: `vertex_fan_disconnected vertex=0`
+- **Mesh assertion**: `euler_characteristic v=7 e=10 f=4 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me842.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me850 — does_bound_a_volume connectivity_broken: tetrahedron with base removed; boundary cycle present; is_closed returns false (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: open-mesh / boundary-cycle)
+- **Sources**: CGAL PMP `PMP.does_bound_a_volume` Branch 1 (*connectivity_broken*: `if(!PMP::is_closed(tmesh)) return false;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Tetrahedron with base face absent — three lateral faces (v0,v1,v3), (v1,v2,v3), (v0,v3,v2) form an open manifold. The three lateral edges (v0,v3),(v1,v3),(v2,v3) are each shared by two triangles. The three base edges (v0,v1),(v1,v2),(v0,v2) are each shared by one triangle → boundary cycle. is_closed returns false → Branch 1 fires immediately before orientation or SI are checked. Euler: V=4, E=6, F=3, chi=1 (cone / open disk).
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,0.5,1); triangles: (v0,v1,v3),(v1,v2,v3),(v0,v3,v2); lateral edges n=2; base edges n=1; hole_boundary=[v0,v1,v2]; euler V=4,E=6,F=3,chi=1.
+- **Expected kernel behavior**: Branch 1 fires; is_closed test detects boundary halfedge; does_bound_a_volume returns false without evaluating orientation or self-intersection.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `hole_boundary loop=[0,1,2]`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=3 chi=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me850.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me851 — does_bound_a_volume orientation_inconsistent: closed tetrahedron; base wound CW; adjacent normals antiparallel; orientation check fails (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: inconsistent-face-orientation / closed-mesh)
+- **Sources**: CGAL PMP `PMP.does_bound_a_volume` Branch 2 (*orientation_inconsistent*: after is_closed passes, orientation test fails); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Closed tetrahedron (4 vertices, 4 faces, all edges n=2) with three lateral faces wound CCW (normals outward) and base face (v0,v2,v1) wound CW. The CW base produces a normal pointing inward (-Z direction): n=(v2-v0)×(v1-v0)=(0,0,-1). Lateral face t0=(v0,v1,v3) at shared edge (v0,v1) has outward normal; dot product with base normal is negative → antiparallel → inconsistent winding. is_closed passes (chi=2); orientation check fails → Branch 2 fires. Euler: V=4, E=6, F=4, chi=2.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,0.5,1); lateral CCW: (v0,v1,v3),(v1,v2,v3),(v0,v3,v2); base CW: (v0,v2,v1); all 6 edges n=2; triangle_normal_z_negative(3); adjacent_triangles_inconsistent_winding(0,3); euler V=4,E=6,F=4,chi=2.
+- **Expected kernel behavior**: Branch 2 fires; is_closed passes; PMP orientation check detects CW base face producing antiparallel normal at shared edge; does_bound_a_volume returns false.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `triangle_normal_z_negative triangle=3`
+- **Mesh assertion**: `adjacent_triangles_inconsistent_winding triangles=[0,3]`
+- **Mesh assertion**: `euler_characteristic v=4 e=6 f=4 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me851.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me852 — does_bound_a_volume self_intersection: XY/XZ crossing fans in closed 8-tri manifold; interior overlap along X-axis; does_self_intersect true (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: self-intersection / closed-mesh)
+- **Sources**: CGAL PMP `PMP.does_bound_a_volume` Branch 3 (*self_intersection*: `if(PMP::does_self_intersect(tmesh, np)) return false;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Closed 8-triangle manifold (6 vertices, 12 edges, chi=2) containing two crossing triangle fans: t0=(v0,v2,v3) lies in the XY plane (z=0), t1=(v0,v4,v5) lies in the XZ plane (y=0). They share only vertex v0=(0,0,0) but their interiors overlap along the positive X half-axis from (0,0,0) to (1,0,0) — a proper geometric self-intersection. Four cap triangles t4=(v0,v2,v4), t5=(v1,v4,v2), t6=(v0,v5,v3), t7=(v1,v3,v5) and right mirrors t2=(v1,v3,v2), t3=(v1,v5,v4) complete the closure. All 12 edges are shared by exactly 2 triangles. is_closed passes, orientation is consistent, but does_self_intersect fires for the (t0,t1) pair → Branch 3 returns false.
+- **Reproducer recipe**: v0=(0,0,0),v1=(2,0,0),v2=(1,1,0),v3=(1,-1,0),v4=(1,0,1),v5=(1,0,-1); 8 triangles; 12 edges each n=2; assert_triangles_self_intersect(0,1); euler V=6,E=12,F=8,chi=2.
+- **Expected kernel behavior**: Branch 3 fires; is_closed and orientation checks pass; does_self_intersect detects the (t0,t1) interior overlap along the X-axis; does_bound_a_volume returns false.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,5] n=2`
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `euler_characteristic v=6 e=12 f=8 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me852.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder

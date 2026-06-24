@@ -839,20 +839,22 @@ Fixture IDs: Me750 Me751 Me752 Me753
   - Fixture: Me049 — open mesh with two boundary loops; interior edge (v1,v5) shared by 2
 
 ##### `PMP.does_bound_a_volume` — lines 913–930
-(3 branches; all UNCOVERED — no mesh fixtures exist yet)
+(3 branches; ALL COVERED by Me850–Me852 — wave 29C, 2026-06-23)
 
-- **Branch 1** @ line 918 — *connectivity_broken*
+- **Branch 1** @ line 918 — *connectivity_broken* — **COVERED (Me850)**
   - What it tests: boundary cycle exists
   - Repair action: return_false
-  - Suggested fixture: defect mentioning 'is_closed'
-- **Branch 2** @ line 922 — *orientation_inconsistent*
+  - Fixture: Me850 — tetrahedron with base removed; 3 lateral faces, 3 boundary base edges (n=1); hole_boundary=[v0,v1,v2]; is_closed returns false
+- **Branch 2** @ line 922 — *orientation_inconsistent* — **COVERED (Me851)**
   - What it tests: normals consistent across components
   - Repair action: return_false
-  - Suggested fixture: defect mentioning 'does_bound_a_volume'
-- **Branch 3** @ line 926 — *self_intersection*
+  - Fixture: Me851 — closed tetrahedron; base wound CW (v0,v2,v1); normal -Z; adjacent normals antiparallel at shared edge; orientation check fails
+- **Branch 3** @ line 926 — *self_intersection* — **COVERED (Me852)**
   - What it tests: no pairwise face intersections
   - Repair action: return_false
-  - Suggested fixture: defect mentioning 'does_self_intersect'
+  - Fixture: Me852 — closed 8-tri manifold; XY/XZ crossing fans share only v0; interiors overlap along X-axis; does_self_intersect true
+
+Fixture IDs: Me850 Me851 Me852
 
 ##### `PMP.does_polygon_soup_self_intersect` — lines 32–60
 (3 branches; all UNCOVERED — no mesh fixtures exist yet)
@@ -1005,20 +1007,20 @@ Fixture IDs: Me770 Me771 Me772 Me773
   - Suggested fixture: defect mentioning 'nesting_levels', '+1', 'parent-child'
 
 ##### `PMP.duplicate_non_manifold_vertices (repair)` — lines 317–361
-(3 branches; all UNCOVERED — no mesh fixtures exist yet)
+(3 branches; all COVERED — Me840–Me842)
 
-- **Branch 1** @ line 335 — *halfedge-visitation-tracking*
+- **Branch 1** @ line 335 — *halfedge-visitation-tracking* — **Me840**
   - What it tests: Skip already-processed halfedges
   - Repair action: only duplicate vertices for unvisited halfedge cycles
-  - Suggested fixture: defect mentioning 'visited_halfedges', 'insert'
-- **Branch 2** @ line 342 — *vertex-occurrence-detection*
+  - Fixture: Me840 (bowtie 2-fan, visited_halfedges.insert skips re-encountered halfedges)
+- **Branch 2** @ line 342 — *vertex-occurrence-detection* — **Me841**
   - What it tests: Check if vertex already processed in different half-cycle
   - Repair action: create new vertex copy if encountering same vertex again
-  - Suggested fixture: defect mentioning 'visited_vertices', 'null_h'
-- **Branch 3** @ line 348 — *non-manifold-class-confirmation*
+  - Fixture: Me841 (3-sector pinch, visited_vertices.count(hub)>0 fires null_h sentinel)
+- **Branch 3** @ line 348 — *non-manifold-class-confirmation* — **Me842**
   - What it tests: Verify vertex is in known non-manifold set before duplication
   - Repair action: only duplicate confirmed non-manifold vertices
-  - Suggested fixture: defect mentioning 'known_nm_vertices', 'duplicate'
+  - Fixture: Me842 (bowtie 2-fan z-offset, known_nm_vertices.count(hub) confirms before duplicate)
 
 ##### `PMP.filter_stitchable_pairs (manifold validator)` — lines 684–780
 (4 branches; all UNCOVERED — no mesh fixtures exist yet)
