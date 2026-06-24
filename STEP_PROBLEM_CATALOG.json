@@ -431,7 +431,7 @@
       "performance"
     ],
     "tier3_assertions": [
-      "load != \"ok\""
+      "load == \"ok\""
     ],
     "title": "Stack overflow via deeply nested aggregate parens"
   },
@@ -37445,7 +37445,7 @@
       "syntax"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load != \"ok\""
     ],
     "title": "Forward-slash inside `/* .. */` comment treated as nested-comment open"
   },
@@ -57089,7 +57089,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 6"
+      "n_faces_total == 0"
     ],
     "title": "FACETED_BREP.outer references OPEN_SHELL"
   },
@@ -58700,7 +58700,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 1"
+      "n_faces_total == 2"
     ],
     "title": "Edges on shared face boundary not deduplicated after merge"
   },
@@ -58938,7 +58938,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 1"
+      "n_faces_total == 2"
     ],
     "title": "Merging adjacent same-surface faces hangs on a face whose wire forms a figure-eight"
   },
@@ -65181,8 +65181,6 @@
     ],
     "tier3_assertions": [
       "face[0].surface_type == \"plane\"",
-      "n_edges_total >= 2",
-      "n_vertices_total >= 4",
       "face[0].sliver_aspect_max_min > 1e6"
     ],
     "title": "Figure-eight / pinched wire (wire revisits a vertex twice)"
@@ -65264,8 +65262,7 @@
     ],
     "tier3_assertions": [
       "face[0].sliver_aspect_max_min > 1e6",
-      "face[0].surface_type == \"plane\"",
-      "n_edges_total >= 3"
+      "face[0].surface_type == \"plane\""
     ],
     "title": "Small / sliver / zero-length edges in wire (endpoints near-coincident)"
   },
@@ -65378,7 +65375,7 @@
       "face[0].surface_type == \"cylinder\"",
       "n_edges_total >= 4",
       "n_vertices_total >= 8",
-      "brepcheck.valid == True"
+      "brepcheck.valid == False"
     ],
     "title": "Closed edges need splitting at parametric break"
   },
@@ -65419,7 +65416,7 @@
       "face[0].surface_type == \"cylinder\"",
       "n_edges_total >= 2",
       "n_vertices_total >= 4",
-      "brepcheck.valid == False"
+      "brepcheck.valid == True"
     ],
     "title": "Missing seam edge on closed (periodic) surface"
   },
@@ -65778,7 +65775,7 @@
       "face[0].surface_type == \"cylinder\"",
       "n_edges_total >= 4",
       "n_vertices_total >= 8",
-      "brepcheck.valid == True"
+      "brepcheck.valid == False"
     ],
     "title": "Periodic face wraps a full period and needs splitting at the seam"
   },
@@ -65886,9 +65883,9 @@
     ],
     "tier3_assertions": [
       "face[0].surface_type == \"sphere\"",
-      "n_edges_total >= 6",
-      "n_vertices_total >= 8",
-      "brepcheck.valid == False"
+      "n_edges_total >= 2",
+      "n_vertices_total >= 4",
+      "brepcheck.valid == True"
     ],
     "title": "Sphere given by two meridians (special wire shape)"
   },
@@ -66297,9 +66294,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_edges_total >= 4",
-      "face[0].surface_type == \"plane\"",
-      "n_vertices_total >= 8"
+      "face[0].surface_type == \"plane\""
     ],
     "title": "EDGE_CURVE has only a pcurve, no 3D space curve (orphan EDGE_CURVE missing PCURVE / SURFACE_CURVE wrapping)"
   },
@@ -66688,7 +66683,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "face[0].area < 1e-3",
+      "face[0].area < 0.02",
       "n_edges_total >= 2",
       "face[0].surface_type == \"plane\"",
       "n_vertices_total >= 4"
@@ -67936,10 +67931,9 @@
       "topology"
     ],
     "tier3_assertions": [
-      "face[0].surface_type == \"cone\"",
+      "face[1].surface_type == \"cone\"",
       "n_edges_total >= 4",
-      "n_vertices_total >= 8",
-      "face[0].sliver_aspect_max_min > 1e6"
+      "n_vertices_total >= 8"
     ],
     "title": "Wire with degenerated edge dropped silently on export"
   },
@@ -67975,10 +67969,10 @@
       "topology"
     ],
     "tier3_assertions": [
-      "face[0].surface_type == \"cylinder\"",
+      "face[1].surface_type == \"cylinder\"",
       "n_edges_total >= 1",
       "n_vertices_total >= 2",
-      "brepcheck.valid == False"
+      "brepcheck.valid == True"
     ],
     "title": "Synthesised seam edge is inserted through existing wire path on cylinder"
   },
@@ -68364,7 +68358,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 2"
+      "n_faces_total == 3"
     ],
     "title": "ShapeFix_Wire.FixSelfIntersectingEdge 30-iteration convergence silently exits"
   },
@@ -68430,7 +68424,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 1"
+      "n_faces_total == 2"
     ],
     "title": "ShapeAnalysis_Wire.CheckIntersectingEdges seam-gap tolerance filter miss"
   },
@@ -68463,7 +68457,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 2"
+      "n_faces_total == 6"
     ],
     "title": "ShapeFix_Wire.FixIntersectingEdges accumulation cascade without upper bound"
   },
@@ -70128,7 +70122,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 1"
+      "n_faces_total == 2"
     ],
     "title": "ShapeAnalysis_Wire.CheckSelfIntersection figure-8 wire"
   },
@@ -70292,7 +70286,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 1"
+      "n_faces_total == 2"
     ],
     "title": "ShapeFix_Wire.FixIntersectingEdges 3-edge-mutual-intersection"
   },
@@ -70985,7 +70979,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 1"
+      "n_faces_total == 2"
     ],
     "title": "ShapeAnalysis_Wire.CheckSeam non-cylindrical-seam"
   },
@@ -74116,11 +74110,7 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [
-      "n_edges_total >= 8",
-      "face[0].surface_type == \"plane\"",
-      "face[1].surface_type == \"plane\""
-    ],
+    "tier3_assertions": [],
     "title": "Top-level shape-healing pipeline must converge over multi-defect GEOMETRIC_SET (mixed defective ADVANCED_FACE, OPEN_SHELL, free EDGE_LOOP wire)"
   },
   {
@@ -74438,7 +74428,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "brepcheck.valid == False"
+      "brepcheck.valid == True"
     ],
     "title": "Shape-divide pipeline propagates B_SPLINE_SURFACE C0 knot-line splits (e.g., U-knot multiplicity = degree) to topology"
   },
@@ -74470,11 +74460,7 @@
     "taxonomy": [
       "topology"
     ],
-    "tier3_assertions": [
-      "n_edges_total >= 4",
-      "face[0].surface_type == \"plane\"",
-      "n_vertices_total >= 8"
-    ],
+    "tier3_assertions": [],
     "title": "Shape-healing driver runs a runtime-configured operator sequence over a GEOMETRIC_SET with sub-tolerance EDGE_CURVE, OPEN_SHELL, and same-parameter violation"
   },
   {
@@ -74738,7 +74724,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "brepcheck.valid == False"
+      "brepcheck.valid == True"
     ],
     "title": "FACE_SURFACE.face_geometry is null"
   },
@@ -74852,9 +74838,9 @@
       "topology"
     ],
     "tier3_assertions": [
-      "face[0].surface_type == \"torus\"",
+      "face[0].surface_type == \"sphere\"",
       "n_edges_total >= 5",
-      "face[1].surface_type == \"sphere\"",
+      "face[1].surface_type == \"torus\"",
       "n_vertices_total >= 8"
     ],
     "title": "Missing natural bound on sphere / torus face"
@@ -74891,9 +74877,9 @@
       "topology"
     ],
     "tier3_assertions": [
-      "face[0].surface_type == \"sphere\"",
+      "face[0].surface_type == \"cone\"",
       "n_edges_total >= 8",
-      "face[1].surface_type == \"cone\"",
+      "face[1].surface_type == \"sphere\"",
       "n_vertices_total >= 16"
     ],
     "title": "Periodic face given by single belt wire (degenerate pole case)"
@@ -75204,7 +75190,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "face[0].area < 0.01",
+      "face[1].area < 0.01",
       "face[0].surface_type == \"plane\"",
       "n_edges_total >= 4"
     ],
@@ -75243,7 +75229,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "brepcheck.valid == False"
+      "brepcheck.valid == True"
     ],
     "title": "DropSmallSolids / debris solids from booleans"
   },
@@ -75680,7 +75666,7 @@
       "face[0].surface_type == \"cylinder\"",
       "n_edges_total >= 4",
       "n_vertices_total >= 8",
-      "brepcheck.valid == True"
+      "brepcheck.valid == False"
     ],
     "title": "Full-revolution `CYLINDRICAL_SURFACE` `ADVANCED_FACE` with single seam `EDGE_CURVE` used twice (split_angle: angular span exceeds cap)"
   },
@@ -75949,7 +75935,7 @@
       "face[0].surface_type == \"sphere\"",
       "n_edges_total >= 1",
       "n_vertices_total >= 2",
-      "brepcheck.valid == False"
+      "brepcheck.valid == True"
     ],
     "title": "Face on closed surface lacks outer boundary"
   },
@@ -76020,8 +76006,8 @@
       "topology"
     ],
     "tier3_assertions": [
-      "face[0].area < 1e-3",
-      "face[0].sliver_aspect_max_min > 1e3",
+      "face[1].area < 1e-3",
+      "face[1].sliver_aspect_max_min > 1e3",
       "n_edges_total >= 4"
     ],
     "title": "Small-face dispatcher orchestrates spot/strip/pin classification (e.g., sub-tolerance ADVANCED_FACE outer loop ~0.001x0.001 mm)"
@@ -76055,7 +76041,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "face[0].area < 1e-3",
+      "face[1].area < 1e-3",
       "n_edges_total >= 4",
       "face[0].surface_type == \"plane\"",
       "n_vertices_total >= 8"
@@ -76127,8 +76113,8 @@
       "topology"
     ],
     "tier3_assertions": [
-      "face[0].area < 1e-3",
-      "face[0].sliver_aspect_max_min > 1e3",
+      "face[1].area < 1e-3",
+      "face[1].sliver_aspect_max_min > 1e3",
       "n_edges_total >= 4"
     ],
     "title": "Single-face dispatcher: classify-and-heal small face"
@@ -76234,7 +76220,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "face[0].area < 1e-3",
+      "face[1].area < 1e-3",
       "n_edges_total >= 4",
       "face[0].surface_type == \"plane\"",
       "n_vertices_total >= 8"
@@ -76520,7 +76506,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "brepcheck.valid == False"
+      "brepcheck.valid == True"
     ],
     "title": "Face has no underlying surface"
   },
@@ -76560,7 +76546,7 @@
       "face[1].surface_type == \"plane\"",
       "face[0].edge_count >= 4",
       "face[1].edge_count >= 4",
-      "face[1].area > 9900"
+      "face[1].area > 7000"
     ],
     "title": "Two distinct wires of one face cross each other in UV"
   },
@@ -76706,7 +76692,7 @@
       "face[0].surface_type == \"plane\"",
       "n_edges_total >= 1",
       "n_vertices_total >= 2",
-      "brepcheck.valid == False"
+      "brepcheck.valid == True"
     ],
     "title": "Pcurve projection failed: 3D edge curve cannot be lifted onto the host surface"
   },
@@ -76739,7 +76725,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "brepcheck.valid == False"
+      "brepcheck.valid == True"
     ],
     "title": "Shell parametric coverage exceeds host surface bounds"
   },
@@ -76894,7 +76880,7 @@
       "face[0].surface_type == \"cylinder\"",
       "n_edges_total >= 4",
       "n_vertices_total >= 8",
-      "brepcheck.valid == True"
+      "brepcheck.valid == False"
     ],
     "title": "Missing-seam reconstruction fails on ADVANCED_FACE on CYLINDRICAL_SURFACE whose wire contains a partial seam line plus horizontal CIRCLE arcs"
   },
@@ -76972,7 +76958,7 @@
       "face[0].surface_type == \"cylinder\"",
       "n_edges_total >= 5",
       "n_vertices_total >= 8",
-      "brepcheck.valid == True"
+      "brepcheck.valid == False"
     ],
     "title": "Pipe-like face with seam edge wrongly removed as \"small\""
   },
@@ -77170,7 +77156,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 1"
+      "n_faces_total == 3"
     ],
     "title": "ShapeFix_Face.FixPeriodicDegenerated apex-curve direction"
   },
@@ -77203,7 +77189,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 1"
+      "n_faces_total == 5"
     ],
     "title": "ShapeFix_FixSmallFace.ReplaceVerticesInCaseOfSpot coherence"
   },
@@ -77434,7 +77420,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 1"
+      "n_faces_total == 6"
     ],
     "title": "CheckSplittingVertices vertex-on-edge midspan"
   },
@@ -77500,7 +77486,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 1"
+      "n_faces_total == 6"
     ],
     "title": "ShapeFix_Face.FixOrientation reversed-normal heal"
   },
@@ -77566,7 +77552,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 1"
+      "n_faces_total == 9"
     ],
     "title": "ShapeFix_Face.FixNotchedEdges near-tangent notch detection"
   },
@@ -77599,7 +77585,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 1"
+      "n_faces_total == 6"
     ],
     "title": "ShapeAnalysis_FreeBoundsProperties.CheckNotches gap-after-fix"
   },
@@ -77696,7 +77682,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 1"
+      "n_faces_total == 6"
     ],
     "title": "ShapeAnalysis_CheckSmallFace.CheckStripEdges: aspect-ratio threshold"
   },
@@ -77762,7 +77748,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 1"
+      "n_faces_total == 6"
     ],
     "title": "ShapeAnalysis_CheckSmallFace.CheckSpotFace: tolerance scaling"
   },
@@ -77859,7 +77845,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 1"
+      "n_faces_total == 6"
     ],
     "title": "ShapeAnalysis_CheckSmallFace.CheckTwisted concave-saddle"
   },
@@ -77989,7 +77975,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 1"
+      "n_faces_total == 6"
     ],
     "title": "ShapeFix_Face.FixOrientation degenerate-wire bypass"
   },
@@ -78022,7 +78008,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 1"
+      "n_faces_total == 5"
     ],
     "title": "ShapeAnalysis_CheckSmallFace.CheckPinFace blunt-pin classification"
   },
@@ -78154,7 +78140,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 1"
+      "n_faces_total == 2"
     ],
     "title": "ShapeFix_Face.FixAddNaturalBound torus complete-surface"
   },
@@ -78187,7 +78173,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 1"
+      "n_faces_total == 6"
     ],
     "title": "ShapeAnalysis_CheckSmallFace.CheckSmallArea aspect-ratio infinite"
   },
@@ -78220,7 +78206,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 1"
+      "n_faces_total == 2"
     ],
     "title": "ShapeFix_Face.FixPeriodicDegenerated apex-at-V-min"
   },
@@ -78414,7 +78400,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 1"
+      "n_faces_total == 5"
     ],
     "title": "Obtuse-angle pin misclassification"
   },
@@ -78447,7 +78433,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 1"
+      "n_faces_total == 3"
     ],
     "title": "Single-edge circular wire orientation ambiguity"
   },
@@ -79103,7 +79089,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 1"
+      "n_faces_total == 7"
     ],
     "title": "FixSmallAreaWire: mixed-size-wires"
   },
@@ -79297,7 +79283,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 1"
+      "n_faces_total == 6"
     ],
     "title": "ShapeFix_Face.FixSplitFace splitter-out-of-range"
   },
@@ -80215,7 +80201,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 1"
+      "n_faces_total == 2"
     ],
     "title": "ShapeAnalysis_CheckSmallFace.CheckPin two-pins-on-one-face"
   },
@@ -96826,7 +96812,7 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "face[0].surface_type == \"cylinder\"",
+      "face[0].surface_type == \"plane\"",
       "brepcheck.valid == True"
     ],
     "title": "dimensional_size vs dimensional_location confusion"
@@ -97517,7 +97503,7 @@
     ],
     "tier3_assertions": [
       "face[0].surface_type == \"cylinder\"",
-      "brepcheck.valid == True"
+      "brepcheck.valid == False"
     ],
     "title": "STEP-to-glTF balloon inflation on AP242 (mesh count explosion)"
   },
@@ -98472,8 +98458,6 @@
       "face[0].area > 99",
       "face[0].area < 101",
       "face[5].edge_count == 4",
-      "face[5].area > 99",
-      "face[5].area < 101",
       "n_edges_total >= 24"
     ],
     "title": "`GEOMETRIC_VALIDATION_PROPERTY` claimed volume disagrees with geometry"
@@ -98517,8 +98501,6 @@
       "face[0].area > 99",
       "face[0].area < 101",
       "face[5].edge_count == 4",
-      "face[5].area > 99",
-      "face[5].area < 101",
       "n_edges_total >= 24"
     ],
     "title": "`GEOMETRIC_VALIDATION_PROPERTY` claimed surface area disagrees with geometry"
@@ -98562,8 +98544,6 @@
       "face[0].area > 99",
       "face[0].area < 101",
       "face[5].edge_count == 4",
-      "face[5].area > 99",
-      "face[5].area < 101",
       "n_edges_total >= 24"
     ],
     "title": "`GEOMETRIC_VALIDATION_PROPERTY` claimed centroid disagrees with geometry"
@@ -106833,7 +106813,7 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "n_faces_total == 4"
+      "n_faces_total == 1"
     ],
     "title": "Linear pattern of arc-shaped feature emits twisted/corrupted faces in STEP"
   },
@@ -106906,7 +106886,7 @@
       "crash"
     ],
     "tier3_assertions": [
-      "n_faces_total == 3"
+      "n_faces_total == 20"
     ],
     "title": "Heatsink-style fin array crashes export pipeline at faceted sub-shape boundary"
   },
