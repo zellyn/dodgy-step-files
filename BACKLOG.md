@@ -312,9 +312,24 @@ new flaky-CI surface.
       (commit `4c3f1d7`); re-refreshed 2026-06-24 with live
       `_final_verdict` numbers + post-rebaseline verdict matrix.
 
-### Q3 — Phase 7 backlog (75-fixture A6 audit groups)
+### Q3 — Phase 7 backlog (75-fixture A6 audit groups) — CLOSED 2026-06-24
 
-Pre-existing task #116. Not blocking but should not be forgotten.
+Audit complete. Punch list at `audit/A6_audit_groups_punch_list_2026-06-24.md`.
+
+- Group 1 (no-bounds ADVANCED_FACE, spec 24): done — 0 build errors,
+  3 intentional KEEPs (Tfa002, Ad015, Tsh229 — all verified).
+- Group 2 (EDGE_LOOP doesn't chain, spec 23): 26 fixtures in bytes
+  but all are intentional — catalog titles describe wire ordering /
+  scrambled edges / FixReorder behavior. Spot-checked Twi003 / Twi078
+  / Pf024. KEEPs.
+- Group 3 (empty EDGE_LOOP, spec 11): done — 0 build errors, 9 KEEPs.
+- Group 4 (EDGE_CURVE twice same orient, spec 17 → 10): 4 fixtures
+  in bytes (Bo006, Tfa028, Wr055, Xp012) — all are intentional per
+  catalog mechanism claims. KEEPs.
+
+The original 75-fixture spec was a "fix build errors" punch list;
+the build errors were fixed during prior Q3 work, and the remaining
+structural patterns are by-design defects. Task #116 closed.
 
 ### Q4 — Mesh-fixture format (Python builder + JSON serialization)
 
