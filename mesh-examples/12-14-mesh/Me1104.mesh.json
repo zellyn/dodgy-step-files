@@ -1,0 +1,89 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      1.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      3,
+      2
+    ],
+    [
+      0,
+      1,
+      2
+    ]
+  ],
+  "metadata": {
+    "id": "Me1104",
+    "schema_version": 0,
+    "defect_class": "degenerate_triangle",
+    "title": "CreateTriangleFromVertices_unlinked_e2: degenerate td collinear; e3 linked via tc; e2=(v1,v2) orphan freed by Branch 5 freeNode",
+    "assertions": [
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 1,
+        "lt": 1e-12
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          2
+        ],
+        "n": 2
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          1,
+          2
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          1
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          3
+        ],
+        "n": 1
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          2,
+          3
+        ],
+        "n": 1
+      }
+    ]
+  }
+}
