@@ -36592,3 +36592,37 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me820 — does_polygon_soup_self_intersect_duplicate_point_presence: coincident v0==v3 at (0,0,0); merge_duplicate_points fires before SI check (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: polygon-soup-self-intersection / duplicate-point-presence)
+- **Sources**: CGAL PMP `does_polygon_soup_self_intersect` Branch 1 (*duplicate_point_presence*: `merge_duplicate_points_in_polygon_soup` call fires when coincident-coordinate vertex pair exists); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two triangles in a flat XY soup where vertex v3=(0,0,0) is a second copy of v0=(0,0,0) with a distinct index. The merge step collapses v3 to v0 before any SI check — Branch 1 fires whenever the de-duplication does real work. The fixture records the spatial coincidence (distance < 1e-9) and the absence of a shared triangle for the pair, confirming they are identical coordinates but topologically separate entries.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(0,0,0) [=v0]; t0=(v0,v1,v2), t1=(v3,v2,v1); assert_vertex_pair_distance_lt(0,3,1e-9); assert_vertex_pair_no_shared_triangle(0,3).
+- **Expected kernel behavior**: Branch 1 fires; merge_duplicate_points_in_polygon_soup remaps v3→v0; de-duplicated soup has 3 unique points; SI check proceeds on merged soup.
+- **Mesh assertion**: `vertex_pair_distance_lt pair=[0,3] lt=1e-09`
+- **Mesh assertion**: `vertex_pair_no_shared_triangle pair=[0,3]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me820.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me821 — does_polygon_soup_self_intersect_polygon_type_mixed: needle triangle (aspect >> 1) simulates non-triangle-polygon pre-condition; triangulate_polygons branch fires (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: polygon-soup-self-intersection / polygon-type-mixed)
+- **Sources**: CGAL PMP `does_polygon_soup_self_intersect` Branch 2 (*polygon_type_mixed*: `if(polygon.size() != std::size_t(3))` → `triangulate_polygons` call); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A two-triangle soup where the first triangle (v0,v1,v2) is a maximally needle-shaped element with base 10 and height 1e-4, giving an aspect ratio >1e5. In the actual CGAL branch, non-triangle polygons (quads, pentagons) trigger the `triangulate_polygons` call; the needle triangle simulates the degenerate geometry that would result from naively ear-clipping a thin quad. The aspect_ratio_gt assertion records the polygon_type_mixed pre-condition.  The second clean triangle confirms no SI.
+- **Reproducer recipe**: v0=(0,0,0), v1=(10,0,0), v2=(5,1e-4,0); t0=(v0,v1,v2) needle; v3=(0,2,0), v4=(1,2,0), v5=(0,3,0); t1=(v3,v4,v5) clean; assert_triangle_aspect_ratio_gt(0,1000.0); assert_triangles_do_not_intersect(0,1).
+- **Expected kernel behavior**: Branch 2 fires on polygon size != 3; triangulate_polygons converts soup to all-triangle representation; SI check proceeds on triangulated soup.
+- **Mesh assertion**: `triangle_aspect_ratio_gt triangle=0 gt=1000.0`
+- **Mesh assertion**: `triangles_do_not_intersect triangles=[0,1]`
+- **Fixture path**: mesh-examples/12-14-mesh/Me821.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me822 — does_polygon_soup_self_intersect_intersection_detection: crossing XY/XZ triangle pair in soup triggers triangle_soup_self_intersections (Branch 3)
+- **Category**: §12.14 mesh defects (sub-class: polygon-soup-self-intersection / intersection-detection)
+- **Sources**: CGAL PMP `does_polygon_soup_self_intersect` Branch 3 (*intersection_detection*: `triangle_soup_self_intersections(points, triangles, …)` returns non-empty); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four triangles in a polygon soup: a crossing XY/XZ pair (t0 and t1 sharing apex v0=(0,0,0)) that geometrically pierce each other, plus two clean companion triangles 20 units away. The crossing pair causes `triangle_soup_self_intersections` to return a non-empty result — Branch 3 fires and the function reports that the soup self-intersects. The clean companions confirm the SI is localised to the two crossing triangles.
+- **Reproducer recipe**: v0=(0,0,0) apex; v1=(1,1,0), v2=(1,-1,0) XY fan; v3=(1,0,1), v4=(1,0,-1) XZ fan; t0=(v0,v1,v2), t1=(v0,v3,v4); clean t2,t3 at y≥20; assert_triangles_self_intersect(0,1); assert_triangles_do_not_intersect(2,3); assert_triangle_not_reachable_from(2,0).
+- **Expected kernel behavior**: Branch 3 fires; triangle_soup_self_intersections detects the crossing pair; function returns true (soup has SI).
+- **Mesh assertion**: `triangles_self_intersect triangles=[0,1]`
+- **Mesh assertion**: `triangles_do_not_intersect triangles=[2,3]`
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me822.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder

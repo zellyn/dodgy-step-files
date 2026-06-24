@@ -1,0 +1,66 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      10.0,
+      0.0,
+      0.0
+    ],
+    [
+      5.0,
+      0.0001,
+      0.0
+    ],
+    [
+      0.0,
+      2.0,
+      0.0
+    ],
+    [
+      1.0,
+      2.0,
+      0.0
+    ],
+    [
+      0.0,
+      3.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      3,
+      4,
+      5
+    ]
+  ],
+  "metadata": {
+    "id": "Me821",
+    "schema_version": 0,
+    "defect_class": "degenerate_triangle",
+    "title": "does_polygon_soup_self_intersect polygon_type_mixed: needle triangle (aspect >> 1) simulates non-triangle-polygon pre-condition; triangulate_polygons branch fires (Branch 2)",
+    "assertions": [
+      {
+        "kind": "triangle_aspect_ratio_gt",
+        "triangle": 0,
+        "gt": 1000.0
+      },
+      {
+        "kind": "triangles_do_not_intersect",
+        "triangles": [
+          0,
+          1
+        ]
+      }
+    ]
+  }
+}
