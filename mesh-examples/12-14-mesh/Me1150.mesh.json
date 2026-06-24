@@ -1,0 +1,55 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ]
+  ],
+  "metadata": {
+    "id": "Me1150",
+    "schema_version": 0,
+    "defect_class": "degenerate_edge",
+    "title": "is_degenerate_edge equal_points: endpoint positions identical \u2014 zero-length edge between v0==v1 at (0,0,0)",
+    "assertions": [
+      {
+        "kind": "vertex_pair_distance_lt",
+        "pair": [
+          0,
+          1
+        ],
+        "lt": 1e-09
+      },
+      {
+        "kind": "edge_shared_by_n_triangles",
+        "edge": [
+          0,
+          1
+        ],
+        "n": 1
+      },
+      {
+        "kind": "triangle_area_lt",
+        "triangle": 0,
+        "lt": 1e-09
+      }
+    ]
+  }
+}

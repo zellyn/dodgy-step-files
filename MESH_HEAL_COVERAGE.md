@@ -702,6 +702,7 @@ Fixture IDs: Me750 Me751 Me752 Me753
 
 ##### `PMP.remove_self_intersections` — lines 2356–2527
 (15 branches; 10 covered — Me1110–Me1114 cover branches 1–5; Me1120–Me1124 cover branches 6–10; branches 11–15 UNCOVERED)
+(15 branches; Branches 11-15 covered by Me1130-Me1134; Branches 1-10 covered by wave 38B/38C Me1110-Me1124)
 
 - **Branch 1** @ line 2379 — *genus-preservation-requirement* — **Me1110**
   - What it tests: whether to preserve topological genus (preserve_genus NP)
@@ -744,25 +745,27 @@ Fixture IDs: Me750 Me751 Me752 Me753
   - Repair action: retry smoothing without sharp-edge constraints
   - Fixture: Me1124 — 4-triangle cross floor + two 90° walls; crease edge (v1,v4) non-manifold n=3; intruder apex at z=-0.5 crosses floor; constrained pass stalls (fixed_by_smoothing=false); unconstrained fallback fires
 - **Branch 11** @ line 2264 — *topology-genus-classification*
+  - Suggested fixture: defect mentioning 'fixed_by_smoothing', 'constrain_sharp_edges'
+- **Branch 11** @ line 2264 — *topology-genus-classification* — **Me1130**
   - What it tests: whether selected CC is topologically a disk (chi=1) or has higher genus/holes
   - Repair action: branch to complex-topology handler vs disk-hole-filling
-  - Suggested fixture: defect mentioning 'euler_characteristic_of_selection', 'handle_CC_with_complex_topology'
-- **Branch 12** @ line 2041 — *expansion-step-depth-control*
+  - Fixture: Me1130 — 4-sector annular strip with intruder; chi=0 (two boundary loops) routes to complex-topology handler
+- **Branch 12** @ line 2041 — *expansion-step-depth-control* — **Me1131**
   - What it tests: whether to expand face selection by multiple topological layers (step > 0)
   - Repair action: iteratively expand neighborhood vs work on initial SI region only
-  - Suggested fixture: defect mentioning 'step', 'expand_face_selection'
-- **Branch 13** @ line 2069 — *bounding-box-obb-transform-applicability*
+  - Fixture: Me1131 — center SI pair needs 2-ring expansion (inner belt + outer belt) before disk-fillable
+- **Branch 13** @ line 2069 — *bounding-box-obb-transform-applicability* — **Me1132**
   - What it tests: whether oriented-bounding-box compactification is enabled (CGAL_PMP_REPAIR_SI_USE_OBB)
   - Repair action: use OBB-based selection vs axis-aligned-box selection
-  - Suggested fixture: defect mentioning 'oriented_bounding_box', 'Aff_transformation'
-- **Branch 14** @ line 2135 — *singleton-cc-rejection*
+  - Fixture: Me1132 — diamond mesh rotated 45 degrees; OBB substantially tighter than axis-aligned box; Aff_transformation applied
+- **Branch 14** @ line 2135 — *singleton-cc-rejection* — **Me1133**
   - What it tests: whether compactified region consists of single face only
   - Repair action: skip further processing (no topology to heal)
-  - Suggested fixture: defect mentioning 'cc_faces.size() == 1', 'continue'
-- **Branch 15** @ line 2311 — *iteration-convergence-stalling-detection*
+  - Fixture: Me1133 — minimal 2-triangle crossing with no belt; cc_faces.size()==1 triggers skip
+- **Branch 15** @ line 2311 — *iteration-convergence-stalling-detection* — **Me1134**
   - What it tests: whether the current step changed the mesh topology at all
   - Repair action: restore face list and skip SI recomputation vs recompute with new config
-  - Suggested fixture: defect mentioning 'something_was_done', 'faces_to_treat.swap'
+  - Fixture: Me1134 — three independent intruders on large base triangle; something_was_done=false; faces_to_treat.swap restores list
 
 ##### `PMP.self_intersections_impl` — lines 343–523
 (11 branches; 10 covered by Me050–Me059; 1 skipped — Branch 5 TBB-availability-guard is compile-time link flag, not a geometry property)
@@ -1235,28 +1238,28 @@ Fixture IDs: Me790 Me791 Me792
   - Suggested fixture: defect mentioning 'parent_component'
 
 ##### `PMP.volume_connected_components` — lines 518–876
-(5 branches; all UNCOVERED — no mesh fixtures exist yet)
+(5 branches; all COVERED — wave 39B, fixtures Me1140–Me1144)
 
-- **Branch 1** @ line 570 — *self_intersection_detection*
+- **Branch 1** @ line 570 — *self_intersection_detection* — **Me1140**
   - What it tests: faces have ray-casting sign inconsistency
   - Repair action: flag self-intersection error
-  - Suggested fixture: defect mentioning 'self_intersecting'
-- **Branch 2** @ line 600 — *boundary_component_detection*
+  - Fixture: 8-triangle closed shell with crossing cap faces (z=1 plane vs y=1 plane); does_self_intersect fires
+- **Branch 2** @ line 600 — *boundary_component_detection* — **Me1141**
   - What it tests: component is open with boundary edges
   - Repair action: flag boundary_error
-  - Suggested fixture: defect mentioning 'is_closed'
-- **Branch 3** @ line 640 — *orientation_consistency*
+  - Fixture: two-triangle flat patch; 4 boundary edges; !is_closed fires
+- **Branch 3** @ line 640 — *orientation_consistency* — **Me1142**
   - What it tests: interior and exterior faces share consistent normal orientation
   - Repair action: flag orientation_error
-  - Suggested fixture: defect mentioning 'normal consistency'
-- **Branch 4** @ line 720 — *nesting_depth_assignment*
+  - Fixture: closed tetrahedron with one CW-wound face; is_outward_oriented fails
+- **Branch 4** @ line 720 — *nesting_depth_assignment* — **Me1143**
   - What it tests: ray-casting parity determines depth
   - Repair action: assign volume_id based on depth and parent
-  - Suggested fixture: defect mentioning 'volume_id'
-- **Branch 5** @ line 800 — *nested_component_orientation*
+  - Fixture: inner tetrahedron nested inside outer; ray-casting parity assigns volume_id=2 to inner
+- **Branch 5** @ line 800 — *nested_component_orientation* — **Me1144**
   - What it tests: child components have opposite parent orientation
   - Repair action: validate nesting invariant
-  - Suggested fixture: defect mentioning 'parent'
+  - Fixture: inner tetrahedron has same outward orientation as outer (defect); nesting invariant violated
 
 
 #### `PMP_Mesh_repair/include/CGAL/Polygon_mesh_processing/repair_degeneracies.h`

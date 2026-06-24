@@ -1,0 +1,19 @@
+ply
+format ascii 1.0
+comment Me1133: SI with singleton compactified region (cc_faces.size()==1): skip branch
+comment defect_class: self_intersection_singleton_cc
+element vertex 6
+property float x
+property float y
+property float z
+element face 2
+property list uchar int vertex_indices
+end_header
+0.5 0.5 0
+1.5 1.5 0
+1.5 -0.5 0
+1.167 0.5 1
+1.167 0.5 -1
+2 0.5 0
+3 0 1 2
+3 3 4 5
