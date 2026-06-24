@@ -478,16 +478,14 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
   - Suggested fixture: defect mentioning 'halfedge(w,'
 
 ##### `PMP.remove_invalid_polygons_in_polygon_soup` — lines 295–321
-(2 branches; all UNCOVERED — no mesh fixtures exist yet)
+(2 branches; **COVERED** — Me1031–Me1032 — wave 35C, 2026-06-23)
 
-- **Branch 1** @ line 298 — *degenerate_polygon_filter*
-  - What it tests: Polygon size <= 2
+- **Branch 1** @ line 298 — *degenerate_polygon_filter* → **Me1031**
+  - What it tests: Polygon size <= 2 (or has_duplicate_vertex)
   - Repair action: std::remove_if predicate returns true; polygon marked for erase
-  - Suggested fixture: defect mentioning 'std::remove_if', 'polygon.size() <= 2'
-- **Branch 2** @ line 311 — *erase_execution*
+- **Branch 2** @ line 311 — *erase_execution* → **Me1032**
   - What it tests: Remove all invalid polygons from container
   - Repair action: polygons.erase(rit, polygons.end())
-  - Suggested fixture: defect mentioning 'polygons.erase'
 
 ##### `PMP.remove_isolated_points_in_polygon_soup` — lines 404–487
 (7 branches; **COVERED** — Me360–Me366 — wave 13B, 2026-06-21)
@@ -973,12 +971,11 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
   - Suggested fixture: defect mentioning 'degree(v,pmesh)==0', 'remove_vertex'
 
 ##### `PMP.split_connected_components` — lines 940–957
-(1 branches; all UNCOVERED — no mesh fixtures exist yet)
+(1 branch; **COVERED** — Me1030 — wave 35C, 2026-06-23)
 
-- **Branch 1** @ line 945 — *component_subdivision*
+- **Branch 1** @ line 945 — *component_subdivision* → **Me1030**
   - What it tests: each connected component isolated
   - Repair action: extract_to_new_mesh
-  - Suggested fixture: defect mentioning 'connected_component', 'cc_meshes'
 
 
 #### `(unknown)`

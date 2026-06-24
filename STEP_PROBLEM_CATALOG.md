@@ -36592,3 +36592,46 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1030 — split_connected_components component_subdivision: two disconnected triangles each extracted to a new mesh (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / split-connected-components)
+- **Sources**: CGAL PMP `PMP.split_connected_components` Branch 1 (*component_subdivision*: `extract_to_new_mesh(cc_meshes[i], ...)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two isolated triangles in one polygon mesh — Component A near the origin (v0–v2), Component B 50 units away (v3–v5). No shared edges or vertices. split_connected_components iterates both CC labels and calls extract_to_new_mesh for each, producing two independent output meshes. t1 is unreachable from t0. Euler: V=6, E=6, F=2, chi=2.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), t0=(v0,v1,v2); v3=(50,0,0), v4=(51,0,0), v5=(50.5,1,0), t1=(v3,v4,v5); all 6 edges n=1; assert_triangle_not_reachable_from(t1,t0); euler V=6,E=6,F=2,chi=2.
+- **Expected kernel behavior**: Branch 1 fires; split_connected_components enumerates two CC labels, calls extract_to_new_mesh twice, and returns two single-triangle meshes.
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,1] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,4] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[3,5] n=1`
+- **Mesh assertion**: `triangle_not_reachable_from target=1 source=0`
+- **Mesh assertion**: `euler_characteristic v=6 e=6 f=2 chi=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1030.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1031 — remove_invalid_polygons_degenerate_filter: duplicate-vertex triangle [v0,v0,v1] triggers remove_if predicate (Branch 1)
+- **Category**: §12.14 mesh defects (sub-class: degenerate_triangle / remove-invalid-polygons-in-polygon-soup)
+- **Sources**: CGAL PMP `PMP.remove_invalid_polygons_in_polygon_soup` Branch 1 (*degenerate_polygon_filter*: `std::remove_if` predicate returns true for `has_duplicate_vertex(polygon)`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Polygon soup containing one valid triangle (v0,v1,v2) and one degenerate triangle with repeated vertex index [v0,v0,v1]. The repeated-vertex face is structurally a 2-vertex polygon; remove_if's predicate evaluates has_duplicate_vertex and returns true, marking it for erasure. Branch 1 fires. Triangle t1 has zero area because two indices are identical.
+- **Reproducer recipe**: v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0); t0=(v0,v1,v2) valid; t1=(v0,v0,v1) degenerate; assert_triangle_area_lt(t1,1e-9); edges (v0,v2) and (v1,v2) each n=1.
+- **Expected kernel behavior**: Branch 1 fires; remove_if predicate returns true for t1; t1 is moved to the tail of the polygon container for subsequent erase.
+- **Mesh assertion**: `triangle_area_lt triangle=1 lt=1e-09`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,2] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1031.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me1032 — remove_invalid_polygons_erase_execution: two degenerate triangles erased by polygons.erase(rit, end()); two valid triangles remain (Branch 2)
+- **Category**: §12.14 mesh defects (sub-class: degenerate_triangle / remove-invalid-polygons-in-polygon-soup)
+- **Sources**: CGAL PMP `PMP.remove_invalid_polygons_in_polygon_soup` Branch 2 (*erase_execution*: `polygons.erase(rit, polygons.end())`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Polygon soup with two valid triangles (t0=(v0,v1,v2), t1=(v1,v3,v2)) and two degenerate triangles with duplicate vertex indices (t2=[v0,v0,v1], t3=[v1,v1,v2]). Both degenerate faces are flagged by the Branch 1 predicate and moved to the tail by remove_if. Branch 2 then calls polygons.erase(rit, end()), permanently truncating the container. The clean outer boundary edges (v0-v2, v1-v3, v2-v3) each have n=1.
+- **Reproducer recipe**: v0=(0,0,0), v1=(2,0,0), v2=(1,2,0), v3=(3,0,0); t0=(v0,v1,v2), t1=(v1,v3,v2); t2=(v0,v0,v1), t3=(v1,v1,v2); assert_triangle_area_lt(t2,1e-9); assert_triangle_area_lt(t3,1e-9); edges (v0,v2), (v1,v3), (v2,v3) each n=1.
+- **Expected kernel behavior**: Branch 2 fires; polygons.erase removes both degenerate faces; remaining container holds only the two valid triangles t0 and t1.
+- **Mesh assertion**: `triangle_area_lt triangle=2 lt=1e-09`
+- **Mesh assertion**: `triangle_area_lt triangle=3 lt=1e-09`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me1032.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
