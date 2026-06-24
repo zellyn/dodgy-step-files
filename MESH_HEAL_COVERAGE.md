@@ -1695,29 +1695,29 @@ Fixture IDs: Me070 Me071 Me072 Me073 Me074 Me075 Me076 Me077 Me078 Me079
   - Suggested fixture: defect mentioning 'T.appendHead(tt)'
 
 ##### `Basic_TMesh.deselectConnectedComponent` — lines 1092–1115
-(6 branches; all UNCOVERED — no mesh fixtures exist yet)
+(6 branches; all COVERED — wave 33C fixtures Me970–Me975)
 
-- **Branch 1** @ line 1098 — *seed_enqueue*
+- **Branch 1** @ line 1098 — *seed_enqueue* — **COVERED by Me970**
   - What it tests: Seed triangle t0 added to todo
   - Repair action: Initialize BFS with t0
   - Suggested fixture: defect mentioning 'todo.appendHead(t0)'
-- **Branch 2** @ line 1102 — *visited_triangle_check*
+- **Branch 2** @ line 1102 — *visited_triangle_check* — **COVERED by Me971**
   - What it tests: Triangle is selected (VISITED)
   - Repair action: Process only visited triangles
   - Suggested fixture: defect mentioning 'if (IS_VISITED(t))'
-- **Branch 3** @ line 1106 — *neighbor_t1_dequeue*
+- **Branch 3** @ line 1106 — *neighbor_t1_dequeue* — **COVERED by Me972**
   - What it tests: t1 exists and selected and edge not sharp
   - Repair action: Add t1 to todo if sos flag not blocking
   - Suggested fixture: defect mentioning 'if (t1 != NULL && IS_VISITED(t1)', 'IS_SHARPEDGE(t->e1)'
-- **Branch 4** @ line 1107 — *neighbor_t2_dequeue*
+- **Branch 4** @ line 1107 — *neighbor_t2_dequeue* — **COVERED by Me973**
   - What it tests: t2 exists and selected and edge not sharp
   - Repair action: Add t2 to todo if crossing not blocked
   - Suggested fixture: defect mentioning 'if (t2 != NULL && IS_VISITED(t2)', 'IS_SHARPEDGE(t->e2)'
-- **Branch 5** @ line 1108 — *neighbor_t3_dequeue*
+- **Branch 5** @ line 1108 — *neighbor_t3_dequeue* — **COVERED by Me974**
   - What it tests: t3 exists and selected and edge not sharp
   - Repair action: Add t3 to todo
   - Suggested fixture: defect mentioning 'if (t3 != NULL && IS_VISITED(t3)', 'IS_SHARPEDGE(t->e3)'
-- **Branch 6** @ line 1110 — *unmark_and_count*
+- **Branch 6** @ line 1110 — *unmark_and_count* — **COVERED by Me975**
   - What it tests: Unmark triangle and increment count
   - Repair action: Clear VISITED flag and increment ns
   - Suggested fixture: defect mentioning 'UNMARK_VISIT(t); ns++'
