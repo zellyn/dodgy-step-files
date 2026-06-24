@@ -246,21 +246,33 @@ single most informative signal. Expect surprises: fixtures that demonstrate
 *different* defects than intended, "broken" fixtures that no kernel
 flags, "clean" fixtures that crash one kernel and not others.
 
-**Status:** Not started.
-**Last touched:** 2026-06-18.
+**Status:** B3.1 + B3.2 survey complete 2026-06-24 (see below). B3.3 pending.
+**Last touched:** 2026-06-24.
 
 **Plan:**
-- [ ] B3.1 Survey kernel landscape: CGAL (Polyhedron + Nef), Geogram,
-      OpenSCAD/libfive, Open Cascade Edge (community fork), pythonOCC
-      (separate from OCCT?), libIGES. Note: not all read STEP — some
-      need bridging via IGES/BREP intermediates.
-- [ ] B3.2 Build kernel-availability matrix: which can be installed in the
-      Linux CI container (Ubuntu 22.04)? Which need build-from-source?
-      Which are Python-bound vs. C/C++ only?
-- [ ] B3.3 Pick top-2 kernels to add first based on coverage + ease of
-      install (likely CGAL + one other). Implement subprocess-isolated
-      oracle wrappers in `validation/src/step_corpus/_kernels/`
-      following the existing `_occt_oracle.py` pattern.
+- [x] B3.1 + B3.2 Kernel landscape survey + install matrix done 2026-06-24
+      by Sonnet sub-agent. Verdict: existing matrix already has 2 fully
+      independent STEP oracles (OCC + solvespace); next gap is a third
+      independent **B-rep** oracle, with a complementary mesh-layer
+      oracle as the second add. Ranked top-2:
+      - **#1 pilot: BRL-CAD `step-g`** — fully independent STEP reader
+        via STEPcode (NIST PDES, not OCC). BSD license. Subprocess
+        pattern matches `_solvespace_oracle.py`. macOS: `.dmg` from
+        brlcad.org releases; Ubuntu CI: pinned `.tar.bz2` download
+        (~5min). No GL dependency. Highest oracle-independence value.
+      - **#2: CGAL PMP** — post-tessellation mesh oracle, complementary
+        to manifold3d (catches segment-pair self-intersections that
+        Euler-characteristic checks miss). `brew install cgal` /
+        `apt-get install libcgal-dev`. LGPL-3.0; subprocess-isolated
+        so MIT-clean. Requires `cgal_pmp_check.cpp` helper binary.
+      Rejected: Geogram (no STEP), OpenSCAD/libfive (OCC-backed STEP),
+      OCE/pythonocc-core (duplicate OCC), libIGES/lib3mf (wrong format),
+      cascadio (bundles OCC), meshlib (proprietary), pymeshfix (mesh-only,
+      duplicates manifold3d's domain).
+- [ ] B3.3 Wire BRL-CAD `step-g` first as `_brlcad_oracle.py` following
+      `_solvespace_oracle.py` pattern. Output schema:
+      `{status, n_regions, n_solids, stderr_tail, duration_ms}`.
+      Then wire CGAL PMP as `_cgal_oracle.py` with companion C++ helper.
 - [ ] B3.4 Add per-kernel JSON output to validate2 schema. Each oracle
       emits `{loaded, n_faces, n_edges, n_solids, error, error_class}`
       with consistent vocabulary.
