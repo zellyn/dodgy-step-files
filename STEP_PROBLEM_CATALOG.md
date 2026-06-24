@@ -36592,3 +36592,100 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=4 e=5 f=2 chi=1`
 - **Fixture path**: mesh-examples/12-14-mesh/Me406.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me450 — removeSmallestComponents area EMPTY_MESH: T.numels()==0 → return 0; no triangles to area-filter
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / empty-mesh-guard)
+- **Sources**: MeshFix `checkAndRepair::removeSmallestComponents@L861` Branch 1 (*EMPTY_MESH*: `if (T.numels() == 0) return 0;`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A single isolated vertex with no triangles. T.numels() == 0 so the area-based removeSmallestComponents exits immediately at line 869 without entering BFS or area accumulation. This guard branch prevents operating on an empty mesh.
+- **Reproducer recipe**: v0=(0,0,0); no triangles; assert_isolated_vertex(v0).
+- **Expected kernel behavior**: Branch 1 fires; T.numels() == 0 → function returns 0 immediately without any component traversal.
+- **Mesh assertion**: `isolated_vertex vertex=0`
+- **Fixture path**: mesh-examples/12-14-mesh/Me450.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me451 — removeSmallestComponents area ADJACENT_TRIANGLE_T1_AREA: BFS expands via t->t1() neighbor; micro-component has area below eps_area
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / bfs-t1-adjacency)
+- **Sources**: MeshFix `checkAndRepair::removeSmallestComponents@L861` Branch 2 (*ADJACENT_TRIANGLE_T1_AREA*: `s = t->t1(); if (s != NULL && !IS_BIT(s, 5))`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four-triangle strip (component A, total area = 2.0) and a micro-triangle (component B, area ≈ 5e-5). BFS traversal of component A reaches unvisited neighbors via t1-adjacency. Interior edge (v0,v2) n=2. Component B is unreachable from t0.
+- **Reproducer recipe**: v0-v5 form two quad-halves (t0-t3); v6-v8 form micro-triangle t4 at (10,10); assert_triangle_not_reachable_from(t4, t0); assert_triangle_area_lt(t4, 1e-3); assert_edge_shared(v0,v2,2).
+- **Expected kernel behavior**: Branch 2 fires during BFS over component A; s=t->t1() yields unvisited neighbor; component B (area ≈ 5e-5) satisfies pa < eps_area and is unlinked.
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Mesh assertion**: `triangle_area_lt triangle=4 lt=0.001`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me451.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me452 — removeSmallestComponents area ADJACENT_TRIANGLE_T2_AREA: BFS expands via t->t2() neighbor; disconnected micro-component below eps_area
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / bfs-t2-adjacency)
+- **Sources**: MeshFix `checkAndRepair::removeSmallestComponents@L861` Branch 3 (*ADJACENT_TRIANGLE_T2_AREA*: `s = t->t2(); if (s != NULL && !IS_BIT(s, 5))`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Three-triangle fan (component A) sharing center vertex v0; BFS propagates via t2-adjacency (second edge). Interior edges (v0,v2) and (v0,v3) each n=2. Micro-triangle (component B, area ≈ 5e-5) at (20,20) is disconnected from t0.
+- **Reproducer recipe**: v0 center, v1-v4 fan; t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v0,v3,v4); micro-tri v5-v7 at (20,20); assert_triangle_not_reachable_from(t3,t0); assert_triangle_area_lt(t3,1e-3); edge_shared(v0,v2,2); edge_shared(v0,v3,2).
+- **Expected kernel behavior**: Branch 3 fires; s=t->t2() yields unvisited fan neighbor; component B area triggers pa < eps_area removal.
+- **Mesh assertion**: `triangle_not_reachable_from target=3 source=0`
+- **Mesh assertion**: `triangle_area_lt triangle=3 lt=0.001`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me452.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me453 — removeSmallestComponents area ADJACENT_TRIANGLE_T3_AREA: BFS expands via t->t3() neighbor; disconnected micro-component below eps_area
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / bfs-t3-adjacency)
+- **Sources**: MeshFix `checkAndRepair::removeSmallestComponents@L861` Branch 4 (*ADJACENT_TRIANGLE_T3_AREA*: `s = t->t3(); if (s != NULL && !IS_BIT(s, 5))`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Four-triangle tetrahedral patch (component A); BFS requires t3-adjacency to reach all neighbors. Interior edges (v1,v3), (v2,v3), (v0,v3) each n=2. Micro-triangle (component B, area ≈ 5e-5) at (30,30) is disconnected from t0.
+- **Reproducer recipe**: v0-v3 tetrahedron base+apex; t0-t3 four faces; micro-tri v4-v6 at (30,30,0) as t4; assert_triangle_not_reachable_from(t4,t0); assert_triangle_area_lt(t4,1e-3); interior edges n=2.
+- **Expected kernel behavior**: Branch 4 fires; s=t->t3() provides the unvisited third-edge neighbor; component B satisfies pa < eps_area and is unlinked.
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Mesh assertion**: `triangle_area_lt triangle=4 lt=0.001`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[2,3] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,3] n=2`
+- **Fixture path**: mesh-examples/12-14-mesh/Me453.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me454 — removeSmallestComponents area AREA_ACCUMULATION: pa += t->area() accumulates component geometric area during BFS; two-component mesh with area disparity
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / area-accumulation)
+- **Sources**: MeshFix `checkAndRepair::removeSmallestComponents@L861` Branch 5 (*AREA_ACCUMULATION*: `pa += t->area();`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Two disconnected components: component A is a 2x1 rectangle split into 4 triangles (total area = 2.0); component B is a single triangle (area = 0.5). BFS over each component accumulates pa via pa += t->area(). Interior edges (v0,v4), (v1,v5), (v1,v4) each n=2. Component B boundary edges n=1 each.
+- **Reproducer recipe**: v0-v5 form 2x1 grid (t0-t3); v6-v8 form isolated triangle t4 at (10,0); assert_triangle_not_reachable_from(t4,t0); interior edge assertions; component B boundary edge n=1 assertions.
+- **Expected kernel behavior**: Branch 5 fires repeatedly as BFS visits each triangle; pa sums to 2.0 for component A and 0.5 for component B.
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[6,7] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[7,8] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[6,8] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me454.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me455 — removeSmallestComponents area COMPONENT_AREA_BELOW_THRESHOLD: pa < eps_area → component unlinked; micro-triangle area 5e-5 vs large patch area 1.0
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / area-threshold)
+- **Sources**: MeshFix `checkAndRepair::removeSmallestComponents@L861` Branch 6 (*COMPONENT_AREA_BELOW_THRESHOLD*: `if (pa < eps_area) { /* unlink */ rem_comps++; }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: Unit-square patch (component A, area = 1.0) and a micro-triangle (component B, area ≈ 5e-5). After BFS accumulates pa ≈ 5e-5 for component B, the condition pa < eps_area triggers: all component B triangles are unlinked and rem_comps is incremented. Interior edge (v0,v2) n=2 in component A; component B boundary edges n=1 each.
+- **Reproducer recipe**: v0-v3 unit square (t0,t1); v4-v6 micro-tri at (5,5) with edge 0.01 (t2); assert_triangle_not_reachable_from(t2,t0); assert_triangle_area_lt(t2,1e-3); edge_shared(v0,v2,2); boundary edges n=1.
+- **Expected kernel behavior**: Branch 6 fires; pa ≈ 5e-5 < eps_area for component B; all component B triangles unlinked; rem_comps incremented to 1.
+- **Mesh assertion**: `triangle_not_reachable_from target=2 source=0`
+- **Mesh assertion**: `triangle_area_lt triangle=2 lt=0.001`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,2] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,5] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[5,6] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[4,6] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me455.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Me456 — removeSmallestComponents area SMALL_COMPONENTS_REMOVED: rem_comps > 0 → dirty flags set + removeUnlinkedElements(); nano-triangle component removed
+- **Category**: §12.14 mesh defects (sub-class: disconnected_components / topology-dirty)
+- **Sources**: MeshFix `checkAndRepair::removeSmallestComponents@L861` Branch 7 (*SMALL_COMPONENTS_REMOVED*: `if (rem_comps > 0) { d_boundaries = d_handles = d_shells = 1; removeUnlinkedElements(); }`); `MESH_HEAL_COVERAGE.md`.
+- **Description**: A 2x2 quad patch (component A, area = 2.0) and a nano-triangle (component B, area ≈ 1.25e-7, edge length 0.0005). After BFS removes component B (pa < eps_area), rem_comps = 1 > 0 triggers Branch 7: topology dirty flags d_boundaries=d_handles=d_shells=1 are set and removeUnlinkedElements() purges the unlinked nano-triangle. Interior edges (v0,v4), (v1,v5), (v1,v4) n=2; nano-triangle boundary edges n=1 each.
+- **Reproducer recipe**: v0-v5 form 2x2 grid (t0-t3); v6-v8 nano-tri at (50,50) with edge 0.0005 (t4); assert_triangle_not_reachable_from(t4,t0); assert_triangle_area_lt(t4,1e-4); interior edges n=2; nano boundary edges n=1.
+- **Expected kernel behavior**: Branch 7 fires; rem_comps == 1 > 0 → d_boundaries = d_handles = d_shells = 1; removeUnlinkedElements() called to purge component B.
+- **Mesh assertion**: `triangle_not_reachable_from target=4 source=0`
+- **Mesh assertion**: `triangle_area_lt triangle=4 lt=0.0001`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[0,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,5] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[1,4] n=2`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[6,7] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[7,8] n=1`
+- **Mesh assertion**: `edge_shared_by_n_triangles edge=[6,8] n=1`
+- **Fixture path**: mesh-examples/12-14-mesh/Me456.mesh.json
+- **Fixture kind**: mesh-defect synthesized via mesh_builder
