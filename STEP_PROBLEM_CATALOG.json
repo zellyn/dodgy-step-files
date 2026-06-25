@@ -1521,7 +1521,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-11-adversarial/Ad003.stp",
     "id": "Ad003",
-    "notes": "C; CWE-191 sign-confusion repeatedly cited in Spatial/ODA/Autodesk advisories. **See also**: Ad015, Ad077. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.",
+    "notes": "C; CWE-191 sign-confusion repeatedly cited in Spatial/ODA/Autodesk advisories. **See also**: Ad015, Ad077. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -1541,7 +1541,6 @@
       "CVE-2022-39803 (Spatial ACIS)"
     ],
     "taxonomy": [
-      "silent-loss",
       "adversarial"
     ],
     "tier3_assertions": [
@@ -2876,7 +2875,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-11-adversarial/Ad082.stp",
     "id": "Ad082",
-    "notes": "**See also**: Ad043. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.",
+    "notes": "**See also**: Ad043. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -2892,7 +2891,6 @@
       "18-other-issues.md I059 (OCCT #844)"
     ],
     "taxonomy": [
-      "silent-loss",
       "adversarial"
     ],
     "tier3_assertions": [
@@ -3229,7 +3227,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-11-adversarial/Ad091.stp",
     "id": "Ad091",
-    "notes": "**See also**: Le023. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: catalog wants a warning to surface; OCC accepts without any diagnostic.",
+    "notes": "**See also**: Le023. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: catalog wants a warning to surface; OCC accepts without any diagnostic.",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -3245,7 +3243,6 @@
       "OCCT MANTIS#0024759 (OCCT MANTIS tracker 502 as of 2026-05-02)"
     ],
     "taxonomy": [
-      "silent-loss",
       "adversarial"
     ],
     "tier3_assertions": [
@@ -3309,7 +3306,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-11-adversarial/Ad093.stp",
     "id": "Ad093",
-    "notes": "**See also**: Ad082. Provenance tier: runtime-only; there is no `.stp` to author; the defect is triggered by an empty or null path passed to the reader API, which fails before any file content is read. Demonstrating this requires invoking the reader with bad arguments, not a fixture file. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.",
+    "notes": "**See also**: Ad082. Provenance tier: runtime-only; there is no `.stp` to author; the defect is triggered by an empty or null path passed to the reader API, which fails before any file content is read. Demonstrating this requires invoking the reader with bad arguments, not a fixture file. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "runtime-only",
@@ -3326,7 +3323,6 @@
       "OCCT MANTIS#0032115 (OCCT MANTIS tracker 502 as of 2026-05-02)"
     ],
     "taxonomy": [
-      "silent-loss",
       "adversarial"
     ],
     "tier3_assertions": [
@@ -3391,7 +3387,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-11-adversarial/Ad095.stp",
     "id": "Ad095",
-    "notes": "**See also**: Ad081. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.",
+    "notes": "**See also**: Ad081. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -3408,7 +3404,6 @@
       "OCCT MANTIS#0025699 (OCCT MANTIS tracker 502 as of 2026-05-02)"
     ],
     "taxonomy": [
-      "silent-loss",
       "adversarial"
     ],
     "tier3_assertions": [
@@ -3785,7 +3780,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-11-adversarial/Ad105.stp",
     "id": "Ad105",
-    "notes": "First entry exercising the .stpz / .stpx archive wrapper as an attack surface. **See also**: Ad104. Provenance tier: cross-file-state; bytes alone cannot demonstrate this defect; the bomb lives in the archive header, not the embedded STEP body. The static `.stp` fixture encodes only the embedded body; the receiver-side amplification requires an actual archive wrapper. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.",
+    "notes": "First entry exercising the .stpz / .stpx archive wrapper as an attack surface. **See also**: Ad104. Provenance tier: cross-file-state; bytes alone cannot demonstrate this defect; the bomb lives in the archive header, not the embedded STEP body. The static `.stp` fixture encodes only the embedded body; the receiver-side amplification requires an actual archive wrapper. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "cross-file-state",
@@ -3803,7 +3798,6 @@
       "ISO 10303-21 §12 (compressed-archive transfer)"
     ],
     "taxonomy": [
-      "silent-loss",
       "adversarial"
     ],
     "tier3_assertions": [
@@ -4040,7 +4034,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-11-adversarial/Ad111.stp",
     "id": "Ad111",
-    "notes": "Companion to Ad110 (gzip wrapper) — different container, same defect class. Distinct from Ad105 (archive *header* lies; this entry's bomb actually decompresses). **See also**: Ad027, Ad105, Ad110, Ad112, Pf030. Provenance tier: cross-file-state — bytes alone (a Part-21 body) cannot demonstrate this defect; the bomb is in the ZIP wrapper. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.",
+    "notes": "Companion to Ad110 (gzip wrapper) — different container, same defect class. Distinct from Ad105 (archive *header* lies; this entry's bomb actually decompresses). **See also**: Ad027, Ad105, Ad110, Ad112, Pf030. Provenance tier: cross-file-state — bytes alone (a Part-21 body) cannot demonstrate this defect; the bomb is in the ZIP wrapper. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "cross-file-state",
@@ -4063,7 +4057,6 @@
       "ISO 10303-21 (STEP body inside an IFCZIP-style wrapper)"
     ],
     "taxonomy": [
-      "silent-loss",
       "adversarial"
     ],
     "tier3_assertions": [
@@ -4086,7 +4079,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-11-adversarial/Ad112.stp",
     "id": "Ad112",
-    "notes": "Companion to Ad110 (single-layer ratio bomb); orthogonal axis (depth, not ratio). **See also**: Ad027, Ad105, Ad110, Ad111, Pf030. Provenance tier: cross-file-state; bytes alone (a Part-21 body) cannot demonstrate this defect; the bomb is in the stack of gzip wrappers. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.",
+    "notes": "Companion to Ad110 (single-layer ratio bomb); orthogonal axis (depth, not ratio). **See also**: Ad027, Ad105, Ad110, Ad111, Pf030. Provenance tier: cross-file-state; bytes alone (a Part-21 body) cannot demonstrate this defect; the bomb is in the stack of gzip wrappers. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "cross-file-state",
@@ -4108,7 +4101,6 @@
       "ISO 10303-21 §12 (compressed-archive transfer)"
     ],
     "taxonomy": [
-      "silent-loss",
       "adversarial"
     ],
     "tier3_assertions": [
@@ -5546,7 +5538,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-12-cross-product/Xp024.stp",
     "id": "Xp024",
-    "notes": "**See also**: Tsh065, Tsh066, Tsh067. **OCC behavior**: silently accepts (no diagnostic, empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog's stated invariant.",
+    "notes": "**See also**: Tsh065, Tsh066, Tsh067. **OCC behavior**: accepts with ERR diagnostic (empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog's stated invariant.",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -34397,7 +34389,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-1a-encoding/Le055.stp",
     "id": "Le055",
-    "notes": "Cousin of Wr041 (writer-side root cause). **See also**: Wr041, Le027. Synonyms: \"STEP boolean wrong format\", \"long-form boolean\", \"TRUE/FALSE in STEP file\". **OCC behavior**: silently accepts (no diagnostic, empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog's stated invariant.",
+    "notes": "Cousin of Wr041 (writer-side root cause). **See also**: Wr041, Le027. Synonyms: \"STEP boolean wrong format\", \"long-form boolean\", \"TRUE/FALSE in STEP file\". **OCC behavior**: accepts with ERR diagnostic (empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog's stated invariant.",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -34439,7 +34431,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-1a-encoding/Le056.stp",
     "id": "Le056",
-    "notes": "**See also**: Le055, Wr041. **OCC behavior**: silently accepts (no diagnostic, empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog's stated invariant. Synonyms: \"mixed .T. and .TRUE. in STEP\", \"STEP file uses both short and long boolean\", \"long-form and short-form boolean mixed\", \"inconsistent boolean lexemes\", \"STEP boolean inconsistent in file\".",
+    "notes": "**See also**: Le055, Wr041. **OCC behavior**: accepts with ERR diagnostic (empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog's stated invariant. Synonyms: \"mixed .T. and .TRUE. in STEP\", \"STEP file uses both short and long boolean\", \"long-form and short-form boolean mixed\", \"inconsistent boolean lexemes\", \"STEP boolean inconsistent in file\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -38112,7 +38104,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp002.stp",
     "id": "Gp002",
-    "notes": "**OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"pcurve endpoints don't match vertex coordinates\", \"2D parameter curve start/end disagrees with vertex 3D position\", \"lifted pcurve lands at wrong point\", \"edge vertices and pcurve disagree about endpoint location\", \"pcurve evaluation at endpoint differs from vertex_point\".",
+    "notes": "**OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"pcurve endpoints don't match vertex coordinates\", \"2D parameter curve start/end disagrees with vertex 3D position\", \"lifted pcurve lands at wrong point\", \"edge vertices and pcurve disagree about endpoint location\", \"pcurve evaluation at endpoint differs from vertex_point\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -38126,7 +38118,6 @@
       "05-occt-shapefix.md F007"
     ],
     "taxonomy": [
-      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -38153,7 +38144,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp005.stp",
     "id": "Gp005",
-    "notes": "**See also**: Twi021. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"pcurve at sphere pole has indeterminate UV\", \"wire touches cone apex without degenerate edge\", \"singular pole on sphere/cone breaks pcurve\", \"indeterminate UV at sphere pole\", \"face touches cone apex no degenerate edge inserted\".",
+    "notes": "**See also**: Twi021. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"pcurve at sphere pole has indeterminate UV\", \"wire touches cone apex without degenerate edge\", \"singular pole on sphere/cone breaks pcurve\", \"indeterminate UV at sphere pole\", \"face touches cone apex no degenerate edge inserted\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -38171,7 +38162,6 @@
       "08-occt-gitlog.md G079"
     ],
     "taxonomy": [
-      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -38198,7 +38188,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp007.stp",
     "id": "Gp007",
-    "notes": "**See also**: Gs029. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"edge parameter range exceeds pcurve domain\", \"edge first/last parameters outside pcurve definition\", \"pcurve evaluated past natural domain\", \"edge trim parameters out of bounds for 2D curve\", \"pcurve domain too short for declared edge range\".",
+    "notes": "**See also**: Gs029. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"edge parameter range exceeds pcurve domain\", \"edge first/last parameters outside pcurve definition\", \"pcurve evaluated past natural domain\", \"edge trim parameters out of bounds for 2D curve\", \"pcurve domain too short for declared edge range\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -38214,7 +38204,6 @@
       "05-occt-shapefix.md F040, F062"
     ],
     "taxonomy": [
-      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -38241,7 +38230,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp008.stp",
     "id": "Gp008",
-    "notes": "**See also**: Gs009. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"pcurve oscillates wildly\", \"high-frequency noise on projected pcurve\", \"wire self-intersection check fooled by pcurve wiggles\", \"non-adaptive pcurve projector emits zigzag\", \"spurious self-intersections from oscillating 2D curve\".",
+    "notes": "**See also**: Gs009. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"pcurve oscillates wildly\", \"high-frequency noise on projected pcurve\", \"wire self-intersection check fooled by pcurve wiggles\", \"non-adaptive pcurve projector emits zigzag\", \"spurious self-intersections from oscillating 2D curve\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -38257,7 +38246,6 @@
       "03-occt-tests.md R026 (bug17128, bug17129, OCC209, bug210)"
     ],
     "taxonomy": [
-      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -38327,7 +38315,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp011.stp",
     "id": "Gp011",
-    "notes": "**See also**: Twi022. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: \"seam edge has same pcurve in both slots\", \"seam_curve associated_geometry references one pcurve twice\", \"two banks of seam point at same 2D curve\", \"seam pcurve duplicated instead of period-shifted\", \"seam wire fails to close around cylinder\".",
+    "notes": "**See also**: Twi022. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: \"seam edge has same pcurve in both slots\", \"seam_curve associated_geometry references one pcurve twice\", \"two banks of seam point at same 2D curve\", \"seam pcurve duplicated instead of period-shifted\", \"seam wire fails to close around cylinder\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -38369,7 +38357,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp012.stp",
     "id": "Gp012",
-    "notes": "**See also**: Twi022. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"seam edge on periodic surface missing one of its two parametric curves\", \"null pcurve in associated_geometry list\", \"seam_curve has dollar-sign for second pcurve\", \"missing pcurve entry on seam edge\", \"associated_geometry contains null parametric curve member\", \"seam pcurve list has $ placeholder\".",
+    "notes": "**See also**: Twi022. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"seam edge on periodic surface missing one of its two parametric curves\", \"null pcurve in associated_geometry list\", \"seam_curve has dollar-sign for second pcurve\", \"missing pcurve entry on seam edge\", \"associated_geometry contains null parametric curve member\", \"seam pcurve list has $ placeholder\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -38385,7 +38373,6 @@
       "04-occt-translation.md Q033 (`StepToTopoDS_TranslateEdgeLoop.cxx:573-575`)"
     ],
     "taxonomy": [
-      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -38412,7 +38399,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp013.stp",
     "id": "Gp013",
-    "notes": "**See also**: Gs005. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"CATIA cylinder as near-closed B-spline surface\", \"two pcurves on non-periodic surface acting like seam\", \"near-closed BSpline surface treated as cylinder\", \"CATIA like-seam idiom on B-spline\", \"shared edge with two pcurves on non-periodic surface\".",
+    "notes": "**See also**: Gs005. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"CATIA cylinder as near-closed B-spline surface\", \"two pcurves on non-periodic surface acting like seam\", \"near-closed BSpline surface treated as cylinder\", \"CATIA like-seam idiom on B-spline\", \"shared edge with two pcurves on non-periodic surface\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -38428,7 +38415,6 @@
       "04-occt-translation.md Q034 (`StepToTopoDS_GeometricTool.cxx:114-199`)"
     ],
     "taxonomy": [
-      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -38455,7 +38441,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp014.stp",
     "id": "Gp014",
-    "notes": "**See also**: Gs031. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"same pcurve referenced by multiple edges\", \"shared pcurve aliased across edges\", \"trimming one edge corrupts neighbours' pcurves\", \"PCURVE instance referenced more than once\", \"SYRKO shared-pcurve aliasing\".",
+    "notes": "**See also**: Gs031. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"same pcurve referenced by multiple edges\", \"shared pcurve aliased across edges\", \"trimming one edge corrupts neighbours' pcurves\", \"PCURVE instance referenced more than once\", \"SYRKO shared-pcurve aliasing\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -38471,7 +38457,6 @@
       "04-occt-translation.md Q035 (`StepToTopoDS_TranslateEdgeLoop.cxx:283-285`)"
     ],
     "taxonomy": [
-      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -38498,7 +38483,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp015.stp",
     "id": "Gp015",
-    "notes": "**OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: \"trimming of 2D curve failed\", \"pcurve clip to edge range fails\", \"edge construction aborts on pcurve trim\", \"2D-curve trim outside pcurve domain\", \"edge construction fails clipping pcurve\".",
+    "notes": "**OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: \"trimming of 2D curve failed\", \"pcurve clip to edge range fails\", \"edge construction aborts on pcurve trim\", \"2D-curve trim outside pcurve domain\", \"edge construction fails clipping pcurve\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -38539,7 +38524,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp016.stp",
     "id": "Gp016",
-    "notes": "**See also**: Gp031. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"pcurve in shifted UV frame\", \"IGES BRep pcurve in translated UV origin\", \"pcurve UV offset relative to host surface\", \"pcurve coordinates in alien frame\", \"pcurve rotated/translated relative to surface UV\".",
+    "notes": "**See also**: Gp031. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"pcurve in shifted UV frame\", \"IGES BRep pcurve in translated UV origin\", \"pcurve UV offset relative to host surface\", \"pcurve coordinates in alien frame\", \"pcurve rotated/translated relative to surface UV\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -38555,7 +38540,6 @@
       "05-occt-shapefix.md F082 (`ShapeBuild_Edge.cxx:15`)"
     ],
     "taxonomy": [
-      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -38578,7 +38562,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp018.stp",
     "id": "Gp018",
-    "notes": "**OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"nearly-duplicate pcurves at converted seam\", \"small UV gap after periodic-to-NURBS conversion\", \"pcurve gap near wraparound\", \"two pcurves on same edge after BSpline conversion\", \"periodic surface converted to NURBS leaves seam pcurve mismatch\".",
+    "notes": "**OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"nearly-duplicate pcurves at converted seam\", \"small UV gap after periodic-to-NURBS conversion\", \"pcurve gap near wraparound\", \"two pcurves on same edge after BSpline conversion\", \"periodic surface converted to NURBS leaves seam pcurve mismatch\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -38592,7 +38576,6 @@
       "08-occt-gitlog.md G095 (Mantis 0032557)"
     ],
     "taxonomy": [
-      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -38654,7 +38637,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp020.stp",
     "id": "Gp020",
-    "notes": "**See also**: Gp026, Twi003. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"2D gap between consecutive edges in wire\", \"pcurves disagree at shared vertex in UV\", \"wire connected in 3D but open in UV\", \"pcurve endpoint mismatch at shared vertex\", \"edges share 3D vertex but pcurves diverge\".",
+    "notes": "**See also**: Gp026, Twi003. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"2D gap between consecutive edges in wire\", \"pcurves disagree at shared vertex in UV\", \"wire connected in 3D but open in UV\", \"pcurve endpoint mismatch at shared vertex\", \"edges share 3D vertex but pcurves diverge\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -38672,7 +38655,6 @@
       "09-healing-menus.md H099"
     ],
     "taxonomy": [
-      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -38699,7 +38681,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp021.stp",
     "id": "Gp021",
-    "notes": "**See also**: Gp022. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"3D curve and pcurve disagree about edge location\", \"pcurve LINE direction off-axis or non-unit magnitude\", \"lifted pcurve diverges from 3D curve mid-edge\", \"skewed pcurve direction ratios\", \"pcurve and 3D curve describe different paths\".",
+    "notes": "**See also**: Gp022. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"3D curve and pcurve disagree about edge location\", \"pcurve LINE direction off-axis or non-unit magnitude\", \"lifted pcurve diverges from 3D curve mid-edge\", \"skewed pcurve direction ratios\", \"pcurve and 3D curve describe different paths\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -38716,7 +38698,6 @@
       "17-standards-bodies.md M007"
     ],
     "taxonomy": [
-      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -38743,7 +38724,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp022.stp",
     "id": "Gp022",
-    "notes": "**See also**: Gp021, Gp027. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"SameParameter flag set but parameterisations differ\", \"edge claims same-parameter but pcurve and 3D curve diverge\", \"non-uniform pcurve parameterisation breaks same-parameter invariant\", \"tolerance growth from same-parameter violation\", \"B-spline pcurve middle pole offset breaks parameter sync\".",
+    "notes": "**See also**: Gp021, Gp027. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"SameParameter flag set but parameterisations differ\", \"edge claims same-parameter but pcurve and 3D curve diverge\", \"non-uniform pcurve parameterisation breaks same-parameter invariant\", \"tolerance growth from same-parameter violation\", \"B-spline pcurve middle pole offset breaks parameter sync\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -38763,7 +38744,6 @@
       "13-quaoar.md B018"
     ],
     "taxonomy": [
-      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -38832,7 +38812,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp024.stp",
     "id": "Gp024",
-    "notes": "**See also**: Gn032. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"pcurve error scales with non-uniform 3D scale\", \"scale by 1000 inflates pcurve deviation\", \"Rhino scale breaks pcurve trim accuracy\", \"edge tolerance not rescaled with model scale\", \"distance from end of trim to 3D edge exceeds tolerance after scale\".",
+    "notes": "**See also**: Gn032. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"pcurve error scales with non-uniform 3D scale\", \"scale by 1000 inflates pcurve deviation\", \"Rhino scale breaks pcurve trim accuracy\", \"edge tolerance not rescaled with model scale\", \"distance from end of trim to 3D edge exceeds tolerance after scale\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -38848,7 +38828,6 @@
       "14-brlcad-rhino.md K016"
     ],
     "taxonomy": [
-      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -38871,7 +38850,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp026.stp",
     "id": "Gp026",
-    "notes": "**See also**: Gp020, Gp028, Gs012, Twi020. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"edge_loop not closed in UV\", \"Jordan curve violation across periodic seam\", \"outer wire fails to close in parametric domain\", \"renderer falls back to isolines instead of triangulating\", \"face contour open across cylinder seam\".",
+    "notes": "**See also**: Gp020, Gp028, Gs012, Twi020. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"edge_loop not closed in UV\", \"Jordan curve violation across periodic seam\", \"outer wire fails to close in parametric domain\", \"renderer falls back to isolines instead of triangulating\", \"face contour open across cylinder seam\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -38891,7 +38870,6 @@
       "09-healing-menus.md H099, H100"
     ],
     "taxonomy": [
-      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -38961,7 +38939,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp028.stp",
     "id": "Gp028",
-    "notes": "**See also**: Gp026. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"wire crosses cylinder seam without seam edge\", \"missing seam edge on periodic surface wire\", \"pcurve range vs vertex angle disagree at seam crossing\", \"cylinder face wire spans U=0/U=2π without explicit seam\", \"open contour in UV from missing seam edge\".",
+    "notes": "**See also**: Gp026. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"wire crosses cylinder seam without seam edge\", \"missing seam edge on periodic surface wire\", \"pcurve range vs vertex angle disagree at seam crossing\", \"cylinder face wire spans U=0/U=2π without explicit seam\", \"open contour in UV from missing seam edge\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -38977,7 +38955,6 @@
       "08-occt-gitlog.md G111 (Mantis 0026708)"
     ],
     "taxonomy": [
-      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -39000,7 +38977,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp029.stp",
     "id": "Gp029",
-    "notes": "**See also**: Gs019. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"period-shift fix leaves wire across multiple bands\", \"wire endpoints in inconsistent UV bands after period adjust\", \"triangulation blocked by mixed-band pcurves\", \"revolved face period shift fails to converge\", \"pcurve endpoints scattered across periods after healing\".",
+    "notes": "**See also**: Gs019. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"period-shift fix leaves wire across multiple bands\", \"wire endpoints in inconsistent UV bands after period adjust\", \"triangulation blocked by mixed-band pcurves\", \"revolved face period shift fails to converge\", \"pcurve endpoints scattered across periods after healing\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -39016,7 +38993,6 @@
       "03-occt-tests.md R082 (bug26716)"
     ],
     "taxonomy": [
-      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -39043,7 +39019,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp030.stp",
     "id": "Gp030",
-    "notes": "**OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"PRO/E polyline-form pcurve gets corrupted by intersection healer\", \"bent B-spline pcurve from PRO/Engineer\", \"pcurve sharp bend killed by generic ShapeFix\", \"polyline pcurve degree-1 with vendor multiplicities\", \"wire intersection fix damages PRO/E pcurve\".",
+    "notes": "**OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"PRO/E polyline-form pcurve gets corrupted by intersection healer\", \"bent B-spline pcurve from PRO/Engineer\", \"pcurve sharp bend killed by generic ShapeFix\", \"polyline pcurve degree-1 with vendor multiplicities\", \"wire intersection fix damages PRO/E pcurve\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -39057,7 +39033,6 @@
       "05-occt-shapefix.md F061 (`ShapeFix_Wire.cxx`)"
     ],
     "taxonomy": [
-      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -39080,7 +39055,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp031.stp",
     "id": "Gp031",
-    "notes": "**See also**: Gn023, Gp016. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"duplicate CYLINDRICAL_SURFACE instances after IGES BRep round-trip\", \"cylinder analytic identity lost\", \"two copies of same cylindrical surface\", \"duplicate analytic surfaces after IGES round-trip\", \"pcurves on supposedly-same cylinder disagree\".",
+    "notes": "**See also**: Gn023, Gp016. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"duplicate CYLINDRICAL_SURFACE instances after IGES BRep round-trip\", \"cylinder analytic identity lost\", \"two copies of same cylindrical surface\", \"duplicate analytic surfaces after IGES round-trip\", \"pcurves on supposedly-same cylinder disagree\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -39097,7 +39072,6 @@
       "05-occt-shapefix.md F063 (`ShapeBuild_Edge.cxx:647`)"
     ],
     "taxonomy": [
-      "silent-loss",
       "round-trip",
       "geometry"
     ],
@@ -39123,7 +39097,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp033.stp",
     "id": "Gp033",
-    "notes": "Same defect applies to pcurve splitting on host surfaces. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"B-spline curve has C0 internal break\", \"interior knot multiplicity equals degree creates kink\", \"downstream tools cannot ingest C0 spline\", \"knot multiplicity=degree produces visible cusp\", \"B-spline kink at interior knot\".",
+    "notes": "Same defect applies to pcurve splitting on host surfaces. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"B-spline curve has C0 internal break\", \"interior knot multiplicity equals degree creates kink\", \"downstream tools cannot ingest C0 spline\", \"knot multiplicity=degree produces visible cusp\", \"B-spline kink at interior knot\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -39137,7 +39111,6 @@
       "OCCT `ShapeUpgrade_SplitCurve::Perform` (`src/ModelingAlgorithms/TKShHealing/ShapeUpgrade/ShapeUpgrade_SplitCurve.hxx:65`)"
     ],
     "taxonomy": [
-      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -39159,7 +39132,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp034.stp",
     "id": "Gp034",
-    "notes": "Similar defect class to `Twi-` wire connectivity but at the curve-aggregate level. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: \"composite curve segments don't meet\", \"gap between consecutive composite curve segments\", \"composite_curve has disconnected segments\", \"segment N+1 starts far from segment N's end\", \"composite curve connectivity check fails\".",
+    "notes": "Similar defect class to `Twi-` wire connectivity but at the curve-aggregate level. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: \"composite curve segments don't meet\", \"gap between consecutive composite curve segments\", \"composite_curve has disconnected segments\", \"segment N+1 starts far from segment N's end\", \"composite curve connectivity check fails\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -39196,7 +39169,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2a-pcurves/Gp035.stp",
     "id": "Gp035",
-    "notes": "Distinct from a *bad* pcurve (Twi-class). Also see Gp019 (edge without pcurve). **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: \"edge has no parametric curve\", \"pcurve absent on face edge\", \"tessellator fails on edge with no UV curve\", \"kernel must project 3D curve onto surface\", \"edge without 2D representation needs synthesis\".",
+    "notes": "Distinct from a *bad* pcurve (Twi-class). Also see Gp019 (edge without pcurve). **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: \"edge has no parametric curve\", \"pcurve absent on face edge\", \"tessellator fails on edge with no UV curve\", \"kernel must project 3D curve onto surface\", \"edge without 2D representation needs synthesis\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -43731,7 +43704,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn001.stp",
     "id": "Gn001",
-    "notes": "**See also**: Gn003, Gn036. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: catalog wants a warning to surface; OCC accepts without any diagnostic. Synonyms: \"duplicate knot value at non-end\", \"B-spline U knot vector has consecutive equal interior knots\", \"knot multiplicity not bumped despite repeated value\", \"two equal interior knots with multiplicity 1 each\", \"BSpline surface knot vector has bogus repeated entries\".",
+    "notes": "**See also**: Gn003, Gn036. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: catalog wants a warning to surface; OCC accepts without any diagnostic. Synonyms: \"duplicate knot value at non-end\", \"B-spline U knot vector has consecutive equal interior knots\", \"knot multiplicity not bumped despite repeated value\", \"two equal interior knots with multiplicity 1 each\", \"BSpline surface knot vector has bogus repeated entries\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -43748,7 +43721,6 @@
       "04-occt-translation.md (Q061: `RWStepGeom_RWBSplineSurfaceWithKnots.cxx:353-429`)"
     ],
     "taxonomy": [
-      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -43771,7 +43743,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn002.stp",
     "id": "Gn002",
-    "notes": "Validation observed: silent-empty (the malformed complex-instance entity is dropped at parse without a diagnostic) rather than the cited heal-or-crash. Specific reader-contract code path returns a quiet false at fixture scale; the kernel-mishandling-by-silent-acceptance still demonstrates the defect class. **See also**: Ad059. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"rational B-spline weights count doesn't match poles\", \"weights array length differs from control points\", \"NbWeights ≠ NbControlPoints\", \"NURBS curve weight vector wrong length\", \"rational BSpline missing weight or has extra weight\".",
+    "notes": "Validation observed: silent-empty (the malformed complex-instance entity is dropped at parse without a diagnostic) rather than the cited heal-or-crash. Specific reader-contract code path returns a quiet false at fixture scale; the kernel-mishandling-by-silent-acceptance still demonstrates the defect class. **See also**: Ad059. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"rational B-spline weights count doesn't match poles\", \"weights array length differs from control points\", \"NbWeights ≠ NbControlPoints\", \"NURBS curve weight vector wrong length\", \"rational BSpline missing weight or has extra weight\".",
     "occ_behavior_note": "silent-empty (the malformed complex-instance entity is dropped at parse without a diagnostic) rather than the cited heal-or-crash. Specific reader-contract code path returns a quiet false at fixture scale; the kernel-mishandling-by-silent-acceptance still demonstrates the defect class.",
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -43789,7 +43761,6 @@
     ],
     "taxonomy": [
       "crash",
-      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -43917,7 +43888,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn008.stp",
     "id": "Gn008",
-    "notes": "**See also**: Gs040. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"knot multiplicity exceeds degree+1\", \"B-spline near-cusp from full-degree interior knot\", \"rational B-spline weight ratio over 1000 causes mesher fail\", \"knot multiplicity equals order produces cusp\", \"high-curvature NURBS curve over-resolves mesher\".",
+    "notes": "**See also**: Gs040. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"knot multiplicity exceeds degree+1\", \"B-spline near-cusp from full-degree interior knot\", \"rational B-spline weight ratio over 1000 causes mesher fail\", \"knot multiplicity equals order produces cusp\", \"high-curvature NURBS curve over-resolves mesher\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -43933,7 +43904,6 @@
       "17-standards-bodies.md (M005)"
     ],
     "taxonomy": [
-      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -43991,7 +43961,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn010.stp",
     "id": "Gn010",
-    "notes": "**See also**: Gs036. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"NURBS control point coordinates out of range\", \"NaN in B-spline surface poles\", \"huge coordinate values 1e100 in NURBS\", \"NURBS pole has impossible coordinates\", \"NaN propagation from B-spline control points\".",
+    "notes": "**See also**: Gs036. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"NURBS control point coordinates out of range\", \"NaN in B-spline surface poles\", \"huge coordinate values 1e100 in NURBS\", \"NURBS pole has impossible coordinates\", \"NaN propagation from B-spline control points\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -44007,7 +43977,6 @@
       "11-translator-vendors.md (W017 — HOOPS Exchange SDHE-22166)"
     ],
     "taxonomy": [
-      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -44069,7 +44038,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn012.stp",
     "id": "Gn012",
-    "notes": "**See also**: Gs025. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"C0 join in B-spline curve needs split\", \"BSpline curve has slope discontinuity\", \"split BSpline at interior knot multiplicity equal to degree\", \"downstream tool needs C1 continuity\", \"tangent break inside B-spline curve\".",
+    "notes": "**See also**: Gs025. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"C0 join in B-spline curve needs split\", \"BSpline curve has slope discontinuity\", \"split BSpline at interior knot multiplicity equal to degree\", \"downstream tool needs C1 continuity\", \"tangent break inside B-spline curve\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -44086,7 +44055,6 @@
       "05-occt-shapefix.md (F047 `ShapeUpgrade_ShapeDivideContinuity`, F075 `C0BSplineToSequenceOfC1BsplineCurve`)"
     ],
     "taxonomy": [
-      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -44108,7 +44076,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn013.stp",
     "id": "Gn013",
-    "notes": "**OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"convert elementary surface to B-spline\", \"convert NURBS to analytic primitive\", \"downstream needs uniform NURBS for every face\", \"exact algebraic conversion between cylinder and BSpline\", \"kernel must convert plane/cylinder to NURBS on demand\".",
+    "notes": "**OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"convert elementary surface to B-spline\", \"convert NURBS to analytic primitive\", \"downstream needs uniform NURBS for every face\", \"exact algebraic conversion between cylinder and BSpline\", \"kernel must convert plane/cylinder to NURBS on demand\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -44123,7 +44091,6 @@
       "05-occt-shapefix.md (F053 `ShapeCustom_ConvertTo*`)"
     ],
     "taxonomy": [
-      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -44145,7 +44112,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn014.stp",
     "id": "Gn014",
-    "notes": "**See also**: Gs024, N030. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: \"BSpline surface should be canonical plane\", \"B-spline that is actually a cylinder/cone/sphere/torus\", \"canonical recognition needed on NURBS\", \"feature recognition cannot find axis on B-spline cylinder\", \"analytic primitive lost in NURBS form\".",
+    "notes": "**See also**: Gs024, N030. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: \"BSpline surface should be canonical plane\", \"B-spline that is actually a cylinder/cone/sphere/torus\", \"canonical recognition needed on NURBS\", \"feature recognition cannot find axis on B-spline cylinder\", \"analytic primitive lost in NURBS form\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -44188,7 +44155,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn015.stp",
     "id": "Gn015",
-    "notes": "**OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"rational B-spline surface is actually surface of revolution\", \"exact-circle NURBS sqrt(2)/2 weight pattern\", \"BSpline 360-degree sweep should be SURFACE_OF_REVOLUTION\", \"cylinder/torus stored as rational BSpline net\", \"rotational symmetry hidden in NURBS control net\".",
+    "notes": "**OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"rational B-spline surface is actually surface of revolution\", \"exact-circle NURBS sqrt(2)/2 weight pattern\", \"BSpline 360-degree sweep should be SURFACE_OF_REVOLUTION\", \"cylinder/torus stored as rational BSpline net\", \"rotational symmetry hidden in NURBS control net\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -44202,7 +44169,6 @@
       "03-occt-tests.md (R013 surface_to_revolution_*)"
     ],
     "taxonomy": [
-      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -44225,7 +44191,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn016.stp",
     "id": "Gn016",
-    "notes": "**OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"ELLIPSE basis curve becomes TRIMMED_CURVE on round-trip\", \"surface_of_revolution loses analytic ellipse basis\", \"non-unit axis direction after BSpline round-trip\", \"rational B-spline approximation of ellipse replaces analytic curve\", \"ellipse swept basis turns into NURBS after STEP read-back\".",
+    "notes": "**OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"ELLIPSE basis curve becomes TRIMMED_CURVE on round-trip\", \"surface_of_revolution loses analytic ellipse basis\", \"non-unit axis direction after BSpline round-trip\", \"rational B-spline approximation of ellipse replaces analytic curve\", \"ellipse swept basis turns into NURBS after STEP read-back\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -44241,7 +44207,7 @@
     ],
     "taxonomy": [
       "crash",
-      "silent-loss",
+      "round-trip",
       "geometry"
     ],
     "tier3_assertions": [
@@ -44264,7 +44230,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn017.stp",
     "id": "Gn017",
-    "notes": "**OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"split B-spline surface at interior knots into Bezier patches\", \"convert NURBS to Bezier for legacy receiver\", \"Bezier conversion needed for downstream tool\", \"exact split at interior knots produces Bezier patches\", \"legacy receiver expects Bezier not arbitrary NURBS\".",
+    "notes": "**OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"split B-spline surface at interior knots into Bezier patches\", \"convert NURBS to Bezier for legacy receiver\", \"Bezier conversion needed for downstream tool\", \"exact split at interior knots produces Bezier patches\", \"legacy receiver expects Bezier not arbitrary NURBS\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -44280,7 +44246,6 @@
       "09-healing-menus.md (H056)"
     ],
     "taxonomy": [
-      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -44374,7 +44339,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn020.stp",
     "id": "Gn020",
-    "notes": "**OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"spline approximation of analytic primitive\", \"cylinder exported as B-spline by sender\", \"analytic surface lost via NURBS export\", \"kernel emits B-spline instead of preserving cylinder\", \"geometry simplification needed to recover analytics\".",
+    "notes": "**OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"spline approximation of analytic primitive\", \"cylinder exported as B-spline by sender\", \"analytic surface lost via NURBS export\", \"kernel emits B-spline instead of preserving cylinder\", \"geometry simplification needed to recover analytics\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -44390,7 +44355,6 @@
       "17-standards-bodies.md (M006)"
     ],
     "taxonomy": [
-      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -44491,7 +44455,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn024.stp",
     "id": "Gn024",
-    "notes": "**OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: \"B-spline curve self-intersects\", \"figure-eight B-spline edge with coincident first/last poles\", \"BSpline edge crosses itself\", \"self-loop in 3D B-spline curve\", \"EDGE_CURVE B-spline forms figure eight\".",
+    "notes": "**OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: \"B-spline curve self-intersects\", \"figure-eight B-spline edge with coincident first/last poles\", \"BSpline edge crosses itself\", \"self-loop in 3D B-spline curve\", \"EDGE_CURVE B-spline forms figure eight\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -44715,7 +44679,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn033.stp",
     "id": "Gn033",
-    "notes": "**See also**: Gs038. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: catalog wants a warning to surface; OCC accepts without any diagnostic. Synonyms: \"closed-but-not-periodic BSpline surface seam undeclared\", \"u_closed flag F but surface geometrically closed\", \"huge UV jump on B-spline surface near wrap-around\", \"self-touching BSpline surface periodicity not recognized\", \"pcurve crosses near-period boundary on undeclared seam\".",
+    "notes": "**See also**: Gs038. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: catalog wants a warning to surface; OCC accepts without any diagnostic. Synonyms: \"closed-but-not-periodic BSpline surface seam undeclared\", \"u_closed flag F but surface geometrically closed\", \"huge UV jump on B-spline surface near wrap-around\", \"self-touching BSpline surface periodicity not recognized\", \"pcurve crosses near-period boundary on undeclared seam\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -44731,7 +44695,6 @@
       "08-occt-gitlog.md (G074 — Mantis 0030075, OCCT b735354)"
     ],
     "taxonomy": [
-      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -44753,7 +44716,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn034.stp",
     "id": "Gn034",
-    "notes": "Same defect on surface knot vectors should be flagged identically. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: \"B-spline knots packed below parametric resolution\", \"consecutive knots differ by less than working epsilon\", \"near-equal knots produce NaN derivatives\", \"knot interval rounds to zero\", \"BSpline ill-conditioned at near-coincident knot pair\".",
+    "notes": "Same defect on surface knot vectors should be flagged identically. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: \"B-spline knots packed below parametric resolution\", \"consecutive knots differ by less than working epsilon\", \"near-equal knots produce NaN derivatives\", \"knot interval rounds to zero\", \"BSpline ill-conditioned at near-coincident knot pair\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -44826,7 +44789,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn036.stp",
     "id": "Gn036",
-    "notes": "**See also**: Gn001, Gn003. **OCC behavior**: silently accepts (no diagnostic, empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog's stated invariant. Synonyms: \"B-spline knots non-monotonic\", \"V knot vector strictly descending\", \"BSpline surface knot vector not non-decreasing\", \"knots violate non-decreasing invariant\", \"knot value smaller than prior in BSpline surface\".",
+    "notes": "**See also**: Gn001, Gn003. **OCC behavior**: accepts with ERR diagnostic (empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog's stated invariant. Synonyms: \"B-spline knots non-monotonic\", \"V knot vector strictly descending\", \"BSpline surface knot vector not non-decreasing\", \"knots violate non-decreasing invariant\", \"knot value smaller than prior in BSpline surface\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -44866,7 +44829,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn037.stp",
     "id": "Gn037",
-    "notes": "**See also**: Gn001, Gn003. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"B-spline surface single distinct knot\", \"BSpline knot vector collapses to one unique value\", \"empty parametric range from collapsed knots\", \"all knots equal produces empty domain\", \"BSpline curve with degenerate knot vector throws\".",
+    "notes": "**See also**: Gn001, Gn003. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"B-spline surface single distinct knot\", \"BSpline knot vector collapses to one unique value\", \"empty parametric range from collapsed knots\", \"all knots equal produces empty domain\", \"BSpline curve with degenerate knot vector throws\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -44883,7 +44846,6 @@
       "08-occt-gitlog.md (G023, Mantis 0027575, OCCT 7252382)"
     ],
     "taxonomy": [
-      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -49427,7 +49389,7 @@
     "fixture_kind": "receiver-behavior",
     "fixture_path": "step-examples/12-2c-surfaces/Gb001.stp",
     "id": "Gb001",
-    "notes": "Synonyms: \"fit didn't converge\". Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: runtime-only. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.",
+    "notes": "Synonyms: \"fit didn't converge\". Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: runtime-only. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -49441,7 +49403,6 @@
       "OCCT Approx_Status.NoApproximation (uncovered class evidence)"
     ],
     "taxonomy": [
-      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -49502,7 +49463,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gb003.stp",
     "id": "Gb003",
-    "notes": "Bug-reporter synonyms: \"B-spline cusp at closure\", \"tangent jump at periodicity\". Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: runtime-only. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: \"B-spline cusp at closure\", \"tangent jump at periodicity\", \"closed B-spline has reversed end-tangent\", \"closure tangent reversed\", \"C0 closure but no C1 on closed BSpline\".",
+    "notes": "Bug-reporter synonyms: \"B-spline cusp at closure\", \"tangent jump at periodicity\". Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: runtime-only. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: \"B-spline cusp at closure\", \"tangent jump at periodicity\", \"closed B-spline has reversed end-tangent\", \"closure tangent reversed\", \"C0 closure but no C1 on closed BSpline\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -51294,7 +51255,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs055.stp",
     "id": "Gs055",
-    "notes": "**See also**: Gs035, Gs054. **OCC behavior**: silently accepts (no diagnostic, empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog's stated invariant. Synonyms: \"composite curve segment with infinite trim parameters\", \"PARAMETER_VALUE 1.0E40 on composite curve segment\", \"unbounded trim on TRIMMED_CURVE\", \"myInfiniteSegment unwrap to bounded edges\", \"near-infinite parameter literals in composite curve trim\".",
+    "notes": "**See also**: Gs035, Gs054. **OCC behavior**: accepts with ERR diagnostic (empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog's stated invariant. Synonyms: \"composite curve segment with infinite trim parameters\", \"PARAMETER_VALUE 1.0E40 on composite curve segment\", \"unbounded trim on TRIMMED_CURVE\", \"myInfiniteSegment unwrap to bounded edges\", \"near-infinite parameter literals in composite curve trim\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -55629,7 +55590,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Bo001.stp",
     "id": "Bo001",
-    "notes": "Synonyms: \"empty shell\", \"shell has no faces\", \"solid with zero faces\". **See also**: Bo002. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.",
+    "notes": "Synonyms: \"empty shell\", \"shell has no faces\", \"solid with zero faces\". **See also**: Bo002. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -55645,7 +55606,6 @@
       "OCCT BRepCheck_Shell.cxx:155 (uncovered class evidence)"
     ],
     "taxonomy": [
-      "silent-loss",
       "topology"
     ],
     "tier3_assertions": [
@@ -55882,7 +55842,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Bo008.stp",
     "id": "Bo008",
-    "notes": "Distinct from \"tolerance disagreement\" (the gap here is geometric, not numeric). **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"vertex doesn't match edge\", \"stray vertex on edge\", \"topology references a sub-shape not in the parent\", \"vertex coordinates don't lie on curve\", \"wrong topological level for sub-shape\".",
+    "notes": "Distinct from \"tolerance disagreement\" (the gap here is geometric, not numeric). **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"vertex doesn't match edge\", \"stray vertex on edge\", \"topology references a sub-shape not in the parent\", \"vertex coordinates don't lie on curve\", \"wrong topological level for sub-shape\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -55896,7 +55856,6 @@
       "OCCT BRepCheck_Vertex.cxx:96, BRepCheck_Edge.cxx:299 (SubshapeNotInShape) (uncovered class evidence)"
     ],
     "taxonomy": [
-      "silent-loss",
       "topology"
     ],
     "tier3_assertions": [
@@ -56024,7 +55983,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Bo027.stp",
     "id": "Bo027",
-    "notes": "Shows up as visible shading seams in renderers. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"vertex normals don't match across edge\", \"normal inconsistency\", \"lighting seam in tessellation\", \"per-vertex normal mismatch on shared node\", \"triangulation has shading discontinuity\".",
+    "notes": "Shows up as visible shading seams in renderers. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"vertex normals don't match across edge\", \"normal inconsistency\", \"lighting seam in tessellation\", \"per-vertex normal mismatch on shared node\", \"triangulation has shading discontinuity\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -56038,7 +55997,6 @@
       "OCCT BRepLib::EnsureNormalConsistency (uncovered class evidence)"
     ],
     "taxonomy": [
-      "silent-loss",
       "topology"
     ],
     "tier3_assertions": [
@@ -91232,7 +91190,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-6-assembly/A001.stp",
     "id": "A001",
-    "notes": "One of the two \"CATIA bug\" canonical patterns referenced in the task description. **See also**: Pf013. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"duplicate part instances merged into one on export\", \"multiple component copies show up at the same coordinate\", \"writer drops repeated subassembly placements\", \"N copies of same component become one in STEP\", \"MAPPED_ITEM placements deduplicated by mistake\".",
+    "notes": "One of the two \"CATIA bug\" canonical patterns referenced in the task description. **See also**: Pf013. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"duplicate part instances merged into one on export\", \"multiple component copies show up at the same coordinate\", \"writer drops repeated subassembly placements\", \"N copies of same component become one in STEP\", \"MAPPED_ITEM placements deduplicated by mistake\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -91248,7 +91206,6 @@
       "V027 (Inventor), V028 (CATIA V5 R25/R26), J018 (cross-vendor), Y027 (CATIA V5 export), Y003 (Fusion 360 → KiCad)."
     ],
     "taxonomy": [
-      "silent-loss",
       "round-trip",
       "assembly"
     ],
@@ -91317,7 +91274,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-6-assembly/A003.stp",
     "id": "A003",
-    "notes": "**See also**: A004, A037. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"assembly node has no geometry\", \"PRODUCT_DEFINITION with empty SHAPE_DEFINITION_REPRESENTATION\", \"phantom subassembly with nothing inside\", \"empty product node breaks import\", \"assembly tree has stub branches with no parts\".",
+    "notes": "**See also**: A004, A037. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"assembly node has no geometry\", \"PRODUCT_DEFINITION with empty SHAPE_DEFINITION_REPRESENTATION\", \"phantom subassembly with nothing inside\", \"empty product node breaks import\", \"assembly tree has stub branches with no parts\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -91334,7 +91291,6 @@
       "M012 (LOTAR), W022 (SpaceClaim 2025R2), K022 (Rhino)."
     ],
     "taxonomy": [
-      "silent-loss",
       "assembly"
     ],
     "tier3_assertions": [
@@ -91484,7 +91440,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-6-assembly/A007.stp",
     "id": "A007",
-    "notes": "**See also**: A006. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"axis placement swapped between subassembly and parent\", \"rep_1 and rep_2 mixed up in SHAPE_REPRESENTATION_RELATIONSHIP\", \"component oriented incorrectly after import\", \"transform applied to wrong frame on round-trip\", \"subassembly axes flipped vs designed\".",
+    "notes": "**See also**: A006. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"axis placement swapped between subassembly and parent\", \"rep_1 and rep_2 mixed up in SHAPE_REPRESENTATION_RELATIONSHIP\", \"component oriented incorrectly after import\", \"transform applied to wrong frame on round-trip\", \"subassembly axes flipped vs designed\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -91500,7 +91456,6 @@
       "G014 (OCCT 06a505b/Mantis 0030087), Q041 (OCCT NAUO winning over SRR direction), Q042 (OCCT TEST_MCI_2.step swapped axes in ITEM_DEFINED_TRANSFORMATION), G033 (OCCT reference-to-reference SRR)."
     ],
     "taxonomy": [
-      "silent-loss",
       "assembly"
     ],
     "tier3_assertions": [
@@ -91526,7 +91481,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-6-assembly/A008.stp",
     "id": "A008",
-    "notes": "Validation observed: silent-empty rather than crash. Kernel-mishandling-by-silent-acceptance still demonstrates the defect class. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"AP242 Ed.2 product_definition_relationship SELECT widened\", \"writer uses Ed.1 SELECT and reader expects Ed.2\", \"schema-mismatch on related/relating types\", \"product_definition_relationship references rejected by older importers\".",
+    "notes": "Validation observed: silent-empty rather than crash. Kernel-mishandling-by-silent-acceptance still demonstrates the defect class. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"AP242 Ed.2 product_definition_relationship SELECT widened\", \"writer uses Ed.1 SELECT and reader expects Ed.2\", \"schema-mismatch on related/relating types\", \"product_definition_relationship references rejected by older importers\".",
     "occ_behavior_note": "silent-empty rather than crash. Kernel-mishandling-by-silent-acceptance still demonstrates the defect class.",
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -91541,7 +91496,6 @@
     ],
     "taxonomy": [
       "crash",
-      "silent-loss",
       "assembly"
     ],
     "tier3_assertions": [
@@ -91567,7 +91521,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-6-assembly/A009.stp",
     "id": "A009",
-    "notes": "**See also**: A034. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"NAUO target points to PRODUCT_DEFINITION_SHAPE not PRODUCT_DEFINITION\", \"assembly link uses wrong entity type\", \"schema rule broken for component reference\", \"STEP reader confused by NAUO->PDS chain\".",
+    "notes": "**See also**: A034. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"NAUO target points to PRODUCT_DEFINITION_SHAPE not PRODUCT_DEFINITION\", \"assembly link uses wrong entity type\", \"schema rule broken for component reference\", \"STEP reader confused by NAUO->PDS chain\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -91583,7 +91537,6 @@
       "G016 (OCCT bedd79c / Mantis 0025167), R049 (OCCT bug25167)."
     ],
     "taxonomy": [
-      "silent-loss",
       "assembly"
     ],
     "tier3_assertions": [
@@ -91694,7 +91647,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-6-assembly/A012.stp",
     "id": "A012",
-    "notes": "**See also**: Pf010, Ad052, M060. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"external reference points back to itself\", \"cyclic file dependency in assembly\", \"STEP file references its own product\", \"external-anchor loop crashes reader\".",
+    "notes": "**See also**: Pf010, Ad052, M060. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"external reference points back to itself\", \"cyclic file dependency in assembly\", \"STEP file references its own product\", \"external-anchor loop crashes reader\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -91713,7 +91666,6 @@
     ],
     "taxonomy": [
       "crash",
-      "silent-loss",
       "assembly"
     ],
     "tier3_assertions": [
@@ -91739,7 +91691,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-6-assembly/A013.stp",
     "id": "A013",
-    "notes": "**See also**: M008, Pmi065. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"STEP reader returns success even when external file missing\", \"no error when referenced subassembly file is absent\", \"silent partial-load on missing externals\", \"reader treats missing referenced file as OK\".",
+    "notes": "**See also**: M008, Pmi065. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"STEP reader returns success even when external file missing\", \"no error when referenced subassembly file is absent\", \"silent partial-load on missing externals\", \"reader treats missing referenced file as OK\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -91756,7 +91708,6 @@
       "G082 (OCCT 3b7f55e / Mantis 0029873), W048 (Datakit AP242 federation), M030 (DDP cross-file refs)."
     ],
     "taxonomy": [
-      "silent-loss",
       "spec-violation",
       "assembly"
     ],
@@ -92136,7 +92087,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-6-assembly/A024.stp",
     "id": "A024",
-    "notes": "**See also**: A017, Pmi068, Tsh033. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"MAPPED_ITEM transform has negative determinant\", \"left-handed frame in component placement\", \"mirrored axis placement in MAPPED_ITEM\", \"improper rotation on assembly transform\".",
+    "notes": "**See also**: A017, Pmi068, Tsh033. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"MAPPED_ITEM transform has negative determinant\", \"left-handed frame in component placement\", \"mirrored axis placement in MAPPED_ITEM\", \"improper rotation on assembly transform\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -92154,7 +92105,6 @@
       "G061 (OCCT 9592ae2 / Mantis 0027457 — BRepTools_PurgeLocations), W039 (HOOPS Exchange Parasolid mirrored MAPPED_ITEM), K017 (Rhino mirrored block + pcurve flip), J006 (Onshape post-rotation disintegration)."
     ],
     "taxonomy": [
-      "silent-loss",
       "assembly"
     ],
     "tier3_assertions": [
@@ -100552,7 +100502,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-8-mixed/Fi004.stp",
     "id": "Fi004",
-    "notes": "Synonyms: \"broken contour\", \"fillet input not chainable\", \"fillet contour invalid\", \"fillet edges don't connect\", \"fillet contour self-crosses\". **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either.",
+    "notes": "Synonyms: \"broken contour\", \"fillet input not chainable\", \"fillet contour invalid\", \"fillet edges don't connect\", \"fillet contour self-crosses\". **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either.",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -100623,7 +100573,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-8-mixed/Fi006.stp",
     "id": "Fi006",
-    "notes": "Synonyms: \"fillet 4-edge corner unsupported\", \"fillet at high-valence corner fails\", \"four-way corner fillet not handled\", \"fillet termination vertex too many edges\". **See also**: Fi002. Distinct: Fi002 is about *walking-into*; Fi006 is about *terminating-at*. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.",
+    "notes": "Synonyms: \"fillet 4-edge corner unsupported\", \"fillet at high-valence corner fails\", \"four-way corner fillet not handled\", \"fillet termination vertex too many edges\". **See also**: Fi002. Distinct: Fi002 is about *walking-into*; Fi006 is about *terminating-at*. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -100639,7 +100589,7 @@
       "OCCT BRepFilletAPI_MakeFillet documentation (4-edge-corner-unsupported) (uncovered class evidence)"
     ],
     "taxonomy": [
-      "silent-loss"
+      "topology"
     ],
     "tier3_assertions": [
       "shape_null == True"

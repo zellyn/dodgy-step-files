@@ -33,7 +33,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>reject the surface with a diagnostic naming the offending index; never silently accept.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Gn001, Gn003. **OCC behavior**: silently accepts (no diagnostic, empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog&#x27;s stated invariant. Synonyms: &quot;B-spline knots non-monotonic&quot;, &quot;V knot vector strictly descending&quot;, &quot;BSpline surface knot vector not non-decreasing&quot;, &quot;knots violate non-decreasing invariant&quot;, &quot;knot value smaller than prior in BSpline surface&quot;.</p></section>
+<p>**See also**: Gn001, Gn003. **OCC behavior**: accepts with ERR diagnostic (empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog&#x27;s stated invariant. Synonyms: &quot;B-spline knots non-monotonic&quot;, &quot;V knot vector strictly descending&quot;, &quot;BSpline surface knot vector not non-decreasing&quot;, &quot;knots violate non-decreasing invariant&quot;, &quot;knot value smaller than prior in BSpline surface&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

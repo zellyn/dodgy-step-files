@@ -15,7 +15,6 @@
 <h1>Gn013 <span class="sep">—</span> <span class="entry-title">Convert elementary to BSpline (or back): producer/consumer requires specific form</span></h1>
 <p class="category">§12.2b NURBS/knots</p>
 <p class="tag-pills">
-<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 <a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
 </p>
 </header>
@@ -34,7 +33,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal; exact algebraic conversion both ways (degree-d Bezier ⇄ NURBS with mult = degree+1; cylinder/cone/sphere ⇄ rational degree-2 NURBS).</p></section>
 <section><h2>Notes</h2>
-<p>**OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;convert elementary surface to B-spline&quot;, &quot;convert NURBS to analytic primitive&quot;, &quot;downstream needs uniform NURBS for every face&quot;, &quot;exact algebraic conversion between cylinder and BSpline&quot;, &quot;kernel must convert plane/cylinder to NURBS on demand&quot;.</p></section>
+<p>**OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;convert elementary surface to B-spline&quot;, &quot;convert NURBS to analytic primitive&quot;, &quot;downstream needs uniform NURBS for every face&quot;, &quot;exact algebraic conversion between cylinder and BSpline&quot;, &quot;kernel must convert plane/cylinder to NURBS on demand&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

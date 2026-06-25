@@ -15,7 +15,6 @@
 <h1>Gp012 <span class="sep">—</span> <span class="entry-title">`SURFACE_CURVE` / seam-curve `associated_geometry` list contains a null `$` entry</span></h1>
 <p class="category">§12.2a pcurve</p>
 <p class="tag-pills">
-<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 <a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
 </p>
 </header>
@@ -33,7 +32,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal; synthesize the missing pcurve as `pc1 ± period`.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Twi022. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;seam edge on periodic surface missing one of its two parametric curves&quot;, &quot;null pcurve in associated_geometry list&quot;, &quot;seam_curve has dollar-sign for second pcurve&quot;, &quot;missing pcurve entry on seam edge&quot;, &quot;associated_geometry contains null parametric curve member&quot;, &quot;seam pcurve list has $ placeholder&quot;.</p></section>
+<p>**See also**: Twi022. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;seam edge on periodic surface missing one of its two parametric curves&quot;, &quot;null pcurve in associated_geometry list&quot;, &quot;seam_curve has dollar-sign for second pcurve&quot;, &quot;missing pcurve entry on seam edge&quot;, &quot;associated_geometry contains null parametric curve member&quot;, &quot;seam pcurve list has $ placeholder&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

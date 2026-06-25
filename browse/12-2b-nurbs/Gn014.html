@@ -37,7 +37,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal; fit candidate primitive within user-specified tolerance, replace surface; reject canonicalization if recovered surface deviates beyond tolerance (otherwise watertightness may be lost).</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Gs024, N030. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: &quot;BSpline surface should be canonical plane&quot;, &quot;B-spline that is actually a cylinder/cone/sphere/torus&quot;, &quot;canonical recognition needed on NURBS&quot;, &quot;feature recognition cannot find axis on B-spline cylinder&quot;, &quot;analytic primitive lost in NURBS form&quot;.</p></section>
+<p>**See also**: Gs024, N030. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: &quot;BSpline surface should be canonical plane&quot;, &quot;B-spline that is actually a cylinder/cone/sphere/torus&quot;, &quot;canonical recognition needed on NURBS&quot;, &quot;feature recognition cannot find axis on B-spline cylinder&quot;, &quot;analytic primitive lost in NURBS form&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

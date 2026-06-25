@@ -15,7 +15,6 @@
 <h1>Ad111 <span class="sep">—</span> <span class="entry-title">ZIP bomb inside a 3MF / IFCZIP container that wraps a STEP body</span></h1>
 <p class="category">§12.11 adversarial (sub-class: decompression bomb / ZIP container)</p>
 <p class="tag-pills">
-<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 <a class="tag tag-adversarial" href="../by-tag/adversarial/index.html">adversarial</a>
 </p>
 </header>
@@ -38,7 +37,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>cap the per-entry decompression budget and abort with a precise diagnostic when exceeded; cap the per-archive total budget; refuse archives with implausible entry-count / total-size combinations; treat the container layer as adversarial.</p></section>
 <section><h2>Notes</h2>
-<p>Companion to Ad110 (gzip wrapper) — different container, same defect class. Distinct from Ad105 (archive *header* lies; this entry&#x27;s bomb actually decompresses). **See also**: Ad027, Ad105, Ad110, Ad112, Pf030. Provenance tier: cross-file-state — bytes alone (a Part-21 body) cannot demonstrate this defect; the bomb is in the ZIP wrapper. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant.</p></section>
+<p>Companion to Ad110 (gzip wrapper) — different container, same defect class. Distinct from Ad105 (archive *header* lies; this entry&#x27;s bomb actually decompresses). **See also**: Ad027, Ad105, Ad110, Ad112, Pf030. Provenance tier: cross-file-state — bytes alone (a Part-21 body) cannot demonstrate this defect; the bomb is in the ZIP wrapper. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>

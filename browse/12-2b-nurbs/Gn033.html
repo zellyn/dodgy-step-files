@@ -15,7 +15,6 @@
 <h1>Gn033 <span class="sep">—</span> <span class="entry-title">Pcurve / 3D-curve large jumps on closed-but-not-periodic `B_SPLINE_SURFACE_WITH_KNOTS` (undeclared `closed_u` seam)</span></h1>
 <p class="category">§12.2b NURBS/knots</p>
 <p class="tag-pills">
-<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 <a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
 </p>
 </header>
@@ -33,7 +32,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>detect jump; insert additional point or adjust by inferred period; never emit a 2D pcurve that crosses half UV range without warning.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Gs038. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({warn-and-proceed}). Kernel-bug witnessed: catalog wants a warning to surface; OCC accepts without any diagnostic. Synonyms: &quot;closed-but-not-periodic BSpline surface seam undeclared&quot;, &quot;u_closed flag F but surface geometrically closed&quot;, &quot;huge UV jump on B-spline surface near wrap-around&quot;, &quot;self-touching BSpline surface periodicity not recognized&quot;, &quot;pcurve crosses near-period boundary on undeclared seam&quot;.</p></section>
+<p>**See also**: Gs038. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({warn-and-proceed}). Kernel-bug witnessed: catalog wants a warning to surface; OCC accepts without any diagnostic. Synonyms: &quot;closed-but-not-periodic BSpline surface seam undeclared&quot;, &quot;u_closed flag F but surface geometrically closed&quot;, &quot;huge UV jump on B-spline surface near wrap-around&quot;, &quot;self-touching BSpline surface periodicity not recognized&quot;, &quot;pcurve crosses near-period boundary on undeclared seam&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

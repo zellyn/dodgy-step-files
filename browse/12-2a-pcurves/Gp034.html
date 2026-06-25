@@ -33,7 +33,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>report the connectivity defect with the offending segment indices and 3D gap; either bridge the segments by inserting a connecting curve, snap endpoints, or refuse to treat the aggregate as a single curve.</p></section>
 <section><h2>Notes</h2>
-<p>Similar defect class to `Twi-` wire connectivity but at the curve-aggregate level. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: &quot;composite curve segments don&#x27;t meet&quot;, &quot;gap between consecutive composite curve segments&quot;, &quot;composite_curve has disconnected segments&quot;, &quot;segment N+1 starts far from segment N&#x27;s end&quot;, &quot;composite curve connectivity check fails&quot;.</p></section>
+<p>Similar defect class to `Twi-` wire connectivity but at the curve-aggregate level. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: &quot;composite curve segments don&#x27;t meet&quot;, &quot;gap between consecutive composite curve segments&quot;, &quot;composite_curve has disconnected segments&quot;, &quot;segment N+1 starts far from segment N&#x27;s end&quot;, &quot;composite curve connectivity check fails&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

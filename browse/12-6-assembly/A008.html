@@ -16,7 +16,6 @@
 <p class="category">§12.6 (sub-class: schema-version migration)</p>
 <p class="tag-pills">
 <a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
-<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 <a class="tag tag-assembly" href="../by-tag/assembly/index.html">assembly</a>
 </p>
 </header>
@@ -34,7 +33,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal; accept both forms via `stix_get_related_pdef`-style helper; never assume direct.</p></section>
 <section><h2>Notes</h2>
-<p>Validation observed: silent-empty rather than crash. Kernel-mishandling-by-silent-acceptance still demonstrates the defect class. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;AP242 Ed.2 product_definition_relationship SELECT widened&quot;, &quot;writer uses Ed.1 SELECT and reader expects Ed.2&quot;, &quot;schema-mismatch on related/relating types&quot;, &quot;product_definition_relationship references rejected by older importers&quot;.</p></section>
+<p>Validation observed: silent-empty rather than crash. Kernel-mishandling-by-silent-acceptance still demonstrates the defect class. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;AP242 Ed.2 product_definition_relationship SELECT widened&quot;, &quot;writer uses Ed.1 SELECT and reader expects Ed.2&quot;, &quot;schema-mismatch on related/relating types&quot;, &quot;product_definition_relationship references rejected by older importers&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

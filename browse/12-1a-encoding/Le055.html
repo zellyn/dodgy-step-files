@@ -37,7 +37,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>reject as malformed with a diagnostic naming the offending lexeme; or, in lenient mode, accept the long form with a warning. Silent acceptance hides the producer-side defect.</p></section>
 <section><h2>Notes</h2>
-<p>Cousin of Wr041 (writer-side root cause). **See also**: Wr041, Le027. Synonyms: &quot;STEP boolean wrong format&quot;, &quot;long-form boolean&quot;, &quot;TRUE/FALSE in STEP file&quot;. **OCC behavior**: silently accepts (no diagnostic, empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog&#x27;s stated invariant.</p></section>
+<p>Cousin of Wr041 (writer-side root cause). **See also**: Wr041, Le027. Synonyms: &quot;STEP boolean wrong format&quot;, &quot;long-form boolean&quot;, &quot;TRUE/FALSE in STEP file&quot;. **OCC behavior**: accepts with ERR diagnostic (empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog&#x27;s stated invariant.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

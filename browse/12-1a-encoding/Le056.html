@@ -37,7 +37,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>surface the inconsistency; reject either uniformly or accept either uniformly; never accept some and reject others within the same file. A producer-side normaliser is the cleanest fix.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Le055, Wr041. **OCC behavior**: silently accepts (no diagnostic, empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog&#x27;s stated invariant. Synonyms: &quot;mixed .T. and .TRUE. in STEP&quot;, &quot;STEP file uses both short and long boolean&quot;, &quot;long-form and short-form boolean mixed&quot;, &quot;inconsistent boolean lexemes&quot;, &quot;STEP boolean inconsistent in file&quot;.</p></section>
+<p>**See also**: Le055, Wr041. **OCC behavior**: accepts with ERR diagnostic (empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog&#x27;s stated invariant. Synonyms: &quot;mixed .T. and .TRUE. in STEP&quot;, &quot;STEP file uses both short and long boolean&quot;, &quot;long-form and short-form boolean mixed&quot;, &quot;inconsistent boolean lexemes&quot;, &quot;STEP boolean inconsistent in file&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

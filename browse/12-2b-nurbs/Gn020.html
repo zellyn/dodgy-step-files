@@ -15,7 +15,6 @@
 <h1>Gn020 <span class="sep">—</span> <span class="entry-title">Spline approximation of analytic primitive (sender philosophy)</span></h1>
 <p class="category">§12.2b NURBS/knots</p>
 <p class="tag-pills">
-<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 <a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
 </p>
 </header>
@@ -37,7 +36,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal by analytic recovery (Spatial &quot;Geometry Simplification&quot; / OCCT canonical recognition).</p></section>
 <section><h2>Notes</h2>
-<p>**OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;spline approximation of analytic primitive&quot;, &quot;cylinder exported as B-spline by sender&quot;, &quot;analytic surface lost via NURBS export&quot;, &quot;kernel emits B-spline instead of preserving cylinder&quot;, &quot;geometry simplification needed to recover analytics&quot;.</p></section>
+<p>**OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;spline approximation of analytic primitive&quot;, &quot;cylinder exported as B-spline by sender&quot;, &quot;analytic surface lost via NURBS export&quot;, &quot;kernel emits B-spline instead of preserving cylinder&quot;, &quot;geometry simplification needed to recover analytics&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

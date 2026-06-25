@@ -15,7 +15,6 @@
 <h1>Gb001 <span class="sep">—</span> <span class="entry-title">Curve approximation cannot meet the requested tolerance</span></h1>
 <p class="category">§12.2c (sub-class: approximation failure)</p>
 <p class="tag-pills">
-<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 <a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
 </p>
 </header>
@@ -35,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Return the partial result with the achieved residual reported; or reject.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;fit didn&#x27;t converge&quot;. Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: runtime-only. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant.</p></section>
+<p>Synonyms: &quot;fit didn&#x27;t converge&quot;. Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: runtime-only. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

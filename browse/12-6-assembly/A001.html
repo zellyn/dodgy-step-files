@@ -15,7 +15,6 @@
 <h1>A001 <span class="sep">—</span> <span class="entry-title">Duplicated component instances collapsed to a single transform on export</span></h1>
 <p class="category">§12.6 (sub-class: instance-multiplication / placement)</p>
 <p class="tag-pills">
-<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 <a class="tag tag-round-trip" href="../by-tag/round-trip/index.html">round-trip</a>
 <a class="tag tag-assembly" href="../by-tag/assembly/index.html">assembly</a>
 </p>
@@ -36,7 +35,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal/accept; every NAUO instance must carry its own placement; readers must not deduplicate placements by reference equality.</p></section>
 <section><h2>Notes</h2>
-<p>One of the two &quot;CATIA bug&quot; canonical patterns referenced in the task description. **See also**: Pf013. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;duplicate part instances merged into one on export&quot;, &quot;multiple component copies show up at the same coordinate&quot;, &quot;writer drops repeated subassembly placements&quot;, &quot;N copies of same component become one in STEP&quot;, &quot;MAPPED_ITEM placements deduplicated by mistake&quot;.</p></section>
+<p>One of the two &quot;CATIA bug&quot; canonical patterns referenced in the task description. **See also**: Pf013. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;duplicate part instances merged into one on export&quot;, &quot;multiple component copies show up at the same coordinate&quot;, &quot;writer drops repeated subassembly placements&quot;, &quot;N copies of same component become one in STEP&quot;, &quot;MAPPED_ITEM placements deduplicated by mistake&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

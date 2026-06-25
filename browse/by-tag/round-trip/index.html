@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1><span class="tag tag-round-trip">round-trip</span></h1>
 <p class="blurb">Defect surfaces only on a save-&gt;reload cycle.</p>
-<p class="meta">96 entries</p>
+<p class="meta">97 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Section</th><th>Expected validation</th></tr></thead><tbody>
@@ -32,6 +32,7 @@
 <tr><td><a href="../../12-6-assembly/A107.html"><code>A107</code></a></td><td>`BinXCAF` regression: documents with colour cannot be re-loaded after save</td><td><a href="../../12-6-assembly/index.html">§12.6 Assembly hierarchy</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-2b-nurbs/Gn007.html"><code>Gn007</code></a></td><td>Under-sampled `B_SPLINE_CURVE_WITH_KNOTS` for long helical thread (Creo relative-accuracy tessellation)</td><td><a href="../../12-2b-nurbs/index.html">§12.2b NURBS / B-spline</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-2b-nurbs/Gn014.html"><code>Gn014</code></a></td><td>`B_SPLINE_SURFACE_WITH_KNOTS` that fits a `PLANE` / `CYLINDRICAL_SURFACE` / `CONICAL_SURFACE` / `SPHERICAL_SURFACE` / `TOROIDAL_SURFACE` (canonical recognition)</td><td><a href="../../12-2b-nurbs/index.html">§12.2b NURBS / B-spline</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="../../12-2b-nurbs/Gn016.html"><code>Gn016</code></a></td><td>`SURFACE_OF_REVOLUTION` on `ELLIPSE`: basis curve becomes `TRIMMED_CURVE` over rational B-spline plus non-unit axis `DIRECTION` after round-trip</td><td><a href="../../12-2b-nurbs/index.html">§12.2b NURBS / B-spline</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-2a-pcurves/Gp031.html"><code>Gp031</code></a></td><td>Cylinder represented twice as duplicate `CYLINDRICAL_SURFACE` instances loses analytic identity</td><td><a href="../../12-2a-pcurves/index.html">§12.2a Pcurve defects</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(12) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-2c-surfaces/Gs024.html"><code>Gs024</code></a></td><td>Round-trip planar face becomes trimmed B-spline (degree-1 NURBS)</td><td><a href="../../12-2c-surfaces/index.html">§12.2c Surface / curve degeneracies</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-2c-surfaces/Gs052.html"><code>Gs052</code></a></td><td>Surface of revolution with offset basis curve breaks on export</td><td><a href="../../12-2c-surfaces/index.html">§12.2c Surface / curve degeneracies</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>

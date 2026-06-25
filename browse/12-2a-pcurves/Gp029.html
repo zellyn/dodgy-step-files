@@ -15,7 +15,6 @@
 <h1>Gp029 <span class="sep">—</span> <span class="entry-title">Period-shift fix on revolved face leaves wire in inconsistent UV band, blocks meshing</span></h1>
 <p class="category">§12.2a pcurve</p>
 <p class="tag-pills">
-<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 <a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
 </p>
 </header>
@@ -33,7 +32,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>a period-shift pass must produce a self-consistent UV band for all wire endpoints, or refuse the shift when no consistent band exists. A post-condition check on the band coverage catches the inconsistency.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Gs019. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant. Synonyms: &quot;period-shift fix leaves wire across multiple bands&quot;, &quot;wire endpoints in inconsistent UV bands after period adjust&quot;, &quot;triangulation blocked by mixed-band pcurves&quot;, &quot;revolved face period shift fails to converge&quot;, &quot;pcurve endpoints scattered across periods after healing&quot;.</p></section>
+<p>**See also**: Gs019. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant. Synonyms: &quot;period-shift fix leaves wire across multiple bands&quot;, &quot;wire endpoints in inconsistent UV bands after period adjust&quot;, &quot;triangulation blocked by mixed-band pcurves&quot;, &quot;revolved face period shift fails to converge&quot;, &quot;pcurve endpoints scattered across periods after healing&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

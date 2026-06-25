@@ -33,7 +33,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>detect knots whose separation is below working precision; either widen the gap (by perturbing one knot up to nominal precision), merge the two knots and adjust multiplicity, or reject the curve as numerically ill-conditioned.</p></section>
 <section><h2>Notes</h2>
-<p>Same defect on surface knot vectors should be flagged identically. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: &quot;B-spline knots packed below parametric resolution&quot;, &quot;consecutive knots differ by less than working epsilon&quot;, &quot;near-equal knots produce NaN derivatives&quot;, &quot;knot interval rounds to zero&quot;, &quot;BSpline ill-conditioned at near-coincident knot pair&quot;.</p></section>
+<p>Same defect on surface knot vectors should be flagged identically. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: &quot;B-spline knots packed below parametric resolution&quot;, &quot;consecutive knots differ by less than working epsilon&quot;, &quot;near-equal knots produce NaN derivatives&quot;, &quot;knot interval rounds to zero&quot;, &quot;BSpline ill-conditioned at near-coincident knot pair&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

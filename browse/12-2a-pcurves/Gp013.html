@@ -15,7 +15,6 @@
 <h1>Gp013 <span class="sep">—</span> <span class="entry-title">CATIA &quot;like-seam&quot;: two pcurves on same near-closed `B_SPLINE_SURFACE_WITH_KNOTS`</span></h1>
 <p class="category">§12.2a pcurve</p>
 <p class="tag-pills">
-<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 <a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
 </p>
 </header>
@@ -35,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal; detect the near-periodic surface, treat it as periodic for the seam, and reconcile both pcurves.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Gs005. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;CATIA cylinder as near-closed B-spline surface&quot;, &quot;two pcurves on non-periodic surface acting like seam&quot;, &quot;near-closed BSpline surface treated as cylinder&quot;, &quot;CATIA like-seam idiom on B-spline&quot;, &quot;shared edge with two pcurves on non-periodic surface&quot;.</p></section>
+<p>**See also**: Gs005. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;CATIA cylinder as near-closed B-spline surface&quot;, &quot;two pcurves on non-periodic surface acting like seam&quot;, &quot;near-closed BSpline surface treated as cylinder&quot;, &quot;CATIA like-seam idiom on B-spline&quot;, &quot;shared edge with two pcurves on non-periodic surface&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

@@ -15,7 +15,6 @@
 <h1>Gp014 <span class="sep">—</span> <span class="entry-title">Shared pcurve across multiple edges (SYRKO)</span></h1>
 <p class="category">§12.2a pcurve</p>
 <p class="tag-pills">
-<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 <a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
 </p>
 </header>
@@ -35,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal; when a pcurve is referenced by &gt;1 edge, deep-copy it before applying per-edge trim.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Gs031. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;same pcurve referenced by multiple edges&quot;, &quot;shared pcurve aliased across edges&quot;, &quot;trimming one edge corrupts neighbours&#x27; pcurves&quot;, &quot;PCURVE instance referenced more than once&quot;, &quot;SYRKO shared-pcurve aliasing&quot;.</p></section>
+<p>**See also**: Gs031. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;same pcurve referenced by multiple edges&quot;, &quot;shared pcurve aliased across edges&quot;, &quot;trimming one edge corrupts neighbours&#x27; pcurves&quot;, &quot;PCURVE instance referenced more than once&quot;, &quot;SYRKO shared-pcurve aliasing&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

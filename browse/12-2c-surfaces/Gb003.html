@@ -36,7 +36,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Reject the smooth-closure claim; or open the curve at the cusp.</p></section>
 <section><h2>Notes</h2>
-<p>Bug-reporter synonyms: &quot;B-spline cusp at closure&quot;, &quot;tangent jump at periodicity&quot;. Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: runtime-only. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: &quot;B-spline cusp at closure&quot;, &quot;tangent jump at periodicity&quot;, &quot;closed B-spline has reversed end-tangent&quot;, &quot;closure tangent reversed&quot;, &quot;C0 closure but no C1 on closed BSpline&quot;.</p></section>
+<p>Bug-reporter synonyms: &quot;B-spline cusp at closure&quot;, &quot;tangent jump at periodicity&quot;. Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: runtime-only. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: &quot;B-spline cusp at closure&quot;, &quot;tangent jump at periodicity&quot;, &quot;closed B-spline has reversed end-tangent&quot;, &quot;closure tangent reversed&quot;, &quot;C0 closure but no C1 on closed BSpline&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

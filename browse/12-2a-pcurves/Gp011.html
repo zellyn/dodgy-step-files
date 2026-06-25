@@ -33,7 +33,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>duplicate one pcurve and shift it by the surface period to recover the missing bank, or reject as malformed. Choice is kernel-design-dependent.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Twi022. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: &quot;seam edge has same pcurve in both slots&quot;, &quot;seam_curve associated_geometry references one pcurve twice&quot;, &quot;two banks of seam point at same 2D curve&quot;, &quot;seam pcurve duplicated instead of period-shifted&quot;, &quot;seam wire fails to close around cylinder&quot;.</p></section>
+<p>**See also**: Twi022. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: &quot;seam edge has same pcurve in both slots&quot;, &quot;seam_curve associated_geometry references one pcurve twice&quot;, &quot;two banks of seam point at same 2D curve&quot;, &quot;seam pcurve duplicated instead of period-shifted&quot;, &quot;seam wire fails to close around cylinder&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

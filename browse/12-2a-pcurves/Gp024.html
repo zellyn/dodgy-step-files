@@ -15,7 +15,6 @@
 <h1>Gp024 <span class="sep">—</span> <span class="entry-title">Pcurve refit after non-uniform scale produces large errors</span></h1>
 <p class="category">§12.2a pcurve</p>
 <p class="tag-pills">
-<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 <a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
 </p>
 </header>
@@ -35,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal; refit pcurves after scale, recompute pcurves at export, or scale `edge_tolerance` consistently.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Gn032. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;pcurve error scales with non-uniform 3D scale&quot;, &quot;scale by 1000 inflates pcurve deviation&quot;, &quot;Rhino scale breaks pcurve trim accuracy&quot;, &quot;edge tolerance not rescaled with model scale&quot;, &quot;distance from end of trim to 3D edge exceeds tolerance after scale&quot;.</p></section>
+<p>**See also**: Gn032. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;pcurve error scales with non-uniform 3D scale&quot;, &quot;scale by 1000 inflates pcurve deviation&quot;, &quot;Rhino scale breaks pcurve trim accuracy&quot;, &quot;edge tolerance not rescaled with model scale&quot;, &quot;distance from end of trim to 3D edge exceeds tolerance after scale&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

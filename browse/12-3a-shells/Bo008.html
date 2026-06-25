@@ -15,7 +15,6 @@
 <h1>Bo008 <span class="sep">—</span> <span class="entry-title">Sub-shape attached at the wrong topological level</span></h1>
 <p class="category">§12.3a (sub-class: topology hierarchy violation)</p>
 <p class="tag-pills">
-<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
 </p>
 </header>
@@ -35,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Reject the edge, or replace the bad vertex with a vertex synthesized from curve evaluation.</p></section>
 <section><h2>Notes</h2>
-<p>Distinct from &quot;tolerance disagreement&quot; (the gap here is geometric, not numeric). **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant. Synonyms: &quot;vertex doesn&#x27;t match edge&quot;, &quot;stray vertex on edge&quot;, &quot;topology references a sub-shape not in the parent&quot;, &quot;vertex coordinates don&#x27;t lie on curve&quot;, &quot;wrong topological level for sub-shape&quot;.</p></section>
+<p>Distinct from &quot;tolerance disagreement&quot; (the gap here is geometric, not numeric). **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant. Synonyms: &quot;vertex doesn&#x27;t match edge&quot;, &quot;stray vertex on edge&quot;, &quot;topology references a sub-shape not in the parent&quot;, &quot;vertex coordinates don&#x27;t lie on curve&quot;, &quot;wrong topological level for sub-shape&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

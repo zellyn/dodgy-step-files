@@ -15,7 +15,6 @@
 <h1>Gp031 <span class="sep">—</span> <span class="entry-title">Cylinder represented twice as duplicate `CYLINDRICAL_SURFACE` instances loses analytic identity</span></h1>
 <p class="category">§12.2a pcurve</p>
 <p class="tag-pills">
-<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 <a class="tag tag-round-trip" href="../by-tag/round-trip/index.html">round-trip</a>
 <a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
 </p>
@@ -34,7 +33,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal; canonicalize duplicate analytic surfaces post-IGES; re-bind pcurves to the canonical surface.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Gn023, Gp016. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;duplicate CYLINDRICAL_SURFACE instances after IGES BRep round-trip&quot;, &quot;cylinder analytic identity lost&quot;, &quot;two copies of same cylindrical surface&quot;, &quot;duplicate analytic surfaces after IGES round-trip&quot;, &quot;pcurves on supposedly-same cylinder disagree&quot;.</p></section>
+<p>**See also**: Gn023, Gp016. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;duplicate CYLINDRICAL_SURFACE instances after IGES BRep round-trip&quot;, &quot;cylinder analytic identity lost&quot;, &quot;two copies of same cylindrical surface&quot;, &quot;duplicate analytic surfaces after IGES round-trip&quot;, &quot;pcurves on supposedly-same cylinder disagree&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(12) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

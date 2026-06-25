@@ -15,7 +15,6 @@
 <h1>Gn001 <span class="sep">—</span> <span class="entry-title">`B_SPLINE_SURFACE_WITH_KNOTS` U knots duplicated without justifying multiplicity</span></h1>
 <p class="category">§12.2b NURBS/knots</p>
 <p class="tag-pills">
-<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 <a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
 </p>
 </header>
@@ -33,7 +32,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>accept the identical-knot case with a warning; treat as multiplicity bump if internally consistent; never crash.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Gn003, Gn036. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({warn-and-proceed}). Kernel-bug witnessed: catalog wants a warning to surface; OCC accepts without any diagnostic. Synonyms: &quot;duplicate knot value at non-end&quot;, &quot;B-spline U knot vector has consecutive equal interior knots&quot;, &quot;knot multiplicity not bumped despite repeated value&quot;, &quot;two equal interior knots with multiplicity 1 each&quot;, &quot;BSpline surface knot vector has bogus repeated entries&quot;.</p></section>
+<p>**See also**: Gn003, Gn036. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({warn-and-proceed}). Kernel-bug witnessed: catalog wants a warning to surface; OCC accepts without any diagnostic. Synonyms: &quot;duplicate knot value at non-end&quot;, &quot;B-spline U knot vector has consecutive equal interior knots&quot;, &quot;knot multiplicity not bumped despite repeated value&quot;, &quot;two equal interior knots with multiplicity 1 each&quot;, &quot;BSpline surface knot vector has bogus repeated entries&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

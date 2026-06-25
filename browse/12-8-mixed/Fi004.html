@@ -34,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Validate contour at request time; reject; or split into multiple contours.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;broken contour&quot;, &quot;fillet input not chainable&quot;, &quot;fillet contour invalid&quot;, &quot;fillet edges don&#x27;t connect&quot;, &quot;fillet contour self-crosses&quot;. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either.</p></section>
+<p>Synonyms: &quot;broken contour&quot;, &quot;fillet input not chainable&quot;, &quot;fillet contour invalid&quot;, &quot;fillet edges don&#x27;t connect&quot;, &quot;fillet contour self-crosses&quot;. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

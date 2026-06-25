@@ -15,7 +15,6 @@
 <h1>Gn008 <span class="sep">—</span> <span class="entry-title">High-curvature curves: knot multiplicity at full degree producing near-cusps</span></h1>
 <p class="category">§12.2b NURBS/knots</p>
 <p class="tag-pills">
-<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 <a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
 </p>
 </header>
@@ -33,7 +32,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>accept geometrically; flag as a quality warning; downstream meshers must detect and refuse / refit before meshing.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Gs040. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant. Synonyms: &quot;knot multiplicity exceeds degree+1&quot;, &quot;B-spline near-cusp from full-degree interior knot&quot;, &quot;rational B-spline weight ratio over 1000 causes mesher fail&quot;, &quot;knot multiplicity equals order produces cusp&quot;, &quot;high-curvature NURBS curve over-resolves mesher&quot;.</p></section>
+<p>**See also**: Gs040. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant. Synonyms: &quot;knot multiplicity exceeds degree+1&quot;, &quot;B-spline near-cusp from full-degree interior knot&quot;, &quot;rational B-spline weight ratio over 1000 causes mesher fail&quot;, &quot;knot multiplicity equals order produces cusp&quot;, &quot;high-curvature NURBS curve over-resolves mesher&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
