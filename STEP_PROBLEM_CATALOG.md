@@ -2792,7 +2792,7 @@ _Section summary: 101 entries._
 - **Tier-3 assertion**: n_edges_total >= 20
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: face[4].surface_type == "plane"
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(33) ifc=schema_n/a`
@@ -3090,7 +3090,7 @@ _Section summary: 101 entries._
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: n_vertices_total >= 8
 - **Tier-3 assertion**: face[0].sliver_aspect_max_min > 1e6
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -3483,7 +3483,7 @@ _Section summary: 101 entries._
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: n_vertices_total >= 8
 - **Tier-3 assertion**: brepcheck.valid == True
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a`
@@ -3499,7 +3499,7 @@ _Section summary: 101 entries._
 - **Tier-3 assertion**: n_edges_total >= 2
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: n_vertices_total >= 4
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
@@ -3515,7 +3515,7 @@ _Section summary: 101 entries._
 - **Tier-3 assertion**: n_edges_total >= 8
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: n_vertices_total >= 16
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a`
@@ -3622,7 +3622,7 @@ _Section summary: 101 entries._
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: n_vertices_total >= 8
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
@@ -4141,7 +4141,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Notes**: **See also**: Gn021. Synonyms: "offset surface used out of AP214 scope", "offset on top of B-spline base fails translation", "offset of extrusion surface throws exception", "compound offset surface chain unsupported".
 - **Tier-3 assertion**: face[0].surface_type == "offset"
 - **Tier-3 assertion**: face[1].surface_type == "offset"
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: Face sewing leaves free bounds or duplicate edges; the resulting shell is open instead of closed, so MakeSolid produces an invalid solid and volume/property computations return wrong values.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
@@ -6549,7 +6549,7 @@ _Section summary: 84 entries._
 - **Tier-3 assertion**: face[0].sliver_aspect_max_min > 1e6
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: brepcheck.valid == True
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels may reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels may reject.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -8639,7 +8639,7 @@ _Section summary: 106 entries._
 - **Notes**: **See also**: N030, Pmi055. Synonyms: "dimensional_size vs dimensional_location confused", "size dimension encoded as location", "wrong dimension entity for size vs distance".
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: brepcheck.valid == True
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's warn-only stance; conservative kernels should still emit a diagnostic.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's warn-only stance; conservative kernels should still emit a diagnostic.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -9179,7 +9179,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].area < 101
 - **Tier-3 assertion**: face[5].edge_count == 4
 - **Tier-3 assertion**: n_edges_total >= 24
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's warn-only stance; conservative kernels should still emit a diagnostic.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's warn-only stance; conservative kernels should still emit a diagnostic.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
@@ -9199,7 +9199,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].area < 101
 - **Tier-3 assertion**: face[5].edge_count == 4
 - **Tier-3 assertion**: n_edges_total >= 24
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's warn-only stance; conservative kernels should still emit a diagnostic.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's warn-only stance; conservative kernels should still emit a diagnostic.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
@@ -9239,7 +9239,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].edge_count == 4
 - **Tier-3 assertion**: face[0].area > 899
 - **Tier-3 assertion**: face[0].area < 901
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -9257,7 +9257,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].edge_count == 4
 - **Tier-3 assertion**: face[0].area > 2499
 - **Tier-3 assertion**: face[0].area < 2501
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -9275,7 +9275,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].edge_count == 4
 - **Tier-3 assertion**: face[0].area > 2499
 - **Tier-3 assertion**: face[0].area < 2501
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -9293,7 +9293,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].edge_count == 4
 - **Tier-3 assertion**: face[0].area > 0.99
 - **Tier-3 assertion**: face[0].area < 1.01
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -9311,7 +9311,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].edge_count == 4
 - **Tier-3 assertion**: face[0].area > 899
 - **Tier-3 assertion**: face[0].area < 901
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -9329,7 +9329,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].edge_count == 4
 - **Tier-3 assertion**: face[0].area > 899
 - **Tier-3 assertion**: face[0].area < 901
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -9347,7 +9347,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].edge_count == 4
 - **Tier-3 assertion**: face[0].area > 899
 - **Tier-3 assertion**: face[0].area < 901
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -9365,7 +9365,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].edge_count == 4
 - **Tier-3 assertion**: face[0].area > 899
 - **Tier-3 assertion**: face[0].area < 901
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still warn.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still warn.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -9383,7 +9383,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].edge_count == 4
 - **Tier-3 assertion**: face[0].area > 899
 - **Tier-3 assertion**: face[0].area < 901
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -9401,7 +9401,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].edge_count == 4
 - **Tier-3 assertion**: face[0].area > 899
 - **Tier-3 assertion**: face[0].area < 901
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -9419,7 +9419,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].edge_count == 4
 - **Tier-3 assertion**: face[0].area > 899
 - **Tier-3 assertion**: face[0].area < 901
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -9437,7 +9437,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].edge_count == 4
 - **Tier-3 assertion**: face[0].area > 899
 - **Tier-3 assertion**: face[0].area < 901
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -9455,7 +9455,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].edge_count == 4
 - **Tier-3 assertion**: face[0].area > 899
 - **Tier-3 assertion**: face[0].area < 901
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -9473,7 +9473,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].edge_count == 4
 - **Tier-3 assertion**: face[0].area > 899
 - **Tier-3 assertion**: face[0].area < 901
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -9491,7 +9491,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].edge_count == 4
 - **Tier-3 assertion**: face[0].area > 899
 - **Tier-3 assertion**: face[0].area < 901
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -9509,7 +9509,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].edge_count == 4
 - **Tier-3 assertion**: face[0].area > 2499
 - **Tier-3 assertion**: face[0].area < 2501
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -9527,7 +9527,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].edge_count == 4
 - **Tier-3 assertion**: face[0].area > 2499
 - **Tier-3 assertion**: face[0].area < 2501
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: Parser dereferences invalid memory while processing the malformed token; the load process is killed by a signal and no shape is delivered.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=signal(11) ifc=schema_n/a`
@@ -9545,7 +9545,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].edge_count == 4
 - **Tier-3 assertion**: face[0].area > 2499
 - **Tier-3 assertion**: face[0].area < 2501
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -9563,7 +9563,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].edge_count == 4
 - **Tier-3 assertion**: face[0].area > 2499
 - **Tier-3 assertion**: face[0].area < 2501
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -9581,7 +9581,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].edge_count == 4
 - **Tier-3 assertion**: face[0].area > 2499
 - **Tier-3 assertion**: face[0].area < 2501
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -9599,7 +9599,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].edge_count == 4
 - **Tier-3 assertion**: face[0].area > 2499
 - **Tier-3 assertion**: face[0].area < 2501
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -9617,7 +9617,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].edge_count == 4
 - **Tier-3 assertion**: face[0].area > 2499
 - **Tier-3 assertion**: face[0].area < 2501
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -9635,7 +9635,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].edge_count == 4
 - **Tier-3 assertion**: face[0].area > 2499
 - **Tier-3 assertion**: face[0].area < 2501
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -9653,7 +9653,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].edge_count == 4
 - **Tier-3 assertion**: face[0].area > 2499
 - **Tier-3 assertion**: face[0].area < 2501
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -9671,7 +9671,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].edge_count == 4
 - **Tier-3 assertion**: face[0].area > 2499
 - **Tier-3 assertion**: face[0].area < 2501
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -9689,7 +9689,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].edge_count == 4
 - **Tier-3 assertion**: face[0].area > 2499
 - **Tier-3 assertion**: face[0].area < 2501
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -9707,7 +9707,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].edge_count == 4
 - **Tier-3 assertion**: face[0].area > 2499
 - **Tier-3 assertion**: face[0].area < 2501
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -9725,7 +9725,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].edge_count == 4
 - **Tier-3 assertion**: face[0].area > 2499
 - **Tier-3 assertion**: face[0].area < 2501
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -9743,7 +9743,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].edge_count == 4
 - **Tier-3 assertion**: face[0].area > 2499
 - **Tier-3 assertion**: face[0].area < 2501
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -9826,7 +9826,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].sliver_aspect_max_min > 100
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: n_edges_total >= 4
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels may reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels may reject.
 - **Severity**: P1
 - **Model impact**: Fillet/chamfer operation fails to construct the rolling-ball geometry; loaded BRep has the unfilleted edges (no smoothing applied) or a NULL shape if the operation aborted, and downstream BRepCheck flags the affected edges.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a`
@@ -9893,7 +9893,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "offset normal flip", "face sense fights surface", "offset bad normals", "face normal flipped before offset", "same_sense=F breaks offset", "offset cannot start, normal direction unclear".
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: n_edges_total >= 1
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: Offset operation produces a shape with collapsed or inverted faces; loaded topology has zero-area faces or self-intersecting shells that fail BRepCheck.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
@@ -9945,7 +9945,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "offset on disconnected shell fails", "shell falls apart in offset", "offset source has split components", "offset rejects multi-piece shell". **See also**: Bo022.
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: face[1].surface_type == "plane"
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: Offset operation fails or produces an invalid shape; the kernel returns NULL or raises `StdFail_NotDone`, and the offset feature is absent from the resulting BRep.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
@@ -9962,7 +9962,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "offset re-join failure", "offset edge trimming failed", "offset faces don't reconnect", "offset edges don't intersect cleanly".
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: face[1].surface_type == "plane"
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: Offset operation fails or produces an invalid shape; the kernel returns NULL or raises `StdFail_NotDone`, and the offset feature is absent from the resulting BRep.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
@@ -10130,7 +10130,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "draft taper failure", "draft face recomputation fails", "drafted surface won't refit", "draft angle exceeds analytic range".
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: n_edges_total >= 1
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: Offset operation fails or produces an invalid shape; the kernel returns NULL or raises `StdFail_NotDone`, and the offset feature is absent from the resulting BRep.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
@@ -10148,7 +10148,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: n_edges_total >= 2
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: face[1].surface_type == "plane"
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: Offset operation fails or produces an invalid shape; the kernel returns NULL or raises `StdFail_NotDone`, and the offset feature is absent from the resulting BRep.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
@@ -14767,7 +14767,7 @@ _Section summary: 52 entries._
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: n_vertices_total >= 8
 - **Tier-3 assertion**: brepcheck.valid == True
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -18685,7 +18685,7 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: brepcheck.valid == true
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: face[5].surface_type == "plane"
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: Kernel reports SUCCESS for an operation that should have failed; the loaded shape passes BRepCheck despite carrying a hidden invalidity that surfaces later in downstream booleans/meshing as wrong geometry or signal-11.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
@@ -18717,7 +18717,7 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: n_edges_total >= 8
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: n_vertices_total >= 16
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: Kernel reports SUCCESS for an operation that should have failed; the loaded shape passes BRepCheck despite carrying a hidden invalidity that surfaces later in downstream booleans/meshing as wrong geometry or signal-11.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a`
@@ -18746,7 +18746,7 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: n_edges_total >= 24
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: face[5].surface_type == "plane"
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: Kernel reports SUCCESS for an operation that should have failed; the loaded shape passes BRepCheck despite carrying a hidden invalidity that surfaces later in downstream booleans/meshing as wrong geometry or signal-11.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
@@ -18779,7 +18779,7 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: n_edges_total >= 12
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: n_vertices_total >= 24
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: Kernel reports SUCCESS for an operation that should have failed; the loaded shape passes BRepCheck despite carrying a hidden invalidity that surfaces later in downstream booleans/meshing as wrong geometry or signal-11.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
@@ -18867,7 +18867,7 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: n_edges_total >= 24
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: face[5].surface_type == "plane"
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's warn-only stance; conservative kernels should still emit a diagnostic.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's warn-only stance; conservative kernels should still emit a diagnostic.
 - **Severity**: P1
 - **Model impact**: Kernel reports SUCCESS for an operation that should have failed; the loaded shape passes BRepCheck despite carrying a hidden invalidity that surfaces later in downstream booleans/meshing as wrong geometry or signal-11.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
@@ -18896,7 +18896,7 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: n_edges_total >= 24
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: face[5].surface_type == "plane"
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's warn-only stance; conservative kernels should still emit a diagnostic.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's warn-only stance; conservative kernels should still emit a diagnostic.
 - **Severity**: P1
 - **Model impact**: Kernel reports SUCCESS for an operation that should have failed; the loaded shape passes BRepCheck despite carrying a hidden invalidity that surfaces later in downstream booleans/meshing as wrong geometry or signal-11.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
@@ -18955,7 +18955,7 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: n_vertices_total >= 8
 - **Tier-3 assertion**: face[0].sliver_aspect_max_min > 1e6
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-or-warn stance; conservative kernels should still reject or emit a diagnostic.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject, warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-or-warn stance; conservative kernels should still reject or emit a diagnostic.
 - **Severity**: P1
 - **Model impact**: Kernel reports SUCCESS for an operation that should have failed; the loaded shape passes BRepCheck despite carrying a hidden invalidity that surfaces later in downstream booleans/meshing as wrong geometry or signal-11.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -18981,7 +18981,7 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: n_edges_total >= 24
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: face[5].surface_type == "plane"
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's warn-only stance; conservative kernels should still emit a diagnostic.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's warn-only stance; conservative kernels should still emit a diagnostic.
 - **Severity**: P1
 - **Model impact**: Kernel reports SUCCESS for an operation that should have failed; the loaded shape passes BRepCheck despite carrying a hidden invalidity that surfaces later in downstream booleans/meshing as wrong geometry or signal-11.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
@@ -19008,7 +19008,7 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: face[1].surface_type == "plane"
 - **Tier-3 assertion**: face[2].surface_type == "plane"
 - **Tier-3 assertion**: n_edges_total >= 4
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's warn-only stance; conservative kernels should still emit a diagnostic.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's warn-only stance; conservative kernels should still emit a diagnostic.
 - **Severity**: P1
 - **Model impact**: Kernel reports SUCCESS for an operation that should have failed; the loaded shape passes BRepCheck despite carrying a hidden invalidity that surfaces later in downstream booleans/meshing as wrong geometry or signal-11.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -19037,7 +19037,7 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: n_edges_total >= 24
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: face[5].surface_type == "plane"
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's warn-only stance; conservative kernels should still emit a diagnostic.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's warn-only stance; conservative kernels should still emit a diagnostic.
 - **Severity**: P1
 - **Model impact**: Kernel reports SUCCESS for an operation that should have failed; the loaded shape passes BRepCheck despite carrying a hidden invalidity that surfaces later in downstream booleans/meshing as wrong geometry or signal-11.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(39) ifc=schema_n/a`
@@ -20306,7 +20306,7 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: n_vertices_total >= 8
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -20409,7 +20409,7 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: n_edges_total >= 3
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: n_vertices_total >= 6
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
@@ -20482,7 +20482,7 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: n_edges_total >= 2
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: n_vertices_total >= 4
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
@@ -20548,7 +20548,7 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: n_vertices_total >= 8
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -21071,7 +21071,7 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: n_vertices_total >= 8
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: Face sewing leaves free bounds or duplicate edges; the resulting shell is open instead of closed, so MakeSolid produces an invalid solid and volume/property computations return wrong values.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
@@ -21102,7 +21102,7 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: face[1].area < 1e-3
 - **Tier-3 assertion**: face[1].sliver_aspect_max_min > 1e3
 - **Tier-3 assertion**: n_edges_total >= 4
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: Face sewing leaves free bounds or duplicate edges; the resulting shell is open instead of closed, so MakeSolid produces an invalid solid and volume/property computations return wrong values.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
@@ -21120,7 +21120,7 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: n_edges_total >= 3
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Tier-3 assertion**: n_vertices_total >= 6
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: Face sewing leaves free bounds or duplicate edges; the resulting shell is open instead of closed, so MakeSolid produces an invalid solid and volume/property computations return wrong values.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(16) ifc=schema_n/a`
@@ -21452,7 +21452,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Closure intent**: sheet
 - **Notes**: Synonyms: "missing face geometry", "null surface reference", "ADVANCED_FACE has no surface", "face_geometry slot is dollar sign", "kernel can't compute face area".
 - **Tier-3 assertion**: brepcheck.valid == True
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: Face sewing leaves free bounds or duplicate edges; the resulting shell is open instead of closed, so MakeSolid produces an invalid solid and volume/property computations return wrong values.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -21491,7 +21491,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Tier-3 assertion**: face[0].edge_count == 12
 - **Tier-3 assertion**: face[0].area > 8900
 - **Tier-3 assertion**: face[0].area < 9100
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: Face sewing leaves free bounds or duplicate edges; the resulting shell is open instead of closed, so MakeSolid produces an invalid solid and volume/property computations return wrong values.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(25) ifc=schema_n/a`
@@ -21511,7 +21511,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Tier-3 assertion**: face[0].edge_count == 8
 - **Tier-3 assertion**: face[0].area > 9500
 - **Tier-3 assertion**: face[0].area < 9700
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: Face sewing leaves free bounds or duplicate edges; the resulting shell is open instead of closed, so MakeSolid produces an invalid solid and volume/property computations return wrong values.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a`
@@ -21530,7 +21530,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Tier-3 assertion**: n_edges_total >= 4
 - **Tier-3 assertion**: n_vertices_total >= 8
 - **Tier-3 assertion**: brepcheck.valid == True
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: Face sewing leaves free bounds or duplicate edges; the resulting shell is open instead of closed, so MakeSolid produces an invalid solid and volume/property computations return wrong values.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
@@ -21549,7 +21549,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Tier-3 assertion**: n_edges_total >= 1
 - **Tier-3 assertion**: n_vertices_total >= 2
 - **Tier-3 assertion**: brepcheck.valid == True
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: Face sewing leaves free bounds or duplicate edges; the resulting shell is open instead of closed, so MakeSolid produces an invalid solid and volume/property computations return wrong values.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
@@ -21565,7 +21565,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Closure intent**: sheet
 - **Notes**: Synonyms: "uv parameters too wide", "face overshoots surface", "face wraps around surface bounds", "wire goes off surface", "pcurve excursion beyond u_min.u_max".
 - **Tier-3 assertion**: brepcheck.valid == True
-- **OCC behavior**: loads a shape (no diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
