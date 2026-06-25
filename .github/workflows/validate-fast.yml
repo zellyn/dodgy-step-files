@@ -113,39 +113,12 @@ jobs:
         # entry no longer trips its expected violation (regression both ways).
         run: uv run python -m step_corpus._schema_oracle --strict
 
-      # Site staleness check. The browse/ HTML site is generated from the
-      # catalog by _render_pages.py and committed to the repo (GitHub
-      # Pages deploys whatever is on main). Without this check the site
-      # silently drifts behind every catalog change — happened in
-      # May-June 2026 and made §12.14 mesh (760 fixtures) invisible
-      # for 50 days. Re-render into a temp area and diff against the
-      # committed browse/ tree; fail with a helpful message if they
-      # differ. The fix on a failure is `cd validation && uv run python
-      # -m step_corpus._render_pages --clean` then commit the result.
-      #
-      # ``if: always()`` so this check runs even if earlier steps
-      # failed — site staleness is independent of pytest failures and
-      # we want both signals on every push.
-      - name: Site staleness check (browse/ vs catalog)
-        if: always()
-        working-directory: validation
-        run: |
-          set -euo pipefail
-          uv run python -m step_corpus._render_pages --clean \
-            --out-root "$RUNNER_TEMP/site_check"
-          # Compare the regenerated tree against the committed one.
-          # `diff -r -q` lists files that differ; we exit 1 if any do.
-          if diff -r -q --exclude=.gitkeep \
-                 "$RUNNER_TEMP/site_check/browse" ../browse \
-                 > "$RUNNER_TEMP/site_diff.txt"; then
-            echo "browse/ matches the regenerated site."
-          else
-            echo "::error::browse/ is out of sync with the catalog."
-            echo "Re-render locally and commit:"
-            echo "  cd validation && uv run python -m step_corpus._render_pages --clean"
-            echo "  git add browse/ index.html && git commit -m 'Regenerate site'"
-            echo ""
-            echo "Diff summary (first 50 lines):"
-            head -50 "$RUNNER_TEMP/site_diff.txt"
-            exit 1
-          fi
+      # Site staleness check — REMOVED 2026-06-24 after a failed pilot.
+      # The renderer's per-fixture pages include live oracle outcomes
+      # pulled from /tmp/cad-v2-out/, which exists locally but never in
+      # CI. So a CI-rendered site is always a degraded version of the
+      # committed (cache-enriched) site, and a byte-diff will always
+      # report drift. Reinstating this check requires a renderer
+      # `--no-oracle-data` flag and committing the cacheless variant
+      # (or two-track rendering). Filed as follow-up — for now staleness
+      # is detected manually when the catalog/site visibly diverge.
