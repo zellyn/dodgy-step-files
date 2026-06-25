@@ -39,6 +39,14 @@ from step_corpus._build_catalog_json import RESEARCH_ROOT
 
 V2_OUT = Path("/tmp/cad-v2-out")
 
+# When True, _read_oracle returns None for every entry — the per-fixture
+# pages then fall back to the "No live oracle data" stub. Set by the
+# --no-oracle-data CLI flag. This is what the committed site uses so
+# CI can re-render without /tmp/cad-v2-out/ and get byte-identical
+# output. Live oracle data is still available locally via _run_corpus
+# or by re-rendering without the flag.
+_OMIT_ORACLE_DATA = False
+
 # Public GitHub repository URL. Used for "View on GitHub" links and for
 # linking to the rendered (rather than raw) Markdown of top-level docs.
 GITHUB_REPO_URL = "https://github.com/zellyn/dodgy-step-files"
@@ -197,6 +205,8 @@ def _ids_from_notes(notes: str, valid_ids: set[str]) -> list[str]:
 # ---------------------------------------------------------------------------
 
 def _read_oracle(entry: dict) -> dict[str, Any] | None:
+    if _OMIT_ORACLE_DATA:
+        return None
     p = V2_OUT / entry["section_dir"] / f"{entry['id']}.json"
     if not p.is_file():
         return None
@@ -1334,7 +1344,16 @@ def main(argv: list[str] | None = None) -> int:
                         "(default: research/ — sibling of validation/)")
     p.add_argument("--clean", action="store_true",
                    help="Remove browse/<section>/ before rendering")
+    p.add_argument("--no-oracle-data", action="store_true",
+                   help="Skip /tmp/cad-v2-out/ oracle data; per-fixture "
+                        "pages show 'No live oracle data — run _run_corpus'. "
+                        "Used by the committed site so CI can re-render "
+                        "without an oracle cache and get matching output.")
     args = p.parse_args(argv)
+
+    if args.no_oracle_data:
+        global _OMIT_ORACLE_DATA
+        _OMIT_ORACLE_DATA = True
 
     counts = render_all(args.out_root, clean=args.clean)
     print(f"Rendered {counts['fixtures']} fixture pages "

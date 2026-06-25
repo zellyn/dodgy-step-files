@@ -113,12 +113,34 @@ jobs:
         # entry no longer trips its expected violation (regression both ways).
         run: uv run python -m step_corpus._schema_oracle --strict
 
-      # Site staleness check — REMOVED 2026-06-24 after a failed pilot.
-      # The renderer's per-fixture pages include live oracle outcomes
-      # pulled from /tmp/cad-v2-out/, which exists locally but never in
-      # CI. So a CI-rendered site is always a degraded version of the
-      # committed (cache-enriched) site, and a byte-diff will always
-      # report drift. Reinstating this check requires a renderer
-      # `--no-oracle-data` flag and committing the cacheless variant
-      # (or two-track rendering). Filed as follow-up — for now staleness
-      # is detected manually when the catalog/site visibly diverge.
+      # Site staleness check. Re-render the committed site with the
+      # `--no-oracle-data` flag (which CI uses because /tmp/cad-v2-out
+      # exists only locally) and diff against the committed browse/.
+      # Mismatch means someone changed the catalog without re-rendering.
+      # Fix: `cd validation && uv run python -m step_corpus._render_pages
+      # --clean --no-oracle-data` then commit.
+      #
+      # if: always() so this runs even when earlier steps fail
+      # (pre-existing A074 OCAF / libGLU env failures shouldn't suppress
+      # this orthogonal signal).
+      - name: Site staleness check (browse/ vs catalog)
+        if: always()
+        working-directory: validation
+        run: |
+          set -euo pipefail
+          uv run python -m step_corpus._render_pages --clean --no-oracle-data \
+            --out-root "$RUNNER_TEMP/site_check"
+          if diff -r -q --exclude=.gitkeep \
+                 "$RUNNER_TEMP/site_check/browse" ../browse \
+                 > "$RUNNER_TEMP/site_diff.txt"; then
+            echo "browse/ matches the regenerated site."
+          else
+            echo "::error::browse/ is out of sync with the catalog."
+            echo "Re-render locally and commit:"
+            echo "  cd validation && uv run python -m step_corpus._render_pages --clean --no-oracle-data"
+            echo "  git add browse/ index.html && git commit -m 'Regenerate site'"
+            echo ""
+            echo "Diff summary (first 50 lines):"
+            head -50 "$RUNNER_TEMP/site_diff.txt"
+            exit 1
+          fi
