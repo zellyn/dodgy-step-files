@@ -131,3 +131,31 @@ def test_json_roundtrip_is_byte_stable(tmp_path: Path) -> None:
     rebuilt = build_catalog(CATALOG_MD)
     write_catalog(rebuilt, target)
     assert target.read_bytes() == CATALOG_JSON.read_bytes()
+
+
+def test_no_orphan_fixtures(entries: list[dict]) -> None:
+    """Every .stp / .mesh.json under step-examples/ + mesh-examples/ must
+    have a catalog entry. Catches the "fixture committed without catalog
+    entry" class of bug (Me270-279, Me620-624, Me630-639, Me810-812,
+    Me932, P004 were all orphans found 2026-06-25 — backfilled).
+
+    Sibling-input fixtures (*.input.stp) are intentionally not catalogued
+    and are excluded from the check.
+    """
+    catalog_ids = {e["id"] for e in entries}
+
+    on_disk: set[str] = set()
+    for stp in RESEARCH_ROOT.glob("step-examples/12-*/[!_]*.stp"):
+        if ".input" in stp.stem:
+            continue  # sibling fixture; intentional
+        on_disk.add(stp.stem)
+    for mj in RESEARCH_ROOT.glob("mesh-examples/12-14-mesh/Me*.mesh.json"):
+        on_disk.add(mj.stem.replace(".mesh", ""))
+
+    orphans = sorted(on_disk - catalog_ids)
+    assert not orphans, (
+        f"{len(orphans)} fixture(s) on disk have no catalog entry — "
+        f"add a `### <id> — ...` section to STEP_PROBLEM_CATALOG.md "
+        f"for each:\n  " + "\n  ".join(orphans[:20])
+        + ("\n  ..." if len(orphans) > 20 else "")
+    )
