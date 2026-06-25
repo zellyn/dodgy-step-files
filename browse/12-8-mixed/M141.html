@@ -44,6 +44,9 @@
 <li><code>count_entity_def(b&#x27;PRODUCT_CATEGORY_RELATIONSHIP&#x27;) &gt;= 2</code></li>
 <li><code>count_entity_def(b&#x27;PRODUCT_CATEGORY&#x27;) &gt;= 2</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -51,7 +54,7 @@
 <tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
 <tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
-<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>reject(E_UNRESOLVED_REFS)</code></td></tr>
 <tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
 </tbody></table>
 </section>
@@ -59,27 +62,72 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M141 - AP203 PRODUCT_CATEGORY hierarchy contains a cycle.
-<span class="lineno">3</span> * Defect: PRODUCT_CATEGORY_RELATIONSHIP entries form a cycle:
-<span class="lineno">4</span> * &#x27;electronics&#x27; is a sub-category of &#x27;mechanical_assembly&#x27; which is
-<span class="lineno">5</span> * a sub-category of &#x27;electronics&#x27;. Walking the category tree to
-<span class="lineno">6</span> * discover a part&#x27;s parent class loops indefinitely. */
-<span class="lineno">7</span>HEADER;
-<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;M141 test case&#x27;,&#x27;AP203 product category cycle&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">9</span>FILE_NAME(&#x27;M141.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">10</span>FILE_SCHEMA((&#x27;<mark>CONFIG_CONTROL_DESIGN</mark>&#x27;));
-<span class="lineno">11</span>ENDSEC;
-<span class="lineno">12</span>DATA;
-<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;configuration controlled 3D design of mechanical parts and assemblies&#x27;);
-<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;config_control_design&#x27;,1994,#1);
-<span class="lineno">15</span><mark>#100=PRODUCT_CATEGORY(</mark>&#x27;electronics&#x27;,&#x27;EE assemblies&#x27;);
-<span class="lineno">16</span><mark>#101=PRODUCT_CATEGORY(</mark>&#x27;mechanical_assembly&#x27;,&#x27;ME assemblies&#x27;);
-<span class="lineno">17</span>/* Defect: category hierarchy forms a cycle:
-<span class="lineno">18</span> * electronics -&gt; mech_assembly -&gt; electronics. */
-<span class="lineno">19</span><mark>#110=PRODUCT_CATEGORY_RELATIONSHIP(</mark>&#x27;parent_a&#x27;,&#x27;sub_of&#x27;,#100,#101);
-<span class="lineno">20</span><mark>#111=PRODUCT_CATEGORY_RELATIONSHIP(</mark>&#x27;parent_b&#x27;,&#x27;sub_of&#x27;,#101,#100);
-<span class="lineno">21</span>ENDSEC;
-<span class="lineno">22</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M141: AP203 PRODUCT_CATEGORY hierarchy contains a cycle */
+<span class="lineno">3</span>/* DEFECT: electronics sub-of mechanical_assembly sub-of electronics */
+<span class="lineno">4</span>/* Two PRODUCT_CATEGORY_RELATIONSHIP entries form cycle: A-&gt;B-&gt;A */
+<span class="lineno">5</span>/* Category tree walkers loop indefinitely; PDM tools hang or stack-overflow */
+<span class="lineno">6</span>/* Per ISO 10303-44 PRODUCT_CATEGORY_RELATIONSHIP graph must be acyclic *)  
+<span class="lineno">7</span>/* Byte assertion: contains(b&#x27;<mark>CONFIG_CONTROL_DESIGN</mark>&#x27;) */
+<span class="lineno">8</span>/* Byte assertion: count_entity_def(b&#x27;PRODUCT_CATEGORY_RELATIONSHIP&#x27;) &gt;= 2 */
+<span class="lineno">9</span>/* Byte assertion: count_entity_def(b&#x27;PRODUCT_CATEGORY&#x27;) &gt;= 2 */
+<span class="lineno">10</span>HEADER;
+<span class="lineno">11</span>FILE_DESCRIPTION((&#x27;M141: AP203 PRODUCT_CATEGORY hierarchy cycle electronics mechanical_assembly&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">12</span>FILE_NAME(&#x27;M141.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">13</span>/* Byte assertion: contains(b&#x27;<mark>CONFIG_CONTROL_DESIGN</mark>&#x27;) */
+<span class="lineno">14</span>FILE_SCHEMA((&#x27;<mark>CONFIG_CONTROL_DESIGN</mark> { 1 0 10303 203 1 0 0 }&#x27;));
+<span class="lineno">15</span>ENDSEC;
+<span class="lineno">16</span>DATA;
+<span class="lineno">17</span>#1=APPLICATION_CONTEXT(&#x27;configuration controlled 3D designs of mechanical parts and assemblies&#x27;);
+<span class="lineno">18</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">19</span>  &#x27;config_control_design&#x27;,1994,#1);
+<span class="lineno">20</span>/* Standard unit context (mm) */
+<span class="lineno">21</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">22</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">23</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">24</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">25</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">26</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">27</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">28</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">29</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">30</span>/* Byte assertion: count_entity_def(b&#x27;PRODUCT_CATEGORY&#x27;) &gt;= 2 */
+<span class="lineno">31</span>/* First category node: &#x27;electronics&#x27; â typically a leaf or mid-level category *)  
+<span class="lineno">32</span><mark>#20=PRODUCT_CATEGORY(</mark>&#x27;electronics&#x27;,&#x27;Electronic components and sub-assemblies&#x27;);
+<span class="lineno">33</span>/* Second category node: &#x27;mechanical_assembly&#x27; â normally a parent category */
+<span class="lineno">34</span><mark>#21=PRODUCT_CATEGORY(</mark>&#x27;mechanical_assembly&#x27;,&#x27;Mechanical assembly components&#x27;);
+<span class="lineno">35</span>/* Byte assertion: count_entity_def(b&#x27;PRODUCT_CATEGORY_RELATIONSHIP&#x27;) &gt;= 2 */
+<span class="lineno">36</span>/* DEFECT leg 1: &#x27;electronics&#x27; declared as sub-category of &#x27;mechanical_assembly&#x27; */
+<span class="lineno">37</span>/* This makes electronics appear as a specialization of mechanical_assembly */
+<span class="lineno">38</span><mark>#30=PRODUCT_CATEGORY_RELATIONSHIP(</mark>&#x27;elec-sub-mech&#x27;,
+<span class="lineno">39</span>  &#x27;electronics is sub-category of mechanical_assembly&#x27;,#20,#21);
+<span class="lineno">40</span>/* DEFECT leg 2: &#x27;mechanical_assembly&#x27; declared as sub-category of &#x27;electronics&#x27; */
+<span class="lineno">41</span>/* This makes mechanical_assembly appear as a specialization of electronics *)   
+<span class="lineno">42</span>/* Together #30 and #31 form the cycle: electronics-&gt;mechanical_assembly-&gt;electronics */
+<span class="lineno">43</span>/* Walking parent links from either node never reaches a root â infinite loop *)  
+<span class="lineno">44</span><mark>#31=PRODUCT_CATEGORY_RELATIONSHIP(</mark>&#x27;mech-sub-elec&#x27;,
+<span class="lineno">45</span>  &#x27;mechanical_assembly is sub-category of electronics&#x27;,#21,#20);
+<span class="lineno">46</span>/* Part assigned to the &#x27;electronics&#x27; category â triggers the cycle on class lookup */
+<span class="lineno">47</span>#35=PRODUCT(&#x27;PART-505&#x27;,&#x27;Sensor PCB&#x27;,&#x27;Printed circuit board for sensor module&#x27;,(#1));
+<span class="lineno">48</span>#36=PRODUCT_DEFINITION_FORMATION(&#x27;rev_B&#x27;,&#x27;Rev B sensor board&#x27;,#35);
+<span class="lineno">49</span>#37=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#36,PRODUCT_DEFINITION_CONTEXT(#1,&#x27;design&#x27;));
+<span class="lineno">50</span>/* Classification assignment binds #37 to category &#x27;electronics&#x27; (#20) */
+<span class="lineno">51</span>/* A BOM exploder walking the hierarchy from #20 enters the A-&gt;B-&gt;A cycle *)  
+<span class="lineno">52</span>#40=APPLIED_CLASSIFICATION_ASSIGNMENT(#20,CLASSIFICATION_ROLE(&#x27;classification&#x27;),(#37));
+<span class="lineno">53</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">54</span>#500=GEOMETRIC_CURVE_SET(&#x27;ap203-product-category-relationship-cycle-A-B-A&#x27;,
+<span class="lineno">55</span>  (#20,#21,#30,#31,#35,#36,#37,#40));
+<span class="lineno">56</span>/* Product chain */
+<span class="lineno">57</span>#600=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">58</span>#601=PRODUCT_CONTEXT(&#x27;&#x27;,#600,&#x27;mechanical&#x27;);
+<span class="lineno">59</span>#602=PRODUCT(&#x27;M141&#x27;,&#x27;M141&#x27;,&#x27;M141&#x27;,(#601));
+<span class="lineno">60</span>#603=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#602);
+<span class="lineno">61</span>#604=PRODUCT_DEFINITION_CONTEXT(#600,&#x27;design&#x27;);
+<span class="lineno">62</span>#605=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#603,#604);
+<span class="lineno">63</span>#606=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#605);
+<span class="lineno">64</span>#607=SHAPE_REPRESENTATION(&#x27;&#x27;,(#500),#14);
+<span class="lineno">65</span>#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
+<span class="lineno">66</span>ENDSEC;
+<span class="lineno">67</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

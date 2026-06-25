@@ -41,6 +41,9 @@
 <li><code>contains(b&#x27;APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT&#x27;)</code></li>
 <li><code>contains(b&#x27;EXTERNAL&#x27;) or contains(b&#x27;IDENTIFICATION_ASSIGNMENT&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="Ad004.html">Ad004</a>, <a href="../12-6-assembly/A012.html">A012</a>, <a href="../12-8-mixed/M060.html">M060</a></p>
 </section>
@@ -58,48 +61,24 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Ad052 - STEP file referencing itself as external file (infinite loop)
-<span class="lineno">2</span>   ----------------------------------------------------------------------
-<span class="lineno">3</span>   Catalog section : Â§12.11 adversarial (sub-class: cyclic-reference / DoS)
-<span class="lineno">4</span>   Sources         : 08-occt-gitlog.md G032 (Mantis 0031711)
-<span class="lineno">5</span>   See also        : Ad004
-<span class="lineno">6</span>   ----------------------------------------------------------------------
-<span class="lineno">7</span>   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
-<span class="lineno">8</span>   testing. Do NOT use as exchange data.
-<span class="lineno">9</span>   ----------------------------------------------------------------------
-<span class="lineno">10</span>   Defect
-<span class="lineno">11</span>     External-file-assignment whose target path resolves to the main
-<span class="lineno">12</span>     file under translation; reader loops forever, re-opening and
-<span class="lineno">13</span>     re-translating the same bytes.
-<span class="lineno">14</span>   Reproducer recipe
-<span class="lineno">15</span>     <mark>APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT</mark> whose external source
-<span class="lineno">16</span>     names the same file path as the file containing it (&#x27;Ad052.stp&#x27;).
-<span class="lineno">17</span>   Expected kernel behavior
-<span class="lineno">18</span>     Detect identity by canonical absolute path; skip self-reference;
-<span class="lineno">19</span>     emit E_SELF_EXTERNAL_REFERENCE.
-<span class="lineno">20</span>   ----------------------------------------------------------------------
-<span class="lineno">21</span>*/
-<span class="lineno">22</span>ISO-10303-21;
-<span class="lineno">23</span>HEADER;
-<span class="lineno">24</span>FILE_DESCRIPTION((&#x27;Ad052 - external assignment cycles back to this file&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">25</span>FILE_NAME(&#x27;Ad052.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
-<span class="lineno">26</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">27</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">28</span>ENDSEC;
-<span class="lineno">29</span>DATA;
-<span class="lineno">30</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">31</span>#2=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">32</span>#3=PRODUCT(&#x27;P&#x27;,&#x27;part&#x27;,&#x27;&#x27;,(#2));
-<span class="lineno">33</span>#4=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#3);
-<span class="lineno">34</span>#5=PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#1,&#x27;design&#x27;);
-<span class="lineno">35</span>#6=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#4,#5);
-<span class="lineno">36</span>#7=IDENTIFICATION_ROLE(&#x27;external_link&#x27;,&#x27;&#x27;);
-<span class="lineno">37</span>#8=EXTERNAL_SOURCE(&#x27;Ad052.stp&#x27;);
-<span class="lineno">38</span>/* Defect: <mark>APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT</mark> references the same
-<span class="lineno">39</span>   file as the one containing this entity. */
-<span class="lineno">40</span>#9=<mark>APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT</mark>(&#x27;id-001&#x27;,#7,(#6),#8);
-<span class="lineno">41</span>ENDSEC;
-<span class="lineno">42</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Ad052: self-referential external file assignment: <mark>APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT</mark> whose target path resolves to the main file under translation; reader loops forever on self-ref; Mantis 0031711; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ad052&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ad052.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">11</span>#3=EXTERNAL_SOURCE((&#x27;Ad052.step&#x27;));
+<span class="lineno">12</span>#4=EXTERNAL_IDENTIFICATION_ASSIGNMENT(&#x27;self&#x27;,&#x27;self-referential file&#x27;,#3);
+<span class="lineno">13</span>#5=<mark>APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT</mark>(#4,(#1));
+<span class="lineno">14</span>#6=EXTERNAL_SOURCE((&#x27;./Ad052.step&#x27;));
+<span class="lineno">15</span>#7=EXTERNAL_IDENTIFICATION_ASSIGNMENT(&#x27;self2&#x27;,&#x27;relative self-ref&#x27;,#6);
+<span class="lineno">16</span>#8=<mark>APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT</mark>(#7,(#1));
+<span class="lineno">17</span>ENDSEC;
+<span class="lineno">18</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

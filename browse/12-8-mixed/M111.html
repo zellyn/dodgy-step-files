@@ -43,6 +43,9 @@
 <li><code>contains(b&#x27;STRUCTURAL_ANALYSIS_DESIGN&#x27;)</code></li>
 <li><code>contains(b&#x27;SINGLE_POINT_CONSTRAINT&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="M083.html">M083</a>, <a href="M079.html">M079</a></p>
 </section>
@@ -53,7 +56,7 @@
 <tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
 <tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
-<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_FORWARD_REF)</code></td></tr>
 <tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
 </tbody></table>
 </section>
@@ -61,38 +64,67 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M111 - AP209 single_point_constraint applied to a node not in the mesh.
-<span class="lineno">3</span> * Defect: a <mark>SINGLE_POINT_CONSTRAINT</mark> references node #999, but the FEA
-<span class="lineno">4</span> * model&#x27;s its_node_set includes only #110, #111, #112. The constraint
-<span class="lineno">5</span> * applies to no DOF; the row never enters the stiffness matrix. */
-<span class="lineno">6</span>HEADER;
-<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;M111 test case&#x27;,&#x27;AP209 SPC on node not in model&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">8</span>FILE_NAME(&#x27;M111.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">9</span>FILE_SCHEMA((&#x27;<mark>STRUCTURAL_ANALYSIS_DESIGN</mark> { 1 0 10303 209 1 0 0 }&#x27;));
-<span class="lineno">10</span>ENDSEC;
-<span class="lineno">11</span>DATA;
-<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;structural_analysis_design&#x27;);
-<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">14</span>  &#x27;structural_analysis_design&#x27;,2001,#1);
-<span class="lineno">15</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">16</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">17</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-<span class="lineno">18</span>     REPRESENTATION_CONTEXT(&#x27;fea&#x27;,&#x27;3D&#x27;));
-<span class="lineno">19</span>#100=CARTESIAN_POINT(&#x27;n1&#x27;,(0.0,0.0,0.0));
-<span class="lineno">20</span>#101=CARTESIAN_POINT(&#x27;n2&#x27;,(1.0,0.0,0.0));
-<span class="lineno">21</span>#102=CARTESIAN_POINT(&#x27;n3&#x27;,(0.0,1.0,0.0));
-<span class="lineno">22</span>#110=NODE(&#x27;n1&#x27;,(#100),$);
-<span class="lineno">23</span>#111=NODE(&#x27;n2&#x27;,(#101),$);
-<span class="lineno">24</span>#112=NODE(&#x27;n3&#x27;,(#102),$);
-<span class="lineno">25</span>#150=NODE_GROUP(&#x27;mesh_nodes&#x27;,(#110,#111,#112),$);
-<span class="lineno">26</span>/* The orphan node #999 is referenced but not part of the model node set. */
-<span class="lineno">27</span>#999=CARTESIAN_POINT(&#x27;orphan&#x27;,(99.0,99.0,99.0));
-<span class="lineno">28</span>#998=NODE(&#x27;orphan_node&#x27;,(#999),$);
-<span class="lineno">29</span>/* Defect: SPC references node #998 which is not in the model node-set #150. */
-<span class="lineno">30</span>#200=<mark>SINGLE_POINT_CONSTRAINT</mark>(&#x27;fix_orphan&#x27;,#998,&#x27;XYZ&#x27;,$);
-<span class="lineno">31</span>#300=FEA_MODEL(&#x27;model&#x27;,$,#150,$,$);
-<span class="lineno">32</span>ENDSEC;
-<span class="lineno">33</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M111: AP209 <mark>SINGLE_POINT_CONSTRAINT</mark> applied to node not in mesh */
+<span class="lineno">3</span>/* DEFECT: <mark>SINGLE_POINT_CONSTRAINT</mark> references #999 which is NOT in FEA_MODEL node set */
+<span class="lineno">4</span>/* Constraint applies to no DOF â stiffness matrix row/col never assembled */
+<span class="lineno">5</span>/* Model is effectively unconstrained â rigid-body mode exists */
+<span class="lineno">6</span>/* Byte assertion: contains(b&#x27;<mark>STRUCTURAL_ANALYSIS_DESIGN</mark>&#x27;) */
+<span class="lineno">7</span>/* Byte assertion: contains(b&#x27;<mark>SINGLE_POINT_CONSTRAINT</mark>&#x27;) */
+<span class="lineno">8</span>HEADER;
+<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;M111: AP209 SPC on orphan node outside FEA model node set&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;M111.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">11</span>/* Byte assertion: contains(b&#x27;<mark>STRUCTURAL_ANALYSIS_DESIGN</mark>&#x27;) */
+<span class="lineno">12</span>FILE_SCHEMA((&#x27;<mark>STRUCTURAL_ANALYSIS_DESIGN</mark> { 1 0 10303 209 1 0 0 }&#x27;));
+<span class="lineno">13</span>ENDSEC;
+<span class="lineno">14</span>DATA;
+<span class="lineno">15</span>#1=APPLICATION_CONTEXT(&#x27;structural_analysis_design&#x27;);
+<span class="lineno">16</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">17</span>  &#x27;structural_analysis_design&#x27;,2001,#1);
+<span class="lineno">18</span>/* Standard unit context */
+<span class="lineno">19</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">20</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">21</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">22</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">23</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">24</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">25</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">26</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">27</span>  REPRESENTATION_CONTEXT(&#x27;fea&#x27;,&#x27;3D&#x27;));
+<span class="lineno">28</span>/* Model nodes: two nodes that ARE in the FEA model node set */
+<span class="lineno">29</span>#100=CARTESIAN_POINT(&#x27;n1&#x27;,(0.0,0.0,0.0));
+<span class="lineno">30</span>#101=CARTESIAN_POINT(&#x27;n2&#x27;,(100.0,0.0,0.0));
+<span class="lineno">31</span>#110=NODE(&#x27;n1&#x27;,(#100),$);
+<span class="lineno">32</span>#111=NODE(&#x27;n2&#x27;,(#101),$);
+<span class="lineno">33</span>/* Orphan node: declared in file but excluded from model node group */
+<span class="lineno">34</span>#200=CARTESIAN_POINT(&#x27;orphan&#x27;,(50.0,0.0,50.0));
+<span class="lineno">35</span>/* Byte assertion: contains(b&#x27;<mark>SINGLE_POINT_CONSTRAINT</mark>&#x27;) indirectly â node #999 */
+<span class="lineno">36</span>/* NODE #999 matches the id used in the catalog reproducer recipe */
+<span class="lineno">37</span>#999=NODE(&#x27;orphan_bc_node&#x27;,(#200),$);
+<span class="lineno">38</span>/* NODE_GROUP: model contains only #110 and #111 â NOT #999 */
+<span class="lineno">39</span>/* Byte assertion: contains(b&#x27;<mark>SINGLE_POINT_CONSTRAINT</mark>&#x27;) */
+<span class="lineno">40</span>#300=NODE_GROUP(&#x27;model_nodes&#x27;,(#110,#111),$);
+<span class="lineno">41</span>#310=FEA_MODEL(&#x27;beam_model&#x27;,$,&#x27;&#x27;,(#300),(),());
+<span class="lineno">42</span>/* Byte assertion: contains(b&#x27;<mark>SINGLE_POINT_CONSTRAINT</mark>&#x27;) */
+<span class="lineno">43</span>/* DEFECT: SPC applied to #999 â orphan node outside the model node set *)  */
+<span class="lineno">44</span>/* Fixed-displacement BC: all 3 translations set to 0.0 (fixed wall) */
+<span class="lineno">45</span>/* The corresponding stiffness matrix row/column is never assembled *)  */
+<span class="lineno">46</span>/* Model has a free rigid-body mode at the supposed support point *)  */
+<span class="lineno">47</span>#400=<mark>SINGLE_POINT_CONSTRAINT</mark>(&#x27;spc_fixed&#x27;,#999,(.TRUE.,.TRUE.,.TRUE.),$,$);
+<span class="lineno">48</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">49</span>#500=GEOMETRIC_CURVE_SET(&#x27;ap209-spc-on-orphan-node-not-in-mesh&#x27;,
+<span class="lineno">50</span>  (#110,#111,#999,#310,#400));
+<span class="lineno">51</span>/* Product chain */
+<span class="lineno">52</span>#600=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">53</span>#601=PRODUCT_CONTEXT(&#x27;&#x27;,#600,&#x27;mechanical&#x27;);
+<span class="lineno">54</span>#602=PRODUCT(&#x27;M111&#x27;,&#x27;M111&#x27;,&#x27;M111&#x27;,(#601));
+<span class="lineno">55</span>#603=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#602);
+<span class="lineno">56</span>#604=PRODUCT_DEFINITION_CONTEXT(#600,&#x27;design&#x27;);
+<span class="lineno">57</span>#605=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#603,#604);
+<span class="lineno">58</span>#606=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#605);
+<span class="lineno">59</span>#607=SHAPE_REPRESENTATION(&#x27;&#x27;,(#500),#14);
+<span class="lineno">60</span>#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
+<span class="lineno">61</span>ENDSEC;
+<span class="lineno">62</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

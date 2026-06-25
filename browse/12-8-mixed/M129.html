@@ -44,6 +44,9 @@
 <li><code>count_entity_def(b&#x27;PRODUCT_DEFINITION_FORMATION&#x27;) &gt;= 3</code></li>
 <li><code>contains(b&#x27;PRODUCT_DEFINITION_RELATIONSHIP&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -59,30 +62,63 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M129 - AP203 new revision references parent that isn&#x27;t in the
-<span class="lineno">3</span> * change-history chain.
-<span class="lineno">4</span> * Defect: PRODUCT_DEFINITION_FORMATION &#x27;rev_C&#x27; lists &#x27;rev_A&#x27; as the
-<span class="lineno">5</span> * basis revision via <mark>PRODUCT_DEFINITION_RELATIONSHIP</mark>, skipping the
-<span class="lineno">6</span> * intermediate &#x27;rev_B&#x27;. The engineering change history is broken
-<span class="lineno">7</span> * - rev_C did not derive from rev_B and there is no relationship
-<span class="lineno">8</span> * accounting for the rev_B work. */
+<span class="lineno">2</span>/* M129: AP203 new revision references parent not in change-history chain */
+<span class="lineno">3</span>/* DEFECT: rev_C links to rev_A via <mark>PRODUCT_DEFINITION_RELATIONSHIP</mark>; rev_B is orphaned */
+<span class="lineno">4</span>/* rev_B has no inbound or outbound relationship â change-history chain is broken */
+<span class="lineno">5</span>/* Per AP203 Â§4.3 ECO chain must be a connected path through all intermediate revisions */
+<span class="lineno">6</span>/* Byte assertion: contains(b&#x27;<mark>CONFIG_CONTROL_DESIGN</mark>&#x27;) */
+<span class="lineno">7</span>/* Byte assertion: count_entity_def(b&#x27;PRODUCT_DEFINITION_FORMATION&#x27;) &gt;= 3 */
+<span class="lineno">8</span>/* Byte assertion: contains(b&#x27;<mark>PRODUCT_DEFINITION_RELATIONSHIP</mark>&#x27;) */
 <span class="lineno">9</span>HEADER;
-<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;M129 test case&#x27;,&#x27;AP203 ECO chain skip&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">11</span>FILE_NAME(&#x27;M129.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">12</span>FILE_SCHEMA((&#x27;<mark>CONFIG_CONTROL_DESIGN</mark>&#x27;));
-<span class="lineno">13</span>ENDSEC;
-<span class="lineno">14</span>DATA;
-<span class="lineno">15</span>#1=APPLICATION_CONTEXT(&#x27;configuration controlled 3D design of mechanical parts and assemblies&#x27;);
-<span class="lineno">16</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;config_control_design&#x27;,1994,#1);
-<span class="lineno">17</span>#10=PRODUCT(&#x27;housing&#x27;,&#x27;housing&#x27;,&#x27;primary case&#x27;,(#1));
-<span class="lineno">18</span><mark>#11=PRODUCT_DEFINITION_FORMATION(</mark>&#x27;rev_A&#x27;,&#x27;first release&#x27;,#10);
-<span class="lineno">19</span><mark>#12=PRODUCT_DEFINITION_FORMATION(</mark>&#x27;rev_B&#x27;,&#x27;intermediate update&#x27;,#10);
-<span class="lineno">20</span><mark>#13=PRODUCT_DEFINITION_FORMATION(</mark>&#x27;rev_C&#x27;,&#x27;latest revision&#x27;,#10);
-<span class="lineno">21</span>/* Defect: rev_C declares rev_A as predecessor, skipping rev_B which
-<span class="lineno">22</span> * exists but has no inbound or outbound relationship. */
-<span class="lineno">23</span>#100=<mark>PRODUCT_DEFINITION_RELATIONSHIP</mark>(&#x27;eco_chain&#x27;,&#x27;derived_from&#x27;,#11,#13);
-<span class="lineno">24</span>ENDSEC;
-<span class="lineno">25</span>END-ISO-10303-21;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;M129: AP203 revision change-history chain skips intermediate revision&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;M129.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>/* Byte assertion: contains(b&#x27;<mark>CONFIG_CONTROL_DESIGN</mark>&#x27;) */
+<span class="lineno">13</span>FILE_SCHEMA((&#x27;<mark>CONFIG_CONTROL_DESIGN</mark> { 1 0 10303 203 1 0 0 }&#x27;));
+<span class="lineno">14</span>ENDSEC;
+<span class="lineno">15</span>DATA;
+<span class="lineno">16</span>#1=APPLICATION_CONTEXT(&#x27;configuration controlled 3D designs of mechanical parts and assemblies&#x27;);
+<span class="lineno">17</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">18</span>  &#x27;config_control_design&#x27;,1994,#1);
+<span class="lineno">19</span>/* Standard unit context (mm) */
+<span class="lineno">20</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">21</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">22</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">23</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">24</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">25</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">26</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">27</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">28</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">29</span>/* The product for which three revisions exist */
+<span class="lineno">30</span>#30=PRODUCT(&#x27;PART-001&#x27;,&#x27;Actuator Housing&#x27;,&#x27;Pneumatic actuator housing&#x27;,(#1));
+<span class="lineno">31</span>/* Byte assertion: count_entity_def(b&#x27;PRODUCT_DEFINITION_FORMATION&#x27;) &gt;= 3 */
+<span class="lineno">32</span>/* Three revisions: rev_A (initial), rev_B (orphan), rev_C (skips to rev_A) */
+<span class="lineno">33</span><mark>#31=PRODUCT_DEFINITION_FORMATION(</mark>&#x27;rev_A&#x27;,&#x27;Initial engineering release&#x27;,#30);
+<span class="lineno">34</span>/* DEFECT: rev_B is an orphan â no <mark>PRODUCT_DEFINITION_RELATIONSHIP</mark> references it */
+<span class="lineno">35</span>/* It has no predecessor link (was it branched? re-worked?) and no successor link */
+<span class="lineno">36</span>/* A valid change chain: rev_A -&gt; rev_B -&gt; rev_C would require two relationships */
+<span class="lineno">37</span><mark>#32=PRODUCT_DEFINITION_FORMATION(</mark>&#x27;rev_B&#x27;,&#x27;Intermediate ECO (orphaned)&#x27;,#30);
+<span class="lineno">38</span><mark>#33=PRODUCT_DEFINITION_FORMATION(</mark>&#x27;rev_C&#x27;,&#x27;Production release derived from rev_A&#x27;,#30);
+<span class="lineno">39</span>/* Byte assertion: contains(b&#x27;<mark>PRODUCT_DEFINITION_RELATIONSHIP</mark>&#x27;) */
+<span class="lineno">40</span>/* DEFECT: relates rev_C directly to rev_A, skipping rev_B entirely */
+<span class="lineno">41</span>/* A correct ECO chain would link: #40 rev_B-&gt;rev_A, #41 rev_C-&gt;rev_B */
+<span class="lineno">42</span>#40=<mark>PRODUCT_DEFINITION_RELATIONSHIP</mark>(&#x27;eco_chain&#x27;,&#x27;ECO: rev_C from rev_A&#x27;,
+<span class="lineno">43</span>  $,#33,#31);
+<span class="lineno">44</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">45</span>#500=GEOMETRIC_CURVE_SET(&#x27;ap203-revision-change-history-chain-skips-intermediate&#x27;,
+<span class="lineno">46</span>  (#31,#32,#33,#40));
+<span class="lineno">47</span>/* Product chain */
+<span class="lineno">48</span>#600=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">49</span>#601=PRODUCT_CONTEXT(&#x27;&#x27;,#600,&#x27;mechanical&#x27;);
+<span class="lineno">50</span>#602=PRODUCT(&#x27;M129&#x27;,&#x27;M129&#x27;,&#x27;M129&#x27;,(#601));
+<span class="lineno">51</span><mark>#603=PRODUCT_DEFINITION_FORMATION(</mark>&#x27;&#x27;,&#x27;&#x27;,#602);
+<span class="lineno">52</span>#604=PRODUCT_DEFINITION_CONTEXT(#600,&#x27;design&#x27;);
+<span class="lineno">53</span>#605=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#603,#604);
+<span class="lineno">54</span>#606=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#605);
+<span class="lineno">55</span>#607=SHAPE_REPRESENTATION(&#x27;&#x27;,(#500),#14);
+<span class="lineno">56</span>#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
+<span class="lineno">57</span>ENDSEC;
+<span class="lineno">58</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

@@ -41,6 +41,9 @@
 <li><code>count_entity_def(b&#x27;VERTEX_POINT&#x27;) == 1</code></li>
 <li><code>contains(b&#x27;1.0E-7&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -55,68 +58,50 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Tb012 - Sphere wire near pole singularity at parametric tolerance boundary
-<span class="lineno">2</span> * Defect: SPHERICAL_SURFACE has parametric pole singularity at V = +/- pi/2.
-<span class="lineno">3</span> * A wire pcurve at V = pi/2 - 1e-9 is just below the pole. Receiver with
-<span class="lineno">4</span> * pole-snap tolerance 1e-7 rad does not snap (1e-9 &lt; 1e-7); but a receiver
-<span class="lineno">5</span> * with pole-snap tolerance 1e-3 rad snaps the wire onto the pole, collapsing
-<span class="lineno">6</span> * the upper face into a degenerate point. Same wire, different surface
-<span class="lineno">7</span> * extents at different tolerance policies.
-<span class="lineno">8</span> */
-<span class="lineno">9</span>ISO-10303-21;
-<span class="lineno">10</span>HEADER;
-<span class="lineno">11</span>FILE_DESCRIPTION((&#x27;Tb012 sphere wire near pole at 1e-9 below singularity&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">12</span>FILE_NAME(&#x27;Tb012.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
-<span class="lineno">13</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">14</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">15</span>ENDSEC;
-<span class="lineno">16</span>DATA;
-<span class="lineno">17</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">18</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">19</span>  &#x27;automotive_design&#x27;,2009,#1);
-<span class="lineno">20</span>#10=CARTESIAN_POINT(&#x27;o&#x27;,(0.0,0.0,0.0));
-<span class="lineno">21</span>#11=DIRECTION(&#x27;+z&#x27;,(0.0,0.0,1.0));
-<span class="lineno">22</span>#12=DIRECTION(&#x27;+x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">23</span>#13=AXIS2_PLACEMENT_3D(&#x27;plc&#x27;,#10,#11,#12);
-<span class="lineno">24</span>#14=SPHERICAL_SURFACE(&#x27;sph&#x27;,#13,1.0);
-<span class="lineno">25</span>/* Wire on near-pole circle: V = pi/2 - 1e-9, full U sweep. */
-<span class="lineno">26</span>#20=CARTESIAN_POINT(&#x27;p_near_pole&#x27;,(1.0E-9,0.0,0.99999999999999955));
-<span class="lineno">27</span><mark>#21=VERTEX_POINT(</mark>&#x27;v_near_pole_seam&#x27;,#20);
-<span class="lineno">28</span>/* Pcurve: V at constant pi/2 - 1e-9, U from 0 to 2*pi (closed circle). */
-<span class="lineno">29</span>#22=CARTESIAN_POINT(&#x27;uv0&#x27;,(0.0,1.5707963257948965));
-<span class="lineno">30</span>#23=DIRECTION(&#x27;+u&#x27;,(1.0,0.0));
-<span class="lineno">31</span>#24=VECTOR(&#x27;uv_vec&#x27;,#23,6.283185307179586);
-<span class="lineno">32</span>#25=LINE(&#x27;pcurve_near_pole&#x27;,#22,#24);
-<span class="lineno">33</span>#26=DEFINITIONAL_REPRESENTATION(&#x27;pdef&#x27;,(#25),#80);
-<span class="lineno">34</span>#27=PCURVE(&#x27;pc&#x27;,#14,#26);
-<span class="lineno">35</span>/* 3D circle at V = pi/2 - 1e-9, just below north pole. */
-<span class="lineno">36</span>#28=AXIS2_PLACEMENT_3D(&#x27;circ_axis&#x27;,#20,#11,#12);
-<span class="lineno">37</span>#29=CIRCLE(&#x27;circ_near_pole&#x27;,#28,1.0E-9);
-<span class="lineno">38</span>#30=SURFACE_CURVE(&#x27;sc&#x27;,#29,(#27),.PCURVE_S1.);
-<span class="lineno">39</span>#31=EDGE_CURVE(&#x27;e_at_pole_minus_1e-9&#x27;,#21,#21,#30,.T.);
-<span class="lineno">40</span>#70=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">41</span>#71=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">42</span>#72=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">43</span>#73=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(<mark>1.0E-7</mark>),#70,
-<span class="lineno">44</span>  &#x27;distance_accuracy_value&#x27;,&#x27;strict_tolerance_no_pole_snap&#x27;);
-<span class="lineno">45</span>#80=(GEOMETRIC_REPRESENTATION_CONTEXT(2)
-<span class="lineno">46</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#70,#71,#72))
-<span class="lineno">47</span>  REPRESENTATION_CONTEXT(&#x27;uv&#x27;,&#x27;2D&#x27;));
-<span class="lineno">48</span>#90=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">49</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#73))
-<span class="lineno">50</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#70,#71,#72))
-<span class="lineno">51</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
-<span class="lineno">52</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">53</span>#9001=PRODUCT(&#x27;Tb012&#x27;,&#x27;Tb012&#x27;,&#x27;&#x27;,(#9000));
-<span class="lineno">54</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
-<span class="lineno">55</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
-<span class="lineno">56</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
-<span class="lineno">57</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
-<span class="lineno">58</span>#9020=GEOMETRIC_CURVE_SET(&#x27;cs&#x27;,(#31,#14));
-<span class="lineno">59</span>#9021=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9020),#90);
-<span class="lineno">60</span>#9022=SHAPE_DEFINITION_REPRESENTATION(#9005,#9021);
-<span class="lineno">61</span>ENDSEC;
-<span class="lineno">62</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tb012: SPHERICAL_SURFACE R=1; wire pcurve at V=pi/2-1.0E-9 (just below pole); pole-snap at <mark>1.0E-7</mark> rad does not snap; at 1.0E-3 rad snaps and collapses face; GEOMETRIC_CURVE_SET â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Tb012&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Tb012.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;o&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">11</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">12</span>#4=AXIS2_PLACEMENT_3D(&#x27;plc&#x27;,#1,#2,#3);
+<span class="lineno">13</span>#5=SPHERICAL_SURFACE(&#x27;sph&#x27;,#4,1.0);
+<span class="lineno">14</span>#6=CARTESIAN_POINT(&#x27;p_near_pole&#x27;,(1.0E-09,0.0,1.0));
+<span class="lineno">15</span><mark>#7=VERTEX_POINT(</mark>&#x27;v_near_pole_seam&#x27;,#6);
+<span class="lineno">16</span>#8=(GEOMETRIC_REPRESENTATION_CONTEXT(2)GLOBAL_UNIT_ASSIGNED_CONTEXT($)REPRESENTATION_CONTEXT(&#x27;uv&#x27;,&#x27;2D&#x27;));
+<span class="lineno">17</span>#9=CARTESIAN_POINT(&#x27;uv0&#x27;,(0.0,1.57079632579));
+<span class="lineno">18</span>#10=DIRECTION(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">19</span>#11=VECTOR(&#x27;&#x27;,#10,6.28318530718);
+<span class="lineno">20</span>#12=LINE(&#x27;pcurve_near_pole&#x27;,#9,#11);
+<span class="lineno">21</span>#13=DEFINITIONAL_REPRESENTATION(&#x27;pdef&#x27;,(#12),#8);
+<span class="lineno">22</span>#14=PCURVE(&#x27;pc&#x27;,#5,#13);
+<span class="lineno">23</span>#15=CARTESIAN_POINT(&#x27;circ_orig&#x27;,(1.0E-09,0.0,1.0));
+<span class="lineno">24</span>#16=AXIS2_PLACEMENT_3D(&#x27;circ_axis&#x27;,#15,#2,#3);
+<span class="lineno">25</span>#17=CIRCLE(&#x27;circ_near_pole&#x27;,#16,1.0E-9);
+<span class="lineno">26</span>#18=SURFACE_CURVE(&#x27;sc&#x27;,#17,(#14),.PCURVE_S1.);
+<span class="lineno">27</span>#19=EDGE_CURVE(&#x27;e_at_pole_minus_1e-9&#x27;,#7,#7,#18,.T.);
+<span class="lineno">28</span>#20=GEOMETRIC_CURVE_SET(&#x27;cs&#x27;,(#19,#5));
+<span class="lineno">29</span>#21=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">30</span>#22=PRODUCT_CONTEXT(&#x27;&#x27;,#21,&#x27;mechanical&#x27;);
+<span class="lineno">31</span>#23=PRODUCT(&#x27;Tb012&#x27;,&#x27;Tb012&#x27;,&#x27;&#x27;,(#22));
+<span class="lineno">32</span>#24=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#23);
+<span class="lineno">33</span>#25=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#21,&#x27;design&#x27;);
+<span class="lineno">34</span>#26=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#24,#25);
+<span class="lineno">35</span>#27=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#26);
+<span class="lineno">36</span>#28=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">37</span>#29=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">38</span>#30=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">39</span>#31=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(<mark>1.0E-7</mark>),#28,&#x27;distance_accuracy_value&#x27;,&#x27;strict_tolerance_no_pole_snap&#x27;);
+<span class="lineno">40</span>#32=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#31))GLOBAL_UNIT_ASSIGNED_CONTEXT((#28,#29,#30))REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">41</span>#33=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION(&#x27;&#x27;,(#20),#32);
+<span class="lineno">42</span>#34=SHAPE_DEFINITION_REPRESENTATION(#27,#33);
+<span class="lineno">43</span>ENDSEC;
+<span class="lineno">44</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

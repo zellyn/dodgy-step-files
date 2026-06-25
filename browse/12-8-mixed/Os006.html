@@ -36,7 +36,7 @@
 <section><h2>Notes</h2>
 <p>Synonyms: &quot;offset corner&quot;, &quot;corner cap missing&quot;, &quot;offset corner gap&quot;, &quot;offset can&#x27;t merge corners&quot;, &quot;offset vertex fuse failure&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>n_edges_total &gt;= 8</code></li>
 <li><code>face[0].surface_type == &quot;plane&quot;</code></li>
@@ -46,8 +46,8 @@
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
 <tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
-<tr><td><code>gmsh_autofix_on</code></td><td><code>reject</code></td></tr>
-<tr><td><code>gmsh_autofix_off</code></td><td><code>reject</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(27)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(27)</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
 <tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
 <tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
@@ -57,81 +57,167 @@
 <details>
 <summary>Show fixture bytes</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Os006 - Cannot fuse offset corner vertices.
-<span class="lineno">3</span> * Defect: polyhedral solid with a corner vertex of valence 4. A uniform
-<span class="lineno">4</span> * outward offset produces four corner-fragments that fail to fuse.
-<span class="lineno">5</span> * Encoded: corner VERTEX_POINT + four EDGE_CURVEs incident on it +
-<span class="lineno">6</span> * four ADVANCED_FACEs whose loops include the four edges +
-<span class="lineno">7</span> * a CLOSED_SHELL. */
-<span class="lineno">8</span>HEADER;
-<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;Os006 test case&#x27;,&#x27;Cannot fuse offset corner vertices&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">10</span>FILE_NAME(&#x27;Os006.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">11</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">12</span>ENDSEC;
-<span class="lineno">13</span>DATA;
-<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">15</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
-<span class="lineno">16</span>/* The valence-4 corner vertex */
-<span class="lineno">17</span>#10=CARTESIAN_POINT(&#x27;valence_4_corner&#x27;,(0.0,0.0,0.0));
-<span class="lineno">18</span>#11=VERTEX_POINT(&#x27;corner&#x27;,#10);
-<span class="lineno">19</span>/* Four neighbour vertices */
-<span class="lineno">20</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));#21=VERTEX_POINT(&#x27;&#x27;,#20);
-<span class="lineno">21</span>#22=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));#23=VERTEX_POINT(&#x27;&#x27;,#22);
-<span class="lineno">22</span>#24=CARTESIAN_POINT(&#x27;&#x27;,(-1.0,0.0,0.0));#25=VERTEX_POINT(&#x27;&#x27;,#24);
-<span class="lineno">23</span>#26=CARTESIAN_POINT(&#x27;&#x27;,(0.0,-1.0,0.0));#27=VERTEX_POINT(&#x27;&#x27;,#26);
-<span class="lineno">24</span>/* Four lines */
-<span class="lineno">25</span>#30=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#31=VECTOR(&#x27;&#x27;,#30,1.0);#32=LINE(&#x27;&#x27;,#10,#31);
-<span class="lineno">26</span>#33=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));#34=VECTOR(&#x27;&#x27;,#33,1.0);#35=LINE(&#x27;&#x27;,#10,#34);
-<span class="lineno">27</span>#36=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));#37=VECTOR(&#x27;&#x27;,#36,1.0);#38=LINE(&#x27;&#x27;,#10,#37);
-<span class="lineno">28</span>#39=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));#40=VECTOR(&#x27;&#x27;,#39,1.0);#41=LINE(&#x27;&#x27;,#10,#40);
-<span class="lineno">29</span>/* Four edges incident on corner */
-<span class="lineno">30</span>#50=EDGE_CURVE(&#x27;e_e&#x27;,#11,#21,#32,.T.);
-<span class="lineno">31</span>#51=EDGE_CURVE(&#x27;e_n&#x27;,#11,#23,#35,.T.);
-<span class="lineno">32</span>#52=EDGE_CURVE(&#x27;e_w&#x27;,#11,#25,#38,.T.);
-<span class="lineno">33</span>#53=EDGE_CURVE(&#x27;e_s&#x27;,#11,#27,#41,.T.);
-<span class="lineno">34</span>/* Four enclosing face surfaces */
-<span class="lineno">35</span>#60=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
-<span class="lineno">36</span>#61=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">37</span>#62=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#60,#61);
-<span class="lineno">38</span>#63=PLANE(&#x27;plane_ne&#x27;,#62);
-<span class="lineno">39</span>#64=PLANE(&#x27;plane_nw&#x27;,#62);
-<span class="lineno">40</span>#65=PLANE(&#x27;plane_sw&#x27;,#62);
-<span class="lineno">41</span>#66=PLANE(&#x27;plane_se&#x27;,#62);
-<span class="lineno">42</span>/* Loops referencing pairs of edges */
-<span class="lineno">43</span>#70=ORIENTED_EDGE(&#x27;&#x27;,*,*,#50,.T.);
-<span class="lineno">44</span>#71=ORIENTED_EDGE(&#x27;&#x27;,*,*,#51,.T.);
-<span class="lineno">45</span>#72=ORIENTED_EDGE(&#x27;&#x27;,*,*,#52,.T.);
-<span class="lineno">46</span>#73=ORIENTED_EDGE(&#x27;&#x27;,*,*,#53,.T.);
-<span class="lineno">47</span>#74=EDGE_LOOP(&#x27;&#x27;,(#70,#71));
-<span class="lineno">48</span>#75=EDGE_LOOP(&#x27;&#x27;,(#71,#72));
-<span class="lineno">49</span>#76=EDGE_LOOP(&#x27;&#x27;,(#72,#73));
-<span class="lineno">50</span>#77=EDGE_LOOP(&#x27;&#x27;,(#73,#70));
-<span class="lineno">51</span>#80=FACE_OUTER_BOUND(&#x27;&#x27;,#74,.T.);
-<span class="lineno">52</span>#81=FACE_OUTER_BOUND(&#x27;&#x27;,#75,.T.);
-<span class="lineno">53</span>#82=FACE_OUTER_BOUND(&#x27;&#x27;,#76,.T.);
-<span class="lineno">54</span>#83=FACE_OUTER_BOUND(&#x27;&#x27;,#77,.T.);
-<span class="lineno">55</span>#90=ADVANCED_FACE(&#x27;face_ne&#x27;,(#80),#63,.T.);
-<span class="lineno">56</span>#91=ADVANCED_FACE(&#x27;face_nw&#x27;,(#81),#64,.T.);
-<span class="lineno">57</span>#92=ADVANCED_FACE(&#x27;face_sw&#x27;,(#82),#65,.T.);
-<span class="lineno">58</span>#93=ADVANCED_FACE(&#x27;face_se&#x27;,(#83),#66,.T.);
-<span class="lineno">59</span>#100=CLOSED_SHELL(&#x27;shell&#x27;,(#90,#91,#92,#93));
-<span class="lineno">60</span>/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
-<span class="lineno">61</span>#9010=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">62</span>#9011=PRODUCT(&#x27;Os006&#x27;,&#x27;Os006&#x27;,&#x27;&#x27;,(#9010));
-<span class="lineno">63</span>#9012=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9011);
-<span class="lineno">64</span>#9013=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
-<span class="lineno">65</span>#9014=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9012,#9013);
-<span class="lineno">66</span>#9015=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9014);
-<span class="lineno">67</span>#9020=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">68</span>#9021=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">69</span>#9022=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">70</span>#9023=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9020,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
-<span class="lineno">71</span>#9024=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9023))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9020,#9021,#9022))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
-<span class="lineno">72</span>#9030=MANIFOLD_SOLID_BREP(&#x27;wrap_msb&#x27;,#100);
-<span class="lineno">73</span>#9050=ADVANCED_BREP_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9030),#9024);
-<span class="lineno">74</span>#9051=SHAPE_DEFINITION_REPRESENTATION(#9015,#9050);
-<span class="lineno">75</span>ENDSEC;
-<span class="lineno">76</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* Os006: MANIFOLD_SOLID_BREP with a polyhedral solid containing a valence-4 corner vertex; per-edge offset produces extra surface near each corner; offset algorithm tries to fuse the three (or more) corner vertices but fails at the 4-valent corner â BRepOffset_MakeOffset CannotFuseVertices; OCC loads (heals); conservative kernels reject */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Os006&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Os006.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">12</span>#3=CARTESIAN_POINT(&#x27;&#x27;,(5.0,5.0,0.0));
+<span class="lineno">13</span>#4=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0,0.0));
+<span class="lineno">14</span>#5=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,5.0));
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,5.0));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(5.0,5.0,5.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0,5.0));
+<span class="lineno">18</span>#9=VERTEX_POINT(&#x27;&#x27;,#1);
+<span class="lineno">19</span>#10=VERTEX_POINT(&#x27;&#x27;,#2);
+<span class="lineno">20</span>#11=VERTEX_POINT(&#x27;&#x27;,#3);
+<span class="lineno">21</span>#12=VERTEX_POINT(&#x27;&#x27;,#4);
+<span class="lineno">22</span>#13=VERTEX_POINT(&#x27;&#x27;,#5);
+<span class="lineno">23</span>#14=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">24</span>#15=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">25</span>#16=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">26</span>#17=DIRECTION(&#x27;&#x27;,(1,0,0));
+<span class="lineno">27</span>#18=VECTOR(&#x27;&#x27;,#17,5.0);
+<span class="lineno">28</span>#19=LINE(&#x27;&#x27;,#1,#18);
+<span class="lineno">29</span>#20=EDGE_CURVE(&#x27;&#x27;,#9,#10,#19,.T.);
+<span class="lineno">30</span>#21=DIRECTION(&#x27;&#x27;,(0,1,0));
+<span class="lineno">31</span>#22=VECTOR(&#x27;&#x27;,#21,5.0);
+<span class="lineno">32</span>#23=LINE(&#x27;&#x27;,#2,#22);
+<span class="lineno">33</span>#24=EDGE_CURVE(&#x27;&#x27;,#10,#11,#23,.T.);
+<span class="lineno">34</span>#25=DIRECTION(&#x27;&#x27;,(1,0,0));
+<span class="lineno">35</span>#26=VECTOR(&#x27;&#x27;,#25,5.0);
+<span class="lineno">36</span>#27=LINE(&#x27;&#x27;,#4,#26);
+<span class="lineno">37</span>#28=EDGE_CURVE(&#x27;&#x27;,#12,#11,#27,.T.);
+<span class="lineno">38</span>#29=DIRECTION(&#x27;&#x27;,(0,1,0));
+<span class="lineno">39</span>#30=VECTOR(&#x27;&#x27;,#29,5.0);
+<span class="lineno">40</span>#31=LINE(&#x27;&#x27;,#1,#30);
+<span class="lineno">41</span>#32=EDGE_CURVE(&#x27;&#x27;,#9,#12,#31,.T.);
+<span class="lineno">42</span>#33=DIRECTION(&#x27;&#x27;,(1,0,0));
+<span class="lineno">43</span>#34=VECTOR(&#x27;&#x27;,#33,5.0);
+<span class="lineno">44</span>#35=LINE(&#x27;&#x27;,#5,#34);
+<span class="lineno">45</span>#36=EDGE_CURVE(&#x27;&#x27;,#13,#14,#35,.T.);
+<span class="lineno">46</span>#37=DIRECTION(&#x27;&#x27;,(0,1,0));
+<span class="lineno">47</span>#38=VECTOR(&#x27;&#x27;,#37,5.0);
+<span class="lineno">48</span>#39=LINE(&#x27;&#x27;,#6,#38);
+<span class="lineno">49</span>#40=EDGE_CURVE(&#x27;&#x27;,#14,#15,#39,.T.);
+<span class="lineno">50</span>#41=DIRECTION(&#x27;&#x27;,(1,0,0));
+<span class="lineno">51</span>#42=VECTOR(&#x27;&#x27;,#41,5.0);
+<span class="lineno">52</span>#43=LINE(&#x27;&#x27;,#8,#42);
+<span class="lineno">53</span>#44=EDGE_CURVE(&#x27;&#x27;,#16,#15,#43,.T.);
+<span class="lineno">54</span>#45=DIRECTION(&#x27;&#x27;,(0,1,0));
+<span class="lineno">55</span>#46=VECTOR(&#x27;&#x27;,#45,5.0);
+<span class="lineno">56</span>#47=LINE(&#x27;&#x27;,#5,#46);
+<span class="lineno">57</span>#48=EDGE_CURVE(&#x27;&#x27;,#13,#16,#47,.T.);
+<span class="lineno">58</span>#49=DIRECTION(&#x27;&#x27;,(0,0,1));
+<span class="lineno">59</span>#50=VECTOR(&#x27;&#x27;,#49,5.0);
+<span class="lineno">60</span>#51=LINE(&#x27;&#x27;,#1,#50);
+<span class="lineno">61</span>#52=EDGE_CURVE(&#x27;&#x27;,#9,#13,#51,.T.);
+<span class="lineno">62</span>#53=DIRECTION(&#x27;&#x27;,(0,0,1));
+<span class="lineno">63</span>#54=VECTOR(&#x27;&#x27;,#53,5.0);
+<span class="lineno">64</span>#55=LINE(&#x27;&#x27;,#2,#54);
+<span class="lineno">65</span>#56=EDGE_CURVE(&#x27;&#x27;,#10,#14,#55,.T.);
+<span class="lineno">66</span>#57=DIRECTION(&#x27;&#x27;,(0,0,1));
+<span class="lineno">67</span>#58=VECTOR(&#x27;&#x27;,#57,5.0);
+<span class="lineno">68</span>#59=LINE(&#x27;&#x27;,#3,#58);
+<span class="lineno">69</span>#60=EDGE_CURVE(&#x27;&#x27;,#11,#15,#59,.T.);
+<span class="lineno">70</span>#61=DIRECTION(&#x27;&#x27;,(0,0,1));
+<span class="lineno">71</span>#62=VECTOR(&#x27;&#x27;,#61,5.0);
+<span class="lineno">72</span>#63=LINE(&#x27;&#x27;,#4,#62);
+<span class="lineno">73</span>#64=EDGE_CURVE(&#x27;&#x27;,#12,#16,#63,.T.);
+<span class="lineno">74</span>#65=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">75</span>#66=DIRECTION(&#x27;&#x27;,(0,0,-1));
+<span class="lineno">76</span>#67=DIRECTION(&#x27;&#x27;,(1,0,0));
+<span class="lineno">77</span>#68=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#65,#66,#67);
+<span class="lineno">78</span>#69=PLANE(&#x27;&#x27;,#68);
+<span class="lineno">79</span>#70=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,5.0));
+<span class="lineno">80</span>#71=DIRECTION(&#x27;&#x27;,(0,0,1));
+<span class="lineno">81</span>#72=DIRECTION(&#x27;&#x27;,(1,0,0));
+<span class="lineno">82</span>#73=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#70,#71,#72);
+<span class="lineno">83</span>#74=PLANE(&#x27;&#x27;,#73);
+<span class="lineno">84</span>#75=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">85</span>#76=DIRECTION(&#x27;&#x27;,(0,-1,0));
+<span class="lineno">86</span>#77=DIRECTION(&#x27;&#x27;,(1,0,0));
+<span class="lineno">87</span>#78=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#75,#76,#77);
+<span class="lineno">88</span>#79=PLANE(&#x27;&#x27;,#78);
+<span class="lineno">89</span>#80=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0,0.0));
+<span class="lineno">90</span>#81=DIRECTION(&#x27;&#x27;,(0,1,0));
+<span class="lineno">91</span>#82=DIRECTION(&#x27;&#x27;,(1,0,0));
+<span class="lineno">92</span>#83=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#80,#81,#82);
+<span class="lineno">93</span>#84=PLANE(&#x27;&#x27;,#83);
+<span class="lineno">94</span>#85=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">95</span>#86=DIRECTION(&#x27;&#x27;,(-1,0,0));
+<span class="lineno">96</span>#87=DIRECTION(&#x27;&#x27;,(0,1,0));
+<span class="lineno">97</span>#88=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#85,#86,#87);
+<span class="lineno">98</span>#89=PLANE(&#x27;&#x27;,#88);
+<span class="lineno">99</span>#90=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">100</span>#91=DIRECTION(&#x27;&#x27;,(1,0,0));
+<span class="lineno">101</span>#92=DIRECTION(&#x27;&#x27;,(0,1,0));
+<span class="lineno">102</span>#93=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#90,#91,#92);
+<span class="lineno">103</span>#94=PLANE(&#x27;&#x27;,#93);
+<span class="lineno">104</span>#95=ORIENTED_EDGE(&#x27;&#x27;,$,$,#20,.T.);
+<span class="lineno">105</span>#96=ORIENTED_EDGE(&#x27;&#x27;,$,$,#24,.T.);
+<span class="lineno">106</span>#97=ORIENTED_EDGE(&#x27;&#x27;,$,$,#28,.F.);
+<span class="lineno">107</span>#98=ORIENTED_EDGE(&#x27;&#x27;,$,$,#32,.F.);
+<span class="lineno">108</span>#99=EDGE_LOOP(&#x27;&#x27;,(#95,#96,#97,#98));
+<span class="lineno">109</span>#100=FACE_OUTER_BOUND(&#x27;&#x27;,#99,.T.);
+<span class="lineno">110</span>#101=ADVANCED_FACE(&#x27;&#x27;,(#100),#69,.T.);
+<span class="lineno">111</span>#102=ORIENTED_EDGE(&#x27;&#x27;,$,$,#36,.T.);
+<span class="lineno">112</span>#103=ORIENTED_EDGE(&#x27;&#x27;,$,$,#40,.T.);
+<span class="lineno">113</span>#104=ORIENTED_EDGE(&#x27;&#x27;,$,$,#44,.F.);
+<span class="lineno">114</span>#105=ORIENTED_EDGE(&#x27;&#x27;,$,$,#48,.F.);
+<span class="lineno">115</span>#106=EDGE_LOOP(&#x27;&#x27;,(#102,#103,#104,#105));
+<span class="lineno">116</span>#107=FACE_OUTER_BOUND(&#x27;&#x27;,#106,.T.);
+<span class="lineno">117</span>#108=ADVANCED_FACE(&#x27;&#x27;,(#107),#74,.T.);
+<span class="lineno">118</span>#109=ORIENTED_EDGE(&#x27;&#x27;,$,$,#20,.T.);
+<span class="lineno">119</span>#110=ORIENTED_EDGE(&#x27;&#x27;,$,$,#56,.T.);
+<span class="lineno">120</span>#111=ORIENTED_EDGE(&#x27;&#x27;,$,$,#36,.F.);
+<span class="lineno">121</span>#112=ORIENTED_EDGE(&#x27;&#x27;,$,$,#52,.F.);
+<span class="lineno">122</span>#113=EDGE_LOOP(&#x27;&#x27;,(#109,#110,#111,#112));
+<span class="lineno">123</span>#114=FACE_OUTER_BOUND(&#x27;&#x27;,#113,.T.);
+<span class="lineno">124</span>#115=ADVANCED_FACE(&#x27;&#x27;,(#114),#79,.T.);
+<span class="lineno">125</span>#116=ORIENTED_EDGE(&#x27;&#x27;,$,$,#28,.T.);
+<span class="lineno">126</span>#117=ORIENTED_EDGE(&#x27;&#x27;,$,$,#60,.T.);
+<span class="lineno">127</span>#118=ORIENTED_EDGE(&#x27;&#x27;,$,$,#44,.F.);
+<span class="lineno">128</span>#119=ORIENTED_EDGE(&#x27;&#x27;,$,$,#64,.F.);
+<span class="lineno">129</span>#120=EDGE_LOOP(&#x27;&#x27;,(#116,#117,#118,#119));
+<span class="lineno">130</span>#121=FACE_OUTER_BOUND(&#x27;&#x27;,#120,.T.);
+<span class="lineno">131</span>#122=ADVANCED_FACE(&#x27;&#x27;,(#121),#84,.T.);
+<span class="lineno">132</span>#123=ORIENTED_EDGE(&#x27;&#x27;,$,$,#32,.T.);
+<span class="lineno">133</span>#124=ORIENTED_EDGE(&#x27;&#x27;,$,$,#64,.T.);
+<span class="lineno">134</span>#125=ORIENTED_EDGE(&#x27;&#x27;,$,$,#48,.F.);
+<span class="lineno">135</span>#126=ORIENTED_EDGE(&#x27;&#x27;,$,$,#52,.F.);
+<span class="lineno">136</span>#127=EDGE_LOOP(&#x27;&#x27;,(#123,#124,#125,#126));
+<span class="lineno">137</span>#128=FACE_OUTER_BOUND(&#x27;&#x27;,#127,.T.);
+<span class="lineno">138</span>#129=ADVANCED_FACE(&#x27;&#x27;,(#128),#89,.T.);
+<span class="lineno">139</span>#130=ORIENTED_EDGE(&#x27;&#x27;,$,$,#24,.T.);
+<span class="lineno">140</span>#131=ORIENTED_EDGE(&#x27;&#x27;,$,$,#60,.T.);
+<span class="lineno">141</span>#132=ORIENTED_EDGE(&#x27;&#x27;,$,$,#40,.F.);
+<span class="lineno">142</span>#133=ORIENTED_EDGE(&#x27;&#x27;,$,$,#56,.F.);
+<span class="lineno">143</span>#134=EDGE_LOOP(&#x27;&#x27;,(#130,#131,#132,#133));
+<span class="lineno">144</span>#135=FACE_OUTER_BOUND(&#x27;&#x27;,#134,.T.);
+<span class="lineno">145</span>#136=ADVANCED_FACE(&#x27;&#x27;,(#135),#94,.T.);
+<span class="lineno">146</span>#137=CLOSED_SHELL(&#x27;os006_box&#x27;,(#101,#108,#115,#122,#129,#136));
+<span class="lineno">147</span>#138=MANIFOLD_SOLID_BREP(&#x27;os006_solid&#x27;,#137);
+<span class="lineno">148</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">149</span>#9051=PRODUCT(&#x27;Os006&#x27;,&#x27;Os006&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">150</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">151</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">152</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">153</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">154</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">155</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">156</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">157</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">158</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">159</span>#9061=ADVANCED_BREP_SHAPE_REPRESENTATION(&#x27;&#x27;,(#138),#9060);
+<span class="lineno">160</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">161</span>ENDSEC;
+<span class="lineno">162</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

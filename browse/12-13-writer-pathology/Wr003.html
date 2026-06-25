@@ -43,6 +43,9 @@
 <li><code>bytes_ends_with(b&#x27;END-ISO-10303-21;&#x27;)</code></li>
 <li><code>not bytes_ends_with(b&#x27;\n&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -57,23 +60,22 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Wr003 - Final END-ISO-10303-21; without trailing newline - file ends mid-line */
-<span class="lineno">2</span>ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Wr003: END-ISO-10303-21; has no trailing newline */
 <span class="lineno">3</span>HEADER;
-<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Wr003 - no final newline&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">5</span>FILE_NAME(&#x27;Wr003.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
-<span class="lineno">6</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Wr003 - no trailing newline after END-ISO-10303-21;&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Wr003.stp&#x27;,&#x27;2026-06-20T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">6</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
 <span class="lineno">7</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
 <span class="lineno">8</span>ENDSEC;
 <span class="lineno">9</span>DATA;
-<span class="lineno">10</span>#1=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
-<span class="lineno">11</span>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
-<span class="lineno">12</span>#11=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
-<span class="lineno">13</span>#12=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">14</span>#13=AXIS2_PLACEMENT_3D(&#x27;placement&#x27;,#10,#11,#12);
-<span class="lineno">15</span>#20=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">16</span>ENDSEC;
-<span class="lineno">17</span><mark>END-ISO-10303-21;</mark>
+<span class="lineno">10</span>/* Defect: the file terminates immediately after the semicolon, no 0x0A */
+<span class="lineno">11</span>#1=CARTESIAN_POINT(&#x27;p0&#x27;,(0.,0.,0.));
+<span class="lineno">12</span>#2=CARTESIAN_POINT(&#x27;p1&#x27;,(1.,0.,0.));
+<span class="lineno">13</span>#3=CARTESIAN_POINT(&#x27;p2&#x27;,(1.,1.,0.));
+<span class="lineno">14</span>#4=GEOMETRIC_CURVE_SET(&#x27;no-newline&#x27;,());
+<span class="lineno">15</span>ENDSEC;
+<span class="lineno">16</span><mark>END-ISO-10303-21;</mark>
 </pre>
 </details>
 </section>

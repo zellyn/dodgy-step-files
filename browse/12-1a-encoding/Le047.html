@@ -40,6 +40,9 @@
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;4.9406564584124654E-324&#x27;) or contains(b&#x27;2.2250738585072014E-308&#x27;) or contains(b&#x27;-0.0&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="Le048.html">Le048</a></p>
 </section>
@@ -58,40 +61,22 @@
 <details>
 <summary>Show fixture bytes</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Le047 - Numeric literal at the IEEE-754 double subnormal boundary
-<span class="lineno">3</span> * Defect: ISO 10303-21 specifies REAL as a decimal floating-point
-<span class="lineno">4</span> * representation but most implementations parse into IEEE-754
-<span class="lineno">5</span> * binary64. Inputs at the subnormal boundary (smallest positive
-<span class="lineno">6</span> * subnormal ~4.9406564584124654E-324; smallest positive normal
-<span class="lineno">7</span> * ~2.2250738585072014E-308) test for two failure modes:
-<span class="lineno">8</span> *  - readers that round to zero and silently drop the value
-<span class="lineno">9</span> *  - readers that flag underflow and reject the file
-<span class="lineno">10</span> * A coordinate emitted at this magnitude often arises in BSpline
-<span class="lineno">11</span> * weight values from buggy producers normalising weights through
-<span class="lineno">12</span> * very small denominators. */
-<span class="lineno">13</span>HEADER;
-<span class="lineno">14</span>FILE_DESCRIPTION((&#x27;Le047 - IEEE-754 subnormal boundary REAL literal&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">15</span>FILE_NAME(&#x27;Le047.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
-<span class="lineno">16</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">17</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">18</span>ENDSEC;
-<span class="lineno">19</span>DATA;
-<span class="lineno">20</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">21</span>#2=PRODUCT_CONTEXT(&#x27;part&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">22</span>/* Defect: subnormal value 4.9E-324 in coordinate */
-<span class="lineno">23</span>#10=CARTESIAN_POINT(&#x27;subnormal&#x27;,(4.9406564584124654E-324,0.0,0.0));
-<span class="lineno">24</span>/* And the smallest positive *normal* double, just above subnormal */
-<span class="lineno">25</span>#11=CARTESIAN_POINT(&#x27;min_normal&#x27;,(2.2250738585072014E-308,0.0,0.0));
-<span class="lineno">26</span>/* And the largest finite double */
-<span class="lineno">27</span>#12=CARTESIAN_POINT(&#x27;max_finite&#x27;,(1.7976931348623157E+308,0.0,0.0));
-<span class="lineno">28</span>/* And negative zero, which IEEE-754 distinguishes from positive
-<span class="lineno">29</span> * zero but most STEP comparators treat as equal. */
-<span class="lineno">30</span>#13=CARTESIAN_POINT(&#x27;neg_zero&#x27;,(-0.0,0.0,0.0));
-<span class="lineno">31</span>#20=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
-<span class="lineno">32</span>#21=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">33</span>#22=AXIS2_PLACEMENT_3D(&#x27;placement&#x27;,#10,#20,#21);
-<span class="lineno">34</span>ENDSEC;
-<span class="lineno">35</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* Le047: REAL literal at IEEE-754 subnormal / minimum-normal / maximum boundaries; ISO 10303-21 Ed.3 Â§6.4.5: REAL is decimal floating-point; most implementations parse into IEEE-754 binary64; subnormal: 4.9406564584124654E-324 (smallest positive subnormal double); min-normal: 2.2250738585072014E-308 (smallest positive normal double); max-finite: 1.7976931348623157E+308 (largest finite double); negative zero: -0.0 (IEEE-754 negative zero); failure mode 1: reader rounds subnormal to zero and silently drops the value; failure mode 2: reader flags underflow and rejects the file; A coordinate at this magnitude arises in BSpline weight values from buggy producers; heal and accept: parse value losslessly; snap below-precision values to zero with diagnostic; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Le047&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Le047.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">11</span>#8996=CARTESIAN_POINT(&#x27;subnormal&#x27;,(4.9406564584124654E-324,0.0,0.0));
+<span class="lineno">12</span>#8997=CARTESIAN_POINT(&#x27;min-normal&#x27;,(2.2250738585072014E-308,0.0,0.0));
+<span class="lineno">13</span>#8998=CARTESIAN_POINT(&#x27;max-finite&#x27;,(1.7976931348623157E+308,0.0,0.0));
+<span class="lineno">14</span>#8999=CARTESIAN_POINT(&#x27;negative-zero&#x27;,(-0.0,0.0,0.0));
+<span class="lineno">15</span>
+<span class="lineno">16</span>ENDSEC;
+<span class="lineno">17</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

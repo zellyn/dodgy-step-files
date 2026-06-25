@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Me1114 — zero-area degenerate faces empty SI candidate set: faces_to_treat emptiness detection</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <span class="sep">/</span> <span class="current">Me1114</span>
+</nav>
+<header class="title-bar">
+<h1>Me1114 <span class="sep">—</span> <span class="entry-title">zero-area degenerate faces empty SI candidate set: faces_to_treat emptiness detection</span></h1>
+<p class="category">§12.14 mesh defects (sub-class: self-intersection/degenerate-cluster)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../mesh-examples/12-14-mesh/Me1114.mesh.json">View raw fixture (.mesh.json)</a> <code class="path">mesh-examples/12-14-mesh/Me1114.mesh.json</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>CGAL `PMP.remove_self_intersections` Branch 5 @ line 2463 (*face-selection-emptiness-detection*: `if(faces_to_treat.empty()) { self_intersecting_faces(…)</li>
+<li>continue</li>
+<li>}`)</li>
+<li>`MESH_HEAL_COVERAGE.md`.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>the mesh contains two valid non-degenerate triangles (0 and 2) and two zero-area collinear-vertex triangles (1 and 3). The degenerate triangles represent topology-blocker faces that would be evicted from faces_to_treat in the prior SI iteration. When they are removed, the candidate set becomes empty, triggering the Branch 5 early-exit check rather than an SI recomputation. Triangle 1 is collinear along Y-axis; triangle 3 is collinear along X-axis.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>12 vertices; tri 0 = valid right triangle in Z=2 plane; tri 1 = collinear (0,1,0)–(0,3,0)–(0,2,0) along Y-axis (area=0); tri 2 = valid triangle in X=3 plane; tri 3 = collinear (1,0,0)–(4,0,0)–(2.5,0,0) along X-axis (area=0). assert_triangle_area_lt(1,1e-12); assert_triangle_area_lt(3,1e-12).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>detect zero-area faces; evict them from faces_to_treat; when set is empty, trigger Branch 5 check — exit loop early vs recompute SI.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>{
+<span class="lineno">2</span>  &quot;vertices&quot;: [
+<span class="lineno">3</span>    [
+<span class="lineno">4</span>      0.0,
+<span class="lineno">5</span>      0.0,
+<span class="lineno">6</span>      2.0
+<span class="lineno">7</span>    ],
+<span class="lineno">8</span>    [
+<span class="lineno">9</span>      1.0,
+<span class="lineno">10</span>      0.0,
+<span class="lineno">11</span>      2.0
+<span class="lineno">12</span>    ],
+<span class="lineno">13</span>    [
+<span class="lineno">14</span>      0.0,
+<span class="lineno">15</span>      1.0,
+<span class="lineno">16</span>      2.0
+<span class="lineno">17</span>    ],
+<span class="lineno">18</span>    [
+<span class="lineno">19</span>      0.0,
+<span class="lineno">20</span>      1.0,
+<span class="lineno">21</span>      0.0
+<span class="lineno">22</span>    ],
+<span class="lineno">23</span>    [
+<span class="lineno">24</span>      0.0,
+<span class="lineno">25</span>      3.0,
+<span class="lineno">26</span>      0.0
+<span class="lineno">27</span>    ],
+<span class="lineno">28</span>    [
+<span class="lineno">29</span>      0.0,
+<span class="lineno">30</span>      2.0,
+<span class="lineno">31</span>      0.0
+<span class="lineno">32</span>    ],
+<span class="lineno">33</span>    [
+<span class="lineno">34</span>      3.0,
+<span class="lineno">35</span>      0.0,
+<span class="lineno">36</span>      0.0
+<span class="lineno">37</span>    ],
+<span class="lineno">38</span>    [
+<span class="lineno">39</span>      3.0,
+<span class="lineno">40</span>      1.0,
+<span class="lineno">41</span>      0.0
+<span class="lineno">42</span>    ],
+<span class="lineno">43</span>    [
+<span class="lineno">44</span>      3.0,
+<span class="lineno">45</span>      0.5,
+<span class="lineno">46</span>      1.0
+<span class="lineno">47</span>    ],
+<span class="lineno">48</span>    [
+<span class="lineno">49</span>      1.0,
+<span class="lineno">50</span>      0.0,
+<span class="lineno">51</span>      0.0
+<span class="lineno">52</span>    ],
+<span class="lineno">53</span>    [
+<span class="lineno">54</span>      4.0,
+<span class="lineno">55</span>      0.0,
+<span class="lineno">56</span>      0.0
+<span class="lineno">57</span>    ],
+<span class="lineno">58</span>    [
+<span class="lineno">59</span>      2.5,
+<span class="lineno">60</span>      0.0,
+<span class="lineno">61</span>      0.0
+<span class="lineno">62</span>    ]
+<span class="lineno">63</span>  ],
+<span class="lineno">64</span>  &quot;triangles&quot;: [
+<span class="lineno">65</span>    [
+<span class="lineno">66</span>      0,
+<span class="lineno">67</span>      1,
+<span class="lineno">68</span>      2
+<span class="lineno">69</span>    ],
+<span class="lineno">70</span>    [
+<span class="lineno">71</span>      3,
+<span class="lineno">72</span>      4,
+<span class="lineno">73</span>      5
+<span class="lineno">74</span>    ],
+<span class="lineno">75</span>    [
+<span class="lineno">76</span>      6,
+<span class="lineno">77</span>      7,
+<span class="lineno">78</span>      8
+<span class="lineno">79</span>    ],
+<span class="lineno">80</span>    [
+<span class="lineno">81</span>      9,
+<span class="lineno">82</span>      10,
+<span class="lineno">83</span>      11
+<span class="lineno">84</span>    ]
+<span class="lineno">85</span>  ],
+<span class="lineno">86</span>  &quot;metadata&quot;: {
+<span class="lineno">87</span>    &quot;id&quot;: &quot;Me1114&quot;,
+<span class="lineno">88</span>    &quot;schema_version&quot;: 0,
+<span class="lineno">89</span>    &quot;defect_class&quot;: &quot;self_intersection_degenerate_cluster&quot;,
+<span class="lineno">90</span>    &quot;title&quot;: &quot;zero-area degenerate faces empty the SI candidate set: faces_to_treat emptiness detection&quot;,
+<span class="lineno">91</span>    &quot;assertions&quot;: [
+<span class="lineno">92</span>      {
+<span class="lineno">93</span>        &quot;kind&quot;: &quot;triangle_area_lt&quot;,
+<span class="lineno">94</span>        &quot;triangle&quot;: 1,
+<span class="lineno">95</span>        &quot;lt&quot;: 1e-12
+<span class="lineno">96</span>      },
+<span class="lineno">97</span>      {
+<span class="lineno">98</span>        &quot;kind&quot;: &quot;triangle_area_lt&quot;,
+<span class="lineno">99</span>        &quot;triangle&quot;: 3,
+<span class="lineno">100</span>        &quot;lt&quot;: 1e-12
+<span class="lineno">101</span>      }
+<span class="lineno">102</span>    ]
+<span class="lineno">103</span>  }
+<span class="lineno">104</span>}
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Me1113.html">&larr; Me1113</a> <a class="up" href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <a class="next" href="Me112.html">Me112 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

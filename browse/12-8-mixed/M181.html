@@ -40,6 +40,9 @@
 <li><code>contains(b&#x27;AP238_STEP_NC_MIM&#x27;)</code></li>
 <li><code>contains(b&#x27;WORKPIECE_COMPLETE_FOR_NC&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -47,7 +50,7 @@
 <tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
 <tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
-<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_FORWARD_REF)</code></td></tr>
 <tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
 </tbody></table>
 </section>
@@ -55,30 +58,61 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M181 - AP238 <mark>WORKPIECE_COMPLETE_FOR_NC</mark> missing required clamping references.
-<span class="lineno">3</span> * Defect: a <mark>WORKPIECE_COMPLETE_FOR_NC</mark> entity is declared with no
-<span class="lineno">4</span> * clamping_position references. AP238 requires that workpieces be tied
-<span class="lineno">5</span> * to their fixturing for collision-checking; an unfixed workpiece
-<span class="lineno">6</span> * cannot be safely machined. The controller has nothing to enforce
-<span class="lineno">7</span> * keep-out zones against. */
-<span class="lineno">8</span>HEADER;
-<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;M181 test case&#x27;,&#x27;AP238 workpiece-complete missing clamping refs&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">10</span>FILE_NAME(&#x27;M181.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">11</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 1 0 0 1 }&#x27;));
-<span class="lineno">12</span>ENDSEC;
-<span class="lineno">13</span>DATA;
-<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;numerical_control_machining&#x27;);
-<span class="lineno">15</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">16</span>  &#x27;numerical_control_machining&#x27;,2007,#1);
+<span class="lineno">2</span>/* M181: AP238 workpiece_complete_for_nc missing required clamping references */
+<span class="lineno">3</span>/* DEFECT: <mark>WORKPIECE_COMPLETE_FOR_NC</mark> &#x27;finished_part&#x27; has empty clamping_position list */
+<span class="lineno">4</span>/* AP238 requires workpieces tied to fixturing for collision-checking */
+<span class="lineno">5</span>/* Controller cannot enforce keep-out zones without clamping references */
+<span class="lineno">6</span>/* Per ISO 10303-238 Â§5.4 at least one clamping reference must be declared */
+<span class="lineno">7</span>/* Byte assertion: contains(b&#x27;<mark>AP238_STEP_NC_MIM</mark>&#x27;) */
+<span class="lineno">8</span>/* Byte assertion: contains(b&#x27;<mark>WORKPIECE_COMPLETE_FOR_NC</mark>&#x27;) */
+<span class="lineno">9</span>HEADER;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;M181: AP238 workpiece_complete_for_nc with empty clamping list&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;M181.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>/* Byte assertion: contains(b&#x27;<mark>AP238_STEP_NC_MIM</mark>&#x27;) */
+<span class="lineno">13</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 3 1 1 1 }&#x27;));
+<span class="lineno">14</span>ENDSEC;
+<span class="lineno">15</span>DATA;
+<span class="lineno">16</span>/* Standard unit context (mm) */
 <span class="lineno">17</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">18</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">19</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-<span class="lineno">20</span>     REPRESENTATION_CONTEXT(&#x27;nc&#x27;,&#x27;3D&#x27;));
-<span class="lineno">21</span>/* Defect: <mark>WORKPIECE_COMPLETE_FOR_NC</mark> declared with empty clamping list. */
-<span class="lineno">22</span>#400=<mark>WORKPIECE_COMPLETE_FOR_NC</mark>(&#x27;finished_part&#x27;,$,$,$,$,$,$,(),$);
-<span class="lineno">23</span>#200=WORKPLAN(&#x27;main&#x27;,(),$,$,$);
-<span class="lineno">24</span>ENDSEC;
-<span class="lineno">25</span>END-ISO-10303-21;
+<span class="lineno">18</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">19</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">20</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">21</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">22</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">23</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">24</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">25</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">26</span>/* mm length unit reference for MEASURE_WITH_UNIT */
+<span class="lineno">27</span>#15=SI_UNIT(.MILLI.,.METRE.);
+<span class="lineno">28</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">29</span>#20=GEOMETRIC_CURVE_SET(&#x27;ap238-workpiece-complete-for-nc-missing-clamping-references&#x27;,
+<span class="lineno">30</span>  (#41,#52,#60));
+<span class="lineno">31</span>/* Base workpiece (raw stock) */
+<span class="lineno">32</span>#40=WORKPIECE(&#x27;raw_stock&#x27;,&#x27;Raw stock for finished part&#x27;,$,$,$,$,$);
+<span class="lineno">33</span>/* Byte assertion: contains(b&#x27;<mark>WORKPIECE_COMPLETE_FOR_NC</mark>&#x27;) */
+<span class="lineno">34</span>/* DEFECT: <mark>WORKPIECE_COMPLETE_FOR_NC</mark> with empty clamping_position list () */
+<span class="lineno">35</span>/* AP238 Â§5.4 invariant: clamping_position must be non-empty for safe machining */
+<span class="lineno">36</span>#41=<mark>WORKPIECE_COMPLETE_FOR_NC</mark>(&#x27;finished_part&#x27;,$,$,$,$,$,$,(),$);
+<span class="lineno">37</span>/* WORKPIECE &#x27;mill_workpiece&#x27; for the milling step */
+<span class="lineno">38</span>#60=WORKPIECE(&#x27;mill_workpiece&#x27;,&#x27;Workpiece for unclamped test&#x27;,$,$,$,$,$);
+<span class="lineno">39</span>/* MILLING_OPERATION references the unclamped workpiece scenario */
+<span class="lineno">40</span>#52=MILLING_OPERATION(&#x27;mill_op&#x27;,$,$,$,$,$,$,$,$,$,$,$,$);
+<span class="lineno">41</span>/* MACHINING_WORKINGSTEP links milling op to workpiece */
+<span class="lineno">42</span>#51=MACHINING_WORKINGSTEP(&#x27;mill_step&#x27;,&#x27;Unclamped workpiece mill step&#x27;,#52,#60,$);
+<span class="lineno">43</span>/* WORKPLAN: single milling step on workpiece with missing clamps */
+<span class="lineno">44</span>#50=WORKPLAN(&#x27;unclamped_workpiece_program&#x27;,&#x27;Unclamped workpiece milling workplan&#x27;,(),$,(#51));
+<span class="lineno">45</span>/* Product chain */
+<span class="lineno">46</span>#100=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">47</span>#101=PRODUCT_CONTEXT(&#x27;&#x27;,#100,&#x27;mechanical&#x27;);
+<span class="lineno">48</span>#102=PRODUCT(&#x27;M181&#x27;,&#x27;M181&#x27;,&#x27;M181&#x27;,(#101));
+<span class="lineno">49</span>#103=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#102);
+<span class="lineno">50</span>#104=PRODUCT_DEFINITION_CONTEXT(#100,&#x27;design&#x27;);
+<span class="lineno">51</span>#105=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#103,#104);
+<span class="lineno">52</span>#106=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#105);
+<span class="lineno">53</span>#107=SHAPE_REPRESENTATION(&#x27;&#x27;,(#20),#14);
+<span class="lineno">54</span>#108=SHAPE_DEFINITION_REPRESENTATION(#106,#107);
+<span class="lineno">55</span>ENDSEC;
+<span class="lineno">56</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

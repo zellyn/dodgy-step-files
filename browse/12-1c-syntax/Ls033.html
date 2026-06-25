@@ -40,6 +40,9 @@
 <li><code>matches(rb&#x27;#\s+\d&#x27;) or matches(rb&#x27;\t&#x27;)</code></li>
 <li><code>matches(rb&#x27;#\s+\d&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="../12-1a-encoding/Le028.html">Le028</a></p>
 </section>
@@ -64,35 +67,34 @@
 <span class="lineno">5</span>   See also        : Le028
 <span class="lineno">6</span>   ----------------------------------------------------------------------
 <span class="lineno">7</span>   Defect
-<span class="lineno">8</span>     ISO 10303-21 Â§5.2 says LF, CR, TAB, FF are ignored characters; Â§5.6
-<span class="lineno">9</span>     says only SPACE, comments, and print directives separate tokens.
-<span class="lineno">10</span>     A strict reading of &quot;ignored&quot; means TAB removal turns &quot;#1&lt;TAB&gt;2&quot;
-<span class="lineno">11</span>     into &quot;#12&quot; - an integer concatenation. Real-world parsers tolerate
-<span class="lineno">12</span>     any ASCII whitespace as a separator. Defects exercised below:
-<span class="lineno">13</span>       - split keyword &quot;FILE _SCHEMA&quot; (space inside the keyword);
-<span class="lineno">14</span>       - whitespace between &#x27;#&#x27; and digits in an instance reference;
-<span class="lineno">15</span>       - tab inside an attribute list (used as separator).
-<span class="lineno">16</span>   Expected behavior
-<span class="lineno">17</span>     Treat any of \t \f \r \n as whitespace separator (matches user
-<span class="lineno">18</span>     expectation); preserve line/column counting across line-ending
-<span class="lineno">19</span>     conventions; warn on TAB inside an identifier; reject embedded
-<span class="lineno">20</span>     whitespace inside #N (between &#x27;#&#x27; and the digits).
-<span class="lineno">21</span>   ----------------------------------------------------------------------
-<span class="lineno">22</span>*/
-<span class="lineno">23</span>ISO-10303-21;
-<span class="lineno">24</span>HEADER;
-<span class="lineno">25</span>FILE_DESCRIPTION((&#x27;Ls033 - whitespace defects: tab/CR/LF/FF separators&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">26</span>FILE_NAME(&#x27;Ls033.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
-<span class="lineno">27</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">28</span>FILE _SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">29</span>ENDSEC;
-<span class="lineno">30</span>DATA;
-<span class="lineno">31</span>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
-<span class="lineno">32</span>#20=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">33</span>/* Defect: whitespace between &#x27;#&#x27; and digits in instance reference */
-<span class="lineno">34</span>#30=AXIS2_PLACEMENT_3D(&#x27;placement&#x27;, <mark># 1</mark>0 ,#20,$);
-<span class="lineno">35</span>ENDSEC;
-<span class="lineno">36</span>END-ISO-10303-21;
+<span class="lineno">8</span>     ISO 10303-21 Â§5.2: LF, CR, TAB, FF are ignored characters.
+<span class="lineno">9</span>     Â§5.6: only SPACE, comments, and print directives separate tokens.
+<span class="lineno">10</span>     Critical defect: embedded whitespace inside #NNN reference
+<span class="lineno">11</span>     (between # and digits) â this changes what the tokenizer reads.
+<span class="lineno">12</span>     Defect 1: space between # and instance number: <mark># 1</mark>=...
+<span class="lineno">13</span>     Defect 2: TAB characters used as token separators.
+<span class="lineno">14</span>   Expected behavior
+<span class="lineno">15</span>     Reject embedded whitespace inside #N (between # and digits);
+<span class="lineno">16</span>     treat any ASCII whitespace as separator elsewhere.
+<span class="lineno">17</span>   ----------------------------------------------------------------------
+<span class="lineno">18</span>*/
+<span class="lineno">19</span>ISO-10303-21;
+<span class="lineno">20</span>HEADER;
+<span class="lineno">21</span>FILE_DESCRIPTION((&#x27;Ls033 - whitespace inside instance-ID and TAB separators&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">22</span>FILE_NAME(&#x27;Ls033.stp&#x27;,&#x27;2026-06-20T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">23</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">24</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">25</span>ENDSEC;
+<span class="lineno">26</span>DATA;
+<span class="lineno">27</span>/* Defect 1: space between # and instance number -- <mark># 1</mark> is NOT #1 per Â§5.6 */
+<span class="lineno">28</span><mark># 1</mark>=CARTESIAN_POINT(&#x27;origin&#x27;,(0.,0.,0.));
+<span class="lineno">29</span>/* Defect 2: TAB characters used as token separators throughout */
+<span class="lineno">30</span>#2	=	CARTESIAN_POINT(&#x27;p1&#x27;,(1.,0.,0.));
+<span class="lineno">31</span>#3	=	DIRECTION(&#x27;x&#x27;,(1.,0.,0.));
+<span class="lineno">32</span>/* Defect 3: space inside back-reference -- <mark># 1</mark> as argument */
+<span class="lineno">33</span>#4=VECTOR(&#x27;v&#x27;,<mark># 3</mark>,1.);
+<span class="lineno">34</span>ENDSEC;
+<span class="lineno">35</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

@@ -36,94 +36,111 @@
 <section><h2>Notes</h2>
 <p>**See also**: Tsh019. Synonyms: &quot;two solids touch at a single point&quot;, &quot;bowtie geometry pinches at vertex&quot;, &quot;hourglass topology&quot;, &quot;fan of fans at one vertex&quot;, &quot;non-manifold pinch point&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a</code></p></section>
+<section><h2>Closure intent</h2>
+<p><code>sheet</code> — the open shell is the intended final geometry; a solid-only kernel should cleanly refuse.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;OPEN_SHELL&#x27;)</code></li>
 <li><code>contains(b&#x27;SHELL_BASED_SURFACE_MODEL&#x27;)</code></li>
 <li><code>count_entity_def(b&#x27;ADVANCED_FACE&#x27;) == 2</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_faces_total == 2</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="Tsh019.html">Tsh019</a></p>
 </section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
-<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(13)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(13)</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
 <tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
-<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Tsh021 - Non-manifold vertex (bowtie / hourglass / fan-of-fans)
-<span class="lineno">3</span> * Defect: A vertex whose 1-ring is not a single fan -- touching cones,
-<span class="lineno">4</span> * bowtie meshes (two fans glued at a single point). Common when two
-<span class="lineno">5</span> * solids touch at exactly one vertex (hourglass). Sources: H009, H010,
-<span class="lineno">6</span> * H042 (CGAL/Manifold), L012, L047 (Attene 2013).
-<span class="lineno">7</span> *
-<span class="lineno">8</span> * This file: two square plates meeting at exactly one corner vertex
-<span class="lineno">9</span> *  - Plate A: 0,0,0 1,0,0 1,1,0 0,1,0
-<span class="lineno">10</span> *  - Plate B: 1,1,0 2,1,0 2,2,0 1,2,0
-<span class="lineno">11</span> * They share VERTEX_POINT #112 (the (1,1,0) vertex) but no edge -- the
-<span class="lineno">12</span> * topology forms an &quot;hourglass&quot; / bowtie at that vertex. */
-<span class="lineno">13</span>HEADER;
-<span class="lineno">14</span>FILE_DESCRIPTION((&#x27;Tsh021 test case&#x27;,&#x27;Non-manifold bowtie vertex&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">15</span>FILE_NAME(&#x27;Tsh021.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">16</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">17</span>ENDSEC;
-<span class="lineno">18</span>DATA;
-<span class="lineno">19</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">20</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
-<span class="lineno">21</span>/* Plate A vertices */
-<span class="lineno">22</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">23</span>#101=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">24</span>#102=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
-<span class="lineno">25</span>#103=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
-<span class="lineno">26</span>/* Plate B vertices -- shares #102 with plate A */
-<span class="lineno">27</span>#104=CARTESIAN_POINT(&#x27;&#x27;,(2.0,1.0,0.0));
-<span class="lineno">28</span>#105=CARTESIAN_POINT(&#x27;&#x27;,(2.0,2.0,0.0));
-<span class="lineno">29</span>#106=CARTESIAN_POINT(&#x27;&#x27;,(1.0,2.0,0.0));
-<span class="lineno">30</span>#110=VERTEX_POINT(&#x27;&#x27;,#100); #111=VERTEX_POINT(&#x27;&#x27;,#101);
-<span class="lineno">31</span>/* Single shared bowtie vertex */
-<span class="lineno">32</span>#112=VERTEX_POINT(&#x27;shared_NM_vertex&#x27;,#102);
-<span class="lineno">33</span>#113=VERTEX_POINT(&#x27;&#x27;,#103);
-<span class="lineno">34</span>#114=VERTEX_POINT(&#x27;&#x27;,#104); #115=VERTEX_POINT(&#x27;&#x27;,#105);
-<span class="lineno">35</span>#116=VERTEX_POINT(&#x27;&#x27;,#106);
-<span class="lineno">36</span>#200=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0)); #201=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">37</span>#211=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#100,#200,#201); #212=PLANE(&#x27;plate_A_plane&#x27;,#211);
-<span class="lineno">38</span>#221=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#102,#200,#201); #222=PLANE(&#x27;plate_B_plane&#x27;,#221);
-<span class="lineno">39</span>#300=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0)); #301=VECTOR(&#x27;&#x27;,#300,1.0);
-<span class="lineno">40</span>#302=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0)); #303=VECTOR(&#x27;&#x27;,#302,1.0);
-<span class="lineno">41</span>/* Plate A edges */
-<span class="lineno">42</span>#310=LINE(&#x27;&#x27;,#100,#301); #311=EDGE_CURVE(&#x27;&#x27;,#110,#111,#310,.T.);
-<span class="lineno">43</span>#312=LINE(&#x27;&#x27;,#101,#303); #313=EDGE_CURVE(&#x27;&#x27;,#111,#112,#312,.T.);
-<span class="lineno">44</span>#314=LINE(&#x27;&#x27;,#103,#301); #315=EDGE_CURVE(&#x27;&#x27;,#113,#112,#314,.T.);
-<span class="lineno">45</span>#316=LINE(&#x27;&#x27;,#100,#303); #317=EDGE_CURVE(&#x27;&#x27;,#110,#113,#316,.T.);
-<span class="lineno">46</span>/* Plate B edges (B does NOT share any edge with A, only vertex #112) */
-<span class="lineno">47</span>#318=LINE(&#x27;&#x27;,#102,#301); #319=EDGE_CURVE(&#x27;&#x27;,#112,#114,#318,.T.);
-<span class="lineno">48</span>#320=LINE(&#x27;&#x27;,#104,#303); #321=EDGE_CURVE(&#x27;&#x27;,#114,#115,#320,.T.);
-<span class="lineno">49</span>#322=LINE(&#x27;&#x27;,#106,#301); #323=EDGE_CURVE(&#x27;&#x27;,#116,#115,#322,.T.);
-<span class="lineno">50</span>#324=LINE(&#x27;&#x27;,#102,#303); #325=EDGE_CURVE(&#x27;&#x27;,#112,#116,#324,.T.);
-<span class="lineno">51</span>/* Plate A face */
-<span class="lineno">52</span>#400=ORIENTED_EDGE(&#x27;&#x27;,*,*,#311,.T.); #401=ORIENTED_EDGE(&#x27;&#x27;,*,*,#313,.T.);
-<span class="lineno">53</span>#402=ORIENTED_EDGE(&#x27;&#x27;,*,*,#315,.F.); #403=ORIENTED_EDGE(&#x27;&#x27;,*,*,#317,.F.);
-<span class="lineno">54</span>#404=EDGE_LOOP(&#x27;&#x27;,(#400,#401,#402,#403)); #405=FACE_OUTER_BOUND(&#x27;&#x27;,#404,.T.);
-<span class="lineno">55</span><mark>#406=ADVANCED_FACE(</mark>&#x27;plate_A&#x27;,(#405),#212,.T.);
-<span class="lineno">56</span>/* Plate B face */
-<span class="lineno">57</span>#410=ORIENTED_EDGE(&#x27;&#x27;,*,*,#319,.T.); #411=ORIENTED_EDGE(&#x27;&#x27;,*,*,#321,.T.);
-<span class="lineno">58</span>#412=ORIENTED_EDGE(&#x27;&#x27;,*,*,#323,.F.); #413=ORIENTED_EDGE(&#x27;&#x27;,*,*,#325,.F.);
-<span class="lineno">59</span>#414=EDGE_LOOP(&#x27;&#x27;,(#410,#411,#412,#413)); #415=FACE_OUTER_BOUND(&#x27;&#x27;,#414,.T.);
-<span class="lineno">60</span><mark>#416=ADVANCED_FACE(</mark>&#x27;plate_B&#x27;,(#415),#222,.T.);
-<span class="lineno">61</span>/* Defect: shell joining two faces that share only a point */
-<span class="lineno">62</span>#500=<mark>OPEN_SHELL</mark>(&#x27;bowtie&#x27;,(#406,#416));
-<span class="lineno">63</span>#510=<mark>SHELL_BASED_SURFACE_MODEL</mark>(&#x27;hourglass&#x27;,(#500));
-<span class="lineno">64</span>ENDSEC;
-<span class="lineno">65</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* Tsh021: Bowtie: two triangles sharing a single vertex (non-manifold 1-ring) */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Tsh021&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Tsh021.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;bowtie_center&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=VERTEX_POINT(&#x27;&#x27;,#1);
+<span class="lineno">12</span>#3=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">14</span>#5=VERTEX_POINT(&#x27;&#x27;,#3);
+<span class="lineno">15</span>#6=VERTEX_POINT(&#x27;&#x27;,#4);
+<span class="lineno">16</span>#7=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">17</span>#8=VECTOR(&#x27;&#x27;,#7,1.0);
+<span class="lineno">18</span>#9=LINE(&#x27;&#x27;,#1,#8);
+<span class="lineno">19</span>#10=EDGE_CURVE(&#x27;&#x27;,#2,#5,#9,.T.);
+<span class="lineno">20</span>#11=DIRECTION(&#x27;&#x27;,(-0.707106781187,0.707106781187,0.0));
+<span class="lineno">21</span>#12=VECTOR(&#x27;&#x27;,#11,1.41421356237);
+<span class="lineno">22</span>#13=LINE(&#x27;&#x27;,#3,#12);
+<span class="lineno">23</span>#14=EDGE_CURVE(&#x27;&#x27;,#5,#6,#13,.T.);
+<span class="lineno">24</span>#15=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">25</span>#16=VECTOR(&#x27;&#x27;,#15,1.0);
+<span class="lineno">26</span>#17=LINE(&#x27;&#x27;,#4,#16);
+<span class="lineno">27</span>#18=EDGE_CURVE(&#x27;&#x27;,#6,#2,#17,.T.);
+<span class="lineno">28</span>#19=ORIENTED_EDGE(&#x27;&#x27;,$,$,#10,.T.);
+<span class="lineno">29</span>#20=ORIENTED_EDGE(&#x27;&#x27;,$,$,#14,.T.);
+<span class="lineno">30</span>#21=ORIENTED_EDGE(&#x27;&#x27;,$,$,#18,.T.);
+<span class="lineno">31</span>#22=EDGE_LOOP(&#x27;&#x27;,(#19,#20,#21));
+<span class="lineno">32</span>#23=CARTESIAN_POINT(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">33</span>#24=CARTESIAN_POINT(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">34</span>#25=VERTEX_POINT(&#x27;&#x27;,#23);
+<span class="lineno">35</span>#26=VERTEX_POINT(&#x27;&#x27;,#24);
+<span class="lineno">36</span>#27=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">37</span>#28=VECTOR(&#x27;&#x27;,#27,1.0);
+<span class="lineno">38</span>#29=LINE(&#x27;&#x27;,#1,#28);
+<span class="lineno">39</span>#30=EDGE_CURVE(&#x27;&#x27;,#2,#25,#29,.T.);
+<span class="lineno">40</span>#31=DIRECTION(&#x27;&#x27;,(0.707106781187,-0.707106781187,0.0));
+<span class="lineno">41</span>#32=VECTOR(&#x27;&#x27;,#31,1.41421356237);
+<span class="lineno">42</span>#33=LINE(&#x27;&#x27;,#23,#32);
+<span class="lineno">43</span>#34=EDGE_CURVE(&#x27;&#x27;,#25,#26,#33,.T.);
+<span class="lineno">44</span>#35=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">45</span>#36=VECTOR(&#x27;&#x27;,#35,1.0);
+<span class="lineno">46</span>#37=LINE(&#x27;&#x27;,#24,#36);
+<span class="lineno">47</span>#38=EDGE_CURVE(&#x27;&#x27;,#26,#2,#37,.T.);
+<span class="lineno">48</span>#39=ORIENTED_EDGE(&#x27;&#x27;,$,$,#30,.T.);
+<span class="lineno">49</span>#40=ORIENTED_EDGE(&#x27;&#x27;,$,$,#34,.T.);
+<span class="lineno">50</span>#41=ORIENTED_EDGE(&#x27;&#x27;,$,$,#38,.T.);
+<span class="lineno">51</span>#42=EDGE_LOOP(&#x27;&#x27;,(#39,#40,#41));
+<span class="lineno">52</span>#43=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">53</span>#44=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">54</span>#45=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">55</span>#46=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#43,#44,#45);
+<span class="lineno">56</span>#47=PLANE(&#x27;&#x27;,#46);
+<span class="lineno">57</span>#48=FACE_OUTER_BOUND(&#x27;&#x27;,#22,.T.);
+<span class="lineno">58</span><mark>#49=ADVANCED_FACE(</mark>&#x27;&#x27;,(#48),#47,.T.);
+<span class="lineno">59</span>#50=FACE_OUTER_BOUND(&#x27;&#x27;,#42,.T.);
+<span class="lineno">60</span><mark>#51=ADVANCED_FACE(</mark>&#x27;&#x27;,(#50),#47,.T.);
+<span class="lineno">61</span>#52=<mark>OPEN_SHELL</mark>(&#x27;&#x27;,(#49,#51));
+<span class="lineno">62</span>#53=<mark>SHELL_BASED_SURFACE_MODEL</mark>(&#x27;&#x27;,(#52));
+<span class="lineno">63</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">64</span>#9051=PRODUCT(&#x27;Tsh021&#x27;,&#x27;Tsh021&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">65</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">66</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">67</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">68</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">69</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">70</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">71</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">72</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">73</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">74</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#53),#9060);
+<span class="lineno">75</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">76</span>ENDSEC;
+<span class="lineno">77</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

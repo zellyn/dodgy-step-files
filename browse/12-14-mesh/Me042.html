@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Me042 — duplicate_polygons removal_iteration: 4-copy group, inner loop runs 3 times</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <span class="sep">/</span> <span class="current">Me042</span>
+</nav>
+<header class="title-bar">
+<h1>Me042 <span class="sep">—</span> <span class="entry-title">duplicate_polygons removal_iteration: 4-copy group, inner loop runs 3 times</span></h1>
+<p class="category">§12.14 mesh defects (sub-class: topology/duplicate)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../mesh-examples/12-14-mesh/Me042.mesh.json">View raw fixture (.mesh.json)</a> <code class="path">mesh-examples/12-14-mesh/Me042.mesh.json</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>CGAL `PMP.merge_duplicate_polygons_in_polygon_soup` Branch 7 @ line 1004 (*removal_iteration*)</li>
+<li>`MESH_HEAL_COVERAGE.md`.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>a group of 4 identical triangles forces the inner for-loop (for(; i&lt;duplicate_polygons.size(); ++i)) to iterate 3 times under KEEP_ONE (i starts at 1, removes indices at positions 1, 2, 3 while keeping position 0).</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>4 copies of (0,1,2) plus one clean neighbour; the inner removal loop body fires 3 times.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>inner loop iterates 3 times; 3 polygons swapped-to-end; erase reduces count from 5 to 2.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>{
+<span class="lineno">2</span>  &quot;vertices&quot;: [
+<span class="lineno">3</span>    [
+<span class="lineno">4</span>      0.0,
+<span class="lineno">5</span>      0.0,
+<span class="lineno">6</span>      0.0
+<span class="lineno">7</span>    ],
+<span class="lineno">8</span>    [
+<span class="lineno">9</span>      1.0,
+<span class="lineno">10</span>      0.0,
+<span class="lineno">11</span>      0.0
+<span class="lineno">12</span>    ],
+<span class="lineno">13</span>    [
+<span class="lineno">14</span>      0.5,
+<span class="lineno">15</span>      1.0,
+<span class="lineno">16</span>      0.0
+<span class="lineno">17</span>    ],
+<span class="lineno">18</span>    [
+<span class="lineno">19</span>      1.5,
+<span class="lineno">20</span>      1.0,
+<span class="lineno">21</span>      0.0
+<span class="lineno">22</span>    ]
+<span class="lineno">23</span>  ],
+<span class="lineno">24</span>  &quot;triangles&quot;: [
+<span class="lineno">25</span>    [
+<span class="lineno">26</span>      0,
+<span class="lineno">27</span>      1,
+<span class="lineno">28</span>      2
+<span class="lineno">29</span>    ],
+<span class="lineno">30</span>    [
+<span class="lineno">31</span>      0,
+<span class="lineno">32</span>      1,
+<span class="lineno">33</span>      2
+<span class="lineno">34</span>    ],
+<span class="lineno">35</span>    [
+<span class="lineno">36</span>      0,
+<span class="lineno">37</span>      1,
+<span class="lineno">38</span>      2
+<span class="lineno">39</span>    ],
+<span class="lineno">40</span>    [
+<span class="lineno">41</span>      0,
+<span class="lineno">42</span>      1,
+<span class="lineno">43</span>      2
+<span class="lineno">44</span>    ],
+<span class="lineno">45</span>    [
+<span class="lineno">46</span>      1,
+<span class="lineno">47</span>      3,
+<span class="lineno">48</span>      2
+<span class="lineno">49</span>    ]
+<span class="lineno">50</span>  ],
+<span class="lineno">51</span>  &quot;metadata&quot;: {
+<span class="lineno">52</span>    &quot;id&quot;: &quot;Me042&quot;,
+<span class="lineno">53</span>    &quot;schema_version&quot;: 0,
+<span class="lineno">54</span>    &quot;defect_class&quot;: &quot;duplicate_triangles&quot;,
+<span class="lineno">55</span>    &quot;title&quot;: &quot;duplicate_polygons removal_iteration: 4-copy group, inner loop runs 3 times&quot;,
+<span class="lineno">56</span>    &quot;assertions&quot;: [
+<span class="lineno">57</span>      {
+<span class="lineno">58</span>        &quot;kind&quot;: &quot;duplicate_polygon_group&quot;,
+<span class="lineno">59</span>        &quot;triangles&quot;: [
+<span class="lineno">60</span>          0,
+<span class="lineno">61</span>          1,
+<span class="lineno">62</span>          2,
+<span class="lineno">63</span>          3
+<span class="lineno">64</span>        ],
+<span class="lineno">65</span>        &quot;n&quot;: 4
+<span class="lineno">66</span>      }
+<span class="lineno">67</span>    ]
+<span class="lineno">68</span>  }
+<span class="lineno">69</span>}
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Me041.html">&larr; Me041</a> <a class="up" href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <a class="next" href="Me043.html">Me043 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

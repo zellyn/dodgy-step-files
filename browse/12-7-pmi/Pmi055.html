@@ -35,99 +35,74 @@
 <section><h2>Notes</h2>
 <p>**See also**: Pmi013, Pmi041. Synonyms: &quot;AP242 hole feature missing required attribute&quot;, &quot;hole feature has inconsistent dimensions&quot;, &quot;hole entity attribute missing or wrong&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>count_entity_def(b&#x27;DIMENSIONAL_SIZE&#x27;) == 4</code></li>
 <li><code>count_entity_def(b&#x27;SHAPE_ASPECT&#x27;) == 3</code></li>
 <li><code>contains(b&#x27;PLUS_MINUS_TOLERANCE&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_vertices_total == 1</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="Pmi013.html">Pmi013</a>, <a href="Pmi041.html">Pmi041</a></p>
 </section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
-<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(1)</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
 <tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
-<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Pmi055 - AP242 hole feature missing required attribute / inconsistent dims
-<span class="lineno">2</span>   Defect: A counterbore hole feature is encoded with three dimensional
-<span class="lineno">3</span>   sizes (drill diameter, counterbore diameter, counterbore depth), but
-<span class="lineno">4</span>   the counterbore_diameter (5.0) is LESS than the drill_diameter (6.0),
-<span class="lineno">5</span>   which is geometrically impossible. NIST SFA S054. The expected
-<span class="lineno">6</span>   relationship counterbore_diameter &gt; drill_diameter and
-<span class="lineno">7</span>   drill_depth &gt; counterbore_depth is violated. Also missing from this
-<span class="lineno">8</span>   file is a tip_angle for the drill, which AP242 hole-feature semantics
-<span class="lineno">9</span>   would require for a drilled-and-counterbored feature. */
-<span class="lineno">10</span>ISO-10303-21;
-<span class="lineno">11</span>HEADER;
-<span class="lineno">12</span>FILE_DESCRIPTION((&#x27;Pmi055 - hole feature inconsistent dimensions&#x27;,
-<span class="lineno">13</span>  &#x27;CAx-IF Rec.Pracs.---PMI Rep &amp; Pres---v4.1&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">14</span>FILE_NAME(&#x27;Pmi055.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;catalog&#x27;),(&#x27;cad&#x27;),
-<span class="lineno">15</span>  &#x27;manual&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">16</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
-<span class="lineno">17</span>ENDSEC;
-<span class="lineno">18</span>DATA;
-<span class="lineno">19</span>#10 = APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
-<span class="lineno">20</span>#11 = APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">21</span>  &#x27;ap242_managed_model_based_3d_engineering&#x27;,2020,#10);
-<span class="lineno">22</span>#12 = PRODUCT_CONTEXT(&#x27;&#x27;,#10,&#x27;mechanical&#x27;);
-<span class="lineno">23</span>#13 = PRODUCT(&#x27;Pmi055&#x27;,&#x27;InconsistentHolePart&#x27;,&#x27;&#x27;,(#12));
-<span class="lineno">24</span>#14 = PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#13);
-<span class="lineno">25</span>#15 = PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#10,&#x27;design&#x27;);
-<span class="lineno">26</span>#16 = PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#14,#15);
-<span class="lineno">27</span>#17 = PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#16);
-<span class="lineno">28</span>#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-<span class="lineno">29</span>#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-<span class="lineno">30</span>#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-<span class="lineno">31</span>#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
-<span class="lineno">32</span>  &#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
-<span class="lineno">33</span>#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">34</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
-<span class="lineno">35</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
-<span class="lineno">36</span>  REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;) );
-<span class="lineno">37</span>#30 = CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">38</span>#31 = DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
-<span class="lineno">39</span>#32 = DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">40</span>#33 = AXIS2_PLACEMENT_3D(&#x27;&#x27;,#30,#31,#32);
-<span class="lineno">41</span>/* Three shape_aspects modeling drill, counterbore and depth */
-<span class="lineno">42</span><mark>#40 = SHAPE_ASPECT(</mark>&#x27;drill&#x27;,&#x27;through hole&#x27;,#17,.T.);
-<span class="lineno">43</span><mark>#41 = SHAPE_ASPECT(</mark>&#x27;cbore&#x27;,&#x27;counterbore&#x27;,#17,.T.);
-<span class="lineno">44</span><mark>#42 = SHAPE_ASPECT(</mark>&#x27;cbore_depth&#x27;,&#x27;counterbore depth&#x27;,#17,.T.);
-<span class="lineno">45</span>/* Defect: drill diameter 6.0 &gt; counterbore diameter 5.0 */
-<span class="lineno">46</span><mark>#50 = DIMENSIONAL_SIZE(</mark>#40,&#x27;diameter&#x27;);
-<span class="lineno">47</span>#51 = MEASURE_REPRESENTATION_ITEM(&#x27;drill_dia&#x27;,LENGTH_MEASURE(6.0),#20);
-<span class="lineno">48</span>#52 = SHAPE_DIMENSION_REPRESENTATION(&#x27;&#x27;,(#51),#25);
-<span class="lineno">49</span><mark>#53 = DIMENSIONAL_SIZE(</mark>#41,&#x27;diameter&#x27;);
-<span class="lineno">50</span>#54 = MEASURE_REPRESENTATION_ITEM(&#x27;cbore_dia&#x27;,LENGTH_MEASURE(5.0),#20);
-<span class="lineno">51</span>#55 = SHAPE_DIMENSION_REPRESENTATION(&#x27;&#x27;,(#54),#25);
-<span class="lineno">52</span><mark>#56 = DIMENSIONAL_SIZE(</mark>#42,&#x27;distance&#x27;);
-<span class="lineno">53</span>#57 = MEASURE_REPRESENTATION_ITEM(&#x27;cbore_depth&#x27;,LENGTH_MEASURE(8.0),#20);
-<span class="lineno">54</span>#58 = SHAPE_DIMENSION_REPRESENTATION(&#x27;&#x27;,(#57),#25);
-<span class="lineno">55</span>/* Defect: drill_depth 4.0 &lt; counterbore_depth 8.0 (also impossible) */
-<span class="lineno">56</span><mark>#59 = DIMENSIONAL_SIZE(</mark>#40,&#x27;distance&#x27;);
-<span class="lineno">57</span>#60 = MEASURE_REPRESENTATION_ITEM(&#x27;drill_depth&#x27;,LENGTH_MEASURE(4.0),#20);
-<span class="lineno">58</span>#61 = SHAPE_DIMENSION_REPRESENTATION(&#x27;&#x27;,(#60),#25);
-<span class="lineno">59</span>/* No tip_angle given for the drill - missing required attribute */
-<span class="lineno">60</span>#70 = <mark>PLUS_MINUS_TOLERANCE</mark>(#71,#50);
-<span class="lineno">61</span>#71 = TOLERANCE_VALUE(#72,#73);
-<span class="lineno">62</span>#72 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(-0.05),#20);
-<span class="lineno">63</span>#73 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#20);
-<span class="lineno">64</span>#80 = DRAUGHTING_MODEL(&#x27;Default&#x27;,(),#25);
-<span class="lineno">65</span>#81 = PLANE(&#x27;ann_plane&#x27;,#33);
-<span class="lineno">66</span>#82 = ANNOTATION_PLANE(&#x27;PMI&#x27;,(),#81,());
-<span class="lineno">67</span>#90 = SHAPE_REPRESENTATION(&#x27;&#x27;,(#33),#25);
-<span class="lineno">68</span>#91 = SHAPE_DEFINITION_REPRESENTATION(#17,#90);
-<span class="lineno">69</span>ENDSEC;
-<span class="lineno">70</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Pmi055: counterbore hole feature has inconsistent dimensions: counterbore_diameter &lt; drill_diameter (4.0 &lt; 6.0); AP242 requires counterbore diameter to exceed drill diameter; receivers must reject or warn; silently accepting geometrically impossible hole dimensions is forbidden; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Pmi055&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Pmi055.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">12</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">13</span>#9051=PRODUCT(&#x27;Pmi055&#x27;,&#x27;Pmi055&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">14</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">15</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">16</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">17</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">18</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">19</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">20</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">21</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">22</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">23</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#2),#9060);
+<span class="lineno">24</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">25</span><mark>#9063=SHAPE_ASPECT(</mark>&#x27;through_bore&#x27;,&#x27;&#x27;,#9055,.T.);
+<span class="lineno">26</span><mark>#9064=SHAPE_ASPECT(</mark>&#x27;cbore_diameter&#x27;,&#x27;&#x27;,#9055,.T.);
+<span class="lineno">27</span><mark>#9065=SHAPE_ASPECT(</mark>&#x27;cbore_depth&#x27;,&#x27;&#x27;,#9055,.T.);
+<span class="lineno">28</span><mark>#9066=DIMENSIONAL_SIZE(</mark>#9063,&#x27;bore_diameter&#x27;);
+<span class="lineno">29</span>#9067=MEASURE_REPRESENTATION_ITEM(&#x27;nominal&#x27;,LENGTH_MEASURE(6.0),#9056);
+<span class="lineno">30</span>#9068=MEASURE_REPRESENTATION_ITEM(&#x27;upper&#x27;,LENGTH_MEASURE(0.05),#9056);
+<span class="lineno">31</span>#9069=MEASURE_REPRESENTATION_ITEM(&#x27;lower&#x27;,LENGTH_MEASURE(0.05),#9056);
+<span class="lineno">32</span>#9070=TOLERANCE_VALUE(#9068,#9069);
+<span class="lineno">33</span>#9071=<mark>PLUS_MINUS_TOLERANCE</mark>(#9070,#9066);
+<span class="lineno">34</span><mark>#9072=DIMENSIONAL_SIZE(</mark>#9064,&#x27;cbore_diameter&#x27;);
+<span class="lineno">35</span>#9073=MEASURE_REPRESENTATION_ITEM(&#x27;nominal&#x27;,LENGTH_MEASURE(4.0),#9056);
+<span class="lineno">36</span><mark>#9074=DIMENSIONAL_SIZE(</mark>#9065,&#x27;cbore_depth&#x27;);
+<span class="lineno">37</span>#9075=MEASURE_REPRESENTATION_ITEM(&#x27;nominal&#x27;,LENGTH_MEASURE(3.0),#9056);
+<span class="lineno">38</span><mark>#9076=DIMENSIONAL_SIZE(</mark>#9063,&#x27;bore_depth&#x27;);
+<span class="lineno">39</span>#9077=MEASURE_REPRESENTATION_ITEM(&#x27;nominal&#x27;,LENGTH_MEASURE(15.0),#9056);
+<span class="lineno">40</span>ENDSEC;
+<span class="lineno">41</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

@@ -38,49 +38,62 @@
 <section><h2>Notes</h2>
 <p>**See also**: Le002, Le021. Synonyms: &quot;bug in OCC with german letter&quot;, &quot;umlaut in PRODUCT.name garbled&quot;, &quot;ISO-8859-1 ä misread as UTF-8 by STEP reader&quot;, &quot;high-bit byte mis-decoded in part name&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;\xe4&#x27;) or contains(b&#x27;\xf6&#x27;) or contains(b&#x27;\xfc&#x27;)</code></li>
 <li><code>contains(b&#x27;PRODUCT&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_vertices_total == 1</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="Le002.html">Le002</a>, <a href="Le021.html">Le021</a></p>
 </section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
-<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(1)</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
-<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
-<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_BARE_BACKSLASH)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Le059 - German umlauts in <mark>PRODUCT</mark>.name mis-decoded by reader (Latin-1/UTF-8 confusion)
-<span class="lineno">3</span> * Defect: producer emits Ed.2-style STEP with raw byte 0xE4 for &#x27;a-umlaut&#x27; inside a string
-<span class="lineno">4</span> * literal; reader assumes Ed.3 UTF-8, mis-decodes the isolated continuation byte. */
-<span class="lineno">5</span>HEADER;
-<span class="lineno">6</span>FILE_DESCRIPTION((&#x27;Le059 - umlaut bytes in <mark>PRODUCT</mark>.name (Ed.2 ISO-8859-1 default)&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">7</span>FILE_NAME(&#x27;Le059.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">8</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">9</span>ENDSEC;
-<span class="lineno">10</span>DATA;
-<span class="lineno">11</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">12</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
-<span class="lineno">13</span>#3=<mark>PRODUCT</mark>_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">14</span>/* Defect: <mark>PRODUCT</mark>.name contains raw 0xE4 (a-umlaut), 0xF6 (o-umlaut), 0xFC (u-umlaut)
-<span class="lineno">15</span>   per Ed.2 ISO-8859-1 default. UTF-8-only readers misinterpret as isolated continuation bytes. */
-<span class="lineno">16</span>#100=<mark>PRODUCT</mark>(&#x27;Schrägverzahnt_Kühlkörper&#x27;,&#x27;german umlauts&#x27;,&#x27;&#x27;,(#3));
-<span class="lineno">17</span>#101=<mark>PRODUCT</mark>_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#100);
-<span class="lineno">18</span>#102=<mark>PRODUCT</mark>_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#101,#103);
-<span class="lineno">19</span>#103=<mark>PRODUCT</mark>_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
-<span class="lineno">20</span>ENDSEC;
-<span class="lineno">21</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* Le059: German umlauts in <mark>PRODUCT</mark>.name mis-decoded by reader: Ed.2-style STEP with raw ISO-8859-1 bytes for umlauts; <mark>PRODUCT</mark> &#x27;Schr\xe4gverzahnt&#x27; (Schraegverzahnt) carries raw byte 0xE4 (Ã¤); UTF-8-only reader sees isolated continuation byte and garbles the string; heal: inspect FILE_DESCRIPTION implementation_level to determine edition; on Ed.2, decode high-bit bytes as ISO-8859-1; on Ed.3, reject isolated continuation bytes with E_BAD_UTF8; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Le059&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Le059.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">12</span>#9050=<mark>PRODUCT</mark>_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">13</span>#9051=<mark>PRODUCT</mark>(&#x27;Le059&#x27;,&#x27;Le059&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">14</span>#9052=<mark>PRODUCT</mark>_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">15</span>#9053=<mark>PRODUCT</mark>_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">16</span>#9054=<mark>PRODUCT</mark>_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">17</span>#9055=<mark>PRODUCT</mark>_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">18</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">19</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">20</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">21</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">22</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">23</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#2),#9060);
+<span class="lineno">24</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">25</span>#8997=<mark>PRODUCT</mark>(&#x27;SchrÃ¤gverzahnt&#x27;,&#x27;&#x27;,&#x27;&#x27;,());
+<span class="lineno">26</span>#8998=<mark>PRODUCT</mark>(&#x27;ä¸ä¸­æ&#x27;,&#x27;&#x27;,&#x27;&#x27;,());
+<span class="lineno">27</span>#8999=<mark>PRODUCT</mark>(&#x27;GrÃ¶Ãe&#x27;,&#x27;&#x27;,&#x27;&#x27;,());
+<span class="lineno">28</span>
+<span class="lineno">29</span>ENDSEC;
+<span class="lineno">30</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

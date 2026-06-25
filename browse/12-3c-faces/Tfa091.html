@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tfa091 — ShapeFix_Face.FixLoopWire intersecting-loop touch</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa091</span>
+</nav>
+<header class="title-bar">
+<h1>Tfa091 <span class="sep">—</span> <span class="entry-title">ShapeFix_Face.FixLoopWire intersecting-loop touch</span></h1>
+<p class="category">§12.3c</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3c-faces/Tfa091.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa091.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>synthesized — no external source cited</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>ShapeFix_Face.FixLoopWire intersecting-loop touch</p></section>
+<section><h2>Reproducer recipe</h2>
+<p></p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>process_signal</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tfa091 - ShapeFix_Face.FixLoopWire intersecting-loop touch
+<span class="lineno">3</span> * Face with two inner wires that share a single tangent-touch point;
+<span class="lineno">4</span> * FixLoopWire merge produces a wire with a self-touch vertex (vertex shared
+<span class="lineno">5</span> * between two non-adjacent edges within the same loop). Tests face healing
+<span class="lineno">6</span> * when merging intersecting loops creates a collapsed topology. */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Tfa091 test case&#x27;,&#x27;Face with tangent-touching inner wires triggering self-touch collapse&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;Tfa091.stp&#x27;,&#x27;2026-06-15T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">15</span>/* === Outer boundary: unit square === */
+<span class="lineno">16</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">17</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">18</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">19</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">20</span>#14=PLANE(&#x27;face_plane&#x27;,#13);
+<span class="lineno">21</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));#21=VERTEX_POINT(&#x27;&#x27;,#20);
+<span class="lineno">22</span>#22=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));#23=VERTEX_POINT(&#x27;&#x27;,#22);
+<span class="lineno">23</span>#24=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));#25=VERTEX_POINT(&#x27;&#x27;,#24);
+<span class="lineno">24</span>#26=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));#27=VERTEX_POINT(&#x27;&#x27;,#26);
+<span class="lineno">25</span>#30=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#31=VECTOR(&#x27;&#x27;,#30,1.0);#32=LINE(&#x27;&#x27;,#20,#31);
+<span class="lineno">26</span>#33=EDGE_CURVE(&#x27;outer_e1&#x27;,#21,#23,#32,.T.);
+<span class="lineno">27</span>#34=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));#35=VECTOR(&#x27;&#x27;,#34,1.0);#36=LINE(&#x27;&#x27;,#22,#35);
+<span class="lineno">28</span>#37=EDGE_CURVE(&#x27;outer_e2&#x27;,#23,#25,#36,.T.);
+<span class="lineno">29</span>#38=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));#39=VECTOR(&#x27;&#x27;,#38,1.0);#40=LINE(&#x27;&#x27;,#24,#39);
+<span class="lineno">30</span>#41=EDGE_CURVE(&#x27;outer_e3&#x27;,#25,#27,#40,.T.);
+<span class="lineno">31</span>#42=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));#43=VECTOR(&#x27;&#x27;,#42,1.0);#44=LINE(&#x27;&#x27;,#26,#43);
+<span class="lineno">32</span>#45=EDGE_CURVE(&#x27;outer_e4&#x27;,#27,#21,#44,.T.);
+<span class="lineno">33</span>#46=ORIENTED_EDGE(&#x27;&#x27;,*,*,#33,.T.);#47=ORIENTED_EDGE(&#x27;&#x27;,*,*,#37,.T.);
+<span class="lineno">34</span>#48=ORIENTED_EDGE(&#x27;&#x27;,*,*,#41,.T.);#49=ORIENTED_EDGE(&#x27;&#x27;,*,*,#45,.T.);
+<span class="lineno">35</span>#50=EDGE_LOOP(&#x27;outer&#x27;,(#46,#47,#48,#49));
+<span class="lineno">36</span>#51=FACE_OUTER_BOUND(&#x27;&#x27;,#50,.T.);
+<span class="lineno">37</span>/* === Inner wire 1: small loop from (0.3,0.3) to (0.5,0.3) to (0.5,0.5) to (0.3,0.5) back to (0.3,0.3) === */
+<span class="lineno">38</span>#60=CARTESIAN_POINT(&#x27;&#x27;,(0.3,0.3,0.0));#61=VERTEX_POINT(&#x27;&#x27;,#60);
+<span class="lineno">39</span>#62=CARTESIAN_POINT(&#x27;&#x27;,(0.5,0.3,0.0));#63=VERTEX_POINT(&#x27;&#x27;,#62);
+<span class="lineno">40</span>#64=CARTESIAN_POINT(&#x27;&#x27;,(0.5,0.5,0.0));#65=VERTEX_POINT(&#x27;&#x27;,#64);
+<span class="lineno">41</span>#66=CARTESIAN_POINT(&#x27;&#x27;,(0.3,0.5,0.0));#67=VERTEX_POINT(&#x27;&#x27;,#66);
+<span class="lineno">42</span>#70=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#71=VECTOR(&#x27;&#x27;,#70,0.2);#72=LINE(&#x27;&#x27;,#60,#71);
+<span class="lineno">43</span>#73=EDGE_CURVE(&#x27;inner1_e1&#x27;,#61,#63,#72,.T.);
+<span class="lineno">44</span>#74=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));#75=VECTOR(&#x27;&#x27;,#74,0.2);#76=LINE(&#x27;&#x27;,#62,#75);
+<span class="lineno">45</span>#77=EDGE_CURVE(&#x27;inner1_e2&#x27;,#63,#65,#76,.T.);
+<span class="lineno">46</span>#78=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));#79=VECTOR(&#x27;&#x27;,#78,0.2);#80=LINE(&#x27;&#x27;,#64,#79);
+<span class="lineno">47</span>#81=EDGE_CURVE(&#x27;inner1_e3&#x27;,#65,#67,#80,.T.);
+<span class="lineno">48</span>#82=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));#83=VECTOR(&#x27;&#x27;,#82,0.2);#84=LINE(&#x27;&#x27;,#66,#83);
+<span class="lineno">49</span>#85=EDGE_CURVE(&#x27;inner1_e4&#x27;,#67,#61,#84,.T.);
+<span class="lineno">50</span>#86=ORIENTED_EDGE(&#x27;&#x27;,*,*,#73,.T.);#87=ORIENTED_EDGE(&#x27;&#x27;,*,*,#77,.T.);
+<span class="lineno">51</span>#88=ORIENTED_EDGE(&#x27;&#x27;,*,*,#81,.T.);#89=ORIENTED_EDGE(&#x27;&#x27;,*,*,#85,.T.);
+<span class="lineno">52</span>#90=EDGE_LOOP(&#x27;inner1&#x27;,(#86,#87,#88,#89));
+<span class="lineno">53</span>#91=FACE_INNER_BOUND(&#x27;&#x27;,#90,.T.);
+<span class="lineno">54</span>/* === Inner wire 2: small loop that touches inner1 at single point (0.5,0.3)
+<span class="lineno">55</span> * Vertices: touch-point (0.5,0.3), then (0.7,0.3), (0.7,0.5), (0.5,0.5), back to touch-point
+<span class="lineno">56</span> * This creates a shared vertex with inner1 at (0.5,0.3) === */
+<span class="lineno">57</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.7,0.3,0.0));#101=VERTEX_POINT(&#x27;&#x27;,#100);
+<span class="lineno">58</span>#102=CARTESIAN_POINT(&#x27;&#x27;,(0.7,0.5,0.0));#103=VERTEX_POINT(&#x27;&#x27;,#102);
+<span class="lineno">59</span>/* Reuse #62 as shared touch point (0.5,0.3) */
+<span class="lineno">60</span>#104=CARTESIAN_POINT(&#x27;&#x27;,(0.5,0.5,0.0));#105=VERTEX_POINT(&#x27;&#x27;,#104);
+<span class="lineno">61</span>#110=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#111=VECTOR(&#x27;&#x27;,#110,0.2);#112=LINE(&#x27;&#x27;,#62,#111);
+<span class="lineno">62</span>#113=EDGE_CURVE(&#x27;inner2_e1&#x27;,#63,#101,#112,.T.);
+<span class="lineno">63</span>#114=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));#115=VECTOR(&#x27;&#x27;,#114,0.2);#116=LINE(&#x27;&#x27;,#100,#115);
+<span class="lineno">64</span>#117=EDGE_CURVE(&#x27;inner2_e2&#x27;,#101,#103,#116,.T.);
+<span class="lineno">65</span>#118=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));#119=VECTOR(&#x27;&#x27;,#118,0.2);#120=LINE(&#x27;&#x27;,#102,#119);
+<span class="lineno">66</span>#121=EDGE_CURVE(&#x27;inner2_e3&#x27;,#103,#105,#120,.T.);
+<span class="lineno">67</span>#122=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));#123=VECTOR(&#x27;&#x27;,#122,0.2);#124=LINE(&#x27;&#x27;,#104,#123);
+<span class="lineno">68</span>#125=EDGE_CURVE(&#x27;inner2_e4&#x27;,#105,#63,#124,.T.);
+<span class="lineno">69</span>#126=ORIENTED_EDGE(&#x27;&#x27;,*,*,#113,.T.);#127=ORIENTED_EDGE(&#x27;&#x27;,*,*,#117,.T.);
+<span class="lineno">70</span>#128=ORIENTED_EDGE(&#x27;&#x27;,*,*,#121,.T.);#129=ORIENTED_EDGE(&#x27;&#x27;,*,*,#125,.T.);
+<span class="lineno">71</span>#130=EDGE_LOOP(&#x27;inner2&#x27;,(#126,#127,#128,#129));
+<span class="lineno">72</span>#131=FACE_INNER_BOUND(&#x27;&#x27;,#130,.T.);
+<span class="lineno">73</span>#140=ADVANCED_FACE(&#x27;face_intersecting_loops&#x27;,(#51,#91,#131),#14,.T.);
+<span class="lineno">74</span>/* === Mandatory product context chain === */
+<span class="lineno">75</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">76</span>#9001=PRODUCT(&#x27;Tfa091&#x27;,&#x27;Tfa091&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">77</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">78</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">79</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">80</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">81</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">82</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">83</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">84</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">85</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">86</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;sbsm&#x27;,(#9020));
+<span class="lineno">87</span>#9020=OPEN_SHELL(&#x27;shell&#x27;,(#140));
+<span class="lineno">88</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">89</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">90</span>ENDSEC;
+<span class="lineno">91</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tfa090.html">&larr; Tfa090</a> <a class="up" href="index.html">§12.3c Faces / sewing / free bound</a> <a class="next" href="Tfa092.html">Tfa092 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -43,6 +43,9 @@
 <li><code>contains(b&quot;CONVERSION_BASED_UNIT(&#x27;DEGREE&#x27;&quot;) or contains(b&quot;CONVERSION_BASED_UNIT(&#x27;DEG&#x27;&quot;)</code></li>
 <li><code>contains(b&#x27;PLANE_ANGLE_MEASURE(1.5708&#x27;) or contains(b&#x27;PLANE_ANGLE_MEASURE(90.0&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="U031.html">U031</a>, <a href="../12-7-pmi/Pmi067.html">Pmi067</a>, <a href="U001.html">U001</a></p>
 </section>
@@ -60,44 +63,43 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* U039 - Plane-angle unit declared as DEGREE but values stored as radians
-<span class="lineno">2</span> * Defect: a PLANE_ANGLE_UNIT context is declared via
-<span class="lineno">3</span> *   CONVERSION_BASED_UNIT(&#x27;DEGREE&#x27;,#7) with factor pi/180 (=0.017453293).
-<span class="lineno">4</span> * A MEASURE_REPRESENTATION_ITEM stores PLANE_ANGLE_MEASURE(1.5708) -- the
-<span class="lineno">5</span> * author intended 90 degrees but emitted the radian value. Receivers
-<span class="lineno">6</span> * that take the unit declaration at face value read 1.5708 degrees;
-<span class="lineno">7</span> * receivers that hard-assume radians produce the right number for the
-<span class="lineno">8</span> * wrong reason. The angular twin of U001 (mm vs inches). */
-<span class="lineno">9</span>ISO-10303-21;
-<span class="lineno">10</span>HEADER;
-<span class="lineno">11</span>FILE_DESCRIPTION((&#x27;U039 - DEGREE unit declared but value stored in radians&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">12</span>FILE_NAME(&#x27;U039.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">13</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">14</span>ENDSEC;
-<span class="lineno">15</span>DATA;
-<span class="lineno">16</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">17</span>#2=DIMENSIONAL_EXPONENTS(0.0,0.0,0.0,0.0,0.0,0.0,0.0);
-<span class="lineno">18</span>#3=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">19</span>#4=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">20</span>#5=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">21</span>#6=PLANE_ANGLE_MEASURE_WITH_UNIT(PLANE_ANGLE_MEASURE(0.017453293),#4);
-<span class="lineno">22</span>/* Defect: unit named DEGREE, conversion factor pi/180 (correct), but
-<span class="lineno">23</span>   the value referencing this unit is stored in radians. */
-<span class="lineno">24</span>#7=(CONVERSION_BASED_UNIT(&#x27;DEGREE&#x27;,#6) NAMED_UNIT(#2) PLANE_ANGLE_UNIT());
-<span class="lineno">25</span>#10=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#3,
-<span class="lineno">26</span>  &#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
-<span class="lineno">27</span>#11=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">28</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#10))
-<span class="lineno">29</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#3,#7,#5))
-<span class="lineno">30</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
-<span class="lineno">31</span>/* Defect: PLANE_ANGLE_MEASURE(1.5708) -- the author intended 90 degrees
-<span class="lineno">32</span>   but emitted the radian value of 90 degrees. A radian-assuming reader
-<span class="lineno">33</span>   will read this as ~90; a degree-assuming reader will read 1.5708. */
-<span class="lineno">34</span>#20=MEASURE_REPRESENTATION_ITEM(&#x27;rotation_intended_90deg&#x27;,
-<span class="lineno">35</span>  PLANE_ANGLE_MEASURE(1.5708),#7);
-<span class="lineno">36</span>#21=REPRESENTATION(&#x27;rep&#x27;,(#20),#11);
-<span class="lineno">37</span>ENDSEC;
-<span class="lineno">38</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* U039: PLANE_ANGLE_UNIT declared DEGREE but value 1.5708 is in radians */
+<span class="lineno">3</span>/* DEFECT: producer emitted radian value; declared unit is DEGREE */
+<span class="lineno">4</span>/* Correct receiver: read 1.5708 as 1.5708 degrees (off by factor pi/180 from intent) */
+<span class="lineno">5</span>/* Buggy receiver (hard-codes radians): silently reads 1.5708 rad = 90 deg by accident */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;U039: DEGREE unit declared but 1.5708 radian value stored&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;U039.stp&#x27;,&#x27;2026-06-20T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>/* Geometry: part with mm coordinates */
+<span class="lineno">13</span>#1=CARTESIAN_POINT(&#x27;origin&#x27;,(0.,0.,0.));
+<span class="lineno">14</span>#2=CARTESIAN_POINT(&#x27;corner-x&#x27;,(50.0,0.,0.));
+<span class="lineno">15</span>#3=CARTESIAN_POINT(&#x27;corner-y&#x27;,(0.,50.0,0.));
+<span class="lineno">16</span>#4=CARTESIAN_POINT(&#x27;corner-z&#x27;,(0.,0.,25.0));
+<span class="lineno">17</span>#5=CARTESIAN_POINT(&#x27;corner-xyz&#x27;,(50.0,50.0,25.0));
+<span class="lineno">18</span>/* SI radian base â required as the conversion reference for DEGREE */
+<span class="lineno">19</span>#8=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+<span class="lineno">20</span>/* Correct DEGREE conversion factor: pi/180 = 0.01745329251994329 */
+<span class="lineno">21</span>#9=PLANE_ANGLE_MEASURE_WITH_UNIT(PLANE_ANGLE_MEASURE(0.01745329251994329),#8);
+<span class="lineno">22</span>/* DEGREE plane-angle unit declared with correct pi/180 factor */
+<span class="lineno">23</span>#10=(CONVERSION_BASED_UNIT(&#x27;DEGREE&#x27;,#9) NAMED_UNIT(*) PLANE_ANGLE_UNIT());
+<span class="lineno">24</span>#11=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">25</span>#12=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+<span class="lineno">26</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#11,
+<span class="lineno">27</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">28</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">29</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#11,#10,#12)) REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">30</span>/* DEFECT: PLANE_ANGLE_MEASURE(1.5708) â author intended 90 deg but stored pi/2 radians */
+<span class="lineno">31</span>/* With DEGREE unit declared, a conformant receiver reads this as 1.5708 degrees */
+<span class="lineno">32</span>/* A receiver hard-coding radians silently gets 90 degrees â hiding the defect */
+<span class="lineno">33</span>#20=MEASURE_REPRESENTATION_ITEM(&#x27;rotation_angle&#x27;,PLANE_ANGLE_MEASURE(1.5708),#10);
+<span class="lineno">34</span>/* Model entity is GEOMETRIC_CURVE_SET â OCC returns empty shape */
+<span class="lineno">35</span>#30=GEOMETRIC_CURVE_SET(&#x27;deg-declared-radian-stored&#x27;,(#1,#2,#3,#4,#5));
+<span class="lineno">36</span>ENDSEC;
+<span class="lineno">37</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

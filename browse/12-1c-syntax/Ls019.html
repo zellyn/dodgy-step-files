@@ -41,6 +41,9 @@
 <li><code>matches(rb&#x27;IFCPOLYLINE\(\(#\d+,#\d+,#\d+\);&#x27;)</code></li>
 <li><code>matches(rb&#x27;\(#\d+,#\d+,#\d+\);&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -55,40 +58,36 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Ls019 - Missing closing &#x27;)&#x27; of an aggregate (paren imbalance)
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Ls019 - Missing closing ) of an aggregate (paren imbalance)
 <span class="lineno">2</span>   ----------------------------------------------------------------------
 <span class="lineno">3</span>   Catalog section : Â§12.1c punctuation
 <span class="lineno">4</span>   Sources         : T043, N050
-<span class="lineno">5</span>   Originally also catalogued as: Ad039
-<span class="lineno">6</span>   ----------------------------------------------------------------------
-<span class="lineno">7</span>   Defect
-<span class="lineno">8</span>     A truncated coordinate or reference list (e.g. ((1.,2.,3.),(4.,5.,6.)
-<span class="lineno">9</span>     - one &#x27;)&#x27; short - causes scanners to walk past the &#x27;;&#x27; of the next
-<span class="lineno">10</span>     instance. The defect is particularly common when nested aggregates
-<span class="lineno">11</span>     contain empty inner lists (e.g. (()) versus ()).
-<span class="lineno">12</span>   Expected behavior
-<span class="lineno">13</span>     Track paren depth per instance; on &#x27;;&#x27; at depth&gt;0, reject with
-<span class="lineno">14</span>     &quot;unbalanced parentheses&quot; naming the unmatched open paren by its
-<span class="lineno">15</span>     line/column. Never resynchronize on the next &#x27;;&#x27; - report at end
-<span class="lineno">16</span>     of input or at first valid recovery boundary.
-<span class="lineno">17</span>   ----------------------------------------------------------------------
-<span class="lineno">18</span>*/
-<span class="lineno">19</span>ISO-10303-21;
-<span class="lineno">20</span>HEADER;
-<span class="lineno">21</span>FILE_DESCRIPTION((&#x27;Ls019 - missing closing paren in aggregate&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">22</span>FILE_NAME(&#x27;Ls019.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
-<span class="lineno">23</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">24</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">25</span>ENDSEC;
-<span class="lineno">26</span>DATA;
-<span class="lineno">27</span>#10=CARTESIAN_POINT(&#x27;a&#x27;,(0.0,0.0,0.0));
-<span class="lineno">28</span>#11=CARTESIAN_POINT(&#x27;b&#x27;,(1.0,0.0,0.0));
-<span class="lineno">29</span>#12=CARTESIAN_POINT(&#x27;c&#x27;,(1.0,1.0,0.0));
-<span class="lineno">30</span>/* Defect: aggregate is missing its closing &#x27;)&#x27;; the next &#x27;;&#x27; belongs to #20 */
-<span class="lineno">31</span>#15=<mark>IFCPOLYLINE((#10,#11,#12);</mark>
-<span class="lineno">32</span>#20=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">33</span>ENDSEC;
-<span class="lineno">34</span>END-ISO-10303-21;
+<span class="lineno">5</span>   ----------------------------------------------------------------------
+<span class="lineno">6</span>   Defect
+<span class="lineno">7</span>     A truncated coordinate list like ((1.,2.,3.),(4.,5.,6.) (one ) short)
+<span class="lineno">8</span>     causes scanners to walk past the ; of the next instance. Common when
+<span class="lineno">9</span>     nested aggregates contain empty inner lists (()) vs ().
+<span class="lineno">10</span>   Expected behavior
+<span class="lineno">11</span>     Track paren depth per instance; on ; at depth&gt;0, reject with
+<span class="lineno">12</span>     &#x27;unbalanced parentheses&#x27; naming the unmatched open paren.
+<span class="lineno">13</span>   ----------------------------------------------------------------------
+<span class="lineno">14</span>*/
+<span class="lineno">15</span>ISO-10303-21;
+<span class="lineno">16</span>HEADER;
+<span class="lineno">17</span>FILE_DESCRIPTION((&#x27;Ls019 - missing closing paren in aggregate&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">18</span>FILE_NAME(&#x27;Ls019.stp&#x27;,&#x27;2026-06-20T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">19</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">20</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">21</span>ENDSEC;
+<span class="lineno">22</span>DATA;
+<span class="lineno">23</span>#1=CARTESIAN_POINT(&#x27;p1&#x27;,(0.,0.,0.));
+<span class="lineno">24</span>#2=CARTESIAN_POINT(&#x27;p2&#x27;,(1.,0.,0.));
+<span class="lineno">25</span>#3=CARTESIAN_POINT(&#x27;p3&#x27;,(1.,1.,0.));
+<span class="lineno">26</span>/* Defect: outer aggregate opened but never closed before semicolon (depth=1 at ;) */
+<span class="lineno">27</span>#4=<mark>IFCPOLYLINE((#1,#2,#3);</mark>
+<span class="lineno">28</span>#5=DIRECTION(&#x27;x&#x27;,(1.,0.,0.));
+<span class="lineno">29</span>ENDSEC;
+<span class="lineno">30</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

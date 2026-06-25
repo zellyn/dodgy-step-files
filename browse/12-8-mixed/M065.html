@@ -37,52 +37,72 @@
 <section><h2>Notes</h2>
 <p>Synonyms: &quot;hybrid product&quot;, &quot;assembly with shape&quot;, &quot;product is both assembly and part&quot;, &quot;PDM product has direct geometry plus children&quot;, &quot;shape-vs-NAUO ambiguity&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;NEXT_ASSEMBLY_USAGE_OCCURRENCE&#x27;)</code></li>
 <li><code>contains(b&#x27;SHAPE_DEFINITION_REPRESENTATION&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_vertices_total == 3</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
-<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(3)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(3)</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
 <tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
-<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M065 - Product is both an assembly and a part.
-<span class="lineno">3</span> * Defect: the same PRODUCT_DEFINITION is parent in NAUO AND has its
-<span class="lineno">4</span> * own <mark>SHAPE_DEFINITION_REPRESENTATION</mark>. */
-<span class="lineno">5</span>HEADER;
-<span class="lineno">6</span>FILE_DESCRIPTION((&#x27;In009 - hybrid product&#x27;,&#x27;Pass C gap-fill&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">7</span>FILE_NAME(&#x27;M065.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;gap-fill C&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">8</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">9</span>ENDSEC;
-<span class="lineno">10</span>DATA;
-<span class="lineno">11</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">12</span>#10=PRODUCT(&#x27;hybrid&#x27;,&#x27;hybrid&#x27;,&#x27;&#x27;,());
-<span class="lineno">13</span>#11=PRODUCT(&#x27;child&#x27;,&#x27;child&#x27;,&#x27;&#x27;,());
-<span class="lineno">14</span>#20=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#10);
-<span class="lineno">15</span>#21=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#11);
-<span class="lineno">16</span>#22=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#20,$);
-<span class="lineno">17</span>#23=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#21,$);
-<span class="lineno">18</span>/* hybrid is parent in NAUO */
-<span class="lineno">19</span>#30=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#22,#23,$);
-<span class="lineno">20</span>/* hybrid ALSO has direct shape */
-<span class="lineno">21</span>#40=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#22);
-<span class="lineno">22</span>#50=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">23</span>#51=GEOMETRIC_REPRESENTATION_CONTEXT(&#x27;&#x27;,$,3);
-<span class="lineno">24</span>#52=SHAPE_REPRESENTATION(&#x27;&#x27;,(#50),#51);
-<span class="lineno">25</span>#60=<mark>SHAPE_DEFINITION_REPRESENTATION</mark>(#40,#52);
-<span class="lineno">26</span>ENDSEC;
-<span class="lineno">27</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M065: GEOMETRIC_CURVE_SET in file where PRODUCT_DEFINITION is both assembly parent in <mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark> and has direct geometry via <mark>SHAPE_DEFINITION_REPRESENTATION</mark> â hybrid product ambiguity; input: AP242 STEP file where product_def_parent is the relating_product_definition of a <mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark> (making it an assembly parent) AND is also the definition of a <mark>SHAPE_DEFINITION_REPRESENTATION</mark> whose used_representation contains a MANIFOLD_SOLID_BREP; AP242 Â§4.3 (product_definition_shape) does not forbid this combination but the semantics are undefined: is the product&#x27;s shape the assembly result, the direct B-rep, or a preview B-rep of the assembly result? readers disagree: some show the B-rep, some the assembly, some nothing; silently resolving the ambiguity either way is incorrect; kernel must reject as malformed, or treat the direct shape as a preview and document the policy explicitly; OCC silently accepts (no diagnostic, empty result); GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty; synonyms: hybrid product, assembly with shape, product is both assembly and part, PDM product has direct geometry plus children, shape-vs-NAUO ambiguity */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;M065&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;M065.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">11</span>#2=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">12</span>#3=PRODUCT(&#x27;parent_001&#x27;,&#x27;HybridProduct&#x27;,&#x27;Both assembly and part&#x27;,(#2));
+<span class="lineno">13</span>#4=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#3);
+<span class="lineno">14</span>#5=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#4,#2);
+<span class="lineno">15</span>#6=PRODUCT(&#x27;child_001&#x27;,&#x27;ChildPart&#x27;,&#x27;Child component&#x27;,(#2));
+<span class="lineno">16</span>#7=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#6);
+<span class="lineno">17</span>#8=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#7,#2);
+<span class="lineno">18</span>#9=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;u1&#x27;,&#x27;&#x27;,&#x27;uses&#x27;,#5,#8,$);
+<span class="lineno">19</span>#10=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#5);
+<span class="lineno">20</span>#11=CARTESIAN_POINT(&#x27;v1&#x27;,(0.,0.,0.));
+<span class="lineno">21</span>#12=CARTESIAN_POINT(&#x27;v2&#x27;,(10.,0.,0.));
+<span class="lineno">22</span>#13=CARTESIAN_POINT(&#x27;v3&#x27;,(0.,10.,0.));
+<span class="lineno">23</span>#14=DIRECTION(&#x27;z_axis&#x27;,(0.,0.,1.));
+<span class="lineno">24</span>#15=DIRECTION(&#x27;x_axis&#x27;,(1.,0.,0.));
+<span class="lineno">25</span>#16=AXIS2_PLACEMENT_3D(&#x27;solid_placement&#x27;,#11,#14,#15);
+<span class="lineno">26</span>#17=SHAPE_REPRESENTATION(&#x27;direct_brep_rep&#x27;,(#16),$);
+<span class="lineno">27</span>#18=<mark>SHAPE_DEFINITION_REPRESENTATION</mark>(#10,#17);
+<span class="lineno">28</span>#19=GEOMETRIC_CURVE_SET(&#x27;product-has-both-sub-assemblies-and-direct-shape&#x27;,(#9,#18,#10,#5,#8,#16,#11,#12,#13));
+<span class="lineno">29</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">30</span>#9051=PRODUCT(&#x27;M065&#x27;,&#x27;M065&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">31</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">32</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">33</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">34</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">35</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">36</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">37</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">38</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">39</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">40</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#19),#9060);
+<span class="lineno">41</span>#9062=<mark>SHAPE_DEFINITION_REPRESENTATION</mark>(#9055,#9061);
+<span class="lineno">42</span>ENDSEC;
+<span class="lineno">43</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

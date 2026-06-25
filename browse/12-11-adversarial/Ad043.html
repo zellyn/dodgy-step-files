@@ -47,6 +47,9 @@
 <li><code>contains(b&#x27;#999&#x27;)</code></li>
 <li><code>contains(b&#x27;STYLED_ITEM&#x27;) and contains(b&#x27;#999&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -61,58 +64,22 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Ad043 - STEP read raises uncaught exception (null/invalid entity catch-all)
-<span class="lineno">2</span>   ----------------------------------------------------------------------
-<span class="lineno">3</span>   Catalog section : Â§12.11 adversarial (sub-class: null-deref / DoS)
-<span class="lineno">4</span>   Sources         : 03-occt-tests.md R043 (bug22871, bug16351, bug23157,
-<span class="lineno">5</span>                     bug24383, bug25912, bug133_2/3/9), R057 (bug23251),
-<span class="lineno">6</span>                     R045 (bug33307), R067 (bug24990);
-<span class="lineno">7</span>                     04-occt-translation.md Q078;
-<span class="lineno">8</span>                     08-occt-gitlog.md G027 (STYLED_ITEM.item NULL),
-<span class="lineno">9</span>                     G029 (NULL vertex name/id), G034, G035, G050, G063,
-<span class="lineno">10</span>                     G083, G085, G086, G109 (GD&amp;T null-deref family);
-<span class="lineno">11</span>                     18-other-issues.md I001, I003, I004, I044
-<span class="lineno">12</span>   See also        : Ad045, Ad046, Ad047, Ad050, Ad081, Ad082, Ad083, Ad086
-<span class="lineno">13</span>   ----------------------------------------------------------------------
-<span class="lineno">14</span>   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
-<span class="lineno">15</span>   testing. Do NOT use as exchange data.
-<span class="lineno">16</span>   ----------------------------------------------------------------------
-<span class="lineno">17</span>   Defect
-<span class="lineno">18</span>     Reader paths assume non-null entity references and throw
-<span class="lineno">19</span>     Standard_Failure (e.g. OSD_Exception_ACCESS_VIOLATION),
-<span class="lineno">20</span>     Standard_OutOfRange, or similar when a STEP file references a
-<span class="lineno">21</span>     non-existent entity. Canonical example: STYLED_ITEM with NULL item.
-<span class="lineno">22</span>   Reproducer recipe
-<span class="lineno">23</span>     STYLED_ITEM(&#x27;&#x27;,(...),<mark>#999</mark>) where <mark>#999</mark> is unresolved.
-<span class="lineno">24</span>   Expected kernel behavior
-<span class="lineno">25</span>     Comprehensive null-checking on every reader path; warn-and-skip;
-<span class="lineno">26</span>     never abort. Emit E_NULL_REFERENCE with entity-id context.
-<span class="lineno">27</span>   ----------------------------------------------------------------------
-<span class="lineno">28</span>*/
-<span class="lineno">29</span>ISO-10303-21;
-<span class="lineno">30</span>HEADER;
-<span class="lineno">31</span>FILE_DESCRIPTION((&#x27;Ad043 - STYLED_ITEM points at unresolved entity&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">32</span>FILE_NAME(&#x27;Ad043.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
-<span class="lineno">33</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">34</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">35</span>ENDSEC;
-<span class="lineno">36</span>DATA;
-<span class="lineno">37</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">38</span>#10=CARTESIAN_POINT(&#x27;o&#x27;,(0.0,0.0,0.0));
-<span class="lineno">39</span>#11=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
-<span class="lineno">40</span>#12=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">41</span>#13=AXIS2_PLACEMENT_3D(&#x27;p&#x27;,#10,#11,#12);
-<span class="lineno">42</span>#20=COLOUR_RGB(&#x27;red&#x27;,1.0,0.0,0.0);
-<span class="lineno">43</span>#21=FILL_AREA_STYLE_COLOUR(&#x27;&#x27;,#20);
-<span class="lineno">44</span>#22=FILL_AREA_STYLE(&#x27;&#x27;,(#21));
-<span class="lineno">45</span>#23=SURFACE_STYLE_FILL_AREA(#22);
-<span class="lineno">46</span>#24=SURFACE_SIDE_STYLE(&#x27;&#x27;,(#23));
-<span class="lineno">47</span>#25=SURFACE_STYLE_USAGE(.BOTH.,#24);
-<span class="lineno">48</span>#26=PRESENTATION_STYLE_ASSIGNMENT((#25));
-<span class="lineno">49</span>/* Defect: STYLED_ITEM references <mark>#999</mark>, which is never declared. */
-<span class="lineno">50</span>#27=STYLED_ITEM(&#x27;&#x27;,(#26),<mark>#999</mark>);
-<span class="lineno">51</span>ENDSEC;
-<span class="lineno">52</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Ad043: null / dangling entity reference: STYLED_ITEM.item = <mark>#999</mark> (never declared); STYLED_ITEM references swept_curve = #998 (never declared); reader throws uncaught exception across ABI on unresolved ref; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ad043&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ad043.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">11</span>#3=STYLED_ITEM(&#x27;&#x27;,(#1),<mark>#999</mark>);
+<span class="lineno">12</span>#4=SURFACE_STYLE_USAGE(.BOTH.,<mark>#999</mark>);
+<span class="lineno">13</span>#5=EXTRUDED_AREA_SOLID(&#x27;&#x27;,<mark>#999</mark>,#1,10.0);
+<span class="lineno">14</span>#6=VERTEX_POINT(&#x27;&#x27;,<mark>#999</mark>);
+<span class="lineno">15</span>ENDSEC;
+<span class="lineno">16</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

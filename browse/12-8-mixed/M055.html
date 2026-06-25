@@ -58,62 +58,43 @@
 <details>
 <summary>Show fixture bytes</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M055 - POLY_LOOP on non-planar surface inside FACETED_BREP.
-<span class="lineno">3</span> * Defect: FACETED_BREP requires planar faces; POLY_LOOP placed on a
-<span class="lineno">4</span> * non-planar surface (here a CYLINDRICAL_SURFACE) violates the
-<span class="lineno">5</span> * schema. OCCT StepToTopoDS_TranslatePolyLoop.cxx:88-91 rejects the
-<span class="lineno">6</span> * face in this configuration.
-<span class="lineno">7</span> * This fixture: a CLOSED_SHELL containing one ADVANCED_FACE whose
-<span class="lineno">8</span> * surface is a CYLINDRICAL_SURFACE and whose outer bound is a
-<span class="lineno">9</span> * POLY_LOOP. The POLY_LOOP/non-planar-surface combination is the
-<span class="lineno">10</span> * defect; the rest of the shell is elided. */
-<span class="lineno">11</span>HEADER;
-<span class="lineno">12</span>FILE_DESCRIPTION((&#x27;M055 test case&#x27;,&#x27;POLY_LOOP on cylindrical surface&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">13</span>FILE_NAME(&#x27;M055.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">14</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">15</span>ENDSEC;
-<span class="lineno">16</span>DATA;
-<span class="lineno">17</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">18</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
-<span class="lineno">19</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">20</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">21</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">22</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
-<span class="lineno">23</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">24</span>     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-<span class="lineno">25</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-<span class="lineno">26</span>     REPRESENTATION_CONTEXT(&#x27;part&#x27;,&#x27;3D&#x27;));
-<span class="lineno">27</span>/* Cylinder placement and surface. */
-<span class="lineno">28</span>#100=CARTESIAN_POINT(&#x27;cyl_origin&#x27;,(0.0,0.0,0.0));
-<span class="lineno">29</span>#101=DIRECTION(&#x27;cyl_axis&#x27;,(0.0,0.0,1.0));
-<span class="lineno">30</span>#102=DIRECTION(&#x27;cyl_ref&#x27;,(1.0,0.0,0.0));
-<span class="lineno">31</span>#103=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#100,#101,#102);
-<span class="lineno">32</span>#104=CYLINDRICAL_SURFACE(&#x27;side_wall&#x27;,#103,5.0);
-<span class="lineno">33</span>/* POLY_LOOP vertices - sampled points on the cylinder; not coplanar. */
-<span class="lineno">34</span>#110=CARTESIAN_POINT(&#x27;p0&#x27;,(5.0,0.0,0.0));
-<span class="lineno">35</span>#111=CARTESIAN_POINT(&#x27;p1&#x27;,(0.0,5.0,0.0));
-<span class="lineno">36</span>#112=CARTESIAN_POINT(&#x27;p2&#x27;,(0.0,5.0,4.0));
-<span class="lineno">37</span>#113=CARTESIAN_POINT(&#x27;p3&#x27;,(5.0,0.0,4.0));
-<span class="lineno">38</span>#120=POLY_LOOP(&#x27;non_planar_loop&#x27;,(#110,#111,#112,#113));
-<span class="lineno">39</span>#130=FACE_OUTER_BOUND(&#x27;&#x27;,#120,.T.);
-<span class="lineno">40</span>#140=ADVANCED_FACE(&#x27;cyl_face_with_poly_loop&#x27;,(#130),#104,.T.);
-<span class="lineno">41</span>/* CLOSED_SHELL is the legal outer for FACETED_BREP, but the face
-<span class="lineno">42</span> * carried by the shell uses POLY_LOOP on a non-planar surface, which
-<span class="lineno">43</span> * is the schema violation. */
-<span class="lineno">44</span>#200=CLOSED_SHELL(&#x27;shell_with_illegal_face&#x27;,(#140));
-<span class="lineno">45</span>#210=FACETED_BREP(&#x27;faceted_brep_with_curved_face&#x27;,#200);
-<span class="lineno">46</span>#220=ADVANCED_BREP_SHAPE_REPRESENTATION(&#x27;poly_loop_on_cylinder&#x27;,
-<span class="lineno">47</span>       (#210),#14);
-<span class="lineno">48</span>/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
-<span class="lineno">49</span>#9010=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">50</span>#9011=PRODUCT(&#x27;M055&#x27;,&#x27;M055&#x27;,&#x27;&#x27;,(#9010));
-<span class="lineno">51</span>#9012=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9011);
-<span class="lineno">52</span>#9013=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
-<span class="lineno">53</span>#9014=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9012,#9013);
-<span class="lineno">54</span>#9015=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9014);
-<span class="lineno">55</span>#9051=SHAPE_DEFINITION_REPRESENTATION(#9015,#220);
-<span class="lineno">56</span>ENDSEC;
-<span class="lineno">57</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M055: POLY_LOOP on non-planar surface inside FACETED_BREP; input: AP214 STEP file where FACETED_BREP references a CLOSED_SHELL containing an ADVANCED_FACE whose surface is a CYLINDRICAL_SURFACE and whose outer bound is a POLY_LOOP with vertices sampled on the cylinder (not coplanar); FACETED_BREP schema requires planar faces; POLY_LOOP on a CYLINDRICAL_SURFACE is a schema violation; OCCT StepToTopoDS_TranslatePolyLoop.cxx:88-91 documents the reject path but OCC&#x27;s auto-repair produces a shape (stronger than catalog&#x27;s reject-only stance); conservative kernels should still reject; synonyms: POLY_LOOP on non-planar surface, FACETED_BREP non-planar face, schema-illegal polyloop placement, faceted brep requires planar faces */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;M055&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;M055.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=CYLINDRICAL_SURFACE(&#x27;side_wall&#x27;,#4,5.0);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0,0.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0,4.0));
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,4.0));
+<span class="lineno">19</span>#10=POLY_LOOP(&#x27;non_planar_loop&#x27;,(#6,#7,#8,#9));
+<span class="lineno">20</span>#11=FACE_OUTER_BOUND(&#x27;&#x27;,#10,.T.);
+<span class="lineno">21</span>#12=ADVANCED_FACE(&#x27;cyl_face_with_poly_loop&#x27;,(#11),#5,.T.);
+<span class="lineno">22</span>#13=CLOSED_SHELL(&#x27;shell_with_illegal_face&#x27;,(#12));
+<span class="lineno">23</span>#14=FACETED_BREP(&#x27;faceted_brep_with_curved_face&#x27;,#13);
+<span class="lineno">24</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">25</span>#9051=PRODUCT(&#x27;M055&#x27;,&#x27;M055&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">26</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">27</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">28</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">29</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">30</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">31</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">32</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">33</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">34</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">35</span>#9061=ADVANCED_BREP_SHAPE_REPRESENTATION(&#x27;&#x27;,(#14),#9060);
+<span class="lineno">36</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">37</span>ENDSEC;
+<span class="lineno">38</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

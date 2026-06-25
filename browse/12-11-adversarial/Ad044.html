@@ -41,6 +41,9 @@
 <li><code>matches(rb&#x27;EDGE_CURVE\([^;]*,\s*\.U\.\s*\)&#x27;)</code></li>
 <li><code>contains(b&#x27;.U.&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="../12-1c-syntax/Ls035.html">Ls035</a></p>
 </section>
@@ -58,52 +61,27 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Ad044 - EDGE_CURVE.same_sense boolean read uninitialised
-<span class="lineno">2</span>   ----------------------------------------------------------------------
-<span class="lineno">3</span>   Catalog section : Â§12.11 adversarial (sub-class: uninit / encoding)
-<span class="lineno">4</span>   Sources         : 08-occt-gitlog.md G028 (Mantis 0029944, GCC 4.9
-<span class="lineno">5</span>                     regression)
-<span class="lineno">6</span>   See also        : Ls035
-<span class="lineno">7</span>   Severity        : M (CWE-457)
-<span class="lineno">8</span>   ----------------------------------------------------------------------
-<span class="lineno">9</span>   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
-<span class="lineno">10</span>   testing. Do NOT use as exchange data.
-<span class="lineno">11</span>   ----------------------------------------------------------------------
-<span class="lineno">12</span>   Defect
-<span class="lineno">13</span>     STEP files where same_sense BOOLEAN is missing or illegally
-<span class="lineno">14</span>     formatted leave a C++ bool uninitialised, producing
-<span class="lineno">15</span>     non-deterministic edge direction. The trigger: writer emits
-<span class="lineno">16</span>     `<mark>.U.</mark>` (an invalid LOGICAL value, never legal for BOOLEAN), or
-<span class="lineno">17</span>     leaves the slot empty. Original GCC 4.9 regression in OCCT
-<span class="lineno">18</span>     surfaced because the field initialisation moved to a hot path.
-<span class="lineno">19</span>   Reproducer recipe
-<span class="lineno">20</span>     EDGE_CURVE with `<mark>.U.</mark>` (illegal in a BOOLEAN slot) for same_sense.
-<span class="lineno">21</span>   Expected kernel behavior
-<span class="lineno">22</span>     Reject `<mark>.U.</mark>` in BOOLEAN; treat missing as default `.T.` and warn;
-<span class="lineno">23</span>     never read an uninitialised bool. Initialise default at struct
-<span class="lineno">24</span>     declaration, not in setter.
-<span class="lineno">25</span>   ----------------------------------------------------------------------
-<span class="lineno">26</span>*/
-<span class="lineno">27</span>ISO-10303-21;
-<span class="lineno">28</span>HEADER;
-<span class="lineno">29</span>FILE_DESCRIPTION((&#x27;Ad044 - EDGE_CURVE.same_sense uses <mark>.U.</mark> (illegal BOOLEAN)&#x27;),
-<span class="lineno">30</span>  &#x27;2;1&#x27;);
-<span class="lineno">31</span>FILE_NAME(&#x27;Ad044.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
-<span class="lineno">32</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">33</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">34</span>ENDSEC;
-<span class="lineno">35</span>DATA;
-<span class="lineno">36</span>#1=CARTESIAN_POINT(&#x27;a&#x27;,(0.0,0.0,0.0));
-<span class="lineno">37</span>#2=CARTESIAN_POINT(&#x27;b&#x27;,(1.0,0.0,0.0));
-<span class="lineno">38</span>#3=VERTEX_POINT(&#x27;va&#x27;,#1);
-<span class="lineno">39</span>#4=VERTEX_POINT(&#x27;vb&#x27;,#2);
-<span class="lineno">40</span>#5=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">41</span>#6=VECTOR(&#x27;v&#x27;,#5,1.0);
-<span class="lineno">42</span>#7=LINE(&#x27;l&#x27;,#1,#6);
-<span class="lineno">43</span>/* Defect: same_sense slot uses <mark>.U.</mark> which is LOGICAL not BOOLEAN. */
-<span class="lineno">44</span>#10=<mark>EDGE_CURVE(&#x27;e&#x27;,#3,#4,#7,.U.)</mark>;
-<span class="lineno">45</span>ENDSEC;
-<span class="lineno">46</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Ad044: EDGE_CURVE.same_sense = <mark>.U.</mark> (unknown/uninitialised boolean); leaves C++ bool uninitialised â non-deterministic edge direction; GCC 4.9 regression Mantis 0029944; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ad044&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ad044.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">11</span>#3=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">12</span>#4=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#5=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">14</span>#6=VECTOR(&#x27;&#x27;,#5,1.0);
+<span class="lineno">15</span>#7=LINE(&#x27;&#x27;,#3,#6);
+<span class="lineno">16</span>#8=VERTEX_POINT(&#x27;&#x27;,#3);
+<span class="lineno">17</span>#9=VERTEX_POINT(&#x27;&#x27;,#4);
+<span class="lineno">18</span>#10=<mark>EDGE_CURVE(&#x27;&#x27;,#8,#9,#7,.U.)</mark>;
+<span class="lineno">19</span>#11=EDGE_CURVE(&#x27;missing_sense&#x27;,#8,#9,#7,$);
+<span class="lineno">20</span>ENDSEC;
+<span class="lineno">21</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

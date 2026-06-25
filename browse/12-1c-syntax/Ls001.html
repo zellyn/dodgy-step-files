@@ -39,6 +39,9 @@
 <li><code>matches(rb&quot;DIRECTION\([^;]*,\(\s*1\s*,&quot;)</code></li>
 <li><code>contains(b&#x27;(1,0,0)&#x27;) or matches(rb&#x27;,\(1,\d&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="../12-11-adversarial/Ad049.html">Ad049</a>, <a href="Ls002.html">Ls002</a>, <a href="Ls003.html">Ls003</a>, <a href="Ls004.html">Ls004</a>, <a href="Ls005.html">Ls005</a>, <a href="Ls006.html">Ls006</a>, <a href="Ls009.html">Ls009</a></p>
 </section>
@@ -56,42 +59,22 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Ls001 - REAL literal missing mandatory decimal point
-<span class="lineno">2</span>   ----------------------------------------------------------------------
-<span class="lineno">3</span>   Catalog section : Â§12.1c numeric-literal grammar
-<span class="lineno">4</span>   Sources         : T021, N015, Q051 (Implementors Issue 003)
-<span class="lineno">5</span>   See also        : Ad049, Ls002, Ls003, Ls004, Ls005, Ls006, Ls009
-<span class="lineno">6</span>   ----------------------------------------------------------------------
-<span class="lineno">7</span>   Defect
-<span class="lineno">8</span>     ISO 10303-21 grammar requires every REAL value to carry a decimal
-<span class="lineno">9</span>     point (1., 1.0, 0.5). Generators that print integer values into REAL
-<span class="lineno">10</span>     slots emit &quot;1&quot; where &quot;1.&quot; is required, e.g. IFCDIRECTION((1,0,0)).
-<span class="lineno">11</span>     The DIRECTION coordinate lists below carry bare integers (1, 0, 0)
-<span class="lineno">12</span>     in slots whose schema type is REAL.
-<span class="lineno">13</span>   Expected behavior
-<span class="lineno">14</span>     Strict mode  : reject with diagnostic &quot;expected REAL, found INTEGER&quot;
-<span class="lineno">15</span>                    naming attribute index and instance ID.
-<span class="lineno">16</span>     Lenient mode : auto-promote INTEGER to REAL with one warning per
-<span class="lineno">17</span>                    instance; never silently coerce without diagnostic.
-<span class="lineno">18</span>   ----------------------------------------------------------------------
-<span class="lineno">19</span>*/
-<span class="lineno">20</span>ISO-10303-21;
-<span class="lineno">21</span>HEADER;
-<span class="lineno">22</span>FILE_DESCRIPTION((&#x27;Ls001 - REAL literal missing decimal point&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">23</span>FILE_NAME(&#x27;Ls001.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
-<span class="lineno">24</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">25</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">26</span>ENDSEC;
-<span class="lineno">27</span>DATA;
-<span class="lineno">28</span>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
-<span class="lineno">29</span>/* Defect: integer literals where REAL is required */
-<span class="lineno">30</span>#20=DIRECTION(&#x27;z&#x27;,(0,0,1));
-<span class="lineno">31</span>#30=<mark>DIRECTION(&#x27;x&#x27;,(1,</mark>0,0));
-<span class="lineno">32</span>/* Defect: integer literal mixed with REALs inside one coord list */
-<span class="lineno">33</span>#31=CARTESIAN_POINT(&#x27;mixed&#x27;,(1,0.0,0.0));
-<span class="lineno">34</span>#40=AXIS2_PLACEMENT_3D(&#x27;placement&#x27;,#10,#20,#30);
-<span class="lineno">35</span>ENDSEC;
-<span class="lineno">36</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Ls001: REAL literal missing mandatory decimal point; ISO 10303-21 Â§6.4 grammar requires every REAL to carry a decimal point: 1. or 1.0 or 0.5; generators that print integer values into REAL slots emit 1 where 1. is required; defect: <mark>DIRECTION(&#x27;&#x27;,(1,</mark>0,0)) â integers in all three coordinate slots, no decimal point on any value; stepcode warns and salvages via istringstream &gt;&gt; double; strict readers must reject with decimal-point-required diagnostic; lenient mode may auto-promote INTEGER to REAL with a warning, never silently; implementors Issue 003 records the original disagreement: integers must not be followed by a dot, REALs must be; a primary cause of integer-vs-real type-coercion bugs; bug-reporter synonyms: REAL with no decimal point, integer where REAL required, 1 written instead of 1., DIRECTION coords missing dots, STEP REAL missing trailing period; GEOMETRIC_CURVE_SET IS NOT used â DIRECTION entity is the defect carrier */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ls001&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ls001.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>/* Defect: integer values in REAL slots â no decimal point. */
+<span class="lineno">10</span>/* ISO 10303-21 Â§6.4: every REAL must carry a decimal point. */
+<span class="lineno">11</span>#1=<mark>DIRECTION(&#x27;&#x27;,(1,</mark>0,0));
+<span class="lineno">12</span>#2=CARTESIAN_POINT(&#x27;origin&#x27;,(0.,0.,0.));
+<span class="lineno">13</span>#3=VECTOR(&#x27;v&#x27;,#1,1.);
+<span class="lineno">14</span>#4=LINE(&#x27;l&#x27;,#2,#3);
+<span class="lineno">15</span>ENDSEC;
+<span class="lineno">16</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

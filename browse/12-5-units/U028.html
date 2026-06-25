@@ -43,6 +43,9 @@
 <li><code>contains(b&#x27;.MILLI.&#x27;) and matches(rb&#x27;SI_UNIT\(\$\s*,\s*\.METRE\.\)&#x27;)</code></li>
 <li><code>count_entity_def(b&#x27;GEOMETRIC_REPRESENTATION_CONTEXT&#x27;) &gt;= 2 or count(b&#x27;GEOMETRIC_REPRESENTATION_CONTEXT&#x27;) &gt;= 2</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="../12-4-tolerance/N016.html">N016</a></p>
 </section>
@@ -61,60 +64,52 @@
 <details>
 <summary>Show fixture bytes</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/*
-<span class="lineno">3</span> * U028 â Mixed LENGTH_UNIT records vs. mixed contexts
-<span class="lineno">4</span> * Defect: part shape uses mm GRC; supplemental geometry CGR uses metre
-<span class="lineno">5</span> *         GRC; PMI references the metre CGR. Sub-representations of one
-<span class="lineno">6</span> *         product disagree on units.
-<span class="lineno">7</span> */
-<span class="lineno">8</span>HEADER;
-<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;U028 multiple GRCs different units&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">10</span>FILE_NAME(&#x27;U028.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;catalog&#x27;),(&#x27;cad&#x27;),
-<span class="lineno">11</span>  &#x27;manual&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">12</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN&#x27;));
-<span class="lineno">13</span>ENDSEC;
-<span class="lineno">14</span>DATA;
-<span class="lineno">15</span>#10 = APPLICATION_CONTEXT(&#x27;automotive design&#x27;);
-<span class="lineno">16</span>#11 = APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">17</span>  &#x27;automotive_design&#x27;,2001,#10);
-<span class="lineno">18</span>#12 = PRODUCT_CONTEXT(&#x27;&#x27;,#10,&#x27;mechanical&#x27;);
-<span class="lineno">19</span>#13 = PRODUCT(&#x27;U028&#x27;,&#x27;U028&#x27;,&#x27;&#x27;,(#12));
-<span class="lineno">20</span>#14 = PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#13);
-<span class="lineno">21</span>#15 = PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#10,&#x27;design&#x27;);
-<span class="lineno">22</span>#16 = PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#14,#15);
-<span class="lineno">23</span>#17 = PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#16);
-<span class="lineno">24</span>/* GRC A: mm â used by the BREP shape */
-<span class="lineno">25</span>#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-<span class="lineno">26</span>#21 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-<span class="lineno">27</span>#22 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-<span class="lineno">28</span>#23 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
-<span class="lineno">29</span>  &#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
-<span class="lineno">30</span>#24 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">31</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#23))
-<span class="lineno">32</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#21,#22))
-<span class="lineno">33</span>  REPRESENTATION_CONTEXT(&#x27;mm_brep&#x27;,&#x27;3D&#x27;) );
-<span class="lineno">34</span>/* GRC B: metre â used by supplemental geometry / PMI */
-<span class="lineno">35</span>#25 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT($,.METRE.) );
-<span class="lineno">36</span>#26 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#25,
-<span class="lineno">37</span>  &#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
-<span class="lineno">38</span>#27 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">39</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#26))
-<span class="lineno">40</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#25,#21,#22))
-<span class="lineno">41</span>  REPRESENTATION_CONTEXT(&#x27;m_pmi&#x27;,&#x27;3D&#x27;) );
-<span class="lineno">42</span>/* Part BREP-side coordinates (mm) */
-<span class="lineno">43</span>#40 = CARTESIAN_POINT(&#x27;brep_origin&#x27;,(0.0,0.0,0.0));
-<span class="lineno">44</span>#41 = DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
-<span class="lineno">45</span>#42 = DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">46</span>#43 = AXIS2_PLACEMENT_3D(&#x27;&#x27;,#40,#41,#42);
-<span class="lineno">47</span>#44 = SHAPE_REPRESENTATION(&#x27;part_brep&#x27;,(#43),#24);
-<span class="lineno">48</span>/* Supplemental geometry CGR (metre) */
-<span class="lineno">49</span>#50 = CARTESIAN_POINT(&#x27;cgr_origin&#x27;,(0.0,0.0,0.0));
-<span class="lineno">50</span>#51 = AXIS2_PLACEMENT_3D(&#x27;&#x27;,#50,#41,#42);
-<span class="lineno">51</span>#52 = CONSTRUCTIVE_GEOMETRY_REPRESENTATION(&#x27;cgr&#x27;,(#51),#27);
-<span class="lineno">52</span>/* Both share the same product, but the GRC trees are unrelated. */
-<span class="lineno">53</span>#60 = SHAPE_DEFINITION_REPRESENTATION(#17,#44);
-<span class="lineno">54</span>ENDSEC;
-<span class="lineno">55</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* U028: Two GEOMETRIC_REPRESENTATION_CONTEXT with different LENGTH_UNIT */
+<span class="lineno">3</span>/* BRep uses mm context; CGR/PMI uses metre context */
+<span class="lineno">4</span>/* PMI v4.1 Â§9.4.2: all sub-representations must share the same GRC */
+<span class="lineno">5</span>/* OCCT defaults to mm and silently mis-scales the metre-based CGR coordinates */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;U028: mm BRep vs metre PMI/CGR in separate GRC contexts&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;U028.stp&#x27;,&#x27;2026-06-20T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>/* BRep geometry: 50x50x25 mm cube (values in mm) */
+<span class="lineno">13</span>#1=CARTESIAN_POINT(&#x27;origin&#x27;,(0.,0.,0.));
+<span class="lineno">14</span>#2=CARTESIAN_POINT(&#x27;corner-x&#x27;,(50.0,0.,0.));
+<span class="lineno">15</span>#3=CARTESIAN_POINT(&#x27;corner-y&#x27;,(0.,50.0,0.));
+<span class="lineno">16</span>#4=CARTESIAN_POINT(&#x27;corner-z&#x27;,(0.,0.,25.0));
+<span class="lineno">17</span>#5=CARTESIAN_POINT(&#x27;corner-xyz&#x27;,(50.0,50.0,25.0));
+<span class="lineno">18</span>/* BRep context: mm (MILLI METRE) */
+<span class="lineno">19</span>#10=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">20</span>#11=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+<span class="lineno">21</span>#12=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+<span class="lineno">22</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">23</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">24</span>/* DEFECT: BRep GRC in mm */
+<span class="lineno">25</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">26</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT(&#x27;mm_brep&#x27;,&#x27;3D&#x27;));
+<span class="lineno">27</span>/* CGR/PMI geometry: same cube but expressed in METRES (values: 0.05, 0.025) */
+<span class="lineno">28</span>#51=CARTESIAN_POINT(&#x27;pmi-origin&#x27;,(0.,0.,0.));
+<span class="lineno">29</span>#52=CARTESIAN_POINT(&#x27;pmi-corner-x&#x27;,(0.05,0.,0.));
+<span class="lineno">30</span>#53=CARTESIAN_POINT(&#x27;pmi-corner-y&#x27;,(0.,0.05,0.));
+<span class="lineno">31</span>#54=CARTESIAN_POINT(&#x27;pmi-corner-z&#x27;,(0.,0.,0.025));
+<span class="lineno">32</span>#55=CARTESIAN_POINT(&#x27;pmi-corner-xyz&#x27;,(0.05,0.05,0.025));
+<span class="lineno">33</span>/* DEFECT: CGR/PMI context in metres (no prefix: SI_UNIT($,.METRE.)) */
+<span class="lineno">34</span>#60=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT($,.METRE.));
+<span class="lineno">35</span>#61=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+<span class="lineno">36</span>#62=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+<span class="lineno">37</span>#63=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#60,
+<span class="lineno">38</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">39</span>/* DEFECT: Second GRC in metres â conflicts with BRep GRC in mm */
+<span class="lineno">40</span>#64=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#63))
+<span class="lineno">41</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#60,#61,#62)) REPRESENTATION_CONTEXT(&#x27;m_pmi&#x27;,&#x27;3D&#x27;));
+<span class="lineno">42</span>/* BRep model entity uses mm GRC */
+<span class="lineno">43</span>#70=GEOMETRIC_CURVE_SET(&#x27;brep-mm-context&#x27;,(#1,#2,#3,#4,#5));
+<span class="lineno">44</span>/* CGR model entity uses metre GRC â same physical shape but mis-scaled when read */
+<span class="lineno">45</span>#71=GEOMETRIC_CURVE_SET(&#x27;cgr-metre-context&#x27;,(#51,#52,#53,#54,#55));
+<span class="lineno">46</span>ENDSEC;
+<span class="lineno">47</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

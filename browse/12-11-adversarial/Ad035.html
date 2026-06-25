@@ -41,6 +41,9 @@
 <li><code>matches(rb&#x27;.{75,}\n&#x27;)</code></li>
 <li><code>matches(rb&#x27;.{72,}&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -55,53 +58,20 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span><mark>/* Ad035 - IGES-style 80-column padding sensitivity (shared translator paths)</mark>
-<span class="lineno">2</span><mark>   ----------------------------------------------------------------------</mark>
-<span class="lineno">3</span><mark>   Catalog section : Â§12.11 adversarial (sub-class: framing / OOB-read)</mark>
-<span class="lineno">4</span><mark>   Sources         : 12-adversarial.md A039</mark>
-<span class="lineno">5</span><mark>   Severity        : Medium</mark>
-<span class="lineno">6</span><mark>   ----------------------------------------------------------------------</mark>
-<span class="lineno">7</span><mark>   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness</mark>
-<span class="lineno">8</span><mark>   testing. It mixes IGES-style fixed-column padding and an off-by-one</mark>
-<span class="lineno">9</span><mark>   record count to exercise the shared IGES/STEP translator code path.</mark>
-<span class="lineno">10</span><mark>   Do NOT use as exchange data.</mark>
-<span class="lineno">11</span><mark>   ----------------------------------------------------------------------</mark>
-<span class="lineno">12</span><mark>   Defect</mark>
-<span class="lineno">13</span><mark>     IGES Directory-Entry uses fixed 80-column records; a record with</mark>
-<span class="lineno">14</span><mark>     non-space padding or off-by-one record count crashes parsers that</mark>
-<span class="lineno">15</span><mark>     index columns 73..80 unconditionally. This matters in STEP because</mark>
-<span class="lineno">16</span><mark>     translators (e.g. ASMIMPORT, IfcOpenShell IGES path) commonly share</mark>
-<span class="lineno">17</span><mark>     code paths between IGES and STEP framing. STEP files placed in</mark>
-<span class="lineno">18</span><mark>     pipelines that try IGES first can trigger the IGES OOB path.</mark>
-<span class="lineno">19</span><mark>   Reproducer recipe</mark>
-<span class="lineno">20</span><mark>     STEP file whose first non-comment line is shorter than 80 columns</mark>
-<span class="lineno">21</span><mark>     yet declares an IGES-style record count one greater than the</mark>
-<span class="lineno">22</span><mark>     physical line count. Below: a comment block masquerading as IGES</mark>
-<span class="lineno">23</span><mark>     directory padding that mis-reports its terminator count.</mark>
-<span class="lineno">24</span><mark>   Expected kernel behavior</mark>
-<span class="lineno">25</span><mark>     Bound all column indexes against actual line length. Do not blindly</mark>
-<span class="lineno">26</span><mark>     read 80 columns. Detect ISO-10303-21 magic before any IGES probe.</mark>
-<span class="lineno">27</span><mark>   ----------------------------------------------------------------------</mark>
-<span class="lineno">28</span><mark>*/</mark>
-<span class="lineno">29</span><mark>/*S0000001                                                                S0000001*/</mark>
-<span class="lineno">30</span><mark>/*G0000002                                                                G0000002*/</mark>
-<span class="lineno">31</span><mark>/*D0000003                                                                D0000004*/</mark>
-<span class="lineno">32</span><mark>/*P0000005                                                                P0000005*/</mark>
-<span class="lineno">33</span><mark>/*T0000099S0000001G0000001D0000002P0000001                                T0000001*/</mark>
-<span class="lineno">34</span><mark>ISO-10303-21;</mark>
-<span class="lineno">35</span><mark>HEADER;</mark>
-<span class="lineno">36</span><mark>FILE_DESCRIPTION((&#x27;Ad035 - IGES 80-col padding fronting STEP body&#x27;),&#x27;2;1&#x27;);</mark>
-<span class="lineno">37</span><mark>FILE_NAME(&#x27;Ad035.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),</mark>
-<span class="lineno">38</span><mark>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);</mark>
-<span class="lineno">39</span><mark>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));</mark>
-<span class="lineno">40</span><mark>ENDSEC;</mark>
-<span class="lineno">41</span><mark>DATA;</mark>
-<span class="lineno">42</span><mark>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));</mark>
-<span class="lineno">43</span><mark>#20=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));</mark>
-<span class="lineno">44</span><mark>#30=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));</mark>
-<span class="lineno">45</span><mark>#40=AXIS2_PLACEMENT_3D(&#x27;placement&#x27;,#10,#20,#30);</mark>
-<span class="lineno">46</span><mark>ENDSEC;</mark>
-<span class="lineno">47</span><mark>END-ISO-10303-21;</mark>
+<pre class="fixture-bytes"><span class="lineno">1</span><mark>ISO-10303-21;</mark>
+<span class="lineno">2</span><mark>/* Ad035: IGES-style 80-column padding sensitivity via shared translator code paths; oversized-line attack pattern in STEP data section probes fixed-column-index path; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */</mark>
+<span class="lineno">3</span><mark>HEADER;</mark>
+<span class="lineno">4</span><mark>FILE_DESCRIPTION((&#x27;Ad035&#x27;),&#x27;2;1&#x27;);</mark>
+<span class="lineno">5</span><mark>FILE_NAME(&#x27;Ad035.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);</mark>
+<span class="lineno">6</span><mark>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));</mark>
+<span class="lineno">7</span><mark>ENDSEC;</mark>
+<span class="lineno">8</span><mark>DATA;</mark>
+<span class="lineno">9</span><mark>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));</mark>
+<span class="lineno">10</span><mark>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));</mark>
+<span class="lineno">11</span><mark>#3=CARTESIAN_POINT(&#x27;XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX&#x27;,(1.0,2.0,3.0));</mark>
+<span class="lineno">12</span><mark>#4=CARTESIAN_POINT(&#x27;YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY99999999&#x27;,(4.0,5.0,6.0));</mark>
+<span class="lineno">13</span><mark>ENDSEC;</mark>
+<span class="lineno">14</span><mark>END-ISO-10303-21;</mark>
 </pre>
 </details>
 </section>

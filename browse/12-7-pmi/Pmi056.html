@@ -35,89 +35,67 @@
 <section><h2>Notes</h2>
 <p>Synonyms: &quot;tessellated and curve annotations both for same callout&quot;, &quot;AP242 ed2 conflict: two annotation styles for one PMI&quot;, &quot;duplicate annotation styles for one tolerance&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;TESSELLATED_ANNOTATION_OCCURRENCE&#x27;)</code></li>
 <li><code>contains(b&#x27;ANNOTATION_CURVE_OCCURRENCE&#x27;)</code></li>
 <li><code>contains(b&#x27;COMPLEX_TRIANGULATED_SURFACE_SET&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_vertices_total == 1</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
-<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(1)</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
 <tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
-<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Pmi056 - Tessellated alongside curve annotations for the same callout (AP242 ed2 conflict)
-<span class="lineno">2</span>   Defect: A DRAUGHTING_CALLOUT references both a <mark>TESSELLATED_ANNOTATION_OCCURRENCE</mark>
-<span class="lineno">3</span>   and a curve-style <mark>ANNOTATION_CURVE_OCCURRENCE</mark> for the same FCF.
-<span class="lineno">4</span>   Even within one PMI item this duplication breaks counting and
-<span class="lineno">5</span>   association (see also Pmi005 which mixes them across separate
-<span class="lineno">6</span>   callouts in one file). NIST SFA S068. Receivers should warn and
-<span class="lineno">7</span>   treat one form as canonical. */
-<span class="lineno">8</span>ISO-10303-21;
-<span class="lineno">9</span>HEADER;
-<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;Pmi056 - tessellated and curve in same callout&#x27;,
-<span class="lineno">11</span>  &#x27;CAx-IF Rec.Pracs.---PMI Rep &amp; Pres---v4.1&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">12</span>FILE_NAME(&#x27;Pmi056.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;catalog&#x27;),(&#x27;cad&#x27;),
-<span class="lineno">13</span>  &#x27;manual&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">14</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
-<span class="lineno">15</span>ENDSEC;
-<span class="lineno">16</span>DATA;
-<span class="lineno">17</span>#10 = APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
-<span class="lineno">18</span>#11 = APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">19</span>  &#x27;ap242_managed_model_based_3d_engineering&#x27;,2020,#10);
-<span class="lineno">20</span>#12 = PRODUCT_CONTEXT(&#x27;&#x27;,#10,&#x27;mechanical&#x27;);
-<span class="lineno">21</span>#13 = PRODUCT(&#x27;Pmi056&#x27;,&#x27;MixedCalloutPart&#x27;,&#x27;&#x27;,(#12));
-<span class="lineno">22</span>#14 = PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#13);
-<span class="lineno">23</span>#15 = PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#10,&#x27;design&#x27;);
-<span class="lineno">24</span>#16 = PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#14,#15);
-<span class="lineno">25</span>#17 = PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#16);
-<span class="lineno">26</span>#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-<span class="lineno">27</span>#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-<span class="lineno">28</span>#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-<span class="lineno">29</span>#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
-<span class="lineno">30</span>  &#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
-<span class="lineno">31</span>#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">32</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
-<span class="lineno">33</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
-<span class="lineno">34</span>  REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;) );
-<span class="lineno">35</span>#30 = CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">36</span>#31 = DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
-<span class="lineno">37</span>#32 = DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">38</span>#33 = AXIS2_PLACEMENT_3D(&#x27;&#x27;,#30,#31,#32);
-<span class="lineno">39</span>/* Curve form */
-<span class="lineno">40</span>#40 = CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">41</span>#41 = CARTESIAN_POINT(&#x27;&#x27;,(20.0,0.0,0.0));
-<span class="lineno">42</span>#42 = POLYLINE(&#x27;curve_leader&#x27;,(#40,#41));
-<span class="lineno">43</span>#43 = COLOUR_RGB(&#x27;&#x27;,0.0,0.0,0.0);
-<span class="lineno">44</span>#44 = CURVE_STYLE(&#x27;&#x27;,#45,POSITIVE_LENGTH_MEASURE(0.18),#43);
-<span class="lineno">45</span>#45 = DRAUGHTING_PRE_DEFINED_CURVE_FONT(&#x27;continuous&#x27;);
-<span class="lineno">46</span>#46 = PRESENTATION_STYLE_ASSIGNMENT((#44));
-<span class="lineno">47</span>#50 = <mark>ANNOTATION_CURVE_OCCURRENCE</mark>(&#x27;curve_form&#x27;,(#46),#42);
-<span class="lineno">48</span>/* Tessellated form for the SAME callout */
-<span class="lineno">49</span>#60 = COORDINATES_LIST(&#x27;coords&#x27;,4,((0.0,0.0,0.0),(2.0,0.0,0.0),
-<span class="lineno">50</span>  (2.0,1.0,0.0),(0.0,1.0,0.0)));
-<span class="lineno">51</span>#61 = TRIANGULATED_FACE(&#x27;text_tri&#x27;,#60,$,$,((1,2,3),(1,3,4)));
-<span class="lineno">52</span>#62 = <mark>COMPLEX_TRIANGULATED_SURFACE_SET</mark>(&#x27;tess_text&#x27;,#60,$,$,$,((1,2,3),(1,3,4)));
-<span class="lineno">53</span>#63 = <mark>TESSELLATED_ANNOTATION_OCCURRENCE</mark>(&#x27;tess_form&#x27;,(#46),(#61));
-<span class="lineno">54</span>/* Defect: BOTH the curve and tessellated form referenced from the
-<span class="lineno">55</span>   same DRAUGHTING_CALLOUT (one logical FCF). */
-<span class="lineno">56</span>#70 = DRAUGHTING_CALLOUT(&#x27;mixed_callout&#x27;,(#50,#63));
-<span class="lineno">57</span>#80 = DRAUGHTING_MODEL(&#x27;Default&#x27;,(#70),#25);
-<span class="lineno">58</span>#81 = PLANE(&#x27;ann_plane&#x27;,#33);
-<span class="lineno">59</span>#82 = ANNOTATION_PLANE(&#x27;PMI&#x27;,(#50,#63),#81,());
-<span class="lineno">60</span>#90 = SHAPE_REPRESENTATION(&#x27;&#x27;,(#33),#25);
-<span class="lineno">61</span>#91 = SHAPE_DEFINITION_REPRESENTATION(#17,#90);
-<span class="lineno">62</span>ENDSEC;
-<span class="lineno">63</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Pmi056: DRAUGHTING_CALLOUT references both a <mark>TESSELLATED_ANNOTATION_OCCURRENCE</mark> and an <mark>ANNOTATION_CURVE_OCCURRENCE</mark> for the same callout; AP242 ed.2 forbids mixing tessellated and curve annotation styles for the same PMI item; this duplication breaks annotation counting and association; receivers must normalize one form as canonical and warn; silently accepting the duplicate is forbidden; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Pmi056&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Pmi056.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">12</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">13</span>#9051=PRODUCT(&#x27;Pmi056&#x27;,&#x27;Pmi056&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">14</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">15</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">16</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">17</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">18</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">19</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">20</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">21</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">22</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">23</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#2),#9060);
+<span class="lineno">24</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">25</span>#9063=COLOUR_RGB(&#x27;anno_colour&#x27;,0.0,0.0,0.0);
+<span class="lineno">26</span>#9064=CURVE_STYLE(&#x27;&#x27;,FONT_SELECT($),LENGTH_MEASURE(0.25),#9063);
+<span class="lineno">27</span>#9065=PRESENTATION_STYLE_ASSIGNMENT((#9064));
+<span class="lineno">28</span>#9066=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">29</span>#9067=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">30</span>#9068=POLYLINE(&#x27;&#x27;,(#9066,#9067));
+<span class="lineno">31</span>#9069=<mark>ANNOTATION_CURVE_OCCURRENCE</mark>(&#x27;fcf_curve&#x27;,(#9068),#9065);
+<span class="lineno">32</span>#9070=COORDINATES_LIST(&#x27;tess_coords&#x27;,3,((0.0,5.0,0.0),(5.0,5.0,0.0),(2.5,8.0,0.0)));
+<span class="lineno">33</span>#9071=<mark>COMPLEX_TRIANGULATED_SURFACE_SET</mark>(&#x27;fcf_tess&#x27;,#9070,((0,1,2)),.F.,$);
+<span class="lineno">34</span>#9072=<mark>TESSELLATED_ANNOTATION_OCCURRENCE</mark>(&#x27;fcf_tess_occ&#x27;,(#9065),#9071);
+<span class="lineno">35</span>#9073=DRAUGHTING_CALLOUT(&#x27;fcf_callout&#x27;,(#9069,#9072));
+<span class="lineno">36</span>ENDSEC;
+<span class="lineno">37</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

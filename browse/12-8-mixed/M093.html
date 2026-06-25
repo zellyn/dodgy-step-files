@@ -42,6 +42,9 @@
 <li><code>contains(b&#x27;AP238_STEP_NC_MIM&#x27;)</code></li>
 <li><code>contains(b&#x27;MACHINING_OPERATION&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -57,30 +60,60 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M093 - AP238 machining_operation references a tool with no geometry.
-<span class="lineno">3</span> * Defect: the tool entity is a bare MACHINING_TOOL stub with no
-<span class="lineno">4</span> * associated cutting-tool body / dimension / edge geometry. The
-<span class="lineno">5</span> * controller has no diameter, no flute count, nothing to plan motion
-<span class="lineno">6</span> * with. */
-<span class="lineno">7</span>HEADER;
-<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;M093 test case&#x27;,&#x27;AP238 tool geometry empty&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">9</span>FILE_NAME(&#x27;M093.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">10</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 1 0 0 1 }&#x27;));
-<span class="lineno">11</span>ENDSEC;
-<span class="lineno">12</span>DATA;
-<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;numerical_control_machining&#x27;);
-<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">15</span>  &#x27;numerical_control_machining&#x27;,2007,#1);
-<span class="lineno">16</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">17</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">18</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-<span class="lineno">19</span>     REPRESENTATION_CONTEXT(&#x27;nc&#x27;,&#x27;3D&#x27;));
-<span class="lineno">20</span>/* Defect: tool stub - no cutting-tool body, no diameter, no edges. */
-<span class="lineno">21</span>#150=MACHINING_TOOL(&#x27;end_mill_10mm&#x27;,$,$,$);
-<span class="lineno">22</span>#100=<mark>MACHINING_OPERATION</mark>(&#x27;rough_pocket&#x27;,$,$,#150,$,$);
-<span class="lineno">23</span>#200=WORKPLAN(&#x27;main&#x27;,(#100),$,$,$);
-<span class="lineno">24</span>ENDSEC;
-<span class="lineno">25</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M093: AP238 machining_tool referenced without cutting-edge geometry */
+<span class="lineno">3</span>/* DEFECT: <mark>MACHINING_OPERATION</mark> references MACHINING_TOOL with all attrs NULL */
+<span class="lineno">4</span>/* No diameter, no flute count, no cutting geometry â tool is a bare name stub */
+<span class="lineno">5</span>/* Controller cannot compute cutter compensation or feedrate from stub tool */
+<span class="lineno">6</span>/* Byte assertion: contains(b&#x27;<mark>AP238_STEP_NC_MIM</mark>&#x27;) */
+<span class="lineno">7</span>/* Byte assertion: contains(b&#x27;<mark>MACHINING_OPERATION</mark>&#x27;) */
+<span class="lineno">8</span>HEADER;
+<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;M093: AP238 MACHINING_TOOL stub without cutting-edge geometry&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;M093.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">11</span>/* Byte assertion: contains(b&#x27;<mark>AP238_STEP_NC_MIM</mark>&#x27;) */
+<span class="lineno">12</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 1 0 0 }&#x27;));
+<span class="lineno">13</span>ENDSEC;
+<span class="lineno">14</span>DATA;
+<span class="lineno">15</span>#1=APPLICATION_CONTEXT(&#x27;step_nc_mim&#x27;);
+<span class="lineno">16</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">17</span>  &#x27;ap238_step_nc_mim&#x27;,2007,#1);
+<span class="lineno">18</span>/* Standard unit context â mm */
+<span class="lineno">19</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">20</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">21</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">22</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">23</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">24</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">25</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">26</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">27</span>  REPRESENTATION_CONTEXT(&#x27;nc&#x27;,&#x27;3D&#x27;));
+<span class="lineno">28</span>/* Target machined feature for the slot operation */
+<span class="lineno">29</span>#50=MACHINED_FEATURE(&#x27;slot_a&#x27;,$,$,$,$,$);
+<span class="lineno">30</span>/* Byte assertion: contains(b&#x27;<mark>MACHINING_OPERATION</mark>&#x27;) */
+<span class="lineno">31</span>/* DEFECT: MACHINING_TOOL with all optional attributes NULL â bare name stub */
+<span class="lineno">32</span>/* No cutting_edges, no CUTTING_TOOL_BODY, no MILLING_TOOL_DIMENSION */
+<span class="lineno">33</span>/* Tool name &#x27;end_mill_10mm&#x27; implies 10mm diameter â but no geometry confirms it */
+<span class="lineno">34</span>#60=MACHINING_TOOL(&#x27;end_mill_10mm&#x27;,$,$,$);
+<span class="lineno">35</span>/* <mark>MACHINING_OPERATION</mark> references the stub tool #60 */
+<span class="lineno">36</span>/* Controller must know tool diameter for cutter compensation â impossible with stub */
+<span class="lineno">37</span>#70=<mark>MACHINING_OPERATION</mark>(&#x27;mill_slot&#x27;,#60,$,$,$,$,$,$,#50,$,$);
+<span class="lineno">38</span>/* Workingstep and workplan wrapping the operation */
+<span class="lineno">39</span>#80=MACHINING_WORKINGSTEP(&#x27;slot_step&#x27;,#50,#70,$);
+<span class="lineno">40</span>#90=WORKPLAN(&#x27;main&#x27;,(#80),$,$,$);
+<span class="lineno">41</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">42</span>#300=GEOMETRIC_CURVE_SET(&#x27;ap238-machining-tool-stub-no-cutting-edge-geometry&#x27;,
+<span class="lineno">43</span>  (#50,#60,#70,#80,#90));
+<span class="lineno">44</span>/* Product chain */
+<span class="lineno">45</span>#400=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">46</span>#401=PRODUCT_CONTEXT(&#x27;&#x27;,#400,&#x27;mechanical&#x27;);
+<span class="lineno">47</span>#402=PRODUCT(&#x27;M093&#x27;,&#x27;M093&#x27;,&#x27;M093&#x27;,(#401));
+<span class="lineno">48</span>#403=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#402);
+<span class="lineno">49</span>#404=PRODUCT_DEFINITION_CONTEXT(#400,&#x27;design&#x27;);
+<span class="lineno">50</span>#405=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#403,#404);
+<span class="lineno">51</span>#406=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#405);
+<span class="lineno">52</span>#407=SHAPE_REPRESENTATION(&#x27;&#x27;,(#300),#14);
+<span class="lineno">53</span>#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
+<span class="lineno">54</span>ENDSEC;
+<span class="lineno">55</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

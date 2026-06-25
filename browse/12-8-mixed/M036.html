@@ -42,6 +42,9 @@
 <li><code>contains(b&#x27;0.001&#x27;)</code></li>
 <li><code>contains(b&#x27;CONSTRUCTIVE_GEOMETRY_REPRESENTATION&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -57,43 +60,36 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M036 - Datum target axes nearly identical (degenerate frame).
-<span class="lineno">3</span> * Defect: two direction vectors used to define a datum-target frame
-<span class="lineno">4</span> * have a cross-product norm &lt;= 0.05 - too close to parallel for an
-<span class="lineno">5</span> * orthonormal basis. Here, axis = (0,0,1) and ref_dir = (<mark>0.001</mark>, 0, 1)
-<span class="lineno">6</span> * which differ in only one millidegree, so cross norm ~ <mark>0.001</mark>.
-<span class="lineno">7</span> * Kernels should warn or substitute an orthonormalized frame. */
-<span class="lineno">8</span>HEADER;
-<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;M036 test case&#x27;,&#x27;near-parallel datum target axes&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">10</span>FILE_NAME(&#x27;M036.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">11</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
-<span class="lineno">12</span>ENDSEC;
-<span class="lineno">13</span>DATA;
-<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
-<span class="lineno">15</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">16</span>  &#x27;ap242_managed_model_based_3d_engineering&#x27;,2014,#1);
-<span class="lineno">17</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">18</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">19</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">20</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
-<span class="lineno">21</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">22</span>     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-<span class="lineno">23</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-<span class="lineno">24</span>     REPRESENTATION_CONTEXT(&#x27;part&#x27;,&#x27;3D&#x27;));
-<span class="lineno">25</span>/* Datum-target placement with degenerate axis frame. */
-<span class="lineno">26</span>#100=CARTESIAN_POINT(&#x27;datum_target_origin&#x27;,(0.0,0.0,0.0));
-<span class="lineno">27</span>/* z direction */
-<span class="lineno">28</span>#101=DIRECTION(&#x27;z_axis&#x27;,(0.0,0.0,1.0));
-<span class="lineno">29</span>/* &quot;x&quot; reference direction - but only <mark>0.001</mark> off the z axis. */
-<span class="lineno">30</span>#102=DIRECTION(&#x27;ref_dir_nearly_parallel&#x27;,(<mark>0.001</mark>,0.0,1.0));
-<span class="lineno">31</span>/* axis cross ref_dir = (0, <mark>0.001</mark>, 0) -&gt; norm = <mark>0.001</mark> &lt;&lt; 0.05 */
-<span class="lineno">32</span>#103=AXIS2_PLACEMENT_3D(&#x27;degenerate_frame&#x27;,#100,#101,#102);
-<span class="lineno">33</span>#104=PLANE(&#x27;datum_target_plane&#x27;,#103);
-<span class="lineno">34</span>/* Wrap in a CGR for completeness. */
-<span class="lineno">35</span>#200=<mark>CONSTRUCTIVE_GEOMETRY_REPRESENTATION</mark>(&#x27;degenerate_supp&#x27;,
-<span class="lineno">36</span>       (#104),#14);
-<span class="lineno">37</span>ENDSEC;
-<span class="lineno">38</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M036: GEOMETRIC_CURVE_SET containing datum-target frame with near-parallel DIRECTION vectors whose cross-product norm is &lt;= 0.05; input: AP242 STEP file where two direction vectors used to define a datum-target or supplemental-geometry AXIS2_PLACEMENT_3D are nearly identical (angle &lt; 0.05 rad), making the orthonormal frame ill-conditioned; the z-axis is (0.,0.,1.) and x-axis is (<mark>0.001</mark>,0.,1.) â norm of cross product is ~<mark>0.001</mark>, below the 0.05 threshold; kernel must warn and heal by substituting a numerically stable frame, or reject with a diagnostic; OCC silently accepts (no diagnostic, empty result); GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty; synonyms: datum target axes nearly identical, near-collinear DIRECTION pair, frame cross-product near zero, datum frame ill-conditioned */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;M036&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;M036.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;datum_target_origin&#x27;,(0.,0.,0.));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;datum_target_z&#x27;,(0.,0.,1.));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;datum_target_x&#x27;,(<mark>0.001</mark>,0.,1.));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;datum_target_frame&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=PLANE(&#x27;datum_target_plane&#x27;,#4);
+<span class="lineno">15</span>#6=<mark>CONSTRUCTIVE_GEOMETRY_REPRESENTATION</mark>(&#x27;datum_target_supplemental_geom&#x27;,(#5),$);
+<span class="lineno">16</span>#7=GEOMETRIC_CURVE_SET(&#x27;datum-target-axes-nearly-identical&#x27;,(#6,#5,#4));
+<span class="lineno">17</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">18</span>#9051=PRODUCT(&#x27;M036&#x27;,&#x27;M036&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">19</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">20</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">21</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">22</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">23</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">24</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">25</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">26</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">27</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">28</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#7),#9060);
+<span class="lineno">29</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">30</span>ENDSEC;
+<span class="lineno">31</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

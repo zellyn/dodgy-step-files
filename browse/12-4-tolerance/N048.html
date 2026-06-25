@@ -41,6 +41,9 @@
 <li><code>count_entity_def(b&#x27;CYLINDRICAL_SURFACE&#x27;) == 2</code></li>
 <li><code>count_entity_def(b&#x27;PCURVE&#x27;) == 2</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="N046.html">N046</a></p>
 </section>
@@ -59,64 +62,62 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* N048 - Walk-line step unrelated to surface tolerance
-<span class="lineno">3</span> * Defect: two cylindrical surfaces with PERPENDICULAR axes meet at a
-<span class="lineno">4</span> * non-trivial intersection curve. Declared surface tolerance is
-<span class="lineno">5</span> * 1.0E-3 mm. The walk-line algorithm should step at ~tolerance,
-<span class="lineno">6</span> * but in fact uses a fixed internal 1e-7 step, doing 1e4x more
-<span class="lineno">7</span> * work than necessary and producing pcurves with sub-tolerance
-<span class="lineno">8</span> * sample density. */
-<span class="lineno">9</span>HEADER;
-<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;N048 test case&#x27;,&#x27;Walk-line step unrelated to surface tolerance&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">11</span>FILE_NAME(&#x27;N048.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">12</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">13</span>ENDSEC;
-<span class="lineno">14</span>DATA;
-<span class="lineno">15</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">16</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
-<span class="lineno">17</span>#100=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
-<span class="lineno">18</span>/* Cylinder A: axis along +Z */
-<span class="lineno">19</span>#101=DIRECTION(&#x27;+z&#x27;,(0.0,0.0,1.0));
-<span class="lineno">20</span>#102=DIRECTION(&#x27;+x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">21</span>#103=AXIS2_PLACEMENT_3D(&#x27;axesA&#x27;,#100,#101,#102);
-<span class="lineno">22</span><mark>#104=CYLINDRICAL_SURFACE(</mark>&#x27;cyl_a&#x27;,#103,1.0);
-<span class="lineno">23</span>/* Cylinder B: axis along +X (perpendicular to A) */
-<span class="lineno">24</span>#110=DIRECTION(&#x27;+xB&#x27;,(1.0,0.0,0.0));
-<span class="lineno">25</span>#111=DIRECTION(&#x27;+yB&#x27;,(0.0,1.0,0.0));
-<span class="lineno">26</span>#112=AXIS2_PLACEMENT_3D(&#x27;axesB&#x27;,#100,#110,#111);
-<span class="lineno">27</span><mark>#113=CYLINDRICAL_SURFACE(</mark>&#x27;cyl_b&#x27;,#112,1.0);
-<span class="lineno">28</span>/* Walk-line tolerance metadata */
-<span class="lineno">29</span>#120=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">30</span>#121=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">31</span>#122=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">32</span>#123=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#120,
-<span class="lineno">33</span>  &#x27;distance_accuracy_value&#x27;,&#x27;walk_line_tolerance&#x27;);
-<span class="lineno">34</span>#124=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">35</span>      GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#123))
-<span class="lineno">36</span>      GLOBAL_UNIT_ASSIGNED_CONTEXT((#120,#121,#122))
-<span class="lineno">37</span>      REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
-<span class="lineno">38</span>/* <mark>INTERSECTION_CURVE</mark> entity binding the two cylinders.
-<span class="lineno">39</span> * (3D representation: a 2-pcurve SURFACE_CURVE/<mark>INTERSECTION_CURVE</mark>.) */
-<span class="lineno">40</span>#130=DIRECTION(&#x27;walk_3d_dir&#x27;,(0.0,1.0,0.0));
-<span class="lineno">41</span>#131=VECTOR(&#x27;walk_3d_vec&#x27;,#130,1.0);
-<span class="lineno">42</span>#132=LINE(&#x27;walk_3d_curve&#x27;,#100,#131);
-<span class="lineno">43</span>/* Pcurve A on cyl_a (U is theta, V is z) */
-<span class="lineno">44</span>#140=CARTESIAN_POINT(&#x27;pcA_start&#x27;,(0.0,0.0));
-<span class="lineno">45</span>#141=DIRECTION(&#x27;pcA_dir&#x27;,(0.0,1.0));
-<span class="lineno">46</span>#142=VECTOR(&#x27;pcA_vec&#x27;,#141,1.0);
-<span class="lineno">47</span>#143=LINE(&#x27;pcA_line&#x27;,#140,#142);
-<span class="lineno">48</span>#144=DEFINITIONAL_REPRESENTATION(&#x27;pcA_def&#x27;,(#143),#103);
-<span class="lineno">49</span><mark>#145=PCURVE(</mark>&#x27;pcA&#x27;,#104,#144);
-<span class="lineno">50</span>/* Pcurve B on cyl_b */
-<span class="lineno">51</span>#150=CARTESIAN_POINT(&#x27;pcB_start&#x27;,(0.0,0.0));
-<span class="lineno">52</span>#151=DIRECTION(&#x27;pcB_dir&#x27;,(0.0,1.0));
-<span class="lineno">53</span>#152=VECTOR(&#x27;pcB_vec&#x27;,#151,1.0);
-<span class="lineno">54</span>#153=LINE(&#x27;pcB_line&#x27;,#150,#152);
-<span class="lineno">55</span>#154=DEFINITIONAL_REPRESENTATION(&#x27;pcB_def&#x27;,(#153),#112);
-<span class="lineno">56</span><mark>#155=PCURVE(</mark>&#x27;pcB&#x27;,#113,#154);
-<span class="lineno">57</span>#160=<mark>INTERSECTION_CURVE</mark>(&#x27;cyl_intersect_perp&#x27;,#132,(#145,#155),.PCURVE_S1.);
-<span class="lineno">58</span>ENDSEC;
-<span class="lineno">59</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* N048: surface-surface walk: 2 CYLINDRICAL_SURFACE at coarse tol 1e-3; fixed walk step ignores tol; <mark>INTERSECTION_CURVE</mark> with 2 PCURVE; GEOMETRIC_CURVE_SET â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;N048&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;N048.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;c1_orig&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">11</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">12</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">13</span><mark>#5=CYLINDRICAL_SURFACE(</mark>&#x27;cyl1&#x27;,#4,5.0);
+<span class="lineno">14</span>#6=CARTESIAN_POINT(&#x27;c2_orig&#x27;,(5.0,0.0,0.0));
+<span class="lineno">15</span>#7=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">16</span>#8=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">17</span>#9=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#6,#7,#8);
+<span class="lineno">18</span><mark>#10=CYLINDRICAL_SURFACE(</mark>&#x27;cyl2&#x27;,#9,5.0);
+<span class="lineno">19</span>#11=(GEOMETRIC_REPRESENTATION_CONTEXT(2)GLOBAL_UNIT_ASSIGNED_CONTEXT($)REPRESENTATION_CONTEXT(&#x27;uv_ctx&#x27;,&#x27;2D&#x27;));
+<span class="lineno">20</span>#12=CARTESIAN_POINT(&#x27;pc1_start&#x27;,(1.57079632679,0.0));
+<span class="lineno">21</span>#13=DIRECTION(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">22</span>#14=VECTOR(&#x27;&#x27;,#13,10.0);
+<span class="lineno">23</span>#15=LINE(&#x27;pc1_line&#x27;,#12,#14);
+<span class="lineno">24</span>#16=DEFINITIONAL_REPRESENTATION(&#x27;pdef1&#x27;,(#15),#11);
+<span class="lineno">25</span><mark>#17=PCURVE(</mark>&#x27;pc1&#x27;,#5,#16);
+<span class="lineno">26</span>#18=CARTESIAN_POINT(&#x27;pc2_start&#x27;,(0.0,0.0));
+<span class="lineno">27</span>#19=DIRECTION(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">28</span>#20=VECTOR(&#x27;&#x27;,#19,10.0);
+<span class="lineno">29</span>#21=LINE(&#x27;pc2_line&#x27;,#18,#20);
+<span class="lineno">30</span>#22=DEFINITIONAL_REPRESENTATION(&#x27;pdef2&#x27;,(#21),#11);
+<span class="lineno">31</span><mark>#23=PCURVE(</mark>&#x27;pc2&#x27;,#10,#22);
+<span class="lineno">32</span>#24=CARTESIAN_POINT(&#x27;int_p0&#x27;,(5.0,0.0,0.0));
+<span class="lineno">33</span>#25=CARTESIAN_POINT(&#x27;int_p1&#x27;,(5.0,0.0,10.0));
+<span class="lineno">34</span>#26=VERTEX_POINT(&#x27;v3d_0&#x27;,#24);
+<span class="lineno">35</span>#27=VERTEX_POINT(&#x27;v3d_1&#x27;,#25);
+<span class="lineno">36</span>#28=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">37</span>#29=VECTOR(&#x27;&#x27;,#28,10.0);
+<span class="lineno">38</span>#30=LINE(&#x27;int_line&#x27;,#24,#29);
+<span class="lineno">39</span>#31=<mark>INTERSECTION_CURVE</mark>(&#x27;int_curve&#x27;,#30,(#17,#23),.PCURVE_S1.);
+<span class="lineno">40</span>#32=EDGE_CURVE(&#x27;int_edge&#x27;,#26,#27,#31,.T.);
+<span class="lineno">41</span>#33=GEOMETRIC_CURVE_SET(&#x27;ints&#x27;,(#5,#10,#32));
+<span class="lineno">42</span>#34=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">43</span>#35=PRODUCT_CONTEXT(&#x27;&#x27;,#34,&#x27;mechanical&#x27;);
+<span class="lineno">44</span>#36=PRODUCT(&#x27;N048&#x27;,&#x27;N048&#x27;,&#x27;&#x27;,(#35));
+<span class="lineno">45</span>#37=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#36);
+<span class="lineno">46</span>#38=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#34,&#x27;design&#x27;);
+<span class="lineno">47</span>#39=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#37,#38);
+<span class="lineno">48</span>#40=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#39);
+<span class="lineno">49</span>#41=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">50</span>#42=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">51</span>#43=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">52</span>#44=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#41,&#x27;distance_accuracy_value&#x27;,&#x27;coarse_walk_tolerance&#x27;);
+<span class="lineno">53</span>#45=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#44))GLOBAL_UNIT_ASSIGNED_CONTEXT((#41,#42,#43))REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">54</span>#46=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION(&#x27;&#x27;,(#33),#45);
+<span class="lineno">55</span>#47=SHAPE_DEFINITION_REPRESENTATION(#40,#46);
+<span class="lineno">56</span>ENDSEC;
+<span class="lineno">57</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

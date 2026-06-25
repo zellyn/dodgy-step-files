@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Me1143 — volume_connected_components nesting_depth_assignment: inner tetrahedron nested inside outer; ray-casting parity assigns volume_id=2 to inner component (Branch 4)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <span class="sep">/</span> <span class="current">Me1143</span>
+</nav>
+<header class="title-bar">
+<h1>Me1143 <span class="sep">—</span> <span class="entry-title">volume_connected_components nesting_depth_assignment: inner tetrahedron nested inside outer; ray-casting parity assigns volume_id=2 to inner component (Branch 4)</span></h1>
+<p class="category">§12.14 mesh defects (sub-class: nested_volume_components / nesting-depth)</p>
+<p class="tag-pills">
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../mesh-examples/12-14-mesh/Me1143.mesh.json">View raw fixture (.mesh.json)</a> <code class="path">mesh-examples/12-14-mesh/Me1143.mesh.json</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>CGAL PMP `PMP.volume_connected_components` Branch 4 (*nesting_depth_assignment*: `volume_id[cc] = 2 * parent_depth + (is_outer_volume ? 0 : 1)` @ line 720)</li>
+<li>`MESH_HEAL_COVERAGE.md`.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Two nested closed tetrahedra — an outer large tetrahedron (O: V=4, E=6, F=4) enclosing an inner small tetrahedron (I: V=4, E=6, F=4), with no shared vertices. Both are closed, non-self-intersecting, and consistently oriented with outward normals. Ray-casting from inside the inner tet crosses 2 surfaces (inner face + outer face) → even parity → inner component is at nesting depth 1. Branch 4 assigns volume_id=2 to the inner component (depth=1, outer face of inner volume) after identifying the outer tet as its parent. Combined: V=8, E=12, F=8, χ=4.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>outer O0=(0,0,0), O1=(8,0,0), O2=(4,8,0), O3=(4,4,8); ot0=(O0,O2,O1), ot1=(O0,O1,O3), ot2=(O1,O2,O3), ot3=(O2,O0,O3). Inner I0=(2,1,1), I1=(4,1,1), I2=(3,3,1), I3=(3,2,3); it0=(I0,I2,I1), it1=(I0,I1,I3), it2=(I1,I2,I3), it3=(I2,I0,I3). All 12 edges n=2; triangle_not_reachable_from(it0, ot0); euler V=8,E=12,F=8,chi=4.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Branch 4 fires; inner component gets parent=outer and nesting depth=1; volume_id=2 assigned to the inner shell; outer shell gets volume_id=0.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>{
+<span class="lineno">2</span>  &quot;vertices&quot;: [
+<span class="lineno">3</span>    [
+<span class="lineno">4</span>      0.0,
+<span class="lineno">5</span>      0.0,
+<span class="lineno">6</span>      0.0
+<span class="lineno">7</span>    ],
+<span class="lineno">8</span>    [
+<span class="lineno">9</span>      8.0,
+<span class="lineno">10</span>      0.0,
+<span class="lineno">11</span>      0.0
+<span class="lineno">12</span>    ],
+<span class="lineno">13</span>    [
+<span class="lineno">14</span>      4.0,
+<span class="lineno">15</span>      8.0,
+<span class="lineno">16</span>      0.0
+<span class="lineno">17</span>    ],
+<span class="lineno">18</span>    [
+<span class="lineno">19</span>      4.0,
+<span class="lineno">20</span>      4.0,
+<span class="lineno">21</span>      8.0
+<span class="lineno">22</span>    ],
+<span class="lineno">23</span>    [
+<span class="lineno">24</span>      2.0,
+<span class="lineno">25</span>      1.0,
+<span class="lineno">26</span>      1.0
+<span class="lineno">27</span>    ],
+<span class="lineno">28</span>    [
+<span class="lineno">29</span>      4.0,
+<span class="lineno">30</span>      1.0,
+<span class="lineno">31</span>      1.0
+<span class="lineno">32</span>    ],
+<span class="lineno">33</span>    [
+<span class="lineno">34</span>      3.0,
+<span class="lineno">35</span>      3.0,
+<span class="lineno">36</span>      1.0
+<span class="lineno">37</span>    ],
+<span class="lineno">38</span>    [
+<span class="lineno">39</span>      3.0,
+<span class="lineno">40</span>      2.0,
+<span class="lineno">41</span>      3.0
+<span class="lineno">42</span>    ]
+<span class="lineno">43</span>  ],
+<span class="lineno">44</span>  &quot;triangles&quot;: [
+<span class="lineno">45</span>    [
+<span class="lineno">46</span>      0,
+<span class="lineno">47</span>      2,
+<span class="lineno">48</span>      1
+<span class="lineno">49</span>    ],
+<span class="lineno">50</span>    [
+<span class="lineno">51</span>      0,
+<span class="lineno">52</span>      1,
+<span class="lineno">53</span>      3
+<span class="lineno">54</span>    ],
+<span class="lineno">55</span>    [
+<span class="lineno">56</span>      1,
+<span class="lineno">57</span>      2,
+<span class="lineno">58</span>      3
+<span class="lineno">59</span>    ],
+<span class="lineno">60</span>    [
+<span class="lineno">61</span>      2,
+<span class="lineno">62</span>      0,
+<span class="lineno">63</span>      3
+<span class="lineno">64</span>    ],
+<span class="lineno">65</span>    [
+<span class="lineno">66</span>      4,
+<span class="lineno">67</span>      6,
+<span class="lineno">68</span>      5
+<span class="lineno">69</span>    ],
+<span class="lineno">70</span>    [
+<span class="lineno">71</span>      4,
+<span class="lineno">72</span>      5,
+<span class="lineno">73</span>      7
+<span class="lineno">74</span>    ],
+<span class="lineno">75</span>    [
+<span class="lineno">76</span>      5,
+<span class="lineno">77</span>      6,
+<span class="lineno">78</span>      7
+<span class="lineno">79</span>    ],
+<span class="lineno">80</span>    [
+<span class="lineno">81</span>      6,
+<span class="lineno">82</span>      4,
+<span class="lineno">83</span>      7
+<span class="lineno">84</span>    ]
+<span class="lineno">85</span>  ],
+<span class="lineno">86</span>  &quot;metadata&quot;: {
+<span class="lineno">87</span>    &quot;id&quot;: &quot;Me1143&quot;,
+<span class="lineno">88</span>    &quot;schema_version&quot;: 0,
+<span class="lineno">89</span>    &quot;defect_class&quot;: &quot;nested_volume_components&quot;,
+<span class="lineno">90</span>    &quot;title&quot;: &quot;volume_connected_components nesting_depth_assignment: inner tetrahedron nested inside outer; ray-casting parity assigns volume_id=2 to inner component (Branch 4)&quot;,
+<span class="lineno">91</span>    &quot;assertions&quot;: [
+<span class="lineno">92</span>      {
+<span class="lineno">93</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">94</span>        &quot;edge&quot;: [
+<span class="lineno">95</span>          0,
+<span class="lineno">96</span>          1
+<span class="lineno">97</span>        ],
+<span class="lineno">98</span>        &quot;n&quot;: 2
+<span class="lineno">99</span>      },
+<span class="lineno">100</span>      {
+<span class="lineno">101</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">102</span>        &quot;edge&quot;: [
+<span class="lineno">103</span>          0,
+<span class="lineno">104</span>          2
+<span class="lineno">105</span>        ],
+<span class="lineno">106</span>        &quot;n&quot;: 2
+<span class="lineno">107</span>      },
+<span class="lineno">108</span>      {
+<span class="lineno">109</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">110</span>        &quot;edge&quot;: [
+<span class="lineno">111</span>          1,
+<span class="lineno">112</span>          2
+<span class="lineno">113</span>        ],
+<span class="lineno">114</span>        &quot;n&quot;: 2
+<span class="lineno">115</span>      },
+<span class="lineno">116</span>      {
+<span class="lineno">117</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">118</span>        &quot;edge&quot;: [
+<span class="lineno">119</span>          0,
+<span class="lineno">120</span>          3
+<span class="lineno">121</span>        ],
+<span class="lineno">122</span>        &quot;n&quot;: 2
+<span class="lineno">123</span>      },
+<span class="lineno">124</span>      {
+<span class="lineno">125</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">126</span>        &quot;edge&quot;: [
+<span class="lineno">127</span>          1,
+<span class="lineno">128</span>          3
+<span class="lineno">129</span>        ],
+<span class="lineno">130</span>        &quot;n&quot;: 2
+<span class="lineno">131</span>      },
+<span class="lineno">132</span>      {
+<span class="lineno">133</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">134</span>        &quot;edge&quot;: [
+<span class="lineno">135</span>          2,
+<span class="lineno">136</span>          3
+<span class="lineno">137</span>        ],
+<span class="lineno">138</span>        &quot;n&quot;: 2
+<span class="lineno">139</span>      },
+<span class="lineno">140</span>      {
+<span class="lineno">141</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">142</span>        &quot;edge&quot;: [
+<span class="lineno">143</span>          4,
+<span class="lineno">144</span>          5
+<span class="lineno">145</span>        ],
+<span class="lineno">146</span>        &quot;n&quot;: 2
+<span class="lineno">147</span>      },
+<span class="lineno">148</span>      {
+<span class="lineno">149</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">150</span>        &quot;edge&quot;: [
+<span class="lineno">151</span>          4,
+<span class="lineno">152</span>          6
+<span class="lineno">153</span>        ],
+<span class="lineno">154</span>        &quot;n&quot;: 2
+<span class="lineno">155</span>      },
+<span class="lineno">156</span>      {
+<span class="lineno">157</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">158</span>        &quot;edge&quot;: [
+<span class="lineno">159</span>          5,
+<span class="lineno">160</span>          6
+<span class="lineno">161</span>        ],
+<span class="lineno">162</span>        &quot;n&quot;: 2
+<span class="lineno">163</span>      },
+<span class="lineno">164</span>      {
+<span class="lineno">165</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">166</span>        &quot;edge&quot;: [
+<span class="lineno">167</span>          4,
+<span class="lineno">168</span>          7
+<span class="lineno">169</span>        ],
+<span class="lineno">170</span>        &quot;n&quot;: 2
+<span class="lineno">171</span>      },
+<span class="lineno">172</span>      {
+<span class="lineno">173</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">174</span>        &quot;edge&quot;: [
+<span class="lineno">175</span>          5,
+<span class="lineno">176</span>          7
+<span class="lineno">177</span>        ],
+<span class="lineno">178</span>        &quot;n&quot;: 2
+<span class="lineno">179</span>      },
+<span class="lineno">180</span>      {
+<span class="lineno">181</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">182</span>        &quot;edge&quot;: [
+<span class="lineno">183</span>          6,
+<span class="lineno">184</span>          7
+<span class="lineno">185</span>        ],
+<span class="lineno">186</span>        &quot;n&quot;: 2
+<span class="lineno">187</span>      },
+<span class="lineno">188</span>      {
+<span class="lineno">189</span>        &quot;kind&quot;: &quot;triangle_not_reachable_from&quot;,
+<span class="lineno">190</span>        &quot;target&quot;: 4,
+<span class="lineno">191</span>        &quot;source&quot;: 0
+<span class="lineno">192</span>      },
+<span class="lineno">193</span>      {
+<span class="lineno">194</span>        &quot;kind&quot;: &quot;euler_characteristic&quot;,
+<span class="lineno">195</span>        &quot;v&quot;: 8,
+<span class="lineno">196</span>        &quot;e&quot;: 12,
+<span class="lineno">197</span>        &quot;f&quot;: 8,
+<span class="lineno">198</span>        &quot;chi&quot;: 4
+<span class="lineno">199</span>      }
+<span class="lineno">200</span>    ]
+<span class="lineno">201</span>  }
+<span class="lineno">202</span>}
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Me1142.html">&larr; Me1142</a> <a class="up" href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <a class="next" href="Me1144.html">Me1144 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

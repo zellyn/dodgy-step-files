@@ -46,6 +46,9 @@
 <li><code>contains(b&#x27;REFERENCE;&#x27;) or contains(b&#x27;EXTERNAL_FILE&#x27;) or contains(b&#x27;/tmp/&#x27;)</code></li>
 <li><code>contains(b&#x27;companion&#x27;) or contains(b&#x27;/tmp/parts/&#x27;) or contains(b&#x27;widget.stp&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -60,28 +63,34 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Ad106 - EXTERNAL_FILE URI resolves through a symlink (TOCTOU race)
-<span class="lineno">2</span> * Defect: an Edition-3 REFERENCE section names a path that the receiver
-<span class="lineno">3</span> * stat()s and then open()s in two filesystem operations. If the path
-<span class="lineno">4</span> * resolves through a symlink that an attacker swaps between check and
-<span class="lineno">5</span> * open, the receiver opens a different file than it validated. This
-<span class="lineno">6</span> * fixture establishes the path-naming side; the demonstration requires
-<span class="lineno">7</span> * receiver-side filesystem manipulation. Provenance tier: cross-file-state. */
-<span class="lineno">8</span>ISO-10303-21;
-<span class="lineno">9</span>HEADER;
-<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;Ad106 - EXTERNAL_FILE TOCTOU symlink-swap witness&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">11</span>FILE_NAME(&#x27;Ad106.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">12</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">13</span>ENDSEC;
-<span class="lineno">14</span>REFERENCE;
-<span class="lineno">15</span>/* Path is a symlink target attackable between stat and open. */
-<span class="lineno">16</span>&lt;companion&gt;=&lt;file:/tmp/parts/widget.stp#main_assembly&gt;;
-<span class="lineno">17</span>ENDSEC;
-<span class="lineno">18</span>DATA;
-<span class="lineno">19</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">20</span>#10=CARTESIAN_POINT(&#x27;benign&#x27;,(0.0,0.0,0.0));
-<span class="lineno">21</span>ENDSEC;
-<span class="lineno">22</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Ad106: EXTERNAL_FILE URI resolves through a symlink; receiver performs stat then open â TOCTOU race; symlink target may change between check and open, causing receiver to read a different file than it validated; receiver must open path once and stat the resulting fd; must not re-resolve path between check and open; must refuse to follow symlinks unless explicitly enabled; must reject EXTERNAL_FILE paths resolving outside configured root; CWE-367; ISO 10303-21 Ed.3 Â§8 REFERENCE/EXTERNAL_FILE; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ad106&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ad106.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">11</span>#3=EXTERNAL_FILE(&#x27;companion_widget&#x27;,(&#x27;/tmp/parts/widget.stp&#x27;),&#x27;application/step&#x27;,$);
+<span class="lineno">12</span>#4=/* TOCTOU race payload:
+<span class="lineno">13</span>   EXTERNAL_FILE path: /tmp/parts/widget.stp
+<span class="lineno">14</span>   Receiver checks access(&#x27;/tmp/parts/widget.stp&#x27;) then
+<span class="lineno">15</span>   open(&#x27;/tmp/parts/widget.stp&#x27;) â two separate syscalls.
+<span class="lineno">16</span>   Between the stat and the open, an attacker swaps the symlink:
+<span class="lineno">17</span>     /tmp/parts/widget.stp -&gt; /tmp/parts/safe.stp  (at stat time)
+<span class="lineno">18</span>     /tmp/parts/widget.stp -&gt; /etc/shadow          (at open time)
+<span class="lineno">19</span>   Receiver reads /etc/shadow despite validating /tmp/parts/safe.stp.
+<span class="lineno">20</span>   Fix: open-then-fstat; never re-resolve path after initial open. */
+<span class="lineno">21</span>CARTESIAN_POINT(&#x27;toctou_note&#x27;,(0.0,0.0,0.0));
+<span class="lineno">22</span>ENDSEC;
+<span class="lineno">23</span>REFERENCE;
+<span class="lineno">24</span>/* EXTERNAL_FILE /tmp/parts/widget.stp resolves through a symlink;
+<span class="lineno">25</span>   TOCTOU race: symlink target can be swapped between stat and open.
+<span class="lineno">26</span>   companion file: widget.stp */
+<span class="lineno">27</span>ENDSEC;
+<span class="lineno">28</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

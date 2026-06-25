@@ -40,6 +40,9 @@
 <li><code>matches(rb&#x27;LENGTH_MEASURE\(\s*0\.0\)&#x27;)</code></li>
 <li><code>count_entity_def(b&#x27;UNCERTAINTY_MEASURE_WITH_UNIT&#x27;) == 1</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -54,54 +57,39 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Tb018 - UNCERTAINTY value of exactly zero -- no fuzzy compare requested
-<span class="lineno">2</span> * Defect: UNCERTAINTY_MEASURE_WITH_UNIT(<mark>LENGTH_MEASURE(0.0)</mark>) declares zero
-<span class="lineno">3</span> * tolerance. Receiver A respects it: every comparison is exact equality;
-<span class="lineno">4</span> * any sub-bit drift is a defect. Receiver B floors at Precision::Confusion
-<span class="lineno">5</span> * (~1e-7): silently substitutes a non-zero working tolerance, behaves
-<span class="lineno">6</span> * identically to a normal file. The producer&#x27;s request for exact arithmetic
-<span class="lineno">7</span> * may or may not be honoured.
-<span class="lineno">8</span> */
-<span class="lineno">9</span>ISO-10303-21;
-<span class="lineno">10</span>HEADER;
-<span class="lineno">11</span>FILE_DESCRIPTION((&#x27;Tb018 zero declared uncertainty&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">12</span>FILE_NAME(&#x27;Tb018.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
-<span class="lineno">13</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">14</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">15</span>ENDSEC;
-<span class="lineno">16</span>DATA;
-<span class="lineno">17</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">18</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">19</span>  &#x27;automotive_design&#x27;,2009,#1);
-<span class="lineno">20</span>/* Simple edge so context is exercised. */
-<span class="lineno">21</span>#10=CARTESIAN_POINT(&#x27;p0&#x27;,(0.0,0.0,0.0));
-<span class="lineno">22</span>#11=CARTESIAN_POINT(&#x27;p1&#x27;,(1.0,0.0,0.0));
-<span class="lineno">23</span>#20=VERTEX_POINT(&#x27;v0&#x27;,#10);
-<span class="lineno">24</span>#21=VERTEX_POINT(&#x27;v1&#x27;,#11);
-<span class="lineno">25</span>#30=DIRECTION(&#x27;+x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">26</span>#31=VECTOR(&#x27;vx&#x27;,#30,1.0);
-<span class="lineno">27</span>#32=LINE(&#x27;l&#x27;,#10,#31);
-<span class="lineno">28</span>#40=EDGE_CURVE(&#x27;e&#x27;,#20,#21,#32,.T.);
-<span class="lineno">29</span>#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">30</span>#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">31</span>#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">32</span><mark>#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0)</mark>,#50,
-<span class="lineno">33</span>  &#x27;distance_accuracy_value&#x27;,&#x27;exact_arithmetic_requested&#x27;);
-<span class="lineno">34</span>#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">35</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
-<span class="lineno">36</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
-<span class="lineno">37</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
-<span class="lineno">38</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">39</span>#9001=PRODUCT(&#x27;Tb018&#x27;,&#x27;Tb018&#x27;,&#x27;&#x27;,(#9000));
-<span class="lineno">40</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
-<span class="lineno">41</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
-<span class="lineno">42</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
-<span class="lineno">43</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
-<span class="lineno">44</span>#9020=GEOMETRIC_CURVE_SET(&#x27;cs&#x27;,(#40));
-<span class="lineno">45</span>#9021=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9020),#70);
-<span class="lineno">46</span>#9022=SHAPE_DEFINITION_REPRESENTATION(#9005,#9021);
-<span class="lineno">47</span>ENDSEC;
-<span class="lineno">48</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tb018: UNCERTAINTY_MEASURE_WITH_UNIT(<mark>LENGTH_MEASURE(0.0)</mark>) â zero tolerance; exact arithmetic requested; receiver silently flooring to 1e-7 violates contract; GEOMETRIC_CURVE_SET â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Tb018&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Tb018.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;p0&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=CARTESIAN_POINT(&#x27;p1&#x27;,(1.0,0.0,0.0));
+<span class="lineno">11</span>#3=VERTEX_POINT(&#x27;v0&#x27;,#1);
+<span class="lineno">12</span>#4=VERTEX_POINT(&#x27;v1&#x27;,#2);
+<span class="lineno">13</span>#5=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">14</span>#6=VECTOR(&#x27;&#x27;,#5,1.0);
+<span class="lineno">15</span>#7=LINE(&#x27;&#x27;,#1,#6);
+<span class="lineno">16</span>#8=EDGE_CURVE(&#x27;e&#x27;,#3,#4,#7,.T.);
+<span class="lineno">17</span>#9=GEOMETRIC_CURVE_SET(&#x27;cs&#x27;,(#8));
+<span class="lineno">18</span>#10=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">19</span>#11=PRODUCT_CONTEXT(&#x27;&#x27;,#10,&#x27;mechanical&#x27;);
+<span class="lineno">20</span>#12=PRODUCT(&#x27;Tb018&#x27;,&#x27;Tb018&#x27;,&#x27;&#x27;,(#11));
+<span class="lineno">21</span>#13=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#12);
+<span class="lineno">22</span>#14=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#10,&#x27;design&#x27;);
+<span class="lineno">23</span>#15=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#13,#14);
+<span class="lineno">24</span>#16=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#15);
+<span class="lineno">25</span>#17=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">26</span>#18=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">27</span>#19=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">28</span><mark>#20=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0)</mark>,#17,&#x27;distance_accuracy_value&#x27;,&#x27;exact_arithmetic_requested&#x27;);
+<span class="lineno">29</span>#21=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#20))GLOBAL_UNIT_ASSIGNED_CONTEXT((#17,#18,#19))REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">30</span>#22=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9),#21);
+<span class="lineno">31</span>#23=SHAPE_DEFINITION_REPRESENTATION(#16,#22);
+<span class="lineno">32</span>ENDSEC;
+<span class="lineno">33</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

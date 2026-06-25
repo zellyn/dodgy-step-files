@@ -37,69 +37,61 @@
 <section><h2>Notes</h2>
 <p>Shows up as visible shading seams in renderers. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;vertex normals don&#x27;t match across edge&quot;, &quot;normal inconsistency&quot;, &quot;lighting seam in tessellation&quot;, &quot;per-vertex normal mismatch on shared node&quot;, &quot;triangulation has shading discontinuity&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;COMPLEX_TRIANGULATED_FACE&#x27;)</code></li>
 <li><code>contains(b&#x27;COORDINATES_LIST&#x27;)</code></li>
 <li><code>declared_schema == b&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
-<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
 <tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
 <tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
 <tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
-<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Bo027 - Per-vertex normals inconsistent across smooth edge.
-<span class="lineno">3</span> * Defect: two adjacent <mark>COMPLEX_TRIANGULATED_FACE</mark>s share node index 1.
-<span class="lineno">4</span> * Face A supplies a per-node normal of (0,0,1) at that node;
-<span class="lineno">5</span> * Face B supplies (0.7071, 0, 0.7071) at the SAME shared node.
-<span class="lineno">6</span> * Across a supposedly smooth edge the normals disagree, so a
-<span class="lineno">7</span> * shading pass must average (or worse: dispatch to default).
-<span class="lineno">8</span> * (AP242 ed.2 entity scaffold.) */
-<span class="lineno">9</span>HEADER;
-<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;Bo027 - normal mismatch across smooth edge&#x27;,&#x27;Pass C gap-fill&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">11</span>FILE_NAME(&#x27;Bo027.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;gap-fill C&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">12</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
-<span class="lineno">13</span>ENDSEC;
-<span class="lineno">14</span>DATA;
-<span class="lineno">15</span>#1=APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
-<span class="lineno">16</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;ap242_managed_model_based_3d_engineering&#x27;,2020,#1);
-<span class="lineno">17</span>/* Shared coordinate list (4 vertices: shared_node at index 1) */
-<span class="lineno">18</span>#10=<mark>COORDINATES_LIST</mark>(&#x27;mesh_coords&#x27;,4,(
-<span class="lineno">19</span>  (1.0,0.0,0.0),
-<span class="lineno">20</span>  (1.0,1.0,0.0),
-<span class="lineno">21</span>  (0.0,1.0,0.0),
-<span class="lineno">22</span>  (1.0,0.0,1.0)));
-<span class="lineno">23</span>/* Face A normals: at shared node (index 1) the normal is +Z */
-<span class="lineno">24</span>#20=<mark>COMPLEX_TRIANGULATED_FACE</mark>(&#x27;faceA_smooth_disagree&#x27;,#10,$,
-<span class="lineno">25</span>  ((0.0,0.0,1.0),
-<span class="lineno">26</span>   (0.0,0.0,1.0),
-<span class="lineno">27</span>   (0.0,0.0,1.0)),
-<span class="lineno">28</span>  ((1,2,3)),
-<span class="lineno">29</span>  ((1,2,3)),
-<span class="lineno">30</span>  $);
-<span class="lineno">31</span>/* Face B normals: at shared node (also index 1) the normal is
-<span class="lineno">32</span> * (0.7071, 0, 0.7071) â disagrees with face A by 45 degrees. */
-<span class="lineno">33</span>#21=<mark>COMPLEX_TRIANGULATED_FACE</mark>(&#x27;faceB_smooth_disagree&#x27;,#10,$,
-<span class="lineno">34</span>  ((0.7071,0.0,0.7071),
-<span class="lineno">35</span>   (0.0,0.0,1.0),
-<span class="lineno">36</span>   (0.7071,0.0,0.7071)),
-<span class="lineno">37</span>  ((1,2,4)),
-<span class="lineno">38</span>  ((1,2,3)),
-<span class="lineno">39</span>  $);
-<span class="lineno">40</span>/* Tessellated shell wrapping the two faces */
-<span class="lineno">41</span>#30=TESSELLATED_SHELL_REPRESENTATION(&#x27;mismatch_shell&#x27;,(#20,#21),$);
-<span class="lineno">42</span>ENDSEC;
-<span class="lineno">43</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* Bo027: Two <mark>COMPLEX_TRIANGULATED_FACE</mark>s sharing node at origin: faceA normal (0,0,1), faceB normal (0.7,0,0.7) at same node â inconsistent per-vertex normals IS wired into shell/face topology; OCCT silently drops (empty result); catalog asks for heal or reject */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Bo027&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Bo027.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=<mark>COORDINATES_LIST</mark>(&#x27;faceA_coords&#x27;,3,((0.,0.,0.),(1.,0.,0.),(0.,1.,0.)));
+<span class="lineno">11</span>#2=<mark>COORDINATES_LIST</mark>(&#x27;faceA_normals&#x27;,3,((0.,0.,1.),(0.,0.,1.),(0.,0.,1.)));
+<span class="lineno">12</span>#3=<mark>COMPLEX_TRIANGULATED_FACE</mark>(&#x27;faceA&#x27;,#1,((0,1,2)),.T.,#2);
+<span class="lineno">13</span>#4=<mark>COORDINATES_LIST</mark>(&#x27;faceB_coords&#x27;,3,((0.,0.,0.),(1.,0.,0.),(0.,0.,1.)));
+<span class="lineno">14</span>#5=<mark>COORDINATES_LIST</mark>(&#x27;faceB_normals&#x27;,3,((0.7071067811865476,0.,0.7071067811865476),(0.7071067811865476,0.,0.7071067811865476),(0.7071067811865476,0.,0.7071067811865476)));
+<span class="lineno">15</span>#6=<mark>COMPLEX_TRIANGULATED_FACE</mark>(&#x27;faceB&#x27;,#4,((0,1,2)),.T.,#5);
+<span class="lineno">16</span>#7=OPEN_SHELL(&#x27;bo027_shell&#x27;,(#3,#6));
+<span class="lineno">17</span>#8=SHELL_BASED_SURFACE_MODEL(&#x27;bo027&#x27;,(#7));
+<span class="lineno">18</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">19</span>#9051=PRODUCT(&#x27;Bo027&#x27;,&#x27;Bo027&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">20</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">21</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">22</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">23</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">24</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">25</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">26</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">27</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">28</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">29</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#8),#9060);
+<span class="lineno">30</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">31</span>ENDSEC;
+<span class="lineno">32</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

@@ -16,7 +16,6 @@
 <p class="category">§12.1a encoding/strings (sub-class: numeric character reference)</p>
 <p class="severity-badge severity-p1">P1 — silent data loss</p>
 <p class="tag-pills">
-<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
 <a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
 <a class="tag tag-encoding" href="../by-tag/encoding/index.html">encoding</a>
 </p>
@@ -38,10 +37,13 @@
 <section><h2>Notes</h2>
 <p>**See also**: Le044 (the matching `\X2\` defect). Synonyms: &quot;Q directive encodes surrogate&quot;, &quot;STEP Q with U+D800 lone surrogate&quot;, &quot;surrogate half via Q escape&quot;, &quot;ill-formed UTF-8 from Q surrogate&quot;, &quot;WTF-8 from STEP Q escape&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=process_signal</code></p></section>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;\\Q\\55296\\Q\\&#x27;)</code></li>
 <li><code>contains(b&#x27;55296&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="Le044.html">Le044</a></p>
@@ -52,7 +54,7 @@
 <tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
 <tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
 <tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
-<tr><td><code>ifcopenshell</code></td><td><code>process_signal</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
 <tr><td><code>part21_strict</code></td><td><code>warn(W_BARE_BACKSLASH)</code></td></tr>
 <tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
 </tbody></table>
@@ -61,31 +63,20 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Le041 - \Q\ numeric-character-reference encoding code point in
-<span class="lineno">3</span> * the UTF-16 surrogate range (U+D800..U+DFFF)
-<span class="lineno">4</span> * Defect: ISO 10303-21 \Q\NNN\Q\ accepts decimal Unicode scalars,
-<span class="lineno">5</span> * but values <mark>55296</mark>..57343 (the UTF-16 surrogate halves) are not
-<span class="lineno">6</span> * legal Unicode scalars - they exist only as paired surrogates in
-<span class="lineno">7</span> * the UTF-16 transformation. A kernel that decodes <mark>\Q\55296\Q\</mark> into
-<span class="lineno">8</span> * a UTF-8 stream will produce an ill-formed sequence (CESU-8 or
-<span class="lineno">9</span> * WTF-8 territory) that downstream tooling may reject. The producer
-<span class="lineno">10</span> * may have meant a non-BMP character but failed to emit the surrogate
-<span class="lineno">11</span> * pair, or may be re-encoding a Java/JavaScript string that allowed
-<span class="lineno">12</span> * lone surrogates internally. */
-<span class="lineno">13</span>HEADER;
-<span class="lineno">14</span>FILE_DESCRIPTION((&#x27;Le041 - \Q\ encoding lone surrogate <mark>55296</mark> (U+D800)&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">15</span>FILE_NAME(&#x27;Le041.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
-<span class="lineno">16</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">17</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">18</span>ENDSEC;
-<span class="lineno">19</span>DATA;
-<span class="lineno">20</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">21</span>#2=PRODUCT_CONTEXT(&#x27;part&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">22</span>/* Defect: <mark>55296</mark> is U+D800, a high-surrogate half - not a legal
-<span class="lineno">23</span> * Unicode scalar */
-<span class="lineno">24</span>#10=PRODUCT(&#x27;lone=<mark>\Q\55296\Q\</mark>&#x27;,&#x27;lone-surrogate&#x27;,&#x27;&#x27;,(#2));
-<span class="lineno">25</span>ENDSEC;
-<span class="lineno">26</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* Le041: \Q\ encoding a code point in the UTF-16 surrogate range U+D800-U+DFFF; ISO 10303-21 Ed.3 Â§6.4.3: \Q\NNN\Q\ accepts decimal Unicode scalars; values <mark>55296</mark>-57343 are UTF-16 surrogate halves, not legal Unicode scalars; defect string: &#x27;lone=<mark>\Q\55296\Q\</mark>&#x27; â decimal <mark>55296</mark> = U+D800, high-surrogate half; a kernel decoding this into UTF-8 produces an ill-formed CESU-8 / WTF-8 sequence; the producer may have re-encoded a Java/JavaScript string that allowed lone surrogates internally, or failed to emit the surrogate pair for a supplementary-plane character; receiver must reject \Q\ payloads in the surrogate range <mark>55296</mark>-57343 with a precise diagnostic; a tolerant mode may pass them through with a warning but must not emit conforming Unicode output containing lone surrogates; ifcopenshell observed to terminate via process signal on \Q\..\Q\ payloads; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Le041&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Le041.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">11</span>#8998=PERSON(&#x27;lone=<mark>\Q\55296\Q\</mark>&#x27;,&#x27;q-ref-surrogate-U+D800&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>#8999=PERSON(&#x27;low=\Q\57343\Q\&#x27;,&#x27;q-ref-surrogate-U+DFFF&#x27;,&#x27;&#x27;);
+<span class="lineno">13</span>
+<span class="lineno">14</span>ENDSEC;
+<span class="lineno">15</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

@@ -42,6 +42,9 @@
 <li><code>contains(b&#x27;REFERENCE;&#x27;) and (contains(b&#x27;companion-file.stp#missing_anchor&#x27;) or contains(b&#x27;no-such-file.stp#also_missing&#x27;))</code></li>
 <li><code>contains(b&#x27;companion-file.stp&#x27;) or contains(b&#x27;companion.stp&#x27;) or contains(b&#x27;no-such-file.stp&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -57,36 +60,30 @@
 <details>
 <summary>Show fixture bytes</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Lh034 - REFERENCE section listing external instance handles
-<span class="lineno">3</span> * but no matching ANCHOR section in the producing-side companion
-<span class="lineno">4</span> * file
-<span class="lineno">5</span> * Defect: ISO 10303-21 Edition 3 ANCHOR / REFERENCE / SIGNATURE
-<span class="lineno">6</span> * sections exist to support cross-file linking. A REFERENCE entry
-<span class="lineno">7</span> * names an external instance via a URI plus &#x27;#anchor_name&#x27;; the
-<span class="lineno">8</span> * other end (a separate file) must publish that anchor in its
-<span class="lineno">9</span> * ANCHOR section. When the receiver imports a file with REFERENCE
-<span class="lineno">10</span> * to an unresolvable target (companion file missing, anchor name
-<span class="lineno">11</span> * misspelt, URI scheme unsupported), the kernel must decide whether
-<span class="lineno">12</span> * to defer-load, fail-load, or substitute a placeholder. */
-<span class="lineno">13</span>HEADER;
-<span class="lineno">14</span>FILE_DESCRIPTION((&#x27;Lh034 - REFERENCE section to unresolvable external anchor&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">15</span>FILE_NAME(&#x27;Lh034.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
-<span class="lineno">16</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">17</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">18</span>ENDSEC;
-<span class="lineno">19</span>REFERENCE;
-<span class="lineno">20</span>/* Defect: external reference to companion-file.stp#missing_anchor
-<span class="lineno">21</span> * which does not exist - URI not resolvable */
-<span class="lineno">22</span>#100=&lt;file:companion-file.stp#missing_anchor&gt;;
-<span class="lineno">23</span>#101=&lt;https://example.invalid/no-such-file.stp#also_missing&gt;;
+<span class="lineno">2</span>/* Lh034: REFERENCE section with unresolvable external anchors */
+<span class="lineno">3</span>/* ISO 10303-21 Ed.3: REFERENCE entry must resolve against a companion ANCHOR section */
+<span class="lineno">4</span>/* DEFECT: companion-file.stp does not exist; missing_anchor name is misspelt */
+<span class="lineno">5</span>/* DEFECT: https://example.invalid/no-such-file.stp is not reachable */
+<span class="lineno">6</span>/* pure-Python validator rejects (E_UNRESOLVED_REFS); OCC silently accepts empty */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Lh034: REFERENCE section with unresolvable external anchors&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;Lh034.stp&#x27;,&#x27;2026-06-20T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>REFERENCE;
+<span class="lineno">13</span>/* DEFECT: companion-file.stp does not exist; #missing_anchor is not published */
+<span class="lineno">14</span>#10=&lt;file:companion-file.stp#missing_anchor&gt;;
+<span class="lineno">15</span>/* DEFECT: example.invalid URI is unresolvable; also_missing anchor absent */
+<span class="lineno">16</span>#11=&lt;https://example.invalid/no-such-file.stp#also_missing&gt;;
+<span class="lineno">17</span>ENDSEC;
+<span class="lineno">18</span>DATA;
+<span class="lineno">19</span>#1=CARTESIAN_POINT(&#x27;origin&#x27;,(0.,0.,0.));
+<span class="lineno">20</span>#2=CARTESIAN_POINT(&#x27;corner&#x27;,(1.,1.,0.));
+<span class="lineno">21</span>#3=DIRECTION(&#x27;xdir&#x27;,(1.,0.,0.));
+<span class="lineno">22</span>#4=DIRECTION(&#x27;zdir&#x27;,(0.,0.,1.));
+<span class="lineno">23</span>#5=GEOMETRIC_CURVE_SET(&#x27;broken-crossfile-link-shape&#x27;,(#1,#2));
 <span class="lineno">24</span>ENDSEC;
-<span class="lineno">25</span>DATA;
-<span class="lineno">26</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">27</span>#2=PRODUCT_CONTEXT(&#x27;part&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">28</span>/* PRODUCT references #100 - which is unresolvable */
-<span class="lineno">29</span>#10=PRODUCT(&#x27;part-with-broken-ref&#x27;,&#x27;demo&#x27;,&#x27;&#x27;,(#2));
-<span class="lineno">30</span>ENDSEC;
-<span class="lineno">31</span>END-ISO-10303-21;
+<span class="lineno">25</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

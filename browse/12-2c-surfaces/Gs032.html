@@ -35,70 +35,109 @@
 <section><h2>Notes</h2>
 <p>**See also**: Gs036. Synonyms: &quot;surface of linear extrusion direction parallel to basis line&quot;, &quot;extruded curve collapses to line&quot;, &quot;SURFACE_OF_LINEAR_EXTRUSION degenerate basis&quot;, &quot;extrusion vector colinear with LINE basis&quot;, &quot;surface collapses because direction matches basis line&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Closure intent</h2>
+<p><code>ambiguous</code> — the open shell is an incidental scaffold for a non-closure-related test.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;SURFACE_OF_LINEAR_EXTRUSION(&#x27;)</code></li>
 <li><code>count_entity_def(b&#x27;LINE&#x27;) == 1</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="Gs036.html">Gs036</a></p>
 </section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
-<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
 <tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
 <tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
 <tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
-<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Gs032 - Surface-of-linear-extrusion whose direction is parallel to its basis line
-<span class="lineno">3</span> *
-<span class="lineno">4</span> * Sources:  G019
-<span class="lineno">5</span> *
-<span class="lineno">6</span> * Defect: A SURFACE_OF_LINEAR_EXTRUSION whose basis curve is a LINE collinear
-<span class="lineno">7</span> *  with the extrusion direction is degenerate - it collapses to a 1D line and
-<span class="lineno">8</span> *  is not a surface at all.
-<span class="lineno">9</span> *
-<span class="lineno">10</span> * Reproducer:  SURFACE_OF_LINEAR_EXTRUSION with basis LINE and extrusion_axis
-<span class="lineno">11</span> *  direction parallel to LINE.dir.
-<span class="lineno">12</span> *
-<span class="lineno">13</span> * Expected kernel behavior:
-<span class="lineno">14</span> *   reject this surface; emit warning; carry on with face omission. */
-<span class="lineno">15</span>HEADER;
-<span class="lineno">16</span>FILE_DESCRIPTION((&#x27;Gs032 test case&#x27;,&#x27;Collinear extrusion collapses to line&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">17</span>FILE_NAME(&#x27;Gs032.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">18</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">19</span>ENDSEC;
-<span class="lineno">20</span>DATA;
-<span class="lineno">21</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">22</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
-<span class="lineno">23</span>/* Basis LINE in +X direction at origin */
-<span class="lineno">24</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">25</span>#11=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">26</span>#12=VECTOR(&#x27;&#x27;,#11,1.0);
-<span class="lineno">27</span><mark>#13=LINE(</mark>&#x27;&#x27;,#10,#12);
-<span class="lineno">28</span>/* Defect: extrusion direction is also +X, parallel to the basis LINE.dir */
-<span class="lineno">29</span>#20=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">30</span>#21=VECTOR(&#x27;&#x27;,#20,10.0);
-<span class="lineno">31</span>#22=<mark>SURFACE_OF_LINEAR_EXTRUSION(</mark>&#x27;&#x27;,#13,#21);
-<span class="lineno">32</span>/* Reference from a face - reader should reject this surface as degenerate */
-<span class="lineno">33</span>#30=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">34</span>#31=VERTEX_POINT(&#x27;&#x27;,#30);
-<span class="lineno">35</span>#32=VERTEX_LOOP(&#x27;&#x27;,#31);
-<span class="lineno">36</span>#33=FACE_OUTER_BOUND(&#x27;&#x27;,#32,.T.);
-<span class="lineno">37</span>#34=ADVANCED_FACE(&#x27;&#x27;,(#33),#22,.T.);
-<span class="lineno">38</span>/* Wrap face in shell - any tessellation / volume integration over the
-<span class="lineno">39</span> * degenerate extrusion will then trip the parallel-direction guard. */
-<span class="lineno">40</span>#40=OPEN_SHELL(&#x27;&#x27;,(#34));
-<span class="lineno">41</span>ENDSEC;
-<span class="lineno">42</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* Gs032: SURFACE_OF_LINEAR_EXTRUSION IS ADVANCED_FACE.face_geometry; basis LINE direction=(0,0,1) IS parallel to extrusion_axis direction=(0,0,1); count_entity_def(LINE)==1; surface collapses to line; shape(1) (live OCC heals) */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Gs032&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Gs032.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=VECTOR(&#x27;&#x27;,#2,10.0);
+<span class="lineno">13</span><mark>#4=LINE(</mark>&#x27;&#x27;,#1,#3);
+<span class="lineno">14</span>#5=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">15</span>#6=VECTOR(&#x27;&#x27;,#5,5.0);
+<span class="lineno">16</span>#7=<mark>SURFACE_OF_LINEAR_EXTRUSION(</mark>&#x27;gs032_sole&#x27;,#4,#6);
+<span class="lineno">17</span>#8=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT(&#x27;UV&#x27;,&#x27;2D&#x27;));
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,5.0));
+<span class="lineno">20</span>#11=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,3.0));
+<span class="lineno">21</span>#12=VERTEX_POINT(&#x27;&#x27;,#9);
+<span class="lineno">22</span>#13=VERTEX_POINT(&#x27;&#x27;,#10);
+<span class="lineno">23</span>#14=VERTEX_POINT(&#x27;&#x27;,#11);
+<span class="lineno">24</span>#15=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">25</span>#16=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,5.0));
+<span class="lineno">26</span>#17=B_SPLINE_CURVE_WITH_KNOTS(&#x27;&#x27;,1,(#15,#16),.UNSPECIFIED.,.F.,.F.,(2,2),(0.0,1.0),.UNSPECIFIED.);
+<span class="lineno">27</span>#18=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));
+<span class="lineno">28</span>#19=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">29</span>#20=B_SPLINE_CURVE_WITH_KNOTS(&#x27;&#x27;,1,(#18,#19),.UNSPECIFIED.,.F.,.F.,(2,2),(0.0,1.0),.UNSPECIFIED.);
+<span class="lineno">30</span>#21=DEFINITIONAL_REPRESENTATION(&#x27;pcdef&#x27;,(#20),#8);
+<span class="lineno">31</span>#22=PCURVE(&#x27;pc&#x27;,#7,#21);
+<span class="lineno">32</span>#23=SURFACE_CURVE(&#x27;sc&#x27;,#17,(#22),.PCURVE_S1.);
+<span class="lineno">33</span>#24=EDGE_CURVE(&#x27;ec&#x27;,#12,#13,#23,.T.);
+<span class="lineno">34</span>#25=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,5.0));
+<span class="lineno">35</span>#26=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,3.0));
+<span class="lineno">36</span>#27=B_SPLINE_CURVE_WITH_KNOTS(&#x27;&#x27;,1,(#25,#26),.UNSPECIFIED.,.F.,.F.,(2,2),(0.0,1.0),.UNSPECIFIED.);
+<span class="lineno">37</span>#28=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">38</span>#29=CARTESIAN_POINT(&#x27;&#x27;,(0.5,0.5));
+<span class="lineno">39</span>#30=B_SPLINE_CURVE_WITH_KNOTS(&#x27;&#x27;,1,(#28,#29),.UNSPECIFIED.,.F.,.F.,(2,2),(0.0,1.0),.UNSPECIFIED.);
+<span class="lineno">40</span>#31=DEFINITIONAL_REPRESENTATION(&#x27;pcdef&#x27;,(#30),#8);
+<span class="lineno">41</span>#32=PCURVE(&#x27;pc&#x27;,#7,#31);
+<span class="lineno">42</span>#33=SURFACE_CURVE(&#x27;sc&#x27;,#27,(#32),.PCURVE_S1.);
+<span class="lineno">43</span>#34=EDGE_CURVE(&#x27;ec&#x27;,#13,#14,#33,.T.);
+<span class="lineno">44</span>#35=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,3.0));
+<span class="lineno">45</span>#36=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">46</span>#37=B_SPLINE_CURVE_WITH_KNOTS(&#x27;&#x27;,1,(#35,#36),.UNSPECIFIED.,.F.,.F.,(2,2),(0.0,1.0),.UNSPECIFIED.);
+<span class="lineno">47</span>#38=CARTESIAN_POINT(&#x27;&#x27;,(0.5,0.5));
+<span class="lineno">48</span>#39=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));
+<span class="lineno">49</span>#40=B_SPLINE_CURVE_WITH_KNOTS(&#x27;&#x27;,1,(#38,#39),.UNSPECIFIED.,.F.,.F.,(2,2),(0.0,1.0),.UNSPECIFIED.);
+<span class="lineno">50</span>#41=DEFINITIONAL_REPRESENTATION(&#x27;pcdef&#x27;,(#40),#8);
+<span class="lineno">51</span>#42=PCURVE(&#x27;pc&#x27;,#7,#41);
+<span class="lineno">52</span>#43=SURFACE_CURVE(&#x27;sc&#x27;,#37,(#42),.PCURVE_S1.);
+<span class="lineno">53</span>#44=EDGE_CURVE(&#x27;ec&#x27;,#14,#12,#43,.T.);
+<span class="lineno">54</span>#45=ORIENTED_EDGE(&#x27;&#x27;,$,$,#24,.T.);
+<span class="lineno">55</span>#46=ORIENTED_EDGE(&#x27;&#x27;,$,$,#34,.T.);
+<span class="lineno">56</span>#47=ORIENTED_EDGE(&#x27;&#x27;,$,$,#44,.T.);
+<span class="lineno">57</span>#48=EDGE_LOOP(&#x27;&#x27;,(#45,#46,#47));
+<span class="lineno">58</span>#49=FACE_OUTER_BOUND(&#x27;&#x27;,#48,.T.);
+<span class="lineno">59</span>#50=ADVANCED_FACE(&#x27;&#x27;,(#49),#7,.T.);
+<span class="lineno">60</span>#51=OPEN_SHELL(&#x27;&#x27;,(#50));
+<span class="lineno">61</span>#52=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#51));
+<span class="lineno">62</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">63</span>#9051=PRODUCT(&#x27;Gs032&#x27;,&#x27;Gs032&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">64</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">65</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">66</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">67</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">68</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">69</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">70</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">71</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">72</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">73</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#52),#9060);
+<span class="lineno">74</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">75</span>ENDSEC;
+<span class="lineno">76</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

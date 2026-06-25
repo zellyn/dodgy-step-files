@@ -44,6 +44,9 @@
 <li><code>contains(b&#x27;SHAPE_DEFINITION_REPRESENTATION&#x27;) and contains(b&#x27;SHAPE_ASPECT&#x27;)</code></li>
 <li><code>contains(b&#x27;SHAPE_DEFINITION_REPRESENTATION&#x27;) and contains(b&#x27;SHAPE_ASPECT(&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="Ad030.html">Ad030</a></p>
 </section>
@@ -54,73 +57,30 @@
 <tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
 <tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
-<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>reject(E_UNRESOLVED_REFS)</code></td></tr>
 <tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Ad042 - Reference to entity-of-wrong-type in attribute slot
-<span class="lineno">2</span>   ----------------------------------------------------------------------
-<span class="lineno">3</span>   Catalog section : Â§12.11 adversarial (sub-class: type-confusion / null-deref)
-<span class="lineno">4</span>   Sources         : 06-nist-sfa.md S007;
-<span class="lineno">5</span>                     18-other-issues.md I001 (CATIA V6 SDR with SHAPE_ASPECT
-<span class="lineno">6</span>                       instead of PROPERTY_DEFINITION_SHAPE; null-handle deref);
-<span class="lineno">7</span>                     08-occt-gitlog.md G002 (Datum_System mixed array crash),
-<span class="lineno">8</span>                     G016 (NAUO with PDS instead of PD)
-<span class="lineno">9</span>   See also        : Ad030
-<span class="lineno">10</span>   ----------------------------------------------------------------------
-<span class="lineno">11</span>   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
-<span class="lineno">12</span>   testing. Do NOT use as exchange data.
-<span class="lineno">13</span>   ----------------------------------------------------------------------
-<span class="lineno">14</span>   Defect
-<span class="lineno">15</span>     SCHEMA SELECT type validated by structural shape only; the actual
-<span class="lineno">16</span>     attribute type is the wrong subtype. Downstream chained calls of
-<span class="lineno">17</span>     the form x-&gt;A()-&gt;B() dereference a null handle. The CATIA V6
-<span class="lineno">18</span>     incident: 1088 of 1267 SHAPE_DEFINITION_REPRESENTATION instances
-<span class="lineno">19</span>     in a 430 MB file pointed at SHAPE_ASPECT instead of
-<span class="lineno">20</span>     PROPERTY_DEFINITION_SHAPE.
-<span class="lineno">21</span>   Reproducer recipe
-<span class="lineno">22</span>     #27=SHAPE_DEFINITION_REPRESENTATION(#23,#26) where #23 is a
-<span class="lineno">23</span>     SHAPE_ASPECT (not PROPERTY_DEFINITION_SHAPE).
-<span class="lineno">24</span>   Expected kernel behavior
-<span class="lineno">25</span>     Schema-aware select-narrowing that distinguishes the SELECT branch
-<span class="lineno">26</span>     and emits E_SELECT_BRANCH instead of dereffing a null.
-<span class="lineno">27</span>   ----------------------------------------------------------------------
-<span class="lineno">28</span>*/
-<span class="lineno">29</span>ISO-10303-21;
-<span class="lineno">30</span>HEADER;
-<span class="lineno">31</span>FILE_DESCRIPTION((&#x27;Ad042 - SDR points at SHAPE_ASPECT, wrong SELECT branch&#x27;),
-<span class="lineno">32</span>  &#x27;2;1&#x27;);
-<span class="lineno">33</span>FILE_NAME(&#x27;Ad042.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
-<span class="lineno">34</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">35</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">36</span>ENDSEC;
-<span class="lineno">37</span>DATA;
-<span class="lineno">38</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">39</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">40</span>  &#x27;automotive_design&#x27;,2001,#1);
-<span class="lineno">41</span>#3=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">42</span>#4=PRODUCT(&#x27;P&#x27;,&#x27;part&#x27;,&#x27;&#x27;,(#3));
-<span class="lineno">43</span>#5=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#4);
-<span class="lineno">44</span>#6=PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#1,&#x27;design&#x27;);
-<span class="lineno">45</span>#7=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#5,#6);
-<span class="lineno">46</span>#8=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#7);
-<span class="lineno">47</span>#10=CARTESIAN_POINT(&#x27;o&#x27;,(0.0,0.0,0.0));
-<span class="lineno">48</span>#11=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
-<span class="lineno">49</span>#12=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">50</span>#13=AXIS2_PLACEMENT_3D(&#x27;p&#x27;,#10,#11,#12);
-<span class="lineno">51</span>#20=MECHANICAL_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">52</span>#21=REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3d&#x27;);
-<span class="lineno">53</span>#26=SHAPE_REPRESENTATION(&#x27;rep&#x27;,(#13),#21);
-<span class="lineno">54</span>/* Defect: #23 is SHAPE_ASPECT, not PROPERTY_DEFINITION_SHAPE.
-<span class="lineno">55</span>   The SELECT in SDR&#x27;s first slot accepts both structurally; downstream
-<span class="lineno">56</span>   code that calls (#23)-&gt;property_definition() crashes. */
-<span class="lineno">57</span>#23=SHAPE_ASPECT(&#x27;aspect&#x27;,&#x27;&#x27;,#8,.T.);
-<span class="lineno">58</span>#27=SHAPE_DEFINITION_REPRESENTATION(#23,#26);
-<span class="lineno">59</span>ENDSEC;
-<span class="lineno">60</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Ad042: type-confusion: SHAPE_ASPECT in SHAPE_DEFINITION_REPRESENTATION attribute slot that requires PROPERTY_DEFINITION_SHAPE; schema SELECT branch mismatch â null-handle deref on chained accessor; 1088/1267 SDRs broken in 430 MB CATIA V6 file; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ad042&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ad042.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">11</span>#23=SHAPE_ASPECT(&#x27;mistyped_aspect&#x27;,&#x27;wrong branch&#x27;,#9000,.T.);
+<span class="lineno">12</span>#24=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9000);
+<span class="lineno">13</span>#25=SHAPE_REPRESENTATION(&#x27;&#x27;,(#1),#9000);
+<span class="lineno">14</span>#26=ADVANCED_BREP_SHAPE_REPRESENTATION(&#x27;&#x27;,(#1),#9000);
+<span class="lineno">15</span>#27=SHAPE_DEFINITION_REPRESENTATION(#23,#26);
+<span class="lineno">16</span>ENDSEC;
+<span class="lineno">17</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

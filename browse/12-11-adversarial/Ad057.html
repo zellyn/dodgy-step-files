@@ -40,6 +40,9 @@
 <li><code>count_entity_def(b&#x27;EDGE_CURVE&#x27;) &gt;= 5</code></li>
 <li><code>count(b&#x27;.T.&#x27;) + count(b&#x27;.F.&#x27;) &gt;= 5</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="Ad027.html">Ad027</a></p>
 </section>
@@ -57,67 +60,122 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Ad057 - Memory leak / unbounded RSS after STEPCAFControl_Reader
-<span class="lineno">2</span>   ----------------------------------------------------------------------
-<span class="lineno">3</span>   Catalog section : Â§12.11 adversarial (sub-class: resource-exhaustion)
-<span class="lineno">4</span>   Sources         : 18-other-issues.md I017 (ShapeFix_Shape huge memory),
-<span class="lineno">5</span>                     I018 (Linux/Docker RSS),
-<span class="lineno">6</span>                     I019 (LSAN reports STEPControl_Controller::Init enum
-<span class="lineno">7</span>                           allocations leaked)
-<span class="lineno">8</span>   See also        : Ad027
-<span class="lineno">9</span>   ----------------------------------------------------------------------
-<span class="lineno">10</span>   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
-<span class="lineno">11</span>   testing. Do NOT use as exchange data.
-<span class="lineno">12</span>   ----------------------------------------------------------------------
-<span class="lineno">13</span>   Defect
-<span class="lineno">14</span>     After read of a moderate STEP file, RSS does not return to baseline
-<span class="lineno">15</span>     (e.g. ~900 MB held after a 142 MB file on glibc); ShapeFix on huge
-<span class="lineno">16</span>     shells hangs and consumes huge memory. LSAN reports leaks from
-<span class="lineno">17</span>     STEPControl_Controller::Init enum tables that are never freed.
-<span class="lineno">18</span>   Reproducer recipe
-<span class="lineno">19</span>     File with many enum-typed slots that flood the typed-value tables
-<span class="lineno">20</span>     (here: many BOOLEAN/LOGICAL slots), exercising leak in the
-<span class="lineno">21</span>     enum-table allocator.
-<span class="lineno">22</span>   Expected kernel behavior
-<span class="lineno">23</span>     Bypass/chunk shell-fix at large counts; release working set on
-<span class="lineno">24</span>     destruction; free typed-value tables on shutdown.
-<span class="lineno">25</span>   ----------------------------------------------------------------------
-<span class="lineno">26</span>*/
-<span class="lineno">27</span>ISO-10303-21;
-<span class="lineno">28</span>HEADER;
-<span class="lineno">29</span>FILE_DESCRIPTION((&#x27;Ad057 - many enum slots stress typed-value table&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">30</span>FILE_NAME(&#x27;Ad057.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
-<span class="lineno">31</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">32</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">33</span>ENDSEC;
-<span class="lineno">34</span>DATA;
-<span class="lineno">35</span>#1=CARTESIAN_POINT(&#x27;o&#x27;,(0.0,0.0,0.0));
-<span class="lineno">36</span>#2=CARTESIAN_POINT(&#x27;a&#x27;,(1.0,0.0,0.0));
-<span class="lineno">37</span>#3=VERTEX_POINT(&#x27;va&#x27;,#1);
-<span class="lineno">38</span>#4=VERTEX_POINT(&#x27;vb&#x27;,#2);
-<span class="lineno">39</span>#5=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">40</span>#6=VECTOR(&#x27;v&#x27;,#5,1.0);
-<span class="lineno">41</span>#7=LINE(&#x27;l&#x27;,#1,#6);
-<span class="lineno">42</span>/* 16 EDGE_CURVE entries, each carrying a BOOLEAN slot the typed-value
-<span class="lineno">43</span>   table caches; enough to demonstrate the leak class with LSAN. */
-<span class="lineno">44</span><mark>#100=EDGE_CURVE(</mark>&#x27;e0&#x27;,#3,#4,#7,.T.);
-<span class="lineno">45</span><mark>#101=EDGE_CURVE(</mark>&#x27;e1&#x27;,#3,#4,#7,.F.);
-<span class="lineno">46</span><mark>#102=EDGE_CURVE(</mark>&#x27;e2&#x27;,#3,#4,#7,.T.);
-<span class="lineno">47</span><mark>#103=EDGE_CURVE(</mark>&#x27;e3&#x27;,#3,#4,#7,.F.);
-<span class="lineno">48</span><mark>#104=EDGE_CURVE(</mark>&#x27;e4&#x27;,#3,#4,#7,.T.);
-<span class="lineno">49</span><mark>#105=EDGE_CURVE(</mark>&#x27;e5&#x27;,#3,#4,#7,.F.);
-<span class="lineno">50</span><mark>#106=EDGE_CURVE(</mark>&#x27;e6&#x27;,#3,#4,#7,.T.);
-<span class="lineno">51</span><mark>#107=EDGE_CURVE(</mark>&#x27;e7&#x27;,#3,#4,#7,.F.);
-<span class="lineno">52</span><mark>#108=EDGE_CURVE(</mark>&#x27;e8&#x27;,#3,#4,#7,.T.);
-<span class="lineno">53</span><mark>#109=EDGE_CURVE(</mark>&#x27;e9&#x27;,#3,#4,#7,.F.);
-<span class="lineno">54</span><mark>#110=EDGE_CURVE(</mark>&#x27;e10&#x27;,#3,#4,#7,.T.);
-<span class="lineno">55</span><mark>#111=EDGE_CURVE(</mark>&#x27;e11&#x27;,#3,#4,#7,.F.);
-<span class="lineno">56</span><mark>#112=EDGE_CURVE(</mark>&#x27;e12&#x27;,#3,#4,#7,.T.);
-<span class="lineno">57</span><mark>#113=EDGE_CURVE(</mark>&#x27;e13&#x27;,#3,#4,#7,.F.);
-<span class="lineno">58</span><mark>#114=EDGE_CURVE(</mark>&#x27;e14&#x27;,#3,#4,#7,.T.);
-<span class="lineno">59</span><mark>#115=EDGE_CURVE(</mark>&#x27;e15&#x27;,#3,#4,#7,.F.);
-<span class="lineno">60</span>ENDSEC;
-<span class="lineno">61</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Ad057: memory leak / unbounded RSS: typed-value/enum tables not freed; each distinct BOOLEAN .T./.F. slot grows per-process table; ShapeFix on huge shells also leaks; LSAN reports STEPControl_Controller::Init enum allocations; See also Ad027; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ad057&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ad057.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">11</span>#3=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">12</span>#4=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#5=VERTEX_POINT(&#x27;&#x27;,#3);
+<span class="lineno">14</span>#6=VERTEX_POINT(&#x27;&#x27;,#4);
+<span class="lineno">15</span>#7=CARTESIAN_POINT(&#x27;p0&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#8=DIRECTION(&#x27;d&#x27;,(1.,0.,0.));
+<span class="lineno">17</span>#9=VECTOR(#8,1.0);
+<span class="lineno">18</span>#10=LINE(#7,#9);
+<span class="lineno">19</span><mark>#11=EDGE_CURVE(</mark>&#x27;ec0&#x27;,#5,#6,#10,.T.);
+<span class="lineno">20</span>#12=CARTESIAN_POINT(&#x27;p1&#x27;,(0.1,0.0,0.0));
+<span class="lineno">21</span>#13=DIRECTION(&#x27;d&#x27;,(1.,0.,0.));
+<span class="lineno">22</span>#14=VECTOR(#13,1.0);
+<span class="lineno">23</span>#15=LINE(#12,#14);
+<span class="lineno">24</span><mark>#16=EDGE_CURVE(</mark>&#x27;ec1&#x27;,#5,#6,#15,.F.);
+<span class="lineno">25</span>#17=CARTESIAN_POINT(&#x27;p2&#x27;,(0.2,0.0,0.0));
+<span class="lineno">26</span>#18=DIRECTION(&#x27;d&#x27;,(1.,0.,0.));
+<span class="lineno">27</span>#19=VECTOR(#18,1.0);
+<span class="lineno">28</span>#20=LINE(#17,#19);
+<span class="lineno">29</span><mark>#21=EDGE_CURVE(</mark>&#x27;ec2&#x27;,#5,#6,#20,.T.);
+<span class="lineno">30</span>#22=CARTESIAN_POINT(&#x27;p3&#x27;,(0.30000000000000004,0.0,0.0));
+<span class="lineno">31</span>#23=DIRECTION(&#x27;d&#x27;,(1.,0.,0.));
+<span class="lineno">32</span>#24=VECTOR(#23,1.0);
+<span class="lineno">33</span>#25=LINE(#22,#24);
+<span class="lineno">34</span><mark>#26=EDGE_CURVE(</mark>&#x27;ec3&#x27;,#5,#6,#25,.F.);
+<span class="lineno">35</span>#27=CARTESIAN_POINT(&#x27;p4&#x27;,(0.4,0.0,0.0));
+<span class="lineno">36</span>#28=DIRECTION(&#x27;d&#x27;,(1.,0.,0.));
+<span class="lineno">37</span>#29=VECTOR(#28,1.0);
+<span class="lineno">38</span>#30=LINE(#27,#29);
+<span class="lineno">39</span><mark>#31=EDGE_CURVE(</mark>&#x27;ec4&#x27;,#5,#6,#30,.T.);
+<span class="lineno">40</span>#32=CARTESIAN_POINT(&#x27;p5&#x27;,(0.5,0.0,0.0));
+<span class="lineno">41</span>#33=DIRECTION(&#x27;d&#x27;,(1.,0.,0.));
+<span class="lineno">42</span>#34=VECTOR(#33,1.0);
+<span class="lineno">43</span>#35=LINE(#32,#34);
+<span class="lineno">44</span><mark>#36=EDGE_CURVE(</mark>&#x27;ec5&#x27;,#5,#6,#35,.F.);
+<span class="lineno">45</span>#37=CARTESIAN_POINT(&#x27;p6&#x27;,(0.6000000000000001,0.0,0.0));
+<span class="lineno">46</span>#38=DIRECTION(&#x27;d&#x27;,(1.,0.,0.));
+<span class="lineno">47</span>#39=VECTOR(#38,1.0);
+<span class="lineno">48</span>#40=LINE(#37,#39);
+<span class="lineno">49</span><mark>#41=EDGE_CURVE(</mark>&#x27;ec6&#x27;,#5,#6,#40,.T.);
+<span class="lineno">50</span>#42=CARTESIAN_POINT(&#x27;p7&#x27;,(0.7000000000000001,0.0,0.0));
+<span class="lineno">51</span>#43=DIRECTION(&#x27;d&#x27;,(1.,0.,0.));
+<span class="lineno">52</span>#44=VECTOR(#43,1.0);
+<span class="lineno">53</span>#45=LINE(#42,#44);
+<span class="lineno">54</span><mark>#46=EDGE_CURVE(</mark>&#x27;ec7&#x27;,#5,#6,#45,.F.);
+<span class="lineno">55</span>#47=CARTESIAN_POINT(&#x27;p8&#x27;,(0.8,0.0,0.0));
+<span class="lineno">56</span>#48=DIRECTION(&#x27;d&#x27;,(1.,0.,0.));
+<span class="lineno">57</span>#49=VECTOR(#48,1.0);
+<span class="lineno">58</span>#50=LINE(#47,#49);
+<span class="lineno">59</span><mark>#51=EDGE_CURVE(</mark>&#x27;ec8&#x27;,#5,#6,#50,.T.);
+<span class="lineno">60</span>#52=CARTESIAN_POINT(&#x27;p9&#x27;,(0.9,0.0,0.0));
+<span class="lineno">61</span>#53=DIRECTION(&#x27;d&#x27;,(1.,0.,0.));
+<span class="lineno">62</span>#54=VECTOR(#53,1.0);
+<span class="lineno">63</span>#55=LINE(#52,#54);
+<span class="lineno">64</span><mark>#56=EDGE_CURVE(</mark>&#x27;ec9&#x27;,#5,#6,#55,.F.);
+<span class="lineno">65</span>#57=CARTESIAN_POINT(&#x27;p10&#x27;,(1.0,0.0,0.0));
+<span class="lineno">66</span>#58=DIRECTION(&#x27;d&#x27;,(1.,0.,0.));
+<span class="lineno">67</span>#59=VECTOR(#58,1.0);
+<span class="lineno">68</span>#60=LINE(#57,#59);
+<span class="lineno">69</span><mark>#61=EDGE_CURVE(</mark>&#x27;ec10&#x27;,#5,#6,#60,.T.);
+<span class="lineno">70</span>#62=CARTESIAN_POINT(&#x27;p11&#x27;,(1.1,0.0,0.0));
+<span class="lineno">71</span>#63=DIRECTION(&#x27;d&#x27;,(1.,0.,0.));
+<span class="lineno">72</span>#64=VECTOR(#63,1.0);
+<span class="lineno">73</span>#65=LINE(#62,#64);
+<span class="lineno">74</span><mark>#66=EDGE_CURVE(</mark>&#x27;ec11&#x27;,#5,#6,#65,.F.);
+<span class="lineno">75</span>#67=CARTESIAN_POINT(&#x27;p12&#x27;,(1.2000000000000002,0.0,0.0));
+<span class="lineno">76</span>#68=DIRECTION(&#x27;d&#x27;,(1.,0.,0.));
+<span class="lineno">77</span>#69=VECTOR(#68,1.0);
+<span class="lineno">78</span>#70=LINE(#67,#69);
+<span class="lineno">79</span><mark>#71=EDGE_CURVE(</mark>&#x27;ec12&#x27;,#5,#6,#70,.T.);
+<span class="lineno">80</span>#72=CARTESIAN_POINT(&#x27;p13&#x27;,(1.3,0.0,0.0));
+<span class="lineno">81</span>#73=DIRECTION(&#x27;d&#x27;,(1.,0.,0.));
+<span class="lineno">82</span>#74=VECTOR(#73,1.0);
+<span class="lineno">83</span>#75=LINE(#72,#74);
+<span class="lineno">84</span><mark>#76=EDGE_CURVE(</mark>&#x27;ec13&#x27;,#5,#6,#75,.F.);
+<span class="lineno">85</span>#77=CARTESIAN_POINT(&#x27;p14&#x27;,(1.4000000000000001,0.0,0.0));
+<span class="lineno">86</span>#78=DIRECTION(&#x27;d&#x27;,(1.,0.,0.));
+<span class="lineno">87</span>#79=VECTOR(#78,1.0);
+<span class="lineno">88</span>#80=LINE(#77,#79);
+<span class="lineno">89</span><mark>#81=EDGE_CURVE(</mark>&#x27;ec14&#x27;,#5,#6,#80,.T.);
+<span class="lineno">90</span>#82=CARTESIAN_POINT(&#x27;p15&#x27;,(1.5,0.0,0.0));
+<span class="lineno">91</span>#83=DIRECTION(&#x27;d&#x27;,(1.,0.,0.));
+<span class="lineno">92</span>#84=VECTOR(#83,1.0);
+<span class="lineno">93</span>#85=LINE(#82,#84);
+<span class="lineno">94</span><mark>#86=EDGE_CURVE(</mark>&#x27;ec15&#x27;,#5,#6,#85,.F.);
+<span class="lineno">95</span>#87=CARTESIAN_POINT(&#x27;p16&#x27;,(1.6,0.0,0.0));
+<span class="lineno">96</span>#88=DIRECTION(&#x27;d&#x27;,(1.,0.,0.));
+<span class="lineno">97</span>#89=VECTOR(#88,1.0);
+<span class="lineno">98</span>#90=LINE(#87,#89);
+<span class="lineno">99</span><mark>#91=EDGE_CURVE(</mark>&#x27;ec16&#x27;,#5,#6,#90,.T.);
+<span class="lineno">100</span>#92=CARTESIAN_POINT(&#x27;p17&#x27;,(1.7000000000000002,0.0,0.0));
+<span class="lineno">101</span>#93=DIRECTION(&#x27;d&#x27;,(1.,0.,0.));
+<span class="lineno">102</span>#94=VECTOR(#93,1.0);
+<span class="lineno">103</span>#95=LINE(#92,#94);
+<span class="lineno">104</span><mark>#96=EDGE_CURVE(</mark>&#x27;ec17&#x27;,#5,#6,#95,.F.);
+<span class="lineno">105</span>#97=CARTESIAN_POINT(&#x27;p18&#x27;,(1.8,0.0,0.0));
+<span class="lineno">106</span>#98=DIRECTION(&#x27;d&#x27;,(1.,0.,0.));
+<span class="lineno">107</span>#99=VECTOR(#98,1.0);
+<span class="lineno">108</span>#100=LINE(#97,#99);
+<span class="lineno">109</span><mark>#101=EDGE_CURVE(</mark>&#x27;ec18&#x27;,#5,#6,#100,.T.);
+<span class="lineno">110</span>#102=CARTESIAN_POINT(&#x27;p19&#x27;,(1.9000000000000001,0.0,0.0));
+<span class="lineno">111</span>#103=DIRECTION(&#x27;d&#x27;,(1.,0.,0.));
+<span class="lineno">112</span>#104=VECTOR(#103,1.0);
+<span class="lineno">113</span>#105=LINE(#102,#104);
+<span class="lineno">114</span><mark>#106=EDGE_CURVE(</mark>&#x27;ec19&#x27;,#5,#6,#105,.F.);
+<span class="lineno">115</span>ENDSEC;
+<span class="lineno">116</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

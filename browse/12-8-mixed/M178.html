@@ -36,57 +36,89 @@
 <section><h2>Notes</h2>
 <p>Synonyms: &quot;AP238 probe collision&quot;, &quot;STEP-NC inspection path crashes&quot;, &quot;probe stylus shears&quot;, &quot;inspection trajectory through workpiece&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;AP238_STEP_NC_MIM&#x27;)</code></li>
 <li><code>contains(b&#x27;INSPECTION_PROBING(&#x27;)</code></li>
 <li><code>contains(b&#x27;probe_path_through_part&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_edges_total == 1</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
-<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(3)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(3)</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
-<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
-<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_FORWARD_REF)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M178 - AP238 INSPECTION_PROBING with probe path through workpiece.
-<span class="lineno">3</span> * Defect: an INSPECTION_PROBING op&#x27;s approach segment runs from the
-<span class="lineno">4</span> * probe-storage position straight through the workpiece body to reach
-<span class="lineno">5</span> * the touch point. The probe stylus shears or breaks. Bug-reporter
-<span class="lineno">6</span> * language: &quot;probe path collides with part&quot;, &quot;AP238 inspection crashes
-<span class="lineno">7</span> * stylus&quot;. */
-<span class="lineno">8</span>HEADER;
-<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;M178 test case&#x27;,&#x27;AP238 probe path collision with workpiece&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">10</span>FILE_NAME(&#x27;M178.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">11</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 1 0 0 1 }&#x27;));
-<span class="lineno">12</span>ENDSEC;
-<span class="lineno">13</span>DATA;
-<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;numerical_control_machining&#x27;);
-<span class="lineno">15</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">16</span>  &#x27;numerical_control_machining&#x27;,2007,#1);
-<span class="lineno">17</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">18</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">19</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-<span class="lineno">20</span>     REPRESENTATION_CONTEXT(&#x27;nc&#x27;,&#x27;3D&#x27;));
-<span class="lineno">21</span>/* Workpiece occupies (0..100, 0..100, 0..50). */
-<span class="lineno">22</span>#400=WORKPIECE(&#x27;block_100x100x50&#x27;,$,$,$,$,$,$);
-<span class="lineno">23</span>/* Defect: probe approach line from (50,50,200) to (50,50,-5) - passes
-<span class="lineno">24</span>   straight through the block body. */
-<span class="lineno">25</span>#50=CARTESIAN_POINT(&#x27;probe_start&#x27;,(50.0,50.0,200.0));
-<span class="lineno">26</span>#51=CARTESIAN_POINT(&#x27;probe_target&#x27;,(50.0,50.0,-5.0));
-<span class="lineno">27</span>#60=POLYLINE(&#x27;<mark>probe_path_through_part</mark>&#x27;,(#50,#51));
-<span class="lineno">28</span>#100=<mark>INSPECTION_PROBING(</mark>&#x27;measure_z&#x27;,$,$,$,$,#60,#400);
-<span class="lineno">29</span>#200=WORKPLAN(&#x27;main&#x27;,(#100),$,$,$);
-<span class="lineno">30</span>ENDSEC;
-<span class="lineno">31</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M178: AP238 inspection_probing path passes through workpiece body */
+<span class="lineno">3</span>/* DEFECT: INSPECTION_PROBING probe path POLYLINE runs (50,50,200) to (50,50,-5) */
+<span class="lineno">4</span>/* Workpiece &#x27;inspection_block&#x27; occupies box (0..100, 0..100, 0..50) */
+<span class="lineno">5</span>/* Probe descends from z=200 through workpiece top face (z=50) to z=-5 */
+<span class="lineno">6</span>/* Probe stylus shears against workpiece body â safe approach required */
+<span class="lineno">7</span>/* Per ISO 10303-238 Â§6.2 probe paths must be collision-free with workpiece envelope */
+<span class="lineno">8</span>/* Byte assertion: contains(b&#x27;<mark>AP238_STEP_NC_MIM</mark>&#x27;) */
+<span class="lineno">9</span>/* Byte assertion: contains(b&#x27;<mark>INSPECTION_PROBING(</mark>&#x27;) */
+<span class="lineno">10</span>/* Byte assertion: contains(b&#x27;<mark>probe_path_through_part</mark>&#x27;) */
+<span class="lineno">11</span>HEADER;
+<span class="lineno">12</span>FILE_DESCRIPTION((&#x27;M178: AP238 inspection_probing path through workpiece body&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">13</span>FILE_NAME(&#x27;M178.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">14</span>/* Byte assertion: contains(b&#x27;<mark>AP238_STEP_NC_MIM</mark>&#x27;) */
+<span class="lineno">15</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 3 1 1 1 }&#x27;));
+<span class="lineno">16</span>ENDSEC;
+<span class="lineno">17</span>DATA;
+<span class="lineno">18</span>/* Standard unit context (mm) */
+<span class="lineno">19</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">20</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">21</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">22</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">23</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">24</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">25</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">26</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">27</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">28</span>/* Probe path points: from storage position straight through workpiece body */
+<span class="lineno">29</span>#30=CARTESIAN_POINT(&#x27;probe_storage&#x27;,(50.0,50.0,200.0));
+<span class="lineno">30</span>#31=CARTESIAN_POINT(&#x27;probe_target&#x27;,(50.0,50.0,-5.0));
+<span class="lineno">31</span>/* Byte assertion: contains(b&#x27;<mark>probe_path_through_part</mark>&#x27;) */
+<span class="lineno">32</span>/* DEFECT: POLYLINE descends from (50,50,200) through workpiece body to (50,50,-5) */
+<span class="lineno">33</span>/* Workpiece top face is at z=50; probe enters body at z=50, exits below z=0 */
+<span class="lineno">34</span>#32=POLYLINE(&#x27;<mark>probe_path_through_part</mark>&#x27;,(#30,#31));
+<span class="lineno">35</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">36</span>#20=GEOMETRIC_CURVE_SET(&#x27;ap238-inspection-probing-path-through-workpiece-body&#x27;,
+<span class="lineno">37</span>  (#32,#52,#60));
+<span class="lineno">38</span>/* Byte assertion: contains(b&#x27;<mark>INSPECTION_PROBING(</mark>&#x27;) */
+<span class="lineno">39</span>/* DEFECT: INSPECTION_PROBING op whose approach path runs through workpiece */
+<span class="lineno">40</span>#52=<mark>INSPECTION_PROBING(</mark>&#x27;probe_collision_op&#x27;,$,#32,$,$,$);
+<span class="lineno">41</span>/* WORKPIECE &#x27;inspection_block&#x27;: occupies box (0..100, 0..100, 0..50) */
+<span class="lineno">42</span>/* Probe path (50,50,200)-&gt;(50,50,-5) passes through this body */
+<span class="lineno">43</span>#60=WORKPIECE(&#x27;inspection_block&#x27;,&#x27;Inspection block workpiece (0..100 0..100 0..50)&#x27;,$,$,$,$,$);
+<span class="lineno">44</span>/* MACHINING_WORKINGSTEP &#x27;probe_collision_step&#x27; links op to workpiece */
+<span class="lineno">45</span>#51=MACHINING_WORKINGSTEP(&#x27;probe_collision_step&#x27;,&#x27;Probe collision workingstep&#x27;,#52,#60,$);
+<span class="lineno">46</span>/* WORKPLAN: single inspection step with colliding probe path */
+<span class="lineno">47</span>#50=WORKPLAN(&#x27;probe_collision_program&#x27;,&#x27;Probe collision inspection workplan&#x27;,(),$,(#51));
+<span class="lineno">48</span>/* Product chain */
+<span class="lineno">49</span>#100=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">50</span>#101=PRODUCT_CONTEXT(&#x27;&#x27;,#100,&#x27;mechanical&#x27;);
+<span class="lineno">51</span>#102=PRODUCT(&#x27;M178&#x27;,&#x27;M178&#x27;,&#x27;M178&#x27;,(#101));
+<span class="lineno">52</span>#103=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#102);
+<span class="lineno">53</span>#104=PRODUCT_DEFINITION_CONTEXT(#100,&#x27;design&#x27;);
+<span class="lineno">54</span>#105=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#103,#104);
+<span class="lineno">55</span>#106=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#105);
+<span class="lineno">56</span>#107=SHAPE_REPRESENTATION(&#x27;&#x27;,(#20),#14);
+<span class="lineno">57</span>#108=SHAPE_DEFINITION_REPRESENTATION(#106,#107);
+<span class="lineno">58</span>ENDSEC;
+<span class="lineno">59</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

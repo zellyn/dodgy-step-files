@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gs110 — ShapeUpgrade_SplitSurface.SetUSplitValues count-mismatch</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2c Surface / curve degeneracies</a> <span class="sep">/</span> <span class="current">Gs110</span>
+</nav>
+<header class="title-bar">
+<h1>Gs110 <span class="sep">—</span> <span class="entry-title">ShapeUpgrade_SplitSurface.SetUSplitValues count-mismatch</span></h1>
+<p class="category">§12.2c surfaces (sub-class: face)</p>
+<p class="tag-pills">
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2c-surfaces/Gs110.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2c-surfaces/Gs110.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT/ShapeAnalysis (see fixture)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>SetUSplitValues called with 3 split values for a surface that internally allocates 2 split slots; silently drops 3rd value without validation or warning. Reproducer: PLANE surface with SetUSplitValues(3 values) when internal allocation expects 2; the 3rd value is ignored.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p></p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal: investigate / reject: geometric degeneracy</p></section>
+<section><h2>Notes</h2>
+<p>synthesized from earlier wave; backfilled from fixture comment</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(25) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(25)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(25)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gs110: PLANE IS ADVANCED_FACE.face_geometry; face boundary encoding 3 u-split positions (0.25, 0.5, 0.75) via collinear interior loop IS the mechanism wired into face topology; SetUSplitValues silently drops 3rd split value due to allocation mismatch IS the defect; shape_null */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Gs110&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Gs110.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;gs110_pln_ax&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=PLANE(&#x27;gs110_pln&#x27;,#4);
+<span class="lineno">15</span>#6=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT(&#x27;UV&#x27;,&#x27;2D&#x27;));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">20</span>#11=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">21</span>#12=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">22</span>#13=VERTEX_POINT(&#x27;&#x27;,#9);
+<span class="lineno">23</span>#14=VERTEX_POINT(&#x27;&#x27;,#10);
+<span class="lineno">24</span>#15=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">25</span>#16=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">26</span>#17=VECTOR(&#x27;&#x27;,#16,1.0);
+<span class="lineno">27</span>#18=LINE(&#x27;&#x27;,#15,#17);
+<span class="lineno">28</span>#19=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));
+<span class="lineno">29</span>#20=DIRECTION(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">30</span>#21=VECTOR(&#x27;&#x27;,#20,1.0);
+<span class="lineno">31</span>#22=LINE(&#x27;&#x27;,#19,#21);
+<span class="lineno">32</span>#23=DEFINITIONAL_REPRESENTATION(&#x27;pcdef&#x27;,(#22),#6);
+<span class="lineno">33</span>#24=PCURVE(&#x27;pc&#x27;,#5,#23);
+<span class="lineno">34</span>#25=SURFACE_CURVE(&#x27;sc&#x27;,#18,(#24),.PCURVE_S1.);
+<span class="lineno">35</span>#26=EDGE_CURVE(&#x27;ec&#x27;,#11,#12,#25,.T.);
+<span class="lineno">36</span>#27=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">37</span>#28=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">38</span>#29=VECTOR(&#x27;&#x27;,#28,1.0);
+<span class="lineno">39</span>#30=LINE(&#x27;&#x27;,#27,#29);
+<span class="lineno">40</span>#31=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">41</span>#32=DIRECTION(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">42</span>#33=VECTOR(&#x27;&#x27;,#32,1.0);
+<span class="lineno">43</span>#34=LINE(&#x27;&#x27;,#31,#33);
+<span class="lineno">44</span>#35=DEFINITIONAL_REPRESENTATION(&#x27;pcdef&#x27;,(#34),#6);
+<span class="lineno">45</span>#36=PCURVE(&#x27;pc&#x27;,#5,#35);
+<span class="lineno">46</span>#37=SURFACE_CURVE(&#x27;sc&#x27;,#30,(#36),.PCURVE_S1.);
+<span class="lineno">47</span>#38=EDGE_CURVE(&#x27;ec&#x27;,#12,#13,#37,.T.);
+<span class="lineno">48</span>#39=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
+<span class="lineno">49</span>#40=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">50</span>#41=VECTOR(&#x27;&#x27;,#40,1.0);
+<span class="lineno">51</span>#42=LINE(&#x27;&#x27;,#39,#41);
+<span class="lineno">52</span>#43=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0));
+<span class="lineno">53</span>#44=DIRECTION(&#x27;&#x27;,(-1.0,0.0));
+<span class="lineno">54</span>#45=VECTOR(&#x27;&#x27;,#44,1.0);
+<span class="lineno">55</span>#46=LINE(&#x27;&#x27;,#43,#45);
+<span class="lineno">56</span>#47=DEFINITIONAL_REPRESENTATION(&#x27;pcdef&#x27;,(#46),#6);
+<span class="lineno">57</span>#48=PCURVE(&#x27;pc&#x27;,#5,#47);
+<span class="lineno">58</span>#49=SURFACE_CURVE(&#x27;sc&#x27;,#42,(#48),.PCURVE_S1.);
+<span class="lineno">59</span>#50=EDGE_CURVE(&#x27;ec&#x27;,#13,#14,#49,.T.);
+<span class="lineno">60</span>#51=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">61</span>#52=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">62</span>#53=VECTOR(&#x27;&#x27;,#52,1.0);
+<span class="lineno">63</span>#54=LINE(&#x27;&#x27;,#51,#53);
+<span class="lineno">64</span>#55=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">65</span>#56=DIRECTION(&#x27;&#x27;,(0.0,-1.0));
+<span class="lineno">66</span>#57=VECTOR(&#x27;&#x27;,#56,1.0);
+<span class="lineno">67</span>#58=LINE(&#x27;&#x27;,#55,#57);
+<span class="lineno">68</span>#59=DEFINITIONAL_REPRESENTATION(&#x27;pcdef&#x27;,(#58),#6);
+<span class="lineno">69</span>#60=PCURVE(&#x27;pc&#x27;,#5,#59);
+<span class="lineno">70</span>#61=SURFACE_CURVE(&#x27;sc&#x27;,#54,(#60),.PCURVE_S1.);
+<span class="lineno">71</span>#62=EDGE_CURVE(&#x27;ec&#x27;,#14,#11,#61,.T.);
+<span class="lineno">72</span>#63=ORIENTED_EDGE(&#x27;&#x27;,$,$,#26,.T.);
+<span class="lineno">73</span>#64=ORIENTED_EDGE(&#x27;&#x27;,$,$,#38,.T.);
+<span class="lineno">74</span>#65=ORIENTED_EDGE(&#x27;&#x27;,$,$,#50,.T.);
+<span class="lineno">75</span>#66=ORIENTED_EDGE(&#x27;&#x27;,$,$,#62,.T.);
+<span class="lineno">76</span>#67=EDGE_LOOP(&#x27;&#x27;,(#63,#64,#65,#66));
+<span class="lineno">77</span>#68=CARTESIAN_POINT(&#x27;&#x27;,(0.25,0.0,0.0));
+<span class="lineno">78</span>#69=CARTESIAN_POINT(&#x27;&#x27;,(0.25,1.0,0.0));
+<span class="lineno">79</span>#70=CARTESIAN_POINT(&#x27;&#x27;,(0.5,1.0,0.0));
+<span class="lineno">80</span>#71=CARTESIAN_POINT(&#x27;&#x27;,(0.5,0.0,0.0));
+<span class="lineno">81</span>#72=CARTESIAN_POINT(&#x27;&#x27;,(0.75,0.0,0.0));
+<span class="lineno">82</span>#73=CARTESIAN_POINT(&#x27;&#x27;,(0.75,1.0,0.0));
+<span class="lineno">83</span>#74=VERTEX_POINT(&#x27;&#x27;,#68);
+<span class="lineno">84</span>#75=VERTEX_POINT(&#x27;&#x27;,#69);
+<span class="lineno">85</span>#76=VERTEX_POINT(&#x27;&#x27;,#70);
+<span class="lineno">86</span>#77=VERTEX_POINT(&#x27;&#x27;,#71);
+<span class="lineno">87</span>#78=VERTEX_POINT(&#x27;&#x27;,#72);
+<span class="lineno">88</span>#79=VERTEX_POINT(&#x27;&#x27;,#73);
+<span class="lineno">89</span>#80=CARTESIAN_POINT(&#x27;&#x27;,(0.25,0.0,0.0));
+<span class="lineno">90</span>#81=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">91</span>#82=VECTOR(&#x27;&#x27;,#81,1.0);
+<span class="lineno">92</span>#83=LINE(&#x27;&#x27;,#80,#82);
+<span class="lineno">93</span>#84=CARTESIAN_POINT(&#x27;&#x27;,(0.25,0.0));
+<span class="lineno">94</span>#85=DIRECTION(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">95</span>#86=VECTOR(&#x27;&#x27;,#85,1.0);
+<span class="lineno">96</span>#87=LINE(&#x27;&#x27;,#84,#86);
+<span class="lineno">97</span>#88=DEFINITIONAL_REPRESENTATION(&#x27;pcdef&#x27;,(#87),#6);
+<span class="lineno">98</span>#89=PCURVE(&#x27;pc&#x27;,#5,#88);
+<span class="lineno">99</span>#90=SURFACE_CURVE(&#x27;sc&#x27;,#83,(#89),.PCURVE_S1.);
+<span class="lineno">100</span>#91=EDGE_CURVE(&#x27;ec&#x27;,#74,#75,#90,.T.);
+<span class="lineno">101</span>#92=CARTESIAN_POINT(&#x27;&#x27;,(0.25,1.0,0.0));
+<span class="lineno">102</span>#93=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">103</span>#94=VECTOR(&#x27;&#x27;,#93,0.25);
+<span class="lineno">104</span>#95=LINE(&#x27;&#x27;,#92,#94);
+<span class="lineno">105</span>#96=CARTESIAN_POINT(&#x27;&#x27;,(0.25,1.0));
+<span class="lineno">106</span>#97=DIRECTION(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">107</span>#98=VECTOR(&#x27;&#x27;,#97,0.25);
+<span class="lineno">108</span>#99=LINE(&#x27;&#x27;,#96,#98);
+<span class="lineno">109</span>#100=DEFINITIONAL_REPRESENTATION(&#x27;pcdef&#x27;,(#99),#6);
+<span class="lineno">110</span>#101=PCURVE(&#x27;pc&#x27;,#5,#100);
+<span class="lineno">111</span>#102=SURFACE_CURVE(&#x27;sc&#x27;,#95,(#101),.PCURVE_S1.);
+<span class="lineno">112</span>#103=EDGE_CURVE(&#x27;ec&#x27;,#75,#76,#102,.T.);
+<span class="lineno">113</span>#104=CARTESIAN_POINT(&#x27;&#x27;,(0.5,1.0,0.0));
+<span class="lineno">114</span>#105=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">115</span>#106=VECTOR(&#x27;&#x27;,#105,1.0);
+<span class="lineno">116</span>#107=LINE(&#x27;&#x27;,#104,#106);
+<span class="lineno">117</span>#108=CARTESIAN_POINT(&#x27;&#x27;,(0.5,1.0));
+<span class="lineno">118</span>#109=DIRECTION(&#x27;&#x27;,(0.0,-1.0));
+<span class="lineno">119</span>#110=VECTOR(&#x27;&#x27;,#109,1.0);
+<span class="lineno">120</span>#111=LINE(&#x27;&#x27;,#108,#110);
+<span class="lineno">121</span>#112=DEFINITIONAL_REPRESENTATION(&#x27;pcdef&#x27;,(#111),#6);
+<span class="lineno">122</span>#113=PCURVE(&#x27;pc&#x27;,#5,#112);
+<span class="lineno">123</span>#114=SURFACE_CURVE(&#x27;sc&#x27;,#107,(#113),.PCURVE_S1.);
+<span class="lineno">124</span>#115=EDGE_CURVE(&#x27;ec&#x27;,#76,#77,#114,.T.);
+<span class="lineno">125</span>#116=CARTESIAN_POINT(&#x27;&#x27;,(0.5,0.0,0.0));
+<span class="lineno">126</span>#117=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">127</span>#118=VECTOR(&#x27;&#x27;,#117,0.25);
+<span class="lineno">128</span>#119=LINE(&#x27;&#x27;,#116,#118);
+<span class="lineno">129</span>#120=CARTESIAN_POINT(&#x27;&#x27;,(0.5,0.0));
+<span class="lineno">130</span>#121=DIRECTION(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">131</span>#122=VECTOR(&#x27;&#x27;,#121,0.25);
+<span class="lineno">132</span>#123=LINE(&#x27;&#x27;,#120,#122);
+<span class="lineno">133</span>#124=DEFINITIONAL_REPRESENTATION(&#x27;pcdef&#x27;,(#123),#6);
+<span class="lineno">134</span>#125=PCURVE(&#x27;pc&#x27;,#5,#124);
+<span class="lineno">135</span>#126=SURFACE_CURVE(&#x27;sc&#x27;,#119,(#125),.PCURVE_S1.);
+<span class="lineno">136</span>#127=EDGE_CURVE(&#x27;ec&#x27;,#77,#78,#126,.T.);
+<span class="lineno">137</span>#128=CARTESIAN_POINT(&#x27;&#x27;,(0.75,0.0,0.0));
+<span class="lineno">138</span>#129=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">139</span>#130=VECTOR(&#x27;&#x27;,#129,1.0);
+<span class="lineno">140</span>#131=LINE(&#x27;&#x27;,#128,#130);
+<span class="lineno">141</span>#132=CARTESIAN_POINT(&#x27;&#x27;,(0.75,0.0));
+<span class="lineno">142</span>#133=DIRECTION(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">143</span>#134=VECTOR(&#x27;&#x27;,#133,1.0);
+<span class="lineno">144</span>#135=LINE(&#x27;&#x27;,#132,#134);
+<span class="lineno">145</span>#136=DEFINITIONAL_REPRESENTATION(&#x27;pcdef&#x27;,(#135),#6);
+<span class="lineno">146</span>#137=PCURVE(&#x27;pc&#x27;,#5,#136);
+<span class="lineno">147</span>#138=SURFACE_CURVE(&#x27;sc&#x27;,#131,(#137),.PCURVE_S1.);
+<span class="lineno">148</span>#139=EDGE_CURVE(&#x27;ec&#x27;,#78,#79,#138,.T.);
+<span class="lineno">149</span>#140=CARTESIAN_POINT(&#x27;&#x27;,(0.75,1.0,0.0));
+<span class="lineno">150</span>#141=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">151</span>#142=VECTOR(&#x27;&#x27;,#141,0.5);
+<span class="lineno">152</span>#143=LINE(&#x27;&#x27;,#140,#142);
+<span class="lineno">153</span>#144=CARTESIAN_POINT(&#x27;&#x27;,(0.75,1.0));
+<span class="lineno">154</span>#145=DIRECTION(&#x27;&#x27;,(-1.0,0.0));
+<span class="lineno">155</span>#146=VECTOR(&#x27;&#x27;,#145,0.5);
+<span class="lineno">156</span>#147=LINE(&#x27;&#x27;,#144,#146);
+<span class="lineno">157</span>#148=DEFINITIONAL_REPRESENTATION(&#x27;pcdef&#x27;,(#147),#6);
+<span class="lineno">158</span>#149=PCURVE(&#x27;pc&#x27;,#5,#148);
+<span class="lineno">159</span>#150=SURFACE_CURVE(&#x27;sc&#x27;,#143,(#149),.PCURVE_S1.);
+<span class="lineno">160</span>#151=EDGE_CURVE(&#x27;ec&#x27;,#79,#74,#150,.T.);
+<span class="lineno">161</span>#152=ORIENTED_EDGE(&#x27;&#x27;,$,$,#91,.T.);
+<span class="lineno">162</span>#153=ORIENTED_EDGE(&#x27;&#x27;,$,$,#103,.T.);
+<span class="lineno">163</span>#154=ORIENTED_EDGE(&#x27;&#x27;,$,$,#115,.T.);
+<span class="lineno">164</span>#155=ORIENTED_EDGE(&#x27;&#x27;,$,$,#127,.T.);
+<span class="lineno">165</span>#156=ORIENTED_EDGE(&#x27;&#x27;,$,$,#139,.T.);
+<span class="lineno">166</span>#157=ORIENTED_EDGE(&#x27;&#x27;,$,$,#151,.T.);
+<span class="lineno">167</span>#158=EDGE_LOOP(&#x27;&#x27;,(#152,#153,#154,#155,#156,#157));
+<span class="lineno">168</span>#159=FACE_BOUND(&#x27;&#x27;,#158,.T.);
+<span class="lineno">169</span>#160=FACE_OUTER_BOUND(&#x27;&#x27;,#67,.T.);
+<span class="lineno">170</span>#161=ADVANCED_FACE(&#x27;&#x27;,(#160,#159),#5,.T.);
+<span class="lineno">171</span>#162=OPEN_SHELL(&#x27;&#x27;,(#161));
+<span class="lineno">172</span>#163=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#162));
+<span class="lineno">173</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">174</span>#9051=PRODUCT(&#x27;Gs110&#x27;,&#x27;Gs110&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">175</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">176</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">177</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">178</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">179</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">180</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">181</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">182</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">183</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">184</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#163),#9060);
+<span class="lineno">185</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">186</span>ENDSEC;
+<span class="lineno">187</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gs109.html">&larr; Gs109</a> <a class="up" href="index.html">§12.2c Surface / curve degeneracies</a> <a class="next" href="Gs111.html">Gs111 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

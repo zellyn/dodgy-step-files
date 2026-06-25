@@ -34,12 +34,14 @@
 <section><h2>Notes</h2>
 <p>**See also**: Tfa040, Tfa042. Synonyms: &quot;pipe face seam removed as small&quot;, &quot;long thin pipe seam edge dropped&quot;, &quot;small-edge filter eats seam edge&quot;, &quot;pipe face loses periodic seam after cleanup&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a</code></p></section>
+<section><h2>Closure intent</h2>
+<p><code>sheet</code> — the open shell is the intended final geometry; a solid-only kernel should cleanly refuse.</p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>face[0].surface_type == &quot;cylinder&quot;</code></li>
 <li><code>n_edges_total &gt;= 5</code></li>
 <li><code>n_vertices_total &gt;= 8</code></li>
-<li><code>brepcheck.valid == True</code></li>
+<li><code>brepcheck.valid == False</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="Tfa040.html">Tfa040</a>, <a href="Tfa042.html">Tfa042</a></p>
@@ -48,8 +50,8 @@
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
 <tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
-<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(8)</code></td></tr>
-<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(8)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(10)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(10)</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
 <tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
 <tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
@@ -59,74 +61,81 @@
 <details>
 <summary>Show fixture bytes</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Tfa066 - Pipe-like face with seam edge wrongly removed as &quot;small&quot;
-<span class="lineno">3</span> * CYLINDRICAL_SURFACE radius 0.05 mm; ADVANCED_FACE bounded by two CIRCLE
-<span class="lineno">4</span> * arcs (top and bottom caps at z=0 and z=100) plus two seam LINE edges
-<span class="lineno">5</span> * along the cylinder axis -- 100 mm long. Bounding-box width is 0.1 mm
-<span class="lineno">6</span> * (=2*radius), well below a small-face detector&#x27;s 0.5 mm threshold, but
-<span class="lineno">7</span> * the area (2*PI*0.05*100 ~= 31.4 mm^2) is non-trivial. */
-<span class="lineno">8</span>HEADER;
-<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;Tfa066 test case&#x27;,&#x27;Cylindrical face length 100mm radius 0.05mm with seam edges -- bbox width 0.1mm&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">10</span>FILE_NAME(&#x27;Tfa066.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">11</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">12</span>ENDSEC;
-<span class="lineno">13</span>DATA;
-<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">15</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
-<span class="lineno">16</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">17</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">18</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
-<span class="lineno">19</span>#14=CYLINDRICAL_SURFACE(&#x27;thin_long&#x27;,#13,0.05);
-<span class="lineno">20</span>/* 4 vertices around the cyl boundary: bottom &amp; top caps at U=0 and U=2*PI seam */
-<span class="lineno">21</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(0.05,0.0,0.0));#21=VERTEX_POINT(&#x27;Vb1&#x27;,#20);
-<span class="lineno">22</span>#22=CARTESIAN_POINT(&#x27;&#x27;,(0.05,0.0,0.0));#23=VERTEX_POINT(&#x27;Vb2&#x27;,#22);
-<span class="lineno">23</span>#24=CARTESIAN_POINT(&#x27;&#x27;,(0.05,0.0,100.0));#25=VERTEX_POINT(&#x27;Vt1&#x27;,#24);
-<span class="lineno">24</span>#26=CARTESIAN_POINT(&#x27;&#x27;,(0.05,0.0,100.0));#27=VERTEX_POINT(&#x27;Vt2&#x27;,#26);
-<span class="lineno">25</span>/* bottom CIRCLE arc Vb1 -&gt; Vb2 (full circle) */
-<span class="lineno">26</span>#30=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">27</span>#31=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));#32=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">28</span>#33=AXIS2_PLACEMENT_3D(&#x27;bottom_axis&#x27;,#30,#31,#32);
-<span class="lineno">29</span>#34=CIRCLE(&#x27;bottom_cap&#x27;,#33,0.05);
-<span class="lineno">30</span>#35=EDGE_CURVE(&#x27;bottom_arc&#x27;,#21,#23,#34,.T.);
-<span class="lineno">31</span>/* seam line (V=0..100 at U=2*PI) Vb2 -&gt; Vt2 */
-<span class="lineno">32</span>#40=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));#41=VECTOR(&#x27;&#x27;,#40,1.0);
-<span class="lineno">33</span>#42=LINE(&#x27;seam_line_at_2pi&#x27;,#22,#41);
-<span class="lineno">34</span>#43=EDGE_CURVE(&#x27;seam_right&#x27;,#23,#27,#42,.T.);
-<span class="lineno">35</span>/* top CIRCLE arc Vt2 -&gt; Vt1 (reversed direction) */
-<span class="lineno">36</span>#50=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,100.0));
-<span class="lineno">37</span>#51=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));#52=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">38</span>#53=AXIS2_PLACEMENT_3D(&#x27;top_axis&#x27;,#50,#51,#52);
-<span class="lineno">39</span>#54=CIRCLE(&#x27;top_cap&#x27;,#53,0.05);
-<span class="lineno">40</span>#55=EDGE_CURVE(&#x27;top_arc&#x27;,#27,#25,#54,.T.);
-<span class="lineno">41</span>/* seam line back Vt1 -&gt; Vb1 */
-<span class="lineno">42</span>#60=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0));#61=VECTOR(&#x27;&#x27;,#60,1.0);
-<span class="lineno">43</span>#62=LINE(&#x27;seam_line_at_0&#x27;,#24,#61);
-<span class="lineno">44</span>#63=EDGE_CURVE(&#x27;seam_left&#x27;,#25,#21,#62,.T.);
-<span class="lineno">45</span>#70=ORIENTED_EDGE(&#x27;&#x27;,*,*,#35,.T.);
-<span class="lineno">46</span>#71=ORIENTED_EDGE(&#x27;&#x27;,*,*,#43,.T.);
-<span class="lineno">47</span>#72=ORIENTED_EDGE(&#x27;&#x27;,*,*,#55,.T.);
-<span class="lineno">48</span>#73=ORIENTED_EDGE(&#x27;&#x27;,*,*,#63,.T.);
-<span class="lineno">49</span>#74=EDGE_LOOP(&#x27;thin_pipe_loop&#x27;,(#70,#71,#72,#73));
-<span class="lineno">50</span>#75=FACE_OUTER_BOUND(&#x27;&#x27;,#74,.T.);
-<span class="lineno">51</span>#76=ADVANCED_FACE(&#x27;pipe_face_long_thin&#x27;,(#75),#14,.T.);
-<span class="lineno">52</span>/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
-<span class="lineno">53</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">54</span>#9001=PRODUCT(&#x27;Tfa066&#x27;,&#x27;Tfa066&#x27;,&#x27;&#x27;,(#9000));
-<span class="lineno">55</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
-<span class="lineno">56</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
-<span class="lineno">57</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
-<span class="lineno">58</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
-<span class="lineno">59</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">60</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">61</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">62</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
-<span class="lineno">63</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
-<span class="lineno">64</span>#9020=OPEN_SHELL(&#x27;wrap_shell&#x27;,(#76));
-<span class="lineno">65</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#9020));
-<span class="lineno">66</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
-<span class="lineno">67</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
-<span class="lineno">68</span>ENDSEC;
-<span class="lineno">69</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* Tfa066: CLOSED_SHELL: cylindrical pipe face length=100mm, radius=0.05mm; bounding-box width â 0.1mm &lt; small-face width threshold 0.5mm; small-face detector classifies as &#x27;small&#x27; by bbox width instead of area; seam EDGE_CURVE used .T. and .F. in same EDGE_LOOP (full revolution); face area â 2pi*0.05*100 â 31mmÂ² â NOT small by area; ShapeFix_FixSmallFace must use area not bbox minor dimension; face[1,2] are valid bottom/top disc caps; defect IS on live cylindrical face traversal path */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Tfa066&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Tfa066.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.05,0.0,0.0));
+<span class="lineno">11</span>#2=CARTESIAN_POINT(&#x27;&#x27;,(0.05,0.0,100.0));
+<span class="lineno">12</span>#3=VERTEX_POINT(&#x27;&#x27;,#1);
+<span class="lineno">13</span>#4=VERTEX_POINT(&#x27;&#x27;,#2);
+<span class="lineno">14</span>#5=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">15</span>#6=VECTOR(&#x27;&#x27;,#5,100.0);
+<span class="lineno">16</span>#7=LINE(&#x27;&#x27;,#1,#6);
+<span class="lineno">17</span>#8=EDGE_CURVE(&#x27;&#x27;,#3,#4,#7,.T.);
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">19</span>#10=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0));
+<span class="lineno">20</span>#11=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">21</span>#12=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#9,#10,#11);
+<span class="lineno">22</span>#13=CIRCLE(&#x27;&#x27;,#12,0.05);
+<span class="lineno">23</span>#14=EDGE_CURVE(&#x27;&#x27;,#3,#3,#13,.T.);
+<span class="lineno">24</span>#15=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,100.0));
+<span class="lineno">25</span>#16=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">26</span>#17=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">27</span>#18=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#15,#16,#17);
+<span class="lineno">28</span>#19=CIRCLE(&#x27;&#x27;,#18,0.05);
+<span class="lineno">29</span>#20=EDGE_CURVE(&#x27;&#x27;,#4,#4,#19,.T.);
+<span class="lineno">30</span>#21=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">31</span>#22=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">32</span>#23=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">33</span>#24=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#21,#22,#23);
+<span class="lineno">34</span>#25=CYLINDRICAL_SURFACE(&#x27;&#x27;,#24,0.05);
+<span class="lineno">35</span>#26=ORIENTED_EDGE(&#x27;&#x27;,$,$,#8,.T.);
+<span class="lineno">36</span>#27=ORIENTED_EDGE(&#x27;&#x27;,$,$,#20,.T.);
+<span class="lineno">37</span>#28=ORIENTED_EDGE(&#x27;&#x27;,$,$,#8,.F.);
+<span class="lineno">38</span>#29=ORIENTED_EDGE(&#x27;&#x27;,$,$,#14,.F.);
+<span class="lineno">39</span>#30=EDGE_LOOP(&#x27;&#x27;,(#26,#27,#28,#29));
+<span class="lineno">40</span>#31=FACE_OUTER_BOUND(&#x27;&#x27;,#30,.T.);
+<span class="lineno">41</span>#32=ADVANCED_FACE(&#x27;&#x27;,(#31),#25,.T.);
+<span class="lineno">42</span>#33=ORIENTED_EDGE(&#x27;&#x27;,$,$,#14,.T.);
+<span class="lineno">43</span>#34=EDGE_LOOP(&#x27;&#x27;,(#33));
+<span class="lineno">44</span>#35=FACE_OUTER_BOUND(&#x27;&#x27;,#34,.T.);
+<span class="lineno">45</span>#36=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">46</span>#37=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0));
+<span class="lineno">47</span>#38=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">48</span>#39=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#36,#37,#38);
+<span class="lineno">49</span>#40=PLANE(&#x27;&#x27;,#39);
+<span class="lineno">50</span>#41=ADVANCED_FACE(&#x27;&#x27;,(#35),#40,.T.);
+<span class="lineno">51</span>#42=ORIENTED_EDGE(&#x27;&#x27;,$,$,#20,.T.);
+<span class="lineno">52</span>#43=EDGE_LOOP(&#x27;&#x27;,(#42));
+<span class="lineno">53</span>#44=FACE_OUTER_BOUND(&#x27;&#x27;,#43,.T.);
+<span class="lineno">54</span>#45=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,100.0));
+<span class="lineno">55</span>#46=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">56</span>#47=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">57</span>#48=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#45,#46,#47);
+<span class="lineno">58</span>#49=PLANE(&#x27;&#x27;,#48);
+<span class="lineno">59</span>#50=ADVANCED_FACE(&#x27;&#x27;,(#44),#49,.T.);
+<span class="lineno">60</span>#51=CLOSED_SHELL(&#x27;&#x27;,(#32,#41,#50));
+<span class="lineno">61</span>#52=MANIFOLD_SOLID_BREP(&#x27;&#x27;,#51);
+<span class="lineno">62</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">63</span>#9051=PRODUCT(&#x27;Tfa066&#x27;,&#x27;Tfa066&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">64</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">65</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">66</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">67</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">68</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">69</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">70</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">71</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">72</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">73</span>#9061=ADVANCED_BREP_SHAPE_REPRESENTATION(&#x27;&#x27;,(#52),#9060);
+<span class="lineno">74</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">75</span>ENDSEC;
+<span class="lineno">76</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

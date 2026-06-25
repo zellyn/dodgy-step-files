@@ -41,6 +41,9 @@
 <li><code>contains(b&#x27;iso-10303-21;&#x27;) or contains(b&#x27;EndSec;&#x27;) or contains(b&#x27;End-Iso-10303-21;&#x27;)</code></li>
 <li><code>matches(rb&#x27;[\x80-\xff]&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -55,30 +58,20 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Le027 <mark>â</mark> 8-bit characters and case-insensitive keyword tolerance in lexer
-<span class="lineno">2</span>   Defect: a lexer that rewrites every byte &gt;= 0x80 to space rejects
-<span class="lineno">3</span>   embedded Latin-1 in comments. This file emits:
-<span class="lineno">4</span>     - a Part-21 comment containing raw Latin-1 degree-sign 0xB0 (&quot;degC&quot;)
-<span class="lineno">5</span>     - the magic line in lowercase (&quot;iso-10303-21;&quot;) to exercise
-<span class="lineno">6</span>       case-insensitive keyword recognition
-<span class="lineno">7</span>     - mixed-case ENDSEC and END-ISO-10303-21 to round-trip the test
-<span class="lineno">8</span>   A correct lexer should canonicalise keyword case and pass through 8-bit
-<span class="lineno">9</span>   bytes inside comments and strings without rewriting. */
-<span class="lineno">10</span>iso-10303-21;
-<span class="lineno">11</span>HEADER;
-<span class="lineno">12</span>FILE_DESCRIPTION((&#x27;Le027 - 8-bit chars and case-insensitive keywords&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">13</span>FILE_NAME(&#x27;Le027.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
-<span class="lineno">14</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">15</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">16</span>EndSec;
-<span class="lineno">17</span>Data;
-<span class="lineno">18</span>/* foo bar <mark>°</mark>C unit comment with 8-bit Latin-1 byte */
-<span class="lineno">19</span>#10=Cartesian_Point(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">20</span>#11=Direction(&#x27;&#x27;,(0.0,0.0,1.0));
-<span class="lineno">21</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">22</span>#13=axis2_placement_3d(&#x27;&#x27;,#10,#11,#12);
-<span class="lineno">23</span>EndSec;
-<span class="lineno">24</span>End-Iso-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>iso-10303-21;
+<span class="lineno">2</span>/* Le027: 8-bit characters and case-insensitive keyword tolerance in lexer; ISO 10303-21 <mark>Â§</mark>6.1: magic line is &#x27;ISO-10303-21;&#x27; in uppercase; OCCT lex grammar (StepFile/step.lex:30-35) tolerates lowercase &#x27;iso-10303-21;&#x27;; schema-loaders that rewrite bytes &gt;= 0x80 to space reject Latin-1 in comments; file uses mixed-case keyword: &#x27;iso-10303-21;&#x27; (all lowercase) as magic line; Latin-1 high-bit byte (0xB0 = degree sign) injected into a PERSON name field; pure-Python Part-21 validator rejects with E_MAGIC_CASE; OCCT silently heals; GEOMETRIC_CURVE_SET IS model entity <mark>â</mark> OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Le027&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Le027.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">11</span>#8997=PERSON(&#x27;<mark>Â°</mark>C&#x27;,&#x27;raw-utf8-degree-celsius&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>
+<span class="lineno">13</span>ENDSEC;
+<span class="lineno">14</span>End-Iso-10303-21;
 </pre>
 </details>
 </section>

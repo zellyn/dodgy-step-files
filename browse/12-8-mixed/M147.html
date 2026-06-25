@@ -38,59 +38,88 @@
 <section><h2>Notes</h2>
 <p>Synonyms: &quot;AP210 wrong-side placement&quot;, &quot;BGA on bottom&quot;, &quot;PCB SMD orientation error&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN&#x27;)</code></li>
 <li><code>contains(b&#x27;AXIS2_PLACEMENT_3D&#x27;)</code></li>
 <li><code>contains(b&#x27;TOP_ONLY&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_vertices_total == 1</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
-<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(1)</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
-<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
-<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_FORWARD_REF)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M147 - AP210 surface-mount component oriented on the wrong board
-<span class="lineno">3</span> * side.
-<span class="lineno">4</span> * Defect: a component placement transform on the bottom side
-<span class="lineno">5</span> * (z=0, normal = -Z) is applied to a part declared as a
-<span class="lineno">6</span> * &#x27;top-only&#x27; SMD package (BGA). The footprint nodes resolve below
-<span class="lineno">7</span> * the board surface and the placement is fundamentally invalid -
-<span class="lineno">8</span> * the BGA balls are on the wrong face. */
+<span class="lineno">2</span>/* M147: AP210 surface-mount component oriented on wrong board side */
+<span class="lineno">3</span>/* DEFECT: BGA256 declared <mark>TOP_ONLY</mark> but placement uses -Z normal (bottom side) */
+<span class="lineno">4</span>/* BGA solder balls face away from the PCB â component cannot be soldered */
+<span class="lineno">5</span>/* Per ISO 10303-210 Â§6 placement axis must agree with mount_constraint */
+<span class="lineno">6</span>/* Byte assertion: contains(b&#x27;<mark>ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN</mark>&#x27;) */
+<span class="lineno">7</span>/* Byte assertion: contains(b&#x27;<mark>AXIS2_PLACEMENT_3D</mark>&#x27;) */
+<span class="lineno">8</span>/* Byte assertion: contains(b&#x27;<mark>TOP_ONLY</mark>&#x27;) */
 <span class="lineno">9</span>HEADER;
-<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;M147 test case&#x27;,&#x27;AP210 SMD wrong-side placement&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">11</span>FILE_NAME(&#x27;M147.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">12</span>FILE_SCHEMA((&#x27;<mark>ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN</mark> { 1 0 10303 210 3 1 0 }&#x27;));
-<span class="lineno">13</span>ENDSEC;
-<span class="lineno">14</span>DATA;
-<span class="lineno">15</span>#1=APPLICATION_CONTEXT(&#x27;electronic_assembly_interconnect_and_packaging_design&#x27;);
-<span class="lineno">16</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">17</span>  &#x27;electronic_assembly_interconnect_and_packaging_design&#x27;,2014,#1);
-<span class="lineno">18</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">19</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">20</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-<span class="lineno">21</span>     REPRESENTATION_CONTEXT(&#x27;pcb&#x27;,&#x27;3D&#x27;));
-<span class="lineno">22</span>/* Defect: BGA_84 declared as top-only SMD but placed on bottom side. */
-<span class="lineno">23</span>#100=PRODUCT(&#x27;BGA_84&#x27;,&#x27;BGA_84&#x27;,&#x27;top-mount BGA package&#x27;,(#1));
-<span class="lineno">24</span>#110=DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;mount_constraint&#x27;,&#x27;<mark>TOP_ONLY</mark>&#x27;);
-<span class="lineno">25</span>#200=CARTESIAN_POINT(&#x27;origin&#x27;,(50.0,40.0,0.0));
-<span class="lineno">26</span>/* Normal -Z indicates bottom side mount. */
-<span class="lineno">27</span>#201=DIRECTION(&#x27;placement_normal&#x27;,(0.0,0.0,-1.0));
-<span class="lineno">28</span>#202=DIRECTION(&#x27;placement_x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">29</span>#203=<mark>AXIS2_PLACEMENT_3D</mark>(&#x27;U1_placement&#x27;,#200,#201,#202);
-<span class="lineno">30</span>#300=NEXT_ASSEMBLY_USAGE_OCCURRENCE(&#x27;U1&#x27;,&#x27;U1&#x27;,&#x27;BGA mounted bottom side&#x27;,
-<span class="lineno">31</span>       #100,#100,$);
-<span class="lineno">32</span>ENDSEC;
-<span class="lineno">33</span>END-ISO-10303-21;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;M147: AP210 <mark>TOP_ONLY</mark> SMD component placed on bottom side&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;M147.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>/* Byte assertion: contains(b&#x27;<mark>ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN</mark>&#x27;) */
+<span class="lineno">13</span>FILE_SCHEMA((&#x27;<mark>ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN</mark> { 1 0 10303 210 3 1 0 }&#x27;));
+<span class="lineno">14</span>ENDSEC;
+<span class="lineno">15</span>DATA;
+<span class="lineno">16</span>#1=APPLICATION_CONTEXT(&#x27;electronic_assembly_interconnect_and_packaging_design&#x27;);
+<span class="lineno">17</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">18</span>  &#x27;electronic_assembly_interconnect_and_packaging_design&#x27;,2014,#1);
+<span class="lineno">19</span>/* Standard unit context (mm) */
+<span class="lineno">20</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">21</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">22</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">23</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">24</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">25</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">26</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">27</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">28</span>  REPRESENTATION_CONTEXT(&#x27;pcb&#x27;,&#x27;3D&#x27;));
+<span class="lineno">29</span>/* BGA256 component product â 256-ball BGA surface-mount package */
+<span class="lineno">30</span>#100=PRODUCT(&#x27;BGA256&#x27;,&#x27;BGA256&#x27;,&#x27;256-ball BGA package&#x27;,(#1));
+<span class="lineno">31</span>/* Byte assertion: contains(b&#x27;<mark>TOP_ONLY</mark>&#x27;) */
+<span class="lineno">32</span>/* mount_constraint property declares BGA256 is a top-side-only package */
+<span class="lineno">33</span>#110=PROPERTY_DEFINITION(&#x27;mount_constraint&#x27;,&#x27;Placement side constraint&#x27;,#100);
+<span class="lineno">34</span>#111=DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;mount_constraint&#x27;,&#x27;<mark>TOP_ONLY</mark>&#x27;);
+<span class="lineno">35</span>#112=REPRESENTATION(&#x27;mount&#x27;,(#111),#14);
+<span class="lineno">36</span>#113=PROPERTY_DEFINITION_REPRESENTATION(#110,#112);
+<span class="lineno">37</span>/* Byte assertion: contains(b&#x27;<mark>AXIS2_PLACEMENT_3D</mark>&#x27;) */
+<span class="lineno">38</span>/* Placement origin on the PCB at position (15.0, 20.0, 0.0) */
+<span class="lineno">39</span>#200=CARTESIAN_POINT(&#x27;bga_origin&#x27;,(15.0,20.0,0.0));
+<span class="lineno">40</span>/* DEFECT: z-axis direction (0,0,-1) = -Z normal = bottom-side placement */
+<span class="lineno">41</span>/* A <mark>TOP_ONLY</mark> package requires +Z normal (0,0,1) for top-side placement */
+<span class="lineno">42</span>#202=DIRECTION(&#x27;bottom_normal&#x27;,(0.0,0.0,-1.0));
+<span class="lineno">43</span>#201=<mark>AXIS2_PLACEMENT_3D</mark>(&#x27;bga_placement&#x27;,#200,#202,$);
+<span class="lineno">44</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">45</span>#300=GEOMETRIC_CURVE_SET(&#x27;ap210-smd-component-oriented-on-wrong-board-side&#x27;,
+<span class="lineno">46</span>  (#100,#110,#111,#112,#113,#200,#202,#201));
+<span class="lineno">47</span>/* Product chain */
+<span class="lineno">48</span>#400=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">49</span>#401=PRODUCT_CONTEXT(&#x27;&#x27;,#400,&#x27;mechanical&#x27;);
+<span class="lineno">50</span>#402=PRODUCT(&#x27;M147&#x27;,&#x27;M147&#x27;,&#x27;M147&#x27;,(#401));
+<span class="lineno">51</span>#403=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#402);
+<span class="lineno">52</span>#404=PRODUCT_DEFINITION_CONTEXT(#400,&#x27;design&#x27;);
+<span class="lineno">53</span>#405=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#403,#404);
+<span class="lineno">54</span>#406=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#405);
+<span class="lineno">55</span>#407=SHAPE_REPRESENTATION(&#x27;&#x27;,(#300),#14);
+<span class="lineno">56</span>#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
+<span class="lineno">57</span>ENDSEC;
+<span class="lineno">58</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

@@ -38,58 +38,86 @@
 <section><h2>Notes</h2>
 <p>Synonyms: &quot;PCB pin order CCW vs CW&quot;, &quot;AP210 pin sequence inverted&quot;, &quot;pin numbering CW vs CCW&quot;, &quot;package pin geometric order wrong&quot;. Synonyms: &quot;PCB pin order CCW vs CW&quot;, &quot;AP210 pin sequence inverted&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN&#x27;)</code></li>
 <li><code>count_entity_def(b&#x27;TERMINAL&#x27;) &gt;= 4</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_vertices_total == 4</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
-<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(4)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(4)</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
 <tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
-<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M149 - AP210 component pin numbering doesn&#x27;t match physical pin
-<span class="lineno">3</span> * sequence (CW vs CCW mismatch).
-<span class="lineno">4</span> * Defect: a 4-pin SOT-23 package declares pins 1, 2, 3, 4 around the
-<span class="lineno">5</span> * package perimeter but the geometric order of the TERMINAL
-<span class="lineno">6</span> * placements walks counterclockwise (1, 4, 3, 2) instead of the
-<span class="lineno">7</span> * package datasheet&#x27;s clockwise order. Soldering follows the geometric
-<span class="lineno">8</span> * placement; the netlist&#x27;s pin assignment is rotated 180 deg. */
-<span class="lineno">9</span>HEADER;
-<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;M149 test case&#x27;,&#x27;AP210 component pin order mismatch&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">11</span>FILE_NAME(&#x27;M149.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">2</span>/* M149: AP210 component pin numbering doesn&#x27;t match physical pin sequence */
+<span class="lineno">3</span>/* DEFECT: SOT-23 TERMINAL placements walk CCW (1,4,3,2) not CW (1,2,3,4) */
+<span class="lineno">4</span>/* Soldering follows geometric order; netlist pin assignments are rotated 180 deg */
+<span class="lineno">5</span>/* Per ISO 10303-210 Â§6 terminal ordering must match package datasheet pin sequence */
+<span class="lineno">6</span>/* Byte assertion: contains(b&#x27;<mark>ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN</mark>&#x27;) */
+<span class="lineno">7</span>/* Byte assertion: count_entity_def(b&#x27;TERMINAL&#x27;) &gt;= 4 */
+<span class="lineno">8</span>HEADER;
+<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;M149: AP210 SOT-23 pin order CCW vs CW&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;M149.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">11</span>/* Byte assertion: contains(b&#x27;<mark>ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN</mark>&#x27;) */
 <span class="lineno">12</span>FILE_SCHEMA((&#x27;<mark>ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN</mark> { 1 0 10303 210 3 1 0 }&#x27;));
 <span class="lineno">13</span>ENDSEC;
 <span class="lineno">14</span>DATA;
 <span class="lineno">15</span>#1=APPLICATION_CONTEXT(&#x27;electronic_assembly_interconnect_and_packaging_design&#x27;);
 <span class="lineno">16</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
 <span class="lineno">17</span>  &#x27;electronic_assembly_interconnect_and_packaging_design&#x27;,2014,#1);
-<span class="lineno">18</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">19</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">20</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-<span class="lineno">21</span>     REPRESENTATION_CONTEXT(&#x27;pcb&#x27;,&#x27;3D&#x27;));
-<span class="lineno">22</span>/* Pin coordinates - clockwise order: pin1=(0,0), pin2=(1,0), pin3=(1,1), pin4=(0,1).
-<span class="lineno">23</span> * Defect: TERMINAL ids name pins 1,4,3,2 - skipping CW order. */
-<span class="lineno">24</span>#100=CARTESIAN_POINT(&#x27;p1&#x27;,(0.0,0.0,0.0));
-<span class="lineno">25</span>#101=CARTESIAN_POINT(&#x27;p2&#x27;,(1.0,0.0,0.0));
-<span class="lineno">26</span>#102=CARTESIAN_POINT(&#x27;p3&#x27;,(1.0,1.0,0.0));
-<span class="lineno">27</span>#103=CARTESIAN_POINT(&#x27;p4&#x27;,(0.0,1.0,0.0));
-<span class="lineno">28</span><mark>#200=TERMINAL(</mark>&#x27;pin1&#x27;,&#x27;SOT23_pin1&#x27;,#100);
-<span class="lineno">29</span><mark>#201=TERMINAL(</mark>&#x27;pin4&#x27;,&#x27;SOT23_pin4&#x27;,#101);
-<span class="lineno">30</span><mark>#202=TERMINAL(</mark>&#x27;pin3&#x27;,&#x27;SOT23_pin3&#x27;,#102);
-<span class="lineno">31</span><mark>#203=TERMINAL(</mark>&#x27;pin2&#x27;,&#x27;SOT23_pin2&#x27;,#103);
-<span class="lineno">32</span>ENDSEC;
-<span class="lineno">33</span>END-ISO-10303-21;
+<span class="lineno">18</span>/* Standard unit context (mm) */
+<span class="lineno">19</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">20</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">21</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">22</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">23</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">24</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">25</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">26</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">27</span>  REPRESENTATION_CONTEXT(&#x27;pcb&#x27;,&#x27;3D&#x27;));
+<span class="lineno">28</span>/* SOT-23 package product */
+<span class="lineno">29</span>#50=PRODUCT(&#x27;SOT23&#x27;,&#x27;SOT23&#x27;,&#x27;4-pin SOT-23 package&#x27;,(#1));
+<span class="lineno">30</span>/* Byte assertion: count_entity_def(b&#x27;TERMINAL&#x27;) &gt;= 4 */
+<span class="lineno">31</span>/* Pin 1: bottom-left corner â correct starting point */
+<span class="lineno">32</span>#100=CARTESIAN_POINT(&#x27;pin1_loc&#x27;,(0.0,0.0,0.0));
+<span class="lineno">33</span><mark>#101=TERMINAL(</mark>&#x27;pin1&#x27;,#100);
+<span class="lineno">34</span>/* DEFECT: CCW step 2 is pin4 at bottom-right â CW expects pin2 here */
+<span class="lineno">35</span>#102=CARTESIAN_POINT(&#x27;pin4_loc&#x27;,(0.95,0.0,0.0));
+<span class="lineno">36</span><mark>#103=TERMINAL(</mark>&#x27;pin4&#x27;,#102);
+<span class="lineno">37</span>/* DEFECT: CCW step 3 is pin3 at top-right â CW expects pin3 here (coincidence) */
+<span class="lineno">38</span>#104=CARTESIAN_POINT(&#x27;pin3_loc&#x27;,(0.95,2.9,0.0));
+<span class="lineno">39</span><mark>#105=TERMINAL(</mark>&#x27;pin3&#x27;,#104);
+<span class="lineno">40</span>/* DEFECT: CCW step 4 is pin2 at top-left â CW expects pin4 here */
+<span class="lineno">41</span>#106=CARTESIAN_POINT(&#x27;pin2_loc&#x27;,(0.0,2.9,0.0));
+<span class="lineno">42</span><mark>#107=TERMINAL(</mark>&#x27;pin2&#x27;,#106);
+<span class="lineno">43</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">44</span>#200=GEOMETRIC_CURVE_SET(&#x27;ap210-pin-numbering-ccw-vs-cw-sot23-package&#x27;,
+<span class="lineno">45</span>  (#100,#101,#102,#103,#104,#105,#106,#107));
+<span class="lineno">46</span>/* Product chain */
+<span class="lineno">47</span>#400=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">48</span>#401=PRODUCT_CONTEXT(&#x27;&#x27;,#400,&#x27;mechanical&#x27;);
+<span class="lineno">49</span>#402=PRODUCT(&#x27;M149&#x27;,&#x27;M149&#x27;,&#x27;M149&#x27;,(#401));
+<span class="lineno">50</span>#403=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#402);
+<span class="lineno">51</span>#404=PRODUCT_DEFINITION_CONTEXT(#400,&#x27;design&#x27;);
+<span class="lineno">52</span>#405=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#403,#404);
+<span class="lineno">53</span>#406=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#405);
+<span class="lineno">54</span>#407=SHAPE_REPRESENTATION(&#x27;&#x27;,(#200),#14);
+<span class="lineno">55</span>#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
+<span class="lineno">56</span>ENDSEC;
+<span class="lineno">57</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

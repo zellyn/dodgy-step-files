@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Me472 — remove_a_border_edge boundary_reached_during_exploration: all three edges are border; region touches outer boundary immediately (Branch 3)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <span class="sep">/</span> <span class="current">Me472</span>
+</nav>
+<header class="title-bar">
+<h1>Me472 <span class="sep">—</span> <span class="entry-title">remove_a_border_edge boundary_reached_during_exploration: all three edges are border; region touches outer boundary immediately (Branch 3)</span></h1>
+<p class="category">§12.14 mesh defects (sub-class: border-edge-collapse / region-exploration)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../mesh-examples/12-14-mesh/Me472.mesh.json">View raw fixture (.mesh.json)</a> <code class="path">mesh-examples/12-14-mesh/Me472.mesh.json</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>CGAL PMP `PMP.remove_a_border_edge.with_sets` Branch 3 (*boundary_reached_during_exploration*: `is_border(opposite(h, tmesh), tmesh)` → true during BFS grow</li>
+<li>returns null_vertex)</li>
+<li>`MESH_HEAL_COVERAGE.md`.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Single isolated triangle where all three edges are border (n=1). When BFS region expansion starts from any border edge, the opposite halfedges of the other two edges are immediately found to be border → boundary reached during exploration → abort. Hole boundary loop [v0,v1,v2]. Euler V=3,E=3,F=1,chi=1.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0); t0=(v0,v1,v2); all edges n=1; assert_hole_boundary([v0,v1,v2]); euler V=3,E=3,F=1,chi=1.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Branch 3 fires; BFS expansion encounters a border halfedge on the first step; function returns null_vertex without performing any removal.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>{
+<span class="lineno">2</span>  &quot;vertices&quot;: [
+<span class="lineno">3</span>    [
+<span class="lineno">4</span>      0.0,
+<span class="lineno">5</span>      0.0,
+<span class="lineno">6</span>      0.0
+<span class="lineno">7</span>    ],
+<span class="lineno">8</span>    [
+<span class="lineno">9</span>      1.0,
+<span class="lineno">10</span>      0.0,
+<span class="lineno">11</span>      0.0
+<span class="lineno">12</span>    ],
+<span class="lineno">13</span>    [
+<span class="lineno">14</span>      0.5,
+<span class="lineno">15</span>      1.0,
+<span class="lineno">16</span>      0.0
+<span class="lineno">17</span>    ]
+<span class="lineno">18</span>  ],
+<span class="lineno">19</span>  &quot;triangles&quot;: [
+<span class="lineno">20</span>    [
+<span class="lineno">21</span>      0,
+<span class="lineno">22</span>      1,
+<span class="lineno">23</span>      2
+<span class="lineno">24</span>    ]
+<span class="lineno">25</span>  ],
+<span class="lineno">26</span>  &quot;metadata&quot;: {
+<span class="lineno">27</span>    &quot;id&quot;: &quot;Me472&quot;,
+<span class="lineno">28</span>    &quot;schema_version&quot;: 0,
+<span class="lineno">29</span>    &quot;defect_class&quot;: &quot;border_edge_boundary_reached_during_exploration&quot;,
+<span class="lineno">30</span>    &quot;title&quot;: &quot;remove_a_border_edge boundary_reached_during_exploration: all three edges are border; region touches outer boundary immediately (Branch 3)&quot;,
+<span class="lineno">31</span>    &quot;assertions&quot;: [
+<span class="lineno">32</span>      {
+<span class="lineno">33</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">34</span>        &quot;edge&quot;: [
+<span class="lineno">35</span>          0,
+<span class="lineno">36</span>          1
+<span class="lineno">37</span>        ],
+<span class="lineno">38</span>        &quot;n&quot;: 1
+<span class="lineno">39</span>      },
+<span class="lineno">40</span>      {
+<span class="lineno">41</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">42</span>        &quot;edge&quot;: [
+<span class="lineno">43</span>          1,
+<span class="lineno">44</span>          2
+<span class="lineno">45</span>        ],
+<span class="lineno">46</span>        &quot;n&quot;: 1
+<span class="lineno">47</span>      },
+<span class="lineno">48</span>      {
+<span class="lineno">49</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">50</span>        &quot;edge&quot;: [
+<span class="lineno">51</span>          0,
+<span class="lineno">52</span>          2
+<span class="lineno">53</span>        ],
+<span class="lineno">54</span>        &quot;n&quot;: 1
+<span class="lineno">55</span>      },
+<span class="lineno">56</span>      {
+<span class="lineno">57</span>        &quot;kind&quot;: &quot;hole_boundary&quot;,
+<span class="lineno">58</span>        &quot;loop&quot;: [
+<span class="lineno">59</span>          0,
+<span class="lineno">60</span>          1,
+<span class="lineno">61</span>          2
+<span class="lineno">62</span>        ]
+<span class="lineno">63</span>      },
+<span class="lineno">64</span>      {
+<span class="lineno">65</span>        &quot;kind&quot;: &quot;euler_characteristic&quot;,
+<span class="lineno">66</span>        &quot;v&quot;: 3,
+<span class="lineno">67</span>        &quot;e&quot;: 3,
+<span class="lineno">68</span>        &quot;f&quot;: 1,
+<span class="lineno">69</span>        &quot;chi&quot;: 1
+<span class="lineno">70</span>      }
+<span class="lineno">71</span>    ]
+<span class="lineno">72</span>  }
+<span class="lineno">73</span>}
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Me471.html">&larr; Me471</a> <a class="up" href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <a class="next" href="Me473.html">Me473 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

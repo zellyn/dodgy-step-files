@@ -42,6 +42,9 @@
 <li><code>contains(b&#x27;AP238_STEP_NC_MIM&#x27;)</code></li>
 <li><code>count_entity_def(b&#x27;DRILLING_OPERATION&#x27;) &gt;= 2</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -57,38 +60,73 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M102 - AP238 drilling sequence with coincident hole positions.
-<span class="lineno">3</span> * Defect: two DRILLING_OPERATIONs target features whose locator
-<span class="lineno">4</span> * placements are identical. The second drill enters an already-drilled
-<span class="lineno">5</span> * hole; either zero-load entry breaks the tool or cycle time is wasted. */
-<span class="lineno">6</span>HEADER;
-<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;M102 test case&#x27;,&#x27;AP238 duplicate drill positions&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">8</span>FILE_NAME(&#x27;M102.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">9</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 1 0 0 1 }&#x27;));
-<span class="lineno">10</span>ENDSEC;
-<span class="lineno">11</span>DATA;
-<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;numerical_control_machining&#x27;);
-<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">14</span>  &#x27;numerical_control_machining&#x27;,2007,#1);
-<span class="lineno">15</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">16</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">17</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-<span class="lineno">18</span>     REPRESENTATION_CONTEXT(&#x27;nc&#x27;,&#x27;3D&#x27;));
-<span class="lineno">19</span>/* Two identical AXIS2_PLACEMENT_3D origins for two drilling features. */
-<span class="lineno">20</span>#500=CARTESIAN_POINT(&#x27;p1&#x27;,(50.0,30.0,0.0));
-<span class="lineno">21</span>#501=DIRECTION(&#x27;zA&#x27;,(0.0,0.0,1.0));
-<span class="lineno">22</span>#502=DIRECTION(&#x27;xA&#x27;,(1.0,0.0,0.0));
-<span class="lineno">23</span>#503=AXIS2_PLACEMENT_3D(&#x27;locA&#x27;,#500,#501,#502);
-<span class="lineno">24</span>#510=CARTESIAN_POINT(&#x27;p2&#x27;,(50.0,30.0,0.0));
-<span class="lineno">25</span>#511=DIRECTION(&#x27;zB&#x27;,(0.0,0.0,1.0));
-<span class="lineno">26</span>#512=DIRECTION(&#x27;xB&#x27;,(1.0,0.0,0.0));
-<span class="lineno">27</span>#513=AXIS2_PLACEMENT_3D(&#x27;locB&#x27;,#510,#511,#512);
-<span class="lineno">28</span>/* Defect: two drill ops at the same coordinate. */
-<span class="lineno">29</span><mark>#100=DRILLING_OPERATION(</mark>&#x27;drill_first&#x27;,$,$,$,$,#503);
-<span class="lineno">30</span><mark>#101=DRILLING_OPERATION(</mark>&#x27;drill_second&#x27;,$,$,$,$,#513);
-<span class="lineno">31</span>#200=WORKPLAN(&#x27;main&#x27;,(#100,#101),$,$,$);
-<span class="lineno">32</span>ENDSEC;
-<span class="lineno">33</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M102: AP238 drilling sequence with coincident hole positions */
+<span class="lineno">3</span>/* DEFECT: two DRILLING_OPERATIONs target features at identical position (50,30,0) */
+<span class="lineno">4</span>/* Second drill enters already-drilled hole â breaks tool or wastes cycle time */
+<span class="lineno">5</span>/* Violates ISO 10303-238 Â§5.8 drilling_operation positional uniqueness */
+<span class="lineno">6</span>/* Byte assertion: contains(b&#x27;<mark>AP238_STEP_NC_MIM</mark>&#x27;) */
+<span class="lineno">7</span>/* Byte assertion: count_entity_def(b&#x27;DRILLING_OPERATION&#x27;) &gt;= 2 */
+<span class="lineno">8</span>HEADER;
+<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;M102: AP238 two DRILLING_OPERATIONs at coincident positions&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;M102.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">11</span>/* Byte assertion: contains(b&#x27;<mark>AP238_STEP_NC_MIM</mark>&#x27;) */
+<span class="lineno">12</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 1 0 0 }&#x27;));
+<span class="lineno">13</span>ENDSEC;
+<span class="lineno">14</span>DATA;
+<span class="lineno">15</span>#1=APPLICATION_CONTEXT(&#x27;step_nc_mim&#x27;);
+<span class="lineno">16</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">17</span>  &#x27;ap238_step_nc_mim&#x27;,2007,#1);
+<span class="lineno">18</span>/* Standard unit context â mm */
+<span class="lineno">19</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">20</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">21</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">22</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">23</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">24</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">25</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">26</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">27</span>  REPRESENTATION_CONTEXT(&#x27;nc&#x27;,&#x27;3D&#x27;));
+<span class="lineno">28</span>/* First hole locator at (50,30,0) */
+<span class="lineno">29</span>#20=CARTESIAN_POINT(&#x27;origin_a&#x27;,(50.,30.,0.));
+<span class="lineno">30</span>#21=DIRECTION(&#x27;z_a&#x27;,(0.,0.,1.));
+<span class="lineno">31</span>#22=AXIS2_PLACEMENT_3D(&#x27;locator_a&#x27;,#20,#21,$);
+<span class="lineno">32</span>/* DEFECT: Second hole locator at IDENTICAL position (50,30,0) */
+<span class="lineno">33</span>/* Correct fix: use a distinct position for hole_b, e.g. (100.,30.,0.) */
+<span class="lineno">34</span>#23=CARTESIAN_POINT(&#x27;origin_b&#x27;,(50.,30.,0.));
+<span class="lineno">35</span>#24=DIRECTION(&#x27;z_b&#x27;,(0.,0.,1.));
+<span class="lineno">36</span>#25=AXIS2_PLACEMENT_3D(&#x27;locator_b&#x27;,#23,#24,$);
+<span class="lineno">37</span>/* Feature declarations â hole_a and hole_b at same position */
+<span class="lineno">38</span>#50=MACHINED_FEATURE(&#x27;hole_a&#x27;,$,$,$,$,#22);
+<span class="lineno">39</span>/* hole_b has same locator position â this is the coincident defect */
+<span class="lineno">40</span>#51=MACHINED_FEATURE(&#x27;hole_b&#x27;,$,$,$,$,#25);
+<span class="lineno">41</span>/* Drill bit â 8mm diameter */
+<span class="lineno">42</span>#60=MACHINING_TOOL(&#x27;drill_8mm&#x27;,$,$,$);
+<span class="lineno">43</span>/* Byte assertion: count_entity_def(b&#x27;DRILLING_OPERATION&#x27;) &gt;= 2 */
+<span class="lineno">44</span>/* First DRILLING_OPERATION on hole_a */
+<span class="lineno">45</span><mark>#70=DRILLING_OPERATION(</mark>&#x27;drill_a&#x27;,#60,$,$,$,$,$,$,#50,$,$);
+<span class="lineno">46</span>/* DEFECT: Second DRILLING_OPERATION on hole_b â same position as hole_a */
+<span class="lineno">47</span>/* Enters already-drilled hole: tool slams through or zero material removal */
+<span class="lineno">48</span><mark>#71=DRILLING_OPERATION(</mark>&#x27;drill_b&#x27;,#60,$,$,$,$,$,$,#51,$,$);
+<span class="lineno">49</span>/* Workingsteps in sequence */
+<span class="lineno">50</span>#80=MACHINING_WORKINGSTEP(&#x27;drill_step_a&#x27;,#50,#70,$);
+<span class="lineno">51</span>#81=MACHINING_WORKINGSTEP(&#x27;drill_step_b&#x27;,#51,#71,$);
+<span class="lineno">52</span>/* WORKPLAN sequences both steps â second step drills into already-finished hole */
+<span class="lineno">53</span>#90=WORKPLAN(&#x27;main&#x27;,(#80,#81),$,$,$);
+<span class="lineno">54</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">55</span>#300=GEOMETRIC_CURVE_SET(&#x27;ap238-drilling-sequence-coincident-hole-positions&#x27;,
+<span class="lineno">56</span>  (#22,#25,#50,#51,#60,#70,#71,#80,#81,#90));
+<span class="lineno">57</span>/* Product chain */
+<span class="lineno">58</span>#400=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">59</span>#401=PRODUCT_CONTEXT(&#x27;&#x27;,#400,&#x27;mechanical&#x27;);
+<span class="lineno">60</span>#402=PRODUCT(&#x27;M102&#x27;,&#x27;M102&#x27;,&#x27;M102&#x27;,(#401));
+<span class="lineno">61</span>#403=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#402);
+<span class="lineno">62</span>#404=PRODUCT_DEFINITION_CONTEXT(#400,&#x27;design&#x27;);
+<span class="lineno">63</span>#405=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#403,#404);
+<span class="lineno">64</span>#406=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#405);
+<span class="lineno">65</span>#407=SHAPE_REPRESENTATION(&#x27;&#x27;,(#300),#14);
+<span class="lineno">66</span>#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
+<span class="lineno">67</span>ENDSEC;
+<span class="lineno">68</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

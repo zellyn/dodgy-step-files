@@ -42,6 +42,9 @@
 <li><code>contains(b&#x27;EDGE_LOOP&#x27;)</code></li>
 <li><code>contains(b&#x27;EDGE_LOOP&#x27;) and count_entity_def(b&#x27;ORIENTED_EDGE&#x27;) &gt;= 3</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="../12-3b-wires/Twi051.html">Twi051</a>, <a href="../12-3b-wires/Twi064.html">Twi064</a></p>
 </section>
@@ -60,39 +63,41 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Ad101 - FixEdgeCurves throws Standard_OutOfRange
-<span class="lineno">3</span> * Defect: open wire of 3 edges. The first FixEdgeCurves step
-<span class="lineno">4</span> * removes the last edge (because it fails some check). Subsequent
-<span class="lineno">5</span> * iteration code accesses edges[3] (the now-removed slot), throwing
-<span class="lineno">6</span> * Standard_OutOfRange. */
-<span class="lineno">7</span>HEADER;
-<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Ad101 test case&#x27;,&#x27;FixEdgeCurves throws Standard_OutOfRange&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">9</span>FILE_NAME(&#x27;Ad101.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">11</span>ENDSEC;
-<span class="lineno">12</span>DATA;
-<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
-<span class="lineno">15</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));#101=VERTEX_POINT(&#x27;&#x27;,#100);
-<span class="lineno">16</span>#102=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));#103=VERTEX_POINT(&#x27;&#x27;,#102);
-<span class="lineno">17</span>#104=CARTESIAN_POINT(&#x27;&#x27;,(2.0,0.0,0.0));#105=VERTEX_POINT(&#x27;&#x27;,#104);
-<span class="lineno">18</span>#106=CARTESIAN_POINT(&#x27;&#x27;,(3.0,0.0,0.0));#107=VERTEX_POINT(&#x27;&#x27;,#106);
-<span class="lineno">19</span>#110=DIRECTION(&#x27;+x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">20</span>#111=VECTOR(&#x27;vx&#x27;,#110,1.0);
-<span class="lineno">21</span>#120=LINE(&#x27;e0&#x27;,#100,#111);
-<span class="lineno">22</span>#121=LINE(&#x27;e1&#x27;,#102,#111);
-<span class="lineno">23</span>#122=LINE(&#x27;e2&#x27;,#104,#111);
-<span class="lineno">24</span>/* Three EDGE_CURVEs forming an open wire v0-&gt;v1-&gt;v2-&gt;v3 */
-<span class="lineno">25</span>#130=EDGE_CURVE(&#x27;edge_0_kept&#x27;,#101,#103,#120,.T.);
-<span class="lineno">26</span>#131=EDGE_CURVE(&#x27;edge_1_kept&#x27;,#103,#105,#121,.T.);
-<span class="lineno">27</span>#132=EDGE_CURVE(&#x27;edge_2_to_be_removed&#x27;,#105,#107,#122,.T.);
-<span class="lineno">28</span><mark>#140=ORIENTED_EDGE(</mark>&#x27;&#x27;,*,*,#130,.T.);
-<span class="lineno">29</span><mark>#141=ORIENTED_EDGE(</mark>&#x27;&#x27;,*,*,#131,.T.);
-<span class="lineno">30</span><mark>#142=ORIENTED_EDGE(</mark>&#x27;&#x27;,*,*,#132,.T.);
-<span class="lineno">31</span>/* Open <mark>EDGE_LOOP</mark> referencing all three edges */
-<span class="lineno">32</span>#150=<mark>EDGE_LOOP</mark>(&#x27;open_3edge_wire&#x27;,(#140,#141,#142));
-<span class="lineno">33</span>ENDSEC;
-<span class="lineno">34</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* Ad101: open wire (non-closed <mark>EDGE_LOOP</mark>) with 3 ORIENTED_EDGEs forming v0-&gt;v1-&gt;v2-&gt;v3 chain; edge-curves-fix reads past end of edge vector after last edge removal; out-of-range OOB access; fix iteration must bounds-check after each edge modification; OCCT MANTIS#0030348, #0029780; See also Twi051, Twi064; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ad101&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ad101.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">11</span>#3=CARTESIAN_POINT(&#x27;open_wire_v0&#x27;,(0.0,0.0,0.0));
+<span class="lineno">12</span>#4=CARTESIAN_POINT(&#x27;open_wire_v1&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#5=CARTESIAN_POINT(&#x27;open_wire_v2&#x27;,(2.0,0.0,0.0));
+<span class="lineno">14</span>#6=CARTESIAN_POINT(&#x27;open_wire_v3&#x27;,(3.0,0.0,0.0));
+<span class="lineno">15</span>#7=VERTEX_POINT(&#x27;&#x27;,#3);
+<span class="lineno">16</span>#8=VERTEX_POINT(&#x27;&#x27;,#4);
+<span class="lineno">17</span>#9=VERTEX_POINT(&#x27;&#x27;,#5);
+<span class="lineno">18</span>#10=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">19</span>#11=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">20</span>#12=VECTOR(&#x27;&#x27;,#11,1.0);
+<span class="lineno">21</span>#13=LINE(&#x27;&#x27;,#3,#12);
+<span class="lineno">22</span>#14=EDGE_CURVE(&#x27;&#x27;,#7,#8,#13,.T.);
+<span class="lineno">23</span>#15=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">24</span>#16=VECTOR(&#x27;&#x27;,#15,1.0);
+<span class="lineno">25</span>#17=LINE(&#x27;&#x27;,#4,#16);
+<span class="lineno">26</span>#18=EDGE_CURVE(&#x27;&#x27;,#8,#9,#17,.T.);
+<span class="lineno">27</span>#19=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">28</span>#20=VECTOR(&#x27;&#x27;,#19,1.0);
+<span class="lineno">29</span>#21=LINE(&#x27;&#x27;,#5,#20);
+<span class="lineno">30</span>#22=EDGE_CURVE(&#x27;&#x27;,#9,#10,#21,.T.);
+<span class="lineno">31</span><mark>#23=ORIENTED_EDGE(</mark>&#x27;&#x27;,$,$,#14,.T.);
+<span class="lineno">32</span><mark>#24=ORIENTED_EDGE(</mark>&#x27;&#x27;,$,$,#18,.T.);
+<span class="lineno">33</span><mark>#25=ORIENTED_EDGE(</mark>&#x27;&#x27;,$,$,#22,.T.);
+<span class="lineno">34</span>#26=<mark>EDGE_LOOP</mark>(&#x27;open_wire_loop&#x27;,(#23,#24,#25));
+<span class="lineno">35</span>ENDSEC;
+<span class="lineno">36</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

@@ -42,6 +42,9 @@
 <li><code>contains(b&#x27;1.0E-7&#x27;)</code></li>
 <li><code>count_entity_def(b&#x27;EDGE_CURVE&#x27;) == 1</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -56,49 +59,39 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* N015 - xstep.cascade.unit M meters setting inflates tolerance and corrupts geometry
-<span class="lineno">2</span> * Defect: Setting OCCT&#x27;s cascade unit to meters during STEP/IGES read inflates
-<span class="lineno">3</span> * max-tolerance &gt;0.001 (some files balloon AABB to +/-1e+100). With unit=M,
-<span class="lineno">4</span> * too-small distances are not detected during edge reordering and BSpline
-<span class="lineno">5</span> * segments are missed.
-<span class="lineno">6</span> * Reproducer: file declared in METRE units (instead of mm) plus tight
-<span class="lineno">7</span> * uncertainty 1e-7 in metre context. Reader&#x27;s cascade.unit M scaling
-<span class="lineno">8</span> * produces tolerance 1e-7 m = 0.1 mm, far above true model precision.
-<span class="lineno">9</span> */
-<span class="lineno">10</span>ISO-10303-21;
-<span class="lineno">11</span>HEADER;
-<span class="lineno">12</span>FILE_DESCRIPTION((&#x27;N015 cascade.unit M inflates tolerance corrupts geometry&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">13</span>FILE_NAME(&#x27;N015.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
-<span class="lineno">14</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">15</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN&#x27;));
-<span class="lineno">16</span>ENDSEC;
-<span class="lineno">17</span>DATA;
-<span class="lineno">18</span>#1=APPLICATION_CONTEXT(&#x27;automotive design&#x27;);
-<span class="lineno">19</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">20</span>  &#x27;automotive_design&#x27;,2009,#1);
-<span class="lineno">21</span>/* All coordinates declared in METRE; tiny part is 0.001 m on a side. */
-<span class="lineno">22</span>#10=CARTESIAN_POINT(&#x27;p0_m&#x27;,(0.0,0.0,0.0));
-<span class="lineno">23</span>#11=CARTESIAN_POINT(&#x27;p1_m&#x27;,(0.001,0.0,0.0));
-<span class="lineno">24</span>#20=VERTEX_POINT(&#x27;v0&#x27;,#10);
-<span class="lineno">25</span>#21=VERTEX_POINT(&#x27;v1&#x27;,#11);
-<span class="lineno">26</span>#30=DIRECTION(&#x27;+x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">27</span>#31=VECTOR(&#x27;&#x27;,#30,0.001);
-<span class="lineno">28</span>#32=LINE(&#x27;e&#x27;,#10,#31);
-<span class="lineno">29</span><mark>#40=EDGE_CURVE(</mark>&#x27;cascade_m_edge&#x27;,#20,#21,#32,.T.);
-<span class="lineno">30</span>/* LENGTH_UNIT defined in metres -- when reader maps via xstep.cascade.unit=M,
-<span class="lineno">31</span> * the working tolerance is interpreted as 1e-7 m == 1e-4 mm, way above
-<span class="lineno">32</span> * native precision. */
-<span class="lineno">33</span>#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT($,.METRE.));
-<span class="lineno">34</span>#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">35</span>#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">36</span>#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(<mark>1.0E-7</mark>),#50,
-<span class="lineno">37</span>  &#x27;distance_accuracy_value&#x27;,&#x27;tol_in_metres_inflates_under_cascade_M&#x27;);
-<span class="lineno">38</span>#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">39</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
-<span class="lineno">40</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
-<span class="lineno">41</span>  REPRESENTATION_CONTEXT(&#x27;ctx_m&#x27;,&#x27;3D&#x27;));
-<span class="lineno">42</span>ENDSEC;
-<span class="lineno">43</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* N015: cascade unit M inflation: file declares <mark>1.0E-7</mark> precision but M-mode scales tolerance below kernel resolution; single EDGE_CURVE; GEOMETRIC_CURVE_SET â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;N015&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;N015.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;p0&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=CARTESIAN_POINT(&#x27;p1_1m&#x27;,(1000.0,0.0,0.0));
+<span class="lineno">11</span>#3=VERTEX_POINT(&#x27;v0&#x27;,#1);
+<span class="lineno">12</span>#4=VERTEX_POINT(&#x27;v1&#x27;,#2);
+<span class="lineno">13</span>#5=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">14</span>#6=VECTOR(&#x27;&#x27;,#5,1000.0);
+<span class="lineno">15</span>#7=LINE(&#x27;line_1m&#x27;,#1,#6);
+<span class="lineno">16</span><mark>#8=EDGE_CURVE(</mark>&#x27;edge&#x27;,#3,#4,#7,.T.);
+<span class="lineno">17</span>#9=GEOMETRIC_CURVE_SET(&#x27;edges&#x27;,(#8));
+<span class="lineno">18</span>#10=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">19</span>#11=PRODUCT_CONTEXT(&#x27;&#x27;,#10,&#x27;mechanical&#x27;);
+<span class="lineno">20</span>#12=PRODUCT(&#x27;N015&#x27;,&#x27;N015&#x27;,&#x27;&#x27;,(#11));
+<span class="lineno">21</span>#13=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#12);
+<span class="lineno">22</span>#14=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#10,&#x27;design&#x27;);
+<span class="lineno">23</span>#15=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#13,#14);
+<span class="lineno">24</span>#16=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#15);
+<span class="lineno">25</span>#17=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">26</span>#18=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">27</span>#19=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">28</span>#20=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(<mark>1.0E-7</mark>),#17,&#x27;distance_accuracy_value&#x27;,&#x27;precision_below_M_mode_threshold&#x27;);
+<span class="lineno">29</span>#21=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#20))GLOBAL_UNIT_ASSIGNED_CONTEXT((#17,#18,#19))REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">30</span>#22=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9),#21);
+<span class="lineno">31</span>#23=SHAPE_DEFINITION_REPRESENTATION(#16,#22);
+<span class="lineno">32</span>ENDSEC;
+<span class="lineno">33</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

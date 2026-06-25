@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tfa095 — ShapeFix_Face.FixPeriodicDegenerated SURFACE_OF_REVOLUTION apex</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa095</span>
+</nav>
+<header class="title-bar">
+<h1>Tfa095 <span class="sep">—</span> <span class="entry-title">ShapeFix_Face.FixPeriodicDegenerated SURFACE_OF_REVOLUTION apex</span></h1>
+<p class="category">§12.3c</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3c-faces/Tfa095.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa095.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>synthesized — no external source cited</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>ShapeFix_Face.FixPeriodicDegenerated SURFACE_OF_REVOLUTION apex</p></section>
+<section><h2>Reproducer recipe</h2>
+<p></p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>process_signal</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tfa095 - ShapeFix_Face.FixPeriodicDegenerated SURFACE_OF_REVOLUTION apex
+<span class="lineno">3</span> * Full surface-of-revolution with degenerate apex curve at v=0 (the axis of rotation).
+<span class="lineno">4</span> * FixPeriodicDegenerated must handle the revolution-axis degenerate edge differently
+<span class="lineno">5</span> * from cone apex. Revolution surfaces pinch at v=0 to a line/point on rotation axis. */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;Tfa095 test case&#x27;,&#x27;Face with SURFACE_OF_REVOLUTION having degenerate apex at revolution axis&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;Tfa095.stp&#x27;,&#x27;2026-06-15T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">14</span>/* === Axis placement for revolution: axis along Z, origin at (0,0,0) === */
+<span class="lineno">15</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">17</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">18</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">19</span>/* === Profile curve for revolution: a line from (1.0, 0.0, 0.0) to (1.0, 0.0, 2.0)
+<span class="lineno">20</span> * When revolved 360 degrees around Z axis, creates a cylinder with apex at Z=0. === */
+<span class="lineno">21</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">22</span>#21=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,2.0));
+<span class="lineno">23</span>#22=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">24</span>#23=VECTOR(&#x27;&#x27;,#22,2.0);
+<span class="lineno">25</span>#24=LINE(&#x27;profile_line&#x27;,#20,#23);
+<span class="lineno">26</span>/* === Surface of Revolution: 360 degrees === */
+<span class="lineno">27</span>#30=SURFACE_OF_REVOLUTION(&#x27;surface_of_rev&#x27;,#24,#13);
+<span class="lineno">28</span>/* === Outer boundary: circle at top (z=2.0), radius 1.0 === */
+<span class="lineno">29</span>#40=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,2.0));#41=VERTEX_POINT(&#x27;&#x27;,#40);
+<span class="lineno">30</span>#42=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,2.0));#43=VERTEX_POINT(&#x27;&#x27;,#42);
+<span class="lineno">31</span>#44=CARTESIAN_POINT(&#x27;&#x27;,(-1.0,0.0,2.0));#45=VERTEX_POINT(&#x27;&#x27;,#44);
+<span class="lineno">32</span>#46=CARTESIAN_POINT(&#x27;&#x27;,(0.0,-1.0,2.0));#47=VERTEX_POINT(&#x27;&#x27;,#46);
+<span class="lineno">33</span>/* Top circle edges (4 quarter-arcs) */
+<span class="lineno">34</span>#50=DIRECTION(&#x27;&#x27;,(0.0,0.0,2.0));
+<span class="lineno">35</span>#51=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#40,#50,#12);
+<span class="lineno">36</span>#52=CIRCLE(&#x27;top_circle&#x27;,#51,1.0);
+<span class="lineno">37</span>#53=EDGE_CURVE(&#x27;top_q1&#x27;,#41,#43,#52,.T.);
+<span class="lineno">38</span>#54=EDGE_CURVE(&#x27;top_q2&#x27;,#43,#45,#52,.T.);
+<span class="lineno">39</span>#55=EDGE_CURVE(&#x27;top_q3&#x27;,#45,#47,#52,.T.);
+<span class="lineno">40</span>#56=EDGE_CURVE(&#x27;top_q4&#x27;,#47,#41,#52,.T.);
+<span class="lineno">41</span>#57=ORIENTED_EDGE(&#x27;&#x27;,*,*,#53,.T.);#58=ORIENTED_EDGE(&#x27;&#x27;,*,*,#54,.T.);
+<span class="lineno">42</span>#59=ORIENTED_EDGE(&#x27;&#x27;,*,*,#55,.T.);#60=ORIENTED_EDGE(&#x27;&#x27;,*,*,#56,.T.);
+<span class="lineno">43</span>#61=EDGE_LOOP(&#x27;top_loop&#x27;,(#57,#58,#59,#60));
+<span class="lineno">44</span>#62=FACE_OUTER_BOUND(&#x27;&#x27;,#61,.T.);
+<span class="lineno">45</span>/* === Degenerate edge at apex (z=0): all four radial lines converge to single point
+<span class="lineno">46</span> * This represents the axis line from (0,0,0) to (0,0,0) â truly degenerate.
+<span class="lineno">47</span> * In STEP, we model this as a single EDGE_CURVE from origin to origin. === */
+<span class="lineno">48</span>#70=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));#71=VERTEX_POINT(&#x27;apex_pt&#x27;,#70);
+<span class="lineno">49</span>#72=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">50</span>#73=VECTOR(&#x27;&#x27;,#72,0.0);
+<span class="lineno">51</span>#74=LINE(&#x27;degenerate_apex_edge&#x27;,#70,#73);
+<span class="lineno">52</span>#75=EDGE_CURVE(&#x27;apex_edge&#x27;,#71,#71,#74,.T.);
+<span class="lineno">53</span>/* Connect apex to top circle at 4 points via meridian edges */
+<span class="lineno">54</span>#80=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">55</span>#81=VECTOR(&#x27;&#x27;,#80,2.0);
+<span class="lineno">56</span>#82=LINE(&#x27;meridian1&#x27;,#70,#81);
+<span class="lineno">57</span>#83=EDGE_CURVE(&#x27;meridian1_edge&#x27;,#71,#41,#82,.T.);
+<span class="lineno">58</span>#84=LINE(&#x27;meridian2&#x27;,#70,#81);
+<span class="lineno">59</span>#85=EDGE_CURVE(&#x27;meridian2_edge&#x27;,#71,#43,#84,.T.);
+<span class="lineno">60</span>#86=LINE(&#x27;meridian3&#x27;,#70,#81);
+<span class="lineno">61</span>#87=EDGE_CURVE(&#x27;meridian3_edge&#x27;,#71,#45,#86,.T.);
+<span class="lineno">62</span>#88=LINE(&#x27;meridian4&#x27;,#70,#81);
+<span class="lineno">63</span>#89=EDGE_CURVE(&#x27;meridian4_edge&#x27;,#71,#47,#88,.T.);
+<span class="lineno">64</span>/* Four inner loops: each connects apex to two adjacent top points via degenerate apex edge */
+<span class="lineno">65</span>#90=ORIENTED_EDGE(&#x27;&#x27;,*,*,#75,.T.);#91=ORIENTED_EDGE(&#x27;&#x27;,*,*,#83,.T.);
+<span class="lineno">66</span>#92=ORIENTED_EDGE(&#x27;&#x27;,*,*,#53,.T.);#93=ORIENTED_EDGE(&#x27;&#x27;,*,*,#89,.F.);
+<span class="lineno">67</span>#94=EDGE_LOOP(&#x27;inner_q1&#x27;,(#90,#91,#92,#93));
+<span class="lineno">68</span>#95=FACE_INNER_BOUND(&#x27;&#x27;,#94,.T.);
+<span class="lineno">69</span>#100=ORIENTED_EDGE(&#x27;&#x27;,*,*,#75,.T.);#101=ORIENTED_EDGE(&#x27;&#x27;,*,*,#85,.T.);
+<span class="lineno">70</span>#102=ORIENTED_EDGE(&#x27;&#x27;,*,*,#54,.T.);#103=ORIENTED_EDGE(&#x27;&#x27;,*,*,#83,.F.);
+<span class="lineno">71</span>#104=EDGE_LOOP(&#x27;inner_q2&#x27;,(#100,#101,#102,#103));
+<span class="lineno">72</span>#105=FACE_INNER_BOUND(&#x27;&#x27;,#104,.T.);
+<span class="lineno">73</span>#110=ORIENTED_EDGE(&#x27;&#x27;,*,*,#75,.T.);#111=ORIENTED_EDGE(&#x27;&#x27;,*,*,#87,.T.);
+<span class="lineno">74</span>#112=ORIENTED_EDGE(&#x27;&#x27;,*,*,#55,.T.);#113=ORIENTED_EDGE(&#x27;&#x27;,*,*,#85,.F.);
+<span class="lineno">75</span>#114=EDGE_LOOP(&#x27;inner_q3&#x27;,(#110,#111,#112,#113));
+<span class="lineno">76</span>#115=FACE_INNER_BOUND(&#x27;&#x27;,#114,.T.);
+<span class="lineno">77</span>#120=ORIENTED_EDGE(&#x27;&#x27;,*,*,#75,.T.);#121=ORIENTED_EDGE(&#x27;&#x27;,*,*,#89,.T.);
+<span class="lineno">78</span>#122=ORIENTED_EDGE(&#x27;&#x27;,*,*,#56,.T.);#123=ORIENTED_EDGE(&#x27;&#x27;,*,*,#87,.F.);
+<span class="lineno">79</span>#124=EDGE_LOOP(&#x27;inner_q4&#x27;,(#120,#121,#122,#123));
+<span class="lineno">80</span>#125=FACE_INNER_BOUND(&#x27;&#x27;,#124,.T.);
+<span class="lineno">81</span>#140=ADVANCED_FACE(&#x27;revolution_apex_face&#x27;,(#62,#95,#105,#115,#125),#30,.T.);
+<span class="lineno">82</span>/* === Mandatory product context chain === */
+<span class="lineno">83</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">84</span>#9001=PRODUCT(&#x27;Tfa095&#x27;,&#x27;Tfa095&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">85</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">86</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">87</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">88</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">89</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">90</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">91</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">92</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">93</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">94</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;sbsm&#x27;,(#9020));
+<span class="lineno">95</span>#9020=OPEN_SHELL(&#x27;shell&#x27;,(#140));
+<span class="lineno">96</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">97</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">98</span>ENDSEC;
+<span class="lineno">99</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tfa094.html">&larr; Tfa094</a> <a class="up" href="index.html">§12.3c Faces / sewing / free bound</a> <a class="next" href="Tfa096.html">Tfa096 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

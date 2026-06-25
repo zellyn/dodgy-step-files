@@ -42,6 +42,9 @@
 <li><code>contains(b&#x27;ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN&#x27;)</code></li>
 <li><code>count_entity_def(b&#x27;LAMINATE_OR_PLY_DEFINITION&#x27;) &gt;= 2</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -57,36 +60,56 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M089 - AP210 stackup ply z-positions overlap.
-<span class="lineno">3</span> * Defect: two LAMINATE_OR_PLY_DEFINITIONs in the same stackup occupy
-<span class="lineno">4</span> * overlapping Z ranges - ply A from z=0.0 to z=0.2 and ply B from
-<span class="lineno">5</span> * z=0.15 to z=0.35. The stackup is physically impossible (two solid
-<span class="lineno">6</span> * dielectrics in the same volume). */
+<span class="lineno">2</span>/* M089: AP210 stackup plies overlap in the Z direction */
+<span class="lineno">3</span>/* DEFECT: ply_a spans z=0.0..0.2, ply_b spans z=0.15..0.35 â overlap at 0.15..0.2 */
+<span class="lineno">4</span>/* Two solid dielectrics in the same volume â physically impossible */
+<span class="lineno">5</span>/* Byte assertion: contains(b&#x27;<mark>ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN</mark>&#x27;) */
+<span class="lineno">6</span>/* Byte assertion: count_entity_def(b&#x27;LAMINATE_OR_PLY_DEFINITION&#x27;) &gt;= 2 */
 <span class="lineno">7</span>HEADER;
-<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;M089 test case&#x27;,&#x27;AP210 stackup plies overlap in Z&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">9</span>FILE_NAME(&#x27;M089.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">10</span>FILE_SCHEMA((&#x27;<mark>ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN</mark> { 1 0 10303 210 3 1 0 }&#x27;));
-<span class="lineno">11</span>ENDSEC;
-<span class="lineno">12</span>DATA;
-<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;electronic_assembly_interconnect_and_packaging_design&#x27;);
-<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">15</span>  &#x27;electronic_assembly_interconnect_and_packaging_design&#x27;,2014,#1);
-<span class="lineno">16</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">17</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">18</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-<span class="lineno">19</span>     REPRESENTATION_CONTEXT(&#x27;pcb&#x27;,&#x27;3D&#x27;));
-<span class="lineno">20</span>/* Two plies with overlapping z extents */
-<span class="lineno">21</span>#20=CARTESIAN_POINT(&#x27;a_bottom&#x27;,(0.0,0.0,0.0));
-<span class="lineno">22</span>#21=AXIS2_PLACEMENT_3D(&#x27;a_pos&#x27;,#20,$,$);
-<span class="lineno">23</span>#22=CARTESIAN_POINT(&#x27;b_bottom&#x27;,(0.0,0.0,0.15));
-<span class="lineno">24</span>#23=AXIS2_PLACEMENT_3D(&#x27;b_pos&#x27;,#22,$,$);
-<span class="lineno">25</span><mark>#100=LAMINATE_OR_PLY_DEFINITION(</mark>&#x27;ply_A&#x27;,$,$,$,LENGTH_MEASURE(0.2));
-<span class="lineno">26</span><mark>#101=LAMINATE_OR_PLY_DEFINITION(</mark>&#x27;ply_B&#x27;,$,$,$,LENGTH_MEASURE(0.2));
-<span class="lineno">27</span>/* Defect: ply A occupies z=0..0.2; ply B occupies z=0.15..0.35; they
-<span class="lineno">28</span> * overlap from 0.15 to 0.2. */
-<span class="lineno">29</span>#200=LAMINATE_TABLE(&#x27;overlapping_stack&#x27;,(#100,#101),$);
-<span class="lineno">30</span>ENDSEC;
-<span class="lineno">31</span>END-ISO-10303-21;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;M089: AP210 stackup plies overlapping in Z&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;M089.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>/* Byte assertion: contains(b&#x27;<mark>ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN</mark>&#x27;) */
+<span class="lineno">11</span>FILE_SCHEMA((&#x27;<mark>ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN</mark> { 1 0 10303 210 3 1 0 }&#x27;));
+<span class="lineno">12</span>ENDSEC;
+<span class="lineno">13</span>DATA;
+<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;electronic_assembly_interconnect_and_packaging_design&#x27;);
+<span class="lineno">15</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">16</span>  &#x27;electronic_assembly_interconnect_and_packaging_design&#x27;,2014,#1);
+<span class="lineno">17</span>/* Standard unit context â mm */
+<span class="lineno">18</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">19</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">20</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">21</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">22</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">23</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">24</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">25</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">26</span>  REPRESENTATION_CONTEXT(&#x27;pcb&#x27;,&#x27;3D&#x27;));
+<span class="lineno">27</span>/* Byte assertion: count_entity_def(b&#x27;LAMINATE_OR_PLY_DEFINITION&#x27;) &gt;= 2 */
+<span class="lineno">28</span>/* ply_a: z_offset=0.0, thickness=0.2mm -&gt; spans z=0.0..0.2 */
+<span class="lineno">29</span><mark>#100=LAMINATE_OR_PLY_DEFINITION(</mark>&#x27;ply_a&#x27;,$,$,$,LENGTH_MEASURE(0.2));
+<span class="lineno">30</span>/* ply_b: z_offset=0.15, thickness=0.2mm -&gt; spans z=0.15..0.35 */
+<span class="lineno">31</span>/* DEFECT: overlaps with ply_a in z=0.15..0.2 */
+<span class="lineno">32</span><mark>#101=LAMINATE_OR_PLY_DEFINITION(</mark>&#x27;ply_b&#x27;,$,$,$,LENGTH_MEASURE(0.2));
+<span class="lineno">33</span>/* LAMINATE_TABLE with the two overlapping plies â ply ordering encodes z position */
+<span class="lineno">34</span>/* ply_a at index 0 -&gt; z starts at 0.0; ply_b at index 1 -&gt; z starts at 0.15 */
+<span class="lineno">35</span>/* (simulated by placing ply_b after only 0.15mm gap, not the full 0.2mm ply_a) */
+<span class="lineno">36</span>#110=LAMINATE_TABLE(&#x27;overlapping_stack&#x27;,(#100,#101),$);
+<span class="lineno">37</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">38</span>#300=GEOMETRIC_CURVE_SET(&#x27;ap210-stackup-plies-overlap-in-z-direction&#x27;,
+<span class="lineno">39</span>  (#100,#101,#110));
+<span class="lineno">40</span>/* Product chain */
+<span class="lineno">41</span>#400=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">42</span>#401=PRODUCT_CONTEXT(&#x27;&#x27;,#400,&#x27;mechanical&#x27;);
+<span class="lineno">43</span>#402=PRODUCT(&#x27;M089&#x27;,&#x27;M089&#x27;,&#x27;M089&#x27;,(#401));
+<span class="lineno">44</span>#403=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#402);
+<span class="lineno">45</span>#404=PRODUCT_DEFINITION_CONTEXT(#400,&#x27;design&#x27;);
+<span class="lineno">46</span>#405=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#403,#404);
+<span class="lineno">47</span>#406=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#405);
+<span class="lineno">48</span>#407=SHAPE_REPRESENTATION(&#x27;&#x27;,(#300),#14);
+<span class="lineno">49</span>#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
+<span class="lineno">50</span>ENDSEC;
+<span class="lineno">51</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

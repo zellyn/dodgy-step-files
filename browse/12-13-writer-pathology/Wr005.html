@@ -44,6 +44,9 @@
 <li><code>contains(b&#x27;1.0E-7&#x27;) and contains(b&#x27;1e-07&#x27;) and (contains(b&#x27;0.0000001&#x27;) or contains(b&#x27;1.0e-007&#x27;))</code></li>
 <li><code>count(b&#x27;1&#x27;) + count(b&#x27;e&#x27;) + count(b&#x27;E&#x27;) &gt;= 5</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -58,25 +61,25 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Wr005 - Floating-point format inconsistency within one file - same magnitude expressed three different ways */
-<span class="lineno">2</span>ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Wr005: mixed floating-point formats in one DATA section */
 <span class="lineno">3</span>HEADER;
-<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Wr005 - inconsistent float formatting&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">5</span>FILE_NAME(&#x27;Wr005.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
-<span class="lineno">6</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Wr005 - floating-point format inconsistency&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Wr005.stp&#x27;,&#x27;2026-06-20T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">6</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
 <span class="lineno">7</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
 <span class="lineno">8</span>ENDSEC;
 <span class="lineno">9</span>DATA;
-<span class="lineno">10</span>#1=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
-<span class="lineno">11</span>#10=CARTESIAN_POINT(&#x27;a&#x27;,(1.0E-7,1e-07,0.0000001));
-<span class="lineno">12</span>#11=CARTESIAN_POINT(&#x27;b&#x27;,(1.0e-007,1.0,1.));
-<span class="lineno">13</span>#12=CARTESIAN_POINT(&#x27;c&#x27;,(2.500000000E+02,2.5e2,250.0));
-<span class="lineno">14</span>#13=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
-<span class="lineno">15</span>#14=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">16</span>#15=AXIS2_PLACEMENT_3D(&#x27;p&#x27;,#10,#13,#14);
-<span class="lineno">17</span>#20=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">18</span>#21=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
-<span class="lineno">19</span>#22=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+<span class="lineno">10</span>/* Defect: coords use four different REAL formats in same file */
+<span class="lineno">11</span>/* Format 1: uppercase E with negative exponent: 1.0E-7 */
+<span class="lineno">12</span>/* Format 2: lowercase e with two-digit exponent: 1e-07 */
+<span class="lineno">13</span>/* Format 3: decimal expansion: 0.0000001 */
+<span class="lineno">14</span>#1=CARTESIAN_POINT(&#x27;pt-a&#x27;,(1.0E-7,1e-07,0.0000001));
+<span class="lineno">15</span>/* Format 4: extra exponent digit: 1.0e-007 */
+<span class="lineno">16</span>/* Format 5: plain decimal: 1.0 */
+<span class="lineno">17</span>/* Format 6: trailing-dot form: 1. */
+<span class="lineno">18</span>#2=CARTESIAN_POINT(&#x27;pt-b&#x27;,(1.0e-007,1.0,1.));
+<span class="lineno">19</span>#3=GEOMETRIC_CURVE_SET(&#x27;fp-formats&#x27;,(#1,#2));
 <span class="lineno">20</span>ENDSEC;
 <span class="lineno">21</span>END-ISO-10303-21;
 </pre>

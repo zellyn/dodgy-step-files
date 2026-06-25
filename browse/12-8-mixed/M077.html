@@ -43,6 +43,9 @@
 <li><code>contains(b&#x27;WORKPIECE_SETUP&#x27;)</code></li>
 <li><code>contains(b&#x27;WORKPIECE&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -58,37 +61,61 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M077 - AP238 fixture_usage references a workpiece not in the assembly.
-<span class="lineno">3</span> * Defect: SETUP.its_workpiece_setup lists fixture references to
-<span class="lineno">4</span> * <mark>WORKPIECE</mark> entities (datum-mating fixture stacks) that are declared in
-<span class="lineno">5</span> * the file, but the <mark>WORKPIECE_SETUP</mark>.its_workpiece points to a different
-<span class="lineno">6</span> * <mark>WORKPIECE</mark> id, leaving the fixture orphaned in space. */
-<span class="lineno">7</span>HEADER;
-<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;M077 test case&#x27;,&#x27;AP238 fixture orphaned from workpiece&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">9</span>FILE_NAME(&#x27;M077.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">10</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 1 0 0 1 }&#x27;));
-<span class="lineno">11</span>ENDSEC;
-<span class="lineno">12</span>DATA;
-<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;numerical_control_machining&#x27;);
-<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">15</span>  &#x27;numerical_control_machining&#x27;,2007,#1);
-<span class="lineno">16</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">17</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">18</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-<span class="lineno">19</span>     REPRESENTATION_CONTEXT(&#x27;setup&#x27;,&#x27;3D&#x27;));
-<span class="lineno">20</span>/* Two workpieces */
-<span class="lineno">21</span>#100=<mark>WORKPIECE</mark>(&#x27;plate_a&#x27;,$,$,$,$,$,$);
-<span class="lineno">22</span>#101=<mark>WORKPIECE</mark>(&#x27;plate_b&#x27;,$,$,$,$,$,$);
-<span class="lineno">23</span>/* A fixture vise referencing plate_a */
-<span class="lineno">24</span>#110=<mark>WORKPIECE</mark>(&#x27;vise_jaw&#x27;,$,$,$,$,$,$);
-<span class="lineno">25</span>#120=<mark>WORKPIECE_SETUP</mark>(#100,$,$,(#110),$);
-<span class="lineno">26</span>/* Defect: SETUP names plate_b as its workpiece, but the workpiece_setup
-<span class="lineno">27</span> * above references plate_a - the vise jaws are now constraining a part
-<span class="lineno">28</span> * that isn&#x27;t the one being machined in this setup. */
-<span class="lineno">29</span>#200=SETUP(&#x27;main_setup&#x27;,(#120),$,$,$);
-<span class="lineno">30</span>#210=MACHINING_WORKINGSTEP(&#x27;ws&#x27;,$,$,#101,#200);
-<span class="lineno">31</span>ENDSEC;
-<span class="lineno">32</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M077: AP238 fixture references different workpiece than the setup is machining */
+<span class="lineno">3</span>/* DEFECT: <mark>WORKPIECE_SETUP</mark> attaches fixture to plate_a, but MACHINING_WORKINGSTEP */
+<span class="lineno">4</span>/*   names plate_b as the machined part â fixture is orphaned */
+<span class="lineno">5</span>/* Byte assertion: contains(b&#x27;<mark>AP238_STEP_NC_MIM</mark>&#x27;) */
+<span class="lineno">6</span>/* Byte assertion: contains(b&#x27;<mark>WORKPIECE_SETUP</mark>&#x27;) */
+<span class="lineno">7</span>/* Byte assertion: contains(b&#x27;<mark>WORKPIECE</mark>&#x27;) */
+<span class="lineno">8</span>HEADER;
+<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;M077: AP238 fixture references wrong workpiece&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;M077.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">11</span>/* Byte assertion: contains(b&#x27;<mark>AP238_STEP_NC_MIM</mark>&#x27;) */
+<span class="lineno">12</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 3 1 1 1 }&#x27;));
+<span class="lineno">13</span>ENDSEC;
+<span class="lineno">14</span>DATA;
+<span class="lineno">15</span>#1=APPLICATION_CONTEXT(&#x27;numerical_control_machining&#x27;);
+<span class="lineno">16</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">17</span>  &#x27;numerical_control_machining&#x27;,2007,#1);
+<span class="lineno">18</span>/* Standard unit context */
+<span class="lineno">19</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">20</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">21</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">22</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">23</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">24</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">25</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">26</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">27</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">28</span>/* Byte assertion: contains(b&#x27;<mark>WORKPIECE</mark>&#x27;) */
+<span class="lineno">29</span>/* Two workpieces: plate_a and plate_b */
+<span class="lineno">30</span>#100=<mark>WORKPIECE</mark>(&#x27;plate_a&#x27;,$,$,$,$,$,$);
+<span class="lineno">31</span>#101=<mark>WORKPIECE</mark>(&#x27;plate_b&#x27;,$,$,$,$,$,$);
+<span class="lineno">32</span>/* Fixture: vise jaw */
+<span class="lineno">33</span>#110=<mark>WORKPIECE</mark>(&#x27;vise_jaw&#x27;,$,$,$,$,$,$);
+<span class="lineno">34</span>/* Byte assertion: contains(b&#x27;<mark>WORKPIECE_SETUP</mark>&#x27;) */
+<span class="lineno">35</span>/* <mark>WORKPIECE_SETUP</mark>: attaches vise_jaw (#110) as fixture for plate_a (#100) */
+<span class="lineno">36</span>#120=<mark>WORKPIECE_SETUP</mark>(#100,$,$,(#110),$);
+<span class="lineno">37</span>/* SETUP uses the workpiece_setup for plate_a */
+<span class="lineno">38</span>#200=SETUP(&#x27;main_setup&#x27;,(#120),$,$,$);
+<span class="lineno">39</span>/* DEFECT: MACHINING_WORKINGSTEP references plate_b (#101), not plate_a (#100) */
+<span class="lineno">40</span>/* The fixture constrains plate_a, but plate_b is being machined */
+<span class="lineno">41</span>#210=MACHINING_WORKINGSTEP(&#x27;ws&#x27;,$,$,#101,#200);
+<span class="lineno">42</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">43</span>#300=GEOMETRIC_CURVE_SET(&#x27;ap238-fixture-references-wrong-workpiece-orphaned&#x27;,
+<span class="lineno">44</span>  (#100,#101,#110,#120,#200,#210));
+<span class="lineno">45</span>/* Product chain */
+<span class="lineno">46</span>#400=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">47</span>#401=PRODUCT_CONTEXT(&#x27;&#x27;,#400,&#x27;mechanical&#x27;);
+<span class="lineno">48</span>#402=PRODUCT(&#x27;M077&#x27;,&#x27;M077&#x27;,&#x27;M077&#x27;,(#401));
+<span class="lineno">49</span>#403=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#402);
+<span class="lineno">50</span>#404=PRODUCT_DEFINITION_CONTEXT(#400,&#x27;design&#x27;);
+<span class="lineno">51</span>#405=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#403,#404);
+<span class="lineno">52</span>#406=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#405);
+<span class="lineno">53</span>#407=SHAPE_REPRESENTATION(&#x27;&#x27;,(#300),#14);
+<span class="lineno">54</span>#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
+<span class="lineno">55</span>ENDSEC;
+<span class="lineno">56</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

@@ -43,6 +43,9 @@
 <li><code>contains(b&#x27;DERIVED_UNIT_ELEMENT&#x27;) and contains(b&#x27;DERIVED_UNIT(&#x27;)</code></li>
 <li><code>contains(b&#x27;THERMODYNAMIC_TEMPERATURE_UNIT&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="U040.html">U040</a>, <a href="U041.html">U041</a></p>
 </section>
@@ -60,38 +63,50 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* U042 - Specific-heat-capacity J/(kg.K) as derived-unit chain (m^2 / (s^2 * K))
-<span class="lineno">2</span> * Defect: a DERIVED_UNIT composed of length^+2, time^-2, temperature^-1.
-<span class="lineno">3</span> * The kg cancels in the underlying SI derivation. Receivers must detect
-<span class="lineno">4</span> * the dimensional signature; both the kg-cancelled form (m^2 s^-2 K^-1)
-<span class="lineno">5</span> * and the kg-explicit form (J kg^-1 K^-1) should bind to the same
-<span class="lineno">6</span> * specific-heat-capacity unit. */
-<span class="lineno">7</span>ISO-10303-21;
-<span class="lineno">8</span>HEADER;
-<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;U042 - specific heat capacity J/(kg.K) as derived unit chain&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">10</span>FILE_NAME(&#x27;U042.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">11</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">12</span>ENDSEC;
-<span class="lineno">13</span>DATA;
-<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">15</span>#3=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT($,.METRE.));
-<span class="lineno">16</span>#4=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">17</span>#5=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">18</span>#6=(NAMED_UNIT(*)SI_UNIT($,.SECOND.)TIME_MEASURE_UNIT());
-<span class="lineno">19</span>#7=(NAMED_UNIT(*)SI_UNIT($,.KELVIN.)<mark>THERMODYNAMIC_TEMPERATURE_UNIT</mark>());
-<span class="lineno">20</span>/* J/(kg.K) = m^+2 s^-2 K^-1 (kg cancels) */
-<span class="lineno">21</span>#10=DERIVED_UNIT_ELEMENT(#3,2.0);
-<span class="lineno">22</span>#11=DERIVED_UNIT_ELEMENT(#6,-2.0);
-<span class="lineno">23</span>#12=DERIVED_UNIT_ELEMENT(#7,-1.0);
-<span class="lineno">24</span>#13=DERIVED_UNIT((#10,#11,#12));
-<span class="lineno">25</span>#20=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#3,
-<span class="lineno">26</span>  &#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
-<span class="lineno">27</span>#21=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">28</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#20))
-<span class="lineno">29</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#3,#4,#5))
-<span class="lineno">30</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
-<span class="lineno">31</span>ENDSEC;
-<span class="lineno">32</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* U042: Specific heat capacity J/(kg*K) as DERIVED_UNIT m^2*s^-2*K^-1 (kg-cancelled form) */
+<span class="lineno">3</span>/* DEFECT: receivers that miss <mark>THERMODYNAMIC_TEMPERATURE_UNIT</mark> drop K^-1 factor */
+<span class="lineno">4</span>/* DEFECT: receivers pattern-matching named J/kg/K unit miss the kg-cancelled form */
+<span class="lineno">5</span>/* Kernel must detect m^2*s^-2*K^-1 dimensional signature and bind to J/(kg.K) */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;U042: J/(kg*K) DERIVED_UNIT chain m^2*s^-2*K^-1 with <mark>THERMODYNAMIC_TEMPERATURE_UNIT</mark>&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;U042.stp&#x27;,&#x27;2026-06-20T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>/* Geometry: part with mm coordinates */
+<span class="lineno">13</span>#1=CARTESIAN_POINT(&#x27;origin&#x27;,(0.,0.,0.));
+<span class="lineno">14</span>#2=CARTESIAN_POINT(&#x27;corner-x&#x27;,(50.0,0.,0.));
+<span class="lineno">15</span>#3=CARTESIAN_POINT(&#x27;corner-y&#x27;,(0.,50.0,0.));
+<span class="lineno">16</span>#4=CARTESIAN_POINT(&#x27;corner-z&#x27;,(0.,0.,25.0));
+<span class="lineno">17</span>#5=CARTESIAN_POINT(&#x27;corner-xyz&#x27;,(50.0,50.0,25.0));
+<span class="lineno">18</span>/* Standard mm geometry context */
+<span class="lineno">19</span>#10=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">20</span>#11=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+<span class="lineno">21</span>#12=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+<span class="lineno">22</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">23</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">24</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">25</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">26</span>/* Base SI units for specific heat capacity DERIVED_UNIT chain */
+<span class="lineno">27</span>#20=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT($,.METRE.));
+<span class="lineno">28</span>#21=(NAMED_UNIT(*) SI_UNIT($,.SECOND.) TIME_UNIT());
+<span class="lineno">29</span>/* <mark>THERMODYNAMIC_TEMPERATURE_UNIT</mark> for kelvin â required by specific heat chain */
+<span class="lineno">30</span>/* DEFECT target: receivers that do not handle <mark>THERMODYNAMIC_TEMPERATURE_UNIT</mark> in */
+<span class="lineno">31</span>/*   a DERIVED_UNIT chain silently drop the K^-1 factor */
+<span class="lineno">32</span>#22=(NAMED_UNIT(*) SI_UNIT($,.KELVIN.) <mark>THERMODYNAMIC_TEMPERATURE_UNIT</mark>());
+<span class="lineno">33</span>/* DERIVED_UNIT for specific heat J/(kg*K) in kg-cancelled form: m^2*s^-2*K^-1 */
+<span class="lineno">34</span>#30=DERIVED_UNIT_ELEMENT(#20,2.);
+<span class="lineno">35</span>#31=DERIVED_UNIT_ELEMENT(#21,-2.);
+<span class="lineno">36</span>#32=DERIVED_UNIT_ELEMENT(#22,-1.);
+<span class="lineno">37</span>#33=DERIVED_UNIT((#30,#31,#32));
+<span class="lineno">38</span>/* Specific heat measure: 4182 J/(kg*K) (water) */
+<span class="lineno">39</span>/* Receiver that drops temperature factor reads m^2*s^-2 = J/kg â wrong unit */
+<span class="lineno">40</span>#40=MEASURE_REPRESENTATION_ITEM(&#x27;specific_heat_capacity&#x27;,LENGTH_MEASURE(4182.),#33);
+<span class="lineno">41</span>/* Model entity is GEOMETRIC_CURVE_SET â OCC returns empty shape */
+<span class="lineno">42</span>#50=GEOMETRIC_CURVE_SET(&#x27;specific-heat-unit-derived-chain&#x27;,(#1,#2,#3,#4,#5));
+<span class="lineno">43</span>ENDSEC;
+<span class="lineno">44</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

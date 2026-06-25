@@ -41,6 +41,9 @@
 <li><code>count_entity_def(b&#x27;EDGE_CURVE&#x27;) == 1</code></li>
 <li><code>contains(b&#x27;GEOMETRIC_REPRESENTATION_ITEM&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -55,51 +58,40 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* N036 - Centroid validation breaks down when relative threshold goes below modeling tolerance
-<span class="lineno">2</span> * Defect: The relative centroid threshold (deviation / model size) breaks
-<span class="lineno">3</span> * down when the bounding-box space diagonal is below ~20 mm at 0.02 mm
-<span class="lineno">4</span> * model accuracy: a 0.1% threshold becomes smaller than the modeling
-<span class="lineno">5</span> * tolerance, so even valid round-trips fail validation.
-<span class="lineno">6</span> * Reproducer: tiny part with bounding-box space diagonal ~5 mm; uncertainty
-<span class="lineno">7</span> * 2e-2 mm; centroid value provided as a GVP -- relative 0.1% threshold
-<span class="lineno">8</span> * is 5e-3 mm, well below the 2e-2 modeling tolerance.
-<span class="lineno">9</span> */
-<span class="lineno">10</span>ISO-10303-21;
-<span class="lineno">11</span>HEADER;
-<span class="lineno">12</span>FILE_DESCRIPTION((&#x27;N036 centroid validation relative threshold below modeling tolerance&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">13</span>FILE_NAME(&#x27;N036.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
-<span class="lineno">14</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">15</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF&#x27;));
-<span class="lineno">16</span>ENDSEC;
-<span class="lineno">17</span>DATA;
-<span class="lineno">18</span>#1=APPLICATION_CONTEXT(&#x27;managed model-based 3d engineering&#x27;);
-<span class="lineno">19</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">20</span>  &#x27;ap242_managed_model_based_3d_engineering&#x27;,2014,#1);
-<span class="lineno">21</span>/* Tiny part: bounding diagonal sqrt(3*3+2*2+2*2) ~= 4.1 mm */
-<span class="lineno">22</span>#10=CARTESIAN_POINT(&#x27;lo&#x27;,(0.0,0.0,0.0));
-<span class="lineno">23</span>#11=CARTESIAN_POINT(&#x27;hi&#x27;,(3.0,2.0,2.0));
-<span class="lineno">24</span>#12=CARTESIAN_POINT(&#x27;centroid_GVP&#x27;,(1.5,1.0,1.0));
-<span class="lineno">25</span>#20=VERTEX_POINT(&#x27;&#x27;,#10);
-<span class="lineno">26</span>#21=VERTEX_POINT(&#x27;&#x27;,#11);
-<span class="lineno">27</span>#30=DIRECTION(&#x27;diag&#x27;,(0.7276068751089989,0.4850712500726659,0.4850712500726659));
-<span class="lineno">28</span>#31=VECTOR(&#x27;&#x27;,#30,4.1);
-<span class="lineno">29</span>#32=LINE(&#x27;&#x27;,#10,#31);
-<span class="lineno">30</span><mark>#40=EDGE_CURVE(</mark>&#x27;tiny_part_diag&#x27;,#20,#21,#32,.T.);
-<span class="lineno">31</span>#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">32</span>#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">33</span>#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">34</span>/* Modeling tolerance 0.02 mm; relative 0.1% on 5 mm diagonal =&gt; 5e-3 &lt; 2e-2 */
-<span class="lineno">35</span>#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(<mark>2.0E-2</mark>),#50,
-<span class="lineno">36</span>  &#x27;distance_accuracy_value&#x27;,&#x27;modeling_tol_above_relative_threshold&#x27;);
-<span class="lineno">37</span>#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">38</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
-<span class="lineno">39</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
-<span class="lineno">40</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
-<span class="lineno">41</span>/* Geometric Validation Property: centroid value */
-<span class="lineno">42</span>#80=<mark>GEOMETRIC_REPRESENTATION_ITEM</mark>(&#x27;centroid_validation_value&#x27;);
-<span class="lineno">43</span>#81=CARTESIAN_POINT(&#x27;centroid_value&#x27;,(1.5,1.0,1.0));
-<span class="lineno">44</span>ENDSEC;
-<span class="lineno">45</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* N036: tiny model diagonal 5 mm; model accuracy <mark>2.0E-2</mark> mm; 0.1% relative centroid threshold = 0.005 mm &lt; accuracy; valid round-trips fail; GEOMETRIC_CURVE_SET â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;N036&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;N036.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;p0&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=CARTESIAN_POINT(&#x27;p1_2mm&#x27;,(2.0,0.0,0.0));
+<span class="lineno">11</span>#3=VERTEX_POINT(&#x27;v0&#x27;,#1);
+<span class="lineno">12</span>#4=VERTEX_POINT(&#x27;v1&#x27;,#2);
+<span class="lineno">13</span>#5=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">14</span>#6=VECTOR(&#x27;&#x27;,#5,2.0);
+<span class="lineno">15</span>#7=LINE(&#x27;tiny_model_edge&#x27;,#1,#6);
+<span class="lineno">16</span><mark>#8=EDGE_CURVE(</mark>&#x27;edge&#x27;,#3,#4,#7,.T.);
+<span class="lineno">17</span>#9=<mark>GEOMETRIC_REPRESENTATION_ITEM</mark>();
+<span class="lineno">18</span>#10=GEOMETRIC_CURVE_SET(&#x27;tiny_model&#x27;,(#8));
+<span class="lineno">19</span>#11=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">20</span>#12=PRODUCT_CONTEXT(&#x27;&#x27;,#11,&#x27;mechanical&#x27;);
+<span class="lineno">21</span>#13=PRODUCT(&#x27;N036&#x27;,&#x27;N036&#x27;,&#x27;&#x27;,(#12));
+<span class="lineno">22</span>#14=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#13);
+<span class="lineno">23</span>#15=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#11,&#x27;design&#x27;);
+<span class="lineno">24</span>#16=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#14,#15);
+<span class="lineno">25</span>#17=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#16);
+<span class="lineno">26</span>#18=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">27</span>#19=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">28</span>#20=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">29</span>#21=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(<mark>2.0E-2</mark>),#18,&#x27;distance_accuracy_value&#x27;,&#x27;tiny_model_accuracy&#x27;);
+<span class="lineno">30</span>#22=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#21))GLOBAL_UNIT_ASSIGNED_CONTEXT((#18,#19,#20))REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">31</span>#23=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION(&#x27;&#x27;,(#10),#22);
+<span class="lineno">32</span>#24=SHAPE_DEFINITION_REPRESENTATION(#17,#23);
+<span class="lineno">33</span>ENDSEC;
+<span class="lineno">34</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

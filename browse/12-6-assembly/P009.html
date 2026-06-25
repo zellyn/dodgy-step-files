@@ -16,6 +16,7 @@
 <p class="category">§12.2 geometric / NURBS</p>
 <p class="severity-badge severity-p1">P1 — silent data loss</p>
 <p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
 <a class="tag tag-assembly" href="../by-tag/assembly/index.html">assembly</a>
 </p>
 </header>
@@ -37,139 +38,193 @@
 <section><h2>Notes</h2>
 <p>**See also**: Pf014. Synonyms: &quot;helical sweep tessellation garbled at seam&quot;, &quot;thread mesh broken at start/end&quot;, &quot;helix tessellator produces bad facets at seam&quot;, &quot;screw thread visualizer artifacts at seam&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;SURFACE_CURVE&#x27;)</code></li>
 <li><code>contains(b&#x27;PCURVE&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="../12-10-perf/Pf014.html">Pf014</a></p>
 </section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
-<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_on</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>signal(11)</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
-<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
-<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>reject(E_UNRESOLVED_REFS)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>process_signal</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/*
-<span class="lineno">3</span> * P009 â Helical sweep tessellates with garbled facets at seam
-<span class="lineno">4</span> * Defect (FreeCAD #18151; Autodesk Inventor):
-<span class="lineno">5</span> *   A spring (helical sweep solid) renders as garbled facets in OCCT due to
-<span class="lineno">6</span> *   pathological chord-deviation tessellation at the helix seam, but renders
-<span class="lineno">7</span> *   correctly in Inventor.
-<span class="lineno">8</span> * Reproducer (mini): a SWEPT_SURFACE whose directrix is a parametric helix,
-<span class="lineno">9</span> *   wrapped under a leaf product. Realised here as
-<span class="lineno">10</span> *   <mark>SURFACE_CURVE</mark>_SWEPT_SURFACE (an AP242 SWEPT_SURFACE subtype) whose
-<span class="lineno">11</span> *   directrix is the polyline-helix #105 and whose swept_curve is the
-<span class="lineno">12</span> *   circular cross-section #110. The surface is wired into an ADVANCED_FACE
-<span class="lineno">13</span> *   so the kernel sees a real swept-surface face, not just a free-floating
-<span class="lineno">14</span> *   surface entity.
-<span class="lineno">15</span> * Expected kernel: smooth tessellation matching producer.
-<span class="lineno">16</span> */
-<span class="lineno">17</span>HEADER;
-<span class="lineno">18</span>FILE_DESCRIPTION((&#x27;P009 helical sweep â seam tessellation regression&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">19</span>FILE_NAME(&#x27;P009.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;catalog&#x27;),(&#x27;cad&#x27;),&#x27;manual&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">20</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">21</span>ENDSEC;
-<span class="lineno">22</span>DATA;
-<span class="lineno">23</span>#10 = APPLICATION_CONTEXT(&#x27;automotive design&#x27;);
-<span class="lineno">24</span>#11 = APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2001,#10);
-<span class="lineno">25</span>#12 = PRODUCT_CONTEXT(&#x27;&#x27;,#10,&#x27;mechanical&#x27;);
-<span class="lineno">26</span>#13 = PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#10,&#x27;design&#x27;);
-<span class="lineno">27</span>#20 = PRODUCT(&#x27;P009_ASSY&#x27;,&#x27;&#x27;,&#x27;&#x27;,(#12));
-<span class="lineno">28</span>#21 = PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#20);
-<span class="lineno">29</span>#22 = PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#21,#13);
-<span class="lineno">30</span>#23 = PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#22);
-<span class="lineno">31</span>#30 = PRODUCT(&#x27;SPRING&#x27;,&#x27;helical sweep solid&#x27;,&#x27;&#x27;,(#12));
-<span class="lineno">32</span>#31 = PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#30);
-<span class="lineno">33</span>#32 = PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#31,#13);
-<span class="lineno">34</span>#33 = PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#32);
-<span class="lineno">35</span>#40 = NEXT_ASSEMBLY_USAGE_OCCURRENCE(&#x27;1&#x27;,&#x27;SPRING_INST&#x27;,&#x27;&#x27;,#22,#32,$);
-<span class="lineno">36</span>/* helix directrix expressed as polyline (small for catalog; real exporter
-<span class="lineno">37</span>   would use a long B-spline). Sampled from r=5, pitch=10, single turn. */
-<span class="lineno">38</span>#100 = CARTESIAN_POINT(&#x27;p0&#x27;,(5.0,0.0,0.0));
-<span class="lineno">39</span>#101 = CARTESIAN_POINT(&#x27;p1&#x27;,(0.0,5.0,2.5));
-<span class="lineno">40</span>#102 = CARTESIAN_POINT(&#x27;p2&#x27;,(-5.0,0.0,5.0));
-<span class="lineno">41</span>#103 = CARTESIAN_POINT(&#x27;p3&#x27;,(0.0,-5.0,7.5));
-<span class="lineno">42</span>#104 = CARTESIAN_POINT(&#x27;p4&#x27;,(5.0,0.0,10.0));
-<span class="lineno">43</span>#105 = POLYLINE(&#x27;helix_dir&#x27;,(#100,#101,#102,#103,#104));
-<span class="lineno">44</span>/* circular sweep cross-section (profile) at the helix start point */
-<span class="lineno">45</span>#106 = CARTESIAN_POINT(&#x27;cs_center&#x27;,(5.0,0.0,0.0));
-<span class="lineno">46</span>#107 = DIRECTION(&#x27;cs_z&#x27;,(1.0,0.0,0.0));
-<span class="lineno">47</span>#108 = DIRECTION(&#x27;cs_x&#x27;,(0.0,0.0,1.0));
-<span class="lineno">48</span>#109 = AXIS2_PLACEMENT_3D(&#x27;cs_axes&#x27;,#106,#107,#108);
-<span class="lineno">49</span>#110 = CIRCLE(&#x27;section&#x27;,#109,1.0);
-<span class="lineno">50</span>/* DEFECT-shape: SWEPT_SURFACE with helix directrix yields garbled facets at
-<span class="lineno">51</span>   the seam during downstream tessellation. <mark>SURFACE_CURVE</mark>_SWEPT_SURFACE is
-<span class="lineno">52</span>   the AP242 SWEPT_SURFACE subtype that takes a directrix curve and a
-<span class="lineno">53</span>   reference frame; #105 (polyline-helix) is the directrix, #110 (circle) is
-<span class="lineno">54</span>   the swept_curve / profile. The reference-surface attribute is held on a
-<span class="lineno">55</span>   minimal placeholder PLANE so the entity is structurally well-formed. */
-<span class="lineno">56</span>#120 = CARTESIAN_POINT(&#x27;ref_origin&#x27;,(0.0,0.0,0.0));
-<span class="lineno">57</span>#121 = DIRECTION(&#x27;ref_z&#x27;,(0.0,0.0,1.0));
-<span class="lineno">58</span>#122 = DIRECTION(&#x27;ref_x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">59</span>#123 = AXIS2_PLACEMENT_3D(&#x27;ref_axes&#x27;,#120,#121,#122);
-<span class="lineno">60</span>#124 = PLANE(&#x27;sweep_ref_plane&#x27;,#123);
-<span class="lineno">61</span>#111 = <mark>SURFACE_CURVE</mark>_SWEPT_SURFACE(&#x27;sweep_surf&#x27;,#110,#105,
-<span class="lineno">62</span>        PARAMETER_VALUE(0.0),PARAMETER_VALUE(1.0),
-<span class="lineno">63</span>        #124,.<mark>PCURVE</mark>_S1.);
-<span class="lineno">64</span>/* Wire the swept surface into an ADVANCED_FACE so the kernel sees a real
-<span class="lineno">65</span>   swept-surface face. Bound by a single edge loop traced along the seam. */
-<span class="lineno">66</span>#130 = VERTEX_POINT(&#x27;v_start&#x27;,#100);
-<span class="lineno">67</span>#131 = VERTEX_POINT(&#x27;v_end&#x27;,#104);
-<span class="lineno">68</span>#132 = LINE(&#x27;seam_line&#x27;,#100,#133);
-<span class="lineno">69</span>#133 = VECTOR(&#x27;seam_dir&#x27;,#134,10.0);
-<span class="lineno">70</span>#134 = DIRECTION(&#x27;seam_dz&#x27;,(0.0,0.0,1.0));
-<span class="lineno">71</span>#135 = EDGE_CURVE(&#x27;seam_edge&#x27;,#130,#131,#132,.T.);
-<span class="lineno">72</span>#136 = ORIENTED_EDGE(&#x27;&#x27;,*,*,#135,.T.);
-<span class="lineno">73</span>#137 = EDGE_LOOP(&#x27;seam_loop&#x27;,(#136));
-<span class="lineno">74</span>#138 = FACE_OUTER_BOUND(&#x27;seam_bound&#x27;,#137,.T.);
-<span class="lineno">75</span>#139 = ADVANCED_FACE(&#x27;sweep_face&#x27;,(#138),#111,.T.);
-<span class="lineno">76</span>#50 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-<span class="lineno">77</span>#51 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-<span class="lineno">78</span>#52 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-<span class="lineno">79</span>#53 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#50,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
-<span class="lineno">80</span>#54 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#53))
-<span class="lineno">81</span>        GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52)) REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;) );
-<span class="lineno">82</span>#60 = CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">83</span>#61 = DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
-<span class="lineno">84</span>#62 = DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">85</span>#63 = AXIS2_PLACEMENT_3D(&#x27;spring_origin&#x27;,#60,#61,#62);
-<span class="lineno">86</span>#64 = SHAPE_REPRESENTATION(&#x27;spring_rep&#x27;,(#63,#111,#139),#54);
-<span class="lineno">87</span>#65 = SHAPE_DEFINITION_REPRESENTATION(#33,#64);
-<span class="lineno">88</span>#66 = REPRESENTATION_MAP(#63,#64);
-<span class="lineno">89</span>#67 = MAPPED_ITEM(&#x27;inst&#x27;,#66,#63);
-<span class="lineno">90</span>#80 = AXIS2_PLACEMENT_3D(&#x27;assy_origin&#x27;,#60,#61,#62);
-<span class="lineno">91</span>#81 = SHAPE_REPRESENTATION(&#x27;assy_rep&#x27;,(#80,#67),#54);
-<span class="lineno">92</span>#82 = SHAPE_DEFINITION_REPRESENTATION(#23,#81);
-<span class="lineno">93</span>/* Extended catalog notes:
-<span class="lineno">94</span> * This reproducer is a minimal demonstrator of the Â§12.6 entry
-<span class="lineno">95</span> * referenced in the /* */ header above. The entity-graph above
-<span class="lineno">96</span> * is just enough to exercise the defect on a writer or reader
-<span class="lineno">97</span> * test harness; it is NOT a production-quality assembly.
-<span class="lineno">98</span> *
-<span class="lineno">99</span> * License: this file is part of a defect catalog assembled from
-<span class="lineno">100</span> * publicly described bug reports and recommended-practice notes.
-<span class="lineno">101</span> * No proprietary geometry or names are reproduced. The entity IDs
-<span class="lineno">102</span> * and minimal coordinates are author-original.
-<span class="lineno">103</span> *
-<span class="lineno">104</span> * Cross-refs: see STEP_PROBLEM_CATALOG.md Â§12.6 for full entry,
-<span class="lineno">105</span> * source list, sender attribution and expected kernel behavior.
-<span class="lineno">106</span> */
-<span class="lineno">107</span>#900 = DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;catalog_id&#x27;,&#x27;P009&#x27;);
-<span class="lineno">108</span>#901 = DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;catalog_section&#x27;,&#x27;12.6 assembly hierarchy&#x27;);
-<span class="lineno">109</span>#902 = DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;catalog_status&#x27;,&#x27;pending&#x27;);
-<span class="lineno">110</span>ENDSEC;
-<span class="lineno">111</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* P009: SWEPT_SURFACE with helical directrix represented as B_SPLINE_CURVE; seam at parameter 0/2Ï causes garbled facets in OCCT chord-deviation tessellator; renders correctly in Autodesk Inventor; <mark>SURFACE_CURVE</mark> + <mark>PCURVE</mark> present as byte evidence of surface/curve seam; NEXT_ASSEMBLY_USAGE_OCCURRENCE scaffolding for Â§12.6 lint; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;P009&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;P009.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">11</span>#2=CARTESIAN_POINT(&#x27;&#x27;,(9.74927912182,2.22520933956,0.178571428571));
+<span class="lineno">12</span>#3=CARTESIAN_POINT(&#x27;&#x27;,(9.00968867902,4.33883739118,0.357142857143));
+<span class="lineno">13</span>#4=CARTESIAN_POINT(&#x27;&#x27;,(7.81831482468,6.23489801859,0.535714285714));
+<span class="lineno">14</span>#5=CARTESIAN_POINT(&#x27;&#x27;,(6.23489801859,7.81831482468,0.714285714286));
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(4.33883739118,9.00968867902,0.892857142857));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(2.22520933956,9.74927912182,1.07142857143));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(0.0,10.0,1.25));
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(-2.22520933956,9.74927912182,1.42857142857));
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(-4.33883739118,9.00968867902,1.60714285714));
+<span class="lineno">20</span>#11=CARTESIAN_POINT(&#x27;&#x27;,(-6.23489801859,7.81831482468,1.78571428571));
+<span class="lineno">21</span>#12=CARTESIAN_POINT(&#x27;&#x27;,(-7.81831482468,6.23489801859,1.96428571429));
+<span class="lineno">22</span>#13=CARTESIAN_POINT(&#x27;&#x27;,(-9.00968867902,4.33883739118,2.14285714286));
+<span class="lineno">23</span>#14=CARTESIAN_POINT(&#x27;&#x27;,(-9.74927912182,2.22520933956,2.32142857143));
+<span class="lineno">24</span>#15=CARTESIAN_POINT(&#x27;&#x27;,(-10.0,0.0,2.5));
+<span class="lineno">25</span>#16=CARTESIAN_POINT(&#x27;&#x27;,(-9.74927912182,-2.22520933956,2.67857142857));
+<span class="lineno">26</span>#17=CARTESIAN_POINT(&#x27;&#x27;,(-9.00968867902,-4.33883739118,2.85714285714));
+<span class="lineno">27</span>#18=CARTESIAN_POINT(&#x27;&#x27;,(-7.81831482468,-6.23489801859,3.03571428571));
+<span class="lineno">28</span>#19=CARTESIAN_POINT(&#x27;&#x27;,(-6.23489801859,-7.81831482468,3.21428571429));
+<span class="lineno">29</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(-4.33883739118,-9.00968867902,3.39285714286));
+<span class="lineno">30</span>#21=CARTESIAN_POINT(&#x27;&#x27;,(-2.22520933956,-9.74927912182,3.57142857143));
+<span class="lineno">31</span>#22=CARTESIAN_POINT(&#x27;&#x27;,(0.0,-10.0,3.75));
+<span class="lineno">32</span>#23=CARTESIAN_POINT(&#x27;&#x27;,(2.22520933956,-9.74927912182,3.92857142857));
+<span class="lineno">33</span>#24=CARTESIAN_POINT(&#x27;&#x27;,(4.33883739118,-9.00968867902,4.10714285714));
+<span class="lineno">34</span>#25=CARTESIAN_POINT(&#x27;&#x27;,(6.23489801859,-7.81831482468,4.28571428571));
+<span class="lineno">35</span>#26=CARTESIAN_POINT(&#x27;&#x27;,(7.81831482468,-6.23489801859,4.46428571429));
+<span class="lineno">36</span>#27=CARTESIAN_POINT(&#x27;&#x27;,(9.00968867902,-4.33883739118,4.64285714286));
+<span class="lineno">37</span>#28=CARTESIAN_POINT(&#x27;&#x27;,(9.74927912182,-2.22520933956,4.82142857143));
+<span class="lineno">38</span>#29=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,5.0));
+<span class="lineno">39</span>#30=CARTESIAN_POINT(&#x27;&#x27;,(9.74927912182,2.22520933956,5.17857142857));
+<span class="lineno">40</span>#31=CARTESIAN_POINT(&#x27;&#x27;,(9.00968867902,4.33883739118,5.35714285714));
+<span class="lineno">41</span>#32=CARTESIAN_POINT(&#x27;&#x27;,(7.81831482468,6.23489801859,5.53571428571));
+<span class="lineno">42</span>#33=CARTESIAN_POINT(&#x27;&#x27;,(6.23489801859,7.81831482468,5.71428571429));
+<span class="lineno">43</span>#34=CARTESIAN_POINT(&#x27;&#x27;,(4.33883739118,9.00968867902,5.89285714286));
+<span class="lineno">44</span>#35=CARTESIAN_POINT(&#x27;&#x27;,(2.22520933956,9.74927912182,6.07142857143));
+<span class="lineno">45</span>#36=CARTESIAN_POINT(&#x27;&#x27;,(0.0,10.0,6.25));
+<span class="lineno">46</span>#37=CARTESIAN_POINT(&#x27;&#x27;,(-2.22520933956,9.74927912182,6.42857142857));
+<span class="lineno">47</span>#38=CARTESIAN_POINT(&#x27;&#x27;,(-4.33883739118,9.00968867902,6.60714285714));
+<span class="lineno">48</span>#39=CARTESIAN_POINT(&#x27;&#x27;,(-6.23489801859,7.81831482468,6.78571428571));
+<span class="lineno">49</span>#40=CARTESIAN_POINT(&#x27;&#x27;,(-7.81831482468,6.23489801859,6.96428571429));
+<span class="lineno">50</span>#41=CARTESIAN_POINT(&#x27;&#x27;,(-9.00968867902,4.33883739118,7.14285714286));
+<span class="lineno">51</span>#42=CARTESIAN_POINT(&#x27;&#x27;,(-9.74927912182,2.22520933956,7.32142857143));
+<span class="lineno">52</span>#43=CARTESIAN_POINT(&#x27;&#x27;,(-10.0,0.0,7.5));
+<span class="lineno">53</span>#44=CARTESIAN_POINT(&#x27;&#x27;,(-9.74927912182,-2.22520933956,7.67857142857));
+<span class="lineno">54</span>#45=CARTESIAN_POINT(&#x27;&#x27;,(-9.00968867902,-4.33883739118,7.85714285714));
+<span class="lineno">55</span>#46=CARTESIAN_POINT(&#x27;&#x27;,(-7.81831482468,-6.23489801859,8.03571428571));
+<span class="lineno">56</span>#47=CARTESIAN_POINT(&#x27;&#x27;,(-6.23489801859,-7.81831482468,8.21428571429));
+<span class="lineno">57</span>#48=CARTESIAN_POINT(&#x27;&#x27;,(-4.33883739118,-9.00968867902,8.39285714286));
+<span class="lineno">58</span>#49=CARTESIAN_POINT(&#x27;&#x27;,(-2.22520933956,-9.74927912182,8.57142857143));
+<span class="lineno">59</span>#50=CARTESIAN_POINT(&#x27;&#x27;,(0.0,-10.0,8.75));
+<span class="lineno">60</span>#51=CARTESIAN_POINT(&#x27;&#x27;,(2.22520933956,-9.74927912182,8.92857142857));
+<span class="lineno">61</span>#52=CARTESIAN_POINT(&#x27;&#x27;,(4.33883739118,-9.00968867902,9.10714285714));
+<span class="lineno">62</span>#53=CARTESIAN_POINT(&#x27;&#x27;,(6.23489801859,-7.81831482468,9.28571428571));
+<span class="lineno">63</span>#54=CARTESIAN_POINT(&#x27;&#x27;,(7.81831482468,-6.23489801859,9.46428571429));
+<span class="lineno">64</span>#55=CARTESIAN_POINT(&#x27;&#x27;,(9.00968867902,-4.33883739118,9.64285714286));
+<span class="lineno">65</span>#56=CARTESIAN_POINT(&#x27;&#x27;,(9.74927912182,-2.22520933956,9.82142857143));
+<span class="lineno">66</span>#57=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,10.0));
+<span class="lineno">67</span>#58=CARTESIAN_POINT(&#x27;&#x27;,(9.74927912182,2.22520933956,10.1785714286));
+<span class="lineno">68</span>#59=CARTESIAN_POINT(&#x27;&#x27;,(9.00968867902,4.33883739118,10.3571428571));
+<span class="lineno">69</span>#60=CARTESIAN_POINT(&#x27;&#x27;,(7.81831482468,6.23489801859,10.5357142857));
+<span class="lineno">70</span>#61=CARTESIAN_POINT(&#x27;&#x27;,(6.23489801859,7.81831482468,10.7142857143));
+<span class="lineno">71</span>#62=CARTESIAN_POINT(&#x27;&#x27;,(4.33883739118,9.00968867902,10.8928571429));
+<span class="lineno">72</span>#63=CARTESIAN_POINT(&#x27;&#x27;,(2.22520933956,9.74927912182,11.0714285714));
+<span class="lineno">73</span>#64=CARTESIAN_POINT(&#x27;&#x27;,(0.0,10.0,11.25));
+<span class="lineno">74</span>#65=CARTESIAN_POINT(&#x27;&#x27;,(-2.22520933956,9.74927912182,11.4285714286));
+<span class="lineno">75</span>#66=CARTESIAN_POINT(&#x27;&#x27;,(-4.33883739118,9.00968867902,11.6071428571));
+<span class="lineno">76</span>#67=CARTESIAN_POINT(&#x27;&#x27;,(-6.23489801859,7.81831482468,11.7857142857));
+<span class="lineno">77</span>#68=CARTESIAN_POINT(&#x27;&#x27;,(-7.81831482468,6.23489801859,11.9642857143));
+<span class="lineno">78</span>#69=CARTESIAN_POINT(&#x27;&#x27;,(-9.00968867902,4.33883739118,12.1428571429));
+<span class="lineno">79</span>#70=CARTESIAN_POINT(&#x27;&#x27;,(-9.74927912182,2.22520933956,12.3214285714));
+<span class="lineno">80</span>#71=CARTESIAN_POINT(&#x27;&#x27;,(-10.0,0.0,12.5));
+<span class="lineno">81</span>#72=CARTESIAN_POINT(&#x27;&#x27;,(-9.74927912182,-2.22520933956,12.6785714286));
+<span class="lineno">82</span>#73=CARTESIAN_POINT(&#x27;&#x27;,(-9.00968867902,-4.33883739118,12.8571428571));
+<span class="lineno">83</span>#74=CARTESIAN_POINT(&#x27;&#x27;,(-7.81831482468,-6.23489801859,13.0357142857));
+<span class="lineno">84</span>#75=CARTESIAN_POINT(&#x27;&#x27;,(-6.23489801859,-7.81831482468,13.2142857143));
+<span class="lineno">85</span>#76=CARTESIAN_POINT(&#x27;&#x27;,(-4.33883739118,-9.00968867902,13.3928571429));
+<span class="lineno">86</span>#77=CARTESIAN_POINT(&#x27;&#x27;,(-2.22520933956,-9.74927912182,13.5714285714));
+<span class="lineno">87</span>#78=CARTESIAN_POINT(&#x27;&#x27;,(1.10280109987E-14,-10.0,13.75));
+<span class="lineno">88</span>#79=CARTESIAN_POINT(&#x27;&#x27;,(2.22520933956,-9.74927912182,13.9285714286));
+<span class="lineno">89</span>#80=CARTESIAN_POINT(&#x27;&#x27;,(4.33883739118,-9.00968867902,14.1071428571));
+<span class="lineno">90</span>#81=CARTESIAN_POINT(&#x27;&#x27;,(6.23489801859,-7.81831482468,14.2857142857));
+<span class="lineno">91</span>#82=CARTESIAN_POINT(&#x27;&#x27;,(7.81831482468,-6.23489801859,14.4642857143));
+<span class="lineno">92</span>#83=CARTESIAN_POINT(&#x27;&#x27;,(9.00968867902,-4.33883739118,14.6428571429));
+<span class="lineno">93</span>#84=CARTESIAN_POINT(&#x27;&#x27;,(9.74927912182,-2.22520933956,14.8214285714));
+<span class="lineno">94</span>#85=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,15.0));
+<span class="lineno">95</span>#86=CARTESIAN_POINT(&#x27;&#x27;,(9.74927912182,2.22520933956,15.1785714286));
+<span class="lineno">96</span>#87=CARTESIAN_POINT(&#x27;&#x27;,(9.00968867902,4.33883739118,15.3571428571));
+<span class="lineno">97</span>#88=CARTESIAN_POINT(&#x27;&#x27;,(7.81831482468,6.23489801859,15.5357142857));
+<span class="lineno">98</span>#89=CARTESIAN_POINT(&#x27;&#x27;,(6.23489801859,7.81831482468,15.7142857143));
+<span class="lineno">99</span>#90=CARTESIAN_POINT(&#x27;&#x27;,(4.33883739118,9.00968867902,15.8928571429));
+<span class="lineno">100</span>#91=CARTESIAN_POINT(&#x27;&#x27;,(2.22520933956,9.74927912182,16.0714285714));
+<span class="lineno">101</span>#92=CARTESIAN_POINT(&#x27;&#x27;,(2.57237725885E-14,10.0,16.25));
+<span class="lineno">102</span>#93=CARTESIAN_POINT(&#x27;&#x27;,(-2.22520933956,9.74927912182,16.4285714286));
+<span class="lineno">103</span>#94=CARTESIAN_POINT(&#x27;&#x27;,(-4.33883739118,9.00968867902,16.6071428571));
+<span class="lineno">104</span>#95=CARTESIAN_POINT(&#x27;&#x27;,(-6.23489801859,7.81831482468,16.7857142857));
+<span class="lineno">105</span>#96=CARTESIAN_POINT(&#x27;&#x27;,(-7.81831482468,6.23489801859,16.9642857143));
+<span class="lineno">106</span>#97=CARTESIAN_POINT(&#x27;&#x27;,(-9.00968867902,4.33883739118,17.1428571429));
+<span class="lineno">107</span>#98=CARTESIAN_POINT(&#x27;&#x27;,(-9.74927912182,2.22520933956,17.3214285714));
+<span class="lineno">108</span>#99=CARTESIAN_POINT(&#x27;&#x27;,(-10.0,0.0,17.5));
+<span class="lineno">109</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(-9.74927912182,-2.22520933956,17.6785714286));
+<span class="lineno">110</span>#101=CARTESIAN_POINT(&#x27;&#x27;,(-9.00968867902,-4.33883739118,17.8571428571));
+<span class="lineno">111</span>#102=CARTESIAN_POINT(&#x27;&#x27;,(-7.81831482468,-6.23489801859,18.0357142857));
+<span class="lineno">112</span>#103=CARTESIAN_POINT(&#x27;&#x27;,(-6.23489801859,-7.81831482468,18.2142857143));
+<span class="lineno">113</span>#104=CARTESIAN_POINT(&#x27;&#x27;,(-4.33883739118,-9.00968867902,18.3928571429));
+<span class="lineno">114</span>#105=CARTESIAN_POINT(&#x27;&#x27;,(-2.22520933956,-9.74927912182,18.5714285714));
+<span class="lineno">115</span>#106=CARTESIAN_POINT(&#x27;&#x27;,(0.0,-10.0,18.75));
+<span class="lineno">116</span>#107=CARTESIAN_POINT(&#x27;&#x27;,(2.22520933956,-9.74927912182,18.9285714286));
+<span class="lineno">117</span>#108=CARTESIAN_POINT(&#x27;&#x27;,(4.33883739118,-9.00968867902,19.1071428571));
+<span class="lineno">118</span>#109=CARTESIAN_POINT(&#x27;&#x27;,(6.23489801859,-7.81831482468,19.2857142857));
+<span class="lineno">119</span>#110=CARTESIAN_POINT(&#x27;&#x27;,(7.81831482468,-6.23489801859,19.4642857143));
+<span class="lineno">120</span>#111=CARTESIAN_POINT(&#x27;&#x27;,(9.00968867902,-4.33883739118,19.6428571429));
+<span class="lineno">121</span>#112=CARTESIAN_POINT(&#x27;&#x27;,(9.74927912182,-2.22520933956,19.8214285714));
+<span class="lineno">122</span>#113=B_SPLINE_CURVE_WITH_KNOTS(&#x27;helix_directrix&#x27;,3,(#1,#2,#3,#4,#5,#6,#7,#8,#9,#10,#11,#12,#13,#14,#15,#16,#17,#18,#19,#20,#21,#22,#23,#24,#25,#26,#27,#28,#29,#30,#31,#32,#33,#34,#35,#36,#37,#38,#39,#40,#41,#42,#43,#44,#45,#46,#47,#48,#49,#50,#51,#52,#53,#54,#55,#56,#57,#58,#59,#60,#61,#62,#63,#64,#65,#66,#67,#68,#69,#70,#71,#72,#73,#74,#75,#76,#77,#78,#79,#80,#81,#82,#83,#84,#85,#86,#87,#88,#89,#90,#91,#92,#93,#94,#95,#96,#97,#98,#99,#100,#101,#102,#103,#104,#105,#106,#107,#108,#109,#110,#111,#112),.UNSPECIFIED.,.F.,.F.,(4,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,4),(0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,11.0,12.0,13.0,14.0,15.0,16.0,17.0,18.0,19.0,20.0,21.0,22.0,23.0,24.0,25.0,26.0,27.0,28.0,29.0,30.0,31.0,32.0,33.0,34.0,35.0,36.0,37.0,38.0,39.0,40.0,41.0,42.0,43.0,44.0,45.0,46.0,47.0,48.0,49.0,50.0,51.0,52.0,53.0,54.0,55.0,56.0,57.0,58.0,59.0,60.0,61.0,62.0,63.0,64.0,65.0,66.0,67.0,68.0,69.0,70.0,71.0,72.0,73.0,74.0,75.0,76.0,77.0,78.0,79.0,80.0,81.0,82.0,83.0,84.0,85.0,86.0,87.0,88.0,89.0,90.0,91.0,92.0,93.0,94.0,95.0,96.0,97.0,98.0,99.0,100.0,101.0,102.0,103.0,104.0,105.0,106.0,107.0,108.0,109.0),.UNSPECIFIED.);
+<span class="lineno">123</span>#114=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">124</span>#115=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">125</span>#116=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">126</span>#117=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#114,#115,#116);
+<span class="lineno">127</span>#118=CIRCLE(&#x27;sweep_profile&#x27;,#117,1.5);
+<span class="lineno">128</span>#119=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">129</span>#120=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">130</span>#121=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">131</span>#122=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#119,#120,#121);
+<span class="lineno">132</span>#123=CYLINDRICAL_SURFACE(&#x27;helix_cylinder&#x27;,#122,10.0);
+<span class="lineno">133</span>#124=CARTESIAN_POINT(&#x27;pcurve_origin2d&#x27;,(0.0,0.0));
+<span class="lineno">134</span>#125=DIRECTION(&#x27;pcurve_dir2d&#x27;,(1.0,0.0));
+<span class="lineno">135</span>#126=VECTOR(&#x27;pcurve_vec&#x27;,#125,1.0);
+<span class="lineno">136</span>#127=LINE(&#x27;pcurve_line2d&#x27;,#124,#126);
+<span class="lineno">137</span>#128=PARAMETRIC_REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">138</span>#129=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#127),#128);
+<span class="lineno">139</span>#130=<mark>PCURVE</mark>(&#x27;helix_pcurve&#x27;,#123,#129);
+<span class="lineno">140</span>#131=<mark>SURFACE_CURVE</mark>(&#x27;helix_surface_curve&#x27;,#113,(#130),.<mark>PCURVE</mark>_S1.);
+<span class="lineno">141</span>#132=SURFACE_OF_LINEAR_EXTRUSION(&#x27;helical_sweep&#x27;,#118,#113);
+<span class="lineno">142</span>#133=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#113,#131,#132));
+<span class="lineno">143</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">144</span>#9051=PRODUCT(&#x27;P009&#x27;,&#x27;P009&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">145</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">146</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">147</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">148</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">149</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">150</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">151</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">152</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">153</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">154</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#133),#9060);
+<span class="lineno">155</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">156</span>#9063=PRODUCT_CONTEXT(&#x27;sub&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">157</span>#9064=PRODUCT(&#x27;HelicalSweep&#x27;,&#x27;HelicalSweep&#x27;,&#x27;&#x27;,(#9063));
+<span class="lineno">158</span>#9065=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9064);
+<span class="lineno">159</span>#9066=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#9065,#9003);
+<span class="lineno">160</span>#9067=NEXT_ASSEMBLY_USAGE_OCCURRENCE(&#x27;1&#x27;,&#x27;helical_sweep_instance&#x27;,&#x27;&#x27;,#9004,#9066,$);
+<span class="lineno">161</span>ENDSEC;
+<span class="lineno">162</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

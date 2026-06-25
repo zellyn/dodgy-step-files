@@ -37,6 +37,8 @@
 <p>**See also**: Tfa045. Synonyms: &quot;two wires touch at single point&quot;, &quot;tangential contact between hole and outer wire&quot;, &quot;outer wire and inner wire share a vertex&quot;, &quot;non-simple face boundary from touching wires&quot;, &quot;kissing wires on face crash kernel&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<section><h2>Closure intent</h2>
+<p><code>sheet</code> — the open shell is the intended final geometry; a solid-only kernel should cleanly refuse.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;V_shared&#x27;)</code></li>
 <li><code>contains(b&#x27;shared_top_midpoint&#x27;)</code></li>

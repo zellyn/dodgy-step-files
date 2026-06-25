@@ -40,6 +40,9 @@
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;\\PE\\Z&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="Le037.html">Le037</a></p>
 </section>
@@ -58,26 +61,20 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Le039 - \PE\ selector letter outside the legal A..I range
-<span class="lineno">3</span> * Defect: ISO 10303-21 defines code pages A through I (nine pages)
-<span class="lineno">4</span> * for \PA\..\PI\ alphabet selectors and \PE\ as the alphabet-extend
-<span class="lineno">5</span> * directive whose follow byte denotes one of the same nine pages.
-<span class="lineno">6</span> * Here the operand is &#x27;Z&#x27; which does not name any defined page.
-<span class="lineno">7</span> * A parser must decide between rejecting, falling back to the
-<span class="lineno">8</span> * default page, or treating &#x27;Z&#x27; as a literal and resyncing. */
-<span class="lineno">9</span>HEADER;
-<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;Le039 - <mark>\PE\Z</mark> out-of-range page&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">11</span>FILE_NAME(&#x27;Le039.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
-<span class="lineno">12</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">13</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">2</span>/* Le039: \PE\ selector letter outside the legal A-I range; ISO 10303-21 Ed.3 Â§6.4.3: \PE\ must be followed by exactly one letter in A-I naming one of the nine ISO 8859 supplementary code pages; operand &#x27;Z&#x27; (and any letter outside A-I) does not name a defined page; a receiver must reject the directive or emit a diagnostic and fall back; defect string: &#x27;bad=<mark>\PE\Z</mark>\S\xx&#x27; â the operand &#x27;Z&#x27; is out-of-range; parsers that silently accept &#x27;Z&#x27; as a code-page selector produce wrong glyphs or pass the directive bytes through verbatim; the out-of-range letter may cause the lexer to desynchronise if it treats the following byte as the next token start; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Le039&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Le039.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">11</span>#8998=PERSON(&#x27;bad=<mark>\PE\Z</mark>\S\xx&#x27;,&#x27;pe-selector-out-of-range-Z&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>#8999=PERSON(&#x27;also=\PE\M\S\yy&#x27;,&#x27;pe-selector-out-of-range-M&#x27;,&#x27;&#x27;);
+<span class="lineno">13</span>
 <span class="lineno">14</span>ENDSEC;
-<span class="lineno">15</span>DATA;
-<span class="lineno">16</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">17</span>#2=PRODUCT_CONTEXT(&#x27;part&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">18</span>/* Defect: page selector Z is not in A..I */
-<span class="lineno">19</span>#10=PRODUCT(&#x27;bad=<mark>\PE\Z</mark>\S\xx&#x27;,&#x27;page-Z&#x27;,&#x27;&#x27;,(#2));
-<span class="lineno">20</span>ENDSEC;
-<span class="lineno">21</span>END-ISO-10303-21;
+<span class="lineno">15</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

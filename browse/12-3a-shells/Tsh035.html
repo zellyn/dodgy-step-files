@@ -35,91 +35,77 @@
 <section><h2>Notes</h2>
 <p>**See also**: Gs001. Synonyms: &quot;torus with negative minor radius flips normal&quot;, &quot;degenerate torus orientation ambiguous&quot;, &quot;shared edge reused with opposite directions on torus seam&quot;, &quot;hole or stud confused on torus&quot;, &quot;torus profile inverted by negative radius&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Closure intent</h2>
+<p><code>sheet</code> — the open shell is the intended final geometry; a solid-only kernel should cleanly refuse.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;OPEN_SHELL&#x27;)</code></li>
 <li><code>count_entity_def(b&#x27;ADVANCED_FACE&#x27;) == 1</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="../12-2c-surfaces/Gs001.html">Gs001</a></p>
 </section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
-<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
 <tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
 <tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
 <tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
-<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Tsh035 - DEGENERATE_TOROIDAL_SURFACE orientation depends on revolve geometry
-<span class="lineno">3</span> * Defect: When the toroid is created by revolving a profile whose
-<span class="lineno">4</span> * curvature center sits to the left of the rotation axis and below the
-<span class="lineno">5</span> * upper edge, OCCT inverts the surface normal; mirror cases work.
-<span class="lineno">6</span> * Causes flipped face shading and hole-vs-stud mis-classification.
-<span class="lineno">7</span> *
-<span class="lineno">8</span> * This file: a DEGENERATE_TOROIDAL_SURFACE whose major_radius is
-<span class="lineno">9</span> * negative -- the profile circle&#x27;s center sits inside the rotation
-<span class="lineno">10</span> * axis, so the swept surface degenerates (lemon/apple form). Combined
-<span class="lineno">11</span> * with a profile arc placed in the inverted half-plane, the kernel&#x27;s
-<span class="lineno">12</span> * orientation heuristics from (major_radius, minor_radius) sign
-<span class="lineno">13</span> * disagree with the bounding wire&#x27;s parametric direction. The
-<span class="lineno">14</span> * advised fix is to choose orientation from the bounding wire, not
-<span class="lineno">15</span> * the radius signs.
-<span class="lineno">16</span> * Sources: J010. */
-<span class="lineno">17</span>HEADER;
-<span class="lineno">18</span>FILE_DESCRIPTION((&#x27;Tsh035 test case&#x27;,&#x27;Degenerate toroid orientation ambiguity&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">19</span>FILE_NAME(&#x27;Tsh035.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">20</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">21</span>ENDSEC;
-<span class="lineno">22</span>DATA;
-<span class="lineno">23</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">24</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
-<span class="lineno">25</span>/* Revolution axis at origin, +Z. */
-<span class="lineno">26</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">27</span>#101=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
-<span class="lineno">28</span>#102=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">29</span>#103=AXIS2_PLACEMENT_3D(&#x27;axis_origin&#x27;,#100,#101,#102);
-<span class="lineno">30</span>/* DEGENERATE_TOROIDAL_SURFACE: major_radius &lt; minor_radius produces a
-<span class="lineno">31</span>   self-intersecting (apple/lemon) toroid. Here we use a NEGATIVE
-<span class="lineno">32</span>   major_radius -- the case J010 reports as inducing inverted
-<span class="lineno">33</span>   surface normals when paired with a profile placed in the
-<span class="lineno">34</span>   inverted half-plane. */
-<span class="lineno">35</span>#200=DEGENERATE_TOROIDAL_SURFACE(&#x27;degenerate_torus&#x27;,#103,-0.3,1.0,.T.);
-<span class="lineno">36</span>/* A small bounding wire on the surface using its (u,v) parametric
-<span class="lineno">37</span>   space. The wire winds in the +u direction along the parametric
-<span class="lineno">38</span>   axis -- this is the direction the healing recommendation says
-<span class="lineno">39</span>   to consult instead of the radius sign convention. */
-<span class="lineno">40</span>#300=CARTESIAN_POINT(&#x27;&#x27;,(0.7,0.0,0.0)); /* parametric u=0, v=0 */
-<span class="lineno">41</span>#301=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,1.0)); /* on degenerate apex */
-<span class="lineno">42</span>#310=VERTEX_POINT(&#x27;&#x27;,#300); #311=VERTEX_POINT(&#x27;&#x27;,#301);
-<span class="lineno">43</span>/* Profile arc placed in the &quot;inverted&quot; half-plane (x&lt;0 side
-<span class="lineno">44</span>   relative to the revolve axis when viewed in the rotating frame). */
-<span class="lineno">45</span>#320=CARTESIAN_POINT(&#x27;&#x27;,(-0.5,0.0,0.0));
-<span class="lineno">46</span>#321=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
-<span class="lineno">47</span>#322=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">48</span>#323=AXIS2_PLACEMENT_3D(&#x27;profile_inverted&#x27;,#320,#321,#322);
-<span class="lineno">49</span>#324=CIRCLE(&#x27;inverted_profile_arc&#x27;,#323,0.5);
-<span class="lineno">50</span>#330=EDGE_CURVE(&#x27;&#x27;,#310,#311,#324,.T.);
-<span class="lineno">51</span>#400=ORIENTED_EDGE(&#x27;&#x27;,*,*,#330,.T.);
-<span class="lineno">52</span>#401=ORIENTED_EDGE(&#x27;&#x27;,*,*,#330,.F.);
-<span class="lineno">53</span>#404=EDGE_LOOP(&#x27;seam_loop&#x27;,(#400,#401));
-<span class="lineno">54</span>#405=FACE_OUTER_BOUND(&#x27;&#x27;,#404,.T.);
-<span class="lineno">55</span>/* face same_sense .T. -- but the negative major_radius coupled with
-<span class="lineno">56</span>   the &quot;left half plane&quot; profile creates a sign-vs-direction conflict.
-<span class="lineno">57</span>   A robust kernel must consult #404&#x27;s parametric direction (not the
-<span class="lineno">58</span>   sign of major_radius) to derive the surface&#x27;s outward normal. */
-<span class="lineno">59</span><mark>#406=ADVANCED_FACE(</mark>&#x27;face_on_degenerate_torus&#x27;,(#405),#200,.T.);
-<span class="lineno">60</span>#500=<mark>OPEN_SHELL</mark>(&#x27;degenerate_torus_shell&#x27;,(#406));
-<span class="lineno">61</span>#510=SHELL_BASED_SURFACE_MODEL(&#x27;container&#x27;,(#500));
-<span class="lineno">62</span>ENDSEC;
-<span class="lineno">63</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* Tsh035: Degenerate torus with negative minor radius and ambiguous edge reuse */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Tsh035&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Tsh035.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">11</span>#2=CARTESIAN_POINT(&#x27;&#x27;,(0.7,0.0,0.0));
+<span class="lineno">12</span>#3=VERTEX_POINT(&#x27;&#x27;,#1);
+<span class="lineno">13</span>#4=VERTEX_POINT(&#x27;&#x27;,#2);
+<span class="lineno">14</span>#5=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">15</span>#6=VECTOR(&#x27;&#x27;,#5,0.3);
+<span class="lineno">16</span>#7=LINE(&#x27;&#x27;,#1,#6);
+<span class="lineno">17</span>#8=EDGE_CURVE(&#x27;&#x27;,#3,#4,#7,.T.);
+<span class="lineno">18</span>#9=ORIENTED_EDGE(&#x27;&#x27;,$,$,#8,.T.);
+<span class="lineno">19</span>#10=ORIENTED_EDGE(&#x27;&#x27;,$,$,#8,.F.);
+<span class="lineno">20</span>#11=EDGE_LOOP(&#x27;&#x27;,(#9,#10));
+<span class="lineno">21</span>#12=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">22</span>#13=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">23</span>#14=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">24</span>#15=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#12,#13,#14);
+<span class="lineno">25</span>#16=DEGENERATE_TOROIDAL_SURFACE(&#x27;&#x27;,#15,1.0,-0.3);
+<span class="lineno">26</span>#17=FACE_OUTER_BOUND(&#x27;&#x27;,#11,.T.);
+<span class="lineno">27</span><mark>#18=ADVANCED_FACE(</mark>&#x27;&#x27;,(#17),#16,.T.);
+<span class="lineno">28</span>#19=<mark>OPEN_SHELL</mark>(&#x27;&#x27;,(#18));
+<span class="lineno">29</span>#20=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#19));
+<span class="lineno">30</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">31</span>#9051=PRODUCT(&#x27;Tsh035&#x27;,&#x27;Tsh035&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">32</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">33</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">34</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">35</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">36</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">37</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">38</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">39</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">40</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">41</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#20),#9060);
+<span class="lineno">42</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">43</span>ENDSEC;
+<span class="lineno">44</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

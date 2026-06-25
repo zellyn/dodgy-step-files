@@ -38,6 +38,8 @@
 <p>Synonyms: &quot;draft taper failure&quot;, &quot;draft face recomputation fails&quot;, &quot;drafted surface won&#x27;t refit&quot;, &quot;draft angle exceeds analytic range&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
+<section><h2>Closure intent</h2>
+<p><code>sheet</code> — the open shell is the intended final geometry; a solid-only kernel should cleanly refuse.</p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>face[0].surface_type == &quot;cylinder&quot;</code></li>
 <li><code>n_edges_total &gt;= 1</code></li>
@@ -57,75 +59,48 @@
 <details>
 <summary>Show fixture bytes</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Os015 - Draft modification face recomputation fails.
-<span class="lineno">3</span> * Defect: 45Â° draft applied to a CYLINDRICAL_SURFACE face.
-<span class="lineno">4</span> * Cylinder cannot become a cone in the analytic family. */
-<span class="lineno">5</span>HEADER;
-<span class="lineno">6</span>FILE_DESCRIPTION((&#x27;Os015 - draft face recomputation fails&#x27;,&#x27;Pass C gap-fill&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">7</span>FILE_NAME(&#x27;Os015.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;gap-fill C&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">8</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">9</span>ENDSEC;
-<span class="lineno">10</span>DATA;
-<span class="lineno">11</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">12</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
-<span class="lineno">13</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">14</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
-<span class="lineno">15</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">16</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
-<span class="lineno">17</span>#14=CYLINDRICAL_SURFACE(&#x27;cyl_for_draft&#x27;,#13,1.0);
-<span class="lineno">18</span>/* Draft angle parameter: 45 deg = pi/4 rad. Encoded as
-<span class="lineno">19</span> * MEASURE_WITH_UNIT in DATA so the operation parameter is byte-visible. */
-<span class="lineno">20</span>#15=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">21</span>#16=MEASURE_WITH_UNIT(PLANE_ANGLE_MEASURE(0.7853981633974483),#15);
-<span class="lineno">22</span>/* --- single triangular face placeholder for OPEN_SHELL --- */
-<span class="lineno">23</span>#5700=CARTESIAN_POINT(&#x27;p0&#x27;,(0.0,0.0,0.0));
-<span class="lineno">24</span>#5701=CARTESIAN_POINT(&#x27;p1&#x27;,(1.0,0.0,0.0));
-<span class="lineno">25</span>#5702=CARTESIAN_POINT(&#x27;p2&#x27;,(0.0,1.0,0.0));
-<span class="lineno">26</span>#5710=VERTEX_POINT(&#x27;&#x27;,#5700);
-<span class="lineno">27</span>#5711=VERTEX_POINT(&#x27;&#x27;,#5701);
-<span class="lineno">28</span>#5712=VERTEX_POINT(&#x27;&#x27;,#5702);
-<span class="lineno">29</span>#5720=DIRECTION(&#x27;dx&#x27;,(1.0,0.0,0.0));
-<span class="lineno">30</span>#5721=DIRECTION(&#x27;dy&#x27;,(0.0,1.0,0.0));
-<span class="lineno">31</span>#5722=DIRECTION(&#x27;dz&#x27;,(0.0,0.0,1.0));
-<span class="lineno">32</span>#5730=VECTOR(&#x27;vx&#x27;,#5720,1.0);
-<span class="lineno">33</span>#5731=VECTOR(&#x27;vy&#x27;,#5721,1.0);
-<span class="lineno">34</span>#5732=VECTOR(&#x27;vd&#x27;,#5720,1.0);
-<span class="lineno">35</span>#5740=LINE(&#x27;&#x27;,#5700,#5730);
-<span class="lineno">36</span>#5741=DIRECTION(&#x27;dxy&#x27;,(-0.7071067811865476,0.7071067811865476,0.0));
-<span class="lineno">37</span>#5742=VECTOR(&#x27;vxy&#x27;,#5741,1.4142135623730951);
-<span class="lineno">38</span>#5743=LINE(&#x27;&#x27;,#5701,#5742);
-<span class="lineno">39</span>#5744=LINE(&#x27;&#x27;,#5700,#5731);
-<span class="lineno">40</span>#5760=EDGE_CURVE(&#x27;&#x27;,#5710,#5711,#5740,.T.);
-<span class="lineno">41</span>#5761=EDGE_CURVE(&#x27;&#x27;,#5711,#5712,#5743,.T.);
-<span class="lineno">42</span>#5762=EDGE_CURVE(&#x27;&#x27;,#5710,#5712,#5744,.T.);
-<span class="lineno">43</span>#5780=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#5700,#5722,#5720);
-<span class="lineno">44</span>#5790=PLANE(&#x27;&#x27;,#5780);
-<span class="lineno">45</span>#5800=ORIENTED_EDGE(&#x27;&#x27;,*,*,#5760,.T.);
-<span class="lineno">46</span>#5801=ORIENTED_EDGE(&#x27;&#x27;,*,*,#5761,.T.);
-<span class="lineno">47</span>#5802=ORIENTED_EDGE(&#x27;&#x27;,*,*,#5762,.F.);
-<span class="lineno">48</span>#5830=EDGE_LOOP(&#x27;&#x27;,(#5800,#5801,#5802));
-<span class="lineno">49</span>#5840=FACE_OUTER_BOUND(&#x27;&#x27;,#5830,.T.);
-<span class="lineno">50</span>#5850=ADVANCED_FACE(&#x27;placeholder&#x27;,(#5840),#5790,.T.);
-<span class="lineno">51</span>/* OPEN_SHELL replacing empty () body */
-<span class="lineno">52</span>#100=ADVANCED_FACE(&#x27;draft_target&#x27;,(#5840),#14,.T.);
-<span class="lineno">53</span>/* Minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
-<span class="lineno">54</span>#9010=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">55</span>#9011=PRODUCT(&#x27;Os015&#x27;,&#x27;Os015&#x27;,&#x27;&#x27;,(#9010));
-<span class="lineno">56</span>#9012=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9011);
-<span class="lineno">57</span>#9013=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
-<span class="lineno">58</span>#9014=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9012,#9013);
-<span class="lineno">59</span>#9015=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9014);
-<span class="lineno">60</span>#9020=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">61</span>#9021=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">62</span>#9022=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">63</span>#9023=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9020,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
-<span class="lineno">64</span>#9024=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9023))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9020,#9021,#9022))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
-<span class="lineno">65</span>#9030=OPEN_SHELL(&#x27;wrap_shell&#x27;,(#100));
-<span class="lineno">66</span>#9031=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#9030));
-<span class="lineno">67</span>#9050=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9031),#9024);
-<span class="lineno">68</span>#9051=SHAPE_DEFINITION_REPRESENTATION(#9015,#9050);
-<span class="lineno">69</span>ENDSEC;
-<span class="lineno">70</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* Os015: ADVANCED_FACE on CYLINDRICAL_SURFACE; 45-degree draft request results in a deformed surface that cannot be re-fitted to any analytic surface family â Draft_Modification Draft_FaceRecomputation; cylinder cannot become cone-like in analytic family; OCC loads (heals) but conservative kernels must reject; mechanism: cylindrical face with same_sense=.T. presented for draft */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Os015&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Os015.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=CYLINDRICAL_SURFACE(&#x27;&#x27;,#4,5.0);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#7=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">17</span>#8=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">18</span>#9=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#6,#7,#8);
+<span class="lineno">19</span>#10=CIRCLE(&#x27;&#x27;,#9,5.0);
+<span class="lineno">20</span>#11=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">21</span>#12=VERTEX_POINT(&#x27;&#x27;,#11);
+<span class="lineno">22</span>#13=EDGE_CURVE(&#x27;bot_seam&#x27;,#12,#12,#10,.T.);
+<span class="lineno">23</span>#14=ORIENTED_EDGE(&#x27;&#x27;,*,*,#13,.T.);
+<span class="lineno">24</span>#15=EDGE_LOOP(&#x27;cyl_loop&#x27;,(#14));
+<span class="lineno">25</span>#16=FACE_OUTER_BOUND(&#x27;&#x27;,#15,.T.);
+<span class="lineno">26</span>#17=ADVANCED_FACE(&#x27;draft_cyl&#x27;,(#16),#5,.T.);
+<span class="lineno">27</span>#18=OPEN_SHELL(&#x27;os015_shell&#x27;,(#17));
+<span class="lineno">28</span>#19=SHELL_BASED_SURFACE_MODEL(&#x27;os015_sbsm&#x27;,(#18));
+<span class="lineno">29</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">30</span>#9051=PRODUCT(&#x27;Os015&#x27;,&#x27;Os015&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">31</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">32</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">33</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">34</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">35</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">36</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">37</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">38</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">39</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">40</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#19),#9060);
+<span class="lineno">41</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">42</span>ENDSEC;
+<span class="lineno">43</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

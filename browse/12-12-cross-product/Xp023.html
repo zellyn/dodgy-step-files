@@ -39,6 +39,9 @@
 <li><code>max_paren_depth &gt;= 60</code></li>
 <li><code>max_string_literal_length &gt;= 32770</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load != &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="../12-10-perf/Pf012.html">Pf012</a></p>
 </section>
@@ -56,12 +59,12 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Xp023 - Deeply nested aggregate AND overlong string literal in one fixture
-<span class="lineno">2</span> * Defect: combines Pf012 (deep parens) and Ad061 (overlong string).
-<span class="lineno">3</span> * The PRODUCT name has 32 770 characters; LIST_OF_LIST_OF_INTEGER has
-<span class="lineno">4</span> * 65 levels of parens. Receivers may stack-overflow on the deep nesting
-<span class="lineno">5</span> * before they encounter the overlong literal. Cross-product. */
-<span class="lineno">6</span>ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Xp023 - Deeply nested aggregate AND overlong string literal in one fixture
+<span class="lineno">3</span> * Defect: combines Pf012 (deep parens) and Ad061 (overlong string).
+<span class="lineno">4</span> * The PRODUCT name has 32 770 characters; LIST_OF_LIST_OF_INTEGER has
+<span class="lineno">5</span> * 65 levels of parens. Receivers may stack-overflow on the deep nesting
+<span class="lineno">6</span> * before they encounter the overlong literal. Cross-product. */
 <span class="lineno">7</span>HEADER;
 <span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Xp023 - cross-product Pf x Ad parser stressors&#x27;),&#x27;2;1&#x27;);
 <span class="lineno">9</span>FILE_NAME(&#x27;Xp023.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);

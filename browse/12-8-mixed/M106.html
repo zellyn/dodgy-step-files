@@ -43,6 +43,9 @@
 <li><code>contains(b&#x27;TIME_MEASURE&#x27;)</code></li>
 <li><code>contains(b&#x27;180000.0&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -58,30 +61,65 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M106 - AP238 single MACHINING_OPERATION declares 50-hour cycle.
-<span class="lineno">3</span> * Defect: a MACHINING_OPERATION carries an EXECUTION_TIME of 180000
-<span class="lineno">4</span> * seconds (50 hours) - well past any reasonable shift length. Indicates
-<span class="lineno">5</span> * an upstream feedrate or unit-confusion bug. */
-<span class="lineno">6</span>HEADER;
-<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;M106 test case&#x27;,&#x27;AP238 unrealistic 50-hour cycle time&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">8</span>FILE_NAME(&#x27;M106.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">9</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 1 0 0 1 }&#x27;));
-<span class="lineno">10</span>ENDSEC;
-<span class="lineno">11</span>DATA;
-<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;numerical_control_machining&#x27;);
-<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">14</span>  &#x27;numerical_control_machining&#x27;,2007,#1);
-<span class="lineno">15</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">16</span>#15=(NAMED_UNIT(*)SI_UNIT($,.SECOND.)TIME_UNIT());
-<span class="lineno">17</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">18</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#15))
-<span class="lineno">19</span>     REPRESENTATION_CONTEXT(&#x27;nc&#x27;,&#x27;3D&#x27;));
-<span class="lineno">20</span>/* Defect: 180000 seconds = 50 hours of continuous machining. */
-<span class="lineno">21</span>#80=MEASURE_WITH_UNIT(<mark>TIME_MEASURE</mark>(<mark>180000.0</mark>),#15);
-<span class="lineno">22</span>#100=MACHINING_OPERATION(&#x27;marathon_cut&#x27;,$,$,$,#80,$);
-<span class="lineno">23</span>#200=WORKPLAN(&#x27;main&#x27;,(#100),$,$,$);
-<span class="lineno">24</span>ENDSEC;
-<span class="lineno">25</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M106: AP238 workplan total execution time exceeds shift length */
+<span class="lineno">3</span>/* DEFECT: single MACHINING_OPERATION declares <mark>180000.0</mark> s (50 h) execution time */
+<span class="lineno">4</span>/* 180000 s &gt;&gt; 28800 s (8-hour shift) â indicates feedrate or unit confusion */
+<span class="lineno">5</span>/* Violates ISO 10303-238 Â§5.6 cycle-time / shift-length practicality */
+<span class="lineno">6</span>/* Byte assertion: contains(b&#x27;<mark>AP238_STEP_NC_MIM</mark>&#x27;) */
+<span class="lineno">7</span>/* Byte assertion: contains(b&#x27;<mark>TIME_MEASURE</mark>&#x27;) */
+<span class="lineno">8</span>/* Byte assertion: contains(b&#x27;<mark>180000.0</mark>&#x27;) */
+<span class="lineno">9</span>HEADER;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;M106: AP238 workplan execution time exceeds shift length&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;M106.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>/* Byte assertion: contains(b&#x27;<mark>AP238_STEP_NC_MIM</mark>&#x27;) */
+<span class="lineno">13</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 1 0 0 }&#x27;));
+<span class="lineno">14</span>ENDSEC;
+<span class="lineno">15</span>DATA;
+<span class="lineno">16</span>#1=APPLICATION_CONTEXT(&#x27;step_nc_mim&#x27;);
+<span class="lineno">17</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">18</span>  &#x27;ap238_step_nc_mim&#x27;,2007,#1);
+<span class="lineno">19</span>/* Standard unit context â mm */
+<span class="lineno">20</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">21</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">22</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">23</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">24</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">25</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">26</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">27</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">28</span>  REPRESENTATION_CONTEXT(&#x27;nc&#x27;,&#x27;3D&#x27;));
+<span class="lineno">29</span>/* Time unit â seconds â for execution time measurement */
+<span class="lineno">30</span>#20=(NAMED_UNIT(*)SI_UNIT($,.SECOND.)TIME_UNIT());
+<span class="lineno">31</span>/* Byte assertion: contains(b&#x27;<mark>TIME_MEASURE</mark>&#x27;) */
+<span class="lineno">32</span>/* Byte assertion: contains(b&#x27;<mark>180000.0</mark>&#x27;) */
+<span class="lineno">33</span>/* DEFECT: <mark>180000.0</mark> seconds = 50 hours; shift length is 28800 s (8 h) */
+<span class="lineno">34</span>/* Feedrate stuck at near-zero or units mm/rev instead of mm/min cause this */
+<span class="lineno">35</span>#21=MEASURE_WITH_UNIT(<mark>TIME_MEASURE</mark>(<mark>180000.0</mark>),#20);
+<span class="lineno">36</span>/* Machined feature â a pocket requiring the absurdly long cut */
+<span class="lineno">37</span>#50=MACHINED_FEATURE(&#x27;pocket_a&#x27;,$,$,$,$,$);
+<span class="lineno">38</span>/* 12mm end mill used for the long pocket milling pass */
+<span class="lineno">39</span>#60=MACHINING_TOOL(&#x27;endmill_12mm&#x27;,$,$,$);
+<span class="lineno">40</span>/* DEFECT: MACHINING_OPERATION declares execution_time of <mark>180000.0</mark> s (50 h) */
+<span class="lineno">41</span>/* Correct shift length would cap at 28800 s; 180000 s signals feedrate error */
+<span class="lineno">42</span>#70=MACHINING_OPERATION(&#x27;op_long_cut&#x27;,#60,$,#21,$,$,$,$,#50,$,$);
+<span class="lineno">43</span>#80=MACHINING_WORKINGSTEP(&#x27;step_a&#x27;,#50,#70,$);
+<span class="lineno">44</span>/* WORKPLAN: single step; total scheduled time = <mark>180000.0</mark> s */
+<span class="lineno">45</span>#90=WORKPLAN(&#x27;main&#x27;,(#80),$,$,$);
+<span class="lineno">46</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">47</span>#300=GEOMETRIC_CURVE_SET(&#x27;ap238-workplan-execution-time-exceeds-shift-length&#x27;,
+<span class="lineno">48</span>  (#21,#50,#60,#70,#80,#90));
+<span class="lineno">49</span>/* Product chain */
+<span class="lineno">50</span>#400=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">51</span>#401=PRODUCT_CONTEXT(&#x27;&#x27;,#400,&#x27;mechanical&#x27;);
+<span class="lineno">52</span>#402=PRODUCT(&#x27;M106&#x27;,&#x27;M106&#x27;,&#x27;M106&#x27;,(#401));
+<span class="lineno">53</span>#403=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#402);
+<span class="lineno">54</span>#404=PRODUCT_DEFINITION_CONTEXT(#400,&#x27;design&#x27;);
+<span class="lineno">55</span>#405=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#403,#404);
+<span class="lineno">56</span>#406=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#405);
+<span class="lineno">57</span>#407=SHAPE_REPRESENTATION(&#x27;&#x27;,(#300),#14);
+<span class="lineno">58</span>#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
+<span class="lineno">59</span>ENDSEC;
+<span class="lineno">60</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

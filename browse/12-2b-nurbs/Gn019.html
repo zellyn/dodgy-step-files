@@ -39,6 +39,9 @@
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;B_SPLINE_CURVE&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -53,56 +56,76 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Gn019 - Sample count &lt;2 in pcurve approximation
-<span class="lineno">2</span>   Defect: when sampling a pcurve for openNURBS ON_BrepTrim, step-g
-<span class="lineno">3</span>   sometimes gets fewer than 2 sample points, yielding a degenerate trim.
-<span class="lineno">4</span>   Likely from the seam_curve or near-singular pcurve evaluation on a
-<span class="lineno">5</span>   closed surface (cylinder/cone) at the apex/seam.
-<span class="lineno">6</span>   This file emits a CYLINDRICAL_SURFACE plus a SURFACE_CURVE whose
-<span class="lineno">7</span>   pcurve is a degree-1 BSpline whose two control points coincide -- so
-<span class="lineno">8</span>   any naive evaluator counts it as a single sample point.  The healer
-<span class="lineno">9</span>   should enforce &gt;= 2 samples and fall back to endpoint+midpoint+endpoint
-<span class="lineno">10</span>   adaptive refinement. */
-<span class="lineno">11</span>ISO-10303-21;
-<span class="lineno">12</span>HEADER;
-<span class="lineno">13</span>FILE_DESCRIPTION(
-<span class="lineno">14</span>  (&#x27;Gn019 - degenerate pcurve with &lt;2 distinct samples on cylinder seam&#x27;),
-<span class="lineno">15</span>  &#x27;2;1&#x27;);
-<span class="lineno">16</span>FILE_NAME(&#x27;Gn019.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
-<span class="lineno">17</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">18</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">19</span>ENDSEC;
-<span class="lineno">20</span>DATA;
-<span class="lineno">21</span>/* Host cylinder, axis = +z, radius = 5. */
-<span class="lineno">22</span>#10=CARTESIAN_POINT(&#x27;axis_o&#x27;,(0.0,0.0,0.0));
-<span class="lineno">23</span>#11=DIRECTION(&#x27;axis_z&#x27;,(0.0,0.0,1.0));
-<span class="lineno">24</span>#12=DIRECTION(&#x27;ref_x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">25</span>#13=AXIS2_PLACEMENT_3D(&#x27;cyl_pl&#x27;,#10,#11,#12);
-<span class="lineno">26</span>#20=CYLINDRICAL_SURFACE(&#x27;cyl&#x27;,#13,5.0);
-<span class="lineno">27</span>/* Defect: pcurve is a degree-1 <mark>B_SPLINE_CURVE</mark>_WITH_KNOTS in the (u,v)
-<span class="lineno">28</span>   parameter plane whose two control points coincide -- gives 1 distinct
-<span class="lineno">29</span>   sample point. */
-<span class="lineno">30</span>#30=CARTESIAN_POINT(&#x27;uv0&#x27;,(0.0,0.0));
-<span class="lineno">31</span>#31=CARTESIAN_POINT(&#x27;uv1&#x27;,(0.0,0.0));
-<span class="lineno">32</span>#40=<mark>B_SPLINE_CURVE</mark>_WITH_KNOTS(&#x27;degenerate_pcurve&#x27;,1,(#30,#31),
-<span class="lineno">33</span>  .UNSPECIFIED.,.F.,.F.,(2,2),(0.0,1.0),.UNSPECIFIED.);
-<span class="lineno">34</span>#50=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#40),#60);
-<span class="lineno">35</span>/* Parameter space (u,v in 2D) for the cylinder. */
-<span class="lineno">36</span>#60=(
-<span class="lineno">37</span>  GEOMETRIC_REPRESENTATION_CONTEXT(2)
-<span class="lineno">38</span>  PARAMETRIC_REPRESENTATION_CONTEXT()
-<span class="lineno">39</span>  REPRESENTATION_CONTEXT(&#x27;cyl_param&#x27;,&#x27;2D&#x27;));
-<span class="lineno">40</span>/* PCURVE wrapping the degenerate definitional representation. */
-<span class="lineno">41</span>#70=PCURVE(&#x27;seam_pcurve&#x27;,#20,#50);
-<span class="lineno">42</span>/* The 3D seam line on the cylinder is a meridian at u=0. */
-<span class="lineno">43</span>#80=CARTESIAN_POINT(&#x27;seam_a&#x27;,(5.0,0.0,0.0));
-<span class="lineno">44</span>#81=CARTESIAN_POINT(&#x27;seam_b&#x27;,(5.0,0.0,1.0));
-<span class="lineno">45</span>#82=DIRECTION(&#x27;seam_dir&#x27;,(0.0,0.0,1.0));
-<span class="lineno">46</span>#83=VECTOR(&#x27;seam_vec&#x27;,#82,1.0);
-<span class="lineno">47</span>#84=LINE(&#x27;seam_line&#x27;,#80,#83);
-<span class="lineno">48</span>#85=SURFACE_CURVE(&#x27;seam&#x27;,#84,(#70),.PCURVE_S1.);
-<span class="lineno">49</span>ENDSEC;
-<span class="lineno">50</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gn019: CYLINDRICAL_SURFACE seam pcurve <mark>B_SPLINE_CURVE</mark>_WITH_KNOTS degree-1 2 CPs; both CPs at UV=(0.0,0.0) â coincident, zero-length pcurve; knots (0.0,1.0) mults (2,2) sum=4=1+2+1 â; sample count &lt;2 distinct points â degenerate trim in BRep; seam edge 3D curve is valid LINE along cylinder seam (Z: 0â3, X=1, Y=0); defect edge <mark>B_SPLINE_CURVE</mark>_WITH_KNOTS degree-2 C-1 break at t=0.5 (CP[2]=(1.5,0,0) vs CP[3]=(3.0,0,0), 1.5-unit gap) drives shape_null=True */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Gn019&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Gn019.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=CYLINDRICAL_SURFACE(&#x27;degenerate_pcurve_cyl&#x27;,#4,1.0);
+<span class="lineno">15</span>#6=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT(&#x27;UV&#x27;,&#x27;2D&#x27;));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,3.0));
+<span class="lineno">18</span>#9=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">19</span>#10=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">20</span>#11=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">21</span>#12=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">22</span>#13=VECTOR(&#x27;&#x27;,#12,3.0);
+<span class="lineno">23</span>#14=LINE(&#x27;&#x27;,#11,#13);
+<span class="lineno">24</span>#15=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));
+<span class="lineno">25</span>#16=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));
+<span class="lineno">26</span>#17=<mark>B_SPLINE_CURVE</mark>_WITH_KNOTS(&#x27;degenerate_zero_length_pcurve&#x27;,1,(#15,#16),.UNSPECIFIED.,.F.,.F.,(2,2),(0.0,1.0),.UNSPECIFIED.);
+<span class="lineno">27</span>#18=DEFINITIONAL_REPRESENTATION(&#x27;degen_pcurve_def&#x27;,(#17),#6);
+<span class="lineno">28</span>#19=PCURVE(&#x27;degen_pcurve_ent&#x27;,#5,#18);
+<span class="lineno">29</span>#20=SURFACE_CURVE(&#x27;seam_sc&#x27;,#14,(#19),.PCURVE_S1.);
+<span class="lineno">30</span>#21=EDGE_CURVE(&#x27;seam_edge&#x27;,#9,#10,#20,.T.);
+<span class="lineno">31</span>#22=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">32</span>#23=CARTESIAN_POINT(&#x27;&#x27;,(1.75,0.0,0.0));
+<span class="lineno">33</span>#24=CARTESIAN_POINT(&#x27;&#x27;,(2.5,0.0,0.0));
+<span class="lineno">34</span>#25=CARTESIAN_POINT(&#x27;&#x27;,(4.0,0.0,0.0));
+<span class="lineno">35</span>#26=CARTESIAN_POINT(&#x27;&#x27;,(4.5,0.0,0.0));
+<span class="lineno">36</span>#27=CARTESIAN_POINT(&#x27;&#x27;,(4.0,0.0,0.0));
+<span class="lineno">37</span>#28=<mark>B_SPLINE_CURVE</mark>_WITH_KNOTS(&#x27;degen_pcurve_c1_break&#x27;,2,(#22,#23,#24,#25,#26,#27),.UNSPECIFIED.,.F.,.F.,(3,3,3),(0.0,0.5,1.0),.UNSPECIFIED.);
+<span class="lineno">38</span>#29=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));
+<span class="lineno">39</span>#30=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.25));
+<span class="lineno">40</span>#31=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.5));
+<span class="lineno">41</span>#32=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.5));
+<span class="lineno">42</span>#33=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.75));
+<span class="lineno">43</span>#34=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">44</span>#35=<mark>B_SPLINE_CURVE</mark>_WITH_KNOTS(&#x27;degen_pcurve_c1_break_pc&#x27;,2,(#29,#30,#31,#32,#33,#34),.UNSPECIFIED.,.F.,.F.,(3,3,3),(0.0,0.5,1.0),.UNSPECIFIED.);
+<span class="lineno">45</span>#36=DEFINITIONAL_REPRESENTATION(&#x27;degen_c1_pc_def&#x27;,(#35),#6);
+<span class="lineno">46</span>#37=PCURVE(&#x27;degen_c1_pc_ent&#x27;,#5,#36);
+<span class="lineno">47</span>#38=SURFACE_CURVE(&#x27;degen_c1_sc&#x27;,#28,(#37),.PCURVE_S1.);
+<span class="lineno">48</span>#39=EDGE_CURVE(&#x27;degen_c1_edge&#x27;,#9,#10,#38,.T.);
+<span class="lineno">49</span>#40=ORIENTED_EDGE(&#x27;&#x27;,$,$,#21,.T.);
+<span class="lineno">50</span>#41=ORIENTED_EDGE(&#x27;&#x27;,$,$,#39,.F.);
+<span class="lineno">51</span>#42=EDGE_LOOP(&#x27;&#x27;,(#40,#41));
+<span class="lineno">52</span>#43=FACE_OUTER_BOUND(&#x27;&#x27;,#42,.T.);
+<span class="lineno">53</span>#44=ADVANCED_FACE(&#x27;&#x27;,(#43),#5,.T.);
+<span class="lineno">54</span>#45=OPEN_SHELL(&#x27;&#x27;,(#44));
+<span class="lineno">55</span>#46=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#45));
+<span class="lineno">56</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">57</span>#9051=PRODUCT(&#x27;Gn019&#x27;,&#x27;Gn019&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">58</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">59</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">60</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">61</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">62</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">63</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">64</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">65</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">66</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">67</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#46),#9060);
+<span class="lineno">68</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">69</span>ENDSEC;
+<span class="lineno">70</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

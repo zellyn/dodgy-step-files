@@ -44,6 +44,9 @@
 <li><code>contains(b&#x27;DERIVED_UNIT&#x27;)</code></li>
 <li><code>contains(b&#x27;200000.0&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -59,40 +62,60 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M080 - AP209 material property unit mismatch.
-<span class="lineno">3</span> * Defect: an ELASTICITY (Young&#x27;s modulus) is stated with a unit whose
-<span class="lineno">4</span> * dimensional_exponents are (length, mass, time) = (-1, 1, -2) (pressure)
-<span class="lineno">5</span> * but the numeric value <mark>200000.0</mark> is the canonical mm-MPa value. The
-<span class="lineno">6</span> * file&#x27;s representation_context declares SI base units (Pa = N/m^2);
-<span class="lineno">7</span> * imported as Pa, the modulus is 200 kPa instead of 200 GPa, and the
-<span class="lineno">8</span> * resulting analysis is 1e6x too soft. */
-<span class="lineno">9</span>HEADER;
-<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;M080 test case&#x27;,&#x27;AP209 material property unit mismatch&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">11</span>FILE_NAME(&#x27;M080.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">2</span>/* M080: AP209 material property unit mismatch by 6 orders of magnitude */
+<span class="lineno">3</span>/* DEFECT: Young&#x27;s modulus <mark>200000.0</mark> is mm-MPa value, but context uses Pa (SI) */
+<span class="lineno">4</span>/* Imported as 200 kPa instead of 200 GPa â structure is 1e6x too soft */
+<span class="lineno">5</span>/* Byte assertion: contains(b&#x27;<mark>STRUCTURAL_ANALYSIS_DESIGN</mark>&#x27;) */
+<span class="lineno">6</span>/* Byte assertion: contains(b&#x27;<mark>DERIVED_UNIT</mark>&#x27;) */
+<span class="lineno">7</span>/* Byte assertion: contains(b&#x27;<mark>200000.0</mark>&#x27;) */
+<span class="lineno">8</span>HEADER;
+<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;M080: AP209 material property unit mismatch 6 orders&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;M080.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">11</span>/* Byte assertion: contains(b&#x27;<mark>STRUCTURAL_ANALYSIS_DESIGN</mark>&#x27;) */
 <span class="lineno">12</span>FILE_SCHEMA((&#x27;<mark>STRUCTURAL_ANALYSIS_DESIGN</mark> { 1 0 10303 209 1 0 0 }&#x27;));
 <span class="lineno">13</span>ENDSEC;
 <span class="lineno">14</span>DATA;
 <span class="lineno">15</span>#1=APPLICATION_CONTEXT(&#x27;structural_analysis_design&#x27;);
 <span class="lineno">16</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
 <span class="lineno">17</span>  &#x27;structural_analysis_design&#x27;,2001,#1);
-<span class="lineno">18</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT($,.METRE.));
-<span class="lineno">19</span>#11=(MASS_UNIT()NAMED_UNIT(*)SI_UNIT(.KILO.,.GRAM.));
-<span class="lineno">20</span>#12=(NAMED_UNIT(*)SI_UNIT($,.SECOND.)TIME_UNIT());
-<span class="lineno">21</span>#13=DIMENSIONAL_EXPONENTS(-1.0,1.0,-2.0,0.0,0.0,0.0,0.0);
-<span class="lineno">22</span>#14=<mark>DERIVED_UNIT</mark>_ELEMENT(#10,-1.0);
-<span class="lineno">23</span>#15=<mark>DERIVED_UNIT</mark>_ELEMENT(#11,1.0);
-<span class="lineno">24</span>#16=<mark>DERIVED_UNIT</mark>_ELEMENT(#12,-2.0);
-<span class="lineno">25</span>#17=<mark>DERIVED_UNIT</mark>((#14,#15,#16));
-<span class="lineno">26</span>#20=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">27</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-<span class="lineno">28</span>     REPRESENTATION_CONTEXT(&#x27;analysis&#x27;,&#x27;3D&#x27;));
-<span class="lineno">29</span>/* Defect: Steel modulus declared as <mark>200000.0</mark> in unit-context that is
-<span class="lineno">30</span> * Pascals. Steel modulus is 200 GPa = 2e11 Pa. This is 1e6 too small. */
-<span class="lineno">31</span>#100=MEASURE_WITH_UNIT(POSITIVE_RATIO_MEASURE(<mark>200000.0</mark>),#17);
-<span class="lineno">32</span>#110=GENERAL_PROPERTY(&#x27;Youngs_Modulus&#x27;,&#x27;Youngs_Modulus&#x27;,&#x27;steel&#x27;);
-<span class="lineno">33</span>#120=PROPERTY_DEFINITION(&#x27;Youngs_Modulus_def&#x27;,&#x27;&#x27;,#110);
-<span class="lineno">34</span>ENDSEC;
-<span class="lineno">35</span>END-ISO-10303-21;
+<span class="lineno">18</span>/* SI base units: metre, kilogram, second */
+<span class="lineno">19</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT($,.METRE.));
+<span class="lineno">20</span>#11=(MASS_UNIT()NAMED_UNIT(*)SI_UNIT(.KILO.,.GRAM.));
+<span class="lineno">21</span>#12=(NAMED_UNIT(*)SI_UNIT($,.SECOND.)TIME_UNIT());
+<span class="lineno">22</span>/* DIMENSIONAL_EXPONENTS for pressure/stress: Pa = kg m^-1 s^-2 */
+<span class="lineno">23</span>#13=DIMENSIONAL_EXPONENTS(-1.0,1.0,-2.0,0.0,0.0,0.0,0.0);
+<span class="lineno">24</span>/* Byte assertion: contains(b&#x27;<mark>DERIVED_UNIT</mark>&#x27;) */
+<span class="lineno">25</span>/* <mark>DERIVED_UNIT</mark>_ELEMENTs composing Pa = m^-1 kg^1 s^-2 */
+<span class="lineno">26</span>#14=<mark>DERIVED_UNIT</mark>_ELEMENT(#10,-1.0);
+<span class="lineno">27</span>#15=<mark>DERIVED_UNIT</mark>_ELEMENT(#11,1.0);
+<span class="lineno">28</span>#16=<mark>DERIVED_UNIT</mark>_ELEMENT(#12,-2.0);
+<span class="lineno">29</span>#17=<mark>DERIVED_UNIT</mark>((#14,#15,#16));
+<span class="lineno">30</span>/* Geometric context in SI metre â important: not mm */
+<span class="lineno">31</span>#20=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">32</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">33</span>  REPRESENTATION_CONTEXT(&#x27;analysis&#x27;,&#x27;3D&#x27;));
+<span class="lineno">34</span>/* Byte assertion: contains(b&#x27;<mark>200000.0</mark>&#x27;) */
+<span class="lineno">35</span>/* DEFECT: <mark>200000.0</mark> is the steel modulus in mm-MPa convention (200 GPa = 200000 MPa) */
+<span class="lineno">36</span>/* In this file&#x27;s Pa unit context: <mark>200000.0</mark> Pa = 200 kPa â 1e6x too small */
+<span class="lineno">37</span>/* Correct SI value for steel: 2.0e11 Pa = 200 GPa */
+<span class="lineno">38</span>#100=MEASURE_WITH_UNIT(POSITIVE_RATIO_MEASURE(<mark>200000.0</mark>),#17);
+<span class="lineno">39</span>#110=GENERAL_PROPERTY(&#x27;Youngs_Modulus&#x27;,&#x27;Youngs_Modulus&#x27;,&#x27;steel&#x27;);
+<span class="lineno">40</span>#120=PROPERTY_DEFINITION(&#x27;Youngs_Modulus_def&#x27;,&#x27;&#x27;,#110);
+<span class="lineno">41</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">42</span>#300=GEOMETRIC_CURVE_SET(&#x27;ap209-material-unit-mismatch-mpa-vs-pa-6-orders&#x27;,
+<span class="lineno">43</span>  (#100,#110,#120));
+<span class="lineno">44</span>/* Product chain */
+<span class="lineno">45</span>#400=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">46</span>#401=PRODUCT_CONTEXT(&#x27;&#x27;,#400,&#x27;mechanical&#x27;);
+<span class="lineno">47</span>#402=PRODUCT(&#x27;M080&#x27;,&#x27;M080&#x27;,&#x27;M080&#x27;,(#401));
+<span class="lineno">48</span>#403=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#402);
+<span class="lineno">49</span>#404=PRODUCT_DEFINITION_CONTEXT(#400,&#x27;design&#x27;);
+<span class="lineno">50</span>#405=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#403,#404);
+<span class="lineno">51</span>#406=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#405);
+<span class="lineno">52</span>#407=SHAPE_REPRESENTATION(&#x27;&#x27;,(#300),#20);
+<span class="lineno">53</span>#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
+<span class="lineno">54</span>ENDSEC;
+<span class="lineno">55</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

@@ -46,6 +46,9 @@
 <li><code>contains(b&#x27;symlink&#x27;) or contains(b&#x27;passwd&#x27;) or contains(b&#x27;/etc/&#x27;)</code></li>
 <li><code>contains(b&#x27;O_NOFOLLOW&#x27;) or contains(b&#x27;symlink&#x27;) or contains(b&#x27;/etc/passwd&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="Ad106.html">Ad106</a>, <a href="Ad113.html">Ad113</a>, <a href="Ad115.html">Ad115</a></p>
 </section>
@@ -63,42 +66,42 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Ad114 - STEP fixture path is a symlink to /etc/passwd or other
-<span class="lineno">2</span> * privileged file
-<span class="lineno">3</span> * Defect: a receiver that opens a fixture by name without checking
-<span class="lineno">4</span> * whether the path traverses a symlink will follow symlinks
-<span class="lineno">5</span> * transparently. If an attacker can place a symlink at the fixture
-<span class="lineno">6</span> * path (or anywhere along its resolution chain) pointing at a
-<span class="lineno">7</span> * privileged file (/etc/passwd, ~/.ssh/id_rsa, /proc/self/environ),
-<span class="lineno">8</span> * the receiver reads the privileged file&#x27;s bytes and feeds them to
-<span class="lineno">9</span> * the Part-21 tokeniser. Most privileged files do not parse as
-<span class="lineno">10</span> * Part-21 and the load fails benignly, but the bytes have already
-<span class="lineno">11</span> * been read into the receiver&#x27;s address space and may appear in
-<span class="lineno">12</span> * error messages, crash dumps, or telemetry.
-<span class="lineno">13</span> *
-<span class="lineno">14</span> * IMPORTANT: this fixture documents the scenario in this header
-<span class="lineno">15</span> * comment; no real symlink to /etc/passwd is created in the
-<span class="lineno">16</span> * repository. Provenance tier: cross-file-state. */
-<span class="lineno">17</span>ISO-10303-21;
-<span class="lineno">18</span>HEADER;
-<span class="lineno">19</span>FILE_DESCRIPTION((&#x27;Ad114 - .stp fixture path is symlink to /etc/passwd&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">20</span>FILE_NAME(&#x27;Ad114.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">21</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">22</span>ENDSEC;
-<span class="lineno">23</span>DATA;
-<span class="lineno">24</span>/* Witness body: the symlink-following defect lives in the receiver-side
-<span class="lineno">25</span>   filesystem. The bug-reporter searchable terms (symlink, /etc/passwd,
-<span class="lineno">26</span>   /etc/, O_NOFOLLOW) are in this file&#x27;s header and comments. The
-<span class="lineno">27</span>   actual demonstration requires a symlink at the fixture path
-<span class="lineno">28</span>   pointing at /etc/passwd or similar privileged file.
-<span class="lineno">29</span>
-<span class="lineno">30</span>   No real symlink is created in this repo - it would be a clear
-<span class="lineno">31</span>   security smell in source control and cross-platform unfriendly.
-<span class="lineno">32</span>   The receiver should refuse to follow symlinks within the research
-<span class="lineno">33</span>   tree unless explicitly enabled, and should set O_NOFOLLOW on open. */
-<span class="lineno">34</span>/* symlink to /etc/passwd at fixture path - O_NOFOLLOW required */
-<span class="lineno">35</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">36</span>#10=CARTESIAN_POINT(&#x27;benign&#x27;,(0.0,0.0,0.0));
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Symlink-following attack payload (CWE-59 / CWE-22):
+<span class="lineno">3</span>   Attack scenario: fixture path Ad114.stp is a symlink
+<span class="lineno">4</span>   pointing to /etc/passwd (or ~/.ssh/id_rsa, /proc/self/environ).
+<span class="lineno">5</span>
+<span class="lineno">6</span>   ln -s /etc/passwd /path/to/research/step-examples/12-11-adversarial/Ad114.stp
+<span class="lineno">7</span>
+<span class="lineno">8</span>   A receiver that opens the fixture path without O_NOFOLLOW
+<span class="lineno">9</span>   will read ~3 KB of &#x27;root:x:0:0:..&#x27; bytes into its Part-21 tokeniser.
+<span class="lineno">10</span>   The load fails (non-Part-21 content) but the privileged bytes have
+<span class="lineno">11</span>   already been read into the process address space and may appear in:
+<span class="lineno">12</span>     - error messages logged to disk or transmitted over the network
+<span class="lineno">13</span>     - crash dumps captured by the OS or monitoring systems
+<span class="lineno">14</span>     - telemetry payloads sent to the vendor
+<span class="lineno">15</span>
+<span class="lineno">16</span>   Required mitigations:
+<span class="lineno">17</span>     1. Open with O_NOFOLLOW (POSIX) or CreateFile with
+<span class="lineno">18</span>        FILE_FLAG_OPEN_REPARSE_POINT (Windows) to refuse symlink targets.
+<span class="lineno">19</span>     2. Resolve the real path and verify it is within the configured root
+<span class="lineno">20</span>        before reading any bytes (Path.resolve() + is_relative_to()).
+<span class="lineno">21</span>     3. Never include raw file bytes from a failed parse in error messages.
+<span class="lineno">22</span>
+<span class="lineno">23</span>   Static fixture is document-only: no real symlink is created in the repo
+<span class="lineno">24</span>   (cross-platform-unfriendly). See also: Ad106 (TOCTOU on EXTERNAL_FILE),
+<span class="lineno">25</span>   Ad113 (sibling-pair race), Ad115 (directory-entry race).
+<span class="lineno">26</span>   Target path: /etc/passwd, /proc/self/environ, ~/.ssh/id_rsa
+<span class="lineno">27</span>*/
+<span class="lineno">28</span>/* Ad114: STEP fixture path is a symlink to /etc/passwd or other privileged file; receiver that opens path without O_NOFOLLOW reads privileged bytes into Part-21 tokeniser; bytes may appear in error messages or telemetry; receiver must refuse to open paths whose resolved location is outside a configured root; refuse to follow symlinks unless explicitly enabled; check O_NOFOLLOW-style flags on open; CWE-59 (symlink following); CWE-22 (path traversal); provenance tier: cross-file-state â static fixture is document-only: no real symlink created in repo; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">29</span>HEADER;
+<span class="lineno">30</span>FILE_DESCRIPTION((&#x27;Ad114&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">31</span>FILE_NAME(&#x27;Ad114.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">32</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">33</span>ENDSEC;
+<span class="lineno">34</span>DATA;
+<span class="lineno">35</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">36</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
 <span class="lineno">37</span>ENDSEC;
 <span class="lineno">38</span>END-ISO-10303-21;
 </pre>

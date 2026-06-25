@@ -42,6 +42,9 @@
 <li><code>contains(b&#x27;10.0)&#x27;)</code></li>
 <li><code>contains(b&#x27;annot_coords_absolute&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -57,45 +60,40 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M015 - Tessellated PMI placement: third coordinate not zero in
-<span class="lineno">3</span> * tessellated_geometric_set (repositioned form preferred).
-<span class="lineno">4</span> * Defect: tessellated annotation lying in a plane at z=10 is emitted
-<span class="lineno">5</span> * with absolute 3D coordinates (every point has z=10) instead of the
-<span class="lineno">6</span> * preferred &quot;repositioned&quot; form, where the COORDINATES_LIST has z=0
-<span class="lineno">7</span> * and a REPOSITIONED_TESSELLATED_ITEM places the set at z=10 via an
-<span class="lineno">8</span> * AXIS2_PLACEMENT_3D. The non-repositioned form bloats the file and
-<span class="lineno">9</span> * loses the 2D semantic of an annotation. Readers must support both;
-<span class="lineno">10</span> * writers should prefer the repositioned form. */
-<span class="lineno">11</span>HEADER;
-<span class="lineno">12</span>FILE_DESCRIPTION((&#x27;M015 test case&#x27;,&#x27;tessellated annotation absolute coords (z!=0)&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">13</span>FILE_NAME(&#x27;M015.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">14</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
-<span class="lineno">15</span>ENDSEC;
-<span class="lineno">16</span>DATA;
-<span class="lineno">17</span>#1=APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
-<span class="lineno">18</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">19</span>  &#x27;ap242_managed_model_based_3d_engineering&#x27;,2014,#1);
-<span class="lineno">20</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">21</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">22</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">23</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
-<span class="lineno">24</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">25</span>     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-<span class="lineno">26</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-<span class="lineno">27</span>     REPRESENTATION_CONTEXT(&#x27;part&#x27;,&#x27;3D&#x27;));
-<span class="lineno">28</span>/* Coordinates: 4 points lying in z=10 plane (NOT z=0).
-<span class="lineno">29</span> * The recommended form would have z=0 here and a repositioning axis
-<span class="lineno">30</span> * at z=10 below. */
-<span class="lineno">31</span>#100=COORDINATES_LIST(&#x27;<mark>annot_coords_absolute</mark>&#x27;,4,
-<span class="lineno">32</span>       ((0.0,0.0,<mark>10.0)</mark>,(1.0,0.0,<mark>10.0)</mark>,
-<span class="lineno">33</span>        (1.0,1.0,<mark>10.0)</mark>,(0.0,1.0,<mark>10.0)</mark>));
-<span class="lineno">34</span>/* tessellated_curve_set forming a square outline */
-<span class="lineno">35</span>#110=TESSELLATED_CURVE_SET(&#x27;annot_outline&#x27;,#100,((1,2,3,4,1)));
-<span class="lineno">36</span>/* Tessellated geometric set wrapping the curve set */
-<span class="lineno">37</span>#120=<mark>TESSELLATED_GEOMETRIC_SET</mark>(&#x27;annot_set&#x27;,(#110));
-<span class="lineno">38</span>#200=TESSELLATED_SHAPE_REPRESENTATION(&#x27;annotation_repr&#x27;,(#120),#14);
-<span class="lineno">39</span>ENDSEC;
-<span class="lineno">40</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M015: GEOMETRIC_CURVE_SET containing <mark>TESSELLATED_GEOMETRIC_SET</mark> with absolute 3D coordinates at z=10 throughout; non-repositioned form: PMI annotation emits absolute coords with zâ10.0 instead of using REPOSITIONED_TESSELLATED_ITEM with z=0 in coord list; PMI v4.1 Â§8.2 prefers the repositioned form: coordinates_list z=0 + axis at z=10; readers requiring z=0 in tessellated_geometric_set reject the absolute form; kernel must heal: accept both absolute and repositioned forms; writers must prefer the repositioned form; GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty; synonyms: tessellated PMI z != 0, annotation third coordinate nonzero, tessellated_geometric_set placement wrong, repositioned tessellated form preferred */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;M015&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;M015.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=COORDINATES_LIST(&#x27;<mark>annot_coords_absolute</mark>&#x27;,3,((0.,0.,<mark>10.0)</mark>,(5.,0.,<mark>10.0)</mark>,(5.,3.,<mark>10.0)</mark>,(0.,3.,<mark>10.0)</mark>));
+<span class="lineno">11</span>#2=TESSELLATED_CURVE_SET(&#x27;annot_outline&#x27;,#1,((0,1,2,3,0)));
+<span class="lineno">12</span>#3=<mark>TESSELLATED_GEOMETRIC_SET</mark>(&#x27;annotation_tgs&#x27;,(#2));
+<span class="lineno">13</span>#4=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,<mark>10.0)</mark>);
+<span class="lineno">14</span>#5=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">15</span>#6=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">16</span>#7=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#4,#5,#6);
+<span class="lineno">17</span>#8=COORDINATES_LIST(&#x27;annot_coords_repositioned&#x27;,3,((0.,0.,0.),(5.,0.,0.),(5.,3.,0.),(0.,3.,0.)));
+<span class="lineno">18</span>#9=TESSELLATED_CURVE_SET(&#x27;annot_outline_z0&#x27;,#8,((0,1,2,3,0)));
+<span class="lineno">19</span>#10=REPOSITIONED_TESSELLATED_ITEM(&#x27;&#x27;,#9,#7);
+<span class="lineno">20</span>#11=GEOMETRIC_CURVE_SET(&#x27;tess-pmi-z-nonzero-absolute&#x27;,(#3,#10));
+<span class="lineno">21</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">22</span>#9051=PRODUCT(&#x27;M015&#x27;,&#x27;M015&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">23</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">24</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">25</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">26</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">27</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">28</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">29</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">30</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">31</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">32</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#11),#9060);
+<span class="lineno">33</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">34</span>ENDSEC;
+<span class="lineno">35</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

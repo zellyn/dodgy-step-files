@@ -44,6 +44,9 @@
 <li><code>matches(rb&#x27;\d\.\d{12,}&#x27;)</code></li>
 <li><code>matches(rb&#x27;\.999999&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -58,27 +61,23 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Wr006 - Floating-point precision degradation on round-trip - exact decimals corrupted to nearly-but-not-exactly */
-<span class="lineno">2</span>ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Wr006: floating-point precision degradation â near-integer coordinates */
 <span class="lineno">3</span>HEADER;
-<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Wr006 - round-trip precision loss&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">5</span>FILE_NAME(&#x27;Wr006.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
-<span class="lineno">6</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Wr006 - floating-point precision degradation on round-trip&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Wr006.stp&#x27;,&#x27;2026-06-20T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">6</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
 <span class="lineno">7</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
 <span class="lineno">8</span>ENDSEC;
 <span class="lineno">9</span>DATA;
-<span class="lineno">10</span>#1=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
-<span class="lineno">11</span>/* originally these vertices were (1.5, 2.5, 1.0); after a round-trip
-<span class="lineno">12</span>   through a single-precision intermediate they have drifted */
-<span class="lineno">13</span>#10=CARTESIAN_POINT(&#x27;p1&#x27;,(<mark>1.4999999999998</mark>,<mark>2.5000000000003</mark>,<mark>0.99999999999996</mark>));
-<span class="lineno">14</span>#11=CARTESIAN_POINT(&#x27;p2&#x27;,(<mark>2.5000000000007</mark>,<mark>1.4999999999994</mark>,<mark>1.0000000000002</mark>));
-<span class="lineno">15</span>#12=CARTESIAN_POINT(&#x27;p3&#x27;,(<mark>0.0000000000003</mark>,<mark>0.0000000000002</mark>,-<mark>0.0000000000001</mark>));
-<span class="lineno">16</span>#13=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
-<span class="lineno">17</span>#14=DIRECTION(&#x27;x&#x27;,(<mark>0.99999999999998</mark>,0.0,0.0));
-<span class="lineno">18</span>#15=AXIS2_PLACEMENT_3D(&#x27;p&#x27;,#10,#13,#14);
-<span class="lineno">19</span>#20=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">20</span>ENDSEC;
-<span class="lineno">21</span>END-ISO-10303-21;
+<span class="lineno">10</span>/* Defect: coordinates are slightly off their intended exact values */
+<span class="lineno">11</span>/* Intended (1.5, 2.5, 1.0) but emitted with float32 round-trip drift */
+<span class="lineno">12</span>#1=CARTESIAN_POINT(&#x27;drifted-pt&#x27;,(<mark>1.4999999999998</mark>,<mark>2.5000000000003</mark>,<mark>0.99999999999996</mark>));
+<span class="lineno">13</span>/* Additional near-zero coordinate to show the pattern */
+<span class="lineno">14</span>#2=CARTESIAN_POINT(&#x27;near-zero&#x27;,(<mark>0.00000000000002</mark>,<mark>0.49999999999998</mark>,<mark>0.25000000000004</mark>));
+<span class="lineno">15</span>#3=GEOMETRIC_CURVE_SET(&#x27;precision-degraded&#x27;,(#1,#2));
+<span class="lineno">16</span>ENDSEC;
+<span class="lineno">17</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

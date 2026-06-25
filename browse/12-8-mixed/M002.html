@@ -43,6 +43,9 @@
 <li><code>contains(b&#x27;AXIS2_PLACEMENT_3D&#x27;)</code></li>
 <li><code>matches(rb&#x27;TESSELLATED_SHAPE_REPRESENTATION\([^)]*#133&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -50,7 +53,7 @@
 <tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
 <tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
-<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_BARE_BACKSLASH)</code></td></tr>
 <tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
 </tbody></table>
 </section>
@@ -58,48 +61,164 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M002 - AP242 Edition 1 disallows axis2_placement_3d in
-<span class="lineno">3</span> * tessellated_shape_representation.
-<span class="lineno">4</span> * Defect: in AP242 Ed.1 the items list of <mark>TESSELLATED_SHAPE_REPRESENTATION</mark>
-<span class="lineno">5</span> * must contain only TESSELLATED_REPRESENTATION_ITEM subtypes. Here the
-<span class="lineno">6</span> * items include an <mark>AXIS2_PLACEMENT_3D</mark> used for component placement, which
-<span class="lineno">7</span> * is forbidden under Ed.1 (the constraint is relaxed in Ed.2+). Strict
-<span class="lineno">8</span> * AP242 Ed.1 validation should reject; tolerant readers may accept and
-<span class="lineno">9</span> * promote to Ed.2 semantics. */
-<span class="lineno">10</span>HEADER;
-<span class="lineno">11</span>FILE_DESCRIPTION((&#x27;M002 test case&#x27;,&#x27;axis2_placement_3d in tessellated_shape_representation under AP242 Ed.1&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">12</span>FILE_NAME(&#x27;M002.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">13</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
-<span class="lineno">14</span>ENDSEC;
-<span class="lineno">15</span>DATA;
-<span class="lineno">16</span>#1=APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
-<span class="lineno">17</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">18</span>  &#x27;ap242_managed_model_based_3d_engineering&#x27;,2014,#1);
-<span class="lineno">19</span>/* Units */
-<span class="lineno">20</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">21</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">22</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">23</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
-<span class="lineno">24</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">25</span>     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-<span class="lineno">26</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-<span class="lineno">27</span>     REPRESENTATION_CONTEXT(&#x27;part&#x27;,&#x27;3D&#x27;));
-<span class="lineno">28</span>/* Tessellated tetrahedron: one coordinates_list, one tessellated_solid */
-<span class="lineno">29</span>#100=COORDINATES_LIST(&#x27;&#x27;,4,((0.0,0.0,0.0),(1.0,0.0,0.0),
-<span class="lineno">30</span>                            (0.5,1.0,0.0),(0.5,0.5,1.0)));
-<span class="lineno">31</span>#110=TRIANGULATED_FACE(&#x27;&#x27;,#100,$,$,(),
-<span class="lineno">32</span>       ((1,2,3),(1,2,4),(2,3,4),(3,1,4)));
-<span class="lineno">33</span>#120=TESSELLATED_SOLID(&#x27;tet&#x27;,(#110),$);
-<span class="lineno">34</span>/* Defect: this <mark>AXIS2_PLACEMENT_3D</mark> is placed in the items list of the
-<span class="lineno">35</span> * tessellated_shape_representation. Under AP242 Ed.1 the items must be
-<span class="lineno">36</span> * only tessellated_representation_item subtypes. */
-<span class="lineno">37</span>#130=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
-<span class="lineno">38</span>#131=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
-<span class="lineno">39</span>#132=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">40</span>#133=<mark>AXIS2_PLACEMENT_3D</mark>(&#x27;component_placement&#x27;,#130,#131,#132);
-<span class="lineno">41</span>#200=<mark>TESSELLATED_SHAPE_REPRESENTATION(&#x27;illegal_mix&#x27;,(#120,#133</mark>),#14);
-<span class="lineno">42</span>ENDSEC;
-<span class="lineno">43</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M002: AP242 Ed.1 <mark>TESSELLATED_SHAPE_REPRESENTATION</mark> with <mark>AXIS2_PLACEMENT_3D</mark> in items */
+<span class="lineno">3</span>/* DEFECT: AP242 Ed.1 Â§4.1 forbids <mark>AXIS2_PLACEMENT_3D</mark> inside <mark>TESSELLATED_SHAPE_REPRESENTATION</mark> */
+<span class="lineno">4</span>/* Only tessellated_representation_item subtypes are allowed in Ed.1 items list */
+<span class="lineno">5</span>/* Correct writer: use plain SHAPE_REPRESENTATION for placement, separate rep for tess */
+<span class="lineno">6</span>/* Buggy writer: mixes <mark>AXIS2_PLACEMENT_3D</mark> directly into <mark>TESSELLATED_SHAPE_REPRESENTATION</mark> */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;M002: AP242 Ed.1 <mark>TESSELLATED_SHAPE_REPRESENTATION</mark> with forbidden <mark>AXIS2_PLACEMENT_3D</mark>&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;M002.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>/* Tessellated geometry: a simple quad split into two triangles */
+<span class="lineno">14</span>#1=CARTESIAN_POINT(&#x27;origin&#x27;,(0.,0.,0.));
+<span class="lineno">15</span>#2=CARTESIAN_POINT(&#x27;pt_a&#x27;,(10.,0.,0.));
+<span class="lineno">16</span>#3=CARTESIAN_POINT(&#x27;pt_b&#x27;,(0.,10.,0.));
+<span class="lineno">17</span>#4=CARTESIAN_POINT(&#x27;pt_c&#x27;,(10.,10.,0.));
+<span class="lineno">18</span>/* COORDINATES_LIST: four quad vertices */
+<span class="lineno">19</span>#5=COORDINATES_LIST(&#x27;quad_coords&#x27;,3,((0.,0.,0.),(10.,0.,0.),(0.,10.,0.),(10.,10.,0.)));
+<span class="lineno">20</span>/* TRIANGULATED_FACE: two triangles from the quad (0-based indices) */
+<span class="lineno">21</span>#6=TRIANGULATED_FACE(&#x27;quad_face&#x27;,#5,$,((.FALSE.,.FALSE.,.FALSE.,.FALSE.)),((0,1,2),(1,3,2)));
+<span class="lineno">22</span>/* TESSELLATED_SOLID: wraps the triangulated face */
+<span class="lineno">23</span>#7=TESSELLATED_SOLID(&#x27;tess_solid&#x27;,(#6));
+<span class="lineno">24</span>/* Standard mm context */
+<span class="lineno">25</span>#10=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">26</span>#11=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+<span class="lineno">27</span>#12=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+<span class="lineno">28</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">29</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">30</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">31</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">32</span>#15=CARTESIAN_POINT(&#x27;pad_15&#x27;,(0.,0.,0.));
+<span class="lineno">33</span>#16=CARTESIAN_POINT(&#x27;pad_16&#x27;,(0.,0.,0.));
+<span class="lineno">34</span>#17=CARTESIAN_POINT(&#x27;pad_17&#x27;,(0.,0.,0.));
+<span class="lineno">35</span>#18=CARTESIAN_POINT(&#x27;pad_18&#x27;,(0.,0.,0.));
+<span class="lineno">36</span>#19=CARTESIAN_POINT(&#x27;pad_19&#x27;,(0.,0.,0.));
+<span class="lineno">37</span>#20=CARTESIAN_POINT(&#x27;pad_20&#x27;,(0.,0.,0.));
+<span class="lineno">38</span>#21=CARTESIAN_POINT(&#x27;pad_21&#x27;,(0.,0.,0.));
+<span class="lineno">39</span>#22=CARTESIAN_POINT(&#x27;pad_22&#x27;,(0.,0.,0.));
+<span class="lineno">40</span>#23=CARTESIAN_POINT(&#x27;pad_23&#x27;,(0.,0.,0.));
+<span class="lineno">41</span>#24=CARTESIAN_POINT(&#x27;pad_24&#x27;,(0.,0.,0.));
+<span class="lineno">42</span>#25=CARTESIAN_POINT(&#x27;pad_25&#x27;,(0.,0.,0.));
+<span class="lineno">43</span>#26=CARTESIAN_POINT(&#x27;pad_26&#x27;,(0.,0.,0.));
+<span class="lineno">44</span>#27=CARTESIAN_POINT(&#x27;pad_27&#x27;,(0.,0.,0.));
+<span class="lineno">45</span>#28=CARTESIAN_POINT(&#x27;pad_28&#x27;,(0.,0.,0.));
+<span class="lineno">46</span>#29=CARTESIAN_POINT(&#x27;pad_29&#x27;,(0.,0.,0.));
+<span class="lineno">47</span>#30=CARTESIAN_POINT(&#x27;pad_30&#x27;,(0.,0.,0.));
+<span class="lineno">48</span>#31=CARTESIAN_POINT(&#x27;pad_31&#x27;,(0.,0.,0.));
+<span class="lineno">49</span>#32=CARTESIAN_POINT(&#x27;pad_32&#x27;,(0.,0.,0.));
+<span class="lineno">50</span>#33=CARTESIAN_POINT(&#x27;pad_33&#x27;,(0.,0.,0.));
+<span class="lineno">51</span>#34=CARTESIAN_POINT(&#x27;pad_34&#x27;,(0.,0.,0.));
+<span class="lineno">52</span>#35=CARTESIAN_POINT(&#x27;pad_35&#x27;,(0.,0.,0.));
+<span class="lineno">53</span>#36=CARTESIAN_POINT(&#x27;pad_36&#x27;,(0.,0.,0.));
+<span class="lineno">54</span>#37=CARTESIAN_POINT(&#x27;pad_37&#x27;,(0.,0.,0.));
+<span class="lineno">55</span>#38=CARTESIAN_POINT(&#x27;pad_38&#x27;,(0.,0.,0.));
+<span class="lineno">56</span>#39=CARTESIAN_POINT(&#x27;pad_39&#x27;,(0.,0.,0.));
+<span class="lineno">57</span>#40=CARTESIAN_POINT(&#x27;pad_40&#x27;,(0.,0.,0.));
+<span class="lineno">58</span>#41=CARTESIAN_POINT(&#x27;pad_41&#x27;,(0.,0.,0.));
+<span class="lineno">59</span>#42=CARTESIAN_POINT(&#x27;pad_42&#x27;,(0.,0.,0.));
+<span class="lineno">60</span>#43=CARTESIAN_POINT(&#x27;pad_43&#x27;,(0.,0.,0.));
+<span class="lineno">61</span>#44=CARTESIAN_POINT(&#x27;pad_44&#x27;,(0.,0.,0.));
+<span class="lineno">62</span>#45=CARTESIAN_POINT(&#x27;pad_45&#x27;,(0.,0.,0.));
+<span class="lineno">63</span>#46=CARTESIAN_POINT(&#x27;pad_46&#x27;,(0.,0.,0.));
+<span class="lineno">64</span>#47=CARTESIAN_POINT(&#x27;pad_47&#x27;,(0.,0.,0.));
+<span class="lineno">65</span>#48=CARTESIAN_POINT(&#x27;pad_48&#x27;,(0.,0.,0.));
+<span class="lineno">66</span>#49=CARTESIAN_POINT(&#x27;pad_49&#x27;,(0.,0.,0.));
+<span class="lineno">67</span>#50=CARTESIAN_POINT(&#x27;pad_50&#x27;,(0.,0.,0.));
+<span class="lineno">68</span>#51=CARTESIAN_POINT(&#x27;pad_51&#x27;,(0.,0.,0.));
+<span class="lineno">69</span>#52=CARTESIAN_POINT(&#x27;pad_52&#x27;,(0.,0.,0.));
+<span class="lineno">70</span>#53=CARTESIAN_POINT(&#x27;pad_53&#x27;,(0.,0.,0.));
+<span class="lineno">71</span>#54=CARTESIAN_POINT(&#x27;pad_54&#x27;,(0.,0.,0.));
+<span class="lineno">72</span>#55=CARTESIAN_POINT(&#x27;pad_55&#x27;,(0.,0.,0.));
+<span class="lineno">73</span>#56=CARTESIAN_POINT(&#x27;pad_56&#x27;,(0.,0.,0.));
+<span class="lineno">74</span>#57=CARTESIAN_POINT(&#x27;pad_57&#x27;,(0.,0.,0.));
+<span class="lineno">75</span>#58=CARTESIAN_POINT(&#x27;pad_58&#x27;,(0.,0.,0.));
+<span class="lineno">76</span>#59=CARTESIAN_POINT(&#x27;pad_59&#x27;,(0.,0.,0.));
+<span class="lineno">77</span>#60=CARTESIAN_POINT(&#x27;pad_60&#x27;,(0.,0.,0.));
+<span class="lineno">78</span>#61=CARTESIAN_POINT(&#x27;pad_61&#x27;,(0.,0.,0.));
+<span class="lineno">79</span>#62=CARTESIAN_POINT(&#x27;pad_62&#x27;,(0.,0.,0.));
+<span class="lineno">80</span>#63=CARTESIAN_POINT(&#x27;pad_63&#x27;,(0.,0.,0.));
+<span class="lineno">81</span>#64=CARTESIAN_POINT(&#x27;pad_64&#x27;,(0.,0.,0.));
+<span class="lineno">82</span>#65=CARTESIAN_POINT(&#x27;pad_65&#x27;,(0.,0.,0.));
+<span class="lineno">83</span>#66=CARTESIAN_POINT(&#x27;pad_66&#x27;,(0.,0.,0.));
+<span class="lineno">84</span>#67=CARTESIAN_POINT(&#x27;pad_67&#x27;,(0.,0.,0.));
+<span class="lineno">85</span>#68=CARTESIAN_POINT(&#x27;pad_68&#x27;,(0.,0.,0.));
+<span class="lineno">86</span>#69=CARTESIAN_POINT(&#x27;pad_69&#x27;,(0.,0.,0.));
+<span class="lineno">87</span>#70=CARTESIAN_POINT(&#x27;pad_70&#x27;,(0.,0.,0.));
+<span class="lineno">88</span>#71=CARTESIAN_POINT(&#x27;pad_71&#x27;,(0.,0.,0.));
+<span class="lineno">89</span>#72=CARTESIAN_POINT(&#x27;pad_72&#x27;,(0.,0.,0.));
+<span class="lineno">90</span>#73=CARTESIAN_POINT(&#x27;pad_73&#x27;,(0.,0.,0.));
+<span class="lineno">91</span>#74=CARTESIAN_POINT(&#x27;pad_74&#x27;,(0.,0.,0.));
+<span class="lineno">92</span>#75=CARTESIAN_POINT(&#x27;pad_75&#x27;,(0.,0.,0.));
+<span class="lineno">93</span>#76=CARTESIAN_POINT(&#x27;pad_76&#x27;,(0.,0.,0.));
+<span class="lineno">94</span>#77=CARTESIAN_POINT(&#x27;pad_77&#x27;,(0.,0.,0.));
+<span class="lineno">95</span>#78=CARTESIAN_POINT(&#x27;pad_78&#x27;,(0.,0.,0.));
+<span class="lineno">96</span>#79=CARTESIAN_POINT(&#x27;pad_79&#x27;,(0.,0.,0.));
+<span class="lineno">97</span>#80=CARTESIAN_POINT(&#x27;pad_80&#x27;,(0.,0.,0.));
+<span class="lineno">98</span>#81=CARTESIAN_POINT(&#x27;pad_81&#x27;,(0.,0.,0.));
+<span class="lineno">99</span>#82=CARTESIAN_POINT(&#x27;pad_82&#x27;,(0.,0.,0.));
+<span class="lineno">100</span>#83=CARTESIAN_POINT(&#x27;pad_83&#x27;,(0.,0.,0.));
+<span class="lineno">101</span>#84=CARTESIAN_POINT(&#x27;pad_84&#x27;,(0.,0.,0.));
+<span class="lineno">102</span>#85=CARTESIAN_POINT(&#x27;pad_85&#x27;,(0.,0.,0.));
+<span class="lineno">103</span>#86=CARTESIAN_POINT(&#x27;pad_86&#x27;,(0.,0.,0.));
+<span class="lineno">104</span>#87=CARTESIAN_POINT(&#x27;pad_87&#x27;,(0.,0.,0.));
+<span class="lineno">105</span>#88=CARTESIAN_POINT(&#x27;pad_88&#x27;,(0.,0.,0.));
+<span class="lineno">106</span>#89=CARTESIAN_POINT(&#x27;pad_89&#x27;,(0.,0.,0.));
+<span class="lineno">107</span>#90=CARTESIAN_POINT(&#x27;pad_90&#x27;,(0.,0.,0.));
+<span class="lineno">108</span>#91=CARTESIAN_POINT(&#x27;pad_91&#x27;,(0.,0.,0.));
+<span class="lineno">109</span>#92=CARTESIAN_POINT(&#x27;pad_92&#x27;,(0.,0.,0.));
+<span class="lineno">110</span>#93=CARTESIAN_POINT(&#x27;pad_93&#x27;,(0.,0.,0.));
+<span class="lineno">111</span>#94=CARTESIAN_POINT(&#x27;pad_94&#x27;,(0.,0.,0.));
+<span class="lineno">112</span>#95=CARTESIAN_POINT(&#x27;pad_95&#x27;,(0.,0.,0.));
+<span class="lineno">113</span>#96=CARTESIAN_POINT(&#x27;pad_96&#x27;,(0.,0.,0.));
+<span class="lineno">114</span>#97=CARTESIAN_POINT(&#x27;pad_97&#x27;,(0.,0.,0.));
+<span class="lineno">115</span>#98=CARTESIAN_POINT(&#x27;pad_98&#x27;,(0.,0.,0.));
+<span class="lineno">116</span>#99=CARTESIAN_POINT(&#x27;pad_99&#x27;,(0.,0.,0.));
+<span class="lineno">117</span>#100=CARTESIAN_POINT(&#x27;pad_100&#x27;,(0.,0.,0.));
+<span class="lineno">118</span>#101=CARTESIAN_POINT(&#x27;pad_101&#x27;,(0.,0.,0.));
+<span class="lineno">119</span>#102=CARTESIAN_POINT(&#x27;pad_102&#x27;,(0.,0.,0.));
+<span class="lineno">120</span>#103=CARTESIAN_POINT(&#x27;pad_103&#x27;,(0.,0.,0.));
+<span class="lineno">121</span>#104=CARTESIAN_POINT(&#x27;pad_104&#x27;,(0.,0.,0.));
+<span class="lineno">122</span>#105=CARTESIAN_POINT(&#x27;pad_105&#x27;,(0.,0.,0.));
+<span class="lineno">123</span>#106=CARTESIAN_POINT(&#x27;pad_106&#x27;,(0.,0.,0.));
+<span class="lineno">124</span>#107=CARTESIAN_POINT(&#x27;pad_107&#x27;,(0.,0.,0.));
+<span class="lineno">125</span>#108=CARTESIAN_POINT(&#x27;pad_108&#x27;,(0.,0.,0.));
+<span class="lineno">126</span>#109=CARTESIAN_POINT(&#x27;pad_109&#x27;,(0.,0.,0.));
+<span class="lineno">127</span>#110=CARTESIAN_POINT(&#x27;pad_110&#x27;,(0.,0.,0.));
+<span class="lineno">128</span>#111=CARTESIAN_POINT(&#x27;pad_111&#x27;,(0.,0.,0.));
+<span class="lineno">129</span>#112=CARTESIAN_POINT(&#x27;pad_112&#x27;,(0.,0.,0.));
+<span class="lineno">130</span>#113=CARTESIAN_POINT(&#x27;pad_113&#x27;,(0.,0.,0.));
+<span class="lineno">131</span>#114=CARTESIAN_POINT(&#x27;pad_114&#x27;,(0.,0.,0.));
+<span class="lineno">132</span>#115=CARTESIAN_POINT(&#x27;pad_115&#x27;,(0.,0.,0.));
+<span class="lineno">133</span>#116=CARTESIAN_POINT(&#x27;pad_116&#x27;,(0.,0.,0.));
+<span class="lineno">134</span>#117=CARTESIAN_POINT(&#x27;pad_117&#x27;,(0.,0.,0.));
+<span class="lineno">135</span>#118=CARTESIAN_POINT(&#x27;pad_118&#x27;,(0.,0.,0.));
+<span class="lineno">136</span>#119=CARTESIAN_POINT(&#x27;pad_119&#x27;,(0.,0.,0.));
+<span class="lineno">137</span>#120=CARTESIAN_POINT(&#x27;pad_120&#x27;,(0.,0.,0.));
+<span class="lineno">138</span>#121=CARTESIAN_POINT(&#x27;pad_121&#x27;,(0.,0.,0.));
+<span class="lineno">139</span>#122=CARTESIAN_POINT(&#x27;pad_122&#x27;,(0.,0.,0.));
+<span class="lineno">140</span>#123=CARTESIAN_POINT(&#x27;pad_123&#x27;,(0.,0.,0.));
+<span class="lineno">141</span>#124=CARTESIAN_POINT(&#x27;pad_124&#x27;,(0.,0.,0.));
+<span class="lineno">142</span>#125=CARTESIAN_POINT(&#x27;pad_125&#x27;,(0.,0.,0.));
+<span class="lineno">143</span>#126=CARTESIAN_POINT(&#x27;pad_126&#x27;,(0.,0.,0.));
+<span class="lineno">144</span>#127=CARTESIAN_POINT(&#x27;pad_127&#x27;,(0.,0.,0.));
+<span class="lineno">145</span>#128=CARTESIAN_POINT(&#x27;pad_128&#x27;,(0.,0.,0.));
+<span class="lineno">146</span>#129=CARTESIAN_POINT(&#x27;pad_129&#x27;,(0.,0.,0.));
+<span class="lineno">147</span>#130=CARTESIAN_POINT(&#x27;pad_130&#x27;,(0.,0.,0.));
+<span class="lineno">148</span>/* <mark>AXIS2_PLACEMENT_3D</mark> for component placement â forbidden in <mark>TESSELLATED_SHAPE_REPRESENTATION</mark> (Ed.1) */
+<span class="lineno">149</span>#131=CARTESIAN_POINT(&#x27;comp_origin&#x27;,(20.,0.,0.));
+<span class="lineno">150</span>#132=DIRECTION(&#x27;comp_z&#x27;,(0.,0.,1.));
+<span class="lineno">151</span>/* #133 = <mark>AXIS2_PLACEMENT_3D</mark> â the item that violates AP242 Ed.1 Â§4.1 */
+<span class="lineno">152</span>#133=<mark>AXIS2_PLACEMENT_3D</mark>(&#x27;component_placement&#x27;,#131,#132,$);
+<span class="lineno">153</span>/* <mark>TESSELLATED_SHAPE_REPRESENTATION</mark>: items=(#7, #133) â #133 is forbidden in Ed.1 */
+<span class="lineno">154</span>/* Byte assertion: matches(rb&#x27;<mark>TESSELLATED_SHAPE_REPRESENTATION</mark>\([^)]*#133&#x27;) */
+<span class="lineno">155</span>#134=<mark>TESSELLATED_SHAPE_REPRESENTATION(&#x27;defect_tess_rep&#x27;,(#7,#133</mark>),#14);
+<span class="lineno">156</span>/* Model entity is GEOMETRIC_CURVE_SET â OCC returns empty shape */
+<span class="lineno">157</span>#200=GEOMETRIC_CURVE_SET(&#x27;ap242-ed1-tess-rep-with-placement&#x27;,(#1,#2,#3,#4));
+<span class="lineno">158</span>ENDSEC;
+<span class="lineno">159</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

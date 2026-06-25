@@ -43,6 +43,9 @@
 <li><code>contains(b&#x27;WORKPLAN(&#x27;)</code></li>
 <li><code>contains(b&#x27;MACHINING_OPERATION&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -58,32 +61,66 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M092 - AP238 workplan with workingsteps in non-executable order.
-<span class="lineno">3</span> * Defect: a finishing operation appears in the workplan element list
-<span class="lineno">4</span> * BEFORE the roughing operation that targets the same feature. AP238
-<span class="lineno">5</span> * Â§6.4 makes the workplan list the executable sequence; running this
-<span class="lineno">6</span> * file as written cuts the finish pass into raw stock. */
-<span class="lineno">7</span>HEADER;
-<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;M092 test case&#x27;,&#x27;AP238 workplan order finishing before roughing&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">9</span>FILE_NAME(&#x27;M092.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">10</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 1 0 0 1 }&#x27;));
-<span class="lineno">11</span>ENDSEC;
-<span class="lineno">12</span>DATA;
-<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;numerical_control_machining&#x27;);
-<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">15</span>  &#x27;numerical_control_machining&#x27;,2007,#1);
-<span class="lineno">16</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">17</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">18</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-<span class="lineno">19</span>     REPRESENTATION_CONTEXT(&#x27;nc&#x27;,&#x27;3D&#x27;));
-<span class="lineno">20</span>/* Both ops target the same feature #500. */
-<span class="lineno">21</span>#100=<mark>MACHINING_OPERATION</mark>(&#x27;finish_pocket&#x27;,$,$,$,$,#500);
-<span class="lineno">22</span>#101=<mark>MACHINING_OPERATION</mark>(&#x27;rough_pocket&#x27;,$,$,$,$,#500);
-<span class="lineno">23</span>/* Defect: WORKPLAN lists finish (#100) before rough (#101). */
-<span class="lineno">24</span>#200=<mark>WORKPLAN(</mark>&#x27;main&#x27;,(#100,#101),$,$,$);
-<span class="lineno">25</span>#500=CARTESIAN_POINT(&#x27;feature_locator&#x27;,(50.0,30.0,0.0));
-<span class="lineno">26</span>ENDSEC;
-<span class="lineno">27</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M092: AP238 workplan workingsteps in non-executable order */
+<span class="lineno">3</span>/* DEFECT: WORKPLAN lists finish_step before rough_step on same feature */
+<span class="lineno">4</span>/* Per AP238 Â§6.4, its_elements list is the executable sequence */
+<span class="lineno">5</span>/* Controller runs finish pass before roughing creates clearance â tool breakage */
+<span class="lineno">6</span>/* Byte assertion: contains(b&#x27;<mark>AP238_STEP_NC_MIM</mark>&#x27;) */
+<span class="lineno">7</span>/* Byte assertion: contains(b&#x27;<mark>WORKPLAN(</mark>&#x27;) */
+<span class="lineno">8</span>/* Byte assertion: contains(b&#x27;<mark>MACHINING_OPERATION</mark>&#x27;) */
+<span class="lineno">9</span>HEADER;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;M092: AP238 WORKPLAN with finishing before roughing&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;M092.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>/* Byte assertion: contains(b&#x27;<mark>AP238_STEP_NC_MIM</mark>&#x27;) */
+<span class="lineno">13</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 1 0 0 }&#x27;));
+<span class="lineno">14</span>ENDSEC;
+<span class="lineno">15</span>DATA;
+<span class="lineno">16</span>#1=APPLICATION_CONTEXT(&#x27;step_nc_mim&#x27;);
+<span class="lineno">17</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">18</span>  &#x27;ap238_step_nc_mim&#x27;,2007,#1);
+<span class="lineno">19</span>/* Standard unit context â mm */
+<span class="lineno">20</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">21</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">22</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">23</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">24</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">25</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">26</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">27</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">28</span>  REPRESENTATION_CONTEXT(&#x27;nc&#x27;,&#x27;3D&#x27;));
+<span class="lineno">29</span>/* Shared MACHINED_FEATURE that both workingsteps operate on */
+<span class="lineno">30</span>/* Both roughing and finishing target the same pocket */
+<span class="lineno">31</span>#50=MACHINED_FEATURE(&#x27;pocket_a&#x27;,$,$,$,$,$);
+<span class="lineno">32</span>/* Byte assertion: contains(b&#x27;<mark>MACHINING_OPERATION</mark>&#x27;) */
+<span class="lineno">33</span>/* Roughing pass: removes bulk material from pocket_a */
+<span class="lineno">34</span>#60=MACHINING_TOOL(&#x27;roughing_endmill&#x27;,$,$,$);
+<span class="lineno">35</span>#70=<mark>MACHINING_OPERATION</mark>(&#x27;rough_pocket_a&#x27;,#60,$,$,$,$,$,$,#50,$,$);
+<span class="lineno">36</span>/* Finishing pass: light cuts to achieve final tolerance on pocket_a */
+<span class="lineno">37</span>#61=MACHINING_TOOL(&#x27;finishing_endmill&#x27;,$,$,$);
+<span class="lineno">38</span>#71=<mark>MACHINING_OPERATION</mark>(&#x27;finish_pocket_a&#x27;,#61,$,$,$,$,$,$,#50,$,$);
+<span class="lineno">39</span>/* Workingsteps wrapping each operation */
+<span class="lineno">40</span>#80=MACHINING_WORKINGSTEP(&#x27;rough_step&#x27;,#50,#70,$);
+<span class="lineno">41</span>#81=MACHINING_WORKINGSTEP(&#x27;finish_step&#x27;,#50,#71,$);
+<span class="lineno">42</span>/* Byte assertion: contains(b&#x27;<mark>WORKPLAN(</mark>&#x27;) */
+<span class="lineno">43</span>/* DEFECT: WORKPLAN lists (#81 finish, #80 rough) â finishing before roughing */
+<span class="lineno">44</span>/* Executable order is: finish_step THEN rough_step â physically wrong */
+<span class="lineno">45</span>/* Correct order would be: (#80 rough, #81 finish) */
+<span class="lineno">46</span>#90=<mark>WORKPLAN(</mark>&#x27;main&#x27;,(#81,#80),$,$,$);
+<span class="lineno">47</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">48</span>#300=GEOMETRIC_CURVE_SET(&#x27;ap238-workplan-finishing-before-roughing-wrong-order&#x27;,
+<span class="lineno">49</span>  (#50,#60,#61,#70,#71,#80,#81,#90));
+<span class="lineno">50</span>/* Product chain */
+<span class="lineno">51</span>#400=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">52</span>#401=PRODUCT_CONTEXT(&#x27;&#x27;,#400,&#x27;mechanical&#x27;);
+<span class="lineno">53</span>#402=PRODUCT(&#x27;M092&#x27;,&#x27;M092&#x27;,&#x27;M092&#x27;,(#401));
+<span class="lineno">54</span>#403=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#402);
+<span class="lineno">55</span>#404=PRODUCT_DEFINITION_CONTEXT(#400,&#x27;design&#x27;);
+<span class="lineno">56</span>#405=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#403,#404);
+<span class="lineno">57</span>#406=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#405);
+<span class="lineno">58</span>#407=SHAPE_REPRESENTATION(&#x27;&#x27;,(#300),#14);
+<span class="lineno">59</span>#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
+<span class="lineno">60</span>ENDSEC;
+<span class="lineno">61</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

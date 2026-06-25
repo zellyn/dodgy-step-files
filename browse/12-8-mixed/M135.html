@@ -44,6 +44,9 @@
 <li><code>contains(b&#x27;DESIGN_CONTEXT&#x27;)</code></li>
 <li><code>contains(b&#x27;MECHANICAL_CONTEXT&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -51,7 +54,7 @@
 <tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
 <tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
-<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>reject(E_UNRESOLVED_REFS)</code></td></tr>
 <tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
 </tbody></table>
 </section>
@@ -59,30 +62,64 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M135 - AP203 declares <mark>CONFIG_CONTROL_DESIGN</mark> (CC1) but uses CC2-only
-<span class="lineno">3</span> * entities.
-<span class="lineno">4</span> * Defect: a file declares the legacy <mark>CONFIG_CONTROL_DESIGN</mark> schema in
-<span class="lineno">5</span> * its FILE_SCHEMA, yet uses entities such as <mark>DESIGN_CONTEXT</mark> and
-<span class="lineno">6</span> * <mark>MECHANICAL_CONTEXT</mark> that were introduced in the AP203 second-edition
-<span class="lineno">7</span> * (CC2 / CCD2) schema. CC1-strict readers will reject the unknown
-<span class="lineno">8</span> * entities; lax readers may accept and produce inconsistent results. */
-<span class="lineno">9</span>HEADER;
-<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;M135 test case&#x27;,&#x27;AP203 CC1 schema with CC2 entities&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">11</span>FILE_NAME(&#x27;M135.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">12</span>FILE_SCHEMA((&#x27;<mark>CONFIG_CONTROL_DESIGN</mark>&#x27;));
-<span class="lineno">13</span>ENDSEC;
-<span class="lineno">14</span>DATA;
-<span class="lineno">15</span>#1=APPLICATION_CONTEXT(&#x27;configuration controlled 3D design of mechanical parts and assemblies&#x27;);
-<span class="lineno">16</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;config_control_design&#x27;,1994,#1);
-<span class="lineno">17</span>/* Defect: <mark>DESIGN_CONTEXT</mark> and <mark>MECHANICAL_CONTEXT</mark> are CC2-only entities,
-<span class="lineno">18</span> * not in the original CC1 schema declared above. */
-<span class="lineno">19</span>#3=<mark>DESIGN_CONTEXT</mark>(&#x27;design_ctx&#x27;,#1,&#x27;design&#x27;);
-<span class="lineno">20</span>#4=<mark>MECHANICAL_CONTEXT</mark>(&#x27;mech_ctx&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">21</span>#10=PRODUCT(&#x27;part_x&#x27;,&#x27;part_x&#x27;,&#x27;sample&#x27;,(#3,#4));
-<span class="lineno">22</span>#20=PRODUCT_DEFINITION_FORMATION(&#x27;rev_A&#x27;,&#x27;released&#x27;,#10);
-<span class="lineno">23</span>#30=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#20,#3);
-<span class="lineno">24</span>ENDSEC;
-<span class="lineno">25</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M135: AP203 CC1 file using CC2-only <mark>DESIGN_CONTEXT</mark> and <mark>MECHANICAL_CONTEXT</mark> */
+<span class="lineno">3</span>/* DEFECT: FILE_SCHEMA declares <mark>CONFIG_CONTROL_DESIGN</mark> (CC1 / Ed.1) */
+<span class="lineno">4</span>/* DATA section uses <mark>DESIGN_CONTEXT</mark> and <mark>MECHANICAL_CONTEXT</mark> added in CC2 (Ed.2) */
+<span class="lineno">5</span>/* CC1-strict readers reject with &#x27;unknown entity type&#x27;; lax readers get inconsistency */
+<span class="lineno">6</span>/* Correct fix: upgrade FILE_SCHEMA to CC2, or strip CC2-only entities */
+<span class="lineno">7</span>/* Byte assertion: contains(b&#x27;<mark>CONFIG_CONTROL_DESIGN</mark>&#x27;) */
+<span class="lineno">8</span>/* Byte assertion: contains(b&#x27;<mark>DESIGN_CONTEXT</mark>&#x27;) */
+<span class="lineno">9</span>/* Byte assertion: contains(b&#x27;<mark>MECHANICAL_CONTEXT</mark>&#x27;) */
+<span class="lineno">10</span>HEADER;
+<span class="lineno">11</span>FILE_DESCRIPTION((&#x27;M135: AP203 CC1 schema declaration with CC2-only entities <mark>DESIGN_CONTEXT</mark> <mark>MECHANICAL_CONTEXT</mark>&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">12</span>FILE_NAME(&#x27;M135.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">13</span>/* Byte assertion: contains(b&#x27;<mark>CONFIG_CONTROL_DESIGN</mark>&#x27;) */
+<span class="lineno">14</span>/* CC1 / Ed.1 schema declaration â does NOT include CC2-only entity types */
+<span class="lineno">15</span>FILE_SCHEMA((&#x27;<mark>CONFIG_CONTROL_DESIGN</mark> { 1 0 10303 203 1 0 0 }&#x27;));
+<span class="lineno">16</span>ENDSEC;
+<span class="lineno">17</span>DATA;
+<span class="lineno">18</span>#1=APPLICATION_CONTEXT(&#x27;configuration controlled 3D designs of mechanical parts and assemblies&#x27;);
+<span class="lineno">19</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">20</span>  &#x27;config_control_design&#x27;,1994,#1);
+<span class="lineno">21</span>/* Standard unit context (mm) */
+<span class="lineno">22</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">23</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">24</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">25</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">26</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">27</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">28</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">29</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">30</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">31</span>/* Byte assertion: contains(b&#x27;<mark>MECHANICAL_CONTEXT</mark>&#x27;) */
+<span class="lineno">32</span>/* DEFECT: <mark>MECHANICAL_CONTEXT</mark> is a CC2-only entity; CC1 does not define this type */
+<span class="lineno">33</span>/* CC1 equivalent is PRODUCT_CONTEXT with discipline_type=&#x27;mechanical&#x27; */
+<span class="lineno">34</span>/* A legacy PDM exporter that switched from CC2 to CC1 header but forgot to strip entities */
+<span class="lineno">35</span>#20=<mark>MECHANICAL_CONTEXT</mark>(&#x27;MECH&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">36</span>/* Byte assertion: contains(b&#x27;<mark>DESIGN_CONTEXT</mark>&#x27;) */
+<span class="lineno">37</span>/* DEFECT: <mark>DESIGN_CONTEXT</mark> is a CC2-only entity; not present in CC1 schema *)   
+<span class="lineno">38</span>/* CC1 equivalent is PRODUCT_DEFINITION_CONTEXT with lifecycle_stage=&#x27;design&#x27; */
+<span class="lineno">39</span>#21=<mark>DESIGN_CONTEXT</mark>(&#x27;DESIGN&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">40</span>/* Product using the CC2-only context entities in a CC1-declared file */
+<span class="lineno">41</span>#30=PRODUCT(&#x27;PART-099&#x27;,&#x27;Valve Body&#x27;,&#x27;Main flow control body&#x27;,(#20));
+<span class="lineno">42</span>#31=PRODUCT_DEFINITION_FORMATION(&#x27;rev_A&#x27;,&#x27;Production release&#x27;,#30);
+<span class="lineno">43</span>/* PRODUCT_DEFINITION references <mark>DESIGN_CONTEXT</mark> (#21) â another CC2-only type *)  
+<span class="lineno">44</span>#32=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#31,#21);
+<span class="lineno">45</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">46</span>#500=GEOMETRIC_CURVE_SET(&#x27;ap203-cc1-schema-with-cc2-only-entities&#x27;,
+<span class="lineno">47</span>  (#20,#21,#30,#31,#32));
+<span class="lineno">48</span>/* Product chain */
+<span class="lineno">49</span>#600=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">50</span>#601=PRODUCT_CONTEXT(&#x27;&#x27;,#600,&#x27;mechanical&#x27;);
+<span class="lineno">51</span>#602=PRODUCT(&#x27;M135&#x27;,&#x27;M135&#x27;,&#x27;M135&#x27;,(#601));
+<span class="lineno">52</span>#603=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#602);
+<span class="lineno">53</span>#604=PRODUCT_DEFINITION_CONTEXT(#600,&#x27;design&#x27;);
+<span class="lineno">54</span>#605=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#603,#604);
+<span class="lineno">55</span>#606=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#605);
+<span class="lineno">56</span>#607=SHAPE_REPRESENTATION(&#x27;&#x27;,(#500),#14);
+<span class="lineno">57</span>#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
+<span class="lineno">58</span>ENDSEC;
+<span class="lineno">59</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

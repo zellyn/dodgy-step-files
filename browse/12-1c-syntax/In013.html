@@ -45,6 +45,9 @@
 <li><code>contains(b&#x27;HEADER;&#x27;)</code></li>
 <li><code>count(b&#x27;ENDSEC;&#x27;) &gt;= 2</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -60,18 +63,18 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* In013 - Entity type unrecognized; transfer status remains Void.
-<span class="lineno">3</span> * Defect: a hypothetical AP242 ed.2 entity that the reader&#x27;s actor
-<span class="lineno">4</span> * pool doesn&#x27;t know about. */
-<span class="lineno">5</span><mark>HEADER;</mark>
-<span class="lineno">6</span>FILE_DESCRIPTION((&#x27;In013 - unrecognised entity type&#x27;,&#x27;Pass C gap-fill&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">7</span>FILE_NAME(&#x27;In013.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;gap-fill C&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">8</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
-<span class="lineno">9</span><mark>ENDSEC;</mark>
-<span class="lineno">10</span><mark>DATA;</mark>
-<span class="lineno">11</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">12</span>/* Made-up entity type that no actor recognises */
-<span class="lineno">13</span>#10=HYPOTHETICAL_AP242_ED2_FUTURE_ENTITY(&#x27;unknown_type&#x27;,&#x27;params&#x27;,1.0);
+<span class="lineno">2</span>/* In013: Transfer Status remains Void after Defined was expected: unknown entity type in DATA section silently skipped; OCCT Transfer_StatusResult Void/Defined transitions (uncovered class evidence); a transfer process expected to produce a Defined result for an entity, but the result remains Void because no actor handled the entity type; the transfer log does not flag the void as an error; defect: DATA section contains HYPOTHETICAL_AP242_ED2_FUTURE_ENTITY â a made-up future type no standard schema defines and no kernel actor recognizes; the reader silently skips it; receiver must emit no-actor-for-entity-type-X warning; track unrecognized types in a per-file summary; never silently skip unknown entity types with no diagnostic; bug-reporter synonyms: entity type not transferred, kernel skipped entity silently, unknown entity type ignored, STEP entity skipped without warning, future-schema entity Void after transfer, transfer Status remains Void; GEOMETRIC_CURVE_SET IS NOT used â unknown entity type is the defect carrier */
+<span class="lineno">3</span><mark>HEADER;</mark>
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;In013&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;In013.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span><mark>ENDSEC;</mark>
+<span class="lineno">8</span><mark>DATA;</mark>
+<span class="lineno">9</span>/* Made-up future-schema entity: no kernel actor recognizes this type. */
+<span class="lineno">10</span>/* Transfer status stays Void with no diagnostic emitted. */
+<span class="lineno">11</span>#1=HYPOTHETICAL_AP242_ED2_FUTURE_ENTITY(&#x27;future_001&#x27;,42,&#x27;schema_version_9999&#x27;,(1.0,2.0,3.0),.UNKNOWN_ENUM_VALUE.);
+<span class="lineno">12</span>/* A second unknown entity to confirm the per-file summary lists both. */
+<span class="lineno">13</span>#2=HYPOTHETICAL_AP242_ED2_FUTURE_ENTITY(&#x27;future_002&#x27;,99,&#x27;schema_version_9999&#x27;,(4.0,5.0,6.0),.ANOTHER_UNKNOWN_VALUE.);
 <span class="lineno">14</span><mark>ENDSEC;</mark>
 <span class="lineno">15</span>END-ISO-10303-21;
 </pre>

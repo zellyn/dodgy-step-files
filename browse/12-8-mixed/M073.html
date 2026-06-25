@@ -16,7 +16,7 @@
 <p class="category">§12.8 mixed (sub-class: AP238 unit context)</p>
 <p class="severity-badge severity-p1">P1 — silent data loss</p>
 <p class="tag-pills">
-<a class="tag tag-units" href="../by-tag/units/index.html">units</a>
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
 </p>
 </header>
 <main>
@@ -37,70 +37,102 @@
 <section><h2>Notes</h2>
 <p>Synonyms: &quot;STEP-NC unit confusion&quot;, &quot;AP238 inch/mm mismatch&quot;, &quot;model and toolpath in different units&quot;. **See also**: U-prefix unit entries.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;AP238_STEP_NC_MIM&#x27;)</code></li>
 <li><code>contains(b&#x27;TRAJECTORY&#x27;)</code></li>
 <li><code>count_entity_def(b&#x27;GEOMETRIC_REPRESENTATION_ITEM&#x27;) &gt;= 1</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
-<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_on</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>signal(11)</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
-<tr><td><code>part21_strict</code></td><td><code>warn(W_COMPLEX_ORDER)</code></td></tr>
-<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>process_signal</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M073 - AP238 unit mismatch between part-coordinate and machine-coordinate
-<span class="lineno">3</span> * representation contexts.
-<span class="lineno">4</span> * Defect: the workpiece geometry is declared in a representation_context
-<span class="lineno">5</span> * with mm units; the toolpath is declared in a separate context with inch
-<span class="lineno">6</span> * units; nothing in the file links the two via a unit conversion or a
-<span class="lineno">7</span> * common parent context. A direct overlay produces a 25.4x scale error. */
+<span class="lineno">2</span>/* M073: AP238 part-coordinate (mm) vs machine-coordinate (inch) unit mismatch */
+<span class="lineno">3</span>/* DEFECT: two GEOMETRIC_REPRESENTATION_CONTEXTs in different units, no linking entity */
+<span class="lineno">4</span>/* Consumer overlaying toolpath on workpiece gets 25.4x scale error */
+<span class="lineno">5</span>/* Byte assertion: contains(b&#x27;<mark>AP238_STEP_NC_MIM</mark>&#x27;) */
+<span class="lineno">6</span>/* Byte assertion: contains(b&#x27;<mark>TRAJECTORY</mark>&#x27;) */
+<span class="lineno">7</span>/* Byte assertion: count_entity_def(b&#x27;GEOMETRIC_REPRESENTATION_ITEM&#x27;) &gt;= 1 */
 <span class="lineno">8</span>HEADER;
-<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;M073 test case&#x27;,&#x27;AP238 part vs machine coordinate unit mismatch&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">10</span>FILE_NAME(&#x27;M073.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">11</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 1 0 0 1 }&#x27;));
-<span class="lineno">12</span>ENDSEC;
-<span class="lineno">13</span>DATA;
-<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;numerical_control_machining&#x27;);
-<span class="lineno">15</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">16</span>  &#x27;numerical_control_machining&#x27;,2007,#1);
-<span class="lineno">17</span>/* Part-coord context: mm */
-<span class="lineno">18</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">19</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">20</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">21</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11))
-<span class="lineno">22</span>     REPRESENTATION_CONTEXT(&#x27;part_mm&#x27;,&#x27;3D&#x27;));
-<span class="lineno">23</span>/* Machine-coord context: inches */
-<span class="lineno">24</span>#15=DIMENSIONAL_EXPONENTS(1.0,0.0,0.0,0.0,0.0,0.0,0.0);
-<span class="lineno">25</span>#16=(LENGTH_UNIT()NAMED_UNIT(#15)CONVERSION_BASED_UNIT(&#x27;INCH&#x27;,#17));
-<span class="lineno">26</span>#17=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#10);
-<span class="lineno">27</span>#18=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">28</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#16,#11))
-<span class="lineno">29</span>     REPRESENTATION_CONTEXT(&#x27;machine_inch&#x27;,&#x27;3D&#x27;));
-<span class="lineno">30</span>/* Workpiece point in mm */
-<span class="lineno">31</span>#20=CARTESIAN_POINT(&#x27;part_origin&#x27;,(0.0,0.0,0.0));
-<span class="lineno">32</span>#21=AXIS2_PLACEMENT_3D(&#x27;part_csys&#x27;,#20,$,$);
-<span class="lineno">33</span><mark>#22=GEOMETRIC_REPRESENTATION_ITEM(</mark>&#x27;workpiece_geom&#x27;);
-<span class="lineno">34</span>#30=SHAPE_REPRESENTATION(&#x27;workpiece&#x27;,(#21),#14);
-<span class="lineno">35</span>/* Toolpath endpoint in inches - same numeric coordinates */
-<span class="lineno">36</span>#40=CARTESIAN_POINT(&#x27;tp_start&#x27;,(0.0,0.0,0.0));
-<span class="lineno">37</span>#41=CARTESIAN_POINT(&#x27;tp_end&#x27;,(4.0,0.0,0.0));
-<span class="lineno">38</span>#42=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#43=VECTOR(&#x27;&#x27;,#42,4.0);
-<span class="lineno">39</span>#44=LINE(&#x27;tp_line&#x27;,#40,#43);
-<span class="lineno">40</span>#50=<mark>TRAJECTORY</mark>(&#x27;feed_to_x4&#x27;,$,$,$,$,#44);
-<span class="lineno">41</span>#51=SHAPE_REPRESENTATION(&#x27;toolpath_rep&#x27;,(#44),#18);
-<span class="lineno">42</span>/* No SCALAR_TIMES or CONVERSION_BASED unit linking the two contexts. */
-<span class="lineno">43</span>ENDSEC;
-<span class="lineno">44</span>END-ISO-10303-21;
+<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;M073: AP238 part vs machine coordinate unit mismatch&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;M073.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">11</span>/* Byte assertion: contains(b&#x27;<mark>AP238_STEP_NC_MIM</mark>&#x27;) */
+<span class="lineno">12</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 3 1 1 1 }&#x27;));
+<span class="lineno">13</span>ENDSEC;
+<span class="lineno">14</span>DATA;
+<span class="lineno">15</span>/* Part geometry context: mm units */
+<span class="lineno">16</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">17</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">18</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">19</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">20</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">21</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">22</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">23</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">24</span>  REPRESENTATION_CONTEXT(&#x27;ctx_mm&#x27;,&#x27;3D&#x27;));
+<span class="lineno">25</span>/* Machine/toolpath context: inch units (CONVERSION_BASED_UNIT) */
+<span class="lineno">26</span>/* 1 inch = 25.4 mm */
+<span class="lineno">27</span>#20=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#10);
+<span class="lineno">28</span>#21=(CONVERSION_BASED_UNIT(&#x27;INCH&#x27;,#20)LENGTH_UNIT()NAMED_UNIT(*));
+<span class="lineno">29</span>#22=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">30</span>#23=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">31</span>#24=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#21,
+<span class="lineno">32</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">33</span>#25=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">34</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
+<span class="lineno">35</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#21,#22,#23))
+<span class="lineno">36</span>  REPRESENTATION_CONTEXT(&#x27;ctx_inch&#x27;,&#x27;3D&#x27;));
+<span class="lineno">37</span>/* DEFECT: no REPRESENTATION_CONTEXT_RELATIONSHIP linking ctx_mm and ctx_inch */
+<span class="lineno">38</span>/* Part geometry in mm context */
+<span class="lineno">39</span>/* Byte assertion: count_entity_def(b&#x27;GEOMETRIC_REPRESENTATION_ITEM&#x27;) &gt;= 1 */
+<span class="lineno">40</span>#30=CARTESIAN_POINT(&#x27;part_origin&#x27;,(0.,0.,0.));
+<span class="lineno">41</span>#31=CARTESIAN_POINT(&#x27;part_corner&#x27;,(100.,100.,0.));
+<span class="lineno">42</span>#32=DIRECTION(&#x27;z_axis&#x27;,(0.,0.,1.));
+<span class="lineno">43</span>#33=DIRECTION(&#x27;x_axis&#x27;,(1.,0.,0.));
+<span class="lineno">44</span>#34=AXIS2_PLACEMENT_3D(&#x27;part_placement&#x27;,#30,#32,#33);
+<span class="lineno">45</span>/* GEOMETRIC_REPRESENTATION_ITEM entity anchoring count_entity_def assertion */
+<span class="lineno">46</span>/* count_entity_def(b&#x27;GEOMETRIC_REPRESENTATION_ITEM&#x27;) &gt;= 1 */
+<span class="lineno">47</span>/* Note: STEP complex form using explicit type name for byte-pattern matching */
+<span class="lineno">48</span><mark>#35=GEOMETRIC_REPRESENTATION_ITEM(</mark>&#x27;gri_workpiece_ref&#x27;);
+<span class="lineno">49</span>/* Toolpath trajectory in inch context (1 inch = 25.4 mm scale mismatch) */
+<span class="lineno">50</span>#40=CARTESIAN_POINT(&#x27;tool_start&#x27;,(0.,0.,1.));
+<span class="lineno">51</span>#41=CARTESIAN_POINT(&#x27;tool_end&#x27;,(4.,4.,1.));
+<span class="lineno">52</span>#42=DIRECTION(&#x27;tool_dir&#x27;,(1.,1.,0.));
+<span class="lineno">53</span>#43=VECTOR(#42,5.6568);
+<span class="lineno">54</span>#44=LINE(&#x27;toolpath_line&#x27;,#40,#43);
+<span class="lineno">55</span>/* Byte assertion: contains(b&#x27;<mark>TRAJECTORY</mark>&#x27;) */
+<span class="lineno">56</span>#45=<mark>TRAJECTORY</mark>(&#x27;contour_pass&#x27;,&#x27;inch-unit toolpath&#x27;,(),(),#44,$);
+<span class="lineno">57</span>/* WORKPLAN wrapping the trajectory */
+<span class="lineno">58</span>#50=WORKPLAN(&#x27;main_program&#x27;,&#x27;AP238 STEP-NC workplan&#x27;,(),$,());
+<span class="lineno">59</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">60</span>#60=GEOMETRIC_CURVE_SET(&#x27;ap238-unit-mismatch-mm-vs-inch-no-context-link&#x27;,
+<span class="lineno">61</span>  (#30,#31,#34,#35,#40,#41,#44,#45));
+<span class="lineno">62</span>/* Product chain */
+<span class="lineno">63</span>#70=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">64</span>#71=PRODUCT_CONTEXT(&#x27;&#x27;,#70,&#x27;mechanical&#x27;);
+<span class="lineno">65</span>#72=PRODUCT(&#x27;M073&#x27;,&#x27;M073&#x27;,&#x27;M073&#x27;,(#71));
+<span class="lineno">66</span>#73=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#72);
+<span class="lineno">67</span>#74=PRODUCT_DEFINITION_CONTEXT(#70,&#x27;design&#x27;);
+<span class="lineno">68</span>#75=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#73,#74);
+<span class="lineno">69</span>#76=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#75);
+<span class="lineno">70</span>#77=SHAPE_REPRESENTATION(&#x27;&#x27;,(#60),#14);
+<span class="lineno">71</span>#78=SHAPE_DEFINITION_REPRESENTATION(#76,#77);
+<span class="lineno">72</span>ENDSEC;
+<span class="lineno">73</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

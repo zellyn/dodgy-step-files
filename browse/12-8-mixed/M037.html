@@ -41,6 +41,9 @@
 <li><code>contains(b&#x27;quadratic_tetrahedron&#x27;)</code></li>
 <li><code>contains(b&#x27;VOLUME_3D_ELEMENT_DESCRIPTOR&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -56,54 +59,42 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M037 - AP209 FEM element with wrong node count.
-<span class="lineno">3</span> * Defect: a CURVE_3D_ELEMENT_DESCRIPTOR declares <mark>quadratic_tetrahedron</mark>
-<span class="lineno">4</span> * topology (which requires 10 nodes) but the actual element_descriptor
-<span class="lineno">5</span> * lists only 8 nodes. Schema readers should drop the element with a
-<span class="lineno">6</span> * warning. */
-<span class="lineno">7</span>HEADER;
-<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;M037 test case&#x27;,&#x27;AP209 <mark>quadratic_tetrahedron</mark> with 8 nodes&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">9</span>FILE_NAME(&#x27;M037.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">10</span>FILE_SCHEMA((&#x27;STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }&#x27;));
-<span class="lineno">11</span>ENDSEC;
-<span class="lineno">12</span>DATA;
-<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;structural_analysis_design&#x27;);
-<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">15</span>  &#x27;structural_analysis_design&#x27;,2001,#1);
-<span class="lineno">16</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">17</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">18</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">19</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
-<span class="lineno">20</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">21</span>     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-<span class="lineno">22</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-<span class="lineno">23</span>     REPRESENTATION_CONTEXT(&#x27;fea&#x27;,&#x27;3D&#x27;));
-<span class="lineno">24</span>/* Eight FEA nodes - corner nodes of a tet plus four extras. A
-<span class="lineno">25</span> * conformant <mark>quadratic_tetrahedron</mark> requires TEN nodes (4 corners +
-<span class="lineno">26</span> * 6 mid-edge); here we provide 8, so the element is malformed. */
-<span class="lineno">27</span>#100=CARTESIAN_POINT(&#x27;n1&#x27;,(0.0,0.0,0.0));
-<span class="lineno">28</span>#101=CARTESIAN_POINT(&#x27;n2&#x27;,(1.0,0.0,0.0));
-<span class="lineno">29</span>#102=CARTESIAN_POINT(&#x27;n3&#x27;,(0.5,1.0,0.0));
-<span class="lineno">30</span>#103=CARTESIAN_POINT(&#x27;n4&#x27;,(0.5,0.5,1.0));
-<span class="lineno">31</span>#104=CARTESIAN_POINT(&#x27;n5&#x27;,(0.5,0.0,0.0));
-<span class="lineno">32</span>#105=CARTESIAN_POINT(&#x27;n6&#x27;,(0.75,0.5,0.0));
-<span class="lineno">33</span>#106=CARTESIAN_POINT(&#x27;n7&#x27;,(0.25,0.5,0.0));
-<span class="lineno">34</span>#107=CARTESIAN_POINT(&#x27;n8&#x27;,(0.25,0.25,0.5));
-<span class="lineno">35</span>#110=NODE(&#x27;n1&#x27;,(#100),$);
-<span class="lineno">36</span>#111=NODE(&#x27;n2&#x27;,(#101),$);
-<span class="lineno">37</span>#112=NODE(&#x27;n3&#x27;,(#102),$);
-<span class="lineno">38</span>#113=NODE(&#x27;n4&#x27;,(#103),$);
-<span class="lineno">39</span>#114=NODE(&#x27;n5&#x27;,(#104),$);
-<span class="lineno">40</span>#115=NODE(&#x27;n6&#x27;,(#105),$);
-<span class="lineno">41</span>#116=NODE(&#x27;n7&#x27;,(#106),$);
-<span class="lineno">42</span>#117=NODE(&#x27;n8&#x27;,(#107),$);
-<span class="lineno">43</span>/* Defect: descriptor declares <mark>quadratic_tetrahedron</mark> but lists only 8
-<span class="lineno">44</span> * nodes (should be 10). AP209 uses <mark>VOLUME_3D_ELEMENT_DESCRIPTOR</mark> for tets;
-<span class="lineno">45</span> * CURVE_3D_ELEMENT_DESCRIPTOR is for 1D elements. */
-<span class="lineno">46</span>#200=<mark>VOLUME_3D_ELEMENT_DESCRIPTOR</mark>(&#x27;quad_tet&#x27;,&#x27;<mark>quadratic_tetrahedron</mark>&#x27;,
-<span class="lineno">47</span>       (#110,#111,#112,#113,#114,#115,#116,#117));
-<span class="lineno">48</span>ENDSEC;
-<span class="lineno">49</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M037: GEOMETRIC_CURVE_SET containing AP209 FEM element with wrong node count; input: AP242/AP209 STEP file where a <mark>VOLUME_3D_ELEMENT_DESCRIPTOR</mark> declares <mark>quadratic_tetrahedron</mark> topology (which requires 10 nodes) but the associated node list has only 8 entries; per ISO 10303-104 AP209 a quadratic tetrahedron (C3D10) must have 10 nodes; kernel must drop the element and warn, not silently accept malformed FEA data; OCC silently accepts (no diagnostic, empty result); GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty; synonyms: AP209 element wrong node count, FEA element node count wrong for hex8, <mark>quadratic_tetrahedron</mark> with 8 nodes, unknown FEM element type */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;M037&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;M037.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;node_1&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=CARTESIAN_POINT(&#x27;node_2&#x27;,(1.0,0.0,0.0));
+<span class="lineno">12</span>#3=CARTESIAN_POINT(&#x27;node_3&#x27;,(0.0,1.0,0.0));
+<span class="lineno">13</span>#4=CARTESIAN_POINT(&#x27;node_4&#x27;,(0.0,0.0,1.0));
+<span class="lineno">14</span>#5=CARTESIAN_POINT(&#x27;node_5&#x27;,(0.5,0.0,0.0));
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;node_6&#x27;,(0.5,0.5,0.0));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;node_7&#x27;,(0.0,0.5,0.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;node_8&#x27;,(0.0,0.0,0.5));
+<span class="lineno">18</span>#9=<mark>VOLUME_3D_ELEMENT_DESCRIPTOR</mark>(&#x27;<mark>quadratic_tetrahedron</mark>&#x27;,$,$,$,$);
+<span class="lineno">19</span>#10=VALUE_REPRESENTATION_ITEM(&#x27;node_list&#x27;,MEASURE_VALUE(8));
+<span class="lineno">20</span>#11=INTEGER_REPRESENTATION_ITEM(&#x27;declared_node_count&#x27;,8);
+<span class="lineno">21</span>#12=INTEGER_REPRESENTATION_ITEM(&#x27;required_node_count_<mark>quadratic_tetrahedron</mark>&#x27;,10);
+<span class="lineno">22</span>#13=GEOMETRIC_CURVE_SET(&#x27;ap209-fem-element-wrong-node-count&#x27;,(#9,#10,#11,#12));
+<span class="lineno">23</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">24</span>#9051=PRODUCT(&#x27;M037&#x27;,&#x27;M037&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">25</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">26</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">27</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">28</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">29</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">30</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">31</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">32</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">33</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">34</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#13),#9060);
+<span class="lineno">35</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">36</span>ENDSEC;
+<span class="lineno">37</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tsh206 — Context null state accumulation</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3a Shells / orientation</a> <span class="sep">/</span> <span class="current">Tsh206</span>
+</nav>
+<header class="title-bar">
+<h1>Tsh206 <span class="sep">—</span> <span class="entry-title">Context null state accumulation</span></h1>
+<p class="category">§12.3a shells (sub-class: state accumulation)</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3a-shells/Tsh206.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3a-shells/Tsh206.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT/ShapeFix_Shell.Perform</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Performs repairable orientation fix on single-face shell. Multiple Perform() calls without context reset may reuse stale ShapeBuild_ReShape, accumulating reshape operations and applying fixes twice.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p></p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Either reset context or track idempotence</p></section>
+<section><h2>Notes</h2>
+<p>context_null_initialize</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>process_signal</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tsh206 - ShapeFix_Shell.Perform.context_null_initialize
+<span class="lineno">3</span> * Defect: Context() can return null; SetContext(new ShapeBuild_ReShape) is
+<span class="lineno">4</span> * idempotent only if no prior state. Multiple Perform() calls may reuse
+<span class="lineno">5</span> * stale context and apply accumulated reshape operations. */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;Tsh206 - context null state accumulation&#x27;&#x27;,&#x27;&#x27;2;1&#x27;&#x27;,&#x27;&#x27;2;1&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;Tsh206.stp&#x27;,&#x27;2026-06-16T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;wave-61A&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">14</span>
+<span class="lineno">15</span>/* Simple shell for multiple fixes */
+<span class="lineno">16</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">17</span>#101=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">18</span>#102=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
+<span class="lineno">19</span>#103=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">20</span>#110=VERTEX_POINT(&#x27;&#x27;,#100);
+<span class="lineno">21</span>#111=VERTEX_POINT(&#x27;&#x27;,#101);
+<span class="lineno">22</span>#112=VERTEX_POINT(&#x27;&#x27;,#102);
+<span class="lineno">23</span>#113=VERTEX_POINT(&#x27;&#x27;,#103);
+<span class="lineno">24</span>
+<span class="lineno">25</span>/* Plane z=0 */
+<span class="lineno">26</span>#200=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">27</span>#201=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">28</span>#210=CARTESIAN_POINT(&#x27;&#x27;,(0.5,0.5,0.0));
+<span class="lineno">29</span>#211=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#210,#200,#201);
+<span class="lineno">30</span>#212=PLANE(&#x27;&#x27;,#211);
+<span class="lineno">31</span>
+<span class="lineno">32</span>/* Edges with potential fix triggers */
+<span class="lineno">33</span>#300=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">34</span>#301=VECTOR(&#x27;&#x27;,#300,1.0);
+<span class="lineno">35</span>#310=LINE(&#x27;&#x27;,#100,#301);
+<span class="lineno">36</span>#311=EDGE_CURVE(&#x27;&#x27;,#110,#111,#310,.T.);
+<span class="lineno">37</span>
+<span class="lineno">38</span>#302=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">39</span>#303=VECTOR(&#x27;&#x27;,#302,1.0);
+<span class="lineno">40</span>#312=LINE(&#x27;&#x27;,#101,#303);
+<span class="lineno">41</span>#313=EDGE_CURVE(&#x27;&#x27;,#111,#112,#312,.T.);
+<span class="lineno">42</span>
+<span class="lineno">43</span>#304=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">44</span>#305=VECTOR(&#x27;&#x27;,#304,1.0);
+<span class="lineno">45</span>#314=LINE(&#x27;&#x27;,#102,#304);
+<span class="lineno">46</span>#315=EDGE_CURVE(&#x27;&#x27;,#112,#113,#314,.T.);
+<span class="lineno">47</span>
+<span class="lineno">48</span>#306=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">49</span>#307=VECTOR(&#x27;&#x27;,#306,1.0);
+<span class="lineno">50</span>#316=LINE(&#x27;&#x27;,#103,#306);
+<span class="lineno">51</span>#317=EDGE_CURVE(&#x27;&#x27;,#113,#110,#316,.T.);
+<span class="lineno">52</span>
+<span class="lineno">53</span>/* Face with wrong orientation (inward normal) */
+<span class="lineno">54</span>#400=ORIENTED_EDGE(&#x27;&#x27;,*,*,#311,.F.);
+<span class="lineno">55</span>#401=ORIENTED_EDGE(&#x27;&#x27;,*,*,#313,.F.);
+<span class="lineno">56</span>#402=ORIENTED_EDGE(&#x27;&#x27;,*,*,#315,.F.);
+<span class="lineno">57</span>#403=ORIENTED_EDGE(&#x27;&#x27;,*,*,#317,.F.);
+<span class="lineno">58</span>#410=EDGE_LOOP(&#x27;&#x27;,(#400,#401,#402,#403));
+<span class="lineno">59</span>#420=FACE_OUTER_BOUND(&#x27;&#x27;,#410,.T.);
+<span class="lineno">60</span>#430=ADVANCED_FACE(&#x27;&#x27;,(#420),#212,.T.);
+<span class="lineno">61</span>
+<span class="lineno">62</span>/* Shell with repairable orientation */
+<span class="lineno">63</span>#500=CLOSED_SHELL(&#x27;context_state_shell&#x27;,(#430));
+<span class="lineno">64</span>
+<span class="lineno">65</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">66</span>#9001=PRODUCT(&#x27;Tsh206&#x27;,&#x27;Tsh206&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">67</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">68</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">69</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">70</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">71</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">72</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">73</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">74</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">75</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">76</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;sbsm&#x27;,(#500));
+<span class="lineno">77</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">78</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">79</span>ENDSEC;
+<span class="lineno">80</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tsh205.html">&larr; Tsh205</a> <a class="up" href="index.html">§12.3a Shells / orientation</a> <a class="next" href="Tsh207.html">Tsh207 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

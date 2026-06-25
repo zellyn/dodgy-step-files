@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tfa131 — FixWiresTwoCoincEdges crossing-wires-coincident-segment</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa131</span>
+</nav>
+<header class="title-bar">
+<h1>Tfa131 <span class="sep">—</span> <span class="entry-title">FixWiresTwoCoincEdges crossing-wires-coincident-segment</span></h1>
+<p class="category">§12.3c</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3c-faces/Tfa131.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa131.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>synthesized — no external source cited</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>FixWiresTwoCoincEdges crossing-wires-coincident-segment</p></section>
+<section><h2>Reproducer recipe</h2>
+<p></p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>process_signal</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>HEADER;
+<span class="lineno">3</span>FILE_DESCRIPTION((&#x27;dodgy-step-files wave 28 face fixture Tfa131&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">4</span>FILE_NAME(&#x27;&#x27;,&#x27;2026-06-15T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
+<span class="lineno">5</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=APPLICATION_CONTEXT(&#x27;automotive design&#x27;);
+<span class="lineno">10</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2009,#1);
+<span class="lineno">11</span>/* Tfa131 - FixWiresTwoCoincEdges.crossing-wires-coincident-segment
+<span class="lineno">12</span> * Defect: Two wires with coincident edge segments.
+<span class="lineno">13</span> * FixWiresTwoCoincEdges can&#x27;t decide which wire owns the segment.
+<span class="lineno">14</span> * Trigger: Face with two non-trivial wires sharing an edge curve.
+<span class="lineno">15</span> */
+<span class="lineno">16</span>
+<span class="lineno">17</span>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">18</span>#11=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">19</span>#12=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">20</span>#13=AXIS2_PLACEMENT_3D(&#x27;placement&#x27;,#10,#11,#12);
+<span class="lineno">21</span>
+<span class="lineno">22</span>/* Outer wire: large rectangle */
+<span class="lineno">23</span>#20=CARTESIAN_POINT(&#x27;p0&#x27;,(0.0,0.0,0.0));
+<span class="lineno">24</span>#21=CARTESIAN_POINT(&#x27;p1&#x27;,(10.0,0.0,0.0));
+<span class="lineno">25</span>#22=CARTESIAN_POINT(&#x27;p2&#x27;,(10.0,10.0,0.0));
+<span class="lineno">26</span>#23=CARTESIAN_POINT(&#x27;p3&#x27;,(0.0,10.0,0.0));
+<span class="lineno">27</span>
+<span class="lineno">28</span>/* Inner wire: shares edge (p1,p2) with outer */
+<span class="lineno">29</span>#24=CARTESIAN_POINT(&#x27;p4&#x27;,(10.0,0.0,0.0));
+<span class="lineno">30</span>#25=CARTESIAN_POINT(&#x27;p5&#x27;,(10.0,10.0,0.0));
+<span class="lineno">31</span>#26=CARTESIAN_POINT(&#x27;p6&#x27;,(12.0,10.0,0.0));
+<span class="lineno">32</span>#27=CARTESIAN_POINT(&#x27;p7&#x27;,(12.0,0.0,0.0));
+<span class="lineno">33</span>
+<span class="lineno">34</span>/* Vertices */
+<span class="lineno">35</span>#30=VERTEX_POINT(&#x27;v0&#x27;,#20);
+<span class="lineno">36</span>#31=VERTEX_POINT(&#x27;v1&#x27;,#21);
+<span class="lineno">37</span>#32=VERTEX_POINT(&#x27;v2&#x27;,#22);
+<span class="lineno">38</span>#33=VERTEX_POINT(&#x27;v3&#x27;,#23);
+<span class="lineno">39</span>#34=VERTEX_POINT(&#x27;v4&#x27;,#24);
+<span class="lineno">40</span>#35=VERTEX_POINT(&#x27;v5&#x27;,#25);
+<span class="lineno">41</span>#36=VERTEX_POINT(&#x27;v6&#x27;,#26);
+<span class="lineno">42</span>#37=VERTEX_POINT(&#x27;v7&#x27;,#27);
+<span class="lineno">43</span>
+<span class="lineno">44</span>/* Edges - outer wire */
+<span class="lineno">45</span>#40=DIRECTION(&#x27;d1&#x27;,(1.0,0.0,0.0));
+<span class="lineno">46</span>#41=DIRECTION(&#x27;d2&#x27;,(0.0,1.0,0.0));
+<span class="lineno">47</span>#42=DIRECTION(&#x27;d3&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">48</span>#43=DIRECTION(&#x27;d4&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">49</span>#44=VECTOR(&#x27;v1&#x27;,#40,10.0);
+<span class="lineno">50</span>#45=VECTOR(&#x27;v2&#x27;,#41,10.0);
+<span class="lineno">51</span>#46=VECTOR(&#x27;v3&#x27;,#42,10.0);
+<span class="lineno">52</span>#47=VECTOR(&#x27;v4&#x27;,#43,10.0);
+<span class="lineno">53</span>#50=LINE(&#x27;line1&#x27;,#20,#44);
+<span class="lineno">54</span>#51=LINE(&#x27;line2&#x27;,#21,#45);
+<span class="lineno">55</span>#52=LINE(&#x27;line3&#x27;,#22,#46);
+<span class="lineno">56</span>#53=LINE(&#x27;line4&#x27;,#23,#47);
+<span class="lineno">57</span>
+<span class="lineno">58</span>/* Outer wire edges */
+<span class="lineno">59</span>#60=EDGE_CURVE(&#x27;e0&#x27;,#30,#31,#50,.T.);
+<span class="lineno">60</span>#61=EDGE_CURVE(&#x27;e1&#x27;,#31,#32,#51,.T.);
+<span class="lineno">61</span>#62=EDGE_CURVE(&#x27;e2&#x27;,#32,#33,#52,.T.);
+<span class="lineno">62</span>#63=EDGE_CURVE(&#x27;e3&#x27;,#33,#30,#53,.T.);
+<span class="lineno">63</span>
+<span class="lineno">64</span>/* Inner wire edges - shares e1 with outer */
+<span class="lineno">65</span>#64=DIRECTION(&#x27;d5&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">66</span>#65=DIRECTION(&#x27;d6&#x27;,(1.0,0.0,0.0));
+<span class="lineno">67</span>#66=DIRECTION(&#x27;d7&#x27;,(0.0,1.0,0.0));
+<span class="lineno">68</span>#67=VECTOR(&#x27;v7&#x27;,#65,2.0);
+<span class="lineno">69</span>#68=VECTOR(&#x27;v8&#x27;,#66,10.0);
+<span class="lineno">70</span>#69=VECTOR(&#x27;v9&#x27;,#64,2.0);
+<span class="lineno">71</span>#70=LINE(&#x27;line5&#x27;,#27,#67);
+<span class="lineno">72</span>#71=LINE(&#x27;line6&#x27;,#26,#68);
+<span class="lineno">73</span>#72=LINE(&#x27;line7&#x27;,#25,#69);
+<span class="lineno">74</span>
+<span class="lineno">75</span>#73=EDGE_CURVE(&#x27;e4&#x27;,#37,#36,#70,.T.);
+<span class="lineno">76</span>#74=EDGE_CURVE(&#x27;e5&#x27;,#36,#35,#71,.T.);
+<span class="lineno">77</span>#75=EDGE_CURVE(&#x27;e6&#x27;,#35,#34,#72,.T.);
+<span class="lineno">78</span>
+<span class="lineno">79</span>/* Oriented edges - outer */
+<span class="lineno">80</span>#80=ORIENTED_EDGE(&#x27;oe0&#x27;,*,*,#60,.T.);
+<span class="lineno">81</span>#81=ORIENTED_EDGE(&#x27;oe1&#x27;,*,*,#61,.T.);
+<span class="lineno">82</span>#82=ORIENTED_EDGE(&#x27;oe2&#x27;,*,*,#62,.T.);
+<span class="lineno">83</span>#83=ORIENTED_EDGE(&#x27;oe3&#x27;,*,*,#63,.T.);
+<span class="lineno">84</span>
+<span class="lineno">85</span>/* Oriented edges - inner (reuses e1 from outer) */
+<span class="lineno">86</span>#84=ORIENTED_EDGE(&#x27;oe4&#x27;,*,*,#75,.T.);
+<span class="lineno">87</span>#85=ORIENTED_EDGE(&#x27;oe5&#x27;,*,*,#61,.T.);
+<span class="lineno">88</span>#86=ORIENTED_EDGE(&#x27;oe6&#x27;,*,*,#73,.T.);
+<span class="lineno">89</span>#87=ORIENTED_EDGE(&#x27;oe7&#x27;,*,*,#74,.T.);
+<span class="lineno">90</span>
+<span class="lineno">91</span>/* Edge loops */
+<span class="lineno">92</span>#90=EDGE_LOOP(&#x27;loop1&#x27;,(#80,#81,#82,#83));
+<span class="lineno">93</span>#91=EDGE_LOOP(&#x27;loop2&#x27;,(#84,#85,#86,#87));
+<span class="lineno">94</span>
+<span class="lineno">95</span>/* Face bounds */
+<span class="lineno">96</span>#100=FACE_OUTER_BOUND(&#x27;outer&#x27;,#90,.T.);
+<span class="lineno">97</span>#101=FACE_INNER_BOUND(&#x27;inner&#x27;,#91,.T.);
+<span class="lineno">98</span>
+<span class="lineno">99</span>/* Geometry */
+<span class="lineno">100</span>#110=PLANE(&#x27;plane&#x27;,#13);
+<span class="lineno">101</span>
+<span class="lineno">102</span>/* Face with shared edge triggering FixWiresTwoCoincEdges */
+<span class="lineno">103</span>#120=ADVANCED_FACE(&#x27;coincident&#x27;,(#100,#101),#110,.T.);
+<span class="lineno">104</span>
+<span class="lineno">105</span>#130=OPEN_SHELL(&#x27;shell&#x27;,(#120));
+<span class="lineno">106</span>
+<span class="lineno">107</span>/* Mandatory PRODUCT chain */
+<span class="lineno">108</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">109</span>#9001=PRODUCT(&#x27;Tfa131&#x27;,&#x27;Tfa131&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">110</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">111</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">112</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">113</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">114</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">115</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">116</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">117</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">118</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">119</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;sbsm&#x27;,(#130));
+<span class="lineno">120</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">121</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">122</span>ENDSEC;
+<span class="lineno">123</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tfa130.html">&larr; Tfa130</a> <a class="up" href="index.html">§12.3c Faces / sewing / free bound</a> <a class="next" href="Tfa132.html">Tfa132 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

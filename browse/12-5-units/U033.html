@@ -41,6 +41,9 @@
 <li><code>contains(b&quot;CONVERSION_BASED_UNIT(&#x27;INCH&#x27;&quot;)</code></li>
 <li><code>contains(b&#x27;INCH&#x27;) and contains(b&#x27;25.4&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="U025.html">U025</a>, <a href="U028.html">U028</a></p>
 </section>
@@ -51,7 +54,7 @@
 <tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
 <tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
-<tr><td><code>part21_strict</code></td><td><code>warn(W_COMPLEX_ORDER)</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
 <tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
 </tbody></table>
 </section>
@@ -59,21 +62,40 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* U033 - Unit-default flag overridden silently
-<span class="lineno">3</span> * Defect: STEP file with explicit LENGTH_UNIT inches; reader configured with default MM */
-<span class="lineno">4</span>HEADER;
-<span class="lineno">5</span>FILE_DESCRIPTION((&#x27;U033 test case&#x27;,&#x27;Unit-default flag overridden silently&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">6</span>FILE_NAME(&#x27;U033.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">7</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">8</span>ENDSEC;
-<span class="lineno">9</span>DATA;
-<span class="lineno">10</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">11</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
-<span class="lineno">12</span>#100=(LENGTH_UNIT() NAMED_UNIT(*) <mark>CONVERSION_BASED_UNIT(&#x27;INCH&#x27;</mark>,#101));
-<span class="lineno">13</span>#101=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#102);
-<span class="lineno">14</span>#102=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">15</span>ENDSEC;
-<span class="lineno">16</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* U033: Explicit INCH unit in file conflicts with reader default MM setting */
+<span class="lineno">3</span>/* xstep.cascade.unit = MM but file declares <mark>CONVERSION_BASED_UNIT(&#x27;INCH&#x27;</mark>,25.4) */
+<span class="lineno">4</span>/* DEFECT: reader may silently apply default MM, apply file INCH, or double-convert */
+<span class="lineno">5</span>/* Kernel must: use file-declared unit; warn when file and config disagree */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;U033: INCH file unit vs MM reader default â silent override defect&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;U033.stp&#x27;,&#x27;2026-06-20T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>/* Geometry: 2x2x1 inch part; values are in inches */
+<span class="lineno">13</span>#1=CARTESIAN_POINT(&#x27;origin&#x27;,(0.,0.,0.));
+<span class="lineno">14</span>#2=CARTESIAN_POINT(&#x27;corner-x&#x27;,(2.0,0.,0.));
+<span class="lineno">15</span>#3=CARTESIAN_POINT(&#x27;corner-y&#x27;,(0.,2.0,0.));
+<span class="lineno">16</span>#4=CARTESIAN_POINT(&#x27;corner-z&#x27;,(0.,0.,1.0));
+<span class="lineno">17</span>#5=CARTESIAN_POINT(&#x27;corner-xyz&#x27;,(2.0,2.0,1.0));
+<span class="lineno">18</span>/* SI mm basis for conversion reference */
+<span class="lineno">19</span>#8=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">20</span>/* INCH conversion: 25.4 mm per inch (correct factor) */
+<span class="lineno">21</span>#9=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#8);
+<span class="lineno">22</span>/* File declares INCH as the active length unit */
+<span class="lineno">23</span>#10=(<mark>CONVERSION_BASED_UNIT(&#x27;INCH&#x27;</mark>,#9) LENGTH_UNIT() NAMED_UNIT(*));
+<span class="lineno">24</span>#11=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+<span class="lineno">25</span>#12=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+<span class="lineno">26</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.000393701),#10,
+<span class="lineno">27</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">28</span>/* DEFECT: reader configured with MM default; file declares INCH */
+<span class="lineno">29</span>/* Some readers apply default (ignoring file), some double-convert, some warn */
+<span class="lineno">30</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">31</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">32</span>/* Model entity is GEOMETRIC_CURVE_SET â OCC returns empty shape */
+<span class="lineno">33</span>#20=GEOMETRIC_CURVE_SET(&#x27;inch-vs-mm-default&#x27;,(#1,#2,#3,#4,#5));
+<span class="lineno">34</span>ENDSEC;
+<span class="lineno">35</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

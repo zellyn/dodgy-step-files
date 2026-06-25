@@ -39,11 +39,13 @@
 <section><h2>Notes</h2>
 <p>**See also**: Tfa005, Twi021. Synonyms: &quot;sphere face has only a hole&quot;, &quot;torus face missing outer boundary&quot;, &quot;closed surface with only inner wire flips region&quot;, &quot;face represents whole surface minus hole but kernel inverts it&quot;, &quot;natural seam not added before orientation&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(22) ifc=schema_n/a</code></p></section>
+<section><h2>Closure intent</h2>
+<p><code>sheet</code> — the open shell is the intended final geometry; a solid-only kernel should cleanly refuse.</p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
-<li><code>face[0].surface_type == &quot;torus&quot;</code></li>
+<li><code>face[0].surface_type == &quot;sphere&quot;</code></li>
 <li><code>n_edges_total &gt;= 5</code></li>
-<li><code>face[1].surface_type == &quot;sphere&quot;</code></li>
+<li><code>face[1].surface_type == &quot;torus&quot;</code></li>
 <li><code>n_vertices_total &gt;= 8</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
@@ -53,8 +55,8 @@
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
 <tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
-<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(9)</code></td></tr>
-<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(22)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(22)</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
 <tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
 <tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
@@ -63,88 +65,97 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Tfa004 - Missing natural bound on sphere / torus face
-<span class="lineno">2</span> * Defect: a face on a closed/periodic surface (sphere, torus, full
-<span class="lineno">3</span> * BSpline, surface_of_revolution) is given with only inner wires - or
-<span class="lineno">4</span> * with a single VERTEX_LOOP - and no FACE_OUTER_BOUND. STEP semantics
-<span class="lineno">5</span> * permit this (&quot;the entire surface with cutouts&quot;), but kernels that
-<span class="lineno">6</span> * pre-orient inner wires before adding the natural bound flip the
-<span class="lineno">7</span> * region.
-<span class="lineno">8</span> *
-<span class="lineno">9</span> * Sources cited in catalog: 05-occt-shapefix F023 (ShapeFix_Face::
-<span class="lineno">10</span> * FixAddNaturalBound); 08-occt-gitlog G007/G021/G056; 04-occt-
-<span class="lineno">11</span> * translation Q014/Q015 (VertexLoop on sphere/torus); 13-quaoar B016.
-<span class="lineno">12</span> *
-<span class="lineno">13</span> * Expected kernel behavior: heal - insert the natural surface boundary
-<span class="lineno">14</span> * first, then orient inner wires as holes. Do NOT pre-orient inner
-<span class="lineno">15</span> * wires before natural-bound insertion on closed surfaces.
-<span class="lineno">16</span> *
-<span class="lineno">17</span> * Reproducer: ADVANCED_FACE on a SPHERICAL_SURFACE whose only
-<span class="lineno">18</span> * FACE_BOUND wraps a single inner VERTEX_LOOP at the north pole. No
-<span class="lineno">19</span> * FACE_OUTER_BOUND is emitted (the receiver must synthesise natural
-<span class="lineno">20</span> * bounds, NOT pre-orient the inner VERTEX_LOOP).
-<span class="lineno">21</span> *
-<span class="lineno">22</span> * For coverage we also emit a torus equivalent (#70) where the inner
-<span class="lineno">23</span> * wire is a small circular EDGE_LOOP on the toroidal surface.
-<span class="lineno">24</span> */
-<span class="lineno">25</span>ISO-10303-21;
-<span class="lineno">26</span>HEADER;
-<span class="lineno">27</span>FILE_DESCRIPTION((&#x27;Tfa004 missing natural bound&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">28</span>FILE_NAME(&#x27;Tfa004.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
-<span class="lineno">29</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">30</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN&#x27;));
-<span class="lineno">31</span>ENDSEC;
-<span class="lineno">32</span>DATA;
-<span class="lineno">33</span>#1=APPLICATION_CONTEXT(&#x27;automotive design&#x27;);
-<span class="lineno">34</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">35</span>  &#x27;automotive_design&#x27;,2009,#1);
-<span class="lineno">36</span>/* Sphere R=10 centred on origin.                                       */
-<span class="lineno">37</span>#10=CARTESIAN_POINT(&#x27;center&#x27;,(0.0,0.0,0.0));
-<span class="lineno">38</span>#11=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
-<span class="lineno">39</span>#12=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">40</span>#13=AXIS2_PLACEMENT_3D(&#x27;plc_sphere&#x27;,#10,#11,#12);
-<span class="lineno">41</span>#20=SPHERICAL_SURFACE(&#x27;sphere_R10&#x27;,#13,10.0);
-<span class="lineno">42</span>/* Inner-only wire: single VERTEX_LOOP at the north pole (0,0,10).      */
-<span class="lineno">43</span>#30=CARTESIAN_POINT(&#x27;north_pole&#x27;,(0.0,0.0,10.0));
-<span class="lineno">44</span>#31=VERTEX_POINT(&#x27;np&#x27;,#30);
-<span class="lineno">45</span>#40=VERTEX_LOOP(&#x27;pole_loop&#x27;,#31);
-<span class="lineno">46</span>/* Defect site #1: FACE_BOUND used as inner-only; no FACE_OUTER_BOUND.  */
-<span class="lineno">47</span>#50=FACE_BOUND(&#x27;inner_only_sphere&#x27;,#40,.T.);
-<span class="lineno">48</span>#60=ADVANCED_FACE(&#x27;sphere_no_natural_bound&#x27;,(#50),#20,.T.);
-<span class="lineno">49</span>/* Torus R=20, r=4 - second instance.                                   */
-<span class="lineno">50</span>#70=CARTESIAN_POINT(&#x27;tor_center&#x27;,(50.0,0.0,0.0));
-<span class="lineno">51</span>#71=AXIS2_PLACEMENT_3D(&#x27;plc_torus&#x27;,#70,#11,#12);
-<span class="lineno">52</span>#72=TOROIDAL_SURFACE(&#x27;tor_R20_r4&#x27;,#71,20.0,4.0);
-<span class="lineno">53</span>/* Inner wire on the torus: small circular hole.                        */
-<span class="lineno">54</span>#73=CARTESIAN_POINT(&#x27;tor_hole_center&#x27;,(70.0,0.0,0.0));
-<span class="lineno">55</span>#74=AXIS2_PLACEMENT_3D(&#x27;hole_plc&#x27;,#73,#11,#12);
-<span class="lineno">56</span>#75=CIRCLE(&#x27;hole_circle&#x27;,#74,1.0);
-<span class="lineno">57</span>#76=CARTESIAN_POINT(&#x27;hole_seam&#x27;,(71.0,0.0,0.0));
-<span class="lineno">58</span>#77=VERTEX_POINT(&#x27;hole_seam_v&#x27;,#76);
-<span class="lineno">59</span>#78=EDGE_CURVE(&#x27;hole_edge&#x27;,#77,#77,#75,.T.);
-<span class="lineno">60</span>#79=ORIENTED_EDGE(&#x27;&#x27;,*,*,#78,.T.);
-<span class="lineno">61</span>#80=EDGE_LOOP(&#x27;hole_loop&#x27;,(#79));
-<span class="lineno">62</span>/* Defect site #2: torus face has only the inner hole wire, no outer.   */
-<span class="lineno">63</span>#81=FACE_BOUND(&#x27;inner_only_torus&#x27;,#80,.T.);
-<span class="lineno">64</span>#82=ADVANCED_FACE(&#x27;torus_no_natural_bound&#x27;,(#81),#72,.T.);
-<span class="lineno">65</span>#90=OPEN_SHELL(&#x27;natural_bound_demos&#x27;,(#60,#82));
-<span class="lineno">66</span>/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
-<span class="lineno">67</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">68</span>#9001=PRODUCT(&#x27;Tfa004&#x27;,&#x27;Tfa004&#x27;,&#x27;&#x27;,(#9000));
-<span class="lineno">69</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
-<span class="lineno">70</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
-<span class="lineno">71</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
-<span class="lineno">72</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
-<span class="lineno">73</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">74</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">75</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">76</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
-<span class="lineno">77</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
-<span class="lineno">78</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#90));
-<span class="lineno">79</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
-<span class="lineno">80</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
-<span class="lineno">81</span>ENDSEC;
-<span class="lineno">82</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tfa004: TWO ADVANCED_FACEs on closed surfaces with no FACE_OUTER_BOUND: face[0] on TOROIDAL_SURFACE with only inner FACE_BOUND (3-edge loop); face[1] on SPHERICAL_SURFACE with only inner FACE_BOUND (4-edge loop); STEP semantics allow entire-surface-with-cutout representation; OCC must insert natural bound before orienting inner wire, not after; both faces wired into OPEN_SHELL â defect is live on face traversal path */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Tfa004&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Tfa004.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=TOROIDAL_SURFACE(&#x27;&#x27;,#4,10.0,3.0);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(13.0,0.0,0.0));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(-6.5,11.2583302492,0.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(-6.5,-11.2583302492,0.0));
+<span class="lineno">18</span>#9=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">19</span>#10=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">20</span>#11=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">21</span>#12=DIRECTION(&#x27;&#x27;,(-0.866025403784,0.5,0.0));
+<span class="lineno">22</span>#13=VECTOR(&#x27;&#x27;,#12,22.5166604984);
+<span class="lineno">23</span>#14=LINE(&#x27;&#x27;,#6,#13);
+<span class="lineno">24</span>#15=EDGE_CURVE(&#x27;&#x27;,#9,#10,#14,.T.);
+<span class="lineno">25</span>#16=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">26</span>#17=VECTOR(&#x27;&#x27;,#16,22.5166604984);
+<span class="lineno">27</span>#18=LINE(&#x27;&#x27;,#7,#17);
+<span class="lineno">28</span>#19=EDGE_CURVE(&#x27;&#x27;,#10,#11,#18,.T.);
+<span class="lineno">29</span>#20=DIRECTION(&#x27;&#x27;,(0.866025403784,0.5,0.0));
+<span class="lineno">30</span>#21=VECTOR(&#x27;&#x27;,#20,22.5166604984);
+<span class="lineno">31</span>#22=LINE(&#x27;&#x27;,#8,#21);
+<span class="lineno">32</span>#23=EDGE_CURVE(&#x27;&#x27;,#11,#9,#22,.T.);
+<span class="lineno">33</span>#24=ORIENTED_EDGE(&#x27;&#x27;,$,$,#15,.T.);
+<span class="lineno">34</span>#25=ORIENTED_EDGE(&#x27;&#x27;,$,$,#19,.T.);
+<span class="lineno">35</span>#26=ORIENTED_EDGE(&#x27;&#x27;,$,$,#23,.T.);
+<span class="lineno">36</span>#27=EDGE_LOOP(&#x27;&#x27;,(#24,#25,#26));
+<span class="lineno">37</span>#28=FACE_BOUND(&#x27;&#x27;,#27,.T.);
+<span class="lineno">38</span>#29=ADVANCED_FACE(&#x27;&#x27;,(#28),#5,.T.);
+<span class="lineno">39</span>#30=CARTESIAN_POINT(&#x27;&#x27;,(30.0,0.0,0.0));
+<span class="lineno">40</span>#31=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">41</span>#32=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">42</span>#33=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#30,#31,#32);
+<span class="lineno">43</span>#34=SPHERICAL_SURFACE(&#x27;&#x27;,#33,5.0);
+<span class="lineno">44</span>#35=CARTESIAN_POINT(&#x27;&#x27;,(35.0,0.0,0.0));
+<span class="lineno">45</span>#36=CARTESIAN_POINT(&#x27;&#x27;,(30.0,5.0,0.0));
+<span class="lineno">46</span>#37=CARTESIAN_POINT(&#x27;&#x27;,(25.0,0.0,0.0));
+<span class="lineno">47</span>#38=CARTESIAN_POINT(&#x27;&#x27;,(30.0,-5.0,0.0));
+<span class="lineno">48</span>#39=VERTEX_POINT(&#x27;&#x27;,#35);
+<span class="lineno">49</span>#40=VERTEX_POINT(&#x27;&#x27;,#36);
+<span class="lineno">50</span>#41=VERTEX_POINT(&#x27;&#x27;,#37);
+<span class="lineno">51</span>#42=VERTEX_POINT(&#x27;&#x27;,#38);
+<span class="lineno">52</span>#43=DIRECTION(&#x27;&#x27;,(-0.707106781187,0.707106781187,0.0));
+<span class="lineno">53</span>#44=VECTOR(&#x27;&#x27;,#43,7.07106781187);
+<span class="lineno">54</span>#45=LINE(&#x27;&#x27;,#35,#44);
+<span class="lineno">55</span>#46=EDGE_CURVE(&#x27;&#x27;,#39,#40,#45,.T.);
+<span class="lineno">56</span>#47=DIRECTION(&#x27;&#x27;,(-0.707106781187,-0.707106781187,0.0));
+<span class="lineno">57</span>#48=VECTOR(&#x27;&#x27;,#47,7.07106781187);
+<span class="lineno">58</span>#49=LINE(&#x27;&#x27;,#36,#48);
+<span class="lineno">59</span>#50=EDGE_CURVE(&#x27;&#x27;,#40,#41,#49,.T.);
+<span class="lineno">60</span>#51=DIRECTION(&#x27;&#x27;,(0.707106781187,-0.707106781187,0.0));
+<span class="lineno">61</span>#52=VECTOR(&#x27;&#x27;,#51,7.07106781187);
+<span class="lineno">62</span>#53=LINE(&#x27;&#x27;,#37,#52);
+<span class="lineno">63</span>#54=EDGE_CURVE(&#x27;&#x27;,#41,#42,#53,.T.);
+<span class="lineno">64</span>#55=DIRECTION(&#x27;&#x27;,(0.707106781187,0.707106781187,0.0));
+<span class="lineno">65</span>#56=VECTOR(&#x27;&#x27;,#55,7.07106781187);
+<span class="lineno">66</span>#57=LINE(&#x27;&#x27;,#38,#56);
+<span class="lineno">67</span>#58=EDGE_CURVE(&#x27;&#x27;,#42,#39,#57,.T.);
+<span class="lineno">68</span>#59=ORIENTED_EDGE(&#x27;&#x27;,$,$,#46,.T.);
+<span class="lineno">69</span>#60=ORIENTED_EDGE(&#x27;&#x27;,$,$,#50,.T.);
+<span class="lineno">70</span>#61=ORIENTED_EDGE(&#x27;&#x27;,$,$,#54,.T.);
+<span class="lineno">71</span>#62=ORIENTED_EDGE(&#x27;&#x27;,$,$,#58,.T.);
+<span class="lineno">72</span>#63=EDGE_LOOP(&#x27;&#x27;,(#59,#60,#61,#62));
+<span class="lineno">73</span>#64=FACE_BOUND(&#x27;&#x27;,#63,.T.);
+<span class="lineno">74</span>#65=ADVANCED_FACE(&#x27;&#x27;,(#64),#34,.T.);
+<span class="lineno">75</span>#66=OPEN_SHELL(&#x27;&#x27;,(#29,#65));
+<span class="lineno">76</span>#67=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#66));
+<span class="lineno">77</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">78</span>#9051=PRODUCT(&#x27;Tfa004&#x27;,&#x27;Tfa004&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">79</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">80</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">81</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">82</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">83</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">84</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">85</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">86</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">87</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">88</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#67),#9060);
+<span class="lineno">89</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">90</span>ENDSEC;
+<span class="lineno">91</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

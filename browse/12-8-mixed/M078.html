@@ -43,6 +43,9 @@
 <li><code>contains(b&#x27;quadratic_hexahedron&#x27;)</code></li>
 <li><code>contains(b&#x27;VOLUME_3D_ELEMENT_DESCRIPTOR&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="M037.html">M037</a>, <a href="M109.html">M109</a></p>
 </section>
@@ -61,48 +64,79 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M078 - AP209 hexahedron element with wrong node count.
-<span class="lineno">3</span> * Defect: a <mark>VOLUME_3D_ELEMENT_DESCRIPTOR</mark> declares <mark>quadratic_hexahedron</mark>
-<span class="lineno">4</span> * topology (which requires 20 nodes - 8 corners + 12 mid-edge) but the
-<span class="lineno">5</span> * descriptor lists only 12 nodes. Schema-strict readers should drop the
-<span class="lineno">6</span> * element with a warning. */
-<span class="lineno">7</span>HEADER;
-<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;M078 test case&#x27;,&#x27;AP209 <mark>quadratic_hexahedron</mark> with 12 nodes&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">9</span>FILE_NAME(&#x27;M078.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">10</span>FILE_SCHEMA((&#x27;STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }&#x27;));
-<span class="lineno">11</span>ENDSEC;
-<span class="lineno">12</span>DATA;
-<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;structural_analysis_design&#x27;);
-<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">15</span>  &#x27;structural_analysis_design&#x27;,2001,#1);
-<span class="lineno">16</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">17</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">18</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-<span class="lineno">19</span>     REPRESENTATION_CONTEXT(&#x27;fea&#x27;,&#x27;3D&#x27;));
-<span class="lineno">20</span>#100=CARTESIAN_POINT(&#x27;n1&#x27;,(0.0,0.0,0.0));
-<span class="lineno">21</span>#101=CARTESIAN_POINT(&#x27;n2&#x27;,(1.0,0.0,0.0));
-<span class="lineno">22</span>#102=CARTESIAN_POINT(&#x27;n3&#x27;,(1.0,1.0,0.0));
-<span class="lineno">23</span>#103=CARTESIAN_POINT(&#x27;n4&#x27;,(0.0,1.0,0.0));
-<span class="lineno">24</span>#104=CARTESIAN_POINT(&#x27;n5&#x27;,(0.0,0.0,1.0));
-<span class="lineno">25</span>#105=CARTESIAN_POINT(&#x27;n6&#x27;,(1.0,0.0,1.0));
-<span class="lineno">26</span>#106=CARTESIAN_POINT(&#x27;n7&#x27;,(1.0,1.0,1.0));
-<span class="lineno">27</span>#107=CARTESIAN_POINT(&#x27;n8&#x27;,(0.0,1.0,1.0));
-<span class="lineno">28</span>#108=CARTESIAN_POINT(&#x27;m1&#x27;,(0.5,0.0,0.0));
-<span class="lineno">29</span>#109=CARTESIAN_POINT(&#x27;m2&#x27;,(1.0,0.5,0.0));
-<span class="lineno">30</span>#110=CARTESIAN_POINT(&#x27;m3&#x27;,(0.5,1.0,0.0));
-<span class="lineno">31</span>#111=CARTESIAN_POINT(&#x27;m4&#x27;,(0.0,0.5,0.0));
-<span class="lineno">32</span>#120=NODE(&#x27;n1&#x27;,(#100),$);#121=NODE(&#x27;n2&#x27;,(#101),$);
-<span class="lineno">33</span>#122=NODE(&#x27;n3&#x27;,(#102),$);#123=NODE(&#x27;n4&#x27;,(#103),$);
-<span class="lineno">34</span>#124=NODE(&#x27;n5&#x27;,(#104),$);#125=NODE(&#x27;n6&#x27;,(#105),$);
-<span class="lineno">35</span>#126=NODE(&#x27;n7&#x27;,(#106),$);#127=NODE(&#x27;n8&#x27;,(#107),$);
-<span class="lineno">36</span>#128=NODE(&#x27;m1&#x27;,(#108),$);#129=NODE(&#x27;m2&#x27;,(#109),$);
-<span class="lineno">37</span>#130=NODE(&#x27;m3&#x27;,(#110),$);#131=NODE(&#x27;m4&#x27;,(#111),$);
-<span class="lineno">38</span>/* Defect: 20-node hex declared with only 12 nodes. */
-<span class="lineno">39</span>#200=<mark>VOLUME_3D_ELEMENT_DESCRIPTOR</mark>(&#x27;quad_hex&#x27;,&#x27;<mark>quadratic_hexahedron</mark>&#x27;,
-<span class="lineno">40</span>       (#120,#121,#122,#123,#124,#125,#126,#127,
-<span class="lineno">41</span>        #128,#129,#130,#131));
-<span class="lineno">42</span>ENDSEC;
-<span class="lineno">43</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M078: AP209 <mark>quadratic_hexahedron</mark> with wrong node count (12 instead of 20) */
+<span class="lineno">3</span>/* DEFECT: quadratic hex (C3D20) requires 20 nodes; only 12 provided */
+<span class="lineno">4</span>/* Element cannot be evaluated; consumers must drop or reject */
+<span class="lineno">5</span>/* Byte assertion: contains(b&#x27;STRUCTURAL_ANALYSIS_DESIGN&#x27;) */
+<span class="lineno">6</span>/* Byte assertion: contains(b&#x27;<mark>quadratic_hexahedron</mark>&#x27;) */
+<span class="lineno">7</span>/* Byte assertion: contains(b&#x27;<mark>VOLUME_3D_ELEMENT_DESCRIPTOR</mark>&#x27;) */
+<span class="lineno">8</span>HEADER;
+<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;M078: AP209 <mark>quadratic_hexahedron</mark> with 12 nodes not 20&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;M078.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">11</span>/* Byte assertion: contains(b&#x27;STRUCTURAL_ANALYSIS_DESIGN&#x27;) */
+<span class="lineno">12</span>FILE_SCHEMA((&#x27;STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }&#x27;));
+<span class="lineno">13</span>ENDSEC;
+<span class="lineno">14</span>DATA;
+<span class="lineno">15</span>#1=APPLICATION_CONTEXT(&#x27;structural_analysis_design&#x27;);
+<span class="lineno">16</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">17</span>  &#x27;structural_analysis_design&#x27;,2001,#1);
+<span class="lineno">18</span>/* Standard unit context */
+<span class="lineno">19</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">20</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">21</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">22</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">23</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">24</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">25</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">26</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">27</span>  REPRESENTATION_CONTEXT(&#x27;fea&#x27;,&#x27;3D&#x27;));
+<span class="lineno">28</span>/* 8 corner nodes of unit cube */
+<span class="lineno">29</span>#100=CARTESIAN_POINT(&#x27;n1&#x27;,(0.0,0.0,0.0));
+<span class="lineno">30</span>#101=CARTESIAN_POINT(&#x27;n2&#x27;,(1.0,0.0,0.0));
+<span class="lineno">31</span>#102=CARTESIAN_POINT(&#x27;n3&#x27;,(1.0,1.0,0.0));
+<span class="lineno">32</span>#103=CARTESIAN_POINT(&#x27;n4&#x27;,(0.0,1.0,0.0));
+<span class="lineno">33</span>#104=CARTESIAN_POINT(&#x27;n5&#x27;,(0.0,0.0,1.0));
+<span class="lineno">34</span>#105=CARTESIAN_POINT(&#x27;n6&#x27;,(1.0,0.0,1.0));
+<span class="lineno">35</span>#106=CARTESIAN_POINT(&#x27;n7&#x27;,(1.0,1.0,1.0));
+<span class="lineno">36</span>#107=CARTESIAN_POINT(&#x27;n8&#x27;,(0.0,1.0,1.0));
+<span class="lineno">37</span>/* 4 mid-edge nodes (only 4 of 12 required; should be 12 mid-edge for C3D20) */
+<span class="lineno">38</span>#108=CARTESIAN_POINT(&#x27;m1&#x27;,(0.5,0.0,0.0));
+<span class="lineno">39</span>#109=CARTESIAN_POINT(&#x27;m2&#x27;,(1.0,0.5,0.0));
+<span class="lineno">40</span>#110=CARTESIAN_POINT(&#x27;m3&#x27;,(0.5,1.0,0.0));
+<span class="lineno">41</span>#111=CARTESIAN_POINT(&#x27;m4&#x27;,(0.0,0.5,0.0));
+<span class="lineno">42</span>/* NODE entities for the 12 geometry points */
+<span class="lineno">43</span>#120=NODE(&#x27;n1&#x27;,(#100),$);
+<span class="lineno">44</span>#121=NODE(&#x27;n2&#x27;,(#101),$);
+<span class="lineno">45</span>#122=NODE(&#x27;n3&#x27;,(#102),$);
+<span class="lineno">46</span>#123=NODE(&#x27;n4&#x27;,(#103),$);
+<span class="lineno">47</span>#124=NODE(&#x27;n5&#x27;,(#104),$);
+<span class="lineno">48</span>#125=NODE(&#x27;n6&#x27;,(#105),$);
+<span class="lineno">49</span>#126=NODE(&#x27;n7&#x27;,(#106),$);
+<span class="lineno">50</span>#127=NODE(&#x27;n8&#x27;,(#107),$);
+<span class="lineno">51</span>#128=NODE(&#x27;m1&#x27;,(#108),$);
+<span class="lineno">52</span>#129=NODE(&#x27;m2&#x27;,(#109),$);
+<span class="lineno">53</span>#130=NODE(&#x27;m3&#x27;,(#110),$);
+<span class="lineno">54</span>#131=NODE(&#x27;m4&#x27;,(#111),$);
+<span class="lineno">55</span>/* Byte assertion: contains(b&#x27;<mark>VOLUME_3D_ELEMENT_DESCRIPTOR</mark>&#x27;) */
+<span class="lineno">56</span>/* Byte assertion: contains(b&#x27;<mark>quadratic_hexahedron</mark>&#x27;) */
+<span class="lineno">57</span>/* DEFECT: <mark>quadratic_hexahedron</mark> requires 20 nodes; only 12 listed */
+<span class="lineno">58</span>#200=<mark>VOLUME_3D_ELEMENT_DESCRIPTOR</mark>(&#x27;quad_hex&#x27;,&#x27;<mark>quadratic_hexahedron</mark>&#x27;,
+<span class="lineno">59</span>  (#120,#121,#122,#123,#124,#125,#126,#127,#128,#129,#130,#131));
+<span class="lineno">60</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">61</span>#300=GEOMETRIC_CURVE_SET(&#x27;ap209-quadratic-hexahedron-12-nodes-not-20&#x27;,
+<span class="lineno">62</span>  (#120,#121,#122,#123,#124,#125,#126,#127,#128,#129,#130,#131,#200));
+<span class="lineno">63</span>/* Product chain */
+<span class="lineno">64</span>#400=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">65</span>#401=PRODUCT_CONTEXT(&#x27;&#x27;,#400,&#x27;mechanical&#x27;);
+<span class="lineno">66</span>#402=PRODUCT(&#x27;M078&#x27;,&#x27;M078&#x27;,&#x27;M078&#x27;,(#401));
+<span class="lineno">67</span>#403=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#402);
+<span class="lineno">68</span>#404=PRODUCT_DEFINITION_CONTEXT(#400,&#x27;design&#x27;);
+<span class="lineno">69</span>#405=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#403,#404);
+<span class="lineno">70</span>#406=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#405);
+<span class="lineno">71</span>#407=SHAPE_REPRESENTATION(&#x27;&#x27;,(#300),#14);
+<span class="lineno">72</span>#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
+<span class="lineno">73</span>ENDSEC;
+<span class="lineno">74</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

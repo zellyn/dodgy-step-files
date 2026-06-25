@@ -43,6 +43,9 @@
 <li><code>contains(b&#x27;header;&#x27;) or contains(b&#x27;data;&#x27;) or contains(b&#x27;endsec;&#x27;)</code></li>
 <li><code>contains(b&#x27;data;&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="../12-1a-encoding/Le027.html">Le027</a></p>
 </section>
@@ -61,21 +64,24 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Lh047 - Lower-case section keywords (<mark>data;</mark> instead of DATA;)
-<span class="lineno">3</span> * Defect: ISO 10303-21 spells framing keywords in upper case.
-<span class="lineno">4</span> * This fixture uses lower-case &#x27;header;&#x27;, &#x27;<mark>data;</mark>&#x27;, &#x27;endsec;&#x27;.
-<span class="lineno">5</span> * Strict readers reject at the first mis-cased keyword; lenient
-<span class="lineno">6</span> * readers fold case and silently accept. */
-<span class="lineno">7</span>header;
-<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Lh047 - lower-case section keywords&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">9</span>FILE_NAME(&#x27;Lh047.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">11</span>endsec;
+<span class="lineno">2</span>/* Lh047: lower-case framing keywords â header; <mark>data;</mark> endsec; instead of upper-case */
+<span class="lineno">3</span>/* ISO 10303-21 Â§6.2: framing keywords ISO-10303-21, HEADER, DATA, ENDSEC are upper-case */
+<span class="lineno">4</span>/* DEFECT: all three section-delimiters below appear in lower case */
+<span class="lineno">5</span>/* strict parsers reject at first mis-cased keyword; lenient parsers fold case and proceed */
+<span class="lineno">6</span>header;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;Lh047: lower-case framing keywords&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;Lh047.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN&#x27;));
+<span class="lineno">10</span>endsec;
+<span class="lineno">11</span>/* DEFECT: <mark>data;</mark> and endsec; are lower-case â violate the Part-21 framing grammar */
 <span class="lineno">12</span><mark>data;</mark>
-<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">14</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">15</span>endsec;
-<span class="lineno">16</span>END-ISO-10303-21;
+<span class="lineno">13</span>#1=CARTESIAN_POINT(&#x27;origin&#x27;,(0.,0.,0.));
+<span class="lineno">14</span>#2=CARTESIAN_POINT(&#x27;corner&#x27;,(1.,1.,0.));
+<span class="lineno">15</span>#3=DIRECTION(&#x27;xdir&#x27;,(1.,0.,0.));
+<span class="lineno">16</span>#4=DIRECTION(&#x27;zdir&#x27;,(0.,0.,1.));
+<span class="lineno">17</span>#5=GEOMETRIC_CURVE_SET(&#x27;lowercase-keyword-shape&#x27;,(#1,#2));
+<span class="lineno">18</span>endsec;
+<span class="lineno">19</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

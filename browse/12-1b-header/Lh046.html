@@ -43,6 +43,9 @@
 <li><code>contains(b&#x27;HEADER;&#x27;) and contains(b&#x27;ENDSEC;&#x27;) and not_contains(b&#x27;FILE_DESCRIPTION(&#x27;)</code></li>
 <li><code>not_contains(b&#x27;FILE_NAME(&#x27;) and not_contains(b&#x27;FILE_SCHEMA(&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="Lh037.html">Lh037</a>, <a href="Lh042.html">Lh042</a>, <a href="Lh043.html">Lh043</a></p>
 </section>
@@ -61,21 +64,25 @@
 <details>
 <summary>Show fixture bytes</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Lh046 - HEADER contains only comments, no required records
-<span class="lineno">3</span> * Defect: ISO 10303-21 mandates the three header records inside
-<span class="lineno">4</span> * HEADER. This fixture&#x27;s HEADER contains only block comments;
-<span class="lineno">5</span> * receivers must reject for missing required records. Lenient
-<span class="lineno">6</span> * receivers may invent default metadata. */
-<span class="lineno">7</span>HEADER;
-<span class="lineno">8</span>/* exported by build pipeline */
-<span class="lineno">9</span>/* metadata source unavailable at export time */
-<span class="lineno">10</span>/* placeholder header - file may not be valid */
-<span class="lineno">11</span>ENDSEC;
-<span class="lineno">12</span>DATA;
-<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">14</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">15</span>ENDSEC;
-<span class="lineno">16</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* Lh046: HEADER section contains only block comments â no required records */
+<span class="lineno">3</span>/* ISO 10303-21 Â§6.2: HEADER must contain FILE_DESCRIPTION, FILE_NAME, FILE_SCHEMA */
+<span class="lineno">4</span>/* DEFECT: all three required records are absent; only block comments appear in HEADER */
+<span class="lineno">5</span>/* lenient readers may invent default metadata; strict readers must reject */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>/* exported by build pipeline */
+<span class="lineno">8</span>/* metadata unavailable â placeholder header inserted by partial export */
+<span class="lineno">9</span>/* FILE_DESCRIPTION: intentionally omitted */
+<span class="lineno">10</span>/* FILE_NAME: intentionally omitted */
+<span class="lineno">11</span>/* FILE_SCHEMA: intentionally omitted */
+<span class="lineno">12</span>ENDSEC;
+<span class="lineno">13</span>DATA;
+<span class="lineno">14</span>#1=CARTESIAN_POINT(&#x27;origin&#x27;,(0.,0.,0.));
+<span class="lineno">15</span>#2=CARTESIAN_POINT(&#x27;corner&#x27;,(1.,1.,0.));
+<span class="lineno">16</span>#3=DIRECTION(&#x27;xdir&#x27;,(1.,0.,0.));
+<span class="lineno">17</span>#4=DIRECTION(&#x27;zdir&#x27;,(0.,0.,1.));
+<span class="lineno">18</span>#5=GEOMETRIC_CURVE_SET(&#x27;comment-only-header-shape&#x27;,(#1,#2));
+<span class="lineno">19</span>ENDSEC;
+<span class="lineno">20</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

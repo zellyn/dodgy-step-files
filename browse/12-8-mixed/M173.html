@@ -35,58 +35,94 @@
 <section><h2>Notes</h2>
 <p>Synonyms: &quot;AP238 toolpath sample gap &gt; tool diameter&quot;, &quot;STEP-NC sparse milling samples&quot;, &quot;milling path discontinuity&quot;, &quot;toolpath leaves uncut between points&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;AP238_STEP_NC_MIM&#x27;)</code></li>
 <li><code>contains(b&#x27;MILLING_TOOLPATH&#x27;)</code></li>
 <li><code>contains(b&#x27;MILLING_CUTTING_TOOL&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_edges_total == 1</code></li>
+<li><code>n_vertices_total == 2</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
-<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(3)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(3)</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
-<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
-<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_FORWARD_REF)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M173 - AP238 <mark>MILLING_TOOLPATH</mark> consecutive points beyond tool diameter.
-<span class="lineno">3</span> * Defect: successive points along a milling toolpath are spaced 12 mm
-<span class="lineno">4</span> * apart while the tool diameter is 6 mm. Linear interpolation between
-<span class="lineno">5</span> * those samples leaves stock between passes and the toolpath has no
-<span class="lineno">6</span> * implicit guarantee of contiguous engagement; the controller either
-<span class="lineno">7</span> * over-feeds or leaves uncut islands. */
-<span class="lineno">8</span>HEADER;
-<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;M173 test case&#x27;,&#x27;AP238 milling-toolpath sampling exceeds tool diameter&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">10</span>FILE_NAME(&#x27;M173.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">11</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 1 0 0 1 }&#x27;));
-<span class="lineno">12</span>ENDSEC;
-<span class="lineno">13</span>DATA;
-<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;numerical_control_machining&#x27;);
-<span class="lineno">15</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">16</span>  &#x27;numerical_control_machining&#x27;,2007,#1);
-<span class="lineno">17</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">18</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">19</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-<span class="lineno">20</span>     REPRESENTATION_CONTEXT(&#x27;nc&#x27;,&#x27;3D&#x27;));
-<span class="lineno">21</span>/* Tool diameter 6 mm. */
-<span class="lineno">22</span>#90=<mark>MILLING_CUTTING_TOOL</mark>(&#x27;endmill_6mm&#x27;,$,$,$,
-<span class="lineno">23</span>  MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(6.0),#10));
-<span class="lineno">24</span>/* Defect: toolpath samples 12 mm apart - twice the tool diameter. */
-<span class="lineno">25</span>#50=CARTESIAN_POINT(&#x27;p0&#x27;,(0.0,0.0,0.0));
-<span class="lineno">26</span>#51=CARTESIAN_POINT(&#x27;p1&#x27;,(12.0,0.0,0.0));
-<span class="lineno">27</span>#52=CARTESIAN_POINT(&#x27;p2&#x27;,(24.0,0.0,0.0));
-<span class="lineno">28</span>#60=POLYLINE(&#x27;jumpy_path&#x27;,(#50,#51,#52));
-<span class="lineno">29</span>#100=<mark>MILLING_TOOLPATH</mark>(&#x27;coarse_path&#x27;,$,$,$,$,#60,#90);
-<span class="lineno">30</span>#200=WORKPLAN(&#x27;main&#x27;,(#100),$,$,$);
-<span class="lineno">31</span>ENDSEC;
-<span class="lineno">32</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M173: AP238 milling_toolpath consecutive points spaced beyond tool diameter */
+<span class="lineno">3</span>/* DEFECT: <mark>MILLING_TOOLPATH</mark> points 12.0mm apart; <mark>MILLING_CUTTING_TOOL</mark> diameter 6.0mm */
+<span class="lineno">4</span>/* Ratio 2.0 â linear interpolation leaves 6mm uncut stock between samples */
+<span class="lineno">5</span>/* Controllers over-feed (gouge) or leave uncut islands between consecutive samples */
+<span class="lineno">6</span>/* Per ISO 10303-238 Â§6.2 milling toolpath sample spacing must not exceed tool diameter */
+<span class="lineno">7</span>/* Byte assertion: contains(b&#x27;<mark>AP238_STEP_NC_MIM</mark>&#x27;) */
+<span class="lineno">8</span>/* Byte assertion: contains(b&#x27;<mark>MILLING_TOOLPATH</mark>&#x27;) */
+<span class="lineno">9</span>/* Byte assertion: contains(b&#x27;<mark>MILLING_CUTTING_TOOL</mark>&#x27;) */
+<span class="lineno">10</span>HEADER;
+<span class="lineno">11</span>FILE_DESCRIPTION((&#x27;M173: AP238 milling_toolpath sample spacing 12mm exceeds tool diameter 6mm&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">12</span>FILE_NAME(&#x27;M173.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">13</span>/* Byte assertion: contains(b&#x27;<mark>AP238_STEP_NC_MIM</mark>&#x27;) */
+<span class="lineno">14</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 3 1 1 1 }&#x27;));
+<span class="lineno">15</span>ENDSEC;
+<span class="lineno">16</span>DATA;
+<span class="lineno">17</span>/* Standard unit context (mm) */
+<span class="lineno">18</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">19</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">20</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">21</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">22</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">23</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">24</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">25</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">26</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">27</span>/* mm length unit reference for MEASURE_WITH_UNIT */
+<span class="lineno">28</span>#15=SI_UNIT(.MILLI.,.METRE.);
+<span class="lineno">29</span>/* POLYLINE backing the sparse toolpath â four points 12mm apart */
+<span class="lineno">30</span>/* Point spacing 12.0mm &gt;&gt; tool diameter 6.0mm: leaves uncut stock between samples */
+<span class="lineno">31</span>#30=CARTESIAN_POINT(&#x27;sample_0&#x27;,(0.0,0.0,0.0));
+<span class="lineno">32</span>#31=CARTESIAN_POINT(&#x27;sample_1&#x27;,(12.0,0.0,0.0));
+<span class="lineno">33</span>#32=CARTESIAN_POINT(&#x27;sample_2&#x27;,(24.0,0.0,0.0));
+<span class="lineno">34</span>#33=CARTESIAN_POINT(&#x27;sample_3&#x27;,(36.0,0.0,0.0));
+<span class="lineno">35</span>#34=POLYLINE(&#x27;sparse_path_polyline&#x27;,(#30,#31,#32,#33));
+<span class="lineno">36</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">37</span>#20=GEOMETRIC_CURVE_SET(&#x27;ap238-milling-toolpath-sample-spacing-12mm-exceeds-tool-dia-6mm&#x27;,
+<span class="lineno">38</span>  (#34,#52,#54,#60));
+<span class="lineno">39</span>/* WORKPLAN &#x27;sparse_mill_program&#x27; â AP238 top-level NC program */
+<span class="lineno">40</span>#50=WORKPLAN(&#x27;sparse_mill_program&#x27;,&#x27;Sparse milling toolpath workplan&#x27;,(),$,(#51));
+<span class="lineno">41</span>/* MACHINING_WORKINGSTEP links workpiece to milling operation */
+<span class="lineno">42</span>#51=MACHINING_WORKINGSTEP(&#x27;sparse_mill_step&#x27;,&#x27;Sparse milling workingstep&#x27;,#52,#60,$);
+<span class="lineno">43</span>/* Byte assertion: contains(b&#x27;<mark>MILLING_CUTTING_TOOL</mark>&#x27;) */
+<span class="lineno">44</span>/* <mark>MILLING_CUTTING_TOOL</mark> &#x27;mill_6mm&#x27;: cutter diameter = 6.0mm */
+<span class="lineno">45</span>#55=MEASURE_WITH_UNIT(POSITIVE_LENGTH_MEASURE(6.0),#15);
+<span class="lineno">46</span>#54=<mark>MILLING_CUTTING_TOOL</mark>(&#x27;mill_6mm&#x27;,$,#55,$,$,$,$,$,$);
+<span class="lineno">47</span>/* Byte assertion: contains(b&#x27;<mark>MILLING_TOOLPATH</mark>&#x27;) */
+<span class="lineno">48</span>/* DEFECT: <mark>MILLING_TOOLPATH</mark> backed by POLYLINE with 12mm spacing &gt; 6mm diameter */
+<span class="lineno">49</span>#52=<mark>MILLING_TOOLPATH</mark>(&#x27;sparse_mill_path&#x27;,#34,$,#54,$);
+<span class="lineno">50</span>/* WORKPIECE &#x27;mill_workpiece&#x27; */
+<span class="lineno">51</span>#60=WORKPIECE(&#x27;mill_workpiece&#x27;,&#x27;Milling workpiece for sparse toolpath test&#x27;,$,$,$,$,$);
+<span class="lineno">52</span>/* Product chain */
+<span class="lineno">53</span>#100=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">54</span>#101=PRODUCT_CONTEXT(&#x27;&#x27;,#100,&#x27;mechanical&#x27;);
+<span class="lineno">55</span>#102=PRODUCT(&#x27;M173&#x27;,&#x27;M173&#x27;,&#x27;M173&#x27;,(#101));
+<span class="lineno">56</span>#103=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#102);
+<span class="lineno">57</span>#104=PRODUCT_DEFINITION_CONTEXT(#100,&#x27;design&#x27;);
+<span class="lineno">58</span>#105=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#103,#104);
+<span class="lineno">59</span>#106=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#105);
+<span class="lineno">60</span>#107=SHAPE_REPRESENTATION(&#x27;&#x27;,(#20),#14);
+<span class="lineno">61</span>#108=SHAPE_DEFINITION_REPRESENTATION(#106,#107);
+<span class="lineno">62</span>ENDSEC;
+<span class="lineno">63</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

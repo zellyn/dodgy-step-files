@@ -43,6 +43,9 @@
 <li><code>contains(b&#x27;urn:&#x27;) or contains(b&#x27;plmlink:&#x27;)</code></li>
 <li><code>contains(b&#x27;file:&#x27;) or contains(b&#x27;https://&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -58,32 +61,32 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Lh041 - REFERENCE section published with multiple URI schemes
-<span class="lineno">3</span> * (file:, https:, urn:) including unsupported schemes
-<span class="lineno">4</span> * Defect: Edition-3 REFERENCE entries carry URIs to external
-<span class="lineno">5</span> * resources. The spec does not constrain the URI scheme. Receivers
-<span class="lineno">6</span> * implement file:// and possibly http(s)://; uncommon schemes
-<span class="lineno">7</span> * (urn:, ftp:, custom org-specific) are typically unsupported.
-<span class="lineno">8</span> * The kernel must decide whether unsupported schemes mean reject,
-<span class="lineno">9</span> * skip, or attempt fallback. Mixed schemes in a single REFERENCE
-<span class="lineno">10</span> * section test the consistency of that decision. */
-<span class="lineno">11</span>HEADER;
-<span class="lineno">12</span>FILE_DESCRIPTION((&#x27;Lh041 - REFERENCE with mixed URI schemes incl. urn:&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">13</span>FILE_NAME(&#x27;Lh041.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
-<span class="lineno">14</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">15</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">16</span>ENDSEC;
-<span class="lineno">17</span><mark>REFERENCE;</mark>
-<span class="lineno">18</span>#100=&lt;file:companion.stp#part_a&gt;;
-<span class="lineno">19</span>#101=&lt;https://example.invalid/companion.stp#part_b&gt;;
-<span class="lineno">20</span>/* Defect: urn: scheme - typically unsupported */
-<span class="lineno">21</span>#102=&lt;urn:plm:org-acme:doc:12345#assembly&gt;;
-<span class="lineno">22</span>/* Defect: custom scheme - definitely unsupported */
-<span class="lineno">23</span>#103=&lt;plmlink:vault://acme/parts/12345#main&gt;;
-<span class="lineno">24</span>ENDSEC;
-<span class="lineno">25</span>DATA;
-<span class="lineno">26</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">27</span>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">2</span>/* Lh041: REFERENCE section with mixed URI schemes including unsupported ones */
+<span class="lineno">3</span>/* ISO 10303-21 Ed.3 Â§8: REFERENCE entries carry URIs; spec does not constrain scheme */
+<span class="lineno">4</span>/* DEFECT: urn: and plmlink: schemes are typically unsupported by receivers */
+<span class="lineno">5</span>/* pure-Python validator rejects (E_UNRESOLVED_REFS); OCC silently accepts empty */
+<span class="lineno">6</span>/* expected: classify each URI scheme; report unsupported entries deterministically */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Lh041: REFERENCE section with mixed URI schemes&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;Lh041.stp&#x27;,&#x27;2026-06-20T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span><mark>REFERENCE;</mark>
+<span class="lineno">13</span>/* supported scheme: file: */
+<span class="lineno">14</span>#10=&lt;file:companion.stp#part_a&gt;;
+<span class="lineno">15</span>/* supported scheme: https: */
+<span class="lineno">16</span>#11=&lt;https://example.invalid/companion.stp#part_b&gt;;
+<span class="lineno">17</span>/* DEFECT: unsupported scheme urn: */
+<span class="lineno">18</span>#12=&lt;urn:plm:org-acme:doc:12345#assembly&gt;;
+<span class="lineno">19</span>/* DEFECT: unsupported custom scheme plmlink: */
+<span class="lineno">20</span>#13=&lt;plmlink:vault://acme/parts/12345#main&gt;;
+<span class="lineno">21</span>ENDSEC;
+<span class="lineno">22</span>DATA;
+<span class="lineno">23</span>#1=CARTESIAN_POINT(&#x27;origin&#x27;,(0.,0.,0.));
+<span class="lineno">24</span>#2=CARTESIAN_POINT(&#x27;corner&#x27;,(1.,1.,0.));
+<span class="lineno">25</span>#3=DIRECTION(&#x27;xdir&#x27;,(1.,0.,0.));
+<span class="lineno">26</span>#4=DIRECTION(&#x27;zdir&#x27;,(0.,0.,1.));
+<span class="lineno">27</span>#5=GEOMETRIC_CURVE_SET(&#x27;mixed-uri-scheme-shape&#x27;,(#1,#2));
 <span class="lineno">28</span>ENDSEC;
 <span class="lineno">29</span>END-ISO-10303-21;
 </pre>

@@ -37,6 +37,8 @@
 <p>**See also**: Tfa038, Tsh001. Synonyms: &quot;face on cylinder has hole but no outer bound&quot;, &quot;natural surface bound not synthesized&quot;, &quot;face read with no boundary at all&quot;, &quot;inner wire on closed surface treated as disk&quot;, &quot;cylinder face missing implicit outer boundary&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<section><h2>Closure intent</h2>
+<p><code>sheet</code> — the open shell is the intended final geometry; a solid-only kernel should cleanly refuse.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;CYLINDRICAL_SURFACE(&#x27;)</code></li>
 <li><code>contains(b&#x27;FACE_INNER_BOUND(&#x27;)</code></li>
@@ -80,7 +82,7 @@
 <span class="lineno">19</span>#102=CARTESIAN_POINT(&#x27;&#x27;,(2.0,0.0,1.0));#103=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#102,#11,#12);
 <span class="lineno">20</span>#104=CIRCLE(&#x27;&#x27;,#103,0.3);
 <span class="lineno">21</span>#105=EDGE_CURVE(&#x27;window&#x27;,#101,#101,#104,.T.);
-<span class="lineno">22</span>#106=ORIENTED_EDGE(&#x27;&#x27;,*,*,#105,.T.);#107=EDGE_LOOP(&#x27;&#x27;,(#106,));
+<span class="lineno">22</span>#106=ORIENTED_EDGE(&#x27;&#x27;,*,*,#105,.T.);#107=EDGE_LOOP(&#x27;&#x27;,(#106));
 <span class="lineno">23</span>#108=<mark>FACE_INNER_BOUND(</mark>&#x27;only_inner&#x27;,#107,.T.);
 <span class="lineno">24</span>#109=ADVANCED_FACE(&#x27;<mark>no_outer_bound</mark>&#x27;,(#108),#14,.T.);
 <span class="lineno">25</span>/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */

@@ -44,6 +44,9 @@
 <li><code>contains(b&#x27;DOCUMENT_FILE&#x27;)</code></li>
 <li><code>contains(b&quot;DOCUMENT_FILE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,&quot;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -59,26 +62,63 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M127 - AP203 <mark>DOCUMENT_FILE</mark> referenced with empty URI/path field.
-<span class="lineno">3</span> * Defect: a <mark>DOCUMENT_FILE</mark> entity declares a referenced specification
-<span class="lineno">4</span> * document but its `name` and `description` strings are empty,
-<span class="lineno">5</span> * leaving consumers with no path or URI to resolve. The document
-<span class="lineno">6</span> * is referenced but unreachable. */
-<span class="lineno">7</span>HEADER;
-<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;M127 test case&#x27;,&#x27;AP203 document_file empty URI&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">9</span>FILE_NAME(&#x27;M127.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">10</span>FILE_SCHEMA((&#x27;<mark>CONFIG_CONTROL_DESIGN</mark>&#x27;));
-<span class="lineno">11</span>ENDSEC;
-<span class="lineno">12</span>DATA;
-<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;configuration controlled 3D design of mechanical parts and assemblies&#x27;);
-<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;config_control_design&#x27;,1994,#1);
-<span class="lineno">15</span>#10=PRODUCT(&#x27;part_42&#x27;,&#x27;part_42&#x27;,&#x27;widget&#x27;,(#1));
-<span class="lineno">16</span>#50=DOCUMENT_TYPE(&#x27;design_specification&#x27;);
-<span class="lineno">17</span>/* Defect: <mark>DOCUMENT_FILE</mark> id+name+description all empty - no URI to resolve. */
-<span class="lineno">18</span>#100=<mark>DOCUMENT_FILE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,</mark>#50);
-<span class="lineno">19</span>#101=APPLIED_DOCUMENT_REFERENCE(#100,&#x27;spec_link&#x27;,(#10));
-<span class="lineno">20</span>ENDSEC;
-<span class="lineno">21</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M127: AP203 <mark>DOCUMENT_FILE</mark> referenced with empty URI / path field */
+<span class="lineno">3</span>/* DEFECT: <mark>DOCUMENT_FILE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,</mark>doc_type) â identifier, name, description all empty */
+<span class="lineno">4</span>/* APPLIED_DOCUMENT_REFERENCE links the part to an unresolvable document */
+<span class="lineno">5</span>/* Consumers cannot retrieve the referenced spec because no URI or identifier exists */
+<span class="lineno">6</span>/* Per AP203 Â§5.4 <mark>DOCUMENT_FILE</mark> must have a non-empty identifier for resolution */
+<span class="lineno">7</span>/* Byte assertion: contains(b&#x27;<mark>CONFIG_CONTROL_DESIGN</mark>&#x27;) */
+<span class="lineno">8</span>/* Byte assertion: contains(b&#x27;<mark>DOCUMENT_FILE</mark>&#x27;) */
+<span class="lineno">9</span>/* Byte assertion: contains(b&quot;<mark>DOCUMENT_FILE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,</mark>&quot;) */
+<span class="lineno">10</span>HEADER;
+<span class="lineno">11</span>FILE_DESCRIPTION((&#x27;M127: AP203 <mark>DOCUMENT_FILE</mark> with empty identifier name and description&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">12</span>FILE_NAME(&#x27;M127.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">13</span>/* Byte assertion: contains(b&#x27;<mark>CONFIG_CONTROL_DESIGN</mark>&#x27;) */
+<span class="lineno">14</span>FILE_SCHEMA((&#x27;<mark>CONFIG_CONTROL_DESIGN</mark> { 1 0 10303 203 1 0 0 }&#x27;));
+<span class="lineno">15</span>ENDSEC;
+<span class="lineno">16</span>DATA;
+<span class="lineno">17</span>#1=APPLICATION_CONTEXT(&#x27;configuration controlled 3D designs of mechanical parts and assemblies&#x27;);
+<span class="lineno">18</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">19</span>  &#x27;config_control_design&#x27;,1994,#1);
+<span class="lineno">20</span>/* Standard unit context (mm) */
+<span class="lineno">21</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">22</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">23</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">24</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">25</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">26</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">27</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">28</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">29</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">30</span>/* Document type for the referenced specification */
+<span class="lineno">31</span>#20=DOCUMENT_TYPE(&#x27;specification&#x27;);
+<span class="lineno">32</span>/* Byte assertion: contains(b&#x27;<mark>DOCUMENT_FILE</mark>&#x27;) */
+<span class="lineno">33</span>/* Byte assertion: contains(b&quot;<mark>DOCUMENT_FILE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,</mark>&quot;) */
+<span class="lineno">34</span>/* DEFECT: all three string fields are empty â document is unresolvable */
+<span class="lineno">35</span>/* A valid <mark>DOCUMENT_FILE</mark> would have: <mark>DOCUMENT_FILE</mark>(&#x27;SPEC-001&#x27;,&#x27;Widget Spec&#x27;,&#x27;Rev A drawing&#x27;,#20) */
+<span class="lineno">36</span>#21=<mark>DOCUMENT_FILE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,</mark>#20);
+<span class="lineno">37</span>/* Product being documented */
+<span class="lineno">38</span>#22=PRODUCT(&#x27;PART-001&#x27;,&#x27;Widget&#x27;,&#x27;Precision widget&#x27;,(#1));
+<span class="lineno">39</span>#23=PRODUCT_DEFINITION_FORMATION(&#x27;A&#x27;,&#x27;Initial&#x27;,#22);
+<span class="lineno">40</span>#24=PRODUCT_DEFINITION_CONTEXT(#1,&#x27;design&#x27;);
+<span class="lineno">41</span>#25=PRODUCT_DEFINITION(&#x27;release&#x27;,&#x27;&#x27;,#23,#24);
+<span class="lineno">42</span>/* APPLIED_DOCUMENT_REFERENCE: links product definition to the empty <mark>DOCUMENT_FILE</mark> */
+<span class="lineno">43</span>#26=APPLIED_DOCUMENT_REFERENCE(#21,&#x27;specification&#x27;,(#25));
+<span class="lineno">44</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">45</span>#500=GEOMETRIC_CURVE_SET(&#x27;ap203-document-file-empty-uri-path-field&#x27;,
+<span class="lineno">46</span>  (#21,#22,#23,#25,#26));
+<span class="lineno">47</span>/* Product chain */
+<span class="lineno">48</span>#600=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">49</span>#601=PRODUCT_CONTEXT(&#x27;&#x27;,#600,&#x27;mechanical&#x27;);
+<span class="lineno">50</span>#602=PRODUCT(&#x27;M127&#x27;,&#x27;M127&#x27;,&#x27;M127&#x27;,(#601));
+<span class="lineno">51</span>#603=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#602);
+<span class="lineno">52</span>#604=PRODUCT_DEFINITION_CONTEXT(#600,&#x27;design&#x27;);
+<span class="lineno">53</span>#605=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#603,#604);
+<span class="lineno">54</span>#606=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#605);
+<span class="lineno">55</span>#607=SHAPE_REPRESENTATION(&#x27;&#x27;,(#500),#14);
+<span class="lineno">56</span>#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
+<span class="lineno">57</span>ENDSEC;
+<span class="lineno">58</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

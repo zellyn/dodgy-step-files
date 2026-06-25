@@ -43,6 +43,9 @@
 <li><code>contains(b&#x27;BEZIER_SURFACE&#x27;)</code></li>
 <li><code>contains(b&#x27;0.000003&#x27;) or contains(b&#x27;3.E-6&#x27;) or contains(b&#x27;3e-06&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="../12-8-mixed/M005.html">M005</a>, <a href="../12-8-mixed/M022.html">M022</a>, <a href="../12-4-tolerance/N019.html">N019</a>, <a href="../12-4-tolerance/N050.html">N050</a></p>
 </section>
@@ -60,23 +63,23 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Wr051 - step-g BRep imports cleanly but g-stl tessellation produces zero triangles silently
-<span class="lineno">2</span>   Defect: a STEP file imports cleanly via BRL-CAD step-g (the .g file
-<span class="lineno">3</span>   contains a Brep_2.s solid), but the downstream g-stl tessellator
-<span class="lineno">4</span>   prints &quot;ERROR(Brep_2.s): tessellation failure&quot; and writes &quot;0 triangles
-<span class="lineno">5</span>   written&quot; - the resulting .stl file is empty. The two halves of the
-<span class="lineno">6</span>   pipeline disagree on whether the model is &quot;good&quot;: step-g believes it
-<span class="lineno">7</span>   converted the geometry; g-stl cannot triangulate it. The user-facing
-<span class="lineno">8</span>   symptom is an empty .stl with no diagnostic at the file-format
-<span class="lineno">9</span>   interface; the failure happens deep in PullbackCurve / SurfaceTree.
-<span class="lineno">10</span>   Reproduce with a file featuring a sliver face on a B-spline (a face
-<span class="lineno">11</span>   whose pcurves and 3D curves agree at the vertices but drift to ~1e-3
-<span class="lineno">12</span>   in the interior - the BRL-CAD m_tolerance threshold) - step-g
-<span class="lineno">13</span>   accepts it, g-stl drops it.
-<span class="lineno">14</span>   Sources: BRL-CAD users mailing list 2017 (Filip Binkiewicz):
-<span class="lineno">15</span>   &quot;ERROR(Brep_2.s): tessellation failure&quot; + &quot;0 triangles written&quot;;
-<span class="lineno">16</span>   step-g side accepts the same file. */
-<span class="lineno">17</span>ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Wr051 - step-g BRep imports cleanly but g-stl tessellation produces zero triangles silently
+<span class="lineno">3</span>   Defect: a STEP file imports cleanly via BRL-CAD step-g (the .g file
+<span class="lineno">4</span>   contains a Brep_2.s solid), but the downstream g-stl tessellator
+<span class="lineno">5</span>   prints &quot;ERROR(Brep_2.s): tessellation failure&quot; and writes &quot;0 triangles
+<span class="lineno">6</span>   written&quot; - the resulting .stl file is empty. The two halves of the
+<span class="lineno">7</span>   pipeline disagree on whether the model is &quot;good&quot;: step-g believes it
+<span class="lineno">8</span>   converted the geometry; g-stl cannot triangulate it. The user-facing
+<span class="lineno">9</span>   symptom is an empty .stl with no diagnostic at the file-format
+<span class="lineno">10</span>   interface; the failure happens deep in PullbackCurve / SurfaceTree.
+<span class="lineno">11</span>   Reproduce with a file featuring a sliver face on a B-spline (a face
+<span class="lineno">12</span>   whose pcurves and 3D curves agree at the vertices but drift to ~1e-3
+<span class="lineno">13</span>   in the interior - the BRL-CAD m_tolerance threshold) - step-g
+<span class="lineno">14</span>   accepts it, g-stl drops it.
+<span class="lineno">15</span>   Sources: BRL-CAD users mailing list 2017 (Filip Binkiewicz):
+<span class="lineno">16</span>   &quot;ERROR(Brep_2.s): tessellation failure&quot; + &quot;0 triangles written&quot;;
+<span class="lineno">17</span>   step-g side accepts the same file. */
 <span class="lineno">18</span>HEADER;
 <span class="lineno">19</span>FILE_DESCRIPTION(
 <span class="lineno">20</span>  (&#x27;Wr051 - sliver-face BRep tessellates to zero triangles silently&#x27;),
@@ -119,7 +122,7 @@
 </section>
 </main>
 <footer>
-<nav class="prevnext"><a class="prev" href="Wr050.html">&larr; Wr050</a> <a class="up" href="index.html">§12.13 Writer pathology</a></nav>
+<nav class="prevnext"><a class="prev" href="Wr050.html">&larr; Wr050</a> <a class="up" href="index.html">§12.13 Writer pathology</a> <a class="next" href="Wr052.html">Wr052 &rarr;</a></nav>
 <p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
 </footer>
 </body>

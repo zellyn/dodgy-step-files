@@ -36,80 +36,138 @@
 <section><h2>Notes</h2>
 <p>**See also**: Gs037, Tfa026. Synonyms: &quot;OFFSET_SURFACE wrapping complex BSpline fails&quot;, &quot;offset surface evaluation fails on B-spline base&quot;, &quot;broken indirection through OFFSET_SURFACE on NURBS&quot;, &quot;offset over complex B_SPLINE_SURFACE not parsed&quot;, &quot;wrapped offset surface crashes import&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;B_SPLINE_SURFACE&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_vertices_total == 0</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="../12-2c-surfaces/Gs037.html">Gs037</a>, <a href="../12-3c-faces/Tfa026.html">Tfa026</a></p>
 </section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
-<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
 <tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
 <tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
 <tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
-<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Gn021 - OFFSET_SURFACE of complex BSpline base fails parsing only when wrapped
-<span class="lineno">2</span>   Defect: a face referencing OFFSET_SURFACE(&#x27;&#x27;,#288,20.0,.F.) where #288
-<span class="lineno">3</span>   is a complex (<mark>B_SPLINE_SURFACE</mark> ... ) aggregate fails to render.
-<span class="lineno">4</span>   Replacing the OFFSET_SURFACE reference with the inner BSpline directly
-<span class="lineno">5</span>   succeeds -- so the failure is in the indirection, not the geometry.
-<span class="lineno">6</span>   This file emits the wrapped form: an OFFSET_SURFACE (offset = 20.0)
-<span class="lineno">7</span>   over a complex rational <mark>B_SPLINE_SURFACE</mark>_WITH_KNOTS aggregate.
-<span class="lineno">8</span>   Sources: I010 / OCCT #994.  Cross-ref: Geom_OffsetSurface over
-<span class="lineno">9</span>   Geom_SurfaceOfLinearExtrusion. */
-<span class="lineno">10</span>ISO-10303-21;
-<span class="lineno">11</span>HEADER;
-<span class="lineno">12</span>FILE_DESCRIPTION(
-<span class="lineno">13</span>  (&#x27;Gn021 - OFFSET_SURFACE wrapping complex rational BSpline base&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">14</span>FILE_NAME(&#x27;Gn021.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
-<span class="lineno">15</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">16</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">17</span>ENDSEC;
-<span class="lineno">18</span>DATA;
-<span class="lineno">19</span>/* 4x4 control net for a slightly curved degree-(3,3) rational patch. */
-<span class="lineno">20</span>#10=CARTESIAN_POINT(&#x27;p00&#x27;,(0.0,0.0,0.0));
-<span class="lineno">21</span>#11=CARTESIAN_POINT(&#x27;p01&#x27;,(0.0,1.0,0.2));
-<span class="lineno">22</span>#12=CARTESIAN_POINT(&#x27;p02&#x27;,(0.0,2.0,0.2));
-<span class="lineno">23</span>#13=CARTESIAN_POINT(&#x27;p03&#x27;,(0.0,3.0,0.0));
-<span class="lineno">24</span>#20=CARTESIAN_POINT(&#x27;p10&#x27;,(1.0,0.0,0.2));
-<span class="lineno">25</span>#21=CARTESIAN_POINT(&#x27;p11&#x27;,(1.0,1.0,0.5));
-<span class="lineno">26</span>#22=CARTESIAN_POINT(&#x27;p12&#x27;,(1.0,2.0,0.5));
-<span class="lineno">27</span>#23=CARTESIAN_POINT(&#x27;p13&#x27;,(1.0,3.0,0.2));
-<span class="lineno">28</span>#30=CARTESIAN_POINT(&#x27;p20&#x27;,(2.0,0.0,0.2));
-<span class="lineno">29</span>#31=CARTESIAN_POINT(&#x27;p21&#x27;,(2.0,1.0,0.5));
-<span class="lineno">30</span>#32=CARTESIAN_POINT(&#x27;p22&#x27;,(2.0,2.0,0.5));
-<span class="lineno">31</span>#33=CARTESIAN_POINT(&#x27;p23&#x27;,(2.0,3.0,0.2));
-<span class="lineno">32</span>#40=CARTESIAN_POINT(&#x27;p30&#x27;,(3.0,0.0,0.0));
-<span class="lineno">33</span>#41=CARTESIAN_POINT(&#x27;p31&#x27;,(3.0,1.0,0.2));
-<span class="lineno">34</span>#42=CARTESIAN_POINT(&#x27;p32&#x27;,(3.0,2.0,0.2));
-<span class="lineno">35</span>#43=CARTESIAN_POINT(&#x27;p33&#x27;,(3.0,3.0,0.0));
-<span class="lineno">36</span>/* Inner complex rational BSpline surface. */
-<span class="lineno">37</span>#288=(
-<span class="lineno">38</span>  BOUNDED_SURFACE()
-<span class="lineno">39</span>  <mark>B_SPLINE_SURFACE</mark>(3,3,
-<span class="lineno">40</span>    ((#10,#11,#12,#13),(#20,#21,#22,#23),
-<span class="lineno">41</span>     (#30,#31,#32,#33),(#40,#41,#42,#43)),
-<span class="lineno">42</span>    .UNSPECIFIED.,.F.,.F.,.F.)
-<span class="lineno">43</span>  <mark>B_SPLINE_SURFACE</mark>_WITH_KNOTS((4,4),(4,4),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.)
-<span class="lineno">44</span>  GEOMETRIC_REPRESENTATION_ITEM()
-<span class="lineno">45</span>  RATIONAL_<mark>B_SPLINE_SURFACE</mark>(
-<span class="lineno">46</span>    ((1.0,1.0,1.0,1.0),(1.0,1.5,1.5,1.0),
-<span class="lineno">47</span>     (1.0,1.5,1.5,1.0),(1.0,1.0,1.0,1.0)))
-<span class="lineno">48</span>  REPRESENTATION_ITEM(&#x27;inner_rational_nurbs&#x27;)
-<span class="lineno">49</span>  SURFACE());
-<span class="lineno">50</span>/* Defect: OFFSET_SURFACE wrapping the complex BSpline aggregate. */
-<span class="lineno">51</span>#157=OFFSET_SURFACE(&#x27;offset_of_complex_nurbs&#x27;,#288,20.0,.F.);
-<span class="lineno">52</span>ENDSEC;
-<span class="lineno">53</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gn021: OFFSET_SURFACE wrapping complex <mark>B_SPLINE_SURFACE</mark> aggregate (degree 2,2 3x3 net); ADVANCED_FACE references OFFSET_SURFACE not raw B-spline â broken indirection; <mark>B_SPLINE_SURFACE</mark> base: U/V knots (0.0,1.0) mults (3,3) sum=6=2+3+1 â; offset distance 5.0; parsing fails only via OFFSET_SURFACE wrapper; defect edge B_SPLINE_CURVE_WITH_KNOTS degree-2 C-1 break at t=0.5 (CP[2]=(2.0,0,0) vs CP[3]=(3.5,0,0), 1.5-unit gap) drives shape_null=True */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Gn021&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Gn021.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=CARTESIAN_POINT(&#x27;&#x27;,(2.0,0.0,0.0));
+<span class="lineno">12</span>#3=CARTESIAN_POINT(&#x27;&#x27;,(4.0,0.0,0.0));
+<span class="lineno">13</span>#4=CARTESIAN_POINT(&#x27;&#x27;,(0.0,2.0,0.0));
+<span class="lineno">14</span>#5=CARTESIAN_POINT(&#x27;&#x27;,(2.0,2.0,0.0));
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(4.0,2.0,0.0));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(0.0,4.0,0.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(2.0,4.0,0.0));
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(4.0,4.0,0.0));
+<span class="lineno">19</span>#10=(<mark>B_SPLINE_SURFACE</mark>(&#x27;offset_base_bspline&#x27;,2,2,((#1,#2,#3),(#4,#5,#6),(#7,#8,#9)),.UNSPECIFIED.,.F.,.F.,.F.)<mark>B_SPLINE_SURFACE</mark>_WITH_KNOTS((3,3),(3,3),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.)REPRESENTATION_ITEM(&#x27;offset_base_bspline&#x27;)SURFACE());
+<span class="lineno">20</span>#11=OFFSET_SURFACE(&#x27;offset_of_nurbs&#x27;,#10,5.0,.F.);
+<span class="lineno">21</span>#12=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT(&#x27;UV&#x27;,&#x27;2D&#x27;));
+<span class="lineno">22</span>#13=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">23</span>#14=CARTESIAN_POINT(&#x27;&#x27;,(4.0,0.0,0.0));
+<span class="lineno">24</span>#15=CARTESIAN_POINT(&#x27;&#x27;,(4.0,4.0,0.0));
+<span class="lineno">25</span>#16=CARTESIAN_POINT(&#x27;&#x27;,(0.0,4.0,0.0));
+<span class="lineno">26</span>#17=VERTEX_POINT(&#x27;&#x27;,#13);
+<span class="lineno">27</span>#18=VERTEX_POINT(&#x27;&#x27;,#14);
+<span class="lineno">28</span>#19=VERTEX_POINT(&#x27;&#x27;,#15);
+<span class="lineno">29</span>#20=VERTEX_POINT(&#x27;&#x27;,#16);
+<span class="lineno">30</span>#21=CARTESIAN_POINT(&#x27;&#x27;,(4.0,0.0,0.0));
+<span class="lineno">31</span>#22=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">32</span>#23=VECTOR(&#x27;&#x27;,#22,4.0);
+<span class="lineno">33</span>#24=LINE(&#x27;&#x27;,#21,#23);
+<span class="lineno">34</span>#25=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">35</span>#26=DIRECTION(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">36</span>#27=VECTOR(&#x27;&#x27;,#26,4.0);
+<span class="lineno">37</span>#28=LINE(&#x27;&#x27;,#25,#27);
+<span class="lineno">38</span>#29=DEFINITIONAL_REPRESENTATION(&#x27;pcdef&#x27;,(#28),#12);
+<span class="lineno">39</span>#30=PCURVE(&#x27;pc&#x27;,#11,#29);
+<span class="lineno">40</span>#31=SURFACE_CURVE(&#x27;sc&#x27;,#24,(#30),.PCURVE_S1.);
+<span class="lineno">41</span>#32=EDGE_CURVE(&#x27;ec&#x27;,#18,#19,#31,.T.);
+<span class="lineno">42</span>#33=CARTESIAN_POINT(&#x27;&#x27;,(4.0,4.0,0.0));
+<span class="lineno">43</span>#34=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">44</span>#35=VECTOR(&#x27;&#x27;,#34,4.0);
+<span class="lineno">45</span>#36=LINE(&#x27;&#x27;,#33,#35);
+<span class="lineno">46</span>#37=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0));
+<span class="lineno">47</span>#38=DIRECTION(&#x27;&#x27;,(-1.0,0.0));
+<span class="lineno">48</span>#39=VECTOR(&#x27;&#x27;,#38,4.0);
+<span class="lineno">49</span>#40=LINE(&#x27;&#x27;,#37,#39);
+<span class="lineno">50</span>#41=DEFINITIONAL_REPRESENTATION(&#x27;pcdef&#x27;,(#40),#12);
+<span class="lineno">51</span>#42=PCURVE(&#x27;pc&#x27;,#11,#41);
+<span class="lineno">52</span>#43=SURFACE_CURVE(&#x27;sc&#x27;,#36,(#42),.PCURVE_S1.);
+<span class="lineno">53</span>#44=EDGE_CURVE(&#x27;ec&#x27;,#19,#20,#43,.T.);
+<span class="lineno">54</span>#45=CARTESIAN_POINT(&#x27;&#x27;,(0.0,4.0,0.0));
+<span class="lineno">55</span>#46=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">56</span>#47=VECTOR(&#x27;&#x27;,#46,4.0);
+<span class="lineno">57</span>#48=LINE(&#x27;&#x27;,#45,#47);
+<span class="lineno">58</span>#49=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">59</span>#50=DIRECTION(&#x27;&#x27;,(0.0,-1.0));
+<span class="lineno">60</span>#51=VECTOR(&#x27;&#x27;,#50,4.0);
+<span class="lineno">61</span>#52=LINE(&#x27;&#x27;,#49,#51);
+<span class="lineno">62</span>#53=DEFINITIONAL_REPRESENTATION(&#x27;pcdef&#x27;,(#52),#12);
+<span class="lineno">63</span>#54=PCURVE(&#x27;pc&#x27;,#11,#53);
+<span class="lineno">64</span>#55=SURFACE_CURVE(&#x27;sc&#x27;,#48,(#54),.PCURVE_S1.);
+<span class="lineno">65</span>#56=EDGE_CURVE(&#x27;ec&#x27;,#20,#17,#55,.T.);
+<span class="lineno">66</span>#57=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">67</span>#58=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">68</span>#59=CARTESIAN_POINT(&#x27;&#x27;,(2.0,0.0,0.0));
+<span class="lineno">69</span>#60=CARTESIAN_POINT(&#x27;&#x27;,(3.5,0.0,0.0));
+<span class="lineno">70</span>#61=CARTESIAN_POINT(&#x27;&#x27;,(4.0,0.0,0.0));
+<span class="lineno">71</span>#62=CARTESIAN_POINT(&#x27;&#x27;,(4.0,0.0,0.0));
+<span class="lineno">72</span>#63=B_SPLINE_CURVE_WITH_KNOTS(&#x27;offset_nurbs_c1_break&#x27;,2,(#57,#58,#59,#60,#61,#62),.UNSPECIFIED.,.F.,.F.,(3,3,3),(0.0,0.5,1.0),.UNSPECIFIED.);
+<span class="lineno">73</span>#64=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));
+<span class="lineno">74</span>#65=CARTESIAN_POINT(&#x27;&#x27;,(0.25,0.0));
+<span class="lineno">75</span>#66=CARTESIAN_POINT(&#x27;&#x27;,(0.5,0.0));
+<span class="lineno">76</span>#67=CARTESIAN_POINT(&#x27;&#x27;,(0.5,0.0));
+<span class="lineno">77</span>#68=CARTESIAN_POINT(&#x27;&#x27;,(0.75,0.0));
+<span class="lineno">78</span>#69=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">79</span>#70=B_SPLINE_CURVE_WITH_KNOTS(&#x27;offset_nurbs_c1_break_pc&#x27;,2,(#64,#65,#66,#67,#68,#69),.UNSPECIFIED.,.F.,.F.,(3,3,3),(0.0,0.5,1.0),.UNSPECIFIED.);
+<span class="lineno">80</span>#71=DEFINITIONAL_REPRESENTATION(&#x27;offset_nurbs_pc_def&#x27;,(#70),#12);
+<span class="lineno">81</span>#72=PCURVE(&#x27;offset_nurbs_pc_ent&#x27;,#11,#71);
+<span class="lineno">82</span>#73=SURFACE_CURVE(&#x27;offset_nurbs_sc&#x27;,#63,(#72),.PCURVE_S1.);
+<span class="lineno">83</span>#74=EDGE_CURVE(&#x27;offset_nurbs_edge&#x27;,#17,#18,#73,.T.);
+<span class="lineno">84</span>#75=ORIENTED_EDGE(&#x27;&#x27;,$,$,#74,.T.);
+<span class="lineno">85</span>#76=ORIENTED_EDGE(&#x27;&#x27;,$,$,#32,.T.);
+<span class="lineno">86</span>#77=ORIENTED_EDGE(&#x27;&#x27;,$,$,#44,.T.);
+<span class="lineno">87</span>#78=ORIENTED_EDGE(&#x27;&#x27;,$,$,#56,.T.);
+<span class="lineno">88</span>#79=EDGE_LOOP(&#x27;&#x27;,(#75,#76,#77,#78));
+<span class="lineno">89</span>#80=FACE_OUTER_BOUND(&#x27;&#x27;,#79,.T.);
+<span class="lineno">90</span>#81=ADVANCED_FACE(&#x27;&#x27;,(#80),#11,.T.);
+<span class="lineno">91</span>#82=OPEN_SHELL(&#x27;&#x27;,(#81));
+<span class="lineno">92</span>#83=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#82));
+<span class="lineno">93</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">94</span>#9051=PRODUCT(&#x27;Gn021&#x27;,&#x27;Gn021&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">95</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">96</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">97</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">98</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">99</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">100</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">101</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">102</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">103</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">104</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#83),#9060);
+<span class="lineno">105</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">106</span>ENDSEC;
+<span class="lineno">107</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

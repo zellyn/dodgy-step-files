@@ -41,6 +41,9 @@
 <li><code>contains(b&#x27;WORKPIECE_SETUP&#x27;)</code></li>
 <li><code>contains(b&#x27;workpiece_csys_rotated&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -48,7 +51,7 @@
 <tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
 <tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
-<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_FORWARD_REF)</code></td></tr>
 <tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
 </tbody></table>
 </section>
@@ -56,35 +59,71 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M183 - AP238 <mark>WORKPIECE_SETUP</mark> coordinate system not aligned with machine axes.
-<span class="lineno">3</span> * Defect: a <mark>WORKPIECE_SETUP</mark>&#x27;s placement axes are rotated 17.3 degrees
-<span class="lineno">4</span> * about the machine Z-axis with no rotational fixturing declared. The
-<span class="lineno">5</span> * machine cannot drive its X/Y stages along the workpiece&#x27;s local axes;
-<span class="lineno">6</span> * every toolpath issues compound moves that exceed acceleration limits. */
-<span class="lineno">7</span>HEADER;
-<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;M183 test case&#x27;,&#x27;AP238 workpiece-setup axes off machine axes&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">9</span>FILE_NAME(&#x27;M183.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">10</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 1 0 0 1 }&#x27;));
-<span class="lineno">11</span>ENDSEC;
-<span class="lineno">12</span>DATA;
-<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;numerical_control_machining&#x27;);
-<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">15</span>  &#x27;numerical_control_machining&#x27;,2007,#1);
-<span class="lineno">16</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">17</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">18</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-<span class="lineno">19</span>     REPRESENTATION_CONTEXT(&#x27;nc&#x27;,&#x27;3D&#x27;));
-<span class="lineno">20</span>/* Defect: workpiece-setup axis rotated 17.3 deg from machine X (cos = 0.9550,
-<span class="lineno">21</span>   sin = 0.2974). No rotary fixturing declared. */
-<span class="lineno">22</span>#50=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
-<span class="lineno">23</span>#51=DIRECTION(&#x27;x_off_axis&#x27;,(0.9550,0.2974,0.0));
-<span class="lineno">24</span>#100=AXIS2_PLACEMENT_3D(&#x27;<mark>workpiece_csys_rotated</mark>&#x27;,
-<span class="lineno">25</span>  CARTESIAN_POINT(&#x27;o&#x27;,(0.0,0.0,0.0)),#50,#51);
-<span class="lineno">26</span>#400=WORKPIECE(&#x27;part_a&#x27;,$,$,$,$,$,$);
-<span class="lineno">27</span>#150=<mark>WORKPIECE_SETUP</mark>(&#x27;vise_misaligned&#x27;,#100,$,#400,$);
-<span class="lineno">28</span>#200=WORKPLAN(&#x27;main&#x27;,(),$,$,$);
-<span class="lineno">29</span>ENDSEC;
-<span class="lineno">30</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M183: AP238 workpiece_setup coordinate system not aligned with machine axes */
+<span class="lineno">3</span>/* DEFECT: <mark>WORKPIECE_SETUP</mark> x-axis (0.9550, 0.2974, 0.0) â 17.3 deg rotation about Z */
+<span class="lineno">4</span>/* No rotary fixturing or rotary stage declared in this file */
+<span class="lineno">5</span>/* Machine cannot drive linear X/Y stages along skewed workpiece axes */
+<span class="lineno">6</span>/* Every toolpath requires compound simultaneous moves exceeding acceleration limits */
+<span class="lineno">7</span>/* Per ISO 10303-238 Â§5.4 setup orientation must align with machine axes (no rotary) */
+<span class="lineno">8</span>/* Byte assertion: contains(b&#x27;<mark>AP238_STEP_NC_MIM</mark>&#x27;) */
+<span class="lineno">9</span>/* Byte assertion: contains(b&#x27;<mark>WORKPIECE_SETUP</mark>&#x27;) */
+<span class="lineno">10</span>/* Byte assertion: contains(b&#x27;<mark>workpiece_csys_rotated</mark>&#x27;) */
+<span class="lineno">11</span>HEADER;
+<span class="lineno">12</span>FILE_DESCRIPTION((&#x27;M183: AP238 workpiece_setup rotated 17.3 deg with no rotary fixturing&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">13</span>FILE_NAME(&#x27;M183.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">14</span>/* Byte assertion: contains(b&#x27;<mark>AP238_STEP_NC_MIM</mark>&#x27;) */
+<span class="lineno">15</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 3 1 1 1 }&#x27;));
+<span class="lineno">16</span>ENDSEC;
+<span class="lineno">17</span>DATA;
+<span class="lineno">18</span>/* Standard unit context (mm) */
+<span class="lineno">19</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">20</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">21</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">22</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">23</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">24</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">25</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">26</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">27</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">28</span>/* mm length unit reference for MEASURE_WITH_UNIT */
+<span class="lineno">29</span>#15=SI_UNIT(.MILLI.,.METRE.);
+<span class="lineno">30</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">31</span>#20=GEOMETRIC_CURVE_SET(&#x27;ap238-workpiece-setup-coordinate-system-not-aligned-with-machine-axes&#x27;,
+<span class="lineno">32</span>  (#41,#52,#60));
+<span class="lineno">33</span>/* Setup origin at machine zero */
+<span class="lineno">34</span>#30=CARTESIAN_POINT(&#x27;setup_origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">35</span>/* Machine Z-axis (vertical) */
+<span class="lineno">36</span>#31=DIRECTION(&#x27;machine_z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">37</span>/* DEFECT: x-axis rotated 17.3 degrees â cos(17.3 deg)=0.9550, sin(17.3 deg)=0.2974 */
+<span class="lineno">38</span>#32=DIRECTION(&#x27;rotated_x&#x27;,(0.9550,0.2974,0.0));
+<span class="lineno">39</span>/* DEFECT: skewed coordinate system â 17.3 deg rotation about Z-axis */
+<span class="lineno">40</span>#33=AXIS2_PLACEMENT_3D(&#x27;rotated_csys&#x27;,#30,#31,#32);
+<span class="lineno">41</span>/* NC workpiece being positioned in the skewed setup */
+<span class="lineno">42</span>#40=WORKPIECE(&#x27;nc_workpiece&#x27;,&#x27;Workpiece for skewed setup test&#x27;,$,$,$,$,$);
+<span class="lineno">43</span>/* Byte assertion: contains(b&#x27;<mark>WORKPIECE_SETUP</mark>&#x27;) */
+<span class="lineno">44</span>/* Byte assertion: contains(b&#x27;<mark>workpiece_csys_rotated</mark>&#x27;) */
+<span class="lineno">45</span>/* DEFECT: <mark>WORKPIECE_SETUP</mark> using rotated_csys â 17.3 deg skew, no rotary stage */
+<span class="lineno">46</span>#41=<mark>WORKPIECE_SETUP</mark>(&#x27;<mark>workpiece_csys_rotated</mark>&#x27;,#33,#40,$,$,$);
+<span class="lineno">47</span>/* WORKPIECE &#x27;mill_workpiece&#x27; for the milling step */
+<span class="lineno">48</span>#60=WORKPIECE(&#x27;mill_workpiece&#x27;,&#x27;Workpiece for skewed-setup milling&#x27;,$,$,$,$,$);
+<span class="lineno">49</span>/* MILLING_OPERATION for the skewed setup scenario */
+<span class="lineno">50</span>#52=MILLING_OPERATION(&#x27;mill_op&#x27;,$,$,$,$,$,$,$,$,$,$,$,$);
+<span class="lineno">51</span>/* MACHINING_WORKINGSTEP links milling op to workpiece */
+<span class="lineno">52</span>#51=MACHINING_WORKINGSTEP(&#x27;mill_step&#x27;,&#x27;Skewed setup mill step&#x27;,#52,#60,$);
+<span class="lineno">53</span>/* WORKPLAN: milling on skewed workpiece setup without rotary stage */
+<span class="lineno">54</span>#50=WORKPLAN(&#x27;skewed_setup_program&#x27;,&#x27;Skewed setup milling workplan&#x27;,(),$,(#51));
+<span class="lineno">55</span>/* Product chain */
+<span class="lineno">56</span>#100=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">57</span>#101=PRODUCT_CONTEXT(&#x27;&#x27;,#100,&#x27;mechanical&#x27;);
+<span class="lineno">58</span>#102=PRODUCT(&#x27;M183&#x27;,&#x27;M183&#x27;,&#x27;M183&#x27;,(#101));
+<span class="lineno">59</span>#103=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#102);
+<span class="lineno">60</span>#104=PRODUCT_DEFINITION_CONTEXT(#100,&#x27;design&#x27;);
+<span class="lineno">61</span>#105=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#103,#104);
+<span class="lineno">62</span>#106=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#105);
+<span class="lineno">63</span>#107=SHAPE_REPRESENTATION(&#x27;&#x27;,(#20),#14);
+<span class="lineno">64</span>#108=SHAPE_DEFINITION_REPRESENTATION(#106,#107);
+<span class="lineno">65</span>ENDSEC;
+<span class="lineno">66</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

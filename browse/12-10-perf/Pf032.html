@@ -37,85 +37,154 @@
 <section><h2>Notes</h2>
 <p>**See also**: A067.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;NEXT_ASSEMBLY_USAGE_OCCURRENCE&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="../12-6-assembly/A067.html">A067</a></p>
 </section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
-<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(1)</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
-<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
-<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>reject(E_UNRESOLVED_REFS)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Pf032 - Reader hangs during XCAF tree build on deep assembly.
-<span class="lineno">2</span> * Pattern: 8-level deep assembly with 10 instances per level (10^8
-<span class="lineno">3</span> * visits without memoisation). Production scale: 8 levels x 10
-<span class="lineno">4</span> * children = exponential XCAF tree-build.
-<span class="lineno">5</span> * Notes: scaled-down representative - this fixture has 3 levels x 2
-<span class="lineno">6</span> * instances (8 NAUO chain links). Replicate to depth 8 with branching
-<span class="lineno">7</span> * 10 to reproduce the production hang. */
-<span class="lineno">8</span>ISO-10303-21;
-<span class="lineno">9</span>HEADER;
-<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;Pf032 test case&#x27;,&#x27;Hang during XCAF tree build on deep assembly&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">11</span>FILE_NAME(&#x27;Pf032.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">12</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">13</span>ENDSEC;
-<span class="lineno">14</span>DATA;
-<span class="lineno">15</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">16</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
-<span class="lineno">17</span>#10=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">18</span>#13=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
-<span class="lineno">19</span>/* Level 0 root */
-<span class="lineno">20</span>#20=PRODUCT(&#x27;ROOT&#x27;,&#x27;root&#x27;,&#x27;&#x27;,(#10));
-<span class="lineno">21</span>#21=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#20);
-<span class="lineno">22</span>#22=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#21,#13);
-<span class="lineno">23</span>/* Level 1: two children */
-<span class="lineno">24</span>#30=PRODUCT(&#x27;L1A&#x27;,&#x27;l1a&#x27;,&#x27;&#x27;,(#10));
-<span class="lineno">25</span>#31=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#30);
-<span class="lineno">26</span>#32=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#31,#13);
-<span class="lineno">27</span>#33=PRODUCT(&#x27;L1B&#x27;,&#x27;l1b&#x27;,&#x27;&#x27;,(#10));
-<span class="lineno">28</span>#34=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#33);
-<span class="lineno">29</span>#35=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#34,#13);
-<span class="lineno">30</span>#40=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;1a&#x27;,&#x27;&#x27;,&#x27;&#x27;,#22,#32,$);
-<span class="lineno">31</span>#41=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;1b&#x27;,&#x27;&#x27;,&#x27;&#x27;,#22,#35,$);
-<span class="lineno">32</span>/* Level 2: two children under each L1 */
-<span class="lineno">33</span>#50=PRODUCT(&#x27;L2AA&#x27;,&#x27;l2aa&#x27;,&#x27;&#x27;,(#10));
-<span class="lineno">34</span>#51=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#50);
-<span class="lineno">35</span>#52=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#51,#13);
-<span class="lineno">36</span>#53=PRODUCT(&#x27;L2AB&#x27;,&#x27;l2ab&#x27;,&#x27;&#x27;,(#10));
-<span class="lineno">37</span>#54=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#53);
-<span class="lineno">38</span>#55=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#54,#13);
-<span class="lineno">39</span>#60=PRODUCT(&#x27;L2BA&#x27;,&#x27;l2ba&#x27;,&#x27;&#x27;,(#10));
-<span class="lineno">40</span>#61=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#60);
-<span class="lineno">41</span>#62=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#61,#13);
-<span class="lineno">42</span>#63=PRODUCT(&#x27;L2BB&#x27;,&#x27;l2bb&#x27;,&#x27;&#x27;,(#10));
-<span class="lineno">43</span>#64=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#63);
-<span class="lineno">44</span>#65=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#64,#13);
-<span class="lineno">45</span>#70=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;2aa&#x27;,&#x27;&#x27;,&#x27;&#x27;,#32,#52,$);
-<span class="lineno">46</span>#71=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;2ab&#x27;,&#x27;&#x27;,&#x27;&#x27;,#32,#55,$);
-<span class="lineno">47</span>#72=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;2ba&#x27;,&#x27;&#x27;,&#x27;&#x27;,#35,#62,$);
-<span class="lineno">48</span>#73=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;2bb&#x27;,&#x27;&#x27;,&#x27;&#x27;,#35,#65,$);
-<span class="lineno">49</span>/* Level 3 leaves under each L2 */
-<span class="lineno">50</span>#80=PRODUCT(&#x27;L3&#x27;,&#x27;l3_leaf&#x27;,&#x27;&#x27;,(#10));
-<span class="lineno">51</span>#81=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#80);
-<span class="lineno">52</span>#82=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#81,#13);
-<span class="lineno">53</span>#90=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;3aa&#x27;,&#x27;&#x27;,&#x27;&#x27;,#52,#82,$);
-<span class="lineno">54</span>#91=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;3ab&#x27;,&#x27;&#x27;,&#x27;&#x27;,#55,#82,$);
-<span class="lineno">55</span>#92=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;3ba&#x27;,&#x27;&#x27;,&#x27;&#x27;,#62,#82,$);
-<span class="lineno">56</span>#93=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;3bb&#x27;,&#x27;&#x27;,&#x27;&#x27;,#65,#82,$);
-<span class="lineno">57</span>ENDSEC;
-<span class="lineno">58</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Pf032: Reader hangs during XCAF tree build on deep assembly: XCAF builder recurses assembly nodes and visits every instance N times for N-level trees; exponential without memoization; production scale: 8 levels x 10 instances = 10^8 visits; heal: memoize visited nodes, coerce visit count to linear in distinct nodes; scaled-down: 3 levels x 2 instances per level; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Pf032&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Pf032.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">12</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">13</span>#9051=PRODUCT(&#x27;Pf032&#x27;,&#x27;Pf032&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">14</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">15</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">16</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">17</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">18</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">19</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">20</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">21</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">22</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">23</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#2),#9060);
+<span class="lineno">24</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">25</span>#9063=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">26</span>#9064=PRODUCT_CONTEXT(&#x27;&#x27;,#9063,&#x27;mechanical&#x27;);
+<span class="lineno">27</span>#9065=PRODUCT(&#x27;L1A&#x27;,&#x27;L1A&#x27;,&#x27;&#x27;,(#9064));
+<span class="lineno">28</span>#9066=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9065);
+<span class="lineno">29</span>#9067=PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#9063,&#x27;design&#x27;);
+<span class="lineno">30</span>#9068=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#9066,#9067);
+<span class="lineno">31</span>#9069=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">32</span>#9070=PRODUCT_CONTEXT(&#x27;&#x27;,#9069,&#x27;mechanical&#x27;);
+<span class="lineno">33</span>#9071=PRODUCT(&#x27;L1B&#x27;,&#x27;L1B&#x27;,&#x27;&#x27;,(#9070));
+<span class="lineno">34</span>#9072=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9071);
+<span class="lineno">35</span>#9073=PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#9069,&#x27;design&#x27;);
+<span class="lineno">36</span>#9074=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#9072,#9073);
+<span class="lineno">37</span>#9075=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;1a&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9004,#9068,$);
+<span class="lineno">38</span>#9076=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;1b&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9004,#9074,$);
+<span class="lineno">39</span>#9077=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">40</span>#9078=PRODUCT_CONTEXT(&#x27;&#x27;,#9077,&#x27;mechanical&#x27;);
+<span class="lineno">41</span>#9079=PRODUCT(&#x27;L2AA&#x27;,&#x27;L2AA&#x27;,&#x27;&#x27;,(#9078));
+<span class="lineno">42</span>#9080=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9079);
+<span class="lineno">43</span>#9081=PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#9077,&#x27;design&#x27;);
+<span class="lineno">44</span>#9082=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#9080,#9081);
+<span class="lineno">45</span>#9083=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">46</span>#9084=PRODUCT_CONTEXT(&#x27;&#x27;,#9083,&#x27;mechanical&#x27;);
+<span class="lineno">47</span>#9085=PRODUCT(&#x27;L2AB&#x27;,&#x27;L2AB&#x27;,&#x27;&#x27;,(#9084));
+<span class="lineno">48</span>#9086=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9085);
+<span class="lineno">49</span>#9087=PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#9083,&#x27;design&#x27;);
+<span class="lineno">50</span>#9088=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#9086,#9087);
+<span class="lineno">51</span>#9089=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">52</span>#9090=PRODUCT_CONTEXT(&#x27;&#x27;,#9089,&#x27;mechanical&#x27;);
+<span class="lineno">53</span>#9091=PRODUCT(&#x27;L2BA&#x27;,&#x27;L2BA&#x27;,&#x27;&#x27;,(#9090));
+<span class="lineno">54</span>#9092=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9091);
+<span class="lineno">55</span>#9093=PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#9089,&#x27;design&#x27;);
+<span class="lineno">56</span>#9094=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#9092,#9093);
+<span class="lineno">57</span>#9095=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">58</span>#9096=PRODUCT_CONTEXT(&#x27;&#x27;,#9095,&#x27;mechanical&#x27;);
+<span class="lineno">59</span>#9097=PRODUCT(&#x27;L2BB&#x27;,&#x27;L2BB&#x27;,&#x27;&#x27;,(#9096));
+<span class="lineno">60</span>#9098=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9097);
+<span class="lineno">61</span>#9099=PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#9095,&#x27;design&#x27;);
+<span class="lineno">62</span>#9100=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#9098,#9099);
+<span class="lineno">63</span>#9101=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;2aa&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9068,#9082,$);
+<span class="lineno">64</span>#9102=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;2ab&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9068,#9088,$);
+<span class="lineno">65</span>#9103=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;2ba&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9074,#9094,$);
+<span class="lineno">66</span>#9104=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;2bb&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9074,#9100,$);
+<span class="lineno">67</span>#9105=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">68</span>#9106=PRODUCT_CONTEXT(&#x27;&#x27;,#9105,&#x27;mechanical&#x27;);
+<span class="lineno">69</span>#9107=PRODUCT(&#x27;L3aaA&#x27;,&#x27;L3aaA&#x27;,&#x27;&#x27;,(#9106));
+<span class="lineno">70</span>#9108=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9107);
+<span class="lineno">71</span>#9109=PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#9105,&#x27;design&#x27;);
+<span class="lineno">72</span>#9110=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#9108,#9109);
+<span class="lineno">73</span>#9111=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">74</span>#9112=PRODUCT_CONTEXT(&#x27;&#x27;,#9111,&#x27;mechanical&#x27;);
+<span class="lineno">75</span>#9113=PRODUCT(&#x27;L3aaB&#x27;,&#x27;L3aaB&#x27;,&#x27;&#x27;,(#9112));
+<span class="lineno">76</span>#9114=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9113);
+<span class="lineno">77</span>#9115=PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#9111,&#x27;design&#x27;);
+<span class="lineno">78</span>#9116=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#9114,#9115);
+<span class="lineno">79</span>#9117=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;3aaa&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9082,#9110,$);
+<span class="lineno">80</span>#9118=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;3aab&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9082,#9116,$);
+<span class="lineno">81</span>#9119=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">82</span>#9120=PRODUCT_CONTEXT(&#x27;&#x27;,#9119,&#x27;mechanical&#x27;);
+<span class="lineno">83</span>#9121=PRODUCT(&#x27;L3abA&#x27;,&#x27;L3abA&#x27;,&#x27;&#x27;,(#9120));
+<span class="lineno">84</span>#9122=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9121);
+<span class="lineno">85</span>#9123=PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#9119,&#x27;design&#x27;);
+<span class="lineno">86</span>#9124=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#9122,#9123);
+<span class="lineno">87</span>#9125=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">88</span>#9126=PRODUCT_CONTEXT(&#x27;&#x27;,#9125,&#x27;mechanical&#x27;);
+<span class="lineno">89</span>#9127=PRODUCT(&#x27;L3abB&#x27;,&#x27;L3abB&#x27;,&#x27;&#x27;,(#9126));
+<span class="lineno">90</span>#9128=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9127);
+<span class="lineno">91</span>#9129=PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#9125,&#x27;design&#x27;);
+<span class="lineno">92</span>#9130=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#9128,#9129);
+<span class="lineno">93</span>#9131=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;3aba&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9088,#9124,$);
+<span class="lineno">94</span>#9132=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;3abb&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9088,#9130,$);
+<span class="lineno">95</span>#9133=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">96</span>#9134=PRODUCT_CONTEXT(&#x27;&#x27;,#9133,&#x27;mechanical&#x27;);
+<span class="lineno">97</span>#9135=PRODUCT(&#x27;L3baA&#x27;,&#x27;L3baA&#x27;,&#x27;&#x27;,(#9134));
+<span class="lineno">98</span>#9136=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9135);
+<span class="lineno">99</span>#9137=PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#9133,&#x27;design&#x27;);
+<span class="lineno">100</span>#9138=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#9136,#9137);
+<span class="lineno">101</span>#9139=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">102</span>#9140=PRODUCT_CONTEXT(&#x27;&#x27;,#9139,&#x27;mechanical&#x27;);
+<span class="lineno">103</span>#9141=PRODUCT(&#x27;L3baB&#x27;,&#x27;L3baB&#x27;,&#x27;&#x27;,(#9140));
+<span class="lineno">104</span>#9142=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9141);
+<span class="lineno">105</span>#9143=PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#9139,&#x27;design&#x27;);
+<span class="lineno">106</span>#9144=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#9142,#9143);
+<span class="lineno">107</span>#9145=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;3baa&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9094,#9138,$);
+<span class="lineno">108</span>#9146=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;3bab&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9094,#9144,$);
+<span class="lineno">109</span>#9147=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">110</span>#9148=PRODUCT_CONTEXT(&#x27;&#x27;,#9147,&#x27;mechanical&#x27;);
+<span class="lineno">111</span>#9149=PRODUCT(&#x27;L3bbA&#x27;,&#x27;L3bbA&#x27;,&#x27;&#x27;,(#9148));
+<span class="lineno">112</span>#9150=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9149);
+<span class="lineno">113</span>#9151=PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#9147,&#x27;design&#x27;);
+<span class="lineno">114</span>#9152=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#9150,#9151);
+<span class="lineno">115</span>#9153=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">116</span>#9154=PRODUCT_CONTEXT(&#x27;&#x27;,#9153,&#x27;mechanical&#x27;);
+<span class="lineno">117</span>#9155=PRODUCT(&#x27;L3bbB&#x27;,&#x27;L3bbB&#x27;,&#x27;&#x27;,(#9154));
+<span class="lineno">118</span>#9156=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9155);
+<span class="lineno">119</span>#9157=PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#9153,&#x27;design&#x27;);
+<span class="lineno">120</span>#9158=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#9156,#9157);
+<span class="lineno">121</span>#9159=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;3bba&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9100,#9152,$);
+<span class="lineno">122</span>#9160=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;3bbb&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9100,#9158,$);
+<span class="lineno">123</span>ENDSEC;
+<span class="lineno">124</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

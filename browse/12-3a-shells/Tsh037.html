@@ -38,9 +38,11 @@
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
-<li><code>contains(b&#x27;EDGE_BASED_WIREFRAME_MODEL&#x27;)</code></li>
 <li><code>contains(b&#x27;GEOMETRIC_CURVE_SET&#x27;)</code></li>
 <li><code>count_entity_def(b&#x27;ADVANCED_FACE&#x27;) == 0</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
 </ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
@@ -57,53 +59,63 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Tsh037 - Free wires/edges in compound (Q029, F080 -- no faces, INTERNAL orientation)
-<span class="lineno">3</span> * Defect: ShapeFix_Shape DONE1/DONE2 marks free wires/edges in compound
-<span class="lineno">4</span> * (no faces). Also <mark>EDGE_BASED_WIREFRAME_MODEL</mark> / FACE_BASED_SURFACE_MODEL
-<span class="lineno">5</span> * with empty content. The receiver should accept the wireframe and not
-<span class="lineno">6</span> * synthesize fictitious faces.
-<span class="lineno">7</span> *
-<span class="lineno">8</span> * This file: a <mark>GEOMETRIC_CURVE_SET</mark> aggregating two unrelated edges
-<span class="lineno">9</span> * (a line and a circle) plus an <mark>EDGE_BASED_WIREFRAME_MODEL</mark> whose
-<span class="lineno">10</span> * connected_edge_set has just one CONNECTED_EDGE_SET grouping the
-<span class="lineno">11</span> * same edges. There are no parent faces, so the file is a pure
-<span class="lineno">12</span> * wireframe representation. A reader that synthesizes faces would
-<span class="lineno">13</span> * be wrong; a reader that rejects &quot;wireframe-only&quot; would lose data.
-<span class="lineno">14</span> * Sources: F080, Q028, Q029. */
-<span class="lineno">15</span>HEADER;
-<span class="lineno">16</span>FILE_DESCRIPTION((&#x27;Tsh037 test case&#x27;,&#x27;Free wires/edges in compound, no faces&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">17</span>FILE_NAME(&#x27;Tsh037.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">18</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">19</span>ENDSEC;
-<span class="lineno">20</span>DATA;
-<span class="lineno">21</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">22</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
-<span class="lineno">23</span>/* Free line edge from (0,0,0) to (1,0,0). */
-<span class="lineno">24</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">25</span>#101=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">26</span>#110=VERTEX_POINT(&#x27;&#x27;,#100); #111=VERTEX_POINT(&#x27;&#x27;,#101);
-<span class="lineno">27</span>#120=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0)); #121=VECTOR(&#x27;&#x27;,#120,1.0);
-<span class="lineno">28</span>#122=LINE(&#x27;free_line&#x27;,#100,#121);
-<span class="lineno">29</span>#123=EDGE_CURVE(&#x27;free_edge_line&#x27;,#110,#111,#122,.T.);
-<span class="lineno">30</span>/* Free circular edge centred at (5,0,0), radius 1, in XY plane. */
-<span class="lineno">31</span>#200=CARTESIAN_POINT(&#x27;circle_centre&#x27;,(5.0,0.0,0.0));
-<span class="lineno">32</span>#201=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
-<span class="lineno">33</span>#202=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">34</span>#203=AXIS2_PLACEMENT_3D(&#x27;circle_axes&#x27;,#200,#201,#202);
-<span class="lineno">35</span>#204=CIRCLE(&#x27;free_circle&#x27;,#203,1.0);
-<span class="lineno">36</span>#205=CARTESIAN_POINT(&#x27;&#x27;,(6.0,0.0,0.0));
-<span class="lineno">37</span>#206=VERTEX_POINT(&#x27;&#x27;,#205);
-<span class="lineno">38</span>#207=EDGE_CURVE(&#x27;free_edge_circle&#x27;,#206,#206,#204,.T.);
-<span class="lineno">39</span>/* Container 1: <mark>GEOMETRIC_CURVE_SET</mark> aggregating two free edges with no
-<span class="lineno">40</span>   parent face. */
-<span class="lineno">41</span>#300=<mark>GEOMETRIC_CURVE_SET</mark>(&#x27;free_curves_no_face&#x27;,(#123,#207));
-<span class="lineno">42</span>/* Container 2: <mark>EDGE_BASED_WIREFRAME_MODEL</mark> with one CONNECTED_EDGE_SET. */
-<span class="lineno">43</span>#310=ORIENTED_EDGE(&#x27;&#x27;,*,*,#123,.T.);
-<span class="lineno">44</span>#311=ORIENTED_EDGE(&#x27;&#x27;,*,*,#207,.T.);
-<span class="lineno">45</span>#320=CONNECTED_EDGE_SET(&#x27;lone_ces&#x27;,(#310,#311));
-<span class="lineno">46</span>#330=<mark>EDGE_BASED_WIREFRAME_MODEL</mark>(&#x27;wireframe_only&#x27;,(#320));
-<span class="lineno">47</span>ENDSEC;
-<span class="lineno">48</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* Tsh037: Compound contains only wires, no surface or solid */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Tsh037&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Tsh037.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">12</span>#3=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
+<span class="lineno">13</span>#4=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">14</span>#5=VERTEX_POINT(&#x27;&#x27;,#1);
+<span class="lineno">15</span>#6=VERTEX_POINT(&#x27;&#x27;,#2);
+<span class="lineno">16</span>#7=VERTEX_POINT(&#x27;&#x27;,#3);
+<span class="lineno">17</span>#8=VERTEX_POINT(&#x27;&#x27;,#4);
+<span class="lineno">18</span>#9=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">19</span>#10=VECTOR(&#x27;&#x27;,#9,1.0);
+<span class="lineno">20</span>#11=LINE(&#x27;&#x27;,#1,#10);
+<span class="lineno">21</span>#12=EDGE_CURVE(&#x27;&#x27;,#5,#6,#11,.T.);
+<span class="lineno">22</span>#13=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">23</span>#14=VECTOR(&#x27;&#x27;,#13,1.0);
+<span class="lineno">24</span>#15=LINE(&#x27;&#x27;,#2,#14);
+<span class="lineno">25</span>#16=EDGE_CURVE(&#x27;&#x27;,#6,#7,#15,.T.);
+<span class="lineno">26</span>#17=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">27</span>#18=VECTOR(&#x27;&#x27;,#17,1.0);
+<span class="lineno">28</span>#19=LINE(&#x27;&#x27;,#3,#18);
+<span class="lineno">29</span>#20=EDGE_CURVE(&#x27;&#x27;,#7,#8,#19,.T.);
+<span class="lineno">30</span>#21=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">31</span>#22=VECTOR(&#x27;&#x27;,#21,1.0);
+<span class="lineno">32</span>#23=LINE(&#x27;&#x27;,#4,#22);
+<span class="lineno">33</span>#24=EDGE_CURVE(&#x27;&#x27;,#8,#5,#23,.T.);
+<span class="lineno">34</span>#25=ORIENTED_EDGE(&#x27;&#x27;,$,$,#12,.T.);
+<span class="lineno">35</span>#26=ORIENTED_EDGE(&#x27;&#x27;,$,$,#16,.T.);
+<span class="lineno">36</span>#27=ORIENTED_EDGE(&#x27;&#x27;,$,$,#20,.T.);
+<span class="lineno">37</span>#28=ORIENTED_EDGE(&#x27;&#x27;,$,$,#24,.T.);
+<span class="lineno">38</span>#29=<mark>GEOMETRIC_CURVE_SET</mark>(&#x27;&#x27;,(#25,#26,#27,#28));
+<span class="lineno">39</span>#30=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">40</span>#31=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">41</span>#32=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">42</span>#33=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#30,#31,#32);
+<span class="lineno">43</span>#34=WIREFRAME_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#29),#33);
+<span class="lineno">44</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">45</span>#9051=PRODUCT(&#x27;Tsh037&#x27;,&#x27;Tsh037&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">46</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">47</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">48</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">49</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">50</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">51</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">52</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">53</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">54</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">55</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#34),#9060);
+<span class="lineno">56</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">57</span>ENDSEC;
+<span class="lineno">58</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

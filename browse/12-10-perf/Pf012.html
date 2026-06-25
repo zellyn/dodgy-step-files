@@ -34,108 +34,76 @@
 <section><h2>Notes</h2>
 <p>**See also**: Pf008, Ad002.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=reject/reject gmsh=reject ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>count_entity_def(b&#x27;CARTESIAN_POINT&#x27;) &gt;= 3</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="Pf008.html">Pf008</a>, <a href="../12-11-adversarial/Ad002.html">Ad002</a></p>
 </section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
-<tr><td><code>occt_heal_on</code></td><td><code>reject</code></td></tr>
-<tr><td><code>occt_heal_off</code></td><td><code>reject</code></td></tr>
-<tr><td><code>gmsh_autofix_on</code></td><td><code>reject</code></td></tr>
-<tr><td><code>gmsh_autofix_off</code></td><td><code>reject</code></td></tr>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(1)</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
-<tr><td><code>part21_strict</code></td><td><code>reject(E_PAREN_NEGATIVE)</code></td></tr>
-<tr><td><code>manifold</code></td><td><code>step_read_failed</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Pf012 - Stack overflow via deeply nested aggregate parens
-<span class="lineno">2</span>   Pattern: a Part-21 LIST/SET/BAG aggregate whose elements are themselves
-<span class="lineno">3</span>   aggregates, recursively. A recursive-descent parser without a depth
-<span class="lineno">4</span>   ceiling stack-overflows when handed thousands of nested parens (A002).
-<span class="lineno">5</span>   The examples below use 25-50 nesting levels - well under the Windows
-<span class="lineno">6</span>   default stack but adequate to demonstrate the pattern. Several depths
-<span class="lineno">7</span>   are included so that a reader fixed at depth N still encounters depth
-<span class="lineno">8</span>   N+1 in a later instance.
-<span class="lineno">9</span>   Scaling-up: replicate the inner aggregate to ~10,000 levels deep to
-<span class="lineno">10</span>   trigger E_AGGREGATE_TOO_DEEP / segfault on naive parsers; this same
-<span class="lineno">11</span>   pattern repeats many times in a single file so single-instance guards
-<span class="lineno">12</span>   don&#x27;t help. */
-<span class="lineno">13</span>ISO-10303-21;
-<span class="lineno">14</span>HEADER;
-<span class="lineno">15</span>FILE_DESCRIPTION((&#x27;Pf012 - deeply nested aggregate parens&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">16</span>FILE_NAME(&#x27;Pf012.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
-<span class="lineno">17</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">18</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">19</span>ENDSEC;
-<span class="lineno">20</span>DATA;
-<span class="lineno">21</span>/* unrelated point so the file is well-formed even if parser stops here */
-<span class="lineno">22</span><mark>#1=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">23</span><mark>#2=CARTESIAN_POINT(</mark>&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">24</span><mark>#3=CARTESIAN_POINT(</mark>&#x27;&#x27;,(2.0,0.0,0.0));
-<span class="lineno">25</span><mark>#4=CARTESIAN_POINT(</mark>&#x27;&#x27;,(3.0,0.0,0.0));
-<span class="lineno">26</span>/* GEOMETRIC_SET takes a SET of geometric_representation_item; we abuse
-<span class="lineno">27</span>   the LIST attribute by handing a deeply nested aggregate. The parens
-<span class="lineno">28</span>   are syntactically inside the single attribute - most readers will
-<span class="lineno">29</span>   recurse into them. Replicate to ~10000 levels to crash. */
-<span class="lineno">30</span>/* depth 25 */
-<span class="lineno">31</span>#10=GEOMETRIC_SET(&#x27;deep-25&#x27;,
-<span class="lineno">32</span>((((((((((((((((((((((((( #1 ))))))))))))))))))))))))));
-<span class="lineno">33</span>/* Pf012-B variant: nested LIST inside a single attribute&#x27;s value
-<span class="lineno">34</span>   (some readers special-case nested LISTs at any depth). */
-<span class="lineno">35</span>/* depth 22 */
-<span class="lineno">36</span>#20=GEOMETRIC_SET(&#x27;deep-22&#x27;,
-<span class="lineno">37</span>(((((((((((((((((((((( #1 ))))))))))))))))))))))));
-<span class="lineno">38</span>/* Pf012-C variant: doubly-nested chains in one file - some healers
-<span class="lineno">39</span>   recover after the first then crash on the second. */
-<span class="lineno">40</span>/* depth 27 */
-<span class="lineno">41</span>#30=GEOMETRIC_SET(&#x27;deep-27&#x27;,
-<span class="lineno">42</span>((((((((((((((((((((((((((( #1 ))))))))))))))))))))))))))));
-<span class="lineno">43</span>/* depth 30 - exceeds many default ceilings */
-<span class="lineno">44</span>#40=GEOMETRIC_SET(&#x27;deep-30&#x27;,
-<span class="lineno">45</span>(((((((((((((((((((((((((((((( #1 ))))))))))))))))))))))))))))));
-<span class="lineno">46</span>/* depth 35 - common test threshold */
-<span class="lineno">47</span>#50=GEOMETRIC_SET(&#x27;deep-35&#x27;,
-<span class="lineno">48</span>(((((((((((((((((((((((((((((((((( #2 ))))))))))))))))))))))))))))))))));
-<span class="lineno">49</span>/* depth 40 - exceeds typical recursive-descent budgets */
-<span class="lineno">50</span>#60=GEOMETRIC_SET(&#x27;deep-40&#x27;,
-<span class="lineno">51</span>(((((((((((((((((((((((((((((((((((((((( #3 ))))))))))))))))))))))))))))))))))))))));
-<span class="lineno">52</span>/* depth 45 - guaranteed overflow on small-stack runtimes */
-<span class="lineno">53</span>#70=GEOMETRIC_SET(&#x27;deep-45&#x27;,
-<span class="lineno">54</span>((((((((((((((((((((((((((((((((((((((((((((( #4 )))))))))))))))))))))))))))))))))))))))))))));
-<span class="lineno">55</span>/* depth 50 */
-<span class="lineno">56</span>#80=GEOMETRIC_SET(&#x27;deep-50&#x27;,
-<span class="lineno">57</span>(((((((((((((((((((((((((((((((((((((((((((((((((( #1 ))))))))))))))))))))))))))))))))))))))))))))))))));
-<span class="lineno">58</span>/* multiple deep aggregates back-to-back stress per-instance recursion
-<span class="lineno">59</span>   counters that reset between instances but share total budget */
-<span class="lineno">60</span>#90=GEOMETRIC_SET(&#x27;deep-back-to-back-1&#x27;,
-<span class="lineno">61</span>(((((((((((((((((((((((((((((( #1 ))))))))))))))))))))))))))))));
-<span class="lineno">62</span>#91=GEOMETRIC_SET(&#x27;deep-back-to-back-2&#x27;,
-<span class="lineno">63</span>(((((((((((((((((((((((((((((( #2 ))))))))))))))))))))))))))))));
-<span class="lineno">64</span>#92=GEOMETRIC_SET(&#x27;deep-back-to-back-3&#x27;,
-<span class="lineno">65</span>(((((((((((((((((((((((((((((( #3 ))))))))))))))))))))))))))))));
-<span class="lineno">66</span>#93=GEOMETRIC_SET(&#x27;deep-back-to-back-4&#x27;,
-<span class="lineno">67</span>(((((((((((((((((((((((((((((( #4 ))))))))))))))))))))))))))))));
-<span class="lineno">68</span>#94=GEOMETRIC_SET(&#x27;deep-back-to-back-5&#x27;,
-<span class="lineno">69</span>(((((((((((((((((((((((((((((( #1 ))))))))))))))))))))))))))))));
-<span class="lineno">70</span>#95=GEOMETRIC_SET(&#x27;deep-back-to-back-6&#x27;,
-<span class="lineno">71</span>(((((((((((((((((((((((((((((( #2 ))))))))))))))))))))))))))))));
-<span class="lineno">72</span>#96=GEOMETRIC_SET(&#x27;deep-back-to-back-7&#x27;,
-<span class="lineno">73</span>(((((((((((((((((((((((((((((( #3 ))))))))))))))))))))))))))))));
-<span class="lineno">74</span>#97=GEOMETRIC_SET(&#x27;deep-back-to-back-8&#x27;,
-<span class="lineno">75</span>(((((((((((((((((((((((((((((( #4 ))))))))))))))))))))))))))))));
-<span class="lineno">76</span>#98=GEOMETRIC_SET(&#x27;deep-back-to-back-9&#x27;,
-<span class="lineno">77</span>(((((((((((((((((((((((((((((( #1 ))))))))))))))))))))))))))))));
-<span class="lineno">78</span>#99=GEOMETRIC_SET(&#x27;deep-back-to-back-10&#x27;,
-<span class="lineno">79</span>(((((((((((((((((((((((((((((( #2 ))))))))))))))))))))))))))))));
-<span class="lineno">80</span>ENDSEC;
-<span class="lineno">81</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Pf012: GEOMETRIC_SET with deeply nested aggregate parens (25â30 levels deep) inside a single attribute; recursive-descent parser without depth ceiling crashes via stack overflow; compliant readers must enforce a depth ceiling (e.g. 64) and emit E_AGGREGATE_TOO_DEEP; GEOMETRIC_CURVE_SET IS model entity â OCC yields reject */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Pf012&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Pf012.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span><mark>#1=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span><mark>#2=CARTESIAN_POINT(</mark>&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">12</span><mark>#3=CARTESIAN_POINT(</mark>&#x27;&#x27;,(2.0,0.0,0.0));
+<span class="lineno">13</span><mark>#4=CARTESIAN_POINT(</mark>&#x27;&#x27;,(3.0,0.0,0.0));
+<span class="lineno">14</span>#5=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">15</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">16</span>#9051=PRODUCT(&#x27;Pf012&#x27;,&#x27;Pf012&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">17</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">18</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">19</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">20</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">21</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">22</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">23</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">24</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">25</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">26</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#5),#9060);
+<span class="lineno">27</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">28</span>/* depth 25 */
+<span class="lineno">29</span>#10=GEOMETRIC_SET(&#x27;deep-25&#x27;,
+<span class="lineno">30</span>((((((((((((((((((((((((( #1 ))))))))))))))))))))))))));
+<span class="lineno">31</span>/* Pf012-B variant: nested LIST inside a single attribute&#x27;s value
+<span class="lineno">32</span>   (some readers special-case nested LISTs at any depth). */
+<span class="lineno">33</span>/* depth 22 */
+<span class="lineno">34</span>#20=GEOMETRIC_SET(&#x27;deep-22&#x27;,
+<span class="lineno">35</span>(((((((((((((((((((((( #1 )))))))))))))))))))))));
+<span class="lineno">36</span>/* Pf012-C variant: doubly-nested chains in one file - some healers
+<span class="lineno">37</span>   recover after the first then crash on the second. */
+<span class="lineno">38</span>/* depth 27 */
+<span class="lineno">39</span>#30=GEOMETRIC_SET(&#x27;deep-27&#x27;,
+<span class="lineno">40</span>((((((((((((((((((((((((((( #1 ))))))))))))))))))))))))))));
+<span class="lineno">41</span>/* depth 30 - exceeds many default ceilings */
+<span class="lineno">42</span>#40=GEOMETRIC_SET(&#x27;deep-30&#x27;,
+<span class="lineno">43</span>(((((((((((((((((((((((((((((( #1 )))))))))))))))))))))))))))))));
+<span class="lineno">44</span>
+<span class="lineno">45</span>ENDSEC;
+<span class="lineno">46</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

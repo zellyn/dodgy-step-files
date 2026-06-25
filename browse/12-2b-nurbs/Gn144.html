@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gn144 — Periodic knot-vector closure mismatch</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2b NURBS / B-spline</a> <span class="sep">/</span> <span class="current">Gn144</span>
+</nav>
+<header class="title-bar">
+<h1>Gn144 <span class="sep">—</span> <span class="entry-title">Periodic knot-vector closure mismatch</span></h1>
+<p class="category">§12.2b</p>
+<p class="tag-pills">
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2b-nurbs/Gn144.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2b-nurbs/Gn144.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>synthesized — no external source cited</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Periodic BSpline surface (.T. in U) with open-clamped knot vector. Knot multiplicities (3,3) conflict with 4-pole periodic topology. Healing must validate periodic flag consistency.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p></p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gn144: B_SPLINE_SURFACE_WITH_KNOTS degree=2 (U) Ã 2 (V); 4Ã3 control net; U_CLOSED=.T. (periodic flag); U knots (0.0,1.0) mults (3,3) sum=6 â 4 poles+degree 2 needs 7 â mismatch; V knots (0.0,1.0) mults (3,3) sum=6 â n_v=3 â; IS face surface; periodic-flag vs clamped-knot-count conflict */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Gn144&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Gn144.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">11</span>#2=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">12</span>#3=CARTESIAN_POINT(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">13</span>#4=CARTESIAN_POINT(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">14</span>#5=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.5));
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.5));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(-1.0,0.0,0.5));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(0.0,-1.0,0.5));
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,1.0));
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,1.0));
+<span class="lineno">20</span>#11=CARTESIAN_POINT(&#x27;&#x27;,(-1.0,0.0,1.0));
+<span class="lineno">21</span>#12=CARTESIAN_POINT(&#x27;&#x27;,(0.0,-1.0,1.0));
+<span class="lineno">22</span>#13=B_SPLINE_SURFACE_WITH_KNOTS(&#x27;gn144_periodic_closure_mismatch&#x27;,2,2,((#1,#2,#3,#4),(#5,#6,#7,#8),(#9,#10,#11,#12)),.UNSPECIFIED.,.T.,.F.,.F.,(3,3),(3,3),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
+<span class="lineno">23</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT(&#x27;UV&#x27;,&#x27;2D&#x27;));
+<span class="lineno">24</span>#15=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">25</span>#16=CARTESIAN_POINT(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">26</span>#17=CARTESIAN_POINT(&#x27;&#x27;,(0.0,-1.0,1.0));
+<span class="lineno">27</span>#18=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,1.0));
+<span class="lineno">28</span>#19=VERTEX_POINT(&#x27;&#x27;,#15);
+<span class="lineno">29</span>#20=VERTEX_POINT(&#x27;&#x27;,#16);
+<span class="lineno">30</span>#21=VERTEX_POINT(&#x27;&#x27;,#17);
+<span class="lineno">31</span>#22=VERTEX_POINT(&#x27;&#x27;,#18);
+<span class="lineno">32</span>#23=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">33</span>#24=DIRECTION(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">34</span>#25=VECTOR(&#x27;&#x27;,#24,1.0);
+<span class="lineno">35</span>#26=LINE(&#x27;&#x27;,#23,#25);
+<span class="lineno">36</span>#27=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));
+<span class="lineno">37</span>#28=DIRECTION(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">38</span>#29=VECTOR(&#x27;&#x27;,#28,1.0);
+<span class="lineno">39</span>#30=LINE(&#x27;&#x27;,#27,#29);
+<span class="lineno">40</span>#31=DEFINITIONAL_REPRESENTATION(&#x27;pcdef&#x27;,(#30),#14);
+<span class="lineno">41</span>#32=PCURVE(&#x27;pc&#x27;,#13,#31);
+<span class="lineno">42</span>#33=SURFACE_CURVE(&#x27;sc&#x27;,#26,(#32),.PCURVE_S1.);
+<span class="lineno">43</span>#34=EDGE_CURVE(&#x27;ec&#x27;,#19,#20,#33,.T.);
+<span class="lineno">44</span>#35=CARTESIAN_POINT(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">45</span>#36=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">46</span>#37=VECTOR(&#x27;&#x27;,#36,1.0);
+<span class="lineno">47</span>#38=LINE(&#x27;&#x27;,#35,#37);
+<span class="lineno">48</span>#39=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">49</span>#40=DIRECTION(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">50</span>#41=VECTOR(&#x27;&#x27;,#40,1.0);
+<span class="lineno">51</span>#42=LINE(&#x27;&#x27;,#39,#41);
+<span class="lineno">52</span>#43=DEFINITIONAL_REPRESENTATION(&#x27;pcdef&#x27;,(#42),#14);
+<span class="lineno">53</span>#44=PCURVE(&#x27;pc&#x27;,#13,#43);
+<span class="lineno">54</span>#45=SURFACE_CURVE(&#x27;sc&#x27;,#38,(#44),.PCURVE_S1.);
+<span class="lineno">55</span>#46=EDGE_CURVE(&#x27;ec&#x27;,#20,#21,#45,.T.);
+<span class="lineno">56</span>#47=CARTESIAN_POINT(&#x27;&#x27;,(0.0,-1.0,1.0));
+<span class="lineno">57</span>#48=DIRECTION(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">58</span>#49=VECTOR(&#x27;&#x27;,#48,1.0);
+<span class="lineno">59</span>#50=LINE(&#x27;&#x27;,#47,#49);
+<span class="lineno">60</span>#51=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0));
+<span class="lineno">61</span>#52=DIRECTION(&#x27;&#x27;,(-1.0,0.0));
+<span class="lineno">62</span>#53=VECTOR(&#x27;&#x27;,#52,1.0);
+<span class="lineno">63</span>#54=LINE(&#x27;&#x27;,#51,#53);
+<span class="lineno">64</span>#55=DEFINITIONAL_REPRESENTATION(&#x27;pcdef&#x27;,(#54),#14);
+<span class="lineno">65</span>#56=PCURVE(&#x27;pc&#x27;,#13,#55);
+<span class="lineno">66</span>#57=SURFACE_CURVE(&#x27;sc&#x27;,#50,(#56),.PCURVE_S1.);
+<span class="lineno">67</span>#58=EDGE_CURVE(&#x27;ec&#x27;,#21,#22,#57,.T.);
+<span class="lineno">68</span>#59=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,1.0));
+<span class="lineno">69</span>#60=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0));
+<span class="lineno">70</span>#61=VECTOR(&#x27;&#x27;,#60,1.0);
+<span class="lineno">71</span>#62=LINE(&#x27;&#x27;,#59,#61);
+<span class="lineno">72</span>#63=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">73</span>#64=DIRECTION(&#x27;&#x27;,(0.0,-1.0));
+<span class="lineno">74</span>#65=VECTOR(&#x27;&#x27;,#64,1.0);
+<span class="lineno">75</span>#66=LINE(&#x27;&#x27;,#63,#65);
+<span class="lineno">76</span>#67=DEFINITIONAL_REPRESENTATION(&#x27;pcdef&#x27;,(#66),#14);
+<span class="lineno">77</span>#68=PCURVE(&#x27;pc&#x27;,#13,#67);
+<span class="lineno">78</span>#69=SURFACE_CURVE(&#x27;sc&#x27;,#62,(#68),.PCURVE_S1.);
+<span class="lineno">79</span>#70=EDGE_CURVE(&#x27;ec&#x27;,#22,#19,#69,.T.);
+<span class="lineno">80</span>#71=ORIENTED_EDGE(&#x27;&#x27;,$,$,#34,.T.);
+<span class="lineno">81</span>#72=ORIENTED_EDGE(&#x27;&#x27;,$,$,#46,.T.);
+<span class="lineno">82</span>#73=ORIENTED_EDGE(&#x27;&#x27;,$,$,#58,.T.);
+<span class="lineno">83</span>#74=ORIENTED_EDGE(&#x27;&#x27;,$,$,#70,.T.);
+<span class="lineno">84</span>#75=EDGE_LOOP(&#x27;&#x27;,(#71,#72,#73,#74));
+<span class="lineno">85</span>#76=FACE_OUTER_BOUND(&#x27;&#x27;,#75,.T.);
+<span class="lineno">86</span>#77=ADVANCED_FACE(&#x27;&#x27;,(#76),#13,.T.);
+<span class="lineno">87</span>#78=OPEN_SHELL(&#x27;&#x27;,(#77));
+<span class="lineno">88</span>#79=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#78));
+<span class="lineno">89</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">90</span>#9051=PRODUCT(&#x27;Gn144&#x27;,&#x27;Gn144&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">91</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">92</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">93</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">94</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">95</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">96</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">97</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">98</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">99</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">100</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#79),#9060);
+<span class="lineno">101</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">102</span>ENDSEC;
+<span class="lineno">103</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gn143.html">&larr; Gn143</a> <a class="up" href="index.html">§12.2b NURBS / B-spline</a> <a class="next" href="Gn145.html">Gn145 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

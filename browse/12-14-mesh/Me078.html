@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Me078 — duplicate_singular_vertices: 3-fan vertex requiring 2 new duplicate points</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <span class="sep">/</span> <span class="current">Me078</span>
+</nav>
+<header class="title-bar">
+<h1>Me078 <span class="sep">—</span> <span class="entry-title">duplicate_singular_vertices: 3-fan vertex requiring 2 new duplicate points</span></h1>
+<p class="category">§12.14 mesh defects (sub-class: non-manifold vertex / singular vertex)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../mesh-examples/12-14-mesh/Me078.mesh.json">View raw fixture (.mesh.json)</a> <code class="path">mesh-examples/12-14-mesh/Me078.mesh.json</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>CGAL `PMP.Polygon_soup_orienter.duplicate_singular_vertices` Branch 11 (*new_point_creation*: points.push_back twice), Branch 12 (*polygon_index_replacement*)</li>
+<li>`MESH_HEAL_COVERAGE.md`.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>vertex 0 is a singular vertex with 3 link CCs (three fans at different Z heights: z=0, z=2, z=4). After repair, the point_duplication_loop creates 2 new clone points (Branch 11 fires twice) and the polygon_index_replacement sub-pass (Branch 12) updates 2 triangle references. The fixture stresses the multi-duplication path in a fully 3D configuration.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>v0=(0,0,0); fan A at z=0 (v1,v2); fan B at z=2 (v3,v4); fan C at z=4 (v5,v6); 3 triangles total, no shared edges.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>split v0 into 3 copies; fan A retains original; fans B and C receive the 2 new clones; vertex count increases by 2.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>{
+<span class="lineno">2</span>  &quot;vertices&quot;: [
+<span class="lineno">3</span>    [
+<span class="lineno">4</span>      0.0,
+<span class="lineno">5</span>      0.0,
+<span class="lineno">6</span>      0.0
+<span class="lineno">7</span>    ],
+<span class="lineno">8</span>    [
+<span class="lineno">9</span>      1.0,
+<span class="lineno">10</span>      1.0,
+<span class="lineno">11</span>      0.0
+<span class="lineno">12</span>    ],
+<span class="lineno">13</span>    [
+<span class="lineno">14</span>      -1.0,
+<span class="lineno">15</span>      1.0,
+<span class="lineno">16</span>      0.0
+<span class="lineno">17</span>    ],
+<span class="lineno">18</span>    [
+<span class="lineno">19</span>      1.0,
+<span class="lineno">20</span>      1.0,
+<span class="lineno">21</span>      2.0
+<span class="lineno">22</span>    ],
+<span class="lineno">23</span>    [
+<span class="lineno">24</span>      -1.0,
+<span class="lineno">25</span>      1.0,
+<span class="lineno">26</span>      2.0
+<span class="lineno">27</span>    ],
+<span class="lineno">28</span>    [
+<span class="lineno">29</span>      1.0,
+<span class="lineno">30</span>      1.0,
+<span class="lineno">31</span>      4.0
+<span class="lineno">32</span>    ],
+<span class="lineno">33</span>    [
+<span class="lineno">34</span>      -1.0,
+<span class="lineno">35</span>      1.0,
+<span class="lineno">36</span>      4.0
+<span class="lineno">37</span>    ]
+<span class="lineno">38</span>  ],
+<span class="lineno">39</span>  &quot;triangles&quot;: [
+<span class="lineno">40</span>    [
+<span class="lineno">41</span>      0,
+<span class="lineno">42</span>      1,
+<span class="lineno">43</span>      2
+<span class="lineno">44</span>    ],
+<span class="lineno">45</span>    [
+<span class="lineno">46</span>      0,
+<span class="lineno">47</span>      3,
+<span class="lineno">48</span>      4
+<span class="lineno">49</span>    ],
+<span class="lineno">50</span>    [
+<span class="lineno">51</span>      0,
+<span class="lineno">52</span>      5,
+<span class="lineno">53</span>      6
+<span class="lineno">54</span>    ]
+<span class="lineno">55</span>  ],
+<span class="lineno">56</span>  &quot;metadata&quot;: {
+<span class="lineno">57</span>    &quot;id&quot;: &quot;Me078&quot;,
+<span class="lineno">58</span>    &quot;schema_version&quot;: 0,
+<span class="lineno">59</span>    &quot;defect_class&quot;: &quot;non_manifold_vertex&quot;,
+<span class="lineno">60</span>    &quot;title&quot;: &quot;duplicate_singular_vertices: 3-fan vertex requiring 2 new duplicate points&quot;,
+<span class="lineno">61</span>    &quot;assertions&quot;: [
+<span class="lineno">62</span>      {
+<span class="lineno">63</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">64</span>        &quot;edge&quot;: [
+<span class="lineno">65</span>          0,
+<span class="lineno">66</span>          1
+<span class="lineno">67</span>        ],
+<span class="lineno">68</span>        &quot;n&quot;: 1
+<span class="lineno">69</span>      },
+<span class="lineno">70</span>      {
+<span class="lineno">71</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">72</span>        &quot;edge&quot;: [
+<span class="lineno">73</span>          0,
+<span class="lineno">74</span>          2
+<span class="lineno">75</span>        ],
+<span class="lineno">76</span>        &quot;n&quot;: 1
+<span class="lineno">77</span>      },
+<span class="lineno">78</span>      {
+<span class="lineno">79</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">80</span>        &quot;edge&quot;: [
+<span class="lineno">81</span>          0,
+<span class="lineno">82</span>          3
+<span class="lineno">83</span>        ],
+<span class="lineno">84</span>        &quot;n&quot;: 1
+<span class="lineno">85</span>      },
+<span class="lineno">86</span>      {
+<span class="lineno">87</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">88</span>        &quot;edge&quot;: [
+<span class="lineno">89</span>          0,
+<span class="lineno">90</span>          4
+<span class="lineno">91</span>        ],
+<span class="lineno">92</span>        &quot;n&quot;: 1
+<span class="lineno">93</span>      },
+<span class="lineno">94</span>      {
+<span class="lineno">95</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">96</span>        &quot;edge&quot;: [
+<span class="lineno">97</span>          0,
+<span class="lineno">98</span>          5
+<span class="lineno">99</span>        ],
+<span class="lineno">100</span>        &quot;n&quot;: 1
+<span class="lineno">101</span>      },
+<span class="lineno">102</span>      {
+<span class="lineno">103</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">104</span>        &quot;edge&quot;: [
+<span class="lineno">105</span>          0,
+<span class="lineno">106</span>          6
+<span class="lineno">107</span>        ],
+<span class="lineno">108</span>        &quot;n&quot;: 1
+<span class="lineno">109</span>      },
+<span class="lineno">110</span>      {
+<span class="lineno">111</span>        &quot;kind&quot;: &quot;vertex_fan_disconnected&quot;,
+<span class="lineno">112</span>        &quot;vertex&quot;: 0
+<span class="lineno">113</span>      }
+<span class="lineno">114</span>    ]
+<span class="lineno">115</span>  }
+<span class="lineno">116</span>}
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Me077.html">&larr; Me077</a> <a class="up" href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <a class="next" href="Me079.html">Me079 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

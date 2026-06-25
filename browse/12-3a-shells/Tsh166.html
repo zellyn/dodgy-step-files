@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tsh166 — ShapeUpgrade_ShellSewing.Apply face-with-same-base</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3a Shells / orientation</a> <span class="sep">/</span> <span class="current">Tsh166</span>
+</nav>
+<header class="title-bar">
+<h1>Tsh166 <span class="sep">—</span> <span class="entry-title">ShapeUpgrade_ShellSewing.Apply face-with-same-base</span></h1>
+<p class="category">§12.3a</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3a-shells/Tsh166.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3a-shells/Tsh166.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>synthesized — no external source cited</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>ShapeUpgrade_ShellSewing.Apply face-with-same-base</p></section>
+<section><h2>Reproducer recipe</h2>
+<p></p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_faces_total == 2</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tsh166: TWO ADVANCED_FACEs sharing ONE PLANE entity in OPEN_SHELL â IS the same-base duplication mechanism; plane_shared IS one PLANE with AXIS2_PLACEMENT_3D at origin, normal +z â IS the single surface entity referenced by BOTH faces; Face0 IS wired with loop0 (own vertex set v00a..v11a) referencing plane_shared; Face1 IS wired with loop1 (own vertex set v00b..v11b) referencing plane_shared; both faces occupy identical unit square region [0,1]x[0,1] at z=0; shared PLANE entity pointer IS the identity that Apply() should detect; ShellSewing.Apply compares geometric coincidence, not entity identity; surface identity blindness IS the defect: duplicate face survives sewing; output OPEN_SHELL retains two overlapping faces â IS the defect manifestation; fix: compare surface entity IDs before sewing; deduplicate co-located faces; emit E_SEWING_DUPLICATE_SURFACE when two faces share same underlying surface */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Tsh166&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Tsh166.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=PLANE(&#x27;&#x27;,#4);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">19</span>#10=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">20</span>#11=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">21</span>#12=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">22</span>#13=VERTEX_POINT(&#x27;&#x27;,#9);
+<span class="lineno">23</span>#14=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">24</span>#15=VECTOR(&#x27;&#x27;,#14,1.0);
+<span class="lineno">25</span>#16=LINE(&#x27;&#x27;,#6,#15);
+<span class="lineno">26</span>#17=EDGE_CURVE(&#x27;&#x27;,#10,#11,#16,.T.);
+<span class="lineno">27</span>#18=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">28</span>#19=VECTOR(&#x27;&#x27;,#18,1.0);
+<span class="lineno">29</span>#20=LINE(&#x27;&#x27;,#7,#19);
+<span class="lineno">30</span>#21=EDGE_CURVE(&#x27;&#x27;,#11,#12,#20,.T.);
+<span class="lineno">31</span>#22=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">32</span>#23=VECTOR(&#x27;&#x27;,#22,1.0);
+<span class="lineno">33</span>#24=LINE(&#x27;&#x27;,#9,#23);
+<span class="lineno">34</span>#25=EDGE_CURVE(&#x27;&#x27;,#13,#12,#24,.T.);
+<span class="lineno">35</span>#26=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">36</span>#27=VECTOR(&#x27;&#x27;,#26,1.0);
+<span class="lineno">37</span>#28=LINE(&#x27;&#x27;,#6,#27);
+<span class="lineno">38</span>#29=EDGE_CURVE(&#x27;&#x27;,#10,#13,#28,.T.);
+<span class="lineno">39</span>#30=ORIENTED_EDGE(&#x27;&#x27;,$,$,#17,.T.);
+<span class="lineno">40</span>#31=ORIENTED_EDGE(&#x27;&#x27;,$,$,#21,.T.);
+<span class="lineno">41</span>#32=ORIENTED_EDGE(&#x27;&#x27;,$,$,#25,.F.);
+<span class="lineno">42</span>#33=ORIENTED_EDGE(&#x27;&#x27;,$,$,#29,.F.);
+<span class="lineno">43</span>#34=EDGE_LOOP(&#x27;&#x27;,(#30,#31,#32,#33));
+<span class="lineno">44</span>#35=FACE_OUTER_BOUND(&#x27;&#x27;,#34,.T.);
+<span class="lineno">45</span>#36=ADVANCED_FACE(&#x27;&#x27;,(#35),#5,.T.);
+<span class="lineno">46</span>#37=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">47</span>#38=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">48</span>#39=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
+<span class="lineno">49</span>#40=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">50</span>#41=VERTEX_POINT(&#x27;&#x27;,#37);
+<span class="lineno">51</span>#42=VERTEX_POINT(&#x27;&#x27;,#38);
+<span class="lineno">52</span>#43=VERTEX_POINT(&#x27;&#x27;,#39);
+<span class="lineno">53</span>#44=VERTEX_POINT(&#x27;&#x27;,#40);
+<span class="lineno">54</span>#45=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">55</span>#46=VECTOR(&#x27;&#x27;,#45,1.0);
+<span class="lineno">56</span>#47=LINE(&#x27;&#x27;,#37,#46);
+<span class="lineno">57</span>#48=EDGE_CURVE(&#x27;&#x27;,#41,#42,#47,.T.);
+<span class="lineno">58</span>#49=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">59</span>#50=VECTOR(&#x27;&#x27;,#49,1.0);
+<span class="lineno">60</span>#51=LINE(&#x27;&#x27;,#38,#50);
+<span class="lineno">61</span>#52=EDGE_CURVE(&#x27;&#x27;,#42,#43,#51,.T.);
+<span class="lineno">62</span>#53=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">63</span>#54=VECTOR(&#x27;&#x27;,#53,1.0);
+<span class="lineno">64</span>#55=LINE(&#x27;&#x27;,#40,#54);
+<span class="lineno">65</span>#56=EDGE_CURVE(&#x27;&#x27;,#44,#43,#55,.T.);
+<span class="lineno">66</span>#57=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">67</span>#58=VECTOR(&#x27;&#x27;,#57,1.0);
+<span class="lineno">68</span>#59=LINE(&#x27;&#x27;,#37,#58);
+<span class="lineno">69</span>#60=EDGE_CURVE(&#x27;&#x27;,#41,#44,#59,.T.);
+<span class="lineno">70</span>#61=ORIENTED_EDGE(&#x27;&#x27;,$,$,#48,.T.);
+<span class="lineno">71</span>#62=ORIENTED_EDGE(&#x27;&#x27;,$,$,#52,.T.);
+<span class="lineno">72</span>#63=ORIENTED_EDGE(&#x27;&#x27;,$,$,#56,.F.);
+<span class="lineno">73</span>#64=ORIENTED_EDGE(&#x27;&#x27;,$,$,#60,.F.);
+<span class="lineno">74</span>#65=EDGE_LOOP(&#x27;&#x27;,(#61,#62,#63,#64));
+<span class="lineno">75</span>#66=FACE_OUTER_BOUND(&#x27;&#x27;,#65,.T.);
+<span class="lineno">76</span>#67=ADVANCED_FACE(&#x27;&#x27;,(#66),#5,.T.);
+<span class="lineno">77</span>#68=OPEN_SHELL(&#x27;&#x27;,(#36,#67));
+<span class="lineno">78</span>#69=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#68));
+<span class="lineno">79</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">80</span>#9051=PRODUCT(&#x27;Tsh166&#x27;,&#x27;Tsh166&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">81</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">82</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">83</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">84</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">85</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">86</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">87</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">88</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">89</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">90</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#69),#9060);
+<span class="lineno">91</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">92</span>ENDSEC;
+<span class="lineno">93</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tsh165.html">&larr; Tsh165</a> <a class="up" href="index.html">§12.3a Shells / orientation</a> <a class="next" href="Tsh167.html">Tsh167 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -39,6 +39,9 @@
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;B_SPLINE_CURVE&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="../12-2c-surfaces/Gs019.html">Gs019</a></p>
 </section>
@@ -56,52 +59,135 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Gn031 - EDGE_CURVE periodic-to-non-periodic conversion on small-edge export
-<span class="lineno">2</span>   Defect: for small edges fully covered by vertex tolerances, the OCCT
-<span class="lineno">3</span>   writer converted a periodic BSpline to non-periodic by cutting a
-<span class="lineno">4</span>   segment, but didn&#x27;t permute closed-curve vertices, producing an
-<span class="lineno">5</span>   invalid edge range on read-back.  In the source the closed BSpline
-<span class="lineno">6</span>   curve C(u) had C(0) == C(1), but after the writer chops off [u1, 1]
-<span class="lineno">7</span>   and re-stitches, the vertex it stored as v_start may correspond to
-<span class="lineno">8</span>   parameter u=u1 while the stored end vertex still corresponds to u=0,
-<span class="lineno">9</span>   giving a backwards edge interval.
-<span class="lineno">10</span>   This file emits the post-bug artifact: a non-periodic
-<span class="lineno">11</span>   <mark>B_SPLINE_CURVE</mark>_WITH_KNOTS plus an EDGE_CURVE whose start/end vertices
-<span class="lineno">12</span>   straddle the wrap-around in a way that yields an empty / inverted range.
-<span class="lineno">13</span>   Sources: Mantis 0031301, OCCT 7ef1f9b. */
-<span class="lineno">14</span>ISO-10303-21;
-<span class="lineno">15</span>HEADER;
-<span class="lineno">16</span>FILE_DESCRIPTION(
-<span class="lineno">17</span>  (&#x27;Gn031 - EDGE_CURVE with inverted range from periodic-to-non-periodic&#x27;),
-<span class="lineno">18</span>  &#x27;2;1&#x27;);
-<span class="lineno">19</span>FILE_NAME(&#x27;Gn031.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
-<span class="lineno">20</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">21</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">22</span>ENDSEC;
-<span class="lineno">23</span>DATA;
-<span class="lineno">24</span>/* Small closed curve approximated as a degree-2 rational BSpline (3
-<span class="lineno">25</span>   poles, weights for a circular arc).  Originally periodic; after the
-<span class="lineno">26</span>   buggy chop, declared non-periodic. */
-<span class="lineno">27</span>#10=CARTESIAN_POINT(&#x27;arc0&#x27;,( 0.0010, 0.0000, 0.0));
-<span class="lineno">28</span>#11=CARTESIAN_POINT(&#x27;arc1&#x27;,( 0.0010, 0.0010, 0.0));
-<span class="lineno">29</span>#12=CARTESIAN_POINT(&#x27;arc2&#x27;,( 0.0000, 0.0010, 0.0));
-<span class="lineno">30</span>#100=(
-<span class="lineno">31</span>  BOUNDED_CURVE()
-<span class="lineno">32</span>  <mark>B_SPLINE_CURVE</mark>(2,(#10,#11,#12),.UNSPECIFIED.,.F.,.F.)
-<span class="lineno">33</span>  <mark>B_SPLINE_CURVE</mark>_WITH_KNOTS((3,3),(0.0,1.0),.UNSPECIFIED.)
-<span class="lineno">34</span>  CURVE()
-<span class="lineno">35</span>  GEOMETRIC_REPRESENTATION_ITEM()
-<span class="lineno">36</span>  RATIONAL_<mark>B_SPLINE_CURVE</mark>((1.0,0.7071067811865476,1.0))
-<span class="lineno">37</span>  REPRESENTATION_ITEM(&#x27;chopped_was_periodic&#x27;));
-<span class="lineno">38</span>/* Defect: vertices kept from the original periodic curve are NOT
-<span class="lineno">39</span>   permuted to match the new non-periodic parametrization.  Resulting
-<span class="lineno">40</span>   EDGE_CURVE range is inconsistent: stored as start=#12-vertex,
-<span class="lineno">41</span>   end=#10-vertex while the curve actually runs from #10 -&gt; #12. */
-<span class="lineno">42</span>#200=VERTEX_POINT(&#x27;v_at_arc2&#x27;,#12);
-<span class="lineno">43</span>#201=VERTEX_POINT(&#x27;v_at_arc0&#x27;,#10);
-<span class="lineno">44</span>#300=EDGE_CURVE(&#x27;inverted_edge&#x27;,#200,#201,#100,.T.);
-<span class="lineno">45</span>ENDSEC;
-<span class="lineno">46</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gn031: EDGE_CURVE periodic-to-non-periodic conversion: rational degree-2 <mark>B_SPLINE_CURVE</mark>_WITH_KNOTS sub-mm quarter-arc (radius 0.001); start vertex=(0,0.001,0) end vertex=(0.001,0,0) â SWAPPED relative to curve parameterization (t=0 maps to (0.001,0,0), t=1 to (0,0.001,0)); OCCT writer cuts periodic segment but omits vertex permutation; invalid edge range on read-back; C-1 break in 3D edge at t=0.5 */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Gn031&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Gn031.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;plane_ax&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=PLANE(&#x27;flat_plane&#x27;,#4);
+<span class="lineno">15</span>#6=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT(&#x27;UV&#x27;,&#x27;2D&#x27;));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(0.001,0.0,0.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(0.001,0.001,0.0));
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.001,0.0));
+<span class="lineno">19</span>#10=(<mark>B_SPLINE_CURVE</mark>(&#x27;tiny_arc&#x27;,2,(#7,#8,#9),.UNSPECIFIED.,.F.,.F.)<mark>B_SPLINE_CURVE</mark>_WITH_KNOTS((3,3),(0.0,1.0),.UNSPECIFIED.)RATIONAL_<mark>B_SPLINE_CURVE</mark>((1.0,0.7071067811865476,1.0))REPRESENTATION_ITEM(&#x27;tiny_arc&#x27;)BOUNDED_CURVE()CURVE());
+<span class="lineno">20</span>#11=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">21</span>#12=CARTESIAN_POINT(&#x27;&#x27;,(1.25,0.0,0.0));
+<span class="lineno">22</span>#13=CARTESIAN_POINT(&#x27;&#x27;,(2.5,0.0,0.0));
+<span class="lineno">23</span>#14=CARTESIAN_POINT(&#x27;&#x27;,(4.0,0.0,0.0));
+<span class="lineno">24</span>#15=CARTESIAN_POINT(&#x27;&#x27;,(4.75,0.0,0.0));
+<span class="lineno">25</span>#16=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">26</span>#17=<mark>B_SPLINE_CURVE</mark>_WITH_KNOTS(&#x27;gn031_c1_break&#x27;,2,(#11,#12,#13,#14,#15,#16),.UNSPECIFIED.,.F.,.F.,(3,3,3),(0.0,0.5,1.0),.UNSPECIFIED.);
+<span class="lineno">27</span>#18=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));
+<span class="lineno">28</span>#19=CARTESIAN_POINT(&#x27;&#x27;,(0.25,0.0));
+<span class="lineno">29</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(0.5,0.0));
+<span class="lineno">30</span>#21=CARTESIAN_POINT(&#x27;&#x27;,(0.5,0.0));
+<span class="lineno">31</span>#22=CARTESIAN_POINT(&#x27;&#x27;,(0.75,0.0));
+<span class="lineno">32</span>#23=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">33</span>#24=<mark>B_SPLINE_CURVE</mark>_WITH_KNOTS(&#x27;gn031_c1_break_pc&#x27;,2,(#18,#19,#20,#21,#22,#23),.UNSPECIFIED.,.F.,.F.,(3,3,3),(0.0,0.5,1.0),.UNSPECIFIED.);
+<span class="lineno">34</span>#25=DEFINITIONAL_REPRESENTATION(&#x27;gn031_pc_def&#x27;,(#24),#6);
+<span class="lineno">35</span>#26=PCURVE(&#x27;gn031_pc_ent&#x27;,#5,#25);
+<span class="lineno">36</span>#27=SURFACE_CURVE(&#x27;gn031_c1_sc&#x27;,#17,(#26),.PCURVE_S1.);
+<span class="lineno">37</span>#28=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.001,0.0));
+<span class="lineno">38</span>#29=VERTEX_POINT(&#x27;&#x27;,#28);
+<span class="lineno">39</span>#30=CARTESIAN_POINT(&#x27;&#x27;,(0.001,0.0,0.0));
+<span class="lineno">40</span>#31=VERTEX_POINT(&#x27;&#x27;,#30);
+<span class="lineno">41</span>#32=CARTESIAN_POINT(&#x27;&#x27;,(0.001,0.0));
+<span class="lineno">42</span>#33=CARTESIAN_POINT(&#x27;&#x27;,(0.001,0.001));
+<span class="lineno">43</span>#34=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.001));
+<span class="lineno">44</span>#35=<mark>B_SPLINE_CURVE</mark>_WITH_KNOTS(&#x27;arc_pc&#x27;,1,(#32,#33,#34),.UNSPECIFIED.,.F.,.F.,(2,2),(0.0,1.0),.UNSPECIFIED.);
+<span class="lineno">45</span>#36=DEFINITIONAL_REPRESENTATION(&#x27;arc_pcdef&#x27;,(#35),#6);
+<span class="lineno">46</span>#37=PCURVE(&#x27;arc_pc_ent&#x27;,#5,#36);
+<span class="lineno">47</span>#38=SURFACE_CURVE(&#x27;gn031_arc_sc&#x27;,#10,(#37),.PCURVE_S1.);
+<span class="lineno">48</span>#39=EDGE_CURVE(&#x27;gn031_swapped_arc&#x27;,#29,#31,#38,.T.);
+<span class="lineno">49</span>#40=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">50</span>#41=VERTEX_POINT(&#x27;&#x27;,#40);
+<span class="lineno">51</span>#42=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">52</span>#43=VERTEX_POINT(&#x27;&#x27;,#42);
+<span class="lineno">53</span>#44=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">54</span>#45=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">55</span>#46=VECTOR(&#x27;&#x27;,#45,5.0);
+<span class="lineno">56</span>#47=LINE(&#x27;&#x27;,#44,#46);
+<span class="lineno">57</span>#48=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));
+<span class="lineno">58</span>#49=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">59</span>#50=DIRECTION(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">60</span>#51=VECTOR(&#x27;&#x27;,#50,5.0);
+<span class="lineno">61</span>#52=LINE(&#x27;&#x27;,#48,#51);
+<span class="lineno">62</span>#53=DEFINITIONAL_REPRESENTATION(&#x27;bot_pcdef&#x27;,(#52),#6);
+<span class="lineno">63</span>#54=PCURVE(&#x27;bot_pc_ent&#x27;,#5,#53);
+<span class="lineno">64</span>#55=SURFACE_CURVE(&#x27;bot_sc&#x27;,#47,(#54),.PCURVE_S1.);
+<span class="lineno">65</span>#56=CARTESIAN_POINT(&#x27;&#x27;,(5.0,5.0,0.0));
+<span class="lineno">66</span>#57=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0,0.0));
+<span class="lineno">67</span>#58=VERTEX_POINT(&#x27;&#x27;,#56);
+<span class="lineno">68</span>#59=VERTEX_POINT(&#x27;&#x27;,#57);
+<span class="lineno">69</span>#60=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">70</span>#61=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">71</span>#62=VECTOR(&#x27;&#x27;,#61,5.0);
+<span class="lineno">72</span>#63=LINE(&#x27;&#x27;,#60,#62);
+<span class="lineno">73</span>#64=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0));
+<span class="lineno">74</span>#65=DIRECTION(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">75</span>#66=VECTOR(&#x27;&#x27;,#65,5.0);
+<span class="lineno">76</span>#67=LINE(&#x27;&#x27;,#64,#66);
+<span class="lineno">77</span>#68=DEFINITIONAL_REPRESENTATION(&#x27;pcdef&#x27;,(#67),#6);
+<span class="lineno">78</span>#69=PCURVE(&#x27;pc&#x27;,#5,#68);
+<span class="lineno">79</span>#70=SURFACE_CURVE(&#x27;sc&#x27;,#63,(#69),.PCURVE_S1.);
+<span class="lineno">80</span>#71=EDGE_CURVE(&#x27;ec&#x27;,#43,#58,#70,.T.);
+<span class="lineno">81</span>#72=CARTESIAN_POINT(&#x27;&#x27;,(5.0,5.0,0.0));
+<span class="lineno">82</span>#73=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">83</span>#74=VECTOR(&#x27;&#x27;,#73,5.0);
+<span class="lineno">84</span>#75=LINE(&#x27;&#x27;,#72,#74);
+<span class="lineno">85</span>#76=CARTESIAN_POINT(&#x27;&#x27;,(5.0,5.0));
+<span class="lineno">86</span>#77=DIRECTION(&#x27;&#x27;,(-1.0,0.0));
+<span class="lineno">87</span>#78=VECTOR(&#x27;&#x27;,#77,5.0);
+<span class="lineno">88</span>#79=LINE(&#x27;&#x27;,#76,#78);
+<span class="lineno">89</span>#80=DEFINITIONAL_REPRESENTATION(&#x27;pcdef&#x27;,(#79),#6);
+<span class="lineno">90</span>#81=PCURVE(&#x27;pc&#x27;,#5,#80);
+<span class="lineno">91</span>#82=SURFACE_CURVE(&#x27;sc&#x27;,#75,(#81),.PCURVE_S1.);
+<span class="lineno">92</span>#83=EDGE_CURVE(&#x27;ec&#x27;,#58,#59,#82,.T.);
+<span class="lineno">93</span>#84=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0,0.0));
+<span class="lineno">94</span>#85=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">95</span>#86=VECTOR(&#x27;&#x27;,#85,5.0);
+<span class="lineno">96</span>#87=LINE(&#x27;&#x27;,#84,#86);
+<span class="lineno">97</span>#88=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0));
+<span class="lineno">98</span>#89=DIRECTION(&#x27;&#x27;,(0.0,-1.0));
+<span class="lineno">99</span>#90=VECTOR(&#x27;&#x27;,#89,5.0);
+<span class="lineno">100</span>#91=LINE(&#x27;&#x27;,#88,#90);
+<span class="lineno">101</span>#92=DEFINITIONAL_REPRESENTATION(&#x27;pcdef&#x27;,(#91),#6);
+<span class="lineno">102</span>#93=PCURVE(&#x27;pc&#x27;,#5,#92);
+<span class="lineno">103</span>#94=SURFACE_CURVE(&#x27;sc&#x27;,#87,(#93),.PCURVE_S1.);
+<span class="lineno">104</span>#95=EDGE_CURVE(&#x27;ec&#x27;,#59,#41,#94,.T.);
+<span class="lineno">105</span>#96=EDGE_CURVE(&#x27;gn031_c1_edge&#x27;,#41,#43,#27,.T.);
+<span class="lineno">106</span>#97=ORIENTED_EDGE(&#x27;&#x27;,$,$,#96,.T.);
+<span class="lineno">107</span>#98=ORIENTED_EDGE(&#x27;&#x27;,$,$,#71,.T.);
+<span class="lineno">108</span>#99=ORIENTED_EDGE(&#x27;&#x27;,$,$,#83,.T.);
+<span class="lineno">109</span>#100=ORIENTED_EDGE(&#x27;&#x27;,$,$,#95,.T.);
+<span class="lineno">110</span>#101=EDGE_LOOP(&#x27;&#x27;,(#97,#98,#99,#100));
+<span class="lineno">111</span>#102=FACE_OUTER_BOUND(&#x27;&#x27;,#101,.T.);
+<span class="lineno">112</span>#103=ADVANCED_FACE(&#x27;&#x27;,(#102),#5,.T.);
+<span class="lineno">113</span>#104=OPEN_SHELL(&#x27;&#x27;,(#103));
+<span class="lineno">114</span>#105=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#104));
+<span class="lineno">115</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">116</span>#9051=PRODUCT(&#x27;Gn031&#x27;,&#x27;Gn031&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">117</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">118</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">119</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">120</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">121</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">122</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">123</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">124</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">125</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">126</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#105),#9060);
+<span class="lineno">127</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">128</span>ENDSEC;
+<span class="lineno">129</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

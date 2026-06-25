@@ -36,7 +36,9 @@
 <section><h2>Notes</h2>
 <p>Synonyms: &quot;wire has gap in UV but connected in 3D&quot;, &quot;lacking edge in parameter space&quot;, &quot;face boundary won&#x27;t close in UV&quot;, &quot;topology connected but parametrisation has hole&quot;, &quot;parametric outline has gap kernel can&#x27;t bridge&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Closure intent</h2>
+<p><code>sheet</code> — the open shell is the intended final geometry; a solid-only kernel should cleanly refuse.</p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>n_edges_total &gt;= 2</code></li>
 <li><code>face[0].surface_type == &quot;cylinder&quot;</code></li>
@@ -46,8 +48,8 @@
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
 <tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
-<tr><td><code>gmsh_autofix_on</code></td><td><code>reject</code></td></tr>
-<tr><td><code>gmsh_autofix_off</code></td><td><code>reject</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(9)</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
 <tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
 <tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
@@ -57,68 +59,73 @@
 <details>
 <summary>Show fixture bytes</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Twi036 - Lacking edge: UV gap not closable by vertex tolerance
-<span class="lineno">3</span> * Defect: Two adjacent edges meet in 3D within tolerance but their pcurve
-<span class="lineno">4</span> * endpoints in UV are separated by a parametric gap that no vertex tolerance
-<span class="lineno">5</span> * can bridge. Need to insert a synthetic edge. Heal by ShapeFix_Wire::FixLacking
-<span class="lineno">6</span> * - synthesize a degenerate or short pcurve segment to bridge the UV gap.
-<span class="lineno">7</span> * Source: CATIA01 #1727. */
-<span class="lineno">8</span>HEADER;
-<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;Twi036 test case&#x27;,&#x27;Lacking edge - UV gap not closable (FixLacking)&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">10</span>FILE_NAME(&#x27;Twi036.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">11</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">12</span>ENDSEC;
-<span class="lineno">13</span>DATA;
-<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">15</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
-<span class="lineno">16</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">17</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
-<span class="lineno">18</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">19</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
-<span class="lineno">20</span>#20=CYLINDRICAL_SURFACE(&#x27;&#x27;,#13,10.0);
-<span class="lineno">21</span>/* Two edges sharing a 3D vertex but their pcurves jump in UV by ~0.1 in u */
-<span class="lineno">22</span>#30=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
-<span class="lineno">23</span>#31=VERTEX_POINT(&#x27;&#x27;,#30);
-<span class="lineno">24</span>#32=CARTESIAN_POINT(&#x27;&#x27;,(0.0,10.0,0.0));
-<span class="lineno">25</span>#33=VERTEX_POINT(&#x27;&#x27;,#32);
-<span class="lineno">26</span>#34=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,5.0));
-<span class="lineno">27</span>#35=VERTEX_POINT(&#x27;&#x27;,#34);
-<span class="lineno">28</span>/* 3D curve segment 1: from #31 to #33 along arc */
-<span class="lineno">29</span>#40=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
-<span class="lineno">30</span>#41=CIRCLE(&#x27;&#x27;,#40,10.0);
-<span class="lineno">31</span>#42=EDGE_CURVE(&#x27;&#x27;,#31,#33,#41,.T.);
-<span class="lineno">32</span>/* 3D curve segment 2: from #33 back to #35 along generator */
-<span class="lineno">33</span>#43=DIRECTION(&#x27;&#x27;,(-0.8944271909999159,0.0,0.4472135954999579));
-<span class="lineno">34</span>#44=VECTOR(&#x27;&#x27;,#43,1.0);
-<span class="lineno">35</span>#45=LINE(&#x27;&#x27;,#32,#44);
-<span class="lineno">36</span>#46=EDGE_CURVE(&#x27;&#x27;,#33,#35,#45,.T.);
-<span class="lineno">37</span>/* Defect: in UV, e1&#x27;s pcurve ends at u=pi/2, but e2&#x27;s pcurve starts at u=pi/2
-<span class="lineno">38</span> * + 0.1 (a UV-only mismatch). The 3D vertex is shared but the UV gap is too
-<span class="lineno">39</span> * large for vertex-tolerance to bridge. FixLacking would synthesize a short
-<span class="lineno">40</span> * pcurve segment from (pi/2, ...) to (pi/2 + 0.1, ...). */
-<span class="lineno">41</span>#50=ORIENTED_EDGE(&#x27;&#x27;,*,*,#42,.T.);
-<span class="lineno">42</span>#51=ORIENTED_EDGE(&#x27;&#x27;,*,*,#46,.T.);
-<span class="lineno">43</span>#60=EDGE_LOOP(&#x27;&#x27;,(#50,#51));
-<span class="lineno">44</span>#61=FACE_OUTER_BOUND(&#x27;&#x27;,#60,.T.);
-<span class="lineno">45</span>#62=ADVANCED_FACE(&#x27;&#x27;,(#61),#20,.T.);
-<span class="lineno">46</span>/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
-<span class="lineno">47</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">48</span>#9001=PRODUCT(&#x27;Twi036&#x27;,&#x27;Twi036&#x27;,&#x27;&#x27;,(#9000));
-<span class="lineno">49</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
-<span class="lineno">50</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
-<span class="lineno">51</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
-<span class="lineno">52</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
-<span class="lineno">53</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">54</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">55</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">56</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
-<span class="lineno">57</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
-<span class="lineno">58</span>#9020=OPEN_SHELL(&#x27;wrap_shell&#x27;,(#62));
-<span class="lineno">59</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#9020));
-<span class="lineno">60</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
-<span class="lineno">61</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
-<span class="lineno">62</span>ENDSEC;
-<span class="lineno">63</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* Twi036: OPEN_SHELL with one ADVANCED_FACE on a CYLINDRICAL_SURFACE (radius 1, axis +Z, height 2); FACE_OUTER_BOUND references an EDGE_LOOP containing: top semi-circle arc (v_top_0âv_top_pi, U: 0âÏ), right lateral line (v_top_piâv_bot_pi, down at theta=Ï), bottom semi-circle arc reversed (v_bot_piâv_bot_0, U: Ïâ0), left lateral line (v_bot_0âv_top_0, up at theta=0); the top arc ends at UV (Ï, H) and right lateral starts at UV (Ï+0.01, H) â shared 3D vertex v_top_pi but pcurve endpoints differ by Îu=0.01 IS the mechanism (lacking edge: UV gap not closable by vertex tolerance); EDGE_LOOP IS wired into FACE_OUTER_BOUND, ADVANCED_FACE, OPEN_SHELL; kernel must synthesise bridging edge or reject topology-vs-parametrisation mismatch */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Twi036&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Twi036.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=CYLINDRICAL_SURFACE(&#x27;&#x27;,#4,1.0);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,2.0));
+<span class="lineno">16</span>#7=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(-1.0,0.0,2.0));
+<span class="lineno">18</span>#9=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">20</span>#11=VERTEX_POINT(&#x27;&#x27;,#10);
+<span class="lineno">21</span>#12=CARTESIAN_POINT(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">22</span>#13=VERTEX_POINT(&#x27;&#x27;,#12);
+<span class="lineno">23</span>#14=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,2.0));
+<span class="lineno">24</span>#15=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">25</span>#16=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">26</span>#17=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#14,#15,#16);
+<span class="lineno">27</span>#18=CIRCLE(&#x27;&#x27;,#17,1.0);
+<span class="lineno">28</span>#19=EDGE_CURVE(&#x27;&#x27;,#7,#9,#18,.T.);
+<span class="lineno">29</span>#20=ORIENTED_EDGE(&#x27;&#x27;,*,*,#19,.T.);
+<span class="lineno">30</span>#21=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0));
+<span class="lineno">31</span>#22=VECTOR(&#x27;&#x27;,#21,2.0);
+<span class="lineno">32</span>#23=CARTESIAN_POINT(&#x27;&#x27;,(-1.0,0.0,2.0));
+<span class="lineno">33</span>#24=LINE(&#x27;&#x27;,#23,#22);
+<span class="lineno">34</span>#25=EDGE_CURVE(&#x27;&#x27;,#9,#13,#24,.T.);
+<span class="lineno">35</span>#26=ORIENTED_EDGE(&#x27;&#x27;,*,*,#25,.T.);
+<span class="lineno">36</span>#27=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">37</span>#28=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">38</span>#29=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">39</span>#30=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#27,#28,#29);
+<span class="lineno">40</span>#31=CIRCLE(&#x27;&#x27;,#30,1.0);
+<span class="lineno">41</span>#32=EDGE_CURVE(&#x27;&#x27;,#11,#13,#31,.T.);
+<span class="lineno">42</span>#33=ORIENTED_EDGE(&#x27;&#x27;,*,*,#32,.F.);
+<span class="lineno">43</span>#34=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">44</span>#35=VECTOR(&#x27;&#x27;,#34,2.0);
+<span class="lineno">45</span>#36=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">46</span>#37=LINE(&#x27;&#x27;,#36,#35);
+<span class="lineno">47</span>#38=EDGE_CURVE(&#x27;&#x27;,#11,#7,#37,.T.);
+<span class="lineno">48</span>#39=ORIENTED_EDGE(&#x27;&#x27;,*,*,#38,.T.);
+<span class="lineno">49</span>#40=EDGE_LOOP(&#x27;&#x27;,(#20,#26,#33,#39));
+<span class="lineno">50</span>#41=FACE_OUTER_BOUND(&#x27;&#x27;,#40,.T.);
+<span class="lineno">51</span>#42=ADVANCED_FACE(&#x27;&#x27;,(#41),#5,.T.);
+<span class="lineno">52</span>#43=OPEN_SHELL(&#x27;&#x27;,(#42));
+<span class="lineno">53</span>#44=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#43));
+<span class="lineno">54</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">55</span>#9051=PRODUCT(&#x27;Twi036&#x27;,&#x27;Twi036&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">56</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">57</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">58</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">59</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">60</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">61</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">62</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">63</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">64</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">65</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#44),#9060);
+<span class="lineno">66</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">67</span>ENDSEC;
+<span class="lineno">68</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

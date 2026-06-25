@@ -42,6 +42,9 @@
 <li><code>contains(b&#x27;1200.0&#x27;)</code></li>
 <li><code>contains(b&#x27;300.0&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -49,7 +52,7 @@
 <tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
 <tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
-<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_FORWARD_REF)</code></td></tr>
 <tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
 </tbody></table>
 </section>
@@ -57,36 +60,66 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M174 - AP238 <mark>MILLING_FEED_RATE</mark> varies along path with no F-code transition.
-<span class="lineno">3</span> * Defect: a milling toolpath references two <mark>MILLING_FEED_RATE</mark> entities
-<span class="lineno">4</span> * with different magnitudes (300 mm/min and 1200 mm/min) along
-<span class="lineno">5</span> * consecutive segments, but no F-code transition / acceleration profile
-<span class="lineno">6</span> * is declared. Controllers either snap discontinuously (over-shooting
-<span class="lineno">7</span> * the corner) or silently use one rate for the entire path. */
-<span class="lineno">8</span>HEADER;
-<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;M174 test case&#x27;,&#x27;AP238 feedrate jump without transition&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">10</span>FILE_NAME(&#x27;M174.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">11</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 1 0 0 1 }&#x27;));
-<span class="lineno">12</span>ENDSEC;
-<span class="lineno">13</span>DATA;
-<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;numerical_control_machining&#x27;);
-<span class="lineno">15</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">16</span>  &#x27;numerical_control_machining&#x27;,2007,#1);
-<span class="lineno">17</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">18</span>#11=(NAMED_UNIT(*)SI_UNIT($,.SECOND.)TIME_UNIT());
-<span class="lineno">19</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">20</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-<span class="lineno">21</span>     REPRESENTATION_CONTEXT(&#x27;nc&#x27;,&#x27;3D&#x27;));
-<span class="lineno">22</span>/* Defect: two feedrates assigned to consecutive segments, no transition. */
-<span class="lineno">23</span>#80=<mark>MILLING_FEED_RATE</mark>(&#x27;slow_feed&#x27;,
-<span class="lineno">24</span>  MEASURE_WITH_UNIT(POSITIVE_RATIO_MEASURE(<mark>300.0</mark>),#10));
-<span class="lineno">25</span>#81=<mark>MILLING_FEED_RATE</mark>(&#x27;fast_feed&#x27;,
-<span class="lineno">26</span>  MEASURE_WITH_UNIT(POSITIVE_RATIO_MEASURE(<mark>1200.0</mark>),#10));
-<span class="lineno">27</span>#100=MILLING_OPERATION(&#x27;seg1&#x27;,$,$,$,$,#80);
-<span class="lineno">28</span>#101=MILLING_OPERATION(&#x27;seg2&#x27;,$,$,$,$,#81);
-<span class="lineno">29</span>#200=WORKPLAN(&#x27;main&#x27;,(#100,#101),$,$,$);
-<span class="lineno">30</span>ENDSEC;
-<span class="lineno">31</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M174: AP238 milling_feed_rate varies along path with no F-code transition */
+<span class="lineno">3</span>/* DEFECT: <mark>MILLING_FEED_RATE</mark> jumps from <mark>300.0</mark> to <mark>1200.0</mark> mm/min with no ramp declared */
+<span class="lineno">4</span>/* Adjacent MILLING_OPERATION entries in WORKPLAN; no transition operation between them */
+<span class="lineno">5</span>/* Controllers snap discontinuously or silently apply one rate for entire path */
+<span class="lineno">6</span>/* Per ISO 10303-238 Â§5.8 feedrate changes require an explicit transition */
+<span class="lineno">7</span>/* Byte assertion: contains(b&#x27;<mark>AP238_STEP_NC_MIM</mark>&#x27;) */
+<span class="lineno">8</span>/* Byte assertion: contains(b&#x27;<mark>MILLING_FEED_RATE</mark>&#x27;) */
+<span class="lineno">9</span>/* Byte assertion: contains(b&#x27;<mark>1200.0</mark>&#x27;) */
+<span class="lineno">10</span>/* Byte assertion: contains(b&#x27;<mark>300.0</mark>&#x27;) */
+<span class="lineno">11</span>HEADER;
+<span class="lineno">12</span>FILE_DESCRIPTION((&#x27;M174: AP238 milling_feed_rate jump 300 to 1200 mm/min no transition&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">13</span>FILE_NAME(&#x27;M174.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">14</span>/* Byte assertion: contains(b&#x27;<mark>AP238_STEP_NC_MIM</mark>&#x27;) */
+<span class="lineno">15</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 3 1 1 1 }&#x27;));
+<span class="lineno">16</span>ENDSEC;
+<span class="lineno">17</span>DATA;
+<span class="lineno">18</span>/* Standard unit context (mm) */
+<span class="lineno">19</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">20</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">21</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">22</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">23</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">24</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">25</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">26</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">27</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">28</span>/* mm/min velocity unit for <mark>MILLING_FEED_RATE</mark> magnitude */
+<span class="lineno">29</span>#15=SI_UNIT(.MILLI.,.METRE.);
+<span class="lineno">30</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">31</span>#20=GEOMETRIC_CURVE_SET(&#x27;ap238-milling-feed-rate-jump-no-transition&#x27;,
+<span class="lineno">32</span>  (#52,#62,#70));
+<span class="lineno">33</span>/* Byte assertion: contains(b&#x27;<mark>MILLING_FEED_RATE</mark>&#x27;) */
+<span class="lineno">34</span>/* DEFECT: <mark>MILLING_FEED_RATE</mark> <mark>300.0</mark> mm/min â first segment, no transition out */
+<span class="lineno">35</span>#53=<mark>MILLING_FEED_RATE</mark>(<mark>300.0</mark>,$,$,$,$);
+<span class="lineno">36</span>/* MILLING_OPERATION &#x27;mill_op_slow&#x27;: feed at <mark>300.0</mark> mm/min */
+<span class="lineno">37</span>#52=MILLING_OPERATION(&#x27;mill_op_slow&#x27;,$,(#53),$,$,$,$,$,$,$,$,$,$);
+<span class="lineno">38</span>/* DEFECT: <mark>MILLING_FEED_RATE</mark> <mark>1200.0</mark> mm/min â second segment, no ramp from <mark>300.0</mark> */
+<span class="lineno">39</span>#63=<mark>MILLING_FEED_RATE</mark>(<mark>1200.0</mark>,$,$,$,$);
+<span class="lineno">40</span>/* MILLING_OPERATION &#x27;mill_op_fast&#x27;: feed at <mark>1200.0</mark> mm/min (4x jump) */
+<span class="lineno">41</span>#62=MILLING_OPERATION(&#x27;mill_op_fast&#x27;,$,(#63),$,$,$,$,$,$,$,$,$,$);
+<span class="lineno">42</span>/* WORKPIECE &#x27;mill_workpiece&#x27; */
+<span class="lineno">43</span>#70=WORKPIECE(&#x27;mill_workpiece&#x27;,&#x27;Milling workpiece for feedrate jump test&#x27;,$,$,$,$,$);
+<span class="lineno">44</span>/* MACHINING_WORKINGSTEP &#x27;mill_step_slow&#x27; â first step at <mark>300.0</mark> mm/min */
+<span class="lineno">45</span>#51=MACHINING_WORKINGSTEP(&#x27;mill_step_slow&#x27;,&#x27;Slow feedrate milling step&#x27;,#52,#70,$);
+<span class="lineno">46</span>/* MACHINING_WORKINGSTEP &#x27;mill_step_fast&#x27; â adjacent, jumps to <mark>1200.0</mark> mm/min */
+<span class="lineno">47</span>#61=MACHINING_WORKINGSTEP(&#x27;mill_step_fast&#x27;,&#x27;Fast feedrate milling step&#x27;,#62,#70,$);
+<span class="lineno">48</span>/* WORKPLAN: two steps adjacent with no transition operation between them */
+<span class="lineno">49</span>#50=WORKPLAN(&#x27;feedrate_jump_program&#x27;,&#x27;Feedrate jump workplan&#x27;,(),$,(#51,#61));
+<span class="lineno">50</span>/* Product chain */
+<span class="lineno">51</span>#100=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">52</span>#101=PRODUCT_CONTEXT(&#x27;&#x27;,#100,&#x27;mechanical&#x27;);
+<span class="lineno">53</span>#102=PRODUCT(&#x27;M174&#x27;,&#x27;M174&#x27;,&#x27;M174&#x27;,(#101));
+<span class="lineno">54</span>#103=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#102);
+<span class="lineno">55</span>#104=PRODUCT_DEFINITION_CONTEXT(#100,&#x27;design&#x27;);
+<span class="lineno">56</span>#105=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#103,#104);
+<span class="lineno">57</span>#106=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#105);
+<span class="lineno">58</span>#107=SHAPE_REPRESENTATION(&#x27;&#x27;,(#20),#14);
+<span class="lineno">59</span>#108=SHAPE_DEFINITION_REPRESENTATION(#106,#107);
+<span class="lineno">60</span>ENDSEC;
+<span class="lineno">61</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

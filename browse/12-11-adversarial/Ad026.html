@@ -41,6 +41,9 @@
 <li><code>matches(rb&#x27;(?s)#(\d+)=\([^;]*#\1[^;]*\);&#x27;)</code></li>
 <li><code>matches(rb&#x27;#\d+=\(&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="Ad004.html">Ad004</a></p>
 </section>
@@ -59,48 +62,21 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* ============================================================
-<span class="lineno">3</span>   WARNING: THIS FILE IS INTENTIONALLY MALFORMED.
-<span class="lineno">4</span>   It exists ONLY for parser-robustness / fuzz-class testing.
-<span class="lineno">5</span>   DO NOT feed to a production translator without sandboxing.
-<span class="lineno">6</span>
-<span class="lineno">7</span>   Entry  : Ad026
-<span class="lineno">8</span>   Title  : Self-referencing complex-entity instance during
-<span class="lineno">9</span>            construction (UAF on half-initialised vtable).
-<span class="lineno">10</span>   Defect : Each complex entity below contains a sub-entity
-<span class="lineno">11</span>            slot whose value is the outer instance ID itself.
-<span class="lineno">12</span>            A two-phase build that dereferences #self while
-<span class="lineno">13</span>            the C++ object is still under construction may
-<span class="lineno">14</span>            invoke methods through a not-yet-installed vtable
-<span class="lineno">15</span>            (use-after-free in practice on most C++ ABIs).
-<span class="lineno">16</span>            Variant Q023 (composite curve self-cyclic) and
-<span class="lineno">17</span>            Ad004 share this root cause.
-<span class="lineno">18</span>   Expected: build attribute graph in two passes â allocate
-<span class="lineno">19</span>             placeholder shells first, bind references after.
-<span class="lineno">20</span>             Constructors must NEVER walk inbound references.
-<span class="lineno">21</span>   See also: Ad004.
-<span class="lineno">22</span>   ============================================================ */
-<span class="lineno">23</span>HEADER;
-<span class="lineno">24</span>FILE_DESCRIPTION((&#x27;Ad026 self-ref complex entity&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">25</span>FILE_NAME(&#x27;Ad026.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;synthetic&#x27;),(&#x27;cad-research&#x27;),
-<span class="lineno">26</span>  &#x27;none&#x27;,&#x27;none&#x27;,&#x27;none&#x27;);
-<span class="lineno">27</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">28</span>ENDSEC;
-<span class="lineno">29</span>DATA;
-<span class="lineno">30</span>/* Pattern A: simple self-reference inside complex */
-<span class="lineno">31</span><mark>#1=(NAMED_UNIT(*) DERIVED_UNIT_ELEMENT(#1, 1.0));</mark>
-<span class="lineno">32</span>
-<span class="lineno">33</span>/* Pattern B: self-reference via composite_curve_segment list,
-<span class="lineno">34</span>   modelled on OCCT Q023 (composite curve self-cyclic). */
-<span class="lineno">35</span>#2=COMPOSITE_CURVE(&#x27;&#x27;,(#3),.F.);
-<span class="lineno">36</span>#3=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#2);
-<span class="lineno">37</span>
-<span class="lineno">38</span>/* Pattern C: complex with self in BOTH sub-entities */
-<span class="lineno">39</span><mark>#4=(GEOMETRIC_REPRESENTATION_ITEM()</mark>
-<span class="lineno">40</span><mark>    REPRESENTATION_ITEM(&#x27;self&#x27;)</mark>
-<span class="lineno">41</span><mark>    STYLED_ITEM(&#x27;&#x27;,(#4),#4));</mark>
-<span class="lineno">42</span>ENDSEC;
-<span class="lineno">43</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* Ad026: self-referencing complex entity during construction; #N=(A() B(#N)) â sub-entity references outer instance; vtable use before init â UAF; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ad026&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ad026.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">11</span><mark>#3=(NAMED_UNIT(*) DERIVED_UNIT_ELEMENT(#3, 1.0));</mark>
+<span class="lineno">12</span>#4=COMPOSITE_CURVE(&#x27;&#x27;,(#5),.F.);
+<span class="lineno">13</span>#5=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#4);
+<span class="lineno">14</span><mark>#6=(GEOMETRIC_REPRESENTATION_ITEM() REPRESENTATION_ITEM(&#x27;self&#x27;) STYLED_ITEM(&#x27;&#x27;,(#6),#6));</mark>
+<span class="lineno">15</span>ENDSEC;
+<span class="lineno">16</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

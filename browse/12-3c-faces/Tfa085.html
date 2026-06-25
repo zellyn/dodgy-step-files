@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tfa085 — ShapeFix_Face.FixSplitFace split-result multiplicity</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa085</span>
+</nav>
+<header class="title-bar">
+<h1>Tfa085 <span class="sep">—</span> <span class="entry-title">ShapeFix_Face.FixSplitFace split-result multiplicity</span></h1>
+<p class="category">§12.3c</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3c-faces/Tfa085.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa085.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>synthesized — no external source cited</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>ShapeFix_Face.FixSplitFace split-result multiplicity</p></section>
+<section><h2>Reproducer recipe</h2>
+<p></p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_FORWARD_REF)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>process_signal</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tfa085 - ShapeFix_Face.FixSplitFace: split-result multiplicity
+<span class="lineno">3</span> * Face split by an interior edge into N &gt; 2 sub-faces. FixSplitFace&#x27;s loop
+<span class="lineno">4</span> * assumes binary split (N=2) and misses sub-faces when N=3+.
+<span class="lineno">5</span> * Uses a rectangular face with two parallel interior edges creating 3 zones.
+<span class="lineno">6</span> */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Tfa085 test case&#x27;,&#x27;Face split into 3+ sub-faces; FixSplitFace binary-split loop misses extras&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;Tfa085.stp&#x27;,&#x27;2026-06-15T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">15</span>/* Plane at Z=0 */
+<span class="lineno">16</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">17</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">18</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">19</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">20</span>#14=PLANE(&#x27;split_face_plane&#x27;,#13);
+<span class="lineno">21</span>/* Outer boundary: rectangle (0,0)-(10,5) */
+<span class="lineno">22</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">23</span>#21=VERTEX_POINT(&#x27;v0&#x27;,#20);
+<span class="lineno">24</span>#22=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">25</span>#23=VERTEX_POINT(&#x27;v1&#x27;,#22);
+<span class="lineno">26</span>#24=CARTESIAN_POINT(&#x27;&#x27;,(10.0,5.0,0.0));
+<span class="lineno">27</span>#25=VERTEX_POINT(&#x27;v2&#x27;,#24);
+<span class="lineno">28</span>#26=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0,0.0));
+<span class="lineno">29</span>#27=VERTEX_POINT(&#x27;v3&#x27;,#26);
+<span class="lineno">30</span>/* Outer edges: bottom, right, top, left */
+<span class="lineno">31</span>#30=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">32</span>#31=VECTOR(&#x27;&#x27;,#30,1.0);
+<span class="lineno">33</span>#32=LINE(&#x27;&#x27;,#20,#31);
+<span class="lineno">34</span>#33=EDGE_CURVE(&#x27;e_outer_bottom&#x27;,#21,#23,#32,.T.);
+<span class="lineno">35</span>#34=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">36</span>#35=VECTOR(&#x27;&#x27;,#34,1.0);
+<span class="lineno">37</span>#36=LINE(&#x27;&#x27;,#22,#35);
+<span class="lineno">38</span>#37=EDGE_CURVE(&#x27;e_outer_right&#x27;,#23,#25,#36,.T.);
+<span class="lineno">39</span>#38=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">40</span>#39=VECTOR(&#x27;&#x27;,#38,1.0);
+<span class="lineno">41</span>#40=LINE(&#x27;&#x27;,#24,#39);
+<span class="lineno">42</span>#41=EDGE_CURVE(&#x27;e_outer_top&#x27;,#25,#27,#40,.T.);
+<span class="lineno">43</span>#42=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">44</span>#43=VECTOR(&#x27;&#x27;,#42,1.0);
+<span class="lineno">45</span>#44=LINE(&#x27;&#x27;,#26,#43);
+<span class="lineno">46</span>#45=EDGE_CURVE(&#x27;e_outer_left&#x27;,#27,#21,#44,.T.);
+<span class="lineno">47</span>#46=ORIENTED_EDGE(&#x27;oe_ob&#x27;,*,*,#33,.T.);
+<span class="lineno">48</span>#47=ORIENTED_EDGE(&#x27;oe_or&#x27;,*,*,#37,.T.);
+<span class="lineno">49</span>#48=ORIENTED_EDGE(&#x27;oe_ot&#x27;,*,*,#41,.T.);
+<span class="lineno">50</span>#49=ORIENTED_EDGE(&#x27;oe_ol&#x27;,*,*,#45,.T.);
+<span class="lineno">51</span>#50=EDGE_LOOP(&#x27;outer_split&#x27;,(#46,#47,#48,#49));
+<span class="lineno">52</span>#51=FACE_OUTER_BOUND(&#x27;&#x27;,#50,.T.);
+<span class="lineno">53</span>/* Inner edges (splits): two vertical lines at X=3 and X=7
+<span class="lineno">54</span>   Creates 3 zones: [0,3], [3,7], [7,10]
+<span class="lineno">55</span>*/
+<span class="lineno">56</span>/* First split edge: X=3, from (3,0) to (3,5) */
+<span class="lineno">57</span>#60=CARTESIAN_POINT(&#x27;&#x27;,(3.0,0.0,0.0));
+<span class="lineno">58</span>#61=VERTEX_POINT(&#x27;v_split1_a&#x27;,#60);
+<span class="lineno">59</span>#62=CARTESIAN_POINT(&#x27;&#x27;,(3.0,5.0,0.0));
+<span class="lineno">60</span>#63=VERTEX_POINT(&#x27;v_split1_b&#x27;,#62);
+<span class="lineno">61</span>#64=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">62</span>#65=VECTOR(&#x27;&#x27;,#64,1.0);
+<span class="lineno">63</span>#66=LINE(&#x27;&#x27;,#60,#65);
+<span class="lineno">64</span>#67=EDGE_CURVE(&#x27;e_split1&#x27;,#61,#63,#66,.T.);
+<span class="lineno">65</span>#68=ORIENTED_EDGE(&#x27;oe_split1_fwd&#x27;,*,*,#67,.T.);
+<span class="lineno">66</span>#69=ORIENTED_EDGE(&#x27;oe_split1_bwd&#x27;,*,*,#67,.F.);
+<span class="lineno">67</span>/* Second split edge: X=7, from (7,0) to (7,5) */
+<span class="lineno">68</span>#70=CARTESIAN_POINT(&#x27;&#x27;,(7.0,0.0,0.0));
+<span class="lineno">69</span>#71=VERTEX_POINT(&#x27;v_split2_a&#x27;,#70);
+<span class="lineno">70</span>#72=CARTESIAN_POINT(&#x27;&#x27;,(7.0,5.0,0.0));
+<span class="lineno">71</span>#73=VERTEX_POINT(&#x27;v_split2_b&#x27;,#72);
+<span class="lineno">72</span>#74=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">73</span>#75=VECTOR(&#x27;&#x27;,#74,1.0);
+<span class="lineno">74</span>#76=LINE(&#x27;&#x27;,#70,#75);
+<span class="lineno">75</span>#77=EDGE_CURVE(&#x27;e_split2&#x27;,#71,#73,#76,.T.);
+<span class="lineno">76</span>#78=ORIENTED_EDGE(&#x27;oe_split2_fwd&#x27;,*,*,#77,.T.);
+<span class="lineno">77</span>#79=ORIENTED_EDGE(&#x27;oe_split2_bwd&#x27;,*,*,#77,.F.);
+<span class="lineno">78</span>/* Inner bounds (holes): none yet; splits are represented as interior edges in the loop */
+<span class="lineno">79</span>/* Complete outer loop including split edges at intermediate vertices
+<span class="lineno">80</span>   Path: (0,0) -&gt; (3,0) -&gt; (3,5) -&gt; (0,5) -&gt; (0,0) [zone 1]
+<span class="lineno">81</span>         (3,0) -&gt; (7,0) -&gt; (7,5) -&gt; (3,5) -&gt; (3,0) [zone 2]
+<span class="lineno">82</span>         (7,0) -&gt; (10,0) -&gt; (10,5) -&gt; (7,5) -&gt; (7,0) [zone 3]
+<span class="lineno">83</span>   Represented as single loop with multiple inner bounds or split representation.
+<span class="lineno">84</span>   Simplified: single loop as if exterior, with split edges marked as inner bounds.
+<span class="lineno">85</span>*/
+<span class="lineno">86</span>/* Inner bound 1: zone boundary along split1, pointing inward */
+<span class="lineno">87</span>#80=ORIENTED_EDGE(&#x27;ie_split1&#x27;,*,*,#67,.F.);
+<span class="lineno">88</span>#81=EDGE_LOOP(&#x27;inner_split1&#x27;,(#80));
+<span class="lineno">89</span>#82=FACE_INNER_BOUND(&#x27;bound_split1&#x27;,#81,.T.);
+<span class="lineno">90</span>/* Inner bound 2: zone boundary along split2, pointing inward */
+<span class="lineno">91</span>#83=ORIENTED_EDGE(&#x27;ie_split2&#x27;,*,*,#77,.F.);
+<span class="lineno">92</span>#84=EDGE_LOOP(&#x27;inner_split2&#x27;,(#83));
+<span class="lineno">93</span>#85=FACE_INNER_BOUND(&#x27;bound_split2&#x27;,#84,.T.);
+<span class="lineno">94</span>/* DEFECT: Face with two inner bounds creates 3 zones when split
+<span class="lineno">95</span>   FixSplitFace loop assumes binary split (1 inner bound -&gt; 2 zones)
+<span class="lineno">96</span>   and misses zone 2 or zone 3.
+<span class="lineno">97</span>*/
+<span class="lineno">98</span>#90=ADVANCED_FACE(&#x27;split_face_3zones&#x27;,(#51,#82,#85),#14,.T.);
+<span class="lineno">99</span>/* Minimal PRODUCT chain */
+<span class="lineno">100</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">101</span>#9001=PRODUCT(&#x27;Tfa085&#x27;,&#x27;Tfa085&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">102</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">103</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">104</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">105</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">106</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">107</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">108</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">109</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">110</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">111</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;sbsm&#x27;,(#9100));
+<span class="lineno">112</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">113</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">114</span>#9100=CLOSED_SHELL(&#x27;shell_for_product&#x27;,(#90));
+<span class="lineno">115</span>ENDSEC;
+<span class="lineno">116</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tfa084.html">&larr; Tfa084</a> <a class="up" href="index.html">§12.3c Faces / sewing / free bound</a> <a class="next" href="Tfa086.html">Tfa086 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

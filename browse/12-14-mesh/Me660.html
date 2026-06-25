@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Me660 — merge_duplicate_points_in_polygon_soup empty_input: zero-polygon soup; ini_points_n==0 causes immediate return; single isolated vertex as structural contrast (Branch 1)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <span class="sep">/</span> <span class="current">Me660</span>
+</nav>
+<header class="title-bar">
+<h1>Me660 <span class="sep">—</span> <span class="entry-title">merge_duplicate_points_in_polygon_soup empty_input: zero-polygon soup; ini_points_n==0 causes immediate return; single isolated vertex as structural contrast (Branch 1)</span></h1>
+<p class="category">§12.14 mesh defects (sub-class: isolated-vertex / empty-polygon-soup)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../mesh-examples/12-14-mesh/Me660.mesh.json">View raw fixture (.mesh.json)</a> <code class="path">mesh-examples/12-14-mesh/Me660.mesh.json</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>CGAL PMP `PMP.merge_duplicate_points_in_polygon_soup` Branch 1 (*empty_input*: `const std::size_t ini_points_n = points.size()</li>
+<li>if(ini_points_n == 0) return</li>
+<li>`)</li>
+<li>`MESH_HEAL_COVERAGE.md`.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A polygon soup with zero polygons causes immediate return at line 538 — no deduplication scan, no unique-point accumulation, no index remapping. Fixture uses a single isolated vertex with no triangles as the structural contrast: the vertex proves vertex storage is present, but the empty polygon list means ini_points_n==0 and Branch 1 fires. The isolated_vertex assertion documents that v0 is unreferenced by any polygon.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>v0=(0,0,0); no triangles; assert_isolated_vertex(v0).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Branch 1 fires; algorithm returns immediately; polygon soup remains unchanged; no point_to_id map is constructed; no unique_points list is populated.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>{
+<span class="lineno">2</span>  &quot;vertices&quot;: [
+<span class="lineno">3</span>    [
+<span class="lineno">4</span>      0.0,
+<span class="lineno">5</span>      0.0,
+<span class="lineno">6</span>      0.0
+<span class="lineno">7</span>    ]
+<span class="lineno">8</span>  ],
+<span class="lineno">9</span>  &quot;triangles&quot;: [],
+<span class="lineno">10</span>  &quot;metadata&quot;: {
+<span class="lineno">11</span>    &quot;id&quot;: &quot;Me660&quot;,
+<span class="lineno">12</span>    &quot;schema_version&quot;: 0,
+<span class="lineno">13</span>    &quot;defect_class&quot;: &quot;isolated_vertex&quot;,
+<span class="lineno">14</span>    &quot;title&quot;: &quot;merge_duplicate_points_in_polygon_soup empty_input: zero-polygon soup; ini_points_n==0 causes immediate return; single isolated vertex as structural contrast (Branch 1)&quot;,
+<span class="lineno">15</span>    &quot;assertions&quot;: [
+<span class="lineno">16</span>      {
+<span class="lineno">17</span>        &quot;kind&quot;: &quot;isolated_vertex&quot;,
+<span class="lineno">18</span>        &quot;vertex&quot;: 0
+<span class="lineno">19</span>      }
+<span class="lineno">20</span>    ]
+<span class="lineno">21</span>  }
+<span class="lineno">22</span>}
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Me654.html">&larr; Me654</a> <a class="up" href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <a class="next" href="Me661.html">Me661 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

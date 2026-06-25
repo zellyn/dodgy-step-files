@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Me911 — di_cell.selectIntersections proper-vs-improper-intersection: justproper flag; touching shared-vertex pair is improper; transverse crossing is proper (Branch 2)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <span class="sep">/</span> <span class="current">Me911</span>
+</nav>
+<header class="title-bar">
+<h1>Me911 <span class="sep">—</span> <span class="entry-title">di_cell.selectIntersections proper-vs-improper-intersection: justproper flag; touching shared-vertex pair is improper; transverse crossing is proper (Branch 2)</span></h1>
+<p class="category">§12.14 mesh defects (sub-class: di_cell / proper-vs-improper-intersection)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../mesh-examples/12-14-mesh/Me911.mesh.json">View raw fixture (.mesh.json)</a> <code class="path">mesh-examples/12-14-mesh/Me911.mesh.json</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>MeshFix `di_cell.selectIntersections` Branch 2 (*Proper vs improper intersection*: `!t-&gt;intersects(s, justproper) → continue`)</li>
+<li>`MESH_HEAL_COVERAGE.md`.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Three-triangle mesh demonstrating both sides of the justproper branch. t0=(v0=(0,0,0), v1=(1,1,0), v2=(2,0,0)) is a flat hub in the XY plane. t1=(v2,v3=(3,1,0),v4=(4,0,0)) shares only vertex v2 with t0 — a touching-only (improper) contact; their interiors are disjoint. t2=(v5=(1,0.3,-1), v6=(1,0.3,1), v7=(4,0,0)) has edge (v5,v6) passing through t0&#x27;s interior at (1,0.3,0) — a proper transverse crossing. With justproper=true, (t0,t1) is skipped (improper); (t0,t2) is collected (proper). Branch 2 discriminates these two cases.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>v0=(0,0,0), v1=(1,1,0), v2=(2,0,0), v3=(3,1,0), v4=(4,0,0), v5=(1,0.3,-1), v6=(1,0.3,1), v7=(4,0,0); t0=(v0,v1,v2), t1=(v2,v3,v4), t2=(v5,v6,v7); assert_triangles_do_not_intersect(0,1); assert_triangles_self_intersect(0,2).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Branch 2 fires for (t0,t1): justproper=true, touching-only → continue; (t0,t2) passes: transverse → collected as SI.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>{
+<span class="lineno">2</span>  &quot;vertices&quot;: [
+<span class="lineno">3</span>    [
+<span class="lineno">4</span>      0.0,
+<span class="lineno">5</span>      0.0,
+<span class="lineno">6</span>      0.0
+<span class="lineno">7</span>    ],
+<span class="lineno">8</span>    [
+<span class="lineno">9</span>      1.0,
+<span class="lineno">10</span>      1.0,
+<span class="lineno">11</span>      0.0
+<span class="lineno">12</span>    ],
+<span class="lineno">13</span>    [
+<span class="lineno">14</span>      2.0,
+<span class="lineno">15</span>      0.0,
+<span class="lineno">16</span>      0.0
+<span class="lineno">17</span>    ],
+<span class="lineno">18</span>    [
+<span class="lineno">19</span>      3.0,
+<span class="lineno">20</span>      1.0,
+<span class="lineno">21</span>      0.0
+<span class="lineno">22</span>    ],
+<span class="lineno">23</span>    [
+<span class="lineno">24</span>      4.0,
+<span class="lineno">25</span>      0.0,
+<span class="lineno">26</span>      0.0
+<span class="lineno">27</span>    ],
+<span class="lineno">28</span>    [
+<span class="lineno">29</span>      1.0,
+<span class="lineno">30</span>      0.3,
+<span class="lineno">31</span>      -1.0
+<span class="lineno">32</span>    ],
+<span class="lineno">33</span>    [
+<span class="lineno">34</span>      1.0,
+<span class="lineno">35</span>      0.3,
+<span class="lineno">36</span>      1.0
+<span class="lineno">37</span>    ],
+<span class="lineno">38</span>    [
+<span class="lineno">39</span>      4.0,
+<span class="lineno">40</span>      0.0,
+<span class="lineno">41</span>      0.0
+<span class="lineno">42</span>    ]
+<span class="lineno">43</span>  ],
+<span class="lineno">44</span>  &quot;triangles&quot;: [
+<span class="lineno">45</span>    [
+<span class="lineno">46</span>      0,
+<span class="lineno">47</span>      1,
+<span class="lineno">48</span>      2
+<span class="lineno">49</span>    ],
+<span class="lineno">50</span>    [
+<span class="lineno">51</span>      2,
+<span class="lineno">52</span>      3,
+<span class="lineno">53</span>      4
+<span class="lineno">54</span>    ],
+<span class="lineno">55</span>    [
+<span class="lineno">56</span>      5,
+<span class="lineno">57</span>      6,
+<span class="lineno">58</span>      7
+<span class="lineno">59</span>    ]
+<span class="lineno">60</span>  ],
+<span class="lineno">61</span>  &quot;metadata&quot;: {
+<span class="lineno">62</span>    &quot;id&quot;: &quot;Me911&quot;,
+<span class="lineno">63</span>    &quot;schema_version&quot;: 0,
+<span class="lineno">64</span>    &quot;defect_class&quot;: &quot;shared_vertex_adjacent_faces&quot;,
+<span class="lineno">65</span>    &quot;title&quot;: &quot;di_cell.selectIntersections proper-vs-improper: shared-vertex touching pair is improper (justproper=true skips); transverse pair is proper (Branch 2)&quot;,
+<span class="lineno">66</span>    &quot;assertions&quot;: [
+<span class="lineno">67</span>      {
+<span class="lineno">68</span>        &quot;kind&quot;: &quot;vertex_pair_no_shared_triangle&quot;,
+<span class="lineno">69</span>        &quot;pair&quot;: [
+<span class="lineno">70</span>          0,
+<span class="lineno">71</span>          3
+<span class="lineno">72</span>        ]
+<span class="lineno">73</span>      },
+<span class="lineno">74</span>      {
+<span class="lineno">75</span>        &quot;kind&quot;: &quot;vertex_pair_no_shared_triangle&quot;,
+<span class="lineno">76</span>        &quot;pair&quot;: [
+<span class="lineno">77</span>          1,
+<span class="lineno">78</span>          4
+<span class="lineno">79</span>        ]
+<span class="lineno">80</span>      },
+<span class="lineno">81</span>      {
+<span class="lineno">82</span>        &quot;kind&quot;: &quot;vertex_pair_no_shared_triangle&quot;,
+<span class="lineno">83</span>        &quot;pair&quot;: [
+<span class="lineno">84</span>          0,
+<span class="lineno">85</span>          5
+<span class="lineno">86</span>        ]
+<span class="lineno">87</span>      },
+<span class="lineno">88</span>      {
+<span class="lineno">89</span>        &quot;kind&quot;: &quot;vertex_pair_no_shared_triangle&quot;,
+<span class="lineno">90</span>        &quot;pair&quot;: [
+<span class="lineno">91</span>          1,
+<span class="lineno">92</span>          6
+<span class="lineno">93</span>        ]
+<span class="lineno">94</span>      },
+<span class="lineno">95</span>      {
+<span class="lineno">96</span>        &quot;kind&quot;: &quot;triangles_do_not_intersect&quot;,
+<span class="lineno">97</span>        &quot;triangles&quot;: [
+<span class="lineno">98</span>          0,
+<span class="lineno">99</span>          1
+<span class="lineno">100</span>        ]
+<span class="lineno">101</span>      },
+<span class="lineno">102</span>      {
+<span class="lineno">103</span>        &quot;kind&quot;: &quot;triangles_self_intersect&quot;,
+<span class="lineno">104</span>        &quot;triangles&quot;: [
+<span class="lineno">105</span>          0,
+<span class="lineno">106</span>          2
+<span class="lineno">107</span>        ]
+<span class="lineno">108</span>      }
+<span class="lineno">109</span>    ]
+<span class="lineno">110</span>  }
+<span class="lineno">111</span>}
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Me910.html">&larr; Me910</a> <a class="up" href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <a class="next" href="Me912.html">Me912 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

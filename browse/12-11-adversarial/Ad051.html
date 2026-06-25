@@ -40,6 +40,9 @@
 <li><code>contains(b&#x27;#-1&#x27;) or matches(rb&#x27;#-\d+&#x27;)</code></li>
 <li><code>matches(rb&#x27;#-\d+&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -54,49 +57,22 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Ad051 - Reference to non-existent entity number (negative or out-of-range)
-<span class="lineno">2</span>   ----------------------------------------------------------------------
-<span class="lineno">3</span>   Catalog section : Â§12.11 adversarial (sub-class: null-deref)
-<span class="lineno">4</span>   Sources         : 08-occt-gitlog.md G030 (Mantis 0031292)
-<span class="lineno">5</span>   See also        : Ad005
-<span class="lineno">6</span>   ----------------------------------------------------------------------
-<span class="lineno">7</span>   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
-<span class="lineno">8</span>   testing. Do NOT use as exchange data.
-<span class="lineno">9</span>   ----------------------------------------------------------------------
-<span class="lineno">10</span>   Defect
-<span class="lineno">11</span>     References to entity numbers beyond the DATA section&#x27;s max_id, or
-<span class="lineno">12</span>     legacy negative numbers, yield literal NULL via lookup. Older
-<span class="lineno">13</span>     OCCT segfaulted on these. Negative entity numbers are a legacy
-<span class="lineno">14</span>     quirk and need pass-correction.
-<span class="lineno">15</span>   Reproducer recipe
-<span class="lineno">16</span>     ADVANCED_FACE referencing #99999 (above max_id) and a separate
-<span class="lineno">17</span>     instance referencing <mark>#-1</mark> (legacy negative).
-<span class="lineno">18</span>   Expected kernel behavior
-<span class="lineno">19</span>     Treat as literal NULL; substitute defaults; do not segfault.
-<span class="lineno">20</span>     Emit E_DANGLING_REFERENCE per occurrence with id context.
-<span class="lineno">21</span>     Negative ids: pass-correct or reject with E_NEGATIVE_ID.
-<span class="lineno">22</span>   ----------------------------------------------------------------------
-<span class="lineno">23</span>*/
-<span class="lineno">24</span>ISO-10303-21;
-<span class="lineno">25</span>HEADER;
-<span class="lineno">26</span>FILE_DESCRIPTION((&#x27;Ad051 - dangling and negative entity references&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">27</span>FILE_NAME(&#x27;Ad051.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
-<span class="lineno">28</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">29</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">30</span>ENDSEC;
-<span class="lineno">31</span>DATA;
-<span class="lineno">32</span>#1=CARTESIAN_POINT(&#x27;o&#x27;,(0.0,0.0,0.0));
-<span class="lineno">33</span>#2=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
-<span class="lineno">34</span>#3=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">35</span>#4=AXIS2_PLACEMENT_3D(&#x27;p&#x27;,#1,#2,#3);
-<span class="lineno">36</span>/* Defect: PLANE references #99999 (out of range; max_id in this file is #50) */
-<span class="lineno">37</span>#10=PLANE(&#x27;plane_dangling&#x27;,#99999);
-<span class="lineno">38</span>/* Defect: ADVANCED_FACE references <mark>#-1</mark> (legacy negative id) */
-<span class="lineno">39</span>#20=ADVANCED_FACE(&#x27;af_neg&#x27;,(#30),#10,.T.);
-<span class="lineno">40</span>#30=FACE_OUTER_BOUND(&#x27;fob&#x27;,<mark>#-1</mark>,.T.);
-<span class="lineno">41</span>#50=AXIS2_PLACEMENT_3D(&#x27;marker&#x27;,#1,#2,#3);
-<span class="lineno">42</span>ENDSEC;
-<span class="lineno">43</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Ad051: negative entity references (<mark>#-1</mark>, <mark>#-2</mark>) and out-of-range IDs; legacy negative numbers yield NULL via lookup; ADVANCED_FACE and SHAPE_REPRESENTATION referencing <mark>#-1</mark>; out-of-range #9999999 reference; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ad051&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ad051.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">11</span>#3=ADVANCED_FACE(&#x27;neg_ref&#x27;,(<mark>#-1</mark>),<mark>#-2</mark>,.T.);
+<span class="lineno">12</span>#4=SHAPE_REPRESENTATION(&#x27;neg_sr&#x27;,(<mark>#-1</mark>),<mark>#-2</mark>);
+<span class="lineno">13</span>#5=MANIFOLD_SOLID_BREP(&#x27;out_of_range&#x27;,#9999999);
+<span class="lineno">14</span>#6=VERTEX_POINT(&#x27;neg_vertex&#x27;,<mark>#-3</mark>);
+<span class="lineno">15</span>ENDSEC;
+<span class="lineno">16</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

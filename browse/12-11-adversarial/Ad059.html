@@ -40,6 +40,9 @@
 <li><code>contains(b&#x27;RATIONAL_B_SPLINE_CURVE&#x27;) or matches(rb&#x27;RATIONAL_BSPLINE_CURVE\(\([^)]+\)\)&#x27;)</code></li>
 <li><code>contains(b&#x27;B_SPLINE_CURVE_WITH_KNOTS&#x27;) or contains(b&#x27;BSPLINE&#x27;) or contains(b&#x27;RATIONAL_B_SPLINE_CURVE&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="../12-2b-nurbs/Gn002.html">Gn002</a></p>
 </section>
@@ -57,59 +60,24 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Ad059 - Mismatched weight / pole counts in BSpline (writer-emitted)
-<span class="lineno">2</span>   ----------------------------------------------------------------------
-<span class="lineno">3</span>   Catalog section : Â§12.11 adversarial (sub-class: schema-validation / OOB-read)
-<span class="lineno">4</span>   Sources         : 08-occt-gitlog.md G024 (Mantis 0030921),
-<span class="lineno">5</span>                     G023 (zero-poles)
-<span class="lineno">6</span>   See also        : Gn002
-<span class="lineno">7</span>   ----------------------------------------------------------------------
-<span class="lineno">8</span>   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
-<span class="lineno">9</span>   testing. Do NOT use as exchange data.
-<span class="lineno">10</span>   ----------------------------------------------------------------------
-<span class="lineno">11</span>   Defect
-<span class="lineno">12</span>     STEP RATIONAL_B_SPLINE_CURVE with weights array length != poles
-<span class="lineno">13</span>     array length; reader walks past the end of the weights vector.
-<span class="lineno">14</span>     Documented in OCCT Mantis 0030921. Companion bug G023: zero
-<span class="lineno">15</span>     poles silently accepted, leading to division-by-zero downstream.
-<span class="lineno">16</span>   Reproducer recipe
-<span class="lineno">17</span>     RATIONAL_B_SPLINE_CURVE complex entity with 4 control points
-<span class="lineno">18</span>     (poles) but only 3 weights. The schema is the typical AP242
-<span class="lineno">19</span>     complex-record layout combining BOUNDED_CURVE / B_SPLINE_CURVE /
-<span class="lineno">20</span>     B_SPLINE_CURVE_WITH_KNOTS / RATIONAL_B_SPLINE_CURVE.
-<span class="lineno">21</span>   Expected kernel behavior
-<span class="lineno">22</span>     Validate equality: weights.length == poles.length. Pad/truncate
-<span class="lineno">23</span>     with E_BSPLINE_WEIGHT_MISMATCH warning; never read past either
-<span class="lineno">24</span>     array.
-<span class="lineno">25</span>   ----------------------------------------------------------------------
-<span class="lineno">26</span>*/
-<span class="lineno">27</span>ISO-10303-21;
-<span class="lineno">28</span>HEADER;
-<span class="lineno">29</span>FILE_DESCRIPTION((&#x27;Ad059 - rational BSpline with weight/pole count mismatch&#x27;),
-<span class="lineno">30</span>  &#x27;2;1&#x27;);
-<span class="lineno">31</span>FILE_NAME(&#x27;Ad059.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
-<span class="lineno">32</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">33</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">34</span>ENDSEC;
-<span class="lineno">35</span>DATA;
-<span class="lineno">36</span>#1=CARTESIAN_POINT(&#x27;p0&#x27;,(0.0,0.0,0.0));
-<span class="lineno">37</span>#2=CARTESIAN_POINT(&#x27;p1&#x27;,(1.0,0.0,0.0));
-<span class="lineno">38</span>#3=CARTESIAN_POINT(&#x27;p2&#x27;,(2.0,0.0,0.0));
-<span class="lineno">39</span>#4=CARTESIAN_POINT(&#x27;p3&#x27;,(3.0,0.0,0.0));
-<span class="lineno">40</span>/* Defect: complex-record rational BSpline with 4 poles but only 3
-<span class="lineno">41</span>   weights. The RATIONAL_B_SPLINE_CURVE.weights_data list length
-<span class="lineno">42</span>   disagrees with the B_SPLINE_CURVE control_points_list length. */
-<span class="lineno">43</span>#100=(
-<span class="lineno">44</span>  BOUNDED_CURVE()
-<span class="lineno">45</span>  B_SPLINE_CURVE(2,(#1,#2,#3,#4),.UNSPECIFIED.,.F.,.F.)
-<span class="lineno">46</span>  B_SPLINE_CURVE_WITH_KNOTS((3,3),(0.0,1.0),.UNSPECIFIED.)
-<span class="lineno">47</span>  CURVE()
-<span class="lineno">48</span>  GEOMETRIC_REPRESENTATION_ITEM()
-<span class="lineno">49</span>  RATIONAL_B_SPLINE_CURVE((1.0,1.0,1.0))
-<span class="lineno">50</span>  REPRESENTATION_ITEM(&#x27;rbsc_bad&#x27;)
-<span class="lineno">51</span>);
-<span class="lineno">52</span>ENDSEC;
-<span class="lineno">53</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Ad059: mismatched weight/pole count in RATIONAL_B_SPLINE_CURVE: weights (1.,1.,1.) has 3 entries but poles list has 4 entries; reader walks past end of weights vector â OOB-read; writer-emitted bug: Mantis 0030921 (G024); See also Gn002; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ad059&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ad059.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">11</span>#3=CARTESIAN_POINT(&#x27;p0&#x27;,(0.,0.,0.));
+<span class="lineno">12</span>#4=CARTESIAN_POINT(&#x27;p1&#x27;,(1.,1.,0.));
+<span class="lineno">13</span>#5=CARTESIAN_POINT(&#x27;p2&#x27;,(2.,0.,0.));
+<span class="lineno">14</span>#6=CARTESIAN_POINT(&#x27;p3&#x27;,(3.,1.,0.));
+<span class="lineno">15</span>#7=(B_SPLINE_CURVE_WITH_KNOTS(&#x27;mismatch&#x27;,3,(#3,#4,#5,#6),.UNSPECIFIED.,.F.,.F.,(4,4),(0.,1.),.PIECEWISE_BEZIER_KNOTS.)RATIONAL_B_SPLINE_CURVE((1.,1.,1.)));
+<span class="lineno">16</span>#8=RATIONAL_B_SPLINE_CURVE((1.,1.,1.));
+<span class="lineno">17</span>ENDSEC;
+<span class="lineno">18</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

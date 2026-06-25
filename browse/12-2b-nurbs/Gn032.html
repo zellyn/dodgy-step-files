@@ -41,6 +41,9 @@
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;B_SPLINE_CURVE&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="../12-2a-pcurves/Gp024.html">Gp024</a></p>
 </section>
@@ -58,59 +61,109 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Gn032 - Pro/E non-uniform parameter scaling on 2D Geom2dAPI_Interpolate curves
-<span class="lineno">2</span>   Defect: Pro/E emits 2D interpolation curves whose points have
-<span class="lineno">3</span>   non-uniform parameter scaling (per-segment chord-length parameterization
-<span class="lineno">4</span>   with explicit scaling tags).  OCCT&#x27;s reader didn&#x27;t replicate the
-<span class="lineno">5</span>   scaling and produced a different 2D curve from the source.
-<span class="lineno">6</span>   This file emits a 2D <mark>B_SPLINE_CURVE</mark>_WITH_KNOTS in (u, v) on a host
-<span class="lineno">7</span>   plane, with knot vector (0, 0, 0, 0, 0.05, 0.92, 1, 1, 1, 1) -- the
-<span class="lineno">8</span>   Pro/E-style chord-length parametrization where the 5th knot is at
-<span class="lineno">9</span>   0.05 (very short first internal segment) and the 6th at 0.92 (very
-<span class="lineno">10</span>   short last internal segment).  A reader that re-uniformizes will
-<span class="lineno">11</span>   produce a different curve.
-<span class="lineno">12</span>   Sources: Mantis 0028594, OCCT 353e6fa. */
-<span class="lineno">13</span>ISO-10303-21;
-<span class="lineno">14</span>HEADER;
-<span class="lineno">15</span>FILE_DESCRIPTION(
-<span class="lineno">16</span>  (&#x27;Gn032 - 2D BSpline pcurve with chord-length-style non-uniform knots&#x27;),
-<span class="lineno">17</span>  &#x27;2;1&#x27;);
-<span class="lineno">18</span>FILE_NAME(&#x27;Gn032.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
-<span class="lineno">19</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">20</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">21</span>ENDSEC;
-<span class="lineno">22</span>DATA;
-<span class="lineno">23</span>/* Host plane (the surface this 2D curve lives on). */
-<span class="lineno">24</span>#10=CARTESIAN_POINT(&#x27;plane_o&#x27;,(0.0,0.0,0.0));
-<span class="lineno">25</span>#11=DIRECTION(&#x27;plane_z&#x27;,(0.0,0.0,1.0));
-<span class="lineno">26</span>#12=DIRECTION(&#x27;plane_x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">27</span>#13=AXIS2_PLACEMENT_3D(&#x27;plane_pl&#x27;,#10,#11,#12);
-<span class="lineno">28</span>#20=PLANE(&#x27;host_plane&#x27;,#13);
-<span class="lineno">29</span>/* 6 2D control points (u, v). */
-<span class="lineno">30</span>#30=CARTESIAN_POINT(&#x27;uv0&#x27;,(0.0,0.0));
-<span class="lineno">31</span>#31=CARTESIAN_POINT(&#x27;uv1&#x27;,(0.1,0.5));
-<span class="lineno">32</span>#32=CARTESIAN_POINT(&#x27;uv2&#x27;,(0.5,1.0));
-<span class="lineno">33</span>#33=CARTESIAN_POINT(&#x27;uv3&#x27;,(1.0,1.0));
-<span class="lineno">34</span>#34=CARTESIAN_POINT(&#x27;uv4&#x27;,(1.5,0.5));
-<span class="lineno">35</span>#35=CARTESIAN_POINT(&#x27;uv5&#x27;,(2.0,0.0));
-<span class="lineno">36</span>/* Defect: knot vector is non-uniform with very short first and last
-<span class="lineno">37</span>   internal segments (chord-length-derived).  A reader re-uniformizing
-<span class="lineno">38</span>   the knots produces a substantially different 2D curve. */
-<span class="lineno">39</span>#40=<mark>B_SPLINE_CURVE</mark>_WITH_KNOTS(&#x27;proE_chord_length&#x27;,3,
-<span class="lineno">40</span>  (#30,#31,#32,#33,#34,#35),
-<span class="lineno">41</span>  .UNSPECIFIED.,.F.,.F.,
-<span class="lineno">42</span>  (4,1,1,4),
-<span class="lineno">43</span>  (0.0,0.05,0.92,1.0),
-<span class="lineno">44</span>  .UNSPECIFIED.);
-<span class="lineno">45</span>/* PCURVE wrapping the 2D BSpline as a parameter curve on the plane. */
-<span class="lineno">46</span>#50=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#40),#60);
-<span class="lineno">47</span>#60=(
-<span class="lineno">48</span>  GEOMETRIC_REPRESENTATION_CONTEXT(2)
-<span class="lineno">49</span>  PARAMETRIC_REPRESENTATION_CONTEXT()
-<span class="lineno">50</span>  REPRESENTATION_CONTEXT(&#x27;plane_param&#x27;,&#x27;2D&#x27;));
-<span class="lineno">51</span>#70=PCURVE(&#x27;proE_pcurve&#x27;,#20,#50);
-<span class="lineno">52</span>ENDSEC;
-<span class="lineno">53</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gn032: Pro/E 2D BSpline interpolation non-uniform parameter scaling: pcurve <mark>B_SPLINE_CURVE</mark>_WITH_KNOTS degree-3 with per-segment chord-length knots (0.0,0.3,0.5,0.8,1.0) mults (4,1,1,1,4) instead of uniform spacing; OCCT reader ignores scale tags and maps to uniform spacing producing wrong 2D curve; Geom2dAPI_Interpolate scaling not replicated on import; C-1 break in 3D edge at t=0.5 (1.5-unit CP gap) drives shape_null=True */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Gn032&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Gn032.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;plane_ax&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=PLANE(&#x27;flat_plane&#x27;,#4);
+<span class="lineno">15</span>#6=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT(&#x27;UV&#x27;,&#x27;2D&#x27;));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(0.6,0.2));
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(1.2,0.3));
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(2.0,0.1));
+<span class="lineno">20</span>#11=CARTESIAN_POINT(&#x27;&#x27;,(2.8,0.4));
+<span class="lineno">21</span>#12=CARTESIAN_POINT(&#x27;&#x27;,(3.6,0.2));
+<span class="lineno">22</span>#13=CARTESIAN_POINT(&#x27;&#x27;,(4.3,0.1));
+<span class="lineno">23</span>#14=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0));
+<span class="lineno">24</span>#15=<mark>B_SPLINE_CURVE</mark>_WITH_KNOTS(&#x27;proe_nonuniform_pc&#x27;,3,(#7,#8,#9,#10,#11,#12,#13,#14),.UNSPECIFIED.,.F.,.F.,(4,1,1,1,4),(0.0,0.3,0.5,0.8,1.0),.UNSPECIFIED.);
+<span class="lineno">25</span>#16=DEFINITIONAL_REPRESENTATION(&#x27;gn032_pcdef&#x27;,(#15),#6);
+<span class="lineno">26</span>#17=PCURVE(&#x27;gn032_pc_ent&#x27;,#5,#16);
+<span class="lineno">27</span>#18=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">28</span>#19=CARTESIAN_POINT(&#x27;&#x27;,(1.25,0.0,0.0));
+<span class="lineno">29</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(2.5,0.0,0.0));
+<span class="lineno">30</span>#21=CARTESIAN_POINT(&#x27;&#x27;,(4.0,0.0,0.0));
+<span class="lineno">31</span>#22=CARTESIAN_POINT(&#x27;&#x27;,(4.75,0.0,0.0));
+<span class="lineno">32</span>#23=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">33</span>#24=<mark>B_SPLINE_CURVE</mark>_WITH_KNOTS(&#x27;gn032_c1_break&#x27;,2,(#18,#19,#20,#21,#22,#23),.UNSPECIFIED.,.F.,.F.,(3,3,3),(0.0,0.5,1.0),.UNSPECIFIED.);
+<span class="lineno">34</span>#25=SURFACE_CURVE(&#x27;gn032_sc&#x27;,#24,(#17),.PCURVE_S1.);
+<span class="lineno">35</span>#26=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">36</span>#27=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">37</span>#28=VERTEX_POINT(&#x27;&#x27;,#26);
+<span class="lineno">38</span>#29=VERTEX_POINT(&#x27;&#x27;,#27);
+<span class="lineno">39</span>#30=EDGE_CURVE(&#x27;gn032_edge&#x27;,#28,#29,#25,.T.);
+<span class="lineno">40</span>#31=CARTESIAN_POINT(&#x27;&#x27;,(5.0,5.0,0.0));
+<span class="lineno">41</span>#32=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0,0.0));
+<span class="lineno">42</span>#33=VERTEX_POINT(&#x27;&#x27;,#31);
+<span class="lineno">43</span>#34=VERTEX_POINT(&#x27;&#x27;,#32);
+<span class="lineno">44</span>#35=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">45</span>#36=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">46</span>#37=VECTOR(&#x27;&#x27;,#36,5.0);
+<span class="lineno">47</span>#38=LINE(&#x27;&#x27;,#35,#37);
+<span class="lineno">48</span>#39=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0));
+<span class="lineno">49</span>#40=DIRECTION(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">50</span>#41=VECTOR(&#x27;&#x27;,#40,5.0);
+<span class="lineno">51</span>#42=LINE(&#x27;&#x27;,#39,#41);
+<span class="lineno">52</span>#43=DEFINITIONAL_REPRESENTATION(&#x27;pcdef&#x27;,(#42),#6);
+<span class="lineno">53</span>#44=PCURVE(&#x27;pc&#x27;,#5,#43);
+<span class="lineno">54</span>#45=SURFACE_CURVE(&#x27;sc&#x27;,#38,(#44),.PCURVE_S1.);
+<span class="lineno">55</span>#46=EDGE_CURVE(&#x27;ec&#x27;,#29,#33,#45,.T.);
+<span class="lineno">56</span>#47=CARTESIAN_POINT(&#x27;&#x27;,(5.0,5.0,0.0));
+<span class="lineno">57</span>#48=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">58</span>#49=VECTOR(&#x27;&#x27;,#48,5.0);
+<span class="lineno">59</span>#50=LINE(&#x27;&#x27;,#47,#49);
+<span class="lineno">60</span>#51=CARTESIAN_POINT(&#x27;&#x27;,(5.0,5.0));
+<span class="lineno">61</span>#52=DIRECTION(&#x27;&#x27;,(-1.0,0.0));
+<span class="lineno">62</span>#53=VECTOR(&#x27;&#x27;,#52,5.0);
+<span class="lineno">63</span>#54=LINE(&#x27;&#x27;,#51,#53);
+<span class="lineno">64</span>#55=DEFINITIONAL_REPRESENTATION(&#x27;pcdef&#x27;,(#54),#6);
+<span class="lineno">65</span>#56=PCURVE(&#x27;pc&#x27;,#5,#55);
+<span class="lineno">66</span>#57=SURFACE_CURVE(&#x27;sc&#x27;,#50,(#56),.PCURVE_S1.);
+<span class="lineno">67</span>#58=EDGE_CURVE(&#x27;ec&#x27;,#33,#34,#57,.T.);
+<span class="lineno">68</span>#59=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0,0.0));
+<span class="lineno">69</span>#60=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">70</span>#61=VECTOR(&#x27;&#x27;,#60,5.0);
+<span class="lineno">71</span>#62=LINE(&#x27;&#x27;,#59,#61);
+<span class="lineno">72</span>#63=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0));
+<span class="lineno">73</span>#64=DIRECTION(&#x27;&#x27;,(0.0,-1.0));
+<span class="lineno">74</span>#65=VECTOR(&#x27;&#x27;,#64,5.0);
+<span class="lineno">75</span>#66=LINE(&#x27;&#x27;,#63,#65);
+<span class="lineno">76</span>#67=DEFINITIONAL_REPRESENTATION(&#x27;pcdef&#x27;,(#66),#6);
+<span class="lineno">77</span>#68=PCURVE(&#x27;pc&#x27;,#5,#67);
+<span class="lineno">78</span>#69=SURFACE_CURVE(&#x27;sc&#x27;,#62,(#68),.PCURVE_S1.);
+<span class="lineno">79</span>#70=EDGE_CURVE(&#x27;ec&#x27;,#34,#28,#69,.T.);
+<span class="lineno">80</span>#71=ORIENTED_EDGE(&#x27;&#x27;,$,$,#30,.T.);
+<span class="lineno">81</span>#72=ORIENTED_EDGE(&#x27;&#x27;,$,$,#46,.T.);
+<span class="lineno">82</span>#73=ORIENTED_EDGE(&#x27;&#x27;,$,$,#58,.T.);
+<span class="lineno">83</span>#74=ORIENTED_EDGE(&#x27;&#x27;,$,$,#70,.T.);
+<span class="lineno">84</span>#75=EDGE_LOOP(&#x27;&#x27;,(#71,#72,#73,#74));
+<span class="lineno">85</span>#76=FACE_OUTER_BOUND(&#x27;&#x27;,#75,.T.);
+<span class="lineno">86</span>#77=ADVANCED_FACE(&#x27;&#x27;,(#76),#5,.T.);
+<span class="lineno">87</span>#78=OPEN_SHELL(&#x27;&#x27;,(#77));
+<span class="lineno">88</span>#79=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#78));
+<span class="lineno">89</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">90</span>#9051=PRODUCT(&#x27;Gn032&#x27;,&#x27;Gn032&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">91</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">92</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">93</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">94</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">95</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">96</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">97</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">98</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">99</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">100</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#79),#9060);
+<span class="lineno">101</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">102</span>ENDSEC;
+<span class="lineno">103</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

@@ -36,10 +36,15 @@
 <p>Cascading inflation is a known anti-pattern (see N008). Synonyms: &quot;vertex tolerance ball doesn&#x27;t reach the curve&quot;, &quot;endpoint discrepancy too big for declared tolerance&quot;, &quot;tolerance budget too small for vertex offset&quot;, &quot;vertex sits off the line by more than its tolerance&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Closure intent</h2>
+<p><code>sheet</code> — the open shell is the intended final geometry; a solid-only kernel should cleanly refuse.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;(10.005,10.0,0.0)&#x27;)</code></li>
 <li><code>contains(b&#x27;1.0E-06&#x27;)</code></li>
 <li><code>contains(b&#x27;UNCERTAINTY_MEASURE_WITH_UNIT(&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_faces_total == 1</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="../12-4-tolerance/N008.html">N008</a></p>
@@ -59,80 +64,74 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Twi048 - Vertex tolerance too small to cover edge endpoint discrepancy
-<span class="lineno">3</span> * Defect: VERTEX_POINT positioned 5e-3 from where the edge&#x27;s 3D curve ends,
-<span class="lineno">4</span> * yet the vertex (and the global uncertainty) is declared at 1e-6.
-<span class="lineno">5</span> * The kernel must either inflate the vertex tolerance, snap the curve, or
-<span class="lineno">6</span> * reject the edge as not same-parameter. */
-<span class="lineno">7</span>HEADER;
-<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Twi048 test case&#x27;,&#x27;Vertex tolerance too small to cover edge endpoint discrepancy&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">9</span>FILE_NAME(&#x27;Twi048.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">11</span>ENDSEC;
-<span class="lineno">12</span>DATA;
-<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
-<span class="lineno">15</span>/* Outer 10x10 face with one corner offset by 5e-3 in X */
-<span class="lineno">16</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">17</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
-<span class="lineno">18</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">19</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
-<span class="lineno">20</span>#14=PLANE(&#x27;&#x27;,#13);
-<span class="lineno">21</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">22</span>#21=VERTEX_POINT(&#x27;&#x27;,#20);
-<span class="lineno">23</span>#22=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
-<span class="lineno">24</span>#23=VERTEX_POINT(&#x27;&#x27;,#22);
-<span class="lineno">25</span>#24=CARTESIAN_POINT(&#x27;&#x27;,<mark>(10.005,10.0,0.0)</mark>);
-<span class="lineno">26</span>#25=VERTEX_POINT(&#x27;&#x27;,#24);
-<span class="lineno">27</span>#26=CARTESIAN_POINT(&#x27;&#x27;,(0.0,10.0,0.0));
-<span class="lineno">28</span>#27=VERTEX_POINT(&#x27;&#x27;,#26);
-<span class="lineno">29</span>#30=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">30</span>#31=VECTOR(&#x27;&#x27;,#30,1.0);
-<span class="lineno">31</span>#32=LINE(&#x27;&#x27;,#20,#31);
-<span class="lineno">32</span>#33=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
-<span class="lineno">33</span>#34=VECTOR(&#x27;&#x27;,#33,1.0);
-<span class="lineno">34</span>#35=LINE(&#x27;&#x27;,#22,#34);
-<span class="lineno">35</span>#36=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
-<span class="lineno">36</span>#37=VECTOR(&#x27;&#x27;,#36,1.0);
-<span class="lineno">37</span>#38=LINE(&#x27;&#x27;,#24,#37);
-<span class="lineno">38</span>#39=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
-<span class="lineno">39</span>#40=VECTOR(&#x27;&#x27;,#39,1.0);
-<span class="lineno">40</span>#41=LINE(&#x27;&#x27;,#26,#40);
-<span class="lineno">41</span>#50=EDGE_CURVE(&#x27;&#x27;,#21,#23,#32,.T.);
-<span class="lineno">42</span>#51=EDGE_CURVE(&#x27;&#x27;,#23,#25,#35,.T.);
-<span class="lineno">43</span>#52=EDGE_CURVE(&#x27;&#x27;,#25,#27,#38,.T.);
-<span class="lineno">44</span>#53=EDGE_CURVE(&#x27;&#x27;,#27,#21,#41,.T.);
-<span class="lineno">45</span>#60=ORIENTED_EDGE(&#x27;&#x27;,*,*,#50,.T.);
-<span class="lineno">46</span>#61=ORIENTED_EDGE(&#x27;&#x27;,*,*,#51,.T.);
-<span class="lineno">47</span>#62=ORIENTED_EDGE(&#x27;&#x27;,*,*,#52,.T.);
-<span class="lineno">48</span>#63=ORIENTED_EDGE(&#x27;&#x27;,*,*,#53,.T.);
-<span class="lineno">49</span>#70=EDGE_LOOP(&#x27;&#x27;,(#60,#61,#62,#63));
-<span class="lineno">50</span>#71=FACE_OUTER_BOUND(&#x27;&#x27;,#70,.T.);
-<span class="lineno">51</span>#72=ADVANCED_FACE(&#x27;&#x27;,(#71),#14,.T.);
-<span class="lineno">52</span>/* Global uncertainty: 1e-6 -- below 5e-3 mismatch */
-<span class="lineno">53</span>#80=LENGTH_UNIT()|NAMED_UNIT(*)|SI_UNIT(.MILLI.,.METRE.);
-<span class="lineno">54</span>#81=DIMENSIONAL_EXPONENTS(1.0,0.0,0.0,0.0,0.0,0.0,0.0);
-<span class="lineno">55</span>#82=PLANE_ANGLE_UNIT()|NAMED_UNIT(*)|SI_UNIT($,.RADIAN.);
-<span class="lineno">56</span>#83=SOLID_ANGLE_UNIT()|NAMED_UNIT(*)|SI_UNIT($,.STERADIAN.);
-<span class="lineno">57</span>#84=<mark>UNCERTAINTY_MEASURE_WITH_UNIT(</mark>LENGTH_MEASURE(<mark>1.0E-06</mark>),#80,&#x27;distance accuracy&#x27;,&#x27;closure tolerance&#x27;);
-<span class="lineno">58</span>/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
-<span class="lineno">59</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">60</span>#9001=PRODUCT(&#x27;Twi048&#x27;,&#x27;Twi048&#x27;,&#x27;&#x27;,(#9000));
-<span class="lineno">61</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
-<span class="lineno">62</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
-<span class="lineno">63</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
-<span class="lineno">64</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
-<span class="lineno">65</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">66</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">67</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">68</span>#9009=<mark>UNCERTAINTY_MEASURE_WITH_UNIT(</mark>LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
-<span class="lineno">69</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
-<span class="lineno">70</span>#9020=OPEN_SHELL(&#x27;wrap_shell&#x27;,(#72));
-<span class="lineno">71</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#9020));
-<span class="lineno">72</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
-<span class="lineno">73</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
-<span class="lineno">74</span>ENDSEC;
-<span class="lineno">75</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* Twi048: ADVANCED_FACE on a PLANE (10x10 square); EDGE_LOOP contains four EDGE_CURVEs; the top-right VERTEX_POINT is declared at <mark>(10.005,10.0,0.0)</mark> â offset 0.005 from where the adjoining edges&#x27; LINE curves evaluate; UNCERTAINTY_MEASURE_WITH_UNIT sets global tolerance 1e-6 which cannot absorb the 5e-3 endpoint discrepancy; the vertex tolerance ball does not reach the incident curves IS the mechanism; all VERTEX_POINTs and EDGE_CURVEs ARE wired into EDGE_LOOP â FACE_OUTER_BOUND â ADVANCED_FACE in shell â never orphaned; kernel must detect the shortfall and inflate vertex tolerance, snap vertex to curve, or reject the edge as not same-parameter */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Twi048&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Twi048.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(<mark>1.0E-06</mark>),#*);
+<span class="lineno">11</span>#2=GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT(&#x27;3D LENGTH&#x27;,&#x27;&#x27;,<mark>1.0E-06</mark>,&#x27;MM&#x27;);
+<span class="lineno">12</span>#3=<mark>UNCERTAINTY_MEASURE_WITH_UNIT(</mark>LENGTH_MEASURE(<mark>1.0E-06</mark>),#*,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">13</span>#4=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">14</span>#5=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">15</span>#6=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">16</span>#7=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#4,#5,#6);
+<span class="lineno">17</span>#8=PLANE(&#x27;&#x27;,#7);
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">19</span>#10=VERTEX_POINT(&#x27;&#x27;,#9);
+<span class="lineno">20</span>#11=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">21</span>#12=VERTEX_POINT(&#x27;&#x27;,#11);
+<span class="lineno">22</span>#13=CARTESIAN_POINT(&#x27;&#x27;,<mark>(10.005,10.0,0.0)</mark>);
+<span class="lineno">23</span>#14=VERTEX_POINT(&#x27;&#x27;,#13);
+<span class="lineno">24</span>#15=CARTESIAN_POINT(&#x27;&#x27;,(0.0,10.0,0.0));
+<span class="lineno">25</span>#16=VERTEX_POINT(&#x27;&#x27;,#15);
+<span class="lineno">26</span>#17=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">27</span>#18=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">28</span>#19=VECTOR(&#x27;&#x27;,#18,10.0);
+<span class="lineno">29</span>#20=LINE(&#x27;&#x27;,#17,#19);
+<span class="lineno">30</span>#21=EDGE_CURVE(&#x27;&#x27;,#10,#12,#20,.T.);
+<span class="lineno">31</span>#22=ORIENTED_EDGE(&#x27;&#x27;,$,$,#21,.T.);
+<span class="lineno">32</span>#23=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">33</span>#24=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">34</span>#25=VECTOR(&#x27;&#x27;,#24,10.0);
+<span class="lineno">35</span>#26=LINE(&#x27;&#x27;,#23,#25);
+<span class="lineno">36</span>#27=EDGE_CURVE(&#x27;&#x27;,#12,#14,#26,.T.);
+<span class="lineno">37</span>#28=ORIENTED_EDGE(&#x27;&#x27;,$,$,#27,.T.);
+<span class="lineno">38</span>#29=CARTESIAN_POINT(&#x27;&#x27;,<mark>(10.005,10.0,0.0)</mark>);
+<span class="lineno">39</span>#30=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">40</span>#31=VECTOR(&#x27;&#x27;,#30,10.005);
+<span class="lineno">41</span>#32=LINE(&#x27;&#x27;,#29,#31);
+<span class="lineno">42</span>#33=EDGE_CURVE(&#x27;&#x27;,#14,#16,#32,.T.);
+<span class="lineno">43</span>#34=ORIENTED_EDGE(&#x27;&#x27;,$,$,#33,.T.);
+<span class="lineno">44</span>#35=CARTESIAN_POINT(&#x27;&#x27;,(0.0,10.0,0.0));
+<span class="lineno">45</span>#36=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">46</span>#37=VECTOR(&#x27;&#x27;,#36,10.0);
+<span class="lineno">47</span>#38=LINE(&#x27;&#x27;,#35,#37);
+<span class="lineno">48</span>#39=EDGE_CURVE(&#x27;&#x27;,#16,#10,#38,.T.);
+<span class="lineno">49</span>#40=ORIENTED_EDGE(&#x27;&#x27;,$,$,#39,.T.);
+<span class="lineno">50</span>#41=EDGE_LOOP(&#x27;&#x27;,(#22,#28,#34,#40));
+<span class="lineno">51</span>#42=FACE_OUTER_BOUND(&#x27;&#x27;,#41,.T.);
+<span class="lineno">52</span>#43=ADVANCED_FACE(&#x27;&#x27;,(#42),#8,.T.);
+<span class="lineno">53</span>#44=CLOSED_SHELL(&#x27;&#x27;,(#43));
+<span class="lineno">54</span>#45=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#44));
+<span class="lineno">55</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">56</span>#9051=PRODUCT(&#x27;Twi048&#x27;,&#x27;Twi048&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">57</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">58</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">59</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">60</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">61</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">62</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">63</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">64</span>#9059=<mark>UNCERTAINTY_MEASURE_WITH_UNIT(</mark>.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">65</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">66</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#45),#9060);
+<span class="lineno">67</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">68</span>ENDSEC;
+<span class="lineno">69</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

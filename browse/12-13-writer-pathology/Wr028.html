@@ -42,6 +42,9 @@
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>matches(rb&quot;(?s)FILE_NAME\([^;]*\(&#x27;&#x27;\)[^;]*&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;&quot;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -56,25 +59,26 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Wr028 - FILE_NAME author and originating_system fields blank or auto-filled with placeholder */
-<span class="lineno">2</span>ISO-10303-21;
-<span class="lineno">3</span>HEADER;
-<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Wr028 - blank provenance fields&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">5</span>/* Wr028: writer never captures user identity; emits empty strings for
-<span class="lineno">6</span>   author, organization, originating_system, authorisation */
-<span class="lineno">7</span><mark>FILE_NAME(&#x27;Wr028.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),</mark>
-<span class="lineno">8</span><mark>  &#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;</mark>);
-<span class="lineno">9</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">10</span>ENDSEC;
-<span class="lineno">11</span>DATA;
-<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
-<span class="lineno">13</span>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
-<span class="lineno">14</span>#11=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
-<span class="lineno">15</span>#12=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">16</span>#13=AXIS2_PLACEMENT_3D(&#x27;placement&#x27;,#10,#11,#12);
-<span class="lineno">17</span>#20=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">18</span>ENDSEC;
-<span class="lineno">19</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Wr028: FILE_NAME.author and originating_system fields blank */
+<span class="lineno">3</span>/* All provenance fields are empty strings: author, organization, */
+<span class="lineno">4</span>/* originating_system, and authorisation are all &#x27;&#x27; */
+<span class="lineno">5</span>/* Produced by writers that do not capture user identity or origin */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;Wr028&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>/* DEFECT: author=(&#x27;&#x27;), organization=(&#x27;&#x27;), originating_system=&#x27;&#x27;, authorisation=&#x27;&#x27; */
+<span class="lineno">9</span><mark>FILE_NAME(&#x27;Wr028.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;</mark>);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>/* Geometry: minimal GEOMETRIC_CURVE_SET â defect is in HEADER only */
+<span class="lineno">14</span>#1=CARTESIAN_POINT(&#x27;origin&#x27;,(0.,0.,0.));
+<span class="lineno">15</span>#2=CARTESIAN_POINT(&#x27;pt&#x27;,(1.,0.,0.));
+<span class="lineno">16</span>#3=DIRECTION(&#x27;xdir&#x27;,(1.,0.,0.));
+<span class="lineno">17</span>#4=DIRECTION(&#x27;zdir&#x27;,(0.,0.,1.));
+<span class="lineno">18</span>#5=GEOMETRIC_CURVE_SET(&#x27;no-provenance-shape&#x27;,());
+<span class="lineno">19</span>ENDSEC;
+<span class="lineno">20</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

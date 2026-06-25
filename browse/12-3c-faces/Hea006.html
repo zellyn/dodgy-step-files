@@ -35,6 +35,8 @@
 <p>Diagnostic-only; useful for kernel benchmarking. Synonyms: &quot;enumerate all sub-shapes and counts&quot;, &quot;subshape histogram for compound&quot;, &quot;shape contents inventory faces edges vertices&quot;, &quot;shape contents tally for downstream check&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Closure intent</h2>
+<p><code>sheet</code> — the open shell is the intended final geometry; a solid-only kernel should cleanly refuse.</p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>n_edges_total &gt;= 4</code></li>
 <li><code>face[0].surface_type == &quot;plane&quot;</code></li>
@@ -55,69 +57,67 @@
 <details>
 <summary>Show fixture bytes</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Hea006 - Shape-contents inventory: subshape histogram
-<span class="lineno">3</span> * Compound containing one ADVANCED_FACE (a unit square) plus one free
-<span class="lineno">4</span> * 4-edge wire (a separate unit square in the y=2 plane). Subshape
-<span class="lineno">5</span> * inventory should report: 1 face, 1 wire, 8 edges, 8 vertices. */
-<span class="lineno">6</span>HEADER;
-<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;Hea006 test case&#x27;,&#x27;Compound: 1 face + 1 free wire (4-edge); inventory totals 8 edges, 8 vertices&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">8</span>FILE_NAME(&#x27;Hea006.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">9</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">10</span>ENDSEC;
-<span class="lineno">11</span>DATA;
-<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
-<span class="lineno">14</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">15</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
-<span class="lineno">16</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">17</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
-<span class="lineno">18</span>#14=PLANE(&#x27;&#x27;,#13);
-<span class="lineno">19</span>/* The face: unit square at z=0 */
-<span class="lineno">20</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));#21=VERTEX_POINT(&#x27;V1&#x27;,#20);
-<span class="lineno">21</span>#22=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));#23=VERTEX_POINT(&#x27;V2&#x27;,#22);
-<span class="lineno">22</span>#24=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));#25=VERTEX_POINT(&#x27;V3&#x27;,#24);
-<span class="lineno">23</span>#26=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));#27=VERTEX_POINT(&#x27;V4&#x27;,#26);
-<span class="lineno">24</span>#30=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#31=VECTOR(&#x27;&#x27;,#30,1.0);#32=LINE(&#x27;&#x27;,#20,#31);#33=EDGE_CURVE(&#x27;e1&#x27;,#21,#23,#32,.T.);
-<span class="lineno">25</span>#34=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));#35=VECTOR(&#x27;&#x27;,#34,1.0);#36=LINE(&#x27;&#x27;,#22,#35);#37=EDGE_CURVE(&#x27;e2&#x27;,#23,#25,#36,.T.);
-<span class="lineno">26</span>#38=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));#39=VECTOR(&#x27;&#x27;,#38,1.0);#40=LINE(&#x27;&#x27;,#24,#39);#41=EDGE_CURVE(&#x27;e3&#x27;,#25,#27,#40,.T.);
-<span class="lineno">27</span>#42=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));#43=VECTOR(&#x27;&#x27;,#42,1.0);#44=LINE(&#x27;&#x27;,#26,#43);#45=EDGE_CURVE(&#x27;e4&#x27;,#27,#21,#44,.T.);
-<span class="lineno">28</span>#50=ORIENTED_EDGE(&#x27;&#x27;,*,*,#33,.T.);#51=ORIENTED_EDGE(&#x27;&#x27;,*,*,#37,.T.);
-<span class="lineno">29</span>#52=ORIENTED_EDGE(&#x27;&#x27;,*,*,#41,.T.);#53=ORIENTED_EDGE(&#x27;&#x27;,*,*,#45,.T.);
-<span class="lineno">30</span>#54=EDGE_LOOP(&#x27;face_loop&#x27;,(#50,#51,#52,#53));
-<span class="lineno">31</span>#55=FACE_OUTER_BOUND(&#x27;&#x27;,#54,.T.);
-<span class="lineno">32</span>#56=ADVANCED_FACE(&#x27;the_one_face&#x27;,(#55),#14,.T.);
-<span class="lineno">33</span>/* The free wire: unit square at z=2 -- topologically separate, NOT attached to a face */
-<span class="lineno">34</span>#60=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,2.0));#61=VERTEX_POINT(&#x27;W1&#x27;,#60);
-<span class="lineno">35</span>#62=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,2.0));#63=VERTEX_POINT(&#x27;W2&#x27;,#62);
-<span class="lineno">36</span>#64=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,2.0));#65=VERTEX_POINT(&#x27;W3&#x27;,#64);
-<span class="lineno">37</span>#66=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,2.0));#67=VERTEX_POINT(&#x27;W4&#x27;,#66);
-<span class="lineno">38</span>#70=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#71=VECTOR(&#x27;&#x27;,#70,1.0);#72=LINE(&#x27;&#x27;,#60,#71);#73=EDGE_CURVE(&#x27;we1&#x27;,#61,#63,#72,.T.);
-<span class="lineno">39</span>#74=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));#75=VECTOR(&#x27;&#x27;,#74,1.0);#76=LINE(&#x27;&#x27;,#62,#75);#77=EDGE_CURVE(&#x27;we2&#x27;,#63,#65,#76,.T.);
-<span class="lineno">40</span>#78=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));#79=VECTOR(&#x27;&#x27;,#78,1.0);#80=LINE(&#x27;&#x27;,#64,#79);#81=EDGE_CURVE(&#x27;we3&#x27;,#65,#67,#80,.T.);
-<span class="lineno">41</span>#82=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));#83=VECTOR(&#x27;&#x27;,#82,1.0);#84=LINE(&#x27;&#x27;,#66,#83);#85=EDGE_CURVE(&#x27;we4&#x27;,#67,#61,#84,.T.);
-<span class="lineno">42</span>#86=ORIENTED_EDGE(&#x27;&#x27;,*,*,#73,.T.);#87=ORIENTED_EDGE(&#x27;&#x27;,*,*,#77,.T.);
-<span class="lineno">43</span>#88=ORIENTED_EDGE(&#x27;&#x27;,*,*,#81,.T.);#89=ORIENTED_EDGE(&#x27;&#x27;,*,*,#85,.T.);
-<span class="lineno">44</span>#90=EDGE_LOOP(&#x27;the_one_free_wire&#x27;,(#86,#87,#88,#89));
-<span class="lineno">45</span>/* Compound */
-<span class="lineno">46</span>#100=GEOMETRIC_SET(&#x27;compound_face_plus_wire&#x27;,(#56,#90));
-<span class="lineno">47</span>/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
-<span class="lineno">48</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">49</span>#9001=PRODUCT(&#x27;Hea006&#x27;,&#x27;Hea006&#x27;,&#x27;&#x27;,(#9000));
-<span class="lineno">50</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
-<span class="lineno">51</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
-<span class="lineno">52</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
-<span class="lineno">53</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
-<span class="lineno">54</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">55</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">56</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">57</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
-<span class="lineno">58</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
-<span class="lineno">59</span>#9020=OPEN_SHELL(&#x27;wrap_shell&#x27;,(#56));
-<span class="lineno">60</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#9020));
-<span class="lineno">61</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
-<span class="lineno">62</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
-<span class="lineno">63</span>ENDSEC;
-<span class="lineno">64</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* Hea006: OPEN_SHELL with single 10x10 rectangular ADVANCED_FACE on PLANE; ShapeAnalysis_ShapeContents::Perform must enumerate: 1 face, 4 edges, 4 vertices; informational shape-contents inventory for downstream defect-detection thresholds; defect: open boundary exposes the free-bound analysis path; subshape histogram: face=1, wire=1, edges=4, vertices=4, surface_kind=plane */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Hea006&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Hea006.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=PLANE(&#x27;&#x27;,#4);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(10.0,10.0,0.0));
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(0.0,10.0,0.0));
+<span class="lineno">19</span>#10=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">20</span>#11=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">21</span>#12=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">22</span>#13=VERTEX_POINT(&#x27;&#x27;,#9);
+<span class="lineno">23</span>#14=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">24</span>#15=VECTOR(&#x27;&#x27;,#14,1.0);
+<span class="lineno">25</span>#16=LINE(&#x27;&#x27;,#6,#15);
+<span class="lineno">26</span>#17=EDGE_CURVE(&#x27;&#x27;,#10,#11,#16,.T.);
+<span class="lineno">27</span>#18=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">28</span>#19=VECTOR(&#x27;&#x27;,#18,1.0);
+<span class="lineno">29</span>#20=LINE(&#x27;&#x27;,#7,#19);
+<span class="lineno">30</span>#21=EDGE_CURVE(&#x27;&#x27;,#11,#12,#20,.T.);
+<span class="lineno">31</span>#22=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">32</span>#23=VECTOR(&#x27;&#x27;,#22,1.0);
+<span class="lineno">33</span>#24=LINE(&#x27;&#x27;,#8,#23);
+<span class="lineno">34</span>#25=EDGE_CURVE(&#x27;&#x27;,#12,#13,#24,.T.);
+<span class="lineno">35</span>#26=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">36</span>#27=VECTOR(&#x27;&#x27;,#26,1.0);
+<span class="lineno">37</span>#28=LINE(&#x27;&#x27;,#9,#27);
+<span class="lineno">38</span>#29=EDGE_CURVE(&#x27;&#x27;,#13,#10,#28,.T.);
+<span class="lineno">39</span>#30=ORIENTED_EDGE(&#x27;&#x27;,$,$,#17,.T.);
+<span class="lineno">40</span>#31=ORIENTED_EDGE(&#x27;&#x27;,$,$,#21,.T.);
+<span class="lineno">41</span>#32=ORIENTED_EDGE(&#x27;&#x27;,$,$,#25,.T.);
+<span class="lineno">42</span>#33=ORIENTED_EDGE(&#x27;&#x27;,$,$,#29,.T.);
+<span class="lineno">43</span>#34=EDGE_LOOP(&#x27;&#x27;,(#30,#31,#32,#33));
+<span class="lineno">44</span>#35=FACE_OUTER_BOUND(&#x27;&#x27;,#34,.T.);
+<span class="lineno">45</span>#36=ADVANCED_FACE(&#x27;&#x27;,(#35),#5,.T.);
+<span class="lineno">46</span>#37=OPEN_SHELL(&#x27;&#x27;,(#36));
+<span class="lineno">47</span>#38=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#37));
+<span class="lineno">48</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">49</span>#9051=PRODUCT(&#x27;Hea006&#x27;,&#x27;Hea006&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">50</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">51</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">52</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">53</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">54</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">55</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">56</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">57</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">58</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">59</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#38),#9060);
+<span class="lineno">60</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">61</span>ENDSEC;
+<span class="lineno">62</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

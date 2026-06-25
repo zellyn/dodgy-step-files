@@ -41,6 +41,9 @@
 <li><code>contains(b&#x27;PLANE&#x27;)</code></li>
 <li><code>contains(b&#x27;1.0E-6&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="N017.html">N017</a></p>
 </section>
@@ -58,53 +61,45 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* N019 - <mark>OFFSET_SURFACE</mark> fixed tolerance hard-coded 1e-3 (BRL-CAD step-g)
-<span class="lineno">2</span> * Defect: BRL-CAD&#x27;s step-g importer hard-codes m_tolerance = 1e-3 for edges
-<span class="lineno">3</span> * and trims rather than reading the file&#x27;s uncertainty_measure_with_unit.
-<span class="lineno">4</span> * Models requiring tighter tolerance lose feature fidelity; models tolerant
-<span class="lineno">5</span> * of wider tolerance are over-rejected.
-<span class="lineno">6</span> * Reproducer: file declares declared 1e-6 mm tolerance via
-<span class="lineno">7</span> * GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT, but BRL-CAD&#x27;s importer ignores it
-<span class="lineno">8</span> * for <mark>OFFSET_SURFACE</mark> distance tolerance.
-<span class="lineno">9</span> */
-<span class="lineno">10</span>ISO-10303-21;
-<span class="lineno">11</span>HEADER;
-<span class="lineno">12</span>FILE_DESCRIPTION((&#x27;N019 <mark>OFFSET_SURFACE</mark> step-g hard-coded 1e-3 ignores file uncertainty&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">13</span>FILE_NAME(&#x27;N019.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
-<span class="lineno">14</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">15</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN&#x27;));
-<span class="lineno">16</span>ENDSEC;
-<span class="lineno">17</span>DATA;
-<span class="lineno">18</span>#1=APPLICATION_CONTEXT(&#x27;automotive design&#x27;);
-<span class="lineno">19</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">20</span>  &#x27;automotive_design&#x27;,2009,#1);
-<span class="lineno">21</span>#10=CARTESIAN_POINT(&#x27;o&#x27;,(0.0,0.0,0.0));
-<span class="lineno">22</span>#11=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
-<span class="lineno">23</span>#12=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">24</span>#13=AXIS2_PLACEMENT_3D(&#x27;plc&#x27;,#10,#11,#12);
-<span class="lineno">25</span>#14=<mark>PLANE</mark>(&#x27;base&#x27;,#13);
-<span class="lineno">26</span>/* <mark>OFFSET_SURFACE</mark> distance is below step-g&#x27;s hard-coded 1e-3 floor */
-<span class="lineno">27</span>#15=<mark>OFFSET_SURFACE</mark>(#14,5.0E-5,.T.);
-<span class="lineno">28</span>#20=CARTESIAN_POINT(&#x27;p0&#x27;,(0.0,0.0,5.0E-5));
-<span class="lineno">29</span>#21=CARTESIAN_POINT(&#x27;p1&#x27;,(10.0,0.0,5.0E-5));
-<span class="lineno">30</span>#22=VERTEX_POINT(&#x27;&#x27;,#20);
-<span class="lineno">31</span>#23=VERTEX_POINT(&#x27;&#x27;,#21);
-<span class="lineno">32</span>#30=DIRECTION(&#x27;+x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">33</span>#31=VECTOR(&#x27;&#x27;,#30,10.0);
-<span class="lineno">34</span>#32=LINE(&#x27;&#x27;,#20,#31);
-<span class="lineno">35</span>#40=EDGE_CURVE(&#x27;off_surf_edge&#x27;,#22,#23,#32,.T.);
-<span class="lineno">36</span>#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">37</span>#51=(NAMED_UNIT(*)<mark>PLANE</mark>_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">38</span>#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">39</span>/* File explicitly declares tight tolerance 1e-6, but step-g forces 1e-3 */
-<span class="lineno">40</span>#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(<mark>1.0E-6</mark>),#50,
-<span class="lineno">41</span>  &#x27;distance_accuracy_value&#x27;,&#x27;file_declared_tight&#x27;);
-<span class="lineno">42</span>#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">43</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
-<span class="lineno">44</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#50,#51,#52))
-<span class="lineno">45</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
-<span class="lineno">46</span>ENDSEC;
-<span class="lineno">47</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* N019: <mark>OFFSET_SURFACE</mark> on <mark>PLANE</mark> with offset 5.0E-5 mm; file tol <mark>1.0E-6</mark>; hard-coded 1.0E-3 importer tolerance crushes offset back to base; GEOMETRIC_CURVE_SET â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;N019&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;N019.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;plane_orig&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">11</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">12</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">13</span>#5=<mark>PLANE</mark>(&#x27;base_plane&#x27;,#4);
+<span class="lineno">14</span>#6=<mark>OFFSET_SURFACE</mark>(&#x27;&#x27;,#5,5.0E-5,.F.);
+<span class="lineno">15</span>#7=CARTESIAN_POINT(&#x27;p0_on_offset&#x27;,(0.0,0.0,5.0E-05));
+<span class="lineno">16</span>#8=CARTESIAN_POINT(&#x27;p1_on_offset&#x27;,(10.0,0.0,5.0E-05));
+<span class="lineno">17</span>#9=VERTEX_POINT(&#x27;v0&#x27;,#7);
+<span class="lineno">18</span>#10=VERTEX_POINT(&#x27;v1&#x27;,#8);
+<span class="lineno">19</span>#11=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">20</span>#12=VECTOR(&#x27;&#x27;,#11,10.0);
+<span class="lineno">21</span>#13=LINE(&#x27;line_on_offset&#x27;,#7,#12);
+<span class="lineno">22</span>#14=EDGE_CURVE(&#x27;edge_at_offset&#x27;,#9,#10,#13,.T.);
+<span class="lineno">23</span>#15=GEOMETRIC_CURVE_SET(&#x27;offset_set&#x27;,(#14,#6));
+<span class="lineno">24</span>#16=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">25</span>#17=PRODUCT_CONTEXT(&#x27;&#x27;,#16,&#x27;mechanical&#x27;);
+<span class="lineno">26</span>#18=PRODUCT(&#x27;N019&#x27;,&#x27;N019&#x27;,&#x27;&#x27;,(#17));
+<span class="lineno">27</span>#19=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#18);
+<span class="lineno">28</span>#20=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#16,&#x27;design&#x27;);
+<span class="lineno">29</span>#21=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#19,#20);
+<span class="lineno">30</span>#22=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#21);
+<span class="lineno">31</span>#23=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">32</span>#24=(NAMED_UNIT(*)<mark>PLANE</mark>_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">33</span>#25=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">34</span>#26=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(<mark>1.0E-6</mark>),#23,&#x27;distance_accuracy_value&#x27;,&#x27;file_precision_ignored_by_importer&#x27;);
+<span class="lineno">35</span>#27=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#26))GLOBAL_UNIT_ASSIGNED_CONTEXT((#23,#24,#25))REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">36</span>#28=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION(&#x27;&#x27;,(#15),#27);
+<span class="lineno">37</span>#29=SHAPE_DEFINITION_REPRESENTATION(#22,#28);
+<span class="lineno">38</span>ENDSEC;
+<span class="lineno">39</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

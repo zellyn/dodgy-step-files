@@ -38,9 +38,14 @@
 <p>**See also**: Tsh023, Tsh024. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Closure intent</h2>
+<p><code>ambiguous</code> — the open shell is an incidental scaffold for a non-closure-related test.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>matches(rb&quot;OPEN_SHELL\(&#x27;[^&#x27;]*&#x27;,\(\)\)&quot;)</code></li>
 <li><code>matches(rb&#x27;\(\)\)&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="../12-3a-shells/Tsh023.html">Tsh023</a>, <a href="../12-3a-shells/Tsh024.html">Tsh024</a></p>
@@ -60,19 +65,20 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Ad094 - Null-deref on empty face list in shell
-<span class="lineno">3</span> * Defect: OPEN_SHELL with empty face list () */
-<span class="lineno">4</span>HEADER;
-<span class="lineno">5</span>FILE_DESCRIPTION((&#x27;Ad094 test case&#x27;,&#x27;Null-deref on empty face list in shell&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">6</span>FILE_NAME(&#x27;Ad094.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">7</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">8</span>ENDSEC;
-<span class="lineno">9</span>DATA;
-<span class="lineno">10</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">11</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
-<span class="lineno">12</span>#100=<mark>OPEN_SHELL(&#x27;zero_face_shell&#x27;,())</mark>;
-<span class="lineno">13</span>ENDSEC;
-<span class="lineno">14</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* Ad094: OPEN_SHELL with empty face list (<mark>())</mark> causes null dereference in shell-translator; translator iterates face list expecting &gt;= 1 element; first-iteration null dereference produces OOB read, junk attributes, or crash; must diagnose malformed shell and skip without crashing; OCCT MANTIS#0033312, #0023938, #0024517; See also Tsh023, Tsh024; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ad094&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ad094.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">11</span>#3=<mark>OPEN_SHELL(&#x27;zero_face_shell&#x27;,())</mark>;
+<span class="lineno">12</span>#4=CLOSED_SHELL(&#x27;zero_face_closed&#x27;,<mark>())</mark>;
+<span class="lineno">13</span>#5=CONNECTED_FACE_SET(&#x27;zero_face_cfs&#x27;,<mark>())</mark>;
+<span class="lineno">14</span>ENDSEC;
+<span class="lineno">15</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

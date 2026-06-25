@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tfa119 — ShapeAnalysis_CheckSmallFace.CheckTwisted opposite-winding-inner-wire</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa119</span>
+</nav>
+<header class="title-bar">
+<h1>Tfa119 <span class="sep">—</span> <span class="entry-title">ShapeAnalysis_CheckSmallFace.CheckTwisted opposite-winding-inner-wire</span></h1>
+<p class="category">§12.3c</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3c-faces/Tfa119.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa119.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>synthesized — no external source cited</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>ShapeAnalysis_CheckSmallFace.CheckTwisted opposite-winding-inner-wire</p></section>
+<section><h2>Reproducer recipe</h2>
+<p></p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_FORWARD_REF)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>process_signal</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tfa119 â ShapeAnalysis_CheckSmallFace.CheckTwisted opposite-winding-inner-wire
+<span class="lineno">3</span> * Defect: face whose inner wire winds opposite to outer; CheckTwisted&#x27;s region
+<span class="lineno">4</span> * orientation logic doesn&#x27;t handle inner-wire reversal correctly. */
+<span class="lineno">5</span>HEADER;
+<span class="lineno">6</span>FILE_DESCRIPTION((&#x27;Tfa119 - CheckTwisted opposite-winding-inner-wire defect&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">7</span>FILE_NAME(&#x27;Tfa119.stp&#x27;,&#x27;2026-06-16T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">8</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">9</span>ENDSEC;
+<span class="lineno">10</span>DATA;
+<span class="lineno">11</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">12</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">13</span>/* Outer loop: counterclockwise when viewed from above (CCW) */
+<span class="lineno">14</span>#10=CARTESIAN_POINT(&#x27;p_origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">15</span>#11=CARTESIAN_POINT(&#x27;p_outer_1&#x27;,(10.0,0.0,0.0));
+<span class="lineno">16</span>#12=VERTEX_POINT(&#x27;v_outer_1&#x27;,#11);
+<span class="lineno">17</span>#13=CARTESIAN_POINT(&#x27;p_outer_2&#x27;,(10.0,10.0,0.0));
+<span class="lineno">18</span>#14=VERTEX_POINT(&#x27;v_outer_2&#x27;,#13);
+<span class="lineno">19</span>#15=CARTESIAN_POINT(&#x27;p_outer_3&#x27;,(0.0,10.0,0.0));
+<span class="lineno">20</span>#16=VERTEX_POINT(&#x27;v_outer_3&#x27;,#15);
+<span class="lineno">21</span>#17=VERTEX_POINT(&#x27;v_origin&#x27;,#10);
+<span class="lineno">22</span>/* Outer edges CCW: 0â10,0 â 10,10 â 0,10 â 0,0 */
+<span class="lineno">23</span>#18=LINE(&#x27;outer_e1&#x27;,(#10),#19);
+<span class="lineno">24</span>#19=VECTOR(&#x27;outer_v1&#x27;,#20,1.0);
+<span class="lineno">25</span>#20=DIRECTION(&#x27;outer_d1&#x27;,(1.0,0.0,0.0));
+<span class="lineno">26</span>#21=EDGE_CURVE(&#x27;outer_edge1&#x27;,#17,#12,#18,.T.);
+<span class="lineno">27</span>#22=LINE(&#x27;outer_e2&#x27;,(#11),#23);
+<span class="lineno">28</span>#23=VECTOR(&#x27;outer_v2&#x27;,#24,1.0);
+<span class="lineno">29</span>#24=DIRECTION(&#x27;outer_d2&#x27;,(0.0,1.0,0.0));
+<span class="lineno">30</span>#25=EDGE_CURVE(&#x27;outer_edge2&#x27;,#12,#14,#22,.T.);
+<span class="lineno">31</span>#26=LINE(&#x27;outer_e3&#x27;,(#13),#27);
+<span class="lineno">32</span>#27=VECTOR(&#x27;outer_v3&#x27;,#28,1.0);
+<span class="lineno">33</span>#28=DIRECTION(&#x27;outer_d3&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">34</span>#29=EDGE_CURVE(&#x27;outer_edge3&#x27;,#14,#16,#26,.T.);
+<span class="lineno">35</span>#30=LINE(&#x27;outer_e4&#x27;,(#15),#31);
+<span class="lineno">36</span>#31=VECTOR(&#x27;outer_v4&#x27;,#32,1.0);
+<span class="lineno">37</span>#32=DIRECTION(&#x27;outer_d4&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">38</span>#33=EDGE_CURVE(&#x27;outer_edge4&#x27;,#16,#17,#30,.T.);
+<span class="lineno">39</span>#34=ORIENTED_EDGE(&#x27;outer_oe1&#x27;,*,*,#21,.T.);
+<span class="lineno">40</span>#35=ORIENTED_EDGE(&#x27;outer_oe2&#x27;,*,*,#25,.T.);
+<span class="lineno">41</span>#36=ORIENTED_EDGE(&#x27;outer_oe3&#x27;,*,*,#29,.T.);
+<span class="lineno">42</span>#37=ORIENTED_EDGE(&#x27;outer_oe4&#x27;,*,*,#33,.T.);
+<span class="lineno">43</span>#38=EDGE_LOOP(&#x27;outer_loop&#x27;,(#34,#35,#36,#37));
+<span class="lineno">44</span>#39=FACE_OUTER_BOUND(&#x27;outer_bound&#x27;,#38,.T.);
+<span class="lineno">45</span>/* Inner loop: CLOCKWISE (opposite to outer â creates twist) */
+<span class="lineno">46</span>#40=CARTESIAN_POINT(&#x27;p_inner_1&#x27;,(2.0,2.0,0.0));
+<span class="lineno">47</span>#41=VERTEX_POINT(&#x27;v_inner_1&#x27;,#40);
+<span class="lineno">48</span>#42=CARTESIAN_POINT(&#x27;p_inner_2&#x27;,(8.0,2.0,0.0));
+<span class="lineno">49</span>#43=VERTEX_POINT(&#x27;v_inner_2&#x27;,#42);
+<span class="lineno">50</span>#44=CARTESIAN_POINT(&#x27;p_inner_3&#x27;,(8.0,8.0,0.0));
+<span class="lineno">51</span>#45=VERTEX_POINT(&#x27;v_inner_3&#x27;,#44);
+<span class="lineno">52</span>#46=CARTESIAN_POINT(&#x27;p_inner_4&#x27;,(2.0,8.0,0.0));
+<span class="lineno">53</span>#47=VERTEX_POINT(&#x27;v_inner_4&#x27;,#46);
+<span class="lineno">54</span>/* Inner edges CW: 2,2 â 2,8 â 8,8 â 8,2 â 2,2 */
+<span class="lineno">55</span>#48=LINE(&#x27;inner_e1&#x27;,(#40),#49);
+<span class="lineno">56</span>#49=VECTOR(&#x27;inner_v1&#x27;,#24,1.0);
+<span class="lineno">57</span>#50=EDGE_CURVE(&#x27;inner_edge1&#x27;,#41,#47,#48,.T.);
+<span class="lineno">58</span>#51=LINE(&#x27;inner_e2&#x27;,(#46),#52);
+<span class="lineno">59</span>#52=VECTOR(&#x27;inner_v2&#x27;,#20,1.0);
+<span class="lineno">60</span>#53=EDGE_CURVE(&#x27;inner_edge2&#x27;,#47,#45,#51,.T.);
+<span class="lineno">61</span>#54=LINE(&#x27;inner_e3&#x27;,(#44),#55);
+<span class="lineno">62</span>#55=VECTOR(&#x27;inner_v3&#x27;,#56,1.0);
+<span class="lineno">63</span>#56=DIRECTION(&#x27;inner_d3&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">64</span>#57=EDGE_CURVE(&#x27;inner_edge3&#x27;,#45,#43,#54,.T.);
+<span class="lineno">65</span>#58=LINE(&#x27;inner_e4&#x27;,(#42),#59);
+<span class="lineno">66</span>#59=VECTOR(&#x27;inner_v4&#x27;,#28,1.0);
+<span class="lineno">67</span>#60=EDGE_CURVE(&#x27;inner_edge4&#x27;,#43,#41,#58,.T.);
+<span class="lineno">68</span>#61=ORIENTED_EDGE(&#x27;inner_oe1&#x27;,*,*,#50,.T.);
+<span class="lineno">69</span>#62=ORIENTED_EDGE(&#x27;inner_oe2&#x27;,*,*,#53,.T.);
+<span class="lineno">70</span>#63=ORIENTED_EDGE(&#x27;inner_oe3&#x27;,*,*,#57,.T.);
+<span class="lineno">71</span>#64=ORIENTED_EDGE(&#x27;inner_oe4&#x27;,*,*,#60,.T.);
+<span class="lineno">72</span>#65=EDGE_LOOP(&#x27;inner_loop&#x27;,(#61,#62,#63,#64));
+<span class="lineno">73</span>#66=FACE_INNER_BOUND(&#x27;inner_bound&#x27;,#65,.T.);
+<span class="lineno">74</span>/* Plane surface */
+<span class="lineno">75</span>#67=DIRECTION(&#x27;z_dir&#x27;,(0.0,0.0,1.0));
+<span class="lineno">76</span>#68=DIRECTION(&#x27;x_dir&#x27;,(1.0,0.0,0.0));
+<span class="lineno">77</span>#69=AXIS2_PLACEMENT_3D(&#x27;plane_place&#x27;,#10,#67,#68);
+<span class="lineno">78</span>#70=PLANE(&#x27;face_plane&#x27;,#69);
+<span class="lineno">79</span>/* Face with opposite winding inner loop */
+<span class="lineno">80</span>#71=ADVANCED_FACE(&#x27;twisted_face&#x27;,(#39,#66),#70,.T.);
+<span class="lineno">81</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">82</span>#9001=PRODUCT(&#x27;Tfa119&#x27;,&#x27;Tfa119&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">83</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">84</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">85</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">86</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">87</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">88</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">89</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">90</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">91</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">92</span>#9020=OPEN_SHELL(&#x27;shell&#x27;,(#71));
+<span class="lineno">93</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;sbsm&#x27;,(#9020));
+<span class="lineno">94</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">95</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">96</span>ENDSEC;
+<span class="lineno">97</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tfa118.html">&larr; Tfa118</a> <a class="up" href="index.html">§12.3c Faces / sewing / free bound</a> <a class="next" href="Tfa120.html">Tfa120 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

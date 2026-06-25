@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Twi190 — ShapeAnalysis_Wire.CheckShapeConnect three-edge-fan</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3b Wires / loops / edges</a> <span class="sep">/</span> <span class="current">Twi190</span>
+</nav>
+<header class="title-bar">
+<h1>Twi190 <span class="sep">—</span> <span class="entry-title">ShapeAnalysis_Wire.CheckShapeConnect three-edge-fan</span></h1>
+<p class="category">§12.3b</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3b-wires/Twi190.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3b-wires/Twi190.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>synthesized — no external source cited</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>ShapeAnalysis_Wire.CheckShapeConnect three-edge-fan</p></section>
+<section><h2>Reproducer recipe</h2>
+<p></p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Twi190: GEOMETRIC_CURVE_SET containing EDGE_LOOP with 4 edges on PLANE; PLANE: normal +Z, origin (0,0,0); hub vertex H(2,1,0) shared by 3 incoming edges and 1 outgoing edge; fan_spoke_0: A(0,0)-&gt;H(2,1) first incoming edge; fan_spoke_1: B(4,0)-&gt;H(2,1) second incoming edge; fan_spoke_2: C(2,3)-&gt;H(2,1) third incoming edge; fan_hub_out: H(2,1)-&gt;A(0,0) outgoing edge; three-edge fan at H IS mechanism: CheckShapeConnect expects 2-edge sharing; CheckShapeConnect IS mechanism â wrong verdict for n-way fan topology; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty; all EDGE_CURVEs ARE wired into EDGE_LOOP; never orphaned */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Twi190&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Twi190.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=PLANE(&#x27;&#x27;,#4);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#7=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(4.0,0.0,0.0));
+<span class="lineno">18</span>#9=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(2.0,3.0,0.0));
+<span class="lineno">20</span>#11=VERTEX_POINT(&#x27;&#x27;,#10);
+<span class="lineno">21</span>#12=CARTESIAN_POINT(&#x27;&#x27;,(2.0,1.0,0.0));
+<span class="lineno">22</span>#13=VERTEX_POINT(&#x27;&#x27;,#12);
+<span class="lineno">23</span>#14=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">24</span>#15=DIRECTION(&#x27;&#x27;,(0.894427191,0.4472135955,0.0));
+<span class="lineno">25</span>#16=VECTOR(&#x27;&#x27;,#15,2.2360679775);
+<span class="lineno">26</span>#17=LINE(&#x27;&#x27;,#14,#16);
+<span class="lineno">27</span>#18=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));
+<span class="lineno">28</span>#19=DIRECTION(&#x27;&#x27;,(0.894427191,0.4472135955));
+<span class="lineno">29</span>#20=VECTOR(&#x27;&#x27;,#19,2.2360679775);
+<span class="lineno">30</span>#21=LINE(&#x27;&#x27;,#18,#20);
+<span class="lineno">31</span>#22=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#21),#*);
+<span class="lineno">32</span>#23=PCURVE(&#x27;&#x27;,#5,#22);
+<span class="lineno">33</span>#24=SURFACE_CURVE(&#x27;&#x27;,#17,(#23),.PCURVE_S1.);
+<span class="lineno">34</span>#25=EDGE_CURVE(&#x27;fan_spoke_0&#x27;,#7,#13,#24,.T.);
+<span class="lineno">35</span>#26=ORIENTED_EDGE(&#x27;&#x27;,*,*,#25,.T.);
+<span class="lineno">36</span>#27=CARTESIAN_POINT(&#x27;&#x27;,(4.0,0.0,0.0));
+<span class="lineno">37</span>#28=DIRECTION(&#x27;&#x27;,(-0.894427191,0.4472135955,0.0));
+<span class="lineno">38</span>#29=VECTOR(&#x27;&#x27;,#28,2.2360679775);
+<span class="lineno">39</span>#30=LINE(&#x27;&#x27;,#27,#29);
+<span class="lineno">40</span>#31=CARTESIAN_POINT(&#x27;&#x27;,(4.0,0.0));
+<span class="lineno">41</span>#32=DIRECTION(&#x27;&#x27;,(-0.894427191,0.4472135955));
+<span class="lineno">42</span>#33=VECTOR(&#x27;&#x27;,#32,2.2360679775);
+<span class="lineno">43</span>#34=LINE(&#x27;&#x27;,#31,#33);
+<span class="lineno">44</span>#35=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#34),#*);
+<span class="lineno">45</span>#36=PCURVE(&#x27;&#x27;,#5,#35);
+<span class="lineno">46</span>#37=SURFACE_CURVE(&#x27;&#x27;,#30,(#36),.PCURVE_S1.);
+<span class="lineno">47</span>#38=EDGE_CURVE(&#x27;fan_spoke_1&#x27;,#9,#13,#37,.T.);
+<span class="lineno">48</span>#39=ORIENTED_EDGE(&#x27;&#x27;,*,*,#38,.T.);
+<span class="lineno">49</span>#40=CARTESIAN_POINT(&#x27;&#x27;,(2.0,3.0,0.0));
+<span class="lineno">50</span>#41=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">51</span>#42=VECTOR(&#x27;&#x27;,#41,2.0);
+<span class="lineno">52</span>#43=LINE(&#x27;&#x27;,#40,#42);
+<span class="lineno">53</span>#44=CARTESIAN_POINT(&#x27;&#x27;,(2.0,3.0));
+<span class="lineno">54</span>#45=DIRECTION(&#x27;&#x27;,(0.0,-1.0));
+<span class="lineno">55</span>#46=VECTOR(&#x27;&#x27;,#45,2.0);
+<span class="lineno">56</span>#47=LINE(&#x27;&#x27;,#44,#46);
+<span class="lineno">57</span>#48=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#47),#*);
+<span class="lineno">58</span>#49=PCURVE(&#x27;&#x27;,#5,#48);
+<span class="lineno">59</span>#50=SURFACE_CURVE(&#x27;&#x27;,#43,(#49),.PCURVE_S1.);
+<span class="lineno">60</span>#51=EDGE_CURVE(&#x27;fan_spoke_2&#x27;,#11,#13,#50,.T.);
+<span class="lineno">61</span>#52=ORIENTED_EDGE(&#x27;&#x27;,*,*,#51,.T.);
+<span class="lineno">62</span>#53=CARTESIAN_POINT(&#x27;&#x27;,(2.0,1.0,0.0));
+<span class="lineno">63</span>#54=DIRECTION(&#x27;&#x27;,(-0.894427191,-0.4472135955,0.0));
+<span class="lineno">64</span>#55=VECTOR(&#x27;&#x27;,#54,2.2360679775);
+<span class="lineno">65</span>#56=LINE(&#x27;&#x27;,#53,#55);
+<span class="lineno">66</span>#57=CARTESIAN_POINT(&#x27;&#x27;,(2.0,1.0));
+<span class="lineno">67</span>#58=DIRECTION(&#x27;&#x27;,(-0.894427191,-0.4472135955));
+<span class="lineno">68</span>#59=VECTOR(&#x27;&#x27;,#58,2.2360679775);
+<span class="lineno">69</span>#60=LINE(&#x27;&#x27;,#57,#59);
+<span class="lineno">70</span>#61=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#60),#*);
+<span class="lineno">71</span>#62=PCURVE(&#x27;&#x27;,#5,#61);
+<span class="lineno">72</span>#63=SURFACE_CURVE(&#x27;&#x27;,#56,(#62),.PCURVE_S1.);
+<span class="lineno">73</span>#64=EDGE_CURVE(&#x27;fan_hub_out&#x27;,#13,#7,#63,.T.);
+<span class="lineno">74</span>#65=ORIENTED_EDGE(&#x27;&#x27;,*,*,#64,.T.);
+<span class="lineno">75</span>#66=EDGE_LOOP(&#x27;&#x27;,(#26,#39,#52,#65));
+<span class="lineno">76</span>#67=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#66));
+<span class="lineno">77</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">78</span>#9051=PRODUCT(&#x27;Twi190&#x27;,&#x27;Twi190&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">79</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">80</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">81</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">82</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">83</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">84</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">85</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">86</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">87</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">88</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#67),#9060);
+<span class="lineno">89</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">90</span>ENDSEC;
+<span class="lineno">91</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Twi189.html">&larr; Twi189</a> <a class="up" href="index.html">§12.3b Wires / loops / edges</a> <a class="next" href="Twi191.html">Twi191 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

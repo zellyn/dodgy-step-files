@@ -44,6 +44,9 @@
 <li><code>count_entity_def(b&#x27;SECURITY_CLASSIFICATION&#x27;) &gt;= 2</code></li>
 <li><code>contains(b&#x27;CC_DESIGN_SECURITY_CLASSIFICATION&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -59,37 +62,72 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M130 - AP203 assembly cleared at lower security classification than
-<span class="lineno">3</span> * its components.
-<span class="lineno">4</span> * Defect: a parent PRODUCT carries SECURITY_CLASSIFICATION &#x27;unclassified&#x27;
-<span class="lineno">5</span> * yet a child component used in NEXT_ASSEMBLY_USAGE_OCCURRENCE carries
-<span class="lineno">6</span> * SECURITY_CLASSIFICATION &#x27;confidential&#x27;. Aggregating a confidential
-<span class="lineno">7</span> * child into an unclassified parent inverts the security clearance
-<span class="lineno">8</span> * hierarchy. */
+<span class="lineno">2</span>/* M130: AP203 assembly classified at lower security level than its components */
+<span class="lineno">3</span>/* DEFECT: parent assembly is &#x27;unclassified&#x27;; child component is &#x27;confidential&#x27; */
+<span class="lineno">4</span>/* Per AP203 Â§5.5 security must be monotone: child level &lt;= parent level */
+<span class="lineno">5</span>/* Anyone reading the unclassified assembly gains access to the confidential child */
+<span class="lineno">6</span>/* Byte assertion: contains(b&#x27;<mark>CONFIG_CONTROL_DESIGN</mark>&#x27;) */
+<span class="lineno">7</span>/* Byte assertion: count_entity_def(b&#x27;SECURITY_CLASSIFICATION&#x27;) &gt;= 2 */
+<span class="lineno">8</span>/* Byte assertion: contains(b&#x27;<mark>CC_DESIGN_SECURITY_CLASSIFICATION</mark>&#x27;) */
 <span class="lineno">9</span>HEADER;
-<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;M130 test case&#x27;,&#x27;AP203 security classification inversion&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">11</span>FILE_NAME(&#x27;M130.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">12</span>FILE_SCHEMA((&#x27;<mark>CONFIG_CONTROL_DESIGN</mark>&#x27;));
-<span class="lineno">13</span>ENDSEC;
-<span class="lineno">14</span>DATA;
-<span class="lineno">15</span>#1=APPLICATION_CONTEXT(&#x27;configuration controlled 3D design of mechanical parts and assemblies&#x27;);
-<span class="lineno">16</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;config_control_design&#x27;,1994,#1);
-<span class="lineno">17</span>#10=PRODUCT(&#x27;parent_assy&#x27;,&#x27;parent_assy&#x27;,&#x27;top assembly&#x27;,(#1));
-<span class="lineno">18</span>#11=PRODUCT(&#x27;classified_child&#x27;,&#x27;classified_child&#x27;,&#x27;restricted part&#x27;,(#1));
-<span class="lineno">19</span>#20=PRODUCT_DEFINITION_FORMATION(&#x27;rev_A&#x27;,&#x27;released&#x27;,#10);
-<span class="lineno">20</span>#21=PRODUCT_DEFINITION_FORMATION(&#x27;rev_A&#x27;,&#x27;released&#x27;,#11);
-<span class="lineno">21</span>#30=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#20,#1);
-<span class="lineno">22</span>#31=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#21,#1);
-<span class="lineno">23</span>#40=NEXT_ASSEMBLY_USAGE_OCCURRENCE(&#x27;use_1&#x27;,&#x27;child usage&#x27;,&#x27;&#x27;,#30,#31,$);
-<span class="lineno">24</span>/* Defect: parent unclassified, child confidential. */
-<span class="lineno">25</span>#100=SECURITY_CLASSIFICATION_LEVEL(&#x27;unclassified&#x27;);
-<span class="lineno">26</span>#101=SECURITY_CLASSIFICATION_LEVEL(&#x27;confidential&#x27;);
-<span class="lineno">27</span><mark>#110=SECURITY_CLASSIFICATION(</mark>&#x27;&#x27;,&#x27;parent open&#x27;,#100);
-<span class="lineno">28</span><mark>#111=SECURITY_CLASSIFICATION(</mark>&#x27;&#x27;,&#x27;child restricted&#x27;,#101);
-<span class="lineno">29</span>#120=<mark>CC_DESIGN_SECURITY_CLASSIFICATION</mark>(#110,(#30));
-<span class="lineno">30</span>#121=<mark>CC_DESIGN_SECURITY_CLASSIFICATION</mark>(#111,(#31));
-<span class="lineno">31</span>ENDSEC;
-<span class="lineno">32</span>END-ISO-10303-21;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;M130: AP203 security classification inversion â unclassified parent, confidential child&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;M130.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>/* Byte assertion: contains(b&#x27;<mark>CONFIG_CONTROL_DESIGN</mark>&#x27;) */
+<span class="lineno">13</span>FILE_SCHEMA((&#x27;<mark>CONFIG_CONTROL_DESIGN</mark> { 1 0 10303 203 1 0 0 }&#x27;));
+<span class="lineno">14</span>ENDSEC;
+<span class="lineno">15</span>DATA;
+<span class="lineno">16</span>#1=APPLICATION_CONTEXT(&#x27;configuration controlled 3D designs of mechanical parts and assemblies&#x27;);
+<span class="lineno">17</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">18</span>  &#x27;config_control_design&#x27;,1994,#1);
+<span class="lineno">19</span>/* Standard unit context (mm) */
+<span class="lineno">20</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">21</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">22</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">23</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">24</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">25</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">26</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">27</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">28</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">29</span>/* Parent assembly product â will be classified &#x27;unclassified&#x27; */
+<span class="lineno">30</span>#20=PRODUCT(&#x27;ASSY-001&#x27;,&#x27;Actuator Assembly&#x27;,&#x27;Top-level assembly&#x27;,(#1));
+<span class="lineno">31</span>#21=PRODUCT_DEFINITION_FORMATION(&#x27;rev_A&#x27;,&#x27;&#x27;,#20);
+<span class="lineno">32</span>#22=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#21,PRODUCT_DEFINITION_CONTEXT(#1,&#x27;design&#x27;));
+<span class="lineno">33</span>/* Child component product â will be classified &#x27;confidential&#x27; */
+<span class="lineno">34</span>#30=PRODUCT(&#x27;PART-007&#x27;,&#x27;Classified Valve&#x27;,&#x27;Restricted flow control valve&#x27;,(#1));
+<span class="lineno">35</span>#31=PRODUCT_DEFINITION_FORMATION(&#x27;rev_A&#x27;,&#x27;&#x27;,#30);
+<span class="lineno">36</span>#32=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#31,PRODUCT_DEFINITION_CONTEXT(#1,&#x27;design&#x27;));
+<span class="lineno">37</span>/* NEXT_ASSEMBLY_USAGE_OCCURRENCE links child into parent assembly */
+<span class="lineno">38</span>#40=NEXT_ASSEMBLY_USAGE_OCCURRENCE(&#x27;nauo_1&#x27;,&#x27;valve in assembly&#x27;,&#x27;&#x27;,
+<span class="lineno">39</span>  #22,#32,$);
+<span class="lineno">40</span>/* Byte assertion: count_entity_def(b&#x27;SECURITY_CLASSIFICATION&#x27;) &gt;= 2 */
+<span class="lineno">41</span>/* SECURITY_CLASSIFICATION for parent: &#x27;unclassified&#x27; */
+<span class="lineno">42</span><mark>#50=SECURITY_CLASSIFICATION(</mark>&#x27;assembly clearance&#x27;,&#x27;unclassified assembly&#x27;,
+<span class="lineno">43</span>  SECURITY_CLASSIFICATION_LEVEL(&#x27;unclassified&#x27;));
+<span class="lineno">44</span>/* SECURITY_CLASSIFICATION for child: &#x27;confidential&#x27; â higher than parent: DEFECT */
+<span class="lineno">45</span><mark>#51=SECURITY_CLASSIFICATION(</mark>&#x27;part clearance&#x27;,&#x27;confidential valve component&#x27;,
+<span class="lineno">46</span>  SECURITY_CLASSIFICATION_LEVEL(&#x27;confidential&#x27;));
+<span class="lineno">47</span>/* Byte assertion: contains(b&#x27;<mark>CC_DESIGN_SECURITY_CLASSIFICATION</mark>&#x27;) */
+<span class="lineno">48</span>/* <mark>CC_DESIGN_SECURITY_CLASSIFICATION</mark> assigns clearance to parent assembly */
+<span class="lineno">49</span>#52=<mark>CC_DESIGN_SECURITY_CLASSIFICATION</mark>(#50,(#22));
+<span class="lineno">50</span>/* DEFECT: child component gets &#x27;confidential&#x27; while parent is &#x27;unclassified&#x27; */
+<span class="lineno">51</span>/* Per AP203 Â§5.5 this inverts the monotonicity requirement */
+<span class="lineno">52</span>#53=<mark>CC_DESIGN_SECURITY_CLASSIFICATION</mark>(#51,(#32));
+<span class="lineno">53</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">54</span>#500=GEOMETRIC_CURVE_SET(&#x27;ap203-security-classification-inversion&#x27;,
+<span class="lineno">55</span>  (#22,#32,#40,#50,#51,#52,#53));
+<span class="lineno">56</span>/* Product chain */
+<span class="lineno">57</span>#600=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">58</span>#601=PRODUCT_CONTEXT(&#x27;&#x27;,#600,&#x27;mechanical&#x27;);
+<span class="lineno">59</span>#602=PRODUCT(&#x27;M130&#x27;,&#x27;M130&#x27;,&#x27;M130&#x27;,(#601));
+<span class="lineno">60</span>#603=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#602);
+<span class="lineno">61</span>#604=PRODUCT_DEFINITION_CONTEXT(#600,&#x27;design&#x27;);
+<span class="lineno">62</span>#605=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#603,#604);
+<span class="lineno">63</span>#606=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#605);
+<span class="lineno">64</span>#607=SHAPE_REPRESENTATION(&#x27;&#x27;,(#500),#14);
+<span class="lineno">65</span>#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
+<span class="lineno">66</span>ENDSEC;
+<span class="lineno">67</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

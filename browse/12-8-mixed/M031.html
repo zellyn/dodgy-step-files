@@ -41,6 +41,9 @@
 <li><code>contains(b&#x27;MEASURE_REPRESENTATION_ITEM&#x27;)</code></li>
 <li><code>matches(rb&#x27;LENGTH_MEASURE\(123.45\),\$&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -56,43 +59,36 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M031 - Validation property: missing unit_component.
-<span class="lineno">3</span> * Defect: a geometric/validation property has a numeric value but no
-<span class="lineno">4</span> * unit reference. The <mark>MEASURE_REPRESENTATION_ITEM</mark> here uses
-<span class="lineno">5</span> * LENGTH_MEASURE without an associated unit_component, so the value
-<span class="lineno">6</span> * is unitless. Strict tools must reject. */
-<span class="lineno">7</span>HEADER;
-<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;M031 test case&#x27;,&#x27;GVP missing unit_component&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">9</span>FILE_NAME(&#x27;M031.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">11</span>ENDSEC;
-<span class="lineno">12</span>DATA;
-<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
-<span class="lineno">15</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">16</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">17</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">18</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
-<span class="lineno">19</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">20</span>     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-<span class="lineno">21</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-<span class="lineno">22</span>     REPRESENTATION_CONTEXT(&#x27;part&#x27;,&#x27;3D&#x27;));
-<span class="lineno">23</span>#300=PRODUCT(&#x27;part&#x27;,&#x27;part&#x27;,&#x27;&#x27;,(#310));
-<span class="lineno">24</span>#310=MECHANICAL_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">25</span>#320=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#300);
-<span class="lineno">26</span>#330=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#320,#340);
-<span class="lineno">27</span>#340=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
-<span class="lineno">28</span>#350=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#330);
-<span class="lineno">29</span>/* GVP for some length measure - DEFECT: no unit_component supplied,
-<span class="lineno">30</span> * so the trailing slot is $ instead of #10 (mm). */
-<span class="lineno">31</span>#400=PROPERTY_DEFINITION(&#x27;geometric validation property&#x27;,
-<span class="lineno">32</span>       &#x27;maximum length&#x27;,#350);
-<span class="lineno">33</span>#410=<mark>MEASURE_REPRESENTATION_ITEM</mark>(&#x27;maximum length&#x27;,
-<span class="lineno">34</span>       <mark>LENGTH_MEASURE(123.45),$</mark>);
-<span class="lineno">35</span>#420=REPRESENTATION(&#x27;&#x27;,(#410),#14);
-<span class="lineno">36</span>#430=PROPERTY_DEFINITION_REPRESENTATION(#400,#420);
-<span class="lineno">37</span>ENDSEC;
-<span class="lineno">38</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M031: GEOMETRIC_CURVE_SET containing <mark>MEASURE_REPRESENTATION_ITEM</mark> with LENGTH_MEASURE(123.45) and no unit_component ($); input: AP242 STEP file where a geometric validation property has a length_measure value but the unit_component field is $ (unset), leaving units unspecified; CAx-IF RP requires every measure to carry an explicit unit reference; kernel must warn; archive-reject if strict; OCC silently accepts (no diagnostic, empty result); GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty; synonyms: GVP missing unit_component, validation property no units, validation value with no unit, unit_component absent on property */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;M031&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;M031.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=<mark>MEASURE_REPRESENTATION_ITEM</mark>(&#x27;edge_length&#x27;,<mark>LENGTH_MEASURE(123.45),$</mark>);
+<span class="lineno">11</span>#2=PROPERTY_DEFINITION(&#x27;geometric validation property&#x27;,&#x27;edge length without unit&#x27;,$);
+<span class="lineno">12</span>#3=PROPERTY_DEFINITION_REPRESENTATION(#2,#1);
+<span class="lineno">13</span>#4=<mark>MEASURE_REPRESENTATION_ITEM</mark>(&#x27;bounding_area&#x27;,AREA_MEASURE(56.78),$);
+<span class="lineno">14</span>#5=PROPERTY_DEFINITION(&#x27;geometric validation property&#x27;,&#x27;bounding area without unit&#x27;,$);
+<span class="lineno">15</span>#6=PROPERTY_DEFINITION_REPRESENTATION(#5,#4);
+<span class="lineno">16</span>#7=GEOMETRIC_CURVE_SET(&#x27;gvp-missing-unit-component&#x27;,(#1,#2,#3,#4,#5,#6));
+<span class="lineno">17</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">18</span>#9051=PRODUCT(&#x27;M031&#x27;,&#x27;M031&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">19</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">20</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">21</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">22</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">23</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">24</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">25</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">26</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">27</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">28</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#7),#9060);
+<span class="lineno">29</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">30</span>ENDSEC;
+<span class="lineno">31</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

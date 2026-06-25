@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Me158 — flipNormals_neighbor_unmark_t1: t1 flip-bit cleared in cleanup pass</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <span class="sep">/</span> <span class="current">Me158</span>
+</nav>
+<header class="title-bar">
+<h1>Me158 <span class="sep">—</span> <span class="entry-title">flipNormals_neighbor_unmark_t1: t1 flip-bit cleared in cleanup pass</span></h1>
+<p class="category">§12.14 mesh defects (sub-class: flip-normals / neighbor unmark t1)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../mesh-examples/12-14-mesh/Me158.mesh.json">View raw fixture (.mesh.json)</a> <code class="path">mesh-examples/12-14-mesh/Me158.mesh.json</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>MeshFix `Basic_TMesh.flipNormals` Branch 9 (*neighbor_unmark_t1*: `IS_BIT(t1,6)`)</li>
+<li>`MESH_HEAL_COVERAGE.md`.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Two adjacent CW triangles sharing edge (v0,v1). After pass 1 flips both, pass 2 processes the seed (Branch 8) and finds the t1-slot neighbor also has bit 6 set (Branch 9); it unmarks t1 and enqueues it for further cleanup.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>v0=(0,0,0), v1=(1,0,0), v2=(0.5,1,0), v3=(0.5,-1,0); t0=(v0,v2,v1) CW, t1=(v0,v1,v3) CW; shared edge (v0,v1).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Branch 9 fires when t1 neighbor&#x27;s bit 6 is set; t1 unmark and enqueue for cleanup.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>{
+<span class="lineno">2</span>  &quot;vertices&quot;: [
+<span class="lineno">3</span>    [
+<span class="lineno">4</span>      0.0,
+<span class="lineno">5</span>      0.0,
+<span class="lineno">6</span>      0.0
+<span class="lineno">7</span>    ],
+<span class="lineno">8</span>    [
+<span class="lineno">9</span>      1.0,
+<span class="lineno">10</span>      0.0,
+<span class="lineno">11</span>      0.0
+<span class="lineno">12</span>    ],
+<span class="lineno">13</span>    [
+<span class="lineno">14</span>      0.5,
+<span class="lineno">15</span>      1.0,
+<span class="lineno">16</span>      0.0
+<span class="lineno">17</span>    ],
+<span class="lineno">18</span>    [
+<span class="lineno">19</span>      0.5,
+<span class="lineno">20</span>      -1.0,
+<span class="lineno">21</span>      0.0
+<span class="lineno">22</span>    ]
+<span class="lineno">23</span>  ],
+<span class="lineno">24</span>  &quot;triangles&quot;: [
+<span class="lineno">25</span>    [
+<span class="lineno">26</span>      0,
+<span class="lineno">27</span>      2,
+<span class="lineno">28</span>      1
+<span class="lineno">29</span>    ],
+<span class="lineno">30</span>    [
+<span class="lineno">31</span>      0,
+<span class="lineno">32</span>      1,
+<span class="lineno">33</span>      3
+<span class="lineno">34</span>    ]
+<span class="lineno">35</span>  ],
+<span class="lineno">36</span>  &quot;metadata&quot;: {
+<span class="lineno">37</span>    &quot;id&quot;: &quot;Me158&quot;,
+<span class="lineno">38</span>    &quot;schema_version&quot;: 0,
+<span class="lineno">39</span>    &quot;defect_class&quot;: &quot;inverted_normals&quot;,
+<span class="lineno">40</span>    &quot;title&quot;: &quot;flipNormals_neighbor_unmark_t1: t1 flip-bit cleared in cleanup pass&quot;,
+<span class="lineno">41</span>    &quot;assertions&quot;: [
+<span class="lineno">42</span>      {
+<span class="lineno">43</span>        &quot;kind&quot;: &quot;triangle_normal_z_negative&quot;,
+<span class="lineno">44</span>        &quot;triangle&quot;: 0
+<span class="lineno">45</span>      },
+<span class="lineno">46</span>      {
+<span class="lineno">47</span>        &quot;kind&quot;: &quot;triangle_normal_z_negative&quot;,
+<span class="lineno">48</span>        &quot;triangle&quot;: 1
+<span class="lineno">49</span>      },
+<span class="lineno">50</span>      {
+<span class="lineno">51</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">52</span>        &quot;edge&quot;: [
+<span class="lineno">53</span>          0,
+<span class="lineno">54</span>          1
+<span class="lineno">55</span>        ],
+<span class="lineno">56</span>        &quot;n&quot;: 2
+<span class="lineno">57</span>      },
+<span class="lineno">58</span>      {
+<span class="lineno">59</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">60</span>        &quot;edge&quot;: [
+<span class="lineno">61</span>          0,
+<span class="lineno">62</span>          2
+<span class="lineno">63</span>        ],
+<span class="lineno">64</span>        &quot;n&quot;: 1
+<span class="lineno">65</span>      },
+<span class="lineno">66</span>      {
+<span class="lineno">67</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">68</span>        &quot;edge&quot;: [
+<span class="lineno">69</span>          1,
+<span class="lineno">70</span>          2
+<span class="lineno">71</span>        ],
+<span class="lineno">72</span>        &quot;n&quot;: 1
+<span class="lineno">73</span>      },
+<span class="lineno">74</span>      {
+<span class="lineno">75</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">76</span>        &quot;edge&quot;: [
+<span class="lineno">77</span>          0,
+<span class="lineno">78</span>          3
+<span class="lineno">79</span>        ],
+<span class="lineno">80</span>        &quot;n&quot;: 1
+<span class="lineno">81</span>      },
+<span class="lineno">82</span>      {
+<span class="lineno">83</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">84</span>        &quot;edge&quot;: [
+<span class="lineno">85</span>          1,
+<span class="lineno">86</span>          3
+<span class="lineno">87</span>        ],
+<span class="lineno">88</span>        &quot;n&quot;: 1
+<span class="lineno">89</span>      }
+<span class="lineno">90</span>    ]
+<span class="lineno">91</span>  }
+<span class="lineno">92</span>}
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Me157.html">&larr; Me157</a> <a class="up" href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <a class="next" href="Me159.html">Me159 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

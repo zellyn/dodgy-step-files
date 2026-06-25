@@ -45,6 +45,9 @@
 <li><code>contains(b&#x27;APPLIED_GROUP_ASSIGNMENT&#x27;)</code></li>
 <li><code>contains(b&#x27;END-ISO-10303-21&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="Ad043.html">Ad043</a></p>
 </section>
@@ -62,68 +65,58 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Ad046 - STEPCAFControl_Writer / writer crashes on shape
-<span class="lineno">2</span>   ----------------------------------------------------------------------
-<span class="lineno">3</span>   Catalog section : Â§12.11 adversarial (sub-class: null-deref / DoS)
-<span class="lineno">4</span>   Sources         : 03-occt-tests.md R050 (empty <mark>APPLIED_GROUP_ASSIGNMENT</mark>
-<span class="lineno">5</span>                     write exception), R067 (writer exception);
-<span class="lineno">6</span>                     19-datasets.md D025 (FreeCAD #5783 STEP-export crash
-<span class="lineno">7</span>                     via missing pcurve);
-<span class="lineno">8</span>                     18-other-issues.md I050 (SolveSpace 0-byte STEP/PDF)
-<span class="lineno">9</span>   See also        : Ad043
-<span class="lineno">10</span>   ----------------------------------------------------------------------
-<span class="lineno">11</span>   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
-<span class="lineno">12</span>   testing on the WRITER side (used as round-trip input). Do NOT use as
-<span class="lineno">13</span>   exchange data.
-<span class="lineno">14</span>   ----------------------------------------------------------------------
-<span class="lineno">15</span>   Defect
-<span class="lineno">16</span>     Writer-side null-deref when shape has missing handles (e.g.
-<span class="lineno">17</span>     missing pcurve), an empty <mark>APPLIED_GROUP_ASSIGNMENT</mark>, or a feature
-<span class="lineno">18</span>     whose translation is incomplete. Producer crashes producing
-<span class="lineno">19</span>     zero-byte output. SolveSpace lathe-then-extrusion-difference and
-<span class="lineno">20</span>     FreeCAD #5783 missing-pcurve are documented incidents.
-<span class="lineno">21</span>   Reproducer recipe
-<span class="lineno">22</span>     <mark>APPLIED_GROUP_ASSIGNMENT</mark> with empty items list (used to crash
-<span class="lineno">23</span>     writer); plus an ADVANCED_FACE missing its pcurve handle.
-<span class="lineno">24</span>   Expected kernel behavior
-<span class="lineno">25</span>     Detect missing handle, fall back to recompute, or skip with
-<span class="lineno">26</span>     warning; never crash. Reject empty group with E_EMPTY_AGGREGATE.
-<span class="lineno">27</span>   ----------------------------------------------------------------------
-<span class="lineno">28</span>*/
-<span class="lineno">29</span>ISO-10303-21;
-<span class="lineno">30</span>HEADER;
-<span class="lineno">31</span>FILE_DESCRIPTION((&#x27;Ad046 - empty <mark>APPLIED_GROUP_ASSIGNMENT</mark> + missing pcurve&#x27;),
-<span class="lineno">32</span>  &#x27;2;1&#x27;);
-<span class="lineno">33</span>FILE_NAME(&#x27;Ad046.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
-<span class="lineno">34</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">35</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">36</span>ENDSEC;
-<span class="lineno">37</span>DATA;
-<span class="lineno">38</span>#1=GROUP(&#x27;g&#x27;,&#x27;desc&#x27;);
-<span class="lineno">39</span>/* Defect: <mark>APPLIED_GROUP_ASSIGNMENT</mark> with empty items list. */
-<span class="lineno">40</span>#2=<mark>APPLIED_GROUP_ASSIGNMENT</mark>(#1,());
-<span class="lineno">41</span>#10=CARTESIAN_POINT(&#x27;o&#x27;,(0.0,0.0,0.0));
-<span class="lineno">42</span>#11=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
-<span class="lineno">43</span>#12=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">44</span>#13=AXIS2_PLACEMENT_3D(&#x27;p&#x27;,#10,#11,#12);
-<span class="lineno">45</span>#14=PLANE(&#x27;plane&#x27;,#13);
-<span class="lineno">46</span>#15=CARTESIAN_POINT(&#x27;a&#x27;,(1.0,0.0,0.0));
-<span class="lineno">47</span>#16=CARTESIAN_POINT(&#x27;b&#x27;,(0.0,1.0,0.0));
-<span class="lineno">48</span>#17=VERTEX_POINT(&#x27;va&#x27;,#15);
-<span class="lineno">49</span>#18=VERTEX_POINT(&#x27;vb&#x27;,#16);
-<span class="lineno">50</span>#19=DIRECTION(&#x27;dx&#x27;,(0.0,1.0,0.0));
-<span class="lineno">51</span>#20=VECTOR(&#x27;v&#x27;,#19,1.0);
-<span class="lineno">52</span>#21=LINE(&#x27;line3d&#x27;,#15,#20);
-<span class="lineno">53</span>/* Note: writer expects pcurve aggregate; here we provide only the 3D
-<span class="lineno">54</span>   curve and no SURFACE_CURVE wrapper, simulating the FreeCAD #5783
-<span class="lineno">55</span>   missing-pcurve crash on export round-trip. */
-<span class="lineno">56</span>#22=EDGE_CURVE(&#x27;e&#x27;,#17,#18,#21,.T.);
-<span class="lineno">57</span>#23=ORIENTED_EDGE(&#x27;oe&#x27;,*,*,#22,.T.);
-<span class="lineno">58</span>#24=EDGE_LOOP(&#x27;el&#x27;,(#23));
-<span class="lineno">59</span>#25=FACE_OUTER_BOUND(&#x27;fob&#x27;,#24,.T.);
-<span class="lineno">60</span>#26=ADVANCED_FACE(&#x27;af&#x27;,(#25),#14,.T.);
-<span class="lineno">61</span>ENDSEC;
-<span class="lineno">62</span><mark>END-ISO-10303-21</mark>;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Ad046: writer null-deref: EDGE_CURVE on ADVANCED_FACE with bare 3D LINE and no SURFACE_CURVE/pcurve; <mark>APPLIED_GROUP_ASSIGNMENT</mark> with empty items list; both trigger null-deref in writer output path; FreeCAD #5783 / SolveSpace 0-byte STEP output; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ad046&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ad046.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">11</span>#3=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">12</span>#4=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#5=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">14</span>#6=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">15</span>#7=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">16</span>#8=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#3,#6,#7);
+<span class="lineno">17</span>#9=PLANE(&#x27;&#x27;,#8);
+<span class="lineno">18</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">19</span>#11=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">20</span>#12=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
+<span class="lineno">21</span>#13=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">22</span>#14=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">23</span>#15=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">24</span>#16=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">25</span>#17=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">26</span>#18=VECTOR(&#x27;&#x27;,#14,1.0);
+<span class="lineno">27</span>#19=VECTOR(&#x27;&#x27;,#15,1.0);
+<span class="lineno">28</span>#20=VECTOR(&#x27;&#x27;,#16,1.0);
+<span class="lineno">29</span>#21=VECTOR(&#x27;&#x27;,#17,1.0);
+<span class="lineno">30</span>#22=LINE(&#x27;&#x27;,#10,#18);
+<span class="lineno">31</span>#23=LINE(&#x27;&#x27;,#11,#19);
+<span class="lineno">32</span>#24=LINE(&#x27;&#x27;,#12,#20);
+<span class="lineno">33</span>#25=LINE(&#x27;&#x27;,#13,#21);
+<span class="lineno">34</span>#26=VERTEX_POINT(&#x27;&#x27;,#10);
+<span class="lineno">35</span>#27=VERTEX_POINT(&#x27;&#x27;,#11);
+<span class="lineno">36</span>#28=VERTEX_POINT(&#x27;&#x27;,#12);
+<span class="lineno">37</span>#29=VERTEX_POINT(&#x27;&#x27;,#13);
+<span class="lineno">38</span>#30=EDGE_CURVE(&#x27;&#x27;,#26,#27,#22,.T.);
+<span class="lineno">39</span>#31=EDGE_CURVE(&#x27;&#x27;,#27,#28,#23,.T.);
+<span class="lineno">40</span>#32=EDGE_CURVE(&#x27;&#x27;,#28,#29,#24,.T.);
+<span class="lineno">41</span>#33=EDGE_CURVE(&#x27;&#x27;,#29,#26,#25,.T.);
+<span class="lineno">42</span>#34=ORIENTED_EDGE(&#x27;&#x27;,$,$,#30,.T.);
+<span class="lineno">43</span>#35=ORIENTED_EDGE(&#x27;&#x27;,$,$,#31,.T.);
+<span class="lineno">44</span>#36=ORIENTED_EDGE(&#x27;&#x27;,$,$,#32,.T.);
+<span class="lineno">45</span>#37=ORIENTED_EDGE(&#x27;&#x27;,$,$,#33,.T.);
+<span class="lineno">46</span>#38=EDGE_LOOP(&#x27;&#x27;,(#34,#35,#36,#37));
+<span class="lineno">47</span>#39=FACE_OUTER_BOUND(&#x27;&#x27;,#38,.T.);
+<span class="lineno">48</span>#40=ADVANCED_FACE(&#x27;&#x27;,(#39),#9,.T.);
+<span class="lineno">49</span>#41=GROUP(&#x27;empty_group&#x27;,&#x27;triggers writer null-deref on empty items&#x27;);
+<span class="lineno">50</span>#42=<mark>APPLIED_GROUP_ASSIGNMENT</mark>(#41,(#40),());
+<span class="lineno">51</span>ENDSEC;
+<span class="lineno">52</span><mark>END-ISO-10303-21</mark>;
 </pre>
 </details>
 </section>

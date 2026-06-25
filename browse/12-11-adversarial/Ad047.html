@@ -40,6 +40,9 @@
 <li><code>matches(rb&#x27;ADVANCED_FACE\([^;]*,\.F\.\)&#x27;)</code></li>
 <li><code>count(b&#x27;.F.&#x27;) &gt;= 1</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="Ad043.html">Ad043</a></p>
 </section>
@@ -57,75 +60,54 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Ad047 - Negative or invalid face area after fixshape
-<span class="lineno">2</span>   ----------------------------------------------------------------------
-<span class="lineno">3</span>   Catalog section : Â§12.11 adversarial (sub-class: schema-validation)
-<span class="lineno">4</span>   Sources         : 03-occt-tests.md R075 (bug28523)
-<span class="lineno">5</span>   See also        : Ad043
-<span class="lineno">6</span>   ----------------------------------------------------------------------
-<span class="lineno">7</span>   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
-<span class="lineno">8</span>   testing. Do NOT use as exchange data.
-<span class="lineno">9</span>   ----------------------------------------------------------------------
-<span class="lineno">10</span>   Defect
-<span class="lineno">11</span>     fixshape reverses face orientation, producing a negative computed
-<span class="lineno">12</span>     area downstream. Trigger: input file has one face whose outer-bound
-<span class="lineno">13</span>     orientation flag (.T./<mark>.F.</mark>) disagrees with the underlying surface
-<span class="lineno">14</span>     normal direction; ShapeFix flips orientation idempotently-incorrectly
-<span class="lineno">15</span>     and the area integral comes out negative.
-<span class="lineno">16</span>   Reproducer recipe
-<span class="lineno">17</span>     ADVANCED_FACE whose orientation flag is <mark>.F.</mark> while its
-<span class="lineno">18</span>     FACE_OUTER_BOUND.orientation is .T. and the surface normal points
-<span class="lineno">19</span>     +Z; ShapeFix flips and the recomputed area is negative.
-<span class="lineno">20</span>   Expected kernel behavior
-<span class="lineno">21</span>     Post-fix invariant check: area must be &gt; 0. If negative, flip
-<span class="lineno">22</span>     once more or emit E_FIXSHAPE_NEGATIVE_AREA. Idempotency is required.
-<span class="lineno">23</span>   ----------------------------------------------------------------------
-<span class="lineno">24</span>*/
-<span class="lineno">25</span>ISO-10303-21;
-<span class="lineno">26</span>HEADER;
-<span class="lineno">27</span>FILE_DESCRIPTION((&#x27;Ad047 - face orientation flag inverse of surface normal&#x27;),
-<span class="lineno">28</span>  &#x27;2;1&#x27;);
-<span class="lineno">29</span>FILE_NAME(&#x27;Ad047.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
-<span class="lineno">30</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">31</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">32</span>ENDSEC;
-<span class="lineno">33</span>DATA;
-<span class="lineno">34</span>#1=CARTESIAN_POINT(&#x27;o&#x27;,(0.0,0.0,0.0));
-<span class="lineno">35</span>#2=DIRECTION(&#x27;+z&#x27;,(0.0,0.0,1.0));
-<span class="lineno">36</span>#3=DIRECTION(&#x27;+x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">37</span>#4=AXIS2_PLACEMENT_3D(&#x27;p&#x27;,#1,#2,#3);
-<span class="lineno">38</span>#5=PLANE(&#x27;plane_normal_+z&#x27;,#4);
-<span class="lineno">39</span>#10=CARTESIAN_POINT(&#x27;p0&#x27;,(0.0,0.0,0.0));
-<span class="lineno">40</span>#11=CARTESIAN_POINT(&#x27;p1&#x27;,(1.0,0.0,0.0));
-<span class="lineno">41</span>#12=CARTESIAN_POINT(&#x27;p2&#x27;,(1.0,1.0,0.0));
-<span class="lineno">42</span>#13=CARTESIAN_POINT(&#x27;p3&#x27;,(0.0,1.0,0.0));
-<span class="lineno">43</span>#14=VERTEX_POINT(&#x27;v0&#x27;,#10);
-<span class="lineno">44</span>#15=VERTEX_POINT(&#x27;v1&#x27;,#11);
-<span class="lineno">45</span>#16=VERTEX_POINT(&#x27;v2&#x27;,#12);
-<span class="lineno">46</span>#17=VERTEX_POINT(&#x27;v3&#x27;,#13);
-<span class="lineno">47</span>#20=DIRECTION(&#x27;dx&#x27;,(1.0,0.0,0.0));
-<span class="lineno">48</span>#21=DIRECTION(&#x27;dy&#x27;,(0.0,1.0,0.0));
-<span class="lineno">49</span>#22=VECTOR(&#x27;vx&#x27;,#20,1.0);
-<span class="lineno">50</span>#23=VECTOR(&#x27;vy&#x27;,#21,1.0);
-<span class="lineno">51</span>#24=LINE(&#x27;lx&#x27;,#10,#22);
-<span class="lineno">52</span>#25=LINE(&#x27;ly&#x27;,#11,#23);
-<span class="lineno">53</span>#26=LINE(&#x27;lx2&#x27;,#13,#22);
-<span class="lineno">54</span>#27=LINE(&#x27;ly2&#x27;,#10,#23);
-<span class="lineno">55</span>#30=EDGE_CURVE(&#x27;e0&#x27;,#14,#15,#24,.T.);
-<span class="lineno">56</span>#31=EDGE_CURVE(&#x27;e1&#x27;,#15,#16,#25,.T.);
-<span class="lineno">57</span>#32=EDGE_CURVE(&#x27;e2&#x27;,#16,#17,#26,<mark>.F.</mark>);
-<span class="lineno">58</span>#33=EDGE_CURVE(&#x27;e3&#x27;,#17,#14,#27,<mark>.F.</mark>);
-<span class="lineno">59</span>#40=ORIENTED_EDGE(&#x27;oe0&#x27;,*,*,#30,.T.);
-<span class="lineno">60</span>#41=ORIENTED_EDGE(&#x27;oe1&#x27;,*,*,#31,.T.);
-<span class="lineno">61</span>#42=ORIENTED_EDGE(&#x27;oe2&#x27;,*,*,#32,.T.);
-<span class="lineno">62</span>#43=ORIENTED_EDGE(&#x27;oe3&#x27;,*,*,#33,.T.);
-<span class="lineno">63</span>#50=EDGE_LOOP(&#x27;el&#x27;,(#40,#41,#42,#43));
-<span class="lineno">64</span>#51=FACE_OUTER_BOUND(&#x27;fob&#x27;,#50,.T.);
-<span class="lineno">65</span>/* Defect: face orientation <mark>.F.</mark> inverts surface; fixshape flips it,
-<span class="lineno">66</span>   computed area downstream is negative. */
-<span class="lineno">67</span>#60=<mark>ADVANCED_FACE(&#x27;af&#x27;,(#51),#5,.F.)</mark>;
-<span class="lineno">68</span>ENDSEC;
-<span class="lineno">69</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Ad047: ADVANCED_FACE.same_sense = <mark>.F.</mark> while supporting PLANE has +Z normal; face flag inverts surface normal â orientation is inverse of host surface; ShapeFix orientation flip produces negative computed area downstream; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ad047&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ad047.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">11</span>#3=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">12</span>#4=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">13</span>#5=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">14</span>#6=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#3,#4,#5);
+<span class="lineno">15</span>#7=PLANE(&#x27;&#x27;,#6);
+<span class="lineno">16</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">17</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">18</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
+<span class="lineno">19</span>#11=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">20</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">21</span>#13=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">22</span>#14=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">23</span>#15=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">24</span>#16=VECTOR(&#x27;&#x27;,#12,1.0);
+<span class="lineno">25</span>#17=VECTOR(&#x27;&#x27;,#13,1.0);
+<span class="lineno">26</span>#18=VECTOR(&#x27;&#x27;,#14,1.0);
+<span class="lineno">27</span>#19=VECTOR(&#x27;&#x27;,#15,1.0);
+<span class="lineno">28</span>#20=LINE(&#x27;&#x27;,#8,#16);
+<span class="lineno">29</span>#21=LINE(&#x27;&#x27;,#9,#17);
+<span class="lineno">30</span>#22=LINE(&#x27;&#x27;,#10,#18);
+<span class="lineno">31</span>#23=LINE(&#x27;&#x27;,#11,#19);
+<span class="lineno">32</span>#24=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">33</span>#25=VERTEX_POINT(&#x27;&#x27;,#9);
+<span class="lineno">34</span>#26=VERTEX_POINT(&#x27;&#x27;,#10);
+<span class="lineno">35</span>#27=VERTEX_POINT(&#x27;&#x27;,#11);
+<span class="lineno">36</span>#28=EDGE_CURVE(&#x27;&#x27;,#24,#25,#20,.T.);
+<span class="lineno">37</span>#29=EDGE_CURVE(&#x27;&#x27;,#25,#26,#21,.T.);
+<span class="lineno">38</span>#30=EDGE_CURVE(&#x27;&#x27;,#26,#27,#22,.T.);
+<span class="lineno">39</span>#31=EDGE_CURVE(&#x27;&#x27;,#27,#24,#23,.T.);
+<span class="lineno">40</span>#32=ORIENTED_EDGE(&#x27;&#x27;,$,$,#28,.T.);
+<span class="lineno">41</span>#33=ORIENTED_EDGE(&#x27;&#x27;,$,$,#29,.T.);
+<span class="lineno">42</span>#34=ORIENTED_EDGE(&#x27;&#x27;,$,$,#30,.T.);
+<span class="lineno">43</span>#35=ORIENTED_EDGE(&#x27;&#x27;,$,$,#31,.T.);
+<span class="lineno">44</span>#36=EDGE_LOOP(&#x27;&#x27;,(#32,#33,#34,#35));
+<span class="lineno">45</span>#37=FACE_OUTER_BOUND(&#x27;&#x27;,#36,.T.);
+<span class="lineno">46</span>#38=<mark>ADVANCED_FACE(&#x27;inverted_face&#x27;,(#37),#7,.F.)</mark>;
+<span class="lineno">47</span>ENDSEC;
+<span class="lineno">48</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

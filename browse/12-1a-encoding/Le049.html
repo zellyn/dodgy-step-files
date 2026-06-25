@@ -42,6 +42,9 @@
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;ISO-10303-21&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="Le017.html">Le017</a>, <a href="Le028.html">Le028</a></p>
 </section>
@@ -52,7 +55,7 @@
 <tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
 <tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
-<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_BARE_BACKSLASH)</code></td></tr>
 <tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
 </tbody></table>
 </section>
@@ -60,19 +63,19 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span><mark>ISO-10303-21</mark>;
-<span class="lineno">2</span>/* Le049 - Carriage-return strip corrupts string content
-<span class="lineno">3</span> * Defect: DESCRIPTION_ATTRIBUTE with literal CR (0x0D) byte inside string;
-<span class="lineno">4</span> * writer normalises line endings inside string body, dropping the embedded 0x0D 0x0A. */
-<span class="lineno">5</span>HEADER;
-<span class="lineno">6</span>FILE_DESCRIPTION((&#x27;Le049 test case&#x27;,&#x27;Carriage-return strip corrupts string content&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">7</span>FILE_NAME(&#x27;Le049.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">8</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">9</span>ENDSEC;
-<span class="lineno">10</span>DATA;
-<span class="lineno">11</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">12</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
-<span class="lineno">13</span>#100=DESCRIPTION_ATTRIBUTE(&#x27;multi_line_with_cr&#x27;,&#x27;line1
-<span class="lineno">14</span>line2&#x27;);
+<span class="lineno">2</span>/* Le049: Carriage-return stripping during STEP file write; OCCT MANTIS#0033602 / MANTIS#0028454: writer normalises line endings by stripping all \r characters including inside string literals; ISO 10303-21 Â§6.4.4: string contents must be preserved byte-for-byte; line-ending normalisation must only apply outside string contexts; defect: DESCRIPTION_ATTRIBUTE(&#x27;line1\r\nline2&#x27;,&#x27;desc&#x27;) â writer strips \r, output reads &#x27;line1\nline2&#x27; â embedded CR silently lost; heal and accept: preserve string contents; escape via \X\ if needed; must not silently strip CR inside string literals; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Le049&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Le049.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">11</span>#8997=PERSON(&#x27;line1
+<span class="lineno">12</span>line2&#x27;,&#x27;cr-lf-in-string&#x27;,&#x27;&#x27;);
+<span class="lineno">13</span>#8998=PERSON(&#x27;line3\X\0D\nline4&#x27;,&#x27;cr-escaped-in-string&#x27;,&#x27;&#x27;);
+<span class="lineno">14</span>
 <span class="lineno">15</span>ENDSEC;
 <span class="lineno">16</span>END-<mark>ISO-10303-21</mark>;
 </pre>

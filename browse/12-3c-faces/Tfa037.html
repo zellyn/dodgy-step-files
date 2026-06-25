@@ -37,6 +37,8 @@
 <p>Cites Perform&#x27;s status codes (DONE1.DONE5, FAIL1.FAIL4). Synonyms: &quot;multi-defect face needs orchestrated healing&quot;, &quot;fix order matters for face with several defects&quot;, &quot;wire/orientation/seam/area fixes in sequence&quot;, &quot;face-level pipeline must converge&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<section><h2>Closure intent</h2>
+<p><code>sheet</code> — the open shell is the intended final geometry; a solid-only kernel should cleanly refuse.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;FACE_INNER_BOUND(&#x27;)</code></li>
 <li><code>contains(b&#x27;FACE_OUTER_BOUND(&#x27;)</code></li>
@@ -60,7 +62,7 @@
 <span class="lineno">2</span>/* Tfa037 - Face-level healing pipeline must orchestrate sub-fixes
 <span class="lineno">3</span> * Square 10x10 face on a PLANE has FACE_OUTER_BOUND plus FACE_INNER_BOUND.
 <span class="lineno">4</span> * Inner wire is the defect bundle: edges out of order (3,1,2), enclosed
-<span class="lineno">5</span> * area sub-tolerance (~5e-7), and FACE_BOUND orientation flag is .T. (outer)
+<span class="lineno">5</span> * area sub-tolerance (~5.0e-7), and FACE_BOUND orientation flag is .T. (outer)
 <span class="lineno">6</span> * but the wire is positioned as an inner hole. */
 <span class="lineno">7</span>HEADER;
 <span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Tfa037 test case&#x27;,&#x27;Square face with out-of-order, sub-tolerance, wrong-orientation inner wire&#x27;),&#x27;2;1&#x27;);
@@ -94,7 +96,7 @@
 <span class="lineno">36</span>#53=ORIENTED_EDGE(&#x27;&#x27;,*,*,#45,.T.);
 <span class="lineno">37</span>#54=EDGE_LOOP(&#x27;outer&#x27;,(#50,#51,#52,#53));
 <span class="lineno">38</span>#55=<mark>FACE_OUTER_BOUND(</mark>&#x27;outer&#x27;,#54,.T.);
-<span class="lineno">39</span>/* inner triangle: tiny (~5e-7 mm^2 area), edges scrambled-order [e3,e1,e2] */
+<span class="lineno">39</span>/* inner triangle: tiny (~5.0e-7 mm^2 area), edges scrambled-order [e3,e1,e2] */
 <span class="lineno">40</span>#60=CARTESIAN_POINT(&#x27;&#x27;,<mark>(5.0,5.0,0.0)</mark>);#61=VERTEX_POINT(&#x27;&#x27;,#60);
 <span class="lineno">41</span>#62=CARTESIAN_POINT(&#x27;&#x27;,(5.001,5.0,0.0));#63=VERTEX_POINT(&#x27;&#x27;,#62);
 <span class="lineno">42</span>#64=CARTESIAN_POINT(&#x27;&#x27;,(5.0,5.001,0.0));#65=VERTEX_POINT(&#x27;&#x27;,#64);

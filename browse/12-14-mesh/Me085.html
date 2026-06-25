@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Me085 — connectivity triangle-not-owns-edge: non-manifold edge shared by 4 triangles</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <span class="sep">/</span> <span class="current">Me085</span>
+</nav>
+<header class="title-bar">
+<h1>Me085 <span class="sep">—</span> <span class="entry-title">connectivity triangle-not-owns-edge: non-manifold edge shared by 4 triangles</span></h1>
+<p class="category">§12.14 mesh defects (sub-class: connectivity / triangle does not own edge)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../mesh-examples/12-14-mesh/Me085.mesh.json">View raw fixture (.mesh.json)</a> <code class="path">mesh-examples/12-14-mesh/Me085.mesh.json</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>MeshFix `checkAndRepair::checkConnectivity` Branches 7 (*TRIANGLE_NOT_OWNS_EDGE t1*) and 9 (*TRIANGLE_NOT_OWNS_EDGE t2*)</li>
+<li>`MESH_HEAL_COVERAGE.md`.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>the undirected edge (v0, v2) is shared by 4 triangles — two using orientation v0→v2 and two using v2→v0. MeshFix&#x27;s half-edge structure allows each edge only one t1 and one t2; a third and fourth triangle that reference the same undirected edge cannot be assigned ownership — those triangles &quot;do not own&quot; the edge. Both Branches 7 and 9 fire when traversing this over-shared edge.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>v0=(0,0,0), v1=(1,0,0), v2=(0,1,0), v3=(-1,0,0), v4=(0,-1,0); 4 triangles all sharing edge (v0,v2).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>detect non-manifold edge; cut or split the mesh at (v0,v2).</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>{
+<span class="lineno">2</span>  &quot;vertices&quot;: [
+<span class="lineno">3</span>    [
+<span class="lineno">4</span>      0.0,
+<span class="lineno">5</span>      0.0,
+<span class="lineno">6</span>      0.0
+<span class="lineno">7</span>    ],
+<span class="lineno">8</span>    [
+<span class="lineno">9</span>      1.0,
+<span class="lineno">10</span>      0.0,
+<span class="lineno">11</span>      0.0
+<span class="lineno">12</span>    ],
+<span class="lineno">13</span>    [
+<span class="lineno">14</span>      0.0,
+<span class="lineno">15</span>      1.0,
+<span class="lineno">16</span>      0.0
+<span class="lineno">17</span>    ],
+<span class="lineno">18</span>    [
+<span class="lineno">19</span>      -1.0,
+<span class="lineno">20</span>      0.0,
+<span class="lineno">21</span>      0.0
+<span class="lineno">22</span>    ],
+<span class="lineno">23</span>    [
+<span class="lineno">24</span>      0.0,
+<span class="lineno">25</span>      -1.0,
+<span class="lineno">26</span>      0.0
+<span class="lineno">27</span>    ]
+<span class="lineno">28</span>  ],
+<span class="lineno">29</span>  &quot;triangles&quot;: [
+<span class="lineno">30</span>    [
+<span class="lineno">31</span>      0,
+<span class="lineno">32</span>      1,
+<span class="lineno">33</span>      2
+<span class="lineno">34</span>    ],
+<span class="lineno">35</span>    [
+<span class="lineno">36</span>      0,
+<span class="lineno">37</span>      2,
+<span class="lineno">38</span>      3
+<span class="lineno">39</span>    ],
+<span class="lineno">40</span>    [
+<span class="lineno">41</span>      0,
+<span class="lineno">42</span>      4,
+<span class="lineno">43</span>      2
+<span class="lineno">44</span>    ],
+<span class="lineno">45</span>    [
+<span class="lineno">46</span>      0,
+<span class="lineno">47</span>      2,
+<span class="lineno">48</span>      4
+<span class="lineno">49</span>    ]
+<span class="lineno">50</span>  ],
+<span class="lineno">51</span>  &quot;metadata&quot;: {
+<span class="lineno">52</span>    &quot;id&quot;: &quot;Me085&quot;,
+<span class="lineno">53</span>    &quot;schema_version&quot;: 0,
+<span class="lineno">54</span>    &quot;defect_class&quot;: &quot;non_manifold_edge&quot;,
+<span class="lineno">55</span>    &quot;title&quot;: &quot;connectivity triangle-not-owns-edge: edge (v0,v2) shared by 4 triangles \u2014 over-shared non-manifold&quot;,
+<span class="lineno">56</span>    &quot;assertions&quot;: [
+<span class="lineno">57</span>      {
+<span class="lineno">58</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">59</span>        &quot;edge&quot;: [
+<span class="lineno">60</span>          0,
+<span class="lineno">61</span>          2
+<span class="lineno">62</span>        ],
+<span class="lineno">63</span>        &quot;n&quot;: 4
+<span class="lineno">64</span>      }
+<span class="lineno">65</span>    ]
+<span class="lineno">66</span>  }
+<span class="lineno">67</span>}
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Me084.html">&larr; Me084</a> <a class="up" href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <a class="next" href="Me086.html">Me086 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

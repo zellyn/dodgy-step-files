@@ -44,6 +44,9 @@
 <li><code>count_entity_def(b&#x27;NETWORK_NODE&#x27;) &gt;= 3</code></li>
 <li><code>contains(b&#x27;NETWORK&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -51,7 +54,7 @@
 <tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
 <tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
-<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_FORWARD_REF)</code></td></tr>
 <tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
 </tbody></table>
 </section>
@@ -59,35 +62,59 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M144 - AP210 <mark>NETWORK</mark>_NODE chain forms a cycle (signal feedback
-<span class="lineno">3</span> * path).
-<span class="lineno">4</span> * Defect: <mark>NETWORK</mark>_NODE entries link node A -&gt; node B -&gt; node C -&gt;
-<span class="lineno">5</span> * node A. A connectivity walk of the net never terminates. The net
-<span class="lineno">6</span> * is also electrically nonsensical for a non-feedback signal
-<span class="lineno">7</span> * (e.g. a clock distribution net is short-circuited to itself). */
-<span class="lineno">8</span>HEADER;
-<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;M144 test case&#x27;,&#x27;AP210 net connectivity cycle&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">10</span>FILE_NAME(&#x27;M144.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">11</span>FILE_SCHEMA((&#x27;<mark>ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN</mark> { 1 0 10303 210 3 1 0 }&#x27;));
-<span class="lineno">12</span>ENDSEC;
-<span class="lineno">13</span>DATA;
-<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;electronic_assembly_interconnect_and_packaging_design&#x27;);
-<span class="lineno">15</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">16</span>  &#x27;electronic_assembly_interconnect_and_packaging_design&#x27;,2014,#1);
-<span class="lineno">17</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">18</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">19</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-<span class="lineno">20</span>     REPRESENTATION_CONTEXT(&#x27;pcb&#x27;,&#x27;3D&#x27;));
-<span class="lineno">21</span>#100=TERMINAL(&#x27;term_a&#x27;,&#x27;TERM_A&#x27;,$);
-<span class="lineno">22</span>#101=TERMINAL(&#x27;term_b&#x27;,&#x27;TERM_B&#x27;,$);
-<span class="lineno">23</span>#102=TERMINAL(&#x27;term_c&#x27;,&#x27;TERM_C&#x27;,$);
-<span class="lineno">24</span>/* Defect: each node points to the next in a 3-cycle a-&gt;b-&gt;c-&gt;a. */
-<span class="lineno">25</span><mark>#200=NETWORK_NODE(</mark>&#x27;node_a&#x27;,#100);
-<span class="lineno">26</span><mark>#201=NETWORK_NODE(</mark>&#x27;node_b&#x27;,#101);
-<span class="lineno">27</span><mark>#202=NETWORK_NODE(</mark>&#x27;node_c&#x27;,#102);
-<span class="lineno">28</span>#300=<mark>NETWORK</mark>(&#x27;CLK_loop&#x27;,(#200,#201,#202),(#200));
-<span class="lineno">29</span>ENDSEC;
-<span class="lineno">30</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M144: AP210 <mark>NETWORK</mark>_NODE chain forms a cycle (signal feedback path) */
+<span class="lineno">3</span>/* DEFECT: node_A -&gt; node_B -&gt; node_C -&gt; node_A â cycle never terminates */
+<span class="lineno">4</span>/* Non-feedback clock net CLK_NET is electrically short-circuited to itself */
+<span class="lineno">5</span>/* Per ISO 10303-210 Â§7 net connectivity must be acyclic for non-feedback signals */
+<span class="lineno">6</span>/* Byte assertion: contains(b&#x27;<mark>ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN</mark>&#x27;) */
+<span class="lineno">7</span>/* Byte assertion: count_entity_def(b&#x27;<mark>NETWORK</mark>_NODE&#x27;) &gt;= 3 */
+<span class="lineno">8</span>/* Byte assertion: contains(b&#x27;<mark>NETWORK</mark>&#x27;) */
+<span class="lineno">9</span>HEADER;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;M144: AP210 <mark>NETWORK</mark>_NODE cyclic connectivity&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;M144.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>/* Byte assertion: contains(b&#x27;<mark>ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN</mark>&#x27;) */
+<span class="lineno">13</span>FILE_SCHEMA((&#x27;<mark>ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN</mark> { 1 0 10303 210 3 1 0 }&#x27;));
+<span class="lineno">14</span>ENDSEC;
+<span class="lineno">15</span>DATA;
+<span class="lineno">16</span>#1=APPLICATION_CONTEXT(&#x27;electronic_assembly_interconnect_and_packaging_design&#x27;);
+<span class="lineno">17</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">18</span>  &#x27;electronic_assembly_interconnect_and_packaging_design&#x27;,2014,#1);
+<span class="lineno">19</span>/* Standard unit context (mm) */
+<span class="lineno">20</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">21</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">22</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">23</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">24</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">25</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">26</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">27</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">28</span>  REPRESENTATION_CONTEXT(&#x27;pcb&#x27;,&#x27;3D&#x27;));
+<span class="lineno">29</span>/* Byte assertion: count_entity_def(b&#x27;<mark>NETWORK</mark>_NODE&#x27;) &gt;= 3 */
+<span class="lineno">30</span>/* Three <mark>NETWORK</mark>_NODEs forming a cycle: A -&gt; B -&gt; C -&gt; A */
+<span class="lineno">31</span>/* node_A connects to node_B */
+<span class="lineno">32</span><mark>#100=NETWORK_NODE(</mark>&#x27;node_A&#x27;,(#101));
+<span class="lineno">33</span>/* node_B connects to node_C */
+<span class="lineno">34</span><mark>#101=NETWORK_NODE(</mark>&#x27;node_B&#x27;,(#102));
+<span class="lineno">35</span>/* DEFECT: node_C connects back to node_A â closes the cycle */
+<span class="lineno">36</span><mark>#102=NETWORK_NODE(</mark>&#x27;node_C&#x27;,(#100));
+<span class="lineno">37</span>/* Byte assertion: contains(b&#x27;<mark>NETWORK</mark>&#x27;) */
+<span class="lineno">38</span>/* CLK_NET groups all three cyclic nodes â walk never terminates */
+<span class="lineno">39</span>#110=<mark>NETWORK</mark>(&#x27;CLK_NET&#x27;,(#100,#101,#102));
+<span class="lineno">40</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">41</span>#300=GEOMETRIC_CURVE_SET(&#x27;ap210-network-node-cycle-signal-feedback-path&#x27;,
+<span class="lineno">42</span>  (#100,#101,#102,#110));
+<span class="lineno">43</span>/* Product chain */
+<span class="lineno">44</span>#400=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">45</span>#401=PRODUCT_CONTEXT(&#x27;&#x27;,#400,&#x27;mechanical&#x27;);
+<span class="lineno">46</span>#402=PRODUCT(&#x27;M144&#x27;,&#x27;M144&#x27;,&#x27;M144&#x27;,(#401));
+<span class="lineno">47</span>#403=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#402);
+<span class="lineno">48</span>#404=PRODUCT_DEFINITION_CONTEXT(#400,&#x27;design&#x27;);
+<span class="lineno">49</span>#405=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#403,#404);
+<span class="lineno">50</span>#406=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#405);
+<span class="lineno">51</span>#407=SHAPE_REPRESENTATION(&#x27;&#x27;,(#300),#14);
+<span class="lineno">52</span>#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
+<span class="lineno">53</span>ENDSEC;
+<span class="lineno">54</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

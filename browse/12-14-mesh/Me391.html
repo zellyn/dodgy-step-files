@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Me391 — do_faces_intersect_identical_face_soup_deduplication: two identical triangles in soup mode — deduplication target, not SI (Branch 2)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <span class="sep">/</span> <span class="current">Me391</span>
+</nav>
+<header class="title-bar">
+<h1>Me391 <span class="sep">—</span> <span class="entry-title">do_faces_intersect_identical_face_soup_deduplication: two identical triangles in soup mode — deduplication target, not SI (Branch 2)</span></h1>
+<p class="category">§12.14 mesh defects (sub-class: do_faces_intersect / identical-face-soup-deduplication)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../mesh-examples/12-14-mesh/Me391.mesh.json">View raw fixture (.mesh.json)</a> <code class="path">mesh-examples/12-14-mesh/Me391.mesh.json</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>CGAL PMP `do_faces_intersect` Branch 2 (*identical-face-soup-deduplication*: `allow_identical_face &amp;&amp; verts[2]==verts[3] → return false`)</li>
+<li>`MESH_HEAL_COVERAGE.md`.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Two triangles with identical vertex indices (v0,v1,v2) appearing twice. In soup mode (allow_identical_face=true), identical faces are classified as deduplication targets, not self-intersections — Branch 2 returns false. The `duplicate_triangle_pair` assertion confirms the oracle detects the identical geometry.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>v0=(0,0,0), v1=(1,0,0), v2=(0,1,0); t0=(v0,v1,v2), t1=(v0,v1,v2); assert_duplicate_triangle_pair(0,1).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Branch 2 fires; soup mode suppresses SI classification for identical faces; function returns false.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>{
+<span class="lineno">2</span>  &quot;vertices&quot;: [
+<span class="lineno">3</span>    [
+<span class="lineno">4</span>      0.0,
+<span class="lineno">5</span>      0.0,
+<span class="lineno">6</span>      0.0
+<span class="lineno">7</span>    ],
+<span class="lineno">8</span>    [
+<span class="lineno">9</span>      1.0,
+<span class="lineno">10</span>      0.0,
+<span class="lineno">11</span>      0.0
+<span class="lineno">12</span>    ],
+<span class="lineno">13</span>    [
+<span class="lineno">14</span>      0.0,
+<span class="lineno">15</span>      1.0,
+<span class="lineno">16</span>      0.0
+<span class="lineno">17</span>    ]
+<span class="lineno">18</span>  ],
+<span class="lineno">19</span>  &quot;triangles&quot;: [
+<span class="lineno">20</span>    [
+<span class="lineno">21</span>      0,
+<span class="lineno">22</span>      1,
+<span class="lineno">23</span>      2
+<span class="lineno">24</span>    ],
+<span class="lineno">25</span>    [
+<span class="lineno">26</span>      0,
+<span class="lineno">27</span>      1,
+<span class="lineno">28</span>      2
+<span class="lineno">29</span>    ]
+<span class="lineno">30</span>  ],
+<span class="lineno">31</span>  &quot;metadata&quot;: {
+<span class="lineno">32</span>    &quot;id&quot;: &quot;Me391&quot;,
+<span class="lineno">33</span>    &quot;schema_version&quot;: 0,
+<span class="lineno">34</span>    &quot;defect_class&quot;: &quot;duplicate_face_pair&quot;,
+<span class="lineno">35</span>    &quot;title&quot;: &quot;do_faces_intersect soup-mode: two identical triangles (same vertices) \u2014 soup deduplication target, not SI&quot;,
+<span class="lineno">36</span>    &quot;assertions&quot;: [
+<span class="lineno">37</span>      {
+<span class="lineno">38</span>        &quot;kind&quot;: &quot;duplicate_triangle_pair&quot;,
+<span class="lineno">39</span>        &quot;triangles&quot;: [
+<span class="lineno">40</span>          0,
+<span class="lineno">41</span>          1
+<span class="lineno">42</span>        ]
+<span class="lineno">43</span>      }
+<span class="lineno">44</span>    ]
+<span class="lineno">45</span>  }
+<span class="lineno">46</span>}
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Me390.html">&larr; Me390</a> <a class="up" href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <a class="next" href="Me392.html">Me392 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -36,108 +36,127 @@
 <section><h2>Notes</h2>
 <p>Synonyms: &quot;color disappears after sliver removal&quot;, &quot;face style lost when small face dropped&quot;, &quot;presentation style references missing face&quot;, &quot;color attribute orphaned after healing&quot;, &quot;nested assembly flatten loses inner-component color&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(16) ifc=schema_n/a</code></p></section>
+<section><h2>Closure intent</h2>
+<p><code>sheet</code> — the open shell is the intended final geometry; a solid-only kernel should cleanly refuse.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;OPEN_SHELL&#x27;)</code></li>
 <li><code>contains(b&#x27;SHELL_BASED_SURFACE_MODEL&#x27;)</code></li>
 <li><code>count_entity_def(b&#x27;ADVANCED_FACE&#x27;) == 2</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_faces_total == 2</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
-<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(16)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(16)</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
 <tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
-<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Tsh028 - STYLED_ITEM lost / mis-bound after sliver-face removal or shell merge
-<span class="lineno">3</span> * Defect: Per-face STYLED_ITEM / PRESENTATION_STYLE_ASSIGNMENT references
-<span class="lineno">4</span> * break when the referenced face is dropped by sliver-face removal
-<span class="lineno">5</span> * (ShapeFix_Face::FixSmallAreaWire) or merged with neighbours during
-<span class="lineno">6</span> * orientation healing.
-<span class="lineno">7</span> *
-<span class="lineno">8</span> * This file: a square plate plus a tiny sliver-face (~1e-9 area) that
-<span class="lineno">9</span> * a healer would drop. A STYLED_ITEM (#900) is bound to the sliver
-<span class="lineno">10</span> * face #466 -- when the healer drops #466 the style binding becomes
-<span class="lineno">11</span> * a dangling reference. A second STYLED_ITEM (#910) targets the main
-<span class="lineno">12</span> * face #406 to demonstrate the surviving-binding contrast.
-<span class="lineno">13</span> * Sources: M032, Y004. */
-<span class="lineno">14</span>HEADER;
-<span class="lineno">15</span>FILE_DESCRIPTION((&#x27;Tsh028 test case&#x27;,&#x27;STYLED_ITEM bound to sliver face&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">16</span>FILE_NAME(&#x27;Tsh028.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">17</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">18</span>ENDSEC;
-<span class="lineno">19</span>DATA;
-<span class="lineno">20</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">21</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
-<span class="lineno">22</span>/* Square plate corners */
-<span class="lineno">23</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">24</span>#101=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">25</span>#102=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
-<span class="lineno">26</span>#103=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
-<span class="lineno">27</span>#110=VERTEX_POINT(&#x27;&#x27;,#100); #111=VERTEX_POINT(&#x27;&#x27;,#101);
-<span class="lineno">28</span>#112=VERTEX_POINT(&#x27;&#x27;,#102); #113=VERTEX_POINT(&#x27;&#x27;,#103);
-<span class="lineno">29</span>/* Sliver triangle: extra vertex at (1, 1e-9, 0) -- a tiny triangle
-<span class="lineno">30</span>   between #111 and #112 with a near-zero area. */
-<span class="lineno">31</span>#120=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.000000001,0.0));
-<span class="lineno">32</span>#121=VERTEX_POINT(&#x27;&#x27;,#120);
-<span class="lineno">33</span>#200=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0)); #201=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">34</span>#211=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#100,#200,#201); #212=PLANE(&#x27;main_plane&#x27;,#211);
-<span class="lineno">35</span>#220=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#101,#200,#201); #222=PLANE(&#x27;sliver_plane&#x27;,#220);
-<span class="lineno">36</span>#300=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0)); #301=VECTOR(&#x27;&#x27;,#300,1.0);
-<span class="lineno">37</span>#302=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0)); #303=VECTOR(&#x27;&#x27;,#302,1.0);
-<span class="lineno">38</span>#310=LINE(&#x27;&#x27;,#100,#301); #311=EDGE_CURVE(&#x27;&#x27;,#110,#111,#310,.T.);
-<span class="lineno">39</span>#312=LINE(&#x27;&#x27;,#101,#303); #313=EDGE_CURVE(&#x27;&#x27;,#111,#112,#312,.T.);
-<span class="lineno">40</span>#314=LINE(&#x27;&#x27;,#103,#301); #315=EDGE_CURVE(&#x27;&#x27;,#113,#112,#314,.T.);
-<span class="lineno">41</span>#316=LINE(&#x27;&#x27;,#100,#303); #317=EDGE_CURVE(&#x27;&#x27;,#110,#113,#316,.T.);
-<span class="lineno">42</span>/* Sliver triangle edges: #111-&gt;#121-&gt;#112 */
-<span class="lineno">43</span>#320=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0)); #321=VECTOR(&#x27;&#x27;,#320,0.000000001);
-<span class="lineno">44</span>#322=LINE(&#x27;&#x27;,#101,#321); #323=EDGE_CURVE(&#x27;&#x27;,#111,#121,#322,.T.);
-<span class="lineno">45</span>#324=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0)); #325=VECTOR(&#x27;&#x27;,#324,0.999999999);
-<span class="lineno">46</span>#326=LINE(&#x27;&#x27;,#120,#325); #327=EDGE_CURVE(&#x27;&#x27;,#121,#112,#326,.T.);
-<span class="lineno">47</span>/* Main face */
-<span class="lineno">48</span>#400=ORIENTED_EDGE(&#x27;&#x27;,*,*,#311,.T.); #401=ORIENTED_EDGE(&#x27;&#x27;,*,*,#313,.T.);
-<span class="lineno">49</span>#402=ORIENTED_EDGE(&#x27;&#x27;,*,*,#315,.F.); #403=ORIENTED_EDGE(&#x27;&#x27;,*,*,#317,.F.);
-<span class="lineno">50</span>#404=EDGE_LOOP(&#x27;&#x27;,(#400,#401,#402,#403)); #405=FACE_OUTER_BOUND(&#x27;&#x27;,#404,.T.);
-<span class="lineno">51</span><mark>#406=ADVANCED_FACE(</mark>&#x27;main_face&#x27;,(#405),#212,.T.);
-<span class="lineno">52</span>/* Sliver face: degenerate triangle with two effectively coincident
-<span class="lineno">53</span>   sides. Healers drop this face. */
-<span class="lineno">54</span>#460=ORIENTED_EDGE(&#x27;&#x27;,*,*,#323,.T.); #461=ORIENTED_EDGE(&#x27;&#x27;,*,*,#327,.T.);
-<span class="lineno">55</span>#462=ORIENTED_EDGE(&#x27;&#x27;,*,*,#313,.F.);
-<span class="lineno">56</span>#464=EDGE_LOOP(&#x27;&#x27;,(#460,#461,#462)); #465=FACE_OUTER_BOUND(&#x27;&#x27;,#464,.T.);
-<span class="lineno">57</span><mark>#466=ADVANCED_FACE(</mark>&#x27;sliver_face_to_be_removed&#x27;,(#465),#222,.T.);
-<span class="lineno">58</span>/* Open shell aggregating both. */
-<span class="lineno">59</span>#500=<mark>OPEN_SHELL</mark>(&#x27;plate_with_sliver&#x27;,(#406,#466));
-<span class="lineno">60</span>#510=<mark>SHELL_BASED_SURFACE_MODEL</mark>(&#x27;container&#x27;,(#500));
-<span class="lineno">61</span>/* Color/style assignments. #800 is the geometric_representation_context. */
-<span class="lineno">62</span>#700=COLOUR_RGB(&#x27;&#x27;,0.8,0.2,0.2);
-<span class="lineno">63</span>#701=FILL_AREA_STYLE_COLOUR(&#x27;&#x27;,#700);
-<span class="lineno">64</span>#702=FILL_AREA_STYLE(&#x27;&#x27;,(#701));
-<span class="lineno">65</span>#703=SURFACE_STYLE_FILL_AREA(#702);
-<span class="lineno">66</span>#704=SURFACE_SIDE_STYLE(&#x27;&#x27;,(#703));
-<span class="lineno">67</span>#705=SURFACE_STYLE_USAGE(.BOTH.,#704);
-<span class="lineno">68</span>#706=PRESENTATION_STYLE_ASSIGNMENT((#705));
-<span class="lineno">69</span>#710=COLOUR_RGB(&#x27;&#x27;,0.2,0.8,0.2);
-<span class="lineno">70</span>#711=FILL_AREA_STYLE_COLOUR(&#x27;&#x27;,#710);
-<span class="lineno">71</span>#712=FILL_AREA_STYLE(&#x27;&#x27;,(#711));
-<span class="lineno">72</span>#713=SURFACE_STYLE_FILL_AREA(#712);
-<span class="lineno">73</span>#714=SURFACE_SIDE_STYLE(&#x27;&#x27;,(#713));
-<span class="lineno">74</span>#715=SURFACE_STYLE_USAGE(.BOTH.,#714);
-<span class="lineno">75</span>#716=PRESENTATION_STYLE_ASSIGNMENT((#715));
-<span class="lineno">76</span>/* Defect: STYLED_ITEM bound to the sliver face #466 -- this binding
-<span class="lineno">77</span>   will dangle once healers drop the sliver face. */
-<span class="lineno">78</span>#900=STYLED_ITEM(&#x27;style_on_sliver&#x27;,(#706),#466);
-<span class="lineno">79</span>/* Surviving binding for contrast: style on main face. */
-<span class="lineno">80</span>#910=STYLED_ITEM(&#x27;style_on_main&#x27;,(#716),#406);
-<span class="lineno">81</span>ENDSEC;
-<span class="lineno">82</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* Tsh028: STYLED_ITEM orphaned when sliver face is removed */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Tsh028&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Tsh028.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">12</span>#3=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
+<span class="lineno">13</span>#4=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">14</span>#5=VERTEX_POINT(&#x27;&#x27;,#1);
+<span class="lineno">15</span>#6=VERTEX_POINT(&#x27;&#x27;,#2);
+<span class="lineno">16</span>#7=VERTEX_POINT(&#x27;&#x27;,#3);
+<span class="lineno">17</span>#8=VERTEX_POINT(&#x27;&#x27;,#4);
+<span class="lineno">18</span>#9=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">19</span>#10=VECTOR(&#x27;&#x27;,#9,1.0);
+<span class="lineno">20</span>#11=LINE(&#x27;&#x27;,#1,#10);
+<span class="lineno">21</span>#12=EDGE_CURVE(&#x27;&#x27;,#5,#6,#11,.T.);
+<span class="lineno">22</span>#13=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">23</span>#14=VECTOR(&#x27;&#x27;,#13,1.0);
+<span class="lineno">24</span>#15=LINE(&#x27;&#x27;,#2,#14);
+<span class="lineno">25</span>#16=EDGE_CURVE(&#x27;&#x27;,#6,#7,#15,.T.);
+<span class="lineno">26</span>#17=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">27</span>#18=VECTOR(&#x27;&#x27;,#17,1.0);
+<span class="lineno">28</span>#19=LINE(&#x27;&#x27;,#3,#18);
+<span class="lineno">29</span>#20=EDGE_CURVE(&#x27;&#x27;,#7,#8,#19,.T.);
+<span class="lineno">30</span>#21=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">31</span>#22=VECTOR(&#x27;&#x27;,#21,1.0);
+<span class="lineno">32</span>#23=LINE(&#x27;&#x27;,#4,#22);
+<span class="lineno">33</span>#24=EDGE_CURVE(&#x27;&#x27;,#8,#5,#23,.T.);
+<span class="lineno">34</span>#25=ORIENTED_EDGE(&#x27;&#x27;,$,$,#12,.T.);
+<span class="lineno">35</span>#26=ORIENTED_EDGE(&#x27;&#x27;,$,$,#16,.T.);
+<span class="lineno">36</span>#27=ORIENTED_EDGE(&#x27;&#x27;,$,$,#20,.T.);
+<span class="lineno">37</span>#28=ORIENTED_EDGE(&#x27;&#x27;,$,$,#24,.T.);
+<span class="lineno">38</span>#29=EDGE_LOOP(&#x27;&#x27;,(#25,#26,#27,#28));
+<span class="lineno">39</span>#30=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">40</span>#31=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">41</span>#32=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">42</span>#33=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#30,#31,#32);
+<span class="lineno">43</span>#34=PLANE(&#x27;&#x27;,#33);
+<span class="lineno">44</span>#35=FACE_OUTER_BOUND(&#x27;&#x27;,#29,.T.);
+<span class="lineno">45</span><mark>#36=ADVANCED_FACE(</mark>&#x27;&#x27;,(#35),#34,.T.);
+<span class="lineno">46</span>#37=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.1));
+<span class="lineno">47</span>#38=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.1));
+<span class="lineno">48</span>#39=CARTESIAN_POINT(&#x27;&#x27;,(1.000000001,1.0,0.1));
+<span class="lineno">49</span>#40=VERTEX_POINT(&#x27;&#x27;,#37);
+<span class="lineno">50</span>#41=VERTEX_POINT(&#x27;&#x27;,#38);
+<span class="lineno">51</span>#42=VERTEX_POINT(&#x27;&#x27;,#39);
+<span class="lineno">52</span>#43=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">53</span>#44=VECTOR(&#x27;&#x27;,#43,1.0);
+<span class="lineno">54</span>#45=LINE(&#x27;&#x27;,#37,#44);
+<span class="lineno">55</span>#46=EDGE_CURVE(&#x27;&#x27;,#40,#41,#45,.T.);
+<span class="lineno">56</span>#47=DIRECTION(&#x27;&#x27;,(1.00000008274E-09,1.0,0.0));
+<span class="lineno">57</span>#48=VECTOR(&#x27;&#x27;,#47,1.0);
+<span class="lineno">58</span>#49=LINE(&#x27;&#x27;,#38,#48);
+<span class="lineno">59</span>#50=EDGE_CURVE(&#x27;&#x27;,#41,#42,#49,.T.);
+<span class="lineno">60</span>#51=DIRECTION(&#x27;&#x27;,(-1.000000001,-1.0,0.0));
+<span class="lineno">61</span>#52=VECTOR(&#x27;&#x27;,#51,1.41421356308);
+<span class="lineno">62</span>#53=LINE(&#x27;&#x27;,#39,#52);
+<span class="lineno">63</span>#54=EDGE_CURVE(&#x27;&#x27;,#42,#40,#53,.T.);
+<span class="lineno">64</span>#55=ORIENTED_EDGE(&#x27;&#x27;,$,$,#46,.T.);
+<span class="lineno">65</span>#56=ORIENTED_EDGE(&#x27;&#x27;,$,$,#50,.T.);
+<span class="lineno">66</span>#57=ORIENTED_EDGE(&#x27;&#x27;,$,$,#54,.T.);
+<span class="lineno">67</span>#58=EDGE_LOOP(&#x27;&#x27;,(#55,#56,#57));
+<span class="lineno">68</span>#59=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#37,#31,#32);
+<span class="lineno">69</span>#60=PLANE(&#x27;&#x27;,#59);
+<span class="lineno">70</span>#61=FACE_OUTER_BOUND(&#x27;&#x27;,#58,.T.);
+<span class="lineno">71</span><mark>#62=ADVANCED_FACE(</mark>&#x27;&#x27;,(#61),#60,.T.);
+<span class="lineno">72</span>#63=<mark>OPEN_SHELL</mark>(&#x27;&#x27;,(#36,#62));
+<span class="lineno">73</span>#64=<mark>SHELL_BASED_SURFACE_MODEL</mark>(&#x27;&#x27;,(#63));
+<span class="lineno">74</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">75</span>#9051=PRODUCT(&#x27;Tsh028&#x27;,&#x27;Tsh028&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">76</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">77</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">78</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">79</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">80</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">81</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">82</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">83</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">84</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">85</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#64),#9060);
+<span class="lineno">86</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">87</span>#9063=COLOUR_RGB(&#x27;sliver_red&#x27;,1.0,0.0,0.0);
+<span class="lineno">88</span>#9064=FILL_AREA_STYLE_COLOUR(&#x27;&#x27;,#9063);
+<span class="lineno">89</span>#9065=FILL_AREA_STYLE(&#x27;&#x27;,(#9064));
+<span class="lineno">90</span>#9066=SURFACE_STYLE_FILL_AREA(#9065);
+<span class="lineno">91</span>#9067=SURFACE_SIDE_STYLE(&#x27;&#x27;,(#9066));
+<span class="lineno">92</span>#9068=SURFACE_STYLE_USAGE(.BOTH.,#9067);
+<span class="lineno">93</span>#9069=PRESENTATION_STYLE_ASSIGNMENT((#9068));
+<span class="lineno">94</span>#9070=STYLED_ITEM(&#x27;sliver_styling&#x27;,(#9069),#62);
+<span class="lineno">95</span>ENDSEC;
+<span class="lineno">96</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

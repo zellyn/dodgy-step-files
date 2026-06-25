@@ -42,6 +42,9 @@
 <li><code>count_entity_def(b&#x27;VERTEX_POINT&#x27;) == 3</code></li>
 <li><code>contains(b&#x27;1.0E-9&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -57,75 +60,48 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* N013 - Boolean cascade vertex deviation (independently computed pairwise intersections)
-<span class="lineno">3</span> * Defect: When three or more surfaces meet at a single mathematical vertex,
-<span class="lineno">4</span> * OCCT computes each pairwise edge-edge intersection independently. Floating-
-<span class="lineno">5</span> * point error makes the three candidate vertex coordinates disagree by
-<span class="lineno">6</span> * 1e-9 to 1e-5, so the boolean output emits three almost-coincident
-<span class="lineno">7</span> * vertices and three short edges in place of one shared vertex.
-<span class="lineno">8</span> *
-<span class="lineno">9</span> * Reproducer: three vertex candidates forming a near-degenerate triangle
-<span class="lineno">10</span> * with side lengths ~1e-7. Each EDGE_CURVE&#x27;s LINE direction &amp; vector
-<span class="lineno">11</span> * magnitude actually move start_vertex to end_vertex (i.e. the geometry
-<span class="lineno">12</span> * is self-consistent: line origin == start vertex point, and
-<span class="lineno">13</span> * start_point + magnitude*direction == end vertex point), unlike the
-<span class="lineno">14</span> * previous version where the line vectors did not connect their declared
-<span class="lineno">15</span> * endpoints.
-<span class="lineno">16</span> */
-<span class="lineno">17</span>HEADER;
-<span class="lineno">18</span>FILE_DESCRIPTION((&#x27;N013 Boolean cascade vertex deviation 3 pairwise intersections&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">19</span>FILE_NAME(&#x27;N013.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
-<span class="lineno">20</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">21</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN&#x27;));
-<span class="lineno">22</span>ENDSEC;
-<span class="lineno">23</span>DATA;
-<span class="lineno">24</span>#1=APPLICATION_CONTEXT(&#x27;automotive design&#x27;);
-<span class="lineno">25</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">26</span>  &#x27;automotive_design&#x27;,2009,#1);
-<span class="lineno">27</span>/* Three vertex candidates from independent pairwise intersections of
-<span class="lineno">28</span> * half-spaces s1/s2, s2/s3, s3/s1; ideal point is (0,0,0). The three
-<span class="lineno">29</span> * candidates form a near-degenerate triangle with side lengths
-<span class="lineno">30</span> * approximately 1.414e-7. */
-<span class="lineno">31</span>#10=CARTESIAN_POINT(&#x27;v_s1s2&#x27;,(1.0E-7,0.0,0.0));
-<span class="lineno">32</span>#11=CARTESIAN_POINT(&#x27;v_s2s3&#x27;,(0.0,1.0E-7,0.0));
-<span class="lineno">33</span>#12=CARTESIAN_POINT(&#x27;v_s3s1&#x27;,(0.0,0.0,1.0E-7));
-<span class="lineno">34</span><mark>#20=VERTEX_POINT(</mark>&#x27;v12&#x27;,#10);
-<span class="lineno">35</span><mark>#21=VERTEX_POINT(</mark>&#x27;v23&#x27;,#11);
-<span class="lineno">36</span><mark>#22=VERTEX_POINT(</mark>&#x27;v31&#x27;,#12);
-<span class="lineno">37</span>/* Three short edges. Each edge&#x27;s LINE has its origin at start_vertex&#x27;s
-<span class="lineno">38</span> * point, and direction*magnitude exactly equals (end - start). This
-<span class="lineno">39</span> * makes the geometry self-consistent so the file is a real reproducer
-<span class="lineno">40</span> * of &quot;3 vertices and 3 short edges in place of one shared vertex&quot;. */
-<span class="lineno">41</span>/* edge_a: v12 (1e-7, 0, 0) -&gt; v23 (0, 1e-7, 0); delta = (-1e-7, 1e-7, 0).
-<span class="lineno">42</span>   length = sqrt(2) * 1e-7; unit dir = (-1/sqrt(2), 1/sqrt(2), 0). */
-<span class="lineno">43</span>#30=DIRECTION(&#x27;d_a&#x27;,(-0.7071067811865476,0.7071067811865476,0.0));
-<span class="lineno">44</span>#33=VECTOR(&#x27;vec_a&#x27;,#30,1.4142135623730951E-7);
-<span class="lineno">45</span>#40=LINE(&#x27;e_a&#x27;,#10,#33);
-<span class="lineno">46</span><mark>#50=EDGE_CURVE(</mark>&#x27;edge_a&#x27;,#20,#21,#40,.T.);
-<span class="lineno">47</span>/* edge_b: v23 (0, 1e-7, 0) -&gt; v31 (0, 0, 1e-7); delta = (0, -1e-7, 1e-7).
-<span class="lineno">48</span>   length = sqrt(2) * 1e-7; unit dir = (0, -1/sqrt(2), 1/sqrt(2)). */
-<span class="lineno">49</span>#31=DIRECTION(&#x27;d_b&#x27;,(0.0,-0.7071067811865476,0.7071067811865476));
-<span class="lineno">50</span>#34=VECTOR(&#x27;vec_b&#x27;,#31,1.4142135623730951E-7);
-<span class="lineno">51</span>#41=LINE(&#x27;e_b&#x27;,#11,#34);
-<span class="lineno">52</span><mark>#51=EDGE_CURVE(</mark>&#x27;edge_b&#x27;,#21,#22,#41,.T.);
-<span class="lineno">53</span>/* edge_c: v31 (0, 0, 1e-7) -&gt; v12 (1e-7, 0, 0); delta = (1e-7, 0, -1e-7).
-<span class="lineno">54</span>   length = sqrt(2) * 1e-7; unit dir = (1/sqrt(2), 0, -1/sqrt(2)). */
-<span class="lineno">55</span>#32=DIRECTION(&#x27;d_c&#x27;,(0.7071067811865476,0.0,-0.7071067811865476));
-<span class="lineno">56</span>#35=VECTOR(&#x27;vec_c&#x27;,#32,1.4142135623730951E-7);
-<span class="lineno">57</span>#42=LINE(&#x27;e_c&#x27;,#12,#35);
-<span class="lineno">58</span><mark>#52=EDGE_CURVE(</mark>&#x27;edge_c&#x27;,#22,#20,#42,.T.);
-<span class="lineno">59</span>/* Units, uncertainty, and representation context */
-<span class="lineno">60</span>#60=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">61</span>#61=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">62</span>#62=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">63</span>#63=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(<mark>1.0E-9</mark>),#60,
-<span class="lineno">64</span>  &#x27;distance_accuracy_value&#x27;,&#x27;model_tol_below_pairwise_drift&#x27;);
-<span class="lineno">65</span>#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">66</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#63))
-<span class="lineno">67</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#60,#61,#62))
-<span class="lineno">68</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
-<span class="lineno">69</span>ENDSEC;
-<span class="lineno">70</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* N013: boolean cascade: three pairwise intersections produce three near-coincident VERTEX_POINTs offset by ~<mark>1.0E-9</mark>; three EDGE_CURVEs instead of one vertex; GEOMETRIC_CURVE_SET â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;N013&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;N013.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;vtx_A&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=CARTESIAN_POINT(&#x27;vtx_B_jitter_x&#x27;,(1.0E-09,0.0,0.0));
+<span class="lineno">11</span>#3=CARTESIAN_POINT(&#x27;vtx_C_jitter_y&#x27;,(0.0,1.0E-09,0.0));
+<span class="lineno">12</span><mark>#4=VERTEX_POINT(</mark>&#x27;v0&#x27;,#1);
+<span class="lineno">13</span><mark>#5=VERTEX_POINT(</mark>&#x27;v1&#x27;,#2);
+<span class="lineno">14</span><mark>#6=VERTEX_POINT(</mark>&#x27;v2&#x27;,#3);
+<span class="lineno">15</span>#7=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">16</span>#8=VECTOR(&#x27;&#x27;,#7,1.0E-09);
+<span class="lineno">17</span>#9=LINE(&#x27;line_AB&#x27;,#1,#8);
+<span class="lineno">18</span><mark>#10=EDGE_CURVE(</mark>&#x27;eAB&#x27;,#4,#5,#9,.T.);
+<span class="lineno">19</span>#11=DIRECTION(&#x27;&#x27;,(-1.0,1.0,0.0));
+<span class="lineno">20</span>#12=VECTOR(&#x27;&#x27;,#11,1.0E-09);
+<span class="lineno">21</span>#13=LINE(&#x27;line_BC&#x27;,#2,#12);
+<span class="lineno">22</span><mark>#14=EDGE_CURVE(</mark>&#x27;eBC&#x27;,#5,#6,#13,.T.);
+<span class="lineno">23</span>#15=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">24</span>#16=VECTOR(&#x27;&#x27;,#15,1.0E-09);
+<span class="lineno">25</span>#17=LINE(&#x27;line_CA&#x27;,#3,#16);
+<span class="lineno">26</span><mark>#18=EDGE_CURVE(</mark>&#x27;eCA&#x27;,#6,#4,#17,.T.);
+<span class="lineno">27</span>#19=GEOMETRIC_CURVE_SET(&#x27;cascade&#x27;,(#10,#14,#18));
+<span class="lineno">28</span>#20=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">29</span>#21=PRODUCT_CONTEXT(&#x27;&#x27;,#20,&#x27;mechanical&#x27;);
+<span class="lineno">30</span>#22=PRODUCT(&#x27;N013&#x27;,&#x27;N013&#x27;,&#x27;&#x27;,(#21));
+<span class="lineno">31</span>#23=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#22);
+<span class="lineno">32</span>#24=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#20,&#x27;design&#x27;);
+<span class="lineno">33</span>#25=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#23,#24);
+<span class="lineno">34</span>#26=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#25);
+<span class="lineno">35</span>#27=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">36</span>#28=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">37</span>#29=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">38</span>#30=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(<mark>1.0E-9</mark>),#27,&#x27;distance_accuracy_value&#x27;,&#x27;boolean_cascade_jitter&#x27;);
+<span class="lineno">39</span>#31=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#30))GLOBAL_UNIT_ASSIGNED_CONTEXT((#27,#28,#29))REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">40</span>#32=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION(&#x27;&#x27;,(#19),#31);
+<span class="lineno">41</span>#33=SHAPE_DEFINITION_REPRESENTATION(#26,#32);
+<span class="lineno">42</span>ENDSEC;
+<span class="lineno">43</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

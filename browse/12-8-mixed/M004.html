@@ -36,82 +36,66 @@
 <section><h2>Notes</h2>
 <p>Synonyms: &quot;tessellation not watertight&quot;, &quot;duplicate vertices on shared edge&quot;, &quot;per-face coordinates_list causes gaps&quot;, &quot;tessellated mesh has sub-tolerance gaps&quot;, &quot;shared edge vertices don&#x27;t match across faces&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>count_entity_def(b&#x27;COORDINATES_LIST&#x27;) == 6</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_vertices_total == 0</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
-<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
 <tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
 <tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
 <tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
-<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M004 - Watertightness lost: each tessellated face has its own
-<span class="lineno">3</span> * COORDINATES_LIST with quantization-different shared-edge vertices.
-<span class="lineno">4</span> * Defect: Best practice is one COORDINATES_LIST per tessellated solid
-<span class="lineno">5</span> * plus TESSELLATED_CONNECTING_EDGE per shared edge. Here the cube&#x27;s
-<span class="lineno">6</span> * six faces each define their own list. The shared corners differ
-<span class="lineno">7</span> * after the 6th decimal (1.0000003 vs 0.9999997 vs 1.0). Vertices are
-<span class="lineno">8</span> * therefore not bitwise-equal across faces and the resulting mesh has
-<span class="lineno">9</span> * sub-tolerance gaps along every shared edge. Healers should merge
-<span class="lineno">10</span> * within model uncertainty. */
-<span class="lineno">11</span>HEADER;
-<span class="lineno">12</span>FILE_DESCRIPTION((&#x27;M004 test case&#x27;,&#x27;per-face coordinates_list breaks watertightness&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">13</span>FILE_NAME(&#x27;M004.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">14</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
-<span class="lineno">15</span>ENDSEC;
-<span class="lineno">16</span>DATA;
-<span class="lineno">17</span>#1=APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
-<span class="lineno">18</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">19</span>  &#x27;ap242_managed_model_based_3d_engineering&#x27;,2014,#1);
-<span class="lineno">20</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">21</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">22</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">23</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
-<span class="lineno">24</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">25</span>     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-<span class="lineno">26</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-<span class="lineno">27</span>     REPRESENTATION_CONTEXT(&#x27;part&#x27;,&#x27;3D&#x27;));
-<span class="lineno">28</span>/* Six independent coordinates_lists - shared corners differ in the
-<span class="lineno">29</span> * last few digits. */
-<span class="lineno">30</span><mark>#100=COORDINATES_LIST(</mark>&#x27;bottom_z0&#x27;,4,
-<span class="lineno">31</span>  ((0.0000000,0.0000000,0.0000000),(1.0000003,0.0000000,0.0000000),
-<span class="lineno">32</span>   (1.0000003,1.0000003,0.0000000),(0.0000000,1.0000003,0.0000000)));
-<span class="lineno">33</span>#110=TRIANGULATED_FACE(&#x27;bottom&#x27;,#100,$,$,(),((1,2,3),(1,3,4)));
-<span class="lineno">34</span><mark>#101=COORDINATES_LIST(</mark>&#x27;top_z1&#x27;,4,
-<span class="lineno">35</span>  ((0.0000000,0.0000000,0.9999997),(1.0000000,0.0000000,0.9999997),
-<span class="lineno">36</span>   (1.0000000,1.0000000,0.9999997),(0.0000000,1.0000000,0.9999997)));
-<span class="lineno">37</span>#111=TRIANGULATED_FACE(&#x27;top&#x27;,#101,$,$,(),((1,2,3),(1,3,4)));
-<span class="lineno">38</span><mark>#102=COORDINATES_LIST(</mark>&#x27;front_y0&#x27;,4,
-<span class="lineno">39</span>  ((0.0000000,0.0000000,0.0000003),(1.0000000,0.0000000,0.0000003),
-<span class="lineno">40</span>   (1.0000000,0.0000000,1.0000000),(0.0000000,0.0000000,1.0000000)));
-<span class="lineno">41</span>#112=TRIANGULATED_FACE(&#x27;front&#x27;,#102,$,$,(),((1,2,3),(1,3,4)));
-<span class="lineno">42</span><mark>#103=COORDINATES_LIST(</mark>&#x27;back_y1&#x27;,4,
-<span class="lineno">43</span>  ((0.0000000,0.9999997,0.0000000),(1.0000000,0.9999997,0.0000000),
-<span class="lineno">44</span>   (1.0000000,0.9999997,1.0000003),(0.0000000,0.9999997,1.0000003)));
-<span class="lineno">45</span>#113=TRIANGULATED_FACE(&#x27;back&#x27;,#103,$,$,(),((1,2,3),(1,3,4)));
-<span class="lineno">46</span><mark>#104=COORDINATES_LIST(</mark>&#x27;left_x0&#x27;,4,
-<span class="lineno">47</span>  ((0.0000000,0.0000000,0.0000000),(0.0000000,1.0000000,0.0000000),
-<span class="lineno">48</span>   (0.0000000,1.0000000,1.0000000),(0.0000000,0.0000000,1.0000000)));
-<span class="lineno">49</span>#114=TRIANGULATED_FACE(&#x27;left&#x27;,#104,$,$,(),((1,2,3),(1,3,4)));
-<span class="lineno">50</span><mark>#105=COORDINATES_LIST(</mark>&#x27;right_x1&#x27;,4,
-<span class="lineno">51</span>  ((1.0000003,0.0000000,0.0000000),(1.0000003,1.0000000,0.0000000),
-<span class="lineno">52</span>   (1.0000003,1.0000000,1.0000000),(1.0000003,0.0000000,1.0000000)));
-<span class="lineno">53</span>#115=TRIANGULATED_FACE(&#x27;right&#x27;,#105,$,$,(),((1,2,3),(1,3,4)));
-<span class="lineno">54</span>/* Solid bundles them - no tessellated_connecting_edge between faces */
-<span class="lineno">55</span>#120=TESSELLATED_SOLID(&#x27;leaky_cube&#x27;,(#110,#111,#112,#113,#114,#115),$);
-<span class="lineno">56</span>#200=TESSELLATED_SHAPE_REPRESENTATION(&#x27;&#x27;,(#120),#14);
-<span class="lineno">57</span>ENDSEC;
-<span class="lineno">58</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M004: GEOMETRIC_CURVE_SET containing TESSELLATED_SOLID with 6 TESSELLATED_FACEs, each owning its own COORDINATES_LIST; per-face COORDINATES_LIST produces duplicate vertices along every shared cube edge; floating-point quantization makes some duplicates non-equal (sub-tolerance gap); AP242 Tessellated Geometry Â§5.4.3/Â§6 recommendation: one COORDINATES_LIST per solid plus TESSELLATED_CONNECTING_EDGE per topological edge; kernel must heal: merge nearly-coincident vertices using model uncertainty, or report the gap; GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty; synonyms: tessellation not watertight, duplicate vertices on shared edge, per-face coordinates_list causes gaps, tessellated mesh has sub-tolerance gaps, shared edge vertices don&#x27;t match across faces */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;M004&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;M004.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span><mark>#1=COORDINATES_LIST(</mark>&#x27;bottom_face_coords&#x27;,3,((0.,0.,0.),(1.0000003,0.,0.),(1.0000003,1.0000003,0.),(0.,1.0000003,0.)));
+<span class="lineno">11</span>#2=TRIANGULATED_FACE(&#x27;bottom_face&#x27;,#1,$,((.FALSE.,.FALSE.,.FALSE.,.FALSE.)),((0,1,2),(0,2,3)));
+<span class="lineno">12</span><mark>#3=COORDINATES_LIST(</mark>&#x27;top_face_coords&#x27;,3,((0.,0.,1.),(1.,0.,1.),(1.,1.,1.),(0.,1.,1.)));
+<span class="lineno">13</span>#4=TRIANGULATED_FACE(&#x27;top_face&#x27;,#3,$,((.FALSE.,.FALSE.,.FALSE.,.FALSE.)),((0,1,2),(0,2,3)));
+<span class="lineno">14</span><mark>#5=COORDINATES_LIST(</mark>&#x27;front_face_coords&#x27;,3,((0.,0.,0.),(1.,0.,0.),(1.,0.,1.),(0.,0.,1.)));
+<span class="lineno">15</span>#6=TRIANGULATED_FACE(&#x27;front_face&#x27;,#5,$,((.FALSE.,.FALSE.,.FALSE.,.FALSE.)),((0,1,2),(0,2,3)));
+<span class="lineno">16</span><mark>#7=COORDINATES_LIST(</mark>&#x27;back_face_coords&#x27;,3,((0.,1.0000003,0.),(1.,1.0000003,0.),(1.,1.0000003,1.),(0.,1.0000003,1.)));
+<span class="lineno">17</span>#8=TRIANGULATED_FACE(&#x27;back_face&#x27;,#7,$,((.FALSE.,.FALSE.,.FALSE.,.FALSE.)),((0,1,2),(0,2,3)));
+<span class="lineno">18</span><mark>#9=COORDINATES_LIST(</mark>&#x27;left_face_coords&#x27;,3,((0.,0.,0.),(0.,1.,0.),(0.,1.,1.),(0.,0.,1.)));
+<span class="lineno">19</span>#10=TRIANGULATED_FACE(&#x27;left_face&#x27;,#9,$,((.FALSE.,.FALSE.,.FALSE.,.FALSE.)),((0,1,2),(0,2,3)));
+<span class="lineno">20</span><mark>#11=COORDINATES_LIST(</mark>&#x27;right_face_coords&#x27;,3,((1.0000003,0.,0.),(1.0000003,1.0000003,0.),(1.0000003,1.0000003,1.),(1.0000003,0.,1.)));
+<span class="lineno">21</span>#12=TRIANGULATED_FACE(&#x27;right_face&#x27;,#11,$,((.FALSE.,.FALSE.,.FALSE.,.FALSE.)),((0,1,2),(0,2,3)));
+<span class="lineno">22</span>#13=TESSELLATED_SOLID(&#x27;per_face_coords_cube&#x27;,(#2,#4,#6,#8,#10,#12));
+<span class="lineno">23</span>#14=GEOMETRIC_CURVE_SET(&#x27;per-face-coords-list-gaps&#x27;,(#13));
+<span class="lineno">24</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">25</span>#9051=PRODUCT(&#x27;M004&#x27;,&#x27;M004&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">26</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">27</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">28</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">29</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">30</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">31</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">32</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">33</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">34</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">35</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#14),#9060);
+<span class="lineno">36</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">37</span>ENDSEC;
+<span class="lineno">38</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

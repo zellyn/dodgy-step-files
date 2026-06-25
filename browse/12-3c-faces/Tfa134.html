@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tfa134 — CheckStripFace strip-with-pin</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa134</span>
+</nav>
+<header class="title-bar">
+<h1>Tfa134 <span class="sep">—</span> <span class="entry-title">CheckStripFace strip-with-pin</span></h1>
+<p class="category">§12.3c</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3c-faces/Tfa134.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa134.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>synthesized — no external source cited</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>CheckStripFace strip-with-pin</p></section>
+<section><h2>Reproducer recipe</h2>
+<p></p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>process_signal</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>HEADER;
+<span class="lineno">3</span>FILE_DESCRIPTION((&#x27;Tfa134 CheckStripFace strip-with-pin&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">4</span>FILE_NAME(&#x27;Tfa134.stp&#x27;,&#x27;2026-06-15T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
+<span class="lineno">5</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=APPLICATION_CONTEXT(&#x27;automotive design&#x27;);
+<span class="lineno">10</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2009,#1);
+<span class="lineno">11</span>/* Tfa134 - CheckStripFace.strip-with-pin
+<span class="lineno">12</span> * Defect: Strip face that also has a pin protrusion at one end.
+<span class="lineno">13</span> * CheckStripFace sees pin-like character but strip dominates classification.
+<span class="lineno">14</span> * Trigger: Face with strip topology plus localized pin expansion.
+<span class="lineno">15</span> */
+<span class="lineno">16</span>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">17</span>#11=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">18</span>#12=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">19</span>#13=AXIS2_PLACEMENT_3D(&#x27;placement&#x27;,#10,#11,#12);
+<span class="lineno">20</span>/* Strip region: thin elongated rectangle */
+<span class="lineno">21</span>#20=CARTESIAN_POINT(&#x27;p0&#x27;,(0.0,0.0,0.0));
+<span class="lineno">22</span>#21=CARTESIAN_POINT(&#x27;p1&#x27;,(30.0,0.0,0.0));
+<span class="lineno">23</span>#22=CARTESIAN_POINT(&#x27;p2&#x27;,(30.0,0.5,0.0));
+<span class="lineno">24</span>#23=CARTESIAN_POINT(&#x27;p3&#x27;,(0.0,0.5,0.0));
+<span class="lineno">25</span>/* Pin protrusion at one end (square expansion at x=0) */
+<span class="lineno">26</span>#24=CARTESIAN_POINT(&#x27;p4&#x27;,(0.0,0.0,0.0));
+<span class="lineno">27</span>#25=CARTESIAN_POINT(&#x27;p5&#x27;,(0.0,-2.0,0.0));
+<span class="lineno">28</span>#26=CARTESIAN_POINT(&#x27;p6&#x27;,(2.0,-2.0,0.0));
+<span class="lineno">29</span>#27=CARTESIAN_POINT(&#x27;p7&#x27;,(2.0,0.0,0.0));
+<span class="lineno">30</span>/* Wire vertices for strip */
+<span class="lineno">31</span>#40=VERTEX_POINT(&#x27;v0&#x27;,#20);
+<span class="lineno">32</span>#41=VERTEX_POINT(&#x27;v1&#x27;,#21);
+<span class="lineno">33</span>#42=VERTEX_POINT(&#x27;v2&#x27;,#22);
+<span class="lineno">34</span>#43=VERTEX_POINT(&#x27;v3&#x27;,#23);
+<span class="lineno">35</span>/* Wire vertices for pin */
+<span class="lineno">36</span>#44=VERTEX_POINT(&#x27;v4&#x27;,#24);
+<span class="lineno">37</span>#45=VERTEX_POINT(&#x27;v5&#x27;,#25);
+<span class="lineno">38</span>#46=VERTEX_POINT(&#x27;v6&#x27;,#26);
+<span class="lineno">39</span>#47=VERTEX_POINT(&#x27;v7&#x27;,#27);
+<span class="lineno">40</span>/* Strip boundary edges */
+<span class="lineno">41</span>#50=DIRECTION(&#x27;d0&#x27;,(1.0,0.0,0.0));
+<span class="lineno">42</span>#51=VECTOR(&#x27;v_s0&#x27;,#50,30.0);
+<span class="lineno">43</span>#52=LINE(&#x27;l0&#x27;,#20,#51);
+<span class="lineno">44</span>#53=DIRECTION(&#x27;d1&#x27;,(0.0,1.0,0.0));
+<span class="lineno">45</span>#54=VECTOR(&#x27;v_s1&#x27;,#53,0.5);
+<span class="lineno">46</span>#55=LINE(&#x27;l1&#x27;,#21,#54);
+<span class="lineno">47</span>#56=DIRECTION(&#x27;d2&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">48</span>#57=VECTOR(&#x27;v_s2&#x27;,#56,30.0);
+<span class="lineno">49</span>#58=LINE(&#x27;l2&#x27;,#22,#57);
+<span class="lineno">50</span>#59=DIRECTION(&#x27;d3&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">51</span>#60=VECTOR(&#x27;v_s3&#x27;,#59,0.5);
+<span class="lineno">52</span>#61=LINE(&#x27;l3&#x27;,#23,#60);
+<span class="lineno">53</span>#62=EDGE_CURVE(&#x27;e0&#x27;,#40,#41,#52,.T.);
+<span class="lineno">54</span>#63=EDGE_CURVE(&#x27;e1&#x27;,#41,#42,#55,.T.);
+<span class="lineno">55</span>#64=EDGE_CURVE(&#x27;e2&#x27;,#42,#43,#58,.T.);
+<span class="lineno">56</span>#65=EDGE_CURVE(&#x27;e3&#x27;,#43,#40,#61,.T.);
+<span class="lineno">57</span>/* Pin expansion edges */
+<span class="lineno">58</span>#66=DIRECTION(&#x27;d4&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">59</span>#67=VECTOR(&#x27;v_p0&#x27;,#66,2.0);
+<span class="lineno">60</span>#68=LINE(&#x27;l4&#x27;,#24,#67);
+<span class="lineno">61</span>#69=DIRECTION(&#x27;d5&#x27;,(1.0,0.0,0.0));
+<span class="lineno">62</span>#70=VECTOR(&#x27;v_p1&#x27;,#69,2.0);
+<span class="lineno">63</span>#71=LINE(&#x27;l5&#x27;,#25,#70);
+<span class="lineno">64</span>#72=DIRECTION(&#x27;d6&#x27;,(0.0,1.0,0.0));
+<span class="lineno">65</span>#73=VECTOR(&#x27;v_p2&#x27;,#72,2.0);
+<span class="lineno">66</span>#74=LINE(&#x27;l6&#x27;,#26,#73);
+<span class="lineno">67</span>#75=DIRECTION(&#x27;d7&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">68</span>#76=VECTOR(&#x27;v_p3&#x27;,#75,2.0);
+<span class="lineno">69</span>#77=LINE(&#x27;l7&#x27;,#27,#76);
+<span class="lineno">70</span>#78=EDGE_CURVE(&#x27;e4&#x27;,#44,#45,#68,.T.);
+<span class="lineno">71</span>#79=EDGE_CURVE(&#x27;e5&#x27;,#45,#46,#71,.T.);
+<span class="lineno">72</span>#80=EDGE_CURVE(&#x27;e6&#x27;,#46,#47,#74,.T.);
+<span class="lineno">73</span>#81=EDGE_CURVE(&#x27;e7&#x27;,#47,#44,#77,.T.);
+<span class="lineno">74</span>/* Oriented edges for strip */
+<span class="lineno">75</span>#90=ORIENTED_EDGE(&#x27;oe0&#x27;,*,*,#62,.T.);
+<span class="lineno">76</span>#91=ORIENTED_EDGE(&#x27;oe1&#x27;,*,*,#63,.T.);
+<span class="lineno">77</span>#92=ORIENTED_EDGE(&#x27;oe2&#x27;,*,*,#64,.T.);
+<span class="lineno">78</span>#93=ORIENTED_EDGE(&#x27;oe3&#x27;,*,*,#65,.T.);
+<span class="lineno">79</span>/* Oriented edges for pin */
+<span class="lineno">80</span>#94=ORIENTED_EDGE(&#x27;oe4&#x27;,*,*,#78,.T.);
+<span class="lineno">81</span>#95=ORIENTED_EDGE(&#x27;oe5&#x27;,*,*,#79,.T.);
+<span class="lineno">82</span>#96=ORIENTED_EDGE(&#x27;oe6&#x27;,*,*,#80,.T.);
+<span class="lineno">83</span>#97=ORIENTED_EDGE(&#x27;oe7&#x27;,*,*,#81,.T.);
+<span class="lineno">84</span>/* Edge loops */
+<span class="lineno">85</span>#100=EDGE_LOOP(&#x27;strip&#x27;,(#90,#91,#92,#93));
+<span class="lineno">86</span>#101=EDGE_LOOP(&#x27;pin&#x27;,(#94,#95,#96,#97));
+<span class="lineno">87</span>/* Face bounds */
+<span class="lineno">88</span>#110=FACE_OUTER_BOUND(&#x27;outer&#x27;,#100,.T.);
+<span class="lineno">89</span>#111=FACE_INNER_BOUND(&#x27;pin&#x27;,#101,.T.);
+<span class="lineno">90</span>/* Geometry */
+<span class="lineno">91</span>#120=PLANE(&#x27;plane&#x27;,#13);
+<span class="lineno">92</span>/* Face: strip with pin protrusion (triggers strip/pin classification ambiguity) */
+<span class="lineno">93</span>#130=ADVANCED_FACE(&#x27;strip-pin&#x27;,(#110,#111),#120,.T.);
+<span class="lineno">94</span>#140=OPEN_SHELL(&#x27;shell&#x27;,(#130));
+<span class="lineno">95</span>/* Mandatory PRODUCT chain */
+<span class="lineno">96</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">97</span>#9001=PRODUCT(&#x27;Tfa134&#x27;,&#x27;Tfa134&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">98</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">99</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">100</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">101</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">102</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">103</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">104</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">105</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">106</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">107</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;sbsm&#x27;,(#140));
+<span class="lineno">108</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">109</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">110</span>ENDSEC;
+<span class="lineno">111</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tfa133.html">&larr; Tfa133</a> <a class="up" href="index.html">§12.3c Faces / sewing / free bound</a> <a class="next" href="Tfa135.html">Tfa135 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

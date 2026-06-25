@@ -38,80 +38,107 @@
 <section><h2>Notes</h2>
 <p>**See also**: Pf027.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>count_entity_def(b&#x27;CARTESIAN_POINT&#x27;) &gt;= 20</code></li>
 <li><code>count(b&#x27;#&#x27;) &gt;= 30</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="../12-10-perf/Pf027.html">Pf027</a></p>
 </section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
-<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(1)</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
 <tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
-<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Ad092 - Crash reading large STEP file
-<span class="lineno">3</span> * Defect: a volume of CARTESIAN_POINTs that exceeds the entity-map
-<span class="lineno">4</span> * rebuild capacity; the entity map uses a fixed-size hash table
-<span class="lineno">5</span> * and re-hashes on overflow, which can throw out-of-range when the
-<span class="lineno">6</span> * iterator is invalidated. Production fixture would contain ~10^7
-<span class="lineno">7</span> * CARTESIAN_POINT entities; the representative below contains 100
-<span class="lineno">8</span> * entries indexed in a non-monotonic pattern (high IDs interleaved
-<span class="lineno">9</span> * with low IDs) to force entity-map rebucketing. */
-<span class="lineno">10</span>HEADER;
-<span class="lineno">11</span>FILE_DESCRIPTION((&#x27;Ad092 test case&#x27;,&#x27;Crash reading large STEP file&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">12</span>FILE_NAME(&#x27;Ad092.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">13</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">14</span>ENDSEC;
-<span class="lineno">15</span>DATA;
-<span class="lineno">16</span><mark>#</mark>1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">17</span><mark>#</mark>2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,<mark>#</mark>1);
-<span class="lineno">18</span>/* Volume start: low IDs */
-<span class="lineno">19</span><mark>#10=CARTESIAN_POINT(</mark>&#x27;p10&#x27;,(0.0,0.0,0.0));
-<span class="lineno">20</span><mark>#11=CARTESIAN_POINT(</mark>&#x27;p11&#x27;,(1.0,0.0,0.0));
-<span class="lineno">21</span><mark>#12=CARTESIAN_POINT(</mark>&#x27;p12&#x27;,(2.0,0.0,0.0));
-<span class="lineno">22</span><mark>#13=CARTESIAN_POINT(</mark>&#x27;p13&#x27;,(3.0,0.0,0.0));
-<span class="lineno">23</span><mark>#14=CARTESIAN_POINT(</mark>&#x27;p14&#x27;,(4.0,0.0,0.0));
-<span class="lineno">24</span><mark>#15=CARTESIAN_POINT(</mark>&#x27;p15&#x27;,(5.0,0.0,0.0));
-<span class="lineno">25</span><mark>#16=CARTESIAN_POINT(</mark>&#x27;p16&#x27;,(6.0,0.0,0.0));
-<span class="lineno">26</span><mark>#17=CARTESIAN_POINT(</mark>&#x27;p17&#x27;,(7.0,0.0,0.0));
-<span class="lineno">27</span><mark>#18=CARTESIAN_POINT(</mark>&#x27;p18&#x27;,(8.0,0.0,0.0));
-<span class="lineno">28</span><mark>#19=CARTESIAN_POINT(</mark>&#x27;p19&#x27;,(9.0,0.0,0.0));
-<span class="lineno">29</span>/* Big jump to provoke entity-map sparse-bucket rebucketing */
-<span class="lineno">30</span><mark>#1000000=CARTESIAN_POINT(</mark>&#x27;p1m&#x27;,(10.0,0.0,0.0));
-<span class="lineno">31</span><mark>#1000001=CARTESIAN_POINT(</mark>&#x27;p1m1&#x27;,(11.0,0.0,0.0));
-<span class="lineno">32</span><mark>#1000002=CARTESIAN_POINT(</mark>&#x27;p1m2&#x27;,(12.0,0.0,0.0));
-<span class="lineno">33</span>/* Low IDs again interleaved */
-<span class="lineno">34</span><mark>#20=CARTESIAN_POINT(</mark>&#x27;p20&#x27;,(13.0,0.0,0.0));
-<span class="lineno">35</span><mark>#21=CARTESIAN_POINT(</mark>&#x27;p21&#x27;,(14.0,0.0,0.0));
-<span class="lineno">36</span><mark>#22=CARTESIAN_POINT(</mark>&#x27;p22&#x27;,(15.0,0.0,0.0));
-<span class="lineno">37</span><mark>#23=CARTESIAN_POINT(</mark>&#x27;p23&#x27;,(16.0,0.0,0.0));
-<span class="lineno">38</span><mark>#24=CARTESIAN_POINT(</mark>&#x27;p24&#x27;,(17.0,0.0,0.0));
-<span class="lineno">39</span><mark>#25=CARTESIAN_POINT(</mark>&#x27;p25&#x27;,(18.0,0.0,0.0));
-<span class="lineno">40</span><mark>#26=CARTESIAN_POINT(</mark>&#x27;p26&#x27;,(19.0,0.0,0.0));
-<span class="lineno">41</span>/* Even bigger jump */
-<span class="lineno">42</span><mark>#9999999=CARTESIAN_POINT(</mark>&#x27;p9m9&#x27;,(20.0,0.0,0.0));
-<span class="lineno">43</span><mark>#10000000=CARTESIAN_POINT(</mark>&#x27;p1e7&#x27;,(21.0,0.0,0.0));
-<span class="lineno">44</span>/* Final low IDs */
-<span class="lineno">45</span><mark>#27=CARTESIAN_POINT(</mark>&#x27;p27&#x27;,(22.0,0.0,0.0));
-<span class="lineno">46</span><mark>#28=CARTESIAN_POINT(</mark>&#x27;p28&#x27;,(23.0,0.0,0.0));
-<span class="lineno">47</span><mark>#29=CARTESIAN_POINT(</mark>&#x27;p29&#x27;,(24.0,0.0,0.0));
-<span class="lineno">48</span><mark>#30=CARTESIAN_POINT(</mark>&#x27;p30&#x27;,(25.0,0.0,0.0));
-<span class="lineno">49</span><mark>#31=CARTESIAN_POINT(</mark>&#x27;first&#x27;,(0.0,0.0,0.0));
-<span class="lineno">50</span><mark>#32=CARTESIAN_POINT(</mark>&#x27;last&#x27;,(1.0,1.0,1.0));
-<span class="lineno">51</span>ENDSEC;
-<span class="lineno">52</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* Ad092: large STEP file with many CARTESIAN_POINT entities exceeds internal buffer/map sizes; reader crashes near end with out-of-range exception in entity-map rebuild; dynamically-sized structures must be used; OCCT MANTIS<mark>#</mark>0028662, <mark>#</mark>0028256, <mark>#</mark>0029108, <mark>#</mark>0033377; See also Pf027; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ad092&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ad092.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span><mark>#</mark>9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span><mark>#1=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span><mark>#</mark>2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(<mark>#</mark>1));
+<span class="lineno">12</span><mark>#</mark>9050=PRODUCT_CONTEXT(&#x27;&#x27;,<mark>#</mark>9000,&#x27;mechanical&#x27;);
+<span class="lineno">13</span><mark>#</mark>9051=PRODUCT(&#x27;Ad092&#x27;,&#x27;Ad092&#x27;,&#x27;&#x27;,(<mark>#</mark>9050));
+<span class="lineno">14</span><mark>#</mark>9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,<mark>#</mark>9051);
+<span class="lineno">15</span><mark>#</mark>9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,<mark>#</mark>9000,&#x27;design&#x27;);
+<span class="lineno">16</span><mark>#</mark>9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,<mark>#</mark>9052,<mark>#</mark>9053);
+<span class="lineno">17</span><mark>#</mark>9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,<mark>#</mark>9054);
+<span class="lineno">18</span><mark>#</mark>9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">19</span><mark>#</mark>9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">20</span><mark>#</mark>9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">21</span><mark>#</mark>9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,<mark>#</mark>9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">22</span><mark>#</mark>9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((<mark>#</mark>9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((<mark>#</mark>9056,<mark>#</mark>9057,<mark>#</mark>9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">23</span><mark>#</mark>9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(<mark>#</mark>2),<mark>#</mark>9060);
+<span class="lineno">24</span><mark>#</mark>9062=SHAPE_DEFINITION_REPRESENTATION(<mark>#</mark>9055,<mark>#</mark>9061);
+<span class="lineno">25</span><mark>#9063=CARTESIAN_POINT(</mark>&#x27;pt0000&#x27;,(0.0,0.0,0.0));
+<span class="lineno">26</span><mark>#9064=CARTESIAN_POINT(</mark>&#x27;pt0001&#x27;,(1.0,2.0,3.0));
+<span class="lineno">27</span><mark>#9065=CARTESIAN_POINT(</mark>&#x27;pt0002&#x27;,(2.0,4.0,6.0));
+<span class="lineno">28</span><mark>#9066=CARTESIAN_POINT(</mark>&#x27;pt0003&#x27;,(3.0,6.0,9.0));
+<span class="lineno">29</span><mark>#9067=CARTESIAN_POINT(</mark>&#x27;pt0004&#x27;,(4.0,8.0,12.0));
+<span class="lineno">30</span><mark>#9068=CARTESIAN_POINT(</mark>&#x27;pt0005&#x27;,(5.0,10.0,15.0));
+<span class="lineno">31</span><mark>#9069=CARTESIAN_POINT(</mark>&#x27;pt0006&#x27;,(6.0,12.0,18.0));
+<span class="lineno">32</span><mark>#9070=CARTESIAN_POINT(</mark>&#x27;pt0007&#x27;,(7.0,14.0,21.0));
+<span class="lineno">33</span><mark>#9071=CARTESIAN_POINT(</mark>&#x27;pt0008&#x27;,(8.0,16.0,24.0));
+<span class="lineno">34</span><mark>#9072=CARTESIAN_POINT(</mark>&#x27;pt0009&#x27;,(9.0,18.0,27.0));
+<span class="lineno">35</span><mark>#9073=CARTESIAN_POINT(</mark>&#x27;pt0010&#x27;,(10.0,20.0,30.0));
+<span class="lineno">36</span><mark>#9074=CARTESIAN_POINT(</mark>&#x27;pt0011&#x27;,(11.0,22.0,33.0));
+<span class="lineno">37</span><mark>#9075=CARTESIAN_POINT(</mark>&#x27;pt0012&#x27;,(12.0,24.0,36.0));
+<span class="lineno">38</span><mark>#9076=CARTESIAN_POINT(</mark>&#x27;pt0013&#x27;,(13.0,26.0,39.0));
+<span class="lineno">39</span><mark>#9077=CARTESIAN_POINT(</mark>&#x27;pt0014&#x27;,(14.0,28.0,42.0));
+<span class="lineno">40</span><mark>#9078=CARTESIAN_POINT(</mark>&#x27;pt0015&#x27;,(15.0,30.0,45.0));
+<span class="lineno">41</span><mark>#9079=CARTESIAN_POINT(</mark>&#x27;pt0016&#x27;,(16.0,32.0,48.0));
+<span class="lineno">42</span><mark>#9080=CARTESIAN_POINT(</mark>&#x27;pt0017&#x27;,(17.0,34.0,51.0));
+<span class="lineno">43</span><mark>#9081=CARTESIAN_POINT(</mark>&#x27;pt0018&#x27;,(18.0,36.0,54.0));
+<span class="lineno">44</span><mark>#9082=CARTESIAN_POINT(</mark>&#x27;pt0019&#x27;,(19.0,38.0,57.0));
+<span class="lineno">45</span><mark>#9083=CARTESIAN_POINT(</mark>&#x27;pt0020&#x27;,(20.0,40.0,60.0));
+<span class="lineno">46</span><mark>#9084=CARTESIAN_POINT(</mark>&#x27;pt0021&#x27;,(21.0,42.0,63.0));
+<span class="lineno">47</span><mark>#9085=CARTESIAN_POINT(</mark>&#x27;pt0022&#x27;,(22.0,44.0,66.0));
+<span class="lineno">48</span><mark>#9086=CARTESIAN_POINT(</mark>&#x27;pt0023&#x27;,(23.0,46.0,69.0));
+<span class="lineno">49</span><mark>#9087=CARTESIAN_POINT(</mark>&#x27;pt0024&#x27;,(24.0,48.0,72.0));
+<span class="lineno">50</span><mark>#9088=CARTESIAN_POINT(</mark>&#x27;pt0025&#x27;,(25.0,50.0,75.0));
+<span class="lineno">51</span><mark>#9089=CARTESIAN_POINT(</mark>&#x27;pt0026&#x27;,(26.0,52.0,78.0));
+<span class="lineno">52</span><mark>#9090=CARTESIAN_POINT(</mark>&#x27;pt0027&#x27;,(27.0,54.0,81.0));
+<span class="lineno">53</span><mark>#9091=CARTESIAN_POINT(</mark>&#x27;pt0028&#x27;,(28.0,56.0,84.0));
+<span class="lineno">54</span><mark>#9092=CARTESIAN_POINT(</mark>&#x27;pt0029&#x27;,(29.0,58.0,87.0));
+<span class="lineno">55</span><mark>#9093=CARTESIAN_POINT(</mark>&#x27;pt0030&#x27;,(30.0,60.0,90.0));
+<span class="lineno">56</span><mark>#9094=CARTESIAN_POINT(</mark>&#x27;pt0031&#x27;,(31.0,62.0,93.0));
+<span class="lineno">57</span><mark>#9095=CARTESIAN_POINT(</mark>&#x27;pt0032&#x27;,(32.0,64.0,96.0));
+<span class="lineno">58</span><mark>#9096=CARTESIAN_POINT(</mark>&#x27;pt0033&#x27;,(33.0,66.0,99.0));
+<span class="lineno">59</span><mark>#9097=CARTESIAN_POINT(</mark>&#x27;pt0034&#x27;,(34.0,68.0,102.0));
+<span class="lineno">60</span><mark>#9098=CARTESIAN_POINT(</mark>&#x27;pt0035&#x27;,(35.0,70.0,105.0));
+<span class="lineno">61</span><mark>#9099=CARTESIAN_POINT(</mark>&#x27;pt0036&#x27;,(36.0,72.0,108.0));
+<span class="lineno">62</span><mark>#9100=CARTESIAN_POINT(</mark>&#x27;pt0037&#x27;,(37.0,74.0,111.0));
+<span class="lineno">63</span><mark>#9101=CARTESIAN_POINT(</mark>&#x27;pt0038&#x27;,(38.0,76.0,114.0));
+<span class="lineno">64</span><mark>#9102=CARTESIAN_POINT(</mark>&#x27;pt0039&#x27;,(39.0,78.0,117.0));
+<span class="lineno">65</span><mark>#9103=CARTESIAN_POINT(</mark>&#x27;pt0040&#x27;,(40.0,80.0,120.0));
+<span class="lineno">66</span><mark>#9104=CARTESIAN_POINT(</mark>&#x27;pt0041&#x27;,(41.0,82.0,123.0));
+<span class="lineno">67</span><mark>#9105=CARTESIAN_POINT(</mark>&#x27;pt0042&#x27;,(42.0,84.0,126.0));
+<span class="lineno">68</span><mark>#9106=CARTESIAN_POINT(</mark>&#x27;pt0043&#x27;,(43.0,86.0,129.0));
+<span class="lineno">69</span><mark>#9107=CARTESIAN_POINT(</mark>&#x27;pt0044&#x27;,(44.0,88.0,132.0));
+<span class="lineno">70</span><mark>#9108=CARTESIAN_POINT(</mark>&#x27;pt0045&#x27;,(45.0,90.0,135.0));
+<span class="lineno">71</span><mark>#9109=CARTESIAN_POINT(</mark>&#x27;pt0046&#x27;,(46.0,92.0,138.0));
+<span class="lineno">72</span><mark>#9110=CARTESIAN_POINT(</mark>&#x27;pt0047&#x27;,(47.0,94.0,141.0));
+<span class="lineno">73</span><mark>#9111=CARTESIAN_POINT(</mark>&#x27;pt0048&#x27;,(48.0,96.0,144.0));
+<span class="lineno">74</span><mark>#9112=CARTESIAN_POINT(</mark>&#x27;pt0049&#x27;,(49.0,98.0,147.0));
+<span class="lineno">75</span>ENDSEC;
+<span class="lineno">76</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

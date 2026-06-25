@@ -37,6 +37,8 @@
 <p>Search terms: &quot;remove tiny holes&quot;, &quot;sub-feature holes&quot;, &quot;hole sliver&quot;. Synonyms: &quot;tiny inner wire enclosing tiny area&quot;, &quot;sub-tolerance hole on face&quot;, &quot;spurious tiny inner wire&quot;, &quot;hole sliver from boolean residue&quot;, &quot;FACE_INNER_BOUND with negligible enclosed area&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<section><h2>Closure intent</h2>
+<p><code>sheet</code> — the open shell is the intended final geometry; a solid-only kernel should cleanly refuse.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;inner_subthreshold_tri&#x27;)</code></li>
 <li><code>contains(b&#x27;(5.001,5.0,0.0)&#x27;)</code></li>
@@ -60,7 +62,7 @@
 <span class="lineno">2</span>/* Twi079 - Internal hole wire whose enclosed area is below threshold
 <span class="lineno">3</span> * Square outer face 10x10 on a PLANE; inner FACE_INNER_BOUND is a tiny
 <span class="lineno">4</span> * triangle near the centre with vertices (5.0, 5.0), (5.001, 5.0),
-<span class="lineno">5</span> * (5.0, 5.001) -- enclosed area ~= 5e-7 mm^2, well below any feature
+<span class="lineno">5</span> * (5.0, 5.001) -- enclosed area ~= 5.0e-7 mm^2, well below any feature
 <span class="lineno">6</span> * threshold. RemoveInternalWires must classify and drop it. */
 <span class="lineno">7</span>HEADER;
 <span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Twi079 test case&#x27;,&#x27;Square face with sub-threshold inner triangle hole&#x27;),&#x27;2;1&#x27;);
@@ -94,7 +96,7 @@
 <span class="lineno">36</span>#53=ORIENTED_EDGE(&#x27;&#x27;,*,*,#45,.T.);
 <span class="lineno">37</span>#54=EDGE_LOOP(&#x27;outer_10x10&#x27;,(#50,#51,#52,#53));
 <span class="lineno">38</span>#55=FACE_OUTER_BOUND(&#x27;outer&#x27;,#54,.T.);
-<span class="lineno">39</span>/* tiny inner triangle, area ~= 5e-7 mm^2 */
+<span class="lineno">39</span>/* tiny inner triangle, area ~= 5.0e-7 mm^2 */
 <span class="lineno">40</span>#60=CARTESIAN_POINT(&#x27;&#x27;,(5.0,5.0,0.0));#61=VERTEX_POINT(&#x27;Ia&#x27;,#60);
 <span class="lineno">41</span>#62=CARTESIAN_POINT(&#x27;&#x27;,<mark>(5.001,5.0,0.0)</mark>);#63=VERTEX_POINT(&#x27;Ib&#x27;,#62);
 <span class="lineno">42</span>#64=CARTESIAN_POINT(&#x27;&#x27;,(5.0,5.001,0.0));#65=VERTEX_POINT(&#x27;Ic&#x27;,#64);

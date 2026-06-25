@@ -38,58 +38,98 @@
 <section><h2>Notes</h2>
 <p>Synonyms: &quot;AP238 tool crash&quot;, &quot;trajectory through part&quot;, &quot;missing retract&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;AP238_STEP_NC_MIM&#x27;)</code></li>
 <li><code>contains(b&#x27;TRAJECTORY&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_edges_total == 1</code></li>
+<li><code>n_vertices_total == 2</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
-<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(1)</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
 <tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
-<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M103 - AP238 trajectory passes through workpiece body before the cut.
-<span class="lineno">3</span> * Defect: the first segment of a <mark>TRAJECTORY</mark> runs from the tool-change
-<span class="lineno">4</span> * height (0,0,200) straight to the feature start (50,30,-5), passing
-<span class="lineno">5</span> * through the workpiece body which occupies (0..100,0..100,0..50).
-<span class="lineno">6</span> * The implicit retract was omitted. */
-<span class="lineno">7</span>HEADER;
-<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;M103 test case&#x27;,&#x27;AP238 approach path collides with workpiece&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">9</span>FILE_NAME(&#x27;M103.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">10</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 1 0 0 1 }&#x27;));
-<span class="lineno">11</span>ENDSEC;
-<span class="lineno">12</span>DATA;
-<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;numerical_control_machining&#x27;);
-<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">15</span>  &#x27;numerical_control_machining&#x27;,2007,#1);
-<span class="lineno">16</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">17</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">18</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-<span class="lineno">19</span>     REPRESENTATION_CONTEXT(&#x27;nc&#x27;,&#x27;3D&#x27;));
-<span class="lineno">20</span>/* Workpiece envelope (0..100, 0..100, 0..50) - represented schematically */
-<span class="lineno">21</span>#400=CARTESIAN_POINT(&#x27;wp_min&#x27;,(0.0,0.0,0.0));
-<span class="lineno">22</span>#401=CARTESIAN_POINT(&#x27;wp_max&#x27;,(100.0,100.0,50.0));
-<span class="lineno">23</span>/* Defect: tool-change point (0,0,200) -&gt; feature start (50,30,-5).
-<span class="lineno">24</span>   The straight line passes through (50,30,~0) which is inside the
-<span class="lineno">25</span>   workpiece. */
-<span class="lineno">26</span>#500=CARTESIAN_POINT(&#x27;toolchange&#x27;,(0.0,0.0,200.0));
-<span class="lineno">27</span>#501=CARTESIAN_POINT(&#x27;feature_start&#x27;,(50.0,30.0,-5.0));
-<span class="lineno">28</span>#502=POLYLINE(&#x27;approach&#x27;,(#500,#501));
-<span class="lineno">29</span>#510=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#502);
-<span class="lineno">30</span>#520=COMPOSITE_CURVE(&#x27;approach_path&#x27;,(#510),.F.);
-<span class="lineno">31</span>#600=<mark>TRAJECTORY</mark>(&#x27;approach_through_part&#x27;,$,$,$,#520);
-<span class="lineno">32</span>ENDSEC;
-<span class="lineno">33</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M103: AP238 tool trajectory passes through workpiece body before designated cut */
+<span class="lineno">3</span>/* DEFECT: <mark>TRAJECTORY</mark> approach LINE from (0,0,200) to (50,30,-5) intersects workpiece */
+<span class="lineno">4</span>/* Workpiece occupies box (0..100, 0..100, 0..50) â approach hits at (50,30,0) */
+<span class="lineno">5</span>/* Missing retract height â controller crashes or plunges unintentionally */
+<span class="lineno">6</span>/* Violates ISO 10303-238 Â§6.2 toolpath safety / clearance invariants */
+<span class="lineno">7</span>/* Byte assertion: contains(b&#x27;<mark>AP238_STEP_NC_MIM</mark>&#x27;) */
+<span class="lineno">8</span>/* Byte assertion: contains(b&#x27;<mark>TRAJECTORY</mark>&#x27;) */
+<span class="lineno">9</span>HEADER;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;M103: AP238 <mark>TRAJECTORY</mark> approach passes through workpiece&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;M103.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>/* Byte assertion: contains(b&#x27;<mark>AP238_STEP_NC_MIM</mark>&#x27;) */
+<span class="lineno">13</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 1 0 0 }&#x27;));
+<span class="lineno">14</span>ENDSEC;
+<span class="lineno">15</span>DATA;
+<span class="lineno">16</span>#1=APPLICATION_CONTEXT(&#x27;step_nc_mim&#x27;);
+<span class="lineno">17</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">18</span>  &#x27;ap238_step_nc_mim&#x27;,2007,#1);
+<span class="lineno">19</span>/* Standard unit context â mm */
+<span class="lineno">20</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">21</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">22</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">23</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">24</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">25</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">26</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">27</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">28</span>  REPRESENTATION_CONTEXT(&#x27;nc&#x27;,&#x27;3D&#x27;));
+<span class="lineno">29</span>/* Tool-change position: above workpiece at Z=200 */
+<span class="lineno">30</span>#20=CARTESIAN_POINT(&#x27;tool_change_pos&#x27;,(0.,0.,200.));
+<span class="lineno">31</span>/* DEFECT: Feature start at Z=-5 (below workpiece surface at Z=0) */
+<span class="lineno">32</span>/* Approach from (0,0,200) to (50,30,-5) crosses workpiece surface at (50,30,0) */
+<span class="lineno">33</span>#21=CARTESIAN_POINT(&#x27;feature_start&#x27;,(50.,30.,-5.));
+<span class="lineno">34</span>/* Approach direction: from tool_change_pos toward feature_start */
+<span class="lineno">35</span>/* Vector: (50-0, 30-0, -5-200) = (50, 30, -205), normalized */
+<span class="lineno">36</span>#22=DIRECTION(&#x27;approach_dir&#x27;,(0.2357,0.1414,-0.9661));
+<span class="lineno">37</span>#23=VECTOR(&#x27;approach_vec&#x27;,#22,212.2);
+<span class="lineno">38</span>/* DEFECT: LINE approach segment passes through workpiece body */
+<span class="lineno">39</span>/* Workpiece box (0..100, 0..100, 0..50): line crosses Z=0 at (50,30,0) â inside box */
+<span class="lineno">40</span>/* Correct fix: add retract to Z=200 above feature, then plunge to feature start */
+<span class="lineno">41</span>#24=LINE(&#x27;approach_line&#x27;,#20,#23);
+<span class="lineno">42</span>/* Byte assertion: contains(b&#x27;<mark>TRAJECTORY</mark>&#x27;) */
+<span class="lineno">43</span>/* <mark>TRAJECTORY</mark> wraps the approach line â defect propagates to motion planning */
+<span class="lineno">44</span>#25=<mark>TRAJECTORY</mark>(&#x27;approach_traj&#x27;,(#24),$,$,$);
+<span class="lineno">45</span>/* Target machined feature */
+<span class="lineno">46</span>#50=MACHINED_FEATURE(&#x27;pocket_c&#x27;,$,$,$,$,$);
+<span class="lineno">47</span>/* End mill used for the pocket operation */
+<span class="lineno">48</span>#60=MACHINING_TOOL(&#x27;endmill_10mm&#x27;,$,$,$);
+<span class="lineno">49</span>/* MACHINING_OPERATION references the unsafe trajectory #25 as its toolpath */
+<span class="lineno">50</span>#70=MACHINING_OPERATION(&#x27;mill_pocket_c&#x27;,#60,$,$,$,$,$,$,#50,$,$);
+<span class="lineno">51</span>/* Workingstep and workplan */
+<span class="lineno">52</span>#80=MACHINING_WORKINGSTEP(&#x27;pocket_c_step&#x27;,#50,#70,$);
+<span class="lineno">53</span>#90=WORKPLAN(&#x27;main&#x27;,(#80),$,$,$);
+<span class="lineno">54</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">55</span>#300=GEOMETRIC_CURVE_SET(&#x27;ap238-tool-trajectory-passes-through-workpiece-body&#x27;,
+<span class="lineno">56</span>  (#20,#21,#24,#25,#50,#60,#70,#80,#90));
+<span class="lineno">57</span>/* Product chain */
+<span class="lineno">58</span>#400=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">59</span>#401=PRODUCT_CONTEXT(&#x27;&#x27;,#400,&#x27;mechanical&#x27;);
+<span class="lineno">60</span>#402=PRODUCT(&#x27;M103&#x27;,&#x27;M103&#x27;,&#x27;M103&#x27;,(#401));
+<span class="lineno">61</span>#403=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#402);
+<span class="lineno">62</span>#404=PRODUCT_DEFINITION_CONTEXT(#400,&#x27;design&#x27;);
+<span class="lineno">63</span>#405=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#403,#404);
+<span class="lineno">64</span>#406=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#405);
+<span class="lineno">65</span>#407=SHAPE_REPRESENTATION(&#x27;&#x27;,(#300),#14);
+<span class="lineno">66</span>#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
+<span class="lineno">67</span>ENDSEC;
+<span class="lineno">68</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

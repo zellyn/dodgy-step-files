@@ -40,6 +40,9 @@
 <li><code>matches(rb&#x27;#\d+\s*=\s*\(\s*CONVERSION_BASED_UNIT&#x27;)</code></li>
 <li><code>not_contains(b&#x27;NAMED_UNIT(*)&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="Ls010.html">Ls010</a>, <a href="Ls047.html">Ls047</a></p>
 </section>
@@ -57,34 +60,40 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Ls048 - Complex / multiple-inheritance entity: ancestor leaf omitted
+<pre class="fixture-bytes"><span class="lineno">1</span>/* Ls048 - Complex entity record: ancestor leaf NAMED_UNIT omitted
 <span class="lineno">2</span>   ----------------------------------------------------------------------
 <span class="lineno">3</span>   Catalog section : Â§12.1c complex entity instances
-<span class="lineno">4</span>   ----------------------------------------------------------------------
-<span class="lineno">5</span>   Defect
-<span class="lineno">6</span>     The external mapping of a multiple-inheritance entity must list ALL
-<span class="lineno">7</span>     ancestor leaves, not only the most-specific subtypes. A writer that
-<span class="lineno">8</span>     elides an ancestor (here NAMED_UNIT) produces a record that resolves
-<span class="lineno">9</span>     ambiguously on dispatch.
-<span class="lineno">10</span>   Expected behavior
-<span class="lineno">11</span>     Reject the record (or accept-with-warning and synthesise the
-<span class="lineno">12</span>     missing ancestor) â never silently bind to an arbitrary subset of
-<span class="lineno">13</span>     the type lattice.
-<span class="lineno">14</span>   ----------------------------------------------------------------------
-<span class="lineno">15</span>*/
-<span class="lineno">16</span>ISO-10303-21;
-<span class="lineno">17</span>HEADER;
-<span class="lineno">18</span>FILE_DESCRIPTION((&#x27;Ls048 - complex entity ancestor leaf omitted&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">19</span>FILE_NAME(&#x27;Ls048.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
-<span class="lineno">20</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">21</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">22</span>ENDSEC;
-<span class="lineno">23</span>DATA;
-<span class="lineno">24</span>#9=DIMENSIONAL_EXPONENTS(0.0,0.0,0.0,0.0,0.0,0.0,0.0);
-<span class="lineno">25</span>/* Defect: ancestor leaf NAMED_UNIT omitted from external mapping */
-<span class="lineno">26</span><mark>#40=( CONVERSION_BASED_UNIT</mark>(&#x27;DEG&#x27;,#9) PLANE_ANGLE_UNIT() );
-<span class="lineno">27</span>ENDSEC;
-<span class="lineno">28</span>END-ISO-10303-21;
+<span class="lineno">4</span>   Sources         : T025, Q046, G088, N032
+<span class="lineno">5</span>   See also        : Ls010, Ls047
+<span class="lineno">6</span>   ----------------------------------------------------------------------
+<span class="lineno">7</span>   Defect
+<span class="lineno">8</span>     The external mapping of a multiple-inheritance entity must list ALL
+<span class="lineno">9</span>     ancestor leaves. A writer that elides an ancestor produces a record
+<span class="lineno">10</span>     that resolves ambiguously on dispatch.
+<span class="lineno">11</span>     The missing ancestor is NAMED_UNIT (the star-arg leaf between
+<span class="lineno">12</span>     CONVERSION_BASED_UNIT and PLANE_ANGLE_UNIT).
+<span class="lineno">13</span>     This defective form omits that intermediate ancestor leaf.
+<span class="lineno">14</span>   Expected behavior
+<span class="lineno">15</span>     Reject the record (or accept-with-warning and synthesise the missing
+<span class="lineno">16</span>     ancestor); never silently bind to an arbitrary subset of the type lattice.
+<span class="lineno">17</span>   ----------------------------------------------------------------------
+<span class="lineno">18</span>*/
+<span class="lineno">19</span>ISO-10303-21;
+<span class="lineno">20</span>HEADER;
+<span class="lineno">21</span>FILE_DESCRIPTION((&#x27;Ls048 - complex entity ancestor leaf omitted&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">22</span>FILE_NAME(&#x27;Ls048.stp&#x27;,&#x27;2026-06-20T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">23</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">24</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">25</span>ENDSEC;
+<span class="lineno">26</span>DATA;
+<span class="lineno">27</span>/* #9 is a plain SI radian unit used as the conversion factor reference */
+<span class="lineno">28</span>#9=( SI_UNIT(.MILLI.,.RADIAN.) );
+<span class="lineno">29</span>/* Defect: the NAMED_UNIT ancestor leaf is missing from the complex unit record */
+<span class="lineno">30</span>/* The intermediate ancestor (star-arg) between CONVERSION_BASED_UNIT and */
+<span class="lineno">31</span>/* PLANE_ANGLE_UNIT must be included per ISO 10303-21 external mapping rules */
+<span class="lineno">32</span><mark>#10=( CONVERSION_BASED_UNIT</mark>(&#x27;DEG&#x27;,#9) PLANE_ANGLE_UNIT() );
+<span class="lineno">33</span>ENDSEC;
+<span class="lineno">34</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

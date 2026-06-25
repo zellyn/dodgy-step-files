@@ -44,6 +44,9 @@
 <li><code>contains(b&#x27;INCH&#x27;)</code></li>
 <li><code>contains(b&#x27;CARTESIAN_POINT&#x27;) and contains(b&#x27;25.4&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="Wr035.html">Wr035</a>, <a href="../12-5-units/U015.html">U015</a></p>
 </section>
@@ -54,58 +57,40 @@
 <tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
 <tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
-<tr><td><code>part21_strict</code></td><td><code>warn(W_COMPLEX_ORDER)</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_FORWARD_REF)</code></td></tr>
 <tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Wr044 - Inch unit declared in LENGTH_UNIT context but coordinates emitted
-<span class="lineno">2</span> * in millimetres (no conversion).
-<span class="lineno">3</span> * Defect (FreeCAD #18078): user picks &quot;inch&quot; in the export dialog; writer
-<span class="lineno">4</span> * flips the LENGTH_UNIT label but does not divide coordinate values by 25.4.
-<span class="lineno">5</span> * A 25.4 mm cube round-trips as a 25.4 inch (645 mm) cube. */
-<span class="lineno">6</span>ISO-10303-21;
-<span class="lineno">7</span>HEADER;
-<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Wr044 - inch unit declared but mm-scale coordinates&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">9</span>FILE_NAME(&#x27;Wr044.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">11</span>ENDSEC;
-<span class="lineno">12</span>DATA;
-<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2001,#1);
-<span class="lineno">15</span>#3=PRODUCT_CONTEXT(&#x27;part&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">16</span>#4=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
-<span class="lineno">17</span>#5=PRODUCT(&#x27;Wr044_inchcube&#x27;,&#x27;inch unit decl with mm values&#x27;,&#x27;&#x27;,(#3));
-<span class="lineno">18</span>#6=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#5);
-<span class="lineno">19</span>#7=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#6,#4);
-<span class="lineno">20</span>#8=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#7);
-<span class="lineno">21</span>/* Defect: inch unit declared, but the eight corners below carry mm-scale
-<span class="lineno">22</span>   values (25.4 mm = 1 inch). After unit interpretation the cube becomes
-<span class="lineno">23</span>   25.4 inch on a side -- 25.4x larger than authored. */
-<span class="lineno">24</span>#10=( LENGTH_UNIT() NAMED_UNIT(*) CONVERSION_BASED_UNIT(&#x27;<mark>INCH</mark>&#x27;,#11) );
-<span class="lineno">25</span>#11=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#12);
-<span class="lineno">26</span>#12=( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-<span class="lineno">27</span>#13=( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-<span class="lineno">28</span>#14=( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-<span class="lineno">29</span>#15=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#10,&#x27;tol&#x27;,&#x27;&#x27;);
-<span class="lineno">30</span>#16=( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#15)) GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#13,#14)) REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;) );
-<span class="lineno">31</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">32</span>#21=CARTESIAN_POINT(&#x27;&#x27;,(25.4,0.0,0.0));
-<span class="lineno">33</span>#22=CARTESIAN_POINT(&#x27;&#x27;,(25.4,25.4,0.0));
-<span class="lineno">34</span>#23=CARTESIAN_POINT(&#x27;&#x27;,(0.0,25.4,0.0));
-<span class="lineno">35</span>#24=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,25.4));
-<span class="lineno">36</span>#25=CARTESIAN_POINT(&#x27;&#x27;,(25.4,0.0,25.4));
-<span class="lineno">37</span>#26=CARTESIAN_POINT(&#x27;&#x27;,(25.4,25.4,25.4));
-<span class="lineno">38</span>#27=CARTESIAN_POINT(&#x27;&#x27;,(0.0,25.4,25.4));
-<span class="lineno">39</span>#30=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
-<span class="lineno">40</span>#31=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">41</span>#32=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#20,#30,#31);
-<span class="lineno">42</span>#33=SHAPE_REPRESENTATION(&#x27;Wr044_cube&#x27;,(#32),#16);
-<span class="lineno">43</span>#34=SHAPE_DEFINITION_REPRESENTATION(#8,#33);
-<span class="lineno">44</span>ENDSEC;
-<span class="lineno">45</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Wr044: inch unit declared in LENGTH_UNIT but coordinates are in millimetres */
+<span class="lineno">3</span>/* FreeCAD #18078: user picks inch export unit; writer labels file as inch but */
+<span class="lineno">4</span>/* emits mm coordinates unchanged (skips the divide-by-25.4 conversion pass) */
+<span class="lineno">5</span>/* A 25.4 mm cube round-trips as a 25.4 inch (645 mm) cube â 25.4x too large */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;Wr044: inch unit declared but coordinates are in mm&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;Wr044.stp&#x27;,&#x27;2026-06-20T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>/* DEFECT: LENGTH_UNIT declares <mark>INCH</mark> but all coordinates are millimetre values */
+<span class="lineno">13</span>/* Correct inch file would have corner at (1.0, 1.0, 1.0) â 25.4mm / 25.4 */
+<span class="lineno">14</span>#1=CARTESIAN_POINT(&#x27;origin&#x27;,(0.,0.,0.));
+<span class="lineno">15</span>#2=CARTESIAN_POINT(&#x27;corner-x&#x27;,(25.4,0.,0.));
+<span class="lineno">16</span>#3=CARTESIAN_POINT(&#x27;corner-y&#x27;,(0.,25.4,0.));
+<span class="lineno">17</span>#4=CARTESIAN_POINT(&#x27;corner-z&#x27;,(0.,0.,25.4));
+<span class="lineno">18</span>#5=CARTESIAN_POINT(&#x27;corner-xyz&#x27;,(25.4,25.4,25.4));
+<span class="lineno">19</span>#6=DIRECTION(&#x27;xdir&#x27;,(1.,0.,0.));
+<span class="lineno">20</span>#7=DIRECTION(&#x27;zdir&#x27;,(0.,0.,1.));
+<span class="lineno">21</span>/* DEFECT: unit declared as <mark>INCH</mark>; coordinates are mm values (25.4 should be 1.0) */
+<span class="lineno">22</span>#8=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#9);
+<span class="lineno">23</span>#9=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">24</span>#10=(CONVERSION_BASED_UNIT(&#x27;<mark>INCH</mark>&#x27;,#8) LENGTH_UNIT() NAMED_UNIT(*));
+<span class="lineno">25</span>#11=GEOMETRIC_CURVE_SET(&#x27;inch-unit-mm-coords-shape&#x27;,(#1,#2,#3,#4,#5));
+<span class="lineno">26</span>ENDSEC;
+<span class="lineno">27</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

@@ -33,82 +33,97 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept, or warn and accept: each defect addressed independently; the representation-items invariant is checked, the PMI-association is resolved (or flagged with a warning), the saved-view linkage is repaired or warned about.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;FILE_SCHEMA&#x27;)</code></li>
 <li><code>contains(b&#x27;EDGE_CURVE&#x27;)</code></li>
 <li><code>contains(b&#x27;ADVANCED_FACE&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
-<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(9)</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
-<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
-<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>reject(E_UNRESOLVED_REFS)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Xp004 - Cross-product: PMI annotation spans tessellated_face and
-<span class="lineno">3</span> *   advanced_face; saved-view mapped_item is missing.
-<span class="lineno">4</span> * Builds on Pmi001 (PMI across BRep+tess) + M002 (mixed items in
-<span class="lineno">5</span> *   tessellated_shape_representation) + Pmi020 (saved view missing
-<span class="lineno">6</span> *   mapped_item). */
-<span class="lineno">7</span>HEADER;
-<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Xp004 cross-product&#x27;,&#x27;PMI x tess+brep mix x missing mapped_item&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">9</span>FILE_NAME(&#x27;Xp004.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">10</span><mark>FILE_SCHEMA</mark>((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
-<span class="lineno">11</span>ENDSEC;
-<span class="lineno">12</span>DATA;
-<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
-<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">15</span>  &#x27;ap242_managed_model_based_3d_engineering&#x27;,2014,#1);
-<span class="lineno">16</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">17</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">18</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">19</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
-<span class="lineno">20</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">21</span>     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-<span class="lineno">22</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-<span class="lineno">23</span>     REPRESENTATION_CONTEXT(&#x27;part&#x27;,&#x27;3D&#x27;));
-<span class="lineno">24</span>/* Tessellated face */
-<span class="lineno">25</span>#100=COORDINATES_LIST(&#x27;&#x27;,4,((0.0,0.0,0.0),(1.0,0.0,0.0),
-<span class="lineno">26</span>                            (0.5,1.0,0.0),(0.5,0.5,1.0)));
-<span class="lineno">27</span>#110=TRIANGULATED_FACE(&#x27;&#x27;,#100,$,$,(),
-<span class="lineno">28</span>       ((1,2,3),(1,2,4),(2,3,4),(3,1,4)));
-<span class="lineno">29</span>/* BRep face (illegal mix in Ed.1) */
-<span class="lineno">30</span>#120=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">31</span>#121=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
-<span class="lineno">32</span>#122=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">33</span>#123=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#120,#121,#122);
-<span class="lineno">34</span>#124=PLANE(&#x27;&#x27;,#123);
-<span class="lineno">35</span>#125=CARTESIAN_POINT(&#x27;a&#x27;,(0.0,0.0,0.0));
-<span class="lineno">36</span>#126=CARTESIAN_POINT(&#x27;b&#x27;,(1.0,0.0,0.0));
-<span class="lineno">37</span>#127=VERTEX_POINT(&#x27;&#x27;,#125);
-<span class="lineno">38</span>#128=VERTEX_POINT(&#x27;&#x27;,#126);
-<span class="lineno">39</span>#129=LINE(&#x27;&#x27;,#125,VECTOR(&#x27;&#x27;,#122,1.0));
-<span class="lineno">40</span>#130=<mark>EDGE_CURVE</mark>(&#x27;&#x27;,#127,#128,#129,.T.);
-<span class="lineno">41</span>#131=ORIENTED_EDGE(&#x27;&#x27;,*,*,#130,.T.);
-<span class="lineno">42</span>#132=EDGE_LOOP(&#x27;&#x27;,(#131));
-<span class="lineno">43</span>#133=FACE_OUTER_BOUND(&#x27;&#x27;,#132,.T.);
-<span class="lineno">44</span>#134=<mark>ADVANCED_FACE</mark>(&#x27;brep_half&#x27;,(#133),#124,.T.);
-<span class="lineno">45</span>/* Defect 1+2: tessellated_shape_representation with mixed items */
-<span class="lineno">46</span>#140=TESSELLATED_SHAPE_REPRESENTATION(&#x27;mixed&#x27;,(#110,#134,#123),#14);
-<span class="lineno">47</span>/* PMI: dimensional_size cites a shape_aspect bound to BOTH halves */
-<span class="lineno">48</span>#200=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,$);
-<span class="lineno">49</span>#201=SHAPE_ASPECT(&#x27;hole&#x27;,&#x27;through-hole&#x27;,#200,.T.);
-<span class="lineno">50</span>#210=GEOMETRIC_ITEM_SPECIFIC_USAGE(&#x27;&#x27;,&#x27;&#x27;,#201,$,#134);
-<span class="lineno">51</span>#211=GEOMETRIC_ITEM_SPECIFIC_USAGE(&#x27;&#x27;,&#x27;&#x27;,#201,$,#110);
-<span class="lineno">52</span>#220=DIMENSIONAL_SIZE(#201,&#x27;hole_diameter&#x27;);
-<span class="lineno">53</span>/* Defect 3: saved view but draughting_model items list lacks mapped_item */
-<span class="lineno">54</span>#300=DRAUGHTING_MODEL(&#x27;saved_view&#x27;,(#220),#14);
-<span class="lineno">55</span>ENDSEC;
-<span class="lineno">56</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* Xp004: PMI annotation x tessellation-vs-BRep mix in a single AP242 file */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Xp004&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Xp004.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span><mark>FILE_SCHEMA</mark>((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=PLANE(&#x27;&#x27;,#4);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">19</span>#10=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">20</span>#11=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">21</span>#12=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">22</span>#13=VERTEX_POINT(&#x27;&#x27;,#9);
+<span class="lineno">23</span>#14=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">24</span>#15=VECTOR(&#x27;&#x27;,#14,1.0);
+<span class="lineno">25</span>#16=LINE(&#x27;&#x27;,#6,#15);
+<span class="lineno">26</span>#17=<mark>EDGE_CURVE</mark>(&#x27;&#x27;,#10,#11,#16,.T.);
+<span class="lineno">27</span>#18=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">28</span>#19=VECTOR(&#x27;&#x27;,#18,1.0);
+<span class="lineno">29</span>#20=LINE(&#x27;&#x27;,#7,#19);
+<span class="lineno">30</span>#21=<mark>EDGE_CURVE</mark>(&#x27;&#x27;,#11,#12,#20,.T.);
+<span class="lineno">31</span>#22=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">32</span>#23=VECTOR(&#x27;&#x27;,#22,1.0);
+<span class="lineno">33</span>#24=LINE(&#x27;&#x27;,#8,#23);
+<span class="lineno">34</span>#25=<mark>EDGE_CURVE</mark>(&#x27;&#x27;,#12,#13,#24,.T.);
+<span class="lineno">35</span>#26=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">36</span>#27=VECTOR(&#x27;&#x27;,#26,1.0);
+<span class="lineno">37</span>#28=LINE(&#x27;&#x27;,#9,#27);
+<span class="lineno">38</span>#29=<mark>EDGE_CURVE</mark>(&#x27;&#x27;,#13,#10,#28,.T.);
+<span class="lineno">39</span>#30=ORIENTED_EDGE(&#x27;&#x27;,$,$,#17,.T.);
+<span class="lineno">40</span>#31=ORIENTED_EDGE(&#x27;&#x27;,$,$,#21,.T.);
+<span class="lineno">41</span>#32=ORIENTED_EDGE(&#x27;&#x27;,$,$,#25,.T.);
+<span class="lineno">42</span>#33=ORIENTED_EDGE(&#x27;&#x27;,$,$,#29,.T.);
+<span class="lineno">43</span>#34=EDGE_LOOP(&#x27;&#x27;,(#30,#31,#32,#33));
+<span class="lineno">44</span>#35=FACE_OUTER_BOUND(&#x27;&#x27;,#34,.T.);
+<span class="lineno">45</span>#36=<mark>ADVANCED_FACE</mark>(&#x27;&#x27;,(#35),#5,.T.);
+<span class="lineno">46</span>#37=OPEN_SHELL(&#x27;&#x27;,(#36));
+<span class="lineno">47</span>#38=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#37));
+<span class="lineno">48</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">49</span>#9051=PRODUCT(&#x27;Xp004&#x27;,&#x27;Xp004&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">50</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">51</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">52</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">53</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">54</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">55</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">56</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">57</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">58</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">59</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#38),#9060);
+<span class="lineno">60</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">61</span>#9063=COORDINATES_LIST(&#x27;tess_coords&#x27;,3,((0.0,0.0,0.0),(1.0,0.0,0.0),(1.0,1.0,0.0)));
+<span class="lineno">62</span>#9064=TRIANGULATED_FACE(&#x27;tess_face&#x27;,#9063,(),(),(0.,(1.,1.)),(3,((1,2,3))));
+<span class="lineno">63</span>#9065=SHAPE_ASPECT(&#x27;diameter_aspect&#x27;,&#x27;&#x27;,#9005,.T.);
+<span class="lineno">64</span>#9066=DIMENSIONAL_SIZE(#9065,&#x27;diameter&#x27;);
+<span class="lineno">65</span>#9067=GEOMETRIC_ITEM_SPECIFIC_USAGE(#9065,#36);
+<span class="lineno">66</span>#9068=DRAUGHTING_MODEL(&#x27;saved_view&#x27;,(),$);
+<span class="lineno">67</span>ENDSEC;
+<span class="lineno">68</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

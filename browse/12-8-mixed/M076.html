@@ -43,6 +43,9 @@
 <li><code>contains(b&#x27;CUTTING_TOOL&#x27;)</code></li>
 <li><code>contains(b&#x27;MACHINING_TOOL_FEEDSPEED&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -58,33 +61,63 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M076 - AP238 cutting_tool feed/speed measurement uses wrong unit class.
-<span class="lineno">3</span> * Defect: a <mark>CUTTING_TOOL</mark> has a feedrate stated in a unit-measure whose
-<span class="lineno">4</span> * dimensional_exponents are length/time^2 (acceleration) instead of
-<span class="lineno">5</span> * length/time (velocity). A consumer mapping feed onto an actual machine
-<span class="lineno">6</span> * would either scale by an unintended factor or reject the value. */
-<span class="lineno">7</span>HEADER;
-<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;M076 test case&#x27;,&#x27;AP238 feedrate unit dimension wrong&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">9</span>FILE_NAME(&#x27;M076.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">10</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 1 0 0 1 }&#x27;));
-<span class="lineno">11</span>ENDSEC;
-<span class="lineno">12</span>DATA;
-<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;numerical_control_machining&#x27;);
-<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">15</span>  &#x27;numerical_control_machining&#x27;,2007,#1);
-<span class="lineno">16</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">17</span>#11=(NAMED_UNIT(*)TIME_UNIT()SI_UNIT($,.SECOND.));
-<span class="lineno">18</span>/* Defect: dimensional_exponents (1, 0, -2, ...) is acceleration. A
-<span class="lineno">19</span> * feedrate is length/time, exponents (1, 0, -1, ...). */
-<span class="lineno">20</span>#12=DIMENSIONAL_EXPONENTS(1.0,0.0,-2.0,0.0,0.0,0.0,0.0);
-<span class="lineno">21</span>#13=DERIVED_UNIT_ELEMENT(#10,1.0);
-<span class="lineno">22</span>#14=DERIVED_UNIT_ELEMENT(#11,-2.0);
-<span class="lineno">23</span>#15=DERIVED_UNIT((#13,#14));
-<span class="lineno">24</span>#20=MEASURE_WITH_UNIT(LENGTH_MEASURE(500.0),#15);
-<span class="lineno">25</span>#100=<mark>CUTTING_TOOL</mark>(&#x27;endmill_6mm&#x27;,$,$,$);
-<span class="lineno">26</span>#101=<mark>MACHINING_TOOL_FEEDSPEED</mark>(&#x27;feed500_per_s2&#x27;,#20,$);
-<span class="lineno">27</span>ENDSEC;
-<span class="lineno">28</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M076: AP238 cutting-tool feedrate stated in wrong dimensional unit */
+<span class="lineno">3</span>/* DEFECT: DERIVED_UNIT has DIMENSIONAL_EXPONENTS (1,0,-2,...) = acceleration */
+<span class="lineno">4</span>/* Feedrate must be velocity: DIMENSIONAL_EXPONENTS (1,0,-1,...) */
+<span class="lineno">5</span>/* Byte assertion: contains(b&#x27;<mark>AP238_STEP_NC_MIM</mark>&#x27;) */
+<span class="lineno">6</span>/* Byte assertion: contains(b&#x27;<mark>CUTTING_TOOL</mark>&#x27;) */
+<span class="lineno">7</span>/* Byte assertion: contains(b&#x27;<mark>MACHINING_TOOL_FEEDSPEED</mark>&#x27;) */
+<span class="lineno">8</span>HEADER;
+<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;M076: AP238 feedrate stated in wrong dimensional unit&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;M076.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">11</span>/* Byte assertion: contains(b&#x27;<mark>AP238_STEP_NC_MIM</mark>&#x27;) */
+<span class="lineno">12</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 3 1 1 1 }&#x27;));
+<span class="lineno">13</span>ENDSEC;
+<span class="lineno">14</span>DATA;
+<span class="lineno">15</span>#1=APPLICATION_CONTEXT(&#x27;numerical_control_machining&#x27;);
+<span class="lineno">16</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">17</span>  &#x27;numerical_control_machining&#x27;,2007,#1);
+<span class="lineno">18</span>/* Standard unit context */
+<span class="lineno">19</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">20</span>#11=(NAMED_UNIT(*)TIME_UNIT()SI_UNIT($,.SECOND.));
+<span class="lineno">21</span>#12=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">22</span>#13=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">23</span>#15=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">24</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">25</span>#16=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">26</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#15))
+<span class="lineno">27</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12,#13))
+<span class="lineno">28</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">29</span>/* DEFECT: DIMENSIONAL_EXPONENTS for acceleration (1,0,-2,...) */
+<span class="lineno">30</span>/* Correct velocity exponents would be (1,0,-1,...) */
+<span class="lineno">31</span>#20=DIMENSIONAL_EXPONENTS(1.0,0.0,-2.0,0.0,0.0,0.0,0.0);
+<span class="lineno">32</span>/* DERIVED_UNIT_ELEMENTs: LENGTH^1 and TIME^-2 â acceleration, not velocity */
+<span class="lineno">33</span>#21=DERIVED_UNIT_ELEMENT(#10,1.0);
+<span class="lineno">34</span>#22=DERIVED_UNIT_ELEMENT(#11,-2.0);
+<span class="lineno">35</span>/* DERIVED_UNIT composed of length/time^2 â the wrong unit class */
+<span class="lineno">36</span>#23=DERIVED_UNIT((#21,#22));
+<span class="lineno">37</span>/* Feedrate value 500.0 in acceleration unit (mm/s^2) instead of mm/s */
+<span class="lineno">38</span>#30=MEASURE_WITH_UNIT(LENGTH_MEASURE(500.0),#23);
+<span class="lineno">39</span>/* Byte assertion: contains(b&#x27;<mark>CUTTING_TOOL</mark>&#x27;) */
+<span class="lineno">40</span>#50=<mark>CUTTING_TOOL</mark>(&#x27;endmill_6mm&#x27;,$,$,$);
+<span class="lineno">41</span>/* Byte assertion: contains(b&#x27;<mark>MACHINING_TOOL_FEEDSPEED</mark>&#x27;) */
+<span class="lineno">42</span>/* <mark>MACHINING_TOOL_FEEDSPEED</mark> referencing the wrong-unit measure */
+<span class="lineno">43</span>#51=<mark>MACHINING_TOOL_FEEDSPEED</mark>(&#x27;feed500_per_s2&#x27;,#30,$);
+<span class="lineno">44</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">45</span>#60=GEOMETRIC_CURVE_SET(&#x27;ap238-feedrate-wrong-dimensional-unit-acceleration&#x27;,
+<span class="lineno">46</span>  (#50,#51,#30));
+<span class="lineno">47</span>/* Product chain */
+<span class="lineno">48</span>#100=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">49</span>#101=PRODUCT_CONTEXT(&#x27;&#x27;,#100,&#x27;mechanical&#x27;);
+<span class="lineno">50</span>#102=PRODUCT(&#x27;M076&#x27;,&#x27;M076&#x27;,&#x27;M076&#x27;,(#101));
+<span class="lineno">51</span>#103=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#102);
+<span class="lineno">52</span>#104=PRODUCT_DEFINITION_CONTEXT(#100,&#x27;design&#x27;);
+<span class="lineno">53</span>#105=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#103,#104);
+<span class="lineno">54</span>#106=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#105);
+<span class="lineno">55</span>#107=SHAPE_REPRESENTATION(&#x27;&#x27;,(#60),#16);
+<span class="lineno">56</span>#108=SHAPE_DEFINITION_REPRESENTATION(#106,#107);
+<span class="lineno">57</span>ENDSEC;
+<span class="lineno">58</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

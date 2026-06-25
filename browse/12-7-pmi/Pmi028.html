@@ -35,79 +35,70 @@
 <section><h2>Notes</h2>
 <p>**See also**: Pmi027. Synonyms: &quot;common_datum vs common_datum_list confusion&quot;, &quot;multi-feature datum encoded with wrong entity&quot;, &quot;common-datum multi-feature pattern misused&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;COMMON_DATUM&#x27;)</code></li>
 <li><code>count_entity_def(b&#x27;DATUM&#x27;) == 2</code></li>
 <li><code>contains(b&#x27;DATUM_SYSTEM&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_vertices_total == 1</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="Pmi027.html">Pmi027</a></p>
 </section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
-<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(1)</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
 <tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
-<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Pmi028 - common_datum vs common_datum_list (multi-feature datum)
-<span class="lineno">2</span>   Defect: For ASME multiple-feature datums or ISO common datums, RP requires
-<span class="lineno">3</span>   DATUM_REFERENCE_ELEMENT with <mark>COMMON_DATUM</mark>_LIST; some senders use the older
-<span class="lineno">4</span>   <mark>COMMON_DATUM</mark> instead. This file emits common_datum(d1,d2) where it should
-<span class="lineno">5</span>   have used common_datum_list((d1,d2)). */
-<span class="lineno">6</span>ISO-10303-21;
-<span class="lineno">7</span>HEADER;
-<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Pmi028 - common_datum used instead of common_datum_list&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">9</span>FILE_NAME(&#x27;Pmi028.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;catalog&#x27;),(&#x27;cad&#x27;),
-<span class="lineno">10</span>  &#x27;manual&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">11</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
-<span class="lineno">12</span>ENDSEC;
-<span class="lineno">13</span>DATA;
-<span class="lineno">14</span>#10 = APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
-<span class="lineno">15</span>#11 = APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">16</span>  &#x27;ap242_managed_model_based_3d_engineering&#x27;,2020,#10);
-<span class="lineno">17</span>#12 = PRODUCT_CONTEXT(&#x27;&#x27;,#10,&#x27;mechanical&#x27;);
-<span class="lineno">18</span>#13 = PRODUCT(&#x27;Pmi028&#x27;,&#x27;CommonDatumPart&#x27;,&#x27;&#x27;,(#12));
-<span class="lineno">19</span>#14 = PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#13);
-<span class="lineno">20</span>#15 = PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#10,&#x27;design&#x27;);
-<span class="lineno">21</span>#16 = PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#14,#15);
-<span class="lineno">22</span>#17 = PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#16);
-<span class="lineno">23</span>#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-<span class="lineno">24</span>#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-<span class="lineno">25</span>#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-<span class="lineno">26</span>#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
-<span class="lineno">27</span>  &#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
-<span class="lineno">28</span>#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">29</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
-<span class="lineno">30</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
-<span class="lineno">31</span>  REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;) );
-<span class="lineno">32</span>#30 = CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">33</span>#31 = DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
-<span class="lineno">34</span>#32 = DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">35</span>#33 = AXIS2_PLACEMENT_3D(&#x27;&#x27;,#30,#31,#32);
-<span class="lineno">36</span><mark>#40 = DATUM(</mark>&#x27;A&#x27;,&#x27;first feature&#x27;,#17,.T.,&#x27;A&#x27;);
-<span class="lineno">37</span><mark>#41 = DATUM(</mark>&#x27;B&#x27;,&#x27;second feature&#x27;,#17,.T.,&#x27;B&#x27;);
-<span class="lineno">38</span>/* Defect: legacy <mark>COMMON_DATUM</mark>(#40,#41) used.
-<span class="lineno">39</span>   Modern form is <mark>COMMON_DATUM</mark>_LIST((#40,#41)). */
-<span class="lineno">40</span>#50 = <mark>COMMON_DATUM</mark>(#40,#41);
-<span class="lineno">41</span>#60 = DATUM_REFERENCE_COMPARTMENT(&#x27;A-B&#x27;,$,#50);
-<span class="lineno">42</span>#61 = <mark>DATUM_SYSTEM</mark>(&#x27;AB_common&#x27;,&#x27;common datum&#x27;,#17,.T.,(#60));
-<span class="lineno">43</span>#70 = SHAPE_ASPECT(&#x27;feature&#x27;,&#x27;&#x27;,#17,.T.);
-<span class="lineno">44</span>#71 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#20);
-<span class="lineno">45</span>#72 = POSITION_TOLERANCE(&#x27;pos&#x27;,$,#71,#70,#61);
-<span class="lineno">46</span>#80 = DRAUGHTING_MODEL(&#x27;Default&#x27;,(),#25);
-<span class="lineno">47</span>#90 = SHAPE_REPRESENTATION(&#x27;&#x27;,(#33),#25);
-<span class="lineno">48</span>#91 = SHAPE_DEFINITION_REPRESENTATION(#17,#90);
-<span class="lineno">49</span>ENDSEC;
-<span class="lineno">50</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Pmi028: multi-feature datum encoded with <mark>COMMON_DATUM</mark>(d1, d2) instead of the AP242 RP-required <mark>COMMON_DATUM</mark>_LIST((d1, d2)) inside a DATUM_REFERENCE_ELEMENT; receivers must warn and coerce the two forms to equivalent; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Pmi028&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Pmi028.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">12</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">13</span>#9051=PRODUCT(&#x27;Pmi028&#x27;,&#x27;Pmi028&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">14</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">15</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">16</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">17</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">18</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">19</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">20</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">21</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">22</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">23</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#2),#9060);
+<span class="lineno">24</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">25</span>#9063=SHAPE_ASPECT(&#x27;feature_A&#x27;,&#x27;&#x27;,#9055,.T.);
+<span class="lineno">26</span>#9064=SHAPE_ASPECT(&#x27;feature_B&#x27;,&#x27;&#x27;,#9055,.T.);
+<span class="lineno">27</span>#9065=SHAPE_ASPECT(&#x27;tol_feature&#x27;,&#x27;&#x27;,#9055,.T.);
+<span class="lineno">28</span><mark>#9066=DATUM(</mark>&#x27;A&#x27;,&#x27;&#x27;,#9063,.T.);
+<span class="lineno">29</span><mark>#9067=DATUM(</mark>&#x27;B&#x27;,&#x27;&#x27;,#9064,.T.);
+<span class="lineno">30</span>#9068=<mark>COMMON_DATUM</mark>(#9066,#9067);
+<span class="lineno">31</span>#9069=DATUM_REFERENCE_ELEMENT(#9068,$,$,$,$);
+<span class="lineno">32</span>#9070=DATUM_REFERENCE_COMPARTMENT(&#x27;primary&#x27;,(#9069));
+<span class="lineno">33</span>#9071=<mark>DATUM_SYSTEM</mark>(&#x27;DRF&#x27;,(#9070));
+<span class="lineno">34</span>#9072=MEASURE_REPRESENTATION_ITEM(&#x27;tol&#x27;,LENGTH_MEASURE(0.2),#9056);
+<span class="lineno">35</span>#9073=POSITION_TOLERANCE(#9065,#9072,#9071,$);
+<span class="lineno">36</span>ENDSEC;
+<span class="lineno">37</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

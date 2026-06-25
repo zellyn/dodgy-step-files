@@ -41,6 +41,9 @@
 <li><code>contains(b&#x27;foreign_edge&#x27;)</code></li>
 <li><code>contains(b&#x27;open_three_edge_wire&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -56,45 +59,66 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Twi075 - Connect-shape diagnostic: how does a foreign edge attach?
-<span class="lineno">3</span> * Open three-edge wire from (0,0,0) -&gt; (1,0,0) -&gt; (2,0,0) -&gt; (3,0,0), plus
-<span class="lineno">4</span> * a separate foreign EDGE not in the wire, going (3.001, 0, 0) -&gt; (4.0, 0, 0).
-<span class="lineno">5</span> * Connect-shape must enumerate four orientations -- foreign-direct-after,
-<span class="lineno">6</span> * foreign-reversed-after, foreign-direct-before, foreign-reversed-before -- with
-<span class="lineno">7</span> * residual gaps; in this layout the smallest gap (0.001) is at the wire tail. */
-<span class="lineno">8</span>HEADER;
-<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;Twi075 test case&#x27;,&#x27;Open wire plus separate foreign edge for connect-shape diagnostic&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">10</span>FILE_NAME(&#x27;Twi075.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">11</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">12</span>ENDSEC;
-<span class="lineno">13</span>DATA;
-<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">15</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
-<span class="lineno">16</span>/* Wire vertices */
-<span class="lineno">17</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));#11=VERTEX_POINT(&#x27;Wstart&#x27;,#10);
-<span class="lineno">18</span>#12=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));#13=VERTEX_POINT(&#x27;W1&#x27;,#12);
-<span class="lineno">19</span>#14=CARTESIAN_POINT(&#x27;&#x27;,(2.0,0.0,0.0));#15=VERTEX_POINT(&#x27;W2&#x27;,#14);
-<span class="lineno">20</span>#16=CARTESIAN_POINT(&#x27;&#x27;,(3.0,0.0,0.0));#17=VERTEX_POINT(&#x27;Wend&#x27;,#16);
-<span class="lineno">21</span>/* Foreign edge vertices (separate -- not part of wire) */
-<span class="lineno">22</span>#18=CARTESIAN_POINT(&#x27;foreign_start&#x27;,<mark>(3.001,0.0,0.0)</mark>);#19=VERTEX_POINT(&#x27;Fstart&#x27;,#18);
-<span class="lineno">23</span>#20=CARTESIAN_POINT(&#x27;foreign_end&#x27;,(4.0,0.0,0.0));#21=VERTEX_POINT(&#x27;Fend&#x27;,#20);
-<span class="lineno">24</span>/* Three wire edges */
-<span class="lineno">25</span>#30=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#31=VECTOR(&#x27;&#x27;,#30,1.0);#32=LINE(&#x27;&#x27;,#10,#31);
-<span class="lineno">26</span>#33=EDGE_CURVE(&#x27;e1&#x27;,#11,#13,#32,.T.);
-<span class="lineno">27</span>#34=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#35=VECTOR(&#x27;&#x27;,#34,1.0);#36=LINE(&#x27;&#x27;,#12,#35);
-<span class="lineno">28</span>#37=EDGE_CURVE(&#x27;e2&#x27;,#13,#15,#36,.T.);
-<span class="lineno">29</span>#38=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#39=VECTOR(&#x27;&#x27;,#38,1.0);#40=LINE(&#x27;&#x27;,#14,#39);
-<span class="lineno">30</span>#41=EDGE_CURVE(&#x27;e3&#x27;,#15,#17,#40,.T.);
-<span class="lineno">31</span>#50=ORIENTED_EDGE(&#x27;&#x27;,*,*,#33,.T.);
-<span class="lineno">32</span>#51=ORIENTED_EDGE(&#x27;&#x27;,*,*,#37,.T.);
-<span class="lineno">33</span>#52=ORIENTED_EDGE(&#x27;&#x27;,*,*,#41,.T.);
-<span class="lineno">34</span>#53=EDGE_LOOP(&#x27;<mark>open_three_edge_wire</mark>&#x27;,(#50,#51,#52));
-<span class="lineno">35</span>/* Foreign single edge -- candidate for connection */
-<span class="lineno">36</span>#60=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#61=VECTOR(&#x27;&#x27;,#60,1.0);#62=LINE(&#x27;&#x27;,#18,#61);
-<span class="lineno">37</span>#63=EDGE_CURVE(&#x27;<mark>foreign_edge</mark>&#x27;,#19,#21,#62,.T.);
-<span class="lineno">38</span>#64=ORIENTED_EDGE(&#x27;foreign_oriented&#x27;,*,*,#63,.T.);
-<span class="lineno">39</span>ENDSEC;
-<span class="lineno">40</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* Twi075: GEOMETRIC_CURVE_SET containing EDGE_LOOP &#x27;<mark>open_three_edge_wire</mark>&#x27; (3 edges, open) and a foreign EDGE_CURVE &#x27;<mark>foreign_edge</mark>&#x27;; wire runs (0,0,0)â(1,0,0)â(2,0,0)â(3,0,0) â open, not closed; <mark>foreign_edge</mark>: <mark>(3.001,0.0,0.0)</mark>â(4.0,0.0,0.0) â sub-mm gap of 0.001 at wire tail; CheckShapeConnect enumerates 4 orientations (follows/precedes Ã direct/reversed) and reports smallest gap distance; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty; all EDGE_CURVEs ARE wired into structures in GEOMETRIC_CURVE_SET; never orphaned */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Twi075&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Twi075.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=VERTEX_POINT(&#x27;&#x27;,#1);
+<span class="lineno">12</span>#3=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=VERTEX_POINT(&#x27;&#x27;,#3);
+<span class="lineno">14</span>#5=CARTESIAN_POINT(&#x27;&#x27;,(2.0,0.0,0.0));
+<span class="lineno">15</span>#6=VERTEX_POINT(&#x27;&#x27;,#5);
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(3.0,0.0,0.0));
+<span class="lineno">17</span>#8=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">19</span>#10=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">20</span>#11=VECTOR(&#x27;&#x27;,#10,1.0);
+<span class="lineno">21</span>#12=LINE(&#x27;&#x27;,#9,#11);
+<span class="lineno">22</span>#13=EDGE_CURVE(&#x27;&#x27;,#2,#4,#12,.T.);
+<span class="lineno">23</span>#14=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">24</span>#15=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">25</span>#16=VECTOR(&#x27;&#x27;,#15,1.0);
+<span class="lineno">26</span>#17=LINE(&#x27;&#x27;,#14,#16);
+<span class="lineno">27</span>#18=EDGE_CURVE(&#x27;&#x27;,#4,#6,#17,.T.);
+<span class="lineno">28</span>#19=CARTESIAN_POINT(&#x27;&#x27;,(2.0,0.0,0.0));
+<span class="lineno">29</span>#20=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">30</span>#21=VECTOR(&#x27;&#x27;,#20,1.0);
+<span class="lineno">31</span>#22=LINE(&#x27;&#x27;,#19,#21);
+<span class="lineno">32</span>#23=EDGE_CURVE(&#x27;&#x27;,#6,#8,#22,.T.);
+<span class="lineno">33</span>#24=ORIENTED_EDGE(&#x27;&#x27;,$,$,#13,.T.);
+<span class="lineno">34</span>#25=ORIENTED_EDGE(&#x27;&#x27;,$,$,#18,.T.);
+<span class="lineno">35</span>#26=ORIENTED_EDGE(&#x27;&#x27;,$,$,#23,.T.);
+<span class="lineno">36</span>#27=EDGE_LOOP(&#x27;<mark>open_three_edge_wire</mark>&#x27;,(#24,#25,#26));
+<span class="lineno">37</span>#28=CARTESIAN_POINT(&#x27;&#x27;,<mark>(3.001,0.0,0.0)</mark>);
+<span class="lineno">38</span>#29=VERTEX_POINT(&#x27;&#x27;,#28);
+<span class="lineno">39</span>#30=CARTESIAN_POINT(&#x27;&#x27;,(4.0,0.0,0.0));
+<span class="lineno">40</span>#31=VERTEX_POINT(&#x27;&#x27;,#30);
+<span class="lineno">41</span>#32=CARTESIAN_POINT(&#x27;&#x27;,<mark>(3.001,0.0,0.0)</mark>);
+<span class="lineno">42</span>#33=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">43</span>#34=VECTOR(&#x27;&#x27;,#33,0.999);
+<span class="lineno">44</span>#35=LINE(&#x27;&#x27;,#32,#34);
+<span class="lineno">45</span>#36=EDGE_CURVE(&#x27;<mark>foreign_edge</mark>&#x27;,#29,#31,#35,.T.);
+<span class="lineno">46</span>#37=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#27,#36));
+<span class="lineno">47</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">48</span>#9051=PRODUCT(&#x27;Twi075&#x27;,&#x27;Twi075&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">49</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">50</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">51</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">52</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">53</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">54</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">55</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">56</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">57</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">58</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#37),#9060);
+<span class="lineno">59</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">60</span>ENDSEC;
+<span class="lineno">61</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

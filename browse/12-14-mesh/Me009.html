@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Me009 — T-junction: vertex 3 lies exactly on edge (v0, v2) of triangle 0</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <span class="sep">/</span> <span class="current">Me009</span>
+</nav>
+<header class="title-bar">
+<h1>Me009 <span class="sep">—</span> <span class="entry-title">T-junction: vertex 3 lies exactly on edge (v0, v2) of triangle 0</span></h1>
+<p class="category">§12.14 mesh defects (sub-class: precision/T-junction)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../mesh-examples/12-14-mesh/Me009.mesh.json">View raw fixture (.mesh.json)</a> <code class="path">mesh-examples/12-14-mesh/Me009.mesh.json</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>`MESH_DEFECT_TAXONOMY.md` #22 (`t_junction`)</li>
+<li>CGAL `Snapping::snap`</li>
+<li>MeshFix `meshclean` (partial).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>vertex 3 is the exact midpoint of the segment from `v0=(0,0,0)` to `v2=(1,0,0)`, which is an edge of triangle 0. Triangles 1 and 2 meet at v3 on the opposite side, but triangle 0 has no knowledge of v3 — its edge `(v0, v2)` passes through v3 without listing it. This causes topological cracks in shading and CSG, as the patch boundary on one side does not match the topology on the other.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>triangle 0 = `(v0, v1, v2)`; v3 = midpoint of `(v0, v2)`; triangle 1 = `(v0, v4, v3)`; triangle 2 = `(v3, v4, v2)`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>detect that v3 lies on edge `(v0, v2)` and split that edge to insert v3, creating a topologically watertight seam.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>{
+<span class="lineno">2</span>  &quot;vertices&quot;: [
+<span class="lineno">3</span>    [
+<span class="lineno">4</span>      0.0,
+<span class="lineno">5</span>      0.0,
+<span class="lineno">6</span>      0.0
+<span class="lineno">7</span>    ],
+<span class="lineno">8</span>    [
+<span class="lineno">9</span>      0.5,
+<span class="lineno">10</span>      1.0,
+<span class="lineno">11</span>      0.0
+<span class="lineno">12</span>    ],
+<span class="lineno">13</span>    [
+<span class="lineno">14</span>      1.0,
+<span class="lineno">15</span>      0.0,
+<span class="lineno">16</span>      0.0
+<span class="lineno">17</span>    ],
+<span class="lineno">18</span>    [
+<span class="lineno">19</span>      0.5,
+<span class="lineno">20</span>      0.0,
+<span class="lineno">21</span>      0.0
+<span class="lineno">22</span>    ],
+<span class="lineno">23</span>    [
+<span class="lineno">24</span>      0.5,
+<span class="lineno">25</span>      -1.0,
+<span class="lineno">26</span>      0.0
+<span class="lineno">27</span>    ]
+<span class="lineno">28</span>  ],
+<span class="lineno">29</span>  &quot;triangles&quot;: [
+<span class="lineno">30</span>    [
+<span class="lineno">31</span>      0,
+<span class="lineno">32</span>      1,
+<span class="lineno">33</span>      2
+<span class="lineno">34</span>    ],
+<span class="lineno">35</span>    [
+<span class="lineno">36</span>      0,
+<span class="lineno">37</span>      4,
+<span class="lineno">38</span>      3
+<span class="lineno">39</span>    ],
+<span class="lineno">40</span>    [
+<span class="lineno">41</span>      3,
+<span class="lineno">42</span>      4,
+<span class="lineno">43</span>      2
+<span class="lineno">44</span>    ]
+<span class="lineno">45</span>  ],
+<span class="lineno">46</span>  &quot;metadata&quot;: {
+<span class="lineno">47</span>    &quot;id&quot;: &quot;Me009&quot;,
+<span class="lineno">48</span>    &quot;schema_version&quot;: 0,
+<span class="lineno">49</span>    &quot;defect_class&quot;: &quot;t_junction&quot;,
+<span class="lineno">50</span>    &quot;title&quot;: &quot;T-junction: vertex 3 lies on edge (v0,v2) of triangle 0 but is not listed in it&quot;,
+<span class="lineno">51</span>    &quot;assertions&quot;: [
+<span class="lineno">52</span>      {
+<span class="lineno">53</span>        &quot;kind&quot;: &quot;vertex_on_edge&quot;,
+<span class="lineno">54</span>        &quot;vertex&quot;: 3,
+<span class="lineno">55</span>        &quot;edge&quot;: [
+<span class="lineno">56</span>          0,
+<span class="lineno">57</span>          2
+<span class="lineno">58</span>        ]
+<span class="lineno">59</span>      }
+<span class="lineno">60</span>    ]
+<span class="lineno">61</span>  }
+<span class="lineno">62</span>}
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Me008.html">&larr; Me008</a> <a class="up" href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <a class="next" href="Me010.html">Me010 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

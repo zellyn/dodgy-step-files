@@ -36,80 +36,63 @@
 <section><h2>Notes</h2>
 <p>First entry exercising kinematic joint topology consistency. Synonyms: &quot;kinematic joint references same link twice&quot;, &quot;self-loop kinematic joint&quot;, &quot;joint with both ends on same link&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>count_entity_def(b&#x27;NEXT_ASSEMBLY_USAGE_OCCURRENCE&#x27;) == 2</code></li>
 <li><code>count_entity_def(b&#x27;PRODUCT&#x27;) == 2</code></li>
 <li><code>count_entity_def(b&#x27;PRODUCT_DEFINITION&#x27;) == 2</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_vertices_total == 1</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
-<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(1)</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
 <tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
-<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Pmi075 - KINEMATIC_JOINT topology inconsistent with the link
-<span class="lineno">3</span> * pair it joins (joint references one rigid body but the other
-<span class="lineno">4</span> * end is unconnected)
-<span class="lineno">5</span> * Defect: AP242 kinematic representation models a mechanism as
-<span class="lineno">6</span> * a graph: KINEMATIC_LINK nodes joined by KINEMATIC_JOINT edges.
-<span class="lineno">7</span> * A joint should reference exactly two links (one per end). A
-<span class="lineno">8</span> * producer that omits one end (referencing the same link twice,
-<span class="lineno">9</span> * or pointing the second end to a deleted link) yields an
-<span class="lineno">10</span> * inconsistent kinematic graph that cannot be simulated. */
-<span class="lineno">11</span>HEADER;
-<span class="lineno">12</span>FILE_DESCRIPTION((&#x27;Pmi075 - KINEMATIC_JOINT references a single link twice&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">13</span>FILE_NAME(&#x27;Pmi075.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
-<span class="lineno">14</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">15</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
-<span class="lineno">16</span>ENDSEC;
-<span class="lineno">17</span>DATA;
-<span class="lineno">18</span>#1=APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
-<span class="lineno">19</span>#2=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">20</span><mark>#3=PRODUCT(</mark>&#x27;Pmi075&#x27;,&#x27;KinJointPart&#x27;,&#x27;&#x27;,(#2));
-<span class="lineno">21</span>#4=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#3);
-<span class="lineno">22</span>#5=PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#1,&#x27;design&#x27;);
-<span class="lineno">23</span><mark>#6=PRODUCT_DEFINITION(</mark>&#x27;&#x27;,&#x27;&#x27;,#4,#5);
-<span class="lineno">24</span>#7=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#6);
-<span class="lineno">25</span>#20=( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-<span class="lineno">26</span>#22=( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-<span class="lineno">27</span>#23=( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-<span class="lineno">28</span>#24=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
-<span class="lineno">29</span>  &#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
-<span class="lineno">30</span>#25=( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">31</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
-<span class="lineno">32</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
-<span class="lineno">33</span>  REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;) );
-<span class="lineno">34</span>#30=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">35</span>#31=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
-<span class="lineno">36</span>#32=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">37</span>#33=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#30,#31,#32);
-<span class="lineno">38</span>/* Single rigid body / link */
-<span class="lineno">39</span><mark>#40=PRODUCT(</mark>&#x27;Link_A&#x27;,&#x27;&#x27;,$,(#2));
-<span class="lineno">40</span>#41=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#40);
-<span class="lineno">41</span><mark>#42=PRODUCT_DEFINITION(</mark>&#x27;&#x27;,&#x27;&#x27;,#41,#5);
-<span class="lineno">42</span><mark>#43=NEXT_ASSEMBLY_USAGE_OCCURRENCE(</mark>&#x27;&#x27;,&#x27;&#x27;,&#x27;self&#x27;,#6,#42,$);
-<span class="lineno">43</span>/* Defect: a &quot;joint&quot; that references the same link as both ends.
-<span class="lineno">44</span> * Modeled here as a NEXT_ASSEMBLY_USAGE_OCCURRENCE pointing the
-<span class="lineno">45</span> * relating and related to the same definition - in the kinematic
-<span class="lineno">46</span> * domain this would be a self-loop joint, simulation-undefined. */
-<span class="lineno">47</span><mark>#44=NEXT_ASSEMBLY_USAGE_OCCURRENCE(</mark>&#x27;&#x27;,&#x27;&#x27;,&#x27;self_joint&#x27;,#42,#42,$);
-<span class="lineno">48</span>#90=SHAPE_REPRESENTATION(&#x27;&#x27;,(#33),#25);
-<span class="lineno">49</span>#91=SHAPE_DEFINITION_REPRESENTATION(#7,#90);
-<span class="lineno">50</span>/* PMI anchor: minimal ANNOTATION_PLANE so this PMI fixture cites at least one canonical PMI entity. */
-<span class="lineno">51</span>#9100=PLANE(&#x27;pmi_anchor_plane&#x27;,#33);
-<span class="lineno">52</span>#9101=ANNOTATION_PLANE(&#x27;pmi_annotation&#x27;,(),#9100,());
-<span class="lineno">53</span>ENDSEC;
-<span class="lineno">54</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* Pmi075: NEXT_ASSEMBLY_USAGE_OCCURRENCE &#x27;joint_self_loop&#x27; references the same PRODUCT_DEFINITION as both relating and related ends; this encodes a kinematic self-loop â a joint whose two link endpoints are the same node; receivers must detect that relating == related in the joint graph and reject or emit a precise &#x27;self-loop kinematic joint&#x27; diagnostic; silently accepting a self-loop kinematic graph is forbidden; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Pmi075&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Pmi075.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">12</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">13</span><mark>#9051=PRODUCT(</mark>&#x27;Pmi075&#x27;,&#x27;Pmi075&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">14</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">15</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">16</span><mark>#9054=PRODUCT_DEFINITION(</mark>&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">17</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">18</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">19</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">20</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">21</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">22</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">23</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#2),#9060);
+<span class="lineno">24</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">25</span>#9063=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">26</span><mark>#9064=PRODUCT(</mark>&#x27;link_B&#x27;,&#x27;link_B&#x27;,&#x27;&#x27;,(#9063));
+<span class="lineno">27</span>#9065=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9064);
+<span class="lineno">28</span><mark>#9066=PRODUCT_DEFINITION(</mark>&#x27;design&#x27;,&#x27;&#x27;,#9065,#9053);
+<span class="lineno">29</span><mark>#9067=NEXT_ASSEMBLY_USAGE_OCCURRENCE(</mark>&#x27;nauo_valid&#x27;,&#x27;joint_parent_to_link_b&#x27;,&#x27;&#x27;,#9054,#9066,$);
+<span class="lineno">30</span><mark>#9068=NEXT_ASSEMBLY_USAGE_OCCURRENCE(</mark>&#x27;joint_self_loop&#x27;,&#x27;kinematic self-loop&#x27;,&#x27;&#x27;,#9066,#9066,$);
+<span class="lineno">31</span>#9069=SHAPE_ASPECT(&#x27;link_b_shape&#x27;,&#x27;kinematic link B shape&#x27;,#9055,.T.);
+<span class="lineno">32</span>ENDSEC;
+<span class="lineno">33</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

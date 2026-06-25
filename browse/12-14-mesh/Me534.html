@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Me534 — holeFilling::joinBoundaryLoops BALANCED_TRIANGULATION_CRITERION: two-loop square annulus; c1 vs c2 cost alternates between loops (Branch 5)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <span class="sep">/</span> <span class="current">Me534</span>
+</nav>
+<header class="title-bar">
+<h1>Me534 <span class="sep">—</span> <span class="entry-title">holeFilling::joinBoundaryLoops BALANCED_TRIANGULATION_CRITERION: two-loop square annulus; c1 vs c2 cost alternates between loops (Branch 5)</span></h1>
+<p class="category">§12.14 mesh defects (sub-class: hole-filling / balanced-triangulation-criterion)</p>
+<p class="tag-pills">
+<a class="tag tag-units" href="../by-tag/units/index.html">units</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../mesh-examples/12-14-mesh/Me534.mesh.json">View raw fixture (.mesh.json)</a> <code class="path">mesh-examples/12-14-mesh/Me534.mesh.json</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>MeshFix `holeFilling::joinBoundaryLoops` Branch 5 (*BALANCED_TRIANGULATION_CRITERION*: `if (c1 &lt; c2) { EulerEdgeTriangle(…, gve, …)</li>
+<li>pl1 -= gve-&gt;length()</li>
+<li>gve = gve-&gt;next</li>
+<li>}`)</li>
+<li>`MESH_HEAL_COVERAGE.md`.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Square annulus (8 triangles) with two distinct closed boundary loops. Inner unit square (i0..i3) — 4 boundary edges. Outer 3x square (o0..o3) — 4 boundary edges. Eight interior bridge edges (n=2). Symmetric geometry: both loops have equal perimeter → cost comparison (c1 vs c2) alternates sides, exercising Branch 5 repeatedly. gv=i0 on inner loop, gw=o0 on outer loop.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>i0=(0,0,0), i1=(1,0,0), i2=(1,1,0), i3=(0,1,0); o0=(-1,-1,0), o1=(2,-1,0), o2=(2,2,0), o3=(-1,2,0); 8 annulus triangles (2 per side); inner+outer edges n=1; bridge edges n=2; assert_hole_boundary([i0,i1,i2,i3]); assert_hole_boundary([o0,o3,o2,o1]).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Branch 5 fires repeatedly in the triangulation loop; symmetric perimeters cause c1 and c2 to alternate; bridge triangles inserted from both loops until both are exhausted.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>{
+<span class="lineno">2</span>  &quot;vertices&quot;: [
+<span class="lineno">3</span>    [
+<span class="lineno">4</span>      0.0,
+<span class="lineno">5</span>      0.0,
+<span class="lineno">6</span>      0.0
+<span class="lineno">7</span>    ],
+<span class="lineno">8</span>    [
+<span class="lineno">9</span>      1.0,
+<span class="lineno">10</span>      0.0,
+<span class="lineno">11</span>      0.0
+<span class="lineno">12</span>    ],
+<span class="lineno">13</span>    [
+<span class="lineno">14</span>      1.0,
+<span class="lineno">15</span>      1.0,
+<span class="lineno">16</span>      0.0
+<span class="lineno">17</span>    ],
+<span class="lineno">18</span>    [
+<span class="lineno">19</span>      0.0,
+<span class="lineno">20</span>      1.0,
+<span class="lineno">21</span>      0.0
+<span class="lineno">22</span>    ],
+<span class="lineno">23</span>    [
+<span class="lineno">24</span>      -1.0,
+<span class="lineno">25</span>      -1.0,
+<span class="lineno">26</span>      0.0
+<span class="lineno">27</span>    ],
+<span class="lineno">28</span>    [
+<span class="lineno">29</span>      2.0,
+<span class="lineno">30</span>      -1.0,
+<span class="lineno">31</span>      0.0
+<span class="lineno">32</span>    ],
+<span class="lineno">33</span>    [
+<span class="lineno">34</span>      2.0,
+<span class="lineno">35</span>      2.0,
+<span class="lineno">36</span>      0.0
+<span class="lineno">37</span>    ],
+<span class="lineno">38</span>    [
+<span class="lineno">39</span>      -1.0,
+<span class="lineno">40</span>      2.0,
+<span class="lineno">41</span>      0.0
+<span class="lineno">42</span>    ]
+<span class="lineno">43</span>  ],
+<span class="lineno">44</span>  &quot;triangles&quot;: [
+<span class="lineno">45</span>    [
+<span class="lineno">46</span>      4,
+<span class="lineno">47</span>      0,
+<span class="lineno">48</span>      1
+<span class="lineno">49</span>    ],
+<span class="lineno">50</span>    [
+<span class="lineno">51</span>      4,
+<span class="lineno">52</span>      1,
+<span class="lineno">53</span>      5
+<span class="lineno">54</span>    ],
+<span class="lineno">55</span>    [
+<span class="lineno">56</span>      5,
+<span class="lineno">57</span>      1,
+<span class="lineno">58</span>      2
+<span class="lineno">59</span>    ],
+<span class="lineno">60</span>    [
+<span class="lineno">61</span>      5,
+<span class="lineno">62</span>      2,
+<span class="lineno">63</span>      6
+<span class="lineno">64</span>    ],
+<span class="lineno">65</span>    [
+<span class="lineno">66</span>      6,
+<span class="lineno">67</span>      2,
+<span class="lineno">68</span>      3
+<span class="lineno">69</span>    ],
+<span class="lineno">70</span>    [
+<span class="lineno">71</span>      6,
+<span class="lineno">72</span>      3,
+<span class="lineno">73</span>      7
+<span class="lineno">74</span>    ],
+<span class="lineno">75</span>    [
+<span class="lineno">76</span>      7,
+<span class="lineno">77</span>      3,
+<span class="lineno">78</span>      0
+<span class="lineno">79</span>    ],
+<span class="lineno">80</span>    [
+<span class="lineno">81</span>      7,
+<span class="lineno">82</span>      0,
+<span class="lineno">83</span>      4
+<span class="lineno">84</span>    ]
+<span class="lineno">85</span>  ],
+<span class="lineno">86</span>  &quot;metadata&quot;: {
+<span class="lineno">87</span>    &quot;id&quot;: &quot;Me534&quot;,
+<span class="lineno">88</span>    &quot;schema_version&quot;: 0,
+<span class="lineno">89</span>    &quot;defect_class&quot;: &quot;joinBoundaryLoops_balanced_triangulation_criterion&quot;,
+<span class="lineno">90</span>    &quot;title&quot;: &quot;joinBoundaryLoops_BALANCED_TRIANGULATION_CRITERION: two-loop square annulus; c1 vs c2 cost alternates between loops (Branch 5)&quot;,
+<span class="lineno">91</span>    &quot;assertions&quot;: [
+<span class="lineno">92</span>      {
+<span class="lineno">93</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">94</span>        &quot;edge&quot;: [
+<span class="lineno">95</span>          0,
+<span class="lineno">96</span>          1
+<span class="lineno">97</span>        ],
+<span class="lineno">98</span>        &quot;n&quot;: 1
+<span class="lineno">99</span>      },
+<span class="lineno">100</span>      {
+<span class="lineno">101</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">102</span>        &quot;edge&quot;: [
+<span class="lineno">103</span>          1,
+<span class="lineno">104</span>          2
+<span class="lineno">105</span>        ],
+<span class="lineno">106</span>        &quot;n&quot;: 1
+<span class="lineno">107</span>      },
+<span class="lineno">108</span>      {
+<span class="lineno">109</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">110</span>        &quot;edge&quot;: [
+<span class="lineno">111</span>          2,
+<span class="lineno">112</span>          3
+<span class="lineno">113</span>        ],
+<span class="lineno">114</span>        &quot;n&quot;: 1
+<span class="lineno">115</span>      },
+<span class="lineno">116</span>      {
+<span class="lineno">117</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">118</span>        &quot;edge&quot;: [
+<span class="lineno">119</span>          0,
+<span class="lineno">120</span>          3
+<span class="lineno">121</span>        ],
+<span class="lineno">122</span>        &quot;n&quot;: 1
+<span class="lineno">123</span>      },
+<span class="lineno">124</span>      {
+<span class="lineno">125</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">126</span>        &quot;edge&quot;: [
+<span class="lineno">127</span>          4,
+<span class="lineno">128</span>          5
+<span class="lineno">129</span>        ],
+<span class="lineno">130</span>        &quot;n&quot;: 1
+<span class="lineno">131</span>      },
+<span class="lineno">132</span>      {
+<span class="lineno">133</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">134</span>        &quot;edge&quot;: [
+<span class="lineno">135</span>          5,
+<span class="lineno">136</span>          6
+<span class="lineno">137</span>        ],
+<span class="lineno">138</span>        &quot;n&quot;: 1
+<span class="lineno">139</span>      },
+<span class="lineno">140</span>      {
+<span class="lineno">141</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">142</span>        &quot;edge&quot;: [
+<span class="lineno">143</span>          6,
+<span class="lineno">144</span>          7
+<span class="lineno">145</span>        ],
+<span class="lineno">146</span>        &quot;n&quot;: 1
+<span class="lineno">147</span>      },
+<span class="lineno">148</span>      {
+<span class="lineno">149</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">150</span>        &quot;edge&quot;: [
+<span class="lineno">151</span>          4,
+<span class="lineno">152</span>          7
+<span class="lineno">153</span>        ],
+<span class="lineno">154</span>        &quot;n&quot;: 1
+<span class="lineno">155</span>      },
+<span class="lineno">156</span>      {
+<span class="lineno">157</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">158</span>        &quot;edge&quot;: [
+<span class="lineno">159</span>          0,
+<span class="lineno">160</span>          4
+<span class="lineno">161</span>        ],
+<span class="lineno">162</span>        &quot;n&quot;: 2
+<span class="lineno">163</span>      },
+<span class="lineno">164</span>      {
+<span class="lineno">165</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">166</span>        &quot;edge&quot;: [
+<span class="lineno">167</span>          1,
+<span class="lineno">168</span>          4
+<span class="lineno">169</span>        ],
+<span class="lineno">170</span>        &quot;n&quot;: 2
+<span class="lineno">171</span>      },
+<span class="lineno">172</span>      {
+<span class="lineno">173</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">174</span>        &quot;edge&quot;: [
+<span class="lineno">175</span>          1,
+<span class="lineno">176</span>          5
+<span class="lineno">177</span>        ],
+<span class="lineno">178</span>        &quot;n&quot;: 2
+<span class="lineno">179</span>      },
+<span class="lineno">180</span>      {
+<span class="lineno">181</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">182</span>        &quot;edge&quot;: [
+<span class="lineno">183</span>          2,
+<span class="lineno">184</span>          5
+<span class="lineno">185</span>        ],
+<span class="lineno">186</span>        &quot;n&quot;: 2
+<span class="lineno">187</span>      },
+<span class="lineno">188</span>      {
+<span class="lineno">189</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">190</span>        &quot;edge&quot;: [
+<span class="lineno">191</span>          2,
+<span class="lineno">192</span>          6
+<span class="lineno">193</span>        ],
+<span class="lineno">194</span>        &quot;n&quot;: 2
+<span class="lineno">195</span>      },
+<span class="lineno">196</span>      {
+<span class="lineno">197</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">198</span>        &quot;edge&quot;: [
+<span class="lineno">199</span>          3,
+<span class="lineno">200</span>          6
+<span class="lineno">201</span>        ],
+<span class="lineno">202</span>        &quot;n&quot;: 2
+<span class="lineno">203</span>      },
+<span class="lineno">204</span>      {
+<span class="lineno">205</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">206</span>        &quot;edge&quot;: [
+<span class="lineno">207</span>          3,
+<span class="lineno">208</span>          7
+<span class="lineno">209</span>        ],
+<span class="lineno">210</span>        &quot;n&quot;: 2
+<span class="lineno">211</span>      },
+<span class="lineno">212</span>      {
+<span class="lineno">213</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">214</span>        &quot;edge&quot;: [
+<span class="lineno">215</span>          0,
+<span class="lineno">216</span>          7
+<span class="lineno">217</span>        ],
+<span class="lineno">218</span>        &quot;n&quot;: 2
+<span class="lineno">219</span>      },
+<span class="lineno">220</span>      {
+<span class="lineno">221</span>        &quot;kind&quot;: &quot;hole_boundary&quot;,
+<span class="lineno">222</span>        &quot;loop&quot;: [
+<span class="lineno">223</span>          0,
+<span class="lineno">224</span>          1,
+<span class="lineno">225</span>          2,
+<span class="lineno">226</span>          3
+<span class="lineno">227</span>        ]
+<span class="lineno">228</span>      },
+<span class="lineno">229</span>      {
+<span class="lineno">230</span>        &quot;kind&quot;: &quot;hole_boundary&quot;,
+<span class="lineno">231</span>        &quot;loop&quot;: [
+<span class="lineno">232</span>          4,
+<span class="lineno">233</span>          7,
+<span class="lineno">234</span>          6,
+<span class="lineno">235</span>          5
+<span class="lineno">236</span>        ]
+<span class="lineno">237</span>      }
+<span class="lineno">238</span>    ]
+<span class="lineno">239</span>  }
+<span class="lineno">240</span>}
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Me533.html">&larr; Me533</a> <a class="up" href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <a class="next" href="Me535.html">Me535 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -40,6 +40,9 @@
 <li><code>matches(rb&quot;\(\s*\d+\.\\X\\&quot;)</code></li>
 <li><code>matches(rb&quot;\\X\\09&quot;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -58,37 +61,33 @@
 <span class="lineno">2</span>   ----------------------------------------------------------------------
 <span class="lineno">3</span>   Catalog section : Â§12.1c lexical / directive scope
 <span class="lineno">4</span>   Sources         : N047
-<span class="lineno">5</span>   Originally also catalogued as: Le019, Ad048
-<span class="lineno">6</span>   ----------------------------------------------------------------------
-<span class="lineno">7</span>   Defect
-<span class="lineno">8</span>     Control directives such as \X\, \S\, \F\, \N\ are valid only inside
-<span class="lineno">9</span>     &#x27;...&#x27; string literals. Tools that pre-process content textually
-<span class="lineno">10</span>     sometimes leave directives in BINARY values, ENUMERATION names, or
-<span class="lineno">11</span>     between top-level tokens. The lexer must recognize them as illegal
-<span class="lineno">12</span>     outside a string-literal context rather than silently consuming them.
-<span class="lineno">13</span>   Expected behavior
-<span class="lineno">14</span>     Strict reject; lenient strip and warn. The diagnostic should name
-<span class="lineno">15</span>     the directive and the lexical context (e.g. &quot;directive \X\ outside
-<span class="lineno">16</span>     string literal at instance #20&quot;).
-<span class="lineno">17</span>   ----------------------------------------------------------------------
-<span class="lineno">18</span>*/
-<span class="lineno">19</span>ISO-10303-21;
-<span class="lineno">20</span>HEADER;
-<span class="lineno">21</span>FILE_DESCRIPTION((&#x27;Ls045 - control directive outside string literal&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">22</span>FILE_NAME(&#x27;Ls045.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
-<span class="lineno">23</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">24</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">25</span>ENDSEC;
-<span class="lineno">26</span>DATA;
-<span class="lineno">27</span>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
-<span class="lineno">28</span>/* Defect: <mark>\X\09</mark> control directive embedded in a REAL literal context
-<span class="lineno">29</span>   (outside any &#x27;...&#x27; string) */
-<span class="lineno">30</span>#20=DIRECTION(&#x27;&#x27;,<mark>(1.\X\09</mark>,0.,0.));
-<span class="lineno">31</span>/* Defect: \N\ between top-level tokens (not a permitted token separator) */
-<span class="lineno">32</span>#30=DIRECTION(&#x27;y&#x27;,\N\(0.0,1.0,0.0));
-<span class="lineno">33</span>#40=AXIS2_PLACEMENT_3D(&#x27;placement&#x27;,#10,#20,$);
-<span class="lineno">34</span>ENDSEC;
-<span class="lineno">35</span>END-ISO-10303-21;
+<span class="lineno">5</span>   ----------------------------------------------------------------------
+<span class="lineno">6</span>   Defect
+<span class="lineno">7</span>     Control directives (\X\, \S\, \F\, \N\) are valid only inside
+<span class="lineno">8</span>     &#x27;..&#x27; string literals. Tools that pre-process content textually
+<span class="lineno">9</span>     sometimes leave directives in BINARY values, ENUMERATION names,
+<span class="lineno">10</span>     or between top-level tokens.
+<span class="lineno">11</span>   Expected behavior
+<span class="lineno">12</span>     Strict reject; lenient mode may strip and warn.
+<span class="lineno">13</span>   ----------------------------------------------------------------------
+<span class="lineno">14</span>*/
+<span class="lineno">15</span>ISO-10303-21;
+<span class="lineno">16</span>HEADER;
+<span class="lineno">17</span>FILE_DESCRIPTION((&#x27;Ls045 - control directives outside string context&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">18</span>FILE_NAME(&#x27;Ls045.stp&#x27;,&#x27;2026-06-20T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">19</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">20</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">21</span>ENDSEC;
+<span class="lineno">22</span>DATA;
+<span class="lineno">23</span>/* Defect 1: <mark>\X\09</mark> (horizontal tab escape) embedded in a coordinate list */
+<span class="lineno">24</span>/* The directive appears after the real number 1. outside any string literal */
+<span class="lineno">25</span>#1=DIRECTION(&#x27;&#x27;,<mark>(1.\X\09</mark>,0.,0.));
+<span class="lineno">26</span>/* Defect 2: \N\ (newline directive) embedded between entity tokens */
+<span class="lineno">27</span>#2=CARTESIAN_POINT(&#x27;&#x27;\N\,(0.,0.,0.));
+<span class="lineno">28</span>/* Defect 3: \S\ (shift directive) left inside an ENUMERATION slot */
+<span class="lineno">29</span>#3=FACE_SURFACE(&#x27;&#x27;,(),$,\S\.T.);
+<span class="lineno">30</span>ENDSEC;
+<span class="lineno">31</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

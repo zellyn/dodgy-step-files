@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Me1112 — displaced fan-apex below flat patch causing SI: use_smoothing strategy branch</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <span class="sep">/</span> <span class="current">Me1112</span>
+</nav>
+<header class="title-bar">
+<h1>Me1112 <span class="sep">—</span> <span class="entry-title">displaced fan-apex below flat patch causing SI: use_smoothing strategy branch</span></h1>
+<p class="category">§12.14 mesh defects (sub-class: self-intersection/smoothable)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../mesh-examples/12-14-mesh/Me1112.mesh.json">View raw fixture (.mesh.json)</a> <code class="path">mesh-examples/12-14-mesh/Me1112.mesh.json</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>CGAL `PMP.remove_self_intersections` Branch 3 @ line 2397 (*smoothing-phase-strategy*: `if(use_smoothing) remove_self_intersections_with_smoothing(…) else hole_fill(…)`)</li>
+<li>`MESH_HEAL_COVERAGE.md`.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>triangles 0,1,2 form a flat 3-triangle fan in the Z=0 plane around hub vertex 0. Triangle 3 is an intruder: its top vertex (v5) is correctly placed at Z=0, but its apex (v6) has been displaced to Z=-0.8, pulling it below the fan plane. This causes tri 3 to intersect tri 0. A smoothing pass that lifts v6 back to Z≈0 resolves the SI without topological changes.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>hub=(0,0,0); fan radials at r0=(1,0,0), r1=(0.5,1,0), r2=(-0.5,1,0), r3=(-1,0,0); tri 0=(hub,r0,r1), tri 1=(hub,r1,r2), tri 2=(hub,r2,r3); intruder top=(0.5,2,0), apex=(0.5,1,-0.8); tri 3=(r1,top,apex). assert_triangles_self_intersect(0,3).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>detect SI between fan and intruder; apply vertex smoothing to move apex back toward Z=0; when use_smoothing=false, fall back to hole-filling instead.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>{
+<span class="lineno">2</span>  &quot;vertices&quot;: [
+<span class="lineno">3</span>    [
+<span class="lineno">4</span>      0.0,
+<span class="lineno">5</span>      0.0,
+<span class="lineno">6</span>      0.0
+<span class="lineno">7</span>    ],
+<span class="lineno">8</span>    [
+<span class="lineno">9</span>      1.0,
+<span class="lineno">10</span>      0.0,
+<span class="lineno">11</span>      0.0
+<span class="lineno">12</span>    ],
+<span class="lineno">13</span>    [
+<span class="lineno">14</span>      0.5,
+<span class="lineno">15</span>      1.0,
+<span class="lineno">16</span>      0.0
+<span class="lineno">17</span>    ],
+<span class="lineno">18</span>    [
+<span class="lineno">19</span>      -0.5,
+<span class="lineno">20</span>      1.0,
+<span class="lineno">21</span>      0.0
+<span class="lineno">22</span>    ],
+<span class="lineno">23</span>    [
+<span class="lineno">24</span>      -1.0,
+<span class="lineno">25</span>      0.0,
+<span class="lineno">26</span>      0.0
+<span class="lineno">27</span>    ],
+<span class="lineno">28</span>    [
+<span class="lineno">29</span>      0.5,
+<span class="lineno">30</span>      2.0,
+<span class="lineno">31</span>      0.0
+<span class="lineno">32</span>    ],
+<span class="lineno">33</span>    [
+<span class="lineno">34</span>      0.5,
+<span class="lineno">35</span>      1.0,
+<span class="lineno">36</span>      -0.8
+<span class="lineno">37</span>    ]
+<span class="lineno">38</span>  ],
+<span class="lineno">39</span>  &quot;triangles&quot;: [
+<span class="lineno">40</span>    [
+<span class="lineno">41</span>      0,
+<span class="lineno">42</span>      1,
+<span class="lineno">43</span>      2
+<span class="lineno">44</span>    ],
+<span class="lineno">45</span>    [
+<span class="lineno">46</span>      0,
+<span class="lineno">47</span>      2,
+<span class="lineno">48</span>      3
+<span class="lineno">49</span>    ],
+<span class="lineno">50</span>    [
+<span class="lineno">51</span>      0,
+<span class="lineno">52</span>      3,
+<span class="lineno">53</span>      4
+<span class="lineno">54</span>    ],
+<span class="lineno">55</span>    [
+<span class="lineno">56</span>      2,
+<span class="lineno">57</span>      5,
+<span class="lineno">58</span>      6
+<span class="lineno">59</span>    ]
+<span class="lineno">60</span>  ],
+<span class="lineno">61</span>  &quot;metadata&quot;: {
+<span class="lineno">62</span>    &quot;id&quot;: &quot;Me1112&quot;,
+<span class="lineno">63</span>    &quot;schema_version&quot;: 0,
+<span class="lineno">64</span>    &quot;defect_class&quot;: &quot;self_intersection_smoothable&quot;,
+<span class="lineno">65</span>    &quot;title&quot;: &quot;displaced apex below flat fan causing SI: use_smoothing strategy branch&quot;,
+<span class="lineno">66</span>    &quot;assertions&quot;: [
+<span class="lineno">67</span>      {
+<span class="lineno">68</span>        &quot;kind&quot;: &quot;triangles_self_intersect&quot;,
+<span class="lineno">69</span>        &quot;triangles&quot;: [
+<span class="lineno">70</span>          0,
+<span class="lineno">71</span>          3
+<span class="lineno">72</span>        ]
+<span class="lineno">73</span>      }
+<span class="lineno">74</span>    ]
+<span class="lineno">75</span>  }
+<span class="lineno">76</span>}
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Me1111.html">&larr; Me1111</a> <a class="up" href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <a class="next" href="Me1113.html">Me1113 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

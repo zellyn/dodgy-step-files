@@ -41,6 +41,9 @@
 <li><code>matches(rb&quot;(?s)PRODUCT\(\s*&#x27;A{50,}&quot;)</code></li>
 <li><code>max_string_literal_length &gt;= 100</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -55,55 +58,20 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Ad033 - Translator OOB write copying parsed string into packed C struct
-<span class="lineno">2</span>   ----------------------------------------------------------------------
-<span class="lineno">3</span>   Catalog section : Â§12.11 adversarial (sub-class: heap-overflow / OOB-write)
-<span class="lineno">4</span>   Sources         : 12-adversarial.md A033;
-<span class="lineno">5</span>                     CVE-2024-23120 (Autodesk ASMIMPORT*.dll on STP/STEP)
-<span class="lineno">6</span>   Severity        : C (Critical)
-<span class="lineno">7</span>   ----------------------------------------------------------------------
-<span class="lineno">8</span>   WARNING: This file is INTENTIONALLY MALFORMED for parser-robustness
-<span class="lineno">9</span>   testing. Do NOT use as exchange data.
-<span class="lineno">10</span>   ----------------------------------------------------------------------
-<span class="lineno">11</span>   Defect
-<span class="lineno">12</span>     A vendor-specific translator copies parsed Part-21 strings directly
-<span class="lineno">13</span>     into a packed C struct buffer; per-attribute lengths from the input
-<span class="lineno">14</span>     are not bounds-checked against the destination slot size. Result:
-<span class="lineno">15</span>     heap or stack OOB write controlled by attacker-supplied string
-<span class="lineno">16</span>     length. CVE-2024-23120 documents this in Autodesk ASMIMPORT*.dll.
-<span class="lineno">17</span>   Reproducer recipe
-<span class="lineno">18</span>     PRODUCT entity whose &#x27;name&#x27; string greatly exceeds the destination
-<span class="lineno">19</span>     struct field width (typically 256 or 512 bytes). The string below
-<span class="lineno">20</span>     is ~720 chars, far longer than typical fixed-width slots.
-<span class="lineno">21</span>   Expected kernel behavior
-<span class="lineno">22</span>     Validate per-attribute string lengths against destination size
-<span class="lineno">23</span>     before any copy; truncate-and-warn or reject with E_STRING_OVERFLOW.
-<span class="lineno">24</span>     Never use unchecked strcpy/memcpy on parser output.
-<span class="lineno">25</span>   ----------------------------------------------------------------------
-<span class="lineno">26</span>*/
-<span class="lineno">27</span>ISO-10303-21;
-<span class="lineno">28</span>HEADER;
-<span class="lineno">29</span>FILE_DESCRIPTION((&#x27;Ad033 - oversized PRODUCT name overflows packed struct&#x27;),
-<span class="lineno">30</span>  &#x27;2;1&#x27;);
-<span class="lineno">31</span>FILE_NAME(&#x27;Ad033.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
-<span class="lineno">32</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">33</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">34</span>ENDSEC;
-<span class="lineno">35</span>DATA;
-<span class="lineno">36</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">37</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">38</span>  &#x27;automotive_design&#x27;,2001,#1);
-<span class="lineno">39</span>#3=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">40</span>/* Defect: PRODUCT &#x27;name&#x27; attribute is ~720 chars, overflows fixed
-<span class="lineno">41</span>   destination buffer in vulnerable translators. */
-<span class="lineno">42</span>#4=<mark>PRODUCT(</mark>
-<span class="lineno">43</span><mark>  &#x27;AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</mark>&#x27;,
-<span class="lineno">44</span>  &#x27;long_id&#x27;,&#x27;description&#x27;,(#3));
-<span class="lineno">45</span>#5=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#4);
-<span class="lineno">46</span>#6=PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#1,&#x27;design&#x27;);
-<span class="lineno">47</span>#7=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#5,#6);
-<span class="lineno">48</span>ENDSEC;
-<span class="lineno">49</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Ad033: OOB write: PRODUCT name string of 256 &#x27;A&#x27;s overflows packed struct field; CVE-2024-23120 Autodesk ASMIMPORT*.dll; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ad033&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ad033.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">11</span>#3=<mark>PRODUCT(&#x27;AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</mark>&#x27;,&#x27;BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB&#x27;,&#x27;CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC&#x27;,());
+<span class="lineno">12</span>#4=PRODUCT_DEFINITION_CONTEXT(&#x27;AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&#x27;,&#x27;design&#x27;);
+<span class="lineno">13</span>ENDSEC;
+<span class="lineno">14</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

@@ -42,6 +42,9 @@
 <li><code>contains(b&#x27;AP238_STEP_NC_MIM&#x27;)</code></li>
 <li><code>contains(b&#x27;SETUP&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -57,37 +60,65 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M104 - AP238 producer emits <mark>SETUP</mark> where WORKPIECE_<mark>SETUP</mark> is required.
-<span class="lineno">3</span> * Defect: AP238 distinguishes <mark>SETUP</mark> (machine fixture configuration) from
-<span class="lineno">4</span> * WORKPIECE_<mark>SETUP</mark> (workpiece-on-fixture clamping). A MACHINING_WORKINGSTEP
-<span class="lineno">5</span> * here references a <mark>SETUP</mark> via its_setup, but per AP238 schema the role
-<span class="lineno">6</span> * expects a WORKPIECE_<mark>SETUP</mark>. Consumers conflate them and lose either the
-<span class="lineno">7</span> * fixture geometry or the workpiece clamp data. */
-<span class="lineno">8</span>HEADER;
-<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;M104 test case&#x27;,&#x27;AP238 <mark>SETUP</mark> used where WORKPIECE_<mark>SETUP</mark> required&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">10</span>FILE_NAME(&#x27;M104.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">11</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 1 0 0 1 }&#x27;));
-<span class="lineno">12</span>ENDSEC;
-<span class="lineno">13</span>DATA;
-<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;numerical_control_machining&#x27;);
-<span class="lineno">15</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">16</span>  &#x27;numerical_control_machining&#x27;,2007,#1);
-<span class="lineno">17</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">18</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">19</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-<span class="lineno">20</span>     REPRESENTATION_CONTEXT(&#x27;nc&#x27;,&#x27;3D&#x27;));
-<span class="lineno">21</span>/* <mark>SETUP</mark> - machine fixture only, no workpiece clamping data */
-<span class="lineno">22</span>#100=AXIS2_PLACEMENT_3D(&#x27;csys&#x27;,
-<span class="lineno">23</span>  CARTESIAN_POINT(&#x27;o&#x27;,(0.0,0.0,0.0)),
-<span class="lineno">24</span>  DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0)),
-<span class="lineno">25</span>  DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0)));
-<span class="lineno">26</span>#150=<mark>SETUP</mark>(&#x27;vise_only&#x27;,#100,$,$);
-<span class="lineno">27</span>/* Defect: workingstep references a <mark>SETUP</mark> but role expects WORKPIECE_<mark>SETUP</mark>. */
-<span class="lineno">28</span>#200=MACHINING_OPERATION(&#x27;rough&#x27;,$,$,$,$,$);
-<span class="lineno">29</span>#300=MACHINING_WORKINGSTEP(&#x27;ws&#x27;,#150,#200,$);
-<span class="lineno">30</span>#400=WORKPLAN(&#x27;main&#x27;,(#300),$,$,$);
-<span class="lineno">31</span>ENDSEC;
-<span class="lineno">32</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M104: AP238 <mark>SETUP</mark> emitted where WORKPIECE_<mark>SETUP</mark> is required */
+<span class="lineno">3</span>/* DEFECT: MACHINING_WORKINGSTEP.its_setup references <mark>SETUP</mark> not WORKPIECE_<mark>SETUP</mark> */
+<span class="lineno">4</span>/* <mark>SETUP</mark> = machine-fixture config; WORKPIECE_<mark>SETUP</mark> = workpiece-on-fixture placement */
+<span class="lineno">5</span>/* Consumers lose workpiece clamp data or fixture geometry â wrong tool-origin offset */
+<span class="lineno">6</span>/* Violates ISO 10303-238 Â§5.4 setup vs workpiece_setup distinction */
+<span class="lineno">7</span>/* Byte assertion: contains(b&#x27;<mark>AP238_STEP_NC_MIM</mark>&#x27;) */
+<span class="lineno">8</span>/* Byte assertion: contains(b&#x27;<mark>SETUP</mark>&#x27;) */
+<span class="lineno">9</span>HEADER;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;M104: AP238 <mark>SETUP</mark> where WORKPIECE_<mark>SETUP</mark> required&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;M104.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>/* Byte assertion: contains(b&#x27;<mark>AP238_STEP_NC_MIM</mark>&#x27;) */
+<span class="lineno">13</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 1 0 0 }&#x27;));
+<span class="lineno">14</span>ENDSEC;
+<span class="lineno">15</span>DATA;
+<span class="lineno">16</span>#1=APPLICATION_CONTEXT(&#x27;step_nc_mim&#x27;);
+<span class="lineno">17</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">18</span>  &#x27;ap238_step_nc_mim&#x27;,2007,#1);
+<span class="lineno">19</span>/* Standard unit context â mm */
+<span class="lineno">20</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">21</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">22</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">23</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">24</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">25</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">26</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">27</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">28</span>  REPRESENTATION_CONTEXT(&#x27;nc&#x27;,&#x27;3D&#x27;));
+<span class="lineno">29</span>/* Byte assertion: contains(b&#x27;<mark>SETUP</mark>&#x27;) */
+<span class="lineno">30</span>/* DEFECT: <mark>SETUP</mark> entity for machine-fixture configuration (vise on tombstone) */
+<span class="lineno">31</span>/* This should be WORKPIECE_<mark>SETUP</mark> (workpiece-on-fixture placement with clamp data) */
+<span class="lineno">32</span>/* The publisher merged both concepts into a single <mark>SETUP</mark> entity â type mismatch */
+<span class="lineno">33</span>#50=<mark>SETUP</mark>(&#x27;vise_config&#x27;,$,$,$);
+<span class="lineno">34</span>/* Target machined feature â a face milling pass */
+<span class="lineno">35</span>#55=MACHINED_FEATURE(&#x27;face_d&#x27;,$,$,$,$,$);
+<span class="lineno">36</span>/* 50mm face mill */
+<span class="lineno">37</span>#60=MACHINING_TOOL(&#x27;facemill_50mm&#x27;,$,$,$);
+<span class="lineno">38</span>/* Machining operation for face milling */
+<span class="lineno">39</span>#70=MACHINING_OPERATION(&#x27;face_op&#x27;,#60,$,$,$,$,$,$,#55,$,$);
+<span class="lineno">40</span>/* DEFECT: MACHINING_WORKINGSTEP.its_setup references <mark>SETUP</mark> #50 */
+<span class="lineno">41</span>/* Per AP238 Â§5.4 its_setup must reference WORKPIECE_<mark>SETUP</mark>, not bare <mark>SETUP</mark> */
+<span class="lineno">42</span>/* Correct fix: replace #50 with WORKPIECE_<mark>SETUP</mark>(&#x27;vise_config_wp&#x27;,...) */
+<span class="lineno">43</span>#80=MACHINING_WORKINGSTEP(&#x27;face_step&#x27;,#55,#70,#50);
+<span class="lineno">44</span>/* WORKPLAN referencing the workingstep with the mistyped setup reference */
+<span class="lineno">45</span>#90=WORKPLAN(&#x27;main&#x27;,(#80),$,$,$);
+<span class="lineno">46</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">47</span>#300=GEOMETRIC_CURVE_SET(&#x27;ap238-setup-emitted-where-workpiece-setup-required&#x27;,
+<span class="lineno">48</span>  (#50,#55,#60,#70,#80,#90));
+<span class="lineno">49</span>/* Product chain */
+<span class="lineno">50</span>#400=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">51</span>#401=PRODUCT_CONTEXT(&#x27;&#x27;,#400,&#x27;mechanical&#x27;);
+<span class="lineno">52</span>#402=PRODUCT(&#x27;M104&#x27;,&#x27;M104&#x27;,&#x27;M104&#x27;,(#401));
+<span class="lineno">53</span>#403=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#402);
+<span class="lineno">54</span>#404=PRODUCT_DEFINITION_CONTEXT(#400,&#x27;design&#x27;);
+<span class="lineno">55</span>#405=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#403,#404);
+<span class="lineno">56</span>#406=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#405);
+<span class="lineno">57</span>#407=SHAPE_REPRESENTATION(&#x27;&#x27;,(#300),#14);
+<span class="lineno">58</span>#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
+<span class="lineno">59</span>ENDSEC;
+<span class="lineno">60</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

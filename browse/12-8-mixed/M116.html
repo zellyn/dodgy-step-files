@@ -42,6 +42,9 @@
 <li><code>contains(b&#x27;STRUCTURAL_ANALYSIS_DESIGN&#x27;)</code></li>
 <li><code>contains(b&#x27;FEA_MODEL&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -57,35 +60,62 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M116 - AP209 modal extraction request exceeds DOF rank.
-<span class="lineno">3</span> * Defect: a <mark>FEA_MODEL</mark>_3D has 3 free nodes (9 active DOFs) but a modal
-<span class="lineno">4</span> * extraction parameter requests 50 modes. The eigensolver either
-<span class="lineno">5</span> * returns 9 real modes plus 41 NaN entries, or fails outright. */
-<span class="lineno">6</span>HEADER;
-<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;M116 test case&#x27;,&#x27;AP209 mode count exceeds DOF rank&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">8</span>FILE_NAME(&#x27;M116.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">9</span>FILE_SCHEMA((&#x27;<mark>STRUCTURAL_ANALYSIS_DESIGN</mark> { 1 0 10303 209 1 0 0 }&#x27;));
-<span class="lineno">10</span>ENDSEC;
-<span class="lineno">11</span>DATA;
-<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;structural_analysis_design&#x27;);
-<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">14</span>  &#x27;structural_analysis_design&#x27;,2001,#1);
-<span class="lineno">15</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">16</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">17</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-<span class="lineno">18</span>     REPRESENTATION_CONTEXT(&#x27;fea&#x27;,&#x27;3D&#x27;));
-<span class="lineno">19</span>#100=CARTESIAN_POINT(&#x27;a&#x27;,(0.0,0.0,0.0));
-<span class="lineno">20</span>#101=CARTESIAN_POINT(&#x27;b&#x27;,(1.0,0.0,0.0));
-<span class="lineno">21</span>#102=CARTESIAN_POINT(&#x27;c&#x27;,(0.0,1.0,0.0));
-<span class="lineno">22</span>#110=NODE(&#x27;n1&#x27;,(#100),$);
-<span class="lineno">23</span>#111=NODE(&#x27;n2&#x27;,(#101),$);
-<span class="lineno">24</span>#112=NODE(&#x27;n3&#x27;,(#102),$);
-<span class="lineno">25</span>#150=NODE_GROUP(&#x27;mesh_nodes&#x27;,(#110,#111,#112),$);
-<span class="lineno">26</span>/* Defect: model has 9 DOFs; modal request asks for 50 modes
-<span class="lineno">27</span>   (encoded in the model&#x27;s description). */
-<span class="lineno">28</span>#200=<mark>FEA_MODEL</mark>_3D(&#x27;modal_test_model_50_modes_requested&#x27;,$,#150,$,$);
-<span class="lineno">29</span>ENDSEC;
-<span class="lineno">30</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M116: AP209 modal extraction count exceeds DOF rank */
+<span class="lineno">3</span>/* DEFECT: 50 modes requested from a model with only 9 active DOFs */
+<span class="lineno">4</span>/* Eigensolver returns NaN/garbage for 41 modes beyond system rank */
+<span class="lineno">5</span>/* Per AP209 Â§9, requested mode count must not exceed DOF rank */
+<span class="lineno">6</span>/* Byte assertion: contains(b&#x27;<mark>STRUCTURAL_ANALYSIS_DESIGN</mark>&#x27;) */
+<span class="lineno">7</span>/* Byte assertion: contains(b&#x27;<mark>FEA_MODEL</mark>&#x27;) */
+<span class="lineno">8</span>HEADER;
+<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;M116: AP209 modal extraction requests 50 modes from 9-DOF model&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;M116.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">11</span>/* Byte assertion: contains(b&#x27;<mark>STRUCTURAL_ANALYSIS_DESIGN</mark>&#x27;) */
+<span class="lineno">12</span>FILE_SCHEMA((&#x27;<mark>STRUCTURAL_ANALYSIS_DESIGN</mark> { 1 0 10303 209 1 0 0 }&#x27;));
+<span class="lineno">13</span>ENDSEC;
+<span class="lineno">14</span>DATA;
+<span class="lineno">15</span>#1=APPLICATION_CONTEXT(&#x27;structural_analysis_design&#x27;);
+<span class="lineno">16</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">17</span>  &#x27;structural_analysis_design&#x27;,2001,#1);
+<span class="lineno">18</span>/* Standard unit context */
+<span class="lineno">19</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">20</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">21</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">22</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">23</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">24</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">25</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">26</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">27</span>  REPRESENTATION_CONTEXT(&#x27;fea&#x27;,&#x27;3D&#x27;));
+<span class="lineno">28</span>/* Three free nodes: total 9 translational DOFs (3 nodes Ã 3 DOF each) */
+<span class="lineno">29</span>#100=CARTESIAN_POINT(&#x27;n1&#x27;,(0.0,0.0,0.0));
+<span class="lineno">30</span>#101=CARTESIAN_POINT(&#x27;n2&#x27;,(50.0,0.0,0.0));
+<span class="lineno">31</span>#102=CARTESIAN_POINT(&#x27;n3&#x27;,(100.0,0.0,0.0));
+<span class="lineno">32</span>#110=NODE(&#x27;free_node_1&#x27;,(#100),$);
+<span class="lineno">33</span>#111=NODE(&#x27;free_node_2&#x27;,(#101),$);
+<span class="lineno">34</span>#112=NODE(&#x27;free_node_3&#x27;,(#102),$);
+<span class="lineno">35</span>/* Byte assertion: contains(b&#x27;<mark>FEA_MODEL</mark>&#x27;) */
+<span class="lineno">36</span>/* NODE_GROUP: all three free nodes â 9 translational DOFs total */
+<span class="lineno">37</span>#300=NODE_GROUP(&#x27;free_nodes&#x27;,(#110,#111,#112),$);
+<span class="lineno">38</span>#310=<mark>FEA_MODEL</mark>(&#x27;modal_model&#x27;,$,&#x27;&#x27;,(#300),(),());
+<span class="lineno">39</span>/* DEFECT: modal analysis requests 50 modes from a 9-DOF system *)  */
+<span class="lineno">40</span>/* Eigensolver can return at most 9 real modes; modes 10-50 are NaN/garbage *)  */
+<span class="lineno">41</span>/* REQUESTED_NUMBER_OF_MODES = 50 &gt;&gt; system DOF rank = 9 *)  */
+<span class="lineno">42</span>#400=EIGENVALUE_EXTRACTION_PARAMETER(&#x27;modal_50&#x27;,&#x27;LANCZOS&#x27;,50,0.0,$,#310);
+<span class="lineno">43</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">44</span>#500=GEOMETRIC_CURVE_SET(&#x27;ap209-modal-extraction-count-exceeds-dof-rank&#x27;,
+<span class="lineno">45</span>  (#110,#111,#112,#310,#400));
+<span class="lineno">46</span>/* Product chain */
+<span class="lineno">47</span>#600=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">48</span>#601=PRODUCT_CONTEXT(&#x27;&#x27;,#600,&#x27;mechanical&#x27;);
+<span class="lineno">49</span>#602=PRODUCT(&#x27;M116&#x27;,&#x27;M116&#x27;,&#x27;M116&#x27;,(#601));
+<span class="lineno">50</span>#603=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#602);
+<span class="lineno">51</span>#604=PRODUCT_DEFINITION_CONTEXT(#600,&#x27;design&#x27;);
+<span class="lineno">52</span>#605=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#603,#604);
+<span class="lineno">53</span>#606=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#605);
+<span class="lineno">54</span>#607=SHAPE_REPRESENTATION(&#x27;&#x27;,(#500),#14);
+<span class="lineno">55</span>#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
+<span class="lineno">56</span>ENDSEC;
+<span class="lineno">57</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

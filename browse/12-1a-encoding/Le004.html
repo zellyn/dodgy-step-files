@@ -16,7 +16,6 @@
 <p class="category">§12.1a encoding/strings (sub-class: `\X\` directive)</p>
 <p class="severity-badge severity-p1">P1 — silent data loss</p>
 <p class="tag-pills">
-<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
 <a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
 <a class="tag tag-encoding" href="../by-tag/encoding/index.html">encoding</a>
 </p>
@@ -40,11 +39,14 @@
 <section><h2>Notes</h2>
 <p>Synonyms: &quot;X escape with bad hex digit count&quot;, &quot;lowercase hex in backslash X escape&quot;, &quot;single-digit X directive&quot;, &quot;malformed character escape&quot;, &quot;non-hex character after backslash X&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=process_signal</code></p></section>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;\\X\\e9&#x27;)</code></li>
 <li><code>contains(b&#x27;\\X\\009&#x27;)</code></li>
 <li><code>contains(b&#x27;\\X\\F&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
 </ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
@@ -52,7 +54,7 @@
 <tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
 <tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
 <tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
-<tr><td><code>ifcopenshell</code></td><td><code>process_signal</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
 <tr><td><code>part21_strict</code></td><td><code>warn(W_BARE_BACKSLASH)</code></td></tr>
 <tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
 </tbody></table>
@@ -60,35 +62,22 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Le004 â \X\ (single-byte ISO-8859) escape with bad hex digit count or non-hex input
-<span class="lineno">2</span>   Defect: \X\ must consume exactly two upper-case hex digits. This file emits
-<span class="lineno">3</span>   four malformed forms in different name slots:
-<span class="lineno">4</span>     - lowercase hex digits     (<mark>\X\e9</mark>)
-<span class="lineno">5</span>     - one digit instead of two (<mark>\X\F</mark>)
-<span class="lineno">6</span>     - three digits             (<mark>\X\009</mark>)
-<span class="lineno">7</span>     - whitespace inside        (\X\E9 9)
-<span class="lineno">8</span>   A loose parser may walk past the directive boundary or accept malformed values. */
-<span class="lineno">9</span>ISO-10303-21;
-<span class="lineno">10</span>HEADER;
-<span class="lineno">11</span>FILE_DESCRIPTION((&#x27;Le004 - bad \X\ hex digit count or non-hex input&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">12</span>FILE_NAME(&#x27;Le004.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
-<span class="lineno">13</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">14</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Le004: \X\ single-byte ISO-8859 escape with bad hex digit count or non-hex input; \X\HH must consume exactly two upper-case hex digits; defects: one digit (<mark>\X\F</mark>), three digits (<mark>\X\009</mark>), lowercase (<mark>\X\e9</mark>), non-hex (\X\GG), or whitespace interposed (\X\E9 9); strict parser emits E_BAD_X_DIRECTIVE; tolerant reader may accept lowercase by case-folding but must reject odd or non-hex digit counts; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Le004&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Le004.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">11</span>#8997=PERSON(&#x27;caf<mark>\X\e9</mark>&#x27;,&#x27;lowercase-hex-x-escape&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>#8998=PERSON(&#x27;caf<mark>\X\009</mark>&#x27;,&#x27;three-digit-x-escape&#x27;,&#x27;&#x27;);
+<span class="lineno">13</span>#8999=PERSON(&#x27;caf<mark>\X\F</mark>&#x27;,&#x27;single-digit-x-escape&#x27;,&#x27;&#x27;);
+<span class="lineno">14</span>
 <span class="lineno">15</span>ENDSEC;
-<span class="lineno">16</span>DATA;
-<span class="lineno">17</span>/* lowercase hex digits */
-<span class="lineno">18</span>#10=CARTESIAN_POINT(&#x27;caf<mark>\X\e9</mark>&#x27;,(0.0,0.0,0.0));
-<span class="lineno">19</span>/* one hex digit only */
-<span class="lineno">20</span>#20=CARTESIAN_POINT(&#x27;caf<mark>\X\F</mark>&#x27;,(1.0,0.0,0.0));
-<span class="lineno">21</span>/* three hex digits (boundary slips) */
-<span class="lineno">22</span>#30=CARTESIAN_POINT(&#x27;caf<mark>\X\009</mark>&#x27;,(2.0,0.0,0.0));
-<span class="lineno">23</span>/* whitespace inside the directive */
-<span class="lineno">24</span>#40=CARTESIAN_POINT(&#x27;caf\X\E9 9&#x27;,(3.0,0.0,0.0));
-<span class="lineno">25</span>#50=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
-<span class="lineno">26</span>#60=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">27</span>#70=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#50,#60);
-<span class="lineno">28</span>ENDSEC;
-<span class="lineno">29</span>END-ISO-10303-21;
+<span class="lineno">16</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

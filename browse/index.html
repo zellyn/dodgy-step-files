@@ -12,7 +12,7 @@
 <a href="../index.html">Home</a> <span class="sep">/</span> <span class="current">Browse</span>
 </nav>
 <header class="title-bar"><h1>Browse the STEP Defect Catalog</h1>
-<p class="meta">1282 entries across 18 sections</p>
+<p class="meta">3073 entries across 19 sections</p>
 </header>
 <main>
 <section class="by-tag-cta">
@@ -25,7 +25,7 @@
 <div class="section-grid">
 <div class="section-card">
 <h2><a href="12-10-perf/index.html">§12.10 Scale &amp; performance</a></h2>
-<p class="meta">35 entries</p>
+<p class="meta">37 entries</p>
 <ul class="samples">
 <li>Multi-GB Creo AP242 assemblies trigger unbounded receiver memory</li>
 <li>Quadratic-cost STEP write on dense forward-reference `VERTEX_POINT` / `EDGE_CURVE` / `ADVANCED_FACE` web (200k-entity scale)</li>
@@ -33,7 +33,7 @@
 </ul></div>
 <div class="section-card">
 <h2><a href="12-11-adversarial/index.html">§12.11 Adversarial / parser robustness</a></h2>
-<p class="meta">74 entries</p>
+<p class="meta">82 entries</p>
 <ul class="samples">
 <li>Heap buffer overflow on overlong `&#x27;…&#x27;` string literal</li>
 <li>Stack overflow via deeply nested aggregate parentheses</li>
@@ -49,11 +49,19 @@
 </ul></div>
 <div class="section-card">
 <h2><a href="12-13-writer-pathology/index.html">§12.13 Writer pathology</a></h2>
-<p class="meta">51 entries</p>
+<p class="meta">62 entries</p>
 <ul class="samples">
 <li>Trailing whitespace on every record line</li>
 <li>Mixed CRLF and LF line endings within one file</li>
 <li>Final `END-ISO-10303-21;` without trailing newline</li>
+</ul></div>
+<div class="section-card">
+<h2><a href="12-14-mesh/index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a></h2>
+<p class="meta">731 entries</p>
+<ul class="samples">
+<li>non-manifold edge: three triangles share a single edge</li>
+<li>degenerate triangle: three collinear vertices, area=0</li>
+<li>near-coincident vertices: 5e-8 separation, distinct entries</li>
 </ul></div>
 <div class="section-card">
 <h2><a href="12-1a-encoding/index.html">§12.1a Encoding &amp; string-literal defects</a></h2>
@@ -65,7 +73,7 @@
 </ul></div>
 <div class="section-card">
 <h2><a href="12-1b-header/index.html">§12.1b Header &amp; instance-numbering</a></h2>
-<p class="meta">44 entries</p>
+<p class="meta">45 entries</p>
 <ul class="samples">
 <li>Missing or malformed closing marker `END-ISO-10303-21;`</li>
 <li>Missing `ENDSEC;` between sections</li>
@@ -81,7 +89,7 @@
 </ul></div>
 <div class="section-card">
 <h2><a href="12-2a-pcurves/index.html">§12.2a Pcurve defects</a></h2>
-<p class="meta">33 entries</p>
+<p class="meta">163 entries</p>
 <ul class="samples">
 <li>Missing pcurve on edge — only the 3D curve representation is present</li>
 <li>Pcurve endpoints disagree with edge vertex 3D positions</li>
@@ -89,7 +97,7 @@
 </ul></div>
 <div class="section-card">
 <h2><a href="12-2b-nurbs/index.html">§12.2b NURBS / B-spline</a></h2>
-<p class="meta">32 entries</p>
+<p class="meta">167 entries</p>
 <ul class="samples">
 <li>`B_SPLINE_SURFACE_WITH_KNOTS` U knots duplicated without justifying multiplicity</li>
 <li>RATIONAL_BSPLINE_CURVE / SURFACE with `NbWeights ≠ NbControlPoints`</li>
@@ -97,7 +105,7 @@
 </ul></div>
 <div class="section-card">
 <h2><a href="12-2c-surfaces/index.html">§12.2c Surface / curve degeneracies</a></h2>
-<p class="meta">52 entries</p>
+<p class="meta">177 entries</p>
 <ul class="samples">
 <li>Curve approximation cannot meet the requested tolerance</li>
 <li>Surface tangent / normal undefined at a parameter (LProp_Status.Undefined)</li>
@@ -105,7 +113,7 @@
 </ul></div>
 <div class="section-card">
 <h2><a href="12-3a-shells/index.html">§12.3a Shells / orientation</a></h2>
-<p class="meta">99 entries</p>
+<p class="meta">262 entries</p>
 <ul class="samples">
 <li>Outer shell of a solid is empty (zero faces)</li>
 <li>MANIFOLD_SOLID_BREP with dangling shell reference (outer points to a non-existent entity)</li>
@@ -113,7 +121,7 @@
 </ul></div>
 <div class="section-card">
 <h2><a href="12-3b-wires/index.html">§12.3b Wires / loops / edges</a></h2>
-<p class="meta">93 entries</p>
+<p class="meta">269 entries</p>
 <ul class="samples">
 <li>Empty edge_list in EDGE_LOOP</li>
 <li>Single-edge EDGE_LOOP with non-coincident start/end vertex</li>
@@ -121,7 +129,7 @@
 </ul></div>
 <div class="section-card">
 <h2><a href="12-3c-faces/index.html">§12.3c Faces / sewing / free bound</a></h2>
-<p class="meta">81 entries</p>
+<p class="meta">259 entries</p>
 <ul class="samples">
 <li>Top-level shape-healing pipeline must converge over multi-defect GEOMETRIC_SET (mixed defective ADVANCED_FACE, OPEN_SHELL, free EDGE_LOOP wire)</li>
 <li>Solid-level healing on MANIFOLD_SOLID_BREP wrapping an OPEN_SHELL (instead of CLOSED_SHELL): iterate shell fixes and re-evaluate closure</li>
@@ -129,7 +137,7 @@
 </ul></div>
 <div class="section-card">
 <h2><a href="12-4-tolerance/index.html">§12.4 Tolerance &amp; numerical precision</a></h2>
-<p class="meta">72 entries</p>
+<p class="meta">194 entries</p>
 <ul class="samples">
 <li>Vertex `UNCERTAINTY_MEASURE_WITH_UNIT` larger than edge / face value (tolerance hierarchy violation)</li>
 <li>Wireframe gap-fix inflates tolerance instead of bridging the gap</li>
@@ -137,7 +145,7 @@
 </ul></div>
 <div class="section-card">
 <h2><a href="12-5-units/index.html">§12.5 Units &amp; coordinate systems</a></h2>
-<p class="meta">34 entries</p>
+<p class="meta">37 entries</p>
 <ul class="samples">
 <li>Solid Edge mm exported STEP read as meters by Inventor (imported part 1000 times bigger than expected)</li>
 <li>Onshape always emits METRE; NX rescales as if mm (1000× too small)</li>
@@ -145,7 +153,7 @@
 </ul></div>
 <div class="section-card">
 <h2><a href="12-6-assembly/index.html">§12.6 Assembly hierarchy</a></h2>
-<p class="meta">101 entries</p>
+<p class="meta">106 entries</p>
 <ul class="samples">
 <li>Duplicated component instances collapsed to a single transform on export</li>
 <li>Hidden / suppressed bodies leak into export, or are dropped silently</li>
@@ -161,7 +169,7 @@
 </ul></div>
 <div class="section-card">
 <h2><a href="12-8-mixed/index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a></h2>
-<p class="meta">216 entries</p>
+<p class="meta">217 entries</p>
 <ul class="samples">
 <li>Fillet on a contour where concavity flips along the spine</li>
 <li>Fillet contour walks into a high-valence vertex (&gt; 3 incident edges)</li>

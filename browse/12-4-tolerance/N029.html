@@ -45,6 +45,9 @@
 <li><code>matches(rb&#x27;0\.0254&#x27;)</code></li>
 <li><code>contains(b&#x27;EDGE_CURVE&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="../12-5-units/U006.html">U006</a></p>
 </section>
@@ -55,55 +58,48 @@
 <tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
 <tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
-<tr><td><code>part21_strict</code></td><td><code>warn(W_COMPLEX_ORDER)</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
 <tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* N029 - Inch-units silent treatment as mm (25.4x scale error)
-<span class="lineno">2</span> * Defect: A STEP file written in inches is silently treated as millimetres
-<span class="lineno">3</span> * because the LENGTH_UNIT declaration is parsed inconsistently.
-<span class="lineno">4</span> * Reproducer: SolidWorks-style file uses CONVERSION_BASED_UNIT(&#x27;INCH&#x27;, ...)
-<span class="lineno">5</span> * wrapping a SI METRE base unit; receiver that ignores the conversion wrapper
-<span class="lineno">6</span> * sees raw mm coordinates and produces a 25.4x scale error on a 2-inch part.
-<span class="lineno">7</span> */
-<span class="lineno">8</span>ISO-10303-21;
-<span class="lineno">9</span>HEADER;
-<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;N029 inch units silent treatment as mm 25.4x scale error&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">11</span>FILE_NAME(&#x27;N029.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
-<span class="lineno">12</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">13</span>FILE_SCHEMA((&#x27;CONFIG_CONTROL_DESIGN&#x27;));
-<span class="lineno">14</span>ENDSEC;
-<span class="lineno">15</span>DATA;
-<span class="lineno">16</span>#1=APPLICATION_CONTEXT(&#x27;configuration controlled 3d designs of mechanical parts&#x27;);
-<span class="lineno">17</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">18</span>  &#x27;config_control_design&#x27;,1994,#1);
-<span class="lineno">19</span>/* 2-inch part: 2.0 in = 50.8 mm. Raw value stored: 2.0 (in inches). */
-<span class="lineno">20</span>#10=CARTESIAN_POINT(&#x27;p0&#x27;,(0.0,0.0,0.0));
-<span class="lineno">21</span>#11=CARTESIAN_POINT(&#x27;p1_2_inches&#x27;,(2.0,0.0,0.0));
-<span class="lineno">22</span>#20=VERTEX_POINT(&#x27;&#x27;,#10);
-<span class="lineno">23</span>#21=VERTEX_POINT(&#x27;&#x27;,#11);
-<span class="lineno">24</span>#30=DIRECTION(&#x27;+x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">25</span>#31=VECTOR(&#x27;&#x27;,#30,2.0);
-<span class="lineno">26</span>#32=LINE(&#x27;&#x27;,#10,#31);
-<span class="lineno">27</span>#40=<mark>EDGE_CURVE</mark>(&#x27;two_inch_edge&#x27;,#20,#21,#32,.T.);
-<span class="lineno">28</span>/* CONVERSION_BASED_UNIT for inches -- base is SI METRE, factor <mark>0.0254</mark> */
-<span class="lineno">29</span>#50=(NAMED_UNIT(*)LENGTH_UNIT()SI_UNIT($,.METRE.));
-<span class="lineno">30</span>#51=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(<mark>0.0254</mark>),#50);
-<span class="lineno">31</span>#52=DIMENSIONAL_EXPONENTS(1.0,0.0,0.0,0.0,0.0,0.0,0.0);
-<span class="lineno">32</span>#53=(CONVERSION_BASED_UNIT(&#x27;INCH&#x27;,#51) LENGTH_UNIT() NAMED_UNIT(#52));
-<span class="lineno">33</span>#54=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">34</span>#55=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">35</span>#60=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#53,
-<span class="lineno">36</span>  &#x27;distance_accuracy_value&#x27;,&#x27;inch_precision&#x27;);
-<span class="lineno">37</span>#70=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">38</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#60))
-<span class="lineno">39</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#53,#54,#55))
-<span class="lineno">40</span>  REPRESENTATION_CONTEXT(&#x27;ctx_inch&#x27;,&#x27;3D&#x27;));
-<span class="lineno">41</span>ENDSEC;
-<span class="lineno">42</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* N029: inch units via CONVERSION_BASED_UNIT <mark>0.0254</mark> m; reader defaults to mm; 50.8mm feature arrives as 2mm â 25.4x scale error; GEOMETRIC_CURVE_SET â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;N029&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;N029.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;p0&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=CARTESIAN_POINT(&#x27;p1_2_inches&#x27;,(2.0,0.0,0.0));
+<span class="lineno">11</span>#3=VERTEX_POINT(&#x27;v0&#x27;,#1);
+<span class="lineno">12</span>#4=VERTEX_POINT(&#x27;v1&#x27;,#2);
+<span class="lineno">13</span>#5=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">14</span>#6=VECTOR(&#x27;&#x27;,#5,2.0);
+<span class="lineno">15</span>#7=LINE(&#x27;two_inch_line&#x27;,#1,#6);
+<span class="lineno">16</span>#8=<mark>EDGE_CURVE</mark>(&#x27;edge_2_inches&#x27;,#3,#4,#7,.T.);
+<span class="lineno">17</span>#9=GEOMETRIC_CURVE_SET(&#x27;edges&#x27;,(#8));
+<span class="lineno">18</span>#10=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">19</span>#11=PRODUCT_CONTEXT(&#x27;&#x27;,#10,&#x27;mechanical&#x27;);
+<span class="lineno">20</span>#12=PRODUCT(&#x27;N029&#x27;,&#x27;N029&#x27;,&#x27;&#x27;,(#11));
+<span class="lineno">21</span>#13=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#12);
+<span class="lineno">22</span>#14=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#10,&#x27;design&#x27;);
+<span class="lineno">23</span>#15=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#13,#14);
+<span class="lineno">24</span>#16=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#15);
+<span class="lineno">25</span>#17=SI_UNIT(.MILLI.,.METRE.);
+<span class="lineno">26</span>#18=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(<mark>0.0254</mark>),#17);
+<span class="lineno">27</span>#19=(CONVERSION_BASED_UNIT(&#x27;inch&#x27;,#18)LENGTH_UNIT()NAMED_UNIT(*));
+<span class="lineno">28</span>#20=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">29</span>#21=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">30</span>#22=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#19,&#x27;distance_accuracy_value&#x27;,&#x27;inch_precision&#x27;);
+<span class="lineno">31</span>#23=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#22))GLOBAL_UNIT_ASSIGNED_CONTEXT((#19,#20,#21))REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">32</span>#24=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9),#23);
+<span class="lineno">33</span>#25=SHAPE_DEFINITION_REPRESENTATION(#16,#24);
+<span class="lineno">34</span>ENDSEC;
+<span class="lineno">35</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

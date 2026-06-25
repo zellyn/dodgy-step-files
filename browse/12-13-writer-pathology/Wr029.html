@@ -43,6 +43,9 @@
 <li><code>matches(rb&quot;FILE_DESCRIPTION\(\(&#x27;[^&#x27;]*\n[^&#x27;]*&#x27;&quot;)</code></li>
 <li><code>matches(rb&quot;FILE_DESCRIPTION\(\(\s*&#x27;[^&#x27;]*\n&quot;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="../12-1a-encoding/Le017.html">Le017</a></p>
 </section>
@@ -60,24 +63,26 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Wr029 - FILE_DESCRIPTION strings containing newlines or unescaped control characters */
-<span class="lineno">2</span>ISO-10303-21;
-<span class="lineno">3</span>HEADER;
-<span class="lineno">4</span><mark>FILE_DESCRIPTION((&#x27;first line</mark>
-<span class="lineno">5</span><mark>second line continues here&#x27;</mark>),&#x27;2;1&#x27;);
-<span class="lineno">6</span>FILE_NAME(&#x27;Wr029.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
-<span class="lineno">7</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">8</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">9</span>ENDSEC;
-<span class="lineno">10</span>DATA;
-<span class="lineno">11</span>#1=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
-<span class="lineno">12</span>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
-<span class="lineno">13</span>#11=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
-<span class="lineno">14</span>#12=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">15</span>#13=AXIS2_PLACEMENT_3D(&#x27;placement&#x27;,#10,#11,#12);
-<span class="lineno">16</span>#20=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">17</span>ENDSEC;
-<span class="lineno">18</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Wr029: FILE_DESCRIPTION with embedded literal newline (0x0A) in string */
+<span class="lineno">3</span>/* Writers that paste user text into FILE_DESCRIPTION without escaping LF */
+<span class="lineno">4</span>/* Crude line-based parsers terminate the string at the embedded newline */
+<span class="lineno">5</span>/* Spec violation: ISO 10303-21 Â§6.4 forbids control characters in strings */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>/* DEFECT: the FILE_DESCRIPTION string contains a real 0x0A byte mid-string */
+<span class="lineno">8</span><mark>FILE_DESCRIPTION((&#x27;first line</mark>
+<span class="lineno">9</span><mark>second line&#x27;</mark>),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;Wr029.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">11</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">12</span>ENDSEC;
+<span class="lineno">13</span>DATA;
+<span class="lineno">14</span>#1=CARTESIAN_POINT(&#x27;origin&#x27;,(0.,0.,0.));
+<span class="lineno">15</span>#2=CARTESIAN_POINT(&#x27;pt&#x27;,(1.,0.,0.));
+<span class="lineno">16</span>#3=DIRECTION(&#x27;xdir&#x27;,(1.,0.,0.));
+<span class="lineno">17</span>#4=DIRECTION(&#x27;zdir&#x27;,(0.,0.,1.));
+<span class="lineno">18</span>#5=GEOMETRIC_CURVE_SET(&#x27;newline-header-shape&#x27;,());
+<span class="lineno">19</span>ENDSEC;
+<span class="lineno">20</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

@@ -35,7 +35,9 @@
 <section><h2>Notes</h2>
 <p>Collapses two OCCT methods (different layers, same defect class). **See also**: Tfa055. Synonyms: &quot;wires cross in UV&quot;, &quot;outer and inner wire overlap&quot;, &quot;face has overlapping wires&quot;, &quot;non-nested wires on same face&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(50) ifc=schema_n/a</code></p></section>
+<section><h2>Closure intent</h2>
+<p><code>sheet</code> — the open shell is the intended final geometry; a solid-only kernel should cleanly refuse.</p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>n_edges_total &gt;= 8</code></li>
 <li><code>face[0].surface_type == &quot;plane&quot;</code></li>
@@ -48,8 +50,8 @@
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
 <tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
-<tr><td><code>gmsh_autofix_on</code></td><td><code>reject</code></td></tr>
-<tr><td><code>gmsh_autofix_off</code></td><td><code>reject</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(50)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(50)</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
 <tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
 <tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
@@ -59,95 +61,163 @@
 <details>
 <summary>Show fixture bytes</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Tfa039 - Two wires of one face intersect each other in UV
-<span class="lineno">3</span> * Defect: An ADVANCED_FACE has an outer wire and an &#x27;inner&#x27; wire whose
-<span class="lineno">4</span> * 2D pcurves cross each other in the host surface&#x27;s parameter space.
-<span class="lineno">5</span> * The kernel must split the face, merge the wires, or reject as malformed. */
-<span class="lineno">6</span>HEADER;
-<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;Tfa039 test case&#x27;,&#x27;Two wires of one face intersect each other in UV&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">8</span>FILE_NAME(&#x27;Tfa039.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">9</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">10</span>ENDSEC;
-<span class="lineno">11</span>DATA;
-<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
-<span class="lineno">14</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">15</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
-<span class="lineno">16</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">17</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
-<span class="lineno">18</span>#14=PLANE(&#x27;&#x27;,#13);
-<span class="lineno">19</span>#15=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">20</span>#16=VERTEX_POINT(&#x27;&#x27;,#15);
-<span class="lineno">21</span>#17=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
-<span class="lineno">22</span>#18=VERTEX_POINT(&#x27;&#x27;,#17);
-<span class="lineno">23</span>#19=CARTESIAN_POINT(&#x27;&#x27;,(10.0,10.0,0.0));
-<span class="lineno">24</span>#20=VERTEX_POINT(&#x27;&#x27;,#19);
-<span class="lineno">25</span>#21=CARTESIAN_POINT(&#x27;&#x27;,(0.0,10.0,0.0));
-<span class="lineno">26</span>#22=VERTEX_POINT(&#x27;&#x27;,#21);
-<span class="lineno">27</span>#23=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">28</span>#24=VECTOR(&#x27;&#x27;,#23,1.0);
-<span class="lineno">29</span>#25=LINE(&#x27;&#x27;,#15,#24);
-<span class="lineno">30</span>#26=EDGE_CURVE(&#x27;&#x27;,#16,#18,#25,.T.);
-<span class="lineno">31</span>#27=ORIENTED_EDGE(&#x27;&#x27;,*,*,#26,.T.);
-<span class="lineno">32</span>#28=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
-<span class="lineno">33</span>#29=VECTOR(&#x27;&#x27;,#28,1.0);
-<span class="lineno">34</span>#30=LINE(&#x27;&#x27;,#17,#29);
-<span class="lineno">35</span>#31=EDGE_CURVE(&#x27;&#x27;,#18,#20,#30,.T.);
-<span class="lineno">36</span>#32=ORIENTED_EDGE(&#x27;&#x27;,*,*,#31,.T.);
-<span class="lineno">37</span>#33=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
-<span class="lineno">38</span>#34=VECTOR(&#x27;&#x27;,#33,1.0);
-<span class="lineno">39</span>#35=LINE(&#x27;&#x27;,#19,#34);
-<span class="lineno">40</span>#36=EDGE_CURVE(&#x27;&#x27;,#20,#22,#35,.T.);
-<span class="lineno">41</span>#37=ORIENTED_EDGE(&#x27;&#x27;,*,*,#36,.T.);
-<span class="lineno">42</span>#38=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
-<span class="lineno">43</span>#39=VECTOR(&#x27;&#x27;,#38,1.0);
-<span class="lineno">44</span>#40=LINE(&#x27;&#x27;,#21,#39);
-<span class="lineno">45</span>#41=EDGE_CURVE(&#x27;&#x27;,#22,#16,#40,.T.);
-<span class="lineno">46</span>#42=ORIENTED_EDGE(&#x27;&#x27;,*,*,#41,.T.);
-<span class="lineno">47</span>#43=EDGE_LOOP(&#x27;&#x27;,(#27,#32,#37,#42));
-<span class="lineno">48</span>#44=FACE_OUTER_BOUND(&#x27;&#x27;,#43,.T.);
-<span class="lineno">49</span>/* Defect: two diagonal &quot;inner&quot; wires that cross at the face center (5,5). */
-<span class="lineno">50</span>#200=CARTESIAN_POINT(&#x27;&#x27;,(2.0,2.0,0.0));
-<span class="lineno">51</span>#201=VERTEX_POINT(&#x27;&#x27;,#200);
-<span class="lineno">52</span>#202=CARTESIAN_POINT(&#x27;&#x27;,(8.0,8.0,0.0));
-<span class="lineno">53</span>#203=VERTEX_POINT(&#x27;&#x27;,#202);
-<span class="lineno">54</span>#204=CARTESIAN_POINT(&#x27;&#x27;,(2.0,8.0,0.0));
-<span class="lineno">55</span>#205=VERTEX_POINT(&#x27;&#x27;,#204);
-<span class="lineno">56</span>#206=CARTESIAN_POINT(&#x27;&#x27;,(8.0,2.0,0.0));
-<span class="lineno">57</span>#207=VERTEX_POINT(&#x27;&#x27;,#206);
-<span class="lineno">58</span>#208=DIRECTION(&#x27;&#x27;,(0.7071067811865475,0.7071067811865475,0.0));
-<span class="lineno">59</span>#209=VECTOR(&#x27;&#x27;,#208,1.4142);
-<span class="lineno">60</span>#210=LINE(&#x27;&#x27;,#200,#209);
-<span class="lineno">61</span>#211=DIRECTION(&#x27;&#x27;,(0.7071067811865475,-0.7071067811865475,0.0));
-<span class="lineno">62</span>#212=VECTOR(&#x27;&#x27;,#211,1.4142);
-<span class="lineno">63</span>#213=LINE(&#x27;&#x27;,#204,#212);
-<span class="lineno">64</span>#214=EDGE_CURVE(&#x27;&#x27;,#201,#203,#210,.T.);
-<span class="lineno">65</span>#215=EDGE_CURVE(&#x27;&#x27;,#205,#207,#213,.T.);
-<span class="lineno">66</span>#216=ORIENTED_EDGE(&#x27;&#x27;,*,*,#214,.T.);
-<span class="lineno">67</span>#217=ORIENTED_EDGE(&#x27;&#x27;,*,*,#215,.T.);
-<span class="lineno">68</span>#218=EDGE_LOOP(&#x27;&#x27;,(#216));
-<span class="lineno">69</span>#219=EDGE_LOOP(&#x27;&#x27;,(#217));
-<span class="lineno">70</span>#220=FACE_BOUND(&#x27;diag_NE&#x27;,#218,.T.);
-<span class="lineno">71</span>#221=FACE_BOUND(&#x27;diag_NW&#x27;,#219,.T.);
-<span class="lineno">72</span>#230=ADVANCED_FACE(&#x27;square_with_two_crossing_diagonals&#x27;,(#44,#220,#221),#14,.T.);
-<span class="lineno">73</span>/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
-<span class="lineno">74</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">75</span>#9001=PRODUCT(&#x27;Tfa039&#x27;,&#x27;Tfa039&#x27;,&#x27;&#x27;,(#9000));
-<span class="lineno">76</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
-<span class="lineno">77</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
-<span class="lineno">78</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
-<span class="lineno">79</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
-<span class="lineno">80</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">81</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">82</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">83</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
-<span class="lineno">84</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
-<span class="lineno">85</span>#9020=OPEN_SHELL(&#x27;wrap_shell&#x27;,(#230));
-<span class="lineno">86</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#9020));
-<span class="lineno">87</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
-<span class="lineno">88</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
-<span class="lineno">89</span>ENDSEC;
-<span class="lineno">90</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* Tfa039: OPEN_SHELL: face[0] is 10Ã10 PLANE with outer FACE_OUTER_BOUND plus two non-nested inner FACE_BOUND wires that cross each other in UV; wire_a slanted quad (2,2)â(8,4)â(8,8)â(2,6); wire_b slanted quad (2,8)â(8,6)â(8,2)â(2,4) â crosses wire_a at center; FixIntersectingWires / IntersectionTool must detect UV crossing and split or reject; defect IS on live OPEN_SHELL traversal path */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Tfa039&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Tfa039.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=PLANE(&#x27;&#x27;,#4);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(10.0,10.0,0.0));
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(0.0,10.0,0.0));
+<span class="lineno">19</span>#10=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">20</span>#11=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">21</span>#12=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">22</span>#13=VERTEX_POINT(&#x27;&#x27;,#9);
+<span class="lineno">23</span>#14=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">24</span>#15=VECTOR(&#x27;&#x27;,#14,10.0);
+<span class="lineno">25</span>#16=LINE(&#x27;&#x27;,#6,#15);
+<span class="lineno">26</span>#17=EDGE_CURVE(&#x27;&#x27;,#10,#11,#16,.T.);
+<span class="lineno">27</span>#18=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">28</span>#19=VECTOR(&#x27;&#x27;,#18,10.0);
+<span class="lineno">29</span>#20=LINE(&#x27;&#x27;,#7,#19);
+<span class="lineno">30</span>#21=EDGE_CURVE(&#x27;&#x27;,#11,#12,#20,.T.);
+<span class="lineno">31</span>#22=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">32</span>#23=VECTOR(&#x27;&#x27;,#22,10.0);
+<span class="lineno">33</span>#24=LINE(&#x27;&#x27;,#8,#23);
+<span class="lineno">34</span>#25=EDGE_CURVE(&#x27;&#x27;,#12,#13,#24,.T.);
+<span class="lineno">35</span>#26=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">36</span>#27=VECTOR(&#x27;&#x27;,#26,10.0);
+<span class="lineno">37</span>#28=LINE(&#x27;&#x27;,#9,#27);
+<span class="lineno">38</span>#29=EDGE_CURVE(&#x27;&#x27;,#13,#10,#28,.T.);
+<span class="lineno">39</span>#30=ORIENTED_EDGE(&#x27;&#x27;,$,$,#17,.T.);
+<span class="lineno">40</span>#31=ORIENTED_EDGE(&#x27;&#x27;,$,$,#21,.T.);
+<span class="lineno">41</span>#32=ORIENTED_EDGE(&#x27;&#x27;,$,$,#25,.T.);
+<span class="lineno">42</span>#33=ORIENTED_EDGE(&#x27;&#x27;,$,$,#29,.T.);
+<span class="lineno">43</span>#34=EDGE_LOOP(&#x27;&#x27;,(#30,#31,#32,#33));
+<span class="lineno">44</span>#35=CARTESIAN_POINT(&#x27;&#x27;,(2.0,2.0,0.0));
+<span class="lineno">45</span>#36=CARTESIAN_POINT(&#x27;&#x27;,(8.0,4.0,0.0));
+<span class="lineno">46</span>#37=CARTESIAN_POINT(&#x27;&#x27;,(8.0,8.0,0.0));
+<span class="lineno">47</span>#38=CARTESIAN_POINT(&#x27;&#x27;,(2.0,6.0,0.0));
+<span class="lineno">48</span>#39=VERTEX_POINT(&#x27;&#x27;,#35);
+<span class="lineno">49</span>#40=VERTEX_POINT(&#x27;&#x27;,#36);
+<span class="lineno">50</span>#41=VERTEX_POINT(&#x27;&#x27;,#37);
+<span class="lineno">51</span>#42=VERTEX_POINT(&#x27;&#x27;,#38);
+<span class="lineno">52</span>#43=DIRECTION(&#x27;&#x27;,(0.948683298051,0.316227766017,0.0));
+<span class="lineno">53</span>#44=VECTOR(&#x27;&#x27;,#43,6.32455532034);
+<span class="lineno">54</span>#45=LINE(&#x27;&#x27;,#35,#44);
+<span class="lineno">55</span>#46=EDGE_CURVE(&#x27;&#x27;,#39,#40,#45,.T.);
+<span class="lineno">56</span>#47=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">57</span>#48=VECTOR(&#x27;&#x27;,#47,4.0);
+<span class="lineno">58</span>#49=LINE(&#x27;&#x27;,#36,#48);
+<span class="lineno">59</span>#50=EDGE_CURVE(&#x27;&#x27;,#40,#41,#49,.T.);
+<span class="lineno">60</span>#51=DIRECTION(&#x27;&#x27;,(-0.948683298051,-0.316227766017,0.0));
+<span class="lineno">61</span>#52=VECTOR(&#x27;&#x27;,#51,6.32455532034);
+<span class="lineno">62</span>#53=LINE(&#x27;&#x27;,#37,#52);
+<span class="lineno">63</span>#54=EDGE_CURVE(&#x27;&#x27;,#41,#42,#53,.T.);
+<span class="lineno">64</span>#55=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">65</span>#56=VECTOR(&#x27;&#x27;,#55,4.0);
+<span class="lineno">66</span>#57=LINE(&#x27;&#x27;,#38,#56);
+<span class="lineno">67</span>#58=EDGE_CURVE(&#x27;&#x27;,#42,#39,#57,.T.);
+<span class="lineno">68</span>#59=ORIENTED_EDGE(&#x27;&#x27;,$,$,#46,.T.);
+<span class="lineno">69</span>#60=ORIENTED_EDGE(&#x27;&#x27;,$,$,#50,.T.);
+<span class="lineno">70</span>#61=ORIENTED_EDGE(&#x27;&#x27;,$,$,#54,.T.);
+<span class="lineno">71</span>#62=ORIENTED_EDGE(&#x27;&#x27;,$,$,#58,.T.);
+<span class="lineno">72</span>#63=EDGE_LOOP(&#x27;&#x27;,(#59,#60,#61,#62));
+<span class="lineno">73</span>#64=CARTESIAN_POINT(&#x27;&#x27;,(2.0,8.0,0.0));
+<span class="lineno">74</span>#65=CARTESIAN_POINT(&#x27;&#x27;,(8.0,6.0,0.0));
+<span class="lineno">75</span>#66=CARTESIAN_POINT(&#x27;&#x27;,(8.0,2.0,0.0));
+<span class="lineno">76</span>#67=CARTESIAN_POINT(&#x27;&#x27;,(2.0,4.0,0.0));
+<span class="lineno">77</span>#68=VERTEX_POINT(&#x27;&#x27;,#64);
+<span class="lineno">78</span>#69=VERTEX_POINT(&#x27;&#x27;,#65);
+<span class="lineno">79</span>#70=VERTEX_POINT(&#x27;&#x27;,#66);
+<span class="lineno">80</span>#71=VERTEX_POINT(&#x27;&#x27;,#67);
+<span class="lineno">81</span>#72=DIRECTION(&#x27;&#x27;,(0.948683298051,-0.316227766017,0.0));
+<span class="lineno">82</span>#73=VECTOR(&#x27;&#x27;,#72,6.32455532034);
+<span class="lineno">83</span>#74=LINE(&#x27;&#x27;,#64,#73);
+<span class="lineno">84</span>#75=EDGE_CURVE(&#x27;&#x27;,#68,#69,#74,.T.);
+<span class="lineno">85</span>#76=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">86</span>#77=VECTOR(&#x27;&#x27;,#76,4.0);
+<span class="lineno">87</span>#78=LINE(&#x27;&#x27;,#65,#77);
+<span class="lineno">88</span>#79=EDGE_CURVE(&#x27;&#x27;,#69,#70,#78,.T.);
+<span class="lineno">89</span>#80=DIRECTION(&#x27;&#x27;,(-0.948683298051,0.316227766017,0.0));
+<span class="lineno">90</span>#81=VECTOR(&#x27;&#x27;,#80,6.32455532034);
+<span class="lineno">91</span>#82=LINE(&#x27;&#x27;,#66,#81);
+<span class="lineno">92</span>#83=EDGE_CURVE(&#x27;&#x27;,#70,#71,#82,.T.);
+<span class="lineno">93</span>#84=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">94</span>#85=VECTOR(&#x27;&#x27;,#84,4.0);
+<span class="lineno">95</span>#86=LINE(&#x27;&#x27;,#67,#85);
+<span class="lineno">96</span>#87=EDGE_CURVE(&#x27;&#x27;,#71,#68,#86,.T.);
+<span class="lineno">97</span>#88=ORIENTED_EDGE(&#x27;&#x27;,$,$,#75,.T.);
+<span class="lineno">98</span>#89=ORIENTED_EDGE(&#x27;&#x27;,$,$,#79,.T.);
+<span class="lineno">99</span>#90=ORIENTED_EDGE(&#x27;&#x27;,$,$,#83,.T.);
+<span class="lineno">100</span>#91=ORIENTED_EDGE(&#x27;&#x27;,$,$,#87,.T.);
+<span class="lineno">101</span>#92=EDGE_LOOP(&#x27;&#x27;,(#88,#89,#90,#91));
+<span class="lineno">102</span>#93=FACE_OUTER_BOUND(&#x27;&#x27;,#34,.T.);
+<span class="lineno">103</span>#94=FACE_BOUND(&#x27;&#x27;,#63,.F.);
+<span class="lineno">104</span>#95=FACE_BOUND(&#x27;&#x27;,#92,.F.);
+<span class="lineno">105</span>#96=ADVANCED_FACE(&#x27;&#x27;,(#93,#94,#95),#5,.T.);
+<span class="lineno">106</span>#97=CARTESIAN_POINT(&#x27;&#x27;,(0.0,12.0,0.0));
+<span class="lineno">107</span>#98=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">108</span>#99=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">109</span>#100=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#97,#98,#99);
+<span class="lineno">110</span>#101=PLANE(&#x27;&#x27;,#100);
+<span class="lineno">111</span>#102=CARTESIAN_POINT(&#x27;&#x27;,(0.0,12.0,0.0));
+<span class="lineno">112</span>#103=CARTESIAN_POINT(&#x27;&#x27;,(10.0,12.0,0.0));
+<span class="lineno">113</span>#104=CARTESIAN_POINT(&#x27;&#x27;,(10.0,22.0,0.0));
+<span class="lineno">114</span>#105=CARTESIAN_POINT(&#x27;&#x27;,(0.0,22.0,0.0));
+<span class="lineno">115</span>#106=VERTEX_POINT(&#x27;&#x27;,#102);
+<span class="lineno">116</span>#107=VERTEX_POINT(&#x27;&#x27;,#103);
+<span class="lineno">117</span>#108=VERTEX_POINT(&#x27;&#x27;,#104);
+<span class="lineno">118</span>#109=VERTEX_POINT(&#x27;&#x27;,#105);
+<span class="lineno">119</span>#110=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">120</span>#111=VECTOR(&#x27;&#x27;,#110,10.0);
+<span class="lineno">121</span>#112=LINE(&#x27;&#x27;,#102,#111);
+<span class="lineno">122</span>#113=EDGE_CURVE(&#x27;&#x27;,#106,#107,#112,.T.);
+<span class="lineno">123</span>#114=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">124</span>#115=VECTOR(&#x27;&#x27;,#114,10.0);
+<span class="lineno">125</span>#116=LINE(&#x27;&#x27;,#103,#115);
+<span class="lineno">126</span>#117=EDGE_CURVE(&#x27;&#x27;,#107,#108,#116,.T.);
+<span class="lineno">127</span>#118=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">128</span>#119=VECTOR(&#x27;&#x27;,#118,10.0);
+<span class="lineno">129</span>#120=LINE(&#x27;&#x27;,#104,#119);
+<span class="lineno">130</span>#121=EDGE_CURVE(&#x27;&#x27;,#108,#109,#120,.T.);
+<span class="lineno">131</span>#122=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">132</span>#123=VECTOR(&#x27;&#x27;,#122,10.0);
+<span class="lineno">133</span>#124=LINE(&#x27;&#x27;,#105,#123);
+<span class="lineno">134</span>#125=EDGE_CURVE(&#x27;&#x27;,#109,#106,#124,.T.);
+<span class="lineno">135</span>#126=ORIENTED_EDGE(&#x27;&#x27;,$,$,#113,.T.);
+<span class="lineno">136</span>#127=ORIENTED_EDGE(&#x27;&#x27;,$,$,#117,.T.);
+<span class="lineno">137</span>#128=ORIENTED_EDGE(&#x27;&#x27;,$,$,#121,.T.);
+<span class="lineno">138</span>#129=ORIENTED_EDGE(&#x27;&#x27;,$,$,#125,.T.);
+<span class="lineno">139</span>#130=EDGE_LOOP(&#x27;&#x27;,(#126,#127,#128,#129));
+<span class="lineno">140</span>#131=FACE_OUTER_BOUND(&#x27;&#x27;,#130,.T.);
+<span class="lineno">141</span>#132=ADVANCED_FACE(&#x27;&#x27;,(#131),#101,.T.);
+<span class="lineno">142</span>#133=OPEN_SHELL(&#x27;&#x27;,(#96,#132));
+<span class="lineno">143</span>#134=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#133));
+<span class="lineno">144</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">145</span>#9051=PRODUCT(&#x27;Tfa039&#x27;,&#x27;Tfa039&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">146</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">147</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">148</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">149</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">150</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">151</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">152</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">153</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">154</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">155</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#134),#9060);
+<span class="lineno">156</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">157</span>ENDSEC;
+<span class="lineno">158</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

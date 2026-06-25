@@ -45,6 +45,9 @@
 <li><code>contains(b&#x27;HEADER;&#x27;)</code></li>
 <li><code>count(b&#x27;ENDSEC;&#x27;) &gt;= 2</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -52,7 +55,7 @@
 <tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
 <tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
-<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_FORWARD_REF)</code></td></tr>
 <tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
 </tbody></table>
 </section>
@@ -60,50 +63,44 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* In002 - Both load-time warning (stray comment after ENDSEC) and a
-<span class="lineno">3</span> * data-content boundary value (entity at spec edge). */
-<span class="lineno">4</span><mark>HEADER;</mark>
-<span class="lineno">5</span>FILE_DESCRIPTION((&#x27;In002 - mixed-channel warnings&#x27;,&#x27;Pass C gap-fill&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">6</span>FILE_NAME(&#x27;In002.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;gap-fill C&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">7</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">8</span><mark>ENDSEC;</mark>
-<span class="lineno">9</span>/* parser-level event: stray comment between HEADER ENDSEC and DATA */
-<span class="lineno">10</span><mark>DATA;</mark>
-<span class="lineno">11</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">12</span>/* Boundary-valued data: B-spline degree at upper limit. */
-<span class="lineno">13</span>#10=B_SPLINE_CURVE_WITH_KNOTS(&#x27;high_degree&#x27;,25,
-<span class="lineno">14</span>   (#100,#101,#102,#103,#104,#105,#106,#107,#108,#109,
-<span class="lineno">15</span>    #110,#111,#112,#113,#114,#115,#116,#117,#118,#119,
-<span class="lineno">16</span>    #120,#121,#122,#123,#124,#125),
-<span class="lineno">17</span>   .UNSPECIFIED.,.F.,.F.,(26,26),(0.0,1.0),.UNSPECIFIED.);
-<span class="lineno">18</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">19</span>#101=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">20</span>#102=CARTESIAN_POINT(&#x27;&#x27;,(2.0,0.0,0.0));
-<span class="lineno">21</span>#103=CARTESIAN_POINT(&#x27;&#x27;,(3.0,0.0,0.0));
-<span class="lineno">22</span>#104=CARTESIAN_POINT(&#x27;&#x27;,(4.0,0.0,0.0));
-<span class="lineno">23</span>#105=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
-<span class="lineno">24</span>#106=CARTESIAN_POINT(&#x27;&#x27;,(6.0,0.0,0.0));
-<span class="lineno">25</span>#107=CARTESIAN_POINT(&#x27;&#x27;,(7.0,0.0,0.0));
-<span class="lineno">26</span>#108=CARTESIAN_POINT(&#x27;&#x27;,(8.0,0.0,0.0));
-<span class="lineno">27</span>#109=CARTESIAN_POINT(&#x27;&#x27;,(9.0,0.0,0.0));
-<span class="lineno">28</span>#110=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
-<span class="lineno">29</span>#111=CARTESIAN_POINT(&#x27;&#x27;,(11.0,0.0,0.0));
-<span class="lineno">30</span>#112=CARTESIAN_POINT(&#x27;&#x27;,(12.0,0.0,0.0));
-<span class="lineno">31</span>#113=CARTESIAN_POINT(&#x27;&#x27;,(13.0,0.0,0.0));
-<span class="lineno">32</span>#114=CARTESIAN_POINT(&#x27;&#x27;,(14.0,0.0,0.0));
-<span class="lineno">33</span>#115=CARTESIAN_POINT(&#x27;&#x27;,(15.0,0.0,0.0));
-<span class="lineno">34</span>#116=CARTESIAN_POINT(&#x27;&#x27;,(16.0,0.0,0.0));
-<span class="lineno">35</span>#117=CARTESIAN_POINT(&#x27;&#x27;,(17.0,0.0,0.0));
-<span class="lineno">36</span>#118=CARTESIAN_POINT(&#x27;&#x27;,(18.0,0.0,0.0));
-<span class="lineno">37</span>#119=CARTESIAN_POINT(&#x27;&#x27;,(19.0,0.0,0.0));
-<span class="lineno">38</span>#120=CARTESIAN_POINT(&#x27;&#x27;,(20.0,0.0,0.0));
-<span class="lineno">39</span>#121=CARTESIAN_POINT(&#x27;&#x27;,(21.0,0.0,0.0));
-<span class="lineno">40</span>#122=CARTESIAN_POINT(&#x27;&#x27;,(22.0,0.0,0.0));
-<span class="lineno">41</span>#123=CARTESIAN_POINT(&#x27;&#x27;,(23.0,0.0,0.0));
-<span class="lineno">42</span>#124=CARTESIAN_POINT(&#x27;&#x27;,(24.0,0.0,0.0));
-<span class="lineno">43</span>#125=CARTESIAN_POINT(&#x27;&#x27;,(25.0,0.0,0.0));
-<span class="lineno">44</span><mark>ENDSEC;</mark>
-<span class="lineno">45</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* In002: Load-time warning vs data-content warning: severity confusion; OCCT Interface_InterfaceModel.cxx:281 (Interface_LoadWarning); two different sources of warnings â parser warnings about file syntax and semantic warnings about data content â are mapped onto the same severity bucket; a consumer who suppresses load warnings ends up suppressing data warnings too; defect: stray comment between HEADER ENDSEC and DATA keyword (parser-level warning) combined with a B_SPLINE_CURVE_WITH_KNOTS at spec-boundary degree 25 (data-level semantic warning); receiver must distinguish severity classes and provide separate warning channels; bug-reporter synonyms: warnings hidden, parser warnings vs data warnings confused, diagnostic channel confusion; GEOMETRIC_CURVE_SET IS NOT used â B-spline entity is the model object */
+<span class="lineno">3</span><mark>HEADER;</mark>
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;In002&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;In002.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span><mark>ENDSEC;</mark>
+<span class="lineno">8</span>/* parser-level event: stray comment between HEADER ENDSEC and DATA */
+<span class="lineno">9</span><mark>DATA;</mark>
+<span class="lineno">10</span>#10=B_SPLINE_CURVE_WITH_KNOTS(&#x27;high_degree_boundary&#x27;,25,(#100,#101,#102,#103,#104,#105,#106,#107,#108,#109,#110,#111,#112,#113,#114,#115,#116,#117,#118,#119,#120,#121,#122,#123,#124,#125),.UNSPECIFIED.,.F.,.F.,(26,26),(0.0,1.0),.UNSPECIFIED.);
+<span class="lineno">11</span>/* data-level event: B_SPLINE_CURVE_WITH_KNOTS at spec-boundary degree 25 */
+<span class="lineno">12</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">13</span>#101=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">14</span>#102=CARTESIAN_POINT(&#x27;&#x27;,(2.0,0.0,0.0));
+<span class="lineno">15</span>#103=CARTESIAN_POINT(&#x27;&#x27;,(3.0,0.0,0.0));
+<span class="lineno">16</span>#104=CARTESIAN_POINT(&#x27;&#x27;,(4.0,0.0,0.0));
+<span class="lineno">17</span>#105=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">18</span>#106=CARTESIAN_POINT(&#x27;&#x27;,(6.0,0.0,0.0));
+<span class="lineno">19</span>#107=CARTESIAN_POINT(&#x27;&#x27;,(7.0,0.0,0.0));
+<span class="lineno">20</span>#108=CARTESIAN_POINT(&#x27;&#x27;,(8.0,0.0,0.0));
+<span class="lineno">21</span>#109=CARTESIAN_POINT(&#x27;&#x27;,(9.0,0.0,0.0));
+<span class="lineno">22</span>#110=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">23</span>#111=CARTESIAN_POINT(&#x27;&#x27;,(11.0,0.0,0.0));
+<span class="lineno">24</span>#112=CARTESIAN_POINT(&#x27;&#x27;,(12.0,0.0,0.0));
+<span class="lineno">25</span>#113=CARTESIAN_POINT(&#x27;&#x27;,(13.0,0.0,0.0));
+<span class="lineno">26</span>#114=CARTESIAN_POINT(&#x27;&#x27;,(14.0,0.0,0.0));
+<span class="lineno">27</span>#115=CARTESIAN_POINT(&#x27;&#x27;,(15.0,0.0,0.0));
+<span class="lineno">28</span>#116=CARTESIAN_POINT(&#x27;&#x27;,(16.0,0.0,0.0));
+<span class="lineno">29</span>#117=CARTESIAN_POINT(&#x27;&#x27;,(17.0,0.0,0.0));
+<span class="lineno">30</span>#118=CARTESIAN_POINT(&#x27;&#x27;,(18.0,0.0,0.0));
+<span class="lineno">31</span>#119=CARTESIAN_POINT(&#x27;&#x27;,(19.0,0.0,0.0));
+<span class="lineno">32</span>#120=CARTESIAN_POINT(&#x27;&#x27;,(20.0,0.0,0.0));
+<span class="lineno">33</span>#121=CARTESIAN_POINT(&#x27;&#x27;,(21.0,0.0,0.0));
+<span class="lineno">34</span>#122=CARTESIAN_POINT(&#x27;&#x27;,(22.0,0.0,0.0));
+<span class="lineno">35</span>#123=CARTESIAN_POINT(&#x27;&#x27;,(23.0,0.0,0.0));
+<span class="lineno">36</span>#124=CARTESIAN_POINT(&#x27;&#x27;,(24.0,0.0,0.0));
+<span class="lineno">37</span>#125=CARTESIAN_POINT(&#x27;&#x27;,(25.0,0.0,0.0));
+<span class="lineno">38</span><mark>ENDSEC;</mark>
+<span class="lineno">39</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

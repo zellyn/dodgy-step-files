@@ -39,6 +39,9 @@
 <li><code>contains(b&#x27;FILE_INFO(&#x27;)</code></li>
 <li><code>count(b&quot;&#x27;2026-04&quot;) + count(b&quot;&#x27;2016-01&quot;) &gt;= 1</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="Lh016.html">Lh016</a></p>
 </section>
@@ -57,24 +60,24 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Lh040 - FILE_INFO Edition-3 header record carrying revision
-<span class="lineno">3</span> * metadata that contradicts FILE_NAME&#x27;s date field
-<span class="lineno">4</span> * Defect: Edition-3 FILE_INFO is intended for additional revision /
-<span class="lineno">5</span> * metadata that did not fit Edition-2&#x27;s FILE_NAME. Producers
-<span class="lineno">6</span> * supporting both editions sometimes write FILE_NAME with one
-<span class="lineno">7</span> * timestamp and FILE_INFO with a different one, leaving the
-<span class="lineno">8</span> * receiver to choose between them. */
-<span class="lineno">9</span>HEADER;
-<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;Lh040 - FILE_INFO date contradicts FILE_NAME date&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">11</span>FILE_NAME(&#x27;Lh040.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
-<span class="lineno">12</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">13</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">14</span>/* Defect: FILE_INFO claims a date 10 years earlier than FILE_NAME */
-<span class="lineno">15</span><mark>FILE_INFO(</mark>&#x27;rev&#x27;,&#x27;2016-01-01T00:00:00&#x27;,&#x27;release-r12&#x27;);
-<span class="lineno">16</span>ENDSEC;
-<span class="lineno">17</span>DATA;
-<span class="lineno">18</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">2</span>/* Lh040: FILE_INFO timestamp contradicts FILE_NAME date */
+<span class="lineno">3</span>/* ISO 10303-21 Ed.3 Â§6.3: FILE_INFO provides supplementary revision metadata */
+<span class="lineno">4</span>/* DEFECT: FILE_NAME says 2026-04-26 but FILE_INFO claims 2016-01-01 (10 years earlier) */
+<span class="lineno">5</span>/* OCC silently picks one timestamp without surfacing the conflict */
+<span class="lineno">6</span>/* expected: surface both timestamps; warn on mismatch; define precedence deterministically */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Lh040: FILE_INFO date contradicts FILE_NAME date&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;Lh040.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN&#x27;));
+<span class="lineno">11</span><mark>FILE_INFO(</mark>&#x27;rev&#x27;,&#x27;2016-01-01T00:00:00&#x27;,&#x27;release-r12&#x27;);
+<span class="lineno">12</span>/* DEFECT: FILE_INFO claims 2016-01-01 but FILE_NAME above says 2026-04-26 */
+<span class="lineno">13</span>ENDSEC;
+<span class="lineno">14</span>DATA;
+<span class="lineno">15</span>#1=CARTESIAN_POINT(&#x27;origin&#x27;,(0.,0.,0.));
+<span class="lineno">16</span>#2=CARTESIAN_POINT(&#x27;corner&#x27;,(1.,1.,0.));
+<span class="lineno">17</span>#3=DIRECTION(&#x27;xdir&#x27;,(1.,0.,0.));
+<span class="lineno">18</span>#4=DIRECTION(&#x27;zdir&#x27;,(0.,0.,1.));
+<span class="lineno">19</span>#5=GEOMETRIC_CURVE_SET(&#x27;conflicting-timestamp-shape&#x27;,(#1,#2));
 <span class="lineno">20</span>ENDSEC;
 <span class="lineno">21</span>END-ISO-10303-21;
 </pre>

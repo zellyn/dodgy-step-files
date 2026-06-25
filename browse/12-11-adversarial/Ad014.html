@@ -41,6 +41,9 @@
 <li><code>contains(b&#x27;1.0E+999999&#x27;)</code></li>
 <li><code>count(b&#x27;1.0E+999999&#x27;) + count(b&#x27;1.0E-999999&#x27;) &gt;= 1</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="../12-1c-syntax/Ls008.html">Ls008</a></p>
 </section>
@@ -59,52 +62,22 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* ============================================================
-<span class="lineno">3</span>   WARNING: THIS FILE IS INTENTIONALLY MALFORMED.
-<span class="lineno">4</span>   It exists ONLY for parser-robustness / fuzz-class testing.
-<span class="lineno">5</span>   DO NOT feed to a production translator without sandboxing.
-<span class="lineno">6</span>
-<span class="lineno">7</span>   Entry  : Ad014
-<span class="lineno">8</span>   Title  : Float literal with extreme exponent (1E999999)
-<span class="lineno">9</span>            propagates as inf/NaN.
-<span class="lineno">10</span>   Defect : strtod returns +inf or 0 for exponents far
-<span class="lineno">11</span>            outside IEEE-754 double range. Downstream code
-<span class="lineno">12</span>            that converts to a fixed-precision tessellation
-<span class="lineno">13</span>            grid index may overflow or produce NaN; NaN then
-<span class="lineno">14</span>            poisons sort comparators in STL containers, which
-<span class="lineno">15</span>            can manifest as use-after-free.
-<span class="lineno">16</span>            Pattern documented by HOOPS Exchange fuzz class
-<span class="lineno">17</span>            (text_rotation_angle = 1.79e308) â never appears
-<span class="lineno">18</span>            in real CAD output.
-<span class="lineno">19</span>   Expected: clamp magnitude; reject non-finite where
-<span class="lineno">20</span>             geometry expects finite; emit E_NUMERIC_OVERFLOW.
-<span class="lineno">21</span>   See also: Ls008.
-<span class="lineno">22</span>   ============================================================ */
-<span class="lineno">23</span>HEADER;
-<span class="lineno">24</span>FILE_DESCRIPTION((&#x27;Ad014 extreme float exponent&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">25</span>FILE_NAME(&#x27;Ad014.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;synthetic&#x27;),(&#x27;cad-research&#x27;),
-<span class="lineno">26</span>  &#x27;none&#x27;,&#x27;none&#x27;,&#x27;none&#x27;);
-<span class="lineno">27</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">28</span>ENDSEC;
-<span class="lineno">29</span>DATA;
-<span class="lineno">30</span>/* extreme positive exponent: well beyond IEEE-754 double */
-<span class="lineno">31</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(<mark>1.0E+999999</mark>,0.,0.));
-<span class="lineno">32</span>
-<span class="lineno">33</span>/* extreme negative exponent: underflows to subnormal/zero */
-<span class="lineno">34</span>#2=CARTESIAN_POINT(&#x27;&#x27;,(1.0E-999999,0.,0.));
-<span class="lineno">35</span>
-<span class="lineno">36</span>/* near-double-max boundary used by HOOPS fuzz */
-<span class="lineno">37</span>#3=CARTESIAN_POINT(&#x27;&#x27;,(1.79E+308,0.,0.));
-<span class="lineno">38</span>
-<span class="lineno">39</span>/* literal already at +inf when reparsed */
-<span class="lineno">40</span>#4=CARTESIAN_POINT(&#x27;&#x27;,(1.0E+400,0.,0.));
-<span class="lineno">41</span>
-<span class="lineno">42</span>/* angle attribute; produces NaN on cos/sin if not clamped */
-<span class="lineno">43</span>#10=CIRCLE(&#x27;&#x27;,#20,<mark>1.0E+999999</mark>);
-<span class="lineno">44</span>#20=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#21,$,$);
-<span class="lineno">45</span>#21=CARTESIAN_POINT(&#x27;&#x27;,(0.,0.,0.));
-<span class="lineno">46</span>ENDSEC;
-<span class="lineno">47</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* Ad014: float literals with extreme exponents (<mark>1.0E+999999</mark>, 1.0E-999999); strtod returns +inf or 0; NaN poisons STL sort comparators â UAF; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ad014&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ad014.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">11</span>#3=CARTESIAN_POINT(&#x27;&#x27;,(<mark>1.0E+999999</mark>,0.,0.));
+<span class="lineno">12</span>#4=CARTESIAN_POINT(&#x27;&#x27;,(1.0E-999999,0.,0.));
+<span class="lineno">13</span>#5=CARTESIAN_POINT(&#x27;&#x27;,(1.79E+308,0.,0.));
+<span class="lineno">14</span>#6=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,$,$);
+<span class="lineno">15</span>#7=CIRCLE(&#x27;&#x27;,#6,<mark>1.0E+999999</mark>);
+<span class="lineno">16</span>ENDSEC;
+<span class="lineno">17</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

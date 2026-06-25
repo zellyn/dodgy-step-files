@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Twi218 — ShapeAnalysis_Wire.CheckShapeConnect with-degenerate-vertex</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3b Wires / loops / edges</a> <span class="sep">/</span> <span class="current">Twi218</span>
+</nav>
+<header class="title-bar">
+<h1>Twi218 <span class="sep">—</span> <span class="entry-title">ShapeAnalysis_Wire.CheckShapeConnect with-degenerate-vertex</span></h1>
+<p class="category">§12.3b</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3b-wires/Twi218.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3b-wires/Twi218.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>synthesized — no external source cited</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>ShapeAnalysis_Wire.CheckShapeConnect with-degenerate-vertex</p></section>
+<section><h2>Reproducer recipe</h2>
+<p></p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>process_signal</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Twi218 - ShapeAnalysis_Wire.CheckShapeConnect with-degenerate-vertex
+<span class="lineno">3</span> * Defect: Wire&#x27;s start or end vertex is degenerate (zero-radius circle or
+<span class="lineno">4</span> * point-like geometry). CheckShapeConnect compares vertices using coordinates
+<span class="lineno">5</span> * from BRep_Tool::Pnt(vertex), but for degenerate vertices, this coordinate
+<span class="lineno">6</span> * may not meaningfully represent topology. The checker uses coordinate-based
+<span class="lineno">7</span> * logic rather than topological identity, causing false positives or misses
+<span class="lineno">8</span> * when degenerate endpoints are involved.
+<span class="lineno">9</span> * Reproduces: ShapeAnalysis_Wire.CheckShapeConnect_at2117 branches. */
+<span class="lineno">10</span>HEADER;
+<span class="lineno">11</span>FILE_DESCRIPTION((&#x27;Twi218 test case&#x27;,&#x27;Degenerate vertex shape connectivity check&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">12</span>FILE_NAME(&#x27;Twi218.stp&#x27;,&#x27;2026-06-15T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">13</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">14</span>ENDSEC;
+<span class="lineno">15</span>DATA;
+<span class="lineno">16</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">17</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">18</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">19</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">20</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">21</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">22</span>#20=PLANE(&#x27;&#x27;,#13);
+<span class="lineno">23</span>/* First edge: normal line from (0,0,0) to (5,0,0) */
+<span class="lineno">24</span>#30=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">25</span>#31=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">26</span>#32=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">27</span>#33=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">28</span>#34=LINE(&#x27;&#x27;,#32,(DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0)),1.0));
+<span class="lineno">29</span>#40=VERTEX_POINT(&#x27;&#x27;,#30);
+<span class="lineno">30</span>#41=VERTEX_POINT(&#x27;&#x27;,#31);
+<span class="lineno">31</span>#50=EDGE_CURVE(&#x27;&#x27;,#40,#41,#34,.T.);
+<span class="lineno">32</span>#51=ORIENTED_EDGE(&#x27;&#x27;,*,*,#50,.T.);
+<span class="lineno">33</span>/* Second edge: degenerate circle at (5,0,0) (zero radius = point)
+<span class="lineno">34</span> * This creates a degenerate vertex at the seam. */
+<span class="lineno">35</span>#60=AXIS2_PLACEMENT_3D(&#x27;&#x27;,(5.0,0.0,0.0),#11,#12);
+<span class="lineno">36</span>#61=CIRCLE(&#x27;&#x27;,#60,0.0);
+<span class="lineno">37</span>#70=VERTEX_POINT(&#x27;&#x27;,#33);
+<span class="lineno">38</span>#71=VERTEX_POINT(&#x27;&#x27;,#33);
+<span class="lineno">39</span>#80=EDGE_CURVE(&#x27;&#x27;,#41,#70,#61,.T.);
+<span class="lineno">40</span>#81=ORIENTED_EDGE(&#x27;&#x27;,*,*,#80,.T.);
+<span class="lineno">41</span>/* Wire with degenerate endpoint */
+<span class="lineno">42</span>#90=EDGE_LOOP(&#x27;&#x27;,(#51,#81));
+<span class="lineno">43</span>#91=FACE_OUTER_BOUND(&#x27;&#x27;,#90,.T.);
+<span class="lineno">44</span>#92=ADVANCED_FACE(&#x27;&#x27;,(#91),#20,.T.);
+<span class="lineno">45</span>/* Product chain (v3.2 schema) */
+<span class="lineno">46</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">47</span>#9001=PRODUCT(&#x27;Twi218&#x27;,&#x27;Twi218&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">48</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">49</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">50</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">51</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">52</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">53</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">54</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">55</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">56</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">57</span>#9020=OPEN_SHELL(&#x27;shell&#x27;,(#92));
+<span class="lineno">58</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;sbsm&#x27;,(#9020));
+<span class="lineno">59</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">60</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">61</span>ENDSEC;
+<span class="lineno">62</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Twi217.html">&larr; Twi217</a> <a class="up" href="index.html">§12.3b Wires / loops / edges</a> <a class="next" href="Twi219.html">Twi219 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

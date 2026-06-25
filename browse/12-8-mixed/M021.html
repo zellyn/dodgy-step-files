@@ -41,6 +41,9 @@
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;TESSELLATED_ANNOTATION_OCCURRENCE&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -56,46 +59,36 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M021 - Tessellated GD&amp;T (annotation) entities not imported.
-<span class="lineno">3</span> * Defect: <mark>TESSELLATED_ANNOTATION_OCCURRENCE</mark> entities encode PMI/GD&amp;T
-<span class="lineno">4</span> * presentation as a triangulated mesh. OCCT historically did not
-<span class="lineno">5</span> * recognize them (Mantis 33661, fixed in b78ccf1). Files using them
-<span class="lineno">6</span> * lose all PMI on import. This fixture exercises the entity. */
-<span class="lineno">7</span>HEADER;
-<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;M021 test case&#x27;,&#x27;tessellated_annotation_occurrence for PMI&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">9</span>FILE_NAME(&#x27;M021.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">10</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
-<span class="lineno">11</span>ENDSEC;
-<span class="lineno">12</span>DATA;
-<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
-<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">15</span>  &#x27;ap242_managed_model_based_3d_engineering&#x27;,2014,#1);
-<span class="lineno">16</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">17</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">18</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">19</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
-<span class="lineno">20</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">21</span>     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-<span class="lineno">22</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-<span class="lineno">23</span>     REPRESENTATION_CONTEXT(&#x27;part&#x27;,&#x27;3D&#x27;));
-<span class="lineno">24</span>/* Tessellated text outline (squiggly approximating digits &quot;10.0&quot;).
-<span class="lineno">25</span> * For this test fixture we just emit a small mesh stand-in. */
-<span class="lineno">26</span>#100=COORDINATES_LIST(&#x27;&#x27;,5,((0.0,0.0,0.0),(2.0,0.0,0.0),
-<span class="lineno">27</span>                            (2.0,0.5,0.0),(0.0,0.5,0.0),
-<span class="lineno">28</span>                            (1.0,0.25,0.0)));
-<span class="lineno">29</span>#110=TESSELLATED_CURVE_SET(&#x27;annotation_strokes&#x27;,#100,
-<span class="lineno">30</span>       ((1,2,3,4,1),(5,5)));
-<span class="lineno">31</span>#120=TESSELLATED_GEOMETRIC_SET(&#x27;annotation_geom&#x27;,(#110));
-<span class="lineno">32</span>/* Style for the annotation text (black) */
-<span class="lineno">33</span>#200=COLOUR_RGB(&#x27;black&#x27;,0.0,0.0,0.0);
-<span class="lineno">34</span>#201=CURVE_STYLE(&#x27;&#x27;,$,POSITIVE_LENGTH_MEASURE(0.1),#200);
-<span class="lineno">35</span>#202=PRESENTATION_STYLE_ASSIGNMENT((#201));
-<span class="lineno">36</span>/* Tessellated annotation occurrence */
-<span class="lineno">37</span>#300=<mark>TESSELLATED_ANNOTATION_OCCURRENCE</mark>(&#x27;size_callout&#x27;,
-<span class="lineno">38</span>       (#202),#120);
-<span class="lineno">39</span>#310=DRAUGHTING_MODEL(&#x27;&#x27;,(#300),#14);
-<span class="lineno">40</span>ENDSEC;
-<span class="lineno">41</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M021: GEOMETRIC_CURVE_SET containing <mark>TESSELLATED_ANNOTATION_OCCURRENCE</mark> for GD&amp;T PMI; input: AP242 STEP file where tessellated PMI annotation is encoded as <mark>TESSELLATED_ANNOTATION_OCCURRENCE</mark> with a TESSELLATED_GEOMETRIC_SET presentation; OCCT b78ccf1 (Mantis 0033661): <mark>TESSELLATED_ANNOTATION_OCCURRENCE</mark> was unrecognized by the reader â annotation entities silently skipped, PMI lost on import; kernel must heal: translate <mark>TESSELLATED_ANNOTATION_OCCURRENCE</mark> as PMI carrier with mesh presentation; OCC silently accepts (no diagnostic, empty result); GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty; synonyms: tessellated GD&amp;T not imported, <mark>TESSELLATED_ANNOTATION_OCCURRENCE</mark> skipped, PMI tessellation entities unrecognized, tessellated annotation lost on read */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;M021&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;M021.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=COORDINATES_LIST(&#x27;leader_pts&#x27;,3,((0.,0.,0.),(5.,5.,0.),(5.,8.,0.),(15.,8.,0.),(15.,11.,0.)));
+<span class="lineno">11</span>#2=TESSELLATED_CURVE_SET(&#x27;leader_line&#x27;,#1,(0,1,2,3,4));
+<span class="lineno">12</span>#3=COORDINATES_LIST(&#x27;tol_box_pts&#x27;,3,((5.,8.,0.),(15.,8.,0.),(15.,11.,0.),(5.,11.,0.)));
+<span class="lineno">13</span>#4=TESSELLATED_CURVE_SET(&#x27;tolerance_box&#x27;,#3,(0,1,2,3,0));
+<span class="lineno">14</span>#5=TESSELLATED_GEOMETRIC_SET(&#x27;annot_tgs&#x27;,(#2,#4));
+<span class="lineno">15</span>#6=<mark>TESSELLATED_ANNOTATION_OCCURRENCE</mark>(&#x27;diameter_tolerance&#x27;,(#5),$);
+<span class="lineno">16</span>#7=GEOMETRIC_CURVE_SET(&#x27;tessellated-annotation-occurrence-unrecognized&#x27;,(#6,#5));
+<span class="lineno">17</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">18</span>#9051=PRODUCT(&#x27;M021&#x27;,&#x27;M021&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">19</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">20</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">21</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">22</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">23</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">24</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">25</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">26</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">27</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">28</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#7),#9060);
+<span class="lineno">29</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">30</span>ENDSEC;
+<span class="lineno">31</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

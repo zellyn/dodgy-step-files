@@ -15,8 +15,8 @@
 <h1>Le042 <span class="sep">—</span> <span class="entry-title">`\Q\` payload contains non-decimal characters</span></h1>
 <p class="category">§12.1a encoding/strings (sub-class: numeric character reference)</p>
 <p class="tag-pills">
-<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
 <a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
 <a class="tag tag-encoding" href="../by-tag/encoding/index.html">encoding</a>
 </p>
 </header>
@@ -36,9 +36,12 @@
 <section><h2>Notes</h2>
 <p>**See also**: Le030, Le040. **OCC behavior**: silently accepts non-decimal `\Q\` payloads and either substitutes 0 or coerces via leading digits; kernel mishandling; the catalog above forbids silent substitution. Synonyms: &quot;Q directive with hex digits&quot;, &quot;Q escape with 0x prefix&quot;, &quot;Q payload not decimal&quot;, &quot;whitespace inside Q numeric&quot;, &quot;non-decimal Q payload&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=process_signal</code></p></section>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;\\Q\\0x&#x27;) or matches(rb&#x27;\\Q\\\s&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="Le030.html">Le030</a>, <a href="Le040.html">Le040</a></p>
@@ -49,7 +52,7 @@
 <tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
 <tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
 <tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
-<tr><td><code>ifcopenshell</code></td><td><code>process_signal</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
 <tr><td><code>part21_strict</code></td><td><code>warn(W_BARE_BACKSLASH)</code></td></tr>
 <tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
 </tbody></table>
@@ -58,30 +61,21 @@
 <details>
 <summary>Show fixture bytes</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Le042 - \Q\ with non-decimal characters between the bracketing
-<span class="lineno">3</span> * \Q\ delimiters
-<span class="lineno">4</span> * Defect: \Q\NNN\Q\ requires the bracketed payload to be a decimal
-<span class="lineno">5</span> * integer. Producers occasionally emit hex (\Q\1F600\Q\), an
-<span class="lineno">6</span> * 0x prefix (\Q\0x1F600\Q\), or whitespace around the number
-<span class="lineno">7</span> * (\Q\ 65 \Q\). A strict parser rejects; lenient parsers may
-<span class="lineno">8</span> * silently coerce, producing the wrong character. */
-<span class="lineno">9</span>HEADER;
-<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;Le042 - \Q\ with hex digits / 0x prefix / whitespace&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">11</span>FILE_NAME(&#x27;Le042.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
-<span class="lineno">12</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">13</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">14</span>ENDSEC;
-<span class="lineno">15</span>DATA;
-<span class="lineno">16</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">17</span>#2=PRODUCT_CONTEXT(&#x27;part&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">18</span>/* Defect: hex-looking value F60 inside \Q\..\Q\ - illegal */
-<span class="lineno">19</span>#10=PRODUCT(&#x27;hex=\Q\F60\Q\&#x27;,&#x27;hex-payload&#x27;,&#x27;&#x27;,(#2));
-<span class="lineno">20</span>/* Defect: 0x prefix inside payload */
-<span class="lineno">21</span>#11=PRODUCT(&#x27;px=\Q\0x41\Q\&#x27;,&#x27;prefixed-payload&#x27;,&#x27;&#x27;,(#2));
-<span class="lineno">22</span>/* Defect: whitespace inside payload */
-<span class="lineno">23</span>#12=PRODUCT(&#x27;ws=\Q\ 65 \Q\&#x27;,&#x27;whitespace-payload&#x27;,&#x27;&#x27;,(#2));
-<span class="lineno">24</span>ENDSEC;
-<span class="lineno">25</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* Le042: \Q\ payload contains non-decimal characters; ISO 10303-21 Ed.3 Â§6.4.3: \Q\NNN\Q\ payload must be a decimal integer; producers emit hex digits &#x27;\Q\1F600\Q\&#x27;, an &#x27;0x&#x27; prefix &#x27;\Q\0x41\Q\&#x27;, or whitespace &#x27;\Q\ 65 \Q\&#x27; around the number; a strict parser must reject with a precise diagnostic citing the offending characters; a lenient parser that extracts leading decimal digits from &#x27;\Q\0x41\Q\&#x27; produces decimal 0 instead of 65 (0x41 = &#x27;A&#x27;), silently substituting the wrong character; similarly &#x27;\Q\F60\Q\&#x27; with no leading decimal digit may be coerced to 0 or garbage; never silently substitute 0 for a malformed payload; ifcopenshell observed to terminate via process signal on \Q\..\Q\ payloads; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Le042&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Le042.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">11</span>#8997=PERSON(&#x27;hex=\Q\F60\Q\&#x27;,&#x27;q-payload-hex-digits&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>#8998=PERSON(&#x27;px=\Q\0x41\Q\&#x27;,&#x27;q-payload-0x-prefix&#x27;,&#x27;&#x27;);
+<span class="lineno">13</span>#8999=PERSON(&#x27;ws=\Q\ 65 \Q\&#x27;,&#x27;q-payload-whitespace&#x27;,&#x27;&#x27;);
+<span class="lineno">14</span>
+<span class="lineno">15</span>ENDSEC;
+<span class="lineno">16</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

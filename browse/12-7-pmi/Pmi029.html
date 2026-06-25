@@ -36,81 +36,67 @@
 <section><h2>Notes</h2>
 <p>Validation observed: silent-empty rather than crash. Kernel-mishandling-by-silent-acceptance still demonstrates the defect class. Synonyms: &quot;datum system has mixed Datum_System and Datum_Reference SELECT&quot;, &quot;SELECT array contains conflicting datum types&quot;, &quot;mixed datum-reference SELECT in tolerance&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;DATUM_SYSTEM_AP242&#x27;)</code></li>
 <li><code>contains(b&#x27;DATUM_REFERENCE&#x27;)</code></li>
 <li><code>contains(b&#x27;DATUM_REFERENCE_ELEMENT&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_vertices_total == 1</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
-<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(1)</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
 <tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
-<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Pmi029 - Datum system carries mixed Datum_System / Datum_Reference SELECT array
-<span class="lineno">2</span>   Defect: AP242 <mark>DATUM_SYSTEM_AP242</mark>.constituents is a SELECT array that may
-<span class="lineno">3</span>   contain both DATUM_SYSTEM and <mark>DATUM_REFERENCE</mark> items. Decoders that assume
-<span class="lineno">4</span>   a homogeneous array (all-DRC or all-DR) crash on multi-body files.
-<span class="lineno">5</span>   This file emits a <mark>DATUM_SYSTEM_AP242</mark> whose constituents list mixes
-<span class="lineno">6</span>   <mark>DATUM_REFERENCE</mark>_COMPARTMENT (modern) and <mark>DATUM_REFERENCE</mark> (legacy). */
-<span class="lineno">7</span>ISO-10303-21;
-<span class="lineno">8</span>HEADER;
-<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;Pmi029 - mixed Datum_System / Datum_Reference SELECT&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">10</span>FILE_NAME(&#x27;Pmi029.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;catalog&#x27;),(&#x27;cad&#x27;),
-<span class="lineno">11</span>  &#x27;manual&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">12</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
-<span class="lineno">13</span>ENDSEC;
-<span class="lineno">14</span>DATA;
-<span class="lineno">15</span>#10 = APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
-<span class="lineno">16</span>#11 = APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">17</span>  &#x27;ap242_managed_model_based_3d_engineering&#x27;,2020,#10);
-<span class="lineno">18</span>#12 = PRODUCT_CONTEXT(&#x27;&#x27;,#10,&#x27;mechanical&#x27;);
-<span class="lineno">19</span>#13 = PRODUCT(&#x27;Pmi029&#x27;,&#x27;MixedDRFPart&#x27;,&#x27;&#x27;,(#12));
-<span class="lineno">20</span>#14 = PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#13);
-<span class="lineno">21</span>#15 = PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#10,&#x27;design&#x27;);
-<span class="lineno">22</span>#16 = PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#14,#15);
-<span class="lineno">23</span>#17 = PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#16);
-<span class="lineno">24</span>#20 = ( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) );
-<span class="lineno">25</span>#22 = ( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-<span class="lineno">26</span>#23 = ( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-<span class="lineno">27</span>#24 = UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#20,
-<span class="lineno">28</span>  &#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
-<span class="lineno">29</span>#25 = ( GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">30</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#24))
-<span class="lineno">31</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#20,#22,#23))
-<span class="lineno">32</span>  REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;) );
-<span class="lineno">33</span>#30 = CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">34</span>#31 = DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
-<span class="lineno">35</span>#32 = DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">36</span>#33 = AXIS2_PLACEMENT_3D(&#x27;&#x27;,#30,#31,#32);
-<span class="lineno">37</span>#40 = DATUM(&#x27;A&#x27;,&#x27;&#x27;,#17,.T.,&#x27;A&#x27;);
-<span class="lineno">38</span>#41 = DATUM(&#x27;B&#x27;,&#x27;&#x27;,#17,.T.,&#x27;B&#x27;);
-<span class="lineno">39</span>/* Modern compartment */
-<span class="lineno">40</span>#50 = <mark>DATUM_REFERENCE</mark>_COMPARTMENT(&#x27;mod_compartment&#x27;,$,#51);
-<span class="lineno">41</span>#51 = <mark>DATUM_REFERENCE_ELEMENT</mark>(&#x27;&#x27;,$,#40);
-<span class="lineno">42</span>/* Legacy datum_reference */
-<span class="lineno">43</span>#60 = <mark>DATUM_REFERENCE</mark>(2,#41);
-<span class="lineno">44</span>/* Defect: mixed SELECT array â <mark>DATUM_REFERENCE</mark>_COMPARTMENT and
-<span class="lineno">45</span>   <mark>DATUM_REFERENCE</mark> in the same constituents list of <mark>DATUM_SYSTEM_AP242</mark>.
-<span class="lineno">46</span>   Naive readers that assume one type crash on the other. */
-<span class="lineno">47</span>#70 = <mark>DATUM_SYSTEM_AP242</mark>(&#x27;mixed_DRF&#x27;,&#x27;&#x27;,#17,.T.,(#50,#60));
-<span class="lineno">48</span>#80 = SHAPE_ASPECT(&#x27;feature&#x27;,&#x27;&#x27;,#17,.T.);
-<span class="lineno">49</span>#81 = LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#20);
-<span class="lineno">50</span>#82 = POSITION_TOLERANCE(&#x27;pos&#x27;,$,#81,#80,#70);
-<span class="lineno">51</span>#90 = DRAUGHTING_MODEL(&#x27;Default&#x27;,(),#25);
-<span class="lineno">52</span>#100 = SHAPE_REPRESENTATION(&#x27;&#x27;,(#33),#25);
-<span class="lineno">53</span>#101 = SHAPE_DEFINITION_REPRESENTATION(#17,#100);
-<span class="lineno">54</span>ENDSEC;
-<span class="lineno">55</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Pmi029: <mark>DATUM_SYSTEM_AP242</mark>.constituents is a heterogeneous SELECT array mixing a DATUM_SYSTEM sub-item and a <mark>DATUM_REFERENCE</mark> item; decoders that assume a homogeneous array crash or silently drop entries on multi-body files; receivers must iterate and dispatch by entity type; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Pmi029&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Pmi029.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">12</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">13</span>#9051=PRODUCT(&#x27;Pmi029&#x27;,&#x27;Pmi029&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">14</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">15</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">16</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">17</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">18</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">19</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">20</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">21</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">22</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">23</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#2),#9060);
+<span class="lineno">24</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">25</span>#9063=SHAPE_ASPECT(&#x27;feature_A&#x27;,&#x27;&#x27;,#9055,.T.);
+<span class="lineno">26</span>#9064=SHAPE_ASPECT(&#x27;feature_B&#x27;,&#x27;&#x27;,#9055,.T.);
+<span class="lineno">27</span>#9065=SHAPE_ASPECT(&#x27;tol_feature&#x27;,&#x27;&#x27;,#9055,.T.);
+<span class="lineno">28</span>#9066=DATUM(&#x27;A&#x27;,&#x27;&#x27;,#9063,.T.);
+<span class="lineno">29</span>#9067=DATUM(&#x27;B&#x27;,&#x27;&#x27;,#9064,.T.);
+<span class="lineno">30</span>#9068=<mark>DATUM_REFERENCE_ELEMENT</mark>(#9066,$,$,$,$);
+<span class="lineno">31</span>#9069=<mark>DATUM_REFERENCE</mark>_COMPARTMENT(&#x27;primary&#x27;,(#9068));
+<span class="lineno">32</span>#9070=DATUM_SYSTEM(&#x27;inner_sys&#x27;,(#9069));
+<span class="lineno">33</span>#9071=<mark>DATUM_REFERENCE</mark>(1,#9067,$);
+<span class="lineno">34</span>#9072=<mark>DATUM_SYSTEM_AP242</mark>(&#x27;mixed_drf&#x27;,(#9070,#9071));
+<span class="lineno">35</span>#9073=MEASURE_REPRESENTATION_ITEM(&#x27;tol&#x27;,LENGTH_MEASURE(0.15),#9056);
+<span class="lineno">36</span>ENDSEC;
+<span class="lineno">37</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

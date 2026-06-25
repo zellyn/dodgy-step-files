@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tsh078 — Möbius-strip orientation contradiction</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3a Shells / orientation</a> <span class="sep">/</span> <span class="current">Tsh078</span>
+</nav>
+<header class="title-bar">
+<h1>Tsh078 <span class="sep">—</span> <span class="entry-title">Möbius-strip orientation contradiction</span></h1>
+<p class="category">§12.3a (shells)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3a-shells/Tsh078.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3a-shells/Tsh078.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT method line ShapeFix_Shell.FixFaceOrientation:1428 (FixFaceOrientation_at1428)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Single-face shell with edge-loop twist creates orientation propagation contradiction. Normal direction reverses as loop is traversed, exposing intrinsic non-orientability. FixFaceOrientation fails to detect and crashes.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Create an OPEN_SHELL with one ADVANCED_FACE whose edge loop has 4 edges forming a topological twist (edge sequence creates orientation flip around loop). Call ShapeFix_Shell.FixFaceOrientation(). Propagation detects contradictory orientation and crashes.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Kernel must detect non-orientable surface topology and either reject or flag for manual repair.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=unknown/unknown gmsh=unknown ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_faces_total == 1</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tsh078 - ShapeFix_Shell MÃ¶bius-strip detection in FixFaceOrientation
+<span class="lineno">3</span> * Defect: Shell with single face where orientation propagation produces
+<span class="lineno">4</span> * contradictory normals as the face is traversed. FixFaceOrientation
+<span class="lineno">5</span> * fails to detect intrinsic non-orientability (one-sided surface) and
+<span class="lineno">6</span> * crashes during propagation. Source: ShapeFix_Shell.FixFaceOrientation
+<span class="lineno">7</span> * line 1428 (FixFaceOrientation_at1428). */
+<span class="lineno">8</span>HEADER;
+<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;Tsh078 test case&#x27;,&#x27;MÃ¶bius-strip orientation contradiction&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;Tsh078.stp&#x27;,&#x27;2026-06-16T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">11</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">12</span>ENDSEC;
+<span class="lineno">13</span>DATA;
+<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">15</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">16</span>/* MÃ¶bius strip: single face with 4 edges; traversal creates orientation contradiction */
+<span class="lineno">17</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">18</span>#101=CARTESIAN_POINT(&#x27;&#x27;,(2.0,0.0,0.0));
+<span class="lineno">19</span>#102=CARTESIAN_POINT(&#x27;&#x27;,(2.0,1.0,0.0));
+<span class="lineno">20</span>#103=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">21</span>#104=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.5));
+<span class="lineno">22</span>#105=CARTESIAN_POINT(&#x27;&#x27;,(2.0,1.0,0.5));
+<span class="lineno">23</span>#110=VERTEX_POINT(&#x27;&#x27;,#100); #111=VERTEX_POINT(&#x27;&#x27;,#101);
+<span class="lineno">24</span>#112=VERTEX_POINT(&#x27;&#x27;,#102); #113=VERTEX_POINT(&#x27;&#x27;,#103);
+<span class="lineno">25</span>#114=VERTEX_POINT(&#x27;&#x27;,#104); #115=VERTEX_POINT(&#x27;&#x27;,#105);
+<span class="lineno">26</span>/* Surface is approximately a SURFACE_OF_REVOLUTION (MÃ¶bius topology) */
+<span class="lineno">27</span>#200=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0)); #201=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">28</span>#210=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#100,#200,#201); #220=PLANE(&#x27;&#x27;,#210);
+<span class="lineno">29</span>/* Four edges forming a strip; the twist creates non-orientability */
+<span class="lineno">30</span>#300=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0)); #301=VECTOR(&#x27;&#x27;,#300,2.0);
+<span class="lineno">31</span>#310=LINE(&#x27;&#x27;,#100,#301); #311=EDGE_CURVE(&#x27;e0&#x27;,#110,#111,#310,.T.);
+<span class="lineno">32</span>#312=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0)); #313=VECTOR(&#x27;&#x27;,#312,0.5);
+<span class="lineno">33</span>#320=LINE(&#x27;&#x27;,#101,#313); #321=EDGE_CURVE(&#x27;e1&#x27;,#111,#115,#320,.T.);
+<span class="lineno">34</span>#322=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0)); #323=VECTOR(&#x27;&#x27;,#322,2.0);
+<span class="lineno">35</span>#330=LINE(&#x27;&#x27;,#105,#323); #331=EDGE_CURVE(&#x27;e2_twist&#x27;,#115,#114,#330,.T.);
+<span class="lineno">36</span>#332=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0)); #333=VECTOR(&#x27;&#x27;,#332,0.5);
+<span class="lineno">37</span>#340=LINE(&#x27;&#x27;,#104,#333); #341=EDGE_CURVE(&#x27;e3&#x27;,#114,#113,#340,.T.);
+<span class="lineno">38</span>/* Defect: Edge loop has twist; traversing from #110-&gt;...-&gt;back to #113
+<span class="lineno">39</span>   produces orientation contradiction for a non-orientable surface */
+<span class="lineno">40</span>#400=ORIENTED_EDGE(&#x27;&#x27;,*,*,#311,.T.);
+<span class="lineno">41</span>#401=ORIENTED_EDGE(&#x27;&#x27;,*,*,#321,.T.);
+<span class="lineno">42</span>#402=ORIENTED_EDGE(&#x27;&#x27;,*,*,#331,.T.);
+<span class="lineno">43</span>#403=ORIENTED_EDGE(&#x27;&#x27;,*,*,#341,.T.);
+<span class="lineno">44</span>#404=EDGE_LOOP(&#x27;&#x27;,(#400,#401,#402,#403)); #405=FACE_OUTER_BOUND(&#x27;&#x27;,#404,.T.);
+<span class="lineno">45</span>#406=ADVANCED_FACE(&#x27;mobius_face&#x27;,(#405),#220,.T.);
+<span class="lineno">46</span>#500=OPEN_SHELL(&#x27;mobius_shell&#x27;,(#406));
+<span class="lineno">47</span>/* PRODUCT chain */
+<span class="lineno">48</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">49</span>#9001=PRODUCT(&#x27;Tsh078&#x27;,&#x27;Tsh078&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">50</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">51</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">52</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">53</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">54</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">55</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">56</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">57</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">58</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">59</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;sbsm&#x27;,(#500));
+<span class="lineno">60</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">61</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">62</span>ENDSEC;
+<span class="lineno">63</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tsh077.html">&larr; Tsh077</a> <a class="up" href="index.html">§12.3a Shells / orientation</a> <a class="next" href="Tsh079.html">Tsh079 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

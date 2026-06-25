@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Me360 — remove_isolated_points_empty_input: empty vertex list triggers early return with 0 removed</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <span class="sep">/</span> <span class="current">Me360</span>
+</nav>
+<header class="title-bar">
+<h1>Me360 <span class="sep">—</span> <span class="entry-title">remove_isolated_points_empty_input: empty vertex list triggers early return with 0 removed</span></h1>
+<p class="category">§12.14 mesh defects (sub-class: isolated_vertex / remove-isolated-points-in-polygon-soup)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../mesh-examples/12-14-mesh/Me360.mesh.json">View raw fixture (.mesh.json)</a> <code class="path">mesh-examples/12-14-mesh/Me360.mesh.json</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>CGAL PMP `remove_isolated_points_in_polygon_soup` Branch 1 (*empty_input*: `if(points.empty()) return 0</li>
+<li>`)</li>
+<li>`MESH_HEAL_COVERAGE.md`.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Completely empty polygon soup — 0 vertices, 0 triangles. The function detects the empty points container immediately and returns 0 without touching polygons. Branch 1 exercises the short-circuit path so that no detection or erase phases execute.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>No vertices, no triangles; euler_characteristic v=0 e=0 f=0 chi=0.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Branch 1 fires; function returns 0 immediately; downstream remap and erase steps never reached.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>{
+<span class="lineno">2</span>  &quot;vertices&quot;: [],
+<span class="lineno">3</span>  &quot;triangles&quot;: [],
+<span class="lineno">4</span>  &quot;metadata&quot;: {
+<span class="lineno">5</span>    &quot;id&quot;: &quot;Me360&quot;,
+<span class="lineno">6</span>    &quot;schema_version&quot;: 0,
+<span class="lineno">7</span>    &quot;defect_class&quot;: &quot;isolated_vertex&quot;,
+<span class="lineno">8</span>    &quot;title&quot;: &quot;remove_isolated_points_empty_input: empty vertex list triggers early return with 0 removed&quot;,
+<span class="lineno">9</span>    &quot;assertions&quot;: [
+<span class="lineno">10</span>      {
+<span class="lineno">11</span>        &quot;kind&quot;: &quot;euler_characteristic&quot;,
+<span class="lineno">12</span>        &quot;v&quot;: 0,
+<span class="lineno">13</span>        &quot;e&quot;: 0,
+<span class="lineno">14</span>        &quot;f&quot;: 0,
+<span class="lineno">15</span>        &quot;chi&quot;: 0
+<span class="lineno">16</span>      }
+<span class="lineno">17</span>    ]
+<span class="lineno">18</span>  }
+<span class="lineno">19</span>}
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Me357.html">&larr; Me357</a> <a class="up" href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <a class="next" href="Me361.html">Me361 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

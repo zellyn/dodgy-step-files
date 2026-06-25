@@ -44,6 +44,9 @@
 <li><code>count_entity_def(b&#x27;VERTEX_POINT&#x27;) &gt;= 4</code></li>
 <li><code>count(b&#x27;VERTEX_POINT&#x27;) &gt;= 4</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -58,36 +61,76 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Wr037 - Loss of seam-edge marking on closed surfaces - cylinder seam emitted as ordinary edge with duplicate vertex */
-<span class="lineno">2</span>ISO-10303-21;
-<span class="lineno">3</span>HEADER;
-<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Wr037 - cylinder seam lost on re-export&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">5</span>FILE_NAME(&#x27;Wr037.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
-<span class="lineno">6</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">7</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">8</span>ENDSEC;
-<span class="lineno">9</span>DATA;
-<span class="lineno">10</span>#1=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
-<span class="lineno">11</span>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
-<span class="lineno">12</span>#11=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
-<span class="lineno">13</span>#12=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">14</span>#13=AXIS2_PLACEMENT_3D(&#x27;placement&#x27;,#10,#11,#12);
-<span class="lineno">15</span>#14=CYLINDRICAL_SURFACE(&#x27;cyl&#x27;,#13,1.0);
-<span class="lineno">16</span>/* Wr037: original had seam-marked edge at U=0 / U=2pi identification.
-<span class="lineno">17</span>   Writer linearised it to two ordinary edges sharing duplicate
-<span class="lineno">18</span>   coincident <mark>VERTEX_POINT</mark>s. Receiver sees two vertices at the same
-<span class="lineno">19</span>   3D location and reports a non-watertight shell */
-<span class="lineno">20</span>#20=CARTESIAN_POINT(&#x27;seamA_top&#x27;,(1.0,0.0,1.0));
-<span class="lineno">21</span>#21=CARTESIAN_POINT(&#x27;seamA_bot&#x27;,(1.0,0.0,0.0));
-<span class="lineno">22</span>#22=CARTESIAN_POINT(&#x27;seamB_top&#x27;,(1.0,0.0,1.0));
-<span class="lineno">23</span>#23=CARTESIAN_POINT(&#x27;seamB_bot&#x27;,(1.0,0.0,0.0));
-<span class="lineno">24</span><mark>#30=VERTEX_POINT(</mark>&#x27;vA_top&#x27;,#20);
-<span class="lineno">25</span><mark>#31=VERTEX_POINT(</mark>&#x27;vA_bot&#x27;,#21);
-<span class="lineno">26</span><mark>#32=VERTEX_POINT(</mark>&#x27;vB_top&#x27;,#22);
-<span class="lineno">27</span><mark>#33=VERTEX_POINT(</mark>&#x27;vB_bot&#x27;,#23);
-<span class="lineno">28</span>#40=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">29</span>ENDSEC;
-<span class="lineno">30</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Wr037: loss of seam-edge marking on cylindrical surface */
+<span class="lineno">3</span>/* Original: cylindrical face with a seam at U=0/U=2pi (writer marked it) */
+<span class="lineno">4</span>/* Re-emitted: two ordinary EDGE_CURVE entries at U=0 and U=2pi with */
+<span class="lineno">5</span>/*   distinct <mark>VERTEX_POINT</mark> entities even though they are coincident in 3D */
+<span class="lineno">6</span>/* Receiver cannot detect the seam; shell is open where it should be closed */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Wr037: cylinder seam edge lost on re-export&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;Wr037.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>/* Cylinder axis */
+<span class="lineno">14</span>#1=CARTESIAN_POINT(&#x27;axis-origin&#x27;,(0.,0.,0.));
+<span class="lineno">15</span>#2=DIRECTION(&#x27;zdir&#x27;,(0.,0.,1.));
+<span class="lineno">16</span>#3=DIRECTION(&#x27;xdir&#x27;,(1.,0.,0.));
+<span class="lineno">17</span>#4=AXIS2_PLACEMENT_3D(&#x27;cyl-axis&#x27;,#1,#2,#3);
+<span class="lineno">18</span>#5=CYLINDRICAL_SURFACE(&#x27;cyl-surf&#x27;,#4,1.0);
+<span class="lineno">19</span>/* Top circle: at Z=1, radius=1 */
+<span class="lineno">20</span>#6=CARTESIAN_POINT(&#x27;top-seam-a&#x27;,(1.,0.,1.));
+<span class="lineno">21</span>#7=CARTESIAN_POINT(&#x27;top-center&#x27;,(0.,0.,1.));
+<span class="lineno">22</span>#8=DIRECTION(&#x27;top-zdir&#x27;,(0.,0.,1.));
+<span class="lineno">23</span>#9=DIRECTION(&#x27;top-xdir&#x27;,(1.,0.,0.));
+<span class="lineno">24</span>#10=AXIS2_PLACEMENT_3D(&#x27;top-circle-ax&#x27;,#7,#8,#9);
+<span class="lineno">25</span>#11=CIRCLE(&#x27;top-circle&#x27;,#10,1.0);
+<span class="lineno">26</span>/* Bottom circle: at Z=0, radius=1 */
+<span class="lineno">27</span>#12=CARTESIAN_POINT(&#x27;bot-center&#x27;,(0.,0.,0.));
+<span class="lineno">28</span>#13=DIRECTION(&#x27;bot-zdir&#x27;,(0.,0.,1.));
+<span class="lineno">29</span>#14=DIRECTION(&#x27;bot-xdir&#x27;,(1.,0.,0.));
+<span class="lineno">30</span>#15=AXIS2_PLACEMENT_3D(&#x27;bot-circle-ax&#x27;,#12,#13,#14);
+<span class="lineno">31</span>#16=CIRCLE(&#x27;bot-circle&#x27;,#15,1.0);
+<span class="lineno">32</span>/* Side seam lines (straight generators at U=0 and U=2pi) */
+<span class="lineno">33</span>#17=CARTESIAN_POINT(&#x27;seam-line-pt&#x27;,(1.,0.,0.));
+<span class="lineno">34</span>#18=DIRECTION(&#x27;seam-dir&#x27;,(0.,0.,1.));
+<span class="lineno">35</span>#19=VECTOR(&#x27;seam-vec&#x27;,#18,1.0);
+<span class="lineno">36</span>#20=LINE(&#x27;seam-line-a&#x27;,#17,#19);
+<span class="lineno">37</span>#21=LINE(&#x27;seam-line-b&#x27;,#17,#19);
+<span class="lineno">38</span>/* DEFECT: four distinct <mark>VERTEX_POINT</mark> entities â two pairs coincide in 3D at seam */
+<span class="lineno">39</span>/* Top vertices at U=0 (seam-A) and U=2pi (seam-B) â same 3D point (1,0,1) */
+<span class="lineno">40</span>#22=CARTESIAN_POINT(&#x27;top-pt-seam-a&#x27;,(1.,0.,1.));
+<span class="lineno">41</span>#23=CARTESIAN_POINT(&#x27;top-pt-seam-b&#x27;,(1.,0.,1.));
+<span class="lineno">42</span>/* Bottom vertices at U=0 (seam-A) and U=2pi (seam-B) â same 3D point (1,0,0) */
+<span class="lineno">43</span>#24=CARTESIAN_POINT(&#x27;bot-pt-seam-a&#x27;,(1.,0.,0.));
+<span class="lineno">44</span>#25=CARTESIAN_POINT(&#x27;bot-pt-seam-b&#x27;,(1.,0.,0.));
+<span class="lineno">45</span><mark>#26=VERTEX_POINT(</mark>&#x27;top-v-seam-a&#x27;,#22);
+<span class="lineno">46</span><mark>#27=VERTEX_POINT(</mark>&#x27;top-v-seam-b&#x27;,#23);
+<span class="lineno">47</span><mark>#28=VERTEX_POINT(</mark>&#x27;bot-v-seam-a&#x27;,#24);
+<span class="lineno">48</span><mark>#29=VERTEX_POINT(</mark>&#x27;bot-v-seam-b&#x27;,#25);
+<span class="lineno">49</span>/* Edges */
+<span class="lineno">50</span>/* Top circle edge */
+<span class="lineno">51</span>#30=EDGE_CURVE(&#x27;top-edge&#x27;,#26,#27,#11,.T.);
+<span class="lineno">52</span>/* Bottom circle edge */
+<span class="lineno">53</span>#31=EDGE_CURVE(&#x27;bot-edge&#x27;,#28,#29,#16,.T.);
+<span class="lineno">54</span>/* DEFECT: side-A and side-B are ordinary EDGE_CURVE (no seam marking) */
+<span class="lineno">55</span>/* side-A runs from bot-v-seam-a (#28) to top-v-seam-a (#26) */
+<span class="lineno">56</span>#32=EDGE_CURVE(&#x27;seam-side-a&#x27;,#28,#26,#20,.T.);
+<span class="lineno">57</span>/* side-B runs from top-v-seam-b (#27) to bot-v-seam-b (#29) */
+<span class="lineno">58</span>#33=EDGE_CURVE(&#x27;seam-side-b&#x27;,#27,#29,#21,.T.);
+<span class="lineno">59</span>/* Oriented edges and loop */
+<span class="lineno">60</span>#34=ORIENTED_EDGE(&#x27;&#x27;,*,*,#30,.T.);
+<span class="lineno">61</span>#35=ORIENTED_EDGE(&#x27;&#x27;,*,*,#33,.T.);
+<span class="lineno">62</span>#36=ORIENTED_EDGE(&#x27;&#x27;,*,*,#31,.F.);
+<span class="lineno">63</span>#37=ORIENTED_EDGE(&#x27;&#x27;,*,*,#32,.F.);
+<span class="lineno">64</span>#38=EDGE_LOOP(&#x27;cyl-loop&#x27;,(#34,#35,#36,#37));
+<span class="lineno">65</span>#39=FACE_OUTER_BOUND(&#x27;&#x27;,#38,.T.);
+<span class="lineno">66</span>#40=ADVANCED_FACE(&#x27;cyl-face&#x27;,(#39),#5,.T.);
+<span class="lineno">67</span>#41=OPEN_SHELL(&#x27;open-shell&#x27;,(#40));
+<span class="lineno">68</span>#42=SHELL_BASED_SURFACE_MODEL(&#x27;cyl-model&#x27;,(#41));
+<span class="lineno">69</span>ENDSEC;
+<span class="lineno">70</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

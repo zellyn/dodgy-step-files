@@ -39,6 +39,9 @@
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;#0=&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="../12-1b-header/Lh023.html">Lh023</a>, <a href="Ls051.html">Ls051</a>, <a href="Ls052.html">Ls052</a></p>
 </section>
@@ -60,11 +63,11 @@
 <span class="lineno">2</span>   ----------------------------------------------------------------------
 <span class="lineno">3</span>   Catalog section : Â§12.1c instance-namespace
 <span class="lineno">4</span>   Sources         : T016, T017, A022
-<span class="lineno">5</span>   Originally also catalogued as: Lh020, Lh021, Ad022, Ad063
-<span class="lineno">6</span>   See also        : Lh023, Ls051, Ls052
-<span class="lineno">7</span>   ----------------------------------------------------------------------
-<span class="lineno">8</span>   Defect
-<span class="lineno">9</span>     ISO 10303-21 requires positive non-zero instance IDs. #0 is invalid.
+<span class="lineno">5</span>   See also        : Lh023, Ls051, Ls052
+<span class="lineno">6</span>   ----------------------------------------------------------------------
+<span class="lineno">7</span>   Defect
+<span class="lineno">8</span>     ISO 10303-21 Â§11.1 requires positive non-zero instance IDs.
+<span class="lineno">9</span>     #0 is invalid: zero is not a positive integer.
 <span class="lineno">10</span>   Expected behavior
 <span class="lineno">11</span>     Reject #0 with E_INSTANCE_ID_RANGE; continue parsing the remainder
 <span class="lineno">12</span>     of the section rather than skipping it.
@@ -72,17 +75,20 @@
 <span class="lineno">14</span>*/
 <span class="lineno">15</span>ISO-10303-21;
 <span class="lineno">16</span>HEADER;
-<span class="lineno">17</span>FILE_DESCRIPTION((&#x27;Ls038 - instance ID #0&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">18</span>FILE_NAME(&#x27;Ls038.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">17</span>FILE_DESCRIPTION((&#x27;Ls038 - instance ID #0 is invalid&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">18</span>FILE_NAME(&#x27;Ls038.stp&#x27;,&#x27;2026-06-20T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
 <span class="lineno">19</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
 <span class="lineno">20</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
 <span class="lineno">21</span>ENDSEC;
 <span class="lineno">22</span>DATA;
-<span class="lineno">23</span>/* Defect: instance ID #0 (must be positive non-zero) */
-<span class="lineno">24</span><mark>#0=</mark>IFCPERSON($,$,&#x27;&#x27;,$,$,$,$,$);
-<span class="lineno">25</span>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
-<span class="lineno">26</span>ENDSEC;
-<span class="lineno">27</span>END-ISO-10303-21;
+<span class="lineno">23</span>/* Defect: #0 is an invalid instance ID (must be &gt;= 1 per Â§11.1) */
+<span class="lineno">24</span><mark>#0=</mark>CARTESIAN_POINT(&#x27;origin&#x27;,(0.,0.,0.));
+<span class="lineno">25</span>#1=DIRECTION(&#x27;x&#x27;,(1.,0.,0.));
+<span class="lineno">26</span>#2=VECTOR(&#x27;v&#x27;,#1,1.);
+<span class="lineno">27</span>/* Back-reference to invalid #0 -- becomes dangling after rejection */
+<span class="lineno">28</span>#3=LINE(&#x27;l&#x27;,#0,#2);
+<span class="lineno">29</span>ENDSEC;
+<span class="lineno">30</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

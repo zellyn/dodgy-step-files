@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gn043 — ShapeAnalysis_Curve.GetSamplePoints rational curve 4x amplification</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2b NURBS / B-spline</a> <span class="sep">/</span> <span class="current">Gn043</span>
+</nav>
+<header class="title-bar">
+<h1>Gn043 <span class="sep">—</span> <span class="entry-title">ShapeAnalysis_Curve.GetSamplePoints rational curve 4x amplification</span></h1>
+<p class="category">§12.2b</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2b-nurbs/Gn043.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2b-nurbs/Gn043.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>synthesized — no external source cited</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>ShapeAnalysis_Curve.GetSamplePoints rational curve 4x amplification</p></section>
+<section><h2>Reproducer recipe</h2>
+<p></p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_FORWARD_REF)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>process_signal</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gn043 - ShapeAnalysis_Curve.GetSamplePoints rational B-spline 4x amplification
+<span class="lineno">3</span>   Defect: a rational B_SPLINE_CURVE_WITH_KNOTS with non-uniform weights causes
+<span class="lineno">4</span>   the sample point generation to amplify the sample count by a factor of 4x.
+<span class="lineno">5</span>   The denominator pre-image expansion in rational curves is not properly
+<span class="lineno">6</span>   accounted for, leading to excessive sampling overhead and potential numerical
+<span class="lineno">7</span>   instability during healing operations. */
+<span class="lineno">8</span>HEADER;
+<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;Gn043 - Rational BSpline 4x sample amplification&#x27;&#x27;,&#x27;&#x27;2;1&#x27;&#x27;,&#x27;&#x27;2;1&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;Gn043.stp&#x27;,&#x27;2026-06-16T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">11</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">13</span>ENDSEC;
+<span class="lineno">14</span>DATA;
+<span class="lineno">15</span>/* Rational cubic B-spline with 5 control points and non-uniform weights.
+<span class="lineno">16</span>   The weight array [1.0, 2.0, 1.0, 2.0, 1.0] has large variation (2.0 vs 1.0)
+<span class="lineno">17</span>   that amplifies the denominator variation, causing sample-count amplification. */
+<span class="lineno">18</span>#10=CARTESIAN_POINT(&#x27;p1&#x27;,(0.0,0.0,0.0));
+<span class="lineno">19</span>#11=CARTESIAN_POINT(&#x27;p2&#x27;,(1.0,2.0,0.0));
+<span class="lineno">20</span>#12=CARTESIAN_POINT(&#x27;p3&#x27;,(2.0,1.0,0.0));
+<span class="lineno">21</span>#13=CARTESIAN_POINT(&#x27;p4&#x27;,(3.0,2.0,0.0));
+<span class="lineno">22</span>#14=CARTESIAN_POINT(&#x27;p5&#x27;,(4.0,0.0,0.0));
+<span class="lineno">23</span>/* Defect: non-uniform weights cause denominator pre-image expansion.
+<span class="lineno">24</span>   GetSamplePoints applies a 4x amplification factor to account for
+<span class="lineno">25</span>   weight variation, causing 4x more samples than necessary. */
+<span class="lineno">26</span>#100=B_SPLINE_CURVE_WITH_KNOTS(&#x27;rational_amplify&#x27;,3,
+<span class="lineno">27</span>  (#10,#11,#12,#13,#14),
+<span class="lineno">28</span>  .UNSPECIFIED.,.F.,.F.,
+<span class="lineno">29</span>  (4,1,4),
+<span class="lineno">30</span>  (0.0,0.5,1.0),
+<span class="lineno">31</span>  .UNSPECIFIED.,
+<span class="lineno">32</span>  (1.0,2.0,1.0,2.0,1.0));
+<span class="lineno">33</span>/* PRODUCT chain wrapping wireframe. */
+<span class="lineno">34</span>#9990=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">35</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#9990,&#x27;mechanical&#x27;);
+<span class="lineno">36</span>#9001=PRODUCT(&#x27;Gn043&#x27;,&#x27;Gn043&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">37</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">38</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9990,&#x27;design&#x27;);
+<span class="lineno">39</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">40</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">41</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">42</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">43</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">44</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">45</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">46</span>#9020=GEOMETRIC_CURVE_SET(&#x27;wire_set&#x27;,(#100));
+<span class="lineno">47</span>#9021=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9020),#9010);
+<span class="lineno">48</span>#9022=SHAPE_DEFINITION_REPRESENTATION(#9005,#9021);
+<span class="lineno">49</span>ENDSEC;
+<span class="lineno">50</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gn042.html">&larr; Gn042</a> <a class="up" href="index.html">§12.2b NURBS / B-spline</a> <a class="next" href="Gn044.html">Gn044 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

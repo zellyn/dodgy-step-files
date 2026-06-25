@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Me396 — do_faces_intersect_edge_orientation_search_mode: i==0 shared-vertex permutation path, strip of non-intersecting triangles (Branch 7)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <span class="sep">/</span> <span class="current">Me396</span>
+</nav>
+<header class="title-bar">
+<h1>Me396 <span class="sep">—</span> <span class="entry-title">do_faces_intersect_edge_orientation_search_mode: i==0 shared-vertex permutation path, strip of non-intersecting triangles (Branch 7)</span></h1>
+<p class="category">§12.14 mesh defects (sub-class: do_faces_intersect / edge-orientation-search-mode)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../mesh-examples/12-14-mesh/Me396.mesh.json">View raw fixture (.mesh.json)</a> <code class="path">mesh-examples/12-14-mesh/Me396.mesh.json</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>CGAL PMP `do_faces_intersect` Branch 7 (*edge-orientation-search-mode*: `if (i==0) { vh[1]=f[i]</li>
+<li>vh[2]=f[(i+1)%3] }`)</li>
+<li>`MESH_HEAL_COVERAGE.md`.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Three triangles arranged as a linear strip. t0=(v0,v1,v3) and t1=(v2,v3,v4) share vertex v3, which is at index position 0 in t1 — triggering the i==0 branch that assigns vh[1]=f[0] and vh[2]=f[1] for edge-orientation derivation. t1 and t2 similarly share v4 at index 0. All triangle pairs have non-intersecting geometries; the permutation search terminates correctly and the segment tests confirm no SI.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>v0=(0,0,0), v1=(1,0,0), v2=(2,0,0), v3=(0.5,1,0), v4=(1.5,1,0), v5=(2.5,1,0); t0=(v0,v1,v3), t1=(v2,v3,v4), t2=(v4,v5,v2); assert_triangles_do_not_intersect(0,1); assert_triangles_do_not_intersect(0,2).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Branch 7 (i==0 permutation) fires during shared-vertex search for (t0,t1) and (t1,t2); edge orientation correctly extracted; segment tests confirm no SI.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>{
+<span class="lineno">2</span>  &quot;vertices&quot;: [
+<span class="lineno">3</span>    [
+<span class="lineno">4</span>      0.0,
+<span class="lineno">5</span>      0.0,
+<span class="lineno">6</span>      0.0
+<span class="lineno">7</span>    ],
+<span class="lineno">8</span>    [
+<span class="lineno">9</span>      1.0,
+<span class="lineno">10</span>      0.0,
+<span class="lineno">11</span>      0.0
+<span class="lineno">12</span>    ],
+<span class="lineno">13</span>    [
+<span class="lineno">14</span>      2.0,
+<span class="lineno">15</span>      0.0,
+<span class="lineno">16</span>      0.0
+<span class="lineno">17</span>    ],
+<span class="lineno">18</span>    [
+<span class="lineno">19</span>      0.5,
+<span class="lineno">20</span>      1.0,
+<span class="lineno">21</span>      0.0
+<span class="lineno">22</span>    ],
+<span class="lineno">23</span>    [
+<span class="lineno">24</span>      1.5,
+<span class="lineno">25</span>      1.0,
+<span class="lineno">26</span>      0.0
+<span class="lineno">27</span>    ],
+<span class="lineno">28</span>    [
+<span class="lineno">29</span>      2.5,
+<span class="lineno">30</span>      1.0,
+<span class="lineno">31</span>      0.0
+<span class="lineno">32</span>    ]
+<span class="lineno">33</span>  ],
+<span class="lineno">34</span>  &quot;triangles&quot;: [
+<span class="lineno">35</span>    [
+<span class="lineno">36</span>      0,
+<span class="lineno">37</span>      1,
+<span class="lineno">38</span>      3
+<span class="lineno">39</span>    ],
+<span class="lineno">40</span>    [
+<span class="lineno">41</span>      2,
+<span class="lineno">42</span>      3,
+<span class="lineno">43</span>      4
+<span class="lineno">44</span>    ],
+<span class="lineno">45</span>    [
+<span class="lineno">46</span>      4,
+<span class="lineno">47</span>      5,
+<span class="lineno">48</span>      2
+<span class="lineno">49</span>    ]
+<span class="lineno">50</span>  ],
+<span class="lineno">51</span>  &quot;metadata&quot;: {
+<span class="lineno">52</span>    &quot;id&quot;: &quot;Me396&quot;,
+<span class="lineno">53</span>    &quot;schema_version&quot;: 0,
+<span class="lineno">54</span>    &quot;defect_class&quot;: &quot;shared_vertex_adjacent_faces&quot;,
+<span class="lineno">55</span>    &quot;title&quot;: &quot;do_faces_intersect edge-orientation-search: i==0 shared-vertex permutation path; strip of 3 non-intersecting triangles (Branch 7)&quot;,
+<span class="lineno">56</span>    &quot;assertions&quot;: [
+<span class="lineno">57</span>      {
+<span class="lineno">58</span>        &quot;kind&quot;: &quot;triangles_do_not_intersect&quot;,
+<span class="lineno">59</span>        &quot;triangles&quot;: [
+<span class="lineno">60</span>          0,
+<span class="lineno">61</span>          1
+<span class="lineno">62</span>        ]
+<span class="lineno">63</span>      },
+<span class="lineno">64</span>      {
+<span class="lineno">65</span>        &quot;kind&quot;: &quot;triangles_do_not_intersect&quot;,
+<span class="lineno">66</span>        &quot;triangles&quot;: [
+<span class="lineno">67</span>          0,
+<span class="lineno">68</span>          2
+<span class="lineno">69</span>        ]
+<span class="lineno">70</span>      }
+<span class="lineno">71</span>    ]
+<span class="lineno">72</span>  }
+<span class="lineno">73</span>}
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Me395.html">&larr; Me395</a> <a class="up" href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <a class="next" href="Me400.html">Me400 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

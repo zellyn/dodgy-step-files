@@ -47,6 +47,9 @@
 <li><code>contains(b&#x27;&lt;!DOCTYPE&#x27;) and contains(b&#x27;&lt;!ENTITY&#x27;)</code></li>
 <li><code>contains(b&#x27;&amp;lol&#x27;) or contains(b&#x27;lol9&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="Ad104.html">Ad104</a>, <a href="Ad108.html">Ad108</a>, <a href="Ad109.html">Ad109</a></p>
 </section>
@@ -64,37 +67,37 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Ad107 - STEP-XML wrapper carries a billion-laughs entity-expansion bomb
-<span class="lineno">2</span> * Defect: a STEP-XML (.stpx) file with an internal DTD declaring named
-<span class="lineno">3</span> * entities that recursively reference other named entities. Expansion
-<span class="lineno">4</span> * produces 10^N copies of the leaf string from N+1 entity declarations.
-<span class="lineno">5</span> * This fixture is shown in .stp form for cataloguing; the actual attack
-<span class="lineno">6</span> * surface is .stpx. Provenance tier: cross-file-state. */
-<span class="lineno">7</span>ISO-10303-21;
-<span class="lineno">8</span>HEADER;
-<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;Ad107 - STEP-XML wrapper carries billion-laughs entity bomb&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">10</span>FILE_NAME(&#x27;Ad107.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">11</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">12</span>ENDSEC;
-<span class="lineno">13</span>DATA;
-<span class="lineno">14</span>/* Witness fixture: the .stp body is benign. The defect lives in the
-<span class="lineno">15</span>   .stpx XML prologue:
-<span class="lineno">16</span>     &lt;?xml version=&quot;1.0&quot;?&gt;
-<span class="lineno">17</span>     &lt;!DOCTYPE step [
-<span class="lineno">18</span>       &lt;!ENTITY lol &quot;lol&quot;&gt;
-<span class="lineno">19</span>       &lt;!ENTITY lol1 &quot;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&quot;&gt;
-<span class="lineno">20</span>       &lt;!ENTITY lol2 &quot;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&quot;&gt;
-<span class="lineno">21</span>       ...
-<span class="lineno">22</span>       &lt;!ENTITY lol9 &quot;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&quot;&gt;
-<span class="lineno">23</span>     ]&gt;
-<span class="lineno">24</span>     &lt;step&gt;&lt;name&gt;&amp;lol9;&lt;/name&gt;&lt;/step&gt;
-<span class="lineno">25</span>   The DTD declarations are not legal inside Part-21; they are shown here
-<span class="lineno">26</span>   inside a comment so receivers can grep for the marker even though the
-<span class="lineno">27</span>   actual exploit lives in the XML wrapper. */
-<span class="lineno">28</span>/* &lt;!DOCTYPE step [&lt;!ENTITY lol &quot;lol&quot;&gt;&lt;!ENTITY lol9 &quot;&amp;lol8;...&quot;&gt;]&gt; */
-<span class="lineno">29</span>/* &amp;lol9; expands to 10^9 copies of &quot;lol&quot; - a billion laughs */
-<span class="lineno">30</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">31</span>#10=CARTESIAN_POINT(&#x27;benign&#x27;,(0.0,0.0,0.0));
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Billion-laughs entity-expansion bomb (STEP-XML / ISO 10303-28 wrapper layer):
+<span class="lineno">3</span>   &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+<span class="lineno">4</span>   &lt;!DOCTYPE step [
+<span class="lineno">5</span>     &lt;!ENTITY lol &quot;lol&quot;&gt;
+<span class="lineno">6</span>     &lt;!ENTITY lol1 &quot;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&quot;&gt;
+<span class="lineno">7</span>     &lt;!ENTITY lol2 &quot;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&quot;&gt;
+<span class="lineno">8</span>     &lt;!ENTITY lol3 &quot;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&quot;&gt;
+<span class="lineno">9</span>     &lt;!ENTITY lol4 &quot;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&quot;&gt;
+<span class="lineno">10</span>     &lt;!ENTITY lol5 &quot;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&quot;&gt;
+<span class="lineno">11</span>     &lt;!ENTITY lol6 &quot;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&quot;&gt;
+<span class="lineno">12</span>     &lt;!ENTITY lol7 &quot;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&quot;&gt;
+<span class="lineno">13</span>     &lt;!ENTITY lol8 &quot;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&quot;&gt;
+<span class="lineno">14</span>     &lt;!ENTITY lol9 &quot;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&quot;&gt;
+<span class="lineno">15</span>   ]&gt;
+<span class="lineno">16</span>   &lt;step:iso_10303_28 xmlns:step=&quot;urn:oid:1.0.10303.28.3.1&quot;&gt;
+<span class="lineno">17</span>     &lt;step:header/&gt;
+<span class="lineno">18</span>     &lt;step:data name=&quot;&amp;lol9;&quot;/&gt;
+<span class="lineno">19</span>   &lt;/step:iso_10303_28&gt;
+<span class="lineno">20</span>   Receiver must cap entity-expansion depth and expanded-text size (CWE-776).
+<span class="lineno">21</span>   Expansion of &amp;lol9; produces 10^9 copies of &#x27;lol&#x27; â ~3 GB of text.
+<span class="lineno">22</span>*/
+<span class="lineno">23</span>/* Ad107: STEP-XML wrapper carries billion-laughs entity-expansion bomb; internal DTD declares &amp;lol; through &amp;lol9; with 10x fanout per level; expansion produces 10^9 copies of leaf string from 10 entity declarations; receiver whose XML parser does not cap entity-expansion depth or expanded-text size allocates gigabytes from a one-kilobyte input; receiver must cap entity-expansion depth and expanded-text size; must reject documents exceeding the cap with a precise diagnostic; CWE-776; ISO 10303-28 STEP-XML transfer; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">24</span>HEADER;
+<span class="lineno">25</span>FILE_DESCRIPTION((&#x27;Ad107&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">26</span>FILE_NAME(&#x27;Ad107.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">27</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">28</span>ENDSEC;
+<span class="lineno">29</span>DATA;
+<span class="lineno">30</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">31</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
 <span class="lineno">32</span>ENDSEC;
 <span class="lineno">33</span>END-ISO-10303-21;
 </pre>

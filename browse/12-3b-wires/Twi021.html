@@ -40,7 +40,9 @@
 <section><h2>Notes</h2>
 <p>**See also**: Tfa004, Tfa005, Twi029, Twi031, Gp005. Synonyms: &quot;missing apex bridge edge&quot;, &quot;cone tip degenerate edge missing&quot;, &quot;wire on sphere pole has no closing edge&quot;, &quot;singular point bridging edge absent&quot;, &quot;face passing through pole has gap in UV&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a</code></p></section>
+<section><h2>Closure intent</h2>
+<p><code>sheet</code> — the open shell is the intended final geometry; a solid-only kernel should cleanly refuse.</p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>face[0].surface_type == &quot;cone&quot;</code></li>
 <li><code>n_edges_total &gt;= 4</code></li>
@@ -54,8 +56,8 @@
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
 <tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
-<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(6)</code></td></tr>
-<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(6)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(8)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(8)</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
 <tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
 <tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
@@ -65,69 +67,67 @@
 <details>
 <summary>Show fixture bytes</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Twi021 - Missing degenerate edge at surface singularity (cone apex / sphere pole)
-<span class="lineno">3</span> * Defect: A CONICAL_SURFACE face whose outer loop touches the cone apex
-<span class="lineno">4</span> * vertex_point lacks the degenerate edge (zero-length 3D, finite-length UV)
-<span class="lineno">5</span> * that bridges the singularity. Surface-surface intersection routines misbehave
-<span class="lineno">6</span> * near the singular row. Heal by ShapeFix_Wire::FixDegenerated /
-<span class="lineno">7</span> * FixPeriodicDegenerated (separate from FixMissingSeam) - insert a degenerate
-<span class="lineno">8</span> * edge at apex/pole. Source: ProSTEP r0501-ug.stp #182180; HOOPS Exchange. */
-<span class="lineno">9</span>HEADER;
-<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;Twi021 test case&#x27;,&#x27;Missing degenerate edge at cone apex&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">11</span>FILE_NAME(&#x27;Twi021.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">12</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">13</span>ENDSEC;
-<span class="lineno">14</span>DATA;
-<span class="lineno">15</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">16</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
-<span class="lineno">17</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">18</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
-<span class="lineno">19</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">20</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
-<span class="lineno">21</span>/* Cone with semi-angle 30 degrees, base radius 5 (apex at z=5/tan(30) ~= 8.66) */
-<span class="lineno">22</span>#20=CONICAL_SURFACE(&#x27;&#x27;,#13,5.0,0.5235988);
-<span class="lineno">23</span>/* Apex vertex_point */
-<span class="lineno">24</span>#21=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,8.660254));
-<span class="lineno">25</span>#22=VERTEX_POINT(&#x27;&#x27;,#21);
-<span class="lineno">26</span>/* Base rim circle */
-<span class="lineno">27</span>#30=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
-<span class="lineno">28</span>#31=VERTEX_POINT(&#x27;&#x27;,#30);
-<span class="lineno">29</span>#32=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
-<span class="lineno">30</span>#33=CIRCLE(&#x27;&#x27;,#32,5.0);
-<span class="lineno">31</span>#34=EDGE_CURVE(&#x27;&#x27;,#31,#31,#33,.T.);
-<span class="lineno">32</span>/* Two meridian edges from base rim to apex */
-<span class="lineno">33</span>#40=DIRECTION(&#x27;&#x27;,(-0.5,0.0,0.8660254));
-<span class="lineno">34</span>#41=VECTOR(&#x27;&#x27;,#40,1.0);
-<span class="lineno">35</span>#42=LINE(&#x27;&#x27;,#30,#41);
-<span class="lineno">36</span>#43=EDGE_CURVE(&#x27;&#x27;,#31,#22,#42,.T.);
-<span class="lineno">37</span>/* Defect: the outer wire goes base-rim, meridian to apex, but back to start
-<span class="lineno">38</span> * needs either another meridian + degenerate apex bridge, or a simple
-<span class="lineno">39</span> * degenerate edge AT the apex. Here the degenerate apex edge is OMITTED -
-<span class="lineno">40</span> * the wire is base + one meridian only and cannot close in UV space. */
-<span class="lineno">41</span>#50=ORIENTED_EDGE(&#x27;&#x27;,*,*,#34,.T.);
-<span class="lineno">42</span>#51=ORIENTED_EDGE(&#x27;&#x27;,*,*,#43,.T.);
-<span class="lineno">43</span>#52=ORIENTED_EDGE(&#x27;&#x27;,*,*,#43,.F.);
-<span class="lineno">44</span>#60=EDGE_LOOP(&#x27;&#x27;,(#50,#51,#52));
-<span class="lineno">45</span>#61=FACE_OUTER_BOUND(&#x27;&#x27;,#60,.T.);
-<span class="lineno">46</span>#62=ADVANCED_FACE(&#x27;&#x27;,(#61),#20,.T.);
-<span class="lineno">47</span>/* Wrap: minimal PRODUCT chain so OCCT TransferRoots produces a shape. */
-<span class="lineno">48</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">49</span>#9001=PRODUCT(&#x27;Twi021&#x27;,&#x27;Twi021&#x27;,&#x27;&#x27;,(#9000));
-<span class="lineno">50</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
-<span class="lineno">51</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
-<span class="lineno">52</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
-<span class="lineno">53</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
-<span class="lineno">54</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">55</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">56</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">57</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
-<span class="lineno">58</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
-<span class="lineno">59</span>#9020=OPEN_SHELL(&#x27;wrap_shell&#x27;,(#62));
-<span class="lineno">60</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#9020));
-<span class="lineno">61</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
-<span class="lineno">62</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
-<span class="lineno">63</span>ENDSEC;
-<span class="lineno">64</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* Twi021: OPEN_SHELL with one ADVANCED_FACE on a CONICAL_SURFACE (semi-angle 30Â°, axis +Z, apex at origin); FACE_OUTER_BOUND references an EDGE_LOOP with two lateral line edges and one base-circle arc that closes the side face; NO degenerate ORIENTED_EDGE inserted at the apex singular row; missing apex-bridging degenerate edge IS the mechanism; apex VERTEX_POINT IS wired into EDGE_LOOP lateral edges, FACE_OUTER_BOUND, ADVANCED_FACE, OPEN_SHELL; kernel must insert degenerate edge at apex or reject as malformed */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Twi021&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Twi021.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=CONICAL_SURFACE(&#x27;&#x27;,#4,2.0,0.5235987756);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#7=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">18</span>#9=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(1.15470053838,0.0,2.0));
+<span class="lineno">20</span>#11=VERTEX_POINT(&#x27;&#x27;,#10);
+<span class="lineno">21</span>#12=CARTESIAN_POINT(&#x27;&#x27;,(-1.15470053838,0.0,2.0));
+<span class="lineno">22</span>#13=VERTEX_POINT(&#x27;&#x27;,#12);
+<span class="lineno">23</span>#14=DIRECTION(&#x27;&#x27;,(0.57735026919,0.0,1.0));
+<span class="lineno">24</span>#15=DIRECTION(&#x27;&#x27;,(0.5,0.0,0.866025403784));
+<span class="lineno">25</span>#16=VECTOR(&#x27;&#x27;,#15,2.30940107676);
+<span class="lineno">26</span>#17=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">27</span>#18=LINE(&#x27;&#x27;,#17,#16);
+<span class="lineno">28</span>#19=EDGE_CURVE(&#x27;&#x27;,#7,#11,#18,.T.);
+<span class="lineno">29</span>#20=ORIENTED_EDGE(&#x27;&#x27;,$,$,#19,.T.);
+<span class="lineno">30</span>#21=DIRECTION(&#x27;&#x27;,(-0.5,0.0,0.866025403784));
+<span class="lineno">31</span>#22=VECTOR(&#x27;&#x27;,#21,2.30940107676);
+<span class="lineno">32</span>#23=CARTESIAN_POINT(&#x27;&#x27;,(-1.15470053838,0.0,2.0));
+<span class="lineno">33</span>#24=LINE(&#x27;&#x27;,#23,#22);
+<span class="lineno">34</span>#25=EDGE_CURVE(&#x27;&#x27;,#13,#9,#24,.T.);
+<span class="lineno">35</span>#26=ORIENTED_EDGE(&#x27;&#x27;,$,$,#25,.T.);
+<span class="lineno">36</span>#27=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,2.0));
+<span class="lineno">37</span>#28=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">38</span>#29=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">39</span>#30=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#27,#28,#29);
+<span class="lineno">40</span>#31=CIRCLE(&#x27;&#x27;,#30,1.1547005384);
+<span class="lineno">41</span>#32=EDGE_CURVE(&#x27;&#x27;,#11,#13,#31,.T.);
+<span class="lineno">42</span>#33=ORIENTED_EDGE(&#x27;&#x27;,*,*,#32,.T.);
+<span class="lineno">43</span>#34=EDGE_LOOP(&#x27;&#x27;,(#20,#33,#26));
+<span class="lineno">44</span>#35=FACE_OUTER_BOUND(&#x27;&#x27;,#34,.T.);
+<span class="lineno">45</span>#36=ADVANCED_FACE(&#x27;&#x27;,(#35),#5,.T.);
+<span class="lineno">46</span>#37=OPEN_SHELL(&#x27;&#x27;,(#36));
+<span class="lineno">47</span>#38=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#37));
+<span class="lineno">48</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">49</span>#9051=PRODUCT(&#x27;Twi021&#x27;,&#x27;Twi021&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">50</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">51</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">52</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">53</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">54</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">55</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">56</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">57</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">58</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">59</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#38),#9060);
+<span class="lineno">60</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">61</span>ENDSEC;
+<span class="lineno">62</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

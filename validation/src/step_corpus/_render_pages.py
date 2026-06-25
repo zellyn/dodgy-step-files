@@ -64,6 +64,7 @@ SECTION_LABELS: dict[str, str] = {
     "12-11-adversarial": "§12.11 Adversarial / parser robustness",
     "12-12-cross-product": "§12.12 Cross-product",
     "12-13-writer-pathology": "§12.13 Writer pathology",
+    "12-14-mesh": "§12.14 Mesh defects (CGAL PMP / MeshFix patterns)",
 }
 
 # A human-friendly one-paragraph blurb per section. Falls back to a generic
@@ -112,6 +113,11 @@ SECTION_BLURBS: dict[str, str] = {
     "12-13-writer-pathology": "Writer-pathology defects: kernel STEP-writer "
                              "round-trip failures, malformed output, and "
                              "schema-non-conformance on emit.",
+    "12-14-mesh": "Mesh-level defect fixtures (.mesh.json): non-manifold "
+                  "edges/vertices, zero-area triangles, near-coincident "
+                  "vertices, hole boundaries, normal-flip patterns, T-junctions, "
+                  "and other defects from the MeshFix + CGAL Polygon Mesh "
+                  "Processing repair surfaces.",
 }
 
 
@@ -527,11 +533,13 @@ def render_fixture_page(entry: dict, section_entries: list[dict],
 
     out.append('<main>')
 
-    # Fixture link (prominent)
+    # Fixture link (prominent). Label varies by fixture kind: .stp for STEP
+    # fixtures, .mesh.json for §12.14 mesh fixtures.
     fixture_rel = f"../../{entry['fixture_path']}"
+    fixture_ext = ".mesh.json" if entry["fixture_path"].endswith(".mesh.json") else ".stp"
     out.append('<section class="fixture-link">')
     out.append(f'<a class="big-link" href="{_h(fixture_rel)}">'
-               f'View raw fixture (.stp)</a> '
+               f'View raw fixture ({fixture_ext})</a> '
                f'<code class="path">{_h(entry["fixture_path"])}</code>')
     out.append('</section>')
 

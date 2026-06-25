@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tsh076 — Shell-count escalation on decomposition</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3a Shells / orientation</a> <span class="sep">/</span> <span class="current">Tsh076</span>
+</nav>
+<header class="title-bar">
+<h1>Tsh076 <span class="sep">—</span> <span class="entry-title">Shell-count escalation on decomposition</span></h1>
+<p class="category">§12.3a (shells)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3a-shells/Tsh076.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3a-shells/Tsh076.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT method line ShapeFix_Shell.Perform:102 (Perform_at102)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Input shell decomposition by GetShells() creates 3+ closed sub-shells, escalating NbShells count unexpectedly. Downstream logic assuming single output shell breaks.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Create a CLOSED_SHELL containing three disconnected cubes (three independent face clusters with no shared edges). Call ShapeFix_Shell.Perform(). Observe NbShells increases from 1 to 3, breaking orientation-fix logic that expects single shell.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Kernel must reconcile multi-shell output or emit error if input cannot be treated as single shell.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=unknown/unknown gmsh=unknown ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_faces_total == 3</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tsh076 - ShapeFix_Shell shell-count escalation
+<span class="lineno">3</span> * Defect: Input shell decomposes into 3+ closed sub-shells when
+<span class="lineno">4</span> * FixFaceOrientation runs GetShells(); NbShells count escalates
+<span class="lineno">5</span> * unexpectedly, breaking downstream orientation logic assuming
+<span class="lineno">6</span> * single output shell. Source: ShapeFix_Shell.Perform line 102
+<span class="lineno">7</span> * (Perform_at102). */
+<span class="lineno">8</span>HEADER;
+<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;Tsh076 test case&#x27;,&#x27;Shell decomposition escalation&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;Tsh076.stp&#x27;,&#x27;2026-06-16T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">11</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">12</span>ENDSEC;
+<span class="lineno">13</span>DATA;
+<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">15</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">16</span>/* Three disconnected cubes in one shell: will decompose into 3 sub-shells */
+<span class="lineno">17</span>/* Cube 1: (0,0,0) to (1,1,1) */
+<span class="lineno">18</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">19</span>#101=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">20</span>#102=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
+<span class="lineno">21</span>#103=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">22</span>#104=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">23</span>#105=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,1.0));
+<span class="lineno">24</span>#106=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,1.0));
+<span class="lineno">25</span>#107=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,1.0));
+<span class="lineno">26</span>/* Cube 2: (3,0,0) to (4,1,1) */
+<span class="lineno">27</span>#110=CARTESIAN_POINT(&#x27;&#x27;,(3.0,0.0,0.0));
+<span class="lineno">28</span>#111=CARTESIAN_POINT(&#x27;&#x27;,(4.0,0.0,0.0));
+<span class="lineno">29</span>#112=CARTESIAN_POINT(&#x27;&#x27;,(4.0,1.0,0.0));
+<span class="lineno">30</span>#113=CARTESIAN_POINT(&#x27;&#x27;,(3.0,1.0,0.0));
+<span class="lineno">31</span>#114=CARTESIAN_POINT(&#x27;&#x27;,(3.0,0.0,1.0));
+<span class="lineno">32</span>#115=CARTESIAN_POINT(&#x27;&#x27;,(4.0,0.0,1.0));
+<span class="lineno">33</span>#116=CARTESIAN_POINT(&#x27;&#x27;,(4.0,1.0,1.0));
+<span class="lineno">34</span>#117=CARTESIAN_POINT(&#x27;&#x27;,(3.0,1.0,1.0));
+<span class="lineno">35</span>/* Cube 3: (6,0,0) to (7,1,1) */
+<span class="lineno">36</span>#120=CARTESIAN_POINT(&#x27;&#x27;,(6.0,0.0,0.0));
+<span class="lineno">37</span>#121=CARTESIAN_POINT(&#x27;&#x27;,(7.0,0.0,0.0));
+<span class="lineno">38</span>#122=CARTESIAN_POINT(&#x27;&#x27;,(7.0,1.0,0.0));
+<span class="lineno">39</span>#123=CARTESIAN_POINT(&#x27;&#x27;,(6.0,1.0,0.0));
+<span class="lineno">40</span>#124=CARTESIAN_POINT(&#x27;&#x27;,(6.0,0.0,1.0));
+<span class="lineno">41</span>#125=CARTESIAN_POINT(&#x27;&#x27;,(7.0,0.0,1.0));
+<span class="lineno">42</span>#126=CARTESIAN_POINT(&#x27;&#x27;,(7.0,1.0,1.0));
+<span class="lineno">43</span>#127=CARTESIAN_POINT(&#x27;&#x27;,(6.0,1.0,1.0));
+<span class="lineno">44</span>/* Cube 1 vertices */
+<span class="lineno">45</span>#200=VERTEX_POINT(&#x27;&#x27;,#100); #201=VERTEX_POINT(&#x27;&#x27;,#101);
+<span class="lineno">46</span>#202=VERTEX_POINT(&#x27;&#x27;,#102); #203=VERTEX_POINT(&#x27;&#x27;,#103);
+<span class="lineno">47</span>#204=VERTEX_POINT(&#x27;&#x27;,#104); #205=VERTEX_POINT(&#x27;&#x27;,#105);
+<span class="lineno">48</span>#206=VERTEX_POINT(&#x27;&#x27;,#106); #207=VERTEX_POINT(&#x27;&#x27;,#107);
+<span class="lineno">49</span>/* Cube 2 vertices */
+<span class="lineno">50</span>#210=VERTEX_POINT(&#x27;&#x27;,#110); #211=VERTEX_POINT(&#x27;&#x27;,#111);
+<span class="lineno">51</span>#212=VERTEX_POINT(&#x27;&#x27;,#112); #213=VERTEX_POINT(&#x27;&#x27;,#113);
+<span class="lineno">52</span>#214=VERTEX_POINT(&#x27;&#x27;,#114); #215=VERTEX_POINT(&#x27;&#x27;,#115);
+<span class="lineno">53</span>#216=VERTEX_POINT(&#x27;&#x27;,#116); #217=VERTEX_POINT(&#x27;&#x27;,#117);
+<span class="lineno">54</span>/* Cube 3 vertices */
+<span class="lineno">55</span>#220=VERTEX_POINT(&#x27;&#x27;,#120); #221=VERTEX_POINT(&#x27;&#x27;,#121);
+<span class="lineno">56</span>#222=VERTEX_POINT(&#x27;&#x27;,#122); #223=VERTEX_POINT(&#x27;&#x27;,#123);
+<span class="lineno">57</span>#224=VERTEX_POINT(&#x27;&#x27;,#124); #225=VERTEX_POINT(&#x27;&#x27;,#125);
+<span class="lineno">58</span>#226=VERTEX_POINT(&#x27;&#x27;,#126); #227=VERTEX_POINT(&#x27;&#x27;,#127);
+<span class="lineno">59</span>/* Planes for each cube (z=0, z=1, and sides) */
+<span class="lineno">60</span>#300=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0)); #301=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">61</span>#310=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#100,#300,#301); #311=PLANE(&#x27;&#x27;,#310);
+<span class="lineno">62</span>#320=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#104,#300,#301); #321=PLANE(&#x27;&#x27;,#320);
+<span class="lineno">63</span>/* One face per cube (minimal) - bottom face */
+<span class="lineno">64</span>/* Cube 1 bottom */
+<span class="lineno">65</span>#1000=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0)); #1001=VECTOR(&#x27;&#x27;,#1000,1.0);
+<span class="lineno">66</span>#1002=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0)); #1003=VECTOR(&#x27;&#x27;,#1002,1.0);
+<span class="lineno">67</span>#1010=LINE(&#x27;&#x27;,#100,#1001); #1011=EDGE_CURVE(&#x27;&#x27;,#200,#201,#1010,.T.);
+<span class="lineno">68</span>#1012=LINE(&#x27;&#x27;,#101,#1003); #1013=EDGE_CURVE(&#x27;&#x27;,#201,#202,#1012,.T.);
+<span class="lineno">69</span>#1014=LINE(&#x27;&#x27;,#103,#1001); #1015=EDGE_CURVE(&#x27;&#x27;,#203,#202,#1014,.T.);
+<span class="lineno">70</span>#1016=LINE(&#x27;&#x27;,#100,#1003); #1017=EDGE_CURVE(&#x27;&#x27;,#200,#203,#1016,.T.);
+<span class="lineno">71</span>#1020=ORIENTED_EDGE(&#x27;&#x27;,*,*,#1011,.T.); #1021=ORIENTED_EDGE(&#x27;&#x27;,*,*,#1013,.T.);
+<span class="lineno">72</span>#1022=ORIENTED_EDGE(&#x27;&#x27;,*,*,#1015,.F.); #1023=ORIENTED_EDGE(&#x27;&#x27;,*,*,#1017,.F.);
+<span class="lineno">73</span>#1024=EDGE_LOOP(&#x27;&#x27;,(#1020,#1021,#1022,#1023)); #1025=FACE_OUTER_BOUND(&#x27;&#x27;,#1024,.T.);
+<span class="lineno">74</span>#1026=ADVANCED_FACE(&#x27;face_c1&#x27;,(#1025),#311,.T.);
+<span class="lineno">75</span>/* Cube 2 bottom */
+<span class="lineno">76</span>#1100=LINE(&#x27;&#x27;,#110,#1001); #1101=EDGE_CURVE(&#x27;&#x27;,#210,#211,#1100,.T.);
+<span class="lineno">77</span>#1102=LINE(&#x27;&#x27;,#111,#1003); #1103=EDGE_CURVE(&#x27;&#x27;,#211,#212,#1102,.T.);
+<span class="lineno">78</span>#1104=LINE(&#x27;&#x27;,#113,#1001); #1105=EDGE_CURVE(&#x27;&#x27;,#213,#212,#1104,.T.);
+<span class="lineno">79</span>#1106=LINE(&#x27;&#x27;,#110,#1003); #1107=EDGE_CURVE(&#x27;&#x27;,#210,#213,#1106,.T.);
+<span class="lineno">80</span>#1110=ORIENTED_EDGE(&#x27;&#x27;,*,*,#1101,.T.); #1111=ORIENTED_EDGE(&#x27;&#x27;,*,*,#1103,.T.);
+<span class="lineno">81</span>#1112=ORIENTED_EDGE(&#x27;&#x27;,*,*,#1105,.F.); #1113=ORIENTED_EDGE(&#x27;&#x27;,*,*,#1107,.F.);
+<span class="lineno">82</span>#1114=EDGE_LOOP(&#x27;&#x27;,(#1110,#1111,#1112,#1113)); #1115=FACE_OUTER_BOUND(&#x27;&#x27;,#1114,.T.);
+<span class="lineno">83</span>#1116=ADVANCED_FACE(&#x27;face_c2&#x27;,(#1115),#311,.T.);
+<span class="lineno">84</span>/* Cube 3 bottom */
+<span class="lineno">85</span>#1200=LINE(&#x27;&#x27;,#120,#1001); #1201=EDGE_CURVE(&#x27;&#x27;,#220,#221,#1200,.T.);
+<span class="lineno">86</span>#1202=LINE(&#x27;&#x27;,#121,#1003); #1203=EDGE_CURVE(&#x27;&#x27;,#221,#222,#1202,.T.);
+<span class="lineno">87</span>#1204=LINE(&#x27;&#x27;,#123,#1001); #1205=EDGE_CURVE(&#x27;&#x27;,#223,#222,#1204,.T.);
+<span class="lineno">88</span>#1206=LINE(&#x27;&#x27;,#120,#1003); #1207=EDGE_CURVE(&#x27;&#x27;,#220,#223,#1206,.T.);
+<span class="lineno">89</span>#1210=ORIENTED_EDGE(&#x27;&#x27;,*,*,#1201,.T.); #1211=ORIENTED_EDGE(&#x27;&#x27;,*,*,#1203,.T.);
+<span class="lineno">90</span>#1212=ORIENTED_EDGE(&#x27;&#x27;,*,*,#1205,.F.); #1213=ORIENTED_EDGE(&#x27;&#x27;,*,*,#1207,.F.);
+<span class="lineno">91</span>#1214=EDGE_LOOP(&#x27;&#x27;,(#1210,#1211,#1212,#1213)); #1215=FACE_OUTER_BOUND(&#x27;&#x27;,#1214,.T.);
+<span class="lineno">92</span>#1216=ADVANCED_FACE(&#x27;face_c3&#x27;,(#1215),#311,.T.);
+<span class="lineno">93</span>/* Defect: all three disconnected cubes in one shell - will decompose to 3 sub-shells */
+<span class="lineno">94</span>#2000=CLOSED_SHELL(&#x27;shell_3cubes&#x27;,(#1026,#1116,#1216));
+<span class="lineno">95</span>/* PRODUCT chain */
+<span class="lineno">96</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">97</span>#9001=PRODUCT(&#x27;Tsh076&#x27;,&#x27;Tsh076&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">98</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">99</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">100</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">101</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">102</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">103</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">104</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">105</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">106</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">107</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;sbsm&#x27;,(#2000));
+<span class="lineno">108</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">109</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">110</span>ENDSEC;
+<span class="lineno">111</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tsh075.html">&larr; Tsh075</a> <a class="up" href="index.html">§12.3a Shells / orientation</a> <a class="next" href="Tsh077.html">Tsh077 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

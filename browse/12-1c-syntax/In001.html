@@ -45,6 +45,9 @@
 <li><code>contains(b&#x27;HEADER;&#x27;)</code></li>
 <li><code>count(b&#x27;ENDSEC;&#x27;) &gt;= 2</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -60,18 +63,16 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* In001 - Empty DATA section after valid HEADER.
-<span class="lineno">3</span> * Defect: HEADER is well-formed; DATA contains only a comment, no
-<span class="lineno">4</span> * entities. Reader&#x27;s data state ends as &quot;Unloaded&quot; silently. */
-<span class="lineno">5</span><mark>HEADER;</mark>
-<span class="lineno">6</span>FILE_DESCRIPTION((&#x27;In001 - empty data section&#x27;,&#x27;Pass C gap-fill&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">7</span>FILE_NAME(&#x27;In001.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;gap-fill C&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">8</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">9</span><mark>ENDSEC;</mark>
-<span class="lineno">10</span><mark>DATA;</mark>
-<span class="lineno">11</span>/* This DATA section is intentionally empty of entities. */
-<span class="lineno">12</span><mark>ENDSEC;</mark>
-<span class="lineno">13</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* In001: Model marked Loaded without entities; load skipped silently; OCCT Interface_InterfaceModel.cxx:276 (Interface_StateUnloaded); a reader data state is Unloaded when the file was opened but the entity table was never populated â e.g. parser bailed silently after the header; defect: a Part-21 file with a valid HEADER but a DATA section containing only a comment and no entities; ENDSEC closes the section; downstream consumers see an empty model without a diagnostic; receiver must distinguish empty-data from load-failed with separate diagnostic codes; never let the consumer see an empty model from a load failure; must not silently accept failed load; bug-reporter synonyms: STEP loaded but empty, no entities in file, kernel imports nothing silently; GEOMETRIC_CURVE_SET IS NOT used â DATA section intentionally empty of entities */
+<span class="lineno">3</span><mark>HEADER;</mark>
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;In001&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;In001.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span><mark>ENDSEC;</mark>
+<span class="lineno">8</span><mark>DATA;</mark>
+<span class="lineno">9</span>/* This DATA section is intentionally empty of entities. */
+<span class="lineno">10</span><mark>ENDSEC;</mark>
+<span class="lineno">11</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

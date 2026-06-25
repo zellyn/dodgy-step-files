@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Twi163 — ShapeAnalysis_Wire.CheckIntersectingEdges trimmed-edges-overlap-base-curve</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3b Wires / loops / edges</a> <span class="sep">/</span> <span class="current">Twi163</span>
+</nav>
+<header class="title-bar">
+<h1>Twi163 <span class="sep">—</span> <span class="entry-title">ShapeAnalysis_Wire.CheckIntersectingEdges trimmed-edges-overlap-base-curve</span></h1>
+<p class="category">§12.3b</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3b-wires/Twi163.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3b-wires/Twi163.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>synthesized — no external source cited</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>ShapeAnalysis_Wire.CheckIntersectingEdges trimmed-edges-overlap-base-curve</p></section>
+<section><h2>Reproducer recipe</h2>
+<p></p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_faces_total == 1</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Twi163: Single ADVANCED_FACE on PLANE in CLOSED_SHELL; outer EDGE_LOOP has 3 edges: E0 degree-3 B-spline (0,0,0)â(6,4.32,0) covering param t=[0.0,0.6]; E1 degree-3 B-spline same-base-curve (4,3.84,0)â(9,2.43,0) covering param t=[0.4,0.9] â overlaps E0 in param range [0.4,0.6] IS the defect; E2 LINE (9,2.43,0)â(0,0,0) closes the wire; both E0 and E1 reference distinct B-spline curve entities that trace the same underlying curve segment in [0.4,0.6]; CheckIntersectingEdges without range-overlap detection on shared-base reports false-clean IS the mechanism; EDGE_LOOP IS wired into FACE_OUTER_BOUND â ADVANCED_FACE in CLOSED_SHELL â never orphaned */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Twi163&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Twi163.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=PLANE(&#x27;&#x27;,#4);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#7=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(5.056,7.088,0.0));
+<span class="lineno">18</span>#9=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(3.84,7.04,0.0));
+<span class="lineno">20</span>#11=VERTEX_POINT(&#x27;&#x27;,#10);
+<span class="lineno">21</span>#12=CARTESIAN_POINT(&#x27;&#x27;,(6.964,6.872,0.0));
+<span class="lineno">22</span>#13=VERTEX_POINT(&#x27;&#x27;,#12);
+<span class="lineno">23</span>#14=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">24</span>#15=CARTESIAN_POINT(&#x27;&#x27;,(2.0,8.0,0.0));
+<span class="lineno">25</span>#16=CARTESIAN_POINT(&#x27;&#x27;,(5.0,6.0,0.0));
+<span class="lineno">26</span>#17=CARTESIAN_POINT(&#x27;&#x27;,(6.0,8.0,0.0));
+<span class="lineno">27</span>#18=CARTESIAN_POINT(&#x27;&#x27;,(8.0,6.0,0.0));
+<span class="lineno">28</span>#19=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">29</span>#20=B_SPLINE_CURVE_WITH_KNOTS(&#x27;&#x27;,3,(#14,#15,#16,#17,#18,#19),.UNSPECIFIED.,.F.,.F.,(4,2,4),(0.0,0.5,1.0),.UNSPECIFIED.);
+<span class="lineno">30</span>#21=EDGE_CURVE(&#x27;&#x27;,#7,#9,#20,.T.);
+<span class="lineno">31</span>#22=ORIENTED_EDGE(&#x27;&#x27;,$,$,#21,.T.);
+<span class="lineno">32</span>#23=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">33</span>#24=CARTESIAN_POINT(&#x27;&#x27;,(2.0,8.0,0.0));
+<span class="lineno">34</span>#25=CARTESIAN_POINT(&#x27;&#x27;,(5.0,6.0,0.0));
+<span class="lineno">35</span>#26=CARTESIAN_POINT(&#x27;&#x27;,(6.0,8.0,0.0));
+<span class="lineno">36</span>#27=CARTESIAN_POINT(&#x27;&#x27;,(8.0,6.0,0.0));
+<span class="lineno">37</span>#28=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">38</span>#29=B_SPLINE_CURVE_WITH_KNOTS(&#x27;&#x27;,3,(#23,#24,#25,#26,#27,#28),.UNSPECIFIED.,.F.,.F.,(4,2,4),(0.0,0.5,1.0),.UNSPECIFIED.);
+<span class="lineno">39</span>#30=EDGE_CURVE(&#x27;&#x27;,#11,#13,#29,.T.);
+<span class="lineno">40</span>#31=ORIENTED_EDGE(&#x27;&#x27;,$,$,#30,.T.);
+<span class="lineno">41</span>#32=CARTESIAN_POINT(&#x27;&#x27;,(5.056,7.088,0.0));
+<span class="lineno">42</span>#33=DIRECTION(&#x27;&#x27;,(-0.999221823409,-0.0394429667135,0.0));
+<span class="lineno">43</span>#34=VECTOR(&#x27;&#x27;,#33,1.21694699967);
+<span class="lineno">44</span>#35=LINE(&#x27;&#x27;,#32,#34);
+<span class="lineno">45</span>#36=EDGE_CURVE(&#x27;&#x27;,#9,#11,#35,.T.);
+<span class="lineno">46</span>#37=ORIENTED_EDGE(&#x27;&#x27;,$,$,#36,.T.);
+<span class="lineno">47</span>#38=CARTESIAN_POINT(&#x27;&#x27;,(6.964,6.872,0.0));
+<span class="lineno">48</span>#39=DIRECTION(&#x27;&#x27;,(-0.711792825643,-0.702389474126,0.0));
+<span class="lineno">49</span>#40=VECTOR(&#x27;&#x27;,#39,9.78374570397);
+<span class="lineno">50</span>#41=LINE(&#x27;&#x27;,#38,#40);
+<span class="lineno">51</span>#42=EDGE_CURVE(&#x27;&#x27;,#13,#7,#41,.T.);
+<span class="lineno">52</span>#43=ORIENTED_EDGE(&#x27;&#x27;,$,$,#42,.T.);
+<span class="lineno">53</span>#44=EDGE_LOOP(&#x27;&#x27;,(#22,#37,#31,#43));
+<span class="lineno">54</span>#45=FACE_OUTER_BOUND(&#x27;&#x27;,#44,.T.);
+<span class="lineno">55</span>#46=ADVANCED_FACE(&#x27;&#x27;,(#45),#5,.T.);
+<span class="lineno">56</span>#47=CLOSED_SHELL(&#x27;&#x27;,(#46));
+<span class="lineno">57</span>#48=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#47));
+<span class="lineno">58</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">59</span>#9051=PRODUCT(&#x27;Twi163&#x27;,&#x27;Twi163&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">60</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">61</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">62</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">63</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">64</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">65</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">66</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">67</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">68</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">69</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#48),#9060);
+<span class="lineno">70</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">71</span>ENDSEC;
+<span class="lineno">72</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Twi162.html">&larr; Twi162</a> <a class="up" href="index.html">§12.3b Wires / loops / edges</a> <a class="next" href="Twi164.html">Twi164 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

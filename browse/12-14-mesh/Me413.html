@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Me413 — refineSelectedHolePatches_edge_length_averaging: non-interior boundary edges summed to compute sigma (Branch 4)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <span class="sep">/</span> <span class="current">Me413</span>
+</nav>
+<header class="title-bar">
+<h1>Me413 <span class="sep">—</span> <span class="entry-title">refineSelectedHolePatches_edge_length_averaging: non-interior boundary edges summed to compute sigma (Branch 4)</span></h1>
+<p class="category">§12.14 mesh defects (sub-class: hole-fill refinement / edge-length-averaging)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../mesh-examples/12-14-mesh/Me413.mesh.json">View raw fixture (.mesh.json)</a> <code class="path">mesh-examples/12-14-mesh/Me413.mesh.json</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>MeshFix `holeFilling::refineSelectedHolePatches` Branch 4 (*EDGE_LENGTH_AVERAGING*: `sigma += e-&gt;length()</li>
+<li>noe++`)</li>
+<li>`MESH_HEAL_COVERAGE.md`.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Four triangles on a 3x2 grid (v0–v5) with 3 interior edges and 6 boundary edges. Interior edges (v0,v4),(v1,v4),(v2,v4) are excluded from sigma. The 6 boundary edges each have length 1.0; Branch 4 fires 6 times, accumulating sigma=6.0, noe=6, average=1.0. This average length becomes the density threshold (sigma/noe=1.0) used in the Branch 5 vertex-split density check. Euler: V=6, E=9, F=4, chi=1.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>v0=(0,0,0), v1=(1,0,0), v2=(2,0,0), v3=(0,1,0), v4=(1,1,0), v5=(2,1,0); t0=(v0,v1,v4), t1=(v0,v4,v3), t2=(v1,v2,v4), t3=(v2,v5,v4); interior (v0,v4),(v1,v4),(v2,v4) n=2; boundary edges length=1.0 n=1; euler V=6,E=9,F=4,chi=1.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Branch 4 fires for each of the 6 boundary edges; sigma accumulates to 6.0; noe=6; sigma/noe=1.0 becomes the vertex-split threshold.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>{
+<span class="lineno">2</span>  &quot;vertices&quot;: [
+<span class="lineno">3</span>    [
+<span class="lineno">4</span>      0.0,
+<span class="lineno">5</span>      0.0,
+<span class="lineno">6</span>      0.0
+<span class="lineno">7</span>    ],
+<span class="lineno">8</span>    [
+<span class="lineno">9</span>      1.0,
+<span class="lineno">10</span>      0.0,
+<span class="lineno">11</span>      0.0
+<span class="lineno">12</span>    ],
+<span class="lineno">13</span>    [
+<span class="lineno">14</span>      2.0,
+<span class="lineno">15</span>      0.0,
+<span class="lineno">16</span>      0.0
+<span class="lineno">17</span>    ],
+<span class="lineno">18</span>    [
+<span class="lineno">19</span>      0.0,
+<span class="lineno">20</span>      1.0,
+<span class="lineno">21</span>      0.0
+<span class="lineno">22</span>    ],
+<span class="lineno">23</span>    [
+<span class="lineno">24</span>      1.0,
+<span class="lineno">25</span>      1.0,
+<span class="lineno">26</span>      0.0
+<span class="lineno">27</span>    ],
+<span class="lineno">28</span>    [
+<span class="lineno">29</span>      2.0,
+<span class="lineno">30</span>      1.0,
+<span class="lineno">31</span>      0.0
+<span class="lineno">32</span>    ]
+<span class="lineno">33</span>  ],
+<span class="lineno">34</span>  &quot;triangles&quot;: [
+<span class="lineno">35</span>    [
+<span class="lineno">36</span>      0,
+<span class="lineno">37</span>      1,
+<span class="lineno">38</span>      4
+<span class="lineno">39</span>    ],
+<span class="lineno">40</span>    [
+<span class="lineno">41</span>      0,
+<span class="lineno">42</span>      4,
+<span class="lineno">43</span>      3
+<span class="lineno">44</span>    ],
+<span class="lineno">45</span>    [
+<span class="lineno">46</span>      1,
+<span class="lineno">47</span>      2,
+<span class="lineno">48</span>      4
+<span class="lineno">49</span>    ],
+<span class="lineno">50</span>    [
+<span class="lineno">51</span>      2,
+<span class="lineno">52</span>      5,
+<span class="lineno">53</span>      4
+<span class="lineno">54</span>    ]
+<span class="lineno">55</span>  ],
+<span class="lineno">56</span>  &quot;metadata&quot;: {
+<span class="lineno">57</span>    &quot;id&quot;: &quot;Me413&quot;,
+<span class="lineno">58</span>    &quot;schema_version&quot;: 0,
+<span class="lineno">59</span>    &quot;defect_class&quot;: &quot;hole_in_hull&quot;,
+<span class="lineno">60</span>    &quot;title&quot;: &quot;refineSelectedHolePatches_edge_length_averaging: boundary edges summed for sigma average (Branch 4)&quot;,
+<span class="lineno">61</span>    &quot;assertions&quot;: [
+<span class="lineno">62</span>      {
+<span class="lineno">63</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">64</span>        &quot;edge&quot;: [
+<span class="lineno">65</span>          0,
+<span class="lineno">66</span>          4
+<span class="lineno">67</span>        ],
+<span class="lineno">68</span>        &quot;n&quot;: 2
+<span class="lineno">69</span>      },
+<span class="lineno">70</span>      {
+<span class="lineno">71</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">72</span>        &quot;edge&quot;: [
+<span class="lineno">73</span>          1,
+<span class="lineno">74</span>          4
+<span class="lineno">75</span>        ],
+<span class="lineno">76</span>        &quot;n&quot;: 2
+<span class="lineno">77</span>      },
+<span class="lineno">78</span>      {
+<span class="lineno">79</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">80</span>        &quot;edge&quot;: [
+<span class="lineno">81</span>          2,
+<span class="lineno">82</span>          4
+<span class="lineno">83</span>        ],
+<span class="lineno">84</span>        &quot;n&quot;: 2
+<span class="lineno">85</span>      },
+<span class="lineno">86</span>      {
+<span class="lineno">87</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">88</span>        &quot;edge&quot;: [
+<span class="lineno">89</span>          0,
+<span class="lineno">90</span>          1
+<span class="lineno">91</span>        ],
+<span class="lineno">92</span>        &quot;n&quot;: 1
+<span class="lineno">93</span>      },
+<span class="lineno">94</span>      {
+<span class="lineno">95</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">96</span>        &quot;edge&quot;: [
+<span class="lineno">97</span>          0,
+<span class="lineno">98</span>          3
+<span class="lineno">99</span>        ],
+<span class="lineno">100</span>        &quot;n&quot;: 1
+<span class="lineno">101</span>      },
+<span class="lineno">102</span>      {
+<span class="lineno">103</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">104</span>        &quot;edge&quot;: [
+<span class="lineno">105</span>          3,
+<span class="lineno">106</span>          4
+<span class="lineno">107</span>        ],
+<span class="lineno">108</span>        &quot;n&quot;: 1
+<span class="lineno">109</span>      },
+<span class="lineno">110</span>      {
+<span class="lineno">111</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">112</span>        &quot;edge&quot;: [
+<span class="lineno">113</span>          1,
+<span class="lineno">114</span>          2
+<span class="lineno">115</span>        ],
+<span class="lineno">116</span>        &quot;n&quot;: 1
+<span class="lineno">117</span>      },
+<span class="lineno">118</span>      {
+<span class="lineno">119</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">120</span>        &quot;edge&quot;: [
+<span class="lineno">121</span>          2,
+<span class="lineno">122</span>          5
+<span class="lineno">123</span>        ],
+<span class="lineno">124</span>        &quot;n&quot;: 1
+<span class="lineno">125</span>      },
+<span class="lineno">126</span>      {
+<span class="lineno">127</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">128</span>        &quot;edge&quot;: [
+<span class="lineno">129</span>          4,
+<span class="lineno">130</span>          5
+<span class="lineno">131</span>        ],
+<span class="lineno">132</span>        &quot;n&quot;: 1
+<span class="lineno">133</span>      },
+<span class="lineno">134</span>      {
+<span class="lineno">135</span>        &quot;kind&quot;: &quot;euler_characteristic&quot;,
+<span class="lineno">136</span>        &quot;v&quot;: 6,
+<span class="lineno">137</span>        &quot;e&quot;: 9,
+<span class="lineno">138</span>        &quot;f&quot;: 4,
+<span class="lineno">139</span>        &quot;chi&quot;: 1
+<span class="lineno">140</span>      }
+<span class="lineno">141</span>    ]
+<span class="lineno">142</span>  }
+<span class="lineno">143</span>}
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Me412.html">&larr; Me412</a> <a class="up" href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <a class="next" href="Me414.html">Me414 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gp098 — ShapeAnalysis_Edge.CheckOverlapping arc-tangent-to-line</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2a Pcurve defects</a> <span class="sep">/</span> <span class="current">Gp098</span>
+</nav>
+<header class="title-bar">
+<h1>Gp098 <span class="sep">—</span> <span class="entry-title">ShapeAnalysis_Edge.CheckOverlapping arc-tangent-to-line</span></h1>
+<p class="category">§12.2a</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2a-pcurves/Gp098.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2a-pcurves/Gp098.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>synthesized — no external source cited</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>ShapeAnalysis_Edge.CheckOverlapping arc-tangent-to-line</p></section>
+<section><h2>Reproducer recipe</h2>
+<p></p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>process_signal</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gp098 - ShapeAnalysis_Edge.CheckOverlapping arc-tangent-to-line
+<span class="lineno">3</span> * Defect: two edges where an arc is tangent to a line at a single point.
+<span class="lineno">4</span> * CheckOverlapping reports &quot;they overlap at one point&quot; which is technically
+<span class="lineno">5</span> * true but misleadingâtangency is not the same as overlap. */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;Gp098 test case&#x27;,&#x27;CheckOverlapping arc-tangent-to-line&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;Gp098.stp&#x27;,&#x27;2026-06-15T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">14</span>#3=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">15</span>#4=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
+<span class="lineno">16</span>#5=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
+<span class="lineno">17</span>#6=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#3,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">18</span>#7=( GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">19</span>     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#6))
+<span class="lineno">20</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#3,#4,#5))
+<span class="lineno">21</span>     REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;) );
+<span class="lineno">22</span>/* Host plane */
+<span class="lineno">23</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">24</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">25</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">26</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">27</span>#14=PLANE(&#x27;host_plane&#x27;,#13);
+<span class="lineno">28</span>/* Horizontal line from (-2,0,0) to (2,0,0) */
+<span class="lineno">29</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(-2.0,0.0,0.0));
+<span class="lineno">30</span>#21=CARTESIAN_POINT(&#x27;&#x27;,(2.0,0.0,0.0));
+<span class="lineno">31</span>#22=LINE(&#x27;line_horizontal&#x27;,#20,#21);
+<span class="lineno">32</span>/* Circle centered at (0,1,0) with radius 1, tangent to line at (0,0,0) */
+<span class="lineno">33</span>#23=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">34</span>#24=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#23,#11,#12);
+<span class="lineno">35</span>#25=CIRCLE(&#x27;circle_tangent&#x27;,#24,1.0);
+<span class="lineno">36</span>/* Trimmed arc from tangent point to beyond */
+<span class="lineno">37</span>#26=TRIMMED_CURVE(&#x27;arc_tangent&#x27;,#25,(0.0,3.14159265358979323846),.T.,.PARAMETER.);
+<span class="lineno">38</span>/* Vertices for line edge */
+<span class="lineno">39</span>#30=VERTEX_POINT(&#x27;&#x27;,#20);
+<span class="lineno">40</span>#31=VERTEX_POINT(&#x27;&#x27;,#21);
+<span class="lineno">41</span>/* Vertices for arc edge */
+<span class="lineno">42</span>#32=VERTEX_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">43</span>#33=CARTESIAN_POINT(&#x27;&#x27;,(0.0,2.0,0.0));
+<span class="lineno">44</span>#34=VERTEX_POINT(&#x27;&#x27;,#33);
+<span class="lineno">45</span>/* PCURVE for line */
+<span class="lineno">46</span>#40=CARTESIAN_POINT(&#x27;&#x27;,(-2.0,0.0));
+<span class="lineno">47</span>#41=CARTESIAN_POINT(&#x27;&#x27;,(2.0,0.0));
+<span class="lineno">48</span>#42=LINE(&#x27;pcurve_line&#x27;,#40,#41);
+<span class="lineno">49</span>#43=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
+<span class="lineno">50</span>      PARAMETRIC_REPRESENTATION_CONTEXT()
+<span class="lineno">51</span>      REPRESENTATION_CONTEXT(&#x27;parametric&#x27;,&#x27;2D&#x27;) );
+<span class="lineno">52</span>#44=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#42),#43);
+<span class="lineno">53</span>#45=PCURVE(&#x27;pcurve_line_2d&#x27;,#14,#44);
+<span class="lineno">54</span>#50=SURFACE_CURVE(&#x27;edge_line_surf&#x27;,#22,(#45),.PCURVE_S1.);
+<span class="lineno">55</span>#60=EDGE_CURVE(&#x27;edge_line&#x27;,#30,#31,#50,.T.);
+<span class="lineno">56</span>/* PCURVE for arc */
+<span class="lineno">57</span>#70=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">58</span>#71=CIRCLE(&#x27;pcurve_arc_circle&#x27;,#70,1.0);
+<span class="lineno">59</span>#72=TRIMMED_CURVE(&#x27;pcurve_arc&#x27;,#71,(0.0,3.14159265358979323846),.T.,.PARAMETER.);
+<span class="lineno">60</span>#73=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#72),#43);
+<span class="lineno">61</span>#74=PCURVE(&#x27;pcurve_arc_2d&#x27;,#14,#73);
+<span class="lineno">62</span>#75=SURFACE_CURVE(&#x27;edge_arc_surf&#x27;,#26,(#74),.PCURVE_S1.);
+<span class="lineno">63</span>#76=EDGE_CURVE(&#x27;edge_arc&#x27;,#32,#34,#75,.T.);
+<span class="lineno">64</span>/* Wire with both edges - they touch at tangent point */
+<span class="lineno">65</span>#80=ORIENTED_EDGE(&#x27;&#x27;,*,*,#60,.T.);
+<span class="lineno">66</span>#81=ORIENTED_EDGE(&#x27;&#x27;,*,*,#76,.T.);
+<span class="lineno">67</span>#82=EDGE_LOOP(&#x27;&#x27;,(#80,#81));
+<span class="lineno">68</span>#83=FACE_OUTER_BOUND(&#x27;&#x27;,#82,.T.);
+<span class="lineno">69</span>#84=ADVANCED_FACE(&#x27;&#x27;,(#83),#14,.T.);
+<span class="lineno">70</span>#90=SHAPE_REPRESENTATION(&#x27;Gp098&#x27;,(#13,#84),#7);
+<span class="lineno">71</span>/* PRODUCT chain */
+<span class="lineno">72</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">73</span>#9001=PRODUCT(&#x27;Gp098&#x27;,&#x27;Gp098&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">74</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">75</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">76</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">77</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">78</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">79</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">80</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">81</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">82</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">83</span>#9020=OPEN_SHELL(&#x27;wrap_shell&#x27;,(#84));
+<span class="lineno">84</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;wrap_sbsm&#x27;,(#9020));
+<span class="lineno">85</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">86</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">87</span>ENDSEC;
+<span class="lineno">88</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gp097.html">&larr; Gp097</a> <a class="up" href="index.html">§12.2a Pcurve defects</a> <a class="next" href="Gp099.html">Gp099 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

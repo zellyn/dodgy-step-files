@@ -44,6 +44,9 @@
 <li><code>count_entity_def(b&#x27;DATE_AND_TIME&#x27;) &gt;= 2</code></li>
 <li><code>contains(b&#x27;COORDINATED_UNIVERSAL_TIME_OFFSET&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -59,31 +62,73 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M133 - AP203 inconsistent ISO 8601 date formats within the same file.
-<span class="lineno">3</span> * Defect: one DATE_AND_TIME captures local time without a timezone
-<span class="lineno">4</span> * offset while another in the same file embeds an explicit UTC offset.
-<span class="lineno">5</span> * Comparing the two requires assuming a timezone for the naive value.
-<span class="lineno">6</span> * Bug-reporter language: &quot;STEP dates inconsistent timezone&quot;, &quot;AP203
-<span class="lineno">7</span> * mixed date format&quot;, &quot;naive timestamp&quot;. */
-<span class="lineno">8</span>HEADER;
-<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;M133 test case&#x27;,&#x27;AP203 mixed ISO 8601 date format&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">10</span>FILE_NAME(&#x27;M133.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">11</span>FILE_SCHEMA((&#x27;<mark>CONFIG_CONTROL_DESIGN</mark>&#x27;));
-<span class="lineno">12</span>ENDSEC;
-<span class="lineno">13</span>DATA;
-<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;configuration controlled 3D design of mechanical parts and assemblies&#x27;);
-<span class="lineno">15</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;config_control_design&#x27;,1994,#1);
-<span class="lineno">16</span>#10=PRODUCT(&#x27;part_a&#x27;,&#x27;part_a&#x27;,&#x27;widget&#x27;,(#1));
-<span class="lineno">17</span>#20=PRODUCT_DEFINITION_FORMATION(&#x27;rev_A&#x27;,&#x27;released&#x27;,#10);
-<span class="lineno">18</span>#30=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#20,#1);
-<span class="lineno">19</span>/* Defect: #100 has no timezone offset; #101 has explicit +00:00 offset. */
-<span class="lineno">20</span><mark>#100=DATE_AND_TIME(</mark>CALENDAR_DATE(2024,3,1),LOCAL_TIME(14,30,0.0,$));
-<span class="lineno">21</span><mark>#101=DATE_AND_TIME(</mark>CALENDAR_DATE(2024,3,1),LOCAL_TIME(14,30,0.0,
-<span class="lineno">22</span>       <mark>COORDINATED_UNIVERSAL_TIME_OFFSET</mark>(0,0,.AHEAD.)));
-<span class="lineno">23</span>#110=APPLIED_DATE_TIME_ASSIGNMENT(#100,&#x27;creation&#x27;,(#30));
-<span class="lineno">24</span>#111=APPLIED_DATE_TIME_ASSIGNMENT(#101,&#x27;release&#x27;,(#30));
-<span class="lineno">25</span>ENDSEC;
-<span class="lineno">26</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M133: AP203 inconsistent ISO 8601 date formats â mixed naive/aware timestamps */
+<span class="lineno">3</span>/* DEFECT: one DATE_AND_TIME is timezone-naive (offset=$); another has explicit UTC offset */
+<span class="lineno">4</span>/* Comparing or ordering these timestamps requires assuming a timezone for the naive one */
+<span class="lineno">5</span>/* Per AP203 Â§5.7 consistent timezone handling is required for reliable PDM audit trails */
+<span class="lineno">6</span>/* Byte assertion: contains(b&#x27;<mark>CONFIG_CONTROL_DESIGN</mark>&#x27;) */
+<span class="lineno">7</span>/* Byte assertion: count_entity_def(b&#x27;DATE_AND_TIME&#x27;) &gt;= 2 */
+<span class="lineno">8</span>/* Byte assertion: contains(b&#x27;<mark>COORDINATED_UNIVERSAL_TIME_OFFSET</mark>&#x27;) */
+<span class="lineno">9</span>HEADER;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;M133: AP203 mixed timezone-naive and timezone-aware DATE_AND_TIME&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;M133.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>/* Byte assertion: contains(b&#x27;<mark>CONFIG_CONTROL_DESIGN</mark>&#x27;) */
+<span class="lineno">13</span>FILE_SCHEMA((&#x27;<mark>CONFIG_CONTROL_DESIGN</mark> { 1 0 10303 203 1 0 0 }&#x27;));
+<span class="lineno">14</span>ENDSEC;
+<span class="lineno">15</span>DATA;
+<span class="lineno">16</span>#1=APPLICATION_CONTEXT(&#x27;configuration controlled 3D designs of mechanical parts and assemblies&#x27;);
+<span class="lineno">17</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">18</span>  &#x27;config_control_design&#x27;,1994,#1);
+<span class="lineno">19</span>/* Standard unit context (mm) */
+<span class="lineno">20</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">21</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">22</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">23</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">24</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">25</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">26</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">27</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">28</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">29</span>/* Calendar dates for creation and modification events */
+<span class="lineno">30</span>#20=CALENDAR_DATE(2024,3,15);
+<span class="lineno">31</span>#21=CALENDAR_DATE(2024,7,22);
+<span class="lineno">32</span>/* Byte assertion: count_entity_def(b&#x27;DATE_AND_TIME&#x27;) &gt;= 2 */
+<span class="lineno">33</span>/* DEFECT: LOCAL_TIME with null offset â timezone-naive, cannot determine UTC equivalent */
+<span class="lineno">34</span>/* This was written by a legacy PDM system that did not record timezone information */
+<span class="lineno">35</span>#22=LOCAL_TIME(14,30,0.0,$);
+<span class="lineno">36</span>/* Byte assertion: contains(b&#x27;<mark>COORDINATED_UNIVERSAL_TIME_OFFSET</mark>&#x27;) */
+<span class="lineno">37</span>/* UTC+0 offset used by the newer system for the modification timestamp */
+<span class="lineno">38</span>#23=<mark>COORDINATED_UNIVERSAL_TIME_OFFSET</mark>(0,0,.AHEAD.);
+<span class="lineno">39</span>/* Timezone-aware LOCAL_TIME with explicit UTC+0 offset */
+<span class="lineno">40</span>#24=LOCAL_TIME(9,15,0.0,#23);
+<span class="lineno">41</span>/* First DATE_AND_TIME: creation date 2024-03-15T14:30:00 â NAIVE (no tz) */
+<span class="lineno">42</span>/* DEFECT contributor: this timestamp cannot be compared with #26 without tz assumption */
+<span class="lineno">43</span><mark>#25=DATE_AND_TIME(</mark>#20,#22);
+<span class="lineno">44</span>/* Second DATE_AND_TIME: modification date 2024-07-22T09:15:00+00:00 â AWARE */
+<span class="lineno">45</span>/* This is timezone-aware; comparing #25 vs #26 requires guessing tz for #25 */
+<span class="lineno">46</span><mark>#26=DATE_AND_TIME(</mark>#21,#24);
+<span class="lineno">47</span>/* Product that has both timestamps attached */
+<span class="lineno">48</span>#30=PRODUCT(&#x27;PART-055&#x27;,&#x27;Control Housing&#x27;,&#x27;Main housing for control unit&#x27;,(#1));
+<span class="lineno">49</span>#31=PRODUCT_DEFINITION_FORMATION(&#x27;rev_A&#x27;,&#x27;Initial release&#x27;,#30);
+<span class="lineno">50</span>#32=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#31,PRODUCT_DEFINITION_CONTEXT(#1,&#x27;design&#x27;));
+<span class="lineno">51</span>/* DATE role assignments: &#x27;creation_date&#x27; (naive) and &#x27;last_modified&#x27; (aware) */
+<span class="lineno">52</span>#40=APPLIED_DATE_AND_TIME_ASSIGNMENT(#25,DATE_TIME_ROLE(&#x27;creation_date&#x27;),(#32));
+<span class="lineno">53</span>#41=APPLIED_DATE_AND_TIME_ASSIGNMENT(#26,DATE_TIME_ROLE(&#x27;last_modified&#x27;),(#32));
+<span class="lineno">54</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">55</span>#500=GEOMETRIC_CURVE_SET(&#x27;ap203-mixed-timezone-naive-aware-dates&#x27;,
+<span class="lineno">56</span>  (#22,#23,#24,#25,#26,#30,#32,#40,#41));
+<span class="lineno">57</span>/* Product chain */
+<span class="lineno">58</span>#600=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">59</span>#601=PRODUCT_CONTEXT(&#x27;&#x27;,#600,&#x27;mechanical&#x27;);
+<span class="lineno">60</span>#602=PRODUCT(&#x27;M133&#x27;,&#x27;M133&#x27;,&#x27;M133&#x27;,(#601));
+<span class="lineno">61</span>#603=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#602);
+<span class="lineno">62</span>#604=PRODUCT_DEFINITION_CONTEXT(#600,&#x27;design&#x27;);
+<span class="lineno">63</span>#605=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#603,#604);
+<span class="lineno">64</span>#606=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#605);
+<span class="lineno">65</span>#607=SHAPE_REPRESENTATION(&#x27;&#x27;,(#500),#14);
+<span class="lineno">66</span>#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
+<span class="lineno">67</span>ENDSEC;
+<span class="lineno">68</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

@@ -43,6 +43,9 @@
 <li><code>contains(b&#x27;DRILLING_OPERATION&#x27;)</code></li>
 <li><code>contains(b&#x27;WORKPLAN&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -58,29 +61,63 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M100 - AP238 spindle-on issued after first tool-workpiece contact.
-<span class="lineno">3</span> * Defect: <mark>WORKPLAN</mark>&#x27;s first operation is a <mark>DRILLING_OPERATION</mark> (tool
-<span class="lineno">4</span> * descends into workpiece) followed by a SPINDLE_SPEED setting. The
-<span class="lineno">5</span> * first contact occurs with the spindle stopped; tool snaps. */
-<span class="lineno">6</span>HEADER;
-<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;M100 test case&#x27;,&#x27;AP238 cut starts before spindle on&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">8</span>FILE_NAME(&#x27;M100.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">9</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 1 0 0 1 }&#x27;));
-<span class="lineno">10</span>ENDSEC;
-<span class="lineno">11</span>DATA;
-<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;numerical_control_machining&#x27;);
-<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">14</span>  &#x27;numerical_control_machining&#x27;,2007,#1);
-<span class="lineno">15</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">16</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">17</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-<span class="lineno">18</span>     REPRESENTATION_CONTEXT(&#x27;nc&#x27;,&#x27;3D&#x27;));
-<span class="lineno">19</span>/* Defect: drilling first, then spindle command. */
-<span class="lineno">20</span>#100=<mark>DRILLING_OPERATION</mark>(&#x27;drill_a&#x27;,$,$,$,$,$);
-<span class="lineno">21</span>#101=MACHINING_OPERATION(&#x27;start_spindle&#x27;,$,$,$,$,$);
-<span class="lineno">22</span>#200=<mark>WORKPLAN</mark>(&#x27;main&#x27;,(#100,#101),$,$,$);
-<span class="lineno">23</span>ENDSEC;
-<span class="lineno">24</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M100: AP238 spindle-on issued after first tool-workpiece contact */
+<span class="lineno">3</span>/* DEFECT: <mark>DRILLING_OPERATION</mark> precedes any spindle-control operation */
+<span class="lineno">4</span>/* Spindle stopped at first tool-workpiece contact â breaks tool or mars surface */
+<span class="lineno">5</span>/* Violates ISO 10303-238 Â§6.4 spindle / coolant / approach ordering */
+<span class="lineno">6</span>/* Byte assertion: contains(b&#x27;<mark>AP238_STEP_NC_MIM</mark>&#x27;) */
+<span class="lineno">7</span>/* Byte assertion: contains(b&#x27;<mark>DRILLING_OPERATION</mark>&#x27;) */
+<span class="lineno">8</span>/* Byte assertion: contains(b&#x27;<mark>WORKPLAN</mark>&#x27;) */
+<span class="lineno">9</span>HEADER;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;M100: AP238 <mark>DRILLING_OPERATION</mark> before spindle-on&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;M100.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>/* Byte assertion: contains(b&#x27;<mark>AP238_STEP_NC_MIM</mark>&#x27;) */
+<span class="lineno">13</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 1 0 0 }&#x27;));
+<span class="lineno">14</span>ENDSEC;
+<span class="lineno">15</span>DATA;
+<span class="lineno">16</span>#1=APPLICATION_CONTEXT(&#x27;step_nc_mim&#x27;);
+<span class="lineno">17</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">18</span>  &#x27;ap238_step_nc_mim&#x27;,2007,#1);
+<span class="lineno">19</span>/* Standard unit context â mm */
+<span class="lineno">20</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">21</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">22</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">23</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">24</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">25</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">26</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">27</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">28</span>  REPRESENTATION_CONTEXT(&#x27;nc&#x27;,&#x27;3D&#x27;));
+<span class="lineno">29</span>/* Target machined feature â a drilled hole */
+<span class="lineno">30</span>#50=MACHINED_FEATURE(&#x27;hole_a&#x27;,$,$,$,$,$);
+<span class="lineno">31</span>/* 10mm drill bit â will break if spindle is not rotating at contact */
+<span class="lineno">32</span>#60=MACHINING_TOOL(&#x27;drill_10mm&#x27;,$,$,$);
+<span class="lineno">33</span>/* Byte assertion: contains(b&#x27;<mark>DRILLING_OPERATION</mark>&#x27;) */
+<span class="lineno">34</span>/* DEFECT: <mark>DRILLING_OPERATION</mark> is the first (and only) operation in the workplan */
+<span class="lineno">35</span>/* No spindle-on control operation precedes this cutting operation */
+<span class="lineno">36</span>/* When controller executes this, spindle is stopped during plunge â tool breaks */
+<span class="lineno">37</span>#70=<mark>DRILLING_OPERATION</mark>(&#x27;drill_plunge&#x27;,#60,$,$,$,$,$,$,#50,$,$);
+<span class="lineno">38</span>/* First workingstep in the <mark>WORKPLAN</mark> â no spindle-on workingstep before this */
+<span class="lineno">39</span>#80=MACHINING_WORKINGSTEP(&#x27;drill_step&#x27;,#50,#70,$);
+<span class="lineno">40</span>/* Byte assertion: contains(b&#x27;<mark>WORKPLAN</mark>&#x27;) */
+<span class="lineno">41</span>/* <mark>WORKPLAN</mark> has only the drilling step â missing a spindle-on step as first entry */
+<span class="lineno">42</span>/* Correct ordering: spindle-on workingstep FIRST, then drilling workingstep *)  */
+<span class="lineno">43</span>#90=<mark>WORKPLAN</mark>(&#x27;main&#x27;,(#80),$,$,$);
+<span class="lineno">44</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">45</span>#300=GEOMETRIC_CURVE_SET(&#x27;ap238-spindle-on-after-first-tool-workpiece-contact&#x27;,
+<span class="lineno">46</span>  (#50,#60,#70,#80,#90));
+<span class="lineno">47</span>/* Product chain */
+<span class="lineno">48</span>#400=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">49</span>#401=PRODUCT_CONTEXT(&#x27;&#x27;,#400,&#x27;mechanical&#x27;);
+<span class="lineno">50</span>#402=PRODUCT(&#x27;M100&#x27;,&#x27;M100&#x27;,&#x27;M100&#x27;,(#401));
+<span class="lineno">51</span>#403=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#402);
+<span class="lineno">52</span>#404=PRODUCT_DEFINITION_CONTEXT(#400,&#x27;design&#x27;);
+<span class="lineno">53</span>#405=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#403,#404);
+<span class="lineno">54</span>#406=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#405);
+<span class="lineno">55</span>#407=SHAPE_REPRESENTATION(&#x27;&#x27;,(#300),#14);
+<span class="lineno">56</span>#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
+<span class="lineno">57</span>ENDSEC;
+<span class="lineno">58</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

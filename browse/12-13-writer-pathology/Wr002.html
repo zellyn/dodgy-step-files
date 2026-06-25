@@ -43,6 +43,9 @@
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>count(b&#x27;\r&#x27;) &gt;= 1</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="Wr042.html">Wr042</a>, <a href="../12-1a-encoding/Le028.html">Le028</a></p>
 </section>
@@ -60,27 +63,23 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Wr002 - Mixed CRLF and LF line endings within one file - HEADER section uses CRLF, DATA section uses LF */
-<span class="lineno">2</span>ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;<mark></mark>
+<span class="lineno">2</span>/* Wr002: HEADER uses CRLF, DATA uses LF */<mark></mark>
 <span class="lineno">3</span>HEADER;<mark></mark>
-<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Wr002 - mixed line endings&#x27;),&#x27;2;1&#x27;);<mark></mark>
-<span class="lineno">5</span>FILE_NAME(&#x27;Wr002.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),<mark></mark>
-<span class="lineno">6</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);<mark></mark>
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Wr002 - mixed CRLF/LF line endings&#x27;),&#x27;2;1&#x27;);<mark></mark>
+<span class="lineno">5</span>FILE_NAME(&#x27;Wr002.stp&#x27;,&#x27;2026-06-20T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),<mark></mark>
+<span class="lineno">6</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);<mark></mark>
 <span class="lineno">7</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));<mark></mark>
 <span class="lineno">8</span>ENDSEC;<mark></mark>
 <span class="lineno">9</span>DATA;
-<span class="lineno">10</span>#1=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
-<span class="lineno">11</span>#3=PRODUCT_CONTEXT(&#x27;part&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">12</span>#4=PRODUCT(&#x27;Wr002-part&#x27;,&#x27;Wr002 demo&#x27;,&#x27;&#x27;,(#3));
-<span class="lineno">13</span>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
-<span class="lineno">14</span>#11=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
-<span class="lineno">15</span>#12=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">16</span>#13=AXIS2_PLACEMENT_3D(&#x27;placement&#x27;,#10,#11,#12);
-<span class="lineno">17</span>#20=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">18</span>#21=(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.));
-<span class="lineno">19</span>#22=(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT());
-<span class="lineno">20</span>ENDSEC;
-<span class="lineno">21</span>END-ISO-10303-21;
+<span class="lineno">10</span>/* Defect: DATA section switches to LF-only line endings */
+<span class="lineno">11</span>#1=CARTESIAN_POINT(&#x27;p0&#x27;,(0.,0.,0.));
+<span class="lineno">12</span>#2=CARTESIAN_POINT(&#x27;p1&#x27;,(1.,0.,0.));
+<span class="lineno">13</span>#3=CARTESIAN_POINT(&#x27;p2&#x27;,(1.,1.,0.));
+<span class="lineno">14</span>#4=CARTESIAN_POINT(&#x27;p3&#x27;,(0.,1.,0.));
+<span class="lineno">15</span>#5=GEOMETRIC_CURVE_SET(&#x27;mixed-endings&#x27;,());
+<span class="lineno">16</span>ENDSEC;
+<span class="lineno">17</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

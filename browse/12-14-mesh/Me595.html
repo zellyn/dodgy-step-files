@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Me595 — holeFilling_TriangulateHole_watson_insert_failure: L-shaped hole; interior insertion candidate falls in concave notch; watsonInsert returns NULL (Branch 6)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <span class="sep">/</span> <span class="current">Me595</span>
+</nav>
+<header class="title-bar">
+<h1>Me595 <span class="sep">—</span> <span class="entry-title">holeFilling_TriangulateHole_watson_insert_failure: L-shaped hole; interior insertion candidate falls in concave notch; watsonInsert returns NULL (Branch 6)</span></h1>
+<p class="category">§12.14 mesh defects (sub-class: hole-fill / watson-insert-failure)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../mesh-examples/12-14-mesh/Me595.mesh.json">View raw fixture (.mesh.json)</a> <code class="path">mesh-examples/12-14-mesh/Me595.mesh.json</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>MeshFix `holeFilling::TriangulateHole@L157` Branch 6 (*WATSON_INSERT_FAILURE*: `watsonInsert(p, ...)== NULL` → skip</li>
+<li>continue)</li>
+<li>`MESH_HEAL_COVERAGE.md`.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Seven-vertex mesh with 5 rim triangles surrounding an L-shaped non-convex hole. Boundary: v0=(0,0,0), v1=(4,0,0), v2=(4,2,0), v3=(2,2,0) (concave corner), v4=(2,4,0), v5=(0,4,0), hub vh=(0,2,0). The concave notch at v3 means a naive fill-triangle centroid lands outside the valid triangulation domain → watsonInsert returns NULL → Branch 6 fires; interior point skipped. Interior edges: (v0,v2),(v0,v3),(v0,v5),(v3,v5) n=2. Outer rim boundary: 7 edges n=1. Hole boundary: [v0,v1,v2,v3,v4,v5]. Euler: V=7, E=11, F=5, chi=1.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>v0-v5=L-shape, vh=(0,2,0); t0=(v0,v1,v2), t1=(v0,v2,v3), t2=(v3,v4,v5), t3=(v0,v3,v5), t4=(v0,v5,vh); interior edges n=2; outer boundary edges n=1; hole_boundary=[v0,v1,v2,v3,v4,v5]; euler V=7,E=11,F=5,chi=1.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Branch 6 fires; centroid of a large fill triangle computed as interior candidate p; watsonInsert(p) called; p outside non-convex domain → returns NULL; p skipped; next candidate tried.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>{
+<span class="lineno">2</span>  &quot;vertices&quot;: [
+<span class="lineno">3</span>    [
+<span class="lineno">4</span>      0.0,
+<span class="lineno">5</span>      0.0,
+<span class="lineno">6</span>      0.0
+<span class="lineno">7</span>    ],
+<span class="lineno">8</span>    [
+<span class="lineno">9</span>      4.0,
+<span class="lineno">10</span>      0.0,
+<span class="lineno">11</span>      0.0
+<span class="lineno">12</span>    ],
+<span class="lineno">13</span>    [
+<span class="lineno">14</span>      4.0,
+<span class="lineno">15</span>      2.0,
+<span class="lineno">16</span>      0.0
+<span class="lineno">17</span>    ],
+<span class="lineno">18</span>    [
+<span class="lineno">19</span>      2.0,
+<span class="lineno">20</span>      2.0,
+<span class="lineno">21</span>      0.0
+<span class="lineno">22</span>    ],
+<span class="lineno">23</span>    [
+<span class="lineno">24</span>      2.0,
+<span class="lineno">25</span>      4.0,
+<span class="lineno">26</span>      0.0
+<span class="lineno">27</span>    ],
+<span class="lineno">28</span>    [
+<span class="lineno">29</span>      0.0,
+<span class="lineno">30</span>      4.0,
+<span class="lineno">31</span>      0.0
+<span class="lineno">32</span>    ],
+<span class="lineno">33</span>    [
+<span class="lineno">34</span>      0.0,
+<span class="lineno">35</span>      2.0,
+<span class="lineno">36</span>      0.0
+<span class="lineno">37</span>    ]
+<span class="lineno">38</span>  ],
+<span class="lineno">39</span>  &quot;triangles&quot;: [
+<span class="lineno">40</span>    [
+<span class="lineno">41</span>      0,
+<span class="lineno">42</span>      1,
+<span class="lineno">43</span>      2
+<span class="lineno">44</span>    ],
+<span class="lineno">45</span>    [
+<span class="lineno">46</span>      0,
+<span class="lineno">47</span>      2,
+<span class="lineno">48</span>      3
+<span class="lineno">49</span>    ],
+<span class="lineno">50</span>    [
+<span class="lineno">51</span>      3,
+<span class="lineno">52</span>      4,
+<span class="lineno">53</span>      5
+<span class="lineno">54</span>    ],
+<span class="lineno">55</span>    [
+<span class="lineno">56</span>      0,
+<span class="lineno">57</span>      3,
+<span class="lineno">58</span>      5
+<span class="lineno">59</span>    ],
+<span class="lineno">60</span>    [
+<span class="lineno">61</span>      0,
+<span class="lineno">62</span>      5,
+<span class="lineno">63</span>      6
+<span class="lineno">64</span>    ]
+<span class="lineno">65</span>  ],
+<span class="lineno">66</span>  &quot;metadata&quot;: {
+<span class="lineno">67</span>    &quot;id&quot;: &quot;Me595&quot;,
+<span class="lineno">68</span>    &quot;schema_version&quot;: 0,
+<span class="lineno">69</span>    &quot;defect_class&quot;: &quot;hole_in_hull&quot;,
+<span class="lineno">70</span>    &quot;title&quot;: &quot;holeFilling_TriangulateHole_watson_insert_failure: L-shaped hole; interior insertion candidate falls in concave notch; watsonInsert returns NULL (Branch 6)&quot;,
+<span class="lineno">71</span>    &quot;assertions&quot;: [
+<span class="lineno">72</span>      {
+<span class="lineno">73</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">74</span>        &quot;edge&quot;: [
+<span class="lineno">75</span>          0,
+<span class="lineno">76</span>          2
+<span class="lineno">77</span>        ],
+<span class="lineno">78</span>        &quot;n&quot;: 2
+<span class="lineno">79</span>      },
+<span class="lineno">80</span>      {
+<span class="lineno">81</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">82</span>        &quot;edge&quot;: [
+<span class="lineno">83</span>          0,
+<span class="lineno">84</span>          3
+<span class="lineno">85</span>        ],
+<span class="lineno">86</span>        &quot;n&quot;: 2
+<span class="lineno">87</span>      },
+<span class="lineno">88</span>      {
+<span class="lineno">89</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">90</span>        &quot;edge&quot;: [
+<span class="lineno">91</span>          0,
+<span class="lineno">92</span>          5
+<span class="lineno">93</span>        ],
+<span class="lineno">94</span>        &quot;n&quot;: 2
+<span class="lineno">95</span>      },
+<span class="lineno">96</span>      {
+<span class="lineno">97</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">98</span>        &quot;edge&quot;: [
+<span class="lineno">99</span>          3,
+<span class="lineno">100</span>          5
+<span class="lineno">101</span>        ],
+<span class="lineno">102</span>        &quot;n&quot;: 2
+<span class="lineno">103</span>      },
+<span class="lineno">104</span>      {
+<span class="lineno">105</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">106</span>        &quot;edge&quot;: [
+<span class="lineno">107</span>          0,
+<span class="lineno">108</span>          1
+<span class="lineno">109</span>        ],
+<span class="lineno">110</span>        &quot;n&quot;: 1
+<span class="lineno">111</span>      },
+<span class="lineno">112</span>      {
+<span class="lineno">113</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">114</span>        &quot;edge&quot;: [
+<span class="lineno">115</span>          1,
+<span class="lineno">116</span>          2
+<span class="lineno">117</span>        ],
+<span class="lineno">118</span>        &quot;n&quot;: 1
+<span class="lineno">119</span>      },
+<span class="lineno">120</span>      {
+<span class="lineno">121</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">122</span>        &quot;edge&quot;: [
+<span class="lineno">123</span>          2,
+<span class="lineno">124</span>          3
+<span class="lineno">125</span>        ],
+<span class="lineno">126</span>        &quot;n&quot;: 1
+<span class="lineno">127</span>      },
+<span class="lineno">128</span>      {
+<span class="lineno">129</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">130</span>        &quot;edge&quot;: [
+<span class="lineno">131</span>          3,
+<span class="lineno">132</span>          4
+<span class="lineno">133</span>        ],
+<span class="lineno">134</span>        &quot;n&quot;: 1
+<span class="lineno">135</span>      },
+<span class="lineno">136</span>      {
+<span class="lineno">137</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">138</span>        &quot;edge&quot;: [
+<span class="lineno">139</span>          4,
+<span class="lineno">140</span>          5
+<span class="lineno">141</span>        ],
+<span class="lineno">142</span>        &quot;n&quot;: 1
+<span class="lineno">143</span>      },
+<span class="lineno">144</span>      {
+<span class="lineno">145</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">146</span>        &quot;edge&quot;: [
+<span class="lineno">147</span>          5,
+<span class="lineno">148</span>          6
+<span class="lineno">149</span>        ],
+<span class="lineno">150</span>        &quot;n&quot;: 1
+<span class="lineno">151</span>      },
+<span class="lineno">152</span>      {
+<span class="lineno">153</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">154</span>        &quot;edge&quot;: [
+<span class="lineno">155</span>          0,
+<span class="lineno">156</span>          6
+<span class="lineno">157</span>        ],
+<span class="lineno">158</span>        &quot;n&quot;: 1
+<span class="lineno">159</span>      },
+<span class="lineno">160</span>      {
+<span class="lineno">161</span>        &quot;kind&quot;: &quot;hole_boundary&quot;,
+<span class="lineno">162</span>        &quot;loop&quot;: [
+<span class="lineno">163</span>          0,
+<span class="lineno">164</span>          1,
+<span class="lineno">165</span>          2,
+<span class="lineno">166</span>          3,
+<span class="lineno">167</span>          4,
+<span class="lineno">168</span>          5
+<span class="lineno">169</span>        ]
+<span class="lineno">170</span>      },
+<span class="lineno">171</span>      {
+<span class="lineno">172</span>        &quot;kind&quot;: &quot;euler_characteristic&quot;,
+<span class="lineno">173</span>        &quot;v&quot;: 7,
+<span class="lineno">174</span>        &quot;e&quot;: 11,
+<span class="lineno">175</span>        &quot;f&quot;: 5,
+<span class="lineno">176</span>        &quot;chi&quot;: 1
+<span class="lineno">177</span>      }
+<span class="lineno">178</span>    ]
+<span class="lineno">179</span>  }
+<span class="lineno">180</span>}
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Me594.html">&larr; Me594</a> <a class="up" href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <a class="next" href="Me600.html">Me600 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

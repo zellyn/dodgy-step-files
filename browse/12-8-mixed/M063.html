@@ -38,41 +38,62 @@
 <section><h2>Notes</h2>
 <p>Synonyms: &quot;STEP no units, defaulted&quot;, &quot;kernel guessed units&quot;, &quot;model 1000x wrong&quot;, &quot;no unit context, default mm applied&quot;, &quot;SHAPE_REPRESENTATION lacks unit context&quot;. Common cause of &quot;model is 1000× wrong&quot; symptom.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;GEOMETRIC_REPRESENTATION_CONTEXT&#x27;)</code></li>
 <li><code>matches(rb&#x27;GEOMETRIC_REPRESENTATION_CONTEXT\(\&#x27;no_units\&#x27;,\$,3\)&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_vertices_total == 3</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
-<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(3)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(3)</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
 <tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
-<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M063 - Entity with no unit context.
-<span class="lineno">3</span> * Defect: SHAPE_REPRESENTATION&#x27;s context lacks a LENGTH_UNIT. */
-<span class="lineno">4</span>HEADER;
-<span class="lineno">5</span>FILE_DESCRIPTION((&#x27;In007 - no unit context&#x27;,&#x27;Pass C gap-fill&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">6</span>FILE_NAME(&#x27;M063.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;gap-fill C&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">7</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">8</span>ENDSEC;
-<span class="lineno">9</span>DATA;
-<span class="lineno">10</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">11</span>/* <mark>GEOMETRIC_REPRESENTATION_CONTEXT</mark> with empty units list */
-<span class="lineno">12</span>#10=<mark>GEOMETRIC_REPRESENTATION_CONTEXT(&#x27;no_units&#x27;,$,3)</mark>;
-<span class="lineno">13</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">14</span>#30=SHAPE_REPRESENTATION(&#x27;shape_no_units&#x27;,(#20),#10);
-<span class="lineno">15</span>ENDSEC;
-<span class="lineno">16</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M063: GEOMETRIC_CURVE_SET in file where SHAPE_REPRESENTATION references a <mark>GEOMETRIC_REPRESENTATION_CONTEXT</mark> lacking LENGTH_UNIT â no unit context, reader silently applies default units; input: AP242 STEP file where SHAPE_REPRESENTATION.context_of_items points to a <mark>GEOMETRIC_REPRESENTATION_CONTEXT(&#x27;no_units&#x27;,$,3)</mark> â the second attribute (global_unit_assigned_context, a GLOBAL_UNIT_ASSIGNED_CONTEXT mixin) is $=absent; no LENGTH_UNIT is declared anywhere in the file for this representation; AP203/214/242 mandate that every geometric representation carry an explicit unit context; a reader that silently defaults to mm will produce a model that is 1000Ã too large or too small when the intended unit was metres or inches; kernel must reject as malformed (units are mandatory) or warn loudly and require explicit user confirmation of the assumed unit; OCC silently accepts (no diagnostic, empty result); GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty; synonyms: STEP no units defaulted, kernel guessed units, model 1000x wrong, no unit context default mm applied, SHAPE_REPRESENTATION lacks unit context */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;M063&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;M063.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=<mark>GEOMETRIC_REPRESENTATION_CONTEXT(&#x27;no_units&#x27;,$,3)</mark>;
+<span class="lineno">11</span>#2=CARTESIAN_POINT(&#x27;pt_a&#x27;,(0.,0.,0.));
+<span class="lineno">12</span>#3=CARTESIAN_POINT(&#x27;pt_b&#x27;,(100.,0.,0.));
+<span class="lineno">13</span>#4=CARTESIAN_POINT(&#x27;pt_c&#x27;,(0.,100.,0.));
+<span class="lineno">14</span>#5=DIRECTION(&#x27;z_axis&#x27;,(0.,0.,1.));
+<span class="lineno">15</span>#6=DIRECTION(&#x27;x_axis&#x27;,(1.,0.,0.));
+<span class="lineno">16</span>#7=AXIS2_PLACEMENT_3D(&#x27;placement&#x27;,#2,#5,#6);
+<span class="lineno">17</span>#8=SHAPE_REPRESENTATION(&#x27;no_unit_shape&#x27;,(#2,#3,#4),#1);
+<span class="lineno">18</span>#9=GEOMETRIC_CURVE_SET(&#x27;shape-representation-missing-unit-context-defaulted&#x27;,(#1,#8,#2,#3,#4,#7));
+<span class="lineno">19</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">20</span>#9051=PRODUCT(&#x27;M063&#x27;,&#x27;M063&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">21</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">22</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">23</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">24</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">25</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">26</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">27</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">28</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">29</span>#9060=(<mark>GEOMETRIC_REPRESENTATION_CONTEXT</mark>(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">30</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9),#9060);
+<span class="lineno">31</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">32</span>ENDSEC;
+<span class="lineno">33</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

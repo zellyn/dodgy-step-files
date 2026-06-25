@@ -42,6 +42,9 @@
 <li><code>contains(b&#x27;2.0&#x27;)</code></li>
 <li><code>contains(b&#x27;SINGLE_POINT_CONSTRAINT&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -57,36 +60,34 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M038 - AP209 freedom_and_coefficient `a` != 1, or
-<span class="lineno">3</span> * single_point_constraint `b` != 0.
-<span class="lineno">4</span> * Defect: the AP209 simplifying recommended practice requires a==1
-<span class="lineno">5</span> * and b==0 in the SPC&#x27;s coefficient pair. This file emits a=<mark>2.0</mark> and
-<span class="lineno">6</span> * b=0.001, violating both. Readers should warn but honor the values. */
-<span class="lineno">7</span>HEADER;
-<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;M038 test case&#x27;,&#x27;SPC coefficient violations&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">9</span>FILE_NAME(&#x27;M038.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">10</span>FILE_SCHEMA((&#x27;STRUCTURAL_ANALYSIS_DESIGN { 1 0 10303 209 1 0 0 }&#x27;));
-<span class="lineno">11</span>ENDSEC;
-<span class="lineno">12</span>DATA;
-<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;structural_analysis_design&#x27;);
-<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">15</span>  &#x27;structural_analysis_design&#x27;,2001,#1);
-<span class="lineno">16</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">17</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">18</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">19</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
-<span class="lineno">20</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">21</span>     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-<span class="lineno">22</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-<span class="lineno">23</span>     REPRESENTATION_CONTEXT(&#x27;fea&#x27;,&#x27;3D&#x27;));
-<span class="lineno">24</span>#100=CARTESIAN_POINT(&#x27;n1&#x27;,(0.0,0.0,0.0));
-<span class="lineno">25</span>#110=NODE(&#x27;n1&#x27;,(#100),$);
-<span class="lineno">26</span>/* Defect: a coefficient is <mark>2.0</mark> instead of required 1.0. */
-<span class="lineno">27</span>#200=<mark>FREEDOM_AND_COEFFICIENT</mark>(&#x27;translation_x&#x27;,&#x27;U&#x27;,<mark>2.0</mark>);
-<span class="lineno">28</span>/* Defect: b (right-hand side) is 0.001 instead of required 0.0. */
-<span class="lineno">29</span>#210=<mark>SINGLE_POINT_CONSTRAINT</mark>(&#x27;spc1&#x27;,#110,(#200),0.001);
-<span class="lineno">30</span>ENDSEC;
-<span class="lineno">31</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M038: GEOMETRIC_CURVE_SET containing AP209 SPC boundary condition with nonstandard constraint coefficients; input: AP242/AP209 STEP file where <mark>FREEDOM_AND_COEFFICIENT</mark> has a=<mark>2.0</mark> (RP requires a==1) and <mark>SINGLE_POINT_CONSTRAINT</mark> has b=0.001 (RP requires b==0); per ISO 10303-104 AP209 the simplifying assumptions for SPC are a==1, b==0; a nonstandard &#x27;a&#x27; scales the constrained DOF; nonzero &#x27;b&#x27; shifts it; kernel must warn and proceed, honoring the actual values rather than silently clamping them to the assumed defaults; OCC silently accepts (no diagnostic, empty result); GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty; synonyms: AP209 SPC coefficient nonstandard, freedom_and_coefficient a!=1, single_point_constraint b!=0, BC simplifying assumptions violated */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;M038&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;M038.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;constrained_node&#x27;,(1.,2.,3.));
+<span class="lineno">11</span>#2=<mark>FREEDOM_AND_COEFFICIENT</mark>(&#x27;constrained_dof_x&#x27;,.X.,<mark>2.0</mark>);
+<span class="lineno">12</span>#3=<mark>SINGLE_POINT_CONSTRAINT</mark>(&#x27;spc_nonstandard_b&#x27;,(#2),0.001);
+<span class="lineno">13</span>#4=<mark>FREEDOM_AND_COEFFICIENT</mark>(&#x27;constrained_dof_y&#x27;,.Y.,<mark>2.0</mark>);
+<span class="lineno">14</span>#5=GEOMETRIC_CURVE_SET(&#x27;ap209-spc-nonstandard-coefficients&#x27;,(#2,#3,#4));
+<span class="lineno">15</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">16</span>#9051=PRODUCT(&#x27;M038&#x27;,&#x27;M038&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">17</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">18</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">19</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">20</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">21</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">22</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">23</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">24</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">25</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">26</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#5),#9060);
+<span class="lineno">27</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">28</span>ENDSEC;
+<span class="lineno">29</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

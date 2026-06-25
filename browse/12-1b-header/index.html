@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1>§12.1b Header &amp; instance-numbering</h1>
 <p class="blurb">HEADER section, instance numbering, ANCHOR / REFERENCE / SIGNATURE and Edition-3 multi-section file pathologies.</p>
-<p class="meta">44 entries</p>
+<p class="meta">45 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
@@ -34,7 +34,7 @@
 <tr><td><a href="Lh016.html"><code>Lh016</code></a></td><td>Edition-3 extra header entities (`FILE_INFO`, `FILE_POPULATION`, `SECTION_LANGUAGE`, …)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Lh017.html"><code>Lh017</code></a></td><td>User-defined entity name with `!` prefix in DATA section</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Lh018.html"><code>Lh018</code></a></td><td>Lower-case keyword (`ifcperson`, `cartesian_point`, `ENTITY` etc.)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
-<tr><td><a href="Lh019.html"><code>Lh019</code></a></td><td>FILE_SCHEMA names a schema that disagrees with entity types in DATA</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=accept(12)</code></td></tr>
+<tr><td><a href="Lh019.html"><code>Lh019</code></a></td><td>FILE_SCHEMA names a schema that disagrees with entity types in DATA</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=accept(0)</code></td></tr>
 <tr><td><a href="Lh022.html"><code>Lh022</code></a></td><td>Duplicate instance ID (`#N=..` defined twice within one DATA section)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Lh023.html"><code>Lh023</code></a></td><td>Whitespace, tab, or comment between `#` and digits of an instance ID</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Lh024.html"><code>Lh024</code></a></td><td>Reuse of `#NNN` across different DATA sections (Ed.3 multi-section)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
@@ -42,7 +42,7 @@
 <tr><td><a href="Lh026.html"><code>Lh026</code></a></td><td>Edition-3 ANCHOR / REFERENCE / SIGNATURE sections present in Edition-2 readers</td><td><code>bytes-sufficient</code></td><td><code>occt=reject/reject gmsh=reject ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Lh027.html"><code>Lh027</code></a></td><td>Malformed entity ID inside an ANCHOR entry (non-numeric `#`)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Lh028.html"><code>Lh028</code></a></td><td>Forward reference inside ANCHOR section to undefined data instance</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
-<tr><td><a href="Lh029.html"><code>Lh029</code></a></td><td>Schema name in FILE_SCHEMA has whitespace, comments, or vendor extensions inside the list</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Lh029.html"><code>Lh029</code></a></td><td>Schema name in FILE_SCHEMA has whitespace, comments, or vendor extensions inside the list</td><td><code>bytes-sufficient</code></td><td><code>occt=reject/reject gmsh=reject ifc=reject</code></td></tr>
 <tr><td><a href="Lh030.html"><code>Lh030</code></a></td><td>Lower-case `name` field values where Recommended-Practices keywords are defined</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Lh031.html"><code>Lh031</code></a></td><td>Header recognition relies on FILE_NAME originating-system substring (I-DEAS auto-detect)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Lh032.html"><code>Lh032</code></a></td><td>Constant reference (`#NAME`/`@NAME`) used where instance reference required</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
@@ -61,7 +61,8 @@
 <tr><td><a href="Lh045.html"><code>Lh045</code></a></td><td>Cross-section reference to undefined section name</td><td><code>bytes-sufficient</code></td><td><code>occt=reject/reject gmsh=reject ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Lh046.html"><code>Lh046</code></a></td><td>HEADER section contains only `/* */` comments and no required records</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=reject</code></td></tr>
 <tr><td><a href="Lh047.html"><code>Lh047</code></a></td><td>Lower-case section keywords (`data;` instead of `DATA;`)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=reject</code></td></tr>
-<tr><td><a href="Lh048.html"><code>Lh048</code></a></td><td>STEP reader cannot consume a non-seekable stream (in-memory / pipe / network)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Lh048.html"><code>Lh048</code></a></td><td>STEP reader cannot consume a non-seekable stream (in-memory / pipe / network)</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Lh049.html"><code>Lh049</code></a></td><td>Big-endian / s390x byte-order in OCCT wrapper drops shapes</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
 </tbody></table>
 </main>
 <footer>

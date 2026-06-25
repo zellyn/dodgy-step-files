@@ -53,28 +53,19 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Gn003 - BSpline curve with empty control_points_list / empty knots
-<span class="lineno">2</span>   Defect: ISO 10303-42 requires a <mark>B_SPLINE_CURVE</mark>_WITH_KNOTS to carry at
-<span class="lineno">3</span>   least (degree+1) control points and a knot vector with at least two
-<span class="lineno">4</span>   distinct values. This curve has empty control_points_list, empty
-<span class="lineno">5</span>   knots, and empty knot_multiplicities. Compliant readers should
-<span class="lineno">6</span>   reject with a precise diagnostic and continue translating the
-<span class="lineno">7</span>   remainder of the file. (OCCT historically threw from
-<span class="lineno">8</span>   RWStepGeom_RWBSplineCurveWithKnots; see Mantis 0027575.) */
-<span class="lineno">9</span>ISO-10303-21;
-<span class="lineno">10</span>HEADER;
-<span class="lineno">11</span>FILE_DESCRIPTION(
-<span class="lineno">12</span>  (&#x27;Gn003 - BSpline curve empty control_points_list&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">13</span>FILE_NAME(&#x27;Gn003.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
-<span class="lineno">14</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">15</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">16</span>ENDSEC;
-<span class="lineno">17</span>DATA;
-<span class="lineno">18</span>/* Defect: empty control points, empty knots, empty multiplicities. */
-<span class="lineno">19</span>#10=<mark>B_SPLINE_CURVE</mark>_WITH_KNOTS(&#x27;empty&#x27;,3,(),.UNSPECIFIED.,.F.,.F.,
-<span class="lineno">20</span>  (),(),.UNSPECIFIED.);
-<span class="lineno">21</span>ENDSEC;
-<span class="lineno">22</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gn003: <mark>B_SPLINE_CURVE</mark>_WITH_KNOTS with empty control_points_list, empty knots, empty knot_multiplicities; ISO 10303-42 requires at least (degree+1) control points and a knot vector with at least two distinct values; OCCT historically threw from RWStepGeom_RWBSplineCurveWithKnots on this; reject: emit E_EMPTY_BSPLINE_CURVE with offset; continue translating */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Gn003&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Gn003.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">11</span>#3=<mark>B_SPLINE_CURVE</mark>_WITH_KNOTS(&#x27;empty&#x27;,3,(),.UNSPECIFIED.,.F.,.F.,(),(),.UNSPECIFIED.);
+<span class="lineno">12</span>ENDSEC;
+<span class="lineno">13</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

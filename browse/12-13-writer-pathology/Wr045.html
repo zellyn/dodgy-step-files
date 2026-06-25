@@ -43,6 +43,9 @@
 <li><code>contains(b&#x27;.METRE.&#x27;) and contains(b&#x27;10.0&#x27;)</code></li>
 <li><code>contains(b&#x27;CARTESIAN_POINT&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="Wr044.html">Wr044</a>, <a href="Wr035.html">Wr035</a></p>
 </section>
@@ -60,48 +63,32 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Wr045 - Unit name in LENGTH_UNIT changed without rescaling coordinates.
-<span class="lineno">2</span> * Defect (FreeCAD #20546): user changes the export-unit drop-down; writer
-<span class="lineno">3</span> * flips the LENGTH_UNIT label (mm to METRE) but emits the same numeric
-<span class="lineno">4</span> * values. A 10mm cube re-imports as a 10-metre cube. */
-<span class="lineno">5</span>ISO-10303-21;
-<span class="lineno">6</span>HEADER;
-<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;Wr045 - METRE unit declared but mm-scale coordinate values&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">8</span>FILE_NAME(&#x27;Wr045.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">9</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">10</span>ENDSEC;
-<span class="lineno">11</span>DATA;
-<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2001,#1);
-<span class="lineno">14</span>#3=PRODUCT_CONTEXT(&#x27;part&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">15</span>#4=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
-<span class="lineno">16</span>#5=PRODUCT(&#x27;Wr045_metre_label&#x27;,&#x27;metre label, mm values&#x27;,&#x27;&#x27;,(#3));
-<span class="lineno">17</span>#6=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#5);
-<span class="lineno">18</span>#7=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#6,#4);
-<span class="lineno">19</span>#8=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#7);
-<span class="lineno">20</span>/* Defect: LENGTH_UNIT declared as plain SI METRE; coordinate values
-<span class="lineno">21</span>   are still on the millimetre scale (10.0 means 10 metres in this context,
-<span class="lineno">22</span>   not 10 mm). */
-<span class="lineno">23</span>#10=( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT($,.METRE.) );
-<span class="lineno">24</span>#11=( NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.) );
-<span class="lineno">25</span>#12=( NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT() );
-<span class="lineno">26</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#10,&#x27;tol&#x27;,&#x27;&#x27;);
-<span class="lineno">27</span>#14=( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13)) GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;) );
-<span class="lineno">28</span>#20=<mark>CARTESIAN_POINT</mark>(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">29</span>#21=<mark>CARTESIAN_POINT</mark>(&#x27;&#x27;,(10.0,0.0,0.0));
-<span class="lineno">30</span>#22=<mark>CARTESIAN_POINT</mark>(&#x27;&#x27;,(10.0,10.0,0.0));
-<span class="lineno">31</span>#23=<mark>CARTESIAN_POINT</mark>(&#x27;&#x27;,(0.0,10.0,0.0));
-<span class="lineno">32</span>#24=<mark>CARTESIAN_POINT</mark>(&#x27;&#x27;,(0.0,0.0,10.0));
-<span class="lineno">33</span>#25=<mark>CARTESIAN_POINT</mark>(&#x27;&#x27;,(10.0,0.0,10.0));
-<span class="lineno">34</span>#26=<mark>CARTESIAN_POINT</mark>(&#x27;&#x27;,(10.0,10.0,10.0));
-<span class="lineno">35</span>#27=<mark>CARTESIAN_POINT</mark>(&#x27;&#x27;,(0.0,10.0,10.0));
-<span class="lineno">36</span>#30=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
-<span class="lineno">37</span>#31=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">38</span>#32=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#20,#30,#31);
-<span class="lineno">39</span>#33=SHAPE_REPRESENTATION(&#x27;Wr045_cube&#x27;,(#32),#14);
-<span class="lineno">40</span>#34=SHAPE_DEFINITION_REPRESENTATION(#8,#33);
-<span class="lineno">41</span>ENDSEC;
-<span class="lineno">42</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Wr045: unit name in LENGTH_UNIT changed without rescaling coordinate values */
+<span class="lineno">3</span>/* FreeCAD #20546: user changes export unit mm â m; writer updates the unit label */
+<span class="lineno">4</span>/* but does NOT divide coordinates by 1000 â values stay as-is (mm numbers) */
+<span class="lineno">5</span>/* A 10 mm cube is emitted with coordinates (10.0,10.0,10.0) under SI METRE */
+<span class="lineno">6</span>/* Receivers that honour the metre unit load a 10-metre cube instead */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Wr045: LENGTH_UNIT says metre but coordinates are in mm&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;Wr045.stp&#x27;,&#x27;2026-06-20T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>/* DEFECT: SI_UNIT($,.METRE.) â no MILLI prefix â declares metre as the length unit */
+<span class="lineno">14</span>/* DEFECT: coordinates are 10.0 (millimetre values); correct metre values would be 0.01 */
+<span class="lineno">15</span>#1=<mark>CARTESIAN_POINT</mark>(&#x27;origin&#x27;,(0.,0.,0.));
+<span class="lineno">16</span>#2=<mark>CARTESIAN_POINT</mark>(&#x27;corner-x&#x27;,(10.0,0.,0.));
+<span class="lineno">17</span>#3=<mark>CARTESIAN_POINT</mark>(&#x27;corner-y&#x27;,(0.,10.0,0.));
+<span class="lineno">18</span>#4=<mark>CARTESIAN_POINT</mark>(&#x27;corner-z&#x27;,(0.,0.,10.0));
+<span class="lineno">19</span>#5=<mark>CARTESIAN_POINT</mark>(&#x27;corner-xyz&#x27;,(10.0,10.0,10.0));
+<span class="lineno">20</span>#6=DIRECTION(&#x27;xdir&#x27;,(1.,0.,0.));
+<span class="lineno">21</span>#7=DIRECTION(&#x27;zdir&#x27;,(0.,0.,1.));
+<span class="lineno">22</span>/* DEFECT: $=no prefix means base unit METRE; coordinates 10.0 are mm values not metres */
+<span class="lineno">23</span>#8=(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT($,.METRE.));
+<span class="lineno">24</span>#9=GEOMETRIC_CURVE_SET(&#x27;metre-unit-mm-values-shape&#x27;,(#1,#2,#3,#4,#5));
+<span class="lineno">25</span>ENDSEC;
+<span class="lineno">26</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

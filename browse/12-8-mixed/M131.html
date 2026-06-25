@@ -44,6 +44,9 @@
 <li><code>count_entity_def(b&#x27;PRODUCT_CONTEXT&#x27;) &gt;= 2</code></li>
 <li><code>contains(b&#x27;PRODUCT_DEFINITION&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -59,29 +62,60 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M131 - AP203 <mark>PRODUCT_DEFINITION</mark> linked to wrong PRODUCT_CONTEXT
-<span class="lineno">3</span> * frame_of_reference.
-<span class="lineno">4</span> * Defect: a mechanical PRODUCT is declared with frame_of_reference
-<span class="lineno">5</span> * referencing #1 (mechanical context) but its <mark>PRODUCT_DEFINITION</mark>
-<span class="lineno">6</span> * uses an electrical PRODUCT_CONTEXT (#3). The class hierarchy is
-<span class="lineno">7</span> * mis-wired - mechanical product appears to be classified as electrical. */
-<span class="lineno">8</span>HEADER;
-<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;M131 test case&#x27;,&#x27;AP203 product context mis-classification&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">10</span>FILE_NAME(&#x27;M131.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">11</span>FILE_SCHEMA((&#x27;<mark>CONFIG_CONTROL_DESIGN</mark>&#x27;));
-<span class="lineno">12</span>ENDSEC;
-<span class="lineno">13</span>DATA;
-<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;configuration controlled 3D design of mechanical parts and assemblies&#x27;);
-<span class="lineno">15</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;config_control_design&#x27;,1994,#1);
-<span class="lineno">16</span><mark>#3=PRODUCT_CONTEXT(</mark>&#x27;mech_ctx&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">17</span><mark>#4=PRODUCT_CONTEXT(</mark>&#x27;elec_ctx&#x27;,#1,&#x27;electrical&#x27;);
-<span class="lineno">18</span>/* PRODUCT declares mechanical frame_of_reference. */
-<span class="lineno">19</span>#10=PRODUCT(&#x27;bracket&#x27;,&#x27;bracket&#x27;,&#x27;steel mounting bracket&#x27;,(#3));
-<span class="lineno">20</span>#20=<mark>PRODUCT_DEFINITION</mark>_FORMATION(&#x27;rev_A&#x27;,&#x27;released&#x27;,#10);
-<span class="lineno">21</span>/* Defect: <mark>PRODUCT_DEFINITION</mark> uses ELECTRICAL context #4 not mechanical #3. */
-<span class="lineno">22</span>#30=<mark>PRODUCT_DEFINITION</mark>(&#x27;design&#x27;,&#x27;wrong context&#x27;,#20,#4);
-<span class="lineno">23</span>ENDSEC;
-<span class="lineno">24</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M131: AP203 <mark>PRODUCT_DEFINITION</mark> linked to wrong PRODUCT_CONTEXT frame_of_reference */
+<span class="lineno">3</span>/* DEFECT: PRODUCT declares mechanical context; <mark>PRODUCT_DEFINITION</mark> uses electrical context */
+<span class="lineno">4</span>/* Per AP203 Â§4.2 <mark>PRODUCT_DEFINITION</mark>.frame_of_reference must match parent PRODUCT&#x27;s context */
+<span class="lineno">5</span>/* Discipline-filtered queries return wrong set; mechanical part filed under electrical */
+<span class="lineno">6</span>/* Byte assertion: contains(b&#x27;<mark>CONFIG_CONTROL_DESIGN</mark>&#x27;) */
+<span class="lineno">7</span>/* Byte assertion: count_entity_def(b&#x27;PRODUCT_CONTEXT&#x27;) &gt;= 2 */
+<span class="lineno">8</span>/* Byte assertion: contains(b&#x27;<mark>PRODUCT_DEFINITION</mark>&#x27;) */
+<span class="lineno">9</span>HEADER;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;M131: AP203 <mark>PRODUCT_DEFINITION</mark> frame_of_reference context mismatch&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;M131.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>/* Byte assertion: contains(b&#x27;<mark>CONFIG_CONTROL_DESIGN</mark>&#x27;) */
+<span class="lineno">13</span>FILE_SCHEMA((&#x27;<mark>CONFIG_CONTROL_DESIGN</mark> { 1 0 10303 203 1 0 0 }&#x27;));
+<span class="lineno">14</span>ENDSEC;
+<span class="lineno">15</span>DATA;
+<span class="lineno">16</span>#1=APPLICATION_CONTEXT(&#x27;configuration controlled 3D designs of mechanical parts and assemblies&#x27;);
+<span class="lineno">17</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">18</span>  &#x27;config_control_design&#x27;,1994,#1);
+<span class="lineno">19</span>/* Standard unit context (mm) */
+<span class="lineno">20</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">21</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">22</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">23</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">24</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">25</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">26</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">27</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">28</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">29</span>/* Byte assertion: count_entity_def(b&#x27;PRODUCT_CONTEXT&#x27;) &gt;= 2 */
+<span class="lineno">30</span>/* Two PRODUCT_CONTEXTs: one mechanical (correct for PRODUCT), one electrical (wrong in PD) */
+<span class="lineno">31</span><mark>#20=PRODUCT_CONTEXT(</mark>&#x27;mechanical_context&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">32</span><mark>#21=PRODUCT_CONTEXT(</mark>&#x27;electrical_context&#x27;,#1,&#x27;electrical&#x27;);
+<span class="lineno">33</span>/* PRODUCT declares mechanical frame_of_reference â correct */
+<span class="lineno">34</span>#30=PRODUCT(&#x27;bracket&#x27;,&#x27;Mounting Bracket&#x27;,&#x27;Structural mounting bracket&#x27;,(#20));
+<span class="lineno">35</span>#31=<mark>PRODUCT_DEFINITION</mark>_FORMATION(&#x27;rev_A&#x27;,&#x27;Initial release&#x27;,#30);
+<span class="lineno">36</span>/* Byte assertion: contains(b&#x27;<mark>PRODUCT_DEFINITION</mark>&#x27;) */
+<span class="lineno">37</span>/* DEFECT: <mark>PRODUCT_DEFINITION</mark>.frame_of_reference = #21 (electrical) */
+<span class="lineno">38</span>/* but parent PRODUCT.frame_of_reference = (#20) which is mechanical */
+<span class="lineno">39</span>/* A valid file would use #20 here so both contexts agree on &#x27;mechanical&#x27; */
+<span class="lineno">40</span>#32=<mark>PRODUCT_DEFINITION</mark>(&#x27;design&#x27;,&#x27;Bracket design definition&#x27;,#31,#21);
+<span class="lineno">41</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">42</span>#500=GEOMETRIC_CURVE_SET(&#x27;ap203-product-context-discipline-mismatch&#x27;,
+<span class="lineno">43</span>  (#20,#21,#30,#31,#32));
+<span class="lineno">44</span>/* Product chain */
+<span class="lineno">45</span>#600=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">46</span><mark>#601=PRODUCT_CONTEXT(</mark>&#x27;&#x27;,#600,&#x27;mechanical&#x27;);
+<span class="lineno">47</span>#602=PRODUCT(&#x27;M131&#x27;,&#x27;M131&#x27;,&#x27;M131&#x27;,(#601));
+<span class="lineno">48</span>#603=<mark>PRODUCT_DEFINITION</mark>_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#602);
+<span class="lineno">49</span>#604=<mark>PRODUCT_DEFINITION</mark>_CONTEXT(#600,&#x27;design&#x27;);
+<span class="lineno">50</span>#605=<mark>PRODUCT_DEFINITION</mark>(&#x27;&#x27;,&#x27;&#x27;,#603,#604);
+<span class="lineno">51</span>#606=<mark>PRODUCT_DEFINITION</mark>_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#605);
+<span class="lineno">52</span>#607=SHAPE_REPRESENTATION(&#x27;&#x27;,(#500),#14);
+<span class="lineno">53</span>#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
+<span class="lineno">54</span>ENDSEC;
+<span class="lineno">55</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

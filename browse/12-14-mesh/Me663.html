@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Me663 — merge_duplicate_points_in_polygon_soup merge_needed_check: 5 input points but 4 unique (u1==u4 at (1,0,0)); unique_points.size()!=ini_points_n triggers remap (Branch 4)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <span class="sep">/</span> <span class="current">Me663</span>
+</nav>
+<header class="title-bar">
+<h1>Me663 <span class="sep">—</span> <span class="entry-title">merge_duplicate_points_in_polygon_soup merge_needed_check: 5 input points but 4 unique (u1==u4 at (1,0,0)); unique_points.size()!=ini_points_n triggers remap (Branch 4)</span></h1>
+<p class="category">§12.14 mesh defects (sub-class: near-coincident-vertex / merge-needed-check)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../mesh-examples/12-14-mesh/Me663.mesh.json">View raw fixture (.mesh.json)</a> <code class="path">mesh-examples/12-14-mesh/Me663.mesh.json</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>CGAL PMP `PMP.merge_duplicate_points_in_polygon_soup` Branch 4 (*merge_needed_check*: `if(unique_points.size() != ini_points_n) { ... perform remap ... }`)</li>
+<li>`MESH_HEAL_COVERAGE.md`.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Three triangles with 5 input vertices containing one coincident pair (u1 and u4 both at (1,0,0)). After the dedup scan, unique_points has 4 entries (the duplicate pair maps to one id), so unique_points.size()==4 != ini_points_n==5 → Branch 4 fires, triggering the remap path. Interior edges (u0,u2) and (u2,u4) n=2; five outer edges n=1. Euler: V=5, E=7, F=3, chi=1.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>u0=(0,0,0), u1=(1,0,0), u2=(0.5,1,0), u3=(1.5,1,0), u4=(1,0,0) [=u1]; t0=(u0,u1,u2), t1=(u2,u4,u3), t2=(u0,u2,u4); interior edges n=2; outer edges n=1; vertex_pair_distance_lt(u1,u4,1e-9); vertex_pair_no_shared_triangle(u1,u4); euler V=5,E=7,F=3,chi=1.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Branch 4 fires; unique_points.size()==4 != ini_points_n==5; remap phase is entered; all polygon vertex indices rewritten via point_index[].</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>{
+<span class="lineno">2</span>  &quot;vertices&quot;: [
+<span class="lineno">3</span>    [
+<span class="lineno">4</span>      0.0,
+<span class="lineno">5</span>      0.0,
+<span class="lineno">6</span>      0.0
+<span class="lineno">7</span>    ],
+<span class="lineno">8</span>    [
+<span class="lineno">9</span>      1.0,
+<span class="lineno">10</span>      0.0,
+<span class="lineno">11</span>      0.0
+<span class="lineno">12</span>    ],
+<span class="lineno">13</span>    [
+<span class="lineno">14</span>      0.5,
+<span class="lineno">15</span>      1.0,
+<span class="lineno">16</span>      0.0
+<span class="lineno">17</span>    ],
+<span class="lineno">18</span>    [
+<span class="lineno">19</span>      1.5,
+<span class="lineno">20</span>      1.0,
+<span class="lineno">21</span>      0.0
+<span class="lineno">22</span>    ],
+<span class="lineno">23</span>    [
+<span class="lineno">24</span>      1.0,
+<span class="lineno">25</span>      0.0,
+<span class="lineno">26</span>      0.0
+<span class="lineno">27</span>    ]
+<span class="lineno">28</span>  ],
+<span class="lineno">29</span>  &quot;triangles&quot;: [
+<span class="lineno">30</span>    [
+<span class="lineno">31</span>      0,
+<span class="lineno">32</span>      1,
+<span class="lineno">33</span>      2
+<span class="lineno">34</span>    ],
+<span class="lineno">35</span>    [
+<span class="lineno">36</span>      2,
+<span class="lineno">37</span>      4,
+<span class="lineno">38</span>      3
+<span class="lineno">39</span>    ],
+<span class="lineno">40</span>    [
+<span class="lineno">41</span>      0,
+<span class="lineno">42</span>      2,
+<span class="lineno">43</span>      4
+<span class="lineno">44</span>    ]
+<span class="lineno">45</span>  ],
+<span class="lineno">46</span>  &quot;metadata&quot;: {
+<span class="lineno">47</span>    &quot;id&quot;: &quot;Me663&quot;,
+<span class="lineno">48</span>    &quot;schema_version&quot;: 0,
+<span class="lineno">49</span>    &quot;defect_class&quot;: &quot;near_coincident_vertex&quot;,
+<span class="lineno">50</span>    &quot;title&quot;: &quot;merge_duplicate_points_in_polygon_soup merge_needed_check: 5 input points but 4 unique (u1==u4 at (1,0,0)); unique_points.size()!=ini_points_n triggers remap (Branch 4)&quot;,
+<span class="lineno">51</span>    &quot;assertions&quot;: [
+<span class="lineno">52</span>      {
+<span class="lineno">53</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">54</span>        &quot;edge&quot;: [
+<span class="lineno">55</span>          0,
+<span class="lineno">56</span>          2
+<span class="lineno">57</span>        ],
+<span class="lineno">58</span>        &quot;n&quot;: 2
+<span class="lineno">59</span>      },
+<span class="lineno">60</span>      {
+<span class="lineno">61</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">62</span>        &quot;edge&quot;: [
+<span class="lineno">63</span>          2,
+<span class="lineno">64</span>          4
+<span class="lineno">65</span>        ],
+<span class="lineno">66</span>        &quot;n&quot;: 2
+<span class="lineno">67</span>      },
+<span class="lineno">68</span>      {
+<span class="lineno">69</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">70</span>        &quot;edge&quot;: [
+<span class="lineno">71</span>          0,
+<span class="lineno">72</span>          1
+<span class="lineno">73</span>        ],
+<span class="lineno">74</span>        &quot;n&quot;: 1
+<span class="lineno">75</span>      },
+<span class="lineno">76</span>      {
+<span class="lineno">77</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">78</span>        &quot;edge&quot;: [
+<span class="lineno">79</span>          1,
+<span class="lineno">80</span>          2
+<span class="lineno">81</span>        ],
+<span class="lineno">82</span>        &quot;n&quot;: 1
+<span class="lineno">83</span>      },
+<span class="lineno">84</span>      {
+<span class="lineno">85</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">86</span>        &quot;edge&quot;: [
+<span class="lineno">87</span>          3,
+<span class="lineno">88</span>          4
+<span class="lineno">89</span>        ],
+<span class="lineno">90</span>        &quot;n&quot;: 1
+<span class="lineno">91</span>      },
+<span class="lineno">92</span>      {
+<span class="lineno">93</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">94</span>        &quot;edge&quot;: [
+<span class="lineno">95</span>          2,
+<span class="lineno">96</span>          3
+<span class="lineno">97</span>        ],
+<span class="lineno">98</span>        &quot;n&quot;: 1
+<span class="lineno">99</span>      },
+<span class="lineno">100</span>      {
+<span class="lineno">101</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">102</span>        &quot;edge&quot;: [
+<span class="lineno">103</span>          0,
+<span class="lineno">104</span>          4
+<span class="lineno">105</span>        ],
+<span class="lineno">106</span>        &quot;n&quot;: 1
+<span class="lineno">107</span>      },
+<span class="lineno">108</span>      {
+<span class="lineno">109</span>        &quot;kind&quot;: &quot;vertex_pair_distance_lt&quot;,
+<span class="lineno">110</span>        &quot;pair&quot;: [
+<span class="lineno">111</span>          1,
+<span class="lineno">112</span>          4
+<span class="lineno">113</span>        ],
+<span class="lineno">114</span>        &quot;lt&quot;: 1e-09
+<span class="lineno">115</span>      },
+<span class="lineno">116</span>      {
+<span class="lineno">117</span>        &quot;kind&quot;: &quot;vertex_pair_no_shared_triangle&quot;,
+<span class="lineno">118</span>        &quot;pair&quot;: [
+<span class="lineno">119</span>          1,
+<span class="lineno">120</span>          4
+<span class="lineno">121</span>        ]
+<span class="lineno">122</span>      },
+<span class="lineno">123</span>      {
+<span class="lineno">124</span>        &quot;kind&quot;: &quot;euler_characteristic&quot;,
+<span class="lineno">125</span>        &quot;v&quot;: 5,
+<span class="lineno">126</span>        &quot;e&quot;: 7,
+<span class="lineno">127</span>        &quot;f&quot;: 3,
+<span class="lineno">128</span>        &quot;chi&quot;: 1
+<span class="lineno">129</span>      }
+<span class="lineno">130</span>    ]
+<span class="lineno">131</span>  }
+<span class="lineno">132</span>}
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Me662.html">&larr; Me662</a> <a class="up" href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <a class="next" href="Me664.html">Me664 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

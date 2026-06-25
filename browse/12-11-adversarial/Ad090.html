@@ -41,6 +41,9 @@
 <li><code>bytes_ends_with(b&#x27;end-iso-10303-21;&#x27;) or contains(b&#x27;end-iso-10303-21;&#x27;)</code></li>
 <li><code>bytes_ends_with(b&#x27;end-iso-10303-21;&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -56,19 +59,17 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Ad090 - Lower-case end marker rejected by strict reader
-<span class="lineno">3</span> * Defect: STEP file ends with end-iso-10303-21; (lower-case) instead of standard form */
-<span class="lineno">4</span>HEADER;
-<span class="lineno">5</span>FILE_DESCRIPTION((&#x27;Ad090 test case&#x27;,&#x27;Lower-case end marker rejected by strict reader&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">6</span>FILE_NAME(&#x27;Ad090.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">7</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">8</span>ENDSEC;
-<span class="lineno">9</span>DATA;
-<span class="lineno">10</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">11</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
-<span class="lineno">12</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">13</span>ENDSEC;
-<span class="lineno">14</span><mark>end-iso-10303-21;</mark>
+<span class="lineno">2</span>/* Ad090: lower-case end-iso-10303-21; token at end of file; ISO 10303-21 keywords should be case-insensitive; strict reader rejects entire file at trailing lower-case token; cross-oracle: pure-Python Part-21 validator rejects (E_CLOSE_CASE); OCCT silently accepts with no diagnostic; OCCT MANTIS#0031000; See also Le027; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ad090&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ad090.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span><mark>end-iso-10303-21;</mark>
 </pre>
 </details>
 </section>

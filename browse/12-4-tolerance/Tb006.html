@@ -54,74 +54,89 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Tb006 - Edge length sub-tolerance squared in 2D pcurve domain
-<span class="lineno">2</span> * Defect: Pcurve U-domain length is exactly 1e-4 on a face whose declared
-<span class="lineno">3</span> * uncertainty is 1e-3. A kernel comparing pcurve domain to sqrt(tol)
-<span class="lineno">4</span> * (~3.16e-2) keeps the edge alive. A kernel comparing to tol*tol = 1e-6
-<span class="lineno">5</span> * declares it degenerate and drops the pcurve. The two policies disagree
-<span class="lineno">6</span> * on whether the edge has a usable parametric representation.
-<span class="lineno">7</span> */
-<span class="lineno">8</span>ISO-10303-21;
-<span class="lineno">9</span>HEADER;
-<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;Tb006 pcurve domain at sqrt-tolerance threshold&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">11</span>FILE_NAME(&#x27;Tb006.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
-<span class="lineno">12</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">13</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">14</span>ENDSEC;
-<span class="lineno">15</span>DATA;
-<span class="lineno">16</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">17</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">18</span>  &#x27;automotive_design&#x27;,2009,#1);
-<span class="lineno">19</span>/* Face on PLANE. */
-<span class="lineno">20</span>#10=CARTESIAN_POINT(&#x27;o&#x27;,(0.0,0.0,0.0));
-<span class="lineno">21</span>#11=DIRECTION(&#x27;+z&#x27;,(0.0,0.0,1.0));
-<span class="lineno">22</span>#12=DIRECTION(&#x27;+x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">23</span>#13=AXIS2_PLACEMENT_3D(&#x27;plc&#x27;,#10,#11,#12);
-<span class="lineno">24</span>#14=PLANE(&#x27;s&#x27;,#13);
-<span class="lineno">25</span>/* Edge with 3D length 1e-4 and pcurve U-range 1e-4. */
-<span class="lineno">26</span>#20=CARTESIAN_POINT(&#x27;p0&#x27;,(0.0,0.0,0.0));
-<span class="lineno">27</span>#21=CARTESIAN_POINT(&#x27;p1&#x27;,(1.0E-4,0.0,0.0));
-<span class="lineno">28</span>#30=VERTEX_POINT(&#x27;&#x27;,#20);
-<span class="lineno">29</span>#31=VERTEX_POINT(&#x27;&#x27;,#21);
-<span class="lineno">30</span>#40=DIRECTION(&#x27;+x_3d&#x27;,(1.0,0.0,0.0));
-<span class="lineno">31</span>#41=VECTOR(&#x27;vx_short&#x27;,#40,1.0E-4);
-<span class="lineno">32</span>#42=LINE(&#x27;line3d&#x27;,#20,#41);
-<span class="lineno">33</span>/* Pcurve: 2D line in UV with same parameter range 0..1e-4 */
-<span class="lineno">34</span>#43=CARTESIAN_POINT(&#x27;uv0&#x27;,(0.0,0.0));
-<span class="lineno">35</span>#44=DIRECTION(&#x27;+u&#x27;,(1.0,0.0));
-<span class="lineno">36</span>#45=VECTOR(&#x27;vu_short&#x27;,#44,1.0E-4);
-<span class="lineno">37</span>#46=LINE(&#x27;pcurve_line&#x27;,#43,#45);
-<span class="lineno">38</span>#47=DEFINITIONAL_REPRESENTATION(&#x27;pcurve_def&#x27;,(#46),#80);
-<span class="lineno">39</span>#48=PCURVE(&#x27;pc&#x27;,#14,#47);
-<span class="lineno">40</span>#49=SURFACE_CURVE(&#x27;sc&#x27;,#42,(#48),.PCURVE_S1.);
-<span class="lineno">41</span>#50=EDGE_CURVE(&#x27;e_subtolsq&#x27;,#30,#31,#49,.T.);
-<span class="lineno">42</span>/* Trim the surface to the tiny edge region. */
-<span class="lineno">43</span>#60=RECTANGULAR_TRIMMED_SURFACE(&#x27;trim&#x27;,#14,0.0,1.0E-4,0.0,1.0E-4,.T.,.T.);
-<span class="lineno">44</span>/* Defect-class threshold: declared 1e-3 -&gt; tol*tol = 1e-6 (drop) vs
-<span class="lineno">45</span> * sqrt(tol) ~ 3.16e-2 (keep). Edge length 1e-4 sits between. */
-<span class="lineno">46</span>#70=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">47</span>#71=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">48</span>#72=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">49</span>#73=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#70,
-<span class="lineno">50</span>  &#x27;distance_accuracy_value&#x27;,&#x27;tolerance_at_pcurve_sqrt_threshold&#x27;);
-<span class="lineno">51</span>#80=(GEOMETRIC_REPRESENTATION_CONTEXT(2)
-<span class="lineno">52</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#70,#71,#72))
-<span class="lineno">53</span>  REPRESENTATION_CONTEXT(&#x27;uv_ctx&#x27;,&#x27;2D&#x27;));
-<span class="lineno">54</span>#90=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">55</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#73))
-<span class="lineno">56</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#70,#71,#72))
-<span class="lineno">57</span>  REPRESENTATION_CONTEXT(&#x27;ctx_3d&#x27;,&#x27;3D&#x27;));
-<span class="lineno">58</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">59</span>#9001=PRODUCT(&#x27;Tb006&#x27;,&#x27;Tb006&#x27;,&#x27;&#x27;,(#9000));
-<span class="lineno">60</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
-<span class="lineno">61</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
-<span class="lineno">62</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
-<span class="lineno">63</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
-<span class="lineno">64</span>#9020=GEOMETRIC_CURVE_SET(&#x27;curveset&#x27;,(#50,#60));
-<span class="lineno">65</span>#9021=GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9020),#90);
-<span class="lineno">66</span>#9022=SHAPE_DEFINITION_REPRESENTATION(#9005,#9021);
-<span class="lineno">67</span>ENDSEC;
-<span class="lineno">68</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tb006: EDGE_CURVE with PCURVE whose parameter range is 1e-4 (U-direction); declared tolerance 1.0E-3; pcurve degeneracy threshold tol*tol_param = 1e-6 kills the edge under one policy, while sqrt(tol) â 3.16e-2 keeps it under another; receiver A keeps edge; receiver B drops it; small ADVANCED_FACE on a PLANE for tier-3 face[0].area assertion */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Tb006&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Tb006.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">11</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">12</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">13</span>#5=PLANE(&#x27;&#x27;,#4);
+<span class="lineno">14</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">15</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(0.0003,0.0,0.0));
+<span class="lineno">16</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(0.0003,0.0003,0.0));
+<span class="lineno">17</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0003,0.0));
+<span class="lineno">18</span>#10=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">19</span>#11=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">20</span>#12=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">21</span>#13=VERTEX_POINT(&#x27;&#x27;,#9);
+<span class="lineno">22</span>#14=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">23</span>#15=VECTOR(&#x27;&#x27;,#14,0.0003);
+<span class="lineno">24</span>#16=LINE(&#x27;&#x27;,#6,#15);
+<span class="lineno">25</span>#17=EDGE_CURVE(&#x27;e_bot&#x27;,#10,#11,#16,.T.);
+<span class="lineno">26</span>#18=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">27</span>#19=VECTOR(&#x27;&#x27;,#18,0.0003);
+<span class="lineno">28</span>#20=LINE(&#x27;&#x27;,#7,#19);
+<span class="lineno">29</span>#21=EDGE_CURVE(&#x27;e_rgt&#x27;,#11,#12,#20,.T.);
+<span class="lineno">30</span>#22=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">31</span>#23=VECTOR(&#x27;&#x27;,#22,0.0003);
+<span class="lineno">32</span>#24=LINE(&#x27;&#x27;,#9,#23);
+<span class="lineno">33</span>#25=EDGE_CURVE(&#x27;e_top&#x27;,#13,#12,#24,.T.);
+<span class="lineno">34</span>#26=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">35</span>#27=VECTOR(&#x27;&#x27;,#26,0.0003);
+<span class="lineno">36</span>#28=LINE(&#x27;&#x27;,#6,#27);
+<span class="lineno">37</span>#29=EDGE_CURVE(&#x27;e_lft&#x27;,#10,#13,#28,.T.);
+<span class="lineno">38</span>#30=ORIENTED_EDGE(&#x27;&#x27;,$,$,#17,.T.);
+<span class="lineno">39</span>#31=ORIENTED_EDGE(&#x27;&#x27;,$,$,#21,.T.);
+<span class="lineno">40</span>#32=ORIENTED_EDGE(&#x27;&#x27;,$,$,#25,.F.);
+<span class="lineno">41</span>#33=ORIENTED_EDGE(&#x27;&#x27;,$,$,#29,.F.);
+<span class="lineno">42</span>#34=EDGE_LOOP(&#x27;&#x27;,(#30,#31,#32,#33));
+<span class="lineno">43</span>#35=FACE_OUTER_BOUND(&#x27;&#x27;,#34,.T.);
+<span class="lineno">44</span>#36=ADVANCED_FACE(&#x27;&#x27;,(#35),#5,.T.);
+<span class="lineno">45</span>#37=CARTESIAN_POINT(&#x27;&#x27;,(20.0,0.0,0.0));
+<span class="lineno">46</span>#38=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">47</span>#39=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">48</span>#40=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#37,#38,#39);
+<span class="lineno">49</span>#41=CYLINDRICAL_SURFACE(&#x27;&#x27;,#40,1.0);
+<span class="lineno">50</span>#42=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;2D&#x27;));
+<span class="lineno">51</span>#43=CARTESIAN_POINT(&#x27;pcurve_uv_start&#x27;,(0.0,0.0));
+<span class="lineno">52</span>#44=DIRECTION(&#x27;pcurve_udir&#x27;,(1.0,0.0));
+<span class="lineno">53</span>#45=VECTOR(&#x27;pcurve_urange_1e-4&#x27;,#44,0.0001);
+<span class="lineno">54</span>#46=LINE(&#x27;pcurve_line&#x27;,#43,#45);
+<span class="lineno">55</span>#47=DEFINITIONAL_REPRESENTATION(&#x27;pcurve_range_1e-4&#x27;,(#46),#42);
+<span class="lineno">56</span>#48=PCURVE(&#x27;pcurve_param_range_1e-4&#x27;,#41,#47);
+<span class="lineno">57</span>#49=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">58</span>#50=CARTESIAN_POINT(&#x27;&#x27;,(0.999999995,9.99999998333E-05,0.0));
+<span class="lineno">59</span>#51=VERTEX_POINT(&#x27;&#x27;,#49);
+<span class="lineno">60</span>#52=VERTEX_POINT(&#x27;&#x27;,#50);
+<span class="lineno">61</span>#53=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">62</span>#54=VECTOR(&#x27;&#x27;,#53,0.0001);
+<span class="lineno">63</span>#55=LINE(&#x27;&#x27;,#49,#54);
+<span class="lineno">64</span>#56=SURFACE_CURVE(&#x27;&#x27;,#55,(#48),.PCURVE_S1.);
+<span class="lineno">65</span>#57=EDGE_CURVE(&#x27;pcurve_sub_tol_squared&#x27;,#51,#52,#56,.T.);
+<span class="lineno">66</span>#58=OPEN_SHELL(&#x27;&#x27;,(#36));
+<span class="lineno">67</span>#59=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#58));
+<span class="lineno">68</span>#60=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">69</span>#61=PRODUCT_CONTEXT(&#x27;&#x27;,#60,&#x27;mechanical&#x27;);
+<span class="lineno">70</span>#62=PRODUCT(&#x27;Tb006&#x27;,&#x27;Tb006&#x27;,&#x27;&#x27;,(#61));
+<span class="lineno">71</span>#63=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#62);
+<span class="lineno">72</span>#64=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#60,&#x27;design&#x27;);
+<span class="lineno">73</span>#65=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#63,#64);
+<span class="lineno">74</span>#66=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#65);
+<span class="lineno">75</span>#67=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">76</span>#68=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">77</span>#69=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">78</span>#70=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-3),#67,&#x27;distance_accuracy_value&#x27;,&#x27;pcurve_domain_length_squared_tol_test&#x27;);
+<span class="lineno">79</span>#71=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#70))GLOBAL_UNIT_ASSIGNED_CONTEXT((#67,#68,#69))REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">80</span>#72=ADVANCED_BREP_SHAPE_REPRESENTATION(&#x27;&#x27;,(#59),#71);
+<span class="lineno">81</span>#73=SHAPE_DEFINITION_REPRESENTATION(#66,#72);
+<span class="lineno">82</span>ENDSEC;
+<span class="lineno">83</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

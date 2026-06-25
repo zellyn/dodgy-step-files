@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gp113 — ShapeAnalysis_Edge.CheckOverlapping different-curves-same-geometry</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2a Pcurve defects</a> <span class="sep">/</span> <span class="current">Gp113</span>
+</nav>
+<header class="title-bar">
+<h1>Gp113 <span class="sep">—</span> <span class="entry-title">ShapeAnalysis_Edge.CheckOverlapping different-curves-same-geometry</span></h1>
+<p class="category">§12.2a</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2a-pcurves/Gp113.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2a-pcurves/Gp113.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>synthesized — no external source cited</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>ShapeAnalysis_Edge.CheckOverlapping different-curves-same-geometry</p></section>
+<section><h2>Reproducer recipe</h2>
+<p></p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_FORWARD_REF)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>process_signal</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gp113 - ShapeAnalysis_Edge.CheckOverlapping different-curves-same-geometry
+<span class="lineno">3</span> * Defect: two edges where one is LINE and the other is BSpline approximation
+<span class="lineno">4</span> * of the same line. CheckOverlapping&#x27;s curve-type-aware comparison reports them
+<span class="lineno">5</span> * not overlapping despite equivalent geometry. */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;Gp113 test case&#x27;,&#x27;LINE and BSpline approximation - CheckOverlapping mismatch&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;Gp113.stp&#x27;,&#x27;2026-06-15T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
+<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
+<span class="lineno">14</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">15</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">16</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">17</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">18</span>#20=PLANE(&#x27;&#x27;,#13);
+<span class="lineno">19</span>/* First 3D curve: LINE from (0,0,0) to (10,0,0) */
+<span class="lineno">20</span>#30=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">21</span>#31=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">22</span>#32=VECTOR(&#x27;&#x27;,#31,1.0);
+<span class="lineno">23</span>#33=LINE(&#x27;&#x27;,#30,#32);
+<span class="lineno">24</span>#40=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">25</span>#41=VERTEX_POINT(&#x27;&#x27;,#40);
+<span class="lineno">26</span>#42=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">27</span>#43=VERTEX_POINT(&#x27;&#x27;,#42);
+<span class="lineno">28</span>/* Vertices for second edge */
+<span class="lineno">29</span>#44=VERTEX_POINT(&#x27;&#x27;,#40);
+<span class="lineno">30</span>#45=VERTEX_POINT(&#x27;&#x27;,#42);
+<span class="lineno">31</span>/* Second 3D curve: B-spline approximation of same line */
+<span class="lineno">32</span>#80=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">33</span>#81=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">34</span>#82=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">35</span>#83=B_SPLINE_CURVE_WITH_KNOTS(&#x27;&#x27;,3,(#80,#81,#82),.UNSPECIFIED.,.F.,.F.,(2,2),(0.0,1.0),.UNSPECIFIED.);
+<span class="lineno">36</span>/* First edge with LINE */
+<span class="lineno">37</span>#50=SURFACE_CURVE(&#x27;&#x27;,#33,(),.PCURVE_S1.);
+<span class="lineno">38</span>#60=EDGE_CURVE(&#x27;&#x27;,#41,#43,#50,.T.);
+<span class="lineno">39</span>/* Second edge with BSpline */
+<span class="lineno">40</span>#84=SURFACE_CURVE(&#x27;&#x27;,#83,(),.PCURVE_S1.);
+<span class="lineno">41</span>#85=EDGE_CURVE(&#x27;&#x27;,#44,#45,#84,.T.);
+<span class="lineno">42</span>/* Bundle both into a single loop to expose overlap check */
+<span class="lineno">43</span>#61=ORIENTED_EDGE(&#x27;&#x27;,*,*,#60,.T.);
+<span class="lineno">44</span>#86=ORIENTED_EDGE(&#x27;&#x27;,*,*,#85,.T.);
+<span class="lineno">45</span>#62=EDGE_LOOP(&#x27;&#x27;,(#61,#86));
+<span class="lineno">46</span>#63=FACE_OUTER_BOUND(&#x27;&#x27;,#62,.T.);
+<span class="lineno">47</span>#64=ADVANCED_FACE(&#x27;&#x27;,(#63),#20,.T.);
+<span class="lineno">48</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">49</span>#9001=PRODUCT(&#x27;Gp113&#x27;,&#x27;Gp113&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">50</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">51</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">52</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">53</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">54</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">55</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">56</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">57</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">58</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">59</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;sbsm&#x27;,(#9020));
+<span class="lineno">60</span>#9020=CLOSED_SHELL(&#x27;&#x27;,(#9011));
+<span class="lineno">61</span>#9011=ORIENTED_FACE(&#x27;&#x27;,*,*,#64,.T.);
+<span class="lineno">62</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">63</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">64</span>ENDSEC;
+<span class="lineno">65</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gp112.html">&larr; Gp112</a> <a class="up" href="index.html">§12.2a Pcurve defects</a> <a class="next" href="Gp114.html">Gp114 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

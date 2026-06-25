@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tfa177 — ShapeAnalysis_CheckSmallFace.CheckPin near-zero-tip-angle</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa177</span>
+</nav>
+<header class="title-bar">
+<h1>Tfa177 <span class="sep">—</span> <span class="entry-title">ShapeAnalysis_CheckSmallFace.CheckPin near-zero-tip-angle</span></h1>
+<p class="category">§12.3c</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3c-faces/Tfa177.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa177.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>synthesized — no external source cited</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>ShapeAnalysis_CheckSmallFace.CheckPin near-zero-tip-angle</p></section>
+<section><h2>Reproducer recipe</h2>
+<p></p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>signal(11)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>process_signal</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tfa177 - ShapeAnalysis_CheckSmallFace.CheckPin near-zero-tip-angle
+<span class="lineno">3</span> * Defect: CheckPin classifies a pin vertex by measuring the tip angle; when
+<span class="lineno">4</span> * the pin is collapsed (tip angle is exactly 0Â°), the angle is meaningless
+<span class="lineno">5</span> * and the classification produces an undefined verdict that can trigger
+<span class="lineno">6</span> * downstream null-pointer dereferences.
+<span class="lineno">7</span> * Reproducer: ADVANCED_FACE with a pin-shaped wire where the tip has zero angle.
+<span class="lineno">8</span> */
+<span class="lineno">9</span>HEADER;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;Tfa177 CheckPin collapsed tip angle&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;Tfa177.stp&#x27;,&#x27;2026-06-15T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
+<span class="lineno">12</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">13</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">14</span>ENDSEC;
+<span class="lineno">15</span>DATA;
+<span class="lineno">16</span>#1=APPLICATION_CONTEXT(&#x27;automotive design&#x27;);
+<span class="lineno">17</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">18</span>  &#x27;automotive_design&#x27;,2009,#1);
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">20</span>#11=DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
+<span class="lineno">21</span>#12=DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
+<span class="lineno">22</span>#13=AXIS2_PLACEMENT_3D(&#x27;plc&#x27;,#10,#11,#12);
+<span class="lineno">23</span>#20=PLANE(&#x27;base_plane&#x27;,#13);
+<span class="lineno">24</span>/* Outer square wire */
+<span class="lineno">25</span>#200=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">26</span>#201=VERTEX_POINT(&#x27;&#x27;,#200);
+<span class="lineno">27</span>#202=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">28</span>#203=VERTEX_POINT(&#x27;&#x27;,#202);
+<span class="lineno">29</span>#204=CARTESIAN_POINT(&#x27;&#x27;,(10.0,10.0,0.0));
+<span class="lineno">30</span>#205=VERTEX_POINT(&#x27;&#x27;,#204);
+<span class="lineno">31</span>#206=CARTESIAN_POINT(&#x27;&#x27;,(0.0,10.0,0.0));
+<span class="lineno">32</span>#207=VERTEX_POINT(&#x27;&#x27;,#206);
+<span class="lineno">33</span>/* Pin wire: sharp triangle with collapsed tip */
+<span class="lineno">34</span>#210=CARTESIAN_POINT(&#x27;&#x27;,(2.0,2.0,0.0));
+<span class="lineno">35</span>#211=VERTEX_POINT(&#x27;&#x27;,#210);
+<span class="lineno">36</span>#212=CARTESIAN_POINT(&#x27;&#x27;,(8.0,2.0,0.0));
+<span class="lineno">37</span>#213=VERTEX_POINT(&#x27;&#x27;,#212);
+<span class="lineno">38</span>#214=CARTESIAN_POINT(&#x27;&#x27;,(5.0,8.0,0.0));
+<span class="lineno">39</span>#215=VERTEX_POINT(&#x27;&#x27;,#214);
+<span class="lineno">40</span>#216=CARTESIAN_POINT(&#x27;&#x27;,(5.0,8.0,0.0));
+<span class="lineno">41</span>#217=VERTEX_POINT(&#x27;&#x27;,#216);
+<span class="lineno">42</span>/* Outer wire edges */
+<span class="lineno">43</span>#300=VECTOR(&#x27;&#x27;,(1.0,0.0,0.0),10.0);
+<span class="lineno">44</span>#301=LINE(&#x27;&#x27;,#200,#300);
+<span class="lineno">45</span>#302=EDGE_CURVE(&#x27;&#x27;,#201,#203,#301,.T.);
+<span class="lineno">46</span>#303=VECTOR(&#x27;&#x27;,(0.0,1.0,0.0),10.0);
+<span class="lineno">47</span>#304=LINE(&#x27;&#x27;,#202,#303);
+<span class="lineno">48</span>#305=EDGE_CURVE(&#x27;&#x27;,#203,#205,#304,.T.);
+<span class="lineno">49</span>#306=VECTOR(&#x27;&#x27;,(-1.0,0.0,0.0),10.0);
+<span class="lineno">50</span>#307=LINE(&#x27;&#x27;,#204,#306);
+<span class="lineno">51</span>#308=EDGE_CURVE(&#x27;&#x27;,#205,#207,#307,.T.);
+<span class="lineno">52</span>#309=VECTOR(&#x27;&#x27;,(0.0,-1.0,0.0),10.0);
+<span class="lineno">53</span>#310=LINE(&#x27;&#x27;,#206,#309);
+<span class="lineno">54</span>#311=EDGE_CURVE(&#x27;&#x27;,#207,#201,#310,.T.);
+<span class="lineno">55</span>/* Pin wire edges - collapsed tip */
+<span class="lineno">56</span>#320=VECTOR(&#x27;&#x27;,(1.0,0.0,0.0),6.0);
+<span class="lineno">57</span>#321=LINE(&#x27;&#x27;,#210,#320);
+<span class="lineno">58</span>#322=EDGE_CURVE(&#x27;&#x27;,#211,#213,#321,.T.);
+<span class="lineno">59</span>#323=VECTOR(&#x27;&#x27;,(-0.428,0.428,0.0),8.485);
+<span class="lineno">60</span>#324=LINE(&#x27;&#x27;,#212,#323);
+<span class="lineno">61</span>#325=EDGE_CURVE(&#x27;&#x27;,#213,#215,#324,.T.);
+<span class="lineno">62</span>/* Degenerate edge: both vertices at same point (collapsed tip) */
+<span class="lineno">63</span>#326=VECTOR(&#x27;&#x27;,(0.0,0.0,0.0),1.0);
+<span class="lineno">64</span>#327=LINE(&#x27;&#x27;,#214,#326);
+<span class="lineno">65</span>#328=EDGE_CURVE(&#x27;&#x27;,#215,#217,#327,.T.);
+<span class="lineno">66</span>#329=VECTOR(&#x27;&#x27;,(-0.428,-0.428,0.0),8.485);
+<span class="lineno">67</span>#330=LINE(&#x27;&#x27;,#216,#329);
+<span class="lineno">68</span>#331=EDGE_CURVE(&#x27;&#x27;,#217,#211,#330,.T.);
+<span class="lineno">69</span>/* Oriented edges */
+<span class="lineno">70</span>#400=ORIENTED_EDGE(&#x27;&#x27;,*,*,#302,.T.);
+<span class="lineno">71</span>#401=ORIENTED_EDGE(&#x27;&#x27;,*,*,#305,.T.);
+<span class="lineno">72</span>#402=ORIENTED_EDGE(&#x27;&#x27;,*,*,#308,.T.);
+<span class="lineno">73</span>#403=ORIENTED_EDGE(&#x27;&#x27;,*,*,#311,.T.);
+<span class="lineno">74</span>#410=ORIENTED_EDGE(&#x27;&#x27;,*,*,#322,.T.);
+<span class="lineno">75</span>#411=ORIENTED_EDGE(&#x27;&#x27;,*,*,#325,.T.);
+<span class="lineno">76</span>#412=ORIENTED_EDGE(&#x27;&#x27;,*,*,#328,.T.);
+<span class="lineno">77</span>#413=ORIENTED_EDGE(&#x27;&#x27;,*,*,#331,.T.);
+<span class="lineno">78</span>/* Loops */
+<span class="lineno">79</span>#500=EDGE_LOOP(&#x27;&#x27;,(#400,#401,#402,#403));
+<span class="lineno">80</span>#501=FACE_OUTER_BOUND(&#x27;&#x27;,#500,.T.);
+<span class="lineno">81</span>#510=EDGE_LOOP(&#x27;&#x27;,(#410,#411,#412,#413));
+<span class="lineno">82</span>#511=FACE_INNER_BOUND(&#x27;&#x27;,#510,.F.);
+<span class="lineno">83</span>#600=ADVANCED_FACE(&#x27;pin_collapsed_tip&#x27;,(#501,#511),#20,.T.);
+<span class="lineno">84</span>#9000=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
+<span class="lineno">85</span>#9001=PRODUCT(&#x27;Tfa177&#x27;,&#x27;Tfa177&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">86</span>#9002=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9001);
+<span class="lineno">87</span>#9003=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
+<span class="lineno">88</span>#9004=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9002,#9003);
+<span class="lineno">89</span>#9005=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9004);
+<span class="lineno">90</span>#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">91</span>#9007=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">92</span>#9008=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">93</span>#9009=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9006,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">94</span>#9010=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9009))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9006,#9007,#9008))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">95</span>#9020=OPEN_SHELL(&#x27;wrap_shell&#x27;,(#600));
+<span class="lineno">96</span>#9021=SHELL_BASED_SURFACE_MODEL(&#x27;sbsm&#x27;,(#9020));
+<span class="lineno">97</span>#9022=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9021),#9010);
+<span class="lineno">98</span>#9023=SHAPE_DEFINITION_REPRESENTATION(#9005,#9022);
+<span class="lineno">99</span>ENDSEC;
+<span class="lineno">100</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tfa176.html">&larr; Tfa176</a> <a class="up" href="index.html">§12.3c Faces / sewing / free bound</a> <a class="next" href="Tfa178.html">Tfa178 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

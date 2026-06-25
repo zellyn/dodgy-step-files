@@ -43,6 +43,9 @@
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;ISO-10303-21&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="Le022.html">Le022</a>, <a href="Le001.html">Le001</a></p>
 </section>
@@ -61,20 +64,21 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span><mark>ISO-10303-21</mark>;
-<span class="lineno">2</span>/* Le050 - Unicode characters dropped on STEP export
-<span class="lineno">3</span> * Defect: document name with Cyrillic Ð¢ÐµÑÑ; writer emits raw UTF-8 bytes in Ed.2-declared file */
-<span class="lineno">4</span>HEADER;
-<span class="lineno">5</span>FILE_DESCRIPTION((&#x27;Le050 test case&#x27;,&#x27;Unicode characters dropped on STEP export&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">6</span>FILE_NAME(&#x27;Le050.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">7</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">8</span>ENDSEC;
-<span class="lineno">9</span>DATA;
-<span class="lineno">10</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">11</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
-<span class="lineno">12</span>#100=PRODUCT(&#x27;Ð¢ÐµÑÑ&#x27;,&#x27;Test&#x27;,&#x27;&#x27;,(#10));
-<span class="lineno">13</span>#10=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">14</span>ENDSEC;
-<span class="lineno">15</span>END-<mark>ISO-10303-21</mark>;
+<span class="lineno">2</span>/* Le050: Unicode characters in STEP export silently dropped; OCCT MANTIS#0031851 / MANTIS#0031670 / MANTIS#0030694: document name contains Cyrillic / CJK / Greek characters; STEP exporter ASCII-encodes the file body but does not escape non-ASCII via \X2\...\X0\ directive; characters emitted as raw UTF-8 bytes in an Ed.2-declared file â illegal under Ed.2; downstream readers mis-decode or reject the file; defect: PRODUCT name &#x27;Test&#x27; in Cyrillic emitted as raw bytes \xD0\xA2\xD0\xB5\xD1\x81\xD1\x82 instead of \X2\0422043504410442\X0\; heal and accept: writer must escape non-ASCII via \X2\ for Ed.2, or declare Ed.3 and emit raw UTF-8 with proper FILE_DESCRIPTION; must not silently drop Unicode characters on export; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Le050&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Le050.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">11</span>#8997=PERSON(&#x27;Ð¢ÐµÑÑ&#x27;,&#x27;cyrillic-raw-bytes&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>#8998=PERSON(&#x27;ÎÎ»ÏÎ±&#x27;,&#x27;greek-raw-bytes&#x27;,&#x27;&#x27;);
+<span class="lineno">13</span>#8999=PERSON(&#x27;\X2\0422043504410442\X0\&#x27;,&#x27;cyrillic-x2-escaped&#x27;,&#x27;&#x27;);
+<span class="lineno">14</span>
+<span class="lineno">15</span>ENDSEC;
+<span class="lineno">16</span>END-<mark>ISO-10303-21</mark>;
 </pre>
 </details>
 </section>

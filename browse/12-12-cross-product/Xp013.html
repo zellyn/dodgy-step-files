@@ -33,123 +33,137 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept, or reject with diagnostic: each pathology is addressed independently; apex-singularity policy (heal/repair), folded-surface detection (warn or reject), non-manifold-vertex policy.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a</code></p></section>
+<section><h2>Closure intent</h2>
+<p><code>sheet</code> — the open shell is the intended final geometry; a solid-only kernel should cleanly refuse.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;FILE_SCHEMA&#x27;)</code></li>
 <li><code>contains(b&#x27;EDGE_CURVE&#x27;)</code></li>
 <li><code>contains(b&#x27;ADVANCED_FACE&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
-<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(17)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(17)</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
-<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
-<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>reject(E_UNRESOLVED_REFS)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Xp013 - Cross-product: cone apex pcurve singularity, folded B-spline
-<span class="lineno">3</span> *   surface, non-manifold vertex shared across components.
-<span class="lineno">4</span> * Builds on Gp005 (pcurve singularity through cone apex) + Gs010 (folded
-<span class="lineno">5</span> *   B-spline surface) + Tsh-nonmanifold-vertex-class.
-<span class="lineno">6</span> * Non-manifold encoding: TWO disjoint shells share the apex VERTEX,
-<span class="lineno">7</span> *   so the apex vertex is referenced from edges in both shells â
-<span class="lineno">8</span> *   the vertex&#x27;s link is non-manifold (more than two faces incident). */
-<span class="lineno">9</span>HEADER;
-<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;Xp013 cross-product&#x27;,&#x27;cone apex x folded surface x non-manifold vertex&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">11</span>FILE_NAME(&#x27;Xp013.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">12</span><mark>FILE_SCHEMA</mark>((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">13</span>ENDSEC;
-<span class="lineno">14</span>DATA;
-<span class="lineno">15</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">16</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
-<span class="lineno">17</span>/* Defect 1: cone with apex at origin */
-<span class="lineno">18</span>#10=CARTESIAN_POINT(&#x27;apex&#x27;,(0.0,0.0,0.0));
-<span class="lineno">19</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
-<span class="lineno">20</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">21</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
-<span class="lineno">22</span>#14=CONICAL_SURFACE(&#x27;cone&#x27;,#13,1.0,0.7853981633974483);
-<span class="lineno">23</span>/* Apex vertex - shared by edges across two SEPARATE shells */
-<span class="lineno">24</span>#20=VERTEX_POINT(&#x27;apex_shared&#x27;,#10);
-<span class="lineno">25</span>/* === Component A: shell of two faces meeting at apex === */
-<span class="lineno">26</span>#30=CARTESIAN_POINT(&#x27;A_p1&#x27;,(1.0,0.0,1.0));
-<span class="lineno">27</span>#31=VERTEX_POINT(&#x27;&#x27;,#30);
-<span class="lineno">28</span>#32=DIRECTION(&#x27;&#x27;,(0.7071,0.0,0.7071));
-<span class="lineno">29</span>#33=VECTOR(&#x27;&#x27;,#32,1.4142);
-<span class="lineno">30</span>#34=LINE(&#x27;&#x27;,#10,#33);
-<span class="lineno">31</span>#35=<mark>EDGE_CURVE</mark>(&#x27;eA1&#x27;,#20,#31,#34,.T.);
-<span class="lineno">32</span>#40=CARTESIAN_POINT(&#x27;A_p2&#x27;,(0.0,1.0,1.0));
-<span class="lineno">33</span>#41=VERTEX_POINT(&#x27;&#x27;,#40);
-<span class="lineno">34</span>#42=DIRECTION(&#x27;&#x27;,(0.0,0.7071,0.7071));
-<span class="lineno">35</span>#43=VECTOR(&#x27;&#x27;,#42,1.4142);
-<span class="lineno">36</span>#44=LINE(&#x27;&#x27;,#10,#43);
-<span class="lineno">37</span>#45=<mark>EDGE_CURVE</mark>(&#x27;eA2&#x27;,#20,#41,#44,.T.);
-<span class="lineno">38</span>/* third edge between the two far ends to close the loop */
-<span class="lineno">39</span>#46=DIRECTION(&#x27;&#x27;,(-0.7071,0.7071,0.0));
-<span class="lineno">40</span>#47=VECTOR(&#x27;&#x27;,#46,1.4142);
-<span class="lineno">41</span>#48=LINE(&#x27;&#x27;,#30,#47);
-<span class="lineno">42</span>#49=<mark>EDGE_CURVE</mark>(&#x27;eA_close&#x27;,#31,#41,#48,.T.);
-<span class="lineno">43</span>#50=ORIENTED_EDGE(&#x27;&#x27;,*,*,#35,.T.);
-<span class="lineno">44</span>#51=ORIENTED_EDGE(&#x27;&#x27;,*,*,#49,.T.);
-<span class="lineno">45</span>#52=ORIENTED_EDGE(&#x27;&#x27;,*,*,#45,.F.);
-<span class="lineno">46</span>#53=EDGE_LOOP(&#x27;A_loop&#x27;,(#50,#51,#52));
-<span class="lineno">47</span>#54=FACE_OUTER_BOUND(&#x27;&#x27;,#53,.T.);
-<span class="lineno">48</span>#55=<mark>ADVANCED_FACE</mark>(&#x27;A_face&#x27;,(#54),#14,.T.);
-<span class="lineno">49</span>#56=OPEN_SHELL(&#x27;A_shell&#x27;,(#55));
-<span class="lineno">50</span>/* === Component B: shell of one face also meeting at apex === */
-<span class="lineno">51</span>#60=CARTESIAN_POINT(&#x27;B_p1&#x27;,(0.0,0.0,-1.0));
-<span class="lineno">52</span>#61=VERTEX_POINT(&#x27;&#x27;,#60);
-<span class="lineno">53</span>#62=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0));
-<span class="lineno">54</span>#63=VECTOR(&#x27;&#x27;,#62,1.0);
-<span class="lineno">55</span>#64=LINE(&#x27;&#x27;,#10,#63);
-<span class="lineno">56</span>#65=<mark>EDGE_CURVE</mark>(&#x27;eB1&#x27;,#20,#61,#64,.T.);
-<span class="lineno">57</span>#66=CARTESIAN_POINT(&#x27;B_p2&#x27;,(0.7071,0.7071,0.0));
-<span class="lineno">58</span>#67=VERTEX_POINT(&#x27;&#x27;,#66);
-<span class="lineno">59</span>#68=DIRECTION(&#x27;&#x27;,(0.7071,0.7071,0.0));
-<span class="lineno">60</span>#69=VECTOR(&#x27;&#x27;,#68,1.0);
-<span class="lineno">61</span>#70=LINE(&#x27;&#x27;,#10,#69);
-<span class="lineno">62</span>#71=<mark>EDGE_CURVE</mark>(&#x27;eB2&#x27;,#20,#67,#70,.T.);
-<span class="lineno">63</span>#72=DIRECTION(&#x27;&#x27;,(0.5774,0.5774,-0.5774));
-<span class="lineno">64</span>#73=VECTOR(&#x27;&#x27;,#72,1.7320);
-<span class="lineno">65</span>#74=LINE(&#x27;&#x27;,#60,#73);
-<span class="lineno">66</span>#75=<mark>EDGE_CURVE</mark>(&#x27;eB_close&#x27;,#61,#67,#74,.T.);
-<span class="lineno">67</span>#76=ORIENTED_EDGE(&#x27;&#x27;,*,*,#65,.T.);
-<span class="lineno">68</span>#77=ORIENTED_EDGE(&#x27;&#x27;,*,*,#75,.T.);
-<span class="lineno">69</span>#78=ORIENTED_EDGE(&#x27;&#x27;,*,*,#71,.F.);
-<span class="lineno">70</span>#79=EDGE_LOOP(&#x27;B_loop&#x27;,(#76,#77,#78));
-<span class="lineno">71</span>#80=FACE_OUTER_BOUND(&#x27;&#x27;,#79,.T.);
-<span class="lineno">72</span>#81=<mark>ADVANCED_FACE</mark>(&#x27;B_face&#x27;,(#80),#14,.T.);
-<span class="lineno">73</span>#82=OPEN_SHELL(&#x27;B_shell&#x27;,(#81));
-<span class="lineno">74</span>/* === Defect 3: SHELL_BASED_SURFACE_MODEL holding two shells that
-<span class="lineno">75</span> *   share a non-manifold vertex (#20) === */
-<span class="lineno">76</span>#90=SHELL_BASED_SURFACE_MODEL(&#x27;non_manifold_apex_two_shells&#x27;,(#56,#82));
-<span class="lineno">77</span>/* Defect 2: B-spline surface with control net that folds (interior
-<span class="lineno">78</span> *   row reverses U order) */
-<span class="lineno">79</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,2.0));
-<span class="lineno">80</span>#101=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,2.0));
-<span class="lineno">81</span>#102=CARTESIAN_POINT(&#x27;&#x27;,(2.0,0.0,2.0));
-<span class="lineno">82</span>#103=CARTESIAN_POINT(&#x27;&#x27;,(3.0,0.0,2.0));
-<span class="lineno">83</span>/* Folded row: u-order swapped */
-<span class="lineno">84</span>#104=CARTESIAN_POINT(&#x27;&#x27;,(2.0,1.0,2.0));
-<span class="lineno">85</span>#105=CARTESIAN_POINT(&#x27;&#x27;,(3.0,1.0,2.0));
-<span class="lineno">86</span>#106=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,2.0));
-<span class="lineno">87</span>#107=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,2.0));
-<span class="lineno">88</span>#108=CARTESIAN_POINT(&#x27;&#x27;,(0.0,2.0,2.0));
-<span class="lineno">89</span>#109=CARTESIAN_POINT(&#x27;&#x27;,(1.0,2.0,2.0));
-<span class="lineno">90</span>#110=CARTESIAN_POINT(&#x27;&#x27;,(2.0,2.0,2.0));
-<span class="lineno">91</span>#111=CARTESIAN_POINT(&#x27;&#x27;,(3.0,2.0,2.0));
-<span class="lineno">92</span>#120=B_SPLINE_SURFACE_WITH_KNOTS(&#x27;folded&#x27;,3,2,
-<span class="lineno">93</span>  ((#100,#101,#102,#103),(#104,#105,#106,#107),(#108,#109,#110,#111)),
-<span class="lineno">94</span>  .UNSPECIFIED.,.F.,.F.,.F.,
-<span class="lineno">95</span>  (4,4),(3,3),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
-<span class="lineno">96</span>ENDSEC;
-<span class="lineno">97</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* Xp013: Cone apex pcurve x surface-folded x non-manifold vertex */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Xp013&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Xp013.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span><mark>FILE_SCHEMA</mark>((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=CONICAL_SURFACE(&#x27;&#x27;,#4,0.0,0.785398163397);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,1.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,1.0));
+<span class="lineno">18</span>#9=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">19</span>#10=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">20</span>#11=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">21</span>#12=DIRECTION(&#x27;&#x27;,(0.707106781187,0.0,0.707106781187));
+<span class="lineno">22</span>#13=VECTOR(&#x27;&#x27;,#12,1.41421356237);
+<span class="lineno">23</span>#14=LINE(&#x27;&#x27;,#6,#13);
+<span class="lineno">24</span>#15=<mark>EDGE_CURVE</mark>(&#x27;&#x27;,#9,#10,#14,.T.);
+<span class="lineno">25</span>#16=DIRECTION(&#x27;&#x27;,(-0.707106781187,0.707106781187,0.0));
+<span class="lineno">26</span>#17=VECTOR(&#x27;&#x27;,#16,1.41421356237);
+<span class="lineno">27</span>#18=LINE(&#x27;&#x27;,#7,#17);
+<span class="lineno">28</span>#19=<mark>EDGE_CURVE</mark>(&#x27;&#x27;,#10,#11,#18,.T.);
+<span class="lineno">29</span>#20=DIRECTION(&#x27;&#x27;,(0.0,-0.707106781187,-0.707106781187));
+<span class="lineno">30</span>#21=VECTOR(&#x27;&#x27;,#20,1.41421356237);
+<span class="lineno">31</span>#22=LINE(&#x27;&#x27;,#8,#21);
+<span class="lineno">32</span>#23=<mark>EDGE_CURVE</mark>(&#x27;&#x27;,#11,#9,#22,.T.);
+<span class="lineno">33</span>#24=ORIENTED_EDGE(&#x27;&#x27;,$,$,#15,.T.);
+<span class="lineno">34</span>#25=ORIENTED_EDGE(&#x27;&#x27;,$,$,#19,.T.);
+<span class="lineno">35</span>#26=ORIENTED_EDGE(&#x27;&#x27;,$,$,#23,.T.);
+<span class="lineno">36</span>#27=EDGE_LOOP(&#x27;&#x27;,(#24,#25,#26));
+<span class="lineno">37</span>#28=FACE_OUTER_BOUND(&#x27;&#x27;,#27,.T.);
+<span class="lineno">38</span>#29=<mark>ADVANCED_FACE</mark>(&#x27;&#x27;,(#28),#5,.T.);
+<span class="lineno">39</span>#30=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">40</span>#31=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">41</span>#32=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,1.0));
+<span class="lineno">42</span>#33=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,1.0));
+<span class="lineno">43</span>#34=CARTESIAN_POINT(&#x27;&#x27;,(0.5,0.0,0.0));
+<span class="lineno">44</span>#35=CARTESIAN_POINT(&#x27;&#x27;,(0.5,1.0,0.0));
+<span class="lineno">45</span>#36=B_SPLINE_SURFACE_WITH_KNOTS(&#x27;&#x27;,2,1,((#30,#31),(#32,#33),(#34,#35)),.UNSPECIFIED.,.F.,.F.,.F.,(3,3),(2,2),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
+<span class="lineno">46</span>#37=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">47</span>#38=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,1.0));
+<span class="lineno">48</span>#39=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,1.0));
+<span class="lineno">49</span>#40=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">50</span>#41=VERTEX_POINT(&#x27;&#x27;,#37);
+<span class="lineno">51</span>#42=VERTEX_POINT(&#x27;&#x27;,#38);
+<span class="lineno">52</span>#43=VERTEX_POINT(&#x27;&#x27;,#39);
+<span class="lineno">53</span>#44=VERTEX_POINT(&#x27;&#x27;,#40);
+<span class="lineno">54</span>#45=DIRECTION(&#x27;&#x27;,(0.707106781187,0.0,0.707106781187));
+<span class="lineno">55</span>#46=VECTOR(&#x27;&#x27;,#45,1.41421356237);
+<span class="lineno">56</span>#47=LINE(&#x27;&#x27;,#37,#46);
+<span class="lineno">57</span>#48=<mark>EDGE_CURVE</mark>(&#x27;&#x27;,#41,#42,#47,.T.);
+<span class="lineno">58</span>#49=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">59</span>#50=VECTOR(&#x27;&#x27;,#49,1.0);
+<span class="lineno">60</span>#51=LINE(&#x27;&#x27;,#38,#50);
+<span class="lineno">61</span>#52=<mark>EDGE_CURVE</mark>(&#x27;&#x27;,#42,#43,#51,.T.);
+<span class="lineno">62</span>#53=DIRECTION(&#x27;&#x27;,(-0.707106781187,0.0,-0.707106781187));
+<span class="lineno">63</span>#54=VECTOR(&#x27;&#x27;,#53,1.41421356237);
+<span class="lineno">64</span>#55=LINE(&#x27;&#x27;,#39,#54);
+<span class="lineno">65</span>#56=<mark>EDGE_CURVE</mark>(&#x27;&#x27;,#43,#44,#55,.T.);
+<span class="lineno">66</span>#57=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">67</span>#58=VECTOR(&#x27;&#x27;,#57,1.0);
+<span class="lineno">68</span>#59=LINE(&#x27;&#x27;,#40,#58);
+<span class="lineno">69</span>#60=<mark>EDGE_CURVE</mark>(&#x27;&#x27;,#44,#41,#59,.T.);
+<span class="lineno">70</span>#61=ORIENTED_EDGE(&#x27;&#x27;,$,$,#48,.T.);
+<span class="lineno">71</span>#62=ORIENTED_EDGE(&#x27;&#x27;,$,$,#52,.T.);
+<span class="lineno">72</span>#63=ORIENTED_EDGE(&#x27;&#x27;,$,$,#56,.T.);
+<span class="lineno">73</span>#64=ORIENTED_EDGE(&#x27;&#x27;,$,$,#60,.T.);
+<span class="lineno">74</span>#65=EDGE_LOOP(&#x27;&#x27;,(#61,#62,#63,#64));
+<span class="lineno">75</span>#66=FACE_OUTER_BOUND(&#x27;&#x27;,#65,.T.);
+<span class="lineno">76</span>#67=<mark>ADVANCED_FACE</mark>(&#x27;&#x27;,(#66),#36,.T.);
+<span class="lineno">77</span>#68=CARTESIAN_POINT(&#x27;&#x27;,(0.5,0.5,0.5));
+<span class="lineno">78</span>#69=CARTESIAN_POINT(&#x27;&#x27;,(-0.5,0.5,0.5));
+<span class="lineno">79</span>#70=VERTEX_POINT(&#x27;&#x27;,#68);
+<span class="lineno">80</span>#71=VERTEX_POINT(&#x27;&#x27;,#69);
+<span class="lineno">81</span>#72=DIRECTION(&#x27;&#x27;,(0.57735026919,0.57735026919,0.57735026919));
+<span class="lineno">82</span>#73=VECTOR(&#x27;&#x27;,#72,0.866025403784);
+<span class="lineno">83</span>#74=LINE(&#x27;&#x27;,#6,#73);
+<span class="lineno">84</span>#75=<mark>EDGE_CURVE</mark>(&#x27;&#x27;,#9,#70,#74,.T.);
+<span class="lineno">85</span>#76=DIRECTION(&#x27;&#x27;,(-0.57735026919,0.57735026919,0.57735026919));
+<span class="lineno">86</span>#77=VECTOR(&#x27;&#x27;,#76,0.866025403784);
+<span class="lineno">87</span>#78=LINE(&#x27;&#x27;,#6,#77);
+<span class="lineno">88</span>#79=<mark>EDGE_CURVE</mark>(&#x27;&#x27;,#9,#71,#78,.T.);
+<span class="lineno">89</span>#80=/* xp013 defect-3: v_apex #9 shared by edges #15, #23, #75, #79 â non-manifold vertex */;
+<span class="lineno">90</span>#81=OPEN_SHELL(&#x27;&#x27;,(#29,#67));
+<span class="lineno">91</span>#82=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#81));
+<span class="lineno">92</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">93</span>#9051=PRODUCT(&#x27;Xp013&#x27;,&#x27;Xp013&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">94</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">95</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">96</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">97</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">98</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">99</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">100</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">101</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">102</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">103</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#82),#9060);
+<span class="lineno">104</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">105</span>ENDSEC;
+<span class="lineno">106</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

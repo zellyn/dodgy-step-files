@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Me951 — Basic_TMesh.checkGeometry duplicate_vertices: v0==v3 at (0,0,0) in separate triangles, no edge (Branch 2)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <span class="sep">/</span> <span class="current">Me951</span>
+</nav>
+<header class="title-bar">
+<h1>Me951 <span class="sep">—</span> <span class="entry-title">Basic_TMesh.checkGeometry duplicate_vertices: v0==v3 at (0,0,0) in separate triangles, no edge (Branch 2)</span></h1>
+<p class="category">§12.14 mesh defects (sub-class: Basic_TMesh.checkGeometry / coincident-vertices-no-edge)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../mesh-examples/12-14-mesh/Me951.mesh.json">View raw fixture (.mesh.json)</a> <code class="path">mesh-examples/12-14-mesh/Me951.mesh.json</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>MeshFix `Basic_TMesh.checkGeometry` Branch 2 (*duplicate_vertices*: `xyzCompare` detects coincident pair, `getEdge(v2)==null`)</li>
+<li>`MESH_HEAL_COVERAGE.md`.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Two vertices v0 and v3 both at (0,0,0) in separate triangles with no shared edge or half-edge. In the sorted vertex array, these entries are adjacent with distance 0. Since getEdge(v3) from v0 returns null (no triangle contains both), a warning is logged and the scan continues — Branch 2 fires without early return. The function records the defect and moves on.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>t0=(v0,v1,v2) with v0=(0,0,0); t1=(v3,v4,v5) with v3=(0,0,0); no triangle references both v0 and v3; assert vertex_pair_distance_lt(v0,v3,1e-12) and vertex_pair_no_shared_triangle(v0,v3).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Branch 2 fires; defect logged as &#x27;detected coincident vertices&#x27;; getEdge returns null; scan continues without early return.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>{
+<span class="lineno">2</span>  &quot;vertices&quot;: [
+<span class="lineno">3</span>    [
+<span class="lineno">4</span>      0.0,
+<span class="lineno">5</span>      0.0,
+<span class="lineno">6</span>      0.0
+<span class="lineno">7</span>    ],
+<span class="lineno">8</span>    [
+<span class="lineno">9</span>      1.0,
+<span class="lineno">10</span>      0.0,
+<span class="lineno">11</span>      0.0
+<span class="lineno">12</span>    ],
+<span class="lineno">13</span>    [
+<span class="lineno">14</span>      0.5,
+<span class="lineno">15</span>      1.0,
+<span class="lineno">16</span>      0.0
+<span class="lineno">17</span>    ],
+<span class="lineno">18</span>    [
+<span class="lineno">19</span>      0.0,
+<span class="lineno">20</span>      0.0,
+<span class="lineno">21</span>      0.0
+<span class="lineno">22</span>    ],
+<span class="lineno">23</span>    [
+<span class="lineno">24</span>      2.0,
+<span class="lineno">25</span>      0.0,
+<span class="lineno">26</span>      0.0
+<span class="lineno">27</span>    ],
+<span class="lineno">28</span>    [
+<span class="lineno">29</span>      1.5,
+<span class="lineno">30</span>      1.0,
+<span class="lineno">31</span>      0.0
+<span class="lineno">32</span>    ]
+<span class="lineno">33</span>  ],
+<span class="lineno">34</span>  &quot;triangles&quot;: [
+<span class="lineno">35</span>    [
+<span class="lineno">36</span>      0,
+<span class="lineno">37</span>      1,
+<span class="lineno">38</span>      2
+<span class="lineno">39</span>    ],
+<span class="lineno">40</span>    [
+<span class="lineno">41</span>      3,
+<span class="lineno">42</span>      4,
+<span class="lineno">43</span>      5
+<span class="lineno">44</span>    ]
+<span class="lineno">45</span>  ],
+<span class="lineno">46</span>  &quot;metadata&quot;: {
+<span class="lineno">47</span>    &quot;id&quot;: &quot;Me951&quot;,
+<span class="lineno">48</span>    &quot;schema_version&quot;: 0,
+<span class="lineno">49</span>    &quot;defect_class&quot;: &quot;coincident_vertices&quot;,
+<span class="lineno">50</span>    &quot;title&quot;: &quot;Basic_TMesh.checkGeometry duplicate_vertices: v0==v3 at (0,0,0) in separate triangles, no edge (Branch 2)&quot;,
+<span class="lineno">51</span>    &quot;assertions&quot;: [
+<span class="lineno">52</span>      {
+<span class="lineno">53</span>        &quot;kind&quot;: &quot;vertex_pair_distance_lt&quot;,
+<span class="lineno">54</span>        &quot;pair&quot;: [
+<span class="lineno">55</span>          0,
+<span class="lineno">56</span>          3
+<span class="lineno">57</span>        ],
+<span class="lineno">58</span>        &quot;lt&quot;: 1e-12
+<span class="lineno">59</span>      },
+<span class="lineno">60</span>      {
+<span class="lineno">61</span>        &quot;kind&quot;: &quot;vertex_pair_no_shared_triangle&quot;,
+<span class="lineno">62</span>        &quot;pair&quot;: [
+<span class="lineno">63</span>          0,
+<span class="lineno">64</span>          3
+<span class="lineno">65</span>        ]
+<span class="lineno">66</span>      }
+<span class="lineno">67</span>    ]
+<span class="lineno">68</span>  }
+<span class="lineno">69</span>}
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Me950.html">&larr; Me950</a> <a class="up" href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <a class="next" href="Me952.html">Me952 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

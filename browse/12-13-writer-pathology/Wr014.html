@@ -43,6 +43,9 @@
 <li><code>matches(rb&#x27;#\d{7,}=&#x27;)</code></li>
 <li><code>matches(rb&#x27;#\d{6,}=&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -57,25 +60,24 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Wr014 - Sparse instance numbering with huge gaps - instance numbers are hash values */
-<span class="lineno">2</span>ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Wr014: sparse instance numbering â 5 entities but #N reaches 999999999 */
 <span class="lineno">3</span>HEADER;
 <span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Wr014 - sparse instance numbering with huge gaps&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">5</span>FILE_NAME(&#x27;Wr014.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
-<span class="lineno">6</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Wr014.stp&#x27;,&#x27;2026-06-20T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
+<span class="lineno">6</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
 <span class="lineno">7</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
 <span class="lineno">8</span>ENDSEC;
 <span class="lineno">9</span>DATA;
-<span class="lineno">10</span>#42=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
-<span class="lineno">11</span><mark>#9876543=</mark>PRODUCT_CONTEXT(&#x27;part&#x27;,#42,&#x27;mechanical&#x27;);
-<span class="lineno">12</span><mark>#21000000=</mark>PRODUCT(&#x27;Wr014-part&#x27;,&#x27;Wr014 demo&#x27;,&#x27;&#x27;,(#9876543));
-<span class="lineno">13</span><mark>#999999999=</mark>CARTESIAN_POINT(&#x27;origin&#x27;,(0.0,0.0,0.0));
-<span class="lineno">14</span><mark>#314159265=</mark>DIRECTION(&#x27;z&#x27;,(0.0,0.0,1.0));
-<span class="lineno">15</span><mark>#271828182=</mark>DIRECTION(&#x27;x&#x27;,(1.0,0.0,0.0));
-<span class="lineno">16</span><mark>#161803398=</mark>AXIS2_PLACEMENT_3D(&#x27;p&#x27;,#999999999,#314159265,#271828182);
-<span class="lineno">17</span><mark>#577215664=</mark>(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">18</span>ENDSEC;
-<span class="lineno">19</span>END-ISO-10303-21;
+<span class="lineno">10</span>/* Defect: only 5 entities but instance numbers are hash-derived and huge */
+<span class="lineno">11</span>/* Naive receivers pre-allocate array[max_id] and OOM on these 5 entities */
+<span class="lineno">12</span>#42=CARTESIAN_POINT(&#x27;origin&#x27;,(0.,0.,0.));
+<span class="lineno">13</span><mark>#9876543=</mark>DIRECTION(&#x27;zdir&#x27;,(0.,0.,1.));
+<span class="lineno">14</span><mark>#21000000=</mark>DIRECTION(&#x27;xdir&#x27;,(1.,0.,0.));
+<span class="lineno">15</span><mark>#500000001=</mark>CARTESIAN_POINT(&#x27;corner&#x27;,(1.,1.,0.));
+<span class="lineno">16</span><mark>#999999999=</mark>GEOMETRIC_CURVE_SET(&#x27;sparse-ids&#x27;,(#42,#500000001));
+<span class="lineno">17</span>ENDSEC;
+<span class="lineno">18</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

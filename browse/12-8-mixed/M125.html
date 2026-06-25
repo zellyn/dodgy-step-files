@@ -42,6 +42,9 @@
 <li><code>contains(b&#x27;STRUCTURAL_ANALYSIS_DESIGN&#x27;)</code></li>
 <li><code>contains(b&#x27;NODE_GROUP&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -57,31 +60,62 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M125 - AP209 node_group declares the same node id twice.
-<span class="lineno">3</span> * Defect: a <mark>NODE_GROUP</mark> lists the same NODE reference twice. Loads or
-<span class="lineno">4</span> * BCs applied to the group act twice on the duplicate. The set
-<span class="lineno">5</span> * semantics of the group are violated. */
-<span class="lineno">6</span>HEADER;
-<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;M125 test case&#x27;,&#x27;AP209 <mark>NODE_GROUP</mark> duplicate member&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">8</span>FILE_NAME(&#x27;M125.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">9</span>FILE_SCHEMA((&#x27;<mark>STRUCTURAL_ANALYSIS_DESIGN</mark> { 1 0 10303 209 1 0 0 }&#x27;));
-<span class="lineno">10</span>ENDSEC;
-<span class="lineno">11</span>DATA;
-<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;structural_analysis_design&#x27;);
-<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">14</span>  &#x27;structural_analysis_design&#x27;,2001,#1);
-<span class="lineno">15</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">16</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">17</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-<span class="lineno">18</span>     REPRESENTATION_CONTEXT(&#x27;fea&#x27;,&#x27;3D&#x27;));
-<span class="lineno">19</span>#100=CARTESIAN_POINT(&#x27;a&#x27;,(0.0,0.0,0.0));
-<span class="lineno">20</span>#101=CARTESIAN_POINT(&#x27;b&#x27;,(1.0,0.0,0.0));
-<span class="lineno">21</span>#110=NODE(&#x27;n1&#x27;,(#100),$);
-<span class="lineno">22</span>#111=NODE(&#x27;n2&#x27;,(#101),$);
-<span class="lineno">23</span>/* Defect: #110 appears twice in the group&#x27;s node list. */
-<span class="lineno">24</span>#200=<mark>NODE_GROUP</mark>(&#x27;fixed_nodes&#x27;,(#110,#111,#110),$);
-<span class="lineno">25</span>ENDSEC;
-<span class="lineno">26</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M125: AP209 node_group declares the same node id twice */
+<span class="lineno">3</span>/* DEFECT: <mark>NODE_GROUP</mark> member list = (#110, #111, #110) â node #110 appears twice */
+<span class="lineno">4</span>/* Per AP209 Â§7 node_group uses set semantics; duplicates violate the invariant */
+<span class="lineno">5</span>/* Load/BC applied to group acts twice on #110: load doubled or BC over-constrained */
+<span class="lineno">6</span>/* Byte assertion: contains(b&#x27;<mark>STRUCTURAL_ANALYSIS_DESIGN</mark>&#x27;) */
+<span class="lineno">7</span>/* Byte assertion: contains(b&#x27;<mark>NODE_GROUP</mark>&#x27;) */
+<span class="lineno">8</span>HEADER;
+<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;M125: AP209 <mark>NODE_GROUP</mark> with duplicate node reference&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">10</span>FILE_NAME(&#x27;M125.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">11</span>/* Byte assertion: contains(b&#x27;<mark>STRUCTURAL_ANALYSIS_DESIGN</mark>&#x27;) */
+<span class="lineno">12</span>FILE_SCHEMA((&#x27;<mark>STRUCTURAL_ANALYSIS_DESIGN</mark> { 1 0 10303 209 1 0 0 }&#x27;));
+<span class="lineno">13</span>ENDSEC;
+<span class="lineno">14</span>DATA;
+<span class="lineno">15</span>#1=APPLICATION_CONTEXT(&#x27;structural_analysis_design&#x27;);
+<span class="lineno">16</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">17</span>  &#x27;structural_analysis_design&#x27;,2001,#1);
+<span class="lineno">18</span>/* Standard unit context (mm) */
+<span class="lineno">19</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">20</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">21</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">22</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">23</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">24</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">25</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">26</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">27</span>  REPRESENTATION_CONTEXT(&#x27;fea&#x27;,&#x27;3D&#x27;));
+<span class="lineno">28</span>/* Two distinct node positions */
+<span class="lineno">29</span>#100=CARTESIAN_POINT(&#x27;n1&#x27;,(0.0,0.0,0.0));
+<span class="lineno">30</span>#101=CARTESIAN_POINT(&#x27;n2&#x27;,(10.0,0.0,0.0));
+<span class="lineno">31</span>#110=NODE(&#x27;fixed_n1&#x27;,(#100),$);
+<span class="lineno">32</span>#111=NODE(&#x27;fixed_n2&#x27;,(#101),$);
+<span class="lineno">33</span>/* AXIS2_PLACEMENT_3D for the constraint orientation */
+<span class="lineno">34</span>#120=DIRECTION(&#x27;z_dir&#x27;,(0.0,0.0,1.0));
+<span class="lineno">35</span>#121=AXIS2_PLACEMENT_3D(&#x27;bc_frame&#x27;,#100,#120,$);
+<span class="lineno">36</span>#200=SINGLE_POINT_CONSTRAINT(&#x27;fixed_bc&#x27;,&#x27;fixed&#x27;,
+<span class="lineno">37</span>  #110,#121,(1,2,3),(0.0,0.0,0.0,$,$,$));
+<span class="lineno">38</span>/* Byte assertion: contains(b&#x27;<mark>NODE_GROUP</mark>&#x27;) */
+<span class="lineno">39</span>/* DEFECT: member list is (#110, #111, #110) â #110 listed at positions 1 and 3 */
+<span class="lineno">40</span>/* A valid set-semantics group would be (#110, #111) with each node unique */
+<span class="lineno">41</span>#300=<mark>NODE_GROUP</mark>(&#x27;fixed&#x27;,(#110,#111,#110),$);
+<span class="lineno">42</span>#310=FEA_MODEL(&#x27;duplicate_node_group_model&#x27;,$,&#x27;&#x27;,(#300),(),());
+<span class="lineno">43</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">44</span>#500=GEOMETRIC_CURVE_SET(&#x27;ap209-node-group-duplicate-node-reference&#x27;,
+<span class="lineno">45</span>  (#110,#111,#200,#300,#310));
+<span class="lineno">46</span>/* Product chain */
+<span class="lineno">47</span>#600=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">48</span>#601=PRODUCT_CONTEXT(&#x27;&#x27;,#600,&#x27;mechanical&#x27;);
+<span class="lineno">49</span>#602=PRODUCT(&#x27;M125&#x27;,&#x27;M125&#x27;,&#x27;M125&#x27;,(#601));
+<span class="lineno">50</span>#603=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#602);
+<span class="lineno">51</span>#604=PRODUCT_DEFINITION_CONTEXT(#600,&#x27;design&#x27;);
+<span class="lineno">52</span>#605=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#603,#604);
+<span class="lineno">53</span>#606=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#605);
+<span class="lineno">54</span>#607=SHAPE_REPRESENTATION(&#x27;&#x27;,(#500),#14);
+<span class="lineno">55</span>#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
+<span class="lineno">56</span>ENDSEC;
+<span class="lineno">57</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

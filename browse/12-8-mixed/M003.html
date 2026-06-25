@@ -36,66 +36,60 @@
 <section><h2>Notes</h2>
 <p>Synonyms: &quot;tessellated_connecting_edge on free edge&quot;, &quot;open shell connecting edge invalid&quot;, &quot;free-boundary connecting edge has only one face&quot;, &quot;face2 missing on boundary edge&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;TESSELLATED_CONNECTING_EDGE&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_vertices_total == 0</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
-<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
 <tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
 <tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
 <tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
-<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M003 - Free-edge tessellated shell uses <mark>TESSELLATED_CONNECTING_EDGE</mark>
-<span class="lineno">3</span> * with a bogus face2 reference.
-<span class="lineno">4</span> * Defect: <mark>TESSELLATED_CONNECTING_EDGE</mark> requires both face1 and face2 to
-<span class="lineno">5</span> * be set (both faces present at the edge). On a free boundary of an
-<span class="lineno">6</span> * open shell only one face exists. Writers that nonetheless emit a
-<span class="lineno">7</span> * <mark>TESSELLATED_CONNECTING_EDGE</mark> for the free boundary must either (a)
-<span class="lineno">8</span> * fall back to plain TESSELLATED_EDGE or (b) wrongly point face2 at an
-<span class="lineno">9</span> * arbitrary face. This file does (b) - the boundary edge of a half-disk
-<span class="lineno">10</span> * mesh refers to the same face twice. Receivers may then incorrectly
-<span class="lineno">11</span> * conclude the shell is closed. */
-<span class="lineno">12</span>HEADER;
-<span class="lineno">13</span>FILE_DESCRIPTION((&#x27;M003 test case&#x27;,&#x27;tessellated_connecting_edge on free boundary&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">14</span>FILE_NAME(&#x27;M003.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">15</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
-<span class="lineno">16</span>ENDSEC;
-<span class="lineno">17</span>DATA;
-<span class="lineno">18</span>#1=APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
-<span class="lineno">19</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">20</span>  &#x27;ap242_managed_model_based_3d_engineering&#x27;,2014,#1);
-<span class="lineno">21</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">22</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">23</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">24</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
-<span class="lineno">25</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">26</span>     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-<span class="lineno">27</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-<span class="lineno">28</span>     REPRESENTATION_CONTEXT(&#x27;part&#x27;,&#x27;3D&#x27;));
-<span class="lineno">29</span>/* Half-disk mesh - 4 vertices, 2 triangles, single open face. */
-<span class="lineno">30</span>#100=COORDINATES_LIST(&#x27;&#x27;,4,((0.0,0.0,0.0),(1.0,0.0,0.0),
-<span class="lineno">31</span>                            (0.5,0.866,0.0),(-0.5,0.866,0.0)));
-<span class="lineno">32</span>#110=TRIANGULATED_FACE(&#x27;half_disk&#x27;,#100,$,$,(),((1,2,3),(1,3,4)));
-<span class="lineno">33</span>/* Defect: <mark>TESSELLATED_CONNECTING_EDGE</mark> for the straight base edge (1-&gt;2)
-<span class="lineno">34</span> * which is a free boundary - there is no face2. This writer cheated by
-<span class="lineno">35</span> * pointing face2 at the same #110, which schema-wise satisfies the
-<span class="lineno">36</span> * attribute but semantically lies. */
-<span class="lineno">37</span>#120=<mark>TESSELLATED_CONNECTING_EDGE</mark>(&#x27;free_edge_pretending_to_connect&#x27;,
-<span class="lineno">38</span>       #110,#110,(1,2),(1,2),.F.);
-<span class="lineno">39</span>#130=TESSELLATED_SHELL(&#x27;half_disk_shell&#x27;,(#110),$);
-<span class="lineno">40</span>#200=TESSELLATED_SHAPE_REPRESENTATION(&#x27;&#x27;,(#130),#14);
-<span class="lineno">41</span>ENDSEC;
-<span class="lineno">42</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M003: GEOMETRIC_CURVE_SET containing TESSELLATED_SHELL; open tessellated shell has a free-boundary edge represented by <mark>TESSELLATED_CONNECTING_EDGE</mark> with both face1 and face2 set, incorrectly implying the shell is closed; AP242 Tessellated Geometry Â§5.4.2: <mark>TESSELLATED_CONNECTING_EDGE</mark> requires both face1 and face2 to be set â it cannot represent a free-boundary edge; writers on free-boundary edges must use TESSELLATED_EDGE not <mark>TESSELLATED_CONNECTING_EDGE</mark>; buggy writer points face2 at an arbitrary face to avoid a null reference, making receivers think the shell is closed; kernel must heal: detect free-boundary <mark>TESSELLATED_CONNECTING_EDGE</mark>s and not infer a closed shell from their presence; GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty; synonyms: tessellated_connecting_edge on free edge, open shell connecting edge invalid, free-boundary connecting edge has only one face, face2 missing on boundary edge */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;M003&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;M003.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=COORDINATES_LIST(&#x27;face_a_coords&#x27;,3,((0.,0.,0.),(10.,0.,0.),(5.,10.,0.)));
+<span class="lineno">11</span>#2=TRIANGULATED_FACE(&#x27;face_a&#x27;,#1,$,((.FALSE.,.FALSE.,.FALSE.)),((0,1,2)));
+<span class="lineno">12</span>#3=COORDINATES_LIST(&#x27;face_b_coords&#x27;,3,((10.,0.,0.),(20.,0.,0.),(5.,10.,0.)));
+<span class="lineno">13</span>#4=TRIANGULATED_FACE(&#x27;face_b&#x27;,#3,$,((.FALSE.,.FALSE.,.FALSE.)),((0,1,2)));
+<span class="lineno">14</span>#5=TESSELLATED_SHELL(&#x27;open_tess_shell&#x27;,(#2,#4));
+<span class="lineno">15</span>#6=<mark>TESSELLATED_CONNECTING_EDGE</mark>(&#x27;free_boundary_edge_WRONG&#x27;,#2,0,#4,2);
+<span class="lineno">16</span>#7=TESSELLATED_EDGE(&#x27;internal_edge_ok&#x27;,#2,2,#4,0);
+<span class="lineno">17</span>#8=GEOMETRIC_CURVE_SET(&#x27;free-edge-tess-connecting-edge&#x27;,(#5,#6,#7));
+<span class="lineno">18</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">19</span>#9051=PRODUCT(&#x27;M003&#x27;,&#x27;M003&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">20</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">21</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">22</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">23</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">24</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">25</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">26</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">27</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">28</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">29</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#8),#9060);
+<span class="lineno">30</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">31</span>ENDSEC;
+<span class="lineno">32</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tfa075 — ShapeFix_ComposeShell.MakeFacesOnPatch fallback resolution</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa075</span>
+</nav>
+<header class="title-bar">
+<h1>Tfa075 <span class="sep">—</span> <span class="entry-title">ShapeFix_ComposeShell.MakeFacesOnPatch fallback resolution</span></h1>
+<p class="category">§12.3c (face / sewing / free bounds)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3c-faces/Tfa075.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa075.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT method `ShapeFix_ComposeShell.MakeFacesOnPatch_at2981` (line 2985-2992)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>MakeFacesOnPatch receives single non-WIRE loop (e.g., VERTEX). Fast-path check at line 2985 (loops.Length==1 &amp;&amp; !WIRE) returns early, promoting residual loop as face without proper topology resolution. Fallback resolution ambiguous when loop type is not WIRE.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Patch with single degenerate loop; single-edge WIRE loop passed through. Type-checking shortcut skips root-finding; residual loop promoted without face construction.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Kernel should distinguish between single-WIRE (valid, construct face) and single-non-WIRE (error, abort or fallback with diagnostic). Failure: non-WIRE loop bypass leads to unresolved topology.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tfa075: GEOMETRIC_CURVE_SET containing ADVANCED_FACE on PLANE; FACE_OUTER_BOUND references EDGE_LOOP with single degenerate ORIENTED_EDGE; edge is self-loop: start vertex == end vertex at (5.0, 5.0, 0.0); collapses to VERTEX-type non-WIRE loop â triggers MakeFacesOnPatch bypass; fast-path at line 2985: loops.Length==1 &amp;&amp; !WIRE returns early; residual loop promoted as face without topology resolution; kernel should reject or fallback with diagnostic for non-WIRE single loop; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty; no orphaned entities */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Tfa075&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Tfa075.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=PLANE(&#x27;&#x27;,#4);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(5.0,5.0,0.0));
+<span class="lineno">16</span>#7=VERTEX_POINT(&#x27;degenerate_vertex&#x27;,#6);
+<span class="lineno">17</span>#8=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">18</span>#9=VECTOR(&#x27;&#x27;,#8,0.0);
+<span class="lineno">19</span>#10=LINE(&#x27;&#x27;,#6,#9);
+<span class="lineno">20</span>#11=EDGE_CURVE(&#x27;self_loop&#x27;,#7,#7,#10,.T.);
+<span class="lineno">21</span>#12=ORIENTED_EDGE(&#x27;&#x27;,*,*,#11,.T.);
+<span class="lineno">22</span>#13=EDGE_LOOP(&#x27;degenerate_loop&#x27;,(#12));
+<span class="lineno">23</span>#14=FACE_OUTER_BOUND(&#x27;&#x27;,#13,.T.);
+<span class="lineno">24</span>#15=ADVANCED_FACE(&#x27;patch_face&#x27;,(#14),#5,.T.);
+<span class="lineno">25</span>#16=GEOMETRIC_CURVE_SET(&#x27;&#x27;,( #15));
+<span class="lineno">26</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">27</span>#9051=PRODUCT(&#x27;Tfa075&#x27;,&#x27;Tfa075&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">28</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">29</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">30</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">31</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">32</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">33</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">34</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">35</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">36</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">37</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#16),#9060);
+<span class="lineno">38</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">39</span>ENDSEC;
+<span class="lineno">40</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tfa074.html">&larr; Tfa074</a> <a class="up" href="index.html">§12.3c Faces / sewing / free bound</a> <a class="next" href="Tfa076.html">Tfa076 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

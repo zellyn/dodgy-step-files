@@ -44,6 +44,9 @@
 <li><code>count_entity_def(b&#x27;VERTEX_POINT&#x27;) == 1</code></li>
 <li><code>contains(b&#x27;emitted_twice&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -59,27 +62,31 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* A072 - Single vertex written as compound-of-two-points
-<span class="lineno">3</span> * Defect: XCAF document with one TopoDS_Vertex at (0,0,0); writer emits both CARTESIAN_POINT and VERTEX_POINT */
-<span class="lineno">4</span>HEADER;
-<span class="lineno">5</span>FILE_DESCRIPTION((&#x27;A072 test case&#x27;,&#x27;Single vertex written as compound-of-two-points&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">6</span>FILE_NAME(&#x27;A072.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">7</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">8</span>ENDSEC;
-<span class="lineno">9</span>DATA;
-<span class="lineno">10</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">11</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
-<span class="lineno">12</span>#10=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">13</span>#11=PRODUCT(&#x27;part1&#x27;,&#x27;part1&#x27;,&#x27;part1&#x27;,(#10));
-<span class="lineno">14</span>#12=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#11);
-<span class="lineno">15</span>#13=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#1,&#x27;design&#x27;);
-<span class="lineno">16</span>#14=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#12,#13);
-<span class="lineno">17</span>#15=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#14);
-<span class="lineno">18</span><mark>#100=CARTESIAN_POINT(</mark>&#x27;only_vertex&#x27;,(0.0,0.0,0.0));
-<span class="lineno">19</span><mark>#101=VERTEX_POINT(</mark>&#x27;<mark>emitted_twice</mark>&#x27;,#100);
-<span class="lineno">20</span>
-<span class="lineno">21</span>ENDSEC;
-<span class="lineno">22</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* A072: single vertex emitted as both CARTESIAN_POINT and VERTEX_POINT (&#x27;<mark>emitted_twice</mark>&#x27; pattern) */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;A072&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;A072.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">10</span>#2=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">11</span>#3=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">12</span>#4=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#1,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">13</span>#5=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#4))GLOBAL_UNIT_ASSIGNED_CONTEXT((#1,#2,#3))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">14</span><mark>#6=CARTESIAN_POINT(</mark>&#x27;<mark>emitted_twice</mark>&#x27;,(0.0,0.0,0.0));
+<span class="lineno">15</span><mark>#7=VERTEX_POINT(</mark>&#x27;<mark>emitted_twice</mark>&#x27;,#6);
+<span class="lineno">16</span>#8=ADVANCED_BREP_SHAPE_REPRESENTATION(&#x27;compound_two_pts&#x27;,(#6,#7),#5);
+<span class="lineno">17</span>#9=COLOUR_RGB(&#x27;vertex_color&#x27;,0.5,0.5,0.5);
+<span class="lineno">18</span>#10=FILL_AREA_STYLE_COLOUR(&#x27;&#x27;,#9);
+<span class="lineno">19</span>#11=FILL_AREA_STYLE(&#x27;&#x27;,(#10));
+<span class="lineno">20</span>#12=SURFACE_STYLE_FILL_AREA(#11);
+<span class="lineno">21</span>#13=SURFACE_SIDE_STYLE(&#x27;&#x27;,(#12));
+<span class="lineno">22</span>#14=SURFACE_STYLE_USAGE(.BOTH.,#13);
+<span class="lineno">23</span>#15=PRESENTATION_STYLE_ASSIGNMENT((#14));
+<span class="lineno">24</span>#16=STYLED_ITEM(&#x27;vertex_style&#x27;,(#15),#7);
+<span class="lineno">25</span>ENDSEC;
+<span class="lineno">26</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

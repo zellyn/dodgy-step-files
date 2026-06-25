@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Me1110 — pinch-neck non-manifold vertex: genus-preservation decision for SI removal</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <span class="sep">/</span> <span class="current">Me1110</span>
+</nav>
+<header class="title-bar">
+<h1>Me1110 <span class="sep">—</span> <span class="entry-title">pinch-neck non-manifold vertex: genus-preservation decision for SI removal</span></h1>
+<p class="category">§12.14 mesh defects (sub-class: self-intersection/non-manifold-vertex)</p>
+<p class="tag-pills">
+<a class="tag tag-units" href="../by-tag/units/index.html">units</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../mesh-examples/12-14-mesh/Me1110.mesh.json">View raw fixture (.mesh.json)</a> <code class="path">mesh-examples/12-14-mesh/Me1110.mesh.json</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>CGAL `PMP.remove_self_intersections` Branch 1 @ line 2379 (*genus-preservation-requirement*: `if(preserve_genus) duplicate_non_manifold_vertices(…)`)</li>
+<li>`MESH_HEAL_COVERAGE.md`.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>vertex 0 is a pinch-neck bowtie hub shared by two disconnected triangle fans. Fan A (triangles 0,1) lies in the Z=0 plane. Fan B (triangles 2,3) lies in the Y=0 plane; triangle 3 dips below Z=0 and self-intersects triangle 0 from fan A. The hub&#x27;s vertex fan is disconnected — the non-manifold precondition that preserve_genus must evaluate before SI removal can proceed.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>8 vertices; hub at origin; fan A upper-left (hub,fa0,fa1) and lower-left (hub,fa1,fa2) in Z=0; fan B right (hub,fb0,fb1) in Y=0 and crossing (hub,fb2,fb3) cutting into Z&lt;0; assert_vertex_fan_disconnected(0); assert_triangles_self_intersect(0,3).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>detect disconnected vertex fan at hub; evaluate preserve_genus; when false, duplicate hub before hole-filling; when true, route to complex-topology handler.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>{
+<span class="lineno">2</span>  &quot;vertices&quot;: [
+<span class="lineno">3</span>    [
+<span class="lineno">4</span>      0.0,
+<span class="lineno">5</span>      0.0,
+<span class="lineno">6</span>      0.0
+<span class="lineno">7</span>    ],
+<span class="lineno">8</span>    [
+<span class="lineno">9</span>      -1.0,
+<span class="lineno">10</span>      1.0,
+<span class="lineno">11</span>      0.0
+<span class="lineno">12</span>    ],
+<span class="lineno">13</span>    [
+<span class="lineno">14</span>      -2.0,
+<span class="lineno">15</span>      0.0,
+<span class="lineno">16</span>      0.0
+<span class="lineno">17</span>    ],
+<span class="lineno">18</span>    [
+<span class="lineno">19</span>      -1.0,
+<span class="lineno">20</span>      -1.0,
+<span class="lineno">21</span>      0.0
+<span class="lineno">22</span>    ],
+<span class="lineno">23</span>    [
+<span class="lineno">24</span>      1.0,
+<span class="lineno">25</span>      0.0,
+<span class="lineno">26</span>      1.0
+<span class="lineno">27</span>    ],
+<span class="lineno">28</span>    [
+<span class="lineno">29</span>      2.0,
+<span class="lineno">30</span>      0.0,
+<span class="lineno">31</span>      0.0
+<span class="lineno">32</span>    ],
+<span class="lineno">33</span>    [
+<span class="lineno">34</span>      1.0,
+<span class="lineno">35</span>      0.0,
+<span class="lineno">36</span>      -1.0
+<span class="lineno">37</span>    ],
+<span class="lineno">38</span>    [
+<span class="lineno">39</span>      -0.5,
+<span class="lineno">40</span>      0.0,
+<span class="lineno">41</span>      -0.5
+<span class="lineno">42</span>    ]
+<span class="lineno">43</span>  ],
+<span class="lineno">44</span>  &quot;triangles&quot;: [
+<span class="lineno">45</span>    [
+<span class="lineno">46</span>      0,
+<span class="lineno">47</span>      1,
+<span class="lineno">48</span>      2
+<span class="lineno">49</span>    ],
+<span class="lineno">50</span>    [
+<span class="lineno">51</span>      0,
+<span class="lineno">52</span>      2,
+<span class="lineno">53</span>      3
+<span class="lineno">54</span>    ],
+<span class="lineno">55</span>    [
+<span class="lineno">56</span>      0,
+<span class="lineno">57</span>      4,
+<span class="lineno">58</span>      5
+<span class="lineno">59</span>    ],
+<span class="lineno">60</span>    [
+<span class="lineno">61</span>      0,
+<span class="lineno">62</span>      6,
+<span class="lineno">63</span>      7
+<span class="lineno">64</span>    ]
+<span class="lineno">65</span>  ],
+<span class="lineno">66</span>  &quot;metadata&quot;: {
+<span class="lineno">67</span>    &quot;id&quot;: &quot;Me1110&quot;,
+<span class="lineno">68</span>    &quot;schema_version&quot;: 0,
+<span class="lineno">69</span>    &quot;defect_class&quot;: &quot;self_intersection_non_manifold_vertex&quot;,
+<span class="lineno">70</span>    &quot;title&quot;: &quot;pinch-neck non-manifold vertex: genus-preservation decision for SI removal&quot;,
+<span class="lineno">71</span>    &quot;assertions&quot;: [
+<span class="lineno">72</span>      {
+<span class="lineno">73</span>        &quot;kind&quot;: &quot;vertex_fan_disconnected&quot;,
+<span class="lineno">74</span>        &quot;vertex&quot;: 0
+<span class="lineno">75</span>      },
+<span class="lineno">76</span>      {
+<span class="lineno">77</span>        &quot;kind&quot;: &quot;triangles_self_intersect&quot;,
+<span class="lineno">78</span>        &quot;triangles&quot;: [
+<span class="lineno">79</span>          0,
+<span class="lineno">80</span>          3
+<span class="lineno">81</span>        ]
+<span class="lineno">82</span>      }
+<span class="lineno">83</span>    ]
+<span class="lineno">84</span>  }
+<span class="lineno">85</span>}
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Me111.html">&larr; Me111</a> <a class="up" href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <a class="next" href="Me1111.html">Me1111 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -38,51 +38,88 @@
 <section><h2>Notes</h2>
 <p>Synonyms: &quot;AP209 unnormalized direction&quot;, &quot;ply orientation magnitude wrong&quot;, &quot;fiber DIRECTION not unit length&quot;, &quot;STEP DIRECTION ratios sum &gt;1&quot;. Synonyms: &quot;AP209 unnormalized direction&quot;, &quot;ply orientation magnitude wrong&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;STRUCTURAL_ANALYSIS_DESIGN&#x27;)</code></li>
 <li><code>contains(b&#x27;DIRECTION&#x27;)</code></li>
 <li><code>contains(b&#x27;(2.0,0.0,0.0)&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_vertices_total == 1</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
-<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(1)</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
 <tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
-<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M110 - AP209 ply orientation vector not normalized.
-<span class="lineno">3</span> * Defect: a <mark>DIRECTION</mark> used as a ply fiber orientation has magnitude
-<span class="lineno">4</span> * 2.0 instead of unit length. Consumers using the ratios directly for
-<span class="lineno">5</span> * stiffness-matrix transformation compute doubled effective fiber
-<span class="lineno">6</span> * weight. */
-<span class="lineno">7</span>HEADER;
-<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;M110 test case&#x27;,&#x27;AP209 ply <mark>DIRECTION</mark> not unit length&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">9</span>FILE_NAME(&#x27;M110.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">10</span>FILE_SCHEMA((&#x27;<mark>STRUCTURAL_ANALYSIS_DESIGN</mark> { 1 0 10303 209 1 0 0 }&#x27;));
-<span class="lineno">11</span>ENDSEC;
-<span class="lineno">12</span>DATA;
-<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;structural_analysis_design&#x27;);
-<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">15</span>  &#x27;structural_analysis_design&#x27;,2001,#1);
-<span class="lineno">16</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">17</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">18</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-<span class="lineno">19</span>     REPRESENTATION_CONTEXT(&#x27;fea&#x27;,&#x27;3D&#x27;));
-<span class="lineno">20</span>/* Defect: <mark>DIRECTION</mark> ratios magnitude = 2.0 instead of 1.0. */
-<span class="lineno">21</span>#100=<mark>DIRECTION</mark>(&#x27;ply_0deg_unnormalized&#x27;,<mark>(2.0,0.0,0.0)</mark>);
-<span class="lineno">22</span>/* Reference from a laminate so the direction has functional weight. */
-<span class="lineno">23</span>#200=LAMINATE_TABLE(&#x27;skin&#x27;,(#100),$);
-<span class="lineno">24</span>ENDSEC;
-<span class="lineno">25</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M110: AP209 ply orientation vector not normalized */
+<span class="lineno">3</span>/* DEFECT: <mark>DIRECTION</mark>(&#x27;ply_0deg&#x27;,<mark>(2.0,0.0,0.0)</mark>) â magnitude=2.0, not unit length */
+<span class="lineno">4</span>/* Consumers computing stiffness-matrix transforms get 2x effective fiber weight */
+<span class="lineno">5</span>/* Violates ISO 10303-42 direction normalization and AP209 Â§8 ply orientation */
+<span class="lineno">6</span>/* Byte assertion: contains(b&#x27;<mark>STRUCTURAL_ANALYSIS_DESIGN</mark>&#x27;) */
+<span class="lineno">7</span>/* Byte assertion: contains(b&#x27;<mark>DIRECTION</mark>&#x27;) */
+<span class="lineno">8</span>/* Byte assertion: contains(b&#x27;<mark>(2.0,0.0,0.0)</mark>&#x27;) */
+<span class="lineno">9</span>HEADER;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;M110: AP209 ply orientation <mark>DIRECTION</mark> not unit normalized&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;M110.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>/* Byte assertion: contains(b&#x27;<mark>STRUCTURAL_ANALYSIS_DESIGN</mark>&#x27;) */
+<span class="lineno">13</span>FILE_SCHEMA((&#x27;<mark>STRUCTURAL_ANALYSIS_DESIGN</mark> { 1 0 10303 209 1 0 0 }&#x27;));
+<span class="lineno">14</span>ENDSEC;
+<span class="lineno">15</span>DATA;
+<span class="lineno">16</span>#1=APPLICATION_CONTEXT(&#x27;structural_analysis_design&#x27;);
+<span class="lineno">17</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">18</span>  &#x27;structural_analysis_design&#x27;,2001,#1);
+<span class="lineno">19</span>/* Standard unit context */
+<span class="lineno">20</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">21</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">22</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">23</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">24</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">25</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">26</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">27</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">28</span>  REPRESENTATION_CONTEXT(&#x27;fea&#x27;,&#x27;3D&#x27;));
+<span class="lineno">29</span>/* Byte assertion: contains(b&#x27;<mark>DIRECTION</mark>&#x27;) */
+<span class="lineno">30</span>/* Byte assertion: contains(b&#x27;<mark>(2.0,0.0,0.0)</mark>&#x27;) */
+<span class="lineno">31</span>/* DEFECT: ply_0deg direction has magnitude 2.0 â should be (1.0,0.0,0.0) */
+<span class="lineno">32</span>/* CAM tool stored raw vector without normalisation; magnitude = sqrt(4) = 2.0 */
+<span class="lineno">33</span>#50=<mark>DIRECTION</mark>(&#x27;ply_0deg&#x27;,<mark>(2.0,0.0,0.0)</mark>);
+<span class="lineno">34</span>/* Normal to ply plane â correctly unit-normalised (0 deg layup on XY plane) */
+<span class="lineno">35</span>#51=<mark>DIRECTION</mark>(&#x27;ply_normal&#x27;,(0.0,0.0,1.0));
+<span class="lineno">36</span>/* Origin for ply axis placement */
+<span class="lineno">37</span>#52=CARTESIAN_POINT(&#x27;ply_origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">38</span>/* AXIS2_PLACEMENT_3D using the defective unnormalized direction as ref direction *)  */
+<span class="lineno">39</span>#60=AXIS2_PLACEMENT_3D(&#x27;ply_axis&#x27;,#52,#51,#50);
+<span class="lineno">40</span>/* PLY_LAMINATE_DEFINITION referencing the unnormalized ply orientation axis */
+<span class="lineno">41</span>#70=PLY_LAMINATE_DEFINITION(&#x27;ply_0&#x27;,#60,$,$,$);
+<span class="lineno">42</span>/* LAMINATE_TABLE holding the defective ply entry *)  */
+<span class="lineno">43</span>#80=LAMINATE_TABLE(&#x27;layup_A&#x27;,(#70),$);
+<span class="lineno">44</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">45</span>#300=GEOMETRIC_CURVE_SET(&#x27;ap209-ply-orientation-direction-not-unit-normalized&#x27;,
+<span class="lineno">46</span>  (#50,#51,#52,#60,#70,#80));
+<span class="lineno">47</span>/* Product chain */
+<span class="lineno">48</span>#400=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">49</span>#401=PRODUCT_CONTEXT(&#x27;&#x27;,#400,&#x27;mechanical&#x27;);
+<span class="lineno">50</span>#402=PRODUCT(&#x27;M110&#x27;,&#x27;M110&#x27;,&#x27;M110&#x27;,(#401));
+<span class="lineno">51</span>#403=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#402);
+<span class="lineno">52</span>#404=PRODUCT_DEFINITION_CONTEXT(#400,&#x27;design&#x27;);
+<span class="lineno">53</span>#405=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#403,#404);
+<span class="lineno">54</span>#406=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#405);
+<span class="lineno">55</span>#407=SHAPE_REPRESENTATION(&#x27;&#x27;,(#300),#14);
+<span class="lineno">56</span>#408=SHAPE_DEFINITION_REPRESENTATION(#406,#407);
+<span class="lineno">57</span>ENDSEC;
+<span class="lineno">58</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

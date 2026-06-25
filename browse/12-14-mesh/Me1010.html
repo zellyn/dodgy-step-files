@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Me1010 — run_stitch_borders vertex-merge-necessity: h1_tgt representative differs from v_to_keep; redirect to master (Branch 1)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <span class="sep">/</span> <span class="current">Me1010</span>
+</nav>
+<header class="title-bar">
+<h1>Me1010 <span class="sep">—</span> <span class="entry-title">run_stitch_borders vertex-merge-necessity: h1_tgt representative differs from v_to_keep; redirect to master (Branch 1)</span></h1>
+<p class="category">§12.14 mesh defects (sub-class: open_boundary_stitch_gap / border-vertex-union-find)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../mesh-examples/12-14-mesh/Me1070.mesh.json">View raw fixture (.mesh.json)</a> <code class="path">mesh-examples/12-14-mesh/Me1070.mesh.json</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>CGAL PMP `PMP.run_stitch_borders` Branch 1 (*vertex-merge-necessity*: `if(get(uvpm, h1_tgt) != get(uvpm, v_to_keep))`)</li>
+<li>`MESH_HEAL_COVERAGE.md`.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Two open rectangular patches (A: t0=(v0,v1,v2), t1=(v0,v2,v3); B: t2=(v4,v6,v7), t3=(v4,v7,v5)) with coincident boundary seam. Patch A&#x27;s right seam edge (v1,v2) and patch B&#x27;s left seam edge (v4,v5) are geometrically identical but stored as distinct vertex indices. When run_stitch_borders processes the halfedge pair (h1: v0→v1 in A, h2: v5→v4 in B), h1_tgt=v1 has its own union-find representative while v_to_keep=v4; they differ, so Branch 1 fires and redirects all halfedges at v1&#x27;s old rep to the master. Coincident pairs: v1==v4 at (1,0,0), v2==v5 at (1,1,0). Each seam edge on 1 triangle. Euler: V=8, E=10, F=4, chi=2.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Patch A: v0=(0,0,0), v1=(1,0,0), v2=(1,1,0), v3=(0,1,0); t0=(v0,v1,v2), t1=(v0,v2,v3). Patch B: v4=(1,0,0), v5=(1,1,0), v6=(2,0,0), v7=(2,1,0); t2=(v4,v6,v7), t3=(v4,v7,v5). edge_shared(v1,v2,1); edge_shared(v4,v5,1); vertex_pair_distance_lt(v1,v4,1e-9); vertex_pair_distance_lt(v2,v5,1e-9); no_shared_triangle(v1,v4); no_shared_triangle(v2,v5); euler V=8,E=10,F=4,chi=2.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Branch 1 fires; the union-find representative of h1_tgt is different from v_to_keep, so all halfedges currently pointing at h1_tgt&#x27;s old representative vertex are redirected to v_to_keep (the patch B counterpart), unifying the two vertex records.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>{
+<span class="lineno">2</span>  &quot;vertices&quot;: [
+<span class="lineno">3</span>    [
+<span class="lineno">4</span>      0.0,
+<span class="lineno">5</span>      0.0,
+<span class="lineno">6</span>      0.0
+<span class="lineno">7</span>    ],
+<span class="lineno">8</span>    [
+<span class="lineno">9</span>      1.0,
+<span class="lineno">10</span>      0.0,
+<span class="lineno">11</span>      0.0
+<span class="lineno">12</span>    ],
+<span class="lineno">13</span>    [
+<span class="lineno">14</span>      0.0,
+<span class="lineno">15</span>      1.0,
+<span class="lineno">16</span>      0.0
+<span class="lineno">17</span>    ],
+<span class="lineno">18</span>    [
+<span class="lineno">19</span>      2.0,
+<span class="lineno">20</span>      0.0,
+<span class="lineno">21</span>      0.0
+<span class="lineno">22</span>    ],
+<span class="lineno">23</span>    [
+<span class="lineno">24</span>      1.0,
+<span class="lineno">25</span>      0.0,
+<span class="lineno">26</span>      0.0
+<span class="lineno">27</span>    ],
+<span class="lineno">28</span>    [
+<span class="lineno">29</span>      0.0,
+<span class="lineno">30</span>      1.0,
+<span class="lineno">31</span>      0.0
+<span class="lineno">32</span>    ]
+<span class="lineno">33</span>  ],
+<span class="lineno">34</span>  &quot;triangles&quot;: [
+<span class="lineno">35</span>    [
+<span class="lineno">36</span>      0,
+<span class="lineno">37</span>      1,
+<span class="lineno">38</span>      2
+<span class="lineno">39</span>    ],
+<span class="lineno">40</span>    [
+<span class="lineno">41</span>      3,
+<span class="lineno">42</span>      4,
+<span class="lineno">43</span>      5
+<span class="lineno">44</span>    ]
+<span class="lineno">45</span>  ],
+<span class="lineno">46</span>  &quot;metadata&quot;: {
+<span class="lineno">47</span>    &quot;id&quot;: &quot;Me1070&quot;,
+<span class="lineno">48</span>    &quot;schema_version&quot;: 0,
+<span class="lineno">49</span>    &quot;defect_class&quot;: &quot;near_coincident_vertex&quot;,
+<span class="lineno">50</span>    &quot;title&quot;: &quot;filter_stitchable_pairs edge-occurrence-limit: two-patch boundary with single coincident-edge pair; count=1 boundary slots confirm manifold safety (Branch 1)&quot;,
+<span class="lineno">51</span>    &quot;assertions&quot;: [
+<span class="lineno">52</span>      {
+<span class="lineno">53</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">54</span>        &quot;edge&quot;: [
+<span class="lineno">55</span>          0,
+<span class="lineno">56</span>          1
+<span class="lineno">57</span>        ],
+<span class="lineno">58</span>        &quot;n&quot;: 1
+<span class="lineno">59</span>      },
+<span class="lineno">60</span>      {
+<span class="lineno">61</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">62</span>        &quot;edge&quot;: [
+<span class="lineno">63</span>          0,
+<span class="lineno">64</span>          2
+<span class="lineno">65</span>        ],
+<span class="lineno">66</span>        &quot;n&quot;: 1
+<span class="lineno">67</span>      },
+<span class="lineno">68</span>      {
+<span class="lineno">69</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">70</span>        &quot;edge&quot;: [
+<span class="lineno">71</span>          1,
+<span class="lineno">72</span>          2
+<span class="lineno">73</span>        ],
+<span class="lineno">74</span>        &quot;n&quot;: 1
+<span class="lineno">75</span>      },
+<span class="lineno">76</span>      {
+<span class="lineno">77</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">78</span>        &quot;edge&quot;: [
+<span class="lineno">79</span>          3,
+<span class="lineno">80</span>          4
+<span class="lineno">81</span>        ],
+<span class="lineno">82</span>        &quot;n&quot;: 1
+<span class="lineno">83</span>      },
+<span class="lineno">84</span>      {
+<span class="lineno">85</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">86</span>        &quot;edge&quot;: [
+<span class="lineno">87</span>          3,
+<span class="lineno">88</span>          5
+<span class="lineno">89</span>        ],
+<span class="lineno">90</span>        &quot;n&quot;: 1
+<span class="lineno">91</span>      },
+<span class="lineno">92</span>      {
+<span class="lineno">93</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
+<span class="lineno">94</span>        &quot;edge&quot;: [
+<span class="lineno">95</span>          4,
+<span class="lineno">96</span>          5
+<span class="lineno">97</span>        ],
+<span class="lineno">98</span>        &quot;n&quot;: 1
+<span class="lineno">99</span>      },
+<span class="lineno">100</span>      {
+<span class="lineno">101</span>        &quot;kind&quot;: &quot;vertex_pair_distance_lt&quot;,
+<span class="lineno">102</span>        &quot;pair&quot;: [
+<span class="lineno">103</span>          1,
+<span class="lineno">104</span>          4
+<span class="lineno">105</span>        ],
+<span class="lineno">106</span>        &quot;lt&quot;: 1e-09
+<span class="lineno">107</span>      },
+<span class="lineno">108</span>      {
+<span class="lineno">109</span>        &quot;kind&quot;: &quot;vertex_pair_distance_lt&quot;,
+<span class="lineno">110</span>        &quot;pair&quot;: [
+<span class="lineno">111</span>          2,
+<span class="lineno">112</span>          5
+<span class="lineno">113</span>        ],
+<span class="lineno">114</span>        &quot;lt&quot;: 1e-09
+<span class="lineno">115</span>      },
+<span class="lineno">116</span>      {
+<span class="lineno">117</span>        &quot;kind&quot;: &quot;vertex_pair_no_shared_triangle&quot;,
+<span class="lineno">118</span>        &quot;pair&quot;: [
+<span class="lineno">119</span>          1,
+<span class="lineno">120</span>          4
+<span class="lineno">121</span>        ]
+<span class="lineno">122</span>      },
+<span class="lineno">123</span>      {
+<span class="lineno">124</span>        &quot;kind&quot;: &quot;vertex_pair_no_shared_triangle&quot;,
+<span class="lineno">125</span>        &quot;pair&quot;: [
+<span class="lineno">126</span>          2,
+<span class="lineno">127</span>          5
+<span class="lineno">128</span>        ]
+<span class="lineno">129</span>      },
+<span class="lineno">130</span>      {
+<span class="lineno">131</span>        &quot;kind&quot;: &quot;euler_characteristic&quot;,
+<span class="lineno">132</span>        &quot;v&quot;: 6,
+<span class="lineno">133</span>        &quot;e&quot;: 6,
+<span class="lineno">134</span>        &quot;f&quot;: 2,
+<span class="lineno">135</span>        &quot;chi&quot;: 2
+<span class="lineno">136</span>      }
+<span class="lineno">137</span>    ]
+<span class="lineno">138</span>  }
+<span class="lineno">139</span>}
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Me101.html">&larr; Me101</a> <a class="up" href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <a class="next" href="Me1011.html">Me1011 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

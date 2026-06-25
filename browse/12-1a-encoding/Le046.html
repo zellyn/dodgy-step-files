@@ -40,6 +40,9 @@
 <li><code>matches(rb&quot;&#x27;[^&#x27;]* !\&quot;#&quot;)</code></li>
 <li><code>contains(b&quot;#$%&amp;&quot;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="Le036.html">Le036</a></p>
 </section>
@@ -58,31 +61,19 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Le046 - String literal containing every legal printable ASCII
-<span class="lineno">3</span> * character (0x20..0x7E) including &#x27;, \, =, and #
-<span class="lineno">4</span> * Defect: a kernel that does not handle every printable-ASCII byte
-<span class="lineno">5</span> * correctly inside a single string literal will mis-parse one of:
-<span class="lineno">6</span> * embedded apostrophe (must be doubled as &#x27;&#x27;), backslash (legal
-<span class="lineno">7</span> * literal in Ed.2 but begins a directive in Ed.3), &#x27;=&#x27; / &#x27;#&#x27; / &#x27;;&#x27;
-<span class="lineno">8</span> * (token boundary characters at outer scope but legal in strings).
-<span class="lineno">9</span> * This fixture exercises every printable ASCII byte exactly once
-<span class="lineno">10</span> * inside a single PRODUCT.name. */
-<span class="lineno">11</span>HEADER;
-<span class="lineno">12</span>FILE_DESCRIPTION((&#x27;Le046 - all printable ASCII inside one string literal&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">13</span>FILE_NAME(&#x27;Le046.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),
-<span class="lineno">14</span>  &#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">15</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">16</span>ENDSEC;
-<span class="lineno">17</span>DATA;
-<span class="lineno">18</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">19</span>#2=PRODUCT_CONTEXT(&#x27;part&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">20</span>/* Defect-witness: every printable ASCII 0x20..0x7E. The two
-<span class="lineno">21</span> * apostrophes are doubled per Ed.3 escape; the single backslash
-<span class="lineno">22</span> * is the literal Ed.2 form (would be \\\\ if interpreted as Ed.3
-<span class="lineno">23</span> * directive sentinel). */
-<span class="lineno">24</span>#10=PRODUCT(<mark>&#x27; !&quot;#$%&amp;</mark>&#x27;&#x27;()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~&#x27;,&#x27;all-printable&#x27;,&#x27;&#x27;,(#2));
-<span class="lineno">25</span>ENDSEC;
-<span class="lineno">26</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* Le046: String literal containing every legal printable ASCII character (0x20..0x7E); ISO 10303-21 Ed.3 Â§6.4.4: all printable ASCII bytes are legal inside string literals; embedded apostrophe must be doubled (&#x27;&#x27;); embedded backslash is a literal in Ed.2 but begins a directive in Ed.3; token-boundary characters &#x27;=&#x27; &#x27;#&#x27; &#x27;;&#x27; are legal inside string context but mishandled by parsers that do not track string state; defect: kernel that does not handle every printable-ASCII byte correctly will mis-parse one of: &#x27;&#x27; apostrophe, backslash, &#x27;=&#x27; &#x27;#&#x27; &#x27;;&#x27;; round-trip every printable ASCII byte through encode/decode/storage byte-for-byte; heal and accept; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Le046&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Le046.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">11</span>#8999=PERSON(<mark>&#x27; !&quot;#$%&amp;</mark>&#x27;&#x27;()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~&#x27;,&#x27;all-printable-ascii&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>
+<span class="lineno">13</span>ENDSEC;
+<span class="lineno">14</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

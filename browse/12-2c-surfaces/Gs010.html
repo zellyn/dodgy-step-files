@@ -35,84 +35,137 @@
 <section><h2>Notes</h2>
 <p>**See also**: Gn025, Twi041. **OCC behavior**: silently accepts the folded BSpline surface and uses it without re-fit or diagnostic; kernel mishandling; the catalog above forbids silent acceptance. Synonyms: &quot;self-intersecting BSpline surface Jacobian sign change&quot;, &quot;folded NURBS surface non-injective&quot;, &quot;B-spline surface control rows transposed&quot;, &quot;surface fold creates non-injective parametrisation&quot;, &quot;BSpline surface from poorly-trimmed offset folds back&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Closure intent</h2>
+<p><code>ambiguous</code> — the open shell is an incidental scaffold for a non-closure-related test.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;B_SPLINE_SURFACE_WITH_KNOTS(&#x27;)</code></li>
 <li><code>contains(b&#x27;(15.0,5.0,2.0)&#x27;)</code></li>
 <li><code>contains(b&#x27;(0.0,5.0,2.0)&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="../12-2b-nurbs/Gn025.html">Gn025</a>, <a href="../12-3b-wires/Twi041.html">Twi041</a></p>
 </section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
-<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(9)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(9)</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
 <tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
-<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Gs010 - Self-intersecting / folded surface (B-spline Jacobian sign change)
-<span class="lineno">3</span> *
-<span class="lineno">4</span> * Sources:  W007, W017 (HOOPS Exchange out-of-range NURBS guard), X015
-<span class="lineno">5</span> *
-<span class="lineno">6</span> * Defect: B_SPLINE_SURFACE_WITH_KNOTS whose control net has interior rows that
-<span class="lineno">7</span> *  swap order (Jacobian flips sign within parameter range), or whose surface
-<span class="lineno">8</span> *  trimming has it doubled back. Common output of poorly-trimmed offset surfaces
-<span class="lineno">9</span> *  or Boolean-derived subdivision surfaces.
-<span class="lineno">10</span> *
-<span class="lineno">11</span> * Reproducer:  4x3 control net where rows 0 and 1 traverse U in opposite
-<span class="lineno">12</span> *  directions so the parametric mapping is non-injective.
-<span class="lineno">13</span> *
-<span class="lineno">14</span> * Expected kernel behavior:
-<span class="lineno">15</span> *   heal by surface re-fit; reject with &quot;non-injective surface parametrisation&quot;
-<span class="lineno">16</span> *   diagnostic; never silently use the surface for projection. */
-<span class="lineno">17</span>HEADER;
-<span class="lineno">18</span>FILE_DESCRIPTION((&#x27;Gs010 test case&#x27;,&#x27;Folded BSpline surface, Jacobian sign change&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">19</span>FILE_NAME(&#x27;Gs010.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">20</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">21</span>ENDSEC;
-<span class="lineno">22</span>DATA;
-<span class="lineno">23</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">24</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
-<span class="lineno">25</span>/* 4x3 control net - rows 1 and 2 are transposed, folding the surface */
-<span class="lineno">26</span>/* Row 0 (V=0): straight, ascending X */
-<span class="lineno">27</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">28</span>#11=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
-<span class="lineno">29</span>#12=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
-<span class="lineno">30</span>#13=CARTESIAN_POINT(&#x27;&#x27;,(15.0,0.0,0.0));
-<span class="lineno">31</span>/* Row 1 (V=0.5): SHOULD ascend in X, but is REVERSED â fold begins */
-<span class="lineno">32</span>#14=CARTESIAN_POINT(&#x27;&#x27;,<mark>(15.0,5.0,2.0)</mark>);
-<span class="lineno">33</span>#15=CARTESIAN_POINT(&#x27;&#x27;,(10.0,5.0,2.0));
-<span class="lineno">34</span>#16=CARTESIAN_POINT(&#x27;&#x27;,(5.0,5.0,2.0));
-<span class="lineno">35</span>#17=CARTESIAN_POINT(&#x27;&#x27;,<mark>(0.0,5.0,2.0)</mark>);
-<span class="lineno">36</span>/* Row 2 (V=1.0): ascending again */
-<span class="lineno">37</span>#18=CARTESIAN_POINT(&#x27;&#x27;,(0.0,10.0,4.0));
-<span class="lineno">38</span>#19=CARTESIAN_POINT(&#x27;&#x27;,(5.0,10.0,4.0));
-<span class="lineno">39</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(10.0,10.0,4.0));
-<span class="lineno">40</span>#21=CARTESIAN_POINT(&#x27;&#x27;,(15.0,10.0,4.0));
-<span class="lineno">41</span>/* Defect: net rows 0 and 1 traverse U in opposite directions â Jacobian sign change */
-<span class="lineno">42</span>#30=<mark>B_SPLINE_SURFACE_WITH_KNOTS(</mark>&#x27;&#x27;,3,2,
-<span class="lineno">43</span>  ((#10,#14,#18),(#11,#15,#19),(#12,#16,#20),(#13,#17,#21)),
-<span class="lineno">44</span>  .UNSPECIFIED.,.F.,.F.,.F.,
-<span class="lineno">45</span>  (4,4),(3,3),(0.0,1.0),(0.0,1.0),
-<span class="lineno">46</span>  .UNSPECIFIED.);
-<span class="lineno">47</span>#40=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">48</span>#41=VERTEX_POINT(&#x27;&#x27;,#40);
-<span class="lineno">49</span>#42=VERTEX_LOOP(&#x27;&#x27;,#41);
-<span class="lineno">50</span>#43=FACE_OUTER_BOUND(&#x27;&#x27;,#42,.T.);
-<span class="lineno">51</span>#44=ADVANCED_FACE(&#x27;&#x27;,(#43),#30,.T.);
-<span class="lineno">52</span>/* Wrap into shell - any projection / boolean attempt will hit the fold */
-<span class="lineno">53</span>#50=OPEN_SHELL(&#x27;&#x27;,(#44));
-<span class="lineno">54</span>ENDSEC;
-<span class="lineno">55</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* Gs010: B_SPLINE_SURFACE_WITH_KNOTS degree 3x2 4x3 net clamped (4,4)x(3,3) knots; interior rows transposed (row1 beyond row2 in X) â Jacobian sign change; non-injective folded surface; contains <mark>(15.0,5.0,2.0)</mark> and <mark>(0.0,5.0,2.0)</mark>; IS ADVANCED_FACE.face_geometry; shape_null=True */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Gs010&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Gs010.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0,0.0));
+<span class="lineno">12</span>#3=CARTESIAN_POINT(&#x27;&#x27;,<mark>(0.0,5.0,2.0)</mark>);
+<span class="lineno">13</span>#4=CARTESIAN_POINT(&#x27;&#x27;,(15.0,0.0,0.0));
+<span class="lineno">14</span>#5=CARTESIAN_POINT(&#x27;&#x27;,(15.0,5.0,0.0));
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,<mark>(15.0,5.0,2.0)</mark>);
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(5.0,5.0,0.0));
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(5.0,5.0,2.0));
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(15.0,0.0,0.0));
+<span class="lineno">20</span>#11=CARTESIAN_POINT(&#x27;&#x27;,(15.0,5.0,0.0));
+<span class="lineno">21</span>#12=CARTESIAN_POINT(&#x27;&#x27;,<mark>(15.0,5.0,2.0)</mark>);
+<span class="lineno">22</span>#13=<mark>B_SPLINE_SURFACE_WITH_KNOTS(</mark>&#x27;gs010_folded&#x27;,3,2,((#1,#2,#3),(#4,#5,#6),(#7,#8,#9),(#10,#11,#12)),.UNSPECIFIED.,.F.,.F.,.F.,(4,4),(3,3),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.);
+<span class="lineno">23</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT(&#x27;UV&#x27;,&#x27;2D&#x27;));
+<span class="lineno">24</span>#15=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">25</span>#16=CARTESIAN_POINT(&#x27;&#x27;,(15.0,0.0,0.0));
+<span class="lineno">26</span>#17=CARTESIAN_POINT(&#x27;&#x27;,(15.0,5.0,0.0));
+<span class="lineno">27</span>#18=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0,0.0));
+<span class="lineno">28</span>#19=VERTEX_POINT(&#x27;&#x27;,#15);
+<span class="lineno">29</span>#20=VERTEX_POINT(&#x27;&#x27;,#16);
+<span class="lineno">30</span>#21=VERTEX_POINT(&#x27;&#x27;,#17);
+<span class="lineno">31</span>#22=VERTEX_POINT(&#x27;&#x27;,#18);
+<span class="lineno">32</span>#23=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">33</span>#24=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">34</span>#25=VECTOR(&#x27;&#x27;,#24,15.0);
+<span class="lineno">35</span>#26=LINE(&#x27;&#x27;,#23,#25);
+<span class="lineno">36</span>#27=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));
+<span class="lineno">37</span>#28=DIRECTION(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">38</span>#29=VECTOR(&#x27;&#x27;,#28,1.0);
+<span class="lineno">39</span>#30=LINE(&#x27;&#x27;,#27,#29);
+<span class="lineno">40</span>#31=DEFINITIONAL_REPRESENTATION(&#x27;pcdef&#x27;,(#30),#14);
+<span class="lineno">41</span>#32=PCURVE(&#x27;pc&#x27;,#13,#31);
+<span class="lineno">42</span>#33=SURFACE_CURVE(&#x27;sc&#x27;,#26,(#32),.PCURVE_S1.);
+<span class="lineno">43</span>#34=EDGE_CURVE(&#x27;ec&#x27;,#19,#20,#33,.T.);
+<span class="lineno">44</span>#35=CARTESIAN_POINT(&#x27;&#x27;,(15.0,0.0,0.0));
+<span class="lineno">45</span>#36=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">46</span>#37=VECTOR(&#x27;&#x27;,#36,5.0);
+<span class="lineno">47</span>#38=LINE(&#x27;&#x27;,#35,#37);
+<span class="lineno">48</span>#39=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">49</span>#40=DIRECTION(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">50</span>#41=VECTOR(&#x27;&#x27;,#40,1.0);
+<span class="lineno">51</span>#42=LINE(&#x27;&#x27;,#39,#41);
+<span class="lineno">52</span>#43=DEFINITIONAL_REPRESENTATION(&#x27;pcdef&#x27;,(#42),#14);
+<span class="lineno">53</span>#44=PCURVE(&#x27;pc&#x27;,#13,#43);
+<span class="lineno">54</span>#45=SURFACE_CURVE(&#x27;sc&#x27;,#38,(#44),.PCURVE_S1.);
+<span class="lineno">55</span>#46=EDGE_CURVE(&#x27;ec&#x27;,#20,#21,#45,.T.);
+<span class="lineno">56</span>#47=CARTESIAN_POINT(&#x27;&#x27;,(15.0,5.0,0.0));
+<span class="lineno">57</span>#48=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">58</span>#49=VECTOR(&#x27;&#x27;,#48,15.0);
+<span class="lineno">59</span>#50=LINE(&#x27;&#x27;,#47,#49);
+<span class="lineno">60</span>#51=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0));
+<span class="lineno">61</span>#52=DIRECTION(&#x27;&#x27;,(-1.0,0.0));
+<span class="lineno">62</span>#53=VECTOR(&#x27;&#x27;,#52,1.0);
+<span class="lineno">63</span>#54=LINE(&#x27;&#x27;,#51,#53);
+<span class="lineno">64</span>#55=DEFINITIONAL_REPRESENTATION(&#x27;pcdef&#x27;,(#54),#14);
+<span class="lineno">65</span>#56=PCURVE(&#x27;pc&#x27;,#13,#55);
+<span class="lineno">66</span>#57=SURFACE_CURVE(&#x27;sc&#x27;,#50,(#56),.PCURVE_S1.);
+<span class="lineno">67</span>#58=EDGE_CURVE(&#x27;ec&#x27;,#21,#22,#57,.T.);
+<span class="lineno">68</span>#59=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0,0.0));
+<span class="lineno">69</span>#60=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">70</span>#61=VECTOR(&#x27;&#x27;,#60,5.0);
+<span class="lineno">71</span>#62=LINE(&#x27;&#x27;,#59,#61);
+<span class="lineno">72</span>#63=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">73</span>#64=DIRECTION(&#x27;&#x27;,(0.0,-1.0));
+<span class="lineno">74</span>#65=VECTOR(&#x27;&#x27;,#64,1.0);
+<span class="lineno">75</span>#66=LINE(&#x27;&#x27;,#63,#65);
+<span class="lineno">76</span>#67=DEFINITIONAL_REPRESENTATION(&#x27;pcdef&#x27;,(#66),#14);
+<span class="lineno">77</span>#68=PCURVE(&#x27;pc&#x27;,#13,#67);
+<span class="lineno">78</span>#69=SURFACE_CURVE(&#x27;sc&#x27;,#62,(#68),.PCURVE_S1.);
+<span class="lineno">79</span>#70=EDGE_CURVE(&#x27;ec&#x27;,#22,#19,#69,.T.);
+<span class="lineno">80</span>#71=ORIENTED_EDGE(&#x27;&#x27;,$,$,#34,.T.);
+<span class="lineno">81</span>#72=ORIENTED_EDGE(&#x27;&#x27;,$,$,#46,.T.);
+<span class="lineno">82</span>#73=ORIENTED_EDGE(&#x27;&#x27;,$,$,#58,.T.);
+<span class="lineno">83</span>#74=ORIENTED_EDGE(&#x27;&#x27;,$,$,#70,.T.);
+<span class="lineno">84</span>#75=EDGE_LOOP(&#x27;&#x27;,(#71,#72,#73,#74));
+<span class="lineno">85</span>#76=FACE_OUTER_BOUND(&#x27;&#x27;,#75,.T.);
+<span class="lineno">86</span>#77=ADVANCED_FACE(&#x27;&#x27;,(#76),#13,.T.);
+<span class="lineno">87</span>#78=OPEN_SHELL(&#x27;&#x27;,(#77));
+<span class="lineno">88</span>#79=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#78));
+<span class="lineno">89</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">90</span>#9051=PRODUCT(&#x27;Gs010&#x27;,&#x27;Gs010&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">91</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">92</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">93</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">94</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">95</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">96</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">97</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">98</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">99</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">100</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#79),#9060);
+<span class="lineno">101</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">102</span>ENDSEC;
+<span class="lineno">103</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

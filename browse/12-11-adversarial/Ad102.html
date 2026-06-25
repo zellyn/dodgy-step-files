@@ -40,6 +40,9 @@
 <li><code>contains(b&#x27;EDGE_CURVE&#x27;) and contains(b&#x27;hlr&#x27;)</code></li>
 <li><code>contains(b&#x27;EDGE_CURVE&#x27;) and contains(b&#x27;VERTEX_POINT&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="../12-3a-shells/Tsh037.html">Tsh037</a></p>
 </section>
@@ -58,22 +61,41 @@
 <details>
 <summary>Show fixture bytes</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Ad102 - Crash transferring HLR shapes via STEP writer
-<span class="lineno">3</span> * Defect: compound of EDGE_CURVEs with no incident face; writer expects every edge to belong to a face */
-<span class="lineno">4</span>HEADER;
-<span class="lineno">5</span>FILE_DESCRIPTION((&#x27;Ad102 test case&#x27;,&#x27;Crash transferring HLR shapes via STEP writer&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">6</span>FILE_NAME(&#x27;Ad102.stp&#x27;,&#x27;2026-04-30T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">7</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">8</span>ENDSEC;
-<span class="lineno">9</span>DATA;
-<span class="lineno">10</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">11</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
-<span class="lineno">12</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));#101=VERTEX_POINT(&#x27;&#x27;,#100);
-<span class="lineno">13</span>#102=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));#103=VERTEX_POINT(&#x27;&#x27;,#102);
-<span class="lineno">14</span>#104=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));#105=VECTOR(&#x27;&#x27;,#104,1.0);
-<span class="lineno">15</span>#106=LINE(&#x27;&#x27;,#100,#105);#107=EDGE_CURVE(&#x27;hlr_bare_edge&#x27;,#101,#103,#106,.T.);
-<span class="lineno">16</span>ENDSEC;
-<span class="lineno">17</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* Ad102: bare-edge HLR shape: EDGE_CURVEs with no incident face; STEP writer expects every edge to belong to a face; segfaults on bare-edge / bare-vertex HLR result; writer must handle bare shapes via WIRE_SHELL representation with no face references; must not crash on bare shapes; OCCT MANTIS#0027070; See also Tsh037; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ad102&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ad102.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">11</span>#3=CARTESIAN_POINT(&#x27;hlr_p0&#x27;,(-1.0,1.0,0.0));
+<span class="lineno">12</span>#4=CARTESIAN_POINT(&#x27;hlr_p1&#x27;,(1.0,1.0,0.0));
+<span class="lineno">13</span>#5=VERTEX_POINT(&#x27;hlr_v0&#x27;,#3);
+<span class="lineno">14</span>#6=VERTEX_POINT(&#x27;hlr_v1&#x27;,#4);
+<span class="lineno">15</span>#7=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">16</span>#8=VECTOR(&#x27;&#x27;,#7,2.0);
+<span class="lineno">17</span>#9=LINE(&#x27;hlr_silhouette_line1&#x27;,#3,#8);
+<span class="lineno">18</span>#10=EDGE_CURVE(&#x27;hlr_edge1&#x27;,#5,#6,#9,.T.);
+<span class="lineno">19</span>#11=CARTESIAN_POINT(&#x27;hlr_p2&#x27;,(-1.0,-1.0,0.0));
+<span class="lineno">20</span>#12=CARTESIAN_POINT(&#x27;hlr_p3&#x27;,(1.0,-1.0,0.0));
+<span class="lineno">21</span>#13=VERTEX_POINT(&#x27;hlr_v2&#x27;,#11);
+<span class="lineno">22</span>#14=VERTEX_POINT(&#x27;hlr_v3&#x27;,#12);
+<span class="lineno">23</span>#15=VECTOR(&#x27;&#x27;,#7,2.0);
+<span class="lineno">24</span>#16=LINE(&#x27;hlr_silhouette_line2&#x27;,#11,#15);
+<span class="lineno">25</span>#17=EDGE_CURVE(&#x27;hlr_edge2&#x27;,#13,#14,#16,.T.);
+<span class="lineno">26</span>#18=CARTESIAN_POINT(&#x27;hlr_p4&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">27</span>#19=CARTESIAN_POINT(&#x27;hlr_p5&#x27;,(0.0,1.0,0.0));
+<span class="lineno">28</span>#20=VERTEX_POINT(&#x27;hlr_v4&#x27;,#18);
+<span class="lineno">29</span>#21=VERTEX_POINT(&#x27;hlr_v5&#x27;,#19);
+<span class="lineno">30</span>#22=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">31</span>#23=VECTOR(&#x27;&#x27;,#22,2.0);
+<span class="lineno">32</span>#24=LINE(&#x27;hlr_silhouette_line3&#x27;,#18,#23);
+<span class="lineno">33</span>#25=EDGE_CURVE(&#x27;hlr_edge3&#x27;,#20,#21,#24,.T.);
+<span class="lineno">34</span>#26=GEOMETRIC_CURVE_SET(&#x27;hlr_result&#x27;,(#10,#17,#25));
+<span class="lineno">35</span>ENDSEC;
+<span class="lineno">36</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

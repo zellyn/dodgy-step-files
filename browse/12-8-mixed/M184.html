@@ -40,6 +40,9 @@
 <li><code>contains(b&#x27;AP238_STEP_NC_MIM&#x27;)</code></li>
 <li><code>count_entity_def(b&#x27;EXECUTABLE_RELATIONSHIP&#x27;) &gt;= 2</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -47,7 +50,7 @@
 <tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
 <tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
-<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>warn(W_FORWARD_REF)</code></td></tr>
 <tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
 </tbody></table>
 </section>
@@ -55,33 +58,63 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M184 - AP238 EXECUTABLE_RELATIONSHIP forms a cycle.
-<span class="lineno">3</span> * Defect: two EXECUTABLE_RELATIONSHIP entities form a cycle where
-<span class="lineno">4</span> * operation A precedes operation B and operation B precedes operation
-<span class="lineno">5</span> * A. The workplan has no valid topological order; consumers either
-<span class="lineno">6</span> * deadlock during scheduling or pick an arbitrary order that breaks
-<span class="lineno">7</span> * the dependency. */
-<span class="lineno">8</span>HEADER;
-<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;M184 test case&#x27;,&#x27;AP238 executable_relationship cycle&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">10</span>FILE_NAME(&#x27;M184.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">11</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 1 0 0 1 }&#x27;));
-<span class="lineno">12</span>ENDSEC;
-<span class="lineno">13</span>DATA;
-<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;numerical_control_machining&#x27;);
-<span class="lineno">15</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">16</span>  &#x27;numerical_control_machining&#x27;,2007,#1);
+<span class="lineno">2</span>/* M184: AP238 executable_relationship forms a cycle (A precedes B, B precedes A) */
+<span class="lineno">3</span>/* DEFECT: EXECUTABLE_RELATIONSHIP A-&gt;B and B-&gt;A create a dependency cycle */
+<span class="lineno">4</span>/* Workplan has no valid topological order â no valid starting operation exists */
+<span class="lineno">5</span>/* Consumer scheduler either deadlocks or picks arbitrary order breaking dependencies */
+<span class="lineno">6</span>/* Per ISO 10303-238 Â§6.4 executable-relationship graph must be acyclic */
+<span class="lineno">7</span>/* Byte assertion: contains(b&#x27;<mark>AP238_STEP_NC_MIM</mark>&#x27;) */
+<span class="lineno">8</span>/* Byte assertion: count_entity_def(b&#x27;EXECUTABLE_RELATIONSHIP&#x27;) &gt;= 2 */
+<span class="lineno">9</span>HEADER;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;M184: AP238 executable_relationship cycle A precedes B precedes A&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;M184.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>/* Byte assertion: contains(b&#x27;<mark>AP238_STEP_NC_MIM</mark>&#x27;) */
+<span class="lineno">13</span>FILE_SCHEMA((&#x27;<mark>AP238_STEP_NC_MIM</mark> { 1 0 10303 238 3 1 1 1 }&#x27;));
+<span class="lineno">14</span>ENDSEC;
+<span class="lineno">15</span>DATA;
+<span class="lineno">16</span>/* Standard unit context (mm) */
 <span class="lineno">17</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">18</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">19</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-<span class="lineno">20</span>     REPRESENTATION_CONTEXT(&#x27;nc&#x27;,&#x27;3D&#x27;));
-<span class="lineno">21</span>#100=MACHINING_OPERATION(&#x27;op_A&#x27;,$,$,$,$,$);
-<span class="lineno">22</span>#101=MACHINING_OPERATION(&#x27;op_B&#x27;,$,$,$,$,$);
-<span class="lineno">23</span>/* Defect: A precedes B and B precedes A. */
-<span class="lineno">24</span><mark>#110=EXECUTABLE_RELATIONSHIP(</mark>&#x27;A_before_B&#x27;,$,#100,#101);
-<span class="lineno">25</span><mark>#111=EXECUTABLE_RELATIONSHIP(</mark>&#x27;B_before_A&#x27;,$,#101,#100);
-<span class="lineno">26</span>#200=WORKPLAN(&#x27;main&#x27;,(#100,#101),$,$,$);
-<span class="lineno">27</span>ENDSEC;
-<span class="lineno">28</span>END-ISO-10303-21;
+<span class="lineno">18</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">19</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">20</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">21</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">22</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">23</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">24</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">25</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">26</span>/* mm length unit reference for MEASURE_WITH_UNIT */
+<span class="lineno">27</span>#15=SI_UNIT(.MILLI.,.METRE.);
+<span class="lineno">28</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">29</span>#20=GEOMETRIC_CURVE_SET(&#x27;ap238-executable-relationship-dependency-cycle&#x27;,
+<span class="lineno">30</span>  (#210,#211,#60));
+<span class="lineno">31</span>/* WORKPIECE &#x27;drill_workpiece&#x27; for both drilling operations */
+<span class="lineno">32</span>#60=WORKPIECE(&#x27;drill_workpiece&#x27;,&#x27;Workpiece for cyclic dependency test&#x27;,$,$,$,$,$);
+<span class="lineno">33</span>/* Operation A: drill_op_A â first drilling operation */
+<span class="lineno">34</span>#200=DRILLING_OPERATION(&#x27;drill_op_A&#x27;,$,$,$,$,$,$,$,$,$,$,$,$);
+<span class="lineno">35</span>/* Operation B: drill_op_B â second drilling operation */
+<span class="lineno">36</span>#201=DRILLING_OPERATION(&#x27;drill_op_B&#x27;,$,$,$,$,$,$,$,$,$,$,$,$);
+<span class="lineno">37</span>/* Byte assertion: count_entity_def(b&#x27;EXECUTABLE_RELATIONSHIP&#x27;) &gt;= 2 */
+<span class="lineno">38</span>/* EXECUTABLE_RELATIONSHIP &#x27;A_precedes_B&#x27;: A (#200) must execute before B (#201) */
+<span class="lineno">39</span><mark>#210=EXECUTABLE_RELATIONSHIP(</mark>&#x27;A_precedes_B&#x27;,&#x27;A must precede B&#x27;,#200,#201);
+<span class="lineno">40</span>/* DEFECT: &#x27;B_precedes_A&#x27;: B (#201) must execute before A (#200) â CYCLE! */
+<span class="lineno">41</span><mark>#211=EXECUTABLE_RELATIONSHIP(</mark>&#x27;B_precedes_A&#x27;,&#x27;B must precede A&#x27;,#201,#200);
+<span class="lineno">42</span>/* MACHINING_WORKINGSTEP links each op to the shared workpiece */
+<span class="lineno">43</span>#51=MACHINING_WORKINGSTEP(&#x27;drill_step_A&#x27;,&#x27;Drill step A&#x27;,#200,#60,$);
+<span class="lineno">44</span>#52=MACHINING_WORKINGSTEP(&#x27;drill_step_B&#x27;,&#x27;Drill step B&#x27;,#201,#60,$);
+<span class="lineno">45</span>/* WORKPLAN: both steps with circular dependency â no valid schedule */
+<span class="lineno">46</span>#50=WORKPLAN(&#x27;cyclic_dependency_program&#x27;,&#x27;Cyclic dependency workplan&#x27;,(),$,(#51,#52));
+<span class="lineno">47</span>/* Product chain */
+<span class="lineno">48</span>#100=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">49</span>#101=PRODUCT_CONTEXT(&#x27;&#x27;,#100,&#x27;mechanical&#x27;);
+<span class="lineno">50</span>#102=PRODUCT(&#x27;M184&#x27;,&#x27;M184&#x27;,&#x27;M184&#x27;,(#101));
+<span class="lineno">51</span>#103=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#102);
+<span class="lineno">52</span>#104=PRODUCT_DEFINITION_CONTEXT(#100,&#x27;design&#x27;);
+<span class="lineno">53</span>#105=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#103,#104);
+<span class="lineno">54</span>#106=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#105);
+<span class="lineno">55</span>#107=SHAPE_REPRESENTATION(&#x27;&#x27;,(#20),#14);
+<span class="lineno">56</span>#108=SHAPE_DEFINITION_REPRESENTATION(#106,#107);
+<span class="lineno">57</span>ENDSEC;
+<span class="lineno">58</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

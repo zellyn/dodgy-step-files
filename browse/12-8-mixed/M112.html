@@ -42,6 +42,9 @@
 <li><code>contains(b&#x27;STRUCTURAL_ANALYSIS_DESIGN&#x27;)</code></li>
 <li><code>count_entity_def(b&#x27;MULTI_POINT_CONSTRAINT&#x27;) &gt;= 3</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -57,35 +60,65 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M112 - AP209 multi_point_constraint chain forms a dependency cycle.
-<span class="lineno">3</span> * Defect: three MULTI_POINT_CONSTRAINTs make A slave of B, B slave of
-<span class="lineno">4</span> * C, and C slave of A - a closed master-slave cycle. Solver assembly
-<span class="lineno">5</span> * cannot reduce the system. */
-<span class="lineno">6</span>HEADER;
-<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;M112 test case&#x27;,&#x27;AP209 MPC chain forms cycle&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">8</span>FILE_NAME(&#x27;M112.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">9</span>FILE_SCHEMA((&#x27;<mark>STRUCTURAL_ANALYSIS_DESIGN</mark> { 1 0 10303 209 1 0 0 }&#x27;));
-<span class="lineno">10</span>ENDSEC;
-<span class="lineno">11</span>DATA;
-<span class="lineno">12</span>#1=APPLICATION_CONTEXT(&#x27;structural_analysis_design&#x27;);
-<span class="lineno">13</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">14</span>  &#x27;structural_analysis_design&#x27;,2001,#1);
-<span class="lineno">15</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">16</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">17</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10))
-<span class="lineno">18</span>     REPRESENTATION_CONTEXT(&#x27;fea&#x27;,&#x27;3D&#x27;));
-<span class="lineno">19</span>#100=CARTESIAN_POINT(&#x27;a&#x27;,(0.0,0.0,0.0));
-<span class="lineno">20</span>#101=CARTESIAN_POINT(&#x27;b&#x27;,(1.0,0.0,0.0));
-<span class="lineno">21</span>#102=CARTESIAN_POINT(&#x27;c&#x27;,(0.0,1.0,0.0));
-<span class="lineno">22</span>#110=NODE(&#x27;A&#x27;,(#100),$);
-<span class="lineno">23</span>#111=NODE(&#x27;B&#x27;,(#101),$);
-<span class="lineno">24</span>#112=NODE(&#x27;C&#x27;,(#102),$);
-<span class="lineno">25</span>/* Defect: A-&gt;B, B-&gt;C, C-&gt;A is a cycle */
-<span class="lineno">26</span><mark>#200=MULTI_POINT_CONSTRAINT(</mark>&#x27;A_slave_of_B&#x27;,#110,#111,&#x27;XYZ&#x27;);
-<span class="lineno">27</span><mark>#201=MULTI_POINT_CONSTRAINT(</mark>&#x27;B_slave_of_C&#x27;,#111,#112,&#x27;XYZ&#x27;);
-<span class="lineno">28</span><mark>#202=MULTI_POINT_CONSTRAINT(</mark>&#x27;C_slave_of_A&#x27;,#112,#110,&#x27;XYZ&#x27;);
-<span class="lineno">29</span>ENDSEC;
-<span class="lineno">30</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M112: AP209 MULTI_POINT_CONSTRAINT chain forms a dependency cycle */
+<span class="lineno">3</span>/* DEFECT: AâBâCâA MPC cycle â solver cannot resolve master-slave reduction */
+<span class="lineno">4</span>/* Stiffness matrix singular; FEA result undefined; must be rejected */
+<span class="lineno">5</span>/* Byte assertion: contains(b&#x27;<mark>STRUCTURAL_ANALYSIS_DESIGN</mark>&#x27;) */
+<span class="lineno">6</span>/* Byte assertion: count_entity_def(b&#x27;MULTI_POINT_CONSTRAINT&#x27;) &gt;= 3 */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;M112: AP209 MPC dependency cycle A-&gt;B-&gt;C-&gt;A&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;M112.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>/* Byte assertion: contains(b&#x27;<mark>STRUCTURAL_ANALYSIS_DESIGN</mark>&#x27;) */
+<span class="lineno">11</span>FILE_SCHEMA((&#x27;<mark>STRUCTURAL_ANALYSIS_DESIGN</mark> { 1 0 10303 209 1 0 0 }&#x27;));
+<span class="lineno">12</span>ENDSEC;
+<span class="lineno">13</span>DATA;
+<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;structural_analysis_design&#x27;);
+<span class="lineno">15</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">16</span>  &#x27;structural_analysis_design&#x27;,2001,#1);
+<span class="lineno">17</span>/* Standard unit context */
+<span class="lineno">18</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">19</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">20</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">21</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">22</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">23</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">24</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">25</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">26</span>  REPRESENTATION_CONTEXT(&#x27;fea&#x27;,&#x27;3D&#x27;));
+<span class="lineno">27</span>/* Three nodes forming the MPC cycle */
+<span class="lineno">28</span>#100=CARTESIAN_POINT(&#x27;node_A&#x27;,(0.0,0.0,0.0));
+<span class="lineno">29</span>#101=CARTESIAN_POINT(&#x27;node_B&#x27;,(100.0,0.0,0.0));
+<span class="lineno">30</span>#102=CARTESIAN_POINT(&#x27;node_C&#x27;,(50.0,100.0,0.0));
+<span class="lineno">31</span>#110=NODE(&#x27;node_A&#x27;,(#100),$);
+<span class="lineno">32</span>#111=NODE(&#x27;node_B&#x27;,(#101),$);
+<span class="lineno">33</span>#112=NODE(&#x27;node_C&#x27;,(#102),$);
+<span class="lineno">34</span>/* NODE_GROUP: all three nodes in the FEA model */
+<span class="lineno">35</span>#300=NODE_GROUP(&#x27;all_nodes&#x27;,(#110,#111,#112),$);
+<span class="lineno">36</span>#310=FEA_MODEL(&#x27;triangle_model&#x27;,$,&#x27;&#x27;,(#300),(),());
+<span class="lineno">37</span>/* DEFECT: three MPCs forming AâBâCâA directed cycle */
+<span class="lineno">38</span>/* Byte assertion: count_entity_def(b&#x27;MULTI_POINT_CONSTRAINT&#x27;) &gt;= 3 */
+<span class="lineno">39</span>/* Constraint X: node_A is slave, node_B is master */
+<span class="lineno">40</span><mark>#400=MULTI_POINT_CONSTRAINT(</mark>&#x27;mpc_AB&#x27;,#110,(#111),$);
+<span class="lineno">41</span>/* Constraint Y: node_B is slave, node_C is master */
+<span class="lineno">42</span><mark>#401=MULTI_POINT_CONSTRAINT(</mark>&#x27;mpc_BC&#x27;,#111,(#112),$);
+<span class="lineno">43</span>/* Constraint Z: node_C is slave, node_A is master â CYCLE CLOSES HERE */
+<span class="lineno">44</span>/* ISO 10303-209 Â§7 requires acyclic DAG; this violates the invariant */
+<span class="lineno">45</span><mark>#402=MULTI_POINT_CONSTRAINT(</mark>&#x27;mpc_CA&#x27;,#112,(#110),$);
+<span class="lineno">46</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">47</span>#500=GEOMETRIC_CURVE_SET(&#x27;ap209-multi-point-constraint-dependency-cycle&#x27;,
+<span class="lineno">48</span>  (#110,#111,#112,#310,#400,#401,#402));
+<span class="lineno">49</span>/* Product chain */
+<span class="lineno">50</span>#600=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">51</span>#601=PRODUCT_CONTEXT(&#x27;&#x27;,#600,&#x27;mechanical&#x27;);
+<span class="lineno">52</span>#602=PRODUCT(&#x27;M112&#x27;,&#x27;M112&#x27;,&#x27;M112&#x27;,(#601));
+<span class="lineno">53</span>#603=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#602);
+<span class="lineno">54</span>#604=PRODUCT_DEFINITION_CONTEXT(#600,&#x27;design&#x27;);
+<span class="lineno">55</span>#605=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#603,#604);
+<span class="lineno">56</span>#606=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#605);
+<span class="lineno">57</span>#607=SHAPE_REPRESENTATION(&#x27;&#x27;,(#500),#14);
+<span class="lineno">58</span>#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
+<span class="lineno">59</span>ENDSEC;
+<span class="lineno">60</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

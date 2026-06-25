@@ -44,6 +44,9 @@
 <li><code>contains(b&#x27;APPLIED_ACTION_ASSIGNMENT&#x27;)</code></li>
 <li><code>contains(b&#x27;DOCUMENT_FILE&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
 <tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
@@ -59,33 +62,69 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M137 - AP203 <mark>APPLIED_ACTION_ASSIGNMENT</mark> applies to a multi-arity
-<span class="lineno">3</span> * mixed-class object list.
-<span class="lineno">4</span> * Defect: an <mark>APPLIED_ACTION_ASSIGNMENT</mark> distributes a single ACTION
-<span class="lineno">5</span> * (engineering review) across a list that mixes classes
-<span class="lineno">6</span> * incompatibly (a PRODUCT_DEFINITION and a <mark>DOCUMENT_FILE</mark>). The
-<span class="lineno">7</span> * action&#x27;s domain semantics are ambiguous - was the review of the
-<span class="lineno">8</span> * design or of the document? */
+<span class="lineno">2</span>/* M137: AP203 <mark>APPLIED_ACTION_ASSIGNMENT</mark> with mixed-class items list */
+<span class="lineno">3</span>/* DEFECT: single ACTION assignment targets both PRODUCT_DEFINITION and <mark>DOCUMENT_FILE</mark> */
+<span class="lineno">4</span>/* Domain semantics are ambiguous: was the review of the design or the document? */
+<span class="lineno">5</span>/* Per ISO 10303-41 items should be homogeneous; fix: split into two assignments */
+<span class="lineno">6</span>/* Byte assertion: contains(b&#x27;<mark>CONFIG_CONTROL_DESIGN</mark>&#x27;) */
+<span class="lineno">7</span>/* Byte assertion: contains(b&#x27;<mark>APPLIED_ACTION_ASSIGNMENT</mark>&#x27;) */
+<span class="lineno">8</span>/* Byte assertion: contains(b&#x27;<mark>DOCUMENT_FILE</mark>&#x27;) */
 <span class="lineno">9</span>HEADER;
-<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;M137 test case&#x27;,&#x27;AP203 action assignment ambiguous arity&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">11</span>FILE_NAME(&#x27;M137.stp&#x27;,&#x27;2026-05-02T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">12</span>FILE_SCHEMA((&#x27;<mark>CONFIG_CONTROL_DESIGN</mark>&#x27;));
-<span class="lineno">13</span>ENDSEC;
-<span class="lineno">14</span>DATA;
-<span class="lineno">15</span>#1=APPLICATION_CONTEXT(&#x27;configuration controlled 3D design of mechanical parts and assemblies&#x27;);
-<span class="lineno">16</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;config_control_design&#x27;,1994,#1);
-<span class="lineno">17</span>#10=PRODUCT(&#x27;valve&#x27;,&#x27;valve&#x27;,&#x27;flow valve&#x27;,(#1));
-<span class="lineno">18</span>#20=PRODUCT_DEFINITION_FORMATION(&#x27;rev_A&#x27;,&#x27;released&#x27;,#10);
-<span class="lineno">19</span>#30=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#20,#1);
-<span class="lineno">20</span>#40=DOCUMENT_TYPE(&#x27;test_report&#x27;);
-<span class="lineno">21</span>#41=<mark>DOCUMENT_FILE</mark>(&#x27;TR-001&#x27;,&#x27;flow_test.pdf&#x27;,&#x27;test report&#x27;,#40);
-<span class="lineno">22</span>#50=ACTION_METHOD(&#x27;engineering_review&#x27;,&#x27;formal review&#x27;,$);
-<span class="lineno">23</span>#51=ACTION(&#x27;review_action&#x27;,&#x27;periodic review&#x27;,&#x27;approved&#x27;,#50);
-<span class="lineno">24</span>/* Defect: assignment lists both PRODUCT_DEFINITION and <mark>DOCUMENT_FILE</mark>
-<span class="lineno">25</span> * as items - mixed-arity domain. */
-<span class="lineno">26</span>#100=<mark>APPLIED_ACTION_ASSIGNMENT</mark>(#51,(#30,#41));
-<span class="lineno">27</span>ENDSEC;
-<span class="lineno">28</span>END-ISO-10303-21;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;M137: AP203 <mark>APPLIED_ACTION_ASSIGNMENT</mark> mixed-class items PRODUCT_DEFINITION <mark>DOCUMENT_FILE</mark>&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;M137.stp&#x27;,&#x27;2026-06-21T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>/* Byte assertion: contains(b&#x27;<mark>CONFIG_CONTROL_DESIGN</mark>&#x27;) */
+<span class="lineno">13</span>FILE_SCHEMA((&#x27;<mark>CONFIG_CONTROL_DESIGN</mark> { 1 0 10303 203 1 0 0 }&#x27;));
+<span class="lineno">14</span>ENDSEC;
+<span class="lineno">15</span>DATA;
+<span class="lineno">16</span>#1=APPLICATION_CONTEXT(&#x27;configuration controlled 3D designs of mechanical parts and assemblies&#x27;);
+<span class="lineno">17</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
+<span class="lineno">18</span>  &#x27;config_control_design&#x27;,1994,#1);
+<span class="lineno">19</span>/* Standard unit context (mm) */
+<span class="lineno">20</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">21</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">22</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">23</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.001),#10,
+<span class="lineno">24</span>  &#x27;distance_accuracy_value&#x27;,&#x27;maximum model space distance between geometric entities&#x27;);
+<span class="lineno">25</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
+<span class="lineno">26</span>  GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
+<span class="lineno">27</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
+<span class="lineno">28</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
+<span class="lineno">29</span>/* Design artifact: PRODUCT and its PRODUCT_DEFINITION */
+<span class="lineno">30</span>#20=PRODUCT(&#x27;PART-101&#x27;,&#x27;Bracket Assembly&#x27;,&#x27;Structural mounting bracket&#x27;,(#1));
+<span class="lineno">31</span>#21=PRODUCT_DEFINITION_FORMATION(&#x27;rev_C&#x27;,&#x27;Third revision&#x27;,#20);
+<span class="lineno">32</span>#22=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#21,PRODUCT_DEFINITION_CONTEXT(#1,&#x27;design&#x27;));
+<span class="lineno">33</span>/* Byte assertion: contains(b&#x27;<mark>DOCUMENT_FILE</mark>&#x27;) */
+<span class="lineno">34</span>/* Document artifact: <mark>DOCUMENT_FILE</mark> referencing a design specification PDF */
+<span class="lineno">35</span>#30=DOCUMENT(&#x27;DOC-101&#x27;,&#x27;Bracket Assembly Design Spec&#x27;,
+<span class="lineno">36</span>  &#x27;Technical specification for bracket assembly&#x27;);
+<span class="lineno">37</span>#31=DOCUMENT_TYPE(&#x27;design_specification&#x27;);
+<span class="lineno">38</span>/* DEFECT contributor: <mark>DOCUMENT_FILE</mark> is an incompatible class to mix with PRODUCT_DEFINITION */
+<span class="lineno">39</span>#32=<mark>DOCUMENT_FILE</mark>(&#x27;bracket-spec-rev-C.pdf&#x27;,#30,$,$,$,#31);
+<span class="lineno">40</span>/* Engineering review ACTION targeting the rev_C release decision */
+<span class="lineno">41</span>#40=ACTION(&#x27;review-2024-Q4&#x27;,&#x27;Engineering design review Q4 2024&#x27;,$);
+<span class="lineno">42</span>#41=ACTION_METHOD(&#x27;design_review&#x27;,&#x27;Standard design review procedure&#x27;,$,&#x27;approved&#x27;);
+<span class="lineno">43</span>#42=ACTION_STATUS(&#x27;approved&#x27;);
+<span class="lineno">44</span>/* Byte assertion: contains(b&#x27;<mark>APPLIED_ACTION_ASSIGNMENT</mark>&#x27;) */
+<span class="lineno">45</span>/* DEFECT: items list mixes PRODUCT_DEFINITION (#22) and <mark>DOCUMENT_FILE</mark> (#32) */
+<span class="lineno">46</span>/* A correct file would use two separate <mark>APPLIED_ACTION_ASSIGNMENT</mark> instances: */
+<span class="lineno">47</span>/*   one with items=(#22) for the design, one with items=(#32) for the document */
+<span class="lineno">48</span>/* With a single mixed-class assignment the ACTION receiver cannot route correctly */
+<span class="lineno">49</span>#50=<mark>APPLIED_ACTION_ASSIGNMENT</mark>(#40,(#22,#32),ACTION_REQUEST_SOLUTION(#41,#40));
+<span class="lineno">50</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
+<span class="lineno">51</span>#500=GEOMETRIC_CURVE_SET(&#x27;ap203-applied-action-assignment-mixed-class-items&#x27;,
+<span class="lineno">52</span>  (#20,#21,#22,#30,#31,#32,#40,#41,#42,#50));
+<span class="lineno">53</span>/* Product chain */
+<span class="lineno">54</span>#600=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">55</span>#601=PRODUCT_CONTEXT(&#x27;&#x27;,#600,&#x27;mechanical&#x27;);
+<span class="lineno">56</span>#602=PRODUCT(&#x27;M137&#x27;,&#x27;M137&#x27;,&#x27;M137&#x27;,(#601));
+<span class="lineno">57</span>#603=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#602);
+<span class="lineno">58</span>#604=PRODUCT_DEFINITION_CONTEXT(#600,&#x27;design&#x27;);
+<span class="lineno">59</span>#605=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#603,#604);
+<span class="lineno">60</span>#606=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#605);
+<span class="lineno">61</span>#607=SHAPE_REPRESENTATION(&#x27;&#x27;,(#500),#14);
+<span class="lineno">62</span>#608=SHAPE_DEFINITION_REPRESENTATION(#606,#607);
+<span class="lineno">63</span>ENDSEC;
+<span class="lineno">64</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

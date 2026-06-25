@@ -37,92 +37,133 @@
 <section><h2>Notes</h2>
 <p>**See also**: Gs005. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;CATIA cylinder as near-closed B-spline surface&quot;, &quot;two pcurves on non-periodic surface acting like seam&quot;, &quot;near-closed BSpline surface treated as cylinder&quot;, &quot;CATIA like-seam idiom on B-spline&quot;, &quot;shared edge with two pcurves on non-periodic surface&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;SURFACE_CURVE&#x27;)</code></li>
 <li><code>contains(b&#x27;EDGE_CURVE&#x27;)</code></li>
 <li><code>count_entity_def(b&#x27;PCURVE&#x27;) &gt;= 2</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_faces_total == 1</code></li>
+<li><code>n_edges_total == 4</code></li>
+<li><code>n_vertices_total == 8</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="../12-2c-surfaces/Gs005.html">Gs005</a></p>
 </section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
-<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(6)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(6)</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
 <tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
-<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>not_manifold</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Gp013 - CATIA &quot;like-seam&quot;: two pcurves on near-closed BSpline surface
-<span class="lineno">3</span> * Defect: a B_SPLINE_SURFACE_WITH_KNOTS whose U=0 and U=1 boundaries
-<span class="lineno">4</span> * coincide within Precision::Confusion() but the surface is NOT declared
-<span class="lineno">5</span> * periodic (u_closed/v_closed = .F.). The shared edge has two pcurves
-<span class="lineno">6</span> * mimicking a seam, but generic seam handling misfires on the
-<span class="lineno">7</span> * non-periodic surface. */
-<span class="lineno">8</span>HEADER;
-<span class="lineno">9</span>FILE_DESCRIPTION((&#x27;Gp013 test case&#x27;,&#x27;CATIA like-seam on near-closed BSpline&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">10</span>FILE_NAME(&#x27;Gp013.stp&#x27;,&#x27;2026-04-27T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">11</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
-<span class="lineno">12</span>ENDSEC;
-<span class="lineno">13</span>DATA;
-<span class="lineno">14</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">15</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#1);
-<span class="lineno">16</span>/* 4-by-2 control net forming an almost-closed surface in U direction */
-<span class="lineno">17</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(10.0, 0.0,0.0));
-<span class="lineno">18</span>#101=CARTESIAN_POINT(&#x27;&#x27;,(0.0,10.0,0.0));
-<span class="lineno">19</span>#102=CARTESIAN_POINT(&#x27;&#x27;,(-10.0,0.0,0.0));
-<span class="lineno">20</span>#103=CARTESIAN_POINT(&#x27;&#x27;,(10.0, 0.000001,0.0));
-<span class="lineno">21</span>#110=CARTESIAN_POINT(&#x27;&#x27;,(10.0, 0.0,5.0));
-<span class="lineno">22</span>#111=CARTESIAN_POINT(&#x27;&#x27;,(0.0,10.0,5.0));
-<span class="lineno">23</span>#112=CARTESIAN_POINT(&#x27;&#x27;,(-10.0,0.0,5.0));
-<span class="lineno">24</span>#113=CARTESIAN_POINT(&#x27;&#x27;,(10.0, 0.000001,5.0));
-<span class="lineno">25</span>/* u_closed=.F., v_closed=.F. - critical: not declared periodic */
-<span class="lineno">26</span>#20=B_SPLINE_SURFACE_WITH_KNOTS(&#x27;&#x27;,2,1,
-<span class="lineno">27</span>  ((#100,#110),(#101,#111),(#102,#112),(#103,#113)),
-<span class="lineno">28</span>  .UNSPECIFIED.,.F.,.F.,.F.,
-<span class="lineno">29</span>  (3,1,3),(2,2),(0.0,0.5,1.0),(0.0,1.0),.UNSPECIFIED.);
-<span class="lineno">30</span>/* 3D curve - line at the like-seam (U=0/U=1 join) */
-<span class="lineno">31</span>#30=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
-<span class="lineno">32</span>#31=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
-<span class="lineno">33</span>#32=VECTOR(&#x27;&#x27;,#31,1.0);
-<span class="lineno">34</span>#33=LINE(&#x27;&#x27;,#30,#32);
-<span class="lineno">35</span>#40=VERTEX_POINT(&#x27;&#x27;,#30);
-<span class="lineno">36</span>#41=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,5.0));
-<span class="lineno">37</span>#42=VERTEX_POINT(&#x27;&#x27;,#41);
-<span class="lineno">38</span>/* First pcurve at U=0 */
-<span class="lineno">39</span>#71=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));
-<span class="lineno">40</span>#72=DIRECTION(&#x27;&#x27;,(0.0,1.0));
-<span class="lineno">41</span>#73=VECTOR(&#x27;&#x27;,#72,1.0);
-<span class="lineno">42</span>#74=LINE(&#x27;&#x27;,#71,#73);
-<span class="lineno">43</span>#75=( GEOMETRIC_REPRESENTATION_CONTEXT(2)
-<span class="lineno">44</span>      PARAMETRIC_REPRESENTATION_CONTEXT()
-<span class="lineno">45</span>      REPRESENTATION_CONTEXT(&#x27;parametric&#x27;,&#x27;2D&#x27;) );
-<span class="lineno">46</span>#76=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#74),#75);
-<span class="lineno">47</span><mark>#77=PCURVE(</mark>&#x27;&#x27;,#20,#76);
-<span class="lineno">48</span>/* Second pcurve at U=1 (the other side of the like-seam) */
-<span class="lineno">49</span>#81=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0));
-<span class="lineno">50</span>#82=DIRECTION(&#x27;&#x27;,(0.0,1.0));
-<span class="lineno">51</span>#83=VECTOR(&#x27;&#x27;,#82,1.0);
-<span class="lineno">52</span>#84=LINE(&#x27;&#x27;,#81,#83);
-<span class="lineno">53</span>#86=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#84),#75);
-<span class="lineno">54</span><mark>#87=PCURVE(</mark>&#x27;&#x27;,#20,#86);
-<span class="lineno">55</span>/* Defect: two pcurves like a seam but #20 is non-periodic. */
-<span class="lineno">56</span>#50=<mark>SURFACE_CURVE</mark>(&#x27;&#x27;,#33,(#77,#87),.PCURVE_S1.);
-<span class="lineno">57</span>#60=<mark>EDGE_CURVE</mark>(&#x27;&#x27;,#40,#42,#50,.T.);
-<span class="lineno">58</span>#61=ORIENTED_EDGE(&#x27;&#x27;,*,*,#60,.T.);
-<span class="lineno">59</span>#62=EDGE_LOOP(&#x27;&#x27;,(#61));
-<span class="lineno">60</span>#63=FACE_OUTER_BOUND(&#x27;&#x27;,#62,.T.);
-<span class="lineno">61</span>#64=ADVANCED_FACE(&#x27;&#x27;,(#63),#20,.T.);
-<span class="lineno">62</span>ENDSEC;
-<span class="lineno">63</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* Gp013: CATIA like-seam: single <mark>EDGE_CURVE</mark> with two pcurves on non-periodic B-spline surface, used twice in a proper 4-edge face loop */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Gp013&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Gp013.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">11</span>#2=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,1.0));
+<span class="lineno">12</span>#3=CARTESIAN_POINT(&#x27;&#x27;,(0.707106781187,0.707106781187,0.0));
+<span class="lineno">13</span>#4=CARTESIAN_POINT(&#x27;&#x27;,(0.707106781187,0.707106781187,1.0));
+<span class="lineno">14</span>#5=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,1.0));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(-0.707106781187,0.707106781187,0.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(-0.707106781187,0.707106781187,1.0));
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(-1.0,0.0,1.0));
+<span class="lineno">20</span>#11=CARTESIAN_POINT(&#x27;&#x27;,(-0.707106781187,-0.707106781187,0.0));
+<span class="lineno">21</span>#12=CARTESIAN_POINT(&#x27;&#x27;,(-0.707106781187,-0.707106781187,1.0));
+<span class="lineno">22</span>#13=CARTESIAN_POINT(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">23</span>#14=CARTESIAN_POINT(&#x27;&#x27;,(0.0,-1.0,1.0));
+<span class="lineno">24</span>#15=CARTESIAN_POINT(&#x27;&#x27;,(0.707106781187,-0.707106781187,0.0));
+<span class="lineno">25</span>#16=CARTESIAN_POINT(&#x27;&#x27;,(0.707106781187,-0.707106781187,1.0));
+<span class="lineno">26</span>#17=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">27</span>#18=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,1.0));
+<span class="lineno">28</span>#19=B_SPLINE_SURFACE_WITH_KNOTS(&#x27;&#x27;,2,1,((#1,#2),(#3,#4),(#5,#6),(#7,#8),(#9,#10),(#11,#12),(#13,#14),(#15,#16),(#17,#18)),.UNSPECIFIED.,.F.,.F.,.F.,(3,1,1,1,1,1,1,3),(2,2),(0.0,0.125,0.25,0.375,0.5,0.625,0.75,1.0),(0.0,1.0),.UNSPECIFIED.);
+<span class="lineno">29</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">30</span>#21=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,1.0));
+<span class="lineno">31</span>#22=VERTEX_POINT(&#x27;&#x27;,#20);
+<span class="lineno">32</span>#23=VERTEX_POINT(&#x27;&#x27;,#21);
+<span class="lineno">33</span>#24=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT(&#x27;UV&#x27;,&#x27;2D&#x27;));
+<span class="lineno">34</span>#25=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">35</span>#26=VECTOR(&#x27;&#x27;,#25,1.0);
+<span class="lineno">36</span>#27=LINE(&#x27;&#x27;,#20,#26);
+<span class="lineno">37</span>#28=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));
+<span class="lineno">38</span>#29=DIRECTION(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">39</span>#30=VECTOR(&#x27;&#x27;,#29,1.0);
+<span class="lineno">40</span>#31=LINE(&#x27;&#x27;,#28,#30);
+<span class="lineno">41</span>#32=DEFINITIONAL_REPRESENTATION(&#x27;pc_u0_def&#x27;,(#31),#24);
+<span class="lineno">42</span><mark>#33=PCURVE(</mark>&#x27;pc_u0_bank&#x27;,#19,#32);
+<span class="lineno">43</span>#34=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">44</span>#35=DIRECTION(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">45</span>#36=VECTOR(&#x27;&#x27;,#35,1.0);
+<span class="lineno">46</span>#37=LINE(&#x27;&#x27;,#34,#36);
+<span class="lineno">47</span>#38=DEFINITIONAL_REPRESENTATION(&#x27;pc_u1_def&#x27;,(#37),#24);
+<span class="lineno">48</span><mark>#39=PCURVE(</mark>&#x27;pc_u1_bank&#x27;,#19,#38);
+<span class="lineno">49</span>#40=<mark>SURFACE_CURVE</mark>(&#x27;catia_like_seam&#x27;,#27,(#33,#39),.PCURVE_S1.);
+<span class="lineno">50</span>#41=<mark>EDGE_CURVE</mark>(&#x27;seam&#x27;,#22,#23,#40,.T.);
+<span class="lineno">51</span>#42=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">52</span>#43=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">53</span>#44=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">54</span>#45=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#42,#43,#44);
+<span class="lineno">55</span>#46=CIRCLE(&#x27;bot_full&#x27;,#45,1.0);
+<span class="lineno">56</span>#47=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));
+<span class="lineno">57</span>#48=DIRECTION(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">58</span>#49=VECTOR(&#x27;&#x27;,#48,1.0);
+<span class="lineno">59</span>#50=LINE(&#x27;&#x27;,#47,#49);
+<span class="lineno">60</span>#51=DEFINITIONAL_REPRESENTATION(&#x27;pc_bot_def&#x27;,(#50),#24);
+<span class="lineno">61</span><mark>#52=PCURVE(</mark>&#x27;bot_pcurve&#x27;,#19,#51);
+<span class="lineno">62</span>#53=<mark>SURFACE_CURVE</mark>(&#x27;bot_arc&#x27;,#46,(#52),.PCURVE_S1.);
+<span class="lineno">63</span>#54=<mark>EDGE_CURVE</mark>(&#x27;bot_arc&#x27;,#22,#22,#53,.T.);
+<span class="lineno">64</span>#55=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">65</span>#56=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#55,#43,#44);
+<span class="lineno">66</span>#57=CIRCLE(&#x27;top_full&#x27;,#56,1.0);
+<span class="lineno">67</span>#58=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">68</span>#59=DIRECTION(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">69</span>#60=VECTOR(&#x27;&#x27;,#59,1.0);
+<span class="lineno">70</span>#61=LINE(&#x27;&#x27;,#58,#60);
+<span class="lineno">71</span>#62=DEFINITIONAL_REPRESENTATION(&#x27;pc_top_def&#x27;,(#61),#24);
+<span class="lineno">72</span><mark>#63=PCURVE(</mark>&#x27;top_pcurve&#x27;,#19,#62);
+<span class="lineno">73</span>#64=<mark>SURFACE_CURVE</mark>(&#x27;top_arc&#x27;,#57,(#63),.PCURVE_S1.);
+<span class="lineno">74</span>#65=<mark>EDGE_CURVE</mark>(&#x27;top_arc&#x27;,#23,#23,#64,.T.);
+<span class="lineno">75</span>#66=ORIENTED_EDGE(&#x27;&#x27;,$,$,#54,.T.);
+<span class="lineno">76</span>#67=ORIENTED_EDGE(&#x27;&#x27;,$,$,#41,.T.);
+<span class="lineno">77</span>#68=ORIENTED_EDGE(&#x27;&#x27;,$,$,#65,.F.);
+<span class="lineno">78</span>#69=ORIENTED_EDGE(&#x27;&#x27;,$,$,#41,.F.);
+<span class="lineno">79</span>#70=EDGE_LOOP(&#x27;&#x27;,(#66,#67,#68,#69));
+<span class="lineno">80</span>#71=FACE_OUTER_BOUND(&#x27;&#x27;,#70,.T.);
+<span class="lineno">81</span>#72=ADVANCED_FACE(&#x27;&#x27;,(#71),#19,.T.);
+<span class="lineno">82</span>#73=OPEN_SHELL(&#x27;&#x27;,(#72));
+<span class="lineno">83</span>#74=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#73));
+<span class="lineno">84</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">85</span>#9051=PRODUCT(&#x27;Gp013&#x27;,&#x27;Gp013&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">86</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">87</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">88</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">89</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">90</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">91</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">92</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">93</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">94</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">95</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#74),#9060);
+<span class="lineno">96</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">97</span>ENDSEC;
+<span class="lineno">98</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

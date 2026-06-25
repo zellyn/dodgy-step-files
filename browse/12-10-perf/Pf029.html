@@ -35,101 +35,107 @@
 <section><h2>Notes</h2>
 <p>Validation observed: this is a deliberately scaled-down representative; the structural pattern is present but the production-scale resource exhaustion / catastrophic timing is not exercised at fixture size. To trigger the documented kernel-crash, multiply the entity-replication factor by ~10^N as noted in the reproducer recipe.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>count_entity_def(b&#x27;CARTESIAN_POINT&#x27;) &gt;= 1</code></li>
 <li><code>contains(b&#x27;NEXT_ASSEMBLY_USAGE_OCCURRENCE&#x27;)</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
 <section><h2>Live oracle output</h2>
 <table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
-<tr><td><code>occt_heal_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>occt_heal_off</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_on</code></td><td><code>empty</code></td></tr>
-<tr><td><code>gmsh_autofix_off</code></td><td><code>empty</code></td></tr>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(1)</code></td></tr>
 <tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
-<tr><td><code>part21_strict</code></td><td><code>warn(W_COMPLEX_ORDER)</code></td></tr>
-<tr><td><code>manifold</code></td><td><code>no_shapes_loaded</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>accept</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
 </tbody></table>
 </section>
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>/* Pf029 - TDocStd_Document creation aborts process under VSCode server
-<span class="lineno">2</span>   runtime (pythonocc-core #1428). `doc = TDocStd_Document(...)` triggers
-<span class="lineno">3</span>   process abort under code-server / extension-host runtimes when reading
-<span class="lineno">4</span>   a multi-level assembly STEP. Symptom of resource / signal-handling
-<span class="lineno">5</span>   assumptions that fail at scale.
-<span class="lineno">6</span>   Pattern: a multi-level assembly that exercises STEPCAFControl_Reader
-<span class="lineno">7</span>   document creation (the abort path is in OCCT, not the file - any
-<span class="lineno">8</span>   multi-level assembly under code-server reproduces).
-<span class="lineno">9</span>   Scaling-up: this fixture has assembly depth ~6 with multiple shape
-<span class="lineno">10</span>   reps. Replicate to deeper / wider assemblies as needed. The trigger
-<span class="lineno">11</span>   is the runtime environment (code-server) more than the file content. */
-<span class="lineno">12</span>ISO-10303-21;
-<span class="lineno">13</span>HEADER;
-<span class="lineno">14</span>FILE_DESCRIPTION((&#x27;Pf029 - multi-level assembly that aborts under code-server&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">15</span>FILE_NAME(&#x27;Pf029.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;auto-generated&#x27;),(&#x27;&#x27;),
-<span class="lineno">16</span>  &#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">17</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
-<span class="lineno">18</span>ENDSEC;
-<span class="lineno">19</span>DATA;
-<span class="lineno">20</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
-<span class="lineno">21</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">22</span>  &#x27;automotive_design&#x27;,2001,#1);
-<span class="lineno">23</span>#3=PRODUCT_CONTEXT(&#x27;&#x27;,#1,&#x27;mechanical&#x27;);
-<span class="lineno">24</span>#4=PRODUCT_DEFINITION_CONTEXT(&#x27;&#x27;,#1,&#x27;design&#x27;);
-<span class="lineno">25</span>#5=( NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.) LENGTH_UNIT() );
-<span class="lineno">26</span>#6=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#5,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">27</span>#7=( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT
-<span class="lineno">28</span>  ((#6)) GLOBAL_UNIT_ASSIGNED_CONTEXT((#5)) REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;) );
-<span class="lineno">29</span><mark>#8=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">30</span>#9=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
-<span class="lineno">31</span>#10=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">32</span>#11=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#8,#9,#10);
-<span class="lineno">33</span>/* assembly nodes */
-<span class="lineno">34</span>#20=PRODUCT(&#x27;ROOT&#x27;,&#x27;&#x27;,&#x27;&#x27;,(#3));
-<span class="lineno">35</span>#21=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#20);
-<span class="lineno">36</span>#22=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#21,#4);
-<span class="lineno">37</span>#23=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#22);
-<span class="lineno">38</span>#24=SHAPE_REPRESENTATION(&#x27;R0&#x27;,(#11),#7);
-<span class="lineno">39</span>#25=SHAPE_DEFINITION_REPRESENTATION(#23,#24);
-<span class="lineno">40</span>#30=PRODUCT(&#x27;SUB1&#x27;,&#x27;&#x27;,&#x27;&#x27;,(#3));
-<span class="lineno">41</span>#31=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#30);
-<span class="lineno">42</span>#32=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#31,#4);
-<span class="lineno">43</span>#33=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#32);
-<span class="lineno">44</span>#34=SHAPE_REPRESENTATION(&#x27;R1&#x27;,(#11),#7);
-<span class="lineno">45</span>#35=SHAPE_DEFINITION_REPRESENTATION(#33,#34);
-<span class="lineno">46</span>#36=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;1&#x27;,&#x27;&#x27;,&#x27;&#x27;,#22,#32,$);
-<span class="lineno">47</span>#40=PRODUCT(&#x27;SUB2&#x27;,&#x27;&#x27;,&#x27;&#x27;,(#3));
-<span class="lineno">48</span>#41=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#40);
-<span class="lineno">49</span>#42=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#41,#4);
-<span class="lineno">50</span>#43=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#42);
-<span class="lineno">51</span>#44=SHAPE_REPRESENTATION(&#x27;R2&#x27;,(#11),#7);
-<span class="lineno">52</span>#45=SHAPE_DEFINITION_REPRESENTATION(#43,#44);
-<span class="lineno">53</span>#46=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;2&#x27;,&#x27;&#x27;,&#x27;&#x27;,#32,#42,$);
-<span class="lineno">54</span>#50=PRODUCT(&#x27;SUB3&#x27;,&#x27;&#x27;,&#x27;&#x27;,(#3));
-<span class="lineno">55</span>#51=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#50);
-<span class="lineno">56</span>#52=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#51,#4);
-<span class="lineno">57</span>#53=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#52);
-<span class="lineno">58</span>#54=SHAPE_REPRESENTATION(&#x27;R3&#x27;,(#11),#7);
-<span class="lineno">59</span>#55=SHAPE_DEFINITION_REPRESENTATION(#53,#54);
-<span class="lineno">60</span>#56=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;3&#x27;,&#x27;&#x27;,&#x27;&#x27;,#42,#52,$);
-<span class="lineno">61</span>#60=PRODUCT(&#x27;SUB4&#x27;,&#x27;&#x27;,&#x27;&#x27;,(#3));
-<span class="lineno">62</span>#61=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#60);
-<span class="lineno">63</span>#62=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#61,#4);
-<span class="lineno">64</span>#63=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#62);
-<span class="lineno">65</span>#64=SHAPE_REPRESENTATION(&#x27;R4&#x27;,(#11),#7);
-<span class="lineno">66</span>#65=SHAPE_DEFINITION_REPRESENTATION(#63,#64);
-<span class="lineno">67</span>#66=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;4&#x27;,&#x27;&#x27;,&#x27;&#x27;,#52,#62,$);
-<span class="lineno">68</span>#70=PRODUCT(&#x27;SUB5&#x27;,&#x27;&#x27;,&#x27;&#x27;,(#3));
-<span class="lineno">69</span>#71=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#70);
-<span class="lineno">70</span>#72=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#71,#4);
-<span class="lineno">71</span>#73=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#72);
-<span class="lineno">72</span>#74=SHAPE_REPRESENTATION(&#x27;R5&#x27;,(#11),#7);
-<span class="lineno">73</span>#75=SHAPE_DEFINITION_REPRESENTATION(#73,#74);
-<span class="lineno">74</span>#76=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;5&#x27;,&#x27;&#x27;,&#x27;&#x27;,#62,#72,$);
-<span class="lineno">75</span>ENDSEC;
-<span class="lineno">76</span>END-ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Pf029: multi-level assembly: grandparentâparentâchild NAUO tree (2-level nesting); TDocStd_Document creation aborts process under code-server / extension-host runtimes due to resource/signal-handling assumptions; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Pf029&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Pf029.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span><mark>#1=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">12</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">13</span>#9051=PRODUCT(&#x27;Pf029&#x27;,&#x27;Pf029&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">14</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">15</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">16</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">17</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">18</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">19</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">20</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">21</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">22</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">23</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#2),#9060);
+<span class="lineno">24</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">25</span>#9063=APPLICATION_CONTEXT(&#x27;multi-level assembly abort pattern&#x27;);
+<span class="lineno">26</span>#9064=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,&#x27;automotive_design&#x27;,2000,#9063);
+<span class="lineno">27</span>#9065=PRODUCT_CONTEXT(&#x27;&#x27;,#9063,&#x27;mechanical&#x27;);
+<span class="lineno">28</span>#9066=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9063,&#x27;design&#x27;);
+<span class="lineno">29</span>#9067=REPRESENTATION_CONTEXT(&#x27;nauo_asm&#x27;,&#x27;3D&#x27;);
+<span class="lineno">30</span><mark>#9068=CARTESIAN_POINT(</mark>&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">31</span>#9069=SHAPE_REPRESENTATION(&#x27;child_a_sr&#x27;,(#9068),#9067);
+<span class="lineno">32</span>#9070=PRODUCT(&#x27;child_a&#x27;,&#x27;child_a&#x27;,&#x27;&#x27;,(9065));
+<span class="lineno">33</span>#9071=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9070);
+<span class="lineno">34</span>#9072=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#9071,#9066);
+<span class="lineno">35</span>#9073=SHAPE_DEFINITION_REPRESENTATION(PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9072),#9069);
+<span class="lineno">36</span><mark>#9074=CARTESIAN_POINT(</mark>&#x27;&#x27;,(2.0,0.0,0.0));
+<span class="lineno">37</span>#9075=SHAPE_REPRESENTATION(&#x27;child_b_sr&#x27;,(#9074),#9067);
+<span class="lineno">38</span>#9076=PRODUCT(&#x27;child_b&#x27;,&#x27;child_b&#x27;,&#x27;&#x27;,(9065));
+<span class="lineno">39</span>#9077=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9076);
+<span class="lineno">40</span>#9078=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#9077,#9066);
+<span class="lineno">41</span>#9079=SHAPE_DEFINITION_REPRESENTATION(PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9078),#9075);
+<span class="lineno">42</span><mark>#9080=CARTESIAN_POINT(</mark>&#x27;&#x27;,(3.0,0.0,0.0));
+<span class="lineno">43</span>#9081=SHAPE_REPRESENTATION(&#x27;child_c_sr&#x27;,(#9080),#9067);
+<span class="lineno">44</span>#9082=PRODUCT(&#x27;child_c&#x27;,&#x27;child_c&#x27;,&#x27;&#x27;,(9065));
+<span class="lineno">45</span>#9083=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9082);
+<span class="lineno">46</span>#9084=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#9083,#9066);
+<span class="lineno">47</span>#9085=SHAPE_DEFINITION_REPRESENTATION(PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9084),#9081);
+<span class="lineno">48</span><mark>#9086=CARTESIAN_POINT(</mark>&#x27;&#x27;,(4.0,0.0,0.0));
+<span class="lineno">49</span>#9087=SHAPE_REPRESENTATION(&#x27;child_d_sr&#x27;,(#9086),#9067);
+<span class="lineno">50</span>#9088=PRODUCT(&#x27;child_d&#x27;,&#x27;child_d&#x27;,&#x27;&#x27;,(9065));
+<span class="lineno">51</span>#9089=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9088);
+<span class="lineno">52</span>#9090=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#9089,#9066);
+<span class="lineno">53</span>#9091=SHAPE_DEFINITION_REPRESENTATION(PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9090),#9087);
+<span class="lineno">54</span><mark>#9092=CARTESIAN_POINT(</mark>&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">55</span>#9093=SHAPE_REPRESENTATION(&#x27;parent_1_sr&#x27;,(#9092),#9067);
+<span class="lineno">56</span>#9094=PRODUCT(&#x27;parent_1&#x27;,&#x27;parent_1&#x27;,&#x27;&#x27;,(9065));
+<span class="lineno">57</span>#9095=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9094);
+<span class="lineno">58</span>#9096=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#9095,#9066);
+<span class="lineno">59</span>#9097=SHAPE_DEFINITION_REPRESENTATION(PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9096),#9093);
+<span class="lineno">60</span><mark>#9098=CARTESIAN_POINT(</mark>&#x27;&#x27;,(6.0,0.0,0.0));
+<span class="lineno">61</span>#9099=SHAPE_REPRESENTATION(&#x27;parent_2_sr&#x27;,(#9098),#9067);
+<span class="lineno">62</span>#9100=PRODUCT(&#x27;parent_2&#x27;,&#x27;parent_2&#x27;,&#x27;&#x27;,(9065));
+<span class="lineno">63</span>#9101=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9100);
+<span class="lineno">64</span>#9102=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#9101,#9066);
+<span class="lineno">65</span>#9103=SHAPE_DEFINITION_REPRESENTATION(PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9102),#9099);
+<span class="lineno">66</span><mark>#9104=CARTESIAN_POINT(</mark>&#x27;&#x27;,(7.0,0.0,0.0));
+<span class="lineno">67</span>#9105=SHAPE_REPRESENTATION(&#x27;grandparent_sr&#x27;,(#9104),#9067);
+<span class="lineno">68</span>#9106=PRODUCT(&#x27;grandparent&#x27;,&#x27;grandparent&#x27;,&#x27;&#x27;,(9065));
+<span class="lineno">69</span>#9107=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9106);
+<span class="lineno">70</span>#9108=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#9107,#9066);
+<span class="lineno">71</span>#9109=SHAPE_DEFINITION_REPRESENTATION(PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9108),#9105);
+<span class="lineno">72</span>#9110=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;nauo_gp1&#x27;,&#x27;1&#x27;,&#x27;&#x27;,#9108,#9096,$);
+<span class="lineno">73</span>#9111=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;nauo_gp2&#x27;,&#x27;2&#x27;,&#x27;&#x27;,#9108,#9102,$);
+<span class="lineno">74</span>#9112=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;nauo_p1a&#x27;,&#x27;1&#x27;,&#x27;&#x27;,#9096,#9072,$);
+<span class="lineno">75</span>#9113=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;nauo_p1b&#x27;,&#x27;2&#x27;,&#x27;&#x27;,#9096,#9078,$);
+<span class="lineno">76</span>#9114=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;nauo_p2c&#x27;,&#x27;1&#x27;,&#x27;&#x27;,#9102,#9084,$);
+<span class="lineno">77</span>#9115=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;nauo_p2d&#x27;,&#x27;2&#x27;,&#x27;&#x27;,#9102,#9090,$);
+<span class="lineno">78</span>ENDSEC;
+<span class="lineno">79</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

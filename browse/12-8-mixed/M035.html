@@ -41,6 +41,9 @@
 <li><code>contains(b&#x27;CONSTRUCTIVE_GEOMETRY_REPRESENTATION&#x27;)</code></li>
 <li><code>count_entity_def(b&#x27;PLANE&#x27;) == 1</code></li>
 </ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="../12-10-perf/Pf008.html">Pf008</a></p>
 </section>
@@ -59,39 +62,36 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* M035 - Single-item <mark>CONSTRUCTIVE_GEOMETRY_REPRESENTATION</mark> crashes
-<span class="lineno">3</span> * translator.
-<span class="lineno">4</span> * Defect: STEP CGR with only one representation item caused exception
-<span class="lineno">5</span> * during OCCT translation (Mantis 31472, fixed in 1e1b83c). Readers
-<span class="lineno">6</span> * must accept single-item representations. */
-<span class="lineno">7</span>HEADER;
-<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;M035 test case&#x27;,&#x27;single-item CGR&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">9</span>FILE_NAME(&#x27;M035.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;auto-generated&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">10</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
-<span class="lineno">11</span>ENDSEC;
-<span class="lineno">12</span>DATA;
-<span class="lineno">13</span>#1=APPLICATION_CONTEXT(&#x27;managed model based 3d engineering&#x27;);
-<span class="lineno">14</span>#2=APPLICATION_PROTOCOL_DEFINITION(&#x27;international standard&#x27;,
-<span class="lineno">15</span>  &#x27;ap242_managed_model_based_3d_engineering&#x27;,2014,#1);
-<span class="lineno">16</span>#10=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">17</span>#11=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">18</span>#12=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">19</span>#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-6),#10,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
-<span class="lineno">20</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3)
-<span class="lineno">21</span>     GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13))
-<span class="lineno">22</span>     GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
-<span class="lineno">23</span>     REPRESENTATION_CONTEXT(&#x27;part&#x27;,&#x27;3D&#x27;));
-<span class="lineno">24</span>/* One supplemental plane. */
-<span class="lineno">25</span>#100=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">26</span>#101=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
-<span class="lineno">27</span>#102=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">28</span>#103=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#100,#101,#102);
-<span class="lineno">29</span><mark>#104=PLANE(</mark>&#x27;only_item&#x27;,#103);
-<span class="lineno">30</span>/* CGR with exactly one item - the historical crash trigger. */
-<span class="lineno">31</span>#200=<mark>CONSTRUCTIVE_GEOMETRY_REPRESENTATION</mark>(&#x27;single_item_cgr&#x27;,
-<span class="lineno">32</span>       (#104),#14);
-<span class="lineno">33</span>ENDSEC;
-<span class="lineno">34</span>END-ISO-10303-21;
+<span class="lineno">2</span>/* M035: GEOMETRIC_CURVE_SET containing <mark>CONSTRUCTIVE_GEOMETRY_REPRESENTATION</mark> with exactly one PLANE item; input: AP242 STEP file where a constructive_geometry_representation has only a single representation_item (a PLANE); OCCT 1e1b83c (Mantis 0031472): translator threw exception on single-item CGR; fixed translators silently accept but produce empty output; kernel must accept single-item representations without crash and without silent-empty; OCC silently accepts (no diagnostic, empty result); GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty; synonyms: single-item CGR crashes translator, constructive_geometry_representation crash, CGR with one item silent-empty, translator exception on tiny CGR */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;M035&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;M035.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;cgr_origin&#x27;,(0.,0.,0.));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;cgr_z&#x27;,(0.,0.,1.));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;cgr_x&#x27;,(1.,0.,0.));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;cgr_placement&#x27;,#1,#2,#3);
+<span class="lineno">14</span><mark>#5=PLANE(</mark>&#x27;reference_plane&#x27;,#4);
+<span class="lineno">15</span>#6=<mark>CONSTRUCTIVE_GEOMETRY_REPRESENTATION</mark>(&#x27;single_item_cgr&#x27;,(#5),$);
+<span class="lineno">16</span>#7=GEOMETRIC_CURVE_SET(&#x27;single-item-cgr-crash&#x27;,(#6,#5));
+<span class="lineno">17</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">18</span>#9051=PRODUCT(&#x27;M035&#x27;,&#x27;M035&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">19</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">20</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">21</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">22</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">23</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">24</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">25</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">26</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">27</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">28</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#7),#9060);
+<span class="lineno">29</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">30</span>ENDSEC;
+<span class="lineno">31</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>
