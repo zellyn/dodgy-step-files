@@ -3,36 +3,35 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Me940 — orient_polygon_soup initial_point_count: initial_nb_pts = points.size() = 4 captured at entry (Branch 1)</title>
+  <title>Me279 — autorefine_triangle_soup segment branch on_same_edge skip: shared edge → no new segment (Branch 5b)</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
 <body class="entry">
 <nav class="topnav">
-<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <span class="sep">/</span> <span class="current">Me940</span>
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <span class="sep">/</span> <span class="current">Me279</span>
 </nav>
 <header class="title-bar">
-<h1>Me940 <span class="sep">—</span> <span class="entry-title">orient_polygon_soup initial_point_count: initial_nb_pts = points.size() = 4 captured at entry (Branch 1)</span></h1>
-<p class="category">§12.14 mesh defects (sub-class: inconsistent-face-orientation / polygon-soup-orientation)</p>
+<h1>Me279 <span class="sep">—</span> <span class="entry-title">autorefine_triangle_soup segment branch on_same_edge skip: shared edge → no new segment (Branch 5b)</span></h1>
+<p class="category">§12.14 mesh defects (sub-class: autorefine_shared_edge_skip / on-same-edge)</p>
 <p class="tag-pills">
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
 </p>
 </header>
 <main>
 <section class="fixture-link">
-<a class="big-link" href="../../mesh-examples/12-14-mesh/Me940.mesh.json">View raw fixture (.mesh.json)</a> <code class="path">mesh-examples/12-14-mesh/Me940.mesh.json</code>
+<a class="big-link" href="../../mesh-examples/12-14-mesh/Me279.mesh.json">View raw fixture (.mesh.json)</a> <code class="path">mesh-examples/12-14-mesh/Me279.mesh.json</code>
 </section>
 <section><h2>Sources</h2><ul>
-<li>CGAL PMP `PMP.orient_polygon_soup` Branch 1 (*initial_point_count*: `std::size_t initial_nb_pts = points.size()</li>
-<li>` @ line 556)</li>
+<li>CGAL PMP `autorefine_impl::autorefine_triangle_soup` Branch 5 (sub-branch) (*on_same_edge*: shared-edge check before segments.emplace_back → skip @ line 1136)</li>
 <li>`MESH_HEAL_COVERAGE.md`.</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Two triangles sharing interior edge (p1,p2) — a minimal open-disk polygon soup. Any non-empty soup triggers `initial_nb_pts = points.size()` at line 556. This four-vertex, two-triangle strip has exactly 4 points; the captured count is compared against points.size() at the end of the function to detect whether vertex duplication was needed. No duplication needed (manifold), so the function returns true. Euler: V=4, E=5, F=2, chi=1.</p></section>
+<p>Two triangles sharing one full edge (v1-v2) folded along that edge like an open book. The intersection is exactly the shared edge (nbi==2, two endpoints) but on_same_edge is true so segments.emplace_back is NOT called. This is the negative complement of Me274: same case-2 path but the segment is skipped because the intersection lies on a manifold shared edge.</p></section>
 <section><h2>Reproducer recipe</h2>
-<p>p0=(0,0,0), p1=(1,0,0), p2=(0.5,1,0), p3=(1.5,1,0); t0=(p0,p1,p2), t1=(p1,p3,p2); assert_edge_shared(p1,p2,2); four boundary edges n=1; euler V=4,E=5,F=2,chi=1.</p></section>
+<p>t0 and t1 share edge (v1,v2) and fold at a dihedral angle; edge (v1,v2) shared by 2 triangles; assert triangles_do_not_intersect([0,1]).</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>Branch 1 fires for any non-empty soup; initial_nb_pts stores 4. orient_polygon_soup completes with no vertex duplication; returns true.</p></section>
+<p>Branch 5 sub-branch fires; on_same_edge==true; segments.emplace_back is NOT called; the shared edge needs no refinement.</p></section>
 <section><h2>Expected validation</h2>
 <p><code></code></p></section>
 <section><h2>Live oracle output</h2>
@@ -45,21 +44,21 @@
 <span class="lineno">2</span>  &quot;vertices&quot;: [
 <span class="lineno">3</span>    [
 <span class="lineno">4</span>      0.0,
-<span class="lineno">5</span>      0.0,
+<span class="lineno">5</span>      -1.0,
 <span class="lineno">6</span>      0.0
 <span class="lineno">7</span>    ],
 <span class="lineno">8</span>    [
-<span class="lineno">9</span>      1.0,
+<span class="lineno">9</span>      -1.0,
 <span class="lineno">10</span>      0.0,
 <span class="lineno">11</span>      0.0
 <span class="lineno">12</span>    ],
 <span class="lineno">13</span>    [
-<span class="lineno">14</span>      0.5,
-<span class="lineno">15</span>      1.0,
+<span class="lineno">14</span>      1.0,
+<span class="lineno">15</span>      0.0,
 <span class="lineno">16</span>      0.0
 <span class="lineno">17</span>    ],
 <span class="lineno">18</span>    [
-<span class="lineno">19</span>      1.5,
+<span class="lineno">19</span>      0.0,
 <span class="lineno">20</span>      1.0,
 <span class="lineno">21</span>      0.0
 <span class="lineno">22</span>    ]
@@ -71,16 +70,16 @@
 <span class="lineno">28</span>      2
 <span class="lineno">29</span>    ],
 <span class="lineno">30</span>    [
-<span class="lineno">31</span>      1,
-<span class="lineno">32</span>      3,
+<span class="lineno">31</span>      3,
+<span class="lineno">32</span>      1,
 <span class="lineno">33</span>      2
 <span class="lineno">34</span>    ]
 <span class="lineno">35</span>  ],
 <span class="lineno">36</span>  &quot;metadata&quot;: {
-<span class="lineno">37</span>    &quot;id&quot;: &quot;Me940&quot;,
+<span class="lineno">37</span>    &quot;id&quot;: &quot;Me279&quot;,
 <span class="lineno">38</span>    &quot;schema_version&quot;: 0,
-<span class="lineno">39</span>    &quot;defect_class&quot;: &quot;inconsistent_face_orientation&quot;,
-<span class="lineno">40</span>    &quot;title&quot;: &quot;orient_polygon_soup initial_point_count: initial_nb_pts = points.size() = 4 captured at entry (Branch 1)&quot;,
+<span class="lineno">39</span>    &quot;defect_class&quot;: &quot;autorefine_shared_edge_skip&quot;,
+<span class="lineno">40</span>    &quot;title&quot;: &quot;autorefine_triangle_soup segment branch on_same_edge skip: shared edge \u2192 no new segment&quot;,
 <span class="lineno">41</span>    &quot;assertions&quot;: [
 <span class="lineno">42</span>      {
 <span class="lineno">43</span>        &quot;kind&quot;: &quot;edge_shared_by_n_triangles&quot;,
@@ -123,11 +122,11 @@
 <span class="lineno">80</span>        &quot;n&quot;: 1
 <span class="lineno">81</span>      },
 <span class="lineno">82</span>      {
-<span class="lineno">83</span>        &quot;kind&quot;: &quot;euler_characteristic&quot;,
-<span class="lineno">84</span>        &quot;v&quot;: 4,
-<span class="lineno">85</span>        &quot;e&quot;: 5,
-<span class="lineno">86</span>        &quot;f&quot;: 2,
-<span class="lineno">87</span>        &quot;chi&quot;: 1
+<span class="lineno">83</span>        &quot;kind&quot;: &quot;triangles_do_not_intersect&quot;,
+<span class="lineno">84</span>        &quot;triangles&quot;: [
+<span class="lineno">85</span>          0,
+<span class="lineno">86</span>          1
+<span class="lineno">87</span>        ]
 <span class="lineno">88</span>      }
 <span class="lineno">89</span>    ]
 <span class="lineno">90</span>  }
@@ -137,7 +136,7 @@
 </section>
 </main>
 <footer>
-<nav class="prevnext"><a class="prev" href="Me933.html">&larr; Me933</a> <a class="up" href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <a class="next" href="Me941.html">Me941 &rarr;</a></nav>
+<nav class="prevnext"><a class="prev" href="Me278.html">&larr; Me278</a> <a class="up" href="index.html">§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</a> <a class="next" href="Me280.html">Me280 &rarr;</a></nav>
 <p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
 </footer>
 </body>
