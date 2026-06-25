@@ -122,7 +122,12 @@ jobs:
       # committed browse/ tree; fail with a helpful message if they
       # differ. The fix on a failure is `cd validation && uv run python
       # -m step_corpus._render_pages --clean` then commit the result.
+      #
+      # ``if: always()`` so this check runs even if earlier steps
+      # failed — site staleness is independent of pytest failures and
+      # we want both signals on every push.
       - name: Site staleness check (browse/ vs catalog)
+        if: always()
         working-directory: validation
         run: |
           set -euo pipefail
