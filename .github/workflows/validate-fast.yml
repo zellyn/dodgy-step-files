@@ -112,3 +112,35 @@ jobs:
         # --strict exits non-zero on unexpected violation OR if an exempt
         # entry no longer trips its expected violation (regression both ways).
         run: uv run python -m step_corpus._schema_oracle --strict
+
+      # Site staleness check. The browse/ HTML site is generated from the
+      # catalog by _render_pages.py and committed to the repo (GitHub
+      # Pages deploys whatever is on main). Without this check the site
+      # silently drifts behind every catalog change — happened in
+      # May-June 2026 and made §12.14 mesh (760 fixtures) invisible
+      # for 50 days. Re-render into a temp area and diff against the
+      # committed browse/ tree; fail with a helpful message if they
+      # differ. The fix on a failure is `cd validation && uv run python
+      # -m step_corpus._render_pages --clean` then commit the result.
+      - name: Site staleness check (browse/ vs catalog)
+        working-directory: validation
+        run: |
+          set -euo pipefail
+          uv run python -m step_corpus._render_pages --clean \
+            --out-root "$RUNNER_TEMP/site_check"
+          # Compare the regenerated tree against the committed one.
+          # `diff -r -q` lists files that differ; we exit 1 if any do.
+          if diff -r -q --exclude=.gitkeep \
+                 "$RUNNER_TEMP/site_check/browse" ../browse \
+                 > "$RUNNER_TEMP/site_diff.txt"; then
+            echo "browse/ matches the regenerated site."
+          else
+            echo "::error::browse/ is out of sync with the catalog."
+            echo "Re-render locally and commit:"
+            echo "  cd validation && uv run python -m step_corpus._render_pages --clean"
+            echo "  git add browse/ index.html && git commit -m 'Regenerate site'"
+            echo ""
+            echo "Diff summary (first 50 lines):"
+            head -50 "$RUNNER_TEMP/site_diff.txt"
+            exit 1
+          fi
