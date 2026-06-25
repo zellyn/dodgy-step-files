@@ -95513,6 +95513,43 @@
   },
   {
     "byte_assertions": [
+      "contains(b'LENGTH_UNIT')",
+      "contains(b'MILLI')",
+      "contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')"
+    ],
+    "category": "§12.5 units / coordinate-systems",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "The `GEOMETRIC_REPRESENTATION_CONTEXT` declares `LENGTH_UNIT(SI_UNIT(.MILLI.,.METRE.))` but the `CARTESIAN_POINT` coordinates are authored at metre scale (values like `500.0` where `0.5` mm was intended), producing geometry that is 1000× too large when parsed with the declared unit. A robust kernel must detect or heal the unit/scale disagreement rather than silently accepting a part that is a thousand times too big.",
+    "expected_kernel_behavior": "detect the unit/coordinate-scale disagreement and either reject the file or apply a corrective scaling; emit a diagnostic that surfaces the scale mismatch to the consumer.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-6-assembly/P004.stp",
+    "id": "P004",
+    "notes": "Synonyms: \"unit declaration disagrees with coordinate scale\", \"metre coordinates in millimetre context\", \"1000× scale mismatch on unit context\", \"LENGTH_UNIT and CARTESIAN_POINT scale disagreement\", \"STEP file 1000x too large from unit/value mismatch\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "Author a standard product chain with `GEOMETRIC_REPRESENTATION_CONTEXT` declaring millimetre `LENGTH_UNIT`, but emit `CARTESIAN_POINT` coordinates at metre scale (e.g., 500.0 instead of 0.5). The shape will load successfully but be 1000× larger than the producer intended.",
+    "section": "12.6",
+    "section_dir": "12-6-assembly",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "catalog claim (P-series defect curation)"
+    ],
+    "taxonomy": [
+      "assembly"
+    ],
+    "tier3_assertions": [
+      "shape_null == False"
+    ],
+    "title": "`LENGTH_UNIT` declaration disagrees with actual coordinate scale"
+  },
+  {
+    "byte_assertions": [
       "contains(b'SPHERICAL_SURFACE')",
       "contains(b'FACE_OUTER_BOUND')"
     ],

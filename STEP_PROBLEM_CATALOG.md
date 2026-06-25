@@ -6885,6 +6885,21 @@ End of file. Total: 38 entries (A001.A038).
 - **Model impact**: Defect causes the loader to either abort, silently drop the affected entity, or accept it with corrupted attributes; downstream operations on the affected sub-shape produce results inconsistent with the producer's intent.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
+### P004 — `LENGTH_UNIT` declaration disagrees with actual coordinate scale
+- **Category**: §12.5 units / coordinate-systems
+- **Sources**: catalog claim (P-series defect curation)
+- **Description**: The `GEOMETRIC_REPRESENTATION_CONTEXT` declares `LENGTH_UNIT(SI_UNIT(.MILLI.,.METRE.))` but the `CARTESIAN_POINT` coordinates are authored at metre scale (values like `500.0` where `0.5` mm was intended), producing geometry that is 1000× too large when parsed with the declared unit. A robust kernel must detect or heal the unit/scale disagreement rather than silently accepting a part that is a thousand times too big.
+- **Reproducer recipe**: Author a standard product chain with `GEOMETRIC_REPRESENTATION_CONTEXT` declaring millimetre `LENGTH_UNIT`, but emit `CARTESIAN_POINT` coordinates at metre scale (e.g., 500.0 instead of 0.5). The shape will load successfully but be 1000× larger than the producer intended.
+- **Expected kernel behavior**: detect the unit/coordinate-scale disagreement and either reject the file or apply a corrective scaling; emit a diagnostic that surfaces the scale mismatch to the consumer.
+- **Notes**: Synonyms: "unit declaration disagrees with coordinate scale", "metre coordinates in millimetre context", "1000× scale mismatch on unit context", "LENGTH_UNIT and CARTESIAN_POINT scale disagreement", "STEP file 1000x too large from unit/value mismatch".
+- **Byte assertion**: contains(b'LENGTH_UNIT')
+- **Byte assertion**: contains(b'MILLI')
+- **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
+- **Tier-3 assertion**: shape_null == False
+- **OCC behavior**: accepts with ERR diagnostic (loads shape) — reading as healing; outside catalog's allowed set ({reject, warn-and-rescale}). Kernel-bug witnessed: receivers enforcing the spec must detect the unit/scale disagreement.
+- **Model impact**: Downstream consumers see a part 1000× too large; assembly placement is broken; collision-detection and tolerance checks operate at the wrong scale. Cross-tool round-trip silently propagates the corruption since the declared context still looks self-consistent.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
+
 ### P005 — Inverted spherical face on certain sweep orientations
 - **Category**: §12.3 topology
 - **Source**: FreeCAD #14710

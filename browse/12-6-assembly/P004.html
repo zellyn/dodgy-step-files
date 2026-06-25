@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>P004 — `LENGTH_UNIT` declaration disagrees with actual coordinate scale</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.6 Assembly hierarchy</a> <span class="sep">/</span> <span class="current">P004</span>
+</nav>
+<header class="title-bar">
+<h1>P004 <span class="sep">—</span> <span class="entry-title">`LENGTH_UNIT` declaration disagrees with actual coordinate scale</span></h1>
+<p class="category">§12.5 units / coordinate-systems</p>
+<p class="tag-pills">
+<a class="tag tag-assembly" href="../by-tag/assembly/index.html">assembly</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-6-assembly/P004.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-6-assembly/P004.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>catalog claim (P-series defect curation)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>The `GEOMETRIC_REPRESENTATION_CONTEXT` declares `LENGTH_UNIT(SI_UNIT(.MILLI.,.METRE.))` but the `CARTESIAN_POINT` coordinates are authored at metre scale (values like `500.0` where `0.5` mm was intended), producing geometry that is 1000× too large when parsed with the declared unit. A robust kernel must detect or heal the unit/scale disagreement rather than silently accepting a part that is a thousand times too big.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Author a standard product chain with `GEOMETRIC_REPRESENTATION_CONTEXT` declaring millimetre `LENGTH_UNIT`, but emit `CARTESIAN_POINT` coordinates at metre scale (e.g., 500.0 instead of 0.5). The shape will load successfully but be 1000× larger than the producer intended.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>detect the unit/coordinate-scale disagreement and either reject the file or apply a corrective scaling; emit a diagnostic that surfaces the scale mismatch to the consumer.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;unit declaration disagrees with coordinate scale&quot;, &quot;metre coordinates in millimetre context&quot;, &quot;1000× scale mismatch on unit context&quot;, &quot;LENGTH_UNIT and CARTESIAN_POINT scale disagreement&quot;, &quot;STEP file 1000x too large from unit/value mismatch&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;LENGTH_UNIT&#x27;)</code></li>
+<li><code>contains(b&#x27;MILLI&#x27;)</code></li>
+<li><code>contains(b&#x27;NEXT_ASSEMBLY_USAGE_OCCURRENCE&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<table class="oracle"><thead><tr><th>Oracle</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>occt_heal_on</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>occt_heal_off</code></td><td><code>shape(1)</code></td></tr>
+<tr><td><code>gmsh_autofix_on</code></td><td><code>shape(4)</code></td></tr>
+<tr><td><code>gmsh_autofix_off</code></td><td><code>shape(4)</code></td></tr>
+<tr><td><code>ifcopenshell</code></td><td><code>schema_n/a</code></td></tr>
+<tr><td><code>part21_strict</code></td><td><code>reject(E_UNRESOLVED_REFS)</code></td></tr>
+<tr><td><code>manifold</code></td><td><code>empty_mesh</code></td></tr>
+</tbody></table>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* P004: <mark>LENGTH_UNIT</mark> context declares SI_UNIT(.<mark>MILLI</mark>.,.METRE.) but CARTESIAN_POINT coordinates are in metres (500.0 not 0.5 mm); 1000x scale mismatch between declared unit and actual coordinate values; <mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark> scaffolding present for Â§12.6 lint; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;P004&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;P004.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=CARTESIAN_POINT(&#x27;&#x27;,(500.0,0.0,0.0));
+<span class="lineno">12</span>#3=CARTESIAN_POINT(&#x27;&#x27;,(500.0,500.0,0.0));
+<span class="lineno">13</span>#4=CARTESIAN_POINT(&#x27;&#x27;,(0.0,500.0,0.0));
+<span class="lineno">14</span>#5=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1,#2,#3,#4));
+<span class="lineno">15</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">16</span>#9051=PRODUCT(&#x27;P004&#x27;,&#x27;P004&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">17</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">18</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">19</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">20</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">21</span>#9056=(<mark>LENGTH_UNIT</mark>()NAMED_UNIT(*)SI_UNIT(.<mark>MILLI</mark>.,.METRE.));
+<span class="lineno">22</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">23</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">24</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">25</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">26</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#5),#9060);
+<span class="lineno">27</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">28</span>#9063=PRODUCT_CONTEXT(&#x27;sub&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">29</span>#9064=PRODUCT(&#x27;UnitMismatch&#x27;,&#x27;UnitMismatch&#x27;,&#x27;&#x27;,(#9063));
+<span class="lineno">30</span>#9065=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9064);
+<span class="lineno">31</span>#9066=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#9065,#9003);
+<span class="lineno">32</span>#9067=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;1&#x27;,&#x27;unit_mismatch_instance&#x27;,&#x27;&#x27;,#9004,#9066,$);
+<span class="lineno">33</span>ENDSEC;
+<span class="lineno">34</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="P003.html">&larr; P003</a> <a class="up" href="index.html">§12.6 Assembly hierarchy</a> <a class="next" href="P005.html">P005 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>
