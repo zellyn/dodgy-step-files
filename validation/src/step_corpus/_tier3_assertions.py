@@ -22,7 +22,16 @@ Supported left-hand sides:
 - ``n_faces_total``, ``n_edges_total``, ``n_vertices_total``
 - ``face[i].area``, ``face[i].sliver_aspect_max_min``, ``face[i].edge_count``,
   ``face[i].surface_type``
-- ``edge[i].length``, ``edge[i].curve_type``
+- ``face[i].edge_orientations.forward``, ``.reversed``, ``.internal``,
+  ``.external``  (per-face edge-loop orientation counts)
+- ``face[i].bspline.is_rational``, ``.is_u_periodic``, ``.is_v_periodic``,
+  ``.u_degree``, ``.v_degree``, ``.n_u_knots``, ``.n_v_knots``,
+  ``.u_knot_mult_max``, ``.v_knot_mult_max``  (B-spline / Bezier surface
+  introspection; ``bspline.*`` keys are absent on non-parametric surfaces)
+- ``edge[i].length``, ``edge[i].curve_type``, ``edge[i].orientation``
+- ``edge[i].bspline.is_rational``, ``.is_periodic``, ``.degree``,
+  ``.n_knots``, ``.knot_mult_max``  (B-spline / Bezier curve introspection;
+  ``bspline.*`` keys are absent on non-parametric curves)
 - ``vertex[i].tolerance``, ``vertex[i].position``
 - ``brepcheck.valid`` (boolean)
 

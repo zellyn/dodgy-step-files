@@ -36,8 +36,152 @@ def load_shape(path: Path):
     return reader.OneShape(), {"roots": n}
 
 
+def _bspline_surface_props(face) -> dict | None:
+    """Extract B-spline / Bezier surface introspection: rationality,
+    periodicity, degree, knot summaries. Returns None if the face isn't a
+    parametric (Bezier or B-spline) surface, or a partial dict if some
+    properties aren't applicable.
+
+    Keys (any may be None on Bezier or extraction failure):
+        is_rational, is_u_periodic, is_v_periodic,
+        u_degree, v_degree,
+        n_u_knots, n_v_knots,
+        u_knot_mult_max, v_knot_mult_max
+    """
+    from OCP.BRep import BRep_Tool  # type: ignore
+    from OCP.GeomAbs import GeomAbs_BSplineSurface, GeomAbs_BezierSurface  # type: ignore
+    from OCP.BRepAdaptor import BRepAdaptor_Surface  # type: ignore
+
+    try:
+        adaptor = BRepAdaptor_Surface(face)
+        gtype = adaptor.GetType()
+    except Exception:
+        return None
+    if gtype not in (GeomAbs_BSplineSurface, GeomAbs_BezierSurface):
+        return None
+
+    out: dict = {
+        "is_rational": None, "is_u_periodic": None, "is_v_periodic": None,
+        "u_degree": None, "v_degree": None,
+        "n_u_knots": None, "n_v_knots": None,
+        "u_knot_mult_max": None, "v_knot_mult_max": None,
+    }
+    if gtype == GeomAbs_BSplineSurface:
+        try:
+            bs = adaptor.BSpline()
+        except Exception:
+            return out
+        try:
+            out["u_degree"] = int(bs.UDegree())
+            out["v_degree"] = int(bs.VDegree())
+        except Exception:
+            pass
+        try:
+            out["is_u_periodic"] = bool(bs.IsUPeriodic())
+            out["is_v_periodic"] = bool(bs.IsVPeriodic())
+        except Exception:
+            pass
+        try:
+            out["is_rational"] = bool(bs.IsURational() or bs.IsVRational())
+        except Exception:
+            pass
+        try:
+            out["n_u_knots"] = int(bs.NbUKnots())
+            out["n_v_knots"] = int(bs.NbVKnots())
+        except Exception:
+            pass
+        try:
+            um = list(bs.UMultiplicities())
+            vm = list(bs.VMultiplicities())
+            out["u_knot_mult_max"] = max(um) if um else None
+            out["v_knot_mult_max"] = max(vm) if vm else None
+        except Exception:
+            pass
+    else:  # GeomAbs_BezierSurface
+        try:
+            bz = adaptor.Bezier()
+        except Exception:
+            return out
+        try:
+            out["u_degree"] = int(bz.UDegree())
+            out["v_degree"] = int(bz.VDegree())
+        except Exception:
+            pass
+        try:
+            out["is_rational"] = bool(bz.IsURational() or bz.IsVRational())
+        except Exception:
+            pass
+        # Bezier has no knot vector / periodicity in OCCT's model
+    return out
+
+
+def _bspline_curve_props(edge) -> dict | None:
+    """Per-edge B-spline / Bezier curve introspection. Returns None if the
+    edge curve isn't parametric, partial dict otherwise.
+
+    Keys: is_rational, is_periodic, degree, n_knots, knot_mult_max
+    """
+    from OCP.GeomAbs import GeomAbs_BSplineCurve, GeomAbs_BezierCurve  # type: ignore
+    from OCP.BRepAdaptor import BRepAdaptor_Curve  # type: ignore
+
+    try:
+        adaptor = BRepAdaptor_Curve(edge)
+        gtype = adaptor.GetType()
+    except Exception:
+        return None
+    if gtype not in (GeomAbs_BSplineCurve, GeomAbs_BezierCurve):
+        return None
+
+    out: dict = {
+        "is_rational": None, "is_periodic": None,
+        "degree": None, "n_knots": None, "knot_mult_max": None,
+    }
+    if gtype == GeomAbs_BSplineCurve:
+        try:
+            bs = adaptor.BSpline()
+        except Exception:
+            return out
+        try:
+            out["degree"] = int(bs.Degree())
+        except Exception:
+            pass
+        try:
+            out["is_periodic"] = bool(bs.IsPeriodic())
+        except Exception:
+            pass
+        try:
+            out["is_rational"] = bool(bs.IsRational())
+        except Exception:
+            pass
+        try:
+            out["n_knots"] = int(bs.NbKnots())
+        except Exception:
+            pass
+        try:
+            mm = list(bs.Multiplicities())
+            out["knot_mult_max"] = max(mm) if mm else None
+        except Exception:
+            pass
+    else:  # GeomAbs_BezierCurve
+        try:
+            bz = adaptor.Bezier()
+        except Exception:
+            return out
+        try:
+            out["degree"] = int(bz.Degree())
+        except Exception:
+            pass
+        try:
+            out["is_rational"] = bool(bz.IsRational())
+        except Exception:
+            pass
+    return out
+
+
 def face_metrics(shape) -> list[dict]:
-    """Per-face: surface type, area, bounding-box, sliver aspect ratio."""
+    """Per-face: surface type, area, bounding-box, sliver aspect ratio,
+    and (for B-spline/Bezier surfaces) rationality, periodicity, degree,
+    knot-vector summaries."""
     from OCP.BRep import BRep_Tool  # type: ignore
     from OCP.BRepGProp import BRepGProp  # type: ignore
     from OCP.GProp import GProp_GProps  # type: ignore
@@ -94,24 +238,69 @@ def face_metrics(shape) -> list[dict]:
             aspect = None
         # Edge count
         edges = list(_shape_iter(f, TopAbs_EDGE))
-        metrics.append({
+        # Edge-loop orientation counts within this face
+        ori_counts = {"forward": 0, "reversed": 0, "internal": 0, "external": 0}
+        try:
+            from OCP.TopAbs import (  # type: ignore
+                TopAbs_FORWARD, TopAbs_REVERSED,
+                TopAbs_INTERNAL, TopAbs_EXTERNAL,
+            )
+            ori_map = {
+                TopAbs_FORWARD: "forward", TopAbs_REVERSED: "reversed",
+                TopAbs_INTERNAL: "internal", TopAbs_EXTERNAL: "external",
+            }
+            for e in edges:
+                try:
+                    ori_counts[ori_map[e.Orientation()]] += 1
+                except Exception:
+                    pass
+        except Exception:
+            pass
+        entry = {
             "i": i,
             "surface_type": stype,
             "area": area,
             "bbox_extents_sorted_desc": extents,
             "sliver_aspect_max_min": aspect,
             "edge_count": len(edges),
-        })
+            "edge_orientations": ori_counts,
+        }
+        bs_props = _bspline_surface_props(f)
+        if bs_props is not None:
+            entry["bspline"] = bs_props
+        metrics.append(entry)
     return metrics
 
 
 def edge_metrics(shape) -> list[dict]:
-    """Per-edge: 3D length, vertex tolerance, curve type."""
+    """Per-edge: 3D length, vertex tolerance, curve type, orientation, and
+    (for B-spline/Bezier curves) rationality, periodicity, degree, knots."""
     from OCP.BRep import BRep_Tool  # type: ignore
     from OCP.BRepGProp import BRepGProp  # type: ignore
     from OCP.GProp import GProp_GProps  # type: ignore
-    from OCP.TopAbs import TopAbs_EDGE  # type: ignore
+    from OCP.TopAbs import (  # type: ignore
+        TopAbs_EDGE, TopAbs_FORWARD, TopAbs_REVERSED,
+        TopAbs_INTERNAL, TopAbs_EXTERNAL,
+    )
     from OCP.TopoDS import TopoDS  # type: ignore
+    from OCP.BRepAdaptor import BRepAdaptor_Curve  # type: ignore
+    from OCP.GeomAbs import (  # type: ignore
+        GeomAbs_Line, GeomAbs_Circle, GeomAbs_Ellipse, GeomAbs_Hyperbola,
+        GeomAbs_Parabola, GeomAbs_BezierCurve, GeomAbs_BSplineCurve,
+        GeomAbs_OffsetCurve, GeomAbs_OtherCurve,
+    )
+
+    curvetype_names = {
+        GeomAbs_Line: "line", GeomAbs_Circle: "circle",
+        GeomAbs_Ellipse: "ellipse", GeomAbs_Hyperbola: "hyperbola",
+        GeomAbs_Parabola: "parabola", GeomAbs_BezierCurve: "bezier",
+        GeomAbs_BSplineCurve: "bspline", GeomAbs_OffsetCurve: "offset",
+        GeomAbs_OtherCurve: "other",
+    }
+    ori_map = {
+        TopAbs_FORWARD: "forward", TopAbs_REVERSED: "reversed",
+        TopAbs_INTERNAL: "internal", TopAbs_EXTERNAL: "external",
+    }
 
     metrics = []
     if shape is None or shape.IsNull():
@@ -128,7 +317,22 @@ def edge_metrics(shape) -> list[dict]:
             tol = BRep_Tool.Tolerance_s(e)
         except Exception:
             tol = None
-        metrics.append({"i": i, "length": length, "tolerance": tol})
+        try:
+            ctype = curvetype_names.get(BRepAdaptor_Curve(e).GetType(), "unknown")
+        except Exception:
+            ctype = "?"
+        try:
+            ori = ori_map.get(e.Orientation(), "?")
+        except Exception:
+            ori = "?"
+        entry = {
+            "i": i, "length": length, "tolerance": tol,
+            "curve_type": ctype, "orientation": ori,
+        }
+        bs_props = _bspline_curve_props(e)
+        if bs_props is not None:
+            entry["bspline"] = bs_props
+        metrics.append(entry)
     return metrics
 
 
