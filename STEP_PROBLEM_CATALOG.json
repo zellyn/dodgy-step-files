@@ -39363,7 +39363,9 @@
       "shape_null == False",
       "n_faces_total == 1",
       "n_edges_total == 4",
-      "n_vertices_total == 8"
+      "n_vertices_total == 8",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.is_u_periodic == True"
     ],
     "title": "CATIA \"like-seam\": two pcurves on same near-closed `B_SPLINE_SURFACE_WITH_KNOTS`"
   },
@@ -39524,7 +39526,9 @@
       "shape_null == False",
       "n_faces_total == 1",
       "n_edges_total == 1",
-      "n_vertices_total == 2"
+      "n_vertices_total == 2",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.is_u_periodic == True"
     ],
     "title": "Pcurve gaps / nearly-duplicate pcurves near periodic boundary after `B_SPLINE_SURFACE` conversion"
   },
@@ -44962,7 +44966,9 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].bspline.u_degree == 9",
+      "face[0].bspline.v_degree == 7"
     ],
     "title": "Excess-degree `B_SPLINE_CURVE_WITH_KNOTS` / `B_SPLINE_SURFACE_WITH_KNOTS` requiring degree restriction"
   },
@@ -47675,7 +47681,9 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].bspline.u_degree == 3",
+      "face[0].bspline.v_degree == 5"
     ],
     "title": "ShapeUpgrade_ConvertSurfaceToBezierBasis u-and-v-knot-asymmetry"
   },
@@ -48038,7 +48046,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "n_faces_total == 1"
+      "n_faces_total == 1",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.is_u_periodic == True",
+      "face[0].bspline.is_v_periodic == True"
     ],
     "title": "trimmed-recursion on B-spline"
   },
@@ -49785,7 +49796,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].bspline.is_rational == True",
+      "face[0].bspline.u_degree == 2",
+      "face[0].bspline.v_degree == 1"
     ],
     "title": "Rational B-spline with extreme weight ratio (1e4), numerical conditioning"
   },
@@ -50049,7 +50063,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.u_degree == 3",
+      "face[0].bspline.is_u_periodic == True"
     ],
     "title": "Ill-Conditioned Knot Spacing (44:1 Ratio)"
   },
@@ -50576,7 +50593,9 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.is_u_periodic == True"
     ],
     "title": "Surface periodicity not declared but actually closed"
   },
@@ -55519,7 +55538,9 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].bspline.u_degree == 2",
+      "face[0].bspline.v_degree == 2"
     ],
     "title": "ShapeAnalysis_Surface.CalcMaxDegree"
   },
@@ -82182,7 +82203,9 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 1"
+      "n_faces_total == 1",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.is_u_periodic == True"
     ],
     "title": "ShapeAnalysis_Surface.IsUClosed bspline-periodic-u"
   },
@@ -83569,7 +83592,9 @@
       "topology"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.is_rational == True"
     ],
     "title": "ShapeFix_Face.FixSplitFace (line-2908)"
   },

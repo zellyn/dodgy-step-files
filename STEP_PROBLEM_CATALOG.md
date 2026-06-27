@@ -1556,6 +1556,8 @@ _Section summary: 82 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
+- **Tier-3 assertion**: face[0].surface_type == "bspline"
+- **Tier-3 assertion**: face[0].bspline.is_u_periodic == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
 
@@ -1625,6 +1627,8 @@ _Section summary: 82 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 1
 - **Tier-3 assertion**: n_vertices_total == 2
+- **Tier-3 assertion**: face[0].surface_type == "bspline"
+- **Tier-3 assertion**: face[0].bspline.is_u_periodic == True
 
 ### Gp019 — Edge on a composite-surface face is missing per-patch pcurve
 - **Category**: §12.2a pcurve
@@ -1933,6 +1937,8 @@ _Section summary: 82 entries._
 - **Notes**: **See also**: Gn026. **OCC behavior**: silently accepts excess-degree NURBS without re-fitting (no degree-restriction performed); shape loads but tessellation may diverge. Kernel-bug witnessed: catalog requires either heal-by-restriction or reject; OCC silently accepts. Synonyms: "excess-degree B-spline curve needs degree reduction", "high-degree NURBS surface 9x7 over-spec", "degree-restriction healer needed for legacy export", "B-spline degree exceeds target system limit", "rank-deficient high-degree NURBS net".- **Byte assertion**: contains(b'B_SPLINE_SURFACE')
 - **Byte assertion**: contains(b'B_SPLINE_CURVE')
 - **Tier-3 assertion**: load == "ok"
+- **Tier-3 assertion**: face[0].bspline.u_degree == 9
+- **Tier-3 assertion**: face[0].bspline.v_degree == 7
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
@@ -2222,6 +2228,8 @@ End of file.
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS(')
 - **Byte assertion**: count(b'(10.0,0.0,0.0)') >= 2
 - **Tier-3 assertion**: load == "ok"
+- **Tier-3 assertion**: face[0].surface_type == "bspline"
+- **Tier-3 assertion**: face[0].bspline.is_u_periodic == True
 - **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
@@ -22189,6 +22197,8 @@ Defect: OFFSET_CURVE wrapping a B-spline; sample density inherited from base cur
 
 Defect: Surface with u_degree=3, v_degree=5 and asymmetric knot multiplicities; conversion's symmetric assumption produces wrong Bezier patch count in U vs V. Fixture: 4x6 control point grid, degree-3 in U, degree-5 in V, knot multiplicities (3,1,3) in U and (5,1,5) in V.
 - **Tier-3 assertion**: load == "ok"
+- **Tier-3 assertion**: face[0].bspline.u_degree == 3
+- **Tier-3 assertion**: face[0].bspline.v_degree == 5
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gn094 — ShapeAnalysis_Curve.IsClosed degree-0-curve
 
@@ -22267,6 +22277,9 @@ Composite curve mixing a degree-3 B-spline segment (requires 4 samples) with a d
 ### Gn104 — trimmed-recursion on B-spline
 Defect: ShapeUpgrade_SplitSurfaceContinuity.Compute recursively subdivides trimmed B-spline ignoring trim bounds, producing overlapping sub-patches.
 - **Tier-3 assertion**: n_faces_total == 1
+- **Tier-3 assertion**: face[0].surface_type == "bspline"
+- **Tier-3 assertion**: face[0].bspline.is_u_periodic == True
+- **Tier-3 assertion**: face[0].bspline.is_v_periodic == True
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(12) ifc=schema_n/a`
 ### Gn105 — rational-with-coincident-poles IsClosed
 Defect: ShapeAnalysis_Curve.IsClosed checks position only, ignoring weights on coincident poles. Closed rational curve with coincident start/end but different weights.
@@ -22628,6 +22641,9 @@ Minimal reproducer: B_SPLINE_CURVE_WITH_KNOTS, degree 2, 5 poles marked periodic
 ### Gn157 — Rational B-spline with extreme weight ratio (1e4), numerical conditioning
 Minimal reproducer: RATIONAL_B_SPLINE_SURFACE, 3×2 control net, degree (2,1). Weights: (1.0, 10000.0, 1.0, 1.0, 1.0, 1.0) span 4 orders of magnitude. Knot structure: U,V multiplicities (3,3)/(2,2), fully clamped. Healing challenge: weight ratio 10000:1 escalates condition number in rational basis function evaluation; numerical instability in homogeneous coordinate normalization. Expected: rescale weights toward unity or flag ill-conditioning.
 - **Tier-3 assertion**: load == "ok"
+- **Tier-3 assertion**: face[0].bspline.is_rational == True
+- **Tier-3 assertion**: face[0].bspline.u_degree == 2
+- **Tier-3 assertion**: face[0].bspline.v_degree == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Gn158 — B-spline curve with clustered interior knots, condition-number escalation
 Minimal reproducer: B_SPLINE_CURVE_WITH_KNOTS, degree 3, 7 poles. Interior knots clustered: 0.5, 0.501, 0.502 (spacing ~0.001). Knot multiplicities (4,1,1,1,4), sum=11=n+d+1. Healing challenge: tight knot spacing (ratio ~0.001:0.5) creates ill-conditioned basis matrix; conditioning number grows exponentially with clustering. Expected: detect knot clustering and apply knot removal or uniform reparametrization.
@@ -22666,6 +22682,9 @@ Rational surface with varying weights requires knot-aware grid sampling, not pol
 ### Gn165 — Ill-Conditioned Knot Spacing (44:1 Ratio)
 Clustered interior knots create numerical instability. BRepLib::SameParameter knot anomaly detection (critratio > 10) triggers arc-length reparametrization.
 - **Tier-3 assertion**: load == "ok"
+- **Tier-3 assertion**: face[0].surface_type == "bspline"
+- **Tier-3 assertion**: face[0].bspline.u_degree == 3
+- **Tier-3 assertion**: face[0].bspline.is_u_periodic == True
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 ### Gn166 — Boundary Pole Singularity (First Row)
 U-boundary poles coalesce; ShapeAnalysis_CheckSmallFace.CheckPin must iterate boundary rows via IsoStat, not interior poles.
@@ -24742,6 +24761,8 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Fixture path**: step-examples/12-3c-faces/Tfa197.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: n_faces_total == 1
+- **Tier-3 assertion**: face[0].surface_type == "bspline"
+- **Tier-3 assertion**: face[0].bspline.is_u_periodic == True
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Tfa198 — ShapeAnalysis_FreeBoundsProperties.CheckNotches gap-after-fix
 - **Category**: §12.3c faces (sub-class: gap detection in free bounds)
@@ -25102,6 +25123,8 @@ Multi-point edge subdivision; overlapping parameter intervals via meridian B-spl
 
 Multi-wire face splitting; sub-face reconstruction via outer loop + inner hole on rational B-spline surface.
 - **Tier-3 assertion**: load == "ok"
+- **Tier-3 assertion**: face[0].surface_type == "bspline"
+- **Tier-3 assertion**: face[0].bspline.is_rational == True
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a`
 ### Tfa240 — ShapeFix_Face.Perform (line-346)
 
@@ -27552,6 +27575,8 @@ trimming or intersection operations assume richer surface.
 **Geometry**: B_SPLINE_SURFACE_WITH_KNOTS (3x3, deg 2/2) with intentionally mismatched knots.
 **Test**: Verify CalcMaxDegree detects and handles knot-count inconsistency gracefully.
 - **Tier-3 assertion**: load == "ok"
+- **Tier-3 assertion**: face[0].bspline.u_degree == 2
+- **Tier-3 assertion**: face[0].bspline.v_degree == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(12) ifc=schema_n/a`
 ### Gs154 — CheckSmall weak tolerance comparison
 ShapeAnalysis_WireVertex::CheckSmall uses undocumented internal threshold independent of schema tolerance. Closely-spaced vertices (within declared tolerance) may be spuriously marked degenerate, causing edge collapse in healing.
