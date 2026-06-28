@@ -7,8 +7,9 @@ closure detection misses boundary condition.
 OCC behavior: silently accepts (no diagnostic, empty result). live oracle: occt=empty/empty.
 
 STEP mechanism (literal):
-  - RATIONAL_B_SPLINE_SURFACE (weights first column=1.0, last column=2.0,
-    asymmetric at U closure) embedded in B_SPLINE_SURFACE_WITH_KNOTS IS the
+  - RATIONAL_B_SPLINE_SURFACE (complex entity: B_SPLINE_SURFACE +
+    B_SPLINE_SURFACE_WITH_KNOTS + RATIONAL_B_SPLINE_SURFACE, weights
+    first column=1.0, last column=2.0, asymmetric at U closure) IS the
     ADVANCED_FACE.face_geometry; asymmetric rational weights at U boundaries
     IS the mechanism wired into face topology; IsUClosed weighted projection
     differs from geometric distance, closure detection fails IS the defect.
@@ -17,12 +18,13 @@ STEP mechanism (literal):
   - Tier-3 assertion: shape_null == True.
 
 Mechanism vs driver:
-  - CATALOG MECHANISM: RATIONAL_B_SPLINE_SURFACE (first-column weights=1.0,
-    last-column weights=2.0; same geometric positions but different homogeneous
-    coordinates at u=0 and u=1) IS the ADVANCED_FACE.face_geometry; asymmetric
-    rational weights at U closure IS the mechanism wired into face topology;
-    IsUClosed weighted projection sees different w-scaled positions, misses
-    closed boundary IS the defect.
+  - CATALOG MECHANISM: RATIONAL_B_SPLINE_SURFACE complex entity (first-column
+    weights=1.0, last-column weights=2.0; same geometric positions but different
+    homogeneous coordinates at u=0 and u=1) IS the ADVANCED_FACE.face_geometry;
+    asymmetric rational weights at U closure IS the mechanism wired into face
+    topology; IsUClosed weighted projection sees different w-scaled positions,
+    misses closed boundary IS the defect.
+  - is_rational=True witness: asymmetric weights (1.0 vs 2.0) confirmed by OCCT.
   - shape_null driver: closure detection failure; strict kernels reject
     unclosed surface used as closed; empty result.
 """
@@ -31,12 +33,11 @@ from step_corpus.step_builder import StepFile
 f = StepFile(
     catalog_id="Gs091",
     defect=(
-        "RATIONAL_B_SPLINE_SURFACE (first-column weights=1.0, last-column "
-        "weights=2.0) superimposed on B_SPLINE_SURFACE_WITH_KNOTS IS "
-        "ADVANCED_FACE.face_geometry; asymmetric rational weights at U closure "
-        "IS the mechanism wired into face topology; IsUClosed weighted projection "
-        "differs from geometric distance, closure detection fails IS the defect; "
-        "shape_null"
+        "RATIONAL_B_SPLINE_SURFACE complex entity (first-column weights=1.0, "
+        "last-column weights=2.0) IS ADVANCED_FACE.face_geometry; asymmetric "
+        "rational weights at U closure IS the mechanism wired into face topology; "
+        "IsUClosed weighted projection differs from geometric distance, closure "
+        "detection fails IS the defect; shape_null"
     ),
 )
 
@@ -45,35 +46,32 @@ f = StepFile(
 # But weights: col 0 = 1.0, col 2 = 2.0 — asymmetric → homogeneous coords differ.
 # Byte assertion: contains(b'2.0')
 ctrl = [
-    [(0.0, 0.0, 0.0), (0.0, 1.0, 0.0)],
-    [(0.5, 0.0, 0.5), (0.5, 1.0, 0.5)],
-    [(0.0, 0.0, 0.0), (0.0, 1.0, 0.0)],   # same as col 0 → geometrically U-closed
+    [f.cartesian_point((0.0, 0.0, 0.0)), f.cartesian_point((0.0, 1.0, 0.0))],
+    [f.cartesian_point((0.5, 0.0, 0.5)), f.cartesian_point((0.5, 1.0, 0.5))],
+    [f.cartesian_point((0.0, 0.0, 0.0)), f.cartesian_point((0.0, 1.0, 0.0))],
 ]
 
-ctrl_pts = [[f.cartesian_point(p) for p in row] for row in ctrl]
-
-cp_str = "(" + ",".join(
-    "(" + ",".join(f"#{ctrl_pts[r][c].eid}" for c in range(2)) + ")"
-    for r in range(3)
-) + ")"
-
-# B_SPLINE_SURFACE_WITH_KNOTS (base entity for complex)
-bss = f._emit_raw(
-    f"B_SPLINE_SURFACE_WITH_KNOTS('gs091_bss',2,1,"
-    f"{cp_str},"
-    f".UNSPECIFIED.,.F.,.F.,.F.,"
-    f"(3,3),(2,2),"
-    f"(0.0,1.0),"
-    f"(0.0,1.0),.UNSPECIFIED.)"
-)
+# Weights: same u-strip col structure:
+# row 0 (u=0): col 0→v0 = 1.0, col 1→v1 = 1.0
+# row 1 (u=mid):            1.0,            1.0
+# row 2 (u=1): col 0→v0 = 2.0, col 1→v1 = 2.0   ← asymmetric at U closure
+# Layout: weights[row][col] = weights[u_index][v_index]
+weights = [
+    [1.0, 1.0],
+    [1.0, 1.0],
+    [2.0, 2.0],
+]
 
 # Byte assertion: contains(b'RATIONAL_B_SPLINE_SURFACE'), contains(b'2.0')
-# Weights: col 0=1.0 (rows 0,1,2), col 1=1.0 (rows 0,1,2) but last col u=1 gets 2.0
-# Layout: weights[row][col] — 3 rows (u), 2 cols (v)
-# First u-strip weight=1.0, last u-strip weight=2.0 → asymmetric U closure
-rbs = f._emit_raw(
-    f"RATIONAL_B_SPLINE_SURFACE("
-    f"((1.0,1.0),(1.0,1.0),(2.0,2.0)))"
+# nu=3, u_degree=2 → sum(u_mults) = 3+2+1=6 → [3,3]
+# nv=2, v_degree=1 → sum(v_mults) = 2+1+1=4 → [2,2]
+bss = f.rational_b_spline_surface_with_knots(
+    2, 1,
+    ctrl,
+    weights,
+    [3, 3], [2, 2],
+    [0.0, 1.0], [0.0, 1.0],
+    name="gs091_rbs",
 )
 
 prc = f._emit_raw(
@@ -130,7 +128,8 @@ loop = f.edge_loop([
     f.oriented_edge(e3, True),
 ])
 
-# RATIONAL_B_SPLINE_SURFACE IS the face_geometry; asymmetric weights at U closure IS the mechanism on face.
+# RATIONAL_B_SPLINE_SURFACE (complex entity) IS the face_geometry;
+# asymmetric weights at U closure IS the mechanism on face.
 face  = f.advanced_face([f.face_outer_bound(loop)], bss)
 shell = f.open_shell([face])
 sbsm  = f.shell_based_surface_model([shell])
