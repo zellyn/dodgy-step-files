@@ -5156,7 +5156,10 @@
       "interop"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.u_degree == 2",
+      "face[0].bspline.v_degree == 1"
     ],
     "title": "Cone apex pcurve × surface-folded × non-manifold vertex"
   },
@@ -39194,7 +39197,8 @@
       "shape_null == False",
       "n_faces_total == 1",
       "n_edges_total == 1",
-      "n_vertices_total == 2"
+      "n_vertices_total == 2",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "Pcurve oscillations producing wire-intersector corruption"
   },
@@ -44599,7 +44603,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "`ProjectDegenerated.dual-distance-logic`"
   },
@@ -46068,7 +46073,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "ShapeUpgrade_SplitSurface.Init split-parameters validation out-of-domain"
   },
@@ -47480,7 +47486,10 @@
       "shape_null == False",
       "n_faces_total == 1",
       "n_edges_total == 4",
-      "n_vertices_total == 9"
+      "n_vertices_total == 9",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.u_degree == 2",
+      "face[0].bspline.v_degree == 2"
     ],
     "title": "ShapeUpgrade_SplitSurface.SetUSplitValues neg-zero"
   },
@@ -47549,7 +47558,10 @@
       "shape_null == False",
       "n_faces_total == 1",
       "n_edges_total == 3",
-      "n_vertices_total == 6"
+      "n_vertices_total == 6",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.u_degree == 3",
+      "face[0].bspline.v_degree == 2"
     ],
     "title": "ShapeUpgrade_SplitSurface non-rectangular-region"
   },
@@ -47815,7 +47827,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.u_degree == 2",
+      "face[0].bspline.v_degree == 2"
     ],
     "title": "ShapeUpgrade_SplitSurface.Init duplicate-split-values"
   },
@@ -48740,7 +48755,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "ShapeUpgrade_SplitSurface.SetVSplitValues partial-domain"
   },
@@ -48938,7 +48954,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.u_degree == 2",
+      "face[0].bspline.v_degree == 2"
     ],
     "title": "ShapeFix_ComposeShell.SplitOnEdges B-spline pcurve tangent-mismatch"
   },
@@ -49037,7 +49056,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.u_degree == 2",
+      "face[0].bspline.v_degree == 1"
     ],
     "title": "NURBS weight array uniform propagation"
   },
@@ -49334,7 +49356,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "RectangularTrimmedSurface Basis Unwrap Null-Check"
   },
@@ -49466,7 +49489,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.u_degree == 2",
+      "face[0].bspline.v_degree == 2"
     ],
     "title": "Stripe singularity (collapsed pole row)"
   },
@@ -49730,7 +49756,11 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.u_degree == 3",
+      "face[0].bspline.v_degree == 2",
+      "face[0].bspline.u_knot_mult_max == 4"
     ],
     "title": "Interior B-spline knot multiplicity equals degree (C1 discontinuity)"
   },
@@ -49931,7 +49961,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.u_degree == 2",
+      "face[0].bspline.v_degree == 1"
     ],
     "title": "B-spline surface with asymmetric pole clustering"
   },
@@ -49997,7 +50030,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.u_degree == 2",
+      "face[0].bspline.v_degree == 2"
     ],
     "title": "B-spline surface with degenerate patch from split"
   },
@@ -50099,7 +50135,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "Boundary Pole Singularity (First Row)"
   },
@@ -50751,7 +50788,12 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.u_degree == 3",
+      "face[0].bspline.v_degree == 2",
+      "face[0].bspline.u_knot_mult_max == 4",
+      "face[0].bspline.v_knot_mult_max == 3"
     ],
     "title": "Self-intersecting / folded `B_SPLINE_SURFACE_WITH_KNOTS` (Jacobian sign change, transposed interior rows)"
   },
@@ -50788,7 +50830,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "Crossed-trim `EDGE_LOOP` with non-shared diagonals (mesh-derived BRep, STL→STEP)"
   },
@@ -51069,7 +51112,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.u_degree == 1",
+      "face[0].bspline.v_degree == 1"
     ],
     "title": "Round-trip planar face becomes trimmed B-spline (degree-1 NURBS)"
   },
@@ -51180,7 +51226,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.is_u_periodic == False",
+      "face[0].bspline.is_v_periodic == False"
     ],
     "title": "Pseudo-seam edge: `SURFACE_CURVE` claims `PCURVE_S1_AND_S2` but lists same pcurve twice"
   },
@@ -51569,7 +51618,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "Pcurve U/V parameter has large jump near periodic boundary on BSpline"
   },
@@ -52156,7 +52206,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "Scaled sphere as B-spline approximation broken on export"
   },
@@ -52459,7 +52510,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.u_degree == 3",
+      "face[0].bspline.v_degree == 3"
     ],
     "title": "B-spline surface normal degeneracy at cusp"
   },
@@ -52595,7 +52649,8 @@
       "shape_null == False",
       "n_faces_total == 1",
       "n_edges_total == 4",
-      "n_vertices_total == 10"
+      "n_vertices_total == 10",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "ShapeAnalysis_Surface.ValueOfUV near-tangent surface"
   },
@@ -52834,7 +52889,8 @@
       "shape_null == False",
       "n_faces_total == 1",
       "n_edges_total == 1",
-      "n_vertices_total == 2"
+      "n_vertices_total == 2",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "ShapeAnalysis_Surface.ValueOfUV bounded surface Newton overflow"
   },
@@ -52867,7 +52923,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "ShapeUpgrade_ConvertSurfaceToBezierBasis plane-approximation thin patch"
   },
@@ -52971,7 +53028,8 @@
       "shape_null == False",
       "n_faces_total == 1",
       "n_edges_total == 4",
-      "n_vertices_total == 11"
+      "n_vertices_total == 11",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "Newton Fallback Comparison Bias"
   },
@@ -53171,7 +53229,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "ShapeAnalysis_Surface.NextValueOfUV curvature step-size"
   },
@@ -53204,7 +53263,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "ShapeUpgrade_ConvertSurfaceToBezierBasis quasi-uniform vs non-uniform mismatch"
   },
@@ -53534,7 +53594,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.n_v_knots == 3",
+      "face[0].bspline.v_knot_mult_max == 3"
     ],
     "title": "ShapeUpgrade_SplitSurface BSpline irregular knots"
   },
@@ -53567,7 +53630,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "ShapeAnalysis_Surface.UVFromIso parameter-clamp underflow"
   },
@@ -53765,7 +53829,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "SplitSurface trim-aware split: splits base not trimmed wrapper"
   },
@@ -53930,7 +53995,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "FaceDivide crossing-curves defect"
   },
@@ -53963,7 +54029,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "Concentrated-poles surface with Newton underflow"
   },
@@ -54194,7 +54261,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "ShapeAnalysis_Surface.ComputeBoundIsos negative-trim"
   },
@@ -54232,7 +54300,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "B-spline surface"
   },
@@ -54648,7 +54717,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "B-SPLINE_SURFACE with high-curvature Newton singularity"
   },
@@ -54681,7 +54751,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "B-SPLINE_SURFACE with degenerate edge after split"
   },
@@ -54944,7 +55015,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "ShapeUpgrade_ConvertSurfaceToBezierBasis with-self-intersecting"
   },
@@ -55870,7 +55942,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.n_u_knots == 32",
+      "face[0].bspline.n_v_knots == 32"
     ],
     "title": "ShapeUpgrade large-pole B-spline threshold"
   },
@@ -56167,7 +56242,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "ShapeAnalysis_Surface: degenerate surface derivative guard omission"
   },
@@ -56299,7 +56375,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.u_degree == 2",
+      "face[0].bspline.v_degree == 2"
     ],
     "title": "RectangularTrimmedSurface Null Basis"
   },
@@ -75349,7 +75428,9 @@
       "topology"
     ],
     "tier3_assertions": [
-      "brepcheck.valid == True"
+      "brepcheck.valid == True",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.u_degree == 3"
     ],
     "title": "Shape-divide pipeline propagates B_SPLINE_SURFACE C0 knot-line splits (e.g., U-knot multiplicity = degree) to topology"
   },
@@ -78374,7 +78455,8 @@
       "topology"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "CheckTwisted normal-inversion"
   },
@@ -78440,7 +78522,8 @@
       "topology"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "ShapeAnalysis_CheckSmallFace.CheckPin pin-direction classification"
   },
@@ -78766,7 +78849,10 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 6"
+      "n_faces_total == 6",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.u_degree == 2",
+      "face[0].bspline.v_degree == 2"
     ],
     "title": "ShapeAnalysis_CheckSmallFace.CheckTwisted concave-saddle"
   },
@@ -79420,7 +79506,10 @@
       "topology"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.u_degree == 3",
+      "face[0].bspline.v_degree == 3"
     ],
     "title": "ShapeAnalysis_CheckSmallFace.CheckTwisted bspline-saddle"
   },
@@ -80660,7 +80749,9 @@
       "topology"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.v_degree == 3"
     ],
     "title": "ShapeFix_Face.FixPeriodicDegenerated B-spline-revolution"
   },
@@ -82137,7 +82228,8 @@
       "topology"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "ShapeFix_Face.FixOrientation face-on-curved-vs-planar"
   },
@@ -82337,7 +82429,8 @@
       "topology"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "CheckSpotFace parametric interior singularity"
   },
@@ -82700,7 +82793,10 @@
       "topology"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.is_u_periodic == False",
+      "face[0].bspline.is_v_periodic == False"
     ],
     "title": "ShapeFix_Face.FixMissingSeam.bspline-non-periodic-rejection"
   },
@@ -82766,7 +82862,8 @@
       "topology"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "ShapeFix_Face.FixMissingSeam.degenerate-wire-consolidation"
   },
@@ -83030,7 +83127,10 @@
       "topology"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.is_u_periodic == False",
+      "face[0].bspline.is_v_periodic == False"
     ],
     "title": "FixMissingSeam.no-closure-early-exit"
   },
@@ -83129,7 +83229,8 @@
       "topology"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "FixMissingSeam.seam-boundary-clamping"
   },
@@ -85068,7 +85169,9 @@
       "shape_null == False",
       "n_faces_total == 2",
       "n_edges_total == 8",
-      "n_vertices_total == 16"
+      "n_vertices_total == 16",
+      "face[0].surface_type == \"bspline\"",
+      "face[1].surface_type == \"bspline\""
     ],
     "title": "Surface discontinuities introduced by translation (G0/G1/G2 break at shared edges)"
   },
@@ -85341,7 +85444,9 @@
       "shape_null == False",
       "n_faces_total == 2",
       "n_edges_total == 8",
-      "n_vertices_total == 16"
+      "n_vertices_total == 16",
+      "face[0].surface_type == \"bspline\"",
+      "face[1].surface_type == \"bspline\""
     ],
     "title": "Patrikalakis interval-solid violation: face-pair gap exceeds bound"
   },
@@ -102820,7 +102925,8 @@
       "shape_null == False",
       "n_faces_total == 1",
       "n_edges_total == 4",
-      "n_vertices_total == 8"
+      "n_vertices_total == 8",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "Constructive geometry / supplemental geometry not allowed type"
   },
@@ -107689,7 +107795,9 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 3"
+      "n_faces_total == 3",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.u_degree == 3"
     ],
     "title": "Fillet faces re-import as rounded edge (Onshape/Rhino) but as fillet in producer"
   },
