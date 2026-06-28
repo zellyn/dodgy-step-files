@@ -35,6 +35,9 @@
 <p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>load == &quot;ok&quot;</code></li>
+<li><code>face[0].surface_type == &quot;bspline&quot;</code></li>
+<li><code>face[0].bspline.u_degree == 2</code></li>
+<li><code>face[0].bspline.v_degree == 1</code></li>
 </ul></section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>

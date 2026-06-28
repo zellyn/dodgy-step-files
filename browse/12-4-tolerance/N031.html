@@ -31,7 +31,7 @@
 <section><h2>Description</h2>
 <p>G0/G1/G2 discontinuities introduced when neighbouring faces are re-parametrized into different surface types during translation. Tangent-plane jumps appear at shared edges that were smooth in the source. Translation re-fits surfaces independently; tangent agreement is not a constraint of the per-surface fit.</p></section>
 <section><h2>Reproducer recipe</h2>
-<p>Convert a Catia procedural blend to STEP — the blend often becomes several `RATIONAL_B_SPLINE_SURFACE` patches whose tangent planes at shared edges differ by more than the resolution tolerance.</p></section>
+<p>Convert a Catia procedural blend to STEP — the blend often becomes several `B_SPLINE_SURFACE_WITH_KNOTS` patches whose tangent planes at shared edges differ by more than the resolution tolerance. (Real-world translators may emit `RATIONAL_B_SPLINE_SURFACE` patches; this fixture uses plain B-spline patches to isolate the G1-break defect without rationality as a confound.)</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>accept; report as quality warning; archive-stable only if validation properties (volume, area) still match within tolerance.</p></section>
 <section><h2>Notes</h2>
@@ -47,6 +47,8 @@
 <li><code>n_faces_total == 2</code></li>
 <li><code>n_edges_total == 8</code></li>
 <li><code>n_vertices_total == 16</code></li>
+<li><code>face[0].surface_type == &quot;bspline&quot;</code></li>
+<li><code>face[1].surface_type == &quot;bspline&quot;</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
 <p><a href="../12-8-mixed/M026.html">M026</a>, <a href="../12-8-mixed/M027.html">M027</a></p>
