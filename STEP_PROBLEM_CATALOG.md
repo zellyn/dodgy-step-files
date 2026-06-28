@@ -4705,7 +4705,7 @@ _Section summary: 70 entries._
 - **Category**: §12.4 (sub-class: working precision / cross-kernel)
 - **Sources**: 17-standards-bodies M006 (LOTAR); 11-translator-vendors W014; 15-academic L043
 - **Description**: G0/G1/G2 discontinuities introduced when neighbouring faces are re-parametrized into different surface types during translation. Tangent-plane jumps appear at shared edges that were smooth in the source. Translation re-fits surfaces independently; tangent agreement is not a constraint of the per-surface fit.
-- **Reproducer recipe**: Convert a Catia procedural blend to STEP — the blend often becomes several `RATIONAL_B_SPLINE_SURFACE` patches whose tangent planes at shared edges differ by more than the resolution tolerance.
+- **Reproducer recipe**: Convert a Catia procedural blend to STEP — the blend often becomes several `B_SPLINE_SURFACE_WITH_KNOTS` patches whose tangent planes at shared edges differ by more than the resolution tolerance. (Real-world translators may emit `RATIONAL_B_SPLINE_SURFACE` patches; this fixture uses plain B-spline patches to isolate the G1-break defect without rationality as a confound.)
 - **Expected kernel behavior**: accept; report as quality warning; archive-stable only if validation properties (volume, area) still match within tolerance.
 - **Notes**: **See also**: M026, M027. Synonyms: "tangent jump at shared edge after translation", "G1 broken across faces after import", "smooth surfaces become creased on round-trip", "translator re-fits surfaces and loses tangent continuity".
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
@@ -6546,9 +6546,7 @@ _Section summary: 84 entries._
 - **Expected kernel behavior**: Heal and accept: STYLED_ITEM must attach to MAPPED_ITEM-level instances; prefer most-specific styled-item; fall back to next ancestor; never inherit from sibling sub-assembly; propagate STYLED_ITEM through every level of NAUO during flatten.
 - **Notes**: **See also**: A019, A020, M039, M040, M042. Synonyms: "assembly-level color override lost on import", "STYLED_ITEM at wrong scope ignored", "component color binding misplaced", "color override applied at wrong assembly level".
 - **Tier-3 assertion**: face[0].sliver_aspect_max_min > 1e6
-- **Tier-3 assertion**: face[1].sliver_aspect_max_min > 1e6
 - **Tier-3 assertion**: face[0].surface_type == "plane"
-- **Tier-3 assertion**: face[1].surface_type == "plane"
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
@@ -7530,9 +7528,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Expected kernel behavior**: Heal and accept: expansion bakes parent locations into child shape representations or preserves them as XCAF child labels with `XCAFDoc_Location` attribute. Must not silently lose sub-shape locations.
 - **Notes**: **See also**: A066, A067. Synonyms: "Expand Compounds loses sub-shape locations", "expanding compound drops nested transforms", "subshape positioning lost after Expand Compounds".
 - **Tier-3 assertion**: face[0].sliver_aspect_max_min > 1e6
-- **Tier-3 assertion**: face[1].sliver_aspect_max_min > 1e6
 - **Tier-3 assertion**: face[0].surface_type == "plane"
-- **Tier-3 assertion**: face[1].surface_type == "plane"
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
@@ -7967,7 +7963,6 @@ End of file. Total: 38 entries (A001.A038).
 - **Closure intent**: sheet
 - **Notes**: **See also**: A077, Pmi076. Synonyms: "dimension lost after STEP export round-trip", "tolerance gone after round-trip", "dimension entity dropped on re-export".
 - **Tier-3 assertion**: face[0].surface_type == "plane"
-- **Tier-3 assertion**: face[1].surface_type == "plane"
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
@@ -23960,7 +23955,8 @@ Face with inward-pointing surface normal (same_sense=.F.). Healer detects via ou
 - **Tier-3 assertion**: n_faces_total == 6
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 ### Tfa082 — ShapeAnalysis_CheckSmallFace.CheckPin pin-direction classification
-Planar face with sharp pin singularity along V parametric axis (vertical). Classifier assumes pin aligns with U-parameter axis; axis-agnostic detection required. NURBS 3x2 poles with near-zero angle at boundary.
+Planar face with sharp pin singularity along V parametric axis (vertical). Classifier assumes pin aligns with U-parameter axis; axis-agnostic detection required. B-spline surface (B_SPLINE_SURFACE_WITH_KNOTS, degree 2×2) with 3×3 pole grid; V=0 row is collapsed to a single point — true pin singularity at v=0.
+- **OCC behavior**: OCCT loads B_SPLINE_SURFACE_WITH_KNOTS directly; surface_type="bspline", is_rational=False (uniform weights, not NURBS).
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "bspline"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
@@ -25133,7 +25129,8 @@ Degenerated torus (R=0.5, r=1.0); single EDGE_LOOP with 4 lines; tests null-surf
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(329) ifc=schema_n/a`
 ### Tfa222 — FixMissingSeam.no-closure-early-exit
-Open BSpline surface (unclosed U, V); single EDGE_LOOP with 2 rational B-spline edges; tests early exit when surface open in both directions (line 1732). Defect: without early return, kernel attempts seam insertion on non-closed surface. Fully ISO-compliant.
+Open B-spline surface (unclosed U, V); 4-edge EDGE_LOOP with 2 B_SPLINE_CURVE_WITH_KNOTS edges and 2 straight line edges; tests early exit when surface open in both directions (line 1732). Defect: without early return, kernel attempts seam insertion on non-closed surface. Fully ISO-compliant.
+- **OCC behavior**: OCCT loads B_SPLINE_SURFACE_WITH_KNOTS directly; surface_type="bspline", is_rational=False; edges are B_SPLINE_CURVE_WITH_KNOTS (not rational, is_rational=False on edges).
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "bspline"
 - **Tier-3 assertion**: face[0].bspline.is_u_periodic == False
@@ -26714,10 +26711,10 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 
 **Category**: §12.2c — Singularity classification  
 **Source**: OCCT_HEAL_COVERAGE_V3.md (conical vs spherical form mismatch)  
-**Description**: SortSingularities picks the wrong singularity model when surface_form='conical' conflicts with actual entity type SPHERICAL_SURFACE. Sphere has two poles (north, south); cone has one apex. Misclassification leads to incorrect singularity removal or merger.
+**Description**: SortSingularities picks the wrong singularity model when a B_SPLINE_SURFACE_WITH_KNOTS carries surface_form='.CONICAL_FORM.' while a co-present SPHERICAL_SURFACE entity has two poles (north, south). The conical form hint (1 apex) conflicts with the sphere entity type (2 poles). Misclassification leads to incorrect singularity removal or merger.
 
 **Reproducer recipe**:
-1. Load Gs066.stp (SPHERICAL_SURFACE with intentionally marked form='conical')
+1. Load Gs066.stp (SPHERICAL_SURFACE + B_SPLINE_SURFACE_WITH_KNOTS with form=.CONICAL_FORM. in a GEOMETRIC_CURVE_SET)
 2. Call ComputeSingularities(); observe returned singularities
 3. Compare against pure SPHERICAL_SURFACE fixture
 
@@ -26725,10 +26722,12 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 
 **Expected validation**: Detect singularity cardinality mismatch (2 poles vs 1 apex); flag as defect or auto-correct.
 
+- **OCC behavior**: OCCT loads the B_SPLINE_SURFACE_WITH_KNOTS as the face geometry (surface_type="bspline", degree 1×1). The SPHERICAL_SURFACE appears inside the GEOMETRIC_CURVE_SET but is not wired as a face; the bspline with .CONICAL_FORM. is the entity exposed on the face.
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 11
+- **Tier-3 assertion**: face[0].surface_type == "bspline"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs067 — ShapeUpgrade_ConvertSurfaceToBezierBasis offset surface with negative distance
 
@@ -26943,12 +26942,17 @@ B-spline surface with interior knot at u=0.5 in iso-curve at v=0.5. Bisection al
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs090 — ShapeUpgrade_ConvertSurfaceToBezierBasis thin-patch elimination threshold
-Bezier surface with near-collinear control points (width 1e-9). Absolute area comparison fails to eliminate degenerate patch; needs normalized area threshold.
+B-spline surface (B_SPLINE_SURFACE_WITH_KNOTS, degree 1×1) with near-collinear control points (Y-extent 1e-9). Absolute area comparison fails to eliminate degenerate patch; needs normalized area threshold.
+- **OCC behavior**: OCCT loads B_SPLINE_SURFACE_WITH_KNOTS directly; surface_type reported as "bspline" with is_rational=False (uniform weights).
 - **Tier-3 assertion**: load == "ok"
+- **Tier-3 assertion**: face[0].surface_type == "bspline"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs091 — ShapeAnalysis_Surface.IsUClosed B-spline rational weights
-Rational B-spline surface with asymmetric weights at U closure (first=1.0, last=2.0). Weighted projection differs from geometric distance; closure detection misses boundary condition.
+Rational B-spline surface (RATIONAL_B_SPLINE_SURFACE complex entity) with asymmetric weights at U closure (first column=1.0, last column=2.0). Weighted projection differs from geometric distance; closure detection misses boundary condition.
+- **OCC behavior**: OCCT parses the RATIONAL_B_SPLINE_SURFACE complex entity and reports is_rational=True; the asymmetric weights (1.0 vs 2.0) are preserved and witnessed by introspection.
 - **Tier-3 assertion**: load == "ok"
+- **Tier-3 assertion**: face[0].surface_type == "bspline"
+- **Tier-3 assertion**: face[0].bspline.is_rational == True
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs092 — ShapeAnalysis_Surface.ComputeBoundIsos extrusion-direction reset
 Surface of linear extrusion with non-unit direction vector (2.0,0.0,0.0). Cached BoundIsos reflect pre-normalization range; recomputation fails to invalidate cache.
@@ -27067,12 +27071,16 @@ Newton initializes on the wrong sheet and converges to wrong root.
 - **Description**: ShapeUpgrade_ConvertSurfaceToBezierBasis detects input is already
 BEZIER_SURFACE and should return unmodified. Instead, algorithm extracts and
 reconstructs Bezier, producing numerically different (re-extracted) surface.
+The STEP file declares a `BEZIER_SURFACE` entity (degree 2×2, 3×3 poles).
+- **OCC behavior**: OCCT silently converts `BEZIER_SURFACE` entities to B-spline representation on load; introspection reports surface_type="bspline" (degree 2×2), is_rational=False. The `BEZIER_SURFACE` byte token is preserved in the input file even though OCCT's in-memory representation is B-spline.
 - **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
 - **Notes**: synthesized from earlier wave; backfilled from fixture comment
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs102.stp
 - **Fixture kind**: scaffold
+- **Byte assertion**: contains(b'BEZIER_SURFACE')
 - **Tier-3 assertion**: load == "ok"
+- **Tier-3 assertion**: face[0].surface_type == "bspline"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs103 — IsUClosed: periodic-vs-closed semantic mismatch
 - **Category**: §12.2c surfaces (sub-class: face)

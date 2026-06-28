@@ -426,7 +426,7 @@ def parametric_summary(path: Path) -> dict:
 def geometric_report(path: Path) -> dict:
     shape, info = load_shape(path)
     if shape is None:
-        return {"file": str(path), "load": "fail", "info": info,
+        return {"file": str(path), "load": "fail", "shape_null": True, "info": info,
                 "parametric": parametric_summary(path)}
     faces = face_metrics(shape)
     return {

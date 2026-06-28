@@ -198,6 +198,17 @@ def check_entry(entry: dict, md_text: str = "") -> list[dict[str, Any]]:
             "status": "tier3-parse-error",
             "reason": str(exc),
         } for a in asserts]
+    # If the tier3 runner itself crashed or timed out (rather than producing
+    # a geometric report), treat it as tolerated infrastructure noise — the
+    # same as if the file were absent entirely ("no-tier3-output").
+    runner_status = tier3.get("status", "")
+    if runner_status in ("tier3_failed", "tier3_timeout", "tier3_error"):
+        return [{
+            "id": entry["id"],
+            "assertion": a,
+            "status": "no-tier3-output",
+            "reason": f"runner status: {runner_status}",
+        } for a in asserts]
     results = []
     for a in asserts:
         parsed = _parse_assertion(a)

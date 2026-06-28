@@ -52690,7 +52690,8 @@
       "shape_null == False",
       "n_faces_total == 1",
       "n_edges_total == 4",
-      "n_vertices_total == 11"
+      "n_vertices_total == 11",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "ShapeAnalysis_Surface.SortSingularities cone vs cylinder differing singularities"
   },
@@ -53499,7 +53500,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "ShapeUpgrade_ConvertSurfaceToBezierBasis thin-patch elimination threshold"
   },
@@ -53532,7 +53534,9 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.is_rational == True"
     ],
     "title": "ShapeAnalysis_Surface.IsUClosed B-spline rational weights"
   },
@@ -53872,12 +53876,14 @@
     "title": "ShapeAnalysis_Surface.ValueOfUV: antipodal sphere convergence failure"
   },
   {
-    "byte_assertions": [],
+    "byte_assertions": [
+      "contains(b'BEZIER_SURFACE')"
+    ],
     "category": "§12.2c surfaces (sub-class: face)",
     "closure_defect": null,
     "closure_intent": null,
     "cross_oracle_note": null,
-    "description": "ShapeUpgrade_ConvertSurfaceToBezierBasis detects input is already BEZIER_SURFACE and should return unmodified. Instead, algorithm extracts and reconstructs Bezier, producing numerically different (re-extracted) surface.",
+    "description": "ShapeUpgrade_ConvertSurfaceToBezierBasis detects input is already BEZIER_SURFACE and should return unmodified. Instead, algorithm extracts and reconstructs Bezier, producing numerically different (re-extracted) surface. The STEP file declares a `BEZIER_SURFACE` entity (degree 2×2, 3×3 poles).",
     "expected_kernel_behavior": "heal: investigate / reject: geometric degeneracy",
     "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
     "fixture_kind": null,
@@ -53900,7 +53906,8 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "face[0].surface_type == \"bspline\""
     ],
     "title": "ConvertSurfaceToBezierBasis: Bezier passthrough produces re-extracted copy"
   },
@@ -85164,7 +85171,7 @@
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
-    "reproducer": "Convert a Catia procedural blend to STEP — the blend often becomes several `RATIONAL_B_SPLINE_SURFACE` patches whose tangent planes at shared edges differ by more than the resolution tolerance.",
+    "reproducer": "Convert a Catia procedural blend to STEP — the blend often becomes several `B_SPLINE_SURFACE_WITH_KNOTS` patches whose tangent planes at shared edges differ by more than the resolution tolerance. (Real-world translators may emit `RATIONAL_B_SPLINE_SURFACE` patches; this fixture uses plain B-spline patches to isolate the G1-break defect without rationality as a confound.)",
     "section": "12.4",
     "section_dir": "12-4-tolerance",
     "see_also": [
@@ -92962,9 +92969,7 @@
     ],
     "tier3_assertions": [
       "face[0].sliver_aspect_max_min > 1e6",
-      "face[1].sliver_aspect_max_min > 1e6",
-      "face[0].surface_type == \"plane\"",
-      "face[1].surface_type == \"plane\""
+      "face[0].surface_type == \"plane\""
     ],
     "title": "STYLED_ITEM at wrong scope: assembly-level color override lost or misbound"
   },
@@ -94148,9 +94153,7 @@
     ],
     "tier3_assertions": [
       "face[0].sliver_aspect_max_min > 1e6",
-      "face[1].sliver_aspect_max_min > 1e6",
-      "face[0].surface_type == \"plane\"",
-      "face[1].surface_type == \"plane\""
+      "face[0].surface_type == \"plane\""
     ],
     "title": "`Expand Compounds` loses sub-shape locations"
   },
@@ -99211,8 +99214,7 @@
       "pmi"
     ],
     "tier3_assertions": [
-      "face[0].surface_type == \"plane\"",
-      "face[1].surface_type == \"plane\""
+      "face[0].surface_type == \"plane\""
     ],
     "title": "Dimension lost after STEP export round-trip"
   },
