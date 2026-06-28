@@ -1560,6 +1560,8 @@ _Section summary: 82 entries._
 - **Tier-3 assertion**: face[0].surface_type == "bspline"
 - **Tier-3 assertion**: face[0].bspline.is_u_periodic == True
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
+- **Tier-3 assertion**: face[0].edge_orientations.forward == 2
+- **Tier-3 assertion**: face[0].edge_orientations.reversed == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
 
 ### Gp014 — Shared pcurve across multiple edges (SYRKO)
@@ -21272,6 +21274,8 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: face[0].surface_type == "bspline"
 - **Tier-3 assertion**: n_vertices_total >= 8
 - **Model impact**: Face sewing leaves free bounds or duplicate edges; the resulting shell is open instead of closed, so MakeSolid produces an invalid solid and volume/property computations return wrong values.
+- **Tier-3 assertion**: face[0].edge_orientations.reversed == 4
+- **Tier-3 assertion**: face[2].edge_orientations.forward == 4
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 
 ### Tfa052 — ADVANCED_FACE split because surface area exceeds threshold (e.g., a 100x100 mm square face must be divided into bounded-area sub-faces)
@@ -22315,6 +22319,8 @@ Defect: ShapeUpgrade_SplitSurfaceContinuity.Compute recursively subdivides trimm
 - **Tier-3 assertion**: face[0].surface_type == "bspline"
 - **Tier-3 assertion**: face[0].bspline.is_u_periodic == True
 - **Tier-3 assertion**: face[0].bspline.is_v_periodic == True
+- **Tier-3 assertion**: face[0].edge_orientations.forward == 6
+- **Tier-3 assertion**: face[0].edge_orientations.reversed == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(12) ifc=schema_n/a`
 ### Gn105 — rational-with-coincident-poles IsClosed
 Defect: ShapeAnalysis_Curve.IsClosed checks position only, ignoring weights on coincident poles. Closed rational curve with coincident start/end but different weights.
@@ -24011,6 +24017,8 @@ Face whose BSpline surface has both convex and concave regions (hyperbolic parab
 - **Tier-3 assertion**: face[0].surface_type == "bspline"
 - **Tier-3 assertion**: face[0].bspline.u_degree == 2
 - **Tier-3 assertion**: face[0].bspline.v_degree == 2
+- **Tier-3 assertion**: face[0].edge_orientations.forward == 4
+- **Tier-3 assertion**: face[1].edge_orientations.reversed == 4
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 ### Tfa093 — ShapeFix_Face.FixSmallAreaWire interior-wire skip
 
@@ -24223,6 +24231,8 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 - **Tier-3 assertion**: face[0].surface_type == "bspline"
 - **Tier-3 assertion**: face[0].bspline.u_degree == 3
 - **Tier-3 assertion**: face[0].bspline.v_degree == 3
+- **Tier-3 assertion**: face[0].edge_orientations.forward == 4
+- **Tier-3 assertion**: face[1].edge_orientations.reversed == 4
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 ### Tfa113 — ShapeFix_Face.FixOrientation 8-face polyhedron
 
@@ -24532,6 +24542,8 @@ Planar face (10×10 square) with two interior splitter wires: vertical line (x=2
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "bspline"
 - **Tier-3 assertion**: face[0].bspline.v_degree == 3
+- **Tier-3 assertion**: face[0].edge_orientations.reversed == 1
+- **Tier-3 assertion**: face[1].edge_orientations.forward == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 ### Tfa151 — ShapeFix_Face.FixLoopWire one-inner-touches-outer
 
@@ -24809,6 +24821,8 @@ Outer boundary 200×200 units with inner rectangle 100×100 units (50-150 on eac
 Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's winding tests yield opposite results for equivalent topology: planar face correctly detects inner winding direction, but B-spline approximation of same geometry yields reversed classification due to numerical drift in normal computation.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "bspline"
+- **Tier-3 assertion**: face[0].edge_orientations.forward == 4
+- **Tier-3 assertion**: face[0].edge_orientations.reversed == 4
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a`
 ### Tfa196 — ShapeAnalysis_Surface.ComputeSingularities toroidal-pinch
 - **Category**: §12.3c faces (sub-class: surface singularity detection)
@@ -24833,6 +24847,8 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "bspline"
 - **Tier-3 assertion**: face[0].bspline.is_u_periodic == True
+- **Tier-3 assertion**: face[0].edge_orientations.forward == 2
+- **Tier-3 assertion**: face[0].edge_orientations.reversed == 3
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Tfa198 — ShapeAnalysis_FreeBoundsProperties.CheckNotches gap-after-fix
 - **Category**: §12.3c faces (sub-class: gap detection in free bounds)

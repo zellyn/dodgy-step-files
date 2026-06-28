@@ -39369,7 +39369,9 @@
       "n_edges_total == 4",
       "n_vertices_total == 8",
       "face[0].surface_type == \"bspline\"",
-      "face[0].bspline.is_u_periodic == True"
+      "face[0].bspline.is_u_periodic == True",
+      "face[0].edge_orientations.forward == 2",
+      "face[0].edge_orientations.reversed == 2"
     ],
     "title": "CATIA \"like-seam\": two pcurves on same near-closed `B_SPLINE_SURFACE_WITH_KNOTS`"
   },
@@ -48064,7 +48066,9 @@
       "n_faces_total == 1",
       "face[0].surface_type == \"bspline\"",
       "face[0].bspline.is_u_periodic == True",
-      "face[0].bspline.is_v_periodic == True"
+      "face[0].bspline.is_v_periodic == True",
+      "face[0].edge_orientations.forward == 6",
+      "face[0].edge_orientations.reversed == 2"
     ],
     "title": "trimmed-recursion on B-spline"
   },
@@ -77404,7 +77408,9 @@
     "tier3_assertions": [
       "n_edges_total >= 4",
       "face[0].surface_type == \"bspline\"",
-      "n_vertices_total >= 8"
+      "n_vertices_total >= 8",
+      "face[0].edge_orientations.reversed == 4",
+      "face[2].edge_orientations.forward == 4"
     ],
     "title": "Face needs splitting (knot insertion / sub-faces) for downstream tools"
   },
@@ -78852,7 +78858,9 @@
       "n_faces_total == 6",
       "face[0].surface_type == \"bspline\"",
       "face[0].bspline.u_degree == 2",
-      "face[0].bspline.v_degree == 2"
+      "face[0].bspline.v_degree == 2",
+      "face[0].edge_orientations.forward == 4",
+      "face[1].edge_orientations.reversed == 4"
     ],
     "title": "ShapeAnalysis_CheckSmallFace.CheckTwisted concave-saddle"
   },
@@ -79509,7 +79517,9 @@
       "load == \"ok\"",
       "face[0].surface_type == \"bspline\"",
       "face[0].bspline.u_degree == 3",
-      "face[0].bspline.v_degree == 3"
+      "face[0].bspline.v_degree == 3",
+      "face[0].edge_orientations.forward == 4",
+      "face[1].edge_orientations.reversed == 4"
     ],
     "title": "ShapeAnalysis_CheckSmallFace.CheckTwisted bspline-saddle"
   },
@@ -80751,7 +80761,9 @@
     "tier3_assertions": [
       "load == \"ok\"",
       "face[0].surface_type == \"bspline\"",
-      "face[0].bspline.v_degree == 3"
+      "face[0].bspline.v_degree == 3",
+      "face[0].edge_orientations.reversed == 1",
+      "face[1].edge_orientations.forward == 1"
     ],
     "title": "ShapeFix_Face.FixPeriodicDegenerated B-spline-revolution"
   },
@@ -82229,7 +82241,9 @@
     ],
     "tier3_assertions": [
       "load == \"ok\"",
-      "face[0].surface_type == \"bspline\""
+      "face[0].surface_type == \"bspline\"",
+      "face[0].edge_orientations.forward == 4",
+      "face[0].edge_orientations.reversed == 4"
     ],
     "title": "ShapeFix_Face.FixOrientation face-on-curved-vs-planar"
   },
@@ -82297,7 +82311,9 @@
     "tier3_assertions": [
       "n_faces_total == 1",
       "face[0].surface_type == \"bspline\"",
-      "face[0].bspline.is_u_periodic == True"
+      "face[0].bspline.is_u_periodic == True",
+      "face[0].edge_orientations.forward == 2",
+      "face[0].edge_orientations.reversed == 3"
     ],
     "title": "ShapeAnalysis_Surface.IsUClosed bspline-periodic-u"
   },
