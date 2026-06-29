@@ -22209,11 +22209,12 @@ Defect: B-spline surface trimmed to non-rectangular region (triangular trim); Sp
 - **Tier-3 assertion**: face[0].bspline.u_degree == 3
 - **Tier-3 assertion**: face[0].bspline.v_degree == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
-### Gn090 — ShapeAnalysis_Curve.IsPlanar Z-NaN
+### Gn090 — B-spline with 1E100 overflow control point (NaN-proxy)
 
-Defect: B-spline with one control point having Z=NaN; IsPlanar's pole sampling produces NaN result, which IEEE compare-with-zero returns false (so "is planar" reported). Fixture: degree-3 curve with 6 control points; middle pole has Z=1.0E+100 to simulate NaN behavior.
+Defect: A `B_SPLINE_CURVE_WITH_KNOTS` control point Z coordinate is `1.0E+100` — STEP P21 cannot encode IEEE NaN in numeric fields, so this overflow value serves as a NaN-proxy. Observable failure path: OCCT loads the shape (BRepCheck.valid=false, edge length and tolerance both ~1e100) but does not reject; gmsh rejects at wire-fix ("Could not fix wire in surface 1"); manifold3d's tessellation casts the OCCT vertex to float32, which overflows to `+Inf`, and emits `nonfinitevertex`. Fixture: degree-3 curve, 6 control points; one pole has Z=1.0E+100. Note: the originally-claimed `ShapeAnalysis_Curve.IsPlanar` pole-sampling path is not the observable failure point in any live oracle — kept here only as a historical mechanism hypothesis.
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
+- **Tier-3 assertion**: brepcheck.valid == False
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a manifold=nonfinitevertex`
 ### Gn091 — ShapeUpgrade_ConvertCurve2dToBezier endpoint-pole-multiplicity
 
 Defect: 2D B-spline whose endpoint knot multiplicity is degree (open), but inner multiplicity is also degree (C0 break); converter expects only-endpoint-clamped. Fixture: degree-3 2D curve with 7 control points, knot multiplicities (4,3,3,4).

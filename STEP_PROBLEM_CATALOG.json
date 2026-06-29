@@ -47573,7 +47573,7 @@
     "closure_defect": null,
     "closure_intent": null,
     "cross_oracle_note": null,
-    "description": "ShapeAnalysis_Curve.IsPlanar Z-NaN",
+    "description": "B-spline with 1E100 overflow control point (NaN-proxy)",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
     "expected_validation": "occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a",
     "fixture_kind": null,
@@ -47596,9 +47596,10 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "brepcheck.valid == False"
     ],
-    "title": "ShapeAnalysis_Curve.IsPlanar Z-NaN"
+    "title": "B-spline with 1E100 overflow control point (NaN-proxy)"
   },
   {
     "byte_assertions": [],
