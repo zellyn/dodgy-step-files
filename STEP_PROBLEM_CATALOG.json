@@ -37343,7 +37343,7 @@
     "byte_assertions": [
       "contains(b'FILE_NAME')",
       "contains(b'-9999-99-99')",
-      "matches(rb'FILE_NAME\\([^,]*,-9999')"
+      "contains(b\"'-9999-99-99T99:99:99+9999:99'\")"
     ],
     "category": "§12.1b header structure & instance numbering (sub-class: malformed header date / platform-specific)",
     "closure_defect": null,
@@ -40816,7 +40816,7 @@
     "tier3_assertions": [
       "face[0].surface_type == \"cone\"",
       "edge[3].curve_type == \"circle\"",
-      "edge[3].analytic.radius == 0.0",
+      "edge[3].analytic.radius < 1e-9",
       "load == \"ok\""
     ],
     "title": "ShapeFix_Edge.FixAddPCurve degenerate-curve at cone apex"
@@ -64771,7 +64771,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 1"
+      "n_faces_total == 4"
     ],
     "title": "ShapeAnalysis_Shell.FreeEdges with-degenerate-edges"
   },

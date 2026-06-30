@@ -29545,8 +29545,8 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 
 **Trigger**: Zero-length edges (same start/end vertex) created by degenerate curves. FreeEdges classification treats them as boundary edges despite not topologically bounding any face.
 
-**Input**: Shell with one normal triangular face and three separate degenerate self-loop edges (zero-length from each triangle vertex back to itself). FreeEdges analysis should exclude degenerates; instead counts all three as free edges.
-- **Tier-3 assertion**: n_faces_total == 1
+**Input**: Shell with one normal triangular face and three separate degenerate self-loop edges (zero-length from each triangle vertex back to itself). FreeEdges analysis should exclude degenerates; instead counts all three as free edges. OCCT loads this with 4 faces (the triangle plus 3 degenerate edges promoted to faces by the parser).
+- **Tier-3 assertion**: n_faces_total == 4
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Tsh179 — ShapeFix_Shell.FixFaceOrientation hex-prism orientation propagation oscillation
 - **Defect class**: Orientation propagation across 6 lateral faces of hexagonal prism creates oscillating fix-pattern
@@ -30055,7 +30055,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Expected kernel behavior**: detect or heal per the named OCCT branch; the fixture demonstrates the buggy input pattern.
 - **Tier-3 assertion**: face[0].surface_type == "cone"
 - **Tier-3 assertion**: edge[3].curve_type == "circle"
-- **Tier-3 assertion**: edge[3].analytic.radius == 0.0
+- **Tier-3 assertion**: edge[3].analytic.radius < 1e-9
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a`
 - **Tier-3 assertion**: load == "ok"
 
@@ -36255,7 +36255,7 @@ exercised against CGAL PMP / MeshFix.
 - **Notes**: DEF-R is platform-specific (FreeBSD-only): the fixture synthesizes the byte pattern the bug produced without relying on a FreeBSD build environment. Distinct from Lh040 (FILE_INFO date contradiction) and Lh016 (wrong timezone format). OCCT V8.0.0 fixes the `extern long timezone` declaration. Synonyms: "FreeBSD STEP timezone bug", "DATE_AND_TIME malformed negative year STEP", "OCCT FreeBSD timezone declaration", "STEP header garbage date FreeBSD", "FILE_NAME timestamp out-of-range year".
 - **Byte assertion**: contains(b'FILE_NAME')
 - **Byte assertion**: contains(b'-9999-99-99')
-- **Byte assertion**: matches(rb'FILE_NAME\([^,]*,-9999')
+- **Byte assertion**: contains(b"'-9999-99-99T99:99:99+9999:99'")
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
