@@ -115,6 +115,93 @@ def _bspline_surface_props(face) -> dict | None:
     return out
 
 
+def _quadric_surface_props(face) -> dict | None:
+    """Extract analytic surface introspection for cylinder, cone, sphere,
+    and torus surfaces. Returns None if the face isn't a quadric, partial
+    dict otherwise.
+
+    Per-type keys (None for properties not applicable to that quadric):
+        cylinder: radius, axis_x, axis_y, axis_z
+        cone:     semi_angle, ref_radius, axis_x, axis_y, axis_z
+        sphere:   radius, loc_x, loc_y, loc_z
+        torus:    major_radius, minor_radius, axis_x, axis_y, axis_z
+
+    The radius/length values are in the file's modeling units. The
+    axis_* tuple is normalized (unit vector); for cylinder/cone/torus
+    this is the axis-of-revolution direction; for sphere it's the
+    "position" axis (which for a full sphere is arbitrary).
+    """
+    from OCP.GeomAbs import (  # type: ignore
+        GeomAbs_Cylinder, GeomAbs_Cone, GeomAbs_Sphere, GeomAbs_Torus,
+    )
+    from OCP.BRepAdaptor import BRepAdaptor_Surface  # type: ignore
+
+    try:
+        adaptor = BRepAdaptor_Surface(face)
+        gtype = adaptor.GetType()
+    except Exception:
+        return None
+    if gtype not in (GeomAbs_Cylinder, GeomAbs_Cone, GeomAbs_Sphere, GeomAbs_Torus):
+        return None
+
+    def _axis_dir(ax):
+        try:
+            d = ax.Direction()
+            return (float(d.X()), float(d.Y()), float(d.Z()))
+        except Exception:
+            return (None, None, None)
+
+    def _loc(ax):
+        try:
+            p = ax.Location()
+            return (float(p.X()), float(p.Y()), float(p.Z()))
+        except Exception:
+            return (None, None, None)
+
+    out: dict = {}
+    if gtype == GeomAbs_Cylinder:
+        try:
+            cyl = adaptor.Cylinder()
+            out["radius"] = float(cyl.Radius())
+            ax = cyl.Axis()
+            x, y, z = _axis_dir(ax)
+            out["axis_x"], out["axis_y"], out["axis_z"] = x, y, z
+        except Exception:
+            pass
+    elif gtype == GeomAbs_Cone:
+        try:
+            cone = adaptor.Cone()
+            out["semi_angle"] = float(cone.SemiAngle())
+            out["ref_radius"] = float(cone.RefRadius())
+            ax = cone.Axis()
+            x, y, z = _axis_dir(ax)
+            out["axis_x"], out["axis_y"], out["axis_z"] = x, y, z
+        except Exception:
+            pass
+    elif gtype == GeomAbs_Sphere:
+        try:
+            sph = adaptor.Sphere()
+            out["radius"] = float(sph.Radius())
+            try:
+                x, y, z = _loc(sph.Position().Axis())
+                out["loc_x"], out["loc_y"], out["loc_z"] = x, y, z
+            except Exception:
+                pass
+        except Exception:
+            pass
+    elif gtype == GeomAbs_Torus:
+        try:
+            tor = adaptor.Torus()
+            out["major_radius"] = float(tor.MajorRadius())
+            out["minor_radius"] = float(tor.MinorRadius())
+            ax = tor.Axis()
+            x, y, z = _axis_dir(ax)
+            out["axis_x"], out["axis_y"], out["axis_z"] = x, y, z
+        except Exception:
+            pass
+    return out
+
+
 def _bspline_curve_props(edge) -> dict | None:
     """Per-edge B-spline / Bezier curve introspection. Returns None if the
     edge curve isn't parametric, partial dict otherwise.
@@ -268,6 +355,9 @@ def face_metrics(shape) -> list[dict]:
         bs_props = _bspline_surface_props(f)
         if bs_props is not None:
             entry["bspline"] = bs_props
+        q_props = _quadric_surface_props(f)
+        if q_props is not None:
+            entry["quadric"] = q_props
         metrics.append(entry)
     return metrics
 

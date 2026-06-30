@@ -93,6 +93,63 @@ def test_resolve_lhs_walks_new_paths(tier3_bspline: dict) -> None:
     assert isinstance(reversed_, int)
 
 
+def test_quadric_props_torus_introspection() -> None:
+    """Torus surface yields major_radius, minor_radius, and axis_z."""
+    fixture = ROOT / "step-examples" / "12-3c-faces" / "Tfa216.stp"
+    if not fixture.is_file():
+        pytest.skip(f"missing fixture {fixture}")
+    d = _run_tier3(fixture)
+    torus_faces = [f for f in d.get("faces", []) if f.get("surface_type") == "torus"]
+    if not torus_faces:
+        pytest.skip("Tfa216 no longer has torus face — fixture mutated")
+    q = torus_faces[0].get("quadric")
+    assert q is not None, "torus face must carry quadric props"
+    assert q["major_radius"] == 2.0
+    assert q["minor_radius"] == 0.5
+    assert q["axis_z"] == 1.0
+
+
+def test_quadric_props_cone_introspection() -> None:
+    """Cone surface yields semi_angle and axis."""
+    fixture = ROOT / "step-examples" / "12-2c-surfaces" / "Gs185.stp"
+    if not fixture.is_file():
+        pytest.skip(f"missing fixture {fixture}")
+    d = _run_tier3(fixture)
+    cone_faces = [f for f in d.get("faces", []) if f.get("surface_type") == "cone"]
+    if not cone_faces:
+        pytest.skip("Gs185 no longer has cone face")
+    q = cone_faces[0].get("quadric")
+    assert q is not None, "cone face must carry quadric props"
+    assert q["semi_angle"] == 0.165
+    # Cone axis can point in either direction; just verify it's a unit
+    # vector along Z
+    assert abs(abs(q["axis_z"]) - 1.0) < 1e-9
+
+
+def test_quadric_props_sphere_introspection() -> None:
+    """Sphere surface yields radius."""
+    fixture = ROOT / "step-examples" / "12-2c-surfaces" / "Gs186.stp"
+    if not fixture.is_file():
+        pytest.skip(f"missing fixture {fixture}")
+    d = _run_tier3(fixture)
+    sphere_faces = [f for f in d.get("faces", []) if f.get("surface_type") == "sphere"]
+    if not sphere_faces:
+        pytest.skip("Gs186 no longer has sphere face")
+    q = sphere_faces[0].get("quadric")
+    assert q is not None, "sphere face must carry quadric props"
+    assert q["radius"] == 5.0
+
+
+def test_quadric_key_absent_on_non_quadric_surfaces(tier3_bspline: dict) -> None:
+    """A B-spline face must NOT carry a `quadric` sub-dict."""
+    for f in tier3_bspline.get("faces", []):
+        if f.get("surface_type") in ("plane", "bspline", "bezier"):
+            assert "quadric" not in f, (
+                f"face {f.get('i')} surface_type={f.get('surface_type')} "
+                f"has unexpected quadric: {f.get('quadric')}"
+            )
+
+
 def test_bspline_key_absent_on_non_bspline_surfaces() -> None:
     """A planar / cylindrical face must NOT carry a `bspline` sub-dict —
     the introspection helper returns None and the entry omits the key."""

@@ -28,6 +28,13 @@ Supported left-hand sides:
   ``.u_degree``, ``.v_degree``, ``.n_u_knots``, ``.n_v_knots``,
   ``.u_knot_mult_max``, ``.v_knot_mult_max``  (B-spline / Bezier surface
   introspection; ``bspline.*`` keys are absent on non-parametric surfaces)
+- ``face[i].quadric.radius`` (cylinder, sphere)
+- ``face[i].quadric.semi_angle``, ``.ref_radius`` (cone)
+- ``face[i].quadric.major_radius``, ``.minor_radius`` (torus)
+- ``face[i].quadric.axis_x``, ``.axis_y``, ``.axis_z`` (cylinder, cone, torus)
+- ``face[i].quadric.loc_x``, ``.loc_y``, ``.loc_z`` (sphere)
+  (analytic-surface introspection; ``quadric.*`` keys are absent on
+  non-quadric surfaces)
 - ``edge[i].length``, ``edge[i].curve_type``, ``edge[i].orientation``
 - ``edge[i].bspline.is_rational``, ``.is_periodic``, ``.degree``,
   ``.n_knots``, ``.knot_mult_max``  (B-spline / Bezier curve introspection;
