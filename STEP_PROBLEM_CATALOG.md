@@ -1529,6 +1529,8 @@ _Section summary: 82 entries._
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 
 ### Gp012 — `SURFACE_CURVE` / seam-curve `associated_geometry` list contains a null `$` entry
@@ -1547,6 +1549,8 @@ _Section summary: 82 entries._
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 
 ### Gp013 — CATIA "like-seam": two pcurves on same near-closed `B_SPLINE_SURFACE_WITH_KNOTS`
@@ -1589,6 +1593,10 @@ _Section summary: 82 entries._
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
 
 ### Gp015 — Pcurve/3D-curve trimming failure ("Trimming of 2D curve failed")
@@ -1667,6 +1675,8 @@ _Section summary: 82 entries._
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_faces_total == 1
@@ -1730,6 +1740,10 @@ _Section summary: 82 entries._
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Gp024 — Pcurve refit after non-uniform scale produces large errors
@@ -1750,6 +1764,8 @@ _Section summary: 82 entries._
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1000.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1000.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 
 ### Gp026 — `EDGE_LOOP` contour not closed in UV (Jordan-curve violation across periodic-surface seam)
@@ -1762,6 +1778,10 @@ _Section summary: 82 entries._
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_faces_total == 1
@@ -1787,6 +1807,10 @@ _Section summary: 82 entries._
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Gp028 — Wire crosses periodic-surface seam without an explicit seam edge (pcurve trim range vs vertex angular position mismatch)
@@ -1840,6 +1864,10 @@ _Section summary: 82 entries._
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 
 ### Gp031 — Cylinder represented twice as duplicate `CYLINDRICAL_SURFACE` instances loses analytic identity
@@ -1854,6 +1882,10 @@ _Section summary: 82 entries._
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
 - **Tier-3 assertion**: face[1].surface_type == "cylinder"
 - **Tier-3 assertion**: face[1].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(12) ifc=schema_n/a`
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_faces_total == 2
@@ -2718,6 +2750,10 @@ End of file.
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Tier-3 assertion**: face[0].surface_type == "sphere"
 - **Tier-3 assertion**: face[0].quadric.radius == 5.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 5.0
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 5.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
 
 ### Gs040 — High-curvature curve / cusp from NURBS knot insertion
@@ -3530,6 +3566,10 @@ _Section summary: 101 entries._
 - **Tier-3 assertion**: brepcheck.valid == False
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[1].curve_type == "circle"
+- **Tier-3 assertion**: edge[1].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[3].curve_type == "circle"
+- **Tier-3 assertion**: edge[3].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 
 ### Twi020 — Missing seam edge on closed (periodic) surface
@@ -3547,6 +3587,10 @@ _Section summary: 101 entries._
 - **Tier-3 assertion**: brepcheck.valid == True
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[1].curve_type == "circle"
+- **Tier-3 assertion**: edge[1].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[3].curve_type == "circle"
+- **Tier-3 assertion**: edge[3].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Twi021 — Missing degenerate edge at surface singularity (cone apex / sphere pole)
@@ -3582,6 +3626,10 @@ _Section summary: 101 entries._
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[1].curve_type == "circle"
+- **Tier-3 assertion**: edge[1].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[3].curve_type == "circle"
+- **Tier-3 assertion**: edge[3].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
 
 ### Twi024 — Wires forming inner loops outside outer loop (mis-classified hole)
@@ -3630,6 +3678,10 @@ _Section summary: 101 entries._
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Tier-3 assertion**: face[0].quadric.major_radius == 2.0
 - **Tier-3 assertion**: face[0].quadric.minor_radius == 0.5
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 2.5
+- **Tier-3 assertion**: edge[1].curve_type == "circle"
+- **Tier-3 assertion**: edge[1].analytic.radius == 2.5
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Twi029 — STEP writer drops entire wire if it contains a degenerate edge
@@ -3662,6 +3714,10 @@ _Section summary: 101 entries._
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
 - **Tier-3 assertion**: face[1].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[1].curve_type == "circle"
+- **Tier-3 assertion**: edge[1].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a`
 
 ### Twi031 — Degenerate edges duplicated at apex (Pro/E)
@@ -3694,6 +3750,10 @@ _Section summary: 101 entries._
 - **Tier-3 assertion**: brepcheck.valid == False
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[1].curve_type == "circle"
+- **Tier-3 assertion**: edge[1].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 
 ### Twi033 — Wire contains two distinct edges that geometrically coincide
@@ -3740,6 +3800,10 @@ _Section summary: 101 entries._
 - **Tier-3 assertion**: brepcheck.valid == True
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[1].curve_type == "circle"
+- **Tier-3 assertion**: edge[1].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a`
 
 ### Twi036 — Lacking edge: UV gap not closable by vertex tolerance
@@ -3756,6 +3820,10 @@ _Section summary: 101 entries._
 - **Tier-3 assertion**: n_vertices_total >= 4
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[1].curve_type == "circle"
+- **Tier-3 assertion**: edge[1].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[3].curve_type == "circle"
+- **Tier-3 assertion**: edge[3].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Twi037 — Free bounds need joining (sewing) — adjacent faces don't share a single edge instance
@@ -4252,6 +4320,10 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Tier-3 assertion**: brepcheck.valid == False
 - **Model impact**: Face sewing leaves free bounds or duplicate edges; the resulting shell is open instead of closed, so MakeSolid produces an invalid solid and volume/property computations return wrong values.
 - **Tier-3 assertion**: face[0].quadric.radius == 5.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 5.0
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 5.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a`
 
 ### Tfa030 — `ADVANCED_FACE` `PLANE` `AXIS2_PLACEMENT_3D` ignored relative to raw-global `CARTESIAN_POINT` bounds (subshape replacement helper drops local placement)
@@ -7009,6 +7081,8 @@ End of file. Total: 38 entries (A001.A038).
 - **Model impact**: Topology defect leaves the BRep in a non-manifold or open-shell state; BRepCheck reports an invalidity, and downstream meshing or boolean operations on the affected shape either fail or produce geometry that disagrees with the producer's intent.
 - **Tier-3 assertion**: face[0].surface_type == "sphere"
 - **Tier-3 assertion**: face[0].quadric.radius == 5.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 5.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
 
 ### P006 — 360° revolution of arc-of-ellipse produces self-intersecting solid
@@ -9906,6 +9980,8 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: face[0].sliver_aspect_max_min > 1e6
 - **Model impact**: Fillet/chamfer operation fails to construct the rolling-ball geometry; loaded BRep has the unfilleted edges (no smoothing applied) or a NULL shape if the operation aborted, and downstream BRepCheck flags the affected edges.
 - **Tier-3 assertion**: face[0].quadric.radius == 5.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 5.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/Fi003.stp
 
@@ -10008,6 +10084,8 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Severity**: P1
 - **Model impact**: Offset operation produces a shape with collapsed or inverted faces; loaded topology has zero-area faces or self-intersecting shells that fail BRepCheck.
 - **Tier-3 assertion**: face[0].quadric.radius == 5.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 5.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/Os001.stp
 
@@ -10246,6 +10324,8 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Severity**: P1
 - **Model impact**: Offset operation fails or produces an invalid shape; the kernel returns NULL or raises `StdFail_NotDone`, and the offset feature is absent from the resulting BRep.
 - **Tier-3 assertion**: face[0].quadric.radius == 5.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 5.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/Os015.stp
 
@@ -15460,6 +15540,10 @@ _Section summary: 28 entries._
 - **Tier-3 assertion**: face[3].surface_type == "torus"
 - **Tier-3 assertion**: face[3].quadric.major_radius == 15.0
 - **Tier-3 assertion**: face[3].quadric.minor_radius == 0.05
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 15.05
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 15.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(67) ifc=schema_n/a`
  warn-when-budget-unreachable; small-feature pre-removal pass.
 
@@ -17187,6 +17271,10 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: face[0].surface_type == "torus"
 - **Tier-3 assertion**: face[0].quadric.major_radius == 10.0
 - **Tier-3 assertion**: face[0].quadric.minor_radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[1].curve_type == "circle"
+- **Tier-3 assertion**: edge[1].analytic.radius == 11.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
 
 ---
@@ -17512,6 +17600,10 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: face[0].surface_type == "torus"
 - **Tier-3 assertion**: face[0].quadric.major_radius == 10.0
 - **Tier-3 assertion**: face[0].quadric.minor_radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[1].curve_type == "circle"
+- **Tier-3 assertion**: edge[1].analytic.radius == 11.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
 
 ### Xp023 — Deeply nested aggregate × overlong string literal in one fixture (Pf × Ad cross-product)
@@ -18473,6 +18565,8 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: face[0].surface_type == "torus"
 - **Tier-3 assertion**: face[0].quadric.major_radius == 10.0
 - **Tier-3 assertion**: face[0].quadric.minor_radius == 3.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 13.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(12) ifc=schema_n/a`
 
 ### Gs045 — `SURFACE_OF_REVOLUTION` whose revolution axis crosses the basis curve at an interior point
@@ -18756,6 +18850,10 @@ _Section summary: 41 entries._
 - **Model impact**: Shell construction reports invalidity (free edges, multi-connected vertices, or wrong orientation); BRepCheck flags the shape, and downstream solid construction either produces an invalid solid or fails outright.
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
 - **Tier-3 assertion**: face[1].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[1].curve_type == "circle"
+- **Tier-3 assertion**: edge[1].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 - **Fixture path**: step-examples/12-3a-shells/Bo025.stp
 
@@ -19164,6 +19262,10 @@ _Section summary: 41 entries._
 - **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({warn-and-proceed}). Documented divergence: OCC's auto-repair is stronger than the catalog's warn-only stance; conservative kernels should still emit a diagnostic.
 - **Severity**: P1
 - **Model impact**: Kernel reports SUCCESS for an operation that should have failed; the loaded shape passes BRepCheck despite carrying a hidden invalidity that surfaces later in downstream booleans/meshing as wrong geometry or signal-11.
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 5.0
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 2.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Ps013 — Chiral part mirrored by silent X-coordinate negation
@@ -19402,6 +19504,10 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
 - **Tier-3 assertion**: face[1].surface_type == "cylinder"
 - **Tier-3 assertion**: face[1].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(12) ifc=schema_n/a`
 
 ### Tsh048 — Same-domain face unification corrupts shape with mirrored sub-instance
@@ -19817,6 +19923,10 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: brepcheck.valid == True
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Tier-3 assertion**: face[1].quadric.radius == 5.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 5.0
+- **Tier-3 assertion**: edge[3].curve_type == "circle"
+- **Tier-3 assertion**: edge[3].analytic.radius == 5.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Twi094 — Wire endpoint first/last edge skipped during wire build (open EDGE_LOOP missing first ORIENTED_EDGE; orphan VERTEX_POINT defined but never referenced)
@@ -20029,6 +20139,10 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: brepcheck.valid == False
 - **Model impact**: Face sewing leaves free bounds or duplicate edges; the resulting shell is open instead of closed, so MakeSolid produces an invalid solid and volume/property computations return wrong values.
 - **Tier-3 assertion**: face[0].quadric.radius == 5.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 5.0
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 5.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a`
 
 ### Tfa065 — Healed face uses inflated tolerance instead of original (small gap between adjacent EDGE_LOOP vertices, e.g., 1e-3 mm between V3 and next-edge start)
@@ -20069,6 +20183,10 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: brepcheck.valid == False
 - **Model impact**: Face sewing leaves free bounds or duplicate edges; the resulting shell is open instead of closed, so MakeSolid produces an invalid solid and volume/property computations return wrong values.
 - **Tier-3 assertion**: face[0].quadric.radius == 0.05
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 0.05
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 0.05
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a`
 
 ### Tfa067 — Top face dropped after STEP import (CLOSED_SHELL cube whose top FACE_OUTER_BOUND edge has 3D LINE vs B_SPLINE_CURVE_WITH_KNOTS pcurve mismatch)
@@ -20180,6 +20298,10 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: face[2].quadric.radius == 1.0
 - **Tier-3 assertion**: face[3].surface_type == "cylinder"
 - **Tier-3 assertion**: face[3].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[1].curve_type == "circle"
+- **Tier-3 assertion**: edge[1].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 
 ### Tsh063 — Adjacent toroidal faces with identical parameters are not detected as same-surface
@@ -20210,6 +20332,10 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: face[1].surface_type == "torus"
 - **Tier-3 assertion**: face[1].quadric.major_radius == 4.0
 - **Tier-3 assertion**: face[1].quadric.minor_radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 4.0
+- **Tier-3 assertion**: edge[1].curve_type == "circle"
+- **Tier-3 assertion**: edge[1].analytic.radius == 4.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
 
 ### Tsh064 — Same-surface face merge edge-removal history contract is undocumented
@@ -21795,6 +21921,10 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Gp036 — Pcurve shifting on non-periodic surface produces wrong result
@@ -24056,6 +24186,10 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Tier-3 assertion**: face[0].surface_type == "torus"
 - **Tier-3 assertion**: face[0].quadric.major_radius == 5.0
 - **Tier-3 assertion**: face[0].quadric.minor_radius == 2.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 2.0
+- **Tier-3 assertion**: edge[1].curve_type == "circle"
+- **Tier-3 assertion**: edge[1].analytic.radius == 7.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 ### Tfa077 — FixSmallAreaWire small-area early-exit
 
@@ -24154,6 +24288,8 @@ Full-sphere face (complete spherical surface) requesting natural boundary correc
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "sphere"
 - **Tier-3 assertion**: face[0].quadric.radius == 5.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 5.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
 ### Tfa089 — ShapeAnalysis_CheckSmallFace.CheckSpotFace: tolerance scaling
 Face slightly larger than the spot threshold (0.1 × 0.1 square) but with vertex tolerances (0.05) larger than the face dimension. Tolerance-scaled spot comparison incorrectly misclassifies as spot face.
@@ -24382,6 +24518,10 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 - **Tier-3 assertion**: n_faces_total == 3
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 3.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 3.0
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 3.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a`
 ### Tfa111 — ShapeFix_Face.FixSmallAreaWire mixed-context
 
@@ -24760,6 +24900,10 @@ Face on cylinder where two wires both start at the seam vertex. FixOrientation's
 - **Tier-3 assertion**: face[0].quadric.radius == 5.0
 - **Tier-3 assertion**: face[3].surface_type == "cylinder"
 - **Tier-3 assertion**: face[3].quadric.radius == 5.0
+- **Tier-3 assertion**: edge[1].curve_type == "circle"
+- **Tier-3 assertion**: edge[1].analytic.radius == 5.0
+- **Tier-3 assertion**: edge[3].curve_type == "circle"
+- **Tier-3 assertion**: edge[3].analytic.radius == 5.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Tfa156 — ShapeFix_Face.FixSmallAreaWire wire-with-tangent-edges
 Face with outer wire and inner wire whose edges form a tangent smooth curve. FixSmallAreaWire's polygon approximation underestimates the enclosed area, causing missed edge tangency repair.
@@ -25069,6 +25213,10 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Tfa200 — ShapeAnalysis_Surface.DegeneratedValues cone-apex-degeneracy
 - **Category**: §12.3c faces (sub-class: cone surface apex degeneracy)
@@ -25082,6 +25230,8 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "cone"
 - **Tier-3 assertion**: face[0].quadric.semi_angle == 0.01
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Tfa201 — CheckSpotFace parametric interior singularity
 - **Category**: §12.3c faces (sub-class: spot-detection)
@@ -25107,6 +25257,10 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Tfa203 — FixMissingSeam null surface guard
 - **Category**: §12.3c faces (sub-class: seam-synthesis)
@@ -25144,6 +25298,8 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cone"
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
 ### Tfa206 — FixOrientation TinyWireFiltering single-edge degenerate
 - **Category**: §12.3c faces (sub-class: wire-orientation)
@@ -25169,6 +25325,8 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Tier-3 assertion**: face[0].surface_type == "torus"
 - **Tier-3 assertion**: face[0].quadric.major_radius == 3.0
 - **Tier-3 assertion**: face[0].quadric.minor_radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 4.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(22) ifc=schema_n/a`
 ### Tfa208 — FixSmallAreaWire undersized perimeter degenerate loop
 - **Category**: §12.3c faces (sub-class: small-area-wire)
@@ -25264,6 +25422,10 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Tfa214 — ShapeFix_Face.FixMissingSeam.degenerate-wire-consolidation
 
@@ -25322,6 +25484,8 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Tier-3 assertion**: face[0].surface_type == "torus"
 - **Tier-3 assertion**: face[0].quadric.major_radius == 2.0
 - **Tier-3 assertion**: face[0].quadric.minor_radius == 0.5
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 2.5
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 ### Tfa217 — curve_copy_trimming
 
@@ -25339,6 +25503,8 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Tier-3 assertion**: face[0].surface_type == "torus"
 - **Tier-3 assertion**: face[0].quadric.major_radius == 3.0
 - **Tier-3 assertion**: face[0].quadric.minor_radius == 0.5
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 3.5
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 ### Tfa219 — vertex_tolerance_mismatch
 
@@ -25348,6 +25514,10 @@ Unit square planar face with centered 0.5×0.5 inner rectangle. FixOrientation's
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Tfa220 — concat_result_truncation
 
@@ -25391,6 +25561,8 @@ Sphere with 3 degenerate wires (zero-extent edges at same vertex); multi-bound f
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "sphere"
 - **Tier-3 assertion**: face[0].quadric.radius == 3.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 3.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tfa225 — FixMissingSeam.seam-boundary-clamping
 U-closed BSpline surface; 2-edge loop with period-wrap geometry; tests seam-boundary clamping at line 2224. Defect: out-of-bounds seam placement (u > 2π) bypasses AdjustToPeriod, producing invalid parameter range.
@@ -25403,6 +25575,10 @@ Fresh null-wire guard in Add() prevents null-reference corruption; wire validati
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Tfa227 — ShapeFix_Face.ClearModes.init-all-modes
 Mode-flag initialization (-1 default) prevents undefined comparisons in NeedFix(); healer state precondition.
@@ -25423,6 +25599,10 @@ Seam-edge reversal for dual-edge UV-periodic representation; non-seam edges skip
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Tfa230 — ShapeFix_Face.FixLoopWire.wire-topology
 Closed-wire reorder via FixReorder vs. open-wire append; topology-driven dispatch path.
@@ -25452,6 +25632,10 @@ Single-period cylindrical face with degenerate bottom/top loops and explicit sea
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.5
+- **Tier-3 assertion**: edge[1].curve_type == "circle"
+- **Tier-3 assertion**: edge[1].analytic.radius == 1.5
+- **Tier-3 assertion**: edge[3].curve_type == "circle"
+- **Tier-3 assertion**: edge[3].analytic.radius == 1.5
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Tfa235 — FixMissingSeam P-curve absence on torus
 
@@ -25460,6 +25644,10 @@ TOROIDAL_SURFACE face with U-seam loop traversing toroidal topology; missing P-c
 - **Tier-3 assertion**: face[0].surface_type == "torus"
 - **Tier-3 assertion**: face[0].quadric.major_radius == 4.0
 - **Tier-3 assertion**: face[0].quadric.minor_radius == 1.0
+- **Tier-3 assertion**: edge[1].curve_type == "circle"
+- **Tier-3 assertion**: edge[1].analytic.radius == 3.0
+- **Tier-3 assertion**: edge[3].curve_type == "circle"
+- **Tier-3 assertion**: edge[3].analytic.radius == 5.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
 ### Tfa236 — ShapeFix_Face.FixOrientation
 
@@ -25472,6 +25660,10 @@ Edge-division on non-manifold geometry; curve parameterization via vertical spin
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[1].curve_type == "circle"
+- **Tier-3 assertion**: edge[1].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[3].curve_type == "circle"
+- **Tier-3 assertion**: edge[3].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Tfa238 — ShapeFix_Face.SplitEdge (line-2741)
 
@@ -25479,6 +25671,8 @@ Multi-point edge subdivision; overlapping parameter intervals via meridian B-spl
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "sphere"
 - **Tier-3 assertion**: face[0].quadric.radius == 2.0
+- **Tier-3 assertion**: edge[1].curve_type == "circle"
+- **Tier-3 assertion**: edge[1].analytic.radius == 2.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a`
 ### Tfa239 — ShapeFix_Face.FixSplitFace (line-2908)
 
@@ -25493,6 +25687,8 @@ Integrated face-healing pipeline; mode-dependent cascade via base-slant-apex dec
 
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cone"
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 2.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a`
 ### Tfa241 — `ShapeFix_Face.FixOrientation.WireBoundingBoxComputation`
 em-dash Periodic bounding-box centering on first-wire midpoint for toroidal containment checks. Two concentric wires on torus; without anchor uMiddle/vMiddle, secondary wire box shifts unanchored relative to first → false containment classification.
@@ -25705,6 +25901,10 @@ em-dash Degenerated synthetic edge synthesis at sphere pole. Single wire at equa
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[1].curve_type == "circle"
+- **Tier-3 assertion**: edge[1].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[3].curve_type == "circle"
+- **Tier-3 assertion**: edge[3].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Twi110 — CheckEdgeCurves 3D-vs-2D Coherence
 **Defect**: Cylindrical wire where edge E3 3D curve (LINE P2→P3) is geometrically correct but pcurve maps to surface parameters (u, v) that evaluate to misaligned 3D point, failing curve/pcurve coherence.
@@ -25713,6 +25913,10 @@ em-dash Degenerated synthetic edge synthesis at sphere pole. Single wire at equa
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[1].curve_type == "circle"
+- **Tier-3 assertion**: edge[1].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[3].curve_type == "circle"
+- **Tier-3 assertion**: edge[3].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Twi111 — FixDummySeam Dummy-Seam Removal
 **Defect**: Cylindrical wire with extraneous seam edge pair (dummy_seam + seam_close) at P1 that no longer matches true seam line (u=0, 2π). Seam edge lies near u=0.002, falsely marked as seam.
@@ -25725,6 +25929,10 @@ Wire on cylindrical surface with consecutive edges' parametric curves (pcurves) 
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Twi113 — ShapeAnalysis_Wire.CheckOuterBound outer-bound mis-identification
 
@@ -26175,6 +26383,8 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 - **Tier-3 assertion**: face[0].quadric.radius == 5.0
 - **Tier-3 assertion**: face[1].surface_type == "sphere"
 - **Tier-3 assertion**: face[1].quadric.radius == 5.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 5.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a`
 ### Twi184 — ShapeFix_Wire.FixConnected zero-length-edge-between
 
@@ -26211,6 +26421,10 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 - **Tier-3 assertion**: face[0].surface_type == "torus"
 - **Tier-3 assertion**: face[0].quadric.major_radius == 5.0
 - **Tier-3 assertion**: face[0].quadric.minor_radius == 2.0
+- **Tier-3 assertion**: edge[1].curve_type == "circle"
+- **Tier-3 assertion**: edge[1].analytic.radius == 2.0
+- **Tier-3 assertion**: edge[3].curve_type == "circle"
+- **Tier-3 assertion**: edge[3].analytic.radius == 2.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Twi187 — ShapeFix_Wire.FixLacking insertion-cascade
 
@@ -26278,6 +26492,10 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[1].curve_type == "circle"
+- **Tier-3 assertion**: edge[1].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[3].curve_type == "circle"
+- **Tier-3 assertion**: edge[3].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Twi194 — FixIntersectingEdges shared-vertex-misclassification
 
@@ -26499,6 +26717,10 @@ Seam edge where parametric curve direction (u-orientation) differs from 3D curve
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Twi218 — ShapeAnalysis_Wire.CheckShapeConnect with-degenerate-vertex
 Wire's start vertex is degenerate (zero-radius circle = point). CheckShapeConnect uses vertex coordinates from BRep_Tool::Pnt(), not topology, causing false results on degenerate endpoints.
@@ -26514,6 +26736,10 @@ Surface with seam at u=π/4 (not standard 0 or 2π). FixDummySeam's heuristic as
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Twi222 — ShapeFix_Wire.FixTails consecutive-removal
 
@@ -26652,6 +26878,10 @@ Wire has a 3D gap at a junction (endpoints separated by ~1e-8, within tolerance)
 - **Tier-3 assertion**: n_vertices_total == 10
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[1].curve_type == "circle"
+- **Tier-3 assertion**: edge[1].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Twi241 — ShapeFix_Wire.FixNotchedEdges notch-at-multi-edge-junction
 - **Category**: §12.3b wires (sub-class: tangency-discontinuity)
@@ -26846,6 +27076,10 @@ Seam edge classification; seam flag not detected when edge traverses surface par
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[1].curve_type == "circle"
+- **Tier-3 assertion**: edge[1].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[3].curve_type == "circle"
+- **Tier-3 assertion**: edge[3].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Twi269 — ShapeAnalysis_Wire.CheckSelfIntersectingEdge
 Individual edge self-crossing; curve loop detection fails on parametric reversals.
@@ -27475,6 +27709,8 @@ Bezier patches don't maintain seam closure or periodic boundary conditions.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 ### Gs108 — Singularity boundary classification error
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -27490,6 +27726,10 @@ the analyzer treats the boundary as exclusive, misclassifying interior vs.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "sphere"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
 ### Gs109 — ShapeAnalysis_Surface.UVFromIso v-iso-at-pole
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -27506,6 +27746,10 @@ UVFromIso accepts the.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "sphere"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
 ### Gs110 — ShapeUpgrade_SplitSurface.SetUSplitValues count-mismatch
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -27802,6 +28046,10 @@ the.
 - **Tier-3 assertion**: face[0].surface_type == "torus"
 - **Tier-3 assertion**: face[0].quadric.major_radius == 1.0
 - **Tier-3 assertion**: face[0].quadric.minor_radius == 0.3
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 0.3
+- **Tier-3 assertion**: edge[1].curve_type == "circle"
+- **Tier-3 assertion**: edge[1].analytic.radius == 1.3
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
 ### Gs132 — TOROIDAL_SURFACE wrongly elevated to non-analytic Bezier
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -27819,6 +28067,10 @@ producing a non-analytic BSpline surface with wrong continuity class.
 - **Tier-3 assertion**: face[0].surface_type == "torus"
 - **Tier-3 assertion**: face[0].quadric.major_radius == 1.0
 - **Tier-3 assertion**: face[0].quadric.minor_radius == 0.3
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 0.3
+- **Tier-3 assertion**: edge[1].curve_type == "circle"
+- **Tier-3 assertion**: edge[1].analytic.radius == 1.3
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
 ### Gs133 — CYLINDRICAL_SURFACE degenerate edge with sub-optimal projection
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -27979,6 +28231,10 @@ trimming or intersection operations assume richer surface.
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cone"
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 0.0
+- **Tier-3 assertion**: edge[1].curve_type == "circle"
+- **Tier-3 assertion**: edge[1].analytic.radius == 0.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs146 — SurfaceNewton zero-normal break
 
@@ -28019,6 +28275,10 @@ trimming or intersection operations assume richer surface.
 
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cone"
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 0.0
+- **Tier-3 assertion**: edge[1].curve_type == "circle"
+- **Tier-3 assertion**: edge[1].analytic.radius == 0.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs149 — ShapeAnalysis_Surface.IsUVBounded
 **Defect**: Parameter gap classification on trimmed B-spline surfaces with inverted or missing bounds.
@@ -28045,6 +28305,10 @@ trimming or intersection operations assume richer surface.
 - **Tier-3 assertion**: face[0].surface_type == "torus"
 - **Tier-3 assertion**: face[0].quadric.major_radius == 5.0
 - **Tier-3 assertion**: face[0].quadric.minor_radius == 2.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 2.0
+- **Tier-3 assertion**: edge[1].curve_type == "circle"
+- **Tier-3 assertion**: edge[1].analytic.radius == 2.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 ### Gs152 — ShapeUpgrade_Surface.SplitSurface
 **Defect**: Parametric split ignores RECTANGULAR_TRIMMED_SURFACE bounds, extending patches beyond envelope.
@@ -28179,6 +28443,8 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Tier-3 assertion**: face[0].surface_type == "torus"
 - **Tier-3 assertion**: face[0].quadric.major_radius == 3.0
 - **Tier-3 assertion**: face[0].quadric.minor_radius == 1.5
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.5
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Gs176 — RectangularTrimmedSurface Null Basis
 **Defect**: `Geom_RectangularTrimmedSurface.BasisSurface unwrap` — Down_cast succeeds; null check skipped on BasisSurface() result. Trimmed B-spline (3×3, deg-2); null basis overwrite triggers undefined GeomAdaptor behavior.
@@ -28294,6 +28560,8 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Tier-3 assertion**: faces[0].surface_type == "cone"
 - **Tier-3 assertion**: face[0].surface_type == "cone"
 - **Tier-3 assertion**: face[0].quadric.semi_angle == 0.165
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 12.7
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 - **Model impact**: Lateral cone face absent in downstream model; FEA/CAM operations on the cone surface fail; visual check shows only base disk.
 
@@ -28310,6 +28578,8 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Tier-3 assertion**: faces[0].surface_type == "sphere"
 - **Tier-3 assertion**: face[0].surface_type == "sphere"
 - **Tier-3 assertion**: face[0].quadric.radius == 5.0
+- **Tier-3 assertion**: edge[3].curve_type == "circle"
+- **Tier-3 assertion**: edge[3].analytic.radius == 5.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 - **Model impact**: UV curves in converted model are geometrically incorrect; downstream tessellation and surface evaluation produce artifacts; tolerance bloat (≈5×radius) propagates downstream.
 
@@ -29546,6 +29816,10 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tsh210 — Shell tolerance iteration filtering
 - **Category**: §12.3a shells (sub-class: tolerance-analysis)
@@ -29736,6 +30010,8 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Reproducer recipe**: see `step-examples/12-2a-pcurves/Gp048.stp`; the fixture file's top comment names the specific OCCT method and line range.
 - **Expected kernel behavior**: detect or heal per the named OCCT branch; the fixture demonstrates the buggy input pattern.
 - **Tier-3 assertion**: face[0].surface_type == "cone"
+- **Tier-3 assertion**: edge[3].curve_type == "circle"
+- **Tier-3 assertion**: edge[3].analytic.radius == 0.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a`
 - **Tier-3 assertion**: load == "ok"
 
@@ -30004,6 +30280,10 @@ Periodic surface edge whose 3D and 2D parameters disagree by exactly 2π (one fu
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp082 — FixAddCurve3d trim-domain extension
 Edge on trimmed surface where the natural 3D-from-pcurve curve extends past the trim boundary; FixAddCurve3d builds the full extent instead of respecting trim domain.
@@ -30016,11 +30296,19 @@ Two edges on periodic surface where their 3D geometry coincides but their 2D pcu
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
 - **Tier-3 assertion**: face[1].surface_type == "cylinder"
 - **Tier-3 assertion**: face[1].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Gp084 — FixSameParameter cone-apex singularity tolerance
 Edge near cone apex where geometric tolerance diverges due to apex singularity; FixSameParameter clamps tolerance and produces incorrect magnitude without accounting for local metric scaling.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cone"
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 0.01
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp085 — GetEndTangent2d ellipse derivative asymmetry
 P-curve is an ELLIPSE entity; GetEndTangent2d uses finite-difference fallback whose result depends on parameter direction (increasing vs decreasing); assumes parameter increases only.
@@ -30063,6 +30351,10 @@ Edge whose pcurve degenerates to single point; CheckCurve3dWithPCurve treats deg
 Edge near cone apex where (u,v) projection is mathematically unstable; FixAddPCurve constructs pcurve with NaN coordinates. Fixture has LINE edge on CONICAL_SURFACE at apex singularity (parameter space [0.001,0.001]→[0.002,0.002]).
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cone"
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 0.001
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 0.002
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp094 — ShapeAnalysis_Edge.CheckOverlapping curves-tangent-at-endpoint
 Two edges meeting tangentially at shared endpoint; CheckOverlapping's interior-intersection test ignores boundary tangency. Fixture has LINE+B_SPLINE_CURVE edges meeting at common vertex with tangent alignment.
@@ -30195,6 +30487,8 @@ ShapeAnalysis_Edge.CheckCurve3dWithPCurve fails when pcurve passes through spher
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "sphere"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a`
 ### Gp117 — Closed pcurve, open 3D curve mismatch
 ShapeFix_Edge.FixAddCurve3d constructs wrong 3D curve when pcurve is closed circle but edge is open. Closure doesn't match edge vertices.
@@ -30209,6 +30503,10 @@ ShapeFix_Edge.FixSameParameter handles seam edge (u=0 vs u=2π) ambiguously; pcu
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp120 — Composite pcurve tangent discontinuity
 ShapeAnalysis_Edge.GetEndTangent2d fails on COMPOSITE_CURVE with G0 continuity; tangent jump at segment join causes discontinuity.
@@ -31873,6 +32171,10 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 10.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 10.0
+- **Tier-3 assertion**: edge[2].curve_type == "circle"
+- **Tier-3 assertion**: edge[2].analytic.radius == 10.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
 
 ### Pmi103 — `BOSS` diameter smaller than host plate thickness (feature-class mismatch)
@@ -35601,6 +35903,10 @@ exercised against CGAL PMP / MeshFix.
 - **Tier-3 assertion**: face[1].surface_type == "torus"
 - **Tier-3 assertion**: face[1].quadric.major_radius == 5.0
 - **Tier-3 assertion**: face[1].quadric.minor_radius == 3.0
+- **Tier-3 assertion**: edge[1].curve_type == "circle"
+- **Tier-3 assertion**: edge[1].analytic.radius == 2.0
+- **Tier-3 assertion**: edge[3].curve_type == "circle"
+- **Tier-3 assertion**: edge[3].analytic.radius == 2.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a`
 - **Model impact**: Round-trip produces a shape whose nbshapes counts (edges, vertices, faces) differ from the in-memory original; downstream consumers that rely on a stable shape signature fail validation.
 
@@ -35629,6 +35935,8 @@ exercised against CGAL PMP / MeshFix.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "sphere"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 - **Model impact**: Receivers using shell-level normals to compute volume see negative volume; viewers render the face with inverted lighting; BRepCheck flags the shell as invalid orientation.
 

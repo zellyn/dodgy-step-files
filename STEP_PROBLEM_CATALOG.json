@@ -972,7 +972,11 @@
       "face[2].quadric.minor_radius == 0.05",
       "face[3].surface_type == \"torus\"",
       "face[3].quadric.major_radius == 15.0",
-      "face[3].quadric.minor_radius == 0.05"
+      "face[3].quadric.minor_radius == 0.05",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 15.05",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 15.0"
     ],
     "title": "Mixed-scale features produce millions of tiny faces post-tessellation"
   },
@@ -5098,7 +5102,11 @@
       "load == \"ok\"",
       "face[0].surface_type == \"torus\"",
       "face[0].quadric.major_radius == 10.0",
-      "face[0].quadric.minor_radius == 1.0"
+      "face[0].quadric.minor_radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 11.0"
     ],
     "title": "Negative torus radius × pcurve disagreement × tiny edge"
   },
@@ -5545,7 +5553,11 @@
       "load == \"ok\"",
       "face[0].surface_type == \"torus\"",
       "face[0].quadric.major_radius == 10.0",
-      "face[0].quadric.minor_radius == 1.0"
+      "face[0].quadric.minor_radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 11.0"
     ],
     "title": "Time-bomb tolerance × negative-radius torus × cyclic seam edge"
   },
@@ -8425,7 +8437,11 @@
       "face[0].quadric.radius == 2.0",
       "face[1].surface_type == \"torus\"",
       "face[1].quadric.major_radius == 5.0",
-      "face[1].quadric.minor_radius == 3.0"
+      "face[1].quadric.minor_radius == 3.0",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 2.0",
+      "edge[3].curve_type == \"circle\"",
+      "edge[3].analytic.radius == 2.0"
     ],
     "title": "Toroidal-surface portion of fused solid corrupted on STEP round-trip"
   },
@@ -8465,7 +8481,9 @@
     "tier3_assertions": [
       "load == \"ok\"",
       "face[0].surface_type == \"sphere\"",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0"
     ],
     "title": "Swept spherical face orientation inverted on STEP export round-trip"
   },
@@ -39357,7 +39375,9 @@
       "n_edges_total == 1",
       "n_vertices_total == 2",
       "face[0].surface_type == \"cylinder\"",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0"
     ],
     "title": "Seam curve with same pcurve referenced twice"
   },
@@ -39400,7 +39420,9 @@
       "n_edges_total == 1",
       "n_vertices_total == 2",
       "face[0].surface_type == \"cylinder\"",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0"
     ],
     "title": "`SURFACE_CURVE` / seam-curve `associated_geometry` list contains a null `$` entry"
   },
@@ -39490,7 +39512,11 @@
       "n_edges_total == 4",
       "n_vertices_total == 8",
       "face[0].surface_type == \"cylinder\"",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 1.0"
     ],
     "title": "Shared pcurve across multiple edges (SYRKO)"
   },
@@ -39691,6 +39717,8 @@
     "tier3_assertions": [
       "face[0].surface_type == \"cylinder\"",
       "face[0].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0",
       "shape_null == False",
       "n_faces_total == 1",
       "n_edges_total == 2",
@@ -39831,7 +39859,11 @@
       "n_edges_total == 4",
       "n_vertices_total == 8",
       "face[0].surface_type == \"cylinder\"",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 1.0"
     ],
     "title": "Point-projection onto trimmed periodic `CYLINDRICAL_SURFACE` returns UV outside trimmed band (pcurve start parameter shifted by period)"
   },
@@ -39875,7 +39907,9 @@
       "n_edges_total == 1",
       "n_vertices_total == 2",
       "face[0].surface_type == \"cylinder\"",
-      "face[0].quadric.radius == 1000.0"
+      "face[0].quadric.radius == 1000.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1000.0"
     ],
     "title": "Pcurve refit after non-uniform scale produces large errors"
   },
@@ -39916,6 +39950,10 @@
     "tier3_assertions": [
       "face[0].surface_type == \"cylinder\"",
       "face[0].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 1.0",
       "shape_null == False",
       "n_faces_total == 1",
       "n_edges_total == 3",
@@ -39964,7 +40002,11 @@
       "n_edges_total == 4",
       "n_vertices_total == 8",
       "face[0].surface_type == \"cylinder\"",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 1.0"
     ],
     "title": "Closed-face splitter leaves new pcurves out of sync with 3D curves on `CYLINDRICAL_SURFACE`"
   },
@@ -40088,7 +40130,11 @@
       "n_edges_total == 4",
       "n_vertices_total == 8",
       "face[0].surface_type == \"cylinder\"",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 1.0"
     ],
     "title": "Bent / polyline-form `B_SPLINE` pcurve from PRO/E IGES requires protective handling"
   },
@@ -40129,6 +40175,10 @@
       "face[0].quadric.radius == 1.0",
       "face[1].surface_type == \"cylinder\"",
       "face[1].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 1.0",
       "shape_null == False",
       "n_faces_total == 2",
       "n_edges_total == 8",
@@ -40245,7 +40295,11 @@
       "n_edges_total == 4",
       "n_vertices_total == 8",
       "face[0].surface_type == \"cylinder\"",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 1.0"
     ],
     "title": "Edge has 3D curve but no pcurve, requiring projection onto host surface"
   },
@@ -40723,6 +40777,8 @@
     ],
     "tier3_assertions": [
       "face[0].surface_type == \"cone\"",
+      "edge[3].curve_type == \"circle\"",
+      "edge[3].analytic.radius == 0.0",
       "load == \"ok\""
     ],
     "title": "ShapeFix_Edge.FixAddPCurve degenerate-curve at cone apex"
@@ -41815,7 +41871,11 @@
     "tier3_assertions": [
       "load == \"ok\"",
       "face[0].surface_type == \"cylinder\"",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 1.0"
     ],
     "title": "CheckSameParameter periodic-shift normalization"
   },
@@ -41885,7 +41945,11 @@
       "face[0].surface_type == \"cylinder\"",
       "face[0].quadric.radius == 1.0",
       "face[1].surface_type == \"cylinder\"",
-      "face[1].quadric.radius == 1.0"
+      "face[1].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 1.0"
     ],
     "title": "CheckOverlapping period-shifted edges"
   },
@@ -41919,7 +41983,11 @@
     ],
     "tier3_assertions": [
       "load == \"ok\"",
-      "face[0].surface_type == \"cone\""
+      "face[0].surface_type == \"cone\"",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 0.01",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 1.0"
     ],
     "title": "FixSameParameter cone-apex singularity tolerance"
   },
@@ -42217,7 +42285,11 @@
     ],
     "tier3_assertions": [
       "load == \"ok\"",
-      "face[0].surface_type == \"cone\""
+      "face[0].surface_type == \"cone\"",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 0.001",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 0.002"
     ],
     "title": "ShapeFix_Edge.FixAddPCurve construct-on-conical-surface near-apex"
   },
@@ -42972,7 +43044,9 @@
     "tier3_assertions": [
       "n_faces_total == 1",
       "face[0].surface_type == \"sphere\"",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0"
     ],
     "title": "Sphere pole singularity in pcurve"
   },
@@ -43073,7 +43147,11 @@
     "tier3_assertions": [
       "n_faces_total == 1",
       "face[0].surface_type == \"cylinder\"",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 1.0"
     ],
     "title": "Cylinder seam-edge pcurve ambiguity"
   },
@@ -51876,7 +51954,11 @@
     "tier3_assertions": [
       "load == \"ok\"",
       "face[0].surface_type == \"sphere\"",
-      "face[0].quadric.radius == 5.0"
+      "face[0].quadric.radius == 5.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 5.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 5.0"
     ],
     "title": "Helical sweep / variable-radius blend silently emitted as incomplete shell (cap-only face on `SPHERICAL_SURFACE` with `VERTEX_LOOP` bound)"
   },
@@ -52072,7 +52154,9 @@
       "load == \"ok\"",
       "face[0].surface_type == \"torus\"",
       "face[0].quadric.major_radius == 10.0",
-      "face[0].quadric.minor_radius == 3.0"
+      "face[0].quadric.minor_radius == 3.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 13.0"
     ],
     "title": "`INTERSECTION_CURVE` between two surfaces with multiple disjoint intersection branches, only one represented"
   },
@@ -54312,7 +54396,9 @@
     "tier3_assertions": [
       "load == \"ok\"",
       "face[0].surface_type == \"cylinder\"",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0"
     ],
     "title": "Closed-surface preservation in Bezier conversion"
   },
@@ -54347,7 +54433,11 @@
     "tier3_assertions": [
       "load == \"ok\"",
       "face[0].surface_type == \"sphere\"",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 1.0"
     ],
     "title": "Singularity boundary classification error"
   },
@@ -54382,7 +54472,11 @@
     "tier3_assertions": [
       "load == \"ok\"",
       "face[0].surface_type == \"sphere\"",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 1.0"
     ],
     "title": "ShapeAnalysis_Surface.UVFromIso v-iso-at-pole"
   },
@@ -55150,7 +55244,11 @@
       "load == \"ok\"",
       "face[0].surface_type == \"torus\"",
       "face[0].quadric.major_radius == 1.0",
-      "face[0].quadric.minor_radius == 0.3"
+      "face[0].quadric.minor_radius == 0.3",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 0.3",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 1.3"
     ],
     "title": "TOROIDAL_SURFACE with Newton iteration near convergence"
   },
@@ -55186,7 +55284,11 @@
       "load == \"ok\"",
       "face[0].surface_type == \"torus\"",
       "face[0].quadric.major_radius == 1.0",
-      "face[0].quadric.minor_radius == 0.3"
+      "face[0].quadric.minor_radius == 0.3",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 0.3",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 1.3"
     ],
     "title": "TOROIDAL_SURFACE wrongly elevated to non-analytic Bezier"
   },
@@ -55616,7 +55718,11 @@
     ],
     "tier3_assertions": [
       "load == \"ok\"",
-      "face[0].surface_type == \"cone\""
+      "face[0].surface_type == \"cone\"",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 0.0",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 0.0"
     ],
     "title": "ProjectDegenerated lazy singularity init"
   },
@@ -55718,7 +55824,11 @@
     ],
     "tier3_assertions": [
       "load == \"ok\"",
-      "face[0].surface_type == \"cone\""
+      "face[0].surface_type == \"cone\"",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 0.0",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 0.0"
     ],
     "title": "DegeneratedValues singularity gap classification"
   },
@@ -55825,7 +55935,11 @@
       "n_vertices_total == 4",
       "face[0].surface_type == \"torus\"",
       "face[0].quadric.major_radius == 5.0",
-      "face[0].quadric.minor_radius == 2.0"
+      "face[0].quadric.minor_radius == 2.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 2.0",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 2.0"
     ],
     "title": "ShapeFix_Face.FixWireTool"
   },
@@ -56639,7 +56753,9 @@
       "load == \"ok\"",
       "face[0].surface_type == \"torus\"",
       "face[0].quadric.major_radius == 3.0",
-      "face[0].quadric.minor_radius == 1.5"
+      "face[0].quadric.minor_radius == 1.5",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.5"
     ],
     "title": "ToroidalSurface Dual-Pinch Singularities"
   },
@@ -56988,7 +57104,9 @@
       "n_faces_total == 2",
       "faces[0].surface_type == \"cone\"",
       "face[0].surface_type == \"cone\"",
-      "face[0].quadric.semi_angle == 0.165"
+      "face[0].quadric.semi_angle == 0.165",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 12.7"
     ],
     "title": "CONICAL_SURFACE EDGE_LOOP incorrectly trimmed — lateral face degenerate"
   },
@@ -57027,7 +57145,9 @@
       "n_faces_total == 1",
       "faces[0].surface_type == \"sphere\"",
       "face[0].surface_type == \"sphere\"",
-      "face[0].quadric.radius == 5.0"
+      "face[0].quadric.radius == 5.0",
+      "edge[3].curve_type == \"circle\"",
+      "edge[3].analytic.radius == 5.0"
     ],
     "title": "SPHERICAL_SURFACE PCURVE V-range [0, π] instead of ISO-10303-42 §4.4.32 standard [-π/2, +π/2]"
   },
@@ -57422,7 +57542,11 @@
       "face[0].surface_type == \"cylinder\"",
       "face[1].surface_type == \"cylinder\"",
       "face[0].quadric.radius == 1.0",
-      "face[1].quadric.radius == 1.0"
+      "face[1].quadric.radius == 1.0",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 1.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 1.0"
     ],
     "title": "Two ADVANCED_FACEs on duplicate CYLINDRICAL_SURFACEs share a smooth (G1) edge mis-tagged as a sharp crease"
   },
@@ -57968,7 +58092,11 @@
       "face[0].surface_type == \"cone\"",
       "face[1].surface_type == \"plane\"",
       "face[2].surface_type == \"plane\"",
-      "n_edges_total >= 4"
+      "n_edges_total >= 4",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 5.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 2.0"
     ],
     "title": "Sweep silently truncated to a CONICAL_SURFACE"
   },
@@ -60002,7 +60130,11 @@
       "face[0].surface_type == \"cylinder\"",
       "face[0].quadric.radius == 1.0",
       "face[1].surface_type == \"cylinder\"",
-      "face[1].quadric.radius == 1.0"
+      "face[1].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 1.0"
     ],
     "title": "Same-domain face unification crosses cylinder seam and produces non-manifold result"
   },
@@ -60615,7 +60747,11 @@
       "face[2].surface_type == \"cylinder\"",
       "face[2].quadric.radius == 1.0",
       "face[3].surface_type == \"cylinder\"",
-      "face[3].quadric.radius == 1.0"
+      "face[3].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 1.0"
     ],
     "title": "Merging adjacent same-surface faces returns topologically invalid shape (OPEN_SHELL of multiple CYLINDRICAL_SURFACE faces with degenerate seam edges where two distinct VERTEX_POINTs share coords)"
   },
@@ -60663,7 +60799,11 @@
       "face[0].quadric.minor_radius == 1.0",
       "face[1].surface_type == \"torus\"",
       "face[1].quadric.major_radius == 4.0",
-      "face[1].quadric.minor_radius == 1.0"
+      "face[1].quadric.minor_radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 4.0",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 4.0"
     ],
     "title": "Adjacent toroidal faces with identical parameters are not detected as same-surface"
   },
@@ -65491,7 +65631,11 @@
     "tier3_assertions": [
       "n_faces_total == 1",
       "face[0].surface_type == \"cylinder\"",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 1.0"
     ],
     "title": "U-closed seam-edge period wrapping"
   },
@@ -66815,7 +66959,11 @@
       "n_edges_total >= 4",
       "n_vertices_total >= 8",
       "brepcheck.valid == False",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 1.0",
+      "edge[3].curve_type == \"circle\"",
+      "edge[3].analytic.radius == 1.0"
     ],
     "title": "Closed edges need splitting at parametric break"
   },
@@ -66857,7 +67005,11 @@
       "n_edges_total >= 2",
       "n_vertices_total >= 4",
       "brepcheck.valid == True",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 1.0",
+      "edge[3].curve_type == \"circle\"",
+      "edge[3].analytic.radius == 1.0"
     ],
     "title": "Missing seam edge on closed (periodic) surface"
   },
@@ -66942,7 +67094,11 @@
       "n_edges_total >= 2",
       "face[0].surface_type == \"cylinder\"",
       "n_vertices_total >= 4",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 1.0",
+      "edge[3].curve_type == \"circle\"",
+      "edge[3].analytic.radius == 1.0"
     ],
     "title": "Seam edge with swapped or duplicated pcurves on a periodic face"
   },
@@ -67063,7 +67219,11 @@
       "n_vertices_total >= 8",
       "brepcheck.valid == False",
       "face[0].quadric.major_radius == 2.0",
-      "face[0].quadric.minor_radius == 0.5"
+      "face[0].quadric.minor_radius == 0.5",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 2.5",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 2.5"
     ],
     "title": "Scrambled (out-of-cyclic-order) `EDGE_LOOP` edge_list on `TOROIDAL_SURFACE` — wire-reorder triggers no replacement"
   },
@@ -67141,7 +67301,11 @@
       "face[1].surface_type == \"sphere\"",
       "n_vertices_total >= 8",
       "face[0].quadric.radius == 1.0",
-      "face[1].quadric.radius == 1.0"
+      "face[1].quadric.radius == 1.0",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 1.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 1.0"
     ],
     "title": "Degenerate edge re-encountered for multiple faces"
   },
@@ -67222,7 +67386,11 @@
       "n_edges_total >= 4",
       "n_vertices_total >= 8",
       "brepcheck.valid == False",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 1.0"
     ],
     "title": "Periodic face wraps a full period and needs splitting at the seam"
   },
@@ -67333,7 +67501,11 @@
       "n_edges_total >= 2",
       "n_vertices_total >= 4",
       "brepcheck.valid == True",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 1.0"
     ],
     "title": "Sphere given by two meridians (special wire shape)"
   },
@@ -67369,7 +67541,11 @@
       "n_edges_total >= 2",
       "face[0].surface_type == \"cylinder\"",
       "n_vertices_total >= 4",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 1.0",
+      "edge[3].curve_type == \"circle\"",
+      "edge[3].analytic.radius == 1.0"
     ],
     "title": "Lacking edge: UV gap not closable by vertex tolerance"
   },
@@ -69425,7 +69601,11 @@
       "n_edges_total >= 1",
       "n_vertices_total >= 2",
       "brepcheck.valid == True",
-      "face[1].quadric.radius == 5.0"
+      "face[1].quadric.radius == 5.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 5.0",
+      "edge[3].curve_type == \"circle\"",
+      "edge[3].analytic.radius == 5.0"
     ],
     "title": "Synthesised seam edge is inserted through existing wire path on cylinder"
   },
@@ -70011,7 +70191,11 @@
     "tier3_assertions": [
       "n_faces_total == 1",
       "face[0].surface_type == \"cylinder\"",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 1.0",
+      "edge[3].curve_type == \"circle\"",
+      "edge[3].analytic.radius == 1.0"
     ],
     "title": "FixShifted Period-Shift on Closed Surface"
   },
@@ -70046,7 +70230,11 @@
     "tier3_assertions": [
       "n_faces_total == 1",
       "face[0].surface_type == \"cylinder\"",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 1.0",
+      "edge[3].curve_type == \"circle\"",
+      "edge[3].analytic.radius == 1.0"
     ],
     "title": "CheckEdgeCurves 3D-vs-2D Coherence"
   },
@@ -70113,7 +70301,11 @@
     "tier3_assertions": [
       "load == \"ok\"",
       "face[0].surface_type == \"cylinder\"",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 1.0"
     ],
     "title": "ShapeFix_Wire.FixGaps2d 2D-gap repair on cylindrical surface"
   },
@@ -72442,7 +72634,9 @@
       "face[0].surface_type == \"sphere\"",
       "face[0].quadric.radius == 5.0",
       "face[1].surface_type == \"sphere\"",
-      "face[1].quadric.radius == 5.0"
+      "face[1].quadric.radius == 5.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 5.0"
     ],
     "title": "ShapeAnalysis_Wire.CheckSeam non-cylindrical-seam"
   },
@@ -72544,7 +72738,11 @@
       "n_faces_total == 1",
       "face[0].surface_type == \"torus\"",
       "face[0].quadric.major_radius == 5.0",
-      "face[0].quadric.minor_radius == 2.0"
+      "face[0].quadric.minor_radius == 2.0",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 2.0",
+      "edge[3].curve_type == \"circle\"",
+      "edge[3].analytic.radius == 2.0"
     ],
     "title": "ShapeFix_Wire.FixIntersectingEdges parametric-overlap"
   },
@@ -72777,7 +72975,11 @@
     "tier3_assertions": [
       "n_faces_total == 1",
       "face[0].surface_type == \"cylinder\"",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 1.0",
+      "edge[3].curve_type == \"circle\"",
+      "edge[3].analytic.radius == 1.0"
     ],
     "title": "CheckOrder index-mode-clash"
   },
@@ -73571,7 +73773,11 @@
     "tier3_assertions": [
       "load == \"ok\"",
       "face[0].surface_type == \"cylinder\"",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 1.0"
     ],
     "title": "ShapeFix_Wire.FixSeam pcurve-direction-not-matching-3d"
   },
@@ -73702,7 +73908,11 @@
     "tier3_assertions": [
       "load == \"ok\"",
       "face[0].surface_type == \"cylinder\"",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 1.0"
     ],
     "title": "ShapeFix_Wire.FixDummySeam non-canonical-seam-position"
   },
@@ -74324,7 +74534,11 @@
       "n_edges_total == 5",
       "n_vertices_total == 10",
       "face[0].surface_type == \"cylinder\"",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 1.0"
     ],
     "title": "ShapeFix_Wire.FixShifted seam-vertex-position-mismatch"
   },
@@ -75254,7 +75468,11 @@
     "tier3_assertions": [
       "n_faces_total == 1",
       "face[0].surface_type == \"cylinder\"",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 1.0",
+      "edge[3].curve_type == \"circle\"",
+      "edge[3].analytic.radius == 1.0"
     ],
     "title": "ShapeAnalysis_Wire.CheckSeam"
   },
@@ -77149,7 +77367,11 @@
       "n_edges_total >= 4",
       "n_vertices_total >= 8",
       "brepcheck.valid == False",
-      "face[0].quadric.radius == 5.0"
+      "face[0].quadric.radius == 5.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 5.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 5.0"
     ],
     "title": "Full-revolution `CYLINDRICAL_SURFACE` `ADVANCED_FACE` with single seam `EDGE_CURVE` used twice (split_angle: angular span exceeds cap)"
   },
@@ -78367,7 +78589,11 @@
       "n_edges_total >= 4",
       "n_vertices_total >= 8",
       "brepcheck.valid == False",
-      "face[0].quadric.radius == 5.0"
+      "face[0].quadric.radius == 5.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 5.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 5.0"
     ],
     "title": "Missing-seam reconstruction fails on ADVANCED_FACE on CYLINDRICAL_SURFACE whose wire contains a partial seam line plus horizontal CIRCLE arcs"
   },
@@ -78446,7 +78672,11 @@
       "n_edges_total >= 5",
       "n_vertices_total >= 8",
       "brepcheck.valid == False",
-      "face[0].quadric.radius == 0.05"
+      "face[0].quadric.radius == 0.05",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 0.05",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 0.05"
     ],
     "title": "Pipe-like face with seam edge wrongly removed as \"small\""
   },
@@ -78814,7 +79044,11 @@
       "load == \"ok\"",
       "face[0].surface_type == \"torus\"",
       "face[0].quadric.major_radius == 5.0",
-      "face[0].quadric.minor_radius == 2.0"
+      "face[0].quadric.minor_radius == 2.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 2.0",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 7.0"
     ],
     "title": "FixAddNaturalBound seam-edge skip"
   },
@@ -79212,7 +79446,9 @@
     "tier3_assertions": [
       "n_faces_total == 1",
       "face[0].surface_type == \"sphere\"",
-      "face[0].quadric.radius == 5.0"
+      "face[0].quadric.radius == 5.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 5.0"
     ],
     "title": "ShapeFix_Face.FixAddNaturalBound: sphere natural boundary"
   },
@@ -79944,7 +80180,11 @@
     "tier3_assertions": [
       "n_faces_total == 3",
       "face[0].surface_type == \"cylinder\"",
-      "face[0].quadric.radius == 3.0"
+      "face[0].quadric.radius == 3.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 3.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 3.0"
     ],
     "title": "Single-edge circular wire orientation ambiguity"
   },
@@ -81436,7 +81676,11 @@
       "face[0].surface_type == \"cylinder\"",
       "face[0].quadric.radius == 5.0",
       "face[3].surface_type == \"cylinder\"",
-      "face[3].quadric.radius == 5.0"
+      "face[3].quadric.radius == 5.0",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 5.0",
+      "edge[3].curve_type == \"circle\"",
+      "edge[3].analytic.radius == 5.0"
     ],
     "title": "ShapeFix_Face.FixOrientation seam-vertex-shared"
   },
@@ -82895,7 +83139,11 @@
     "tier3_assertions": [
       "n_faces_total == 1",
       "face[0].surface_type == \"cylinder\"",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 1.0"
     ],
     "title": "ShapeFix_Face.FixMissingSeam seam-detection"
   },
@@ -82930,7 +83178,9 @@
     "tier3_assertions": [
       "n_faces_total == 1",
       "face[0].surface_type == \"cone\"",
-      "face[0].quadric.semi_angle == 0.01"
+      "face[0].quadric.semi_angle == 0.01",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0"
     ],
     "title": "ShapeAnalysis_Surface.DegeneratedValues cone-apex-degeneracy"
   },
@@ -82999,7 +83249,11 @@
     "tier3_assertions": [
       "load == \"ok\"",
       "face[0].surface_type == \"cylinder\"",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 1.0"
     ],
     "title": "CheckTwisted normal inversion on elementary"
   },
@@ -83102,7 +83356,9 @@
     ],
     "tier3_assertions": [
       "load == \"ok\"",
-      "face[0].surface_type == \"cone\""
+      "face[0].surface_type == \"cone\"",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0"
     ],
     "title": "FixAddNaturalBound cone apex degenerate"
   },
@@ -83171,7 +83427,9 @@
       "load == \"ok\"",
       "face[0].surface_type == \"torus\"",
       "face[0].quadric.major_radius == 3.0",
-      "face[0].quadric.minor_radius == 1.0"
+      "face[0].quadric.minor_radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 4.0"
     ],
     "title": "FixOrientation PeriodicBoundingBoxShift torus seam wrapping"
   },
@@ -83374,7 +83632,11 @@
     "tier3_assertions": [
       "load == \"ok\"",
       "face[0].surface_type == \"cylinder\"",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 1.0"
     ],
     "title": "ShapeFix_Face.FixMissingSeam.infinite-bounds-fallback"
   },
@@ -83486,7 +83748,9 @@
       "load == \"ok\"",
       "face[0].surface_type == \"torus\"",
       "face[0].quadric.major_radius == 2.0",
-      "face[0].quadric.minor_radius == 0.5"
+      "face[0].quadric.minor_radius == 0.5",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 2.5"
     ],
     "title": "seam_detection_orientation_loss"
   },
@@ -83555,7 +83819,9 @@
       "load == \"ok\"",
       "face[0].surface_type == \"torus\"",
       "face[0].quadric.major_radius == 3.0",
-      "face[0].quadric.minor_radius == 0.5"
+      "face[0].quadric.minor_radius == 0.5",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 3.5"
     ],
     "title": "circle_parameter"
   },
@@ -83590,7 +83856,11 @@
     "tier3_assertions": [
       "load == \"ok\"",
       "face[0].surface_type == \"cylinder\"",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 1.0"
     ],
     "title": "vertex_tolerance_mismatch"
   },
@@ -83774,7 +84044,9 @@
     "tier3_assertions": [
       "load == \"ok\"",
       "face[0].surface_type == \"sphere\"",
-      "face[0].quadric.radius == 3.0"
+      "face[0].quadric.radius == 3.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 3.0"
     ],
     "title": "FixMissingSeam.degenerate-wire-consolidation"
   },
@@ -83843,7 +84115,11 @@
     "tier3_assertions": [
       "load == \"ok\"",
       "face[0].surface_type == \"cylinder\"",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 1.0"
     ],
     "title": "ShapeFix_Face.Add.null-wire-guard"
   },
@@ -83950,7 +84226,11 @@
     "tier3_assertions": [
       "load == \"ok\"",
       "face[0].surface_type == \"cylinder\"",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 1.0"
     ],
     "title": "ShapeFix_Face.FixLoopWire.orientation-handling"
   },
@@ -84120,7 +84400,11 @@
     "tier3_assertions": [
       "load == \"ok\"",
       "face[0].surface_type == \"cylinder\"",
-      "face[0].quadric.radius == 1.5"
+      "face[0].quadric.radius == 1.5",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 1.5",
+      "edge[3].curve_type == \"circle\"",
+      "edge[3].analytic.radius == 1.5"
     ],
     "title": "FixAddNaturalBound seam-edge exclusion"
   },
@@ -84156,7 +84440,11 @@
       "load == \"ok\"",
       "face[0].surface_type == \"torus\"",
       "face[0].quadric.major_radius == 4.0",
-      "face[0].quadric.minor_radius == 1.0"
+      "face[0].quadric.minor_radius == 1.0",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 3.0",
+      "edge[3].curve_type == \"circle\"",
+      "edge[3].analytic.radius == 5.0"
     ],
     "title": "FixMissingSeam P-curve absence on torus"
   },
@@ -84224,7 +84512,11 @@
     "tier3_assertions": [
       "load == \"ok\"",
       "face[0].surface_type == \"cylinder\"",
-      "face[0].quadric.radius == 1.0"
+      "face[0].quadric.radius == 1.0",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 1.0",
+      "edge[3].curve_type == \"circle\"",
+      "edge[3].analytic.radius == 1.0"
     ],
     "title": "ShapeFix_Face.SplitEdge (line-2653)"
   },
@@ -84259,7 +84551,9 @@
     "tier3_assertions": [
       "load == \"ok\"",
       "face[0].surface_type == \"sphere\"",
-      "face[0].quadric.radius == 2.0"
+      "face[0].quadric.radius == 2.0",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 2.0"
     ],
     "title": "ShapeFix_Face.SplitEdge (line-2741)"
   },
@@ -84328,7 +84622,9 @@
     ],
     "tier3_assertions": [
       "load == \"ok\"",
-      "face[0].surface_type == \"cone\""
+      "face[0].surface_type == \"cone\"",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 2.0"
     ],
     "title": "ShapeFix_Face.Perform (line-346)"
   },
@@ -96331,7 +96627,9 @@
     "tier3_assertions": [
       "n_faces_total == 1",
       "face[0].surface_type == \"sphere\"",
-      "face[0].quadric.radius == 5.0"
+      "face[0].quadric.radius == 5.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 5.0"
     ],
     "title": "Inverted spherical face on certain sweep orientations"
   },
@@ -100798,7 +101096,11 @@
     "tier3_assertions": [
       "n_faces_total == 1",
       "face[0].surface_type == \"cylinder\"",
-      "face[0].quadric.radius == 10.0"
+      "face[0].quadric.radius == 10.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 10.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 10.0"
     ],
     "title": "`GROOVE` radial depth exceeds cylindrical host radius (depth wraps past axis)"
   },
@@ -102342,7 +102644,9 @@
       "n_edges_total >= 1",
       "n_vertices_total >= 2",
       "face[0].sliver_aspect_max_min > 1e6",
-      "face[0].quadric.radius == 5.0"
+      "face[0].quadric.radius == 5.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 5.0"
     ],
     "title": "Fillet radius exceeds local curvature radius along the spine"
   },
@@ -109659,7 +109963,9 @@
     "tier3_assertions": [
       "face[0].surface_type == \"cylinder\"",
       "n_edges_total >= 1",
-      "face[0].quadric.radius == 5.0"
+      "face[0].quadric.radius == 5.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 5.0"
     ],
     "title": "Offset of a surface whose normals flip sign"
   },
@@ -110168,7 +110474,9 @@
     "tier3_assertions": [
       "face[0].surface_type == \"cylinder\"",
       "n_edges_total >= 1",
-      "face[0].quadric.radius == 5.0"
+      "face[0].quadric.radius == 5.0",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 5.0"
     ],
     "title": "Draft modification fails to recompute a deformed face"
   },
