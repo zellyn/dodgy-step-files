@@ -34,6 +34,8 @@
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>face[0].surface_type == &quot;cone&quot;</code></li>
+<li><code>face[0].quadric.semi_angle == 0.52</code></li>
 <li><code>n_faces_total == 3</code></li>
 </ul></section>
 <section><h2>Live oracle output</h2>
