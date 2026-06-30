@@ -23102,6 +23102,21 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: faces[0].surface_type == "bspline"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+### Gn176 — SolidWorks `RECTANGULAR_TRIMMED_SURFACE` with negative NURBS pole weight
+- **Category**: §12.2b NURBS (sub-class: rational-surface negative-weight / null-face)
+- **Sources**: https://dev.opencascade.org/content/crash-step-import-solidworks (SolidWorks STEP export containing negative pole weight in B_SPLINE_SURFACE_WITH_KNOTS); B4 wave-5 DEF-N (LGPL-clean — pattern only, no bytes copied).
+- **Description**: STEP file encoding an `ADVANCED_FACE` on a `RECTANGULAR_TRIMMED_SURFACE` whose underlying rational B-spline surface has at least one negative pole weight (-0.15 at pole (1,1)) in its weight vector. Negative weights are geometrically invalid in the homogeneous-coordinate representation of rational NURBS: the denominator w(u,v) must be strictly positive everywhere for the surface to be well-defined. OCCT's `BRepBuilderAPI_NurbsConvert` raises an exception or returns a null/empty shell when it encounters the negative weight, because the conversion path does not defensively clamp or reject individual weights. The defect is directly encoded in the STEP DATA section via a `RATIONAL_B_SPLINE_SURFACE` complex instance carrying the negative weight vector; the fixture synthesizes the pattern reported from SolidWorks exports.
+- **Reproducer recipe**: `RECTANGULAR_TRIMMED_SURFACE` wrapping a complex `(B_SPLINE_SURFACE(...) B_SPLINE_SURFACE_WITH_KNOTS(...) RATIONAL_B_SPLINE_SURFACE(((1.,1.,1.),(1.,-0.15,1.),(1.,1.,1.))))` entity; `ADVANCED_FACE` boundary is a rectangular polyline loop; `OPEN_SHELL` + `SHELL_BASED_SURFACE_MODEL`. OCCT accepts the entity structurally but produces 0 faces (empty shell) when building the BRep.
+- **Expected kernel behavior**: reject or flag — a negative weight pole makes the rational surface undefined; `BRepBuilderAPI_NurbsConvert` must detect w ≤ 0 and emit `E_NEGATIVE_NURBS_WEIGHT` rather than crashing or silently yielding an empty shell; downstream B-rep topology must never contain a face with a negative-weight underlying surface.
+- **Notes**: Pattern from SolidWorks export bug; synthesized from defect description (LGPL-clean). B4 wave-5 DEF-N. Synonyms: "STEP crash SolidWorks import negative weight", "B_SPLINE_SURFACE_WITH_KNOTS negative weight crash", "RECTANGULAR_TRIMMED_SURFACE invalid NURBS", "rational B-spline negative pole weight STEP", "NurbsConvert exception negative weight".
+- **Byte assertion**: contains(b'RECTANGULAR_TRIMMED_SURFACE')
+- **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS')
+- **Byte assertion**: contains(b'RATIONAL_B_SPLINE_SURFACE')
+- **Byte assertion**: contains(b'-0.15')
+- **Tier-3 assertion**: n_faces_total == 0
+- **Tier-3 assertion**: shape_null == False
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
+- **Model impact**: OCCT produces an empty shell (0 faces) for the ADVANCED_FACE on the negative-weight surface; downstream mesh generation, FEA, and CAM operations on this face receive no geometry; the defect is silent (no exception exposed to Python caller, no diagnostic emitted).
 ### Wr001 — Trailing whitespace on every record line
 - **Category**: §12.13 writer-pathology (sub-class: whitespace/line-ending)
 - **Sources**: prostep ivip CAx-IF round-trip reports; FreeCAD #4231 "STEP exporter pads lines with spaces"; bug-reporter language: "diff between exports is all whitespace"
@@ -28582,6 +28597,35 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Tier-3 assertion**: edge[3].analytic.radius == 5.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 - **Model impact**: UV curves in converted model are geometrically incorrect; downstream tessellation and surface evaluation produce artifacts; tolerance bloat (≈5×radius) propagates downstream.
+
+### Gs187 — `CONICAL_SURFACE` tessellation null in OCCT 7.8+ (truncated cone frustum, R_bottom=15, R_top=5, height=20)
+- **Category**: §12.2c surfaces (sub-class: conical-face / BRepMesh regression)
+- **Sources**: https://github.com/Open-Cascade-SAS/OCCT/issues/572 (OCCT 7.8.0–7.9.x BRepMesh_IncrementalMesh returns null triangulation on CONICAL_SURFACE faces; OCCT 7.6.0 tessellates correctly). B4 wave-5 DEF-M (LGPL-clean — pattern only, no bytes copied).
+- **Description**: STEP file with a `MANIFOLD_SOLID_BREP` whose `CLOSED_SHELL` has three `ADVANCED_FACE` entities: (a) `CONICAL_SURFACE` lateral face (truncated cone frustum, R_bottom=15 mm, R_top=5 mm, height=20 mm, semi_angle≈0.464 rad), (b) a `PLANE` bottom cap (z=0, radius=15), and (c) a `PLANE` top cap (z=20, radius=5). The BRep geometry is geometrically valid and passes `checkshape`. The defect is that `BRepMesh_IncrementalMesh` in OCCT 7.8.0–7.9.x silently returns null (zero-triangle) triangulation on the `CONICAL_SURFACE` lateral face while OCCT 7.6.0 tessellates it correctly. This is a historical-fix demonstration: on current OCCT the mesher may function correctly; the fixture documents the triggering geometry class for conformance testing against 7.8/7.9 builds.
+- **Reproducer recipe**: `CONICAL_SURFACE` with apex at z=30 mm (above frustum), axis pointing down (−Z), semi_angle=atan(10/20)≈0.464 rad, radius=0; bottom circle at z=0 R=15, top circle at z=20 R=5; two `PLANE` cap faces; `CLOSED_SHELL` + `MANIFOLD_SOLID_BREP` + `ADVANCED_BREP_SHAPE_REPRESENTATION`.
+- **Expected kernel behavior**: `BRepMesh_IncrementalMesh` must produce non-empty triangulation (non-zero triangle count) on all three faces including the `CONICAL_SURFACE` lateral face; silent null triangulation on any face is a meshability defect.
+- **Notes**: Historical-fix demonstration: OCCT 7.8.0–7.9.x BRepMesh regression fixed in later versions. Local OCCT may yield correct tessellation; fixture documents the class for 7.8/7.9 testing. Synonyms: "CONICAL_SURFACE null triangulation OCCT 7.8", "BRepMesh cone face empty tessellation", "OCCT issue 572 conical surface", "cone frustum zero triangles BRepMesh", "IncrementalMesh null output cone".
+- **Byte assertion**: contains(b'CONICAL_SURFACE')
+- **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
+- **Tier-3 assertion**: n_faces_total == 3
+- **Tier-3 assertion**: faces[2].surface_type == "cone"
+- **Tier-3 assertion**: faces[2].quadric.semi_angle == 0.463647609001
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+- **Model impact**: Cone lateral face tessellation is null (zero triangles) under OCCT 7.8–7.9; downstream renderers see only the two flat caps; FEA mesh generation on the frustum surface fails silently; visual representation of the cone is incomplete.
+
+### Gs188 — Onshape `SURFACE_OF_REVOLUTION` micro-geometry (radius ≈ 2 μm) faulty self-import topology
+- **Category**: §12.2c surfaces (sub-class: revolution-surface / micro-geometry near-coincident)
+- **Sources**: https://forum.onshape.com/discussion/22945/step-file-export-import-bug (Onshape STEP export of micro-scale geometry causing faulty topology on self-import). B4 wave-5 DEF-P (LGPL-clean — pattern only, no bytes copied).
+- **Description**: STEP file containing a `CLOSED_SHELL` with an `ADVANCED_FACE` on a `SURFACE_OF_REVOLUTION` whose profile curve is a `TRIMMED_CURVE` over a circular arc of radius ≈ 0.002 mm (2 microns). The revolution axis is Z; the profile circle center is at (0.002, 0, 0) so the inner profile radius equals the offset, placing the innermost arc tangent to the Z axis. After 360° revolution this produces a torus-like closed surface where the inner hole radius is approximately zero — a degenerate near-coincident-with-axis case. The `VERTEX_POINT` coordinates at the profile endpoints are near-coincident in 3D space (all within the default OCCT tolerance zone). The file loads under OCCT (geometry healed to shape(1)), but `checkshape` may flag near-coincident vertices or degenerate seam edges; pre-fix Onshape self-import produced topology errors.
+- **Reproducer recipe**: `SURFACE_OF_REVOLUTION` with a `TRIMMED_CURVE` over a circle of radius 0.002 mm centered at (0.002, 0, 0); `AXIS1_PLACEMENT` on the Z axis; 360° revolution parameter domain; seam `EDGE_CURVE` from the profile endpoint to itself; `CLOSED_SHELL` + `MANIFOLD_SOLID_BREP`.
+- **Expected kernel behavior**: reject or flag degenerate near-coincident seam; `checkshape` must report near-coincident vertices (distance < tolerance) on the degenerate inner seam; receivers that accept the shape must widen tolerance to accommodate the micro-geometry and emit `W_NEAR_COINCIDENT_VERTEX`.
+- **Notes**: OCCT heals the micro-geometry by widening vertex tolerance; shape loads as shape(1) with 1 face on current OCCT. The defect class (sub-tolerance revolution surface) is important for interoperability testing with micro-scale STEP exports. Synonyms: "Onshape STEP micro-geometry self-import", "SURFACE_OF_REVOLUTION tiny radius faulty topology", "degenerate torus near-zero inner radius STEP", "revolution surface micro-scale vertex coincident", "STEP micro-geometry tolerance failure".
+- **Byte assertion**: contains(b'SURFACE_OF_REVOLUTION')
+- **Byte assertion**: contains(b'TRIMMED_CURVE')
+- **Tier-3 assertion**: n_faces_total == 1
+- **Tier-3 assertion**: faces[0].surface_type == "revolution"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
+- **Model impact**: Micro-geometry near-coincident topology causes faulty BRep on import; downstream FEA mesh generation on the degenerate seam fails; exporters that do not widen tolerance produce incorrect vertex coordinates; visual rendering of the sub-tolerance feature is implementation-dependent.
 
 ### Ad117 — STEP reader crashes on minimal file with malformed `STYLED_ITEM`
 - **Category**: §12.11 adversarial / parser-robustness (sub-class: SEGV on style record)
@@ -36201,6 +36245,21 @@ exercised against CGAL PMP / MeshFix.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: A receiver on big-endian arch silently drops shapes — downstream pipeline sees fewer entities than were authored.
+
+### Lh050 — STEP header `DATE_AND_TIME` malformed — FreeBSD `timezone` variable declaration conflict
+- **Category**: §12.1b header structure & instance numbering (sub-class: malformed header date / platform-specific)
+- **Sources**: OCCT V8.0.0 (FreeBSD `timezone` global variable: `long timezone` declaration conflicts with POSIX `extern long timezone`, producing garbage UTC offset on FreeBSD). B4 wave-5 DEF-R (LGPL-clean — pattern only, no bytes copied).
+- **Description**: STEP AP203 file with a `FILE_NAME` header record where the timestamp field contains a deliberately malformed `DATE_AND_TIME` value (`-9999-99-99T99:99:99+9999:99`) synthesizing what the FreeBSD timezone-declaration bug produced: the `timezone` global (`long timezone`) was declared without `extern` in a local header, conflicting with the POSIX `extern long timezone` prototype; on FreeBSD this yielded a garbage UTC-offset value that, when formatted as ISO 8601, produced an entirely out-of-range date string (negative year, month/day/hour/minute > valid range). The DATA section contains a valid minimal planar face geometry so geometry-loading tests can confirm the reader proceeds despite the malformed header date. The `FILE_SCHEMA` uses `CONFIG_CONTROL_DESIGN` (AP203 1994) to test legacy-schema tolerance simultaneously.
+- **Reproducer recipe**: `FILE_NAME('Lh050.stp','-9999-99-99T99:99:99+9999:99',(''),(''),...)` with `FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'))` and a valid `OPEN_SHELL` planar face in the DATA section. OCCT loads nothing (header schema not recognized + no PRODUCT chain); strict parsers may emit `W_MALFORMED_DATE`.
+- **Expected kernel behavior**: geometry-reading proceeds despite invalid header date; strict ISO 8601 parsers emit `W_MALFORMED_DATE` and continue; no crash; STEP header date fields are non-critical for geometry semantics; `CONFIG_CONTROL_DESIGN` schema string triggers `W_LEGACY_SCHEMA`.
+- **Notes**: DEF-R is platform-specific (FreeBSD-only): the fixture synthesizes the byte pattern the bug produced without relying on a FreeBSD build environment. Distinct from Lh040 (FILE_INFO date contradiction) and Lh016 (wrong timezone format). OCCT V8.0.0 fixes the `extern long timezone` declaration. Synonyms: "FreeBSD STEP timezone bug", "DATE_AND_TIME malformed negative year STEP", "OCCT FreeBSD timezone declaration", "STEP header garbage date FreeBSD", "FILE_NAME timestamp out-of-range year".
+- **Byte assertion**: contains(b'FILE_NAME')
+- **Byte assertion**: contains(b'-9999-99-99')
+- **Byte assertion**: matches(rb'FILE_NAME\([^,]*,-9999')
+- **Tier-3 assertion**: load == "ok"
+- **Tier-3 assertion**: shape_null == True
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Model impact**: A receiver on FreeBSD with the declaration bug emits a malformed timestamp on every STEP export; downstream consumers that strictly validate the header date reject the file; a receiver that consumes the malformed date as input may crash or silently skip the entire file header.
 
 ### Wr058 — XCAF → STEP export crashes on umlaut in label
 - **Category**: §12.13 writer-pathology (sub-class: encoding crash on emit)
@@ -43951,4 +44010,40 @@ exercised against CGAL PMP / MeshFix.
 - **OCC behavior**: accepts with ERR diagnostic (1 vertex compound shape); AP242 DRAUGHTING_ANNOTATION_OCCURRENCE unknown to local OCCT; extra trailing `$` is transparent to Part-21 strict checker which performs structural not schema validation.
 - **Severity**: P1
 - **Model impact**: Orphan annotation entity with broken syntax may crash pre-fix parsers; correctly-formed annotation may be partially loaded; machine-readable PMI text cannot be extracted from the orphan.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+
+### Pmi140 — OCCT V8 `PROPERTY_DEFINITION` string-metadata chain invisible to V7 readers
+- **Category**: §12.7 PMI/GD&T (sub-class: metadata-chain / version-bound API gap)
+- **Sources**: OCCT V8.0.0 issue #634 (OCCT GitHub release notes — `UserDefinedAttributes` API for `PROPERTY_DEFINITION` string metadata added in V8); B4 wave-5 DEF-O (LGPL-clean — pattern only, no bytes copied).
+- **Description**: STEP AP214 file containing a valid geometry (6-face cube `MANIFOLD_SOLID_BREP`, 10×10×10 mm) and a `PROPERTY_DEFINITION` + `PROPERTY_DEFINITION_REPRESENTATION` + `DESCRIPTIVE_REPRESENTATION_ITEM` chain encoding a string metadata attribute (material name = "Aluminum 6061"). The geometry loads correctly under any reader; the `DESCRIPTIVE_REPRESENTATION_ITEM` string value is readable under OCCT V8+ via the `UserDefinedAttributes` API but is silently unavailable under OCCT V7.x readers (no error, no diagnostic — the entity chain is simply not traversed). This is a historical-fix demonstration: the local OCCT version may or may not expose the metadata depending on installed build.
+- **Reproducer recipe**: `MANIFOLD_SOLID_BREP` cube (6 `ADVANCED_FACE` planes); then `DESCRIPTIVE_REPRESENTATION_ITEM('material','Aluminum 6061')` inside a `REPRESENTATION` linked by `PROPERTY_DEFINITION_REPRESENTATION` from a `PROPERTY_DEFINITION('material','material name attribute',#PRODUCT_DEFINITION_SHAPE)`. OCCT V7 loads the cube (shape(1), 6 faces) but cannot retrieve the material string; OCCT V8+ exposes it via `UserDefinedAttributes`.
+- **Expected kernel behavior**: traverse `PROPERTY_DEFINITION_REPRESENTATION` chains from `PRODUCT_DEFINITION_SHAPE` to `DESCRIPTIVE_REPRESENTATION_ITEM`; expose the string value via a stable API (`UserDefinedAttributes` or equivalent); emit `W_METADATA_UNREADABLE` under V7.x if the entity is present but not accessible.
+- **Notes**: Historical-fix demonstration: OCCT V7.x silently ignores the metadata chain; V8.0.0 adds the traversal. The geometry (cube) is unaffected. B4 wave-5 DEF-O. Synonyms: "PROPERTY_DEFINITION string metadata invisible V7", "DESCRIPTIVE_REPRESENTATION_ITEM not accessible OCCT", "STEP material metadata lost on import", "UserDefinedAttributes not populated OCCT 7", "STEP AP214 attribute string silently missing".
+- **Byte assertion**: contains(b'PROPERTY_DEFINITION')
+- **Byte assertion**: contains(b'PROPERTY_DEFINITION_REPRESENTATION')
+- **Byte assertion**: contains(b'DESCRIPTIVE_REPRESENTATION_ITEM')
+- **Byte assertion**: contains(b'Aluminum 6061')
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_faces_total == 6
+- **OCC behavior**: accepts with no diagnostic; OCCT loads the cube geometry correctly (6 planar faces, shape(1)); the metadata chain is structurally valid but not traversed under OCCT 7.x — defect manifests only when caller queries `UserDefinedAttributes` API.
+- **Severity**: P1
+- **Model impact**: Material name and other string metadata attributes encoded via `PROPERTY_DEFINITION` chains are invisible to OCCT V7.x consumers; downstream PDM systems, BOM generators, and simulation tools that rely on STEP metadata for material assignment receive no data; the geometry appears correct but the attribute payload is silently absent.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a`
+
+### Pmi141 — AP242 coordinate-system connection-point entity silently dropped under OCCT V7.x
+- **Category**: §12.7 PMI/GD&T (sub-class: assembly / coordinate-system-link silent elision)
+- **Sources**: OCCT V8.0.0 issue #779 (OCCT GitHub release notes — AP242 assembly coordinate-system connection-point support added in V8); B4 wave-5 DEF-Q (LGPL-clean — pattern only, no bytes copied).
+- **Description**: STEP AP242 file containing a valid geometry (single `GEOMETRIC_CURVE_SET`) and a two-component product structure linked by `NEXT_ASSEMBLY_USAGE_OCCURRENCE`, with a coordinate-system connection-point encoded as an `AXIS2_PLACEMENT_3D` inside a `CONSTRUCTIVE_GEOMETRY_REPRESENTATION`, linked via `CONSTRUCTIVE_GEOMETRY_REPRESENTATION_RELATIONSHIP` + `PROPERTY_DEFINITION_REPRESENTATION` to the component's `PRODUCT_DEFINITION_SHAPE`. Under OCCT 7.x the connection-point entity chain is not traversed (no error, data simply absent); under OCCT V8+ the assembly-data API exposes the coordinate-system anchor. Documented as expected-valid synthesis target: OCCT 7.x loads geometry and silently ignores the chain; no observable V7 diagnostic.
+- **Reproducer recipe**: Main product with `GEOMETRIC_CURVE_SET` geometry; component product linked by `NEXT_ASSEMBLY_USAGE_OCCURRENCE`; `AXIS2_PLACEMENT_3D('',#cs_orig,#z,#x)` at (5,0,0) inside `CONSTRUCTIVE_GEOMETRY_REPRESENTATION`; `CONSTRUCTIVE_GEOMETRY_REPRESENTATION_RELATIONSHIP` linking CGR to geometric context; `PROPERTY_DEFINITION_REPRESENTATION` wiring `PROPERTY_DEFINITION` to the CGR. On OCCT 7.x: shape(1) with 1 vertex compound, connection-point absent.
+- **Expected kernel behavior**: traverse `CONSTRUCTIVE_GEOMETRY_REPRESENTATION_RELATIONSHIP` chains from `PRODUCT_DEFINITION_SHAPE` to the coordinate-system `AXIS2_PLACEMENT_3D`; expose the connection point via the assembly-data API; emit `W_COORD_SYS_CONN_PT_DROPPED` under V7.x if the entity is present but not accessible.
+- **Notes**: Expected-valid synthesis target: local OCCT yields shape(1) with no diagnostic; the connection-point silence is the defect, not a crash or rejection. B4 wave-5 DEF-Q. Synonyms: "AP242 connection point silently dropped", "CONSTRUCTIVE_GEOMETRY_REPRESENTATION_RELATIONSHIP not traversed", "coordinate system anchor missing assembly STEP", "NEXT_ASSEMBLY_USAGE_OCCURRENCE connection point", "OCCT V7 AP242 coordinate-system link absent".
+- **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
+- **Byte assertion**: contains(b'CONSTRUCTIVE_GEOMETRY_REPRESENTATION')
+- **Byte assertion**: contains(b'PRODUCT_DEFINITION_SHAPE')
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_faces_total == 0
+- **Tier-3 assertion**: n_vertices_total == 1
+- **OCC behavior**: accepts; OCCT 7.x loads the product chain and GCS entity (1 vertex compound, shape_null==False); AP242 `CONSTRUCTIVE_GEOMETRY_REPRESENTATION_RELATIONSHIP` chain not traversed — connection-point coordinate system absent from the assembly model.
+- **Severity**: P1
+- **Model impact**: Coordinate-system connection points between assembly components are invisible to OCCT V7.x; multi-component assemblies that use AP242 coordinate-system anchors for mating constraints, connection paths, or fastener placement receive no alignment data; assembly tooling under V7.x must use alternative connection mechanisms.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`

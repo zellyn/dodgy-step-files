@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gs187 — `CONICAL_SURFACE` tessellation null in OCCT 7.8+ (truncated cone frustum, R_bottom=15, R_top=5, height=20)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2c Surface / curve degeneracies</a> <span class="sep">/</span> <span class="current">Gs187</span>
+</nav>
+<header class="title-bar">
+<h1>Gs187 <span class="sep">—</span> <span class="entry-title">`CONICAL_SURFACE` tessellation null in OCCT 7.8+ (truncated cone frustum, R_bottom=15, R_top=5, height=20)</span></h1>
+<p class="category">§12.2c surfaces (sub-class: conical-face / BRepMesh regression)</p>
+<p class="tag-pills">
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2c-surfaces/Gs187.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2c-surfaces/Gs187.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>https://github.com/Open-Cascade-SAS/OCCT/issues/572 (OCCT 7.8.0–7.9.x BRepMesh_IncrementalMesh returns null triangulation on CONICAL_SURFACE faces</li>
+<li>OCCT 7.6.0 tessellates correctly). B4 wave-5 DEF-M (LGPL-clean — pattern only, no bytes copied).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>STEP file with a `MANIFOLD_SOLID_BREP` whose `CLOSED_SHELL` has three `ADVANCED_FACE` entities: (a) `CONICAL_SURFACE` lateral face (truncated cone frustum, R_bottom=15 mm, R_top=5 mm, height=20 mm, semi_angle≈0.464 rad), (b) a `PLANE` bottom cap (z=0, radius=15), and (c) a `PLANE` top cap (z=20, radius=5). The BRep geometry is geometrically valid and passes `checkshape`. The defect is that `BRepMesh_IncrementalMesh` in OCCT 7.8.0–7.9.x silently returns null (zero-triangle) triangulation on the `CONICAL_SURFACE` lateral face while OCCT 7.6.0 tessellates it correctly. This is a historical-fix demonstration: on current OCCT the mesher may function correctly; the fixture documents the triggering geometry class for conformance testing against 7.8/7.9 builds.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`CONICAL_SURFACE` with apex at z=30 mm (above frustum), axis pointing down (−Z), semi_angle=atan(10/20)≈0.464 rad, radius=0; bottom circle at z=0 R=15, top circle at z=20 R=5; two `PLANE` cap faces; `CLOSED_SHELL` + `MANIFOLD_SOLID_BREP` + `ADVANCED_BREP_SHAPE_REPRESENTATION`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>`BRepMesh_IncrementalMesh` must produce non-empty triangulation (non-zero triangle count) on all three faces including the `CONICAL_SURFACE` lateral face; silent null triangulation on any face is a meshability defect.</p></section>
+<section><h2>Notes</h2>
+<p>Historical-fix demonstration: OCCT 7.8.0–7.9.x BRepMesh regression fixed in later versions. Local OCCT may yield correct tessellation; fixture documents the class for 7.8/7.9 testing. Synonyms: &quot;CONICAL_SURFACE null triangulation OCCT 7.8&quot;, &quot;BRepMesh cone face empty tessellation&quot;, &quot;OCCT issue 572 conical surface&quot;, &quot;cone frustum zero triangles BRepMesh&quot;, &quot;IncrementalMesh null output cone&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;CONICAL_SURFACE&#x27;)</code></li>
+<li><code>contains(b&#x27;MANIFOLD_SOLID_BREP&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_faces_total == 3</code></li>
+<li><code>faces[2].surface_type == &quot;cone&quot;</code></li>
+<li><code>faces[2].quadric.semi_angle == 0.463647609001</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gs187: <mark>CONICAL_SURFACE</mark> (R_bottom=15, R_top=5, height=20, semi_angleâ0.464 rad) IS ADVANCED_FACE.face_geometry in CLOSED_SHELL; OCCT 7.8.0-7.9.x BRepMesh_IncrementalMesh returns null triangulation on cone lateral face (silent failure, zero triangles); OCCT 7.6 tessellates correctly; historical-fix demonstration (OCCT issue #572); 3 faces: lateral cone + 2 plane caps â <mark>MANIFOLD_SOLID_BREP</mark> IS model entity */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Gs187&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Gs187.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,30.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=<mark>CONICAL_SURFACE</mark>(&#x27;&#x27;,#4,0.0,0.463647609001);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#7=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0));
+<span class="lineno">17</span>#8=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">18</span>#9=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#6,#7,#8);
+<span class="lineno">19</span>#10=PLANE(&#x27;&#x27;,#9);
+<span class="lineno">20</span>#11=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,20.0));
+<span class="lineno">21</span>#12=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">22</span>#13=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">23</span>#14=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#11,#12,#13);
+<span class="lineno">24</span>#15=PLANE(&#x27;&#x27;,#14);
+<span class="lineno">25</span>#16=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">26</span>#17=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0));
+<span class="lineno">27</span>#18=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">28</span>#19=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#16,#17,#18);
+<span class="lineno">29</span>#20=CIRCLE(&#x27;gs187_bot_circ&#x27;,#19,15.0);
+<span class="lineno">30</span>#21=CARTESIAN_POINT(&#x27;&#x27;,(15.0,0.0,0.0));
+<span class="lineno">31</span>#22=VERTEX_POINT(&#x27;&#x27;,#21);
+<span class="lineno">32</span>#23=EDGE_CURVE(&#x27;gs187_bot_circle&#x27;,#22,#22,#20,.T.);
+<span class="lineno">33</span>#24=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,20.0));
+<span class="lineno">34</span>#25=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">35</span>#26=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">36</span>#27=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#24,#25,#26);
+<span class="lineno">37</span>#28=CIRCLE(&#x27;gs187_top_circ&#x27;,#27,5.0);
+<span class="lineno">38</span>#29=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,20.0));
+<span class="lineno">39</span>#30=VERTEX_POINT(&#x27;&#x27;,#29);
+<span class="lineno">40</span>#31=EDGE_CURVE(&#x27;gs187_top_circle&#x27;,#30,#30,#28,.T.);
+<span class="lineno">41</span>#32=ORIENTED_EDGE(&#x27;&#x27;,$,$,#23,.T.);
+<span class="lineno">42</span>#33=EDGE_LOOP(&#x27;&#x27;,(#32));
+<span class="lineno">43</span>#34=FACE_OUTER_BOUND(&#x27;&#x27;,#33,.T.);
+<span class="lineno">44</span>#35=ADVANCED_FACE(&#x27;&#x27;,(#34),#10,.T.);
+<span class="lineno">45</span>#36=ORIENTED_EDGE(&#x27;&#x27;,$,$,#31,.T.);
+<span class="lineno">46</span>#37=EDGE_LOOP(&#x27;&#x27;,(#36));
+<span class="lineno">47</span>#38=FACE_OUTER_BOUND(&#x27;&#x27;,#37,.T.);
+<span class="lineno">48</span>#39=ADVANCED_FACE(&#x27;&#x27;,(#38),#15,.T.);
+<span class="lineno">49</span>#40=ORIENTED_EDGE(&#x27;&#x27;,$,$,#23,.F.);
+<span class="lineno">50</span>#41=EDGE_LOOP(&#x27;&#x27;,(#40));
+<span class="lineno">51</span>#42=ORIENTED_EDGE(&#x27;&#x27;,$,$,#31,.T.);
+<span class="lineno">52</span>#43=EDGE_LOOP(&#x27;&#x27;,(#42));
+<span class="lineno">53</span>#44=FACE_OUTER_BOUND(&#x27;&#x27;,#41,.T.);
+<span class="lineno">54</span>#45=FACE_BOUND(&#x27;&#x27;,#43,.T.);
+<span class="lineno">55</span>#46=ADVANCED_FACE(&#x27;gs187_cone_lateral&#x27;,(#44,#45),#5,.T.);
+<span class="lineno">56</span>#47=CLOSED_SHELL(&#x27;gs187_shell&#x27;,(#35,#39,#46));
+<span class="lineno">57</span>#48=<mark>MANIFOLD_SOLID_BREP</mark>(&#x27;gs187_solid&#x27;,#47);
+<span class="lineno">58</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">59</span>#9051=PRODUCT(&#x27;Gs187&#x27;,&#x27;Gs187&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">60</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">61</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">62</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">63</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">64</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">65</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">66</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">67</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">68</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">69</span>#9061=ADVANCED_BREP_SHAPE_REPRESENTATION(&#x27;&#x27;,(#48),#9060);
+<span class="lineno">70</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">71</span>ENDSEC;
+<span class="lineno">72</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gs186.html">&larr; Gs186</a> <a class="up" href="index.html">§12.2c Surface / curve degeneracies</a> <a class="next" href="Gs188.html">Gs188 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

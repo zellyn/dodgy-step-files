@@ -1,0 +1,49 @@
+ISO-10303-21;
+/* Lh050: malformed DATE_AND_TIME in FILE_NAME header — FreeBSD timezone bug */
+/* DEFECT: 'long timezone' vs 'extern long timezone' declaration mismatch on FreeBSD */
+/* produces garbage UTC offset; synthesized as explicit out-of-range date string */
+/* OCCT V8.0.0 fixes: https://github.com/Open-Cascade-SAS/OCCT/releases */
+/* Expected: geometry loads; strict parsers emit W_MALFORMED_DATE; no crash */
+HEADER;
+FILE_DESCRIPTION(('Lh050: malformed header DATE_AND_TIME (FreeBSD timezone bug)'),'2;1');
+/* DEFECT: next line has malformed timestamp with garbage timezone offset */
+FILE_NAME('Lh050.stp','-9999-99-99T99:99:99+9999:99',(''),(''),'cad-research-suite','FreeBSD/OCCT-7.x-timezone-bug','');
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+ENDSEC;
+DATA;
+#1=CARTESIAN_POINT('',(0.,0.,0.));
+#2=CARTESIAN_POINT('',(10.,0.,0.));
+#3=CARTESIAN_POINT('',(10.,10.,0.));
+#4=CARTESIAN_POINT('',(0.,10.,0.));
+#5=DIRECTION('',(1.,0.,0.));
+#6=DIRECTION('',(0.,1.,0.));
+#7=DIRECTION('',(0.,0.,1.));
+#8=VECTOR('',#5,10.);
+#9=VECTOR('',#6,10.);
+#10=LINE('',#1,#8);
+#11=LINE('',#2,#9);
+#12=VECTOR('',#5,10.);
+#13=LINE('',#4,#12);
+#14=VECTOR('',#6,10.);
+#15=LINE('',#1,#14);
+#16=VERTEX_POINT('',#1);
+#17=VERTEX_POINT('',#2);
+#18=VERTEX_POINT('',#3);
+#19=VERTEX_POINT('',#4);
+#20=EDGE_CURVE('',#16,#17,#10,.T.);
+#21=EDGE_CURVE('',#17,#18,#11,.T.);
+#22=EDGE_CURVE('',#19,#18,#13,.T.);
+#23=EDGE_CURVE('',#16,#19,#15,.T.);
+#24=ORIENTED_EDGE('',*,*,#20,.T.);
+#25=ORIENTED_EDGE('',*,*,#21,.T.);
+#26=ORIENTED_EDGE('',*,*,#22,.F.);
+#27=ORIENTED_EDGE('',*,*,#23,.F.);
+#28=EDGE_LOOP('',(#24,#25,#26,#27));
+#29=AXIS2_PLACEMENT_3D('',#1,#7,#5);
+#30=PLANE('',#29);
+#31=FACE_OUTER_BOUND('',#28,.T.);
+#32=ADVANCED_FACE('',(#31),#30,.T.);
+#33=OPEN_SHELL('',(#32));
+#34=SHELL_BASED_SURFACE_MODEL('',(#33));
+ENDSEC;
+END-ISO-10303-21;

@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1><span class="tag tag-crash">crash</span></h1>
 <p class="blurb">Kernel-side crash (signal-11 / segfault, runtime-error, infinite-loop, OOM).</p>
-<p class="meta">255 entries</p>
+<p class="meta">257 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Section</th><th>Expected validation</th></tr></thead><tbody>
@@ -63,6 +63,7 @@
 <tr><td><a href="../../12-2b-nurbs/Gn105.html"><code>Gn105</code></a></td><td>rational-with-coincident-poles IsClosed</td><td><a href="../../12-2b-nurbs/index.html">§12.2b NURBS / B-spline</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-2b-nurbs/Gn107.html"><code>Gn107</code></a></td><td>approximate-mode B-spline high-frequency</td><td><a href="../../12-2b-nurbs/index.html">§12.2b NURBS / B-spline</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-2b-nurbs/Gn173.html"><code>Gn173</code></a></td><td>Rational B-spline surface with extreme pole clustering and weight ratio</td><td><a href="../../12-2b-nurbs/index.html">§12.2b NURBS / B-spline</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="../../12-2b-nurbs/Gn176.html"><code>Gn176</code></a></td><td>SolidWorks `RECTANGULAR_TRIMMED_SURFACE` with negative NURBS pole weight</td><td><a href="../../12-2b-nurbs/index.html">§12.2b NURBS / B-spline</a></td><td><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-2a-pcurves/Gp001.html"><code>Gp001</code></a></td><td>Missing pcurve on edge — only the 3D curve representation is present</td><td><a href="../../12-2a-pcurves/index.html">§12.2a Pcurve defects</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-2a-pcurves/Gp019.html"><code>Gp019</code></a></td><td>Edge on a composite-surface face is missing per-patch pcurve</td><td><a href="../../12-2a-pcurves/index.html">§12.2a Pcurve defects</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-2a-pcurves/Gp037.html"><code>Gp037</code></a></td><td>Pcurve projection produces infinite line instead of bounded</td><td><a href="../../12-2a-pcurves/index.html">§12.2a Pcurve defects</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
@@ -139,6 +140,7 @@
 <tr><td><a href="../../12-7-pmi/Pmi049.html"><code>Pmi049</code></a></td><td>Tessellated geometry with no styled_item / color</td><td><a href="../../12-7-pmi/index.html">§12.7 PMI / GD&amp;T</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-7-pmi/Pmi060.html"><code>Pmi060</code></a></td><td>Tolerance datum description NULL on re-export</td><td><a href="../../12-7-pmi/index.html">§12.7 PMI / GD&amp;T</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-7-pmi/Pmi111.html"><code>Pmi111</code></a></td><td>`COMPOSITE_FEATURE` with cyclic sub-feature reference (A → B → A)</td><td><a href="../../12-7-pmi/index.html">§12.7 PMI / GD&amp;T</a></td><td><code>occt=shape(1)/shape(1) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="../../12-7-pmi/Pmi141.html"><code>Pmi141</code></a></td><td>AP242 coordinate-system connection-point entity silently dropped under OCCT V7.x</td><td><a href="../../12-7-pmi/index.html">§12.7 PMI / GD&amp;T</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-4-tolerance/Tb013.html"><code>Tb013</code></a></td><td>Coordinate at 1e-300 tests as &quot;near zero&quot; only under denormalized math</td><td><a href="../../12-4-tolerance/index.html">§12.4 Tolerance &amp; numerical precision</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-3c-faces/Tfa002.html"><code>Tfa002</code></a></td><td>Unbound ADVANCED_FACE (no FACE_OUTER_BOUND, no FACE_BOUND)</td><td><a href="../../12-3c-faces/index.html">§12.3c Faces / sewing / free bound</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-3c-faces/Tfa018.html"><code>Tfa018</code></a></td><td>Same-domain face merge across periodic seam: shared `EDGE_CURVE` reused with `.T.`/`.F.` on both halves (missed-seam reconstruction)</td><td><a href="../../12-3c-faces/index.html">§12.3c Faces / sewing / free bound</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>

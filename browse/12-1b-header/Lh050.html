@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lh050 — STEP header `DATE_AND_TIME` malformed — FreeBSD `timezone` variable declaration conflict</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.1b Header &amp; instance-numbering</a> <span class="sep">/</span> <span class="current">Lh050</span>
+</nav>
+<header class="title-bar">
+<h1>Lh050 <span class="sep">—</span> <span class="entry-title">STEP header `DATE_AND_TIME` malformed — FreeBSD `timezone` variable declaration conflict</span></h1>
+<p class="category">§12.1b header structure &amp; instance numbering (sub-class: malformed header date / platform-specific)</p>
+<p class="tag-pills">
+<a class="tag tag-syntax" href="../by-tag/syntax/index.html">syntax</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-1b-header/Lh050.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-1b-header/Lh050.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT V8.0.0 (FreeBSD `timezone` global variable: `long timezone` declaration conflicts with POSIX `extern long timezone`, producing garbage UTC offset on FreeBSD). B4 wave-5 DEF-R (LGPL-clean — pattern only, no bytes copied).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>STEP AP203 file with a `FILE_NAME` header record where the timestamp field contains a deliberately malformed `DATE_AND_TIME` value (`-9999-99-99T99:99:99+9999:99`) synthesizing what the FreeBSD timezone-declaration bug produced: the `timezone` global (`long timezone`) was declared without `extern` in a local header, conflicting with the POSIX `extern long timezone` prototype; on FreeBSD this yielded a garbage UTC-offset value that, when formatted as ISO 8601, produced an entirely out-of-range date string (negative year, month/day/hour/minute &gt; valid range). The DATA section contains a valid minimal planar face geometry so geometry-loading tests can confirm the reader proceeds despite the malformed header date. The `FILE_SCHEMA` uses `CONFIG_CONTROL_DESIGN` (AP203 1994) to test legacy-schema tolerance simultaneously.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`FILE_NAME(&#x27;Lh050.stp&#x27;,&#x27;-9999-99-99T99:99:99+9999:99&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),...)` with `FILE_SCHEMA((&#x27;CONFIG_CONTROL_DESIGN&#x27;))` and a valid `OPEN_SHELL` planar face in the DATA section. OCCT loads nothing (header schema not recognized + no PRODUCT chain); strict parsers may emit `W_MALFORMED_DATE`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>geometry-reading proceeds despite invalid header date; strict ISO 8601 parsers emit `W_MALFORMED_DATE` and continue; no crash; STEP header date fields are non-critical for geometry semantics; `CONFIG_CONTROL_DESIGN` schema string triggers `W_LEGACY_SCHEMA`.</p></section>
+<section><h2>Notes</h2>
+<p>DEF-R is platform-specific (FreeBSD-only): the fixture synthesizes the byte pattern the bug produced without relying on a FreeBSD build environment. Distinct from Lh040 (FILE_INFO date contradiction) and Lh016 (wrong timezone format). OCCT V8.0.0 fixes the `extern long timezone` declaration. Synonyms: &quot;FreeBSD STEP timezone bug&quot;, &quot;DATE_AND_TIME malformed negative year STEP&quot;, &quot;OCCT FreeBSD timezone declaration&quot;, &quot;STEP header garbage date FreeBSD&quot;, &quot;FILE_NAME timestamp out-of-range year&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;FILE_NAME&#x27;)</code></li>
+<li><code>contains(b&#x27;-9999-99-99&#x27;)</code></li>
+<li><code>matches(rb&#x27;FILE_NAME\([^,]*,-9999&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+<li><code>shape_null == True</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Lh040.html">Lh040</a>, <a href="Lh016.html">Lh016</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Lh050: malformed DATE_AND_TIME in <mark>FILE_NAME</mark> header â FreeBSD timezone bug */
+<span class="lineno">3</span>/* DEFECT: &#x27;long timezone&#x27; vs &#x27;extern long timezone&#x27; declaration mismatch on FreeBSD */
+<span class="lineno">4</span>/* produces garbage UTC offset; synthesized as explicit out-of-range date string */
+<span class="lineno">5</span>/* OCCT V8.0.0 fixes: https://github.com/Open-Cascade-SAS/OCCT/releases */
+<span class="lineno">6</span>/* Expected: geometry loads; strict parsers emit W_MALFORMED_DATE; no crash */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Lh050: malformed header DATE_AND_TIME (FreeBSD timezone bug)&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>/* DEFECT: next line has malformed timestamp with garbage timezone offset */
+<span class="lineno">10</span><mark>FILE_NAME</mark>(&#x27;Lh050.stp&#x27;,&#x27;<mark>-9999-99-99</mark>T99:99:99+9999:99&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;FreeBSD/OCCT-7.x-timezone-bug&#x27;,&#x27;&#x27;);
+<span class="lineno">11</span>FILE_SCHEMA((&#x27;CONFIG_CONTROL_DESIGN&#x27;));
+<span class="lineno">12</span>ENDSEC;
+<span class="lineno">13</span>DATA;
+<span class="lineno">14</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.,0.,0.));
+<span class="lineno">15</span>#2=CARTESIAN_POINT(&#x27;&#x27;,(10.,0.,0.));
+<span class="lineno">16</span>#3=CARTESIAN_POINT(&#x27;&#x27;,(10.,10.,0.));
+<span class="lineno">17</span>#4=CARTESIAN_POINT(&#x27;&#x27;,(0.,10.,0.));
+<span class="lineno">18</span>#5=DIRECTION(&#x27;&#x27;,(1.,0.,0.));
+<span class="lineno">19</span>#6=DIRECTION(&#x27;&#x27;,(0.,1.,0.));
+<span class="lineno">20</span>#7=DIRECTION(&#x27;&#x27;,(0.,0.,1.));
+<span class="lineno">21</span>#8=VECTOR(&#x27;&#x27;,#5,10.);
+<span class="lineno">22</span>#9=VECTOR(&#x27;&#x27;,#6,10.);
+<span class="lineno">23</span>#10=LINE(&#x27;&#x27;,#1,#8);
+<span class="lineno">24</span>#11=LINE(&#x27;&#x27;,#2,#9);
+<span class="lineno">25</span>#12=VECTOR(&#x27;&#x27;,#5,10.);
+<span class="lineno">26</span>#13=LINE(&#x27;&#x27;,#4,#12);
+<span class="lineno">27</span>#14=VECTOR(&#x27;&#x27;,#6,10.);
+<span class="lineno">28</span>#15=LINE(&#x27;&#x27;,#1,#14);
+<span class="lineno">29</span>#16=VERTEX_POINT(&#x27;&#x27;,#1);
+<span class="lineno">30</span>#17=VERTEX_POINT(&#x27;&#x27;,#2);
+<span class="lineno">31</span>#18=VERTEX_POINT(&#x27;&#x27;,#3);
+<span class="lineno">32</span>#19=VERTEX_POINT(&#x27;&#x27;,#4);
+<span class="lineno">33</span>#20=EDGE_CURVE(&#x27;&#x27;,#16,#17,#10,.T.);
+<span class="lineno">34</span>#21=EDGE_CURVE(&#x27;&#x27;,#17,#18,#11,.T.);
+<span class="lineno">35</span>#22=EDGE_CURVE(&#x27;&#x27;,#19,#18,#13,.T.);
+<span class="lineno">36</span>#23=EDGE_CURVE(&#x27;&#x27;,#16,#19,#15,.T.);
+<span class="lineno">37</span>#24=ORIENTED_EDGE(&#x27;&#x27;,*,*,#20,.T.);
+<span class="lineno">38</span>#25=ORIENTED_EDGE(&#x27;&#x27;,*,*,#21,.T.);
+<span class="lineno">39</span>#26=ORIENTED_EDGE(&#x27;&#x27;,*,*,#22,.F.);
+<span class="lineno">40</span>#27=ORIENTED_EDGE(&#x27;&#x27;,*,*,#23,.F.);
+<span class="lineno">41</span>#28=EDGE_LOOP(&#x27;&#x27;,(#24,#25,#26,#27));
+<span class="lineno">42</span>#29=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#7,#5);
+<span class="lineno">43</span>#30=PLANE(&#x27;&#x27;,#29);
+<span class="lineno">44</span>#31=FACE_OUTER_BOUND(&#x27;&#x27;,#28,.T.);
+<span class="lineno">45</span>#32=ADVANCED_FACE(&#x27;&#x27;,(#31),#30,.T.);
+<span class="lineno">46</span>#33=OPEN_SHELL(&#x27;&#x27;,(#32));
+<span class="lineno">47</span>#34=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#33));
+<span class="lineno">48</span>ENDSEC;
+<span class="lineno">49</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Lh049.html">&larr; Lh049</a> <a class="up" href="index.html">§12.1b Header &amp; instance-numbering</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>
