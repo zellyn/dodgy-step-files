@@ -121,7 +121,7 @@ The catalog uses `### ID — title` for each entry. Numbers are best-effort curr
 
 ### The gap, plainly
 
-- **Mesh defects (MeshFix / CGAL PMP) are catalogued but not synthesized** into STEP fixtures. STEP isn't a mesh format, so this gap is structural, not just unfinished work; mesh defects need a parallel mesh-fixture format that doesn't exist here yet.
+- **Mesh defects (CLOSED, 2026-06-19/23)**: previously deferred because STEP isn't a mesh format. The corpus now carries its own mesh-fixture format — `mesh_builder.py` emits `*.mesh.json` files (vertices + triangles + assertions) under `mesh-examples/12-14-mesh/`. §12.14 has ~760 mesh fixtures (Me001–Me1182) covering MeshFix / CGAL PMP / pyvista defect classes. Oracles in place: pymeshfix, pyvista (B3.3b/c). See `MESH_DEFECT_TAXONOMY.md` for the defect catalog and the §12.14 entries in `STEP_PROBLEM_CATALOG.md` for the per-fixture mechanisms.
 - **OCCT branch coverage**: the v3 deep-pass enumerates 2058 implementation branches, of which the catalog currently has ~2,287 entries spanning many of them — but a substantial chunk of those entries describe related-or-overlapping defect classes, so true unique-branch coverage is lower than the raw count suggests.
 - **Other CAD codebases**: HOOPS, JT, IFC, Parasolid, ACIS — listed in `CODEBASE_LANDSCAPE.md` as worth auditing, mostly not yet deep-passed.
 - **Semantic verification gap (CLOSED, 2026-06-18)**: the corpus-wide adversarial sweep ran 100% sample coverage in two-pass Haiku→Sonnet verification. 98% of fixtures (2,280/2,309) demonstrate their claim crisply; the remaining 29 are either weak (23) or claim-vs-geometry mismatches (6 in regen queue at `audit/CONFIRMED_INVALID_REGEN_QUEUE.md`).
