@@ -22811,6 +22811,31 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Fixture path**: step-examples/12-2b-nurbs/Gn173.stp
 - **Fixture kind**: scaffold
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
+### Gn174 — B-spline surface with extreme aspect-ratio control net (1000:1) causing empty BRepMesh output
+- **Category**: §12.2b NURBS
+- **Sources**: arXiv 2506.05417 "Better STEP" paper (~5% model rate); BRepMesh_IncrementalMesh internal chord-deflection / aspect-ratio guard
+- **Description**: B_SPLINE_SURFACE_WITH_KNOTS degree (2,2) with a 3×3 control-point net whose physical extent is 1000 mm in U and 1 mm in V (aspect ratio 1000:1). BRepMesh_IncrementalMesh encounters the extreme aspect ratio during chord-deflection computation and aborts triangulation without raising an exception, yielding empty triangulation (zero triangles) on the face. The shape loads but is un-renderable.
+- **Reproducer recipe**: B_SPLINE_SURFACE_WITH_KNOTS degree (2,2), U knots (0, 1000), V knots (0, 1); 3×3 flat control net spanning 1000×1 in XY; ADVANCED_FACE with four SURFACE_CURVE/PCURVE edges wiring the full parametric domain.
+- **Expected kernel behavior**: BRepMesh should either mesh the face with anisotropic chord deflection or report a non-empty warning; silent empty output is the defect.
+- **Notes**: Extreme aspect ratio (1000:1); sliver_aspect_max_min ≈ 5e9; flat surface (z=0) so geometry itself is valid.
+- **Fixture path**: step-examples/12-2b-nurbs/Gn174.stp
+- **Fixture kind**: scaffold
+- **Tier-3 assertion**: n_faces_total == 1
+- **Tier-3 assertion**: faces[0].surface_type == "bspline"
+- **Tier-3 assertion**: faces[0].sliver_aspect_max_min > 1e6
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+### Gn175 — Gordon surface ill-conditioned guide-curve network (nearly parallel rails, V-extent 0.01 mm)
+- **Category**: §12.2b NURBS
+- **Sources**: OCCT V8_0_0_p1 release note (GeomFill_Gordon ill-conditioned guide-curve network fix); https://github.com/Open-Cascade-SAS/OCCT/releases
+- **Description**: B_SPLINE_SURFACE_WITH_KNOTS degree (2,1) whose control-point net models a loft over two nearly-parallel rail curves (separation 0.01 mm) over a U span of 10 mm (aspect ratio 1000:1 in V vs U). This recreates the ill-conditioned guide-curve network that GeomFill_Gordon mishandled pre-OCCT-V8, silently producing degenerate geometry. Historical-fix demonstration: on OCCT V8+, the fix is applied and the shape loads; the fixture documents the defect class for pre-V8 interoperability checking.
+- **Reproducer recipe**: B_SPLINE_SURFACE_WITH_KNOTS degree (2,1), U knots (0,10), V knots (0,0.01); 3×2 control net with two nearly-coincident rail rows (z=0 and z=0.01); ADVANCED_FACE with SURFACE_CURVE/PCURVE wire looping the full domain.
+- **Expected kernel behavior**: pre-OCCT-V8 GeomFill_Gordon silently produces degenerate (incorrect) geometry; OCCT V8+ detects ill-conditioning and applies fallback loft. Current behavior: shape loads with near-zero V extent.
+- **Notes**: V-extent 0.01 mm; U/V aspect ratio 1000:1; Gordon surface ill-conditioning; historical-fix class (OCCT V8_0_0_p1). On current OCCT, shape loads successfully as OCCT V8 fix is present.
+- **Fixture path**: step-examples/12-2b-nurbs/Gn175.stp
+- **Fixture kind**: scaffold
+- **Tier-3 assertion**: n_faces_total == 1
+- **Tier-3 assertion**: faces[0].surface_type == "bspline"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Wr001 — Trailing whitespace on every record line
 - **Category**: §12.13 writer-pathology (sub-class: whitespace/line-ending)
 - **Sources**: prostep ivip CAx-IF round-trip reports; FreeCAD #4231 "STEP exporter pads lines with spaces"; bug-reporter language: "diff between exports is all whitespace"
@@ -27891,6 +27916,19 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 | **Status** | Built, validated. Demonstrates cache-invalidation omission near singularities. |
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
+### Gs184 — Two adjacent B-spline surfaces at G1-tangency boundary with tessellation polyline crossing
+- **Category**: §12.2c surfaces
+- **Sources**: https://academic.oup.com/jcde/article/13/1/239/8383411 (JCDE 13(1):239, 2026 — tessellation self-intersection at tangency seams)
+- **Description**: Two adjacent B_SPLINE_SURFACE_WITH_KNOTS ADVANCED_FACEs sharing an EDGE_CURVE boundary at a G1-tangency locus (surface normals equal at the seam, tangent planes coincide along the boundary curve). The PCURVE on each patch references the shared EDGE_CURVE and approaches the seam tangentially. BRepMesh tessellation sample points on the two sides produce polylines that cross in 3D at the tangent-plane seam (self-intersecting mesh at the G1 boundary). The two-patch topology is encoded as an OPEN_SHELL with a SURFACE_CURVE carrying two PCURVEs on the shared edge.
+- **Reproducer recipe**: Patch A: B_SPLINE_SURFACE_WITH_KNOTS degree (2,2) 3×3 net x∈[0,2], y∈[0,2], z bow peaking at 0.4 at mid-V on the right boundary. Patch B: B_SPLINE_SURFACE_WITH_KNOTS degree (2,2) 3×3 net x∈[2,4], y∈[0,2], first control row matches Patch A's last row (G0), second row continues with same derivative (G1 tangent). Shared EDGE_CURVE at x=2 with SURFACE_CURVE carrying one PCURVE per patch.
+- **Expected kernel behavior**: BRepMesh should detect the G1-tangency seam and generate consistent polylines across the boundary; self-intersecting tessellation polylines at the seam are the defect.
+- **Notes**: G1 tangency (normals match, tangent planes coincide at seam); two-patch open shell; SURFACE_CURVE carries two PCURVEs on shared edge; defect is on the face geometry, not an orphan entity.
+- **Fixture path**: step-examples/12-2c-surfaces/Gs184.stp
+- **Fixture kind**: scaffold
+- **Tier-3 assertion**: n_faces_total == 2
+- **Tier-3 assertion**: faces[0].surface_type == "bspline"
+- **Tier-3 assertion**: faces[1].surface_type == "bspline"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 ### Ad117 — STEP reader crashes on minimal file with malformed `STYLED_ITEM`
 - **Category**: §12.11 adversarial / parser-robustness (sub-class: SEGV on style record)
 - **Sources**: OCCT MANTIS#0029979; bug-reporter language: "crash by reading STEP file", "STEP reader crashes on import", "segmentation fault on small STEP file". (OCCT MANTIS tracker 502 as of 2026-05-02)
