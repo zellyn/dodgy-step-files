@@ -43201,3 +43201,54 @@ exercised against CGAL PMP / MeshFix.
 - **Mesh assertion**: `euler_characteristic v=6 e=9 f=3 chi=0`
 - **Fixture path**: mesh-examples/12-14-mesh/Me1182.mesh.json
 - **Fixture kind**: mesh-defect synthesized via mesh_builder
+
+### Pmi137 — `COMPOUND_REPRESENTATION_ITEM` with `SET_REPRESENTATION_ITEM` null children
+- **Category**: §12.7 PMI/GD&T
+- **Sources**: OCCT GitHub issue #1283 (nist_ctc_05_asme1_ap242-e1.stp test case); https://github.com/Open-Cascade-SAS/OCCT/issues/1283
+- **Description**: A STEP AP242 file containing a `COMPOUND_REPRESENTATION_ITEM` whose item list includes a `SET_REPRESENTATION_ITEM` that wraps `DESCRIPTIVE_REPRESENTATION_ITEM` children. OCCT's entity-resolution pass populates `NbItemElement() == 1` (the SET wrapper counts as one item) but `ItemElementValue(0)` returns a null handle because the resolver does not traverse into `SET_REPRESENTATION_ITEM` sub-elements when they appear inside a compound item list. PMI dimensional-note data is silently missing even though the file's geometry loads correctly. The NIST CTC-05 test case exposed this gap.
+- **Reproducer recipe**: STEP AP242 file with `DESCRIPTIVE_REPRESENTATION_ITEM('dimensional note','statistical')` wrapped in `SET_REPRESENTATION_ITEM('',(#N))` which is listed as an item in `COMPOUND_REPRESENTATION_ITEM('compound_note',(#M))`; the compound is wired into a `REPRESENTATION` via `PROPERTY_DEFINITION_REPRESENTATION` anchored to the model shape.
+- **Expected kernel behavior**: resolve `SET_REPRESENTATION_ITEM` children when walking a compound item list; `ItemElementValue(0)` must return the `DESCRIPTIVE_REPRESENTATION_ITEM`, not a null handle; emit `W_COMPOUND_ITEM_SET_WRAPPED` diagnostic when the intermediate SET node is present.
+- **Notes**: STEP file containing a `COMPOUND_REPRESENTATION_ITEM` whose item list includes a `SET_REPRESENTATION_ITEM` wrapping `DESCRIPTIVE_REPRESENTATION_ITEM` children. **See also**: M027, M029. B4 wave-4 commercial-tracker synthesis batch A (DEF-A). Synonyms: "COMPOUND_REPRESENTATION_ITEM null children", "SET_REPRESENTATION_ITEM not traversed in compound", "AP242 compound item sub-elements missing", "NbItemElement > 0 but ItemElementValue returns null".
+- **Byte assertion**: contains(b'COMPOUND_REPRESENTATION_ITEM')
+- **Byte assertion**: contains(b'SET_REPRESENTATION_ITEM')
+- **Byte assertion**: count_entity_def(b'DESCRIPTIVE_REPRESENTATION_ITEM') >= 1
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_vertices_total == 1
+- **OCC behavior**: accepts with ERR diagnostic (1 vertex compound shape); AP242 PMI entities unknown to local OCCT; null-handle defect manifests in OCAF PMI extraction API only.
+- **Severity**: P1
+- **Model impact**: PMI dimensional-note data silently missing; compound item sub-elements not accessible via ItemElementValue; downstream PMI extraction tools report empty annotation text.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+
+### Pmi138 — `GEOMETRIC_TOLERANCE` magnitude encoded via `MEASURE_REPRESENTATION_ITEM` indirect chain
+- **Category**: §12.7 PMI/GD&T
+- **Sources**: OCCT developer forum — issue reading geometric tolerance values from NX/NIST-generated STEP AP242 files in OCCT 7.9; https://dev.opencascade.org/content/issue-reading-geometric-tolerance-values-nxnist-generated-step-ap242-files-occt-79
+- **Description**: A STEP AP242 file where a `FLATNESS_TOLERANCE` (and by extension any `GEOMETRIC_TOLERANCE` subtype) carries its magnitude via an indirect structural chain rather than the direct attribute slot that OCCT's writer produces. The indirect path is: `GEOMETRIC_TOLERANCE` (magnitude attribute = $) → `PROPERTY_DEFINITION` → `PROPERTY_DEFINITION_REPRESENTATION` → `REPRESENTATION` → `MEASURE_REPRESENTATION_ITEM` (value = 0.05 mm). OCCT 7.9's `StepDimTol_GeometricTolerance::Magnitude()` looks only at the direct attribute and returns a null handle for this encoding. NX and NIST-generated AP242 exports commonly use this path. Fixed in OCCT 8.0.x master.
+- **Reproducer recipe**: STEP AP242 file with `FLATNESS_TOLERANCE('flatness',$,$,#shape_asp,$)` (null direct magnitude) and a parallel `PROPERTY_DEFINITION_REPRESENTATION` chain leading to `MEASURE_REPRESENTATION_ITEM('flatness_magnitude',LENGTH_MEASURE(0.05),#length_unit)`.
+- **Expected kernel behavior**: traverse the `PROPERTY_DEFINITION_REPRESENTATION` chain from `GEOMETRIC_TOLERANCE` to find the `MEASURE_REPRESENTATION_ITEM`; return value 0.05 mm from `Magnitude()`; emit `W_TOLERANCE_INDIRECT_MAGNITUDE` diagnostic when the indirect path is used.
+- **Notes**: STEP file containing a `GEOMETRIC_TOLERANCE` entity with a null direct-magnitude attribute and an indirect magnitude encoded through a `PROPERTY_DEFINITION_REPRESENTATION` → `MEASURE_REPRESENTATION_ITEM` chain. Expected-valid synthesis target: OCCT 7.9 returns null (defect); OCCT 8.x traverses the chain correctly (fix). Local oracle cannot distinguish because `FLATNESS_TOLERANCE` is not in the installed OCCT AP242 schema map. **See also**: Pmi003, Pmi068. B4 wave-4 commercial-tracker synthesis batch A (DEF-E). Synonyms: "GEOMETRIC_TOLERANCE magnitude returns null", "MEASURE_REPRESENTATION_ITEM indirect tolerance value", "NX AP242 flatness magnitude not readable", "StepDimTol_GeometricTolerance Magnitude null handle".
+- **Byte assertion**: contains(b'FLATNESS_TOLERANCE')
+- **Byte assertion**: contains(b'MEASURE_REPRESENTATION_ITEM')
+- **Byte assertion**: contains(b'PROPERTY_DEFINITION_REPRESENTATION')
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_vertices_total == 1
+- **OCC behavior**: accepts with ERR diagnostic (1 vertex compound shape); AP242 tolerance entities unknown to local OCCT schema; null-handle defect manifests in OCAF PMI extraction API under OCCT 7.9 only.
+- **Severity**: P1
+- **Model impact**: Tolerance numerical value and unit are not extractable via `StepDimTol_GeometricTolerance::Magnitude()`; only type, name, description, and datum references are accessible; downstream GD&T consumers report zero or undefined tolerance value.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+
+### Pmi139 — Orphan `DRAUGHTING_ANNOTATION_OCCURRENCE` with broken STEP syntax
+- **Category**: §12.7 PMI/GD&T
+- **Sources**: HOOPS Exchange fixed-bugs list 2024, SDHE-36465; https://docs.techsoft3d.com/exchange/2024/fixed_bugs.html
+- **Description**: A STEP AP242 file (modeled on HOOPS Exchange SDHE-36465) where a `DRAUGHTING_ANNOTATION_OCCURRENCE` entity is emitted in the DATA section with no reference from any `DRAUGHTING_MODEL` or `MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION` (orphan — not reachable from the model shape tree). Additionally the entity record has an attribute-count mismatch: four arguments instead of the expected three (extra trailing `$`). A correctly-formed annotation is also present and wired into a `DRAUGHTING_MODEL`. The pre-fix HOOPS Exchange writer emitted exactly this pattern when an annotation write pass started but the parent reference was lost mid-stream. Downstream parsers must skip the malformed orphan with a diagnostic rather than crashing or accepting the corrupt record silently.
+- **Reproducer recipe**: STEP AP242 file with one valid `DRAUGHTING_ANNOTATION_OCCURRENCE` inside a `DRAUGHTING_MODEL`, and one orphan `DRAUGHTING_ANNOTATION_OCCURRENCE('orphan_annotation',(#psa),#poly,$)` with a trailing `$` argument and no parent `DRAUGHTING_MODEL` reference.
+- **Expected kernel behavior**: skip the malformed orphan entity with a `W_ANNOTATION_ORPHAN` or `E_ATTR_COUNT_MISMATCH` diagnostic; never crash; continue loading the valid annotation from the correctly-formed `DRAUGHTING_MODEL`.
+- **Notes**: STEP file containing a `DRAUGHTING_ANNOTATION_OCCURRENCE` that is not connected to any `DRAUGHTING_MODEL` and has an attribute-count mismatch (extra trailing `$`). **See also**: Pmi014, Pmi082, A020. B4 wave-4 commercial-tracker synthesis batch A (DEF-H). Synonyms: "orphan DRAUGHTING_ANNOTATION_OCCURRENCE", "unattached annotation occurrence", "annotation entity with no parent model reference", "STEP annotation syntax error with dangling occurrence", "SDHE-36465 annotation orphan".
+- **Byte assertion**: count_entity_def(b'DRAUGHTING_ANNOTATION_OCCURRENCE') == 2
+- **Byte assertion**: contains(b'DRAUGHTING_MODEL')
+- **Byte assertion**: contains(b'orphan_annotation')
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_vertices_total == 1
+- **OCC behavior**: accepts with ERR diagnostic (1 vertex compound shape); AP242 DRAUGHTING_ANNOTATION_OCCURRENCE unknown to local OCCT; extra trailing `$` is transparent to Part-21 strict checker which performs structural not schema validation.
+- **Severity**: P1
+- **Model impact**: Orphan annotation entity with broken syntax may crash pre-fix parsers; correctly-formed annotation may be partially loaded; machine-readable PMI text cannot be extracted from the orphan.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`

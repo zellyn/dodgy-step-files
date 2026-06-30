@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pmi139 — Orphan `DRAUGHTING_ANNOTATION_OCCURRENCE` with broken STEP syntax</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.7 PMI / GD&amp;T</a> <span class="sep">/</span> <span class="current">Pmi139</span>
+</nav>
+<header class="title-bar">
+<h1>Pmi139 <span class="sep">—</span> <span class="entry-title">Orphan `DRAUGHTING_ANNOTATION_OCCURRENCE` with broken STEP syntax</span></h1>
+<p class="category">§12.7 PMI/GD&amp;T</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-pmi" href="../by-tag/pmi/index.html">pmi</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-7-pmi/Pmi139.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-7-pmi/Pmi139.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>HOOPS Exchange fixed-bugs list 2024, SDHE-36465</li>
+<li>https://docs.techsoft3d.com/exchange/2024/fixed_bugs.html</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A STEP AP242 file (modeled on HOOPS Exchange SDHE-36465) where a `DRAUGHTING_ANNOTATION_OCCURRENCE` entity is emitted in the DATA section with no reference from any `DRAUGHTING_MODEL` or `MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION` (orphan — not reachable from the model shape tree). Additionally the entity record has an attribute-count mismatch: four arguments instead of the expected three (extra trailing `$`). A correctly-formed annotation is also present and wired into a `DRAUGHTING_MODEL`. The pre-fix HOOPS Exchange writer emitted exactly this pattern when an annotation write pass started but the parent reference was lost mid-stream. Downstream parsers must skip the malformed orphan with a diagnostic rather than crashing or accepting the corrupt record silently.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>STEP AP242 file with one valid `DRAUGHTING_ANNOTATION_OCCURRENCE` inside a `DRAUGHTING_MODEL`, and one orphan `DRAUGHTING_ANNOTATION_OCCURRENCE(&#x27;orphan_annotation&#x27;,(#psa),#poly,$)` with a trailing `$` argument and no parent `DRAUGHTING_MODEL` reference.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>skip the malformed orphan entity with a `W_ANNOTATION_ORPHAN` or `E_ATTR_COUNT_MISMATCH` diagnostic; never crash; continue loading the valid annotation from the correctly-formed `DRAUGHTING_MODEL`.</p></section>
+<section><h2>Notes</h2>
+<p>STEP file containing a `DRAUGHTING_ANNOTATION_OCCURRENCE` that is not connected to any `DRAUGHTING_MODEL` and has an attribute-count mismatch (extra trailing `$`). **See also**: Pmi014, Pmi082, A020. B4 wave-4 commercial-tracker synthesis batch A (DEF-H). Synonyms: &quot;orphan DRAUGHTING_ANNOTATION_OCCURRENCE&quot;, &quot;unattached annotation occurrence&quot;, &quot;annotation entity with no parent model reference&quot;, &quot;STEP annotation syntax error with dangling occurrence&quot;, &quot;SDHE-36465 annotation orphan&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;DRAUGHTING_ANNOTATION_OCCURRENCE&#x27;) == 2</code></li>
+<li><code>contains(b&#x27;DRAUGHTING_MODEL&#x27;)</code></li>
+<li><code>contains(b&#x27;orphan_annotation&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_vertices_total == 1</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Pmi014.html">Pmi014</a>, <a href="Pmi082.html">Pmi082</a>, <a href="../12-6-assembly/A020.html">A020</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Pmi139: two DRAUGHTING_ANNOTATION_OCCURRENCE entities: one correctly wired into a <mark>DRAUGHTING_MODEL</mark>, one orphan with no parent reference AND an attribute count mismatch (extra trailing $); parsers must skip the malformed orphan with a diagnostic rather than crashing; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Pmi139&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Pmi139.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">12</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">13</span>#9051=PRODUCT(&#x27;Pmi139&#x27;,&#x27;Pmi139&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">14</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">15</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">16</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">17</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">18</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">19</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">20</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">21</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">22</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">23</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#2),#9060);
+<span class="lineno">24</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">25</span>#9063=PRESENTATION_STYLE_ASSIGNMENT($);
+<span class="lineno">26</span>#9064=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">27</span>#9065=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">28</span>#9066=POLYLINE(&#x27;&#x27;,(#9064,#9065));
+<span class="lineno">29</span><mark>#9067=DRAUGHTING_ANNOTATION_OCCURRENCE(</mark>&#x27;valid_annotation&#x27;,(#9063),#9066);
+<span class="lineno">30</span>#9068=<mark>DRAUGHTING_MODEL</mark>(&#x27;pmi_view&#x27;,(#9067),#9060);
+<span class="lineno">31</span>#9069=CARTESIAN_POINT(&#x27;&#x27;,(20.0,0.0,0.0));
+<span class="lineno">32</span>#9070=CARTESIAN_POINT(&#x27;&#x27;,(30.0,0.0,0.0));
+<span class="lineno">33</span>#9071=POLYLINE(&#x27;&#x27;,(#9069,#9070));
+<span class="lineno">34</span><mark>#9072=DRAUGHTING_ANNOTATION_OCCURRENCE(</mark>&#x27;<mark>orphan_annotation</mark>&#x27;,(#9063),#9071,$);
+<span class="lineno">35</span>ENDSEC;
+<span class="lineno">36</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Pmi138.html">&larr; Pmi138</a> <a class="up" href="index.html">§12.7 PMI / GD&amp;T</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pmi137 — `COMPOUND_REPRESENTATION_ITEM` with `SET_REPRESENTATION_ITEM` null children</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.7 PMI / GD&amp;T</a> <span class="sep">/</span> <span class="current">Pmi137</span>
+</nav>
+<header class="title-bar">
+<h1>Pmi137 <span class="sep">—</span> <span class="entry-title">`COMPOUND_REPRESENTATION_ITEM` with `SET_REPRESENTATION_ITEM` null children</span></h1>
+<p class="category">§12.7 PMI/GD&amp;T</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-pmi" href="../by-tag/pmi/index.html">pmi</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-7-pmi/Pmi137.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-7-pmi/Pmi137.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT GitHub issue #1283 (nist_ctc_05_asme1_ap242-e1.stp test case)</li>
+<li>https://github.com/Open-Cascade-SAS/OCCT/issues/1283</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A STEP AP242 file containing a `COMPOUND_REPRESENTATION_ITEM` whose item list includes a `SET_REPRESENTATION_ITEM` that wraps `DESCRIPTIVE_REPRESENTATION_ITEM` children. OCCT&#x27;s entity-resolution pass populates `NbItemElement() == 1` (the SET wrapper counts as one item) but `ItemElementValue(0)` returns a null handle because the resolver does not traverse into `SET_REPRESENTATION_ITEM` sub-elements when they appear inside a compound item list. PMI dimensional-note data is silently missing even though the file&#x27;s geometry loads correctly. The NIST CTC-05 test case exposed this gap.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>STEP AP242 file with `DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;dimensional note&#x27;,&#x27;statistical&#x27;)` wrapped in `SET_REPRESENTATION_ITEM(&#x27;&#x27;,(#N))` which is listed as an item in `COMPOUND_REPRESENTATION_ITEM(&#x27;compound_note&#x27;,(#M))`; the compound is wired into a `REPRESENTATION` via `PROPERTY_DEFINITION_REPRESENTATION` anchored to the model shape.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>resolve `SET_REPRESENTATION_ITEM` children when walking a compound item list; `ItemElementValue(0)` must return the `DESCRIPTIVE_REPRESENTATION_ITEM`, not a null handle; emit `W_COMPOUND_ITEM_SET_WRAPPED` diagnostic when the intermediate SET node is present.</p></section>
+<section><h2>Notes</h2>
+<p>STEP file containing a `COMPOUND_REPRESENTATION_ITEM` whose item list includes a `SET_REPRESENTATION_ITEM` wrapping `DESCRIPTIVE_REPRESENTATION_ITEM` children. **See also**: M027, M029. B4 wave-4 commercial-tracker synthesis batch A (DEF-A). Synonyms: &quot;COMPOUND_REPRESENTATION_ITEM null children&quot;, &quot;SET_REPRESENTATION_ITEM not traversed in compound&quot;, &quot;AP242 compound item sub-elements missing&quot;, &quot;NbItemElement &gt; 0 but ItemElementValue returns null&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;COMPOUND_REPRESENTATION_ITEM&#x27;)</code></li>
+<li><code>contains(b&#x27;SET_REPRESENTATION_ITEM&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;DESCRIPTIVE_REPRESENTATION_ITEM&#x27;) &gt;= 1</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_vertices_total == 1</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-8-mixed/M027.html">M027</a>, <a href="../12-8-mixed/M029.html">M029</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Pmi137: <mark>COMPOUND_REPRESENTATION_ITEM</mark> item list contains a <mark>SET_REPRESENTATION_ITEM</mark> wrapping DESCRIPTIVE_REPRESENTATION_ITEM children; OCCT NbItemElement()==1 but ItemElementValue(0) returns null handle â PMI dimensional note silently missing; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Pmi137&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Pmi137.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">12</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">13</span>#9051=PRODUCT(&#x27;Pmi137&#x27;,&#x27;Pmi137&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">14</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">15</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">16</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">17</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">18</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">19</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">20</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">21</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">22</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">23</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#2),#9060);
+<span class="lineno">24</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">25</span><mark>#9063=DESCRIPTIVE_REPRESENTATION_ITEM(</mark>&#x27;dimensional note&#x27;,&#x27;statistical&#x27;);
+<span class="lineno">26</span>#9064=<mark>SET_REPRESENTATION_ITEM</mark>(&#x27;&#x27;,(#9063));
+<span class="lineno">27</span>#9065=<mark>COMPOUND_REPRESENTATION_ITEM</mark>(&#x27;compound_note&#x27;,(#9064));
+<span class="lineno">28</span>#9066=REPRESENTATION(&#x27;pmi_rep&#x27;,(#9065),#9060);
+<span class="lineno">29</span>#9067=PROPERTY_DEFINITION(&#x27;note_prop&#x27;,&#x27;dimensional note&#x27;,#9055);
+<span class="lineno">30</span>#9068=PROPERTY_DEFINITION_REPRESENTATION(#9067,#9066);
+<span class="lineno">31</span>ENDSEC;
+<span class="lineno">32</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Pmi136.html">&larr; Pmi136</a> <a class="up" href="index.html">§12.7 PMI / GD&amp;T</a> <a class="next" href="Pmi138.html">Pmi138 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>
