@@ -39,6 +39,11 @@ Supported left-hand sides:
 - ``edge[i].bspline.is_rational``, ``.is_periodic``, ``.degree``,
   ``.n_knots``, ``.knot_mult_max``  (B-spline / Bezier curve introspection;
   ``bspline.*`` keys are absent on non-parametric curves)
+- ``edge[i].analytic.radius`` (circle), ``.major_radius``, ``.minor_radius``
+  (ellipse, hyperbola), ``.focal`` (parabola), ``.axis_x``, ``.axis_y``,
+  ``.axis_z`` (circle/ellipse/hyperbola/parabola axis of revolution),
+  ``.dir_x``, ``.dir_y``, ``.dir_z`` (line direction)
+  (analytic-curve introspection; ``analytic.*`` keys absent on bspline/bezier)
 - ``vertex[i].tolerance``, ``vertex[i].position``
 - ``brepcheck.valid`` (boolean)
 

@@ -150,6 +150,37 @@ def test_quadric_key_absent_on_non_quadric_surfaces(tier3_bspline: dict) -> None
             )
 
 
+def test_analytic_curve_circle_introspection() -> None:
+    """Torus fixture's outer boundary is a circle — radius + axis should resolve."""
+    fixture = ROOT / "step-examples" / "12-3c-faces" / "Tfa216.stp"
+    if not fixture.is_file():
+        pytest.skip(f"missing fixture {fixture}")
+    d = _run_tier3(fixture)
+    circle_edges = [e for e in d.get("edges", []) if e.get("curve_type") == "circle"]
+    if not circle_edges:
+        pytest.skip("Tfa216 no longer has circle edge")
+    a = circle_edges[0].get("analytic")
+    assert a is not None, "circle edge must carry analytic props"
+    assert a["radius"] == 2.5  # major + minor radius of the torus boundary
+    assert abs(abs(a["axis_z"]) - 1.0) < 1e-9
+
+
+def test_analytic_curve_line_introspection() -> None:
+    """B-spline pilot fixture has line edges — direction should resolve."""
+    fixture = ROOT / "step-examples" / "12-3c-faces" / "Tfa225.stp"
+    if not fixture.is_file():
+        pytest.skip(f"missing fixture {fixture}")
+    d = _run_tier3(fixture)
+    line_edges = [e for e in d.get("edges", []) if e.get("curve_type") == "line"]
+    if not line_edges:
+        pytest.skip("Tfa225 no line edges")
+    a = line_edges[0].get("analytic")
+    assert a is not None, "line edge must carry analytic props"
+    # dir is a unit vector
+    s = (a["dir_x"] or 0) ** 2 + (a["dir_y"] or 0) ** 2 + (a["dir_z"] or 0) ** 2
+    assert abs(s - 1.0) < 1e-6, f"line direction not unit: {a}"
+
+
 def test_bspline_key_absent_on_non_bspline_surfaces() -> None:
     """A planar / cylindrical face must NOT carry a `bspline` sub-dict —
     the introspection helper returns None and the entry omits the key."""

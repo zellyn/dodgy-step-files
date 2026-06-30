@@ -202,6 +202,83 @@ def _quadric_surface_props(face) -> dict | None:
     return out
 
 
+def _analytic_curve_props(edge) -> dict | None:
+    """Per-edge analytic curve introspection for line / circle / ellipse /
+    hyperbola / parabola. Returns None if the edge curve isn't analytic.
+
+    Per-type keys (None for properties not applicable):
+        line:      dir_x, dir_y, dir_z
+        circle:    radius, axis_x, axis_y, axis_z
+        ellipse:   major_radius, minor_radius, axis_x, axis_y, axis_z
+        hyperbola: major_radius, minor_radius, axis_x, axis_y, axis_z
+        parabola:  focal, axis_x, axis_y, axis_z
+
+    Lengths in modeling units; axis is a unit-vector tuple (axis of
+    revolution for circle/ellipse/hyperbola/parabola; direction for line).
+    """
+    from OCP.GeomAbs import (  # type: ignore
+        GeomAbs_Line, GeomAbs_Circle, GeomAbs_Ellipse,
+        GeomAbs_Hyperbola, GeomAbs_Parabola,
+    )
+    from OCP.BRepAdaptor import BRepAdaptor_Curve  # type: ignore
+
+    try:
+        adaptor = BRepAdaptor_Curve(edge)
+        gtype = adaptor.GetType()
+    except Exception:
+        return None
+    if gtype not in (GeomAbs_Line, GeomAbs_Circle, GeomAbs_Ellipse,
+                     GeomAbs_Hyperbola, GeomAbs_Parabola):
+        return None
+
+    def _axis_dir(ax):
+        try:
+            d = ax.Direction()
+            return (float(d.X()), float(d.Y()), float(d.Z()))
+        except Exception:
+            return (None, None, None)
+
+    out: dict = {}
+    if gtype == GeomAbs_Line:
+        try:
+            line = adaptor.Line()
+            d = line.Direction()
+            out["dir_x"], out["dir_y"], out["dir_z"] = float(d.X()), float(d.Y()), float(d.Z())
+        except Exception:
+            pass
+    elif gtype == GeomAbs_Circle:
+        try:
+            c = adaptor.Circle()
+            out["radius"] = float(c.Radius())
+            out["axis_x"], out["axis_y"], out["axis_z"] = _axis_dir(c.Axis())
+        except Exception:
+            pass
+    elif gtype == GeomAbs_Ellipse:
+        try:
+            e = adaptor.Ellipse()
+            out["major_radius"] = float(e.MajorRadius())
+            out["minor_radius"] = float(e.MinorRadius())
+            out["axis_x"], out["axis_y"], out["axis_z"] = _axis_dir(e.Axis())
+        except Exception:
+            pass
+    elif gtype == GeomAbs_Hyperbola:
+        try:
+            h = adaptor.Hyperbola()
+            out["major_radius"] = float(h.MajorRadius())
+            out["minor_radius"] = float(h.MinorRadius())
+            out["axis_x"], out["axis_y"], out["axis_z"] = _axis_dir(h.Axis())
+        except Exception:
+            pass
+    elif gtype == GeomAbs_Parabola:
+        try:
+            p = adaptor.Parabola()
+            out["focal"] = float(p.Focal())
+            out["axis_x"], out["axis_y"], out["axis_z"] = _axis_dir(p.Axis())
+        except Exception:
+            pass
+    return out
+
+
 def _bspline_curve_props(edge) -> dict | None:
     """Per-edge B-spline / Bezier curve introspection. Returns None if the
     edge curve isn't parametric, partial dict otherwise.
@@ -422,6 +499,9 @@ def edge_metrics(shape) -> list[dict]:
         bs_props = _bspline_curve_props(e)
         if bs_props is not None:
             entry["bspline"] = bs_props
+        ac_props = _analytic_curve_props(e)
+        if ac_props is not None:
+            entry["analytic"] = ac_props
         metrics.append(entry)
     return metrics
 
