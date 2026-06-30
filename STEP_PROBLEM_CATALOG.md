@@ -27929,6 +27929,34 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Tier-3 assertion**: faces[0].surface_type == "bspline"
 - **Tier-3 assertion**: faces[1].surface_type == "bspline"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
+### Gs185 — CONICAL_SURFACE EDGE_LOOP incorrectly trimmed — lateral face degenerate
+- **Category**: §12.2c surfaces (sub-class: conical-face / EDGE_LOOP-trim-mismatch)
+- **Sources**: https://discourse.mcneel.com/t/step-import-issue-conical-surface-interpreted-as-a-circle/219575 (Rhino RH-96071: cone imports as a flat disk; lateral face absent/degenerate). B4 wave-4 DEF-D (LGPL-clean — pattern only, no bytes copied).
+- **Description**: STEP file with a CLOSED_SHELL containing two ADVANCED_FACEs: (a) PLANE base circle and (b) CONICAL_SURFACE lateral surface. The EDGE_LOOP defining the CONICAL_SURFACE's boundary clips the upper extent to z ≈ 0.15 mm above the base (instead of the apex at z ≈ 76.2 mm), making the lateral face extent effectively zero. The CONICAL_SURFACE has semi_angle ≈ 0.165 rad (≈9.45°) and base radius 12.7 mm; the nominal apex height ≈ 76.2 mm. The top edge of the lateral face references a vertex at z=0.15 (DEFECT_HEIGHT) instead of the apex, causing the cone face to span only 0.15 mm in height — the full lateral surface is collapsed to a near-degenerate sliver.
+- **Reproducer recipe**: CONICAL_SURFACE with AXIS2_PLACEMENT_3D apex at z≈76.2, semi_angle=0.165 rad, radius=0; EDGE_LOOP upper trim vertex at z=0.15 (should be at apex z≈76.2); PLANE base circle at z=0 radius 12.7; CLOSED_SHELL wrapping both faces. Produces shape(1) under OCCT (healer tolerates the near-zero height face).
+- **Expected kernel behavior**: reject or emit diagnostic for nearly-degenerate cone lateral face (height 0.15 mm vs nominal 76.2 mm); Rhino RH-96071 incorrectly interprets this as a flat circle.
+- **Notes**: Distinct from Ps012 (sweep-truncated to clean cone frustum — clean file). Gs185 specifically encodes the EDGE_LOOP miscut that kills the lateral extent. Synonyms: "CONICAL_SURFACE imports as circle", "cone lateral face missing STEP", "cone EDGE_LOOP trim wrong", "Rhino conical surface circle".
+- **Byte assertion**: contains(b'CONICAL_SURFACE')
+- **Byte assertion**: contains(b'EDGE_LOOP')
+- **Tier-3 assertion**: n_faces_total == 2
+- **Tier-3 assertion**: faces[0].surface_type == "cone"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
+- **Model impact**: Lateral cone face absent in downstream model; FEA/CAM operations on the cone surface fail; visual check shows only base disk.
+
+### Gs186 — SPHERICAL_SURFACE PCURVE V-range [0, π] instead of ISO-10303-42 §4.4.32 standard [-π/2, +π/2]
+- **Category**: §12.2c surfaces (sub-class: spherical-face / pcurve-parametrization-offset)
+- **Sources**: https://docs.techsoft3d.com/exchange/2023_SP2_U1/fixed_bugs.html (SDHE-12051: incorrect UV curves on spherical face from STEP). B4 wave-4 DEF-F (LGPL-clean — pattern only, no bytes copied).
+- **Description**: STEP file with a SPHERICAL_SURFACE ADVANCED_FACE containing a PCURVE whose DEFINITIONAL_REPRESENTATION uses a V-range of [0, π] instead of the STEP-defined [-π/2, +π/2] per ISO 10303-42 §4.4.32. Under the standard, V=0 maps to the equator; the defect V=0 should correspond to the south pole (V=-π/2 in standard coords). The V-origin is offset by +π/2, mapping the wrong parametric half of the sphere and causing incorrect UV curves in receivers that enforce the standard. The PCURVE is wired into the face's seam EDGE_CURVE on the SPHERICAL_SURFACE face.
+- **Reproducer recipe**: SPHERICAL_SURFACE radius 5 at origin; PCURVE for seam edge with DEFINITIONAL_REPRESENTATION LINE starting at (U=0, V=0) (wrong) instead of (U=0, V=-π/2) (correct), spanning V range [0, π] instead of [-π/2, +π/2]; SURFACE_CURVE on seam EDGE_CURVE carries this PCURVE; OPEN_SHELL wraps one face. OCCT heals (tolerance widens to ~5.0) and produces shape(1).
+- **Expected kernel behavior**: receivers enforcing ISO 10303-42 §4.4.32 should diagnose V-origin mismatch and either reject or recompute pcurves; pre-fix HOOPS Exchange (SDHE-12051) produced incorrect UV tessellation.
+- **Notes**: Synonyms: "SPHERICAL_SURFACE wrong V parametrization", "sphere pcurve V-range offset", "STEP sphere UV incorrect", "SDHE-12051 sphere pcurve", "incorrect UV curves spherical face STEP". OCCT healing widens tolerance to ~5 units to recover.
+- **Byte assertion**: contains(b'SPHERICAL_SURFACE')
+- **Byte assertion**: contains(b'PCURVE')
+- **Tier-3 assertion**: n_faces_total == 1
+- **Tier-3 assertion**: faces[0].surface_type == "sphere"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
+- **Model impact**: UV curves in converted model are geometrically incorrect; downstream tessellation and surface evaluation produce artifacts; tolerance bloat (≈5×radius) propagates downstream.
+
 ### Ad117 — STEP reader crashes on minimal file with malformed `STYLED_ITEM`
 - **Category**: §12.11 adversarial / parser-robustness (sub-class: SEGV on style record)
 - **Sources**: OCCT MANTIS#0029979; bug-reporter language: "crash by reading STEP file", "STEP reader crashes on import", "segmentation fault on small STEP file". (OCCT MANTIS tracker 502 as of 2026-05-02)
@@ -35498,6 +35526,19 @@ exercised against CGAL PMP / MeshFix.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Production pipeline cannot defend against a single broken file by wrapping reads in try/except; whole worker process dies.
+
+### Ad128 — ORIENTED_EDGE mutual circular reference causes stack overflow
+- **Category**: §12.11 adversarial (sub-class: entity self-reference / cyclic topology)
+- **Sources**: https://github.com/prusa3d/PrusaSlicer/issues/11305 (PrusaSlicer 2.6.1 + OCCT 7.x: stack overflow on import of file with circular ORIENTED_EDGE reference). B4 wave-4 DEF-B (LGPL-clean — pattern only, no bytes copied).
+- **Description**: STEP file containing a self-referential ORIENTED_EDGE entity: `#N=ORIENTED_EDGE('',*,*,#N,.T.);` where the edge_element forward-reference equals the entity's own ID. In importers that chase edge_element references recursively without a cycle guard (ORIENTED_EDGE → EdgeStart() → EdgeEnd() → EdgeStart() → …), the resolver recurses until the call stack exhausts. OCCT detects the self-reference and skips the orphan entity; the valid planar face in the product chain loads normally as shape(1). The self-referential entity is a denial-of-service vector in embedded importers.
+- **Reproducer recipe**: Valid OPEN_SHELL planar face (1×1 square) with PRODUCT chain; followed by `#N=ORIENTED_EDGE('',*,*,#N,.T.)` where N is the entity's own ID (obtained via `f._next_id` before emit).
+- **Expected kernel behavior**: detect self-referential ORIENTED_EDGE and raise a parse error or skip cleanly; never recurse unboundedly on edge_element resolution. Pre-fix PrusaSlicer: stack overflow → crash.
+- **Notes**: Distinct from Ad004 (general complex-entity cycle) and Pf036 (MAPPED_ITEM cyclic assembly). This specific pattern targets the EdgeStart/EdgeEnd resolution path. Synonyms: "ORIENTED_EDGE self-reference stack overflow", "circular edge reference crash STEP", "PrusaSlicer stack overflow STEP import", "STEP cyclic ORIENTED_EDGE DoS", "edge element self-reference".
+- **Byte assertion**: contains(b'ORIENTED_EDGE')
+- **Byte assertion**: contains(b"ORIENTED_EDGE('',*,*,")
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+- **Model impact**: Stack overflow → process crash in importers without cycle guard; denial-of-service via minimal crafted file.
 
 ### Wr059 — STEP→BREP→STEP round-trip inflates cylinder analytic surface into B-spline
 - **Category**: §12.13 writer-pathology (sub-class: analytic-to-NURBS-inflation)
