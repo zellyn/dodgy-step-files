@@ -35,6 +35,12 @@
 <p><code>occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>load == &quot;ok&quot;</code></li>
+<li><code>edge[0].curve_type == &quot;circle&quot;</code></li>
+<li><code>edge[0].analytic.radius == 3.0</code></li>
+<li><code>edge[1].curve_type == &quot;circle&quot;</code></li>
+<li><code>edge[1].analytic.radius == 3.0</code></li>
+<li><code>edge[2].curve_type == &quot;circle&quot;</code></li>
+<li><code>edge[2].analytic.radius == 3.0</code></li>
 </ul></section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>

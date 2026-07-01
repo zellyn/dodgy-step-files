@@ -5106,7 +5106,11 @@
       "edge[0].curve_type == \"circle\"",
       "edge[0].analytic.radius == 1.0",
       "edge[1].curve_type == \"circle\"",
-      "edge[1].analytic.radius == 11.0"
+      "edge[1].analytic.radius == 11.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 1.0",
+      "edge[3].curve_type == \"circle\"",
+      "edge[3].analytic.radius == 11.0"
     ],
     "title": "Negative torus radius × pcurve disagreement × tiny edge"
   },
@@ -5557,7 +5561,11 @@
       "edge[0].curve_type == \"circle\"",
       "edge[0].analytic.radius == 1.0",
       "edge[1].curve_type == \"circle\"",
-      "edge[1].analytic.radius == 11.0"
+      "edge[1].analytic.radius == 11.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 1.0",
+      "edge[3].curve_type == \"circle\"",
+      "edge[3].analytic.radius == 11.0"
     ],
     "title": "Time-bomb tolerance × negative-radius torus × cyclic seam edge"
   },
@@ -39506,7 +39514,11 @@
       "face[0].surface_type == \"bspline\"",
       "face[0].bspline.is_u_periodic == True",
       "face[0].edge_orientations.forward == 2",
-      "face[0].edge_orientations.reversed == 2"
+      "face[0].edge_orientations.reversed == 2",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 1.0"
     ],
     "title": "CATIA \"like-seam\": two pcurves on same near-closed `B_SPLINE_SURFACE_WITH_KNOTS`"
   },
@@ -40123,6 +40135,10 @@
       "geometry"
     ],
     "tier3_assertions": [
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 2.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 2.0",
       "shape_null == False",
       "n_faces_total == 1",
       "n_edges_total == 4",
@@ -42058,7 +42074,9 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "edge[3].curve_type == \"circle\"",
+      "edge[3].analytic.radius == 1.0"
     ],
     "title": "GetEndTangent2d ellipse derivative asymmetry"
   },
@@ -42652,7 +42670,9 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "n_faces_total == 1"
+      "n_faces_total == 1",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0"
     ],
     "title": "ShapeAnalysis_Edge.CheckPCurveRange CIRCLE-vs-trim-mismatch"
   },
@@ -43014,7 +43034,9 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 2.5"
     ],
     "title": "ShapeFix_Edge.FixSameParameter periodic-curve-with-non-periodic-pcurve"
   },
@@ -43814,7 +43836,9 @@
       "geometry"
     ],
     "tier3_assertions": [
-      "n_faces_total == 1"
+      "n_faces_total == 1",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0"
     ],
     "title": "ShapeFix_IntersectionTool.SplitEdge2.pcurve-endpoint-detection"
   },
@@ -46721,7 +46745,9 @@
       "shape_null == False",
       "n_faces_total == 1",
       "n_edges_total == 4",
-      "n_vertices_total == 8"
+      "n_vertices_total == 8",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1000000.0"
     ],
     "title": "ShapeAnalysis_Curve.GetSamplePoints high-radius full-circle 360K cap"
   },
@@ -47096,7 +47122,13 @@
       "shape_null == False",
       "n_faces_total == 2",
       "n_edges_total == 6",
-      "n_vertices_total == 12"
+      "n_vertices_total == 12",
+      "edge[0].curve_type == \"ellipse\"",
+      "edge[0].analytic.major_radius == 3.0",
+      "edge[0].analytic.minor_radius == 0.3",
+      "edge[3].curve_type == \"ellipse\"",
+      "edge[3].analytic.major_radius == 3.0",
+      "edge[3].analytic.minor_radius == 0.3"
     ],
     "title": "ShapeAnalysis_Curve.FillBndBox elliptic-arc midpoint sampling"
   },
@@ -55327,7 +55359,11 @@
       "edge[0].curve_type == \"circle\"",
       "edge[0].analytic.radius == 0.3",
       "edge[1].curve_type == \"circle\"",
-      "edge[1].analytic.radius == 1.3"
+      "edge[1].analytic.radius == 1.3",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 0.3",
+      "edge[3].curve_type == \"circle\"",
+      "edge[3].analytic.radius == 1.3"
     ],
     "title": "TOROIDAL_SURFACE with Newton iteration near convergence"
   },
@@ -55367,7 +55403,11 @@
       "edge[0].curve_type == \"circle\"",
       "edge[0].analytic.radius == 0.3",
       "edge[1].curve_type == \"circle\"",
-      "edge[1].analytic.radius == 1.3"
+      "edge[1].analytic.radius == 1.3",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 0.3",
+      "edge[3].curve_type == \"circle\"",
+      "edge[3].analytic.radius == 1.3"
     ],
     "title": "TOROIDAL_SURFACE wrongly elevated to non-analytic Bezier"
   },
@@ -57265,7 +57305,13 @@
     "tier3_assertions": [
       "n_faces_total == 3",
       "faces[2].surface_type == \"cone\"",
-      "faces[2].quadric.semi_angle == 0.463647609001"
+      "faces[2].quadric.semi_angle == 0.463647609001",
+      "face[2].surface_type == \"cone\"",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 15.0",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 5.0",
+      "edge[2].curve_type == \"circle\""
     ],
     "title": "`CONICAL_SURFACE` tessellation null in OCCT 7.8+ (truncated cone frustum, R_bottom=15, R_top=5, height=20)"
   },
@@ -57302,7 +57348,13 @@
     ],
     "tier3_assertions": [
       "n_faces_total == 1",
-      "faces[0].surface_type == \"revolution\""
+      "faces[0].surface_type == \"revolution\"",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 0.002",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 0.004",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 0.002"
     ],
     "title": "Onshape `SURFACE_OF_REVOLUTION` micro-geometry (radius ≈ 2 μm) faulty self-import topology"
   },
@@ -57701,7 +57753,9 @@
       "edge[1].curve_type == \"circle\"",
       "edge[1].analytic.radius == 1.0",
       "edge[2].curve_type == \"circle\"",
-      "edge[2].analytic.radius == 1.0"
+      "edge[2].analytic.radius == 1.0",
+      "edge[3].curve_type == \"circle\"",
+      "edge[3].analytic.radius == 1.0"
     ],
     "title": "Two ADVANCED_FACEs on duplicate CYLINDRICAL_SURFACEs share a smooth (G1) edge mis-tagged as a sharp crease"
   },
@@ -60906,7 +60960,11 @@
       "edge[0].curve_type == \"circle\"",
       "edge[0].analytic.radius == 1.0",
       "edge[1].curve_type == \"circle\"",
-      "edge[1].analytic.radius == 1.0"
+      "edge[1].analytic.radius == 1.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 1.0",
+      "edge[3].curve_type == \"circle\"",
+      "edge[3].analytic.radius == 1.0"
     ],
     "title": "Merging adjacent same-surface faces returns topologically invalid shape (OPEN_SHELL of multiple CYLINDRICAL_SURFACE faces with degenerate seam edges where two distinct VERTEX_POINTs share coords)"
   },
@@ -66684,7 +66742,9 @@
     "tier3_assertions": [
       "n_edges_total >= 1",
       "face[0].surface_type == \"plane\"",
-      "n_vertices_total >= 2"
+      "n_vertices_total >= 2",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0"
     ],
     "title": "ORIENTED_EDGE wrapping another ORIENTED_EDGE"
   },
@@ -66764,7 +66824,9 @@
     "tier3_assertions": [
       "n_edges_total >= 1",
       "face[0].surface_type == \"plane\"",
-      "n_vertices_total >= 2"
+      "n_vertices_total >= 2",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0"
     ],
     "title": "ORIENTED_EDGE underlying EDGE_CURVE is null/missing reference"
   },
@@ -67039,7 +67101,9 @@
       "n_edges_total == 1",
       "n_vertices_total == 2",
       "face[0].surface_type == \"plane\"",
-      "n_edges_total >= 1"
+      "n_edges_total >= 1",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0"
     ],
     "title": "Closed 3D curve with two distinct VERTEX_POINTs (single-edge closed)"
   },
@@ -67378,7 +67442,11 @@
       "edge[0].curve_type == \"circle\"",
       "edge[0].analytic.radius == 2.5",
       "edge[1].curve_type == \"circle\"",
-      "edge[1].analytic.radius == 2.5"
+      "edge[1].analytic.radius == 2.5",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 2.5",
+      "edge[3].curve_type == \"circle\"",
+      "edge[3].analytic.radius == 2.5"
     ],
     "title": "Scrambled (out-of-cyclic-order) `EDGE_LOOP` edge_list on `TOROIDAL_SURFACE` — wire-reorder triggers no replacement"
   },
@@ -67460,7 +67528,9 @@
       "edge[1].curve_type == \"circle\"",
       "edge[1].analytic.radius == 1.0",
       "edge[2].curve_type == \"circle\"",
-      "edge[2].analytic.radius == 1.0"
+      "edge[2].analytic.radius == 1.0",
+      "edge[3].curve_type == \"circle\"",
+      "edge[3].analytic.radius == 1.0"
     ],
     "title": "Degenerate edge re-encountered for multiple faces"
   },
@@ -67545,7 +67615,9 @@
       "edge[0].curve_type == \"circle\"",
       "edge[0].analytic.radius == 1.0",
       "edge[1].curve_type == \"circle\"",
-      "edge[1].analytic.radius == 1.0"
+      "edge[1].analytic.radius == 1.0",
+      "edge[3].curve_type == \"circle\"",
+      "edge[3].analytic.radius == 1.0"
     ],
     "title": "Periodic face wraps a full period and needs splitting at the seam"
   },
@@ -67815,7 +67887,9 @@
     "tier3_assertions": [
       "n_edges_total >= 2",
       "face[0].surface_type == \"plane\"",
-      "n_vertices_total >= 4"
+      "n_vertices_total >= 4",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 1.0"
     ],
     "title": "Wire self-intersection check fails on mirrored-then-rotated arc footprints"
   },
@@ -71765,7 +71839,9 @@
       "topology"
     ],
     "tier3_assertions": [
-      "n_faces_total == 1"
+      "n_faces_total == 1",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 10.0"
     ],
     "title": "ShapeFix_Wire.FixIntersectingEdges line-segment-vs-circle-arc"
   },
@@ -74693,7 +74769,9 @@
       "edge[0].curve_type == \"circle\"",
       "edge[0].analytic.radius == 1.0",
       "edge[1].curve_type == \"circle\"",
-      "edge[1].analytic.radius == 1.0"
+      "edge[1].analytic.radius == 1.0",
+      "edge[3].curve_type == \"circle\"",
+      "edge[3].analytic.radius == 1.0"
     ],
     "title": "ShapeFix_Wire.FixShifted seam-vertex-position-mismatch"
   },
@@ -79203,7 +79281,11 @@
       "edge[0].curve_type == \"circle\"",
       "edge[0].analytic.radius == 2.0",
       "edge[1].curve_type == \"circle\"",
-      "edge[1].analytic.radius == 7.0"
+      "edge[1].analytic.radius == 7.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 2.0",
+      "edge[3].curve_type == \"circle\"",
+      "edge[3].analytic.radius == 7.0"
     ],
     "title": "FixAddNaturalBound seam-edge skip"
   },
@@ -81662,7 +81744,11 @@
       "face[0].surface_type == \"bspline\"",
       "face[0].bspline.v_degree == 3",
       "face[0].edge_orientations.reversed == 1",
-      "face[1].edge_orientations.forward == 1"
+      "face[1].edge_orientations.forward == 1",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 5.0",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 5.0"
     ],
     "title": "ShapeFix_Face.FixPeriodicDegenerated B-spline-revolution"
   },
@@ -82719,7 +82805,13 @@
       "topology"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 3.0",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 3.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 3.0"
     ],
     "title": "ShapeAnalysis_CheckSmallFace.CheckSmallArea polygon-vs-curve"
   },
@@ -83226,7 +83318,11 @@
       "face[0].surface_type == \"bspline\"",
       "face[0].bspline.is_u_periodic == True",
       "face[0].edge_orientations.forward == 2",
-      "face[0].edge_orientations.reversed == 3"
+      "face[0].edge_orientations.reversed == 3",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 1.0",
+      "edge[2].curve_type == \"circle\"",
+      "edge[2].analytic.radius == 1.0"
     ],
     "title": "ShapeAnalysis_Surface.IsUClosed bspline-periodic-u"
   },
@@ -84048,7 +84144,9 @@
       "topology"
     ],
     "tier3_assertions": [
-      "load == \"ok\""
+      "load == \"ok\"",
+      "edge[1].curve_type == \"circle\"",
+      "edge[1].analytic.radius == 1.0"
     ],
     "title": "concat_result_truncation"
   },
@@ -96824,7 +96922,10 @@
     "tier3_assertions": [
       "shape_null == False",
       "n_edges_total == 1",
-      "n_vertices_total == 2"
+      "n_vertices_total == 2",
+      "edge[0].curve_type == \"ellipse\"",
+      "edge[0].analytic.major_radius == 10.0",
+      "edge[0].analytic.minor_radius == 5.0"
     ],
     "title": "360° revolution of arc-of-ellipse produces self-intersecting solid"
   },
@@ -105172,7 +105273,9 @@
     "tier3_assertions": [
       "shape_null == False",
       "n_edges_total == 1",
-      "n_vertices_total == 2"
+      "n_vertices_total == 2",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 25.0"
     ],
     "title": "File mixing AP203 schema declaration with AP214-only entity types in DATA"
   },
@@ -105400,7 +105503,9 @@
     "tier3_assertions": [
       "n_faces_total == 0",
       "n_edges_total >= 1",
-      "parametric.uncertainty_values == []"
+      "parametric.uncertainty_values == []",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 25.0"
     ],
     "title": "GEOMETRIC_REPRESENTATION_CONTEXT lacks UNCERTAINTY_MEASURE_WITH_UNIT; reader-side default precision substituted"
   },
@@ -110899,7 +111004,9 @@
     "tier3_assertions": [
       "shape_null == False",
       "n_edges_total == 2",
-      "n_vertices_total == 4"
+      "n_vertices_total == 4",
+      "edge[0].curve_type == \"circle\"",
+      "edge[0].analytic.radius == 3.0"
     ],
     "title": "MakeEvolved: profile sweep along a non-planar spine self-intersects"
   },

@@ -36,6 +36,10 @@
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>edge[0].curve_type == &quot;circle&quot;</code></li>
+<li><code>edge[0].analytic.radius == 2.0</code></li>
+<li><code>edge[2].curve_type == &quot;circle&quot;</code></li>
+<li><code>edge[2].analytic.radius == 2.0</code></li>
 <li><code>shape_null == False</code></li>
 <li><code>n_faces_total == 1</code></li>
 <li><code>n_edges_total == 4</code></li>
