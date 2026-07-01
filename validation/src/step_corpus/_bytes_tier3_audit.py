@@ -65,6 +65,7 @@ OUTPUT_JSON = Path("/tmp/cad-bytes-tier3-audit.json")
 # individually correct; cross-audit downgrades inconsistent → documented.
 DOCUMENTED_DIVERGENCE: set[str] = {
     "Tsh050",  # OCC silently merges two coplanar ADVANCED_FACEs sharing an edge
+    "Tsh056",  # figure-eight wire: 1 ADVANCED_FACE in bytes, 2 loaded by OCCT
 }
 
 # --- Byte-assertion shape extractors --------------------------------------

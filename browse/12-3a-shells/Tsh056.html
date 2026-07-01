@@ -35,7 +35,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>edge-walking iterators on non-simple wires must terminate (use vertex+direction or edge+direction in the visited map); reject pathological wires before iterating.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Twi076, Tsh056b. Synonyms: &quot;face merge hangs on figure-eight wire&quot;, &quot;infinite loop in unifier on non-simple wire&quot;, &quot;edge walker stuck on pinched face&quot;, &quot;non-simple wire causes hang&quot;, &quot;face merge fails to terminate&quot;. Validation observed: the source bytes declare 1 ADVANCED_FACE entity, but OCCT&#x27;s traversal of the non-simple figure-eight wire produces n_faces_total=2 — this divergence IS the defect (bytes/tier-3 inconsistency is intentional, allowlisted in `INCONSISTENT_CEILING` of `test_bytes_tier3_audit.py`).</p></section>
+<p>**See also**: Twi076, Tsh056b. Synonyms: &quot;face merge hangs on figure-eight wire&quot;, &quot;infinite loop in unifier on non-simple wire&quot;, &quot;edge walker stuck on pinched face&quot;, &quot;non-simple wire causes hang&quot;, &quot;face merge fails to terminate&quot;. Validation observed: the source bytes declare 1 ADVANCED_FACE entity, but OCCT&#x27;s traversal of the non-simple figure-eight wire produces n_faces_total=2 — this divergence IS the defect (bytes/tier-3 inconsistency is intentional, allowlisted in `DOCUMENTED_DIVERGENCE` of `_bytes_tier3_audit.py`).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
