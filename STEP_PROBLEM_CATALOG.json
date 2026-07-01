@@ -4741,6 +4741,43 @@
   },
   {
     "byte_assertions": [
+      "contains(b'CARTESIAN_TRANSFORMATION_OPERATOR_3D')",
+      "contains(b'MAPPED_ITEM')"
+    ],
+    "category": "§12.11 adversarial (sub-class: reflection / orientation-silent-error)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "STEP AP214 file with a valid planar face (component A via standard product chain) and a `MAPPED_ITEM` referencing a `REPRESENTATION_MAP` combined with an `ITEM_DEFINED_TRANSFORMATION` whose placement is a `CARTESIAN_TRANSFORMATION_OPERATOR_3D` with `axis1=(1,0,0)`, `axis2=(0,1,0)`, `axis3=(0,0,-1)` — a left-handed coordinate system with `det = -1` (a reflection). Conforming readers that handle negative-det transformations produce component B as a mirror image of component A. Readers that silently treat the transformation as an identity or orthogonalize it (force det=+1) produce a copy at the wrong orientation. OCCT silently ignores the negative-det CTO and yields shape(1).",
+    "expected_kernel_behavior": "detect negative-det transformation and emit `W_REFLECTION_TRANSFORM` diagnostic; produce the geometrically correct mirror image; never silently treat a reflection as an orthogonal placement.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-11-adversarial/Ad129.stp",
+    "id": "Ad129",
+    "notes": "Synonyms: \"negative determinant STEP transformation\", \"CARTESIAN_TRANSFORMATION_OPERATOR_3D det=-1\", \"STEP mirror reflection wrong orientation\", \"MAPPED_ITEM reflection silently identity\", \"Fusion 360 mirror pattern STEP wrong\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`CARTESIAN_TRANSFORMATION_OPERATOR_3D('neg_det_mirror',#axis1,#axis2,#origin,1.0,#axis3)` where `#axis3=DIRECTION('axis3',(0.0,0.0,-1.0))` (det=-1); combined with `MAPPED_ITEM` referencing a `REPRESENTATION_MAP`.",
+    "section": "12.11",
+    "section_dir": "12-11-adversarial",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "Fusion 360 community mirror pattern STEP export (DEF-V). LGPL-clean — pattern only, no bytes copied. Fusion 360 mirror-pattern exports encode `CARTESIAN_TRANSFORMATION_OPERATOR_3D` with axis3=(0,0,-1) forming a left-handed coordinate system (det=-1)",
+      "readers that silently orthogonalize the transformation (force det=+1) produce wrong orientation."
+    ],
+    "taxonomy": [
+      "adversarial"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
+    "title": "Negative-determinant CARTESIAN_TRANSFORMATION_OPERATOR_3D in MAPPED_ITEM"
+  },
+  {
+    "byte_assertions": [
       "contains(b'\\\\X2\\\\')",
       "contains(b'EDGE_CURVE')",
       "contains(b'ADVANCED_FACE')"
@@ -96696,6 +96733,118 @@
       "load == \"ok\""
     ],
     "title": "NAUO name reuse: dedup-by-name collapses distinct instances"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'PRODUCT_CATEGORY_RELATIONSHIP')",
+      "contains(b'PRODUCT_CATEGORY')",
+      "contains(b'raw_material/AL6061')"
+    ],
+    "category": "§12.6 assembly (sub-class: schema-boundary attribute loss)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "STEP AP214 file containing a valid planar face geometry and a `PRODUCT_CATEGORY_RELATIONSHIP('material_category','',#prod_cat,#product)` where `#prod_cat=PRODUCT_CATEGORY('raw_material/AL6061','...')`. AP214-capable readers (OCCT, HOOPS) expose the category as a product attribute; AP242-only readers that use the `GENERAL_PROPERTY` path for categories silently drop the relationship on AP214→AP242 schema boundary crossing.",
+    "expected_kernel_behavior": "AP214 readers must traverse `PRODUCT_CATEGORY_RELATIONSHIP` and expose the category attribute; schema-boundary readers (AP242-only) must emit a diagnostic when a `PRODUCT_CATEGORY_RELATIONSHIP` is present and silently dropped.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-6-assembly/A115.stp",
+    "id": "A115",
+    "notes": "Synonyms: \"CATIA V5 STEP material category lost\", \"PRODUCT_CATEGORY_RELATIONSHIP dropped AP242\", \"AP214 to AP242 schema boundary material\", \"raw_material category STEP export CATIA\", \"material_category PRODUCT_CATEGORY_RELATIONSHIP silent drop\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`PRODUCT_CATEGORY('raw_material/AL6061','aluminium alloy 6061 stock material')` + `PRODUCT_CATEGORY_RELATIONSHIP('material_category','',#cat,#product)` alongside valid AP214 geometry.",
+    "section": "12.6",
+    "section_dir": "12-6-assembly",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "3DS community CATIA V5 migration forum (DEF-W). LGPL-clean — pattern only, no bytes copied. CATIA V5 AP214 export encodes material categories via `PRODUCT_CATEGORY_RELATIONSHIP`",
+      "AP242-only readers use a different `GENERAL_PROPERTY` path and silently drop this chain."
+    ],
+    "taxonomy": [
+      "silent-loss",
+      "assembly"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
+    "title": "CATIA V5 PRODUCT_CATEGORY_RELATIONSHIP across AP214→AP242 schema boundary"
+  },
+  {
+    "byte_assertions": [
+      "count(b\"PRODUCT('Body'\") >= 2",
+      "count_entity_def(b'MANIFOLD_SOLID_BREP') >= 2"
+    ],
+    "category": "§12.6 assembly (sub-class: identifier-collision dedup)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "STEP AP214 file with two `MANIFOLD_SOLID_BREP` bodies (cube1 at origin, cube2 offset +100 in X), each with its own `PRODUCT` + `PRODUCT_DEFINITION` + `PRODUCT_DEFINITION_SHAPE` chain, but both `PRODUCT` entities have `id='Body'`. OCCT correctly imports both bodies using entity-instance identity (shape(2)); readers that deduplicate by `PRODUCT.id` string collapse the two bodies to one and lose one shape.",
+    "expected_kernel_behavior": "never deduplicate `PRODUCT` entities by the `id` string alone; key on entity reference `#NNN`; the `id` attribute is a human label, not a unique key.",
+    "expected_validation": "occt=shape(2)/shape(2) gmsh=shape(18) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-6-assembly/A116.stp",
+    "id": "A116",
+    "notes": "Synonyms: \"CATIA V5 multi-body STEP duplicate PRODUCT id\", \"STEP PRODUCT id collision Body\", \"duplicate PRODUCT.id collapses bodies\", \"multi-body STEP loses one solid\", \"CATIA STEP Body Body dedup\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "two `PRODUCT('Body','Body','',(#ctx))` entities with distinct `#NNN` IDs; each with its own `MANIFOLD_SOLID_BREP` and `PRODUCT_DEFINITION` chain; bodies spatially offset so the collapse is geometrically obvious.",
+    "section": "12.6",
+    "section_dir": "12-6-assembly",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "CATIA V5 multi-body STEP export, 3DS community (DEF-X). LGPL-clean — pattern only, no bytes copied. CATIA V5 exports multi-body parts with all bodies labelled `id='Body'`",
+      "readers keying dedup on the `id` string rather than entity `#NNN` collapse multiple bodies to one."
+    ],
+    "taxonomy": [
+      "assembly"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
+    "title": "Duplicate PRODUCT.id in multi-body STEP export"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'PRODUCT_DEFINITION_CONTEXT')",
+      "matches(rb\"PRODUCT_DEFINITION_CONTEXT\\('[^']*',[^,]+,\\$\\)\")"
+    ],
+    "category": "§12.6 assembly (sub-class: null attribute causes empty import)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "STEP AP214 file containing a valid `MANIFOLD_SURFACE_SHAPE_REPRESENTATION` geometry (planar face) and a second `PRODUCT_DEFINITION_CONTEXT('part definition',#app_ctx,$)` where the `application_context_element` is `$` (null). Readers that check `application_context_element` to determine design context classify the null-element `PRODUCT_DEFINITION` as having no context and skip the corresponding shape transfer. OCCT-permissive readers ignore the null and load the valid geometry from the main product chain (shape(1)). Strict readers produce an empty document.",
+    "expected_kernel_behavior": "treat null `application_context_element` as an error or default to 'design'; emit `W_NULL_APPLICATION_CONTEXT_ELEMENT` diagnostic; do not silently produce an empty import.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-6-assembly/A117.stp",
+    "id": "A117",
+    "notes": "Synonyms: \"Fusion 360 STEP empty context\", \"PRODUCT_DEFINITION_CONTEXT null application_context_element\", \"STEP null application context empty import\", \"OCCT MANTIS 31455 null context\", \"PRODUCT_DEFINITION_CONTEXT $ empty\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "valid PRODUCT chain with `PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design')` (healthy); plus `PRODUCT_DEFINITION_CONTEXT('part definition',#9000,$)` (null third arg) referenced by a second `PRODUCT_DEFINITION`.",
+    "section": "12.6",
+    "section_dir": "12-6-assembly",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "Fusion 360 community + OCCT MANTIS 0031455 (DEF-GG). LGPL-clean — pattern only, no bytes copied. Fusion 360 sporadically emits `PRODUCT_DEFINITION_CONTEXT` with an empty or null `application_context_element` (third parameter), causing strict readers to classify the product as having no design context and skip geometry transfer."
+    ],
+    "taxonomy": [
+      "assembly"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
+    "title": "PRODUCT_DEFINITION_CONTEXT with null application_context_element"
   },
   {
     "byte_assertions": [

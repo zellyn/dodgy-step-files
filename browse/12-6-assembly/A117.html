@@ -3,49 +3,45 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ad128 — ORIENTED_EDGE mutual circular reference causes stack overflow</title>
+  <title>A117 — PRODUCT_DEFINITION_CONTEXT with null application_context_element</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
 <body class="entry">
 <nav class="topnav">
-<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.11 Adversarial / parser robustness</a> <span class="sep">/</span> <span class="current">Ad128</span>
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.6 Assembly hierarchy</a> <span class="sep">/</span> <span class="current">A117</span>
 </nav>
 <header class="title-bar">
-<h1>Ad128 <span class="sep">—</span> <span class="entry-title">ORIENTED_EDGE mutual circular reference causes stack overflow</span></h1>
-<p class="category">§12.11 adversarial (sub-class: entity self-reference / cyclic topology)</p>
+<h1>A117 <span class="sep">—</span> <span class="entry-title">PRODUCT_DEFINITION_CONTEXT with null application_context_element</span></h1>
+<p class="category">§12.6 assembly (sub-class: null attribute causes empty import)</p>
 <p class="tag-pills">
-<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
-<a class="tag tag-adversarial" href="../by-tag/adversarial/index.html">adversarial</a>
+<a class="tag tag-assembly" href="../by-tag/assembly/index.html">assembly</a>
 </p>
 </header>
 <main>
 <section class="fixture-link">
-<a class="big-link" href="../../step-examples/12-11-adversarial/Ad128.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-11-adversarial/Ad128.stp</code>
+<a class="big-link" href="../../step-examples/12-6-assembly/A117.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-6-assembly/A117.stp</code>
 </section>
 <section><h2>Sources</h2><ul>
-<li>https://github.com/prusa3d/PrusaSlicer/issues/11305 (PrusaSlicer 2.6.1 + OCCT 7.x: stack overflow on import of file with circular ORIENTED_EDGE reference). B4 wave-4 DEF-B (LGPL-clean — pattern only, no bytes copied).</li>
+<li>Fusion 360 community + OCCT MANTIS 0031455 (DEF-GG). LGPL-clean — pattern only, no bytes copied. Fusion 360 sporadically emits `PRODUCT_DEFINITION_CONTEXT` with an empty or null `application_context_element` (third parameter), causing strict readers to classify the product as having no design context and skip geometry transfer.</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>STEP file containing a self-referential ORIENTED_EDGE entity: `#N=ORIENTED_EDGE(&#x27;&#x27;,*,*,#N,.T.);` where the edge_element forward-reference equals the entity&#x27;s own ID. In importers that chase edge_element references recursively without a cycle guard (ORIENTED_EDGE → EdgeStart() → EdgeEnd() → EdgeStart() → …), the resolver recurses until the call stack exhausts. OCCT detects the self-reference and skips the orphan entity; the valid planar face in the product chain loads normally as shape(1). The self-referential entity is a denial-of-service vector in embedded importers.</p></section>
+<p>STEP AP214 file containing a valid `MANIFOLD_SURFACE_SHAPE_REPRESENTATION` geometry (planar face) and a second `PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#app_ctx,$)` where the `application_context_element` is `$` (null). Readers that check `application_context_element` to determine design context classify the null-element `PRODUCT_DEFINITION` as having no context and skip the corresponding shape transfer. OCCT-permissive readers ignore the null and load the valid geometry from the main product chain (shape(1)). Strict readers produce an empty document.</p></section>
 <section><h2>Reproducer recipe</h2>
-<p>Valid OPEN_SHELL planar face (1×1 square) with PRODUCT chain; followed by `#N=ORIENTED_EDGE(&#x27;&#x27;,*,*,#N,.T.)` where N is the entity&#x27;s own ID (obtained via `f._next_id` before emit).</p></section>
+<p>valid PRODUCT chain with `PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;)` (healthy); plus `PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,$)` (null third arg) referenced by a second `PRODUCT_DEFINITION`.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>detect self-referential ORIENTED_EDGE and raise a parse error or skip cleanly; never recurse unboundedly on edge_element resolution. Pre-fix PrusaSlicer: stack overflow → crash.</p></section>
+<p>treat null `application_context_element` as an error or default to &#x27;design&#x27;; emit `W_NULL_APPLICATION_CONTEXT_ELEMENT` diagnostic; do not silently produce an empty import.</p></section>
 <section><h2>Notes</h2>
-<p>Distinct from Ad004 (general complex-entity cycle) and Pf036 (MAPPED_ITEM cyclic assembly). This specific pattern targets the EdgeStart/EdgeEnd resolution path. Synonyms: &quot;ORIENTED_EDGE self-reference stack overflow&quot;, &quot;circular edge reference crash STEP&quot;, &quot;PrusaSlicer stack overflow STEP import&quot;, &quot;STEP cyclic ORIENTED_EDGE DoS&quot;, &quot;edge element self-reference&quot;.</p></section>
+<p>Synonyms: &quot;Fusion 360 STEP empty context&quot;, &quot;PRODUCT_DEFINITION_CONTEXT null application_context_element&quot;, &quot;STEP null application context empty import&quot;, &quot;OCCT MANTIS 31455 null context&quot;, &quot;PRODUCT_DEFINITION_CONTEXT $ empty&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
-<li><code>contains(b&#x27;ORIENTED_EDGE&#x27;)</code></li>
-<li><code>contains(b&quot;ORIENTED_EDGE(&#x27;&#x27;,*,*,&quot;)</code></li>
+<li><code>contains(b&#x27;PRODUCT_DEFINITION_CONTEXT&#x27;)</code></li>
+<li><code>matches(rb&quot;PRODUCT_DEFINITION_CONTEXT\(&#x27;[^&#x27;]*&#x27;,[^,]+,\$\)&quot;)</code></li>
 </ul></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>load == &quot;ok&quot;</code></li>
 </ul></section>
-<section><h2>Cross-references</h2>
-<p><a href="Ad004.html">Ad004</a>, <a href="../12-10-perf/Pf036.html">Pf036</a></p>
-</section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
 </section>
@@ -53,10 +49,10 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Ad128: <mark>ORIENTED_EDGE</mark> self-referential entity: #N=<mark>ORIENTED_EDGE(&#x27;&#x27;,*,*,</mark>#N,.T.) where the edge_element forward-ref equals the entity&#x27;s own ID; mutual circular reference causes stack overflow on import (PrusaSlicer#11305); OPEN_SHELL planar face IS model entity â OCC yields shape(1) (cycle skipped) */
+<span class="lineno">2</span>/* A117: <mark>PRODUCT_DEFINITION_CONTEXT</mark> with null application_context_element ($): <mark>PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,$)</mark> â the third param is $ rather than &#x27;mechanical&#x27;; readers checking this slot for design-context classification skip geometry transfer producing empty import; OCCT-permissive readers still load the solid; OCCT MANTIS 0031455 + Fusion 360 DEF-GG */
 <span class="lineno">3</span>HEADER;
-<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ad128&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">5</span>FILE_NAME(&#x27;Ad128.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;A117&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;A117.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
 <span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
 <span class="lineno">7</span>ENDSEC;
 <span class="lineno">8</span>DATA;
@@ -90,19 +86,19 @@
 <span class="lineno">36</span>#27=VECTOR(&#x27;&#x27;,#26,1.0);
 <span class="lineno">37</span>#28=LINE(&#x27;&#x27;,#9,#27);
 <span class="lineno">38</span>#29=EDGE_CURVE(&#x27;&#x27;,#13,#10,#28,.T.);
-<span class="lineno">39</span>#30=<mark>ORIENTED_EDGE</mark>(&#x27;&#x27;,$,$,#17,.T.);
-<span class="lineno">40</span>#31=<mark>ORIENTED_EDGE</mark>(&#x27;&#x27;,$,$,#21,.T.);
-<span class="lineno">41</span>#32=<mark>ORIENTED_EDGE</mark>(&#x27;&#x27;,$,$,#25,.T.);
-<span class="lineno">42</span>#33=<mark>ORIENTED_EDGE</mark>(&#x27;&#x27;,$,$,#29,.T.);
+<span class="lineno">39</span>#30=ORIENTED_EDGE(&#x27;&#x27;,$,$,#17,.T.);
+<span class="lineno">40</span>#31=ORIENTED_EDGE(&#x27;&#x27;,$,$,#21,.T.);
+<span class="lineno">41</span>#32=ORIENTED_EDGE(&#x27;&#x27;,$,$,#25,.T.);
+<span class="lineno">42</span>#33=ORIENTED_EDGE(&#x27;&#x27;,$,$,#29,.T.);
 <span class="lineno">43</span>#34=EDGE_LOOP(&#x27;&#x27;,(#30,#31,#32,#33));
 <span class="lineno">44</span>#35=FACE_OUTER_BOUND(&#x27;&#x27;,#34,.T.);
 <span class="lineno">45</span>#36=ADVANCED_FACE(&#x27;&#x27;,(#35),#5,.T.);
 <span class="lineno">46</span>#37=OPEN_SHELL(&#x27;&#x27;,(#36));
 <span class="lineno">47</span>#38=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#37));
 <span class="lineno">48</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
-<span class="lineno">49</span>#9051=PRODUCT(&#x27;Ad128&#x27;,&#x27;Ad128&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">49</span>#9051=PRODUCT(&#x27;A117&#x27;,&#x27;A117&#x27;,&#x27;&#x27;,(#9050));
 <span class="lineno">50</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
-<span class="lineno">51</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">51</span>#9053=<mark>PRODUCT_DEFINITION_CONTEXT</mark>(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
 <span class="lineno">52</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
 <span class="lineno">53</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
 <span class="lineno">54</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
@@ -112,15 +108,18 @@
 <span class="lineno">58</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
 <span class="lineno">59</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#38),#9060);
 <span class="lineno">60</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
-<span class="lineno">61</span>#9063=<mark>ORIENTED_EDGE(&#x27;&#x27;,*,*,</mark>#9063,.T.);
-<span class="lineno">62</span>ENDSEC;
-<span class="lineno">63</span>END-ISO-10303-21;
+<span class="lineno">61</span>#9063=<mark>PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,$)</mark>;
+<span class="lineno">62</span>#9064=PRODUCT(&#x27;null_ctx_part&#x27;,&#x27;null_ctx_part&#x27;,&#x27;&#x27;,(#9000));
+<span class="lineno">63</span>#9065=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9064);
+<span class="lineno">64</span>#9066=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#9065,#9063);
+<span class="lineno">65</span>ENDSEC;
+<span class="lineno">66</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>
 </main>
 <footer>
-<nav class="prevnext"><a class="prev" href="Ad127.html">&larr; Ad127</a> <a class="up" href="index.html">§12.11 Adversarial / parser robustness</a> <a class="next" href="Ad129.html">Ad129 &rarr;</a></nav>
+<nav class="prevnext"><a class="prev" href="A116.html">&larr; A116</a> <a class="up" href="index.html">§12.6 Assembly hierarchy</a> <a class="next" href="P001.html">P001 &rarr;</a></nav>
 <p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
 </footer>
 </body>

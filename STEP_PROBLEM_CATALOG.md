@@ -44154,3 +44154,56 @@ exercised against CGAL PMP / MeshFix.
 - **Severity**: P1
 - **Model impact**: Coordinate-system connection points between assembly components are invisible to OCCT V7.x; multi-component assemblies that use AP242 coordinate-system anchors for mating constraints, connection paths, or fastener placement receive no alignment data; assembly tooling under V7.x must use alternative connection mechanisms.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+
+### A115 — CATIA V5 PRODUCT_CATEGORY_RELATIONSHIP across AP214→AP242 schema boundary
+- **Category**: §12.6 assembly (sub-class: schema-boundary attribute loss)
+- **Sources**: 3DS community CATIA V5 migration forum (DEF-W). LGPL-clean — pattern only, no bytes copied. CATIA V5 AP214 export encodes material categories via `PRODUCT_CATEGORY_RELATIONSHIP`; AP242-only readers use a different `GENERAL_PROPERTY` path and silently drop this chain.
+- **Description**: STEP AP214 file containing a valid planar face geometry and a `PRODUCT_CATEGORY_RELATIONSHIP('material_category','',#prod_cat,#product)` where `#prod_cat=PRODUCT_CATEGORY('raw_material/AL6061','...')`. AP214-capable readers (OCCT, HOOPS) expose the category as a product attribute; AP242-only readers that use the `GENERAL_PROPERTY` path for categories silently drop the relationship on AP214→AP242 schema boundary crossing.
+- **Reproducer recipe**: `PRODUCT_CATEGORY('raw_material/AL6061','aluminium alloy 6061 stock material')` + `PRODUCT_CATEGORY_RELATIONSHIP('material_category','',#cat,#product)` alongside valid AP214 geometry.
+- **Expected kernel behavior**: AP214 readers must traverse `PRODUCT_CATEGORY_RELATIONSHIP` and expose the category attribute; schema-boundary readers (AP242-only) must emit a diagnostic when a `PRODUCT_CATEGORY_RELATIONSHIP` is present and silently dropped.
+- **Notes**: Synonyms: "CATIA V5 STEP material category lost", "PRODUCT_CATEGORY_RELATIONSHIP dropped AP242", "AP214 to AP242 schema boundary material", "raw_material category STEP export CATIA", "material_category PRODUCT_CATEGORY_RELATIONSHIP silent drop".
+- **Byte assertion**: contains(b'PRODUCT_CATEGORY_RELATIONSHIP')
+- **Byte assertion**: contains(b'PRODUCT_CATEGORY')
+- **Byte assertion**: contains(b'raw_material/AL6061')
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+- **Model impact**: Material classification is silently lost when CATIA V5 AP214 files are read by AP242-only readers; downstream CAM, simulation, and BoM tools lack material data; erroneous toolpath or FEA setup.
+
+### A116 — Duplicate PRODUCT.id in multi-body STEP export
+- **Category**: §12.6 assembly (sub-class: identifier-collision dedup)
+- **Sources**: CATIA V5 multi-body STEP export, 3DS community (DEF-X). LGPL-clean — pattern only, no bytes copied. CATIA V5 exports multi-body parts with all bodies labelled `id='Body'`; readers keying dedup on the `id` string rather than entity `#NNN` collapse multiple bodies to one.
+- **Description**: STEP AP214 file with two `MANIFOLD_SOLID_BREP` bodies (cube1 at origin, cube2 offset +100 in X), each with its own `PRODUCT` + `PRODUCT_DEFINITION` + `PRODUCT_DEFINITION_SHAPE` chain, but both `PRODUCT` entities have `id='Body'`. OCCT correctly imports both bodies using entity-instance identity (shape(2)); readers that deduplicate by `PRODUCT.id` string collapse the two bodies to one and lose one shape.
+- **Reproducer recipe**: two `PRODUCT('Body','Body','',(#ctx))` entities with distinct `#NNN` IDs; each with its own `MANIFOLD_SOLID_BREP` and `PRODUCT_DEFINITION` chain; bodies spatially offset so the collapse is geometrically obvious.
+- **Expected kernel behavior**: never deduplicate `PRODUCT` entities by the `id` string alone; key on entity reference `#NNN`; the `id` attribute is a human label, not a unique key.
+- **Notes**: Synonyms: "CATIA V5 multi-body STEP duplicate PRODUCT id", "STEP PRODUCT id collision Body", "duplicate PRODUCT.id collapses bodies", "multi-body STEP loses one solid", "CATIA STEP Body Body dedup".
+- **Byte assertion**: count(b"PRODUCT('Body'") >= 2
+- **Byte assertion**: count_entity_def(b'MANIFOLD_SOLID_BREP') >= 2
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(2)/shape(2) gmsh=shape(18) ifc=schema_n/a`
+- **Model impact**: Multi-body CATIA V5 parts import as single-body in readers with id-string dedup; downstream mass-properties, collision detection, and assembly mating reference the wrong geometry.
+
+### A117 — PRODUCT_DEFINITION_CONTEXT with null application_context_element
+- **Category**: §12.6 assembly (sub-class: null attribute causes empty import)
+- **Sources**: Fusion 360 community + OCCT MANTIS 0031455 (DEF-GG). LGPL-clean — pattern only, no bytes copied. Fusion 360 sporadically emits `PRODUCT_DEFINITION_CONTEXT` with an empty or null `application_context_element` (third parameter), causing strict readers to classify the product as having no design context and skip geometry transfer.
+- **Description**: STEP AP214 file containing a valid `MANIFOLD_SURFACE_SHAPE_REPRESENTATION` geometry (planar face) and a second `PRODUCT_DEFINITION_CONTEXT('part definition',#app_ctx,$)` where the `application_context_element` is `$` (null). Readers that check `application_context_element` to determine design context classify the null-element `PRODUCT_DEFINITION` as having no context and skip the corresponding shape transfer. OCCT-permissive readers ignore the null and load the valid geometry from the main product chain (shape(1)). Strict readers produce an empty document.
+- **Reproducer recipe**: valid PRODUCT chain with `PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design')` (healthy); plus `PRODUCT_DEFINITION_CONTEXT('part definition',#9000,$)` (null third arg) referenced by a second `PRODUCT_DEFINITION`.
+- **Expected kernel behavior**: treat null `application_context_element` as an error or default to 'design'; emit `W_NULL_APPLICATION_CONTEXT_ELEMENT` diagnostic; do not silently produce an empty import.
+- **Notes**: Synonyms: "Fusion 360 STEP empty context", "PRODUCT_DEFINITION_CONTEXT null application_context_element", "STEP null application context empty import", "OCCT MANTIS 31455 null context", "PRODUCT_DEFINITION_CONTEXT $ empty".
+- **Byte assertion**: contains(b'PRODUCT_DEFINITION_CONTEXT')
+- **Byte assertion**: matches(rb"PRODUCT_DEFINITION_CONTEXT\('[^']*',[^,]+,\$\)")
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+- **Model impact**: Permissive readers silently skip product definitions with null context, losing geometry; strict readers emit empty documents; both outcomes are invisible to the user who authored the file.
+
+### Ad129 — Negative-determinant CARTESIAN_TRANSFORMATION_OPERATOR_3D in MAPPED_ITEM
+- **Category**: §12.11 adversarial (sub-class: reflection / orientation-silent-error)
+- **Sources**: Fusion 360 community mirror pattern STEP export (DEF-V). LGPL-clean — pattern only, no bytes copied. Fusion 360 mirror-pattern exports encode `CARTESIAN_TRANSFORMATION_OPERATOR_3D` with axis3=(0,0,-1) forming a left-handed coordinate system (det=-1); readers that silently orthogonalize the transformation (force det=+1) produce wrong orientation.
+- **Description**: STEP AP214 file with a valid planar face (component A via standard product chain) and a `MAPPED_ITEM` referencing a `REPRESENTATION_MAP` combined with an `ITEM_DEFINED_TRANSFORMATION` whose placement is a `CARTESIAN_TRANSFORMATION_OPERATOR_3D` with `axis1=(1,0,0)`, `axis2=(0,1,0)`, `axis3=(0,0,-1)` — a left-handed coordinate system with `det = -1` (a reflection). Conforming readers that handle negative-det transformations produce component B as a mirror image of component A. Readers that silently treat the transformation as an identity or orthogonalize it (force det=+1) produce a copy at the wrong orientation. OCCT silently ignores the negative-det CTO and yields shape(1).
+- **Reproducer recipe**: `CARTESIAN_TRANSFORMATION_OPERATOR_3D('neg_det_mirror',#axis1,#axis2,#origin,1.0,#axis3)` where `#axis3=DIRECTION('axis3',(0.0,0.0,-1.0))` (det=-1); combined with `MAPPED_ITEM` referencing a `REPRESENTATION_MAP`.
+- **Expected kernel behavior**: detect negative-det transformation and emit `W_REFLECTION_TRANSFORM` diagnostic; produce the geometrically correct mirror image; never silently treat a reflection as an orthogonal placement.
+- **Notes**: Synonyms: "negative determinant STEP transformation", "CARTESIAN_TRANSFORMATION_OPERATOR_3D det=-1", "STEP mirror reflection wrong orientation", "MAPPED_ITEM reflection silently identity", "Fusion 360 mirror pattern STEP wrong".
+- **Byte assertion**: contains(b'CARTESIAN_TRANSFORMATION_OPERATOR_3D')
+- **Byte assertion**: contains(b'MAPPED_ITEM')
+- **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+- **Model impact**: Mirror-pattern assemblies from Fusion 360 import with wrong component orientation; mirrored parts appear as copies rather than reflections; downstream FEA, tolerance analysis, and inspection reference incorrect geometry.
