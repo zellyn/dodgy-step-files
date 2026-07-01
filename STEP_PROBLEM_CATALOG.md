@@ -31034,8 +31034,9 @@ Circle parametrization assumes aNewF ≤ aNewL without handling periodic wraparo
 
 Vertex tolerance extracted without validation against accumulating tolerance array. Edge chain with heterogeneous vertex tolerances triggers incoherent continuity checks. Line 1971–1972: `TopExp::CommonVertex()` retrieves unvalidated tolerance; `aTolVerSeq.Append()` stores unsorted values.
 
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Tier-3 assertion**: n_faces_total == 1
+- **Tier-3 assertion**: face[0].surface_type == "plane"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a`
 ### Gp166 — `ProjectDegenerated.whole-edge-degenerate`
 Conical surface with entire pcurve collapsing to apex singularity. Fixtures force redistribution of degenerate points along non-degenerate parametric axis.
 - **Tier-3 assertion**: shape_null == True

@@ -123,35 +123,4 @@ shell = f.open_shell([face])
 sbsm  = f.shell_based_surface_model([shell])
 
 # Product chain with TIGHT TOLERANCE 1.0E-9 (the near-degenerate trigger)
-block_start = max(9000, f._next_id)
-f._next_id = block_start
-
-app_ctx   = f._emit_raw("APPLICATION_CONTEXT('mechanical design')")
-f.entities.insert(0, f.entities.pop())
-prod_ctx  = f._emit_raw(f"PRODUCT_CONTEXT('',#{app_ctx.eid},'mechanical')")
-product   = f._emit_raw(f"PRODUCT('Gp078','Gp078','',({prod_ctx.ref()}))")
-prod_form = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{product.eid})")
-pd_ctx    = f._emit_raw(
-    f"PRODUCT_DEFINITION_CONTEXT('part definition',#{app_ctx.eid},'design')"
-)
-prod_def  = f._emit_raw(
-    f"PRODUCT_DEFINITION('','',#{prod_form.eid},#{pd_ctx.eid})"
-)
-prod_shape = f._emit_raw(f"PRODUCT_DEFINITION_SHAPE('','',#{prod_def.eid})")
-lu  = f._emit_raw("(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.))")
-pau = f._emit_raw("(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.))")
-sau = f._emit_raw("(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT())")
-unc = f._emit_raw(
-    f"UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-9),#{lu.eid},"
-    f"'distance_accuracy_value','')"
-)
-grc = f._emit_raw(
-    f"(GEOMETRIC_REPRESENTATION_CONTEXT(3)"
-    f"GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT(({unc.ref()}))"
-    f"GLOBAL_UNIT_ASSIGNED_CONTEXT(({lu.ref()},{pau.ref()},{sau.ref()}))"
-    f"REPRESENTATION_CONTEXT('','3D'))"
-)
-shape_rep = f._emit_raw(
-    f"MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#{sbsm.eid}),#{grc.eid})"
-)
-f._emit_raw(f"SHAPE_DEFINITION_REPRESENTATION(#{prod_shape.eid},#{shape_rep.eid})")
+f.add_product_chain(sbsm, uncertainty=1.0E-9)

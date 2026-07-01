@@ -102,7 +102,10 @@ than committed. New strategy: Sonnet-generates instead of Haiku-generates.
 - [x] Q5.2 Opus regen Gp007 + Gp008 per Sonnet recipes (awaiting re-verify)
 - [x] Q5.3 Discard Haiku-generated chunks 1-3 (40% slop rate; rolled back locally, never pushed)
 - [ ] Q5.4 Architecture: Sonnet-generates the fixture, Sonnet-self-verifies the bytes match the claim, only commit when STRONG_PASS. Opus regen on STILL_FAILS.
-- [ ] Q5.5 Re-attack the 97 Gp + ~650 other silent-empty entries under new architecture, in small batches with Sonnet verification gating every commit.
+- [x] Q5.6 Pilot 2 (2026-06-25): 3 manual-chain Gp fixtures refactored to add_product_chain — all 3 STRONG_PASS (10/10 mutation detection): Gp074 (FP cliff), Gp078 (near-degenerate), Gp165 (heterogeneous vertex tol, restructured from WIREFRAME to ADVANCED_FACE, oracle shifted to shape(1)/shape(1))
+- [ ] Q5.5 Re-attack the remaining manual-chain + unstrengthened silent-empty entries under new architecture, in small batches with Sonnet verification gating every commit.
+
+**Survey note (2026-06-25):** Only 3 candidates remain without add_product_chain in priority sections (Gp074/078/165 — now done). All Twi/Tsh/Gs entries with occt=empty already use add_product_chain. N-tolerance and U-units sections have oracle-invisible defects (tolerance/unit context not read during BRep load) — cannot be made STRONG_PASS via BRep embedding; WEAK at defect-specific byte level.
 
 
 
