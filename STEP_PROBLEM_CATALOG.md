@@ -44207,3 +44207,65 @@ exercised against CGAL PMP / MeshFix.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Mirror-pattern assemblies from Fusion 360 import with wrong component orientation; mirrored parts appear as copies rather than reflections; downstream FEA, tolerance analysis, and inspection reference incorrect geometry.
+
+### Tsh232 — Fusion 360 fillet-junction three-valent `ORIENTED_EDGE` in `CLOSED_SHELL`
+- **Category**: §12.3a shells (sub-class: non-manifold / three-valent edge)
+- **Sources**: Fusion 360 community — fillet-fillet junction STEP export thread. B4 wave-6 DEF-T (LGPL-clean — pattern only, no bytes copied). Fusion 360 exports a `CLOSED_SHELL` where two adjacent cylindrical fillet faces and one planar base face share a common edge referenced by three `ORIENTED_EDGE` records.
+- **Description**: STEP file with a `CLOSED_SHELL` containing three `ADVANCED_FACE` entities: F1 (planar, `PLANE`), F2 (cylindrical fillet, `CYLINDRICAL_SURFACE`), F3 (cylindrical fillet, `CYLINDRICAL_SURFACE`). The shared `EDGE_CURVE` E running from vertex (1,0,0) to (1,1,0) is referenced by three distinct `ORIENTED_EDGE` records — once in each face's `EDGE_LOOP`. The STEP schema (ISO 10303-42 §4.5) requires exactly two `ADVANCED_FACE` entities per `EDGE_CURVE` in a `CLOSED_SHELL`; a three-valent edge is a non-manifold topology defect. OCCT loads the shape with heal-on and heal-off, reporting 3 faces (non-manifold solid accepted). Strict receivers must flag the three-valent edge as a non-manifold violation.
+- **Reproducer recipe**: `CLOSED_SHELL` with 3 faces; a single `EDGE_CURVE` entity referenced by 3 separate `ORIENTED_EDGE` entities across all 3 face loops; two faces on `CYLINDRICAL_SURFACE` (large radius ≈100, nearly planar), one face on `PLANE`.
+- **Expected kernel behavior**: flag "EDGE shared by 3 or more faces (non-manifold)"; either reject the shape or load it with a non-manifold diagnostic; checkshape must report the three-valent edge.
+- **Notes**: Synonyms: "Fusion 360 fillet fillet junction STEP non-manifold", "three-valent edge CLOSED_SHELL STEP", "ORIENTED_EDGE three faces non-manifold", "fillet junction shared edge three faces", "STEP non-manifold topology three-valent".
+- **Byte assertion**: contains(b'CLOSED_SHELL')
+- **Byte assertion**: contains(b'CYLINDRICAL_SURFACE')
+- **Tier-3 assertion**: n_faces_total == 3
+- **OCC behavior**: silent-accept; OCCT loads the three-face non-manifold shell as shape(1) without a diagnostic; the three-valent edge is not flagged.
+- **Severity**: P1
+- **Model impact**: Non-manifold topology from fillet-junction STEP exports is silently accepted; downstream Boolean operations on the non-manifold shell produce undefined results; FEA meshing on the three-valent edge fails or produces degenerate elements.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a`
+
+### Gs189 — `SPHERICAL_SURFACE` hemispherical cap with zero-radius `CIRCLE` `EDGE` at pole
+- **Category**: §12.2c surfaces (sub-class: spherical-surface / degenerate polar edge)
+- **Sources**: Fusion 360 community — hemisphere STEP export thread. B4 wave-6 DEF-U (LGPL-clean — pattern only, no bytes copied). Fusion 360 emits a hemispherical STEP solid with a `CIRCLE` entity of `radius=0.0` centred at the north pole as the polar cap's boundary edge.
+- **Description**: STEP file with a `MANIFOLD_SOLID_BREP` containing two `ADVANCED_FACE` entities: (a) a `SPHERICAL_SURFACE` hemispherical cap (radius=5), and (b) a planar equatorial disk (`PLANE` at z=0). The spherical cap's `FACE_BOUND` `EDGE_LOOP` contains an `ORIENTED_EDGE` whose basis `EDGE_CURVE` uses a `CIRCLE` with `radius=0.0` centred at the north pole (0,0,5); both `edge_start` and `edge_end` reference the same `VERTEX_POINT` (degenerate self-referential loop). The equatorial face uses a full-circle edge (radius=5) shared with the cap. Readers should either reject the zero-radius `CIRCLE` as degenerate or treat the apex as a `VERTEX_LOOP`; OCCT heals and loads shape(1) with 2 faces.
+- **Reproducer recipe**: `SPHERICAL_SURFACE(radius=5)` + `CLOSED_SHELL`; equatorial `CIRCLE(radius=5)` self-loop edge for equatorial face; `CIRCLE('gs189_pole_circle',pole_axis,0.0)` with identical `edge_start` and `edge_end` vertex for polar cap `FACE_BOUND`.
+- **Expected kernel behavior**: reject the zero-radius `CIRCLE` as a degenerate edge and emit `E_DEGENERATE_EDGE`; or convert the zero-radius edge to a `VERTEX_LOOP` at the apex and emit `W_POLAR_DEGENERATE`; never accept silently without a diagnostic.
+- **Notes**: Synonyms: "Fusion 360 hemisphere STEP pole degenerate", "SPHERICAL_SURFACE zero radius circle pole", "hemisphere apex degenerate edge STEP", "CIRCLE radius zero polar cap", "sphere north pole degenerate loop STEP".
+- **Byte assertion**: contains(b'SPHERICAL_SURFACE')
+- **Byte assertion**: contains(b'CIRCLE')
+- **Tier-3 assertion**: n_faces_total == 2
+- **Tier-3 assertion**: faces[0].surface_type == "sphere"
+- **OCC behavior**: silent-accept; OCCT heals the zero-radius polar edge and loads shape(1) with 2 faces and 1 solid without a diagnostic; the degenerate pole is not flagged.
+- **Severity**: P1
+- **Model impact**: Hemisphere exports with degenerate polar edges load silently; downstream UV parameterisation of the spherical cap is incorrect at the pole; tessellation of the polar region may produce degenerate triangles or collapse the apex.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a`
+
+### Gs190 — `TOROIDAL_SURFACE` with `minor_radius` and `major_radius` attribute values swapped
+- **Category**: §12.2c surfaces (sub-class: toroidal-surface / swapped-radius attributes)
+- **Sources**: SolidCAM/HSMWorks STEP import community forum. B4 wave-6 DEF-CC (LGPL-clean — pattern only, no bytes copied). CAM post-processors have been observed emitting `TOROIDAL_SURFACE` with `major_radius` and `minor_radius` in swapped positions, producing a self-intersecting torus geometry.
+- **Description**: STEP file with a `SHELL_BASED_SURFACE_MODEL` containing one `ADVANCED_FACE` on a `TOROIDAL_SURFACE`. The `TOROIDAL_SURFACE` entity encodes `major_radius=2.0, minor_radius=10.0` — the intended values are major=10.0 (ring radius), minor=2.0 (tube radius), but they are swapped. ISO 10303-42 §4.4.37 specifies the positional order as `(position, major_radius, minor_radius)`; with minor=10.0 > major=2.0 the torus is geometrically self-intersecting (impossible geometry). The 3D boundary patch is computed using the intended (correct) radii so the EDGE_CURVEs are geometrically coherent, but the `TOROIDAL_SURFACE` entity itself encodes the defect. OCCT accepts the swapped torus and loads shape(1) with 1 face.
+- **Reproducer recipe**: `TOROIDAL_SURFACE('gs190_torus',#axis2_placement,2.0,10.0)` — literal `2.0,10.0` in file (byte assertion); boundary SURFACE_CURVE edges use intended-correct geometry (R=10, r=2).
+- **Expected kernel behavior**: detect `minor_radius > major_radius` as geometrically invalid (self-intersecting torus); emit `E_TOROIDAL_RADIUS_SWAP` or `W_SELF_INTERSECTING_TORUS`; reject or flag; never silently produce an inverted torus without a diagnostic.
+- **Notes**: Synonyms: "TOROIDAL_SURFACE swapped radii STEP", "major minor radius swap torus", "self-intersecting torus STEP CAM post-processor", "SolidCAM STEP toroidal surface wrong radii", "minor_radius major_radius STEP swap".
+- **Byte assertion**: contains(b'TOROIDAL_SURFACE')
+- **Byte assertion**: contains(b'2.0,10.0')
+- **Tier-3 assertion**: n_faces_total == 1
+- **Tier-3 assertion**: faces[0].surface_type == "torus"
+- **OCC behavior**: silent-accept; OCCT loads the swapped-radius torus as shape(1) with 1 face without a diagnostic; the self-intersecting torus geometry is not detected.
+- **Severity**: P1
+- **Model impact**: CAM post-processors that emit swapped torus radii produce geometrically incorrect toolpath surfaces; downstream simulation and toolpath generation reference the self-intersecting torus; inspection tools measuring ring/tube radius read inverted values.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+
+### Tsh233 — Two `MANIFOLD_SOLID_BREP`s sharing the same `OPEN_SHELL` entity reference
+- **Category**: §12.3a shells (sub-class: dual-owner shell / structural uniqueness violation)
+- **Sources**: OCCT MANTIS 0026988. B4 wave-6 DEF-FF (LGPL-clean — pattern only, no bytes copied). OCCT MANTIS tracker reported a case where two `MANIFOLD_SOLID_BREP` entities reference the same `OPEN_SHELL` entity, violating the STEP schema ownership uniqueness constraint.
+- **Description**: STEP file with two `MANIFOLD_SOLID_BREP` entities (MSB1, MSB2) whose `outer` attribute both reference the same `OPEN_SHELL` entity. The `OPEN_SHELL` contains six planar faces forming a unit cube. The STEP schema requires each `CLOSED_SHELL` or `OPEN_SHELL` to be owned by exactly one `MANIFOLD_SOLID_BREP`; two entities referencing the same shell is a structural uniqueness-constraint violation. Only MSB1 is wired into the product chain; MSB2 is a second owner of the same shell. OCCT loads the shape, reporting 6 faces and 6 shells in a compound (each face treated as a separate shell rather than unified) with no solid.
+- **Reproducer recipe**: `OPEN_SHELL` with 6 planar faces (unit cube); `#MSB1=MANIFOLD_SOLID_BREP('tsh233_msb1',#SHELL)` and `#MSB2=MANIFOLD_SOLID_BREP('tsh233_msb2',#SHELL)` both referencing the same `#SHELL` entity.
+- **Expected kernel behavior**: reject — emit `E_SHELL_DUAL_OWNER`; each shell entity must be owned by exactly one solid; detect the structural uniqueness violation at parse time or shell-topology resolution time; never silently load a shape derived from a shared shell.
+- **Notes**: Synonyms: "MANIFOLD_SOLID_BREP dual owner shell", "OPEN_SHELL shared two solids STEP", "structural uniqueness violation STEP shell", "two MSB same shell entity", "OCCT MANTIS 0026988 dual owner shell".
+- **Byte assertion**: contains(b'OPEN_SHELL')
+- **Byte assertion**: count_entity_def(b'MANIFOLD_SOLID_BREP') == 2
+- **Tier-3 assertion**: n_faces_total == 6
+- **OCC behavior**: silent-accept; OCCT loads the dual-owner shell as a compound of 6 individual shells with 6 faces (shape(1) compound, no solid); the structural uniqueness violation is not flagged.
+- **Severity**: P1
+- **Model impact**: Dual-owner shell references from two solids produce an undefined shared topology; mutation of the shared shell through one `MANIFOLD_SOLID_BREP` affects the other; downstream Boolean operations on either solid produce undefined results; solid/volume queries return zero for the compound.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(38) ifc=schema_n/a`
