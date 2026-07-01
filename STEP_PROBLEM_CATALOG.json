@@ -44945,6 +44945,88 @@
   },
   {
     "byte_assertions": [
+      "contains(b'CIRCLE')",
+      "count_entity_def(b'VERTEX_POINT') >= 2",
+      "contains(b'FACE_OUTER_BOUND')"
+    ],
+    "category": "§12-2a pcurves (sub-class: full-circle closure / near-coincident vertices)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "STEP file with a planar face (`PLANE`, z=0, normal +Z) bounded by a single `FACE_OUTER_BOUND` containing one `ORIENTED_EDGE` whose basis is a `CIRCLE` (radius=5.0, axis=+Z, center at origin). `edge_start` and `edge_end` are two **distinct** `VERTEX_POINT` entities — V1 at (5.0, 0.0, 0.0) and V2 at (5.0, −1e-8, 0.0) — separated by ~1e-8 m, which is within the declared `UNCERTAINTY_MEASURE_WITH_UNIT = 1e-7`. The circle's parametric extent runs from θ=0 to θ≈2π−2×10⁻⁹ rad (not exactly 2π). Some readers collapse the two vertices into one (treating the loop as closed); others preserve both vertices and produce a wire with a near-zero-length free edge at the closure point.",
+    "expected_kernel_behavior": "detect near-coincident `edge_start`/`edge_end` on a closed-curve `EDGE_CURVE` when vertex gap < declared tolerance; collapse to a single vertex and treat as a true closed loop; emit `W_NEAR_COINCIDENT_CLOSURE_VERTICES`.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp171.stp",
+    "id": "Gp171",
+    "notes": "OCCT MANTIS 0027634. B4 wave-6 DEF-DD. Synonyms: \"full-circle edge with two vertices at closure\", \"CIRCLE EDGE_CURVE edge_start edge_end near-coincident\", \"near-degenerate circle closure vertex\", \"two distinct vertices on full-revolution CIRCLE\", \"zero-length free edge at closure point\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`CIRCLE(radius=5)` on z=0 `PLANE`; `EDGE_CURVE` with `edge_start=VERTEX_POINT((5,0,0))` and `edge_end=VERTEX_POINT((5,-1e-8,0))`; `UNCERTAINTY_MEASURE_WITH_UNIT=1e-7`; single `ORIENTED_EDGE` in the `FACE_OUTER_BOUND`. OCCT loads the face (shape(1)) with 2 vertex entries both resolving to (5,0,0) and 1 edge.",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [],
+    "sender": "STEP exporters that emit a full-circle `EDGE_CURVE` with `edge_start` ≠ `edge_end` but at distance < `UNCERTAINTY_MEASURE_WITH_UNIT`; common in CATIA/SolidWorks exports of near-degenerate revolution features.",
+    "severity": "P2",
+    "sources": [
+      "OCCT MANTIS#0027634 (\"near-degenerate full-circle CIRCLE with two distinct near-coincident vertices at closure\")",
+      "B4 wave-6 DEF-DD (LGPL-clean — pattern only, no bytes copied)."
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 1",
+      "n_vertices_total == 2"
+    ],
+    "title": "Full-circle `CIRCLE` `EDGE_CURVE` with two near-coincident but distinct `VERTEX_POINT`s"
+  },
+  {
+    "byte_assertions": [
+      "count_entity_def(b'ADVANCED_FACE') >= 2",
+      "contains(b'PCURVE')",
+      "contains(b'CYLINDRICAL_SURFACE')",
+      "contains(b'PLANE')"
+    ],
+    "category": "§12-2a pcurves (sub-class: wrong basis_surface reference)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "STEP file with two adjacent `ADVANCED_FACE` entities: F1 on surface S1 (`PLANE`, y=0, normal +Y, the XZ plane) and F2 on surface S2 (`CYLINDRICAL_SURFACE`, radius=3, axis +Z). They share edge E: a `LINE` from (3,0,0) to (3,0,5) (lies on both y=0 and x²+y²=9). The `SURFACE_CURVE` for edge E carries two `PCURVE` entries. The pcurve for F2 correctly references S2 (cylinder). **THE DEFECT**: the pcurve for F1 (the plane) has its `basis_surface` attribute pointing to S2 (the cylindrical surface) instead of S1 (the plane). The 3D curve of E is correct. OCCT loads the shape but `brepcheck` flags it as invalid; gmsh rejects (\"Could not fix wire in surface 1\"); the wrong surface UV domain is used to evaluate the planar face boundary.",
+    "expected_kernel_behavior": "validate `PCURVE.basis_surface` against the `ADVANCED_FACE.face_geometry` for each face that uses the edge; emit `E_PCURVE_WRONG_BASIS_SURFACE` when the surface IDs do not match; reject or warn before propagating incorrect UV bounds to downstream operations.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp172.stp",
+    "id": "Gp172",
+    "notes": "OCCT MANTIS 0030124. B4 wave-6 DEF-EE. Synonyms: \"PCURVE basis_surface wrong surface reference\", \"PCURVE points at adjacent face surface\", \"wrong basis surface in PCURVE\", \"PCURVE.basis_surface mismatch\", \"adjacent face surface UV error pcurve\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "Two `ADVANCED_FACE`s sharing an `EDGE_CURVE` via a `SURFACE_CURVE`; the `SURFACE_CURVE` lists two `PCURVE`s; the pcurve for the `PLANE` face encodes `PCURVE('...',#CYLINDRICAL_SURFACE,...)` (wrong `basis_surface`). OCCT: `shape(1)`, `brepcheck=False`; gmsh: reject.",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [],
+    "sender": "STEP exporters that copy a `PCURVE` from one face to an adjacent face without updating the `basis_surface` reference; common in translation pipelines that share `SURFACE_CURVE` entities between adjacent faces but emit separate `PCURVE` slots with the wrong surface ID.",
+    "severity": "P1",
+    "sources": [
+      "OCCT MANTIS#0030124 (\"PCURVE.basis_surface points at wrong adjacent surface\")",
+      "B4 wave-6 DEF-EE (LGPL-clean — pattern only, no bytes copied)."
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 2",
+      "n_edges_total == 5"
+    ],
+    "title": "`PCURVE.basis_surface` referencing the wrong (adjacent) `ADVANCED_FACE` surface"
+  },
+  {
+    "byte_assertions": [
       "contains(b'B_SPLINE_SURFACE')"
     ],
     "category": "§12.2b NURBS/knots",
@@ -103173,6 +103255,87 @@
       "n_vertices_total == 1"
     ],
     "title": "AP242 coordinate-system connection-point entity silently dropped under OCCT V7.x"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'DIMENSION_SIZE')",
+      "contains(b'SHAPE_ASPECT')",
+      "contains(b'MANIFOLD_SOLID_BREP')"
+    ],
+    "category": "§12.7 PMI/GD&T (sub-class: edition-boundary entity elision / dimensional annotation)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "STEP AP242 Ed.2 file containing a valid geometry (6-face cube `MANIFOLD_SOLID_BREP`, 10×10×10 mm) and a dimensional annotation encoded via `DIMENSION_SIZE(#shape_aspect,'10.0')` (AP242 Ed.2 entity) + `DESCRIPTIVE_REPRESENTATION_ITEM('height_value','10.0 mm')` inside a `REPRESENTATION` linked by `PROPERTY_DEFINITION_REPRESENTATION`. The geometry loads correctly under any reader; `DIMENSION_SIZE` is recognized by AP242 Ed.2 readers but is **silently absent** under AP242 Ed.1 and AP214 readers (entity type not in their schema). Edition-boundary demonstration: entity class defines the defect; the data loss is silent (no error diagnostic emitted).",
+    "expected_kernel_behavior": "AP242 Ed.2 readers must populate dimensional annotations from `DIMENSION_SIZE`; Ed.1/AP214 readers must emit `W_SCHEMA_ENTITY_UNSUPPORTED(DIMENSION_SIZE)` rather than silently discarding the annotation.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-7-pmi/Pmi142.stp",
+    "id": "Pmi142",
+    "notes": "NIST IR 8221 §4.5.7. B4 wave-6 DEF-Z. Edition boundary: Ed.2 entity absent from Ed.1 schema. Synonyms: \"DIMENSION_SIZE AP242 Ed.2 dropped by Ed.1 readers\", \"AP242 edition 2 dimensional size entity\", \"DIMENSION_SIZE silently ignored\", \"AP242 Ed2 PMI size callout lost\", \"DIMENSION_SIZE vs DIMENSIONAL_SIZE AP242\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "AP242 Ed.2 header; cube `MANIFOLD_SOLID_BREP`; `SHAPE_ASPECT('top_face_z','z-dimension face aspect',#pds,.F.)`; `DIMENSION_SIZE(#shape_aspect,'10.0')`; `PROPERTY_DEFINITION_REPRESENTATION` chain. Ed.1/AP214 readers import cube (shape(1)) but silently drop `DIMENSION_SIZE`; Ed.2 readers expose the dimensional size value.",
+    "section": "12.7",
+    "section_dir": "12-7-pmi",
+    "see_also": [],
+    "sender": "AP242 Edition 2 STEP files from tools that encode dimensional size callouts via `DIMENSION_SIZE` (Ed.2 §4.5.7) rather than the Ed.1 `DIMENSIONAL_SIZE` path; file header declares `AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF {1 0 10303 442 1 1 4}` (Ed.2 OID).",
+    "severity": "P1",
+    "sources": [
+      "NIST IR 8221 AP242 conformance test results §4.5.7 (`DIMENSION_SIZE` entity in AP242 Ed.2 dimensional annotation)",
+      "B4 wave-6 DEF-Z (LGPL-clean — pattern only, no bytes copied)."
+    ],
+    "taxonomy": [
+      "silent-loss",
+      "pmi"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 6"
+    ],
+    "title": "AP242 Ed.2 `DIMENSION_SIZE` entity silently dropped by Ed.1 readers"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'SURFACE_TEXTURE_REPRESENTATION')",
+      "contains(b'DESCRIPTIVE_REPRESENTATION_ITEM')",
+      "contains(b'Ra')",
+      "contains(b'MANIFOLD_SOLID_BREP')"
+    ],
+    "category": "§12.7 PMI/GD&T (sub-class: edition-boundary entity elision / surface texture annotation)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "STEP AP242 Ed.2 file with a surface finish annotation encoded via `SURFACE_TEXTURE_REPRESENTATION('Ra_1p6_um',(#dri),#ctx)` (AP242 Ed.2 Part 1701) containing a `DESCRIPTIVE_REPRESENTATION_ITEM('Ra','1.6')` for Ra=1.6 μm surface roughness on a machined face. Also includes valid geometry (6-face prismatic `MANIFOLD_SOLID_BREP`, 10×10×5 mm). Geometry loads under all readers; `SURFACE_TEXTURE_REPRESENTATION` is recognized by AP242 Ed.2 readers but **silently ignored** by AP242 Ed.1 / AP214 readers (entity type absent from their schema). Edition-boundary demonstration: the Ra value and surface texture annotation are completely invisible to Ed.1 readers with no error.",
+    "expected_kernel_behavior": "AP242 Ed.2 readers must traverse `SURFACE_TEXTURE_REPRESENTATION` and expose the Ra/Rz/Rmax values via surface finish API; Ed.1/AP214 readers must emit `W_SCHEMA_ENTITY_UNSUPPORTED(SURFACE_TEXTURE_REPRESENTATION)` rather than silently discarding the annotation.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-7-pmi/Pmi143.stp",
+    "id": "Pmi143",
+    "notes": "NIST MBE PMI Round 3 §5.2. B4 wave-6 DEF-BB. Entity defined in AP242 Ed.2 Part 1701 only. Synonyms: \"SURFACE_TEXTURE_REPRESENTATION AP242 Ed.2 dropped\", \"surface roughness Ra STEP AP242 lost\", \"surface finish annotation Ed.2 invisible Ed.1\", \"Ra 1.6 STEP annotation silently missing\", \"Part 1701 surface texture entity not recognized\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "AP242 Ed.2 header; prismatic `MANIFOLD_SOLID_BREP` (6 faces); `SHAPE_ASPECT('machined_top','top face surface texture aspect',#pds,.F.)`; `DESCRIPTIVE_REPRESENTATION_ITEM('Ra','1.6')`; `SURFACE_TEXTURE_REPRESENTATION('Ra_1p6_um',(#dri),#ctx)`; `PROPERTY_DEFINITION_REPRESENTATION` chain. Ed.1/AP214 readers import geometry (shape(1)) but silently drop surface texture; Ed.2 readers expose Ra=1.6.",
+    "section": "12.7",
+    "section_dir": "12-7-pmi",
+    "see_also": [],
+    "sender": "AP242 Edition 2 STEP files from MBE-capable tools that encode surface finish annotations via `SURFACE_TEXTURE_REPRESENTATION` (Part 1701); file header declares AP242 Ed.2 schema.",
+    "severity": "P1",
+    "sources": [
+      "NIST MBE PMI Round 3 test results (surface texture §5.2",
+      "`SURFACE_TEXTURE_REPRESENTATION` AP242 Ed.2 Part 1701)",
+      "B4 wave-6 DEF-BB (LGPL-clean — pattern only, no bytes copied)."
+    ],
+    "taxonomy": [
+      "pmi"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 6"
+    ],
+    "title": "AP242 Ed.2 `SURFACE_TEXTURE_REPRESENTATION` entity dropped by Ed.1/AP214 readers"
   },
   {
     "byte_assertions": [],

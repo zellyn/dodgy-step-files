@@ -31057,6 +31057,47 @@ B-spline surface with 3D curve initial gap. Pcurve distance metrics inconsistent
 Planar surface with U-iso degenerate edge. U-constant pcurve lacks coordinate-axis consistency check; flag used without validation.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+
+### Gp171 — Full-circle `CIRCLE` `EDGE_CURVE` with two near-coincident but distinct `VERTEX_POINT`s
+- **Category**: §12-2a pcurves (sub-class: full-circle closure / near-coincident vertices)
+- **Sources**: OCCT MANTIS#0027634 ("near-degenerate full-circle CIRCLE with two distinct near-coincident vertices at closure"); B4 wave-6 DEF-DD (LGPL-clean — pattern only, no bytes copied).
+- **Sender**: STEP exporters that emit a full-circle `EDGE_CURVE` with `edge_start` ≠ `edge_end` but at distance < `UNCERTAINTY_MEASURE_WITH_UNIT`; common in CATIA/SolidWorks exports of near-degenerate revolution features.
+- **Description**: STEP file with a planar face (`PLANE`, z=0, normal +Z) bounded by a single `FACE_OUTER_BOUND` containing one `ORIENTED_EDGE` whose basis is a `CIRCLE` (radius=5.0, axis=+Z, center at origin). `edge_start` and `edge_end` are two **distinct** `VERTEX_POINT` entities — V1 at (5.0, 0.0, 0.0) and V2 at (5.0, −1e-8, 0.0) — separated by ~1e-8 m, which is within the declared `UNCERTAINTY_MEASURE_WITH_UNIT = 1e-7`. The circle's parametric extent runs from θ=0 to θ≈2π−2×10⁻⁹ rad (not exactly 2π). Some readers collapse the two vertices into one (treating the loop as closed); others preserve both vertices and produce a wire with a near-zero-length free edge at the closure point.
+- **Reproducer recipe**: `CIRCLE(radius=5)` on z=0 `PLANE`; `EDGE_CURVE` with `edge_start=VERTEX_POINT((5,0,0))` and `edge_end=VERTEX_POINT((5,-1e-8,0))`; `UNCERTAINTY_MEASURE_WITH_UNIT=1e-7`; single `ORIENTED_EDGE` in the `FACE_OUTER_BOUND`. OCCT loads the face (shape(1)) with 2 vertex entries both resolving to (5,0,0) and 1 edge.
+- **Expected kernel behavior**: detect near-coincident `edge_start`/`edge_end` on a closed-curve `EDGE_CURVE` when vertex gap < declared tolerance; collapse to a single vertex and treat as a true closed loop; emit `W_NEAR_COINCIDENT_CLOSURE_VERTICES`.
+- **Notes**: OCCT MANTIS 0027634. B4 wave-6 DEF-DD. Synonyms: "full-circle edge with two vertices at closure", "CIRCLE EDGE_CURVE edge_start edge_end near-coincident", "near-degenerate circle closure vertex", "two distinct vertices on full-revolution CIRCLE", "zero-length free edge at closure point".
+- **Byte assertion**: contains(b'CIRCLE')
+- **Byte assertion**: count_entity_def(b'VERTEX_POINT') >= 2
+- **Byte assertion**: contains(b'FACE_OUTER_BOUND')
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_faces_total == 1
+- **Tier-3 assertion**: n_edges_total == 1
+- **Tier-3 assertion**: n_vertices_total == 2
+- **OCC behavior**: accepts; OCCT loads the face with 2 vertex entries both at (5.0, 0.0, 0.0) and 1 edge (circle, length 31.42); brepcheck valid; defect is two topologically distinct vertices that are geometrically within tolerance — a near-zero-length free edge latent at closure.
+- **Severity**: P2
+- **Model impact**: The near-zero-length free edge at the closure point causes downstream `BRepCheck` / `BOPAlgo` operations to see a free edge and may flag the face as open-shell defective; revolution operations on the face may fail or produce a zero-length edge in the result; healing pipelines must detect and merge near-coincident closure vertices.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
+
+### Gp172 — `PCURVE.basis_surface` referencing the wrong (adjacent) `ADVANCED_FACE` surface
+- **Category**: §12-2a pcurves (sub-class: wrong basis_surface reference)
+- **Sources**: OCCT MANTIS#0030124 ("PCURVE.basis_surface points at wrong adjacent surface"); B4 wave-6 DEF-EE (LGPL-clean — pattern only, no bytes copied).
+- **Sender**: STEP exporters that copy a `PCURVE` from one face to an adjacent face without updating the `basis_surface` reference; common in translation pipelines that share `SURFACE_CURVE` entities between adjacent faces but emit separate `PCURVE` slots with the wrong surface ID.
+- **Description**: STEP file with two adjacent `ADVANCED_FACE` entities: F1 on surface S1 (`PLANE`, y=0, normal +Y, the XZ plane) and F2 on surface S2 (`CYLINDRICAL_SURFACE`, radius=3, axis +Z). They share edge E: a `LINE` from (3,0,0) to (3,0,5) (lies on both y=0 and x²+y²=9). The `SURFACE_CURVE` for edge E carries two `PCURVE` entries. The pcurve for F2 correctly references S2 (cylinder). **THE DEFECT**: the pcurve for F1 (the plane) has its `basis_surface` attribute pointing to S2 (the cylindrical surface) instead of S1 (the plane). The 3D curve of E is correct. OCCT loads the shape but `brepcheck` flags it as invalid; gmsh rejects ("Could not fix wire in surface 1"); the wrong surface UV domain is used to evaluate the planar face boundary.
+- **Reproducer recipe**: Two `ADVANCED_FACE`s sharing an `EDGE_CURVE` via a `SURFACE_CURVE`; the `SURFACE_CURVE` lists two `PCURVE`s; the pcurve for the `PLANE` face encodes `PCURVE('...',#CYLINDRICAL_SURFACE,...)` (wrong `basis_surface`). OCCT: `shape(1)`, `brepcheck=False`; gmsh: reject.
+- **Expected kernel behavior**: validate `PCURVE.basis_surface` against the `ADVANCED_FACE.face_geometry` for each face that uses the edge; emit `E_PCURVE_WRONG_BASIS_SURFACE` when the surface IDs do not match; reject or warn before propagating incorrect UV bounds to downstream operations.
+- **Notes**: OCCT MANTIS 0030124. B4 wave-6 DEF-EE. Synonyms: "PCURVE basis_surface wrong surface reference", "PCURVE points at adjacent face surface", "wrong basis surface in PCURVE", "PCURVE.basis_surface mismatch", "adjacent face surface UV error pcurve".
+- **Byte assertion**: count_entity_def(b'ADVANCED_FACE') >= 2
+- **Byte assertion**: contains(b'PCURVE')
+- **Byte assertion**: contains(b'CYLINDRICAL_SURFACE')
+- **Byte assertion**: contains(b'PLANE')
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_faces_total == 2
+- **Tier-3 assertion**: n_edges_total == 5
+- **OCC behavior**: silent-accept observed (catalog allowed: {reject}); OCCT loads 2 faces (plane + cylinder) and 5 edges, shape_null=False; brepcheck=False (invalid shape); gmsh rejects with "Could not fix wire in surface 1" — wrong basis_surface causes the plane face's UV boundary evaluation to use the cylinder's UV domain.
+- **Severity**: P1
+- **Model impact**: Face F1's boundary is evaluated using the wrong surface's UV parameterization; UV-based operations (PCurve evaluation, face trimming, Boolean ops, mesh generation) for F1 produce geometrically incorrect results; BRep healing that relies on pcurve UV bounds will compute wrong edge positions on the plane face.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
+
 ### A105 — Regression OCC 6.9.1 → 7.4.0: colours stop appearing on certain STEP files
 - **Category**: §12.6 assembly hierarchy (sub-class: appearance regression across kernel versions)
 - **Sources**: OCCT MANTIS#0031809; bug-reporter language: "regression v.6.9.1-7.4.0 colors no longer showing on certain STEP files", "files that displayed colour in 6.9.1 are grey in 7.4.0", "appearance regression". (OCCT MANTIS tracker 502 as of 2026-05-02)
@@ -44154,6 +44195,43 @@ exercised against CGAL PMP / MeshFix.
 - **Severity**: P1
 - **Model impact**: Coordinate-system connection points between assembly components are invisible to OCCT V7.x; multi-component assemblies that use AP242 coordinate-system anchors for mating constraints, connection paths, or fastener placement receive no alignment data; assembly tooling under V7.x must use alternative connection mechanisms.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+
+### Pmi142 — AP242 Ed.2 `DIMENSION_SIZE` entity silently dropped by Ed.1 readers
+- **Category**: §12.7 PMI/GD&T (sub-class: edition-boundary entity elision / dimensional annotation)
+- **Sources**: NIST IR 8221 AP242 conformance test results §4.5.7 (`DIMENSION_SIZE` entity in AP242 Ed.2 dimensional annotation); B4 wave-6 DEF-Z (LGPL-clean — pattern only, no bytes copied).
+- **Sender**: AP242 Edition 2 STEP files from tools that encode dimensional size callouts via `DIMENSION_SIZE` (Ed.2 §4.5.7) rather than the Ed.1 `DIMENSIONAL_SIZE` path; file header declares `AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF {1 0 10303 442 1 1 4}` (Ed.2 OID).
+- **Description**: STEP AP242 Ed.2 file containing a valid geometry (6-face cube `MANIFOLD_SOLID_BREP`, 10×10×10 mm) and a dimensional annotation encoded via `DIMENSION_SIZE(#shape_aspect,'10.0')` (AP242 Ed.2 entity) + `DESCRIPTIVE_REPRESENTATION_ITEM('height_value','10.0 mm')` inside a `REPRESENTATION` linked by `PROPERTY_DEFINITION_REPRESENTATION`. The geometry loads correctly under any reader; `DIMENSION_SIZE` is recognized by AP242 Ed.2 readers but is **silently absent** under AP242 Ed.1 and AP214 readers (entity type not in their schema). Edition-boundary demonstration: entity class defines the defect; the data loss is silent (no error diagnostic emitted).
+- **Reproducer recipe**: AP242 Ed.2 header; cube `MANIFOLD_SOLID_BREP`; `SHAPE_ASPECT('top_face_z','z-dimension face aspect',#pds,.F.)`; `DIMENSION_SIZE(#shape_aspect,'10.0')`; `PROPERTY_DEFINITION_REPRESENTATION` chain. Ed.1/AP214 readers import cube (shape(1)) but silently drop `DIMENSION_SIZE`; Ed.2 readers expose the dimensional size value.
+- **Expected kernel behavior**: AP242 Ed.2 readers must populate dimensional annotations from `DIMENSION_SIZE`; Ed.1/AP214 readers must emit `W_SCHEMA_ENTITY_UNSUPPORTED(DIMENSION_SIZE)` rather than silently discarding the annotation.
+- **Notes**: NIST IR 8221 §4.5.7. B4 wave-6 DEF-Z. Edition boundary: Ed.2 entity absent from Ed.1 schema. Synonyms: "DIMENSION_SIZE AP242 Ed.2 dropped by Ed.1 readers", "AP242 edition 2 dimensional size entity", "DIMENSION_SIZE silently ignored", "AP242 Ed2 PMI size callout lost", "DIMENSION_SIZE vs DIMENSIONAL_SIZE AP242".
+- **Byte assertion**: contains(b'DIMENSION_SIZE')
+- **Byte assertion**: contains(b'SHAPE_ASPECT')
+- **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_faces_total == 6
+- **OCC behavior**: accepts; OCCT loads the cube geometry correctly (compound(1), 6 planar faces, shape_null=False); `DIMENSION_SIZE` entity chain is structurally present but OCCT 7.x does not traverse it for dimensional annotation — defect manifests only when querying PMI annotations via XCAF.
+- **Severity**: P1
+- **Model impact**: Dimensional size callouts encoded via AP242 Ed.2 `DIMENSION_SIZE` are silently absent when read by AP242 Ed.1 or AP214 readers; MBD/MBE workflows that rely on dimensional annotations for inspection, machining tolerances, or drawing generation receive no size data from Ed.2 files on Ed.1-capable readers.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a`
+
+### Pmi143 — AP242 Ed.2 `SURFACE_TEXTURE_REPRESENTATION` entity dropped by Ed.1/AP214 readers
+- **Category**: §12.7 PMI/GD&T (sub-class: edition-boundary entity elision / surface texture annotation)
+- **Sources**: NIST MBE PMI Round 3 test results (surface texture §5.2; `SURFACE_TEXTURE_REPRESENTATION` AP242 Ed.2 Part 1701); B4 wave-6 DEF-BB (LGPL-clean — pattern only, no bytes copied).
+- **Sender**: AP242 Edition 2 STEP files from MBE-capable tools that encode surface finish annotations via `SURFACE_TEXTURE_REPRESENTATION` (Part 1701); file header declares AP242 Ed.2 schema.
+- **Description**: STEP AP242 Ed.2 file with a surface finish annotation encoded via `SURFACE_TEXTURE_REPRESENTATION('Ra_1p6_um',(#dri),#ctx)` (AP242 Ed.2 Part 1701) containing a `DESCRIPTIVE_REPRESENTATION_ITEM('Ra','1.6')` for Ra=1.6 μm surface roughness on a machined face. Also includes valid geometry (6-face prismatic `MANIFOLD_SOLID_BREP`, 10×10×5 mm). Geometry loads under all readers; `SURFACE_TEXTURE_REPRESENTATION` is recognized by AP242 Ed.2 readers but **silently ignored** by AP242 Ed.1 / AP214 readers (entity type absent from their schema). Edition-boundary demonstration: the Ra value and surface texture annotation are completely invisible to Ed.1 readers with no error.
+- **Reproducer recipe**: AP242 Ed.2 header; prismatic `MANIFOLD_SOLID_BREP` (6 faces); `SHAPE_ASPECT('machined_top','top face surface texture aspect',#pds,.F.)`; `DESCRIPTIVE_REPRESENTATION_ITEM('Ra','1.6')`; `SURFACE_TEXTURE_REPRESENTATION('Ra_1p6_um',(#dri),#ctx)`; `PROPERTY_DEFINITION_REPRESENTATION` chain. Ed.1/AP214 readers import geometry (shape(1)) but silently drop surface texture; Ed.2 readers expose Ra=1.6.
+- **Expected kernel behavior**: AP242 Ed.2 readers must traverse `SURFACE_TEXTURE_REPRESENTATION` and expose the Ra/Rz/Rmax values via surface finish API; Ed.1/AP214 readers must emit `W_SCHEMA_ENTITY_UNSUPPORTED(SURFACE_TEXTURE_REPRESENTATION)` rather than silently discarding the annotation.
+- **Notes**: NIST MBE PMI Round 3 §5.2. B4 wave-6 DEF-BB. Entity defined in AP242 Ed.2 Part 1701 only. Synonyms: "SURFACE_TEXTURE_REPRESENTATION AP242 Ed.2 dropped", "surface roughness Ra STEP AP242 lost", "surface finish annotation Ed.2 invisible Ed.1", "Ra 1.6 STEP annotation silently missing", "Part 1701 surface texture entity not recognized".
+- **Byte assertion**: contains(b'SURFACE_TEXTURE_REPRESENTATION')
+- **Byte assertion**: contains(b'DESCRIPTIVE_REPRESENTATION_ITEM')
+- **Byte assertion**: contains(b'Ra')
+- **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_faces_total == 6
+- **OCC behavior**: accepts; OCCT loads the prismatic geometry (compound(1), 6 planar faces, shape_null=False); `SURFACE_TEXTURE_REPRESENTATION` entity chain is present but OCCT 7.x does not traverse Part 1701 entities — surface texture annotation silent.
+- **Severity**: P1
+- **Model impact**: Surface finish annotations (Ra, Rz, Rmax) encoded via AP242 Ed.2 `SURFACE_TEXTURE_REPRESENTATION` are completely invisible to AP242 Ed.1 and AP214 readers; quality inspection workflows, machining parameter generation, and CMM planning that rely on STEP-encoded surface finish data receive no annotation data from Ed.2 files on Ed.1-capable readers.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a`
 
 ### A115 — CATIA V5 PRODUCT_CATEGORY_RELATIONSHIP across AP214→AP242 schema boundary
 - **Category**: §12.6 assembly (sub-class: schema-boundary attribute loss)
