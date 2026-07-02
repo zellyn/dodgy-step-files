@@ -402,3 +402,13 @@ of the 470 fixtures shipped 2026-06-21) before expanding scope.
 **How to apply:** when the kernel needs to be tested against meshing/
 tessellation defects, this section is the gap. Treat as a Q5 ticket once
 quality work clears.
+
+## Deferred wave-7 items — need oracle verification
+
+### DEF-MM (AP242 Ed.1 kinematic module): REVOLUTE_PAIR + KINEMATIC_JOINT + KINEMATIC_LINK
+Two-link mechanism (rectangular prism + shorter prism) connected by revolute joint J1
+(axis Z, range ±90°). Requires an AP242 Ed.1 kinematics-capable oracle (HOOPS Exchange
+or STEP Tools ST-Developer) to verify Expected validation. OCCT 7.x + FreeCAD only
+read the geometry, so encoding without oracle verify would produce speculative Expected
+lines. Defer until such an oracle is wired.
+Source: FreeCAD issue #19795; OCCT STEP translator docs.
