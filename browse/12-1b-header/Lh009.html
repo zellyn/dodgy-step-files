@@ -34,11 +34,9 @@
 <section><h2>Expected kernel behavior</h2>
 <p>case-fold to upper for compare; reject the comma-in-string variant; warn-and-fall-back-to-best-fit on unrecognized names.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Lh006. Synonyms: &quot;empty FILE_SCHEMA value&quot;, &quot;mixed-case schema name&quot;, &quot;vendor schema in FILE_SCHEMA&quot;, &quot;comma-separated schemas inside one string&quot;, &quot;unrecognised schema name&quot;. Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).</p></section>
+<p>**See also**: Lh006. Synonyms: &quot;empty FILE_SCHEMA value&quot;, &quot;mixed-case schema name&quot;, &quot;vendor schema in FILE_SCHEMA&quot;, &quot;comma-separated schemas inside one string&quot;, &quot;unrecognised schema name&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
-<section><h2>Provenance tier</h2>
-<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>matches(rb&quot;FILE_SCHEMA\(\(\s*&#x27;AUTOMOTIVE_DESIGN_MIM(?!_LF)&#x27;&quot;)</code></li>
 <li><code>contains(b&#x27;AUTOMOTIVE_DESIGN_MIM&#x27;)</code></li>

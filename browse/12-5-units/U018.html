@@ -34,11 +34,9 @@
 <section><h2>Expected kernel behavior</h2>
 <p>reject or warn on tessellated representations not anchored in a `global_unit_assigned_context`.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;tessellated annotation no global unit context&quot;, &quot;PMI tessellation 25.4x wrong&quot;, &quot;tessellated coords without unit anchor&quot;, &quot;annotation outside global_unit_assigned_context&quot;, &quot;tessellated PMI silent unit drop&quot;. Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).</p></section>
+<p>Synonyms: &quot;tessellated annotation no global unit context&quot;, &quot;PMI tessellation 25.4x wrong&quot;, &quot;tessellated coords without unit anchor&quot;, &quot;annotation outside global_unit_assigned_context&quot;, &quot;tessellated PMI silent unit drop&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
-<section><h2>Provenance tier</h2>
-<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;TESSELLATED_SHAPE_REPRESENTATION&#x27;)</code></li>
 <li><code>contains(b&#x27;TESSELLATED_ANNOTATION_OCCURRENCE&#x27;) or contains(b&#x27;TESSELLATED_GEOMETRIC_SET&#x27;) or contains(b&#x27;TESSELLATED_SHAPE_REPRESENTATION&#x27;)</code></li>

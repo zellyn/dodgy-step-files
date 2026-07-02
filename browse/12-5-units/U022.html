@@ -33,11 +33,9 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Warn and accept: emit a warning; normalize the case-insensitive match against the canonical set `{INCH, FOOT, MILLIMETRE, MILLIMETER, METER, METRE, MIL, MICROINCH}`; resolve via `dimensional_exponents` rather than `name` text.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Pmi067. Synonyms: &quot;INCH lowercase in CONVERSION_BASED_UNIT&quot;, &quot;STEP inch spelled as &#x27;inch&#x27; or &#x27;IN&#x27;&quot;, &quot;case-sensitive inch lookup fails&quot;, &quot;&#x27;inches&#x27; in CONVERSION_BASED_UNIT name&quot;, &quot;STEP unit name wrong case&quot;. Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).</p></section>
+<p>**See also**: Pmi067. Synonyms: &quot;INCH lowercase in CONVERSION_BASED_UNIT&quot;, &quot;STEP inch spelled as &#x27;inch&#x27; or &#x27;IN&#x27;&quot;, &quot;case-sensitive inch lookup fails&quot;, &quot;&#x27;inches&#x27; in CONVERSION_BASED_UNIT name&quot;, &quot;STEP unit name wrong case&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
-<section><h2>Provenance tier</h2>
-<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&quot;&#x27;inch&#x27;&quot;) or contains(b&quot;&#x27;IN&#x27;&quot;) or contains(b&quot;&#x27;inches&#x27;&quot;)</code></li>
 <li><code>count(b&quot;CONVERSION_BASED_UNIT(&quot;) &gt;= 2</code></li>

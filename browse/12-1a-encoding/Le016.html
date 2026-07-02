@@ -36,11 +36,9 @@
 <section><h2>Expected kernel behavior</h2>
 <p>strict mode rejects when the formed directive is malformed. Tolerant readers should detect un-escaped Windows paths and warn, treating unknown `\X` sequences as a literal character pair. Round-trip must preserve literal backslashes; OCCT 7.5.0 lost them for several releases.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;literal backslash from Windows path&quot;, &quot;single backslash inside string&quot;, &quot;C:\path forms accidental escape&quot;, &quot;Windows file path escapes confused&quot;, &quot;STEP string contains raw backslash&quot;. Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).</p></section>
+<p>Synonyms: &quot;literal backslash from Windows path&quot;, &quot;single backslash inside string&quot;, &quot;C:\path forms accidental escape&quot;, &quot;Windows file path escapes confused&quot;, &quot;STEP string contains raw backslash&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
-<section><h2>Provenance tier</h2>
-<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>matches(rb&quot;&#x27;C:\\\\[A-Za-z]&quot;)</code></li>
 <li><code>count(b&#x27;C:\\&#x27;) &gt;= 1</code></li>

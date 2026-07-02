@@ -34,11 +34,9 @@
 <section><h2>Expected kernel behavior</h2>
 <p>reject the malformed directive with a precise diagnostic citing the string offset; never let the closing apostrophe be consumed as a directive operand.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Le037, Le039. Synonyms: &quot;bare PE at end of string&quot;, &quot;PE directive without operand letter&quot;, &quot;PE truncated at apostrophe&quot;, &quot;PE escape with no follow byte&quot;, &quot;STEP PE with missing selector&quot;. Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).</p></section>
+<p>**See also**: Le037, Le039. Synonyms: &quot;bare PE at end of string&quot;, &quot;PE directive without operand letter&quot;, &quot;PE truncated at apostrophe&quot;, &quot;PE escape with no follow byte&quot;, &quot;STEP PE with missing selector&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
-<section><h2>Provenance tier</h2>
-<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>matches(rb&quot;\\PE\\&#x27;&quot;)</code></li>
 </ul></section>

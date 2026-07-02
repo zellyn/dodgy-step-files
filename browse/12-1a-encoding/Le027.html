@@ -34,11 +34,9 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: lexer should be UTF-8/Latin-1 aware in comments and pass 8-bit bytes through to the string-decoder. Keyword recognition should be case-insensitive but identifiers/entity-names canonicalised once before binding.</p></section>
 <section><h2>Notes</h2>
-<p>Cross-oracle: pure-Python Part-21 validator rejects (reject(E_MAGIC_CASE)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation. Synonyms: &quot;high-bit byte in EXPRESS schema rejected&quot;, &quot;8-bit char in STEP comment&quot;, &quot;lex grammar tolerates Latin-1&quot;, &quot;degree symbol in schema comment fails&quot;, &quot;non-ASCII in keywords&quot;. Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).</p></section>
+<p>Cross-oracle: pure-Python Part-21 validator rejects (reject(E_MAGIC_CASE)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation. Synonyms: &quot;high-bit byte in EXPRESS schema rejected&quot;, &quot;8-bit char in STEP comment&quot;, &quot;lex grammar tolerates Latin-1&quot;, &quot;degree symbol in schema comment fails&quot;, &quot;non-ASCII in keywords&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=reject</code></p></section>
-<section><h2>Provenance tier</h2>
-<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;iso-10303-21;&#x27;) or contains(b&#x27;EndSec;&#x27;) or contains(b&#x27;End-Iso-10303-21;&#x27;)</code></li>
 <li><code>matches(rb&#x27;[\x80-\xff]&#x27;)</code></li>

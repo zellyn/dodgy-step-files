@@ -40,11 +40,9 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: tokenise on `;` alone; treat EOF as a valid record-and-section terminator if the preceding `;`-terminated record has been seen. Never require a trailing newline. Lexers that scan line-by-line should be replaced or wrapped with a `;`-aware preprocessor. Do not reject missing-trailing-newline files.</p></section>
 <section><h2>Notes</h2>
-<p>Companion to Le056 / Le057 (other EOR variants). **See also**: Le054, Le056, Le057. Synonyms: &quot;no newline at EOF in STEP&quot;, &quot;ENDSEC without preceding newline&quot;, &quot;POSIX-incomplete final line in Part-21&quot;. Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).</p></section>
+<p>Companion to Le056 / Le057 (other EOR variants). **See also**: Le054, Le056, Le057. Synonyms: &quot;no newline at EOF in STEP&quot;, &quot;ENDSEC without preceding newline&quot;, &quot;POSIX-incomplete final line in Part-21&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
-<section><h2>Provenance tier</h2>
-<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>matches(rb&#x27;\);ENDSEC;END-ISO-10303-21;\Z&#x27;) or matches(rb&#x27;\);ENDSEC;&#x27;)</code></li>
 <li><code>not_contains(b&#x27;ENDSEC;\nEND-ISO-10303-21;\n&#x27;) or contains(b&#x27;;ENDSEC;END-ISO-10303-21;&#x27;)</code></li>
