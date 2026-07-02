@@ -133,6 +133,7 @@
           "type": "string",
           "enum": [
             "bytes-sufficient",
+            "bytes-only",
             "runtime-only",
             "requires-sibling-pair",
             "cross-file-state",
