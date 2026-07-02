@@ -3,46 +3,46 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ad131 — OCCT PR #448: malformed `FILE_SCHEMA` with literal `.` between schema name and version triple (every OCCT-written AP242 file in the wild)</title>
+  <title>Le060 — OCCT #1318: STEP writer infinite loop on oversized raw string with indentation prefix</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
 <body class="entry">
 <nav class="topnav">
-<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.11 Adversarial / parser robustness</a> <span class="sep">/</span> <span class="current">Ad131</span>
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.1a Encoding &amp; string-literal defects</a> <span class="sep">/</span> <span class="current">Le060</span>
 </nav>
 <header class="title-bar">
-<h1>Ad131 <span class="sep">—</span> <span class="entry-title">OCCT PR #448: malformed `FILE_SCHEMA` with literal `.` between schema name and version triple (every OCCT-written AP242 file in the wild)</span></h1>
-<p class="category">§12.11 adversarial (sub-class: writer-emitted malformed schema declaration / massive-impact real-world defect)</p>
+<h1>Le060 <span class="sep">—</span> <span class="entry-title">OCCT #1318: STEP writer infinite loop on oversized raw string with indentation prefix</span></h1>
+<p class="category">§12.1a encoding (sub-class: writer defect — oversized-string line-wrap infinite loop; version-specific to OCCT ≤ 7.9)</p>
 <p class="severity-badge severity-p0">P0 — receiver crash / hang / OOM</p>
 <p class="tag-pills">
-<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
-<a class="tag tag-adversarial" href="../by-tag/adversarial/index.html">adversarial</a>
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-encoding" href="../by-tag/encoding/index.html">encoding</a>
 </p>
 </header>
 <main>
 <section class="fixture-link">
-<a class="big-link" href="../../step-examples/12-11-adversarial/Ad131.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-11-adversarial/Ad131.stp</code>
+<a class="big-link" href="../../step-examples/12-1a-encoding/Le060.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-1a-encoding/Le060.stp</code>
 </section>
 <section><h2>Sources</h2><ul>
-<li>OCCT PR #448 (https://github.com/Open-Cascade-SAS/OCCT/pull/448) — `STEPControl_Writer` FILE_SCHEMA emission fix that strips the extra `.` between schema name and version tuple. B4 wave-8 DEF-BBB (LGPL-clean — malformed pattern documented in the PR title and patch diff</li>
-<li>no upstream STEP bytes copied). **Massive real-world impact**: every OCCT-written AP242 file emitted by FreeCAD, KiCad, Salome-Platform, and the entire OCCT-based ecosystem between OCCT 7.x releases (~2018-2024) and the pre-8.0 patch (PR #448) carries this malformed header. This affects the entire OCCT-authored AP242 corpus in the wild — arguably the largest single class of malformed AP242 STEP files ever produced.</li>
+<li>https://github.com/Open-Cascade-SAS/OCCT/pull/1318 (`STEPControl_Writer` 72-column line-wrap logic combined with indentation prefix produces zero remaining columns after the indent, so the wrap advance is 0 and the writer spins forever</li>
+<li>post-fix either drops the indent or splits the string cleanly). B4 wave-8 DEF-CCC (LGPL-clean — pattern only, no upstream bytes copied).</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>OCCT `STEPControl_Writer` 7.x through pre-8.0 (fixed in PR #448) — the C++ writer code path built the schema name as `TCollection_AsciiString schemaName = &quot;AUTOMOTIVE_DESIGN.&quot;; schemaName += &quot;{ 1 0 10303 442 3 0 0 }&quot;;` — with the trailing `.` on the schema-name literal producing the literal join point `AUTOMOTIVE_DESIGN.{ 1 0 10303 442 3 0 0 }`. The PR removes the trailing period.</p></section>
+<p>OCCT ≤ 7.9-based CAD/CAM tools re-exporting a STEP file that contains a `DESCRIPTIVE_REPRESENTATION_ITEM` (or similar entity with a raw-string attribute) whose payload is greater than ~4096 bytes and includes a leading indentation prefix — typical for machine-generated PMI descriptions or embedded documentation.</p></section>
 <section><h2>Description</h2>
-<p>STEP file whose HEADER section contains a `FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN.{ 1 0 10303 442 3 0 0 }&#x27;));` declaration — note the literal `.` (period) between the schema name `AUTOMOTIVE_DESIGN` and the opening brace `{` of the version-triple tuple. The DATA section contains a minimal cube `MANIFOLD_SOLID_BREP` (six planar 10×10×10 mm faces) so the file is otherwise valid. Strict Part 21 parsers reject the schema declaration on syntax grounds (the ISO 10303-21 grammar for a `SCHEMA_NAME` does not permit an embedded `.` before the parenthesized version tuple). Permissive parsers (including OCCT itself, since it wrote the malformation) accept the file but treat the schema as effectively unknown, falling back to generic AP203/AP214 handling and silently dropping AP242-specific tolerance and PMI entities. The literal `.{` byte sequence is directly detectable via byte assertion on the header.</p></section>
+<p>STEP file with a valid cube `MANIFOLD_SOLID_BREP` (10×10×10 mm) carrier plus a `DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;oversized_writer_trip&#x27;, ...)` whose second attribute is a raw string 4232 bytes long: a 32-space leading indentation prefix followed by 4200 repeated `A` bytes. Total file size is 13349 bytes. The input bytes are perfectly readable — the file loads under any OCCT version and yields shape(1). The defect surfaces on `write → reread` through pre-fix OCCT: `STEPControl_Writer`&#x27;s 72-column line-wrap logic sees zero remaining columns after the indent-depth-plus-prefix, so the wrap advance is 0 and the writer enters an infinite loop. Post-fix (OCCT PR #1318) either drops the indent or splits the string cleanly and the file re-serializes normally.</p></section>
 <section><h2>Reproducer recipe</h2>
-<p>HEADER with `FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN.{ 1 0 10303 442 3 0 0 }&#x27;));` (literal `.{` join point); minimal cube `MANIFOLD_SOLID_BREP` in DATA section.</p></section>
+<p>STEP file with a `DESCRIPTIVE_REPRESENTATION_ITEM` (or `PROPERTY_DEFINITION`, or any entity with a raw-string attribute) whose raw-string payload is greater than 4096 bytes and starts with an indentation prefix (32+ spaces); embed in a `PROPERTY_DEFINITION_REPRESENTATION` chain so a writer would traverse it during re-export.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>STEP parsers must either (a) reject the file at HEADER parse time with a diagnostic pointing at the malformed `FILE_SCHEMA` declaration, or (b) accept the file with a recovery diagnostic (`W_FILE_SCHEMA_MALFORMED_DOT_SEPARATOR`) explaining that the schema was normalized by stripping the extra period; silent fallback to AP203/AP214 handling without diagnostic is unacceptable because AP242-specific entities are then silently dropped.</p></section>
+<p>OCCT ≥ 8.0&#x27;s `STEPControl_Writer` must split oversized raw strings across multiple 72-column lines even when the indentation prefix consumes most of the available columns; the writer advance-pointer must never be 0 regardless of indent depth.</p></section>
 <section><h2>Notes</h2>
-<p>OCCT PR #448 patch line is exact; the malformed string is byte-verifiable. B4 wave-8 DEF-BBB. Confidence: HIGH. Impact: every OCCT-authored AP242 file in the wild between 2018 and OCCT 8.0 release carries this malformation — the corpus scale is millions of files across FreeCAD, KiCad, Salome, and downstream tools. Synonyms: &quot;OCCT PR #448 FILE_SCHEMA extra dot&quot;, &quot;AUTOMOTIVE_DESIGN. schema name period&quot;, &quot;malformed FILE_SCHEMA OCCT 7.x AP242&quot;, &quot;STEPControl_Writer schema-name dot bug&quot;, &quot;every OCCT-written AP242 file schema malformed&quot;.</p></section>
+<p>OCCT #1318. B4 wave-8 DEF-CCC. Confidence: MEDIUM — mechanism fully described in PR but exact trip conditions depend on OCCT writer&#x27;s indent policy; the fixture encodes the INPUT file (the defect surfaces only on write→reread against pre-fix OCCT ≤ 7.9). Since we cannot run the pre-fix OCCT writer&#x27;s infinite loop inside CI without hanging, the fixture is a WRITER-INTENT specimen: any downstream tool re-exporting this file through pre-fix OCCT would hang forever. Post-fix / current OCCT reads shape(1); the defect is invisible on the input side. Live-oracle diagnostics carry &quot;Incorrect Syntax : Fails Count : 2&quot;. Synonyms: &quot;OCCT #1318 writer infinite loop&quot;, &quot;STEPControl_Writer oversized string hang&quot;, &quot;72-column line-wrap zero-advance bug&quot;, &quot;DESCRIPTIVE_REPRESENTATION_ITEM oversized string writer hang&quot;, &quot;STEP writer indentation prefix loop&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
-<li><code>contains(b&#x27;AUTOMOTIVE_DESIGN.{&#x27;)</code></li>
-<li><code>contains(b&#x27;FILE_SCHEMA&#x27;)</code></li>
+<li><code>contains(b&#x27;DESCRIPTIVE_REPRESENTATION_ITEM&#x27;)</code></li>
+<li><code>contains(b&#x27;oversized_writer_trip&#x27;)</code></li>
 <li><code>contains(b&#x27;MANIFOLD_SOLID_BREP&#x27;)</code></li>
 </ul></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
@@ -55,11 +55,11 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Ad131: <mark>FILE_SCHEMA</mark>((&#x27;<mark>AUTOMOTIVE_DESIGN.{</mark> 1 0 10303 442 3 0 0 }&#x27;)) â the literal &#x27;.&#x27; (period) between AUTOMOTIVE_DESIGN and the opening brace of the version tuple; the exact pattern OCCT 7.x through pre-8.0&#x27;s STEPControl_Writer emitted for every AP242 export (fixed in OCCT PR #448); every FreeCAD, KiCad, Salome-Platform, and OCCT-based export of AP242 in the ~2018-2024 window carries this malformed header; strict Part 21 parsers reject the schema declaration; permissive parsers (OCCT itself) fall back to generic AP2xx handling and silently drop AP242-specific tolerance/PMI entities; minimal cube <mark>MANIFOLD_SOLID_BREP</mark> as carrier geometry; DEF-BBB; <mark>MANIFOLD_SOLID_BREP</mark> IS model entity â OCC (permissive) yields shape(1) */
+<span class="lineno">2</span>/* Le060: OCCT #1318 STEP writer infinite-loop input: <mark>DESCRIPTIVE_REPRESENTATION_ITEM</mark> whose description attribute is a raw string &gt; 4096 bytes with a leading indentation prefix (32 spaces); pre-fix OCCT STEPControl_Writer&#x27;s 72-column line-wrap logic sees zero remaining columns after the indent-depth-plus-prefix, so the wrap advance is 0 and the writer spins forever; post-fix (OCCT PR #1318) either drops the indent or splits the string cleanly; the input bytes ARE readable â defect surfaces only on writeâreread; carrier cube <mark>MANIFOLD_SOLID_BREP</mark>; DEF-CCC; <mark>MANIFOLD_SOLID_BREP</mark> IS model entity â OCC (reading input) yields shape(1) */
 <span class="lineno">3</span>HEADER;
-<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ad131&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">5</span>FILE_NAME(&#x27;Ad131.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">6</span><mark>FILE_SCHEMA</mark>((&#x27;<mark>AUTOMOTIVE_DESIGN.{</mark> 1 0 10303 442 3 0 0 }&#x27;));
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Le060&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Le060.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
 <span class="lineno">7</span>ENDSEC;
 <span class="lineno">8</span>DATA;
 <span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
@@ -279,10 +279,10 @@
 <span class="lineno">223</span>#214=EDGE_LOOP(&#x27;&#x27;,(#198,#203,#208,#213));
 <span class="lineno">224</span>#215=FACE_OUTER_BOUND(&#x27;&#x27;,#214,.T.);
 <span class="lineno">225</span>#216=ADVANCED_FACE(&#x27;&#x27;,(#215),#185,.T.);
-<span class="lineno">226</span>#217=CLOSED_SHELL(&#x27;ad131_shell&#x27;,(#36,#72,#108,#144,#180,#216));
-<span class="lineno">227</span>#218=<mark>MANIFOLD_SOLID_BREP</mark>(&#x27;ad131_cube&#x27;,#217);
+<span class="lineno">226</span>#217=CLOSED_SHELL(&#x27;le060_shell&#x27;,(#36,#72,#108,#144,#180,#216));
+<span class="lineno">227</span>#218=<mark>MANIFOLD_SOLID_BREP</mark>(&#x27;le060_cube&#x27;,#217);
 <span class="lineno">228</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
-<span class="lineno">229</span>#9051=PRODUCT(&#x27;Ad131&#x27;,&#x27;Ad131&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">229</span>#9051=PRODUCT(&#x27;Le060&#x27;,&#x27;Le060&#x27;,&#x27;&#x27;,(#9050));
 <span class="lineno">230</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
 <span class="lineno">231</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
 <span class="lineno">232</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
@@ -294,14 +294,18 @@
 <span class="lineno">238</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
 <span class="lineno">239</span>#9061=ADVANCED_BREP_SHAPE_REPRESENTATION(&#x27;&#x27;,(#218),#9060);
 <span class="lineno">240</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
-<span class="lineno">241</span>ENDSEC;
-<span class="lineno">242</span>END-ISO-10303-21;
+<span class="lineno">241</span>#9063=<mark>DESCRIPTIVE_REPRESENTATION_ITEM</mark>(&#x27;<mark>oversized_writer_trip</mark>&#x27;,&#x27;                                AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&#x27;);
+<span class="lineno">242</span>#9064=PROPERTY_DEFINITION(&#x27;le060_writer_trip&#x27;,&#x27;oversized-string writer-loop input â OCCT #1318&#x27;,#9055);
+<span class="lineno">243</span>#9065=REPRESENTATION(&#x27;oversized_rep&#x27;,(#9063),#9060);
+<span class="lineno">244</span>#9066=PROPERTY_DEFINITION_REPRESENTATION(#9064,#9065);
+<span class="lineno">245</span>ENDSEC;
+<span class="lineno">246</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>
 </main>
 <footer>
-<nav class="prevnext"><a class="prev" href="Ad130.html">&larr; Ad130</a> <a class="up" href="index.html">§12.11 Adversarial / parser robustness</a> <a class="next" href="Ad132.html">Ad132 &rarr;</a></nav>
+<nav class="prevnext"><a class="prev" href="Le059.html">&larr; Le059</a> <a class="up" href="index.html">§12.1a Encoding &amp; string-literal defects</a></nav>
 <p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
 </footer>
 </body>

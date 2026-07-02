@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1><span class="tag tag-round-trip">round-trip</span></h1>
 <p class="blurb">Defect surfaces only on a save-&gt;reload cycle.</p>
-<p class="meta">97 entries</p>
+<p class="meta">98 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Section</th><th>Expected validation</th></tr></thead><tbody>
@@ -30,6 +30,7 @@
 <tr><td><a href="../../12-6-assembly/A087.html"><code>A087</code></a></td><td>STEP exporter loses shapes after import-export cycle</td><td><a href="../../12-6-assembly/index.html">§12.6 Assembly hierarchy</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(36) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-6-assembly/A098.html"><code>A098</code></a></td><td>Writer-emitted STEP cannot be re-imported by the same writing process (round-trip refused)</td><td><a href="../../12-6-assembly/index.html">§12.6 Assembly hierarchy</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-6-assembly/A107.html"><code>A107</code></a></td><td>`BinXCAF` regression: documents with colour cannot be re-loaded after save</td><td><a href="../../12-6-assembly/index.html">§12.6 Assembly hierarchy</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="../../12-11-adversarial/Ad133.html"><code>Ad133</code></a></td><td>OCCT #1327 / FreeCAD #30266: OCCT 8.0 STEP writer regression drops curved-surface entities on re-export</td><td><a href="../../12-11-adversarial/index.html">§12.11 Adversarial / parser robustness</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-2b-nurbs/Gn007.html"><code>Gn007</code></a></td><td>Under-sampled `B_SPLINE_CURVE_WITH_KNOTS` for long helical thread (Creo relative-accuracy tessellation)</td><td><a href="../../12-2b-nurbs/index.html">§12.2b NURBS / B-spline</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-2b-nurbs/Gn014.html"><code>Gn014</code></a></td><td>`B_SPLINE_SURFACE_WITH_KNOTS` that fits a `PLANE` / `CYLINDRICAL_SURFACE` / `CONICAL_SURFACE` / `SPHERICAL_SURFACE` / `TOROIDAL_SURFACE` (canonical recognition)</td><td><a href="../../12-2b-nurbs/index.html">§12.2b NURBS / B-spline</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-2b-nurbs/Gn016.html"><code>Gn016</code></a></td><td>`SURFACE_OF_REVOLUTION` on `ELLIPSE`: basis curve becomes `TRIMMED_CURVE` over rational B-spline plus non-unit axis `DIRECTION` after round-trip</td><td><a href="../../12-2b-nurbs/index.html">§12.2b NURBS / B-spline</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>

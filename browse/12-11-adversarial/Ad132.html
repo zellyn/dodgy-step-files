@@ -3,47 +3,48 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ad131 — OCCT PR #448: malformed `FILE_SCHEMA` with literal `.` between schema name and version triple (every OCCT-written AP242 file in the wild)</title>
+  <title>Ad132 — OCCT #383/#407: NIST AP242 Ed.3 datum-axis reader confuses indices vs values → `gp_Dir::CrossCross` zero-norm exception</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
 <body class="entry">
 <nav class="topnav">
-<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.11 Adversarial / parser robustness</a> <span class="sep">/</span> <span class="current">Ad131</span>
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.11 Adversarial / parser robustness</a> <span class="sep">/</span> <span class="current">Ad132</span>
 </nav>
 <header class="title-bar">
-<h1>Ad131 <span class="sep">—</span> <span class="entry-title">OCCT PR #448: malformed `FILE_SCHEMA` with literal `.` between schema name and version triple (every OCCT-written AP242 file in the wild)</span></h1>
-<p class="category">§12.11 adversarial (sub-class: writer-emitted malformed schema declaration / massive-impact real-world defect)</p>
+<h1>Ad132 <span class="sep">—</span> <span class="entry-title">OCCT #383/#407: NIST AP242 Ed.3 datum-axis reader confuses indices vs values → `gp_Dir::CrossCross` zero-norm exception</span></h1>
+<p class="category">§12.11 adversarial (sub-class: reader crash-path — datum-axis colinear-direction trip; NIST AP242 Ed.3 fixture)</p>
 <p class="severity-badge severity-p0">P0 — receiver crash / hang / OOM</p>
 <p class="tag-pills">
-<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
 <a class="tag tag-adversarial" href="../by-tag/adversarial/index.html">adversarial</a>
 </p>
 </header>
 <main>
 <section class="fixture-link">
-<a class="big-link" href="../../step-examples/12-11-adversarial/Ad131.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-11-adversarial/Ad131.stp</code>
+<a class="big-link" href="../../step-examples/12-11-adversarial/Ad132.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-11-adversarial/Ad132.stp</code>
 </section>
 <section><h2>Sources</h2><ul>
-<li>OCCT PR #448 (https://github.com/Open-Cascade-SAS/OCCT/pull/448) — `STEPControl_Writer` FILE_SCHEMA emission fix that strips the extra `.` between schema name and version tuple. B4 wave-8 DEF-BBB (LGPL-clean — malformed pattern documented in the PR title and patch diff</li>
-<li>no upstream STEP bytes copied). **Massive real-world impact**: every OCCT-written AP242 file emitted by FreeCAD, KiCad, Salome-Platform, and the entire OCCT-based ecosystem between OCCT 7.x releases (~2018-2024) and the pre-8.0 patch (PR #448) carries this malformed header. This affects the entire OCCT-authored AP242 corpus in the wild — arguably the largest single class of malformed AP242 STEP files ever produced.</li>
+<li>https://github.com/Open-Cascade-SAS/OCCT/issues/383, https://github.com/Open-Cascade-SAS/OCCT/pull/407 (`STEPCAFControl_Reader.cxx:3007` — pre-fix passes `Lower()` indices into `gp_Dir::SetCoord()` instead of `Value(Lower())`</li>
+<li>post-fix reads the array values). NIST `nist_stc_07_asme1_ap242-e3.stp` is the reference file that surfaced the crash. B4 wave-8 DEF-AAA (LGPL-clean — pattern only, no upstream bytes copied).</li>
 </ul></section>
 <section><h2>Sender</h2>
-<p>OCCT `STEPControl_Writer` 7.x through pre-8.0 (fixed in PR #448) — the C++ writer code path built the schema name as `TCollection_AsciiString schemaName = &quot;AUTOMOTIVE_DESIGN.&quot;; schemaName += &quot;{ 1 0 10303 442 3 0 0 }&quot;;` — with the trailing `.` on the schema-name literal producing the literal join point `AUTOMOTIVE_DESIGN.{ 1 0 10303 442 3 0 0 }`. The PR removes the trailing period.</p></section>
+<p>NIST-authored AP242 Ed.3 test files with datum-axis chains, and any AP242 Ed.3 CAD tool that emits `DATUM` + `DATUM_REFERENCE_MODIFIER` chains with axis references; file header declares `AUTOMOTIVE_DESIGN { 1 0 10303 442 4 1 4 }` (Ed.3 OID).</p></section>
 <section><h2>Description</h2>
-<p>STEP file whose HEADER section contains a `FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN.{ 1 0 10303 442 3 0 0 }&#x27;));` declaration — note the literal `.` (period) between the schema name `AUTOMOTIVE_DESIGN` and the opening brace `{` of the version-triple tuple. The DATA section contains a minimal cube `MANIFOLD_SOLID_BREP` (six planar 10×10×10 mm faces) so the file is otherwise valid. Strict Part 21 parsers reject the schema declaration on syntax grounds (the ISO 10303-21 grammar for a `SCHEMA_NAME` does not permit an embedded `.` before the parenthesized version tuple). Permissive parsers (including OCCT itself, since it wrote the malformation) accept the file but treat the schema as effectively unknown, falling back to generic AP203/AP214 handling and silently dropping AP242-specific tolerance and PMI entities. The literal `.{` byte sequence is directly detectable via byte assertion on the header.</p></section>
+<p>STEP AP242 Ed.3 file matching the NIST `nist_stc_07_asme1_ap242-e3.stp` structure: cube `MANIFOLD_SOLID_BREP` (10×10×10 mm) carrier, plus a `DATUM(&#x27;datum_A&#x27;,&#x27;primary datum on top face&#x27;,&#x27;A&#x27;,...)` referencing the top-face `SHAPE_ASPECT`, plus a `DATUM_REFERENCE_MODIFIER(&#x27;drm_1&#x27;,...,#datum_a,.BASIC.,#datum_plc)` whose axis placement holds two colinear direction vectors `(1.0, 2.0, 3.0)` for both `axis` and `ref_direction`. Pre-fix OCCT (≤ 7.9) reads via `STEPCAFControl_Reader.cxx:3007` — three `TColStd_HArray1OfReal` direction arrays whose `Lower()` indices are 1, 2, 3 — and passes those *indices* (1,2,3) into `gp_Dir::SetCoord()` instead of the array *values*; both directions receive the same vector, `gp_Ax2` raises &quot;result vector has zero norm&quot; via `gp_Dir::CrossCross()`. Post-fix (OCCT 8.0) uses `Value(Lower())` and reads the correct coordinates, then either normalizes the colinear vectors or raises a proper schema error. The fixture&#x27;s `(1,2,3)` values verify colinearity by construction — the crash is guaranteed on pre-fix OCCT regardless of whether it reads the indices or the values.</p></section>
 <section><h2>Reproducer recipe</h2>
-<p>HEADER with `FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN.{ 1 0 10303 442 3 0 0 }&#x27;));` (literal `.{` join point); minimal cube `MANIFOLD_SOLID_BREP` in DATA section.</p></section>
+<p>AP242 Ed.3 header (`AUTOMOTIVE_DESIGN { 1 0 10303 442 4 1 4 }`); cube `MANIFOLD_SOLID_BREP` carrier; `DATUM(&#x27;datum_A&#x27;,...)` referencing a top-face `SHAPE_ASPECT`; `DATUM_REFERENCE_MODIFIER(&#x27;drm_1&#x27;,...,#datum,.BASIC.,#axis_placement)`; the axis placement&#x27;s two `DIRECTION` entities both hold vector `(1.0, 2.0, 3.0)` — colinear.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>STEP parsers must either (a) reject the file at HEADER parse time with a diagnostic pointing at the malformed `FILE_SCHEMA` declaration, or (b) accept the file with a recovery diagnostic (`W_FILE_SCHEMA_MALFORMED_DOT_SEPARATOR`) explaining that the schema was normalized by stripping the extra period; silent fallback to AP203/AP214 handling without diagnostic is unacceptable because AP242-specific entities are then silently dropped.</p></section>
+<p>OCCT ≥ 8.0 must resolve the `DATUM_REFERENCE_MODIFIER` chain via `Value(Lower())` and either normalize the colinear directions or raise a proper schema error; kernels ≤ 7.9 raise `gp_Dir::CrossCross()` &quot;result vector has zero norm&quot; — a segfault-adjacent crash in the reader path.</p></section>
 <section><h2>Notes</h2>
-<p>OCCT PR #448 patch line is exact; the malformed string is byte-verifiable. B4 wave-8 DEF-BBB. Confidence: HIGH. Impact: every OCCT-authored AP242 file in the wild between 2018 and OCCT 8.0 release carries this malformation — the corpus scale is millions of files across FreeCAD, KiCad, Salome, and downstream tools. Synonyms: &quot;OCCT PR #448 FILE_SCHEMA extra dot&quot;, &quot;AUTOMOTIVE_DESIGN. schema name period&quot;, &quot;malformed FILE_SCHEMA OCCT 7.x AP242&quot;, &quot;STEPControl_Writer schema-name dot bug&quot;, &quot;every OCCT-written AP242 file schema malformed&quot;.</p></section>
+<p>OCCT #383/#407. B4 wave-8 DEF-AAA. Confidence: HIGH — mechanism precisely described in issue #383 patch diff. The defect IS the OCCT reader behavior; live oracle IS the failure mode. The reproducer&#x27;s `(1.0,2.0,3.0)` colinear vectors are a deliberate simplification of the NIST fixture&#x27;s crash-path — the crash on pre-fix OCCT is guaranteed regardless of whether the pre-fix reads the indices or the values because the array values are already colinear. Post-fix OCCT reads shape(1) and skips the colinear-axis warning as expected. Synonyms: &quot;OCCT #383 datum-axis crash&quot;, &quot;STEPCAFControl_Reader Lower index bug&quot;, &quot;gp_Dir CrossCross zero norm&quot;, &quot;NIST nist_stc_07_asme1_ap242-e3.stp datum crash&quot;, &quot;AP242 Ed.3 datum axis colinear ref_direction&quot;, &quot;OCCT PR #407 Value(Lower) fix&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
-<li><code>contains(b&#x27;AUTOMOTIVE_DESIGN.{&#x27;)</code></li>
-<li><code>contains(b&#x27;FILE_SCHEMA&#x27;)</code></li>
+<li><code>contains(b&#x27;DATUM&#x27;)</code></li>
+<li><code>contains(b&#x27;DATUM_REFERENCE_MODIFIER&#x27;)</code></li>
 <li><code>contains(b&#x27;MANIFOLD_SOLID_BREP&#x27;)</code></li>
+<li><code>contains(b&#x27;(1.0,2.0,3.0)&#x27;)</code></li>
 </ul></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>shape_null == False</code></li>
@@ -55,11 +56,11 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Ad131: <mark>FILE_SCHEMA</mark>((&#x27;<mark>AUTOMOTIVE_DESIGN.{</mark> 1 0 10303 442 3 0 0 }&#x27;)) â the literal &#x27;.&#x27; (period) between AUTOMOTIVE_DESIGN and the opening brace of the version tuple; the exact pattern OCCT 7.x through pre-8.0&#x27;s STEPControl_Writer emitted for every AP242 export (fixed in OCCT PR #448); every FreeCAD, KiCad, Salome-Platform, and OCCT-based export of AP242 in the ~2018-2024 window carries this malformed header; strict Part 21 parsers reject the schema declaration; permissive parsers (OCCT itself) fall back to generic AP2xx handling and silently drop AP242-specific tolerance/PMI entities; minimal cube <mark>MANIFOLD_SOLID_BREP</mark> as carrier geometry; DEF-BBB; <mark>MANIFOLD_SOLID_BREP</mark> IS model entity â OCC (permissive) yields shape(1) */
+<span class="lineno">2</span>/* Ad132: AP242 Ed.3 file: cube <mark>MANIFOLD_SOLID_BREP</mark> (10x10x10 mm) plus a <mark>DATUM</mark> feature whose reference-axis chain matches NIST nist_stc_07_asme1_ap242-e3.stp; three direction arrays for the datum axis all hold the vector (1.0, 2.0, 3.0) â colinear ref_direction and axis â reproducing the OCCT #383/#407 crash path where pre-fix STEPCAFControl_Reader.cxx:3007 passed Lower() indices (1,2,3) into gp_Dir::SetCoord instead of Value(Lower()); result: both directions receive (1,2,3), gp_Ax2 raises &#x27;result vector has zero norm&#x27; via gp_Dir::CrossCross(); post-fix OCCT 8.0 uses Value(Lower()) and reads the file cleanly; DEF-AAA; header OID = {1 0 10303 442 4 1 4}; <mark>MANIFOLD_SOLID_BREP</mark> IS model entity â OCC (post-fix) yields shape(1) */
 <span class="lineno">3</span>HEADER;
-<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ad131&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">5</span>FILE_NAME(&#x27;Ad131.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">6</span><mark>FILE_SCHEMA</mark>((&#x27;<mark>AUTOMOTIVE_DESIGN.{</mark> 1 0 10303 442 3 0 0 }&#x27;));
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ad132&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ad132.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 442 4 1 4 }&#x27;));
 <span class="lineno">7</span>ENDSEC;
 <span class="lineno">8</span>DATA;
 <span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
@@ -279,10 +280,10 @@
 <span class="lineno">223</span>#214=EDGE_LOOP(&#x27;&#x27;,(#198,#203,#208,#213));
 <span class="lineno">224</span>#215=FACE_OUTER_BOUND(&#x27;&#x27;,#214,.T.);
 <span class="lineno">225</span>#216=ADVANCED_FACE(&#x27;&#x27;,(#215),#185,.T.);
-<span class="lineno">226</span>#217=CLOSED_SHELL(&#x27;ad131_shell&#x27;,(#36,#72,#108,#144,#180,#216));
-<span class="lineno">227</span>#218=<mark>MANIFOLD_SOLID_BREP</mark>(&#x27;ad131_cube&#x27;,#217);
+<span class="lineno">226</span>#217=CLOSED_SHELL(&#x27;ad132_shell&#x27;,(#36,#72,#108,#144,#180,#216));
+<span class="lineno">227</span>#218=<mark>MANIFOLD_SOLID_BREP</mark>(&#x27;ad132_cube&#x27;,#217);
 <span class="lineno">228</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
-<span class="lineno">229</span>#9051=PRODUCT(&#x27;Ad131&#x27;,&#x27;Ad131&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">229</span>#9051=PRODUCT(&#x27;Ad132&#x27;,&#x27;Ad132&#x27;,&#x27;&#x27;,(#9050));
 <span class="lineno">230</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
 <span class="lineno">231</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
 <span class="lineno">232</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
@@ -294,14 +295,24 @@
 <span class="lineno">238</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
 <span class="lineno">239</span>#9061=ADVANCED_BREP_SHAPE_REPRESENTATION(&#x27;&#x27;,(#218),#9060);
 <span class="lineno">240</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
-<span class="lineno">241</span>ENDSEC;
-<span class="lineno">242</span>END-ISO-10303-21;
+<span class="lineno">241</span>#9063=SHAPE_ASPECT(&#x27;datum_A_face&#x27;,&#x27;datum feature host face&#x27;,#9055,.F.);
+<span class="lineno">242</span>#9064=DIRECTION(&#x27;datum_axis_dir&#x27;,<mark>(1.0,2.0,3.0)</mark>);
+<span class="lineno">243</span>#9065=DIRECTION(&#x27;datum_ref_dir&#x27;,<mark>(1.0,2.0,3.0)</mark>);
+<span class="lineno">244</span>#9066=CARTESIAN_POINT(&#x27;datum_origin&#x27;,(5.0,5.0,10.0));
+<span class="lineno">245</span>#9067=AXIS2_PLACEMENT_3D(&#x27;datum_axis_plc&#x27;,#9066,#9064,#9065);
+<span class="lineno">246</span>#9068=<mark>DATUM</mark>(&#x27;datum_A&#x27;,&#x27;primary datum on top face&#x27;,&#x27;A&#x27;,#9063,.T.,&#x27;A&#x27;);
+<span class="lineno">247</span>#9069=<mark>DATUM_REFERENCE_MODIFIER</mark>(&#x27;drm_1&#x27;,&#x27;datum reference modifier with colinear axis â OCCT #383 trip&#x27;,#9068,.BASIC.,#9067);
+<span class="lineno">248</span>#9070=PROPERTY_DEFINITION(&#x27;ad132_datum_prov&#x27;,&#x27;<mark>DATUM</mark> + <mark>DATUM_REFERENCE_MODIFIER</mark> chain â OCCT #383 CrossCross zero-norm&#x27;,#9055);
+<span class="lineno">249</span>#9071=REPRESENTATION(&#x27;datum_rep&#x27;,(#9068,#9069,#9063,#9067),#9060);
+<span class="lineno">250</span>#9072=PROPERTY_DEFINITION_REPRESENTATION(#9070,#9071);
+<span class="lineno">251</span>ENDSEC;
+<span class="lineno">252</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>
 </main>
 <footer>
-<nav class="prevnext"><a class="prev" href="Ad130.html">&larr; Ad130</a> <a class="up" href="index.html">§12.11 Adversarial / parser robustness</a> <a class="next" href="Ad132.html">Ad132 &rarr;</a></nav>
+<nav class="prevnext"><a class="prev" href="Ad131.html">&larr; Ad131</a> <a class="up" href="index.html">§12.11 Adversarial / parser robustness</a> <a class="next" href="Ad133.html">Ad133 &rarr;</a></nav>
 <p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
 </footer>
 </body>

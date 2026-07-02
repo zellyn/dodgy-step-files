@@ -4857,6 +4857,86 @@
   },
   {
     "byte_assertions": [
+      "contains(b'DATUM')",
+      "contains(b'DATUM_REFERENCE_MODIFIER')",
+      "contains(b'MANIFOLD_SOLID_BREP')",
+      "contains(b'(1.0,2.0,3.0)')"
+    ],
+    "category": "§12.11 adversarial (sub-class: reader crash-path — datum-axis colinear-direction trip; NIST AP242 Ed.3 fixture)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "STEP AP242 Ed.3 file matching the NIST `nist_stc_07_asme1_ap242-e3.stp` structure: cube `MANIFOLD_SOLID_BREP` (10×10×10 mm) carrier, plus a `DATUM('datum_A','primary datum on top face','A',...)` referencing the top-face `SHAPE_ASPECT`, plus a `DATUM_REFERENCE_MODIFIER('drm_1',...,#datum_a,.BASIC.,#datum_plc)` whose axis placement holds two colinear direction vectors `(1.0, 2.0, 3.0)` for both `axis` and `ref_direction`. Pre-fix OCCT (≤ 7.9) reads via `STEPCAFControl_Reader.cxx:3007` — three `TColStd_HArray1OfReal` direction arrays whose `Lower()` indices are 1, 2, 3 — and passes those *indices* (1,2,3) into `gp_Dir::SetCoord()` instead of the array *values*; both directions receive the same vector, `gp_Ax2` raises \"result vector has zero norm\" via `gp_Dir::CrossCross()`. Post-fix (OCCT 8.0) uses `Value(Lower())` and reads the correct coordinates, then either normalizes the colinear vectors or raises a proper schema error. The fixture's `(1,2,3)` values verify colinearity by construction — the crash is guaranteed on pre-fix OCCT regardless of whether it reads the indices or the values.",
+    "expected_kernel_behavior": "OCCT ≥ 8.0 must resolve the `DATUM_REFERENCE_MODIFIER` chain via `Value(Lower())` and either normalize the colinear directions or raise a proper schema error; kernels ≤ 7.9 raise `gp_Dir::CrossCross()` \"result vector has zero norm\" — a segfault-adjacent crash in the reader path.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-11-adversarial/Ad132.stp",
+    "id": "Ad132",
+    "notes": "OCCT #383/#407. B4 wave-8 DEF-AAA. Confidence: HIGH — mechanism precisely described in issue #383 patch diff. The defect IS the OCCT reader behavior; live oracle IS the failure mode. The reproducer's `(1.0,2.0,3.0)` colinear vectors are a deliberate simplification of the NIST fixture's crash-path — the crash on pre-fix OCCT is guaranteed regardless of whether the pre-fix reads the indices or the values because the array values are already colinear. Post-fix OCCT reads shape(1) and skips the colinear-axis warning as expected. Synonyms: \"OCCT #383 datum-axis crash\", \"STEPCAFControl_Reader Lower index bug\", \"gp_Dir CrossCross zero norm\", \"NIST nist_stc_07_asme1_ap242-e3.stp datum crash\", \"AP242 Ed.3 datum axis colinear ref_direction\", \"OCCT PR #407 Value(Lower) fix\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "AP242 Ed.3 header (`AUTOMOTIVE_DESIGN { 1 0 10303 442 4 1 4 }`); cube `MANIFOLD_SOLID_BREP` carrier; `DATUM('datum_A',...)` referencing a top-face `SHAPE_ASPECT`; `DATUM_REFERENCE_MODIFIER('drm_1',...,#datum,.BASIC.,#axis_placement)`; the axis placement's two `DIRECTION` entities both hold vector `(1.0, 2.0, 3.0)` — colinear.",
+    "section": "12.11",
+    "section_dir": "12-11-adversarial",
+    "see_also": [],
+    "sender": "NIST-authored AP242 Ed.3 test files with datum-axis chains, and any AP242 Ed.3 CAD tool that emits `DATUM` + `DATUM_REFERENCE_MODIFIER` chains with axis references; file header declares `AUTOMOTIVE_DESIGN { 1 0 10303 442 4 1 4 }` (Ed.3 OID).",
+    "severity": "P0",
+    "sources": [
+      "https://github.com/Open-Cascade-SAS/OCCT/issues/383, https://github.com/Open-Cascade-SAS/OCCT/pull/407 (`STEPCAFControl_Reader.cxx:3007` — pre-fix passes `Lower()` indices into `gp_Dir::SetCoord()` instead of `Value(Lower())`",
+      "post-fix reads the array values). NIST `nist_stc_07_asme1_ap242-e3.stp` is the reference file that surfaced the crash. B4 wave-8 DEF-AAA (LGPL-clean — pattern only, no upstream bytes copied)."
+    ],
+    "taxonomy": [
+      "crash",
+      "adversarial"
+    ],
+    "tier3_assertions": [
+      "shape_null == False"
+    ],
+    "title": "OCCT #383/#407: NIST AP242 Ed.3 datum-axis reader confuses indices vs values → `gp_Dir::CrossCross` zero-norm exception"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'CYLINDRICAL_SURFACE')",
+      "contains(b'ADVANCED_FACE')",
+      "contains(b'EDGE_LOOP')"
+    ],
+    "category": "§12.11 adversarial (sub-class: writer regression — curved-surface entity elision on re-export; version-specific to OCCT 8.0)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "STEP file with a single `ADVANCED_FACE` on a `CYLINDRICAL_SURFACE` (radius 5.0 mm, axis Z, 90-degree cylindrical patch from z=0 to z=10; boundary `EDGE_LOOP` = bottom arc + right vertical line + top arc + left vertical line). The input bytes are perfectly readable — geometry loads cleanly under any OCCT version. The defect surfaces downstream: on `write → reread` through OCCT 8.0's `STEPControl_Writer` C++ API path, the `CYLINDRICAL_SURFACE` entity reference is silently omitted from the output — the output STEP has an `ADVANCED_FACE` whose surface reference points at a null/missing entity, so a downstream slicer that consumes the re-exported STEP produces completely wrong toolpaths because the curved boundary vanished. OCCT 7.x writes the same source shape correctly; DRAW-path does not reproduce; regression is version-specific to OCCT 8.0.",
+    "expected_kernel_behavior": "OCCT 8.0's `STEPControl_Writer` must emit every curved-surface entity present in the source shape into the output STEP; regression fix must ensure `CYLINDRICAL_SURFACE`, `CONICAL_SURFACE`, `B_SPLINE_SURFACE_WITH_KNOTS`, etc. are all preserved on re-export.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-11-adversarial/Ad133.stp",
+    "id": "Ad133",
+    "notes": "OCCT #1327 / FreeCAD #30266. B4 wave-8 DEF-DDD. Confidence: MEDIUM — regression is confirmed in trackers but exact writer-code path is not root-caused; the fixture encodes the INPUT file (the defect surfaces downstream on `write → reread → compare-with-input` against an OCCT 8.0 kernel). Since we cannot run the pre-fix OCCT 8.0 writer inside CI, the fixture is a WRITER-INTENT specimen: any downstream tool re-exporting this shape through OCCT 8.0 would silently lose the `CYLINDRICAL_SURFACE`. Post-fix / OCCT 7.x reads the input shape correctly (shape(1)); the defect is invisible on the input side. Live-oracle diagnostics carry \"Incorrect Syntax : Fails Count : 2\". Synonyms: \"OCCT 8.0 writer regression\", \"STEPControl_Writer curved surface dropped\", \"FreeCAD #30266 cylinder writer bug\", \"CYLINDRICAL_SURFACE re-export silent loss OCCT 8.0\", \"toolpath vanishes on STEP round-trip\", \"OCCT #1327 writer\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "Standard OCCT-parseable STEP with an `ADVANCED_FACE` on a `CYLINDRICAL_SURFACE` (or `B_SPLINE_SURFACE_WITH_KNOTS`, or `CONICAL_SURFACE`, etc.); mixed-content shape acceptable (curved + planar faces); read via OCCT 8.0 C++ API path; re-export via `STEPControl_Writer::Write()`; compare curved-surface entity references between input and output.",
+    "section": "12.11",
+    "section_dir": "12-11-adversarial",
+    "see_also": [],
+    "sender": "OCCT 8.0-based CAD/CAM tools re-exporting curved-surface STEP shapes via the C++ `STEPControl_Writer` API (FreeCAD, Salome-Platform, KiCad, and any downstream tool using OCCT 8.0's writer path); the INPUT file is a valid curved-surface STEP shape from any producer.",
+    "severity": "P0",
+    "sources": [
+      "https://github.com/Open-Cascade-SAS/OCCT/issues/1327, https://github.com/FreeCAD/FreeCAD/issues/30266 (OCCT 8.0's `STEPControl_Writer` regression drops `CYLINDRICAL_SURFACE` / `B_SPLINE_SURFACE_WITH_KNOTS` entity references on write",
+      "OCCT 7.x writes the same shape correctly",
+      "the regression surfaces via the C++ writer API path as FreeCAD uses, and DRAW does not reproduce). B4 wave-8 DEF-DDD (LGPL-clean — pattern only, no upstream bytes copied)."
+    ],
+    "taxonomy": [
+      "round-trip",
+      "adversarial"
+    ],
+    "tier3_assertions": [
+      "shape_null == False"
+    ],
+    "title": "OCCT #1327 / FreeCAD #30266: OCCT 8.0 STEP writer regression drops curved-surface entities on re-export"
+  },
+  {
+    "byte_assertions": [
       "contains(b'\\\\X2\\\\')",
       "contains(b'EDGE_CURVE')",
       "contains(b'ADVANCED_FACE')"
@@ -35741,6 +35821,45 @@
       "n_vertices_total == 1"
     ],
     "title": "German umlauts in `PRODUCT.name` mis-decoded by reader (Latin-1/UTF-8 confusion)"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'DESCRIPTIVE_REPRESENTATION_ITEM')",
+      "contains(b'oversized_writer_trip')",
+      "contains(b'MANIFOLD_SOLID_BREP')"
+    ],
+    "category": "§12.1a encoding (sub-class: writer defect — oversized-string line-wrap infinite loop; version-specific to OCCT ≤ 7.9)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "STEP file with a valid cube `MANIFOLD_SOLID_BREP` (10×10×10 mm) carrier plus a `DESCRIPTIVE_REPRESENTATION_ITEM('oversized_writer_trip', ...)` whose second attribute is a raw string 4232 bytes long: a 32-space leading indentation prefix followed by 4200 repeated `A` bytes. Total file size is 13349 bytes. The input bytes are perfectly readable — the file loads under any OCCT version and yields shape(1). The defect surfaces on `write → reread` through pre-fix OCCT: `STEPControl_Writer`'s 72-column line-wrap logic sees zero remaining columns after the indent-depth-plus-prefix, so the wrap advance is 0 and the writer enters an infinite loop. Post-fix (OCCT PR #1318) either drops the indent or splits the string cleanly and the file re-serializes normally.",
+    "expected_kernel_behavior": "OCCT ≥ 8.0's `STEPControl_Writer` must split oversized raw strings across multiple 72-column lines even when the indentation prefix consumes most of the available columns; the writer advance-pointer must never be 0 regardless of indent depth.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-1a-encoding/Le060.stp",
+    "id": "Le060",
+    "notes": "OCCT #1318. B4 wave-8 DEF-CCC. Confidence: MEDIUM — mechanism fully described in PR but exact trip conditions depend on OCCT writer's indent policy; the fixture encodes the INPUT file (the defect surfaces only on write→reread against pre-fix OCCT ≤ 7.9). Since we cannot run the pre-fix OCCT writer's infinite loop inside CI without hanging, the fixture is a WRITER-INTENT specimen: any downstream tool re-exporting this file through pre-fix OCCT would hang forever. Post-fix / current OCCT reads shape(1); the defect is invisible on the input side. Live-oracle diagnostics carry \"Incorrect Syntax : Fails Count : 2\". Synonyms: \"OCCT #1318 writer infinite loop\", \"STEPControl_Writer oversized string hang\", \"72-column line-wrap zero-advance bug\", \"DESCRIPTIVE_REPRESENTATION_ITEM oversized string writer hang\", \"STEP writer indentation prefix loop\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "STEP file with a `DESCRIPTIVE_REPRESENTATION_ITEM` (or `PROPERTY_DEFINITION`, or any entity with a raw-string attribute) whose raw-string payload is greater than 4096 bytes and starts with an indentation prefix (32+ spaces); embed in a `PROPERTY_DEFINITION_REPRESENTATION` chain so a writer would traverse it during re-export.",
+    "section": "12.1a",
+    "section_dir": "12-1a-encoding",
+    "see_also": [],
+    "sender": "OCCT ≤ 7.9-based CAD/CAM tools re-exporting a STEP file that contains a `DESCRIPTIVE_REPRESENTATION_ITEM` (or similar entity with a raw-string attribute) whose payload is greater than ~4096 bytes and includes a leading indentation prefix — typical for machine-generated PMI descriptions or embedded documentation.",
+    "severity": "P0",
+    "sources": [
+      "https://github.com/Open-Cascade-SAS/OCCT/pull/1318 (`STEPControl_Writer` 72-column line-wrap logic combined with indentation prefix produces zero remaining columns after the indent, so the wrap advance is 0 and the writer spins forever",
+      "post-fix either drops the indent or splits the string cleanly). B4 wave-8 DEF-CCC (LGPL-clean — pattern only, no upstream bytes copied)."
+    ],
+    "taxonomy": [
+      "crash",
+      "encoding"
+    ],
+    "tier3_assertions": [
+      "shape_null == False"
+    ],
+    "title": "OCCT #1318: STEP writer infinite loop on oversized raw string with indentation prefix"
   },
   {
     "byte_assertions": [
@@ -104100,6 +104219,45 @@
       "shape_null == False"
     ],
     "title": "AP242 Ed.3 item-level topology-geometry association pair (`TOPOLOGY_TO_GEOMETRY_ITEM_ASSOCIATION` + `GEOMETRY_TO_TOPOLOGY_ITEM_ASSOCIATION`) dropped by Ed.2/AP214 readers"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'DATA_EQUIVALENCE_CRITERION_ASSESSMENT_ASSOCIATION')",
+      "contains(b'DATA_EQUIVALENCE_CRITERION_INSPECTION_ASSOCIATION')",
+      "contains(b'10303 442 4 1 4')"
+    ],
+    "category": "§12.7 PMI/GD&T (sub-class: edition-boundary entity elision / QA-provenance data-equivalence)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "STEP AP242 Ed.3 file containing a minimal single-face planar 10×10 mm carrier (`SHELL_BASED_SURFACE_MODEL` with one `OPEN_SHELL` containing one `ADVANCED_FACE` on a `PLANE`). Two Ed.3 QA-provenance entities are attached at the product's PMI representation: `DATA_EQUIVALENCE_CRITERION_ASSESSMENT_ASSOCIATION('deca_1',...)` asserts that this file's simplified representation is equivalent to a full CAD model under the criteria \"geometric tolerance 0.01 mm; topology preserved; PMI count matches\"; `DATA_EQUIVALENCE_CRITERION_INSPECTION_ASSOCIATION('deci_1',...)` records that the equivalence claim has been inspected and passed with result \"PASSED; inspector=jsmith; 2026-06-30\". Ed.3 readers expose both records via QA-provenance API; Ed.2 / AP214 readers produce Void transfer status on both — the face still loads but the equivalence assertion and inspection provenance are silently absent; QA workflows that would consume the equivalence claim silently receive nothing.",
+    "expected_kernel_behavior": "AP242 Ed.3 readers must resolve `DATA_EQUIVALENCE_CRITERION_ASSESSMENT_ASSOCIATION` and `DATA_EQUIVALENCE_CRITERION_INSPECTION_ASSOCIATION` and expose the QA-provenance records; Ed.2 / AP214 readers must emit `W_SCHEMA_ENTITY_UNSUPPORTED(DATA_EQUIVALENCE_CRITERION_ASSESSMENT_ASSOCIATION)` rather than silently discarding the QA-provenance chain.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-7-pmi/Pmi155.stp",
+    "id": "Pmi155",
+    "notes": "steptools notes_ap242e3.html §4.4 (21 new Ed.3 entities, data-equivalence family). B4 wave-8 DEF-ZZ. Confidence: MEDIUM — accept-live-oracle. OCCT drops the Ed.3 entities and loads the geometry as if AP214 (single-face shell loads, QA-provenance records absent) — that IS the defect. Expected validation captured from OCCT live behavior. Edition boundary: Ed.3 entities absent from Ed.2, Ed.1, AP214 schemas. Synonyms: \"DATA_EQUIVALENCE_CRITERION_ASSESSMENT_ASSOCIATION AP242 Ed.3 dropped\", \"DATA_EQUIVALENCE_CRITERION_INSPECTION_ASSOCIATION Ed.2 lost\", \"QA-provenance equivalence claim silent drop\", \"simplified representation equivalence lost Ed.2\", \"AP242 Ed.3 data-equivalence assertion pair absent\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "AP242 Ed.3 header (`AUTOMOTIVE_DESIGN { 1 0 10303 442 4 1 4 }`); single planar `ADVANCED_FACE` + `SHELL_BASED_SURFACE_MODEL`; `SHAPE_ASPECT` anchor; `DATA_EQUIVALENCE_CRITERION_ASSESSMENT_ASSOCIATION('deca_1',...,#criteria,#shape_aspect)`; `DATA_EQUIVALENCE_CRITERION_INSPECTION_ASSOCIATION('deci_1',...,#deca,#inspection_result)`.",
+    "section": "12.7",
+    "section_dir": "12-7-pmi",
+    "see_also": [],
+    "sender": "AP242 Edition 3 STEP files from QA-aware CAD tools that emit data-equivalence records for simplified-representation workflows (design-to-simulation MBD/MBE workflows, digital-thread QA); file header declares `AUTOMOTIVE_DESIGN { 1 0 10303 442 4 1 4 }` (Ed.3 OID).",
+    "severity": "P1",
+    "sources": [
+      "steptools.com AP242 Ed.3 notes (`DATA_EQUIVALENCE_CRITERION_ASSESSMENT_ASSOCIATION` and `DATA_EQUIVALENCE_CRITERION_INSPECTION_ASSOCIATION` §4.4 — two of 21 new Ed.3 entities in the data-equivalence family, merged from E13+E14). B4 wave-8 DEF-ZZ (LGPL-clean — pattern only, no upstream bytes copied). AP242 Ed.3 introduced explicit QA-provenance records: an assessment association that asserts a simplified representation is equivalent to a full CAD model under specified criteria, plus an inspection association that records the equivalence has been inspected and passed",
+      "earlier editions (Ed.2, Ed.1, AP214) do not carry these entities in their schemas and their readers produce Void transfer status."
+    ],
+    "taxonomy": [
+      "silent-loss",
+      "pmi"
+    ],
+    "tier3_assertions": [
+      "shape_null == False"
+    ],
+    "title": "AP242 Ed.3 data-equivalence assertion+inspection pair (`DATA_EQUIVALENCE_CRITERION_ASSESSMENT_ASSOCIATION` + `DATA_EQUIVALENCE_CRITERION_INSPECTION_ASSOCIATION`) dropped by Ed.2/AP214 readers"
   },
   {
     "byte_assertions": [],

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ad133 — OCCT #1327 / FreeCAD #30266: OCCT 8.0 STEP writer regression drops curved-surface entities on re-export</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.11 Adversarial / parser robustness</a> <span class="sep">/</span> <span class="current">Ad133</span>
+</nav>
+<header class="title-bar">
+<h1>Ad133 <span class="sep">—</span> <span class="entry-title">OCCT #1327 / FreeCAD #30266: OCCT 8.0 STEP writer regression drops curved-surface entities on re-export</span></h1>
+<p class="category">§12.11 adversarial (sub-class: writer regression — curved-surface entity elision on re-export; version-specific to OCCT 8.0)</p>
+<p class="severity-badge severity-p0">P0 — receiver crash / hang / OOM</p>
+<p class="tag-pills">
+<a class="tag tag-round-trip" href="../by-tag/round-trip/index.html">round-trip</a>
+<a class="tag tag-adversarial" href="../by-tag/adversarial/index.html">adversarial</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-11-adversarial/Ad133.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-11-adversarial/Ad133.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>https://github.com/Open-Cascade-SAS/OCCT/issues/1327, https://github.com/FreeCAD/FreeCAD/issues/30266 (OCCT 8.0&#x27;s `STEPControl_Writer` regression drops `CYLINDRICAL_SURFACE` / `B_SPLINE_SURFACE_WITH_KNOTS` entity references on write</li>
+<li>OCCT 7.x writes the same shape correctly</li>
+<li>the regression surfaces via the C++ writer API path as FreeCAD uses, and DRAW does not reproduce). B4 wave-8 DEF-DDD (LGPL-clean — pattern only, no upstream bytes copied).</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>OCCT 8.0-based CAD/CAM tools re-exporting curved-surface STEP shapes via the C++ `STEPControl_Writer` API (FreeCAD, Salome-Platform, KiCad, and any downstream tool using OCCT 8.0&#x27;s writer path); the INPUT file is a valid curved-surface STEP shape from any producer.</p></section>
+<section><h2>Description</h2>
+<p>STEP file with a single `ADVANCED_FACE` on a `CYLINDRICAL_SURFACE` (radius 5.0 mm, axis Z, 90-degree cylindrical patch from z=0 to z=10; boundary `EDGE_LOOP` = bottom arc + right vertical line + top arc + left vertical line). The input bytes are perfectly readable — geometry loads cleanly under any OCCT version. The defect surfaces downstream: on `write → reread` through OCCT 8.0&#x27;s `STEPControl_Writer` C++ API path, the `CYLINDRICAL_SURFACE` entity reference is silently omitted from the output — the output STEP has an `ADVANCED_FACE` whose surface reference points at a null/missing entity, so a downstream slicer that consumes the re-exported STEP produces completely wrong toolpaths because the curved boundary vanished. OCCT 7.x writes the same source shape correctly; DRAW-path does not reproduce; regression is version-specific to OCCT 8.0.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Standard OCCT-parseable STEP with an `ADVANCED_FACE` on a `CYLINDRICAL_SURFACE` (or `B_SPLINE_SURFACE_WITH_KNOTS`, or `CONICAL_SURFACE`, etc.); mixed-content shape acceptable (curved + planar faces); read via OCCT 8.0 C++ API path; re-export via `STEPControl_Writer::Write()`; compare curved-surface entity references between input and output.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>OCCT 8.0&#x27;s `STEPControl_Writer` must emit every curved-surface entity present in the source shape into the output STEP; regression fix must ensure `CYLINDRICAL_SURFACE`, `CONICAL_SURFACE`, `B_SPLINE_SURFACE_WITH_KNOTS`, etc. are all preserved on re-export.</p></section>
+<section><h2>Notes</h2>
+<p>OCCT #1327 / FreeCAD #30266. B4 wave-8 DEF-DDD. Confidence: MEDIUM — regression is confirmed in trackers but exact writer-code path is not root-caused; the fixture encodes the INPUT file (the defect surfaces downstream on `write → reread → compare-with-input` against an OCCT 8.0 kernel). Since we cannot run the pre-fix OCCT 8.0 writer inside CI, the fixture is a WRITER-INTENT specimen: any downstream tool re-exporting this shape through OCCT 8.0 would silently lose the `CYLINDRICAL_SURFACE`. Post-fix / OCCT 7.x reads the input shape correctly (shape(1)); the defect is invisible on the input side. Live-oracle diagnostics carry &quot;Incorrect Syntax : Fails Count : 2&quot;. Synonyms: &quot;OCCT 8.0 writer regression&quot;, &quot;STEPControl_Writer curved surface dropped&quot;, &quot;FreeCAD #30266 cylinder writer bug&quot;, &quot;CYLINDRICAL_SURFACE re-export silent loss OCCT 8.0&quot;, &quot;toolpath vanishes on STEP round-trip&quot;, &quot;OCCT #1327 writer&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;CYLINDRICAL_SURFACE&#x27;)</code></li>
+<li><code>contains(b&#x27;ADVANCED_FACE&#x27;)</code></li>
+<li><code>contains(b&#x27;EDGE_LOOP&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Ad133: OCCT #1327 / FreeCAD #30266 writer-regression INPUT: single <mark>ADVANCED_FACE</mark> on a <mark>CYLINDRICAL_SURFACE</mark> (a 90-degree curved patch, radius 5.0, axis Z, from z=0 to z=10); input bytes are perfectly readable; defect surfaces downstream â OCCT 8.0&#x27;s STEPControl_Writer regression silently omits <mark>CYLINDRICAL_SURFACE</mark> entities on re-export via the C++ API path (as FreeCAD uses); OCCT 7.x writes the same shape correctly; a downstream slicer that consumes the re-exported STEP produces completely wrong toolpaths because the curved boundary vanished; DRAW-path does not reproduce; version-specific to OCCT 8.0; detected only on writeârereadâcompare-with-input; DEF-DDD; SHELL_BASED_SURFACE_MODEL IS model entity â OCC (reading input) yields shape(1) */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ad133&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ad133.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=<mark>CYLINDRICAL_SURFACE</mark>(&#x27;ad133_cylinder&#x27;,#4,5.0);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0,0.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0,10.0));
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,10.0));
+<span class="lineno">19</span>#10=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">20</span>#11=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">21</span>#12=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">22</span>#13=VERTEX_POINT(&#x27;&#x27;,#9);
+<span class="lineno">23</span>#14=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">24</span>#15=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">25</span>#16=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">26</span>#17=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#14,#15,#16);
+<span class="lineno">27</span>#18=CIRCLE(&#x27;ad133_bot_arc&#x27;,#17,5.0);
+<span class="lineno">28</span>#19=EDGE_CURVE(&#x27;&#x27;,#10,#11,#18,.T.);
+<span class="lineno">29</span>#20=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">30</span>#21=VECTOR(&#x27;&#x27;,#20,10.0);
+<span class="lineno">31</span>#22=LINE(&#x27;&#x27;,#7,#21);
+<span class="lineno">32</span>#23=EDGE_CURVE(&#x27;&#x27;,#11,#12,#22,.T.);
+<span class="lineno">33</span>#24=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,10.0));
+<span class="lineno">34</span>#25=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">35</span>#26=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">36</span>#27=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#24,#25,#26);
+<span class="lineno">37</span>#28=CIRCLE(&#x27;ad133_top_arc&#x27;,#27,5.0);
+<span class="lineno">38</span>#29=EDGE_CURVE(&#x27;&#x27;,#12,#13,#28,.T.);
+<span class="lineno">39</span>#30=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0));
+<span class="lineno">40</span>#31=VECTOR(&#x27;&#x27;,#30,10.0);
+<span class="lineno">41</span>#32=LINE(&#x27;&#x27;,#9,#31);
+<span class="lineno">42</span>#33=EDGE_CURVE(&#x27;&#x27;,#13,#10,#32,.T.);
+<span class="lineno">43</span>#34=ORIENTED_EDGE(&#x27;&#x27;,$,$,#19,.T.);
+<span class="lineno">44</span>#35=ORIENTED_EDGE(&#x27;&#x27;,$,$,#23,.T.);
+<span class="lineno">45</span>#36=ORIENTED_EDGE(&#x27;&#x27;,$,$,#29,.T.);
+<span class="lineno">46</span>#37=ORIENTED_EDGE(&#x27;&#x27;,$,$,#33,.T.);
+<span class="lineno">47</span>#38=<mark>EDGE_LOOP</mark>(&#x27;&#x27;,(#34,#35,#36,#37));
+<span class="lineno">48</span>#39=FACE_OUTER_BOUND(&#x27;&#x27;,#38,.T.);
+<span class="lineno">49</span>#40=<mark>ADVANCED_FACE</mark>(&#x27;ad133_cyl_face&#x27;,(#39),#5,.T.);
+<span class="lineno">50</span>#41=OPEN_SHELL(&#x27;ad133_shell&#x27;,(#40));
+<span class="lineno">51</span>#42=SHELL_BASED_SURFACE_MODEL(&#x27;ad133_sbsm&#x27;,(#41));
+<span class="lineno">52</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">53</span>#9051=PRODUCT(&#x27;Ad133&#x27;,&#x27;Ad133&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">54</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">55</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">56</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">57</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">58</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">59</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">60</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">61</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">62</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">63</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#42),#9060);
+<span class="lineno">64</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">65</span>ENDSEC;
+<span class="lineno">66</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ad132.html">&larr; Ad132</a> <a class="up" href="index.html">§12.11 Adversarial / parser robustness</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>
