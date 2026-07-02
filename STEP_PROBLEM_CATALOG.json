@@ -103772,6 +103772,176 @@
     "title": "AP242 Ed.3 `BASIC_ROUND_HOLE_OCCURRENCE_IN_ASSEMBLY` assembly-level occurrence dropped by Ed.2/AP214 readers"
   },
   {
+    "byte_assertions": [
+      "contains(b'ANNOTATION_PLACEHOLDER_OCCURRENCE_WITH_LEADER_LINE')",
+      "contains(b'DRAUGHTING_ANNOTATION_OCCURRENCE')",
+      "contains(b'10303 442 4 1 4')",
+      "contains(b'MANIFOLD_SOLID_BREP')"
+    ],
+    "category": "§12.7 PMI/GD&T (sub-class: edition-boundary entity elision / atomic placeholder-occurrence-with-leader)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "STEP AP242 Ed.3 file containing a minimal cube `MANIFOLD_SOLID_BREP` (six planar 10×10×10 mm faces) plus one PMI `DRAUGHTING_ANNOTATION_OCCURRENCE('atomic_occ',(#callout_geom),#styled_item)` whose leader is fused into a single atomic `ANNOTATION_PLACEHOLDER_OCCURRENCE_WITH_LEADER_LINE('atomic_apowll',#occ,#face_top_sa,(#leader_end_pt))` — an atomic bundled entity that carries the annotation occurrence, the leader-line target `SHAPE_ASPECT` (top face), and the leader-endpoint `CARTESIAN_POINT` in one instance (distinct from Pmi148 / DEF-PP's split placeholder + separate leader pair). Ed.3 readers resolve the atomic entity and expose the callout+leader as a bundled unit through the PMI API; Ed.2 / AP214 readers produce Void transfer status on the atomic entity and the entire callout+leader disappears at once — unlike the split form where the placeholder would remain visible after leader-drop, the atomic form drops the whole callout+leader unit.",
+    "expected_kernel_behavior": "AP242 Ed.3 readers must resolve `ANNOTATION_PLACEHOLDER_OCCURRENCE_WITH_LEADER_LINE` as an atomic bundled entity and expose both the occurrence and the leader endpoint(s); Ed.2 / AP214 readers must emit `W_SCHEMA_ENTITY_UNSUPPORTED(ANNOTATION_PLACEHOLDER_OCCURRENCE_WITH_LEADER_LINE)` rather than silently discarding the entire atomic callout+leader.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-7-pmi/Pmi150.stp",
+    "id": "Pmi150",
+    "notes": "steptools notes_ap242e3.html §4.5 §7 (leader-line family). B4 wave-8 DEF-QQ. Confidence: HIGH — accept-live-oracle. OCCT drops the Ed.3 entity and loads the geometry as if AP214 (cube + draughting occurrence load, atomic bundled entity absent) — that IS the defect. Expected validation captured from OCCT live behavior. Edition boundary: Ed.3 atomic entity absent from Ed.2, Ed.1, AP214 schemas. Companion to Pmi148/DEF-PP (split form). Synonyms: \"ANNOTATION_PLACEHOLDER_OCCURRENCE_WITH_LEADER_LINE AP242 Ed.3 dropped\", \"atomic placeholder callout leader Ed.2 lost\", \"PMI atomic bundled leader-occurrence silent drop\", \"Ed.3 fused callout+leader entity absent\", \"AP242 Ed.3 atomic placeholder-with-leader family\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "AP242 Ed.3 header (`AUTOMOTIVE_DESIGN { 1 0 10303 442 4 1 4 }`); cube `MANIFOLD_SOLID_BREP`; `DRAUGHTING_ANNOTATION_OCCURRENCE('atomic_occ',(#callout_geom),#styled_item)`; `SHAPE_ASPECT` on top face; single-endpoint `CARTESIAN_POINT`; `ANNOTATION_PLACEHOLDER_OCCURRENCE_WITH_LEADER_LINE('atomic_apowll',#occ,#face_top_sa,(#leader_end_pt))`.",
+    "section": "12.7",
+    "section_dir": "12-7-pmi",
+    "see_also": [],
+    "sender": "AP242 Edition 3 STEP files from PMI-authoring tools that emit atomic placeholder-occurrence-with-leader entities (typical in in-progress authoring where a callout's occurrence and leader are always co-authored); file header declares `AUTOMOTIVE_DESIGN { 1 0 10303 442 4 1 4 }` (Ed.3 OID with hybrid AUTOMOTIVE_DESIGN name).",
+    "severity": "P1",
+    "sources": [
+      "steptools.com AP242 Ed.3 notes (`ANNOTATION_PLACEHOLDER_OCCURRENCE_WITH_LEADER_LINE` §4.5 §7 — one of 21 new Ed.3 entities in the leader-line family",
+      "the atomic form as opposed to Pmi148's separate placeholder + leader pair). B4 wave-8 DEF-QQ (LGPL-clean — pattern only, no upstream bytes copied). AP242 Ed.3 introduced two encodings for placeholder callouts with leader lines: the split form (`ANNOTATION_PLACEHOLDER` + `ANNOTATION_PLACEHOLDER_LEADER_LINE`, as in Pmi148/DEF-PP) and the atomic bundled form (this fixture) that fuses the callout occurrence and the leader-line geometry into a single entity instance",
+      "both forms are absent from Ed.2, Ed.1, and AP214 schemas and their readers produce Void transfer status."
+    ],
+    "taxonomy": [
+      "silent-loss",
+      "pmi"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 6"
+    ],
+    "title": "AP242 Ed.3 `ANNOTATION_PLACEHOLDER_OCCURRENCE_WITH_LEADER_LINE` atomic entity dropped by Ed.2/AP214 readers"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'ANNOTATION_TO_MODEL_LEADER_LINE')",
+      "contains(b'DRAUGHTING_ANNOTATION_OCCURRENCE')",
+      "contains(b'10303 442 4 1 4')",
+      "contains(b'MANIFOLD_SOLID_BREP')"
+    ],
+    "category": "§12.7 PMI/GD&T (sub-class: edition-boundary entity elision / 2D-annotation-to-3D-face leader binding)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "STEP AP242 Ed.3 file containing a minimal cube `MANIFOLD_SOLID_BREP` (six planar 10×10×10 mm faces) plus one PMI position tolerance callout `DRAUGHTING_ANNOTATION_OCCURRENCE('pos_tol_callout',(#callout_geom),#styled_item)` (with backing `POSITION_TOLERANCE('pos_tol_face_top','true position 0.1 to top face',LENGTH_MEASURE(0.1),#9055)`) linked to the top face's `ADVANCED_FACE` (a direct 3D-face reference) via `ANNOTATION_TO_MODEL_LEADER_LINE('atml_1',#pos_tol_annot,#face_zp,$)` — the Ed.3 entity that carries the 2D-annotation-to-3D-face leader binding directly (as opposed to Pmi148's binding to a `SHAPE_ASPECT`). Ed.3 readers resolve the leader line and expose the annotation→3D-face link through the PMI API, so downstream inspection tools can determine exactly which face the leader points at; Ed.2 / AP214 readers produce Void transfer status on the leader-line entity and silently drop the annotation→face link — the position tolerance annotation may still load individually but downstream inspection tools cannot recover which face is the target of the tolerance.",
+    "expected_kernel_behavior": "AP242 Ed.3 readers must resolve `ANNOTATION_TO_MODEL_LEADER_LINE` and populate the annotation→target-3D-face link; Ed.2 / AP214 readers must emit `W_SCHEMA_ENTITY_UNSUPPORTED(ANNOTATION_TO_MODEL_LEADER_LINE)` rather than silently discarding the leader-line entity.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-7-pmi/Pmi151.stp",
+    "id": "Pmi151",
+    "notes": "steptools notes_ap242e3.html §4.5 (leader-line family). B4 wave-8 DEF-RR. Confidence: HIGH — accept-live-oracle. OCCT drops the Ed.3 entity and loads the geometry as if AP214 (cube + position-tolerance annotation load, direct face-target leader absent) — that IS the defect. Expected validation captured from OCCT live behavior. Edition boundary: Ed.3 entity absent from Ed.2, Ed.1, AP214 schemas. Sibling to Pmi148 (placeholder→SHAPE_ASPECT variant). Synonyms: \"ANNOTATION_TO_MODEL_LEADER_LINE AP242 Ed.3 dropped\", \"2D annotation to 3D face leader Ed.2 lost\", \"PMI position tolerance target-face link silent drop\", \"Ed.3 direct annotation-to-face leader entity absent\", \"AP242 Ed.3 annotation-to-model leader family\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "AP242 Ed.3 header (`AUTOMOTIVE_DESIGN { 1 0 10303 442 4 1 4 }`); cube `MANIFOLD_SOLID_BREP`; `DRAUGHTING_ANNOTATION_OCCURRENCE` for a position tolerance callout; `POSITION_TOLERANCE('pos_tol_face_top','true position 0.1 to top face',LENGTH_MEASURE(0.1),#9055)`; `ANNOTATION_TO_MODEL_LEADER_LINE('atml_1',#pos_tol_annot,#face_zp,$)` — the target is the top-face `ADVANCED_FACE` directly.",
+    "section": "12.7",
+    "section_dir": "12-7-pmi",
+    "see_also": [],
+    "sender": "AP242 Edition 3 STEP files from PMI-authoring tools that emit direct annotation→3D-face leader bindings (typical for position tolerances applied to a specific face in an MBD model); file header declares `AUTOMOTIVE_DESIGN { 1 0 10303 442 4 1 4 }` (Ed.3 OID with hybrid AUTOMOTIVE_DESIGN name).",
+    "severity": "P1",
+    "sources": [
+      "steptools.com AP242 Ed.3 notes (`ANNOTATION_TO_MODEL_LEADER_LINE` §4.5 — one of 21 new Ed.3 entities in the leader-line family",
+      "the Ed.3 entity that binds a 2D annotation directly to a specific 3D model `ADVANCED_FACE` rather than to an anchoring `SHAPE_ASPECT`). B4 wave-8 DEF-RR (LGPL-clean — pattern only, no upstream bytes copied). AP242 Ed.3 introduced explicit annotation-to-model-face leader lines so a 2D callout (position tolerance, GD&T frame, etc.) can carry a direct reference to the exact 3D face it applies to",
+      "earlier editions require an intervening `SHAPE_ASPECT` and their readers produce Void transfer status on the Ed.3-direct entity."
+    ],
+    "taxonomy": [
+      "silent-loss",
+      "pmi"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 6"
+    ],
+    "title": "AP242 Ed.3 `ANNOTATION_TO_MODEL_LEADER_LINE` (2D annotation → 3D face) dropped by Ed.2/AP214 readers"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'AUXILIARY_LEADER_LINE')",
+      "contains(b'ANNOTATION_TO_MODEL_LEADER_LINE')",
+      "contains(b'10303 442 4 1 4')",
+      "contains(b'MANIFOLD_SOLID_BREP')"
+    ],
+    "category": "§12.7 PMI/GD&T (sub-class: edition-boundary entity elision / secondary leader for symmetric-feature callouts)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "STEP AP242 Ed.3 file containing a minimal cube `MANIFOLD_SOLID_BREP` (six planar 10×10×10 mm faces) plus one PMI symmetric-feature position tolerance callout `DRAUGHTING_ANNOTATION_OCCURRENCE('symm_pos_tol_callout',(#callout_geom),#styled_item)` (with backing `POSITION_TOLERANCE('symm_pos_tol','symmetric position 0.2 to top+bottom',LENGTH_MEASURE(0.2),#9055)`) that has TWO leaders: (a) a primary `ANNOTATION_TO_MODEL_LEADER_LINE('primary_top_leader',#symm_pos_tol_annot,#face_zp,$)` pointing at the top face, and (b) a secondary `AUXILIARY_LEADER_LINE('aux_leader',#symm_pos_tol_annot,#face_zn,$)` pointing at the mirror bottom face (the symmetric feature). Ed.3 readers resolve both leaders — the callout applies to both the top face (primary) and the bottom face (auxiliary); Ed.2 / AP214 readers produce Void transfer status on the auxiliary leader entity — the imported callout appears with only the primary leader (silently missing the symmetric-feature indication), and downstream inspection tools apply the tolerance only to the top face and skip the mirror feature.",
+    "expected_kernel_behavior": "AP242 Ed.3 readers must resolve `AUXILIARY_LEADER_LINE` and populate the secondary leader binding so the imported callout carries both targets; Ed.2 / AP214 readers must emit `W_SCHEMA_ENTITY_UNSUPPORTED(AUXILIARY_LEADER_LINE)` rather than silently dropping the auxiliary leader.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-7-pmi/Pmi152.stp",
+    "id": "Pmi152",
+    "notes": "steptools notes_ap242e3.html §4.5 (leader-line family). B4 wave-8 DEF-SS. Confidence: HIGH — accept-live-oracle. OCCT drops the Ed.3 entity and loads the geometry as if AP214 (cube + primary leader load, auxiliary leader absent) — that IS the defect. Expected validation captured from OCCT live behavior. Edition boundary: Ed.3 entity absent from Ed.2, Ed.1, AP214 schemas. Composes on top of Pmi151's ANNOTATION_TO_MODEL_LEADER_LINE. Synonyms: \"AUXILIARY_LEADER_LINE AP242 Ed.3 dropped\", \"secondary leader Ed.2 lost\", \"symmetric-feature callout mirror leader silent drop\", \"Ed.3 auxiliary/second leader entity absent\", \"AP242 Ed.3 auxiliary leader family\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "AP242 Ed.3 header (`AUTOMOTIVE_DESIGN { 1 0 10303 442 4 1 4 }`); cube `MANIFOLD_SOLID_BREP`; `DRAUGHTING_ANNOTATION_OCCURRENCE` symmetric-feature callout; primary `ANNOTATION_TO_MODEL_LEADER_LINE('primary_top_leader',#annot,#face_zp,$)`; secondary `AUXILIARY_LEADER_LINE('aux_leader',#annot,#face_zn,$)`.",
+    "section": "12.7",
+    "section_dir": "12-7-pmi",
+    "see_also": [],
+    "sender": "AP242 Edition 3 STEP files from PMI-authoring tools that emit multi-target GD&T callouts (typical for symmetric-feature or mirror-feature tolerancing where a single tolerance applies to two features indicated by primary + auxiliary leaders); file header declares `AUTOMOTIVE_DESIGN { 1 0 10303 442 4 1 4 }` (Ed.3 OID with hybrid AUTOMOTIVE_DESIGN name).",
+    "severity": "P1",
+    "sources": [
+      "steptools.com AP242 Ed.3 notes (`AUXILIARY_LEADER_LINE` §4.5 — one of 21 new Ed.3 entities in the leader-line family",
+      "the Ed.3 entity that adds a secondary leader branching from a primary leader to indicate a second callout target, used for symmetric-feature callouts where one GD&T frame applies to two mirror features at once). B4 wave-8 DEF-SS (LGPL-clean — pattern only, no upstream bytes copied). AP242 Ed.3 introduced explicit auxiliary/secondary leader lines so a single callout can indicate multiple targets (typical for symmetric-feature tolerancing)",
+      "earlier editions do not carry this entity in their schemas and their readers produce Void transfer status."
+    ],
+    "taxonomy": [
+      "silent-loss",
+      "pmi"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 6"
+    ],
+    "title": "AP242 Ed.3 `AUXILIARY_LEADER_LINE` (secondary/mirror leader) dropped by Ed.2/AP214 readers"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'APLL_POINT_WITH_SURFACE')",
+      "contains(b'APLL_POINT')",
+      "contains(b'ANNOTATION_PLACEHOLDER_LEADER_LINE')",
+      "contains(b'10303 442 4 1 4')",
+      "contains(b'MANIFOLD_SOLID_BREP')"
+    ],
+    "category": "§12.7 PMI/GD&T (sub-class: edition-boundary entity elision / typed leader-line endpoint entities)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "STEP AP242 Ed.3 file containing a minimal cube `MANIFOLD_SOLID_BREP` (six planar 10×10×10 mm faces) plus one PMI `ANNOTATION_PLACEHOLDER('pl_callout','unfilled callout slot',#placeholder_pt)` (as in Pmi148) whose linking `ANNOTATION_PLACEHOLDER_LEADER_LINE('pl_leader_typed_endpoints',#placeholder,#face_top_sa,(#apll_free,#apll_on_face))` has its endpoint chain declared via TWO Ed.3 endpoint-typing entities: (a) a plain `APLL_POINT('apll_pt_free',(15.0,0.0,5.0))` (free-space endpoint at the callout end) and (b) a surface-constrained `APLL_POINT_WITH_SURFACE('apll_pt_on_face',(5.0,5.0,10.0),#face_zp)` (endpoint whose 3D position is constrained to lie on the top `ADVANCED_FACE`). Ed.3 readers resolve both endpoint entity types and expose the leader-line's endpoint chain with proper typing (which endpoint is free, which is face-constrained); Ed.2 / AP214 readers produce Void transfer status on BOTH endpoint entities — the endpoints are silently dropped, so if the leader-line container survives at all its endpoint list is populated with orphan references pointing at nothing.",
+    "expected_kernel_behavior": "AP242 Ed.3 readers must resolve `APLL_POINT` and `APLL_POINT_WITH_SURFACE` and populate the leader's endpoint chain with the proper endpoint types; Ed.2 / AP214 readers must emit `W_SCHEMA_ENTITY_UNSUPPORTED(APLL_POINT)` and `W_SCHEMA_ENTITY_UNSUPPORTED(APLL_POINT_WITH_SURFACE)` rather than silently discarding the endpoint entities.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-7-pmi/Pmi153.stp",
+    "id": "Pmi153",
+    "notes": "steptools notes_ap242e3.html §4.5 (leader-line family). B4 wave-8 DEF-TT. Confidence: HIGH — accept-live-oracle. OCCT drops the Ed.3 entities and loads the geometry as if AP214 (cube + placeholder load, typed endpoint chain absent) — that IS the defect. Expected validation captured from OCCT live behavior. Edition boundary: Ed.3 entities absent from Ed.2, Ed.1, AP214 schemas. Extends Pmi148's `ANNOTATION_PLACEHOLDER_LEADER_LINE` with typed endpoints. Synonyms: \"APLL_POINT AP242 Ed.3 dropped\", \"APLL_POINT_WITH_SURFACE Ed.2 lost\", \"leader endpoint typing entity silent drop\", \"Ed.3 typed leader endpoint chain absent\", \"AP242 Ed.3 APLL endpoint family\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "AP242 Ed.3 header (`AUTOMOTIVE_DESIGN { 1 0 10303 442 4 1 4 }`); cube `MANIFOLD_SOLID_BREP`; `ANNOTATION_PLACEHOLDER`; `SHAPE_ASPECT` on top face; `APLL_POINT('apll_pt_free',(15.0,0.0,5.0))`; `APLL_POINT_WITH_SURFACE('apll_pt_on_face',(5.0,5.0,10.0),#face_zp)`; `ANNOTATION_PLACEHOLDER_LEADER_LINE('pl_leader_typed_endpoints',#placeholder,#face_top_sa,(#apll_free,#apll_on_face))`.",
+    "section": "12.7",
+    "section_dir": "12-7-pmi",
+    "see_also": [],
+    "sender": "AP242 Edition 3 STEP files from PMI-authoring tools that emit typed leader endpoint chains (typical for leader lines whose target endpoint is snapped to a specific face); file header declares `AUTOMOTIVE_DESIGN { 1 0 10303 442 4 1 4 }` (Ed.3 OID with hybrid AUTOMOTIVE_DESIGN name).",
+    "severity": "P1",
+    "sources": [
+      "steptools.com AP242 Ed.3 notes (`APLL_POINT` and `APLL_POINT_WITH_SURFACE` §4.5 — two of 21 new Ed.3 entities in the leader-line family",
+      "endpoint-typing entities that let an `ANNOTATION_PLACEHOLDER_LEADER_LINE` declare its endpoint chain with per-endpoint surface constraints — one plain free-space endpoint and one endpoint tied to a specific host surface). B4 wave-8 DEF-TT (LGPL-clean — pattern only, no upstream bytes copied). AP242 Ed.3 introduced explicit endpoint-typing entities so a leader-line's endpoint chain can carry per-endpoint surface constraints (e.g., \"this endpoint is free in 3D space",
+      "this other endpoint must lie on face F\")",
+      "earlier editions do not carry either of these entities in their schemas and their readers produce Void transfer status."
+    ],
+    "taxonomy": [
+      "silent-loss",
+      "pmi"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 6"
+    ],
+    "title": "AP242 Ed.3 `APLL_POINT` and `APLL_POINT_WITH_SURFACE` leader-endpoint types dropped by Ed.2/AP214 readers"
+  },
+  {
     "byte_assertions": [],
     "category": "§12.7 feature defects (sub-class: fillet contour concavity)",
     "closure_defect": null,
