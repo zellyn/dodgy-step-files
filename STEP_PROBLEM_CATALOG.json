@@ -4778,6 +4778,46 @@
   },
   {
     "byte_assertions": [
+      "contains(b'PRESENTATION_LAYER_ASSIGNMENT')",
+      "contains(b'STYLED_ITEM')",
+      "matches(rb\"PRESENTATION_LAYER_ASSIGNMENT\\('[^']*','[^']*',\\(#\\d+,\\$,#\\d+\\)\\)\")"
+    ],
+    "category": "§12.11 adversarial (sub-class: null-item dereference / layer-visibility crash)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "STEP AP214 file with a valid cube `MANIFOLD_SOLID_BREP` (six planar 10×10×10 mm faces) plus a colour + presentation-style chain producing two `STYLED_ITEM` entities (one red on the +X face, one blue on the +Y face). The defect: `PRESENTATION_LAYER_ASSIGNMENT('layer_ad130','...',(#styled1,$,#styled2))` — the middle element of the `assigned_items` set is literally `$` (STEP null). OCCT prior to commit 96049f2e passes this triple through `TCollection_HAsciiString` resolution without a null check and dereferences the null pointer during layer visibility computation, producing a segfault. OCCT post-fix (96049f2e+) skips the null entry gracefully and assigns only the two non-null `STYLED_ITEM` items to the layer, emitting a diagnostic in the transfer log.",
+    "expected_kernel_behavior": "reject or skip null `$` entries in `PRESENTATION_LAYER_ASSIGNMENT.assigned_items` with a diagnostic (`W_LAYER_NULL_ITEM_SKIPPED`); never dereference the null pointer; never segfault or produce undefined behaviour.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-11-adversarial/Ad130.stp",
+    "id": "Ad130",
+    "notes": "Synonyms: \"PRESENTATION_LAYER_ASSIGNMENT null item segfault\", \"OCCT 96049f2 layer null item crash fix\", \"MANTIS 32049 layer visibility null crash\", \"assigned_items $ null STEP layer\", \"STYLED_ITEM null layer dereference crash\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "cube `MANIFOLD_SOLID_BREP`; two `STYLED_ITEM` entities with colour + presentation-style chain; `PRESENTATION_LAYER_ASSIGNMENT('layer_ad130','...',(#styled_1,$,#styled_2))` — literal `$` between the two valid references.",
+    "section": "12.11",
+    "section_dir": "12-11-adversarial",
+    "see_also": [],
+    "sender": "",
+    "severity": "P0",
+    "sources": [
+      "OCCT commit 96049f2e3d7de177d89f89231e44e9d7d105ae43 (layer-visibility null-item crash fix) and OCCT MANTIS 0032049 (layer visibility + null item crash). B4 wave-7 DEF-LL (LGPL-clean — pattern only, no upstream bytes copied). `PRESENTATION_LAYER_ASSIGNMENT` `assigned_items` is an unordered set of items whose element type is `SELECT(REPRESENTATION_ITEM, REPRESENTATION)`",
+      "when a producer emits a `$` (null) element alongside valid `STYLED_ITEM` references, pre-fix OCCT dereferences the null pointer during layer resolution and segfaults",
+      "post-fix OCCT skips the null with a diagnostic."
+    ],
+    "taxonomy": [
+      "crash",
+      "adversarial"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\""
+    ],
+    "title": "`PRESENTATION_LAYER_ASSIGNMENT` with null (`$`) item in `assigned_items` set"
+  },
+  {
+    "byte_assertions": [
       "contains(b'\\\\X2\\\\')",
       "contains(b'EDGE_CURVE')",
       "contains(b'ADVANCED_FACE')"
@@ -57554,6 +57594,42 @@
   },
   {
     "byte_assertions": [
+      "count_entity_def(b'B_SPLINE_SURFACE_WITH_KNOTS') == 2",
+      "count_entity_def(b'ADVANCED_FACE') == 2"
+    ],
+    "category": "§12.2c surfaces (sub-class: tessellation-parameter mis-scaling / small-radius faceting)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "STEP file with a `SHELL_BASED_SURFACE_MODEL` containing two `ADVANCED_FACE` entities, each on a `B_SPLINE_SURFACE_WITH_KNOTS`. Face A approximates a cylindrical arc of radius R = 50 mm (large radius) subtending 60°; face B approximates a cylindrical arc of radius R = 1.5 mm (small radius) subtending 60°. Both B-spline surfaces are degree 2×1 with a 3×2 control-point net whose middle U-control point is placed at R/cos(30°) so the surface passes through the true cylindrical arc endpoints. The two surfaces are placed side-by-side in X (offset 200 mm) so a reader tessellating both at the same chord deflection produces qualitatively different mesh quality: OCCT with `LinearDeflection = 0.01 mm` yields ≈120 triangles per face (both smooth); a slicer with hard-coded `LinearDeflection = 0.1 mm` yields ≈120 triangles on the R=50 face but only ≈8 triangles on the R=1.5 face (visible faceting). OCCT loads shape(1) with 2 faces at either deflection.",
+    "expected_kernel_behavior": "derive tessellation `LinearDeflection` from the surface's local curvature (Chord × Radius scaling); emit `W_TESSELLATION_UNDER_SIZED_FOR_CURVATURE` diagnostic when a fixed deflection exceeds the target quality on small-radius faces; never silently produce a visibly-faceted small-radius mesh when the source B-spline is smooth.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2c-surfaces/Gs191.stp",
+    "id": "Gs191",
+    "notes": "Synonyms: \"BambuStudio STEP small-radius facet\", \"slicer chord deflection hardcoded STEP\", \"B_SPLINE_SURFACE_WITH_KNOTS small radius facet slicer\", \"LinearDeflection fixed 0.1 mm slicer STEP\", \"OCCT BRepMesh small radius facet slicer\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`SHELL_BASED_SURFACE_MODEL` containing `OPEN_SHELL` with two `ADVANCED_FACE` entities; each face_geometry is a `B_SPLINE_SURFACE_WITH_KNOTS(deg_u=2, deg_v=1, ctrl=3×2, knot_mults=(3,3)×(2,2), knots=(0,1)×(0,1))` approximating a 60° cylindrical arc — one at R=50 mm, one at R=1.5 mm.",
+    "section": "12.2c",
+    "section_dir": "12-2c-surfaces",
+    "see_also": [],
+    "sender": "",
+    "severity": "P1",
+    "sources": [
+      "BambuStudio GitHub issue #3437 (`STEP translation poor quality, 44% fewer triangles`). B4 wave-7 DEF-HH (LGPL-clean — pattern only, no upstream bytes copied). Slicers built on top of OCCT's `BRepMesh` with a hard-coded `LinearDeflection = 0.1 mm` produce visibly faceted meshes on small-radius (R < 2 mm) B-spline surfaces, while readers with configurable chord deflection (0.01 mm) mesh the same surface smoothly."
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [
+      "n_faces_total == 2"
+    ],
+    "title": "Slicer chord-deflection defect on small-radius `B_SPLINE_SURFACE_WITH_KNOTS`"
+  },
+  {
+    "byte_assertions": [
       "matches(rb'CLOSED_SHELL\\s*\\(\\s*\\x27[^\\x27]*\\x27\\s*,\\s*\\(\\s*\\)\\s*\\)')",
       "contains(b'MANIFOLD_SOLID_BREP')",
       "count_entity_def(b'ADVANCED_FACE') == 0"
@@ -103337,6 +103413,88 @@
       "n_faces_total == 6"
     ],
     "title": "AP242 Ed.2 `SURFACE_TEXTURE_REPRESENTATION` entity dropped by Ed.1/AP214 readers"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'ANNOTATION_TO_ANNOTATION_LEADER_LINE')",
+      "contains(b'ANNOTATION_OCCURRENCE')",
+      "contains(b'10303 442 4 1 4')",
+      "contains(b'MANIFOLD_SOLID_BREP')"
+    ],
+    "category": "§12.7 PMI/GD&T (sub-class: edition-boundary entity elision / annotation link)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "STEP AP242 Ed.3 file containing a minimal cube `MANIFOLD_SOLID_BREP` (6-face 10×10×10 mm) and two PMI callouts: a position tolerance frame `ANNOTATION_OCCURRENCE('pos_tol_frame',$,#dri_a)` (with `DESCRIPTIVE_REPRESENTATION_ITEM('position_tol','POS 0.05 A B C')`) anchored to the top face's `SHAPE_ASPECT`, and a datum feature label `ANNOTATION_OCCURRENCE('datum_label',$,#dri_b)` (with `DESCRIPTIVE_REPRESENTATION_ITEM('datum_feature','DATUM A')`) anchored to the +X face. The two annotations are linked by `ANNOTATION_TO_ANNOTATION_LEADER_LINE('pos_tol_to_datum_leader',#annot_a,#annot_b,$)` — the Ed.3 entity that carries source→target leader-line semantics. Ed.3 readers resolve the leader link and expose both callouts as connected; Ed.2 / AP214 readers produce Void transfer status on the linking entity and silently drop the leader connection; both individual annotations still load.",
+    "expected_kernel_behavior": "AP242 Ed.3 readers must resolve `ANNOTATION_TO_ANNOTATION_LEADER_LINE` and populate the annotation-link API; Ed.2 / AP214 readers must emit `W_SCHEMA_ENTITY_UNSUPPORTED(ANNOTATION_TO_ANNOTATION_LEADER_LINE)` rather than silently discarding the leader-line link.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-7-pmi/Pmi144.stp",
+    "id": "Pmi144",
+    "notes": "steptools notes_ap242e3.html (21 new Ed.3 entities). B4 wave-7 DEF-II. Edition boundary: Ed.3 entity absent from Ed.2, Ed.1, AP214 schemas. Synonyms: \"ANNOTATION_TO_ANNOTATION_LEADER_LINE AP242 Ed.3 dropped by Ed.2 readers\", \"AP242 Ed.3 leader line entity\", \"PMI callout leader link lost\", \"Ed.3 annotation-to-annotation leader silent drop\", \"AP242 Ed.3 hybrid AUTOMOTIVE_DESIGN header\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "AP242 Ed.3 header (`AUTOMOTIVE_DESIGN { 1 0 10303 442 4 1 4 }`); cube `MANIFOLD_SOLID_BREP`; two `ANNOTATION_OCCURRENCE` entities linked by `ANNOTATION_TO_ANNOTATION_LEADER_LINE('...',#annot_a,#annot_b,$)`.",
+    "section": "12.7",
+    "section_dir": "12-7-pmi",
+    "see_also": [],
+    "sender": "AP242 Edition 3 STEP files from tools that emit the new Ed.3 leader-line linking entity; file header declares `AUTOMOTIVE_DESIGN { 1 0 10303 442 4 1 4 }` (Ed.3 OID with hybrid AUTOMOTIVE_DESIGN name — as observed in Ed.2 writers upgraded to the Ed.3 OID).",
+    "severity": "P1",
+    "sources": [
+      "steptools.com AP242 Ed.3 notes (`ANNOTATION_TO_ANNOTATION_LEADER_LINE` §4.4 — one of 21 new Ed.3 entities). B4 wave-7 DEF-II (LGPL-clean — pattern only, no upstream bytes copied). AP242 Ed.3 introduced explicit leader-line linking between two annotation callouts",
+      "earlier editions (Ed.2, Ed.1, AP214) do not carry this entity in their schema and their readers produce Void transfer status."
+    ],
+    "taxonomy": [
+      "silent-loss",
+      "pmi"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 6"
+    ],
+    "title": "AP242 Ed.3 `ANNOTATION_TO_ANNOTATION_LEADER_LINE` entity dropped by Ed.2/AP214 readers"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'BASIC_ROUND_HOLE')",
+      "contains(b'CYLINDRICAL_SURFACE')",
+      "contains(b'MANIFOLD_SOLID_BREP')",
+      "contains(b'10303 442 4 1 4')"
+    ],
+    "category": "§12.7 PMI/GD&T (sub-class: edition-boundary feature-semantic elision / drilled hole)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "STEP AP242 Ed.3 file containing a prismatic 20×20×10 mm `MANIFOLD_SOLID_BREP` block (the carrier part) plus a co-present B-rep representation of a drilled through-hole encoded in TWO parallel ways. (a) Hole B-rep geometry: a `CYLINDRICAL_SURFACE` `ADVANCED_FACE` for the hole wall (radius=3.0, centered at (W/2, W/2), extruded z: 0→10) and two `PLANE` cap `ADVANCED_FACE` entities marking the ±Z ends of the drilled hole. (b) Feature semantic: `BASIC_ROUND_HOLE('brh_1','through_hole',#shape_aspect,POSITIVE_LENGTH_MEASURE(6.0))` with `internal_diameter = 6.0` mm (= wall radius × 2), plus `BASIC_ROUND_HOLE_OCCURRENCE` linking the feature entity to the B-rep hole face. Ed.3 readers expose the hole as `type=through, diameter=6.0` via the machining-feature API; Ed.2 / AP214 readers produce Void transfer status on both feature entities but the hole B-rep geometry (cylinder + caps) loads correctly, so downstream CAM must re-classify the geometry from scratch.",
+    "expected_kernel_behavior": "AP242 Ed.3 readers must traverse `BASIC_ROUND_HOLE` / `BASIC_ROUND_HOLE_OCCURRENCE` and expose the drilled-hole parameters via the machining-feature API; Ed.2 / AP214 readers must emit `W_SCHEMA_ENTITY_UNSUPPORTED(BASIC_ROUND_HOLE)` rather than silently dropping the feature semantic.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-7-pmi/Pmi145.stp",
+    "id": "Pmi145",
+    "notes": "steptools notes_ap242e3.html §4.4. FreeCAD #19795. B4 wave-7 DEF-JJ. Entity defined in AP242 Ed.3 §4.4 only. Synonyms: \"BASIC_ROUND_HOLE AP242 Ed.3 dropped\", \"AP242 Ed.3 drilled hole feature entity\", \"hole feature semantic silent drop Ed.2\", \"internal_diameter 6.0 STEP AP242 Ed.3\", \"BASIC_ROUND_HOLE_OCCURRENCE feature-semantic gap\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "AP242 Ed.3 header (`AUTOMOTIVE_DESIGN { 1 0 10303 442 4 1 4 }`); prismatic `MANIFOLD_SOLID_BREP` block + hole B-rep (`CYLINDRICAL_SURFACE` wall + two `PLANE` cap faces); `BASIC_ROUND_HOLE('brh_1','through_hole',#sa,POSITIVE_LENGTH_MEASURE(6.0))` + `BASIC_ROUND_HOLE_OCCURRENCE('brh_occ_1',...,#sa,#brh,#wall_face)`.",
+    "section": "12.7",
+    "section_dir": "12-7-pmi",
+    "see_also": [],
+    "sender": "AP242 Edition 3 STEP files from feature-aware CAD tools that emit both the B-rep geometry AND the machining-feature semantic; file header declares `AUTOMOTIVE_DESIGN { 1 0 10303 442 4 1 4 }` (Ed.3 OID).",
+    "severity": "P1",
+    "sources": [
+      "steptools.com AP242 Ed.3 notes (`BASIC_ROUND_HOLE` + `BASIC_ROUND_HOLE_OCCURRENCE` §4.4 — Ed.3 machining-feature entities)",
+      "FreeCAD issue #19795 (AP242 Ed.1-4 feature-semantic gap). B4 wave-7 DEF-JJ (LGPL-clean — pattern only, no upstream bytes copied). AP242 Ed.3 introduced explicit machining-feature entities for drilled round holes",
+      "earlier editions do not carry these entities and their readers produce Void transfer status while the hole B-rep geometry still loads."
+    ],
+    "taxonomy": [
+      "silent-loss",
+      "pmi"
+    ],
+    "tier3_assertions": [
+      "shape_null == False"
+    ],
+    "title": "AP242 Ed.3 `BASIC_ROUND_HOLE` feature entity dropped by Ed.2/AP214 readers"
   },
   {
     "byte_assertions": [],

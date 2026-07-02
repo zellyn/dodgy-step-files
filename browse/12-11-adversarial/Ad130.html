@@ -3,52 +3,49 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Pmi143 — AP242 Ed.2 `SURFACE_TEXTURE_REPRESENTATION` entity dropped by Ed.1/AP214 readers</title>
+  <title>Ad130 — `PRESENTATION_LAYER_ASSIGNMENT` with null (`$`) item in `assigned_items` set</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
 <body class="entry">
 <nav class="topnav">
-<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.7 PMI / GD&amp;T</a> <span class="sep">/</span> <span class="current">Pmi143</span>
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.11 Adversarial / parser robustness</a> <span class="sep">/</span> <span class="current">Ad130</span>
 </nav>
 <header class="title-bar">
-<h1>Pmi143 <span class="sep">—</span> <span class="entry-title">AP242 Ed.2 `SURFACE_TEXTURE_REPRESENTATION` entity dropped by Ed.1/AP214 readers</span></h1>
-<p class="category">§12.7 PMI/GD&amp;T (sub-class: edition-boundary entity elision / surface texture annotation)</p>
-<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<h1>Ad130 <span class="sep">—</span> <span class="entry-title">`PRESENTATION_LAYER_ASSIGNMENT` with null (`$`) item in `assigned_items` set</span></h1>
+<p class="category">§12.11 adversarial (sub-class: null-item dereference / layer-visibility crash)</p>
+<p class="severity-badge severity-p0">P0 — receiver crash / hang / OOM</p>
 <p class="tag-pills">
-<a class="tag tag-pmi" href="../by-tag/pmi/index.html">pmi</a>
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-adversarial" href="../by-tag/adversarial/index.html">adversarial</a>
 </p>
 </header>
 <main>
 <section class="fixture-link">
-<a class="big-link" href="../../step-examples/12-7-pmi/Pmi143.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-7-pmi/Pmi143.stp</code>
+<a class="big-link" href="../../step-examples/12-11-adversarial/Ad130.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-11-adversarial/Ad130.stp</code>
 </section>
 <section><h2>Sources</h2><ul>
-<li>NIST MBE PMI Round 3 test results (surface texture §5.2</li>
-<li>`SURFACE_TEXTURE_REPRESENTATION` AP242 Ed.2 Part 1701)</li>
-<li>B4 wave-6 DEF-BB (LGPL-clean — pattern only, no bytes copied).</li>
+<li>OCCT commit 96049f2e3d7de177d89f89231e44e9d7d105ae43 (layer-visibility null-item crash fix) and OCCT MANTIS 0032049 (layer visibility + null item crash). B4 wave-7 DEF-LL (LGPL-clean — pattern only, no upstream bytes copied). `PRESENTATION_LAYER_ASSIGNMENT` `assigned_items` is an unordered set of items whose element type is `SELECT(REPRESENTATION_ITEM, REPRESENTATION)`</li>
+<li>when a producer emits a `$` (null) element alongside valid `STYLED_ITEM` references, pre-fix OCCT dereferences the null pointer during layer resolution and segfaults</li>
+<li>post-fix OCCT skips the null with a diagnostic.</li>
 </ul></section>
-<section><h2>Sender</h2>
-<p>AP242 Edition 2 STEP files from MBE-capable tools that encode surface finish annotations via `SURFACE_TEXTURE_REPRESENTATION` (Part 1701); file header declares AP242 Ed.2 schema.</p></section>
 <section><h2>Description</h2>
-<p>STEP AP242 Ed.2 file with a surface finish annotation encoded via `SURFACE_TEXTURE_REPRESENTATION(&#x27;Ra_1p6_um&#x27;,(#dri),#ctx)` (AP242 Ed.2 Part 1701) containing a `DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;Ra&#x27;,&#x27;1.6&#x27;)` for Ra=1.6 μm surface roughness on a machined face. Also includes valid geometry (6-face prismatic `MANIFOLD_SOLID_BREP`, 10×10×5 mm). Geometry loads under all readers; `SURFACE_TEXTURE_REPRESENTATION` is recognized by AP242 Ed.2 readers but **silently ignored** by AP242 Ed.1 / AP214 readers (entity type absent from their schema). Edition-boundary demonstration: the Ra value and surface texture annotation are completely invisible to Ed.1 readers with no error.</p></section>
+<p>STEP AP214 file with a valid cube `MANIFOLD_SOLID_BREP` (six planar 10×10×10 mm faces) plus a colour + presentation-style chain producing two `STYLED_ITEM` entities (one red on the +X face, one blue on the +Y face). The defect: `PRESENTATION_LAYER_ASSIGNMENT(&#x27;layer_ad130&#x27;,&#x27;...&#x27;,(#styled1,$,#styled2))` — the middle element of the `assigned_items` set is literally `$` (STEP null). OCCT prior to commit 96049f2e passes this triple through `TCollection_HAsciiString` resolution without a null check and dereferences the null pointer during layer visibility computation, producing a segfault. OCCT post-fix (96049f2e+) skips the null entry gracefully and assigns only the two non-null `STYLED_ITEM` items to the layer, emitting a diagnostic in the transfer log.</p></section>
 <section><h2>Reproducer recipe</h2>
-<p>AP242 Ed.2 header; prismatic `MANIFOLD_SOLID_BREP` (6 faces); `SHAPE_ASPECT(&#x27;machined_top&#x27;,&#x27;top face surface texture aspect&#x27;,#pds,.F.)`; `DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;Ra&#x27;,&#x27;1.6&#x27;)`; `SURFACE_TEXTURE_REPRESENTATION(&#x27;Ra_1p6_um&#x27;,(#dri),#ctx)`; `PROPERTY_DEFINITION_REPRESENTATION` chain. Ed.1/AP214 readers import geometry (shape(1)) but silently drop surface texture; Ed.2 readers expose Ra=1.6.</p></section>
+<p>cube `MANIFOLD_SOLID_BREP`; two `STYLED_ITEM` entities with colour + presentation-style chain; `PRESENTATION_LAYER_ASSIGNMENT(&#x27;layer_ad130&#x27;,&#x27;...&#x27;,(#styled_1,$,#styled_2))` — literal `$` between the two valid references.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>AP242 Ed.2 readers must traverse `SURFACE_TEXTURE_REPRESENTATION` and expose the Ra/Rz/Rmax values via surface finish API; Ed.1/AP214 readers must emit `W_SCHEMA_ENTITY_UNSUPPORTED(SURFACE_TEXTURE_REPRESENTATION)` rather than silently discarding the annotation.</p></section>
+<p>reject or skip null `$` entries in `PRESENTATION_LAYER_ASSIGNMENT.assigned_items` with a diagnostic (`W_LAYER_NULL_ITEM_SKIPPED`); never dereference the null pointer; never segfault or produce undefined behaviour.</p></section>
 <section><h2>Notes</h2>
-<p>NIST MBE PMI Round 3 §5.2. B4 wave-6 DEF-BB. Entity defined in AP242 Ed.2 Part 1701 only. Synonyms: &quot;SURFACE_TEXTURE_REPRESENTATION AP242 Ed.2 dropped&quot;, &quot;surface roughness Ra STEP AP242 lost&quot;, &quot;surface finish annotation Ed.2 invisible Ed.1&quot;, &quot;Ra 1.6 STEP annotation silently missing&quot;, &quot;Part 1701 surface texture entity not recognized&quot;.</p></section>
+<p>Synonyms: &quot;PRESENTATION_LAYER_ASSIGNMENT null item segfault&quot;, &quot;OCCT 96049f2 layer null item crash fix&quot;, &quot;MANTIS 32049 layer visibility null crash&quot;, &quot;assigned_items $ null STEP layer&quot;, &quot;STYLED_ITEM null layer dereference crash&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
-<li><code>contains(b&#x27;SURFACE_TEXTURE_REPRESENTATION&#x27;)</code></li>
-<li><code>contains(b&#x27;DESCRIPTIVE_REPRESENTATION_ITEM&#x27;)</code></li>
-<li><code>contains(b&#x27;Ra&#x27;)</code></li>
-<li><code>contains(b&#x27;MANIFOLD_SOLID_BREP&#x27;)</code></li>
+<li><code>contains(b&#x27;PRESENTATION_LAYER_ASSIGNMENT&#x27;)</code></li>
+<li><code>contains(b&#x27;STYLED_ITEM&#x27;)</code></li>
+<li><code>matches(rb&quot;PRESENTATION_LAYER_ASSIGNMENT\(&#x27;[^&#x27;]*&#x27;,&#x27;[^&#x27;]*&#x27;,\(#\d+,\$,#\d+\)\)&quot;)</code></li>
 </ul></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
-<li><code>shape_null == False</code></li>
-<li><code>n_faces_total == 6</code></li>
+<li><code>load == &quot;ok&quot;</code></li>
 </ul></section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
@@ -57,11 +54,11 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Pmi143: AP242 Ed.2 file: surface finish annotation encoded via <mark>SURFACE_TEXTURE_REPRESENTATION</mark> (Part 1701) referencing a machined face with <mark>Ra</mark>=1.6um via <mark>DESCRIPTIVE_REPRESENTATION_ITEM</mark>; geometry (<mark>MANIFOLD_SOLID_BREP</mark> prismatic part) loads under all readers; <mark>SURFACE_TEXTURE_REPRESENTATION</mark> silently ignored by AP242 Ed.1 / AP214 readers (entity absent from their schema); readable under Ed.2 readers; edition-boundary demonstration; NIST MBE PMI Round 3 Â§5.2; <mark>MANIFOLD_SOLID_BREP</mark> IS model entity â OCC yields shape(1) */
+<span class="lineno">2</span>/* Ad130: <mark>PRESENTATION_LAYER_ASSIGNMENT</mark>(&#x27;layer_ad130&#x27;,&#x27;&#x27;,(#styled1,$,#styled2)) â the middle element of assigned_items is literally $ (STEP null) alongside two valid <mark>STYLED_ITEM</mark> references; valid cube MANIFOLD_SOLID_BREP as the carrier geometry; OCCT prior to commit 96049f2e (MANTIS 0032049 layer null-item fix) dereferences the null pointer during layer resolution and segfaults; post-fix OCCT skips the null entry gracefully and assigns only the two non-null <mark>STYLED_ITEM</mark>s to the layer; DEF-LL; MANIFOLD_SOLID_BREP IS model entity â OCC (post-fix) yields shape(1) */
 <span class="lineno">3</span>HEADER;
-<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Pmi143&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">5</span>FILE_NAME(&#x27;Pmi143.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">6</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ad130&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ad130.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
 <span class="lineno">7</span>ENDSEC;
 <span class="lineno">8</span>DATA;
 <span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
@@ -71,15 +68,15 @@
 <span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
 <span class="lineno">14</span>#5=PLANE(&#x27;&#x27;,#4);
 <span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0,0));
-<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0,5.0));
-<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(10.0,10.0,5.0));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0,10.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(10.0,10.0,10.0));
 <span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(10.0,10.0,0));
 <span class="lineno">19</span>#10=VERTEX_POINT(&#x27;&#x27;,#6);
 <span class="lineno">20</span>#11=VERTEX_POINT(&#x27;&#x27;,#7);
 <span class="lineno">21</span>#12=VERTEX_POINT(&#x27;&#x27;,#8);
 <span class="lineno">22</span>#13=VERTEX_POINT(&#x27;&#x27;,#9);
 <span class="lineno">23</span>#14=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
-<span class="lineno">24</span>#15=VECTOR(&#x27;&#x27;,#14,5.0);
+<span class="lineno">24</span>#15=VECTOR(&#x27;&#x27;,#14,10.0);
 <span class="lineno">25</span>#16=LINE(&#x27;&#x27;,#6,#15);
 <span class="lineno">26</span>#17=EDGE_CURVE(&#x27;&#x27;,#10,#11,#16,.T.);
 <span class="lineno">27</span>#18=ORIENTED_EDGE(&#x27;&#x27;,$,$,#17,.T.);
@@ -89,7 +86,7 @@
 <span class="lineno">31</span>#22=EDGE_CURVE(&#x27;&#x27;,#11,#12,#21,.T.);
 <span class="lineno">32</span>#23=ORIENTED_EDGE(&#x27;&#x27;,$,$,#22,.T.);
 <span class="lineno">33</span>#24=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0));
-<span class="lineno">34</span>#25=VECTOR(&#x27;&#x27;,#24,5.0);
+<span class="lineno">34</span>#25=VECTOR(&#x27;&#x27;,#24,10.0);
 <span class="lineno">35</span>#26=LINE(&#x27;&#x27;,#8,#25);
 <span class="lineno">36</span>#27=EDGE_CURVE(&#x27;&#x27;,#12,#13,#26,.T.);
 <span class="lineno">37</span>#28=ORIENTED_EDGE(&#x27;&#x27;,$,$,#27,.T.);
@@ -108,8 +105,8 @@
 <span class="lineno">50</span>#41=PLANE(&#x27;&#x27;,#40);
 <span class="lineno">51</span>#42=CARTESIAN_POINT(&#x27;&#x27;,(0,0,0));
 <span class="lineno">52</span>#43=CARTESIAN_POINT(&#x27;&#x27;,(0,10.0,0));
-<span class="lineno">53</span>#44=CARTESIAN_POINT(&#x27;&#x27;,(0,10.0,5.0));
-<span class="lineno">54</span>#45=CARTESIAN_POINT(&#x27;&#x27;,(0,0,5.0));
+<span class="lineno">53</span>#44=CARTESIAN_POINT(&#x27;&#x27;,(0,10.0,10.0));
+<span class="lineno">54</span>#45=CARTESIAN_POINT(&#x27;&#x27;,(0,0,10.0));
 <span class="lineno">55</span>#46=VERTEX_POINT(&#x27;&#x27;,#42);
 <span class="lineno">56</span>#47=VERTEX_POINT(&#x27;&#x27;,#43);
 <span class="lineno">57</span>#48=VERTEX_POINT(&#x27;&#x27;,#44);
@@ -120,7 +117,7 @@
 <span class="lineno">62</span>#53=EDGE_CURVE(&#x27;&#x27;,#46,#47,#52,.T.);
 <span class="lineno">63</span>#54=ORIENTED_EDGE(&#x27;&#x27;,$,$,#53,.T.);
 <span class="lineno">64</span>#55=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
-<span class="lineno">65</span>#56=VECTOR(&#x27;&#x27;,#55,5.0);
+<span class="lineno">65</span>#56=VECTOR(&#x27;&#x27;,#55,10.0);
 <span class="lineno">66</span>#57=LINE(&#x27;&#x27;,#43,#56);
 <span class="lineno">67</span>#58=EDGE_CURVE(&#x27;&#x27;,#47,#48,#57,.T.);
 <span class="lineno">68</span>#59=ORIENTED_EDGE(&#x27;&#x27;,$,$,#58,.T.);
@@ -130,7 +127,7 @@
 <span class="lineno">72</span>#63=EDGE_CURVE(&#x27;&#x27;,#48,#49,#62,.T.);
 <span class="lineno">73</span>#64=ORIENTED_EDGE(&#x27;&#x27;,$,$,#63,.T.);
 <span class="lineno">74</span>#65=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0));
-<span class="lineno">75</span>#66=VECTOR(&#x27;&#x27;,#65,5.0);
+<span class="lineno">75</span>#66=VECTOR(&#x27;&#x27;,#65,10.0);
 <span class="lineno">76</span>#67=LINE(&#x27;&#x27;,#45,#66);
 <span class="lineno">77</span>#68=EDGE_CURVE(&#x27;&#x27;,#49,#46,#67,.T.);
 <span class="lineno">78</span>#69=ORIENTED_EDGE(&#x27;&#x27;,$,$,#68,.T.);
@@ -144,8 +141,8 @@
 <span class="lineno">86</span>#77=PLANE(&#x27;&#x27;,#76);
 <span class="lineno">87</span>#78=CARTESIAN_POINT(&#x27;&#x27;,(0,10.0,0));
 <span class="lineno">88</span>#79=CARTESIAN_POINT(&#x27;&#x27;,(10.0,10.0,0));
-<span class="lineno">89</span>#80=CARTESIAN_POINT(&#x27;&#x27;,(10.0,10.0,5.0));
-<span class="lineno">90</span>#81=CARTESIAN_POINT(&#x27;&#x27;,(0,10.0,5.0));
+<span class="lineno">89</span>#80=CARTESIAN_POINT(&#x27;&#x27;,(10.0,10.0,10.0));
+<span class="lineno">90</span>#81=CARTESIAN_POINT(&#x27;&#x27;,(0,10.0,10.0));
 <span class="lineno">91</span>#82=VERTEX_POINT(&#x27;&#x27;,#78);
 <span class="lineno">92</span>#83=VERTEX_POINT(&#x27;&#x27;,#79);
 <span class="lineno">93</span>#84=VERTEX_POINT(&#x27;&#x27;,#80);
@@ -156,7 +153,7 @@
 <span class="lineno">98</span>#89=EDGE_CURVE(&#x27;&#x27;,#82,#83,#88,.T.);
 <span class="lineno">99</span>#90=ORIENTED_EDGE(&#x27;&#x27;,$,$,#89,.T.);
 <span class="lineno">100</span>#91=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
-<span class="lineno">101</span>#92=VECTOR(&#x27;&#x27;,#91,5.0);
+<span class="lineno">101</span>#92=VECTOR(&#x27;&#x27;,#91,10.0);
 <span class="lineno">102</span>#93=LINE(&#x27;&#x27;,#79,#92);
 <span class="lineno">103</span>#94=EDGE_CURVE(&#x27;&#x27;,#83,#84,#93,.T.);
 <span class="lineno">104</span>#95=ORIENTED_EDGE(&#x27;&#x27;,$,$,#94,.T.);
@@ -166,7 +163,7 @@
 <span class="lineno">108</span>#99=EDGE_CURVE(&#x27;&#x27;,#84,#85,#98,.T.);
 <span class="lineno">109</span>#100=ORIENTED_EDGE(&#x27;&#x27;,$,$,#99,.T.);
 <span class="lineno">110</span>#101=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0));
-<span class="lineno">111</span>#102=VECTOR(&#x27;&#x27;,#101,5.0);
+<span class="lineno">111</span>#102=VECTOR(&#x27;&#x27;,#101,10.0);
 <span class="lineno">112</span>#103=LINE(&#x27;&#x27;,#81,#102);
 <span class="lineno">113</span>#104=EDGE_CURVE(&#x27;&#x27;,#85,#82,#103,.T.);
 <span class="lineno">114</span>#105=ORIENTED_EDGE(&#x27;&#x27;,$,$,#104,.T.);
@@ -179,15 +176,15 @@
 <span class="lineno">121</span>#112=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#109,#110,#111);
 <span class="lineno">122</span>#113=PLANE(&#x27;&#x27;,#112);
 <span class="lineno">123</span>#114=CARTESIAN_POINT(&#x27;&#x27;,(0,0,0));
-<span class="lineno">124</span>#115=CARTESIAN_POINT(&#x27;&#x27;,(0,0,5.0));
-<span class="lineno">125</span>#116=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0,5.0));
+<span class="lineno">124</span>#115=CARTESIAN_POINT(&#x27;&#x27;,(0,0,10.0));
+<span class="lineno">125</span>#116=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0,10.0));
 <span class="lineno">126</span>#117=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0,0));
 <span class="lineno">127</span>#118=VERTEX_POINT(&#x27;&#x27;,#114);
 <span class="lineno">128</span>#119=VERTEX_POINT(&#x27;&#x27;,#115);
 <span class="lineno">129</span>#120=VERTEX_POINT(&#x27;&#x27;,#116);
 <span class="lineno">130</span>#121=VERTEX_POINT(&#x27;&#x27;,#117);
 <span class="lineno">131</span>#122=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
-<span class="lineno">132</span>#123=VECTOR(&#x27;&#x27;,#122,5.0);
+<span class="lineno">132</span>#123=VECTOR(&#x27;&#x27;,#122,10.0);
 <span class="lineno">133</span>#124=LINE(&#x27;&#x27;,#114,#123);
 <span class="lineno">134</span>#125=EDGE_CURVE(&#x27;&#x27;,#118,#119,#124,.T.);
 <span class="lineno">135</span>#126=ORIENTED_EDGE(&#x27;&#x27;,$,$,#125,.T.);
@@ -197,7 +194,7 @@
 <span class="lineno">139</span>#130=EDGE_CURVE(&#x27;&#x27;,#119,#120,#129,.T.);
 <span class="lineno">140</span>#131=ORIENTED_EDGE(&#x27;&#x27;,$,$,#130,.T.);
 <span class="lineno">141</span>#132=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0));
-<span class="lineno">142</span>#133=VECTOR(&#x27;&#x27;,#132,5.0);
+<span class="lineno">142</span>#133=VECTOR(&#x27;&#x27;,#132,10.0);
 <span class="lineno">143</span>#134=LINE(&#x27;&#x27;,#116,#133);
 <span class="lineno">144</span>#135=EDGE_CURVE(&#x27;&#x27;,#120,#121,#134,.T.);
 <span class="lineno">145</span>#136=ORIENTED_EDGE(&#x27;&#x27;,$,$,#135,.T.);
@@ -209,15 +206,15 @@
 <span class="lineno">151</span>#142=EDGE_LOOP(&#x27;&#x27;,(#126,#131,#136,#141));
 <span class="lineno">152</span>#143=FACE_OUTER_BOUND(&#x27;&#x27;,#142,.T.);
 <span class="lineno">153</span>#144=ADVANCED_FACE(&#x27;&#x27;,(#143),#113,.T.);
-<span class="lineno">154</span>#145=CARTESIAN_POINT(&#x27;&#x27;,(0,0,5.0));
+<span class="lineno">154</span>#145=CARTESIAN_POINT(&#x27;&#x27;,(0,0,10.0));
 <span class="lineno">155</span>#146=DIRECTION(&#x27;&#x27;,(0,0,1));
 <span class="lineno">156</span>#147=DIRECTION(&#x27;&#x27;,(1,0,0));
 <span class="lineno">157</span>#148=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#145,#146,#147);
 <span class="lineno">158</span>#149=PLANE(&#x27;&#x27;,#148);
-<span class="lineno">159</span>#150=CARTESIAN_POINT(&#x27;&#x27;,(0,0,5.0));
-<span class="lineno">160</span>#151=CARTESIAN_POINT(&#x27;&#x27;,(0,10.0,5.0));
-<span class="lineno">161</span>#152=CARTESIAN_POINT(&#x27;&#x27;,(10.0,10.0,5.0));
-<span class="lineno">162</span>#153=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0,5.0));
+<span class="lineno">159</span>#150=CARTESIAN_POINT(&#x27;&#x27;,(0,0,10.0));
+<span class="lineno">160</span>#151=CARTESIAN_POINT(&#x27;&#x27;,(0,10.0,10.0));
+<span class="lineno">161</span>#152=CARTESIAN_POINT(&#x27;&#x27;,(10.0,10.0,10.0));
+<span class="lineno">162</span>#153=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0,10.0));
 <span class="lineno">163</span>#154=VERTEX_POINT(&#x27;&#x27;,#150);
 <span class="lineno">164</span>#155=VERTEX_POINT(&#x27;&#x27;,#151);
 <span class="lineno">165</span>#156=VERTEX_POINT(&#x27;&#x27;,#152);
@@ -281,10 +278,10 @@
 <span class="lineno">223</span>#214=EDGE_LOOP(&#x27;&#x27;,(#198,#203,#208,#213));
 <span class="lineno">224</span>#215=FACE_OUTER_BOUND(&#x27;&#x27;,#214,.T.);
 <span class="lineno">225</span>#216=ADVANCED_FACE(&#x27;&#x27;,(#215),#185,.T.);
-<span class="lineno">226</span>#217=CLOSED_SHELL(&#x27;pmi143_shell&#x27;,(#36,#72,#108,#144,#180,#216));
-<span class="lineno">227</span>#218=<mark>MANIFOLD_SOLID_BREP</mark>(&#x27;pmi143_prism&#x27;,#217);
+<span class="lineno">226</span>#217=CLOSED_SHELL(&#x27;ad130_shell&#x27;,(#36,#72,#108,#144,#180,#216));
+<span class="lineno">227</span>#218=MANIFOLD_SOLID_BREP(&#x27;ad130_cube&#x27;,#217);
 <span class="lineno">228</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
-<span class="lineno">229</span>#9051=PRODUCT(&#x27;Pmi143&#x27;,&#x27;Pmi143&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">229</span>#9051=PRODUCT(&#x27;Ad130&#x27;,&#x27;Ad130&#x27;,&#x27;&#x27;,(#9050));
 <span class="lineno">230</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
 <span class="lineno">231</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
 <span class="lineno">232</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
@@ -296,20 +293,31 @@
 <span class="lineno">238</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
 <span class="lineno">239</span>#9061=ADVANCED_BREP_SHAPE_REPRESENTATION(&#x27;&#x27;,(#218),#9060);
 <span class="lineno">240</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
-<span class="lineno">241</span>#9063=SHAPE_ASPECT(&#x27;machined_top&#x27;,&#x27;top face surface texture aspect&#x27;,#9055,.F.);
-<span class="lineno">242</span>#9064=<mark>DESCRIPTIVE_REPRESENTATION_ITEM</mark>(&#x27;<mark>Ra</mark>&#x27;,&#x27;1.6&#x27;);
-<span class="lineno">243</span>#9065=<mark>SURFACE_TEXTURE_REPRESENTATION</mark>(&#x27;<mark>Ra</mark>_1p6_um&#x27;,(#9064),#9060);
-<span class="lineno">244</span>#9066=SHAPE_ASPECT_RELATIONSHIP(&#x27;surface_texture_link&#x27;,&#x27;&#x27;,#9063,#9063);
-<span class="lineno">245</span>#9067=PROPERTY_DEFINITION(&#x27;surface_texture&#x27;,&#x27;surface roughness <mark>Ra</mark>&#x27;,#9055);
-<span class="lineno">246</span>#9068=PROPERTY_DEFINITION_REPRESENTATION(#9067,#9065);
-<span class="lineno">247</span>ENDSEC;
-<span class="lineno">248</span>END-ISO-10303-21;
+<span class="lineno">241</span>#9063=COLOUR_RGB(&#x27;red&#x27;,1.0,0.0,0.0);
+<span class="lineno">242</span>#9064=COLOUR_RGB(&#x27;blue&#x27;,0.0,0.0,1.0);
+<span class="lineno">243</span>#9065=FILL_AREA_STYLE_COLOUR(&#x27;&#x27;,#9063);
+<span class="lineno">244</span>#9066=FILL_AREA_STYLE(&#x27;&#x27;,(#9065));
+<span class="lineno">245</span>#9067=SURFACE_STYLE_FILL_AREA(#9066);
+<span class="lineno">246</span>#9068=SURFACE_SIDE_STYLE(&#x27;&#x27;,(#9067));
+<span class="lineno">247</span>#9069=SURFACE_STYLE_USAGE(.BOTH.,#9068);
+<span class="lineno">248</span>#9070=PRESENTATION_STYLE_ASSIGNMENT((#9069));
+<span class="lineno">249</span>#9071=FILL_AREA_STYLE_COLOUR(&#x27;&#x27;,#9064);
+<span class="lineno">250</span>#9072=FILL_AREA_STYLE(&#x27;&#x27;,(#9071));
+<span class="lineno">251</span>#9073=SURFACE_STYLE_FILL_AREA(#9072);
+<span class="lineno">252</span>#9074=SURFACE_SIDE_STYLE(&#x27;&#x27;,(#9073));
+<span class="lineno">253</span>#9075=SURFACE_STYLE_USAGE(.BOTH.,#9074);
+<span class="lineno">254</span>#9076=PRESENTATION_STYLE_ASSIGNMENT((#9075));
+<span class="lineno">255</span>#9077=<mark>STYLED_ITEM</mark>(&#x27;face_xp_style&#x27;,(#9070),#36);
+<span class="lineno">256</span>#9078=<mark>STYLED_ITEM</mark>(&#x27;face_yp_style&#x27;,(#9076),#108);
+<span class="lineno">257</span>#9079=<mark>PRESENTATION_LAYER_ASSIGNMENT(&#x27;layer_ad130&#x27;,&#x27;layer with null middle item â OCCT pre-fix 96049f2 segfaults&#x27;,(#9077,$,#9078))</mark>;
+<span class="lineno">258</span>ENDSEC;
+<span class="lineno">259</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>
 </main>
 <footer>
-<nav class="prevnext"><a class="prev" href="Pmi142.html">&larr; Pmi142</a> <a class="up" href="index.html">§12.7 PMI / GD&amp;T</a> <a class="next" href="Pmi144.html">Pmi144 &rarr;</a></nav>
+<nav class="prevnext"><a class="prev" href="Ad129.html">&larr; Ad129</a> <a class="up" href="index.html">§12.11 Adversarial / parser robustness</a></nav>
 <p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
 </footer>
 </body>
