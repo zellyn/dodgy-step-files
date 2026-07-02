@@ -36,9 +36,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>writer fuses or rejects co-incident-face operand pairs before emission; receiver tolerates positioning alerts as warnings rather than aborting import.</p></section>
 <section><h2>Notes</h2>
-<p>Regression introduced in FreeCAD 1.2.0dev. Synonyms: &quot;BOPAlog_AlertBadPositioning during STEP import&quot;, &quot;STEP import broken Unknown C++ exception&quot;, &quot;OCC fuse raised warning on STEP import&quot;, &quot;scrubEdges fails on imported STEP&quot;.</p></section>
+<p>Regression introduced in FreeCAD 1.2.0dev. Synonyms: &quot;BOPAlog_AlertBadPositioning during STEP import&quot;, &quot;STEP import broken Unknown C++ exception&quot;, &quot;OCC fuse raised warning on STEP import&quot;, &quot;scrubEdges fails on imported STEP&quot;. Provenance tier: writer-side (Q5 reclassification 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>writer-side</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>count_entity_def(b&#x27;MANIFOLD_SOLID_BREP&#x27;) &gt;= 2</code></li>
 <li><code>contains(b&#x27;AXIS2_PLACEMENT_3D&#x27;)</code></li>

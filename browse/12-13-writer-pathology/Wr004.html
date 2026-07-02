@@ -36,9 +36,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: normalize by ignoring the whitespace.</p></section>
 <section><h2>Notes</h2>
-<p>Cosmetic only, but reviewer-fatiguing.</p></section>
+<p>Cosmetic only, but reviewer-fatiguing. Provenance tier: writer-side (Q5 reclassification 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>writer-side</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>matches(rb&#x27;\n\t&#x27;) and matches(rb&#x27;\n &#x27;)</code></li>
 <li><code>contains(b&#x27;\t&#x27;)</code></li>

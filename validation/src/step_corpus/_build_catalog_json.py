@@ -333,7 +333,7 @@ PROVENANCE_TIERS = (
 
 # Patterns extracted from the freeform Notes field.
 _RE_PROVENANCE_TIER = re.compile(
-    r"Provenance tier:\s*([a-z][a-z\-]*)", re.IGNORECASE,
+    r"Provenance[_ ]tier:\s*([a-z][a-z\-]*)", re.IGNORECASE,
 )
 _RE_CROSS_ORACLE = re.compile(
     r"(?:Cross[- ]oracle|Cross oracle):\s*(.+?)(?=\s*(?:\*\*|\Z|\n\s*-\s*\*\*))",

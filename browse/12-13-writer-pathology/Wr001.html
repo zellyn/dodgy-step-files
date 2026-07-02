@@ -37,9 +37,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>read tolerantly; the spec permits insignificant whitespace anywhere outside string literals. Optionally normalise on re-emit. A downstream tool that warns on this is over-strict; a producer that emits this is sloppy but not malformed.</p></section>
 <section><h2>Notes</h2>
-<p>Practically harmless to parse; the cost is to humans who diff exports.</p></section>
+<p>Practically harmless to parse; the cost is to humans who diff exports. Provenance tier: writer-side (Q5 reclassification 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>writer-side</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>matches(rb&#x27; +\n&#x27;)</code></li>
 <li><code>count(b&#x27; \n&#x27;) &gt;= 5</code></li>

@@ -33,9 +33,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>surface the aliasing in the catalog tier-3 introspection (`n_unique_surfaces` vs `n_surface_references`); document writer policy.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;Solvespace exported duplicated entities aliased&quot;, &quot;STEP writer aliases shared substructure&quot;, &quot;MAPPED_ITEM shared one map&quot;, &quot;writer dedup creates aliasing&quot;, &quot;shared-substructure mutation propagates&quot;.</p></section>
+<p>Synonyms: &quot;Solvespace exported duplicated entities aliased&quot;, &quot;STEP writer aliases shared substructure&quot;, &quot;MAPPED_ITEM shared one map&quot;, &quot;writer dedup creates aliasing&quot;, &quot;shared-substructure mutation propagates&quot;. Provenance tier: writer-side (Q5 reclassification 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>writer-side</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>count(b&#x27;MAPPED_ITEM&#x27;) &gt;= 2</code></li>
 <li><code>contains(b&#x27;REPRESENTATION_MAP&#x27;)</code></li>

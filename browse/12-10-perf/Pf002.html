@@ -34,8 +34,12 @@
 <p>Convert any IFC architectural model with &gt; 100k entities through OCCT&#x27;s STEP writer; time the write phase.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept (performance contract): sub-minute write at 200k entities via amortized O(N) writer with indexed reference resolution. Must not hang.</p></section>
+<section><h2>Notes</h2>
+<p>Provenance tier: runtime-only (Q5 reclassification 2026-07-01). amortized O(N) writer with indexed reference resolution.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>runtime-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>count_entity_def(b&#x27;CARTESIAN_POINT&#x27;) &gt;= 8</code></li>
 </ul></section>

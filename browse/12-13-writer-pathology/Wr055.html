@@ -33,9 +33,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>validate edge-loop orientation consistency before emit; check loop traversal forms a closed cycle in either direction.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;Solvespace STEP wrong edge direction&quot;, &quot;half flipped ORIENTED_EDGE writer bug&quot;, &quot;STEP edges reversed every other&quot;, &quot;3DViewStation renders STEP wrong after Solvespace&quot;, &quot;writer flips edge direction systematically&quot;.</p></section>
+<p>Synonyms: &quot;Solvespace STEP wrong edge direction&quot;, &quot;half flipped ORIENTED_EDGE writer bug&quot;, &quot;STEP edges reversed every other&quot;, &quot;3DViewStation renders STEP wrong after Solvespace&quot;, &quot;writer flips edge direction systematically&quot;. Provenance tier: writer-side (Q5 reclassification 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>writer-side</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;ORIENTED_EDGE&#x27;)</code></li>
 <li><code>matches(rb&#x27;\.F\.&#x27;)</code></li>

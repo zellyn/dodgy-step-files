@@ -40,6 +40,8 @@
 <p>§12.7 covers PMI input defects; Wr021 covers writer-side data loss. Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: requires-sibling-pair.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>requires-sibling-pair</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>count_entity_def(b&#x27;GEOMETRIC_TOLERANCE&#x27;) == 0 and count_entity_def(b&#x27;DIMENSIONAL_LOCATION&#x27;) == 0</code></li>
 </ul></section>

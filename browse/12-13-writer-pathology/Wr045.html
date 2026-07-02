@@ -36,9 +36,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>writer multiplies/divides coordinates whenever the declared unit differs from the canonical kernel unit; or refuses the unit change with a clear diagnostic.</p></section>
 <section><h2>Notes</h2>
-<p>Cousin of Wr044 (inch case) and Wr035 (scale-applied-twice). Synonyms: &quot;metre unit but mm values&quot;, &quot;unit field decorative&quot;, &quot;STEP exporter doesn&#x27;t convert when user changes units&quot;.</p></section>
+<p>Cousin of Wr044 (inch case) and Wr035 (scale-applied-twice). Synonyms: &quot;metre unit but mm values&quot;, &quot;unit field decorative&quot;, &quot;STEP exporter doesn&#x27;t convert when user changes units&quot;. Provenance tier: writer-side (Q5 reclassification 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>writer-side</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;.METRE.&#x27;) and contains(b&#x27;10.0&#x27;)</code></li>
 <li><code>contains(b&#x27;CARTESIAN_POINT&#x27;)</code></li>

@@ -32,8 +32,12 @@
 <p>read 142 MB STEP, destroy reader, observe RSS.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: allocator-tuned working-set release after STEP assembly read; coerce resident memory back to baseline. Must not OOM across repeated reads.</p></section>
+<section><h2>Notes</h2>
+<p>Provenance tier: runtime-only (Q5 reclassification 2026-07-01). optional `malloc_trim` after large reads.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>runtime-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>count_entity_def(b&#x27;CARTESIAN_POINT&#x27;) &gt;= 5</code></li>
 </ul></section>

@@ -33,9 +33,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>writer must encode-or-reject non-ASCII labels; never let a TCollection conversion crash become a process kill.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;pythonocc XCAF umlaut crash STEP export&quot;, &quot;TCollection_ExtendedString crash on emit&quot;, &quot;STEP writer crashes on non-ASCII label&quot;, &quot;umlaut in PRODUCT name crashes&quot;, &quot;label with ü crashes STEP write&quot;.</p></section>
+<p>Synonyms: &quot;pythonocc XCAF umlaut crash STEP export&quot;, &quot;TCollection_ExtendedString crash on emit&quot;, &quot;STEP writer crashes on non-ASCII label&quot;, &quot;umlaut in PRODUCT name crashes&quot;, &quot;label with ü crashes STEP write&quot;. Provenance tier: writer-side (Q5 reclassification 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>writer-side</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;PROPERTY_DEFINITION&#x27;)</code></li>
 <li><code>matches(rb&#x27;[\x80-\xff]&#x27;)</code></li>

@@ -36,9 +36,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: writer normalizes / emits canonical short-form lexemes per the spec; if interoperability with long-form-emitting tools is required, expose a normaliser flag.</p></section>
 <section><h2>Notes</h2>
-<p>Producer-side root cause for Le055. **See also**: Le055, Le056.</p></section>
+<p>Producer-side root cause for Le055. **See also**: Le055, Le056. Provenance tier: writer-side (Q5 reclassification 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>writer-side</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;.TRUE.&#x27;) and contains(b&#x27;.FALSE.&#x27;)</code></li>
 <li><code>count(b&#x27;.TRUE.&#x27;) &gt;= 1 and count(b&#x27;.FALSE.&#x27;) &gt;= 1</code></li>

@@ -32,9 +32,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>assert non-empty before emit; fail visibly when no surfaces were collected.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;Solvespace s390x STEP empty&quot;, &quot;no surfaces to export STEP&quot;, &quot;big-endian STEP writer regression&quot;, &quot;Debian s390x STEP regression&quot;, &quot;STEP writer silent empty on big-endian&quot;.</p></section>
+<p>Synonyms: &quot;Solvespace s390x STEP empty&quot;, &quot;no surfaces to export STEP&quot;, &quot;big-endian STEP writer regression&quot;, &quot;Debian s390x STEP regression&quot;, &quot;STEP writer silent empty on big-endian&quot;. Provenance tier: writer-side (Q5 reclassification 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>writer-side</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;SHAPE_REPRESENTATION&#x27;)</code></li>
 <li><code>matches(rb&#x27;SHAPE_REPRESENTATION\([^)]*\(\)\s*,&#x27;)</code></li>

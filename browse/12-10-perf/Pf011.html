@@ -35,9 +35,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Reject with E_PATHOLOGICAL_CHAIN diagnostic, or heal and accept via iterative traversal with cycle detection. Must not infinite loop. Must not crash.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Pf010. Validation observed: this is a deliberately scaled-down representative; the structural pattern is present but the production-scale resource exhaustion / catastrophic timing is not exercised at fixture size. To trigger the documented kernel-crash, multiply the entity-replication factor by ~10^N as noted in the reproducer recipe.</p></section>
+<p>**See also**: Pf010. Validation observed: this is a deliberately scaled-down representative; the structural pattern is present but the production-scale resource exhaustion / catastrophic timing is not exercised at fixture size. To trigger the documented kernel-crash, multiply the entity-replication factor by ~10^N as noted in the reproducer recipe. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>runtime-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>length &gt; 100</code></li>
 </ul></section>

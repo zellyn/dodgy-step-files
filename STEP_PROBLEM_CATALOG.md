@@ -13827,7 +13827,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected kernel behavior**: ShapeFix uses a fixed iteration count or
  relative-change termination; never unbounded recursion.
 - **Closure intent**: solid
-- **Notes**: **See also**: Tfa056.
+- **Notes**: **See also**: Tfa056. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') >= 3 and contains(b'sliver')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') >= 4
 - **Tier-3 assertion**: load == "ok"
@@ -14158,7 +14158,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Reproducer recipe**: STEP file with 5,000 small faces; load with auto-mesh
  enabled. Mesh phase runs for minutes per file.
 - **Expected kernel behavior**: Heal and accept: auto-mesh is opt-in, not default; coerce meshing to sub-quadratic in face count. Must not hang on default reads.
-- **Notes**: **See also**: M046, Pf032.
+- **Notes**: **See also**: M046, Pf032. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 1
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Tier-3 assertion**: load == "ok"
@@ -15047,7 +15047,7 @@ _Section summary: 28 entries._
 - **Expected kernel behavior**: streaming/lazy reader with bounded peak
  memory; partial-load via configurable `max_instances`; abort with
  `E_INSTANCE_LIMIT` rather than thrash.
-- **Notes**: PTC community thread documents the symptom; Mantis 32127 / **See also**: Pf013, Pf017.
+- **Notes**: PTC community thread documents the symptom; Mantis 32127 / **See also**: Pf013, Pf017. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 1
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
@@ -15079,6 +15079,7 @@ _Section summary: 28 entries._
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Notes**: Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
  amortized O(N) writer with indexed reference resolution.
 
 ### Pf003 — 50-second read on a 20 MB STEP: forward-reference DATA section forces multi-pass resolution (single-threaded)
@@ -15117,6 +15118,7 @@ _Section summary: 28 entries._
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
+- **Notes**: Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
  amortized O(N log N).
 
 ### Pf006 — Quadratic self-intersection check dominates STEP read on perforated sheets
@@ -15129,7 +15131,7 @@ _Section summary: 28 entries._
 - **Reproducer recipe**: STEP of a flat sheet with > 1000 small circular
  holes; time `STEPControl_Reader::TransferRoots`.
 - **Expected kernel behavior**: Heal and accept: skip the self-intersection check by default on simple input; reject only when the caller opts in and the check fails. Must not hang on perforated sheets.
-- **Notes**: **See also**: N042.
+- **Notes**: **See also**: N042. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 10
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
@@ -15171,7 +15173,7 @@ _Section summary: 28 entries._
  children, all referencing the same surface; or
  `StepData_EntityCluster` chain hand-built to ~10⁴ depth.
 - **Expected kernel behavior**: Heal and accept: iterative traversal with bounded recursion. Must not crash. Must not hang.
-- **Notes**: **See also**: M035, Pf009, Pf012, Ad055.
+- **Notes**: **See also**: M035, Pf009, Pf012, Ad055. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 1
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Tier-3 assertion**: shape_null == False
@@ -15191,7 +15193,7 @@ _Section summary: 28 entries._
 - **Reproducer recipe**: Real STEP with large faces; parallel meshing
  enabled.
 - **Expected kernel behavior**: Heal and accept: iterative mesher, or coerce to explicit per-thread stack sizing. Must not crash. Must not hang.
-- **Notes**: **See also**: Pf008, Ad055.
+- **Notes**: **See also**: Pf008, Ad055. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 4
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Tier-3 assertion**: shape_null == False
@@ -15235,7 +15237,7 @@ _Section summary: 28 entries._
 - **Reproducer recipe**: hand-construct entity cluster chain with cyclic
  next-pointer.
 - **Expected kernel behavior**: Reject with E_PATHOLOGICAL_CHAIN diagnostic, or heal and accept via iterative traversal with cycle detection. Must not infinite loop. Must not crash.
-- **Notes**: **See also**: Pf010. Validation observed: this is a deliberately scaled-down representative; the structural pattern is present but the production-scale resource exhaustion / catastrophic timing is not exercised at fixture size. To trigger the documented kernel-crash, multiply the entity-replication factor by ~10^N as noted in the reproducer recipe.
+- **Notes**: **See also**: Pf010. Validation observed: this is a deliberately scaled-down representative; the structural pattern is present but the production-scale resource exhaustion / catastrophic timing is not exercised at fixture size. To trigger the documented kernel-crash, multiply the entity-replication factor by ~10^N as noted in the reproducer recipe. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
 - **Byte assertion**: length > 100
 - **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
@@ -15252,7 +15254,7 @@ _Section summary: 28 entries._
  thousands of nested parentheses inside a single attribute.
 - **Reproducer recipe**: `#1=FOO(((((…10 000 levels…)))));`
 - **Expected kernel behavior**: Reject with E_DEPTH_EXCEEDED diagnostic: enforce a depth ceiling (e.g. 64) and emit a structured error. Must not crash via stack overflow.
-- **Notes**: **See also**: Pf008, Ad002.
+- **Notes**: **See also**: Pf008, Ad002. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 3
 - **Tier-3 assertion**: load == "ok"
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
@@ -15345,7 +15347,7 @@ _Section summary: 28 entries._
  calling `reader.Transfer(doc)` after `ReadFile` returns
  `IFSelect_RetDone`.
 - **Expected kernel behavior**: Reject with E_TRANSFER_TIMEOUT diagnostic: bound transfer time, detect pathological cyclic SHAPE_REPRESENTATION_RELATIONSHIP loops, and bail with a diagnostic. Must not hang. Must not infinite loop.
-- **Notes**: distinct from #417 (huge-shell ShapeFix slowness). **See also**: A026.
+- **Notes**: distinct from #417 (huge-shell ShapeFix slowness). **See also**: A026. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 1
 - **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
@@ -15390,6 +15392,7 @@ _Section summary: 28 entries._
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Notes**: Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
  optional `malloc_trim` after large reads.
 
 ### Pf019 — Memory leaks in STEP/IGES controller initialisation enum tables
@@ -15409,6 +15412,7 @@ _Section summary: 28 entries._
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Notes**: Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
  shutdown.
 
 ### Pf020 — OCAF modification-delta leak on long-running healing test suites
@@ -15449,7 +15453,7 @@ _Section summary: 28 entries._
 - **Closure intent**: solid
 - **Closure defect**: unstitched_seam
 - **Notes**: **See also**: N041. Validation observed: this is a deliberately scaled-down representative; the structural pattern is present but the production-scale resource exhaustion / catastrophic timing is not exercised at fixture size. To trigger the documented kernel-crash, multiply the entity-replication factor by ~10^N as noted in the reproducer recipe.
-- **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_REAL_NO_DOT)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation.
+- **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_REAL_NO_DOT)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 3
 - **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
@@ -15498,7 +15502,7 @@ _Section summary: 28 entries._
  3D/2D mismatch, and self-intersecting micro-loop; run an iterative
  wire-healing pass with default settings.
 - **Expected kernel behavior**: Reject with E_ITERATION_LIMIT diagnostic: bounded iteration count with an explicit ceiling; bail with a structured error on divergence. Must not infinite loop.
-- **Notes**: **See also**: N041.
+- **Notes**: **See also**: N041. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 6
 - **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
@@ -15519,7 +15523,7 @@ _Section summary: 28 entries._
 - **Reproducer recipe**: face whose intersection-tool encounters
  out-of-range split.
 - **Expected kernel behavior**: Heal and accept: bounded iteration with index range guard; coerce out-of-range indices to a safe ceiling, or reject with E_INDEX_OUT_OF_RANGE. Must not crash. Must not infinite loop.
-- **Notes**: Validation observed: this is a deliberately scaled-down representative; the structural pattern is present but the production-scale resource exhaustion / catastrophic timing is not exercised at fixture size. To trigger the documented kernel-crash, multiply the entity-replication factor by ~10^N as noted in the reproducer recipe.
+- **Notes**: Validation observed: this is a deliberately scaled-down representative; the structural pattern is present but the production-scale resource exhaustion / catastrophic timing is not exercised at fixture size. To trigger the documented kernel-crash, multiply the entity-replication factor by ~10^N as noted in the reproducer recipe. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 5
 - **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
@@ -15535,7 +15539,7 @@ _Section summary: 28 entries._
 - **Reproducer recipe**: face with internal vertex sub-shape (common in
  IFC slab/wall models converted to STEP).
 - **Expected kernel behavior**: Heal and accept: skip internal sub-shapes, iterating only the relevant boundary topology.
-- **Notes**: Validation observed: this is a deliberately scaled-down representative; the structural pattern is present but the production-scale resource exhaustion / catastrophic timing is not exercised at fixture size. To trigger the documented kernel-crash, multiply the entity-replication factor by ~10^N as noted in the reproducer recipe. **See also**: Twi041.
+- **Notes**: Validation observed: this is a deliberately scaled-down representative; the structural pattern is present but the production-scale resource exhaustion / catastrophic timing is not exercised at fixture size. To trigger the documented kernel-crash, multiply the entity-replication factor by ~10^N as noted in the reproducer recipe. **See also**: Twi041. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 5
 - **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
@@ -15608,7 +15612,7 @@ _Section summary: 28 entries._
 - **Reproducer recipe**: Run inside `code-server` container; create the
  document while opening a multi-level assembly STEP.
 - **Expected kernel behavior**: no process abort; recoverable error;
-- **Notes**: Validation observed: this is a deliberately scaled-down representative; the structural pattern is present but the production-scale resource exhaustion / catastrophic timing is not exercised at fixture size. To trigger the documented kernel-crash, multiply the entity-replication factor by ~10^N as noted in the reproducer recipe.
+- **Notes**: Validation observed: this is a deliberately scaled-down representative; the structural pattern is present but the production-scale resource exhaustion / catastrophic timing is not exercised at fixture size. To trigger the documented kernel-crash, multiply the entity-replication factor by ~10^N as noted in the reproducer recipe. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 1
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
 - **Tier-3 assertion**: load == "ok"
@@ -15626,7 +15630,7 @@ _Section summary: 28 entries._
 - **Reproducer recipe**: file constructed so each WHERE rule recurses
  into N peer instances; observe exponential evaluation time.
 - **Expected kernel behavior**: Heal and accept: WHERE-rule evaluator memoizes results across repeated invocations; coerce evaluation to sub-quadratic. Must not hang on rule-heavy schemas.
-- **Notes**: **See also**: Ad032, Pf010.
+- **Notes**: **See also**: Ad032, Pf010. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 3
 - **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
@@ -16009,7 +16013,7 @@ _Section summary: 41 entries._
 - **Description**: External-file-assignment whose target path resolves to the main file under translation; reader loops forever.
 - **Reproducer recipe**: `APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT` to same `.step` file path.
 - **Expected kernel behavior**: Heal and accept: detect identity by canonical path; skip self-reference. Must not infinite loop.
-- **Notes**: **See also**: Ad004, A012, M060. Validation observed: silent-empty rather than the cited crash. The structural attack pattern (e.g., billion-laughs / cyclic-reference / very-large-string) is demonstrated; production-scale exploitation requires inflating the size factor as described. Kernel-mishandling-by-silent-acceptance is itself a defect signal at fixture scale.
+- **Notes**: **See also**: Ad004, A012, M060. Validation observed: silent-empty rather than the cited crash. The structural attack pattern (e.g., billion-laughs / cyclic-reference / very-large-string) is demonstrated; production-scale exploitation requires inflating the size factor as described. Kernel-mishandling-by-silent-acceptance is itself a defect signal at fixture scale. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
 - **Byte assertion**: contains(b'APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT')
 - **Byte assertion**: contains(b'EXTERNAL') or contains(b'IDENTIFICATION_ASSIGNMENT')
 - **Tier-3 assertion**: load == "ok"
@@ -23179,7 +23183,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Description**: Every record line in the DATA section ends with one or more ASCII space (0x20) characters before the line terminator. Spec-conforming parsers accept this (whitespace is insignificant outside string literals), but downstream tools that diff exports for change-detection see noise on every line, version-control systems show every line as modified on every export, and crude line-based regex parsers that anchor on `;$` mis-match. Bug-reporter language: "STEP file has trailing spaces", "every line ends with whitespace", "diff is huge but nothing changed", "git keeps marking the file dirty".
 - **Reproducer recipe**: minimal Part-21 file where each `#NNN=ENTITY(..);` line ends with ` ` (three spaces) before `\n`.
 - **Expected kernel behavior**: read tolerantly; the spec permits insignificant whitespace anywhere outside string literals. Optionally normalise on re-emit. A downstream tool that warns on this is over-strict; a producer that emits this is sloppy but not malformed.
-- **Notes**: Practically harmless to parse; the cost is to humans who diff exports.
+- **Notes**: Practically harmless to parse; the cost is to humans who diff exports. Provenance tier: writer-side (Q5 reclassification 2026-07-01).
 - **Byte assertion**: matches(rb' +\n')
 - **Byte assertion**: count(b' \n') >= 5
 - **Tier-3 assertion**: load == "ok"
@@ -23195,7 +23199,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Description**: The HEADER section uses CRLF (`0x0D 0x0A`) line terminators while the DATA section uses bare LF (`0x0A`), or any other inconsistent mix within one file. Spec-conforming parsers ignore line-ending choice (whitespace), but tools that count lines for diagnostics report misleading line numbers, some text editors display the file as binary, and content-hash-based caches see the file as different from a CRLF-normalised copy. Bug-reporter language: "line numbers in error messages are wrong", "file shows up as binary in editor", "STEP from Windows opens weird on Mac".
 - **Reproducer recipe**: HEADER section terminated with `\r\n`, DATA section terminated with `\n`.
 - **Expected kernel behavior**: read tolerantly; treat any of `\n`, `\r\n`, or `\r` (classic Mac) as a line terminator. Diagnostics that report a line number should normalise.
-- **Notes**: **See also**: Wr042. Cousin of Le028 but emitted by writer rather than introduced by transit.- **Byte assertion**: contains(b'\r\n') and contains(b'\n')
+- **Notes**: **See also**: Wr042. Cousin of Le028 but emitted by writer rather than introduced by transit.- **Byte assertion**: contains(b'\r\n') and contains(b'\n') Provenance tier: writer-side (Q5 reclassification 2026-07-01).
 - **Byte assertion**: count(b'\r') >= 1
 - **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
@@ -23226,7 +23230,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Description**: Continuation lines for long records mix TAB (0x09) and SPACE (0x20) for indentation, or use TAB for some continuations and 2-SPACE for others within the same file. Parsers don't care; humans diffing or reviewing exports do. Bug-reporter language: "tabs and spaces mixed", "indentation inconsistent", "looks bad in editor".
 - **Reproducer recipe**: a long argument list where some continuation lines start with a TAB and others start with two SPACEs.
 - **Expected kernel behavior**: Heal and accept: normalize by ignoring the whitespace.
-- **Notes**: Cosmetic only, but reviewer-fatiguing.
+- **Notes**: Cosmetic only, but reviewer-fatiguing. Provenance tier: writer-side (Q5 reclassification 2026-07-01).
 - **Byte assertion**: matches(rb'\n\t') and matches(rb'\n ')
 - **Byte assertion**: contains(b'\t')
 - **Tier-3 assertion**: load == "ok"
@@ -23274,7 +23278,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Description**: Numeric attributes appear with commas as decimal separator (`1,5` instead of `1.5`) because the writer used a locale-aware formatter. ISO 10303-21 mandates the period (`.`) as the decimal separator; comma-decimal output is malformed. Receivers either fail at the lexer (a `,` mid-number ends the argument and the next field is mis-counted) or, with bizarre tolerance, accept the comma and produce wrong geometry. Bug-reporter language: "commas in numbers", "German locale STEP", "STEP file from European user looks corrupt".
 - **Reproducer recipe**: a CARTESIAN_POINT entry with coordinates `(1,5,2,5,3,5)` (intended as `(1.5,2.5,3.5)` but parsed as 6 separate integers).
 - **Expected kernel behavior**: reject as malformed with a diagnostic that names the offending attribute and column; do not silently accept comma-decimals because that makes the failure mode geometric rather than syntactic.
-- **Notes**: Le023 covers this from the read side; Wr007 documents the producer-side root cause. **OCC behavior**: silently accepts the malformed file (no diagnostic, empty result); kernel mishandling is the documented signal here; the catalog claim above describes the desired future behavior, not what OCC does today.
+- **Notes**: Le023 covers this from the read side; Wr007 documents the producer-side root cause. **OCC behavior**: silently accepts the malformed file (no diagnostic, empty result); kernel mishandling is the documented signal here; the catalog claim above describes the desired future behavior, not what OCC does today. Provenance tier: writer-side (Q5 reclassification 2026-07-01).
 - **Byte assertion**: matches(rb"CARTESIAN_POINT\([^;]*,\(\d+,\d+,\d+,\d+")
 - **Byte assertion**: count(b',') >= 8
 - **Tier-3 assertion**: load == "ok"
@@ -23304,7 +23308,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Description**: The producer emits `$` (omitted) where the EXPRESS schema declares the attribute as required (non-OPTIONAL). Example: `AXIS2_PLACEMENT_3D('placement',#10,$,$)` where the schema specifies `axis` and `ref_direction` as effectively required when both are present (one cannot be `$` if the other is non-`$` and the Z-axis convention is to be applied). Some kernels invent a default direction; others reject. Bug-reporter language: "STEP file has dollar signs for required fields", "missing axis direction", "writer omitted required attribute".
 - **Reproducer recipe**: `AXIS2_PLACEMENT_3D('p',#10,$,$)` paired with a `MANIFOLD_SOLID_BREP` that depends on the placement.
 - **Expected kernel behavior**: reject as malformed when a required attribute is `$`; do not silently substitute Z+X defaults because the producer's intent is unrecoverable.
-- **Notes**: AP242 marks `axis` and `ref_direction` as OPTIONAL in the EXPRESS; but most receivers expect both populated when the placement is referenced from a non-trivial geometry context. **OCC behavior**: silently substitutes the Z+X default convention rather than rejecting; this is the kernel mishandling the catalog above forbids.
+- **Notes**: AP242 marks `axis` and `ref_direction` as OPTIONAL in the EXPRESS; but most receivers expect both populated when the placement is referenced from a non-trivial geometry context. **OCC behavior**: silently substitutes the Z+X default convention rather than rejecting; this is the kernel mishandling the catalog above forbids. Provenance tier: writer-side (Q5 reclassification 2026-07-01).
 - **Byte assertion**: matches(rb'AXIS2_PLACEMENT_3D\([^;]*,#\d+,\$,\$\)')
 - **Byte assertion**: contains(b'$,$)') or matches(rb',\$\s*,\$\s*\)')
 - **Tier-3 assertion**: load == "ok"
@@ -23428,7 +23432,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Description**: A file that arrived at the writer carrying `MANIFOLD_SOLID_BREP` geometry is re-exported as `TESSELLATED_SHELL_REPRESENTATION` (AP242) or as a mesh-of-PLANE faces approximating the original surfaces. The semantic loss is silent; the file is well-formed, but the analytical surfaces are gone. Bug-reporter language: "STEP went from B-rep to mesh", "lost analytical surfaces on round-trip", "cylinder became 36 facets", "STEP file is now triangulated".
 - **Reproducer recipe**: a STEP file that contains only `TESSELLATED_SHELL_REPRESENTATION` with triangle list, claiming to represent what was originally a `CYLINDRICAL_SURFACE`.
 - **Expected kernel behavior**: Warn and accept: detect tessellation-only content and emit a warning that round-trip from this file forward will be mesh-quality only; do not auto-fit (heal) surfaces back from triangles unless explicitly requested.
-- **Notes**: Schema-version-agnostic; both AP203 and AP242 permit tessellated representations.
+- **Notes**: Schema-version-agnostic; both AP203 and AP242 permit tessellated representations. Provenance tier: writer-side (Q5 reclassification 2026-07-01).
 - **Byte assertion**: contains(b'TESSELLATED_SHELL') or contains(b'TRIANGULATED_FACE')
 - **Byte assertion**: count_entity_def(b'TESSELLATED_SHELL_REPRESENTATION') >= 1 or count_entity_def(b'TRIANGULATED_FACE') >= 1
 - **Tier-3 assertion**: load == "ok"
@@ -23659,7 +23663,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Description**: The input was AP203 with no PMI; the re-emitted file is AP242 with empty `DRAUGHTING_ANNOTATION_OCCURRENCE` containers, empty `GEOMETRIC_VALIDATION_PROPERTY` records, and other stub entities the writer added to look "complete". Receivers that scan for PMI find empty containers and may report misleading "no annotations to validate". Bug-reporter language: "fake PMI in STEP file", "empty annotations after upgrade", "AP242 file with placeholder PMI".
 - **Reproducer recipe**: an AP242 fixture with `FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING'))` containing an empty `DRAUGHTING_ANNOTATION_OCCURRENCE` referenced from `GEOMETRIC_TOLERANCE_RELATIONSHIP` whose ref is `$`.
 - **Expected kernel behavior**: emit the schema actually used; do not synthesise empty PMI containers to satisfy "looks like AP242" expectations.
-- **Notes**: Inverse of Wr031.
+- **Notes**: Inverse of Wr031. Provenance tier: writer-side (Q5 reclassification 2026-07-01).
 - **Byte assertion**: contains(b'AP242') and (count_entity_def(b'GEOMETRIC_TOLERANCE_RELATIONSHIP') >= 1 or contains(b"GEOMETRIC_TOLERANCE_RELATIONSHIP('','',$,$)"))
 - **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
@@ -23752,7 +23756,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Description**: A round-trip (read STEP → no-op → write STEP) produces a file that differs from the input not in geometry but in the choice of `#N` numbering; every export uses different numbers. This breaks regression tests that compare files for equivalence by hash. Bug-reporter language: "STEP files differ after no-op round-trip", "file hashes change every export", "diff is just renumbering".
 - **Reproducer recipe**: a file with deliberately non-canonical numbering (`#42, #17, #99, #1`) to demonstrate the post-pathology state.
 - **Expected kernel behavior**: Heal and accept: normalize / emit canonical, deterministic numbering on write so a no-op round-trip produces byte-identical output (modulo timestamp-bearing fields like FILE_NAME date).
-- **Notes**: Drift-detection test that flags this is the canonical CI signal.
+- **Notes**: Drift-detection test that flags this is the canonical CI signal. Provenance tier: writer-side (Q5 reclassification 2026-07-01).
 - **Byte assertion**: matches(rb'(?s)#42.*#17.*#99.*#1=') or matches(rb'#\d+=APPLICATION_CONTEXT')
 - **Byte assertion**: count(b'#') >= 5
 - **Tier-3 assertion**: load == "ok"
@@ -23768,7 +23772,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Description**: A complex (subtype-stack) record like `(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.))` is re-emitted on round-trip as `(SI_UNIT(.MILLI.,.METRE.) NAMED_UNIT(*) LENGTH_UNIT())`; the same complex entity but with the supertype list reordered. Spec-conforming (the order within `(... ..)` is supertype-significant per ISO 10303-21 §11 but only by inheritance hierarchy, not by emission order); receivers that build canonical hash strings see the file as different. Bug-reporter language: "subtype-stack reordered", "complex entity attribute order changed", "STEP round-trip permutes inheritance order".
 - **Reproducer recipe**: `#20=(SI_UNIT(.MILLI.,.METRE.) NAMED_UNIT(*) LENGTH_UNIT());` (canonical ordering would be `LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(..)`).
 - **Expected kernel behavior**: Heal and accept: normalize / emit complex-record supertype lists in a canonical order (e.g., alphabetic or schema-declaration-order) deterministically.
-- **Notes**: Subtle: parsers handle either order, but file-equivalence tests fail.
+- **Notes**: Subtle: parsers handle either order, but file-equivalence tests fail. Provenance tier: writer-side (Q5 reclassification 2026-07-01).
 - **Byte assertion**: matches(rb'\(\s*SI_UNIT\([^)]+\)\s+NAMED_UNIT\(\*\)\s+LENGTH_UNIT\(\)\s*\)')
 - **Byte assertion**: matches(rb'\(\s*SI_UNIT\(')
 - **Tier-3 assertion**: load == "ok"
@@ -23802,7 +23806,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Description**: A producer's writer emits boolean attribute values as `.TRUE.` / `.FALSE.` rather than the canonical Part-21 `.T.` / `.F.`. The output is malformed under strict spec interpretation; receivers that strictly enforce the lexeme reject, while heuristic receivers fold the long form. Producer-side root cause for the receiver-side defect Le055. Bug-reporter language: "STEP writer emits .TRUE.", "long-form boolean", "exporter wrote TRUE/FALSE".
 - **Reproducer recipe**: a complete file where every `EDGE_CURVE` `same_sense` and every `ORIENTED_EDGE` `orientation` attribute uses `.TRUE.` / `.FALSE.` instead of `.T.` / `.F.`.
 - **Expected kernel behavior**: Heal and accept: writer normalizes / emits canonical short-form lexemes per the spec; if interoperability with long-form-emitting tools is required, expose a normaliser flag.
-- **Notes**: Producer-side root cause for Le055. **See also**: Le055, Le056.
+- **Notes**: Producer-side root cause for Le055. **See also**: Le055, Le056. Provenance tier: writer-side (Q5 reclassification 2026-07-01).
 - **Byte assertion**: contains(b'.TRUE.') and contains(b'.FALSE.')
 - **Byte assertion**: count(b'.TRUE.') >= 1 and count(b'.FALSE.') >= 1
 - **Tier-3 assertion**: load == "ok"
@@ -23850,7 +23854,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Description**: The user selects inches in the STEP-export unit dialog. The writer emits a `LENGTH_UNIT` complex record claiming inches, but every `CARTESIAN_POINT` carries the original millimetre values verbatim with no scale division. A part the user authored as a 25.4 mm cube round-trips as a 25.4 inch (645 mm) cube; visibly 25.4× larger on re-import. The unit declaration and the numeric content disagree.
 - **Reproducer recipe**: minimal `MANIFOLD_SOLID_BREP` cube; `GEOMETRIC_REPRESENTATION_CONTEXT` with `LENGTH_UNIT` complex record `(LENGTH_UNIT() NAMED_UNIT(*) CONVERSION_BASED_UNIT('INCH', ..))`; `CARTESIAN_POINT` corner coordinates `(25.4, 25.4, 25.4)` (millimetre values, not inches).
 - **Expected kernel behavior**: Heal and accept: writer divides every coordinate by 25.4 when it changes the declared unit; or warn and accept by warning the user that values were not converted. Receivers should heal the mismatch when validation properties (volume, surface area) are present and contradict the declared unit; otherwise they have no way to know. Accepting unit/value disagreement without diagnostic is a coverage gap.
-- **Notes**: Subset of Wr035 but with concrete inch-vs-mm symptom. **See also**: Wr035, U015. Synonyms: "STEP file marked inch but model is mm-sized", "unit dropdown changes label only", "inch unit but coords are mm", "writer forgot to convert when changing unit".
+- **Notes**: Subset of Wr035 but with concrete inch-vs-mm symptom. **See also**: Wr035, U015. Synonyms: "STEP file marked inch but model is mm-sized", "unit dropdown changes label only", "inch unit but coords are mm", "writer forgot to convert when changing unit". Provenance tier: writer-side (Q5 reclassification 2026-07-01).
 - **Byte assertion**: contains(b'INCH')
 - **Byte assertion**: contains(b'CARTESIAN_POINT') and contains(b'25.4')
 - **Tier-3 assertion**: load == "ok"
@@ -23866,7 +23870,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Description**: A user authors a 10 mm cube. They change the export-unit setting to "m" (or "in"); the writer flips the `LENGTH_UNIT` text in the `GEOMETRIC_REPRESENTATION_CONTEXT` but emits the same numeric values. Re-import produces a 10-metre or 10-inch cube. Distinct from Wr044 because the trigger is "user selected a different unit on the way out" rather than "the source kernel was already mm". Bug-reporter language: "labels change but numbers don't".
 - **Reproducer recipe**: a 10 mm cube; declare `LENGTH_UNIT` as SI metre (`SI_UNIT($,.METRE.)` — *not* `MILLI`) but emit corner coordinates `(10.0, 10.0, 10.0)`.
 - **Expected kernel behavior**: writer multiplies/divides coordinates whenever the declared unit differs from the canonical kernel unit; or refuses the unit change with a clear diagnostic.
-- **Notes**: Cousin of Wr044 (inch case) and Wr035 (scale-applied-twice). Synonyms: "metre unit but mm values", "unit field decorative", "STEP exporter doesn't convert when user changes units".
+- **Notes**: Cousin of Wr044 (inch case) and Wr035 (scale-applied-twice). Synonyms: "metre unit but mm values", "unit field decorative", "STEP exporter doesn't convert when user changes units". Provenance tier: writer-side (Q5 reclassification 2026-07-01).
 - **Byte assertion**: contains(b'.METRE.') and contains(b'10.0')
 - **Byte assertion**: contains(b'CARTESIAN_POINT')
 - **Tier-3 assertion**: load == "ok"
@@ -23882,7 +23886,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Description**: A Body whose document Placement is non-identity (e.g. rotated 45° about Z, translated 100 mm in X) is written out as if the Placement were identity; the writer flattens the model-space coordinates from local-frame coordinates without composing the Placement transform, so the geometry is emitted in body-local coordinates with no `AXIS2_PLACEMENT_3D` carrying the original orientation. Round-tripping into KiCad / FreeCAD itself yields a part at the origin without rotation. Wrapping the Body in a Compound first is the user-side workaround because the Compound has identity placement.
 - **Reproducer recipe**: STEP file with a single `MANIFOLD_SOLID_BREP` whose `SHAPE_REPRESENTATION` `AXIS2_PLACEMENT_3D` is the identity, but the source kernel had a non-identity placement before export.
 - **Expected kernel behavior**: Heal and accept: writer composes the document Placement into the emitted shape's `AXIS2_PLACEMENT_3D` transform; or pre-multiplies it into the coordinates; or warn and accept with a diagnostic when a non-identity Placement is dropped. Loading geometry whose original Placement has been silently flattened is a coverage gap.
-- **Notes**: **See also**: Wr025, A024. Synonyms: "Placement ignored on STEP export", "single-body export drops orientation", "compound workaround needed for placement", "exported part lands at wrong position".
+- **Notes**: **See also**: Wr025, A024. Synonyms: "Placement ignored on STEP export", "single-body export drops orientation", "compound workaround needed for placement", "exported part lands at wrong position". Provenance tier: writer-side (Q5 reclassification 2026-07-01).
 - **Byte assertion**: contains(b'AXIS2_PLACEMENT_3D')
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Tier-3 assertion**: load == "ok"
@@ -23898,7 +23902,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Description**: A STEP file produced by a recent FreeCAD development build contains two solid `MANIFOLD_SOLID_BREP`s whose authored placements overlap by an exact zero-volume amount (for example, two cylinders sharing a co-incident face that should have been fused in the producing kernel). On re-import the receiver runs a fuse pass that emits `BOPAlog_AlertBadPositioning` warnings for every co-incident pair, surfacing as "STEP Import Broken / Unknown C++ exception thrown" in the GUI. The geometry is technically valid but represents a CSG residual the producer should have collapsed.
 - **Reproducer recipe**: STEP file with two `MANIFOLD_SOLID_BREP`s whose `AXIS2_PLACEMENT_3D` co-locates a face of solid A flush with a face of solid B (no gap, no overlap volume) — the receiver's BOP fuse will alert.
 - **Expected kernel behavior**: writer fuses or rejects co-incident-face operand pairs before emission; receiver tolerates positioning alerts as warnings rather than aborting import.
-- **Notes**: Regression introduced in FreeCAD 1.2.0dev. Synonyms: "BOPAlog_AlertBadPositioning during STEP import", "STEP import broken Unknown C++ exception", "OCC fuse raised warning on STEP import", "scrubEdges fails on imported STEP".
+- **Notes**: Regression introduced in FreeCAD 1.2.0dev. Synonyms: "BOPAlog_AlertBadPositioning during STEP import", "STEP import broken Unknown C++ exception", "OCC fuse raised warning on STEP import", "scrubEdges fails on imported STEP". Provenance tier: writer-side (Q5 reclassification 2026-07-01).
 - **Byte assertion**: count_entity_def(b'MANIFOLD_SOLID_BREP') >= 2
 - **Byte assertion**: contains(b'AXIS2_PLACEMENT_3D')
 - **Tier-3 assertion**: load == "ok"
@@ -23914,7 +23918,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Description**: Exporting a body that is the direct result of a Boolean operation crashes the writer mid-export inside `TKXDESTEP`. The stack trace centres on the color-attribution pass (it traverses sub-shapes to record `STYLED_ITEM` for each face). When the topmost shape is a freshly-fused Boolean result, the sub-shape iterator dereferences a face whose owner-edge map has not yet been populated. A trivial workaround is to chamfer or fillet one edge after the Boolean; that re-walks the sub-shape graph and populates the maps. The on-disk artefact (when the writer doesn't crash, e.g., on a different OS / OCCT build) is a STEP file with `STYLED_ITEM` references to entity numbers that don't exist in the file's own DATA section.
 - **Reproducer recipe**: a `MANIFOLD_SOLID_BREP` whose face has a `STYLED_ITEM` annotation referencing an entity number that is not declared elsewhere in the DATA section (forward reference to `#999` that has no `#999=..` definition).
 - **Expected kernel behavior**: writer must validate sub-shape maps before traversal; receivers must reject dangling entity references with a clear diagnostic rather than crash.
-- **Notes**: **See also**: P028, A018. Synonyms: "STEP/STEPZ crash exporting boolean", "TKXDESTEP segfault on boolean export", "writer dies on STYLED_ITEM map", "chamfer workaround for boolean export crash".
+- **Notes**: **See also**: P028, A018. Synonyms: "STEP/STEPZ crash exporting boolean", "TKXDESTEP segfault on boolean export", "writer dies on STYLED_ITEM map", "chamfer workaround for boolean export crash". Provenance tier: writer-side (Q5 reclassification 2026-07-01).
 - **Byte assertion**: contains(b'STYLED_ITEM')
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Tier-3 assertion**: load == "ok"
@@ -24149,7 +24153,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Description**: A large industrial STEP file (electronics enclosure, ~100 MB on disk, with thousands of `NEXT_ASSEMBLY_USAGE_OCCURRENCE`) saturates one CPU core during import while the resident set grows unboundedly until OOM. The producing kernel re-imports the file successfully on a host with 256 GB RAM. The receiver-side defect is that the `MAPPED_ITEM` resolver computes the closure of the `REPRESENTATION_MAP` graph eagerly rather than lazily, materialising every instance's geometry up-front. Distinct from Pf001 because the file size is well below 1 GB but the *graph closure* is what blows up.
 - **Reproducer recipe**: STEP assembly with a single `REPRESENTATION_MAP` referenced by 50+ `MAPPED_ITEM`s arranged in a deeply nested `NEXT_ASSEMBLY_USAGE_OCCURRENCE` chain (depth 10+), each level multiplying the closure size.
 - **Expected kernel behavior**: Heal and accept: lazy resolution of `MAPPED_ITEM` references; bounded peak memory. Reject with `E_INSTANCE_LIMIT` diagnostic when configurable `max_instances` and `max_depth` cutoffs are exceeded. Must not infinite loop, must not OOM the host, must not crash.
-- **Notes**: **See also**: Pf001, Pf013. Synonyms: "100% CPU and OOM on STEP load", "NUC12 STEP file hangs FreeCAD", "deeply-nested assembly graph blows memory", "MAPPED_ITEM closure explodes".
+- **Notes**: **See also**: Pf001, Pf013. Synonyms: "100% CPU and OOM on STEP load", "NUC12 STEP file hangs FreeCAD", "deeply-nested assembly graph blows memory", "MAPPED_ITEM closure explodes". Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') >= 5
 - **Byte assertion**: count_entity_def(b'MAPPED_ITEM') >= 4
 - **Tier-3 assertion**: load == "ok"
@@ -28749,7 +28753,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Description**: A `MAPPED_ITEM` references a `REPRESENTATION_MAP` whose `mapped_representation` ultimately contains the original `MAPPED_ITEM`. The reader's resolution recursion does not detect the cycle; it keeps descending until the call stack overflows or the process hangs indefinitely. This is a denial-of-service vector for STEP-consuming services that accept untrusted input.
 - **Reproducer recipe**: `#1=REPRESENTATION_MAP(#2,#3);` `#3=SHAPE_REPRESENTATION('',(#4),#5);` `#4=MAPPED_ITEM('',#1,#2);` — the mapped item points back to the representation that contains it.
 - **Expected kernel behavior**: reject — track in-flight `MAPPED_ITEM` resolutions in a visited-set; on re-entry emit `E_CYCLIC_MAPPED_ITEM` and abort traversal of that branch. Must not hang.
-- **Notes**: **See also**: Pf022. Synonyms: "STEPCAFControl_Reader hangs on cyclic mapped item", "infinite loop in STEP import", "self-referential REPRESENTATION_MAP", "STEP reader DoS via cycle".
+- **Notes**: **See also**: Pf022. Synonyms: "STEPCAFControl_Reader hangs on cyclic mapped item", "infinite loop in STEP import", "self-referential REPRESENTATION_MAP", "STEP reader DoS via cycle". Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
 - **Byte assertion**: contains(b'MAPPED_ITEM')
 - **Byte assertion**: contains(b'REPRESENTATION_MAP')
 - **Tier-3 assertion**: load == "ok"
@@ -36053,7 +36057,7 @@ exercised against CGAL PMP / MeshFix.
 - **Description**: A STEP writer emits an EDGE_CURVE whose `edge_geometry` slot is filled by an unbounded LINE entity rather than a TRIMMED_CURVE(LINE, t0, t1) or a SURFACE_CURVE with explicit param bookkeeping. The vertices nominally define the edge's domain, but the LINE itself carries no parametric extent, so receivers that traverse the LINE directly (rather than the EDGE_CURVE bookkeeping) walk into an unbounded range.
 - **Reproducer recipe**: a single EDGE_CURVE with edge_geometry = #(LINE). No TRIMMED_CURVE, no SURFACE_CURVE wrapper. Two distinct VERTEX_POINTs delimit the topological edge but the geometric curve is intrinsically unbounded.
 - **Expected kernel behavior**: heal — re-bound the LINE via implicit vertex-parameter projection, or wrap it in a TRIMMED_CURVE post-load.
-- **Notes**: Synonyms: "EDGE_CURVE points to unbounded LINE", "STEP writer emits untrimmed curve", "missing TRIMMED_CURVE wrapper around LINE", "line-edge without parametric trim". See also Twi248 (null-3D-curve sibling case).
+- **Notes**: Synonyms: "EDGE_CURVE points to unbounded LINE", "STEP writer emits untrimmed curve", "missing TRIMMED_CURVE wrapper around LINE", "line-edge without parametric trim". See also Twi248 (null-3D-curve sibling case). Provenance tier: writer-side (Q5 reclassification 2026-07-01).
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'LINE')
 - **Tier-3 assertion**: shape_null == False
@@ -36350,7 +36354,7 @@ exercised against CGAL PMP / MeshFix.
 - **Description**: An EDGE_LOOP that should have all `.T.` ORIENTED_EDGE flags has every other entry flipped to `.F.`. The geometric path is the same (the underlying EDGE_CURVE endpoints don't change), but the loop's directed-traversal sense is broken: receivers that follow the orientation flags end up with face normals pointing every which way. Distinct from Tsh012 (.U. seam flag) and Wr054 (single-face inversion) — this is a *systematic* half-population reversal.
 - **Reproducer recipe**: 4 ORIENTED_EDGEs in a loop with flags `(.T., .F., .T., .F.)` where the loop should be all `.T.` for a consistent CCW traversal.
 - **Expected kernel behavior**: validate edge-loop orientation consistency before emit; check loop traversal forms a closed cycle in either direction.
-- **Notes**: Synonyms: "Solvespace STEP wrong edge direction", "half flipped ORIENTED_EDGE writer bug", "STEP edges reversed every other", "3DViewStation renders STEP wrong after Solvespace", "writer flips edge direction systematically".
+- **Notes**: Synonyms: "Solvespace STEP wrong edge direction", "half flipped ORIENTED_EDGE writer bug", "STEP edges reversed every other", "3DViewStation renders STEP wrong after Solvespace", "writer flips edge direction systematically". Provenance tier: writer-side (Q5 reclassification 2026-07-01).
 - **Byte assertion**: contains(b'ORIENTED_EDGE')
 - **Byte assertion**: matches(rb'\.F\.')
 - **Tier-3 assertion**: load == "ok"
@@ -36363,7 +36367,7 @@ exercised against CGAL PMP / MeshFix.
 - **Description**: Two (or more) MAPPED_ITEMs point at the same REPRESENTATION_MAP via a single underlying definition. The writer treats geometrically-identical surfaces as a single shared entity, so any mutation (post-emit edit or downstream healer) propagates to every alias. Receivers that mutate one instance and expect the others independent are surprised.
 - **Reproducer recipe**: one REPRESENTATION_MAP referenced by two distinct MAPPED_ITEM call-sites.
 - **Expected kernel behavior**: surface the aliasing in the catalog tier-3 introspection (`n_unique_surfaces` vs `n_surface_references`); document writer policy.
-- **Notes**: Synonyms: "Solvespace exported duplicated entities aliased", "STEP writer aliases shared substructure", "MAPPED_ITEM shared one map", "writer dedup creates aliasing", "shared-substructure mutation propagates".
+- **Notes**: Synonyms: "Solvespace exported duplicated entities aliased", "STEP writer aliases shared substructure", "MAPPED_ITEM shared one map", "writer dedup creates aliasing", "shared-substructure mutation propagates". Provenance tier: writer-side (Q5 reclassification 2026-07-01).
 - **Byte assertion**: count(b'MAPPED_ITEM') >= 2
 - **Byte assertion**: contains(b'REPRESENTATION_MAP')
 - **Tier-3 assertion**: load == "ok"
@@ -36376,7 +36380,7 @@ exercised against CGAL PMP / MeshFix.
 - **Description**: The writer's surface-collection pass reads a structure whose byte-order was assumed little-endian; on s390x, the iteration count returns garbage and the writer concludes there are no surfaces. The resulting file is structurally valid but semantically empty.
 - **Reproducer recipe**: `SHAPE_REPRESENTATION('s390x_empty',(),#9005)` (empty items).
 - **Expected kernel behavior**: assert non-empty before emit; fail visibly when no surfaces were collected.
-- **Notes**: Synonyms: "Solvespace s390x STEP empty", "no surfaces to export STEP", "big-endian STEP writer regression", "Debian s390x STEP regression", "STEP writer silent empty on big-endian".
+- **Notes**: Synonyms: "Solvespace s390x STEP empty", "no surfaces to export STEP", "big-endian STEP writer regression", "Debian s390x STEP regression", "STEP writer silent empty on big-endian". Provenance tier: writer-side (Q5 reclassification 2026-07-01).
 - **Byte assertion**: contains(b'SHAPE_REPRESENTATION')
 - **Byte assertion**: matches(rb'SHAPE_REPRESENTATION\([^)]*\(\)\s*,')
 - **Tier-3 assertion**: load == "ok"
@@ -36416,7 +36420,7 @@ exercised against CGAL PMP / MeshFix.
 - **Description**: Distinct from Le022 (read-side encoding) — this is *writer-side* crash on non-ASCII content. The XCAF document holds a label with an umlaut; on emit, the writer's TCollection_ExtendedString → ascii conversion path dereferences a null and crashes the entire Python process.
 - **Reproducer recipe**: `PROPERTY_DEFINITION('umlaut_label','Schlüssel','',#9001)` (UTF-8 bytes for 'ü').
 - **Expected kernel behavior**: writer must encode-or-reject non-ASCII labels; never let a TCollection conversion crash become a process kill.
-- **Notes**: Synonyms: "pythonocc XCAF umlaut crash STEP export", "TCollection_ExtendedString crash on emit", "STEP writer crashes on non-ASCII label", "umlaut in PRODUCT name crashes", "label with ü crashes STEP write".
+- **Notes**: Synonyms: "pythonocc XCAF umlaut crash STEP export", "TCollection_ExtendedString crash on emit", "STEP writer crashes on non-ASCII label", "umlaut in PRODUCT name crashes", "label with ü crashes STEP write". Provenance tier: writer-side (Q5 reclassification 2026-07-01).
 - **Byte assertion**: contains(b'PROPERTY_DEFINITION')
 - **Byte assertion**: matches(rb'[\x80-\xff]')
 - **Tier-3 assertion**: load == "ok"
@@ -36466,7 +36470,7 @@ exercised against CGAL PMP / MeshFix.
 - **Description**: A SOLIDWORKS-shape STEP file uses a specific AXIS2_PLACEMENT_3D location form that the new OCCT reader interprets differently. The result is that a PLANE at (10, 0, 0) gets placed at (10 + δ, 0, 0) in the loaded shape.
 - **Reproducer recipe**: PLANE referenced through an AXIS2_PLACEMENT_3D at (10.0, 0.0, 0.0).
 - **Expected kernel behavior**: writer-form compatibility across versions; reader version-pinning notes for vendor-specific writers.
-- **Notes**: Synonyms: "pythonocc OCC upgrade surface offset", "Solidworks AP214 STEP offset wrong", "OCC 0.18.2 → 7.4.0 STEP regression", "STEP surfaces moved after OCC upgrade", "vendor writer regression OCC upgrade".
+- **Notes**: Synonyms: "pythonocc OCC upgrade surface offset", "Solidworks AP214 STEP offset wrong", "OCC 0.18.2 → 7.4.0 STEP regression", "STEP surfaces moved after OCC upgrade", "vendor writer regression OCC upgrade". Provenance tier: writer-side (Q5 reclassification 2026-07-01).
 - **Byte assertion**: contains(b'PLANE')
 - **Byte assertion**: contains(b'AXIS2_PLACEMENT_3D')
 - **Tier-3 assertion**: load == "ok"
@@ -36479,7 +36483,7 @@ exercised against CGAL PMP / MeshFix.
 - **Description**: A NEXT_ASSEMBLY_USAGE_OCCURRENCE references the same PRODUCT as both parent and child — the assembly graph has a self-loop. cascadio's traversal (depth-first, no visited-set) never terminates.
 - **Reproducer recipe**: `NEXT_ASSEMBLY_USAGE_OCCURRENCE('self_loop','','',#9001,#9001,$)` (same PRODUCT on both ends).
 - **Expected kernel behavior**: maintain a visited-set during assembly traversal; reject cycles with a diagnostic.
-- **Notes**: Synonyms: "cascadio assembly infinite loop", "STEP assembly traversal stuck", "cycle in assembly graph cascadio", "self-referencing NAUO stuck", "STEP-to-GLB stuck on assembly".
+- **Notes**: Synonyms: "cascadio assembly infinite loop", "STEP assembly traversal stuck", "cycle in assembly graph cascadio", "self-referencing NAUO stuck", "STEP-to-GLB stuck on assembly". Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -36491,7 +36495,7 @@ exercised against CGAL PMP / MeshFix.
 - **Description**: A wide-fanout assembly (one source shape, many MAPPED_ITEM instances) causes the converter's tessellation cache to grow per-instance rather than sharing the source mesh. The cache is never garbage-collected during translation, so memory grows linearly with instance count until the kernel OOMs.
 - **Reproducer recipe**: one REPRESENTATION_MAP + N MAPPED_ITEMs (N ~ 8 here, the real reports were thousands).
 - **Expected kernel behavior**: share tessellation cache across instances of the same source; release cache pages when no longer reachable.
-- **Notes**: Synonyms: "cascadio OOM STEP-to-GLB", "STEP conversion memory leak", "tessellation cache not shared", "OOM on assembly STEP conversion", "memory grows per instance".
+- **Notes**: Synonyms: "cascadio OOM STEP-to-GLB", "STEP conversion memory leak", "tessellation cache not shared", "OOM on assembly STEP conversion", "memory grows per instance". Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
 - **Byte assertion**: count_entity_def(b'MAPPED_ITEM') >= 8
 - **Byte assertion**: contains(b'REPRESENTATION_MAP')
 - **Tier-3 assertion**: load == "ok"
@@ -44731,7 +44735,7 @@ exercised against CGAL PMP / MeshFix.
 - **Description**: STEP file with a single `ADVANCED_FACE` on a `CYLINDRICAL_SURFACE` (radius 5.0 mm, axis Z, 90-degree cylindrical patch from z=0 to z=10; boundary `EDGE_LOOP` = bottom arc + right vertical line + top arc + left vertical line). The input bytes are perfectly readable — geometry loads cleanly under any OCCT version. The defect surfaces downstream: on `write → reread` through OCCT 8.0's `STEPControl_Writer` C++ API path, the `CYLINDRICAL_SURFACE` entity reference is silently omitted from the output — the output STEP has an `ADVANCED_FACE` whose surface reference points at a null/missing entity, so a downstream slicer that consumes the re-exported STEP produces completely wrong toolpaths because the curved boundary vanished. OCCT 7.x writes the same source shape correctly; DRAW-path does not reproduce; regression is version-specific to OCCT 8.0.
 - **Reproducer recipe**: Standard OCCT-parseable STEP with an `ADVANCED_FACE` on a `CYLINDRICAL_SURFACE` (or `B_SPLINE_SURFACE_WITH_KNOTS`, or `CONICAL_SURFACE`, etc.); mixed-content shape acceptable (curved + planar faces); read via OCCT 8.0 C++ API path; re-export via `STEPControl_Writer::Write()`; compare curved-surface entity references between input and output.
 - **Expected kernel behavior**: OCCT 8.0's `STEPControl_Writer` must emit every curved-surface entity present in the source shape into the output STEP; regression fix must ensure `CYLINDRICAL_SURFACE`, `CONICAL_SURFACE`, `B_SPLINE_SURFACE_WITH_KNOTS`, etc. are all preserved on re-export.
-- **Notes**: OCCT #1327 / FreeCAD #30266. B4 wave-8 DEF-DDD. Confidence: MEDIUM — regression is confirmed in trackers but exact writer-code path is not root-caused; the fixture encodes the INPUT file (the defect surfaces downstream on `write → reread → compare-with-input` against an OCCT 8.0 kernel). Since we cannot run the pre-fix OCCT 8.0 writer inside CI, the fixture is a WRITER-INTENT specimen: any downstream tool re-exporting this shape through OCCT 8.0 would silently lose the `CYLINDRICAL_SURFACE`. Post-fix / OCCT 7.x reads the input shape correctly (shape(1)); the defect is invisible on the input side. Live-oracle diagnostics carry "Incorrect Syntax : Fails Count : 2". Synonyms: "OCCT 8.0 writer regression", "STEPControl_Writer curved surface dropped", "FreeCAD #30266 cylinder writer bug", "CYLINDRICAL_SURFACE re-export silent loss OCCT 8.0", "toolpath vanishes on STEP round-trip", "OCCT #1327 writer".
+- **Notes**: OCCT #1327 / FreeCAD #30266. B4 wave-8 DEF-DDD. Confidence: MEDIUM — regression is confirmed in trackers but exact writer-code path is not root-caused; the fixture encodes the INPUT file (the defect surfaces downstream on `write → reread → compare-with-input` against an OCCT 8.0 kernel). Since we cannot run the pre-fix OCCT 8.0 writer inside CI, the fixture is a WRITER-INTENT specimen: any downstream tool re-exporting this shape through OCCT 8.0 would silently lose the `CYLINDRICAL_SURFACE`. Post-fix / OCCT 7.x reads the input shape correctly (shape(1)); the defect is invisible on the input side. Live-oracle diagnostics carry "Incorrect Syntax : Fails Count : 2". Synonyms: "OCCT 8.0 writer regression", "STEPControl_Writer curved surface dropped", "FreeCAD #30266 cylinder writer bug", "CYLINDRICAL_SURFACE re-export silent loss OCCT 8.0", "toolpath vanishes on STEP round-trip", "OCCT #1327 writer". Provenance tier: writer-side (Q5 reclassification 2026-07-01).
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
 - **Byte assertion**: contains(b'EDGE_LOOP')

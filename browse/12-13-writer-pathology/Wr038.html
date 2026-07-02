@@ -37,9 +37,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: normalize / emit canonical, deterministic numbering on write so a no-op round-trip produces byte-identical output (modulo timestamp-bearing fields like FILE_NAME date).</p></section>
 <section><h2>Notes</h2>
-<p>Drift-detection test that flags this is the canonical CI signal.</p></section>
+<p>Drift-detection test that flags this is the canonical CI signal. Provenance tier: writer-side (Q5 reclassification 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>writer-side</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>matches(rb&#x27;(?s)#42.*#17.*#99.*#1=&#x27;) or matches(rb&#x27;#\d+=APPLICATION_CONTEXT&#x27;)</code></li>
 <li><code>count(b&#x27;#&#x27;) &gt;= 5</code></li>

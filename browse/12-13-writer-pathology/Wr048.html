@@ -37,9 +37,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>writer must validate sub-shape maps before traversal; receivers must reject dangling entity references with a clear diagnostic rather than crash.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: P028, A018. Synonyms: &quot;STEP/STEPZ crash exporting boolean&quot;, &quot;TKXDESTEP segfault on boolean export&quot;, &quot;writer dies on STYLED_ITEM map&quot;, &quot;chamfer workaround for boolean export crash&quot;.</p></section>
+<p>**See also**: P028, A018. Synonyms: &quot;STEP/STEPZ crash exporting boolean&quot;, &quot;TKXDESTEP segfault on boolean export&quot;, &quot;writer dies on STYLED_ITEM map&quot;, &quot;chamfer workaround for boolean export crash&quot;. Provenance tier: writer-side (Q5 reclassification 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>writer-side</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;STYLED_ITEM&#x27;)</code></li>
 <li><code>contains(b&#x27;MANIFOLD_SOLID_BREP&#x27;)</code></li>

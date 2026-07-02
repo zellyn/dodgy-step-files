@@ -37,9 +37,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Warn and accept: detect tessellation-only content and emit a warning that round-trip from this file forward will be mesh-quality only; do not auto-fit (heal) surfaces back from triangles unless explicitly requested.</p></section>
 <section><h2>Notes</h2>
-<p>Schema-version-agnostic; both AP203 and AP242 permit tessellated representations.</p></section>
+<p>Schema-version-agnostic; both AP203 and AP242 permit tessellated representations. Provenance tier: writer-side (Q5 reclassification 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>writer-side</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;TESSELLATED_SHELL&#x27;) or contains(b&#x27;TRIANGULATED_FACE&#x27;)</code></li>
 <li><code>count_entity_def(b&#x27;TESSELLATED_SHELL_REPRESENTATION&#x27;) &gt;= 1 or count_entity_def(b&#x27;TRIANGULATED_FACE&#x27;) &gt;= 1</code></li>

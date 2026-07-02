@@ -32,9 +32,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal — re-bound the LINE via implicit vertex-parameter projection, or wrap it in a TRIMMED_CURVE post-load.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;EDGE_CURVE points to unbounded LINE&quot;, &quot;STEP writer emits untrimmed curve&quot;, &quot;missing TRIMMED_CURVE wrapper around LINE&quot;, &quot;line-edge without parametric trim&quot;. See also Twi248 (null-3D-curve sibling case).</p></section>
+<p>Synonyms: &quot;EDGE_CURVE points to unbounded LINE&quot;, &quot;STEP writer emits untrimmed curve&quot;, &quot;missing TRIMMED_CURVE wrapper around LINE&quot;, &quot;line-edge without parametric trim&quot;. See also Twi248 (null-3D-curve sibling case). Provenance tier: writer-side (Q5 reclassification 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>writer-side</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;EDGE_CURVE&#x27;)</code></li>
 <li><code>contains(b&#x27;LINE&#x27;)</code></li>

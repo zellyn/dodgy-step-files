@@ -34,9 +34,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: detect identity by canonical path; skip self-reference. Must not infinite loop.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Ad004, A012, M060. Validation observed: silent-empty rather than the cited crash. The structural attack pattern (e.g., billion-laughs / cyclic-reference / very-large-string) is demonstrated; production-scale exploitation requires inflating the size factor as described. Kernel-mishandling-by-silent-acceptance is itself a defect signal at fixture scale.</p></section>
+<p>**See also**: Ad004, A012, M060. Validation observed: silent-empty rather than the cited crash. The structural attack pattern (e.g., billion-laughs / cyclic-reference / very-large-string) is demonstrated; production-scale exploitation requires inflating the size factor as described. Kernel-mishandling-by-silent-acceptance is itself a defect signal at fixture scale. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>runtime-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT&#x27;)</code></li>
 <li><code>contains(b&#x27;EXTERNAL&#x27;) or contains(b&#x27;IDENTIFICATION_ASSIGNMENT&#x27;)</code></li>

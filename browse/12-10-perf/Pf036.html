@@ -37,9 +37,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>reject — track in-flight `MAPPED_ITEM` resolutions in a visited-set; on re-entry emit `E_CYCLIC_MAPPED_ITEM` and abort traversal of that branch. Must not hang.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Pf022. Synonyms: &quot;STEPCAFControl_Reader hangs on cyclic mapped item&quot;, &quot;infinite loop in STEP import&quot;, &quot;self-referential REPRESENTATION_MAP&quot;, &quot;STEP reader DoS via cycle&quot;.</p></section>
+<p>**See also**: Pf022. Synonyms: &quot;STEPCAFControl_Reader hangs on cyclic mapped item&quot;, &quot;infinite loop in STEP import&quot;, &quot;self-referential REPRESENTATION_MAP&quot;, &quot;STEP reader DoS via cycle&quot;. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>runtime-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;MAPPED_ITEM&#x27;)</code></li>
 <li><code>contains(b&#x27;REPRESENTATION_MAP&#x27;)</code></li>

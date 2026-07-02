@@ -35,9 +35,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Reject with E_ITERATION_LIMIT diagnostic: bounded iteration count with an explicit ceiling; bail with a structured error on divergence. Must not infinite loop.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: N041.</p></section>
+<p>**See also**: N041. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>runtime-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>count_entity_def(b&#x27;CARTESIAN_POINT&#x27;) &gt;= 6</code></li>
 </ul></section>

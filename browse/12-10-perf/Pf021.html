@@ -34,9 +34,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: deterministic same-input-same-output writer; normalize the output across runs.</p></section>
 <section><h2>Notes</h2>
-<p>Cross-oracle: pure-Python Part-21 validator rejects (reject(E_REAL_NO_DOT)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation.</p></section>
+<p>Cross-oracle: pure-Python Part-21 validator rejects (reject(E_REAL_NO_DOT)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>runtime-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Closure intent</h2>
 <p><code>solid</code> (defect kind: <code>unstitched_seam</code>) — authored as a closed solid; openness is the defect — heal it shut.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
