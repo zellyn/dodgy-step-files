@@ -320,8 +320,17 @@ def main(argv: list[str] | None = None) -> int:
     print(f"Testing {len(sample)} fixtures with {args.workers} workers", file=sys.stderr)
 
     results: list[dict[str, Any]] = []
-    rng = random.Random(args.seed)
-    seeds = {e["id"]: rng.randint(0, 1 << 31) for e in sample}
+    # Per-fixture seed is derived deterministically from (top_seed, fixture_id)
+    # so that mutation targets are STABLE across runs regardless of iteration
+    # order (--section vs --all, worker count, etc.). Previous versions used
+    # `rng.randint(...)` in iteration order, which caused the same fixture to
+    # get different seeds depending on how it was invoked and produced
+    # non-reproducible detected/undetected verdicts across runs.
+    import hashlib
+    def _stable_seed(fid: str) -> int:
+        h = hashlib.md5(f"{args.seed}:{fid}".encode()).digest()
+        return int.from_bytes(h[:4], "big")
+    seeds = {e["id"]: _stable_seed(e["id"]) for e in sample}
 
     with ProcessPoolExecutor(max_workers=args.workers) as ex:
         futs = {ex.submit(_test_one, e, seeds[e["id"]], args.mutations): e for e in sample}
