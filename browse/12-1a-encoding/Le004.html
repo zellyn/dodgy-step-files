@@ -37,7 +37,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>strict 2-digit consumption; emit `E_BAD_X_DIRECTIVE` with offset; tolerant readers may accept lowercase by case-folding but must reject odd or non-hex digit counts.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;X escape with bad hex digit count&quot;, &quot;lowercase hex in backslash X escape&quot;, &quot;single-digit X directive&quot;, &quot;malformed character escape&quot;, &quot;non-hex character after backslash X&quot;.</p></section>
+<p>Synonyms: &quot;X escape with bad hex digit count&quot;, &quot;lowercase hex in backslash X escape&quot;, &quot;single-digit X directive&quot;, &quot;malformed character escape&quot;, &quot;non-hex character after backslash X&quot;. Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

@@ -37,7 +37,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>surface the ambiguity to the user; name the byte and the page-selection policy. A receiver may treat 0x80.0x9F as Windows-1252 if it documents the policy; or reject on encountering C1 control bytes inside a string body. Silent reinterpretation across vendor policies hides the disagreement.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;smart-quote in STEP&quot;, &quot;cp1252 high-bit&quot;, &quot;C1 control byte in string&quot;. **See also**: Le002, Le009. Validation observed: silent acceptance; kernel-mishandling-by-silent-page-reinterpretation demonstrates the defect class.</p></section>
+<p>Synonyms: &quot;smart-quote in STEP&quot;, &quot;cp1252 high-bit&quot;, &quot;C1 control byte in string&quot;. **See also**: Le002, Le009. Validation observed: silent acceptance; kernel-mishandling-by-silent-page-reinterpretation demonstrates the defect class. Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

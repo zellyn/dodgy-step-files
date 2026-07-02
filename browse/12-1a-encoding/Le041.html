@@ -35,7 +35,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>reject `\Q\.\Q\` payloads in the surrogate range (55296.57343); a tolerant mode may pass them through as a degraded encoding with a warning, but conforming Unicode output must not contain lone surrogates.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Le044 (the matching `\X2\` defect). Synonyms: &quot;Q directive encodes surrogate&quot;, &quot;STEP Q with U+D800 lone surrogate&quot;, &quot;surrogate half via Q escape&quot;, &quot;ill-formed UTF-8 from Q surrogate&quot;, &quot;WTF-8 from STEP Q escape&quot;.</p></section>
+<p>**See also**: Le044 (the matching `\X2\` defect). Synonyms: &quot;Q directive encodes surrogate&quot;, &quot;STEP Q with U+D800 lone surrogate&quot;, &quot;surrogate half via Q escape&quot;, &quot;ill-formed UTF-8 from Q surrogate&quot;, &quot;WTF-8 from STEP Q escape&quot;. Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

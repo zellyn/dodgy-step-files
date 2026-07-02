@@ -33,7 +33,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: scanner must recognise `\X\` consumes exactly two hex digits and `\X2\` continues until `\X0\` before deciding apostrophe parity.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;hex 27 inside X2 escape closes string&quot;, &quot;apostrophe code-point misread as quote&quot;, &quot;X2 block contains 27 garbles parser&quot;, &quot;string closes inside Unicode escape&quot;, &quot;embedded apostrophe code in hex run&quot;.</p></section>
+<p>Synonyms: &quot;hex 27 inside X2 escape closes string&quot;, &quot;apostrophe code-point misread as quote&quot;, &quot;X2 block contains 27 garbles parser&quot;, &quot;string closes inside Unicode escape&quot;, &quot;embedded apostrophe code in hex run&quot;. Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

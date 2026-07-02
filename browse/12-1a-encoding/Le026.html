@@ -34,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>warn and best-effort decode the Unicode chars present; revert to literal-ASCII mode at the closing apostrophe; do not crash.</p></section>
 <section><h2>Notes</h2>
-<p>Validation observed: silent-empty rather than the cited garbling. Specific crash code path may not be reached at fixture scale; the kernel-mishandling-by-silent-acceptance still demonstrates the defect class. **See also**: Le005. Synonyms: &quot;X2 escape missing X0 terminator&quot;, &quot;Unicode run leaks into rest of string&quot;, &quot;no X0 closer on hex run&quot;, &quot;tail of string treated as encoded&quot;, &quot;missing X0 garbles STEP literal&quot;.</p></section>
+<p>Validation observed: silent-empty rather than the cited garbling. Specific crash code path may not be reached at fixture scale; the kernel-mishandling-by-silent-acceptance still demonstrates the defect class. **See also**: Le005. Synonyms: &quot;X2 escape missing X0 terminator&quot;, &quot;Unicode run leaks into rest of string&quot;, &quot;no X0 closer on hex run&quot;, &quot;tail of string treated as encoded&quot;, &quot;missing X0 garbles STEP literal&quot;. Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

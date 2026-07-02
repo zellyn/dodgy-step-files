@@ -37,7 +37,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Reject `E_BAD_PAGE_DIRECTIVE` for out-of-range; validate `[A-I]` per Table 4; implement the page-state machine at minimum for `\PA\`; warn-and-accept (decoding may be incorrect when the state is not implemented).</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;lowercase page selector&quot;, &quot;P directive with digit selector&quot;, &quot;Polish characters garbled in STEP&quot;, &quot;page-shift state machine ignored&quot;, &quot;PA through PI page directive bad&quot;.</p></section>
+<p>Synonyms: &quot;lowercase page selector&quot;, &quot;P directive with digit selector&quot;, &quot;Polish characters garbled in STEP&quot;, &quot;page-shift state machine ignored&quot;, &quot;PA through PI page directive bad&quot;. Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

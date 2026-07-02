@@ -37,7 +37,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>track parity of consecutive apostrophes; only an odd count terminates the string. Collapse `&#x27;&#x27;` → `&#x27;` in canonical form during tokenisation. Tolerant readers may use look-ahead heuristics (peek for a comma or close paren) to recover from un-doubled apostrophes but must flag the result.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;doubled apostrophe in STEP string misread as terminator&quot;, &quot;It&#x27;&#x27;s parsed as two strings&quot;, &quot;embedded quote breaks string&quot;, &quot;apostrophe doubling not recognised&quot;, &quot;single quote escape mishandled&quot;.</p></section>
+<p>Synonyms: &quot;doubled apostrophe in STEP string misread as terminator&quot;, &quot;It&#x27;&#x27;s parsed as two strings&quot;, &quot;embedded quote breaks string&quot;, &quot;apostrophe doubling not recognised&quot;, &quot;single quote escape mishandled&quot;. Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

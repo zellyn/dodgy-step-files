@@ -93,7 +93,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Description**: `\X\HH` must consume exactly two upper-case hex digits to encode an 8-bit ISO-8859-* code point. Real files emit one digit (`\X\F`), three or more (`\X\FFA`), lowercase (`\X\e9`), non-hex (`\X\GG`), or interpose whitespace (`\X\E9 9`). A loose parser may walk past the directive boundary or accept malformed values.
 - **Reproducer recipe**: `'caf\X\e9'`, `'caf\X\009'`, `'caf\X\F'`, `'caf\X\E9 9'`
 - **Expected kernel behavior**: strict 2-digit consumption; emit `E_BAD_X_DIRECTIVE` with offset; tolerant readers may accept lowercase by case-folding but must reject odd or non-hex digit counts.
-- **Notes**: Synonyms: "X escape with bad hex digit count", "lowercase hex in backslash X escape", "single-digit X directive", "malformed character escape", "non-hex character after backslash X".
+- **Notes**: Synonyms: "X escape with bad hex digit count", "lowercase hex in backslash X escape", "single-digit X directive", "malformed character escape", "non-hex character after backslash X". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: contains(b'\\X\\e9')
 - **Byte assertion**: contains(b'\\X\\009')
 - **Byte assertion**: contains(b'\\X\\F')
@@ -141,7 +141,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
-- **Notes**: Synonyms: "lone surrogate in STEP string", "X2 endianness wrong", "invalid UTF-8 from STEP encoder", "surrogate-half decoded as character", "STEP Unicode endian flipped".
+- **Notes**: Synonyms: "lone surrogate in STEP string", "X2 endianness wrong", "invalid UTF-8 from STEP encoder", "surrogate-half decoded as character", "STEP Unicode endian flipped". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Model impact**: The `\X2\` block is consumed incorrectly; subsequent bytes leak into the decoded string and the carrying entity attribute records garbled text instead of the intended Unicode.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -152,7 +152,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Reproducer recipe**: `'abc\S\'def'` (the byte after `\S\` is an apostrophe — the string is seven characters, not closed early); `'caf\S\\S\i'` (illegal chaining).
 - **Expected kernel behavior**: Heal and accept per spec: `\S\` consumes exactly the byte after the second `\` literally; do not recurse, do not close the string on that byte. Treat `\S\\` as `\S\` followed by `\` only outside another directive.
 - **Notes**:
-- **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_STRING_OPEN)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation. Synonyms: "S directive followed by apostrophe closes string", "8-bit shift escape misuse", "chained S directives", "string truncated at backslash S apostrophe", "STEP string ends mid-escape".
+- **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_STRING_OPEN)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation. Synonyms: "S directive followed by apostrophe closes string", "8-bit shift escape misuse", "chained S directives", "string truncated at backslash S apostrophe", "STEP string ends mid-escape". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: contains(b'\\S\\')
 - **Byte assertion**: count(b'\\S\\') >= 2
 - **Tier-3 assertion**: shape_null == True
@@ -167,7 +167,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Description**: `\PA\` through `\PI\` selects ISO-8859-1 through ISO-8859-9 (one upper-case letter, persistent for the rest of the string). Real files emit lowercase letters (`\Pg\`), digits (`\P1\`), full names (`\PISO\`), or omit/replace the selector (`\P\`, `\P!\`). Many parsers also skip the state machine and ignore the directive entirely, garbling subsequent characters.
 - **Reproducer recipe**: `'\PB\Krak\X\F3w'` (Polish "Kraków" via Latin-2); `'\Pg\\S\a'` (lowercase selector); `'\P1\…'` (digit); `'\P!\X\41'` (non-letter).
 - **Expected kernel behavior**: Reject `E_BAD_PAGE_DIRECTIVE` for out-of-range; validate `[A-I]` per Table 4; implement the page-state machine at minimum for `\PA\`; warn-and-accept (decoding may be incorrect when the state is not implemented).
-- **Notes**: Synonyms: "lowercase page selector", "P directive with digit selector", "Polish characters garbled in STEP", "page-shift state machine ignored", "PA through PI page directive bad".
+- **Notes**: Synonyms: "lowercase page selector", "P directive with digit selector", "Polish characters garbled in STEP", "page-shift state machine ignored", "PA through PI page directive bad". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: contains(b'\\Pg\\') or contains(b'\\P1\\') or contains(b'\\P!\\')
 - **Byte assertion**: count(b'\\P') >= 2
 - **Tier-3 assertion**: shape_null == True
@@ -209,7 +209,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Description**: A string contains a backslash directive that is not one of the spec-recognised forms (`\X\`, `\X2\…\X0\`, `\X4\…\X0\`, `\S\x`, `\Q\x`, `\PE\`, `\N\n`, `\F\`).
 - **Reproducer recipe**: embed `'foo\Z\bar'` in a string-valued attribute.
 - **Expected kernel behavior**: reject the directive; recover by passing the bytes through literally with a warning.
-- **Notes**: **See also**: Le030. Synonyms: "unknown backslash escape in string", "made-up control directive", "STEP rejects unknown escape", "vendor-extension escape passes through", "non-standard backslash sequence".
+- **Notes**: **See also**: Le030. Synonyms: "unknown backslash escape in string", "made-up control directive", "STEP rejects unknown escape", "vendor-extension escape passes through", "non-standard backslash sequence". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: contains(b'\\Z\\') or contains(b'\\M\\')
 - **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal, reject, or emit a diagnostic this fixture.
@@ -223,7 +223,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Description**: ISO 10303-21 escapes a literal apostrophe inside a string by doubling it: `'It''s'` decodes to `It's`. State machines that do not treat the doubled quote as escape mistake mid-string `''` for end-of-string + start-of-next, leading to a misaligned token stream and (in worst cases) heap corruption when a later write uses the wrong length. Parity matters when an even number of consecutive apostrophes appears.
 - **Reproducer recipe**: `#1=PERSON('O''Brien','x');`; `'a''b'` decodes to `a'b`; `''''` decodes to two literal apostrophes; producer that builds strings via naive concatenation and forgets to double — `'O'Brien'`.
 - **Expected kernel behavior**: track parity of consecutive apostrophes; only an odd count terminates the string. Collapse `''` → `'` in canonical form during tokenisation. Tolerant readers may use look-ahead heuristics (peek for a comma or close paren) to recover from un-doubled apostrophes but must flag the result.
-- **Notes**: Synonyms: "doubled apostrophe in STEP string misread as terminator", "It''s parsed as two strings", "embedded quote breaks string", "apostrophe doubling not recognised", "single quote escape mishandled".
+- **Notes**: Synonyms: "doubled apostrophe in STEP string misread as terminator", "It''s parsed as two strings", "embedded quote breaks string", "apostrophe doubling not recognised", "single quote escape mishandled". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: contains(b"O''Brien") or contains(b"a''b") or contains(b"''''")
 - **Byte assertion**: count(b"''") >= 3
 - **Tier-3 assertion**: shape_null == True
@@ -240,7 +240,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected kernel behavior**: Heal and accept: scanner must recognise `\X\` consumes exactly two hex digits and `\X2\` continues until `\X0\` before deciding apostrophe parity.
 - **Byte assertion**: contains(b'\\X\\27')
 - **Tier-3 assertion**: shape_null == True
-- **Notes**: Synonyms: "hex 27 inside X2 escape closes string", "apostrophe code-point misread as quote", "X2 block contains 27 garbles parser", "string closes inside Unicode escape", "embedded apostrophe code in hex run".
+- **Notes**: Synonyms: "hex 27 inside X2 escape closes string", "apostrophe code-point misread as quote", "X2 block contains 27 garbles parser", "string closes inside Unicode escape", "embedded apostrophe code in hex run". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The string-encoding defect either causes the lexer to abort or to record an attribute value different from the producer's bytes; no geometric data is corrupted but identifiers/descriptions on the carrying entity are wrong.
@@ -266,7 +266,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Description**: The reverse-solidus is the lead-in for Part-21 control directives; a literal backslash must be doubled (`\\`). Generators that copy Windows file paths verbatim emit single backslashes, which then accidentally form what looks like a malformed `\X\` or `\S\` directive (e.g. `\X1\`, `\Use…`).
 - **Reproducer recipe**: `'C:\path'` (rejected by spec); `'C:\Users\Test\X1\file.stp'` (the `\X1` resembles a malformed `\X\`); contrast with `'C:\\path'`.
 - **Expected kernel behavior**: strict mode rejects when the formed directive is malformed. Tolerant readers should detect un-escaped Windows paths and warn, treating unknown `\X` sequences as a literal character pair. Round-trip must preserve literal backslashes; OCCT 7.5.0 lost them for several releases.
-- **Notes**: Synonyms: "literal backslash from Windows path", "single backslash inside string", "C:\path forms accidental escape", "Windows file path escapes confused", "STEP string contains raw backslash".
+- **Notes**: Synonyms: "literal backslash from Windows path", "single backslash inside string", "C:\path forms accidental escape", "Windows file path escapes confused", "STEP string contains raw backslash". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: matches(rb"'C:\\\\[A-Za-z]")
 - **Byte assertion**: count(b'C:\\') >= 1
 - **Tier-3 assertion**: shape_null == True
@@ -356,7 +356,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Description**: The REAL grammar uses `.` only. A parser using `strtod` without `setlocale("C")` on a host with `LC_NUMERIC=de_DE` reads `1,5` as `1234`-style integers separated by a comma, or worse, two integer tokens. Producers using locale-aware `printf` on European locales emit `1,5` for one-and-a-half. Geometry then has wildly wrong coordinates; downstream tessellation can crash on degenerate triangles.
 - **Reproducer recipe**: `#1=CARTESIAN_POINT('',(1,5,0.,0.));`
 - **Expected kernel behavior**: use `strtod_l` with the `"C"` locale; reject anything `strtod` does not consume entirely. Tolerant readers should diagnose locale corruption rather than silently re-parse.
-- **Notes**: Synonyms: "European decimal comma in STEP REAL", "1,5 instead of 1.5 in attribute", "locale comma corrupts coordinates", "German locale STEP REAL parse fail", "decimal separator wrong in numeric".
+- **Notes**: Synonyms: "European decimal comma in STEP REAL", "1,5 instead of 1.5 in attribute", "locale comma corrupts coordinates", "German locale STEP REAL parse fail", "decimal separator wrong in numeric". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: matches(rb"CARTESIAN_POINT\('[^']*',\([0-9]+,[0-9]+,")
 - **Byte assertion**: matches(rb'\(0,\s*0,\s*0,\s*0,\s*0\)')
 - **Tier-3 assertion**: shape_null == True
@@ -386,7 +386,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Description**: When `\X0\` is omitted, OCCT (pre-fix) treated the remainder of the string as encoded hex content, garbling the trailing ASCII portion of the literal.
 - **Reproducer recipe**: `name = '\X2\00B0'` (closing apostrophe immediately follows hex run; no `\X0\`).
 - **Expected kernel behavior**: warn and best-effort decode the Unicode chars present; revert to literal-ASCII mode at the closing apostrophe; do not crash.
-- **Notes**: Validation observed: silent-empty rather than the cited garbling. Specific crash code path may not be reached at fixture scale; the kernel-mishandling-by-silent-acceptance still demonstrates the defect class. **See also**: Le005. Synonyms: "X2 escape missing X0 terminator", "Unicode run leaks into rest of string", "no X0 closer on hex run", "tail of string treated as encoded", "missing X0 garbles STEP literal".
+- **Notes**: Validation observed: silent-empty rather than the cited garbling. Specific crash code path may not be reached at fixture scale; the kernel-mishandling-by-silent-acceptance still demonstrates the defect class. **See also**: Le005. Synonyms: "X2 escape missing X0 terminator", "Unicode run leaks into rest of string", "no X0 closer on hex run", "tail of string treated as encoded", "missing X0 garbles STEP literal". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: contains(b'\\X2\\00B0')
 - **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
@@ -401,7 +401,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Reproducer recipe**: an EXPRESS schema source file with comment `(* foo bar °C *)`; STEP file with mixed-case keyword such as `iso-10303-21;`.
 - **Expected kernel behavior**: Heal and accept: lexer should be UTF-8/Latin-1 aware in comments and pass 8-bit bytes through to the string-decoder. Keyword recognition should be case-insensitive but identifiers/entity-names canonicalised once before binding.
 - **Notes**: **See also**: Lh019.
-- **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_MAGIC_CASE)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation. Synonyms: "high-bit byte in EXPRESS schema rejected", "8-bit char in STEP comment", "lex grammar tolerates Latin-1", "degree symbol in schema comment fails", "non-ASCII in keywords".
+- **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_MAGIC_CASE)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation. Synonyms: "high-bit byte in EXPRESS schema rejected", "8-bit char in STEP comment", "lex grammar tolerates Latin-1", "degree symbol in schema comment fails", "non-ASCII in keywords". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: contains(b'iso-10303-21;') or contains(b'EndSec;') or contains(b'End-Iso-10303-21;')
 - **Byte assertion**: matches(rb'[\x80-\xff]')
 - **Tier-3 assertion**: shape_null == True
@@ -433,7 +433,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Description**: Header parsers implemented as regex-split-on-comma fail when a description string contains literal commas or balanced parentheses. Real IFC and STEP headers commonly carry both.
 - **Reproducer recipe**: `FILE_DESCRIPTION(('a, b (c)','d'),'2;1');`
 - **Expected kernel behavior**: Heal and accept: tokenise strings before splitting parameters; treat `'…'` content opaquely.
-- **Notes**: Synonyms: "FILE_DESCRIPTION with comma trips header parser", "regex header parser breaks on parens", "comma inside string splits header wrong", "IFC header parens confuse split", "header description with embedded comma".
+- **Notes**: Synonyms: "FILE_DESCRIPTION with comma trips header parser", "regex header parser breaks on parens", "comma inside string splits header wrong", "IFC header parens confuse split", "header description with embedded comma". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: matches(rb"FILE_DESCRIPTION\(\(\s*'[^']*\([^)]+\)")
 - **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
@@ -475,7 +475,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Description**: A pretty-printer or broken splice writes a hex run across a `\r\n` boundary, e.g. `\X2\30A2 30A4\X0\` where the space is actually a CR LF. Per Part-21 §5.2 those bytes are ignored, so a tolerant lexer must accept the split; but many implementations consume the directive byte-greedily and fail on the line-end.
 - **Reproducer recipe**: a `STRING` literal `'foo\X2\30A2<CR LF>30A4\X0\bar'` split mid-escape.
 - **Expected kernel behavior**: Accept; the Part-21 lexer must be whitespace-tolerant inside escape sequences and string literals. Do not reject.
-- **Notes**: **See also**: Le005. Synonyms: "X2 escape split across CRLF", "hex run broken by line break", "directive spanning line break", "STEP escape across newline", "Unicode hex run interrupted by newline".
+- **Notes**: **See also**: Le005. Synonyms: "X2 escape split across CRLF", "hex run broken by line break", "directive spanning line break", "STEP escape across newline", "Unicode hex run interrupted by newline". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: matches(rb'\\X2\\[^\\\\]*\r?\n[^\\\\]*\\X0\\')
 - **Byte assertion**: count(b'\\X2\\') >= 1
 - **Tier-3 assertion**: shape_null == True
@@ -506,7 +506,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected kernel behavior**: Heal and accept: preserve exact Unicode through encode/decode/storage; emit `\X2\…\X0\` only when the Ed.2 conformance class requires it. Must not silently lose Unicode content.
 - **Fixture kind**: producer-receiver-pair
 - **Pair with**: Le036.input
-- **Notes**: **See also**: Le022. Provenance tier: requires-sibling-pair; bytes alone cannot demonstrate round-trip loss; the defect is the differential between the input file and the writer's output. Demonstrating this requires both an `<id>.input.stp` fixture and the corrupted `<id>.stp` produced by re-export through the lossy XML/DB layer. Synonyms: "X2 content lost in XML round trip", "Unicode dropped through database layer", "VARCHAR truncates STEP Unicode", "STEP characters become question marks after DB store", "round-trip loses backslash X2 content".
+- **Notes**: **See also**: Le022. Provenance tier: requires-sibling-pair; bytes alone cannot demonstrate round-trip loss; the defect is the differential between the input file and the writer's output. Demonstrating this requires both an `<id>.input.stp` fixture and the corrupted `<id>.stp` produced by re-export through the lossy XML/DB layer. Synonyms: "X2 content lost in XML round trip", "Unicode dropped through database layer", "VARCHAR truncates STEP Unicode", "STEP characters become question marks after DB store", "round-trip loses backslash X2 content". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: contains(b'\\X4\\')
 - **Byte assertion**: contains(b'\\X2\\')
 - **Byte assertion**: contains(b'\\\\')
@@ -588,7 +588,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Description**: `FILE_SCHEMA` carries `('AP203_CONFIG_CONTROL_DESIGN','AUTOMOTIVE_DESIGN')`. Most receivers consume only the first; some pick the most-capable; behavior is implementation-defined and divergent.
 - **Reproducer recipe**: `FILE_SCHEMA(('AP203_CONFIG_CONTROL_DESIGN','AUTOMOTIVE_DESIGN'));` or with embedded comments inside the parentheses.
 - **Expected kernel behavior**: warn; pick the most-capable supported schema deterministically; do not crash. Document which one was chosen.
-- **Notes**: Validation observed: silent-empty (no shape produced) rather than the cited divergent-pick behavior. Specific divergent-pick code path may not be exercised at fixture scale; the kernel-mishandling-by-silent-acceptance still demonstrates the defect class (implementation-defined behavior on multi-schema lists). **See also**: Lh006. Synonyms: "multiple schemas in FILE_SCHEMA", "FILE_SCHEMA lists AP203 and AP214 together", "two schema names in one FILE_SCHEMA", "STEP picks wrong schema from multi-list", "compound FILE_SCHEMA confuses receiver".
+- **Notes**: Validation observed: silent-empty (no shape produced) rather than the cited divergent-pick behavior. Specific divergent-pick code path may not be exercised at fixture scale; the kernel-mishandling-by-silent-acceptance still demonstrates the defect class (implementation-defined behavior on multi-schema lists). **See also**: Lh006. Synonyms: "multiple schemas in FILE_SCHEMA", "FILE_SCHEMA lists AP203 and AP214 together", "two schema names in one FILE_SCHEMA", "STEP picks wrong schema from multi-list", "compound FILE_SCHEMA confuses receiver". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: matches(rb"FILE_SCHEMA\(\(\s*'[^']+'\s*,\s*'[^']+'\s*\)\)")
 - **Byte assertion**: count(b"','") >= 2 or matches(rb"FILE_SCHEMA\(\(\s*'[^']+',\s*'")
 - **Tier-3 assertion**: shape_null == True
@@ -615,7 +615,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Description**: FILE_SCHEMA value is `''`, mixed-case (`'AutomotiveDesign'`), uses a non-canonical long form (e.g. `_MIM` instead of `_MIM_LF`), names an internal vendor schema, or comma-separates multiple schemas inside one string instead of using a LIST.
 - **Reproducer recipe**: `FILE_SCHEMA(('AUTOMOTIVE_DESIGN_MIM'));` (instead of `_MIM_LF`); `FILE_SCHEMA(('AutomotiveDesign'));`; `FILE_SCHEMA(('AUTOMOTIVE_DESIGN, IFC2X3'));` (one string, two names).
 - **Expected kernel behavior**: case-fold to upper for compare; reject the comma-in-string variant; warn-and-fall-back-to-best-fit on unrecognized names.
-- **Notes**: **See also**: Lh006. Synonyms: "empty FILE_SCHEMA value", "mixed-case schema name", "vendor schema in FILE_SCHEMA", "comma-separated schemas inside one string", "unrecognised schema name".
+- **Notes**: **See also**: Lh006. Synonyms: "empty FILE_SCHEMA value", "mixed-case schema name", "vendor schema in FILE_SCHEMA", "comma-separated schemas inside one string", "unrecognised schema name". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: matches(rb"FILE_SCHEMA\(\(\s*'AUTOMOTIVE_DESIGN_MIM(?!_LF)'")
 - **Byte assertion**: contains(b'AUTOMOTIVE_DESIGN_MIM')
 - **Tier-3 assertion**: shape_null == True
@@ -630,7 +630,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Description**: FILE_DESCRIPTION's `implementation_level` must be one of the canonical conformance codes `'1;1'`, `'2;1'`, `'3;1'`, `'4;1'`, `'4;2'`, `'4;3'`. Real files contain `'1.0'`, `'2;1;1'`, `'2.1'`, the empty string, or vendor branding strings (`'Simulia 2018'`). Overlong values can additionally trigger fixed-buffer overflows in legacy translators.
 - **Reproducer recipe**: `FILE_DESCRIPTION((''),'1.0');`, `FILE_DESCRIPTION((''),'Simulia 2018');`, or `FILE_DESCRIPTION(('x'),'AAAA…(2 KiB)…');` to exercise the overflow case.
 - **Expected kernel behavior**: warn-and-tolerate when the value is recognizable; reject overlong values; default to class 1 with a warning if unparseable. Validate length before copy into any fixed-size buffer.
-- **Notes**: **See also**: Le020. Synonyms: "non-canonical implementation_level in FILE_DESCRIPTION", "STEP conformance code wrong format", "vendor branding in implementation_level", "1.0 instead of 1;1 in header", "implementation_level overflow".
+- **Notes**: **See also**: Le020. Synonyms: "non-canonical implementation_level in FILE_DESCRIPTION", "STEP conformance code wrong format", "vendor branding in implementation_level", "1.0 instead of 1;1 in header", "implementation_level overflow". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: contains(b"'Simulia 2018'") or matches(rb"FILE_DESCRIPTION\([^;]*'1\.0'")
 - **Byte assertion**: contains(b'Simulia') or contains(b"'1.0'")
 - **Tier-3 assertion**: shape_null == True
@@ -690,7 +690,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Description**: ISO 10303-21 reserves header keywords without `!` for the standard. Vendor-specific HEADER entities must begin with `!` to avoid collision with future spec entities. Files appear with bare `VENDOR_INFO(..)` or similar.
 - **Reproducer recipe**: `HEADER; FILE_DESCRIPTION((''),'2;1'); FILE_NAME(..); FILE_SCHEMA(('AUTOMOTIVE_DESIGN')); VENDOR_INFO('SolidWorks 2024'); ENDSEC;`
 - **Expected kernel behavior**: reject the bare keyword; lenient mode may treat unknown header keywords as ignorable with a warning.
-- **Notes**: **See also**: Lh017. Synonyms: "vendor HEADER entity without bang prefix", "user-defined header missing exclamation mark", "VENDOR_INFO bare without !", "non-spec header entity collides with future spec", "custom HEADER record name not prefixed".
+- **Notes**: **See also**: Lh017. Synonyms: "vendor HEADER entity without bang prefix", "user-defined header missing exclamation mark", "VENDOR_INFO bare without !", "non-spec header entity collides with future spec", "custom HEADER record name not prefixed". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: matches(rb"FILE_SCHEMA\([^;]*\);\s*VENDOR_INFO\(")
 - **Byte assertion**: contains(b'VENDOR_INFO')
 - **Tier-3 assertion**: shape_null == True
@@ -709,7 +709,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
-- **Notes**: Synonyms: "FILE_POPULATION header record", "Edition 3 extra header entities", "SECTION_LANGUAGE in HEADER", "Ed.2 reader rejects FILE_INFO", "Edition 3 header beyond required three".
+- **Notes**: Synonyms: "FILE_POPULATION header record", "Edition 3 extra header entities", "SECTION_LANGUAGE in HEADER", "Ed.2 reader rejects FILE_INFO", "Edition 3 header beyond required three". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -735,7 +735,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Description**: ISO 10303-21 keywords are upper-case. Hand-edited files routinely contain lower-case or mixed-case (`Cartesian_Point`) entity names. Implementations that combine case-insensitive lookup of internal keywords with case-sensitive comparison of attribute-binding names produce two divergent parses for the same file.
 - **Reproducer recipe**: `#1=ifcperson($,$,'',$,$,$,$,$);` or `#1=Cartesian_Point('',(0.,0.,0.));`
 - **Expected kernel behavior**: per ISO, entity names canonicalize to upper-case before binding; pick one rule (case-insensitive throughout) and apply uniformly. Lenient mode may auto-uppercase with a warning.
-- **Notes**: **See also**: Lh030. Synonyms: "lowercase keyword in STEP file", "ifcperson instead of IFCPERSON", "cartesian_point in lowercase", "mixed-case entity name", "STEP entity not all caps".
+- **Notes**: **See also**: Lh030. Synonyms: "lowercase keyword in STEP file", "ifcperson instead of IFCPERSON", "cartesian_point in lowercase", "mixed-case entity name", "STEP entity not all caps". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: contains(b'cartesian_point') or contains(b'Cartesian_Point') or contains(b'ifcperson')
 - **Byte assertion**: matches(rb'EndSec;|End-Iso-10303-21;|cartesian_point|Cartesian_Point|ifcperson')
 - **Tier-3 assertion**: shape_null == True
@@ -885,7 +885,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Description**: Several Recommended Practices specify lower-case keyword strings as canonical attribute values (e.g. `'composite'` on `geometric_tolerance_relationship`). Producers that emit these in mixed or upper case break receivers that string-compare strictly.
 - **Reproducer recipe**: `GEOMETRIC_TOLERANCE_RELATIONSHIP('Composite',..);` instead of `'composite'`.
 - **Expected kernel behavior**: Heal and accept (case-insensitive match for documented RP keyword values on import); warn; emit canonical lower-case on export.
-- **Notes**: Adjacent to Lh018 but specifically about RP-defined string attribute values rather than Part-21 keywords. **See also**: Lh018, Pmi043. Synonyms: "lower-case enum value in name field", "Recommended Practices keyword case mismatch", "composite spelled in mixed case", "STEP attribute string-compare fails on case", "RP-defined keyword not lower-case".
+- **Notes**: Adjacent to Lh018 but specifically about RP-defined string attribute values rather than Part-21 keywords. **See also**: Lh018, Pmi043. Synonyms: "lower-case enum value in name field", "Recommended Practices keyword case mismatch", "composite spelled in mixed case", "STEP attribute string-compare fails on case", "RP-defined keyword not lower-case". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: contains(b"GEOMETRIC_TOLERANCE_RELATIONSHIP('Composite'")
 - **Byte assertion**: contains(b"'Composite'")
 - **Tier-3 assertion**: shape_null == True
@@ -5889,7 +5889,7 @@ _Section summary: 31 entries._
 - **Description**: Onshape always emits length unit `.METRE.` regardless of workspace display unit. NX accepts only inch or millimetre and silently treats metric STEP as mm, yielding a 1000× too-small body.
 - **Reproducer recipe**: `SI_UNIT($, .METRE.)` (no prefix) with coordinate magnitudes appropriate for metres; consume in NX configured for mm.
 - **Expected kernel behavior**: Heal and accept: read the declared length unit verbatim; never assume; if the display unit differs, normalize / scale internally.
-- **Notes**: **See also**: U001. Synonyms: "Onshape STEP comes in 1000x too small in NX", "Onshape always emits METRE", "NX reads metres as mm", "STEP metres misread as mm", "metric STEP 1000x smaller in NX".
+- **Notes**: **See also**: U001. Synonyms: "Onshape STEP comes in 1000x too small in NX", "Onshape always emits METRE", "NX reads metres as mm", "STEP metres misread as mm", "metric STEP 1000x smaller in NX". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: matches(rb'SI_UNIT\(\$\s*,\s*\.METRE\.\)')
 - **Byte assertion**: count(b'.METRE.') >= 1
 - **Tier-3 assertion**: shape_null == True
@@ -5927,7 +5927,7 @@ _Section summary: 31 entries._
 - **Description**: Inventor changed STEP angle unit to `.RADIAN.` for cross-vendor consistency. After import the document angle unit setting is overwritten. The producer's preference for degrees does not round-trip via the STEP `plane_angle_unit` context.
 - **Reproducer recipe**: doc set to degrees; export STEP; file contains `(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.))`; reopen — display now in radians.
 - **Expected kernel behavior**: Heal and accept: normalize / separate the "wire" unit (RADIAN by spec) from the "display" unit; preserve session angular display preference, or coerce an explicit `CONVERSION_BASED_UNIT('DEGREE',..)` when the author prefers degrees.
-- **Notes**: **See also**: U031. Synonyms: "Inventor STEP forces RADIAN angles", "angle unit changes from DEGREE to RADIAN", "doc preference broken on STEP round-trip", "Inventor switches plane_angle to radians", "STEP angle unit overwritten on import".
+- **Notes**: **See also**: U031. Synonyms: "Inventor STEP forces RADIAN angles", "angle unit changes from DEGREE to RADIAN", "doc preference broken on STEP round-trip", "Inventor switches plane_angle to radians", "STEP angle unit overwritten on import". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: contains(b'.RADIAN.')
 - **Byte assertion**: count(b'.RADIAN.') >= 1
 - **Tier-3 assertion**: shape_null == True
@@ -5945,7 +5945,7 @@ _Section summary: 31 entries._
 - **Receiver**: any STEP consumer
 - **Description**: Models authored in Plant 3D export to STEP with a `LENGTH_UNIT` context whose declared unit does not match drawing units, so external receivers see mismatched scale. Typical signature: `LENGTH_UNIT` declared as millimetres with `UNCERTAINTY_MEASURE_WITH_UNIT` 0.001 mm, but coordinates of 1.0 and 2.5; a sub-millimetre or unscaled inch fragment sitting in a mm context.
 - **Expected kernel behavior**: writer must emit unit context tied to authored model; producer pipeline must not silently change unit context between authoring and serialization.
-- **Notes**: **OCC behavior**: silently consumes the mismatched mm-context file as written without surfacing a unit-vs-coordinate-magnitude inconsistency; the catalog claim above is producer-side, but on the read side OCC's lack of sanity-check is the kernel mishandling. Synonyms: "Plant 3D STEP unit context disagrees with drawing", "sub-mm coords in mm STEP context", "Plant 3D unit mismatch", "AutoCAD Plant 3D wrong STEP units", "drawing units differ from STEP unit".
+- **Notes**: **OCC behavior**: silently consumes the mismatched mm-context file as written without surfacing a unit-vs-coordinate-magnitude inconsistency; the catalog claim above is producer-side, but on the read side OCC's lack of sanity-check is the kernel mishandling. Synonyms: "Plant 3D STEP unit context disagrees with drawing", "sub-mm coords in mm STEP context", "Plant 3D unit mismatch", "AutoCAD Plant 3D wrong STEP units", "drawing units differ from STEP unit". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: contains(b'SI_UNIT(.MILLI.,.METRE.)') or contains(b'SI_UNIT(.MILLI., .METRE.)')
 - **Byte assertion**: matches(rb'CARTESIAN_POINT')
 - **Tier-3 assertion**: shape_null == True
@@ -5962,7 +5962,7 @@ _Section summary: 31 entries._
 - **Description**: PrePoMax recognizes the STEP file as inch and then multiplies coordinates by 25.4, leaving the body 25.4× too large; the conversion is applied where coordinates are already in mm.
 - **Reproducer recipe**: inch SolidWorks STEP with `CONVERSION_BASED_UNIT('INCH',#lmwu)` and `LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#mm)` — coordinates in mm — receiver multiplies by 25.4 again.
 - **Expected kernel behavior**: Heal and accept: normalize / apply the `CONVERSION_BASED_UNIT` factor exactly once; never compose with target-unit conversion on the same coordinates.
-- **Notes**: **See also**: N029, U023. Synonyms: "PrePoMax double-applies inch scaling", "STEP body 25.4x too large in PrePoMax", "inch STEP scaled twice by 25.4", "double inch-to-mm conversion", "PrePoMax inch import 25.4x off".
+- **Notes**: **See also**: N029, U023. Synonyms: "PrePoMax double-applies inch scaling", "STEP body 25.4x too large in PrePoMax", "inch STEP scaled twice by 25.4", "double inch-to-mm conversion", "PrePoMax inch import 25.4x off". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: contains(b"CONVERSION_BASED_UNIT('INCH'")
 - **Byte assertion**: contains(b'25.4') or matches(rb'LENGTH_MEASURE\(25\.4\)')
 - **Tier-3 assertion**: shape_null == True
@@ -6018,7 +6018,7 @@ _Section summary: 31 entries._
 - **Description**: After OCCT 7.8 the `write.units` / `DESTEP_Parameters` write-unit setting is no longer applied: output coordinates are not scaled to the requested unit. Common signature: `LENGTH_UNIT` declared as bare `SI_UNIT(METRE)` (no `.MILLI.` prefix) but coordinate values are sized as if mm (e.g. 100, 50, 25.4), so a literal interpretation produces a 100 m × 50 m oversized part.
 - **Reproducer recipe**: `xstep.cascade.unit MM` and `write.step.unit M`, write a 1-unit vertex; file is still in mm.
 - **Expected kernel behavior**: Heal and accept: normalize / honour the configured target unit on write; coerce / apply scale during transfer.
-- **Notes**: **See also**: Pf022. Synonyms: "OCCT 7.8 ignores write.units setting", "STEP exports as METRE despite mm setting", "write.step.unit silently ignored", "OCCT regression on STEP write unit", "100m oversized part from STEP write".
+- **Notes**: **See also**: Pf022. Synonyms: "OCCT 7.8 ignores write.units setting", "STEP exports as METRE despite mm setting", "write.step.unit silently ignored", "OCCT regression on STEP write unit", "100m oversized part from STEP write". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: matches(rb'SI_UNIT\(\s*\$\s*,\s*\.METRE\.\)') or contains(b'SI_UNIT($,.METRE.)')
 - **Byte assertion**: contains(b'.METRE.')
 - **Tier-3 assertion**: shape_null == True
@@ -6070,7 +6070,7 @@ _Section summary: 31 entries._
 - **Description**: `coordinates_list.position_coords` are bare `REAL`s, not `length_measure`. If a tessellated annotation or tessellated shape sits under a `representation_context` that is not a `global_unit_assigned_context`, coordinates have no resolvable unit. Common breakage: tessellated PMI extracted out of context appears 25.4× the correct size.
 - **Reproducer recipe**: STEP file with one `tessellated_annotation_occurrence` whose `tessellated_geometric_set` references a `coordinates_list`; place that occurrence's `tessellated_shape_representation` under a generic `representation_context` lacking `global_unit_assigned_context`.
 - **Expected kernel behavior**: reject or warn on tessellated representations not anchored in a `global_unit_assigned_context`.
-- **Notes**: Synonyms: "tessellated annotation no global unit context", "PMI tessellation 25.4x wrong", "tessellated coords without unit anchor", "annotation outside global_unit_assigned_context", "tessellated PMI silent unit drop".
+- **Notes**: Synonyms: "tessellated annotation no global unit context", "PMI tessellation 25.4x wrong", "tessellated coords without unit anchor", "annotation outside global_unit_assigned_context", "tessellated PMI silent unit drop". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: contains(b'TESSELLATED_SHAPE_REPRESENTATION')
 - **Byte assertion**: contains(b'TESSELLATED_ANNOTATION_OCCURRENCE') or contains(b'TESSELLATED_GEOMETRIC_SET') or contains(b'TESSELLATED_SHAPE_REPRESENTATION')
 - **Tier-3 assertion**: shape_null == True
@@ -6121,7 +6121,7 @@ _Section summary: 31 entries._
 - **Description**: The conventional name is `'INCH'`; producers sometimes write `'inch'`, `'IN'`, or `'inches'` on the `name` attribute of `CONVERSION_BASED_UNIT`, breaking case-sensitive lookup tables.
 - **Reproducer recipe**: `CONVERSION_BASED_UNIT('inches', #lmwu)`.
 - **Expected kernel behavior**: Warn and accept: emit a warning; normalize the case-insensitive match against the canonical set `{INCH, FOOT, MILLIMETRE, MILLIMETER, METER, METRE, MIL, MICROINCH}`; resolve via `dimensional_exponents` rather than `name` text.
-- **Notes**: **See also**: Pmi067. Synonyms: "INCH lowercase in CONVERSION_BASED_UNIT", "STEP inch spelled as 'inch' or 'IN'", "case-sensitive inch lookup fails", "'inches' in CONVERSION_BASED_UNIT name", "STEP unit name wrong case".
+- **Notes**: **See also**: Pmi067. Synonyms: "INCH lowercase in CONVERSION_BASED_UNIT", "STEP inch spelled as 'inch' or 'IN'", "case-sensitive inch lookup fails", "'inches' in CONVERSION_BASED_UNIT name", "STEP unit name wrong case". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: contains(b"'inch'") or contains(b"'IN'") or contains(b"'inches'")
 - **Byte assertion**: count(b"CONVERSION_BASED_UNIT(") >= 2
 - **Tier-3 assertion**: shape_null == True
@@ -6189,7 +6189,7 @@ _Section summary: 31 entries._
 - **Description**: `derived_unit` (e.g. `kg·m/s²`) and unusual conversion bases are not normalized; unit lookup falls through and the kernel uses the value as identity (scale = 1).
 - **Reproducer recipe**: file with `DERIVED_UNIT((DERIVED_UNIT_ELEMENT(#k,1.0)))` referenced from a geometric quantity (force/density).
 - **Expected kernel behavior**: walk the `derived_unit_element` list and compute SI scale factor by multiplying each base si_unit's prefix factor raised to its exponent; never silently treat as identity.
-- **Notes**: **See also**: U021. **OCC behavior**: silently treats unsupported `DERIVED_UNIT` constructs as identity scale with no diagnostic; kernel mishandling; the catalog above forbids silent identity-substitution. Synonyms: "derived_unit treated as identity scale", "BRL-CAD step-g derived unit TODO", "kg.m/s^2 derived unit unsupported", "DERIVED_UNIT lookup falls through", "non-SI derived unit identity-scale bug".
+- **Notes**: **See also**: U021. **OCC behavior**: silently treats unsupported `DERIVED_UNIT` constructs as identity scale with no diagnostic; kernel mishandling; the catalog above forbids silent identity-substitution. Synonyms: "derived_unit treated as identity scale", "BRL-CAD step-g derived unit TODO", "kg.m/s^2 derived unit unsupported", "DERIVED_UNIT lookup falls through", "non-SI derived unit identity-scale bug". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: contains(b'DERIVED_UNIT')
 - **Byte assertion**: contains(b'DERIVED_UNIT_ELEMENT') or contains(b'DERIVED_UNIT')
 - **Tier-3 assertion**: shape_null == True
@@ -6245,7 +6245,7 @@ _Section summary: 31 entries._
  varies across versions (some apply file unit, some apply default, some
  apply both as conversion).
 - **Expected kernel behavior**: Warn and accept: file-declared units take precedence; the configured default applies only when the file omits the unit record; emit a diagnostic when the two disagree.
-- **Notes**: **See also**: U025, U028. Synonyms: "xstep.cascade.unit overridden by file unit", "default unit ignored when file declares unit", "configured default conflicts with STEP unit", "reader applies conversion twice", "STEP unit default vs file divergence".
+- **Notes**: **See also**: U025, U028. Synonyms: "xstep.cascade.unit overridden by file unit", "default unit ignored when file declares unit", "configured default conflicts with STEP unit", "reader applies conversion twice", "STEP unit default vs file divergence". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: contains(b"CONVERSION_BASED_UNIT('INCH'")
 - **Byte assertion**: contains(b'INCH') and contains(b'25.4')
 - **Tier-3 assertion**: shape_null == True
@@ -6264,7 +6264,7 @@ _Section summary: 31 entries._
 - **Reproducer recipe**: Part 1 mile long internally; export with
  `CONVERSION_BASED_UNIT('MILE', factor)`. Factor written is wrong by 1000×.
 - **Expected kernel behavior**: Heal and accept: normalize / every non-SI conversion factor is a schema-mandated constant; the exporter consults a lookup table and never recomputes.
-- **Notes**: **See also**: U023. Synonyms: "mile-to-mm factor wrong by 1000", "MILE conversion 1609.344 instead of 1609344", "metres-to-mm prefix applied to miles", "STEP mile under-scaled 1000x", "wrong mile conversion factor on export".
+- **Notes**: **See also**: U023. Synonyms: "mile-to-mm factor wrong by 1000", "MILE conversion 1609.344 instead of 1609344", "metres-to-mm prefix applied to miles", "STEP mile under-scaled 1000x", "wrong mile conversion factor on export". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: contains(b'1609.344')
 - **Byte assertion**: contains(b"CONVERSION_BASED_UNIT('MILE'")
 - **Tier-3 assertion**: shape_null == True
@@ -6284,7 +6284,7 @@ _Section summary: 31 entries._
  Exporter writes `a=2.0`, `b=1.0` in a file declaring `INCH` but the
  internal representation was in millimetres.
 - **Expected kernel behavior**: Heal and accept: normalize / coerce every numeric attribute emitted to the declared file unit; never mix internal and declared units.
-- **Notes**: **See also**: U034. Synonyms: "ellipse semi-axes in mm but STEP declares inch", "ellipse exports with mismatched unit", "STEP ellipse re-import 25.4x off", "non-mm unit corrupts ellipse export", "ELLIPSE coords wrong unit".
+- **Notes**: **See also**: U034. Synonyms: "ellipse semi-axes in mm but STEP declares inch", "ellipse exports with mismatched unit", "STEP ellipse re-import 25.4x off", "non-mm unit corrupts ellipse export", "ELLIPSE coords wrong unit". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: contains(b'ELLIPSE')
 - **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
@@ -17988,7 +17988,7 @@ _Section summary: 41 entries._
 - **Description**: Edition-3 ISO 10303-21 defines `\PE\` as a single-letter alphabet selector that switches the active 96-glyph code page for subsequent characters until another `\PA\.\PI\` or `\PE\` directive resets it. A parser that recognises only the common `\PA\.\PI\` single-byte selectors and treats `\PE\` as an unrecognised escape will desynchronise its lexer or pass the directive through verbatim into the decoded string.
 - **Reproducer recipe**: `PRODUCT.name='greek=\PE\F\S\\S\xx-greek\PI\-end'` — switches to ISO-8859-7 (page F) for two `\S\xx` runs, then resets via `\PI\`. Receivers that drop the page selector decode the bytes against the default Latin-1 table and produce the wrong glyphs.
 - **Expected kernel behavior**: recognise `\PE\`, consume the selector letter, and decode subsequent bytes against the named code page until the next page-switch directive. If the page is unsupported, warn and fall back deterministically (e.g. default page) without lexer desynchronisation.
-- **Notes**: **See also**: Le030, Le012. Distinct from Le030 in that this entry exercises a mid-string page switch with a non-default page (Le030 covers the bare `\PE\` recognition only). Synonyms: "PE alphabet-extension directive ignored", "PE switches code page mid-string", "non-Latin code page selector", "STEP PE not implemented", "PE directive treated as literal".
+- **Notes**: **See also**: Le030, Le012. Distinct from Le030 in that this entry exercises a mid-string page switch with a non-default page (Le030 covers the bare `\PE\` recognition only). Synonyms: "PE alphabet-extension directive ignored", "PE switches code page mid-string", "non-Latin code page selector", "STEP PE not implemented", "PE directive treated as literal". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: contains(b'\\PE\\')
 - **Byte assertion**: count(b'\\PE\\') >= 2
 - **Tier-3 assertion**: shape_null == True
@@ -18003,7 +18003,7 @@ _Section summary: 41 entries._
 - **Description**: Edition-3 `\PE\` requires a single ASCII letter (the page selector A.I) immediately following the slashes. A producer that truncates a string at the directive boundary or copy/pastes incorrectly emits a bare `\PE\` with no follow-byte before the closing apostrophe. A naive parser may consume the closing `'` as the page operand and lose string termination, walking off into the rest of the entity.
 - **Reproducer recipe**: `PRODUCT.name='text\PE\'` — closing apostrophe immediately follows `\PE\`. The next entity definition becomes part of the apparent string body if the parser eats the apostrophe as the operand.
 - **Expected kernel behavior**: reject the malformed directive with a precise diagnostic citing the string offset; never let the closing apostrophe be consumed as a directive operand.
-- **Notes**: **See also**: Le037, Le039. Synonyms: "bare PE at end of string", "PE directive without operand letter", "PE truncated at apostrophe", "PE escape with no follow byte", "STEP PE with missing selector".
+- **Notes**: **See also**: Le037, Le039. Synonyms: "bare PE at end of string", "PE directive without operand letter", "PE truncated at apostrophe", "PE escape with no follow byte", "STEP PE with missing selector". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: matches(rb"\\PE\\'")
 - **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
@@ -18032,7 +18032,7 @@ _Section summary: 41 entries._
 - **Reproducer recipe**: `PRODUCT.name='top=\Q\1114111\Q\'` — the `\Q\.\Q\` payload is the decimal value of U+10FFFF.
 - **Expected kernel behavior**: decode `\Q\NNN\Q\` payloads into the corresponding Unicode scalar; reject only values outside the legal scalar range (`> 0x10FFFF` or surrogate halves); do not silently truncate to BMP.
 - **Fixture kind**: conformance-probe
-- **Notes**: **See also**: Le030, Le041, Le042. Validation observed: ifcopenshell terminates via process signal — the `\Q\.\Q\` form may interact badly with the parser's ASCII-only string decoder. **OCC behavior**: silently accepts the file and either truncates to BMP or passes the digits through verbatim; kernel mishandling — the catalog above forbids silent BMP truncation. Synonyms: "Q directive at U+10FFFF boundary", "STEP Q encodes max Unicode", "supplementary plane via Q escape", "Q escape decodes high code point", "Q directive at top of Unicode".
+- **Notes**: **See also**: Le030, Le041, Le042. Validation observed: ifcopenshell terminates via process signal — the `\Q\.\Q\` form may interact badly with the parser's ASCII-only string decoder. **OCC behavior**: silently accepts the file and either truncates to BMP or passes the digits through verbatim; kernel mishandling — the catalog above forbids silent BMP truncation. Synonyms: "Q directive at U+10FFFF boundary", "STEP Q encodes max Unicode", "supplementary plane via Q escape", "Q escape decodes high code point", "Q directive at top of Unicode". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: contains(b'\\Q\\1114111\\Q\\')
 - **Byte assertion**: contains(b'1114111')
 - **Tier-3 assertion**: shape_null == True
@@ -18045,7 +18045,7 @@ _Section summary: 41 entries._
 - **Description**: `\Q\NNN\Q\` accepts decimal Unicode scalars, but values 55296.57343 (the UTF-16 surrogate halves) are not legal Unicode scalars; they exist only as paired surrogates in the UTF-16 transformation. A kernel that decodes `\Q\55296\Q\` into a UTF-8 stream produces an ill-formed sequence (CESU-8 / WTF-8 territory) that downstream tooling may reject. The producer may have meant a non-BMP character but failed to emit the surrogate pair, or may be re-encoding a Java/JavaScript string that allowed lone surrogates internally.
 - **Reproducer recipe**: `PRODUCT.name='lone=\Q\55296\Q\'` — value 55296 is U+D800, a high-surrogate half.
 - **Expected kernel behavior**: reject `\Q\.\Q\` payloads in the surrogate range (55296.57343); a tolerant mode may pass them through as a degraded encoding with a warning, but conforming Unicode output must not contain lone surrogates.
-- **Notes**: **See also**: Le044 (the matching `\X2\` defect). Synonyms: "Q directive encodes surrogate", "STEP Q with U+D800 lone surrogate", "surrogate half via Q escape", "ill-formed UTF-8 from Q surrogate", "WTF-8 from STEP Q escape".
+- **Notes**: **See also**: Le044 (the matching `\X2\` defect). Synonyms: "Q directive encodes surrogate", "STEP Q with U+D800 lone surrogate", "surrogate half via Q escape", "ill-formed UTF-8 from Q surrogate", "WTF-8 from STEP Q escape". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: contains(b'\\Q\\55296\\Q\\')
 - **Byte assertion**: contains(b'55296')
 - **Tier-3 assertion**: shape_null == True
@@ -18060,7 +18060,7 @@ _Section summary: 41 entries._
 - **Description**: `\Q\NNN\Q\` requires the bracketed payload to be a decimal integer. Producers occasionally emit hex (`\Q\1F600\Q\`), an `0x` prefix (`\Q\0x1F600\Q\`), or whitespace around the number (`\Q\ 65 \Q\`). A strict parser rejects; a lenient parser may silently coerce, producing the wrong character (e.g. parsing `F60` as decimal 0 then F-A-A garbage).
 - **Reproducer recipe**: `PRODUCT.name='hex=\Q\F60\Q\'`; `'px=\Q\0x41\Q\'`; `'ws=\Q\ 65 \Q\'`.
 - **Expected kernel behavior**: reject any non-decimal payload with a precise diagnostic citing the offending characters; never silently substitute 0 for a malformed payload.
-- **Notes**: **See also**: Le030, Le040. **OCC behavior**: silently accepts non-decimal `\Q\` payloads and either substitutes 0 or coerces via leading digits; kernel mishandling; the catalog above forbids silent substitution. Synonyms: "Q directive with hex digits", "Q escape with 0x prefix", "Q payload not decimal", "whitespace inside Q numeric", "non-decimal Q payload".
+- **Notes**: **See also**: Le030, Le040. **OCC behavior**: silently accepts non-decimal `\Q\` payloads and either substitutes 0 or coerces via leading digits; kernel mishandling; the catalog above forbids silent substitution. Synonyms: "Q directive with hex digits", "Q escape with 0x prefix", "Q payload not decimal", "whitespace inside Q numeric", "non-decimal Q payload". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: contains(b'\\Q\\0x') or matches(rb'\\Q\\\s')
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: The string-encoding defect either causes the lexer to abort or to record an attribute value different from the producer's bytes; no geometric data is corrupted but identifiers/descriptions on the carrying entity are wrong.
@@ -18072,7 +18072,7 @@ _Section summary: 41 entries._
 - **Description**: `\X4\.\X0\` wraps a sequence of 8-hex-digit groups, each encoding one UCS-4 (32-bit) scalar. A producer concatenating variable-length output may emit a hex run not divisible by 8 (e.g. 4 or 7 digits), which is malformed. Distinct from Le006 in that the *valid* leading group is a supplementary-plane scalar (U+1F600 Grinning Face) and only the trailing group is short, so a tolerant parser may accept the first character and silently drop the second.
 - **Reproducer recipe**: `PRODUCT.name='mix=\X4\0001F60000041\X0\'` — 8 hex digits (U+1F600, valid SMP) followed by 4 hex digits (short, illegal).
 - **Expected kernel behavior**: reject the whole `\X4\.\X0\` block as malformed, or reject only the trailing short group with a diagnostic; never silently truncate.
-- **Notes**: **See also**: Le006. **OCC behavior**: silently accepts the malformed `\X4\.\X0\` block and either truncates the trailing short group or interprets it incorrectly; kernel mishandling; the catalog above forbids silent truncation. Synonyms: "X4 with valid plus short trailing run", "supplementary char then partial X4 group", "X4 mixed valid and malformed", "X4 valid leader with truncated tail", "X4 followed by short hex run".
+- **Notes**: **See also**: Le006. **OCC behavior**: silently accepts the malformed `\X4\.\X0\` block and either truncates the trailing short group or interprets it incorrectly; kernel mishandling; the catalog above forbids silent truncation. Synonyms: "X4 with valid plus short trailing run", "supplementary char then partial X4 group", "X4 mixed valid and malformed", "X4 valid leader with truncated tail", "X4 followed by short hex run". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: contains(b'\\X4\\0001F60000041\\X0\\')
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: Out-of-range or malformed UCS-4 code points either pass through as invalid UTF-8 or stop the load entirely; downstream consumers see either mojibake or no model.
@@ -18084,7 +18084,7 @@ _Section summary: 41 entries._
 - **Description**: `\X2\.\X0\` wraps 4-hex-digit groups each denoting one UCS-2 (BMP) scalar. Surrogate halves U+D800.U+DFFF are not BMP characters; they exist only as paired surrogates of UTF-16. A Java-vintage exporter that internally holds Java `char[]` (allowing lone surrogates) and writes them out one-by-one as `\X2\DXXX\X0\` produces a malformed but parseable token. A surrogate pair encoded as two `\X2\` groups (CESU-8-like) round-trips by accident on tools that decode UTF-16 surrogates.
 - **Reproducer recipe**: `'lone=\X2\D801\X0\'` — D801 is a high-surrogate half. `'pair=\X2\D801DC37\X0\'` — high+low surrogate pair.
 - **Expected kernel behavior**: reject lone surrogates with a precise diagnostic; either reject paired surrogates (strict) or transparently combine them into the matching supplementary-plane scalar (lenient, with a warning).
-- **Notes**: **See also**: Le006, Le041. Distinct from Le006 (which exercises hex run length, not surrogate semantics). Synonyms: "X2 payload contains UTF-16 surrogate halves", "Java char[] surrogate written as X2", "X2 with U+D800 surrogate", "lone surrogate in X2 hex run", "X2 surrogate-half value".
+- **Notes**: **See also**: Le006, Le041. Distinct from Le006 (which exercises hex run length, not surrogate semantics). Synonyms: "X2 payload contains UTF-16 surrogate halves", "Java char[] surrogate written as X2", "X2 with U+D800 surrogate", "lone surrogate in X2 hex run", "X2 surrogate-half value". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: contains(b'\\X2\\D801\\X0\\') or contains(b'\\X2\\D801DC37\\X0\\')
 - **Byte assertion**: count(b'\\X2\\') >= 2
 - **Tier-3 assertion**: shape_null == True
@@ -18115,7 +18115,7 @@ _Section summary: 41 entries._
 - **Reproducer recipe**: `PRODUCT.name=' !"#$%&''()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_'`<..full printable ASCII..>'` — exactly one occurrence of each printable ASCII byte.
 - **Expected kernel behavior**: Heal and accept: round-trip every printable ASCII byte through encode/decode/storage byte-for-byte; in particular preserve doubled apostrophes (`''`) and the literal backslash form per the active edition.
 - **Fixture kind**: conformance-probe
-- **Notes**: **See also**: Le036. Synonyms: "string with every printable ASCII", "STEP literal containing all printable bytes", "embedded apostrophe and backslash and =", "round-trip every printable ASCII", "all-ASCII string literal".
+- **Notes**: **See also**: Le036. Synonyms: "string with every printable ASCII", "STEP literal containing all printable bytes", "embedded apostrophe and backslash and =", "round-trip every printable ASCII", "all-ASCII string literal". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: matches(rb"'[^']* !\"#")
 - **Byte assertion**: contains(b"#$%&")
 - **Tier-3 assertion**: shape_null == True
@@ -18145,7 +18145,7 @@ _Section summary: 41 entries._
 - **Description**: ISO 10303-21 REAL has no syntactic form for non-finite values (no `+Inf`, `-Inf`, `NaN`). Producers that internally hold IEEE-754 doubles and serialise via `printf %g` may emit `1.0E+999` (which on parse overflows to `+Inf`) or `1.0E-999` (which underflows to 0). A receiver must decide whether to reject, snap to a finite sentinel, or propagate the non-finite value through downstream computations.
 - **Reproducer recipe**: `CARTESIAN_POINT('overflow',(1.0E+999,0.0,0.0))`; `CARTESIAN_POINT('underflow',(1.0E-999,0.0,0.0))`.
 - **Expected kernel behavior**: detect overflow during literal-to-binary conversion and reject as out-of-range; do not let `+Inf` or `-Inf` enter the geometric pipeline.
-- **Notes**: **See also**: Le047. Synonyms: "REAL exceeds double range", "1.0E+999 overflows to inf", "STEP REAL underflows to zero", "STEP REAL emits +Inf", "non-finite REAL from overflow".
+- **Notes**: **See also**: Le047. Synonyms: "REAL exceeds double range", "1.0E+999 overflows to inf", "STEP REAL underflows to zero", "STEP REAL emits +Inf", "non-finite REAL from overflow". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: contains(b'1.0E+999') or contains(b'1.0E-999')
 - **Byte assertion**: matches(rb'1\.0E[+-]999')
 - **Tier-3 assertion**: shape_null == True
@@ -18168,7 +18168,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: Heal and accept: line-ending normalisation only outside string literals; preserve string contents byte-for-byte (with proper escaping via `\X\` if needed). Must not silently strip CR.
 - **Fixture kind**: producer-receiver-pair
 - **Pair with**: Le049.input
-- **Notes**: **See also**: Le017, Le028. Provenance tier: requires-sibling-pair; bytes alone cannot demonstrate the writer-side stripping; the defect is the differential between the writer's input (string containing `\r`) and its output (string without `\r`). Demonstrating this requires both an input fixture and the corrupted output it produces, exercised through a STEP writer. Synonyms: "STEP writer strips carriage return", "CR removed during STEP write", "line endings normalised by writer", "STEP export drops CR", "writer rewrites CRLF to LF".
+- **Notes**: **See also**: Le017, Le028. Provenance tier: requires-sibling-pair; bytes alone cannot demonstrate the writer-side stripping; the defect is the differential between the writer's input (string containing `\r`) and its output (string without `\r`). Demonstrating this requires both an input fixture and the corrupted output it produces, exercised through a STEP writer. Synonyms: "STEP writer strips carriage return", "CR removed during STEP write", "line endings normalised by writer", "STEP export drops CR", "writer rewrites CRLF to LF". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: contains(b'ISO-10303-21')
 - **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
@@ -18203,7 +18203,7 @@ _Section summary: 41 entries._
 - **Description**: `\X2\` opens a UCS-2 hex run that MUST close with `\X0\`. When the run folds directly into the closing apostrophe of the string literal, the directive is unterminated and a non-validating parser may consume past the apostrophe or pass a half-formed code point to its downstream UTF-8 encoder.
 - **Reproducer recipe**: `'name=\X2\30A2'` — the apostrophe closes the string while `\X2\` is still active.
 - **Expected kernel behavior**: emit `E_BAD_X2_DIRECTIVE` (unterminated) and abort decoding the string; warn-and-best-effort downstream without crashing.
-- **Notes**: **See also**: Le005, Le052, Le053. Synonyms: "backslash X2 unicode escape missing terminating backslash X0", "X2 escape missing X0 terminator", "backslash X2 hex run not closed with backslash X0", "STEP unicode escape unterminated no X0", "missing X0 terminator on X2 directive".
+- **Notes**: **See also**: Le005, Le052, Le053. Synonyms: "backslash X2 unicode escape missing terminating backslash X0", "X2 escape missing X0 terminator", "backslash X2 hex run not closed with backslash X0", "STEP unicode escape unterminated no X0", "missing X0 terminator on X2 directive". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: contains(b'\\X2\\30A2')
 - **Byte assertion**: not_contains(b'\\X2\\30A2\\X0\\')
 - **Tier-3 assertion**: shape_null == True
@@ -18216,7 +18216,7 @@ _Section summary: 41 entries._
 - **Description**: The hex run inside `\X2\.\X0\` must be contiguous (multiple of four hex digits). Embedding whitespace between two 4-digit groups is malformed even if it would be a legal continuation in some Java/host string forms.
 - **Reproducer recipe**: `'name=\X2\30A2 30A4\X0\rest'` — a space between `30A2` and `30A4`.
 - **Expected kernel behavior**: emit `E_BAD_X2_DIRECTIVE`; reject the string or, in lenient mode, drop the whitespace and continue with a warning.
-- **Notes**: **See also**: Le005, Le051, Le053. Synonyms: "whitespace inside X2 hex run", "X2 hex broken by space", "X2 groups split by whitespace", "whitespace mid-Unicode-escape", "X2 payload non-contiguous".
+- **Notes**: **See also**: Le005, Le051, Le053. Synonyms: "whitespace inside X2 hex run", "X2 hex broken by space", "X2 groups split by whitespace", "whitespace mid-Unicode-escape", "X2 payload non-contiguous". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: contains(b'\\X2\\30A2 30A4\\X0\\')
 - **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
@@ -18230,7 +18230,7 @@ _Section summary: 41 entries._
 - **Description**: `\X2\.\X0\` directives are not re-entrant. Opening a fresh `\X2\` while another is still active is malformed; a naive scanner may merge the two hex runs or lose the inner content.
 - **Reproducer recipe**: `'name=\X2\30A2\X2\30A4\X0\'` — second `\X2\` opens before the first closes.
 - **Expected kernel behavior**: emit `E_BAD_X2_DIRECTIVE` (nested); reject the string without crashing.
-- **Notes**: **See also**: Le005, Le051, Le052. Synonyms: "nested X2 directive in STEP", "X2 opened twice without closing", "re-entrant X2 escape", "X2 inside X2 garbles content", "consecutive X2 without X0".
+- **Notes**: **See also**: Le005, Le051, Le052. Synonyms: "nested X2 directive in STEP", "X2 opened twice without closing", "re-entrant X2 escape", "X2 inside X2 garbles content", "consecutive X2 without X0". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: contains(b'\\X2\\30A2\\X2\\30A4\\X0\\')
 - **Byte assertion**: count(b'\\X2\\') >= 2
 - **Tier-3 assertion**: shape_null == True
@@ -18246,7 +18246,7 @@ _Section summary: 41 entries._
 - **Description**: Edition-2 declares ISO-8859-1 as the default 8-bit page. Bytes `0x80.0x9F` in ISO-8859-1 are control characters (C1 controls, no glyphs); in Windows-1252 the same range carries glyphs (Euro sign at 0x80, smart-quotes at 0x91-0x94, em-dash at 0x97, etc.). When a writer copies user-input strings (from a Windows clipboard, a smart-quote-rewriting word processor, or a CAD note containing the Euro sign) it emits raw bytes in 0x80.0x9F into a string literal. Strict Edition-2 readers see C1 control bytes in a string body and either reject, emit `?`, or pass garbage downstream. Tolerant readers heuristically reinterpret as Windows-1252 and recover the intended glyphs but disagree on which receiver is right. Bug-reporter language: "Word smart-quote shows as box character", "Euro sign garbled in STEP", "string contains 0x91 byte and parser reports control char in literal".
 - **Reproducer recipe**: a `PRODUCT.name` whose body contains the bytes `\X\91`, `\X\92`, `\X\80`, `\X\97` — left/right single-quote, Euro, em-dash in Windows-1252; or as raw bytes `0x91 0x92 0x80 0x97` inside an Ed.2-declared file.
 - **Expected kernel behavior**: surface the ambiguity to the user; name the byte and the page-selection policy. A receiver may treat 0x80.0x9F as Windows-1252 if it documents the policy; or reject on encountering C1 control bytes inside a string body. Silent reinterpretation across vendor policies hides the disagreement.
-- **Notes**: Synonyms: "smart-quote in STEP", "cp1252 high-bit", "C1 control byte in string". **See also**: Le002, Le009. Validation observed: silent acceptance; kernel-mishandling-by-silent-page-reinterpretation demonstrates the defect class.
+- **Notes**: Synonyms: "smart-quote in STEP", "cp1252 high-bit", "C1 control byte in string". **See also**: Le002, Le009. Validation observed: silent acceptance; kernel-mishandling-by-silent-page-reinterpretation demonstrates the defect class. Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: contains(b'\\X\\91') or contains(b'\\X\\92') or contains(b'\\X\\80') or contains(b'\\X\\97')
 - **Byte assertion**: matches(rb'\\X\\(80|91|92|93|94|97|99)')
 - **Tier-3 assertion**: shape_null == True
@@ -18306,7 +18306,7 @@ _Section summary: 41 entries._
 - **Description**: ISO 10303-21 §6.2 specifies that a record is terminated by `;`; the spec is silent on whether a trailing newline is required after the final `;` of the file. A producer may emit `..);ENDSEC;END-ISO-10303-21;` with no newline anywhere, or with the final newline omitted. POSIX tools that read line-by-line (and strict line-buffered tokenisers) drop the last line if it lacks a `\n` — the final record (or the `END-ISO-10303-21;` terminator) is silently lost, and the receiver reports a file that is structurally short by one record. The cousin defect is a missing newline between the last DATA-section record and `ENDSEC;` — `..);ENDSEC;` with no separator at all is allowed by the grammar but trips lexers that scan to end-of-line for an `ENDSEC` keyword. Bug-reporter language: "STEP file missing trailing newline", "last record dropped on load", "ENDSEC on same line as last record".
 - **Reproducer recipe**: a file whose byte stream ends `..#19=EDGE_LOOP('',(#18));ENDSEC;END-ISO-10303-21;` with NO trailing `\n` and NO newline between the last record and `ENDSEC;`. The fixture is byte-exact at EOF.
 - **Expected kernel behavior**: Heal and accept: tokenise on `;` alone; treat EOF as a valid record-and-section terminator if the preceding `;`-terminated record has been seen. Never require a trailing newline. Lexers that scan line-by-line should be replaced or wrapped with a `;`-aware preprocessor. Do not reject missing-trailing-newline files.
-- **Notes**: Companion to Le056 / Le057 (other EOR variants). **See also**: Le054, Le056, Le057. Synonyms: "no newline at EOF in STEP", "ENDSEC without preceding newline", "POSIX-incomplete final line in Part-21".
+- **Notes**: Companion to Le056 / Le057 (other EOR variants). **See also**: Le054, Le056, Le057. Synonyms: "no newline at EOF in STEP", "ENDSEC without preceding newline", "POSIX-incomplete final line in Part-21". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Byte assertion**: matches(rb'\);ENDSEC;END-ISO-10303-21;\Z') or matches(rb'\);ENDSEC;')
 - **Byte assertion**: not_contains(b'ENDSEC;\nEND-ISO-10303-21;\n') or contains(b';ENDSEC;END-ISO-10303-21;')
 - **Tier-3 assertion**: shape_null == True

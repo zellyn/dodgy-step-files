@@ -34,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>warn; pick the most-capable supported schema deterministically; do not crash. Document which one was chosen.</p></section>
 <section><h2>Notes</h2>
-<p>Validation observed: silent-empty (no shape produced) rather than the cited divergent-pick behavior. Specific divergent-pick code path may not be exercised at fixture scale; the kernel-mishandling-by-silent-acceptance still demonstrates the defect class (implementation-defined behavior on multi-schema lists). **See also**: Lh006. Synonyms: &quot;multiple schemas in FILE_SCHEMA&quot;, &quot;FILE_SCHEMA lists AP203 and AP214 together&quot;, &quot;two schema names in one FILE_SCHEMA&quot;, &quot;STEP picks wrong schema from multi-list&quot;, &quot;compound FILE_SCHEMA confuses receiver&quot;.</p></section>
+<p>Validation observed: silent-empty (no shape produced) rather than the cited divergent-pick behavior. Specific divergent-pick code path may not be exercised at fixture scale; the kernel-mishandling-by-silent-acceptance still demonstrates the defect class (implementation-defined behavior on multi-schema lists). **See also**: Lh006. Synonyms: &quot;multiple schemas in FILE_SCHEMA&quot;, &quot;FILE_SCHEMA lists AP203 and AP214 together&quot;, &quot;two schema names in one FILE_SCHEMA&quot;, &quot;STEP picks wrong schema from multi-list&quot;, &quot;compound FILE_SCHEMA confuses receiver&quot;. Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

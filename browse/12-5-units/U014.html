@@ -37,7 +37,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: normalize / honour the configured target unit on write; coerce / apply scale during transfer.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Pf022. Synonyms: &quot;OCCT 7.8 ignores write.units setting&quot;, &quot;STEP exports as METRE despite mm setting&quot;, &quot;write.step.unit silently ignored&quot;, &quot;OCCT regression on STEP write unit&quot;, &quot;100m oversized part from STEP write&quot;.</p></section>
+<p>**See also**: Pf022. Synonyms: &quot;OCCT 7.8 ignores write.units setting&quot;, &quot;STEP exports as METRE despite mm setting&quot;, &quot;write.step.unit silently ignored&quot;, &quot;OCCT regression on STEP write unit&quot;, &quot;100m oversized part from STEP write&quot;. Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

@@ -34,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>reject any non-decimal payload with a precise diagnostic citing the offending characters; never silently substitute 0 for a malformed payload.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Le030, Le040. **OCC behavior**: silently accepts non-decimal `\Q\` payloads and either substitutes 0 or coerces via leading digits; kernel mishandling; the catalog above forbids silent substitution. Synonyms: &quot;Q directive with hex digits&quot;, &quot;Q escape with 0x prefix&quot;, &quot;Q payload not decimal&quot;, &quot;whitespace inside Q numeric&quot;, &quot;non-decimal Q payload&quot;.</p></section>
+<p>**See also**: Le030, Le040. **OCC behavior**: silently accepts non-decimal `\Q\` payloads and either substitutes 0 or coerces via leading digits; kernel mishandling; the catalog above forbids silent substitution. Synonyms: &quot;Q directive with hex digits&quot;, &quot;Q escape with 0x prefix&quot;, &quot;Q payload not decimal&quot;, &quot;whitespace inside Q numeric&quot;, &quot;non-decimal Q payload&quot;. Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

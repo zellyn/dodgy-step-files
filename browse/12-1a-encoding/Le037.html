@@ -33,7 +33,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>recognise `\PE\`, consume the selector letter, and decode subsequent bytes against the named code page until the next page-switch directive. If the page is unsupported, warn and fall back deterministically (e.g. default page) without lexer desynchronisation.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Le030, Le012. Distinct from Le030 in that this entry exercises a mid-string page switch with a non-default page (Le030 covers the bare `\PE\` recognition only). Synonyms: &quot;PE alphabet-extension directive ignored&quot;, &quot;PE switches code page mid-string&quot;, &quot;non-Latin code page selector&quot;, &quot;STEP PE not implemented&quot;, &quot;PE directive treated as literal&quot;.</p></section>
+<p>**See also**: Le030, Le012. Distinct from Le030 in that this entry exercises a mid-string page switch with a non-default page (Le030 covers the bare `\PE\` recognition only). Synonyms: &quot;PE alphabet-extension directive ignored&quot;, &quot;PE switches code page mid-string&quot;, &quot;non-Latin code page selector&quot;, &quot;STEP PE not implemented&quot;, &quot;PE directive treated as literal&quot;. Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
