@@ -39,6 +39,8 @@
 <p>Cross-oracle: pure-Python Part-21 validator rejects (reject(E_STRING_OPEN)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation. Synonyms: &quot;S directive followed by apostrophe closes string&quot;, &quot;8-bit shift escape misuse&quot;, &quot;chained S directives&quot;, &quot;string truncated at backslash S apostrophe&quot;, &quot;STEP string ends mid-escape&quot;. Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;\\S\\&#x27;)</code></li>
 <li><code>count(b&#x27;\\S\\&#x27;) &gt;= 2</code></li>

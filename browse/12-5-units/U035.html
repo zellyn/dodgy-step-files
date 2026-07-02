@@ -36,6 +36,8 @@
 <p>**See also**: U034. Synonyms: &quot;ellipse semi-axes in mm but STEP declares inch&quot;, &quot;ellipse exports with mismatched unit&quot;, &quot;STEP ellipse re-import 25.4x off&quot;, &quot;non-mm unit corrupts ellipse export&quot;, &quot;ELLIPSE coords wrong unit&quot;. Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;ELLIPSE&#x27;)</code></li>
 </ul></section>

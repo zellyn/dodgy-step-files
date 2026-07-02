@@ -37,6 +37,8 @@
 <p>**See also**: Lh017. Synonyms: &quot;vendor HEADER entity without bang prefix&quot;, &quot;user-defined header missing exclamation mark&quot;, &quot;VENDOR_INFO bare without !&quot;, &quot;non-spec header entity collides with future spec&quot;, &quot;custom HEADER record name not prefixed&quot;. Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>matches(rb&quot;FILE_SCHEMA\([^;]*\);\s*VENDOR_INFO\(&quot;)</code></li>
 <li><code>contains(b&#x27;VENDOR_INFO&#x27;)</code></li>

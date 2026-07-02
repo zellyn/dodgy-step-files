@@ -38,6 +38,8 @@
 <p>**See also**: N029, U023. Synonyms: &quot;PrePoMax double-applies inch scaling&quot;, &quot;STEP body 25.4x too large in PrePoMax&quot;, &quot;inch STEP scaled twice by 25.4&quot;, &quot;double inch-to-mm conversion&quot;, &quot;PrePoMax inch import 25.4x off&quot;. Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&quot;CONVERSION_BASED_UNIT(&#x27;INCH&#x27;&quot;)</code></li>
 <li><code>contains(b&#x27;25.4&#x27;) or matches(rb&#x27;LENGTH_MEASURE\(25\.4\)&#x27;)</code></li>

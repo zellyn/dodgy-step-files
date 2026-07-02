@@ -40,6 +40,8 @@
 <p>Synonyms: &quot;lowercase page selector&quot;, &quot;P directive with digit selector&quot;, &quot;Polish characters garbled in STEP&quot;, &quot;page-shift state machine ignored&quot;, &quot;PA through PI page directive bad&quot;. Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;\\Pg\\&#x27;) or contains(b&#x27;\\P1\\&#x27;) or contains(b&#x27;\\P!\\&#x27;)</code></li>
 <li><code>count(b&#x27;\\P&#x27;) &gt;= 2</code></li>

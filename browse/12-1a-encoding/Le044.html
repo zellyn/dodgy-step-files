@@ -38,6 +38,8 @@
 <p>**See also**: Le006, Le041. Distinct from Le006 (which exercises hex run length, not surrogate semantics). Synonyms: &quot;X2 payload contains UTF-16 surrogate halves&quot;, &quot;Java char[] surrogate written as X2&quot;, &quot;X2 with U+D800 surrogate&quot;, &quot;lone surrogate in X2 hex run&quot;, &quot;X2 surrogate-half value&quot;. Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;\\X2\\D801\\X0\\&#x27;) or contains(b&#x27;\\X2\\D801DC37\\X0\\&#x27;)</code></li>
 <li><code>count(b&#x27;\\X2\\&#x27;) &gt;= 2</code></li>

@@ -40,6 +40,8 @@
 <p>Synonyms: &quot;smart-quote in STEP&quot;, &quot;cp1252 high-bit&quot;, &quot;C1 control byte in string&quot;. **See also**: Le002, Le009. Validation observed: silent acceptance; kernel-mishandling-by-silent-page-reinterpretation demonstrates the defect class. Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;\\X\\91&#x27;) or contains(b&#x27;\\X\\92&#x27;) or contains(b&#x27;\\X\\80&#x27;) or contains(b&#x27;\\X\\97&#x27;)</code></li>
 <li><code>matches(rb&#x27;\\X\\(80|91|92|93|94|97|99)&#x27;)</code></li>

@@ -37,6 +37,8 @@
 <p>**See also**: Le020. Synonyms: &quot;non-canonical implementation_level in FILE_DESCRIPTION&quot;, &quot;STEP conformance code wrong format&quot;, &quot;vendor branding in implementation_level&quot;, &quot;1.0 instead of 1;1 in header&quot;, &quot;implementation_level overflow&quot;. Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&quot;&#x27;Simulia 2018&#x27;&quot;) or matches(rb&quot;FILE_DESCRIPTION\([^;]*&#x27;1\.0&#x27;&quot;)</code></li>
 <li><code>contains(b&#x27;Simulia&#x27;) or contains(b&quot;&#x27;1.0&#x27;&quot;)</code></li>

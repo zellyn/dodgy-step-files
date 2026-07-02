@@ -322,6 +322,7 @@ REQUIRED_FIELDS = (
 # backs the entry's claim.
 PROVENANCE_TIERS = (
     "bytes-sufficient",       # default: bytes alone embody the defect
+    "bytes-only",             # defect only visible in bytes; oracles cannot verify
     "runtime-only",           # defect is kernel runtime behavior, not in any file
     "requires-sibling-pair",  # defect requires both <id>.input.stp and <id>.stp
     "cross-file-state",       # defect lives across multiple files / process state

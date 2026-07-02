@@ -36,6 +36,8 @@
 <p>Synonyms: &quot;FILE_DESCRIPTION with comma trips header parser&quot;, &quot;regex header parser breaks on parens&quot;, &quot;comma inside string splits header wrong&quot;, &quot;IFC header parens confuse split&quot;, &quot;header description with embedded comma&quot;. Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>matches(rb&quot;FILE_DESCRIPTION\(\(\s*&#x27;[^&#x27;]*\([^)]+\)&quot;)</code></li>
 </ul></section>
