@@ -3,49 +3,50 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ad130 — `PRESENTATION_LAYER_ASSIGNMENT` with null (`$`) item in `assigned_items` set</title>
+  <title>Ad131 — OCCT PR #448: malformed `FILE_SCHEMA` with literal `.` between schema name and version triple (every OCCT-written AP242 file in the wild)</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
 <body class="entry">
 <nav class="topnav">
-<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.11 Adversarial / parser robustness</a> <span class="sep">/</span> <span class="current">Ad130</span>
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.11 Adversarial / parser robustness</a> <span class="sep">/</span> <span class="current">Ad131</span>
 </nav>
 <header class="title-bar">
-<h1>Ad130 <span class="sep">—</span> <span class="entry-title">`PRESENTATION_LAYER_ASSIGNMENT` with null (`$`) item in `assigned_items` set</span></h1>
-<p class="category">§12.11 adversarial (sub-class: null-item dereference / layer-visibility crash)</p>
+<h1>Ad131 <span class="sep">—</span> <span class="entry-title">OCCT PR #448: malformed `FILE_SCHEMA` with literal `.` between schema name and version triple (every OCCT-written AP242 file in the wild)</span></h1>
+<p class="category">§12.11 adversarial (sub-class: writer-emitted malformed schema declaration / massive-impact real-world defect)</p>
 <p class="severity-badge severity-p0">P0 — receiver crash / hang / OOM</p>
 <p class="tag-pills">
-<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
 <a class="tag tag-adversarial" href="../by-tag/adversarial/index.html">adversarial</a>
 </p>
 </header>
 <main>
 <section class="fixture-link">
-<a class="big-link" href="../../step-examples/12-11-adversarial/Ad130.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-11-adversarial/Ad130.stp</code>
+<a class="big-link" href="../../step-examples/12-11-adversarial/Ad131.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-11-adversarial/Ad131.stp</code>
 </section>
 <section><h2>Sources</h2><ul>
-<li>OCCT commit 96049f2e3d7de177d89f89231e44e9d7d105ae43 (layer-visibility null-item crash fix) and OCCT MANTIS 0032049 (layer visibility + null item crash). B4 wave-7 DEF-LL (LGPL-clean — pattern only, no upstream bytes copied). `PRESENTATION_LAYER_ASSIGNMENT` `assigned_items` is an unordered set of items whose element type is `SELECT(REPRESENTATION_ITEM, REPRESENTATION)`</li>
-<li>when a producer emits a `$` (null) element alongside valid `STYLED_ITEM` references, pre-fix OCCT dereferences the null pointer during layer resolution and segfaults</li>
-<li>post-fix OCCT skips the null with a diagnostic.</li>
+<li>OCCT PR #448 (https://github.com/Open-Cascade-SAS/OCCT/pull/448) — `STEPControl_Writer` FILE_SCHEMA emission fix that strips the extra `.` between schema name and version tuple. B4 wave-8 DEF-BBB (LGPL-clean — malformed pattern documented in the PR title and patch diff</li>
+<li>no upstream STEP bytes copied). **Massive real-world impact**: every OCCT-written AP242 file emitted by FreeCAD, KiCad, Salome-Platform, and the entire OCCT-based ecosystem between OCCT 7.x releases (~2018-2024) and the pre-8.0 patch (PR #448) carries this malformed header. This affects the entire OCCT-authored AP242 corpus in the wild — arguably the largest single class of malformed AP242 STEP files ever produced.</li>
 </ul></section>
+<section><h2>Sender</h2>
+<p>OCCT `STEPControl_Writer` 7.x through pre-8.0 (fixed in PR #448) — the C++ writer code path built the schema name as `TCollection_AsciiString schemaName = &quot;AUTOMOTIVE_DESIGN.&quot;; schemaName += &quot;{ 1 0 10303 442 3 0 0 }&quot;;` — with the trailing `.` on the schema-name literal producing the literal join point `AUTOMOTIVE_DESIGN.{ 1 0 10303 442 3 0 0 }`. The PR removes the trailing period.</p></section>
 <section><h2>Description</h2>
-<p>STEP AP214 file with a valid cube `MANIFOLD_SOLID_BREP` (six planar 10×10×10 mm faces) plus a colour + presentation-style chain producing two `STYLED_ITEM` entities (one red on the +X face, one blue on the +Y face). The defect: `PRESENTATION_LAYER_ASSIGNMENT(&#x27;layer_ad130&#x27;,&#x27;...&#x27;,(#styled1,$,#styled2))` — the middle element of the `assigned_items` set is literally `$` (STEP null). OCCT prior to commit 96049f2e passes this triple through `TCollection_HAsciiString` resolution without a null check and dereferences the null pointer during layer visibility computation, producing a segfault. OCCT post-fix (96049f2e+) skips the null entry gracefully and assigns only the two non-null `STYLED_ITEM` items to the layer, emitting a diagnostic in the transfer log.</p></section>
+<p>STEP file whose HEADER section contains a `FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN.{ 1 0 10303 442 3 0 0 }&#x27;));` declaration — note the literal `.` (period) between the schema name `AUTOMOTIVE_DESIGN` and the opening brace `{` of the version-triple tuple. The DATA section contains a minimal cube `MANIFOLD_SOLID_BREP` (six planar 10×10×10 mm faces) so the file is otherwise valid. Strict Part 21 parsers reject the schema declaration on syntax grounds (the ISO 10303-21 grammar for a `SCHEMA_NAME` does not permit an embedded `.` before the parenthesized version tuple). Permissive parsers (including OCCT itself, since it wrote the malformation) accept the file but treat the schema as effectively unknown, falling back to generic AP203/AP214 handling and silently dropping AP242-specific tolerance and PMI entities. The literal `.{` byte sequence is directly detectable via byte assertion on the header.</p></section>
 <section><h2>Reproducer recipe</h2>
-<p>cube `MANIFOLD_SOLID_BREP`; two `STYLED_ITEM` entities with colour + presentation-style chain; `PRESENTATION_LAYER_ASSIGNMENT(&#x27;layer_ad130&#x27;,&#x27;...&#x27;,(#styled_1,$,#styled_2))` — literal `$` between the two valid references.</p></section>
+<p>HEADER with `FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN.{ 1 0 10303 442 3 0 0 }&#x27;));` (literal `.{` join point); minimal cube `MANIFOLD_SOLID_BREP` in DATA section.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>reject or skip null `$` entries in `PRESENTATION_LAYER_ASSIGNMENT.assigned_items` with a diagnostic (`W_LAYER_NULL_ITEM_SKIPPED`); never dereference the null pointer; never segfault or produce undefined behaviour.</p></section>
+<p>STEP parsers must either (a) reject the file at HEADER parse time with a diagnostic pointing at the malformed `FILE_SCHEMA` declaration, or (b) accept the file with a recovery diagnostic (`W_FILE_SCHEMA_MALFORMED_DOT_SEPARATOR`) explaining that the schema was normalized by stripping the extra period; silent fallback to AP203/AP214 handling without diagnostic is unacceptable because AP242-specific entities are then silently dropped.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;PRESENTATION_LAYER_ASSIGNMENT null item segfault&quot;, &quot;OCCT 96049f2 layer null item crash fix&quot;, &quot;MANTIS 32049 layer visibility null crash&quot;, &quot;assigned_items $ null STEP layer&quot;, &quot;STYLED_ITEM null layer dereference crash&quot;.</p></section>
+<p>OCCT PR #448 patch line is exact; the malformed string is byte-verifiable. B4 wave-8 DEF-BBB. Confidence: HIGH. Impact: every OCCT-authored AP242 file in the wild between 2018 and OCCT 8.0 release carries this malformation — the corpus scale is millions of files across FreeCAD, KiCad, Salome, and downstream tools. Synonyms: &quot;OCCT PR #448 FILE_SCHEMA extra dot&quot;, &quot;AUTOMOTIVE_DESIGN. schema name period&quot;, &quot;malformed FILE_SCHEMA OCCT 7.x AP242&quot;, &quot;STEPControl_Writer schema-name dot bug&quot;, &quot;every OCCT-written AP242 file schema malformed&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
-<li><code>contains(b&#x27;PRESENTATION_LAYER_ASSIGNMENT&#x27;)</code></li>
-<li><code>contains(b&#x27;STYLED_ITEM&#x27;)</code></li>
-<li><code>matches(rb&quot;PRESENTATION_LAYER_ASSIGNMENT\(&#x27;[^&#x27;]*&#x27;,&#x27;[^&#x27;]*&#x27;,\(#\d+,\$,#\d+\)\)&quot;)</code></li>
+<li><code>contains(b&#x27;AUTOMOTIVE_DESIGN.{&#x27;)</code></li>
+<li><code>contains(b&#x27;FILE_SCHEMA&#x27;)</code></li>
+<li><code>contains(b&#x27;MANIFOLD_SOLID_BREP&#x27;)</code></li>
 </ul></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
-<li><code>load == &quot;ok&quot;</code></li>
+<li><code>shape_null == False</code></li>
 </ul></section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
@@ -54,11 +55,11 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Ad130: <mark>PRESENTATION_LAYER_ASSIGNMENT</mark>(&#x27;layer_ad130&#x27;,&#x27;&#x27;,(#styled1,$,#styled2)) â the middle element of assigned_items is literally $ (STEP null) alongside two valid <mark>STYLED_ITEM</mark> references; valid cube MANIFOLD_SOLID_BREP as the carrier geometry; OCCT prior to commit 96049f2e (MANTIS 0032049 layer null-item fix) dereferences the null pointer during layer resolution and segfaults; post-fix OCCT skips the null entry gracefully and assigns only the two non-null <mark>STYLED_ITEM</mark>s to the layer; DEF-LL; MANIFOLD_SOLID_BREP IS model entity â OCC (post-fix) yields shape(1) */
+<span class="lineno">2</span>/* Ad131: <mark>FILE_SCHEMA</mark>((&#x27;<mark>AUTOMOTIVE_DESIGN.{</mark> 1 0 10303 442 3 0 0 }&#x27;)) â the literal &#x27;.&#x27; (period) between AUTOMOTIVE_DESIGN and the opening brace of the version tuple; the exact pattern OCCT 7.x through pre-8.0&#x27;s STEPControl_Writer emitted for every AP242 export (fixed in OCCT PR #448); every FreeCAD, KiCad, Salome-Platform, and OCCT-based export of AP242 in the ~2018-2024 window carries this malformed header; strict Part 21 parsers reject the schema declaration; permissive parsers (OCCT itself) fall back to generic AP2xx handling and silently drop AP242-specific tolerance/PMI entities; minimal cube <mark>MANIFOLD_SOLID_BREP</mark> as carrier geometry; DEF-BBB; <mark>MANIFOLD_SOLID_BREP</mark> IS model entity â OCC (permissive) yields shape(1) */
 <span class="lineno">3</span>HEADER;
-<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ad130&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">5</span>FILE_NAME(&#x27;Ad130.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ad131&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ad131.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span><mark>FILE_SCHEMA</mark>((&#x27;<mark>AUTOMOTIVE_DESIGN.{</mark> 1 0 10303 442 3 0 0 }&#x27;));
 <span class="lineno">7</span>ENDSEC;
 <span class="lineno">8</span>DATA;
 <span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
@@ -278,10 +279,10 @@
 <span class="lineno">223</span>#214=EDGE_LOOP(&#x27;&#x27;,(#198,#203,#208,#213));
 <span class="lineno">224</span>#215=FACE_OUTER_BOUND(&#x27;&#x27;,#214,.T.);
 <span class="lineno">225</span>#216=ADVANCED_FACE(&#x27;&#x27;,(#215),#185,.T.);
-<span class="lineno">226</span>#217=CLOSED_SHELL(&#x27;ad130_shell&#x27;,(#36,#72,#108,#144,#180,#216));
-<span class="lineno">227</span>#218=MANIFOLD_SOLID_BREP(&#x27;ad130_cube&#x27;,#217);
+<span class="lineno">226</span>#217=CLOSED_SHELL(&#x27;ad131_shell&#x27;,(#36,#72,#108,#144,#180,#216));
+<span class="lineno">227</span>#218=<mark>MANIFOLD_SOLID_BREP</mark>(&#x27;ad131_cube&#x27;,#217);
 <span class="lineno">228</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
-<span class="lineno">229</span>#9051=PRODUCT(&#x27;Ad130&#x27;,&#x27;Ad130&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">229</span>#9051=PRODUCT(&#x27;Ad131&#x27;,&#x27;Ad131&#x27;,&#x27;&#x27;,(#9050));
 <span class="lineno">230</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
 <span class="lineno">231</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
 <span class="lineno">232</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
@@ -293,31 +294,14 @@
 <span class="lineno">238</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
 <span class="lineno">239</span>#9061=ADVANCED_BREP_SHAPE_REPRESENTATION(&#x27;&#x27;,(#218),#9060);
 <span class="lineno">240</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
-<span class="lineno">241</span>#9063=COLOUR_RGB(&#x27;red&#x27;,1.0,0.0,0.0);
-<span class="lineno">242</span>#9064=COLOUR_RGB(&#x27;blue&#x27;,0.0,0.0,1.0);
-<span class="lineno">243</span>#9065=FILL_AREA_STYLE_COLOUR(&#x27;&#x27;,#9063);
-<span class="lineno">244</span>#9066=FILL_AREA_STYLE(&#x27;&#x27;,(#9065));
-<span class="lineno">245</span>#9067=SURFACE_STYLE_FILL_AREA(#9066);
-<span class="lineno">246</span>#9068=SURFACE_SIDE_STYLE(&#x27;&#x27;,(#9067));
-<span class="lineno">247</span>#9069=SURFACE_STYLE_USAGE(.BOTH.,#9068);
-<span class="lineno">248</span>#9070=PRESENTATION_STYLE_ASSIGNMENT((#9069));
-<span class="lineno">249</span>#9071=FILL_AREA_STYLE_COLOUR(&#x27;&#x27;,#9064);
-<span class="lineno">250</span>#9072=FILL_AREA_STYLE(&#x27;&#x27;,(#9071));
-<span class="lineno">251</span>#9073=SURFACE_STYLE_FILL_AREA(#9072);
-<span class="lineno">252</span>#9074=SURFACE_SIDE_STYLE(&#x27;&#x27;,(#9073));
-<span class="lineno">253</span>#9075=SURFACE_STYLE_USAGE(.BOTH.,#9074);
-<span class="lineno">254</span>#9076=PRESENTATION_STYLE_ASSIGNMENT((#9075));
-<span class="lineno">255</span>#9077=<mark>STYLED_ITEM</mark>(&#x27;face_xp_style&#x27;,(#9070),#36);
-<span class="lineno">256</span>#9078=<mark>STYLED_ITEM</mark>(&#x27;face_yp_style&#x27;,(#9076),#108);
-<span class="lineno">257</span>#9079=<mark>PRESENTATION_LAYER_ASSIGNMENT(&#x27;layer_ad130&#x27;,&#x27;layer with null middle item â OCCT pre-fix 96049f2 segfaults&#x27;,(#9077,$,#9078))</mark>;
-<span class="lineno">258</span>ENDSEC;
-<span class="lineno">259</span>END-ISO-10303-21;
+<span class="lineno">241</span>ENDSEC;
+<span class="lineno">242</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>
 </main>
 <footer>
-<nav class="prevnext"><a class="prev" href="Ad129.html">&larr; Ad129</a> <a class="up" href="index.html">§12.11 Adversarial / parser robustness</a> <a class="next" href="Ad131.html">Ad131 &rarr;</a></nav>
+<nav class="prevnext"><a class="prev" href="Ad130.html">&larr; Ad130</a> <a class="up" href="index.html">§12.11 Adversarial / parser robustness</a></nav>
 <p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
 </footer>
 </body>

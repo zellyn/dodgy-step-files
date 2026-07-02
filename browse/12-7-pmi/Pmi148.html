@@ -3,49 +3,52 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ad130 — `PRESENTATION_LAYER_ASSIGNMENT` with null (`$`) item in `assigned_items` set</title>
+  <title>Pmi148 — AP242 Ed.3 `ANNOTATION_PLACEHOLDER_LEADER_LINE` entity dropped by Ed.2/AP214 readers</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
 <body class="entry">
 <nav class="topnav">
-<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.11 Adversarial / parser robustness</a> <span class="sep">/</span> <span class="current">Ad130</span>
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.7 PMI / GD&amp;T</a> <span class="sep">/</span> <span class="current">Pmi148</span>
 </nav>
 <header class="title-bar">
-<h1>Ad130 <span class="sep">—</span> <span class="entry-title">`PRESENTATION_LAYER_ASSIGNMENT` with null (`$`) item in `assigned_items` set</span></h1>
-<p class="category">§12.11 adversarial (sub-class: null-item dereference / layer-visibility crash)</p>
-<p class="severity-badge severity-p0">P0 — receiver crash / hang / OOM</p>
+<h1>Pmi148 <span class="sep">—</span> <span class="entry-title">AP242 Ed.3 `ANNOTATION_PLACEHOLDER_LEADER_LINE` entity dropped by Ed.2/AP214 readers</span></h1>
+<p class="category">§12.7 PMI/GD&amp;T (sub-class: edition-boundary entity elision / placeholder leader line)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
 <p class="tag-pills">
-<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
-<a class="tag tag-adversarial" href="../by-tag/adversarial/index.html">adversarial</a>
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-pmi" href="../by-tag/pmi/index.html">pmi</a>
 </p>
 </header>
 <main>
 <section class="fixture-link">
-<a class="big-link" href="../../step-examples/12-11-adversarial/Ad130.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-11-adversarial/Ad130.stp</code>
+<a class="big-link" href="../../step-examples/12-7-pmi/Pmi148.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-7-pmi/Pmi148.stp</code>
 </section>
 <section><h2>Sources</h2><ul>
-<li>OCCT commit 96049f2e3d7de177d89f89231e44e9d7d105ae43 (layer-visibility null-item crash fix) and OCCT MANTIS 0032049 (layer visibility + null item crash). B4 wave-7 DEF-LL (LGPL-clean — pattern only, no upstream bytes copied). `PRESENTATION_LAYER_ASSIGNMENT` `assigned_items` is an unordered set of items whose element type is `SELECT(REPRESENTATION_ITEM, REPRESENTATION)`</li>
-<li>when a producer emits a `$` (null) element alongside valid `STYLED_ITEM` references, pre-fix OCCT dereferences the null pointer during layer resolution and segfaults</li>
-<li>post-fix OCCT skips the null with a diagnostic.</li>
+<li>steptools.com AP242 Ed.3 notes (`ANNOTATION_PLACEHOLDER_LEADER_LINE` §4.5 — one of 21 new Ed.3 entities in the leader-line family). B4 wave-8 DEF-PP (LGPL-clean — pattern only, no upstream bytes copied). AP242 Ed.3 introduced explicit leader lines for unfilled placeholder callouts so a callout slot can carry a leader-to-face link before content is authored</li>
+<li>earlier editions (Ed.2, Ed.1, AP214) do not carry this entity in their schema and their readers produce Void transfer status.</li>
 </ul></section>
+<section><h2>Sender</h2>
+<p>AP242 Edition 3 STEP files from PMI-authoring tools that emit placeholder callouts with leader lines during in-progress authoring; file header declares `AUTOMOTIVE_DESIGN { 1 0 10303 442 4 1 4 }` (Ed.3 OID with hybrid AUTOMOTIVE_DESIGN name).</p></section>
 <section><h2>Description</h2>
-<p>STEP AP214 file with a valid cube `MANIFOLD_SOLID_BREP` (six planar 10×10×10 mm faces) plus a colour + presentation-style chain producing two `STYLED_ITEM` entities (one red on the +X face, one blue on the +Y face). The defect: `PRESENTATION_LAYER_ASSIGNMENT(&#x27;layer_ad130&#x27;,&#x27;...&#x27;,(#styled1,$,#styled2))` — the middle element of the `assigned_items` set is literally `$` (STEP null). OCCT prior to commit 96049f2e passes this triple through `TCollection_HAsciiString` resolution without a null check and dereferences the null pointer during layer visibility computation, producing a segfault. OCCT post-fix (96049f2e+) skips the null entry gracefully and assigns only the two non-null `STYLED_ITEM` items to the layer, emitting a diagnostic in the transfer log.</p></section>
+<p>STEP AP242 Ed.3 file containing a minimal cube `MANIFOLD_SOLID_BREP` (six planar 10×10×10 mm faces) plus one PMI `ANNOTATION_PLACEHOLDER(&#x27;pl_callout&#x27;,&#x27;unfilled callout slot&#x27;,#placeholder_pt)` positioned at world coordinates `(15, 0, 5)` (an unfilled callout slot representing a placeholder that has not yet been given content). The placeholder is linked to the top face&#x27;s `SHAPE_ASPECT` by `ANNOTATION_PLACEHOLDER_LEADER_LINE(&#x27;pl_leader&#x27;,#placeholder,#face_top_sa,$)` — the Ed.3 entity that carries the leader line from the placeholder to a target host. Ed.3 readers resolve the leader line and expose the placeholder+leader pair through the PMI API; Ed.2 / AP214 readers produce Void transfer status on the leader-line entity and silently drop the placeholder-to-face link — the individual `ANNOTATION_PLACEHOLDER` entity may still load but its target-face binding is absent.</p></section>
 <section><h2>Reproducer recipe</h2>
-<p>cube `MANIFOLD_SOLID_BREP`; two `STYLED_ITEM` entities with colour + presentation-style chain; `PRESENTATION_LAYER_ASSIGNMENT(&#x27;layer_ad130&#x27;,&#x27;...&#x27;,(#styled_1,$,#styled_2))` — literal `$` between the two valid references.</p></section>
+<p>AP242 Ed.3 header (`AUTOMOTIVE_DESIGN { 1 0 10303 442 4 1 4 }`); cube `MANIFOLD_SOLID_BREP`; `ANNOTATION_PLACEHOLDER(&#x27;pl_callout&#x27;,&#x27;unfilled callout slot&#x27;,#pt)`; `SHAPE_ASPECT` on top face; `ANNOTATION_PLACEHOLDER_LEADER_LINE(&#x27;pl_leader&#x27;,#placeholder,#face_top_sa,$)`.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>reject or skip null `$` entries in `PRESENTATION_LAYER_ASSIGNMENT.assigned_items` with a diagnostic (`W_LAYER_NULL_ITEM_SKIPPED`); never dereference the null pointer; never segfault or produce undefined behaviour.</p></section>
+<p>AP242 Ed.3 readers must resolve `ANNOTATION_PLACEHOLDER_LEADER_LINE` and populate the placeholder→target-face link; Ed.2 / AP214 readers must emit `W_SCHEMA_ENTITY_UNSUPPORTED(ANNOTATION_PLACEHOLDER_LEADER_LINE)` rather than silently discarding the leader-line entity.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;PRESENTATION_LAYER_ASSIGNMENT null item segfault&quot;, &quot;OCCT 96049f2 layer null item crash fix&quot;, &quot;MANTIS 32049 layer visibility null crash&quot;, &quot;assigned_items $ null STEP layer&quot;, &quot;STYLED_ITEM null layer dereference crash&quot;.</p></section>
+<p>steptools notes_ap242e3.html §4.5 (leader-line family). B4 wave-8 DEF-PP. Confidence: HIGH — accept-live-oracle. OCCT drops the Ed.3 entity and loads the geometry as if AP214 (cube + placeholder load, leader link absent) — that IS the defect. Expected validation captured from OCCT live behavior. Edition boundary: Ed.3 entity absent from Ed.2, Ed.1, AP214 schemas. Synonyms: &quot;ANNOTATION_PLACEHOLDER_LEADER_LINE AP242 Ed.3 dropped&quot;, &quot;placeholder callout leader link lost Ed.2&quot;, &quot;PMI placeholder-to-face leader silent drop&quot;, &quot;Ed.3 unfilled callout leader entity absent&quot;, &quot;AP242 Ed.3 placeholder leader family&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
-<li><code>contains(b&#x27;PRESENTATION_LAYER_ASSIGNMENT&#x27;)</code></li>
-<li><code>contains(b&#x27;STYLED_ITEM&#x27;)</code></li>
-<li><code>matches(rb&quot;PRESENTATION_LAYER_ASSIGNMENT\(&#x27;[^&#x27;]*&#x27;,&#x27;[^&#x27;]*&#x27;,\(#\d+,\$,#\d+\)\)&quot;)</code></li>
+<li><code>contains(b&#x27;ANNOTATION_PLACEHOLDER_LEADER_LINE&#x27;)</code></li>
+<li><code>contains(b&#x27;ANNOTATION_PLACEHOLDER&#x27;)</code></li>
+<li><code>contains(b&#x27;10303 442 4 1 4&#x27;)</code></li>
+<li><code>contains(b&#x27;MANIFOLD_SOLID_BREP&#x27;)</code></li>
 </ul></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
-<li><code>load == &quot;ok&quot;</code></li>
+<li><code>shape_null == False</code></li>
+<li><code>n_faces_total == 6</code></li>
 </ul></section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
@@ -54,11 +57,11 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Ad130: <mark>PRESENTATION_LAYER_ASSIGNMENT</mark>(&#x27;layer_ad130&#x27;,&#x27;&#x27;,(#styled1,$,#styled2)) â the middle element of assigned_items is literally $ (STEP null) alongside two valid <mark>STYLED_ITEM</mark> references; valid cube MANIFOLD_SOLID_BREP as the carrier geometry; OCCT prior to commit 96049f2e (MANTIS 0032049 layer null-item fix) dereferences the null pointer during layer resolution and segfaults; post-fix OCCT skips the null entry gracefully and assigns only the two non-null <mark>STYLED_ITEM</mark>s to the layer; DEF-LL; MANIFOLD_SOLID_BREP IS model entity â OCC (post-fix) yields shape(1) */
+<span class="lineno">2</span>/* Pmi148: AP242 Ed.3 file: cube <mark>MANIFOLD_SOLID_BREP</mark> (10x10x10 mm) plus one PMI <mark>ANNOTATION_PLACEHOLDER</mark> (unfilled callout slot at (15, 0, 5)) linked to the top face&#x27;s SHAPE_ASPECT via <mark>ANNOTATION_PLACEHOLDER_LEADER_LINE</mark> (AP242 Ed.3 Â§4.5 leader-line family, one of 21 new Ed.3 entities); header OID = {1 0 <mark>10303 442 4 1 4</mark>}; Ed.3 readers resolve the placeholder+leader pair; Ed.2 / AP214 readers produce Void transfer status on the leader-line entity â the placeholder callout may still load but the leader-to-face link is silently absent; edition-boundary drop; steptools notes_ap242e3.html; <mark>MANIFOLD_SOLID_BREP</mark> IS model entity â OCC yields shape(1) */
 <span class="lineno">3</span>HEADER;
-<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ad130&#x27;),&#x27;2;1&#x27;);
-<span class="lineno">5</span>FILE_NAME(&#x27;Ad130.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Pmi148&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Pmi148.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 <mark>10303 442 4 1 4</mark> }&#x27;));
 <span class="lineno">7</span>ENDSEC;
 <span class="lineno">8</span>DATA;
 <span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
@@ -278,10 +281,10 @@
 <span class="lineno">223</span>#214=EDGE_LOOP(&#x27;&#x27;,(#198,#203,#208,#213));
 <span class="lineno">224</span>#215=FACE_OUTER_BOUND(&#x27;&#x27;,#214,.T.);
 <span class="lineno">225</span>#216=ADVANCED_FACE(&#x27;&#x27;,(#215),#185,.T.);
-<span class="lineno">226</span>#217=CLOSED_SHELL(&#x27;ad130_shell&#x27;,(#36,#72,#108,#144,#180,#216));
-<span class="lineno">227</span>#218=MANIFOLD_SOLID_BREP(&#x27;ad130_cube&#x27;,#217);
+<span class="lineno">226</span>#217=CLOSED_SHELL(&#x27;pmi148_shell&#x27;,(#36,#72,#108,#144,#180,#216));
+<span class="lineno">227</span>#218=<mark>MANIFOLD_SOLID_BREP</mark>(&#x27;pmi148_cube&#x27;,#217);
 <span class="lineno">228</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
-<span class="lineno">229</span>#9051=PRODUCT(&#x27;Ad130&#x27;,&#x27;Ad130&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">229</span>#9051=PRODUCT(&#x27;Pmi148&#x27;,&#x27;Pmi148&#x27;,&#x27;&#x27;,(#9050));
 <span class="lineno">230</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
 <span class="lineno">231</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
 <span class="lineno">232</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
@@ -293,31 +296,21 @@
 <span class="lineno">238</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
 <span class="lineno">239</span>#9061=ADVANCED_BREP_SHAPE_REPRESENTATION(&#x27;&#x27;,(#218),#9060);
 <span class="lineno">240</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
-<span class="lineno">241</span>#9063=COLOUR_RGB(&#x27;red&#x27;,1.0,0.0,0.0);
-<span class="lineno">242</span>#9064=COLOUR_RGB(&#x27;blue&#x27;,0.0,0.0,1.0);
-<span class="lineno">243</span>#9065=FILL_AREA_STYLE_COLOUR(&#x27;&#x27;,#9063);
-<span class="lineno">244</span>#9066=FILL_AREA_STYLE(&#x27;&#x27;,(#9065));
-<span class="lineno">245</span>#9067=SURFACE_STYLE_FILL_AREA(#9066);
-<span class="lineno">246</span>#9068=SURFACE_SIDE_STYLE(&#x27;&#x27;,(#9067));
-<span class="lineno">247</span>#9069=SURFACE_STYLE_USAGE(.BOTH.,#9068);
-<span class="lineno">248</span>#9070=PRESENTATION_STYLE_ASSIGNMENT((#9069));
-<span class="lineno">249</span>#9071=FILL_AREA_STYLE_COLOUR(&#x27;&#x27;,#9064);
-<span class="lineno">250</span>#9072=FILL_AREA_STYLE(&#x27;&#x27;,(#9071));
-<span class="lineno">251</span>#9073=SURFACE_STYLE_FILL_AREA(#9072);
-<span class="lineno">252</span>#9074=SURFACE_SIDE_STYLE(&#x27;&#x27;,(#9073));
-<span class="lineno">253</span>#9075=SURFACE_STYLE_USAGE(.BOTH.,#9074);
-<span class="lineno">254</span>#9076=PRESENTATION_STYLE_ASSIGNMENT((#9075));
-<span class="lineno">255</span>#9077=<mark>STYLED_ITEM</mark>(&#x27;face_xp_style&#x27;,(#9070),#36);
-<span class="lineno">256</span>#9078=<mark>STYLED_ITEM</mark>(&#x27;face_yp_style&#x27;,(#9076),#108);
-<span class="lineno">257</span>#9079=<mark>PRESENTATION_LAYER_ASSIGNMENT(&#x27;layer_ad130&#x27;,&#x27;layer with null middle item â OCCT pre-fix 96049f2 segfaults&#x27;,(#9077,$,#9078))</mark>;
-<span class="lineno">258</span>ENDSEC;
-<span class="lineno">259</span>END-ISO-10303-21;
+<span class="lineno">241</span>#9063=SHAPE_ASPECT(&#x27;top_face&#x27;,&#x27;placeholder leader target face&#x27;,#9055,.F.);
+<span class="lineno">242</span>#9064=CARTESIAN_POINT(&#x27;&#x27;,(15.0,0.0,5.0));
+<span class="lineno">243</span>#9065=<mark>ANNOTATION_PLACEHOLDER</mark>(&#x27;pl_callout&#x27;,&#x27;unfilled callout slot&#x27;,#9064);
+<span class="lineno">244</span>#9066=<mark>ANNOTATION_PLACEHOLDER_LEADER_LINE</mark>(&#x27;pl_leader&#x27;,#9065,#9063,$);
+<span class="lineno">245</span>#9067=PROPERTY_DEFINITION(&#x27;pmi_placeholder&#x27;,&#x27;placeholder callout with leader&#x27;,#9055);
+<span class="lineno">246</span>#9068=REPRESENTATION(&#x27;placeholder_rep&#x27;,(#9065,#9066,#9063),#9060);
+<span class="lineno">247</span>#9069=PROPERTY_DEFINITION_REPRESENTATION(#9067,#9068);
+<span class="lineno">248</span>ENDSEC;
+<span class="lineno">249</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>
 </main>
 <footer>
-<nav class="prevnext"><a class="prev" href="Ad129.html">&larr; Ad129</a> <a class="up" href="index.html">§12.11 Adversarial / parser robustness</a> <a class="next" href="Ad131.html">Ad131 &rarr;</a></nav>
+<nav class="prevnext"><a class="prev" href="Pmi147.html">&larr; Pmi147</a> <a class="up" href="index.html">§12.7 PMI / GD&amp;T</a> <a class="next" href="Pmi149.html">Pmi149 &rarr;</a></nav>
 <p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
 </footer>
 </body>

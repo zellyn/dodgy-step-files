@@ -4818,6 +4818,45 @@
   },
   {
     "byte_assertions": [
+      "contains(b'AUTOMOTIVE_DESIGN.{')",
+      "contains(b'FILE_SCHEMA')",
+      "contains(b'MANIFOLD_SOLID_BREP')"
+    ],
+    "category": "§12.11 adversarial (sub-class: writer-emitted malformed schema declaration / massive-impact real-world defect)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "STEP file whose HEADER section contains a `FILE_SCHEMA(('AUTOMOTIVE_DESIGN.{ 1 0 10303 442 3 0 0 }'));` declaration — note the literal `.` (period) between the schema name `AUTOMOTIVE_DESIGN` and the opening brace `{` of the version-triple tuple. The DATA section contains a minimal cube `MANIFOLD_SOLID_BREP` (six planar 10×10×10 mm faces) so the file is otherwise valid. Strict Part 21 parsers reject the schema declaration on syntax grounds (the ISO 10303-21 grammar for a `SCHEMA_NAME` does not permit an embedded `.` before the parenthesized version tuple). Permissive parsers (including OCCT itself, since it wrote the malformation) accept the file but treat the schema as effectively unknown, falling back to generic AP203/AP214 handling and silently dropping AP242-specific tolerance and PMI entities. The literal `.{` byte sequence is directly detectable via byte assertion on the header.",
+    "expected_kernel_behavior": "STEP parsers must either (a) reject the file at HEADER parse time with a diagnostic pointing at the malformed `FILE_SCHEMA` declaration, or (b) accept the file with a recovery diagnostic (`W_FILE_SCHEMA_MALFORMED_DOT_SEPARATOR`) explaining that the schema was normalized by stripping the extra period; silent fallback to AP203/AP214 handling without diagnostic is unacceptable because AP242-specific entities are then silently dropped.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-11-adversarial/Ad131.stp",
+    "id": "Ad131",
+    "notes": "OCCT PR #448 patch line is exact; the malformed string is byte-verifiable. B4 wave-8 DEF-BBB. Confidence: HIGH. Impact: every OCCT-authored AP242 file in the wild between 2018 and OCCT 8.0 release carries this malformation — the corpus scale is millions of files across FreeCAD, KiCad, Salome, and downstream tools. Synonyms: \"OCCT PR #448 FILE_SCHEMA extra dot\", \"AUTOMOTIVE_DESIGN. schema name period\", \"malformed FILE_SCHEMA OCCT 7.x AP242\", \"STEPControl_Writer schema-name dot bug\", \"every OCCT-written AP242 file schema malformed\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "HEADER with `FILE_SCHEMA(('AUTOMOTIVE_DESIGN.{ 1 0 10303 442 3 0 0 }'));` (literal `.{` join point); minimal cube `MANIFOLD_SOLID_BREP` in DATA section.",
+    "section": "12.11",
+    "section_dir": "12-11-adversarial",
+    "see_also": [],
+    "sender": "OCCT `STEPControl_Writer` 7.x through pre-8.0 (fixed in PR #448) — the C++ writer code path built the schema name as `TCollection_AsciiString schemaName = \"AUTOMOTIVE_DESIGN.\"; schemaName += \"{ 1 0 10303 442 3 0 0 }\";` — with the trailing `.` on the schema-name literal producing the literal join point `AUTOMOTIVE_DESIGN.{ 1 0 10303 442 3 0 0 }`. The PR removes the trailing period.",
+    "severity": "P0",
+    "sources": [
+      "OCCT PR #448 (https://github.com/Open-Cascade-SAS/OCCT/pull/448) — `STEPControl_Writer` FILE_SCHEMA emission fix that strips the extra `.` between schema name and version tuple. B4 wave-8 DEF-BBB (LGPL-clean — malformed pattern documented in the PR title and patch diff",
+      "no upstream STEP bytes copied). **Massive real-world impact**: every OCCT-written AP242 file emitted by FreeCAD, KiCad, Salome-Platform, and the entire OCCT-based ecosystem between OCCT 7.x releases (~2018-2024) and the pre-8.0 patch (PR #448) carries this malformed header. This affects the entire OCCT-authored AP242 corpus in the wild — arguably the largest single class of malformed AP242 STEP files ever produced."
+    ],
+    "taxonomy": [
+      "spec-violation",
+      "adversarial"
+    ],
+    "tier3_assertions": [
+      "shape_null == False"
+    ],
+    "title": "OCCT PR #448: malformed `FILE_SCHEMA` with literal `.` between schema name and version triple (every OCCT-written AP242 file in the wild)"
+  },
+  {
+    "byte_assertions": [
       "contains(b'\\\\X2\\\\')",
       "contains(b'EDGE_CURVE')",
       "contains(b'ADVANCED_FACE')"
@@ -57666,6 +57705,43 @@
   },
   {
     "byte_assertions": [
+      "contains(b'CONICAL_SURFACE')",
+      "count_entity_def(b'ADVANCED_FACE') == 1",
+      "count_entity_def(b'CONICAL_SURFACE') == 1"
+    ],
+    "category": "§12.2c surfaces (sub-class: producer-consumer convention mismatch / periodic-surface single-face vs. split-at-180°)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "STEP file with a `SHELL_BASED_SURFACE_MODEL` containing one `OPEN_SHELL` with a single `ADVANCED_FACE` whose `face_geometry` is a `CONICAL_SURFACE('gs193_chamfer',#axis,6.5,π/4)` (reference radius 6.5, half-angle 45°). The face covers the full 360° angular extent — its `FACE_OUTER_BOUND` walks an `EDGE_LOOP` with four `ORIENTED_EDGE` entries: (1) bottom circle (`EDGE_CURVE('gs193_bottom_ring',#v_seam_lo,#v_seam_lo,#lo_circ,.T.)`), forward; (2) seam edge (`EDGE_CURVE('gs193_seam_edge',#v_seam_lo,#v_seam_hi,#seam_sc,.T.)`), forward — the internal edge on the periodic boundary; (3) top circle (`EDGE_CURVE('gs193_top_ring',#v_seam_hi,#v_seam_hi,#hi_circ,.T.)`), reversed; (4) the same seam edge, reversed — the internal edge referenced a second time so the loop closes topologically on the periodic surface. This is topologically valid (the face wraps around the periodic seam via the internal edge referenced twice). Fusion 360 emits this encoding as its default for circular chamfers; PTC Creo Parametric drops the chamfer with `CONICAL_SURFACE not processed`; SolidWorks, FreeCAD, Rhino, and ZW3D accept the file correctly. Producer-consumer convention mismatch specific to periodic surfaces.",
+    "expected_kernel_behavior": "CAD readers must handle periodic conical surfaces with internal seam edges by (a) accepting the single-face encoding and preserving the seam via the standard periodic-surface machinery, OR (b) automatically splitting the face at 180° into two half-faces during import with a diagnostic (`W_PERIODIC_SURFACE_SPLIT_ON_IMPORT`); silent-drop of the entire chamfer face without diagnostic (Creo's current behavior) is unacceptable.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2c-surfaces/Gs193.stp",
+    "id": "Gs193",
+    "notes": "PTC community #27769 (MartinHanak). B4 wave-8 DEF-EEE. Confidence: HIGH — entity structure precisely describable per MartinHanak's diagnosis. The defect is on the receiver side (Creo); OCCT accepts the fixture and loads it correctly, so the fixture demonstrates the producer-consumer convention mismatch as a byte-level property of the file. Related: line 4186 (Boolean union coplanar-face duplicate topology) is the *opposite* pattern (spurious internal edge between two abutting co-conical faces that should be merged); Gs193 is one full-360° face with one internal seam edge that some receivers require to be split. Synonyms: \"Fusion 360 circular chamfer CONICAL_SURFACE 360° single face\", \"Creo CONICAL_SURFACE not processed chamfer drop\", \"periodic conical face internal seam edge\", \"PTC community 27769 chamfer import faulty\", \"producer-consumer periodic-surface split convention mismatch\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`SHELL_BASED_SURFACE_MODEL` / `OPEN_SHELL` with one `ADVANCED_FACE` on `CONICAL_SURFACE` (half-angle 45°, reference radius 6.5, 360° angular extent); `FACE_OUTER_BOUND` walks `EDGE_LOOP` with (bottom ring, seam forward, top ring reversed, seam reversed) — the seam `EDGE_CURVE` referenced twice as an internal edge on the periodic boundary.",
+    "section": "12.2c",
+    "section_dir": "12-2c-surfaces",
+    "see_also": [],
+    "sender": "Autodesk Fusion 360 STEP export (any recent version) exporting a circular chamfer feature (a chamfer along the edge between a hole and a flat face).",
+    "severity": "P1",
+    "sources": [
+      "PTC community post 27769 (https://community.ptc.com/t5/3D-Part-Assembly-Design/Circular-chamfer-import-faulty/td-p/27769) — MartinHanak's PTC community-expert diagnosis of the Fusion 360 → Creo circular chamfer import failure. B4 wave-8 DEF-EEE (LGPL-clean — pattern only, no upstream bytes copied). Autodesk Fusion 360's STEP exporter emits circular chamfers as a single 360° `ADVANCED_FACE` on a `CONICAL_SURFACE` with the seam represented as an internal `EDGE_CURVE` on the periodic boundary (referenced twice from the outer loop, once forward and once reversed). PTC Creo Parametric requires periodic surfaces to be split at 180° into two half-faces and cannot process the single-face encoding."
+    ],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [
+      "n_faces_total == 1"
+    ],
+    "title": "Fusion 360 → PTC Creo circular chamfer: single 360° `CONICAL_SURFACE` face with internal seam edge"
+  },
+  {
+    "byte_assertions": [
       "matches(rb'CLOSED_SHELL\\s*\\(\\s*\\x27[^\\x27]*\\x27\\s*,\\s*\\(\\s*\\)\\s*\\)')",
       "contains(b'MANIFOLD_SOLID_BREP')",
       "count_entity_def(b'ADVANCED_FACE') == 0"
@@ -103612,6 +103688,88 @@
       "n_faces_total == 6"
     ],
     "title": "AP242 Ed.3 `GEOMETRY_BASED_ITEM_WITHIN_REPRESENTATION` per-item geometry reference dropped by Ed.2/AP214 readers"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'ANNOTATION_PLACEHOLDER_LEADER_LINE')",
+      "contains(b'ANNOTATION_PLACEHOLDER')",
+      "contains(b'10303 442 4 1 4')",
+      "contains(b'MANIFOLD_SOLID_BREP')"
+    ],
+    "category": "§12.7 PMI/GD&T (sub-class: edition-boundary entity elision / placeholder leader line)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "STEP AP242 Ed.3 file containing a minimal cube `MANIFOLD_SOLID_BREP` (six planar 10×10×10 mm faces) plus one PMI `ANNOTATION_PLACEHOLDER('pl_callout','unfilled callout slot',#placeholder_pt)` positioned at world coordinates `(15, 0, 5)` (an unfilled callout slot representing a placeholder that has not yet been given content). The placeholder is linked to the top face's `SHAPE_ASPECT` by `ANNOTATION_PLACEHOLDER_LEADER_LINE('pl_leader',#placeholder,#face_top_sa,$)` — the Ed.3 entity that carries the leader line from the placeholder to a target host. Ed.3 readers resolve the leader line and expose the placeholder+leader pair through the PMI API; Ed.2 / AP214 readers produce Void transfer status on the leader-line entity and silently drop the placeholder-to-face link — the individual `ANNOTATION_PLACEHOLDER` entity may still load but its target-face binding is absent.",
+    "expected_kernel_behavior": "AP242 Ed.3 readers must resolve `ANNOTATION_PLACEHOLDER_LEADER_LINE` and populate the placeholder→target-face link; Ed.2 / AP214 readers must emit `W_SCHEMA_ENTITY_UNSUPPORTED(ANNOTATION_PLACEHOLDER_LEADER_LINE)` rather than silently discarding the leader-line entity.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-7-pmi/Pmi148.stp",
+    "id": "Pmi148",
+    "notes": "steptools notes_ap242e3.html §4.5 (leader-line family). B4 wave-8 DEF-PP. Confidence: HIGH — accept-live-oracle. OCCT drops the Ed.3 entity and loads the geometry as if AP214 (cube + placeholder load, leader link absent) — that IS the defect. Expected validation captured from OCCT live behavior. Edition boundary: Ed.3 entity absent from Ed.2, Ed.1, AP214 schemas. Synonyms: \"ANNOTATION_PLACEHOLDER_LEADER_LINE AP242 Ed.3 dropped\", \"placeholder callout leader link lost Ed.2\", \"PMI placeholder-to-face leader silent drop\", \"Ed.3 unfilled callout leader entity absent\", \"AP242 Ed.3 placeholder leader family\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "AP242 Ed.3 header (`AUTOMOTIVE_DESIGN { 1 0 10303 442 4 1 4 }`); cube `MANIFOLD_SOLID_BREP`; `ANNOTATION_PLACEHOLDER('pl_callout','unfilled callout slot',#pt)`; `SHAPE_ASPECT` on top face; `ANNOTATION_PLACEHOLDER_LEADER_LINE('pl_leader',#placeholder,#face_top_sa,$)`.",
+    "section": "12.7",
+    "section_dir": "12-7-pmi",
+    "see_also": [],
+    "sender": "AP242 Edition 3 STEP files from PMI-authoring tools that emit placeholder callouts with leader lines during in-progress authoring; file header declares `AUTOMOTIVE_DESIGN { 1 0 10303 442 4 1 4 }` (Ed.3 OID with hybrid AUTOMOTIVE_DESIGN name).",
+    "severity": "P1",
+    "sources": [
+      "steptools.com AP242 Ed.3 notes (`ANNOTATION_PLACEHOLDER_LEADER_LINE` §4.5 — one of 21 new Ed.3 entities in the leader-line family). B4 wave-8 DEF-PP (LGPL-clean — pattern only, no upstream bytes copied). AP242 Ed.3 introduced explicit leader lines for unfilled placeholder callouts so a callout slot can carry a leader-to-face link before content is authored",
+      "earlier editions (Ed.2, Ed.1, AP214) do not carry this entity in their schema and their readers produce Void transfer status."
+    ],
+    "taxonomy": [
+      "silent-loss",
+      "pmi"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 6"
+    ],
+    "title": "AP242 Ed.3 `ANNOTATION_PLACEHOLDER_LEADER_LINE` entity dropped by Ed.2/AP214 readers"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'BASIC_ROUND_HOLE_OCCURRENCE_IN_ASSEMBLY')",
+      "contains(b'BASIC_ROUND_HOLE')",
+      "contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')",
+      "contains(b'10303 442 4 1 4')",
+      "contains(b'MANIFOLD_SOLID_BREP')"
+    ],
+    "category": "§12.7 PMI/GD&T (sub-class: edition-boundary feature-semantic elision / assembly-level hole occurrence)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "STEP AP242 Ed.3 assembly file containing a parent product P0 (`Pmi149_P0_assembly`) whose geometry is a prismatic 20×20×10 mm `MANIFOLD_SOLID_BREP` block plus a co-present B-rep of a drilled through-hole (`CYLINDRICAL_SURFACE` `ADVANCED_FACE` for the hole wall, radius 3.0, centered at (10, 10), extruded z: 0→10). A separate child sub-product P1 (`Pmi149_P1_block`) is referenced from P0 via `NEXT_ASSEMBLY_USAGE_OCCURRENCE('nauo_P0_P1','P0 contains P1','assembly',#P0_pd,#P1_pd,$)`. The hole is encoded at THREE levels: (a) B-rep geometry (`CYLINDRICAL_SURFACE` + circle edges); (b) part-level feature semantic `BASIC_ROUND_HOLE('brh_P1','through_hole',#shape_aspect,POSITIVE_LENGTH_MEASURE(6.0))` (as in `Pmi145`); (c) assembly-level `BASIC_ROUND_HOLE_OCCURRENCE_IN_ASSEMBLY('brh_asm_occ_1',$,$,#nauo,#brh_P1)` binding the hole feature to its assembly-context occurrence. Ed.3 readers expose the hole at BOTH the part level (`BASIC_ROUND_HOLE`) and the assembly level (`BASIC_ROUND_HOLE_OCCURRENCE_IN_ASSEMBLY`); Ed.2 / AP214 readers produce Void transfer status on the assembly-context occurrence entity — the part-level feature is still recoverable but the per-assembly-instance binding is silently absent, so CAM/inspection tools can locate the hole per-part but not per-assembly-instance.",
+    "expected_kernel_behavior": "AP242 Ed.3 readers must traverse `BASIC_ROUND_HOLE_OCCURRENCE_IN_ASSEMBLY` and expose the per-assembly-instance hole binding via the machining-feature API; Ed.2 / AP214 readers must emit `W_SCHEMA_ENTITY_UNSUPPORTED(BASIC_ROUND_HOLE_OCCURRENCE_IN_ASSEMBLY)` rather than silently dropping the assembly-context occurrence.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-7-pmi/Pmi149.stp",
+    "id": "Pmi149",
+    "notes": "steptools notes_ap242e3.html §4.5. B4 wave-8 DEF-UU. Confidence: MEDIUM — accept-live-oracle. Entity signature requires AP242 Ed.3 schema for the `_IN_ASSEMBLY` subclass. OCCT drops the Ed.3 entity and loads the geometry+NAUO as if AP214 (block + child product + part-level BASIC_ROUND_HOLE, assembly-context binding absent) — that IS the defect. Expected validation captured from OCCT live behavior. Edition boundary: `_IN_ASSEMBLY` subclass absent from Ed.2, Ed.1, AP214 schemas. Synonyms: \"BASIC_ROUND_HOLE_OCCURRENCE_IN_ASSEMBLY AP242 Ed.3 dropped\", \"assembly-context hole binding lost Ed.2\", \"per-instance hole feature link absent\", \"Ed.3 assembly hole occurrence silent drop\", \"AP242 Ed.3 machining-feature assembly extension\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "AP242 Ed.3 header (`AUTOMOTIVE_DESIGN { 1 0 10303 442 4 1 4 }`); prismatic `MANIFOLD_SOLID_BREP` block + `CYLINDRICAL_SURFACE` hole face; child sub-product PRODUCT + `NEXT_ASSEMBLY_USAGE_OCCURRENCE`; `BASIC_ROUND_HOLE('brh_P1',...,POSITIVE_LENGTH_MEASURE(6.0))`; `BASIC_ROUND_HOLE_OCCURRENCE_IN_ASSEMBLY('brh_asm_occ_1',$,$,#nauo,#brh_P1)`.",
+    "section": "12.7",
+    "section_dir": "12-7-pmi",
+    "see_also": [],
+    "sender": "AP242 Edition 3 STEP files from feature-aware assembly-capable CAD tools that emit both the part-level `BASIC_ROUND_HOLE` and its assembly-context occurrence; file header declares `AUTOMOTIVE_DESIGN { 1 0 10303 442 4 1 4 }` (Ed.3 OID).",
+    "severity": "P1",
+    "sources": [
+      "steptools.com AP242 Ed.3 notes (`BASIC_ROUND_HOLE_OCCURRENCE_IN_ASSEMBLY` §4.5 — Ed.3 machining-feature assembly-context entity). B4 wave-8 DEF-UU (LGPL-clean — pattern only, no upstream bytes copied). AP242 Ed.3 introduced explicit assembly-context feature-occurrence entities so a `BASIC_ROUND_HOLE` (defined at the part level) can be bound to its per-instance occurrence inside an assembly via `NEXT_ASSEMBLY_USAGE_OCCURRENCE`",
+      "earlier editions do not carry the `_IN_ASSEMBLY` subclass and their readers produce Void transfer status."
+    ],
+    "taxonomy": [
+      "silent-loss",
+      "pmi"
+    ],
+    "tier3_assertions": [
+      "shape_null == False"
+    ],
+    "title": "AP242 Ed.3 `BASIC_ROUND_HOLE_OCCURRENCE_IN_ASSEMBLY` assembly-level occurrence dropped by Ed.2/AP214 readers"
   },
   {
     "byte_assertions": [],
