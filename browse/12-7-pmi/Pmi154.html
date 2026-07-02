@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pmi154 — AP242 Ed.3 item-level topology-geometry association pair (`TOPOLOGY_TO_GEOMETRY_ITEM_ASSOCIATION` + `GEOMETRY_TO_TOPOLOGY_ITEM_ASSOCIATION`) dropped by Ed.2/AP214 readers</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.7 PMI / GD&amp;T</a> <span class="sep">/</span> <span class="current">Pmi154</span>
+</nav>
+<header class="title-bar">
+<h1>Pmi154 <span class="sep">—</span> <span class="entry-title">AP242 Ed.3 item-level topology-geometry association pair (`TOPOLOGY_TO_GEOMETRY_ITEM_ASSOCIATION` + `GEOMETRY_TO_TOPOLOGY_ITEM_ASSOCIATION`) dropped by Ed.2/AP214 readers</span></h1>
+<p class="category">§12.7 PMI/GD&amp;T (sub-class: edition-boundary entity elision / item-level topology-geometry link)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-pmi" href="../by-tag/pmi/index.html">pmi</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-7-pmi/Pmi154.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-7-pmi/Pmi154.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>steptools.com AP242 Ed.3 notes (`TOPOLOGY_TO_GEOMETRY_ITEM_ASSOCIATION` / inverse `GEOMETRY_TO_TOPOLOGY_ITEM_ASSOCIATION` §4.4 — two of 21 new Ed.3 entities</li>
+<li>item-level companions to Pmi146&#x27;s model-level `TOPOLOGY_TO_GEOMETRY_MODEL_ASSOCIATION` pair). B4 wave-8 DEF-YY (LGPL-clean — pattern only, no upstream bytes copied). AP242 Ed.3 introduced explicit bidirectional linking between a shape&#x27;s topological items (individual edges/faces) and their geometric-item counterparts, at the ITEM level rather than the model-root level</li>
+<li>earlier editions (Ed.2, Ed.1, AP214) do not carry these entities in their schemas and their readers produce Void transfer status.</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>AP242 Edition 3 STEP files from tools that emit item-level topology↔geometry linking (typical for PMI-aware CAD tools that need precise per-item associations for tolerance targeting); file header declares `AUTOMOTIVE_DESIGN { 1 0 10303 442 4 1 4 }` (Ed.3 OID).</p></section>
+<section><h2>Description</h2>
+<p>STEP AP242 Ed.3 file containing a minimal single-face planar 10×10 mm patch (`SHELL_BASED_SURFACE_MODEL` with one `OPEN_SHELL` containing one `ADVANCED_FACE` on a `PLANE`) plus a co-present explicit `EDGE_CURVE(&#x27;pmi154_bottom_edge&#x27;,...)` on a straight `LINE` (the bottom edge of the face, from (0,0,0) to (10,0,0)). A PMI `ANNOTATION_OCCURRENCE` (`FLATNESS 0.02`) references the face via a `SHAPE_ASPECT` anchor. The two Ed.3 item-level association entities: `TOPOLOGY_TO_GEOMETRY_ITEM_ASSOCIATION(&#x27;t2g_item&#x27;,...,#edge_curve,#face)` links a specific topological item (the `EDGE_CURVE`) to its geometric-item counterpart (the `ADVANCED_FACE` it lies on); `GEOMETRY_TO_TOPOLOGY_ITEM_ASSOCIATION(&#x27;g2t_item&#x27;,...,#face,#edge_curve)` is the inverse. Ed.3 readers use the pair to validate item-level consistency; Ed.2 / AP214 readers produce Void transfer status on both entities and silently drop the explicit item-level topology↔geometry link — the face + edge + annotation still load but the bidirectional item-level association is absent. Distinct from `Pmi147`&#x27;s `GEOMETRY_BASED_ITEM_WITHIN_REPRESENTATION` (a locator entity); this is a bidirectional item-level link.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>AP242 Ed.3 header (`AUTOMOTIVE_DESIGN { 1 0 10303 442 4 1 4 }`); single planar `ADVANCED_FACE` + `EDGE_CURVE`; `SHAPE_ASPECT` + `ANNOTATION_OCCURRENCE`; `TOPOLOGY_TO_GEOMETRY_ITEM_ASSOCIATION(&#x27;t2g_item&#x27;,...,#edge,#face)` + `GEOMETRY_TO_TOPOLOGY_ITEM_ASSOCIATION(&#x27;g2t_item&#x27;,...,#face,#edge)`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>AP242 Ed.3 readers must resolve `TOPOLOGY_TO_GEOMETRY_ITEM_ASSOCIATION` and `GEOMETRY_TO_TOPOLOGY_ITEM_ASSOCIATION` and expose the bidirectional item-level link; Ed.2 / AP214 readers must emit `W_SCHEMA_ENTITY_UNSUPPORTED(TOPOLOGY_TO_GEOMETRY_ITEM_ASSOCIATION)` rather than silently discarding the associations.</p></section>
+<section><h2>Notes</h2>
+<p>steptools notes_ap242e3.html §4.4 (21 new Ed.3 entities). B4 wave-8 DEF-YY. Confidence: MEDIUM — accept-live-oracle. OCCT drops the Ed.3 entities and loads the geometry as if AP214 (single-face shell + edge + annotation load, item-level associations absent) — that IS the defect. Expected validation captured from OCCT live behavior. Edition boundary: Ed.3 entities absent from Ed.2, Ed.1, AP214 schemas. Item-level companions to Pmi146&#x27;s model-level pair. Distinct from Pmi147&#x27;s `GEOMETRY_BASED_ITEM_WITHIN_REPRESENTATION` locator entity — E12 is a bidirectional link. Synonyms: &quot;TOPOLOGY_TO_GEOMETRY_ITEM_ASSOCIATION AP242 Ed.3 dropped&quot;, &quot;GEOMETRY_TO_TOPOLOGY_ITEM_ASSOCIATION Ed.3 gone Ed.2&quot;, &quot;item-level topology geometry link lost&quot;, &quot;Ed.3 item association silent drop&quot;, &quot;AP242 Ed.3 t2g_item g2t_item association absent&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;TOPOLOGY_TO_GEOMETRY_ITEM_ASSOCIATION&#x27;)</code></li>
+<li><code>contains(b&#x27;GEOMETRY_TO_TOPOLOGY_ITEM_ASSOCIATION&#x27;)</code></li>
+<li><code>contains(b&#x27;10303 442 4 1 4&#x27;)</code></li>
+<li><code>contains(b&#x27;ANNOTATION_OCCURRENCE&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Pmi146.html">Pmi146</a>, <a href="Pmi147.html">Pmi147</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Pmi154: AP242 Ed.3 file: single-face planar 10x10 mm part; the topological EDGE_CURVE of the face boundary and the geometric ADVANCED_FACE are explicitly linked at the ITEM level by <mark>TOPOLOGY_TO_GEOMETRY_ITEM_ASSOCIATION</mark>(&#x27;t2g_item&#x27;,#edge,#face) + inverse <mark>GEOMETRY_TO_TOPOLOGY_ITEM_ASSOCIATION</mark>(&#x27;g2t_item&#x27;,#face,#edge) (AP242 Ed.3 Â§4.4, two of 21 new Ed.3 entities; item-level companions to Pmi146&#x27;s model-level TOPOLOGY_TO_GEOMETRY_MODEL_ASSOCIATION pair); header OID = {1 0 <mark>10303 442 4 1 4</mark>}; PMI <mark>ANNOTATION_OCCURRENCE</mark> references the face via a SHAPE_ASPECT anchor; Ed.3 readers resolve the item-level bidirectional link; Ed.2 / AP214 readers silently drop both association entities â the face + annotation still load but the explicit item-level topology&lt;-&gt;geometry link is absent; edition-boundary drop; steptools notes_ap242e3.html; distinct from Pmi147&#x27;s GEOMETRY_BASED_ITEM_WITHIN_REPRESENTATION locator entity; single-face shell â OCC yields shape(1) */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Pmi154&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Pmi154.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 <mark>10303 442 4 1 4</mark> }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=PLANE(&#x27;pmi154_plane&#x27;,#4);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(10.0,10.0,0.0));
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(0.0,10.0,0.0));
+<span class="lineno">19</span>#10=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">20</span>#11=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">21</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">22</span>#13=VECTOR(&#x27;&#x27;,#12,10.0);
+<span class="lineno">23</span>#14=LINE(&#x27;&#x27;,#6,#13);
+<span class="lineno">24</span>#15=EDGE_CURVE(&#x27;pmi154_bottom_edge&#x27;,#10,#11,#14,.T.);
+<span class="lineno">25</span>#16=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">26</span>#17=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">27</span>#18=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">28</span>#19=VERTEX_POINT(&#x27;&#x27;,#9);
+<span class="lineno">29</span>#20=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">30</span>#21=VECTOR(&#x27;&#x27;,#20,10.0);
+<span class="lineno">31</span>#22=LINE(&#x27;&#x27;,#6,#21);
+<span class="lineno">32</span>#23=EDGE_CURVE(&#x27;&#x27;,#16,#17,#22,.T.);
+<span class="lineno">33</span>#24=ORIENTED_EDGE(&#x27;&#x27;,$,$,#23,.T.);
+<span class="lineno">34</span>#25=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">35</span>#26=VECTOR(&#x27;&#x27;,#25,10.0);
+<span class="lineno">36</span>#27=LINE(&#x27;&#x27;,#7,#26);
+<span class="lineno">37</span>#28=EDGE_CURVE(&#x27;&#x27;,#17,#18,#27,.T.);
+<span class="lineno">38</span>#29=ORIENTED_EDGE(&#x27;&#x27;,$,$,#28,.T.);
+<span class="lineno">39</span>#30=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">40</span>#31=VECTOR(&#x27;&#x27;,#30,10.0);
+<span class="lineno">41</span>#32=LINE(&#x27;&#x27;,#8,#31);
+<span class="lineno">42</span>#33=EDGE_CURVE(&#x27;&#x27;,#18,#19,#32,.T.);
+<span class="lineno">43</span>#34=ORIENTED_EDGE(&#x27;&#x27;,$,$,#33,.T.);
+<span class="lineno">44</span>#35=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">45</span>#36=VECTOR(&#x27;&#x27;,#35,10.0);
+<span class="lineno">46</span>#37=LINE(&#x27;&#x27;,#9,#36);
+<span class="lineno">47</span>#38=EDGE_CURVE(&#x27;&#x27;,#19,#16,#37,.T.);
+<span class="lineno">48</span>#39=ORIENTED_EDGE(&#x27;&#x27;,$,$,#38,.T.);
+<span class="lineno">49</span>#40=EDGE_LOOP(&#x27;&#x27;,(#24,#29,#34,#39));
+<span class="lineno">50</span>#41=FACE_OUTER_BOUND(&#x27;&#x27;,#40,.T.);
+<span class="lineno">51</span>#42=ADVANCED_FACE(&#x27;pmi154_face&#x27;,(#41),#5,.T.);
+<span class="lineno">52</span>#43=OPEN_SHELL(&#x27;pmi154_shell&#x27;,(#42));
+<span class="lineno">53</span>#44=SHELL_BASED_SURFACE_MODEL(&#x27;pmi154_sbsm&#x27;,(#43));
+<span class="lineno">54</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">55</span>#9051=PRODUCT(&#x27;Pmi154&#x27;,&#x27;Pmi154&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">56</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">57</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">58</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">59</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">60</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">61</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">62</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">63</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">64</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">65</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#44),#9060);
+<span class="lineno">66</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">67</span>#9063=SHAPE_ASPECT(&#x27;face_aspect&#x27;,&#x27;planar face host&#x27;,#9055,.F.);
+<span class="lineno">68</span>#9064=DESCRIPTIVE_REPRESENTATION_ITEM(&#x27;flatness_tol&#x27;,&#x27;FLATNESS 0.02&#x27;);
+<span class="lineno">69</span>#9065=<mark>ANNOTATION_OCCURRENCE</mark>(&#x27;face_annot&#x27;,$,#9064);
+<span class="lineno">70</span>#9066=<mark>TOPOLOGY_TO_GEOMETRY_ITEM_ASSOCIATION</mark>(&#x27;t2g_item&#x27;,&#x27;edge to face item-level link&#x27;,#15,#42);
+<span class="lineno">71</span>#9067=<mark>GEOMETRY_TO_TOPOLOGY_ITEM_ASSOCIATION</mark>(&#x27;g2t_item&#x27;,&#x27;face to edge item-level link&#x27;,#42,#15);
+<span class="lineno">72</span>#9068=PROPERTY_DEFINITION(&#x27;pmi_assoc_item&#x27;,&#x27;item-level topology-geometry link&#x27;,#9055);
+<span class="lineno">73</span>#9069=REPRESENTATION(&#x27;assoc_item_rep&#x27;,(#9065,#9066,#9067,#9063),#9060);
+<span class="lineno">74</span>#9070=PROPERTY_DEFINITION_REPRESENTATION(#9068,#9069);
+<span class="lineno">75</span>ENDSEC;
+<span class="lineno">76</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Pmi153.html">&larr; Pmi153</a> <a class="up" href="index.html">§12.7 PMI / GD&amp;T</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>
