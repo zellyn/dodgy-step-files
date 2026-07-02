@@ -37,11 +37,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>recompute and emit validation properties on write, or pass through input properties unchanged with a warning if the kernel cannot verify them.</p></section>
 <section><h2>Notes</h2>
-<p>prostep ivip CAx-IF Recommended Practice for Validation Properties. Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: requires-sibling-pair.</p></section>
+<p>prostep ivip CAx-IF Recommended Practice for Validation Properties. Bytes alone are insufficient to demonstrate this defect;. Tagged provenance_tier: writer-side.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>
-<p><code>requires-sibling-pair</code> — defect not fully embodied in fixture bytes.</p></section>
+<p><code>writer-side</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>count_entity_def(b&#x27;GEOMETRIC_VALIDATION_PROPERTY&#x27;) == 0</code></li>
 </ul></section>

@@ -23464,7 +23464,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Reproducer recipe**: a STEP file showing the *post*-pathology state — a clean `MANIFOLD_SOLID_BREP` with no `STYLED_ITEM` / `COLOUR_RGB` references, where the title comment notes "originally had per-face colours, dropped on re-export".
 - **Expected kernel behavior**: preserve `STYLED_ITEM` / `COLOUR_RGB` chains on round-trip; surface a warning if the kernel's internal model cannot represent them.
 - **Closure intent**: solid
-- **Notes**: Visible in §12.6 / §12.8 colour-bound entries; Wr019 documents the writer-side root cause. Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: requires-sibling-pair.
+- **Notes**: Visible in §12.6 / §12.8 colour-bound entries; Wr019 documents the writer-side root cause. Bytes alone are insufficient to demonstrate this defect;. Tagged provenance_tier: writer-side.
 - **Byte assertion**: count_entity_def(b'STYLED_ITEM') == 0 and count_entity_def(b'COLOUR_RGB') == 0
 - **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
@@ -23495,7 +23495,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Description**: The input file contained AP242 PMI entities (`DIMENSIONAL_LOCATION`, `GEOMETRIC_TOLERANCE`, `DRAUGHTING_ANNOTATION_OCCURRENCE`, etc.); the re-emitted file contains none of them, only the underlying geometry. Bug-reporter language: "PMI annotations lost during round-trip", "GD&T disappeared", "STEP file lost dimensions".
 - **Reproducer recipe**: a clean MANIFOLD_SOLID_BREP file with the title comment noting the input had GEOMETRIC_TOLERANCE and DIMENSIONAL_LOCATION annotations.
 - **Expected kernel behavior**: Heal and accept (if AP242), warn and accept (if AP203): preserve PMI on round-trip if the output schema supports it (AP242); emit a loud warning when the output schema is AP203 (no PMI representation possible).
-- **Notes**: §12.7 covers PMI input defects; Wr021 covers writer-side data loss. Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: requires-sibling-pair.
+- **Notes**: §12.7 covers PMI input defects; Wr021 covers writer-side data loss. Bytes alone are insufficient to demonstrate this defect;. Tagged provenance_tier: writer-side.
 - **Byte assertion**: count_entity_def(b'GEOMETRIC_TOLERANCE') == 0 and count_entity_def(b'DIMENSIONAL_LOCATION') == 0
 - **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
@@ -23510,7 +23510,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Description**: The input contained AP242 saved-view entities (`CAMERA_MODEL_D3`, `PRESENTATION_VIEW`, `DRAUGHTING_PRE_DEFINED_CURVE_FONT`); the re-emitted file omits them. The geometry is preserved but the curated set of "look from front", "look from above" views the original author defined is gone. Bug-reporter language: "saved views gone after re-export", "lost camera positions".
 - **Reproducer recipe**: a clean MANIFOLD_SOLID_BREP fixture with no `CAMERA_MODEL_D3` and a comment indicating the input had three saved views.
 - **Expected kernel behavior**: Heal and accept: preserve saved-view entities on round-trip when the output schema supports them.
-- **Notes**: AP242-specific; AP203 has no saved-view representation. Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: requires-sibling-pair.
+- **Notes**: AP242-specific; AP203 has no saved-view representation. Bytes alone are insufficient to demonstrate this defect;. Tagged provenance_tier: writer-side.
 - **Byte assertion**: count_entity_def(b'CAMERA_MODEL_D3') == 0 and count_entity_def(b'PRESENTATION_VIEW') == 0
 - **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
@@ -23525,7 +23525,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Description**: The input contained `GEOMETRIC_VALIDATION_PROPERTY` entries declaring producer-computed volume, area, and centroid for each solid, intended as a checksum the receiver can use to verify exchange fidelity. The re-emitted file lacks them. The downstream tool can no longer cross-check the round-trip. Bug-reporter language: "validation properties lost", "no volume in re-exported STEP", "checksum gone".
 - **Reproducer recipe**: a MANIFOLD_SOLID_BREP fixture with no validation properties, comment indicating input had them.
 - **Expected kernel behavior**: recompute and emit validation properties on write, or pass through input properties unchanged with a warning if the kernel cannot verify them.
-- **Notes**: prostep ivip CAx-IF Recommended Practice for Validation Properties. Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: requires-sibling-pair.
+- **Notes**: prostep ivip CAx-IF Recommended Practice for Validation Properties. Bytes alone are insufficient to demonstrate this defect;. Tagged provenance_tier: writer-side.
 - **Byte assertion**: count_entity_def(b'GEOMETRIC_VALIDATION_PROPERTY') == 0
 - **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
@@ -23572,7 +23572,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Description**: The producer writes `FILE_DESCRIPTION(('CAD-System-X version 12.4.1 build 2026-04-15'),'2;1')`. Some receivers contain heuristic special-casing keyed on vendor strings; they apply a "fix-up X model" filter only if the vendor string matches. This couples the receiver's behaviour to the producer's exact wording, so a minor wording change ("CAD-System X" with a space versus "CAD-System-X" with a hyphen) silently disables the fix-up. Bug-reporter language: "STEP file behaves differently after vendor renamed product", "kernel detects wrong vendor", "vendor sniffing failed".
 - **Reproducer recipe**: a fixture with `FILE_DESCRIPTION(('CAD-System-X v12.4.1'),'2;1')` and a comment noting the receiver special-cases the exact spelling.
 - **Expected kernel behavior**: Heal and accept: normalize / avoid behaviour-altering vendor sniffing; if vendor-specific compatibility is needed, expose it as an explicit user opt-in.
-- **Notes**: Sender-attribution in `FILE_DESCRIPTION` is a long-standing interop hazard. Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: requires-sibling-pair.
+- **Notes**: Sender-attribution in `FILE_DESCRIPTION` is a long-standing interop hazard. Bytes alone are insufficient to demonstrate this defect;. Tagged provenance_tier: writer-side.
 - **Byte assertion**: contains(b'CAD-System-X')
 - **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
@@ -23648,7 +23648,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Description**: The input declared `FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING'))` and contained `GEOMETRIC_TOLERANCE`, `DRAUGHTING_ANNOTATION_OCCURRENCE`, and `KINEMATIC_LINK` entities. The re-emitted file declares `FILE_SCHEMA(('AUTOMOTIVE_DESIGN'))` and contains only the geometry; every AP242-specific entity is gone. Bug-reporter language: "schema downgrade lost data", "AP203 export drops PMI", "STEP went from 242 to 203".
 - **Reproducer recipe**: a fixture with `FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'))` and only AP203-compatible entities, with a comment noting the input was AP242 with PMI and kinematics.
 - **Expected kernel behavior**: Warn and accept: preserve the input schema on round-trip when possible; emit a loud warning on any schema downgrade that drops entities.
-- **Notes**: §12.7 covers PMI loss; Wr031 covers the schema-level root cause. Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: requires-sibling-pair.
+- **Notes**: §12.7 covers PMI loss; Wr031 covers the schema-level root cause. Bytes alone are insufficient to demonstrate this defect;. Tagged provenance_tier: writer-side.
 - **Byte assertion**: matches(rb"FILE_SCHEMA\(\(\s*'AUTOMOTIVE_DESIGN")
 - **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
