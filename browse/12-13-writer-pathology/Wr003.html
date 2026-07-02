@@ -36,9 +36,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: parsers normalize / accept this form (the spec permits it); downstream tooling that concatenates files adds its own separator.</p></section>
 <section><h2>Notes</h2>
-<p>A POSIX-text-file convention (text files end with newline) but not a Part-21 requirement.</p></section>
+<p>A POSIX-text-file convention (text files end with newline) but not a Part-21 requirement. Provenance tier: writer-side (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>writer-side</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>bytes_ends_with(b&#x27;END-ISO-10303-21;&#x27;)</code></li>
 <li><code>not bytes_ends_with(b&#x27;\n&#x27;)</code></li>

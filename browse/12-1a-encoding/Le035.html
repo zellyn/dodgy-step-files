@@ -34,9 +34,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept both edition styles regardless of declared edition; never assume the file declares its encoding mode.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Le021. Synonyms: &quot;unnecessary X escapes in UTF-8 file&quot;, &quot;Ed.2 escapes in Ed.3 STEP&quot;, &quot;double-decoded UTF-8&quot;, &quot;redundant control directives in modern STEP&quot;, &quot;X escape in UTF-8 file double-decodes&quot;.</p></section>
+<p>**See also**: Le021. Synonyms: &quot;unnecessary X escapes in UTF-8 file&quot;, &quot;Ed.2 escapes in Ed.3 STEP&quot;, &quot;double-decoded UTF-8&quot;, &quot;redundant control directives in modern STEP&quot;, &quot;X escape in UTF-8 file double-decodes&quot;. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;\\X\\&#x27;) and matches(rb&quot;&#x27;[^&#x27;]*[\xc0-\xff][\x80-\xbf]&quot;)</code></li>
 </ul></section>

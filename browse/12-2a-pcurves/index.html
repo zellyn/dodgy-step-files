@@ -18,7 +18,7 @@
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
-<tr><td><a href="Gp001.html"><code>Gp001</code></a></td><td>Missing pcurve on edge — only the 3D curve representation is present</td><td><code>bytes-sufficient</code></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp001.html"><code>Gp001</code></a></td><td>Missing pcurve on edge — only the 3D curve representation is present</td><td><code>bytes-only</code></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Gp002.html"><code>Gp002</code></a></td><td>Pcurve endpoints disagree with edge vertex 3D positions</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Gp005.html"><code>Gp005</code></a></td><td>Pcurve with single-pole apex on sphere/cone (singularity)</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Gp007.html"><code>Gp007</code></a></td><td>Edge parameter range outside the pcurve&#x27;s natural domain</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></td></tr>
@@ -59,7 +59,7 @@
 <tr><td><a href="Gp046.html"><code>Gp046</code></a></td><td>ShapeFix_Edge.FixVertexTolerance face-context null underestimates multi-surface tolerance</td><td><code>bytes-sufficient</code></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Gp047.html"><code>Gp047</code></a></td><td>ShapeAnalysis_Edge.CheckPCurveRange parameter-domain mismatch</td><td><code>bytes-sufficient</code></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Gp048.html"><code>Gp048</code></a></td><td>ShapeFix_Edge.FixAddPCurve degenerate-curve at cone apex</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a</code></td></tr>
-<tr><td><a href="Gp049.html"><code>Gp049</code></a></td><td>ShapeAnalysis_Edge.CheckOverlapping arc-length vs parameter-space</td><td><code>bytes-sufficient</code></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp049.html"><code>Gp049</code></a></td><td>ShapeAnalysis_Edge.CheckOverlapping arc-length vs parameter-space</td><td><code>bytes-only</code></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Gp050.html"><code>Gp050</code></a></td><td>ShapeFix_Edge.FixSameParameter recursive SameRange</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Gp051.html"><code>Gp051</code></a></td><td>ShapeAnalysis_Edge.GetEndTangent2d B-spline endpoint tangent divergence</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Gp052.html"><code>Gp052</code></a></td><td>ShapeFix_Edge.FixSameParameter copyedge stale range</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>

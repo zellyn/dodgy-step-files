@@ -36,9 +36,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: parse normally; on re-emit, normalize / populate at least `originating_system` with the kernel&#x27;s identity.</p></section>
 <section><h2>Notes</h2>
-<p>Audit-trail loss but no functional consequence.</p></section>
+<p>Audit-trail loss but no functional consequence. Provenance tier: writer-side (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>writer-side</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>matches(rb&quot;(?s)FILE_NAME\([^;]*\(&#x27;&#x27;\)[^;]*&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;&quot;)</code></li>
 </ul></section>

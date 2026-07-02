@@ -33,9 +33,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Strict reject; lenient readers commonly accept implicit zero.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Ls001. Synonyms: &quot;REAL with no digit before decimal&quot;, &quot;.5 instead of 0.5 in STEP&quot;, &quot;leading-dot REAL literal&quot;, &quot;%g formatter emits .5&quot;, &quot;missing zero before decimal&quot;.</p></section>
+<p>**See also**: Ls001. Synonyms: &quot;REAL with no digit before decimal&quot;, &quot;.5 instead of 0.5 in STEP&quot;, &quot;leading-dot REAL literal&quot;, &quot;%g formatter emits .5&quot;, &quot;missing zero before decimal&quot;. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>matches(rb&quot;\(\s*\.\d&quot;)</code></li>
 <li><code>contains(b&#x27;.5&#x27;) and matches(rb&#x27;\(\.\d&#x27;)</code></li>

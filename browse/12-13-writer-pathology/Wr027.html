@@ -36,9 +36,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Warn and accept: normalize by trusting the DATA-section unit context (the schema-meaningful one) and treat HEADER prose as informational. Emit a warning on mismatch.</p></section>
 <section><h2>Notes</h2>
-<p>§12.5 covers unit defects; Wr027 documents producer-side root cause.</p></section>
+<p>§12.5 covers unit defects; Wr027 documents producer-side root cause. Provenance tier: writer-side (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>writer-side</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&quot;&#x27;INCH&#x27;&quot;) and contains(b&quot;part in mm&quot;)</code></li>
 <li><code>contains(b&quot;&#x27;INCH&#x27;&quot;)</code></li>

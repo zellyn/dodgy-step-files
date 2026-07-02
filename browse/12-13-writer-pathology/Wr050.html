@@ -37,9 +37,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>writer composes the Placement-and-unit pipeline once; refuses to chain document-scale into unit-conversion; emits a self-test that round-trips a known-volume primitive before writing user data.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Wr035, U015, Wr044. Synonyms: &quot;STEP export doubles all coordinates&quot;, &quot;20mm becomes 40mm on import&quot;, &quot;two-times scale factor on STEP export&quot;, &quot;writer applies scale twice&quot;.</p></section>
+<p>**See also**: Wr035, U015, Wr044. Synonyms: &quot;STEP export doubles all coordinates&quot;, &quot;20mm becomes 40mm on import&quot;, &quot;two-times scale factor on STEP export&quot;, &quot;writer applies scale twice&quot;. Provenance tier: writer-side (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>writer-side</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;40.0&#x27;) and contains(b&#x27;MILLI&#x27;)</code></li>
 <li><code>contains(b&#x27;CARTESIAN_POINT&#x27;)</code></li>

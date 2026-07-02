@@ -34,9 +34,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: parse the value losslessly into the kernel&#x27;s working numeric type; if the value is below the kernel&#x27;s coordinate precision, snap to zero with a diagnostic rather than letting it propagate as silent NaN or Inf.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Le048. Synonyms: &quot;REAL at IEEE-754 subnormal&quot;, &quot;smallest normal double in STEP&quot;, &quot;max double 1.798E+308 in REAL&quot;, &quot;subnormal value loses precision&quot;, &quot;REAL at IEEE boundary&quot;.</p></section>
+<p>**See also**: Le048. Synonyms: &quot;REAL at IEEE-754 subnormal&quot;, &quot;smallest normal double in STEP&quot;, &quot;max double 1.798E+308 in REAL&quot;, &quot;subnormal value loses precision&quot;, &quot;REAL at IEEE boundary&quot;. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;4.9406564584124654E-324&#x27;) or contains(b&#x27;2.2250738585072014E-308&#x27;) or contains(b&#x27;-0.0&#x27;)</code></li>
 </ul></section>

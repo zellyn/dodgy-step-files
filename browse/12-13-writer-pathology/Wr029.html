@@ -36,9 +36,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>reject as malformed per spec; do not silently splice the broken string back together because the splice point is undefined.</p></section>
 <section><h2>Notes</h2>
-<p>Le017 covers from read side; Wr029 attributes to writer. **OCC behavior**: silently accepts the broken-string file (no diagnostic, empty result); kernel mishandling; not what kernels should do.</p></section>
+<p>Le017 covers from read side; Wr029 attributes to writer. **OCC behavior**: silently accepts the broken-string file (no diagnostic, empty result); kernel mishandling; not what kernels should do. Provenance tier: writer-side (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>writer-side</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>matches(rb&quot;FILE_DESCRIPTION\(\(&#x27;[^&#x27;]*\n[^&#x27;]*&#x27;&quot;)</code></li>
 <li><code>matches(rb&quot;FILE_DESCRIPTION\(\(\s*&#x27;[^&#x27;]*\n&quot;)</code></li>

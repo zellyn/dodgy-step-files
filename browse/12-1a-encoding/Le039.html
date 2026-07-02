@@ -34,9 +34,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>reject with a diagnostic citing the invalid selector; fallback (treat as default page) is acceptable if a warning is emitted.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Le037. Synonyms: &quot;PE selector outside A.I range&quot;, &quot;out-of-range page selector letter&quot;, &quot;STEP PE with selector Z&quot;, &quot;invalid page-selector letter&quot;, &quot;code-page letter not in legal set&quot;.</p></section>
+<p>**See also**: Le037. Synonyms: &quot;PE selector outside A.I range&quot;, &quot;out-of-range page selector letter&quot;, &quot;STEP PE with selector Z&quot;, &quot;invalid page-selector letter&quot;, &quot;code-page letter not in legal set&quot;. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;\\PE\\Z&#x27;)</code></li>
 </ul></section>

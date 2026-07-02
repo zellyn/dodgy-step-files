@@ -33,9 +33,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: pole-snapping is a documented invariant; the snap threshold normalizes into diagnostics, not hidden behind working precision.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;sphere pole singularity breaks seam match&quot;, &quot;v-parameter singular at pole&quot;, &quot;pole singularity fails parametric tolerance&quot;, &quot;sphere seam at pole has multi-valued UV&quot;.</p></section>
+<p>Synonyms: &quot;sphere pole singularity breaks seam match&quot;, &quot;v-parameter singular at pole&quot;, &quot;pole singularity fails parametric tolerance&quot;, &quot;sphere seam at pole has multi-valued UV&quot;. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;SPHERICAL_SURFACE&#x27;) and contains(b&#x27;CIRCLE&#x27;)</code></li>
 <li><code>count_entity_def(b&#x27;VERTEX_POINT&#x27;) == 1</code></li>

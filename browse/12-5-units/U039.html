@@ -36,9 +36,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>surface the disagreement when the value&#x27;s magnitude is implausible for the declared unit (e.g. an angle of 90 rad is unphysical); reject as malformed when out-of-range, or warn and convert per the declared unit. The unit declaration is authoritative; receivers that hard-assume one over the other hide the producer-side defect.</p></section>
 <section><h2>Notes</h2>
-<p>Angular twin of U001 (mm vs inches). **See also**: U031, Pmi067. Synonyms: &quot;STEP angle wrong by 57x&quot;, &quot;deg/rad confusion&quot;, &quot;rotation off by pi/180&quot;.</p></section>
+<p>Angular twin of U001 (mm vs inches). **See also**: U031, Pmi067. Synonyms: &quot;STEP angle wrong by 57x&quot;, &quot;deg/rad confusion&quot;, &quot;rotation off by pi/180&quot;. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&quot;CONVERSION_BASED_UNIT(&#x27;DEGREE&#x27;&quot;) or contains(b&quot;CONVERSION_BASED_UNIT(&#x27;DEG&#x27;&quot;)</code></li>
 <li><code>contains(b&#x27;PLANE_ANGLE_MEASURE(1.5708&#x27;) or contains(b&#x27;PLANE_ANGLE_MEASURE(90.0&#x27;)</code></li>

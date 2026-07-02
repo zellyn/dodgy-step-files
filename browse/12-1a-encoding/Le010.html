@@ -34,9 +34,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>reject with diagnostic; ignoring the directive is safer than over-consuming text.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;F directive consumes too many bytes&quot;, &quot;font-shift escape multi-character&quot;, &quot;CJK font tag confused with STEP escape&quot;, &quot;F directive treated as HTML tag&quot;, &quot;font shift directive runs past one letter&quot;.</p></section>
+<p>Synonyms: &quot;F directive consumes too many bytes&quot;, &quot;font-shift escape multi-character&quot;, &quot;CJK font tag confused with STEP escape&quot;, &quot;F directive treated as HTML tag&quot;, &quot;font shift directive runs past one letter&quot;. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;\\F\\&#x27;)</code></li>
 </ul></section>

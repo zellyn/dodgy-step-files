@@ -36,9 +36,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Smooth tessellation matching producer.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Pf014. Synonyms: &quot;helical sweep tessellation garbled at seam&quot;, &quot;thread mesh broken at start/end&quot;, &quot;helix tessellator produces bad facets at seam&quot;, &quot;screw thread visualizer artifacts at seam&quot;.</p></section>
+<p>**See also**: Pf014. Synonyms: &quot;helical sweep tessellation garbled at seam&quot;, &quot;thread mesh broken at start/end&quot;, &quot;helix tessellator produces bad facets at seam&quot;, &quot;screw thread visualizer artifacts at seam&quot;. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;SURFACE_CURVE&#x27;)</code></li>
 <li><code>contains(b&#x27;PCURVE&#x27;)</code></li>

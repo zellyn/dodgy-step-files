@@ -35,9 +35,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>vendor-conditional handling; tolerate known legacy patterns when vendor field matches; reject cleanly otherwise.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Ad081. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant.</p></section>
+<p>**See also**: Ad081. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;Pro/E&#x27;) or contains(b&#x27;Pro/Engineer&#x27;)</code></li>
 <li><code>contains(b&#x27;STYLED_ITEM&#x27;) and contains(b&#x27;Pro&#x27;)</code></li>

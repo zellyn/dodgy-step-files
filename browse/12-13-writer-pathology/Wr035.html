@@ -37,9 +37,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: normalize by trusting the DATA-section unit declaration. If a receiver application has a &quot;model size sanity check&quot; it warns when the bounding box exceeds plausible bounds, but the kernel itself does not second-guess.</p></section>
 <section><h2>Notes</h2>
-<p>§12.5 covers unit defects from receiver perspective.</p></section>
+<p>§12.5 covers unit defects from receiver perspective. Provenance tier: writer-side (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>writer-side</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>matches(rb&#x27;CARTESIAN_POINT\([^;]*1000(?:\.0)?,1000&#x27;) or contains(b&#x27;1000.0,1000.0,1000.0&#x27;)</code></li>
 <li><code>matches(rb&#x27;1000&#x27;) and contains(b&#x27;.MILLI.&#x27;)</code></li>

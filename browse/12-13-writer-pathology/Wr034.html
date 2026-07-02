@@ -36,9 +36,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Warn and accept: normalize by trusting the file&#x27;s coordinate system (DATA-section AXIS2_PLACEMENT_3D); if the application expects Z-up, emit a &quot;model appears Y-up&quot; diagnostic when the geometry&#x27;s bounding box has inverted aspect.</p></section>
 <section><h2>Notes</h2>
-<p>Symptom-match search-term: &quot;STEP imported on its side&quot;.</p></section>
+<p>Symptom-match search-term: &quot;STEP imported on its side&quot;. Provenance tier: writer-side (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>writer-side</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;Y-up&#x27;) or contains(b&#x27;Z-up&#x27;)</code></li>
 <li><code>contains(b&#x27;Y-up&#x27;)</code></li>

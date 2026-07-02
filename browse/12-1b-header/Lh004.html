@@ -35,9 +35,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>reject with &quot;missing required header entity X&quot; or &quot;header section out of order&quot;; never null-deref the schema pointer.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Lh005. Synonyms: &quot;FILE_SCHEMA missing from HEADER&quot;, &quot;FILE_NAME twice in HEADER&quot;, &quot;DATA before HEADER in STEP&quot;, &quot;header records out of order&quot;, &quot;duplicated header entity&quot;.</p></section>
+<p>**See also**: Lh005. Synonyms: &quot;FILE_SCHEMA missing from HEADER&quot;, &quot;FILE_NAME twice in HEADER&quot;, &quot;DATA before HEADER in STEP&quot;, &quot;header records out of order&quot;, &quot;duplicated header entity&quot;. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=reject</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>not matches(rb&#x27;FILE_SCHEMA\s*\(&#x27;)</code></li>
 </ul></section>

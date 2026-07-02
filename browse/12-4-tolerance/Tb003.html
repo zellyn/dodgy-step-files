@@ -33,9 +33,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>produce a consistent hierarchy regardless of internal unit scaling; either rescale tolerances atomically with coordinates, or document a single canonical working-unit and reject input that cannot survive the conversion.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: N001, U001. Searchable as &quot;tolerance hierarchy. Synonyms: &quot;tolerance hierarchy flips when scaled to meters&quot;, &quot;uncertainty values change order under unit change&quot;, &quot;vertex/edge/face hierarchy inverts on unit conversion&quot;, &quot;scaling breaks tolerance ordering&quot;. violated after metric conversion&quot;, &quot;STEP unit conversion broke tolerances&quot;.</p></section>
+<p>**See also**: N001, U001. Searchable as &quot;tolerance hierarchy. Synonyms: &quot;tolerance hierarchy flips when scaled to meters&quot;, &quot;uncertainty values change order under unit change&quot;, &quot;vertex/edge/face hierarchy inverts on unit conversion&quot;, &quot;scaling breaks tolerance ordering&quot;. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01). violated after metric conversion&quot;, &quot;STEP unit conversion broke tolerances&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>count_entity_def(b&#x27;UNCERTAINTY_MEASURE_WITH_UNIT&#x27;) == 3</code></li>
 <li><code>contains(b&#x27;1.0E-6&#x27;) and contains(b&#x27;1.0E-5&#x27;) and contains(b&#x27;1.0E-4&#x27;)</code></li>

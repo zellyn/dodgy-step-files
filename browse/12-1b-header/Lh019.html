@@ -33,9 +33,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>reject with a diagnostic naming the offending entity-name vs. claimed schema; offer a schema-name override flag. Parse based on entity-name availability, not header schema name; warn on mismatch.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Le027, Lh031. Synonyms: &quot;FILE_SCHEMA disagrees with DATA entities&quot;, &quot;AP214 entity in IFC4 file&quot;, &quot;schema name mismatches entity types&quot;, &quot;entity not in declared schema&quot;, &quot;STEP DATA uses entities from another schema&quot;.</p></section>
+<p>**See also**: Le027, Lh031. Synonyms: &quot;FILE_SCHEMA disagrees with DATA entities&quot;, &quot;AP214 entity in IFC4 file&quot;, &quot;schema name mismatches entity types&quot;, &quot;entity not in declared schema&quot;, &quot;STEP DATA uses entities from another schema&quot;. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=accept(0)</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;IFC2X3_PROJECT&#x27;)</code></li>
 <li><code>matches(rb&quot;FILE_SCHEMA\(\(&#x27;IFC4&#x27;\)\)&quot;)</code></li>

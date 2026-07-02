@@ -33,9 +33,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: normalize to a single documented policy (absolute or relative) for knot-equivalence; the policy is transparently emitted in diagnostics.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Tb007. Synonyms: &quot;knot tolerance scaled by parametric range&quot;, &quot;absolute knot tolerance wrong on stretched parameter&quot;, &quot;NURBS knot comparison ignores range scaling&quot;, &quot;stretched parameter range hides distinct knots&quot;.</p></section>
+<p>**See also**: Tb007. Synonyms: &quot;knot tolerance scaled by parametric range&quot;, &quot;absolute knot tolerance wrong on stretched parameter&quot;, &quot;NURBS knot comparison ignores range scaling&quot;, &quot;stretched parameter range hides distinct knots&quot;. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;B_SPLINE_CURVE_WITH_KNOTS&#x27;)</code></li>
 <li><code>count_entity_def(b&#x27;CARTESIAN_POINT&#x27;) == 5</code></li>

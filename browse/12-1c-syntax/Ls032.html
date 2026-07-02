@@ -32,9 +32,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Comment length unbounded (memory-bound only); never silently truncate.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;STEP comment exceeds buffer&quot;, &quot;8KB comment limit&quot;, &quot;multi-page log banner in STEP&quot;, &quot;long comment rejected by stepcode&quot;, &quot;huge STEP comment overflows buffer&quot;.</p></section>
+<p>Synonyms: &quot;STEP comment exceeds buffer&quot;, &quot;8KB comment limit&quot;, &quot;multi-page log banner in STEP&quot;, &quot;long comment rejected by stepcode&quot;, &quot;huge STEP comment overflows buffer&quot;. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>length &gt; 8192</code></li>
 <li><code>length &gt; 8000</code></li>

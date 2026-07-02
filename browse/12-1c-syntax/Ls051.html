@@ -33,9 +33,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Detect overflow during digit accumulation and reject with `E_INSTANCE_ID_RANGE`; if width must be capped, emit a precise per-instance diagnostic and continue parsing.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Ls038, Ls052. Synonyms: &quot;22-digit instance ID overflows uint64&quot;, &quot;huge instance ID overflows accumulator&quot;, &quot;STEP ID width exceeds 20 digits&quot;, &quot;stepcode skips section on big ID&quot;, &quot;instance ID too wide for uint64_t&quot;.</p></section>
+<p>**See also**: Ls038, Ls052. Synonyms: &quot;22-digit instance ID overflows uint64&quot;, &quot;huge instance ID overflows accumulator&quot;, &quot;STEP ID width exceeds 20 digits&quot;, &quot;stepcode skips section on big ID&quot;, &quot;instance ID too wide for uint64_t&quot;. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>matches(rb&#x27;#\d{20,}=&#x27;)</code></li>
 </ul></section>

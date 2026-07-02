@@ -37,9 +37,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>warn on unrecognised schema version and either reject or load under the closest known schema with a diagnostic; never silently treat unknown as known.</p></section>
 <section><h2>Notes</h2>
-<p>Cousin of Lh004-class. **OCC behavior**: silently accepts the unparseable schema-version tuple (no warning); kernel mishandling; the catalog above forbids treating unknown as known.</p></section>
+<p>Cousin of Lh004-class. **OCC behavior**: silently accepts the unparseable schema-version tuple (no warning); kernel mishandling; the catalog above forbids treating unknown as known. Provenance tier: writer-side (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>writer-side</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>matches(rb&#x27;\b99\b.*\}&#x27;)</code></li>
 <li><code>matches(rb&#x27;\b99\b&#x27;)</code></li>

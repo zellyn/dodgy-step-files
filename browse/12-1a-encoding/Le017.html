@@ -38,9 +38,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>reject raw control characters in literals. Tolerant readers may translate raw `\n`/`\t` to space-equivalents and warn. Identifiers carrying control chars must round-trip without corruption when the user opted in.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Le018, Le028. Synonyms: &quot;raw tab in STEP string&quot;, &quot;literal newline inside string&quot;, &quot;raw control char inside literal&quot;, &quot;NUL byte inside STEP string&quot;, &quot;binary control byte unencoded in attribute&quot;.</p></section>
+<p>**See also**: Le018, Le028. Synonyms: &quot;raw tab in STEP string&quot;, &quot;literal newline inside string&quot;, &quot;raw control char inside literal&quot;, &quot;NUL byte inside STEP string&quot;, &quot;binary control byte unencoded in attribute&quot;. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>matches(rb&quot;&#x27;[^&#x27;]*[\x00-\x08\x0b\x0c\x0e-\x1f][^&#x27;]*&#x27;&quot;)</code></li>
 <li><code>matches(rb&quot;&#x27;[^&#x27;]*\t[^&#x27;]*&#x27;&quot;)</code></li>

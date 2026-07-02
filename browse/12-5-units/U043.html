@@ -36,9 +36,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: receivers MUST honour the declared `LENGTH_UNIT` context, normalize coordinate values into the kernel&#x27;s canonical unit, and never assume mm without inspecting it. Reject with E_UNIT_CONTEXT_IGNORED if the unit declaration cannot be parsed; treating inch-tagged data as millimetres without diagnostic is a coverage gap.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: U015, Wr044. Synonyms: &quot;slicer ignores STEP unit declaration&quot;, &quot;INCH unit silently treated as mm by receiver&quot;, &quot;unit-context inversion on receiver side&quot;.</p></section>
+<p>**See also**: U015, Wr044. Synonyms: &quot;slicer ignores STEP unit declaration&quot;, &quot;INCH unit silently treated as mm by receiver&quot;, &quot;unit-context inversion on receiver side&quot;. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;INCH&#x27;)</code></li>
 <li><code>contains(b&#x27;CONVERSION_BASED_UNIT&#x27;)</code></li>

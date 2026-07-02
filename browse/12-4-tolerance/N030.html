@@ -36,9 +36,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal; `convert-to-canonical` / `ShapeCustom_BSplineRestriction` with a tolerance recovers the analytic form; reject canonicalization if recovered surface deviates beyond user-supplied tolerance, since otherwise watertightness is lost.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Pmi041, Gn014. Synonyms: &quot;cylinder stored as B-spline instead of analytic&quot;, &quot;feature recognition can&#x27;t find hole as B-spline&quot;, &quot;analytic surface lost as NURBS&quot;, &quot;kernel doesn&#x27;t recognize quarter cylinder&quot;, &quot;B-spline that should be cylinder or plane&quot;.</p></section>
+<p>**See also**: Pmi041, Gn014. Synonyms: &quot;cylinder stored as B-spline instead of analytic&quot;, &quot;feature recognition can&#x27;t find hole as B-spline&quot;, &quot;analytic surface lost as NURBS&quot;, &quot;kernel doesn&#x27;t recognize quarter cylinder&quot;, &quot;B-spline that should be cylinder or plane&quot;. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;B_SPLINE_SURFACE_WITH_KNOTS&#x27;)</code></li>
 <li><code>count_entity_def(b&#x27;CARTESIAN_POINT&#x27;) == 8</code></li>

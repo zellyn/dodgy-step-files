@@ -34,9 +34,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: keywords are case-insensitive in ISO 10303-21; accept any case for `ISO-10303-21`, `HEADER`, `DATA`, `ENDSEC`, `END-ISO-10303-21`. Do not reject lower-case forms.</p></section>
 <section><h2>Notes</h2>
-<p>Cross-oracle: pure-Python Part-21 validator rejects (reject(E_CLOSE_CASE)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation.</p></section>
+<p>Cross-oracle: pure-Python Part-21 validator rejects (reject(E_CLOSE_CASE)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>bytes_ends_with(b&#x27;end-iso-10303-21;&#x27;) or contains(b&#x27;end-iso-10303-21;&#x27;)</code></li>
 <li><code>bytes_ends_with(b&#x27;end-iso-10303-21;&#x27;)</code></li>

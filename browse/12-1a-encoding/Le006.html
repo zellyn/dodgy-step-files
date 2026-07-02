@@ -35,9 +35,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>reject; tolerant readers should at minimum flag surrogate code points (U+D800.U+DFFF) and values above U+10FFFF as malformed.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;X4 UCS-4 escape malformed&quot;, &quot;supplementary plane character broken&quot;, &quot;lone surrogate in X4 escape&quot;, &quot;code point above U+10FFFF in STEP&quot;, &quot;X4 hex run not divisible by 8&quot;.</p></section>
+<p>Synonyms: &quot;X4 UCS-4 escape malformed&quot;, &quot;supplementary plane character broken&quot;, &quot;lone surrogate in X4 escape&quot;, &quot;code point above U+10FFFF in STEP&quot;, &quot;X4 hex run not divisible by 8&quot;. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;\\X4\\03C0\\X0\\&#x27;)</code></li>
 <li><code>contains(b&#x27;\\X4\\0000D83D\\X0\\&#x27;)</code></li>

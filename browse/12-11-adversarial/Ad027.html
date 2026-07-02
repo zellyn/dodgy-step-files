@@ -34,9 +34,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>streaming-friendly architecture; configurable `max_instances`; abort with `E_INSTANCE_LIMIT`.</p></section>
 <section><h2>Notes</h2>
-<p>M DoS. **See also**: Ad032, Ad057, Pf013. Validation observed: silent-empty rather than the cited crash. The structural attack pattern (e.g., billion-laughs / cyclic-reference / very-large-string) is demonstrated; production-scale exploitation requires inflating the size factor as described. Kernel-mishandling-by-silent-acceptance is itself a defect signal at fixture scale.</p></section>
+<p>M DoS. **See also**: Ad032, Ad057, Pf013. Validation observed: silent-empty rather than the cited crash. The structural attack pattern (e.g., billion-laughs / cyclic-reference / very-large-string) is demonstrated; production-scale exploitation requires inflating the size factor as described. Kernel-mishandling-by-silent-acceptance is itself a defect signal at fixture scale. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>count_entity_def(b&#x27;CARTESIAN_POINT&#x27;) &gt;= 5 or count(b&#x27;#&#x27;) &gt;= 100</code></li>
 <li><code>count_entity_def(b&#x27;CARTESIAN_POINT&#x27;) &gt;= 5 or count(b&#x27;#&#x27;) &gt;= 30</code></li>

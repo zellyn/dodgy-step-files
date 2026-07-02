@@ -32,8 +32,12 @@
 <p>large general-transform scaling factor; instantiate transform.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Reject and return a failure status or an empty result; do not let an unhandled exception escape across the API boundary. Must not crash.</p></section>
+<section><h2>Notes</h2>
+<p>Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;CARTESIAN_TRANSFORMATION_OPERATOR_3D&#x27;) and contains(b&#x27;1.0E+18&#x27;)</code></li>
 <li><code>contains(b&#x27;1.0E+18&#x27;)</code></li>

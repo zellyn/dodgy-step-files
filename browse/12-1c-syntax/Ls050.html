@@ -33,9 +33,11 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Reject the value at the BOOLEAN slot; never leave the bool uninitialised.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Ad044, Ls034, Ls035, Ls049. Synonyms: &quot;STEP boolean given .UNKNOWN.&quot;, &quot;long-form UNKNOWN at BOOLEAN slot&quot;, &quot;LOGICAL UNKNOWN long form&quot;, &quot;STEP same_sense .UNKNOWN.&quot;, &quot;three-state value at BOOLEAN attribute&quot;.</p></section>
+<p>**See also**: Ad044, Ls034, Ls035, Ls049. Synonyms: &quot;STEP boolean given .UNKNOWN.&quot;, &quot;long-form UNKNOWN at BOOLEAN slot&quot;, &quot;LOGICAL UNKNOWN long form&quot;, &quot;STEP same_sense .UNKNOWN.&quot;, &quot;three-state value at BOOLEAN attribute&quot;. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;.UNKNOWN.&#x27;)</code></li>
 </ul></section>
