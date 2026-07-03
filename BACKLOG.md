@@ -441,3 +441,17 @@ same reason) applies.
 Note: AP242 Ed.3 (2022) was corrective maintenance and added NO kinematics entities.
 Kinematics lives in Ed.1 (DEF-MM, already deferred) and Ed.4 (Aug 2025). The wave-8
 audit's "AP242 Ed.3 kinematics" hypothesis was wrong; wave-9 confirmed.
+
+## DEF-GMSH-DRIFT — gmsh face-count nondeterminism recurrence watch (2026-07-03)
+Nightly validate-full run 28653762990 flagged Gs056 + Twi035 as DRIFT: gmsh
+mesh face-count changed on stable fixtures (Twi035 shape(10)→shape(5),
+Gs056 shape(10)→shape(12)) while OCCT stayed shape(1)/shape(1). Rebaselined
+to live in 2e0aab1a. Only 2 of ~hundreds of gmsh-shape(N) fixtures drifted,
+in opposite directions — consistent with gmsh meshing nondeterminism on
+borderline geometries rather than a version bump. **Risk:** these two may
+re-drift on future scheduled runs. **Recurrence-prevention options to
+consider (do NOT implement without sign-off):** (a) tolerance-match gmsh
+shape counts in the _final_verdict DRIFT check (±N faces), or (b) drop the
+gmsh field from Expected for fixtures where OCCT is the sole defect oracle,
+or (c) accept periodic rebaseline churn. Watch the next few daily
+validate-full runs to gauge frequency before investing.
