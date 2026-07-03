@@ -3826,7 +3826,7 @@ _Section summary: 101 entries._
 - **Tier-3 assertion**: edge[0].analytic.radius == 1.0
 - **Tier-3 assertion**: edge[1].curve_type == "circle"
 - **Tier-3 assertion**: edge[1].analytic.radius == 1.0
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 
 ### Twi036 — Lacking edge: UV gap not closable by vertex tolerance
 - **Category**: §12.3b wire-loop
@@ -27233,7 +27233,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 - **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(12) ifc=schema_n/a`
 
 ### Gs057 — `RECTANGULAR_COMPOSITE_SURFACE` LoadONBrep stub (BRL-CAD step-g)
 - **Category**: §12.2c (sub-class: composite quilt unimplemented)
