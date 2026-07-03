@@ -442,16 +442,28 @@ Note: AP242 Ed.3 (2022) was corrective maintenance and added NO kinematics entit
 Kinematics lives in Ed.1 (DEF-MM, already deferred) and Ed.4 (Aug 2025). The wave-8
 audit's "AP242 Ed.3 kinematics" hypothesis was wrong; wave-9 confirmed.
 
-## DEF-GMSH-DRIFT — gmsh face-count nondeterminism recurrence watch (2026-07-03)
-Nightly validate-full run 28653762990 flagged Gs056 + Twi035 as DRIFT: gmsh
-mesh face-count changed on stable fixtures (Twi035 shape(10)→shape(5),
-Gs056 shape(10)→shape(12)) while OCCT stayed shape(1)/shape(1). Rebaselined
-to live in 2e0aab1a. Only 2 of ~hundreds of gmsh-shape(N) fixtures drifted,
-in opposite directions — consistent with gmsh meshing nondeterminism on
-borderline geometries rather than a version bump. **Risk:** these two may
-re-drift on future scheduled runs. **Recurrence-prevention options to
-consider (do NOT implement without sign-off):** (a) tolerance-match gmsh
-shape counts in the _final_verdict DRIFT check (±N faces), or (b) drop the
-gmsh field from Expected for fixtures where OCCT is the sole defect oracle,
-or (c) accept periodic rebaseline churn. Watch the next few daily
-validate-full runs to gauge frequency before investing.
+## DEF-GMSH-DRIFT — gmsh entity-count platform divergence (2026-07-03, RESOLVED)
+Nightly validate-full runs 28575794898 (07-02) and 28653762990 (07-03) both
+flagged Gs056 + Twi035 as DRIFT: gmsh entity count (importShapes+synchronize
++OCCAutoFix `getEntities` total) was catalog shape(10) but CI produced
+Twi035 shape(5), Gs056 shape(12). OCCT stayed shape(1)/shape(1).
+
+**Diagnosis (investigated, confirmed — NOT nondeterminism):** Ran the exact
+production gmsh metric 6× in fresh subprocesses locally (gmsh 4.15.2, ARM
+macOS): Gs056 and Twi035 are rock-stable at **10** every run — matching the
+original catalog baseline. A spread of controls (Pf001=9, Pf005=15, Pf020=27,
+Pf034=9, Pf008=900, Pf033=1296) all matched catalog exactly and were stable.
+Both CI nightlies (Linux x86_64, same gmsh 4.15.2) agree at 12/5. So gmsh is
+**deterministic per-platform**; the two values differ because OCCAutoFix
+healing of these 2 borderline geometries is FP-sensitive across macOS-ARM vs
+Linux-x86. The original shape(10) baseline had been set from a local macOS
+run; CI (the authoritative nightly env) has consistently been 12/5.
+
+**Fix:** rebaselined Expected to the CI/Linux values (12,5) in 2e0aab1a —
+matches both nightlies, so validate-full goes green and stays green.
+Recurrence risk is LOW (CI deterministic). Only 2 of 1085 gmsh shape(N>1)
+fixtures diverge across platforms — the gmsh oracle is 99.8% platform-stable.
+
+**Latent process note (no action needed now):** gmsh shape(N) baselines must
+be sourced from CI-Linux, not local macOS, for borderline-healing geometries.
+The other 1083 gmsh fixtures are platform-agnostic.
