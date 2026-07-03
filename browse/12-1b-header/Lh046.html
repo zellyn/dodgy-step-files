@@ -36,11 +36,9 @@
 <section><h2>Expected kernel behavior</h2>
 <p>reject the file with a diagnostic naming each missing required record; do not invent default metadata to allow downstream import.</p></section>
 <section><h2>Notes</h2>
-<p>Distinguishable from Lh043 (comments-inside-string). **See also**: Lh037, Lh042. Synonyms: &quot;HEADER contains only comments&quot;, &quot;STEP header missing required records&quot;, &quot;FILE_DESCRIPTION absent from header&quot;, &quot;comment-only HEADER section&quot;, &quot;empty HEADER with /* */ only&quot;. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).</p></section>
+<p>Distinguishable from Lh043 (comments-inside-string). **See also**: Lh037, Lh042. Synonyms: &quot;HEADER contains only comments&quot;, &quot;STEP header missing required records&quot;, &quot;FILE_DESCRIPTION absent from header&quot;, &quot;comment-only HEADER section&quot;, &quot;empty HEADER with /* */ only&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=reject</code></p></section>
-<section><h2>Provenance tier</h2>
-<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;HEADER;&#x27;) and contains(b&#x27;ENDSEC;&#x27;) and not_contains(b&#x27;FILE_DESCRIPTION(&#x27;)</code></li>
 <li><code>not_contains(b&#x27;FILE_NAME(&#x27;) and not_contains(b&#x27;FILE_SCHEMA(&#x27;)</code></li>

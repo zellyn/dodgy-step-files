@@ -209,7 +209,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Description**: A string contains a backslash directive that is not one of the spec-recognised forms (`\X\`, `\X2\…\X0\`, `\X4\…\X0\`, `\S\x`, `\Q\x`, `\PE\`, `\N\n`, `\F\`).
 - **Reproducer recipe**: embed `'foo\Z\bar'` in a string-valued attribute.
 - **Expected kernel behavior**: reject the directive; recover by passing the bytes through literally with a warning.
-- **Notes**: **See also**: Le030. Synonyms: "unknown backslash escape in string", "made-up control directive", "STEP rejects unknown escape", "vendor-extension escape passes through", "non-standard backslash sequence". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
+- **Notes**: **See also**: Le030. Synonyms: "unknown backslash escape in string", "made-up control directive", "STEP rejects unknown escape", "vendor-extension escape passes through", "non-standard backslash sequence".
 - **Byte assertion**: contains(b'\\Z\\') or contains(b'\\M\\')
 - **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal, reject, or emit a diagnostic this fixture.
@@ -240,7 +240,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected kernel behavior**: Heal and accept: scanner must recognise `\X\` consumes exactly two hex digits and `\X2\` continues until `\X0\` before deciding apostrophe parity.
 - **Byte assertion**: contains(b'\\X\\27')
 - **Tier-3 assertion**: shape_null == True
-- **Notes**: Synonyms: "hex 27 inside X2 escape closes string", "apostrophe code-point misread as quote", "X2 block contains 27 garbles parser", "string closes inside Unicode escape", "embedded apostrophe code in hex run". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
+- **Notes**: Synonyms: "hex 27 inside X2 escape closes string", "apostrophe code-point misread as quote", "X2 block contains 27 garbles parser", "string closes inside Unicode escape", "embedded apostrophe code in hex run".
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The string-encoding defect either causes the lexer to abort or to record an attribute value different from the producer's bytes; no geometric data is corrupted but identifiers/descriptions on the carrying entity are wrong.
@@ -296,7 +296,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Description**: Per §5.2, LF and CR are ignored characters even inside string literals, so a literal `'first line<LF>second line'` parses to `'first linesecond line'`. This produces surprising silent concatenation when round-tripping descriptions written across physical lines.
 - **Reproducer recipe**: `FILE_DESCRIPTION(('first line<LF>second line'),'2;1');`
 - **Expected kernel behavior**: Heal and accept per spec (LF ignored, string content becomes concatenated). Tolerant writers should pre-encode `\X\0A` if a real newline was intended; readers should preserve input bytes when echoing diagnostics.
-- **Notes**: **See also**: Le017. Synonyms: "string spanning multiple lines silently joined", "newline inside literal eaten", "two-line description merged into one", "STEP string joins lines without separator", "multiline literal becomes single line". Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: **See also**: Le017. Synonyms: "string spanning multiple lines silently joined", "newline inside literal eaten", "two-line description merged into one", "STEP string joins lines without separator", "multiline literal becomes single line".
 - **Byte assertion**: matches(rb"FILE_DESCRIPTION\(\('first line\nsecond line'")
 - **Byte assertion**: matches(rb"PERSON\(\s*'p1','para1\s*\n")
 - **Tier-3 assertion**: shape_null == True
@@ -341,7 +341,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Description**: STEP names and PMI annotation strings carry Unicode using the spec-conformant `\X2\…\X0\` directive. Older OCCT did not decode the directives at all and emitted question-mark replacements. Some downstream tools (Excel, legacy ANSI receivers) cannot render the result because they lack full Unicode font support, but the file itself is conformant.
 - **Reproducer recipe**: `PRODUCT('\X2\03B1\X0\','alpha','desc',..);` (Greek alpha); Japanese characters embedded as `\X2\…\X0\` in `NAME` field.
 - **Expected kernel behavior**: Heal and accept: decode all control directives during read; pass through as Unicode; provide `read.step.codepage` for legacy files where the producer used 8-bit code pages instead.
-- **Notes**: **See also**: Le021, Le036. Synonyms: "Japanese product name in STEP", "Greek letters in PMI annotation", "X2 Unicode lost on import", "non-ASCII PRODUCT name shows as question marks", "Asian characters dropped on read". Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: **See also**: Le021, Le036. Synonyms: "Japanese product name in STEP", "Greek letters in PMI annotation", "X2 Unicode lost on import", "non-ASCII PRODUCT name shows as question marks", "Asian characters dropped on read".
 - **Byte assertion**: contains(b'\\X2\\03B1\\X0\\')
 - **Byte assertion**: count(b'\\X2\\') >= 1
 - **Tier-3 assertion**: shape_null == True
@@ -356,7 +356,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Description**: The REAL grammar uses `.` only. A parser using `strtod` without `setlocale("C")` on a host with `LC_NUMERIC=de_DE` reads `1,5` as `1234`-style integers separated by a comma, or worse, two integer tokens. Producers using locale-aware `printf` on European locales emit `1,5` for one-and-a-half. Geometry then has wildly wrong coordinates; downstream tessellation can crash on degenerate triangles.
 - **Reproducer recipe**: `#1=CARTESIAN_POINT('',(1,5,0.,0.));`
 - **Expected kernel behavior**: use `strtod_l` with the `"C"` locale; reject anything `strtod` does not consume entirely. Tolerant readers should diagnose locale corruption rather than silently re-parse.
-- **Notes**: Synonyms: "European decimal comma in STEP REAL", "1,5 instead of 1.5 in attribute", "locale comma corrupts coordinates", "German locale STEP REAL parse fail", "decimal separator wrong in numeric". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
+- **Notes**: Synonyms: "European decimal comma in STEP REAL", "1,5 instead of 1.5 in attribute", "locale comma corrupts coordinates", "German locale STEP REAL parse fail", "decimal separator wrong in numeric".
 - **Byte assertion**: matches(rb"CARTESIAN_POINT\('[^']*',\([0-9]+,[0-9]+,")
 - **Byte assertion**: matches(rb'\(0,\s*0,\s*0,\s*0,\s*0\)')
 - **Tier-3 assertion**: shape_null == True
@@ -475,7 +475,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Description**: A pretty-printer or broken splice writes a hex run across a `\r\n` boundary, e.g. `\X2\30A2 30A4\X0\` where the space is actually a CR LF. Per Part-21 §5.2 those bytes are ignored, so a tolerant lexer must accept the split; but many implementations consume the directive byte-greedily and fail on the line-end.
 - **Reproducer recipe**: a `STRING` literal `'foo\X2\30A2<CR LF>30A4\X0\bar'` split mid-escape.
 - **Expected kernel behavior**: Accept; the Part-21 lexer must be whitespace-tolerant inside escape sequences and string literals. Do not reject.
-- **Notes**: **See also**: Le005. Synonyms: "X2 escape split across CRLF", "hex run broken by line break", "directive spanning line break", "STEP escape across newline", "Unicode hex run interrupted by newline". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
+- **Notes**: **See also**: Le005. Synonyms: "X2 escape split across CRLF", "hex run broken by line break", "directive spanning line break", "STEP escape across newline", "Unicode hex run interrupted by newline".
 - **Byte assertion**: matches(rb'\\X2\\[^\\\\]*\r?\n[^\\\\]*\\X0\\')
 - **Byte assertion**: count(b'\\X2\\') >= 1
 - **Tier-3 assertion**: shape_null == True
@@ -548,7 +548,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Description**: ISO 10303-21 requires exactly one each of FILE_DESCRIPTION, FILE_NAME, FILE_SCHEMA, in that order. Real files appear with FILE_SCHEMA omitted, FILE_NAME twice, FILE_DESCRIPTION/FILE_NAME swapped, or DATA before HEADER.
 - **Reproducer recipe**: `HEADER; FILE_NAME('a.stp','..',(''),(''),'','',''); FILE_DESCRIPTION((''),'2;1'); ENDSEC;` (no FILE_SCHEMA); or `ISO-10303-21; DATA; #1=A(); ENDSEC; END-ISO-10303-21;` (no HEADER at all).
 - **Expected kernel behavior**: reject with "missing required header entity X" or "header section out of order"; never null-deref the schema pointer.
-- **Notes**: **See also**: Lh005. Synonyms: "FILE_SCHEMA missing from HEADER", "FILE_NAME twice in HEADER", "DATA before HEADER in STEP", "header records out of order", "duplicated header entity". Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: **See also**: Lh005. Synonyms: "FILE_SCHEMA missing from HEADER", "FILE_NAME twice in HEADER", "DATA before HEADER in STEP", "header records out of order", "duplicated header entity".
 - **Byte assertion**: not matches(rb'FILE_SCHEMA\s*\(')
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: Cross-references that depend on the duplicated/illegal instance number resolve to the wrong entity (or to NULL); affected sub-trees attach to incorrect parents and the resulting BRep contains dangling or mis-typed references.
@@ -645,7 +645,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Description**: FILE_NAME's timestamp attribute must be ISO-8601 (`YYYY-MM-DDThh:mm:ss[±hh:mm]`). Producers emit RFC 822 dates, locale-formatted (`27/12/2003 11:57`, `08/13/2014`), epoch integers, or empty strings.
 - **Reproducer recipe**: `FILE_NAME('a.stp','27/12/2003 11:57',..);`
 - **Expected kernel behavior**: Warn and accept: lexically valid as STRING; semantic layer warns; do not reject (block import) on non-conformant timestamp.
-- **Notes**: **See also**: Lh012, Lh013. Synonyms: "FILE_NAME timestamp not ISO-8601", "RFC 822 date in STEP header", "STEP timestamp 27/12/2003 format", "epoch integer in FILE_NAME timestamp", "locale-formatted date in header". Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: **See also**: Lh012, Lh013. Synonyms: "FILE_NAME timestamp not ISO-8601", "RFC 822 date in STEP header", "STEP timestamp 27/12/2003 format", "epoch integer in FILE_NAME timestamp", "locale-formatted date in header".
 - **Byte assertion**: matches(rb"FILE_NAME\([^;]*'[0-9]{1,2}/[0-9]{1,2}/[0-9]{2,4}")
 - **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
@@ -885,7 +885,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Description**: Several Recommended Practices specify lower-case keyword strings as canonical attribute values (e.g. `'composite'` on `geometric_tolerance_relationship`). Producers that emit these in mixed or upper case break receivers that string-compare strictly.
 - **Reproducer recipe**: `GEOMETRIC_TOLERANCE_RELATIONSHIP('Composite',..);` instead of `'composite'`.
 - **Expected kernel behavior**: Heal and accept (case-insensitive match for documented RP keyword values on import); warn; emit canonical lower-case on export.
-- **Notes**: Adjacent to Lh018 but specifically about RP-defined string attribute values rather than Part-21 keywords. **See also**: Lh018, Pmi043. Synonyms: "lower-case enum value in name field", "Recommended Practices keyword case mismatch", "composite spelled in mixed case", "STEP attribute string-compare fails on case", "RP-defined keyword not lower-case". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
+- **Notes**: Adjacent to Lh018 but specifically about RP-defined string attribute values rather than Part-21 keywords. **See also**: Lh018, Pmi043. Synonyms: "lower-case enum value in name field", "Recommended Practices keyword case mismatch", "composite spelled in mixed case", "STEP attribute string-compare fails on case", "RP-defined keyword not lower-case".
 - **Byte assertion**: contains(b"GEOMETRIC_TOLERANCE_RELATIONSHIP('Composite'")
 - **Byte assertion**: contains(b"'Composite'")
 - **Tier-3 assertion**: shape_null == True
@@ -943,7 +943,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Description**: Grammar requires at least one digit before the dot. `.5` is not legal; `0.5` is. C/Python `%g` formatters frequently emit bare `.5`.
 - **Reproducer recipe**: `#1=DIRECTION('',(.0,.0,1.0));`
 - **Expected kernel behavior**: Strict reject; lenient readers commonly accept implicit zero.
-- **Notes**: **See also**: Ls001. Synonyms: "REAL with no digit before decimal", ".5 instead of 0.5 in STEP", "leading-dot REAL literal", "%g formatter emits .5", "missing zero before decimal". Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: **See also**: Ls001. Synonyms: "REAL with no digit before decimal", ".5 instead of 0.5 in STEP", "leading-dot REAL literal", "%g formatter emits .5", "missing zero before decimal".
 - **Byte assertion**: matches(rb"\(\s*\.\d")
 - **Byte assertion**: contains(b'.5') and matches(rb'\(\.\d')
 - **Tier-3 assertion**: shape_null == True
@@ -958,7 +958,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Description**: ISO 10303-21 specifies upper-case `E` for the REAL exponent; lower-case `e`, embedded whitespace (`1.5 E+3`), or `+` sign in the exponent (`1e+18`) are non-conforming. Locale-aware printers also produce these.
 - **Reproducer recipe**: `(1.5e+3,0.,0.)`, `(1.5 E+3,0.,0.)`, `1.E+18`.
 - **Expected kernel behavior**: Lex `[+-]?\d+(\.\d*)?([eE][+-]?\d+)?` permissively; emit warning for non-canonical subsets.
-- **Notes**: **See also**: Ls001. Synonyms: "lowercase e in REAL exponent", "1e+18 instead of 1E+18", "whitespace in REAL exponent", "STEP exponent has plus sign", "non-standard exponent in STEP". Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: **See also**: Ls001. Synonyms: "lowercase e in REAL exponent", "1e+18 instead of 1E+18", "whitespace in REAL exponent", "STEP exponent has plus sign", "non-standard exponent in STEP".
 - **Byte assertion**: matches(rb'\d[eE]\+?\d') and (matches(rb'\d e\d') or matches(rb'\d\.?e[+-]?\d'))
 - **Byte assertion**: matches(rb'\d[Ee][+-]?\d')
 - **Tier-3 assertion**: shape_null == True
@@ -1412,7 +1412,7 @@ _Section summary: 82 entries._
 - **Reproducer recipe**: `EDGE_CURVE` references a 3D `LINE`/`B_SPLINE_CURVE_WITH_KNOTS` and bounds an `ADVANCED_FACE`; the corresponding `SURFACE_CURVE.associated_geometry` lacks any `PCURVE` entry. With STEP writer flag "Write out curves in parametric space of surface" enabled but no cached pcurve.
 - **Expected kernel behavior**: synthesise the missing pcurve by projecting the 3D curve onto the host surface, or reject the input as malformed. Never dereference a null pcurve handle.
 - **Notes**: **See also**: Gp010, Gp019, Tfa003. Synonyms: "missing pcurve on edge between two surfaces", "edge stored without 2D parameter curve", "edge has only 3D curve representation no pcurve", "tessellator can't render face because edge has no parametric curve", "edge bounds a face with no associated pcurve geometry". **OCC behavior**: crashes (signal 11) on this fixture (catalog disallows crash). Kernel-bug witnessed: receivers should produce one of {heal, reject}, never crash.
-- **Notes**: Cross-oracle: pure-Python Part-21 validator accepts (`accept`); OCCT crashes (`signal(11)`). The crash is on the kernel side; the file is spec-conformant Part-21. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: Cross-oracle: pure-Python Part-21 validator accepts (`accept`); OCCT crashes (`signal(11)`). The crash is on the kernel side; the file is spec-conformant Part-21.
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'PCURVE')
@@ -5190,7 +5190,7 @@ End of file. 44 distinct entries.
  internal unit scaling; either rescale tolerances atomically with
  coordinates, or document a single canonical working-unit and reject input
  that cannot survive the conversion.
-- **Notes**: **See also**: N001, U001. Searchable as "tolerance hierarchy. Synonyms: "tolerance hierarchy flips when scaled to meters", "uncertainty values change order under unit change", "vertex/edge/face hierarchy inverts on unit conversion", "scaling breaks tolerance ordering". Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: **See also**: N001, U001. Searchable as "tolerance hierarchy. Synonyms: "tolerance hierarchy flips when scaled to meters", "uncertainty values change order under unit change", "vertex/edge/face hierarchy inverts on unit conversion", "scaling breaks tolerance ordering".
  violated after metric conversion", "STEP unit conversion broke tolerances".
 - **Byte assertion**: count_entity_def(b'UNCERTAINTY_MEASURE_WITH_UNIT') == 3
 - **Byte assertion**: contains(b'1.0E-6') and contains(b'1.0E-5') and contains(b'1.0E-4')
@@ -5222,7 +5222,7 @@ End of file. 44 distinct entries.
  unit conversion; if precision is insufficient to preserve it, reject the
  input or widen the inflated tolerance to absorb the conversion drift, and
  emit a warning.
-- **Notes**: Synonyms: "tolerance hierarchy inverts under inch conversion", "non-decimal scale flips uncertainty ordering", "inch unit breaks vertex/edge tolerance ratio", "tolerance hierarchy fails after mm-to-inch conversion". Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: Synonyms: "tolerance hierarchy inverts under inch conversion", "non-decimal scale flips uncertainty ordering", "inch unit breaks vertex/edge tolerance ratio", "tolerance hierarchy fails after mm-to-inch conversion".
 - **Byte assertion**: count_entity_def(b'UNCERTAINTY_MEASURE_WITH_UNIT') == 3
 - **Byte assertion**: contains(b'1.000E-6') and contains(b'1.001E-6') and contains(b'1.002E-6')
 - **Tier-3 assertion**: shape_null == True
@@ -5337,7 +5337,7 @@ End of file. 44 distinct entries.
  `(0.0, 1.0E-2, 1.0E6)` multiplicities `(4, 1, 4)`, five control points
  spread across the parametric range; wrap in PRODUCT chain.
 - **Expected kernel behavior**: Heal and accept: normalize to a single documented policy (absolute or relative) for knot-equivalence; the policy is transparently emitted in diagnostics.
-- **Notes**: **See also**: Tb007. Synonyms: "knot tolerance scaled by parametric range", "absolute knot tolerance wrong on stretched parameter", "NURBS knot comparison ignores range scaling", "stretched parameter range hides distinct knots". Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: **See also**: Tb007. Synonyms: "knot tolerance scaled by parametric range", "absolute knot tolerance wrong on stretched parameter", "NURBS knot comparison ignores range scaling", "stretched parameter range hides distinct knots".
 - **Byte assertion**: contains(b'B_SPLINE_CURVE_WITH_KNOTS')
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') == 5
 - **Byte assertion**: contains(b'1.0E-6')
@@ -5446,7 +5446,7 @@ End of file. 44 distinct entries.
 - **Reproducer recipe**: `SPHERICAL_SURFACE` with R=1; face with outer-bound
  wire at constant V = π/2 - 1e-9 (a near-pole circle).
 - **Expected kernel behavior**: Heal and accept: pole-snapping is a documented invariant; the snap threshold normalizes into diagnostics, not hidden behind working precision.
-- **Notes**: Synonyms: "sphere pole singularity breaks seam match", "v-parameter singular at pole", "pole singularity fails parametric tolerance", "sphere seam at pole has multi-valued UV". Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: Synonyms: "sphere pole singularity breaks seam match", "v-parameter singular at pole", "pole singularity fails parametric tolerance", "sphere seam at pole has multi-valued UV".
 - **Byte assertion**: contains(b'SPHERICAL_SURFACE') and contains(b'CIRCLE')
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') == 1
 - **Byte assertion**: contains(b'1.0E-7')
@@ -5927,7 +5927,7 @@ _Section summary: 31 entries._
 - **Description**: Inventor changed STEP angle unit to `.RADIAN.` for cross-vendor consistency. After import the document angle unit setting is overwritten. The producer's preference for degrees does not round-trip via the STEP `plane_angle_unit` context.
 - **Reproducer recipe**: doc set to degrees; export STEP; file contains `(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.))`; reopen — display now in radians.
 - **Expected kernel behavior**: Heal and accept: normalize / separate the "wire" unit (RADIAN by spec) from the "display" unit; preserve session angular display preference, or coerce an explicit `CONVERSION_BASED_UNIT('DEGREE',..)` when the author prefers degrees.
-- **Notes**: **See also**: U031. Synonyms: "Inventor STEP forces RADIAN angles", "angle unit changes from DEGREE to RADIAN", "doc preference broken on STEP round-trip", "Inventor switches plane_angle to radians", "STEP angle unit overwritten on import". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
+- **Notes**: **See also**: U031. Synonyms: "Inventor STEP forces RADIAN angles", "angle unit changes from DEGREE to RADIAN", "doc preference broken on STEP round-trip", "Inventor switches plane_angle to radians", "STEP angle unit overwritten on import".
 - **Byte assertion**: contains(b'.RADIAN.')
 - **Byte assertion**: count(b'.RADIAN.') >= 1
 - **Tier-3 assertion**: shape_null == True
@@ -5945,7 +5945,7 @@ _Section summary: 31 entries._
 - **Receiver**: any STEP consumer
 - **Description**: Models authored in Plant 3D export to STEP with a `LENGTH_UNIT` context whose declared unit does not match drawing units, so external receivers see mismatched scale. Typical signature: `LENGTH_UNIT` declared as millimetres with `UNCERTAINTY_MEASURE_WITH_UNIT` 0.001 mm, but coordinates of 1.0 and 2.5; a sub-millimetre or unscaled inch fragment sitting in a mm context.
 - **Expected kernel behavior**: writer must emit unit context tied to authored model; producer pipeline must not silently change unit context between authoring and serialization.
-- **Notes**: **OCC behavior**: silently consumes the mismatched mm-context file as written without surfacing a unit-vs-coordinate-magnitude inconsistency; the catalog claim above is producer-side, but on the read side OCC's lack of sanity-check is the kernel mishandling. Synonyms: "Plant 3D STEP unit context disagrees with drawing", "sub-mm coords in mm STEP context", "Plant 3D unit mismatch", "AutoCAD Plant 3D wrong STEP units", "drawing units differ from STEP unit". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
+- **Notes**: **OCC behavior**: silently consumes the mismatched mm-context file as written without surfacing a unit-vs-coordinate-magnitude inconsistency; the catalog claim above is producer-side, but on the read side OCC's lack of sanity-check is the kernel mishandling. Synonyms: "Plant 3D STEP unit context disagrees with drawing", "sub-mm coords in mm STEP context", "Plant 3D unit mismatch", "AutoCAD Plant 3D wrong STEP units", "drawing units differ from STEP unit".
 - **Byte assertion**: contains(b'SI_UNIT(.MILLI.,.METRE.)') or contains(b'SI_UNIT(.MILLI., .METRE.)')
 - **Byte assertion**: matches(rb'CARTESIAN_POINT')
 - **Tier-3 assertion**: shape_null == True
@@ -6018,7 +6018,7 @@ _Section summary: 31 entries._
 - **Description**: After OCCT 7.8 the `write.units` / `DESTEP_Parameters` write-unit setting is no longer applied: output coordinates are not scaled to the requested unit. Common signature: `LENGTH_UNIT` declared as bare `SI_UNIT(METRE)` (no `.MILLI.` prefix) but coordinate values are sized as if mm (e.g. 100, 50, 25.4), so a literal interpretation produces a 100 m × 50 m oversized part.
 - **Reproducer recipe**: `xstep.cascade.unit MM` and `write.step.unit M`, write a 1-unit vertex; file is still in mm.
 - **Expected kernel behavior**: Heal and accept: normalize / honour the configured target unit on write; coerce / apply scale during transfer.
-- **Notes**: **See also**: Pf022. Synonyms: "OCCT 7.8 ignores write.units setting", "STEP exports as METRE despite mm setting", "write.step.unit silently ignored", "OCCT regression on STEP write unit", "100m oversized part from STEP write". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
+- **Notes**: **See also**: Pf022. Synonyms: "OCCT 7.8 ignores write.units setting", "STEP exports as METRE despite mm setting", "write.step.unit silently ignored", "OCCT regression on STEP write unit", "100m oversized part from STEP write".
 - **Byte assertion**: matches(rb'SI_UNIT\(\s*\$\s*,\s*\.METRE\.\)') or contains(b'SI_UNIT($,.METRE.)')
 - **Byte assertion**: contains(b'.METRE.')
 - **Tier-3 assertion**: shape_null == True
@@ -6036,7 +6036,7 @@ _Section summary: 31 entries._
 - **Description**: User picks "inch" as export unit; OCCT 7.8.1 still writes coordinates in mm but writes `LENGTH_UNIT` as inch. Re-import scales 25.4× too large.
 - **Reproducer recipe**: file declares `(CONVERSION_BASED_UNIT('INCH',..) NAMED_UNIT(..) LENGTH_UNIT())` but `CARTESIAN_POINT` coordinates are mm-valued.
 - **Expected kernel behavior**: Warn and accept: the validator normalizes coordinate magnitudes against declared `UNCERTAINTY_MEASURE_WITH_UNIT` and assembly bounding boxes; emit a warning diagnostic on suspicious 25.4× / 1000× mismatch.
-- **Notes**: **See also**: U001. Synonyms: "FreeCAD STEP labelled inch but values mm", "model in mm but file says inches", "re-import 25.4x too large from FreeCAD STEP", "mm coords with INCH declaration", "OCCT 7.8.1 mislabels STEP as inches". Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: **See also**: U001. Synonyms: "FreeCAD STEP labelled inch but values mm", "model in mm but file says inches", "re-import 25.4x too large from FreeCAD STEP", "mm coords with INCH declaration", "OCCT 7.8.1 mislabels STEP as inches".
 - **Byte assertion**: contains(b"CONVERSION_BASED_UNIT('INCH'")
 - **Byte assertion**: matches(rb"'INCH'")
 - **Tier-3 assertion**: shape_null == True
@@ -6264,7 +6264,7 @@ _Section summary: 31 entries._
 - **Reproducer recipe**: Part 1 mile long internally; export with
  `CONVERSION_BASED_UNIT('MILE', factor)`. Factor written is wrong by 1000×.
 - **Expected kernel behavior**: Heal and accept: normalize / every non-SI conversion factor is a schema-mandated constant; the exporter consults a lookup table and never recomputes.
-- **Notes**: **See also**: U023. Synonyms: "mile-to-mm factor wrong by 1000", "MILE conversion 1609.344 instead of 1609344", "metres-to-mm prefix applied to miles", "STEP mile under-scaled 1000x", "wrong mile conversion factor on export". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
+- **Notes**: **See also**: U023. Synonyms: "mile-to-mm factor wrong by 1000", "MILE conversion 1609.344 instead of 1609344", "metres-to-mm prefix applied to miles", "STEP mile under-scaled 1000x", "wrong mile conversion factor on export".
 - **Byte assertion**: contains(b'1609.344')
 - **Byte assertion**: contains(b"CONVERSION_BASED_UNIT('MILE'")
 - **Tier-3 assertion**: shape_null == True
@@ -10574,7 +10574,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected kernel behavior**: detect the type mismatch / unresolved reference;
  reject the operation as malformed or warn and continue with the operation
  treated as having no associated feature.
-- **Notes**: Synonyms: "AP238 broken reference", "STEP-NC missing process aspect", "machining_operation has no feature", "STEP-NC dangling reference". Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: Synonyms: "AP238 broken reference", "STEP-NC missing process aspect", "machining_operation has no feature", "STEP-NC dangling reference".
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'MACHINING_OPERATION')
 - **Byte assertion**: contains(b'WORKPLAN')
@@ -10864,7 +10864,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  listed in order n1,n4,n3,n2.
 - **Expected kernel behavior**: detect negative Jacobian; reject, reverse the
  node order, or warn the consumer that downstream signs may be inverted.
-- **Notes**: Synonyms: "negative Jacobian element", "wound backwards", Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: Synonyms: "negative Jacobian element", "wound backwards",
  "element flipped".
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'SURFACE_3D_ELEMENT_DESCRIPTOR')
@@ -10937,7 +10937,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  polyimide_ref, LENGTH_MEASURE(0.2))`.
 - **Expected kernel behavior**: detect the mismatch; either split the ply
  into two plies, reject, or honor only one of the two materials and warn.
-- **Notes**: Synonyms: "PCB layer with split material", "stackup ply inconsistent", "AP210 ply has mismatched top/bottom material", "transition film mislabeled as ply", "ply has two different MATERIAL_DESIGNATIONs". Synonyms: "PCB layer with split material", "stackup ply Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: Synonyms: "PCB layer with split material", "stackup ply inconsistent", "AP210 ply has mismatched top/bottom material", "transition film mislabeled as ply", "ply has two different MATERIAL_DESIGNATIONs". Synonyms: "PCB layer with split material", "stackup ply
  inconsistent".
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: contains(b'LAMINATE_OR_PLY_DEFINITION')
@@ -11649,7 +11649,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  referenced by `SINGLE_POINT_CONSTRAINT(#999, ..)`.
 - **Expected kernel behavior**: detect orphan-node constraints; warn and skip,
  or reject.
-- **Notes**: Synonyms: "AP209 SPC orphan node", "boundary condition on missing node", "FEM constraint references node not in mesh", "single_point_constraint targets unknown node". **See also**: M083 (load analog), M079 (empty-group analog). Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: Synonyms: "AP209 SPC orphan node", "boundary condition on missing node", "FEM constraint references node not in mesh", "single_point_constraint targets unknown node". **See also**: M083 (load analog), M079 (empty-group analog).
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'SINGLE_POINT_CONSTRAINT')
 - **Tier-3 assertion**: shape_null == True
@@ -11758,7 +11758,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  distribution factors `0.6, 0.6, -0.2`.
 - **Expected kernel behavior**: validate non-negative distribution factors;
  warn, normalize to non-negative, or reject as malformed.
-- **Notes**: Synonyms: "negative load fraction", "AP209 distribution wrong sign", "load weights include negative", "FEM distributed load pulls instead of pushes". Synonyms: "negative load fraction", "AP209 distribution wrong Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: Synonyms: "negative load fraction", "AP209 distribution wrong sign", "load weights include negative", "FEM distributed load pulls instead of pushes". Synonyms: "negative load fraction", "AP209 distribution wrong
  sign".
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'NODE_WITH_FORCE')
@@ -12063,7 +12063,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected kernel behavior**: detect overlapping effectivity windows;
  reject the configuration set, or warn and pick the latest-released
  configuration deterministically.
-- **Notes**: Synonyms: "effectivity ambiguity", "configuration overlap", Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: Synonyms: "effectivity ambiguity", "configuration overlap",
  "AP203 PDM date conflict". **See also**: A012.
 - **Byte assertion**: contains(b'CONFIG_CONTROL_DESIGN')
 - **Byte assertion**: count_entity_def(b'TIME_INTERVAL_BASED_EFFECTIVITY') >= 2
@@ -12118,7 +12118,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  `TIME_INTERVAL_BASED_EFFECTIVITY(..,2024-06-01,..)`.
 - **Expected kernel behavior**: detect the inversion; warn or reject the
  approval/effectivity pair as out of process order.
-- **Notes**: Synonyms: "approval workflow inversion", "effectivity precedes approval", "design approved after effectivity start", "AP203 approval after release". Synonyms: "approval workflow inversion", "effectivity precedes Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: Synonyms: "approval workflow inversion", "effectivity precedes approval", "design approved after effectivity start", "AP203 approval after release". Synonyms: "approval workflow inversion", "effectivity precedes
  approval".
 - **Byte assertion**: contains(b'CONFIG_CONTROL_DESIGN')
 - **Byte assertion**: contains(b'APPROVAL_DATE_TIME')
@@ -12382,7 +12382,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  (product_def, document_file))`.
 - **Expected kernel behavior**: detect mixed-class items list; reject or
  warn and split into homogeneous assignments.
-- **Notes**: Synonyms: "AP203 multi-arity action", "PDM action target ambiguity", "applied_action mixes products and documents", "ACTION_ASSIGNMENT crosses class boundary". Synonyms: "AP203 multi-arity action", "PDM action target Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: Synonyms: "AP203 multi-arity action", "PDM action target ambiguity", "applied_action mixes products and documents", "ACTION_ASSIGNMENT crosses class boundary". Synonyms: "AP203 multi-arity action", "PDM action target
  ambiguity".
 - **Byte assertion**: contains(b'CONFIG_CONTROL_DESIGN')
 - **Byte assertion**: contains(b'APPLIED_ACTION_ASSIGNMENT')
@@ -12411,7 +12411,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  `APPROVAL_PERSON_ORGANIZATION`.
 - **Expected kernel behavior**: detect empty PERSON identity; reject the
  approval or warn that the audit trail is incomplete.
-- **Notes**: Synonyms: "AP203 anonymous approver", "PDM approval no Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: Synonyms: "AP203 anonymous approver", "PDM approval no
  signer", "missing approver name".
 - **Byte assertion**: contains(b'CONFIG_CONTROL_DESIGN')
 - **Byte assertion**: contains(b'APPROVAL_PERSON_ORGANIZATION')
@@ -13342,7 +13342,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: The external mapping of a multiple-inheritance entity must list ALL ancestor leaves, not only the most-specific subtypes. A writer that elides an ancestor (e.g. `NAMED_UNIT` between `CONVERSION_BASED_UNIT` and `PLANE_ANGLE_UNIT`) produces a record that resolves ambiguously on dispatch.
 - **Reproducer recipe**: `#10=( CONVERSION_BASED_UNIT('DEG',#9) PLANE_ANGLE_UNIT() );` — ancestor `NAMED_UNIT` missing from the leaf list.
 - **Expected kernel behavior**: Reject the record (or accept-with-warning and synthesise the missing ancestor); never silently bind to an arbitrary subset of the type lattice.
-- **Notes**: **See also**: Ls010, Ls047. **OCC behavior**: silently accepts (no diagnostic, empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog's stated invariant. Synonyms: "complex entity ancestor leaf omitted", "NAMED_UNIT missing from complex unit record", "STEP multi-inheritance ancestor missing", "incomplete leaf chain in complex entity", "leaf elision in complex record". Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: **See also**: Ls010, Ls047. **OCC behavior**: silently accepts (no diagnostic, empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog's stated invariant. Synonyms: "complex entity ancestor leaf omitted", "NAMED_UNIT missing from complex unit record", "STEP multi-inheritance ancestor missing", "incomplete leaf chain in complex entity", "leaf elision in complex record".
 - **Byte assertion**: matches(rb'#\d+\s*=\s*\(\s*CONVERSION_BASED_UNIT')
 - **Byte assertion**: not_contains(b'NAMED_UNIT(*)')
 - **Tier-3 assertion**: shape_null == True
@@ -13673,7 +13673,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  `end-iso-10303-21;` (lower-case).
 - **Expected kernel behavior**: Heal and accept: keywords are case-insensitive in ISO 10303-21; accept any case for `ISO-10303-21`, `HEADER`, `DATA`, `ENDSEC`, `END-ISO-10303-21`. Do not reject lower-case forms.
 - **Notes**: **See also**: Le027.
-- **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_CLOSE_CASE)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_CLOSE_CASE)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation.
 - **Byte assertion**: bytes_ends_with(b'end-iso-10303-21;') or contains(b'end-iso-10303-21;')
 - **Byte assertion**: bytes_ends_with(b'end-iso-10303-21;')
 - **Tier-3 assertion**: load == "ok"
@@ -13751,7 +13751,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected kernel behavior**: empty face list is a malformed shell;
  diagnose and skip; never crash.
 - **Closure intent**: ambiguous
-- **Notes**: **See also**: Tsh023, Tsh024. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: **See also**: Tsh023, Tsh024. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: matches(rb"OPEN_SHELL\('[^']*',\(\)\)")
 - **Byte assertion**: matches(rb'\(\)\)')
 - **Tier-3 assertion**: load == "ok"
@@ -14019,7 +14019,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  first fix removes the last edge; subsequent step accesses `edges[3]`.
 - **Expected kernel behavior**: wire-fix iteration uses bounds-checked
  iterators and re-validates edge count after each modification.
-- **Notes**: **See also**: Twi051, Twi064. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: **See also**: Twi051, Twi064. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic.
 - **Byte assertion**: count_entity_def(b'ORIENTED_EDGE') >= 3
 - **Byte assertion**: contains(b'EDGE_LOOP')
 - **Byte assertion**: contains(b'EDGE_LOOP') and count_entity_def(b'ORIENTED_EDGE') >= 3
@@ -15762,7 +15762,7 @@ _Section summary: 41 entries._
 - **Reproducer recipe**: `#1=ADVANCED_FACE('',(),#42,.T.);` (empty bound list); `#1=TESSELLATED_SHELL('',(),$);`.
 - **Expected kernel behavior**: validate `LIST` bounds against schema lower bound at parse time; reject with `E_AGGREGATE_BOUNDS`.
 - **Notes**: H; recurring class across Spatial/Autodesk/OCCT. **See also**: Ad003, Ls013. **OCC behavior**: crashes (signal 11) on this fixture (catalog disallows crash). Kernel-bug witnessed: receivers should produce one of {reject}; never crash.
-- **Notes**: Cross-oracle: pure-Python Part-21 validator accepts (`accept`); OCCT crashes (`signal(11)`). The crash is on the kernel side; the file is spec-conformant Part-21. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: Cross-oracle: pure-Python Part-21 validator accepts (`accept`); OCCT crashes (`signal(11)`). The crash is on the kernel side; the file is spec-conformant Part-21.
 - **Byte assertion**: matches(rb'ADVANCED_FACE\([^;]*,\(\),') or matches(rb'TESSELLATED_SHELL\([^;]*,\(\),')
 - **Model impact**: Parser dereferences invalid memory while processing the malformed token; the load process is killed by a signal and no shape is delivered.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
@@ -15986,7 +15986,7 @@ _Section summary: 41 entries._
 - **Description**: Schema requires non-empty list; producer emits `()`. Reader's iterator-step crashes on empty.
 - **Reproducer recipe**: `#1=EDGE_LOOP('',());` referenced from `FACE_BOUND`.
 - **Expected kernel behavior**: defensive iterator guard; reject malformed entity; continue translation.
-- **Notes**: **See also**: Ad043. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: **See also**: Ad043. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: matches(rb"EDGE_LOOP\('[^']*',\(\)\)")
 - **Byte assertion**: contains(b'EDGE_LOOP')
 - **Tier-3 assertion**: load == "ok"
@@ -16101,7 +16101,7 @@ _Section summary: 41 entries._
 - **Description**: STEP `RATIONAL_BSPLINE_CURVE` with weights array length ≠ poles array length; reader walks past end of weights vector.
 - **Reproducer recipe**: `RATIONAL_BSPLINE_CURVE` with weights `(1.,1.,1.)` and poles `(#1,#2,#3,#4)`.
 - **Expected kernel behavior**: validate equality; pad/truncate with warning; never read past either array.
-- **Notes**: **See also**: Gn002. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: catalog wants a warning to surface; OCC accepts without any diagnostic. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: **See also**: Gn002. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: catalog wants a warning to surface; OCC accepts without any diagnostic.
 - **Byte assertion**: contains(b'RATIONAL_B_SPLINE_CURVE') or matches(rb'RATIONAL_BSPLINE_CURVE\(\([^)]+\)\)')
 - **Byte assertion**: contains(b'B_SPLINE_CURVE_WITH_KNOTS') or contains(b'BSPLINE') or contains(b'RATIONAL_B_SPLINE_CURVE')
 - **Tier-3 assertion**: load == "ok"
@@ -18050,7 +18050,7 @@ _Section summary: 41 entries._
 - **Description**: `\Q\NNN\Q\` accepts decimal Unicode scalars, but values 55296.57343 (the UTF-16 surrogate halves) are not legal Unicode scalars; they exist only as paired surrogates in the UTF-16 transformation. A kernel that decodes `\Q\55296\Q\` into a UTF-8 stream produces an ill-formed sequence (CESU-8 / WTF-8 territory) that downstream tooling may reject. The producer may have meant a non-BMP character but failed to emit the surrogate pair, or may be re-encoding a Java/JavaScript string that allowed lone surrogates internally.
 - **Reproducer recipe**: `PRODUCT.name='lone=\Q\55296\Q\'` — value 55296 is U+D800, a high-surrogate half.
 - **Expected kernel behavior**: reject `\Q\.\Q\` payloads in the surrogate range (55296.57343); a tolerant mode may pass them through as a degraded encoding with a warning, but conforming Unicode output must not contain lone surrogates.
-- **Notes**: **See also**: Le044 (the matching `\X2\` defect). Synonyms: "Q directive encodes surrogate", "STEP Q with U+D800 lone surrogate", "surrogate half via Q escape", "ill-formed UTF-8 from Q surrogate", "WTF-8 from STEP Q escape". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
+- **Notes**: **See also**: Le044 (the matching `\X2\` defect). Synonyms: "Q directive encodes surrogate", "STEP Q with U+D800 lone surrogate", "surrogate half via Q escape", "ill-formed UTF-8 from Q surrogate", "WTF-8 from STEP Q escape".
 - **Byte assertion**: contains(b'\\Q\\55296\\Q\\')
 - **Byte assertion**: contains(b'55296')
 - **Tier-3 assertion**: shape_null == True
@@ -18065,7 +18065,7 @@ _Section summary: 41 entries._
 - **Description**: `\Q\NNN\Q\` requires the bracketed payload to be a decimal integer. Producers occasionally emit hex (`\Q\1F600\Q\`), an `0x` prefix (`\Q\0x1F600\Q\`), or whitespace around the number (`\Q\ 65 \Q\`). A strict parser rejects; a lenient parser may silently coerce, producing the wrong character (e.g. parsing `F60` as decimal 0 then F-A-A garbage).
 - **Reproducer recipe**: `PRODUCT.name='hex=\Q\F60\Q\'`; `'px=\Q\0x41\Q\'`; `'ws=\Q\ 65 \Q\'`.
 - **Expected kernel behavior**: reject any non-decimal payload with a precise diagnostic citing the offending characters; never silently substitute 0 for a malformed payload.
-- **Notes**: **See also**: Le030, Le040. **OCC behavior**: silently accepts non-decimal `\Q\` payloads and either substitutes 0 or coerces via leading digits; kernel mishandling; the catalog above forbids silent substitution. Synonyms: "Q directive with hex digits", "Q escape with 0x prefix", "Q payload not decimal", "whitespace inside Q numeric", "non-decimal Q payload". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
+- **Notes**: **See also**: Le030, Le040. **OCC behavior**: silently accepts non-decimal `\Q\` payloads and either substitutes 0 or coerces via leading digits; kernel mishandling; the catalog above forbids silent substitution. Synonyms: "Q directive with hex digits", "Q escape with 0x prefix", "Q payload not decimal", "whitespace inside Q numeric", "non-decimal Q payload".
 - **Byte assertion**: contains(b'\\Q\\0x') or matches(rb'\\Q\\\s')
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: The string-encoding defect either causes the lexer to abort or to record an attribute value different from the producer's bytes; no geometric data is corrupted but identifiers/descriptions on the carrying entity are wrong.
@@ -18404,7 +18404,7 @@ _Section summary: 41 entries._
 - **Description**: Edition-3 FILE_POPULATION records declare a 'population' (a named subset of instances) whose closure is determined by a separate marker or by section boundary. When the marker is missing or misspelt, instances appear to belong to multiple populations or to none. Consumers diverge on whether to treat the open population as covering the whole DATA section or to discard the population designation.
 - **Reproducer recipe**: HEADER contains `FILE_POPULATION('release_a','version-1','release-baseline');` with no closing record.
 - **Expected kernel behavior**: parse FILE_POPULATION metadata and either apply the named population to the entire DATA section deterministically or reject the unterminated population with a diagnostic; do not silently apply to an arbitrary subset.
-- **Notes**: **See also**: Lh016. **OCC behavior**: silently accepts the unterminated `FILE_POPULATION` record with no diagnostic; kernel mishandling; the catalog above forbids silent application to an arbitrary subset. Synonyms: "FILE_POPULATION unterminated", "STEP population set without close marker", "FILE_POPULATION missing terminator", "instances belong to no population", "ambiguous FILE_POPULATION boundary". Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: **See also**: Lh016. **OCC behavior**: silently accepts the unterminated `FILE_POPULATION` record with no diagnostic; kernel mishandling; the catalog above forbids silent application to an arbitrary subset. Synonyms: "FILE_POPULATION unterminated", "STEP population set without close marker", "FILE_POPULATION missing terminator", "instances belong to no population", "ambiguous FILE_POPULATION boundary".
 - **Byte assertion**: contains(b'FILE_POPULATION(')
 - **Byte assertion**: contains(b'release_a')
 - **Tier-3 assertion**: shape_null == True
@@ -18523,7 +18523,7 @@ _Section summary: 41 entries._
 - **Description**: ISO 10303-21 mandates that HEADER contain at minimum FILE_DESCRIPTION, FILE_NAME, and FILE_SCHEMA records (in that order). A pathological writer emits a HEADER section consisting of only `/* */` block comments; the required records are absent. Spec-conforming readers cannot determine the file's edition, encoding declaration, or schema name; they must reject. Lenient readers may invent default metadata (assume Edition-2, ISO-8859-1, AP203) and proceed, hiding the producer-side failure. Bug-reporter language: "STEP file has empty header", "no FILE_SCHEMA in file", "header is just comments", "schema unknown".
 - **Reproducer recipe**: a Part-21 file whose HEADER section is `HEADER; /* exported by build pipeline */ /* metadata unavailable */ ENDSEC;` (no FILE_DESCRIPTION / FILE_NAME / FILE_SCHEMA), followed by a normal DATA section.
 - **Expected kernel behavior**: reject the file with a diagnostic naming each missing required record; do not invent default metadata to allow downstream import.
-- **Notes**: Distinguishable from Lh043 (comments-inside-string). **See also**: Lh037, Lh042. Synonyms: "HEADER contains only comments", "STEP header missing required records", "FILE_DESCRIPTION absent from header", "comment-only HEADER section", "empty HEADER with /* */ only". Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: Distinguishable from Lh043 (comments-inside-string). **See also**: Lh037, Lh042. Synonyms: "HEADER contains only comments", "STEP header missing required records", "FILE_DESCRIPTION absent from header", "comment-only HEADER section", "empty HEADER with /* */ only".
 - **Byte assertion**: contains(b'HEADER;') and contains(b'ENDSEC;') and not_contains(b'FILE_DESCRIPTION(')
 - **Byte assertion**: not_contains(b'FILE_NAME(') and not_contains(b'FILE_SCHEMA(')
 - **Tier-3 assertion**: shape_null == True
@@ -24843,7 +24843,7 @@ Face with three small inner wires (areas 0.01, 0.0225, 0.04) on a 20×20 outer s
 **Taxonomy:** OCCT face analysis, winding number calculation, topology awareness.
 
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
-- **Notes**: Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**:
 ### Tfa138 — ShapeFix_Face.FixAddNaturalBound surface-not-closed-but-flagged
 
 **Defect:** A surface flagged as u_closed=true but geometrically NOT closed (seam gap exists). FixAddNaturalBound incorrectly constructs a natural boundary at the assumed closure point instead of diagnosing the flag/geometry mismatch.
@@ -24853,7 +24853,7 @@ Face with three small inner wires (areas 0.01, 0.0225, 0.04) on a 20×20 outer s
 **Taxonomy:** OCCT surface closure semantics, parameterization assumptions.
 
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
-- **Notes**: Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**:
 ### Tfa139 — ShapeAnalysis_CheckSmallFace.CheckSpotFace spot-with-internal-pin
 
 **Defect:** ShapeAnalysis_CheckSmallFace::CheckSpotFace classifies small faces as "spot" (degenerate/noise) when they have minimal area. Missing secondary features (pin protrusions) that contradict spot classification, producing false positives.
@@ -24875,7 +24875,7 @@ Face with three small inner wires (areas 0.01, 0.0225, 0.04) on a 20×20 outer s
 
 Face with two inner wires where first uses LINE edge and second uses geometrically identical B-SPLINE_CURVE_WITH_KNOTS edge. FixWiresTwoCoincEdges's curve-type strict check (comparing 3D curve pointers) misses coincidence when curve representations differ despite identical geometry. Defect triggers at FWC-004: edge-identity check fails because curve-type incompatibility prevents match, even though pcurve and 3D locus are congruent.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
-- **Notes**: Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**:
 ### Tfa142 — ShapeAnalysis_CheckSmallFace.CheckSmallArea torus-patch
 
 Small face on TOROIDAL_SURFACE with major radius 5.0 and minor radius 1.0. CheckSmallArea computes area via parametric (u,v)-domain projection as planar polygon, ignoring torus surface curvature. Actual 3D area differs significantly from projection; parametric bounds [0.0, 0.2] × [0.0, 0.3] yield false positives or negatives in small-area classification depending on projection method. Defect exposes curvature-unawareness in area approximation.
@@ -24895,7 +24895,7 @@ CONICAL_SURFACE with apex at origin (0,0,0) and half-angle 0.52 radians. Face ha
 
 B_SPLINE_SURFACE_WITH_KNOTS stretched non-uniformly (control points in y-direction span 0 to 40.0) creates severe parametric-vs-3D aspect-ratio mismatch. Face bounds parametrically narrow (u: [0.1, 0.15], v: [0.2, 0.9]) with parametric aspect 0.071, but 3D geometry expands to width ~0.5 and length ~20 (aspect 0.025). CheckPinFace applies parametric ratio test, missing the actual 3D pin condition. Defect exposes surface-stretch blindness in pin detection.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
-- **Notes**: Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**:
 ### Tfa145 — ShapeFix_Face.FixSplitFace two-splitters
 
 Planar face (10×10 square) with two interior splitter wires: vertical line (x=2, y∈[0,10]) and horizontal line (y=5, x∈[0,10]) intersecting at (2,5). FixSplitFace applies splitters sequentially in a loop; after first splitter creates two sub-faces, the loop structure sees stale topology when applying second splitter. Edge/vertex deduplication from first split not synchronized before second split processes; results in incorrect face tessellation or undetected edge-reuse violations at intersection point.
@@ -25069,7 +25069,7 @@ Face with inner wire containing triple-point self-intersection. FixLoopWire's me
 ### Tfa172 — ShapeAnalysis_CheckSmallArea non-planar-face
 Parametrically small face on curved B-spline surface where geometric area differs significantly from parametric area. CheckSmallArea uses parametric bounds and misses the actual 3D footprint, triggering false negatives on near-degenerate curved faces.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
-- **Notes**: Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**:
 ### Tfa173 — ShapeFix_Face.FixSplitFace splitter-tangent-at-vertex
 Splitter LINE that is tangent to the face boundary at one of its endpoint vertices. FixSplitFace does not detect the tangency condition and produces degenerate sub-face with zero area, violating the face validity contract.
 - **Tier-3 assertion**: n_faces_total == 1
@@ -26212,7 +26212,7 @@ Wire on periodic SURFACE_OF_REVOLUTION (conical profile) crossing seam; FixSeam 
 
 **Root cause**: Hardcoded cylinder-only logic; needs generalization for all periodic surfaces.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
-- **Notes**: Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**:
 ### Twi145 — ShapeAnalysis_Wire.CheckGap3d 3D-only with valid 2D
 
 Wire on surface where 3D edges have a real gap but parametric 2D curves connect seamlessly; CheckGap3d misses this because it validates 2D first and skips 3D when 2D passes.
@@ -28827,7 +28827,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Description**: A STEP file emitted by an older OCC version declares `FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'))` (AP203 1994 schema) and uses entity flavours that the current reader has retired (e.g., `BREP_WITH_VOIDS` referenced from the older schema). The current reader rejects the schema string outright, even though the entities themselves are still recognisable. The result: a file that was authored by the same vendor toolchain becomes unreadable after a kernel upgrade.
 - **Reproducer recipe**: `FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));` (older AP203) plus a `MANIFOLD_SOLID_BREP`. Newer reader refuses the schema even though entities are compatible.
 - **Expected kernel behavior**: heal-and-accept; recognise legacy schema tokens (`CONFIG_CONTROL_DESIGN`, `AUTOMOTIVE_DESIGN`) and dispatch the reader appropriate to the entities present; emit `W_LEGACY_SCHEMA` rather than `E_UNKNOWN_SCHEMA`.
-- **Notes**: **See also**: Lh013, A105. Synonyms: "STEP file from older OCC fails to open", "CONFIG_CONTROL_DESIGN no longer accepted", "schema-version regression on STEP read", "legacy AP203 schema rejected". Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: **See also**: Lh013, A105. Synonyms: "STEP file from older OCC fails to open", "CONFIG_CONTROL_DESIGN no longer accepted", "schema-version regression on STEP read", "legacy AP203 schema rejected".
 - **Byte assertion**: contains(b'CONFIG_CONTROL_DESIGN')
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Tier-3 assertion**: load == "ok"
@@ -29276,7 +29276,7 @@ Face with 3 internal wires (holes); RemoveInternalWires iterates internal wires 
 
 Shell with 4 faces requiring orientation fixing; Perform calls FixFaceOrientation which calls Perform recursively; recursion termination uses depth counter but doesn't reset for sibling-face processing. Second invocation encounters depth state from first face.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
-- **Notes**: Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**:
 ### Tsh126 — ShapeAnalysis_Shell.CheckOrientedShells coplanar-faces
 
 Shell with two coplanar abutting faces sharing an edge; CheckOrientedShells treats them as a flat surface and reports inconclusive result. Face normals are collinear; orientation check fails to distinguish manifold from non-manifold.
@@ -30178,7 +30178,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Reproducer recipe**: see `step-examples/12-2a-pcurves/Gp049.stp`; the fixture file's top comment names the specific OCCT method and line range.
 - **Expected kernel behavior**: detect or heal per the named OCCT branch; the fixture demonstrates the buggy input pattern.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
-- **Notes**: Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**:
 
 ### Gp050 — ShapeFix_Edge.FixSameParameter recursive SameRange
 - **Category**: §12.2a (pcurves)
@@ -31435,7 +31435,7 @@ same-parameter constraint cannot be achieved at the ceiling value.
 **Expected behavior**: LimitTolerance(compound, max=1e-4) should limit all geometry; actual behavior skips the solid's interior faces/edges/vertices.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
-- **Notes**: Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**:
 ### N066 — ShapeAnalysis_ShapeTolerance.OverTolerance >= vs > comparison
 
 OverTolerance comparison operator bug: method uses `>=` instead of `>` when comparing vertex tolerance against threshold, flagging 0.0 tolerance as exceeding any positive threshold. Root cause: boundary condition equality treated as over-tolerance state rather than at-threshold state. Fixture: vertex with 0.0 declared tolerance, global context 1e-3. OverTolerance(shape, 1e-3) should return false; with bug returns true.
@@ -31551,7 +31551,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
-- **Notes**: Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**:
 ### N079 — ShapeAnalysis_Edge.CheckPointsAreOnEdges sphere-pole
 
 **Defect**: CheckPointsAreOnEdges verifies vertex-on-edge by comparing parameter values. At a sphere pole (north/south), the U parameter is singular (any U maps to the same physical location). The check fails because the pole's indeterminate U doesn't match the computed parameter, incorrectly marking the vertex as NOT on edge.
@@ -32167,7 +32167,7 @@ BRepBuilderAPI_Sewing omits distance threshold check; out-of-tolerance candidate
 SameParameterEdge tolerance computation ignores surface location placement; edge on transformed surface (translate +100mm, rotate 45°) yields false tolerance sans transform.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
-- **Notes**: Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**:
 ### N159 — direct_BRep_TEdge_tolerance_write bypass
 Raw write to BRep_TEdge bypasses SetMaxTolerance API validation; computed tolerance (0.05) exceeds cap (0.01) via direct memory write.
 - **Tier-3 assertion**: shape_null == True
@@ -32621,7 +32621,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Description**: A milling toolpath references two `MILLING_FEED_RATE` entities with different magnitudes (300 mm/min and 1200 mm/min) on consecutive segments, but no F-code transition / acceleration profile is declared. Controllers either snap discontinuously (over-shooting the corner) or silently use one rate for the entire path. Bug-reporter language: "AP238 feedrate step change", "STEP-NC missing acceleration profile", "milling F-code transition absent".
 - **Reproducer recipe**: two `MILLING_OPERATION` entries in workplan order, the first with feed_rate 300 mm/min and the second with feed_rate 1200 mm/min, with no transition operation between them.
 - **Expected kernel behavior**: validate that feedrate changes carry an explicit transition; warn or insert a default ramp.
-- **Notes**: Synonyms: "AP238 feedrate jump no F-code", "STEP-NC milling no acceleration profile", "feed-rate change without transition", "milling F-word missing between segments". Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: Synonyms: "AP238 feedrate jump no F-code", "STEP-NC milling no acceleration profile", "feed-rate change without transition", "milling F-word missing between segments".
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'MILLING_FEED_RATE')
 - **Byte assertion**: contains(b'1200.0')
@@ -32683,7 +32683,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Description**: An `INSPECTION_PROBING` op's approach segment runs from the probe-storage position straight through the workpiece body to reach the touch point. The probe stylus shears or breaks. Bug-reporter language: "AP238 probe path through part", "STEP-NC inspection collision", "stylus crashes against workpiece".
 - **Reproducer recipe**: an `INSPECTION_PROBING` op whose probe path `POLYLINE` runs from `(50,50,200)` to `(50,50,-5)` while the workpiece body occupies the box `(0.100, 0.100, 0.50)`.
 - **Expected kernel behavior**: collision-check probe paths against workpiece envelope; reject the op or warn loudly.
-- **Notes**: Synonyms: "AP238 probe collision", "STEP-NC inspection path crashes", "probe stylus shears", "inspection trajectory through workpiece". Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: Synonyms: "AP238 probe collision", "STEP-NC inspection path crashes", "probe stylus shears", "inspection trajectory through workpiece".
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'INSPECTION_PROBING(')
 - **Byte assertion**: contains(b'probe_path_through_part')
@@ -32729,7 +32729,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Description**: A `WORKPIECE_COMPLETE_FOR_NC` entity is declared with an empty clamping_position list. AP238 requires that workpieces be tied to their fixturing for collision-checking; an unfixed workpiece cannot be safely machined. The controller has nothing to enforce keep-out zones against. Bug-reporter language: "AP238 workpiece-complete missing clamps", "STEP-NC no fixturing references", "workpiece floats with no clamping".
 - **Reproducer recipe**: `WORKPIECE_COMPLETE_FOR_NC('finished_part',$,$,$,$,$,$,(),$)` - empty parenthesised clamping list.
 - **Expected kernel behavior**: validate that workpiece-complete entries declare at least one clamping reference; reject as malformed.
-- **Notes**: Synonyms: "AP238 fixturing absent", "STEP-NC clamps missing on workpiece", "workpiece-complete with empty clamping list", "no keep-out zones declared". Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
+- **Notes**: Synonyms: "AP238 fixturing absent", "STEP-NC clamps missing on workpiece", "workpiece-complete with empty clamping list", "no keep-out zones declared".
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'WORKPIECE_COMPLETE_FOR_NC')
 - **Tier-3 assertion**: shape_null == True

@@ -36,11 +36,9 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal-and-accept; recognise legacy schema tokens (`CONFIG_CONTROL_DESIGN`, `AUTOMOTIVE_DESIGN`) and dispatch the reader appropriate to the entities present; emit `W_LEGACY_SCHEMA` rather than `E_UNKNOWN_SCHEMA`.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Lh013, A105. Synonyms: &quot;STEP file from older OCC fails to open&quot;, &quot;CONFIG_CONTROL_DESIGN no longer accepted&quot;, &quot;schema-version regression on STEP read&quot;, &quot;legacy AP203 schema rejected&quot;. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).</p></section>
+<p>**See also**: Lh013, A105. Synonyms: &quot;STEP file from older OCC fails to open&quot;, &quot;CONFIG_CONTROL_DESIGN no longer accepted&quot;, &quot;schema-version regression on STEP read&quot;, &quot;legacy AP203 schema rejected&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
-<section><h2>Provenance tier</h2>
-<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;CONFIG_CONTROL_DESIGN&#x27;)</code></li>
 <li><code>contains(b&#x27;FILE_SCHEMA&#x27;)</code></li>

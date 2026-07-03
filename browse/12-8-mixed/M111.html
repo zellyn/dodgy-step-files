@@ -36,11 +36,9 @@
 <section><h2>Expected kernel behavior</h2>
 <p>detect orphan-node constraints; warn and skip, or reject.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;AP209 SPC orphan node&quot;, &quot;boundary condition on missing node&quot;, &quot;FEM constraint references node not in mesh&quot;, &quot;single_point_constraint targets unknown node&quot;. **See also**: M083 (load analog), M079 (empty-group analog). Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).</p></section>
+<p>Synonyms: &quot;AP209 SPC orphan node&quot;, &quot;boundary condition on missing node&quot;, &quot;FEM constraint references node not in mesh&quot;, &quot;single_point_constraint targets unknown node&quot;. **See also**: M083 (load analog), M079 (empty-group analog).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
-<section><h2>Provenance tier</h2>
-<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;STRUCTURAL_ANALYSIS_DESIGN&#x27;)</code></li>
 <li><code>contains(b&#x27;SINGLE_POINT_CONSTRAINT&#x27;)</code></li>

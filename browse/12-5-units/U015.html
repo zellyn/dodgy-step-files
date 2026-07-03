@@ -37,11 +37,9 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Warn and accept: the validator normalizes coordinate magnitudes against declared `UNCERTAINTY_MEASURE_WITH_UNIT` and assembly bounding boxes; emit a warning diagnostic on suspicious 25.4× / 1000× mismatch.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: U001. Synonyms: &quot;FreeCAD STEP labelled inch but values mm&quot;, &quot;model in mm but file says inches&quot;, &quot;re-import 25.4x too large from FreeCAD STEP&quot;, &quot;mm coords with INCH declaration&quot;, &quot;OCCT 7.8.1 mislabels STEP as inches&quot;. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).</p></section>
+<p>**See also**: U001. Synonyms: &quot;FreeCAD STEP labelled inch but values mm&quot;, &quot;model in mm but file says inches&quot;, &quot;re-import 25.4x too large from FreeCAD STEP&quot;, &quot;mm coords with INCH declaration&quot;, &quot;OCCT 7.8.1 mislabels STEP as inches&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
-<section><h2>Provenance tier</h2>
-<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&quot;CONVERSION_BASED_UNIT(&#x27;INCH&#x27;&quot;)</code></li>
 <li><code>matches(rb&quot;&#x27;INCH&#x27;&quot;)</code></li>

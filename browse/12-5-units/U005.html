@@ -34,11 +34,9 @@
 <section><h2>Expected kernel behavior</h2>
 <p>writer must emit unit context tied to authored model; producer pipeline must not silently change unit context between authoring and serialization.</p></section>
 <section><h2>Notes</h2>
-<p>**OCC behavior**: silently consumes the mismatched mm-context file as written without surfacing a unit-vs-coordinate-magnitude inconsistency; the catalog claim above is producer-side, but on the read side OCC&#x27;s lack of sanity-check is the kernel mishandling. Synonyms: &quot;Plant 3D STEP unit context disagrees with drawing&quot;, &quot;sub-mm coords in mm STEP context&quot;, &quot;Plant 3D unit mismatch&quot;, &quot;AutoCAD Plant 3D wrong STEP units&quot;, &quot;drawing units differ from STEP unit&quot;. Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).</p></section>
+<p>**OCC behavior**: silently consumes the mismatched mm-context file as written without surfacing a unit-vs-coordinate-magnitude inconsistency; the catalog claim above is producer-side, but on the read side OCC&#x27;s lack of sanity-check is the kernel mishandling. Synonyms: &quot;Plant 3D STEP unit context disagrees with drawing&quot;, &quot;sub-mm coords in mm STEP context&quot;, &quot;Plant 3D unit mismatch&quot;, &quot;AutoCAD Plant 3D wrong STEP units&quot;, &quot;drawing units differ from STEP unit&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
-<section><h2>Provenance tier</h2>
-<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;SI_UNIT(.MILLI.,.METRE.)&#x27;) or contains(b&#x27;SI_UNIT(.MILLI., .METRE.)&#x27;)</code></li>
 <li><code>matches(rb&#x27;CARTESIAN_POINT&#x27;)</code></li>

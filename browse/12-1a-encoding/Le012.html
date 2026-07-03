@@ -33,11 +33,9 @@
 <section><h2>Expected kernel behavior</h2>
 <p>reject the directive; recover by passing the bytes through literally with a warning.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Le030. Synonyms: &quot;unknown backslash escape in string&quot;, &quot;made-up control directive&quot;, &quot;STEP rejects unknown escape&quot;, &quot;vendor-extension escape passes through&quot;, &quot;non-standard backslash sequence&quot;. Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).</p></section>
+<p>**See also**: Le030. Synonyms: &quot;unknown backslash escape in string&quot;, &quot;made-up control directive&quot;, &quot;STEP rejects unknown escape&quot;, &quot;vendor-extension escape passes through&quot;, &quot;non-standard backslash sequence&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
-<section><h2>Provenance tier</h2>
-<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;\\Z\\&#x27;) or contains(b&#x27;\\M\\&#x27;)</code></li>
 </ul></section>

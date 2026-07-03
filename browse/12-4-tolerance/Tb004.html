@@ -33,11 +33,9 @@
 <section><h2>Expected kernel behavior</h2>
 <p>hierarchy invariant must be preserved across unit conversion; if precision is insufficient to preserve it, reject the input or widen the inflated tolerance to absorb the conversion drift, and emit a warning.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;tolerance hierarchy inverts under inch conversion&quot;, &quot;non-decimal scale flips uncertainty ordering&quot;, &quot;inch unit breaks vertex/edge tolerance ratio&quot;, &quot;tolerance hierarchy fails after mm-to-inch conversion&quot;. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).</p></section>
+<p>Synonyms: &quot;tolerance hierarchy inverts under inch conversion&quot;, &quot;non-decimal scale flips uncertainty ordering&quot;, &quot;inch unit breaks vertex/edge tolerance ratio&quot;, &quot;tolerance hierarchy fails after mm-to-inch conversion&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
-<section><h2>Provenance tier</h2>
-<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>count_entity_def(b&#x27;UNCERTAINTY_MEASURE_WITH_UNIT&#x27;) == 3</code></li>
 <li><code>contains(b&#x27;1.000E-6&#x27;) and contains(b&#x27;1.001E-6&#x27;) and contains(b&#x27;1.002E-6&#x27;)</code></li>

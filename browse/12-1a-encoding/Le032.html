@@ -33,11 +33,9 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Accept; the Part-21 lexer must be whitespace-tolerant inside escape sequences and string literals. Do not reject.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Le005. Synonyms: &quot;X2 escape split across CRLF&quot;, &quot;hex run broken by line break&quot;, &quot;directive spanning line break&quot;, &quot;STEP escape across newline&quot;, &quot;Unicode hex run interrupted by newline&quot;. Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).</p></section>
+<p>**See also**: Le005. Synonyms: &quot;X2 escape split across CRLF&quot;, &quot;hex run broken by line break&quot;, &quot;directive spanning line break&quot;, &quot;STEP escape across newline&quot;, &quot;Unicode hex run interrupted by newline&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
-<section><h2>Provenance tier</h2>
-<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>matches(rb&#x27;\\X2\\[^\\\\]*\r?\n[^\\\\]*\\X0\\&#x27;)</code></li>
 <li><code>count(b&#x27;\\X2\\&#x27;) &gt;= 1</code></li>

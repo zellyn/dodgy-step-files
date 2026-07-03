@@ -33,11 +33,9 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Lex `[+-]?\d+(\.\d*)?([eE][+-]?\d+)?` permissively; emit warning for non-canonical subsets.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Ls001. Synonyms: &quot;lowercase e in REAL exponent&quot;, &quot;1e+18 instead of 1E+18&quot;, &quot;whitespace in REAL exponent&quot;, &quot;STEP exponent has plus sign&quot;, &quot;non-standard exponent in STEP&quot;. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).</p></section>
+<p>**See also**: Ls001. Synonyms: &quot;lowercase e in REAL exponent&quot;, &quot;1e+18 instead of 1E+18&quot;, &quot;whitespace in REAL exponent&quot;, &quot;STEP exponent has plus sign&quot;, &quot;non-standard exponent in STEP&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
-<section><h2>Provenance tier</h2>
-<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>matches(rb&#x27;\d[eE]\+?\d&#x27;) and (matches(rb&#x27;\d e\d&#x27;) or matches(rb&#x27;\d\.?e[+-]?\d&#x27;))</code></li>
 <li><code>matches(rb&#x27;\d[Ee][+-]?\d&#x27;)</code></li>

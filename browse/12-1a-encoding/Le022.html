@@ -35,11 +35,9 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: decode all control directives during read; pass through as Unicode; provide `read.step.codepage` for legacy files where the producer used 8-bit code pages instead.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Le021, Le036. Synonyms: &quot;Japanese product name in STEP&quot;, &quot;Greek letters in PMI annotation&quot;, &quot;X2 Unicode lost on import&quot;, &quot;non-ASCII PRODUCT name shows as question marks&quot;, &quot;Asian characters dropped on read&quot;. Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).</p></section>
+<p>**See also**: Le021, Le036. Synonyms: &quot;Japanese product name in STEP&quot;, &quot;Greek letters in PMI annotation&quot;, &quot;X2 Unicode lost on import&quot;, &quot;non-ASCII PRODUCT name shows as question marks&quot;, &quot;Asian characters dropped on read&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
-<section><h2>Provenance tier</h2>
-<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;\\X2\\03B1\\X0\\&#x27;)</code></li>
 <li><code>count(b&#x27;\\X2\\&#x27;) &gt;= 1</code></li>

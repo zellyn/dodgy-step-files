@@ -36,11 +36,9 @@
 <section><h2>Expected kernel behavior</h2>
 <p>detect overlapping effectivity windows; reject the configuration set, or warn and pick the latest-released configuration deterministically.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;effectivity ambiguity&quot;, &quot;configuration overlap&quot;, Provenance tier: bytes-only (Q5 full-corpus 2026-07-01). &quot;AP203 PDM date conflict&quot;. **See also**: A012.</p></section>
+<p>Synonyms: &quot;effectivity ambiguity&quot;, &quot;configuration overlap&quot;, &quot;AP203 PDM date conflict&quot;. **See also**: A012.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
-<section><h2>Provenance tier</h2>
-<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;CONFIG_CONTROL_DESIGN&#x27;)</code></li>
 <li><code>count_entity_def(b&#x27;TIME_INTERVAL_BASED_EFFECTIVITY&#x27;) &gt;= 2</code></li>
