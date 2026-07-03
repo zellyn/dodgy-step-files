@@ -412,3 +412,32 @@ or STEP Tools ST-Developer) to verify Expected validation. OCCT 7.x + FreeCAD on
 read the geometry, so encoding without oracle verify would produce speculative Expected
 lines. Defer until such an oracle is wired.
 Source: FreeCAD issue #19795; OCCT STEP translator docs.
+
+## Deferred wave-9 items — need HOOPS Exchange / ST-Developer / AP242 Ed.4 schema
+
+Wave-9 mining (2026-07-02) sampled 25 defects across AP242 XML Kinematics Recommended Practices
+(2021), CAx-IF Round 56J (Aug 2025), AP242 Ed.4 (Aug 2025), and OCCT tracker 2024-2026.
+Novelty rate: 22/25 = 88% (record). Full audit: `audit/b4_mining_wave_9_2026-07-02.md`.
+
+All 22 novel items are deferred because they require an AP242 Ed.1/Ed.4 kinematics-capable
+oracle (HOOPS Exchange, STEP Tools ST-Developer) or the AP242 Ed.4 EXPRESS schema to verify
+Expected validation. OCCT 7.x/8.0 either drops the entities silently (leaving Expected
+speculative) or lacks the kinematics module entirely. The wave-7 DEF-MM pattern (deferred
+same reason) applies.
+
+- **DEF-FFF/GGG/HHH/III/JJJ** (F01-F05, HIGH): AP242 XML Kinematics receiver-side gaps —
+  `spherical_pair_with_pin`, `unconstrained_pair`, `universal_pair`, CV joint, `rolling_curve_pair`.
+- **DEF-KKK/LLL/MMM/NNN/OOO/PPP** (F06-F11, HIGH): AP242 XML Kinematics Bugzilla schema holes
+  and receiver silent-drops (rolling_surface_pair, KinematicLinkToOccurrenceAssociation cardinality,
+  LowOrderKinematicPairWithMotionCoupling link limits, ProductStructureKinematicPathAssociation
+  property gap, Substructure reference gap, spherical_pair 3-axis limits).
+- **DEF-QQQ/RRR** (F12, F16, HIGH): planar_pair 3-attr limits + EXPRESS SELECT XSD "combined" restriction.
+- **DEF-SSS** (F17, HIGH): OCCT #384 tolerance polymorphism — `StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI`
+  not recognized as `MEASURE_WITH_UNIT` by 21 tolerance-reader classes. Closed with fix in OCCT 8.0.
+- **DEF-TTT..DEF-AAAA** (F13-F15, F18-F25, MEDIUM/LOW): CAx-IF Round 56J validation-property
+  partial-match, AP242 Ed.4 STRUCTURAL_JOINT+xMCF fastener, OCCT #430 seam-vertex duplication,
+  and other lower-confidence items.
+
+Note: AP242 Ed.3 (2022) was corrective maintenance and added NO kinematics entities.
+Kinematics lives in Ed.1 (DEF-MM, already deferred) and Ed.4 (Aug 2025). The wave-8
+audit's "AP242 Ed.3 kinematics" hypothesis was wrong; wave-9 confirmed.
