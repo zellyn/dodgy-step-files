@@ -4937,6 +4937,44 @@
   },
   {
     "byte_assertions": [
+      "contains(b\"DIRECTION('',())\")",
+      "contains(b'TOROIDAL_SURFACE')",
+      "contains(b'AXIS2_PLACEMENT_3D')",
+      "contains(b'ADVANCED_FACE')"
+    ],
+    "category": "§12.11 adversarial (sub-class: empty mandatory aggregate on a geometry entity reached by the transferred shape — null-deref crash during transfer)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "STEP file with a single `ADVANCED_FACE` (#69) on a `TOROIDAL_SURFACE` (#5, major_radius 50.0, minor_radius 10.0). The surface is placed by an `AXIS2_PLACEMENT_3D` (#4) whose axis direction is `#2=DIRECTION('',())` — a `DIRECTION` with an EMPTY `direction_ratios` list. Because the placement's surface IS the transferred face's `face_geometry`, OCCT reaches `#2` during `TransferRoots` and reads its direction-ratios aggregate; the aggregate has zero elements, so `StepGeom_Direction::NbDirectionRatios` / the coordinate access dereferences a null/empty backing array and the kernel dies with signal(11). The empty mandatory aggregate on an entity reached by the transferred shape is the crash trigger; a `DIRECTION('',())` that were NOT on the transfer path would be silently skipped.",
+    "expected_kernel_behavior": "a `DIRECTION` with an empty (or wrong-arity) `direction_ratios` aggregate must be rejected or repaired (treated as a missing/default axis and diagnosed) — never dereferenced. The transfer must check `NbDirectionRatios() > 0` before accessing coordinates and produce one of {reject, heal-with-diagnostic}, never signal(11).",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-11-adversarial/Ad134.stp",
+    "id": "Ad134",
+    "notes": "OCCT Mantis 33665. B4 wave-10 DEF-W10-A; reproducibility-verified 2026-07-04. This fixture opens the empty-mandatory-aggregate crash archetype (the long-missing signal(11) reproducer template: an empty required aggregate on an entity referenced by the transferred shape). The crash is deterministic and byte-triggered — visible directly on the input bytes with no writer round-trip needed. Confidence: HIGH — deterministic occt=signal(11)/signal(11) + gmsh=signal(11) across repeated runs. Synonyms: \"empty direction_ratios crash\", \"DIRECTION('',()) null deref\", \"StepGeom_Direction NbDirectionRatios segfault\", \"empty mandatory aggregate on transferred shape\", \"AXIS2_PLACEMENT_3D empty axis direction crash\", \"OCCT Mantis 33665\". Provenance tier: bytes-sufficient (the crash is byte-triggered and oracle-visible on the input file).",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "any OCCT-parseable STEP whose transferred shape reaches a `DIRECTION` entity (via `AXIS2_PLACEMENT_3D.axis` or `.ref_direction`, or a `VECTOR.orientation`) whose `direction_ratios` list is empty `()`; the entity must be on the transfer path of a root shape (e.g. the placement of the `ADVANCED_FACE`'s `face_geometry`), then run `TransferRoots`.",
+    "section": "12.11",
+    "section_dir": "12-11-adversarial",
+    "see_also": [],
+    "sender": "STEP producers or hand-edited/machine-truncated files that emit a `DIRECTION` entity whose `direction_ratios` REAL-list is empty `()` while it is still referenced as the axis (or ref_direction) of an `AXIS2_PLACEMENT_3D` that places a surface belonging to a transferred `ADVANCED_FACE`; also fuzzers and aggregate-truncation corruption on any producer path.",
+    "severity": "P0",
+    "sources": [
+      "OCCT Mantis 33665 (`DIRECTION('',())` — empty `direction_ratios` list dereferenced in `StepGeom_Direction::NbDirectionRatios` during `TransferRoots`, yielding a null-deref segfault). B4 wave-10 DEF-W10-A (LGPL-clean — pattern only, no upstream bytes copied",
+      "reproducibility-verified 2026-07-04)."
+    ],
+    "taxonomy": [
+      "crash",
+      "adversarial"
+    ],
+    "tier3_assertions": [],
+    "title": "`DIRECTION` with an empty `direction_ratios` list used as the axis of the transferred shape's `TOROIDAL_SURFACE`"
+  },
+  {
+    "byte_assertions": [
       "contains(b'\\\\X2\\\\')",
       "contains(b'EDGE_CURVE')",
       "contains(b'ADVANCED_FACE')"
