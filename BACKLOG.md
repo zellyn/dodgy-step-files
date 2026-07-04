@@ -467,3 +467,31 @@ fixtures diverge across platforms — the gmsh oracle is 99.8% platform-stable.
 **Latent process note (no action needed now):** gmsh shape(N) baselines must
 be sourced from CI-Linux, not local macOS, for borderline-healing geometries.
 The other 1083 gmsh fixtures are platform-agnostic.
+
+## DEF-MUT-DEPTH — deeper mutation run saturates bytes-only metric (2026-07-04, RESOLVED: keep depth-3)
+Ran the experiment suggested in commit 1c50062f ("bump --mutations 3→10-20
+for more stable bytes-only tags"): full-corpus `_mutation_test --all
+--mutations 15 --seed 1`. **Result: the metric saturates.** Depth-3 had 138
+`undetected`; depth-15 has **0 undetected** (2384 detected, 9 no-target-byte).
+A deeper run would reclassify **all 41** `bytes-only` entries as detected →
+downgrade to `bytes-sufficient`, erasing the category.
+
+**Why that is WRONG (verified):** `_mutation_test` flips a *random* digit
+anywhere in the DATA section and calls it `detected` if any oracle spec
+changes. That is a general numeric-sensitivity probe, NOT a test of whether
+*this fixture's defect* is oracle-invisible. Example Le004 (`\X\` string-escape
+with bad hex, tagged bytes-only): its defect is pure string/metadata OCC never
+reads at BRep load (`occt=empty/empty`), yet at depth 15 a random coordinate/
+entity-ref flip trivially changes some spec → "detected". That detection is
+unrelated to the actual defect. So the 41 bytes-only tags remain CORRECT;
+depth-15 detection is noise.
+
+**Decision:** keep the committed depth-3 snapshot + current 41 bytes-only tags
+(self-consistent, CI-green). Do NOT bump `--mutations` for bytes-only
+validation — it is the wrong lever. This supersedes the 1c50062f note.
+
+**Proper hardening (proposal, do NOT build without sign-off):** a
+*defect-targeted* mutation test — mutate a byte *inside each fixture's own
+`Byte assertion` region* and confirm no wired oracle notices. That directly
+validates the bytes-only claim, unlike random-digit probing. Larger infra
+change; propose separately per scope discipline.
