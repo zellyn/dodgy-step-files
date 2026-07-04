@@ -562,10 +562,7 @@ ran validate2. Results:
   Mantis 33665 null-deref. **This is the standout** — and it supplies the long-missing
   **signal(11) reproducer template** (empty mandatory aggregate on an entity referenced by
   the transferred shape). Recommended Expected: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`.
-  **DECISION NEEDED (maintainer):** synthesizing this opens the signal(11) archetype, which
-  has been deliberately deferred (see the "signal(11) archetype — need OCC-crash template"
-  block above). The template gap is now closed; greenlight to synthesize W10-A (and the
-  broader deferred signal(11) backlog) as a §12.2c/§12.11 crash entry?
+  **RESOLVED — SHIPPED as Ad134** (db61a6d5): signal(11) is an established archetype (175 entries); no greenlight needed. The empty-aggregate crash template is now in the corpus.
 - **W10-M duplicate top-level faces** → occt heals identically (shape(1)=base); only gmsh
   degrades 34→9. **occt-INVISIBLE** → weak fixture (the class Q5 moved away from). Skip
   unless reframed.
