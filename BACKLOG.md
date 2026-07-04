@@ -495,3 +495,61 @@ validation — it is the wrong lever. This supersedes the 1c50062f note.
 `Byte assertion` region* and confirm no wired oracle notices. That directly
 validates the bytes-only claim, unlike random-digit probing. Larger infra
 change; propose separately per scope discipline.
+
+## B4 wave-10 mining — 3 fresh seams (2026-07-04, research only; synthesis deferred)
+Three parallel research agents mined new sources (OCCT issue tracker, real-world
+CAD/exporter forums, ISO-10303 Part-21 e3 conformance). Candidates below are
+DEFERRED to fixture synthesis under user quality oversight (Sonnet-gen bar) —
+NOT auto-synthesized. Dedup notes from noisy catalog greps; verify at synth time.
+
+### Tier 1 — OCCT tracker minimal reproducers (highest confidence, likely novel)
+- **DEF-W10-A**: `DIRECTION('',())` empty direction_ratios → null-deref crash in
+  StepGeom_Direction::NbDirectionRatios during TransferRoots. §12.2c/§12.1c.
+  Catalog grep 0 hits → NOVEL. (OCCT Mantis 33665)
+- **DEF-W10-B**: `TESSELLATED_SHELL('',(),$)` empty required items set → crash in
+  STEPCAFControl_Reader. §12.14 mesh (tessellated-entity arity). (OCCT #667)
+- **DEF-W10-C**: ORIENTED_EDGE pair with cyclic EdgeStart/EdgeEnd self-reference →
+  unbounded reader recursion / stack overflow (DoS topology). §12.3b wires.
+  (PrusaSlicer #11305) — distinct from existing wire defects; verify vs cyclic-loop entries.
+- **DEF-W10-D**: COMPOUND_REPRESENTATION_ITEM wrapping SET_REPRESENTATION_ITEM of a
+  DESCRIPTIVE_REPRESENTATION_ITEM → item_element resolves NULL (silent incomplete
+  read). §12.7 PMI. (OCCT #1283)
+- **DEF-W10-E**: edge pcurve list where index-0 pcurve is always NULL →
+  GlueEdgesWithPCurves/UnifySameDomain silently drops all pcurves (wrong-heal).
+  §12.2a pcurves. (OCCT #966)
+- **DEF-W10-F**: small-unit body read with xstep.cascade.unit=M → infinite/degenerate
+  scale geometry (unit-scale interaction, not just wrong scale). §12.5 units. (OCCT #512)
+- **DEF-W10-G**: assembly STEP (Catia/NX-readable) → STEPCAFControl_Reader.Transfer
+  never terminates (hang, not crash). §12.6/§12.10. (OCCT #712; Mantis 31711)
+
+### Tier 2 — real-world writer pathologies (CAD forums, med-high novelty)
+- **DEF-W10-H**: B_SPLINE knot multiplicity > degree+1 at ends / > degree interior
+  (Fusion T-spline→NURBS export). §12.2b nurbs. (Autodesk forum)
+- **DEF-W10-I**: elliptical arc revolved 360° with major axis on X → re-imports fused
+  with own mirror; Y-axis fine — axis-sign-dependent revolution seam. §12.2c/§12.13.
+  (FreeCAD #14447)
+- **DEF-W10-J**: closed solid downgraded on export to SHELL_BASED_SURFACE_MODEL /
+  loose faces despite watertight source ("imports as surfaces not solid"). §12.3a/§12.13.
+  (FreeCAD #20588, #16292)
+- **DEF-W10-K**: PRESENTATION_STYLE_ASSIGNMENT with forward/invalid record index →
+  "Encountered invalid record index". §12.1c/§12.13. Catalog grep 0 hits → novel.
+- **DEF-W10-L**: model far from origin (huge coords) → precision below
+  Precision::Confusion, geometry collapses on import. §12.5/§12.4. (OCCT STEP guide)
+- **DEF-W10-M**: AP214 root carrying duplicate ADVANCED_FACE copies alongside
+  MANIFOLD_SOLID_BREP (redundant top-level faces). §12.13/§12.3a. (dev.occ forum)
+
+### Tier 3 — Part-21 edition-3 structural (novel axis, some prior wave-7/8/9 overlap)
+- **DEF-W10-N**: `@`-value-instance refs (`@70`, leading-zero `@023` alias) where `#N`
+  expected. §12.1c. Corpus is `#`-centric, 0 "value instance" hits → novel.
+- **DEF-W10-O**: named/multi DATA sections `DATA('DS1',('GEOMETRY'));` w/ independent
+  populations. §12.1c. Verify vs existing multi-DATA entries.
+- **DEF-W10-P**: raw UTF-8 octets embedded directly in string (e3 dual-encoding path)
+  vs `\X2\` escaping. §12.1a.
+- **DEF-W10-Q**: `\X4\0000F600\X4\0\` 32-bit astral/emoji codepoint escape. §12.1a
+  (thin: 5 `\X4\` hits — verify).
+- **DEF-W10-R**: SIGNATURE section (base64 CMS/RFC-5652) before ENDSEC. §12.1b.
+- **DEF-W10-S**: EXPRESS named-constant refs `#INCH`, `@PI` as attribute values. §12.5.
+
+**Next step (needs user):** pick a Tier-1 batch (the empty-mandatory-aggregate crash
+family A/B are the cleanest new class) and run the Sonnet-gen synthesis pipeline with
+quality verification. Audit provenance: research agents 2026-07-04.
