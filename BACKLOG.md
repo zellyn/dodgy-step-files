@@ -553,3 +553,29 @@ NOT auto-synthesized. Dedup notes from noisy catalog greps; verify at synth time
 **Next step (needs user):** pick a Tier-1 batch (the empty-mandatory-aggregate crash
 family A/B are the cleanest new class) and run the Sonnet-gen synthesis pipeline with
 quality verification. Audit provenance: research agents 2026-07-04.
+
+### Wave-10 Tier-1 reproducibility probe (2026-07-04, verified via validate2; nothing committed)
+Built minimal .stp for 4 candidates (base scaffolds Gs001 / Tfa148, one change each),
+ran validate2. Results:
+- **W10-A `DIRECTION('',())`** → **REPRODUCES: deterministic occt=signal(11)/signal(11),
+  gmsh=signal(11)** (2 runs). Clean, isolated, maximally oracle-visible. Confirms OCCT
+  Mantis 33665 null-deref. **This is the standout** — and it supplies the long-missing
+  **signal(11) reproducer template** (empty mandatory aggregate on an entity referenced by
+  the transferred shape). Recommended Expected: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`.
+  **DECISION NEEDED (maintainer):** synthesizing this opens the signal(11) archetype, which
+  has been deliberately deferred (see the "signal(11) archetype — need OCC-crash template"
+  block above). The template gap is now closed; greenlight to synthesize W10-A (and the
+  broader deferred signal(11) backlog) as a §12.2c/§12.11 crash entry?
+- **W10-M duplicate top-level faces** → occt heals identically (shape(1)=base); only gmsh
+  degrades 34→9. **occt-INVISIBLE** → weak fixture (the class Q5 moved away from). Skip
+  unless reframed.
+- **W10-N `@` value-instance ref** → occt rejects as syntax noise (Fails 2→4), heals shape(1);
+  gmsh empty; part21_strict accept. Mechanism not honored; only a modest part21/occt/gmsh
+  divergence. Low priority.
+- **W10-E NULL index-0 pcurve** → no distinct effect (byte-identical outcome to clean base).
+  Not synthesizable on this OCCT build. Drop.
+
+**Net:** the empty-mandatory-aggregate crash family (W10-A, and by extension W10-B
+TESSELLATED_SHELL) is the genuinely-novel, high-value seam and now has a working template.
+The other probed candidates are weak/no-effect. Next synthesis batch should be W10-A once the
+signal(11) archetype is greenlit.
