@@ -576,3 +576,26 @@ ran validate2. Results:
 TESSELLATED_SHELL) is the genuinely-novel, high-value seam and now has a working template.
 The other probed candidates are weak/no-effect. Next synthesis batch should be W10-A once the
 signal(11) archetype is greenlit.
+
+### Wave-10 verification round 2 (2026-07-05) — crash-family/knot candidates DEDUP to existing; do NOT synthesize
+Probed + deduped a second batch of empty-mandatory-aggregate crash candidates and Tier-2 items
+against the live oracle AND existing catalog. Outcome: the family is already well-covered.
+- **C1 empty B_SPLINE_CURVE control points** → signal(11) — **DUPLICATE of Gn003** (identical
+  reproducer `B_SPLINE_CURVE_WITH_KNOTS('',3,(),...)`, already a shipped signal(11) fixture). Skip.
+- **C6 empty B_SPLINE_SURFACE control grid** → signal(11) — **near-duplicate of Gn004** (empty
+  bspline-surface aggregate → signal(11), already shipped). Skip.
+- **W10-H knot multiplicity > degree+1** → occt shape(1)→empty — **DUPLICATE of Xp042** (interior
+  mult exceeds degree+1) and overlaps Gn008. Skip (end-mult variant is marginal novelty at best).
+- **C4 empty CARTESIAN_POINT coords** → occt=shape(1)/shape(1) gmsh=empty divergence — no exact
+  catalog match, but a low-severity degenerate case in an already-dense occt-heals/gmsh-diverge
+  family. OPTIONAL / low priority; not worth a fixture on its own.
+- Honest negatives from Tier-2 probe: W10-J (solid→loose-shell) not occt-shape-distinguishable;
+  W10-L (far-from-origin) heals identically; W10-K (invalid record index) tolerated (diag-only).
+
+**Conclusion:** Ad134 (empty DIRECTION direction_ratios) was the genuine novel gap in the
+empty-aggregate crash family; the bspline/knot/point variants are already in the corpus. The
+crash-family expansion has **saturated** against existing coverage. NOTE: the earlier
+"signal(11) archetype — need OCC-crash template" / Gn003/Gn004 deferral notes in this file are
+STALE (those fixtures were materialized long ago). Future wave-10 synthesis should target the
+UNPROBED novel seams instead: Tier-3 Part-21 edition-3 structural (@ value-instances, multi-DATA
+populations, SIGNATURE section, raw-UTF-8 dual-encoding) — each needs its own verify+dedup pass.
