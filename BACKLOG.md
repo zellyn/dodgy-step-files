@@ -599,3 +599,25 @@ crash-family expansion has **saturated** against existing coverage. NOTE: the ea
 STALE (those fixtures were materialized long ago). Future wave-10 synthesis should target the
 UNPROBED novel seams instead: Tier-3 Part-21 edition-3 structural (@ value-instances, multi-DATA
 populations, SIGNATURE section, raw-UTF-8 dual-encoding) — each needs its own verify+dedup pass.
+
+### Wave-10 arc CLOSED (2026-07-05) — 1 novel fixture shipped, seams saturated
+Full wave-10 outcome: 19 candidates mined across 3 fresh seams (OCCT tracker, real-world CAD
+forums, ISO-10303 Part-21 e3) → verified + deduped → **exactly ONE genuinely-novel, occt-visible,
+synthesizable fixture: Ad134** (empty DIRECTION direction_ratios → signal(11), shipped db61a6d5).
+Everything else deduped to existing coverage or was weak:
+- Empty-bspline crashes → Gn003/Gn004. Knot-mult overflow → Xp042/Gn008.
+- Part-21 e3 structural: @ value-instance → Ls040; multi-DATA → Lh024; SIGNATURE → Lh026;
+  raw-UTF-8 → Le002/Le021; ANCHOR/REFERENCE → Lh026/Lh027/Lh028/A014.
+- Weak/occt-invisible (skipped): solid→loose-shell, far-from-origin, invalid-record-index,
+  duplicate-top-level-faces, empty CARTESIAN_POINT.
+
+**Strategic finding: variant-mining has hit diminishing returns.** The corpus already covers the
+mechanisms that OCCT-tracker/forum/conformance mining surfaces — a mining pass now yields ~1 novel
+fixture per ~19 candidates. Meaningful further GROWTH needs a different strategy, not more
+variant-mining:
+  (a) genuinely NEW external sources not yet mined — fuzzing corpora (e.g. OSS-Fuzz OCCT finds),
+      academic STEP-robustness papers, other kernels' bug trackers (CGAL/Parasolid/ACIS forums);
+  (b) a NEW oracle that sees defects OCCT heals (would make many currently-"weak/occt-invisible"
+      candidates like solid→loose-shell become synthesizable) — infra, needs sign-off;
+  (c) QUALITY-deepening of existing cases: the defect-targeted mutation validator (mutate within
+      each fixture's own Byte-assertion region) to properly harden bytes-only — infra, needs sign-off.
