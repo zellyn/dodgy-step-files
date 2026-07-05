@@ -647,3 +647,15 @@ levers all need a maintainer decision:
       of a defect across kernel versions) — a scope decision.
 Session net (2026-07-03..05): CI DRIFT fixed, mutation-depth saturation documented, CONCERN audit
 clean, wave-10/11 mined+verified+deduped, **1 genuinely-novel fixture shipped (Ad134)**.
+
+### fixture_lint 19 warnings — assessed benign (2026-07-05), low priority
+`_fixture_lint --strict` reports 19 warnings (0 errors; CI passes — they don't fail the build):
+- 16× "no `/* ... */` Part-21 comment block" (Le031, Gp056/058/059/060, Gn055/058,
+  Tsh079/080/081/139/140/149/156/158): cosmetic — the mechanism is fully documented in each
+  fixture's catalog entry; the inline comment is redundant. Low priority; if ever cleaned, add
+  the mechanism description to each .stp header (check for a fixture_source builder first; edit
+  the source, not the .stp, if one exists) and re-render the site.
+- 3× FILE_NAME/FILE_SCHEMA not found: **Lh004 (FILE_SCHEMA) and Lh046 (FILE_NAME) are §12.1b
+  HEADER-DEFECT fixtures that deliberately omit those entities — false-positive warnings; do NOT
+  "fix" them.** Tfa126/Tfa131 (FILE_NAME) are minor lint-detection quirks, not real defects.
+Conclusion: no action needed; recorded so the benign/intentional ones aren't re-chased.
