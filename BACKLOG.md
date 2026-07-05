@@ -621,3 +621,29 @@ variant-mining:
       candidates like solid→loose-shell become synthesizable) — infra, needs sign-off;
   (c) QUALITY-deepening of existing cases: the defect-targeted mutation validator (mutate within
       each fixture's own Byte-assertion region) to properly harden bytes-only — infra, needs sign-off.
+
+### Wave-11 fresh-source mining (2026-07-05) — saturation CONFIRMED across fresh sources; pause variant-mining
+Mined sources wave-10 did NOT touch (OSS-Fuzz/fuzzer OCCT crashes, academic STEP-robustness
+taxonomies, other-kernel trackers CGAL/Parasolid/ACIS). The mining agent flagged 3 "HIGH-novelty"
+leads; all dedup to existing coverage:
+- #1 **cyclic ORIENTED_EDGE recursion** (stack-exhaustion DoS) → already a catalog entry
+  (self-referential `ORIENTED_EDGE('',*,*,#N,.T.)` recurses EdgeStart/EdgeEnd until stack exhausts;
+  OCCT skips it, valid face loads shape(1)). Plus Twi cyclic-edge entries. DUP.
+- #2 **Part-21 e3 anchor/reference/signature** → already saturated (Lh026/Lh027/Lh028/A014/Ls040). DUP.
+- #3 **procedural / constructive-geometry model semantics** → covered by A038, M012, M014, M033,
+  **M035** (single-item Constructive_Geometry_Representation crashes translator), Wr047. DUP.
+- #4-8 (truncation, REAL overflow, duplicate #id, degenerate/tolerance, knot-mult) → all covered.
+
+**DEFINITIVE STRATEGIC CONCLUSION:** variant-mining is saturated — even fresh OSS-Fuzz/academic/
+other-kernel sources now yield mechanisms the corpus already covers. Mining agents' novelty
+estimates are unreliable (no catalog to dedup against); the real hit rate is ~1 novel fixture per
+~19-27 candidates and falling. **Recommend PAUSING autonomous variant-mining.** The genuine next
+levers all need a maintainer decision:
+  (a) NEW ORACLE that sees defects OCCT heals (turns many "occt-invisible/weak" candidates —
+      solid→loose-shell, procedural-semantic, styling refs — into synthesizable oracle-visible
+      fixtures). Biggest lever. Infra; needs sign-off.
+  (b) defect-targeted mutation validator (harden bytes-only). Infra; needs sign-off.
+  (c) a fundamentally new corpus axis (e.g. multi-file assemblies, non-AP242 schemas, time-series
+      of a defect across kernel versions) — a scope decision.
+Session net (2026-07-03..05): CI DRIFT fixed, mutation-depth saturation documented, CONCERN audit
+clean, wave-10/11 mined+verified+deduped, **1 genuinely-novel fixture shipped (Ad134)**.
