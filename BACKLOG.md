@@ -700,3 +700,31 @@ EXCLUDE n-gon/polygon-soup (unbuildable in triangle-only format).
 1. Harvest ready in-format candidates now (OCCT top-3 + BRepCheck pilots, Mesh top-4) via
    verify→synthesize gate. 2. Enumerate openNURBS + SASIG-PDQ into candidate lists (new mining
    passes). 3. On SASIG non-geometric: decide whether to open a new section before synthesizing.
+
+## Wave-12 execution log + candidate inventory (2026-07-06)
+Pipeline PROVEN on the repair-code vein: **Gp173 shipped** (59869b22) — general B-spline 3D edge
+on a sphere → OCCT sampled pcurve-projection fallback + correctExtremity REPAIR (occt=shape(1),
+runtime-only). On-thesis (a repair heuristic). Dedup skipped 2 of 3 OCCT candidates (Gp005,
+Twi085/Gp007). NOTE: synthesis agents must run SERIAL — they all write STEP_PROBLEM_CATALOG.md/.json
++ browse/ + push to main, so parallel synth = git races. Research/enumeration agents can be parallel.
+
+### Ready-to-synthesize candidate inventory (deduped)
+**OCCT tail** (~30-60 total; each needs dedup like Gp173 did): ShapeConstruct AdjustOverDegen was
+a dup; remaining strong: ShapeCustom_ConvertToBSpline/SweptToElementary, ShapeUpgrade_ClosedEdgeDivide/
+FixSmallCurves, ShapeConstruct_Curve::FixEnds, ShapeExtend_ComplexCurve C0-gap, BSplineRestriction
+rational-drop/continuity-downgrade, Curve3dToBezier. (BRepCheck family likely dups ShapeFix/Analysis
+coverage — dedup hard before attempting.)
+**Mesh** (existing oracles, JSON builder — high confidence): 1 sliver-at-tolerance, 2 multi-vertex
+seam-crack, 3 out-of-plane spike vertex, 4 does_bound_a_volume predicate failure.
+**openNURBS half-wave (~6-8; theme = FLAG-vs-GEOMETRY consistency, novel):** non-unit vertex normal
+[§12.14], parallel-array len≠vertex-count [§12.14], under-stated edge tolerance [§12.4], singular-trim
+vs non-degenerate edge [§12.2/3], valid-but-unreferenced VERTEX_POINT [§12.3], bound-role mistyping
+(2 outers) [§12.3], orient-flag vs vertex-order [§12.3], closed-flag vs distinct-endpoints [§12.3].
+
+### SASIG PDQ — RECOMMENDATION: no big new section
+The standard is itself geometry/topology-centric (bulk already covered by §12.2/3/4). Non-geometric
+core is small (~15-25). Split: ~7-8 ORACLE-VISIBLE (non-orthonormal AXIS2, tessellation-without-BREP,
+isolated wireframe, unresolved external ref, empty assembly/rep, inconsistent units, huge offset) →
+**fold into existing §12.5/12.6/12.8 rather than a new section**. ~8-10 PURE-STRUCTURAL (duplicate/
+embedded/dangling geometry, blank names, invalid layers) → NO kernel oracle reacts → these are the
+concrete motivation for the future **structural-linter oracle** lever (defer until that exists).
