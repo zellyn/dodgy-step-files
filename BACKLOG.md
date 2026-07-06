@@ -659,3 +659,44 @@ clean, wave-10/11 mined+verified+deduped, **1 genuinely-novel fixture shipped (A
   HEADER-DEFECT fixtures that deliberately omit those entities — false-positive warnings; do NOT
   "fix" them.** Tfa126/Tfa131 (FILE_NAME) are minor lint-detection quirks, not real defects.
 Conclusion: no action needed; recorded so the benign/intentional ones aren't re-chased.
+
+## Wave-12 REPAIR-CODE mining roadmap (2026-07-06) — the on-thesis vein, NOT saturated
+Three parallel gap-mining agents (OCCT source, MeshFix/CGAL source, new-vein search) run against
+the coverage maps. Thesis reaffirmed: enumerate problematic-input CLASSES that kernel repair
+heuristics exist for (repairs, graceful-tolerate, AND crashes all count). Corrected the earlier
+"mining saturated" claim: only bug-tracker/crash mining was exhausted; the repair-code vein has a
+tail, and NEW veins are wide open.
+
+### Track A — OCCT ShapeHealing tail (~30-60 fixtures left, then genuinely saturated)
+Method: fetch the `.cxx` for each never-mined class, apply COVERAGE_POLICY sub-status rule (one
+fixture per input-shape-determined if/else branch). Also mine `BRepCheck_*` as a NEW invariant-
+detector family (distinct from Fix* healers; ~5 refs, never per-method mined). Top candidates:
+- ShapeConstruct_ProjectCurveOnSurface: AdjustOverDegen (3D edge through degenerate apex, seam-side
+  ambiguous) [§12.2a]; sampled-fallback + correctExtremity (projected pcurve endpoint gap) [§12.2a]
+- ShapeFix_EdgeProjAux: edge pcurve param-range reversed/zero-length/missing [§12.2a/3b]
+- BRepCheck_* family: per-invariant "input violates invariant N" (Face::IntersectWires,
+  UnorientableShape, NotClosed, etc.) [§12.3*]
+- ShapeCustom_ConvertToBSpline / SweptToElementary / BSplineRestriction rational-drop+continuity-
+  downgrade; ShapeUpgrade_ClosedEdgeDivide, FixSmallCurves; ShapeConstruct_Curve::FixEnds;
+  ShapeExtend_ComplexCurve C0-gap. (12 total; full list in scratch vein_occt.)
+
+### Track B — Mesh repair tail (near-saturated; 4 strong, existing oracles, no oracle changes)
+1. sliver-at-tolerance-boundary (needle-collapse vs cap-flip edge)  2. multi-vertex seam-crack merge
+3. out-of-plane spike vertex  4. does_bound_a_volume predicate failure. (+6 lower-conf.)
+EXCLUDE n-gon/polygon-soup (unbuildable in triangle-only format).
+
+### Track C — NEW veins (0 coverage — the genuine growth frontier)
+- **SASIG PDQ / ISO-PAS 26183** — industry master taxonomy, ~159 coded criteria: 64 geometric +
+  **63 NON-geometric/model-structure** (naming, layers, unused/duplicate entities, embedded
+  metadata) + drawing/CAE. The non-geometric set is a whole uncovered CATEGORY (possible new
+  §12.x). HIGHEST value. Mine via Q-Checker/CADIQ/arXiv 1611.01765 public mirrors. **Needs a
+  maintainer call: open a new "model-structure/PDQ" section?**
+- **openNURBS/Rhino3dm source** — staged IsValidTopology→IsValidGeometry→IsValidTolerancesAndFlags
+  + IsCorrupt; free greppable C++. 0 coverage, immediately minable.
+- Parasolid PK_*_state fault codes; IGES-native defects (not OCCT byproduct); 3MF/lib3mf; academic
+  taxonomies (Contero arXiv 1611.01765). (full list in scratch vein_new.)
+
+### Execution order (proposed)
+1. Harvest ready in-format candidates now (OCCT top-3 + BRepCheck pilots, Mesh top-4) via
+   verify→synthesize gate. 2. Enumerate openNURBS + SASIG-PDQ into candidate lists (new mining
+   passes). 3. On SASIG non-geometric: decide whether to open a new section before synthesizing.
