@@ -64,7 +64,7 @@ DATA;
 #9066=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
 #9067=PRODUCT_DEFINITION('','',#9065,#9066);
 #9068=PRODUCT_DEFINITION_SHAPE('','',#9067);
-#9069=NEXT_ASSEMBLY_USAGE_OCCURRENCE('child_nauo','','',#9067,#9003,$);
+#9069=NEXT_ASSEMBLY_USAGE_OCCURRENCE('child_nauo','','',#9067,#9053,$);
 #9070=/* xp043 defect: #9067 (top-level) has no SHAPE_DEFINITION_REPRESENTATION; Inventor aborts import; FreeCAD/Onshape infer from child #9069 */;
 ENDSEC;
 END-ISO-10303-21;
