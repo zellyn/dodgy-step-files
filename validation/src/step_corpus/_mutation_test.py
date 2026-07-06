@@ -192,6 +192,9 @@ def _summaries_differ(a: dict | None, b: dict | None) -> bool:
     keys = ("occt_heal_on", "occt_heal_off",
             "gmsh_autofix_on", "gmsh_autofix_off",
             "ifcopenshell", "part21_strict",
+            # Non-kernel structural linter: a mutation that changes the
+            # structural defect code counts as detected.
+            "structural",
             # Diagnostic signatures: distinguish silent-empty fixtures
             # by *why* they came out silent.
             "occt_diag_on", "occt_diag_off", "gmsh_diag")

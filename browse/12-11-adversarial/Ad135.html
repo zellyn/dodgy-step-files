@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ad135 — Degenerate AXIS2_PLACEMENT_3D: axis parallel to ref_direction (x-axis undefined)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.11 Adversarial / parser robustness</a> <span class="sep">/</span> <span class="current">Ad135</span>
+</nav>
+<header class="title-bar">
+<h1>Ad135 <span class="sep">—</span> <span class="entry-title">Degenerate AXIS2_PLACEMENT_3D: axis parallel to ref_direction (x-axis undefined)</span></h1>
+<p class="category">§12.11 adversarial (sub-class: degenerate placement / undefined derived axis)</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-adversarial" href="../by-tag/adversarial/index.html">adversarial</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-11-adversarial/Ad135.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-11-adversarial/Ad135.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>synthesized — SASIG PDQ structural (structural-linter v1)</li>
+<li>models the &quot;non-orthonormal / degenerate AXIS2_PLACEMENT_3D&quot; PDQ class.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>`AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#30,#30)` uses the SAME `DIRECTION` (#30) for both its axis and its ref_direction, so the two are parallel and the derived x-axis (ref_direction projected perpendicular to axis) is undefined. OCC&#x27;s `gp_Ax2` handling silently defaults the x-direction and loads the placement, so the shape-count oracles are identical to a clean model (oracle-invisible). The structural linter flags `AXIS_DEGENERATE`. (Note: this flags only genuinely degenerate — parallel or zero-length — directions; a merely non-perpendicular or non-unit ref_direction is spec-legal and is NOT flagged.)</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`AXIS2_PLACEMENT_3D(#loc,#dir,#dir)` — same direction entity referenced twice.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>detect axis∥ref_direction and reject or emit a diagnostic rather than silently substituting an arbitrary x-axis.</p></section>
+<section><h2>Notes</h2>
+<p>Provenance_tier: bytes-sufficient. SASIG PDQ structural (structural-linter v1). Oracle-invisible: occt/gmsh both load shape(1)/shape(9) identically to clean; discrimination comes solely from the `structural` oracle. Distinct from Ad134 (empty direction_ratios → crash) — here the ratios are valid but the two directions coincide. Synonyms: &quot;AXIS2_PLACEMENT_3D axis parallel ref_direction&quot;, &quot;degenerate placement undefined x axis&quot;, &quot;gp_Ax2 silent default&quot;, &quot;SASIG PDQ non-orthonormal axis&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&quot;AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#30,#30)&quot;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Ad134.html">Ad134</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Ad135: AXIS2_PLACEMENT_3D #32 whose axis (#30) and ref_direction (#30 again)
+<span class="lineno">3</span>   are identical -&gt; parallel, so the x-axis projection is undefined. A robust
+<span class="lineno">4</span>   kernel must detect this and default/reject; OCC&#x27;s gp_Ax2 handling of the
+<span class="lineno">5</span>   degenerate case is exactly the kind of silently-defaulted defect the
+<span class="lineno">6</span>   structural linter surfaces (AXIS_DEGENERATE). accept-live-oracle. */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;Ad135&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;Ad135.stp&#x27;,&#x27;2026-07-06T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">14</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">15</span>#2=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">16</span>#3=CARTESIAN_POINT(&#x27;&#x27;,(10.0,10.0,0.0));
+<span class="lineno">17</span>#4=CARTESIAN_POINT(&#x27;&#x27;,(0.0,10.0,0.0));
+<span class="lineno">18</span>#5=VERTEX_POINT(&#x27;&#x27;,#1);
+<span class="lineno">19</span>#6=VERTEX_POINT(&#x27;&#x27;,#2);
+<span class="lineno">20</span>#7=VERTEX_POINT(&#x27;&#x27;,#3);
+<span class="lineno">21</span>#8=VERTEX_POINT(&#x27;&#x27;,#4);
+<span class="lineno">22</span>#9=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">23</span>#10=VECTOR(&#x27;&#x27;,#9,10.0);
+<span class="lineno">24</span>#11=LINE(&#x27;&#x27;,#1,#10);
+<span class="lineno">25</span>#12=EDGE_CURVE(&#x27;&#x27;,#5,#6,#11,.T.);
+<span class="lineno">26</span>#13=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">27</span>#14=VECTOR(&#x27;&#x27;,#13,10.0);
+<span class="lineno">28</span>#15=LINE(&#x27;&#x27;,#2,#14);
+<span class="lineno">29</span>#16=EDGE_CURVE(&#x27;&#x27;,#6,#7,#15,.T.);
+<span class="lineno">30</span>#17=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">31</span>#18=VECTOR(&#x27;&#x27;,#17,10.0);
+<span class="lineno">32</span>#19=LINE(&#x27;&#x27;,#3,#18);
+<span class="lineno">33</span>#20=EDGE_CURVE(&#x27;&#x27;,#7,#8,#19,.T.);
+<span class="lineno">34</span>#21=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">35</span>#22=VECTOR(&#x27;&#x27;,#21,10.0);
+<span class="lineno">36</span>#23=LINE(&#x27;&#x27;,#4,#22);
+<span class="lineno">37</span>#24=EDGE_CURVE(&#x27;&#x27;,#8,#5,#23,.T.);
+<span class="lineno">38</span>#25=ORIENTED_EDGE(&#x27;&#x27;,$,$,#12,.T.);
+<span class="lineno">39</span>#26=ORIENTED_EDGE(&#x27;&#x27;,$,$,#16,.T.);
+<span class="lineno">40</span>#27=ORIENTED_EDGE(&#x27;&#x27;,$,$,#20,.T.);
+<span class="lineno">41</span>#28=ORIENTED_EDGE(&#x27;&#x27;,$,$,#24,.T.);
+<span class="lineno">42</span>#29=EDGE_LOOP(&#x27;&#x27;,(#25,#26,#27,#28));
+<span class="lineno">43</span>#30=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">44</span>#32=<mark>AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#30,#30)</mark>;
+<span class="lineno">45</span>#33=FACE_OUTER_BOUND(&#x27;&#x27;,#29,.T.);
+<span class="lineno">46</span>#34=PLANE(&#x27;&#x27;,#32);
+<span class="lineno">47</span>#35=ADVANCED_FACE(&#x27;&#x27;,(#33),#34,.T.);
+<span class="lineno">48</span>#36=OPEN_SHELL(&#x27;&#x27;,(#35));
+<span class="lineno">49</span>#37=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#36));
+<span class="lineno">50</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">51</span>#9051=PRODUCT(&#x27;Ad135&#x27;,&#x27;Ad135&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">52</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">53</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">54</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">55</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">56</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">57</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">58</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">59</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">60</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">61</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#37),#9060);
+<span class="lineno">62</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">63</span>ENDSEC;
+<span class="lineno">64</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ad134.html">&larr; Ad134</a> <a class="up" href="index.html">§12.11 Adversarial / parser robustness</a> <a class="next" href="Ad136.html">Ad136 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

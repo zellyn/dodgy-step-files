@@ -36,8 +36,9 @@ from step_corpus._mutation_test import _mutate_byte, _run_validate2, EXAMPLES
 
 # BRep-load geometry kernels — the oracles a bytes-only claim is about.
 GEOM = ("occt_heal_on", "occt_heal_off", "gmsh_autofix_on", "gmsh_autofix_off")
-# Reported but NOT used for the verdict (syntax/schema parsers, not geometry).
-INFO = ("ifcopenshell", "part21_strict")
+# Reported but NOT used for the verdict (syntax/schema parsers + the non-kernel
+# structural linter — a bytes-only defect SHOULD move these, that's expected).
+INFO = ("ifcopenshell", "part21_strict", "structural")
 
 
 def _pick(summary: dict | None, keys) -> dict:

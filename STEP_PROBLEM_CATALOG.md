@@ -44913,3 +44913,43 @@ exercised against CGAL PMP / MeshFix.
 - **Severity**: P0
 - **Model impact**: OCCT ≤ 7.9-based CAD/CAM tools re-exporting STEP files that contain oversized raw-string payloads (typical for machine-generated PMI descriptions, embedded documentation, or user-tool comments) hang the writer forever with no diagnostic output; the round-trip pipeline stalls, no output file is produced, and the operator has no signal that the write path is looping until they kill the process.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a`
+
+### U049 — Two conflicting length units (MILLI + CENTI metre) in one representation context
+- **Category**: §12.5 units (sub-class: ambiguous model scale / conflicting unit assignment)
+- **Sources**: synthesized — SASIG PDQ structural (structural-linter v1); models the "inconsistent units within one representation" PDQ class.
+- **Description**: A single `GLOBAL_UNIT_ASSIGNED_CONTEXT` assigns TWO distinct length units — `SI_UNIT(.MILLI.,.METRE.)` and `SI_UNIT(.CENTI.,.METRE.)` — leaving the model's length scale ambiguous. OCC silently binds the first length unit it encounters and ignores the second, so the loaded shape and every geometry-kernel shape-count are byte-identical to a clean single-unit model. This is exactly an ORACLE-INVISIBLE defect: the shape-count oracles cannot see it. The non-kernel structural linter flags `UNITS_INCONSISTENT`.
+- **Reproducer recipe**: a `GLOBAL_UNIT_ASSIGNED_CONTEXT((#milli,#centi,#angle,#solid))` binding two length units of different SI prefix.
+- **Expected kernel behavior**: a robust importer should reject or warn on a representation context with more than one length unit rather than silently defaulting; scale ambiguity must not pass unnoticed.
+- **Notes**: Provenance_tier: bytes-sufficient. SASIG PDQ structural (structural-linter v1). The defect is invisible to occt/gmsh shape-counts (both load shape(1)/shape(9) identically to a clean model); discrimination comes solely from the `structural` oracle. Synonyms: "STEP two length units one context", "GLOBAL_UNIT_ASSIGNED_CONTEXT conflicting units", "inconsistent model scale silent default", "SASIG PDQ inconsistent units".
+- **Byte assertion**: contains(b'SI_UNIT(.MILLI.,.METRE.)')
+- **Byte assertion**: contains(b'SI_UNIT(.CENTI.,.METRE.)')
+- **Tier-3 assertion**: load == "ok"
+- **Structural assertion**: struct == UNITS_INCONSISTENT
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+- **Model impact**: downstream receivers that pick a different length unit than the sender's importer scale the part by 10×; a 10 mm feature becomes 1 cm or 100 mm depending on which unit each tool honours.
+
+### Ad135 — Degenerate AXIS2_PLACEMENT_3D: axis parallel to ref_direction (x-axis undefined)
+- **Category**: §12.11 adversarial (sub-class: degenerate placement / undefined derived axis)
+- **Sources**: synthesized — SASIG PDQ structural (structural-linter v1); models the "non-orthonormal / degenerate AXIS2_PLACEMENT_3D" PDQ class.
+- **Description**: `AXIS2_PLACEMENT_3D('',#1,#30,#30)` uses the SAME `DIRECTION` (#30) for both its axis and its ref_direction, so the two are parallel and the derived x-axis (ref_direction projected perpendicular to axis) is undefined. OCC's `gp_Ax2` handling silently defaults the x-direction and loads the placement, so the shape-count oracles are identical to a clean model (oracle-invisible). The structural linter flags `AXIS_DEGENERATE`. (Note: this flags only genuinely degenerate — parallel or zero-length — directions; a merely non-perpendicular or non-unit ref_direction is spec-legal and is NOT flagged.)
+- **Reproducer recipe**: `AXIS2_PLACEMENT_3D(#loc,#dir,#dir)` — same direction entity referenced twice.
+- **Expected kernel behavior**: detect axis∥ref_direction and reject or emit a diagnostic rather than silently substituting an arbitrary x-axis.
+- **Notes**: Provenance_tier: bytes-sufficient. SASIG PDQ structural (structural-linter v1). Oracle-invisible: occt/gmsh both load shape(1)/shape(9) identically to clean; discrimination comes solely from the `structural` oracle. Distinct from Ad134 (empty direction_ratios → crash) — here the ratios are valid but the two directions coincide. Synonyms: "AXIS2_PLACEMENT_3D axis parallel ref_direction", "degenerate placement undefined x axis", "gp_Ax2 silent default", "SASIG PDQ non-orthonormal axis".
+- **Byte assertion**: contains(b"AXIS2_PLACEMENT_3D('',#1,#30,#30)")
+- **Tier-3 assertion**: load == "ok"
+- **Structural assertion**: struct == AXIS_DEGENERATE
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+- **Model impact**: the part's local coordinate frame is whatever the importer happened to default; two tools can place features on different (arbitrary) x-axes, silently mis-orienting datums and mapped components.
+
+### Ad136 — Duplicate entity id: `#30` defined twice in DATA
+- **Category**: §12.11 adversarial (sub-class: duplicate entity instance id)
+- **Sources**: synthesized — SASIG PDQ structural (structural-linter v1); models the "duplicate/ambiguous entity graph" PDQ class.
+- **Description**: entity id `#30` is defined by two `#30=...` statements in the DATA section, which ISO 10303-21 clause 11 forbids (instance names must be unique). OCC's reader silently keeps one definition and loads the model normally, so occt/gmsh shape-counts are identical to a clean model (oracle-invisible). The structural linter flags `DUPLICATE_ID`.
+- **Reproducer recipe**: emit the same `#N=` line twice in the DATA section.
+- **Expected kernel behavior**: a conformant reader must reject a file with a duplicated instance name, or at minimum diagnose which definition it kept.
+- **Notes**: Provenance_tier: bytes-sufficient. SASIG PDQ structural (structural-linter v1). Oracle-invisible: occt/gmsh load shape(1)/shape(9) identically to clean; discrimination comes solely from the `structural` oracle. Synonyms: "STEP duplicate entity id", "same #N defined twice", "ISO 10303-21 unique instance name violation", "SASIG PDQ duplicate geometry id".
+- **Byte assertion**: contains(b"#30=DIRECTION('',(0.0,0.0,1.0))")
+- **Tier-3 assertion**: load == "ok"
+- **Structural assertion**: struct == DUPLICATE_ID
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+- **Model impact**: which of the two definitions wins is reader-dependent; two importers can silently build different models from the same file when the duplicated ids carry different attribute values.
