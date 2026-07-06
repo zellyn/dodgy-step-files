@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1>§12.2a Pcurve defects</h1>
 <p class="blurb">Pcurve / parametric-curve defects: near-period mismatches, out-of-bounds parameters, degenerate or seam pcurves.</p>
-<p class="meta">165 entries</p>
+<p class="meta">166 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
@@ -183,6 +183,7 @@
 <tr><td><a href="Gp170.html"><code>Gp170</code></a></td><td>`ProjectDegenerated.iso-flag-unvalidated`</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Gp171.html"><code>Gp171</code></a></td><td>Full-circle `CIRCLE` `EDGE_CURVE` with two near-coincident but distinct `VERTEX_POINT`s</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Gp172.html"><code>Gp172</code></a></td><td>`PCURVE.basis_surface` referencing the wrong (adjacent) `ADVANCED_FACE` surface</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp173.html"><code>Gp173</code></a></td><td>General (non-analytic) `B_SPLINE_CURVE_WITH_KNOTS` 3D edge on a `SPHERICAL_SURFACE` forcing the sampled pcurve-projection fallback</td><td><code>runtime-only</code></td><td><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></td></tr>
 </tbody></table>
 </main>
 <footer>

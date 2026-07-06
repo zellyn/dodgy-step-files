@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gp173 — General (non-analytic) `B_SPLINE_CURVE_WITH_KNOTS` 3D edge on a `SPHERICAL_SURFACE` forcing the sampled pcurve-projection fallback</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2a Pcurve defects</a> <span class="sep">/</span> <span class="current">Gp173</span>
+</nav>
+<header class="title-bar">
+<h1>Gp173 <span class="sep">—</span> <span class="entry-title">General (non-analytic) `B_SPLINE_CURVE_WITH_KNOTS` 3D edge on a `SPHERICAL_SURFACE` forcing the sampled pcurve-projection fallback</span></h1>
+<p class="category">§12-2a pcurves (sub-class: sampled projection fallback + endpoint extremity correction)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2a-pcurves/Gp173.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2a-pcurves/Gp173.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT `ShapeConstruct_ProjectCurveOnSurface` (`Perform` sampled-approximation branch + `correctExtremity`)</li>
+<li>B4 wave-12 repair-code mining (LGPL-clean — pattern only, no bytes copied).</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>STEP translators that emit an `EDGE_CURVE` with a general free-form 3D B-spline lying on a curved analytic surface (sphere/torus) but supply only a crude straight-line placeholder pcurve (or none), leaving the receiver to build the true 2D image by projection.</p></section>
+<section><h2>Description</h2>
+<p>An `EDGE_CURVE` (`#24`) has a 3D geometry that is a general, non-iso, cubic `B_SPLINE_CURVE_WITH_KNOTS` (`#11`, control points near but not on a radius-5 `SPHERICAL_SURFACE` `#5`) tracing a diagonal path from `(5,0,0)` toward the north pole. There is no closed-form analytic projection of a general B-spline onto a sphere, so `ShapeConstruct_ProjectCurveOnSurface` cannot use its analytic path and falls back to the **sampled** branch: it evaluates the 3D curve at a fixed grid of sample points (~23), projects each onto the sphere, and approximates a B-spline pcurve through the projected 2D points. The approximated pcurve&#x27;s endpoints do not land exactly on the vertex UV parameters, so `correctExtremity` must nudge the projected 2D endpoints back onto the vertices. Two additional stressors are baked in: the supplied pcurve (`#22`) is a crude straight 2D `LINE` that does not match the true projection, and the terminal `VERTEX_POINT` (`#13`, `(0.02,0.48,4.98)`) is offset ~0.02 mm from the 3D curve endpoint, forcing a real (non-zero) endpoint residual. OCCT loads the shape (`shape(1)`) after running the sampled projection and adding the sphere&#x27;s natural bounds (seam + pole degenerate edges), so the single declared edge becomes a 5-edge, 10-vertex healed face.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`SPHERICAL_SURFACE` radius 5; an `ADVANCED_FACE` whose outer bound is one `EDGE_CURVE` whose 3D curve is a cubic `B_SPLINE_CURVE_WITH_KNOTS` running diagonally across the sphere (no analytic pcurve exists); attach a `SURFACE_CURVE` with a single straight-`LINE` placeholder `PCURVE` on the sphere, and offset one endpoint vertex ~0.02 mm off the 3D curve end. OCCT: `shape(1)`, sampled projection + `correctExtremity` run at load; gmsh: reject.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>detect that no analytic projection exists, sample the 3D curve, approximate the pcurve, and snap the projected extremities to the vertex parameters within tolerance; or reject the edge if the sampled approximation exceeds the edge tolerance. The residual endpoint gap must be closed by re-projecting the vertices, not left as a `SameParameter` violation.</p></section>
+<section><h2>Notes</h2>
+<p>OCCT `ShapeConstruct_ProjectCurveOnSurface` sampled-fallback + `correctExtremity`. B4 wave-12 repair-code mining. **See also**: Gp005 (apex-projection singularity), Gp008 (oscillating projected pcurve), Gp072 (`FixAddPCurve` planar projection). Distinct from those: this is the **sampled-approximation** path taken when analytic projection is unavailable on a curved surface, plus the endpoint-extremity correction sub-step. Provenance tier: runtime-only — the bytes encode only the trigger geometry (non-analytic 3D B-spline + placeholder pcurve + offset vertex); whether the projector uses the sampled branch and how `correctExtremity` nudges the endpoints manifests only at kernel runtime. Mutation-test verified oracle-invisible: removing the endpoint offset leaves the summary and tier-3 counts unchanged (`occt=shape(1)`, faces=1, edges=5, verts=10) because OCCT heals to the same shape either way. Synonyms: &quot;B-spline pcurve approximated from sample points&quot;, &quot;analytic pcurve projection unavailable on sphere&quot;, &quot;sampled projection fallback for free-form edge&quot;, &quot;projected pcurve endpoints corrected to vertex parameters&quot;, &quot;correctExtremity nudges pcurve endpoint&quot;, &quot;23-point sampled pcurve approximation&quot;, &quot;non-analytic 3D curve projected onto spherical surface&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>runtime-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;SPHERICAL_SURFACE&#x27;)</code></li>
+<li><code>contains(b&#x27;B_SPLINE_CURVE_WITH_KNOTS&#x27;)</code></li>
+<li><code>contains(b&#x27;SURFACE_CURVE&#x27;)</code></li>
+<li><code>contains(b&#x27;EDGE_CURVE&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;PCURVE&#x27;) &gt;= 1</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_faces_total == 1</code></li>
+<li><code>n_edges_total == 5</code></li>
+<li><code>n_vertices_total == 10</code></li>
+<li><code>face[0].surface_type == &quot;sphere&quot;</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Gp005.html">Gp005</a>, <a href="Gp008.html">Gp008</a>, <a href="Gp072.html">Gp072</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gp173: <mark>EDGE_CURVE</mark> whose 3D geometry is a general (non-iso, non-analytic) cubic <mark>B_SPLINE_CURVE_WITH_KNOTS</mark> lying approximately on a <mark>SPHERICAL_SURFACE</mark> (radius 5). No closed-form analytic projection of a general B-spline onto a sphere exists, so ShapeConstruct_ProjectCurveOnSurface must fall back to its sampled path: it evaluates ~23 sample points, approximates a B-spline pcurve through them, then runs correctExtremity to nudge the projected 2D endpoints onto the vertex parameters. The supplied pcurve is a crude straight 2D LINE placeholder that does not match the true projection, and the end VERTEX_POINT is offset ~0.02mm from the 3D curve end, so a residual endpoint gap must be corrected. Input pattern: 3D curve not analytically projectable onto host surface + missing/placeholder pcurve + endpoint residual â exercises the sampled-fallback + correctExtremity repair path. B4 wave-12 repair-code mining (ShapeConstruct_ProjectCurveOnSurface). SHELL_BASED_SURFACE_MODEL is model entity */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Gp173&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Gp173.stp&#x27;,&#x27;2026-07-06T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;sphere_center&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=<mark>SPHERICAL_SURFACE</mark>(&#x27;sph&#x27;,#4,5.0);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;bsp_p0&#x27;,(5.0,0.0,0.0));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;bsp_p1&#x27;,(4.0,2.0,1.5));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;bsp_p2&#x27;,(2.5,2.5,3.0));
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;bsp_p3&#x27;,(1.0,2.0,4.3));
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;bsp_p4&#x27;,(0.0,0.5,4.98));
+<span class="lineno">20</span>#11=<mark>B_SPLINE_CURVE_WITH_KNOTS</mark>(&#x27;crv3d&#x27;,3,(#6,#7,#8,#9,#10),.UNSPECIFIED.,.F.,.F.,(4,1,4),(0.0,0.5,1.0),.UNSPECIFIED.);
+<span class="lineno">21</span>#12=CARTESIAN_POINT(&#x27;v_start&#x27;,(5.0,0.0,0.0));
+<span class="lineno">22</span>#13=CARTESIAN_POINT(&#x27;v_end_offset&#x27;,(0.02,0.48,4.98));
+<span class="lineno">23</span>#14=VERTEX_POINT(&#x27;&#x27;,#12);
+<span class="lineno">24</span>#15=VERTEX_POINT(&#x27;&#x27;,#13);
+<span class="lineno">25</span>#16=CARTESIAN_POINT(&#x27;pc_placeholder_p0&#x27;,(0.0,0.0));
+<span class="lineno">26</span>#17=DIRECTION(&#x27;&#x27;,(0.7071067811865476,0.7071067811865476));
+<span class="lineno">27</span>#18=VECTOR(&#x27;&#x27;,#17,2.221441469079183);
+<span class="lineno">28</span>#19=LINE(&#x27;pc_crude&#x27;,#16,#18);
+<span class="lineno">29</span>#20=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;2D&#x27;));
+<span class="lineno">30</span>#21=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#19),#20);
+<span class="lineno">31</span><mark>#22=PCURVE(</mark>&#x27;pc_on_sphere&#x27;,#5,#21);
+<span class="lineno">32</span>#23=<mark>SURFACE_CURVE</mark>(&#x27;sc_bsp&#x27;,#11,(#22),.PCURVE_S1.);
+<span class="lineno">33</span>#24=<mark>EDGE_CURVE</mark>(&#x27;ec_bsp&#x27;,#14,#15,#23,.T.);
+<span class="lineno">34</span>#25=ORIENTED_EDGE(&#x27;&#x27;,$,$,#24,.T.);
+<span class="lineno">35</span>#26=EDGE_LOOP(&#x27;&#x27;,(#25));
+<span class="lineno">36</span>#27=FACE_OUTER_BOUND(&#x27;&#x27;,#26,.T.);
+<span class="lineno">37</span>#28=ADVANCED_FACE(&#x27;&#x27;,(#27),#5,.T.);
+<span class="lineno">38</span>#29=OPEN_SHELL(&#x27;&#x27;,(#28));
+<span class="lineno">39</span>#30=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#29));
+<span class="lineno">40</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">41</span>#9051=PRODUCT(&#x27;Gp173&#x27;,&#x27;Gp173&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">42</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">43</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">44</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">45</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">46</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">47</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">48</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">49</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">50</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">51</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#30),#9060);
+<span class="lineno">52</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">53</span>ENDSEC;
+<span class="lineno">54</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gp172.html">&larr; Gp172</a> <a class="up" href="index.html">§12.2a Pcurve defects</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>
