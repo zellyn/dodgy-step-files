@@ -36120,6 +36120,43 @@ exercised against CGAL PMP / MeshFix.
 - **Tier-3 assertion**: n_vertices_total == 8
 - **Model impact**: Compound on round-trip has one fewer sub-shape than the in-memory original; downstream consumers that expect the original compound's item count fail topology-count validation.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+
+### M191 — Isolated wireframe: `GEOMETRIC_CURVE_SET` of a cube's 12 edges with no topology (no solid root)
+- **Category**: §12.8 mixed (sub-class: geometry-without-topology / completeness)
+- **Sources**: SASIG PDQ non-geometric enumeration (geometry-completeness / "wireframe-only export" class); B4 wave-12. Sketch/curve exporters, harness/electrical and 2.5D tools routinely emit curve-only geometry where a solid is expected. Pattern-authored; no bytes copied.
+- **Description**: The transferred shape is a `GEOMETRIC_CURVE_SET` whose items are twelve valid `LINE` curves tracing the outline of a 10 mm cube. There is no topological superstructure of any kind — no `VERTEX_POINT`, `EDGE_CURVE`, `EDGE_LOOP`, `ADVANCED_FACE`, `CLOSED_SHELL`, or `MANIFOLD_SOLID_BREP`. Every item is a legal `geometric_select` curve and the file is well-formed, so OCC transfers the set cleanly to a single `COMPOUND` holding 12 free edges — there is no solid, face, or wire. A consumer that reports "import OK" without noticing the empty solid set hands a boolean / meshing / mass-property pipeline nothing to operate on. This is a completeness defect (wireframe delivered where a solid was expected), *not* corruption — distinct from M051 (`GEOMETRIC_CURVE_SET` aggregating schema-illegal non-geometric children, which crashes OCC with signal 11) and M058 (curve set carried inside an AP203-tag/AP214-entity schema-mismatch file).
+- **Reproducer recipe**: a `GEOMETRIC_CURVE_SET` listing 12 `LINE` entities (the edges of a cube), wrapped in a `MANIFOLD_SURFACE_SHAPE_REPRESENTATION` under the canonical PRODUCT chain; emit no topological entities at all.
+- **Expected kernel behavior**: accept, but surface the wireframe-only nature (warn / expose a subshape inventory showing zero solids and zero faces); LOTAR/downstream solid-expecting pipelines must not treat a curve-only import as a successful solid import.
+- **Notes**: Synonyms: "wireframe-only STEP has no solid", "curve set imports as loose edges not a solid", "GEOMETRIC_CURVE_SET with no topology", "geometry present but no faces or shells", "cube delivered as wireframe". **See also**: M051, M058, M190, M192.
+- **Byte assertion**: contains(b'GEOMETRIC_CURVE_SET')
+- **Byte assertion**: count_entity_def(b'LINE') == 12
+- **Byte assertion**: count_entity_def(b'MANIFOLD_SOLID_BREP') == 0
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_faces_total == 0
+- **Tier-3 assertion**: n_edges_total == 12
+- **Tier-3 assertion**: n_vertices_total == 0
+- **OCC behavior**: accepts and transfers to a COMPOUND of 12 free edges (0 solids, 0 faces). The completeness defect is oracle-visible: the shape signature (edges only, no solid) is distinguishable from any clean solid.
+- **Model impact**: The model loads as a bag of loose edges; every downstream operation that assumes a solid or surface body (booleans, meshing, mass properties, watertightness checks) has no input, and count-based validation that expects faces/solids fails.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(12) ifc=schema_n/a`
+
+### M192 — Point-set only: `GEOMETRIC_SET` of eight `CARTESIAN_POINT`s with no curves, surfaces, or topology
+- **Category**: §12.8 mixed (sub-class: geometry-without-topology / completeness)
+- **Sources**: SASIG PDQ non-geometric enumeration (geometry-completeness / point-cloud-only export class); B4 wave-12. Scan/probe pipelines, feature-point and "reference geometry only" exports emit bare point sets. Pattern-authored; no bytes copied.
+- **Description**: The transferred shape is a `GEOMETRIC_SET` whose items are eight bare `CARTESIAN_POINT`s (the corners of a 10 mm cube). There are no curves, no surfaces, and no topological entities — the model is a pure zero-dimensional point cloud. Every item is a legal `geometric_select` point and the file is well-formed, so OCC transfers the set to a single `COMPOUND` holding 8 free vertices: vertices exist but edge, face, and solid counts are all zero. A consumer expecting bounded geometry receives nothing to bound. Distinct from the wireframe class (M191, curves → edges) and from the curve-set crash/mismatch fixtures (M051 non-geometric children → signal 11; M058 schema mismatch): the input here is legal and point-only.
+- **Reproducer recipe**: a `GEOMETRIC_SET` listing 8 `CARTESIAN_POINT` entities (cube corners), wrapped in a `MANIFOLD_SURFACE_SHAPE_REPRESENTATION` under the canonical PRODUCT chain; emit no curves, surfaces, or topology.
+- **Expected kernel behavior**: accept, but surface the point-only nature (warn / expose a subshape inventory showing only vertices); a point-cloud import must not be reported as a solid/surface import to solid-expecting consumers.
+- **Notes**: Synonyms: "point cloud STEP has no geometry to bound", "GEOMETRIC_SET of points imports as loose vertices", "reference points only no solid", "scan points delivered as model", "part delivered as point cloud". **See also**: M051, M190, M191.
+- **Byte assertion**: contains(b'GEOMETRIC_SET')
+- **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') == 8
+- **Byte assertion**: count_entity_def(b'MANIFOLD_SOLID_BREP') == 0
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_faces_total == 0
+- **Tier-3 assertion**: n_edges_total == 0
+- **Tier-3 assertion**: n_vertices_total == 8
+- **OCC behavior**: accepts and transfers to a COMPOUND of 8 free vertices (0 solids, 0 faces, 0 edges). Oracle-visible: the vertex-only signature is distinguishable from a clean solid and from the wireframe class (M191).
+- **Model impact**: The model loads as loose vertices only; booleans, meshing, and mass-property pipelines have no bounded geometry, and any validation expecting edges/faces/solids fails.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a`
+
 ### Wr053 — Toroidal-surface portion of fused solid corrupted on STEP round-trip
 - **Category**: §12.13 writer-pathology (sub-class: torus-surface write corruption)
 - **Sources**: Pattern-mined from OCCT/tests/bugs/step/bug32556 (LGPL-clean — pattern only, no bytes copied). OCCT regression: torus(5, 3) fused with cylinder(radius 2, height 10) should round-trip to a 12-edge / 7-vertex result; OCCT-pre-fix produced a corrupted shape with non-matching counts.

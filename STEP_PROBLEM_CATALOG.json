@@ -111785,6 +111785,99 @@
     "title": "Compound with free VERTEX_POINT silently dropped on STEP export"
   },
   {
+    "byte_assertions": [
+      "contains(b'GEOMETRIC_CURVE_SET')",
+      "count_entity_def(b'LINE') == 12",
+      "count_entity_def(b'MANIFOLD_SOLID_BREP') == 0"
+    ],
+    "category": "§12.8 mixed (sub-class: geometry-without-topology / completeness)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "The transferred shape is a `GEOMETRIC_CURVE_SET` whose items are twelve valid `LINE` curves tracing the outline of a 10 mm cube. There is no topological superstructure of any kind — no `VERTEX_POINT`, `EDGE_CURVE`, `EDGE_LOOP`, `ADVANCED_FACE`, `CLOSED_SHELL`, or `MANIFOLD_SOLID_BREP`. Every item is a legal `geometric_select` curve and the file is well-formed, so OCC transfers the set cleanly to a single `COMPOUND` holding 12 free edges — there is no solid, face, or wire. A consumer that reports \"import OK\" without noticing the empty solid set hands a boolean / meshing / mass-property pipeline nothing to operate on. This is a completeness defect (wireframe delivered where a solid was expected), *not* corruption — distinct from M051 (`GEOMETRIC_CURVE_SET` aggregating schema-illegal non-geometric children, which crashes OCC with signal 11) and M058 (curve set carried inside an AP203-tag/AP214-entity schema-mismatch file).",
+    "expected_kernel_behavior": "accept, but surface the wireframe-only nature (warn / expose a subshape inventory showing zero solids and zero faces); LOTAR/downstream solid-expecting pipelines must not treat a curve-only import as a successful solid import.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(12) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-8-mixed/M191.stp",
+    "id": "M191",
+    "notes": "Synonyms: \"wireframe-only STEP has no solid\", \"curve set imports as loose edges not a solid\", \"GEOMETRIC_CURVE_SET with no topology\", \"geometry present but no faces or shells\", \"cube delivered as wireframe\". **See also**: M051, M058, M190, M192.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "a `GEOMETRIC_CURVE_SET` listing 12 `LINE` entities (the edges of a cube), wrapped in a `MANIFOLD_SURFACE_SHAPE_REPRESENTATION` under the canonical PRODUCT chain; emit no topological entities at all.",
+    "section": "12.8",
+    "section_dir": "12-8-mixed",
+    "see_also": [
+      "M051",
+      "M058",
+      "M190",
+      "M192"
+    ],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "SASIG PDQ non-geometric enumeration (geometry-completeness / \"wireframe-only export\" class)",
+      "B4 wave-12. Sketch/curve exporters, harness/electrical and 2.5D tools routinely emit curve-only geometry where a solid is expected. Pattern-authored",
+      "no bytes copied."
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 0",
+      "n_edges_total == 12",
+      "n_vertices_total == 0"
+    ],
+    "title": "Isolated wireframe: `GEOMETRIC_CURVE_SET` of a cube's 12 edges with no topology (no solid root)"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'GEOMETRIC_SET')",
+      "count_entity_def(b'CARTESIAN_POINT') == 8",
+      "count_entity_def(b'MANIFOLD_SOLID_BREP') == 0"
+    ],
+    "category": "§12.8 mixed (sub-class: geometry-without-topology / completeness)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "The transferred shape is a `GEOMETRIC_SET` whose items are eight bare `CARTESIAN_POINT`s (the corners of a 10 mm cube). There are no curves, no surfaces, and no topological entities — the model is a pure zero-dimensional point cloud. Every item is a legal `geometric_select` point and the file is well-formed, so OCC transfers the set to a single `COMPOUND` holding 8 free vertices: vertices exist but edge, face, and solid counts are all zero. A consumer expecting bounded geometry receives nothing to bound. Distinct from the wireframe class (M191, curves → edges) and from the curve-set crash/mismatch fixtures (M051 non-geometric children → signal 11; M058 schema mismatch): the input here is legal and point-only.",
+    "expected_kernel_behavior": "accept, but surface the point-only nature (warn / expose a subshape inventory showing only vertices); a point-cloud import must not be reported as a solid/surface import to solid-expecting consumers.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-8-mixed/M192.stp",
+    "id": "M192",
+    "notes": "Synonyms: \"point cloud STEP has no geometry to bound\", \"GEOMETRIC_SET of points imports as loose vertices\", \"reference points only no solid\", \"scan points delivered as model\", \"part delivered as point cloud\". **See also**: M051, M190, M191.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "a `GEOMETRIC_SET` listing 8 `CARTESIAN_POINT` entities (cube corners), wrapped in a `MANIFOLD_SURFACE_SHAPE_REPRESENTATION` under the canonical PRODUCT chain; emit no curves, surfaces, or topology.",
+    "section": "12.8",
+    "section_dir": "12-8-mixed",
+    "see_also": [
+      "M051",
+      "M190",
+      "M191"
+    ],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "SASIG PDQ non-geometric enumeration (geometry-completeness / point-cloud-only export class)",
+      "B4 wave-12. Scan/probe pipelines, feature-point and \"reference geometry only\" exports emit bare point sets. Pattern-authored",
+      "no bytes copied."
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 0",
+      "n_edges_total == 0",
+      "n_vertices_total == 8"
+    ],
+    "title": "Point-set only: `GEOMETRIC_SET` of eight `CARTESIAN_POINT`s with no curves, surfaces, or topology"
+  },
+  {
     "byte_assertions": [],
     "category": "§12.8 (sub-class: offset prerequisite)",
     "closure_defect": null,
