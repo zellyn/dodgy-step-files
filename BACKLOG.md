@@ -836,3 +836,14 @@ OVER-FLAGS — Pmi075 was falsely flagged ("no kinematic entities") but actually
 entities and demonstrates its claim; Signal-B (claim/content) is unreliable. So the list is a strong
 LEAD requiring per-item verification (structural-grep + mutation) before any fix (feedback_audit_pattern).
 Full data: scratchpad SUSPECT_REPORT.md / reach.py / combined_orphan.json.
+
+## Re-validation VERIFIED (2026-07-06): 5 fixtures confirmed not-demonstrating
+Double-verified (reachability + mutation-differential, both independent) the orphan-carrier suspects.
+**CONFIRMED not-demonstrating (5):** Gn002, Gn007, Gn008 (nurbs), P014, P022 (assembly). Mechanism:
+the defect entity sits in a SECOND, unreferenced GEOMETRIC_CURVE_SET('defect_curves',...); the
+shape-rep root points only at a 1-vertex stub, so OCC builds shape(1) and never processes the defect.
+byte_assertions pass on byte-presence only → green but unreproducible. See feedback_orphaned_defect_carrier.
+CLEARED 64 (incl. the sweep's over-flags Pmi075 + M008 — M008 IS reachable, gmsh=shape(27)). UNCLEAR 5
+(P027, P017, Pf003/007/014 — perf/structural claims not oracle-demonstrable). Verified data: scratchpad
+VERIFICATION_RESULT.txt / final_verdicts.json. FIX = wire each defect into an EDGE_CURVE/ADVANCED_FACE
+reachable from the rep root (per feedback_wire_mechanism), then accept-live-oracle — awaiting maintainer go.
