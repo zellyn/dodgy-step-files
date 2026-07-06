@@ -76788,6 +76788,49 @@
     "title": "AP242 Ed.3 `SUBPATH` named path sub-region dropped by Ed.2/AP214 readers"
   },
   {
+    "byte_assertions": [
+      "contains(b'VERTEX_LOOP(')",
+      "contains(b'point_loop_on_flat_plane')",
+      "contains(b'PLANE(')"
+    ],
+    "category": "§12.3b wire-loop (sub-class: loop-type / degeneracy flag vs surface geometry)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "An `ADVANCED_FACE` on a flat `PLANE` whose SOLE `FACE_OUTER_BOUND` wraps a `VERTEX_LOOP('point_loop_on_flat_plane',#v)` — a loop collapsing to a single `VERTEX_POINT` at (0,0,0). A point-loop declares \"this face's boundary is a single point / the face collapses to a singular vertex\", which openNURBS permits only at a genuine surface singularity; a `PLANE` has no singular point anywhere, so the loop-degeneracy flag contradicts the flat geometry. The face is transferred through an `OPEN_SHELL` / `SHELL_BASED_SURFACE_MODEL` so the malformed loop is on the live traversal path (no orphaned entities).",
+    "expected_kernel_behavior": "Reject or heal loudly — a `ptonsrf`/singular loop is only well-formed at a surface singularity; on a non-singular surface the face has no bounded area and should be dropped with a diagnostic, or the point-loop coerced to a proper wire. Silently building a zero-area face masks the inconsistency.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3b-wires/Twi281.stp",
+    "id": "Twi281",
+    "notes": "openNURBS validity ontology (`ON_BrepLoop` type `ptonsrf` / singular). B4 wave-12 repair-code mining. Confidence: MEDIUM — accept-live-oracle. Distinct from **Twi041 / Pf025** (`VERTEX_LOOP` as an INNER `FACE_BOUND` alongside a real outer bound — here it is the SOLE / OUTER bound) and from the Tfe writer-drop sphere-cap `VERTEX_LOOP` cluster (a `SPHERICAL_SURFACE` HAS pole singularities; a `PLANE` has none). Live oracle: OCCT builds a face on the plane bounded only by the degenerate vertex loop — `shape(1)` but with n_edges_total==0 / n_vertices_total==0 (a clean planar quad face carries 4 edges) and an empty mesh; gmsh yields `shape(1)` where a clean planar quad meshes to `shape(9)` — the distinguishable signal. Synonyms: \"point-loop outer bound on flat plane\", \"VERTEX_LOOP as sole face boundary non-singular surface\", \"singular loop type on plane\", \"face collapses to point on plane\", \"ptonsrf loop off singularity\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`PLANE` at origin (+Z normal); `VERTEX_POINT` at (0,0,0); `VERTEX_LOOP('point_loop_on_flat_plane',#v)`; `FACE_OUTER_BOUND('',#vloop,.T.)` as the ADVANCED_FACE's only bound; `ADVANCED_FACE` on the plane; `OPEN_SHELL` + `SHELL_BASED_SURFACE_MODEL`.",
+    "section": "12.3b",
+    "section_dir": "12-3b-wires",
+    "see_also": [],
+    "sender": "BRep translator / writer that emits a face whose outer boundary is a `VERTEX_LOOP` on a non-singular surface — e.g. a healing/decomposition pass that collapsed a wire to a single vertex, or a mis-typed singular loop copied onto a planar carrier.",
+    "severity": "P2",
+    "sources": [
+      "openNURBS validity ontology (`ON_BrepLoop` loop-type `ptonsrf` / singular loop",
+      "`ON_Brep::IsValidTopology` loop-type checks). B4 wave-12 repair-code mining (LGPL-clean — pattern only, no upstream bytes copied). openNURBS constrains a point-loop (a loop that collapses to a single vertex) to occur only where the underlying surface has a genuine singularity (cone apex / sphere pole)",
+      "a point-loop as a face's boundary on a surface with no singular point is a loop-type-vs-geometry inconsistency."
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 0",
+      "n_vertices_total == 0",
+      "face[0].surface_type == \"plane\""
+    ],
+    "title": "`VERTEX_LOOP` point-loop used as the sole `FACE_OUTER_BOUND` of an `ADVANCED_FACE` on a non-singular `PLANE` (loop-degeneracy flag vs flat geometry)"
+  },
+  {
     "byte_assertions": [],
     "category": "§12.3 (sub-class: shape-healing) — pipeline",
     "closure_defect": null,
