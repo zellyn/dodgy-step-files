@@ -739,3 +739,52 @@ reactions, fold into existing §12.5/12.6/12.8 — no new section): tessellation
 isolated-wireframe, empty-assembly/rep, inconsistent-units-in-one-rep, non-orthonormal-AXIS2,
 unresolved-external-ref. Then mesh 4 (existing oracles). Pure-structural PDQ (dup geom/blank-names/
 layers) still awaits the structural-linter oracle lever.
+
+## Wave-12 SASIG pivot RESULT (2026-07-06): oracle-visible non-geometric also near-mature → INFLECTION
+Executed the SASIG oracle-visible pivot. Shipped **M191** (isolated wireframe: GEOMETRIC_CURVE_SET of
+12 free LINE edges → occt COMPOUND shape(1)/gmsh=shape(12), 0 solids) + **M192** (point-set: 8 bare
+CARTESIAN_POINTs → occt COMPOUND shape(1)/gmsh=shape(8), 0 edges) — both §12.8, CONFIRMED, 0 DRIFT.
+But the batch **empirically disproved the rest of the oracle-visible list**: non-orthonormal AXIS2
+(OCC re-orthonormalizes silently → identical to clean), orphan/empty representation (either segfault-dup
+of Ad050/M018 or silently-dropped = invisible), tessellation-without-BREP (dup M002-M021), inconsistent
+units (shape_counts don't capture scale → the Q5-quarantine class). Net: 2 of ~7 candidates were
+genuinely oracle-visible+novel; the other ~5 collapse to invisible-or-dup.
+
+**INFLECTION (both veins now mature at the shape_counts-oracle level):** geometry/topology AND
+oracle-visible-non-geometric are both yielding ~0-2 novel fixtures per full agent pass (~150K tokens
+each). The binding constraint is the DISCRIMINATING ORACLE: `shape_counts` (occt/gmsh shape(N)/empty/
+reject) cannot see units/scale/orthonormality/external-ref/duplicate-geometry/blank-name defects —
+OCCT normalizes or ignores them, so they read identical to a clean solid.
+
+**NEXT REAL LEVER = structural-linter oracle (USER DECISION).** A Part-21-level structural validator
+(units-consistency, AXIS2 orthonormality, external-ref resolution, duplicate/dangling entities, name/
+layer hygiene) would add a new discriminating dimension and unlock ~15-25 currently-invisible classes
+(the SASIG pure-structural core + the oracle-invisible half of the oracle-visible list). This is
+validation-INFRA scope → do NOT build unilaterally (feedback_scope_discipline); surface for maintainer.
+Until then, low-yield mining is paused; loop pivots to quality/trustworthiness of existing 3158 entries.
+
+### Structural-linter oracle — WORKING PROTOTYPE + decision brief (2026-07-06)
+De-risked the lever with a standalone ~90-line spike (session scratchpad:
+`structural_linter_spike.py`, NOT committed — awaiting go/no-go). It implements 2 checks with
+pure entity parsing (no kernel) and proves discrimination where shape_counts is blind:
+
+    case                   shape_counts        structural-linter
+    clean-solid            occt=shape(1)        clean
+    inconsistent-units     occt=shape(1) SAME   UNITS_INCONSISTENT (2 distinct length units)
+    non-orthonormal-axis   occt=shape(1) SAME   AXIS_NON_ORTHONORMAL (non-unit + non-perpendicular)
+
+**Integration sketch (est. cost, for the go/no-go):**
+- Add a `structural` oracle to validate2 alongside occt/gmsh/ifc: input bytes → list[lint-code].
+  New Expected-line token, e.g. `struct=UNITS_INCONSISTENT` (or `struct=ok`). ~1 day.
+- Check family v1 (each = a new distinguishable class → a new fixture sub-section):
+  units-consistency, AXIS2 orthonormality, external-ref resolution, duplicate/coincident entities,
+  dangling refs, blank required names, layer/style hygiene. ~7-10 checks.
+- Unlocks the ~15-25 currently-INVISIBLE SASIG structural classes + the invisible half of the
+  oracle-visible list. This is the only identified vein that reopens meaningful growth.
+- Risk: it's a NON-kernel oracle (asserts on spec/structural validity, not OCCT reaction) — a small
+  philosophical shift from "what does the kernel do" to "what's malformed". Worth a maintainer nod
+  before building. Negative controls (clean inputs → struct=ok) guard against false positives.
+
+**DECISION NEEDED (Zellyn):** build the structural-linter oracle (reopens growth, ~2-3 days infra +
+fixtures) or hold the corpus at ~3158 as a geometry/topology/mesh-complete artifact? Prototype proves
+feasibility; the shift to a non-kernel oracle is the only judgment call.
