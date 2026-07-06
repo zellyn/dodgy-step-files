@@ -1,0 +1,134 @@
+{
+  "vertices": [
+    [
+      0.0,
+      0.0,
+      50.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5000000000000001,
+      0.8660254037844386,
+      0.0
+    ],
+    [
+      -0.49999999999999983,
+      0.8660254037844387,
+      0.0
+    ],
+    [
+      -1.0,
+      1.2246467991473532e-16,
+      0.0
+    ],
+    [
+      -0.5000000000000004,
+      -0.8660254037844384,
+      0.0
+    ],
+    [
+      0.49999999999999933,
+      -0.866025403784439,
+      0.0
+    ]
+  ],
+  "triangles": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      2,
+      3
+    ],
+    [
+      0,
+      3,
+      4
+    ],
+    [
+      0,
+      4,
+      5
+    ],
+    [
+      0,
+      5,
+      6
+    ],
+    [
+      0,
+      6,
+      1
+    ]
+  ],
+  "metadata": {
+    "id": "Me1184",
+    "schema_version": 0,
+    "defect_class": "spike_vertex",
+    "title": "out-of-plane spike vertex: one interior vertex of a flat patch displaced far off-surface, fanning extreme-aspect needle triangles with no self-intersection (outlier vertex)",
+    "assertions": [
+      {
+        "kind": "triangle_aspect_ratio_gt",
+        "triangle": 0,
+        "gt": 30.0
+      },
+      {
+        "kind": "triangle_aspect_ratio_gt",
+        "triangle": 1,
+        "gt": 30.0
+      },
+      {
+        "kind": "triangle_aspect_ratio_gt",
+        "triangle": 2,
+        "gt": 30.0
+      },
+      {
+        "kind": "triangle_aspect_ratio_gt",
+        "triangle": 3,
+        "gt": 30.0
+      },
+      {
+        "kind": "triangle_aspect_ratio_gt",
+        "triangle": 4,
+        "gt": 30.0
+      },
+      {
+        "kind": "triangle_aspect_ratio_gt",
+        "triangle": 5,
+        "gt": 30.0
+      },
+      {
+        "kind": "triangles_do_not_intersect",
+        "triangles": [
+          0,
+          3
+        ]
+      },
+      {
+        "kind": "triangles_do_not_intersect",
+        "triangles": [
+          0,
+          2
+        ]
+      },
+      {
+        "kind": "hole_boundary",
+        "loop": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      }
+    ]
+  }
+}

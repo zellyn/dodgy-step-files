@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1>§12.14 Mesh defects (CGAL PMP / MeshFix patterns)</h1>
 <p class="blurb">Mesh-level defect fixtures (.mesh.json): non-manifold edges/vertices, zero-area triangles, near-coincident vertices, hole boundaries, normal-flip patterns, T-junctions, and other defects from the MeshFix + CGAL Polygon Mesh Processing repair surfaces.</p>
-<p class="meta">760 entries</p>
+<p class="meta">762 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
@@ -239,6 +239,8 @@
 <tr><td><a href="Me1180.html"><code>Me1180</code></a></td><td>triangulate_hole.main threshold_override: explicit threshold_distance named parameter overrides bbox-computed default; hexagonal hole (Branch 4)</td><td><code>bytes-sufficient</code></td><td><code></code></td></tr>
 <tr><td><a href="Me1181.html"><code>Me1181</code></a></td><td>triangulate_hole.main algorithm_fallback_strategy: non-planar hole triggers DT3 fallback; delegation to internal with use_dt3/use_cdt flags (Branch 5)</td><td><code>bytes-sufficient</code></td><td><code></code></td></tr>
 <tr><td><a href="Me1182.html"><code>Me1182</code></a></td><td>triangulate_hole.main geometry_traits_deduction: GetGeomTraits deduces traits from point type; triangular hole; default traits path (Branch 6)</td><td><code>bytes-sufficient</code></td><td><code></code></td></tr>
+<tr><td><a href="Me1183.html"><code>Me1183</code></a></td><td>polygon-soup box corner: three coincident-but-distinct copies of the shared corner vertex leave un-welded seam cracks (multi-vertex seam)</td><td><code>bytes-sufficient</code></td><td><code></code></td></tr>
+<tr><td><a href="Me1184.html"><code>Me1184</code></a></td><td>out-of-plane spike vertex: one interior vertex of a flat patch displaced far off-surface, fanning extreme-aspect needle triangles with no self-intersection (outlier vertex)</td><td><code>bytes-sufficient</code></td><td><code></code></td></tr>
 <tr><td><a href="Me119.html"><code>Me119</code></a></td><td>intersects_proper_mode_endpoint_touch: T-junction vertex on edge — improper contact</td><td><code>bytes-sufficient</code></td><td><code></code></td></tr>
 <tr><td><a href="Me120.html"><code>Me120</code></a></td><td>inverse_collapse_right_triangle_e2: ta1 exists on right side of split edge e2</td><td><code>bytes-sufficient</code></td><td><code></code></td></tr>
 <tr><td><a href="Me121.html"><code>Me121</code></a></td><td>inverse_collapse_left_triangle_e3: ta4 exists on left side of split edge e3</td><td><code>bytes-sufficient</code></td><td><code></code></td></tr>
