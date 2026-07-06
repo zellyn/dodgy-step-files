@@ -1,0 +1,15 @@
+# Me1184: out-of-plane spike vertex: one interior vertex of a flat patch displaced far off-surface, fanning extreme-aspect needle triangles with no self-intersection (outlier vertex)
+# defect_class: spike_vertex
+v 0 0 50
+v 1 0 0
+v 0.5 0.866025403784 0
+v -0.5 0.866025403784 0
+v -1 1.22464679915e-16 0
+v -0.5 -0.866025403784 0
+v 0.5 -0.866025403784 0
+f 1 2 3
+f 1 3 4
+f 1 4 5
+f 1 5 6
+f 1 6 7
+f 1 7 2

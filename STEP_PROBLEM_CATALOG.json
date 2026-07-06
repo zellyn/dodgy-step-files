@@ -33722,6 +33722,72 @@
     "title": "triangulate_hole.main geometry_traits_deduction: GetGeomTraits deduces traits from point type; triangular hole; default traits path (Branch 6)"
   },
   {
+    "byte_assertions": [],
+    "category": "§12.14 mesh defects (sub-class: multi_vertex_seam_crack / polygon-soup-unwelded-corner)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A polygon soup of a box corner where three planar triangular patches (XY, YZ, XZ plane) join at the origin. Each patch was exported with its own separate vertex records, so the single geometric corner point (0,0,0) is stored as THREE distinct vertices (indices 0, 3, 6), and every shared boundary is represented twice — once per neighbouring patch. Because the indices differ, the half-edge structure never pairs the un-welded seams: each seam segment is incident on only one triangle, leaving three open cracks radiating from the corner. This is the >2-coincident-vertex generalization of the near-coincident-vertex pair (Me003, Me281): a single position occupied by more than two distinct vertices that a pairwise snap must collapse to one before the cracks can be stitched. Distinct from the two-patch B-rep analog Twi037 by the three-way corner multiplicity and the mesh oracle tier.",
+    "expected_kernel_behavior": "recognize the three-vertex coincident cluster at (0,0,0) (multiplicity > 2) and merge all three copies into a single vertex; detect and stitch the un-welded seam segment pairs; result is a watertight three-patch corner with each seam segment incident on two triangles.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "mesh-examples/12-14-mesh/Me1183.mesh.json",
+    "id": "Me1183",
+    "notes": "",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "patch XY = (0,0,0),(1,0,0),(0,1,0); patch YZ = (0,0,0),(0,1,0),(0,0,1); patch XZ = (0,0,0),(0,0,1),(1,0,0); one corner triangle per patch, un-welded; corner copies 0,3,6 all at (0,0,0); +x seam segments (0,1)≡(6,8); +z seam segments (3,5)≡(6,7).",
+    "section": "12.14",
+    "section_dir": "12-14-mesh",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "CGAL PMP `merge_duplicate_points_in_polygon_soup` / `Polygon_mesh_processing::stitch_borders`",
+      "naive STL/OBJ per-triangle vertex duplication",
+      "`MESH_HEAL_COVERAGE.md`."
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "polygon-soup box corner: three coincident-but-distinct copies of the shared corner vertex leave un-welded seam cracks (multi-vertex seam)"
+  },
+  {
+    "byte_assertions": [],
+    "category": "§12.14 mesh defects (sub-class: spike_vertex / outlier-noise-vertex)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A flat hexagonal patch is fanned from its centre vertex, but the centre vertex — which should lie in the z=0 plane with its six rim neighbours — is displaced to z=50, a single gross geometric outlier (spike / noise vertex) of the kind produced by a bad scan sample or a units/typo error on one coordinate. The six fan triangles each become a tall thin needle (longest edge ~50, base ~1, aspect ratio ~50 vs ~1.7 for the clean flat fan). The spike protrudes OUTWARD into empty space, so — unlike a displaced apex that dips through a facing patch (Me018, Me1112, which self-INTERSECT) — none of the needle triangles cross each other. The mesh remains a valid manifold fan; the defect is purely that one vertex is nowhere near where the surface should be.",
+    "expected_kernel_behavior": "recognize the outlier via a dihedral / aspect-ratio / distance-to-fitted-plane heuristic and either smooth the spike vertex back toward the patch plane or flag it; do not treat the needle-sliver fan as valid surface signal.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "mesh-examples/12-14-mesh/Me1184.mesh.json",
+    "id": "Me1184",
+    "notes": "",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "rim r0..r5 on a unit hexagon at z=0; apex at (0,0,50); six needle triangles (apex, r_i, r_{i+1}); rim loop [r0..r5] is the open fan boundary; every fan triangle aspect ratio ~50; opposite/non-adjacent needles do not intersect.",
+    "section": "12.14",
+    "section_dir": "12-14-mesh",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "19-datasets.md (Thingi10K scan-noise outlier vertices)",
+      "CGAL PMP `remove_almost_degenerate_faces` / vertex smoothing",
+      "`MESH_HEAL_COVERAGE.md`."
+    ],
+    "taxonomy": [
+      "units"
+    ],
+    "tier3_assertions": [],
+    "title": "out-of-plane spike vertex: one interior vertex of a flat patch displaced far off-surface, fanning extreme-aspect needle triangles with no self-intersection (outlier vertex)"
+  },
+  {
     "byte_assertions": [
       "bytes_starts_with(b'\\xef\\xbb\\xbf')",
       "matches(rb'\\xef\\xbb\\xbf')"
