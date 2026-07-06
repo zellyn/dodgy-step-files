@@ -25,7 +25,7 @@ import sys
 import traceback
 from pathlib import Path
 
-ORACLES = ["ifcopenshell", "occt_heal_on", "occt_heal_off", "gmsh_autofix_on", "gmsh_autofix_off", "part21_strict", "manifold", "ocaf", "solvespace", "brlcad"]
+ORACLES = ["ifcopenshell", "occt_heal_on", "occt_heal_off", "gmsh_autofix_on", "gmsh_autofix_off", "part21_strict", "manifold", "ocaf", "solvespace", "brlcad", "structural"]
 
 
 def byte_signature(path: Path) -> dict:
@@ -284,6 +284,17 @@ def derive_summary(per_oracle: dict) -> dict:
         s["brlcad"] = "not_installed"
     else:
         s["brlcad"] = st
+
+    # Structural linter (non-kernel): the most-salient STEP structural defect
+    # code, or "ok". Kept OUT of the legacy occt/gmsh/ifc spec triple so the
+    # DRIFT line stays byte-stable for every existing fixture; consumed via the
+    # separate `structural` summary key + per-entry Structural assertions.
+    d = per_oracle.get("structural", {})
+    st = d.get("status", "unknown")
+    if st == "ok_scan":
+        s["structural"] = d.get("code", "ok")
+    else:
+        s["structural"] = st
 
     return s
 

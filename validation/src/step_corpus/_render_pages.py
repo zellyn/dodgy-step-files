@@ -260,7 +260,8 @@ def _render_oracle_table(summary: dict | None) -> str:
     rows = ['<table class="oracle"><thead><tr>'
             "<th>Oracle</th><th>Verdict</th></tr></thead><tbody>"]
     for k in ("occt_heal_on", "occt_heal_off", "gmsh_autofix_on",
-              "gmsh_autofix_off", "ifcopenshell", "part21_strict", "manifold"):
+              "gmsh_autofix_off", "ifcopenshell", "part21_strict", "manifold",
+              "structural"):
         v = summary.get(k, "?")
         rows.append(f"<tr><td><code>{_h(k)}</code></td>"
                     f"<td><code>{_h(v)}</code></td></tr>")

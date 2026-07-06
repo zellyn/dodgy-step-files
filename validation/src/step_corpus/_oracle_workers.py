@@ -376,6 +376,18 @@ def oracle_brlcad(path: str) -> None:
         _emit({"status": "exception", "error": str(e)[:400]})
 
 
+def oracle_structural(path: str) -> None:
+    """Non-kernel STEP structural linter (units-consistency, degenerate axes,
+    dangling refs, duplicate ids). Asserts on spec conformance / model integrity
+    — a dimension the geometry kernels are blind to. See _structural_oracle.
+    """
+    try:
+        from step_corpus._structural_oracle import lint_file
+        _emit({"status": "ok_scan", "code": lint_file(path)})
+    except Exception as e:
+        _emit({"status": "exception", "error": str(e)[:400]})
+
+
 ORACLES = {
     "ifcopenshell": oracle_ifcopenshell,
     "occt_heal_on": lambda p: oracle_occt(p, healing=True),
@@ -387,6 +399,7 @@ ORACLES = {
     "ocaf": oracle_ocaf,
     "solvespace": oracle_solvespace,
     "brlcad": oracle_brlcad,
+    "structural": oracle_structural,
 }
 
 

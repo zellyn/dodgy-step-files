@@ -120,6 +120,18 @@ def test_step_control_occt_heal_off(stp: Path) -> None:
 
 
 @pytest.mark.parametrize("stp", _STEP_PATHS, ids=_STEP_IDS)
+def test_step_control_structural(stp: Path) -> None:
+    """The structural linter must return "ok" on every clean control — a
+    linter that flags valid input is worse than useless (false-positive guard)."""
+    from step_corpus._structural_oracle import lint_file
+    code = lint_file(stp)
+    assert code == "ok", (
+        f"{stp.name}: structural linter returned {code!r} on a CLEAN control — "
+        f"false positive. The structural oracle must not flag valid input."
+    )
+
+
+@pytest.mark.parametrize("stp", _STEP_PATHS, ids=_STEP_IDS)
 def test_step_control_part21_strict(stp: Path) -> None:
     """part21_strict must accept all clean STEP controls."""
     from step_corpus.validate2 import validate

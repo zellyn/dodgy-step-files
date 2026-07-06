@@ -28,6 +28,7 @@
         "taxonomy",
         "byte_assertions",
         "tier3_assertions",
+        "structural_assertions",
         "see_also",
         "occ_behavior_note",
         "cross_oracle_note",
@@ -175,6 +176,11 @@
         },
         "tier3_assertions": {
           "description": "Tier-3 OCCT/runtime assertions.",
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "structural_assertions": {
+          "description": "Structural-linter assertions (e.g. `struct == UNITS_INCONSISTENT`), verified by the non-kernel _structural_oracle independent of any geometry kernel.",
           "type": "array",
           "items": { "type": "string", "minLength": 1 }
         },

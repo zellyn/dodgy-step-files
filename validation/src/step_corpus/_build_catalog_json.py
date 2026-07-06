@@ -349,6 +349,13 @@ _RE_TIER3_ASSERTION = re.compile(
 _RE_BYTE_ASSERTION = re.compile(
     r"^- \*\*Byte assertion\*\*:\s*(.+?)\s*$", re.MULTILINE,
 )
+# Structural-oracle assertion, e.g. `struct == UNITS_INCONSISTENT`. Verified by
+# the non-kernel structural linter (_structural_oracle) independent of any
+# geometry kernel — used by structural-defect fixtures whose defect is invisible
+# to occt/gmsh shape-counts.
+_RE_STRUCTURAL_ASSERTION = re.compile(
+    r"^- \*\*Structural assertion\*\*:\s*(.+?)\s*$", re.MULTILINE,
+)
 # P0/P1/P2/P3 severity line lives directly under `**OCC behavior**:`.
 _RE_SEVERITY = re.compile(
     r"^- \*\*Severity\*\*:\s*(P[0-3])\s*$", re.MULTILINE,
@@ -426,6 +433,7 @@ def build_entry(entry_id: str, title: str, fields: dict[str, str], block_text: s
     occ_behavior_note = _extract_inline_note(notes_raw, _RE_OCC_BEHAVIOR)
     tier3_assertions = _extract_assertions(block_text, _RE_TIER3_ASSERTION)
     byte_assertions = _extract_assertions(block_text, _RE_BYTE_ASSERTION)
+    structural_assertions = _extract_assertions(block_text, _RE_STRUCTURAL_ASSERTION)
     severity_match = _RE_SEVERITY.search(block_text)
     severity = severity_match.group(1) if severity_match else None
     closure_match = _RE_CLOSURE_INTENT.search(block_text)
@@ -491,6 +499,7 @@ def build_entry(entry_id: str, title: str, fields: dict[str, str], block_text: s
         "provenance_tier": provenance_tier,
         "tier3_assertions": tier3_assertions,
         "byte_assertions": byte_assertions,
+        "structural_assertions": structural_assertions,
         "cross_oracle_note": cross_oracle_note,
         "occ_behavior_note": occ_behavior_note,
         "severity": severity,
