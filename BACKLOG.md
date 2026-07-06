@@ -728,3 +728,14 @@ isolated wireframe, unresolved external ref, empty assembly/rep, inconsistent un
 **fold into existing §12.5/12.6/12.8 rather than a new section**. ~8-10 PURE-STRUCTURAL (duplicate/
 embedded/dangling geometry, blank names, invalid layers) → NO kernel oracle reacts → these are the
 concrete motivation for the future **structural-linter oracle** lever (defer until that exists).
+
+## Wave-12 harvest finding (2026-07-06): geometry veins MATURE → pivot to SASIG oracle-visible
+Shipped: Gp173 (repair, strong) + Twi281 (VERTEX_LOOP outer bound on flat plane — distinct but
+borderline). But the harvest shows the GEOMETRY repair veins are mature at the oracle-active-fixture
+level: OCCT ShapeHealing tail pre-screen → 0 strong (3 dups, 2 silent-heal); openNURBS flag-consistency
+batch → 1 borderline fixture. Each geometry pass yields ~0-1 novel oracle-active fixtures.
+**PIVOT: next batches = SASIG oracle-visible non-geometric** (new problem TYPES, distinguishable OCCT
+reactions, fold into existing §12.5/12.6/12.8 — no new section): tessellation-without-BREP,
+isolated-wireframe, empty-assembly/rep, inconsistent-units-in-one-rep, non-orthonormal-AXIS2,
+unresolved-external-ref. Then mesh 4 (existing oracles). Pure-structural PDQ (dup geom/blank-names/
+layers) still awaits the structural-linter oracle lever.
