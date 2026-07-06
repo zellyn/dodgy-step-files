@@ -815,3 +815,24 @@ rebaseline. **MAINTAINER DECISION** (71-fixture regen + rebaseline) — do not d
 parse ALL DATA sections + resolve Ed.3 `@section#id` (only 8 multi-DATA files; sole residual FP Lh033),
 and keep the `*)`-typo-comment-terminator heuristic scoped to inside comment scans. Full results:
 scratchpad final.json / ranked_C.txt.
+
+## Boilerplate fix DONE (2026-07-06) + re-validation Signal-A finding
+Fixed 57 of the 71 concerning assembly-boilerplate fixtures (#9003->#9053, #9004->#9054, #9010->#9060):
+verified 0 genuine dangling refs remain, structural oracle now `ok`. The fix is ORACLE-INVISIBLE
+(occt/gmsh output byte-identical → 0 DRIFT, demonstration preserved) — OCC nulls the missing parent
+ref and yields the same stub either way. Branch `fix-assembly-boilerplate-dangling`. **15 DEFERRED**
+(non-uniform scaffold, need individual handling): A110, A112, Ad042 (define #9000 as wrong-TYPE),
+P011, Pf035/038/039, Wr056/057/062, Xp004/020/029/036/044.
+
+## Re-validation sweep (2026-07-06) — "fixtures that don't demonstrate their claim"
+Read-only two-signal sweep (oracle-invisibility via reachability + mutation; claim/content mismatch).
+NEW SYSTEMIC CLASS found: **geometry defects on entities UNREACHABLE from the shape-representation
+root** — the carrier (bspline/pcurve/surface_curve/surface) is present in bytes but not linked into
+any face/shell reachable from SHAPE_REPRESENTATION, so OCC builds a trivial GEOMETRIC_CURVE_SET stub
+(shape(1)) and the claimed defect NEVER FIRES. **5 mutation-CONFIRMED** (moving the defect param
+changes no oracle output): P014, Gn002, Gn007, Gn008, P022. ~41 more orphan-carrier need review; 135
+fixtures have NO byte/structural/tier3 assertion at all (pinning-hygiene gap). CAVEAT: the sweep agent
+OVER-FLAGS — Pmi075 was falsely flagged ("no kinematic entities") but actually HAS 3 KINEMATIC
+entities and demonstrates its claim; Signal-B (claim/content) is unreliable. So the list is a strong
+LEAD requiring per-item verification (structural-grep + mutation) before any fix (feedback_audit_pattern).
+Full data: scratchpad SUSPECT_REPORT.md / reach.py / combined_orphan.json.
