@@ -41,7 +41,7 @@ origin = f.cartesian_point((0.0, 0.0, 0.0))   # #1
 gcs = f._emit_raw(f"GEOMETRIC_CURVE_SET('',(#{origin.eid}))")  # #2
 
 # All attack payloads are emitted BEFORE add_product_chain so that their
-# references to well-known product-chain IDs (#9001, #9003) are forward refs.
+# references to well-known product-chain IDs (#9054, #9003) are forward refs.
 
 # Attack payload 1 (Q078/a): CARTESIAN_POINT with only 2 coords (arity mismatch).
 f._emit_raw("CARTESIAN_POINT('arity_mismatch',(1.0,2.0))")     # #3
@@ -50,9 +50,9 @@ f._emit_raw("CARTESIAN_POINT('arity_mismatch',(1.0,2.0))")     # #3
 f._emit_raw("CARTESIAN_POINT('overflow_coord',(1.0E+999,0.0,0.0))")  # #4
 
 # Attack payload 3 (Q078/c): PRODUCT_DEFINITION used as a wrong-type location.
-# add_product_chain emits the PRODUCT_DEFINITION at #9001; we forward-ref it.
+# add_product_chain emits the PRODUCT_DEFINITION at #9054; we forward-ref it.
 f._emit_raw(
-    "AXIS2_PLACEMENT_3D('type_confused_loc',#9001,$,$)"         # #5
+    "AXIS2_PLACEMENT_3D('type_confused_loc',#9054,$,$)"         # #5
 )
 
 # Attack payload 4 (Q078/d): CARTESIAN_POINT used where DIRECTION is required.
@@ -70,6 +70,6 @@ f._emit_raw(
     f"LINE('type_confused_line',#{origin.eid},#{bad_vec.eid})"  # #8
 )
 
-# Canonical PRODUCT chain (IDs 9000+); the PRODUCT_DEFINITION at #9001 is
+# Canonical PRODUCT chain (IDs 9000+); the PRODUCT_DEFINITION at #9054 is
 # referenced by the AXIS2_PLACEMENT_3D above as a type-confusion forward ref.
 f.add_product_chain(gcs)

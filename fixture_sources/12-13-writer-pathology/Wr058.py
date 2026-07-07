@@ -39,4 +39,4 @@ f.add_product_chain(sbsm)
 
 # Umlaut payload in PRODUCT.name — writer-side crash on emit.
 # The bytes that crash are TCollection_ExtendedString conversion.
-f._emit_raw("PROPERTY_DEFINITION('umlaut_label','Schl\u00fcssel','',#9001)")
+f._emit_raw("PROPERTY_DEFINITION('umlaut_label','Schl\u00fcssel','',#9054)")

@@ -38,4 +38,4 @@ sbsm = f.shell_based_surface_model([shell])
 f.add_product_chain(sbsm)
 
 # Naming-pattern: PRODUCT.name set to '#NNN' instead of a real label.
-f._emit_raw("PRODUCT('#9001','step-id-as-name','',(#9001))")
+f._emit_raw("PRODUCT('#9050','step-id-as-name','',(#9050))")

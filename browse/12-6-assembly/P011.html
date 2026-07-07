@@ -85,10 +85,10 @@
 <span class="lineno">30</span>#9068=DATUM(&#x27;A&#x27;,&#x27;&#x27;,#9067,$);
 <span class="lineno">31</span>#9069=DATUM_REFERENCE(&#x27;A_ref&#x27;,1.0,#9068);
 <span class="lineno">32</span>#9070=DATUM_REFERENCE_MODIFIER_WITH_VALUE(.MAXIMUM_MATERIAL_REQUIREMENT.,#9069);
-<span class="lineno">33</span>#9071=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#9009);
+<span class="lineno">33</span>#9071=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#9056);
 <span class="lineno">34</span>#9072=TOLERANCE_ZONE_FORM(&#x27;cylindrical&#x27;);
 <span class="lineno">35</span>#9073=TOLERANCE_ZONE_DEFINITION(#9072,$);
-<span class="lineno">36</span>#9074=<mark>GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE</mark>(&#x27;pos_tol&#x27;,&#x27;&#x27;,LENGTH_MEASURE(0.05),#9009,#9066,$,(#9069));
+<span class="lineno">36</span>#9074=<mark>GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE</mark>(&#x27;pos_tol&#x27;,&#x27;&#x27;,LENGTH_MEASURE(0.05),#9056,#9066,$,(#9069));
 <span class="lineno">37</span>#9075=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
 <span class="lineno">38</span>#9076=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
 <span class="lineno">39</span>#9077=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
@@ -99,8 +99,8 @@
 <span class="lineno">44</span>#9082=PRODUCT_CONTEXT(&#x27;sub&#x27;,#9000,&#x27;mechanical&#x27;);
 <span class="lineno">45</span>#9083=PRODUCT(&#x27;PMIAssembly&#x27;,&#x27;PMIAssembly&#x27;,&#x27;&#x27;,(#9082));
 <span class="lineno">46</span>#9084=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9083);
-<span class="lineno">47</span>#9085=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#9084,#9003);
-<span class="lineno">48</span>#9086=NEXT_ASSEMBLY_USAGE_OCCURRENCE(&#x27;1&#x27;,&#x27;pmi_assy_instance&#x27;,&#x27;&#x27;,#9004,#9085,$);
+<span class="lineno">47</span>#9085=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#9084,#9053);
+<span class="lineno">48</span>#9086=NEXT_ASSEMBLY_USAGE_OCCURRENCE(&#x27;1&#x27;,&#x27;pmi_assy_instance&#x27;,&#x27;&#x27;,#9054,#9085,$);
 <span class="lineno">49</span>ENDSEC;
 <span class="lineno">50</span>END-ISO-10303-21;
 </pre>

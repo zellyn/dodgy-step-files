@@ -39,6 +39,6 @@ f.add_product_chain(sbsm)
 
 # Two MAPPED_ITEMs sharing one REPRESENTATION_MAP — the writer aliased
 # them on emit (one mutation propagates). Catalog claim: dedup aliasing.
-rmap = f._emit_raw(f"REPRESENTATION_MAP(#{plc.eid},#9005)")
+rmap = f._emit_raw(f"REPRESENTATION_MAP(#{plc.eid},#9061)")
 f._emit_raw(f"MAPPED_ITEM('alias_a','',#{rmap.eid})")
 f._emit_raw(f"MAPPED_ITEM('alias_b','',#{rmap.eid})")

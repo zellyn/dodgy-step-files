@@ -66,7 +66,7 @@ datum_ref_modifier = f._emit_raw(
 # ── GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE: e.g., position tolerance ────────
 # Tolerance zone definition.
 tol_value = f._emit_raw(
-    "LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#9009)"
+    "LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#9056)"
 )
 tol_zone_form = f._emit_raw(
     "TOLERANCE_ZONE_FORM('cylindrical')"
@@ -77,7 +77,7 @@ tol_zone_def = f._emit_raw(
 # GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE — key byte assertion entity.
 geom_tol = f._emit_raw(
     f"GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE("
-    f"'pos_tol','',LENGTH_MEASURE(0.05),#9009,"
+    f"'pos_tol','',LENGTH_MEASURE(0.05),#9056,"
     f"#{datum_plc.eid},$,"
     f"(#{datum_ref.eid}))"
 )
@@ -107,9 +107,9 @@ sub_prod = f._emit_raw(
 )
 sub_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{sub_prod.eid})")
 sub_pdef = f._emit_raw(
-    f"PRODUCT_DEFINITION('design','',#{sub_pdf.eid},#9003)"
+    f"PRODUCT_DEFINITION('design','',#{sub_pdf.eid},#9053)"
 )
 f._emit_raw(
     f"NEXT_ASSEMBLY_USAGE_OCCURRENCE("
-    f"'1','pmi_assy_instance','',#9004,#{sub_pdef.eid},$)"
+    f"'1','pmi_assy_instance','',#9054,#{sub_pdef.eid},$)"
 )

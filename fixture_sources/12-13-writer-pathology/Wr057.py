@@ -40,4 +40,4 @@ f.add_product_chain(sbsm)
 # Mimic the s390x regression: SHAPE_REPRESENTATION exists but its
 # items list is empty (writer didn't realize the surfaces).
 f._emit_raw("/* s390x writer regression: 'no surfaces to export' (silent empty) */")
-f._emit_raw("SHAPE_REPRESENTATION('s390x_empty',(),#9005)")
+f._emit_raw("SHAPE_REPRESENTATION('s390x_empty',(),#9060)")

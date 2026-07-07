@@ -50,5 +50,5 @@ f.add_product_chain(sbsm)
 # trigger. Both can coexist in the file.
 f._emit_raw(
     f"MANIFOLD_SURFACE_SHAPE_REPRESENTATION('component1_1|dipole1',"
-    f"(#{sbsm.eid}),#9010)"
+    f"(#{sbsm.eid}),#9060)"
 )

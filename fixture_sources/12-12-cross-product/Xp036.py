@@ -35,4 +35,4 @@ f.add_product_chain(sbsm)
 
 # MDGPR + STYLED_ITEM — bare reader skips MDGPR styles
 styled = f._emit_raw(f"STYLED_ITEM('coloured',(),#{face.eid})")
-f._emit_raw("MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION('mdgpr',(),#9005)")
+f._emit_raw("MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION('mdgpr',(),#9060)")

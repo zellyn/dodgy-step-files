@@ -40,4 +40,4 @@ f.add_product_chain(sbsm)
 # Marker for the gateway-loss class: a STEP body that originally carried
 # COLOUR_RGB + NEXT_ASSEMBLY_USAGE_OCCURRENCE chain has both stripped.
 f._emit_raw("/* gateway round-trip: COLOUR_RGB and NAUO hierarchy stripped */")
-f._emit_raw("PROPERTY_DEFINITION('gateway_loss','color and assembly hierarchy lost','',#9001)")
+f._emit_raw("PROPERTY_DEFINITION('gateway_loss','color and assembly hierarchy lost','',#9054)")

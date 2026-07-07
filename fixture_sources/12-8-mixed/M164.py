@@ -47,7 +47,7 @@ f.add_product_chain(sbsm)
 
 # Now build a REPRESENTATION_MAP off the base shell and instantiate 4 MAPPED_ITEMs.
 rep_map = f._emit_raw(
-    f"REPRESENTATION_MAP(#{plc.eid},#9022)"   # the MSSR from add_product_chain
+    f"REPRESENTATION_MAP(#{plc.eid},#9061)"   # the MSSR from add_product_chain
 )
 # Three normal MAPPED_ITEMs at +X, +Y, -X — with axis (0,0,1).
 for k, offset in enumerate([(2.0, 0.0, 0.0), (4.0, 0.0, 0.0), (6.0, 0.0, 0.0)]):

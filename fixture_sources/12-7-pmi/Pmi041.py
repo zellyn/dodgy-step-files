@@ -43,7 +43,7 @@ f.add_product_chain(sbsm)
 
 # SHAPE_ASPECT for the hole feature.
 shape_aspect = f._emit_raw(
-    f"SHAPE_ASPECT('hole_feature','',#9005,.T.)"
+    f"SHAPE_ASPECT('hole_feature','',#9055,.T.)"
 )
 # DIMENSIONAL_LOCATION (curved_distance) — wrong type, should be DIMENSIONAL_SIZE.
 f._emit_raw(

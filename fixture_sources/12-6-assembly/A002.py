@@ -45,9 +45,9 @@ sub_pdc = f._emit_raw("PRODUCT_CONTEXT('sub',#9000,'mechanical')")
 # Visible sub-component (NAUO 1).
 vis_prod = f._emit_raw(f"PRODUCT('Visible','Visible','',(#{sub_pdc.eid}))")
 vis_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{vis_prod.eid})")
-vis_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{vis_pdf.eid},#9003)")
+vis_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{vis_pdf.eid},#9053)")
 f._emit_raw(
-    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','visible_body','',#9004,#{vis_pdef.eid},$)"
+    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','visible_body','',#9054,#{vis_pdef.eid},$)"
 )
 
 # Hidden sub-component — body was suppressed so NO SDR is emitted (NAUO 2
@@ -55,9 +55,9 @@ f._emit_raw(
 hid_prod = f._emit_raw(f"PRODUCT('HIDDEN_Body','HIDDEN_Body','',(#{sub_pdc.eid}))")
 hid_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{hid_prod.eid})")
 hid_pdef = f._emit_raw(
-    f"PRODUCT_DEFINITION('design','HIDDEN',#{hid_pdf.eid},#9003)"
+    f"PRODUCT_DEFINITION('design','HIDDEN',#{hid_pdf.eid},#9053)"
 )
 # No SHAPE_DEFINITION_REPRESENTATION for the hidden body — the dropped-body defect.
 f._emit_raw(
-    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','hidden_body','',#9004,#{hid_pdef.eid},$)"
+    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','hidden_body','',#9054,#{hid_pdef.eid},$)"
 )

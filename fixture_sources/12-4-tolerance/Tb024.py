@@ -38,7 +38,7 @@ sbsm = f.shell_based_surface_model([shell])
 f.add_product_chain(sbsm)
 
 # Label-aspect pattern: SHAPE_ASPECT whose location reference target is wrong.
-sa = f._emit_raw(f"SHAPE_ASPECT('label_aspect','wrong-location',#9005,.T.)")
+sa = f._emit_raw(f"SHAPE_ASPECT('label_aspect','wrong-location',#9055,.T.)")
 f._emit_raw(
-    f"GEOMETRIC_ITEM_SPECIFIC_USAGE('label_loss','',#{sa.eid},#9005,#9999)"
+    f"GEOMETRIC_ITEM_SPECIFIC_USAGE('label_loss','',#{sa.eid},#9055,#9999)"
 )

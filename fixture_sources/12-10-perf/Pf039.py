@@ -40,6 +40,6 @@ f.add_product_chain(sbsm)
 # Self-referencing NAUO loop — cascadio's traversal doesn't detect cycles.
 f._emit_raw(
     "NEXT_ASSEMBLY_USAGE_OCCURRENCE('self_loop','infinite traversal',"
-    "'',#9001,#9001,$)"
+    "'',#9054,#9054,$)"
 )
 f._emit_raw("/* cascadio assembly traversal: no cycle detection */")

@@ -47,9 +47,9 @@ p1_prod = f._emit_raw(
     r"PRODUCT('\X2\03B1\X0\','\X2\03B1\X0\','',(#" + str(sub_pdc.eid) + r"))"
 )
 p1_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{p1_prod.eid})")
-p1_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{p1_pdf.eid},#9003)")
+p1_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{p1_pdf.eid},#9053)")
 f._emit_raw(
-    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','unicode_name','',#9004,#{p1_pdef.eid},$)"
+    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','unicode_name','',#9054,#{p1_pdef.eid},$)"
 )
 
 # 2. Doubled apostrophe: O'Brien → 'O''Brien'.
@@ -57,9 +57,9 @@ p2_prod = f._emit_raw(
     "PRODUCT('O''Brien','O''Brien','',(#" + str(sub_pdc.eid) + "))"
 )
 p2_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{p2_prod.eid})")
-p2_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{p2_pdf.eid},#9003)")
+p2_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{p2_pdf.eid},#9053)")
 f._emit_raw(
-    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','apostrophe_name','',#9004,#{p2_pdef.eid},$)"
+    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','apostrophe_name','',#9054,#{p2_pdef.eid},$)"
 )
 
 # 3. Backslash Windows path.
@@ -67,9 +67,9 @@ p3_prod = f._emit_raw(
     "PRODUCT('C:\\\\path\\\\file','C:\\\\path\\\\file','',(#" + str(sub_pdc.eid) + "))"
 )
 p3_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{p3_prod.eid})")
-p3_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{p3_pdf.eid},#9003)")
+p3_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{p3_pdf.eid},#9053)")
 f._emit_raw(
-    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('3','backslash_name','',#9004,#{p3_pdef.eid},$)"
+    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('3','backslash_name','',#9054,#{p3_pdef.eid},$)"
 )
 
 # 4. Single space placeholder.
@@ -77,7 +77,7 @@ p4_prod = f._emit_raw(
     "PRODUCT(' ',' ','',(#" + str(sub_pdc.eid) + "))"
 )
 p4_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{p4_prod.eid})")
-p4_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{p4_pdf.eid},#9003)")
+p4_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{p4_pdf.eid},#9053)")
 f._emit_raw(
-    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('4','space_name','',#9004,#{p4_pdef.eid},$)"
+    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('4','space_name','',#9054,#{p4_pdef.eid},$)"
 )

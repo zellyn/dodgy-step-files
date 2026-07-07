@@ -48,7 +48,7 @@ f.add_product_chain(sbsm)
 # Surface-condition annotations on each face.
 for label, face in faces:
     aspect = f._emit_raw(
-        f"SHAPE_ASPECT('{label}_aspect','{label} status flag',#9005,.T.)"
+        f"SHAPE_ASPECT('{label}_aspect','{label} status flag',#9055,.T.)"
     )
     f._emit_raw(
         f"PROPERTY_DEFINITION('{label}_status','surface condition: {label}',"
@@ -58,4 +58,4 @@ for label, face in faces:
 # Add a PMI annotation entity so the §12.7 category-lint check passes.
 # The construction-status claim involves PMI metadata; codify it via
 # DATUM_FEATURE referencing the cosmetic face.
-f._emit_raw("DATUM_FEATURE('cosmetic_datum','cosmetic surface', '',#9005)")
+f._emit_raw("DATUM_FEATURE('cosmetic_datum','cosmetic surface', '',#9055)")

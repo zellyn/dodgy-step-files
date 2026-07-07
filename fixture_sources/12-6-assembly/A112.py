@@ -41,5 +41,5 @@ f.add_product_chain(sbsm)
 # by NAUO.id collapse them to one instance.
 for k in range(3):
     f._emit_raw(
-        f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('C1','same name {k}','',#9001,#9001,$)"
+        f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('C1','same name {k}','',#9054,#9054,$)"
     )

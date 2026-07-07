@@ -59,6 +59,6 @@ DATA;
 #9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#38),#9060);
 #9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 #9063=/* gateway round-trip: COLOUR_RGB and NAUO hierarchy stripped */;
-#9064=PROPERTY_DEFINITION('gateway_loss','color and assembly hierarchy lost','',#9001);
+#9064=PROPERTY_DEFINITION('gateway_loss','color and assembly hierarchy lost','',#9054);
 ENDSEC;
 END-ISO-10303-21;

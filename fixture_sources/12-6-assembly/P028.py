@@ -49,7 +49,7 @@ root_prod = f._emit_raw(
 )
 root_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{root_prod.eid})")
 root_pdef = f._emit_raw(
-    f"PRODUCT_DEFINITION('design','',#{root_pdf.eid},#9003)"
+    f"PRODUCT_DEFINITION('design','',#{root_pdf.eid},#9053)"
 )
 
 # ── The defect: non-shape labels with null-shape entries interspersed in the
@@ -63,7 +63,7 @@ joints_prod = f._emit_raw(
 )
 joints_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{joints_prod.eid})")
 joints_pdef = f._emit_raw(
-    f"PRODUCT_DEFINITION('design','',#{joints_pdf.eid},#9003)"
+    f"PRODUCT_DEFINITION('design','',#{joints_pdf.eid},#9053)"
 )
 # NAUO links Joints null-label directly under root — defect: shape is null.
 # Byte assertion: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE').
@@ -78,7 +78,7 @@ vars_prod = f._emit_raw(
 )
 vars_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{vars_prod.eid})")
 vars_pdef = f._emit_raw(
-    f"PRODUCT_DEFINITION('design','',#{vars_pdf.eid},#9003)"
+    f"PRODUCT_DEFINITION('design','',#{vars_pdf.eid},#9053)"
 )
 f._emit_raw(
     f"NEXT_ASSEMBLY_USAGE_OCCURRENCE("
@@ -91,7 +91,7 @@ cstr_prod = f._emit_raw(
 )
 cstr_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{cstr_prod.eid})")
 cstr_pdef = f._emit_raw(
-    f"PRODUCT_DEFINITION('design','',#{cstr_pdf.eid},#9003)"
+    f"PRODUCT_DEFINITION('design','',#{cstr_pdf.eid},#9053)"
 )
 f._emit_raw(
     f"NEXT_ASSEMBLY_USAGE_OCCURRENCE("
@@ -104,7 +104,7 @@ cfg_prod = f._emit_raw(
 )
 cfg_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{cfg_prod.eid})")
 cfg_pdef = f._emit_raw(
-    f"PRODUCT_DEFINITION('design','',#{cfg_pdf.eid},#9003)"
+    f"PRODUCT_DEFINITION('design','',#{cfg_pdf.eid},#9053)"
 )
 f._emit_raw(
     f"NEXT_ASSEMBLY_USAGE_OCCURRENCE("

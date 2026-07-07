@@ -75,7 +75,7 @@ deg_pcurve_line = f._emit_raw(
     f"LINE('deg_pcurve_line',#{deg_pcurve_pt.eid},#{deg_pcurve_vec.eid})"
 )
 deg_def_rep = f._emit_raw(
-    f"DEFINITIONAL_REPRESENTATION('',(#{deg_pcurve_line.eid}),#9010)"
+    f"DEFINITIONAL_REPRESENTATION('',(#{deg_pcurve_line.eid}),#9060)"
 )
 # PCURVE binding the degenerate 2D line to the BSpline surface.
 # Byte assertion: contains(b'PCURVE').
@@ -102,9 +102,9 @@ sub_prod = f._emit_raw(
 )
 sub_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{sub_prod.eid})")
 sub_pdef = f._emit_raw(
-    f"PRODUCT_DEFINITION('design','',#{sub_pdf.eid},#9003)"
+    f"PRODUCT_DEFINITION('design','',#{sub_pdf.eid},#9053)"
 )
 f._emit_raw(
     f"NEXT_ASSEMBLY_USAGE_OCCURRENCE("
-    f"'1','bool_history_face_instance','',#9004,#{sub_pdef.eid},$)"
+    f"'1','bool_history_face_instance','',#9054,#{sub_pdef.eid},$)"
 )

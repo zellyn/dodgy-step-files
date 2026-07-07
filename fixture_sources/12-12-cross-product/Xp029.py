@@ -35,4 +35,4 @@ f.add_product_chain(sbsm)
 
 # Cylindrical thread surface + SHAPE_ASPECT for the thread feature
 cyl = f._emit_raw(f"CYLINDRICAL_SURFACE('thread_cyl',#{plc.eid},5.0)")
-f._emit_raw(f"SHAPE_ASPECT('thread_M6','dropped cosmetic thread',#9005,.T.)")
+f._emit_raw(f"SHAPE_ASPECT('thread_M6','dropped cosmetic thread',#9055,.T.)")

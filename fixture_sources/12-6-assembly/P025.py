@@ -51,7 +51,7 @@ root_prod = f._emit_raw(
 )
 root_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{root_prod.eid})")
 root_pdef = f._emit_raw(
-    f"PRODUCT_DEFINITION('design','',#{root_pdf.eid},#9003)"
+    f"PRODUCT_DEFINITION('design','',#{root_pdf.eid},#9053)"
 )
 
 # ── The defect: two body products whose names are last-operation labels. ───────
@@ -61,10 +61,10 @@ body1_prod = f._emit_raw(
 )
 body1_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{body1_prod.eid})")
 body1_pdef = f._emit_raw(
-    f"PRODUCT_DEFINITION('design','',#{body1_pdf.eid},#9003)"
+    f"PRODUCT_DEFINITION('design','',#{body1_pdf.eid},#9053)"
 )
 body1_sr = f._emit_raw(
-    f"SHAPE_REPRESENTATION('body1_rep',(#{asm_plc.eid}),#9010)"
+    f"SHAPE_REPRESENTATION('body1_rep',(#{asm_plc.eid}),#9060)"
 )
 body1_rm = f._emit_raw(f"REPRESENTATION_MAP(#{asm_plc.eid},#{body1_sr.eid})")
 body1_inst_orig = f._emit_raw("CARTESIAN_POINT('body1_inst_orig',(0.0,0.0,0.0))")
@@ -88,10 +88,10 @@ body2_prod = f._emit_raw(
 )
 body2_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{body2_prod.eid})")
 body2_pdef = f._emit_raw(
-    f"PRODUCT_DEFINITION('design','',#{body2_pdf.eid},#9003)"
+    f"PRODUCT_DEFINITION('design','',#{body2_pdf.eid},#9053)"
 )
 body2_sr = f._emit_raw(
-    f"SHAPE_REPRESENTATION('body2_rep',(#{asm_plc.eid}),#9010)"
+    f"SHAPE_REPRESENTATION('body2_rep',(#{asm_plc.eid}),#9060)"
 )
 body2_rm = f._emit_raw(f"REPRESENTATION_MAP(#{asm_plc.eid},#{body2_sr.eid})")
 body2_inst_orig = f._emit_raw("CARTESIAN_POINT('body2_inst_orig',(10.0,0.0,0.0))")

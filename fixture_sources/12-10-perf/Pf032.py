@@ -31,8 +31,8 @@ f.add_product_chain(gcs)
 
 # Build the deep assembly chain via NEXT_ASSEMBLY_USAGE_OCCURRENCE.
 # 3 levels x 2 children per level.
-# After add_product_chain, the root PRODUCT_DEFINITION is at eid 9004.
-root_pdef_eid = 9004
+# After add_product_chain, the root PRODUCT_DEFINITION is at eid 9054.
+root_pdef_eid = 9054
 
 def make_child_pdef(name: str) -> int:
     """Create PRODUCT + PDF + PDEF chain and return the PDEF eid."""

@@ -42,12 +42,12 @@ f.add_product_chain(sbsm)
 # Defect 1: geometric_tolerance references shape_aspect via forward reference #998
 # (shape_aspect defined later in the file)
 id_sa = f._next_id + 10  # intentional forward reference
-geom_tol = f._emit_raw(f"FLATNESS_TOLERANCE('flatness',#{id_sa},$,#9005)")
+geom_tol = f._emit_raw(f"FLATNESS_TOLERANCE('flatness',#{id_sa},$,#9055)")
 
 # Define shape_aspect after the tolerance (forward reference fulfilled late)
 from step_corpus.step_builder import Entity
 sa = Entity(id_sa, "__RAW__", [])
-sa._raw_body = f"SHAPE_ASPECT('pmi_face','',#9005,.T.)"
+sa._raw_body = f"SHAPE_ASPECT('pmi_face','',#9055,.T.)"
 f.entities.append(sa)
 f._next_id = max(f._next_id, id_sa + 1)
 

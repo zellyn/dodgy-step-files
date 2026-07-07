@@ -42,7 +42,7 @@ sbsm = f.shell_based_surface_model([shell])
 f.add_product_chain(sbsm)
 
 # DIMENSIONAL_SIZE — the dimension the round-trip drops.
-shape_aspect = f._emit_raw(f"SHAPE_ASPECT('dimension_target','',#9005,.T.)")
+shape_aspect = f._emit_raw(f"SHAPE_ASPECT('dimension_target','',#9055,.T.)")
 f._emit_raw(
     f"DIMENSIONAL_SIZE(#{shape_aspect.eid},'linear_distance','25.4 mm')"
 )

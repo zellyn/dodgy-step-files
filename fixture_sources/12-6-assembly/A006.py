@@ -44,17 +44,17 @@ sub_pdc = f._emit_raw("PRODUCT_CONTEXT('sub',#9000,'mechanical')")
 # Sub-component A (NAUO 1) — no SRR to carry its transform.
 prod_a = f._emit_raw(f"PRODUCT('PartA','PartA','',(#{sub_pdc.eid}))")
 pdf_a = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{prod_a.eid})")
-pdef_a = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{pdf_a.eid},#9003)")
+pdef_a = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{pdf_a.eid},#9053)")
 f._emit_raw(
-    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','comp_a','',#9004,#{pdef_a.eid},$)"
+    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','comp_a','',#9054,#{pdef_a.eid},$)"
 )
 
 # Sub-component B (NAUO 2) — no SRR to carry its transform.
 prod_b = f._emit_raw(f"PRODUCT('PartB','PartB','',(#{sub_pdc.eid}))")
 pdf_b = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{prod_b.eid})")
-pdef_b = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{pdf_b.eid},#9003)")
+pdef_b = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{pdf_b.eid},#9053)")
 f._emit_raw(
-    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','comp_b','',#9004,#{pdef_b.eid},$)"
+    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','comp_b','',#9054,#{pdef_b.eid},$)"
 )
 # NOTE: No SHAPE_REPRESENTATION_RELATIONSHIP emitted anywhere — that is the defect.
 # Both components will collapse to (0,0,0) on import.

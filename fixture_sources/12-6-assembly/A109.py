@@ -41,5 +41,5 @@ f.add_product_chain(sbsm)
 # producing a duplicated/orphan node in the assembly tree.
 f._emit_raw(
     "NEXT_ASSEMBLY_USAGE_OCCURRENCE('wrong_parent','tree corruption',"
-    "'',#9001,#9999,$)"
+    "'',#9054,#9999,$)"
 )

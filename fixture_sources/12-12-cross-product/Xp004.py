@@ -48,7 +48,7 @@ tess_face = f._emit_raw(f"TRIANGULATED_FACE('tess_face',#{coords_list.eid},(),()
 
 # Defect 2: PMI dimensional_size referencing BRep face via shape_aspect
 # shape_aspect → face; geometric_item_specific_usage links it
-shape_asp = f._emit_raw(f"SHAPE_ASPECT('diameter_aspect','',#9005,.T.)")
+shape_asp = f._emit_raw(f"SHAPE_ASPECT('diameter_aspect','',#9055,.T.)")
 dim_size = f._emit_raw(f"DIMENSIONAL_SIZE(#{shape_asp.eid},'diameter')")
 gisu = f._emit_raw(f"GEOMETRIC_ITEM_SPECIFIC_USAGE(#{shape_asp.eid},#{face.eid})")
 
