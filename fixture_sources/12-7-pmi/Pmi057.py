@@ -47,12 +47,15 @@ f.add_product_chain(sbsm)
 
 # Toleranced shape aspect on face 0.
 shape_aspect = f._emit_raw(
-    f"SHAPE_ASPECT('toleranced_aspect','',#9005,.T.)"
+    f"SHAPE_ASPECT('toleranced_aspect','',#9055,.T.)"
 )
 # Semantic GEOMETRIC_TOLERANCE (perpendicularity).
+tol_mag = f._emit_raw(
+    f"LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#9056)"
+)
 f._emit_raw(
     f"PERPENDICULARITY_TOLERANCE('perpendicularity',"
-    f"'0.05 mm perpendicularity',#9009,#{shape_aspect.eid})"
+    f"'0.05 mm perpendicularity',#{tol_mag.eid},#{shape_aspect.eid})"
 )
 # Graphical presentation that drifts off the part on round-trip.
 f._emit_raw(

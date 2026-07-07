@@ -52,5 +52,6 @@ sbsm = f._emit_raw(f"SHELL_BASED_SURFACE_MODEL('sbsm',(#{shell.eid}))")
 f.add_product_chain(sbsm)
 
 # Add PMI: catalog narrative is GD&T on the sliver face.
-f._emit_raw("DATUM_FEATURE('sliver_datum','sliver face datum','',#9005)")
-f._emit_raw("GEOMETRIC_TOLERANCE('gt_sliver','0.05 mm flatness on sliver',#9009,#9005)")
+datum_feat = f._emit_raw("DATUM_FEATURE('sliver_datum','sliver face datum','',#9055)")
+tol_mag = f._emit_raw("LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#9056)")
+f._emit_raw(f"GEOMETRIC_TOLERANCE('gt_sliver','0.05 mm flatness on sliver',#{tol_mag.eid},#{datum_feat.eid})")

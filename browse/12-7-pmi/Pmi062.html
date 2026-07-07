@@ -91,11 +91,12 @@
 <span class="lineno">40</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
 <span class="lineno">41</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#20),#9060);
 <span class="lineno">42</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
-<span class="lineno">43</span>#9063=SHAPE_ASPECT(&#x27;hole_feature&#x27;,&#x27;&#x27;,#9005,.T.);
+<span class="lineno">43</span>#9063=SHAPE_ASPECT(&#x27;hole_feature&#x27;,&#x27;&#x27;,#9055,.T.);
 <span class="lineno">44</span>#9064=DIMENSIONAL_SIZE(#9063,&#x27;diameter&#x27;,&#x27;10.0 mm&#x27;);
-<span class="lineno">45</span>#9065=GEOMETRIC_TOLERANCE(&#x27;position_tol&#x27;,&#x27;0.05 mm position&#x27;,#9009,#9063);
-<span class="lineno">46</span>ENDSEC;
-<span class="lineno">47</span>END-ISO-10303-21;
+<span class="lineno">45</span>#9065=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#9056);
+<span class="lineno">46</span>#9066=GEOMETRIC_TOLERANCE(&#x27;position_tol&#x27;,&#x27;0.05 mm position&#x27;,#9065,#9063);
+<span class="lineno">47</span>ENDSEC;
+<span class="lineno">48</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>
