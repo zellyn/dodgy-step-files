@@ -32,7 +32,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept via a top-level driver that walks the shape hierarchy, dispatches to per-shape fixers, and either converges or rejects with a fixed-point failure listing the offending sub-shape.</p></section>
 <section><h2>Notes</h2>
-<p>Umbrella over all sub-shape Perform() methods. Synonyms: &quot;multi-defect shape needs pipeline convergence&quot;, &quot;fix order changes end state&quot;, &quot;shape orchestrator must converge not loop&quot;, &quot;compound with mixed defects healing&quot;.</p></section>
+<p>Umbrella over all sub-shape Perform() methods. **OCC behavior**: oracle-invisible (shape_counts) — occt=empty/empty gmsh=empty. The multi-defect GEOMETRIC_SET is orphaned (not reachable from the shape-representation root), so OCC yields empty regardless of the sub-defects. oracle-invisible (shape_counts): the defect is byte-verifiable but the healing-pipeline behavior the fixture describes is API/runtime-level, not exercised by the load-time oracles. Synonyms: &quot;multi-defect shape needs pipeline convergence&quot;, &quot;fix order changes end state&quot;, &quot;shape orchestrator must converge not loop&quot;, &quot;compound with mixed defects healing&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Closure intent</h2>

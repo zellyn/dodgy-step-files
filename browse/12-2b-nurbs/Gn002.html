@@ -16,6 +16,7 @@
 <p class="category">§12.2b NURBS/knots</p>
 <p class="tag-pills">
 <a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 <a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
 </p>
 </header>
@@ -34,7 +35,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal; pad weights with 1.0 / truncate to match pole count; warn. Do not crash. Writers must always emit len(weights) == len(poles).</p></section>
 <section><h2>Notes</h2>
-<p>Validation observed: silent-empty (the malformed complex-instance entity is dropped at parse without a diagnostic) rather than the cited heal-or-crash. Specific reader-contract code path returns a quiet false at fixture scale; the kernel-mishandling-by-silent-acceptance still demonstrates the defect class. **See also**: Ad059. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;rational B-spline weights count doesn&#x27;t match poles&quot;, &quot;weights array length differs from control points&quot;, &quot;NbWeights ≠ NbControlPoints&quot;, &quot;NURBS curve weight vector wrong length&quot;, &quot;rational BSpline missing weight or has extra weight&quot;.</p></section>
+<p>Validation observed: silent-empty (the malformed complex-instance entity is dropped at parse without a diagnostic) rather than the cited heal-or-crash. Specific reader-contract code path returns a quiet false at fixture scale; the kernel-mishandling-by-silent-acceptance still demonstrates the defect class. **See also**: Ad059. **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1) gmsh=shape(1). The mismatched-weights RATIONAL_B_SPLINE is byte-present but sits in an unreferenced GEOMETRIC_CURVE_SET, so OCC/gmsh build a 1-vertex stub and silently accept with NO distinguishing signal vs a clean file. oracle-invisible (shape_counts): the defect is byte-verifiable but not demonstrable by the load-time shape-count oracles. Synonyms: &quot;rational B-spline weights count doesn&#x27;t match poles&quot;, &quot;weights array length differs from control points&quot;, &quot;NbWeights ≠ NbControlPoints&quot;, &quot;NURBS curve weight vector wrong length&quot;, &quot;rational BSpline missing weight or has extra weight&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
