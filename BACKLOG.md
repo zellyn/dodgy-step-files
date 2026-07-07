@@ -847,3 +847,19 @@ CLEARED 64 (incl. the sweep's over-flags Pmi075 + M008 — M008 IS reachable, gm
 (P027, P017, Pf003/007/014 — perf/structural claims not oracle-demonstrable). Verified data: scratchpad
 VERIFICATION_RESULT.txt / final_verdicts.json. FIX = wire each defect into an EDGE_CURVE/ADVANCED_FACE
 reachable from the rep root (per feedback_wire_mechanism), then accept-live-oracle — awaiting maintainer go.
+
+## Re-validation COMPLETE (2026-07-06) — 135-unpinned audit + final tally
+Audited the 135 non-mesh NO_PINNING fixtures (897 total NO_PINNING but 762 are mesh, validated by the
+mesh oracle). Result: **133 DEMONSTRATE_BUT_UNPINNED** (baseline occt=signal(11) crash ×133 or empty ×2,
+zero false-clean shape(N); all match Expected exactly; reaction already pinned by Expected+DRIFT — gap is
+only a missing byte/mechanism assertion, a hardening nicety). **2 SUSPECT (Hea001, Hea011)** — orphaned
+GEOMETRIC_SET carriers like the confirmed-5 but return `empty` (documented value) → lower confidence; fix =
+reclassify bytes-sufficient→runtime-only. Data: scratchpad NO_PINNING_AUDIT.md.
+
+**FINAL RE-VALIDATION TALLY (corpus is honest — ~0.3% problematic):**
+- NOT-DEMONSTRATING, high-confidence (5): Gn002, Gn007, Gn008, P014, P022 — oracle-invisible quality/spec
+  defects; wiring proven insufficient; fix = reclassify OR geometry-quality oracle (MAINTAINER DECISION).
+- NOT-DEMONSTRATING, lower-confidence (2): Hea001, Hea011 — reclassify to runtime-only.
+- UNDER-ASSERTED but fine (133): optional hygiene — add a mechanism byte-assertion each; NOT a demo failure.
+- Everything else verified demonstrating. Coverage: reachability+mutation across all ~2400 STEP fixtures,
+  double-verified, over-flags rejected (Pmi075/M008 cleared).
