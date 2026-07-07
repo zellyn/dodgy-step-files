@@ -105,7 +105,7 @@ def _render_m157() -> str:
     lines.append("#60=LAMINATE_OR_PLY_DEFINITION('solder_mask_top','Top solder mask green LPI',$);")
     lines.append("/* Byte assertion: contains(b'PLY_BOUNDARY_REPRESENTATION') */")
     lines.append("/* DEFECT: PLY_BOUNDARY_REPRESENTATION covers (0,0) to (5,5) — PAD_U1_1 at (2.5,2.5) */")
-    lines.append("/* The pad is inside this polygon; no clearance cutout was subtracted *)");
+    lines.append("/* The pad is inside this polygon; no clearance cutout was subtracted */");
     lines.append("#70=PLY_BOUNDARY_REPRESENTATION('solder_mask_top_outline',#60,")
     lines.append("  (CARTESIAN_POINT('corner_0',(0.0,0.0,0.0)),")
     lines.append("   CARTESIAN_POINT('corner_1',(5.0,0.0,0.0)),")

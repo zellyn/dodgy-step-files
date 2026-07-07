@@ -34,13 +34,13 @@ DATA;
 /* A legacy PDM exporter that switched from CC2 to CC1 header but forgot to strip entities */
 #20=MECHANICAL_CONTEXT('MECH',#1,'mechanical');
 /* Byte assertion: contains(b'DESIGN_CONTEXT') */
-/* DEFECT: DESIGN_CONTEXT is a CC2-only entity; not present in CC1 schema *)   
+/* DEFECT: DESIGN_CONTEXT is a CC2-only entity; not present in CC1 schema */   
 /* CC1 equivalent is PRODUCT_DEFINITION_CONTEXT with lifecycle_stage='design' */
 #21=DESIGN_CONTEXT('DESIGN',#1,'design');
 /* Product using the CC2-only context entities in a CC1-declared file */
 #30=PRODUCT('PART-099','Valve Body','Main flow control body',(#20));
 #31=PRODUCT_DEFINITION_FORMATION('rev_A','Production release',#30);
-/* PRODUCT_DEFINITION references DESIGN_CONTEXT (#21) — another CC2-only type *)  
+/* PRODUCT_DEFINITION references DESIGN_CONTEXT (#21) — another CC2-only type */  
 #32=PRODUCT_DEFINITION('design','',#31,#21);
 /* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
 #500=GEOMETRIC_CURVE_SET('ap203-cc1-schema-with-cc2-only-entities',

@@ -58,7 +58,7 @@
 <span class="lineno">3</span>/* DEFECT: electronics sub-of mechanical_assembly sub-of electronics */
 <span class="lineno">4</span>/* Two PRODUCT_CATEGORY_RELATIONSHIP entries form cycle: A-&gt;B-&gt;A */
 <span class="lineno">5</span>/* Category tree walkers loop indefinitely; PDM tools hang or stack-overflow */
-<span class="lineno">6</span>/* Per ISO 10303-44 PRODUCT_CATEGORY_RELATIONSHIP graph must be acyclic *)  
+<span class="lineno">6</span>/* Per ISO 10303-44 PRODUCT_CATEGORY_RELATIONSHIP graph must be acyclic */  
 <span class="lineno">7</span>/* Byte assertion: contains(b&#x27;<mark>CONFIG_CONTROL_DESIGN</mark>&#x27;) */
 <span class="lineno">8</span>/* Byte assertion: count_entity_def(b&#x27;PRODUCT_CATEGORY_RELATIONSHIP&#x27;) &gt;= 2 */
 <span class="lineno">9</span>/* Byte assertion: count_entity_def(b&#x27;PRODUCT_CATEGORY&#x27;) &gt;= 2 */
@@ -83,7 +83,7 @@
 <span class="lineno">28</span>  GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
 <span class="lineno">29</span>  REPRESENTATION_CONTEXT(&#x27;ctx&#x27;,&#x27;3D&#x27;));
 <span class="lineno">30</span>/* Byte assertion: count_entity_def(b&#x27;PRODUCT_CATEGORY&#x27;) &gt;= 2 */
-<span class="lineno">31</span>/* First category node: &#x27;electronics&#x27; â typically a leaf or mid-level category *)  
+<span class="lineno">31</span>/* First category node: &#x27;electronics&#x27; â typically a leaf or mid-level category */  
 <span class="lineno">32</span><mark>#20=PRODUCT_CATEGORY(</mark>&#x27;electronics&#x27;,&#x27;Electronic components and sub-assemblies&#x27;);
 <span class="lineno">33</span>/* Second category node: &#x27;mechanical_assembly&#x27; â normally a parent category */
 <span class="lineno">34</span><mark>#21=PRODUCT_CATEGORY(</mark>&#x27;mechanical_assembly&#x27;,&#x27;Mechanical assembly components&#x27;);
@@ -93,9 +93,9 @@
 <span class="lineno">38</span><mark>#30=PRODUCT_CATEGORY_RELATIONSHIP(</mark>&#x27;elec-sub-mech&#x27;,
 <span class="lineno">39</span>  &#x27;electronics is sub-category of mechanical_assembly&#x27;,#20,#21);
 <span class="lineno">40</span>/* DEFECT leg 2: &#x27;mechanical_assembly&#x27; declared as sub-category of &#x27;electronics&#x27; */
-<span class="lineno">41</span>/* This makes mechanical_assembly appear as a specialization of electronics *)   
+<span class="lineno">41</span>/* This makes mechanical_assembly appear as a specialization of electronics */   
 <span class="lineno">42</span>/* Together #30 and #31 form the cycle: electronics-&gt;mechanical_assembly-&gt;electronics */
-<span class="lineno">43</span>/* Walking parent links from either node never reaches a root â infinite loop *)  
+<span class="lineno">43</span>/* Walking parent links from either node never reaches a root â infinite loop */  
 <span class="lineno">44</span><mark>#31=PRODUCT_CATEGORY_RELATIONSHIP(</mark>&#x27;mech-sub-elec&#x27;,
 <span class="lineno">45</span>  &#x27;mechanical_assembly is sub-category of electronics&#x27;,#21,#20);
 <span class="lineno">46</span>/* Part assigned to the &#x27;electronics&#x27; category â triggers the cycle on class lookup */
@@ -103,7 +103,7 @@
 <span class="lineno">48</span>#36=PRODUCT_DEFINITION_FORMATION(&#x27;rev_B&#x27;,&#x27;Rev B sensor board&#x27;,#35);
 <span class="lineno">49</span>#37=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#36,PRODUCT_DEFINITION_CONTEXT(#1,&#x27;design&#x27;));
 <span class="lineno">50</span>/* Classification assignment binds #37 to category &#x27;electronics&#x27; (#20) */
-<span class="lineno">51</span>/* A BOM exploder walking the hierarchy from #20 enters the A-&gt;B-&gt;A cycle *)  
+<span class="lineno">51</span>/* A BOM exploder walking the hierarchy from #20 enters the A-&gt;B-&gt;A cycle */  
 <span class="lineno">52</span>#40=APPLIED_CLASSIFICATION_ASSIGNMENT(#20,CLASSIFICATION_ROLE(&#x27;classification&#x27;),(#37));
 <span class="lineno">53</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
 <span class="lineno">54</span>#500=GEOMETRIC_CURVE_SET(&#x27;ap203-product-category-relationship-cycle-A-B-A&#x27;,

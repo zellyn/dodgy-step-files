@@ -95,14 +95,14 @@
 <span class="lineno">40</span>/* Byte assertion: contains(b&#x27;<mark>PRODUCT_DEFINITION_RELATIONSHIP</mark>&#x27;) */
 <span class="lineno">41</span>/* Succession record: rev_B (#24) is derived from rev_A (#22) */
 <span class="lineno">42</span>/* This relationship formally marks #22 (rev_A) as superseded */
-<span class="lineno">43</span>/* Any change request that targets #22 is by definition stale *)  
+<span class="lineno">43</span>/* Any change request that targets #22 is by definition stale */  
 <span class="lineno">44</span>#30=<mark>PRODUCT_DEFINITION_RELATIONSHIP</mark>(&#x27;eco&#x27;,&#x27;derived_from&#x27;,#22,#24);
 <span class="lineno">45</span>/* ACTION representing the in-flight engineering change request ECO-2024-099 */
 <span class="lineno">46</span>#35=ACTION(&#x27;ECO-2024-099&#x27;,&#x27;Update sealing gasket specification&#x27;,$);
 <span class="lineno">47</span>#36=ACTION_METHOD(&#x27;change_request&#x27;,&#x27;Standard ECO review procedure&#x27;,$,&#x27;open&#x27;);
 <span class="lineno">48</span>/* Byte assertion: contains(b&#x27;<mark>APPLIED_ACTION_ASSIGNMENT</mark>&#x27;) */
 <span class="lineno">49</span>/* DEFECT: items=(#22) targets rev_A â the superseded PRODUCT_DEFINITION */
-<span class="lineno">50</span>/* The correct target is #24 (rev_B, the current baseline) *)   
+<span class="lineno">50</span>/* The correct target is #24 (rev_B, the current baseline) */   
 <span class="lineno">51</span>/* A PDM tool checking effective revision before routing ECO-2024-099 would */
 <span class="lineno">52</span>/* detect that #22 is no longer the head revision and reject or re-target */
 <span class="lineno">53</span>#40=<mark>APPLIED_ACTION_ASSIGNMENT</mark>(#35,(#22),ACTION_REQUEST_SOLUTION(#36,#35));

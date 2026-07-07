@@ -40,14 +40,14 @@ DATA;
 /* Byte assertion: contains(b'PRODUCT_DEFINITION_RELATIONSHIP') */
 /* Succession record: rev_B (#24) is derived from rev_A (#22) */
 /* This relationship formally marks #22 (rev_A) as superseded */
-/* Any change request that targets #22 is by definition stale *)  
+/* Any change request that targets #22 is by definition stale */  
 #30=PRODUCT_DEFINITION_RELATIONSHIP('eco','derived_from',#22,#24);
 /* ACTION representing the in-flight engineering change request ECO-2024-099 */
 #35=ACTION('ECO-2024-099','Update sealing gasket specification',$);
 #36=ACTION_METHOD('change_request','Standard ECO review procedure',$,'open');
 /* Byte assertion: contains(b'APPLIED_ACTION_ASSIGNMENT') */
 /* DEFECT: items=(#22) targets rev_A — the superseded PRODUCT_DEFINITION */
-/* The correct target is #24 (rev_B, the current baseline) *)   
+/* The correct target is #24 (rev_B, the current baseline) */   
 /* A PDM tool checking effective revision before routing ECO-2024-099 would */
 /* detect that #22 is no longer the head revision and reject or re-target */
 #40=APPLIED_ACTION_ASSIGNMENT(#35,(#22),ACTION_REQUEST_SOLUTION(#36,#35));
