@@ -46,7 +46,7 @@ sbsm = f.shell_based_surface_model([shell])
 
 # Build the normal product chain (this will become the CHILD product)
 f.add_product_chain(sbsm)
-# The product chain is now at IDs 9000+; #9003 = PRODUCT_DEFINITION for the child
+# The product chain is now at IDs 9000+; #9053 = PRODUCT_DEFINITION for the child
 
 # Now add a TOP-LEVEL PRODUCT_DEFINITION without any SHAPE_DEFINITION_REPRESENTATION
 # Defect: no SDR references top_prod_def
@@ -73,7 +73,7 @@ top_pds = f._emit_raw(
 
 # Link child to top via NEXT_ASSEMBLY_USAGE_OCCURRENCE
 nauo = f._emit_raw(
-    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('child_nauo','','',{top_prod_def.ref()},#9003,$)"
+    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('child_nauo','','',{top_prod_def.ref()},#9053,$)"
 )
 
 # NOTE: No SHAPE_DEFINITION_REPRESENTATION for top_prod_def

@@ -42,11 +42,11 @@ f.add_product_chain(sbsm)
 sub_pdc = f._emit_raw("PRODUCT_CONTEXT('ext_sub',#9000,'mechanical')")
 sub_prod = f._emit_raw(f"PRODUCT('BranchB','BranchB','',(#{sub_pdc.eid}))")
 sub_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{sub_prod.eid})")
-sub_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','empty_branch',#{sub_pdf.eid},#9003)")
+sub_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','empty_branch',#{sub_pdf.eid},#9053)")
 
 # NAUO linking root to empty branch.
 f._emit_raw(
-    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','empty_branch','',#9004,#{sub_pdef.eid},$)"
+    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','empty_branch','',#9054,#{sub_pdef.eid},$)"
 )
 
 # EXTERNALLY_DEFINED_ITEM: the multi-file reference that triggered the crash.

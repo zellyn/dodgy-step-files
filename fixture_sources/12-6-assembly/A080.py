@@ -46,18 +46,18 @@ branch_pdc = f._emit_raw(f"PRODUCT_CONTEXT('branch',#9000,'mechanical')")
 branch_prod = f._emit_raw(f"PRODUCT('Branch','Branch','',(#{branch_pdc.eid}))")
 branch_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{branch_prod.eid})")
 branch_pdef = f._emit_raw(
-    f"PRODUCT_DEFINITION('design','',#{branch_pdf.eid},#9003)"
+    f"PRODUCT_DEFINITION('design','',#{branch_pdf.eid},#9053)"
 )
 # Root → Branch NAUO.
 f._emit_raw(
     f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','RootBranch','',"
-    f"#9004,#{branch_pdef.eid},$)"
+    f"#9054,#{branch_pdef.eid},$)"
 )
 
 leaf_prod = f._emit_raw(f"PRODUCT('Leaf','Leaf','',(#{branch_pdc.eid}))")
 leaf_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{leaf_prod.eid})")
 leaf_pdef = f._emit_raw(
-    f"PRODUCT_DEFINITION('design','',#{leaf_pdf.eid},#9003)"
+    f"PRODUCT_DEFINITION('design','',#{leaf_pdf.eid},#9053)"
 )
 # Branch → Leaf NAUO.
 f._emit_raw(

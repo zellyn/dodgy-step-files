@@ -67,12 +67,12 @@ doc_file_stpx = f._emit_raw(
 )
 
 # DOCUMENT_REFERENCE links the external docs back to the product definition.
-# Uses #9004 (the product_definition from add_product_chain).
+# Uses #9054 (the product_definition from add_product_chain).
 doc_ref_stpz = f._emit_raw(
-    f"DOCUMENT_REFERENCE(#{doc_file_stpz.eid},#9004,'compressed_step_ref')"
+    f"DOCUMENT_REFERENCE(#{doc_file_stpz.eid},#9054,'compressed_step_ref')"
 )
 doc_ref_stpx = f._emit_raw(
-    f"DOCUMENT_REFERENCE(#{doc_file_stpx.eid},#9004,'xml_step_ref')"
+    f"DOCUMENT_REFERENCE(#{doc_file_stpx.eid},#9054,'xml_step_ref')"
 )
 
 # EXTERNALLY_DEFINED_ITEM: the item that lives in the external .stpz/.stpx.
@@ -90,9 +90,9 @@ sub_prod = f._emit_raw(
 )
 sub_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{sub_prod.eid})")
 sub_pdef = f._emit_raw(
-    f"PRODUCT_DEFINITION('design','',#{sub_pdf.eid},#9003)"
+    f"PRODUCT_DEFINITION('design','',#{sub_pdf.eid},#9053)"
 )
 f._emit_raw(
     f"NEXT_ASSEMBLY_USAGE_OCCURRENCE("
-    f"'1','step_variant_instance','',#9004,#{sub_pdef.eid},$)"
+    f"'1','step_variant_instance','',#9054,#{sub_pdef.eid},$)"
 )

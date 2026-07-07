@@ -48,17 +48,17 @@ shared_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{shared_prod.eid}
 
 # Shared representation (single shape rep for the leaf geometry).
 leaf_sr = f._emit_raw(
-    f"SHAPE_REPRESENTATION('leaf_rep',(#{plc.eid}),#9010)"
+    f"SHAPE_REPRESENTATION('leaf_rep',(#{plc.eid}),#9060)"
 )
 
 # 3 instances: each gets its own PRODUCT_DEFINITION + own NAUO + own
 # REPRESENTATION_MAP + own MAPPED_ITEM — but all share the same PDF (flatten trap).
 for i in range(1, 4):
     pdef_i = f._emit_raw(
-        f"PRODUCT_DEFINITION('design','',#{shared_pdf.eid},#9003)"
+        f"PRODUCT_DEFINITION('design','',#{shared_pdf.eid},#9053)"
     )
     f._emit_raw(
-        f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('{i}','leaf{i}','',#9004,#{pdef_i.eid},$)"
+        f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('{i}','leaf{i}','',#9054,#{pdef_i.eid},$)"
     )
     # Each instance gets its own REPRESENTATION_MAP and MAPPED_ITEM.
     rep_map_i = f._emit_raw(f"REPRESENTATION_MAP(#{plc.eid},#{leaf_sr.eid})")

@@ -41,13 +41,13 @@ f.add_product_chain(sbsm)
 # AP203 <=1998 legacy: SHAPE_ASPECT acts as the link node between PD and SDR.
 # The named 'legacy_link' and 'AP203 hybrid' pattern.
 legacy_aspect = f._emit_raw(
-    "SHAPE_ASPECT('legacy_link','AP203 hybrid SDR mediator',#9004,.T.)"
+    "SHAPE_ASPECT('legacy_link','AP203 hybrid SDR mediator',#9054,.T.)"
 )
 
 # In the legacy hybrid: the SDR references the SHAPE_ASPECT as its definition,
 # not the usual PRODUCT_DEFINITION_SHAPE.
 legacy_sr = f._emit_raw(
-    f"SHAPE_REPRESENTATION('legacy_rep',(#{plc.eid}),#9010)"
+    f"SHAPE_REPRESENTATION('legacy_rep',(#{plc.eid}),#9060)"
 )
 f._emit_raw(
     f"SHAPE_DEFINITION_REPRESENTATION(#{legacy_aspect.eid},#{legacy_sr.eid})"

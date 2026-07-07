@@ -51,10 +51,10 @@ prodA = f._emit_raw("PRODUCT('SubA','SubA','',())")
 prodB = f._emit_raw("PRODUCT('SubB','SubB','',())")
 
 nauo1 = f._emit_raw(
-    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('nauo_A','','',#9003,#{prodA.eid},$)"
+    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('nauo_A','','',#9053,#{prodA.eid},$)"
 )
 nauo2 = f._emit_raw(
-    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('nauo_B','','',#9003,#{prodB.eid},$)"
+    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('nauo_B','','',#9053,#{prodB.eid},$)"
 )
 
 f._emit_raw(

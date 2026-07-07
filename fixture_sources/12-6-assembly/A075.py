@@ -45,7 +45,7 @@ f.add_product_chain(sbsm)
 # add a MANIFOLD_SURFACE_SHAPE_REPRESENTATION referencing the same face,
 # which the defective reader would need to handle.
 mssr = f._emit_raw(
-    f"MANIFOLD_SURFACE_SHAPE_REPRESENTATION('mssr_defect',(#{face.eid}),#9010)"
+    f"MANIFOLD_SURFACE_SHAPE_REPRESENTATION('mssr_defect',(#{face.eid}),#9060)"
 )
 
 # STYLED_ITEM scaffolding so assembly-presence lint passes.

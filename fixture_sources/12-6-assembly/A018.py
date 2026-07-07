@@ -44,7 +44,7 @@ sbsm = f.shell_based_surface_model([shell])
 f.add_product_chain(sbsm)
 
 # REPRESENTATION_MAP off the base shape, 2 MAPPED_ITEM instances.
-rep_map = f._emit_raw(f"REPRESENTATION_MAP(#{plc.eid},#9022)")
+rep_map = f._emit_raw(f"REPRESENTATION_MAP(#{plc.eid},#9060)")
 for k, offset in enumerate([(2.0, 0.0, 0.0), (4.0, 0.0, 0.0)]):
     p_inst = f.cartesian_point(offset)
     plc_inst = f.axis2_placement_3d(p_inst, zdir, xdir)
@@ -52,7 +52,7 @@ for k, offset in enumerate([(2.0, 0.0, 0.0), (4.0, 0.0, 0.0)]):
         f"MAPPED_ITEM('instance_{k}',#{rep_map.eid},#{plc_inst.eid})"
     )
 
-# STYLED_ITEM attached to top-level SHAPE_REPRESENTATION (#9022) —
+# STYLED_ITEM attached to top-level SHAPE_REPRESENTATION (#9060) —
 # WRONG SCOPE: should be attached to each MAPPED_ITEM.
 colour = f._emit_raw("COLOUR_RGB('wrong_scope_red',0.8,0.0,0.0)")
 fasc = f._emit_raw(f"FILL_AREA_STYLE_COLOUR('',#{colour.eid})")
@@ -61,5 +61,5 @@ ssfa = f._emit_raw(f"SURFACE_STYLE_FILL_AREA(#{fas.eid})")
 sss = f._emit_raw(f"SURFACE_SIDE_STYLE('',(#{ssfa.eid}))")
 ssu = f._emit_raw(f"SURFACE_STYLE_USAGE(.BOTH.,#{sss.eid})")
 psa = f._emit_raw(f"PRESENTATION_STYLE_ASSIGNMENT((#{ssu.eid}))")
-# WRONG SCOPE: attaches to #9022 (the MSSR) instead of to each MAPPED_ITEM.
-f._emit_raw(f"STYLED_ITEM('wrong_scope',(#{psa.eid}),#9022)")
+# WRONG SCOPE: attaches to #9060 (the MSSR) instead of to each MAPPED_ITEM.
+f._emit_raw(f"STYLED_ITEM('wrong_scope',(#{psa.eid}),#9060)")

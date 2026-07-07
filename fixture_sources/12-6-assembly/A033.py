@@ -53,10 +53,10 @@ sub_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{sub_prod.eid})")
 # PRODUCT_DEFINITION_WITH_ASSOCIATED_DOCUMENTS instead of plain PD — the defect.
 pdwad = f._emit_raw(
     f"PRODUCT_DEFINITION_WITH_ASSOCIATED_DOCUMENTS('PLM_Part_XYZ','named product def',"
-    f"#{sub_pdf.eid},#9003,(#{doc.eid}))"
+    f"#{sub_pdf.eid},#9053,(#{doc.eid}))"
 )
 pds = f._emit_raw(f"PRODUCT_DEFINITION_SHAPE('','',#{pdwad.eid})")
-mssr = f._emit_raw(f"MANIFOLD_SURFACE_SHAPE_REPRESENTATION('pdwad_rep',(#{plc.eid}),#9010)")
+mssr = f._emit_raw(f"MANIFOLD_SURFACE_SHAPE_REPRESENTATION('pdwad_rep',(#{plc.eid}),#9060)")
 f._emit_raw(f"SHAPE_DEFINITION_REPRESENTATION(#{pds.eid},#{mssr.eid})")
 
 # External ID assignment for the document — the bytes that must appear.

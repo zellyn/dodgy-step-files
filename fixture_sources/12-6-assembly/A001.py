@@ -45,7 +45,7 @@ f.add_product_chain(sbsm)
 sub_pdc = f._emit_raw("PRODUCT_CONTEXT('sub',#9000,'mechanical')")
 sub_prod = f._emit_raw(f"PRODUCT('Sub','Sub','',(#{sub_pdc.eid}))")
 sub_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{sub_prod.eid})")
-sub_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{sub_pdf.eid},#9003)")
+sub_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{sub_pdf.eid},#9053)")
 
 # Shared AXIS2_PLACEMENT_3D — the defect: all 3 instances reuse this one.
 shared_origin = f._emit_raw("CARTESIAN_POINT('SHARED_PLACEMENT',(0.0,0.0,0.0))")
@@ -56,7 +56,7 @@ shared_plc = f._emit_raw(
 )
 
 # Sub-component representation referencing the shared placement.
-sub_sr = f._emit_raw(f"SHAPE_REPRESENTATION('sub_rep',(#{shared_plc.eid}),#9010)")
+sub_sr = f._emit_raw(f"SHAPE_REPRESENTATION('sub_rep',(#{shared_plc.eid}),#9060)")
 
 # Representation map (single) for the sub-component.
 rep_map = f._emit_raw(f"REPRESENTATION_MAP(#{shared_plc.eid},#{sub_sr.eid})")
@@ -64,7 +64,7 @@ rep_map = f._emit_raw(f"REPRESENTATION_MAP(#{shared_plc.eid},#{sub_sr.eid})")
 # 3 NAUO rows + 3 MAPPED_ITEMs all pointing at the same shared placement.
 for i in range(1, 4):
     nauo = f._emit_raw(
-        f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('{i}','inst{i}','',#9004,#{sub_pdef.eid},$)"
+        f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('{i}','inst{i}','',#9054,#{sub_pdef.eid},$)"
     )
     f._emit_raw(
         f"MAPPED_ITEM('mi{i}',#{rep_map.eid},#{shared_plc.eid})"

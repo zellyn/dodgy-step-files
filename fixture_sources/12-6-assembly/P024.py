@@ -58,7 +58,7 @@ root_prod = f._emit_raw(
 )
 root_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{root_prod.eid})")
 root_pdef = f._emit_raw(
-    f"PRODUCT_DEFINITION('design','',#{root_pdf.eid},#9003)"
+    f"PRODUCT_DEFINITION('design','',#{root_pdf.eid},#9053)"
 )
 
 # Leaf component 1 — should live inside a sub-assembly, but merge dropped that layer.
@@ -67,10 +67,10 @@ leaf1_prod = f._emit_raw(
 )
 leaf1_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{leaf1_prod.eid})")
 leaf1_pdef = f._emit_raw(
-    f"PRODUCT_DEFINITION('design','',#{leaf1_pdf.eid},#9003)"
+    f"PRODUCT_DEFINITION('design','',#{leaf1_pdf.eid},#9053)"
 )
 leaf1_sr = f._emit_raw(
-    f"SHAPE_REPRESENTATION('leaf1_rep',(#{asm_plc.eid}),#9010)"
+    f"SHAPE_REPRESENTATION('leaf1_rep',(#{asm_plc.eid}),#9060)"
 )
 leaf1_rm = f._emit_raw(f"REPRESENTATION_MAP(#{asm_plc.eid},#{leaf1_sr.eid})")
 leaf1_inst_orig = f._emit_raw("CARTESIAN_POINT('leaf1_inst_orig',(0.0,0.0,0.0))")
@@ -94,10 +94,10 @@ leaf2_prod = f._emit_raw(
 )
 leaf2_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{leaf2_prod.eid})")
 leaf2_pdef = f._emit_raw(
-    f"PRODUCT_DEFINITION('design','',#{leaf2_pdf.eid},#9003)"
+    f"PRODUCT_DEFINITION('design','',#{leaf2_pdf.eid},#9053)"
 )
 leaf2_sr = f._emit_raw(
-    f"SHAPE_REPRESENTATION('leaf2_rep',(#{asm_plc.eid}),#9010)"
+    f"SHAPE_REPRESENTATION('leaf2_rep',(#{asm_plc.eid}),#9060)"
 )
 leaf2_rm = f._emit_raw(f"REPRESENTATION_MAP(#{asm_plc.eid},#{leaf2_sr.eid})")
 leaf2_inst_orig = f._emit_raw("CARTESIAN_POINT('leaf2_inst_orig',(5.0,0.0,0.0))")

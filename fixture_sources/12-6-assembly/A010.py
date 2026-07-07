@@ -44,14 +44,14 @@ sub_pdc = f._emit_raw("PRODUCT_CONTEXT('sub',#9000,'mechanical')")
 # Shared leaf product — both instances reference the same PD.
 leaf_prod = f._emit_raw(f"PRODUCT('Leaf','Leaf','',(#{sub_pdc.eid}))")
 leaf_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{leaf_prod.eid})")
-leaf_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{leaf_pdf.eid},#9003)")
+leaf_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{leaf_pdf.eid},#9053)")
 
 # Two NAUOs with distinct instance names — names that must survive round-trip.
 f._emit_raw(
     f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('L','LEFT_LEAF_INSTANCE','',"
-    f"#9004,#{leaf_pdef.eid},$)"
+    f"#9054,#{leaf_pdef.eid},$)"
 )
 f._emit_raw(
     f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('R','RIGHT_LEAF_INSTANCE','',"
-    f"#9004,#{leaf_pdef.eid},$)"
+    f"#9054,#{leaf_pdef.eid},$)"
 )

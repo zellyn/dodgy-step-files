@@ -42,10 +42,10 @@ sbsm = f.shell_based_surface_model([shell])
 f.add_product_chain(sbsm)
 
 # Two GENERAL_PROPERTY entities — dropped by defective AP242 reader.
-gp_density = f._emit_raw("GENERAL_PROPERTY('density','7.85',#9004)")
-gp_material = f._emit_raw("GENERAL_PROPERTY('material','STEEL',#9004)")
+gp_density = f._emit_raw("GENERAL_PROPERTY('density','7.85',#9054)")
+gp_material = f._emit_raw("GENERAL_PROPERTY('material','STEEL',#9054)")
 
 # GENERAL_PROPERTY_ASSOCIATION links the properties to the product definition.
 gpa = f._emit_raw(
-    f"GENERAL_PROPERTY_ASSOCIATION('mat_props','',(#{gp_density.eid},#{gp_material.eid}),#9004)"
+    f"GENERAL_PROPERTY_ASSOCIATION('mat_props','',(#{gp_density.eid},#{gp_material.eid}),#9054)"
 )

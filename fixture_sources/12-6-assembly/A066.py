@@ -46,7 +46,7 @@ root_x = f._emit_raw("DIRECTION('',(1.0,0.0,0.0))")
 root_plc = f._emit_raw(
     f"AXIS2_PLACEMENT_3D('root_loc',#{root_origin.eid},#{root_z.eid},#{root_x.eid})"
 )
-root_sr = f._emit_raw(f"SHAPE_REPRESENTATION('root_rep',(#{root_plc.eid}),#9010)")
+root_sr = f._emit_raw(f"SHAPE_REPRESENTATION('root_rep',(#{root_plc.eid}),#9060)")
 
 child_origin = f._emit_raw("CARTESIAN_POINT('child_origin',(50.0,0.0,0.0))")
 child_z = f._emit_raw("DIRECTION('',(0.0,0.0,1.0))")
@@ -54,7 +54,7 @@ child_x = f._emit_raw("DIRECTION('',(1.0,0.0,0.0))")
 child_plc = f._emit_raw(
     f"AXIS2_PLACEMENT_3D('child_loc',#{child_origin.eid},#{child_z.eid},#{child_x.eid})"
 )
-child_sr = f._emit_raw(f"SHAPE_REPRESENTATION('child_rep',(#{child_plc.eid}),#9010)")
+child_sr = f._emit_raw(f"SHAPE_REPRESENTATION('child_rep',(#{child_plc.eid}),#9060)")
 
 # ITEM_DEFINED_TRANSFORMATION named root_loc — the double-apply trigger.
 idt = f._emit_raw(
@@ -70,7 +70,7 @@ f._emit_raw(
 sub_pdc = f._emit_raw("PRODUCT_CONTEXT('sub',#9000,'mechanical')")
 sub_prod = f._emit_raw(f"PRODUCT('Child','Child','',(#{sub_pdc.eid}))")
 sub_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{sub_prod.eid})")
-sub_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{sub_pdf.eid},#9003)")
+sub_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{sub_pdf.eid},#9053)")
 f._emit_raw(
-    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','child','',#9004,#{sub_pdef.eid},$)"
+    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','child','',#9054,#{sub_pdef.eid},$)"
 )

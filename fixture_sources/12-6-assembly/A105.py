@@ -55,5 +55,5 @@ styled = f._emit_raw(f"STYLED_ITEM('si_via_mdgpr',(#{psa.eid}),#{face.eid})")
 # — the 6.9.x route the 7.4.0 reader doesn't consult.
 f._emit_raw(
     f"MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION("
-    f"'old_colour_route',(#{styled.eid}),#9010)"
+    f"'old_colour_route',(#{styled.eid}),#9060)"
 )

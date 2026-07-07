@@ -44,9 +44,9 @@ f.add_product_chain(sbsm)
 sub_pdc = f._emit_raw("PRODUCT_CONTEXT('sub',#9000,'mechanical')")
 sub_prod = f._emit_raw(f"PRODUCT('Sub','Sub','',(#{sub_pdc.eid}))")
 sub_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{sub_prod.eid})")
-sub_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{sub_pdf.eid},#9003)")
+sub_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{sub_pdf.eid},#9053)")
 f._emit_raw(
-    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','sub','',#9004,#{sub_pdef.eid},$)"
+    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','sub','',#9054,#{sub_pdef.eid},$)"
 )
 
 # Construction geometry context — inch-unit (not applied to placements).
@@ -74,5 +74,5 @@ cgr = f._emit_raw(
 
 # CONSTRUCTIVE_GEOMETRY_REPRESENTATION_RELATIONSHIP linking to main shape_rep.
 f._emit_raw(
-    f"CONSTRUCTIVE_GEOMETRY_REPRESENTATION_RELATIONSHIP('cgr_rel','cgr',#{cgr.eid},#9010)"
+    f"CONSTRUCTIVE_GEOMETRY_REPRESENTATION_RELATIONSHIP('cgr_rel','cgr',#{cgr.eid},#9060)"
 )

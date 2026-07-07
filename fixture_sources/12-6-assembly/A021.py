@@ -43,10 +43,10 @@ f.add_product_chain(sbsm)
 sub_pdc = f._emit_raw("PRODUCT_CONTEXT('sub',#9000,'mechanical')")
 sub_prod = f._emit_raw(f"PRODUCT('Comp','Comp','',(#{sub_pdc.eid}))")
 sub_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{sub_prod.eid})")
-sub_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{sub_pdf.eid},#9003)")
+sub_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{sub_pdf.eid},#9053)")
 
 # Sub-shape representations for MAPPED_ITEM and SRRs.
-sub_sr = f._emit_raw(f"SHAPE_REPRESENTATION('sub_rep',(#{plc.eid}),#9010)")
+sub_sr = f._emit_raw(f"SHAPE_REPRESENTATION('sub_rep',(#{plc.eid}),#9060)")
 rep_map = f._emit_raw(f"REPRESENTATION_MAP(#{plc.eid},#{sub_sr.eid})")
 mapped_item_plc = f._emit_raw(
     f"AXIS2_PLACEMENT_3D('mi_plc',#{orig.eid},#{zdir.eid},#{xdir.eid})"
@@ -55,10 +55,10 @@ mi = f._emit_raw(f"MAPPED_ITEM('comp_instance',#{rep_map.eid},#{mapped_item_plc.
 
 # Two SHAPE_REPRESENTATION_RELATIONSHIPs (the WR1-violating context entries).
 srr1 = f._emit_raw(
-    f"SHAPE_REPRESENTATION_RELATIONSHIP('srr1','',#9010,#{sub_sr.eid})"
+    f"SHAPE_REPRESENTATION_RELATIONSHIP('srr1','',#9060,#{sub_sr.eid})"
 )
 srr2 = f._emit_raw(
-    f"SHAPE_REPRESENTATION_RELATIONSHIP('srr2','',#9010,#{sub_sr.eid})"
+    f"SHAPE_REPRESENTATION_RELATIONSHIP('srr2','',#9060,#{sub_sr.eid})"
 )
 
 # COLOUR_RGB for the styling.

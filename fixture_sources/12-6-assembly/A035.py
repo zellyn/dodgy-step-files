@@ -45,24 +45,24 @@ sub_pdc = f._emit_raw("PRODUCT_CONTEXT('sub',#9000,'mechanical')")
 # Sub-component A.
 prod_a = f._emit_raw(f"PRODUCT('PartA','PartA','',(#{sub_pdc.eid}))")
 pdf_a = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{prod_a.eid})")
-pdef_a = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{pdf_a.eid},#9003)")
+pdef_a = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{pdf_a.eid},#9053)")
 
 # Sub-component B.
 prod_b = f._emit_raw(f"PRODUCT('PartB','PartB','',(#{sub_pdc.eid}))")
 pdf_b = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{prod_b.eid})")
-pdef_b = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{pdf_b.eid},#9003)")
+pdef_b = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{pdf_b.eid},#9053)")
 
-# 2 NAUOs — root (#9004) acts as parent for both A and B.
+# 2 NAUOs — root (#9054) acts as parent for both A and B.
 f._emit_raw(
-    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','comp_a','',#9004,#{pdef_a.eid},$)"
+    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','comp_a','',#9054,#{pdef_a.eid},$)"
 )
 f._emit_raw(
-    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','comp_b','',#9004,#{pdef_b.eid},$)"
+    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','comp_b','',#9054,#{pdef_b.eid},$)"
 )
 
 # Sub-shape representations for the MAPPED_ITEMs.
-rep_map_a = f._emit_raw(f"REPRESENTATION_MAP(#{plc.eid},#9010)")
-rep_map_b = f._emit_raw(f"REPRESENTATION_MAP(#{plc.eid},#9010)")
+rep_map_a = f._emit_raw(f"REPRESENTATION_MAP(#{plc.eid},#9060)")
+rep_map_b = f._emit_raw(f"REPRESENTATION_MAP(#{plc.eid},#9060)")
 
 # 2 MAPPED_ITEMs attached to the root assembly's direct shape_rep.
 plc_a = f._emit_raw("AXIS2_PLACEMENT_3D('inst_a_plc',#1,#3,#4)")

@@ -50,9 +50,9 @@ density_mwu = f._emit_raw(
     f"MEASURE_WITH_UNIT(MASS_DENSITY_MEASURE(0.0),#{mat_unit.eid})"
 )
 mat_prop = f._emit_raw(
-    f"PROPERTY_DEFINITION('density','material density',#9004)"
+    f"PROPERTY_DEFINITION('density','material density',#9054)"
 )
 f._emit_raw(
     f"PROPERTY_DEFINITION_REPRESENTATION(#{mat_prop.eid},"
-    f"REPRESENTATION('mat_rep',(#{density_mwu.eid}),#9010))"
+    f"REPRESENTATION('mat_rep',(#{density_mwu.eid}),#9060))"
 )

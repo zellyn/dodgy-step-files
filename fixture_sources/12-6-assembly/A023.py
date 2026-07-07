@@ -46,7 +46,7 @@ f.add_product_chain(sbsm)
 nonident_origin = f.cartesian_point((10.0, 0.0, 0.0))
 plc_nonident = f.axis2_placement_3d(nonident_origin, zdir, xdir)
 rep_map = f._emit_raw(
-    f"REPRESENTATION_MAP(#{plc_nonident.eid},#9022)"   # non-identity mapping origin
+    f"REPRESENTATION_MAP(#{plc_nonident.eid},#9060)"   # non-identity mapping origin
 )
 # MAPPED_ITEM under this REPRESENTATION_MAP exercises the saved-view defect.
 p_inst = f.cartesian_point((0.0, 0.0, 0.0))

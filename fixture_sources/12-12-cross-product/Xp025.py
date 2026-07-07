@@ -57,10 +57,10 @@ id_idt   = f._emit_raw(f"ITEM_DEFINED_TRANSFORMATION('identity_xform','',#{id_pl
 
 # Two NAUOs both referencing the same identity IDT
 nauo1 = f._emit_raw(
-    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('nauo1','','',#9003,#{child1_prod.eid},$)"
+    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('nauo1','','',#9053,#{child1_prod.eid},$)"
 )
 nauo2 = f._emit_raw(
-    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('nauo2','','',#9003,#{child2_prod.eid},$)"
+    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('nauo2','','',#9053,#{child2_prod.eid},$)"
 )
 f._emit_raw(
     "/* xp025 defect: both NAUOs reference identity IDT — "
