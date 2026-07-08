@@ -36,14 +36,7 @@ f = StepFile(
 
 # ── B_SPLINE_SURFACE_WITH_KNOTS — forbidden type in supplemental geometry ─────
 # Byte assertion: contains(b'B_SPLINE_SURFACE_WITH_KNOTS')
-# A minimal degree-1 × degree-1 bilinear patch (2×2 control points)
-bss = f._emit_raw(
-    "B_SPLINE_SURFACE_WITH_KNOTS('supp_bspline',1,1,"
-    "((#11,#12),(#13,#14)),"
-    ".UNSPECIFIED.,.F.,.F.,.F.,"
-    "(2,2),(2,2),(0.,1.),(0.,1.),.PIECEWISE_BEZIER_KNOTS.)"
-)
-
+# A minimal degree-1 × degree-1 bilinear patch (2×2 control points).
 # Control points for the B-spline surface
 cp11 = f._emit_raw("CARTESIAN_POINT('cp11',(0.,0.,0.))")
 cp12 = f._emit_raw("CARTESIAN_POINT('cp12',(10.,0.,0.))")

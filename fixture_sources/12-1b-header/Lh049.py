@@ -40,4 +40,5 @@ f.add_product_chain(sbsm)
 # Independent witness of the same endianness defect — OCCT/cascadio
 # wrapper's internal byte-order parse drops shapes from the data section.
 f._emit_raw("/* cascadio s390x: byte-order mismatch in entity decode */")
-f._emit_raw("REPRESENTATION_RELATIONSHIP('endian_drop','',#9005,#9005)")
+_rr_eid = f._next_id  # id this entity will receive, so the rep-rel self-references
+f._emit_raw(f"REPRESENTATION_RELATIONSHIP('endian_drop','',#{_rr_eid},#{_rr_eid})")
