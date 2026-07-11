@@ -15,6 +15,7 @@
 <h1>P014 <span class="sep">—</span> <span class="entry-title">`PCURVE` start point shifted in V from 3D `EDGE_CURVE` lift (UV drift beyond tolerance after Boolean)</span></h1>
 <p class="category">§12.2 pcurve</p>
 <p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 <a class="tag tag-round-trip" href="../by-tag/round-trip/index.html">round-trip</a>
 <a class="tag tag-assembly" href="../by-tag/assembly/index.html">assembly</a>
 </p>
@@ -35,7 +36,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Auto-project pcurve back to surface (within tolerance); or warn and accept.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;PCURVE 2D trace drifts off surface after Boolean&quot;, &quot;UV parameter shifts beyond tolerance&quot;, &quot;pcurve start point doesn&#x27;t match 3D edge&quot;, &quot;parametric curve disagrees with surface geometry&quot;.</p></section>
+<p>**OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1) gmsh=shape(1). The drifted PCURVE / SURFACE_CURVE is byte-present but sits in an unreferenced GEOMETRIC_CURVE_SET, so OCC/gmsh build a 1-vertex stub and silently accept with NO distinguishing signal vs a clean file. oracle-invisible (shape_counts): the defect is byte-verifiable but not demonstrable by the load-time shape-count oracles. (no reachable face/edge exists to flag &#x27;invalid curve on surface&#x27;). Synonyms: &quot;PCURVE 2D trace drifts off surface after Boolean&quot;, &quot;UV parameter shifts beyond tolerance&quot;, &quot;pcurve start point doesn&#x27;t match 3D edge&quot;, &quot;parametric curve disagrees with surface geometry&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

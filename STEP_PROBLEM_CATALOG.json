@@ -46816,7 +46816,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn002.stp",
     "id": "Gn002",
-    "notes": "Validation observed: silent-empty (the malformed complex-instance entity is dropped at parse without a diagnostic) rather than the cited heal-or-crash. Specific reader-contract code path returns a quiet false at fixture scale; the kernel-mishandling-by-silent-acceptance still demonstrates the defect class. **See also**: Ad059. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"rational B-spline weights count doesn't match poles\", \"weights array length differs from control points\", \"NbWeights ≠ NbControlPoints\", \"NURBS curve weight vector wrong length\", \"rational BSpline missing weight or has extra weight\".",
+    "notes": "Validation observed: silent-empty (the malformed complex-instance entity is dropped at parse without a diagnostic) rather than the cited heal-or-crash. Specific reader-contract code path returns a quiet false at fixture scale; the kernel-mishandling-by-silent-acceptance still demonstrates the defect class. **See also**: Ad059. **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1) gmsh=shape(1). The mismatched-weights RATIONAL_B_SPLINE is byte-present but sits in an unreferenced GEOMETRIC_CURVE_SET, so OCC/gmsh build a 1-vertex stub and silently accept with NO distinguishing signal vs a clean file. oracle-invisible (shape_counts): the defect is byte-verifiable but not demonstrable by the load-time shape-count oracles. Synonyms: \"rational B-spline weights count doesn't match poles\", \"weights array length differs from control points\", \"NbWeights ≠ NbControlPoints\", \"NURBS curve weight vector wrong length\", \"rational BSpline missing weight or has extra weight\".",
     "occ_behavior_note": "silent-empty (the malformed complex-instance entity is dropped at parse without a diagnostic) rather than the cited heal-or-crash. Specific reader-contract code path returns a quiet false at fixture scale; the kernel-mishandling-by-silent-acceptance still demonstrates the defect class.",
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -46835,6 +46835,7 @@
     "structural_assertions": [],
     "taxonomy": [
       "crash",
+      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -46965,7 +46966,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn008.stp",
     "id": "Gn008",
-    "notes": "**See also**: Gs040. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"knot multiplicity exceeds degree+1\", \"B-spline near-cusp from full-degree interior knot\", \"rational B-spline weight ratio over 1000 causes mesher fail\", \"knot multiplicity equals order produces cusp\", \"high-curvature NURBS curve over-resolves mesher\".",
+    "notes": "**See also**: Gs040. **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1) gmsh=shape(1). The near-cusp / high-weight-ratio B_SPLINE curve is byte-present but sits in an unreferenced GEOMETRIC_CURVE_SET, so OCC/gmsh build a 1-vertex stub and silently accept with NO distinguishing signal vs a clean file. oracle-invisible (shape_counts): the defect is byte-verifiable but not demonstrable by the load-time shape-count oracles. Synonyms: \"knot multiplicity exceeds degree+1\", \"B-spline near-cusp from full-degree interior knot\", \"rational B-spline weight ratio over 1000 causes mesher fail\", \"knot multiplicity equals order produces cusp\", \"high-curvature NURBS curve over-resolves mesher\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -46982,6 +46983,7 @@
     ],
     "structural_assertions": [],
     "taxonomy": [
+      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -79188,7 +79190,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3c-faces/Hea001.stp",
     "id": "Hea001",
-    "notes": "Umbrella over all sub-shape Perform() methods. Synonyms: \"multi-defect shape needs pipeline convergence\", \"fix order changes end state\", \"shape orchestrator must converge not loop\", \"compound with mixed defects healing\".",
+    "notes": "Umbrella over all sub-shape Perform() methods. **OCC behavior**: oracle-invisible (shape_counts) — occt=empty/empty gmsh=empty. The multi-defect GEOMETRIC_SET is orphaned (not reachable from the shape-representation root), so OCC yields empty regardless of the sub-defects. oracle-invisible (shape_counts): the defect is byte-verifiable but the healing-pipeline behavior the fixture describes is API/runtime-level, not exercised by the load-time oracles. Synonyms: \"multi-defect shape needs pipeline convergence\", \"fix order changes end state\", \"shape orchestrator must converge not loop\", \"compound with mixed defects healing\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -79550,7 +79552,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3c-faces/Hea011.stp",
     "id": "Hea011",
-    "notes": "Provides the runtime extension point for the healing pipeline. Defect manifests at runtime (operator-list invocation is API-level); fixture establishes the input precondition (a multi-defect compound mixing sub-tolerance edge, open shell, and same-parameter violation). Synonyms: \"runtime-configured healing operator sequence\", \"named healing operators chained at runtime\", \"sub-tolerance edge plus open shell plus same-param violation\", \"healing driver aggregates errors from each operator\".",
+    "notes": "Provides the runtime extension point for the healing pipeline. Defect manifests at runtime (operator-list invocation is API-level); fixture establishes the input precondition (a multi-defect compound mixing sub-tolerance edge, open shell, and same-parameter violation). **OCC behavior**: oracle-invisible (shape_counts) — occt=empty/empty gmsh=empty. The multi-defect GEOMETRIC_SET is orphaned (not reachable from the shape-representation root), so OCC yields empty regardless of the sub-defects; the runtime-configured operator sequence is API-level. oracle-invisible (shape_counts): the defect is byte-verifiable but the healing-pipeline behavior the fixture describes is API/runtime-level, not exercised by the load-time oracles. Synonyms: \"runtime-configured healing operator sequence\", \"named healing operators chained at runtime\", \"sub-tolerance edge plus open shell plus same-param violation\", \"healing driver aggregates errors from each operator\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -101113,7 +101115,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-6-assembly/P014.stp",
     "id": "P014",
-    "notes": "Synonyms: \"PCURVE 2D trace drifts off surface after Boolean\", \"UV parameter shifts beyond tolerance\", \"pcurve start point doesn't match 3D edge\", \"parametric curve disagrees with surface geometry\".",
+    "notes": "**OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1) gmsh=shape(1). The drifted PCURVE / SURFACE_CURVE is byte-present but sits in an unreferenced GEOMETRIC_CURVE_SET, so OCC/gmsh build a 1-vertex stub and silently accept with NO distinguishing signal vs a clean file. oracle-invisible (shape_counts): the defect is byte-verifiable but not demonstrable by the load-time shape-count oracles. (no reachable face/edge exists to flag 'invalid curve on surface'). Synonyms: \"PCURVE 2D trace drifts off surface after Boolean\", \"UV parameter shifts beyond tolerance\", \"pcurve start point doesn't match 3D edge\", \"parametric curve disagrees with surface geometry\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -101128,6 +101130,7 @@
     ],
     "structural_assertions": [],
     "taxonomy": [
+      "silent-loss",
       "round-trip",
       "assembly"
     ],
