@@ -33,6 +33,7 @@ EXEMPT_END_MARKER = {
     "Le027",         # lower-case iso-10303-21 magic line: framing malformed
     "Le031",         # UTF-16 LE BOM: entire body is UTF-16
     "Ls029",         # unterminated /* */ comment runs through EOF — no close marker by design
+    "Ls055",         # unterminated /* */ comment swallows the file tail incl. END marker — by design
     # §12.11 adversarial: many intentionally have framing issues
     "Ad001", "Ad002", "Ad003", "Ad004", "Ad005",
     "Ad014", "Ad015", "Ad026", "Ad027", "Ad030",
