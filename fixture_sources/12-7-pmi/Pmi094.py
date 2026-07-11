@@ -41,7 +41,7 @@ sbsm = f.shell_based_surface_model([shell])
 f.add_product_chain(sbsm)
 
 # GD&T chain on the face.
-shape_aspect = f._emit_raw(f"SHAPE_ASPECT('toleranced','',#9005,.T.)")
+shape_aspect = f._emit_raw(f"SHAPE_ASPECT('toleranced','',#9055,.T.)")
 f._emit_raw(
     f"DATUM('A','primary datum','',#{shape_aspect.eid},'A')"
 )
@@ -51,7 +51,10 @@ f._emit_raw(
 f._emit_raw(
     f"DIMENSIONAL_SIZE(#{shape_aspect.eid},'diameter','10.0 mm')"
 )
+tol_mag = f._emit_raw(
+    f"LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.01),#9056)"
+)
 f._emit_raw(
     f"GEOMETRIC_TOLERANCE('flatness','0.01 mm flatness',"
-    f"#9009,#{shape_aspect.eid})"
+    f"#{tol_mag.eid},#{shape_aspect.eid})"
 )

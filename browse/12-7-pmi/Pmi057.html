@@ -143,11 +143,12 @@
 <span class="lineno">89</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
 <span class="lineno">90</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#69),#9060);
 <span class="lineno">91</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
-<span class="lineno">92</span>#9063=SHAPE_ASPECT(&#x27;toleranced_aspect&#x27;,&#x27;&#x27;,#9005,.T.);
-<span class="lineno">93</span>#9064=PERPENDICULARITY_TOLERANCE(&#x27;perpendicularity&#x27;,&#x27;0.05 mm perpendicularity&#x27;,#9009,#9063);
-<span class="lineno">94</span>#9065=ANNOTATION_PLANE(&#x27;perp_plane&#x27;,(),#4,(#36));
-<span class="lineno">95</span>ENDSEC;
-<span class="lineno">96</span>END-ISO-10303-21;
+<span class="lineno">92</span>#9063=SHAPE_ASPECT(&#x27;toleranced_aspect&#x27;,&#x27;&#x27;,#9055,.T.);
+<span class="lineno">93</span>#9064=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#9056);
+<span class="lineno">94</span>#9065=PERPENDICULARITY_TOLERANCE(&#x27;perpendicularity&#x27;,&#x27;0.05 mm perpendicularity&#x27;,#9064,#9063);
+<span class="lineno">95</span>#9066=ANNOTATION_PLANE(&#x27;perp_plane&#x27;,(),#4,(#36));
+<span class="lineno">96</span>ENDSEC;
+<span class="lineno">97</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

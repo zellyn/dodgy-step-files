@@ -44,7 +44,7 @@ f.add_product_chain(sbsm)
 
 # Legacy AP203+G&DT chain.
 shape_aspect = f._emit_raw(
-    f"SHAPE_ASPECT('feature_aspect','',#9005,.T.)"
+    f"SHAPE_ASPECT('feature_aspect','',#9055,.T.)"
 )
 gen_prop = f._emit_raw(
     f"GENERAL_PROPERTY('hole_diameter','indirect via property_definition','')"
@@ -54,12 +54,15 @@ prop_def = f._emit_raw(
     f"#{shape_aspect.eid})"
 )
 prop_def_rep = f._emit_raw(
-    f"PROPERTY_DEFINITION_REPRESENTATION(#{prop_def.eid},#9022)"
+    f"PROPERTY_DEFINITION_REPRESENTATION(#{prop_def.eid},#9061)"
 )
 # DIMENSIONAL_SIZE reachable indirectly via the property chain above.
 f._emit_raw(
     f"DIMENSIONAL_SIZE(#{shape_aspect.eid},'diameter','indirect via prop def')"
 )
+tol_mag = f._emit_raw(
+    f"LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#9056)"
+)
 f._emit_raw(
-    f"GEOMETRIC_TOLERANCE('cylindricity','indirect',#9009,#{shape_aspect.eid})"
+    f"GEOMETRIC_TOLERANCE('cylindricity','indirect',#{tol_mag.eid},#{shape_aspect.eid})"
 )
