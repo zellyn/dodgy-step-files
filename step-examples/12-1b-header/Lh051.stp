@@ -1,0 +1,17 @@
+ISO-10303-21;
+/* Lh051: leading-zero instance-name aliasing collision; ISO 10303-21 6.4.4.3 NOTE 2: leading zeros in an entity-instance name are not significant, so #1 and #01 denote the SAME instance; the file defines #1 as a CARTESIAN_POINT and #01 as a DIRECTION, which normalize to the same name 1 and silently alias; #2 references #01, resolving to whichever definition won; independent parsers that normalize the name to an integer collapse the two while byte-diff and lax readers miss the collision; distinct from Lh022 (byte-identical duplicate); this is duplication after leading-zero normalization; expected kernel behavior: reject with E_DUPLICATE_INSTANCE_ID after leading-zero normalization; never silently overwrite */
+HEADER;
+FILE_DESCRIPTION(('Lh051'),'2;1');
+FILE_NAME('Lh051.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* ISO 10303-21 6.4.4.3 NOTE 2: leading zeros in an instance name are
+   NOT significant; #1 and #01 denote the SAME instance. */
+#1=CARTESIAN_POINT('p1',(0.,0.,0.));
+/* Defect: #01 normalizes to name 1 and silently aliases #1 above. */
+#01=DIRECTION('d1',(1.,0.,0.));
+/* #2 references #01, which after normalization is the same name as #1. */
+#2=VECTOR('v',#01,1.);
+ENDSEC;
+END-ISO-10303-21;

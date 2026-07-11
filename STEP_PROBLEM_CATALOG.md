@@ -13401,6 +13401,63 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
+### Ls053 — REAL literal in an INTEGER-typed slot (`3.0` where `3` is required)
+- **Category**: §12.1c parameter tokens
+- **Sources**: Pattern-mined from ricosjp/ruststep parameter.rs::untyped_parameter and issue #56 "tokenize integer as float" (Apache-2.0/MIT — pattern only, no bytes copied); ISO 10303-21 §6.4 (INTEGER vs REAL literal grammar)
+- **Description**: ISO 10303-21 distinguishes INTEGER and REAL literals; a REAL carries a mandatory decimal point. A count/degree/dimension attribute typed INTEGER in the EXPRESS schema must not receive a REAL literal. The fixture writes the REAL literal `3.0` in the `B_SPLINE_CURVE_WITH_KNOTS` degree slot, where the integer `3` is required. This is the inverse of Ls001 (integer written where a REAL is required). A real-first tokenizer (`untyped_parameter` tries `real` before `integer`) mis-types `3.0` as a REAL parameter and may silently truncate it.
+- **Reproducer recipe**: `#5=B_SPLINE_CURVE_WITH_KNOTS('c',3.0,(#1,#2,#3,#4),.UNSPECIFIED.,.F.,.F.,(4,4),(0.,1.),.UNSPECIFIED.);` — degree slot is INTEGER but carries `3.0`.
+- **Expected kernel behavior**: Reject or warn on a non-integral value in an INTEGER slot; never silently truncate `3.0` to `3`.
+- **Notes**: **See also**: Ls001. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic. Synonyms: "REAL where INTEGER expected", "degree given 3.0", "count field carries a decimal point", "fractional value in integer slot", "float literal in STEP integer attribute". Provenance tier: bytes-only. Expected validation is provisional (best-guess) pending oracle rebaseline — the live occt/gmsh oracle is not run here (platform divergence); nightly CI reconciles.
+- **Byte assertion**: contains(b'B_SPLINE_CURVE_WITH_KNOTS')
+- **Byte assertion**: matches(rb"WITH_KNOTS\('c',3\.0,")
+- **Tier-3 assertion**: shape_null == True
+- **Severity**: P1
+- **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+
+### Ls054 — Empty complex (subsuper) instance `#1=();` (zero constituent records)
+- **Category**: §12.1c parameter syntax
+- **Sources**: Pattern-mined from ricosjp/ruststep data.rs::subsuper_record (`many0` allows empty) (Apache-2.0/MIT — pattern only, no bytes copied); ISO 10303-21 §11 (combined/complex entity instances)
+- **Description**: A complex (subsuper / combined-entity) instance is written as a parenthesized list of simple records, e.g. `#1=(A(...)B(...))`. A `many0`-style parser accepts an EMPTY list `()`, i.e. a complex instance with ZERO constituent records. A complex instance must combine at least one (really at least two) simple records; the empty form is meaningless. Distinct from Ls013 (`PRODUCT()` — keyword present, no attributes): here there is no keyword at all, just `()`. The empty complex `#1` is reachable (referenced as a GEOMETRIC_SET item), so a parser must process it rather than skip dead code.
+- **Reproducer recipe**: `#1=(); #2=CARTESIAN_POINT('p',(0.,0.,0.)); #3=GEOMETRIC_SET('gs',(#1,#2));` — `#1` is an empty complex instance referenced by `#3`.
+- **Expected kernel behavior**: Reject the empty complex instance; the lexer may accept `()` as a zero-record list, but the semantic layer must reject "0 constituent records, expected >=1".
+- **Notes**: **See also**: Ls013. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture. Synonyms: "empty subsuper instance", "complex entity with no records", "keyword-less empty parens instance", "zero-record combined entity", "STEP empty complex #1=()". Provenance tier: bytes-only. Expected validation is provisional (best-guess) pending oracle rebaseline — the live occt/gmsh oracle is not run here (platform divergence); nightly CI reconciles.
+- **Byte assertion**: contains(b'#1=();')
+- **Byte assertion**: matches(rb'#\d+=\(\)\s*;')
+- **Tier-3 assertion**: shape_null == True
+- **Severity**: P1
+- **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+
+### Ls055 — Unterminated block comment (no closing `*/`) swallows the file tail
+- **Category**: §12.1c comment framing
+- **Sources**: Pattern-mined from ricosjp/ruststep combinator.rs::comment (`tag("/*") ... tag("*/")` fails if the closer is missing) (Apache-2.0/MIT — pattern only, no bytes copied); ISO 10303-21 §6.3 (comment syntax)
+- **Description**: ISO 10303-21 §6.3 block comments are delimited by an opening `/*` and a closing `*/`. A parser that requires the closer fails if it is missing; an unterminated comment consumes every byte to end-of-file, silently swallowing the section terminators (`ENDSEC` / `END-ISO-10303-21;`). The fixture opens a comment in the DATA section after a valid CARTESIAN_POINT and never closes it, so the remainder of the file — including the close bookend — is eaten. A conformant reader must reject with an unterminated-comment diagnostic; it must not hang or silently drop the tail.
+- **Reproducer recipe**: `#1=CARTESIAN_POINT('origin',(0.,0.,0.));` followed by `/* note ...` with no closing `*/` before EOF.
+- **Expected kernel behavior**: Reject with an unterminated-comment diagnostic; never hang, and never silently drop the swallowed file tail.
+- **Notes**: **See also**: Ls056. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture. Synonyms: "unterminated comment", "missing */ closer", "comment runs to EOF", "STEP comment never closed", "dangling /* opener". Provenance tier: bytes-only. Expected validation is provisional (best-guess) pending oracle rebaseline — the live occt/gmsh oracle is not run here (platform divergence); nightly CI reconciles.
+- **Byte assertion**: count(b'/*') > count(b'*/')
+- **Byte assertion**: not_contains(b'END-ISO-10303-21;')
+- **Tier-3 assertion**: shape_null == True
+- **Severity**: P1
+- **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+
+### Ls056 — Non-nesting comment illusion; inner opener leaves a stray closer
+- **Category**: §12.1c comment framing
+- **Sources**: Pattern-mined from ricosjp/ruststep combinator.rs::comment (non-nesting) (Apache-2.0/MIT — pattern only, no bytes copied); ISO 10303-21 §6.3 (comment syntax)
+- **Description**: ISO 10303-21 §6.3 block comments do NOT nest. In `/* a /* b */ tail */` the comment closes at the FIRST `*/`, so the inner `/*` is not an opener — it is comment text. Whatever follows the first closer is live token stream, and the final `*/` is a stray, unmatched closer (a lexical error). An author who tries to comment out an entity but nests a second opener inside will have that entity LEAK back into the parse: here `#2=CARTESIAN_POINT('leaked',...)` re-enters the token stream and a stray `*/` trails it.
+- **Reproducer recipe**: `/* a /* b */ #2=CARTESIAN_POINT('leaked',(0.,0.,0.)); */` — comment = `/* a /* b */`; the CARTESIAN_POINT leaks; the trailing `*/` is stray.
+- **Expected kernel behavior**: Treat comments as non-nesting per the spec and reject the stray `*/`; document the non-nesting rule clearly so authors do not rely on nested-comment behavior.
+- **Notes**: **See also**: Ls055. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture. Synonyms: "nested comment illusion", "comments do not nest", "stray */", "leaked entity from comment", "unmatched comment closer", "double */ after entity". Provenance tier: bytes-only. Expected validation is provisional (best-guess) pending oracle rebaseline — the live occt/gmsh oracle is not run here (platform divergence); nightly CI reconciles.
+- **Byte assertion**: contains(b'/* a /* b */')
+- **Byte assertion**: matches(rb";\s*\*/")
+- **Byte assertion**: matches(rb"CARTESIAN_POINT\('leaked'")
+- **Tier-3 assertion**: shape_null == True
+- **Severity**: P1
+- **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+
 ---
 
 ## §12.3a more shells (UnifySameDomain)
@@ -36488,6 +36545,34 @@ exercised against CGAL PMP / MeshFix.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Model impact**: A receiver on FreeBSD with the declaration bug emits a malformed timestamp on every STEP export; downstream consumers that strictly validate the header date reject the file; a receiver that consumes the malformed date as input may crash or silently skip the entire file header.
+
+### Lh051 — Leading-zero instance-name aliasing collision (`#1` and `#01` are the same name)
+- **Category**: §12.1b header/numbering
+- **Sources**: Pattern-mined from ricosjp/ruststep token.rs::entity_instance_name (Apache-2.0/MIT — pattern only, no bytes copied); ISO 10303-21 §6.4.4.3 NOTE 2 (leading zeros not significant)
+- **Description**: ISO 10303-21 §6.4.4.3 NOTE 2 states that leading zeros in an entity-instance name are not significant — `#1` and `#01` denote the SAME instance. The fixture defines `#1` as a CARTESIAN_POINT and `#01` as a DIRECTION, which normalize to the same name and silently alias; `#2` references `#01`, resolving to whichever definition won. Independent parsers that normalize the name to an integer (ruststep parses `#001` into a `u64`) collapse the two, while byte-diff and lax readers miss the collision. Distinct from Lh022 (byte-identical duplicate `#N`): this is duplication after leading-zero normalization, which byte-diff tooling cannot see.
+- **Reproducer recipe**: `#1=CARTESIAN_POINT('p1',(0.,0.,0.)); #01=DIRECTION('d1',(1.,0.,0.)); #2=VECTOR('v',#01,1.);` — `#01` aliases `#1`.
+- **Expected kernel behavior**: reject with `E_DUPLICATE_INSTANCE_ID` after leading-zero normalization; never silently overwrite one definition with the other.
+- **Notes**: **See also**: Lh022, Lh024. **OCC behavior**: silently accepts duplicate instance IDs (typically last-write-wins) without diagnostic; kernel mishandling; the catalog forbids silent overwrite. Synonyms: "leading-zero instance ID aliasing", "#1 and #01 same instance", "#001 normalizes to #1", "duplicate after leading-zero normalization", "STEP instance name leading zeros not significant". Provenance tier: bytes-only. Expected validation is provisional (best-guess) pending oracle rebaseline — the live occt/gmsh oracle is not run here (platform divergence); nightly CI reconciles.
+- **Byte assertion**: contains(b'#1=CARTESIAN_POINT')
+- **Byte assertion**: contains(b'#01=DIRECTION')
+- **Tier-3 assertion**: load == "ok"
+- **Severity**: P1
+- **Model impact**: Cross-references that depend on the aliased instance number resolve to the wrong entity (or to NULL); affected sub-trees attach to incorrect parents and the resulting BRep contains dangling or mis-typed references.
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+
+### Lh052 — Conformant AP203 file rejected at the `DATA;` boundary (independent-parser differential)
+- **Category**: §12.1b header/numbering (sub-class: strict-reader leniency gap)
+- **Sources**: Pattern-mined from ricosjp/ruststep#252 (Apache-2.0/MIT — pattern only; the issue's attached file is proprietary and was NOT ingested); ISO 10303-21 §8 (exchange-file structure)
+- **Description**: A fully-conformant Part-21 AP203 file — HOOPS-Exchange-style header with a `/* File generated by ... */` comment inside HEADER, a spaced `FILE_SCHEMA( ( '...' ) )` list, and an ISO-8601 timestamp with an explicit `+01:00` UTC offset — is accepted by OCCT/HOOPS but has been observed to make a strict independent tokenizer abort at the `DATA;` section boundary. This is an independent-parser leniency gap: every individual token is legal Part-21, yet the strict reader rejects the conformant file. The DATA section carries a valid minimal planar face so a tolerant reader loads it without error.
+- **Reproducer recipe**: HEADER with a `/* File generated by ... */` comment, `FILE_SCHEMA( ('AP203_CONFIGURATION_CONTROLLED_3D_DESIGN_OF_MECHANICAL_PARTS_AND_ASSEMBLIES_MIM_LF') )` (interior spaces), timestamp `2025-03-05T17:10:01+01:00`, followed by a legal DATA section (planar face).
+- **Expected kernel behavior**: accept — the file is conformant Part-21; a reader that rejects it at the `DATA;` boundary has a tokenizer leniency bug, not the file.
+- **Notes**: **See also**: Lh050. Independent-parser interop differential: OCCT/HOOPS accept, a strict `nom`-based tokenizer rejects at `DATA;`. Not to be confused with the out-of-range-UTC-offset sub-case; this fixture uses a legal `+01:00` offset. Synonyms: "conformant STEP rejected at DATA", "strict parser aborts at DATA boundary", "spaced FILE_SCHEMA list", "header comment in HEADER section", "HOOPS Exchange AP203 tokenize failure". Provenance tier: bytes-sufficient. Expected validation is provisional (best-guess) pending oracle rebaseline — the live occt/gmsh oracle is not run here (platform divergence); nightly CI reconciles.
+- **Byte assertion**: contains(b'File generated by')
+- **Byte assertion**: matches(rb'FILE_SCHEMA\(\s+\(')
+- **Byte assertion**: contains(b'AP203_CONFIGURATION_CONTROLLED_3D_DESIGN')
+- **Tier-3 assertion**: load == "ok"
+- **Model impact**: A conformant file authored by a widely-used exporter fails to import in a strict receiver; the whole model is lost even though every token is legal; the differential silently splits a pipeline into readers that accept and readers that reject the same bytes.
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Wr058 — XCAF → STEP export crashes on umlaut in label
 - **Category**: §12.13 writer-pathology (sub-class: encoding crash on emit)

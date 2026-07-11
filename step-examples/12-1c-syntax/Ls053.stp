@@ -1,0 +1,17 @@
+ISO-10303-21;
+/* Ls053: REAL literal in an INTEGER-typed slot; ISO 10303-21 distinguishes INTEGER and REAL literals, and a REAL carries a mandatory decimal point; the B_SPLINE_CURVE_WITH_KNOTS degree attribute is INTEGER in the EXPRESS schema, but the fixture writes the REAL literal 3.0 where the integer 3 is required; this is the inverse of Ls001 (integer written where a REAL is required); a real-first tokenizer mis-types 3.0 as Parameter::Real; expected kernel behavior: reject or warn on a non-integral value in an INTEGER slot; never silently truncate 3.0 to 3; see also Ls001; synonyms: REAL where INTEGER expected, degree given 3.0, count field carries a decimal point, fractional value in integer slot, float literal in STEP integer attribute; the B_SPLINE_CURVE_WITH_KNOTS entity is the defect carrier */
+HEADER;
+FILE_DESCRIPTION(('Ls053'),'2;1');
+FILE_NAME('Ls053.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=CARTESIAN_POINT('',(0.,0.,0.));
+#2=CARTESIAN_POINT('',(1.,1.,0.));
+#3=CARTESIAN_POINT('',(2.,0.,0.));
+#4=CARTESIAN_POINT('',(3.,1.,0.));
+/* Defect: the degree slot of B_SPLINE_CURVE_WITH_KNOTS is INTEGER, but
+   the REAL literal 3.0 is written where the integer 3 is required. */
+#5=B_SPLINE_CURVE_WITH_KNOTS('c',3.0,(#1,#2,#3,#4),.UNSPECIFIED.,.F.,.F.,(4,4),(0.,1.),.UNSPECIFIED.);
+ENDSEC;
+END-ISO-10303-21;

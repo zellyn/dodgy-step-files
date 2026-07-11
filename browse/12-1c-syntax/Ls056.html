@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ls056 — Non-nesting comment illusion; inner opener leaves a stray closer</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.1c Part-21 grammar</a> <span class="sep">/</span> <span class="current">Ls056</span>
+</nav>
+<header class="title-bar">
+<h1>Ls056 <span class="sep">—</span> <span class="entry-title">Non-nesting comment illusion; inner opener leaves a stray closer</span></h1>
+<p class="category">§12.1c comment framing</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+<a class="tag tag-syntax" href="../by-tag/syntax/index.html">syntax</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-1c-syntax/Ls056.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-1c-syntax/Ls056.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>Pattern-mined from ricosjp/ruststep combinator.rs::comment (non-nesting) (Apache-2.0/MIT — pattern only, no bytes copied)</li>
+<li>ISO 10303-21 §6.3 (comment syntax)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>ISO 10303-21 §6.3 block comments do NOT nest. In `/* a /* b */ tail */` the comment closes at the FIRST `*/`, so the inner `/*` is not an opener — it is comment text. Whatever follows the first closer is live token stream, and the final `*/` is a stray, unmatched closer (a lexical error). An author who tries to comment out an entity but nests a second opener inside will have that entity LEAK back into the parse: here `#2=CARTESIAN_POINT(&#x27;leaked&#x27;,...)` re-enters the token stream and a stray `*/` trails it.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`/* a /* b */ #2=CARTESIAN_POINT(&#x27;leaked&#x27;,(0.,0.,0.)); */` — comment = `/* a /* b */`; the CARTESIAN_POINT leaks; the trailing `*/` is stray.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Treat comments as non-nesting per the spec and reject the stray `*/`; document the non-nesting rule clearly so authors do not rely on nested-comment behavior.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Ls055. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture. Synonyms: &quot;nested comment illusion&quot;, &quot;comments do not nest&quot;, &quot;stray */&quot;, &quot;leaked entity from comment&quot;, &quot;unmatched comment closer&quot;, &quot;double */ after entity&quot;. Provenance tier: bytes-only. Expected validation is provisional (best-guess) pending oracle rebaseline — the live occt/gmsh oracle is not run here (platform divergence); nightly CI reconciles.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;/* a /* b */&#x27;)</code></li>
+<li><code>matches(rb&quot;;\s*\*/&quot;)</code></li>
+<li><code>matches(rb&quot;CARTESIAN_POINT\(&#x27;leaked&#x27;&quot;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Ls055.html">Ls055</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Ls056: non-nesting comment illusion leaves a stray closer and a leaked entity; ISO 10303-21 6.3 block comments do NOT nest, so in a slash-star opener that contains a second slash-star, the comment closes at the FIRST star-slash; the inner opener is just comment text; the author tried to comment out a CARTESIAN_POINT but nested a second opener inside, so the CARTESIAN_POINT LEAKS back into the token stream and the trailing star-slash is a stray, unmatched closer; expected kernel behavior: treat comments as non-nesting per the spec and reject the stray closer; document the non-nesting rule clearly; synonyms: nested comment illusion, comments do not nest, stray star-slash, leaked entity from comment, unmatched comment closer, double star-slash after entity; the stray closer and leaked CARTESIAN_POINT are the defect carriers */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ls056&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ls056.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=DIRECTION(&#x27;d&#x27;,(1.,0.,0.));
+<span class="lineno">10</span>/* Defect: the author tried to comment out an entity but nested a second
+<span class="lineno">11</span>   comment opener inside. Part-21 comments do NOT nest (ISO 10303-21 6.3):
+<span class="lineno">12</span>   the comment closes at the FIRST closer, so the CARTESIAN_POINT below
+<span class="lineno">13</span>   LEAKS back into the token stream and a stray closer follows it. */
+<span class="lineno">14</span><mark>/* a /* b */</mark> #2=<mark>CARTESIAN_POINT(&#x27;leaked&#x27;</mark>,(0.,0.,0.))<mark>; */</mark>
+<span class="lineno">15</span>#3=DIRECTION(&#x27;after&#x27;,(0.,1.,0.));
+<span class="lineno">16</span>ENDSEC;
+<span class="lineno">17</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ls055.html">&larr; Ls055</a> <a class="up" href="index.html">§12.1c Part-21 grammar</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

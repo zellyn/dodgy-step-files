@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1><span class="tag tag-spec-violation">spec-violation</span></h1>
 <p class="blurb">Input violates ISO 10303 / AP-spec text and should be rejected.</p>
-<p class="meta">373 entries</p>
+<p class="meta">379 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Section</th><th>Expected validation</th></tr></thead><tbody>
@@ -87,6 +87,12 @@
 <tr><td><a href="../../12-1b-header/Lh045.html"><code>Lh045</code></a></td><td>Cross-section reference to undefined section name</td><td><a href="../../12-1b-header/index.html">§12.1b Header &amp; instance-numbering</a></td><td><code>occt=reject/reject gmsh=reject ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-1b-header/Lh046.html"><code>Lh046</code></a></td><td>HEADER section contains only `/* */` comments and no required records</td><td><a href="../../12-1b-header/index.html">§12.1b Header &amp; instance-numbering</a></td><td><code>occt=empty/empty gmsh=empty ifc=reject</code></td></tr>
 <tr><td><a href="../../12-1b-header/Lh047.html"><code>Lh047</code></a></td><td>Lower-case section keywords (`data;` instead of `DATA;`)</td><td><a href="../../12-1b-header/index.html">§12.1b Header &amp; instance-numbering</a></td><td><code>occt=empty/empty gmsh=empty ifc=reject</code></td></tr>
+<tr><td><a href="../../12-1b-header/Lh051.html"><code>Lh051</code></a></td><td>Leading-zero instance-name aliasing collision (`#1` and `#01` are the same name)</td><td><a href="../../12-1b-header/index.html">§12.1b Header &amp; instance-numbering</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="../../12-1b-header/Lh052.html"><code>Lh052</code></a></td><td>Conformant AP203 file rejected at the `DATA;` boundary (independent-parser differential)</td><td><a href="../../12-1b-header/index.html">§12.1b Header &amp; instance-numbering</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="../../12-1c-syntax/Ls053.html"><code>Ls053</code></a></td><td>REAL literal in an INTEGER-typed slot (`3.0` where `3` is required)</td><td><a href="../../12-1c-syntax/index.html">§12.1c Part-21 grammar</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="../../12-1c-syntax/Ls054.html"><code>Ls054</code></a></td><td>Empty complex (subsuper) instance `#1=();` (zero constituent records)</td><td><a href="../../12-1c-syntax/index.html">§12.1c Part-21 grammar</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="../../12-1c-syntax/Ls055.html"><code>Ls055</code></a></td><td>Unterminated block comment (no closing `*/`) swallows the file tail</td><td><a href="../../12-1c-syntax/index.html">§12.1c Part-21 grammar</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="../../12-1c-syntax/Ls056.html"><code>Ls056</code></a></td><td>Non-nesting comment illusion; inner opener leaves a stray closer</td><td><a href="../../12-1c-syntax/index.html">§12.1c Part-21 grammar</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-8-mixed/M012.html"><code>M012</code></a></td><td>tessellated_constructive_geometry_representation requires AP242 Ed.4</td><td><a href="../../12-8-mixed/index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a></td><td><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-8-mixed/M013.html"><code>M013</code></a></td><td>Saved-view supplemental geometry split across multiple CGRs</td><td><a href="../../12-8-mixed/index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-8-mixed/M017.html"><code>M017</code></a></td><td>Tessellated geometry without a styled_item (no color)</td><td><a href="../../12-8-mixed/index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a></td><td><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></td></tr>

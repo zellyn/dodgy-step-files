@@ -1,0 +1,14 @@
+ISO-10303-21;
+/* Ls055: unterminated block comment consumes the rest of the file; ISO 10303-21 6.3 block comments open with slash-star and close with star-slash; the fixture opens a comment in the DATA section and never closes it, so every byte to end-of-file is consumed as comment text, silently swallowing the ENDSEC and END-ISO-10303-21 section terminators; expected kernel behavior: reject with an unterminated-comment diagnostic; the reader must not hang or silently drop the file tail; synonyms: unterminated comment, missing star-slash closer, comment runs to EOF, STEP comment never closed, dangling slash-star; the unterminated comment is the defect carrier */
+HEADER;
+FILE_DESCRIPTION(('Ls055'),'2;1');
+FILE_NAME('Ls055.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+/* Defect: this comment is opened but NEVER closed. A conformant reader
+   must reject with an unterminated-comment diagnostic (ISO 10303-21 6.3).
+   From the opening slash-star to end of file everything is consumed as
+   comment text, including what should have been the section terminators.
+#2=DIRECTION('never-parsed',(1.,0.,0.));
