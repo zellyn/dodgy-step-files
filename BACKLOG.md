@@ -70,6 +70,21 @@ nightly rebaseline. assimp §12.15 still pending (needs new section + raw-file w
 - [ ] **OrcaSlicer** (highest-volume slicer STEP stream)
 - [ ] **Online3DViewer / occt-import-js** (kovacsv; attachment-rich, "opens in X / empty in Y" cross-oracle)
 
+**Wave 2 — MINED 2026-07-11 (low yield, as predicted — OCCT-wrapping slicers corroborate more than diversify):**
+- [x] **PrusaSlicer** → `audit/mining_prusaslicer_2026-07.md`. 1 NEW: cyclic `ORIENTED_EDGE.edge_element`
+      self-ref → EdgeEnd/EdgeStart recursion stack-overflow DoS (#11305); `#1=ORIENTED_EDGE('',*,*,#1,.F.);`.
+      → §12.3b Twi + cross-list §12.11 Ad. Rest corroborate existing OCCT classes.
+- [x] **OrcaSlicer** → `audit/mining_orcaslicer_2026-07.md`. 0 NEW (2 sub-cases). Value = cross-oracle
+      validator, not a defect source. Do NOT open a fixture wave.
+- [x] **Online3DViewer/occt-import-js** → `audit/mining_online3dviewer_2026-07.md`. 3 NEW (viewer exposes
+      differentials): (a) OCCT-VERSION differential — conical ADVANCED_FACE dropped by BRepMesh 7.7.x but
+      present ≤7.6.1 on VALID bytes (occt-import-js#42 / OCCT#33681) → §12.12 Xp, first version-divergence
+      entry; (b) wasm32 32-bit-address-space silent-empty on large valid STEP (#19; iOS-Safari cap sub-case
+      #443); (c) far-from-origin float32 three.js vertex collapse (#37/#467), distinct from Tb010/Tb013.
+- **Wave-2 synthesizable novel set ≈ 4:** cyclic-ORIENTED_EDGE DoS (Twi/Ad), OCCT-version conical drop (Xp),
+      far-origin float32 collapse (Tb/Xp); wasm-address-space is borderline-platform (Pf/Xp or describe-only).
+      → SYNTH TASK #496.
+
 **Wave 3 (mesh libraries — malformed-mesh/parser pathologies):**
 - [ ] **trimesh + Open3D** (messy-file loaders; RPly failures; trimesh ships an in-repo broken-model corpus)
 - [ ] **MeshLab / VCGlib** (`confirmed`-labeled PLY/OBJ crashers)
