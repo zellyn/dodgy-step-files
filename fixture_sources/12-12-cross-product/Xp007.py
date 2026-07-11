@@ -43,7 +43,8 @@ f.add_product_chain(sbsm)
 
 # Defect 1: self-referencing REPRESENTATION_RELATIONSHIP (cyclic ref)
 # #100 references itself in both rep_1 and rep_2 slots
-cycle = f._emit_raw("REPRESENTATION_RELATIONSHIP('cycle','',#100,#100)")
+_cyc_eid = f._next_id  # the id this entity will receive, so it can reference itself
+cycle = f._emit_raw(f"REPRESENTATION_RELATIONSHIP('cycle','',#{_cyc_eid},#{_cyc_eid})")
 
 # Defect 2: deeply-nested aggregate — 50 levels of parens
 # A naive recursive parser hits stack overflow at this depth

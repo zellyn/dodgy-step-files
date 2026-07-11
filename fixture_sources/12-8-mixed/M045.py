@@ -174,5 +174,5 @@ f._emit_raw(
 # The non-manifold reader path in OCCT dbba6f1/36cc58f skips color/layer binding.
 f._emit_raw(
     f"NON_MANIFOLD_SURFACE_SHAPE_REPRESENTATION('nmsm_cube',"
-    f"(#{sbsm.eid}),#9015)"
+    f"(#{sbsm.eid}),#9060)"
 )

@@ -150,5 +150,5 @@ f.add_product_chain(sbsm)
 # exceeds the receiver's default sewing tolerance (1.0e-3 mm).
 f._emit_raw(
     "MEASURE_REPRESENTATION_ITEM"
-    "('sewing_gap_exceeds_tolerance',LENGTH_MEASURE(1.1E-3),#9009)"
+    "('sewing_gap_exceeds_tolerance',LENGTH_MEASURE(1.1E-3),#9056)"
 )
