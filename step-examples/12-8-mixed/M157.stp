@@ -40,7 +40,7 @@ DATA;
 #60=LAMINATE_OR_PLY_DEFINITION('solder_mask_top','Top solder mask green LPI',$);
 /* Byte assertion: contains(b'PLY_BOUNDARY_REPRESENTATION') */
 /* DEFECT: PLY_BOUNDARY_REPRESENTATION covers (0,0) to (5,5) — PAD_U1_1 at (2.5,2.5) */
-/* The pad is inside this polygon; no clearance cutout was subtracted *)
+/* The pad is inside this polygon; no clearance cutout was subtracted */
 #70=PLY_BOUNDARY_REPRESENTATION('solder_mask_top_outline',#60,
   (CARTESIAN_POINT('corner_0',(0.0,0.0,0.0)),
    CARTESIAN_POINT('corner_1',(5.0,0.0,0.0)),

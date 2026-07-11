@@ -106,7 +106,7 @@ def _render_m140() -> str:
     lines.append("#22=PRODUCT_DEFINITION('design','',#21,PRODUCT_DEFINITION_CONTEXT(#1,'design'));")
     lines.append("/* External organization designated as supplier — contradicts .MADE. above */")
     lines.append("#30=ORGANIZATION('SUP-999','ExtSupplierCo','External precision machining supplier');")
-    lines.append("/* Organization role: 'supplier' — this role is only valid for .BOUGHT. parts *)  ")
+    lines.append("/* Organization role: 'supplier' — this role is only valid for .BOUGHT. parts */  ")
     lines.append("#31=ORGANIZATION_ROLE('supplier');")
     lines.append("/* DEFECT: APPLIED_ORGANIZATION_ASSIGNMENT assigns an external supplier (#30) */")
     lines.append("/* to PRODUCT_DEFINITION #22 which was formed with source=.MADE. (#21) */")

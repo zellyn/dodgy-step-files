@@ -3,7 +3,7 @@ ISO-10303-21;
 /* DEFECT: electronics sub-of mechanical_assembly sub-of electronics */
 /* Two PRODUCT_CATEGORY_RELATIONSHIP entries form cycle: A->B->A */
 /* Category tree walkers loop indefinitely; PDM tools hang or stack-overflow */
-/* Per ISO 10303-44 PRODUCT_CATEGORY_RELATIONSHIP graph must be acyclic *)  
+/* Per ISO 10303-44 PRODUCT_CATEGORY_RELATIONSHIP graph must be acyclic */  
 /* Byte assertion: contains(b'CONFIG_CONTROL_DESIGN') */
 /* Byte assertion: count_entity_def(b'PRODUCT_CATEGORY_RELATIONSHIP') >= 2 */
 /* Byte assertion: count_entity_def(b'PRODUCT_CATEGORY') >= 2 */
@@ -28,7 +28,7 @@ DATA;
   GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12))
   REPRESENTATION_CONTEXT('ctx','3D'));
 /* Byte assertion: count_entity_def(b'PRODUCT_CATEGORY') >= 2 */
-/* First category node: 'electronics' — typically a leaf or mid-level category *)  
+/* First category node: 'electronics' — typically a leaf or mid-level category */  
 #20=PRODUCT_CATEGORY('electronics','Electronic components and sub-assemblies');
 /* Second category node: 'mechanical_assembly' — normally a parent category */
 #21=PRODUCT_CATEGORY('mechanical_assembly','Mechanical assembly components');
@@ -38,9 +38,9 @@ DATA;
 #30=PRODUCT_CATEGORY_RELATIONSHIP('elec-sub-mech',
   'electronics is sub-category of mechanical_assembly',#20,#21);
 /* DEFECT leg 2: 'mechanical_assembly' declared as sub-category of 'electronics' */
-/* This makes mechanical_assembly appear as a specialization of electronics *)   
+/* This makes mechanical_assembly appear as a specialization of electronics */   
 /* Together #30 and #31 form the cycle: electronics->mechanical_assembly->electronics */
-/* Walking parent links from either node never reaches a root — infinite loop *)  
+/* Walking parent links from either node never reaches a root — infinite loop */  
 #31=PRODUCT_CATEGORY_RELATIONSHIP('mech-sub-elec',
   'mechanical_assembly is sub-category of electronics',#21,#20);
 /* Part assigned to the 'electronics' category — triggers the cycle on class lookup */
@@ -48,7 +48,7 @@ DATA;
 #36=PRODUCT_DEFINITION_FORMATION('rev_B','Rev B sensor board',#35);
 #37=PRODUCT_DEFINITION('design','',#36,PRODUCT_DEFINITION_CONTEXT(#1,'design'));
 /* Classification assignment binds #37 to category 'electronics' (#20) */
-/* A BOM exploder walking the hierarchy from #20 enters the A->B->A cycle *)  
+/* A BOM exploder walking the hierarchy from #20 enters the A->B->A cycle */  
 #40=APPLIED_CLASSIFICATION_ASSIGNMENT(#20,CLASSIFICATION_ROLE('classification'),(#37));
 /* GEOMETRIC_CURVE_SET IS the model entity — OCC yields empty */
 #500=GEOMETRIC_CURVE_SET('ap203-product-category-relationship-cycle-A-B-A',

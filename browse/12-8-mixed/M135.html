@@ -89,13 +89,13 @@
 <span class="lineno">34</span>/* A legacy PDM exporter that switched from CC2 to CC1 header but forgot to strip entities */
 <span class="lineno">35</span>#20=<mark>MECHANICAL_CONTEXT</mark>(&#x27;MECH&#x27;,#1,&#x27;mechanical&#x27;);
 <span class="lineno">36</span>/* Byte assertion: contains(b&#x27;<mark>DESIGN_CONTEXT</mark>&#x27;) */
-<span class="lineno">37</span>/* DEFECT: <mark>DESIGN_CONTEXT</mark> is a CC2-only entity; not present in CC1 schema *)   
+<span class="lineno">37</span>/* DEFECT: <mark>DESIGN_CONTEXT</mark> is a CC2-only entity; not present in CC1 schema */   
 <span class="lineno">38</span>/* CC1 equivalent is PRODUCT_DEFINITION_CONTEXT with lifecycle_stage=&#x27;design&#x27; */
 <span class="lineno">39</span>#21=<mark>DESIGN_CONTEXT</mark>(&#x27;DESIGN&#x27;,#1,&#x27;design&#x27;);
 <span class="lineno">40</span>/* Product using the CC2-only context entities in a CC1-declared file */
 <span class="lineno">41</span>#30=PRODUCT(&#x27;PART-099&#x27;,&#x27;Valve Body&#x27;,&#x27;Main flow control body&#x27;,(#20));
 <span class="lineno">42</span>#31=PRODUCT_DEFINITION_FORMATION(&#x27;rev_A&#x27;,&#x27;Production release&#x27;,#30);
-<span class="lineno">43</span>/* PRODUCT_DEFINITION references <mark>DESIGN_CONTEXT</mark> (#21) â another CC2-only type *)  
+<span class="lineno">43</span>/* PRODUCT_DEFINITION references <mark>DESIGN_CONTEXT</mark> (#21) â another CC2-only type */  
 <span class="lineno">44</span>#32=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#31,#21);
 <span class="lineno">45</span>/* GEOMETRIC_CURVE_SET IS the model entity â OCC yields empty */
 <span class="lineno">46</span>#500=GEOMETRIC_CURVE_SET(&#x27;ap203-cc1-schema-with-cc2-only-entities&#x27;,

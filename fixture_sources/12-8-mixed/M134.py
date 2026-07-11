@@ -97,7 +97,7 @@ def _render_m134() -> str:
     lines.append("#20=PERSON('jdoe','Doe','John',$,$,$);")
     lines.append("/* DEFECT: second PERSON also has id 'jdoe' — imported from approval database */")
     lines.append("/* Different last name 'Doppelganger' proves these are distinct individuals */")
-    lines.append("/* A valid file would use distinct ids such as 'jdoe' and 'jdopple' *)   ")
+    lines.append("/* A valid file would use distinct ids such as 'jdoe' and 'jdopple' */   ")
     lines.append("#21=PERSON('jdoe','Doppelganger','Jane',$,$,$);")
     lines.append("/* Shared organization for both persons */")
     lines.append("#22=ORGANIZATION('ORG-001','Acme Engineering','Mechanical design division');")

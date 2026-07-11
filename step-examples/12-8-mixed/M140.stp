@@ -39,7 +39,7 @@ DATA;
 #22=PRODUCT_DEFINITION('design','',#21,PRODUCT_DEFINITION_CONTEXT(#1,'design'));
 /* External organization designated as supplier — contradicts .MADE. above */
 #30=ORGANIZATION('SUP-999','ExtSupplierCo','External precision machining supplier');
-/* Organization role: 'supplier' — this role is only valid for .BOUGHT. parts *)  
+/* Organization role: 'supplier' — this role is only valid for .BOUGHT. parts */  
 #31=ORGANIZATION_ROLE('supplier');
 /* DEFECT: APPLIED_ORGANIZATION_ASSIGNMENT assigns an external supplier (#30) */
 /* to PRODUCT_DEFINITION #22 which was formed with source=.MADE. (#21) */

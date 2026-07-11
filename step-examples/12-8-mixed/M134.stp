@@ -32,7 +32,7 @@ DATA;
 #20=PERSON('jdoe','Doe','John',$,$,$);
 /* DEFECT: second PERSON also has id 'jdoe' — imported from approval database */
 /* Different last name 'Doppelganger' proves these are distinct individuals */
-/* A valid file would use distinct ids such as 'jdoe' and 'jdopple' *)   
+/* A valid file would use distinct ids such as 'jdoe' and 'jdopple' */   
 #21=PERSON('jdoe','Doppelganger','Jane',$,$,$);
 /* Shared organization for both persons */
 #22=ORGANIZATION('ORG-001','Acme Engineering','Mechanical design division');
