@@ -90,6 +90,32 @@ nightly rebaseline. assimp §12.15 still pending (needs new section + raw-file w
 - [ ] **MeshLab / VCGlib** (`confirmed`-labeled PLY/OBJ crashers)
 - [ ] **Draco + fTetWild** (OSS-Fuzz `.drc` crashers; failing Thingi10K STLs)
 
+**Wave 3 — MINED 2026-07-11 (independent mesh kernels → high yield, as predicted):**
+- [x] **trimesh + Open3D** → `audit/mining_trimesh_open3d_2026-07.md`. 12 novel (11 §12.15 Ip* parse-layer:
+      OBJ backslash line-continuation, face-like-substring-in-name, binary-STL-"solid"-header trap,
+      multi-body ASCII STL silent-drop, etc.; 1 §12.14 concave-n-gon fan-triangulation).
+- [x] **MeshLab + Draco + fTetWild** → `audit/mining_meshlab_draco_ftetwild_2026-07.md`. 16 novel:
+      **8 Draco `.drc` codec/container** (compression-bomb-in-codec, rANS entropy overflow, Edgebreaker
+      CLERS OOB, kd-tree point-cloud, integer-overflow size math) — a WHOLE NEW codec surface, zero
+      analogue in corpus; 3 §12.15 Ip* (MeshLab OFF/PLY differentials); 5 §12.14 (fTetWild valid-STL
+      volumetric-oracle defects).
+
+**CONSOLIDATED SYNTHESIS POOL (Waves 1+3, file-level, mined & ready):**
+- **§12.15 `Ip*` parse-layer ≈ 40** (assimp 26 + trimesh 11 + MeshLab 3) — GATED on the §12.15 raw-file
+  writer + section scaffold. THE priority unlock. → task #492.
+- **Draco `.drc` codec ≈ 8** — needs a BINARY writer (`draco_encoder` + field mutation); own `codec/draco`
+  sub-band under §12.15. Heavier tooling; separate sub-track.
+- **§12.14 `Me*` ≈ 6** (fTetWild 5 + trimesh 1) — fit existing mesh infra but some need mesh_builder
+  n-gon-face / volumetric-oracle support.
+- Numerous CORROBORATING (cross-loader confirmation of already-covered classes) — logged in the audit
+  files, NOT synthesized; usable as cross-oracle Notes on existing entries.
+
+**§12.15 BUILD PLAN (task #492, next):** (1) study how §12.14 mesh fixtures are stored/validated (closest
+analog to raw import-format files); (2) scaffold `step-examples/12-15-import-formats/` (`Ip*`) + catalog
+section + register in section lists / lints / catalog-json builder; (3) a raw-malformed-file WRITER
+(fixtures are malformed-by-construction, not Python-StepFile-generated); (4) pilot ~5 strongest assimp
+Ip* fixtures end-to-end; (5) scale to the ~40 pool. Draco codec is a follow-on sub-track.
+
 **Wave 4 (NEW categories the corpus lacks entirely — need new section/infra):**
 - [ ] **lib3mf / 3MF** (ZIP+XML/OPC container defects) — brand-new container-format category; needs new
       section + container-aware builder/validator. Bigger lift; scope separately.
