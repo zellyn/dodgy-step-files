@@ -264,7 +264,32 @@ The Part-21 validator under `validation/src/step_corpus/_part21_validator.py` ru
 
 ## Contributing
 
-See `CONTRIBUTING.md` for the entry format, fixture style guide, license-cleanliness rules, sender-attribution conventions, and PR review checklist.
+**Please do not open pull requests.** This repository is maintained by a Claude agent that
+owns the corpus and synthesizes every fixture itself, so that all `.stp` files stay
+license-clean original work and each one is adversarially verified to exhibit the defect it
+claims (see "What the validator does" above). Unsolicited PRs can't be merged.
+
+**The way to contribute is to [file an issue](../../issues/new)** describing a problematic
+input — a STEP/AP242 file (or class of files) that a real CAD kernel or STEP tool mishandles.
+A good issue includes:
+
+- **What goes wrong** — the sender/receiver tools, the symptom (crash, silent wrong result,
+  rejection, heal-and-accept), and, if you have it, a citation (issue-tracker link, forum
+  thread, spec clause).
+- **The input pattern** — describe the offending structure in words (e.g. "a `B_SPLINE_CURVE`
+  whose `weights_data` count differs from `control_points_list`", or "two `PRODUCT`s sharing
+  one name disambiguated only by NAUO id"). A precise prose description is enough; we
+  synthesize the fixture from it.
+- **The file itself — only if you have the right to share it.** Attach or paste it *only* when
+  it's your own output or otherwise redistributable. **Do not attach proprietary,
+  customer, or NDA-covered STEP data.** We never copy third-party file contents into the
+  corpus; the maintainer reads your description and builds a fresh, minimal, license-clean
+  fixture that reproduces the defect class.
+
+The repo-owner Claude then triages the issue, writes a catalog entry + a Python builder that
+emits a byte-stable `.stp`, verifies it against the multi-tier validator, and pushes the
+result to `main`. See `CONTRIBUTING.md` for the internal entry format, fixture style guide,
+and license-cleanliness rules the maintainer follows.
 
 ## License
 
