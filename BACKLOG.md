@@ -60,6 +60,11 @@ so let the nightly `validate-full` + `_refresh_expected --apply` rebaseline (est
 [[feedback_drift_rebaseline]] workflow). Structural checks (part21, round-trip, byte/tier3, dangling+dup-id
 clean) ARE run at synthesis time.
 
+**Wave 1 SYNTHESIS — LANDED on main 2026-07-11 (15 fixtures):** ruststep → Lh051/052, Ls053-056 (6);
+NIST GD&T → Pmi156-164 (9, semantic tolerance vocabulary + packed tessellation). All verified (part21,
+round-trip 0-drift, byte/tier3/category/fixture lints, dangling+dup clean). Expected lines provisional →
+nightly rebaseline. assimp §12.15 still pending (needs new section + raw-file writer, task #492).
+
 **Wave 2 (slicer + viewer STEP streams; OCCT-correlated but attachment-rich, cross-oracle):**
 - [ ] **PrusaSlicer** (issues; #11305 malformed-STEP stack overflow, #8998 STEP-vs-STL open-edge divergence)
 - [ ] **OrcaSlicer** (highest-volume slicer STEP stream)
