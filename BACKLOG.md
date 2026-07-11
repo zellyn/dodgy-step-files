@@ -24,6 +24,55 @@ Conventions:
 
 ## Active initiatives
 
+### B5 — New-source mining (2026-07 survey) — IN PROGRESS
+
+**Why:** The STEP/OCCT/CAx-IF/commercial-KB veins are near-saturated. A 2026-07 source
+survey (full detail in local `audit/source_survey_2026-07.md`) found new, currently-maintained
+frontiers with public issue trackers/forums and license-clean test-file seams. Mine each for
+FILE-LEVEL problematic-input classes (a static `.stp`/mesh/container fixture can reproduce it),
+synthesize catalog entries + builders, verify via validate2, and push to `main`.
+
+Take these on in parallel (≤3 mining agents at a time per [[feedback_parallelism]]). Order is
+"maintainer said you-pick" — sequenced below by tractability × novelty. Mark `[x]` when a source's
+candidate-defect list is mined; a second pass synthesizes the confirmed-novel, file-level ones.
+
+**Wave 1 (in progress — fits existing STEP/mesh infra, highest kernel-diversity):**
+- [ ] **ruststep** (github.com/ricosjp/ruststep issues, start #252) — independent Rust Part-21 parser;
+      highest kernel-diversity novelty; unhandled Part-21/AP cases in issues + TODOs. → STEP sections.
+- [ ] **assimp** (github.com/assimp/assimp issues + OSS-Fuzz) — independent import path; malformed-file
+      crashers at scale with reproducers. → mesh (§12.14) + format-lexical.
+- [ ] **MBx-IF / NIST test cases** (STC/FTC/CTC/HTC; "no restrictions" license) + CAx-IF test-round
+      STEP files — biggest LICENSE-CLEAN ingestible seam; exotic-but-legal AP242/PMI geometry.
+
+**Wave 2 (slicer + viewer STEP streams; OCCT-correlated but attachment-rich, cross-oracle):**
+- [ ] **PrusaSlicer** (issues; #11305 malformed-STEP stack overflow, #8998 STEP-vs-STL open-edge divergence)
+- [ ] **OrcaSlicer** (highest-volume slicer STEP stream)
+- [ ] **Online3DViewer / occt-import-js** (kovacsv; attachment-rich, "opens in X / empty in Y" cross-oracle)
+
+**Wave 3 (mesh libraries — malformed-mesh/parser pathologies):**
+- [ ] **trimesh + Open3D** (messy-file loaders; RPly failures; trimesh ships an in-repo broken-model corpus)
+- [ ] **MeshLab / VCGlib** (`confirmed`-labeled PLY/OBJ crashers)
+- [ ] **Draco + fTetWild** (OSS-Fuzz `.drc` crashers; failing Thingi10K STLs)
+
+**Wave 4 (NEW categories the corpus lacks entirely — need new section/infra):**
+- [ ] **lib3mf / 3MF** (ZIP+XML/OPC container defects) — brand-new container-format category; needs new
+      section + container-aware builder/validator. Bigger lift; scope separately.
+- [ ] **buildingSMART ifc-gherkin-rules** — maintained executable taxonomy of malformed-input classes;
+      mine rule names (ShapeFix-style) even if IFC-adjacent.
+
+**Datasets to ingest as filters/seeds (license notes):**
+- [ ] **Better STEP (`better-step/abs`)** — use as a FILTER to isolate the ~5% of Fusion360/ABC models
+      that fail OCCT meshing (describe-only for the models themselves).
+- [ ] **MeshRepairTestModels** — purpose-built broken meshes (small; verify license before ingest).
+- [ ] CC3D scan meshes — richer but **describe-only** (signed agreement; do NOT ingest bytes).
+
+**Explicitly deferred / out of scope:** LibreDWG (huge OSS-Fuzz/CVE crasher vein but DWG/DXF, not STEP —
+hold unless scope expands to legacy 2D/3D CAD). Concurrency/thread-safety bugs (not encodable as a static file).
+
+**Under-covered buckets these fill:** container-format (ZIP/OPC) defects; adversarial fuzz-crashers WITH
+reproducers; independent-parser Part-21 lexical divergences (empty `()`, `DATA;`, non-ASCII); STEP↔mesh
+round-trip divergence; PLY/OFF parser pathologies; producer-side degenerate-geometry recipes.
+
 ### Q5 — Silent-empty subset strengthening (DEFERRED-IN-PROGRESS)
 
 **Why:** Per QUALITY_DASHBOARD, 88% of the ~755 silent-empty fixtures are
