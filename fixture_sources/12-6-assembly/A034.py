@@ -44,11 +44,11 @@ while f._next_id < 90:
 
 # #90 = catia_aspect SHAPE_ASPECT (NOT PROPERTY_DEFINITION_SHAPE).
 catia_aspect = f._emit_raw(
-    "SHAPE_ASPECT('catia_aspect','CATIA SDR bypass',#9004,.T.)"
+    "SHAPE_ASPECT('catia_aspect','CATIA SDR bypass',#9054,.T.)"
 )
 
 # Shape representation for the SDR.
-shape_rep = f._emit_raw(f"SHAPE_REPRESENTATION('catia_rep',(#{plc.eid}),#9010)")
+shape_rep = f._emit_raw(f"SHAPE_REPRESENTATION('catia_rep',(#{plc.eid}),#9060)")
 
 # The defect: SHAPE_DEFINITION_REPRESENTATION(#90, ...) where #90 is SHAPE_ASPECT.
 f._emit_raw(

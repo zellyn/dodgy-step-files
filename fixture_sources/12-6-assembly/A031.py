@@ -52,7 +52,7 @@ f._emit_raw(f"STYLED_ITEM('si_kin',(#{psa.eid}),#{face.eid})")
 # Retired AP214 kinematics entities.
 # KINEMATIC_LINK_REPRESENTATION — retired in AP242 Ed.1.
 klr = f._emit_raw(
-    f"KINEMATIC_LINK_REPRESENTATION('link_rep',(#{plc.eid}),#9010,'')"
+    f"KINEMATIC_LINK_REPRESENTATION('link_rep',(#{plc.eid}),#9060,'')"
 )
 # KINEMATIC_LINK_REPRESENTATION_RELATION — retired in AP242 Ed.1.
 f._emit_raw(

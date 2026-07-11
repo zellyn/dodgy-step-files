@@ -127,9 +127,9 @@ sub_prod = f._emit_raw(
 )
 sub_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{sub_prod.eid})")
 sub_pdef = f._emit_raw(
-    f"PRODUCT_DEFINITION('design','',#{sub_pdf.eid},#9003)"
+    f"PRODUCT_DEFINITION('design','',#{sub_pdf.eid},#9053)"
 )
 f._emit_raw(
     f"NEXT_ASSEMBLY_USAGE_OCCURRENCE("
-    f"'1','full_transp_instance','',#9004,#{sub_pdef.eid},$)"
+    f"'1','full_transp_instance','',#9054,#{sub_pdef.eid},$)"
 )

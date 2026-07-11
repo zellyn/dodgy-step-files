@@ -788,3 +788,78 @@ pure entity parsing (no kernel) and proves discrimination where shape_counts is 
 **DECISION NEEDED (Zellyn):** build the structural-linter oracle (reopens growth, ~2-3 days infra +
 fixtures) or hold the corpus at ~3158 as a geometry/topology/mesh-complete artifact? Prototype proves
 feasibility; the shift to a non-kernel oracle is the only judgment call.
+
+## Trust finding 2026-07-06 (robust dangling-ref audit) — assembly boilerplate bug, VERIFIED
+Ran a robust string/comment/paren-aware Part-21 tokenizer (scratchpad: dangling.py) over the corpus
+to find GENUINE dangling references (referenced #N never defined). Robust count = 147 files (5.7%),
+vs the naive ;-split's 569 (22%) — the naive parser's ~422 extra were false positives (missed defs
+after /* */ comments, e.g. Gs026's #30). Classification: 52 DOCUMENTED (dangling IS the point —
+sentinel #999 etc.), 23 incidental-harmless (broken 90xx scaffold in a fixture whose real defect is on
+a separate well-formed subgraph), **72 CONCERNING**.
+
+**71 of the 72 concerning = ONE generator bug** (independently grep-verified on A001): the shared
+sub-assembly boilerplate references `#9003`/`#9004`/`#9010` which are NEVER defined; the
+plausibly-intended `#9053` (PD_CONTEXT), `#9054` (assembly-root PRODUCT_DEFINITION), `#9060` (GEOM_
+REP_CONTEXT) ARE defined. So the NAUO *parent* link (#9004) and rep contexts dangle → the file is not
+a valid assembly. These fixtures (54 §12-6-assembly + 8 §12-12 + 5 §12-13 + 4 §12-10-perf; e.g.
+A001/A003/A005/A007/P013-018) are meant to demonstrate ONE interop defect (dup instances, color loss,
+hierarchy) on an otherwise-valid assembly — but the broken parent/context may confound the claim
+(reader could reject/heal for the wrong reason). They're currently CONFIRMED/green, so no CI urgency.
+Fix = correct the boilerplate generator (#9003→#9053, #9004→#9054, #9010→#9060, #9022→#9060) and
+re-emit 71 fixtures; likely CHANGES occt/gmsh output (valid vs broken assembly) → needs DRIFT
+rebaseline. **MAINTAINER DECISION** (71-fixture regen + rebaseline) — do not do unilaterally.
++1 loner: **Ad042** documented as "reference to wrong-TYPE entity" but #9000 is simply undefined
+(mechanism drifted to dangling) — individual fix (define #9000 as the intended wrong-type entity).
+
+**v2 DANGLING_REF: viable** on dangling.py (validated vs Gs026 FP + Pf001 TP). Two caveats to fold in:
+parse ALL DATA sections + resolve Ed.3 `@section#id` (only 8 multi-DATA files; sole residual FP Lh033),
+and keep the `*)`-typo-comment-terminator heuristic scoped to inside comment scans. Full results:
+scratchpad final.json / ranked_C.txt.
+
+## Boilerplate fix DONE (2026-07-06) + re-validation Signal-A finding
+Fixed 57 of the 71 concerning assembly-boilerplate fixtures (#9003->#9053, #9004->#9054, #9010->#9060):
+verified 0 genuine dangling refs remain, structural oracle now `ok`. The fix is ORACLE-INVISIBLE
+(occt/gmsh output byte-identical → 0 DRIFT, demonstration preserved) — OCC nulls the missing parent
+ref and yields the same stub either way. Branch `fix-assembly-boilerplate-dangling`. **15 DEFERRED**
+(non-uniform scaffold, need individual handling): A110, A112, Ad042 (define #9000 as wrong-TYPE),
+P011, Pf035/038/039, Wr056/057/062, Xp004/020/029/036/044.
+
+## Re-validation sweep (2026-07-06) — "fixtures that don't demonstrate their claim"
+Read-only two-signal sweep (oracle-invisibility via reachability + mutation; claim/content mismatch).
+NEW SYSTEMIC CLASS found: **geometry defects on entities UNREACHABLE from the shape-representation
+root** — the carrier (bspline/pcurve/surface_curve/surface) is present in bytes but not linked into
+any face/shell reachable from SHAPE_REPRESENTATION, so OCC builds a trivial GEOMETRIC_CURVE_SET stub
+(shape(1)) and the claimed defect NEVER FIRES. **5 mutation-CONFIRMED** (moving the defect param
+changes no oracle output): P014, Gn002, Gn007, Gn008, P022. ~41 more orphan-carrier need review; 135
+fixtures have NO byte/structural/tier3 assertion at all (pinning-hygiene gap). CAVEAT: the sweep agent
+OVER-FLAGS — Pmi075 was falsely flagged ("no kinematic entities") but actually HAS 3 KINEMATIC
+entities and demonstrates its claim; Signal-B (claim/content) is unreliable. So the list is a strong
+LEAD requiring per-item verification (structural-grep + mutation) before any fix (feedback_audit_pattern).
+Full data: scratchpad SUSPECT_REPORT.md / reach.py / combined_orphan.json.
+
+## Re-validation VERIFIED (2026-07-06): 5 fixtures confirmed not-demonstrating
+Double-verified (reachability + mutation-differential, both independent) the orphan-carrier suspects.
+**CONFIRMED not-demonstrating (5):** Gn002, Gn007, Gn008 (nurbs), P014, P022 (assembly). Mechanism:
+the defect entity sits in a SECOND, unreferenced GEOMETRIC_CURVE_SET('defect_curves',...); the
+shape-rep root points only at a 1-vertex stub, so OCC builds shape(1) and never processes the defect.
+byte_assertions pass on byte-presence only → green but unreproducible. See feedback_orphaned_defect_carrier.
+CLEARED 64 (incl. the sweep's over-flags Pmi075 + M008 — M008 IS reachable, gmsh=shape(27)). UNCLEAR 5
+(P027, P017, Pf003/007/014 — perf/structural claims not oracle-demonstrable). Verified data: scratchpad
+VERIFICATION_RESULT.txt / final_verdicts.json. FIX = wire each defect into an EDGE_CURVE/ADVANCED_FACE
+reachable from the rep root (per feedback_wire_mechanism), then accept-live-oracle — awaiting maintainer go.
+
+## Re-validation COMPLETE (2026-07-06) — 135-unpinned audit + final tally
+Audited the 135 non-mesh NO_PINNING fixtures (897 total NO_PINNING but 762 are mesh, validated by the
+mesh oracle). Result: **133 DEMONSTRATE_BUT_UNPINNED** (baseline occt=signal(11) crash ×133 or empty ×2,
+zero false-clean shape(N); all match Expected exactly; reaction already pinned by Expected+DRIFT — gap is
+only a missing byte/mechanism assertion, a hardening nicety). **2 SUSPECT (Hea001, Hea011)** — orphaned
+GEOMETRIC_SET carriers like the confirmed-5 but return `empty` (documented value) → lower confidence; fix =
+reclassify bytes-sufficient→runtime-only. Data: scratchpad NO_PINNING_AUDIT.md.
+
+**FINAL RE-VALIDATION TALLY (corpus is honest — ~0.3% problematic):**
+- NOT-DEMONSTRATING, high-confidence (5): Gn002, Gn007, Gn008, P014, P022 — oracle-invisible quality/spec
+  defects; wiring proven insufficient; fix = reclassify OR geometry-quality oracle (MAINTAINER DECISION).
+- NOT-DEMONSTRATING, lower-confidence (2): Hea001, Hea011 — reclassify to runtime-only.
+- UNDER-ASSERTED but fine (133): optional hygiene — add a mechanism byte-assertion each; NOT a demo failure.
+- Everything else verified demonstrating. Coverage: reachability+mutation across all ~2400 STEP fixtures,
+  double-verified, over-flags rejected (Pmi075/M008 cleared).

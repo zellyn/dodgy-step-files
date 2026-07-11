@@ -43,17 +43,17 @@ f.add_product_chain(sbsm)
 sub_pdc = f._emit_raw("PRODUCT_CONTEXT('sub',#9000,'mechanical')")
 sub_prod = f._emit_raw(f"PRODUCT('Sub','Sub','',(#{sub_pdc.eid}))")
 sub_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{sub_prod.eid})")
-sub_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{sub_pdf.eid},#9003)")
+sub_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{sub_pdf.eid},#9053)")
 f._emit_raw(
-    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','sub','',#9004,#{sub_pdef.eid},$)"
+    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','sub','',#9054,#{sub_pdef.eid},$)"
 )
 
 # Geometric tolerance infrastructure.
 shape_asp = f._emit_raw(
-    f"SHAPE_ASPECT('tol_face','tolerance surface',#9004,.T.)"
+    f"SHAPE_ASPECT('tol_face','tolerance surface',#9054,.T.)"
 )
 datum_feat = f._emit_raw(
-    f"DATUM_FEATURE('A_datum','',#9004,.T.)"
+    f"DATUM_FEATURE('A_datum','',#9054,.T.)"
 )
 datum = f._emit_raw(
     f"DATUM('datum_A','',#{datum_feat.eid},.T.)"

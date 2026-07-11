@@ -44,10 +44,10 @@ sub_pdc = f._emit_raw("PRODUCT_CONTEXT('sub',#9000,'mechanical')")
 # Single shared leaf product — all 24 NAUOs reference this one PD.
 leaf_prod = f._emit_raw(f"PRODUCT('LeafCap','LeafCap','',(#{sub_pdc.eid}))")
 leaf_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{leaf_prod.eid})")
-leaf_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{leaf_pdf.eid},#9003)")
+leaf_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{leaf_pdf.eid},#9053)")
 
 # 24 sibling NAUO rows all pointing at the same leaf_pdef.
 for i in range(1, 25):
     f._emit_raw(
-        f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('{i}','inst{i:03d}','',#9004,#{leaf_pdef.eid},$)"
+        f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('{i}','inst{i:03d}','',#9054,#{leaf_pdef.eid},$)"
     )

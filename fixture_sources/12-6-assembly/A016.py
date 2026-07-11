@@ -43,16 +43,16 @@ sub_pdc = f._emit_raw("PRODUCT_CONTEXT('sub',#9000,'mechanical')")
 # L-Bracket-Assembly.
 lbr_prod = f._emit_raw(f"PRODUCT('L-Bracket-Assembly','LBR','',(#{sub_pdc.eid}))")
 lbr_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{lbr_prod.eid})")
-lbr_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{lbr_pdf.eid},#9003)")
+lbr_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{lbr_pdf.eid},#9053)")
 
 # Nut subcomponent within LBR.
 nut_prod = f._emit_raw(f"PRODUCT('Nut','Nut','',(#{sub_pdc.eid}))")
 nut_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{nut_prod.eid})")
-nut_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{nut_pdf.eid},#9003)")
+nut_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{nut_pdf.eid},#9053)")
 
 # NAUO 1: AS1 → LBR (named AS1_TO_LBR — UDA is on this NAUO).
 nauo_lbr = f._emit_raw(
-    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','AS1_TO_LBR','',#9004,#{lbr_pdef.eid},$)"
+    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','AS1_TO_LBR','',#9054,#{lbr_pdef.eid},$)"
 )
 # NAUO 2: LBR → Nut (named LBR_TO_NUT — UDA is on the MLRD path through here).
 nauo_nut = f._emit_raw(
@@ -69,9 +69,9 @@ uda_prop2 = f._emit_raw(
 )
 f._emit_raw(
     f"PROPERTY_DEFINITION_REPRESENTATION(#{uda_prop1.eid},"
-    f"REPRESENTATION('UDA_rep_1',(DESCRIPTIVE_REPRESENTATION_ITEM('AS1_LBR_attr','mlrd_level_1')),#9010))"
+    f"REPRESENTATION('UDA_rep_1',(DESCRIPTIVE_REPRESENTATION_ITEM('AS1_LBR_attr','mlrd_level_1')),#9060))"
 )
 f._emit_raw(
     f"PROPERTY_DEFINITION_REPRESENTATION(#{uda_prop2.eid},"
-    f"REPRESENTATION('UDA_rep_2',(DESCRIPTIVE_REPRESENTATION_ITEM('LBR_NUT_attr','mlrd_level_2')),#9010))"
+    f"REPRESENTATION('UDA_rep_2',(DESCRIPTIVE_REPRESENTATION_ITEM('LBR_NUT_attr','mlrd_level_2')),#9060))"
 )

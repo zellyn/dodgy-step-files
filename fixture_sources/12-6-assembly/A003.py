@@ -49,7 +49,7 @@ phantom_pdf = f._emit_raw(
     f"PRODUCT_DEFINITION_FORMATION('','',#{phantom_prod.eid})"
 )
 phantom_pdef = f._emit_raw(
-    f"PRODUCT_DEFINITION('design','',#{phantom_pdf.eid},#9003)"
+    f"PRODUCT_DEFINITION('design','',#{phantom_pdf.eid},#9053)"
 )
 phantom_pds = f._emit_raw(
     f"PRODUCT_DEFINITION_SHAPE('','',#{phantom_pdef.eid})"
@@ -57,7 +57,7 @@ phantom_pds = f._emit_raw(
 
 # Empty MANIFOLD_SURFACE_SHAPE_REPRESENTATION — no items, no geometry.
 empty_mssr = f._emit_raw(
-    f"MANIFOLD_SURFACE_SHAPE_REPRESENTATION('phantom_rep',(),#9010)"
+    f"MANIFOLD_SURFACE_SHAPE_REPRESENTATION('phantom_rep',(),#9060)"
 )
 f._emit_raw(
     f"SHAPE_DEFINITION_REPRESENTATION(#{phantom_pds.eid},#{empty_mssr.eid})"
@@ -65,5 +65,5 @@ f._emit_raw(
 
 # Single NAUO referencing the phantom product definition.
 f._emit_raw(
-    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','phantom_node','',#9004,#{phantom_pdef.eid},$)"
+    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','phantom_node','',#9054,#{phantom_pdef.eid},$)"
 )

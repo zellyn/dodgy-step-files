@@ -44,7 +44,7 @@ sub_prod = f._emit_raw(
 )
 sub_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{sub_prod.eid})")
 sub_pdef = f._emit_raw(
-    f"PRODUCT_DEFINITION('design','',#{sub_pdf.eid},#9003)"
+    f"PRODUCT_DEFINITION('design','',#{sub_pdf.eid},#9053)"
 )
 
 # Normal right-handed placement for the sub-shape representation.
@@ -55,7 +55,7 @@ sub_plc = f._emit_raw(
     f"AXIS2_PLACEMENT_3D('sub_plc',#{sub_origin.eid},#{sub_z_rh.eid},#{sub_x_rh.eid})"
 )
 sub_sr = f._emit_raw(
-    f"SHAPE_REPRESENTATION('sub_rep',(#{sub_plc.eid}),#9010)"
+    f"SHAPE_REPRESENTATION('sub_rep',(#{sub_plc.eid}),#9060)"
 )
 rep_map = f._emit_raw(f"REPRESENTATION_MAP(#{sub_plc.eid},#{sub_sr.eid})")
 
@@ -79,5 +79,5 @@ mi = f._emit_raw(
 # NAUO for assembly-presence lint.
 f._emit_raw(
     f"NEXT_ASSEMBLY_USAGE_OCCURRENCE("
-    f"'1','mirrored_comp_instance','',#9004,#{sub_pdef.eid},$)"
+    f"'1','mirrored_comp_instance','',#9054,#{sub_pdef.eid},$)"
 )

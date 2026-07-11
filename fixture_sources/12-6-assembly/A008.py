@@ -45,7 +45,7 @@ sub_pdc = f._emit_raw("PRODUCT_CONTEXT('sub',#9000,'mechanical')")
 # Sub-component product.
 sub_prod = f._emit_raw(f"PRODUCT('Sub','Sub','',(#{sub_pdc.eid}))")
 sub_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{sub_prod.eid})")
-sub_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{sub_pdf.eid},#9003)")
+sub_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{sub_pdf.eid},#9053)")
 
 # AP242 Ed.2 PRODUCT_DEFINITION_OCCURRENCE wrapping the sub PD (SELECT widening).
 pdo = f._emit_raw(
@@ -54,10 +54,10 @@ pdo = f._emit_raw(
 
 # NAUO using the wrapping PDO as the related slot — Ed.2 SELECT form.
 f._emit_raw(
-    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','sub_e2','',#9004,#{pdo.eid},$)"
+    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','sub_e2','',#9054,#{pdo.eid},$)"
 )
 
 # REPRESENTATION_MAP + MAPPED_ITEM for the sub-component.
-sub_sr = f._emit_raw(f"SHAPE_REPRESENTATION('sub_rep',(#{plc.eid}),#9010)")
+sub_sr = f._emit_raw(f"SHAPE_REPRESENTATION('sub_rep',(#{plc.eid}),#9060)")
 rep_map = f._emit_raw(f"REPRESENTATION_MAP(#{plc.eid},#{sub_sr.eid})")
 f._emit_raw(f"MAPPED_ITEM('mi1',#{rep_map.eid},#{plc.eid})")

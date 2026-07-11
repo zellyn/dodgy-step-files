@@ -41,9 +41,9 @@ f.add_product_chain(sbsm)
 sub_pdc = f._emit_raw("PRODUCT_CONTEXT('sub',#9000,'mechanical')")
 sub_prod = f._emit_raw(f"PRODUCT('Sub','Sub','',(#{sub_pdc.eid}))")
 sub_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{sub_prod.eid})")
-sub_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{sub_pdf.eid},#9003)")
+sub_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{sub_pdf.eid},#9053)")
 f._emit_raw(
-    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','sub','',#9004,#{sub_pdef.eid},$)"
+    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','sub','',#9054,#{sub_pdef.eid},$)"
 )
 
 # NX-style UDA bound to SHAPE_ASPECT instead of NAUO — the binding mismatch.
@@ -55,5 +55,5 @@ uda_prop = f._emit_raw(
 )
 f._emit_raw(
     f"PROPERTY_DEFINITION_REPRESENTATION(#{uda_prop.eid},"
-    f"REPRESENTATION('mat_uda',(DESCRIPTIVE_REPRESENTATION_ITEM('material','Steel_1045')),#9010))"
+    f"REPRESENTATION('mat_uda',(DESCRIPTIVE_REPRESENTATION_ITEM('material','Steel_1045')),#9060))"
 )

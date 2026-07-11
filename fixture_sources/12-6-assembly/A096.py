@@ -42,17 +42,17 @@ f.add_product_chain(sbsm)
 sub_pdc = f._emit_raw("PRODUCT_CONTEXT('sub',#9000,'mechanical')")
 sub_prod = f._emit_raw(f"PRODUCT('Part','Part','',(#{sub_pdc.eid}))")
 sub_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{sub_prod.eid})")
-sub_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{sub_pdf.eid},#9003)")
+sub_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{sub_pdf.eid},#9053)")
 
 # NAUO 1: instance at identity location (the one writer wrongly skips).
 f._emit_raw(
-    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','identity_instance','',#9004,#{sub_pdef.eid},$)"
+    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','identity_instance','',#9054,#{sub_pdef.eid},$)"
 )
 # NAUO 2: instance at non-identity location (translated 10 mm along X).
 f._emit_raw(
-    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','placed_instance_a','',#9004,#{sub_pdef.eid},$)"
+    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','placed_instance_a','',#9054,#{sub_pdef.eid},$)"
 )
 # NAUO 3: instance at non-identity location (translated 20 mm along X).
 f._emit_raw(
-    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('3','placed_instance_b','',#9004,#{sub_pdef.eid},$)"
+    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('3','placed_instance_b','',#9054,#{sub_pdef.eid},$)"
 )

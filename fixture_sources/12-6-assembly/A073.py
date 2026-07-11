@@ -47,7 +47,7 @@ f.add_product_chain(sbsm)
 # REPRESENTATION_MAP wrapping the base shape, then 3 MAPPED_ITEMs at
 # distinct AXIS2_PLACEMENT_3D locations — the nested-compound pattern
 # whose locations Expand Compounds drops.
-rep_map = f._emit_raw(f"REPRESENTATION_MAP(#{plc.eid},#9022)")
+rep_map = f._emit_raw(f"REPRESENTATION_MAP(#{plc.eid},#9060)")
 for k, offset in enumerate([(2.0, 0.0, 0.0), (4.0, 0.0, 0.0), (6.0, 0.0, 0.0)]):
     p_inst = f.cartesian_point(offset)
     plc_inst = f.axis2_placement_3d(p_inst, zdir, xdir)

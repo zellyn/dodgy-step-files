@@ -42,7 +42,7 @@ asm_x = f._emit_raw("DIRECTION('asm_x',(1.0,0.0,0.0))")
 asm_plc = f._emit_raw(
     f"AXIS2_PLACEMENT_3D('asm_placement',#{asm_origin.eid},#{asm_z.eid},#{asm_x.eid})"
 )
-asm_sr = f._emit_raw(f"SHAPE_REPRESENTATION('asm_rep',(#{asm_plc.eid}),#9010)")
+asm_sr = f._emit_raw(f"SHAPE_REPRESENTATION('asm_rep',(#{asm_plc.eid}),#9060)")
 
 sub_pdc = f._emit_raw("PRODUCT_CONTEXT('sub',#9000,'mechanical')")
 
@@ -60,7 +60,7 @@ for i, (name, instance_name, offset) in enumerate(COMPONENTS, start=1):
     )
     pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{prod.eid})")
     pdef = f._emit_raw(
-        f"PRODUCT_DEFINITION('design','',#{pdf.eid},#9003)"
+        f"PRODUCT_DEFINITION('design','',#{pdf.eid},#9053)"
     )
 
     # Individual placement for this component.
@@ -77,7 +77,7 @@ for i, (name, instance_name, offset) in enumerate(COMPONENTS, start=1):
 
     # SHAPE_REPRESENTATION + REPRESENTATION_MAP for MAPPED_ITEM.
     comp_sr = f._emit_raw(
-        f"SHAPE_REPRESENTATION('{name}_rep',(#{comp_plc.eid}),#9010)"
+        f"SHAPE_REPRESENTATION('{name}_rep',(#{comp_plc.eid}),#9060)"
     )
     rep_map = f._emit_raw(
         f"REPRESENTATION_MAP(#{comp_plc.eid},#{comp_sr.eid})"
@@ -91,5 +91,5 @@ for i, (name, instance_name, offset) in enumerate(COMPONENTS, start=1):
     # NEXT_ASSEMBLY_USAGE_OCCURRENCE (#3 total required).
     f._emit_raw(
         f"NEXT_ASSEMBLY_USAGE_OCCURRENCE("
-        f"'{i}','{instance_name}','',#9004,#{pdef.eid},$)"
+        f"'{i}','{instance_name}','',#9054,#{pdef.eid},$)"
     )

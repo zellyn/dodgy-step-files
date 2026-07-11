@@ -46,7 +46,7 @@ asm_x = f._emit_raw("DIRECTION('',(1.0,0.0,0.0))")
 asm_plc = f._emit_raw(
     f"AXIS2_PLACEMENT_3D('asm_placement',#{asm_orig.eid},#{asm_z.eid},#{asm_x.eid})"
 )
-asm_sr = f._emit_raw(f"SHAPE_REPRESENTATION('asm_rep',(#{asm_plc.eid}),#9010)")
+asm_sr = f._emit_raw(f"SHAPE_REPRESENTATION('asm_rep',(#{asm_plc.eid}),#9060)")
 
 # Component representation — placed at (10, 0, 0).
 cmp_orig = f._emit_raw("CARTESIAN_POINT('cmp_origin',(10.0,0.0,0.0))")
@@ -55,7 +55,7 @@ cmp_x = f._emit_raw("DIRECTION('',(1.0,0.0,0.0))")
 cmp_plc = f._emit_raw(
     f"AXIS2_PLACEMENT_3D('cmp_placement',#{cmp_orig.eid},#{cmp_z.eid},#{cmp_x.eid})"
 )
-cmp_sr = f._emit_raw(f"SHAPE_REPRESENTATION('cmp_rep',(#{cmp_plc.eid}),#9010)")
+cmp_sr = f._emit_raw(f"SHAPE_REPRESENTATION('cmp_rep',(#{cmp_plc.eid}),#9060)")
 
 # ITEM_DEFINED_TRANSFORMATION with swapped source/target — the defect.
 # Correct would be (asm_plc → cmp_plc); here they are SWAPPED.
@@ -73,7 +73,7 @@ f._emit_raw(
 sub_pdc = f._emit_raw("PRODUCT_CONTEXT('sub',#9000,'mechanical')")
 sub_prod = f._emit_raw(f"PRODUCT('Sub','Sub','',(#{sub_pdc.eid}))")
 sub_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{sub_prod.eid})")
-sub_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{sub_pdf.eid},#9003)")
+sub_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{sub_pdf.eid},#9053)")
 f._emit_raw(
-    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','sub','',#9004,#{sub_pdef.eid},$)"
+    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','sub','',#9054,#{sub_pdef.eid},$)"
 )

@@ -68,7 +68,7 @@ surf = f._emit_raw(f"PLANE('seam_plane',#{surf_plc.eid})")
 # PCURVE: AP214/AP242-only entity — the key defect entity.
 # definitional_representation is a minimal DEFINITIONAL_REPRESENTATION.
 def_rep = f._emit_raw(
-    f"DEFINITIONAL_REPRESENTATION('',(#{pcurve_line.eid}),#9010)"
+    f"DEFINITIONAL_REPRESENTATION('',(#{pcurve_line.eid}),#9060)"
 )
 pcurve = f._emit_raw(f"PCURVE('',#{surf.eid},#{def_rep.eid})")
 
@@ -85,11 +85,11 @@ sub_prod = f._emit_raw(
 )
 sub_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{sub_prod.eid})")
 sub_pdef = f._emit_raw(
-    f"PRODUCT_DEFINITION('design','',#{sub_pdf.eid},#9003)"
+    f"PRODUCT_DEFINITION('design','',#{sub_pdf.eid},#9053)"
 )
 f._emit_raw(
     f"NEXT_ASSEMBLY_USAGE_OCCURRENCE("
-    f"'1','seam_curve_instance','',#9004,#{sub_pdef.eid},$)"
+    f"'1','seam_curve_instance','',#9054,#{sub_pdef.eid},$)"
 )
 
 # ── Override FILE_SCHEMA to emit CONFIG_CONTROL_DESIGN (AP203) ────────────────

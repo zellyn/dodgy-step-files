@@ -64,7 +64,7 @@ mirror_plc = f.axis2_placement_3d(mirror_orig, zdir, mirror_xdir)
 # placement. This is the topology pattern Draft's Mirror emits and
 # some writers' NAUO path skips.
 rep_map = f._emit_raw(
-    f"REPRESENTATION_MAP(#{plc_body.eid},#9022)"   # references the MSSR from add_product_chain
+    f"REPRESENTATION_MAP(#{plc_body.eid},#9060)"   # references the MSSR from add_product_chain
 )
 mapped_item = f._emit_raw(
     f"MAPPED_ITEM('mirrored_body',#{rep_map.eid},#{mirror_plc.eid})"
@@ -90,5 +90,5 @@ mirror_pdef = f._emit_raw(
 # NEXT_ASSEMBLY_USAGE_OCCURRENCE linking parent → mirrored child.
 f._emit_raw(
     f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','BodyMirrored','',"
-    f"#9004,#{mirror_pdef.eid},$)"
+    f"#9054,#{mirror_pdef.eid},$)"
 )

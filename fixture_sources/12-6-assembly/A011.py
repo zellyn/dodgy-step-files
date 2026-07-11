@@ -46,7 +46,7 @@ sub_pdc = f._emit_raw("PRODUCT_CONTEXT('sub',#9000,'mechanical')")
 for i in range(1, 4):
     cap_prod = f._emit_raw(f"PRODUCT('Cap','Cap','',(#{sub_pdc.eid}))")
     cap_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{cap_prod.eid})")
-    cap_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{cap_pdf.eid},#9003)")
+    cap_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{cap_pdf.eid},#9053)")
     f._emit_raw(
-        f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('{i}','cap{i}','',#9004,#{cap_pdef.eid},$)"
+        f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('{i}','cap{i}','',#9054,#{cap_pdef.eid},$)"
     )

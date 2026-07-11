@@ -80,12 +80,12 @@ pdc_extra = f._emit_raw(f"PRODUCT_CONTEXT('',#9000,'mechanical')")
 # 'screw' is incorrectly emitted as the top product
 screw_prod = f._emit_raw(f"PRODUCT('screw','screw','',(#{pdc_extra.eid}))")
 screw_pdf  = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{screw_prod.eid})")
-screw_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{screw_pdf.eid},#9003)")
+screw_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{screw_pdf.eid},#9053)")
 
 # 'plate' is incorrectly emitted as a component
 plate_prod = f._emit_raw(f"PRODUCT('plate','plate','',(#{pdc_extra.eid}))")
 plate_pdf  = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{plate_prod.eid})")
-plate_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{plate_pdf.eid},#9003)")
+plate_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{plate_pdf.eid},#9053)")
 
 # NAUO: screw -> plate (wrong direction; input had plate -> screw)
 f._emit_raw(

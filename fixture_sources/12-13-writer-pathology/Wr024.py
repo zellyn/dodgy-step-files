@@ -66,7 +66,7 @@ shell = f.open_shell([face])
 sbsm = f.shell_based_surface_model([shell])
 f.add_product_chain(sbsm)
 
-# Flat NAUO chain: top (#9004) → part_1, part_2, part_3, part_4
+# Flat NAUO chain: top (#9054) → part_1, part_2, part_3, part_4
 # Comment documents the original two-level hierarchy that was lost.
 f._emit_raw(
     "/* DEFECT: original hierarchy had two subassemblies: "
@@ -79,34 +79,34 @@ part_pdc = f._emit_raw(f"PRODUCT_CONTEXT('parts',#9000,'mechanical')")
 
 part1_prod = f._emit_raw(f"PRODUCT('part_1','part_1','',(#{part_pdc.eid}))")
 part1_pdf  = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{part1_prod.eid})")
-part1_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{part1_pdf.eid},#9003)")
+part1_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{part1_pdf.eid},#9053)")
 
 part2_prod = f._emit_raw(f"PRODUCT('part_2','part_2','',(#{part_pdc.eid}))")
 part2_pdf  = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{part2_prod.eid})")
-part2_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{part2_pdf.eid},#9003)")
+part2_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{part2_pdf.eid},#9053)")
 
 part3_prod = f._emit_raw(f"PRODUCT('part_3','part_3','',(#{part_pdc.eid}))")
 part3_pdf  = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{part3_prod.eid})")
-part3_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{part3_pdf.eid},#9003)")
+part3_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{part3_pdf.eid},#9053)")
 
 part4_prod = f._emit_raw(f"PRODUCT('part_4','part_4','',(#{part_pdc.eid}))")
 part4_pdf  = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{part4_prod.eid})")
-part4_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{part4_pdf.eid},#9003)")
+part4_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{part4_pdf.eid},#9053)")
 
-# Four flat NAUOs: top (#9004) → part1..part4 directly (no intermediate subassembly)
+# Four flat NAUOs: top (#9054) → part1..part4 directly (no intermediate subassembly)
 f._emit_raw(
     f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','part_1_flat','',"
-    f"#9004,#{part1_pdef.eid},$)"
+    f"#9054,#{part1_pdef.eid},$)"
 )
 f._emit_raw(
     f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','part_2_flat','',"
-    f"#9004,#{part2_pdef.eid},$)"
+    f"#9054,#{part2_pdef.eid},$)"
 )
 f._emit_raw(
     f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('3','part_3_flat','',"
-    f"#9004,#{part3_pdef.eid},$)"
+    f"#9054,#{part3_pdef.eid},$)"
 )
 f._emit_raw(
     f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('4','part_4_flat','',"
-    f"#9004,#{part4_pdef.eid},$)"
+    f"#9054,#{part4_pdef.eid},$)"
 )
