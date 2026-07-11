@@ -45185,3 +45185,53 @@ exercised against CGAL PMP / MeshFix.
 - **Structural assertion**: struct == DUPLICATE_ID
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: which of the two definitions wins is reader-dependent; two importers can silently build different models from the same file when the duplicated ids carry different attribute values.
+
+### Twi282 — Cyclic `ORIENTED_EDGE.edge_element` self-reference → unbounded `EdgeStart`/`EdgeEnd` recursion (stack-overflow DoS)
+- **Category**: §12.3b wire-loop
+- **Sources**: Pattern-mined from prusa3d/PrusaSlicer#11305 — pattern only, no bytes; the attached `stack-overflow.step` is a user-uploaded proprietary CAD export (DESCRIBE-ONLY, never ingested). ASAN report: frames alternate `StepShape_OrientedEdge::EdgeEnd()` ⇄ `EdgeStart()` in `OCCTWrapper.so`.
+- **Description**: An `ORIENTED_EDGE` whose `edge_element` (4th arg) references ITSELF, e.g. `#N=ORIENTED_EDGE('',*,*,#N,.F.);`. The spec requires `edge_element` to be an `EDGE` (ultimately an `EDGE_CURVE`); here it is the `ORIENTED_EDGE` itself. OCCT's derived-attribute accessors `EdgeStart()`/`EdgeEnd()` delegate to `edge_element->EdgeStart()` (swapping to `EdgeEnd()` when `orientation=.F.`); a self-cycle never reaches an `EDGE_CURVE`, so the two accessors recurse into each other forever and blow the C stack — a fuzz-grade DoS.
+- **Reproducer recipe**: `#N=ORIENTED_EDGE('',*,*,#N,.F.);` placed in an `EDGE_LOOP` → `FACE_OUTER_BOUND` → `ADVANCED_FACE` (on a `PLANE`) → `OPEN_SHELL` so the edge-loop transfer pass dereferences it. A 2-cycle (`#1→#2→#1`) overflows identically.
+- **Expected kernel behavior**: chase `ORIENTED_EDGE` wrapper chains under a depth/visited-set guard; on a cycle emit `E_EDGE_CYCLE` and drop the edge (or reject the file). Must not stack-overflow — a receiver must give up gracefully on adversarial input.
+- **Notes**: **See also**: Twi004 (a FINITE wrapper chain that terminates at an `EDGE_CURVE` and is healed by traversal — silent-empty, no crash); this is the UNBOUNDED-cycle variant. **Cross-reference**: §12.11 Ad (adversarial / fuzz DoS) — distinct entity path from Gs054 (COMPOSITE_CURVE_SEGMENT self-cycle) and Ad087/Pf010 (generic entity-graph / external-ref cycle); no existing entry covers an `ORIENTED_EDGE.edge_element` cycle. The self-referential `#N` IS the intended defect (not an accidental dangling ref); the pure-Python Part-21 validator accepts the file (the id resolves — to itself). Expected-validation line is PROVISIONAL best-guess (crasher; the live oracle was not run in this worktree). Synonyms: "ORIENTED_EDGE points at itself", "cyclic edge_element self-reference", "EdgeStart/EdgeEnd infinite recursion", "self-referential oriented edge stack overflow", "unbounded wrapper-chain recursion in edge topology". Provenance tier: bytes-sufficient.
+- **Byte assertion**: contains(b'ORIENTED_EDGE')
+- **Byte assertion**: count_entity_def(b'ORIENTED_EDGE') == 1
+- **Byte assertion**: matches(rb"#(\d+)=ORIENTED_EDGE\('',\*,\*,#\1,\.F\.\)")
+- **OCC behavior**: stack-overflows (signal 11) on the unbounded `EdgeStart`/`EdgeEnd` self-recursion (catalog disallows crash). Kernel-bug witnessed: receivers should produce one of {reject, heal-by-dropping-edge}, never crash.
+- **Severity**: P1
+- **Model impact**: Crafted input drives the parser's derived-attribute accessors into unbounded mutual recursion; the load process is killed by a signal (stack exhaustion) and no shape is delivered — a denial-of-service on any receiver that dereferences the edge without a cycle guard.
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
+
+### Xp045 — Far-from-origin model collapses in a float32 viewer buffer while double-precision CAD renders it
+- **Category**: §12.12 cross-product (double-vs-single-precision output differential)
+- **Sources**: Pattern-mined from kovacsv/occt-import-js#37 / kovacsv/Online3DViewer#467 ("model doesn't contain any meshes … all positions are 0", opens in CAD Assistant) — pattern only, no bytes; the reporter-attached file is a third-party user upload (DESCRIBE-ONLY).
+- **Sender**: a producer that authors geometry at absolute (GIS-style) coordinates
+- **Receiver**: a viewer that emits a float32 (three.js / glTF / WASM) vertex buffer
+- **Description**: A fully valid solid whose own extent is ~10 mm but which is authored a very large distance from the origin — here a 10×10 planar square whose corners sit at absolute coordinates ~1.2e8 mm. Double-precision readers (OCCT, CAD Assistant) load and render it fine (the 10 mm relief is ~1e-7 of the absolute magnitude, still far above the 1e-6 mm model tolerance). A reader that down-converts vertex positions into a float32 buffer cannot represent 10-unit relief at magnitude 1.2e8 — the float32 ULP there is ~16 units — so all four corners quantize to the SAME grid point and the face collapses to a degenerate zero-area primitive; the viewer shows an empty model.
+- **Reproducer recipe**: a valid `ADVANCED_FACE` on a `PLANE` whose `CARTESIAN_POINT`s are all offset by ~1.2e8 mm from the origin while the face's own extent is ~10 mm; wrap in the standard PRODUCT chain.
+- **Expected kernel behavior**: recentre far-from-origin geometry to a local frame before down-converting to single precision, or warn that a float32 output buffer cannot represent the model at its absolute coordinates. Emitting an all-zero / degenerate mesh with no diagnostic is the defect.
+- **Notes**: **See also**: Tb013 (far-from-origin DOUBLE-precision ULP-vs-tolerance), Tb010 (float32 round-trip that MASKS a real self-intersection). Here the file is clean and self-consistent — the defect is purely the output-buffer precision down-conversion in a WASM/glTF/three.js viewer, ORACLE-INVISIBLE to our single (double-precision) OCCT oracle (which loads a normal shape). Mechanism partly inferred from the ticket (could co-occur with a large-file size cap) — medium confidence. gmsh count is PROVISIONAL. Synonyms: "far from origin float32 collapse", "single-precision viewer loses local relief", "all vertex positions zero after down-convert", "absolute coordinates degrade in three.js buffer", "GIS-placed model empty in web viewer". Provenance tier: runtime-only.
+- **Byte assertion**: contains(b'CARTESIAN_POINT')
+- **Byte assertion**: contains(b'120000000.0')
+- **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 4
+- **Tier-3 assertion**: load == "ok"
+- **Severity**: P2
+- **Model impact**: A valid part silently disappears (or degenerates to a zero-extent primitive) when opened in a single-precision viewer; the same bytes are correct in a double-precision CAD tool, so the loss is receiver-dependent and easy to misattribute to a bad file.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
+
+### Xp046 — Valid conical `ADVANCED_FACE` dropped by OCCT 7.7.x `BRepMesh` but present in ≤7.6.1 / desktop CAD (kernel-version differential)
+- **Category**: §12.12 cross-product (kernel-version × conical-face tessellation differential)
+- **Sources**: Pattern-mined from kovacsv/occt-import-js#42 "Surfaces are occasionally missed" → OCCT tracker 33681 — pattern only, no bytes; the reporter-attached file is a third-party user upload (DESCRIBE-ONLY).
+- **Sender**: any CAD writer emitting a valid conical frustum solid
+- **Receiver**: OCCT `BRepMesh` — 7.7.x regression vs ≤7.6.1
+- **Description**: A fully valid, watertight `MANIFOLD_SOLID_BREP` conical frustum whose lateral face is exactly one `ADVANCED_FACE` on a `CONICAL_SURFACE` (semi-angle 20°) bounded by two `CIRCLE` edges; the two caps are planar. The file is NOT defective — every OCCT version parses it and loads a solid. The defect is a mesher REGRESSION: on an OCCT-7.7.x `BRepMesh` the conical `ADVANCED_FACE` yields ZERO triangles, so the solid renders with a hole (a missing face); OCCT-7.6.1, CAD Assistant and other CAD tessellate all faces. Same bytes → complete in one kernel version, defective in the next.
+- **Reproducer recipe**: `MANIFOLD_SOLID_BREP` / `CLOSED_SHELL` with one `ADVANCED_FACE` on a `CONICAL_SURFACE` (finite frustum bounded by a bottom and top `CIRCLE` edge) plus two planar cap faces; fully valid and watertight.
+- **Expected kernel behavior**: mesh every face of a valid solid; a face that produces zero triangles is a mesher defect, not an input defect — the receiver must not silently emit a solid missing a face. Cross-oracle: the same bytes are complete in one kernel version and defective in the next, so a version bump is itself a regression surface.
+- **Notes**: **See also**: Gn014 / Gd* (conical-canonical INPUT-geometry defects), Pf021 (near-apex healing) — those are bad-geometry inputs; here the geometry is valid and the regression lives in the receiver's mesher VERSION. No prior catalog entry captures a kernel-version tessellation differential. ORACLE-INVISIBLE to our single-version harness: the file loads as a normal solid; the divergence lives between kernel versions. gmsh count is PROVISIONAL. Synonyms: "conical face missing after OCCT 7.7 upgrade", "BRepMesh drops cone face", "solid renders with a hole one kernel version", "version-differential missing face", "same STEP complete in 7.6.1 broken in 7.7". Provenance tier: runtime-only.
+- **Byte assertion**: contains(b'CONICAL_SURFACE')
+- **Byte assertion**: count_entity_def(b'CONICAL_SURFACE') == 1
+- **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
+- **Tier-3 assertion**: load == "ok"
+- **Tier-3 assertion**: face[0].surface_type == "cone"
+- **Severity**: P2
+- **Model impact**: A valid part loses a face silently after a kernel-version bump; downstream watertightness / volume checks fail on a model the sender authored correctly, and the loss is attributable only by comparing two kernel versions of the same receiver.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`

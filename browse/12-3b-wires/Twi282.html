@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Twi282 — Cyclic `ORIENTED_EDGE.edge_element` self-reference → unbounded `EdgeStart`/`EdgeEnd` recursion (stack-overflow DoS)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3b Wires / loops / edges</a> <span class="sep">/</span> <span class="current">Twi282</span>
+</nav>
+<header class="title-bar">
+<h1>Twi282 <span class="sep">—</span> <span class="entry-title">Cyclic `ORIENTED_EDGE.edge_element` self-reference → unbounded `EdgeStart`/`EdgeEnd` recursion (stack-overflow DoS)</span></h1>
+<p class="category">§12.3b wire-loop</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3b-wires/Twi282.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3b-wires/Twi282.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>Pattern-mined from prusa3d/PrusaSlicer#11305 — pattern only, no bytes</li>
+<li>the attached `stack-overflow.step` is a user-uploaded proprietary CAD export (DESCRIBE-ONLY, never ingested). ASAN report: frames alternate `StepShape_OrientedEdge::EdgeEnd()` ⇄ `EdgeStart()` in `OCCTWrapper.so`.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An `ORIENTED_EDGE` whose `edge_element` (4th arg) references ITSELF, e.g. `#N=ORIENTED_EDGE(&#x27;&#x27;,*,*,#N,.F.);`. The spec requires `edge_element` to be an `EDGE` (ultimately an `EDGE_CURVE`); here it is the `ORIENTED_EDGE` itself. OCCT&#x27;s derived-attribute accessors `EdgeStart()`/`EdgeEnd()` delegate to `edge_element-&gt;EdgeStart()` (swapping to `EdgeEnd()` when `orientation=.F.`); a self-cycle never reaches an `EDGE_CURVE`, so the two accessors recurse into each other forever and blow the C stack — a fuzz-grade DoS.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`#N=ORIENTED_EDGE(&#x27;&#x27;,*,*,#N,.F.);` placed in an `EDGE_LOOP` → `FACE_OUTER_BOUND` → `ADVANCED_FACE` (on a `PLANE`) → `OPEN_SHELL` so the edge-loop transfer pass dereferences it. A 2-cycle (`#1→#2→#1`) overflows identically.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>chase `ORIENTED_EDGE` wrapper chains under a depth/visited-set guard; on a cycle emit `E_EDGE_CYCLE` and drop the edge (or reject the file). Must not stack-overflow — a receiver must give up gracefully on adversarial input.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Twi004 (a FINITE wrapper chain that terminates at an `EDGE_CURVE` and is healed by traversal — silent-empty, no crash); this is the UNBOUNDED-cycle variant. **Cross-reference**: §12.11 Ad (adversarial / fuzz DoS) — distinct entity path from Gs054 (COMPOSITE_CURVE_SEGMENT self-cycle) and Ad087/Pf010 (generic entity-graph / external-ref cycle); no existing entry covers an `ORIENTED_EDGE.edge_element` cycle. The self-referential `#N` IS the intended defect (not an accidental dangling ref); the pure-Python Part-21 validator accepts the file (the id resolves — to itself). Expected-validation line is PROVISIONAL best-guess (crasher; the live oracle was not run in this worktree). Synonyms: &quot;ORIENTED_EDGE points at itself&quot;, &quot;cyclic edge_element self-reference&quot;, &quot;EdgeStart/EdgeEnd infinite recursion&quot;, &quot;self-referential oriented edge stack overflow&quot;, &quot;unbounded wrapper-chain recursion in edge topology&quot;. Provenance tier: bytes-sufficient.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;ORIENTED_EDGE&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;ORIENTED_EDGE&#x27;) == 1</code></li>
+<li><code>matches(rb&quot;#(\d+)=ORIENTED_EDGE\(&#x27;&#x27;,\*,\*,#\1,\.F\.\)&quot;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Twi004.html">Twi004</a>, <a href="../12-2c-surfaces/Gs054.html">Gs054</a>, <a href="../12-11-adversarial/Ad087.html">Ad087</a>, <a href="../12-10-perf/Pf010.html">Pf010</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Twi282: OPEN_SHELL with one ADVANCED_FACE on a PLANE (z=0, normal +Z); FACE_OUTER_BOUND references an EDGE_LOOP whose single <mark>ORIENTED_EDGE</mark> has its edge_element (4th arg) pointing at ITSELF â a cyclic self-reference with no EDGE_CURVE anywhere in the cycle; the derived EdgeStart()/EdgeEnd() accessors recurse into each other unbounded and overflow the stack; receiver must guard wrapper-chain traversal with a visited-set/depth bound and never crash */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Twi282&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Twi282.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=PLANE(&#x27;&#x27;,#4);
+<span class="lineno">15</span><mark>#6=ORIENTED_EDGE(&#x27;&#x27;,*,*,#6,.F.)</mark>;
+<span class="lineno">16</span>#7=EDGE_LOOP(&#x27;&#x27;,(#6));
+<span class="lineno">17</span>#8=FACE_OUTER_BOUND(&#x27;&#x27;,#7,.T.);
+<span class="lineno">18</span>#9=ADVANCED_FACE(&#x27;&#x27;,(#8),#5,.T.);
+<span class="lineno">19</span>#10=OPEN_SHELL(&#x27;&#x27;,(#9));
+<span class="lineno">20</span>#11=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#10));
+<span class="lineno">21</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">22</span>#9051=PRODUCT(&#x27;Twi282&#x27;,&#x27;Twi282&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">23</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">24</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">25</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">26</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">27</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">28</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">29</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">30</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">31</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">32</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#11),#9060);
+<span class="lineno">33</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">34</span>ENDSEC;
+<span class="lineno">35</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Twi281.html">&larr; Twi281</a> <a class="up" href="index.html">§12.3b Wires / loops / edges</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

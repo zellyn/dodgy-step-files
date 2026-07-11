@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Xp046 — Valid conical `ADVANCED_FACE` dropped by OCCT 7.7.x `BRepMesh` but present in ≤7.6.1 / desktop CAD (kernel-version differential)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.12 Cross-product</a> <span class="sep">/</span> <span class="current">Xp046</span>
+</nav>
+<header class="title-bar">
+<h1>Xp046 <span class="sep">—</span> <span class="entry-title">Valid conical `ADVANCED_FACE` dropped by OCCT 7.7.x `BRepMesh` but present in ≤7.6.1 / desktop CAD (kernel-version differential)</span></h1>
+<p class="category">§12.12 cross-product (kernel-version × conical-face tessellation differential)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-interop" href="../by-tag/interop/index.html">interop</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-12-cross-product/Xp046.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-12-cross-product/Xp046.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>Pattern-mined from kovacsv/occt-import-js#42 &quot;Surfaces are occasionally missed&quot; → OCCT tracker 33681 — pattern only, no bytes</li>
+<li>the reporter-attached file is a third-party user upload (DESCRIBE-ONLY).</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>any CAD writer emitting a valid conical frustum solid</p></section>
+<section><h2>Description</h2>
+<p>A fully valid, watertight `MANIFOLD_SOLID_BREP` conical frustum whose lateral face is exactly one `ADVANCED_FACE` on a `CONICAL_SURFACE` (semi-angle 20°) bounded by two `CIRCLE` edges; the two caps are planar. The file is NOT defective — every OCCT version parses it and loads a solid. The defect is a mesher REGRESSION: on an OCCT-7.7.x `BRepMesh` the conical `ADVANCED_FACE` yields ZERO triangles, so the solid renders with a hole (a missing face); OCCT-7.6.1, CAD Assistant and other CAD tessellate all faces. Same bytes → complete in one kernel version, defective in the next.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`MANIFOLD_SOLID_BREP` / `CLOSED_SHELL` with one `ADVANCED_FACE` on a `CONICAL_SURFACE` (finite frustum bounded by a bottom and top `CIRCLE` edge) plus two planar cap faces; fully valid and watertight.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>mesh every face of a valid solid; a face that produces zero triangles is a mesher defect, not an input defect — the receiver must not silently emit a solid missing a face. Cross-oracle: the same bytes are complete in one kernel version and defective in the next, so a version bump is itself a regression surface.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Gn014 / Gd* (conical-canonical INPUT-geometry defects), Pf021 (near-apex healing) — those are bad-geometry inputs; here the geometry is valid and the regression lives in the receiver&#x27;s mesher VERSION. No prior catalog entry captures a kernel-version tessellation differential. ORACLE-INVISIBLE to our single-version harness: the file loads as a normal solid; the divergence lives between kernel versions. gmsh count is PROVISIONAL. Synonyms: &quot;conical face missing after OCCT 7.7 upgrade&quot;, &quot;BRepMesh drops cone face&quot;, &quot;solid renders with a hole one kernel version&quot;, &quot;version-differential missing face&quot;, &quot;same STEP complete in 7.6.1 broken in 7.7&quot;. Provenance tier: runtime-only.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>runtime-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;CONICAL_SURFACE&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;CONICAL_SURFACE&#x27;) == 1</code></li>
+<li><code>contains(b&#x27;MANIFOLD_SOLID_BREP&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+<li><code>face[0].surface_type == &quot;cone&quot;</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-2b-nurbs/Gn014.html">Gn014</a>, <a href="../12-10-perf/Pf021.html">Pf021</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Xp046: valid watertight <mark>MANIFOLD_SOLID_BREP</mark> conical frustum: one ADVANCED_FACE on a <mark>CONICAL_SURFACE</mark> (semi-angle 20Â°) bounded by two CIRCLE edges, plus two planar caps; the file loads a solid in every OCCT version, but OCCT-7.7.x BRepMesh emits zero triangles for the conical face (regression) so the solid renders with a hole while â¤7.6.1 / CAD Assistant tessellate all faces â a kernel-version mesher differential, not an input defect */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Xp046&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Xp046.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span><mark>#5=CONICAL_SURFACE(</mark>&#x27;&#x27;,#4,10.0,0.349065850399);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#7=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">17</span>#8=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">18</span>#9=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#6,#7,#8);
+<span class="lineno">19</span>#10=CIRCLE(&#x27;&#x27;,#9,10.0);
+<span class="lineno">20</span>#11=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">21</span>#12=VERTEX_POINT(&#x27;&#x27;,#11);
+<span class="lineno">22</span>#13=EDGE_CURVE(&#x27;&#x27;,#12,#12,#10,.T.);
+<span class="lineno">23</span>#14=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,15.0));
+<span class="lineno">24</span>#15=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">25</span>#16=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">26</span>#17=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#14,#15,#16);
+<span class="lineno">27</span>#18=CIRCLE(&#x27;&#x27;,#17,15.459553514);
+<span class="lineno">28</span>#19=CARTESIAN_POINT(&#x27;&#x27;,(15.459553514,0.0,15.0));
+<span class="lineno">29</span>#20=VERTEX_POINT(&#x27;&#x27;,#19);
+<span class="lineno">30</span>#21=EDGE_CURVE(&#x27;&#x27;,#20,#20,#18,.T.);
+<span class="lineno">31</span>#22=ORIENTED_EDGE(&#x27;&#x27;,$,$,#13,.T.);
+<span class="lineno">32</span>#23=EDGE_LOOP(&#x27;&#x27;,(#22));
+<span class="lineno">33</span>#24=FACE_OUTER_BOUND(&#x27;&#x27;,#23,.T.);
+<span class="lineno">34</span>#25=ORIENTED_EDGE(&#x27;&#x27;,$,$,#21,.F.);
+<span class="lineno">35</span>#26=EDGE_LOOP(&#x27;&#x27;,(#25));
+<span class="lineno">36</span>#27=FACE_BOUND(&#x27;&#x27;,#26,.T.);
+<span class="lineno">37</span>#28=ADVANCED_FACE(&#x27;&#x27;,(#24,#27),#5,.T.);
+<span class="lineno">38</span>#29=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">39</span>#30=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0));
+<span class="lineno">40</span>#31=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">41</span>#32=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#29,#30,#31);
+<span class="lineno">42</span>#33=PLANE(&#x27;&#x27;,#32);
+<span class="lineno">43</span>#34=ORIENTED_EDGE(&#x27;&#x27;,$,$,#13,.F.);
+<span class="lineno">44</span>#35=EDGE_LOOP(&#x27;&#x27;,(#34));
+<span class="lineno">45</span>#36=FACE_OUTER_BOUND(&#x27;&#x27;,#35,.T.);
+<span class="lineno">46</span>#37=ADVANCED_FACE(&#x27;&#x27;,(#36),#33,.T.);
+<span class="lineno">47</span>#38=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,15.0));
+<span class="lineno">48</span>#39=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">49</span>#40=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">50</span>#41=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#38,#39,#40);
+<span class="lineno">51</span>#42=PLANE(&#x27;&#x27;,#41);
+<span class="lineno">52</span>#43=ORIENTED_EDGE(&#x27;&#x27;,$,$,#21,.T.);
+<span class="lineno">53</span>#44=EDGE_LOOP(&#x27;&#x27;,(#43));
+<span class="lineno">54</span>#45=FACE_OUTER_BOUND(&#x27;&#x27;,#44,.T.);
+<span class="lineno">55</span>#46=ADVANCED_FACE(&#x27;&#x27;,(#45),#42,.T.);
+<span class="lineno">56</span>#47=CLOSED_SHELL(&#x27;&#x27;,(#28,#37,#46));
+<span class="lineno">57</span>#48=<mark>MANIFOLD_SOLID_BREP</mark>(&#x27;&#x27;,#47);
+<span class="lineno">58</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">59</span>#9051=PRODUCT(&#x27;Xp046&#x27;,&#x27;Xp046&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">60</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">61</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">62</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">63</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">64</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">65</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">66</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">67</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">68</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">69</span>#9061=ADVANCED_BREP_SHAPE_REPRESENTATION(&#x27;&#x27;,(#48),#9060);
+<span class="lineno">70</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">71</span>ENDSEC;
+<span class="lineno">72</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Xp045.html">&larr; Xp045</a> <a class="up" href="index.html">§12.12 Cross-product</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>
