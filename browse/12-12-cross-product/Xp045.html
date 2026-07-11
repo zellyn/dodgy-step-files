@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Xp045 — Far-from-origin model collapses in a float32 viewer buffer while double-precision CAD renders it</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.12 Cross-product</a> <span class="sep">/</span> <span class="current">Xp045</span>
+</nav>
+<header class="title-bar">
+<h1>Xp045 <span class="sep">—</span> <span class="entry-title">Far-from-origin model collapses in a float32 viewer buffer while double-precision CAD renders it</span></h1>
+<p class="category">§12.12 cross-product (double-vs-single-precision output differential)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-interop" href="../by-tag/interop/index.html">interop</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-12-cross-product/Xp045.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-12-cross-product/Xp045.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>Pattern-mined from kovacsv/occt-import-js#37 / kovacsv/Online3DViewer#467 (&quot;model doesn&#x27;t contain any meshes … all positions are 0&quot;, opens in CAD Assistant) — pattern only, no bytes</li>
+<li>the reporter-attached file is a third-party user upload (DESCRIBE-ONLY).</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>a producer that authors geometry at absolute (GIS-style) coordinates</p></section>
+<section><h2>Description</h2>
+<p>A fully valid solid whose own extent is ~10 mm but which is authored a very large distance from the origin — here a 10×10 planar square whose corners sit at absolute coordinates ~1.2e8 mm. Double-precision readers (OCCT, CAD Assistant) load and render it fine (the 10 mm relief is ~1e-7 of the absolute magnitude, still far above the 1e-6 mm model tolerance). A reader that down-converts vertex positions into a float32 buffer cannot represent 10-unit relief at magnitude 1.2e8 — the float32 ULP there is ~16 units — so all four corners quantize to the SAME grid point and the face collapses to a degenerate zero-area primitive; the viewer shows an empty model.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>a valid `ADVANCED_FACE` on a `PLANE` whose `CARTESIAN_POINT`s are all offset by ~1.2e8 mm from the origin while the face&#x27;s own extent is ~10 mm; wrap in the standard PRODUCT chain.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>recentre far-from-origin geometry to a local frame before down-converting to single precision, or warn that a float32 output buffer cannot represent the model at its absolute coordinates. Emitting an all-zero / degenerate mesh with no diagnostic is the defect.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Tb013 (far-from-origin DOUBLE-precision ULP-vs-tolerance), Tb010 (float32 round-trip that MASKS a real self-intersection). Here the file is clean and self-consistent — the defect is purely the output-buffer precision down-conversion in a WASM/glTF/three.js viewer, ORACLE-INVISIBLE to our single (double-precision) OCCT oracle (which loads a normal shape). Mechanism partly inferred from the ticket (could co-occur with a large-file size cap) — medium confidence. gmsh count is PROVISIONAL. Synonyms: &quot;far from origin float32 collapse&quot;, &quot;single-precision viewer loses local relief&quot;, &quot;all vertex positions zero after down-convert&quot;, &quot;absolute coordinates degrade in three.js buffer&quot;, &quot;GIS-placed model empty in web viewer&quot;. Provenance tier: runtime-only.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>runtime-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;CARTESIAN_POINT&#x27;)</code></li>
+<li><code>contains(b&#x27;120000000.0&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;CARTESIAN_POINT&#x27;) &gt;= 4</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-4-tolerance/Tb013.html">Tb013</a>, <a href="../12-4-tolerance/Tb010.html">Tb010</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Xp045: valid 10x10 planar square whose four <mark>CARTESIAN_POINT</mark>s sit at absolute coordinates ~1.2e8 mm from the origin (own extent ~10 mm); double-precision readers load it, but a float32 viewer output buffer cannot resolve 10-unit relief at magnitude 1.2e8 (ULP ~16) so all corners quantize to one point and the mesh collapses to zero â reader must recentre to a local frame before down-converting, or warn */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Xp045&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Xp045.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span><mark>#1=CARTESIAN_POINT(</mark>&#x27;&#x27;,(<mark>120000000.0</mark>,85000000.0,33000000.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=PLANE(&#x27;&#x27;,#4);
+<span class="lineno">15</span><mark>#6=CARTESIAN_POINT(</mark>&#x27;&#x27;,(<mark>120000000.0</mark>,85000000.0,33000000.0));
+<span class="lineno">16</span><mark>#7=CARTESIAN_POINT(</mark>&#x27;&#x27;,(120000010.0,85000000.0,33000000.0));
+<span class="lineno">17</span><mark>#8=CARTESIAN_POINT(</mark>&#x27;&#x27;,(120000010.0,85000010.0,33000000.0));
+<span class="lineno">18</span><mark>#9=CARTESIAN_POINT(</mark>&#x27;&#x27;,(<mark>120000000.0</mark>,85000010.0,33000000.0));
+<span class="lineno">19</span>#10=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">20</span>#11=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">21</span>#12=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">22</span>#13=VERTEX_POINT(&#x27;&#x27;,#9);
+<span class="lineno">23</span>#14=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">24</span>#15=VECTOR(&#x27;&#x27;,#14,10.0);
+<span class="lineno">25</span>#16=LINE(&#x27;&#x27;,#6,#15);
+<span class="lineno">26</span>#17=EDGE_CURVE(&#x27;&#x27;,#10,#11,#16,.T.);
+<span class="lineno">27</span>#18=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">28</span>#19=VECTOR(&#x27;&#x27;,#18,10.0);
+<span class="lineno">29</span>#20=LINE(&#x27;&#x27;,#7,#19);
+<span class="lineno">30</span>#21=EDGE_CURVE(&#x27;&#x27;,#11,#12,#20,.T.);
+<span class="lineno">31</span>#22=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">32</span>#23=VECTOR(&#x27;&#x27;,#22,10.0);
+<span class="lineno">33</span>#24=LINE(&#x27;&#x27;,#8,#23);
+<span class="lineno">34</span>#25=EDGE_CURVE(&#x27;&#x27;,#12,#13,#24,.T.);
+<span class="lineno">35</span>#26=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">36</span>#27=VECTOR(&#x27;&#x27;,#26,10.0);
+<span class="lineno">37</span>#28=LINE(&#x27;&#x27;,#9,#27);
+<span class="lineno">38</span>#29=EDGE_CURVE(&#x27;&#x27;,#13,#10,#28,.T.);
+<span class="lineno">39</span>#30=ORIENTED_EDGE(&#x27;&#x27;,$,$,#17,.T.);
+<span class="lineno">40</span>#31=ORIENTED_EDGE(&#x27;&#x27;,$,$,#21,.T.);
+<span class="lineno">41</span>#32=ORIENTED_EDGE(&#x27;&#x27;,$,$,#25,.T.);
+<span class="lineno">42</span>#33=ORIENTED_EDGE(&#x27;&#x27;,$,$,#29,.T.);
+<span class="lineno">43</span>#34=EDGE_LOOP(&#x27;&#x27;,(#30,#31,#32,#33));
+<span class="lineno">44</span>#35=FACE_OUTER_BOUND(&#x27;&#x27;,#34,.T.);
+<span class="lineno">45</span>#36=ADVANCED_FACE(&#x27;&#x27;,(#35),#5,.T.);
+<span class="lineno">46</span>#37=OPEN_SHELL(&#x27;&#x27;,(#36));
+<span class="lineno">47</span>#38=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#37));
+<span class="lineno">48</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">49</span>#9051=PRODUCT(&#x27;Xp045&#x27;,&#x27;Xp045&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">50</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">51</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">52</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">53</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">54</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">55</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">56</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">57</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">58</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">59</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#38),#9060);
+<span class="lineno">60</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">61</span>ENDSEC;
+<span class="lineno">62</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Xp044.html">&larr; Xp044</a> <a class="up" href="index.html">§12.12 Cross-product</a> <a class="next" href="Xp046.html">Xp046 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

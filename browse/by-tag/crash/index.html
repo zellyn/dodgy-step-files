@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1><span class="tag tag-crash">crash</span></h1>
 <p class="blurb">Kernel-side crash (signal-11 / segfault, runtime-error, infinite-loop, OOM).</p>
-<p class="meta">262 entries</p>
+<p class="meta">263 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Section</th><th>Expected validation</th></tr></thead><tbody>
@@ -275,6 +275,7 @@
 <tr><td><a href="../../12-3b-wires/Twi231.html"><code>Twi231</code></a></td><td>ShapeFix_Wire.FixLacking with-existing-wire-degenerate-vertex</td><td><a href="../../12-3b-wires/index.html">§12.3b Wires / loops / edges</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-3b-wires/Twi248.html"><code>Twi248</code></a></td><td>BRepLib::SameParameter null 3D curve dereference</td><td><a href="../../12-3b-wires/index.html">§12.3b Wires / loops / edges</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-3b-wires/Twi277.html"><code>Twi277</code></a></td><td>SURFACE_CURVE wraps null after StepGeom_SurfaceCurve downcast (OCE legacy)</td><td><a href="../../12-3b-wires/index.html">§12.3b Wires / loops / edges</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="../../12-3b-wires/Twi282.html"><code>Twi282</code></a></td><td>Cyclic `ORIENTED_EDGE.edge_element` self-reference → unbounded `EdgeStart`/`EdgeEnd` recursion (stack-overflow DoS)</td><td><a href="../../12-3b-wires/index.html">§12.3b Wires / loops / edges</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-5-units/U008.html"><code>U008</code></a></td><td>NX subassemblies with mixed inch + mm — inconsistent per-part scaling</td><td><a href="../../12-5-units/index.html">§12.5 Units &amp; coordinate systems</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-5-units/U009.html"><code>U009</code></a></td><td>KiCad assembly: board mm + component model in inch, naive merge breaks scale</td><td><a href="../../12-5-units/index.html">§12.5 Units &amp; coordinate systems</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-13-writer-pathology/Wr048.html"><code>Wr048</code></a></td><td>Boolean-result body crashes STEP writer in `libTKXDESTEP` color-attribution pass</td><td><a href="../../12-13-writer-pathology/index.html">§12.13 Writer pathology</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
