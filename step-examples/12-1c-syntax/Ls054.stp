@@ -1,0 +1,16 @@
+ISO-10303-21;
+/* Ls054: empty complex (subsuper) instance with zero constituent records; a complex / combined-entity instance is a parenthesized list of simple records, but the fixture writes #1=() with an EMPTY list; a many0-style parser accepts the empty form even though a complex instance must combine at least one (really at least two) simple records; the empty complex #1 is reachable — referenced as a GEOMETRIC_SET item; distinct from Ls013 (PRODUCT() has a keyword and no attributes); here there is no keyword at all, just (); expected kernel behavior: reject an empty complex instance; the lexer may accept () as a zero-record list but the semantic layer must reject; see also Ls013; synonyms: empty subsuper instance, complex entity with no records, keyword-less empty parens instance, zero-record combined entity, STEP empty complex #1=(); the empty complex instance is the defect carrier */
+HEADER;
+FILE_DESCRIPTION(('Ls054'),'2;1');
+FILE_NAME('Ls054.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+/* Defect: a subsuper (complex) instance with ZERO constituent simple
+   records. A complex instance must combine >=1 (really >=2) records. */
+#1=();
+#2=CARTESIAN_POINT('p',(0.,0.,0.));
+/* #1 (empty complex) is reachable: referenced as a GEOMETRIC_SET item. */
+#3=GEOMETRIC_SET('gs',(#1,#2));
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,17 @@
+ISO-10303-21;
+/* Ls056: non-nesting comment illusion leaves a stray closer and a leaked entity; ISO 10303-21 6.3 block comments do NOT nest, so in a slash-star opener that contains a second slash-star, the comment closes at the FIRST star-slash; the inner opener is just comment text; the author tried to comment out a CARTESIAN_POINT but nested a second opener inside, so the CARTESIAN_POINT LEAKS back into the token stream and the trailing star-slash is a stray, unmatched closer; expected kernel behavior: treat comments as non-nesting per the spec and reject the stray closer; document the non-nesting rule clearly; synonyms: nested comment illusion, comments do not nest, stray star-slash, leaked entity from comment, unmatched comment closer, double star-slash after entity; the stray closer and leaked CARTESIAN_POINT are the defect carriers */
+HEADER;
+FILE_DESCRIPTION(('Ls056'),'2;1');
+FILE_NAME('Ls056.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=DIRECTION('d',(1.,0.,0.));
+/* Defect: the author tried to comment out an entity but nested a second
+   comment opener inside. Part-21 comments do NOT nest (ISO 10303-21 6.3):
+   the comment closes at the FIRST closer, so the CARTESIAN_POINT below
+   LEAKS back into the token stream and a stray closer follows it. */
+/* a /* b */ #2=CARTESIAN_POINT('leaked',(0.,0.,0.)); */
+#3=DIRECTION('after',(0.,1.,0.));
+ENDSEC;
+END-ISO-10303-21;

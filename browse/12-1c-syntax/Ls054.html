@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ls054 — Empty complex (subsuper) instance `#1=();` (zero constituent records)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.1c Part-21 grammar</a> <span class="sep">/</span> <span class="current">Ls054</span>
+</nav>
+<header class="title-bar">
+<h1>Ls054 <span class="sep">—</span> <span class="entry-title">Empty complex (subsuper) instance `#1=();` (zero constituent records)</span></h1>
+<p class="category">§12.1c parameter syntax</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+<a class="tag tag-syntax" href="../by-tag/syntax/index.html">syntax</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-1c-syntax/Ls054.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-1c-syntax/Ls054.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>Pattern-mined from ricosjp/ruststep data.rs::subsuper_record (`many0` allows empty) (Apache-2.0/MIT — pattern only, no bytes copied)</li>
+<li>ISO 10303-21 §11 (combined/complex entity instances)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A complex (subsuper / combined-entity) instance is written as a parenthesized list of simple records, e.g. `#1=(A(...)B(...))`. A `many0`-style parser accepts an EMPTY list `()`, i.e. a complex instance with ZERO constituent records. A complex instance must combine at least one (really at least two) simple records; the empty form is meaningless. Distinct from Ls013 (`PRODUCT()` — keyword present, no attributes): here there is no keyword at all, just `()`. The empty complex `#1` is reachable (referenced as a GEOMETRIC_SET item), so a parser must process it rather than skip dead code.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`#1=(); #2=CARTESIAN_POINT(&#x27;p&#x27;,(0.,0.,0.)); #3=GEOMETRIC_SET(&#x27;gs&#x27;,(#1,#2));` — `#1` is an empty complex instance referenced by `#3`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Reject the empty complex instance; the lexer may accept `()` as a zero-record list, but the semantic layer must reject &quot;0 constituent records, expected &gt;=1&quot;.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Ls013. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture. Synonyms: &quot;empty subsuper instance&quot;, &quot;complex entity with no records&quot;, &quot;keyword-less empty parens instance&quot;, &quot;zero-record combined entity&quot;, &quot;STEP empty complex #1=()&quot;. Provenance tier: bytes-only. Expected validation is provisional (best-guess) pending oracle rebaseline — the live occt/gmsh oracle is not run here (platform divergence); nightly CI reconciles.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;#1=();&#x27;)</code></li>
+<li><code>matches(rb&#x27;#\d+=\(\)\s*;&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Ls013.html">Ls013</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Ls054: empty complex (subsuper) instance with zero constituent records; a complex / combined-entity instance is a parenthesized list of simple records, but the fixture writes #1=() with an EMPTY list; a many0-style parser accepts the empty form even though a complex instance must combine at least one (really at least two) simple records; the empty complex #1 is reachable â referenced as a GEOMETRIC_SET item; distinct from Ls013 (PRODUCT() has a keyword and no attributes); here there is no keyword at all, just (); expected kernel behavior: reject an empty complex instance; the lexer may accept () as a zero-record list but the semantic layer must reject; see also Ls013; synonyms: empty subsuper instance, complex entity with no records, keyword-less empty parens instance, zero-record combined entity, STEP empty complex <mark>#1=();</mark> the empty complex instance is the defect carrier */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ls054&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ls054.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>/* Defect: a subsuper (complex) instance with ZERO constituent simple
+<span class="lineno">10</span>   records. A complex instance must combine &gt;=1 (really &gt;=2) records. */
+<span class="lineno">11</span><mark>#1=();</mark>
+<span class="lineno">12</span>#2=CARTESIAN_POINT(&#x27;p&#x27;,(0.,0.,0.));
+<span class="lineno">13</span>/* #1 (empty complex) is reachable: referenced as a GEOMETRIC_SET item. */
+<span class="lineno">14</span>#3=GEOMETRIC_SET(&#x27;gs&#x27;,(#1,#2));
+<span class="lineno">15</span>ENDSEC;
+<span class="lineno">16</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ls053.html">&larr; Ls053</a> <a class="up" href="index.html">§12.1c Part-21 grammar</a> <a class="next" href="Ls055.html">Ls055 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

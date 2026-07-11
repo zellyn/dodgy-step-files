@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ls053 — REAL literal in an INTEGER-typed slot (`3.0` where `3` is required)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.1c Part-21 grammar</a> <span class="sep">/</span> <span class="current">Ls053</span>
+</nav>
+<header class="title-bar">
+<h1>Ls053 <span class="sep">—</span> <span class="entry-title">REAL literal in an INTEGER-typed slot (`3.0` where `3` is required)</span></h1>
+<p class="category">§12.1c parameter tokens</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+<a class="tag tag-syntax" href="../by-tag/syntax/index.html">syntax</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-1c-syntax/Ls053.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-1c-syntax/Ls053.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>Pattern-mined from ricosjp/ruststep parameter.rs::untyped_parameter and issue #56 &quot;tokenize integer as float&quot; (Apache-2.0/MIT — pattern only, no bytes copied)</li>
+<li>ISO 10303-21 §6.4 (INTEGER vs REAL literal grammar)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>ISO 10303-21 distinguishes INTEGER and REAL literals; a REAL carries a mandatory decimal point. A count/degree/dimension attribute typed INTEGER in the EXPRESS schema must not receive a REAL literal. The fixture writes the REAL literal `3.0` in the `B_SPLINE_CURVE_WITH_KNOTS` degree slot, where the integer `3` is required. This is the inverse of Ls001 (integer written where a REAL is required). A real-first tokenizer (`untyped_parameter` tries `real` before `integer`) mis-types `3.0` as a REAL parameter and may silently truncate it.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`#5=B_SPLINE_CURVE_WITH_KNOTS(&#x27;c&#x27;,3.0,(#1,#2,#3,#4),.UNSPECIFIED.,.F.,.F.,(4,4),(0.,1.),.UNSPECIFIED.);` — degree slot is INTEGER but carries `3.0`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Reject or warn on a non-integral value in an INTEGER slot; never silently truncate `3.0` to `3`.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Ls001. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic. Synonyms: &quot;REAL where INTEGER expected&quot;, &quot;degree given 3.0&quot;, &quot;count field carries a decimal point&quot;, &quot;fractional value in integer slot&quot;, &quot;float literal in STEP integer attribute&quot;. Provenance tier: bytes-only. Expected validation is provisional (best-guess) pending oracle rebaseline — the live occt/gmsh oracle is not run here (platform divergence); nightly CI reconciles.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;B_SPLINE_CURVE_WITH_KNOTS&#x27;)</code></li>
+<li><code>matches(rb&quot;WITH_KNOTS\(&#x27;c&#x27;,3\.0,&quot;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Ls001.html">Ls001</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Ls053: REAL literal in an INTEGER-typed slot; ISO 10303-21 distinguishes INTEGER and REAL literals, and a REAL carries a mandatory decimal point; the <mark>B_SPLINE_CURVE_WITH_KNOTS</mark> degree attribute is INTEGER in the EXPRESS schema, but the fixture writes the REAL literal 3.0 where the integer 3 is required; this is the inverse of Ls001 (integer written where a REAL is required); a real-first tokenizer mis-types 3.0 as Parameter::Real; expected kernel behavior: reject or warn on a non-integral value in an INTEGER slot; never silently truncate 3.0 to 3; see also Ls001; synonyms: REAL where INTEGER expected, degree given 3.0, count field carries a decimal point, fractional value in integer slot, float literal in STEP integer attribute; the <mark>B_SPLINE_CURVE_WITH_KNOTS</mark> entity is the defect carrier */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ls053&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ls053.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.,0.,0.));
+<span class="lineno">10</span>#2=CARTESIAN_POINT(&#x27;&#x27;,(1.,1.,0.));
+<span class="lineno">11</span>#3=CARTESIAN_POINT(&#x27;&#x27;,(2.,0.,0.));
+<span class="lineno">12</span>#4=CARTESIAN_POINT(&#x27;&#x27;,(3.,1.,0.));
+<span class="lineno">13</span>/* Defect: the degree slot of <mark>B_SPLINE_CURVE_WITH_KNOTS</mark> is INTEGER, but
+<span class="lineno">14</span>   the REAL literal 3.0 is written where the integer 3 is required. */
+<span class="lineno">15</span>#5=<mark>B_SPLINE_CURVE_WITH_KNOTS(&#x27;c&#x27;,3.0,</mark>(#1,#2,#3,#4),.UNSPECIFIED.,.F.,.F.,(4,4),(0.,1.),.UNSPECIFIED.);
+<span class="lineno">16</span>ENDSEC;
+<span class="lineno">17</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ls052.html">&larr; Ls052</a> <a class="up" href="index.html">§12.1c Part-21 grammar</a> <a class="next" href="Ls054.html">Ls054 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>
