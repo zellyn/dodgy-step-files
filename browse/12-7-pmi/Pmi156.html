@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pmi156 — `CIRCULAR_RUNOUT_TOLERANCE` + `TOTAL_RUNOUT_TOLERANCE` with datum-axis reference (semantic runout family) [VALID-BUT-HARD]</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.7 PMI / GD&amp;T</a> <span class="sep">/</span> <span class="current">Pmi156</span>
+</nav>
+<header class="title-bar">
+<h1>Pmi156 <span class="sep">—</span> <span class="entry-title">`CIRCULAR_RUNOUT_TOLERANCE` + `TOTAL_RUNOUT_TOLERANCE` with datum-axis reference (semantic runout family) [VALID-BUT-HARD]</span></h1>
+<p class="category">§12.7 PMI/GD&amp;T (sub-class: semantic tolerance-type vocabulary — runout family)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-pmi" href="../by-tag/pmi/index.html">pmi</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-7-pmi/Pmi156.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-7-pmi/Pmi156.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>Pattern-mined from NIST MBE PMI test suite / CAx-IF FTC/CTC AP242 files (public-domain / describe-only — pattern only, no bytes copied)</li>
+<li>audit/mining_nist_mbxif_2026-07.md #1.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>AP242 semantic-GD&amp;T files carry runout tolerances (`circular_runout_tolerance`, `total_runout_tolerance`) whose tolerance zone is defined relative to a datum axis through a `datum_system` (built from `datum_reference_compartment` → `datum_reference_element` → `datum`). The entire runout tolerance family is absent from the corpus (nearest is the generic `position_tolerance` of Pmi010). A reader that maps unknown tolerance subtypes onto a generic tolerance silently downgrades runout to circularity, and one that drops the datum-axis link loses the reference the zone is measured against.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>AP242 file; cylinder feature `SHAPE_ASPECT`; `DATUM(&#x27;A&#x27;,...)` → `DATUM_REFERENCE_ELEMENT` → `DATUM_REFERENCE_COMPARTMENT` → `DATUM_SYSTEM`; `CIRCULAR_RUNOUT_TOLERANCE(&#x27;circular_runout&#x27;,&#x27;&#x27;,#mag,#aspect,#datum_sys)` and `TOTAL_RUNOUT_TOLERANCE(...)` each with a real `LENGTH_MEASURE_WITH_UNIT` magnitude.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Import both runout FCFs, preserving the datum-axis link and the distinct runout subtype; runout must not be silently downgraded to circularity or dropped.</p></section>
+<section><h2>Notes</h2>
+<p>Semantic-PMI carrier geometry is a `GEOMETRIC_CURVE_SET` (single point → one loaded vertex, like Pmi010). Synonyms: &quot;circular runout tolerance dropped&quot;, &quot;total runout tolerance not parsed&quot;, &quot;runout FCF datum axis lost&quot;, &quot;runout downgraded to circularity&quot;, &quot;AP242 runout tolerance family absent&quot;. Provenance tier: bytes-only — semantic GD&amp;T tolerance metadata is oracle-invisible at BRep load (OCC loads only the carrier geometry); pattern-mined, not yet mutation-verified.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;CIRCULAR_RUNOUT_TOLERANCE&#x27;)</code></li>
+<li><code>contains(b&#x27;TOTAL_RUNOUT_TOLERANCE&#x27;)</code></li>
+<li><code>contains(b&#x27;DATUM_SYSTEM&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_vertices_total == 1</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Pmi010.html">Pmi010</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Pmi156: <mark>CIRCULAR_RUNOUT_TOLERANCE</mark> + <mark>TOTAL_RUNOUT_TOLERANCE</mark> on a cylinder feature, each referencing a <mark>DATUM_SYSTEM</mark> built on datum axis A; semantic runout tolerance family absent from corpus; GEOMETRIC_CURVE_SET IS model entity â OCC loads the point as one vertex */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Pmi156&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Pmi156.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">12</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">13</span>#9051=PRODUCT(&#x27;Pmi156&#x27;,&#x27;Pmi156&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">14</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">15</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">16</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">17</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">18</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">19</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">20</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">21</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">22</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">23</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#2),#9060);
+<span class="lineno">24</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">25</span>#9063=DATUM(&#x27;A&#x27;,&#x27;datum axis A&#x27;,#9055,.T.,&#x27;A&#x27;);
+<span class="lineno">26</span>#9064=DATUM_REFERENCE_ELEMENT(&#x27;&#x27;,$,#9063);
+<span class="lineno">27</span>#9065=DATUM_REFERENCE_COMPARTMENT(&#x27;&#x27;,$,#9064);
+<span class="lineno">28</span>#9066=<mark>DATUM_SYSTEM</mark>(&#x27;datum_system_A&#x27;,&#x27;&#x27;,#9055,.T.,(#9065));
+<span class="lineno">29</span>#9067=SHAPE_ASPECT(&#x27;cylinder_od&#x27;,&#x27;runout feature&#x27;,#9055,.T.);
+<span class="lineno">30</span>#9068=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.05),#9056);
+<span class="lineno">31</span>#9069=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.1),#9056);
+<span class="lineno">32</span>#9070=<mark>CIRCULAR_RUNOUT_TOLERANCE</mark>(&#x27;circular_runout&#x27;,&#x27;0.05 circular runout wrt A&#x27;,#9068,#9067,#9066);
+<span class="lineno">33</span>#9071=<mark>TOTAL_RUNOUT_TOLERANCE</mark>(&#x27;total_runout&#x27;,&#x27;0.1 total runout wrt A&#x27;,#9069,#9067,#9066);
+<span class="lineno">34</span>ENDSEC;
+<span class="lineno">35</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Pmi155.html">&larr; Pmi155</a> <a class="up" href="index.html">§12.7 PMI / GD&amp;T</a> <a class="next" href="Pmi157.html">Pmi157 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

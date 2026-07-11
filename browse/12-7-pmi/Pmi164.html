@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pmi164 — Single shared `COORDINATES_LIST` for a whole `TESSELLATED_SHELL`, 1-based integer indices [VALID-BUT-HARD]</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.7 PMI / GD&amp;T</a> <span class="sep">/</span> <span class="current">Pmi164</span>
+</nav>
+<header class="title-bar">
+<h1>Pmi164 <span class="sep">—</span> <span class="entry-title">Single shared `COORDINATES_LIST` for a whole `TESSELLATED_SHELL`, 1-based integer indices [VALID-BUT-HARD]</span></h1>
+<p class="category">§12.7 PMI/GD&amp;T (sub-class: AP242 tessellation packed-array — shared list / 1-based indexing)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-pmi" href="../by-tag/pmi/index.html">pmi</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-7-pmi/Pmi164.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-7-pmi/Pmi164.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>Pattern-mined from the NIST MBE PMI FTC-08 tessellated AP242 file and the MBx-IF Tessellated-3D-Geometry Recommended Practice (public-domain / describe-only — pattern only, no bytes copied)</li>
+<li>audit/mining_nist_mbxif_2026-07.md #10.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>AP242 tessellated geometry packs all vertices of a shell into a single shared `coordinates_list` (the AP242 point holder — `cartesian_point_list_3d` is the AP203/214 name) and lets every `triangulated_face` index that one packed real array with 1-based integer index lists, instead of owning a per-face list or naming individual `cartesian_point` entities. A kernel built around per-point entities, one that assumes a per-face list, or one that treats the indices as 0-based, mis-indexes or drops faces. Distinct from M004 (per-face lists → watertightness lost); here a single shared 1-based-indexed list is the correct packed form.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>AP242 file; one `COORDINATES_LIST` holding all 8 cube corners; six `TRIANGULATED_FACE`s each indexing that same list with 1-based triangle index lists; one `TESSELLATED_SHELL` over the six faces; wrapped in a `GEOMETRIC_CURVE_SET` model item.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Index the shared packed array with correct 1-based semantics; kernels built around per-point entities, or that assume a per-face list, or that read the indices as 0-based, mis-index or drop faces.</p></section>
+<section><h2>Notes</h2>
+<p>Tessellation carrier: `GEOMETRIC_CURVE_SET` over a `TESSELLATED_SHELL` — OCC loads the compound but yields no topological vertices (as in M004). This fixture is exempt from the §12.7 PMI-presence lint (no semantic-PMI bytes by design); see `EXEMPT_PMI_PRESENCE`. See also: M004. Synonyms: &quot;shared coordinates_list packed array&quot;, &quot;1-based tessellation index mis-read as 0-based&quot;, &quot;tessellated_shell single point list&quot;, &quot;triangulated_face shared vertex list mis-indexed&quot;, &quot;AP242 packed point array dropped&quot;. Provenance tier: bytes-only — the packed-array / 1-based-index defect is byte-structural and oracle-invisible at BRep load (OCC yields empty vertices regardless); pattern-mined, not yet mutation-verified.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;COORDINATES_LIST&#x27;) == 1</code></li>
+<li><code>count_entity_def(b&#x27;TRIANGULATED_FACE&#x27;) == 6</code></li>
+<li><code>contains(b&#x27;TESSELLATED_SHELL&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_vertices_total == 0</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-8-mixed/M004.html">M004</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Pmi164: single shared COORDINATES_LIST (8 cube corners) indexed by six TRIANGULATED_FACEs using 1-based integer index lists, wrapped in one <mark>TESSELLATED_SHELL</mark>; packed-array + 1-based indexing form; per-point / per-face-list / 0-based readers mis-index or drop faces; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty vertices */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Pmi164&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Pmi164.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span><mark>#1=COORDINATES_LIST(</mark>&#x27;shared_cube_coords&#x27;,8,((0.,0.,0.),(1.,0.,0.),(1.,1.,0.),(0.,1.,0.),(0.,0.,1.),(1.,0.,1.),(1.,1.,1.),(0.,1.,1.)));
+<span class="lineno">11</span><mark>#2=TRIANGULATED_FACE(</mark>&#x27;bottom&#x27;,#1,$,$,((1,2,3),(1,3,4)));
+<span class="lineno">12</span><mark>#3=TRIANGULATED_FACE(</mark>&#x27;top&#x27;,#1,$,$,((5,6,7),(5,7,8)));
+<span class="lineno">13</span><mark>#4=TRIANGULATED_FACE(</mark>&#x27;front&#x27;,#1,$,$,((1,2,6),(1,6,5)));
+<span class="lineno">14</span><mark>#5=TRIANGULATED_FACE(</mark>&#x27;back&#x27;,#1,$,$,((4,3,7),(4,7,8)));
+<span class="lineno">15</span><mark>#6=TRIANGULATED_FACE(</mark>&#x27;left&#x27;,#1,$,$,((1,4,8),(1,8,5)));
+<span class="lineno">16</span><mark>#7=TRIANGULATED_FACE(</mark>&#x27;right&#x27;,#1,$,$,((2,3,7),(2,7,6)));
+<span class="lineno">17</span>#8=<mark>TESSELLATED_SHELL</mark>(&#x27;shared_list_shell&#x27;,(#2,#3,#4,#5,#6,#7),$);
+<span class="lineno">18</span>#9=GEOMETRIC_CURVE_SET(&#x27;shared-coordinates-list-tessellation&#x27;,(#8));
+<span class="lineno">19</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">20</span>#9051=PRODUCT(&#x27;Pmi164&#x27;,&#x27;Pmi164&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">21</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">22</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">23</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">24</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">25</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">26</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">27</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">28</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">29</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">30</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#9),#9060);
+<span class="lineno">31</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">32</span>ENDSEC;
+<span class="lineno">33</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Pmi163.html">&larr; Pmi163</a> <a class="up" href="index.html">§12.7 PMI / GD&amp;T</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>
