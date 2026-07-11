@@ -36,13 +36,29 @@ Take these on in parallel (≤3 mining agents at a time per [[feedback_paralleli
 "maintainer said you-pick" — sequenced below by tractability × novelty. Mark `[x]` when a source's
 candidate-defect list is mined; a second pass synthesizes the confirmed-novel, file-level ones.
 
-**Wave 1 (in progress — fits existing STEP/mesh infra, highest kernel-diversity):**
-- [ ] **ruststep** (github.com/ricosjp/ruststep issues, start #252) — independent Rust Part-21 parser;
-      highest kernel-diversity novelty; unhandled Part-21/AP cases in issues + TODOs. → STEP sections.
-- [ ] **assimp** (github.com/assimp/assimp issues + OSS-Fuzz) — independent import path; malformed-file
-      crashers at scale with reproducers. → mesh (§12.14) + format-lexical.
-- [ ] **MBx-IF / NIST test cases** (STC/FTC/CTC/HTC; "no restrictions" license) + CAx-IF test-round
-      STEP files — biggest LICENSE-CLEAN ingestible seam; exotic-but-legal AP242/PMI geometry.
+**Wave 1 — MINED 2026-07-11 (candidate lists in local audit/mining_*.md):**
+- [x] **ruststep** → `audit/mining_ruststep_2026-07.md`. 14 candidates, ~6 novel (rest already covered =
+      good saturation signal). Fits EXISTING infra (§12-1b/1c). Strongest: leading-zero instance-name
+      aliasing (`#1`≡`#01`), instance-id >u64::MAX overflow, REAL-in-INTEGER slot, empty complex `#1=()`,
+      conformant-file-rejected-at-`DATA;`. → SYNTH TASK #490.
+- [x] **assimp** → `audit/mining_assimp_2026-07.md`. **26 novel** across 9 formats (glTF/PLY/OBJ/OFF/
+      COLLADA/3MF/FBX/STL). NEEDS NEW CATEGORY: **§12.15 "Import-format parser robustness" (`Ip*`)** +
+      raw-malformed-file writer — mesh_builder only emits structurally-VALID files, can't express
+      header-count lies / OOB indices / dangling refs / truncated multibyte. First glTF/COLLADA/3MF/FBX
+      coverage. → INFRA+SYNTH TASK #492 (bigger lift).
+- [x] **MBx-IF / NIST** → `audit/mining_nist_mbxif_2026-07.md`. 18 novel; biggest gap = **semantic GD&T
+      tolerance vocabulary** (CIRCULAR/TOTAL_RUNOUT, SURFACE/LINE_PROFILE, GEOMETRIC_TOLERANCE_WITH_MODIFIERS
+      MMC/LMC, DATUM_REFERENCE_COMPARTMENT) + AP242 tessellation packed-arrays (shared COORDINATES_LIST) +
+      saved-view presentation. Fits EXISTING infra (§12-7 Pmi, §12-8 M). → SYNTH TASK #491.
+      **Ingestible clean file set:** `https://www.nist.gov/system/files/documents/noindex/2024/06/19/NIST-PMI-STEP-Files.zip`
+      (US public-domain, verbatim "no restrictions"). **LICENSE CAVEAT:** only the NIST-authored synthetic
+      subset is redistributable; broader CAx-IF (member-production / JAMA / LOTAR) is RESTRICTED — describe-only.
+
+**Synthesis note (all waves):** new fixtures ship with best-guess `Expected validation` lines; the live
+occt/gmsh oracle can't be run locally (macOS/CI gmsh platform divergence, [[reference_gmsh_platform_divergence]]),
+so let the nightly `validate-full` + `_refresh_expected --apply` rebaseline (established
+[[feedback_drift_rebaseline]] workflow). Structural checks (part21, round-trip, byte/tier3, dangling+dup-id
+clean) ARE run at synthesis time.
 
 **Wave 2 (slicer + viewer STEP streams; OCCT-correlated but attachment-rich, cross-oracle):**
 - [ ] **PrusaSlicer** (issues; #11305 malformed-STEP stack overflow, #8998 STEP-vs-STL open-edge divergence)
