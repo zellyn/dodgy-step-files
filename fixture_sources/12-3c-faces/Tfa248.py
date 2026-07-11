@@ -39,7 +39,7 @@ f.add_product_chain(sbsm)
 
 # OrthoArray pattern: a MAPPED_ITEM array whose REPRESENTATION_MAP target
 # is dropped — receiver gets fewer instances than the source authored.
-rmap = f._emit_raw(f"REPRESENTATION_MAP(#{plc.eid},#9005)")
+rmap = f._emit_raw(f"REPRESENTATION_MAP(#{plc.eid},#9060)")
 # Only one of the four array instances survives in the export.
 f._emit_raw(f"MAPPED_ITEM('orthoarray_inst_1','',#{rmap.eid})")
 f._emit_raw("/* OrthoArray defect: instances 2/3/4 dropped on STEP export */")

@@ -41,7 +41,7 @@ f.add_product_chain(sbsm)
 neg_dir = f.direction((-1.0, 0.0, 0.0))
 mirror_plc = f.axis2_placement_3d(orig, zdir, neg_dir)
 f._emit_raw(
-    f"REPRESENTATION_MAP(#{mirror_plc.eid},#9005)"
+    f"REPRESENTATION_MAP(#{mirror_plc.eid},#9061)"
 )
 f._emit_raw(
     f"MAPPED_ITEM('scale_-1_link','',#{plc.eid})"

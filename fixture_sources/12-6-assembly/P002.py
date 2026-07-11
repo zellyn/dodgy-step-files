@@ -65,7 +65,7 @@ def _render_with_gb18030():
         "'1',"
         "'\\X2\\6D77\\X0\\\\X2\\7EF5\\X0\\2',"
         "'',"
-        "#9004,$,$);\n"
+        "#9054,$,$);\n"
     )
     # PRODUCT whose name is the Chinese characters 海绵 written directly as
     # Unicode (encodes to raw UTF-8 multibyte bytes ≥ 0x80 in the .stp file).

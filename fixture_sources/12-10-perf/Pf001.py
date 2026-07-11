@@ -60,7 +60,7 @@ for k in range(3):
 
 # The root PRODUCT chain is added by add_product_chain.
 # Now nest 30 child PRODUCT chains, each linked via NAUO to the previous.
-prev_pdef_eid = 9004   # PRODUCT_DEFINITION for root from add_product_chain
+prev_pdef_eid = 9054   # PRODUCT_DEFINITION for root from add_product_chain
 DEPTH = 30
 for k in range(DEPTH):
     child_prod = f._emit_raw(
@@ -70,7 +70,7 @@ for k in range(DEPTH):
         f"PRODUCT_DEFINITION_FORMATION('','',#{child_prod.eid})"
     )
     child_pdef = f._emit_raw(
-        f"PRODUCT_DEFINITION('design','',#{child_pdf.eid},#9003)"
+        f"PRODUCT_DEFINITION('design','',#{child_pdf.eid},#9053)"
     )
     # Link parent → child via NAUO.
     f._emit_raw(

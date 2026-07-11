@@ -40,11 +40,11 @@ sbsm = f.shell_based_surface_model([shell])
 f.add_product_chain(sbsm)
 
 # 4 MAPPED_ITEMs against a shared REPRESENTATION_MAP; 5 NAUO chain.
-rmap = f._emit_raw(f"REPRESENTATION_MAP(#{plc.eid},#9005)")
+rmap = f._emit_raw(f"REPRESENTATION_MAP(#{plc.eid},#9061)")
 for k in range(4):
     f._emit_raw(f"MAPPED_ITEM('inst_{k}','',#{rmap.eid})")
 # 5 NAUO entries — pretend each maps a sub-assembly relation.
 for k in range(5):
     f._emit_raw(
-        f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('nauo_{k}','sub_{k}','',#9001,#9001,$)"
+        f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('nauo_{k}','sub_{k}','',#9054,#9054,$)"
     )

@@ -40,7 +40,7 @@ f.add_product_chain(sbsm)
 
 # SHAPE_ASPECT for the face that carries the downstream load reference.
 face_aspect = f._emit_raw(
-    f"SHAPE_ASPECT('load_face_orphan','pressure face',#9004,.T.)"
+    f"SHAPE_ASPECT('load_face_orphan','pressure face',#9054,.T.)"
 )
 # The associated property holds the Ansys face-pressure load identifier.
 prop_def = f._emit_raw(
@@ -48,10 +48,10 @@ prop_def = f._emit_raw(
 )
 f._emit_raw(
     f"PROPERTY_DEFINITION_REPRESENTATION(#{prop_def.eid},"
-    f"REPRESENTATION('load_ref',(DESCRIPTIVE_REPRESENTATION_ITEM('pressure','10.5_MPa')),#9010))"
+    f"REPRESENTATION('load_ref',(DESCRIPTIVE_REPRESENTATION_ITEM('pressure','10.5_MPa')),#9060))"
 )
 # SHAPE_ASPECT_RELATIONSHIP linking the face aspect to the product shape.
-pds = f._emit_raw(f"PRODUCT_DEFINITION_SHAPE('','',#9004)")
+pds = f._emit_raw(f"PRODUCT_DEFINITION_SHAPE('','',#9054)")
 f._emit_raw(
     f"SHAPE_ASPECT_RELATIONSHIP('load_face_orphan','face_to_product',"
     f"#{face_aspect.eid},#{face_aspect.eid})"

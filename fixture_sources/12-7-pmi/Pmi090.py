@@ -41,7 +41,7 @@ sbsm = f.shell_based_surface_model([shell])
 f.add_product_chain(sbsm)
 
 # DIMENSIONAL_SIZE on a SHAPE_ASPECT for the feature.
-shape_aspect = f._emit_raw(f"SHAPE_ASPECT('uuid_feature','',#9005,.T.)")
+shape_aspect = f._emit_raw(f"SHAPE_ASPECT('uuid_feature','',#9055,.T.)")
 f._emit_raw(
     f"DIMENSIONAL_SIZE(#{shape_aspect.eid},'diameter','10.0 mm')"
 )

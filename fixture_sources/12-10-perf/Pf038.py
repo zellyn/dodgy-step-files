@@ -39,7 +39,7 @@ f.add_product_chain(sbsm)
 
 # Wide-fanout REPRESENTATION_MAP: tessellation cache grows per-instance
 # rather than sharing the source mesh.
-rmap = f._emit_raw(f"REPRESENTATION_MAP(#{plc.eid},#9005)")
+rmap = f._emit_raw(f"REPRESENTATION_MAP(#{plc.eid},#9061)")
 for k in range(8):
     f._emit_raw(f"MAPPED_ITEM('oom_inst_{k}','',#{rmap.eid})")
 f._emit_raw("/* cascadio tessellation cache not shared across instances → OOM */")

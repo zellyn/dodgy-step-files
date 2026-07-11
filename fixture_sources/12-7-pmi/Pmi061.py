@@ -42,7 +42,7 @@ f.add_product_chain(sbsm)
 
 # Indirect DATUM chain.
 shape_aspect = f._emit_raw(
-    f"SHAPE_ASPECT('datum_aspect','indirect link to face',#9005,.T.)"
+    f"SHAPE_ASPECT('datum_aspect','indirect link to face',#9055,.T.)"
 )
 f._emit_raw(
     f"DATUM_FEATURE('df_indirect','indirect via SHAPE_ASPECT','',#{shape_aspect.eid})"
@@ -53,5 +53,5 @@ f._emit_raw(
 # GEOMETRIC_ITEM_SPECIFIC_USAGE pointing the shape_aspect at the face.
 f._emit_raw(
     f"GEOMETRIC_ITEM_SPECIFIC_USAGE('gisu_datum','',#{shape_aspect.eid},"
-    f"#9005,#{face.eid})"
+    f"#9055,#{face.eid})"
 )

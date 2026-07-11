@@ -63,8 +63,8 @@ tess_face = f._emit_raw(
 
 # Defect 2: PMI dimensional_size (diameter) bound to both BRep and tess face
 # No STYLED_ITEM for tess face → style binding lost
-shape_asp_brep = f._emit_raw(f"SHAPE_ASPECT('brep_half','',#9005,.T.)")
-shape_asp_tess = f._emit_raw(f"SHAPE_ASPECT('tess_half','',#9005,.T.)")
+shape_asp_brep = f._emit_raw(f"SHAPE_ASPECT('brep_half','',#9055,.T.)")
+shape_asp_tess = f._emit_raw(f"SHAPE_ASPECT('tess_half','',#9055,.T.)")
 gisu_brep = f._emit_raw(
     f"GEOMETRIC_ITEM_SPECIFIC_USAGE(#{shape_asp_brep.eid},#{face.eid})"
 )

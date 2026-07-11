@@ -101,5 +101,5 @@ config_item_b = f._emit_raw(
 # design reference that binds dm_a exclusively to config_item_a. On export the
 # configuration-association is dropped, making the annotation universally visible.
 f._emit_raw(
-    f"CONFIGURATION_DESIGN(#{config_item_a.eid},#9005)"
+    f"CONFIGURATION_DESIGN(#{config_item_a.eid},#9055)"
 )

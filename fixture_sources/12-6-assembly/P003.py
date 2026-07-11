@@ -65,7 +65,7 @@ def _render_with_control_chars():
         "'1',"
         "'kicad\\X\\01part',"
         "'TO-92\\X\\1Ffootprint',"
-        "#9004,$,$);\n"
+        "#9054,$,$);\n"
     )
     # PRODUCT whose name embeds a backspace (0x08) via \X\08 escape.
     product_line = (

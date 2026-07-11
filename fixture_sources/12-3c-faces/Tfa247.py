@@ -38,4 +38,4 @@ sbsm = f.shell_based_surface_model([shell])
 f.add_product_chain(sbsm)
 
 # Empty-object pattern: SHAPE_REPRESENTATION with no items but referenced.
-f._emit_raw("SHAPE_REPRESENTATION('empty_obj',(),#9005)")
+f._emit_raw("SHAPE_REPRESENTATION('empty_obj',(),#9060)")

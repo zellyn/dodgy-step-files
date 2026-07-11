@@ -45,12 +45,12 @@ sub_pdc = f._emit_raw("PRODUCT_CONTEXT('sub',#9000,'mechanical')")
 # Valid sub-component (NAUO 1).
 valid_prod = f._emit_raw(f"PRODUCT('Part_A','Part_A','',(#{sub_pdc.eid}))")
 valid_pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{valid_prod.eid})")
-valid_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{valid_pdf.eid},#9003)")
+valid_pdef = f._emit_raw(f"PRODUCT_DEFINITION('design','',#{valid_pdf.eid},#9053)")
 f._emit_raw(
-    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','part_a','',#9004,#{valid_pdef.eid},$)"
+    f"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','part_a','',#9054,#{valid_pdef.eid},$)"
 )
 
 # Dangling NAUO — related product_definition is #99999 which does not exist.
 f._emit_raw(
-    "NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','missing_part','',#9004,#99999,$)"
+    "NEXT_ASSEMBLY_USAGE_OCCURRENCE('2','missing_part','',#9054,#99999,$)"
 )

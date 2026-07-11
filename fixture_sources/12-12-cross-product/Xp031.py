@@ -34,5 +34,5 @@ sbsm = f.shell_based_surface_model([shell])
 f.add_product_chain(sbsm)
 
 # Two PRODUCT entries with the same name 'R0805' — SolidWorks de-dups them
-f._emit_raw("PRODUCT('R0805','resistor #1','',(#9001))")
-f._emit_raw("PRODUCT('R0805','resistor #2','',(#9001))")
+f._emit_raw("PRODUCT('R0805','resistor #1','',(#9050))")
+f._emit_raw("PRODUCT('R0805','resistor #2','',(#9050))")
