@@ -44930,6 +44930,153 @@ exercised against CGAL PMP / MeshFix.
 - **Model impact**: QA-provenance records for data-equivalence assertion and inspection introduced in AP242 Ed.3 are silently absent when read by AP242 Ed.2 or AP214 readers; MBD/MBE / digital-thread workflows that rely on the equivalence claim to demonstrate simplified-representation fidelity to a full CAD model, or on the inspection record for audit compliance, receive no provenance on Ed.2-capable readers and must fall back to out-of-band QA channels.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
+### Pmi156 — `CIRCULAR_RUNOUT_TOLERANCE` + `TOTAL_RUNOUT_TOLERANCE` with datum-axis reference (semantic runout family) [VALID-BUT-HARD]
+- **Category**: §12.7 PMI/GD&T (sub-class: semantic tolerance-type vocabulary — runout family)
+- **Sources**: Pattern-mined from NIST MBE PMI test suite / CAx-IF FTC/CTC AP242 files (public-domain / describe-only — pattern only, no bytes copied); audit/mining_nist_mbxif_2026-07.md #1.
+- **Description**: AP242 semantic-GD&T files carry runout tolerances (`circular_runout_tolerance`, `total_runout_tolerance`) whose tolerance zone is defined relative to a datum axis through a `datum_system` (built from `datum_reference_compartment` → `datum_reference_element` → `datum`). The entire runout tolerance family is absent from the corpus (nearest is the generic `position_tolerance` of Pmi010). A reader that maps unknown tolerance subtypes onto a generic tolerance silently downgrades runout to circularity, and one that drops the datum-axis link loses the reference the zone is measured against.
+- **Reproducer recipe**: AP242 file; cylinder feature `SHAPE_ASPECT`; `DATUM('A',...)` → `DATUM_REFERENCE_ELEMENT` → `DATUM_REFERENCE_COMPARTMENT` → `DATUM_SYSTEM`; `CIRCULAR_RUNOUT_TOLERANCE('circular_runout','',#mag,#aspect,#datum_sys)` and `TOTAL_RUNOUT_TOLERANCE(...)` each with a real `LENGTH_MEASURE_WITH_UNIT` magnitude.
+- **Expected kernel behavior**: Import both runout FCFs, preserving the datum-axis link and the distinct runout subtype; runout must not be silently downgraded to circularity or dropped.
+- **Notes**: Semantic-PMI carrier geometry is a `GEOMETRIC_CURVE_SET` (single point → one loaded vertex, like Pmi010). Synonyms: "circular runout tolerance dropped", "total runout tolerance not parsed", "runout FCF datum axis lost", "runout downgraded to circularity", "AP242 runout tolerance family absent". Provenance tier: bytes-only — semantic GD&T tolerance metadata is oracle-invisible at BRep load (OCC loads only the carrier geometry); pattern-mined, not yet mutation-verified.
+- **Byte assertion**: contains(b'CIRCULAR_RUNOUT_TOLERANCE')
+- **Byte assertion**: contains(b'TOTAL_RUNOUT_TOLERANCE')
+- **Byte assertion**: contains(b'DATUM_SYSTEM')
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_vertices_total == 1
+- **Severity**: P2
+- **Model impact**: Runout callouts either vanish or lose their datum-axis reference on import; downstream inspection/CMM programming loses the rotational-tolerance requirement entirely, and any tool that re-emits the model drops the runout FCF.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a` (provisional — pattern-synthesized, pending nightly oracle rebaseline)
+
+### Pmi157 — `CIRCULAR_RUNOUT_TOLERANCE` with no datum reference (GD&T-illegal) [DEFECT]
+- **Category**: §12.7 PMI/GD&T (sub-class: semantic tolerance-type vocabulary — illegal datum-less runout)
+- **Sources**: Pattern-mined from NIST MBE PMI test suite / CAx-IF FTC/CTC AP242 files (public-domain / describe-only — pattern only, no bytes copied); audit/mining_nist_mbxif_2026-07.md #8.
+- **Description**: A runout tolerance is meaningless without a datum axis — ASME Y14.5 and ISO 1101 require runout to be referenced to a datum. This fixture emits a `circular_runout_tolerance` on a toleranced feature but omits the `datum_system` / datum-reference entirely, producing a datum-less runout FCF. A compliant reader must flag it rather than silently accept it. Defect variant of Pmi156.
+- **Reproducer recipe**: Same as Pmi156 but omit the `DATUM_SYSTEM` and all datum-reference entities; leave `CIRCULAR_RUNOUT_TOLERANCE('circular_runout_no_datum','',#mag,#aspect)` datum-less.
+- **Expected kernel behavior**: Reject or warn: a runout FCF without a datum axis is meaningless; a conformance-checking reader must flag the missing datum reference, not silently accept a degenerate runout callout.
+- **Notes**: Semantic-PMI carrier geometry is a `GEOMETRIC_CURVE_SET` (single point → one loaded vertex, like Pmi010). Synonyms: "runout tolerance without datum", "datum-less runout FCF", "runout missing datum axis reference", "illegal runout callout accepted silently". Provenance tier: bytes-only — the missing-datum defect is byte-structural and oracle-invisible at BRep load (OCC loads the carrier point regardless); pattern-mined, not yet mutation-verified.
+- **Byte assertion**: contains(b'CIRCULAR_RUNOUT_TOLERANCE')
+- **Byte assertion**: not_contains(b'DATUM_SYSTEM')
+- **Byte assertion**: not_contains(b'GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE')
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_vertices_total == 1
+- **Severity**: P1
+- **Model impact**: A degenerate runout callout with no datum axis passes through non-validating readers unremarked; QA/inspection tooling downstream either errors when it tries to resolve the missing datum or fabricates a default axis, both of which corrupt the tolerance requirement.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a` (provisional — pattern-synthesized, pending nightly oracle rebaseline)
+
+### Pmi158 — `SURFACE_PROFILE_TOLERANCE` + `LINE_PROFILE_TOLERANCE` with `ALL_AROUND_SHAPE_ASPECT` scope [VALID-BUT-HARD]
+- **Category**: §12.7 PMI/GD&T (sub-class: semantic tolerance-type vocabulary — profile / all-around scope)
+- **Sources**: Pattern-mined from NIST MBE PMI test suite / CAx-IF CTC/FTC AP242 files (public-domain / describe-only — pattern only, no bytes copied); audit/mining_nist_mbxif_2026-07.md #2.
+- **Description**: Profile tolerances scoped "all-around" target an `all_around_shape_aspect` (tied to the base feature by a `shape_aspect_relationship`) so the profile zone wraps every bounded segment of the profile, not just the first face. The profile tolerance family (`surface_profile_tolerance`, `line_profile_tolerance`) and the all-around scope entity are absent from the corpus. A reader that ignores the all-around scope applies the zone to a single face; one that drops the profile subtype loses the symbol semantics.
+- **Reproducer recipe**: AP242 file; base profiled `SHAPE_ASPECT`; `ALL_AROUND_SHAPE_ASPECT` referencing `#9055`, linked to the base via `SHAPE_ASPECT_RELATIONSHIP`; `SURFACE_PROFILE_TOLERANCE('surf_profile','',#mag,#all_around)` and `LINE_PROFILE_TOLERANCE(...)`.
+- **Expected kernel behavior**: Resolve the all-around scope so the profile zone covers every bounded segment, and preserve the distinct surface- vs line-profile subtype.
+- **Notes**: Semantic-PMI carrier geometry is a `GEOMETRIC_CURVE_SET` (single point → one loaded vertex, like Pmi010). Synonyms: "surface profile tolerance all around", "line profile tolerance dropped", "all_around_shape_aspect scope lost", "profile zone applied to one face only", "AP242 profile tolerance family absent". Provenance tier: bytes-only — semantic GD&T tolerance metadata is oracle-invisible at BRep load (OCC loads only the carrier geometry); pattern-mined, not yet mutation-verified.
+- **Byte assertion**: contains(b'SURFACE_PROFILE_TOLERANCE')
+- **Byte assertion**: contains(b'LINE_PROFILE_TOLERANCE')
+- **Byte assertion**: contains(b'ALL_AROUND_SHAPE_ASPECT')
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_vertices_total == 1
+- **Severity**: P2
+- **Model impact**: All-around profile callouts collapse to a single-face zone or disappear; the controlled profile of the part is under-constrained on import and any re-export loses the "all around" scope symbol.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a` (provisional — pattern-synthesized, pending nightly oracle rebaseline)
+
+### Pmi159 — `GEOMETRIC_TOLERANCE_WITH_MODIFIERS` carrying MMC / LMC / free-state / tangent-plane modifiers [VALID-BUT-HARD]
+- **Category**: §12.7 PMI/GD&T (sub-class: semantic tolerance modifiers — material-condition vocabulary)
+- **Sources**: Pattern-mined from NIST MBE PMI test suite / CAx-IF FTC/CTC AP242 files (public-domain / describe-only — pattern only, no bytes copied); audit/mining_nist_mbxif_2026-07.md #3.
+- **Description**: Position tolerances often carry material-condition modifiers — maximum-material-requirement (Ⓜ), least-material-requirement (Ⓛ), free-state (Ⓕ), tangent-plane (Ⓣ) — via a `geometric_tolerance_with_modifiers` whose `modifiers` set holds the enum values (`.MAXIMUM_MATERIAL_REQUIREMENT.`, `.LEAST_MATERIAL_REQUIREMENT.`, `.FREE_STATE.`, `.TANGENT_PLANE.`). The modifier changes the tolerance semantics: MMC/LMC enable bonus tolerance. A reader that silently coerces to RFS (drops the modifier) commits a correctness bug. Both the modifier-carrying tolerance and the material-condition enum vocabulary are absent from the corpus.
+- **Reproducer recipe**: AP242 file; two toleranced `SHAPE_ASPECT`s (hole, boss); `GEOMETRIC_TOLERANCE_WITH_MODIFIERS('pos_mmc','',#mag,#hole,(.MAXIMUM_MATERIAL_REQUIREMENT.,.TANGENT_PLANE.))` and a second with `(.LEAST_MATERIAL_REQUIREMENT.,.FREE_STATE.)`.
+- **Expected kernel behavior**: Preserve the Ⓜ/Ⓛ/Ⓕ/Ⓣ modifier on round-trip; do not coerce to RFS. Dropping the modifier changes the tolerance meaning (removes the bonus-tolerance allowance) — a correctness bug.
+- **Notes**: Semantic-PMI carrier geometry is a `GEOMETRIC_CURVE_SET` (single point → one loaded vertex, like Pmi010). Synonyms: "MMC modifier dropped on import", "least material requirement lost", "geometric_tolerance_with_modifiers coerced to RFS", "bonus tolerance modifier discarded", "tangent-plane / free-state modifier absent". Provenance tier: bytes-only — semantic GD&T modifier metadata is oracle-invisible at BRep load (OCC loads only the carrier geometry); pattern-mined, not yet mutation-verified.
+- **Byte assertion**: contains(b'GEOMETRIC_TOLERANCE_WITH_MODIFIERS')
+- **Byte assertion**: contains(b'MAXIMUM_MATERIAL_REQUIREMENT')
+- **Byte assertion**: contains(b'LEAST_MATERIAL_REQUIREMENT')
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_vertices_total == 1
+- **Severity**: P2
+- **Model impact**: Material-condition modifiers silently reduce to regardless-of-feature-size on import, so the allowed bonus tolerance disappears and downstream inspection over-rejects conforming parts (or a re-export mis-states the tolerance).
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a` (provisional — pattern-synthesized, pending nightly oracle rebaseline)
+
+### Pmi160 — `.MAXIMUM_MATERIAL_REQUIREMENT.` modifier applied to a `FLATNESS_TOLERANCE` (form tolerance, no size feature) [DEFECT]
+- **Category**: §12.7 PMI/GD&T (sub-class: illegal tolerance modifier — MMC on form tolerance)
+- **Sources**: Pattern-mined from NIST MBE PMI test suite / CAx-IF FTC/CTC AP242 files (public-domain / describe-only — pattern only, no bytes copied); audit/mining_nist_mbxif_2026-07.md #9.
+- **Description**: Material-condition modifiers (Ⓜ MMC / Ⓛ LMC) apply only to features of size. A form tolerance such as flatness has no feature of size, so a maximum-material-requirement modifier on it is an ASME Y14.5 rule violation. This fixture emits a single AP242 complex instance that is simultaneously a `flatness_tolerance` and a `geometric_tolerance_with_modifiers` bearing `.MAXIMUM_MATERIAL_REQUIREMENT.`. Defect variant of Pmi159.
+- **Reproducer recipe**: AP242 file; flat-face `SHAPE_ASPECT`; complex instance `(FLATNESS_TOLERANCE()GEOMETRIC_TOLERANCE('flat_mmc','',#mag,#aspect)GEOMETRIC_TOLERANCE_WITH_MODIFIERS((.MAXIMUM_MATERIAL_REQUIREMENT.)))`.
+- **Expected kernel behavior**: Warn or reject: Ⓜ on a feature without size violates ASME Y14.5; accepting it silently propagates a bad bonus-tolerance calculation.
+- **Notes**: Semantic-PMI carrier geometry is a `GEOMETRIC_CURVE_SET` (single point → one loaded vertex, like Pmi010). Synonyms: "MMC on flatness illegal", "material modifier on form tolerance", "maximum material requirement without size feature", "bonus tolerance on form control accepted silently". Provenance tier: bytes-only — the illegal-modifier defect is byte-structural and oracle-invisible at BRep load (OCC loads the carrier point regardless); pattern-mined, not yet mutation-verified.
+- **Byte assertion**: contains(b'FLATNESS_TOLERANCE')
+- **Byte assertion**: contains(b'GEOMETRIC_TOLERANCE_WITH_MODIFIERS')
+- **Byte assertion**: contains(b'MAXIMUM_MATERIAL_REQUIREMENT')
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_vertices_total == 1
+- **Severity**: P1
+- **Model impact**: A non-validating reader accepts an impossible bonus-tolerance allowance on a form control; any downstream tolerance-stack or inspection engine that honors the modifier computes a fictitious extra tolerance, silently accepting out-of-spec geometry.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a` (provisional — pattern-synthesized, pending nightly oracle rebaseline)
+
+### Pmi161 — `DATUM_REFERENCE_COMPARTMENT` / `DATUM_REFERENCE_ELEMENT` with per-datum material modifier (MMC on datum B) [VALID-BUT-HARD]
+- **Category**: §12.7 PMI/GD&T (sub-class: datum-system compartment ordering + per-datum modifier)
+- **Sources**: Pattern-mined from NIST MBE PMI test suite / CAx-IF FTC/CTC AP242 files (public-domain / describe-only — pattern only, no bytes copied); audit/mining_nist_mbxif_2026-07.md #4.
+- **Description**: An AP242 Ed.2 datum-reference frame A|B(Ⓜ)|C encodes the datum system as ordered `datum_reference_compartment`s, each holding a `datum_reference_element`; a per-datum modifier (here `.MAXIMUM_MATERIAL_REQUIREMENT.` on the secondary datum B) lives in that element's modifiers list. Readers that flatten the datum system to a legacy flat `datum_reference` list lose both the compartment ORDERING (primary/secondary/tertiary) and the per-datum modifier. The corpus has identical-datum / common-datum entries (Pmi025/027/028) but none carries compartment + per-datum modifier.
+- **Reproducer recipe**: AP242 file; three `DATUM`s A/B/C; three `DATUM_REFERENCE_ELEMENT`s (B's modifiers list = `(.MAXIMUM_MATERIAL_REQUIREMENT.)`); three ordered `DATUM_REFERENCE_COMPARTMENT`s ('primary'/'secondary'/'tertiary'); `DATUM_SYSTEM('A|B(M)|C',...)`; a `POSITION_TOLERANCE` referencing the datum system.
+- **Expected kernel behavior**: Preserve the compartment ordering AND the per-datum modifier; do not flatten to an unordered/legacy datum-reference list.
+- **Notes**: Semantic-PMI carrier geometry is a `GEOMETRIC_CURVE_SET` (single point → one loaded vertex, like Pmi010). See also: Pmi025, Pmi027, Pmi028. Synonyms: "per-datum MMC modifier lost", "datum reference compartment ordering flattened", "datum_reference_element modifier dropped", "MMC on datum B not preserved", "datum system A|B(M)|C degraded". Provenance tier: bytes-only — datum-system modifier metadata is oracle-invisible at BRep load (OCC loads only the carrier geometry); pattern-mined, not yet mutation-verified.
+- **Byte assertion**: count_entity_def(b'DATUM_REFERENCE_COMPARTMENT') == 3
+- **Byte assertion**: contains(b'DATUM_REFERENCE_ELEMENT')
+- **Byte assertion**: contains(b'MAXIMUM_MATERIAL_REQUIREMENT')
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_vertices_total == 1
+- **Severity**: P2
+- **Model impact**: The datum reference frame loses its precedence ordering and the material-boundary modifier on a datum; the datum-reference-frame that establishes the part's coordinate system is silently altered, so every datum-referenced tolerance is evaluated against the wrong constraint set.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a` (provisional — pattern-synthesized, pending nightly oracle rebaseline)
+
+### Pmi162 — Full GD&T form/orientation/location symbol set beyond position/perpendicularity/flatness [VALID-BUT-HARD]
+- **Category**: §12.7 PMI/GD&T (sub-class: semantic tolerance-type vocabulary — six remaining subtypes)
+- **Sources**: Pattern-mined from NIST MBE PMI test suite / CAx-IF FTC/CTC AP242 files (public-domain / describe-only — pattern only, no bytes copied); audit/mining_nist_mbxif_2026-07.md #6.
+- **Description**: The corpus's semantic-tolerance coverage is limited to position, perpendicularity, and flatness. AP242 distinguishes six further tolerance subtypes on their own entity names: `cylindricity_tolerance`, `roundness_tolerance` (circularity), `straightness_tolerance` (form; no datum), and the datum-referenced `angularity_tolerance`, `concentricity_tolerance`, `symmetry_tolerance`. A reader that maps unknown subtypes onto a generic tolerance loses the symbol semantics (and, for the datum-referenced three, the datum link).
+- **Reproducer recipe**: AP242 file; a `DATUM_SYSTEM` on datum A; feature aspects (cylinder, angled face, slot); emit each of `CYLINDRICITY_TOLERANCE`, `ROUNDNESS_TOLERANCE`, `STRAIGHTNESS_TOLERANCE` (no datum) and `ANGULARITY_TOLERANCE`, `CONCENTRICITY_TOLERANCE`, `SYMMETRY_TOLERANCE` (referencing the datum system), each with a real `LENGTH_MEASURE_WITH_UNIT` magnitude.
+- **Expected kernel behavior**: Recognize each tolerance subtype distinctly; a reader that maps unknown subtypes onto a generic `geometric_tolerance` loses the symbol semantics.
+- **Notes**: Semantic-PMI carrier geometry is a `GEOMETRIC_CURVE_SET` (single point → one loaded vertex, like Pmi010). Synonyms: "cylindricity tolerance dropped", "circularity roundness tolerance lost", "straightness tolerance not parsed", "angularity concentricity symmetry tolerance absent", "GD&T symbol subtype mapped to generic tolerance". Provenance tier: bytes-only — semantic GD&T tolerance metadata is oracle-invisible at BRep load (OCC loads only the carrier geometry); pattern-mined, not yet mutation-verified.
+- **Byte assertion**: contains(b'CYLINDRICITY_TOLERANCE')
+- **Byte assertion**: contains(b'ROUNDNESS_TOLERANCE')
+- **Byte assertion**: contains(b'STRAIGHTNESS_TOLERANCE')
+- **Byte assertion**: contains(b'ANGULARITY_TOLERANCE')
+- **Byte assertion**: contains(b'CONCENTRICITY_TOLERANCE')
+- **Byte assertion**: contains(b'SYMMETRY_TOLERANCE')
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_vertices_total == 1
+- **Severity**: P2
+- **Model impact**: Six distinct GD&T symbols collapse to a generic tolerance (or vanish) on import; the specific form/orientation/location control each imposes is lost, so inspection cannot reconstruct the intended requirement and re-export drops the symbol.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a` (provisional — pattern-synthesized, pending nightly oracle rebaseline)
+
+### Pmi163 — `ANGULAR_SIZE` / `ANGULAR_LOCATION` semantic dimension with plane-angle unit [VALID-BUT-HARD]
+- **Category**: §12.7 PMI/GD&T (sub-class: semantic dimension — angular vs linear)
+- **Sources**: Pattern-mined from NIST MBE PMI test suite / CAx-IF FTC/CTC AP242 files (public-domain / describe-only — pattern only, no bytes copied); audit/mining_nist_mbxif_2026-07.md #7.
+- **Description**: AP242 carries angular dimensions as `angular_size` (with an `angle_relator` selection) and `angular_location` (angle between two features), tied to their value through a `dimensional_characteristic_representation` whose measure is a plane-angle `MEASURE_REPRESENTATION_ITEM` in RADIAN units (the file's `plane_angle_unit`, #9057). A reader that coerces the angular dimension to a linear `dimensional_size`, or drops the plane-angle unit, mis-carries the dimension. Angular semantic dimensions are absent from the corpus (nearest = Pmi072 dimension-pair unit mismatch).
+- **Reproducer recipe**: AP242 file; two wedge-face `SHAPE_ASPECT`s; `ANGULAR_SIZE(#face1,'wedge_angle',.EQUAL.)` and `ANGULAR_LOCATION('face_angle','',#face1,#face2,.EQUAL.)`; a `(MEASURE_REPRESENTATION_ITEM()MEASURE_WITH_UNIT(PLANE_ANGLE_MEASURE(0.5235987756),#9057)REPRESENTATION_ITEM('wedge_angle'))` inside a `SHAPE_DIMENSION_REPRESENTATION`; two `DIMENSIONAL_CHARACTERISTIC_REPRESENTATION`s tying each angular dimension to the value.
+- **Expected kernel behavior**: Carry the angular dimension with its plane-angle unit; do not coerce to a linear size or drop the angular unit.
+- **Notes**: Semantic-PMI carrier geometry is a `GEOMETRIC_CURVE_SET` (single point → one loaded vertex, like Pmi010). See also: Pmi072. Synonyms: "angular size coerced to linear", "angular location dimension dropped", "plane-angle unit lost on dimension", "30-degree wedge angle imported as length", "angle_relator selection ignored". Provenance tier: bytes-only — semantic dimension metadata is oracle-invisible at BRep load (OCC loads only the carrier geometry); pattern-mined, not yet mutation-verified.
+- **Byte assertion**: contains(b'ANGULAR_SIZE')
+- **Byte assertion**: contains(b'ANGULAR_LOCATION')
+- **Byte assertion**: contains(b'PLANE_ANGLE_MEASURE')
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_vertices_total == 1
+- **Severity**: P2
+- **Model impact**: An angular dimension is imported as a unitless or linear value, so the controlled angle is lost or mis-scaled; downstream inspection measures the wrong quantity and any re-export emits a linear dimension where an angular one was intended.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a` (provisional — pattern-synthesized, pending nightly oracle rebaseline)
+
+### Pmi164 — Single shared `COORDINATES_LIST` for a whole `TESSELLATED_SHELL`, 1-based integer indices [VALID-BUT-HARD]
+- **Category**: §12.7 PMI/GD&T (sub-class: AP242 tessellation packed-array — shared list / 1-based indexing)
+- **Sources**: Pattern-mined from the NIST MBE PMI FTC-08 tessellated AP242 file and the MBx-IF Tessellated-3D-Geometry Recommended Practice (public-domain / describe-only — pattern only, no bytes copied); audit/mining_nist_mbxif_2026-07.md #10.
+- **Description**: AP242 tessellated geometry packs all vertices of a shell into a single shared `coordinates_list` (the AP242 point holder — `cartesian_point_list_3d` is the AP203/214 name) and lets every `triangulated_face` index that one packed real array with 1-based integer index lists, instead of owning a per-face list or naming individual `cartesian_point` entities. A kernel built around per-point entities, one that assumes a per-face list, or one that treats the indices as 0-based, mis-indexes or drops faces. Distinct from M004 (per-face lists → watertightness lost); here a single shared 1-based-indexed list is the correct packed form.
+- **Reproducer recipe**: AP242 file; one `COORDINATES_LIST` holding all 8 cube corners; six `TRIANGULATED_FACE`s each indexing that same list with 1-based triangle index lists; one `TESSELLATED_SHELL` over the six faces; wrapped in a `GEOMETRIC_CURVE_SET` model item.
+- **Expected kernel behavior**: Index the shared packed array with correct 1-based semantics; kernels built around per-point entities, or that assume a per-face list, or that read the indices as 0-based, mis-index or drop faces.
+- **Notes**: Tessellation carrier: `GEOMETRIC_CURVE_SET` over a `TESSELLATED_SHELL` — OCC loads the compound but yields no topological vertices (as in M004). This fixture is exempt from the §12.7 PMI-presence lint (no semantic-PMI bytes by design); see `EXEMPT_PMI_PRESENCE`. See also: M004. Synonyms: "shared coordinates_list packed array", "1-based tessellation index mis-read as 0-based", "tessellated_shell single point list", "triangulated_face shared vertex list mis-indexed", "AP242 packed point array dropped". Provenance tier: bytes-only — the packed-array / 1-based-index defect is byte-structural and oracle-invisible at BRep load (OCC yields empty vertices regardless); pattern-mined, not yet mutation-verified.
+- **Byte assertion**: count_entity_def(b'COORDINATES_LIST') == 1
+- **Byte assertion**: count_entity_def(b'TRIANGULATED_FACE') == 6
+- **Byte assertion**: contains(b'TESSELLATED_SHELL')
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_vertices_total == 0
+- **Severity**: P2
+- **Model impact**: A viewer or kernel that mis-reads the shared packed array (0-based, or expecting per-face lists) drops or scrambles facets, so the faceted representation renders with missing or transposed triangles while a B-rep-only kernel ignores it entirely.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a` (provisional — pattern-synthesized, pending nightly oracle rebaseline)
+
 ### Ad132 — OCCT #383/#407: NIST AP242 Ed.3 datum-axis reader confuses indices vs values → `gp_Dir::CrossCross` zero-norm exception
 - **Category**: §12.11 adversarial (sub-class: reader crash-path — datum-axis colinear-direction trip; NIST AP242 Ed.3 fixture)
 - **Sources**: https://github.com/Open-Cascade-SAS/OCCT/issues/383, https://github.com/Open-Cascade-SAS/OCCT/pull/407 (`STEPCAFControl_Reader.cxx:3007` — pre-fix passes `Lower()` indices into `gp_Dir::SetCoord()` instead of `Value(Lower())`; post-fix reads the array values). NIST `nist_stc_07_asme1_ap242-e3.stp` is the reference file that surfaced the crash. B4 wave-8 DEF-AAA (LGPL-clean — pattern only, no upstream bytes copied).

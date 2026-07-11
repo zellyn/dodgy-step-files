@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pmi160 — `.MAXIMUM_MATERIAL_REQUIREMENT.` modifier applied to a `FLATNESS_TOLERANCE` (form tolerance, no size feature) [DEFECT]</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.7 PMI / GD&amp;T</a> <span class="sep">/</span> <span class="current">Pmi160</span>
+</nav>
+<header class="title-bar">
+<h1>Pmi160 <span class="sep">—</span> <span class="entry-title">`.MAXIMUM_MATERIAL_REQUIREMENT.` modifier applied to a `FLATNESS_TOLERANCE` (form tolerance, no size feature) [DEFECT]</span></h1>
+<p class="category">§12.7 PMI/GD&amp;T (sub-class: illegal tolerance modifier — MMC on form tolerance)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+<a class="tag tag-pmi" href="../by-tag/pmi/index.html">pmi</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-7-pmi/Pmi160.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-7-pmi/Pmi160.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>Pattern-mined from NIST MBE PMI test suite / CAx-IF FTC/CTC AP242 files (public-domain / describe-only — pattern only, no bytes copied)</li>
+<li>audit/mining_nist_mbxif_2026-07.md #9.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Material-condition modifiers (Ⓜ MMC / Ⓛ LMC) apply only to features of size. A form tolerance such as flatness has no feature of size, so a maximum-material-requirement modifier on it is an ASME Y14.5 rule violation. This fixture emits a single AP242 complex instance that is simultaneously a `flatness_tolerance` and a `geometric_tolerance_with_modifiers` bearing `.MAXIMUM_MATERIAL_REQUIREMENT.`. Defect variant of Pmi159.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>AP242 file; flat-face `SHAPE_ASPECT`; complex instance `(FLATNESS_TOLERANCE()GEOMETRIC_TOLERANCE(&#x27;flat_mmc&#x27;,&#x27;&#x27;,#mag,#aspect)GEOMETRIC_TOLERANCE_WITH_MODIFIERS((.MAXIMUM_MATERIAL_REQUIREMENT.)))`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Warn or reject: Ⓜ on a feature without size violates ASME Y14.5; accepting it silently propagates a bad bonus-tolerance calculation.</p></section>
+<section><h2>Notes</h2>
+<p>Semantic-PMI carrier geometry is a `GEOMETRIC_CURVE_SET` (single point → one loaded vertex, like Pmi010). Synonyms: &quot;MMC on flatness illegal&quot;, &quot;material modifier on form tolerance&quot;, &quot;maximum material requirement without size feature&quot;, &quot;bonus tolerance on form control accepted silently&quot;. Provenance tier: bytes-only — the illegal-modifier defect is byte-structural and oracle-invisible at BRep load (OCC loads the carrier point regardless); pattern-mined, not yet mutation-verified.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;FLATNESS_TOLERANCE&#x27;)</code></li>
+<li><code>contains(b&#x27;GEOMETRIC_TOLERANCE_WITH_MODIFIERS&#x27;)</code></li>
+<li><code>contains(b&#x27;MAXIMUM_MATERIAL_REQUIREMENT&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_vertices_total == 1</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Pmi010.html">Pmi010</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Pmi160: <mark>MAXIMUM_MATERIAL_REQUIREMENT</mark> modifier on a <mark>FLATNESS_TOLERANCE</mark> (a form tolerance with no feature of size) â ASME Y14.5 rule violation; emitted as a <mark>FLATNESS_TOLERANCE</mark> + <mark>GEOMETRIC_TOLERANCE_WITH_MODIFIERS</mark> complex instance; compliant reader must warn/reject, not accept; GEOMETRIC_CURVE_SET IS model entity â OCC loads the point as one vertex */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Pmi160&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Pmi160.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=GEOMETRIC_CURVE_SET(&#x27;&#x27;,(#1));
+<span class="lineno">12</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">13</span>#9051=PRODUCT(&#x27;Pmi160&#x27;,&#x27;Pmi160&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">14</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">15</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">16</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">17</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">18</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">19</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">20</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">21</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">22</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">23</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#2),#9060);
+<span class="lineno">24</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">25</span>#9063=SHAPE_ASPECT(&#x27;flat_face&#x27;,&#x27;flat face â no feature of size&#x27;,#9055,.T.);
+<span class="lineno">26</span>#9064=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.02),#9056);
+<span class="lineno">27</span>#9065=(<mark>FLATNESS_TOLERANCE</mark>()GEOMETRIC_TOLERANCE(&#x27;flat_mmc&#x27;,&#x27;ILLEGAL: MMC on flatness (no size feature)&#x27;,#9064,#9063)<mark>GEOMETRIC_TOLERANCE_WITH_MODIFIERS</mark>((.<mark>MAXIMUM_MATERIAL_REQUIREMENT</mark>.)));
+<span class="lineno">28</span>ENDSEC;
+<span class="lineno">29</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Pmi159.html">&larr; Pmi159</a> <a class="up" href="index.html">§12.7 PMI / GD&amp;T</a> <a class="next" href="Pmi161.html">Pmi161 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

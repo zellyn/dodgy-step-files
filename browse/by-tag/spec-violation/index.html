@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1><span class="tag tag-spec-violation">spec-violation</span></h1>
 <p class="blurb">Input violates ISO 10303 / AP-spec text and should be rejected.</p>
-<p class="meta">379 entries</p>
+<p class="meta">381 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Section</th><th>Expected validation</th></tr></thead><tbody>
@@ -388,6 +388,8 @@
 <tr><td><a href="../../12-7-pmi/Pmi134.html"><code>Pmi134</code></a></td><td>`CHAMFER` with two contradictory `chamfer_angle` attributes (45 deg and 60 deg)</td><td><a href="../../12-7-pmi/index.html">§12.7 PMI / GD&amp;T</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-7-pmi/Pmi135.html"><code>Pmi135</code></a></td><td>`FILLET` feature with non-positive radius (zero or negative)</td><td><a href="../../12-7-pmi/index.html">§12.7 PMI / GD&amp;T</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-7-pmi/Pmi136.html"><code>Pmi136</code></a></td><td>`FILLET` radius larger than the adjacent face&#x27;s smallest extent (rolling-ball doesn&#x27;t fit)</td><td><a href="../../12-7-pmi/index.html">§12.7 PMI / GD&amp;T</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="../../12-7-pmi/Pmi157.html"><code>Pmi157</code></a></td><td>`CIRCULAR_RUNOUT_TOLERANCE` with no datum reference (GD&amp;T-illegal) [DEFECT]</td><td><a href="../../12-7-pmi/index.html">§12.7 PMI / GD&amp;T</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="../../12-7-pmi/Pmi160.html"><code>Pmi160</code></a></td><td>`.MAXIMUM_MATERIAL_REQUIREMENT.` modifier applied to a `FLATNESS_TOLERANCE` (form tolerance, no size feature) [DEFECT]</td><td><a href="../../12-7-pmi/index.html">§12.7 PMI / GD&amp;T</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-4-tolerance/Tb005.html"><code>Tb005</code></a></td><td>Face area sub-tolerance squared (`tol*tol` threshold defect)</td><td><a href="../../12-4-tolerance/index.html">§12.4 Tolerance &amp; numerical precision</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-4-tolerance/Tb014.html"><code>Tb014</code></a></td><td>Sliver triangle whose smallest internal angle is at the hardcoded trigger</td><td><a href="../../12-4-tolerance/index.html">§12.4 Tolerance &amp; numerical precision</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-4-tolerance/Tb017.html"><code>Tb017</code></a></td><td>Two coincident faces at distance equal to declared tolerance</td><td><a href="../../12-4-tolerance/index.html">§12.4 Tolerance &amp; numerical precision</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></td></tr>

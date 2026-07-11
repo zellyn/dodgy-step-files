@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1>§12.7 PMI / GD&amp;T</h1>
 <p class="blurb">PMI / GD&amp;T defects: dimensional tolerances, datums, geometric tolerance frames, semantic surface association.</p>
-<p class="meta">140 entries</p>
+<p class="meta">149 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
@@ -158,6 +158,15 @@
 <tr><td><a href="Pmi153.html"><code>Pmi153</code></a></td><td>AP242 Ed.3 `APLL_POINT` and `APLL_POINT_WITH_SURFACE` leader-endpoint types dropped by Ed.2/AP214 readers</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Pmi154.html"><code>Pmi154</code></a></td><td>AP242 Ed.3 item-level topology-geometry association pair (`TOPOLOGY_TO_GEOMETRY_ITEM_ASSOCIATION` + `GEOMETRY_TO_TOPOLOGY_ITEM_ASSOCIATION`) dropped by Ed.2/AP214 readers</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Pmi155.html"><code>Pmi155</code></a></td><td>AP242 Ed.3 data-equivalence assertion+inspection pair (`DATA_EQUIVALENCE_CRITERION_ASSESSMENT_ASSOCIATION` + `DATA_EQUIVALENCE_CRITERION_INSPECTION_ASSOCIATION`) dropped by Ed.2/AP214 readers</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pmi156.html"><code>Pmi156</code></a></td><td>`CIRCULAR_RUNOUT_TOLERANCE` + `TOTAL_RUNOUT_TOLERANCE` with datum-axis reference (semantic runout family) [VALID-BUT-HARD]</td><td><code>bytes-only</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pmi157.html"><code>Pmi157</code></a></td><td>`CIRCULAR_RUNOUT_TOLERANCE` with no datum reference (GD&amp;T-illegal) [DEFECT]</td><td><code>bytes-only</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pmi158.html"><code>Pmi158</code></a></td><td>`SURFACE_PROFILE_TOLERANCE` + `LINE_PROFILE_TOLERANCE` with `ALL_AROUND_SHAPE_ASPECT` scope [VALID-BUT-HARD]</td><td><code>bytes-only</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pmi159.html"><code>Pmi159</code></a></td><td>`GEOMETRIC_TOLERANCE_WITH_MODIFIERS` carrying MMC / LMC / free-state / tangent-plane modifiers [VALID-BUT-HARD]</td><td><code>bytes-only</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pmi160.html"><code>Pmi160</code></a></td><td>`.MAXIMUM_MATERIAL_REQUIREMENT.` modifier applied to a `FLATNESS_TOLERANCE` (form tolerance, no size feature) [DEFECT]</td><td><code>bytes-only</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pmi161.html"><code>Pmi161</code></a></td><td>`DATUM_REFERENCE_COMPARTMENT` / `DATUM_REFERENCE_ELEMENT` with per-datum material modifier (MMC on datum B) [VALID-BUT-HARD]</td><td><code>bytes-only</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pmi162.html"><code>Pmi162</code></a></td><td>Full GD&amp;T form/orientation/location symbol set beyond position/perpendicularity/flatness [VALID-BUT-HARD]</td><td><code>bytes-only</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pmi163.html"><code>Pmi163</code></a></td><td>`ANGULAR_SIZE` / `ANGULAR_LOCATION` semantic dimension with plane-angle unit [VALID-BUT-HARD]</td><td><code>bytes-only</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Pmi164.html"><code>Pmi164</code></a></td><td>Single shared `COORDINATES_LIST` for a whole `TESSELLATED_SHELL`, 1-based integer indices [VALID-BUT-HARD]</td><td><code>bytes-only</code></td><td><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></td></tr>
 </tbody></table>
 </main>
 <footer>

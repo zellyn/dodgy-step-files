@@ -49,6 +49,7 @@ EXEMPT_PMI_PRESENCE = {
     # tagged `bytes-sufficient` only.
     "Pmi006",  # saved-view-name on CAMERA_MODEL_D3 not DRAUGHTING_MODEL — meta-PMI defect with no annotation entities
     "Pmi017",  # supplemental-geometry subset tagged via DESCRIPTION_ATTRIBUTE on SHAPE_REPRESENTATION — meta-PMI
+    "Pmi164",  # AP242 tessellation packed-array construct (shared COORDINATES_LIST / TESSELLATED_SHELL) — no semantic-PMI bytes by design
 }
 
 EXEMPT_ASSEMBLY_PRESENCE = {
