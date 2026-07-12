@@ -187,7 +187,17 @@ free_wire = f.edge_loop([
 gset = f._emit_raw(
     f"GEOMETRIC_SET('compound_three_defects',(#{face_a.eid},#{shell_b.eid},#{free_wire.eid}))"
 )
-# Add product chain using the shell_b as the model entity (surface_shape mode)
-f.add_product_chain(shell_b)
+# 2026-07-12 fix (audit finding): the representation previously wired in only
+# shell_b (#120) directly, leaving face_a (#59, part a) and free_wire (#142,
+# part c) unreachable from the shape-representation root -- so only ONE of
+# the THREE defects this fixture's own catalog claim ("ShapeFix_Shape
+# orchestrator must converge over all three without looping") actually
+# reached a live translated shape. Fixed by wiring in gset (the GEOMETRIC_SET
+# compound of all three) instead, matching the corpus's own precedent for a
+# GEOMETRIC_SET as a direct MANIFOLD_SURFACE_SHAPE_REPRESENTATION item (see
+# M192: GEOMETRIC_SET of bare CARTESIAN_POINTs wired the same way, oracle-
+# visible as a live COMPOUND). All three sub-shapes -- face_a, shell_b, and
+# free_wire -- are now reachable via gset.
+f.add_product_chain(gset)
 
 f.write(_Path(__file__).parent.parent.parent / "step-examples" / "12-3c-faces" / "Hea001.stp")
