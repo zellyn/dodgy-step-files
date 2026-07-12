@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ip008 — glTF node `children[]` references a node index out of range</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <span class="sep">/</span> <span class="current">Ip008</span>
+</nav>
+<header class="title-bar">
+<h1>Ip008 <span class="sep">—</span> <span class="entry-title">glTF node `children[]` references a node index out of range</span></h1>
+<p class="category">§12.15 import-format parser robustness (sub-class: index-out-of-range)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../import-examples/12-15-import-formats/Ip008.gltf">View raw fixture (.gltf)</a> <code class="path">import-examples/12-15-import-formats/Ip008.gltf</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>Pattern-mined from assimp/assimp#6485 (`ImportNode`) + OSS-Fuzz 483501004 (BSD-3-Clause — pattern only, no bytes copied).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A glTF scene graph node lists `children: [5]` but the document declares only one node (index 0). `ImportNode` recurses into `nodes[5]` without bounds-checking the child index against the `nodes` array length, indexing past its end. Same index-out-of-range family as Ip004/Ip005 but at the scene-graph (node) layer rather than the buffer/geometry layer.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>a `.gltf` whose node `children[]` (or a scene&#x27;s node list) names an index ≥ the number of declared nodes.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>validate every node/child index against the `nodes` array length before recursing.</p></section>
+<section><h2>Notes</h2>
+<p>Complements Ip004 (accessor-over-bufferView) with a scene-graph index-OOB in the same format. Synonyms: &quot;glTF node index out of range&quot;, &quot;children references missing node&quot;, &quot;scene graph index OOB&quot;, &quot;ImportNode overflow&quot;. Provenance tier: bytes-only.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;&quot;children&quot;: [ 5 ]&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Ip004.html">Ip004</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>{
+<span class="lineno">2</span>  &quot;asset&quot;: { &quot;version&quot;: &quot;2.0&quot;, &quot;generator&quot;: &quot;Ip008 assimp#6485 node children[] references a node index out of range&quot; },
+<span class="lineno">3</span>  &quot;scene&quot;: 0,
+<span class="lineno">4</span>  &quot;scenes&quot;: [ { &quot;nodes&quot;: [ 0 ] } ],
+<span class="lineno">5</span>  &quot;nodes&quot;: [
+<span class="lineno">6</span>    { &quot;name&quot;: &quot;root&quot;, <mark>&quot;children&quot;: [ 5 ]</mark> }
+<span class="lineno">7</span>  ]
+<span class="lineno">8</span>}
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ip007.html">&larr; Ip007</a> <a class="up" href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <a class="next" href="Ip009.html">Ip009 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

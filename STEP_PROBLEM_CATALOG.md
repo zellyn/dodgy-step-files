@@ -45300,3 +45300,68 @@ exercised against CGAL PMP / MeshFix.
 - **Notes**: Synonyms: "COLLADA p index out of range", "primitive index beyond source", "DAE CopyVertex overflow", "vertex index exceeds accessor count". Provenance tier: bytes-only. First COLLADA coverage.
 - **Severity**: P2
 - **Model impact**: The importer reads past the position `<float_array>`, assembling a triangle from adjacent-memory coordinates or crashing; the reconstructed geometry contains a vertex the document never defined.
+
+### Ip006 — OBJ negative relative face index below −(vertex count)
+- **Category**: §12.15 import-format parser robustness (sub-class: negative-index-underflow)
+- **Sources**: Pattern-mined from assimp/assimp#281 + #2349 (broken-index class; assimp 6.0.4 face-scan fix) (BSD-3-Clause — pattern only, no bytes copied).
+- **Description**: OBJ permits negative face indices as back-references relative to the running vertex count (`-1` = the most recent `v`). Here only 3 vertices precede a face `f -9 -1 -1`; `-9` resolves to `count + index + 1 = 3 + (−9) + 1 = −5`, which is < 1 and references no vertex. A loader that resolves negatives without a lower-bound check indexes before the start of the vertex array.
+- **Reproducer recipe**: an OBJ with N `v` records followed by a face whose negative index is more negative than −N.
+- **Expected kernel behavior**: resolve each negative index against the running count and reject (or skip) any result < 1; never index before the vertex array.
+- **Byte assertion**: contains(b'f -9 -1 -1')
+- **Fixture path**: import-examples/12-15-import-formats/Ip006.obj
+- **Fixture kind**: raw import-format file (parser-robustness; graded against assimp/trimesh, not Part-21)
+- **Notes**: Distinct from Ip001 (positive OOB). Synonyms: "OBJ negative index underflow", "relative index below negative count", "back-reference before first vertex", "OBJ f -9 out of range". Provenance tier: bytes-only.
+- **Severity**: P2
+- **Model impact**: The importer reads before the vertex buffer (garbage coordinates or crash) or silently drops the face; either way the loaded mesh diverges from the file's intent.
+
+### Ip007 — glTF accessor `componentType` is an invalid enum value
+- **Category**: §12.15 import-format parser robustness (sub-class: invalid-enum-tag)
+- **Sources**: Pattern-mined from assimp/assimp#6527 (`Accessor::Read`) + OSS-Fuzz 483099602 (UBSAN) (BSD-3-Clause — pattern only, no bytes copied).
+- **Description**: A glTF 2.0 accessor declares `componentType: 9999`, outside the valid set {5120…5126}. Element-size math casts the value to an enum and uses it to compute per-element byte strides; an unknown value yields a nonsensical (or zero) element size that drives out-of-bounds or divide-related reads. The backing buffer here is correctly sized (36 B for 3× VEC3 float) so the *only* defect is the invalid tag.
+- **Reproducer recipe**: a self-contained `.gltf` whose accessor `componentType` is not one of the seven valid glTF component types.
+- **Expected kernel behavior**: reject any `componentType` outside {5120,5121,5122,5123,5125,5126} before computing element sizes.
+- **Byte assertion**: contains(b'"componentType": 9999')
+- **Fixture path**: import-examples/12-15-import-formats/Ip007.gltf
+- **Fixture kind**: raw import-format file (parser-robustness; graded against assimp/tinygltf, not Part-21)
+- **Notes**: The corpus's first invalid-enum-tag import class. Synonyms: "glTF invalid componentType", "unknown accessor component type", "bad enum tag", "componentType out of range". Provenance tier: bytes-only.
+- **Severity**: P2
+- **Model impact**: Element-size computation from an unknown type produces a wrong or zero stride, so the accessor reads the wrong bytes (or a zero-size loop / division), corrupting or aborting the load.
+
+### Ip008 — glTF node `children[]` references a node index out of range
+- **Category**: §12.15 import-format parser robustness (sub-class: index-out-of-range)
+- **Sources**: Pattern-mined from assimp/assimp#6485 (`ImportNode`) + OSS-Fuzz 483501004 (BSD-3-Clause — pattern only, no bytes copied).
+- **Description**: A glTF scene graph node lists `children: [5]` but the document declares only one node (index 0). `ImportNode` recurses into `nodes[5]` without bounds-checking the child index against the `nodes` array length, indexing past its end. Same index-out-of-range family as Ip004/Ip005 but at the scene-graph (node) layer rather than the buffer/geometry layer.
+- **Reproducer recipe**: a `.gltf` whose node `children[]` (or a scene's node list) names an index ≥ the number of declared nodes.
+- **Expected kernel behavior**: validate every node/child index against the `nodes` array length before recursing.
+- **Byte assertion**: contains(b'"children": [ 5 ]')
+- **Fixture path**: import-examples/12-15-import-formats/Ip008.gltf
+- **Fixture kind**: raw import-format file (parser-robustness; graded against assimp/tinygltf, not Part-21)
+- **Notes**: Complements Ip004 (accessor-over-bufferView) with a scene-graph index-OOB in the same format. Synonyms: "glTF node index out of range", "children references missing node", "scene graph index OOB", "ImportNode overflow". Provenance tier: bytes-only.
+- **Severity**: P2
+- **Model impact**: The importer dereferences a node past the end of the node array (garbage transform/mesh pointer or crash); the scene graph it builds is corrupt.
+
+### Ip009 — PLY vertex row supplies more scalar fields than declared properties
+- **Category**: §12.15 import-format parser robustness (sub-class: row-field-overflow)
+- **Sources**: Pattern-mined from assimp/assimp#5729 + OSS-Fuzz 6544205135544320 (`LoadVertex` heap-overflow WRITE) (BSD-3-Clause — pattern only, no bytes copied).
+- **Description**: The PLY header declares three vertex properties (`x y z`), but the first vertex body row streams four scalars: `0.0 0.0 0.0 7.0`. A `LoadVertex` that writes one slot per whitespace-delimited token (rather than per declared property) writes a fourth value past the vertex's field storage — the heap-overflow-write variant of the assimp defect. Distinct from Ip002, where the header *count* (not the per-row field count) was the lie.
+- **Reproducer recipe**: an ASCII PLY whose vertex row contains more scalar fields than the header declares properties for that element.
+- **Expected kernel behavior**: bind each row's parse to the declared property count; ignore or reject extra fields, never write past the per-vertex storage.
+- **Byte assertion**: contains(b'0.0 0.0 0.0 7.0')
+- **Fixture path**: import-examples/12-15-import-formats/Ip009.ply
+- **Fixture kind**: raw import-format file (parser-robustness; graded against assimp/trimesh, not Part-21)
+- **Notes**: Complements Ip002 (header count > rows) with the per-row-field-overflow variant. Synonyms: "PLY extra property field", "row has more scalars than properties", "LoadVertex field overflow", "PLY vertex row overrun". Provenance tier: bytes-only.
+- **Severity**: P2
+- **Model impact**: The extra scalar is written past the vertex's field storage (heap corruption) or shifts all subsequent parsing, so vertex coordinates and topology decode incorrectly.
+
+### Ip010 — OFF face names a vertex index ≥ declared vertex count
+- **Category**: §12.15 import-format parser robustness (sub-class: index-out-of-range)
+- **Sources**: Pattern-mined from assimp/assimp#2228 (OFF header/index-trust class) (BSD-3-Clause — pattern only, no bytes copied).
+- **Description**: An OFF file declares 3 vertices (indices 0–2) but its face record `3 0 1 5` references vertex index 5. A loader that indexes the vertex array by the face's index without bounds-checking reads past the end of the vertex table. Distinct from Ip003 (OFF header *count* lie) — here the counts are honest but a face index is out of range.
+- **Reproducer recipe**: an OFF file whose face `k i0 i1 …` names an index ≥ the declared vertex count V.
+- **Expected kernel behavior**: validate every face index against V at parse time; reject or skip the face rather than dereference past the vertex table.
+- **Byte assertion**: contains(b'3 0 1 5')
+- **Fixture path**: import-examples/12-15-import-formats/Ip010.off
+- **Fixture kind**: raw import-format file (parser-robustness; graded against assimp/trimesh, not Part-21)
+- **Notes**: Complements Ip003 (OFF header count) with an OFF face index-OOB. Synonyms: "OFF face index out of range", "vertex index exceeds V", "OFF OOB face reference", "index past vertex table". Provenance tier: bytes-only.
+- **Severity**: P2
+- **Model impact**: The importer reads past the vertex table (garbage coordinates or crash) or drops the face; the reconstructed surface disagrees with the file.

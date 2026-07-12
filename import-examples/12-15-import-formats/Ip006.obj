@@ -1,0 +1,5 @@
+# Ip006 assimp#281 negative relative face index below -(vertex count)
+v 0.0 0.0 0.0
+v 1.0 0.0 0.0
+v 0.0 1.0 0.0
+f -9 -1 -1

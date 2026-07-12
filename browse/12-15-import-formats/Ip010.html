@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ip010 — OFF face names a vertex index ≥ declared vertex count</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <span class="sep">/</span> <span class="current">Ip010</span>
+</nav>
+<header class="title-bar">
+<h1>Ip010 <span class="sep">—</span> <span class="entry-title">OFF face names a vertex index ≥ declared vertex count</span></h1>
+<p class="category">§12.15 import-format parser robustness (sub-class: index-out-of-range)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../import-examples/12-15-import-formats/Ip010.off">View raw fixture (.off)</a> <code class="path">import-examples/12-15-import-formats/Ip010.off</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>Pattern-mined from assimp/assimp#2228 (OFF header/index-trust class) (BSD-3-Clause — pattern only, no bytes copied).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An OFF file declares 3 vertices (indices 0–2) but its face record `3 0 1 5` references vertex index 5. A loader that indexes the vertex array by the face&#x27;s index without bounds-checking reads past the end of the vertex table. Distinct from Ip003 (OFF header *count* lie) — here the counts are honest but a face index is out of range.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>an OFF file whose face `k i0 i1 …` names an index ≥ the declared vertex count V.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>validate every face index against V at parse time; reject or skip the face rather than dereference past the vertex table.</p></section>
+<section><h2>Notes</h2>
+<p>Complements Ip003 (OFF header count) with an OFF face index-OOB. Synonyms: &quot;OFF face index out of range&quot;, &quot;vertex index exceeds V&quot;, &quot;OFF OOB face reference&quot;, &quot;index past vertex table&quot;. Provenance tier: bytes-only.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;3 0 1 5&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Ip003.html">Ip003</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>OFF
+<span class="lineno">2</span># Ip010 assimp#2228 face names a vertex index &gt;= declared vertex count
+<span class="lineno">3</span>3 1 0
+<span class="lineno">4</span>0.0 0.0 0.0
+<span class="lineno">5</span>1.0 0.0 0.0
+<span class="lineno">6</span>0.0 1.0 0.0
+<span class="lineno">7</span><mark>3 0 1 5</mark>
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ip009.html">&larr; Ip009</a> <a class="up" href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

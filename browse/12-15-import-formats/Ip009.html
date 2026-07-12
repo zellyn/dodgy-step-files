@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ip009 — PLY vertex row supplies more scalar fields than declared properties</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <span class="sep">/</span> <span class="current">Ip009</span>
+</nav>
+<header class="title-bar">
+<h1>Ip009 <span class="sep">—</span> <span class="entry-title">PLY vertex row supplies more scalar fields than declared properties</span></h1>
+<p class="category">§12.15 import-format parser robustness (sub-class: row-field-overflow)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../import-examples/12-15-import-formats/Ip009.ply">View raw fixture (.ply)</a> <code class="path">import-examples/12-15-import-formats/Ip009.ply</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>Pattern-mined from assimp/assimp#5729 + OSS-Fuzz 6544205135544320 (`LoadVertex` heap-overflow WRITE) (BSD-3-Clause — pattern only, no bytes copied).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>The PLY header declares three vertex properties (`x y z`), but the first vertex body row streams four scalars: `0.0 0.0 0.0 7.0`. A `LoadVertex` that writes one slot per whitespace-delimited token (rather than per declared property) writes a fourth value past the vertex&#x27;s field storage — the heap-overflow-write variant of the assimp defect. Distinct from Ip002, where the header *count* (not the per-row field count) was the lie.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>an ASCII PLY whose vertex row contains more scalar fields than the header declares properties for that element.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>bind each row&#x27;s parse to the declared property count; ignore or reject extra fields, never write past the per-vertex storage.</p></section>
+<section><h2>Notes</h2>
+<p>Complements Ip002 (header count &gt; rows) with the per-row-field-overflow variant. Synonyms: &quot;PLY extra property field&quot;, &quot;row has more scalars than properties&quot;, &quot;LoadVertex field overflow&quot;, &quot;PLY vertex row overrun&quot;. Provenance tier: bytes-only.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;0.0 0.0 0.0 7.0&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Ip002.html">Ip002</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ply
+<span class="lineno">2</span>format ascii 1.0
+<span class="lineno">3</span>comment Ip009 assimp#5729 vertex row supplies more scalar fields than declared properties
+<span class="lineno">4</span>element vertex 3
+<span class="lineno">5</span>property float x
+<span class="lineno">6</span>property float y
+<span class="lineno">7</span>property float z
+<span class="lineno">8</span>element face 1
+<span class="lineno">9</span>property list uchar int vertex_indices
+<span class="lineno">10</span>end_header
+<span class="lineno">11</span><mark>0.0 0.0 0.0 7.0</mark>
+<span class="lineno">12</span>1.0 0.0 0.0
+<span class="lineno">13</span>0.0 1.0 0.0
+<span class="lineno">14</span>3 0 1 2
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ip008.html">&larr; Ip008</a> <a class="up" href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <a class="next" href="Ip010.html">Ip010 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

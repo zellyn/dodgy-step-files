@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ip007 — glTF accessor `componentType` is an invalid enum value</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <span class="sep">/</span> <span class="current">Ip007</span>
+</nav>
+<header class="title-bar">
+<h1>Ip007 <span class="sep">—</span> <span class="entry-title">glTF accessor `componentType` is an invalid enum value</span></h1>
+<p class="category">§12.15 import-format parser robustness (sub-class: invalid-enum-tag)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../import-examples/12-15-import-formats/Ip007.gltf">View raw fixture (.gltf)</a> <code class="path">import-examples/12-15-import-formats/Ip007.gltf</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>Pattern-mined from assimp/assimp#6527 (`Accessor::Read`) + OSS-Fuzz 483099602 (UBSAN) (BSD-3-Clause — pattern only, no bytes copied).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A glTF 2.0 accessor declares `componentType: 9999`, outside the valid set {5120…5126}. Element-size math casts the value to an enum and uses it to compute per-element byte strides; an unknown value yields a nonsensical (or zero) element size that drives out-of-bounds or divide-related reads. The backing buffer here is correctly sized (36 B for 3× VEC3 float) so the *only* defect is the invalid tag.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>a self-contained `.gltf` whose accessor `componentType` is not one of the seven valid glTF component types.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>reject any `componentType` outside {5120,5121,5122,5123,5125,5126} before computing element sizes.</p></section>
+<section><h2>Notes</h2>
+<p>The corpus&#x27;s first invalid-enum-tag import class. Synonyms: &quot;glTF invalid componentType&quot;, &quot;unknown accessor component type&quot;, &quot;bad enum tag&quot;, &quot;componentType out of range&quot;. Provenance tier: bytes-only.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;&quot;componentType&quot;: 9999&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>{
+<span class="lineno">2</span>  &quot;asset&quot;: { &quot;version&quot;: &quot;2.0&quot;, &quot;generator&quot;: &quot;Ip007 assimp#6527 accessor componentType is an invalid enum&quot; },
+<span class="lineno">3</span>  &quot;scene&quot;: 0,
+<span class="lineno">4</span>  &quot;scenes&quot;: [ { &quot;nodes&quot;: [ 0 ] } ],
+<span class="lineno">5</span>  &quot;nodes&quot;: [ { &quot;mesh&quot;: 0 } ],
+<span class="lineno">6</span>  &quot;meshes&quot;: [
+<span class="lineno">7</span>    { &quot;primitives&quot;: [ { &quot;attributes&quot;: { &quot;POSITION&quot;: 0 }, &quot;mode&quot;: 4 } ] }
+<span class="lineno">8</span>  ],
+<span class="lineno">9</span>  &quot;accessors&quot;: [
+<span class="lineno">10</span>    {
+<span class="lineno">11</span>      &quot;bufferView&quot;: 0,
+<span class="lineno">12</span>      <mark>&quot;componentType&quot;: 9999</mark>,
+<span class="lineno">13</span>      &quot;count&quot;: 3,
+<span class="lineno">14</span>      &quot;type&quot;: &quot;VEC3&quot;,
+<span class="lineno">15</span>      &quot;min&quot;: [ 0.0, 0.0, 0.0 ],
+<span class="lineno">16</span>      &quot;max&quot;: [ 1.0, 1.0, 0.0 ]
+<span class="lineno">17</span>    }
+<span class="lineno">18</span>  ],
+<span class="lineno">19</span>  &quot;bufferViews&quot;: [
+<span class="lineno">20</span>    { &quot;buffer&quot;: 0, &quot;byteOffset&quot;: 0, &quot;byteLength&quot;: 36 }
+<span class="lineno">21</span>  ],
+<span class="lineno">22</span>  &quot;buffers&quot;: [
+<span class="lineno">23</span>    { &quot;byteLength&quot;: 36, &quot;uri&quot;: &quot;data:application/octet-stream;base64,AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAgD8AAAAA&quot; }
+<span class="lineno">24</span>  ]
+<span class="lineno">25</span>}
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ip006.html">&larr; Ip006</a> <a class="up" href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <a class="next" href="Ip008.html">Ip008 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>
