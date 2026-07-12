@@ -59,6 +59,5 @@ DATA;
 #9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#38),#9060);
 #9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 #9063=NEXT_ASSEMBLY_USAGE_OCCURRENCE('self_loop','infinite traversal','',#9054,#9054,$);
-#9064=/* cascadio assembly traversal: no cycle detection */;
 ENDSEC;
 END-ISO-10303-21;
