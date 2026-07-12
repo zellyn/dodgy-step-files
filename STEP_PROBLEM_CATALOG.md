@@ -45222,6 +45222,94 @@ exercised against CGAL PMP / MeshFix.
 - **Model impact**: Crafted input drives the parser's derived-attribute accessors into unbounded mutual recursion; the load process is killed by a signal (stack exhaustion) and no shape is delivered — a denial-of-service on any receiver that dereferences the edge without a cycle guard.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
+### Twi284 — Consecutive wire edges share a corner location via two distinct `VERTEX_POINT` entities (coincident, not reused)
+- **Category**: §12.3b wire-loop (sub-class: vertex unification)
+- **Sources**: OCCT `ShapeFix_WireVertex::FixSame` (`ShapeFix_WireVertex.cxx:108-153`); `ShapeFix_EdgeConnect::Build` (`ShapeFix_EdgeConnect.cxx:145-284`)
+- **Description**: Two consecutive edges of one wire meet at a corner. Instead of the normal pattern — edge A's end vertex and edge B's start vertex ARE the same `VERTEX_POINT` entity — the sender emits two separate `VERTEX_POINT` entities that sit at identical coordinates. The wire looks geometrically closed but is topologically torn at that corner; the general-purpose vertex-unification utility must recognize the coincident-but-distinct pair and merge them into one shared vertex before the wire can be trusted as connected. This is the opposite direction from Twi009/Twi050 (`ShapeFix_SplitCommonVertex`): those fixtures have ONE vertex entity over-shared across two wires that must be split apart; here there are TWO vertex entities at the SAME wire corner that must be merged together.
+- **Reproducer recipe**: A 4-edge planar square wire whose bottom-right corner at `(10,0,0)` is split across two `VERTEX_POINT` entities — one is the end vertex of the bottom `EDGE_CURVE`, the other is the start vertex of the right `EDGE_CURVE` — both citing `CARTESIAN_POINT('',(10.0,0.0,0.0))` but never the same entity.
+- **Expected kernel behavior**: detect the coincident-but-distinct vertex pair at the shared corner and merge them into a single shared vertex (position = midpoint / aggregate of the originals, tolerance = max deviation plus margin), rewiring both edges to the merged vertex; or reject the wire as malformed.
+- **Closure intent**: sheet
+- **Notes**: **See also**: Twi009, Twi050 (SplitCommonVertex — the opposite direction: one vertex over-shared across two wires, split apart). Twi285 covers the companion subvariant (non-adjacent edges registered as touching via a broader connectivity graph, e.g. sewing). Synonyms: "two vertex entities at same wire corner", "coincident but distinct VERTEX_POINT at edge junction", "wire corner not welded", "vertex fragmentation at shared corner", "duplicate coordinate vertex needs merging". Provenance tier: bytes-sufficient.
+- **Byte assertion**: count_entity_def(b'VERTEX_POINT') >= 5
+- **Byte assertion**: contains(b'(10.0,0.0,0.0)')
+- **Tier-3 assertion**: n_edges_total >= 4
+- **Tier-3 assertion**: face[0].surface_type == "plane"
+- **OCC behavior**: loads a shape with diagnostic — reading as warn-and-heal; outside catalog's allowed set ({reject}). Documented divergence: OCC silently accepts the coincident-but-distinct vertex pair without an explicit unification diagnostic visible at this oracle's granularity; conservative kernels should still reject or explicitly merge.
+- **Severity**: P2
+- **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+
+### Twi285 — Two arbitrary, non-adjacent edges (different faces) register as touching via coincident-but-distinct `VERTEX_POINT` entities in a broader connectivity graph
+- **Category**: §12.3b wire-loop (sub-class: vertex unification, cross-wire scope)
+- **Sources**: OCCT `ShapeFix_EdgeConnect::Add` / `::Build` (`ShapeFix_EdgeConnect.cxx:145-284`) — the general-purpose utility underlying shell/face sewing, not limited to one wire's own consecutive edges
+- **Description**: The vertex-unification utility that shell/face sewing relies on must reconcile vertices across UNRELATED edges anywhere in the connectivity graph, not just consecutive edges of one wire (contrast Twi284). Here two unrelated `ADVANCED_FACE`s each have their own outer-wire corner at world coordinate `(0,0,0)`, each encoded with its OWN distinct `VERTEX_POINT` entity rather than a shared one. This deliberately differs from Twi050 (`ShapeFix_SplitCommonVertex`): Twi050 reuses the SAME `VERTEX_POINT` entity across both faces (too much sharing, must split apart); here each face has a DIFFERENT `VERTEX_POINT` entity at the same coordinate (no sharing at all, must be merged) — the opposite defect direction, exercising the general connectivity-graph `Add()`/`Build()` merge path rather than the split path.
+- **Reproducer recipe**: Two `ADVANCED_FACE`s on `PLANE`s, geometrically unrelated (different Z-offset carrier planes) except that each face's outer-wire `EDGE_LOOP` has one corner `VERTEX_POINT` at `(0,0,0)` — `#v0` for face 0, `#v1` for face 1 — two separate entities, never the same reference.
+- **Expected kernel behavior**: the connectivity-graph builder (`ShapeFix_EdgeConnect::Add`/`Build`, or the sewing tool that invokes it) must recognize `#v0`/`#v1` as touching (identical location, distinct entities) and merge them into one shared vertex, or reject the input as ambiguous.
+- **Closure intent**: sheet
+- **Notes**: **See also**: Twi284 (the single-wire, consecutive-edges subvariant of this same problem class). Twi009/Twi050 (`SplitCommonVertex`) are cited as negative-space contrast — the opposite defect direction (one entity over-shared, must split) — not reused here. Synonyms: "non-adjacent edges share coincident vertex across faces", "connectivity graph must merge distinct vertex entities", "cross-wire vertex fragmentation", "sewing-scope vertex unification", "arbitrary edge pair registered as touching". Provenance tier: bytes-sufficient.
+- **Byte assertion**: count_entity_def(b'VERTEX_POINT') >= 8
+- **Byte assertion**: contains(b'(0.0,0.0,0.0)')
+- **Tier-3 assertion**: n_edges_total >= 6
+- **Tier-3 assertion**: face[0].surface_type == "plane"
+- **Tier-3 assertion**: face[1].surface_type == "plane"
+- **OCC behavior**: loads a shape with diagnostic — reading as warn-and-heal; outside catalog's allowed set ({reject}). Documented divergence: OCC silently accepts the two coincident-but-distinct corner vertices without an explicit cross-face unification diagnostic visible at this oracle's granularity; conservative kernels should still reject or explicitly merge.
+- **Severity**: P2
+- **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
+
+### Twi286 — Minimal self-intersecting (bow-tie) wire on a single real `ADVANCED_FACE`, no confounding defects
+- **Category**: §12.3b wire-loop (sub-class: self-intersection, BRepCheck detection)
+- **Sources**: OCCT `BRepCheck_Wire::Closed` / internal-orientation checks (`BRepCheck_Wire.cxx:1048,1051`) — sets/returns `BRepCheck_SelfIntersectingWire`
+- **Description**: A wire's own edges cross each other in the host face's parameter space. Four straight edges form the classic bow-tie: `(0,0,0)->(10,10,0)->(10,0,0)->(0,10,0)->(0,0,0)`; edges 0 and 2 are the two diagonals of the nominal square and cross at `(5,5,0)` in both 3D and the plane's UV (identity frame). Deliberately minimal: one `ADVANCED_FACE`, one `PLANE`, one `EDGE_LOOP`, one `OPEN_SHELL` — no second face, no crash-prone geometry, no other defect layered in, isolating the self-intersection from the confounders present in this corpus's earlier attempts at this mechanism (Twi049's two-face setup, Twi076's revisited-vertex framing).
+- **Reproducer recipe**: `ADVANCED_FACE` on a `PLANE`; `FACE_OUTER_BOUND` → `EDGE_LOOP` of four `ORIENTED_EDGE`s whose `LINE` geometry forms a bow-tie (diagonals of a square crossing at the centre); `OPEN_SHELL` → `SHELL_BASED_SURFACE_MODEL`.
+- **Expected kernel behavior**: detect the self-intersection point(s) in UV/3D; split the wire at the intersection into two simple loops, remove the degenerate sub-loop, or reject the face as malformed. A diagnostic citing the offending edge pair should be available.
+- **Closure intent**: sheet
+- **Notes**: **See also**: Twi049, Twi076 (prior attempts at this mechanism, both carrying an explicit "checker does not fire" annotation). **Live-oracle finding (this fixture, verified via direct OCP/OCCT 7.8.1 testing)**: `STEPControl_Reader`'s default ShapeProcess sequence runs `ShapeFix_Wire`'s self-intersection repair (`ShapeFix_Wire::FixSelfIntersection`, `ShapeFix_IntersectionTool::FixSelfIntersectWire`) unconditionally on import — confirmed identical under both `occt_heal_on` and `occt_heal_off` `Interface_Static` settings (neither toggles the `ShapeProcess`/`FromSTEP` operator sequence that performs the split); only bypassing `STEPControl_Reader`'s default resource/sequence entirely — which none of this corpus's oracle configurations do — leaves the wire unrepaired for `BRepCheck` to observe. The reader silently splits the bow-tie into two valid triangular faces (`n_faces_total==2` post-import, `brepcheck.valid==True`) before `BRepCheck` ever runs on the original single self-intersecting wire; this is the same "silently heals on import" outcome already documented for Twi009, Twi010, Twi050, Twi076 and the ~120 other self-intersection-adjacent fixtures cataloged under `FixSelfIntersection()` in `OCCT_HEAL_COVERAGE.md`. The defect IS genuinely encoded in the DATA-section bytes (one crossing `EDGE_LOOP` on one live `ADVANCED_FACE`, reachable, never orphaned) and IS geometrically self-intersecting by construction; what is not observable via any of this corpus's standard reader configurations is the live `BRepCheck_SelfIntersectingWire` status on the as-read shape, because the reader's own healing pass resolves it first. NEEDS-ORACLE-REFRESH: not applicable — Expected validation below was captured live against this exact fixture, not mirrored from a sibling. Synonyms: "bow-tie wire on real face", "wire crosses itself in UV", "figure-eight self-intersecting wire minimal", "diagonals of square wire cross", "self-intersecting wire silently healed on import". Provenance tier: bytes-sufficient.
+- **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
+- **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 4
+- **Byte assertion**: contains(b'(0.0,0.0,0.0)')
+- **Byte assertion**: contains(b'(10.0,10.0,0.0)')
+- **Tier-3 assertion**: n_edges_total >= 4
+- **Tier-3 assertion**: face[0].surface_type == "plane"
+- **OCC behavior**: loads a shape with diagnostic — reading as warn-and-heal; outside catalog's allowed set ({reject}). Kernel-bug witnessed: OCCT's default ShapeFix pass silently splits the self-intersecting wire into two valid faces during import rather than surfacing `BRepCheck_SelfIntersectingWire` on the as-declared geometry; conservative kernels should reject or flag before any auto-split.
+- **Severity**: P2
+- **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a`
+
+### Twi287 — Full-period closed meridian edges on a `TOROIDAL_SURFACE` belt need splitting at the seam (insurance fixture, distinct surface kind from Twi019)
+- **Category**: §12.3b wire-loop (sub-class: closed-edge splitting)
+- **Sources**: OCCT `ShapeUpgrade_ShapeDivideClosedEdges`, exposed as the `spltclosededges` `ShapeProcess` operator (`ShapeProcess_OperLibrary.cxx:817-844`)
+- **Description**: An `EDGE_CURVE` whose underlying curve is a full 360° `CIRCLE` is used as a single edge; start vertex equals end vertex. Consumers that require every edge to be an open arc with two distinct endpoints need the edge divided at a seam/interior point. Twi019 demonstrates this mechanism on a `CYLINDRICAL_SURFACE`; this insurance fixture demonstrates the identical mechanism on a `TOROIDAL_SURFACE` belt (a torus segment bounded by two full meridian circles) so the class's coverage does not rest on a single surface kind.
+- **Reproducer recipe**: `ADVANCED_FACE` on a `TOROIDAL_SURFACE` (major=5, minor=2); `EDGE_LOOP` bounding a quarter-revolution belt — two full-period meridian `EDGE_CURVE`s (`start==end` vertex, complete 360° tube cross-section) at `u=0` and `u=pi/2`, connected by two `CIRCLE`-arc edges along the outer (`v=0`) and inner (`v=pi`) equators.
+- **Expected kernel behavior**: split each closed meridian edge at its seam parameter (or a natural break) into two open arcs, or accept the closed single edge as a kernel-internal representation. Choice is design-dependent; consumers of the result must agree on the convention.
+- **Closure intent**: sheet
+- **Notes**: **See also**: Twi019 (the cylinder-surface sibling of this mechanism — untouched by this fixture). Verified live: OCCT does NOT auto-split the meridian circles on read (`edge[0]`/`edge[2]` retain full length `2*pi*minor_radius == 12.566`), unlike the bow-tie self-intersection class (Twi286) which the reader silently repairs — closed-edge splitting is genuinely opt-in (`spltclosededges` is available-but-not-default), so the unsplit closed edges survive import exactly as declared. `brepcheck.valid` came back `False` live (an unrelated seam/inner-arc side effect of this specific belt construction, not asserted in tier-3 here since Twi019 already carries the `brepcheck.valid==True` claim for the cylinder case and this fixture's contribution is the distinct-surface-kind coverage, not a brepcheck claim). Synonyms: "torus belt closed meridian edge unsplit", "full 360 degree circle edge on torus", "closed curve as single edge needs splitting torus", "meridian circle spans whole tube cross-section", "torus surface closed-edge splitting". Provenance tier: bytes-sufficient.
+- **Byte assertion**: count_entity_def(b'TOROIDAL_SURFACE') == 1
+- **Byte assertion**: count_entity_def(b'CIRCLE') >= 2
+- **Tier-3 assertion**: face[0].surface_type == "torus"
+- **Tier-3 assertion**: n_edges_total >= 4
+- **Tier-3 assertion**: n_vertices_total >= 4
+- **Severity**: P2
+- **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
+
+### Twi288 — Non-convex dart outer wire and inner triangle hole share a common pinch `VERTEX_POINT` at the face centre (insurance fixture, distinct geometry from Twi009)
+- **Category**: §12.3b wire-loop (sub-class: common-vertex split)
+- **Sources**: OCCT `ShapeFix_SplitCommonVertex`, exposed as the `splitcommonvertex` `ShapeProcess` operator (`ShapeProcess_OperLibrary.cxx:853-879`)
+- **Description**: Two wires of a face (an outer boundary and an inner hole) share a single common `VERTEX_POINT` instance — a pinch point. Legal in a BRep-internal representation, illegal in the STEP schema (each wire must own distinct vertices), so the shared vertex must be split into per-wire copies. Twi009 demonstrates this with a unit-square outer wire and a small offset-square inner wire pinched at `(0.5,0.5)`; this insurance fixture uses a simple non-convex 5-vertex "dart" outer wire (four corners on a radius-5 circle, the fifth pulled all the way in to the face centre) and a small inner triangle hole with one corner also at the centre — distinct polygon topology and a different pinch location `(0,0,0)`, so the class's coverage does not rest on a single geometric configuration.
+- **Reproducer recipe**: `ADVANCED_FACE` on a `PLANE`; `FACE_OUTER_BOUND` → `EDGE_LOOP` for a non-convex dart (4 outer corners + 1 centre corner); `FACE_BOUND` → `EDGE_LOOP` for a small inner triangle with one corner at the same centre `VERTEX_POINT` instance as the dart's concave corner.
+- **Expected kernel behavior**: detect vertex over-sharing between the outer and inner wire; split the common vertex into independent per-wire copies so each wire's connectivity is explicit, or reject as malformed if the share crosses topological boundaries the kernel cannot resolve.
+- **Closure intent**: sheet
+- **Notes**: **See also**: Twi009 (the unit-square / offset-square configuration of this same mechanism — untouched by this fixture). Verified live: OCCT's default read pipeline splits the pinched face into two valid faces at the shared vertex (`n_faces_total==2`, one of the dart's boundary edges is subdivided into two sub-edges at the pinch, `n_edges_total` goes from the declared 8 to 10 post-heal) — the same "silently splits the shared-vertex face" outcome documented for Twi009's own Notes. Synonyms: "pinch vertex shared between outer and inner wire", "dart polygon hole touches boundary at one vertex", "common vertex needs splitting per wire, non-square case", "vertex over-sharing between outer boundary and hole", "concave polygon corner coincides with hole corner". Provenance tier: bytes-sufficient.
+- **Byte assertion**: count_entity_def(b'VERTEX_POINT') >= 7
+- **Byte assertion**: contains(b'(0.0,0.0,0.0)')
+- **Tier-3 assertion**: n_edges_total >= 7
+- **Tier-3 assertion**: face[0].surface_type == "plane"
+- **Tier-3 assertion**: n_vertices_total >= 7
+- **Severity**: P2
+- **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(20) ifc=schema_n/a`
+
 ### Xp045 — Far-from-origin model collapses in a float32 viewer buffer while double-precision CAD renders it
 - **Category**: §12.12 cross-product (double-vs-single-precision output differential)
 - **Sources**: Pattern-mined from kovacsv/occt-import-js#37 / kovacsv/Online3DViewer#467 ("model doesn't contain any meshes … all positions are 0", opens in CAD Assistant) — pattern only, no bytes; the reporter-attached file is a third-party user upload (DESCRIBE-ONLY).
