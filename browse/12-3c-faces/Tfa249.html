@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tfa249 — Splitting vertex genuinely unattached: independent vertex sits on another edge&#x27;s interior (T-junction not expressed as shared topology)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa249</span>
+</nav>
+<header class="title-bar">
+<h1>Tfa249 <span class="sep">—</span> <span class="entry-title">Splitting vertex genuinely unattached: independent vertex sits on another edge&#x27;s interior (T-junction not expressed as shared topology)</span></h1>
+<p class="category">§12.3c face-sliver-sewing (sub-class: splitting-vertex / T-junction, genuine trigger)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3c-faces/Tfa249.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa249.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>closes TKShHealing coverage GAP `tkshh-splitting-vertex-face` (occt-coverage/tkshhealing audit, 2026-07-01/02). OCCT `ShapeAnalysis_CheckSmallFace::CheckSplittingVertices` (`ShapeAnalysis_CheckSmallFace.cxx:487`</li>
+<li>endpoint skip-guard `if (V.IsSame(V1) || V.IsSame(V2)) continue</li>
+<li>` at line 533</li>
+<li>exact-hit skip `if (dist == 0.0) continue</li>
+<li>` at line 539) and `ShapeFix_FixSmallFace::FixSplitFace`/`SplitOneFace` (`ShapeFix_FixSmallFace.cxx:500,525`), all @ `bd2a789f15235755ce4d1a3b07379a2e062fdc2e`. Background: ~17 existing catalog fixtures are titled after this mechanism (Tfa010, Tfa079, Tfa085, Tfa094, Tfa098, Tfa104, Tfa117, Tfa118, Tfa129, Tfa136, Tfa145, Tfa149, Tfa163, Tfa169, Tfa173, Tfa183, Tfa210, Tfa239 — 18 read in the audit), but EVERY one encodes the &quot;splitting&quot; vertex as a genuine shared topological ENDPOINT of the edges it touches (e.g. Tfa010&#x27;s bottom edge is pre-split into two `EDGE_CURVE`s at the vertex</li>
+<li>Tfa094 reuses an outer hex vertex verbatim) — exactly the case the line-533 skip-guard ignores. None place an unattached, independent vertex projecting onto an unrelated edge&#x27;s interior — the actual trigger condition.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>`ADVANCED_FACE` on a `PLANE`: outer 4-edge 10×10 square wire where edge A(0,0,0)-B(10,0,0) is ONE uninterrupted `EDGE_CURVE` (never pre-split), plus an inner `FACE_BOUND` triangle wire (V1-V2-V3) whose vertex V1 is a NEW, independent `VERTEX_POINT` at (5.0, 0.0, 5.0E-8) — geometrically on the interior of edge AB (within its default 1e-7 tolerance) but topologically unrelated to it (V1 is only ever an endpoint of the two inner-wire edges, never of edge AB). The 5e-8 Z-offset is deliberate: the checker&#x27;s own projection call skips an EXACT zero-distance hit (Sources, line 539), so a vertex placed mathematically exactly on the curve would NOT trigger the mechanism — it must be near-but-not-exactly on it, inside the tolerance zone.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`ADVANCED_FACE` whose `FACE_OUTER_BOUND` wire has an uninterrupted edge A-B, plus a `FACE_BOUND` (or second wire) whose own vertex V is a distinct `VERTEX_POINT` entity (never referenced by edge A-B) placed within tolerance of, but not exactly on, A-B&#x27;s curve interior. Runtime invocation (live-verified 2026-07-12, OCP 7.8.1): reconstruct the face directly via `BRepBuilderAPI_MakePolygon`/`BRepBuilderAPI_MakeFace` from this file&#x27;s raw vertex/edge coordinates, then call `ShapeAnalysis_CheckSmallFace().CheckSplittingVertices(face, mapEdges, mapParam, allVertCompound)` with an explicit `SetTolerance(1e-4)` — returns 2 (V1 visited once per adjacent inner-wire edge by the face&#x27;s un-deduplicated vertex walk, both times identified as splitting edge AB&#x27;s interior), with `mapEdges` binding V1 to edge AB. TWO pitfalls, both live-confirmed: (1) the checker&#x27;s precision member is never initialized by its constructor, so omitting `SetTolerance` silently returns 0 regardless of geometry; (2) loading this file through the standard `STEPControl_Reader().TransferRoots()` pipeline does NOT preserve the untouched topology — every STEP face translation is unconditionally routed through `XSAlgo_AlgoContainer::ProcessShape` (`STEPControl_ActorRead.cxx` ~line 1660), which even with no resource sequence configured (and with no `Interface_Static` switch able to disable it) falls back to running `ShapeFix_Shape::Perform()` unconditionally, resolving the same T-junction via a different, already-covered wire-level repair first (observed: edge AB arrives already split in two at (5,0,0), i.e. V1 is by then a genuine shared endpoint — the fate of all 17 misnamed fixtures). Reproducing THIS mechanism requires bypassing that mandatory per-face default-healing pass.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>the small-face analyzer&#x27;s splitting-vertex check should flag V as a splitting vertex of edge A-B; the face-splitting repair should divide the face into two regular sub-faces along a synthetic edge from V to its projection.</p></section>
+<section><h2>Notes</h2>
+<p>Provenance_tier: bytes-sufficient. Fixture kind: scaffold (kernel-test-pair: this file&#x27;s raw Part-21 entities provide the untouched, verified-genuine splitting-vertex setup; the specific checker must be invoked at runtime on a rebuilt face — see Reproducer recipe for the exact snippet and the two pitfalls, including the reader&#x27;s mandatory default-healing pass that would otherwise resolve the T-junction via a different code path first). The un-initialized-precision behavior noted in the Reproducer is a real, separate finding worth its own future audit note. Do NOT rename or modify the 17 existing misleadingly-named fixtures listed in Sources — they demonstrate other real behaviors (out of scope for this entry; flagged for the maintainer to consider separately). Live oracle (2026-07-12): the standard reader path yields the Expected line below; the loaded edge count (12) exceeds this file&#x27;s 11 raw `EDGE_CURVE` entities — byte-level evidence that the reader&#x27;s default healing split edge AB during ordinary loading. Synonyms: &quot;unattached vertex on edge interior&quot;, &quot;genuine T-junction splitting vertex&quot;, &quot;splitting vertex real trigger not shared endpoint&quot;, &quot;vertex projects onto unrelated edge interior&quot;, &quot;face split at interior vertex&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(25) ifc=schema_n/a</code></p></section>
+<section><h2>Closure intent</h2>
+<p><code>sheet</code> — the open shell is the intended final geometry; a solid-only kernel should cleanly refuse.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&quot;ADVANCED_FACE(&#x27;&#x27;,(#30,#53)&quot;)</code></li>
+<li><code>contains(b&#x27;5.0E-08&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_faces_total == 2</code></li>
+<li><code>n_edges_total == 12</code></li>
+<li><code>n_vertices_total == 24</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tfa249: genuine CheckSplittingVertices trigger: face[0] outer wire has edge AB as ONE uninterrupted EDGE_CURVE A(0,0,0)-B(10,0,0) (never pre-split); a separate inner triangle wire (V1-V2-V3) has V1=(5,0,5e-8), a NEW independent VERTEX_POINT that is NOT a topological endpoint of edge AB, offset 5e-8 off AB&#x27;s interior (within default 1e-7 tolerance, not exactly on it) -- V.IsSame(V1)||V.IsSame(V2) is FALSE for edge AB, unlike the ~17 existing misnamed CheckSplittingVertices/FixSplitFace fixtures which all encode the vertex as a genuine shared topological endpoint; companion 1x1 face ensures shape(1) */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Tfa249&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Tfa249.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">12</span>#3=CARTESIAN_POINT(&#x27;&#x27;,(10.0,10.0,0.0));
+<span class="lineno">13</span>#4=CARTESIAN_POINT(&#x27;&#x27;,(0.0,10.0,0.0));
+<span class="lineno">14</span>#5=VERTEX_POINT(&#x27;&#x27;,#1);
+<span class="lineno">15</span>#6=VERTEX_POINT(&#x27;&#x27;,#2);
+<span class="lineno">16</span>#7=VERTEX_POINT(&#x27;&#x27;,#3);
+<span class="lineno">17</span>#8=VERTEX_POINT(&#x27;&#x27;,#4);
+<span class="lineno">18</span>#9=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">19</span>#10=VECTOR(&#x27;&#x27;,#9,10.0);
+<span class="lineno">20</span>#11=LINE(&#x27;&#x27;,#1,#10);
+<span class="lineno">21</span>#12=EDGE_CURVE(&#x27;&#x27;,#5,#6,#11,.T.);
+<span class="lineno">22</span>#13=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">23</span>#14=VECTOR(&#x27;&#x27;,#13,10.0);
+<span class="lineno">24</span>#15=LINE(&#x27;&#x27;,#2,#14);
+<span class="lineno">25</span>#16=EDGE_CURVE(&#x27;&#x27;,#6,#7,#15,.T.);
+<span class="lineno">26</span>#17=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">27</span>#18=VECTOR(&#x27;&#x27;,#17,10.0);
+<span class="lineno">28</span>#19=LINE(&#x27;&#x27;,#3,#18);
+<span class="lineno">29</span>#20=EDGE_CURVE(&#x27;&#x27;,#7,#8,#19,.T.);
+<span class="lineno">30</span>#21=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">31</span>#22=VECTOR(&#x27;&#x27;,#21,10.0);
+<span class="lineno">32</span>#23=LINE(&#x27;&#x27;,#4,#22);
+<span class="lineno">33</span>#24=EDGE_CURVE(&#x27;&#x27;,#8,#5,#23,.T.);
+<span class="lineno">34</span>#25=ORIENTED_EDGE(&#x27;&#x27;,$,$,#12,.T.);
+<span class="lineno">35</span>#26=ORIENTED_EDGE(&#x27;&#x27;,$,$,#16,.T.);
+<span class="lineno">36</span>#27=ORIENTED_EDGE(&#x27;&#x27;,$,$,#20,.T.);
+<span class="lineno">37</span>#28=ORIENTED_EDGE(&#x27;&#x27;,$,$,#24,.T.);
+<span class="lineno">38</span>#29=EDGE_LOOP(&#x27;&#x27;,(#25,#26,#27,#28));
+<span class="lineno">39</span>#30=FACE_OUTER_BOUND(&#x27;&#x27;,#29,.T.);
+<span class="lineno">40</span>#31=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,<mark>5.0E-08</mark>));
+<span class="lineno">41</span>#32=CARTESIAN_POINT(&#x27;&#x27;,(4.0,2.0,0.0));
+<span class="lineno">42</span>#33=CARTESIAN_POINT(&#x27;&#x27;,(6.0,2.0,0.0));
+<span class="lineno">43</span>#34=VERTEX_POINT(&#x27;&#x27;,#31);
+<span class="lineno">44</span>#35=VERTEX_POINT(&#x27;&#x27;,#32);
+<span class="lineno">45</span>#36=VERTEX_POINT(&#x27;&#x27;,#33);
+<span class="lineno">46</span>#37=DIRECTION(&#x27;&#x27;,(-0.4472135955,0.894427191,-2.2360679775E-08));
+<span class="lineno">47</span>#38=VECTOR(&#x27;&#x27;,#37,2.2360679775);
+<span class="lineno">48</span>#39=LINE(&#x27;&#x27;,#31,#38);
+<span class="lineno">49</span>#40=EDGE_CURVE(&#x27;&#x27;,#34,#35,#39,.T.);
+<span class="lineno">50</span>#41=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">51</span>#42=VECTOR(&#x27;&#x27;,#41,2.0);
+<span class="lineno">52</span>#43=LINE(&#x27;&#x27;,#32,#42);
+<span class="lineno">53</span>#44=EDGE_CURVE(&#x27;&#x27;,#35,#36,#43,.T.);
+<span class="lineno">54</span>#45=DIRECTION(&#x27;&#x27;,(-0.4472135955,-0.894427191,2.2360679775E-08));
+<span class="lineno">55</span>#46=VECTOR(&#x27;&#x27;,#45,2.2360679775);
+<span class="lineno">56</span>#47=LINE(&#x27;&#x27;,#33,#46);
+<span class="lineno">57</span>#48=EDGE_CURVE(&#x27;&#x27;,#36,#34,#47,.T.);
+<span class="lineno">58</span>#49=ORIENTED_EDGE(&#x27;&#x27;,$,$,#40,.T.);
+<span class="lineno">59</span>#50=ORIENTED_EDGE(&#x27;&#x27;,$,$,#44,.T.);
+<span class="lineno">60</span>#51=ORIENTED_EDGE(&#x27;&#x27;,$,$,#48,.T.);
+<span class="lineno">61</span>#52=EDGE_LOOP(&#x27;&#x27;,(#49,#50,#51));
+<span class="lineno">62</span>#53=FACE_BOUND(&#x27;&#x27;,#52,.T.);
+<span class="lineno">63</span>#54=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">64</span>#55=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">65</span>#56=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">66</span>#57=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#54,#55,#56);
+<span class="lineno">67</span>#58=PLANE(&#x27;&#x27;,#57);
+<span class="lineno">68</span>#59=<mark>ADVANCED_FACE(&#x27;&#x27;,(#30,#53)</mark>,#58,.T.);
+<span class="lineno">69</span>#60=CARTESIAN_POINT(&#x27;&#x27;,(20.0,0.0,0.0));
+<span class="lineno">70</span>#61=CARTESIAN_POINT(&#x27;&#x27;,(21.0,0.0,0.0));
+<span class="lineno">71</span>#62=CARTESIAN_POINT(&#x27;&#x27;,(21.0,1.0,0.0));
+<span class="lineno">72</span>#63=CARTESIAN_POINT(&#x27;&#x27;,(20.0,1.0,0.0));
+<span class="lineno">73</span>#64=VERTEX_POINT(&#x27;&#x27;,#60);
+<span class="lineno">74</span>#65=VERTEX_POINT(&#x27;&#x27;,#61);
+<span class="lineno">75</span>#66=VERTEX_POINT(&#x27;&#x27;,#62);
+<span class="lineno">76</span>#67=VERTEX_POINT(&#x27;&#x27;,#63);
+<span class="lineno">77</span>#68=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">78</span>#69=VECTOR(&#x27;&#x27;,#68,1.0);
+<span class="lineno">79</span>#70=LINE(&#x27;&#x27;,#60,#69);
+<span class="lineno">80</span>#71=EDGE_CURVE(&#x27;&#x27;,#64,#65,#70,.T.);
+<span class="lineno">81</span>#72=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">82</span>#73=VECTOR(&#x27;&#x27;,#72,1.0);
+<span class="lineno">83</span>#74=LINE(&#x27;&#x27;,#61,#73);
+<span class="lineno">84</span>#75=EDGE_CURVE(&#x27;&#x27;,#65,#66,#74,.T.);
+<span class="lineno">85</span>#76=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">86</span>#77=VECTOR(&#x27;&#x27;,#76,1.0);
+<span class="lineno">87</span>#78=LINE(&#x27;&#x27;,#62,#77);
+<span class="lineno">88</span>#79=EDGE_CURVE(&#x27;&#x27;,#66,#67,#78,.T.);
+<span class="lineno">89</span>#80=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">90</span>#81=VECTOR(&#x27;&#x27;,#80,1.0);
+<span class="lineno">91</span>#82=LINE(&#x27;&#x27;,#63,#81);
+<span class="lineno">92</span>#83=EDGE_CURVE(&#x27;&#x27;,#67,#64,#82,.T.);
+<span class="lineno">93</span>#84=ORIENTED_EDGE(&#x27;&#x27;,$,$,#71,.T.);
+<span class="lineno">94</span>#85=ORIENTED_EDGE(&#x27;&#x27;,$,$,#75,.T.);
+<span class="lineno">95</span>#86=ORIENTED_EDGE(&#x27;&#x27;,$,$,#79,.T.);
+<span class="lineno">96</span>#87=ORIENTED_EDGE(&#x27;&#x27;,$,$,#83,.T.);
+<span class="lineno">97</span>#88=EDGE_LOOP(&#x27;&#x27;,(#84,#85,#86,#87));
+<span class="lineno">98</span>#89=CARTESIAN_POINT(&#x27;&#x27;,(20.0,0.0,0.0));
+<span class="lineno">99</span>#90=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">100</span>#91=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">101</span>#92=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#89,#90,#91);
+<span class="lineno">102</span>#93=PLANE(&#x27;&#x27;,#92);
+<span class="lineno">103</span>#94=FACE_OUTER_BOUND(&#x27;&#x27;,#88,.T.);
+<span class="lineno">104</span>#95=ADVANCED_FACE(&#x27;&#x27;,(#94),#93,.T.);
+<span class="lineno">105</span>#96=OPEN_SHELL(&#x27;&#x27;,(#59,#95));
+<span class="lineno">106</span>#97=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#96));
+<span class="lineno">107</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">108</span>#9051=PRODUCT(&#x27;Tfa249&#x27;,&#x27;Tfa249&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">109</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">110</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">111</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">112</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">113</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">114</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">115</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">116</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">117</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">118</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#97),#9060);
+<span class="lineno">119</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">120</span>ENDSEC;
+<span class="lineno">121</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tfa248.html">&larr; Tfa248</a> <a class="up" href="index.html">§12.3c Faces / sewing / free bound</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

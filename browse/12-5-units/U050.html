@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>U050 — `CONVERSION_BASED_UNIT(&#x27;INCH&#x27;,...)` declared on a live 2-face shell (unit-scaling on real geometry + tolerances)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.5 Units &amp; coordinate systems</a> <span class="sep">/</span> <span class="current">U050</span>
+</nav>
+<header class="title-bar">
+<h1>U050 <span class="sep">—</span> <span class="entry-title">`CONVERSION_BASED_UNIT(&#x27;INCH&#x27;,...)` declared on a live 2-face shell (unit-scaling on real geometry + tolerances)</span></h1>
+<p class="category">§12.5 units (sub-class: inch-conversion on real geometry, not a wireframe scaffold)</p>
+<p class="tag-pills">
+<a class="tag tag-units" href="../by-tag/units/index.html">units</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-5-units/U050.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-5-units/U050.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>synthesized — closes exchange coverage GAP `seq-xsalgo-unit-mismatch` (occt-coverage/exchange audit, 2026-07-01</li>
+<li>VERDICT_AUDIT.md overturn #10, 2026-07-01/02): a corpus-wide sweep found ZERO shell-bearing fixtures anywhere in the corpus that declare a non-millimetre length unit, so `XSAlgo_AlgoContainer::PrepareForTransfer` (installs the target length unit before each transfer) and `STEPControl_ActorRead::Transfer`&#x27;s unit-scaling of both translated geometry and repair tolerances were structurally unexercised. The five previously-cited fixtures (U001/U002/U003/Wr044/Wr045) are all faceless `GEOMETRIC_CURVE_SET` scaffolds with `occt=empty/empty` — none reach a live `TopoDS_Shape`.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A minimal 2-face `OPEN_SHELL` (same sewing-pair skeleton as N152/N153: two coplanar unit squares sharing one `PLANE`, free boundaries facing each other) whose `GEOMETRIC_REPRESENTATION_CONTEXT` declares its length unit as `CONVERSION_BASED_UNIT(&#x27;INCH&#x27;, LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4), &lt;mm-basis SI_UNIT&gt;))` — a genuine, schema-legal inch unit on the SAME context that wires the shape (unlike A038, whose `.INCH.` unit sits on an unused `CONSTRUCTIVE_GEOMETRY_REPRESENTATION` side-context while the shape itself stays in mm). Coordinates are authored in inch-scale: Face A is a 1×1 unit square (y∈[0,1]); Face B is a 1×1 unit square at y∈[1.001,2.001] on the same `PLANE`, leaving a raw 0.001 gap between the two faces&#x27; facing free-boundary edges.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`(CONVERSION_BASED_UNIT(&#x27;INCH&#x27;,#lmwu)LENGTH_UNIT()NAMED_UNIT(*))` where `#lmwu=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#mm)`, wired into the `GLOBAL_UNIT_ASSIGNED_CONTEXT` of the `GEOMETRIC_REPRESENTATION_CONTEXT` that backs a real `MANIFOLD_SURFACE_SHAPE_REPRESENTATION`/`OPEN_SHELL`/`ADVANCED_FACE` chain (not a `GEOMETRIC_CURVE_SET`).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>`STEPControl_Reader` must scale every transferred coordinate by the declared 25.4 factor (1-inch-scale input becomes a 25.4mm-scale shape) AND scale the reading precision by the same factor before healing/tolerance checks run, per `XSAlgo_AlgoContainer::PrepareForTransfer`.</p></section>
+<section><h2>Notes</h2>
+<p>Provenance_tier: bytes-sufficient. Live-verified 2026-07-12 (OCP 7.8.1 `STEPControl_Reader`, local oracle harness — not mirrored/guessed): `Bnd_Box` on the transferred shape spans x=[0, 25.4mm], y=[0, 50.8254mm] — the reader genuinely applies the 25.4× factor to every coordinate (raw 1.0 → 25.4mm, raw 2.001 → 50.8254mm), confirming the unit-scaling mechanism runs on this fixture. The interesting repair interaction: the raw 0.001 gap, if a receiver forgot to rescale-by-unit before comparing against `Precision::Confusion` (~1e-7 in target-unit &quot;mm&quot;), would read as a trivially sub-tolerance, auto-mergeable gap; correctly scaled it is a real 0.0254mm crack between the two free boundaries — exactly the class of tolerance-scaling defect `PrepareForTransfer`/`IGESToBRep_Reader::TransferRoots` (precision multiplied by the file&#x27;s unit factor before `ProcessShape`) exist to get right. `validate2` (2026-07-12, live, not mirrored) reports `occt_heal_on`/`occt_heal_off` both `shape(1)` with `shape_counts` vertex=16 edge=8 wire=2 face=2 shell=2 solid=0 compound=1 — the identical topology signature to N152/N153&#x27;s 2-face sewing pair, now genuinely unit-scaled. `tier3_geometric.geometric_report` (live): shape_null=False, n_faces_total=2, n_edges_total=8, n_vertices_total=16. Structural linter reports `UNITS_INCONSISTENT` — this is the same false-positive class already present (and accepted) on U006 and A038&#x27;s existing `CONVERSION_BASED_UNIT` usage: the mm-basis `NAMED_UNIT` feeding the conversion factor plus the `INCH` `NAMED_UNIT` itself both count as &quot;reachable length units&quot; under the linter&#x27;s `&gt;1-distinct-unit` heuristic even though only one (`INCH`) is actually assigned in `GLOBAL_UNIT_ASSIGNED_CONTEXT`; no `**Structural assertion**` line is registered here, matching U006/A038. Synonyms: &quot;inch-declared STEP shell&quot;, &quot;CONVERSION_BASED_UNIT on live geometry&quot;, &quot;unit-scaled tolerance gap&quot;, &quot;XSAlgo unit mismatch on shell-bearing fixture&quot;, &quot;STEP inch unit real shape scaling&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&quot;CONVERSION_BASED_UNIT(&#x27;INCH&#x27;&quot;)</code></li>
+<li><code>matches(rb&#x27;LENGTH_MEASURE\(25\.4\)&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_faces_total == 2</code></li>
+<li><code>n_edges_total == 8</code></li>
+<li><code>n_vertices_total == 16</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-4-tolerance/N152.html">N152</a>, <a href="../12-4-tolerance/N153.html">N153</a>, <a href="U006.html">U006</a>, <a href="../12-6-assembly/A038.html">A038</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* U050: unit-scaling mechanism â <mark>CONVERSION_BASED_UNIT(&#x27;INCH&#x27;</mark>,...) on a live 2-face shell */
+<span class="lineno">3</span>/* seq-xsalgo-unit-mismatch: XSAlgo_AlgoContainer::PrepareForTransfer installs target length */
+<span class="lineno">4</span>/* unit before transfer; the file declares INCH, geometry authored in inch-scale (~1.0 extent) */
+<span class="lineno">5</span>/* so the mm-converted model is ~25.4mm; a 0.001-inch (0.0254mm) free-boundary gap between the */
+<span class="lineno">6</span>/* two faces demonstrates the tolerance-scaling interaction: at raw face value the gap (0.001) */
+<span class="lineno">7</span>/* reads as sub-Precision::Confusion if a reader forgot to rescale, but the true post-conversion */
+<span class="lineno">8</span>/* gap (0.0254mm) is a genuine, healing-relevant crack once units are correctly applied. */
+<span class="lineno">9</span>HEADER;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;U050: unit-scaling mechanism (INCH-declared 2-face shell)&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;U050.stp&#x27;,&#x27;2026-07-12T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">13</span>ENDSEC;
+<span class="lineno">14</span>DATA;
+<span class="lineno">15</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">16</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">17</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">18</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">19</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">20</span>#5=PLANE(&#x27;&#x27;,#4);
+<span class="lineno">21</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">22</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">23</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
+<span class="lineno">24</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">25</span>#10=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">26</span>#11=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">27</span>#12=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">28</span>#13=VERTEX_POINT(&#x27;&#x27;,#9);
+<span class="lineno">29</span>#14=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">30</span>#15=VECTOR(&#x27;&#x27;,#14,1.0);
+<span class="lineno">31</span>#16=LINE(&#x27;&#x27;,#6,#15);
+<span class="lineno">32</span>#17=EDGE_CURVE(&#x27;&#x27;,#10,#11,#16,.T.);
+<span class="lineno">33</span>#18=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">34</span>#19=VECTOR(&#x27;&#x27;,#18,1.0);
+<span class="lineno">35</span>#20=LINE(&#x27;&#x27;,#7,#19);
+<span class="lineno">36</span>#21=EDGE_CURVE(&#x27;&#x27;,#11,#12,#20,.T.);
+<span class="lineno">37</span>#22=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">38</span>#23=VECTOR(&#x27;&#x27;,#22,1.0);
+<span class="lineno">39</span>#24=LINE(&#x27;&#x27;,#8,#23);
+<span class="lineno">40</span>#25=EDGE_CURVE(&#x27;&#x27;,#12,#13,#24,.T.);
+<span class="lineno">41</span>#26=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">42</span>#27=VECTOR(&#x27;&#x27;,#26,1.0);
+<span class="lineno">43</span>#28=LINE(&#x27;&#x27;,#9,#27);
+<span class="lineno">44</span>#29=EDGE_CURVE(&#x27;&#x27;,#13,#10,#28,.T.);
+<span class="lineno">45</span>#30=ORIENTED_EDGE(&#x27;&#x27;,$,$,#17,.T.);
+<span class="lineno">46</span>#31=ORIENTED_EDGE(&#x27;&#x27;,$,$,#21,.T.);
+<span class="lineno">47</span>#32=ORIENTED_EDGE(&#x27;&#x27;,$,$,#25,.T.);
+<span class="lineno">48</span>#33=ORIENTED_EDGE(&#x27;&#x27;,$,$,#29,.T.);
+<span class="lineno">49</span>#34=EDGE_LOOP(&#x27;&#x27;,(#30,#31,#32,#33));
+<span class="lineno">50</span>#35=FACE_OUTER_BOUND(&#x27;&#x27;,#34,.T.);
+<span class="lineno">51</span>#36=ADVANCED_FACE(&#x27;&#x27;,(#35),#5,.T.);
+<span class="lineno">52</span>#37=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.001,0.0));
+<span class="lineno">53</span>#38=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.001,0.0));
+<span class="lineno">54</span>#39=CARTESIAN_POINT(&#x27;&#x27;,(1.0,2.001,0.0));
+<span class="lineno">55</span>#40=CARTESIAN_POINT(&#x27;&#x27;,(0.0,2.001,0.0));
+<span class="lineno">56</span>#41=VERTEX_POINT(&#x27;&#x27;,#37);
+<span class="lineno">57</span>#42=VERTEX_POINT(&#x27;&#x27;,#38);
+<span class="lineno">58</span>#43=VERTEX_POINT(&#x27;&#x27;,#39);
+<span class="lineno">59</span>#44=VERTEX_POINT(&#x27;&#x27;,#40);
+<span class="lineno">60</span>#45=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">61</span>#46=VECTOR(&#x27;&#x27;,#45,1.0);
+<span class="lineno">62</span>#47=LINE(&#x27;&#x27;,#37,#46);
+<span class="lineno">63</span>#48=EDGE_CURVE(&#x27;&#x27;,#41,#42,#47,.T.);
+<span class="lineno">64</span>#49=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">65</span>#50=VECTOR(&#x27;&#x27;,#49,1.0);
+<span class="lineno">66</span>#51=LINE(&#x27;&#x27;,#38,#50);
+<span class="lineno">67</span>#52=EDGE_CURVE(&#x27;&#x27;,#42,#43,#51,.T.);
+<span class="lineno">68</span>#53=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">69</span>#54=VECTOR(&#x27;&#x27;,#53,1.0);
+<span class="lineno">70</span>#55=LINE(&#x27;&#x27;,#39,#54);
+<span class="lineno">71</span>#56=EDGE_CURVE(&#x27;&#x27;,#43,#44,#55,.T.);
+<span class="lineno">72</span>#57=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">73</span>#58=VECTOR(&#x27;&#x27;,#57,1.0);
+<span class="lineno">74</span>#59=LINE(&#x27;&#x27;,#40,#58);
+<span class="lineno">75</span>#60=EDGE_CURVE(&#x27;&#x27;,#44,#41,#59,.T.);
+<span class="lineno">76</span>#61=ORIENTED_EDGE(&#x27;&#x27;,$,$,#48,.T.);
+<span class="lineno">77</span>#62=ORIENTED_EDGE(&#x27;&#x27;,$,$,#52,.T.);
+<span class="lineno">78</span>#63=ORIENTED_EDGE(&#x27;&#x27;,$,$,#56,.T.);
+<span class="lineno">79</span>#64=ORIENTED_EDGE(&#x27;&#x27;,$,$,#60,.T.);
+<span class="lineno">80</span>#65=EDGE_LOOP(&#x27;&#x27;,(#61,#62,#63,#64));
+<span class="lineno">81</span>#66=FACE_OUTER_BOUND(&#x27;&#x27;,#65,.T.);
+<span class="lineno">82</span>#67=ADVANCED_FACE(&#x27;&#x27;,(#66),#5,.T.);
+<span class="lineno">83</span>#68=OPEN_SHELL(&#x27;&#x27;,(#36,#67));
+<span class="lineno">84</span>#69=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#68));
+<span class="lineno">85</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">86</span>#9051=PRODUCT(&#x27;U050&#x27;,&#x27;U050&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">87</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">88</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">89</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">90</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">91</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">92</span>#9057=LENGTH_MEASURE_WITH_UNIT(<mark>LENGTH_MEASURE(25.4)</mark>,#9056);
+<span class="lineno">93</span>#9058=(<mark>CONVERSION_BASED_UNIT(&#x27;INCH&#x27;</mark>,#9057)LENGTH_UNIT()NAMED_UNIT(*));
+<span class="lineno">94</span>#9059=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">95</span>#9060=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">96</span>#9061=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9058,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">97</span>#9062=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9061))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9058,#9059,#9060))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">98</span>#9063=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#69),#9062);
+<span class="lineno">99</span>#9064=SHAPE_DEFINITION_REPRESENTATION(#9055,#9063);
+<span class="lineno">100</span>ENDSEC;
+<span class="lineno">101</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="U049.html">&larr; U049</a> <a class="up" href="index.html">§12.5 Units &amp; coordinate systems</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

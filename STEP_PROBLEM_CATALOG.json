@@ -72461,7 +72461,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3b-wires/Twi065.stp",
     "id": "Twi065",
-    "notes": "Sub-pipeline of Twi064. Synonyms: \"wire edge curves analysis combined report\", \"per-edge per-check status grid for wire\", \"edge consistency check across spatial and parametric\", \"exhaustive edge curve diagnostics\".",
+    "notes": "Sub-pipeline of Twi064. Synonyms: \"wire edge curves analysis combined report\", \"per-edge per-check status grid for wire\", \"edge consistency check across spatial and parametric\", \"exhaustive edge curve diagnostics\". 2026-07-12 regen (exchange VERDICT_AUDIT.md \"Fixture-citation hygiene\" finding): this entry's edge4 claim (pcurve parameter length 5.0 vs 3D arc length 10.0) was byte-verified to have ZERO `PCURVE` entities anywhere in the shipped file — the old construction only set the 3D `LINE`'s STEP `VECTOR` magnitude to 5.0 instead of 10.0, which has NO effect on OCCT's evaluation (`Geom_Line` is always unit-speed/arc-length parametrized regardless of the stored `VECTOR` magnitude), so the claimed defect was never actually encoded. Fixed per the Gp022 pattern (independently verified as a genuine SameParameter-lie construction): edge4 now carries a REAL `PCURVE` — a degree-1 `B_SPLINE_CURVE_WITH_KNOTS` on the same `PLANE` (control points UV(0,10)→UV(0,0), knot values `(0.0,5.0)`) tracing the identical spatial path as the correct 10-unit 3D `LINE`, but with a parameter-domain width of 5.0 — a genuine 2:1 pcurve/3D-arc-length mismatch under `EDGE_CURVE`'s `same_sense=.T.` assertion. Edges 1-3 are unchanged (their claims — reversed wire-traversal orientation via `ORIENTED_EDGE` `.F.`, vertex/3D-line start mismatch, junction gap — do not require a `PCURVE` entity and were already genuine). Live-reverified 2026-07-12: `occt_heal_on`/`occt_heal_off` both `shape(1)`, `gmsh_autofix_on`/`off` both `shape(9)`, `ifcopenshell=schema_n/a` — IDENTICAL to the previously-recorded Expected line below (no NEEDS-ORACLE-REFRESH; confirmed no drift). `tier3_geometric.geometric_report` (live): shape_null=False, n_faces_total=1, n_edges_total=4, n_vertices_total=8, face[0].surface_type=\"plane\" — all three Tier-3 assertions below still hold (n_vertices_total lands exactly at the `>=8` boundary).",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -80125,7 +80125,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3c-faces/Hea001.stp",
     "id": "Hea001",
-    "notes": "Umbrella over all sub-shape Perform() methods. **OCC behavior**: oracle-invisible (shape_counts) — occt=empty/empty gmsh=empty. The multi-defect GEOMETRIC_SET is orphaned (not reachable from the shape-representation root), so OCC yields empty regardless of the sub-defects. oracle-invisible (shape_counts): the defect is byte-verifiable but the healing-pipeline behavior the fixture describes is API/runtime-level, not exercised by the load-time oracles. Synonyms: \"multi-defect shape needs pipeline convergence\", \"fix order changes end state\", \"shape orchestrator must converge not loop\", \"compound with mixed defects healing\".",
+    "notes": "Umbrella over all sub-shape Perform() methods. 2026-07-12 rewire (audit finding, exchange VERDICT_AUDIT.md process notes): the representation previously referenced ONLY part (b) (`#120`, the `OPEN_SHELL`) — `#143=GEOMETRIC_SET('compound_three_defects',(#59,#120,#142))` itself was never referenced by anything, leaving parts (a) `#59` (the defective face) and (c) `#142` (the free wire) genuinely unreachable from the shape-representation root. Fixed by rewiring `#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION` to reference `#143` (the `GEOMETRIC_SET` of all three) instead of `#120` directly — matching this corpus's own precedent for a `GEOMETRIC_SET` as a direct representation item (see M192: `GEOMETRIC_SET` of bare `CARTESIAN_POINT`s wired the same way). All three sub-shapes are now reachable in the Part-21 entity graph. IMPORTANT correction to the prior explanation, found during live-oracle verification: the \"orphaned... so OCC yields empty\" reasoning was factually wrong about the MECHANISM, though the recorded `occt=empty` OUTCOME was already correct — isolated testing (2026-07-12, OCP 7.8.1) shows `#120` alone, even when directly (non-orphaned) wired as the representation's sole item, ALREADY yields `occt=empty`: a bare `OPEN_SHELL` wired directly into `MANIFOLD_SURFACE_SHAPE_REPRESENTATION` (unlike every other legitimate corpus fixture, which wraps it in a `SHELL_BASED_SURFACE_MODEL` first — confirmed by control tests against A085/A089/Tsh022) is not translated; wrapping it in a `SHELL_BASED_SURFACE_MODEL` makes it a live `shape(1)`. Separately, `GEOMETRIC_SET` cannot carry topological items (`ADVANCED_FACE`/`OPEN_SHELL`/`EDGE_LOOP` are not valid `geometric_set_select` members — only point/curve/surface are); isolated testing confirms even a single valid `ADVANCED_FACE` wrapped alone in a `GEOMETRIC_SET` yields `occt=empty` (items silently untranslated, not an error). So `#143` reproduces the SAME `occt=empty/empty` outcome as before — Expected validation is UNCHANGED, no NEEDS-ORACLE-REFRESH — but now for the structurally honest reason (graph-reachable, oracle-invisible via `GEOMETRIC_SET`'s item-type restriction) rather than a false orphaning explanation. Separate finding, flagged for the maintainer rather than fixed here (out of scope for a minimal reachability fix, and NOT safe to wire live): part (a)'s face `#59` (the \"sub-tolerance scrambled inner wire, wrong orientation\" `FACE_INNER_BOUND`) reliably CRASHES OCCT (`signal(11)`) if it is EVER made a live, OCCT-translated representation item — tested directly as the sole bare item, wrapped in its own `OPEN_SHELL`+`SHELL_BASED_SURFACE_MODEL`, and combined with the wrapped shell-b — all three configurations segfault. This is a more severe defect than \"heals or is oracle-invisible\"; it may warrant its own crash-bug fixture (`occt=signal(11)/signal(11)`, matching the Tsh139/Tsh140 convention) in a future wave, but is NOT wired live here to avoid shipping a crashing fixture under an entry whose own contract is graceful multi-defect convergence. `Hea011` (§12.3c) has the identical orphaning + bare-`OPEN_SHELL` pattern (`#61=GEOMETRIC_SET(...)` unreferenced, `#9061` wired directly to `#45` the bare `OPEN_SHELL`) — confirmed independently to also yield `occt=empty` — flagged for the maintainer; not fixed here (out of this task's scope). Synonyms: \"multi-defect shape needs pipeline convergence\", \"fix order changes end state\", \"shape orchestrator must converge not loop\", \"compound with mixed defects healing\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -80140,6 +80140,7 @@
     ],
     "structural_assertions": [],
     "taxonomy": [
+      "crash",
       "topology"
     ],
     "tier3_assertions": [],
@@ -89534,6 +89535,51 @@
   },
   {
     "byte_assertions": [
+      "contains(b\"ADVANCED_FACE('',(#30,#53)\")",
+      "contains(b'5.0E-08')"
+    ],
+    "category": "§12.3c face-sliver-sewing (sub-class: splitting-vertex / T-junction, genuine trigger)",
+    "closure_defect": null,
+    "closure_intent": "sheet",
+    "cross_oracle_note": null,
+    "description": "`ADVANCED_FACE` on a `PLANE`: outer 4-edge 10×10 square wire where edge A(0,0,0)-B(10,0,0) is ONE uninterrupted `EDGE_CURVE` (never pre-split), plus an inner `FACE_BOUND` triangle wire (V1-V2-V3) whose vertex V1 is a NEW, independent `VERTEX_POINT` at (5.0, 0.0, 5.0E-8) — geometrically on the interior of edge AB (within its default 1e-7 tolerance) but topologically unrelated to it (V1 is only ever an endpoint of the two inner-wire edges, never of edge AB). The 5e-8 Z-offset is deliberate: the checker's own projection call skips an EXACT zero-distance hit (Sources, line 539), so a vertex placed mathematically exactly on the curve would NOT trigger the mechanism — it must be near-but-not-exactly on it, inside the tolerance zone.",
+    "expected_kernel_behavior": "the small-face analyzer's splitting-vertex check should flag V as a splitting vertex of edge A-B; the face-splitting repair should divide the face into two regular sub-faces along a synthetic edge from V to its projection.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(25) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3c-faces/Tfa249.stp",
+    "id": "Tfa249",
+    "notes": "Provenance_tier: bytes-sufficient. Fixture kind: scaffold (kernel-test-pair: this file's raw Part-21 entities provide the untouched, verified-genuine splitting-vertex setup; the specific checker must be invoked at runtime on a rebuilt face — see Reproducer recipe for the exact snippet and the two pitfalls, including the reader's mandatory default-healing pass that would otherwise resolve the T-junction via a different code path first). The un-initialized-precision behavior noted in the Reproducer is a real, separate finding worth its own future audit note. Do NOT rename or modify the 17 existing misleadingly-named fixtures listed in Sources — they demonstrate other real behaviors (out of scope for this entry; flagged for the maintainer to consider separately). Live oracle (2026-07-12): the standard reader path yields the Expected line below; the loaded edge count (12) exceeds this file's 11 raw `EDGE_CURVE` entities — byte-level evidence that the reader's default healing split edge AB during ordinary loading. Synonyms: \"unattached vertex on edge interior\", \"genuine T-junction splitting vertex\", \"splitting vertex real trigger not shared endpoint\", \"vertex projects onto unrelated edge interior\", \"face split at interior vertex\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`ADVANCED_FACE` whose `FACE_OUTER_BOUND` wire has an uninterrupted edge A-B, plus a `FACE_BOUND` (or second wire) whose own vertex V is a distinct `VERTEX_POINT` entity (never referenced by edge A-B) placed within tolerance of, but not exactly on, A-B's curve interior. Runtime invocation (live-verified 2026-07-12, OCP 7.8.1): reconstruct the face directly via `BRepBuilderAPI_MakePolygon`/`BRepBuilderAPI_MakeFace` from this file's raw vertex/edge coordinates, then call `ShapeAnalysis_CheckSmallFace().CheckSplittingVertices(face, mapEdges, mapParam, allVertCompound)` with an explicit `SetTolerance(1e-4)` — returns 2 (V1 visited once per adjacent inner-wire edge by the face's un-deduplicated vertex walk, both times identified as splitting edge AB's interior), with `mapEdges` binding V1 to edge AB. TWO pitfalls, both live-confirmed: (1) the checker's precision member is never initialized by its constructor, so omitting `SetTolerance` silently returns 0 regardless of geometry; (2) loading this file through the standard `STEPControl_Reader().TransferRoots()` pipeline does NOT preserve the untouched topology — every STEP face translation is unconditionally routed through `XSAlgo_AlgoContainer::ProcessShape` (`STEPControl_ActorRead.cxx` ~line 1660), which even with no resource sequence configured (and with no `Interface_Static` switch able to disable it) falls back to running `ShapeFix_Shape::Perform()` unconditionally, resolving the same T-junction via a different, already-covered wire-level repair first (observed: edge AB arrives already split in two at (5,0,0), i.e. V1 is by then a genuine shared endpoint — the fate of all 17 misnamed fixtures). Reproducing THIS mechanism requires bypassing that mandatory per-face default-healing pass.",
+    "section": "12.3c",
+    "section_dir": "12-3c-faces",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "closes TKShHealing coverage GAP `tkshh-splitting-vertex-face` (occt-coverage/tkshhealing audit, 2026-07-01/02). OCCT `ShapeAnalysis_CheckSmallFace::CheckSplittingVertices` (`ShapeAnalysis_CheckSmallFace.cxx:487`",
+      "endpoint skip-guard `if (V.IsSame(V1) || V.IsSame(V2)) continue",
+      "` at line 533",
+      "exact-hit skip `if (dist == 0.0) continue",
+      "` at line 539) and `ShapeFix_FixSmallFace::FixSplitFace`/`SplitOneFace` (`ShapeFix_FixSmallFace.cxx:500,525`), all @ `bd2a789f15235755ce4d1a3b07379a2e062fdc2e`. Background: ~17 existing catalog fixtures are titled after this mechanism (Tfa010, Tfa079, Tfa085, Tfa094, Tfa098, Tfa104, Tfa117, Tfa118, Tfa129, Tfa136, Tfa145, Tfa149, Tfa163, Tfa169, Tfa173, Tfa183, Tfa210, Tfa239 — 18 read in the audit), but EVERY one encodes the \"splitting\" vertex as a genuine shared topological ENDPOINT of the edges it touches (e.g. Tfa010's bottom edge is pre-split into two `EDGE_CURVE`s at the vertex",
+      "Tfa094 reuses an outer hex vertex verbatim) — exactly the case the line-533 skip-guard ignores. None place an unattached, independent vertex projecting onto an unrelated edge's interior — the actual trigger condition."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 2",
+      "n_edges_total == 12",
+      "n_vertices_total == 24"
+    ],
+    "title": "Splitting vertex genuinely unattached: independent vertex sits on another edge's interior (T-junction not expressed as shared topology)"
+  },
+  {
+    "byte_assertions": [
       "count_entity_def(b'UNCERTAINTY_MEASURE_WITH_UNIT') == 3",
       "contains(b'1.0E-7') and contains(b'1.0E-3') and contains(b'1.0E-2')",
       "contains(b'GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT')"
@@ -98047,6 +98093,47 @@
       "load == \"ok\""
     ],
     "title": "Two conflicting length units (MILLI + CENTI metre) in one representation context"
+  },
+  {
+    "byte_assertions": [
+      "contains(b\"CONVERSION_BASED_UNIT('INCH'\")",
+      "matches(rb'LENGTH_MEASURE\\(25\\.4\\)')"
+    ],
+    "category": "§12.5 units (sub-class: inch-conversion on real geometry, not a wireframe scaffold)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A minimal 2-face `OPEN_SHELL` (same sewing-pair skeleton as N152/N153: two coplanar unit squares sharing one `PLANE`, free boundaries facing each other) whose `GEOMETRIC_REPRESENTATION_CONTEXT` declares its length unit as `CONVERSION_BASED_UNIT('INCH', LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4), <mm-basis SI_UNIT>))` — a genuine, schema-legal inch unit on the SAME context that wires the shape (unlike A038, whose `.INCH.` unit sits on an unused `CONSTRUCTIVE_GEOMETRY_REPRESENTATION` side-context while the shape itself stays in mm). Coordinates are authored in inch-scale: Face A is a 1×1 unit square (y∈[0,1]); Face B is a 1×1 unit square at y∈[1.001,2.001] on the same `PLANE`, leaving a raw 0.001 gap between the two faces' facing free-boundary edges.",
+    "expected_kernel_behavior": "`STEPControl_Reader` must scale every transferred coordinate by the declared 25.4 factor (1-inch-scale input becomes a 25.4mm-scale shape) AND scale the reading precision by the same factor before healing/tolerance checks run, per `XSAlgo_AlgoContainer::PrepareForTransfer`.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-5-units/U050.stp",
+    "id": "U050",
+    "notes": "Provenance_tier: bytes-sufficient. Live-verified 2026-07-12 (OCP 7.8.1 `STEPControl_Reader`, local oracle harness — not mirrored/guessed): `Bnd_Box` on the transferred shape spans x=[0, 25.4mm], y=[0, 50.8254mm] — the reader genuinely applies the 25.4× factor to every coordinate (raw 1.0 → 25.4mm, raw 2.001 → 50.8254mm), confirming the unit-scaling mechanism runs on this fixture. The interesting repair interaction: the raw 0.001 gap, if a receiver forgot to rescale-by-unit before comparing against `Precision::Confusion` (~1e-7 in target-unit \"mm\"), would read as a trivially sub-tolerance, auto-mergeable gap; correctly scaled it is a real 0.0254mm crack between the two free boundaries — exactly the class of tolerance-scaling defect `PrepareForTransfer`/`IGESToBRep_Reader::TransferRoots` (precision multiplied by the file's unit factor before `ProcessShape`) exist to get right. `validate2` (2026-07-12, live, not mirrored) reports `occt_heal_on`/`occt_heal_off` both `shape(1)` with `shape_counts` vertex=16 edge=8 wire=2 face=2 shell=2 solid=0 compound=1 — the identical topology signature to N152/N153's 2-face sewing pair, now genuinely unit-scaled. `tier3_geometric.geometric_report` (live): shape_null=False, n_faces_total=2, n_edges_total=8, n_vertices_total=16. Structural linter reports `UNITS_INCONSISTENT` — this is the same false-positive class already present (and accepted) on U006 and A038's existing `CONVERSION_BASED_UNIT` usage: the mm-basis `NAMED_UNIT` feeding the conversion factor plus the `INCH` `NAMED_UNIT` itself both count as \"reachable length units\" under the linter's `>1-distinct-unit` heuristic even though only one (`INCH`) is actually assigned in `GLOBAL_UNIT_ASSIGNED_CONTEXT`; no `**Structural assertion**` line is registered here, matching U006/A038. Synonyms: \"inch-declared STEP shell\", \"CONVERSION_BASED_UNIT on live geometry\", \"unit-scaled tolerance gap\", \"XSAlgo unit mismatch on shell-bearing fixture\", \"STEP inch unit real shape scaling\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`(CONVERSION_BASED_UNIT('INCH',#lmwu)LENGTH_UNIT()NAMED_UNIT(*))` where `#lmwu=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4),#mm)`, wired into the `GLOBAL_UNIT_ASSIGNED_CONTEXT` of the `GEOMETRIC_REPRESENTATION_CONTEXT` that backs a real `MANIFOLD_SURFACE_SHAPE_REPRESENTATION`/`OPEN_SHELL`/`ADVANCED_FACE` chain (not a `GEOMETRIC_CURVE_SET`).",
+    "section": "12.5",
+    "section_dir": "12-5-units",
+    "see_also": [],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "synthesized — closes exchange coverage GAP `seq-xsalgo-unit-mismatch` (occt-coverage/exchange audit, 2026-07-01",
+      "VERDICT_AUDIT.md overturn #10, 2026-07-01/02): a corpus-wide sweep found ZERO shell-bearing fixtures anywhere in the corpus that declare a non-millimetre length unit, so `XSAlgo_AlgoContainer::PrepareForTransfer` (installs the target length unit before each transfer) and `STEPControl_ActorRead::Transfer`'s unit-scaling of both translated geometry and repair tolerances were structurally unexercised. The five previously-cited fixtures (U001/U002/U003/Wr044/Wr045) are all faceless `GEOMETRIC_CURVE_SET` scaffolds with `occt=empty/empty` — none reach a live `TopoDS_Shape`."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "units"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 2",
+      "n_edges_total == 8",
+      "n_vertices_total == 16"
+    ],
+    "title": "`CONVERSION_BASED_UNIT('INCH',...)` declared on a live 2-face shell (unit-scaling on real geometry + tolerances)"
   },
   {
     "byte_assertions": [
