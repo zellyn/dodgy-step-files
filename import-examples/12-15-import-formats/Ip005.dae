@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ip005 assimp#6522 <p> primitive index references vertex beyond <source> -->
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <library_geometries>
+    <geometry id="g0" name="g0">
+      <mesh>
+        <source id="pos">
+          <float_array id="pos-array" count="9">0 0 0 1 0 0 0 1 0</float_array>
+          <technique_common>
+            <accessor source="#pos-array" count="3" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="verts">
+          <input semantic="POSITION" source="#pos"/>
+        </vertices>
+        <triangles count="1">
+          <input semantic="VERTEX" source="#verts" offset="0"/>
+          <p>0 1 5</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <scene/>
+</COLLADA>

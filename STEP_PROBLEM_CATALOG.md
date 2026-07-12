@@ -45209,7 +45209,7 @@ exercised against CGAL PMP / MeshFix.
 - **Description**: A fully valid solid whose own extent is ~10 mm but which is authored a very large distance from the origin — here a 10×10 planar square whose corners sit at absolute coordinates ~1.2e8 mm. Double-precision readers (OCCT, CAD Assistant) load and render it fine (the 10 mm relief is ~1e-7 of the absolute magnitude, still far above the 1e-6 mm model tolerance). A reader that down-converts vertex positions into a float32 buffer cannot represent 10-unit relief at magnitude 1.2e8 — the float32 ULP there is ~16 units — so all four corners quantize to the SAME grid point and the face collapses to a degenerate zero-area primitive; the viewer shows an empty model.
 - **Reproducer recipe**: a valid `ADVANCED_FACE` on a `PLANE` whose `CARTESIAN_POINT`s are all offset by ~1.2e8 mm from the origin while the face's own extent is ~10 mm; wrap in the standard PRODUCT chain.
 - **Expected kernel behavior**: recentre far-from-origin geometry to a local frame before down-converting to single precision, or warn that a float32 output buffer cannot represent the model at its absolute coordinates. Emitting an all-zero / degenerate mesh with no diagnostic is the defect.
-- **Notes**: **See also**: Tb013 (far-from-origin DOUBLE-precision ULP-vs-tolerance), Tb010 (float32 round-trip that MASKS a real self-intersection). Here the file is clean and self-consistent — the defect is purely the output-buffer precision down-conversion in a WASM/glTF/three.js viewer, ORACLE-INVISIBLE to our single (double-precision) OCCT oracle (which loads a normal shape). Mechanism partly inferred from the ticket (could co-occur with a large-file size cap) — medium confidence. gmsh count is PROVISIONAL. Synonyms: "far from origin float32 collapse", "single-precision viewer loses local relief", "all vertex positions zero after down-convert", "absolute coordinates degrade in three.js buffer", "GIS-placed model empty in web viewer". Provenance tier: runtime-only.
+- **Notes**: **See also**: Tb013 (far-from-origin DOUBLE-precision ULP-vs-tolerance), Tb010 (single-precision round-trip that MASKS a real self-intersection). Here the file is clean and self-consistent — the defect is purely the output-buffer precision down-conversion in a WASM/glTF/three.js viewer, ORACLE-INVISIBLE to our single (double-precision) OCCT oracle (which loads a normal shape). Mechanism partly inferred from the ticket (could co-occur with a large-file size cap) — medium confidence. gmsh count is PROVISIONAL. Synonyms: "far from origin float32 collapse", "single-precision viewer loses local relief", "all vertex positions zero after down-convert", "absolute coordinates degrade in three.js buffer", "GIS-placed model empty in web viewer". Provenance tier: runtime-only.
 - **Byte assertion**: contains(b'CARTESIAN_POINT')
 - **Byte assertion**: contains(b'120000000.0')
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 4
@@ -45235,3 +45235,68 @@ exercised against CGAL PMP / MeshFix.
 - **Severity**: P2
 - **Model impact**: A valid part loses a face silently after a kernel-version bump; downstream watertightness / volume checks fail on a model the sender authored correctly, and the loss is attributable only by comparing two kernel versions of the same receiver.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
+
+### Ip001 — OBJ face index exceeds vertex count (out-of-range reference)
+- **Category**: §12.15 import-format parser robustness (sub-class: index-out-of-range)
+- **Sources**: Pattern-mined from assimp/assimp#1047 + cnr-isti-vclab/meshlab (Apache-2.0 / GPL-3.0 — pattern only, no bytes copied).
+- **Description**: A Wavefront OBJ defines 3 vertices but a face record `f 1 2 5` references vertex index 5. OBJ indices are 1-based and must be ≤ the number of preceding `v` records. Strict loaders (assimp) abort the import with an out-of-range error; lenient loaders (MeshLab) clamp or drop the face and load a partial mesh — a cross-oracle divergence on identical bytes.
+- **Reproducer recipe**: an OBJ with exactly three `v` lines followed by `f 1 2 5` (the `5` exceeds the 3-vertex table).
+- **Expected kernel behavior**: reject with a diagnostic naming the offending index/record, or clamp-and-warn; never silently emit an out-of-bounds vertex reference into downstream geometry.
+- **Byte assertion**: contains(b'f 1 2 5')
+- **Fixture path**: import-examples/12-15-import-formats/Ip001.obj
+- **Fixture kind**: raw import-format file (parser-robustness; graded against assimp/trimesh, not Part-21)
+- **Notes**: Synonyms: "OBJ face index out of range", "vertex index exceeds count", "OBJ OOB face reference", "index-past-end mesh face". Provenance tier: bytes-only.
+- **Severity**: P2
+- **Model impact**: The importer either aborts (no geometry) or fabricates/clamps a vertex the file never declared, so the loaded mesh silently disagrees with the producer's intent; downstream indexing assumptions (vertex buffers, adjacency) read past the end of the vertex table.
+
+### Ip002 — PLY header vertex count exceeds body rows (declared > actual)
+- **Category**: §12.15 import-format parser robustness (sub-class: declared-count-exceeds-body)
+- **Sources**: Pattern-mined from assimp/assimp#5729 + OSS-Fuzz 6544205135544320 (`LoadVertex` heap-overflow WRITE; fix PR#5956) (BSD-3-Clause — pattern only, no bytes copied).
+- **Description**: An ASCII PLY header declares `element vertex 5` but the body streams only 3 vertex rows before the `face` element begins. A header-trusting loader keeps writing into the vertex buffer for the declared count, consuming the face row (and past-EOF bytes) as if they were vertex coordinates — the assimp defect was a heap-overflow write. The single most common file-level import defect: declared count > actual body data.
+- **Reproducer recipe**: an ASCII PLY whose `element vertex N` line names a larger N than the number of coordinate rows physically present before the next element.
+- **Expected kernel behavior**: bound every vertex write to the rows actually present; stop at EOF / the next element token and reject with a diagnostic (declared N vs parsed count), never write past the allocation.
+- **Byte assertion**: contains(b'element vertex 5')
+- **Fixture path**: import-examples/12-15-import-formats/Ip002.ply
+- **Fixture kind**: raw import-format file (parser-robustness; graded against assimp/trimesh, not Part-21)
+- **Notes**: Synonyms: "PLY vertex count mismatch", "header count exceeds body", "declared more vertices than present", "PLY LoadVertex overflow". Provenance tier: bytes-only.
+- **Severity**: P2
+- **Model impact**: The loader either reads past the vertex table into unrelated bytes (corrupt coordinates, wrong topology) or overflows the vertex buffer entirely; the reconstructed mesh has no correspondence to the file's real geometry.
+
+### Ip003 — OFF header V/F/E counts exceed actual body rows (declared > actual)
+- **Category**: §12.15 import-format parser robustness (sub-class: declared-count-exceeds-body)
+- **Sources**: Pattern-mined from assimp/assimp#2228 (OFF header-trust class) (BSD-3-Clause — pattern only, no bytes copied).
+- **Description**: An OFF header line `8 4 0` claims 8 vertices and 4 faces, but the body supplies only 3 vertex rows and 1 face row. An OFF loader that trusts the header count iterates 8 vertices / 4 faces and reads past EOF. Same declared-count-exceeds-body family as Ip002 but for the OFF `V F E` triple rather than PLY element counts.
+- **Reproducer recipe**: an OFF file whose count line names more vertices/faces than the body rows that follow.
+- **Expected kernel behavior**: stop at EOF, validate the declared V/F/E against the rows actually read, and reject with a diagnostic rather than looping past the buffer.
+- **Byte assertion**: contains(b'8 4 0')
+- **Fixture path**: import-examples/12-15-import-formats/Ip003.off
+- **Fixture kind**: raw import-format file (parser-robustness; graded against assimp/trimesh, not Part-21)
+- **Notes**: Synonyms: "OFF header count mismatch", "V F E exceeds body", "OFF trusts header", "declared face count too high". Provenance tier: bytes-only. First OFF-format parser-robustness fixture in the corpus.
+- **Severity**: P2
+- **Model impact**: The loader reads uninitialized / past-EOF memory as vertex and face data, producing garbage geometry or crashing; a partial read silently drops the real faces.
+
+### Ip004 — glTF accessor over-runs its bufferView (count×stride > byteLength)
+- **Category**: §12.15 import-format parser robustness (sub-class: accessor-overruns-backing-store)
+- **Sources**: Pattern-mined from assimp/assimp#6488 + #1002 (`ExtractData`) + OSS-Fuzz 483102963 (BSD-3-Clause — pattern only, no bytes copied).
+- **Description**: A glTF 2.0 accessor declares `count: 3` of `VEC3`/`FLOAT` (36 bytes required) but its `bufferView` (and backing `buffer`) is only 12 bytes. `ExtractData` copies `count × element-size` bytes without checking against `bufferView.byteLength`, over-reading 24 bytes past the buffer. First glTF-format fixture in the corpus and its first accessor-over-runs-backing-store class.
+- **Reproducer recipe**: a self-contained `.gltf` (JSON, data-URI buffer) where `accessor.count × componentSize × typeSize` exceeds the referenced `bufferView.byteLength`.
+- **Expected kernel behavior**: enforce `byteOffset + count × stride ≤ bufferView.byteLength ≤ buffer.byteLength` before any copy; reject with a diagnostic naming the accessor and the shortfall.
+- **Byte assertion**: contains(b'data:application/octet-stream;base64,AAAAAAAAAAAAAAAA')
+- **Fixture path**: import-examples/12-15-import-formats/Ip004.gltf
+- **Fixture kind**: raw import-format file (parser-robustness; graded against assimp/tinygltf, not Part-21)
+- **Notes**: The 16-char base64 payload decodes to exactly 12 zero bytes — one VEC3, a third of the 36 the accessor claims. Synonyms: "glTF accessor out of bounds", "accessor over-runs bufferView", "ExtractData overflow", "count exceeds byteLength". Provenance tier: bytes-only. First glTF coverage.
+- **Severity**: P2
+- **Model impact**: The importer copies past the end of the decoded buffer, reading adjacent heap bytes as vertex coordinates (info leak / garbage geometry) or crashing; the loaded positions are partly fabricated.
+
+### Ip005 — COLLADA `<p>` primitive index references vertex beyond `<source>`
+- **Category**: §12.15 import-format parser robustness (sub-class: index-out-of-range)
+- **Sources**: Pattern-mined from assimp/assimp#6522 (`CopyVertex`/`ReadPrimitives`) + OSS-Fuzz 483173710 (BSD-3-Clause — pattern only, no bytes copied).
+- **Description**: A COLLADA `<triangles>` block's `<p>0 1 5</p>` index list references vertex index 5, but the `<source>`/`<accessor>` declares only 3 vertices (`count="3"`). `CopyVertex` indexes the position array by the `<p>` value without bounds-checking it against the accessor count, reading past the `<float_array>`. First COLLADA/DAE-format fixture in the corpus.
+- **Reproducer recipe**: a minimal `.dae` with a 3-vertex POSITION source and a `<triangles>` `<p>` list naming an index ≥ 3.
+- **Expected kernel behavior**: validate every `<p>` index against the referenced source's accessor count before dereference; reject with a diagnostic or skip the primitive.
+- **Byte assertion**: contains(b'<p>0 1 5</p>')
+- **Fixture path**: import-examples/12-15-import-formats/Ip005.dae
+- **Fixture kind**: raw import-format file (parser-robustness; graded against assimp, not Part-21)
+- **Notes**: Synonyms: "COLLADA p index out of range", "primitive index beyond source", "DAE CopyVertex overflow", "vertex index exceeds accessor count". Provenance tier: bytes-only. First COLLADA coverage.
+- **Severity**: P2
+- **Model impact**: The importer reads past the position `<float_array>`, assembling a triangle from adjacent-memory coordinates or crashing; the reconstructed geometry contains a vertex the document never defined.

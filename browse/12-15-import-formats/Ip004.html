@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ip004 — glTF accessor over-runs its bufferView (count×stride &gt; byteLength)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <span class="sep">/</span> <span class="current">Ip004</span>
+</nav>
+<header class="title-bar">
+<h1>Ip004 <span class="sep">—</span> <span class="entry-title">glTF accessor over-runs its bufferView (count×stride &gt; byteLength)</span></h1>
+<p class="category">§12.15 import-format parser robustness (sub-class: accessor-overruns-backing-store)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../import-examples/12-15-import-formats/Ip004.gltf">View raw fixture (.gltf)</a> <code class="path">import-examples/12-15-import-formats/Ip004.gltf</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>Pattern-mined from assimp/assimp#6488 + #1002 (`ExtractData`) + OSS-Fuzz 483102963 (BSD-3-Clause — pattern only, no bytes copied).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A glTF 2.0 accessor declares `count: 3` of `VEC3`/`FLOAT` (36 bytes required) but its `bufferView` (and backing `buffer`) is only 12 bytes. `ExtractData` copies `count × element-size` bytes without checking against `bufferView.byteLength`, over-reading 24 bytes past the buffer. First glTF-format fixture in the corpus and its first accessor-over-runs-backing-store class.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>a self-contained `.gltf` (JSON, data-URI buffer) where `accessor.count × componentSize × typeSize` exceeds the referenced `bufferView.byteLength`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>enforce `byteOffset + count × stride ≤ bufferView.byteLength ≤ buffer.byteLength` before any copy; reject with a diagnostic naming the accessor and the shortfall.</p></section>
+<section><h2>Notes</h2>
+<p>The 16-char base64 payload decodes to exactly 12 zero bytes — one VEC3, a third of the 36 the accessor claims. Synonyms: &quot;glTF accessor out of bounds&quot;, &quot;accessor over-runs bufferView&quot;, &quot;ExtractData overflow&quot;, &quot;count exceeds byteLength&quot;. Provenance tier: bytes-only. First glTF coverage.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;data:application/octet-stream;base64,AAAAAAAAAAAAAAAA&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>{
+<span class="lineno">2</span>  &quot;asset&quot;: { &quot;version&quot;: &quot;2.0&quot;, &quot;generator&quot;: &quot;Ip004 assimp#6488 accessor over-runs bufferView&quot; },
+<span class="lineno">3</span>  &quot;scene&quot;: 0,
+<span class="lineno">4</span>  &quot;scenes&quot;: [ { &quot;nodes&quot;: [ 0 ] } ],
+<span class="lineno">5</span>  &quot;nodes&quot;: [ { &quot;mesh&quot;: 0 } ],
+<span class="lineno">6</span>  &quot;meshes&quot;: [
+<span class="lineno">7</span>    { &quot;primitives&quot;: [ { &quot;attributes&quot;: { &quot;POSITION&quot;: 0 }, &quot;mode&quot;: 4 } ] }
+<span class="lineno">8</span>  ],
+<span class="lineno">9</span>  &quot;accessors&quot;: [
+<span class="lineno">10</span>    {
+<span class="lineno">11</span>      &quot;bufferView&quot;: 0,
+<span class="lineno">12</span>      &quot;componentType&quot;: 5126,
+<span class="lineno">13</span>      &quot;count&quot;: 3,
+<span class="lineno">14</span>      &quot;type&quot;: &quot;VEC3&quot;,
+<span class="lineno">15</span>      &quot;min&quot;: [ 0.0, 0.0, 0.0 ],
+<span class="lineno">16</span>      &quot;max&quot;: [ 1.0, 1.0, 0.0 ]
+<span class="lineno">17</span>    }
+<span class="lineno">18</span>  ],
+<span class="lineno">19</span>  &quot;bufferViews&quot;: [
+<span class="lineno">20</span>    { &quot;buffer&quot;: 0, &quot;byteOffset&quot;: 0, &quot;byteLength&quot;: 12 }
+<span class="lineno">21</span>  ],
+<span class="lineno">22</span>  &quot;buffers&quot;: [
+<span class="lineno">23</span>    { &quot;byteLength&quot;: 12, &quot;uri&quot;: &quot;<mark>data:application/octet-stream;base64,AAAAAAAAAAAAAAAA</mark>&quot; }
+<span class="lineno">24</span>  ]
+<span class="lineno">25</span>}
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ip003.html">&larr; Ip003</a> <a class="up" href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <a class="next" href="Ip005.html">Ip005 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

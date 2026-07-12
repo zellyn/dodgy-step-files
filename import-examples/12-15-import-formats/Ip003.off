@@ -1,0 +1,7 @@
+OFF
+# Ip003 assimp#2228 header V F E counts exceed actual body rows
+8 4 0
+0.0 0.0 0.0
+1.0 0.0 0.0
+0.0 1.0 0.0
+3 0 1 2

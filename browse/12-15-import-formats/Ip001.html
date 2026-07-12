@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ip001 — OBJ face index exceeds vertex count (out-of-range reference)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <span class="sep">/</span> <span class="current">Ip001</span>
+</nav>
+<header class="title-bar">
+<h1>Ip001 <span class="sep">—</span> <span class="entry-title">OBJ face index exceeds vertex count (out-of-range reference)</span></h1>
+<p class="category">§12.15 import-format parser robustness (sub-class: index-out-of-range)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../import-examples/12-15-import-formats/Ip001.obj">View raw fixture (.obj)</a> <code class="path">import-examples/12-15-import-formats/Ip001.obj</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>Pattern-mined from assimp/assimp#1047 + cnr-isti-vclab/meshlab (Apache-2.0 / GPL-3.0 — pattern only, no bytes copied).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A Wavefront OBJ defines 3 vertices but a face record `f 1 2 5` references vertex index 5. OBJ indices are 1-based and must be ≤ the number of preceding `v` records. Strict loaders (assimp) abort the import with an out-of-range error; lenient loaders (MeshLab) clamp or drop the face and load a partial mesh — a cross-oracle divergence on identical bytes.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>an OBJ with exactly three `v` lines followed by `f 1 2 5` (the `5` exceeds the 3-vertex table).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>reject with a diagnostic naming the offending index/record, or clamp-and-warn; never silently emit an out-of-bounds vertex reference into downstream geometry.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;OBJ face index out of range&quot;, &quot;vertex index exceeds count&quot;, &quot;OBJ OOB face reference&quot;, &quot;index-past-end mesh face&quot;. Provenance tier: bytes-only.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;f 1 2 5&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span># Ip001: OBJ face references vertex index 5, but only 3 vertices are defined.
+<span class="lineno">2</span># assimp aborts import (out-of-range index); MeshLab clamps/loads. Cross-oracle divergence.
+<span class="lineno">3</span>v 0.0 0.0 0.0
+<span class="lineno">4</span>v 1.0 0.0 0.0
+<span class="lineno">5</span>v 0.0 1.0 0.0
+<span class="lineno">6</span><mark>f 1 2 5</mark>
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="up" href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <a class="next" href="Ip002.html">Ip002 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

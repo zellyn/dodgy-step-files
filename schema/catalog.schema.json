@@ -68,7 +68,7 @@
             "12.3a", "12.3b", "12.3c",
             "12.4", "12.5", "12.6", "12.7", "12.8",
             "12.10", "12.11", "12.12", "12.13",
-            "12.14"
+            "12.14", "12.15"
           ]
         },
         "section_dir": {
@@ -94,13 +94,14 @@
             "12-11-adversarial",
             "12-12-cross-product",
             "12-13-writer-pathology",
-            "12-14-mesh"
+            "12-14-mesh",
+            "12-15-import-formats"
           ]
         },
         "fixture_path": {
-          "description": "Path (relative to repo root) to the fixture file. STEP fixtures live under step-examples/...stp; §12.14 mesh fixtures live under mesh-examples/...mesh.json.",
+          "description": "Path (relative to repo root) to the fixture file. STEP fixtures live under step-examples/...stp; §12.14 mesh fixtures live under mesh-examples/...mesh.json; §12.15 import-format fixtures live under import-examples/...{obj,ply,off,gltf,glb,dae,3mf,fbx,stl}.",
           "type": "string",
-          "pattern": "^(step-examples/12-[0-9]+[a-z]?-[a-z-]+/[A-Za-z0-9_.-]+\\.stp|mesh-examples/12-[0-9]+[a-z]?-[a-z-]+/[A-Za-z0-9_.-]+\\.mesh\\.json)$"
+          "pattern": "^(step-examples/12-[0-9]+[a-z]?-[a-z-]+/[A-Za-z0-9_.-]+\\.stp|mesh-examples/12-[0-9]+[a-z]?-[a-z-]+/[A-Za-z0-9_.-]+\\.mesh\\.json|import-examples/12-[0-9]+[a-z]?-[a-z-]+/[A-Za-z0-9_.-]+\\.[A-Za-z0-9]+)$"
         },
         "expected_validation": {
           "description": "Expected outcomes per oracle (occt=, gmsh=, ifc=). Empty string allowed for entries pre-dating the oracle harness.",

@@ -69,6 +69,7 @@ PREFIX_MAP: list[tuple[str, str, str]] = [
     ("P", "12.6", "12-6-assembly"),  # P001..P028: FreeCAD-origin findings
     ("M", "12.8", "12-8-mixed"),
     ("Me", "12.14", "12-14-mesh"),  # mesh-defect fixtures (parallel corpus, not Part-21)
+    ("Ip", "12.15", "12-15-import-formats"),  # import-format parser-robustness (raw malformed mesh/format files, not Part-21)
 ]
 
 

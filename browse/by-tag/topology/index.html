@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1><span class="tag tag-topology">topology</span></h1>
 <p class="blurb">Shell / wire / face / edge / vertex topology defect.</p>
-<p class="meta">1540 entries</p>
+<p class="meta">1544 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Section</th><th>Expected validation</th></tr></thead><tbody>
@@ -55,6 +55,10 @@
 <tr><td><a href="../../12-3c-faces/Hea015.html"><code>Hea015</code></a></td><td>Shape healing regression: shared EDGE_CURVE between two ADVANCED_FACEs on same PLANE has duplicate PCURVE_S1_AND_S2 entries (identical UV start and direction)</td><td><a href="../../12-3c-faces/index.html">§12.3c Faces / sewing / free bound</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-3c-faces/Hea016.html"><code>Hea016</code></a></td><td>Empty solid output from STEP export of complex body, despite STL succeeding</td><td><a href="../../12-3c-faces/index.html">§12.3c Faces / sewing / free bound</a></td><td><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-3c-faces/Hea017.html"><code>Hea017</code></a></td><td>Extrude of 2D Offset of Sketch fails STEP export as non-manifold (offset trace not closed)</td><td><a href="../../12-3c-faces/index.html">§12.3c Faces / sewing / free bound</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="../../12-15-import-formats/Ip001.html"><code>Ip001</code></a></td><td>OBJ face index exceeds vertex count (out-of-range reference)</td><td><a href="../../12-15-import-formats/index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a></td><td><code></code></td></tr>
+<tr><td><a href="../../12-15-import-formats/Ip002.html"><code>Ip002</code></a></td><td>PLY header vertex count exceeds body rows (declared &gt; actual)</td><td><a href="../../12-15-import-formats/index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a></td><td><code></code></td></tr>
+<tr><td><a href="../../12-15-import-formats/Ip003.html"><code>Ip003</code></a></td><td>OFF header V/F/E counts exceed actual body rows (declared &gt; actual)</td><td><a href="../../12-15-import-formats/index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a></td><td><code></code></td></tr>
+<tr><td><a href="../../12-15-import-formats/Ip005.html"><code>Ip005</code></a></td><td>COLLADA `&lt;p&gt;` primitive index references vertex beyond `&lt;source&gt;`</td><td><a href="../../12-15-import-formats/index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a></td><td><code></code></td></tr>
 <tr><td><a href="../../12-8-mixed/M003.html"><code>M003</code></a></td><td>Free-edge tessellated shell cannot use tessellated_connecting_edge</td><td><a href="../../12-8-mixed/index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a></td><td><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-8-mixed/M004.html"><code>M004</code></a></td><td>Watertightness lost when each tessellated face has its own coordinates_list</td><td><a href="../../12-8-mixed/index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a></td><td><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-8-mixed/M024.html"><code>M024</code></a></td><td>Mesh-to-BRep gaps at trim curves (non-watertight result)</td><td><a href="../../12-8-mixed/index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></td></tr>

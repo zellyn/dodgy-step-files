@@ -166,9 +166,10 @@ def _check_empty_face_bounds(entry: dict, body: bytes) -> str | None:
 
 
 def lint_one(entry: dict) -> list[str]:
-    # §12.14 mesh fixtures live under mesh-examples/ and are JSON, not STEP.
-    # The Part-21-shaped checks below don't apply.
-    if entry.get("section") == "12.14":
+    # §12.14 mesh fixtures live under mesh-examples/ (JSON); §12.15 import-format
+    # fixtures live under import-examples/ (raw OBJ/PLY/etc.). Neither is STEP, so
+    # the Part-21-shaped checks below don't apply.
+    if entry.get("section") in ("12.14", "12.15"):
         return []
     fixture = EXAMPLES / entry["section_dir"] / f"{entry['id']}.stp"
     if not fixture.is_file():

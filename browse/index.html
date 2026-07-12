@@ -12,7 +12,7 @@
 <a href="../index.html">Home</a> <span class="sep">/</span> <span class="current">Browse</span>
 </nav>
 <header class="title-bar"><h1>Browse the STEP Defect Catalog</h1>
-<p class="meta">3181 entries across 19 sections</p>
+<p class="meta">3186 entries across 20 sections</p>
 </header>
 <main>
 <section class="by-tag-cta">
@@ -62,6 +62,14 @@
 <li>non-manifold edge: three triangles share a single edge</li>
 <li>degenerate triangle: three collinear vertices, area=0</li>
 <li>near-coincident vertices: 5e-8 separation, distinct entries</li>
+</ul></div>
+<div class="section-card">
+<h2><a href="12-15-import-formats/index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a></h2>
+<p class="meta">5 entries</p>
+<ul class="samples">
+<li>OBJ face index exceeds vertex count (out-of-range reference)</li>
+<li>PLY header vertex count exceeds body rows (declared &gt; actual)</li>
+<li>OFF header V/F/E counts exceed actual body rows (declared &gt; actual)</li>
 </ul></div>
 <div class="section-card">
 <h2><a href="12-1a-encoding/index.html">§12.1a Encoding &amp; string-literal defects</a></h2>

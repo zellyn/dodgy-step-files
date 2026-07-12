@@ -73,6 +73,7 @@ SECTION_LABELS: dict[str, str] = {
     "12-12-cross-product": "§12.12 Cross-product",
     "12-13-writer-pathology": "§12.13 Writer pathology",
     "12-14-mesh": "§12.14 Mesh defects (CGAL PMP / MeshFix patterns)",
+    "12-15-import-formats": "§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)",
 }
 
 # A human-friendly one-paragraph blurb per section. Falls back to a generic
@@ -121,6 +122,11 @@ SECTION_BLURBS: dict[str, str] = {
     "12-13-writer-pathology": "Writer-pathology defects: kernel STEP-writer "
                              "round-trip failures, malformed output, and "
                              "schema-non-conformance on emit.",
+    "12-15-import-formats": "Raw malformed import-format files (OBJ/PLY/OFF/glTF/"
+                            "COLLADA/3MF/FBX) that exercise a parser's robustness: "
+                            "header-count lies, out-of-range indices, dangling refs, "
+                            "truncated/encoding faults. Graded against independent "
+                            "loaders (assimp, trimesh); not Part-21.",
     "12-14-mesh": "Mesh-level defect fixtures (.mesh.json): non-manifold "
                   "edges/vertices, zero-area triangles, near-coincident "
                   "vertices, hole boundaries, normal-flip patterns, T-junctions, "
@@ -547,7 +553,8 @@ def render_fixture_page(entry: dict, section_entries: list[dict],
     # Fixture link (prominent). Label varies by fixture kind: .stp for STEP
     # fixtures, .mesh.json for §12.14 mesh fixtures.
     fixture_rel = f"../../{entry['fixture_path']}"
-    fixture_ext = ".mesh.json" if entry["fixture_path"].endswith(".mesh.json") else ".stp"
+    fixture_ext = ("".join(Path(entry["fixture_path"]).suffixes)
+                   or Path(entry["fixture_path"]).suffix or ".stp")
     out.append('<section class="fixture-link">')
     out.append(f'<a class="big-link" href="{_h(fixture_rel)}">'
                f'View raw fixture ({fixture_ext})</a> '

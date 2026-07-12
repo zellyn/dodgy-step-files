@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="section">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <span class="current">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</span>
+</nav>
+<header class="title-bar">
+<h1>§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</h1>
+<p class="blurb">Raw malformed import-format files (OBJ/PLY/OFF/glTF/COLLADA/3MF/FBX) that exercise a parser&#x27;s robustness: header-count lies, out-of-range indices, dangling refs, truncated/encoding faults. Graded against independent loaders (assimp, trimesh); not Part-21.</p>
+<p class="meta">5 entries</p>
+</header>
+<main>
+<table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
+<tr><td><a href="Ip001.html"><code>Ip001</code></a></td><td>OBJ face index exceeds vertex count (out-of-range reference)</td><td><code>bytes-only</code></td><td><code></code></td></tr>
+<tr><td><a href="Ip002.html"><code>Ip002</code></a></td><td>PLY header vertex count exceeds body rows (declared &gt; actual)</td><td><code>bytes-only</code></td><td><code></code></td></tr>
+<tr><td><a href="Ip003.html"><code>Ip003</code></a></td><td>OFF header V/F/E counts exceed actual body rows (declared &gt; actual)</td><td><code>bytes-only</code></td><td><code></code></td></tr>
+<tr><td><a href="Ip004.html"><code>Ip004</code></a></td><td>glTF accessor over-runs its bufferView (count×stride &gt; byteLength)</td><td><code>bytes-only</code></td><td><code></code></td></tr>
+<tr><td><a href="Ip005.html"><code>Ip005</code></a></td><td>COLLADA `&lt;p&gt;` primitive index references vertex beyond `&lt;source&gt;`</td><td><code>bytes-only</code></td><td><code></code></td></tr>
+</tbody></table>
+</main>
+<footer>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

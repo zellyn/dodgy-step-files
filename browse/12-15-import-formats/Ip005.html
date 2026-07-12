@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ip005 — COLLADA `&lt;p&gt;` primitive index references vertex beyond `&lt;source&gt;`</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <span class="sep">/</span> <span class="current">Ip005</span>
+</nav>
+<header class="title-bar">
+<h1>Ip005 <span class="sep">—</span> <span class="entry-title">COLLADA `&lt;p&gt;` primitive index references vertex beyond `&lt;source&gt;`</span></h1>
+<p class="category">§12.15 import-format parser robustness (sub-class: index-out-of-range)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../import-examples/12-15-import-formats/Ip005.dae">View raw fixture (.dae)</a> <code class="path">import-examples/12-15-import-formats/Ip005.dae</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>Pattern-mined from assimp/assimp#6522 (`CopyVertex`/`ReadPrimitives`) + OSS-Fuzz 483173710 (BSD-3-Clause — pattern only, no bytes copied).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A COLLADA `&lt;triangles&gt;` block&#x27;s `&lt;p&gt;0 1 5&lt;/p&gt;` index list references vertex index 5, but the `&lt;source&gt;`/`&lt;accessor&gt;` declares only 3 vertices (`count=&quot;3&quot;`). `CopyVertex` indexes the position array by the `&lt;p&gt;` value without bounds-checking it against the accessor count, reading past the `&lt;float_array&gt;`. First COLLADA/DAE-format fixture in the corpus.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>a minimal `.dae` with a 3-vertex POSITION source and a `&lt;triangles&gt;` `&lt;p&gt;` list naming an index ≥ 3.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>validate every `&lt;p&gt;` index against the referenced source&#x27;s accessor count before dereference; reject with a diagnostic or skip the primitive.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;COLLADA p index out of range&quot;, &quot;primitive index beyond source&quot;, &quot;DAE CopyVertex overflow&quot;, &quot;vertex index exceeds accessor count&quot;. Provenance tier: bytes-only. First COLLADA coverage.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;&lt;p&gt;0 1 5&lt;/p&gt;&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+<span class="lineno">2</span>&lt;!-- Ip005 assimp#6522 &lt;p&gt; primitive index references vertex beyond &lt;source&gt; --&gt;
+<span class="lineno">3</span>&lt;COLLADA xmlns=&quot;http://www.collada.org/2005/11/COLLADASchema&quot; version=&quot;1.4.1&quot;&gt;
+<span class="lineno">4</span>  &lt;library_geometries&gt;
+<span class="lineno">5</span>    &lt;geometry id=&quot;g0&quot; name=&quot;g0&quot;&gt;
+<span class="lineno">6</span>      &lt;mesh&gt;
+<span class="lineno">7</span>        &lt;source id=&quot;pos&quot;&gt;
+<span class="lineno">8</span>          &lt;float_array id=&quot;pos-array&quot; count=&quot;9&quot;&gt;0 0 0 1 0 0 0 1 0&lt;/float_array&gt;
+<span class="lineno">9</span>          &lt;technique_common&gt;
+<span class="lineno">10</span>            &lt;accessor source=&quot;#pos-array&quot; count=&quot;3&quot; stride=&quot;3&quot;&gt;
+<span class="lineno">11</span>              &lt;param name=&quot;X&quot; type=&quot;float&quot;/&gt;
+<span class="lineno">12</span>              &lt;param name=&quot;Y&quot; type=&quot;float&quot;/&gt;
+<span class="lineno">13</span>              &lt;param name=&quot;Z&quot; type=&quot;float&quot;/&gt;
+<span class="lineno">14</span>            &lt;/accessor&gt;
+<span class="lineno">15</span>          &lt;/technique_common&gt;
+<span class="lineno">16</span>        &lt;/source&gt;
+<span class="lineno">17</span>        &lt;vertices id=&quot;verts&quot;&gt;
+<span class="lineno">18</span>          &lt;input semantic=&quot;POSITION&quot; source=&quot;#pos&quot;/&gt;
+<span class="lineno">19</span>        &lt;/vertices&gt;
+<span class="lineno">20</span>        &lt;triangles count=&quot;1&quot;&gt;
+<span class="lineno">21</span>          &lt;input semantic=&quot;VERTEX&quot; source=&quot;#verts&quot; offset=&quot;0&quot;/&gt;
+<span class="lineno">22</span>          <mark>&lt;p&gt;0 1 5&lt;/p&gt;</mark>
+<span class="lineno">23</span>        &lt;/triangles&gt;
+<span class="lineno">24</span>      &lt;/mesh&gt;
+<span class="lineno">25</span>    &lt;/geometry&gt;
+<span class="lineno">26</span>  &lt;/library_geometries&gt;
+<span class="lineno">27</span>  &lt;scene/&gt;
+<span class="lineno">28</span>&lt;/COLLADA&gt;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ip004.html">&larr; Ip004</a> <a class="up" href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

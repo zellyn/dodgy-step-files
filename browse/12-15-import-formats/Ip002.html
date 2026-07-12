@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ip002 — PLY header vertex count exceeds body rows (declared &gt; actual)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <span class="sep">/</span> <span class="current">Ip002</span>
+</nav>
+<header class="title-bar">
+<h1>Ip002 <span class="sep">—</span> <span class="entry-title">PLY header vertex count exceeds body rows (declared &gt; actual)</span></h1>
+<p class="category">§12.15 import-format parser robustness (sub-class: declared-count-exceeds-body)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../import-examples/12-15-import-formats/Ip002.ply">View raw fixture (.ply)</a> <code class="path">import-examples/12-15-import-formats/Ip002.ply</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>Pattern-mined from assimp/assimp#5729 + OSS-Fuzz 6544205135544320 (`LoadVertex` heap-overflow WRITE</li>
+<li>fix PR#5956) (BSD-3-Clause — pattern only, no bytes copied).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An ASCII PLY header declares `element vertex 5` but the body streams only 3 vertex rows before the `face` element begins. A header-trusting loader keeps writing into the vertex buffer for the declared count, consuming the face row (and past-EOF bytes) as if they were vertex coordinates — the assimp defect was a heap-overflow write. The single most common file-level import defect: declared count &gt; actual body data.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>an ASCII PLY whose `element vertex N` line names a larger N than the number of coordinate rows physically present before the next element.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>bound every vertex write to the rows actually present; stop at EOF / the next element token and reject with a diagnostic (declared N vs parsed count), never write past the allocation.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;PLY vertex count mismatch&quot;, &quot;header count exceeds body&quot;, &quot;declared more vertices than present&quot;, &quot;PLY LoadVertex overflow&quot;. Provenance tier: bytes-only.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;element vertex 5&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ply
+<span class="lineno">2</span>format ascii 1.0
+<span class="lineno">3</span>comment Ip002 assimp#5729 header vertex count exceeds body rows
+<span class="lineno">4</span><mark>element vertex 5</mark>
+<span class="lineno">5</span>property float x
+<span class="lineno">6</span>property float y
+<span class="lineno">7</span>property float z
+<span class="lineno">8</span>element face 1
+<span class="lineno">9</span>property list uchar int vertex_indices
+<span class="lineno">10</span>end_header
+<span class="lineno">11</span>0.0 0.0 0.0
+<span class="lineno">12</span>1.0 0.0 0.0
+<span class="lineno">13</span>0.0 1.0 0.0
+<span class="lineno">14</span>3 0 1 2
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ip001.html">&larr; Ip001</a> <a class="up" href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <a class="next" href="Ip003.html">Ip003 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>
