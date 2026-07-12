@@ -61793,7 +61793,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Sw002.stp",
     "id": "Sw002",
-    "notes": "Synonyms: \"silent face loss\", \"sliver face drop\", \"face missing after sewing\", \"sewer dropped sub-tolerance face\", \"sub-micron sliver removed without warning\".",
+    "notes": "Synonyms: \"silent face loss\", \"sliver face drop\", \"face missing after sewing\", \"sewer dropped sub-tolerance face\", \"sub-micron sliver removed without warning\". OCCT exchange-layer audit (occt-coverage/exchange/) byte-verified the previous version as a full 1x1mm unit square (NOT a sliver); fixed by rebuilding the face footprint to the catalog's own 1e-6mm reproducer-recipe coordinates.",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -61833,11 +61833,11 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Sw003.stp",
     "id": "Sw003",
-    "notes": "Synonyms: \"back-and-forth wire\", \"fold-line face\", \"zero-area face accepted\", \"degenerate face wire collapses to line\", \"face collapsed to a line or point\".",
+    "notes": "Synonyms: \"back-and-forth wire\", \"fold-line face\", \"zero-area face accepted\", \"degenerate face wire collapses to line\", \"face collapsed to a line or point\". OCCT exchange-layer audit (occt-coverage/exchange/) byte-verified the previous 1.0mm-full-length version as NOT demonstrating `sew-degenerate-free-wire-collapse` (extent far above tolerance); fixed by shrinking the wire's extent to 1e-9mm.",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
-    "reproducer": "An `ADVANCED_FACE` whose `FACE_OUTER_BOUND` `EDGE_LOOP` consists of two `ORIENTED_EDGE`s that are equal-and-reversed (a back-and-forth on one curve), enclosing zero area.",
+    "reproducer": "An `ADVANCED_FACE` whose `FACE_OUTER_BOUND` `EDGE_LOOP` consists of two `ORIENTED_EDGE`s that are equal-and-reversed (a back-and-forth on one curve), enclosing zero area **and** of sub-tolerance spatial extent (1e-9mm, three orders of magnitude below the model's 1e-7mm UNCERTAINTY_MEASURE_WITH_UNIT) -- so the collapsed wire is negligible by both area and extent, not merely zero-area-but-full-length.",
     "section": "12.3a",
     "section_dir": "12-3a-shells",
     "see_also": [],
@@ -61857,6 +61857,7 @@
   },
   {
     "byte_assertions": [
+      "matches(rb'ADVANCED_FACE\\([^,]+,\\(\\),\\$,')",
       "contains(b'OPEN_SHELL')"
     ],
     "category": "§12.3a (sub-class: fast-sewing prerequisite)",
@@ -61869,7 +61870,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Sw004.stp",
     "id": "Sw004",
-    "notes": "**See also**: Sw005. Synonyms: \"fast sewing fails on null face\", \"null surface in fast sew\", \"ADVANCED_FACE with no face_geometry\", \"face_geometry slot is dollar\", \"fast-sewer aborts on missing surface\".- **Byte assertion**: matches(rb'ADVANCED_FACE\\([^,]+,\\(\\),\\$,')",
+    "notes": "**See also**: Sw005. Synonyms: \"fast sewing fails on null face\", \"null surface in fast sew\", \"ADVANCED_FACE with no face_geometry\", \"face_geometry slot is dollar\", \"fast-sewer aborts on missing surface\". OCCT exchange-layer audit (occt-coverage/exchange/, bc-no-surface) byte-verified the previous version as a single ordinary face referencing a real PLANE (no null surface at all); fixed by adding a second ADVANCED_FACE with an empty bound list and a genuine `$` (null) face_geometry reference alongside the original valid face, so the shell now carries both a real face and the catalog's exact null-surface reproducer.",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -94746,7 +94747,7 @@
     "cross_oracle_note": null,
     "description": "EvaluateDistances.zero_angle_count_guard",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-4-tolerance/N146.stp",
     "id": "N146",
@@ -94768,7 +94769,7 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "n_faces_total == 2"
     ],
     "title": "EvaluateDistances.zero_angle_count_guard"
   },
@@ -94780,7 +94781,7 @@
     "cross_oracle_note": null,
     "description": "FindCandidates.acceptance_criteria_composite_filter",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-4-tolerance/N147.stp",
     "id": "N147",
@@ -94802,7 +94803,7 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "n_faces_total == 2"
     ],
     "title": "FindCandidates.acceptance_criteria_composite_filter"
   },
@@ -94814,7 +94815,7 @@
     "cross_oracle_note": null,
     "description": "EvaluateDistances.projection_direction_selection",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-4-tolerance/N148.stp",
     "id": "N148",
@@ -94836,7 +94837,7 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "n_faces_total == 2"
     ],
     "title": "EvaluateDistances.projection_direction_selection"
   },
@@ -94848,7 +94849,7 @@
     "cross_oracle_note": null,
     "description": "FindCandidates.equidistant_precision_test",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-4-tolerance/N149.stp",
     "id": "N149",
@@ -94870,7 +94871,7 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "n_faces_total == 2"
     ],
     "title": "FindCandidates.equidistant_precision_test"
   },
@@ -94882,7 +94883,7 @@
     "cross_oracle_note": null,
     "description": "IsMergedClosed.v_overlap_negativity_test",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-4-tolerance/N150.stp",
     "id": "N150",
@@ -94904,7 +94905,7 @@
       "spec-violation"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "n_faces_total == 2"
     ],
     "title": "IsMergedClosed.v_overlap_negativity_test"
   },
@@ -94916,7 +94917,7 @@
     "cross_oracle_note": null,
     "description": "`BRepBuilderAPI_Sewing.SameParameterEdge.recursive-tolerance-comparison`",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-4-tolerance/N151.stp",
     "id": "N151",
@@ -94938,7 +94939,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "n_faces_total == 2"
     ],
     "title": "`BRepBuilderAPI_Sewing.SameParameterEdge.recursive-tolerance-comparison`"
   },
@@ -94984,7 +94985,7 @@
     "cross_oracle_note": null,
     "description": "`BRepBuilderAPI_Sewing.SameParameterEdge.final-tolerance-validation`",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
-    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-4-tolerance/N153.stp",
     "id": "N153",
@@ -95006,7 +95007,7 @@
       "topology"
     ],
     "tier3_assertions": [
-      "shape_null == True"
+      "n_faces_total == 2"
     ],
     "title": "`BRepBuilderAPI_Sewing.SameParameterEdge.final-tolerance-validation`"
   },

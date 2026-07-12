@@ -31,11 +31,11 @@
 <section><h2>Description</h2>
 <p>A face whose bounding wire collapses to a curve or a point (zero-area face) is reported by the sewer as &quot;degenerated&quot; but appears unflagged in the source file. Bug-reporter language: &quot;zero-area face&quot;, &quot;face is a line&quot;, &quot;degenerate face accepted&quot;.</p></section>
 <section><h2>Reproducer recipe</h2>
-<p>An `ADVANCED_FACE` whose `FACE_OUTER_BOUND` `EDGE_LOOP` consists of two `ORIENTED_EDGE`s that are equal-and-reversed (a back-and-forth on one curve), enclosing zero area.</p></section>
+<p>An `ADVANCED_FACE` whose `FACE_OUTER_BOUND` `EDGE_LOOP` consists of two `ORIENTED_EDGE`s that are equal-and-reversed (a back-and-forth on one curve), enclosing zero area **and** of sub-tolerance spatial extent (1e-9mm, three orders of magnitude below the model&#x27;s 1e-7mm UNCERTAINTY_MEASURE_WITH_UNIT) -- so the collapsed wire is negligible by both area and extent, not merely zero-area-but-full-length.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Detect via signed-area; reject the face, or coerce to a degenerate edge.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;back-and-forth wire&quot;, &quot;fold-line face&quot;, &quot;zero-area face accepted&quot;, &quot;degenerate face wire collapses to line&quot;, &quot;face collapsed to a line or point&quot;.</p></section>
+<p>Synonyms: &quot;back-and-forth wire&quot;, &quot;fold-line face&quot;, &quot;zero-area face accepted&quot;, &quot;degenerate face wire collapses to line&quot;, &quot;face collapsed to a line or point&quot;. OCCT exchange-layer audit (occt-coverage/exchange/) byte-verified the previous 1.0mm-full-length version as NOT demonstrating `sew-degenerate-free-wire-collapse` (extent far above tolerance); fixed by shrinking the wire&#x27;s extent to 1e-9mm.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
@@ -52,7 +52,7 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Sw003: ADVANCED_FACE with FACE_OUTER_BOUND whose EDGE_LOOP is two ORIENTED_EDGEs going back-and-forth on the same LINE (equal-and-reversed), enclosing zero area; collapsed wire IS wired into the FACE_OUTER_BOUND of the OPEN_SHELL face; sewer flags as degenerated; no upstream rejection */
+<span class="lineno">2</span>/* Sw003: ADVANCED_FACE with FACE_OUTER_BOUND whose EDGE_LOOP is two ORIENTED_EDGEs going back-and-forth on the same LINE (equal-and-reversed), enclosing zero area AND sub-tolerance extent (1e-9mm, below the 1e-7mm model tolerance); collapsed wire IS wired into the FACE_OUTER_BOUND of the OPEN_SHELL face; sewer flags as degenerated; no upstream rejection */
 <span class="lineno">3</span>HEADER;
 <span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Sw003&#x27;),&#x27;2;1&#x27;);
 <span class="lineno">5</span>FILE_NAME(&#x27;Sw003.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
@@ -61,11 +61,11 @@
 <span class="lineno">8</span>DATA;
 <span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
 <span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">11</span>#2=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">11</span>#2=CARTESIAN_POINT(&#x27;&#x27;,(1.0E-09,0.0,0.0));
 <span class="lineno">12</span>#3=VERTEX_POINT(&#x27;&#x27;,#1);
 <span class="lineno">13</span>#4=VERTEX_POINT(&#x27;&#x27;,#2);
 <span class="lineno">14</span>#5=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">15</span>#6=VECTOR(&#x27;&#x27;,#5,1.0);
+<span class="lineno">15</span>#6=VECTOR(&#x27;&#x27;,#5,1.0E-09);
 <span class="lineno">16</span>#7=LINE(&#x27;&#x27;,#1,#6);
 <span class="lineno">17</span>#8=EDGE_CURVE(&#x27;&#x27;,#3,#4,#7,.T.);
 <span class="lineno">18</span>#9=ORIENTED_EDGE(&#x27;&#x27;,$,$,#8,.T.);

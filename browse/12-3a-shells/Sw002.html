@@ -35,7 +35,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Warn and accept: always report dropped faces in a diagnostic list with configurable tolerance.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;silent face loss&quot;, &quot;sliver face drop&quot;, &quot;face missing after sewing&quot;, &quot;sewer dropped sub-tolerance face&quot;, &quot;sub-micron sliver removed without warning&quot;.</p></section>
+<p>Synonyms: &quot;silent face loss&quot;, &quot;sliver face drop&quot;, &quot;face missing after sewing&quot;, &quot;sewer dropped sub-tolerance face&quot;, &quot;sub-micron sliver removed without warning&quot;. OCCT exchange-layer audit (occt-coverage/exchange/) byte-verified the previous version as a full 1x1mm unit square (NOT a sliver); fixed by rebuilding the face footprint to the catalog&#x27;s own 1e-6mm reproducer-recipe coordinates.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
@@ -55,7 +55,7 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Sw002: <mark>sliver</mark> face for sewing-loss */
+<span class="lineno">2</span>/* Sw002: sub-micron <mark>sliver</mark> face for sewing-loss */
 <span class="lineno">3</span>HEADER;
 <span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Sw002&#x27;),&#x27;2;1&#x27;);
 <span class="lineno">5</span>FILE_NAME(&#x27;Sw002.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
@@ -69,27 +69,27 @@
 <span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
 <span class="lineno">14</span>#5=PLANE(&#x27;&#x27;,#4);
 <span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
-<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(1.0E-06,0.0,0.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(1.0E-06,1.0E-06,0.0));
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0E-06,0.0));
 <span class="lineno">19</span>#10=VERTEX_POINT(&#x27;&#x27;,#6);
 <span class="lineno">20</span>#11=VERTEX_POINT(&#x27;&#x27;,#7);
 <span class="lineno">21</span>#12=VERTEX_POINT(&#x27;&#x27;,#8);
 <span class="lineno">22</span>#13=VERTEX_POINT(&#x27;&#x27;,#9);
 <span class="lineno">23</span>#14=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">24</span>#15=VECTOR(&#x27;&#x27;,#14,1.0);
+<span class="lineno">24</span>#15=VECTOR(&#x27;&#x27;,#14,1.0E-06);
 <span class="lineno">25</span>#16=LINE(&#x27;&#x27;,#6,#15);
 <span class="lineno">26</span>#17=EDGE_CURVE(&#x27;&#x27;,#10,#11,#16,.T.);
 <span class="lineno">27</span>#18=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
-<span class="lineno">28</span>#19=VECTOR(&#x27;&#x27;,#18,1.0);
+<span class="lineno">28</span>#19=VECTOR(&#x27;&#x27;,#18,1.0E-06);
 <span class="lineno">29</span>#20=LINE(&#x27;&#x27;,#7,#19);
 <span class="lineno">30</span>#21=EDGE_CURVE(&#x27;&#x27;,#11,#12,#20,.T.);
 <span class="lineno">31</span>#22=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
-<span class="lineno">32</span>#23=VECTOR(&#x27;&#x27;,#22,1.0);
+<span class="lineno">32</span>#23=VECTOR(&#x27;&#x27;,#22,1.0E-06);
 <span class="lineno">33</span>#24=LINE(&#x27;&#x27;,#8,#23);
 <span class="lineno">34</span>#25=EDGE_CURVE(&#x27;&#x27;,#12,#13,#24,.T.);
 <span class="lineno">35</span>#26=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
-<span class="lineno">36</span>#27=VECTOR(&#x27;&#x27;,#26,1.0);
+<span class="lineno">36</span>#27=VECTOR(&#x27;&#x27;,#26,1.0E-06);
 <span class="lineno">37</span>#28=LINE(&#x27;&#x27;,#9,#27);
 <span class="lineno">38</span>#29=EDGE_CURVE(&#x27;&#x27;,#13,#10,#28,.T.);
 <span class="lineno">39</span>#30=ORIENTED_EDGE(&#x27;&#x27;,$,$,#17,.T.);

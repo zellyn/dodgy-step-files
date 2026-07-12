@@ -35,12 +35,13 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Warn and accept: skip the face with a diagnostic; or heal and accept by falling back to slow sewing.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Sw005. Synonyms: &quot;fast sewing fails on null face&quot;, &quot;null surface in fast sew&quot;, &quot;ADVANCED_FACE with no face_geometry&quot;, &quot;face_geometry slot is dollar&quot;, &quot;fast-sewer aborts on missing surface&quot;.- **Byte assertion**: matches(rb&#x27;ADVANCED_FACE\([^,]+,\(\),\$,&#x27;)</p></section>
+<p>**See also**: Sw005. Synonyms: &quot;fast sewing fails on null face&quot;, &quot;null surface in fast sew&quot;, &quot;ADVANCED_FACE with no face_geometry&quot;, &quot;face_geometry slot is dollar&quot;, &quot;fast-sewer aborts on missing surface&quot;. OCCT exchange-layer audit (occt-coverage/exchange/, bc-no-surface) byte-verified the previous version as a single ordinary face referencing a real PLANE (no null surface at all); fixed by adding a second ADVANCED_FACE with an empty bound list and a genuine `$` (null) face_geometry reference alongside the original valid face, so the shell now carries both a real face and the catalog&#x27;s exact null-surface reproducer.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Closure intent</h2>
 <p><code>solid</code> (defect kind: <code>unstitched_seam</code>) — authored as a closed solid; openness is the defect — heal it shut.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>matches(rb&#x27;ADVANCED_FACE\([^,]+,\(\),\$,&#x27;)</code></li>
 <li><code>contains(b&#x27;OPEN_SHELL&#x27;)</code></li>
 </ul></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
@@ -59,7 +60,7 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Sw004: face with null surface (for byte assertion) */
+<span class="lineno">2</span>/* Sw004: <mark>OPEN_SHELL</mark> carries one valid unit-square ADVANCED_FACE plus one genuinely null-surface ADVANCED_FACE (&#x27;null_surface_face&#x27;,(),$,.T.) -- fast-sewing input with a real face_geometry==$ null reference */
 <span class="lineno">3</span>HEADER;
 <span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Sw004&#x27;),&#x27;2;1&#x27;);
 <span class="lineno">5</span>FILE_NAME(&#x27;Sw004.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
@@ -103,23 +104,24 @@
 <span class="lineno">43</span>#34=EDGE_LOOP(&#x27;&#x27;,(#30,#31,#32,#33));
 <span class="lineno">44</span>#35=FACE_OUTER_BOUND(&#x27;&#x27;,#34,.T.);
 <span class="lineno">45</span>#36=ADVANCED_FACE(&#x27;&#x27;,(#35),#5,.T.);
-<span class="lineno">46</span>#37=<mark>OPEN_SHELL</mark>(&#x27;&#x27;,(#36));
-<span class="lineno">47</span>#38=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#37));
-<span class="lineno">48</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
-<span class="lineno">49</span>#9051=PRODUCT(&#x27;Sw004&#x27;,&#x27;Sw004&#x27;,&#x27;&#x27;,(#9050));
-<span class="lineno">50</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
-<span class="lineno">51</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
-<span class="lineno">52</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
-<span class="lineno">53</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
-<span class="lineno">54</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-<span class="lineno">55</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
-<span class="lineno">56</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">57</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
-<span class="lineno">58</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
-<span class="lineno">59</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#38),#9060);
-<span class="lineno">60</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
-<span class="lineno">61</span>ENDSEC;
-<span class="lineno">62</span>END-ISO-10303-21;
+<span class="lineno">46</span>#37=<mark>ADVANCED_FACE(&#x27;null_surface_face&#x27;,(),$,</mark>.T.);
+<span class="lineno">47</span>#38=<mark>OPEN_SHELL</mark>(&#x27;&#x27;,(#36,#37));
+<span class="lineno">48</span>#39=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#38));
+<span class="lineno">49</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">50</span>#9051=PRODUCT(&#x27;Sw004&#x27;,&#x27;Sw004&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">51</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">52</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">53</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">54</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">55</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">56</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">57</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">58</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">59</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">60</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#39),#9060);
+<span class="lineno">61</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">62</span>ENDSEC;
+<span class="lineno">63</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

@@ -20562,7 +20562,7 @@ _Section summary: 41 entries._
 - **Description**: A face whose area is below the squared sewing tolerance is removed entirely by the sewer with no diagnostic — the consumer sees a clean shell with one fewer face than the input. Typical fixture: an ADVANCED_FACE whose underlying PLANE references CARTESIAN_POINTs covering only a sub-micron sliver region (e.g., (0,0,0), (1e-6,0,0), (1e-6,1e-6,0), (0,1e-6,0)) — a face whose extent is below typical tolerance. Empty bound lists may also feature in such fixtures. Bug-reporter language: "face missing after sewing", "sewer dropped face", "face silently lost", "sub-micron sliver".
 - **Reproducer recipe**: A shell with one ADVANCED_FACE whose bounding wire encloses an area of (sewing_tol)² on a plane (e.g., CARTESIAN_POINTs spanning ~1e-6 in each direction), surrounded by larger faces.
 - **Expected kernel behavior**: Warn and accept: always report dropped faces in a diagnostic list with configurable tolerance.
-- **Notes**: Synonyms: "silent face loss", "sliver face drop", "face missing after sewing", "sewer dropped sub-tolerance face", "sub-micron sliver removed without warning".
+- **Notes**: Synonyms: "silent face loss", "sliver face drop", "face missing after sewing", "sewer dropped sub-tolerance face", "sub-micron sliver removed without warning". OCCT exchange-layer audit (occt-coverage/exchange/) byte-verified the previous version as a full 1x1mm unit square (NOT a sliver); fixed by rebuilding the face footprint to the catalog's own 1e-6mm reproducer-recipe coordinates.
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
 - **Byte assertion**: contains(b'sliver')
 - **Tier-3 assertion**: shape_null == False
@@ -20580,9 +20580,9 @@ _Section summary: 41 entries._
 - **Sources**: OCCT BRepBuilderAPI_Sewing.hxx:145 (NbDegeneratedShapes) (uncovered class evidence)
 - **Sender**: deduced — OCCT uncovered-class sweep
 - **Description**: A face whose bounding wire collapses to a curve or a point (zero-area face) is reported by the sewer as "degenerated" but appears unflagged in the source file. Bug-reporter language: "zero-area face", "face is a line", "degenerate face accepted".
-- **Reproducer recipe**: An `ADVANCED_FACE` whose `FACE_OUTER_BOUND` `EDGE_LOOP` consists of two `ORIENTED_EDGE`s that are equal-and-reversed (a back-and-forth on one curve), enclosing zero area.
+- **Reproducer recipe**: An `ADVANCED_FACE` whose `FACE_OUTER_BOUND` `EDGE_LOOP` consists of two `ORIENTED_EDGE`s that are equal-and-reversed (a back-and-forth on one curve), enclosing zero area **and** of sub-tolerance spatial extent (1e-9mm, three orders of magnitude below the model's 1e-7mm UNCERTAINTY_MEASURE_WITH_UNIT) -- so the collapsed wire is negligible by both area and extent, not merely zero-area-but-full-length.
 - **Expected kernel behavior**: Detect via signed-area; reject the face, or coerce to a degenerate edge.
-- **Notes**: Synonyms: "back-and-forth wire", "fold-line face", "zero-area face accepted", "degenerate face wire collapses to line", "face collapsed to a line or point".
+- **Notes**: Synonyms: "back-and-forth wire", "fold-line face", "zero-area face accepted", "degenerate face wire collapses to line", "face collapsed to a line or point". OCCT exchange-layer audit (occt-coverage/exchange/) byte-verified the previous 1.0mm-full-length version as NOT demonstrating `sew-degenerate-free-wire-collapse` (extent far above tolerance); fixed by shrinking the wire's extent to 1e-9mm.
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
 - **Byte assertion**: contains(b'zero_area_face')
 - **Tier-3 assertion**: load == "ok"
@@ -20601,7 +20601,8 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: Warn and accept: skip the face with a diagnostic; or heal and accept by falling back to slow sewing.
 - **Closure intent**: solid
 - **Closure defect**: unstitched_seam
-- **Notes**: **See also**: Sw005. Synonyms: "fast sewing fails on null face", "null surface in fast sew", "ADVANCED_FACE with no face_geometry", "face_geometry slot is dollar", "fast-sewer aborts on missing surface".- **Byte assertion**: matches(rb'ADVANCED_FACE\([^,]+,\(\),\$,')
+- **Notes**: **See also**: Sw005. Synonyms: "fast sewing fails on null face", "null surface in fast sew", "ADVANCED_FACE with no face_geometry", "face_geometry slot is dollar", "fast-sewer aborts on missing surface". OCCT exchange-layer audit (occt-coverage/exchange/, bc-no-surface) byte-verified the previous version as a single ordinary face referencing a real PLANE (no null surface at all); fixed by adding a second ADVANCED_FACE with an empty bound list and a genuine `$` (null) face_geometry reference alongside the original valid face, so the shell now carries both a real face and the catalog's exact null-surface reproducer.
+- **Byte assertion**: matches(rb'ADVANCED_FACE\([^,]+,\(\),\$,')
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_faces_total == 1
@@ -29432,11 +29433,13 @@ Shell with inverted face orientation. ShapeFix_Shell::Perform called twice; seco
 
 **Defect**: Sewing input includes a strip face whose two long edges should merge with themselves (strip seam). Apply doesn't allow self-pairing and fails silently.
 
-**Geometry**: Two coplanar rectangles forming a strip; one edge pair should sew the strip into a closed loop.
+**Geometry**: Two coplanar rectangles forming a strip folded back on itself; the fold brings one edge pair into exact 3D coincidence so that pair should self-sew and close the loop.
 
 **Expected behavior**: Apply should detect and permit self-sewing within a single face.
 
 **Fault axis**: `self_pairing_rejection`
+
+**Notes**: OCCT exchange-layer coverage audit (occt-coverage/exchange/) byte-verified the previous version: it placed the two faces side-by-side (free edges at x=0 and x=2, 2.0mm apart) while its own comment claimed they were "geometrically coincident" — not demonstrated. Fixed by folding Face2 back 180° flat over Face1's own footprint (same PLANE entity, same_sense=.F.) so Face2's far edge lands at the EXACT same coordinates as Face1's free edge (x=0, y=[0,2]) via genuinely distinct, unmerged VERTEX_POINT/EDGE_CURVE entities — a real coincident-but-unmerged self-sewing candidate pair. NEEDS-ORACLE-REFRESH: the fold-back changes the shell from two disjoint footprints to two fully-overlapping (opposite-sense) footprints, so the recorded `occt=shape(1)/shape(1) gmsh=shape(15)` baseline below was computed against the old side-by-side geometry and has not been re-verified against a live oracle for the new fold-back geometry.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 ### Tsh142 — ShapeFix_Shell.Perform overlapping-faces
@@ -32170,38 +32173,45 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### N146 — EvaluateDistances.zero_angle_count_guard
 
-BRepBuilderAPI_Sewing angular precision defect: division-by-zero on degenerate surface (zero D1 normal magnitude). nbComputedAngle guard missing; tabAng becomes NaN when evaluating edges on plane/point-like geometry.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+BRepBuilderAPI_Sewing angular precision defect: division-by-zero on degenerate surface (zero D1 normal magnitude). nbComputedAngle guard missing; tabAng becomes NaN when evaluating edges on plane/point-like geometry. Mechanism is wired into 2 real ADVANCED_FACEs: the candidate edge pair (e0_degen, e1_degen_coincident) sits on the live free boundary between two faces, exactly coincident (zero distance, perfectly parallel).
+**Fixture kind**: scaffold (kernel-test-pair: shape provides the coincident-edge-on-real-faces setup; EvaluateDistances runtime invocation required to reproduce the NaN)
+- **Tier-3 assertion**: n_faces_total == 2
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### N147 — FindCandidates.acceptance_criteria_composite_filter
 
-Composite AND condition omitted: candidates exceeding myTolerance (0.15 > 0.1) with undersized coverage falsely accepted. Full condition (aMaxDist<=tol AND arrLen>minTol) required but first clause alone applied.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+Composite AND condition omitted: candidates exceeding myTolerance (0.15 > 0.1) with undersized coverage falsely accepted. Full condition (aMaxDist<=tol AND arrLen>minTol) required but first clause alone applied. Mechanism is wired into 2 real ADVANCED_FACEs: the candidate edge pair (eA, eB_offset) sits on the live free boundary between two faces, 0.15mm apart (over myTolerance=0.1mm).
+**Fixture kind**: scaffold (kernel-test-pair: shape provides the over-tolerance candidate-edge-on-real-faces setup; FindCandidates runtime invocation required to reproduce)
+- **Tier-3 assertion**: n_faces_total == 2
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### N148 — EvaluateDistances.projection_direction_selection
 
-Curve-length comparison fails at parity (5.0 vs 4.9): backwards projection direction selected, reporting distance to far branch. True separation 0.1 masked when lengths nearly equal.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+Curve-length comparison fails at parity (5.0 vs 4.9): backwards projection direction selected, reporting distance to far branch. True separation 0.1 masked when lengths nearly equal. Mechanism is wired into 2 real ADVANCED_FACEs: the near-parity-length candidate edge pair (eA_5mm, eB_4p9mm) sits on the live free boundary between two faces, 0.1mm apart.
+**Fixture kind**: scaffold (kernel-test-pair: shape provides the near-parity-length candidate-edge-on-real-faces setup; EvaluateDistances runtime invocation required to reproduce)
+- **Tier-3 assertion**: n_faces_total == 2
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### N149 — FindCandidates.equidistant_precision_test
 
-Precision-equality guard absent: candidates differing by 1e-11 inserted as distinct despite Precision::Confusion (~1e-10) threshold. Tiebreaker logic bypassed for numerically identical distances.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+Precision-equality guard absent: candidates differing by 1e-11 inserted as distinct despite Precision::Confusion (~1e-10) threshold. Tiebreaker logic bypassed for numerically identical distances. Mechanism is wired into 2 real ADVANCED_FACEs: the candidate edge pair (eA, eB_sub_confusion) sits on the live free boundary between two faces, 1e-11mm apart (below Precision::Confusion).
+**Fixture kind**: scaffold (kernel-test-pair: shape provides the sub-confusion-threshold candidate-edge-on-real-faces setup; FindCandidates runtime invocation required to reproduce)
+- **Tier-3 assertion**: n_faces_total == 2
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### N150 — IsMergedClosed.v_overlap_negativity_test
 
-V-parameter gap detection missing: curves separated by 1.0 in V (gap beyond overlap tolerance) proceed to distInner/distOuter logic. dist<0 check omitted; non-overlapping geometries incorrectly merged on U-closed surfaces.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+V-parameter gap detection missing: curves separated by 1.0 in V (gap beyond overlap tolerance) proceed to distInner/distOuter logic. dist<0 check omitted; non-overlapping geometries incorrectly merged on U-closed surfaces. Mechanism is wired into 2 real full-revolution ADVANCED_FACEs on the same U-closed CYLINDRICAL_SURFACE (seam edges eA_v0_to_v1, eB_v2_to_v3), separated 1.0mm in V(Z).
+**Fixture kind**: scaffold (kernel-test-pair: shape provides the V-gap-on-U-closed-surface setup; IsMergedClosed runtime invocation required to reproduce)
+- **Tier-3 assertion**: n_faces_total == 2
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### N151 — `BRepBuilderAPI_Sewing.SameParameterEdge.recursive-tolerance-comparison`
 
 **Axis**: tolerance monotonicity validation  
 **Defect**: Accept second attempt only if both SameParameter achieved AND tolerance improved (tolReached_2 < tolReached). Missing check causes worse-tolerance fallbacks.  
-**Reproducer**: First attempt tol=0.08 (good), second attempt tol=0.12 (worse). Without guard, worse result selected.  
+**Reproducer**: First attempt tol=0.08 (good), second attempt tol=0.12 (worse). Without guard, worse result selected. Mechanism is wired into 2 real ADVANCED_FACEs: the first-attempt candidate edge pair (eA, eB_gap) sits on the live free boundary between two faces, 0.08mm apart, matching the first-attempt achieved tolerance; the second-attempt retry value (0.12) is a runtime-only SameParameterEdge internal recursion state.  
 **Falsifiable**: Comparison ensures monotonic tolerance decrease across recursive attempts. Remove check; second worse result improperly accepted.
 
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+**Fixture kind**: scaffold (kernel-test-pair: shape provides the first-attempt-tolerance candidate-edge-on-real-faces setup; SameParameterEdge runtime invocation required to reproduce the recursive-retry comparison)
+
+- **Tier-3 assertion**: n_faces_total == 2
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### N152 — `BRepBuilderAPI_Sewing.SameParameterEdge.location-transform-in-tolerance-eval`
 
 **Axis**: surface geometry transformation  
@@ -32216,11 +32226,13 @@ V-parameter gap detection missing: curves separated by 1.0 in V (gap beyond over
 
 **Axis**: tolerance acceptance gate (secondary)  
 **Defect**: Nullify edge if final tolerance exceeds MaxTolerance (second validation gate at line 1180-1184). Bypass creation at line 1168 caught by final check.  
-**Reproducer**: Edge via bypass with tolEdge1=0.05, MaxTolerance=0.01. Final check nullifies; without check, invalid edge returned.  
+**Reproducer**: Edge via bypass with tolEdge1=0.05, MaxTolerance=0.01. Final check nullifies; without check, invalid edge returned. Mechanism is wired into 2 real ADVANCED_FACEs: the candidate edge pair (eA, eB_gap) sits on the live free boundary between two faces, 0.05mm apart (tolEdge1), with MaxTolerance=0.01 encoded via the global UNCERTAINTY_MEASURE_WITH_UNIT.  
 **Falsifiable**: Condition `tolEdge1 > MaxTolerance()` triggers `edge.Nullify()`. Remove check; bypass edges escape validation.
 
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+**Fixture kind**: scaffold (kernel-test-pair: shape provides the over-MaxTolerance candidate-edge-on-real-faces setup; SameParameterEdge runtime invocation required to reproduce the final-gate bypass)
+
+- **Tier-3 assertion**: n_faces_total == 2
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### N154 — `ShapeUpgrade_UnifySameDomain.MergeSubSeq.circle_spatial_closure_tolerance`
 
 **Axis**: topological vs. spatial closure identity  
