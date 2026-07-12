@@ -4,68 +4,98 @@ Curve-length comparison fails at parity (5.0 vs 4.9): backwards projection
 direction selected, reporting distance to far branch. True separation 0.1
 masked when lengths nearly equal.
 
-Geometry: two nearly equal-length parallel edges (5.0 mm and 4.9 mm)
-separated by 0.1 mm; near-parity causes direction-selection flip.
+Mechanism IS wired into 2 real ADVANCED_FACEs (not a faceless
+GEOMETRIC_CURVE_SET): Face1 (x=[0,5], y=[-1,0]) has free top edge eA_5mm
+(length 5.0) at y=0; Face2 (x=[0,4.9], y=[0.1,1.1]) has free bottom edge
+eB_4p9mm (length 4.9) at y=0.1. The near-parity lengths (5.0 vs 4.9) and
+the genuine 0.1mm gap between the two real face boundaries is exactly the
+near-parity input that flips EvaluateDistances's projection-direction
+selection.
 
-(No byte assertions; kernel-test-pair — defect requires EvaluateDistances
-runtime invocation.)
+Fixture kind: scaffold (kernel-test-pair) -- the STEP file provides the
+genuine near-parity-length candidate-edge-pair-on-real-faces setup; the
+projection-direction bug fires when EvaluateDistances is invoked at
+runtime.
 
-Tier-3: shape_null == True
-Expected: occt=empty/empty gmsh=empty ifc=schema_n/a
+Tier-3: n_faces_total == 2
+Expected: occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a  [NEEDS-ORACLE-REFRESH]
 """
 from step_corpus.step_builder import StepFile
 
 f = StepFile(
     catalog_id="N148",
     defect=(
-        "EvaluateDistances projection_direction: 2 edges 5.0 vs 4.9 mm, "
-        "0.1mm apart; near-parity triggers backwards projection direction; "
-        "GEOMETRIC_CURVE_SET — OCC yields empty"
+        "EvaluateDistances projection_direction: two ADVANCED_FACEs whose "
+        "facing free edges (eA_5mm length 5.0, eB_4p9mm length 4.9) are "
+        "0.1mm apart; near-parity lengths trigger backwards projection "
+        "direction selection on real face boundaries"
     ),
 )
 
-# Edge A: 5.0 mm long.
-p0a = f.cartesian_point((0.0, 0.0, 0.0), name="p0a")
-p1a = f.cartesian_point((5.0, 0.0, 0.0), name="p1a")
-v0a = f.vertex_point(p0a, name="v0a")
-v1a = f.vertex_point(p1a, name="v1a")
-d = f.direction((1.0, 0.0, 0.0))
-eA = f.edge_curve(v0a, v1a, f.line(p0a, f.vector(d, 5.0)), name="eA_5mm")
 
-# Edge B: 4.9 mm long, 0.1 mm offset in Y.
-p0b = f.cartesian_point((0.0, 0.1, 0.0), name="p0b")
-p1b = f.cartesian_point((4.9, 0.1, 0.0), name="p1b")
-v0b = f.vertex_point(p0b, name="v0b")
-v1b = f.vertex_point(p1b, name="v1b")
-eB = f.edge_curve(v0b, v1b, f.line(p0b, f.vector(d, 4.9)), name="eB_4p9mm")
+def cp(x, y, z):
+    return f.cartesian_point((float(x), float(y), float(z)))
 
-gcs = f._emit_raw(f"GEOMETRIC_CURVE_SET('near_parity',(#{eA.eid},#{eB.eid}))")
 
-# Product chain
-app_ctx = f._emit_raw("APPLICATION_CONTEXT('automotive_design')")
-prod_ctx = f._emit_raw(f"PRODUCT_CONTEXT('',#{app_ctx.eid},'mechanical')")
-product = f._emit_raw(f"PRODUCT('N148','N148','',(#{prod_ctx.eid}))")
-pdf = f._emit_raw(f"PRODUCT_DEFINITION_FORMATION('','',#{product.eid})")
-pdc = f._emit_raw(
-    f"PRODUCT_DEFINITION_CONTEXT('part definition',#{app_ctx.eid},'design')"
-)
-pd = f._emit_raw(f"PRODUCT_DEFINITION('','',#{pdf.eid},#{pdc.eid})")
-pds = f._emit_raw(f"PRODUCT_DEFINITION_SHAPE('','',#{pd.eid})")
+def dir3(x, y, z):
+    return f.direction((float(x), float(y), float(z)))
 
-lu = f._emit_raw("(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.))")
-pau = f._emit_raw("(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.))")
-sau = f._emit_raw("(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT())")
-unc = f._emit_raw(
-    f"UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#{lu.eid},"
-    f"'distance_accuracy_value','model_precision')"
+
+def led(va, vb, pt, dx, dy, dz, length):
+    d = dir3(dx, dy, dz)
+    vec = f.vector(d, length)
+    ln = f.line(pt, vec)
+    return f.edge_curve(va, vb, ln)
+
+
+def mk_plane_z0():
+    orig = cp(0, 0, 0)
+    return f.plane(f.axis2_placement_3d(orig, dir3(0, 0, 1), dir3(1, 0, 0)))
+
+
+def face4(edges_with_ori, plane):
+    loop = f.edge_loop([f.oriented_edge(e, o) for e, o in edges_with_ori])
+    return f.advanced_face([f.face_outer_bound(loop, orientation=True)], plane, same_sense=True)
+
+
+# Face1: x=[0,5], y=[-1,0] -- top edge at y=0, length 5.0, IS eA_5mm.
+p00 = cp(0, -1, 0)
+p10 = cp(5, -1, 0)
+p11 = cp(5, 0, 0)
+p01 = cp(0, 0, 0)
+v00 = f.vertex_point(p00)
+v10 = f.vertex_point(p10)
+v11 = f.vertex_point(p11)
+v01 = f.vertex_point(p01)
+e1_bot = led(v00, v10, p00, 1, 0, 0, 5.0)
+e1_right = led(v10, v11, p10, 0, 1, 0, 1.0)
+eA_5mm = led(v01, v11, p01, 1, 0, 0, 5.0)  # top edge, y=0, length 5.0
+e1_left = led(v00, v01, p00, 0, 1, 0, 1.0)
+face1 = face4(
+    [(e1_bot, True), (e1_right, True), (eA_5mm, False), (e1_left, False)],
+    mk_plane_z0(),
 )
-ctx = f._emit_raw(
-    f"(GEOMETRIC_REPRESENTATION_CONTEXT(3)"
-    f"GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#{unc.eid}))"
-    f"GLOBAL_UNIT_ASSIGNED_CONTEXT((#{lu.eid},#{pau.eid},#{sau.eid}))"
-    f"REPRESENTATION_CONTEXT('ctx','3D'))"
+
+# Face2: x=[0,4.9], y=[0.1,1.1] -- bottom edge at y=0.1, length 4.9, IS eB_4p9mm.
+p00b = cp(0, 0.1, 0)
+p10b = cp(4.9, 0.1, 0)
+p11b = cp(4.9, 1.1, 0)
+p01b = cp(0, 1.1, 0)
+v00b = f.vertex_point(p00b)
+v10b = f.vertex_point(p10b)
+v11b = f.vertex_point(p11b)
+v01b = f.vertex_point(p01b)
+eB_4p9mm = led(v00b, v10b, p00b, 1, 0, 0, 4.9)  # bottom edge, y=0.1, length 4.9
+e2_right = led(v10b, v11b, p10b, 0, 1, 0, 1.0)
+e2_top = led(v01b, v11b, p01b, 1, 0, 0, 4.9)
+e2_left = led(v00b, v01b, p00b, 0, 1, 0, 1.0)
+face2 = face4(
+    [(eB_4p9mm, True), (e2_right, True), (e2_top, False), (e2_left, False)],
+    mk_plane_z0(),
 )
-wfr = f._emit_raw(
-    f"GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION('',(#{gcs.eid}),#{ctx.eid})"
-)
-f._emit_raw(f"SHAPE_DEFINITION_REPRESENTATION(#{pds.eid},#{wfr.eid})")
+
+# OPEN_SHELL with two near-parity-length faces 0.1mm apart IS the
+# projection-direction near-parity mechanism.
+shell = f.open_shell([face1, face2])
+sbsm = f.shell_based_surface_model([shell])
+f.add_product_chain(sbsm)
