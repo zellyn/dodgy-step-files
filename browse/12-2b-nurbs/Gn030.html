@@ -36,7 +36,8 @@
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
-<li><code>contains(b&#x27;CARTESIAN_POINT&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;SURFACE_CURVE&#x27;) == 4</code></li>
+<li><code>count_entity_def(b&#x27;PCURVE&#x27;) == 0</code></li>
 </ul></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>load == &quot;ok&quot;</code></li>
@@ -59,59 +60,59 @@
 <span class="lineno">7</span>ENDSEC;
 <span class="lineno">8</span>DATA;
 <span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
-<span class="lineno">10</span>#1=<mark>CARTESIAN_POINT</mark>(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
 <span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
 <span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
 <span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;plane_ax&#x27;,#1,#2,#3);
 <span class="lineno">14</span>#5=PLANE(&#x27;flat_plane&#x27;,#4);
 <span class="lineno">15</span>#6=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT(&#x27;UV&#x27;,&#x27;2D&#x27;));
-<span class="lineno">16</span>#7=<mark>CARTESIAN_POINT</mark>(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">17</span>#8=<mark>CARTESIAN_POINT</mark>(&#x27;&#x27;,(4.0,0.0,0.0));
-<span class="lineno">18</span>#9=<mark>CARTESIAN_POINT</mark>(&#x27;&#x27;,(4.0,4.0,0.0));
-<span class="lineno">19</span>#10=<mark>CARTESIAN_POINT</mark>(&#x27;&#x27;,(0.0,4.0,0.0));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(4.0,0.0,0.0));
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(4.0,4.0,0.0));
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,4.0,0.0));
 <span class="lineno">20</span>#11=VERTEX_POINT(&#x27;&#x27;,#7);
 <span class="lineno">21</span>#12=VERTEX_POINT(&#x27;&#x27;,#8);
 <span class="lineno">22</span>#13=VERTEX_POINT(&#x27;&#x27;,#9);
 <span class="lineno">23</span>#14=VERTEX_POINT(&#x27;&#x27;,#10);
-<span class="lineno">24</span>#15=<mark>CARTESIAN_POINT</mark>(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">24</span>#15=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
 <span class="lineno">25</span>#16=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
 <span class="lineno">26</span>#17=VECTOR(&#x27;&#x27;,#16,4.0);
 <span class="lineno">27</span>#18=LINE(&#x27;&#x27;,#15,#17);
-<span class="lineno">28</span>#19=<mark>CARTESIAN_POINT</mark>(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">28</span>#19=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
 <span class="lineno">29</span>#20=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
 <span class="lineno">30</span>#21=VECTOR(&#x27;&#x27;,#20,4.0);
 <span class="lineno">31</span>#22=LINE(&#x27;&#x27;,#19,#21);
-<span class="lineno">32</span>#23=SURFACE_CURVE(&#x27;sc_3d_as_pc&#x27;,#18,(#22),.PCURVE_S1.);
+<span class="lineno">32</span><mark>#23=SURFACE_CURVE(</mark>&#x27;sc_3d_as_pc&#x27;,#18,(#22),.PCURVE_S1.);
 <span class="lineno">33</span>#24=EDGE_CURVE(&#x27;ec&#x27;,#11,#12,#23,.T.);
-<span class="lineno">34</span>#25=<mark>CARTESIAN_POINT</mark>(&#x27;&#x27;,(4.0,0.0,0.0));
+<span class="lineno">34</span>#25=CARTESIAN_POINT(&#x27;&#x27;,(4.0,0.0,0.0));
 <span class="lineno">35</span>#26=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
 <span class="lineno">36</span>#27=VECTOR(&#x27;&#x27;,#26,4.0);
 <span class="lineno">37</span>#28=LINE(&#x27;&#x27;,#25,#27);
-<span class="lineno">38</span>#29=<mark>CARTESIAN_POINT</mark>(&#x27;&#x27;,(4.0,0.0,0.0));
+<span class="lineno">38</span>#29=CARTESIAN_POINT(&#x27;&#x27;,(4.0,0.0,0.0));
 <span class="lineno">39</span>#30=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
 <span class="lineno">40</span>#31=VECTOR(&#x27;&#x27;,#30,4.0);
 <span class="lineno">41</span>#32=LINE(&#x27;&#x27;,#29,#31);
-<span class="lineno">42</span>#33=SURFACE_CURVE(&#x27;sc_3d_as_pc&#x27;,#28,(#32),.PCURVE_S1.);
+<span class="lineno">42</span><mark>#33=SURFACE_CURVE(</mark>&#x27;sc_3d_as_pc&#x27;,#28,(#32),.PCURVE_S1.);
 <span class="lineno">43</span>#34=EDGE_CURVE(&#x27;ec&#x27;,#12,#13,#33,.T.);
-<span class="lineno">44</span>#35=<mark>CARTESIAN_POINT</mark>(&#x27;&#x27;,(4.0,4.0,0.0));
+<span class="lineno">44</span>#35=CARTESIAN_POINT(&#x27;&#x27;,(4.0,4.0,0.0));
 <span class="lineno">45</span>#36=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
 <span class="lineno">46</span>#37=VECTOR(&#x27;&#x27;,#36,4.0);
 <span class="lineno">47</span>#38=LINE(&#x27;&#x27;,#35,#37);
-<span class="lineno">48</span>#39=<mark>CARTESIAN_POINT</mark>(&#x27;&#x27;,(4.0,4.0,0.0));
+<span class="lineno">48</span>#39=CARTESIAN_POINT(&#x27;&#x27;,(4.0,4.0,0.0));
 <span class="lineno">49</span>#40=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
 <span class="lineno">50</span>#41=VECTOR(&#x27;&#x27;,#40,4.0);
 <span class="lineno">51</span>#42=LINE(&#x27;&#x27;,#39,#41);
-<span class="lineno">52</span>#43=SURFACE_CURVE(&#x27;sc_3d_as_pc&#x27;,#38,(#42),.PCURVE_S1.);
+<span class="lineno">52</span><mark>#43=SURFACE_CURVE(</mark>&#x27;sc_3d_as_pc&#x27;,#38,(#42),.PCURVE_S1.);
 <span class="lineno">53</span>#44=EDGE_CURVE(&#x27;ec&#x27;,#13,#14,#43,.T.);
-<span class="lineno">54</span>#45=<mark>CARTESIAN_POINT</mark>(&#x27;&#x27;,(0.0,4.0,0.0));
+<span class="lineno">54</span>#45=CARTESIAN_POINT(&#x27;&#x27;,(0.0,4.0,0.0));
 <span class="lineno">55</span>#46=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
 <span class="lineno">56</span>#47=VECTOR(&#x27;&#x27;,#46,4.0);
 <span class="lineno">57</span>#48=LINE(&#x27;&#x27;,#45,#47);
-<span class="lineno">58</span>#49=<mark>CARTESIAN_POINT</mark>(&#x27;&#x27;,(0.0,4.0,0.0));
+<span class="lineno">58</span>#49=CARTESIAN_POINT(&#x27;&#x27;,(0.0,4.0,0.0));
 <span class="lineno">59</span>#50=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
 <span class="lineno">60</span>#51=VECTOR(&#x27;&#x27;,#50,4.0);
 <span class="lineno">61</span>#52=LINE(&#x27;&#x27;,#49,#51);
-<span class="lineno">62</span>#53=SURFACE_CURVE(&#x27;sc_3d_as_pc&#x27;,#48,(#52),.PCURVE_S1.);
+<span class="lineno">62</span><mark>#53=SURFACE_CURVE(</mark>&#x27;sc_3d_as_pc&#x27;,#48,(#52),.PCURVE_S1.);
 <span class="lineno">63</span>#54=EDGE_CURVE(&#x27;ec&#x27;,#14,#11,#53,.T.);
 <span class="lineno">64</span>#55=ORIENTED_EDGE(&#x27;&#x27;,$,$,#24,.T.);
 <span class="lineno">65</span>#56=ORIENTED_EDGE(&#x27;&#x27;,$,$,#34,.T.);

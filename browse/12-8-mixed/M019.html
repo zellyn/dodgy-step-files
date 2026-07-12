@@ -40,6 +40,7 @@
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;COMPLEX_TRIANGULATED_FACE&#x27;)</code></li>
+<li><code>contains(b&#x27;((0,(1,2,3,4)))&#x27;)</code></li>
 </ul></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>shape_null == True</code></li>
@@ -60,7 +61,7 @@
 <span class="lineno">8</span>DATA;
 <span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
 <span class="lineno">10</span>#1=COORDINATES_LIST(&#x27;strip_fan_verts&#x27;,3,((5.,5.,0.),(0.,0.,0.),(10.,0.,0.),(10.,10.,0.),(0.,10.,0.),(20.,0.,0.),(20.,10.,0.)));
-<span class="lineno">11</span>#2=<mark>COMPLEX_TRIANGULATED_FACE</mark>(&#x27;strip_fan_face&#x27;,#1,$,((.FALSE.,.FALSE.,.FALSE.,.FALSE.,.FALSE.,.FALSE.,.FALSE.)),((1,2,5,6)),((0,(1,2,3,4))),((0,2,3)));
+<span class="lineno">11</span>#2=<mark>COMPLEX_TRIANGULATED_FACE</mark>(&#x27;strip_fan_face&#x27;,#1,$,((.FALSE.,.FALSE.,.FALSE.,.FALSE.,.FALSE.,.FALSE.,.FALSE.)),((1,2,5,6)),<mark>((0,(1,2,3,4)))</mark>,((0,2,3)));
 <span class="lineno">12</span>#3=GEOMETRIC_CURVE_SET(&#x27;complex-triangulated-face-strip-fan&#x27;,(#2));
 <span class="lineno">13</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
 <span class="lineno">14</span>#9051=PRODUCT(&#x27;M019&#x27;,&#x27;M019&#x27;,&#x27;&#x27;,(#9050));

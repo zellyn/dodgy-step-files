@@ -37,7 +37,12 @@ shell = f.open_shell([face])
 sbsm = f.shell_based_surface_model([shell])
 f.add_product_chain(sbsm)
 
-# Damaged payload: two entities sharing the same ID slot through a forward
-# reference that doesn't resolve cleanly.
-f._emit_raw("/* duplicate-id corruption: writer reused #5 for a second entity */")
-f._emit_raw("CARTESIAN_POINT('damaged_dup',(7.0,7.0,7.0))")
+# Damaged payload: the writer reuses ID slot #5 — originally `plane`
+# (PLANE('',#4), the ADVANCED_FACE's underlying_surface at #36) — for a
+# second, unrelated entity. A forward-reference resolver that binds the
+# LAST definition it sees for a given id (as real STEP readers do) makes
+# #36's surface reference resolve to this CARTESIAN_POINT instead of the
+# PLANE, damaging the geometry exactly per FreeCAD#25774.
+dup_point = f.cartesian_point((7.0, 7.0, 7.0), name="damaged_dup")
+assert plane.eid == 5, "Ad122 defect assumes `plane` was allocated #5"
+dup_point.eid = 5  # DEFECT: reuse #5 for a second, different entity

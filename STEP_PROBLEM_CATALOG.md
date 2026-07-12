@@ -1223,7 +1223,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected kernel behavior**: Reject with `E_UNTERMINATED_COMMENT`: lexer must check `pos < end` on every advance and emit the diagnostic at EOF.
 - **Notes**: **See also**: Le015.
 - **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_NO_CLOSE)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation. Synonyms: "unclosed STEP comment runs through EOF", "comment without closing star-slash", "STEP lexer reads past file end", "/* without */ in STEP", "comment terminator missing".
-- **Byte assertion**: bytes_ends_with(b'closing it') or matches(rb'(?s)/\*[^*]+$')
+- **Byte assertion**: matches(rb'(?s)/\*[^*]+$')
 - **Byte assertion**: matches(rb'(?s)/\*[^*]*$')
 - **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
@@ -2211,7 +2211,8 @@ _Section summary: 82 entries._
 - **Reproducer recipe**: `SURFACE_CURVE` whose `associated_geometry` is a 3D `LINE` lying in a `PLANE`, instead of a `PCURVE` with 2D parameters.
 - **Expected kernel behavior**: Heal and accept; derive parameter curve from 3D curve when consistent with the host surface.
 - **Notes**: **See also**: Gp010. Synonyms: "flat 3D curve as p-curve instead of 2D PCURVE", "Parasolid file with 3D curve in lieu of pcurve", "associated_geometry has 3D LINE on PLANE", "importer hardcoded for 2D pcurve sees 3D curve", "3D edge curve in p-curve slot on flat surface".
-- **Byte assertion**: contains(b'CARTESIAN_POINT')
+- **Byte assertion**: count_entity_def(b'SURFACE_CURVE') == 4
+- **Byte assertion**: count_entity_def(b'PCURVE') == 0
 - **Tier-3 assertion**: load == "ok"
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -7013,6 +7014,7 @@ _Section summary: 84 entries._
 - **Expected kernel behavior**: Heal and accept: apply unit scaling to construction-geometry placements; expose `read.step.constructivegeom.relationship` opt-in flag.
 - **Notes**: **See also**: M011. Synonyms: "constructive geometry representation relationship axis placements", "CGR carries assembly-level placements", "constructive geometry connects subassembly axis frames".
 - **Byte assertion**: contains(b'CONSTRUCTIVE_GEOMETRY_REPRESENTATION_RELATIONSHIP')
+- **Byte assertion**: contains(b'.INCH.')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
@@ -14529,6 +14531,7 @@ _Section summary: 52 entries._
 - **Expected kernel behavior**: heal; correctly unfold strips/fans to individual triangles preserving orientation.
 - **Notes**: Synonyms: "TRIANGLE_STRIP indices misaligned", "fan strip mis-decoded", "complex_triangulated_face strip wrong", "tessellation strip topology mishandled".
 - **Byte assertion**: contains(b'COMPLEX_TRIANGULATED_FACE')
+- **Byte assertion**: contains(b'((0,(1,2,3,4)))')
 - **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
@@ -17333,7 +17336,9 @@ _Section summary: 41 entries._
 - **Reproducer recipe**: leading BOM bytes; valid header; one surface with
  v-knots `(0,0,0,0.4,0.3,1,1,1)`; no closing `END-ISO-10303-21;`.
 - **Expected kernel behavior**: Heal and accept, or reject with diagnostic: each invariant is addressed independently; encoding policy on BOM, framing-token policy, knot-vector validity. A kernel that rejects (fails fast) on BOM never gets to the knot defect; one that heals (accepts) BOM must then face it.
-- **Byte assertion**: contains(b'FILE_SCHEMA')
+- **Byte assertion**: bytes_starts_with(b"\xef\xbb\xbf")
+- **Byte assertion**: not_contains(b"\nEND-ISO-10303-21;")
+- **Byte assertion**: contains(b"(0.0,0.4,0.3,1.0)")
 - **Tier-3 assertion**: load != "ok"
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=reject`
@@ -17505,6 +17510,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
+- **Byte assertion**: contains(b'CYLINDRICAL_SURFACE')
 - **Tier-3 assertion**: load == "ok"
 - **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
@@ -18231,7 +18237,8 @@ _Section summary: 41 entries._
 - **Fixture kind**: producer-receiver-pair
 - **Pair with**: Le049.input
 - **Notes**: **See also**: Le017, Le028. Provenance tier: requires-sibling-pair; bytes alone cannot demonstrate the writer-side stripping; the defect is the differential between the writer's input (string containing `\r`) and its output (string without `\r`). Demonstrating this requires both an input fixture and the corrupted output it produces, exercised through a STEP writer. Synonyms: "STEP writer strips carriage return", "CR removed during STEP write", "line endings normalised by writer", "STEP export drops CR", "writer rewrites CRLF to LF". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
-- **Byte assertion**: contains(b'ISO-10303-21')
+- **Byte assertion**: contains(b"line1\r\nline2")
+- **Byte assertion**: contains(b"\\X\\0D")
 - **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
@@ -32389,8 +32396,8 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Closure intent**: sheet
 - **Notes**: **See also**: Pmi091, Pmi095, Pmi105. Synonyms: "SLOT axis parallel to host face", "slot placement orientation wrong", "AP242 slot Z direction mis-aligned".
 - **Byte assertion**: contains(b'SLOT')
-- **Byte assertion**: contains(b'AXIS2_PLACEMENT_3D')
-- **Byte assertion**: contains(b'slot_axis_z_PARALLEL_TO_FACE')
+- **Byte assertion**: contains(b"#9064=DIRECTION('',(1.0,0.0,0.0))")
+- **Byte assertion**: contains(b"#9066=AXIS2_PLACEMENT_3D('',#9063,#9064,#9065)")
 - **Tier-3 assertion**: n_faces_total == 1
 - **OCC behavior**: heal observed (catalog allowed: {reject, warn-and-proceed}). Documented divergence: OCC's lenient/healing parser accepts where the spec text says reject; conservative kernels enforcing the spec must reject this fixture.
 - **Severity**: P1
@@ -36302,8 +36309,10 @@ exercised against CGAL PMP / MeshFix.
 - **Reproducer recipe**: emit two entities at the same ID (or a duplicate CARTESIAN_POINT in a slot already used by a vertex).
 - **Expected kernel behavior**: detect ID collisions at parse time; reject the file with an error pointing at the colliding pair.
 - **Notes**: Synonyms: "duplicate STEP entity ID", "writer reused entity slot", "STEP forward ref points to wrong entity", "geometry damaged in STEP export", "FreeCAD export damaged geometry".
-- **Byte assertion**: contains(b'CARTESIAN_POINT')
+- **Byte assertion**: contains(b"#5=PLANE('',#4)")
+- **Byte assertion**: contains(b"#5=CARTESIAN_POINT('damaged_dup',(7.0,7.0,7.0))")
 - **Tier-3 assertion**: load == "ok"
+- **Structural assertion**: struct == DUPLICATE_ID
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Receivers using a streaming parser may bind the forward reference to whichever of the two entities wins the second pass; output is non-deterministic.
 

@@ -36,7 +36,8 @@
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
-<li><code>contains(b&#x27;CARTESIAN_POINT&#x27;)</code></li>
+<li><code>contains(b&quot;#5=PLANE(&#x27;&#x27;,#4)&quot;)</code></li>
+<li><code>contains(b&quot;#5=CARTESIAN_POINT(&#x27;damaged_dup&#x27;,(7.0,7.0,7.0))&quot;)</code></li>
 </ul></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>load == &quot;ok&quot;</code></li>
@@ -56,15 +57,15 @@
 <span class="lineno">7</span>ENDSEC;
 <span class="lineno">8</span>DATA;
 <span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
-<span class="lineno">10</span>#1=<mark>CARTESIAN_POINT</mark>(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
 <span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
 <span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
 <span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
-<span class="lineno">14</span>#5=PLANE(&#x27;&#x27;,#4);
-<span class="lineno">15</span>#6=<mark>CARTESIAN_POINT</mark>(&#x27;&#x27;,(0.0,0.0,0.0));
-<span class="lineno">16</span>#7=<mark>CARTESIAN_POINT</mark>(&#x27;&#x27;,(1.0,0.0,0.0));
-<span class="lineno">17</span>#8=<mark>CARTESIAN_POINT</mark>(&#x27;&#x27;,(1.0,1.0,0.0));
-<span class="lineno">18</span>#9=<mark>CARTESIAN_POINT</mark>(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">14</span><mark>#5=PLANE(&#x27;&#x27;,#4)</mark>;
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
 <span class="lineno">19</span>#10=VERTEX_POINT(&#x27;&#x27;,#6);
 <span class="lineno">20</span>#11=VERTEX_POINT(&#x27;&#x27;,#7);
 <span class="lineno">21</span>#12=VERTEX_POINT(&#x27;&#x27;,#8);
@@ -107,10 +108,9 @@
 <span class="lineno">58</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
 <span class="lineno">59</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#38),#9060);
 <span class="lineno">60</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
-<span class="lineno">61</span>#9063=/* duplicate-id corruption: writer reused #5 for a second entity */;
-<span class="lineno">62</span>#9064=<mark>CARTESIAN_POINT</mark>(&#x27;damaged_dup&#x27;,(7.0,7.0,7.0));
-<span class="lineno">63</span>ENDSEC;
-<span class="lineno">64</span>END-ISO-10303-21;
+<span class="lineno">61</span><mark>#5=CARTESIAN_POINT(&#x27;damaged_dup&#x27;,(7.0,7.0,7.0))</mark>;
+<span class="lineno">62</span>ENDSEC;
+<span class="lineno">63</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

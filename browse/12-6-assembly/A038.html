@@ -38,6 +38,7 @@
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;CONSTRUCTIVE_GEOMETRY_REPRESENTATION_RELATIONSHIP&#x27;)</code></li>
+<li><code>contains(b&#x27;.INCH.&#x27;)</code></li>
 </ul></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>shape_null == False</code></li>
@@ -119,7 +120,7 @@
 <span class="lineno">63</span>#9065=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9064);
 <span class="lineno">64</span>#9066=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#9065,#9053);
 <span class="lineno">65</span>#9067=NEXT_ASSEMBLY_USAGE_OCCURRENCE(&#x27;1&#x27;,&#x27;sub&#x27;,&#x27;&#x27;,#9054,#9066,$);
-<span class="lineno">66</span>#9068=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.INCH.,.METRE.));
+<span class="lineno">66</span>#9068=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(<mark>.INCH.</mark>,.METRE.));
 <span class="lineno">67</span>#9069=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNIT_ASSIGNED_CONTEXT((#9068))REPRESENTATION_CONTEXT(&#x27;cgr_inch&#x27;,&#x27;3D&#x27;));
 <span class="lineno">68</span>#9070=CARTESIAN_POINT(&#x27;cgr_pt&#x27;,(1.0,0.0,0.0));
 <span class="lineno">69</span>#9071=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));

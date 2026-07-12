@@ -34,7 +34,9 @@
 <section><h2>Expected validation</h2>
 <p><code>occt=reject/reject gmsh=reject ifc=reject</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
-<li><code>contains(b&#x27;FILE_SCHEMA&#x27;)</code></li>
+<li><code>bytes_starts_with(b&quot;\xef\xbb\xbf&quot;)</code></li>
+<li><code>not_contains(b&quot;\nEND-ISO-10303-21;&quot;)</code></li>
+<li><code>contains(b&quot;(0.0,0.4,0.3,1.0)&quot;)</code></li>
 </ul></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>load != &quot;ok&quot;</code></li>
@@ -45,7 +47,7 @@
 <section><h2>Fixture content</h2>
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
-<pre class="fixture-bytes"><span class="lineno">1</span>ï»¿ISO-10303-21;
+<pre class="fixture-bytes"><span class="lineno">1</span><mark>ï»¿</mark>ISO-10303-21;
 <span class="lineno">2</span>/* Xp009 - Cross-product: UTF-8 BOM at file start, missing END-ISO-10303-21
 <span class="lineno">3</span> *   marker, and B-spline surface with descending v-knot vector.
 <span class="lineno">4</span> * Builds on Le001 (BOM) + Lh002 (missing END marker) + Gn001 (knot order).
@@ -56,7 +58,7 @@
 <span class="lineno">9</span>HEADER;
 <span class="lineno">10</span>FILE_DESCRIPTION((&#x27;Xp009 cross-product&#x27;,&#x27;BOM x missing END x descending knots&#x27;),&#x27;2;1&#x27;);
 <span class="lineno">11</span>FILE_NAME(&#x27;Xp009.stp&#x27;,&#x27;2026-04-26T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
-<span class="lineno">12</span><mark>FILE_SCHEMA</mark>((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
+<span class="lineno">12</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }&#x27;));
 <span class="lineno">13</span>ENDSEC;
 <span class="lineno">14</span>DATA;
 <span class="lineno">15</span>#1=APPLICATION_CONTEXT(&#x27;automotive_design&#x27;);
@@ -87,7 +89,7 @@
 <span class="lineno">40</span>  .UNSPECIFIED.,.F.,.F.,.F.,
 <span class="lineno">41</span>  (4,4),(4,4),
 <span class="lineno">42</span>  (0.0,1.0),
-<span class="lineno">43</span>  (0.0,0.4,0.3,1.0),
+<span class="lineno">43</span>  <mark>(0.0,0.4,0.3,1.0)</mark>,
 <span class="lineno">44</span>  .UNSPECIFIED.);
 <span class="lineno">45</span>ENDSEC;
 <span class="lineno">46</span>/* Defect 2: no END-ISO-10303-21; below */

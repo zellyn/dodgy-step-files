@@ -4602,7 +4602,8 @@
   },
   {
     "byte_assertions": [
-      "contains(b'CARTESIAN_POINT')"
+      "contains(b\"#5=PLANE('',#4)\")",
+      "contains(b\"#5=CARTESIAN_POINT('damaged_dup',(7.0,7.0,7.0))\")"
     ],
     "category": "§12.11 adversarial (sub-class: identifier-collision / schema-violation)",
     "closure_defect": null,
@@ -4627,7 +4628,9 @@
     "sources": [
       "Pattern-mined from FreeCAD/FreeCAD#25774 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: \"geometry of exported STEP is damaged\"."
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DUPLICATE_ID"
+    ],
     "taxonomy": [
       "adversarial"
     ],
@@ -5480,7 +5483,9 @@
   },
   {
     "byte_assertions": [
-      "contains(b'FILE_SCHEMA')"
+      "bytes_starts_with(b\"\\xef\\xbb\\xbf\")",
+      "not_contains(b\"\\nEND-ISO-10303-21;\")",
+      "contains(b\"(0.0,0.4,0.3,1.0)\")"
     ],
     "category": "§12.12 cross-product (encoding × header × NURBS)",
     "closure_defect": null,
@@ -5721,7 +5726,8 @@
     "byte_assertions": [
       "contains(b'FILE_SCHEMA')",
       "contains(b'EDGE_CURVE')",
-      "contains(b'ADVANCED_FACE')"
+      "contains(b'ADVANCED_FACE')",
+      "contains(b'CYLINDRICAL_SURFACE')"
     ],
     "category": "§12.12 cross-product (wires × surfaces × pcurves)",
     "closure_defect": null,
@@ -37218,7 +37224,8 @@
   },
   {
     "byte_assertions": [
-      "contains(b'ISO-10303-21')"
+      "contains(b\"line1\\r\\nline2\")",
+      "contains(b\"\\\\X\\\\0D\")"
     ],
     "category": "§12.1a encoding/strings",
     "closure_defect": null,
@@ -40668,7 +40675,7 @@
   },
   {
     "byte_assertions": [
-      "bytes_ends_with(b'closing it') or matches(rb'(?s)/\\*[^*]+$')",
+      "matches(rb'(?s)/\\*[^*]+$')",
       "matches(rb'(?s)/\\*[^*]*$')"
     ],
     "category": "§12.1c comments",
@@ -48542,7 +48549,8 @@
   },
   {
     "byte_assertions": [
-      "contains(b'CARTESIAN_POINT')"
+      "count_entity_def(b'SURFACE_CURVE') == 4",
+      "count_entity_def(b'PCURVE') == 0"
     ],
     "category": "§12.2b NURBS/knots",
     "closure_defect": null,
@@ -99512,7 +99520,8 @@
   },
   {
     "byte_assertions": [
-      "contains(b'CONSTRUCTIVE_GEOMETRY_REPRESENTATION_RELATIONSHIP')"
+      "contains(b'CONSTRUCTIVE_GEOMETRY_REPRESENTATION_RELATIONSHIP')",
+      "contains(b'.INCH.')"
     ],
     "category": "§12.6 (sub-class: assembly axes / CGR)",
     "closure_defect": null,
@@ -106073,8 +106082,8 @@
   {
     "byte_assertions": [
       "contains(b'SLOT')",
-      "contains(b'AXIS2_PLACEMENT_3D')",
-      "contains(b'slot_axis_z_PARALLEL_TO_FACE')"
+      "contains(b\"#9064=DIRECTION('',(1.0,0.0,0.0))\")",
+      "contains(b\"#9066=AXIS2_PLACEMENT_3D('',#9063,#9064,#9065)\")"
     ],
     "category": "§12.7 (sub-class: AP242 feature definition)",
     "closure_defect": null,
@@ -109692,7 +109701,8 @@
   },
   {
     "byte_assertions": [
-      "contains(b'COMPLEX_TRIANGULATED_FACE')"
+      "contains(b'COMPLEX_TRIANGULATED_FACE')",
+      "contains(b'((0,(1,2,3,4)))')"
     ],
     "category": "§12.8 (sub-class: tessellation)",
     "closure_defect": null,
