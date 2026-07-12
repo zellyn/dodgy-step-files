@@ -516,13 +516,22 @@ class StepFile:
 
     # ----- Mandatory PRODUCT chain (canonical) -----
 
-    def add_product_chain(self, model_entity: Entity, *,
+    def add_product_chain(self, model_entity: Entity | list[Entity], *,
                           product_id: str | None = None,
                           mode: str = "surface_shape",
                           uncertainty: float = 1.0E-7) -> Entity:
         """Add the canonical PRODUCT/PRODUCT_DEFINITION chain at fixed IDs
         #9000-#9023 referencing ``model_entity`` (usually a
         SHELL_BASED_SURFACE_MODEL or MANIFOLD_SOLID_BREP).
+
+        ``model_entity`` may also be a list of entities (e.g. two
+        MANIFOLD_SOLID_BREPs) to build a genuine *compound* — a single
+        SHAPE_REPRESENTATION whose ``items`` list has more than one
+        top-level shape. This is how OCCT's STEP reader is expected to
+        recognize a compound-of-solids (as opposed to two independent
+        PRODUCT chains each with their own SHAPE_DEFINITION_REPRESENTATION,
+        which is a *different* structural pattern some fixtures use
+        intentionally instead).
 
         Returns the SHAPE_DEFINITION_REPRESENTATION entity.
 
@@ -537,6 +546,7 @@ class StepFile:
         1.0E-15) or loose (e.g., 0.01) tolerances embedded in the
         geometric context.
         """
+        model_entities = model_entity if isinstance(model_entity, list) else [model_entity]
         if product_id is None:
             product_id = self.catalog_id
         # Force IDs 9000+
@@ -578,10 +588,10 @@ class StepFile:
 
         if mode == "surface_shape":
             shape_rep = self._emit("MANIFOLD_SURFACE_SHAPE_REPRESENTATION",
-                                    [model_entity], geom_ctx, name="")
+                                    model_entities, geom_ctx, name="")
         elif mode == "brep_shape":
             shape_rep = self._emit("ADVANCED_BREP_SHAPE_REPRESENTATION",
-                                    [model_entity], geom_ctx, name="")
+                                    model_entities, geom_ctx, name="")
         else:
             raise ValueError(f"unknown mode: {mode}")
         sdr = self._emit("SHAPE_DEFINITION_REPRESENTATION", prod_def_shape, shape_rep, name="_no_name")
