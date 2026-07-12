@@ -59,7 +59,7 @@ face_xp = make_plane_face((S,0,0), (1,0,0), (0,0,1),
                            [(S,0,0),(S,0,S),(S,S,S),(S,S,0)])
 face_xn = make_plane_face((0,0,0), (-1,0,0), (0,0,-1),
                            [(0,0,0),(0,S,0),(0,S,S),(0,0,S)])
-face_yp = make_plane_face((0,S,0), (0,1,0), (S,0,0),
+face_yp = make_plane_face((0,S,0), (0,1,0), (1,0,0),
                            [(0,S,0),(S,S,0),(S,S,S),(0,S,S)])
 face_yn = make_plane_face((0,0,0), (0,-1,0), (0,0,1),
                            [(0,0,0),(0,0,S),(S,0,S),(S,0,0)])

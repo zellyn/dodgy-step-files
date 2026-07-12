@@ -71,7 +71,7 @@ face_xn = make_plane_face(  # -X face (x=0)
     [(0, 0, 0), (0, S, 0), (0, S, S), (0, 0, S)],
 )
 face_yp = make_plane_face(  # +Y face (y=10)
-    (0, S, 0), (0, 1, 0), (S, 0, 0),
+    (0, S, 0), (0, 1, 0), (1, 0, 0),
     None,
     [(0, S, 0), (S, S, 0), (S, S, S), (0, S, S)],
 )
