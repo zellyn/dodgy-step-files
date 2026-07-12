@@ -547,9 +547,6 @@ class StepFile:
         self.entities.insert(0, app_ctx)  # insert near beginning
         self._next_id += 1
 
-        # Re-allocate from block_start for the rest
-        self._next_id = block_start
-
         product_ctx = self._emit("PRODUCT_CONTEXT", app_ctx, "mechanical", name="")
         product = self._emit("PRODUCT", product_id, product_id, "", [product_ctx], name="_no_name")
         prod_def_form = self._emit("PRODUCT_DEFINITION_FORMATION", "", "", product, name="_no_name")
