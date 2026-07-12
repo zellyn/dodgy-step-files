@@ -458,6 +458,23 @@ new flaky-CI surface.
 
 ## Smaller queued items
 
+### Q8 — nightly `validate-full` workflow swallows its own DRIFT list on failure
+
+**Not fixed here** (infra change needs separate review — this is a report-only note per scope
+discipline). Found 2026-07-12 while resolving 9 DRIFT fixtures flagged by the nightly run: the
+workflow step that prints the DRIFT summary captures the validator's stdout with
+`out="$(...)"` while the script has `set -e` active. If the validator's own exit code is
+non-zero (which it legitimately is whenever DRIFT entries exist), the `$(...)` command
+substitution's failure aborts the script *before* the subsequent `echo "$out"` runs — so the
+DRIFT list never reaches the job log, even though the job itself correctly goes red. This is why
+today's + this morning's runs both had to be diagnosed from the raw
+`/tmp/cad-v2-out*` JSON artifacts rather than the workflow's own summary output.
+**Fix** (for whoever picks this up): `out=$(...) || status=$?` to capture the exit code without
+tripping `set -e`, *then* `echo "$out"`, *then* `exit "${status:-0}"` (or equivalent) so the
+summary always prints regardless of whether the validator found DRIFT. Locate the offending step
+in `.github/workflows/` (the nightly `validate-full` job) and apply the same pattern anywhere else
+in that workflow captures oracle-script stdout under `set -e` before echoing it.
+
 ### Q7 — Mutation-snapshot refresh (oracle-machine chore)
 `tests/data/mutation_snapshot.json` (2026-07-02) does not yet cover 14 bytes-only STEP fixtures added
 2026-07-11/12 (ruststep Lh051/Ls053-056, NIST Pmi156-164). Not a blocker — `test_bytes_only_are_undetected`
