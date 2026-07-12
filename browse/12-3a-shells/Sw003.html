@@ -37,7 +37,7 @@
 <section><h2>Notes</h2>
 <p>Synonyms: &quot;back-and-forth wire&quot;, &quot;fold-line face&quot;, &quot;zero-area face accepted&quot;, &quot;degenerate face wire collapses to line&quot;, &quot;face collapsed to a line or point&quot;. OCCT exchange-layer audit (occt-coverage/exchange/) byte-verified the previous 1.0mm-full-length version as NOT demonstrating `sew-degenerate-free-wire-collapse` (extent far above tolerance); fixed by shrinking the wire&#x27;s extent to 1e-9mm.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>count_entity_def(b&#x27;ADVANCED_FACE&#x27;) == 1</code></li>
 <li><code>contains(b&#x27;zero_area_face&#x27;)</code></li>

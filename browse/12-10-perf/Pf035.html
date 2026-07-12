@@ -17,6 +17,7 @@
 <p class="severity-badge severity-p0">P0 — receiver crash / hang / OOM</p>
 <p class="tag-pills">
 <a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 <a class="tag tag-performance" href="../by-tag/performance/index.html">performance</a>
 </p>
 </header>
@@ -37,7 +38,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: lazy resolution of `MAPPED_ITEM` references; bounded peak memory. Reject with `E_INSTANCE_LIMIT` diagnostic when configurable `max_instances` and `max_depth` cutoffs are exceeded. Must not infinite loop, must not OOM the host, must not crash.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Pf001, Pf013. Synonyms: &quot;100% CPU and OOM on STEP load&quot;, &quot;NUC12 STEP file hangs FreeCAD&quot;, &quot;deeply-nested assembly graph blows memory&quot;, &quot;MAPPED_ITEM closure explodes&quot;. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).</p></section>
+<p>**See also**: Pf001, Pf013. Synonyms: &quot;100% CPU and OOM on STEP load&quot;, &quot;NUC12 STEP file hangs FreeCAD&quot;, &quot;deeply-nested assembly graph blows memory&quot;, &quot;MAPPED_ITEM closure explodes&quot;. Provenance tier: runtime-only (Q5 reclassification 2026-07-01). DRIFT audit 2026-07-12: original construction self-referenced every NAUO (`#9054,#9054`), which OCCT treats as &quot;used&quot;/non-root — transfer silently produced 0 shapes, contradicting the &quot;silently accepts on small fixture&quot; claim below. Repaired to relate the root to a genuine child `PRODUCT_DEFINITION` (also fixed a swapped `MAPPED_ITEM` arg order); live-verified `occt=shape(1)` on the small fixture per this entry&#x27;s own claim.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>
@@ -118,18 +119,27 @@
 <span class="lineno">58</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
 <span class="lineno">59</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#38),#9060);
 <span class="lineno">60</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
-<span class="lineno">61</span>#9063=REPRESENTATION_MAP(#4,#9061);
-<span class="lineno">62</span><mark>#9064=MAPPED_ITEM(</mark>&#x27;inst_0&#x27;,&#x27;&#x27;,#9063);
-<span class="lineno">63</span><mark>#9065=MAPPED_ITEM(</mark>&#x27;inst_1&#x27;,&#x27;&#x27;,#9063);
-<span class="lineno">64</span><mark>#9066=MAPPED_ITEM(</mark>&#x27;inst_2&#x27;,&#x27;&#x27;,#9063);
-<span class="lineno">65</span><mark>#9067=MAPPED_ITEM(</mark>&#x27;inst_3&#x27;,&#x27;&#x27;,#9063);
-<span class="lineno">66</span><mark>#9068=NEXT_ASSEMBLY_USAGE_OCCURRENCE(</mark>&#x27;nauo_0&#x27;,&#x27;sub_0&#x27;,&#x27;&#x27;,#9054,#9054,$);
-<span class="lineno">67</span><mark>#9069=NEXT_ASSEMBLY_USAGE_OCCURRENCE(</mark>&#x27;nauo_1&#x27;,&#x27;sub_1&#x27;,&#x27;&#x27;,#9054,#9054,$);
-<span class="lineno">68</span><mark>#9070=NEXT_ASSEMBLY_USAGE_OCCURRENCE(</mark>&#x27;nauo_2&#x27;,&#x27;sub_2&#x27;,&#x27;&#x27;,#9054,#9054,$);
-<span class="lineno">69</span><mark>#9071=NEXT_ASSEMBLY_USAGE_OCCURRENCE(</mark>&#x27;nauo_3&#x27;,&#x27;sub_3&#x27;,&#x27;&#x27;,#9054,#9054,$);
-<span class="lineno">70</span><mark>#9072=NEXT_ASSEMBLY_USAGE_OCCURRENCE(</mark>&#x27;nauo_4&#x27;,&#x27;sub_4&#x27;,&#x27;&#x27;,#9054,#9054,$);
-<span class="lineno">71</span>ENDSEC;
-<span class="lineno">72</span>END-ISO-10303-21;
+<span class="lineno">61</span>#9063=PRODUCT_CONTEXT(&#x27;sub&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">62</span>#9064=PRODUCT(&#x27;Sub&#x27;,&#x27;Sub&#x27;,&#x27;&#x27;,(#9063));
+<span class="lineno">63</span>#9065=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9064);
+<span class="lineno">64</span>#9066=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#9065,#9053);
+<span class="lineno">65</span>#9067=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">66</span>#9068=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">67</span>#9069=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">68</span>#9070=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#9067,#9068,#9069);
+<span class="lineno">69</span>#9071=SHAPE_REPRESENTATION(&#x27;sub_rep&#x27;,(#9070),#9060);
+<span class="lineno">70</span>#9072=REPRESENTATION_MAP(#9070,#9071);
+<span class="lineno">71</span><mark>#9073=MAPPED_ITEM(</mark>&#x27;inst_0&#x27;,#9072,#9070);
+<span class="lineno">72</span><mark>#9074=MAPPED_ITEM(</mark>&#x27;inst_1&#x27;,#9072,#9070);
+<span class="lineno">73</span><mark>#9075=MAPPED_ITEM(</mark>&#x27;inst_2&#x27;,#9072,#9070);
+<span class="lineno">74</span><mark>#9076=MAPPED_ITEM(</mark>&#x27;inst_3&#x27;,#9072,#9070);
+<span class="lineno">75</span><mark>#9077=NEXT_ASSEMBLY_USAGE_OCCURRENCE(</mark>&#x27;nauo_0&#x27;,&#x27;sub_0&#x27;,&#x27;&#x27;,#9054,#9066,$);
+<span class="lineno">76</span><mark>#9078=NEXT_ASSEMBLY_USAGE_OCCURRENCE(</mark>&#x27;nauo_1&#x27;,&#x27;sub_1&#x27;,&#x27;&#x27;,#9054,#9066,$);
+<span class="lineno">77</span><mark>#9079=NEXT_ASSEMBLY_USAGE_OCCURRENCE(</mark>&#x27;nauo_2&#x27;,&#x27;sub_2&#x27;,&#x27;&#x27;,#9054,#9066,$);
+<span class="lineno">78</span><mark>#9080=NEXT_ASSEMBLY_USAGE_OCCURRENCE(</mark>&#x27;nauo_3&#x27;,&#x27;sub_3&#x27;,&#x27;&#x27;,#9054,#9066,$);
+<span class="lineno">79</span><mark>#9081=NEXT_ASSEMBLY_USAGE_OCCURRENCE(</mark>&#x27;nauo_4&#x27;,&#x27;sub_4&#x27;,&#x27;&#x27;,#9054,#9066,$);
+<span class="lineno">80</span>ENDSEC;
+<span class="lineno">81</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

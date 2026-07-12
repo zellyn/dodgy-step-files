@@ -13437,13 +13437,13 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: ISO 10303-21 §6.3 block comments are delimited by an opening `/*` and a closing `*/`. A parser that requires the closer fails if it is missing; an unterminated comment consumes every byte to end-of-file, silently swallowing the section terminators (`ENDSEC` / `END-ISO-10303-21;`). The fixture opens a comment in the DATA section after a valid CARTESIAN_POINT and never closes it, so the remainder of the file — including the close bookend — is eaten. A conformant reader must reject with an unterminated-comment diagnostic; it must not hang or silently drop the tail.
 - **Reproducer recipe**: `#1=CARTESIAN_POINT('origin',(0.,0.,0.));` followed by `/* note ...` with no closing `*/` before EOF.
 - **Expected kernel behavior**: Reject with an unterminated-comment diagnostic; never hang, and never silently drop the swallowed file tail.
-- **Notes**: **See also**: Ls056. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture. Synonyms: "unterminated comment", "missing */ closer", "comment runs to EOF", "STEP comment never closed", "dangling /* opener". Provenance tier: bytes-only. Expected validation is provisional (best-guess) pending oracle rebaseline — the live occt/gmsh oracle is not run here (platform divergence); nightly CI reconciles.
+- **Notes**: **See also**: Ls056. **OCC behavior**: rejects with a parse diagnostic (`Undefined Parsing: ... Incorrect...`) on both `occt_heal_on`/`occt_heal_off` and `gmsh_autofix_on`/`gmsh_autofix_off` — matches this entry's own "Expected kernel behavior" (reject with an unterminated-comment diagnostic; never hang, never silently drop the tail). Synonyms: "unterminated comment", "missing */ closer", "comment runs to EOF", "STEP comment never closed", "dangling /* opener". Provenance tier: bytes-only. DRIFT audit 2026-07-12: live-verified (macOS OCP/OCCT 7.8.1, matching CI-Linux) — corrected the placeholder `empty/empty` guess to the observed `reject/reject`, which is the spec-conformant behavior this entry asks for.
 - **Byte assertion**: count(b'/*') > count(b'*/')
 - **Byte assertion**: not_contains(b'END-ISO-10303-21;')
 - **Tier-3 assertion**: shape_null == True
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+- **Expected validation**: `occt=reject/reject gmsh=reject ifc=schema_n/a`
 
 ### Ls056 — Non-nesting comment illusion; inner opener leaves a stray closer
 - **Category**: §12.1c comment framing
@@ -20589,7 +20589,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Sewing leaves the shell open or produces non-manifold edges; loaded shape is a compound of free faces instead of a closed shell, and MakeSolid downstream fails to produce a valid solid.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-3a-shells/Sw003.stp
 
 ### Sw004 — Fast-sewing face has null surface reference
@@ -24219,7 +24219,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Description**: A large industrial STEP file (electronics enclosure, ~100 MB on disk, with thousands of `NEXT_ASSEMBLY_USAGE_OCCURRENCE`) saturates one CPU core during import while the resident set grows unboundedly until OOM. The producing kernel re-imports the file successfully on a host with 256 GB RAM. The receiver-side defect is that the `MAPPED_ITEM` resolver computes the closure of the `REPRESENTATION_MAP` graph eagerly rather than lazily, materialising every instance's geometry up-front. Distinct from Pf001 because the file size is well below 1 GB but the *graph closure* is what blows up.
 - **Reproducer recipe**: STEP assembly with a single `REPRESENTATION_MAP` referenced by 50+ `MAPPED_ITEM`s arranged in a deeply nested `NEXT_ASSEMBLY_USAGE_OCCURRENCE` chain (depth 10+), each level multiplying the closure size.
 - **Expected kernel behavior**: Heal and accept: lazy resolution of `MAPPED_ITEM` references; bounded peak memory. Reject with `E_INSTANCE_LIMIT` diagnostic when configurable `max_instances` and `max_depth` cutoffs are exceeded. Must not infinite loop, must not OOM the host, must not crash.
-- **Notes**: **See also**: Pf001, Pf013. Synonyms: "100% CPU and OOM on STEP load", "NUC12 STEP file hangs FreeCAD", "deeply-nested assembly graph blows memory", "MAPPED_ITEM closure explodes". Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
+- **Notes**: **See also**: Pf001, Pf013. Synonyms: "100% CPU and OOM on STEP load", "NUC12 STEP file hangs FreeCAD", "deeply-nested assembly graph blows memory", "MAPPED_ITEM closure explodes". Provenance tier: runtime-only (Q5 reclassification 2026-07-01). DRIFT audit 2026-07-12: original construction self-referenced every NAUO (`#9054,#9054`), which OCCT treats as "used"/non-root — transfer silently produced 0 shapes, contradicting the "silently accepts on small fixture" claim below. Repaired to relate the root to a genuine child `PRODUCT_DEFINITION` (also fixed a swapped `MAPPED_ITEM` arg order); live-verified `occt=shape(1)` on the small fixture per this entry's own claim.
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') >= 5
 - **Byte assertion**: count_entity_def(b'MAPPED_ITEM') >= 4
 - **Tier-3 assertion**: load == "ok"
@@ -32200,7 +32200,7 @@ Precision-equality guard absent: candidates differing by 1e-11 inserted as disti
 V-parameter gap detection missing: curves separated by 1.0 in V (gap beyond overlap tolerance) proceed to distInner/distOuter logic. dist<0 check omitted; non-overlapping geometries incorrectly merged on U-closed surfaces. Mechanism is wired into 2 real full-revolution ADVANCED_FACEs on the same U-closed CYLINDRICAL_SURFACE (seam edges eA_v0_to_v1, eB_v2_to_v3), separated 1.0mm in V(Z).
 **Fixture kind**: scaffold (kernel-test-pair: shape provides the V-gap-on-U-closed-surface setup; IsMergedClosed runtime invocation required to reproduce)
 - **Tier-3 assertion**: n_faces_total == 2
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(14) ifc=schema_n/a`
 ### N151 — `BRepBuilderAPI_Sewing.SameParameterEdge.recursive-tolerance-comparison`
 
 **Axis**: tolerance monotonicity validation  
@@ -36679,12 +36679,13 @@ exercised against CGAL PMP / MeshFix.
 - **Category**: §12.10 perf (sub-class: cycle-undetected assembly)
 - **Sources**: Pattern-mined from trimesh/cascadio#19 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: cascadio "stuck on assembly STEP" — infinite loop because the assembly graph contains a cycle the traversal doesn't detect.
 - **Description**: A NEXT_ASSEMBLY_USAGE_OCCURRENCE references the same PRODUCT as both parent and child — the assembly graph has a self-loop. cascadio's traversal (depth-first, no visited-set) never terminates.
-- **Reproducer recipe**: `NEXT_ASSEMBLY_USAGE_OCCURRENCE('self_loop','','',#9001,#9001,$)` (same PRODUCT on both ends).
+- **Reproducer recipe**: `NEXT_ASSEMBLY_USAGE_OCCURRENCE('self_loop','','',#9054,#9054,$)` (same PRODUCT_DEFINITION on both ends — the root of the file's own product chain).
 - **Expected kernel behavior**: maintain a visited-set during assembly traversal; reject cycles with a diagnostic.
-- **Notes**: Synonyms: "cascadio assembly infinite loop", "STEP assembly traversal stuck", "cycle in assembly graph cascadio", "self-referencing NAUO stuck", "STEP-to-GLB stuck on assembly". Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
+- **Notes**: Synonyms: "cascadio assembly infinite loop", "STEP assembly traversal stuck", "cycle in assembly graph cascadio", "self-referencing NAUO stuck", "STEP-to-GLB stuck on assembly". Provenance tier: runtime-only (Q5 reclassification 2026-07-01). DRIFT audit 2026-07-12: catalog's `occt=shape(1) gmsh=shape(9)` was an unverified mirrored-template value; live-checked against this construction it was never real. Corrected to the live-observed `empty/empty` — see OCC behavior below.
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
 - **Tier-3 assertion**: load == "ok"
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+- **OCC behavior**: silently drops the self-referenced root — STEPControl_Reader treats the product as "used" (a NAUO.related target) and excludes it from TransferRoots(), so transfer produces 0 roots / no shape, with no diagnostic raised; outside catalog's allowed set ({reject}). Kernel-bug witnessed: the self-loop isn't detected as a cycle and rejected per the "Expected kernel behavior" above — it's silently swallowed instead, which is arguably the more faithful analogue of cascadio's own undetected-cycle failure mode.
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Model impact**: Conversion pipeline hangs indefinitely; CI / batch processing wedges.
 
 ### Pf038 — STEP→GLB OOM, memory not released during translation pipeline
@@ -36717,9 +36718,9 @@ exercised against CGAL PMP / MeshFix.
 - **Category**: §12.6 assembly (sub-class: identifier-collision dedup)
 - **Sources**: Pattern-mined from KiCad gitlab#14125 + CadQuery/cadquery#1962 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: KiCad emits N capacitor instances all labelled `C1`; downstream kernels (and some converters) deduplicate by NAUO.id and collapse all instances into one placement.
 - **Description**: Three `NEXT_ASSEMBLY_USAGE_OCCURRENCE` entries share the same `id` slot (`C1`). Receivers that key on NAUO.id (rather than entity #N) deduplicate and lose two of the three instances.
-- **Reproducer recipe**: three NAUOs with identical first-arg label.
+- **Reproducer recipe**: three NAUOs with identical first-arg label, each relating the root PRODUCT_DEFINITION to its own distinct child PRODUCT_DEFINITION (genuinely 3 separate entities, same label).
 - **Expected kernel behavior**: NAUO ids should not be assumed unique within a file; key dedup on entity reference, not the label string.
-- **Notes**: Synonyms: "KiCad STEP NAUO duplicate names", "CadQuery STEP assembly dedup collapse", "STEP NAUO name reuse loses instances", "C1 C1 C1 in STEP collapses", "PCB assembly STEP same-name NAUOs".
+- **Notes**: Synonyms: "KiCad STEP NAUO duplicate names", "CadQuery STEP assembly dedup collapse", "STEP NAUO name reuse loses instances", "C1 C1 C1 in STEP collapses", "PCB assembly STEP same-name NAUOs". DRIFT audit 2026-07-12: original construction self-referenced every NAUO (`#9054,#9054` for relating AND related), which OCCT treats as "used"/non-root — transfer silently produced 0 shapes instead of the claimed shape(1), and didn't actually demonstrate 3 distinct entities either. Repaired to relate the root to 3 genuinely distinct child PRODUCT_DEFINITIONs (still all labelled 'C1'); live-verified `occt=shape(1)`.
 - **Byte assertion**: count(b"NEXT_ASSEMBLY_USAGE_OCCURRENCE('C1") >= 3
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -45102,18 +45103,19 @@ exercised against CGAL PMP / MeshFix.
 ### Pmi164 — Single shared `COORDINATES_LIST` for a whole `TESSELLATED_SHELL`, 1-based integer indices [VALID-BUT-HARD]
 - **Category**: §12.7 PMI/GD&T (sub-class: AP242 tessellation packed-array — shared list / 1-based indexing)
 - **Sources**: Pattern-mined from the NIST MBE PMI FTC-08 tessellated AP242 file and the MBx-IF Tessellated-3D-Geometry Recommended Practice (public-domain / describe-only — pattern only, no bytes copied); audit/mining_nist_mbxif_2026-07.md #10.
-- **Description**: AP242 tessellated geometry packs all vertices of a shell into a single shared `coordinates_list` (the AP242 point holder — `cartesian_point_list_3d` is the AP203/214 name) and lets every `triangulated_face` index that one packed real array with 1-based integer index lists, instead of owning a per-face list or naming individual `cartesian_point` entities. A kernel built around per-point entities, one that assumes a per-face list, or one that treats the indices as 0-based, mis-indexes or drops faces. Distinct from M004 (per-face lists → watertightness lost); here a single shared 1-based-indexed list is the correct packed form.
+- **Description**: AP242 tessellated geometry packs all vertices of a shell into a single shared `coordinates_list` (the AP242 point holder — `cartesian_point_list_3d` is the AP203/214 name) and lets every `triangulated_face` index that one packed real array with 1-based integer index lists, instead of owning a per-face list or naming individual `cartesian_point` entities. A kernel built around per-point entities, one that assumes a per-face list, or one that treats the indices as 0-based, mis-indexes or drops faces. Distinct from M004 (per-face lists → watertightness lost); here a single shared 1-based-indexed list is the correct packed form. DRIFT audit 2026-07-12: live-verified this exact construction (one `COORDINATES_LIST` shared by six `TRIANGULATED_FACE`s) segfaults both OCCT and gmsh (signal 11) instead of loading — the same shared-list/6-face crash independently present in M022 (`COORDINATES_LIST` shared by 6 `TRIANGULATED_FACE`s via `COMPLEX_TRIANGULATED_SURFACE_SET`), which already carries `occt=signal(11) gmsh=signal(11)` as its Expected validation. Two independently-mined fixtures hitting the same crash on the same structural shape (1 shared point list × 6 indexing faces) is strong evidence this is a genuine, reproducible receiver stability bug, not a one-off construction error — the shared-array + 1-based-index mechanism this entry claims is real, and it's actually *worse* than mis-indexing: current OCCT/gmsh abort outright.
 - **Reproducer recipe**: AP242 file; one `COORDINATES_LIST` holding all 8 cube corners; six `TRIANGULATED_FACE`s each indexing that same list with 1-based triangle index lists; one `TESSELLATED_SHELL` over the six faces; wrapped in a `GEOMETRIC_CURVE_SET` model item.
-- **Expected kernel behavior**: Index the shared packed array with correct 1-based semantics; kernels built around per-point entities, or that assume a per-face list, or that read the indices as 0-based, mis-index or drop faces.
-- **Notes**: Tessellation carrier: `GEOMETRIC_CURVE_SET` over a `TESSELLATED_SHELL` — OCC loads the compound but yields no topological vertices (as in M004). This fixture is exempt from the §12.7 PMI-presence lint (no semantic-PMI bytes by design); see `EXEMPT_PMI_PRESENCE`. See also: M004. Synonyms: "shared coordinates_list packed array", "1-based tessellation index mis-read as 0-based", "tessellated_shell single point list", "triangulated_face shared vertex list mis-indexed", "AP242 packed point array dropped". Provenance tier: bytes-only — the packed-array / 1-based-index defect is byte-structural and oracle-invisible at BRep load (OCC yields empty vertices regardless); pattern-mined, not yet mutation-verified.
+- **Expected kernel behavior**: Index the shared packed array with correct 1-based semantics; kernels built around per-point entities, or that assume a per-face list, or that read the indices as 0-based, mis-index or drop faces. At minimum, must not crash on this valid AP242 construction.
+- **OCC behavior**: segfaults (signal 11) on both `occt_heal_on`/`occt_heal_off` and `gmsh_autofix_on`/`gmsh_autofix_off` — no diagnostic before the crash; outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: a shared `COORDINATES_LIST` indexed by 6 `TRIANGULATED_FACE`s crashes the reader rather than mis-indexing or dropping faces as originally hypothesized.
+- **Notes**: Tessellation carrier: `GEOMETRIC_CURVE_SET` over a `TESSELLATED_SHELL`. This fixture is exempt from the §12.7 PMI-presence lint (no semantic-PMI bytes by design); see `EXEMPT_PMI_PRESENCE`. See also: M004 (per-face lists, no crash), M022 (same shared-list/6-face crash pattern, independently mined). Synonyms: "shared coordinates_list packed array", "1-based tessellation index mis-read as 0-based", "tessellated_shell single point list", "triangulated_face shared vertex list mis-indexed", "AP242 packed point array dropped", "shared coordinates_list segfault", "tessellated shell crash on shared point list". Provenance tier: bytes-sufficient — the packed-array / shared-list defect is byte-structural and directly oracle-visible (both OCCT and gmsh crash on it); DRIFT audit 2026-07-12 replaced the original "provisional... pending nightly oracle rebaseline" placeholder with the live-verified crash signature.
 - **Byte assertion**: count_entity_def(b'COORDINATES_LIST') == 1
 - **Byte assertion**: count_entity_def(b'TRIANGULATED_FACE') == 6
 - **Byte assertion**: contains(b'TESSELLATED_SHELL')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 0
-- **Severity**: P2
-- **Model impact**: A viewer or kernel that mis-reads the shared packed array (0-based, or expecting per-face lists) drops or scrambles facets, so the faceted representation renders with missing or transposed triangles while a B-rep-only kernel ignores it entirely.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a` (provisional — pattern-synthesized, pending nightly oracle rebaseline)
+- **Severity**: P1
+- **Model impact**: A viewer or kernel that mis-reads the shared packed array (0-based, or expecting per-face lists) drops or scrambles facets; current OCCT/gmsh instead crash outright on load, taking down the whole batch-processing pipeline rather than degrading gracefully.
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
 ### Ad132 — OCCT #383/#407: NIST AP242 Ed.3 datum-axis reader confuses indices vs values → `gp_Dir::CrossCross` zero-norm exception
 - **Category**: §12.11 adversarial (sub-class: reader crash-path — datum-axis colinear-direction trip; NIST AP242 Ed.3 fixture)
@@ -45263,14 +45265,14 @@ exercised against CGAL PMP / MeshFix.
 - **Description**: A fully valid solid whose own extent is ~10 mm but which is authored a very large distance from the origin — here a 10×10 planar square whose corners sit at absolute coordinates ~1.2e8 mm. Double-precision readers (OCCT, CAD Assistant) load and render it fine (the 10 mm relief is ~1e-7 of the absolute magnitude, still far above the 1e-6 mm model tolerance). A reader that down-converts vertex positions into a float32 buffer cannot represent 10-unit relief at magnitude 1.2e8 — the float32 ULP there is ~16 units — so all four corners quantize to the SAME grid point and the face collapses to a degenerate zero-area primitive; the viewer shows an empty model.
 - **Reproducer recipe**: a valid `ADVANCED_FACE` on a `PLANE` whose `CARTESIAN_POINT`s are all offset by ~1.2e8 mm from the origin while the face's own extent is ~10 mm; wrap in the standard PRODUCT chain.
 - **Expected kernel behavior**: recentre far-from-origin geometry to a local frame before down-converting to single precision, or warn that a float32 output buffer cannot represent the model at its absolute coordinates. Emitting an all-zero / degenerate mesh with no diagnostic is the defect.
-- **Notes**: **See also**: Tb013 (far-from-origin DOUBLE-precision ULP-vs-tolerance), Tb010 (single-precision round-trip that MASKS a real self-intersection). Here the file is clean and self-consistent — the defect is purely the output-buffer precision down-conversion in a WASM/glTF/three.js viewer, ORACLE-INVISIBLE to our single (double-precision) OCCT oracle (which loads a normal shape). Mechanism partly inferred from the ticket (could co-occur with a large-file size cap) — medium confidence. gmsh count is PROVISIONAL. Synonyms: "far from origin float32 collapse", "single-precision viewer loses local relief", "all vertex positions zero after down-convert", "absolute coordinates degrade in three.js buffer", "GIS-placed model empty in web viewer". Provenance tier: runtime-only.
+- **Notes**: **See also**: Tb013 (far-from-origin DOUBLE-precision ULP-vs-tolerance), Tb010 (single-precision round-trip that MASKS a real self-intersection). Here the file is clean and self-consistent — the defect is purely the output-buffer precision down-conversion in a WASM/glTF/three.js viewer, ORACLE-INVISIBLE to our single (double-precision) OCCT oracle (which loads a normal shape). Mechanism partly inferred from the ticket (could co-occur with a large-file size cap) — medium confidence. DRIFT audit 2026-07-12: gmsh count was provisional (never live-verified); corrected `shape(3)` → `shape(9)` against the live oracle (CI-Linux + local macOS agree) — this is a platform/gmsh-version artifact of the standard single-face scaffold, not a change in the claimed defect (still oracle-invisible; occt is unaffected). Synonyms: "far from origin float32 collapse", "single-precision viewer loses local relief", "all vertex positions zero after down-convert", "absolute coordinates degrade in three.js buffer", "GIS-placed model empty in web viewer". Provenance tier: runtime-only.
 - **Byte assertion**: contains(b'CARTESIAN_POINT')
 - **Byte assertion**: contains(b'120000000.0')
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 4
 - **Tier-3 assertion**: load == "ok"
 - **Severity**: P2
 - **Model impact**: A valid part silently disappears (or degenerates to a zero-extent primitive) when opened in a single-precision viewer; the same bytes are correct in a double-precision CAD tool, so the loss is receiver-dependent and easy to misattribute to a bad file.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Xp046 — Valid conical `ADVANCED_FACE` dropped by OCCT 7.7.x `BRepMesh` but present in ≤7.6.1 / desktop CAD (kernel-version differential)
 - **Category**: §12.12 cross-product (kernel-version × conical-face tessellation differential)
@@ -45280,7 +45282,7 @@ exercised against CGAL PMP / MeshFix.
 - **Description**: A fully valid, watertight `MANIFOLD_SOLID_BREP` conical frustum whose lateral face is exactly one `ADVANCED_FACE` on a `CONICAL_SURFACE` (semi-angle 20°) bounded by two `CIRCLE` edges; the two caps are planar. The file is NOT defective — every OCCT version parses it and loads a solid. The defect is a mesher REGRESSION: on an OCCT-7.7.x `BRepMesh` the conical `ADVANCED_FACE` yields ZERO triangles, so the solid renders with a hole (a missing face); OCCT-7.6.1, CAD Assistant and other CAD tessellate all faces. Same bytes → complete in one kernel version, defective in the next.
 - **Reproducer recipe**: `MANIFOLD_SOLID_BREP` / `CLOSED_SHELL` with one `ADVANCED_FACE` on a `CONICAL_SURFACE` (finite frustum bounded by a bottom and top `CIRCLE` edge) plus two planar cap faces; fully valid and watertight.
 - **Expected kernel behavior**: mesh every face of a valid solid; a face that produces zero triangles is a mesher defect, not an input defect — the receiver must not silently emit a solid missing a face. Cross-oracle: the same bytes are complete in one kernel version and defective in the next, so a version bump is itself a regression surface.
-- **Notes**: **See also**: Gn014 / Gd* (conical-canonical INPUT-geometry defects), Pf021 (near-apex healing) — those are bad-geometry inputs; here the geometry is valid and the regression lives in the receiver's mesher VERSION. No prior catalog entry captures a kernel-version tessellation differential. ORACLE-INVISIBLE to our single-version harness: the file loads as a normal solid; the divergence lives between kernel versions. gmsh count is PROVISIONAL. Synonyms: "conical face missing after OCCT 7.7 upgrade", "BRepMesh drops cone face", "solid renders with a hole one kernel version", "version-differential missing face", "same STEP complete in 7.6.1 broken in 7.7". Provenance tier: runtime-only.
+- **Notes**: **See also**: Gn014 / Gd* (conical-canonical INPUT-geometry defects), Pf021 (near-apex healing) — those are bad-geometry inputs; here the geometry is valid and the regression lives in the receiver's mesher VERSION. No prior catalog entry captures a kernel-version tessellation differential. ORACLE-INVISIBLE to our single-version harness: the file loads as a normal solid; the divergence lives between kernel versions. DRIFT audit 2026-07-12: gmsh count was provisional (never live-verified); corrected `shape(5)` → `shape(9)` against the live oracle (CI-Linux + local macOS agree) — a platform/gmsh-version artifact of the standard single-face scaffold, not a change in the claimed defect (still oracle-invisible; occt is unaffected). Synonyms: "conical face missing after OCCT 7.7 upgrade", "BRepMesh drops cone face", "solid renders with a hole one kernel version", "version-differential missing face", "same STEP complete in 7.6.1 broken in 7.7". Provenance tier: runtime-only.
 - **Byte assertion**: contains(b'CONICAL_SURFACE')
 - **Byte assertion**: count_entity_def(b'CONICAL_SURFACE') == 1
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
@@ -45288,7 +45290,7 @@ exercised against CGAL PMP / MeshFix.
 - **Tier-3 assertion**: face[0].surface_type == "cone"
 - **Severity**: P2
 - **Model impact**: A valid part loses a face silently after a kernel-version bump; downstream watertightness / volume checks fail on a model the sender authored correctly, and the loss is attributable only by comparing two kernel versions of the same receiver.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Ip001 — OBJ face index exceeds vertex count (out-of-range reference)
 - **Category**: §12.15 import-format parser robustness (sub-class: index-out-of-range)

@@ -14,8 +14,9 @@
 <header class="title-bar">
 <h1>Pmi164 <span class="sep">—</span> <span class="entry-title">Single shared `COORDINATES_LIST` for a whole `TESSELLATED_SHELL`, 1-based integer indices [VALID-BUT-HARD]</span></h1>
 <p class="category">§12.7 PMI/GD&amp;T (sub-class: AP242 tessellation packed-array — shared list / 1-based indexing)</p>
-<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
 <p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
 <a class="tag tag-pmi" href="../by-tag/pmi/index.html">pmi</a>
 </p>
 </header>
@@ -28,17 +29,15 @@
 <li>audit/mining_nist_mbxif_2026-07.md #10.</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>AP242 tessellated geometry packs all vertices of a shell into a single shared `coordinates_list` (the AP242 point holder — `cartesian_point_list_3d` is the AP203/214 name) and lets every `triangulated_face` index that one packed real array with 1-based integer index lists, instead of owning a per-face list or naming individual `cartesian_point` entities. A kernel built around per-point entities, one that assumes a per-face list, or one that treats the indices as 0-based, mis-indexes or drops faces. Distinct from M004 (per-face lists → watertightness lost); here a single shared 1-based-indexed list is the correct packed form.</p></section>
+<p>AP242 tessellated geometry packs all vertices of a shell into a single shared `coordinates_list` (the AP242 point holder — `cartesian_point_list_3d` is the AP203/214 name) and lets every `triangulated_face` index that one packed real array with 1-based integer index lists, instead of owning a per-face list or naming individual `cartesian_point` entities. A kernel built around per-point entities, one that assumes a per-face list, or one that treats the indices as 0-based, mis-indexes or drops faces. Distinct from M004 (per-face lists → watertightness lost); here a single shared 1-based-indexed list is the correct packed form. DRIFT audit 2026-07-12: live-verified this exact construction (one `COORDINATES_LIST` shared by six `TRIANGULATED_FACE`s) segfaults both OCCT and gmsh (signal 11) instead of loading — the same shared-list/6-face crash independently present in M022 (`COORDINATES_LIST` shared by 6 `TRIANGULATED_FACE`s via `COMPLEX_TRIANGULATED_SURFACE_SET`), which already carries `occt=signal(11) gmsh=signal(11)` as its Expected validation. Two independently-mined fixtures hitting the same crash on the same structural shape (1 shared point list × 6 indexing faces) is strong evidence this is a genuine, reproducible receiver stability bug, not a one-off construction error — the shared-array + 1-based-index mechanism this entry claims is real, and it&#x27;s actually *worse* than mis-indexing: current OCCT/gmsh abort outright.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>AP242 file; one `COORDINATES_LIST` holding all 8 cube corners; six `TRIANGULATED_FACE`s each indexing that same list with 1-based triangle index lists; one `TESSELLATED_SHELL` over the six faces; wrapped in a `GEOMETRIC_CURVE_SET` model item.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>Index the shared packed array with correct 1-based semantics; kernels built around per-point entities, or that assume a per-face list, or that read the indices as 0-based, mis-index or drop faces.</p></section>
+<p>Index the shared packed array with correct 1-based semantics; kernels built around per-point entities, or that assume a per-face list, or that read the indices as 0-based, mis-index or drop faces. At minimum, must not crash on this valid AP242 construction.</p></section>
 <section><h2>Notes</h2>
-<p>Tessellation carrier: `GEOMETRIC_CURVE_SET` over a `TESSELLATED_SHELL` — OCC loads the compound but yields no topological vertices (as in M004). This fixture is exempt from the §12.7 PMI-presence lint (no semantic-PMI bytes by design); see `EXEMPT_PMI_PRESENCE`. See also: M004. Synonyms: &quot;shared coordinates_list packed array&quot;, &quot;1-based tessellation index mis-read as 0-based&quot;, &quot;tessellated_shell single point list&quot;, &quot;triangulated_face shared vertex list mis-indexed&quot;, &quot;AP242 packed point array dropped&quot;. Provenance tier: bytes-only — the packed-array / 1-based-index defect is byte-structural and oracle-invisible at BRep load (OCC yields empty vertices regardless); pattern-mined, not yet mutation-verified.</p></section>
+<p>Tessellation carrier: `GEOMETRIC_CURVE_SET` over a `TESSELLATED_SHELL`. This fixture is exempt from the §12.7 PMI-presence lint (no semantic-PMI bytes by design); see `EXEMPT_PMI_PRESENCE`. See also: M004 (per-face lists, no crash), M022 (same shared-list/6-face crash pattern, independently mined). Synonyms: &quot;shared coordinates_list packed array&quot;, &quot;1-based tessellation index mis-read as 0-based&quot;, &quot;tessellated_shell single point list&quot;, &quot;triangulated_face shared vertex list mis-indexed&quot;, &quot;AP242 packed point array dropped&quot;, &quot;shared coordinates_list segfault&quot;, &quot;tessellated shell crash on shared point list&quot;. Provenance tier: bytes-sufficient — the packed-array / shared-list defect is byte-structural and directly oracle-visible (both OCCT and gmsh crash on it); DRIFT audit 2026-07-12 replaced the original &quot;provisional... pending nightly oracle rebaseline&quot; placeholder with the live-verified crash signature.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
-<section><h2>Provenance tier</h2>
-<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>count_entity_def(b&#x27;COORDINATES_LIST&#x27;) == 1</code></li>
 <li><code>count_entity_def(b&#x27;TRIANGULATED_FACE&#x27;) == 6</code></li>
@@ -49,7 +48,7 @@
 <li><code>n_vertices_total == 0</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
-<p><a href="../12-8-mixed/M004.html">M004</a></p>
+<p><a href="../12-8-mixed/M004.html">M004</a>, <a href="../12-8-mixed/M022.html">M022</a></p>
 </section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>

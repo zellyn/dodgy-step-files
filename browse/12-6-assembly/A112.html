@@ -29,11 +29,11 @@
 <section><h2>Description</h2>
 <p>Three `NEXT_ASSEMBLY_USAGE_OCCURRENCE` entries share the same `id` slot (`C1`). Receivers that key on NAUO.id (rather than entity #N) deduplicate and lose two of the three instances.</p></section>
 <section><h2>Reproducer recipe</h2>
-<p>three NAUOs with identical first-arg label.</p></section>
+<p>three NAUOs with identical first-arg label, each relating the root PRODUCT_DEFINITION to its own distinct child PRODUCT_DEFINITION (genuinely 3 separate entities, same label).</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>NAUO ids should not be assumed unique within a file; key dedup on entity reference, not the label string.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;KiCad STEP NAUO duplicate names&quot;, &quot;CadQuery STEP assembly dedup collapse&quot;, &quot;STEP NAUO name reuse loses instances&quot;, &quot;C1 C1 C1 in STEP collapses&quot;, &quot;PCB assembly STEP same-name NAUOs&quot;.</p></section>
+<p>Synonyms: &quot;KiCad STEP NAUO duplicate names&quot;, &quot;CadQuery STEP assembly dedup collapse&quot;, &quot;STEP NAUO name reuse loses instances&quot;, &quot;C1 C1 C1 in STEP collapses&quot;, &quot;PCB assembly STEP same-name NAUOs&quot;. DRIFT audit 2026-07-12: original construction self-referenced every NAUO (`#9054,#9054` for relating AND related), which OCCT treats as &quot;used&quot;/non-root — transfer silently produced 0 shapes instead of the claimed shape(1), and didn&#x27;t actually demonstrate 3 distinct entities either. Repaired to relate the root to 3 genuinely distinct child PRODUCT_DEFINITIONs (still all labelled &#x27;C1&#x27;); live-verified `occt=shape(1)`.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
@@ -108,11 +108,42 @@
 <span class="lineno">58</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
 <span class="lineno">59</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#38),#9060);
 <span class="lineno">60</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
-<span class="lineno">61</span>#9063=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE(&#x27;C1</mark>&#x27;,&#x27;same name 0&#x27;,&#x27;&#x27;,#9054,#9054,$);
-<span class="lineno">62</span>#9064=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE(&#x27;C1</mark>&#x27;,&#x27;same name 1&#x27;,&#x27;&#x27;,#9054,#9054,$);
-<span class="lineno">63</span>#9065=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE(&#x27;C1</mark>&#x27;,&#x27;same name 2&#x27;,&#x27;&#x27;,#9054,#9054,$);
-<span class="lineno">64</span>ENDSEC;
-<span class="lineno">65</span>END-ISO-10303-21;
+<span class="lineno">61</span>#9063=SHAPE_REPRESENTATION(&#x27;leaf_rep&#x27;,(#4),#9060);
+<span class="lineno">62</span>#9064=PRODUCT_CONTEXT(&#x27;sub0&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">63</span>#9065=PRODUCT(&#x27;C1&#x27;,&#x27;Capacitor 0&#x27;,&#x27;&#x27;,(#9064));
+<span class="lineno">64</span>#9066=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9065);
+<span class="lineno">65</span>#9067=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#9066,#9053);
+<span class="lineno">66</span>#9068=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE(&#x27;C1</mark>&#x27;,&#x27;same name 0&#x27;,&#x27;&#x27;,#9054,#9067,$);
+<span class="lineno">67</span>#9069=REPRESENTATION_MAP(#4,#9063);
+<span class="lineno">68</span>#9070=CARTESIAN_POINT(&#x27;inst0_origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">69</span>#9071=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">70</span>#9072=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">71</span>#9073=AXIS2_PLACEMENT_3D(&#x27;inst0_plc&#x27;,#9070,#9071,#9072);
+<span class="lineno">72</span>#9074=MAPPED_ITEM(&#x27;mi0&#x27;,#9069,#9073);
+<span class="lineno">73</span>#9075=PRODUCT_CONTEXT(&#x27;sub1&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">74</span>#9076=PRODUCT(&#x27;C1&#x27;,&#x27;Capacitor 1&#x27;,&#x27;&#x27;,(#9075));
+<span class="lineno">75</span>#9077=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9076);
+<span class="lineno">76</span>#9078=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#9077,#9053);
+<span class="lineno">77</span>#9079=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE(&#x27;C1</mark>&#x27;,&#x27;same name 1&#x27;,&#x27;&#x27;,#9054,#9078,$);
+<span class="lineno">78</span>#9080=REPRESENTATION_MAP(#4,#9063);
+<span class="lineno">79</span>#9081=CARTESIAN_POINT(&#x27;inst1_origin&#x27;,(2.0,0.0,0.0));
+<span class="lineno">80</span>#9082=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">81</span>#9083=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">82</span>#9084=AXIS2_PLACEMENT_3D(&#x27;inst1_plc&#x27;,#9081,#9082,#9083);
+<span class="lineno">83</span>#9085=MAPPED_ITEM(&#x27;mi1&#x27;,#9080,#9084);
+<span class="lineno">84</span>#9086=PRODUCT_CONTEXT(&#x27;sub2&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">85</span>#9087=PRODUCT(&#x27;C1&#x27;,&#x27;Capacitor 2&#x27;,&#x27;&#x27;,(#9086));
+<span class="lineno">86</span>#9088=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9087);
+<span class="lineno">87</span>#9089=PRODUCT_DEFINITION(&#x27;design&#x27;,&#x27;&#x27;,#9088,#9053);
+<span class="lineno">88</span>#9090=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE(&#x27;C1</mark>&#x27;,&#x27;same name 2&#x27;,&#x27;&#x27;,#9054,#9089,$);
+<span class="lineno">89</span>#9091=REPRESENTATION_MAP(#4,#9063);
+<span class="lineno">90</span>#9092=CARTESIAN_POINT(&#x27;inst2_origin&#x27;,(4.0,0.0,0.0));
+<span class="lineno">91</span>#9093=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">92</span>#9094=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">93</span>#9095=AXIS2_PLACEMENT_3D(&#x27;inst2_plc&#x27;,#9092,#9093,#9094);
+<span class="lineno">94</span>#9096=MAPPED_ITEM(&#x27;mi2&#x27;,#9091,#9095);
+<span class="lineno">95</span>ENDSEC;
+<span class="lineno">96</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

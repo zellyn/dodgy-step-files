@@ -29,13 +29,13 @@
 <section><h2>Description</h2>
 <p>A NEXT_ASSEMBLY_USAGE_OCCURRENCE references the same PRODUCT as both parent and child — the assembly graph has a self-loop. cascadio&#x27;s traversal (depth-first, no visited-set) never terminates.</p></section>
 <section><h2>Reproducer recipe</h2>
-<p>`NEXT_ASSEMBLY_USAGE_OCCURRENCE(&#x27;self_loop&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9001,#9001,$)` (same PRODUCT on both ends).</p></section>
+<p>`NEXT_ASSEMBLY_USAGE_OCCURRENCE(&#x27;self_loop&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054,#9054,$)` (same PRODUCT_DEFINITION on both ends — the root of the file&#x27;s own product chain).</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>maintain a visited-set during assembly traversal; reject cycles with a diagnostic.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;cascadio assembly infinite loop&quot;, &quot;STEP assembly traversal stuck&quot;, &quot;cycle in assembly graph cascadio&quot;, &quot;self-referencing NAUO stuck&quot;, &quot;STEP-to-GLB stuck on assembly&quot;. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).</p></section>
+<p>Synonyms: &quot;cascadio assembly infinite loop&quot;, &quot;STEP assembly traversal stuck&quot;, &quot;cycle in assembly graph cascadio&quot;, &quot;self-referencing NAUO stuck&quot;, &quot;STEP-to-GLB stuck on assembly&quot;. Provenance tier: runtime-only (Q5 reclassification 2026-07-01). DRIFT audit 2026-07-12: catalog&#x27;s `occt=shape(1) gmsh=shape(9)` was an unverified mirrored-template value; live-checked against this construction it was never real. Corrected to the live-observed `empty/empty` — see OCC behavior below.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>
 <p><code>runtime-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
@@ -111,9 +111,8 @@
 <span class="lineno">59</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#38),#9060);
 <span class="lineno">60</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
 <span class="lineno">61</span>#9063=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;self_loop&#x27;,&#x27;infinite traversal&#x27;,&#x27;&#x27;,#9054,#9054,$);
-<span class="lineno">62</span>#9064=/* cascadio assembly traversal: no cycle detection */;
-<span class="lineno">63</span>ENDSEC;
-<span class="lineno">64</span>END-ISO-10303-21;
+<span class="lineno">62</span>ENDSEC;
+<span class="lineno">63</span>END-ISO-10303-21;
 </pre>
 </details>
 </section>

@@ -36,9 +36,9 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Reject with an unterminated-comment diagnostic; never hang, and never silently drop the swallowed file tail.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Ls056. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture. Synonyms: &quot;unterminated comment&quot;, &quot;missing */ closer&quot;, &quot;comment runs to EOF&quot;, &quot;STEP comment never closed&quot;, &quot;dangling /* opener&quot;. Provenance tier: bytes-only. Expected validation is provisional (best-guess) pending oracle rebaseline — the live occt/gmsh oracle is not run here (platform divergence); nightly CI reconciles.</p></section>
+<p>**See also**: Ls056. **OCC behavior**: rejects with a parse diagnostic (`Undefined Parsing: ... Incorrect...`) on both `occt_heal_on`/`occt_heal_off` and `gmsh_autofix_on`/`gmsh_autofix_off` — matches this entry&#x27;s own &quot;Expected kernel behavior&quot; (reject with an unterminated-comment diagnostic; never hang, never silently drop the tail). Synonyms: &quot;unterminated comment&quot;, &quot;missing */ closer&quot;, &quot;comment runs to EOF&quot;, &quot;STEP comment never closed&quot;, &quot;dangling /* opener&quot;. Provenance tier: bytes-only. DRIFT audit 2026-07-12: live-verified (macOS OCP/OCCT 7.8.1, matching CI-Linux) — corrected the placeholder `empty/empty` guess to the observed `reject/reject`, which is the spec-conformant behavior this entry asks for.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code>occt=reject/reject gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>
 <p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

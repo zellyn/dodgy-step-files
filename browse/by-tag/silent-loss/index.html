@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1><span class="tag tag-silent-loss">silent-loss</span></h1>
 <p class="blurb">Data silently dropped without a diagnostic (faces, colors, labels, geometry).</p>
-<p class="meta">123 entries</p>
+<p class="meta">124 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Section</th><th>Expected validation</th></tr></thead><tbody>
@@ -91,7 +91,7 @@
 <tr><td><a href="../../12-1c-syntax/Ls052.html"><code>Ls052</code></a></td><td>Instance ID just past `UINT64_MAX` wraps to a low-numbered ID</td><td><a href="../../12-1c-syntax/index.html">§12.1c Part-21 grammar</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-1c-syntax/Ls053.html"><code>Ls053</code></a></td><td>REAL literal in an INTEGER-typed slot (`3.0` where `3` is required)</td><td><a href="../../12-1c-syntax/index.html">§12.1c Part-21 grammar</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-1c-syntax/Ls054.html"><code>Ls054</code></a></td><td>Empty complex (subsuper) instance `#1=();` (zero constituent records)</td><td><a href="../../12-1c-syntax/index.html">§12.1c Part-21 grammar</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
-<tr><td><a href="../../12-1c-syntax/Ls055.html"><code>Ls055</code></a></td><td>Unterminated block comment (no closing `*/`) swallows the file tail</td><td><a href="../../12-1c-syntax/index.html">§12.1c Part-21 grammar</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="../../12-1c-syntax/Ls055.html"><code>Ls055</code></a></td><td>Unterminated block comment (no closing `*/`) swallows the file tail</td><td><a href="../../12-1c-syntax/index.html">§12.1c Part-21 grammar</a></td><td><code>occt=reject/reject gmsh=reject ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-1c-syntax/Ls056.html"><code>Ls056</code></a></td><td>Non-nesting comment illusion; inner opener leaves a stray closer</td><td><a href="../../12-1c-syntax/index.html">§12.1c Part-21 grammar</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-8-mixed/M022.html"><code>M022</code></a></td><td>STL-derived tessellated_solid / triangulated_face ignored by importers</td><td><a href="../../12-8-mixed/index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-8-mixed/M048.html"><code>M048</code></a></td><td>Material / appearance / physical attributes silently dropped on STEP export</td><td><a href="../../12-8-mixed/index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a></td><td><code>occt=empty/empty gmsh=signal(11) ifc=schema_n/a</code></td></tr>
@@ -104,6 +104,7 @@
 <tr><td><a href="../../12-6-assembly/P017.html"><code>P017</code></a></td><td>Free wires in a top-level COMPOUND silently dropped</td><td><a href="../../12-6-assembly/index.html">§12.6 Assembly hierarchy</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-10-perf/Pf017.html"><code>Pf017</code></a></td><td>Healing pipeline hangs on huge single-shell input (multi-pass divergence)</td><td><a href="../../12-10-perf/index.html">§12.10 Scale &amp; performance</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(441) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-10-perf/Pf021.html"><code>Pf021</code></a></td><td>Floating / non-deterministic crash in shape healing on near-apex `CONICAL_SURFACE` edge</td><td><a href="../../12-10-perf/index.html">§12.10 Scale &amp; performance</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="../../12-10-perf/Pf035.html"><code>Pf035</code></a></td><td>Large assembly STEP loads at 100% CPU with unbounded memory growth until OOM</td><td><a href="../../12-10-perf/index.html">§12.10 Scale &amp; performance</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-7-pmi/Pmi022.html"><code>Pmi022</code></a></td><td>Duplicate UUID on multiple identified_item</td><td><a href="../../12-7-pmi/index.html">§12.7 PMI / GD&amp;T</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-7-pmi/Pmi030.html"><code>Pmi030</code></a></td><td>Negative projected tolerance zone length</td><td><a href="../../12-7-pmi/index.html">§12.7 PMI / GD&amp;T</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-7-pmi/Pmi037.html"><code>Pmi037</code></a></td><td>shape_aspect.product_definitional flag wrong polarity</td><td><a href="../../12-7-pmi/index.html">§12.7 PMI / GD&amp;T</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
