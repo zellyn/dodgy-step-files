@@ -6,31 +6,44 @@ silently. Expected: Apply should detect and permit self-sewing within a single
 face. Geometry: Two coplanar rectangles forming a strip; one edge pair should
 sew the strip into a closed loop.
 
-Mechanism IS the shell structure: TWO ADVANCED_FACEs forming a strip (each
-1×2 rectangle, placed side-by-side) — the shared edge between them IS wired
-into both EDGE_LOOPs. The left free edge of Face1 and the right free edge of
-Face2 ARE the self-sewing candidates: they are geometrically coincident (both
-at x=0 and x=2 in the strip) so ShellSewing.Apply would need to pair them with
-themselves to close the loop. The coincident free-edge pair IS wired into the
-face topology as separate EDGE_CURVEs — IS the self-sewing mechanism.
+OCCT exchange-layer coverage audit finding (occt-coverage/exchange/): the
+PREVIOUS version of this fixture placed Face1 and Face2 side-by-side
+(x=[0,1] and x=[1,2]) and claimed their outer free edges (at x=0 and x=2)
+were "geometrically coincident" -- but x=0 and x=2 are 2.0mm apart, not
+coincident. Byte-verified as NOT demonstrating the self-sewing claim.
+
+Fixed here: Face2 is folded back 180 degrees flat over Face1's own
+footprint (a genuine "strip folded double" -- both faces stay coplanar,
+in the SAME z=0 plane, sharing the SAME PLANE entity) instead of
+extending the strip further out. Face2's seam edge (shared with Face1 at
+x=1) is unchanged; its far corners are NEW, topologically-distinct
+vertices placed at the EXACT same 3D coordinates as Face1's free left
+edge (x=0, y=0 and x=0, y=2) -- genuinely coincident (distance 0), not
+merged. This is the literal self-sewing input: two independent EDGE_CURVEs
+occupying the same 3D segment, on the same shell, that ShellSewing.Apply
+should recognize and pair with each other but doesn't.
 
 Tier-3 assertion: load == "ok"
 
-live oracle: occt=shape(1)/shape(1)
+live oracle: occt=shape(1)/shape(1)  [NEEDS-ORACLE-REFRESH: face footprints
+now fully overlap via the fold-back, unlike the prior side-by-side layout]
 """
 from step_corpus.step_builder import StepFile
 
 f = StepFile(
     catalog_id="Tsh141",
     defect=(
-        "TWO ADVANCED_FACEs forming a 2×2 strip — IS the self-sewing mechanism wired into topology; "
-        "Face1 (x=[0,1], y=[0,2]) left edge at x=0 IS a free edge candidate for self-sewing; "
-        "Face2 (x=[1,2], y=[0,2]) right edge at x=2 IS a free edge candidate for self-sewing; "
+        "TWO ADVANCED_FACEs forming a strip folded back on itself — IS the self-sewing "
+        "mechanism wired into topology; Face1 (x=[0,1], y=[0,2]) left edge at x=0 IS a "
+        "free edge candidate for self-sewing; Face2 folds back over the SAME footprint "
+        "(same PLANE, same_sense=.F.) so its far edge lands EXACTLY at x=0, y=[0,2] too "
+        "— a genuinely coincident (distance 0) but topologically DISTINCT free edge; "
         "shared EDGE_CURVE at x=1 IS wired into both EDGE_LOOPs (manifold seam); "
-        "free edge at x=0 and free edge at x=2 ARE geometrically coincident — IS self-sewing pair; "
-        "ShellSewing.Apply rejects self-pairing of free edges — silently fails; "
-        "fix: allow edge-to-edge self-sewing when endpoints coincide within tolerance; "
-        "emit E_SELF_SEWING_REJECTED when Apply refuses valid self-pairing"
+        "the two coincident free edges (Face1's e_f1_left, Face2's e_f2_left_fold) ARE "
+        "the self-sewing pair; ShellSewing.Apply rejects self-pairing of free edges — "
+        "silently fails; fix: allow edge-to-edge self-sewing when endpoints coincide "
+        "within tolerance; emit E_SELF_SEWING_REJECTED when Apply refuses valid "
+        "self-pairing"
     ),
 )
 
@@ -42,49 +55,58 @@ def led(va, vb, pt, dx, dy, dz):
     ln = f.line(pt, vec)
     return f.edge_curve(va, vb, ln)
 
-# Strip vertices: two 1×2 rectangles side by side
-p00 = cp(0, 0, 0); p10 = cp(1, 0, 0); p20 = cp(2, 0, 0)
-p02 = cp(0, 2, 0); p12 = cp(1, 2, 0); p22 = cp(2, 2, 0)
+# Face1 vertices: unit-strip square x=[0,1], y=[0,2].
+p00 = cp(0, 0, 0); p10 = cp(1, 0, 0)
+p02 = cp(0, 2, 0); p12 = cp(1, 2, 0)
 
-v00 = f.vertex_point(p00); v10 = f.vertex_point(p10); v20 = f.vertex_point(p20)
-v02 = f.vertex_point(p02); v12 = f.vertex_point(p12); v22 = f.vertex_point(p22)
+v00 = f.vertex_point(p00); v10 = f.vertex_point(p10)
+v02 = f.vertex_point(p02); v12 = f.vertex_point(p12)
 
-# Shared internal edge at x=1 — IS wired into both EDGE_LOOPs (manifold seam)
-e_mid_bot = led(v00, v10, p00,  1, 0, 0)  # y=0 bottom
-e_mid_top = led(v02, v12, p02,  1, 0, 0)  # y=2 top (Face1 inner seam at x=1, bottom segment)
-e_seam    = led(v10, v12, p10,  0, 1, 0)  # x=1 shared seam — IS wired into both faces
+# Face2 far-corner vertices: NEW, distinct entities placed at the EXACT
+# same coordinates as Face1's free edge (x=0) — the coincident-but-unmerged
+# self-sewing candidate, not a shared/reused vertex.
+p00_fold = cp(0, 0, 0); p02_fold = cp(0, 2, 0)
+v00_fold = f.vertex_point(p00_fold); v02_fold = f.vertex_point(p02_fold)
 
-# Face1 free edges
-e_f1_bot  = led(v00, v10, p00,  1, 0, 0)  # bottom y=0 left half (same as e_mid_bot, reused)
-e_f1_left = led(v00, v02, p00,  0, 1, 0)  # x=0 left free edge — IS self-sewing candidate
-e_f1_top  = led(v02, v12, p02,  1, 0, 0)  # y=2 top left half
+# Shared internal seam edge at x=1 — IS wired into both EDGE_LOOPs (manifold seam)
+e_seam = led(v10, v12, p10, 0, 1, 0)  # x=1 shared seam — IS wired into both faces
 
-# Face2 free edges
-e_f2_bot  = led(v10, v20, p10,  1, 0, 0)  # bottom y=0 right half
-e_f2_right= led(v20, v22, p20,  0, 1, 0)  # x=2 right free edge — IS self-sewing candidate
-e_f2_top  = led(v12, v22, p12,  1, 0, 0)  # y=2 top right half
+# Face1 boundary edges
+e_f1_bot  = led(v00, v10, p00, 1, 0, 0)   # bottom y=0
+e_f1_left = led(v00, v02, p00, 0, 1, 0)   # x=0 left free edge — IS self-sewing candidate #1
+e_f1_top  = led(v02, v12, p02, 1, 0, 0)   # top y=2
+
+# Face2 boundary edges (folded back over Face1's own footprint)
+e_f2_bot       = led(v10, v00_fold, p10, -1, 0, 0)       # bottom y=0, seam -> folded corner
+e_f2_left_fold = led(v00_fold, v02_fold, p00_fold, 0, 1, 0)  # x=0 folded free edge — self-sewing candidate #2
+e_f2_top       = led(v02_fold, v12, p02_fold, 1, 0, 0)       # top y=2, folded corner -> seam
 
 def mk_plane_z0(ox, oy):
     orig = f.cartesian_point((ox, oy, 0.0))
     return f.plane(f.axis2_placement_3d(orig, dir3(0, 0, 1), dir3(1, 0, 0)))
 
-def face4(edges_with_ori, plane):
+def face4(edges_with_ori, plane, same_sense=True):
     loop = f.edge_loop([f.oriented_edge(e, o) for e, o in edges_with_ori])
-    return f.advanced_face([f.face_outer_bound(loop, orientation=True)], plane, same_sense=True)
+    return f.advanced_face([f.face_outer_bound(loop, orientation=True)], plane, same_sense=same_sense)
 
-# Face1: x=[0,1], y=[0,2] — left strip half
+# Both faces share the SAME plane instance — genuinely coplanar, z=0.
+plane_z0 = mk_plane_z0(0, 0)
+
+# Face1: x=[0,1], y=[0,2] — normal sense (+Z normal facing up).
 face1 = face4(
     [(e_f1_bot, True), (e_seam, True), (e_f1_top, False), (e_f1_left, False)],
-    mk_plane_z0(0, 0)
+    plane_z0, same_sense=True,
 )
 
-# Face2: x=[1,2], y=[0,2] — right strip half
+# Face2: folded back onto the SAME x=[0,1], y=[0,2] footprint — opposite
+# sense (it is the "under" layer of the fold, facing -Z).
 face2 = face4(
-    [(e_f2_bot, True), (e_f2_right, True), (e_f2_top, False), (e_seam, False)],
-    mk_plane_z0(1, 0)
+    [(e_f2_bot, True), (e_f2_left_fold, True), (e_f2_top, True), (e_seam, False)],
+    plane_z0, same_sense=False,
 )
 
-# OPEN_SHELL with two faces forming strip — IS the self-sewing mechanism
+# OPEN_SHELL with two faces forming a strip folded back on itself — IS the
+# self-sewing mechanism (coincident-but-unmerged free-edge pair).
 shell = f.open_shell([face1, face2])
 sbsm = f.shell_based_surface_model([shell])
 f.add_product_chain(sbsm)

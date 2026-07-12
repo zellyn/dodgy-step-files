@@ -1,5 +1,5 @@
 ISO-10303-21;
-/* Sw003: ADVANCED_FACE with FACE_OUTER_BOUND whose EDGE_LOOP is two ORIENTED_EDGEs going back-and-forth on the same LINE (equal-and-reversed), enclosing zero area; collapsed wire IS wired into the FACE_OUTER_BOUND of the OPEN_SHELL face; sewer flags as degenerated; no upstream rejection */
+/* Sw003: ADVANCED_FACE with FACE_OUTER_BOUND whose EDGE_LOOP is two ORIENTED_EDGEs going back-and-forth on the same LINE (equal-and-reversed), enclosing zero area AND sub-tolerance extent (1e-9mm, below the 1e-7mm model tolerance); collapsed wire IS wired into the FACE_OUTER_BOUND of the OPEN_SHELL face; sewer flags as degenerated; no upstream rejection */
 HEADER;
 FILE_DESCRIPTION(('Sw003'),'2;1');
 FILE_NAME('Sw003.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
@@ -8,11 +8,11 @@ ENDSEC;
 DATA;
 #9000=APPLICATION_CONTEXT('mechanical design');
 #1=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#2=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(1.0E-09,0.0,0.0));
 #3=VERTEX_POINT('',#1);
 #4=VERTEX_POINT('',#2);
 #5=DIRECTION('',(1.0,0.0,0.0));
-#6=VECTOR('',#5,1.0);
+#6=VECTOR('',#5,1.0E-09);
 #7=LINE('',#1,#6);
 #8=EDGE_CURVE('',#3,#4,#7,.T.);
 #9=ORIENTED_EDGE('',$,$,#8,.T.);
