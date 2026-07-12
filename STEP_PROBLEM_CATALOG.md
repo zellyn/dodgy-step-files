@@ -44573,6 +44573,138 @@ exercised against CGAL PMP / MeshFix.
 - **Model impact**: Dual-owner shell references from two solids produce an undefined shared topology; mutation of the shared shell through one `MANIFOLD_SOLID_BREP` affects the other; downstream Boolean operations on either solid produce undefined results; solid/volume queries return zero for the compound.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(38) ifc=schema_n/a`
 
+### Tsh234 — Compound of a normal solid + an isolated sliver solid at 0.5% of its volume
+- **Category**: §12.3a shells (sub-class: small/sliver-solid healing — `tkshh-sliver-solid`)
+- **Sources**: occt-coverage GAP audit, `tkshhealing/problems.json` `tkshh-sliver-solid` (ShapeFix_FixSmallSolid). No prior fixture presented a genuine compound of two `MANIFOLD_SOLID_BREP` solids where one is a sliver below the healer's volume threshold.
+- **Description**: A compound (one `ADVANCED_BREP_SHAPE_REPRESENTATION` with two `items`) contains two genuine `MANIFOLD_SOLID_BREP` solids, each with a real watertight 6-face `CLOSED_SHELL` (not a bare face): solid A is a 10x10x10 box (volume 1000), solid B is a 10x10x0.05 slab (volume 5 = 0.5% of solid A's volume, below `ShapeFix_FixSmallSolid`'s default volume-ratio threshold), placed with a bounding box disjoint from solid A (genuinely isolated, no adjacent neighbor). A correct healer must choose the "Drop" disposition for the isolated sliver — there is no neighbor solid to merge into.
+- **Reproducer recipe**: Two `MANIFOLD_SOLID_BREP` entities (each a genuine 6-face `CLOSED_SHELL` box), both listed in one `ADVANCED_BREP_SHAPE_REPRESENTATION.items`; solid B's volume = 0.5% of solid A's, bounding boxes disjoint.
+- **Expected kernel behavior**: heal; detect the negligible-volume solid via `ShapeFix_FixSmallSolid`'s volume-ratio test and drop it (no neighbor to merge into); preserve solid A unchanged.
+- **Notes**: **See also**: Tsh235 (width-factor / adjacent-neighbor sibling), Tfa015 (face-sliver-sewing analog — this fixture builds genuine `TopoDS_SOLID` bodies, not bare faces). Synonyms: "boolean leaves tiny debris solid", "compound has near-zero-volume sub-solid", "sliver solid below drop threshold", "isolated small solid needs removing", "compound-of-solids volume-ratio healing".
+- **Byte assertion**: count_entity_def(b'MANIFOLD_SOLID_BREP') == 2
+- **Byte assertion**: count_entity_def(b'CLOSED_SHELL') == 2
+- **Tier-3 assertion**: n_faces_total == 12
+- **Tier-3 assertion**: face[0].surface_type == "plane"
+- **OCC behavior**: silent-accept; OCCT loads the compound as shape(1) with 12 faces (both solids kept verbatim); the sliver-solid healing (`dropsmallsolids`) is an opt-in operator not run by default transfer, so no diagnostic is emitted and the sliver is not dropped.
+- **Severity**: P1
+- **Model impact**: Boolean-fragment debris solids below the healing threshold are silently retained in the loaded compound; downstream mass-property and Boolean operations see spurious extra bodies; assemblies inflate part counts with unintended micro-solids.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a`
+
+### Tsh235 — Compound of a normal solid + a width-factor needle sliver adjacent to it (Merge disposition)
+- **Category**: §12.3a shells (sub-class: small/sliver-solid healing — `tkshh-sliver-solid`, width-factor + Merge-disposition subvariant)
+- **Sources**: occt-coverage GAP audit, `tkshhealing/problems.json` `tkshh-sliver-solid` (ShapeFix_FixSmallSolid width-factor test and Remove-vs-Merge disposition).
+- **Description**: The adjacent-neighbor sibling of Tsh234. A compound (one `ADVANCED_BREP_SHAPE_REPRESENTATION` with two `items`) contains a normal 10x10x10 box (solid A, volume 1000) and an elongated needle sliver, 10x0.02x0.02 (solid B, volume 0.004, width-factor = volume / half-surface-area ~= 0.00999 mm — the discriminating signal for this shape family, distinct from Tsh234's flat-plate volume-ratio test). Solid B's bounding box is flush-adjacent to solid A's x=10 face (touching, though topologically independent — distinct `VERTEX_POINT`/`EDGE_CURVE`/`PLANE` entities, no shared IDs), giving a correct healer a real neighbor to exercise the "Merge" disposition against, unlike Tsh234's isolated "Drop" case.
+- **Reproducer recipe**: Two `MANIFOLD_SOLID_BREP` entities in one `ADVANCED_BREP_SHAPE_REPRESENTATION.items`; solid B is a long thin needle (aspect ratio 500:1) whose bounding box face is flush against solid A's face.
+- **Expected kernel behavior**: heal; detect the negligible width-factor solid via `ShapeFix_FixSmallSolid` and merge it into the adjacent neighbor solid A (Merge disposition), respecting a "Merge Solids" flag.
+- **Notes**: **See also**: Tsh234 (isolated / volume-ratio sibling). Synonyms: "needle solid merged into neighbor", "width-factor sliver detection", "thin sliver solid adjacent to body", "sliver-solid merge disposition", "elongated debris solid touching body".
+- **Byte assertion**: count_entity_def(b'MANIFOLD_SOLID_BREP') == 2
+- **Byte assertion**: count_entity_def(b'CLOSED_SHELL') == 2
+- **Tier-3 assertion**: n_faces_total == 12
+- **Tier-3 assertion**: face[0].surface_type == "plane"
+- **OCC behavior**: silent-accept; OCCT loads the compound as shape(1) with 12 faces (both solids kept verbatim, not merged); the sliver-solid healing (`dropsmallsolids`, MergeSolids flag) is an opt-in operator not run by default transfer.
+- **Severity**: P1
+- **Model impact**: Boolean-fragment needle solids adjacent to a real body are silently retained as a separate solid instead of merged; downstream mass-property computations double-count negligible material as a distinct body; CAM/mesh pipelines choke on the degenerate sliver.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a` (provisional — thin-needle gmsh meshing is a borderline geometry that may diverge macOS-ARM vs CI-Linux)
+
+### Tsh236 — Two nested `CLOSED_SHELL`s with no `BREP_WITH_VOIDS` wrapper (unstructured shell soup, containment classification)
+- **Category**: §12.3a shells (sub-class: unstructured multi-shell — `tkshh-solid-unstructured-multishell`)
+- **Sources**: occt-coverage GAP audit, `tkshhealing/problems.json` `tkshh-solid-unstructured-multishell` (ShapeFix_Solid::CreateSolids point-containment classification).
+- **Description**: A `SHELL_BASED_SURFACE_MODEL` lists two watertight `CLOSED_SHELL`s directly — NOT wrapped in a `BREP_WITH_VOIDS` or `MANIFOLD_SOLID_BREP` the way Bo003/Tsh015 are. One shell (outer, 10x10x10 box) geometrically fully encloses the other (inner, 2x2x2 box). With no author-declared voids list, a receiver that wants a solid-with-void must run its own point-containment classification (`ShapeFix_Solid::CreateSolids`) rather than trusting an explicit structure.
+- **Reproducer recipe**: `SHELL_BASED_SURFACE_MODEL('',(#outer_shell,#inner_shell))` where `#inner_shell`'s bounding box is strictly contained in `#outer_shell`'s; no `BREP_WITH_VOIDS`/`MANIFOLD_SOLID_BREP` entity present.
+- **Expected kernel behavior**: heal; classify the nested shell pair via point-in-solid containment and synthesize one `TopoDS_Solid` with an internal void, equivalent to what an explicit `BREP_WITH_VOIDS` would have declared.
+- **Notes**: **See also**: Tsh237 (disjoint sibling), Bo003 (avoid — that fixture's defect is an explicit but malformed `BREP_WITH_VOIDS` wrapper, a different, already-covered code path). Live-verified (this worktree's OCP/OCCT 7.8.1, default `STEPControl_Reader.TransferRoots`): the default transfer path does NOT invoke `CreateSolids` for a bare `SHELL_BASED_SURFACE_MODEL` — it returns a `TopoDS_COMPOUND` of the 2 shells verbatim (0 solids); the containment-classification healing is an opt-in reprocessing step, recorded honestly here rather than mirrored from an unrelated fixture. Synonyms: "unstructured shell soup nested", "two shells no voids wrapper", "shell containment classification needed", "solid promotion from bare shells", "nested closed shells no solid wrapper".
+- **Byte assertion**: count_entity_def(b'CLOSED_SHELL') == 2
+- **Byte assertion**: count_entity_def(b'BREP_WITH_VOIDS') == 0
+- **Byte assertion**: count_entity_def(b'MANIFOLD_SOLID_BREP') == 0
+- **Tier-3 assertion**: n_faces_total == 12
+- **Tier-3 assertion**: face[0].surface_type == "plane"
+- **OCC behavior**: silent-accept; OCCT loads the shell pair as shape(1), a `TopoDS_COMPOUND` of 2 shells with 0 solids and 12 faces; no containment classification is applied by default, and no diagnostic is emitted.
+- **Severity**: P1
+- **Model impact**: Unstructured shell soup without an explicit solid/voids wrapper loads as a non-solid compound; downstream Boolean/mass-property operations that expect a `TopoDS_Solid` silently receive a shell-only shape with zero volume; void semantics are lost.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(52) ifc=schema_n/a`
+
+### Tsh237 — Two disjoint `CLOSED_SHELL`s with no `BREP_WITH_VOIDS` wrapper (unstructured shell soup, compound-of-2-solids classification)
+- **Category**: §12.3a shells (sub-class: unstructured multi-shell — `tkshh-solid-unstructured-multishell`, disjoint subvariant)
+- **Sources**: occt-coverage GAP audit, `tkshhealing/problems.json` `tkshh-solid-unstructured-multishell` (ShapeFix_Solid::CreateSolids point-containment classification, disjoint branch).
+- **Description**: The disjoint sibling of Tsh236. A `SHELL_BASED_SURFACE_MODEL` lists two watertight `CLOSED_SHELL`s directly, again with no `BREP_WITH_VOIDS`/`MANIFOLD_SOLID_BREP` wrapper — but this time the two 10x10x10 boxes have genuinely disjoint bounding boxes (box A at x in [0,10], box B at x in [30,40]). Since neither shell contains the other, a receiver wanting solids from this shell soup must classify it as a COMPOUND OF TWO SEPARATE SOLIDS — the opposite branch of `ShapeFix_Solid::CreateSolids`' containment classification from Tsh236's nested case.
+- **Reproducer recipe**: `SHELL_BASED_SURFACE_MODEL('',(#shell_a,#shell_b))` where `#shell_a` and `#shell_b`'s bounding boxes do not overlap; no `BREP_WITH_VOIDS`/`MANIFOLD_SOLID_BREP` entity present.
+- **Expected kernel behavior**: heal; classify the disjoint shell pair via point-in-solid containment and synthesize two independent `TopoDS_Solid`s (a compound of 2 solids), not a solid-with-void.
+- **Notes**: **See also**: Tsh236 (nested sibling), Bo003 (avoid its explicit-but-malformed `BREP_WITH_VOIDS` pattern). Live-verified (this worktree's OCP/OCCT 7.8.1, default `STEPControl_Reader.TransferRoots`): same as Tsh236, the default transfer path returns a `TopoDS_COMPOUND` of 2 shells with 0 solids; recorded honestly rather than mirrored. Synonyms: "unstructured shell soup disjoint", "two shells no voids wrapper compound", "shell containment classification disjoint", "compound-of-2-solids from bare shells", "disjoint closed shells no solid wrapper".
+- **Byte assertion**: count_entity_def(b'CLOSED_SHELL') == 2
+- **Byte assertion**: count_entity_def(b'BREP_WITH_VOIDS') == 0
+- **Byte assertion**: count_entity_def(b'MANIFOLD_SOLID_BREP') == 0
+- **Tier-3 assertion**: n_faces_total == 12
+- **Tier-3 assertion**: face[0].surface_type == "plane"
+- **OCC behavior**: silent-accept; OCCT loads the shell pair as shape(1), a `TopoDS_COMPOUND` of 2 shells with 0 solids and 12 faces; no containment classification is applied by default, and no diagnostic is emitted.
+- **Severity**: P1
+- **Model impact**: Unstructured shell soup without an explicit solid/voids wrapper loads as a non-solid compound; downstream Boolean/mass-property operations that expect two `TopoDS_Solid`s silently receive a shell-only shape with zero volume.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(52) ifc=schema_n/a`
+
+### Tsh238 — Compound of a normal solid + an isolated volume-threshold sliver, reached via the `dropsmallsolids` operator context
+- **Category**: §12.3a shells (sub-class: heal-sequence operator — `seq-drop-small-solids`, volume-threshold subvariant)
+- **Sources**: occt-coverage GAP audit, `exchange/problems.json` `seq-drop-small-solids` (`dropsmallsolids`, `ShapeProcess_OperLibrary.cxx:594-635`, backed by `ShapeFix_FixSmallSolid`; "available-but-not-default" STEP.exec.op operator).
+- **Description**: `dropsmallsolids` is an opt-in `ShapeProcess` operator, distinct from OCCT's default `STEPControl_Reader` transfer path — it is invoked only when a caller explicitly names it in the operator sequence. This fixture supplies the static compound-of-solids precondition the operator acts on: a normal 8x8x8 box (solid A, volume 512) plus an isolated 8x8x0.04 slab sliver (solid B, volume 2.56 = 0.5% of solid A's volume), genuinely disjoint from solid A (no neighbor to merge into — Remove disposition when `dropsmallsolids` runs with MergeSolids off). Same GAP-item lineage as Tsh234/Tsh235 (sliver-solid family) but a byte-distinct fixture, explicitly framed around the operator linkage.
+- **Reproducer recipe**: Same structural pattern as Tsh234 (two `MANIFOLD_SOLID_BREP` solids in one compound `ADVANCED_BREP_SHAPE_REPRESENTATION`, isolated sliver at 0.5% volume) at different dimensions/positions; catalog entry documents the `dropsmallsolids` operator linkage explicitly.
+- **Expected kernel behavior**: when the `dropsmallsolids` `ShapeProcess` operator is explicitly invoked post-transfer: detect the negligible-volume solid and remove it (no neighbor to merge into). Default transfer (no operator invoked) applies no such healing.
+- **Notes**: **Fixture kind**: scaffold (operator-test-pair: shape provides the compound-of-solids precondition; `dropsmallsolids` operator invocation required post-transfer to reproduce the Remove/Merge healing decision — mirrors the N146-N153 runtime-only-mechanism convention). **See also**: Tsh234 (same geometry family, default-transfer framing), Tsh239 (Merge-disposition sibling). Synonyms: "dropsmallsolids operator", "STEP.exec.op small solid removal", "opt-in small-solid healing operator", "ShapeProcess_OperLibrary dropsmallsolids", "available-but-not-default solid healing".
+- **Byte assertion**: count_entity_def(b'MANIFOLD_SOLID_BREP') == 2
+- **Byte assertion**: count_entity_def(b'CLOSED_SHELL') == 2
+- **Tier-3 assertion**: n_faces_total == 12
+- **Tier-3 assertion**: face[0].surface_type == "plane"
+- **OCC behavior**: silent-accept; default `STEPControl_Reader` transfer (the path this corpus's oracles exercise) loads the compound as shape(1) with 12 faces (both solids kept verbatim); `dropsmallsolids` is not part of default transfer, so no diagnostic is emitted and the sliver is not removed absent explicit operator invocation.
+- **Severity**: P1
+- **Model impact**: Boolean-fragment debris solids persist through default translation; only an explicit `dropsmallsolids` operator pass removes them, so pipelines that skip that opt-in step silently retain spurious micro-solids in the loaded model.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a`
+
+### Tsh239 — Compound of a normal solid + an adjacent width-factor sliver, reached via the `dropsmallsolids` operator context (Merge disposition)
+- **Category**: §12.3a shells (sub-class: heal-sequence operator — `seq-drop-small-solids`, width-factor + Merge-disposition subvariant)
+- **Sources**: occt-coverage GAP audit, `exchange/problems.json` `seq-drop-small-solids` (`dropsmallsolids`, `ShapeProcess_OperLibrary.cxx:594-635`; MergeSolids flag chooses Remove vs Merge disposition).
+- **Description**: The adjacent-neighbor sibling of Tsh238, mirroring Tsh235's geometry family. A normal 8x8x8 box (solid A, volume 512) plus an 8x0.015x0.015 needle sliver (solid B, volume 0.0018, width-factor ~= 0.00749 mm) whose bounding box is flush-adjacent to solid A's x=8 face — a genuine Merge-disposition precondition for the `dropsmallsolids` operator's MergeSolids flag, distinct from Tsh238's isolated Remove-disposition precondition.
+- **Reproducer recipe**: Same structural pattern as Tsh235 (two `MANIFOLD_SOLID_BREP` solids, elongated needle sliver flush against the normal solid's face) at different dimensions/positions; catalog entry documents the `dropsmallsolids` operator linkage explicitly.
+- **Expected kernel behavior**: when the `dropsmallsolids` `ShapeProcess` operator is explicitly invoked with MergeSolids on: detect the negligible width-factor solid and merge it into the adjacent neighbor. Default transfer applies no such healing.
+- **Notes**: **Fixture kind**: scaffold (operator-test-pair: shape provides the adjacent-compound precondition; `dropsmallsolids` operator invocation with MergeSolids on required post-transfer to reproduce the Merge-disposition healing decision). **See also**: Tsh235 (same geometry family, default-transfer framing), Tsh238 (Remove-disposition sibling). Synonyms: "dropsmallsolids merge disposition", "STEP.exec.op needle solid merge", "opt-in width-factor healing operator", "ShapeProcess_OperLibrary MergeSolids flag", "adjacent sliver merge operator context".
+- **Byte assertion**: count_entity_def(b'MANIFOLD_SOLID_BREP') == 2
+- **Byte assertion**: count_entity_def(b'CLOSED_SHELL') == 2
+- **Tier-3 assertion**: n_faces_total == 12
+- **Tier-3 assertion**: face[0].surface_type == "plane"
+- **OCC behavior**: silent-accept; default `STEPControl_Reader` transfer loads the compound as shape(1) with 12 faces (both solids kept verbatim, not merged); `dropsmallsolids`/MergeSolids is not part of default transfer.
+- **Severity**: P1
+- **Model impact**: Boolean-fragment needle solids adjacent to a real body persist as a separate solid through default translation; only an explicit `dropsmallsolids` operator pass with MergeSolids on folds them into the neighbor.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a` (provisional — thin-needle gmsh meshing is a borderline geometry that may diverge macOS-ARM vs CI-Linux)
+
+### Tsh240 — Second independent `BREP_WITH_VOIDS` nested-void solid, geometry distinct from Tsh015
+- **Category**: §12.3a shells (sub-class: solid imbrication / enclosed region — `bc-enclosed-region` insurance)
+- **Sources**: occt-coverage `exchange/problems.json` `bc-enclosed-region` (`BRepCheck_Solid::Blind`, `BRepCheck_Solid.cxx:297`, `BRepCheck_EnclosedRegion`). Per the occt-coverage audit, Tsh015 is the SOLE surviving fixture for this class (Bo003/Bo004 were pruned as structurally unable to fire it) — this is a second, independent fixture, added without modifying Tsh015.
+- **Description**: A `BREP_WITH_VOIDS` nests a void `CLOSED_SHELL` (4x3x2 box) geometrically fully inside an outer `CLOSED_SHELL` (12x8x6 box) — dimensions, proportions, and origin all distinct from Tsh015's pair of axis-aligned unit cubes (2x2x2 outer, 1x1x1 inner). Per AP214, the void's `ORIENTED_CLOSED_SHELL` orientation must be reversed (`.F.`) relative to the outer shell; this fixture emits it as `.T.` instead (same defect direction as Tsh015, distinct geometry) — the mis-oriented void is wired directly into the shell topology via a real, reachable `ORIENTED_CLOSED_SHELL`, not an orphaned entity.
+- **Reproducer recipe**: `BREP_WITH_VOIDS('',#outer_shell,(#void_ocs))` where `#void_ocs=ORIENTED_CLOSED_SHELL('',*,#void_shell,.T.)` and `#void_shell`'s bounding box is strictly contained in `#outer_shell`'s.
+- **Expected kernel behavior**: heal; detect the mis-oriented void by signed-volume sign; auto-reverse with a warning diagnostic.
+- **Notes**: Live-verified directly against this worktree's OCP/OCCT 7.8.1: `BRepCheck_Analyzer` on a raw `BRep_Builder`-constructed solid with two shells (outer + geometrically-enclosed inner, no reversal applied) DOES reliably raise `BRepCheck_Status.BRepCheck_EnclosedRegion` in-memory, confirming the check itself is real and reachable. However `STEPControl_Reader`'s default transfer path silently reclassifies/heals `BREP_WITH_VOIDS` void orientation by signed-volume sign during translation — independently re-verified live on both this fixture's `.T.` encoding and a hand-corrected `.F.` encoding, both translating to `BRepCheck_Status.NoError`. That silent healing IS this class's documented "Expected kernel behavior" (heal + auto-reverse); OCCT performs the heal, just without the warning diagnostic — the same live-observed behavior this worktree separately confirmed for Tsh015 itself (its on-disk translation also comes back `BrepCheck`-valid). The byte-level defect (a real, reachable `ORIENTED_CLOSED_SHELL` carrying the wrong orientation flag inside a genuine nested-void `BREP_WITH_VOIDS`) is what this fixture demonstrates. **See also**: Tsh015 (sole prior fixture — untouched), Bo003 (pruned — crashes), Bo004 (pruned — `aNbVTS<2` early-return, structurally cannot fire). Synonyms: "second enclosed-region solid", "nested void insurance fixture", "void orientation flag wrong distinct geometry", "BREP_WITH_VOIDS mis-oriented void second fixture", "enclosed region single-fixture-thin insurance".
+- **Byte assertion**: contains(b'ORIENTED_CLOSED_SHELL')
+- **Byte assertion**: count_entity_def(b'CLOSED_SHELL') == 2
+- **Tier-3 assertion**: n_faces_total == 12
+- **Tier-3 assertion**: face[0].surface_type == "plane"
+- **OCC behavior**: silent-accept; OCCT loads the nested-void solid as shape(1) with 12 faces; `BRepCheck_Analyzer` reports the translated shape valid (the void-orientation healing runs silently, without a warning diagnostic).
+- **Severity**: P1
+- **Model impact**: Mis-oriented void shells in `BREP_WITH_VOIDS` solids are silently auto-corrected on load with no diagnostic trail; authoring tools that rely on the STEP file's own orientation flags (rather than re-deriving them) propagate the wrong classification downstream.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(53) ifc=schema_n/a`
+
+### Tsh241 — Cone-apex degenerate edge referenced from the bounds of TWO different `ADVANCED_FACE`s
+- **Category**: §12.3a shells (sub-class: degenerate-edge multi-face retranslation — `stp-degenerate-edge-multiface`)
+- **Sources**: occt-coverage GAP audit, `exchange/problems.json` `stp-degenerate-edge-multiface` (`StepToTopoDS_TranslateEdge::Init` cached-degenerated-edge retranslate-per-face path). Extends Tsh035's single-face degenerate/ambiguous-edge pattern to a genuine multi-face reference.
+- **Description**: A `CONICAL_SURFACE` (apex at origin, axis +Z, semi-angle 30 deg) is split into TWO half-cone `ADVANCED_FACE`s (front, y>=0, and back, y<=0) sharing: (1) the SAME degenerate apex `EDGE_CURVE` entity (zero-length, apex `VERTEX_POINT` at both ends) referenced from BOTH faces' `EDGE_LOOP`s, and (2) the two lateral (radial) `EDGE_CURVE`s at the seam, each referenced with opposite `ORIENTED_EDGE` sense by the two faces (a genuine manifold split, not two independent half-cones taped together). No prior fixture (Tsh035, Twi031, Gs189, Xp013) presents a degenerate edge entity shared across multiple faces' bounds — each keeps its degenerate edge within a single face's own wire.
+- **Reproducer recipe**: One `CONICAL_SURFACE`; one degenerate `EDGE_CURVE('',#apex,#apex,#zero_length_line,.T.)`; two `ADVANCED_FACE`s each with an `EDGE_LOOP` containing an `ORIENTED_EDGE` wrapping that SAME `EDGE_CURVE` entity (not a duplicate copy).
+- **Expected kernel behavior**: heal; `StepToTopoDS_TranslateEdge::Init` must retranslate a fresh per-face degenerate edge (with its own pcurve for that face's parametrization) each time the shared entity is encountered on a new face, rather than reusing a stale cached copy from the first face.
+- **Notes**: Live-verified (this worktree's OCP/OCCT 7.8.1): the translated shape reports `n_faces_total == 2` (both `surface_type == "cone"`), `n_edges_total == 6` against only 5 distinct `EDGE_CURVE` STEP entities in the bytes — one entity (the shared degenerate apex edge) is retranslated into two separate `TopoDS_Edge`s rather than reused from cache, while the two shared lateral edges ARE reused (5 entities, 8 `ORIENTED_EDGE` references, 6 resulting `TopoDS_Edge`s) — directly confirming the cached-degenerated-edge-retranslated-per-face mechanism in bytes and behavior. **See also**: Tsh035 (single-face torus-seam analog), Twi031 (duplicated-within-one-wire analog). Synonyms: "degenerate edge shared across faces", "cone apex edge reused by two faces", "per-face degenerate edge retranslation", "shared apex bridge multi-face cone", "degenerate edge entity multiple face bounds".
+- **Byte assertion**: count_entity_def(b'CONICAL_SURFACE') == 1
+- **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
+- **Byte assertion**: count_entity_def(b'EDGE_LOOP') == 2
+- **Tier-3 assertion**: n_faces_total == 2
+- **Tier-3 assertion**: face[0].surface_type == "cone"
+- **Tier-3 assertion**: face[1].surface_type == "cone"
+- **OCC behavior**: silent-accept; OCCT loads the two half-cone faces as shape(1) with 2 faces; the shared degenerate edge is retranslated per-face without a diagnostic.
+- **Severity**: P1
+- **Model impact**: Shared degenerate apex edges spanning multiple faces are silently retranslated per face rather than validated for consistency; downstream topology queries that assume STEP entity identity implies `TopoDS_Edge` identity see unexpectedly duplicated apex edges.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+
 ### Gs191 — Slicer chord-deflection defect on small-radius `B_SPLINE_SURFACE_WITH_KNOTS`
 - **Category**: §12.2c surfaces (sub-class: tessellation-parameter mis-scaling / small-radius faceting)
 - **Sources**: BambuStudio GitHub issue #3437 (`STEP translation poor quality, 44% fewer triangles`). B4 wave-7 DEF-HH (LGPL-clean — pattern only, no upstream bytes copied). Slicers built on top of OCCT's `BRepMesh` with a hard-coded `LinearDeflection = 0.1 mm` produce visibly faceted meshes on small-radius (R < 2 mm) B-spline surfaces, while readers with configurable chord deflection (0.01 mm) mesh the same surface smoothly.
