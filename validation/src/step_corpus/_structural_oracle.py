@@ -58,6 +58,22 @@ _STMT = re.compile(r"\s*#(\d+)\s*=\s*([A-Z_0-9]*)\s*\((.*)\)\s*$", re.S)
 _ID_DEF = re.compile(r"#(\d+)\s*=")
 _ID_REF = re.compile(r"#(\d+)")
 _FLOAT = re.compile(r"(?<![#\d.])(-?\d+\.\d*(?:[eE][-+]?\d+)?)")
+_COMMENT = re.compile(r"/\*.*?\*/", re.S)
+
+
+def _strip_comments(data: str) -> str:
+    """Strip Part-21 ``/* ... */`` comments.
+
+    The ``;``-split statement tokenizer (``_STMT``) anchors on a leading
+    ``#N =`` — a comment placed before a definition in the same ``;``-chunk
+    (e.g. ``#9063=/* stale */; #9064=FOO(...);`` written as one statement,
+    or a trailing ``/* ... */`` glued onto the previous statement) makes
+    that chunk fail the regex and the entity becomes invisible to
+    ``DUPLICATE_ID`` / ``AXIS_DEGENERATE``. Stripping comments first keeps
+    the FAIL SAFE under-report property (never introduces a false positive)
+    while fixing this under-report class.
+    """
+    return _COMMENT.sub("", data)
 
 
 def _data_section(text: str) -> str:
@@ -80,6 +96,7 @@ def parse_entities(data: str) -> dict[int, tuple[str, str]]:
     On a duplicate id the LAST definition wins here; duplicate detection uses the
     raw definition count (``duplicate_ids``) rather than this map.
     """
+    data = _strip_comments(data)
     out: dict[int, tuple[str, str]] = {}
     for stmt in data.split(";"):
         m = _STMT.match(stmt)
@@ -89,6 +106,7 @@ def parse_entities(data: str) -> dict[int, tuple[str, str]]:
 
 
 def duplicate_ids(data: str) -> list[int]:
+    data = _strip_comments(data)
     counts: dict[int, int] = {}
     for stmt in data.split(";"):
         m = _STMT.match(stmt)
@@ -128,6 +146,7 @@ def _length_units(data: str) -> set:
     Only METRE-based SI units and named length CONVERSION_BASED_UNITs count;
     angle / solid-angle units are irrelevant to model scale and are ignored.
     """
+    data = _strip_comments(data)
     units: set = set()
     for m in _SI_LENGTH.finditer(data):
         prefix = (m.group(1) or "$").strip(".")
