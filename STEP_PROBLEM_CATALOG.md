@@ -45365,3 +45365,87 @@ exercised against CGAL PMP / MeshFix.
 - **Notes**: Cross-oracle: trimesh 4.12 raises IndexError (index 5 out of bounds for size 3) — verified 2026-07-12. Complements Ip003 (OFF header count) with an OFF face index-OOB. Synonyms: "OFF face index out of range", "vertex index exceeds V", "OFF OOB face reference", "index past vertex table". Provenance tier: bytes-only.
 - **Severity**: P2
 - **Model impact**: The importer reads past the vertex table (garbage coordinates or crash) or drops the face; the reconstructed surface disagrees with the file.
+
+### Ip011 — glTF node `matrix` has fewer than 16 backing floats
+
+- **Category**: §12.15 import-format parser robustness (sub-class: fixed-width-read-insufficient-backing)
+- **Sources**: Pattern-mined from assimp/assimp#6612 (`CopyValue`, glTFCommon.h) (BSD-3-Clause — pattern only, no bytes copied).
+- **Description**: A glTF node declares a `matrix` transform (a JSON array meant to hold 16 floats for a 4×4 column-major matrix) but supplies only 8. `CopyValue<float[16]>` unconditionally reads/copies 16 floats from whatever backs the value; with only 8 present, the copy runs past the end of the parsed array. Distinct from Ip004/Ip012 (accessor/buffer-backed data) — here the insufficient data is a literal inline JSON array, not a buffer view.
+- **Reproducer recipe**: a `.gltf` node object whose `matrix` array has fewer than 16 numeric entries.
+- **Expected kernel behavior**: verify the `matrix` array holds exactly 16 floats before using it as a 4×4 transform; reject with a diagnostic naming the node and the actual/expected element count.
+- **Byte assertion**: contains(b'"matrix": [ 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0 ]')
+- **Fixture path**: import-examples/12-15-import-formats/Ip011.gltf
+- **Fixture kind**: raw import-format file (parser-robustness; graded against assimp/tinygltf, not Part-21)
+- **Notes**: Cross-oracle: trimesh 4.12.2 raises ValueError (cannot reshape array of size 8 into shape (4,4)) when it tries to reshape the `matrix` array into a 4×4 transform — verified 2026-07-12. First fixed-width-read-insufficient-backing class in the corpus (assimp's own `CopyValue` reads unconditionally and would over-read instead of raising). Synonyms: "glTF matrix insufficient data", "node matrix too few floats", "CopyValue overread", "4x4 transform short array". Provenance tier: bytes-only.
+- **Severity**: P2
+- **Model impact**: A transform matrix assembled from too few floats is either fabricated from adjacent-memory garbage (assimp) or the load aborts (trimesh); a consumer that proceeds anyway places the node's subtree at an undefined location.
+
+### Ip012 — glTF accessor `componentType` disagrees with the buffer's actual data layout
+
+- **Category**: §12.15 import-format parser robustness (sub-class: type-size-mismatch)
+- **Sources**: Pattern-mined from assimp/assimp#5683 (BSD-3-Clause — pattern only, no bytes copied).
+- **Description**: A glTF accessor declares `componentType: 5121` (UNSIGNED_BYTE, 1 byte/component) and `type: "VEC3"`, but the backing buffer actually holds 3 interleaved `FLOAT32` (4 bytes/component) vertices — the same 36-byte payload Ip004/Ip007 use for a legitimate 3×VEC3-float mesh. A loader that trusts the declared `componentType` for its per-component stride reads 1 byte where 4 were written, silently reinterpreting the float bit-pattern as an unsigned byte. Distinct from Ip007 (invalid enum value): here the enum is *valid* but disagrees with how the bytes were actually laid out.
+- **Reproducer recipe**: a `.gltf` accessor whose `componentType`/`type` byte-width contract does not match the true byte layout of its buffer's contents.
+- **Expected kernel behavior**: there is no way to detect this from the accessor alone (both are individually valid); loaders should not fabricate silently — if a diversity of tools disagree on the same bytes, the export/import contract itself is broken, which is exactly the graded signal.
+- **Byte assertion**: contains(b'"componentType": 5121')
+- **Fixture path**: import-examples/12-15-import-formats/Ip012.gltf
+- **Fixture kind**: raw import-format file (parser-robustness; graded against assimp/tinygltf, not Part-21)
+- **Notes**: Cross-oracle: trimesh 4.12.2 loads without error but silently corrupts the geometry — `g.vertices` decodes to `[[0,0,0],[0,0,0],[0,0,0]]` (all-zero, degenerate) instead of the intended `(0,0,0),(1,0,0),(0,1,0)` triangle, because reading 1-byte UNSIGNED_BYTE components from float32-laid-out bytes picks up each float's leading zero byte — verified 2026-07-12. No exception is raised; the mesh is silently wrong. Synonyms: "glTF componentType data layout mismatch", "accessor type disagrees with buffer bytes", "silent byte-width misparse", "UNSIGNED_BYTE read of float data". Provenance tier: bytes-only.
+- **Severity**: P2
+- **Model impact**: The loader silently fabricates a degenerate/garbage mesh with no error signal at all — the worst failure mode in this family, since downstream code has no indication the geometry is wrong.
+
+### Ip013 — PLY face list references a vertex index ≥ declared vertex count (unvalidated on load)
+
+- **Category**: §12.15 import-format parser robustness (sub-class: index-out-of-range, deferred-validation)
+- **Sources**: Pattern-mined from assimp/assimp#5341 downstream ("face list index ≥ declared vertex count", validation-caught but post-parse) (BSD-3-Clause — pattern only, no bytes copied).
+- **Description**: An ASCII PLY declares `element vertex 3` and a face row `3 0 1 5` — index `5` is ≥ the 3-vertex table. Unlike Ip001 (OBJ) and Ip010 (OFF), where the loader bounds-checks the index *at parse time* and raises immediately, a PLY `vertex_indices` list is stored as raw integers with no bounds-check during `LoadVertex`/face assembly — the file loads successfully with the bad index sitting unvalidated inside the face array. The defect surfaces later, only when something actually dereferences the face (e.g. building `.triangles`).
+- **Reproducer recipe**: an ASCII PLY whose `vertex_indices` face list names an index ≥ the declared `element vertex` count.
+- **Expected kernel behavior**: validate every face index against the declared vertex count at parse time (same discipline OBJ/OFF importers apply), not lazily on first dereference.
+- **Byte assertion**: contains(b'3 0 1 5')
+- **Fixture path**: import-examples/12-15-import-formats/Ip013.ply
+- **Fixture kind**: raw import-format file (parser-robustness; graded against assimp/trimesh, not Part-21)
+- **Notes**: Cross-oracle: trimesh 4.12.2 `trimesh.load()` **succeeds** with `m.faces == [[0, 1, 5]]` — the out-of-range `5` is retained unchecked — and only accessing `m.triangles` (which indexes `m.vertices` by `m.faces`) raises `IndexError: index 5 is out of bounds for axis 0 with size 3` — verified 2026-07-12. A deferred-validation gap distinct from Ip001/Ip010, where the equivalent OBJ/OFF loads raise immediately. Synonyms: "PLY face index unvalidated on load", "deferred IndexError on triangles", "PLY vertex_indices OOB lazy failure", "load succeeds bad index". Provenance tier: bytes-only.
+- **Severity**: P2
+- **Model impact**: Code that loads the mesh and inspects `.faces`/vertex counts sees no error and may serialize or hand off the corrupt face list downstream; the crash (if any) happens later and further from the malformed input, complicating diagnosis.
+
+### Ip014 — COLLADA document with no `library_geometries` (empty scene)
+
+- **Category**: §12.15 import-format parser robustness (sub-class: empty-document)
+- **Sources**: Pattern-mined from assimp/assimp#110 (empty Collada document crash/hang) (BSD-3-Clause — pattern only, no bytes copied).
+- **Description**: A syntactically well-formed COLLADA document declares a `library_visual_scenes` with an empty `visual_scene` (no `instance_geometry`, no nodes) and no `library_geometries` element at all. The document is valid XML and valid-enough COLLADA, but carries zero mesh content — a construct historically observed to crash or hang assimp's COLLADA path (#110) rather than degrade to an empty scene.
+- **Reproducer recipe**: a `.dae` with `library_visual_scenes`/`scene` present but no `library_geometries` and no geometry instances anywhere.
+- **Expected kernel behavior**: an empty document should produce a clean empty scene (zero meshes) or a diagnostic — never crash or hang.
+- **Byte assertion**: contains(b'<visual_scene id="scene0" name="scene0"/>')
+- **Fixture path**: import-examples/12-15-import-formats/Ip014.dae
+- **Fixture kind**: raw import-format file (parser-robustness; graded against assimp, not Part-21)
+- **Notes**: Cross-oracle: trimesh 4.12.2 + pycollada 0.9.3 load the document cleanly, returning a `Scene` with an empty `geometry` dict (`{}`) — no crash, no hang — a differential-tolerance signal against assimp's historical crash/hang on the same construct (#110), verified 2026-07-12. Complements Ip005 (index-OOB) with the empty-document facet of COLLADA robustness. Synonyms: "COLLADA empty document", "no library_geometries", "empty scene crash", "COLLADA zero-mesh doc". Provenance tier: bytes-only.
+- **Severity**: P2
+- **Model impact**: A strict loader that assumes at least one geometry exists may dereference a null/empty structure and crash or hang instead of reporting "no geometry found"; a tolerant loader silently returns nothing, which downstream code must still recognize as a real (if degenerate) outcome.
+
+### Ip015 — PLY zero-count face element alongside a populated vertex element (silent type change)
+
+- **Category**: §12.15 import-format parser robustness (sub-class: zero-count-element)
+- **Sources**: Pattern-mined from trimesh's own edge-case test corpus, `points_emptyface.ply` (`tests/test_ply.py`) (MIT — pattern only, no bytes copied).
+- **Description**: An ASCII PLY declares `element vertex 3` (populated with 3 coordinate rows) and `element face 0` (a legitimately empty face element — zero body rows, which is valid PLY). A loader that returns a uniform "mesh" type regardless of face count instead returns a *different* result type when there is no face data: a point cloud rather than an indexed mesh. Code written against the mesh API (assuming a `.faces` attribute exists) breaks on this input even though the file parsed without any error.
+- **Reproducer recipe**: an ASCII PLY with a populated `vertex` element and an `element face 0` header line followed by zero face body rows.
+- **Expected kernel behavior**: either always return a mesh-shaped object with `faces == []` for zero-face inputs, or document/require callers to type-check the return value; a silent type change on a `count == 0` edge is a common source of "works on every file I tested" downstream bugs.
+- **Byte assertion**: contains(b'element face 0')
+- **Fixture path**: import-examples/12-15-import-formats/Ip015.ply
+- **Fixture kind**: raw import-format file (parser-robustness; graded against assimp/trimesh, not Part-21)
+- **Notes**: Cross-oracle: trimesh 4.12.2 `trimesh.load()` returns a `trimesh.points.PointCloud` (not a `trimesh.Trimesh`) for this file; `PointCloud` has **no** `.faces` attribute at all, so `m.faces` raises `AttributeError: 'PointCloud' object has no attribute 'faces'` — verified 2026-07-12. Distinct from Ip013 (deferred IndexError on bad data): here the *type itself* silently changes on legitimate zero-count input, and any code assuming a uniform mesh-shaped return value breaks. Synonyms: "PLY zero face count returns PointCloud", "loader return type changes on empty element", "no faces attribute", "empty face element type trap". Provenance tier: bytes-only.
+- **Severity**: P2
+- **Model impact**: Downstream code written against a mesh API (indexed faces, connectivity) crashes with an unrelated-looking `AttributeError` far from the actual cause (a legitimately empty, but valid, PLY face element) unless every caller defensively type-checks the loader's return value.
+
+### Ip016 — OFF face names a negative vertex index (unvalidated, wraps to the last vertex)
+
+- **Category**: §12.15 import-format parser robustness (sub-class: negative-index-underflow)
+- **Sources**: Pattern-mined from assimp/assimp#2228 (OFF index-trust class) + the negative-index-underflow theme this corpus already demonstrates for OBJ in Ip006 (assimp#281) (BSD-3-Clause — pattern only, no bytes copied).
+- **Description**: An OFF file declares 5 vertices (indices 0–4) but a face record `3 0 1 -1` uses `-1` as its third index. The OFF format has no concept of relative/negative indices (unlike OBJ) — every index must be an absolute, non-negative offset into the vertex table. A loader that stores face indices as plain signed integers without an explicit non-negative check, then later indexes the vertex array with them, hands the negative value straight to a language-level indexing operator.
+- **Reproducer recipe**: an OFF file whose face `k i0 i1 …` includes a negative index among otherwise-valid indices.
+- **Expected kernel behavior**: reject any face index < 0 at parse time with a diagnostic; never pass a negative value into vertex-array indexing.
+- **Byte assertion**: contains(b'3 0 1 -1')
+- **Fixture path**: import-examples/12-15-import-formats/Ip016.off
+- **Fixture kind**: raw import-format file (parser-robustness; graded against assimp/trimesh, not Part-21)
+- **Notes**: Cross-oracle: trimesh 4.12.2 `trimesh.load()` succeeds with `m.faces == [[0, 1, -1]]` (the `-1` is kept, unvalidated) and `m.triangles` then silently substitutes the vertex at index 4 (`(99.0, 99.0, 99.0)`, deliberately placed far from the other 4 vertices to make the divergence unambiguous) via Python/NumPy negative-index wraparound — no exception, no diagnostic, a plausible-looking but entirely wrong triangle — verified 2026-07-12. Distinct from Ip010 (positive OOB, which trimesh does bounds-check and reject) and from Ip006 (OBJ negative index, which trimesh also rejects with IndexError): OFF's negative-index path is the one variant in the corpus that neither raises nor drops the face, but silently fabricates wrong geometry. Synonyms: "OFF negative face index", "negative index wraparound", "OFF -1 vertex reference", "silent wrong-vertex substitution". Provenance tier: bytes-only.
+- **Severity**: P2
+- **Model impact**: The reconstructed face silently references an unrelated vertex from elsewhere in the file (here, a deliberately distant point) with no error signal — the worst kind of divergence, since the output is plausible-looking geometry rather than an obvious crash or hole.

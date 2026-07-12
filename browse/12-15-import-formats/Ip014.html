@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ip014 — COLLADA document with no `library_geometries` (empty scene)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <span class="sep">/</span> <span class="current">Ip014</span>
+</nav>
+<header class="title-bar">
+<h1>Ip014 <span class="sep">—</span> <span class="entry-title">COLLADA document with no `library_geometries` (empty scene)</span></h1>
+<p class="category">§12.15 import-format parser robustness (sub-class: empty-document)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../import-examples/12-15-import-formats/Ip014.dae">View raw fixture (.dae)</a> <code class="path">import-examples/12-15-import-formats/Ip014.dae</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>Pattern-mined from assimp/assimp#110 (empty Collada document crash/hang) (BSD-3-Clause — pattern only, no bytes copied).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A syntactically well-formed COLLADA document declares a `library_visual_scenes` with an empty `visual_scene` (no `instance_geometry`, no nodes) and no `library_geometries` element at all. The document is valid XML and valid-enough COLLADA, but carries zero mesh content — a construct historically observed to crash or hang assimp&#x27;s COLLADA path (#110) rather than degrade to an empty scene.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>a `.dae` with `library_visual_scenes`/`scene` present but no `library_geometries` and no geometry instances anywhere.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>an empty document should produce a clean empty scene (zero meshes) or a diagnostic — never crash or hang.</p></section>
+<section><h2>Notes</h2>
+<p>Cross-oracle: trimesh 4.12.2 + pycollada 0.9.3 load the document cleanly, returning a `Scene` with an empty `geometry` dict (`{}`) — no crash, no hang — a differential-tolerance signal against assimp&#x27;s historical crash/hang on the same construct (#110), verified 2026-07-12. Complements Ip005 (index-OOB) with the empty-document facet of COLLADA robustness. Synonyms: &quot;COLLADA empty document&quot;, &quot;no library_geometries&quot;, &quot;empty scene crash&quot;, &quot;COLLADA zero-mesh doc&quot;. Provenance tier: bytes-only.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;&lt;visual_scene id=&quot;scene0&quot; name=&quot;scene0&quot;/&gt;&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Ip005.html">Ip005</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+<span class="lineno">2</span>&lt;!-- Ip014 assimp#110 empty COLLADA document: no library_geometries --&gt;
+<span class="lineno">3</span>&lt;COLLADA xmlns=&quot;http://www.collada.org/2005/11/COLLADASchema&quot; version=&quot;1.4.1&quot;&gt;
+<span class="lineno">4</span>  &lt;asset&gt;
+<span class="lineno">5</span>    &lt;created&gt;2026-07-12T00:00:00&lt;/created&gt;
+<span class="lineno">6</span>    &lt;modified&gt;2026-07-12T00:00:00&lt;/modified&gt;
+<span class="lineno">7</span>  &lt;/asset&gt;
+<span class="lineno">8</span>  &lt;library_visual_scenes&gt;
+<span class="lineno">9</span>    <mark>&lt;visual_scene id=&quot;scene0&quot; name=&quot;scene0&quot;/&gt;</mark>
+<span class="lineno">10</span>  &lt;/library_visual_scenes&gt;
+<span class="lineno">11</span>  &lt;scene&gt;
+<span class="lineno">12</span>    &lt;instance_visual_scene url=&quot;#scene0&quot;/&gt;
+<span class="lineno">13</span>  &lt;/scene&gt;
+<span class="lineno">14</span>&lt;/COLLADA&gt;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ip013.html">&larr; Ip013</a> <a class="up" href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <a class="next" href="Ip015.html">Ip015 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

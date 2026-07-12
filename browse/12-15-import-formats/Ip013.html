@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ip013 — PLY face list references a vertex index ≥ declared vertex count (unvalidated on load)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <span class="sep">/</span> <span class="current">Ip013</span>
+</nav>
+<header class="title-bar">
+<h1>Ip013 <span class="sep">—</span> <span class="entry-title">PLY face list references a vertex index ≥ declared vertex count (unvalidated on load)</span></h1>
+<p class="category">§12.15 import-format parser robustness (sub-class: index-out-of-range, deferred-validation)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-assembly" href="../by-tag/assembly/index.html">assembly</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../import-examples/12-15-import-formats/Ip013.ply">View raw fixture (.ply)</a> <code class="path">import-examples/12-15-import-formats/Ip013.ply</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>Pattern-mined from assimp/assimp#5341 downstream (&quot;face list index ≥ declared vertex count&quot;, validation-caught but post-parse) (BSD-3-Clause — pattern only, no bytes copied).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An ASCII PLY declares `element vertex 3` and a face row `3 0 1 5` — index `5` is ≥ the 3-vertex table. Unlike Ip001 (OBJ) and Ip010 (OFF), where the loader bounds-checks the index *at parse time* and raises immediately, a PLY `vertex_indices` list is stored as raw integers with no bounds-check during `LoadVertex`/face assembly — the file loads successfully with the bad index sitting unvalidated inside the face array. The defect surfaces later, only when something actually dereferences the face (e.g. building `.triangles`).</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>an ASCII PLY whose `vertex_indices` face list names an index ≥ the declared `element vertex` count.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>validate every face index against the declared vertex count at parse time (same discipline OBJ/OFF importers apply), not lazily on first dereference.</p></section>
+<section><h2>Notes</h2>
+<p>Cross-oracle: trimesh 4.12.2 `trimesh.load()` **succeeds** with `m.faces == [[0, 1, 5]]` — the out-of-range `5` is retained unchecked — and only accessing `m.triangles` (which indexes `m.vertices` by `m.faces`) raises `IndexError: index 5 is out of bounds for axis 0 with size 3` — verified 2026-07-12. A deferred-validation gap distinct from Ip001/Ip010, where the equivalent OBJ/OFF loads raise immediately. Synonyms: &quot;PLY face index unvalidated on load&quot;, &quot;deferred IndexError on triangles&quot;, &quot;PLY vertex_indices OOB lazy failure&quot;, &quot;load succeeds bad index&quot;. Provenance tier: bytes-only.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;3 0 1 5&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Ip001.html">Ip001</a>, <a href="Ip010.html">Ip010</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ply
+<span class="lineno">2</span>format ascii 1.0
+<span class="lineno">3</span>comment Ip013 assimp#5341 face list index &gt;= declared vertex count (post-parse, unvalidated)
+<span class="lineno">4</span>element vertex 3
+<span class="lineno">5</span>property float x
+<span class="lineno">6</span>property float y
+<span class="lineno">7</span>property float z
+<span class="lineno">8</span>element face 1
+<span class="lineno">9</span>property list uchar int vertex_indices
+<span class="lineno">10</span>end_header
+<span class="lineno">11</span>0.0 0.0 0.0
+<span class="lineno">12</span>1.0 0.0 0.0
+<span class="lineno">13</span>0.0 1.0 0.0
+<span class="lineno">14</span><mark>3 0 1 5</mark>
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ip012.html">&larr; Ip012</a> <a class="up" href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <a class="next" href="Ip014.html">Ip014 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ip016 — OFF face names a negative vertex index (unvalidated, wraps to the last vertex)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <span class="sep">/</span> <span class="current">Ip016</span>
+</nav>
+<header class="title-bar">
+<h1>Ip016 <span class="sep">—</span> <span class="entry-title">OFF face names a negative vertex index (unvalidated, wraps to the last vertex)</span></h1>
+<p class="category">§12.15 import-format parser robustness (sub-class: negative-index-underflow)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../import-examples/12-15-import-formats/Ip016.off">View raw fixture (.off)</a> <code class="path">import-examples/12-15-import-formats/Ip016.off</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>Pattern-mined from assimp/assimp#2228 (OFF index-trust class) + the negative-index-underflow theme this corpus already demonstrates for OBJ in Ip006 (assimp#281) (BSD-3-Clause — pattern only, no bytes copied).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An OFF file declares 5 vertices (indices 0–4) but a face record `3 0 1 -1` uses `-1` as its third index. The OFF format has no concept of relative/negative indices (unlike OBJ) — every index must be an absolute, non-negative offset into the vertex table. A loader that stores face indices as plain signed integers without an explicit non-negative check, then later indexes the vertex array with them, hands the negative value straight to a language-level indexing operator.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>an OFF file whose face `k i0 i1 …` includes a negative index among otherwise-valid indices.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>reject any face index &lt; 0 at parse time with a diagnostic; never pass a negative value into vertex-array indexing.</p></section>
+<section><h2>Notes</h2>
+<p>Cross-oracle: trimesh 4.12.2 `trimesh.load()` succeeds with `m.faces == [[0, 1, -1]]` (the `-1` is kept, unvalidated) and `m.triangles` then silently substitutes the vertex at index 4 (`(99.0, 99.0, 99.0)`, deliberately placed far from the other 4 vertices to make the divergence unambiguous) via Python/NumPy negative-index wraparound — no exception, no diagnostic, a plausible-looking but entirely wrong triangle — verified 2026-07-12. Distinct from Ip010 (positive OOB, which trimesh does bounds-check and reject) and from Ip006 (OBJ negative index, which trimesh also rejects with IndexError): OFF&#x27;s negative-index path is the one variant in the corpus that neither raises nor drops the face, but silently fabricates wrong geometry. Synonyms: &quot;OFF negative face index&quot;, &quot;negative index wraparound&quot;, &quot;OFF -1 vertex reference&quot;, &quot;silent wrong-vertex substitution&quot;. Provenance tier: bytes-only.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;3 0 1 -1&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Ip010.html">Ip010</a>, <a href="Ip006.html">Ip006</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>OFF
+<span class="lineno">2</span># Ip016 OFF face names a negative vertex index (assimp#2228 family; cf. Ip006 OBJ negative-index)
+<span class="lineno">3</span>5 1 0
+<span class="lineno">4</span>0.0 0.0 0.0
+<span class="lineno">5</span>1.0 0.0 0.0
+<span class="lineno">6</span>0.0 1.0 0.0
+<span class="lineno">7</span>1.0 1.0 0.0
+<span class="lineno">8</span>99.0 99.0 99.0
+<span class="lineno">9</span><mark>3 0 1 -1</mark>
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ip015.html">&larr; Ip015</a> <a class="up" href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,9 @@
+OFF
+# Ip016 OFF face names a negative vertex index (assimp#2228 family; cf. Ip006 OBJ negative-index)
+5 1 0
+0.0 0.0 0.0
+1.0 0.0 0.0
+0.0 1.0 0.0
+1.0 1.0 0.0
+99.0 99.0 99.0
+3 0 1 -1

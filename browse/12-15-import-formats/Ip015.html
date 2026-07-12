@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ip015 — PLY zero-count face element alongside a populated vertex element (silent type change)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <span class="sep">/</span> <span class="current">Ip015</span>
+</nav>
+<header class="title-bar">
+<h1>Ip015 <span class="sep">—</span> <span class="entry-title">PLY zero-count face element alongside a populated vertex element (silent type change)</span></h1>
+<p class="category">§12.15 import-format parser robustness (sub-class: zero-count-element)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../import-examples/12-15-import-formats/Ip015.ply">View raw fixture (.ply)</a> <code class="path">import-examples/12-15-import-formats/Ip015.ply</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>Pattern-mined from trimesh&#x27;s own edge-case test corpus, `points_emptyface.ply` (`tests/test_ply.py`) (MIT — pattern only, no bytes copied).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An ASCII PLY declares `element vertex 3` (populated with 3 coordinate rows) and `element face 0` (a legitimately empty face element — zero body rows, which is valid PLY). A loader that returns a uniform &quot;mesh&quot; type regardless of face count instead returns a *different* result type when there is no face data: a point cloud rather than an indexed mesh. Code written against the mesh API (assuming a `.faces` attribute exists) breaks on this input even though the file parsed without any error.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>an ASCII PLY with a populated `vertex` element and an `element face 0` header line followed by zero face body rows.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>either always return a mesh-shaped object with `faces == []` for zero-face inputs, or document/require callers to type-check the return value; a silent type change on a `count == 0` edge is a common source of &quot;works on every file I tested&quot; downstream bugs.</p></section>
+<section><h2>Notes</h2>
+<p>Cross-oracle: trimesh 4.12.2 `trimesh.load()` returns a `trimesh.points.PointCloud` (not a `trimesh.Trimesh`) for this file; `PointCloud` has **no** `.faces` attribute at all, so `m.faces` raises `AttributeError: &#x27;PointCloud&#x27; object has no attribute &#x27;faces&#x27;` — verified 2026-07-12. Distinct from Ip013 (deferred IndexError on bad data): here the *type itself* silently changes on legitimate zero-count input, and any code assuming a uniform mesh-shaped return value breaks. Synonyms: &quot;PLY zero face count returns PointCloud&quot;, &quot;loader return type changes on empty element&quot;, &quot;no faces attribute&quot;, &quot;empty face element type trap&quot;. Provenance tier: bytes-only.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;element face 0&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Ip013.html">Ip013</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ply
+<span class="lineno">2</span>format ascii 1.0
+<span class="lineno">3</span>comment Ip015 zero-count face element alongside populated vertex element (trimesh test corpus pattern, cf. points_emptyface.ply)
+<span class="lineno">4</span>element vertex 3
+<span class="lineno">5</span>property float x
+<span class="lineno">6</span>property float y
+<span class="lineno">7</span>property float z
+<span class="lineno">8</span><mark>element face 0</mark>
+<span class="lineno">9</span>property list uchar int vertex_indices
+<span class="lineno">10</span>end_header
+<span class="lineno">11</span>0.0 0.0 0.0
+<span class="lineno">12</span>1.0 0.0 0.0
+<span class="lineno">13</span>0.0 1.0 0.0
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ip014.html">&larr; Ip014</a> <a class="up" href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <a class="next" href="Ip016.html">Ip016 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

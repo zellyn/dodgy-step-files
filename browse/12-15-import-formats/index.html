@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1>§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</h1>
 <p class="blurb">Raw malformed import-format files (OBJ/PLY/OFF/glTF/COLLADA/3MF/FBX) that exercise a parser&#x27;s robustness: header-count lies, out-of-range indices, dangling refs, truncated/encoding faults. Graded against independent loaders (assimp, trimesh); not Part-21.</p>
-<p class="meta">10 entries</p>
+<p class="meta">16 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
@@ -28,6 +28,12 @@
 <tr><td><a href="Ip008.html"><code>Ip008</code></a></td><td>glTF node `children[]` references a node index out of range</td><td><code>bytes-only</code></td><td><code></code></td></tr>
 <tr><td><a href="Ip009.html"><code>Ip009</code></a></td><td>PLY vertex row supplies more scalar fields than declared properties</td><td><code>bytes-only</code></td><td><code></code></td></tr>
 <tr><td><a href="Ip010.html"><code>Ip010</code></a></td><td>OFF face names a vertex index ≥ declared vertex count</td><td><code>bytes-only</code></td><td><code></code></td></tr>
+<tr><td><a href="Ip011.html"><code>Ip011</code></a></td><td>glTF node `matrix` has fewer than 16 backing floats</td><td><code>bytes-only</code></td><td><code></code></td></tr>
+<tr><td><a href="Ip012.html"><code>Ip012</code></a></td><td>glTF accessor `componentType` disagrees with the buffer&#x27;s actual data layout</td><td><code>bytes-only</code></td><td><code></code></td></tr>
+<tr><td><a href="Ip013.html"><code>Ip013</code></a></td><td>PLY face list references a vertex index ≥ declared vertex count (unvalidated on load)</td><td><code>bytes-only</code></td><td><code></code></td></tr>
+<tr><td><a href="Ip014.html"><code>Ip014</code></a></td><td>COLLADA document with no `library_geometries` (empty scene)</td><td><code>bytes-only</code></td><td><code></code></td></tr>
+<tr><td><a href="Ip015.html"><code>Ip015</code></a></td><td>PLY zero-count face element alongside a populated vertex element (silent type change)</td><td><code>bytes-only</code></td><td><code></code></td></tr>
+<tr><td><a href="Ip016.html"><code>Ip016</code></a></td><td>OFF face names a negative vertex index (unvalidated, wraps to the last vertex)</td><td><code>bytes-only</code></td><td><code></code></td></tr>
 </tbody></table>
 </main>
 <footer>

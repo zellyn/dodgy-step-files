@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1><span class="tag tag-spec-violation">spec-violation</span></h1>
 <p class="blurb">Input violates ISO 10303 / AP-spec text and should be rejected.</p>
-<p class="meta">384 entries</p>
+<p class="meta">386 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Section</th><th>Expected validation</th></tr></thead><tbody>
@@ -41,6 +41,8 @@
 <tr><td><a href="../../12-15-import-formats/Ip004.html"><code>Ip004</code></a></td><td>glTF accessor over-runs its bufferView (count×stride &gt; byteLength)</td><td><a href="../../12-15-import-formats/index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a></td><td><code></code></td></tr>
 <tr><td><a href="../../12-15-import-formats/Ip007.html"><code>Ip007</code></a></td><td>glTF accessor `componentType` is an invalid enum value</td><td><a href="../../12-15-import-formats/index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a></td><td><code></code></td></tr>
 <tr><td><a href="../../12-15-import-formats/Ip008.html"><code>Ip008</code></a></td><td>glTF node `children[]` references a node index out of range</td><td><a href="../../12-15-import-formats/index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a></td><td><code></code></td></tr>
+<tr><td><a href="../../12-15-import-formats/Ip011.html"><code>Ip011</code></a></td><td>glTF node `matrix` has fewer than 16 backing floats</td><td><a href="../../12-15-import-formats/index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a></td><td><code></code></td></tr>
+<tr><td><a href="../../12-15-import-formats/Ip012.html"><code>Ip012</code></a></td><td>glTF accessor `componentType` disagrees with the buffer&#x27;s actual data layout</td><td><a href="../../12-15-import-formats/index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a></td><td><code></code></td></tr>
 <tr><td><a href="../../12-1a-encoding/Le001.html"><code>Le001</code></a></td><td>UTF-8 BOM at start of `ISO-10303-21;`</td><td><a href="../../12-1a-encoding/index.html">§12.1a Encoding &amp; string-literal defects</a></td><td><code>occt=reject/reject gmsh=reject ifc=reject</code></td></tr>
 <tr><td><a href="../../12-1a-encoding/Le004.html"><code>Le004</code></a></td><td>`\X\` (single-byte ISO-8859) escape with bad hex digit count or non-hex input</td><td><a href="../../12-1a-encoding/index.html">§12.1a Encoding &amp; string-literal defects</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-1a-encoding/Le006.html"><code>Le006</code></a></td><td>`\X4\…\X0\` (UCS-4) escape with hex run not divisible by 8 or containing surrogate code points</td><td><a href="../../12-1a-encoding/index.html">§12.1a Encoding &amp; string-literal defects</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>

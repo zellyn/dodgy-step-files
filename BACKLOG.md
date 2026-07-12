@@ -117,19 +117,50 @@ field like §12.14). All 10 independently verified with trimesh 4.12 + pycollada
 recorded per entry. Ip001-010: OBJ/PLY/OFF/glTF/COLLADA across index-OOB, count>body, accessor-overrun,
 invalid-enum, negative-index, row-overflow. See [[project_section_12_15_import]].
 
-**§12.15 REMAINING (paused — diminishing returns past ~12; each item below needs new tooling or is a
-variant of a covered class):**
-- [ ] ~14 more assimp classes still un-synthesized (glTF matrix-underread #6612, LINE_LOOP<2 #6634,
-      ExtractData-NULL #6609, STL count/size #4304, OFF infinite-loop DoS #6604 [hard to pin statically]).
+**§12.15 BATCH 2 — DONE (2026-07-12).** 6 more text-format fixtures (Ip011-016), all independently
+verified with trimesh 4.12.2 (+ pycollada 0.9.3 for COLLADA) before catalog write, per the verify-then-ship
+discipline. Ip011 glTF node-matrix insufficient backing floats (assimp#6612, raises ValueError reshape);
+Ip012 glTF componentType/data-layout mismatch (assimp#5683, silently corrupts all vertices to (0,0,0) —
+no exception at all, the worst-case failure mode in the section); Ip013 PLY face index ≥ vertex count kept
+UNvalidated on load — load succeeds, only `.triangles` raises IndexError later (deferred-validation gap,
+distinct from Ip001/Ip010 which raise immediately); Ip014 COLLADA empty document / no library_geometries
+(assimp#110, trimesh+pycollada tolerate cleanly — differential vs assimp's historical crash/hang); Ip015
+PLY zero-count face element returns a `PointCloud` instead of `Trimesh` (trimesh's own `points_emptyface.ply`
+test-corpus pattern, MIT) — `.faces` raises `AttributeError`, a silent-return-type trap on legitimate input;
+Ip016 OFF negative face index kept UNvalidated — `.triangles` silently substitutes the wrong vertex via
+Python/NumPy negative-index wraparound instead of erroring (the only variant in the section that neither
+raises nor drops the face, but fabricates plausible-looking wrong geometry).
+
+**Candidates tried and DROPPED this batch (documented for the next miner — don't re-attempt without new
+tooling)**: OBJ `f` face with <3 vertex-refs / backslash line-continuation / face-like substring in
+group-or-comment / vn-vt channel underrun (trimesh's OBJ loader handles all of these gracefully or ignores
+vn/vt indices entirely — no observable defect via trimesh); OFF header-glued-magic / leading-comment
+tokenization (trimesh parses both correctly); glTF LINE_LOOP<2 indices (confounded — trimesh drops ALL
+LINE_LOOP primitives regardless of index count, so the fixture wouldn't isolate the <2-indices defect);
+glTF primitive with no `indices` / TRIANGLE_STRIP mode (trimesh correctly reconstructs both topologies);
+COLLADA declared-count-exceeds-body (`<float_array count=N>` or `<accessor count=N>` or `<triangles
+count=N>` lying vs. actual body) — pycollada always trusts the real array/token length over the declared
+XML count, so this whole class doesn't manifest via our available tooling; PLY negative index and PLY
+face-list-count-prefix mismatch — technically load without erroring but couldn't get a byte-level
+divergence as clean as Ip016's OFF version, so skipped as redundant/weaker.
+
+**§12.15 REMAINING (paused — diminishing returns past ~18; each item below needs new tooling, needs a
+loader we don't have (assimp/Open3D/tinygltf), or was tried-and-dropped above):**
+- [ ] Remaining assimp classes needing assimp itself (not trimesh) to observe: glTF ExtractData-NULL
+      #6609 (glTF 1.0, trimesh doesn't support v1.0 well), animation-channel-target-NULL #6611, degenerate
+      UV → tangent-space OOB #6350 (trimesh doesn't compute tangent space), STL count/size #4304 (binary,
+      out of this batch's text-only scope), OFF infinite-loop DoS #6604 (hard to pin statically, hang risk).
+- [ ] Open3D cross-loader differentials (OBJ vertex-reference disorder, PLY RPly truncation/CRLF) — needs
+      an `open3d` dependency, not yet tried; heavier install than trimesh/pycollada.
 - [ ] **First FBX coverage** (deep-nesting #6501, PolygonVertexIndex #6635) — needs a minimal ASCII FBX
       that assimp/loaders will actually parse. Medium lift.
 - [ ] **First 3MF coverage** (triangle-ref #1128) — needs a ZIP/OPC container writer. Bigger lift.
 - [ ] **Draco `.drc` codec ≈ 8** — needs a binary `draco_encoder`-based writer; own sub-track.
-- [ ] **PROPOSAL (maintainer decision): permanent §12.15 import oracle.** This session verified all 10
-      fixtures with a one-shot trimesh/pycollada script; a standing `_import_oracle.py` + pytest (loading
-      each Ip* and asserting the recorded outcome) would make the section self-guarding like §12.14's mesh
-      oracle. Deferred because it adds heavy deps (trimesh/numpy/pycollada) — belongs in the SLOW
-      (validate-full) lane, not the fast push-gating lane. Needs your call on dep/CI cost.
+- [ ] **PROPOSAL (maintainer decision): permanent §12.15 import oracle.** All 16 fixtures now verified
+      with one-shot trimesh/pycollada scripts; a standing `_import_oracle.py` + pytest (loading each Ip*
+      and asserting the recorded outcome) would make the section self-guarding like §12.14's mesh oracle.
+      Deferred because it adds heavy deps (trimesh/numpy/pycollada) — belongs in the SLOW (validate-full)
+      lane, not the fast push-gating lane. Needs your call on dep/CI cost.
 
 **Wave 4 (NEW categories the corpus lacks entirely — need new section/infra):**
 - [ ] **lib3mf / 3MF** (ZIP+XML/OPC container defects) — brand-new container-format category; needs new
