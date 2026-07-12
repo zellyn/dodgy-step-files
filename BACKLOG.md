@@ -110,11 +110,26 @@ nightly rebaseline. assimp §12.15 still pending (needs new section + raw-file w
 - Numerous CORROBORATING (cross-loader confirmation of already-covered classes) — logged in the audit
   files, NOT synthesized; usable as cross-oracle Notes on existing entries.
 
-**§12.15 BUILD PLAN (task #492, next):** (1) study how §12.14 mesh fixtures are stored/validated (closest
-analog to raw import-format files); (2) scaffold `step-examples/12-15-import-formats/` (`Ip*`) + catalog
-section + register in section lists / lints / catalog-json builder; (3) a raw-malformed-file WRITER
-(fixtures are malformed-by-construction, not Python-StepFile-generated); (4) pilot ~5 strongest assimp
-Ip* fixtures end-to-end; (5) scale to the ~40 pool. Draco codec is a follow-on sub-track.
+**§12.15 BUILD — DONE (task #492, 2026-07-12).** Section stood up + 10 fixtures landed & CI-green
+(commits faec7b2d, 7a7b61fe, 71a8ccf2). Raw malformed files checked in directly under
+`import-examples/12-15-import-formats/` (NOT a Python writer — uses the explicit `Fixture path` catalog
+field like §12.14). All 10 independently verified with trimesh 4.12 + pycollada; cross-oracle behavior
+recorded per entry. Ip001-010: OBJ/PLY/OFF/glTF/COLLADA across index-OOB, count>body, accessor-overrun,
+invalid-enum, negative-index, row-overflow. See [[project_section_12_15_import]].
+
+**§12.15 REMAINING (paused — diminishing returns past ~12; each item below needs new tooling or is a
+variant of a covered class):**
+- [ ] ~14 more assimp classes still un-synthesized (glTF matrix-underread #6612, LINE_LOOP<2 #6634,
+      ExtractData-NULL #6609, STL count/size #4304, OFF infinite-loop DoS #6604 [hard to pin statically]).
+- [ ] **First FBX coverage** (deep-nesting #6501, PolygonVertexIndex #6635) — needs a minimal ASCII FBX
+      that assimp/loaders will actually parse. Medium lift.
+- [ ] **First 3MF coverage** (triangle-ref #1128) — needs a ZIP/OPC container writer. Bigger lift.
+- [ ] **Draco `.drc` codec ≈ 8** — needs a binary `draco_encoder`-based writer; own sub-track.
+- [ ] **PROPOSAL (maintainer decision): permanent §12.15 import oracle.** This session verified all 10
+      fixtures with a one-shot trimesh/pycollada script; a standing `_import_oracle.py` + pytest (loading
+      each Ip* and asserting the recorded outcome) would make the section self-guarding like §12.14's mesh
+      oracle. Deferred because it adds heavy deps (trimesh/numpy/pycollada) — belongs in the SLOW
+      (validate-full) lane, not the fast push-gating lane. Needs your call on dep/CI cost.
 
 **Wave 4 (NEW categories the corpus lacks entirely — need new section/infra):**
 - [ ] **lib3mf / 3MF** (ZIP+XML/OPC container defects) — brand-new container-format category; needs new
@@ -411,6 +426,14 @@ new flaky-CI surface.
 ---
 
 ## Smaller queued items
+
+### Q7 — Mutation-snapshot refresh (oracle-machine chore)
+`tests/data/mutation_snapshot.json` (2026-07-02) does not yet cover 14 bytes-only STEP fixtures added
+2026-07-11/12 (ruststep Lh051/Ls053-056, NIST Pmi156-164). Not a blocker — `test_bytes_only_are_undetected`
+now treats snapshot-missing entries as a non-fatal NOTE (only DETECTED fails), and the 95%-coverage floor
+still guards staleness. But the snapshot can only be regenerated on a machine with the live occt oracle
+(CI): `cd validation && uv run python -m step_corpus._mutation_test --all --mutations 3 --workers 8 --out
+/tmp/qmut_full.json`, then copy to `tests/data/mutation_snapshot.json`. Do on next oracle-machine session.
 
 ### Q1 — 23 CONFIRMED_WEAK fixtures, bespoke regens — DONE
 
