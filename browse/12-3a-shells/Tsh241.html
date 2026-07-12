@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tsh241 — Cone-apex degenerate edge referenced from the bounds of TWO different `ADVANCED_FACE`s</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3a Shells / orientation</a> <span class="sep">/</span> <span class="current">Tsh241</span>
+</nav>
+<header class="title-bar">
+<h1>Tsh241 <span class="sep">—</span> <span class="entry-title">Cone-apex degenerate edge referenced from the bounds of TWO different `ADVANCED_FACE`s</span></h1>
+<p class="category">§12.3a shells (sub-class: degenerate-edge multi-face retranslation — `stp-degenerate-edge-multiface`)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3a-shells/Tsh241.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3a-shells/Tsh241.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>occt-coverage GAP audit, `exchange/problems.json` `stp-degenerate-edge-multiface` (`StepToTopoDS_TranslateEdge::Init` cached-degenerated-edge retranslate-per-face path). Extends Tsh035&#x27;s single-face degenerate/ambiguous-edge pattern to a genuine multi-face reference.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A `CONICAL_SURFACE` (apex at origin, axis +Z, semi-angle 30 deg) is split into TWO half-cone `ADVANCED_FACE`s (front, y&gt;=0, and back, y&lt;=0) sharing: (1) the SAME degenerate apex `EDGE_CURVE` entity (zero-length, apex `VERTEX_POINT` at both ends) referenced from BOTH faces&#x27; `EDGE_LOOP`s, and (2) the two lateral (radial) `EDGE_CURVE`s at the seam, each referenced with opposite `ORIENTED_EDGE` sense by the two faces (a genuine manifold split, not two independent half-cones taped together). No prior fixture (Tsh035, Twi031, Gs189, Xp013) presents a degenerate edge entity shared across multiple faces&#x27; bounds — each keeps its degenerate edge within a single face&#x27;s own wire.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>One `CONICAL_SURFACE`; one degenerate `EDGE_CURVE(&#x27;&#x27;,#apex,#apex,#zero_length_line,.T.)`; two `ADVANCED_FACE`s each with an `EDGE_LOOP` containing an `ORIENTED_EDGE` wrapping that SAME `EDGE_CURVE` entity (not a duplicate copy).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal; `StepToTopoDS_TranslateEdge::Init` must retranslate a fresh per-face degenerate edge (with its own pcurve for that face&#x27;s parametrization) each time the shared entity is encountered on a new face, rather than reusing a stale cached copy from the first face.</p></section>
+<section><h2>Notes</h2>
+<p>Live-verified (this worktree&#x27;s OCP/OCCT 7.8.1): the translated shape reports `n_faces_total == 2` (both `surface_type == &quot;cone&quot;`), `n_edges_total == 6` against only 5 distinct `EDGE_CURVE` STEP entities in the bytes — one entity (the shared degenerate apex edge) is retranslated into two separate `TopoDS_Edge`s rather than reused from cache, while the two shared lateral edges ARE reused (5 entities, 8 `ORIENTED_EDGE` references, 6 resulting `TopoDS_Edge`s) — directly confirming the cached-degenerated-edge-retranslated-per-face mechanism in bytes and behavior. **See also**: Tsh035 (single-face torus-seam analog), Twi031 (duplicated-within-one-wire analog). Synonyms: &quot;degenerate edge shared across faces&quot;, &quot;cone apex edge reused by two faces&quot;, &quot;per-face degenerate edge retranslation&quot;, &quot;shared apex bridge multi-face cone&quot;, &quot;degenerate edge entity multiple face bounds&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;CONICAL_SURFACE&#x27;) == 1</code></li>
+<li><code>count_entity_def(b&#x27;ADVANCED_FACE&#x27;) == 2</code></li>
+<li><code>count_entity_def(b&#x27;EDGE_LOOP&#x27;) == 2</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_faces_total == 2</code></li>
+<li><code>face[0].surface_type == &quot;cone&quot;</code></li>
+<li><code>face[1].surface_type == &quot;cone&quot;</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Tsh035.html">Tsh035</a>, <a href="../12-3b-wires/Twi031.html">Twi031</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tsh241: OPEN_SHELL with TWO ADVANCED_FACEs on the SAME CONICAL_SURFACE (semi-angle 30 deg, axis +Z, apex at origin), split front/back (y&gt;=0 / y&lt;=0) at a shared diametral seam; ONE degenerate apex EDGE_CURVE entity (zero-length, apex vertex at both ends) IS referenced from the bounds of BOTH ADVANCED_FACEs&#x27; EDGE_LOOPs (not confined to a single face&#x27;s wire); the two radial seam EDGE_CURVEs are also shared between the faces with opposite ORIENTED_EDGE senses â forces per-face retranslation of the cached degenerate edge (StepToTopoDS_TranslateEdge::Init) */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Tsh241&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Tsh241.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span><mark>#5=CONICAL_SURFACE(</mark>&#x27;&#x27;,#4,2.0,0.5235987756);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#7=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(1.15470053838,0.0,2.0));
+<span class="lineno">18</span>#9=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(-1.15470053838,0.0,2.0));
+<span class="lineno">20</span>#11=VERTEX_POINT(&#x27;&#x27;,#10);
+<span class="lineno">21</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">22</span>#13=VECTOR(&#x27;&#x27;,#12,0.0);
+<span class="lineno">23</span>#14=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">24</span>#15=LINE(&#x27;&#x27;,#14,#13);
+<span class="lineno">25</span>#16=EDGE_CURVE(&#x27;tsh241_degen_apex&#x27;,#7,#7,#15,.T.);
+<span class="lineno">26</span>#17=DIRECTION(&#x27;&#x27;,(0.5,0.0,0.866025403784));
+<span class="lineno">27</span>#18=VECTOR(&#x27;&#x27;,#17,2.30940107676);
+<span class="lineno">28</span>#19=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">29</span>#20=LINE(&#x27;&#x27;,#19,#18);
+<span class="lineno">30</span>#21=EDGE_CURVE(&#x27;&#x27;,#7,#9,#20,.T.);
+<span class="lineno">31</span>#22=DIRECTION(&#x27;&#x27;,(-0.5,0.0,0.866025403784));
+<span class="lineno">32</span>#23=VECTOR(&#x27;&#x27;,#22,2.30940107676);
+<span class="lineno">33</span>#24=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">34</span>#25=LINE(&#x27;&#x27;,#24,#23);
+<span class="lineno">35</span>#26=EDGE_CURVE(&#x27;&#x27;,#7,#11,#25,.T.);
+<span class="lineno">36</span>#27=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,2.0));
+<span class="lineno">37</span>#28=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">38</span>#29=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">39</span>#30=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#27,#28,#29);
+<span class="lineno">40</span>#31=CIRCLE(&#x27;&#x27;,#30,1.1547005384);
+<span class="lineno">41</span>#32=EDGE_CURVE(&#x27;&#x27;,#9,#11,#31,.T.);
+<span class="lineno">42</span>#33=EDGE_CURVE(&#x27;&#x27;,#11,#9,#31,.T.);
+<span class="lineno">43</span>#34=ORIENTED_EDGE(&#x27;&#x27;,*,*,#16,.T.);
+<span class="lineno">44</span>#35=ORIENTED_EDGE(&#x27;&#x27;,*,*,#21,.T.);
+<span class="lineno">45</span>#36=ORIENTED_EDGE(&#x27;&#x27;,*,*,#32,.T.);
+<span class="lineno">46</span>#37=ORIENTED_EDGE(&#x27;&#x27;,*,*,#26,.F.);
+<span class="lineno">47</span><mark>#38=EDGE_LOOP(</mark>&#x27;&#x27;,(#34,#35,#36,#37));
+<span class="lineno">48</span>#39=FACE_OUTER_BOUND(&#x27;&#x27;,#38,.T.);
+<span class="lineno">49</span><mark>#40=ADVANCED_FACE(</mark>&#x27;tsh241_face_front&#x27;,(#39),#5,.T.);
+<span class="lineno">50</span>#41=ORIENTED_EDGE(&#x27;&#x27;,*,*,#16,.T.);
+<span class="lineno">51</span>#42=ORIENTED_EDGE(&#x27;&#x27;,*,*,#26,.T.);
+<span class="lineno">52</span>#43=ORIENTED_EDGE(&#x27;&#x27;,*,*,#33,.T.);
+<span class="lineno">53</span>#44=ORIENTED_EDGE(&#x27;&#x27;,*,*,#21,.F.);
+<span class="lineno">54</span><mark>#45=EDGE_LOOP(</mark>&#x27;&#x27;,(#41,#42,#43,#44));
+<span class="lineno">55</span>#46=FACE_OUTER_BOUND(&#x27;&#x27;,#45,.T.);
+<span class="lineno">56</span><mark>#47=ADVANCED_FACE(</mark>&#x27;tsh241_face_back&#x27;,(#46),#5,.T.);
+<span class="lineno">57</span>#48=OPEN_SHELL(&#x27;&#x27;,(#40,#47));
+<span class="lineno">58</span>#49=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#48));
+<span class="lineno">59</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">60</span>#9051=PRODUCT(&#x27;Tsh241&#x27;,&#x27;Tsh241&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">61</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">62</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">63</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">64</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">65</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">66</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">67</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">68</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">69</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">70</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#49),#9060);
+<span class="lineno">71</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">72</span>ENDSEC;
+<span class="lineno">73</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tsh240.html">&larr; Tsh240</a> <a class="up" href="index.html">§12.3a Shells / orientation</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

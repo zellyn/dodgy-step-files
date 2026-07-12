@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1>§12.3a Shells / orientation</h1>
 <p class="blurb">Shell topology defects: orientation, free bounds, mixed open/closed shells, UnifySameDomain pathologies.</p>
-<p class="meta">264 entries</p>
+<p class="meta">272 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
@@ -282,6 +282,14 @@
 <tr><td><a href="Tsh231.html"><code>Tsh231</code></a></td><td>Revolve 288°-360° band triggers SURFACE_OF_REVOLUTION bound flip</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Tsh232.html"><code>Tsh232</code></a></td><td>Fusion 360 fillet-junction three-valent `ORIENTED_EDGE` in `CLOSED_SHELL`</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Tsh233.html"><code>Tsh233</code></a></td><td>Two `MANIFOLD_SOLID_BREP`s sharing the same `OPEN_SHELL` entity reference</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(38) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tsh234.html"><code>Tsh234</code></a></td><td>Compound of a normal solid + an isolated sliver solid at 0.5% of its volume</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tsh235.html"><code>Tsh235</code></a></td><td>Compound of a normal solid + a width-factor needle sliver adjacent to it (Merge disposition)</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tsh236.html"><code>Tsh236</code></a></td><td>Two nested `CLOSED_SHELL`s with no `BREP_WITH_VOIDS` wrapper (unstructured shell soup, containment classification)</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(52) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tsh237.html"><code>Tsh237</code></a></td><td>Two disjoint `CLOSED_SHELL`s with no `BREP_WITH_VOIDS` wrapper (unstructured shell soup, compound-of-2-solids classification)</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(52) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tsh238.html"><code>Tsh238</code></a></td><td>Compound of a normal solid + an isolated volume-threshold sliver, reached via the `dropsmallsolids` operator context</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tsh239.html"><code>Tsh239</code></a></td><td>Compound of a normal solid + an adjacent width-factor sliver, reached via the `dropsmallsolids` operator context (Merge disposition)</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tsh240.html"><code>Tsh240</code></a></td><td>Second independent `BREP_WITH_VOIDS` nested-void solid, geometry distinct from Tsh015</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(53) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tsh241.html"><code>Tsh241</code></a></td><td>Cone-apex degenerate edge referenced from the bounds of TWO different `ADVANCED_FACE`s</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
 </tbody></table>
 </main>
 <footer>

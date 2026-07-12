@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Twi287 — Full-period closed meridian edges on a `TOROIDAL_SURFACE` belt need splitting at the seam (insurance fixture, distinct surface kind from Twi019)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3b Wires / loops / edges</a> <span class="sep">/</span> <span class="current">Twi287</span>
+</nav>
+<header class="title-bar">
+<h1>Twi287 <span class="sep">—</span> <span class="entry-title">Full-period closed meridian edges on a `TOROIDAL_SURFACE` belt need splitting at the seam (insurance fixture, distinct surface kind from Twi019)</span></h1>
+<p class="category">§12.3b wire-loop (sub-class: closed-edge splitting)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3b-wires/Twi287.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3b-wires/Twi287.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT `ShapeUpgrade_ShapeDivideClosedEdges`, exposed as the `spltclosededges` `ShapeProcess` operator (`ShapeProcess_OperLibrary.cxx:817-844`)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An `EDGE_CURVE` whose underlying curve is a full 360° `CIRCLE` is used as a single edge; start vertex equals end vertex. Consumers that require every edge to be an open arc with two distinct endpoints need the edge divided at a seam/interior point. Twi019 demonstrates this mechanism on a `CYLINDRICAL_SURFACE`; this insurance fixture demonstrates the identical mechanism on a `TOROIDAL_SURFACE` belt (a torus segment bounded by two full meridian circles) so the class&#x27;s coverage does not rest on a single surface kind.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`ADVANCED_FACE` on a `TOROIDAL_SURFACE` (major=5, minor=2); `EDGE_LOOP` bounding a quarter-revolution belt — two full-period meridian `EDGE_CURVE`s (`start==end` vertex, complete 360° tube cross-section) at `u=0` and `u=pi/2`, connected by two `CIRCLE`-arc edges along the outer (`v=0`) and inner (`v=pi`) equators.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>split each closed meridian edge at its seam parameter (or a natural break) into two open arcs, or accept the closed single edge as a kernel-internal representation. Choice is design-dependent; consumers of the result must agree on the convention.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Twi019 (the cylinder-surface sibling of this mechanism — untouched by this fixture). Verified live: OCCT does NOT auto-split the meridian circles on read (`edge[0]`/`edge[2]` retain full length `2*pi*minor_radius == 12.566`), unlike the bow-tie self-intersection class (Twi286) which the reader silently repairs — closed-edge splitting is genuinely opt-in (`spltclosededges` is available-but-not-default), so the unsplit closed edges survive import exactly as declared. `brepcheck.valid` came back `False` live (an unrelated seam/inner-arc side effect of this specific belt construction, not asserted in tier-3 here since Twi019 already carries the `brepcheck.valid==True` claim for the cylinder case and this fixture&#x27;s contribution is the distinct-surface-kind coverage, not a brepcheck claim). Synonyms: &quot;torus belt closed meridian edge unsplit&quot;, &quot;full 360 degree circle edge on torus&quot;, &quot;closed curve as single edge needs splitting torus&quot;, &quot;meridian circle spans whole tube cross-section&quot;, &quot;torus surface closed-edge splitting&quot;. Provenance tier: bytes-sufficient.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
+<section><h2>Closure intent</h2>
+<p><code>sheet</code> — the open shell is the intended final geometry; a solid-only kernel should cleanly refuse.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;TOROIDAL_SURFACE&#x27;) == 1</code></li>
+<li><code>count_entity_def(b&#x27;CIRCLE&#x27;) &gt;= 2</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>face[0].surface_type == &quot;torus&quot;</code></li>
+<li><code>n_edges_total &gt;= 4</code></li>
+<li><code>n_vertices_total &gt;= 4</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Twi019.html">Twi019</a>, <a href="Twi286.html">Twi286</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Twi287: OPEN_SHELL with one ADVANCED_FACE on a TOROIDAL_SURFACE (major=5, minor=2); FACE_OUTER_BOUND references an EDGE_LOOP bounding a quarter-revolution belt of the torus: two full-period meridian CIRCLE edges (start==end vertex) at u=0 and u=pi/2, connected by two U-direction arcs at v=0 (outer equator) and v=pi (inner equator); each meridian EDGE_CURVE wraps a full 360 degrees around the tube cross-section without being split â full-period closed edge with start==end vertex IS the mechanism, distinct surface kind (torus, not Twi019&#x27;s cylinder); the EDGE_LOOP IS wired into FACE_OUTER_BOUND, ADVANCED_FACE, OPEN_SHELL, SHELL_BASED_SURFACE_MODEL â never orphaned; kernel must split each closed meridian edge at its seam parameter into two open arcs, or accept the closed single edge as a kernel-internal representation */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Twi287&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Twi287.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span><mark>#5=CIRCLE(</mark>&#x27;&#x27;,#4,2.0);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(7.0,0.0,0.0));
+<span class="lineno">16</span>#7=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">17</span>#8=EDGE_CURVE(&#x27;&#x27;,#7,#7,#5,.T.);
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0,0.0));
+<span class="lineno">19</span>#10=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">20</span>#11=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">21</span>#12=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#9,#10,#11);
+<span class="lineno">22</span><mark>#13=CIRCLE(</mark>&#x27;&#x27;,#12,2.0);
+<span class="lineno">23</span>#14=CARTESIAN_POINT(&#x27;&#x27;,(0.0,7.0,0.0));
+<span class="lineno">24</span>#15=VERTEX_POINT(&#x27;&#x27;,#14);
+<span class="lineno">25</span>#16=EDGE_CURVE(&#x27;&#x27;,#15,#15,#13,.T.);
+<span class="lineno">26</span>#17=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">27</span>#18=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">28</span>#19=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">29</span>#20=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#17,#18,#19);
+<span class="lineno">30</span><mark>#21=CIRCLE(</mark>&#x27;&#x27;,#20,7.0);
+<span class="lineno">31</span>#22=EDGE_CURVE(&#x27;&#x27;,#7,#15,#21,.T.);
+<span class="lineno">32</span>#23=CARTESIAN_POINT(&#x27;&#x27;,(3.0,0.0,0.0));
+<span class="lineno">33</span>#24=CARTESIAN_POINT(&#x27;&#x27;,(0.0,3.0,0.0));
+<span class="lineno">34</span>#25=VERTEX_POINT(&#x27;&#x27;,#23);
+<span class="lineno">35</span>#26=VERTEX_POINT(&#x27;&#x27;,#24);
+<span class="lineno">36</span>#27=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">37</span>#28=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0));
+<span class="lineno">38</span>#29=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">39</span>#30=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#27,#28,#29);
+<span class="lineno">40</span><mark>#31=CIRCLE(</mark>&#x27;&#x27;,#30,3.0);
+<span class="lineno">41</span>#32=EDGE_CURVE(&#x27;&#x27;,#26,#25,#31,.T.);
+<span class="lineno">42</span>#33=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">43</span>#34=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">44</span>#35=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">45</span>#36=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#33,#34,#35);
+<span class="lineno">46</span><mark>#37=TOROIDAL_SURFACE(</mark>&#x27;&#x27;,#36,5.0,2.0);
+<span class="lineno">47</span>#38=ORIENTED_EDGE(&#x27;&#x27;,$,$,#8,.T.);
+<span class="lineno">48</span>#39=ORIENTED_EDGE(&#x27;&#x27;,$,$,#22,.T.);
+<span class="lineno">49</span>#40=ORIENTED_EDGE(&#x27;&#x27;,$,$,#16,.F.);
+<span class="lineno">50</span>#41=ORIENTED_EDGE(&#x27;&#x27;,$,$,#32,.T.);
+<span class="lineno">51</span>#42=EDGE_LOOP(&#x27;&#x27;,(#38,#39,#40,#41));
+<span class="lineno">52</span>#43=FACE_OUTER_BOUND(&#x27;&#x27;,#42,.T.);
+<span class="lineno">53</span>#44=ADVANCED_FACE(&#x27;&#x27;,(#43),#37,.T.);
+<span class="lineno">54</span>#45=OPEN_SHELL(&#x27;&#x27;,(#44));
+<span class="lineno">55</span>#46=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#45));
+<span class="lineno">56</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">57</span>#9051=PRODUCT(&#x27;Twi287&#x27;,&#x27;Twi287&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">58</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">59</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">60</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">61</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">62</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">63</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">64</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">65</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">66</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">67</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#46),#9060);
+<span class="lineno">68</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">69</span>ENDSEC;
+<span class="lineno">70</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Twi286.html">&larr; Twi286</a> <a class="up" href="index.html">§12.3b Wires / loops / edges</a> <a class="next" href="Twi288.html">Twi288 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

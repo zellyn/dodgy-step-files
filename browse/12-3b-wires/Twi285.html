@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Twi285 — Two arbitrary, non-adjacent edges (different faces) register as touching via coincident-but-distinct `VERTEX_POINT` entities in a broader connectivity graph</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3b Wires / loops / edges</a> <span class="sep">/</span> <span class="current">Twi285</span>
+</nav>
+<header class="title-bar">
+<h1>Twi285 <span class="sep">—</span> <span class="entry-title">Two arbitrary, non-adjacent edges (different faces) register as touching via coincident-but-distinct `VERTEX_POINT` entities in a broader connectivity graph</span></h1>
+<p class="category">§12.3b wire-loop (sub-class: vertex unification, cross-wire scope)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3b-wires/Twi285.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3b-wires/Twi285.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT `ShapeFix_EdgeConnect::Add` / `::Build` (`ShapeFix_EdgeConnect.cxx:145-284`) — the general-purpose utility underlying shell/face sewing, not limited to one wire&#x27;s own consecutive edges</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>The vertex-unification utility that shell/face sewing relies on must reconcile vertices across UNRELATED edges anywhere in the connectivity graph, not just consecutive edges of one wire (contrast Twi284). Here two unrelated `ADVANCED_FACE`s each have their own outer-wire corner at world coordinate `(0,0,0)`, each encoded with its OWN distinct `VERTEX_POINT` entity rather than a shared one. This deliberately differs from Twi050 (`ShapeFix_SplitCommonVertex`): Twi050 reuses the SAME `VERTEX_POINT` entity across both faces (too much sharing, must split apart); here each face has a DIFFERENT `VERTEX_POINT` entity at the same coordinate (no sharing at all, must be merged) — the opposite defect direction, exercising the general connectivity-graph `Add()`/`Build()` merge path rather than the split path.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Two `ADVANCED_FACE`s on `PLANE`s, geometrically unrelated (different Z-offset carrier planes) except that each face&#x27;s outer-wire `EDGE_LOOP` has one corner `VERTEX_POINT` at `(0,0,0)` — `#v0` for face 0, `#v1` for face 1 — two separate entities, never the same reference.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>the connectivity-graph builder (`ShapeFix_EdgeConnect::Add`/`Build`, or the sewing tool that invokes it) must recognize `#v0`/`#v1` as touching (identical location, distinct entities) and merge them into one shared vertex, or reject the input as ambiguous.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Twi284 (the single-wire, consecutive-edges subvariant of this same problem class). Twi009/Twi050 (`SplitCommonVertex`) are cited as negative-space contrast — the opposite defect direction (one entity over-shared, must split) — not reused here. Synonyms: &quot;non-adjacent edges share coincident vertex across faces&quot;, &quot;connectivity graph must merge distinct vertex entities&quot;, &quot;cross-wire vertex fragmentation&quot;, &quot;sewing-scope vertex unification&quot;, &quot;arbitrary edge pair registered as touching&quot;. Provenance tier: bytes-sufficient.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></p></section>
+<section><h2>Closure intent</h2>
+<p><code>sheet</code> — the open shell is the intended final geometry; a solid-only kernel should cleanly refuse.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;VERTEX_POINT&#x27;) &gt;= 8</code></li>
+<li><code>contains(b&#x27;(0.0,0.0,0.0)&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_edges_total &gt;= 6</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>face[1].surface_type == &quot;plane&quot;</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Twi284.html">Twi284</a>, <a href="Twi009.html">Twi009</a>, <a href="Twi050.html">Twi050</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Twi285: Two ADVANCED_FACEs on PLANEs, unrelated to each other except for a shared corner LOCATION; face 0&#x27;s outer wire has a corner VERTEX_POINT #v0 at (0,0,0); face 1&#x27;s outer wire has its OWN, DISTINCT VERTEX_POINT #v1 also at (0,0,0) â two coincident-but-distinct entities registered as &#x27;touching&#x27; only via the broader connectivity graph, not via any shared wire or entity reuse; this differs from Twi050 (same entity reused across both wires); here NO entity is shared â both vertices are separate but coincident; the general-purpose connectivity-graph vertex-unification utility (ShapeFix_EdgeConnect::Add/Build) must recognize the pair and merge; both VERTEX_POINTs ARE wired into EDGE_LOOPs â FACE_OUTER_BOUNDs â ADVANCED_FACEs in a SHELL_BASED_SURFACE_MODEL â never orphaned */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Twi285&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Twi285.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,<mark>(0.0,0.0,0.0)</mark>);
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=PLANE(&#x27;&#x27;,#4);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,<mark>(0.0,0.0,0.0)</mark>);
+<span class="lineno">16</span><mark>#7=VERTEX_POINT(</mark>&#x27;&#x27;,#6);
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">18</span><mark>#9=VERTEX_POINT(</mark>&#x27;&#x27;,#8);
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(5.0,5.0,0.0));
+<span class="lineno">20</span><mark>#11=VERTEX_POINT(</mark>&#x27;&#x27;,#10);
+<span class="lineno">21</span>#12=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0,0.0));
+<span class="lineno">22</span><mark>#13=VERTEX_POINT(</mark>&#x27;&#x27;,#12);
+<span class="lineno">23</span>#14=CARTESIAN_POINT(&#x27;&#x27;,<mark>(0.0,0.0,0.0)</mark>);
+<span class="lineno">24</span>#15=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">25</span>#16=VECTOR(&#x27;&#x27;,#15,5.0);
+<span class="lineno">26</span>#17=LINE(&#x27;&#x27;,#14,#16);
+<span class="lineno">27</span>#18=EDGE_CURVE(&#x27;&#x27;,#7,#9,#17,.T.);
+<span class="lineno">28</span>#19=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">29</span>#20=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">30</span>#21=VECTOR(&#x27;&#x27;,#20,5.0);
+<span class="lineno">31</span>#22=LINE(&#x27;&#x27;,#19,#21);
+<span class="lineno">32</span>#23=EDGE_CURVE(&#x27;&#x27;,#9,#11,#22,.T.);
+<span class="lineno">33</span>#24=CARTESIAN_POINT(&#x27;&#x27;,(5.0,5.0,0.0));
+<span class="lineno">34</span>#25=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">35</span>#26=VECTOR(&#x27;&#x27;,#25,5.0);
+<span class="lineno">36</span>#27=LINE(&#x27;&#x27;,#24,#26);
+<span class="lineno">37</span>#28=EDGE_CURVE(&#x27;&#x27;,#11,#13,#27,.T.);
+<span class="lineno">38</span>#29=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0,0.0));
+<span class="lineno">39</span>#30=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">40</span>#31=VECTOR(&#x27;&#x27;,#30,5.0);
+<span class="lineno">41</span>#32=LINE(&#x27;&#x27;,#29,#31);
+<span class="lineno">42</span>#33=EDGE_CURVE(&#x27;&#x27;,#13,#7,#32,.T.);
+<span class="lineno">43</span>#34=ORIENTED_EDGE(&#x27;&#x27;,$,$,#18,.T.);
+<span class="lineno">44</span>#35=ORIENTED_EDGE(&#x27;&#x27;,$,$,#23,.T.);
+<span class="lineno">45</span>#36=ORIENTED_EDGE(&#x27;&#x27;,$,$,#28,.T.);
+<span class="lineno">46</span>#37=ORIENTED_EDGE(&#x27;&#x27;,$,$,#33,.T.);
+<span class="lineno">47</span>#38=EDGE_LOOP(&#x27;&#x27;,(#34,#35,#36,#37));
+<span class="lineno">48</span>#39=FACE_OUTER_BOUND(&#x27;&#x27;,#38,.T.);
+<span class="lineno">49</span>#40=ADVANCED_FACE(&#x27;&#x27;,(#39),#5,.T.);
+<span class="lineno">50</span>#41=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,-10.0));
+<span class="lineno">51</span>#42=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">52</span>#43=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">53</span>#44=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#41,#42,#43);
+<span class="lineno">54</span>#45=PLANE(&#x27;&#x27;,#44);
+<span class="lineno">55</span>#46=CARTESIAN_POINT(&#x27;&#x27;,<mark>(0.0,0.0,0.0)</mark>);
+<span class="lineno">56</span><mark>#47=VERTEX_POINT(</mark>&#x27;&#x27;,#46);
+<span class="lineno">57</span>#48=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,-10.0));
+<span class="lineno">58</span><mark>#49=VERTEX_POINT(</mark>&#x27;&#x27;,#48);
+<span class="lineno">59</span>#50=CARTESIAN_POINT(&#x27;&#x27;,(5.0,5.0,-10.0));
+<span class="lineno">60</span><mark>#51=VERTEX_POINT(</mark>&#x27;&#x27;,#50);
+<span class="lineno">61</span>#52=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0,-10.0));
+<span class="lineno">62</span><mark>#53=VERTEX_POINT(</mark>&#x27;&#x27;,#52);
+<span class="lineno">63</span>#54=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,-10.0));
+<span class="lineno">64</span>#55=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">65</span>#56=VECTOR(&#x27;&#x27;,#55,5.0);
+<span class="lineno">66</span>#57=LINE(&#x27;&#x27;,#54,#56);
+<span class="lineno">67</span>#58=EDGE_CURVE(&#x27;&#x27;,#47,#49,#57,.T.);
+<span class="lineno">68</span>#59=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,-10.0));
+<span class="lineno">69</span>#60=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">70</span>#61=VECTOR(&#x27;&#x27;,#60,5.0);
+<span class="lineno">71</span>#62=LINE(&#x27;&#x27;,#59,#61);
+<span class="lineno">72</span>#63=EDGE_CURVE(&#x27;&#x27;,#49,#51,#62,.T.);
+<span class="lineno">73</span>#64=CARTESIAN_POINT(&#x27;&#x27;,(5.0,5.0,-10.0));
+<span class="lineno">74</span>#65=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">75</span>#66=VECTOR(&#x27;&#x27;,#65,5.0);
+<span class="lineno">76</span>#67=LINE(&#x27;&#x27;,#64,#66);
+<span class="lineno">77</span>#68=EDGE_CURVE(&#x27;&#x27;,#51,#53,#67,.T.);
+<span class="lineno">78</span>#69=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0,-10.0));
+<span class="lineno">79</span>#70=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">80</span>#71=VECTOR(&#x27;&#x27;,#70,5.0);
+<span class="lineno">81</span>#72=LINE(&#x27;&#x27;,#69,#71);
+<span class="lineno">82</span>#73=EDGE_CURVE(&#x27;&#x27;,#53,#47,#72,.T.);
+<span class="lineno">83</span>#74=ORIENTED_EDGE(&#x27;&#x27;,$,$,#58,.T.);
+<span class="lineno">84</span>#75=ORIENTED_EDGE(&#x27;&#x27;,$,$,#63,.T.);
+<span class="lineno">85</span>#76=ORIENTED_EDGE(&#x27;&#x27;,$,$,#68,.T.);
+<span class="lineno">86</span>#77=ORIENTED_EDGE(&#x27;&#x27;,$,$,#73,.T.);
+<span class="lineno">87</span>#78=EDGE_LOOP(&#x27;&#x27;,(#74,#75,#76,#77));
+<span class="lineno">88</span>#79=FACE_OUTER_BOUND(&#x27;&#x27;,#78,.T.);
+<span class="lineno">89</span>#80=ADVANCED_FACE(&#x27;&#x27;,(#79),#45,.T.);
+<span class="lineno">90</span>#81=CLOSED_SHELL(&#x27;&#x27;,(#40,#80));
+<span class="lineno">91</span>#82=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#81));
+<span class="lineno">92</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">93</span>#9051=PRODUCT(&#x27;Twi285&#x27;,&#x27;Twi285&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">94</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">95</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">96</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">97</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">98</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">99</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">100</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">101</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">102</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">103</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#82),#9060);
+<span class="lineno">104</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">105</span>ENDSEC;
+<span class="lineno">106</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Twi284.html">&larr; Twi284</a> <a class="up" href="index.html">§12.3b Wires / loops / edges</a> <a class="next" href="Twi286.html">Twi286 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -70218,6 +70218,341 @@
   },
   {
     "byte_assertions": [
+      "count_entity_def(b'MANIFOLD_SOLID_BREP') == 2",
+      "count_entity_def(b'CLOSED_SHELL') == 2"
+    ],
+    "category": "§12.3a shells (sub-class: small/sliver-solid healing — `tkshh-sliver-solid`)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A compound (one `ADVANCED_BREP_SHAPE_REPRESENTATION` with two `items`) contains two genuine `MANIFOLD_SOLID_BREP` solids, each with a real watertight 6-face `CLOSED_SHELL` (not a bare face): solid A is a 10x10x10 box (volume 1000), solid B is a 10x10x0.05 slab (volume 5 = 0.5% of solid A's volume, below `ShapeFix_FixSmallSolid`'s default volume-ratio threshold), placed with a bounding box disjoint from solid A (genuinely isolated, no adjacent neighbor). A correct healer must choose the \"Drop\" disposition for the isolated sliver — there is no neighbor solid to merge into.",
+    "expected_kernel_behavior": "heal; detect the negligible-volume solid via `ShapeFix_FixSmallSolid`'s volume-ratio test and drop it (no neighbor to merge into); preserve solid A unchanged.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3a-shells/Tsh234.stp",
+    "id": "Tsh234",
+    "notes": "**See also**: Tsh235 (width-factor / adjacent-neighbor sibling), Tfa015 (face-sliver-sewing analog — this fixture builds genuine `TopoDS_SOLID` bodies, not bare faces). Synonyms: \"boolean leaves tiny debris solid\", \"compound has near-zero-volume sub-solid\", \"sliver solid below drop threshold\", \"isolated small solid needs removing\", \"compound-of-solids volume-ratio healing\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "Two `MANIFOLD_SOLID_BREP` entities (each a genuine 6-face `CLOSED_SHELL` box), both listed in one `ADVANCED_BREP_SHAPE_REPRESENTATION.items`; solid B's volume = 0.5% of solid A's, bounding boxes disjoint.",
+    "section": "12.3a",
+    "section_dir": "12-3a-shells",
+    "see_also": [
+      "Tsh235",
+      "Tfa015"
+    ],
+    "sender": "",
+    "severity": "P1",
+    "sources": [
+      "occt-coverage GAP audit, `tkshhealing/problems.json` `tkshh-sliver-solid` (ShapeFix_FixSmallSolid). No prior fixture presented a genuine compound of two `MANIFOLD_SOLID_BREP` solids where one is a sliver below the healer's volume threshold."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [
+      "n_faces_total == 12",
+      "face[0].surface_type == \"plane\""
+    ],
+    "title": "Compound of a normal solid + an isolated sliver solid at 0.5% of its volume"
+  },
+  {
+    "byte_assertions": [
+      "count_entity_def(b'MANIFOLD_SOLID_BREP') == 2",
+      "count_entity_def(b'CLOSED_SHELL') == 2"
+    ],
+    "category": "§12.3a shells (sub-class: small/sliver-solid healing — `tkshh-sliver-solid`, width-factor + Merge-disposition subvariant)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "The adjacent-neighbor sibling of Tsh234. A compound (one `ADVANCED_BREP_SHAPE_REPRESENTATION` with two `items`) contains a normal 10x10x10 box (solid A, volume 1000) and an elongated needle sliver, 10x0.02x0.02 (solid B, volume 0.004, width-factor = volume / half-surface-area ~= 0.00999 mm — the discriminating signal for this shape family, distinct from Tsh234's flat-plate volume-ratio test). Solid B's bounding box is flush-adjacent to solid A's x=10 face (touching, though topologically independent — distinct `VERTEX_POINT`/`EDGE_CURVE`/`PLANE` entities, no shared IDs), giving a correct healer a real neighbor to exercise the \"Merge\" disposition against, unlike Tsh234's isolated \"Drop\" case.",
+    "expected_kernel_behavior": "heal; detect the negligible width-factor solid via `ShapeFix_FixSmallSolid` and merge it into the adjacent neighbor solid A (Merge disposition), respecting a \"Merge Solids\" flag.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3a-shells/Tsh235.stp",
+    "id": "Tsh235",
+    "notes": "**See also**: Tsh234 (isolated / volume-ratio sibling). Synonyms: \"needle solid merged into neighbor\", \"width-factor sliver detection\", \"thin sliver solid adjacent to body\", \"sliver-solid merge disposition\", \"elongated debris solid touching body\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "Two `MANIFOLD_SOLID_BREP` entities in one `ADVANCED_BREP_SHAPE_REPRESENTATION.items`; solid B is a long thin needle (aspect ratio 500:1) whose bounding box face is flush against solid A's face.",
+    "section": "12.3a",
+    "section_dir": "12-3a-shells",
+    "see_also": [
+      "Tsh234"
+    ],
+    "sender": "",
+    "severity": "P1",
+    "sources": [
+      "occt-coverage GAP audit, `tkshhealing/problems.json` `tkshh-sliver-solid` (ShapeFix_FixSmallSolid width-factor test and Remove-vs-Merge disposition)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [
+      "n_faces_total == 12",
+      "face[0].surface_type == \"plane\""
+    ],
+    "title": "Compound of a normal solid + a width-factor needle sliver adjacent to it (Merge disposition)"
+  },
+  {
+    "byte_assertions": [
+      "count_entity_def(b'CLOSED_SHELL') == 2",
+      "count_entity_def(b'BREP_WITH_VOIDS') == 0",
+      "count_entity_def(b'MANIFOLD_SOLID_BREP') == 0"
+    ],
+    "category": "§12.3a shells (sub-class: unstructured multi-shell — `tkshh-solid-unstructured-multishell`)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A `SHELL_BASED_SURFACE_MODEL` lists two watertight `CLOSED_SHELL`s directly — NOT wrapped in a `BREP_WITH_VOIDS` or `MANIFOLD_SOLID_BREP` the way Bo003/Tsh015 are. One shell (outer, 10x10x10 box) geometrically fully encloses the other (inner, 2x2x2 box). With no author-declared voids list, a receiver that wants a solid-with-void must run its own point-containment classification (`ShapeFix_Solid::CreateSolids`) rather than trusting an explicit structure.",
+    "expected_kernel_behavior": "heal; classify the nested shell pair via point-in-solid containment and synthesize one `TopoDS_Solid` with an internal void, equivalent to what an explicit `BREP_WITH_VOIDS` would have declared.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(52) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3a-shells/Tsh236.stp",
+    "id": "Tsh236",
+    "notes": "**See also**: Tsh237 (disjoint sibling), Bo003 (avoid — that fixture's defect is an explicit but malformed `BREP_WITH_VOIDS` wrapper, a different, already-covered code path). Live-verified (this worktree's OCP/OCCT 7.8.1, default `STEPControl_Reader.TransferRoots`): the default transfer path does NOT invoke `CreateSolids` for a bare `SHELL_BASED_SURFACE_MODEL` — it returns a `TopoDS_COMPOUND` of the 2 shells verbatim (0 solids); the containment-classification healing is an opt-in reprocessing step, recorded honestly here rather than mirrored from an unrelated fixture. Synonyms: \"unstructured shell soup nested\", \"two shells no voids wrapper\", \"shell containment classification needed\", \"solid promotion from bare shells\", \"nested closed shells no solid wrapper\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`SHELL_BASED_SURFACE_MODEL('',(#outer_shell,#inner_shell))` where `#inner_shell`'s bounding box is strictly contained in `#outer_shell`'s; no `BREP_WITH_VOIDS`/`MANIFOLD_SOLID_BREP` entity present.",
+    "section": "12.3a",
+    "section_dir": "12-3a-shells",
+    "see_also": [
+      "Tsh237",
+      "Bo003"
+    ],
+    "sender": "",
+    "severity": "P1",
+    "sources": [
+      "occt-coverage GAP audit, `tkshhealing/problems.json` `tkshh-solid-unstructured-multishell` (ShapeFix_Solid::CreateSolids point-containment classification)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [
+      "n_faces_total == 12",
+      "face[0].surface_type == \"plane\""
+    ],
+    "title": "Two nested `CLOSED_SHELL`s with no `BREP_WITH_VOIDS` wrapper (unstructured shell soup, containment classification)"
+  },
+  {
+    "byte_assertions": [
+      "count_entity_def(b'CLOSED_SHELL') == 2",
+      "count_entity_def(b'BREP_WITH_VOIDS') == 0",
+      "count_entity_def(b'MANIFOLD_SOLID_BREP') == 0"
+    ],
+    "category": "§12.3a shells (sub-class: unstructured multi-shell — `tkshh-solid-unstructured-multishell`, disjoint subvariant)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "The disjoint sibling of Tsh236. A `SHELL_BASED_SURFACE_MODEL` lists two watertight `CLOSED_SHELL`s directly, again with no `BREP_WITH_VOIDS`/`MANIFOLD_SOLID_BREP` wrapper — but this time the two 10x10x10 boxes have genuinely disjoint bounding boxes (box A at x in [0,10], box B at x in [30,40]). Since neither shell contains the other, a receiver wanting solids from this shell soup must classify it as a COMPOUND OF TWO SEPARATE SOLIDS — the opposite branch of `ShapeFix_Solid::CreateSolids`' containment classification from Tsh236's nested case.",
+    "expected_kernel_behavior": "heal; classify the disjoint shell pair via point-in-solid containment and synthesize two independent `TopoDS_Solid`s (a compound of 2 solids), not a solid-with-void.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(52) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3a-shells/Tsh237.stp",
+    "id": "Tsh237",
+    "notes": "**See also**: Tsh236 (nested sibling), Bo003 (avoid its explicit-but-malformed `BREP_WITH_VOIDS` pattern). Live-verified (this worktree's OCP/OCCT 7.8.1, default `STEPControl_Reader.TransferRoots`): same as Tsh236, the default transfer path returns a `TopoDS_COMPOUND` of 2 shells with 0 solids; recorded honestly rather than mirrored. Synonyms: \"unstructured shell soup disjoint\", \"two shells no voids wrapper compound\", \"shell containment classification disjoint\", \"compound-of-2-solids from bare shells\", \"disjoint closed shells no solid wrapper\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`SHELL_BASED_SURFACE_MODEL('',(#shell_a,#shell_b))` where `#shell_a` and `#shell_b`'s bounding boxes do not overlap; no `BREP_WITH_VOIDS`/`MANIFOLD_SOLID_BREP` entity present.",
+    "section": "12.3a",
+    "section_dir": "12-3a-shells",
+    "see_also": [
+      "Tsh236",
+      "Bo003"
+    ],
+    "sender": "",
+    "severity": "P1",
+    "sources": [
+      "occt-coverage GAP audit, `tkshhealing/problems.json` `tkshh-solid-unstructured-multishell` (ShapeFix_Solid::CreateSolids point-containment classification, disjoint branch)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [
+      "n_faces_total == 12",
+      "face[0].surface_type == \"plane\""
+    ],
+    "title": "Two disjoint `CLOSED_SHELL`s with no `BREP_WITH_VOIDS` wrapper (unstructured shell soup, compound-of-2-solids classification)"
+  },
+  {
+    "byte_assertions": [
+      "count_entity_def(b'MANIFOLD_SOLID_BREP') == 2",
+      "count_entity_def(b'CLOSED_SHELL') == 2"
+    ],
+    "category": "§12.3a shells (sub-class: heal-sequence operator — `seq-drop-small-solids`, volume-threshold subvariant)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "`dropsmallsolids` is an opt-in `ShapeProcess` operator, distinct from OCCT's default `STEPControl_Reader` transfer path — it is invoked only when a caller explicitly names it in the operator sequence. This fixture supplies the static compound-of-solids precondition the operator acts on: a normal 8x8x8 box (solid A, volume 512) plus an isolated 8x8x0.04 slab sliver (solid B, volume 2.56 = 0.5% of solid A's volume), genuinely disjoint from solid A (no neighbor to merge into — Remove disposition when `dropsmallsolids` runs with MergeSolids off). Same GAP-item lineage as Tsh234/Tsh235 (sliver-solid family) but a byte-distinct fixture, explicitly framed around the operator linkage.",
+    "expected_kernel_behavior": "when the `dropsmallsolids` `ShapeProcess` operator is explicitly invoked post-transfer: detect the negligible-volume solid and remove it (no neighbor to merge into). Default transfer (no operator invoked) applies no such healing.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3a-shells/Tsh238.stp",
+    "id": "Tsh238",
+    "notes": "**Fixture kind**: scaffold (operator-test-pair: shape provides the compound-of-solids precondition; `dropsmallsolids` operator invocation required post-transfer to reproduce the Remove/Merge healing decision — mirrors the N146-N153 runtime-only-mechanism convention). **See also**: Tsh234 (same geometry family, default-transfer framing), Tsh239 (Merge-disposition sibling). Synonyms: \"dropsmallsolids operator\", \"STEP.exec.op small solid removal\", \"opt-in small-solid healing operator\", \"ShapeProcess_OperLibrary dropsmallsolids\", \"available-but-not-default solid healing\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "Same structural pattern as Tsh234 (two `MANIFOLD_SOLID_BREP` solids in one compound `ADVANCED_BREP_SHAPE_REPRESENTATION`, isolated sliver at 0.5% volume) at different dimensions/positions; catalog entry documents the `dropsmallsolids` operator linkage explicitly.",
+    "section": "12.3a",
+    "section_dir": "12-3a-shells",
+    "see_also": [
+      "Tsh234",
+      "Tsh239"
+    ],
+    "sender": "",
+    "severity": "P1",
+    "sources": [
+      "occt-coverage GAP audit, `exchange/problems.json` `seq-drop-small-solids` (`dropsmallsolids`, `ShapeProcess_OperLibrary.cxx:594-635`, backed by `ShapeFix_FixSmallSolid`",
+      "\"available-but-not-default\" STEP.exec.op operator)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [
+      "n_faces_total == 12",
+      "face[0].surface_type == \"plane\""
+    ],
+    "title": "Compound of a normal solid + an isolated volume-threshold sliver, reached via the `dropsmallsolids` operator context"
+  },
+  {
+    "byte_assertions": [
+      "count_entity_def(b'MANIFOLD_SOLID_BREP') == 2",
+      "count_entity_def(b'CLOSED_SHELL') == 2"
+    ],
+    "category": "§12.3a shells (sub-class: heal-sequence operator — `seq-drop-small-solids`, width-factor + Merge-disposition subvariant)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "The adjacent-neighbor sibling of Tsh238, mirroring Tsh235's geometry family. A normal 8x8x8 box (solid A, volume 512) plus an 8x0.015x0.015 needle sliver (solid B, volume 0.0018, width-factor ~= 0.00749 mm) whose bounding box is flush-adjacent to solid A's x=8 face — a genuine Merge-disposition precondition for the `dropsmallsolids` operator's MergeSolids flag, distinct from Tsh238's isolated Remove-disposition precondition.",
+    "expected_kernel_behavior": "when the `dropsmallsolids` `ShapeProcess` operator is explicitly invoked with MergeSolids on: detect the negligible width-factor solid and merge it into the adjacent neighbor. Default transfer applies no such healing.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3a-shells/Tsh239.stp",
+    "id": "Tsh239",
+    "notes": "**Fixture kind**: scaffold (operator-test-pair: shape provides the adjacent-compound precondition; `dropsmallsolids` operator invocation with MergeSolids on required post-transfer to reproduce the Merge-disposition healing decision). **See also**: Tsh235 (same geometry family, default-transfer framing), Tsh238 (Remove-disposition sibling). Synonyms: \"dropsmallsolids merge disposition\", \"STEP.exec.op needle solid merge\", \"opt-in width-factor healing operator\", \"ShapeProcess_OperLibrary MergeSolids flag\", \"adjacent sliver merge operator context\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "Same structural pattern as Tsh235 (two `MANIFOLD_SOLID_BREP` solids, elongated needle sliver flush against the normal solid's face) at different dimensions/positions; catalog entry documents the `dropsmallsolids` operator linkage explicitly.",
+    "section": "12.3a",
+    "section_dir": "12-3a-shells",
+    "see_also": [
+      "Tsh235",
+      "Tsh238"
+    ],
+    "sender": "",
+    "severity": "P1",
+    "sources": [
+      "occt-coverage GAP audit, `exchange/problems.json` `seq-drop-small-solids` (`dropsmallsolids`, `ShapeProcess_OperLibrary.cxx:594-635`",
+      "MergeSolids flag chooses Remove vs Merge disposition)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [
+      "n_faces_total == 12",
+      "face[0].surface_type == \"plane\""
+    ],
+    "title": "Compound of a normal solid + an adjacent width-factor sliver, reached via the `dropsmallsolids` operator context (Merge disposition)"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'ORIENTED_CLOSED_SHELL')",
+      "count_entity_def(b'CLOSED_SHELL') == 2"
+    ],
+    "category": "§12.3a shells (sub-class: solid imbrication / enclosed region — `bc-enclosed-region` insurance)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A `BREP_WITH_VOIDS` nests a void `CLOSED_SHELL` (4x3x2 box) geometrically fully inside an outer `CLOSED_SHELL` (12x8x6 box) — dimensions, proportions, and origin all distinct from Tsh015's pair of axis-aligned unit cubes (2x2x2 outer, 1x1x1 inner). Per AP214, the void's `ORIENTED_CLOSED_SHELL` orientation must be reversed (`.F.`) relative to the outer shell; this fixture emits it as `.T.` instead (same defect direction as Tsh015, distinct geometry) — the mis-oriented void is wired directly into the shell topology via a real, reachable `ORIENTED_CLOSED_SHELL`, not an orphaned entity.",
+    "expected_kernel_behavior": "heal; detect the mis-oriented void by signed-volume sign; auto-reverse with a warning diagnostic.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(53) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3a-shells/Tsh240.stp",
+    "id": "Tsh240",
+    "notes": "Live-verified directly against this worktree's OCP/OCCT 7.8.1: `BRepCheck_Analyzer` on a raw `BRep_Builder`-constructed solid with two shells (outer + geometrically-enclosed inner, no reversal applied) DOES reliably raise `BRepCheck_Status.BRepCheck_EnclosedRegion` in-memory, confirming the check itself is real and reachable. However `STEPControl_Reader`'s default transfer path silently reclassifies/heals `BREP_WITH_VOIDS` void orientation by signed-volume sign during translation — independently re-verified live on both this fixture's `.T.` encoding and a hand-corrected `.F.` encoding, both translating to `BRepCheck_Status.NoError`. That silent healing IS this class's documented \"Expected kernel behavior\" (heal + auto-reverse); OCCT performs the heal, just without the warning diagnostic — the same live-observed behavior this worktree separately confirmed for Tsh015 itself (its on-disk translation also comes back `BrepCheck`-valid). The byte-level defect (a real, reachable `ORIENTED_CLOSED_SHELL` carrying the wrong orientation flag inside a genuine nested-void `BREP_WITH_VOIDS`) is what this fixture demonstrates. **See also**: Tsh015 (sole prior fixture — untouched), Bo003 (pruned — crashes), Bo004 (pruned — `aNbVTS<2` early-return, structurally cannot fire). Synonyms: \"second enclosed-region solid\", \"nested void insurance fixture\", \"void orientation flag wrong distinct geometry\", \"BREP_WITH_VOIDS mis-oriented void second fixture\", \"enclosed region single-fixture-thin insurance\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`BREP_WITH_VOIDS('',#outer_shell,(#void_ocs))` where `#void_ocs=ORIENTED_CLOSED_SHELL('',*,#void_shell,.T.)` and `#void_shell`'s bounding box is strictly contained in `#outer_shell`'s.",
+    "section": "12.3a",
+    "section_dir": "12-3a-shells",
+    "see_also": [
+      "Tsh015",
+      "Bo003",
+      "Bo004"
+    ],
+    "sender": "",
+    "severity": "P1",
+    "sources": [
+      "occt-coverage `exchange/problems.json` `bc-enclosed-region` (`BRepCheck_Solid::Blind`, `BRepCheck_Solid.cxx:297`, `BRepCheck_EnclosedRegion`). Per the occt-coverage audit, Tsh015 is the SOLE surviving fixture for this class (Bo003/Bo004 were pruned as structurally unable to fire it) — this is a second, independent fixture, added without modifying Tsh015."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "crash",
+      "topology"
+    ],
+    "tier3_assertions": [
+      "n_faces_total == 12",
+      "face[0].surface_type == \"plane\""
+    ],
+    "title": "Second independent `BREP_WITH_VOIDS` nested-void solid, geometry distinct from Tsh015"
+  },
+  {
+    "byte_assertions": [
+      "count_entity_def(b'CONICAL_SURFACE') == 1",
+      "count_entity_def(b'ADVANCED_FACE') == 2",
+      "count_entity_def(b'EDGE_LOOP') == 2"
+    ],
+    "category": "§12.3a shells (sub-class: degenerate-edge multi-face retranslation — `stp-degenerate-edge-multiface`)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A `CONICAL_SURFACE` (apex at origin, axis +Z, semi-angle 30 deg) is split into TWO half-cone `ADVANCED_FACE`s (front, y>=0, and back, y<=0) sharing: (1) the SAME degenerate apex `EDGE_CURVE` entity (zero-length, apex `VERTEX_POINT` at both ends) referenced from BOTH faces' `EDGE_LOOP`s, and (2) the two lateral (radial) `EDGE_CURVE`s at the seam, each referenced with opposite `ORIENTED_EDGE` sense by the two faces (a genuine manifold split, not two independent half-cones taped together). No prior fixture (Tsh035, Twi031, Gs189, Xp013) presents a degenerate edge entity shared across multiple faces' bounds — each keeps its degenerate edge within a single face's own wire.",
+    "expected_kernel_behavior": "heal; `StepToTopoDS_TranslateEdge::Init` must retranslate a fresh per-face degenerate edge (with its own pcurve for that face's parametrization) each time the shared entity is encountered on a new face, rather than reusing a stale cached copy from the first face.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3a-shells/Tsh241.stp",
+    "id": "Tsh241",
+    "notes": "Live-verified (this worktree's OCP/OCCT 7.8.1): the translated shape reports `n_faces_total == 2` (both `surface_type == \"cone\"`), `n_edges_total == 6` against only 5 distinct `EDGE_CURVE` STEP entities in the bytes — one entity (the shared degenerate apex edge) is retranslated into two separate `TopoDS_Edge`s rather than reused from cache, while the two shared lateral edges ARE reused (5 entities, 8 `ORIENTED_EDGE` references, 6 resulting `TopoDS_Edge`s) — directly confirming the cached-degenerated-edge-retranslated-per-face mechanism in bytes and behavior. **See also**: Tsh035 (single-face torus-seam analog), Twi031 (duplicated-within-one-wire analog). Synonyms: \"degenerate edge shared across faces\", \"cone apex edge reused by two faces\", \"per-face degenerate edge retranslation\", \"shared apex bridge multi-face cone\", \"degenerate edge entity multiple face bounds\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "One `CONICAL_SURFACE`; one degenerate `EDGE_CURVE('',#apex,#apex,#zero_length_line,.T.)`; two `ADVANCED_FACE`s each with an `EDGE_LOOP` containing an `ORIENTED_EDGE` wrapping that SAME `EDGE_CURVE` entity (not a duplicate copy).",
+    "section": "12.3a",
+    "section_dir": "12-3a-shells",
+    "see_also": [
+      "Tsh035",
+      "Twi031"
+    ],
+    "sender": "",
+    "severity": "P1",
+    "sources": [
+      "occt-coverage GAP audit, `exchange/problems.json` `stp-degenerate-edge-multiface` (`StepToTopoDS_TranslateEdge::Init` cached-degenerated-edge retranslate-per-face path). Extends Tsh035's single-face degenerate/ambiguous-edge pattern to a genuine multi-face reference."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [
+      "n_faces_total == 2",
+      "face[0].surface_type == \"cone\"",
+      "face[1].surface_type == \"cone\""
+    ],
+    "title": "Cone-apex degenerate edge referenced from the bounds of TWO different `ADVANCED_FACE`s"
+  },
+  {
+    "byte_assertions": [
       "contains(b\"EDGE_LOOP('',())\")",
       "count_entity_def(b'ORIENTED_EDGE') == 0"
     ],
@@ -80113,6 +80448,341 @@
     ],
     "tier3_assertions": [],
     "title": "Cyclic `ORIENTED_EDGE.edge_element` self-reference → unbounded `EdgeStart`/`EdgeEnd` recursion (stack-overflow DoS)"
+  },
+  {
+    "byte_assertions": [
+      "count_entity_def(b'VERTEX_POINT') >= 5",
+      "contains(b'(10.0,0.0,0.0)')"
+    ],
+    "category": "§12.3b wire-loop (sub-class: vertex unification)",
+    "closure_defect": null,
+    "closure_intent": "sheet",
+    "cross_oracle_note": null,
+    "description": "Two consecutive edges of one wire meet at a corner. Instead of the normal pattern — edge A's end vertex and edge B's start vertex ARE the same `VERTEX_POINT` entity — the sender emits two separate `VERTEX_POINT` entities that sit at identical coordinates. The wire looks geometrically closed but is topologically torn at that corner; the general-purpose vertex-unification utility must recognize the coincident-but-distinct pair and merge them into one shared vertex before the wire can be trusted as connected. This is the opposite direction from Twi009/Twi050 (`ShapeFix_SplitCommonVertex`): those fixtures have ONE vertex entity over-shared across two wires that must be split apart; here there are TWO vertex entities at the SAME wire corner that must be merged together.",
+    "expected_kernel_behavior": "detect the coincident-but-distinct vertex pair at the shared corner and merge them into a single shared vertex (position = midpoint / aggregate of the originals, tolerance = max deviation plus margin), rewiring both edges to the merged vertex; or reject the wire as malformed.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3b-wires/Twi284.stp",
+    "id": "Twi284",
+    "notes": "**See also**: Twi009, Twi050 (SplitCommonVertex — the opposite direction: one vertex over-shared across two wires, split apart). Twi285 covers the companion subvariant (non-adjacent edges registered as touching via a broader connectivity graph, e.g. sewing). Synonyms: \"two vertex entities at same wire corner\", \"coincident but distinct VERTEX_POINT at edge junction\", \"wire corner not welded\", \"vertex fragmentation at shared corner\", \"duplicate coordinate vertex needs merging\". Provenance tier: bytes-sufficient.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "A 4-edge planar square wire whose bottom-right corner at `(10,0,0)` is split across two `VERTEX_POINT` entities — one is the end vertex of the bottom `EDGE_CURVE`, the other is the start vertex of the right `EDGE_CURVE` — both citing `CARTESIAN_POINT('',(10.0,0.0,0.0))` but never the same entity.",
+    "section": "12.3b",
+    "section_dir": "12-3b-wires",
+    "see_also": [
+      "Twi009",
+      "Twi050"
+    ],
+    "sender": "",
+    "severity": "P2",
+    "sources": [
+      "OCCT `ShapeFix_WireVertex::FixSame` (`ShapeFix_WireVertex.cxx:108-153`)",
+      "`ShapeFix_EdgeConnect::Build` (`ShapeFix_EdgeConnect.cxx:145-284`)"
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [
+      "n_edges_total >= 4",
+      "face[0].surface_type == \"plane\""
+    ],
+    "title": "Consecutive wire edges share a corner location via two distinct `VERTEX_POINT` entities (coincident, not reused)"
+  },
+  {
+    "byte_assertions": [
+      "count_entity_def(b'VERTEX_POINT') >= 8",
+      "contains(b'(0.0,0.0,0.0)')"
+    ],
+    "category": "§12.3b wire-loop (sub-class: vertex unification, cross-wire scope)",
+    "closure_defect": null,
+    "closure_intent": "sheet",
+    "cross_oracle_note": null,
+    "description": "The vertex-unification utility that shell/face sewing relies on must reconcile vertices across UNRELATED edges anywhere in the connectivity graph, not just consecutive edges of one wire (contrast Twi284). Here two unrelated `ADVANCED_FACE`s each have their own outer-wire corner at world coordinate `(0,0,0)`, each encoded with its OWN distinct `VERTEX_POINT` entity rather than a shared one. This deliberately differs from Twi050 (`ShapeFix_SplitCommonVertex`): Twi050 reuses the SAME `VERTEX_POINT` entity across both faces (too much sharing, must split apart); here each face has a DIFFERENT `VERTEX_POINT` entity at the same coordinate (no sharing at all, must be merged) — the opposite defect direction, exercising the general connectivity-graph `Add()`/`Build()` merge path rather than the split path.",
+    "expected_kernel_behavior": "the connectivity-graph builder (`ShapeFix_EdgeConnect::Add`/`Build`, or the sewing tool that invokes it) must recognize `#v0`/`#v1` as touching (identical location, distinct entities) and merge them into one shared vertex, or reject the input as ambiguous.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3b-wires/Twi285.stp",
+    "id": "Twi285",
+    "notes": "**See also**: Twi284 (the single-wire, consecutive-edges subvariant of this same problem class). Twi009/Twi050 (`SplitCommonVertex`) are cited as negative-space contrast — the opposite defect direction (one entity over-shared, must split) — not reused here. Synonyms: \"non-adjacent edges share coincident vertex across faces\", \"connectivity graph must merge distinct vertex entities\", \"cross-wire vertex fragmentation\", \"sewing-scope vertex unification\", \"arbitrary edge pair registered as touching\". Provenance tier: bytes-sufficient.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "Two `ADVANCED_FACE`s on `PLANE`s, geometrically unrelated (different Z-offset carrier planes) except that each face's outer-wire `EDGE_LOOP` has one corner `VERTEX_POINT` at `(0,0,0)` — `#v0` for face 0, `#v1` for face 1 — two separate entities, never the same reference.",
+    "section": "12.3b",
+    "section_dir": "12-3b-wires",
+    "see_also": [
+      "Twi284"
+    ],
+    "sender": "",
+    "severity": "P2",
+    "sources": [
+      "OCCT `ShapeFix_EdgeConnect::Add` / `::Build` (`ShapeFix_EdgeConnect.cxx:145-284`) — the general-purpose utility underlying shell/face sewing, not limited to one wire's own consecutive edges"
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [
+      "n_edges_total >= 6",
+      "face[0].surface_type == \"plane\"",
+      "face[1].surface_type == \"plane\""
+    ],
+    "title": "Two arbitrary, non-adjacent edges (different faces) register as touching via coincident-but-distinct `VERTEX_POINT` entities in a broader connectivity graph"
+  },
+  {
+    "byte_assertions": [
+      "count_entity_def(b'ADVANCED_FACE') == 1",
+      "count_entity_def(b'EDGE_CURVE') == 4",
+      "contains(b'(0.0,0.0,0.0)')",
+      "contains(b'(10.0,10.0,0.0)')"
+    ],
+    "category": "§12.3b wire-loop (sub-class: self-intersection, BRepCheck detection)",
+    "closure_defect": null,
+    "closure_intent": "sheet",
+    "cross_oracle_note": null,
+    "description": "A wire's own edges cross each other in the host face's parameter space. Four straight edges form the classic bow-tie: `(0,0,0)->(10,10,0)->(10,0,0)->(0,10,0)->(0,0,0)`; edges 0 and 2 are the two diagonals of the nominal square and cross at `(5,5,0)` in both 3D and the plane's UV (identity frame). Deliberately minimal: one `ADVANCED_FACE`, one `PLANE`, one `EDGE_LOOP`, one `OPEN_SHELL` — no second face, no crash-prone geometry, no other defect layered in, isolating the self-intersection from the confounders present in this corpus's earlier attempts at this mechanism (Twi049's two-face setup, Twi076's revisited-vertex framing).",
+    "expected_kernel_behavior": "detect the self-intersection point(s) in UV/3D; split the wire at the intersection into two simple loops, remove the degenerate sub-loop, or reject the face as malformed. A diagnostic citing the offending edge pair should be available.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3b-wires/Twi286.stp",
+    "id": "Twi286",
+    "notes": "**See also**: Twi049, Twi076 (prior attempts at this mechanism, both carrying an explicit \"checker does not fire\" annotation). **Live-oracle finding (this fixture, verified against OCCT 7.8.1)**: the reader's default healing sequence repairs self-intersecting wires unconditionally on import — confirmed identical under both heal-on and heal-off oracle settings (neither toggles the import-time operator sequence that performs the split); only bypassing the reader's default resource/sequence entirely — which none of this corpus's oracle configurations do — leaves the wire unrepaired for the validity checker to observe. The reader silently splits the bow-tie into two valid triangular faces (`n_faces_total==2` post-import, `brepcheck.valid==True`) before the validity check ever runs on the original single self-intersecting wire; this is the same \"silently heals on import\" outcome already documented for Twi009, Twi010, Twi050, Twi076 and the ~120 other self-intersection-adjacent fixtures cataloged in `OCCT_HEAL_COVERAGE.md`. The defect IS genuinely encoded in the DATA-section bytes (one crossing `EDGE_LOOP` on one live `ADVANCED_FACE`, reachable, never orphaned) and IS geometrically self-intersecting by construction; what is not observable via any of this corpus's standard reader configurations is the live self-intersecting-wire validity status on the as-read shape, because the reader's own healing pass resolves it first (runtime-scaffold verification confirms the status fires when the checker is invoked on the unhealed geometry directly). NEEDS-ORACLE-REFRESH: not applicable — Expected validation below was captured live against this exact fixture, not mirrored from a sibling. Synonyms: \"bow-tie wire on real face\", \"wire crosses itself in UV\", \"figure-eight self-intersecting wire minimal\", \"diagonals of square wire cross\", \"self-intersecting wire silently healed on import\". Provenance tier: bytes-sufficient.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`ADVANCED_FACE` on a `PLANE`; `FACE_OUTER_BOUND` → `EDGE_LOOP` of four `ORIENTED_EDGE`s whose `LINE` geometry forms a bow-tie (diagonals of a square crossing at the centre); `OPEN_SHELL` → `SHELL_BASED_SURFACE_MODEL`.",
+    "section": "12.3b",
+    "section_dir": "12-3b-wires",
+    "see_also": [
+      "Twi049",
+      "Twi076"
+    ],
+    "sender": "",
+    "severity": "P2",
+    "sources": [
+      "OCCT `BRepCheck_Wire::Closed` / internal-orientation checks (`BRepCheck_Wire.cxx:1048,1051`) — sets/returns `BRepCheck_SelfIntersectingWire`"
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [
+      "n_edges_total >= 4",
+      "face[0].surface_type == \"plane\""
+    ],
+    "title": "Minimal self-intersecting (bow-tie) wire on a single real `ADVANCED_FACE`, no confounding defects"
+  },
+  {
+    "byte_assertions": [
+      "count_entity_def(b'TOROIDAL_SURFACE') == 1",
+      "count_entity_def(b'CIRCLE') >= 2"
+    ],
+    "category": "§12.3b wire-loop (sub-class: closed-edge splitting)",
+    "closure_defect": null,
+    "closure_intent": "sheet",
+    "cross_oracle_note": null,
+    "description": "An `EDGE_CURVE` whose underlying curve is a full 360° `CIRCLE` is used as a single edge; start vertex equals end vertex. Consumers that require every edge to be an open arc with two distinct endpoints need the edge divided at a seam/interior point. Twi019 demonstrates this mechanism on a `CYLINDRICAL_SURFACE`; this insurance fixture demonstrates the identical mechanism on a `TOROIDAL_SURFACE` belt (a torus segment bounded by two full meridian circles) so the class's coverage does not rest on a single surface kind.",
+    "expected_kernel_behavior": "split each closed meridian edge at its seam parameter (or a natural break) into two open arcs, or accept the closed single edge as a kernel-internal representation. Choice is design-dependent; consumers of the result must agree on the convention.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3b-wires/Twi287.stp",
+    "id": "Twi287",
+    "notes": "**See also**: Twi019 (the cylinder-surface sibling of this mechanism — untouched by this fixture). Verified live: OCCT does NOT auto-split the meridian circles on read (`edge[0]`/`edge[2]` retain full length `2*pi*minor_radius == 12.566`), unlike the bow-tie self-intersection class (Twi286) which the reader silently repairs — closed-edge splitting is genuinely opt-in (`spltclosededges` is available-but-not-default), so the unsplit closed edges survive import exactly as declared. `brepcheck.valid` came back `False` live (an unrelated seam/inner-arc side effect of this specific belt construction, not asserted in tier-3 here since Twi019 already carries the `brepcheck.valid==True` claim for the cylinder case and this fixture's contribution is the distinct-surface-kind coverage, not a brepcheck claim). Synonyms: \"torus belt closed meridian edge unsplit\", \"full 360 degree circle edge on torus\", \"closed curve as single edge needs splitting torus\", \"meridian circle spans whole tube cross-section\", \"torus surface closed-edge splitting\". Provenance tier: bytes-sufficient.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`ADVANCED_FACE` on a `TOROIDAL_SURFACE` (major=5, minor=2); `EDGE_LOOP` bounding a quarter-revolution belt — two full-period meridian `EDGE_CURVE`s (`start==end` vertex, complete 360° tube cross-section) at `u=0` and `u=pi/2`, connected by two `CIRCLE`-arc edges along the outer (`v=0`) and inner (`v=pi`) equators.",
+    "section": "12.3b",
+    "section_dir": "12-3b-wires",
+    "see_also": [
+      "Twi019"
+    ],
+    "sender": "",
+    "severity": "P2",
+    "sources": [
+      "OCCT `ShapeUpgrade_ShapeDivideClosedEdges`, exposed as the `spltclosededges` `ShapeProcess` operator (`ShapeProcess_OperLibrary.cxx:817-844`)"
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [
+      "face[0].surface_type == \"torus\"",
+      "n_edges_total >= 4",
+      "n_vertices_total >= 4"
+    ],
+    "title": "Full-period closed meridian edges on a `TOROIDAL_SURFACE` belt need splitting at the seam (insurance fixture, distinct surface kind from Twi019)"
+  },
+  {
+    "byte_assertions": [
+      "count_entity_def(b'VERTEX_POINT') >= 7",
+      "contains(b'(0.0,0.0,0.0)')"
+    ],
+    "category": "§12.3b wire-loop (sub-class: common-vertex split)",
+    "closure_defect": null,
+    "closure_intent": "sheet",
+    "cross_oracle_note": null,
+    "description": "Two wires of a face (an outer boundary and an inner hole) share a single common `VERTEX_POINT` instance — a pinch point. Legal in a BRep-internal representation, illegal in the STEP schema (each wire must own distinct vertices), so the shared vertex must be split into per-wire copies. Twi009 demonstrates this with a unit-square outer wire and a small offset-square inner wire pinched at `(0.5,0.5)`; this insurance fixture uses a simple non-convex 5-vertex \"dart\" outer wire (four corners on a radius-5 circle, the fifth pulled all the way in to the face centre) and a small inner triangle hole with one corner also at the centre — distinct polygon topology and a different pinch location `(0,0,0)`, so the class's coverage does not rest on a single geometric configuration.",
+    "expected_kernel_behavior": "detect vertex over-sharing between the outer and inner wire; split the common vertex into independent per-wire copies so each wire's connectivity is explicit, or reject as malformed if the share crosses topological boundaries the kernel cannot resolve.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(20) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3b-wires/Twi288.stp",
+    "id": "Twi288",
+    "notes": "**See also**: Twi009 (the unit-square / offset-square configuration of this same mechanism — untouched by this fixture). Verified live: OCCT's default read pipeline splits the pinched face into two valid faces at the shared vertex (`n_faces_total==2`, one of the dart's boundary edges is subdivided into two sub-edges at the pinch, `n_edges_total` goes from the declared 8 to 10 post-heal) — the same \"silently splits the shared-vertex face\" outcome documented for Twi009's own Notes. Synonyms: \"pinch vertex shared between outer and inner wire\", \"dart polygon hole touches boundary at one vertex\", \"common vertex needs splitting per wire, non-square case\", \"vertex over-sharing between outer boundary and hole\", \"concave polygon corner coincides with hole corner\". Provenance tier: bytes-sufficient.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`ADVANCED_FACE` on a `PLANE`; `FACE_OUTER_BOUND` → `EDGE_LOOP` for a non-convex dart (4 outer corners + 1 centre corner); `FACE_BOUND` → `EDGE_LOOP` for a small inner triangle with one corner at the same centre `VERTEX_POINT` instance as the dart's concave corner.",
+    "section": "12.3b",
+    "section_dir": "12-3b-wires",
+    "see_also": [
+      "Twi009"
+    ],
+    "sender": "",
+    "severity": "P2",
+    "sources": [
+      "OCCT `ShapeFix_SplitCommonVertex`, exposed as the `splitcommonvertex` `ShapeProcess` operator (`ShapeProcess_OperLibrary.cxx:853-879`)"
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [
+      "n_edges_total >= 7",
+      "face[0].surface_type == \"plane\"",
+      "n_vertices_total >= 7"
+    ],
+    "title": "Non-convex dart outer wire and inner triangle hole share a common pinch `VERTEX_POINT` at the face centre (insurance fixture, distinct geometry from Twi009)"
+  },
+  {
+    "byte_assertions": [
+      "count_entity_def(b'EDGE_CURVE') == 6",
+      "count_entity_def(b'SURFACE_CURVE') == 1"
+    ],
+    "category": "§12.3b wire-loop (sub-class: edge consistency, removal path)",
+    "closure_defect": null,
+    "closure_intent": "sheet",
+    "cross_oracle_note": null,
+    "description": "`ShapeFix_Wire::FixEdgeCurves` has two outcomes for an edge missing its 3D curve: if the pcurve is usable, reconstruct the 3D curve by lifting it through the host surface (Twi047's mechanism); if the edge has NEITHER a 3D curve NOR a usable pcurve (its own parametric range collapses to zero length), it cannot be salvaged and is REMOVED from the wire entirely, which is then re-closed/re-connected around the resulting gap. This fixture demonstrates the removal path: a pentagon wire with five ordinary healthy edges plus one degenerate sixth edge spliced in at one corner — start vertex equals end vertex (zero 3D extent, Twi018's pattern) AND its curve is a `SURFACE_CURVE` wrapping only a `PCURVE` with no 3D curve at all (Twi047's pattern) — combined, neither representation is usable.",
+    "expected_kernel_behavior": "detect that the edge has neither a usable 3D curve nor a usable (non-zero-range) pcurve; remove the edge from the wire and re-close/re-connect the wire across the resulting gap (here, the two healthy neighbor edges already meet at the shared corner, so removal alone suffices); or reject the wire as malformed.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3b-wires/Twi289.stp",
+    "id": "Twi289",
+    "notes": "**See also**: Twi047 (the reconstruct-from-pcurve path — the sibling outcome of the same `FixEdgeCurves` decision point); Twi018 (the same-vertex/zero-arc-length pattern reused here as one half of the combined defect). Verified live: the degenerate sixth edge is dropped on import — `n_edges_total` comes back as exactly 5 (the healthy pentagon), down from the 6 declared in the DATA section — confirming the removal path fires rather than a reconstruction or a load failure. Synonyms: \"edge with no curve representation is dropped\", \"unsalvageable edge removed from wire\", \"wire re-closes after dropping degenerate edge\", \"neither 3D curve nor usable pcurve\", \"incomplete edge removal path\". Provenance tier: bytes-sufficient.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`ADVANCED_FACE` on a `PLANE` (pentagon); `EDGE_LOOP` of six `ORIENTED_EDGE`s — five ordinary `LINE`-based `EDGE_CURVE`s plus one `EDGE_CURVE('',#v,#v,#surface_curve,.T.)` where `#v` is a single `VERTEX_POINT` used for both start and end, and `#surface_curve` is a `SURFACE_CURVE` whose `associated_geometry` lists only a `PCURVE` (no 3D curve).",
+    "section": "12.3b",
+    "section_dir": "12-3b-wires",
+    "see_also": [
+      "Twi047",
+      "Twi018"
+    ],
+    "sender": "",
+    "severity": "P2",
+    "sources": [
+      "OCCT `ShapeFix_Wire::FixEdgeCurves` incomplete-edge removal (`ShapeFix_Wire.cxx:744-759`) — the sibling path to `ShapeFix_Edge::FixAddCurve3d` (Twi047, reconstruct-from-pcurve)"
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [
+      "face[0].surface_type == \"plane\"",
+      "n_edges_total >= 5"
+    ],
+    "title": "Edge with neither a 3D curve nor a usable pcurve is REMOVED from the wire (not reconstructed)"
+  },
+  {
+    "byte_assertions": [
+      "count_entity_def(b'VERTEX_POINT') == 4",
+      "count_entity_def(b'EDGE_CURVE') == 4",
+      "contains(b'(10.0,5.0,0.0)')",
+      "contains(b'(10.0,0.0,0.0)')",
+      "contains(b'(10.0,10.0,0.0)')"
+    ],
+    "category": "§12.3b wire-loop (sub-class: edge consistency, arc-trim fallback)",
+    "closure_defect": null,
+    "closure_intent": "sheet",
+    "cross_oracle_note": null,
+    "description": "An edge's 3D curve cannot be validly trimmed between its two vertex parameters — a near-zero-length or otherwise malformed arc — even though the curve itself is not closed and the two declared vertices are genuinely distinct points. OCCT discards the STEP-specified curve for this edge and substitutes a straight line segment built directly between the two vertex points. This fixture's \"right\" edge of an ordinary square wire uses a `LINE` anchored at the edge's own midpoint `(10,5,0)` running perpendicular (+Z) to the square's plane; both corner vertices `(10,0,0)` and `(10,10,0)` are distinct 3D points, but each one's orthogonal projection onto this perpendicular line lands at the identical curve parameter `w=0`, so the trim collapses to null arc length on a genuinely open (non-periodic) curve. Twi018 covers the sibling `V1==V2` branch, where the edge is dropped entirely instead of substituted.",
+    "expected_kernel_behavior": "detect that the declared curve cannot be validly trimmed between the two vertex parameters (construction failure, e.g. OCCT's `BRepBuilderAPI_LineThroughIdenticPoints`); since `V1 != V2`, substitute a straight `Geom_Line` directly between the two vertex points rather than dropping the edge; or reject the edge as malformed.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3b-wires/Twi290.stp",
+    "id": "Twi290",
+    "notes": "**See also**: Twi018 (the sibling identical-vertices branch — edge dropped, not substituted). Verified live via two independent checks: (1) direct OCP construction — `BRepBuilderAPI_MakeEdge(line, v1, v2, w1=0.0, w2=0.0)` raises `BRepBuilderAPI_LineThroughIdenticPoints` for this exact vertex/curve configuration; (2) full STEP round-trip through this corpus's `occt_heal_on`/`occt_heal_off` oracle — the resulting edge's analytic curve comes back as a fresh `line` with direction `(0,1,0)` (a straight segment from `(10,0,0)` to `(10,10,0)`), NOT the declared perpendicular `(0,0,1)`-direction `LINE` — confirming the fallback substitution fired exactly as the catalog claim describes, and the shape stays a clean single face (`n_faces_total==1`, `brepcheck.valid==True`), unlike the periodic-curve \"same parameter -> full period\" outcome (Twi017/Twi019) that a `CIRCLE`-based attempt at this mechanism produced instead. Synonyms: \"malformed arc trim falls back to straight line\", \"null arc length on non-closed curve\", \"distinct vertices same curve parameter\", \"line substituted for undeclared arc\", \"BRepBuilderAPI_LineThroughIdenticPoints fallback\". Provenance tier: bytes-sufficient.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`ADVANCED_FACE` on a `PLANE` (square); `EDGE_LOOP` of four edges — three ordinary `LINE`-based edges plus one `EDGE_CURVE('',#v1,#v2,#line,.T.)` where `#line` runs perpendicular to the square's plane through the edge's midpoint, and `#v1`/`#v2` are the square's own (distinct) corner vertices, both of which project orthogonally onto the same point on `#line`.",
+    "section": "12.3b",
+    "section_dir": "12-3b-wires",
+    "see_also": [
+      "Twi018"
+    ],
+    "sender": "",
+    "severity": "P2",
+    "sources": [
+      "OCCT `StepToTopoDS_TranslateEdge::MakeFromCurve3D` (`StepToTopoDS_TranslateEdge.cxx:459-481`) — non-closed-curve branch: builds a `Geom_Line` between the vertex points when `V1 != V2` (\"this edge has null arc length\"), otherwise nullifies the result (\"NULL EDGE, SKIPPED\", Twi018's branch)"
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [
+      "face[0].surface_type == \"plane\"",
+      "n_edges_total >= 4"
+    ],
+    "title": "Non-closed curve whose two distinct vertices project to an identical parameter (null arc length) is discarded in favor of a straight-line fallback"
+  },
+  {
+    "byte_assertions": [
+      "count_entity_def(b'VERTEX_POINT') >= 7",
+      "contains(b'1.0E-07')"
+    ],
+    "category": "§12.3b wire-loop (sub-class: vertex merge, step-reader edge-loop translation)",
+    "closure_defect": null,
+    "closure_intent": "sheet",
+    "cross_oracle_note": null,
+    "description": "Two distinct STEP vertex entities used within the same wire — the endpoints two adjacent edges are each supposed to share at their common corner — turn out to be geometrically coincident within tolerance even though STEP declared them as separate entities. This targets the STEP READER's own edge-loop translation logic (`StepToTopoDS_TranslateEdgeLoop::Init`), distinct from the general-purpose `ShapeFix_WireVertex`/`ShapeFix_EdgeConnect` healing utility (Twi284's mechanism) and from Twi017's single-edge closed-curve case (one `EDGE_CURVE`, bit-identical coordinates). Here a regular hexagon's corner between edge 3 and edge 4 is split across two `VERTEX_POINT`s offset by `1e-8` in each coordinate — well within the file's declared `1e-7` uncertainty, but genuinely distinct entities.",
+    "expected_kernel_behavior": "detect the within-tolerance coincidence between adjacent edges' translated vertex points and rebind one vertex to the other so the wire stays topologically connected; if both vertices are already independently bound elsewhere so the rebind can't be done, flag the mismatch as an unresolved connectivity gap rather than silently repairing it.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3b-wires/Twi291.stp",
+    "id": "Twi291",
+    "notes": "**See also**: Twi017 (single-edge closed-curve, bit-identical coordinates — a different call site/mechanism); Twi284 (the general `ShapeFix_WireVertex` healing-utility mechanism, TKShHealing domain, built with bit-identical coordinates) — this fixture is deliberately distinct from both: different domain (`exchange/step-reader`, not `TKShHealing`), different geometry (hexagon, not square), and near-tolerance (not bit-identical) coordinates, matching Gp171's precedent for this exact \"1e-8 apart, within declared tolerance\" pattern cited in `occt-coverage/exchange/problems.json`. Verified live: the hexagon loads as a single clean face (`n_faces_total==1`, `n_edges_total==6`, `brepcheck.valid==True`) with all six edge lengths coming back at (or within floating-point noise of) `5.0` — confirming the near-coincident corner was successfully reconciled rather than leaving a visible gap or split. Synonyms: \"adjacent edges near-coincident vertex within tolerance\", \"loop vertex merge below uncertainty threshold\", \"StepToTopoDS_TranslateEdgeLoop rebind\", \"hexagon corner split across two vertex entities\", \"set confused adjacent vertex rebind\". Provenance tier: bytes-sufficient.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`ADVANCED_FACE` on a `PLANE` (regular hexagon, radius 5); `EDGE_LOOP` of six edges where the corner between edge 2 and edge 3 uses `#v3b` (end of edge 2) at one coordinate and `#v4a` (start of edge 3) at a coordinate offset by `1e-8`, both within a global `UNCERTAINTY_MEASURE_WITH_UNIT` of `1e-7`.",
+    "section": "12.3b",
+    "section_dir": "12-3b-wires",
+    "see_also": [
+      "Twi017",
+      "Twi284",
+      "Gp171"
+    ],
+    "sender": "",
+    "severity": "P2",
+    "sources": [
+      "OCCT `StepToTopoDS_TranslateEdgeLoop::Init` (`StepToTopoDS_TranslateEdgeLoop.cxx:369-415`) — adjacent oriented edges that don't share a vertex entity but whose translated points coincide within tolerance are rebound (\"Adjacent edges do not have common vertex",
+      "set confused\"), or left as an unresolved connectivity gap if not repairable"
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [
+      "n_edges_total >= 6",
+      "face[0].surface_type == \"plane\""
+    ],
+    "title": "Two adjacent wire edges' shared corner is encoded as two distinct `VERTEX_POINT`s coincident within tolerance (not bit-identical)"
   },
   {
     "byte_assertions": [],
