@@ -789,10 +789,11 @@
    "Twi018",
    "Twi086",
    "Twi099",
-   "Twi013"
+   "Twi013",
+   "Twi290"
   ],
-  "coverage_verdict": "PARTIAL",
-  "notes": "VERIFICATION: Identical-vertices -> edge-dropped subvariant genuinely covered: read Twi018 (same VERTEX_POINT both ends of an open LINE, inside a 5-edge wired loop) and Twi086. Distinct-vertices -> substitute-straight-line subvariant only weakly present: Twi013's 1e-9 sliver line edge may trip it, but no fixture presents a malformed/near-zero ARC on a non-closed curve that forces the STEP curve to be replaced by a Geom_Line segment."
+  "coverage_verdict": "COVERED",
+  "notes": "VERIFICATION: Identical-vertices -> edge-dropped subvariant genuinely covered: read Twi018 (same VERTEX_POINT both ends of an open LINE, inside a 5-edge wired loop) and Twi086. Distinct-vertices -> substitute-straight-line subvariant only weakly present: Twi013's 1e-9 sliver line edge may trip it, but no fixture presents a malformed/near-zero ARC on a non-closed curve that forces the STEP curve to be replaced by a Geom_Line segment. | Wave-1 (2026-07-12, adversarial verifier): Twi290 confirmed byte-level (distinct VERTEX_POINTs projecting to the same parameter on a perpendicular substitute LINE) closes the distinct-vertices subvariant alongside existing Twi018; PARTIAL -> COVERED."
  },
  {
   "problem_id": "stp-loop-degenerate-edge-drop",
@@ -1078,10 +1079,11 @@
    "Twi017",
    "Gp171",
    "Twi003",
-   "Hea012"
+   "Hea012",
+   "Twi291"
   ],
-  "coverage_verdict": "PARTIAL",
-  "notes": "Direct match for the 'duplicate/coincident vertices in a loop -> merged' example in the task brief. | VERIFICATION: Single-edge path covered: Twi017 (verified: two distinct VERTEX_POINTs at identical coords on one wired edge) and Gp171 (1e-8 apart, within declared tolerance) hit the 'Vertex of same coordinates, set confused' rebind. The unrepairable branch is exercised by Twi003 (adjacent edges' junction vertices 0.01 apart, above tolerance -> 'not connected'). Missing variant: two ADJACENT edges in one wire whose shared corner uses distinct-but-coincident-within-tolerance vertex entities (merge across edges); Hea012's inner triangle is 1e-3 apart (above 1e-7 uncertainty) and Tfa025's duplicated vertices sit in a GEOMETRIC_CURVE_SET."
+  "coverage_verdict": "COVERED",
+  "notes": "Direct match for the 'duplicate/coincident vertices in a loop -> merged' example in the task brief. | VERIFICATION: Single-edge path covered: Twi017 (verified: two distinct VERTEX_POINTs at identical coords on one wired edge) and Gp171 (1e-8 apart, within declared tolerance) hit the 'Vertex of same coordinates, set confused' rebind. The unrepairable branch is exercised by Twi003 (adjacent edges' junction vertices 0.01 apart, above tolerance -> 'not connected'). Missing variant: two ADJACENT edges in one wire whose shared corner uses distinct-but-coincident-within-tolerance vertex entities (merge across edges); Hea012's inner triangle is 1e-3 apart (above 1e-7 uncertainty) and Tfa025's duplicated vertices sit in a GEOMETRIC_CURVE_SET. | Wave-1 (2026-07-12, adversarial verifier): Twi291 confirmed byte-level (hexagon corner split across two vertex entities offset 1e-8, within the declared 1e-7 uncertainty) closes the missing adjacent-edges subvariant alongside existing Twi017; PARTIAL -> COVERED."
  },
  {
   "problem_id": "stp-seam-pcurve-selection",
@@ -1507,9 +1509,11 @@
    }
   ],
   "subvariants": [],
-  "fixture_ids": [],
-  "coverage_verdict": "GAP",
-  "notes": "Input pattern: the same degenerate edge entity used in multiple face boundaries. | VERIFICATION: No fixture presents a degenerate edge entity referenced from SEVERAL faces' bounds. Read the nearest candidates: Tsh035 reuses EDGE_CURVE #8 with .T./.F. but within a single EDGE_LOOP on ONE face (seam-style, and the edge is a normal two-vertex edge); Twi031 puts two degenerate apex edges in the same wire; Gs189's zero-radius pole circle bounds only the spherical cap face; Xp013 gives each face its own edges. The cached-degenerated-edge-retranslated-per-face trigger is never presented."
+  "fixture_ids": [
+   "Tsh241"
+  ],
+  "coverage_verdict": "COVERED",
+  "notes": "Input pattern: the same degenerate edge entity used in multiple face boundaries. | VERIFICATION: No fixture presents a degenerate edge entity referenced from SEVERAL faces' bounds. Read the nearest candidates: Tsh035 reuses EDGE_CURVE #8 with .T./.F. but within a single EDGE_LOOP on ONE face (seam-style, and the edge is a normal two-vertex edge); Twi031 puts two degenerate apex edges in the same wire; Gs189's zero-radius pole circle bounds only the spherical cap face; Xp013 gives each face its own edges. The cached-degenerated-edge-retranslated-per-face trigger is never presented. | Wave-1 (2026-07-12, adversarial verifier): Tsh241 confirmed byte-level -- the degenerate apex EDGE_CURVE #16 is referenced by both EDGE_LOOP #38 (face #40) and EDGE_LOOP #45 (face #47) in one OPEN_SHELL; live oracle matches exactly (occt=shape(1)/shape(1) gmsh=shape(9)). GAP -> COVERED."
  },
  {
   "problem_id": "stp-tess-degenerate-triangles",
@@ -1803,10 +1807,11 @@
   ],
   "subvariants": [],
   "fixture_ids": [
-   "Gp022"
+   "Gp022",
+   "Twi065"
   ],
   "coverage_verdict": "COVERED",
-  "notes": "BRepCheck_Status enum value InvalidSameParameterFlag. | VERIFICATION: Gp022 and N004 explicitly construct the SameParameter lie: 3D curve and pcurve with different parameterisations (degenerate/offset B-spline pcurve) beyond edge tolerance; Gp022 draws an OCC ERR diagnostic (recorded in catalog). Since importers assert SameParameter after their fix pass, a genuine unreconcilable parameterisation disagreement is the standard STEP route to this status; Twi065/Twi246 add wire-level parameter-mismatch variants.",
+  "notes": "BRepCheck_Status enum value InvalidSameParameterFlag. | VERIFICATION: Gp022 and N004 explicitly construct the SameParameter lie: 3D curve and pcurve with different parameterisations (degenerate/offset B-spline pcurve) beyond edge tolerance; Gp022 draws an OCC ERR diagnostic (recorded in catalog). Since importers assert SameParameter after their fix pass, a genuine unreconcilable parameterisation disagreement is the standard STEP route to this status; Twi065/Twi246 add wire-level parameter-mismatch variants. | Wave-1 (2026-07-12, adversarial verifier): repaired 2026-07-12: genuine 2:1 PCURVE mismatch now encoded, live-verified no-drift (it was pruned as bogus pre-repair); Twi065 re-added to fixture_ids.",
   "detect_only": true,
   "audit": "VERDICT_AUDIT.md: pruned bogus citation(s) ['Twi246', 'N004', 'Twi065'] -- N004/Twi246 are dead wireframes; Twi065's catalog comment describes a reversed-pcurve defect but its bytes contain zero PCURVE entities (catalog-vs-bytes discrepancy) -- verdict survives on Gp022 alone. Verdict unchanged (COVERED)."
  },
@@ -1955,9 +1960,11 @@
    }
   ],
   "subvariants": [],
-  "fixture_ids": [],
-  "coverage_verdict": "GAP",
-  "notes": "DOWNGRADED COVERED->GAP (COVERED_FULL_REVERIFY.md): Twi049/Twi076 carry the corpus's explicit fixture-specific 'the validity-checker does not flag [this]... tier-3 valid-flag should be ignored' annotation (confirmed non-firing); Twi157 cites ShapeAnalysis_Wire::CheckSelfIntersection (ShapeHealing, not BRepCheck_Wire -- adjacent mechanism); Xp001 shares Twi049's exact pattern with no independent detection confirmation. Geometry is live/reachable in all 4 but none survive as detect evidence. Surviving/cited fixtures: (none -- no fixture in the corpus reaches this mechanism live). || Prior COVERED notes (fixture_ids were ['Twi049', 'Twi076', 'Twi157', 'Xp001']): BRepCheck_Status enum value SelfIntersectingWire. | VERIFICATION: Twi049 verified: figure-eight EDGE_LOOP of four diagonal edges crossing at (5,5,0) in the UV of a real plane ADVANCED_FACE (occt=shape(1)). Twi076 (pinched figure-eight), Twi157 (CheckSelfIntersection figure-8), Xp001 (self-intersecting wire crossed with encoding defect) reinforce.",
+  "fixture_ids": [
+   "Twi286"
+  ],
+  "coverage_verdict": "COVERED",
+  "notes": "DOWNGRADED COVERED->GAP (COVERED_FULL_REVERIFY.md): Twi049/Twi076 carry the corpus's explicit fixture-specific 'the validity-checker does not flag [this]... tier-3 valid-flag should be ignored' annotation (confirmed non-firing); Twi157 cites ShapeAnalysis_Wire::CheckSelfIntersection (ShapeHealing, not BRepCheck_Wire -- adjacent mechanism); Xp001 shares Twi049's exact pattern with no independent detection confirmation. Geometry is live/reachable in all 4 but none survive as detect evidence. Surviving/cited fixtures: (none -- no fixture in the corpus reaches this mechanism live). || Prior COVERED notes (fixture_ids were ['Twi049', 'Twi076', 'Twi157', 'Xp001']): BRepCheck_Status enum value SelfIntersectingWire. | VERIFICATION: Twi049 verified: figure-eight EDGE_LOOP of four diagonal edges crossing at (5,5,0) in the UV of a real plane ADVANCED_FACE (occt=shape(1)). Twi076 (pinched figure-eight), Twi157 (CheckSelfIntersection figure-8), Xp001 (self-intersecting wire crossed with encoding defect) reinforce. | Wave-1 (2026-07-12, adversarial verifier): runtime-scaffold: reader's default healing repairs before the checker; scaffold verification confirms the status fires on unhealed geometry (Twi286; Tfa249 precedent). GAP -> COVERED.",
   "detect_only": true,
   "audit": "COVERED_FULL_REVERIFY.md: COVERED->GAP. Twi049/Twi076 carry the corpus's explicit fixture-specific 'the validity-checker does not flag [this]... tier-3 valid-flag should be ignored' annotation (confirmed non-firing); Twi157 cites ShapeAnalysis_Wire::CheckSelfIntersection (ShapeHealing, not BRepCheck_Wire -- adjacent mechanism); Xp001 shares Twi049's exact pattern with no independent detection confirmation. Geometry is live/reachable in all 4 but none survive as detect evidence."
  },
@@ -2268,10 +2275,11 @@
   ],
   "subvariants": [],
   "fixture_ids": [
-   "Tsh015"
+   "Tsh015",
+   "Tsh240"
   ],
   "coverage_verdict": "COVERED",
-  "notes": "BRepCheck_Status enum value EnclosedRegion. | VERIFICATION: Bo004 verified: MANIFOLD_SOLID_BREP whose single CLOSED_SHELL contains 12 faces \u2014 6 outer cube faces plus 6 faces of an unrepresented internal cavity (genus mismatch); catalog explicitly labels it the EnclosedRegion branch, occt=shape(1). Tsh015 (BREP_WITH_VOIDS void shell oriented .T. so the enclosed region is mis-classified as material) and Bo003 (void nested inside void) give further genuine enclosed-internal-shell configurations.",
+  "notes": "BRepCheck_Status enum value EnclosedRegion. | VERIFICATION: Bo004 verified: MANIFOLD_SOLID_BREP whose single CLOSED_SHELL contains 12 faces \u2014 6 outer cube faces plus 6 faces of an unrepresented internal cavity (genus mismatch); catalog explicitly labels it the EnclosedRegion branch, occt=shape(1). Tsh015 (BREP_WITH_VOIDS void shell oriented .T. so the enclosed region is mis-classified as material) and Bo003 (void nested inside void) give further genuine enclosed-internal-shell configurations. | Wave-1 (2026-07-12, adversarial verifier): Tsh240 confirmed -- BREP_WITH_VOIDS #276 reachable from ADVANCED_BREP_SHAPE_REPRESENTATION #9061 (not orphaned); default-reader silent-heal half re-confirmed live. COVERED, no longer single-fixture-thin.",
   "detect_only": true,
   "audit": "COVERED_FULL_REVERIFY.md: pruned bogus citation(s) ['Bo004', 'Bo003'] -- Bo004 has ONE CLOSED_SHELL (aNbVTS<2 early-returns -- structurally cannot fire); Bo003 crashes (signal(11)) -- class now rests on Tsh015 alone (single-fixture base). Verdict unchanged (COVERED)."
  },
@@ -2636,9 +2644,12 @@
    "width-factor (sliver solid) below threshold",
    "remove vs merge disposition"
   ],
-  "fixture_ids": [],
-  "coverage_verdict": "GAP",
-  "notes": "Available-but-not-default. | VERIFICATION: No STEP fixture presents a solid of negligible volume or a sliver/thin-plate solid for removal/merging. The only negligible-size-component fixtures are in the mesh domain (Me240-Me248, 12-14-mesh, graded against a different oracle). All three subvariants (volume threshold, width-factor sliver, remove-vs-merge disposition) uncovered."
+  "fixture_ids": [
+   "Tsh238",
+   "Tsh239"
+  ],
+  "coverage_verdict": "PARTIAL",
+  "notes": "Available-but-not-default. | VERIFICATION: No STEP fixture presents a solid of negligible volume or a sliver/thin-plate solid for removal/merging. The only negligible-size-component fixtures are in the mesh domain (Me240-Me248, 12-14-mesh, graded against a different oracle). All three subvariants (volume threshold, width-factor sliver, remove-vs-merge disposition) uncovered. | Wave-1 (2026-07-12, adversarial verifier): Tsh238 (Remove, operator context) independently confirmed to fire (ShapeFix_FixSmallSolid.Remove collapses compound from 2 solids to 1); Tsh239 (Merge/width-factor) does not fire across a threshold sweep -- kept as PARTIAL, not COVERED, pending a corrected geometry/invocation for the Merge disposition."
  },
  {
   "problem_id": "seq-drop-small-edges",
@@ -2678,10 +2689,11 @@
   ],
   "subvariants": [],
   "fixture_ids": [
-   "Twi019"
+   "Twi019",
+   "Twi287"
   ],
   "coverage_verdict": "COVERED",
-  "notes": "Available-but-not-default. Edge-level sibling of seq-split-closed-faces. | VERIFICATION: Twi019 bytes verified: full-period closed CIRCLE edge (start==end vertex) wired into a cylindrical face loop. Twi099/Twi017/Twi084 cover the same closed-edge-needs-splitting pattern with distinct vertex arrangements.",
+  "notes": "Available-but-not-default. Edge-level sibling of seq-split-closed-faces. | VERIFICATION: Twi019 bytes verified: full-period closed CIRCLE edge (start==end vertex) wired into a cylindrical face loop. Twi099/Twi017/Twi084 cover the same closed-edge-needs-splitting pattern with distinct vertex arrangements. | Wave-1 (2026-07-12, adversarial verifier): Twi287 confirmed (torus-belt geometry, two full-period meridian EDGE_CURVEs); gmsh=reject independently reproduced live as specifically requested. Insurance fixture, COVERED strengthened.",
   "audit": "COVERED_FULL_REVERIFY.md: pruned bogus citation(s) ['Twi017', 'Twi099', 'Twi084'] -- Twi099/Twi084 dead and wrong-mechanism; Twi017 is live but its remedy is vertex-merge not edge-split (it correctly serves stp-closed-curve-two-vertices instead) -- class now rests on Twi019 alone (single-fixture base). Verdict unchanged (COVERED)."
  },
  {
@@ -2697,10 +2709,11 @@
   ],
   "subvariants": [],
   "fixture_ids": [
-   "Twi009"
+   "Twi009",
+   "Twi288"
   ],
   "coverage_verdict": "COVERED",
-  "notes": "Registered operator; wired only into the default STEP WRITE sequence (ToSTEP.exec.op). Included because it is part of the shared operator registry and the pinch-point input pattern can also arrive from imported files; flag as write-leaning when grading. | VERIFICATION: Twi009 bytes verified: one VERTEX_POINT instance shared between a face's outer wire and its inner hole wire \u2014 exactly the pinch pattern SplitCommonVertex separates. Gs034 covers the same-wire revisited-vertex (figure-eight) relative.",
+  "notes": "Registered operator; wired only into the default STEP WRITE sequence (ToSTEP.exec.op). Included because it is part of the shared operator registry and the pinch-point input pattern can also arrive from imported files; flag as write-leaning when grading. | VERIFICATION: Twi009 bytes verified: one VERTEX_POINT instance shared between a face's outer wire and its inner hole wire \u2014 exactly the pinch pattern SplitCommonVertex separates. Gs034 covers the same-wire revisited-vertex (figure-eight) relative. | Wave-1 (2026-07-12, adversarial verifier): Twi288 confirmed (one shared VERTEX_POINT referenced by both the outer dart wire and inner triangle wire, correct entity-sharing direction, opposite of Twi284/285); reader split confirmed live. Insurance fixture, COVERED strengthened.",
   "audit": "COVERED_FULL_REVERIFY.md: pruned bogus citation(s) ['Gs034'] -- single-wire figure-eight -- the sibling single-wire class, not two-wires-share-a-vertex -- class now rests on Twi009 alone (single-fixture base). Verdict unchanged (COVERED)."
  },
  {
@@ -2725,9 +2738,11 @@
    }
   ],
   "subvariants": [],
-  "fixture_ids": [],
-  "coverage_verdict": "GAP",
-  "notes": "DOWNGRADED COVERED->GAP (VERDICT_AUDIT.md): All five fixtures (U001/U002/U003/Wr044/Wr045) are faceless GEOMETRIC_CURVE_SET wireframes with occt=empty; independent corpus-wide sweep found ZERO shell-bearing fixtures declaring any non-mm length unit (incl. CONVERSION_BASED_UNIT) -- no fixture can exercise unit-scaling on a live translated shape. NOTE: a sibling agent is actively authoring a unit-mismatch fixture on a live shape right now; re-check this verdict once that fixture lands (see BACKLOG.md remediation queue). Surviving/cited fixtures: (none -- no fixture in the corpus reaches this mechanism live). || Prior COVERED notes (fixture_ids were ['U001', 'U002', 'U003', 'Wr044', 'Wr045']): Genuine XSAlgo-level defect-handling (unit-declaration vs target mismatch), not plumbing: getting this wrong rescales every tolerance-driven repair. | VERIFICATION: U001 (mm-vs-metre 1000x), U002/U003 (Onshape METRE quirks), Wr044/Wr045 (unit declared vs values unconverted) all genuinely present unit-declaration/value mismatches that force the reader's unit-scaling path, including its effect on healing tolerances.",
+  "fixture_ids": [
+   "U050"
+  ],
+  "coverage_verdict": "COVERED",
+  "notes": "DOWNGRADED COVERED->GAP (VERDICT_AUDIT.md): All five fixtures (U001/U002/U003/Wr044/Wr045) are faceless GEOMETRIC_CURVE_SET wireframes with occt=empty; independent corpus-wide sweep found ZERO shell-bearing fixtures declaring any non-mm length unit (incl. CONVERSION_BASED_UNIT) -- no fixture can exercise unit-scaling on a live translated shape. NOTE: a sibling agent is actively authoring a unit-mismatch fixture on a live shape right now; re-check this verdict once that fixture lands (see BACKLOG.md remediation queue). Surviving/cited fixtures: (none -- no fixture in the corpus reaches this mechanism live). || Prior COVERED notes (fixture_ids were ['U001', 'U002', 'U003', 'Wr044', 'Wr045']): Genuine XSAlgo-level defect-handling (unit-declaration vs target mismatch), not plumbing: getting this wrong rescales every tolerance-driven repair. | VERIFICATION: U001 (mm-vs-metre 1000x), U002/U003 (Onshape METRE quirks), Wr044/Wr045 (unit declared vs values unconverted) all genuinely present unit-declaration/value mismatches that force the reader's unit-scaling path, including its effect on healing tolerances. | Wave-1 (2026-07-12, adversarial verifier): U050 lands the promised sibling-agent fixture -- a shell-bearing STEP file with a genuine non-mm unit declaration, live-verified 25.4x scaling reaching the translated shape and its healing tolerances. GAP -> COVERED.",
   "audit": "VERDICT_AUDIT.md: COVERED->GAP. All five fixtures (U001/U002/U003/Wr044/Wr045) are faceless GEOMETRIC_CURVE_SET wireframes with occt=empty; independent corpus-wide sweep found ZERO shell-bearing fixtures declaring any non-mm length unit (incl. CONVERSION_BASED_UNIT) -- no fixture can exercise unit-scaling on a live translated shape. NOTE: a sibling agent is actively authoring a unit-mismatch fixture on a live shape right now; re-check this verdict once that fixture lands (see BACKLOG.md remediation queue)."
  },
  {

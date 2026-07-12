@@ -202,10 +202,11 @@
       "Twi088",
       "Os012",
       "Gp057",
-      "Gp082"
+      "Gp082",
+      "Twi289"
     ],
-    "coverage_verdict": "PARTIAL",
-    "notes": "Group-C's edge-missing-curve-representation record confirms the same class from the ShapeFix_Edge::FixAddCurve3d side (Twi047 shared evidence). MISSING: fixture for the removal path of a completely geometry-less edge (ShapeFix_Wire.cxx:744-759). || Source-record notes: [D-wire] Twi047 (EDGE_CURVE with only a pcurve) and Twi088/Os012 (no 3D curve attached) verified as reconstruct inputs; Gp057/Gp082 cover trim-domain extension mechanisms. Missing: a fixture demonstrating the removal path for a completely geometry-less edge (ShapeFix_Wire.cxx:744-759) as a healer behavior - Ad046 has a similar input but targets writer crash, not wire healing.",
+    "coverage_verdict": "COVERED",
+    "notes": "Group-C's edge-missing-curve-representation record confirms the same class from the ShapeFix_Edge::FixAddCurve3d side (Twi047 shared evidence). MISSING: fixture for the removal path of a completely geometry-less edge (ShapeFix_Wire.cxx:744-759). || Source-record notes: [D-wire] Twi047 (EDGE_CURVE with only a pcurve) and Twi088/Os012 (no 3D curve attached) verified as reconstruct inputs; Gp057/Gp082 cover trim-domain extension mechanisms. Missing: a fixture demonstrating the removal path for a completely geometry-less edge (ShapeFix_Wire.cxx:744-759) as a healer behavior - Ad046 has a similar input but targets writer crash, not wire healing. | Wave-1 (2026-07-12, adversarial verifier): Twi289 confirmed byte-level -- EDGE_CURVE #34 with same vertex both ends, whose curve #33 is a SURFACE_CURVE wrapping only a PCURVE (neither usable 3D curve nor pcurve range); live oracle confirms removal (shape_counts.edge==5, down from 6 declared, matching gmsh=shape(11)). Removal path now demonstrated alongside existing Twi047 reconstruct path. PARTIAL -> COVERED.",
     "source_group": [
       "D-wire"
     ]
@@ -908,9 +909,12 @@
       "solid width factor (volume/area ratio) below an explicit thinness threshold",
       "repair mode: delete (Remove) vs fold into neighboring solid (Merge), selectable via SetFixMode(0/1/2)"
     ],
-    "fixture_ids": [],
-    "coverage_verdict": "GAP",
-    "notes": "Only one candidate found by keyword search: Tfa015 ('DropSmallSolids / debris solids from booleans'). Reading its .stp directly shows it is NOT a TopoDS_SOLID at all -- it's a bare 0.001x0.001mm ADVANCED_FACE on an OPEN_SHELL (no MANIFOLD_SOLID_BREP / CLOSED_SHELL wrapping a SOLID anywhere in the file). ShapeFix_FixSmallSolid::IsValidInput only accepts TopAbs_COMPOUND/COMPSOLID/SOLID input, so this fixture cannot exercise ShapeFix_FixSmallSolid at all despite its title; it is really a small-FACE fixture (already covered by tkshh-spot-face/tkshh-strip-face territory), not a small-SOLID fixture. No genuine tiny-volume-SOLID-inside-a-compound fixture was found anywhere in the corpus.",
+    "fixture_ids": [
+      "Tsh234",
+      "Tsh235"
+    ],
+    "coverage_verdict": "PARTIAL",
+    "notes": "Only one candidate found by keyword search: Tfa015 ('DropSmallSolids / debris solids from booleans'). Reading its .stp directly shows it is NOT a TopoDS_SOLID at all -- it's a bare 0.001x0.001mm ADVANCED_FACE on an OPEN_SHELL (no MANIFOLD_SOLID_BREP / CLOSED_SHELL wrapping a SOLID anywhere in the file). ShapeFix_FixSmallSolid::IsValidInput only accepts TopAbs_COMPOUND/COMPSOLID/SOLID input, so this fixture cannot exercise ShapeFix_FixSmallSolid at all despite its title; it is really a small-FACE fixture (already covered by tkshh-spot-face/tkshh-strip-face territory), not a small-SOLID fixture. No genuine tiny-volume-SOLID-inside-a-compound fixture was found anywhere in the corpus. | Wave-1 (2026-07-12, adversarial verifier): Tsh234 (volume-threshold/Remove) independently confirmed load-bearing -- ShapeFix_FixSmallSolid().Remove() with SetVolumeThreshold(50.0) collapses the compound from 2 solids to 1, live oracle occt=shape(1) gmsh=shape(54). Tsh235 (width-factor/Merge) is reachable and byte-distinct but the Merge disposition could not be made to fire across a SetVolumeThreshold/SetWidthFactorThreshold/SetPrecision sweep (solid/face counts never changed) -- kept in fixture_ids as an honest non-firing sibling, not counted toward COVERED. GAP -> PARTIAL.",
     "source_group": [
       "A-small-face-shell-tolerance"
     ]
@@ -948,9 +952,12 @@
       "outer shell + nested internal void shell(s) correctly assembled into one solid",
       "genuinely disjoint shell groups split into a compound of separate solids"
     ],
-    "fixture_ids": [],
-    "coverage_verdict": "GAP",
-    "notes": "The closest candidates found (Bo003, Tsh015, Tsh067) all target the STEP-schema-level BREP_WITH_VOIDS void-orientation representation (an inner void shell's own .T./.F. sense flag being wrong, or a void shell's extent exceeding its host), which is handled by the StepToTopoDS BREP_WITH_VOIDS translator rather than by ShapeFix_Solid::Perform's generic unstructured-compound-of-shells classification path (CreateSolids/CollectSolids). No fixture presenting a plain, unstructured multi-shell compound requiring point-containment classification into nested-void-vs-disjoint solids was found with confidence; treating this as a GAP rather than claiming the BREP_WITH_VOIDS fixtures as coverage of this specific mechanism.",
+    "fixture_ids": [
+      "Tsh236",
+      "Tsh237"
+    ],
+    "coverage_verdict": "PARTIAL",
+    "notes": "The closest candidates found (Bo003, Tsh015, Tsh067) all target the STEP-schema-level BREP_WITH_VOIDS void-orientation representation (an inner void shell's own .T./.F. sense flag being wrong, or a void shell's extent exceeding its host), which is handled by the StepToTopoDS BREP_WITH_VOIDS translator rather than by ShapeFix_Solid::Perform's generic unstructured-compound-of-shells classification path (CreateSolids/CollectSolids). No fixture presenting a plain, unstructured multi-shell compound requiring point-containment classification into nested-void-vs-disjoint solids was found with confidence; treating this as a GAP rather than claiming the BREP_WITH_VOIDS fixtures as coverage of this specific mechanism. | Wave-1 (2026-07-12, adversarial verifier): Tsh236 (nested) and Tsh237 (disjoint) honestly encode both target topologies -- reachable, no BREP_WITH_VOIDS entity present, default-reader solid:0 reproduced exactly -- but no accessible public OCCT entry point performing the claimed CreateSolids/CollectSolids containment classification could be located (ShapeFix_Solid.Init only accepts an already-built TopoDS_Solid; ShapeFix_Shape.Perform's default FixSolidMode left the shape at 0 solids). Kept PARTIAL, not COVERED; flagged for maintainer follow-up to locate the real call site or reclassify alongside the STEP-INEXPRESSIBLE carve-out. GAP -> PARTIAL.",
     "source_group": [
       "A-small-face-shell-tolerance"
     ]
@@ -967,9 +974,11 @@
       "vertex sits on the interior of an edge belonging to a different wire of the same face (outer/inner T-junction)",
       "vertex sits on the interior of an edge of the same wire"
     ],
-    "fixture_ids": [],
-    "coverage_verdict": "GAP",
-    "notes": "Catalog contains ~17 fixtures explicitly titled after ShapeAnalysis_CheckSmallFace.CheckSplittingVertices / ShapeFix_Face.FixSplitFace (Tfa010, Tfa079, Tfa094, Tfa104, Tfa117, Tfa129, Tfa149, Tfa169, etc.) but reading 4 of them directly (Tfa010, Tfa079, Tfa104, Tfa129) shows a consistent mismatch: in every sampled fixture the 'splitting' vertex is encoded as a genuine shared topological ENDPOINT of the edges it touches (the bottom edge is literally split into two EDGE_CURVEs at that vertex, or the vertex is reused as an edge_curve endpoint across both wires), which is exactly the case CheckSplittingVertices explicitly SKIPS (`V.IsSame(V1) || V.IsSame(V2)`); Tfa129 additionally has no extra vertex encoded in the STEP at all despite its comment describing one. None of the sampled fixtures place an independent vertex near (but not attached to) an unrelated edge's curve interior, which is the actual trigger condition. Also note ShapeFix_FixSmallFace::FixSplitFace/SplitOneFace are not called by the class's own default Perform() (which only calls FixSpotFace+FixStripFace) -- they must be invoked explicitly, though this doesn't affect the verdict since the method still exists as real OCCT healing code. Recommend re-authoring this family with a vertex geometrically near an unrelated edge's interior without being declared as its topological endpoint.",
+    "fixture_ids": [
+      "Tfa249"
+    ],
+    "coverage_verdict": "COVERED",
+    "notes": "Catalog contains ~17 fixtures explicitly titled after ShapeAnalysis_CheckSmallFace.CheckSplittingVertices / ShapeFix_Face.FixSplitFace (Tfa010, Tfa079, Tfa094, Tfa104, Tfa117, Tfa129, Tfa149, Tfa169, etc.) but reading 4 of them directly (Tfa010, Tfa079, Tfa104, Tfa129) shows a consistent mismatch: in every sampled fixture the 'splitting' vertex is encoded as a genuine shared topological ENDPOINT of the edges it touches (the bottom edge is literally split into two EDGE_CURVEs at that vertex, or the vertex is reused as an edge_curve endpoint across both wires), which is exactly the case CheckSplittingVertices explicitly SKIPS (`V.IsSame(V1) || V.IsSame(V2)`); Tfa129 additionally has no extra vertex encoded in the STEP at all despite its comment describing one. None of the sampled fixtures place an independent vertex near (but not attached to) an unrelated edge's curve interior, which is the actual trigger condition. Also note ShapeFix_FixSmallFace::FixSplitFace/SplitOneFace are not called by the class's own default Perform() (which only calls FixSpotFace+FixStripFace) -- they must be invoked explicitly, though this doesn't affect the verdict since the method still exists as real OCCT healing code. Recommend re-authoring this family with a vertex geometrically near an unrelated edge's interior without being declared as its topological endpoint. | Wave-1 (2026-07-12, adversarial verifier): runtime-scaffold: reader's unconditional per-face healing resolves T-junctions on import; scaffold invocation returns 2 splitting vertices (Tfa249). GAP -> COVERED.",
     "source_group": [
       "A-small-face-shell-tolerance"
     ]
@@ -1360,9 +1369,12 @@
       "consecutive edges within a single wire share a location but not a vertex object (ShapeFix_WireVertex::FixSame, status codes 1/2 = 'already close/same')",
       "arbitrary edge-pairs across a broader connectivity graph (registered via Add(), merged via Build()) \u2014 used as the general-purpose utility underlying shell/face sewing"
     ],
-    "fixture_ids": [],
-    "coverage_verdict": "GAP",
-    "notes": "No fixture found that cleanly demonstrates this exact defect (topologically distinct-but-coincident vertex objects that a healer merges into one shared vertex, independent of the separate face-pair-sewing and common-vertex-splitting problems). Ad103 was investigated as a near-miss but tests a different axis entirely (a use-after-free / double-merge robustness bug in a vertex-union table during a *second* merge pass, not the initial merge-of-coincident-vertices mechanism itself). Tfa019/Twi037 (face-pair sewing, see tkshh-faceconnect-unshared-boundary-edges) and Twi009/Twi050 (SplitCommonVertex, the opposite direction) are the closest related fixtures but exercise different, already-catalogued problems. Searched for 'distinct vertex instances', 'coincident vertex', 'not welded', 'vertex fragmentation', 'duplicate coordinate' with no further hits.",
+    "fixture_ids": [
+      "Twi284",
+      "Twi285"
+    ],
+    "coverage_verdict": "COVERED",
+    "notes": "No fixture found that cleanly demonstrates this exact defect (topologically distinct-but-coincident vertex objects that a healer merges into one shared vertex, independent of the separate face-pair-sewing and common-vertex-splitting problems). Ad103 was investigated as a near-miss but tests a different axis entirely (a use-after-free / double-merge robustness bug in a vertex-union table during a *second* merge pass, not the initial merge-of-coincident-vertices mechanism itself). Tfa019/Twi037 (face-pair sewing, see tkshh-faceconnect-unshared-boundary-edges) and Twi009/Twi050 (SplitCommonVertex, the opposite direction) are the closest related fixtures but exercise different, already-catalogued problems. Searched for 'distinct vertex instances', 'coincident vertex', 'not welded', 'vertex fragmentation', 'duplicate coordinate' with no further hits. | Wave-1 (2026-07-12, adversarial verifier): Twi284 (two genuinely distinct VERTEX_POINT entities at the same coincident location, consecutive-in-wire subvariant) and Twi285 (distinct entities, cross-graph subvariant, each on its own unrelated ADVANCED_FACE) both confirmed byte-level and live-oracle-matched -- correctly the opposite direction from Twi009/Twi050 (SplitCommonVertex). Both subvariants demonstrated. GAP -> COVERED.",
     "source_group": [
       "C-edge-vertex-facesplit"
     ]
