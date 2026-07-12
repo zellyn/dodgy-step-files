@@ -33,7 +33,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>validate every face index against V at parse time; reject or skip the face rather than dereference past the vertex table.</p></section>
 <section><h2>Notes</h2>
-<p>Complements Ip003 (OFF header count) with an OFF face index-OOB. Synonyms: &quot;OFF face index out of range&quot;, &quot;vertex index exceeds V&quot;, &quot;OFF OOB face reference&quot;, &quot;index past vertex table&quot;. Provenance tier: bytes-only.</p></section>
+<p>Cross-oracle: trimesh 4.12 raises IndexError (index 5 out of bounds for size 3) — verified 2026-07-12. Complements Ip003 (OFF header count) with an OFF face index-OOB. Synonyms: &quot;OFF face index out of range&quot;, &quot;vertex index exceeds V&quot;, &quot;OFF OOB face reference&quot;, &quot;index past vertex table&quot;. Provenance tier: bytes-only.</p></section>
 <section><h2>Expected validation</h2>
 <p><code></code></p></section>
 <section><h2>Provenance tier</h2>

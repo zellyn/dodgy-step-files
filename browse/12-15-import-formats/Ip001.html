@@ -33,7 +33,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>reject with a diagnostic naming the offending index/record, or clamp-and-warn; never silently emit an out-of-bounds vertex reference into downstream geometry.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;OBJ face index out of range&quot;, &quot;vertex index exceeds count&quot;, &quot;OBJ OOB face reference&quot;, &quot;index-past-end mesh face&quot;. Provenance tier: bytes-only.</p></section>
+<p>Cross-oracle: trimesh 4.12 raises IndexError (index 4 out of bounds for size 3); assimp aborts; MeshLab clamps — verified 2026-07-12. Synonyms: &quot;OBJ face index out of range&quot;, &quot;vertex index exceeds count&quot;, &quot;OBJ OOB face reference&quot;, &quot;index-past-end mesh face&quot;. Provenance tier: bytes-only.</p></section>
 <section><h2>Expected validation</h2>
 <p><code></code></p></section>
 <section><h2>Provenance tier</h2>

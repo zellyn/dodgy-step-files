@@ -33,7 +33,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>stop at EOF, validate the declared V/F/E against the rows actually read, and reject with a diagnostic rather than looping past the buffer.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;OFF header count mismatch&quot;, &quot;V F E exceeds body&quot;, &quot;OFF trusts header&quot;, &quot;declared face count too high&quot;. Provenance tier: bytes-only. First OFF-format parser-robustness fixture in the corpus.</p></section>
+<p>Cross-oracle: trimesh 4.12 raises ValueError (cannot reshape 12 floats into (8,3) — it trusts the header&#x27;s 8-vertex count) — verified 2026-07-12. Synonyms: &quot;OFF header count mismatch&quot;, &quot;V F E exceeds body&quot;, &quot;OFF trusts header&quot;, &quot;declared face count too high&quot;. Provenance tier: bytes-only. First OFF-format parser-robustness fixture in the corpus.</p></section>
 <section><h2>Expected validation</h2>
 <p><code></code></p></section>
 <section><h2>Provenance tier</h2>

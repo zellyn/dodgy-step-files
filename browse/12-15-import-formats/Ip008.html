@@ -33,7 +33,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>validate every node/child index against the `nodes` array length before recursing.</p></section>
 <section><h2>Notes</h2>
-<p>Complements Ip004 (accessor-over-bufferView) with a scene-graph index-OOB in the same format. Synonyms: &quot;glTF node index out of range&quot;, &quot;children references missing node&quot;, &quot;scene graph index OOB&quot;, &quot;ImportNode overflow&quot;. Provenance tier: bytes-only.</p></section>
+<p>Cross-oracle: trimesh 4.12 raises IndexError (children references node index out of range) — verified 2026-07-12. Complements Ip004 (accessor-over-bufferView) with a scene-graph index-OOB in the same format. Synonyms: &quot;glTF node index out of range&quot;, &quot;children references missing node&quot;, &quot;scene graph index OOB&quot;, &quot;ImportNode overflow&quot;. Provenance tier: bytes-only.</p></section>
 <section><h2>Expected validation</h2>
 <p><code></code></p></section>
 <section><h2>Provenance tier</h2>

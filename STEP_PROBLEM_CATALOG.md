@@ -45245,7 +45245,7 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'f 1 2 5')
 - **Fixture path**: import-examples/12-15-import-formats/Ip001.obj
 - **Fixture kind**: raw import-format file (parser-robustness; graded against assimp/trimesh, not Part-21)
-- **Notes**: Synonyms: "OBJ face index out of range", "vertex index exceeds count", "OBJ OOB face reference", "index-past-end mesh face". Provenance tier: bytes-only.
+- **Notes**: Cross-oracle: trimesh 4.12 raises IndexError (index 4 out of bounds for size 3); assimp aborts; MeshLab clamps — verified 2026-07-12. Synonyms: "OBJ face index out of range", "vertex index exceeds count", "OBJ OOB face reference", "index-past-end mesh face". Provenance tier: bytes-only.
 - **Severity**: P2
 - **Model impact**: The importer either aborts (no geometry) or fabricates/clamps a vertex the file never declared, so the loaded mesh silently disagrees with the producer's intent; downstream indexing assumptions (vertex buffers, adjacency) read past the end of the vertex table.
 
@@ -45258,7 +45258,7 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'element vertex 5')
 - **Fixture path**: import-examples/12-15-import-formats/Ip002.ply
 - **Fixture kind**: raw import-format file (parser-robustness; graded against assimp/trimesh, not Part-21)
-- **Notes**: Synonyms: "PLY vertex count mismatch", "header count exceeds body", "declared more vertices than present", "PLY LoadVertex overflow". Provenance tier: bytes-only.
+- **Notes**: Cross-oracle: trimesh 4.12 mis-parses to 4 vertices / 0 faces (consumes the face row as vertex data) instead of the intended 3 vertices / 1 face; assimp overflows (#5729) — verified 2026-07-12. Synonyms: "PLY vertex count mismatch", "header count exceeds body", "declared more vertices than present", "PLY LoadVertex overflow". Provenance tier: bytes-only.
 - **Severity**: P2
 - **Model impact**: The loader either reads past the vertex table into unrelated bytes (corrupt coordinates, wrong topology) or overflows the vertex buffer entirely; the reconstructed mesh has no correspondence to the file's real geometry.
 
@@ -45271,7 +45271,7 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'8 4 0')
 - **Fixture path**: import-examples/12-15-import-formats/Ip003.off
 - **Fixture kind**: raw import-format file (parser-robustness; graded against assimp/trimesh, not Part-21)
-- **Notes**: Synonyms: "OFF header count mismatch", "V F E exceeds body", "OFF trusts header", "declared face count too high". Provenance tier: bytes-only. First OFF-format parser-robustness fixture in the corpus.
+- **Notes**: Cross-oracle: trimesh 4.12 raises ValueError (cannot reshape 12 floats into (8,3) — it trusts the header's 8-vertex count) — verified 2026-07-12. Synonyms: "OFF header count mismatch", "V F E exceeds body", "OFF trusts header", "declared face count too high". Provenance tier: bytes-only. First OFF-format parser-robustness fixture in the corpus.
 - **Severity**: P2
 - **Model impact**: The loader reads uninitialized / past-EOF memory as vertex and face data, producing garbage geometry or crashing; a partial read silently drops the real faces.
 
@@ -45284,7 +45284,7 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'data:application/octet-stream;base64,AAAAAAAAAAAAAAAA')
 - **Fixture path**: import-examples/12-15-import-formats/Ip004.gltf
 - **Fixture kind**: raw import-format file (parser-robustness; graded against assimp/tinygltf, not Part-21)
-- **Notes**: The 16-char base64 payload decodes to exactly 12 zero bytes — one VEC3, a third of the 36 the accessor claims. Synonyms: "glTF accessor out of bounds", "accessor over-runs bufferView", "ExtractData overflow", "count exceeds byteLength". Provenance tier: bytes-only. First glTF coverage.
+- **Notes**: Cross-oracle: trimesh 4.12 raises ValueError (cannot reshape the 12-byte buffer's 3 floats into (3,3)) — verified 2026-07-12. The 16-char base64 payload decodes to exactly 12 zero bytes — one VEC3, a third of the 36 the accessor claims. Synonyms: "glTF accessor out of bounds", "accessor over-runs bufferView", "ExtractData overflow", "count exceeds byteLength". Provenance tier: bytes-only. First glTF coverage.
 - **Severity**: P2
 - **Model impact**: The importer copies past the end of the decoded buffer, reading adjacent heap bytes as vertex coordinates (info leak / garbage geometry) or crashing; the loaded positions are partly fabricated.
 
@@ -45297,7 +45297,7 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'<p>0 1 5</p>')
 - **Fixture path**: import-examples/12-15-import-formats/Ip005.dae
 - **Fixture kind**: raw import-format file (parser-robustness; graded against assimp, not Part-21)
-- **Notes**: Synonyms: "COLLADA p index out of range", "primitive index beyond source", "DAE CopyVertex overflow", "vertex index exceeds accessor count". Provenance tier: bytes-only. First COLLADA coverage.
+- **Notes**: Cross-oracle: trimesh 4.12 + pycollada instantiate the geometry then silently drop the primitive to an empty mesh (0 faces vs the intended 1 triangle); assimp reads past the source (#6522) — verified 2026-07-12. Synonyms: "COLLADA p index out of range", "primitive index beyond source", "DAE CopyVertex overflow", "vertex index exceeds accessor count". Provenance tier: bytes-only. First COLLADA coverage.
 - **Severity**: P2
 - **Model impact**: The importer reads past the position `<float_array>`, assembling a triangle from adjacent-memory coordinates or crashing; the reconstructed geometry contains a vertex the document never defined.
 
@@ -45310,7 +45310,7 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'f -9 -1 -1')
 - **Fixture path**: import-examples/12-15-import-formats/Ip006.obj
 - **Fixture kind**: raw import-format file (parser-robustness; graded against assimp/trimesh, not Part-21)
-- **Notes**: Distinct from Ip001 (positive OOB). Synonyms: "OBJ negative index underflow", "relative index below negative count", "back-reference before first vertex", "OBJ f -9 out of range". Provenance tier: bytes-only.
+- **Notes**: Cross-oracle: trimesh 4.12 raises IndexError (index -9 out of bounds for size 3) — verified 2026-07-12. Distinct from Ip001 (positive OOB). Synonyms: "OBJ negative index underflow", "relative index below negative count", "back-reference before first vertex", "OBJ f -9 out of range". Provenance tier: bytes-only.
 - **Severity**: P2
 - **Model impact**: The importer reads before the vertex buffer (garbage coordinates or crash) or silently drops the face; either way the loaded mesh diverges from the file's intent.
 
@@ -45323,7 +45323,7 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'"componentType": 9999')
 - **Fixture path**: import-examples/12-15-import-formats/Ip007.gltf
 - **Fixture kind**: raw import-format file (parser-robustness; graded against assimp/tinygltf, not Part-21)
-- **Notes**: The corpus's first invalid-enum-tag import class. Synonyms: "glTF invalid componentType", "unknown accessor component type", "bad enum tag", "componentType out of range". Provenance tier: bytes-only.
+- **Notes**: Cross-oracle: trimesh 4.12 raises KeyError(9999) on the unknown componentType — verified 2026-07-12. The corpus's first invalid-enum-tag import class. Synonyms: "glTF invalid componentType", "unknown accessor component type", "bad enum tag", "componentType out of range". Provenance tier: bytes-only.
 - **Severity**: P2
 - **Model impact**: Element-size computation from an unknown type produces a wrong or zero stride, so the accessor reads the wrong bytes (or a zero-size loop / division), corrupting or aborting the load.
 
@@ -45336,7 +45336,7 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'"children": [ 5 ]')
 - **Fixture path**: import-examples/12-15-import-formats/Ip008.gltf
 - **Fixture kind**: raw import-format file (parser-robustness; graded against assimp/tinygltf, not Part-21)
-- **Notes**: Complements Ip004 (accessor-over-bufferView) with a scene-graph index-OOB in the same format. Synonyms: "glTF node index out of range", "children references missing node", "scene graph index OOB", "ImportNode overflow". Provenance tier: bytes-only.
+- **Notes**: Cross-oracle: trimesh 4.12 raises IndexError (children references node index out of range) — verified 2026-07-12. Complements Ip004 (accessor-over-bufferView) with a scene-graph index-OOB in the same format. Synonyms: "glTF node index out of range", "children references missing node", "scene graph index OOB", "ImportNode overflow". Provenance tier: bytes-only.
 - **Severity**: P2
 - **Model impact**: The importer dereferences a node past the end of the node array (garbage transform/mesh pointer or crash); the scene graph it builds is corrupt.
 
@@ -45349,7 +45349,7 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'0.0 0.0 0.0 7.0')
 - **Fixture path**: import-examples/12-15-import-formats/Ip009.ply
 - **Fixture kind**: raw import-format file (parser-robustness; graded against assimp/trimesh, not Part-21)
-- **Notes**: Complements Ip002 (header count > rows) with the per-row-field-overflow variant. Synonyms: "PLY extra property field", "row has more scalars than properties", "LoadVertex field overflow", "PLY vertex row overrun". Provenance tier: bytes-only.
+- **Notes**: Cross-oracle: trimesh 4.12 TOLERATES it (parses per declared property, ignores the extra field → clean 3v/1f); assimp writes past the vertex buffer (#5729) — a differential-tolerance signal, verified 2026-07-12. Complements Ip002 (header count > rows) with the per-row-field-overflow variant. Synonyms: "PLY extra property field", "row has more scalars than properties", "LoadVertex field overflow", "PLY vertex row overrun". Provenance tier: bytes-only.
 - **Severity**: P2
 - **Model impact**: The extra scalar is written past the vertex's field storage (heap corruption) or shifts all subsequent parsing, so vertex coordinates and topology decode incorrectly.
 
@@ -45362,6 +45362,6 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'3 0 1 5')
 - **Fixture path**: import-examples/12-15-import-formats/Ip010.off
 - **Fixture kind**: raw import-format file (parser-robustness; graded against assimp/trimesh, not Part-21)
-- **Notes**: Complements Ip003 (OFF header count) with an OFF face index-OOB. Synonyms: "OFF face index out of range", "vertex index exceeds V", "OFF OOB face reference", "index past vertex table". Provenance tier: bytes-only.
+- **Notes**: Cross-oracle: trimesh 4.12 raises IndexError (index 5 out of bounds for size 3) — verified 2026-07-12. Complements Ip003 (OFF header count) with an OFF face index-OOB. Synonyms: "OFF face index out of range", "vertex index exceeds V", "OFF OOB face reference", "index past vertex table". Provenance tier: bytes-only.
 - **Severity**: P2
 - **Model impact**: The importer reads past the vertex table (garbage coordinates or crash) or drops the face; the reconstructed surface disagrees with the file.

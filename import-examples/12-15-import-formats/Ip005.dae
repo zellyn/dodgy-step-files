@@ -24,5 +24,14 @@
       </mesh>
     </geometry>
   </library_geometries>
-  <scene/>
+  <library_visual_scenes>
+    <visual_scene id="scene0">
+      <node id="n0" name="n0">
+        <instance_geometry url="#g0"/>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#scene0"/>
+  </scene>
 </COLLADA>

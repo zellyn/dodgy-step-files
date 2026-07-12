@@ -34,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>bound every vertex write to the rows actually present; stop at EOF / the next element token and reject with a diagnostic (declared N vs parsed count), never write past the allocation.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;PLY vertex count mismatch&quot;, &quot;header count exceeds body&quot;, &quot;declared more vertices than present&quot;, &quot;PLY LoadVertex overflow&quot;. Provenance tier: bytes-only.</p></section>
+<p>Cross-oracle: trimesh 4.12 mis-parses to 4 vertices / 0 faces (consumes the face row as vertex data) instead of the intended 3 vertices / 1 face; assimp overflows (#5729) — verified 2026-07-12. Synonyms: &quot;PLY vertex count mismatch&quot;, &quot;header count exceeds body&quot;, &quot;declared more vertices than present&quot;, &quot;PLY LoadVertex overflow&quot;. Provenance tier: bytes-only.</p></section>
 <section><h2>Expected validation</h2>
 <p><code></code></p></section>
 <section><h2>Provenance tier</h2>

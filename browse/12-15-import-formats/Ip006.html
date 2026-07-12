@@ -34,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>resolve each negative index against the running count and reject (or skip) any result &lt; 1; never index before the vertex array.</p></section>
 <section><h2>Notes</h2>
-<p>Distinct from Ip001 (positive OOB). Synonyms: &quot;OBJ negative index underflow&quot;, &quot;relative index below negative count&quot;, &quot;back-reference before first vertex&quot;, &quot;OBJ f -9 out of range&quot;. Provenance tier: bytes-only.</p></section>
+<p>Cross-oracle: trimesh 4.12 raises IndexError (index -9 out of bounds for size 3) — verified 2026-07-12. Distinct from Ip001 (positive OOB). Synonyms: &quot;OBJ negative index underflow&quot;, &quot;relative index below negative count&quot;, &quot;back-reference before first vertex&quot;, &quot;OBJ f -9 out of range&quot;. Provenance tier: bytes-only.</p></section>
 <section><h2>Expected validation</h2>
 <p><code></code></p></section>
 <section><h2>Provenance tier</h2>

@@ -33,7 +33,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>enforce `byteOffset + count × stride ≤ bufferView.byteLength ≤ buffer.byteLength` before any copy; reject with a diagnostic naming the accessor and the shortfall.</p></section>
 <section><h2>Notes</h2>
-<p>The 16-char base64 payload decodes to exactly 12 zero bytes — one VEC3, a third of the 36 the accessor claims. Synonyms: &quot;glTF accessor out of bounds&quot;, &quot;accessor over-runs bufferView&quot;, &quot;ExtractData overflow&quot;, &quot;count exceeds byteLength&quot;. Provenance tier: bytes-only. First glTF coverage.</p></section>
+<p>Cross-oracle: trimesh 4.12 raises ValueError (cannot reshape the 12-byte buffer&#x27;s 3 floats into (3,3)) — verified 2026-07-12. The 16-char base64 payload decodes to exactly 12 zero bytes — one VEC3, a third of the 36 the accessor claims. Synonyms: &quot;glTF accessor out of bounds&quot;, &quot;accessor over-runs bufferView&quot;, &quot;ExtractData overflow&quot;, &quot;count exceeds byteLength&quot;. Provenance tier: bytes-only. First glTF coverage.</p></section>
 <section><h2>Expected validation</h2>
 <p><code></code></p></section>
 <section><h2>Provenance tier</h2>

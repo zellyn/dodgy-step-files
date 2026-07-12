@@ -16,7 +16,7 @@
 <p class="category">§12.15 import-format parser robustness (sub-class: index-out-of-range)</p>
 <p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
 <p class="tag-pills">
-<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 </p>
 </header>
 <main>
@@ -33,7 +33,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>validate every `&lt;p&gt;` index against the referenced source&#x27;s accessor count before dereference; reject with a diagnostic or skip the primitive.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;COLLADA p index out of range&quot;, &quot;primitive index beyond source&quot;, &quot;DAE CopyVertex overflow&quot;, &quot;vertex index exceeds accessor count&quot;. Provenance tier: bytes-only. First COLLADA coverage.</p></section>
+<p>Cross-oracle: trimesh 4.12 + pycollada instantiate the geometry then silently drop the primitive to an empty mesh (0 faces vs the intended 1 triangle); assimp reads past the source (#6522) — verified 2026-07-12. Synonyms: &quot;COLLADA p index out of range&quot;, &quot;primitive index beyond source&quot;, &quot;DAE CopyVertex overflow&quot;, &quot;vertex index exceeds accessor count&quot;. Provenance tier: bytes-only. First COLLADA coverage.</p></section>
 <section><h2>Expected validation</h2>
 <p><code></code></p></section>
 <section><h2>Provenance tier</h2>
@@ -73,8 +73,17 @@
 <span class="lineno">24</span>      &lt;/mesh&gt;
 <span class="lineno">25</span>    &lt;/geometry&gt;
 <span class="lineno">26</span>  &lt;/library_geometries&gt;
-<span class="lineno">27</span>  &lt;scene/&gt;
-<span class="lineno">28</span>&lt;/COLLADA&gt;
+<span class="lineno">27</span>  &lt;library_visual_scenes&gt;
+<span class="lineno">28</span>    &lt;visual_scene id=&quot;scene0&quot;&gt;
+<span class="lineno">29</span>      &lt;node id=&quot;n0&quot; name=&quot;n0&quot;&gt;
+<span class="lineno">30</span>        &lt;instance_geometry url=&quot;#g0&quot;/&gt;
+<span class="lineno">31</span>      &lt;/node&gt;
+<span class="lineno">32</span>    &lt;/visual_scene&gt;
+<span class="lineno">33</span>  &lt;/library_visual_scenes&gt;
+<span class="lineno">34</span>  &lt;scene&gt;
+<span class="lineno">35</span>    &lt;instance_visual_scene url=&quot;#scene0&quot;/&gt;
+<span class="lineno">36</span>  &lt;/scene&gt;
+<span class="lineno">37</span>&lt;/COLLADA&gt;
 </pre>
 </details>
 </section>

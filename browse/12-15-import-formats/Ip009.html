@@ -33,7 +33,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>bind each row&#x27;s parse to the declared property count; ignore or reject extra fields, never write past the per-vertex storage.</p></section>
 <section><h2>Notes</h2>
-<p>Complements Ip002 (header count &gt; rows) with the per-row-field-overflow variant. Synonyms: &quot;PLY extra property field&quot;, &quot;row has more scalars than properties&quot;, &quot;LoadVertex field overflow&quot;, &quot;PLY vertex row overrun&quot;. Provenance tier: bytes-only.</p></section>
+<p>Cross-oracle: trimesh 4.12 TOLERATES it (parses per declared property, ignores the extra field → clean 3v/1f); assimp writes past the vertex buffer (#5729) — a differential-tolerance signal, verified 2026-07-12. Complements Ip002 (header count &gt; rows) with the per-row-field-overflow variant. Synonyms: &quot;PLY extra property field&quot;, &quot;row has more scalars than properties&quot;, &quot;LoadVertex field overflow&quot;, &quot;PLY vertex row overrun&quot;. Provenance tier: bytes-only.</p></section>
 <section><h2>Expected validation</h2>
 <p><code></code></p></section>
 <section><h2>Provenance tier</h2>
