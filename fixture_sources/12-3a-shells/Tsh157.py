@@ -83,7 +83,7 @@ e1_a = led(v1, vc1, p1,  0.3, 0.5, 0.0)
 e1_b = led(v2, vc1, p2,  0.8,-0.5, 0.0)
 
 # Face2 private edges: v2->vc2 and v0->vc2
-e2_a = led(v2, vc2, p2, -0.8, 0.5, 0.0)  # wait, adjust direction
+e2_a = led(v2, vc2, p2, -0.8, -0.5, 0.0)
 e2_b = led(v0, vc2, p0, -0.3, 0.5, 0.0)
 
 # Planes for each triangular face (all in z=0 plane)

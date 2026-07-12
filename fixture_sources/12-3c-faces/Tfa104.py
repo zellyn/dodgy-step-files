@@ -50,8 +50,16 @@ e_cB = f.edge_curve(v_center, v_B, f.line(p_center, f.vector(f.direction((-0.5, 
 e_cC = f.edge_curve(v_center, v_C, f.line(p_center, f.vector(f.direction((-0.5, -0.866, 0.0)), 2.0)))
 
 # Two outer edges needed in the star loop: A→B and C→A
-e_AB = f.edge_curve(v_A, v_B, f.line(p_A, f.vector(f.direction((-0.75, 0.433, 0.0)), 3.0)))
-e_CA = f.edge_curve(v_C, v_A, f.line(p_C, f.vector(f.direction(( 0.75, 0.433, 0.0)), 3.0)))
+def _support_edge(v_from, v_to, p_from, p_to):
+    dx = p_to.args[1][0] - p_from.args[1][0]
+    dy = p_to.args[1][1] - p_from.args[1][1]
+    dz = p_to.args[1][2] - p_from.args[1][2]
+    length = (dx*dx + dy*dy + dz*dz) ** 0.5
+    d = f.direction((dx/length, dy/length, dz/length))
+    return f.edge_curve(v_from, v_to, f.line(p_from, f.vector(d, length)))
+
+e_AB = _support_edge(v_A, v_B, p_A, p_B)
+e_CA = _support_edge(v_C, v_A, p_C, p_A)
 
 # Star loop: center→A→B→center→C→A→center — visits center 3 times.
 # Non-manifold: center vertex has 3-edge incidence (e_cA, e_cB, e_cC all touch it).

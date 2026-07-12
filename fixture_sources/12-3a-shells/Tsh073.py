@@ -74,7 +74,10 @@ spoke3 = led(v01, vap, p01, 0.5,-0.5, 1)
 
 def tri_face(va, vb, base_edge, sp_a, sp_b, nx, ny, nz, ox, oy, oz, sense):
     """Triangular side face: base_edge traversed reversed, spokes out and back."""
-    pl = f.plane(f.axis2_placement_3d(cp(ox,oy,oz), dir3(nx,ny,nz), dir3(1,0,0)))
+    origin = cp(ox,oy,oz)
+    normal = dir3(nx,ny,nz)
+    ref = dir3(0,0,1) if abs(nx) > 0.9 else dir3(1,0,0)
+    pl = f.plane(f.axis2_placement_3d(origin, normal, ref))
     # Return base edge (vb→va) then spoke_b (vb→apex) then spoke_a (apex→va)
     loop = f.edge_loop([
         f.oriented_edge(base_edge, False),   # base traversed va←vb (reversed)

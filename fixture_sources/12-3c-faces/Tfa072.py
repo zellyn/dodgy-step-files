@@ -128,7 +128,6 @@ side12_loop = f.edge_loop([
     f.oriented_edge(e_z1,   False),
 ])
 n12 = _side_normal(V1, V2)
-ax12 = f.axis2_placement_3d(p1_0, f.direction(n12), f.direction((V2[0]-V1[0], V2[1]-V1[1], 0.0) if True else (1.0,0.0,0.0)))
 dx12 = V2[0]-V1[0]; dy12 = V2[1]-V1[1]; L12 = math.sqrt(dx12*dx12+dy12*dy12)
 ax12 = f.axis2_placement_3d(p1_0, f.direction(n12), f.direction((dx12/L12, dy12/L12, 0.0)))
 face2 = f.advanced_face([f.face_outer_bound(side12_loop)], f.plane(ax12))

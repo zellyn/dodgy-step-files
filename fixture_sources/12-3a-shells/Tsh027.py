@@ -31,7 +31,9 @@ def _quad_face(p_topleft, p_topright, p_botright, p_botleft, normal_axis):
         line = f.line(p_from, vec)
         oriented.append(f.oriented_edge(f.edge_curve(v_from, v_to, line)))
     loop = f.edge_loop(oriented)
-    plc = f.axis2_placement_3d(p_topleft, normal_axis, f.direction((1.0, 0.0, 0.0)))
+    nx = normal_axis.args[1][0]
+    ref_dir = f.direction((0.0, 0.0, 1.0)) if abs(nx) > 0.9 else f.direction((1.0, 0.0, 0.0))
+    plc = f.axis2_placement_3d(p_topleft, normal_axis, ref_dir)
     plane = f.plane(plc)
     return f.advanced_face([f.face_outer_bound(loop)], plane)
 

@@ -61,8 +61,9 @@ e_coarse = f.edge_curve(v_shared, v_coarse, l_c, name="edge_coarse")
 
 # Closing edges to form a triangle face_mixed_tol
 # v_precision → v_top
-d_up_l = f.direction((0.5, 1.0, 0.0))
-vec_up_l = f.vector(d_up_l, 1.0)
+_len_up_l = 2.0 ** 0.5
+d_up_l = f.direction((1.0 / _len_up_l, 1.0 / _len_up_l, 0.0))
+vec_up_l = f.vector(d_up_l, _len_up_l)
 e_left = f.edge_curve(v_precision, v_top, f.line(p_precision, vec_up_l))
 
 # v_top → v_coarse
