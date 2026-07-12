@@ -1,0 +1,506 @@
+{
+  "group": "D-wire",
+  "problems": [
+    {
+      "problem_id": "tkshh-wire-edges-disordered",
+      "domain": "TKShHealing",
+      "description": "The edges of a wire are stored out of traversal order: consecutive entries in the edge list do not chain head-to-tail, although a valid ordering (possibly with some edges reversed, or with the closed wire's start rotated) exists. Includes the sub-case where an individual edge's stored orientation is opposite to its traversal direction.",
+      "occt_evidence": [
+        "ShapeAnalysis_WireOrder::Perform - ShapeAnalysis_WireOrder.cxx:230 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (verified; greedy chaining, joint types 0-3 at 289-438 decide keep/reverse/move)",
+        "ShapeAnalysis_Wire::CheckOrder - ShapeAnalysis_Wire.cxx:549 @ bd2a789f (verified; status mapping 627-637: DONE1 reorder, DONE2/DONE3 reversal needed, DONE5 shift-only)",
+        "ShapeFix_Wire::FixReorder(wi) - ShapeFix_Wire.cxx:1107-1141 @ bd2a789f (verified; permutes edge list per wi.Ordered at 1133-1137)",
+        "ShapeFix_Wire::FixReorder(theModeBoth) - ShapeFix_Wire.cxx:426-474 @ bd2a789f (verified; bi-periodic-surface 2D+3D ModeBoth ordering at 436-441)"
+      ],
+      "subvariants": [
+        "edges listed in scrambled order, reorderable by vertex matching (Status 1)",
+        "some edges need sense reversal to chain (Status +/-2; also CheckConnected FAIL2 reverse-acceptable branch, ShapeAnalysis_Wire.cxx:679-686)",
+        "closed wire in correct cyclic order but started mid-loop (shift-only, Status 3 / DONE5)",
+        "ordering ambiguous between 3D and 2D on a bi-periodic surface, requiring ModeBoth 2D+3D ordering with fallback to 3D when a pcurve is missing (ShapeAnalysis_Wire.cxx:563-625)"
+      ],
+      "fixture_ids": ["Twi007", "Twi078", "Twi028", "Twi038", "Twi159", "Twi008", "Twi107", "Twi200", "Twi242", "Twi193"],
+      "coverage_verdict": "COVERED",
+      "notes": "Verified Twi007/Twi078 records (arbitrary-order EDGE_LOOP, reorder-no-reversal) and Twi008 (2D/3D mode ambiguity). Twi159 covers full-reversal; Twi028/Twi038 cover reorder-on-toroidal / parent-face-update wrinkles. Many additional FixReorder mechanism fixtures exist (Twi127, Twi139, Twi156, Twi164, Twi171, Twi202, Twi209, Twi223, Twi229)."
+    },
+    {
+      "problem_id": "tkshh-wire-small-edge",
+      "domain": "TKShHealing",
+      "description": "A wire contains a geometrically negligible edge: its two endpoint vertices and its curve midpoint all coincide within tolerance (sliver / zero-length edge, e.g. remnant of over-trimming). The edge must be removed and the wire re-stitched.",
+      "occt_evidence": [
+        "ShapeAnalysis_Wire::CheckSmall - ShapeAnalysis_Wire.cxx:698-753 @ bd2a789f (verified; endpoint distance 722-727, midpoint closure test 733-749, DONE1 loop / DONE2 distinct vertices at 751)",
+        "ShapeFix_Wire::FixSmall(num) - ShapeFix_Wire.cxx:1149-1197 @ bd2a789f (verified; edge removal 1181-1184, follow-up FixConnected when vertices differed 1187-1194)"
+      ],
+      "subvariants": [
+        "small edge whose two vertices are the same vertex object (null loop, DONE1)",
+        "small edge with two distinct but coincident vertices - removal must merge junction via FixConnected (DONE2)",
+        "midpoint test rejecting edges that leave and return (only endpoints coincide) - such edges are NOT small and must be kept (ShapeAnalysis_Wire.cxx:749)"
+      ],
+      "fixture_ids": ["Twi013", "Twi119", "Twi138", "Twi237", "Twi244", "Twi184"],
+      "coverage_verdict": "COVERED",
+      "notes": "Twi013 record verified (1e-9 m sliver on 1 m part, endpoints near-coincident, expected drop+merge). Twi119/Twi138/Twi237 are mechanism fixtures targeting the FixSmall/CheckSmall threshold and coalescing behavior; Twi184 covers zero-length edge between neighbors at a FixConnected junction."
+    },
+    {
+      "problem_id": "tkshh-wire-adjacent-vertex-gap",
+      "domain": "TKShHealing",
+      "description": "Consecutive edges of a wire are listed in correct order but do not share a vertex: the end vertex of edge n and the start vertex of edge n+1 are distinct VERTEX instances separated by a small 3D distance. The wire is topologically broken at the junction; the vertices must be merged (identical points) or combined into an averaged vertex.",
+      "occt_evidence": [
+        "ShapeAnalysis_Wire::CheckConnected - ShapeAnalysis_Wire.cxx:646-691 @ bd2a789f (verified; distance tiers DONE1 <= gp::Resolution / DONE2 <= myPrecision / DONE3 <= prec at 672-674)",
+        "ShapeFix_Wire::FixConnected(num,prec) - ShapeFix_Wire.cxx:1205-1300 @ bd2a789f (verified; same-point vertex replacement 1232-1245, CombineVertex averaging 1246-1256, edge vertex substitution 1259-1296)"
+      ],
+      "subvariants": [
+        "vertices at numerically identical points (distinct instances of the same point) - one vertex substituted for the other",
+        "vertices within working precision - replaced by an averaged CombineVertex with inflated tolerance",
+        "vertices within user-supplied (max) tolerance only",
+        "junction between last and first edge of a closed wire (handled by the closed-mode loop bound, ShapeFix_Wire.cxx:506)"
+      ],
+      "fixture_ids": ["Twi003", "Twi043", "Twi056", "Twi116", "Twi136", "Twi238", "Twi243", "Twi264"],
+      "coverage_verdict": "COVERED",
+      "notes": "Twi003 verified (in-order EDGE_LOOP with >tolerance vertex gaps, expected merge). Twi056 covers sub-precision coordinate drift, Twi043 covers merge-or-split decision, Twi238 covers the merge-fails path. Distinct from tkshh-wire-3d-curve-gap: here the topology (vertex sharing) is broken; there the curves' geometric endpoints do not meet."
+    },
+    {
+      "problem_id": "tkshh-wire-not-closed",
+      "domain": "TKShHealing",
+      "description": "A wire that bounds a face (and therefore must be closed) is open: the last edge's end and the first edge's start do not coincide - either a small snapable gap, or the closing edge is missing entirely.",
+      "occt_evidence": [
+        "ShapeAnalysis_Wire::CheckClosed - ShapeAnalysis_Wire.cxx:449-467 @ bd2a789f (verified; CheckConnected(1)+CheckDegenerated(1))",
+        "ShapeFix_Wire::FixClosed - ShapeFix_Wire.cxx:1071-1095 @ bd2a789f (verified; FixConnected(1,prec) + FixDegenerated(1) + FixLacking(1) at the closure junction)"
+      ],
+      "subvariants": [
+        "closure gap small enough to snap dangling vertices together (FixConnected path)",
+        "closure gap that is a genuine missing segment needing an inserted edge (FixLacking path) or a degenerate closing edge (FixDegenerated path)",
+        "wire intended open (design choice) that must NOT be force-closed - the near-closed vs intentionally-open discrimination"
+      ],
+      "fixture_ids": ["Twi034", "Twi053", "Twi066", "Twi195", "Twi210", "Twi239", "Twi245", "Twi126", "Twi148", "Twi265"],
+      "coverage_verdict": "COVERED",
+      "notes": "Twi053 verified (triangle minus one side as FACE_OUTER_BOUND; expected insert-or-snap). Twi034 covers the intentionally-open discrimination, Twi066 separate 3D/2D closure reporting, Twi239 the degenerate-bridge closure case, Twi148/Twi210 CheckClosed tolerance edges. Kept separate from tkshh-wire-adjacent-vertex-gap because the input pattern (face-bounding wire whose closure edge is absent) and the FixClosed composite repair are independently recognizable; interior-junction gaps are the other class."
+    },
+    {
+      "problem_id": "tkshh-wire-missing-or-bad-degenerated-edge",
+      "domain": "TKShHealing",
+      "description": "A wire on a surface with a singularity (cone apex, sphere pole, degenerated torus/revolution row) is missing the degenerated edge (zero 3D length, finite UV length) that must bridge the singular row - or carries a degenerated edge whose flag/pcurve is wrong (no pcurve and no singularity actually present, bad parametrization vs neighbors, or duplicated degenerated edges).",
+      "occt_evidence": [
+        "ShapeAnalysis_Wire::CheckDegenerated - ShapeAnalysis_Wire.cxx:806-988 @ bd2a789f (verified; dgnr detection at 877-887, lacking-degenerated singularity search 899-921, FAIL2 flagged-degenerated-but-no-singularity 927-933, bad neighbor parametrization FAIL2 822-841, consecutive degenerated w/o pcurve FAIL2 844-850, DONE1/DONE2 at 986)",
+        "ShapeFix_Wire::FixDegenerated(num) - ShapeFix_Wire.cxx:1703-1766 @ bd2a789f (verified; removal of falsely-degenerated edge 1716-1720, build 2D-line degenerated edge and insert (lack->Add DONE1) or replace (dgnr->Set DONE2) 1725-1760)",
+        "ShapeFix_Wire::FixDegenerated() duplicate removal - ShapeFix_Wire.cxx:857-874 @ bd2a789f (verified; removes duplicated consecutive degenerated edges)"
+      ],
+      "subvariants": [
+        "degenerated edge entirely missing at a singularity crossed by the wire (lack, DONE1, edge inserted)",
+        "edge sitting on the singularity that must become/be replaced by a proper degenerated edge (dgnr, DONE2)",
+        "edge flagged Degenerated in the data but with no pcurve and no singularity at that location - must be removed (FAIL2 -> DONE3)",
+        "duplicated consecutive degenerated edges - one removed",
+        "degenerated edge whose pcurve parametrization does not connect the neighbor pcurves (FAIL2 removal path)"
+      ],
+      "fixture_ids": ["Twi021", "Twi031", "Twi083", "Twi102", "Twi142", "Twi169", "Twi196", "Twi216", "Twi234"],
+      "coverage_verdict": "COVERED",
+      "notes": "Twi021 fixture bytes verified (cone face, apex row, no degenerate ORIENTED_EDGE - exact 'lack' input). Twi083 covers flagged-degenerate-with-positive-length (removal variant), Twi031 duplicated apex edges (duplicate-removal variant), Twi102/Twi142 insertion index edge cases, Twi216 removal cascade. Sphere/cone singular-seam interplay also exercised by Twi035."
+    },
+    {
+      "problem_id": "tkshh-edge-self-intersecting",
+      "domain": "TKShHealing",
+      "description": "A single edge's curve crosses itself: the pcurve (and correspondingly the 3D curve) forms a loop or lemniscate within the edge's parameter range, so the edge cannot bound a simple region.",
+      "occt_evidence": [
+        "ShapeAnalysis_Wire::CheckSelfIntersectingEdge - ShapeAnalysis_Wire.cxx:1130-1187 @ bd2a789f (verified; Geom2dInt_GInter on the single pcurve, interior intersection points beyond vertex tolerances collected at 1170-1184)",
+        "ShapeFix_Wire::FixSelfIntersectingEdge - ShapeFix_Wire.cxx:2197-2343 @ bd2a789f (verified; RemoveLoop call 2249, vertex-tolerance absorption 2259-2264, insert-vertex/split mode 2292-2337)",
+        "static RemoveLoop - ShapeFix_Wire.cxx:1840 and 2043 @ bd2a789f (verified; loop excision by pcurve surgery or by splitting into two edges at the crossing)"
+      ],
+      "subvariants": [
+        "loop excised geometrically, edge keeps one continuous pcurve (RemoveLoopMode<=0, DONE4)",
+        "loop removed by inserting a vertex at the crossing and splitting into two edges (RemoveLoopMode==1, DONE8)",
+        "small self-crossing absorbed by increasing the tolerance of the nearest end vertex (DONE1)"
+      ],
+      "fixture_ids": ["Twi103", "Twi129", "Twi141", "Twi151", "Twi166", "Twi172", "Twi188", "Twi206", "Twi269", "Gn024"],
+      "coverage_verdict": "COVERED",
+      "notes": "Twi103 verified (persistent self-intersection vs the 30-iteration loop); Twi188 (B-spline with loop), Twi129/Twi151/Twi172/Twi206 cusp/inflection variants, Gn024 figure-eight B_SPLINE_CURVE at the STEP level. Ad099 (12-11) additionally covers non-termination on a self-tangent loop pcurve."
+    },
+    {
+      "problem_id": "tkshh-wire-adjacent-edges-intersect",
+      "domain": "TKShHealing",
+      "description": "Two consecutive edges of a wire cross each other in the face's parameter space at a point away from their shared vertex - the corner region self-overlaps. Repair trims the edges back to the intersection point, moves the shared vertex there, or absorbs the crossing in vertex/edge tolerance.",
+      "occt_evidence": [
+        "ShapeAnalysis_Wire::CheckIntersectingEdges(num) - ShapeAnalysis_Wire.cxx:1208-1357 @ bd2a789f (verified; pairwise Geom2dInt_GInter incl. segments, lacking-guard 1334-1342, tolerance filter 1344-1353)",
+        "ShapeFix_Wire::FixIntersectingEdges(num) - ShapeFix_Wire.cxx:2391-2646 @ bd2a789f (verified; edge-tolerance increase path 2466-2531, CutEdge trim-back 2542-2556, vertex relocation to intersection 2600-2624, post-cut FixSameParameter 2627-2641)",
+        "ShapeFix_Wire::FixSelfIntersection consumed-edge removal - ShapeFix_Wire.cxx:945-951 @ bd2a789f (verified; DONE4/DONE3 remove current/previous edge when the cut consumed it)"
+      ],
+      "subvariants": [
+        "crossing healed by cutting both edges back to the intersection and moving the shared vertex there (DONE2)",
+        "crossing absorbed by increasing vertex tolerance (DONE1) or edge tolerances (DONE6) when local deviation is smaller",
+        "cut consumes an entire edge, which is then removed from the wire (DONE3/DONE4; requires >=3 edges)",
+        "closed-wire wrap-around pair (last edge vs first edge, num=1 with reversed intersection operand order)"
+      ],
+      "fixture_ids": ["Twi106", "Twi130", "Twi137", "Twi152", "Twi162", "Twi167", "Twi176", "Twi194", "Twi204", "Twi212", "Twi219"],
+      "coverage_verdict": "COVERED",
+      "notes": "Twi106 verified (5-edge cascading zigzag exercising repeated cut + tolerance accumulation). Twi167 loop-collapse covers consumed-edge removal; Twi130 adjacency exemption; Twi105 covers the seam-gap tolerance filter of the check; Twi124 the 2.0000001 sampling constant. Broad coverage across curve-type variants (Twi143, Twi152, Twi153, Twi163, Twi205, Twi230)."
+    },
+    {
+      "problem_id": "tkshh-wire-nonadjacent-edges-intersect",
+      "domain": "TKShHealing",
+      "description": "Two non-adjacent edges of the same wire cross in parameter space (global self-intersection, e.g. a figure-eight or bow-tie contour). Repair splits the edges at the crossing, cuts back, or removes the enclosed sub-segment.",
+      "occt_evidence": [
+        "ShapeAnalysis_Wire::CheckIntersectingEdges(num1,num2) - ShapeAnalysis_Wire.cxx:1377-1483 @ bd2a789f (verified; intersections filtered against all four end-vertex tolerance balls at 1459-1480)",
+        "ShapeAnalysis_Wire::CheckSelfIntersection - ShapeAnalysis_Wire.cxx:373-427 @ bd2a789f (verified; 2D bounding-box sweep over non-adjacent pairs 392-425)",
+        "ShapeFix_Wire::FixSelfIntersection non-adjacent branch - ShapeFix_Wire.cxx:973-987 @ bd2a789f (verified; delegates to ShapeFix_IntersectionTool::FixSelfIntersectWire, DONE5, removed-segment flag)",
+        "ShapeFix_IntersectionTool::FixSelfIntersectWire - ShapeFix_IntersectionTool.cxx:843 @ bd2a789f (verified; split at intersection creating new vertex, cut, remove; uses FindVertAndSplitEdge/UnionVertexes)"
+      ],
+      "subvariants": [
+        "transverse crossing split by inserting a new vertex at the intersection point",
+        "crossing near existing vertices healed by cutting edges back / unioning vertices",
+        "enclosed loop segment removed entirely (NbRemoved, myStatusRemovedSegment)"
+      ],
+      "fixture_ids": ["Twi049", "Twi076", "Twi157", "Twi214", "Twi225", "Twi232", "Twi263", "Twi249", "Twi250", "Twi251"],
+      "coverage_verdict": "COVERED",
+      "notes": "Twi049 verified (four-edge figure-eight in UV with explicit crossing at (5,5)). Twi249-251 target ShapeFix_IntersectionTool primitives (CutEdge, FindVertAndSplitEdge, null guard). Twi185/Twi198/Twi208 cover coincident/tangent overlap variants; Twi096 the cross-loop translation case. Note: the V3 entries filed under ShapeAnalysis_WireOrder.Perform_at206 actually describe this ShapeFix_IntersectionTool code (misattribution, see line_verification_notes)."
+    },
+    {
+      "problem_id": "tkshh-wire-lacking-edge-2d",
+      "domain": "TKShHealing",
+      "description": "Two consecutive edges share a vertex in 3D (topologically connected) but their pcurves are disconnected in the face's UV space - a boundary segment is missing in parameter space (classically at a seam or degenerated boundary of the surface). The wire cannot bound a UV region until an edge is inserted or the pcurves are deformed.",
+      "occt_evidence": [
+        "ShapeAnalysis_Wire::CheckLacking - ShapeAnalysis_Wire.cxx:1505-1568 @ bd2a789f (verified; 2D gap vs 2*UV-resolution of vertex tolerance at 1552-1557, back-going/zigzag classification DONE2 at 1563-1566)",
+        "ShapeFix_Wire::FixLacking(num,force) - ShapeFix_Wire.cxx:2924-3189 @ bd2a789f (verified; solution selector doBend/doIncrease/doAddLong/doAddDegen/doAddClosed 2991-3064, edge construction+insertion 3078-3148, pcurve bending 3158-3176, tolerance increase 3179-3183)",
+        "static TryBendingPCurve - ShapeFix_Wire.cxx:2868 @ bd2a789f (verified)"
+      ],
+      "subvariants": [
+        "gap spanned by inserting a real (long) 3D edge with a 2D line pcurve, replacing the junction vertices (doAddLong, DONE2+DONE4)",
+        "gap at a surface singularity spanned by inserting a degenerated edge (doAddDegen, DONE3)",
+        "gap spanned by a closed 3D edge (doAddClosed)",
+        "small gap closed by bending the two pcurves toward a common point (doBend, DONE5, with post-checks for induced self-intersection)",
+        "gap absorbed by increasing vertex tolerance (doIncrease, DONE1)"
+      ],
+      "fixture_ids": ["Twi036", "Twi067", "Twi118", "Twi131", "Twi146", "Twi150", "Twi160", "Twi173", "Twi187", "Twi211", "Twi220", "Twi231"],
+      "coverage_verdict": "COVERED",
+      "notes": "Twi036 verified (3D-shared vertex, UV endpoints apart by >1e-3 - the canonical lacking input) and Twi131 bytes verified (degenerate-edge insertion variant). Twi067 not-absorbable-by-tolerance, Twi220 degenerate-fill-in, Twi146 wrap-around on closed surface, Twi118/Twi150 tangency classification. The pcurve-bending subvariant has no dedicated fixture found by search, but the class is otherwise densely covered - treated as covered with this minor caveat."
+    },
+    {
+      "problem_id": "tkshh-wire-pcurve-period-shifted",
+      "domain": "TKShHealing",
+      "description": "On a closed/periodic surface, one or more edges' pcurves are displaced by (a multiple of) the surface period relative to their neighbors - typically because the pcurve was recomputed from 3D near the seam. The 2D contour is discontinuous or lies outside the surface's nominal parametric range even though the 3D wire is fine.",
+      "occt_evidence": [
+        "ShapeFix_Wire::FixShifted - ShapeFix_Wire.cxx:1352-1696 @ bd2a789f (verified; per-junction AdjustByPeriod pcurve translation 1620-1642 DONE1, whole-wire shift back into standard range 1663-1695 DONE2, bi-meridian analysis 1516-1569, surface-of-revolution periodic basis handling 1367-1385)"
+      ],
+      "subvariants": [
+        "single edge's pcurve shifted by a period relative to the previous edge (junction jump ~ period)",
+        "entire wire's 2D contour uniformly outside the standard parametric range (all pcurves shifted back)",
+        "wire bounded by two meridians through the poles (bi-meridian case with special shift-direction analysis)",
+        "V-shift on a surface of revolution whose basis curve is periodic"
+      ],
+      "fixture_ids": ["Twi109", "Twi134", "Twi240", "Twi035", "Twi032"],
+      "coverage_verdict": "COVERED",
+      "notes": "Twi109 fixture bytes verified: cylinder face, one lateral pcurve shifted +2pi - exactly the per-edge DONE1 mechanism. Twi134 covers a non-2pi (half-period) shift that FixShifted must NOT correct; Twi035 the sphere-two-meridians special case explicitly named in the FixShifted LIMITATION comment; Twi240 seam-vertex misalignment. The whole-wire-out-of-range DONE2 subvariant is only indirectly exercised (no fixture explicitly claims it), minor caveat."
+    },
+    {
+      "problem_id": "tkshh-seam-pcurves-swapped",
+      "domain": "TKShHealing",
+      "description": "A seam edge on a periodic surface carries two pcurves (one per side of the seam), but they are assigned to the wrong sides - the FORWARD-orientation pcurve is the one that belongs to the REVERSED side and vice versa (or both slots carry the same curve), breaking UV closure by one period.",
+      "occt_evidence": [
+        "ShapeAnalysis_Wire::CheckSeam - ShapeAnalysis_Wire.cxx:760-787 @ bd2a789f (verified; ShapeAnalysis_Curve::SelectForwardSeam decides which pcurve should be forward at 782-783)",
+        "ShapeFix_Wire::FixSeam - ShapeFix_Wire.cxx:1308-1324 @ bd2a789f (verified; B.UpdateEdge(E, C2, C1, ...) swaps the two pcurves at 1319)"
+      ],
+      "subvariants": [],
+      "fixture_ids": ["Twi022", "Twi071", "Twi121", "Twi144", "Twi154", "Twi183", "Twi201", "Twi217", "Twi268"],
+      "coverage_verdict": "COVERED",
+      "notes": "Twi071 fixture bytes verified (SEAM_CURVE with FORWARD pcurve at U=2pi and REVERSED at U=0 - the exact swap). Twi022 adds the duplicated-slot variant; Twi144/Twi183 non-cylindrical periodic surfaces; Twi154/Twi201/Twi217 direction-mismatch flavors."
+    },
+    {
+      "problem_id": "tkshh-edge-missing-pcurve",
+      "domain": "TKShHealing",
+      "description": "An edge used in a face's wire has no pcurve on that face's surface (only a 3D curve). The 2D representation must be computed by projecting the 3D curve onto the surface (with special handling for seams and singular rows).",
+      "occt_evidence": [
+        "ShapeFix_Wire::FixEdgeCurves add-pcurve loop - ShapeFix_Wire.cxx:554-562 @ bd2a789f (verified; drives ShapeFix_Edge::FixAddPCurve per edge with seam flag, DONE3/FAIL3)",
+        "ShapeAnalysis_Wire::CheckGap2d FAIL1 on missing pcurve - ShapeAnalysis_Wire.cxx:1047-1049 @ bd2a789f (verified; detection surface)"
+      ],
+      "subvariants": [
+        "plain projection of 3D curve to obtain the pcurve",
+        "pcurve computation for a seam edge (two-sided) and near singular rows"
+      ],
+      "fixture_ids": ["Gp001", "Gp035", "Gp042", "Gp019", "Gp048", "Gp076"],
+      "coverage_verdict": "COVERED",
+      "notes": "Gp001/Gp035/Gp042 records verified as edge-with-3D-curve-but-no-PCURVE inputs. The projection machinery itself is ShapeFix_Edge::FixAddPCurve (edge group's slice); listed here because ShapeFix_Wire::FixEdgeCurves is the wire-level driver. Coordinate with the ShapeFix_Edge group to avoid double counting."
+    },
+    {
+      "problem_id": "tkshh-edge-crossing-surface-singularity",
+      "domain": "TKShHealing",
+      "description": "An edge's curve passes over a surface singularity (cone apex, sphere pole) in its interior, so a single pcurve cannot represent it faithfully: after pcurve (re)computation the edge must be split at the singularity parameter(s); a related form is a contour that goes around a degenerated pole and the seam, whose pcurve must be recomputed with over-degenerate adjustment disabled.",
+      "occt_evidence": [
+        "ShapeFix_Wire::FixEdgeCurves singularity split - ShapeFix_Wire.cxx:566-694 @ bd2a789f (verified; projects each surface singularity onto the 3D curve 578-599, splits the edge at interior singularity parameters 632-689)",
+        "ShapeFix_Wire::FixEdgeCurves over-degenerated pole+seam - ShapeFix_Wire.cxx:696-719 @ bd2a789f (verified; detects contour spanning full U-range, rebuilds pcurve with AdjustOverDegenMode=false)"
+      ],
+      "subvariants": [
+        "edge whose interior crosses a cone apex / sphere pole - split at the singularity into sub-edges",
+        "contour whose pcurve wraps over both a degenerated pole and the seam - pcurve removed and re-projected with over-degenerate adjustment off"
+      ],
+      "fixture_ids": ["Xp013", "Gp048", "Gp084"],
+      "coverage_verdict": "PARTIAL",
+      "notes": "Xp013 (wire passing through cone apex, combined pathology) and Gp048/Gp084 (apex-degenerate pcurve construction / same-parameter at apex) provide apex-singularity inputs, but no fixture found that specifically demonstrates FixEdgeCurves SPLITTING an edge whose interior crosses the singularity, nor the over-degenerated pole+seam pcurve-rebuild branch. Missing: (a) an edge spanning across the apex interior triggering the split at ShapeFix_Wire.cxx:632-689; (b) the :c0 overdegen rebuild at 696-719."
+    },
+    {
+      "problem_id": "tkshh-edge-missing-3d-curve",
+      "domain": "TKShHealing",
+      "description": "An edge has no 3D curve (only a pcurve on a surface, or no geometry at all). The 3D curve must be rebuilt from the pcurve lifted to the surface; an edge with neither representation is unusable and is removed from the wire.",
+      "occt_evidence": [
+        "ShapeFix_Wire::FixEdgeCurves add-curve3d loop - ShapeFix_Wire.cxx:732-762 @ bd2a789f (verified; drives ShapeFix_Edge::FixAddCurve3d, DONE5/FAIL5)",
+        "ShapeFix_Wire::FixEdgeCurves incomplete-edge removal - ShapeFix_Wire.cxx:744-759 @ bd2a789f (verified; edge with neither 3D curve nor usable pcurve removed from the wire, wire re-closed/re-connected)"
+      ],
+      "subvariants": [
+        "3D curve reconstructable from pcurve + surface",
+        "edge with neither a 3D curve nor a pcurve (or zero-length pcurve range) - removed from the wire, junction re-healed"
+      ],
+      "fixture_ids": ["Twi047", "Twi088", "Os012", "Gp057", "Gp082"],
+      "coverage_verdict": "PARTIAL",
+      "notes": "Twi047 (EDGE_CURVE with only a pcurve) and Twi088/Os012 (no 3D curve attached) verified as reconstruct inputs; Gp057/Gp082 cover trim-domain extension mechanisms. Missing: a fixture demonstrating the removal path for a completely geometry-less edge (ShapeFix_Wire.cxx:744-759) as a healer behavior - Ad046 has a similar input but targets writer crash, not wire healing."
+    },
+    {
+      "problem_id": "tkshh-edge-pcurve-reversed-sense",
+      "domain": "TKShHealing",
+      "description": "An edge's pcurve runs in the opposite parametric direction to its 3D curve: traversing the edge forward in 3D corresponds to traversing the pcurve backward, so the 2D contour direction disagrees with the topology.",
+      "occt_evidence": [
+        "ShapeFix_Wire::FixEdgeCurves reversed-2d loop - ShapeFix_Wire.cxx:533-541 @ bd2a789f (verified; drives ShapeFix_Edge::FixReversed2d per edge, DONE1/FAIL1)"
+      ],
+      "subvariants": [],
+      "fixture_ids": ["Twi062", "Twi065", "Gp043", "Gp054", "Gp068", "Gs018"],
+      "coverage_verdict": "COVERED",
+      "notes": "Twi062 verified (3D curve and pcurve traverse in opposite senses). Gp054/Gp068/Gp080/Gp089/Gp109/Gp124 cover curve-type variants at the ShapeFix_Edge level (edge group's slice; wire-level driver cited here)."
+    },
+    {
+      "problem_id": "tkshh-edge-3d-2d-parameterization-mismatch",
+      "domain": "TKShHealing",
+      "description": "An edge's 3D curve and its pcurve disagree as parameterizations: at the same parameter the 3D point and the surface-evaluated pcurve point diverge beyond tolerance (SameParameter violation), the declared parameter ranges differ while SameRange is asserted, the pcurve's range is invalid for its surface domain, or the two representations drift apart mid-edge while agreeing at the ends.",
+      "occt_evidence": [
+        "ShapeFix_Wire::FixEdgeCurves same-parameter block - ShapeFix_Wire.cxx:786-823 @ bd2a789f (verified; clears SameRange on range mismatch 796-801, replaces out-of-domain pcurve 802-814, drives ShapeFix_Edge::FixSameParameter 817)",
+        "ShapeAnalysis_Wire::CheckEdgeCurves / CheckSameParameter - ShapeAnalysis_Wire.cxx:344-349 @ bd2a789f (verified)",
+        "ShapeAnalysis_Wire::CheckCurveGap - ShapeAnalysis_Wire.cxx:1065-1099 @ bd2a789f (verified; 45-point sampling of 3D curve vs lifted pcurve, mid-edge divergence)"
+      ],
+      "subvariants": [
+        "same-parameter deviation beyond tolerance (pcurve reapproximated / edge tolerance raised)",
+        "SameRange flag asserted but 3D and 2D ranges differ",
+        "pcurve range invalid for the surface's periodic domain - pcurve replaced",
+        "mid-edge drift between 3D curve and pcurve with matching endpoints (CheckCurveGap)"
+      ],
+      "fixture_ids": ["Gp022", "Twi082", "Twi070", "Twi133", "Twi246", "Gp050", "Gp073", "Twi040"],
+      "coverage_verdict": "COVERED",
+      "notes": "Gp022 (SameParameter=.T. asserted with different parameterisations), Twi082 (same_range flag false claim), Twi070 (mid-edge drift, endpoints agree) all verified from records. Rich FixSameParameter mechanism coverage in 12-2a (Gp045, Gp052, Gp059, Gp066, Gp074, Gp078, Gp081, Gp084). FixSameParameter internals belong to the ShapeFix_Edge group; the wire-level orchestration and CheckCurveGap are this group's."
+    },
+    {
+      "problem_id": "tkshh-vertex-not-on-curve-endpoints",
+      "domain": "TKShHealing",
+      "description": "An edge's vertex 3D points do not lie on the ends of the edge's 3D curve and/or its pcurve (lifted to the surface) within the vertex tolerance - the declared endpoint and the geometric endpoint disagree. Healing enlarges vertex tolerance to cover the actual curve ends.",
+      "occt_evidence": [
+        "ShapeAnalysis_Wire::CheckEdgeCurves vertex checks - ShapeAnalysis_Wire.cxx:314-324 @ bd2a789f (verified; CheckVerticesWithPCurve DONE2, CheckVerticesWithCurve3d DONE3)",
+        "ShapeFix_Wire::Perform vertex-tolerance loop - ShapeFix_Wire.cxx:409-413 @ bd2a789f (verified; unconditional FixVertexTolerance per edge)",
+        "ShapeFix_Wire::FixEdgeCurves vertex-tolerance block - ShapeFix_Wire.cxx:827-839 @ bd2a789f (verified)"
+      ],
+      "subvariants": [
+        "vertex point off the 3D curve endpoint",
+        "vertex point off the pcurve endpoint (surface-evaluated)",
+        "vertex tolerance smaller than the discrepancy it must absorb (inflation amount computed)"
+      ],
+      "fixture_ids": ["Twi046", "Twi048", "Twi059", "Twi060", "Twi061", "Twi085", "Gp002", "Gp038", "Bo030"],
+      "coverage_verdict": "COVERED",
+      "notes": "Twi059/Twi060 split the 3D-curve vs pcurve variants explicitly; Twi048/Twi061 the tolerance-inflation view; Gp002/Gp038 the pcurve-side from the pcurves section. Underlying ShapeAnalysis_Edge/ShapeFix_Edge::FixVertexTolerance code is the edge group's; wire drives it unconditionally in Perform."
+    },
+    {
+      "problem_id": "tkshh-wire-notched-edges",
+      "domain": "TKShHealing",
+      "description": "Two adjacent edges form a notch: from the shared vertex they run back along (nearly) the same track - collinear/tangent within ~0.1 rad and within tolerance of each other - so one edge (the short one) retraces part of the other, creating a zero-area slit in the boundary. Fix removes the short edge and splits the long one at the projection of the short edge's far end.",
+      "occt_evidence": [
+        "ShapeAnalysis_Wire::CheckNotchedEdges - ShapeAnalysis_Wire.cxx:1636-1748 @ bd2a789f (verified; tangent-angle <=0.1 and endpoint distance test 1692-1696, mutual projection 1706-1745 identifying the short (retraced) edge and split parameter)",
+        "ShapeFix_Wire::FixNotchedEdges - ShapeFix_Wire.cxx:3196-3298 @ bd2a789f (verified; split of the long edge at the projection parameter 3232-3288, removal of the retraced pair via FixDummySeam 3225-3231 and 3286)"
+      ],
+      "subvariants": [
+        "split point interior to the long edge - long edge split, then retraced pair removed",
+        "split point coincides with an edge end (incl. closed-edge far-end case) - pair removed directly via FixDummySeam"
+      ],
+      "fixture_ids": ["Twi054", "Twi074", "Twi117", "Twi241", "Hea005"],
+      "coverage_verdict": "COVERED",
+      "notes": "Twi054 verified (5-edge rectangle with short detour edge between near-collinear long edges - canonical notch). Twi074 detection view, Twi117 singular-derivative guard case, Twi241 multi-edge junction, Hea005 free-bound notch. Note ShapeFix_Face/FreeBoundsProperties also surface notches (Tfa083, Tfa084) - face group."
+    },
+    {
+      "problem_id": "tkshh-wire-tail",
+      "domain": "TKShHealing",
+      "description": "A tail (hair): at the junction of two consecutive edges the boundary shoots out and comes straight back, forming a protrusion narrower than a configured max width (and optionally sharper than a max angle). The out-and-back portions must be cut off the two edges and the residual out/back pair removed.",
+      "occt_evidence": [
+        "ShapeAnalysis_Wire::CheckTail - ShapeAnalysis_Wire.cxx:2040-2282 @ bd2a789f (verified; common-end proximity 2058-2084, tail-angle sine test 2086-2130, tail-bound bisection along both curves 2132-2188, edge partitioning into keep/remove parts 2198-2281)",
+        "ShapeFix_Wire::FixTails - ShapeFix_Wire.cxx:3479-3641 @ bd2a789f (verified; splits edges into parts, removes the tail pair via FixDummySeam 3551-3604 or removes a single whole edge 3605-3637)",
+        "ShapeFix_Wire::Perform tail dispatch - ShapeFix_Wire.cxx:384-391 @ bd2a789f (verified; myFixTailMode gate)"
+      ],
+      "subvariants": [
+        "tail entirely consuming both edges (both removed)",
+        "tail requiring one or both edges to be split, keeping the non-tail parts",
+        "whole single edge removed as the tail",
+        "consecutive/multiple tails requiring iteration with index rescan"
+      ],
+      "fixture_ids": ["Twi011", "Twi077", "Twi098", "Twi114", "Twi122", "Twi182", "Twi197", "Twi215", "Twi222"],
+      "coverage_verdict": "COVERED",
+      "notes": "Twi011/Twi077 verified (thin spike beyond max-angle/width; 180-degree fold over sub-tolerance width). Twi098 is the false-positive guard case (intentional chamfer-like short edges must survive), Twi197/Twi222 iteration-with-removal, Twi215 multi-tail, plus CheckTail mechanism fixtures Twi104/Twi128/Twi140/Twi165/Twi175/Twi203/Twi235/Twi271. Kept separate from notched-edges: tail = protruding out-and-back spike gated by MaxTailWidth/Angle; notch = one edge retracing along the other."
+    },
+    {
+      "problem_id": "tkshh-wire-duplicate-opposed-edge-pair",
+      "domain": "TKShHealing",
+      "description": "A wire contains two consecutive edges that traverse (nearly) the same curve in opposite directions - a 'dummy seam' or duplicated out-and-back pair that encloses nothing. The pair must be removed and the wire's neighboring edges re-joined at a combined vertex.",
+      "occt_evidence": [
+        "ShapeFix_Wire::FixDummySeam - ShapeFix_Wire.cxx:3396-3455 @ bd2a789f (verified; combines end vertices, merges the pair's pcurves onto one edge then removes both edges from the wire 3446-3454)",
+        "call sites: FixNotchedEdges - ShapeFix_Wire.cxx:3228, 3286; FixTails - ShapeFix_Wire.cxx:3554 @ bd2a789f (verified)"
+      ],
+      "subvariants": [
+        "exact geometric duplicate pair (out-and-back on the same curve)",
+        "pair on a non-periodic / non-cylindrical surface (not a real surface seam, hence 'dummy')"
+      ],
+      "fixture_ids": ["Twi033", "Twi111", "Twi132", "Twi149", "Twi174", "Twi221", "Twi057", "Twi063"],
+      "coverage_verdict": "COVERED",
+      "notes": "Twi111 fixture header verified (FixDummySeam dummy-seam removal); Twi033 (two distinct edges geometrically coincide) and Twi063 (overlapping segments of same curve) verified from records; Twi132/Twi149/Twi174/Twi221 vary the surface context. This is the terminal removal mechanism shared by notch/tail fixes but the duplicated-opposed-pair is its own recognizable input defect (writer emits both sides of a slit)."
+    },
+    {
+      "problem_id": "tkshh-wire-3d-curve-gap",
+      "domain": "TKShHealing",
+      "description": "The 3D curves of two consecutive edges do not meet: the end point of edge n's 3D curve and the start point of edge n+1's 3D curve are separated by more than precision, even though the wire's topology may claim connection. Repair modifies the curve geometry itself - translating/extending curve ends or replacing curve segments - to close the gap (distinct from merely merging vertices or inflating tolerance).",
+      "occt_evidence": [
+        "ShapeAnalysis_Wire::CheckGap3d - ShapeAnalysis_Wire.cxx:1006-1028 @ bd2a789f (verified; C1(last) vs C2(first) distance > myPrecision -> DONE1)",
+        "ShapeAnalysis_Wire::CheckGaps3d - ShapeAnalysis_Wire.cxx:474-492 @ bd2a789f (verified; whole-wire enumeration)",
+        "ShapeFix_Wire::FixGaps3d - ShapeFix_Wire_1.cxx:77-98 @ bd2a789f (verified; per-junction FixGap3d, range mode then convert mode)",
+        "ShapeFix_Wire::FixGap3d - ShapeFix_Wire_1.cxx:151 @ bd2a789f (verified; extracts basis curves, extends/translates/converts curve ends to close the gap)"
+      ],
+      "subvariants": [
+        "gap closed by adjusting curve parameter ranges (FixGapsByRanges)",
+        "gap closed by geometric modification/conversion of the curve ends (convert mode, may produce B-spline replacement)"
+      ],
+      "fixture_ids": ["Twi108", "Twi147", "Twi180", "Twi189", "Twi199", "Twi224", "Twi266", "Twi068", "Twi072"],
+      "coverage_verdict": "COVERED",
+      "notes": "Twi108 fixture bytes verified (deliberate 0.05 3D gap on a plane face; FixGaps3d bridging is the stated mechanism). Twi147 edge-replacement, Twi189 directional extension, Twi199 gap between Confusion and vertex tolerance, Twi224 gap bigger than edge, Twi266 parameter discontinuity; Twi068/Twi072 enumeration and per-junction query; CheckGap3d threshold/variant fixtures Twi115/Twi145/Twi155/Twi170/Twi181/Twi213/Twi228."
+    },
+    {
+      "problem_id": "tkshh-wire-2d-pcurve-gap",
+      "domain": "TKShHealing",
+      "description": "The pcurves of two consecutive edges do not meet in the face's UV space: edge n's pcurve ends at a different UV point than edge n+1's pcurve starts (beyond the surface UV resolution of the precision), while 3D may be fine. Repair modifies the pcurve geometry to close the parametric contour (distinct from inserting a lacking edge).",
+      "occt_evidence": [
+        "ShapeAnalysis_Wire::CheckGap2d - ShapeAnalysis_Wire.cxx:1035-1058 @ bd2a789f (verified; UV distance vs Max(UResolution,VResolution)+PConfusion -> DONE1)",
+        "ShapeAnalysis_Wire::CheckGaps2d - ShapeAnalysis_Wire.cxx:499-517 @ bd2a789f (verified)",
+        "ShapeFix_Wire::FixGaps2d - ShapeFix_Wire_1.cxx:105-126 @ bd2a789f (verified)",
+        "ShapeFix_Wire::FixGap2d - ShapeFix_Wire_1.cxx:741 @ bd2a789f (verified; extends/translates/converts pcurve ends to close the UV gap)"
+      ],
+      "subvariants": [
+        "pcurve-range adjustment (FixGapsByRanges)",
+        "pcurve geometric modification/conversion (convert mode)"
+      ],
+      "fixture_ids": ["Twi112", "Twi158", "Twi192", "Twi207", "Twi227", "Twi069", "Twi073", "Gp020"],
+      "coverage_verdict": "COVERED",
+      "notes": "Gp020 verified (UV disagreement between adjacent pcurves); Twi112/Twi158/Twi227 vary the surface (cylindrical, periodic, B-spline), Twi192 the 2D-only-bridge case, Twi207 gap at a knot discontinuity; Twi069/Twi073 the enumeration/per-junction detection; CheckGap2d variants Twi123/Twi135/Twi161/Twi179."
+    },
+    {
+      "problem_id": "tkshh-wire-multivertex-loop",
+      "domain": "TKShHealing",
+      "description": "A wire visits the same vertex more than twice (a vertex has more than two incident wire edges, after discounting seams, degenerated and small edges): a pinched / figure-eight / branching wire that is really several loops glued at a point, and must be split into separate wires.",
+      "occt_evidence": [
+        "ShapeAnalysis_Wire::CheckLoop - ShapeAnalysis_Wire.cxx:1939-2002 @ bd2a789f (verified; per-vertex incident-edge lists, self-loop edges appended twice 1975-1982, seams/degenerated/small edges discounted via isMultiVertex 1923-1937, loop vertices collected)",
+        "fix consumer: ShapeFix_Face::FixLoopWire - ShapeFix_Face.cxx:2097 @ bd2a789f (verified; splits the wire at loop vertices into several wires)"
+      ],
+      "subvariants": [
+        "figure-eight wire (vertex revisited by non-adjacent passes)",
+        "branching wire (>2 distinct edges at a vertex)",
+        "self-loop edges (V1==V2) counted with degree 2 at their vertex",
+        "seam / degenerated / small edges that must NOT count toward the vertex degree"
+      ],
+      "fixture_ids": ["Twi010", "Twi087", "Twi256", "Twi258", "Twi259", "Twi260", "Twi261", "Twi274", "Twi275", "Twi276"],
+      "coverage_verdict": "COVERED",
+      "notes": "Twi010 verified (wire revisits vertex, face is two disks joined at a point; expected split). Twi087 branching wire; Twi256-261 and Twi272-276 target individual CheckLoop classification branches (degenerated filter, self-loop binding, multi-vertex checks, seam classification). The FIX lives in ShapeFix_Face::FixLoopWire - coordinate with the face group; listed here because the entire detection semantics is in ShapeAnalysis_Wire."
+    },
+    {
+      "problem_id": "tkshh-wire-not-outer-bound",
+      "domain": "TKShHealing",
+      "description": "The wire designated as a face's outer bound does not actually enclose the face's material (it is an inner contour, or its winding classifies it as a hole): outer/inner classification of the face's wires is wrong.",
+      "occt_evidence": [
+        "ShapeAnalysis_Wire::CheckOuterBound - ShapeAnalysis_Wire.cxx:1588-1604 @ bd2a789f (verified; rebuilds a single-wire face and tests ShapeAnalysis::IsOuterBound)"
+      ],
+      "subvariants": [],
+      "fixture_ids": ["Twi113", "Twi177", "Twi233", "Twi267", "Twi024"],
+      "coverage_verdict": "COVERED",
+      "notes": "Twi113 fixture bytes verified (20x20 outer rectangle vs 4x4 inner loop with outer-bound mis-tagging). Twi233 winding-number-zero, Twi177 nested faces, Twi024 inner loops outside outer loop. The corrective action (reversing the wire / re-classifying bounds) is in ShapeFix_Face (FixOrientation/FixAddNaturalBound) - face group; detection-side is wholly here."
+    },
+    {
+      "problem_id": "tkshh-wire-encloses-no-area",
+      "domain": "TKShHealing",
+      "description": "A closed wire encloses (nearly) zero area relative to its length - a collapsed contour (e.g. a sliver hole left by Boolean fallout or reverse engineering). Such a wire (and the face region it bounds) should be dropped.",
+      "occt_evidence": [
+        "ShapeAnalysis_Wire::CheckSmallArea - ShapeAnalysis_Wire.cxx:1754-1848 @ bd2a789f (verified; sampled cross-product area vs length*precision, confirmed by exact GProp surface area 1828-1845)",
+        "fix consumer: ShapeFix_Face::FixSmallAreaWire - ShapeFix_Face.cxx:1990 @ bd2a789f (verified call site)"
+      ],
+      "subvariants": [
+        "sub-tolerance inner (hole) wire - dropped, hole filled",
+        "sub-tolerance outer wire - whole face dropped"
+      ],
+      "fixture_ids": ["Twi044", "Twi079", "Twi045"],
+      "coverage_verdict": "COVERED",
+      "notes": "Twi044 verified (inner FACE_BOUND hole-wire with sub-tolerance enclosed area). Twi079 threshold variant, Twi045 removal on reversed/located face. Fix implementation is ShapeFix_Face::FixSmallAreaWire (face group); the area analysis is this group's. Face-side fixtures Tfa077/Tfa093/Tfa105/Tfa111/Tfa123/Tfa130 also apply."
+    }
+  ],
+  "excluded": [
+    {"branch": "ShapeAnalysis_Wire.CheckConnected.WIRE_NOT_LOADED", "line": "ShapeAnalysis_Wire.cxx:650", "reason": "precondition guard (unloaded/empty wire), not an input-defect repair"},
+    {"branch": "ShapeAnalysis_Wire.CheckConnected.NULL_EDGE_VERTICES", "line": "ShapeAnalysis_Wire.cxx:662", "reason": "defensive null-vertex guard; not constructible from STEP input (translator never yields null vertices)"},
+    {"branch": "ShapeAnalysis_Wire.CheckConnected.SAME_VERTEX_BOTH_ENDS", "line": "ShapeAnalysis_Wire.cxx:667", "reason": "early-accept control flow (junction already shares a vertex)"},
+    {"branch": "ShapeAnalysis_Wire.CheckCurveGap.SE-CGAP-001", "line": "ShapeAnalysis_Wire.cxx:1068", "reason": "precondition guard"},
+    {"branch": "ShapeAnalysis_Wire.CheckCurveGap.SE-CGAP-002/003", "line": "ShapeAnalysis_Wire.cxx:1074,1079", "reason": "missing-geometry FAIL guards; the underlying defects are the missing-3d-curve / missing-pcurve problem classes"},
+    {"branch": "ShapeAnalysis_Wire.CheckCurveGaps_at564.CCurveGaps_NoReady", "line": "ShapeAnalysis_Wire.cxx:527", "reason": "precondition guard"},
+    {"branch": "ShapeAnalysis_Wire.CheckCurveGaps_at564.CCurveGaps_FailStatus", "line": "ShapeAnalysis_Wire.cxx:534", "reason": "status accumulation from per-edge check, no distinct defect"},
+    {"branch": "ShapeAnalysis_Wire.CheckGap2d.SE-GAP2D-001/002", "line": "ShapeAnalysis_Wire.cxx:1039", "reason": "precondition guards (null face / unready wire)"},
+    {"branch": "ShapeAnalysis_Wire.CheckGap2d.SE-GAP2D-003", "line": "ShapeAnalysis_Wire.cxx:1047", "reason": "missing-pcurve FAIL guard; defect covered by tkshh-edge-missing-pcurve"},
+    {"branch": "ShapeAnalysis_Wire.CheckGap3d_at1125.Gap3d_NoLoad", "line": "ShapeAnalysis_Wire.cxx:1010", "reason": "precondition guard"},
+    {"branch": "ShapeAnalysis_Wire.CheckGap3d_at1125.Gap3d_NoCurve3d", "line": "ShapeAnalysis_Wire.cxx:1018", "reason": "missing-3D-curve FAIL guard; defect covered by tkshh-edge-missing-3d-curve"},
+    {"branch": "ShapeAnalysis_Wire.CheckGaps2d_at534.* / CheckGaps3d_at504.*", "line": "ShapeAnalysis_Wire.cxx:502,477", "reason": "precondition guards + per-edge status accumulation"},
+    {"branch": "ShapeAnalysis_Wire.CheckIntersectingEdges_at1365.SE-IXIE-001", "line": "ShapeAnalysis_Wire.cxx:1217", "reason": "precondition guard (<2 edges)"},
+    {"branch": "ShapeAnalysis_Wire.CheckIntersectingEdges_at1365.SE-IXIE-004", "line": "ShapeAnalysis_Wire.cxx:1250", "reason": "zero-length pcurve-range skip; degenerate-edge defect covered by small-edge / missing-geometry classes"},
+    {"branch": "ShapeAnalysis_Wire.CheckIntersectingEdges_at1365.SE-IXIE-005", "line": "ShapeAnalysis_Wire.cxx:1281", "reason": "intersection-algorithm failure guard (Inter.IsDone), numerical robustness"},
+    {"branch": "ShapeAnalysis_Wire.CheckIntersectingEdges_at1365.SE-IXIE-008 [low-confidence]", "line": "ShapeAnalysis_Wire.cxx:1344", "reason": "result-filter threshold internal to the adjacent-intersection class, not a separate defect"},
+    {"branch": "ShapeAnalysis_Wire.CheckIntersectingEdges_at1563.SE-IXIE-NON-001/003/004", "line": "ShapeAnalysis_Wire.cxx:1384,1405,1432", "reason": "precondition guard / degenerate-range skip / algorithm-failure guard"},
+    {"branch": "ShapeAnalysis_Wire.CheckLacking.SE-LACK-001/002", "line": "ShapeAnalysis_Wire.cxx:1510,1522", "reason": "precondition and null-vertex guards"},
+    {"branch": "ShapeAnalysis_Wire.CheckLacking_at455.edge_index_boundary [low-confidence]", "line": "ShapeAnalysis_Wire.cxx:437", "reason": "misreading of standard cyclic index arithmetic; no defect"},
+    {"branch": "ShapeAnalysis_Wire.CheckLoop.unloaded-or-trivial-wire", "line": "ShapeAnalysis_Wire.cxx:1945", "reason": "precondition guard"},
+    {"branch": "ShapeAnalysis_Wire.CheckLoop.null-vertices", "line": "ShapeAnalysis_Wire.cxx:1954", "reason": "defensive null-vertex guard, not STEP-constructible"},
+    {"branch": "ShapeAnalysis_Wire.CheckLoop.precision-save-restore", "line": "ShapeAnalysis_Wire.cxx:1946,1994", "reason": "healer-internal state save/restore"},
+    {"branch": "ShapeAnalysis_Wire.CheckLoop.status-encoding", "line": "ShapeAnalysis_Wire.cxx:1997", "reason": "status bookkeeping"},
+    {"branch": "ShapeAnalysis_Wire.CheckNotchedEdges_at1868.NotchedEdges_NoReady/NoVertex", "line": "ShapeAnalysis_Wire.cxx:1642,1656", "reason": "precondition / null-vertex guards"},
+    {"branch": "ShapeAnalysis_Wire.CheckNotchedEdges_at1868.NotchedEdges_ZeroVelocity", "line": "ShapeAnalysis_Wire.cxx:1692", "reason": "singular-derivative numerical guard within the notch class"},
+    {"branch": "ShapeAnalysis_Wire.CheckOrder.MISSING_FACE_2D_MODE", "line": "ShapeAnalysis_Wire.cxx:554", "reason": "API precondition (2D mode requested without face)"},
+    {"branch": "ShapeAnalysis_Wire.CheckOrder.NULL_VERTEX_ENDPOINTS", "line": "ShapeAnalysis_Wire.cxx:573", "reason": "defensive null-vertex guard"},
+    {"branch": "ShapeAnalysis_Wire.CheckOrder.ORDERING_ALGORITHM_CASE_0_OK", "line": "ShapeAnalysis_Wire.cxx:630", "reason": "OK-status branch (well-formed wire), not a defect"},
+    {"branch": "ShapeAnalysis_Wire.CheckOrder.ORDERING_FAIL_SINGULAR_OPERATION [low-confidence]", "line": "ShapeAnalysis_Wire.cxx:636", "reason": "case -10 is dead code in V7_8_1 (source comment: 'this value is not returned')"},
+    {"branch": "ShapeAnalysis_Wire.CheckOuterBound_at1806.OuterBound_NoReady", "line": "ShapeAnalysis_Wire.cxx:1591", "reason": "precondition guard"},
+    {"branch": "ShapeAnalysis_Wire.CheckSeam.SE-SEAM-001/002/003", "line": "ShapeAnalysis_Wire.cxx:767,770,778", "reason": "precondition guard / not-a-seam early exit / missing-pcurve guard (defect covered elsewhere)"},
+    {"branch": "ShapeAnalysis_Wire.CheckSelfIntersectingEdge.SE-SXIE-001/003/004/005", "line": "ShapeAnalysis_Wire.cxx:1137,1148,1156,1160", "reason": "precondition guard / degenerate-range skip / algorithm-failure guard / null-vertex guard"},
+    {"branch": "ShapeAnalysis_Wire.CheckSelfIntersection.BOUNDING_BOX_INTERSECTION_2D [low-confidence]", "line": "ShapeAnalysis_Wire.cxx:392-425", "reason": "bounding-box pruning is a performance optimization, not a defect"},
+    {"branch": "ShapeAnalysis_Wire.CheckSelfIntersection.CLOSED_WIRE_FIRST_LAST_INTERSECTION", "line": "ShapeAnalysis_Wire.cxx:410-413", "reason": "adjacency exemption control flow within the non-adjacent-intersection class"},
+    {"branch": "ShapeAnalysis_Wire.CheckSelfIntersection.MULTI_EDGE_INTERSECTION_AGGREGATION", "line": "ShapeAnalysis_Wire.cxx:421-424", "reason": "status aggregation"},
+    {"branch": "ShapeAnalysis_Wire.CheckShapeConnect_at2117.* (10 branches)", "line": "ShapeAnalysis_Wire.cxx:1866-1917", "reason": "diagnostic utility reporting how a candidate shape attaches to the wire (head/tail/reversed); performs no repair; the reversal/ordering defect is tkshh-wire-edges-disordered"},
+    {"branch": "ShapeAnalysis_Wire.CheckSmall.WIRE_EMPTY_OR_UNLOADED / NULL_VERTEX_ENDPOINTS_SMALL / SMALL_EDGE_PCURVE_MISSING_FAIL", "line": "ShapeAnalysis_Wire.cxx:702,717,744", "reason": "precondition, null-vertex, and missing-geometry guards (missing geometry covered by its own classes)"},
+    {"branch": "ShapeAnalysis_Wire.Perform_at220.* (9 branches incl. bitwise_or.accumulation)", "line": "ShapeAnalysis_Wire.cxx:236-248", "reason": "pure dispatch/aggregation over the individual checks"},
+    {"branch": "ShapeAnalysis_WireOrder.Add_at135.Mode2DOnly / Add_at152.ModeBothOnly", "line": "ShapeAnalysis_WireOrder.cxx:137,154 (V3 numbering)", "reason": "API mode-dependent data storage semantics of the container, not input-defect repair"},
+    {"branch": "ShapeAnalysis_WireOrder.SetMode.BothModePriority / ModeTransitionClear", "line": "ShapeAnalysis_WireOrder.cxx:75-105", "reason": "mode-flag precedence and state-clearing bookkeeping"},
+    {"branch": "ShapeAnalysis_WireOrder.XY.ModeBothExtraction / Gap.ZeroEdgeShortCircuit", "line": "ShapeAnalysis_WireOrder.cxx:751-782", "reason": "accessor semantics / cached-value early return"},
+    {"branch": "ShapeAnalysis_WireOrder.SetChains.EmptyEdgeListReturn / GapToleranceComputation", "line": "ShapeAnalysis_WireOrder.cxx:791,806", "reason": "guard + chain-partition utility (chains feed multi-wire assembly, no repair of malformed input beyond the ordering class)"},
+    {"branch": "ShapeAnalysis_WireOrder.Couple_at855.null_chain_guard / Chain_at814.*", "line": "ShapeAnalysis_WireOrder.cxx:837-884", "reason": "null-safe accessors"},
+    {"branch": "ShapeAnalysis_WireOrder.Perform_at206.no_edges", "line": "ShapeAnalysis_WireOrder.cxx:233", "reason": "empty-input guard"},
+    {"branch": "ShapeAnalysis_WireOrder.Perform_at206.box_early_skip/edge_identity_skip/same_edge_skip/point_intersection_*/segment_*/wire_modification_loop/box_rebuild_after_split", "line": "misattributed (not in ShapeAnalysis_WireOrder.cxx)", "reason": "V3 misattribution: these describe ShapeFix_IntersectionTool::FixSelfIntersectWire internals (ShapeFix_IntersectionTool.cxx:843+); the defect is covered by tkshh-wire-nonadjacent-edges-intersect"},
+    {"branch": "ShapeFix_Wire.ClearModes.1", "line": "ShapeFix_Wire.cxx:182", "reason": "initialization"},
+    {"branch": "ShapeFix_Wire.FixClosed.1", "line": "ShapeFix_Wire.cxx:1074", "reason": "precondition guard"},
+    {"branch": "ShapeFix_Wire.FixClosed.2/3/4", "line": "ShapeFix_Wire.cxx:1076-1092", "reason": "status propagation from sub-fixes (the sub-fixes are their own classes)"},
+    {"branch": "ShapeFix_Wire.FixConnected.SF_FixConnected_001/002 and _at558.W558.1/2", "line": "ShapeFix_Wire.cxx:504,1209-1216", "reason": "precondition guards / failure-status bookkeeping / context refresh"},
+    {"branch": "ShapeFix_Wire.FixConnected.SF_FixConnected_003..006 [low-confidence]", "line": "ShapeFix_Wire.cxx:1232-1296", "reason": "internal mechanics of the adjacent-vertex-gap repair (vertex replacement/copy details), collapsed into that class"},
+    {"branch": "ShapeFix_Wire.FixDegenerated.SF_FixDegen_001/003..006 and _at1035.W1035.1..3", "line": "ShapeFix_Wire.cxx:853,857-874,1705-1760", "reason": "precondition guard + index/loop mechanics of the degenerated-edge class (incl. speculative bounds claims)"},
+    {"branch": "ShapeFix_Wire.FixDummySeam.1/2/3", "line": "ShapeFix_Wire.cxx:3414,3421-3431,3448-3454", "reason": "internal mechanics of the duplicate-opposed-pair removal, collapsed into that class"},
+    {"branch": "ShapeFix_Wire.FixEdgeCurves.loaded-check / null-fixedge-guard", "line": "ShapeFix_Wire.cxx:523,530", "reason": "precondition / null-handle guards"},
+    {"branch": "ShapeFix_Wire.FixEdgeCurves.reversed2d-loop / same-parameter-pcurve", "line": "ShapeFix_Wire.cxx:533-541,612-623", "reason": "driver-loop mechanics, collapsed into the reversed-pcurve and singularity-split classes"},
+    {"branch": "ShapeFix_Wire.FixIntersectingEdges.SF_FixIntEdges_001..017 (13 low-confidence)", "line": "ShapeFix_Wire.cxx:2394-2641", "reason": "guards, tolerance-selection and cut-bookkeeping mechanics of the adjacent-intersection class; the low-confidence entries are code-quality speculation, not distinct input defects"},
+    {"branch": "ShapeFix_Wire.FixIntersectingEdges_at3272.W3272.1..10", "line": "ShapeFix_Wire.cxx:2654-2860", "reason": "guards and numerical-robustness speculation inside the non-adjacent pair fix; defect covered by tkshh-wire-nonadjacent-edges-intersect"},
+    {"branch": "ShapeFix_Wire.FixLacking_at1285.?", "line": "ShapeFix_Wire.cxx:1054", "reason": "precondition guard in the FixLacking wrapper"},
+    {"branch": "ShapeFix_Wire.FixReorder_at488.1/3/4 and _at1352.1..5", "line": "ShapeFix_Wire.cxx:429,450-457,1110-1130", "reason": "precondition guards, status mapping, and analyzer-result consistency guards (count mismatch, zero index) - internal contract checks of the reorder class"},
+    {"branch": "ShapeFix_Wire.FixSeam_at1616.W1616.1/2", "line": "ShapeFix_Wire.cxx:1311,1319", "reason": "guard + tolerance-reset mechanics of the seam-swap class"},
+    {"branch": "ShapeFix_Wire.FixSelfIntersectingEdge.SF_FixSelfInt_001..012 (6 low-confidence)", "line": "ShapeFix_Wire.cxx:2200-2337", "reason": "guards, iteration limit, and loop-removal mechanics of the self-intersecting-edge class"},
+    {"branch": "ShapeFix_Wire.FixSelfIntersection.IsReady_check + all mode-skip/status-propagation/reload branches", "line": "ShapeFix_Wire.cxx:889,894,914,916-931,973,981-986,1102-1202 (V3 ids)", "reason": "precondition guard, user-mode gating (NeedFix), status propagation, analyzer reload - healer configuration/state, not input defects"},
+    {"branch": "ShapeFix_Wire.FixShifted.loaded-check", "line": "ShapeFix_Wire.cxx:1355", "reason": "precondition guard"},
+    {"branch": "ShapeFix_Wire.FixSmall.SF_FixSmall_001..005 and FixSmall_at539.?", "line": "ShapeFix_Wire.cxx:485,1154-1194", "reason": "precondition/null guards, failure-status bookkeeping, lockvtx/myTopoMode user-mode gating, and follow-up-index mechanics of the small-edge class"},
+    {"branch": "ShapeFix_Wire.FixTails.1/2 and FixTails.3..23", "line": "ShapeFix_Wire.cxx:3481-3487,3494-3637", "reason": "precondition guard, context sync, and the split/removal index bookkeeping mechanics of the tail class"},
+    {"branch": "ShapeFix_Wire.FixNotchedEdges.IsReady-guard / context-update", "line": "ShapeFix_Wire.cxx:3199,3203", "reason": "precondition guard / healer-state sync"},
+    {"branch": "ShapeFix_Wire.Load_at248.face-set-check", "line": "ShapeFix_Wire.cxx:275-304", "reason": "API precondition on Load"},
+    {"branch": "ShapeFix_Wire.Perform.SF_Perform_001..012", "line": "ShapeFix_Wire.cxx:327-419", "reason": "fix-scheduling / mode-cascade control flow (ReorderOK gating etc.); each dispatched fix is its own problem class"},
+    {"branch": "ShapeFix_Wire.UpdateWire_at4294.?", "line": "ShapeFix_Wire.cxx:3462", "reason": "context-synchronization utility"},
+    {"branch": "ShapeFix_Wire.FixEdgeCurves remove-pcurve loop (myFixRemovePCurveMode)", "line": "ShapeFix_Wire.cxx:544-552", "reason": "normalization (drops redundant pcurves, e.g. on planes); default-off mode; not repair of malformed input"},
+    {"branch": "ShapeFix_Wire.FixEdgeCurves remove-curve3d loop (myFixRemoveCurve3dMode)", "line": "ShapeFix_Wire.cxx:723-731", "reason": "normalization (drops 3D curves where not needed); default-off mode"}
+  ],
+  "line_verification_notes": "All kept evidence lines were verified by reading OCCT V7_8_1 source at /tmp/cad-occt-781 (commit bd2a789f15235755ce4d1a3b07379a2e062fdc2e). V3's line numbers are systematically HIGHER than V7_8_1's, with drift growing roughly linearly with file position - consistent with V3 having been generated against a reformatted (clang-formatted, 7.9-era) tree. Measured drift examples (V3 -> actual): ShapeAnalysis_Wire.cxx CheckConnected 697->646 (-51), CheckSmall 770->698 (-72), CheckSeam 844->760 (-84), CheckDegenerated 913->806..988 (~-90), CheckGap3d 1128->1006, CheckSelfIntersectingEdge 1273->1130 (-143), CheckIntersectingEdges 1365->1208, non-adjacent 1563->1377, CheckLacking 1715->1505 (-210), CheckOuterBound 1806->1588, CheckNotchedEdges 1868->1636, CheckSmallArea 2005->1754, CheckShapeConnect 2117->1866, CheckLoop 2236->1939 (-297), CheckTail 2356->2040. ShapeFix_Wire.cxx: Perform 305->327 (+22, small early-file drift the other way), FixReorder 488->426, FixEdgeCurves 601->520, FixSelfIntersection 1085->886, FixClosed 1308->1071, FixReorder(wi) 1352->1107, FixSmall 1410->1149, FixConnected 1482->1205, FixSeam 1616->1308, FixShifted 1662->1352, FixDegenerated 2136->1703, FixSelfIntersectingEdge 2714->2197 (-517), FixIntersectingEdges 2972->2391, pair-form 3272->2654, FixLacking 3618->2924 (-694), FixNotchedEdges 3980->3196, FixDummySeam 4222->3396, FixTails 4318->3479 (-839). Items V3 missed or garbled that I added from direct source reading: (1) the entire FixShifted body (V3 had only the IsLoaded guard) - per-edge period shift, whole-wire range shift, bi-meridian case; (2) the entire FixLacking(num) body (39 V3 branches all '?') - doAddLong/doAddDegen/doAddClosed/doBend/doIncrease solution selector; (3) FixGaps3d/FixGaps2d/FixGap3d/FixGap2d live in ShapeFix_Wire_1.cxx (77/105/151/741) and were absent from V3 entirely; (4) FixEdgeCurves' incomplete-edge removal (744-759) and over-degenerated pole+seam pcurve rebuild (696-719); (5) duplicate-degenerated-edge removal in FixDegenerated() (857-874). Major V3 misattribution: the 'ShapeAnalysis_WireOrder.Perform_at206' branch set describing bounding-box pruning, vertex creation at intersections, and edge splitting does NOT exist in ShapeAnalysis_WireOrder.cxx (884 lines, pure ordering algorithm); the described code is ShapeFix_IntersectionTool::FixSelfIntersectWire (ShapeFix_IntersectionTool.cxx:843+), which I cite under tkshh-wire-nonadjacent-edges-intersect. V3's CheckShapeConnect_at2117, CheckSmallArea_at2005, CheckTail_at2356, FixLacking_at3618, Chain_at814 entries were all '?' placeholders; I reconstructed those functions' semantics from source. Fixture verification: read raw .stp bytes for Twi021, Twi071, Twi108, Twi109, Twi111, Twi113, Twi131, Twi134 (all genuinely encode the claimed defect, with mechanism stated in a leading comment; note several use GEOMETRIC_CURVE_SET carriers, which are oracle-invisible but structurally demonstrate the input pattern) and full catalog records for ~40 more."
+}

@@ -1,0 +1,307 @@
+{
+  "group": "C-edge-vertex-facesplit",
+  "problems": [
+    {
+      "problem_id": "tkshh-edge-missing-curve-representation",
+      "domain": "TKShHealing",
+      "description": "An edge is missing one of its two required geometric representations: either it has a 3D space curve but no 2D parametric curve (pcurve) on a face's host surface, or vice versa (a pcurve exists but no 3D curve). The healer synthesizes the missing representation by projecting the 3D curve onto the surface (or lifting the pcurve into 3D), skipping only the case where the host surface is a plane (pcurve is optional there). On periodic/closed surfaces, a seam edge additionally needs a second, period-shifted pcurve paired with the first.",
+      "occt_evidence": [
+        "ShapeFix_Edge::FixAddPCurve — ShapeFix_Edge.cxx:445 (function start), plane-skip at :458, null-3D-curve guard at :470-473, seam-pcurve translation at :509-539 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified against source; V3 cited lines 486/502/564 for the same logic — drift of roughly -15 to -25 lines against this checkout)",
+        "ShapeFix_Edge::FixAddCurve3d — ShapeFix_Edge.cxx:571-585 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited line 619-629 as stub '?' branches with no content — actual function body located and content newly characterized by direct source read)"
+      ],
+      "subvariants": [
+        "edge missing pcurve on a non-planar analytic or composite surface (3D curve present)",
+        "edge missing 3D curve (pcurve present, needs 3D curve lifted from it)",
+        "seam edge on a periodic/closed surface missing its second, period-translated pcurve"
+      ],
+      "fixture_ids": ["Gp001", "Gp035", "Gp019", "Twi047", "Gp076"],
+      "coverage_verdict": "PARTIAL",
+      "notes": "Missing-pcurve (Gp001, incl. composite-surface sub-case Gp019 and analytic-surface case Gp035) and missing-3D-curve (Twi047) are cleanly and directly covered. The seam/periodic-pcurve-pair subvariant is only weakly represented: Gp076 exercises FixAddPCurve's seam path but is entangled with an unrelated C-1 positional-break defect on the 3D curve (comment states 'driving OCC shape_null=True'), so it is not a clean single-defect demonstration of the seam-pcurve-pair mechanism alone."
+    },
+    {
+      "problem_id": "tkshh-edge-curve-inconsistent-with-vertex-removed",
+      "domain": "TKShHealing",
+      "description": "An edge carries a 3D curve or a pcurve whose endpoint(s), when evaluated, land farther from the edge's actual vertex position than the vertex tolerance allows (i.e., the curve representation itself is stale, wrong, or was computed for a different placement) — or a pcurve's declared parameter range does not correspond to a valid sub-domain of its curve (exceeds the curve's bounds or wraps past a periodic curve's period). Rather than trying to repair the curve in place, the healer discards the offending representation so it can be rebuilt fresh from the other (trusted) representation.",
+      "occt_evidence": [
+        "ShapeFix_Edge::FixRemovePCurve — ShapeFix_Edge.cxx:100-109, using ShapeAnalysis_Edge::CheckVerticesWithPCurve — ShapeAnalysis_Edge.cxx:529/545-565 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited PCurve-check lines 525/533/539/544/551/557/562, drift ~ -4 to -20 lines)",
+        "ShapeFix_Edge::FixRemoveCurve3d — ShapeFix_Edge.cxx:116-123, using ShapeAnalysis_Edge::CheckVerticesWithCurve3d — ShapeAnalysis_Edge.cxx:485-521 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited lines 462-485, drift ~ -20 lines)",
+        "ShapeAnalysis_Edge::CheckPCurveRange — ShapeAnalysis_Edge.cxx:977-1040ish (function start verified at :977; V3 cited :1007-1030, drift ~ +30 lines), consumed by ShapeFix_Wire.cxx:792-810 (out-of-group class) which calls ShapeBuild_Edge().RemovePCurve when the range check fails — confirms this ShapeAnalysis_Edge method has a genuine automated-repair consumer even though the consumer class itself belongs to a different assigned group"
+      ],
+      "subvariants": [
+        "pcurve endpoint disagrees with vertex position beyond tolerance, pcurve discarded",
+        "3D curve endpoint disagrees with vertex position beyond tolerance, 3D curve discarded",
+        "pcurve's declared parameter range invalid/out-of-domain relative to its curve, pcurve discarded"
+      ],
+      "fixture_ids": ["Gp064", "Gp136", "Gp047", "Gp058", "Gp086", "Gp103", "Gp108", "Gp123", "Gp151"],
+      "coverage_verdict": "PARTIAL",
+      "notes": "The pcurve-side of this problem is well covered: FixRemovePCurve directly (Gp064, Gp136) and the CheckPCurveRange invalid-range path (Gp047, Gp058, Gp086, Gp103, Gp108, Gp123, Gp151) both have multiple fixtures. No fixture was found that specifically demonstrates FixRemoveCurve3d's mirror-image case (a stale/wrong 3D curve discarded because it disagrees with the vertex, with a trustworthy pcurve remaining) — Gp136's title mentions RemoveCurve3d only as a side-note about orphaned pcurves, not as its primary demonstrated mechanism."
+    },
+    {
+      "problem_id": "tkshh-edge-vertex-tolerance-too-small",
+      "domain": "TKShHealing",
+      "description": "An edge's endpoint vertex carries a tolerance value too small to actually contain the true geometric deviation between the vertex's 3D point and the edge curve's (or, when shared across multiple faces, several surfaces') endpoint evaluation. The vertex's tolerance ball does not reach the curve/surface geometry it is meant to index, so proximity and coincidence queries against it silently fail. The healer recomputes the required tolerance (accounting for all surfaces the vertex touches, not just one) and enlarges the vertex tolerance to cover the actual deviation.",
+      "occt_evidence": [
+        "ShapeFix_Edge::FixVertexTolerance (face-context overload) — ShapeFix_Edge.cxx:592-623 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified against source; V3 cited lines 643-659, drift ~ -35 to -50 lines)",
+        "ShapeFix_Edge::FixVertexTolerance (no-face overload) — ShapeFix_Edge.cxx:630-659 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited lines 690-705, drift ~ -55 to -60 lines)",
+        "ShapeAnalysis_Edge::CheckVertexTolerance (both overloads) — ShapeAnalysis_Edge.cxx:682-704 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (out of V3's assigned line slice for this file; located directly by reading the source as instructed, since it is the check that FixVertexTolerance depends on)"
+      ],
+      "subvariants": [
+        "vertex tolerance too small relative to a single edge/curve deviation",
+        "vertex shared by multiple surfaces (e.g. plane + cylinder) where single-surface tolerance computation underestimates the true required value"
+      ],
+      "fixture_ids": ["Bo030", "Twi048", "Twi059", "Twi061", "Gp046", "N054"],
+      "coverage_verdict": "COVERED",
+      "notes": "Both the basic single-curve-deviation case (Bo030, Twi048, Twi059, Twi061) and the multi-surface underestimation case (Gp046, N054, which explicitly describes plane+cylinder shared-vertex underestimation matching FixVertexTolerance's face-context-null code path) are represented."
+    },
+    {
+      "problem_id": "tkshh-edge-pcurve-reversed",
+      "domain": "TKShHealing",
+      "description": "An edge's pcurve traces the boundary in the opposite parametric direction from its 3D curve / edge orientation — sampling the 3D curve and the pcurve at the same parameter lands on opposite ends of the edge. The healer detects this via a 3D/2D consistency check and reverses the pcurve's parametrization (swapping and re-deriving first/last parameters), flagging the edge as no longer same-range/same-parameter if the reversed range doesn't line up numerically.",
+      "occt_evidence": [
+        "ShapeFix_Edge::FixReversed2d — ShapeFix_Edge.cxx:666-713 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified against source; V3 cited lines 752/779, drift ~ -70 to -85 lines), driven by ShapeAnalysis_Edge::CheckCurve3dWithPCurve — ShapeAnalysis_Edge.cxx:399-460 (line verified; V3 cited lines 384-405, drift ~ -15 lines)"
+      ],
+      "subvariants": [
+        "reversal on simple analytic pcurves (line/circle/trimmed variants)",
+        "reversal on non-trivial pcurve types (offset curves, B-splines, composite/multi-segment pcurves) where the range-reversal formula may not line up cleanly"
+      ],
+      "fixture_ids": ["Gp054", "Gp068", "Gp080", "Gp089", "Gp109", "Gp124", "Gs018"],
+      "coverage_verdict": "COVERED",
+      "notes": "Both analytic-curve reversal (Gp068 circle, Gp089 trimmed-circle, Gs018 general mismatch) and non-trivial-curve reversal (Gp054 trimmed-line edge case, Gp080 offset-curve, Gp109 composite pcurve, Gp124 hyperbola) are represented."
+    },
+    {
+      "problem_id": "tkshh-edge-parametrization-desynchronized",
+      "domain": "TKShHealing",
+      "description": "An edge's 3D curve and its pcurve(s) are not consistently parametrized ('not SameParameter'): evaluating both at the same parameter value produces points that diverge in 3D space by more than the edge's tolerance, even though the edge may be flagged as SameParameter=.T. in the input. The healer attempts to resynchronize the parametrizations (via BRepLib::SameParameter on a working copy), measures the resulting deviation against the original, picks whichever result has lower deviation, and raises the edge's (and its vertices') tolerance to bound the residual deviation.",
+      "occt_evidence": [
+        "ShapeFix_Edge::FixSameParameter — ShapeFix_Edge.cxx:720-843 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified against source; V3 cited lines 804-924, drift of roughly -65 to -80 lines)",
+        "ShapeAnalysis_Edge::CheckSameParameter — ShapeAnalysis_Edge.cxx:711-847 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; note this method's current implementation, which delegates to BRepLib_ValidateEdge with multi-point sampling via NbControl, is substantially different from the 3-point cf3d/cl3d/ProjectAct-based implementation V3 described at lines 480-540 — the underlying problem class is the same, but V3's exact mechanism description is stale for this OCCT version)"
+      ],
+      "subvariants": [
+        "desync on simple curves (degree mismatch, degenerate/near-degenerate cases)",
+        "desync on B-spline curves where knot-domain/range mismatch triggers deep recursive SameRange refinement or stale-range propagation through edge copies",
+        "desync on periodic curves paired with non-periodic pcurves (periodic-shift normalization)"
+      ],
+      "fixture_ids": ["Gp022", "Gp045", "Gp050", "Gp052", "Gp059", "Gp066", "Gp073", "Gp074", "Gp078", "Gp081", "Gp084", "Gp091", "Gp099", "Gp104", "Gp107", "Gp114", "Gp130", "Gp133"],
+      "coverage_verdict": "COVERED",
+      "notes": "Extensive coverage across simple, B-spline, and periodic sub-cases. This is the most heavily mined problem in the group."
+    },
+    {
+      "problem_id": "tkshh-vertex-spuriously-shared-across-wires",
+      "domain": "TKShHealing",
+      "description": "A single TopoDS_Vertex object is referenced by two different wires of the same face (e.g., an outer boundary wire and an inner/hole wire, or two hole wires) at a point where they touch. This is representable and tolerated inside OCCT's in-memory BRep model but is invalid for STEP export, where each wire must own distinct vertex instances even at coincident locations. The healer detects such cross-wire vertex sharing and splits the shared vertex into a fresh, independent copy for the second wire's edges, preserving position and tolerance.",
+      "occt_evidence": [
+        "ShapeFix_SplitCommonVertex::Perform — ShapeFix_SplitCommonVertex.cxx:70-144 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified against source; V3 cited line 90/95/110 for sub-branches within this same function, consistent within a few lines), corroborated by the operator registration comment in ShapeProcess_OperLibrary.cxx:848-852 ('Two wires have common vertex - this case is valid in BRep model and isn't valid in STEP => before writing into STEP it is necessary to split this vertex')"
+      ],
+      "subvariants": [],
+      "fixture_ids": ["Twi009", "Twi050"],
+      "coverage_verdict": "COVERED",
+      "notes": "Twi009's description explicitly frames the defect as 'STEP requires that each wire of a face own its own distinct VERTEX_POINTs' — a near-verbatim match to the OCCT source comment describing exactly this repair's motivation. Twi050 covers the more general two-unrelated-wires case."
+    },
+    {
+      "problem_id": "tkshh-wire-duplicate-coincident-vertex-instances",
+      "domain": "TKShHealing",
+      "description": "Two or more edges that are topologically connected (consecutive edges in a wire, or arbitrary edges registered as touching) reference geometrically coincident (within tolerance) but topologically DISTINCT vertex objects, instead of sharing one common vertex. The healer merges the group of coincident vertex instances into a single shared vertex, computing its position as the midpoint of the bounding box of all the original positions and its tolerance as the maximum deviation from that position (plus a small numerical margin), then rewires all affected edges to use the single merged vertex.",
+      "occt_evidence": [
+        "ShapeFix_EdgeConnect::Build — ShapeFix_EdgeConnect.cxx:145-284 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified against source; general utility, position aggregation at :202-224, tolerance aggregation at :226-234, vertex substitution at :236-283)",
+        "ShapeFix_WireVertex::FixSame — ShapeFix_WireVertex.cxx:108-153 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited lines 94/113/118 for the '_at82' variant and line 100/130 for the '_at83' variant of the same underlying function — both drift by only a few lines against this checkout; these are two V3 catalog entries for what is a single OCCT method)"
+      ],
+      "subvariants": [
+        "consecutive edges within a single wire share a location but not a vertex object (ShapeFix_WireVertex::FixSame, status codes 1/2 = 'already close/same')",
+        "arbitrary edge-pairs across a broader connectivity graph (registered via Add(), merged via Build()) — used as the general-purpose utility underlying shell/face sewing"
+      ],
+      "fixture_ids": [],
+      "coverage_verdict": "GAP",
+      "notes": "No fixture found that cleanly demonstrates this exact defect (topologically distinct-but-coincident vertex objects that a healer merges into one shared vertex, independent of the separate face-pair-sewing and common-vertex-splitting problems). Ad103 was investigated as a near-miss but tests a different axis entirely (a use-after-free / double-merge robustness bug in a vertex-union table during a *second* merge pass, not the initial merge-of-coincident-vertices mechanism itself). Tfa019/Twi037 (face-pair sewing, see tkshh-faceconnect-unshared-boundary-edges) and Twi009/Twi050 (SplitCommonVertex, the opposite direction) are the closest related fixtures but exercise different, already-catalogued problems. Searched for 'distinct vertex instances', 'coincident vertex', 'not welded', 'vertex fragmentation', 'duplicate coordinate' with no further hits."
+    },
+    {
+      "problem_id": "tkshh-wire-consecutive-edge-endpoint-gap",
+      "domain": "TKShHealing",
+      "description": "Consecutive edges of a wire have endpoint vertices/curve-endpoints that do not merely duplicate-at-the-same-location (as in the previous problem) but genuinely disagree — there is an actual positional or parametric gap between where one edge's curve ends and the next edge's curve begins, exceeding trivial tolerance. This includes both 3D gaps (edges not physically head-to-tail) and 2D-only gaps (3D endpoints coincide via a shared vertex, but the pcurves evaluated at that vertex land at different UV positions on the host surface). The healer recomputes a consistent shared vertex position (and/or per-edge parameter) from the neighboring curves rather than simply reusing an existing vertex.",
+      "occt_evidence": [
+        "ShapeFix_WireVertex::Fix — ShapeFix_WireVertex.cxx:160-288 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified against source; V3 cited lines 160/200/240 for sub-branches of this function, consistent within a few lines)"
+      ],
+      "subvariants": [
+        "3D gap between consecutive edge endpoints (edges not head-to-tail in space)",
+        "2D-only gap: 3D endpoints coincide but pcurves disagree in UV at the shared vertex"
+      ],
+      "fixture_ids": ["Twi003", "Gp020", "Twi067"],
+      "coverage_verdict": "COVERED",
+      "notes": "Twi003 is a clean 3D-gap demonstration; Gp020 and Twi067 are 2D-only-gap demonstrations (Twi067 specifically notes the gap 'requires insertion of a connecting edge; not just snapping', which is a slightly different repair path than WireVertex::Fix's recompute-a-shared-vertex approach — still the same underlying defect class, so counted as covered)."
+    },
+    {
+      "problem_id": "tkshh-faceconnect-unshared-boundary-edges",
+      "domain": "TKShHealing",
+      "description": "Two adjacent faces that physically touch along a common boundary each carry their own independent copy of the boundary edge (and its endpoint vertices) instead of referencing one shared topological edge — a geometric crack/gap in an otherwise visually-closed shell. The healer geometrically sews the registered face pairs together (via BRepBuilderAPI_Sewing), rebuilds the affected wires with the sewn/shared edges (reordering, re-fixing edge curves, and removing self-intersections introduced by the substitution), aggregates and repositions any resulting merged vertices (bounding-box-center position, inflated tolerance to cover all originals), and finally corrects face orientation after the wire reconstruction.",
+      "occt_evidence": [
+        "ShapeFix_FaceConnect::Build — ShapeFix_FaceConnect.cxx:60-370+ (multi-part function; sewing at :267-297, vertex position aggregation at :605, vertex tolerance aggregation at :613-617ish, vertex-replacement ReShape at :624, wire reorder at :nearby, degenerate-edge filter at :142) @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified against several representative anchor lines cited by V3 — actual lines found: myConnected.IsBound guard at :141-142 vs V3's :105, SewedShape().IsNull() at :286 vs V3's :294-297, position-aggregation midpoint formula at :605 vs V3's :467-483/707-740, vertex ReShape::Replace at :624 vs V3's :764-771 — drift ranges from ~35 to ~135 lines across this large function, consistent with V3 having indexed an earlier/later revision of the same file)"
+      ],
+      "subvariants": [
+        "simple two-face boundary crack requiring sewing and shared-edge substitution",
+        "post-sewing merged-vertex position/tolerance aggregation across more than two coincident vertex instances"
+      ],
+      "fixture_ids": ["Tfa019", "Twi037"],
+      "coverage_verdict": "COVERED",
+      "notes": "Tfa019's title is a near-verbatim match ('FaceConnect: vertices not shared'). Twi037 demonstrates the general free-bound/duplicate-edge sewing scenario. No fixture specifically isolates the >2-coincident-vertex aggregation math as its own defect, but that is an implementation detail of the same repair, not a separately observable input pattern."
+    },
+    {
+      "problem_id": "tkshh-shell-faces-not-sewn",
+      "domain": "TKShHealing",
+      "description": "A shell (or the set of shells within a shape) is made up of faces whose boundary edges are not shared/sewn across the whole shell — each face independently carries its own edges even where multiple faces physically coincide — rather than forming a single topologically-connected shell. The healer collects all faces of each shell, runs BRepBuilderAPI_Sewing across the whole set at once (batch/whole-shell granularity, as opposed to the pairwise face-registration approach of FaceConnect), and replaces the original shell with the sewn result.",
+      "occt_evidence": [
+        "ShapeUpgrade_ShellSewing::Init — ShapeUpgrade_ShellSewing.cxx:41-50 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified against source; V3 cited lines 39/42, consistent)",
+        "ShapeUpgrade_ShellSewing::Prepare — ShapeUpgrade_ShellSewing.cxx:57-70 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited line 64, consistent)",
+        "ShapeUpgrade_ShellSewing::ApplySewing — ShapeUpgrade_ShellSewing.cxx:105-120 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited lines 120/125/131, consistent within a few lines)"
+      ],
+      "subvariants": [],
+      "fixture_ids": ["Tsh079", "Tsh086", "Tsh095", "Tsh101", "Tsh108", "Tsh110"],
+      "coverage_verdict": "COVERED",
+      "notes": "Multiple fixtures explicitly named after ShapeUpgrade_ShellSewing.Apply/Prepare/ApplySewing exist in 12-3a-shells. This problem is conceptually the same underlying defect class as tkshh-faceconnect-unshared-boundary-edges but operates at whole-shell granularity via a different OCCT utility class explicitly in this group's assigned scope; kept as a separate grading item per the assigned class list, with the overlap noted here rather than silently deduplicated away."
+    },
+    {
+      "problem_id": "tkshh-shell-inverted-orientation-after-sewing",
+      "domain": "TKShHealing",
+      "description": "After sewing a shell's faces together, the resulting closed shell (interpreted as a solid boundary) is inside-out: a point-classification test from a far/infinite reference point against the shell reports the reference point as being 'inside' the volume, which only happens when all the shell's face normals are collectively flipped inward. The healer classifies each solid's shell using BRepClass3d_SolidClassifier and reverses (flips) any shell whose classification comes back 'IN'.",
+      "occt_evidence": [
+        "ShapeUpgrade_ShellSewing::Apply — ShapeUpgrade_ShellSewing.cxx:87-92 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified against source; V3 cited lines 85/99/107 for the enclosing function, consistent)"
+      ],
+      "subvariants": [],
+      "fixture_ids": ["Ps001", "Tsh010", "Bo024"],
+      "coverage_verdict": "COVERED",
+      "notes": "Ps001, Tsh010, and Bo024 all demonstrate the general 'inside-out solid / inverted shell normals' input pattern that this specific ShapeUpgrade_ShellSewing code path repairs after a sewing pass. Note the fixtures' expected-behavior text does not name ShapeUpgrade_ShellSewing specifically (they could equally be graded against a different orientation-fixing mechanism such as ShapeFix_Solid, which is outside this group's scope) — the input-defect pattern match is exact, but attribution to this specific repair mechanism versus a sibling one is not certain from the fixture text alone."
+    },
+    {
+      "problem_id": "tkshh-face-internal-wire-negligible-area",
+      "domain": "TKShHealing",
+      "description": "A face contains an internal (hole) wire whose enclosed contour area falls below a configured minimum threshold — a spurious sliver/degenerate hole loop, often manufacturing noise or import precision artifacts rather than a real feature. The healer removes such internal wires from the face. If, after removal, some other face's entire outer boundary turns out to consist only of edges that came from wires that were removed (ignoring seam edges on conic surfaces), that now-vestigial face is cascade-removed as well.",
+      "occt_evidence": [
+        "ShapeUpgrade_RemoveInternalWires::removeSmallWire — ShapeUpgrade_RemoveInternalWires.cxx:143-178 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified against source; V3 cited lines 152/158/162/168, consistent)",
+        "ShapeUpgrade_RemoveInternalWires::removeSmallFaces — ShapeUpgrade_RemoveInternalWires.cxx:185-267 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited a range of lines 198-255 spanning the same function, consistent)"
+      ],
+      "subvariants": [
+        "internal wire (hole) with negligible area removed from a face, boundary edges retained if still used by another face",
+        "cascading removal of a whole face whose outer boundary is entirely composed of edges from removed internal wires"
+      ],
+      "fixture_ids": ["Twi079", "Tsh089", "Tsh106", "Tsh113", "Tsh124"],
+      "coverage_verdict": "PARTIAL",
+      "notes": "The core small-hole-area-removal mechanism is clearly covered and independently verified by reading Twi079.stp and Tsh089.stp directly (both construct a small-area FACE_BOUND/FACE_OUTER_BOUND hole against a much larger face, matching the source's area-threshold comparison exactly). Tsh124 ('faces-with-multiple-internal-wires') is the best candidate for the cascading-face-removal subvariant but its description field is an unexpanded placeholder (title repeated verbatim) so the exact mechanism it demonstrates could not be independently confirmed from metadata alone within this pass."
+    },
+    {
+      "problem_id": "tkshh-face-area-exceeds-threshold",
+      "domain": "TKShHealing",
+      "description": "A single face's surface area exceeds a caller-configured maximum (or exceeds what a fixed target part-count can address), which causes numerical or downstream-meshing problems for excessively large faces. The healer computes the number of sub-parts needed (area / max-area, rounded up), delegates to a surface-splitting tool to grid the surface into that many parts, and recursively re-applies itself to any resulting sub-faces that are still oversized.",
+      "occt_evidence": [
+        "ShapeUpgrade_FaceDivideArea::Perform — ShapeUpgrade_FaceDivideArea.cxx:66-137 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified against source; V3 cited lines 69/78/90, consistent within a few lines)"
+      ],
+      "subvariants": [],
+      "fixture_ids": ["Tfa013", "Tfa052"],
+      "coverage_verdict": "COVERED",
+      "notes": "Tfa052 explicitly matches the source mechanism ('N is computed from total area / threshold... split along U or V'). Gs097 was considered but is really about a threshold=0.0 API-precondition edge case (excluded-worthy) rather than the core defect, so it was not counted toward this verdict."
+    },
+    {
+      "problem_id": "tkshh-face-closed-surface-unsplit-at-seam",
+      "domain": "TKShHealing",
+      "description": "A face is built directly on a fully closed/periodic surface (full cylinder, cone, torus, or sphere) without being explicitly split along the periodic seam, or is trimmed such that it still effectively wraps a full period in U and/or V. Many downstream consumers cannot represent or process a face that wraps a full period. The healer detects the seam — either from an explicit seam edge already present, or by testing whether the untrimmed surface is closed while the trimmed half is not — chooses to split along U or V based on which direction the seam's bounding box is anisotropic in, and recursively re-applies the split to results still closed in a remaining direction.",
+      "occt_evidence": [
+        "ShapeUpgrade_ClosedFaceDivide::SplitSurface — ShapeUpgrade_ClosedFaceDivide.cxx:70-... @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (function start verified at :70 vs V3's :65 — drift of 5 lines; seam-detection loop, U/V anisotropy choice, and recursive-application sub-branches all confirmed present via the read of the surrounding function, matching V3's characterization closely)"
+      ],
+      "subvariants": [
+        "face has an explicit seam edge on a closed/periodic surface requiring an anisotropy-driven U-or-V split",
+        "face has no explicit seam but the trimmed surface remains effectively closed in U or V and must be split via the trimmed-half closure test",
+        "surface closed in both U and V, requiring recursive splitting of the first split's results"
+      ],
+      "fixture_ids": ["Twi032", "N005", "Gp027"],
+      "coverage_verdict": "COVERED",
+      "notes": "Twi032 is a direct, clean match for the core defect ('periodic face wraps a full period and needs splitting at the seam'). N005 and Gp027 additionally exercise downstream consequences of the split (pcurve/3D-curve parametrization mismatch on the newly created seam edges) which further corroborates that this exact splitting mechanism is exercised, though they don't individually confirm each of the three internal sub-branches (explicit-seam vs implicit-closure-test vs recursive-both-directions) as distinct fixtures — those are internal mechanics of one conceptual defect rather than separately observable input patterns, so PARTIAL was not used."
+    },
+    {
+      "problem_id": "tkshh-surface-curve-continuity-below-required",
+      "domain": "TKShHealing",
+      "description": "A face's boundary curves, pcurves, or its underlying surface have geometric continuity below a required order (by default C1) at internal parametric locations — e.g. a composite/multi-knot curve or surface with only C0 (positionally-continuous-but-kinked) joins between segments — which downstream consumers that assume at least C1 continuity (for tangent/normal computation, offsetting, meshing) cannot correctly process. The healer locates the discontinuities and splits the affected curve(s)/surface(s) into multiple patches, each internally continuous to the required order, propagating the split through to the topology (new edges/faces with shared vertices at the split points).",
+      "occt_evidence": [
+        "ShapeUpgrade_ShapeDivideContinuity::GetSplitFaceTool — ShapeUpgrade_ShapeDivideContinuity.cxx:110-128 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified against source; V3 cited line 94, drift of ~16 lines; this method wires together the SplitCurve2d/3dContinuity and SplitSurfaceContinuity tools used by the actual split), registered as the 'SplitContinuity' operator in ShapeProcess_OperLibrary.cxx:438-475"
+      ],
+      "subvariants": [
+        "curve-level C0 discontinuity (3D curve or pcurve) requiring a split",
+        "surface-level C0 discontinuity requiring a split"
+      ],
+      "fixture_ids": ["Gn012", "Gs049", "Gs070", "Gs085", "Gs132", "Gs182", "Hea010"],
+      "coverage_verdict": "COVERED",
+      "notes": "Both the curve continuity sub-case (Gn012, Hea010) and the surface continuity sub-case (Gs049, Gs070, Gs085, Gs132, Gs182) are represented. Some cited evidence (ShapeUpgrade_SplitSurfaceContinuity, ShapeUpgrade_Surface.SplitContinuity) technically lives in sibling classes outside this group's exact assigned line ranges, but they are the concrete mechanisms wired together by ShapeUpgrade_ShapeDivideContinuity::GetSplitFaceTool, which is in scope, so they are cited as corroborating evidence for the same problem rather than as separate problems."
+    },
+    {
+      "problem_id": "tkshh-shape-unbaked-location-transform",
+      "domain": "TKShHealing",
+      "description": "Shape sub-elements (faces, edges, vertices, or entire branches of a compound) carry a non-identity TopLoc_Location transform applied at the topology level rather than having their geometry expressed directly in absolute/global coordinates. This is a normal and valid OCCT representation, but is inconvenient or actively broken for some consumers/algorithms/round-trips that don't correctly track or honor a placement stack, causing geometry to appear in the wrong place or stale-cached-location bugs during traversal. The healer rebuilds each affected surface, curve, and point by applying the transform directly to the geometry, then clears the location so the assembled shape carries no residual instance transforms.",
+      "occt_evidence": [
+        "ShapeUpgrade_RemoveLocations::MakeNewShape — ShapeUpgrade_RemoveLocations.cxx:163-277 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified against source; V3 cited line 247/310/317 for sub-branches, actual matching content found at :228 (edge rebuild binding), :253-254 (location nullification), :257 (iterator with isRemoveLoc) — drift of roughly -19 to -60 lines)",
+        "ShapeUpgrade_RemoveLocations::Remove — ShapeUpgrade_RemoveLocations.cxx:53-65 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited lines 51/56, consistent)",
+        "static RebuildShape helpers (face/edge/vertex geometry-transform-baking) — ShapeUpgrade_RemoveLocations.cxx:71-157 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (found directly by reading the source; not separately itemized in V3's assigned slice for this class)"
+      ],
+      "subvariants": [],
+      "fixture_ids": ["Tsh082", "Tsh098", "Tsh133", "N143", "A067"],
+      "coverage_verdict": "COVERED",
+      "notes": "Tsh082/Tsh098/Tsh133/N143 directly reference ShapeUpgrade_RemoveLocations.MakeNewShape/Remove. A067 demonstrates the broader real-world consequence (baking placements into geometry breaks shared-subshape sharing across assembly instances), corroborating the same underlying input pattern (non-identity locations that a baking pass must resolve) from the assembly-instancing angle."
+    }
+  ],
+  "excluded": [
+    {"branch": "ShapeAnalysis_Edge.CheckOverlapping.* (all 10 branches, e.g. CHECK_OVERLAPPING_B001-B010)", "line": "ShapeAnalysis_Edge.cxx:897-970", "reason": "detection-only; grep of the full OCCT source tree found no ShapeFix/ShapeUpgrade repair method that calls CheckOverlapping — its only caller outside ShapeAnalysis_Edge itself is a DRAW test command (SWDRAW_ShapeFix.cxx), so there is no genuine automated input-defect repair action to grade in this OCCT version"},
+    {"branch": "ShapeAnalysis_Edge.CheckPoints.* (SQUARED_DISTANCE_THRESHOLD, CROSS_DISTANCE_SWAP_DETECTION)", "line": "ShapeAnalysis_Edge.cxx:462-477", "reason": "internal point-pair-proximity helper used only by CheckOverlapping (excluded above); not independently actionable"},
+    {"branch": "ShapeAnalysis_Edge.Curve3d_at106.* (CURVE3D_NULL_CHECK, EDGE_ORIENTATION_REVERSAL)", "line": "ShapeAnalysis_Edge.cxx:114-137", "reason": "internal accessor helper handling FORWARD/REVERSED parameter-swap bookkeeping; not itself a defect-repair action"},
+    {"branch": "ShapeAnalysis_Edge.FirstVertex_at229 / LastVertex_at246 (VERTEX_ORIENTATION_BRANCH x2)", "line": "ShapeAnalysis_Edge.cxx (accessor methods)", "reason": "internal accessor helpers for orientation-aware vertex retrieval; control-flow bookkeeping, not a repair"},
+    {"branch": "ShapeAnalysis_Edge.PCurve_at177 / PCurve_at199 (ORIENTATION_PARAMETER_SWAP)", "line": "ShapeAnalysis_Edge.cxx (accessor methods)", "reason": "internal accessor helper for orientation-aware parameter swap; control-flow bookkeeping, not a repair"},
+    {"branch": "ShapeAnalysis_Edge.GetEndTangent2d.* (all 10 branches, GET_END_TANGENT_2D_B001-B010)", "line": "ShapeAnalysis_Edge.cxx:306-398", "reason": "pure numerical-robustness fallback chain (D1->D2->D3->line) for estimating a tangent vector at a curve endpoint; used internally by other analysis/fix code but does not itself detect or repair a distinct malformed-input class, and has no fixture-observable pass/fail on its own"},
+    {"branch": "ShapeAnalysis_Edge.BoundUV_at78", "line": "ShapeAnalysis_Edge.cxx:67-100", "reason": "0 branches reported by V3; trivial surface-bounds accessor"},
+    {"branch": "ShapeAnalysis_Edge.CheckCurve3dWithPCurve.CHECK_CURVE_3D_WITH_PCURVE_B001 (planar_surface_bypass)", "line": "ShapeAnalysis_Edge.cxx:~410", "reason": "intentional design decision (plane pcurves are optional) rather than a repairable defect; folded into tkshh-edge-pcurve-reversed's evidence chain without being its own subvariant"},
+    {"branch": "ShapeAnalysis_Edge.CheckCurve3dWithPCurve.CHECK_CURVE_3D_WITH_PCURVE_B004 (null_vertex_topology)", "line": "ShapeAnalysis_Edge.cxx:~420", "reason": "precondition guard skipping the check when edge vertices are null; not itself a distinct defect class"},
+    {"branch": "ShapeFix_Edge.FixAddPCurve.FIXADDPCURVE_PRE_EXISTING", "line": "ShapeFix_Edge.cxx:454-455", "reason": "precondition guard (pcurve already present / edge already a recognized seam) short-circuiting the function; not a repair action itself"},
+    {"branch": "ShapeFix_Edge.FixAddPCurve.FIXADDPCURVE_PROJECTION_FAIL (DONE4 status)", "line": "ShapeFix_Edge.cxx:~498", "reason": "internal status-flag bookkeeping for the projector's outcome; healer-state, not a separate defect"},
+    {"branch": "ShapeFix_Edge.FixAddPCurve.FIXADDPCURVE_3D_UPDATE_RACE (DONE3)", "line": "ShapeFix_Edge.cxx:546-551", "reason": "internal status-flag/ordering detail of how the 3D curve range is committed after the pcurve; healer-state, not a separate defect"},
+    {"branch": "ShapeFix_Edge.FixAddPCurve_at134.transform_nullability", "line": "ShapeFix_Edge.cxx:151-159 (down_cast on transformed surface)", "reason": "type-safety/API-contract guard around a down_cast of a transformed surface handle; precondition robustness, not a distinct input-defect repair"},
+    {"branch": "ShapeFix_Edge.FixAddPCurve_at134.sas_memory_loss", "line": "ShapeFix_Edge.cxx:157", "reason": "speculative reference-lifetime concern about a locally-allocated helper object; healer-internal implementation detail, not a defect class"},
+    {"branch": "ShapeFix_Edge.FixRemoveCurve3d_at104.no_status_init", "line": "ShapeFix_Edge.cxx:116-123", "reason": "restates the same check/removal flow already captured as the core mechanism of tkshh-edge-curve-inconsistent-with-vertex-removed; not a separate defect"},
+    {"branch": "ShapeFix_Edge.FixRemoveCurve3d_at104.orphan_pcurves", "line": "ShapeFix_Edge.cxx:121", "reason": "speculative claim about stale pcurves left on other faces after 3D-curve removal; no confirming logic found in the function body (it only calls RemoveCurve3d, no face/pcurve cross-cleanup), and represents an incomplete-repair concern rather than an independently demonstrable input-defect class"},
+    {"branch": "ShapeFix_Edge.FixRemovePCurve_at90.CONDITIONAL_PCURVE_REMOVAL", "line": "ShapeFix_Edge.cxx:104-109", "reason": "restates the same check/removal flow already captured as the core mechanism of tkshh-edge-curve-inconsistent-with-vertex-removed; not a separate defect"},
+    {"branch": "ShapeFix_Edge.FixSameParameter.FIXSAMEPAR_TEMP_RANGE_LOSE", "line": "ShapeFix_Edge.cxx:741-742,763-764", "reason": "internal precision-constant choice (Precision::PConfusion) for the TempSameRange helper; numerical-robustness detail folded into the main FixSameParameter problem, not separately actionable"},
+    {"branch": "ShapeFix_Edge.FixSameParameter.FIXSAMEPAR_BRLIB_FAIL_MASK", "line": "ShapeFix_Edge.cxx:780", "reason": "internal status-flag classification (whether BRepLib::SameParameter itself failed vs. produced a worse result); healer-state bookkeeping, not a separate defect"},
+    {"branch": "ShapeFix_Edge.FixSameParameter.FIXSAMEPAR_BRLIB_SELECTION_BIAS", "line": "ShapeFix_Edge.cxx:815-818", "reason": "internal best-of-two-results selection heuristic (compare BRepLib-computed vs. original deviation); implementation detail of the single FixSameParameter repair, not a separate defect"},
+    {"branch": "ShapeFix_Edge.FixSameParameter.FIXSAMEPAR_EDGE_TOL_UPDATE", "line": "ShapeFix_Edge.cxx:834-839", "reason": "internal conditional (only update edge tolerance if deviation exceeds current); part of the single FixSameParameter repair's bookkeeping"},
+    {"branch": "ShapeFix_Edge.FixVertexTolerance_at643.FIXVTOL643_CONTEXT_BYPASS / FIXVTOL690_CONTEXT_BYPASS", "line": "ShapeFix_Edge.cxx:598-601, 635-638", "reason": "Context()-null-vs-bound dispatch is healer-internal reshape-tracking bookkeeping (CopyVertex vs. direct UpdateVertex), not a distinct input-defect"},
+    {"branch": "ShapeFix_Edge.FixVertexTolerance_at643.FIXVTOL643_SHAPE_TYPE_CHECK", "line": "ShapeFix_Edge.cxx (Context Apply result type check)", "reason": "API-contract type-safety guard on the ReShape context's Apply() result; precondition robustness, not an input-defect"},
+    {"branch": "ShapeFix_Edge.FixVertexTolerance_at643.FIXVTOL643_CHECK_FAIL", "line": "ShapeFix_Edge.cxx:604", "reason": "restates the same CheckVertexTolerance-failure early-return already covered as the core FixVertexTolerance mechanism"},
+    {"branch": "ShapeFix_Edge.FixVertexTolerance_at690.FIXVTOL690_IMPLICIT_CHECK", "line": "ShapeFix_Edge.cxx:640", "reason": "restates the same single-vs-multi-surface tolerance computation already covered as a subvariant of tkshh-edge-vertex-tolerance-too-small"},
+    {"branch": "ShapeFix_EdgeConnect.Add_at49.* / Add_at127.* / Build_at157.* (all '?' stub branches, no V3 content)", "line": "ShapeFix_EdgeConnect.cxx:48-288", "reason": "V3 provided no Brief/claim text for these branches (stub '?' entries); read the full source directly and folded the genuine repair behavior of Add()/Build() into tkshh-wire-duplicate-coincident-vertex-instances rather than treating each stub as a separate problem"},
+    {"branch": "ShapeFix_FaceConnect.Add_at58.bidirectional_binding_asymmetry", "line": "ShapeFix_FaceConnect.cxx:64-90", "reason": "low-confidence speculative duplicate-registration concern in the face-pair connectivity map; healer-internal bookkeeping (the actual defect this map enables fixing is captured in tkshh-faceconnect-unshared-boundary-edges)"},
+    {"branch": "ShapeFix_FaceConnect.Build.EDGE_ALREADY_LISTED", "line": "ShapeFix_FaceConnect.cxx:~136", "reason": "duplicate-prevention bookkeeping in the free-edge map; healer-state, not a distinct input defect"},
+    {"branch": "ShapeFix_FaceConnect.Build.DEGENERATE_EDGE_FILTER", "line": "ShapeFix_FaceConnect.cxx:141-142", "reason": "precondition guard excluding degenerate (zero-length/apex) edges from the free-edge repair pipeline; not itself a repair of a distinct defect class"},
+    {"branch": "ShapeFix_FaceConnect.Build.FREE_EDGE_INITIAL_BINDING / RESULT_EDGE_LIST_INIT / SELF_CONNECTED_FACE / PAIR_ALREADY_PROCESSED / SEWING_EXCEPTION_CATCH / SEWING_NULL_RESULT / MODIFIED_EDGE_EXTRACTION / SHARED_EDGE_COLLISION / FREE_EDGE_REMOVAL / EDGE_REPLACEMENT_SCOPE / VERTEX_REPLACEMENT_INIT / VERTEX_IDENTITY_SKIP / RESHAPE_OK_FALLBACK / RESHAPE_FAIL1_FALLBACK / WIRE_ORDER_RESTORATION / PCURVE_MISSING_SKIP / WIRE_ITERATION_TYPE_CHECK / FACE_ORIENTATION_FIX / TRANSITIVE_VERTEX_MAPPING / VERTEX_REPLACEMENT_RESHAPE / VERTEX_RESHAPE_FAILURE / EMPTY_RESULT_EDGES / SHELL_CLOSURE_STATE / EMPTY_VERTICES_REPLACEMENT / CONNECTED_FACES_ITERATION / ORIGINAL_FREE_EDGES_ACCUMULATION / WIRE_PRECISION_SYNC / WIRE_EDGE_CURVE_FIX / WIRE_SELF_INTERSECTION_FIX / SEWING_WIRE_CONSTRUCTION / AUXILIARY_FACE_WRAPPING / FACE_LIST_INIT / NUM_FACES_SEWING_GUARD", "line": "ShapeFix_FaceConnect.cxx:105-801 (whole Build function)", "reason": "internal state-machine bookkeeping, exception-safety guards, map initialization/dedup, and API-contract fallbacks that implement the single tkshh-faceconnect-unshared-boundary-edges repair; not each a separately observable input-defect class"},
+    {"branch": "ShapeFix_SplitCommonVertex.Perform_at63.uninitialized-vertex", "line": "ShapeFix_SplitCommonVertex.cxx:100-104", "reason": "speculative null-Find()-result concern on a map lookup that, per the surrounding code, is only reached when IsBound() already confirmed the key exists; precondition-robustness speculation, not a demonstrated distinct defect"},
+    {"branch": "ShapeFix_SplitCommonVertex.Perform_at63.tolerance-loss", "line": "ShapeFix_SplitCommonVertex.cxx:107-109", "reason": "restates the same vertex-splitting mechanism already covered as the core of tkshh-vertex-spuriously-shared-across-wires (tolerance is simply copied from the original vertex, which is normal/correct behavior, not a bug needing its own fixture)"},
+    {"branch": "ShapeFix_SplitCommonVertex.Perform_at63.edge-replacement-order", "line": "ShapeFix_SplitCommonVertex.cxx:114-131", "reason": "low-confidence speculative ordering/state-mutation concern about Context()->Replace() calls within a loop; healer-internal implementation detail"},
+    {"branch": "ShapeFix_WireVertex.FixSame_at83.status_filter_under_inclusive", "line": "ShapeFix_WireVertex.cxx:122-123", "reason": "low-confidence speculative concern about unhandled analyzer status codes >2; no evidence in source that such codes are ever produced by ShapeAnalysis_WireVertex, so not a demonstrated distinct defect"},
+    {"branch": "ShapeFix_WireVertex.FixSame_at83.vertex_orientation_reversal_sideeffect", "line": "ShapeFix_WireVertex.cxx:145-148", "reason": "restates the same vertex-merge mechanism already covered as the core of tkshh-wire-duplicate-coincident-vertex-instances; orientation bookkeeping detail, not a separate defect"},
+    {"branch": "ShapeFix_WireVertex.Fix_at142.status-array-bounds", "line": "ShapeFix_WireVertex.cxx:191-227", "reason": "low-confidence speculative array-bounds concern with no confirming evidence (array is always sized to nb and indices are always in [1,nb] per the surrounding loop structure); precondition-robustness speculation"},
+    {"branch": "ShapeFix_WireVertex.Fix_at142.vertex-orientation-inconsistency", "line": "ShapeFix_WireVertex.cxx:264-278", "reason": "restates the same recompute mechanism already covered as the core of tkshh-wire-consecutive-edge-endpoint-gap; orientation-sequencing bookkeeping, not a separate defect"},
+    {"branch": "ShapeFix_WireVertex.Fix_at142.edge-free-without-validation", "line": "ShapeFix_WireVertex.cxx:241,277", "reason": "low-confidence speculative double-free-like concern about repeated Edge.Free(true) calls, which is a normal idempotent flag toggle in OCCT's topology API, not a demonstrated distinct defect"},
+    {"branch": "ShapeUpgrade_FaceDivide.SplitCurves.context-apply-nullcheck / continue-skip-replace", "line": "ShapeUpgrade_FaceDivide.cxx:196-220", "reason": "internal Context()-cache bookkeeping and non-WIRE-child skip guard in the base FaceDivide utility; healer-state, not a distinct input-defect (the genuine surface-splitting defects built on top of this base class are captured separately as tkshh-face-area-exceeds-threshold, tkshh-face-closed-surface-unsplit-at-seam, and tkshh-surface-curve-continuity-below-required)"},
+    {"branch": "ShapeUpgrade_FaceDivide.Perform_at80.* / SplitSurface_at99.* (all '?' stub branches)", "line": "ShapeUpgrade_FaceDivide.cxx:82-182", "reason": "V3 provided no Brief/claim text; read the source directly and confirmed this is the shared base-class SplitSurface/Perform mechanism reused by ShapeUpgrade_FaceDivideArea and ShapeUpgrade_ClosedFaceDivide, already captured under those problems"},
+    {"branch": "ShapeUpgrade_FaceDivideArea.Perform_at58.negative-area-trap", "line": "ShapeUpgrade_FaceDivideArea.cxx:69-85", "reason": "speculative numerical-robustness concern about negative computed area on degenerate faces; not a demonstrated distinct input-defect class (BRepGProp::SurfaceProperties does not produce negative area for the well-formed-but-oversized faces this tool targets)"},
+    {"branch": "ShapeUpgrade_FaceDivideArea.Perform_at58.null-downcaster", "line": "ShapeUpgrade_FaceDivideArea.cxx:87-90", "reason": "type-safety/API-contract guard on a down_cast of the configured split-surface tool; precondition robustness, not an input-defect"},
+    {"branch": "ShapeUpgrade_FaceDivideArea.Perform_at58.result-shape-type-assumption", "line": "ShapeUpgrade_FaceDivideArea.cxx:100-102", "reason": "low-confidence speculative concern about downstream assumptions after a SHELL-typed result; implementation detail of the recursive splitting bookkeeping already covered by tkshh-face-area-exceeds-threshold"},
+    {"branch": "ShapeUpgrade_RemoveInternalWires.Perform_at71.* / Perform_at97.* / removeSmallFaces_at192.* / removeSmallWire_at143.* (all '?' stub branches)", "line": "ShapeUpgrade_RemoveInternalWires.cxx:82-267", "reason": "V3 provided no Brief/claim text; read the source directly and folded the genuine small-wire/small-face removal mechanism into tkshh-face-internal-wire-negligible-area rather than treating each stub as a separate problem"},
+    {"branch": "ShapeUpgrade_ClosedFaceDivide.SplitSurface_at63.null_tool_check / result_type_check", "line": "ShapeUpgrade_ClosedFaceDivide.cxx:73-78", "reason": "precondition guards (split-surface tool configured, result is a FACE) around the core splitting logic; not themselves a repair of a distinct defect"},
+    {"branch": "ShapeUpgrade_ClosedFaceDivide.SplitSurface_at63.seam_paired_curves / seam_curve_equality", "line": "ShapeUpgrade_ClosedFaceDivide.cxx:~145-165", "reason": "internal seam-detection-loop mechanics (pcurve extraction, skip-if-identical-curve) that implement the single tkshh-face-closed-surface-unsplit-at-seam repair; not separately observable input-defect classes"},
+    {"branch": "ShapeUpgrade_ShapeDivideContinuity.GetSplitFaceTool_at87.criterion-unvalidated", "line": "ShapeUpgrade_ShapeDivideContinuity.cxx:110-127", "reason": "speculative null-criterion concern (myCurve2dCriterion/myCurve3dCriterion/mySurfaceCriterion are GeomAbs_Shape enum values initialized to GeomAbs_C1 in every constructor, never left null); not a demonstrated distinct defect"},
+    {"branch": "ShapeUpgrade_ShellSewing.ApplySewing_at118.* / Apply_at83.* / Init_at37.* / Prepare_at58.* (all '?' stub branches beyond what's cited as evidence)", "line": "ShapeUpgrade_ShellSewing.cxx:41-120", "reason": "V3 provided no Brief/claim text; read the source directly and folded genuine repair behavior into tkshh-shell-faces-not-sewn and tkshh-shell-inverted-orientation-after-sewing"},
+    {"branch": "ShapeUpgrade_RemoveLocations.MakeNewShape_at178.location-removal-dual-path", "line": "ShapeUpgrade_RemoveLocations.cxx:251-254", "reason": "low-confidence speculative state-mutation concern about setting location to null on an unmodified shape; this is normal, harmless behavior of the isRemoveLoc code path, not a demonstrated distinct defect"},
+    {"branch": "ShapeUpgrade_RemoveLocations.MakeNewShape_at178.iterator-filter-missing", "line": "ShapeUpgrade_RemoveLocations.cxx:257", "reason": "low-confidence speculative concern about TopoDS_Iterator's location-aware traversal skipping sub-shapes; no confirming evidence found (the iterator's third argument controls whether locations are applied during traversal, not whether shapes are visited), precondition-robustness speculation"},
+    {"branch": "ShapeUpgrade_RemoveLocations.Remove_at48.implicit-shape-mutation", "line": "ShapeUpgrade_RemoveLocations.cxx:55-56", "reason": "low-confidence speculative aliasing concern (const-reference assignment); standard C++ semantics, not a demonstrated distinct defect"},
+    {"branch": "ShapeUpgrade_RemoveLocations.Remove_at48.bool-return-semantics", "line": "ShapeUpgrade_RemoveLocations.cxx:61-63", "reason": "low-confidence speculative API-contract ambiguity in the isDone return value; caller-facing API-contract nuance, not an input-defect"},
+    {"branch": "ShapeProcess_OperLibrary.ApplyModifier_at62.context_downcast_unsafe", "line": "ShapeProcess_OperLibrary.cxx:56-99 (Handle down_cast used inside static per-operator functions, not in ApplyModifier itself)", "reason": "type-safety/API-contract downcast guard pattern repeated across every operator function in this file; precondition robustness, not an input-defect repair"},
+    {"branch": "ShapeProcess_OperLibrary.Init_at983.registration-leak", "line": "ShapeProcess_OperLibrary.cxx:887-913", "reason": "resource-lifetime/cleanup concern (heap-allocated UOperator singletons never freed at module unload); this is deliberate one-time process-lifetime registration, not an input-defect repair"},
+    {"branch": "ShapeProcess_ShapeContext.GetContinuity_at416.enum-exhaustion-gap", "line": "ShapeProcess_ShapeContext.cxx (string-to-enum config parser)", "reason": "config-string parsing helper for named continuity levels; not an input-defect repair"},
+    {"branch": "ShapeProcess_ShapeContext.PrintStatistics_at474.* (message-arg-overwrite, division-by-zero, unused-variable-cleanup)", "line": "ShapeProcess_ShapeContext.cxx:474-530ish", "reason": "pure diagnostic-reporting/logging code (statistics printout); does not touch or repair shape geometry"},
+    {"branch": "ShapeProcess_ShapeContext.RecordModification_at250.early-return-gap", "line": "ShapeProcess_ShapeContext.cxx:250-260ish", "reason": "healer-internal modification-tracking bookkeeping (observer/map update), not itself a geometry repair"},
+    {"branch": "ShapeProcess_ShapeContext.RecordModification_at346.location-override-branch", "line": "ShapeProcess_ShapeContext.cxx:346-355ish", "reason": "healer-internal modification-tracking bookkeeping (location propagation into the result map), not itself a geometry repair"}
+  ],
+  "line_verification_notes": "Verified representative evidence lines for all 16 kept problems by opening the actual .cxx source at bd2a789f15235755ce4d1a3b07379a2e062fdc2e for every file in scope: ShapeAnalysis_Edge.cxx, ShapeFix_Edge.cxx, ShapeFix_EdgeConnect.cxx, ShapeFix_FaceConnect.cxx, ShapeFix_SplitCommonVertex.cxx, ShapeFix_WireVertex.cxx, ShapeUpgrade_RemoveLocations.cxx, ShapeUpgrade_ShapeDivideContinuity.cxx, ShapeUpgrade_ShellSewing.cxx, ShapeUpgrade_RemoveInternalWires.cxx, ShapeUpgrade_FaceDivideArea.cxx, ShapeUpgrade_ClosedFaceDivide.cxx, ShapeUpgrade_FaceDivide.cxx, ShapeProcess_OperLibrary.cxx, ShapeProcess_ShapeContext.cxx. Systematic drift observed: V3's cited line numbers run consistently EARLIER than the actual bd2a789f checkout for large multi-function files (ShapeFix_Edge.cxx: drift ranges from -15 lines near the top of the file to about -85 lines by FixSameParameter near the bottom, suggesting V3 indexed a slightly shorter revision of this file with the same overall structure); ShapeFix_FaceConnect.cxx showed the largest and most irregular drift (35-135 lines across one large Build() function), consistent with V3 indexing a materially different revision — all such branches were re-anchored to lines verified in the bd2a789f checkout used here. Two classes (ShapeUpgrade_ShellSewing.cxx, ShapeUpgrade_RemoveLocations.cxx) matched V3's cited lines closely (within 0-7 lines). The most consequential drift was NOT line-number drift but content drift: ShapeAnalysis_Edge::CheckSameParameter in this checkout (lines 711-847) is a substantially different implementation (delegates to BRepLib_ValidateEdge with configurable multi-point sampling) than what V3's SAMEPARAM_001-003 entries describe (a hand-rolled 3-point cf3d/cl3d/ProjectAct scheme) — the underlying problem class (3D/2D parametrization desync) is unchanged and still genuinely fixed, but V3's exact mechanism narrative is stale for V7_8_1 and was not used verbatim in this file's description. Beyond verification, direct source reading surfaced several problems/subvariants V3 either stubbed out with '?' (no Brief text at all: ShapeFix_EdgeConnect.Add_at49/Add_at127/Build_at157, ShapeUpgrade_FaceDivide.Perform_at80/SplitSurface_at99, ShapeUpgrade_RemoveInternalWires.Perform_at71/Perform_at97/removeSmallFaces_at192/removeSmallWire_at143, ShapeUpgrade_ShellSewing.ApplySewing_at118/Apply_at83/Init_at37/Prepare_at58) or characterized only partially (ShapeAnalysis_Edge::CheckVertexTolerance at lines 682-704, used by ShapeFix_Edge::FixVertexTolerance but not itself in V3's assigned line slice for ShapeAnalysis_Edge). All of these were read in full and folded into the appropriate deduplicated problem above rather than left uncharacterized."
+}

@@ -1,0 +1,260 @@
+{
+  "group": "E-face-composeshell-intersection",
+  "problems": [
+    {
+      "problem_id": "tkshh-face-missing-seam-edge",
+      "domain": "TKShHealing",
+      "description": "A face lies on a closed (periodic) surface -- cylinder, torus, sphere, periodic B-spline -- and its boundary wraps around the periodic direction, but the file contains no seam edge. The wire closes in 3D yet is open in UV parameter space (e.g. two half-circles at top and bottom of a cylinder with nothing joining them along the U=0 isoline). OCCT detects the 2D-open wires, chooses a seam location, wraps the surface in a rectangular trimmed surface, and drives ShapeFix_ComposeShell to insert the seam and rebuild the face.",
+      "occt_evidence": [
+        "ShapeFix_Face::FixMissingSeam -- ShapeFix_Face.cxx:1514 (function entry; uclosed/vclosed detection) @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified against source)",
+        "ShapeFix_Face::FixMissingSeam -- ShapeFix_Face.cxx:1704-1730 (opposite-sense wire orientation correction, deltaOther test at 1720-1721) @ bd2a789f (verified)",
+        "ShapeFix_Face::FixMissingSeam -- ShapeFix_Face.cxx:1877-1904 (Geom_RectangularTrimmedSurface wrapper + ShapeFix_ComposeShell seam insertion) @ bd2a789f (verified)"
+      ],
+      "subvariants": [
+        "singly-closed surface (cylinder/cone): wire(s) open in UV across the one periodic direction, seam synthesized",
+        "fully-closed surface (torus): second boundary wire lies a period away in UV and must be repositioned by AdjustByPeriod before seam insertion (ShapeFix_Face.cxx:1766-1798)",
+        "two open wires traversing the periodic direction in opposite senses; one must be reversed before they can be joined by a seam (ShapeFix_Face.cxx:1704-1730)"
+      ],
+      "fixture_ids": ["Twi020", "Tfa199", "Tfa215", "Gp137", "Gs141", "Xp015"],
+      "coverage_verdict": "COVERED",
+      "notes": "Twi020 verified byte-level: cylinder face, two semicircular arcs, no seam edge, wire 3D-closed/UV-open. Tfa215 verified: torus with mixed-orientation quad loop hitting the orientation-correction path. Gp137 covers the pcurve-period-translation aspect, Gs141 the RTS bound mismatch. Cylinder, torus, and orientation-correction subvariants all have genuine fixtures."
+    },
+    {
+      "problem_id": "tkshh-face-missing-degenerated-edge-at-singularity",
+      "domain": "TKShHealing",
+      "description": "A face on a surface with a parametric singularity (sphere pole, cone apex, degenerated torus apex, B-spline surface pinched to a point) is bounded by a wire that does not include the required degenerated (zero-3D-extent) edge at the singular row. Typically a single 'belt' wire wraps the surface once and the pole/apex boundary is simply absent. OCCT synthesizes a degenerated edge (B.Degenerated=true, 2D line pcurve along the singular isoline) and adds it as the second boundary, then proceeds with normal seam/bound processing.",
+      "occt_evidence": [
+        "ShapeFix_Face::FixMissingSeam -- ShapeFix_Face.cxx:1630-1700 (single-open-wire case: degenerated-torus apex at 1640-1650, sphere pole at 1651-1656, B-spline V/U pinch at 1657-1681, synthetic degenerated edge built at 1684-1699) @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (verified)",
+        "ShapeFix_Face::FixPeriodicDegenerated -- ShapeFix_Face.cxx:2647-2788 (single belt wire on a conical surface; apex degenerated edge built at 2725-2762, apex-below/apex-above cases at 2739-2755) @ bd2a789f (verified)"
+      ],
+      "subvariants": [
+        "sphere with single wire open in U: degenerated pole edge synthesized (FixMissingSeam)",
+        "cone with single closed belt wire: degenerated apex edge synthesized, apex below vs above the wire V-range (FixPeriodicDegenerated)",
+        "degenerated torus (major radius < minor radius): apex edge at aPhi = acos(-R/r) (FixMissingSeam)",
+        "B-spline surface pinched to a point at a U- or V-boundary: pinch detected by 3D distance test, degenerated edge at the pinch (FixMissingSeam, bug 24055)"
+      ],
+      "fixture_ids": ["Twi021", "Tfa245", "Tfa005", "Tfa071", "Tfa103", "Tfa150"],
+      "coverage_verdict": "PARTIAL",
+      "notes": "Cone-apex (Twi021 verified: conical face, lateral edges + base arc, no degenerated apex edge; Tfa071/Tfa103 apex-direction cases) and sphere-pole (Tfa245 verified: hemisphere bounded only by equator) are genuinely covered. Tfa005 covers the generic single-belt-wire pole case. Missing: degenerated-torus (major<minor) apex subvariant, and the FixMissingSeam B-spline pinch-point subvariant (Tfa150 exercises a B-spline cone but only documents FixPeriodicDegenerated bailing out on non-analytic cones; no fixture drives the FixMissingSeam pinch-detection path at ShapeFix_Face.cxx:1657-1681)."
+    },
+    {
+      "problem_id": "tkshh-face-wire-orientation-wrong",
+      "domain": "TKShHealing",
+      "description": "The wires of a face are wound the wrong way relative to the surface normal / to each other: the outer boundary is traversed clockwise (encloses the infinite point), a hole wire is oriented like an outer boundary, or outer and inner senses are swapped so that the material side is inverted. OCCT classifies each wire against the others (point-in-face tests anchored by PerformInfinitePoint) and reverses wires that disagree with the consensus.",
+      "occt_evidence": [
+        "ShapeFix_Face::FixOrientation -- ShapeFix_Face.cxx:1056 (function entry) @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (verified)",
+        "ShapeFix_Face::FixOrientation -- ShapeFix_Face.cxx:1131-1140 (single-wire face: IsOuterBound test, wire reversed) @ bd2a789f (verified)",
+        "ShapeFix_Face::FixOrientation -- ShapeFix_Face.cxx:1236 (staout = clas.PerformInfinitePoint() reference classification) and 1345-1397 (wire reversal on containment mismatch, incl. second deferred pass) @ bd2a789f (verified)"
+      ],
+      "subvariants": [
+        "single-wire face whose only wire is wound as an inner boundary (reversed)",
+        "multi-wire face where a hole wire has outer-boundary orientation (or vice versa) and must be reversed relative to the consensus",
+        "wire with edges partly inside / partly outside the outer loop -- ambiguous classification flagged (sta = UNKNOWN warning path)"
+      ],
+      "fixture_ids": ["Tfa236", "Tfa081", "Ps002", "Tfa133", "Tfa161", "Tfa186"],
+      "coverage_verdict": "COVERED",
+      "notes": "Tfa236 verified: planar face with CW outer loop + orientation=.F.; Tfa081: box with one same_sense-flipped face; Ps002: outer CW / inner CCW swap; Tfa133 outer-wrong-inner-right; Tfa186 inner-wires-only. Both the single-wire and multi-wire reversal variants are genuinely exercised. The ambiguous half-in/half-out case is approximated by Tfa126 (crossing wires) which primarily belongs to the intersecting-wires problem."
+    },
+    {
+      "problem_id": "tkshh-face-natural-bound-missing",
+      "domain": "TKShHealing",
+      "description": "A face on a closed surface lacks its outer boundary: either the ADVANCED_FACE has no bounds at all (legal STEP for 'the whole surface'), or -- on a doubly-periodic surface (sphere, torus) -- it carries only hole wires, the intended semantics being 'entire surface minus holes'. OCCT creates the natural (full parametric rectangle) boundary: an empty face is rebuilt via BRepBuilderAPI_MakeFace; a holes-only face gets the natural bound added after shifting the holes by whole periods into the chosen fundamental domain.",
+      "occt_evidence": [
+        "ShapeFix_Face::FixAddNaturalBound -- ShapeFix_Face.cxx:795 (function entry), 815-840 (empty-face branch: new face with natural bounds on finite surface) @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (verified)",
+        "ShapeFix_Face::isNeedAddNaturalBound -- ShapeFix_Face.cxx:1010-1049 (only doubly-periodic surfaces, no outer bound, no seam/degenerated edges in wires) @ bd2a789f (verified)",
+        "ShapeFix_Face::FixAddNaturalBound -- ShapeFix_Face.cxx:937-983 (sphere: hole wire containing a degenerated pole edge is merged into the natural boundary) @ bd2a789f (verified)"
+      ],
+      "subvariants": [
+        "face with zero boundary wires on a finite surface (full sphere/torus, no FACE_BOUND at all)",
+        "face on sphere/torus carrying only inner (hole) wires, natural outer bound added around them",
+        "sphere where a hole touches the pole via a degenerated edge and must be merged with the natural boundary instead of kept as a separate hole"
+      ],
+      "fixture_ids": ["Tfa002", "Tfa004", "Tfa038", "Tfa088", "Tfa101"],
+      "coverage_verdict": "PARTIAL",
+      "notes": "Tfa002 (sphere, no bounds at all) and Tfa004/Tfa038 (torus + sphere faces with only inner FACE_BOUNDs, verified from fixture headers) genuinely cover the two main subvariants. Missing: the pole-touching-hole merge subvariant (ShapeFix_Face.cxx:937-983) -- no fixture places a hole with a degenerated pole edge on a sphere with natural bounds. Twi091 (cylinder, inner wire, no outer bound) is related but a cylinder is not doubly-periodic so this exact fixer does not apply to it."
+    },
+    {
+      "problem_id": "tkshh-face-small-area-wire",
+      "domain": "TKShHealing",
+      "description": "A face contains a wire that encloses (near-)zero area in UV -- a sliver loop, a collapsed rectangle of width ~1e-4, or a micro loop far below model tolerance. Such wires carry no usable material information and corrupt downstream classification. OCCT (ShapeAnalysis_Wire::CheckSmallArea inside ShapeFix_Face::FixSmallAreaWire) detects them and rebuilds the face without them; if every wire of the face is small the whole face can be removed from the model.",
+      "occt_evidence": [
+        "ShapeFix_Face::FixSmallAreaWire -- ShapeFix_Face.cxx:1962-2026 (CheckSmallArea per wire at 1989-1996, face rebuilt without small wires at 2018-2025, all-wires-small face removal at 2006-2015) @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (verified)",
+        "ShapeFix_Face::FixMissingSeam -- ShapeFix_Face.cxx:1943 (FixSmallAreaWire(true) re-run after seam insertion to clean ComposeShell debris) @ bd2a789f (verified)"
+      ],
+      "subvariants": [
+        "sliver/zero-area inner wire among healthy wires (removed, face kept)",
+        "face whose only wire(s) are all below the area threshold (face itself removed when theIsRemoveSmallFace)"
+      ],
+      "fixture_ids": ["Tfa208", "Tfa123", "Twi045", "Tfa130", "Tfa093", "Tfa077"],
+      "coverage_verdict": "COVERED",
+      "notes": "Tfa208 verified: 10x10 face with 1e-8-area inner square; Tfa123: near-collinear 1e-4-wide outer rectangle; Twi045: ~5e-7 mm^2 hole on a reversed face (also documents an OCC crash); Tfa077: face whose single outer wire is micro-scale (all-wires-small variant). Both subvariants genuinely demonstrated."
+    },
+    {
+      "problem_id": "tkshh-face-wire-containing-multiple-loops",
+      "domain": "TKShHealing",
+      "description": "A single wire actually contains more than one closed loop: a vertex is shared by more than two edges (graph degree > 2), e.g. a figure-eight EDGE_LOOP made of two triangles glued at one vertex, or an inner loop that touches the outer loop at a coincident vertex. Such a 'loop wire' is not a simple boundary. OCCT (CheckLoop + ShapeFix_Face::FixLoopWire) walks the edge graph from the high-degree vertices, extracts each closed sub-loop as its own wire, reorders closed loops, and stitches leftover open chains together by their common endpoints.",
+      "occt_evidence": [
+        "ShapeFix_Face::FixLoopWire -- ShapeFix_Face.cxx:2097-2245 (CheckLoop gate at 2103, sub-loop extraction from degree>2 vertices at 2110-2145, closed-loop FixReorder vs open-chain merging at 2134-2200) @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (verified)"
+      ],
+      "subvariants": [
+        "figure-eight: one EDGE_LOOP whose edges form two closed sub-loops sharing a degree-4 vertex",
+        "inner loop touching the outer loop (or another inner loop) at a shared vertex",
+        "leftover open chains after loop extraction that must be re-joined via common endpoints"
+      ],
+      "fixture_ids": ["Twi076", "Tfa151", "Tfa091", "Tfa204", "Tfa181"],
+      "coverage_verdict": "COVERED",
+      "notes": "Twi076 verified byte-level: single EDGE_LOOP with a degree-4 center vertex forming two interlocked sub-triangles -- the canonical FixLoopWire input. Tfa151: inner wire sharing a corner vertex with the outer wire. Tfa091: two inner wires tangent-touching. Tfa204/Tfa181 exercise the closed-dispatch and tail-segment (open-chain) paths."
+    },
+    {
+      "problem_id": "tkshh-face-wire-of-two-coincident-edges",
+      "domain": "TKShHealing",
+      "description": "A face (with at least two wires) contains a wire that consists of exactly two edges which are the same edge entity traversed twice -- a zero-area 'slit' loop that goes out along an edge and immediately back along the identical curve. The wire bounds no area and must be dropped. OCCT's FixWiresTwoCoincEdges rebuilds the face keeping every wire except those whose two edges are identical when both are oriented FORWARD.",
+      "occt_evidence": [
+        "ShapeFix_Face::FixWiresTwoCoincEdges -- ShapeFix_Face.cxx:2419-2472 (nbWires>=2 gate at 2440, NbEdges()==2 gate at 2450, E1==E2 identity test after forcing FORWARD orientation at 2453-2458, slit wire dropped) @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (verified)"
+      ],
+      "subvariants": [
+        "wire = [E forward, E forward] or [E forward, E reversed] where E is one edge entity, on a face that has at least one other wire"
+      ],
+      "fixture_ids": ["Tfa074", "Tfa232", "Tfa209"],
+      "coverage_verdict": "PARTIAL",
+      "notes": "Tfa074 verified: 2-edge wire reusing the same EDGE_CURVE twice ([E .T., E .T.]) -- the right defect pattern, but it is the ONLY wire on its face, and the fixer no-ops when nbWires<2, so the repair never actually fires. Tfa232 is a 4-edge loop reusing a curve (filter probe, not the 2-edge slit); Tfa209 is a 5-edge wire with a duplicate pair (outside the NbEdges==2 pattern). Missing: a fixture with a multi-wire face where one wire is exactly the two-coincident-edge slit so the removal path executes."
+    },
+    {
+      "problem_id": "tkshh-face-wires-bound-multiple-disjoint-regions",
+      "domain": "TKShHealing",
+      "description": "One face's wires actually bound several disjoint regions of the surface -- more than one closed wire acts as an 'outer' boundary (each possibly with its own holes), so the single FACE entity should really be several faces. This arises from merged faces on closed surfaces or from split-by-wire operations. OCCT's FixOrientation records which wires contain which (MapWires) and FixSplitFace then builds one face per outer wire, distributing hole wires by point-in-face classification and replacing the face with a compound.",
+      "occt_evidence": [
+        "ShapeFix_Face::FixSplitFace -- ShapeFix_Face.cxx:2479-2563 (per-outer-wire face construction at 2514-2537, hole distribution via PerformInfinitePoint at 2523-2533, compound of >1 faces replaces original at 2542-2560) @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (verified)",
+        "ShapeFix_ComposeShell::MakeFacesOnPatch -- ShapeFix_ComposeShell.cxx:2367-2583 (root/hole classification of loops on a patch, incl. no-root fallback at 2496-2500 and residual-loop promotion at 2565-2575) @ bd2a789f (verified)"
+      ],
+      "subvariants": [
+        "face with two or more disjoint outer-style closed wires (each becomes its own face)",
+        "hole wires that must be re-assigned to the correct sub-face during the split",
+        "wires that cannot be nested consistently (inner wire outside every outer wire) -- MakeFacesOnPatch promotes unclaimed loops to roots"
+      ],
+      "fixture_ids": ["Tfa085", "Tfa145", "Tfa210", "Tfa239", "Tfa075"],
+      "coverage_verdict": "PARTIAL",
+      "notes": "Fixtures probe FixSplitFace mechanics: Tfa085 (interior splitter edges creating 3 zones), Tfa145 (two crossing splitters), Tfa239 (NURBS multi-wire split path), Tfa210 (disconnected inner wires), Tfa075 (MakeFacesOnPatch fallback via a collapsed vertex-loop). But none verified provides the canonical clean input -- a single face carrying two disjoint outer wires with correct orientations that FixOrientation maps and FixSplitFace splits into two faces. The wrongly-nested (inner-outside-outer) subvariant also lacks a dedicated fixture."
+    },
+    {
+      "problem_id": "tkshh-wire-self-intersection-nonadjacent-edges",
+      "domain": "TKShHealing",
+      "description": "Within a single wire of a face, two non-adjacent edges intersect each other in the surface's UV space -- crossing diagonals (figure-eight written without a shared vertex), an edge passing through another edge's endpoint, or two edges lying collinearly on the same curve with overlapping ranges. OCCT's ShapeFix_IntersectionTool::FixSelfIntersectWire computes pairwise 2D intersections and heals by inserting a vertex at the crossing and splitting both edges, snapping to an existing nearby vertex (increasing its tolerance) when the crossing is near an edge end, merging endpoint vertices when both edges intersect at their ends, or cutting/splitting overlapped segments out of collinear edges.",
+      "occt_evidence": [
+        "ShapeFix_IntersectionTool::FixSelfIntersectWire -- ShapeFix_IntersectionTool.cxx:843 (function entry), 903-1004 (interior-interior point crossing: snap-to-endpoint via CutEdge at 920-981, or new vertex + SplitEdge1 x2 at 984-1000) @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (verified)",
+        "ShapeFix_IntersectionTool::FixSelfIntersectWire -- ShapeFix_IntersectionTool.cxx:1005-1031 (crossing at one edge's endpoint: FindVertAndSplitEdge; at both endpoints: UnionVertexes) @ bd2a789f (verified)",
+        "ShapeFix_IntersectionTool::FixSelfIntersectWire -- ShapeFix_IntersectionTool.cxx:1033-1456 (collinear overlapping segment: CutEdge trimming at 1101/1154, small-overlap SplitEdge2 at 1163-1196, large-overlap (>50%) 3-edge reconstruction at 1202-1456) @ bd2a789f (verified)"
+      ],
+      "subvariants": [
+        "transverse crossing at interior parameters of both edges (new vertex, both edges split)",
+        "crossing at/near an existing edge endpoint (existing vertex reused, tolerance grown, other edge split)",
+        "crossing at endpoints of both edges (near-coincident vertices merged, no split)",
+        "collinear overlap over a small (<50% of edge) range (edges cut/split at overlap midpoint)",
+        "collinear overlap over a large (>50%) range (3-edge reconstruction sharing the overlap segment)"
+      ],
+      "fixture_ids": ["Twi049", "Gs011", "Gs009", "Twi103", "Twi063", "Xp015"],
+      "coverage_verdict": "PARTIAL",
+      "notes": "Interior-interior crossing is well covered (Twi049/Gs011 verified: crossed diagonals with no shared endpoints; Twi103 additionally probes the 30-split limit; Xp015 combines with a periodic face). Twi063 verified: two edges of one EDGE_LOOP overlapping collinearly over [2,5] of the same line -- the segment-overlap subvariant. Missing: dedicated fixtures for the near-endpoint vertex-snap subvariant, the endpoint-endpoint UnionVertexes subvariant, and the large (>50%) overlap 3-edge reconstruction within one wire. Note: many Twi15x/Twi2xx 'FixSelfIntersectingEdge' fixtures target ShapeFix_Wire's adjacent-edge fixer (different code, Group covered elsewhere), not this tool."
+    },
+    {
+      "problem_id": "tkshh-face-intersecting-wires",
+      "domain": "TKShHealing",
+      "description": "Two DIFFERENT wires of the same face intersect each other in UV: a hole boundary crosses the outer boundary, two hole wires cross, or wires share a collinear segment. Holes cut by intersecting wires make containment/orientation undecidable. OCCT's ShapeFix_IntersectionTool::FixIntersectingWires intersects all edge pairs across wire pairs and repairs exactly like the self-intersection case: vertex insertion + edge splitting at transverse crossings, vertex reuse near endpoints, vertex union at endpoint-endpoint contacts, and segment-overlap resolution (cutting edges back, 2-edge split for small overlaps, 3-edge reconstruction with a shared segment edge for large overlaps), then rebuilds the face from the modified wires.",
+      "occt_evidence": [
+        "ShapeFix_IntersectionTool::FixIntersectingWires -- ShapeFix_IntersectionTool.cxx:1457 (function entry; wire collection, SeqWir.Length()<2 gate at 1478) @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (verified)",
+        "ShapeFix_IntersectionTool::FixIntersectingWires -- ShapeFix_IntersectionTool.cxx:1551-1605 (point intersections: interior-interior split of both edges at 1551-1576; endpoint cases via FindVertAndSplitEdge at 1578-1596; both-endpoints UnionVertexes at 1598-1604) @ bd2a789f (verified)",
+        "ShapeFix_IntersectionTool::FixIntersectingWires -- ShapeFix_IntersectionTool.cxx:1607-1939 (segment overlap: CutEdge at 1668/1719, large-overlap 3-edge reconstruction at 1740-1913, small-overlap SplitEdge2 at 1917-1936), face rebuild at 1963-1983 @ bd2a789f (verified)"
+      ],
+      "subvariants": [
+        "transverse point crossing between edges of two wires (interior on both)",
+        "crossing at/near an edge endpoint of one wire (vertex reuse + split of the other edge)",
+        "endpoint-endpoint contact between wires (vertices unified, tolerances grown)",
+        "collinear segment overlap between wires, small (<50%) -> 2-edge split; large (>50%) -> 3-edge reconstruction with shared segment"
+      ],
+      "fixture_ids": ["Tfa039", "Twi250", "Tfa126", "Tfa131", "Tfa160", "N141", "Twi249"],
+      "coverage_verdict": "PARTIAL",
+      "notes": "Tfa039 verified: planar face with two crossing (non-nested) inner FACE_BOUND quads -- the canonical transverse case. Twi250: two wires intersecting at the midpoint of one edge with equidistant endpoints (FindVertAndSplitEdge endpoint-selection). Tfa126: outer and hole wires cross. Tfa131/Tfa160 verified: two wires sharing a coincident collinear segment (segment-overlap input; note OCC yields empty on these GEOMETRIC_CURVE_SET fixtures). N141 exercises vertex-tolerance selection at the junction; Twi249 the CutEdge tiny-range guard. Missing: a fixture demonstrating the large (>50%) overlap 3-edge reconstruction, and a clean endpoint-endpoint UnionVertexes case between two wires of a proper ADVANCED_FACE."
+    },
+    {
+      "problem_id": "tkshh-seam-edge-identical-pcurves",
+      "domain": "TKShHealing",
+      "description": "A seam edge on a closed surface carries two pcurves that are the same curve (or geometrically coincident) instead of two copies separated by the surface period -- e.g. a STEP SEAM_CURVE whose associated_geometry lists the same PCURVE twice. Both banks of the seam then map to one UV line and the face's UV domain collapses. OCCT detects the coincidence on reversed seam edges and translates the second pcurve by the U (or V) period.",
+      "occt_evidence": [
+        "ShapeFix_ComposeShell::DispatchWires -- ShapeFix_ComposeShell.cxx:2605-2624 (reversed closed edge: if c21 == c22 or endpoints coincide, second pcurve Translate(shift) by myUPeriod/myVPeriod) @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (verified)"
+      ],
+      "subvariants": [
+        "seam pcurves are literally the same entity (aliased twice)",
+        "seam pcurves are distinct entities but geometrically coincident (zero period offset)"
+      ],
+      "fixture_ids": ["Gp011", "Twi022"],
+      "coverage_verdict": "COVERED",
+      "notes": "Gp011 verified: SEAM_CURVE associated_geometry lists the same PCURVE twice. Twi022 verified: cylinder face whose seam edge's both pcurve slots reference the same PCURVE entity ('missing period shift' called out in the fixture header). The primary repair for this defect also lives in ShapeFix_Wire::FixShifted (another group); this entry records the ComposeShell-side handling that fires during seam insertion / face composition."
+    },
+    {
+      "problem_id": "tkshh-wire-only-degenerated-edges",
+      "domain": "TKShHealing",
+      "description": "A wire consists solely of degenerated / zero-extent edges (all edges collapse to a single point, e.g. leftover pole caps or authoring debris): it bounds nothing and poisons seam construction and orientation analysis. OCCT removes such wires: FixMissingSeam drops completely-degenerated extra open wires before pairing seam wires; ComposeShell::DispatchWires prunes empty or single-degenerated-edge wires; FixOrientation quarantines near-null-length wires into VerySmallWires so they cannot corrupt classification.",
+      "occt_evidence": [
+        "ShapeFix_Face::FixMissingSeam -- ShapeFix_Face.cxx:1612-1621 (when >2 open wires and some are completely degenerated, the degenerated ones are removed and pairing restarts) @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (verified)",
+        "ShapeFix_ComposeShell::DispatchWires -- ShapeFix_ComposeShell.cxx:2633-2640 (wire with 0 edges or a single degenerated edge removed) @ bd2a789f (verified)",
+        "ShapeFix_Face::FixOrientation -- ShapeFix_Face.cxx:1066-1112 (one-edge wires with 3D length below Precision::Confusion segregated into VerySmallWires) @ bd2a789f (verified)"
+      ],
+      "subvariants": [
+        "wire whose every edge is a zero-length / degenerated edge at one point",
+        "single-edge wire of near-zero 3D length polluting orientation classification"
+      ],
+      "fixture_ids": ["Tfa224", "Tfa096", "Tfa168", "Tfa206"],
+      "coverage_verdict": "COVERED",
+      "notes": "Tfa224 verified: sphere with two zero-extent degenerate point-loop inner wires targeting the FixMissingSeam consolidation exactly. Tfa096/Tfa168: outer wires of 4 zero-length edges collapsed to a point (FixOrientation skip path). Tfa206: 1e-8-length single-edge inner loop (VerySmallWires filter). Related to but distinct from tkshh-face-small-area-wire: here the edges are structurally degenerate, not merely enclosing small area."
+    },
+    {
+      "problem_id": "tkshh-face-period-wrapped-uv-placement",
+      "domain": "TKShHealing",
+      "description": "On a periodic surface, a face's wires are written with UV coordinates outside or straddling the canonical period window: one wire near u=0, another a full period away (u~2pi+x), or a wire wrapping across the seam so its 2D bounding box splits to opposite ends of the domain. Geometry is valid modulo the period, but naive containment/nesting tests see disjoint boxes and misclassify. OCCT normalizes with AdjustByPeriod/AdjustToPeriod: FixOrientation shifts wire boxes and probes wrapped copies (including diagonal +/-U x +/-V shifts on tori) and physically shifts pcurves (Shift2dWire); FixMissingSeam repositions the second wire by whole periods; FixAddNaturalBound shifts holes into the chosen fundamental domain.",
+      "occt_evidence": [
+        "ShapeFix_Face::FixOrientation -- ShapeFix_Face.cxx:1206-1215 (per-wire bounding-box period shift via AdjustByPeriod) and 1300-1340 (wrapped-point probes incl. diagonal shifts, Shift2dWire at 1328) @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (verified)",
+        "ShapeFix_Face::FixMissingSeam -- ShapeFix_Face.cxx:1766-1798 (second wire adjusted by period along seam direction, pcurves translated) @ bd2a789f (verified)",
+        "ShapeFix_Face::FixAddNaturalBound -- ShapeFix_Face.cxx:884-889 (holes shifted by AdjustByPeriod into the natural-bound domain) @ bd2a789f (verified)"
+      ],
+      "subvariants": [
+        "wire straddling the seam (bbox wraps the period boundary) while a sibling wire sits mid-domain",
+        "two wires offset by a full period in one direction",
+        "wires offset in BOTH u and v on a torus (diagonal 2x2 period shift required)"
+      ],
+      "fixture_ids": ["Tfa207", "Tfa242", "Tfa243", "Gp137"],
+      "coverage_verdict": "COVERED",
+      "notes": "Tfa207 verified: torus with one inner wire straddling u=0/2pi and one mid-domain. Tfa242: outer wire straddling the seam, inner near u=0 (full-period shift). Tfa243: wires at diagonally opposite UV corners requiring the 2x2 diagonal shift. Gp137 covers the pcurve-not-translated flavor on a cylinder. All three subvariants have dedicated fixtures."
+    }
+  ],
+  "excluded": [
+    {"branch": "ShapeFix_Face.Add.null-wire-guard", "line": "ShapeFix_Face.cxx:227 (V3)", "reason": "API precondition guard on programmer-supplied null wire"},
+    {"branch": "ShapeFix_Face.ClearModes.init-all-modes", "line": "ShapeFix_Face.cxx:134 (V3)", "reason": "healer-state initialization, not input repair"},
+    {"branch": "ShapeFix_Face.Init.fwd-orientation-check + Init.null-surface-guard", "line": "ShapeFix_Face.cxx:201/214 (V3)", "reason": "initialization + null-surface precondition guard"},
+    {"branch": "ShapeFix_Face.Perform.* (all 15 branches: null-fixwire-guard, context-apply, auto-precision, wire-type-filter, wire-fix-success, fixed-status-aggregate, context-replace-*, empty-wire-after-fix, unfixed-wire-reorder, face-orientation-restore, missing-seam-check, seam-fix-status, face-explorer-multi)", "line": "ShapeFix_Face.cxx:350-717 (V3 346-605)", "reason": "orchestration/dispatch, mode gating, context bookkeeping, tolerance management -- the actual repairs are counted under the specific Fix* problems"},
+    {"branch": "ShapeFix_Face.Perform.empty-wire-nonmanifold", "line": "ShapeFix_Face.cxx:410 (V3)", "reason": "preservation of legal non-manifold wires (feature handling), not defect repair"},
+    {"branch": "ShapeFix_Face.FixMissingSeam.null-surface-guard / context-apply-if-present / no-closure-early-exit", "line": "ShapeFix_Face.cxx:1514-1536 (V3 1724-1737)", "reason": "precondition guards and healer-state sync"},
+    {"branch": "ShapeFix_Face.FixMissingSeam.bspline-non-periodic-rejection", "line": "ShapeFix_Face.cxx:1527-1531 (V3 1744)", "reason": "detection-only abort; the repair (making the surface periodic) lives in ShapeCustom, outside this group"},
+    {"branch": "ShapeFix_Face.FixMissingSeam.infinite-bounds-fallback", "line": "ShapeFix_Face.cxx:1539-1554 (V3 1759)", "reason": "numerical robustness for legal infinite-bound surfaces, not malformed input"},
+    {"branch": "ShapeFix_Face.FixMissingSeam.wire-replacement-tracking / u+v-seam-optimal-placement / dual-wire-seam-point-match / seam-boundary-clamping / rts-seam-surface-creation / small-area-wire-cleanup", "line": "ShapeFix_Face.cxx:1731-1943 (V3 2043-2309)", "reason": "internal mechanics/optimization of the single missing-seam repair (seam placement choice, RTS wrapper, post-cleanup) -- collapsed into tkshh-face-missing-seam-edge"},
+    {"branch": "ShapeFix_Face.FixMissingSeam.edge-pcurve-fetch-failure-abort", "line": "ShapeFix_Face.cxx:~1810 (V3 2254)", "reason": "abort on missing pcurve; missing-pcurve repair belongs to ShapeFix_Edge (another group)"},
+    {"branch": "ShapeFix_Face.FixOrientation.WireBoundingBoxComputation / BoxPrerequistePruning / InfinitePointOuterBoundDetection / StateFlipAndWireShift / NaturalBoundsCondensing / FaceRebuild", "line": "ShapeFix_Face.cxx:1150-1440 (V3 1268-1507)", "reason": "core classification machinery, perf pruning, and rebuild bookkeeping of the one orientation repair -- collapsed into tkshh-face-wire-orientation-wrong / tkshh-face-period-wrapped-uv-placement"},
+    {"branch": "ShapeFix_Face.FixAddNaturalBound FAN-001 (null surface) + isNeedAddNaturalBound mode check", "line": "ShapeFix_Face.cxx:1013-1016 (V3 878/1127)", "reason": "precondition guard and fix-mode gating"},
+    {"branch": "ShapeFix_Face.FixLoopWire FLW-002/003/004/005/006/007/008/009 (duplicate-edge skip, seam reversal, small-edge skip, closed/open dispatch, merge cardinality, 2D-closure validation)", "line": "ShapeFix_Face.cxx:2103-2245 (V3 2485-2627)", "reason": "internal steps of the single loop-wire-splitting repair -- collapsed into tkshh-face-wire-containing-multiple-loops"},
+    {"branch": "ShapeFix_Face.FixSmallAreaWire FSA-001 (shape-type filter) / FSA-003 (no-removal early exit)", "line": "ShapeFix_Face.cxx:1981-2004 (V3 2350/2372)", "reason": "type filter and idempotent early-exit control flow"},
+    {"branch": "ShapeFix_Face.FixWiresTwoCoincEdges FWC-001 (type filter) / FWC-002 (nbWires<2 early exit)", "line": "ShapeFix_Face.cxx:2433-2440 (V3 2846/2854)", "reason": "control-flow gates of the coincident-edge-wire repair"},
+    {"branch": "ShapeFix_Face.FixSplitFace guards (type/orientation filter, empty wire skip, open-wire abort, NbWires mismatch, single-result no-op)", "line": "ShapeFix_Face.cxx:2488-2563 (V3 2920-2974)", "reason": "internal validity gates of the one split-face repair"},
+    {"branch": "ShapeFix_Face.FixPeriodicDegenerated guards (context apply, type filter, single-wire+conical constraint, semi-angle check, apex-position consistency)", "line": "ShapeFix_Face.cxx:2653-2737 (V3 3108-3198)", "reason": "applicability gates of the cone-apex repair -- the repair itself is counted under tkshh-face-missing-degenerated-edge-at-singularity"},
+    {"branch": "ShapeFix_Face.SplitEdge_at2653 / SplitEdge_at2741 (SPE-001..003, SPE2-001..003)", "line": "ShapeFix_Face.cxx:2247-2405 (V3 2653-2784)", "reason": "internal edge-splitting helpers (bbox bookkeeping, BSpline load quirks) serving the intersection repairs"},
+    {"branch": "ShapeFix_ComposeShell.Init (INIT_CLOSED_FILTER, INIT_INFINITE_BOUNDS, INIT_RESOLUTION_UNINIT)", "line": "ShapeFix_ComposeShell.cxx:102-176 (V3 111-194)", "reason": "initialization / closure-detection heuristics and tolerance setup, not input repair"},
+    {"branch": "ShapeFix_ComposeShell.LoadWires (vertex segments, non-manifold split, periodic reorder)", "line": "ShapeFix_ComposeShell.cxx:464-721 (V3 509-586)", "reason": "loading/normalization of legal inputs (vertex loops, non-manifold wires) into internal segments -- feature handling"},
+    {"branch": "ShapeFix_ComposeShell.Perform PERFORM_EMPTY_WIRES / PERFORM_FACE_VS_SHELL", "line": "ShapeFix_ComposeShell.cxx:178-226 (V3 215/236)", "reason": "status flagging and result-shape packaging"},
+    {"branch": "ShapeFix_ComposeShell.SplitByGrid / SplitByLine / SplitEdges / SplitWire / BreakWires / CollectWires / ComputeCode (all ~25 branches incl. COMPUTECODE_*, SPLITBYGRID_*, SPLITBYLINE_*, BreakWires.*, CollectWires.wire-type-filter, SplitWire.*)", "line": "ShapeFix_ComposeShell.cxx:227-2330 (V3 695-2514)", "reason": "internal grid-splitting machinery used to IMPLEMENT seam insertion and face division; its guards (missing pcurve skip, missing 3D curve tolerated, vertex wires, tangency state machine) are healer-internal or defer to ShapeFix_Edge-domain problems"},
+    {"branch": "ShapeFix_ComposeShell.MakeFacesOnPatch branches 2985-3269 (V3) except root/hole nesting fallbacks", "line": "ShapeFix_ComposeShell.cxx:2367-2583", "reason": "loop classification internals of face construction; the user-visible nesting fallbacks are folded into tkshh-face-wires-bound-multiple-disjoint-regions"},
+    {"branch": "ShapeFix_ComposeShell.DispatchWires branches 3367-3575 (V3): empty-sequence exit, vertex-wire skip, edge caching, seam pcurve transform, SameRange rebuild, curve3d addition, patch grouping, vertex/wire loop building", "line": "ShapeFix_ComposeShell.cxx:2656-2820", "reason": "reconstruction bookkeeping; SameRange/curve3d fixes are ShapeFix_Edge-domain; seam identical-pcurve shift kept as its own problem"},
+    {"branch": "ShapeFix_IntersectionTool.SplitEdge_at94 (11 branches), SplitEdge1_at278 (10), SplitEdge2 (5), CutEdge_at199 (10), FindVertAndSplitEdge_at979 (6)", "line": "ShapeFix_IntersectionTool.cxx:92-428, 785-841 (V3 94-1014)", "reason": "internal helper mechanics (parameter routing, pcurve/bbox bookkeeping, location transforms, tolerance checks) of the two intersection repairs; each helper is a sub-step, not a distinct input defect"},
+    {"branch": "ShapeFix_IntersectionTool.UnionVertexes_at502 (all 56 branches)", "line": "ShapeFix_IntersectionTool.cxx:429-714 (V3 502-868)", "reason": "one mechanism (merge near-coincident vertices, choosing among first/last x first/last pairings and updating neighbor edges) enumerated as 56 case-analysis branches -- collapsed into the endpoint-endpoint subvariants of the two intersection problems"},
+    {"branch": "ShapeFix_IntersectionTool.FixSelfIntersectWire guards: null_context_face_validation, loop_bounds_split_limit (NbSplit<30), same_edge_self_intersection_guard, degenerate_edge_filter, bounding_box_presence_check, spatial_overlap_prefilter, intersection_algorithm_success_check, segment_endpoint_validation, iteration_break_after_modification", "line": "ShapeFix_IntersectionTool.cxx:846-1456 (V3 1038-1686)", "reason": "preconditions, perf pruning, runaway-iteration limits, and Geom2dInt failure guards inside the self-intersection repair"},
+    {"branch": "ShapeFix_IntersectionTool.FixIntersectingWires guards: NULL_CONTEXT_OR_FACE, NON_WIRE_SHAPE_FILTER, MINIMUM_WIRE_COUNT, MAX_VERTEX_TOLERANCE_SEED, WIRE_EDGE_BOXES_CACHING, WIRE_PAIR_BOUNDING_BOX_CULL, SAME_EDGE_IDENTITY_SKIP, DEGENERATE_EDGE_SKIP, EDGE_BOX_BINDING_VALIDATION, EDGE_PAIR_2D_BOUNDING_BOX_OVERLAP, PCURVE_EXTRACTION_EDGE1/2, INTERSECTION_COMPUTATION_VALIDITY, MODIFICATION_THRESHOLD_SAFEGUARD, WIRE_BOX_RECOMPUTATION_AFTER_SPLIT, FACE_RECONSTRUCTION_FROM_WIRES", "line": "ShapeFix_IntersectionTool.cxx:1460-1983 (V3 1837-2520)", "reason": "preconditions, broad-phase culling, caching, iteration limits, and rebuild bookkeeping of the wire-wire intersection repair; the ~20 akey/vertex-fusion sub-branches are case analysis inside the segment-overlap subvariants already counted"}
+  ],
+  "line_verification_notes": "V3 line numbers for all three files are systematically drifted relative to the pinned V7_8_1 checkout at /tmp/cad-occt-781 (commit bd2a789f); V3 was evidently generated against a reformatted source tree. Verified anchors (V3 -> actual): ShapeFix_Face.cxx: FixMissingSeam 1724->1514, FixOrientation(MapWires) 1185->1056, FixAddNaturalBound ~878->795, isNeedAddNaturalBound 1123->1010, FixSmallAreaWire 2350->1962, FixLoopWire 2485->2097, SplitEdge 2653/2741->2247/2331, FixIntersectingWires wrapper ->2407, FixWiresTwoCoincEdges 2846->2419, FixSplitFace 2908->2479, FixPeriodicDegenerated 3102->2647 (drift +130..+455). ShapeFix_IntersectionTool.cxx: SplitEdge 94->92, CutEdge 199->183, SplitEdge1 278->243, SplitEdge2 379->323, UnionVertexes 502->429, FindVertAndSplitEdge 979->785, FixSelfIntersectWire 1038->843, FixIntersectingWires 1836->1457 (drift -2..-379, growing with file position). ShapeFix_ComposeShell.cxx: Init 111->102, Perform 215->178, LoadWires ~509->464, SplitByLine 1440->1188, SplitByGrid 2144->~1721, BreakWires 2280->1841, CollectWires 2514->2014, MakeFacesOnPatch 2981->2367, DispatchWires 3277->2585 (drift -9..-692). Every occt_evidence line in this file was re-derived by reading the actual V7_8_1 source, not by trusting V3. Repair logic V3 under-described, found by direct reading: (1) FixAddNaturalBound's empty-face branch (Face.cxx:815-840) fully rebuilds a bound-less face on ANY finite surface, not only periodic ones -- captured under tkshh-face-natural-bound-missing subvariant 1; (2) FixAddNaturalBound's sphere pole-hole merge (Face.cxx:937-983) merges a degenerated-edge hole into the natural boundary (V3's FAN-005 hinted at it; confirmed and kept as a missing-fixture subvariant); (3) CutEdge has a special 2D-only trim path for non-SameParameter edges whose pcurve is a trimmed line (IntersectionTool.cxx:197-224) -- treated as internal mechanics; (4) FixMissingSeam's more-than-two-open-wires recovery removes completely degenerated wires and restarts pairing (Face.cxx:1606-1622), which grounded the tkshh-wire-only-degenerated-edges problem. V3's ComputeCode/SplitByLine/SplitByGrid 'control_flow_ambiguity'-style and [low-confidence] entries were individually reviewed; none describes a distinct user-visible input defect beyond those kept, so they are excluded as healer-internal machinery."
+}

@@ -1,0 +1,193 @@
+{
+  "group": "A-small-face-shell-tolerance",
+  "problems": [
+    {
+      "problem_id": "tkshh-spot-face",
+      "domain": "TKShHealing",
+      "description": "A face's entire boundary has collapsed within tolerance to a single point: every wire vertex is coincident (or the outer wire's bounding box is smaller than the working precision), so the face has no usable 2D interior and contributes nothing to the shape's area/volume. OCCT detects this ('spot face') and repairs it by merging all of the face's vertices into one shared tolerant vertex and deleting the face and its edges from the shell.",
+      "occt_evidence": [
+        "ShapeAnalysis_CheckSmallFace::IsSpotFace / CheckSpotFace — ShapeAnalysis_CheckSmallFace.cxx:111,177 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified against source; V3 cited 162/235, drifted ~60-70 lines)",
+        "ShapeFix_FixSmallFace::FixSpotFace / ReplaceVerticesInCaseOfSpot / RemoveFacesInCaseOfSpot — ShapeFix_FixSmallFace.cxx:78,126,198 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited 87-88/99-105/108-128 relative offsets inside method bodies, function starts confirmed)"
+      ],
+      "subvariants": [
+        "all wire vertices exactly/near-exactly coincident (classic spot)",
+        "vertices distinct but the face's overall bounding box is still below precision (bbox-degenerate spot)"
+      ],
+      "fixture_ids": ["Tfa006", "Tfa041", "Tfa072", "Gs014"],
+      "coverage_verdict": "COVERED",
+      "notes": "Tfa006 and Tfa041 were read directly: both encode an ADVANCED_FACE whose 4 vertices sit within 1e-9-1e-7 of one another on an otherwise valid OPEN_SHELL, exactly matching IsSpotFace's bounding-box-vs-tolerance test. Gs014 is a broader family fixture (spot+strip+pin) also touching this case."
+    },
+    {
+      "problem_id": "tkshh-strip-face",
+      "domain": "TKShHealing",
+      "description": "A face has degenerated into a zero-width sliver/ribbon: either (a) it is bounded by exactly two long edges plus tiny connecting edges, and the two long edges run coincident within tolerance along their full length, or (b) the underlying BSpline/Bezier surface's control-point grid collapses to within tolerance across an entire row/column in one parametric direction. OCCT detects this ('strip face') and repairs it by merging the two coincident long edges into one shared edge, deleting the strip face and its short connecting edges, and removing any shell that becomes empty as a result.",
+      "occt_evidence": [
+        "ShapeAnalysis_CheckSmallFace::CheckStripFace / CheckSingleStrip / FindStripEdges / CheckStripEdges / IsStripSupport — ShapeAnalysis_CheckSmallFace.cxx:456,378,328,263,197 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited 659/530/442/351/290, drift of 90-250 lines throughout this file)",
+        "ShapeFix_FixSmallFace::FixStripFace / ReplaceInCaseOfStrip / ComputeSharedEdgeForStripFace / RemoveFacesInCaseOfStrip — ShapeFix_FixSmallFace.cxx:211,262,327,320 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified)"
+      ],
+      "subvariants": [
+        "2-edge wire strip, closed contour collapsed to a line (CheckSingleStrip)",
+        "4-edge strip: two long confused edges plus two tiny connecting edges, found by scanning (FindStripEdges/CheckStripEdges)",
+        "BSpline/Bezier pole-grid collapse in U or V (IsStripSupport) used as a supporting classifier"
+      ],
+      "fixture_ids": ["Tfa007", "Tfa042", "Tfa047", "Tfa048", "Gs014"],
+      "coverage_verdict": "COVERED",
+      "notes": "Tfa007 and Tfa042 were read directly and both genuinely encode two 100mm edges separated by 1e-7mm plus two 1e-7mm connecting edges on a live OPEN_SHELL traversal path -- exactly the FindStripEdges/CheckStripEdges pattern."
+    },
+    {
+      "problem_id": "tkshh-splitting-vertex-face",
+      "domain": "TKShHealing",
+      "description": "A face contains a vertex that is NOT an endpoint of a given edge of that same face, but whose 3D position projects within tolerance onto the interior of that edge's curve (a geometric T-junction/self-touch that isn't expressed as shared topology). OCCT detects this ('splitting vertex') and repairs it by inserting a synthetic splitting edge from the vertex to its projected point and dividing the face into two independently valid sub-faces along it.",
+      "occt_evidence": [
+        "ShapeAnalysis_CheckSmallFace::CheckSplittingVertices — ShapeAnalysis_CheckSmallFace.cxx:487 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited 687, drift ~200 lines). Key logic: line 533 `if (V.IsSame(V1) || V.IsSame(V2)) continue;` -- a vertex that is already a topological endpoint of the edge being tested is explicitly skipped.",
+        "ShapeFix_FixSmallFace::FixSplitFace / SplitOneFace — ShapeFix_FixSmallFace.cxx:500,525 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified)"
+      ],
+      "subvariants": [
+        "vertex sits on the interior of an edge belonging to a different wire of the same face (outer/inner T-junction)",
+        "vertex sits on the interior of an edge of the same wire"
+      ],
+      "fixture_ids": [],
+      "coverage_verdict": "GAP",
+      "notes": "Catalog contains ~17 fixtures explicitly titled after ShapeAnalysis_CheckSmallFace.CheckSplittingVertices / ShapeFix_Face.FixSplitFace (Tfa010, Tfa079, Tfa094, Tfa104, Tfa117, Tfa129, Tfa149, Tfa169, etc.) but reading 4 of them directly (Tfa010, Tfa079, Tfa104, Tfa129) shows a consistent mismatch: in every sampled fixture the 'splitting' vertex is encoded as a genuine shared topological ENDPOINT of the edges it touches (the bottom edge is literally split into two EDGE_CURVEs at that vertex, or the vertex is reused as an edge_curve endpoint across both wires), which is exactly the case CheckSplittingVertices explicitly SKIPS (`V.IsSame(V1) || V.IsSame(V2)`); Tfa129 additionally has no extra vertex encoded in the STEP at all despite its comment describing one. None of the sampled fixtures place an independent vertex near (but not attached to) an unrelated edge's curve interior, which is the actual trigger condition. Also note ShapeFix_FixSmallFace::FixSplitFace/SplitOneFace are not called by the class's own default Perform() (which only calls FixSpotFace+FixStripFace) -- they must be invoked explicitly, though this doesn't affect the verdict since the method still exists as real OCCT healing code. Recommend re-authoring this family with a vertex geometrically near an unrelated edge's interior without being declared as its topological endpoint."
+    },
+    {
+      "problem_id": "tkshh-sliver-solid",
+      "domain": "TKShHealing",
+      "description": "A compound/comp-solid contains one or more degenerate 'sliver' solids -- artifacts of Boolean/import operations whose volume is below an application-supplied threshold, and/or whose width factor (volume divided by half its surface area, a proxy for 'thinness') is below a threshold. OCCT repairs this by either deleting the sliver solid outright, or merging it into an adjacent non-small solid (folding its non-shared faces into the neighbor's shell).",
+      "occt_evidence": [
+        "ShapeFix_FixSmallSolid::IsSmall — ShapeFix_FixSmallSolid.cxx:515 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified against source; V3 cited 570/574/580, minor drift)",
+        "ShapeFix_FixSmallSolid::Remove — ShapeFix_FixSmallSolid.cxx:101 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited 96/99/105)",
+        "ShapeFix_FixSmallSolid::Merge — ShapeFix_FixSmallSolid.cxx:401 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited 439/442/453/478/492/502)"
+      ],
+      "subvariants": [
+        "solid volume below an explicit volume threshold",
+        "solid width factor (volume/area ratio) below an explicit thinness threshold",
+        "repair mode: delete (Remove) vs fold into neighboring solid (Merge), selectable via SetFixMode(0/1/2)"
+      ],
+      "fixture_ids": [],
+      "coverage_verdict": "GAP",
+      "notes": "Only one candidate found by keyword search: Tfa015 ('DropSmallSolids / debris solids from booleans'). Reading its .stp directly shows it is NOT a TopoDS_SOLID at all -- it's a bare 0.001x0.001mm ADVANCED_FACE on an OPEN_SHELL (no MANIFOLD_SOLID_BREP / CLOSED_SHELL wrapping a SOLID anywhere in the file). ShapeFix_FixSmallSolid::IsValidInput only accepts TopAbs_COMPOUND/COMPSOLID/SOLID input, so this fixture cannot exercise ShapeFix_FixSmallSolid at all despite its title; it is really a small-FACE fixture (already covered by tkshh-spot-face/tkshh-strip-face territory), not a small-SOLID fixture. No genuine tiny-volume-SOLID-inside-a-compound fixture was found anywhere in the corpus."
+    },
+    {
+      "problem_id": "tkshh-tolerance-out-of-range",
+      "domain": "TKShHealing",
+      "description": "A vertex, edge, or face carries a tolerance value that falls outside an application-specified acceptable range [tmin, tmax] -- either unrealistically tight (masking nothing, but inconsistent with the rest of the model) or excessively loose (hiding real geometric gaps/deviations downstream). OCCT repairs this by clamping the offending tolerance to the nearer bound of the range, recursing through WIRE->EDGE/VERTEX or whole-shape hierarchies as needed.",
+      "occt_evidence": [
+        "ShapeFix_ShapeTolerance::LimitTolerance — ShapeFix_ShapeTolerance.cxx:42 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified against source; V3 cited 39/45/62/98, drift ~3-7 lines). Clamp logic for VERTEX/EDGE/FACE at lines 55-85; WIRE recursion at lines 87-96 (recurses per-edge into LimitTolerance(E,...,EDGE) then both endpoint vertices)."
+      ],
+      "subvariants": [
+        "tolerance too large (> tmax), clamped down",
+        "tolerance too small (< tmin), raised up",
+        "tmax == tmin equality edge case (iamax = tmax>=tmin), clamp target ambiguous",
+        "applied recursively across VERTEX/EDGE/FACE/WIRE/whole-shape hierarchy, including shared-vertex double-application"
+      ],
+      "fixture_ids": ["N040", "N055", "N065", "N070", "N080", "N089", "N097", "N119", "N128", "N132", "N134", "N167", "N168"],
+      "coverage_verdict": "COVERED",
+      "notes": "Section 12-4-tolerance has a dense, deliberately-authored family of 13+ fixtures explicitly named after ShapeFix_ShapeTolerance.LimitTolerance and covering essentially every branch (boundary equality, WIRE recursion, zero lower-bound, large shapes, iamax flip). N055 was read directly and confirms a vertex tolerance value (2e-3) is encoded via UNCERTAINTY_MEASURE_WITH_UNIT alongside a GEOMETRIC_CURVE_SET carrying the target edge/vertices; this and several siblings wrap the payload in a GEOMETRIC_CURVE_SET representation which some prior audits flagged as producing an empty/orphaned OCCT shape on import (shape_null) -- since LimitTolerance is a manually-invoked healing utility rather than part of the default STEP-import pipeline, this is expected for this class of fixture and doesn't by itself disqualify the family, but graders should confirm their harness actually invokes LimitTolerance directly rather than relying on default import healing."
+    },
+    {
+      "problem_id": "tkshh-shell-free-boundary-gap",
+      "domain": "TKShHealing",
+      "description": "Two (or more) faces that geometrically share a boundary curve each carry their own separate copy of that boundary's edges/vertices, so the shell's free (single-face) boundary edges are geometrically coincident but topologically disjoint -- either exactly coincident (pure duplicate) or separated by a small gap that is larger than the sewing tolerance but within an application-specified closing tolerance. OCCT repairs this by classifying the shell's free boundary into closed/open wire groups, then (when a closing tolerance is supplied that exceeds the sewing tolerance) connecting nearby open-wire endpoints and replacing/merging the corresponding vertices in the underlying edges so the boundary becomes topologically continuous.",
+      "occt_evidence": [
+        "ShapeFix_FreeBounds::Perform — ShapeFix_FreeBounds.cxx:84 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified against source). Closing-tolerance gap-bridging branch at lines 95-120: `if (myCloseToler > mySewToler) { ... ShapeAnalysis_FreeBounds::ConnectWiresToWires(...); ... B.Remove(Edge,V); B.Add(Edge,newV); }`.",
+        "ShapeAnalysis_FreeBounds::ConnectWiresToWires / DispatchWires — ShapeAnalysis_FreeBounds.cxx:163,520 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited DispatchWires at 613, drift ~93 lines)"
+      ],
+      "subvariants": [
+        "exactly-coincident duplicate free-boundary edges (distance 0) needing to be recognized/merged as one shared edge",
+        "free-boundary wire endpoints separated by a small but nonzero gap within closing tolerance, needing vertex welding + wire reclassification (closed vs open)"
+      ],
+      "fixture_ids": ["Twi037"],
+      "coverage_verdict": "PARTIAL",
+      "notes": "Twi037 was read directly: two ADVANCED_FACEs on an OPEN_SHELL each carry their own EDGE_CURVE/VERTEX_POINT copies of the same boundary, but the coordinates are EXACTLY coincident (distance 0), which exercises the general free-bounds/duplicate-edge-stitching concept but not specifically ShapeFix_FreeBounds's closing-tolerance (myCloseToler>mySewToler) gap-bridging branch, which is designed for a genuinely nonzero separation. No fixture with a small-but-nonzero gap between free-boundary wire endpoints (e.g. 1e-3mm, below closing tolerance but above sewing tolerance) was found in a keyword search across the corpus."
+    },
+    {
+      "problem_id": "tkshh-shell-inconsistent-face-orientation",
+      "domain": "TKShHealing",
+      "description": "A shell's constituent faces have inconsistent orientation relative to each other -- some faces are flipped relative to a globally-consistent (outward-facing) convention, possibly combined with exact-duplicate faces, edges shared by three or more faces (non-manifold connectivity), or a mismatch between the shell's cached Closed flag and its actual free-edge state. OCCT repairs this by regrouping/reorienting the shell's faces into one or more consistently-oriented shells (splitting into multiple shells when a single consistent orientation can't be achieved across all faces), dropping exact-duplicate faces during the rebuild, optionally special-casing non-manifold multi-shared edges so they don't force incompatible faces into the same group, and correcting the Closed flag when it disagrees with the detected free-boundary state.",
+      "occt_evidence": [
+        "ShapeFix_Shell::FixFaceOrientation — ShapeFix_Shell.cxx:844 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified against source; V3 cited 1428, drift of ~584 lines -- the whole file is only 1114 lines, well short of V3's citation). Duplicate-face dedup at lines 860-866 (`aMapAdded.Add` -- faces failing the Add are silently dropped from Lface, i.e. genuinely deduplicated, not merely 'warned' as V3 claimed); non-manifold multi-connect-edge handling at 868-882; Closed-flag correction at 883-887; multi-shell split / Mobius isolation at 900-1010.",
+        "ShapeFix_Shell::Perform — ShapeFix_Shell.cxx:99 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited 102, close). Post-fix Closed-flag re-verification via ShapeAnalysis_Shell at lines 137-153."
+      ],
+      "subvariants": [
+        "some faces reversed relative to a consistent shell, corrected by flipping",
+        "shell splits into multiple valid shells when faces can't form one globally consistent shell",
+        "exact-duplicate faces present in the shell, dropped during rebuild",
+        "Closed flag disagrees with actual free-edge presence, corrected",
+        "edges shared by 3+ faces (non-manifold) handled specially via isAccountMultiConex to avoid merging incompatible faces into one group"
+      ],
+      "fixture_ids": ["Tsh070", "Tsh074", "Tsh080", "Tsh085", "Tsh090", "Tsh094", "Tsh100", "Tsh104", "Tsh112", "Tsh122", "Tsh128", "Tsh132", "Tsh139", "Tsh144", "Tsh149"],
+      "coverage_verdict": "COVERED",
+      "notes": "Section 12-3a-shells has a large, deliberately-authored family (15+ fixtures) explicitly named after ShapeFix_Shell.FixFaceOrientation covering multiconnect-edge classification, duplicate-face removal, single-face shells, tangent/reverse-edge propagation, T-junction ambiguity, and specific shell topologies (cylindrical, hexagonal, flat, T-shaped non-manifold). Bo024 (unit cube, all 6 faces same_sense=.F., globally but uniformly inverted) was checked and correctly maps to the DIFFERENT tkshh-solid-globally-inverted-shell problem below, not this one -- confirming the corpus distinguishes uniform-shell-inversion from mixed-face-orientation. Note: genuinely non-orientable (Mobius-like) face groups are detected but NOT repaired by this method (isolated into single-face shells with a FAIL status) -- that sub-case is excluded below as a detection-only limitation, not folded in as a covered subvariant."
+    },
+    {
+      "problem_id": "tkshh-solid-globally-inverted-shell",
+      "domain": "TKShHealing",
+      "description": "A solid built from a single closed shell has its overall orientation globally inverted: every face is consistently flipped together, so classifying a point at infinity against the resulting solid reports it as 'inside' (i.e. the shell bounds the complement of the intended region -- material and void are swapped). OCCT repairs this by reversing the entire shell (all faces at once) so the solid's interior/exterior classification comes out correct.",
+      "occt_evidence": [
+        "ShapeFix_Solid::SolidFromShell — ShapeFix_Solid.cxx:538 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified against source; V3 cited 656/668, drift ~118-130 lines). Reversal logic at lines 548-565: `bsc3d.PerformInfinitePoint(t); if (bsc3d.State()==TopAbs_IN) { sh.Reverse(); ... }`."
+      ],
+      "subvariants": [],
+      "fixture_ids": ["Bo024"],
+      "coverage_verdict": "COVERED",
+      "notes": "Bo024 was read directly: a MANIFOLD_SOLID_BREP unit cube where all 6 ADVANCED_FACEs have same_sense=.F. (uniformly, consistently reversed relative to the intended outward convention) -- exactly the pattern SolidFromShell's infinite-point classify-and-reverse handles, and distinct from the mixed/inconsistent per-face orientation problem above. Related fixtures Tsh083/Tsh102/Tsh186 target SolidFromShell's behavior on non-closed input (which the code handles by returning the unmodified solid inside a try/catch, i.e. detection-and-refusal rather than repair) -- not counted as additional repair evidence here."
+    },
+    {
+      "problem_id": "tkshh-solid-unstructured-multishell",
+      "domain": "TKShHealing",
+      "description": "A shape intended to become a solid is built from more than one shell without pre-established outer-boundary/void nesting -- e.g. an unstructured compound of shells that should really be recognized as either (a) an outer boundary shell plus nested internal cavity shell(s) forming one valid solid, or (b) multiple disjoint solids incorrectly bundled together. OCCT repairs this by point-containment classification (BRepClass3d_SolidClassifier) of each shell against the others to determine nesting/disjointness, then reconstructing one or more properly-formed TopoDS_Solid(s) (or a compound of separate solids when the shells don't share one containment structure).",
+      "occt_evidence": [
+        "ShapeFix_Solid::Perform (multi-shell branch) — ShapeFix_Solid.cxx:375, branch at 470-519 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified against source; V3 cited 461/477/490/510, drift ~86 lines). This directly supersedes V3's ShapeFix_Solid.Perform.single_shell_orientation_skip claim ('NbShells != 1, shell orientation fix skipped') -- current source does NOT skip the multi-shell case; it dispatches to the more general CreateSolids/CollectSolids classification instead.",
+        "static CreateSolids / CollectSolids helpers — ShapeFix_Solid.cxx:248,126 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; uses BRepClass3d_SolidClassifier point-in/out/on tests to classify shell nesting)"
+      ],
+      "subvariants": [
+        "outer shell + nested internal void shell(s) correctly assembled into one solid",
+        "genuinely disjoint shell groups split into a compound of separate solids"
+      ],
+      "fixture_ids": [],
+      "coverage_verdict": "GAP",
+      "notes": "The closest candidates found (Bo003, Tsh015, Tsh067) all target the STEP-schema-level BREP_WITH_VOIDS void-orientation representation (an inner void shell's own .T./.F. sense flag being wrong, or a void shell's extent exceeding its host), which is handled by the StepToTopoDS BREP_WITH_VOIDS translator rather than by ShapeFix_Solid::Perform's generic unstructured-compound-of-shells classification path (CreateSolids/CollectSolids). No fixture presenting a plain, unstructured multi-shell compound requiring point-containment classification into nested-void-vs-disjoint solids was found with confidence; treating this as a GAP rather than claiming the BREP_WITH_VOIDS fixtures as coverage of this specific mechanism."
+    }
+  ],
+  "excluded": [
+    {"branch": "ShapeAnalysis_CheckSmallFace.CheckPin.* (all 4 branches)", "line": "ShapeAnalysis_CheckSmallFace.cxx:601 (CheckPin)", "reason": "detection-only; grep across all of /tmp/cad-occt-781/src confirms CheckPin is defined and referenced only inside this one file -- no ShapeFix_* class ever calls it, so no repair exists for whatever it detects"},
+    {"branch": "ShapeAnalysis_CheckSmallFace.CheckPinEdges.* (3 branches)", "line": "ShapeAnalysis_CheckSmallFace.cxx:836 (CheckPinEdges)", "reason": "detection-only helper feeding CheckPinFace, which itself is never consumed by any Fix class"},
+    {"branch": "ShapeAnalysis_CheckSmallFace.CheckPinFace.* (10 branches)", "line": "ShapeAnalysis_CheckSmallFace.cxx:742 (CheckPinFace)", "reason": "detection-only; ShapeFix_FixSmallFace::FixPinFace (ShapeFix_FixSmallFace.cxx:753-756) is a literal no-op stub (`return true;` with no shape modification), so pin-face detection never results in an actual repair"},
+    {"branch": "ShapeAnalysis_CheckSmallFace.CheckTwisted.* (3 branches)", "line": "ShapeAnalysis_CheckSmallFace.cxx:671 (CheckTwisted)", "reason": "detection-only; never called from any Fix* class in the OCCT source tree"},
+    {"branch": "ShapeAnalysis_CheckSmallFace.IsSpotFace.SPOT_002 (uninitialized minmax bounds)", "line": "ShapeAnalysis_CheckSmallFace.cxx:129", "reason": "internal init-order nitpick within an already-captured detector (tkshh-spot-face), not an independent input-defect class"},
+    {"branch": "ShapeAnalysis_CheckSmallFace.IsStripSupport.STRIP_001/STRIP_002 (scan order, status bit encoding)", "line": "ShapeAnalysis_CheckSmallFace.cxx:224-252", "reason": "internal scan-order/status-encoding implementation detail of the already-captured strip-face detector (tkshh-strip-face), not an independent defect"},
+    {"branch": "ShapeAnalysis_CheckSmallFace.CheckSingleStrip.SSTRIP_001/002 (vertex dedup, tolerance propagation)", "line": "ShapeAnalysis_CheckSmallFace.cxx:378", "reason": "internal implementation detail folded into tkshh-strip-face, not a distinct defect class"},
+    {"branch": "ShapeAnalysis_ShapeContents.* (all ~21 branches: Clear, Perform.*)", "line": "ShapeAnalysis_ShapeContents.cxx (class-wide)", "reason": "pure shape-statistics collector for diagnostic reporting (counts big-splines, indirect surfaces, offset surfaces, seams, C0 curves/surfaces, missing pcurves, etc.); never modifies the shape -- no repair action of any kind is performed by this class"},
+    {"branch": "ShapeAnalysis_ShapeTolerance.* (all ~19 branches: AddTolerance, GlobalTolerance, InTolerance x6, OverTolerance)", "line": "ShapeAnalysis_ShapeTolerance.cxx (class-wide)", "reason": "pure query/reporting class (finds shapes whose tolerance falls in a range, or the global min/max tolerance); consumed for diagnostics/reporting only, never invoked by a Fix class to drive a repair"},
+    {"branch": "ShapeFix_ShapeTolerance.SetTolerance.* (no_validation, cast_unsafety_vertices, recursive_double_mutation)", "line": "ShapeFix_ShapeTolerance.cxx:110", "reason": "blind unconditional setter -- overwrites tolerance to a caller-supplied value with no defect-detection logic of its own (unlike LimitTolerance, which is the genuine clamp-based repair kept above); API-contract utility, not an input-defect heuristic"},
+    {"branch": "ShapeFix_ShapeTolerance.LimitTolerance.cast_pointer_unsafety", "line": "ShapeFix_ShapeTolerance.cxx:61", "reason": "internal type-cast implementation detail (BRep_TVertex/TEdge/TFace down-cast), not an input-defect repair path"},
+    {"branch": "ShapeFix_FixSmallFace.ComputeSharedEdgeForStripFace.SHARED-001..008 (endpoint-pair merging asymmetry, tolerance scaling, curve-range consistency)", "line": "ShapeFix_FixSmallFace.cxx:327-498", "reason": "internal algorithm branches of the already-captured strip-face merge (tkshh-strip-face) -- vertex-pairing/tolerance-scaling order within the fix, not an independently distinguishable input pattern"},
+    {"branch": "ShapeFix_FixSmallFace.FixSpotFace.SPOT-001/002/003 (topology consistency, replacement atomicity, wire-fixing deferral)", "line": "ShapeFix_FixSmallFace.cxx:78-124", "reason": "internal consistency/atomicity guards of the already-captured spot-face fix, not a distinct defect class"},
+    {"branch": "ShapeFix_FixSmallFace.FixStripFace.STRIP-001..004 (iterator safety, failure atomicity, pcurve deferral)", "line": "ShapeFix_FixSmallFace.cxx:211-260", "reason": "internal consistency guards of the already-captured strip-face fix, not a distinct defect class"},
+    {"branch": "ShapeFix_FixSmallFace.FixSplitFace.SPLIT-001/002 (post-split null-check, failure granularity)", "line": "ShapeFix_FixSmallFace.cxx:500-523", "reason": "internal consistency guards of the splitting-vertex fix mechanism (already documented under tkshh-splitting-vertex-face), not an independent defect"},
+    {"branch": "ShapeFix_FixSmallFace.ReplaceInCaseOfStrip.STRIP-REP-001..005 (null guard, adjacent-face search, orientation propagation, short-edge removal)", "line": "ShapeFix_FixSmallFace.cxx:262-318", "reason": "internal algorithm branches of the already-captured strip-face fix"},
+    {"branch": "ShapeFix_FixSmallFace.ReplaceVerticesInCaseOfSpot.SPOT-VRT-001..004 (wire-existence check, tolerance-biased averaging, orientation-aware replace)", "line": "ShapeFix_FixSmallFace.cxx:126-196", "reason": "internal algorithm branches of the already-captured spot-face fix"},
+    {"branch": "ShapeFix_FixSmallFace.RemoveFacesInCaseOfSpot.null_edge_swap", "line": "ShapeFix_FixSmallFace.cxx:198", "reason": "internal edge-removal guard within the already-captured spot-face fix"},
+    {"branch": "ShapeAnalysis_FreeBounds.ConnectEdgesToWires / DispatchWires / SplitWires.* (raw branches)", "line": "ShapeAnalysis_FreeBounds.cxx:135,520,498", "reason": "pure boundary-classification analysis (groups edges into closed/open wires); the actual repair behavior (gap-bridging under closing tolerance) is captured separately under tkshh-shell-free-boundary-gap via ShapeFix_FreeBounds"},
+    {"branch": "ShapeAnalysis_FreeBoundsProperties.* (all branches: CheckContours, CheckNotches x3, DispatchBounds, FillProperties)", "line": "ShapeAnalysis_FreeBoundsProperties.cxx (class-wide)", "reason": "pure diagnostic/statistics class (area, perimeter, notch-count reporting for free boundaries); grep confirms it is only referenced from the DRAW test-harness (SWDRAW_ShapeAnalysis.cxx), never from a Fix class -- no repair"},
+    {"branch": "ShapeAnalysis_Shell.* (BadEdges, CheckOrientedShells, FreeEdges, LoadShells)", "line": "ShapeAnalysis_Shell.cxx (class-wide)", "reason": "pure detection class consumed by ShapeFix_Shell::Perform purely to re-verify the Closed flag after fixing (ShapeFix_Shell.cxx:138-153); the actual repair is already captured under tkshh-shell-inconsistent-face-orientation"},
+    {"branch": "ShapeFix_Shell.FixFaceOrientation.duplicate_faces_undetected", "line": "ShapeFix_Shell.cxx:862-866", "reason": "V3's claim ('duplicates still processed independently') is contradicted by the current source: aMapAdded.Add() failing silently drops the duplicate from Lface, so duplicates ARE removed during rebuild -- this behavior is instead captured correctly as a subvariant of tkshh-shell-inconsistent-face-orientation"},
+    {"branch": "ShapeFix_Shell.FixFaceOrientation.multiconnect_edge_loop_unbounded", "line": "ShapeFix_Shell.cxx:872-882", "reason": "algorithmic-complexity/performance concern (unbounded iteration on pathological non-manifold meshes), not a claim about a specific repairable input-defect class"},
+    {"branch": "ShapeFix_Shell.FixFaceOrientation.error_faces_mebius_assumption", "line": "ShapeFix_Shell.cxx:914-951", "reason": "genuinely non-orientable (Mobius-like) face groups are isolated into single-face shells and the method returns with myStatus=FAIL -- this is detection-and-refusal, not a repair, so it is not counted as a covered subvariant"},
+    {"branch": "ShapeFix_Shell.Perform.context_null_initialize", "line": "ShapeFix_Shell.cxx:102-103", "reason": "healer-internal state bookkeeping (lazy ShapeBuild_ReShape context construction), not an input-defect repair"},
+    {"branch": "ShapeFix_Shell.Perform.progress_abort_inconsistency", "line": "ShapeFix_Shell.cxx:128-130", "reason": "control-flow (user-abort handling via Message_ProgressScope), not an input-defect repair"},
+    {"branch": "ShapeFix_Solid.Perform.context_stale_state", "line": "ShapeFix_Solid.cxx:379-380", "reason": "healer-internal state bookkeeping (context re-use across Perform() calls), not an input-defect repair"},
+    {"branch": "ShapeFix_Solid.Perform.shell_count_mismatch", "line": "ShapeFix_Solid.cxx:410", "reason": "internal bookkeeping/semantic-ambiguity note about NbShells accounting, not an independently repairable defect class"},
+    {"branch": "ShapeFix_Solid.Perform.closed_detection_incomplete", "line": "ShapeFix_Solid.cxx:428-445", "reason": "describes a detection limitation (sub-tolerance gaps counted as 'closed') rather than a repair action; numerical-robustness caveat, not a fix"},
+    {"branch": "ShapeFix_Solid.SolidFromShell.exception_silent_catch", "line": "ShapeFix_Solid.cxx:567-574", "reason": "error-handling/exception-safety robustness (returns the unmodified solid on internal classifier failure), not defect-repair logic"},
+    {"branch": "ShapeFix_Solid.SolidFromShell.shell_free_flag_mutation", "line": "ShapeFix_Solid.cxx:541,558", "reason": "redundant internal state mutation (Shell.Free(true) called twice) with no functional effect on the output shape"},
+    {"branch": "ShapeFix_Shape.Perform.already_fixed", "line": "ShapeFix_Shape.cxx:113", "reason": "idempotency/caching control flow, not an input-defect repair"},
+    {"branch": "ShapeFix_Shape.Perform.compound_recursion", "line": "ShapeFix_Shape.cxx:149", "reason": "pure recursive traversal dispatch over compound/compsolid children, not itself a repair"},
+    {"branch": "ShapeFix_Shape.Perform.solid_conditional / shell_conditional", "line": "ShapeFix_Shape.cxx:177,193", "reason": "mode-gated dispatch to ShapeFix_Solid/ShapeFix_Shell (already captured under their own classes), pure orchestration"},
+    {"branch": "ShapeFix_Shape.Perform.face_topology_override / wire_closed_mode", "line": "ShapeFix_Shape.cxx:210,237", "reason": "temporary tool-state mutation (topology mode flags) around calls into ShapeFix_Face/ShapeFix_Wire, which are out of this scope's assigned classes; orchestration, not repair"},
+    {"branch": "ShapeFix_Shape.Perform.edge_unconditional", "line": "ShapeFix_Shape.cxx:226", "reason": "delegates to ShapeFix_Edge::FixVertexTolerance, a class outside this scope's assigned list; orchestration only"},
+    {"branch": "ShapeFix_Shape.Perform.same_parameter_post", "line": "ShapeFix_Shape.cxx:239-244,281-286", "reason": "delegates to the static ShapeFix::SameParameter utility, outside this scope's assigned classes; orchestration only"},
+    {"branch": "ShapeFix_Shape.Perform.multi_face_vertex_check (bug 0025455)", "line": "ShapeFix_Shape.cxx:245-266", "reason": "delegates to ShapeFix_Edge::FixVertexTolerance across all faces/edges when nbF>1; the underlying repair mechanism belongs to ShapeFix_Edge (outside this scope), this branch is only the orchestration gate that decides whether to call it"}
+  ],
+  "line_verification_notes": "Significant line drift throughout: ShapeAnalysis_CheckSmallFace.cxx entries in V3 were cited against a version of the file with ~90-250 extra lines relative to the pinned V7_8_1 source (e.g. CheckPin cited at 852-901 vs actual 601; CheckPinFace at 1069 vs actual 742; CheckPinEdges at 1208-1308 vs actual 836; CheckStripFace at 659 vs actual 456). ShapeFix_Shell.cxx drift was extreme: V3 cited FixFaceOrientation at line 1428, but the entire file is only 1114 lines long in the pinned commit -- the real function starts at line 844. ShapeFix_Solid.cxx also drifted (~86-130 lines): Perform cited at 461 vs actual 375, SolidFromShell at 656 vs actual 538. ShapeFix_FixSmallFace.cxx and ShapeFix_FixSmallSolid.cxx, ShapeFix_ShapeTolerance.cxx, ShapeFix_FreeBounds.cxx, ShapeFix_Shape.cxx line citations were close to accurate (drift under ~10 lines) since those files' method-line V3 entries already used the correct definitions with 'Line: File.cxx:NNNN' format; I re-verified all of them directly and cite the confirmed lines above. Two V3 claims were found factually WRONG against current source and corrected: (1) ShapeFix_Shell.FixFaceOrientation.duplicate_faces_undetected claimed duplicates are 'still processed independently' -- source shows they ARE deduplicated (aMapAdded.Add failing silently drops them from Lface); (2) ShapeFix_Solid.Perform.single_shell_orientation_skip claimed the multi-shell case (NbShells != 1) skips orientation fixing entirely -- source shows it instead dispatches to a more general CreateSolids/CollectSolids point-containment classification (this became the basis for the separately-tracked GAP problem tkshh-solid-unstructured-multishell). Beyond citation verification, reading ShapeFix_FixSmallFace.cxx directly surfaced that FixPinFace (line 753-756) is a literal no-op stub and that CheckPin/CheckPinFace/CheckPinEdges/CheckTwisted in ShapeAnalysis_CheckSmallFace.cxx are never called anywhere else in the OCCT source tree (confirmed via grep across /tmp/cad-occt-781/src) -- V3 did not call this out explicitly as dead code, so the whole Pin/Twisted detection family was excluded rather than promoted to a GAP problem, since there is no OCCT healing code that could ever fix it. Fixture-side verification also caught a mismatch V3 could not have found (it only analyzes OCCT source, not the fixture corpus): the ~17 catalog fixtures titled after ShapeAnalysis_CheckSmallFace.CheckSplittingVertices consistently encode the wrong geometric pattern (a genuinely shared topological vertex/endpoint rather than an independent vertex merely near an unrelated edge's interior), so tkshh-splitting-vertex-face is marked GAP despite substantial fixture-count coverage by title alone."
+}

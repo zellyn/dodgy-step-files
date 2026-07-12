@@ -1,0 +1,1622 @@
+[
+  {
+    "branch": "ShapeAnalysis_CheckSmallFace.CheckPin.* (all 4 branches)",
+    "line": "ShapeAnalysis_CheckSmallFace.cxx:601 (CheckPin)",
+    "reason": "detection-only; grep across all of /tmp/cad-occt-781/src confirms CheckPin is defined and referenced only inside this one file -- no ShapeFix_* class ever calls it, so no repair exists for whatever it detects",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeAnalysis_CheckSmallFace.CheckPinEdges.* (3 branches)",
+    "line": "ShapeAnalysis_CheckSmallFace.cxx:836 (CheckPinEdges)",
+    "reason": "detection-only helper feeding CheckPinFace, which itself is never consumed by any Fix class",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeAnalysis_CheckSmallFace.CheckPinFace.* (10 branches)",
+    "line": "ShapeAnalysis_CheckSmallFace.cxx:742 (CheckPinFace)",
+    "reason": "detection-only; ShapeFix_FixSmallFace::FixPinFace (ShapeFix_FixSmallFace.cxx:753-756) is a literal no-op stub (`return true;` with no shape modification), so pin-face detection never results in an actual repair",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeAnalysis_CheckSmallFace.CheckSingleStrip.SSTRIP_001/002 (vertex dedup, tolerance propagation)",
+    "line": "ShapeAnalysis_CheckSmallFace.cxx:378",
+    "reason": "internal implementation detail folded into tkshh-strip-face, not a distinct defect class",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeAnalysis_CheckSmallFace.CheckTwisted.* (3 branches)",
+    "line": "ShapeAnalysis_CheckSmallFace.cxx:671 (CheckTwisted)",
+    "reason": "detection-only; never called from any Fix* class in the OCCT source tree",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeAnalysis_CheckSmallFace.IsSpotFace.SPOT_002 (uninitialized minmax bounds)",
+    "line": "ShapeAnalysis_CheckSmallFace.cxx:129",
+    "reason": "internal init-order nitpick within an already-captured detector (tkshh-spot-face), not an independent input-defect class",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeAnalysis_CheckSmallFace.IsStripSupport.STRIP_001/STRIP_002 (scan order, status bit encoding)",
+    "line": "ShapeAnalysis_CheckSmallFace.cxx:224-252",
+    "reason": "internal scan-order/status-encoding implementation detail of the already-captured strip-face detector (tkshh-strip-face), not an independent defect",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeAnalysis_FreeBounds.ConnectEdgesToWires / DispatchWires / SplitWires.* (raw branches)",
+    "line": "ShapeAnalysis_FreeBounds.cxx:135,520,498",
+    "reason": "pure boundary-classification analysis (groups edges into closed/open wires); the actual repair behavior (gap-bridging under closing tolerance) is captured separately under tkshh-shell-free-boundary-gap via ShapeFix_FreeBounds",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeAnalysis_FreeBoundsProperties.* (all branches: CheckContours, CheckNotches x3, DispatchBounds, FillProperties)",
+    "line": "ShapeAnalysis_FreeBoundsProperties.cxx (class-wide)",
+    "reason": "pure diagnostic/statistics class (area, perimeter, notch-count reporting for free boundaries); grep confirms it is only referenced from the DRAW test-harness (SWDRAW_ShapeAnalysis.cxx), never from a Fix class -- no repair",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeAnalysis_ShapeContents.* (all ~21 branches: Clear, Perform.*)",
+    "line": "ShapeAnalysis_ShapeContents.cxx (class-wide)",
+    "reason": "pure shape-statistics collector for diagnostic reporting (counts big-splines, indirect surfaces, offset surfaces, seams, C0 curves/surfaces, missing pcurves, etc.); never modifies the shape -- no repair action of any kind is performed by this class",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeAnalysis_ShapeTolerance.* (all ~19 branches: AddTolerance, GlobalTolerance, InTolerance x6, OverTolerance)",
+    "line": "ShapeAnalysis_ShapeTolerance.cxx (class-wide)",
+    "reason": "pure query/reporting class (finds shapes whose tolerance falls in a range, or the global min/max tolerance); consumed for diagnostics/reporting only, never invoked by a Fix class to drive a repair",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeAnalysis_Shell.* (BadEdges, CheckOrientedShells, FreeEdges, LoadShells)",
+    "line": "ShapeAnalysis_Shell.cxx (class-wide)",
+    "reason": "pure detection class consumed by ShapeFix_Shell::Perform purely to re-verify the Closed flag after fixing (ShapeFix_Shell.cxx:138-153); the actual repair is already captured under tkshh-shell-inconsistent-face-orientation",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeFix_FixSmallFace.ComputeSharedEdgeForStripFace.SHARED-001..008 (endpoint-pair merging asymmetry, tolerance scaling, curve-range consistency)",
+    "line": "ShapeFix_FixSmallFace.cxx:327-498",
+    "reason": "internal algorithm branches of the already-captured strip-face merge (tkshh-strip-face) -- vertex-pairing/tolerance-scaling order within the fix, not an independently distinguishable input pattern",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeFix_FixSmallFace.FixSplitFace.SPLIT-001/002 (post-split null-check, failure granularity)",
+    "line": "ShapeFix_FixSmallFace.cxx:500-523",
+    "reason": "internal consistency guards of the splitting-vertex fix mechanism (already documented under tkshh-splitting-vertex-face), not an independent defect",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeFix_FixSmallFace.FixSpotFace.SPOT-001/002/003 (topology consistency, replacement atomicity, wire-fixing deferral)",
+    "line": "ShapeFix_FixSmallFace.cxx:78-124",
+    "reason": "internal consistency/atomicity guards of the already-captured spot-face fix, not a distinct defect class",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeFix_FixSmallFace.FixStripFace.STRIP-001..004 (iterator safety, failure atomicity, pcurve deferral)",
+    "line": "ShapeFix_FixSmallFace.cxx:211-260",
+    "reason": "internal consistency guards of the already-captured strip-face fix, not a distinct defect class",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeFix_FixSmallFace.RemoveFacesInCaseOfSpot.null_edge_swap",
+    "line": "ShapeFix_FixSmallFace.cxx:198",
+    "reason": "internal edge-removal guard within the already-captured spot-face fix",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeFix_FixSmallFace.ReplaceInCaseOfStrip.STRIP-REP-001..005 (null guard, adjacent-face search, orientation propagation, short-edge removal)",
+    "line": "ShapeFix_FixSmallFace.cxx:262-318",
+    "reason": "internal algorithm branches of the already-captured strip-face fix",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeFix_FixSmallFace.ReplaceVerticesInCaseOfSpot.SPOT-VRT-001..004 (wire-existence check, tolerance-biased averaging, orientation-aware replace)",
+    "line": "ShapeFix_FixSmallFace.cxx:126-196",
+    "reason": "internal algorithm branches of the already-captured spot-face fix",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeFix_Shape.Perform.already_fixed",
+    "line": "ShapeFix_Shape.cxx:113",
+    "reason": "idempotency/caching control flow, not an input-defect repair",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeFix_Shape.Perform.compound_recursion",
+    "line": "ShapeFix_Shape.cxx:149",
+    "reason": "pure recursive traversal dispatch over compound/compsolid children, not itself a repair",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeFix_Shape.Perform.edge_unconditional",
+    "line": "ShapeFix_Shape.cxx:226",
+    "reason": "delegates to ShapeFix_Edge::FixVertexTolerance, a class outside this scope's assigned list; orchestration only",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeFix_Shape.Perform.face_topology_override / wire_closed_mode",
+    "line": "ShapeFix_Shape.cxx:210,237",
+    "reason": "temporary tool-state mutation (topology mode flags) around calls into ShapeFix_Face/ShapeFix_Wire, which are out of this scope's assigned classes; orchestration, not repair",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeFix_Shape.Perform.multi_face_vertex_check (bug 0025455)",
+    "line": "ShapeFix_Shape.cxx:245-266",
+    "reason": "delegates to ShapeFix_Edge::FixVertexTolerance across all faces/edges when nbF>1; the underlying repair mechanism belongs to ShapeFix_Edge (outside this scope), this branch is only the orchestration gate that decides whether to call it",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeFix_Shape.Perform.same_parameter_post",
+    "line": "ShapeFix_Shape.cxx:239-244,281-286",
+    "reason": "delegates to the static ShapeFix::SameParameter utility, outside this scope's assigned classes; orchestration only",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeFix_Shape.Perform.solid_conditional / shell_conditional",
+    "line": "ShapeFix_Shape.cxx:177,193",
+    "reason": "mode-gated dispatch to ShapeFix_Solid/ShapeFix_Shell (already captured under their own classes), pure orchestration",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeFix_ShapeTolerance.LimitTolerance.cast_pointer_unsafety",
+    "line": "ShapeFix_ShapeTolerance.cxx:61",
+    "reason": "internal type-cast implementation detail (BRep_TVertex/TEdge/TFace down-cast), not an input-defect repair path",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeFix_ShapeTolerance.SetTolerance.* (no_validation, cast_unsafety_vertices, recursive_double_mutation)",
+    "line": "ShapeFix_ShapeTolerance.cxx:110",
+    "reason": "blind unconditional setter -- overwrites tolerance to a caller-supplied value with no defect-detection logic of its own (unlike LimitTolerance, which is the genuine clamp-based repair kept above); API-contract utility, not an input-defect heuristic",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeFix_Shell.FixFaceOrientation.duplicate_faces_undetected",
+    "line": "ShapeFix_Shell.cxx:862-866",
+    "reason": "V3's claim ('duplicates still processed independently') is contradicted by the current source: aMapAdded.Add() failing silently drops the duplicate from Lface, so duplicates ARE removed during rebuild -- this behavior is instead captured correctly as a subvariant of tkshh-shell-inconsistent-face-orientation",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeFix_Shell.FixFaceOrientation.error_faces_mebius_assumption",
+    "line": "ShapeFix_Shell.cxx:914-951",
+    "reason": "genuinely non-orientable (Mobius-like) face groups are isolated into single-face shells and the method returns with myStatus=FAIL -- this is detection-and-refusal, not a repair, so it is not counted as a covered subvariant",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeFix_Shell.FixFaceOrientation.multiconnect_edge_loop_unbounded",
+    "line": "ShapeFix_Shell.cxx:872-882",
+    "reason": "algorithmic-complexity/performance concern (unbounded iteration on pathological non-manifold meshes), not a claim about a specific repairable input-defect class",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeFix_Shell.Perform.context_null_initialize",
+    "line": "ShapeFix_Shell.cxx:102-103",
+    "reason": "healer-internal state bookkeeping (lazy ShapeBuild_ReShape context construction), not an input-defect repair",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeFix_Shell.Perform.progress_abort_inconsistency",
+    "line": "ShapeFix_Shell.cxx:128-130",
+    "reason": "control-flow (user-abort handling via Message_ProgressScope), not an input-defect repair",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeFix_Solid.Perform.closed_detection_incomplete",
+    "line": "ShapeFix_Solid.cxx:428-445",
+    "reason": "describes a detection limitation (sub-tolerance gaps counted as 'closed') rather than a repair action; numerical-robustness caveat, not a fix",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeFix_Solid.Perform.context_stale_state",
+    "line": "ShapeFix_Solid.cxx:379-380",
+    "reason": "healer-internal state bookkeeping (context re-use across Perform() calls), not an input-defect repair",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeFix_Solid.Perform.shell_count_mismatch",
+    "line": "ShapeFix_Solid.cxx:410",
+    "reason": "internal bookkeeping/semantic-ambiguity note about NbShells accounting, not an independently repairable defect class",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeFix_Solid.SolidFromShell.exception_silent_catch",
+    "line": "ShapeFix_Solid.cxx:567-574",
+    "reason": "error-handling/exception-safety robustness (returns the unmodified solid on internal classifier failure), not defect-repair logic",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeFix_Solid.SolidFromShell.shell_free_flag_mutation",
+    "line": "ShapeFix_Solid.cxx:541,558",
+    "reason": "redundant internal state mutation (Shell.Free(true) called twice) with no functional effect on the output shape",
+    "source_group": "A-small-face-shell-tolerance"
+  },
+  {
+    "branch": "ShapeAnalysis_Curve.FillBndBox.BBOX_820_CONTINUITY_INTERVAL_MISMATCH / BBOX_843_EXTREMUM_INITIALIZATION",
+    "line": "ShapeAnalysis_Curve.cxx:683-711",
+    "reason": "describes possible search-quality bugs in the extremum-finding sub-algorithm itself (interval pairing, local-vs-global extremum), not a distinct malformed-input category beyond the sampling-density problem already kept (tkshh-surface-bounding-box-curvature-extrema-sampling)",
+    "source_group": "B-curve-surface-analysis"
+  },
+  {
+    "branch": "ShapeAnalysis_Curve.IsPlanar (curve dispatch).PLANAR_1178_LINE_DISPATCH / CONIC_AXIS_ASSUMPTION / TRIMMED_RECURSION / BSPLINE_POLES_ONLY / COMPLEX_ACCUMULATION",
+    "line": "ShapeAnalysis_Curve.cxx:958-1035",
+    "reason": "these describe potential false-positive/false-negative weaknesses in the planarity-analysis heuristic itself (pole-only sufficiency, axis-only conic check), i.e. analysis-quality concerns, not repair of a distinct malformed-input category",
+    "source_group": "B-curve-surface-analysis"
+  },
+  {
+    "branch": "ShapeAnalysis_Curve.NextProject.fallback_cast / complex_fallback",
+    "line": "ShapeAnalysis_Curve.cxx:408-460 (NextProject)",
+    "reason": "V3's described 'Bezier downcast without null guard' and 'ComplexCurve fallback lacks validation' content does not match the verified NextProject source (no such downcast/ComplexCurve branch exists there); dropped as an unverifiable/mismatched branch description",
+    "source_group": "B-curve-surface-analysis"
+  },
+  {
+    "branch": "ShapeAnalysis_Curve.ProjectAct.PROJ_001/PROJ_002/PROJ_003 (extrema IsMin filter, closed-curve period computation, stale-solution fallback)",
+    "line": "ShapeAnalysis_Curve.cxx:223-260 (ProjectAct)",
+    "reason": "internal robustness/correctness of the Extrema_ExtPC search algorithm itself, not a distinct category of malformed input",
+    "source_group": "B-curve-surface-analysis"
+  },
+  {
+    "branch": "ShapeAnalysis_Curve.Project_at212.PROJ_212_CONFUSION_FALLBACK / PROJ_212_PROJECTION_RACE",
+    "line": "ShapeAnalysis_Curve.cxx:180-215",
+    "reason": "tolerance-comparison/epsilon-race nuance of the projection search, not defect-specific input handling (the genuine infinite-bounds subvariant is kept under tkshh-curve-projection-degenerate-parametrization)",
+    "source_group": "B-curve-surface-analysis"
+  },
+  {
+    "branch": "ShapeAnalysis_Curve.SelectForwardSeam.SEAM_001 (periodicity-unwrapped dedup)",
+    "line": "ShapeAnalysis_Curve.cxx:724-789",
+    "reason": "V3's described periodic-wrap deduplication logic is not present in the verified SelectForwardSeam source (which is a pure direction/location heuristic with no period handling); dropped as unverifiable",
+    "source_group": "B-curve-surface-analysis"
+  },
+  {
+    "branch": "ShapeAnalysis_Surface.ComputeBoxes-iso-null-guard / ComputeBoxes-cached-flag",
+    "line": "ShapeAnalysis_Surface.cxx:1606",
+    "reason": "bounding-box cache population/invalidation bookkeeping for UVFromIso's internal iso-box optimization, not itself a defect repair",
+    "source_group": "B-curve-surface-analysis"
+  },
+  {
+    "branch": "ShapeAnalysis_Surface.ComputeSingularities.skip-when-cached / null-surface-guard",
+    "line": "ShapeAnalysis_Surface.cxx:160,163",
+    "reason": "lazy-computation caching and null-precondition guard, not input-defect handling",
+    "source_group": "B-curve-surface-analysis"
+  },
+  {
+    "branch": "ShapeAnalysis_Surface.DegeneratedValues-lazy-compute / ProjectDegenerated.lazy-singularity-init (both overloads) / ProjectDegenerated_at421-lazy-compute",
+    "line": "ShapeAnalysis_Surface.cxx:342,376,411",
+    "reason": "repeated 'if (myNbDeg<0) ComputeSingularities()' lazy-init pattern; internal caching, not a distinct malformed-input category",
+    "source_group": "B-curve-surface-analysis"
+  },
+  {
+    "branch": "ShapeAnalysis_Surface.Init-null-surface / Init_at155",
+    "line": "ShapeAnalysis_Surface.cxx:113,132",
+    "reason": "null-handle precondition guard on the constructor/initializer, an API-contract check not input-defect repair",
+    "source_group": "B-curve-surface-analysis"
+  },
+  {
+    "branch": "ShapeAnalysis_Surface.IsUClosed.cached-result / IsVClosed.cached-result",
+    "line": "ShapeAnalysis_Surface.cxx:564,777",
+    "reason": "state caching for repeated calls, not defect repair",
+    "source_group": "B-curve-surface-analysis"
+  },
+  {
+    "branch": "ShapeAnalysis_Surface.IsUClosed.plane-not-closed / IsVClosed.plane-cone-cylinder-sphere-not-vclosed",
+    "line": "ShapeAnalysis_Surface.cxx:592",
+    "reason": "type-based short-circuit for analytic surface types that are structurally never closed in that direction; a correct classification shortcut, not malformed-input handling",
+    "source_group": "B-curve-surface-analysis"
+  },
+  {
+    "branch": "ShapeAnalysis_Surface.ProjectDegenerated-dual-distance-logic / iso-flag-unvalidated (low-confidence)",
+    "line": "ShapeAnalysis_Surface.cxx:383-396",
+    "reason": "speculative low-confidence internal-consistency concerns already subsumed by the kept ProjectDegenerated problem's mechanism",
+    "source_group": "B-curve-surface-analysis"
+  },
+  {
+    "branch": "ShapeAnalysis_Surface.SortSingularities-swap-logic / array-count-mismatch",
+    "line": "ShapeAnalysis_Surface.cxx:1565-1594",
+    "reason": "internal parallel-array sort bookkeeping (selection sort over at most 4 singularities), pure implementation detail",
+    "source_group": "B-curve-surface-analysis"
+  },
+  {
+    "branch": "ShapeAnalysis_TransferParametersProj.CopyNMVertex.SAT_CopyNM1_002/SAT_CopyNM2_004 (low-confidence unvalidated-UV speculation)",
+    "line": "ShapeAnalysis_TransferParametersProj.cxx:522-561",
+    "reason": "speculative low-confidence risk description already subsumed by the kept CopyNMVertex representation-carryover problem's mechanism",
+    "source_group": "B-curve-surface-analysis"
+  },
+  {
+    "branch": "ShapeAnalysis_TransferParametersProj.CopyNMVertex_at565/at718.SAT_CopyNM1_001/SAT_CopyNM2_001 (orientation must be INTERNAL/EXTERNAL)",
+    "line": "ShapeAnalysis_TransferParametersProj.cxx:496",
+    "reason": "API-contract precondition guard on the caller-supplied vertex orientation, not itself a class of malformed CAD geometry",
+    "source_group": "B-curve-surface-analysis"
+  },
+  {
+    "branch": "ShapeAnalysis_TransferParametersProj.Init.SAT_Init_001/002/003 (null 3D curve / null face / unvalidated location)",
+    "line": "ShapeAnalysis_TransferParametersProj.cxx:83-105",
+    "reason": "precondition guards on constructor arguments (null curve/face), not malformed-STEP-input handling",
+    "source_group": "B-curve-surface-analysis"
+  },
+  {
+    "branch": "ShapeAnalysis_TransferParametersProj.Perform_at110.SAT_Perf110_003 / Perform_at223.SAT_Perf223_003 / TransferRange.SAT_TransfR_006 (silent clamping / multi-representation consistency, low-confidence)",
+    "line": "ShapeAnalysis_TransferParametersProj.cxx:154-157,224-225,454",
+    "reason": "generic tolerance-clamping/consistency nuance of the transfer mechanism already covered by the kept problems, not a separately distinct input-defect class",
+    "source_group": "B-curve-surface-analysis"
+  },
+  {
+    "branch": "ShapeUpgrade_ConvertCurve2dToBezier.Build_at270.index-boundary-gap",
+    "line": "ShapeUpgrade_ConvertCurve2dToBezier.cxx:233-257",
+    "reason": "internal loop-index bookkeeping bug risk in the Build() reconstruction step, not malformed-input handling",
+    "source_group": "B-curve-surface-analysis"
+  },
+  {
+    "branch": "ShapeUpgrade_ConvertCurve2dToBezier.Compute.trimmed_curve_recursion_mySplitValues_coupling / conic_approximation_shift_accumulation / bezier_arc_line_check_parameter_scope_mismatch / split_values_insertion_index_off_by_one / conic_bspline_conversion_fallback_no_error_handling / parameter_clamping_doesnt_update_split_params / bezier_segment_precision_boundary_off_by_one",
+    "line": "ShapeUpgrade_ConvertCurve2dToBezier.cxx:89-224",
+    "reason": "internal state-consistency/bookkeeping concerns of the conversion pipeline itself (healer-internal split-value/shift tracking), not a distinct external malformed-input category",
+    "source_group": "B-curve-surface-analysis"
+  },
+  {
+    "branch": "ShapeUpgrade_ConvertSurfaceToBezierBasis.Build_at631.iterator-loop-boundary-fault / precision-comparison-asymmetry",
+    "line": "ShapeUpgrade_ConvertSurfaceToBezierBasis.cxx:506-527",
+    "reason": "internal loop-index/asymmetric-tolerance bug risk in Build() patch reconstruction; verified j2 is in fact freshly reset each outer iteration (V3's premise is inaccurate), and the remaining j1-persistence is intentional monotonic-search behavior, not defect repair",
+    "source_group": "B-curve-surface-analysis"
+  },
+  {
+    "branch": "ShapeUpgrade_ConvertSurfaceToBezierBasis.Compute_at58.segment_flag_init / infinite_bound_skip / trimmed_surface_delegate / offset_delegate / plane_to_bezier / bezier_full_range / bezier_partial_segment / bspline_split_insertion",
+    "line": "ShapeUpgrade_ConvertSurfaceToBezierBasis.cxx:62-146,320",
+    "reason": "generic type-dispatch/wrapper-delegation and standard full-vs-partial-range conversion machinery; not specific to a malformed/degenerate input condition (only the thin-patch filter subset is a genuine defect-repair and is kept)",
+    "source_group": "B-curve-surface-analysis"
+  },
+  {
+    "branch": "tkshh-curve-adaptive-sample-density-and-zero-length-guard (reclassified from problem candidate at merge time)",
+    "line": "ShapeAnalysis_Curve::GetSamplePoints(Handle(Geom_Curve),...) zero-length-curve guard \u2014 ShapeAnalysis_Curve.cxx:1041-1043 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 supplied only unlabeled '?' placeholders citing 1264-1299, drift ~220-260 lines, content reconstructed from source)",
+    "reason": "adaptive sampling density for internal point-sequence generation - computation machinery, not input-defect repair",
+    "source_group": "B-curve-surface-analysis"
+  },
+  {
+    "branch": "tkshh-curve-planarity-degenerate-point-set (reclassified from problem candidate at merge time)",
+    "line": "static GetAnyNormal(...) fallback-normal helper \u2014 ShapeAnalysis_Curve.cxx:798-808 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified)",
+    "reason": "numerical-robustness fallback (arbitrary valid normal for <3/collinear points); collinear sample sets arise from legal input (straight curves), not a distinct malformed-input class",
+    "source_group": "B-curve-surface-analysis"
+  },
+  {
+    "branch": "tkshh-edge-not-sameparameter-linear-vs-projected-transfer (reclassified from problem candidate at merge time)",
+    "line": "ShapeAnalysis_TransferParametersProj::Perform(Knots,To2d) bypass-vs-transfer gate \u2014 ShapeAnalysis_TransferParametersProj.cxx:119-121 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified)",
+    "reason": "parameter-transfer service (ShapeAnalysis_TransferParametersProj) invoked during edge splitting/rebuild; the underlying input defect (not-SameParameter edge) is counted as tkshh-edge-3d-2d-parameterization-mismatch",
+    "source_group": "B-curve-surface-analysis"
+  },
+  {
+    "branch": "tkshh-near-linear-2d-curve-collapsed-to-line-bezier (reclassified from problem candidate at merge time)",
+    "line": "ShapeUpgrade_ConvertCurve2dToBezier::Compute() near-linear BSpline/Bezier-to-line shortcut \u2014 ShapeUpgrade_ConvertCurve2dToBezier.cxx:69-86 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited 60-82, drift ~10 lines)",
+    "reason": "canonical simplification (collinear B-spline/Bezier -> exact line) inside a downstream-format conversion tool - transformation, not input-defect repair",
+    "source_group": "B-curve-surface-analysis"
+  },
+  {
+    "branch": "tkshh-nonmanifold-vertex-representation-carryover (reclassified from problem candidate at merge time)",
+    "line": "ShapeAnalysis_TransferParametersProj::CopyNMVertex per-representation-type carryover (PointOnCurve/PointOnSurface/PointOnCurveOnSurface) \u2014 ShapeAnalysis_TransferParametersProj.cxx:518-561 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited 597-679, drift ~30-120 lines)",
+    "reason": "preservation of legal non-manifold vertex parameter representations during edge copy (CopyNMVertex) - data preservation during healing, not repair of a defect",
+    "source_group": "B-curve-surface-analysis"
+  },
+  {
+    "branch": "tkshh-surface-analytic-singularity-detection (reclassified from problem candidate at merge time)",
+    "line": "ShapeAnalysis_Surface::ComputeSingularities cone-apex branch \u2014 ShapeAnalysis_Surface.cxx:171-183 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited 201, drift ~20 lines)",
+    "reason": "intrinsic-surface-property mapping (ComputeSingularities); a cone apex or torus pinch is not malformed input - the consuming repairs are counted (tkshh-wire-missing-or-bad-degenerated-edge, tkshh-pcurve-collapse-onto-surface-singularity); its fixtures noted there",
+    "source_group": "B-curve-surface-analysis"
+  },
+  {
+    "branch": "tkshh-surface-bounding-box-curvature-extrema-sampling (reclassified from problem candidate at merge time)",
+    "line": "ShapeAnalysis_Curve::FillBndBox exact-mode C2-interval partition \u2014 ShapeAnalysis_Curve.cxx:683-692 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited 823, drift ~140 lines)",
+    "reason": "internal 2D bounding-box computation accuracy (sampling density) - computation machinery used by healing decisions, not repair of a malformed input",
+    "source_group": "B-curve-surface-analysis"
+  },
+  {
+    "branch": "tkshh-surface-newton-uv-refinement-guards (reclassified from problem candidate at merge time)",
+    "line": "ShapeAnalysis_Surface::SurfaceNewton zero-normal / bad-discriminant / out-of-bounds / divergence / normal-component guards \u2014 ShapeAnalysis_Surface.cxx:1004,1013,1021,1035,1038 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited 1093-1141, drift ~90-115 lines)",
+    "reason": "Newton-iteration bail-out guards - pure numerical robustness of internal point inversion, not repair of malformed input",
+    "source_group": "B-curve-surface-analysis"
+  },
+  {
+    "branch": "tkshh-surface-uv-inversion-fallback-chain (reclassified from problem candidate at merge time)",
+    "line": "ShapeAnalysis_Surface::NextValueOfUV C0-knot avoidance before Newton \u2014 ShapeAnalysis_Surface.cxx:1078,1091 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited 1186/1201, drift ~110 lines)",
+    "reason": "point-inversion fallback machinery; it implements counted repairs (pcurve regeneration etc.) but is not itself an input defect - inputs that stress it are counted under their own classes",
+    "source_group": "B-curve-surface-analysis"
+  },
+  {
+    "branch": "ShapeAnalysis_Edge.BoundUV_at78",
+    "line": "ShapeAnalysis_Edge.cxx:67-100",
+    "reason": "0 branches reported by V3; trivial surface-bounds accessor",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeAnalysis_Edge.CheckCurve3dWithPCurve.CHECK_CURVE_3D_WITH_PCURVE_B001 (planar_surface_bypass)",
+    "line": "ShapeAnalysis_Edge.cxx:~410",
+    "reason": "intentional design decision (plane pcurves are optional) rather than a repairable defect; folded into tkshh-edge-pcurve-reversed's evidence chain without being its own subvariant",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeAnalysis_Edge.CheckCurve3dWithPCurve.CHECK_CURVE_3D_WITH_PCURVE_B004 (null_vertex_topology)",
+    "line": "ShapeAnalysis_Edge.cxx:~420",
+    "reason": "precondition guard skipping the check when edge vertices are null; not itself a distinct defect class",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeAnalysis_Edge.CheckOverlapping.* (all 10 branches, e.g. CHECK_OVERLAPPING_B001-B010)",
+    "line": "ShapeAnalysis_Edge.cxx:897-970",
+    "reason": "detection-only; grep of the full OCCT source tree found no ShapeFix/ShapeUpgrade repair method that calls CheckOverlapping \u2014 its only caller outside ShapeAnalysis_Edge itself is a DRAW test command (SWDRAW_ShapeFix.cxx), so there is no genuine automated input-defect repair action to grade in this OCCT version",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeAnalysis_Edge.CheckPoints.* (SQUARED_DISTANCE_THRESHOLD, CROSS_DISTANCE_SWAP_DETECTION)",
+    "line": "ShapeAnalysis_Edge.cxx:462-477",
+    "reason": "internal point-pair-proximity helper used only by CheckOverlapping (excluded above); not independently actionable",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeAnalysis_Edge.Curve3d_at106.* (CURVE3D_NULL_CHECK, EDGE_ORIENTATION_REVERSAL)",
+    "line": "ShapeAnalysis_Edge.cxx:114-137",
+    "reason": "internal accessor helper handling FORWARD/REVERSED parameter-swap bookkeeping; not itself a defect-repair action",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeAnalysis_Edge.FirstVertex_at229 / LastVertex_at246 (VERTEX_ORIENTATION_BRANCH x2)",
+    "line": "ShapeAnalysis_Edge.cxx (accessor methods)",
+    "reason": "internal accessor helpers for orientation-aware vertex retrieval; control-flow bookkeeping, not a repair",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeAnalysis_Edge.GetEndTangent2d.* (all 10 branches, GET_END_TANGENT_2D_B001-B010)",
+    "line": "ShapeAnalysis_Edge.cxx:306-398",
+    "reason": "pure numerical-robustness fallback chain (D1->D2->D3->line) for estimating a tangent vector at a curve endpoint; used internally by other analysis/fix code but does not itself detect or repair a distinct malformed-input class, and has no fixture-observable pass/fail on its own",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeAnalysis_Edge.PCurve_at177 / PCurve_at199 (ORIENTATION_PARAMETER_SWAP)",
+    "line": "ShapeAnalysis_Edge.cxx (accessor methods)",
+    "reason": "internal accessor helper for orientation-aware parameter swap; control-flow bookkeeping, not a repair",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeFix_Edge.FixAddPCurve.FIXADDPCURVE_3D_UPDATE_RACE (DONE3)",
+    "line": "ShapeFix_Edge.cxx:546-551",
+    "reason": "internal status-flag/ordering detail of how the 3D curve range is committed after the pcurve; healer-state, not a separate defect",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeFix_Edge.FixAddPCurve.FIXADDPCURVE_PRE_EXISTING",
+    "line": "ShapeFix_Edge.cxx:454-455",
+    "reason": "precondition guard (pcurve already present / edge already a recognized seam) short-circuiting the function; not a repair action itself",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeFix_Edge.FixAddPCurve.FIXADDPCURVE_PROJECTION_FAIL (DONE4 status)",
+    "line": "ShapeFix_Edge.cxx:~498",
+    "reason": "internal status-flag bookkeeping for the projector's outcome; healer-state, not a separate defect",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeFix_Edge.FixAddPCurve_at134.sas_memory_loss",
+    "line": "ShapeFix_Edge.cxx:157",
+    "reason": "speculative reference-lifetime concern about a locally-allocated helper object; healer-internal implementation detail, not a defect class",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeFix_Edge.FixAddPCurve_at134.transform_nullability",
+    "line": "ShapeFix_Edge.cxx:151-159 (down_cast on transformed surface)",
+    "reason": "type-safety/API-contract guard around a down_cast of a transformed surface handle; precondition robustness, not a distinct input-defect repair",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeFix_Edge.FixRemoveCurve3d_at104.no_status_init",
+    "line": "ShapeFix_Edge.cxx:116-123",
+    "reason": "restates the same check/removal flow already captured as the core mechanism of tkshh-edge-curve-inconsistent-with-vertex-removed; not a separate defect",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeFix_Edge.FixRemoveCurve3d_at104.orphan_pcurves",
+    "line": "ShapeFix_Edge.cxx:121",
+    "reason": "speculative claim about stale pcurves left on other faces after 3D-curve removal; no confirming logic found in the function body (it only calls RemoveCurve3d, no face/pcurve cross-cleanup), and represents an incomplete-repair concern rather than an independently demonstrable input-defect class",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeFix_Edge.FixRemovePCurve_at90.CONDITIONAL_PCURVE_REMOVAL",
+    "line": "ShapeFix_Edge.cxx:104-109",
+    "reason": "restates the same check/removal flow already captured as the core mechanism of tkshh-edge-curve-inconsistent-with-vertex-removed; not a separate defect",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeFix_Edge.FixSameParameter.FIXSAMEPAR_BRLIB_FAIL_MASK",
+    "line": "ShapeFix_Edge.cxx:780",
+    "reason": "internal status-flag classification (whether BRepLib::SameParameter itself failed vs. produced a worse result); healer-state bookkeeping, not a separate defect",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeFix_Edge.FixSameParameter.FIXSAMEPAR_BRLIB_SELECTION_BIAS",
+    "line": "ShapeFix_Edge.cxx:815-818",
+    "reason": "internal best-of-two-results selection heuristic (compare BRepLib-computed vs. original deviation); implementation detail of the single FixSameParameter repair, not a separate defect",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeFix_Edge.FixSameParameter.FIXSAMEPAR_EDGE_TOL_UPDATE",
+    "line": "ShapeFix_Edge.cxx:834-839",
+    "reason": "internal conditional (only update edge tolerance if deviation exceeds current); part of the single FixSameParameter repair's bookkeeping",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeFix_Edge.FixSameParameter.FIXSAMEPAR_TEMP_RANGE_LOSE",
+    "line": "ShapeFix_Edge.cxx:741-742,763-764",
+    "reason": "internal precision-constant choice (Precision::PConfusion) for the TempSameRange helper; numerical-robustness detail folded into the main FixSameParameter problem, not separately actionable",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeFix_Edge.FixVertexTolerance_at643.FIXVTOL643_CHECK_FAIL",
+    "line": "ShapeFix_Edge.cxx:604",
+    "reason": "restates the same CheckVertexTolerance-failure early-return already covered as the core FixVertexTolerance mechanism",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeFix_Edge.FixVertexTolerance_at643.FIXVTOL643_CONTEXT_BYPASS / FIXVTOL690_CONTEXT_BYPASS",
+    "line": "ShapeFix_Edge.cxx:598-601, 635-638",
+    "reason": "Context()-null-vs-bound dispatch is healer-internal reshape-tracking bookkeeping (CopyVertex vs. direct UpdateVertex), not a distinct input-defect",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeFix_Edge.FixVertexTolerance_at643.FIXVTOL643_SHAPE_TYPE_CHECK",
+    "line": "ShapeFix_Edge.cxx (Context Apply result type check)",
+    "reason": "API-contract type-safety guard on the ReShape context's Apply() result; precondition robustness, not an input-defect",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeFix_Edge.FixVertexTolerance_at690.FIXVTOL690_IMPLICIT_CHECK",
+    "line": "ShapeFix_Edge.cxx:640",
+    "reason": "restates the same single-vs-multi-surface tolerance computation already covered as a subvariant of tkshh-edge-vertex-tolerance-too-small",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeFix_EdgeConnect.Add_at49.* / Add_at127.* / Build_at157.* (all '?' stub branches, no V3 content)",
+    "line": "ShapeFix_EdgeConnect.cxx:48-288",
+    "reason": "V3 provided no Brief/claim text for these branches (stub '?' entries); read the full source directly and folded the genuine repair behavior of Add()/Build() into tkshh-wire-duplicate-coincident-vertex-instances rather than treating each stub as a separate problem",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeFix_FaceConnect.Add_at58.bidirectional_binding_asymmetry",
+    "line": "ShapeFix_FaceConnect.cxx:64-90",
+    "reason": "low-confidence speculative duplicate-registration concern in the face-pair connectivity map; healer-internal bookkeeping (the actual defect this map enables fixing is captured in tkshh-faceconnect-unshared-boundary-edges)",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeFix_FaceConnect.Build.DEGENERATE_EDGE_FILTER",
+    "line": "ShapeFix_FaceConnect.cxx:141-142",
+    "reason": "precondition guard excluding degenerate (zero-length/apex) edges from the free-edge repair pipeline; not itself a repair of a distinct defect class",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeFix_FaceConnect.Build.EDGE_ALREADY_LISTED",
+    "line": "ShapeFix_FaceConnect.cxx:~136",
+    "reason": "duplicate-prevention bookkeeping in the free-edge map; healer-state, not a distinct input defect",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeFix_FaceConnect.Build.FREE_EDGE_INITIAL_BINDING / RESULT_EDGE_LIST_INIT / SELF_CONNECTED_FACE / PAIR_ALREADY_PROCESSED / SEWING_EXCEPTION_CATCH / SEWING_NULL_RESULT / MODIFIED_EDGE_EXTRACTION / SHARED_EDGE_COLLISION / FREE_EDGE_REMOVAL / EDGE_REPLACEMENT_SCOPE / VERTEX_REPLACEMENT_INIT / VERTEX_IDENTITY_SKIP / RESHAPE_OK_FALLBACK / RESHAPE_FAIL1_FALLBACK / WIRE_ORDER_RESTORATION / PCURVE_MISSING_SKIP / WIRE_ITERATION_TYPE_CHECK / FACE_ORIENTATION_FIX / TRANSITIVE_VERTEX_MAPPING / VERTEX_REPLACEMENT_RESHAPE / VERTEX_RESHAPE_FAILURE / EMPTY_RESULT_EDGES / SHELL_CLOSURE_STATE / EMPTY_VERTICES_REPLACEMENT / CONNECTED_FACES_ITERATION / ORIGINAL_FREE_EDGES_ACCUMULATION / WIRE_PRECISION_SYNC / WIRE_EDGE_CURVE_FIX / WIRE_SELF_INTERSECTION_FIX / SEWING_WIRE_CONSTRUCTION / AUXILIARY_FACE_WRAPPING / FACE_LIST_INIT / NUM_FACES_SEWING_GUARD",
+    "line": "ShapeFix_FaceConnect.cxx:105-801 (whole Build function)",
+    "reason": "internal state-machine bookkeeping, exception-safety guards, map initialization/dedup, and API-contract fallbacks that implement the single tkshh-faceconnect-unshared-boundary-edges repair; not each a separately observable input-defect class",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeFix_SplitCommonVertex.Perform_at63.edge-replacement-order",
+    "line": "ShapeFix_SplitCommonVertex.cxx:114-131",
+    "reason": "low-confidence speculative ordering/state-mutation concern about Context()->Replace() calls within a loop; healer-internal implementation detail",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeFix_SplitCommonVertex.Perform_at63.tolerance-loss",
+    "line": "ShapeFix_SplitCommonVertex.cxx:107-109",
+    "reason": "restates the same vertex-splitting mechanism already covered as the core of tkshh-vertex-spuriously-shared-across-wires (tolerance is simply copied from the original vertex, which is normal/correct behavior, not a bug needing its own fixture)",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeFix_SplitCommonVertex.Perform_at63.uninitialized-vertex",
+    "line": "ShapeFix_SplitCommonVertex.cxx:100-104",
+    "reason": "speculative null-Find()-result concern on a map lookup that, per the surrounding code, is only reached when IsBound() already confirmed the key exists; precondition-robustness speculation, not a demonstrated distinct defect",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeFix_WireVertex.FixSame_at83.status_filter_under_inclusive",
+    "line": "ShapeFix_WireVertex.cxx:122-123",
+    "reason": "low-confidence speculative concern about unhandled analyzer status codes >2; no evidence in source that such codes are ever produced by ShapeAnalysis_WireVertex, so not a demonstrated distinct defect",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeFix_WireVertex.FixSame_at83.vertex_orientation_reversal_sideeffect",
+    "line": "ShapeFix_WireVertex.cxx:145-148",
+    "reason": "restates the same vertex-merge mechanism already covered as the core of tkshh-wire-duplicate-coincident-vertex-instances; orientation bookkeeping detail, not a separate defect",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeFix_WireVertex.Fix_at142.edge-free-without-validation",
+    "line": "ShapeFix_WireVertex.cxx:241,277",
+    "reason": "low-confidence speculative double-free-like concern about repeated Edge.Free(true) calls, which is a normal idempotent flag toggle in OCCT's topology API, not a demonstrated distinct defect",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeFix_WireVertex.Fix_at142.status-array-bounds",
+    "line": "ShapeFix_WireVertex.cxx:191-227",
+    "reason": "low-confidence speculative array-bounds concern with no confirming evidence (array is always sized to nb and indices are always in [1,nb] per the surrounding loop structure); precondition-robustness speculation",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeFix_WireVertex.Fix_at142.vertex-orientation-inconsistency",
+    "line": "ShapeFix_WireVertex.cxx:264-278",
+    "reason": "restates the same recompute mechanism already covered as the core of tkshh-wire-consecutive-edge-endpoint-gap; orientation-sequencing bookkeeping, not a separate defect",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeProcess_OperLibrary.ApplyModifier_at62.context_downcast_unsafe",
+    "line": "ShapeProcess_OperLibrary.cxx:56-99 (Handle down_cast used inside static per-operator functions, not in ApplyModifier itself)",
+    "reason": "type-safety/API-contract downcast guard pattern repeated across every operator function in this file; precondition robustness, not an input-defect repair",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeProcess_OperLibrary.Init_at983.registration-leak",
+    "line": "ShapeProcess_OperLibrary.cxx:887-913",
+    "reason": "resource-lifetime/cleanup concern (heap-allocated UOperator singletons never freed at module unload); this is deliberate one-time process-lifetime registration, not an input-defect repair",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeProcess_ShapeContext.GetContinuity_at416.enum-exhaustion-gap",
+    "line": "ShapeProcess_ShapeContext.cxx (string-to-enum config parser)",
+    "reason": "config-string parsing helper for named continuity levels; not an input-defect repair",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeProcess_ShapeContext.PrintStatistics_at474.* (message-arg-overwrite, division-by-zero, unused-variable-cleanup)",
+    "line": "ShapeProcess_ShapeContext.cxx:474-530ish",
+    "reason": "pure diagnostic-reporting/logging code (statistics printout); does not touch or repair shape geometry",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeProcess_ShapeContext.RecordModification_at250.early-return-gap",
+    "line": "ShapeProcess_ShapeContext.cxx:250-260ish",
+    "reason": "healer-internal modification-tracking bookkeeping (observer/map update), not itself a geometry repair",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeProcess_ShapeContext.RecordModification_at346.location-override-branch",
+    "line": "ShapeProcess_ShapeContext.cxx:346-355ish",
+    "reason": "healer-internal modification-tracking bookkeeping (location propagation into the result map), not itself a geometry repair",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeUpgrade_ClosedFaceDivide.SplitSurface_at63.null_tool_check / result_type_check",
+    "line": "ShapeUpgrade_ClosedFaceDivide.cxx:73-78",
+    "reason": "precondition guards (split-surface tool configured, result is a FACE) around the core splitting logic; not themselves a repair of a distinct defect",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeUpgrade_ClosedFaceDivide.SplitSurface_at63.seam_paired_curves / seam_curve_equality",
+    "line": "ShapeUpgrade_ClosedFaceDivide.cxx:~145-165",
+    "reason": "internal seam-detection-loop mechanics (pcurve extraction, skip-if-identical-curve) that implement the single tkshh-face-closed-surface-unsplit-at-seam repair; not separately observable input-defect classes",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeUpgrade_FaceDivide.Perform_at80.* / SplitSurface_at99.* (all '?' stub branches)",
+    "line": "ShapeUpgrade_FaceDivide.cxx:82-182",
+    "reason": "V3 provided no Brief/claim text; read the source directly and confirmed this is the shared base-class SplitSurface/Perform mechanism reused by ShapeUpgrade_FaceDivideArea and ShapeUpgrade_ClosedFaceDivide, already captured under those problems",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeUpgrade_FaceDivide.SplitCurves.context-apply-nullcheck / continue-skip-replace",
+    "line": "ShapeUpgrade_FaceDivide.cxx:196-220",
+    "reason": "internal Context()-cache bookkeeping and non-WIRE-child skip guard in the base FaceDivide utility; healer-state, not a distinct input-defect (the genuine surface-splitting defects built on top of this base class are captured separately as tkshh-face-area-exceeds-threshold, tkshh-face-closed-surface-unsplit-at-seam, and tkshh-surface-curve-continuity-below-required)",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeUpgrade_FaceDivideArea.Perform_at58.negative-area-trap",
+    "line": "ShapeUpgrade_FaceDivideArea.cxx:69-85",
+    "reason": "speculative numerical-robustness concern about negative computed area on degenerate faces; not a demonstrated distinct input-defect class (BRepGProp::SurfaceProperties does not produce negative area for the well-formed-but-oversized faces this tool targets)",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeUpgrade_FaceDivideArea.Perform_at58.null-downcaster",
+    "line": "ShapeUpgrade_FaceDivideArea.cxx:87-90",
+    "reason": "type-safety/API-contract guard on a down_cast of the configured split-surface tool; precondition robustness, not an input-defect",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeUpgrade_FaceDivideArea.Perform_at58.result-shape-type-assumption",
+    "line": "ShapeUpgrade_FaceDivideArea.cxx:100-102",
+    "reason": "low-confidence speculative concern about downstream assumptions after a SHELL-typed result; implementation detail of the recursive splitting bookkeeping already covered by tkshh-face-area-exceeds-threshold",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeUpgrade_RemoveInternalWires.Perform_at71.* / Perform_at97.* / removeSmallFaces_at192.* / removeSmallWire_at143.* (all '?' stub branches)",
+    "line": "ShapeUpgrade_RemoveInternalWires.cxx:82-267",
+    "reason": "V3 provided no Brief/claim text; read the source directly and folded the genuine small-wire/small-face removal mechanism into tkshh-face-internal-wire-negligible-area rather than treating each stub as a separate problem",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeUpgrade_RemoveLocations.MakeNewShape_at178.iterator-filter-missing",
+    "line": "ShapeUpgrade_RemoveLocations.cxx:257",
+    "reason": "low-confidence speculative concern about TopoDS_Iterator's location-aware traversal skipping sub-shapes; no confirming evidence found (the iterator's third argument controls whether locations are applied during traversal, not whether shapes are visited), precondition-robustness speculation",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeUpgrade_RemoveLocations.MakeNewShape_at178.location-removal-dual-path",
+    "line": "ShapeUpgrade_RemoveLocations.cxx:251-254",
+    "reason": "low-confidence speculative state-mutation concern about setting location to null on an unmodified shape; this is normal, harmless behavior of the isRemoveLoc code path, not a demonstrated distinct defect",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeUpgrade_RemoveLocations.Remove_at48.bool-return-semantics",
+    "line": "ShapeUpgrade_RemoveLocations.cxx:61-63",
+    "reason": "low-confidence speculative API-contract ambiguity in the isDone return value; caller-facing API-contract nuance, not an input-defect",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeUpgrade_RemoveLocations.Remove_at48.implicit-shape-mutation",
+    "line": "ShapeUpgrade_RemoveLocations.cxx:55-56",
+    "reason": "low-confidence speculative aliasing concern (const-reference assignment); standard C++ semantics, not a demonstrated distinct defect",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeUpgrade_ShapeDivideContinuity.GetSplitFaceTool_at87.criterion-unvalidated",
+    "line": "ShapeUpgrade_ShapeDivideContinuity.cxx:110-127",
+    "reason": "speculative null-criterion concern (myCurve2dCriterion/myCurve3dCriterion/mySurfaceCriterion are GeomAbs_Shape enum values initialized to GeomAbs_C1 in every constructor, never left null); not a demonstrated distinct defect",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeUpgrade_ShellSewing.ApplySewing_at118.* / Apply_at83.* / Init_at37.* / Prepare_at58.* (all '?' stub branches beyond what's cited as evidence)",
+    "line": "ShapeUpgrade_ShellSewing.cxx:41-120",
+    "reason": "V3 provided no Brief/claim text; read the source directly and folded genuine repair behavior into tkshh-shell-faces-not-sewn and tkshh-shell-inverted-orientation-after-sewing",
+    "source_group": "C-edge-vertex-facesplit"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckConnected.NULL_EDGE_VERTICES",
+    "line": "ShapeAnalysis_Wire.cxx:662",
+    "reason": "defensive null-vertex guard; not constructible from STEP input (translator never yields null vertices)",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckConnected.SAME_VERTEX_BOTH_ENDS",
+    "line": "ShapeAnalysis_Wire.cxx:667",
+    "reason": "early-accept control flow (junction already shares a vertex)",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckConnected.WIRE_NOT_LOADED",
+    "line": "ShapeAnalysis_Wire.cxx:650",
+    "reason": "precondition guard (unloaded/empty wire), not an input-defect repair",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckCurveGap.SE-CGAP-001",
+    "line": "ShapeAnalysis_Wire.cxx:1068",
+    "reason": "precondition guard",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckCurveGap.SE-CGAP-002/003",
+    "line": "ShapeAnalysis_Wire.cxx:1074,1079",
+    "reason": "missing-geometry FAIL guards; the underlying defects are the missing-3d-curve / missing-pcurve problem classes",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckCurveGaps_at564.CCurveGaps_FailStatus",
+    "line": "ShapeAnalysis_Wire.cxx:534",
+    "reason": "status accumulation from per-edge check, no distinct defect",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckCurveGaps_at564.CCurveGaps_NoReady",
+    "line": "ShapeAnalysis_Wire.cxx:527",
+    "reason": "precondition guard",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckGap2d.SE-GAP2D-001/002",
+    "line": "ShapeAnalysis_Wire.cxx:1039",
+    "reason": "precondition guards (null face / unready wire)",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckGap2d.SE-GAP2D-003",
+    "line": "ShapeAnalysis_Wire.cxx:1047",
+    "reason": "missing-pcurve FAIL guard; defect covered by tkshh-edge-missing-pcurve",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckGap3d_at1125.Gap3d_NoCurve3d",
+    "line": "ShapeAnalysis_Wire.cxx:1018",
+    "reason": "missing-3D-curve FAIL guard; defect covered by tkshh-edge-missing-3d-curve",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckGap3d_at1125.Gap3d_NoLoad",
+    "line": "ShapeAnalysis_Wire.cxx:1010",
+    "reason": "precondition guard",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckGaps2d_at534.* / CheckGaps3d_at504.*",
+    "line": "ShapeAnalysis_Wire.cxx:502,477",
+    "reason": "precondition guards + per-edge status accumulation",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckIntersectingEdges_at1365.SE-IXIE-001",
+    "line": "ShapeAnalysis_Wire.cxx:1217",
+    "reason": "precondition guard (<2 edges)",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckIntersectingEdges_at1365.SE-IXIE-004",
+    "line": "ShapeAnalysis_Wire.cxx:1250",
+    "reason": "zero-length pcurve-range skip; degenerate-edge defect covered by small-edge / missing-geometry classes",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckIntersectingEdges_at1365.SE-IXIE-005",
+    "line": "ShapeAnalysis_Wire.cxx:1281",
+    "reason": "intersection-algorithm failure guard (Inter.IsDone), numerical robustness",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckIntersectingEdges_at1365.SE-IXIE-008 [low-confidence]",
+    "line": "ShapeAnalysis_Wire.cxx:1344",
+    "reason": "result-filter threshold internal to the adjacent-intersection class, not a separate defect",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckIntersectingEdges_at1563.SE-IXIE-NON-001/003/004",
+    "line": "ShapeAnalysis_Wire.cxx:1384,1405,1432",
+    "reason": "precondition guard / degenerate-range skip / algorithm-failure guard",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckLacking.SE-LACK-001/002",
+    "line": "ShapeAnalysis_Wire.cxx:1510,1522",
+    "reason": "precondition and null-vertex guards",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckLacking_at455.edge_index_boundary [low-confidence]",
+    "line": "ShapeAnalysis_Wire.cxx:437",
+    "reason": "misreading of standard cyclic index arithmetic; no defect",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckLoop.null-vertices",
+    "line": "ShapeAnalysis_Wire.cxx:1954",
+    "reason": "defensive null-vertex guard, not STEP-constructible",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckLoop.precision-save-restore",
+    "line": "ShapeAnalysis_Wire.cxx:1946,1994",
+    "reason": "healer-internal state save/restore",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckLoop.status-encoding",
+    "line": "ShapeAnalysis_Wire.cxx:1997",
+    "reason": "status bookkeeping",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckLoop.unloaded-or-trivial-wire",
+    "line": "ShapeAnalysis_Wire.cxx:1945",
+    "reason": "precondition guard",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckNotchedEdges_at1868.NotchedEdges_NoReady/NoVertex",
+    "line": "ShapeAnalysis_Wire.cxx:1642,1656",
+    "reason": "precondition / null-vertex guards",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckNotchedEdges_at1868.NotchedEdges_ZeroVelocity",
+    "line": "ShapeAnalysis_Wire.cxx:1692",
+    "reason": "singular-derivative numerical guard within the notch class",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckOrder.MISSING_FACE_2D_MODE",
+    "line": "ShapeAnalysis_Wire.cxx:554",
+    "reason": "API precondition (2D mode requested without face)",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckOrder.NULL_VERTEX_ENDPOINTS",
+    "line": "ShapeAnalysis_Wire.cxx:573",
+    "reason": "defensive null-vertex guard",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckOrder.ORDERING_ALGORITHM_CASE_0_OK",
+    "line": "ShapeAnalysis_Wire.cxx:630",
+    "reason": "OK-status branch (well-formed wire), not a defect",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckOrder.ORDERING_FAIL_SINGULAR_OPERATION [low-confidence]",
+    "line": "ShapeAnalysis_Wire.cxx:636",
+    "reason": "case -10 is dead code in V7_8_1 (source comment: 'this value is not returned')",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckOuterBound_at1806.OuterBound_NoReady",
+    "line": "ShapeAnalysis_Wire.cxx:1591",
+    "reason": "precondition guard",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckSeam.SE-SEAM-001/002/003",
+    "line": "ShapeAnalysis_Wire.cxx:767,770,778",
+    "reason": "precondition guard / not-a-seam early exit / missing-pcurve guard (defect covered elsewhere)",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckSelfIntersectingEdge.SE-SXIE-001/003/004/005",
+    "line": "ShapeAnalysis_Wire.cxx:1137,1148,1156,1160",
+    "reason": "precondition guard / degenerate-range skip / algorithm-failure guard / null-vertex guard",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckSelfIntersection.BOUNDING_BOX_INTERSECTION_2D [low-confidence]",
+    "line": "ShapeAnalysis_Wire.cxx:392-425",
+    "reason": "bounding-box pruning is a performance optimization, not a defect",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckSelfIntersection.CLOSED_WIRE_FIRST_LAST_INTERSECTION",
+    "line": "ShapeAnalysis_Wire.cxx:410-413",
+    "reason": "adjacency exemption control flow within the non-adjacent-intersection class",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckSelfIntersection.MULTI_EDGE_INTERSECTION_AGGREGATION",
+    "line": "ShapeAnalysis_Wire.cxx:421-424",
+    "reason": "status aggregation",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckShapeConnect_at2117.* (10 branches)",
+    "line": "ShapeAnalysis_Wire.cxx:1866-1917",
+    "reason": "diagnostic utility reporting how a candidate shape attaches to the wire (head/tail/reversed); performs no repair; the reversal/ordering defect is tkshh-wire-edges-disordered",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.CheckSmall.WIRE_EMPTY_OR_UNLOADED / NULL_VERTEX_ENDPOINTS_SMALL / SMALL_EDGE_PCURVE_MISSING_FAIL",
+    "line": "ShapeAnalysis_Wire.cxx:702,717,744",
+    "reason": "precondition, null-vertex, and missing-geometry guards (missing geometry covered by its own classes)",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_Wire.Perform_at220.* (9 branches incl. bitwise_or.accumulation)",
+    "line": "ShapeAnalysis_Wire.cxx:236-248",
+    "reason": "pure dispatch/aggregation over the individual checks",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_WireOrder.Add_at135.Mode2DOnly / Add_at152.ModeBothOnly",
+    "line": "ShapeAnalysis_WireOrder.cxx:137,154 (V3 numbering)",
+    "reason": "API mode-dependent data storage semantics of the container, not input-defect repair",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_WireOrder.Couple_at855.null_chain_guard / Chain_at814.*",
+    "line": "ShapeAnalysis_WireOrder.cxx:837-884",
+    "reason": "null-safe accessors",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_WireOrder.Perform_at206.box_early_skip/edge_identity_skip/same_edge_skip/point_intersection_*/segment_*/wire_modification_loop/box_rebuild_after_split",
+    "line": "misattributed (not in ShapeAnalysis_WireOrder.cxx)",
+    "reason": "V3 misattribution: these describe ShapeFix_IntersectionTool::FixSelfIntersectWire internals (ShapeFix_IntersectionTool.cxx:843+); the defect is covered by tkshh-wire-nonadjacent-edges-intersect",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_WireOrder.Perform_at206.no_edges",
+    "line": "ShapeAnalysis_WireOrder.cxx:233",
+    "reason": "empty-input guard",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_WireOrder.SetChains.EmptyEdgeListReturn / GapToleranceComputation",
+    "line": "ShapeAnalysis_WireOrder.cxx:791,806",
+    "reason": "guard + chain-partition utility (chains feed multi-wire assembly, no repair of malformed input beyond the ordering class)",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_WireOrder.SetMode.BothModePriority / ModeTransitionClear",
+    "line": "ShapeAnalysis_WireOrder.cxx:75-105",
+    "reason": "mode-flag precedence and state-clearing bookkeeping",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeAnalysis_WireOrder.XY.ModeBothExtraction / Gap.ZeroEdgeShortCircuit",
+    "line": "ShapeAnalysis_WireOrder.cxx:751-782",
+    "reason": "accessor semantics / cached-value early return",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeFix_Wire.ClearModes.1",
+    "line": "ShapeFix_Wire.cxx:182",
+    "reason": "initialization",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeFix_Wire.FixClosed.1",
+    "line": "ShapeFix_Wire.cxx:1074",
+    "reason": "precondition guard",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeFix_Wire.FixClosed.2/3/4",
+    "line": "ShapeFix_Wire.cxx:1076-1092",
+    "reason": "status propagation from sub-fixes (the sub-fixes are their own classes)",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeFix_Wire.FixConnected.SF_FixConnected_001/002 and _at558.W558.1/2",
+    "line": "ShapeFix_Wire.cxx:504,1209-1216",
+    "reason": "precondition guards / failure-status bookkeeping / context refresh",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeFix_Wire.FixConnected.SF_FixConnected_003..006 [low-confidence]",
+    "line": "ShapeFix_Wire.cxx:1232-1296",
+    "reason": "internal mechanics of the adjacent-vertex-gap repair (vertex replacement/copy details), collapsed into that class",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeFix_Wire.FixDegenerated.SF_FixDegen_001/003..006 and _at1035.W1035.1..3",
+    "line": "ShapeFix_Wire.cxx:853,857-874,1705-1760",
+    "reason": "precondition guard + index/loop mechanics of the degenerated-edge class (incl. speculative bounds claims)",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeFix_Wire.FixDummySeam.1/2/3",
+    "line": "ShapeFix_Wire.cxx:3414,3421-3431,3448-3454",
+    "reason": "internal mechanics of the duplicate-opposed-pair removal, collapsed into that class",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeFix_Wire.FixEdgeCurves remove-curve3d loop (myFixRemoveCurve3dMode)",
+    "line": "ShapeFix_Wire.cxx:723-731",
+    "reason": "normalization (drops 3D curves where not needed); default-off mode",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeFix_Wire.FixEdgeCurves remove-pcurve loop (myFixRemovePCurveMode)",
+    "line": "ShapeFix_Wire.cxx:544-552",
+    "reason": "normalization (drops redundant pcurves, e.g. on planes); default-off mode; not repair of malformed input",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeFix_Wire.FixEdgeCurves.loaded-check / null-fixedge-guard",
+    "line": "ShapeFix_Wire.cxx:523,530",
+    "reason": "precondition / null-handle guards",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeFix_Wire.FixEdgeCurves.reversed2d-loop / same-parameter-pcurve",
+    "line": "ShapeFix_Wire.cxx:533-541,612-623",
+    "reason": "driver-loop mechanics, collapsed into the reversed-pcurve and singularity-split classes",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeFix_Wire.FixIntersectingEdges.SF_FixIntEdges_001..017 (13 low-confidence)",
+    "line": "ShapeFix_Wire.cxx:2394-2641",
+    "reason": "guards, tolerance-selection and cut-bookkeeping mechanics of the adjacent-intersection class; the low-confidence entries are code-quality speculation, not distinct input defects",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeFix_Wire.FixIntersectingEdges_at3272.W3272.1..10",
+    "line": "ShapeFix_Wire.cxx:2654-2860",
+    "reason": "guards and numerical-robustness speculation inside the non-adjacent pair fix; defect covered by tkshh-wire-nonadjacent-edges-intersect",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeFix_Wire.FixLacking_at1285.?",
+    "line": "ShapeFix_Wire.cxx:1054",
+    "reason": "precondition guard in the FixLacking wrapper",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeFix_Wire.FixNotchedEdges.IsReady-guard / context-update",
+    "line": "ShapeFix_Wire.cxx:3199,3203",
+    "reason": "precondition guard / healer-state sync",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeFix_Wire.FixReorder_at488.1/3/4 and _at1352.1..5",
+    "line": "ShapeFix_Wire.cxx:429,450-457,1110-1130",
+    "reason": "precondition guards, status mapping, and analyzer-result consistency guards (count mismatch, zero index) - internal contract checks of the reorder class",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeFix_Wire.FixSeam_at1616.W1616.1/2",
+    "line": "ShapeFix_Wire.cxx:1311,1319",
+    "reason": "guard + tolerance-reset mechanics of the seam-swap class",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeFix_Wire.FixSelfIntersectingEdge.SF_FixSelfInt_001..012 (6 low-confidence)",
+    "line": "ShapeFix_Wire.cxx:2200-2337",
+    "reason": "guards, iteration limit, and loop-removal mechanics of the self-intersecting-edge class",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeFix_Wire.FixSelfIntersection.IsReady_check + all mode-skip/status-propagation/reload branches",
+    "line": "ShapeFix_Wire.cxx:889,894,914,916-931,973,981-986,1102-1202 (V3 ids)",
+    "reason": "precondition guard, user-mode gating (NeedFix), status propagation, analyzer reload - healer configuration/state, not input defects",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeFix_Wire.FixShifted.loaded-check",
+    "line": "ShapeFix_Wire.cxx:1355",
+    "reason": "precondition guard",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeFix_Wire.FixSmall.SF_FixSmall_001..005 and FixSmall_at539.?",
+    "line": "ShapeFix_Wire.cxx:485,1154-1194",
+    "reason": "precondition/null guards, failure-status bookkeeping, lockvtx/myTopoMode user-mode gating, and follow-up-index mechanics of the small-edge class",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeFix_Wire.FixTails.1/2 and FixTails.3..23",
+    "line": "ShapeFix_Wire.cxx:3481-3487,3494-3637",
+    "reason": "precondition guard, context sync, and the split/removal index bookkeeping mechanics of the tail class",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeFix_Wire.Load_at248.face-set-check",
+    "line": "ShapeFix_Wire.cxx:275-304",
+    "reason": "API precondition on Load",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeFix_Wire.Perform.SF_Perform_001..012",
+    "line": "ShapeFix_Wire.cxx:327-419",
+    "reason": "fix-scheduling / mode-cascade control flow (ReorderOK gating etc.); each dispatched fix is its own problem class",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeFix_Wire.UpdateWire_at4294.?",
+    "line": "ShapeFix_Wire.cxx:3462",
+    "reason": "context-synchronization utility",
+    "source_group": "D-wire"
+  },
+  {
+    "branch": "ShapeFix_ComposeShell.DispatchWires branches 3367-3575 (V3): empty-sequence exit, vertex-wire skip, edge caching, seam pcurve transform, SameRange rebuild, curve3d addition, patch grouping, vertex/wire loop building",
+    "line": "ShapeFix_ComposeShell.cxx:2656-2820",
+    "reason": "reconstruction bookkeeping; SameRange/curve3d fixes are ShapeFix_Edge-domain; seam identical-pcurve shift kept as its own problem",
+    "source_group": "E-face-composeshell-intersection"
+  },
+  {
+    "branch": "ShapeFix_ComposeShell.Init (INIT_CLOSED_FILTER, INIT_INFINITE_BOUNDS, INIT_RESOLUTION_UNINIT)",
+    "line": "ShapeFix_ComposeShell.cxx:102-176 (V3 111-194)",
+    "reason": "initialization / closure-detection heuristics and tolerance setup, not input repair",
+    "source_group": "E-face-composeshell-intersection"
+  },
+  {
+    "branch": "ShapeFix_ComposeShell.LoadWires (vertex segments, non-manifold split, periodic reorder)",
+    "line": "ShapeFix_ComposeShell.cxx:464-721 (V3 509-586)",
+    "reason": "loading/normalization of legal inputs (vertex loops, non-manifold wires) into internal segments -- feature handling",
+    "source_group": "E-face-composeshell-intersection"
+  },
+  {
+    "branch": "ShapeFix_ComposeShell.MakeFacesOnPatch branches 2985-3269 (V3) except root/hole nesting fallbacks",
+    "line": "ShapeFix_ComposeShell.cxx:2367-2583",
+    "reason": "loop classification internals of face construction; the user-visible nesting fallbacks are folded into tkshh-face-wires-bound-multiple-disjoint-regions",
+    "source_group": "E-face-composeshell-intersection"
+  },
+  {
+    "branch": "ShapeFix_ComposeShell.Perform PERFORM_EMPTY_WIRES / PERFORM_FACE_VS_SHELL",
+    "line": "ShapeFix_ComposeShell.cxx:178-226 (V3 215/236)",
+    "reason": "status flagging and result-shape packaging",
+    "source_group": "E-face-composeshell-intersection"
+  },
+  {
+    "branch": "ShapeFix_ComposeShell.SplitByGrid / SplitByLine / SplitEdges / SplitWire / BreakWires / CollectWires / ComputeCode (all ~25 branches incl. COMPUTECODE_*, SPLITBYGRID_*, SPLITBYLINE_*, BreakWires.*, CollectWires.wire-type-filter, SplitWire.*)",
+    "line": "ShapeFix_ComposeShell.cxx:227-2330 (V3 695-2514)",
+    "reason": "internal grid-splitting machinery used to IMPLEMENT seam insertion and face division; its guards (missing pcurve skip, missing 3D curve tolerated, vertex wires, tangency state machine) are healer-internal or defer to ShapeFix_Edge-domain problems",
+    "source_group": "E-face-composeshell-intersection"
+  },
+  {
+    "branch": "ShapeFix_Face.Add.null-wire-guard",
+    "line": "ShapeFix_Face.cxx:227 (V3)",
+    "reason": "API precondition guard on programmer-supplied null wire",
+    "source_group": "E-face-composeshell-intersection"
+  },
+  {
+    "branch": "ShapeFix_Face.ClearModes.init-all-modes",
+    "line": "ShapeFix_Face.cxx:134 (V3)",
+    "reason": "healer-state initialization, not input repair",
+    "source_group": "E-face-composeshell-intersection"
+  },
+  {
+    "branch": "ShapeFix_Face.FixAddNaturalBound FAN-001 (null surface) + isNeedAddNaturalBound mode check",
+    "line": "ShapeFix_Face.cxx:1013-1016 (V3 878/1127)",
+    "reason": "precondition guard and fix-mode gating",
+    "source_group": "E-face-composeshell-intersection"
+  },
+  {
+    "branch": "ShapeFix_Face.FixLoopWire FLW-002/003/004/005/006/007/008/009 (duplicate-edge skip, seam reversal, small-edge skip, closed/open dispatch, merge cardinality, 2D-closure validation)",
+    "line": "ShapeFix_Face.cxx:2103-2245 (V3 2485-2627)",
+    "reason": "internal steps of the single loop-wire-splitting repair -- collapsed into tkshh-face-wire-containing-multiple-loops",
+    "source_group": "E-face-composeshell-intersection"
+  },
+  {
+    "branch": "ShapeFix_Face.FixMissingSeam.bspline-non-periodic-rejection",
+    "line": "ShapeFix_Face.cxx:1527-1531 (V3 1744)",
+    "reason": "detection-only abort; the repair (making the surface periodic) lives in ShapeCustom, outside this group",
+    "source_group": "E-face-composeshell-intersection"
+  },
+  {
+    "branch": "ShapeFix_Face.FixMissingSeam.edge-pcurve-fetch-failure-abort",
+    "line": "ShapeFix_Face.cxx:~1810 (V3 2254)",
+    "reason": "abort on missing pcurve; missing-pcurve repair belongs to ShapeFix_Edge (another group)",
+    "source_group": "E-face-composeshell-intersection"
+  },
+  {
+    "branch": "ShapeFix_Face.FixMissingSeam.infinite-bounds-fallback",
+    "line": "ShapeFix_Face.cxx:1539-1554 (V3 1759)",
+    "reason": "numerical robustness for legal infinite-bound surfaces, not malformed input",
+    "source_group": "E-face-composeshell-intersection"
+  },
+  {
+    "branch": "ShapeFix_Face.FixMissingSeam.null-surface-guard / context-apply-if-present / no-closure-early-exit",
+    "line": "ShapeFix_Face.cxx:1514-1536 (V3 1724-1737)",
+    "reason": "precondition guards and healer-state sync",
+    "source_group": "E-face-composeshell-intersection"
+  },
+  {
+    "branch": "ShapeFix_Face.FixMissingSeam.wire-replacement-tracking / u+v-seam-optimal-placement / dual-wire-seam-point-match / seam-boundary-clamping / rts-seam-surface-creation / small-area-wire-cleanup",
+    "line": "ShapeFix_Face.cxx:1731-1943 (V3 2043-2309)",
+    "reason": "internal mechanics/optimization of the single missing-seam repair (seam placement choice, RTS wrapper, post-cleanup) -- collapsed into tkshh-face-missing-seam-edge",
+    "source_group": "E-face-composeshell-intersection"
+  },
+  {
+    "branch": "ShapeFix_Face.FixOrientation.WireBoundingBoxComputation / BoxPrerequistePruning / InfinitePointOuterBoundDetection / StateFlipAndWireShift / NaturalBoundsCondensing / FaceRebuild",
+    "line": "ShapeFix_Face.cxx:1150-1440 (V3 1268-1507)",
+    "reason": "core classification machinery, perf pruning, and rebuild bookkeeping of the one orientation repair -- collapsed into tkshh-face-wire-orientation-wrong / tkshh-face-period-wrapped-uv-placement",
+    "source_group": "E-face-composeshell-intersection"
+  },
+  {
+    "branch": "ShapeFix_Face.FixPeriodicDegenerated guards (context apply, type filter, single-wire+conical constraint, semi-angle check, apex-position consistency)",
+    "line": "ShapeFix_Face.cxx:2653-2737 (V3 3108-3198)",
+    "reason": "applicability gates of the cone-apex repair -- the repair itself is counted under tkshh-face-missing-degenerated-edge-at-singularity",
+    "source_group": "E-face-composeshell-intersection"
+  },
+  {
+    "branch": "ShapeFix_Face.FixSmallAreaWire FSA-001 (shape-type filter) / FSA-003 (no-removal early exit)",
+    "line": "ShapeFix_Face.cxx:1981-2004 (V3 2350/2372)",
+    "reason": "type filter and idempotent early-exit control flow",
+    "source_group": "E-face-composeshell-intersection"
+  },
+  {
+    "branch": "ShapeFix_Face.FixSplitFace guards (type/orientation filter, empty wire skip, open-wire abort, NbWires mismatch, single-result no-op)",
+    "line": "ShapeFix_Face.cxx:2488-2563 (V3 2920-2974)",
+    "reason": "internal validity gates of the one split-face repair",
+    "source_group": "E-face-composeshell-intersection"
+  },
+  {
+    "branch": "ShapeFix_Face.FixWiresTwoCoincEdges FWC-001 (type filter) / FWC-002 (nbWires<2 early exit)",
+    "line": "ShapeFix_Face.cxx:2433-2440 (V3 2846/2854)",
+    "reason": "control-flow gates of the coincident-edge-wire repair",
+    "source_group": "E-face-composeshell-intersection"
+  },
+  {
+    "branch": "ShapeFix_Face.Init.fwd-orientation-check + Init.null-surface-guard",
+    "line": "ShapeFix_Face.cxx:201/214 (V3)",
+    "reason": "initialization + null-surface precondition guard",
+    "source_group": "E-face-composeshell-intersection"
+  },
+  {
+    "branch": "ShapeFix_Face.Perform.* (all 15 branches: null-fixwire-guard, context-apply, auto-precision, wire-type-filter, wire-fix-success, fixed-status-aggregate, context-replace-*, empty-wire-after-fix, unfixed-wire-reorder, face-orientation-restore, missing-seam-check, seam-fix-status, face-explorer-multi)",
+    "line": "ShapeFix_Face.cxx:350-717 (V3 346-605)",
+    "reason": "orchestration/dispatch, mode gating, context bookkeeping, tolerance management -- the actual repairs are counted under the specific Fix* problems",
+    "source_group": "E-face-composeshell-intersection"
+  },
+  {
+    "branch": "ShapeFix_Face.Perform.empty-wire-nonmanifold",
+    "line": "ShapeFix_Face.cxx:410 (V3)",
+    "reason": "preservation of legal non-manifold wires (feature handling), not defect repair",
+    "source_group": "E-face-composeshell-intersection"
+  },
+  {
+    "branch": "ShapeFix_Face.SplitEdge_at2653 / SplitEdge_at2741 (SPE-001..003, SPE2-001..003)",
+    "line": "ShapeFix_Face.cxx:2247-2405 (V3 2653-2784)",
+    "reason": "internal edge-splitting helpers (bbox bookkeeping, BSpline load quirks) serving the intersection repairs",
+    "source_group": "E-face-composeshell-intersection"
+  },
+  {
+    "branch": "ShapeFix_IntersectionTool.FixIntersectingWires guards: NULL_CONTEXT_OR_FACE, NON_WIRE_SHAPE_FILTER, MINIMUM_WIRE_COUNT, MAX_VERTEX_TOLERANCE_SEED, WIRE_EDGE_BOXES_CACHING, WIRE_PAIR_BOUNDING_BOX_CULL, SAME_EDGE_IDENTITY_SKIP, DEGENERATE_EDGE_SKIP, EDGE_BOX_BINDING_VALIDATION, EDGE_PAIR_2D_BOUNDING_BOX_OVERLAP, PCURVE_EXTRACTION_EDGE1/2, INTERSECTION_COMPUTATION_VALIDITY, MODIFICATION_THRESHOLD_SAFEGUARD, WIRE_BOX_RECOMPUTATION_AFTER_SPLIT, FACE_RECONSTRUCTION_FROM_WIRES",
+    "line": "ShapeFix_IntersectionTool.cxx:1460-1983 (V3 1837-2520)",
+    "reason": "preconditions, broad-phase culling, caching, iteration limits, and rebuild bookkeeping of the wire-wire intersection repair; the ~20 akey/vertex-fusion sub-branches are case analysis inside the segment-overlap subvariants already counted",
+    "source_group": "E-face-composeshell-intersection"
+  },
+  {
+    "branch": "ShapeFix_IntersectionTool.FixSelfIntersectWire guards: null_context_face_validation, loop_bounds_split_limit (NbSplit<30), same_edge_self_intersection_guard, degenerate_edge_filter, bounding_box_presence_check, spatial_overlap_prefilter, intersection_algorithm_success_check, segment_endpoint_validation, iteration_break_after_modification",
+    "line": "ShapeFix_IntersectionTool.cxx:846-1456 (V3 1038-1686)",
+    "reason": "preconditions, perf pruning, runaway-iteration limits, and Geom2dInt failure guards inside the self-intersection repair",
+    "source_group": "E-face-composeshell-intersection"
+  },
+  {
+    "branch": "ShapeFix_IntersectionTool.SplitEdge_at94 (11 branches), SplitEdge1_at278 (10), SplitEdge2 (5), CutEdge_at199 (10), FindVertAndSplitEdge_at979 (6)",
+    "line": "ShapeFix_IntersectionTool.cxx:92-428, 785-841 (V3 94-1014)",
+    "reason": "internal helper mechanics (parameter routing, pcurve/bbox bookkeeping, location transforms, tolerance checks) of the two intersection repairs; each helper is a sub-step, not a distinct input defect",
+    "source_group": "E-face-composeshell-intersection"
+  },
+  {
+    "branch": "ShapeFix_IntersectionTool.UnionVertexes_at502 (all 56 branches)",
+    "line": "ShapeFix_IntersectionTool.cxx:429-714 (V3 502-868)",
+    "reason": "one mechanism (merge near-coincident vertices, choosing among first/last x first/last pairings and updating neighbor edges) enumerated as 56 case-analysis branches -- collapsed into the endpoint-endpoint subvariants of the two intersection problems",
+    "source_group": "E-face-composeshell-intersection"
+  },
+  {
+    "branch": "ShapeFix_Wireframe.CheckSmallEdges.double-loop-inefficiency [low-confidence]",
+    "line": "ShapeFix_Wireframe.cxx:~560",
+    "reason": "efficiency observation, no repair semantics",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeFix_Wireframe.CheckSmallEdges.orientation-lost-on-apply [low-confidence]",
+    "line": "ShapeFix_Wireframe.cxx:~475",
+    "reason": "low-confidence speculative state issue, not a defect-repair branch",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeFix_Wireframe.CheckSmallEdges.seam-edge-skip-gap",
+    "line": "ShapeFix_Wireframe.cxx:508",
+    "reason": "internal seam-tracking map consistency, folded into small-edge problem's seam subvariant",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeFix_Wireframe.FixSmallEdges.null-shape/context/compound-* family",
+    "line": "ShapeFix_Wireframe.cxx:401-457",
+    "reason": "same guard/dispatch/bookkeeping pattern as FixWireGaps compound handling",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeFix_Wireframe.FixSmallEdges.unconditional-success-return",
+    "line": "ShapeFix_Wireframe.cxx:460",
+    "reason": "API status contract",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeFix_Wireframe.FixWireGaps.compound-recursive-dispatch (+caching/orientation/location/early-return siblings)",
+    "line": "ShapeFix_Wireframe.cxx:120-150",
+    "reason": "control-flow dispatch and bookkeeping over compound members, no defect semantics",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeFix_Wireframe.FixWireGaps.conditional-post-processing/same-parameter-sync/self-intersection-fix/vertex-tolerance-fixup",
+    "line": "ShapeFix_Wireframe.cxx:213-247",
+    "reason": "post-processing of the healer's OWN edits (restores invariants it may have broken), not input-defect repair",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeFix_Wireframe.FixWireGaps.context-initialization",
+    "line": "ShapeFix_Wireframe.cxx:113",
+    "reason": "healer-state (lazy ReShape context creation/replay)",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeFix_Wireframe.FixWireGaps.null-shape-early-return",
+    "line": "ShapeFix_Wireframe.cxx:111",
+    "reason": "precondition guard on null input shape",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeFix_Wireframe.FixWireGaps.precision-selection",
+    "line": "ShapeFix_Wireframe.cxx:~121",
+    "reason": "API default substitution (Precision::Confusion fallback)",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeFix_Wireframe.FixWireGaps.success-return-condition",
+    "line": "ShapeFix_Wireframe.cxx:~252",
+    "reason": "API status contract",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeFix_Wireframe.FixWireGaps.warning-emission-on-repair",
+    "line": "ShapeFix_Wireframe.cxx:189",
+    "reason": "message reporting only",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeFix_Wireframe.FixWireGaps.wire-type-check",
+    "line": "ShapeFix_Wireframe.cxx:172",
+    "reason": "type filter guard on face children",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeFix_Wireframe.MergeSmallEdges.angle_diff_significance",
+    "line": "ShapeFix_Wireframe.cxx:~745",
+    "reason": "numerical determinism threshold, not defect semantics",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeFix_Wireframe.MergeSmallEdges.degenerate_tangent_handling",
+    "line": "ShapeFix_Wireframe.cxx:~700",
+    "reason": "numerical robustness (zero-magnitude tangent default angle)",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeFix_Wireframe.MergeSmallEdges.empty_set_guard/face_binding_check/extent_nonzero_check/context_face_refresh/edge_replacement_cascade",
+    "line": "ShapeFix_Wireframe.cxx:600-660",
+    "reason": "healer-state map maintenance and entry guards",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeFix_Wireframe.MergeSmallEdges.join_failure_handling",
+    "line": "ShapeFix_Wireframe.cxx:~820",
+    "reason": "failure-status propagation on JoinEdges null result",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeFix_Wireframe.MergeSmallEdges.loop_bounds_check/prev_next_wraparound/face_set_build/default_skip",
+    "line": "ShapeFix_Wireframe.cxx:660-800",
+    "reason": "loop mechanics and O(1)-lookup construction",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeFix_Wireframe.MergeSmallEdges.vertex_record_*/context_edge_replacement/edge_face_map_update/face_with_small_update/drop_mode_map_updates/final_context_apply/return_status",
+    "line": "ShapeFix_Wireframe.cxx:825-1549",
+    "reason": "context registration and internal map bookkeeping after the actual repair",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeUpgrade_ClosedFaceDivide.SplitSurface.face-shape-type",
+    "line": "ShapeUpgrade_ClosedFaceDivide.cxx:~76",
+    "reason": "API-contract type enforcement on myResult",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeUpgrade_ClosedFaceDivide.SplitSurface.infinite-bounds",
+    "line": "ShapeUpgrade_ClosedFaceDivide.cxx:~83",
+    "reason": "precondition guard against unbounded surfaces (numerical safety)",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeUpgrade_ClosedFaceDivide.SplitSurface.null-splitter",
+    "line": "ShapeUpgrade_ClosedFaceDivide.cxx:72-73",
+    "reason": "healer configuration guard (tool handle null)",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeUpgrade_ClosedFaceDivide.SplitSurface.seam-bounding-box-gap/u-split-dominance/split-value-generation/splitter-initialization/perform-status-check/composite-shell-build/context-apply-final/no-split-fallback",
+    "line": "ShapeUpgrade_ClosedFaceDivide.cxx:122-263",
+    "reason": "internal split-computation machinery of the closed-face-split repairs (folded into problems 4/5)",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeUpgrade_ClosedFaceDivide.SplitSurface.seam-wire-iteration/pcurve-extraction-first/reversed-edge-pcurve",
+    "line": "ShapeUpgrade_ClosedFaceDivide.cxx:96-120",
+    "reason": "type filters and defensive skips while probing seams; skipping is not repairing",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeUpgrade_SplitSurface.Build_at241/Init_at61/Init_at88/SetUSplitValues/SetVSplitValues (all ~50 '?' branches)",
+    "line": "ShapeUpgrade_SplitSurface.cxx:~60-558",
+    "reason": "generic surface-splitting machinery invoked by ClosedFaceDivide/SplitSurfaceContinuity; V3 entries are unlabeled placeholders; carries no independent input-defect semantics",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeUpgrade_SplitSurfaceContinuity.Compute.bounds_init",
+    "line": "ShapeUpgrade_SplitSurfaceContinuity.cxx:~80",
+    "reason": "initialization of split bounds",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeUpgrade_SplitSurfaceContinuity.Compute.split_value_count_check/revolution_early_return",
+    "line": "ShapeUpgrade_SplitSurfaceContinuity.cxx:101/123",
+    "reason": "status bookkeeping and criterion-already-met early exits",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeUpgrade_UnifySameDomain.Build_at4455 (2 branches)",
+    "line": "ShapeUpgrade_UnifySameDomain.cxx:~4085",
+    "reason": "top-level dispatch (UnifyFaces/UnifyEdges mode flags)",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeUpgrade_UnifySameDomain.FillHistory.* (6 branches)",
+    "line": "ShapeUpgrade_UnifySameDomain.cxx:~4050-4118",
+    "reason": "history recording for callers, no repair",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeUpgrade_UnifySameDomain.Initialize.state_clear_sequence",
+    "line": "ShapeUpgrade_UnifySameDomain.cxx:~2700",
+    "reason": "initialization / state clearing",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeUpgrade_UnifySameDomain.IntUnifyFaces.non_manifold_check/local_edge_limit_check/same_shell_containment_check/keep_edges_* family",
+    "line": "ShapeUpgrade_UnifySameDomain.cxx:2961-3130",
+    "reason": "merge-eligibility criteria protecting topology; correctness conditions of problem 7, not separate defects",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeUpgrade_UnifySameDomain.IntUnifyFaces.null_surface_defense",
+    "line": "ShapeUpgrade_UnifySameDomain.cxx:~2915",
+    "reason": "defensive skip of corrupt (null-surface) face \u2014 bug 33894 guard, skipping not repairing",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeUpgrade_UnifySameDomain.IntUnifyFaces.planar_pcurve_optimization",
+    "line": "ShapeUpgrade_UnifySameDomain.cxx:~2990",
+    "reason": "performance optimization (pre-built pcurves on planes)",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeUpgrade_UnifySameDomain.IntUnifyFaces.processed_face_skip/same_face_self_skip/already_processed_inner/plane_map_check/add_pcurves/edge_face_map_construction/orientation+wire-building family (~40 branches)",
+    "line": "ShapeUpgrade_UnifySameDomain.cxx:2898-3800",
+    "reason": "internal wire/face reconstruction machinery of the face-union repair (folded into problem 7)",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeUpgrade_UnifySameDomain.KeepShapes.filter-gap",
+    "line": "ShapeUpgrade_UnifySameDomain.cxx:~2740",
+    "reason": "API input filter (only edges/vertices keepable)",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeUpgrade_UnifySameDomain.MergeEdges.vertex-orientation-filter/used-edge-skip/null-vertex-terminator",
+    "line": "ShapeUpgrade_UnifySameDomain.cxx:2495-2580",
+    "reason": "chain-walk bookkeeping (dedup, termination); reachability walk itself folded into problem 8",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeUpgrade_UnifySameDomain.MergeSeq.merge_edges_predicate_false/null_union_edge_skip",
+    "line": "ShapeUpgrade_UnifySameDomain.cxx:2601-2615",
+    "reason": "control-flow guards over MergeEdges results",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeUpgrade_UnifySameDomain.MergeSubSeq.curve_null_validation/both_possible_contradiction/degenerate_closest_points_failure/circle_closed_reconstruction_failure",
+    "line": "ShapeUpgrade_UnifySameDomain.cxx:2043/2085/2115/2210",
+    "reason": "defensive failure guards; rejecting is not repairing",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeUpgrade_UnifySameDomain.MergeSubSeq.safe_input_mode_vertex_recording (both line and circle variants)",
+    "line": "ShapeUpgrade_UnifySameDomain.cxx:~2127/~2230",
+    "reason": "safe-mode context copy bookkeeping",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeUpgrade_UnifySameDomain.MergeSubSeq.trimmed_curve_unwrap/bspline_type_screening/bspline_null_curve_skip/bspline_concatenation_guard",
+    "line": "ShapeUpgrade_UnifySameDomain.cxx:2054-2290",
+    "reason": "curve-type normalization and eligibility screening for the union repair (folded into problem 8)",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeUpgrade_UnifySameDomain.MergeSubSeq.zero_length_line_construction/circle_open_chain_parameter_safety/circle_open_bisection/circle_open_angle_normalization/circle_closed_orientation_consistency/circle_closed_full_circle_check",
+    "line": "ShapeUpgrade_UnifySameDomain.cxx:2140-2260",
+    "reason": "numerical robustness and parameterization mechanics inside the edge-union repair (folded into problem 8)",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeUpgrade_UnifySameDomain.UnifyEdges.M3-* (6 low-confidence branches)",
+    "line": "ShapeUpgrade_UnifySameDomain.cxx:3802+",
+    "reason": "low-confidence healer-state/context-coherence speculation",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeUpgrade_UnifySameDomain.UnifyFaces.M2-* (4 branches)",
+    "line": "ShapeUpgrade_UnifySameDomain.cxx:2767+",
+    "reason": "null-safety and context-apply bookkeeping around IntUnifyFaces",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeUpgrade_UnifySameDomain.UnionPCurves.* (18 branches)",
+    "line": "ShapeUpgrade_UnifySameDomain.cxx:1643-2009",
+    "reason": "pcurve concatenation machinery of the edge-union repair: tolerance tracking, trimmed-curve unwrapping, projection fallback, C0->C1 conversion internals (folded into problem 8; N144 fixture noted there)",
+    "source_group": "F-wireframe-unify-split"
+  },
+  {
+    "branch": "ShapeUpgrade_UnifySameDomain.generateSubSeq.M1-* (4 branches)",
+    "line": "ShapeUpgrade_UnifySameDomain.cxx:2443-2494",
+    "reason": "chain segmentation mechanics; closed-wire closure merge folded into problem 8",
+    "source_group": "F-wireframe-unify-split"
+  }
+]

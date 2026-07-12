@@ -1,0 +1,335 @@
+{
+  "group": "B-curve-surface-analysis",
+  "problems": [
+    {
+      "problem_id": "tkshh-curve-projection-degenerate-parametrization",
+      "domain": "TKShHealing",
+      "description": "A 3D point needs to be projected onto a Geom_Curve/edge whose parametrization is itself abnormal: FirstParameter()>LastParameter() (reversed range), an unbounded/infinite parametric domain (e.g. an unclamped Geom_Line), or a curve that has degenerated to (near-)zero length (e.g. coincident control points). Project()/NextProject() must swap the range, special-case infinite bounds, and tolerate a curve whose evaluation may legitimately fail (returning a controlled failure rather than propagating NaN) instead of silently mis-projecting.",
+      "occt_evidence": [
+        "ShapeAnalysis_Curve::Project(Handle(Geom_Curve),...) reversed-range swap — ShapeAnalysis_Curve.cxx:104 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified against source; V3 cited line 135 for this branch, drift ~30 lines)",
+        "ShapeAnalysis_Curve::Project(Adaptor3d_Curve,...) infinite-bounds bypass — ShapeAnalysis_Curve.cxx:180 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (V3 cited line 220, drift ~40 lines)",
+        "ShapeAnalysis_Curve::ProjectAct extrema search entry point — ShapeAnalysis_Curve.cxx:223 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (V3 cited line 294, drift ~70 lines)"
+      ],
+      "subvariants": [
+        "Reversed curve parametrization (FirstParameter() > LastParameter())",
+        "Unbounded/infinite parametric domain (e.g. untrimmed Geom_Line)",
+        "Degenerate/near-zero-length curve producing NaN or garbage projection parameter"
+      ],
+      "fixture_ids": ["Gs029", "Gp129", "Gp037"],
+      "coverage_verdict": "COVERED",
+      "notes": "Gs029 (TRIMMED_CURVE last<first) exercises the reversed-range swap; Gp129 (degenerate 3-pole-collapsed BSpline) exercises the NaN/degenerate-curve path; Gp037 exercises the unbounded-projection case. All three fixtures wire the defect into face/edge topology and annotate live-oracle healing behavior, read past the title to confirm."
+    },
+    {
+      "problem_id": "tkshh-curve-tolerance-closure-detection",
+      "domain": "TKShHealing",
+      "description": "A curve's own type/flag does not report IsClosed()==true (e.g. it is not flagged periodic, or is a trimmed/reparametrized curve), yet its two 3D endpoints coincide within the supplied tolerance (or Precision::Confusion() as a floor). The curve must still be recognized as topologically closed via an explicit endpoint-distance check, while curves with an infinite parameter bound are safely reported as not closed rather than crashing on evaluation.",
+      "occt_evidence": [
+        "ShapeAnalysis_Curve::IsClosed(Handle(Geom_Curve),preci) — ShapeAnalysis_Curve.cxx:1188-1203 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 supplied only unlabeled '?' placeholder branches citing 1425-1442, drift ~235 lines, content reconstructed from source)"
+      ],
+      "subvariants": [
+        "Endpoints coincide within tolerance despite type not natively reporting closure",
+        "Infinite-parameter curve correctly reported as not closed rather than evaluated"
+      ],
+      "fixture_ids": ["Gn039", "Gn049", "Gn064", "Gn071", "Gn077", "Gn088", "Gn094", "Gn101"],
+      "coverage_verdict": "COVERED",
+      "notes": "12-2b-nurbs has a dense family of ShapeAnalysis_Curve.IsClosed fixtures (near-closure rejection, infinite-parameter B-spline with knot sentinel, periodic-vs-closed semantic, BezierCurve check, self-intersecting reversal, open-via-knots, degree-0 curve, COMPOSITE_CURVE discontinuity) covering both the tolerance-based-closure and infinite-bound subvariants."
+    },
+    {
+      "problem_id": "tkshh-curve-planarity-degenerate-point-set",
+      "domain": "TKShHealing",
+      "description": "Planarity of a curve is judged from a small/degenerate set of sample points or poles: fewer than 3 points (only a direction can be formed, not a plane), or points that are (near-)collinear so the accumulated cross-product normal has ~zero magnitude. Rather than producing an undefined/NaN normal, the routine falls back to an arbitrary-but-valid perpendicular direction (GetAnyNormal) so callers get a stable, non-crashing classification instead of garbage.",
+      "occt_evidence": [
+        "static GetAnyNormal(...) fallback-normal helper — ShapeAnalysis_Curve.cxx:798-808 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified)",
+        "ShapeAnalysis_Curve::IsPlanar(TColgp_Array1OfPnt,...) <3-points and collinear-points fallback — ShapeAnalysis_Curve.cxx:900,936-937 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (V3 cited lines 1110/1151, drift ~200 lines)"
+      ],
+      "subvariants": [
+        "Point set with fewer than 3 samples (degenerate normal from a single direction vector)",
+        "Near-collinear point set where cross-product accumulation collapses to ~zero"
+      ],
+      "fixture_ids": ["Gn046", "Gn084", "Gn098"],
+      "coverage_verdict": "PARTIAL",
+      "notes": "Gn098 ('exactly-2-points') and Gn084 ('tolerance-zero') plausibly exercise the <3-points and near-zero-normal fallback paths; Gn046 exercises the near-coplanar tolerance boundary. The remaining IsPlanar-titled fixtures (Gn053/54/66/79/109) target per-curve-type dispatch heuristics (BSpline pole-only sufficiency, OffsetCurve/TrimmedCurve delegation) which this problem intentionally excludes as an analysis-quality issue rather than degenerate-input handling (see excluded list) — not counted here."
+    },
+    {
+      "problem_id": "tkshh-surface-analytic-singularity-detection",
+      "domain": "TKShHealing",
+      "description": "Analytic and bounded/revolution/offset surfaces have intrinsic parametric singularities where the surface map is not injective: a cone's apex, a sphere's north/south poles, a torus's inner pinch point(s) (one if major>minor, two if major<minor — the self-intersecting 'lemon/apple' case), and heuristically-detected edge collapse on bounded/revolution/offset surfaces via 4-corner sampling. These must be located (3D point + degenerate 2D row/column + local precision) so that edges/pcurves touching them can be handled specially rather than treated as ordinary non-degenerate geometry.",
+      "occt_evidence": [
+        "ShapeAnalysis_Surface::ComputeSingularities cone-apex branch — ShapeAnalysis_Surface.cxx:171-183 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited 201, drift ~20 lines)",
+        "ShapeAnalysis_Surface::ComputeSingularities torus pinch (1 or 2 depending on major vs minor radius) — ShapeAnalysis_Surface.cxx:184-202 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (V3 cited 214, drift ~15 lines)",
+        "ShapeAnalysis_Surface::ComputeSingularities sphere poles — ShapeAnalysis_Surface.cxx:203-215 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (V3 cited 233, drift ~20 lines)"
+      ],
+      "subvariants": [
+        "Conical surface apex",
+        "Spherical surface north/south poles",
+        "Toroidal surface pinch (single pinch when major>minor; two pinches / self-intersecting lemon-apple when major<=minor)",
+        "Heuristic corner-sampling degeneracy on bounded/revolution/offset surfaces"
+      ],
+      "fixture_ids": ["Gs096", "Tfa196", "Gs002", "Gs006"],
+      "coverage_verdict": "COVERED",
+      "notes": "Gs096/Tfa196 directly target the torus-pinch branch (verified by reading the .stp: TOROIDAL_SURFACE major<minor with the pinch locus wired into the face's edge loop). Gs002 covers the lemon/apple (minor>=major) case. Cone-apex and sphere-pole detection are covered indirectly through the ProjectDegenerated/IsDegenerated fixtures below plus Gs006 (generic 'singularities not in declared form')."
+    },
+    {
+      "problem_id": "tkshh-pcurve-collapse-onto-surface-singularity",
+      "domain": "TKShHealing",
+      "description": "When an edge's 3D curve runs through (or partially through) one of a surface's known singularities (see tkshh-surface-analytic-singularity-detection), the corresponding pcurve's 2D samples must be recognized as degenerate and repaired rather than left as noisy/undefined UV values: if the whole pcurve collapses onto the singularity, its non-degenerate parametric axis is evenly redistributed across the sample range; if only a portion collapses, that portion is snapped to the singularity's iso-parameter while the rest keeps its real coordinates. A companion routine reports whether/where a given 3D point matches a known singularity within a supplied precision.",
+      "occt_evidence": [
+        "ShapeAnalysis_Surface::IsDegenerated(gp_Pnt,preci) / DegeneratedValues singularity-match — ShapeAnalysis_Surface.cxx:317-364 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified)",
+        "ShapeAnalysis_Surface::ProjectDegenerated (nbrPnt overload) whole-edge redistribution — ShapeAnalysis_Surface.cxx:442-452 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (V3 cited 513, drift ~70 lines)",
+        "ShapeAnalysis_Surface::ProjectDegenerated partial-collapse anchoring — ShapeAnalysis_Surface.cxx:454-458 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (V3 cited 533, drift ~75 lines)"
+      ],
+      "subvariants": [
+        "Entire pcurve collapsed onto a singularity (even redistribution along the live axis)",
+        "Partial pcurve segment collapsed onto a singularity (anchored to the singular iso-parameter)",
+        "3D point matched against nearest known singularity within precision"
+      ],
+      "fixture_ids": ["Gp157", "Gp158", "Gp159", "Gp160", "Gs148", "Tfa200"],
+      "coverage_verdict": "COVERED",
+      "notes": "Gp158/Gp159 are explicitly titled whole-edge-degenerate / partial-edge-collapse; Gs148/Tfa200 target DegeneratedValues gap-classification and cone-apex degeneracy respectively."
+    },
+    {
+      "problem_id": "tkshh-surface-implicit-degenerate-edge",
+      "domain": "TKShHealing",
+      "description": "An edge segment can be geometrically degenerate in 3D (its two endpoints and midpoint all map to nearly the same 3D point) even though it spans a non-trivial 2D parametric distance and is nowhere near one of the surface's canonical analytic singularities (cone apex, sphere pole, torus pinch). This is detected by comparing the 3D span against the 2D parametric span scaled by the surface's local U/V resolution, catching implicit degeneracies (e.g. a collapsed row of a BSpline surface, a zero-radius circle, a zero-length extrusion/revolution axis) that the canonical singularity list misses.",
+      "occt_evidence": [
+        "ShapeAnalysis_Surface::IsDegenerated(gp_Pnt2d,gp_Pnt2d,tol,ratio) — ShapeAnalysis_Surface.cxx:466-487 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited 562/570, drift ~100 lines)"
+      ],
+      "subvariants": [],
+      "fixture_ids": ["Gs069", "Gs084", "Gs098", "Gs111", "Gs138"],
+      "coverage_verdict": "COVERED",
+      "notes": "Gs069 (zero-length axis), Gs084 (bounded-surface zero-area), Gs098 (revolution-axis-on-curve), Gs111 (zero-extrusion), Gs138 (bounded surface with only corner points) collectively exercise this implicit/heuristic degeneracy path distinctly from the canonical-singularity family above."
+    },
+    {
+      "problem_id": "tkshh-surface-closure-vs-declared-periodicity-mismatch",
+      "domain": "TKShHealing",
+      "description": "A surface is geometrically closed in U and/or V (its poles/boundary curve coincide within tolerance at the two parametric extremes) even though it is not flagged periodic by its Geom type or STEP declaration — or vice versa, a surface that merely comes close but is not truly closed must not be misreported as closed. Type-specific heuristics locate the true closure distance (pole comparison for well-formed BSpline/Bezier surfaces, forced surface sampling when boundary knot multiplicity is wrong for a BSpline, basis-curve endpoint comparison for extrusion/revolution surfaces, and 101-point grid sampling for trimmed/offset surfaces), and a midpoint sanity check rejects a false-positive closure claim when the midpoint is much farther apart than the endpoints (a real gap, not a seam).",
+      "occt_evidence": [
+        "ShapeAnalysis_Surface::IsUClosed BSpline boundary-knot-multiplicity fallback to sampling — ShapeAnalysis_Surface.cxx:619-666 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited 732/738, drift ~110 lines)",
+        "ShapeAnalysis_Surface::IsUClosed midpoint sanity gate rejecting false-positive closure — ShapeAnalysis_Surface.cxx:759-763 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (V3 cited 857, drift ~100 lines)",
+        "ShapeAnalysis_Surface::IsVClosed (symmetric V counterpart) — ShapeAnalysis_Surface.cxx:773 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (V3 cited 872, drift ~100 lines)"
+      ],
+      "subvariants": [
+        "BSpline surface with correct boundary knot multiplicity: fast pole-based closure",
+        "BSpline surface with wrong/rational boundary knots: forced grid-sampling closure",
+        "Bezier surface pole-based closure (and insufficient-pole rejection, <3 poles)",
+        "Extrusion/revolution surface closure via basis-curve endpoints",
+        "Trimmed/offset surface closure via 101-point grid sampling",
+        "Midpoint sanity rejection of a merely-close-but-actually-open surface"
+      ],
+      "fixture_ids": ["Gs081", "Gs091", "Gs103", "Gs139", "Tfa197", "Gs064", "Gs140"],
+      "coverage_verdict": "COVERED",
+      "notes": "Gs103 (u_closed=.T. declared but 0.1 pole gap) is a precise match for the declaration-vs-geometry mismatch; Gs139 tests the pole-singularity edge case at U-closure; Gs081/Gs091/Tfa197 cover extrusion-basis and rational-weight BSpline U-closure; Gs064/Gs140 cover the V-closed midpoint-sampling and Bezier-pole-coincidence variants."
+    },
+    {
+      "problem_id": "tkshh-surface-newton-uv-refinement-guards",
+      "domain": "TKShHealing",
+      "description": "Local Newton iteration used to refine a surface UV guess toward a 3D point must detect and bail out of the several ways such iteration can go wrong on real (imperfect) surface data: a locally-degenerate normal (ru x rv ~ 0), an ill-conditioned step equation (near-zero discriminant), a step that would leave the surface's parametric domain, residual growth indicating divergence, or a solution whose normal-direction error exceeds tolerance — falling back to a controlled failure return rather than an incorrect converged answer, and flagging solutions found in high-curvature regions (near-zero normal relative to the partial-derivative magnitudes) for extra caller-side validation.",
+      "occt_evidence": [
+        "ShapeAnalysis_Surface::SurfaceNewton zero-normal / bad-discriminant / out-of-bounds / divergence / normal-component guards — ShapeAnalysis_Surface.cxx:1004,1013,1021,1035,1038 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited 1093-1141, drift ~90-115 lines)",
+        "ShapeAnalysis_Surface::SurfaceNewton high-curvature classification (return code 2) — ShapeAnalysis_Surface.cxx:1046 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (V3 cited 1152, drift ~105 lines)"
+      ],
+      "subvariants": [
+        "Degenerate/near-zero surface normal at the iteration point",
+        "Ill-conditioned (near-zero-discriminant) step equation",
+        "Step leaving the surface's declared parametric bounds",
+        "Divergent residual growth across iterations",
+        "Converged solution flagged as high-curvature/near-singular for extra validation",
+        "Local minimum trap when the distance function has multiple local minima"
+      ],
+      "fixture_ids": ["Gs121", "Gs146"],
+      "coverage_verdict": "PARTIAL",
+      "notes": "Gs146 (zero-normal break) and Gs121 (local-minimum trap) are confirmed; the discriminant/out-of-bounds/divergence/normal-component guards are not each independently isolated by a dedicated fixture (they are exercised only incidentally through the ValueOfUV/NextValueOfUV family below)."
+    },
+    {
+      "problem_id": "tkshh-surface-periodic-parameter-out-of-range",
+      "domain": "TKShHealing",
+      "description": "Analytic inversion of a 3D point onto a periodic surface (cylinder, cone, sphere, torus) via ElSLib::Parameters yields a raw angular parameter that can legitimately land outside the surface's currently-declared/trimmed [UMin,UMax] (and for torus, [VMin,VMax]) band even though a valid equivalent parameter exists one period away. The result must be shifted by a whole multiple of 2*pi (AdjustByPeriod, centered on the domain midpoint) before being returned, or downstream UV consumers (mesh reprojection, trimmed-face containment) will treat a point on the surface as out of range.",
+      "occt_evidence": [
+        "ShapeAnalysis_Surface::ValueOfUV cylinder/cone/sphere/torus AdjustByPeriod correction — ShapeAnalysis_Surface.cxx:1155-1183 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited 1272-1291, drift ~110-115 lines)"
+      ],
+      "subvariants": [
+        "Cylinder/cone U-parameter period correction",
+        "Sphere U-parameter period correction",
+        "Torus dual U/V-parameter period correction"
+      ],
+      "fixture_ids": ["Gp023"],
+      "coverage_verdict": "COVERED",
+      "notes": "Gp023 ('Point-projection onto trimmed periodic CYLINDRICAL_SURFACE returns UV outside trimmed band') is a precise, verified match: the fixture's comment explicitly states the pcurve starts shifted by -pi from the correct value and that projection returns UV outside the trimmed band. Only the cylinder subvariant is directly demonstrated; cone/sphere/torus period-wrap are the same code shape but not independently fixtured."
+    },
+    {
+      "problem_id": "tkshh-surface-uv-inversion-fallback-chain",
+      "domain": "TKShHealing",
+      "description": "When direct analytic/Newton-based UV inversion for a 3D point either isn't available for the surface type, lands in a C0-continuity knot region (where derivatives are unreliable), fails to converge, or converges to a worse result than an alternative, the surface analysis falls back through a chain: skip Newton near C0 B-spline knots (evaluate via the general path instead); after Extrema-based search, retry with Newton if the residual exceeds precision and accept it only if it improves on the Extrema result; if that is still unsatisfying (or Extrema found nothing), search along boundary and through-point iso-parametric curves (UVFromIso) and iterate; and if the whole procedure throws (e.g. on an ill-defined offset surface), catch the exception and fall back to the domain midpoint rather than propagating garbage.",
+      "occt_evidence": [
+        "ShapeAnalysis_Surface::NextValueOfUV C0-knot avoidance before Newton — ShapeAnalysis_Surface.cxx:1078,1091 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited 1186/1201, drift ~110 lines)",
+        "ShapeAnalysis_Surface::ValueOfUV Extrema-then-Newton-then-UVFromIso fallback chain — ShapeAnalysis_Surface.cxx:1263-1298 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (V3 cited 1372-1448, drift ~110-150 lines)",
+        "ShapeAnalysis_Surface::ValueOfUV exception-safe midpoint fallback — ShapeAnalysis_Surface.cxx:1346-1359 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (V3 cited 1474, drift ~115 lines)",
+        "ShapeAnalysis_Surface::UVFromIso boundary/through-point iso-curve scan and iterative refinement — ShapeAnalysis_Surface.cxx:1374-1556 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 supplied only unlabeled '?' placeholders for this 33-branch entry, content reconstructed from source)"
+      ],
+      "subvariants": [
+        "C0-continuity knot proximity forcing a non-Newton evaluation path",
+        "Extrema-search failure or suboptimal result triggering supplementary Newton refinement",
+        "Iso-curve (boundary + through-point U/V) fallback search when Extrema/Newton are unavailable or unsatisfying",
+        "Exception-safe fallback to domain-midpoint UV on ill-defined/degenerate surface evaluation"
+      ],
+      "fixture_ids": ["Gs062", "Gs065", "Gs072", "Gs101", "Gs147", "Gs068", "Gs079", "Gs089", "Gs094", "Gs109", "Gs134", "Gn041", "Gs082", "Gs099"],
+      "coverage_verdict": "COVERED",
+      "notes": "This is the largest single fixture family in the group (12-2c-surfaces Gs06x-Gs14x range), covering near-tangent surfaces, bounded-surface Newton overflow, antipodal-sphere convergence failure, boundary/B-spline-midspan/parameter-clamp/pole UVFromIso variants, and C0-knot Newton convergence (Gn041). The exception-safe midpoint fallback subvariant is not independently isolated by any fixture found."
+    },
+    {
+      "problem_id": "tkshh-edge-not-sameparameter-linear-vs-projected-transfer",
+      "domain": "TKShHealing",
+      "description": "When a derived/split edge's 3D curve and pcurve parametrizations are not guaranteed synchronized (BRep_Tool::SameParameter()==false, or projection is being forced), each transferred knot's new parameter is chosen between a cheap linear-interpolated value and a true geometric projection, based on which has the smaller 3D deviation, with a bias toward the (cheaper) linear result when it is within the edge's precision and not much worse than the projected one. This avoids both the cost of always re-projecting and the accuracy loss of always linearly interpolating a mismatched 3D/2D parametrization.",
+      "occt_evidence": [
+        "ShapeAnalysis_TransferParametersProj::Perform(Knots,To2d) bypass-vs-transfer gate — ShapeAnalysis_TransferParametersProj.cxx:119-121 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified)",
+        "ShapeAnalysis_TransferParametersProj::PreformSegment linear-vs-projected deviation comparison — ShapeAnalysis_TransferParametersProj.cxx:188-198 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified)"
+      ],
+      "subvariants": [
+        "3D-to-2D (To2d) parameter transfer with location-inverted projection",
+        "2D-to-3D parameter transfer",
+        "Closed-curve periodic knot correction applied after per-knot transfer"
+      ],
+      "fixture_ids": [],
+      "coverage_verdict": "GAP",
+      "notes": "This exact class (ShapeAnalysis_TransferParametersProj) is only invoked from edge-splitting/composing code paths (ShapeFix_Wire, ShapeFix_SplitTool, ShapeFix_ComposeShell, ShapeUpgrade_WireDivide, ShapeFix_Wireframe) — not directly from the main STEP import path. The conceptually identical defect ('EDGE_CURVE SameParameter=.T. asserted but 3D curve and pcurve use different parametrizations') is heavily fixtured in 12-2a-pcurves under the ShapeFix_Edge.FixSameParameter / ShapeAnalysis_Edge.CheckSameParameter family (Gp022, Gp045, Gp050, Gp052, Gp066, Gp074, Gp078, Gp081, Gp088, Gp091, Gp099, Gp104, Gp106, Gp107, Gp114, Gp130, Gp133, N004, Sw009, Twi085), but that is a sibling class (ShapeFix_Edge/BRepLib), not verified to route through ShapeAnalysis_TransferParametersProj specifically, so it is not counted as covering this problem."
+    },
+    {
+      "problem_id": "tkshh-derived-edge-range-construction",
+      "domain": "TKShHealing",
+      "description": "When a new edge is derived from an existing one at a split point (wire divide, seam splitting, intersection-based splitting), its parametric range and pcurve/3D-curve ranges must be built correctly even when: the source curve is closed (duplicate/out-of-order transferred knots near the closure point need a small periodic correction pushed toward the curve's true end rather than left ambiguous); the projected endpoint maps to an infinite 3D coordinate (marked SameRange=false rather than propagating Precision::Infinite()); the two endpoint parameters come back swapped after projection; or the parameter being corrected is nested inside an Offset/Trimmed curve wrapper (falls back to the nearest BSpline knot of the true basis curve rather than leaving the parameter uncorrected).",
+      "occt_evidence": [
+        "ShapeAnalysis_TransferParametersProj::TransferRange infinite-endpoint guard — ShapeAnalysis_TransferParametersProj.cxx:291-297,305-311 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited 327, drift ~0-15 lines)",
+        "ShapeAnalysis_TransferParametersProj::Perform(Knots,To2d) closed-curve periodic knot correction — ShapeAnalysis_TransferParametersProj.cxx:146-152 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (V3 cited 135, drift ~10 lines)",
+        "static CorrectParameter() Offset/Trimmed-curve knot-snap fallback — ShapeAnalysis_TransferParametersProj.cxx:234-254 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (V3 cited 445, drift ~200 lines)"
+      ],
+      "subvariants": [
+        "Closed/periodic source curve: duplicate transferred knots near closure corrected toward the true endpoint",
+        "Projected endpoint at infinity: marked SameRange=false instead of propagating an infinite coordinate",
+        "Swapped parameter order after projection, with epsilon-safe range reconstruction",
+        "Parameter correction nested inside Offset/Trimmed curve wrappers falls back to nearest true-basis-curve knot"
+      ],
+      "fixture_ids": ["Twi019"],
+      "coverage_verdict": "PARTIAL",
+      "notes": "Twi019 ('Closed edges need splitting at parametric break': a full-circle EDGE_CURVE whose start==end vertex) is a strong trigger for the closed-curve split path that flows through ShapeUpgrade_WireDivide/ShapeFix_Wire into TransferRange's periodic-knot correction. The infinite-endpoint guard, parameter-swap handling, and nested-Offset/Trimmed knot-snap subvariants are not independently demonstrated by any fixture found."
+    },
+    {
+      "problem_id": "tkshh-nonmanifold-vertex-representation-carryover",
+      "domain": "TKShHealing",
+      "description": "A non-manifold vertex (TopAbs_INTERNAL/EXTERNAL orientation, shared by 3+ edges/faces) can carry several independent parameter representations simultaneously: a parameter on a specific 3D curve (PointOnCurve), a UV pair on a specific surface (PointOnSurface), and a parameter tied to a specific pcurve-on-surface pair (PointOnCurveOnSurface). When such a vertex is copied onto a newly derived edge (e.g. during edge splitting), each representation must be individually carried forward and, where its originating curve/surface can't be matched on the new edge, tolerantly omitted (falling back to a single geometric re-projection to pick the new vertex's parameter and tolerance) rather than fabricating an incorrect value or crashing.",
+      "occt_evidence": [
+        "ShapeAnalysis_TransferParametersProj::CopyNMVertex per-representation-type carryover (PointOnCurve/PointOnSurface/PointOnCurveOnSurface) — ShapeAnalysis_TransferParametersProj.cxx:518-561 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited 597-679, drift ~30-120 lines)",
+        "ShapeAnalysis_TransferParametersProj::CopyNMVertex fallback re-projection when no matching representation is found — ShapeAnalysis_TransferParametersProj.cxx:567-572 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified)"
+      ],
+      "subvariants": [
+        "PointOnCurve representation carried across matching 3D curve",
+        "PointOnSurface representation carried through unconditionally",
+        "PointOnCurveOnSurface representation matched against the source edge's curve-on-surface list",
+        "No matching representation found: fallback geometric re-projection determines parameter and tolerance"
+      ],
+      "fixture_ids": [],
+      "coverage_verdict": "GAP",
+      "notes": "No fixture in the corpus targets a BRep vertex shared by 3+ edges carrying multiple distinct parameter representations through an edge-copy/split operation. The non-manifold-vertex fixtures found in the corpus (Me* series) are mesh/triangulation non-manifold-vertex handling (a different domain), and Xp013 is a cross-product fixture that does not isolate this mechanism cleanly enough to credit."
+    },
+    {
+      "problem_id": "tkshh-near-linear-2d-curve-collapsed-to-line-bezier",
+      "domain": "TKShHealing",
+      "description": "A pcurve that is nominally a BSpline or Bezier but whose control geometry is actually collinear within approximation tolerance is detected and replaced with an exact minimal 2-point line-Bezier, rather than being carried through the (more expensive, and numerically noisier for a degenerate case) general Bezier-decomposition pipeline as if it were a genuinely curved segment.",
+      "occt_evidence": [
+        "ShapeUpgrade_ConvertCurve2dToBezier::Compute() near-linear BSpline/Bezier-to-line shortcut — ShapeUpgrade_ConvertCurve2dToBezier.cxx:69-86 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited 60-82, drift ~10 lines)"
+      ],
+      "subvariants": [],
+      "fixture_ids": [],
+      "coverage_verdict": "GAP",
+      "notes": "No fixture found that specifically constructs a nominally-curved (BSpline/Bezier) 2D pcurve whose control points are collinear within Precision::Approximation() to trigger this specific line-collapse shortcut in ShapeUpgrade_ConvertCurve2dToBezier; the 8 ConvertCurve2dToBezier-titled fixtures found (Gn044/60/70/78/91/102/127, N142) all target degree-elevation/knot-multiplicity mechanics instead."
+    },
+    {
+      "problem_id": "tkshh-curve-range-exceeds-pcurve-domain-clamp",
+      "domain": "TKShHealing",
+      "description": "The requested split/trim range for a 2D curve conversion ([First,Last], typically taken from an edge's declared parameter range) extends beyond the underlying pcurve/BSpline's actual definition domain [bf,bl] (a common STEP defect where an edge's declared range doesn't match its geometry's natural bounds). The out-of-range end(s) are clamped to the curve's real bounds (with a debug warning) instead of evaluating the curve outside its valid domain.",
+      "occt_evidence": [
+        "ShapeUpgrade_ConvertCurve2dToBezier::Compute() First/Last clamped against BSpline bf/bl domain — ShapeUpgrade_ConvertCurve2dToBezier.cxx:153-172 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited 176-191, drift ~15-20 lines)"
+      ],
+      "subvariants": [
+        "First below the curve's natural FirstParameter (clamped up)",
+        "Last above the curve's natural LastParameter (clamped down)"
+      ],
+      "fixture_ids": [],
+      "coverage_verdict": "GAP",
+      "notes": "Gp007/Gp047/Gp086 ('edge range outside pcurve domain' / CheckPCurveRange) test the same conceptual defect at the ShapeAnalysis_Edge level, not through the ShapeUpgrade_ConvertCurve2dToBezier conversion path specifically, so not counted here without stronger evidence of the call path being exercised."
+    },
+    {
+      "problem_id": "tkshh-near-zero-knot-span-thin-patch-filter",
+      "domain": "TKShHealing",
+      "description": "A curve or surface's knot vector contains near-duplicate/clustered knots (e.g. from an interior knot inserted to full multiplicity, or STEP data with two knots separated by less than working precision) that would otherwise produce a near-zero-length Bezier arc (2D curve conversion) or a near-zero-extent Bezier patch (surface conversion) after decomposition. These degenerate spans are detected and filtered out of the result set before being handed to downstream consumers, rather than emitting a degenerate zero-extent Bezier segment/patch into the output shape.",
+      "occt_evidence": [
+        "ShapeUpgrade_ConvertCurve2dToBezier::Compute() near-zero knot-interval filter — ShapeUpgrade_ConvertCurve2dToBezier.cxx:188-209 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited 196-210, drift ~10 lines)",
+        "ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute() thin-patch (UReject/VReject) filter — ShapeUpgrade_ConvertSurfaceToBezierBasis.cxx:157-191 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited 245, drift ~90 lines; source contains an explicit debug message 'thin patches dropped' confirming intent)"
+      ],
+      "subvariants": [
+        "2D curve: near-zero-length arc between clustered knots filtered from the Bezier segment sequence",
+        "Surface: near-zero-extent U or V patch filtered from the Bezier patch grid (UReject/VReject)"
+      ],
+      "fixture_ids": ["Gn042"],
+      "coverage_verdict": "PARTIAL",
+      "notes": "Gn042 ('ShapeUpgrade_ConvertSurfaceToBezierBasis double-knot thin patch') is a precise, verified match for the surface subvariant: its comment describes an interior U-knot at multiplicity=2 collapsing to a zero-width patch and explicitly notes the extent filter's behavior on it. No fixture found for the analogous 2D-curve (ShapeUpgrade_ConvertCurve2dToBezier) knot-interval-filter subvariant."
+    },
+    {
+      "problem_id": "tkshh-surface-bounding-box-curvature-extrema-sampling",
+      "domain": "TKShHealing",
+      "description": "Computing an accurate 2D parametric bounding box for a pcurve used in adjacency/overlap decisions (face composition, closed-face division) requires more than naive corner/linear-grid sampling when the curve has sharp local extrema between sample points: the 'exact' mode partitions the curve into its C2-continuity intervals and performs a local extremum search (in both the U and V directions) within each interval's midpoint neighborhood, in addition to sampling the interval endpoints, so a highly curved segment's true bounding box is not underestimated between samples.",
+      "occt_evidence": [
+        "ShapeAnalysis_Curve::FillBndBox exact-mode C2-interval partition — ShapeAnalysis_Curve.cxx:683-692 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 cited 823, drift ~140 lines)",
+        "ShapeAnalysis_Curve::FillBndBox per-interval SearchForExtremum calls — ShapeAnalysis_Curve.cxx:700-711 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (V3 cited 843, drift ~140 lines)"
+      ],
+      "subvariants": [
+        "Approximate mode: coarse linear parameter grid (fast, may miss extrema)",
+        "Exact mode: per-C2-interval midpoint extremum search in U and V directions"
+      ],
+      "fixture_ids": ["Gn040", "Gn056", "Gn059", "Gn068", "Gn073", "Gn075", "Gn083", "Gn096"],
+      "coverage_verdict": "COVERED",
+      "notes": "Used by ShapeFix_ComposeShell and ShapeUpgrade_ClosedFaceDivide for edge/face bounding-box overlap decisions during healing, not purely diagnostic. 8 fixtures found spanning S-curve extremum undersample, exact-mode knot-boundary clamping, SearchForExtremum drift, elliptic-arc midpoint sampling, composite-curve segment switch, approximation-mode underestimate, endpoint-bias extremum miss, and infinite-bbox handling."
+    },
+    {
+      "problem_id": "tkshh-curve-adaptive-sample-density-and-zero-length-guard",
+      "domain": "TKShHealing",
+      "description": "Generating a dense point sequence along a curve (for downstream bounding/analysis operations) must adapt sample count to curve type (2 points for a Line, 360*k for a Circle, knot-count*degree for a BSpline, pole-count-based for a Bezier, plus a 4x amplification for rational 2D curves) so that highly curved or high-degree geometry isn't under-sampled, must recurse through Offset/Trimmed wrapper curves to the true basis curve for an adequate density, and must detect the degenerate case where a curve's own natural parametric length is zero (returning a controlled failure instead of dividing by zero when computing the step size).",
+      "occt_evidence": [
+        "ShapeAnalysis_Curve::GetSamplePoints(Handle(Geom_Curve),...) zero-length-curve guard — ShapeAnalysis_Curve.cxx:1041-1043 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (line verified; V3 supplied only unlabeled '?' placeholders citing 1264-1299, drift ~220-260 lines, content reconstructed from source)",
+        "ShapeAnalysis_Curve::GetSamplePoints per-type sample-density dispatch (Line/Circle/BSpline/Bezier) and Offset/Trimmed delegation to basis curve — ShapeAnalysis_Curve.cxx:1046-1067 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e"
+      ],
+      "subvariants": [
+        "Zero-parametric-length curve: controlled failure instead of division by zero",
+        "Per-geometry-type sample density selection (Line/Circle/BSpline/Bezier/rational-2D 4x amplification)",
+        "Offset/Trimmed wrapper curves delegate sampling to their true basis curve"
+      ],
+      "fixture_ids": ["Gn043", "Gn047", "Gn051", "Gn057", "Gn061", "Gn063", "Gn069", "Gn081"],
+      "coverage_verdict": "COVERED",
+      "notes": "12-2b-nurbs has a dense, well-targeted family: rational curve 4x amplification, 2D rational weight-ratio dominance, offset/trimmed recursion depth, high-radius full-circle 360K sample cap, 3D 2-point LINE shortcut, rational pole density, BSpline knot-aware sampling, CIRCLE scale-insensitive cap."
+    }
+  ],
+  "excluded": [
+    {"branch": "ShapeAnalysis_Curve.FillBndBox.BBOX_820_CONTINUITY_INTERVAL_MISMATCH / BBOX_843_EXTREMUM_INITIALIZATION", "line": "ShapeAnalysis_Curve.cxx:683-711", "reason": "describes possible search-quality bugs in the extremum-finding sub-algorithm itself (interval pairing, local-vs-global extremum), not a distinct malformed-input category beyond the sampling-density problem already kept (tkshh-surface-bounding-box-curvature-extrema-sampling)"},
+    {"branch": "ShapeAnalysis_Curve.NextProject.fallback_cast / complex_fallback", "line": "ShapeAnalysis_Curve.cxx:408-460 (NextProject)", "reason": "V3's described 'Bezier downcast without null guard' and 'ComplexCurve fallback lacks validation' content does not match the verified NextProject source (no such downcast/ComplexCurve branch exists there); dropped as an unverifiable/mismatched branch description"},
+    {"branch": "ShapeAnalysis_Curve.ProjectAct.PROJ_001/PROJ_002/PROJ_003 (extrema IsMin filter, closed-curve period computation, stale-solution fallback)", "line": "ShapeAnalysis_Curve.cxx:223-260 (ProjectAct)", "reason": "internal robustness/correctness of the Extrema_ExtPC search algorithm itself, not a distinct category of malformed input"},
+    {"branch": "ShapeAnalysis_Curve.Project_at212.PROJ_212_CONFUSION_FALLBACK / PROJ_212_PROJECTION_RACE", "line": "ShapeAnalysis_Curve.cxx:180-215", "reason": "tolerance-comparison/epsilon-race nuance of the projection search, not defect-specific input handling (the genuine infinite-bounds subvariant is kept under tkshh-curve-projection-degenerate-parametrization)"},
+    {"branch": "ShapeAnalysis_Curve.IsPlanar (curve dispatch).PLANAR_1178_LINE_DISPATCH / CONIC_AXIS_ASSUMPTION / TRIMMED_RECURSION / BSPLINE_POLES_ONLY / COMPLEX_ACCUMULATION", "line": "ShapeAnalysis_Curve.cxx:958-1035", "reason": "these describe potential false-positive/false-negative weaknesses in the planarity-analysis heuristic itself (pole-only sufficiency, axis-only conic check), i.e. analysis-quality concerns, not repair of a distinct malformed-input category"},
+    {"branch": "ShapeAnalysis_Curve.SelectForwardSeam.SEAM_001 (periodicity-unwrapped dedup)", "line": "ShapeAnalysis_Curve.cxx:724-789", "reason": "V3's described periodic-wrap deduplication logic is not present in the verified SelectForwardSeam source (which is a pure direction/location heuristic with no period handling); dropped as unverifiable"},
+    {"branch": "ShapeAnalysis_Surface.ComputeSingularities.skip-when-cached / null-surface-guard", "line": "ShapeAnalysis_Surface.cxx:160,163", "reason": "lazy-computation caching and null-precondition guard, not input-defect handling"},
+    {"branch": "ShapeAnalysis_Surface.DegeneratedValues-lazy-compute / ProjectDegenerated.lazy-singularity-init (both overloads) / ProjectDegenerated_at421-lazy-compute", "line": "ShapeAnalysis_Surface.cxx:342,376,411", "reason": "repeated 'if (myNbDeg<0) ComputeSingularities()' lazy-init pattern; internal caching, not a distinct malformed-input category"},
+    {"branch": "ShapeAnalysis_Surface.ProjectDegenerated-dual-distance-logic / iso-flag-unvalidated (low-confidence)", "line": "ShapeAnalysis_Surface.cxx:383-396", "reason": "speculative low-confidence internal-consistency concerns already subsumed by the kept ProjectDegenerated problem's mechanism"},
+    {"branch": "ShapeAnalysis_Surface.IsUClosed.cached-result / IsVClosed.cached-result", "line": "ShapeAnalysis_Surface.cxx:564,777", "reason": "state caching for repeated calls, not defect repair"},
+    {"branch": "ShapeAnalysis_Surface.IsUClosed.plane-not-closed / IsVClosed.plane-cone-cylinder-sphere-not-vclosed", "line": "ShapeAnalysis_Surface.cxx:592", "reason": "type-based short-circuit for analytic surface types that are structurally never closed in that direction; a correct classification shortcut, not malformed-input handling"},
+    {"branch": "ShapeAnalysis_Surface.ComputeBoxes-iso-null-guard / ComputeBoxes-cached-flag", "line": "ShapeAnalysis_Surface.cxx:1606", "reason": "bounding-box cache population/invalidation bookkeeping for UVFromIso's internal iso-box optimization, not itself a defect repair"},
+    {"branch": "ShapeAnalysis_Surface.SortSingularities-swap-logic / array-count-mismatch", "line": "ShapeAnalysis_Surface.cxx:1565-1594", "reason": "internal parallel-array sort bookkeeping (selection sort over at most 4 singularities), pure implementation detail"},
+    {"branch": "ShapeAnalysis_Surface.Init-null-surface / Init_at155", "line": "ShapeAnalysis_Surface.cxx:113,132", "reason": "null-handle precondition guard on the constructor/initializer, an API-contract check not input-defect repair"},
+    {"branch": "ShapeAnalysis_TransferParametersProj.Init.SAT_Init_001/002/003 (null 3D curve / null face / unvalidated location)", "line": "ShapeAnalysis_TransferParametersProj.cxx:83-105", "reason": "precondition guards on constructor arguments (null curve/face), not malformed-STEP-input handling"},
+    {"branch": "ShapeAnalysis_TransferParametersProj.CopyNMVertex_at565/at718.SAT_CopyNM1_001/SAT_CopyNM2_001 (orientation must be INTERNAL/EXTERNAL)", "line": "ShapeAnalysis_TransferParametersProj.cxx:496", "reason": "API-contract precondition guard on the caller-supplied vertex orientation, not itself a class of malformed CAD geometry"},
+    {"branch": "ShapeAnalysis_TransferParametersProj.CopyNMVertex.SAT_CopyNM1_002/SAT_CopyNM2_004 (low-confidence unvalidated-UV speculation)", "line": "ShapeAnalysis_TransferParametersProj.cxx:522-561", "reason": "speculative low-confidence risk description already subsumed by the kept CopyNMVertex representation-carryover problem's mechanism"},
+    {"branch": "ShapeAnalysis_TransferParametersProj.Perform_at110.SAT_Perf110_003 / Perform_at223.SAT_Perf223_003 / TransferRange.SAT_TransfR_006 (silent clamping / multi-representation consistency, low-confidence)", "line": "ShapeAnalysis_TransferParametersProj.cxx:154-157,224-225,454", "reason": "generic tolerance-clamping/consistency nuance of the transfer mechanism already covered by the kept problems, not a separately distinct input-defect class"},
+    {"branch": "ShapeUpgrade_ConvertCurve2dToBezier.Build_at270.index-boundary-gap", "line": "ShapeUpgrade_ConvertCurve2dToBezier.cxx:233-257", "reason": "internal loop-index bookkeeping bug risk in the Build() reconstruction step, not malformed-input handling"},
+    {"branch": "ShapeUpgrade_ConvertCurve2dToBezier.Compute.trimmed_curve_recursion_mySplitValues_coupling / conic_approximation_shift_accumulation / bezier_arc_line_check_parameter_scope_mismatch / split_values_insertion_index_off_by_one / conic_bspline_conversion_fallback_no_error_handling / parameter_clamping_doesnt_update_split_params / bezier_segment_precision_boundary_off_by_one", "line": "ShapeUpgrade_ConvertCurve2dToBezier.cxx:89-224", "reason": "internal state-consistency/bookkeeping concerns of the conversion pipeline itself (healer-internal split-value/shift tracking), not a distinct external malformed-input category"},
+    {"branch": "ShapeUpgrade_ConvertSurfaceToBezierBasis.Build_at631.iterator-loop-boundary-fault / precision-comparison-asymmetry", "line": "ShapeUpgrade_ConvertSurfaceToBezierBasis.cxx:506-527", "reason": "internal loop-index/asymmetric-tolerance bug risk in Build() patch reconstruction; verified j2 is in fact freshly reset each outer iteration (V3's premise is inaccurate), and the remaining j1-persistence is intentional monotonic-search behavior, not defect repair"},
+    {"branch": "ShapeUpgrade_ConvertSurfaceToBezierBasis.Compute_at58.segment_flag_init / infinite_bound_skip / trimmed_surface_delegate / offset_delegate / plane_to_bezier / bezier_full_range / bezier_partial_segment / bspline_split_insertion", "line": "ShapeUpgrade_ConvertSurfaceToBezierBasis.cxx:62-146,320", "reason": "generic type-dispatch/wrapper-delegation and standard full-vs-partial-range conversion machinery; not specific to a malformed/degenerate input condition (only the thin-patch filter subset is a genuine defect-repair and is kept)"}
+  ],
+  "line_verification_notes": "All V3 line citations for these five classes drift substantially from the verified V7_8_1 source (bd2a789f), and the drift grows through each file (roughly +15 to +30 lines early in ShapeAnalysis_Surface.cxx, growing to +100 to +150 lines by UVFromIso near the end), consistent with V3 having been built against a slightly different/expanded revision of these two large files. ShapeUpgrade_ConvertCurve2dToBezier.cxx and ShapeUpgrade_ConvertSurfaceToBezierBasis.cxx drift much less (0-90 lines). ShapeAnalysis_Curve.cxx drift is the most severe (up to ~260 lines) and V3 additionally left several whole functions as unlabeled '?' placeholder branches with no content at all (GetSamplePoints_at1262, GetSamplePoints_at1321, IsClosed_at1425, ShapeAnalysis_Surface.Singularity_at332, ShapeAnalysis_Surface.UVFromIso_at1523 [33 branches]) — all five were read directly from source to reconstruct their actual behavior and folded into tkshh-curve-adaptive-sample-density-and-zero-length-guard, tkshh-curve-tolerance-closure-detection, and tkshh-surface-uv-inversion-fallback-chain respectively (Singularity()'s two placeholder branches turned out to be a pure index-bounds accessor guard and were excluded, not kept). Two V3 branches were dropped outright as apparently mismatched/hallucinated against the verified source: ShapeAnalysis_Curve.NextProject.fallback_cast (claims a Bezier null-guard downcast that does not exist in NextProject) and ShapeAnalysis_Curve.SelectForwardSeam SEAM_001 (claims periodic-wrap deduplication logic that SelectForwardSeam does not implement — it is a pure direction/location heuristic). One additional genuine repair mechanism not really surfaced by V3's branch list was found by reading past the cited lines: ShapeUpgrade_ConvertSurfaceToBezierBasis.cxx:157-191's explicit thin-patch UReject/VReject filter (V3's bspline_split_insertion branch pointed elsewhere in the function); its exact debug string 'thin patches dropped' at line ~189 confirms the intent and was used as supporting evidence for tkshh-near-zero-knot-span-thin-patch-filter."
+}

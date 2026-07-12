@@ -1,0 +1,459 @@
+[
+ {
+  "pattern": "Internal map/lookup bookkeeping supporting a repair decision (e.g. 'if bound is registered in mySectionBound, remap to its canonical edge before doing the real lookup', or 'find the face list for this edge from myBoundFaces before proceeding') -- necessary plumbing for several problem classes above, but not itself a distinct input-defect class.",
+  "example_locations": [
+   "BRepBuilderAPI_Sewing.cxx:1334 (AnalysisNearestEdges section-bound remap)",
+   "BRepBuilderAPI_Sewing.cxx:1335-1337 (AnalysisNearestEdges work-faces lookup)",
+   "BRepBuilderAPI_Sewing.cxx:1466-1471 (FindCandidates reference-face collection)",
+   "BRepBuilderAPI_Sewing.cxx:343,392 (SameParameterEdge outer overload bound remap)"
+  ],
+  "reason": "Map/lookup plumbing that fetches context data a repair decision downstream depends on, not itself a repair decision or defect signature.",
+  "source_domain": "exchange/sewing"
+ },
+ {
+  "pattern": "Feature-gate / configuration-flag checks that decide whether an already-cataloged repair stage runs at all (myAnalysis, myCutting, mySewing, mySameParameterMode && myFaceMode, mySameParameterMode alone in SameParameterShape).",
+  "example_locations": [
+   "BRepBuilderAPI_Sewing.cxx:1810 (Perform, myAnalysis gate)",
+   "BRepBuilderAPI_Sewing.cxx:1848 (Perform, myCutting gate)",
+   "BRepBuilderAPI_Sewing.cxx:1888 (Perform, mySewing gate)",
+   "BRepBuilderAPI_Sewing.cxx:1907 (Perform, mySameParameterMode && myFaceMode gate)"
+  ],
+  "reason": "These are API/configuration surface (opt-in/opt-out toggles for stages already captured as their own problem classes above), not new input-defect classes in their own right.",
+  "source_domain": "exchange/sewing"
+ },
+ {
+  "pattern": "Context-shape aggregation bookkeeping: folding a directly-Load()'ed context shape into the myOldShapes accumulation list on first use.",
+  "example_locations": [
+   "BRepBuilderAPI_Sewing.cxx:2452-2456 (FindFreeBoundaries)",
+   "raw material: FaceAnalysis-B1, FindFreeBoundaries-B1/B2"
+  ],
+  "reason": "Internal accumulation of the multiple ways a caller can supply input (Load vs Add) into one working shape set; not a defect-detection behavior.",
+  "source_domain": "exchange/sewing"
+ },
+ {
+  "pattern": "API-contract precondition handling / constructor-parameter clamping not about malformed input geometry (e.g. Init() clamping a caller-supplied tolerance to a Precision::Confusion() floor; Load(null shape) simply clearing internal state).",
+  "example_locations": [
+   "BRepBuilderAPI_Sewing.cxx:1725 (Init tolerance floor)",
+   "BRepBuilderAPI_Sewing.cxx:1750-1755 (Load)"
+  ],
+  "reason": "Guards against caller/API misuse (e.g. a caller passing tolerance=0), not against defective input geometry.",
+  "source_domain": "exchange/sewing"
+ },
+ {
+  "pattern": "Read-only query/accessor methods that report already-computed state rather than performing any repair action (IsDegenerated, IsModified, SewedShape, NbFreeEdges/FreeEdge, NbMultipleEdges/MultipleEdge, WhichFace lookup helper, etc.).",
+  "example_locations": [
+   "BRepBuilderAPI_Sewing.cxx:2096-2114 (IsDegenerated)",
+   "BRepBuilderAPI_Sewing.cxx:144-155 (WhichFace)"
+  ],
+  "reason": "Public query API surface, not repair logic; the underlying repair behavior they report on is captured elsewhere (e.g. sew-degenerate-edge-passthrough, sew-edge-multiplicity-reporting).",
+  "source_domain": "exchange/sewing"
+ },
+ {
+  "pattern": "EvaluateAngulars -- an entire public/protected virtual method (6 branches in the raw material) that computes angular deviation between candidate face normals as a manifold-candidate tie-breaker.",
+  "example_locations": [
+   "BRepBuilderAPI_Sewing.cxx:978-1052 (function body)",
+   "BRepBuilderAPI_Sewing.cxx:1604 (its only call site)"
+  ],
+  "reason": "Grep-confirmed dead code at this SHA: its only call site (line 1604) is inside a large commented-out block (roughly lines 1561-1635) inside FindCandidates. It is not invoked anywhere in the live default Perform() pipeline; it would only matter if an external caller or subclass invoked the exported virtual method directly.",
+  "source_domain": "exchange/sewing"
+ },
+ {
+  "pattern": "BRepLib namespace functions that are physically present in the given source line range (735-2841, which spans both the BRepBuilderAPI_Sewing.cxx-derived '### BRepBuilderAPI_Sewing' subsection and the BRepLib.cxx-derived '### BRepLib' subsection of the source document) but are never called, directly or transitively, from BRepBuilderAPI_Sewing.cxx.",
+  "example_locations": [
+   "BRepLib.BoundingVertex_at3016",
+   "BRepLib.BuildCurve3d / BuildCurves3d_at473",
+   "BRepLib.CheckSameRange_at150",
+   "BRepLib.ContinuityOfFaces (0 branches)",
+   "BRepLib.EnsureNormalConsistency",
+   "BRepLib.ExtendFace_at3134",
+   "BRepLib.OrientClosedSolid_at2088",
+   "BRepLib.ReverseSortFaces_at2956 / SortFaces",
+   "BRepLib.SameRange_at116 (BRepLib's own top-level SameRange, distinct from BRepBuilderAPI_Sewing's own SameRange wrapper)",
+   "BRepLib.UpdateDeflection",
+   "BRepLib.UpdateEdgeTol / UpdateEdgeTolerance_at694",
+   "BRepLib.UpdateInnerTolerances"
+  ],
+  "reason": "Verified via `grep -n \"BRepLib::\" BRepBuilderAPI_Sewing.cxx`: the only two BRepLib functions Sewing actually calls are BRepLib::SameParameter (edge overload, Sewing.cxx:300) and BRepLib::EncodeRegularity (Sewing.cxx:4044) -- both of which ARE included above (sew-pcurve-parameter-desync-repair / sew-merged-edge-continuity-encoding). The rest of the BRepLib.cxx-sourced material belongs to other OCCT repair pipelines entirely (general edge/face tolerance-update passes used by ShapeFix, meshing/tessellation deflection passes, solid-orientation-by-infinite-point classification, face-sorting for reverse-engineering/tessellation) and is out of scope for the BRepBuilderAPI_Sewing taxonomy specifically.",
+  "source_domain": "exchange/sewing"
+ },
+ {
+  "pattern": "Message_ProgressScope / cancellation-progress bookkeeping (aPS.More()/aPS.Next() loop-increment desynchronization on early `continue`).",
+  "example_locations": [
+   "raw material: Merging.progress_scope_continuation_3798",
+   "BRepBuilderAPI_Sewing.cxx:3629 (Cutting), 3974 (EdgeProcessing) -- similar aPS.Next() loop-increment idiom"
+  ],
+  "reason": "UI/cancellation progress-reporting plumbing; not related to geometric defect detection or repair.",
+  "source_domain": "exchange/sewing"
+ },
+ {
+  "pattern": "Thin single-call exception-swallowing wrapper *methods* around one external algorithm invocation, considered as their own would-be problem class.",
+  "example_locations": [
+   "BRepBuilderAPI_Sewing.cxx:296-309 (SameParameter edge wrapper)",
+   "BRepBuilderAPI_Sewing.cxx:117-137 (SameRange wrapper)"
+  ],
+  "reason": "Not double-counted as separate problems: the fault-isolation behavior they exhibit is already captured once, comprehensively, as sew-per-edge-fault-isolation above.",
+  "source_domain": "exchange/sewing"
+ },
+ {
+  "pattern": "IsUClosedSurface/IsVClosedSurface's Geom_RectangularTrimmedSurface / Geom_OffsetSurface basis-surface unwrapping recursion, considered as its own problem separate from the seam-merge validity check it supports.",
+  "example_locations": [
+   "BRepBuilderAPI_Sewing.cxx:244-247,273-276 (basis-surface unwrap before closure test)"
+  ],
+  "reason": "Already folded into sew-seam-closed-surface-merge as a mechanism detail/subvariant, not double-counted as its own class.",
+  "source_domain": "exchange/sewing"
+ },
+ {
+  "pattern": "SHAPE_ASPECT / duplicate-SDR filtering to avoid re-translating validation-property shapes as hybrid-model geometry (getSDR/getListSDR/IsNeedRepresentation/OldWay)",
+  "example_locations": [
+   "STEPControl_ActorRead.cxx:398-498,1232-1368"
+  ],
+  "reason": "Product-structure / AP203 hybrid-model representation-selection bookkeeping to avoid duplicate work, not itself a geometry-defect repair. Includes the preferred-representation-type selection in getSDR (444-477): configuration-driven choice among valid alternative representations.",
+  "source_domain": "exchange/step-reader"
+ },
+ {
+  "pattern": "Entity-type recognition/dispatch chains (Recognize(), the IsKind chain in TransferShape, GeometricSet element type dispatch)",
+  "example_locations": [
+   "STEPControl_ActorRead.cxx:226-292,1417-1474",
+   "StepToTopoDS_Builder.cxx:672-759"
+  ],
+  "reason": "Pure API-contract type dispatch deciding which translator to call; excluded per task rubric except where a genuine fallback shape choice is involved (those cases are captured separately, e.g. stp-vertexloop-bound-mismatch, stp-geomset-gri-fallback).",
+  "source_domain": "exchange/step-reader"
+ },
+ {
+  "pattern": "Product has both sub-assemblies (NAUO) and a directly-assigned shape representation",
+  "example_locations": [
+   "STEPControl_ActorRead.cxx:680-682"
+  ],
+  "reason": "Product/assembly-structure ambiguity; both are still read and merged into one compound with only a warning, so no differing repair action is taken (borderline: could be promoted if corpus wants warning-diagnostic coverage).",
+  "source_domain": "exchange/step-reader"
+ },
+ {
+  "pattern": "TransferBRep_ShapeBinder / TransferBRep_ShapeListBinder accessor and storage methods",
+  "example_locations": [
+   "TransferBRep_ShapeBinder.cxx:1-63",
+   "TransferBRep_ShapeListBinder.cxx:1-102"
+  ],
+  "reason": "Pure bookkeeping (wrapping a TopoDS_Shape/list of shapes for the transfer map); no defect detection or repair logic present.",
+  "source_domain": "exchange/step-reader"
+ },
+ {
+  "pattern": "STEPControl_Reader file-load status plumbing and STEPControl_Controller actor/schema registration",
+  "example_locations": [
+   "STEPControl_Reader.cxx:103-259",
+   "STEPControl_Controller.cxx:1-500"
+  ],
+  "reason": "File I/O status codes and actor/schema registration infrastructure; no per-entity STEP-data-defect handling.",
+  "source_domain": "exchange/step-reader"
+ },
+ {
+  "pattern": "VERTEX_LOOP translated into an OCCT degenerate edge + closed wire (e.g. cone apex bound)",
+  "example_locations": [
+   "StepToTopoDS_TranslateVertexLoop.cxx:73-104"
+  ],
+  "reason": "This is the standard, expected STEP-to-BRep encoding for a single-point loop, not a repair of malformed data (contrast with stp-vertexloop-bound-mismatch, which covers genuinely mismatched VERTEX_LOOP usage).",
+  "source_domain": "exchange/step-reader"
+ },
+ {
+  "pattern": "COMPOSITE_CURVE_SEGMENT / EDGE_CURVE same_sense flag causing an edge to be reversed",
+  "example_locations": [
+   "StepToTopoDS_TranslateCompositeCurve.cxx:148-151,257",
+   "StepToTopoDS_TranslateEdge.cxx:270-279"
+  ],
+  "reason": "Correct interpretation of a legitimate STEP orientation flag, not detection/repair of a defect.",
+  "source_domain": "exchange/step-reader"
+ },
+ {
+  "pattern": "BREP_WITH_VOIDS void shell orientation flag causing the void shape to be reversed",
+  "example_locations": [
+   "StepToTopoDS_Builder.cxx:236-238"
+  ],
+  "reason": "Normal, expected STEP idiom for representing a solid's internal void, not defect repair.",
+  "source_domain": "exchange/step-reader"
+ },
+ {
+  "pattern": "OFFSET_SURFACE used as a face's basis surface logged as out of AP214 schema scope",
+  "example_locations": [
+   "StepToTopoDS_TranslateFace.cxx:490-491"
+  ],
+  "reason": "Diagnostic-only warning; translation proceeds identically to any other surface type with no differing fallback action taken, so there is no distinct repair behavior to catalog (tolerant out-of-schema acceptance; a corpus fixture could still target the warning).",
+  "source_domain": "exchange/step-reader"
+ },
+ {
+  "pattern": "Trimmed-surface unwrap before face construction (BasisSurface + trim bounds instead of the trimmed surface itself)",
+  "example_locations": [
+   "StepToTopoDS_Builder.cxx:607-634"
+  ],
+  "reason": "Works around an OCCT-internal BRepLib_MakeFace limitation, not a defect in the STEP data.",
+  "source_domain": "exchange/step-reader"
+ },
+ {
+  "pattern": "NMSSR sub-result compound flattening",
+  "example_locations": [
+   "STEPControl_ActorRead.cxx:603-614"
+  ],
+  "reason": "Result-structure bookkeeping (avoids an extra compound level in non-manifold assemblies), not a data repair.",
+  "source_domain": "exchange/step-reader"
+ },
+ {
+  "pattern": "Root Axis2Placement3d item interpreted as the representation's coordinate frame",
+  "example_locations": [
+   "STEPControl_ActorRead.cxx:875-909"
+  ],
+  "reason": "Supports a legitimate STEP encoding style for a root transform (read.step.root.transformation), not repair of malformed data.",
+  "source_domain": "exchange/step-reader"
+ },
+ {
+  "pattern": "Geometric-continuity (C0/C1/C2) statistics counters for surfaces/curves/pcurves",
+  "example_locations": [
+   "StepToTopoDS_Builder.cxx:159-172,249-262,451-465",
+   "StepToTopoDS_Tool (AddContinuity calls throughout Translate* files)"
+  ],
+  "reason": "Pure statistics collection for diagnostic reporting; no defect detection or repair.",
+  "source_domain": "exchange/step-reader"
+ },
+ {
+  "pattern": "BRepCheck_InvalidPointOnCurve \u2014 enum value defined, but the only code that would assign it (BRepCheck_Vertex::Blind) has its entire body commented out in V7_8_1 ('removed because of its useless...')",
+  "example_locations": [
+   "BRepCheck_Vertex.cxx:302-350"
+  ],
+  "reason": "dead code \u2014 no live path in this OCCT version assigns this status; cannot be exercised via BRepCheck_Analyzer regardless of fixture content",
+  "source_domain": "exchange/brepcheck"
+ },
+ {
+  "pattern": "BRepCheck_InvalidPointOnCurveOnSurface \u2014 same dead Blind() method as above",
+  "example_locations": [
+   "BRepCheck_Vertex.cxx:302-350"
+  ],
+  "reason": "dead code \u2014 no live assignment path in V7_8_1",
+  "source_domain": "exchange/brepcheck"
+ },
+ {
+  "pattern": "BRepCheck_Invalid3DCurve \u2014 enum value only referenced in the status-name printer (BRepCheck::Print) and in BRepTest's DRAW-command problem-ID table; grep across all of src/ finds no BRepCheck_*.cxx assignment site",
+  "example_locations": [
+   "BRepCheck.cxx:153",
+   "BRepTest_CheckCommands.cxx:598"
+  ],
+  "reason": "dead/reserved code \u2014 never assigned by any checker method in V7_8_1",
+  "source_domain": "exchange/brepcheck"
+ },
+ {
+  "pattern": "BRepCheck_InvalidWire \u2014 same pattern: only in the printer and BRepTest table, no checker assignment site found",
+  "example_locations": [
+   "BRepCheck.cxx:195",
+   "BRepTest_CheckCommands.cxx:654"
+  ],
+  "reason": "dead/reserved code \u2014 never assigned by any checker method in V7_8_1",
+  "source_domain": "exchange/brepcheck"
+ },
+ {
+  "pattern": "BRepCheck_BadOrientation (plain, distinct from BadOrientationOfSubshape) \u2014 same pattern: only in the printer and BRepTest table",
+  "example_locations": [
+   "BRepCheck.cxx:225",
+   "BRepTest_CheckCommands.cxx:694"
+  ],
+  "reason": "dead/reserved code \u2014 never assigned by any checker method in V7_8_1; only BadOrientationOfSubshape is live",
+  "source_domain": "exchange/brepcheck"
+ },
+ {
+  "pattern": "ShapeProcess::Perform per-operator exception-catch-and-continue and unknown-operator-name skip",
+  "example_locations": [
+   "ShapeProcess.cxx:126-145"
+  ],
+  "reason": "sequencing robustness / configuration-error plumbing, not an input-geometry defect class",
+  "source_domain": "exchange/heal-sequence+iges-reader"
+ },
+ {
+  "pattern": "ShapeProcess_Operator / ShapeProcess_UOperator dispatch shells",
+  "example_locations": [
+   "ShapeProcess_UOperator.cxx:35-39",
+   "ShapeProcess_Operator.cxx:21"
+  ],
+  "reason": "pure function-pointer dispatch, no defect logic",
+  "source_domain": "exchange/heal-sequence+iges-reader"
+ },
+ {
+  "pattern": "ShapeProcess_Context resource-file loading, mtime-based caching, scope stack",
+  "example_locations": [
+   "ShapeProcess_Context.cxx:61-130"
+  ],
+  "reason": "configuration plumbing",
+  "source_domain": "exchange/heal-sequence+iges-reader"
+ },
+ {
+  "pattern": "ShapeProcess_ShapeContext shape-identity/message map maintenance across operators",
+  "example_locations": [
+   "ShapeProcess_ShapeContext.cxx:151-390"
+  ],
+  "reason": "bookkeeping so later operators and binders see current shapes; no input defect",
+  "source_domain": "exchange/heal-sequence+iges-reader"
+ },
+ {
+  "pattern": "XSAlgo_AlgoContainer::MergeTransferInfo binder/message remapping after healing",
+  "example_locations": [
+   "XSAlgo_AlgoContainer.cxx:453-524",
+   "XSAlgo_AlgoContainer.cxx:531-601"
+  ],
+  "reason": "transfer-map bookkeeping, no repair decision",
+  "source_domain": "exchange/heal-sequence+iges-reader"
+ },
+ {
+  "pattern": "XSAlgo::Init Interface_Static parameter registration (read.stdsameparameter.mode, xstep.cascade.unit enum)",
+  "example_locations": [
+   "XSAlgo.cxx:30-66"
+  ],
+  "reason": "initialization; the unit-mismatch defect itself is captured as seq-xsalgo-unit-mismatch",
+  "source_domain": "exchange/heal-sequence+iges-reader"
+ },
+ {
+  "pattern": "XSAlgo_ToolContainer empty container",
+  "example_locations": [
+   "XSAlgo_ToolContainer.cxx:26-28"
+  ],
+  "reason": "vestigial factory, all code commented out",
+  "source_domain": "exchange/heal-sequence+iges-reader"
+ },
+ {
+  "pattern": "Dead code: commented-out dropsmalledges and PerformFixShape",
+  "example_locations": [
+   "ShapeProcess_OperLibrary.cxx:637-661",
+   "XSAlgo_AlgoContainer.cxx:217-282"
+  ],
+  "reason": "unreachable (inside comment blocks); references defunct APIs",
+  "source_domain": "exchange/heal-sequence+iges-reader"
+ },
+ {
+  "pattern": "Runtime.Tolerance / Runtime.MaxTolerance injection into resource manager before Perform",
+  "example_locations": [
+   "XSAlgo_AlgoContainer.cxx:183-184"
+  ],
+  "reason": "parameter plumbing feeding operator configs; the tolerance-policy defect classes live in seq-set-tolerance and seq-fix-shape",
+  "source_domain": "exchange/heal-sequence+iges-reader"
+ },
+ {
+  "pattern": "fixshape's ~40 individual Fix*Mode flag wirings",
+  "example_locations": [
+   "ShapeProcess_OperLibrary.cxx:718-772"
+  ],
+  "reason": "ShapeFix_Shape internal branch selection \u2014 owned by sibling TKShHealing agent; kept as one class seq-fix-shape",
+  "source_domain": "exchange/heal-sequence+iges-reader"
+ },
+ {
+  "pattern": "ShapeFix_Wire / ShapeAnalysis_Wire / ShapeFix_Edge / ShapeConstruct internal repair branches reached from IGESToBRep",
+  "example_locations": [
+   "IGESToBRep_IGESBoundary.cxx",
+   "IGESControl_IGESBoundary.cxx"
+  ],
+  "reason": "TKShHealing mechanism internals; only the IGES-side trigger/decision context is cataloged",
+  "source_domain": "exchange/heal-sequence+iges-reader"
+ },
+ {
+  "pattern": "EncodeRegularity uniform post-processing of every produced shape in IGES reader",
+  "example_locations": [
+   "IGESToBRep_Actor.cxx:105-118",
+   "IGESToBRep_Reader.cxx:282-295"
+  ],
+  "reason": "unconditional regularity-flag annotation, not tied to a specific input defect (the operator-level equivalent is a seq-set-tolerance subvariant); the tolerance-clamp half (TrimTolerances) is cataloged as iges-file-resolution-tolerance-calibration",
+  "source_domain": "exchange/heal-sequence+iges-reader"
+ },
+ {
+  "pattern": "Per-entity/per-root exception isolation (catch and continue with remaining entities, partial model instead of total failure)",
+  "example_locations": [
+   "IGESToBRep_Reader.cxx:424-433",
+   "IGESToBRep_CurveAndSurface.cxx:262-269",
+   "IGESToBRep_Actor.cxx:185-193"
+  ],
+  "reason": "crash-robustness policy, same verdict as the ShapeProcess per-operator catch; distinct underlying defects are cataloged under their own classes",
+  "source_domain": "exchange/heal-sequence+iges-reader"
+ },
+ {
+  "pattern": "IGESData_ToolLocation::ConvertLocation internal transform-decomposition math",
+  "example_locations": [
+   "IGESToBRep_CurveAndSurface.cxx:496-519"
+  ],
+  "reason": "delegated mechanism; the defect outcome is captured as iges-transform-non-similarity-rejected",
+  "source_domain": "exchange/heal-sequence+iges-reader"
+ },
+ {
+  "pattern": "IGESToBRep_Actor::Recognize entity-type gating",
+  "example_locations": [
+   "IGESToBRep_Actor.cxx:81-99"
+  ],
+  "reason": "pure dispatch/routing of which entities are attempted",
+  "source_domain": "exchange/heal-sequence+iges-reader"
+ },
+ {
+  "pattern": "Interface_ShareFlags::IsShared root filtering",
+  "example_locations": [
+   "IGESToBRep_Reader.cxx:413",
+   "IGESControl_Reader.cxx:114"
+  ],
+  "reason": "root-vs-referenced graph bookkeeping, not a defect signal",
+  "source_domain": "exchange/heal-sequence+iges-reader"
+ },
+ {
+  "pattern": "SingularSubfigure translation/scale compositing",
+  "example_locations": [
+   "IGESToBRep_CurveAndSurface.cxx:496-524"
+  ],
+  "reason": "correct coordinate math for well-formed nested instances, not repair",
+  "source_domain": "exchange/heal-sequence+iges-reader"
+ },
+ {
+  "pattern": "ParamSurface UV shift/scale for elementary surfaces (IGES vs OCCT parametrization conventions)",
+  "example_locations": [
+   "IGESToBRep_TopoSurface.cxx:1789-1866"
+  ],
+  "reason": "convention mapping, not a file-authoring defect",
+  "source_domain": "exchange/heal-sequence+iges-reader"
+ },
+ {
+  "pattern": "TabulatedCylinder V-parameter sign flip",
+  "example_locations": [
+   "IGESToBRep_TopoSurface.cxx:927-933"
+  ],
+  "reason": "OCCT-side construction convention correction, not an input defect",
+  "source_domain": "exchange/heal-sequence+iges-reader"
+ },
+ {
+  "pattern": "SurfaceOfRevolution near-2\u03c0 full-angle tolerance snap",
+  "example_locations": [
+   "IGESToBRep_TopoSurface.cxx:723-724"
+  ],
+  "reason": "minor floating-point boundary normalization, too thin to stand alone",
+  "source_domain": "exchange/heal-sequence+iges-reader"
+ },
+ {
+  "pattern": "ApproxBSplineCurve degree-1 approximation modes",
+  "example_locations": [
+   "IGESToBRep_TopoCurve.cxx:912-921",
+   "IGESToBRep_TopoCurve.cxx:1076-1087"
+  ],
+  "reason": "user-selected optional approximation feature, not defect-triggered",
+  "source_domain": "exchange/heal-sequence+iges-reader"
+ },
+ {
+  "pattern": "IGESControl_ActorWrite and all IGES write-side logic",
+  "example_locations": [
+   "IGESControl_ActorWrite.cxx"
+  ],
+  "reason": "export path, out of scope",
+  "source_domain": "exchange/heal-sequence+iges-reader"
+ },
+ {
+  "pattern": "IGESControl_Reader::PrintTransferInfo statistics/diagnostics",
+  "example_locations": [
+   "IGESControl_Reader.cxx:126-315"
+  ],
+  "reason": "reporting only, no repair",
+  "source_domain": "exchange/heal-sequence+iges-reader"
+ },
+ {
+  "pattern": "Generic OCC_CATCH_SIGNALS / catch(Standard_Failure) wrappers throughout IGESToBRep and ShapeProcess",
+  "example_locations": [
+   "ShapeProcess.cxx:135-144",
+   "XSAlgo_AlgoContainer.cxx:145-172"
+  ],
+  "reason": "defensive crash prevention; distinct underlying triggers are cataloged under their own classes",
+  "source_domain": "exchange/heal-sequence+iges-reader"
+ }
+]
