@@ -91394,6 +91394,101 @@
   },
   {
     "byte_assertions": [
+      "contains(b'FACE_OUTER_BOUND')",
+      "contains(b'FACE_BOUND(')",
+      "count_entity_def(b'EDGE_CURVE') == 5"
+    ],
+    "category": "§12.3c faces (sub-class: `tkshh-face-wire-of-two-coincident-edges` PARTIAL, missing multi-wire subvariant)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A single `PLANE` `ADVANCED_FACE` carries TWO wires: `FACE_OUTER_BOUND` is an ordinary valid 10×10 square, and `FACE_BOUND` is a 2-edge slit *inside* the square — the SAME `EDGE_CURVE` entity `E` (a 4-unit segment from (3,3,0) to (7,3,0)) referenced twice by two `ORIENTED_EDGE`s, both at `.T.` (FORWARD). Because the face now genuinely has 2 wires, `FixWiresTwoCoincEdges`'s multi-wire precondition is live and reachable, unlike Tfa074.",
+    "expected_kernel_behavior": "when a face has 2+ wires and one of them is a 2-edge loop reusing one edge entity at matching (FORWARD/FORWARD) orientation, that wire bounds no area and must be dropped from the face, leaving the other wire(s) intact.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3c-faces/Tfa256.stp",
+    "id": "Tfa256",
+    "notes": "**See also**: Tfa074 (identical reused-edge pattern, but single-wire — the gate this entry satisfies never opens there), Tfa232 (4-edge loop reusing a curve — a different, filter-probe pattern outside the `NbEdges()==2` gate), Tfa209 (5-edge wire with a duplicate pair — also outside the 2-edge gate). Live-verified (this worktree's OCP/OCCT 7.8.1, default import path, heal-on and heal-off identical): `occt=shape(1)/shape(1)`. The authored file has 2 wires and 5 `EDGE_CURVE` entities (4 square + 1 reused twice); the loaded shape carries only 1 wire and 4 edges — the entire coincident-edge inner wire (both its `ORIENTED_EDGE` references to `E`) is dropped outright, not merely left unmerged or flipped to a valid-but-degenerate orientation. `face[0].area==99.99999999999999`, matching the full 10×10 square with no trace of the slit subtracted. This is the opposite outcome from Tfa074, where the identical reused-edge pattern survives translation as a live 2-edge zero-area sliver (OCCT there just flips one `ORIENTED_EDGE` to REVERSED to keep the wire topologically valid, without recognizing it as a duplicate to remove) because that face has only one wire and the removal repair's `nbWires>=2` gate never opens. Synonyms: \"two coincident edges wire multi-wire face\", \"FixWiresTwoCoincEdges nbWires gate\", \"slit wire dropped from multi-wire face\", \"reused edge wire removal second wire present\", \"coincident-edge hole wire genuinely fires\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`ADVANCED_FACE` with a valid `FACE_OUTER_BOUND` wire plus a second `FACE_BOUND` wire whose `EDGE_LOOP` references one `EDGE_CURVE` twice via two FORWARD `ORIENTED_EDGE`s — on a live `OPEN_SHELL`/`SHELL_BASED_SURFACE_MODEL` path.",
+    "section": "12.3c",
+    "section_dir": "12-3c-faces",
+    "see_also": [
+      "Tfa074",
+      "Tfa232",
+      "Tfa209"
+    ],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "closes occt-coverage tkshhealing PARTIAL `tkshh-face-wire-of-two-coincident-edges` missing subvariant (occt-coverage/tkshhealing audit). OCCT `ShapeFix_Face::FixWiresTwoCoincEdges` (`ShapeFix_Face.cxx:2419-2472`, `nbWires>=2` gate at line 2440, `NbEdges()==2` gate at line 2450, `E1==E2` identity test after forcing FORWARD orientation at lines 2453-2458, slit wire dropped). Prior sole fixture Tfa074 encodes the identical reused-edge pattern but places it as the ONLY wire on its face — the `nbWires>=2` gate never opens, so the fix never fires and the sliver survives unmerged. This entry gives the same face a second, ordinary wire so the gate is genuinely satisfied."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\"",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "face[0].edge_count == 4",
+      "face[0].surface_type == \"plane\"",
+      "brepcheck.valid == True"
+    ],
+    "title": "Face with two coincident-edge wires, multi-wire gate satisfied"
+  },
+  {
+    "byte_assertions": [
+      "count_entity_def(b'CIRCLE') == 2",
+      "count_entity_def(b'EDGE_CURVE') == 2",
+      "contains(b'5.00001')"
+    ],
+    "category": "§12.3c faces (sub-class: `sew-edge-endpoint-tolerance-reconciliation` PARTIAL, missing closed-edge subvariant)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "An `OPEN_SHELL` carries two `ADVANCED_FACE`s on coincident `PLANE` locations (z=0). Each face's entire boundary is a single CLOSED `EDGE_CURVE` — its start vertex and end vertex are the identical `VERTEX_POINT` — tracing a full 360° `CIRCLE` of radius 5. `face_a`'s circle (normal +Z) closes at `VERTEX_POINT` (5,0,0). `face_b`'s circle (normal -Z, the \"other side\" of the same disk location) closes at a DISTINCT `VERTEX_POINT` (5.00001,0,0) — offset 1e-5 mm along +X, within a typical sewing tolerance (1e-4) but a genuinely different entity. Two independent, topologically unshared, full-period closed boundaries at (nearly) the same location.",
+    "expected_kernel_behavior": "a sewing/merge pass reconciling these two closed boundaries should use the closed-edge three-point-averaging tolerance computation (not the plain two-point formula) since both of each edge's endpoints are the same vertex; the merged result should have a single shared closing vertex whose tolerance sphere bounds both original positions.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3c-faces/Tfa257.stp",
+    "id": "Tfa257",
+    "notes": "**See also**: Tfa020 (open-edge two-vertex merge precondition, same offset-encoding convention), Tsh203, Tsh187 (same two-vertex subvariant, different offsets). Live-verified (this worktree's OCP/OCCT 7.8.1, default import path, heal-on and heal-off identical): `occt=shape(1)/shape(1) gmsh=shape(6)/shape(6)`; `n_faces_total==2`, `n_vertices_total==4` (2 closed edges x 1 vertex, each counted once per edge-endpoint reference pair). Honest caveat, matching this class's existing PARTIAL-covering fixtures: the plain default STEP reading path does not itself invoke the sewing/merge algorithm, so no live vertex-reconciling merge is observed on ordinary import — the two closing vertices remain 2 distinct, unmerged `VERTEX_POINT` instances at (5.00001,0,0) and (5,0,0) (confirmed via tier-3 vertex dump), and the two faces load as 2 separate shells inside a compound rather than one merged shell. What IS genuinely demonstrated and live-verified is that the input precondition itself survives translation completely intact and reachable — not orphaned, not dropped, not crashed — unlike a `GEOMETRIC_CURVE_SET`-hosted encoding, which this entry deliberately avoids. Synonyms: \"closed edge three point averaging merge\", \"two full circles same location unshared\", \"closed-edge tolerance-vertex overload\", \"closing vertex reconciliation coincident circles\", \"closed edge sewing tolerance merge precondition\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "Two `ADVANCED_FACE`s whose entire boundary is one CLOSED `EDGE_CURVE` each (own start vertex == own end vertex), positioned at coincident locations with their closing vertices offset by a within-tolerance amount and encoded as distinct `VERTEX_POINT` entities — on a live `OPEN_SHELL`/`SHELL_BASED_SURFACE_MODEL` path.",
+    "section": "12.3c",
+    "section_dir": "12-3c-faces",
+    "see_also": [
+      "Tfa020",
+      "Tsh203",
+      "Tsh187"
+    ],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "closes occt-coverage exchange/sewing PARTIAL `sew-edge-endpoint-tolerance-reconciliation` missing subvariant (occt-coverage/exchange audit). OCCT `BRepBuilderAPI_Sewing` static `ComputeToleranceVertex` (2-vertex overload, `BRepBuilderAPI_Sewing.cxx:481-524`, computes a new vertex position/tolerance bounding both original vertices) and `BRepBuilderAPI_Sewing::SameParameterEdge` (`BRepBuilderAPI_Sewing.cxx:669-684`, closed edges — `V11.IsSame(V12)` — route to a distinct 3-point-averaging overload and set both new endpoint vertices to the same computed node). Existing fixtures Tfa020/Tsh203/Tsh187 each encode the plain two-vertex (open-edge) merge precondition at distinct offsets",
+      "none encodes a CLOSED edge (an edge whose own two endpoints are the same vertex — a full-period loop), the precondition for the 3-point-averaging overload."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "crash",
+      "topology"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\"",
+      "n_faces_total == 2",
+      "face[0].surface_type == \"plane\"",
+      "face[1].surface_type == \"plane\"",
+      "n_vertices_total == 4"
+    ],
+    "title": "Two independent full-circle boundaries at the same location, closed-edge vertex reconciliation"
+  },
+  {
+    "byte_assertions": [
       "count_entity_def(b'UNCERTAINTY_MEASURE_WITH_UNIT') == 3",
       "contains(b'1.0E-7') and contains(b'1.0E-3') and contains(b'1.0E-2')",
       "contains(b'GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT')"
