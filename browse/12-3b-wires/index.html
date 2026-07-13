@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1>§12.3b Wires / loops / edges</h1>
 <p class="blurb">Wire / loop / edge pathologies: self-intersecting wires, half-edge orphans, misordered loops.</p>
-<p class="meta">282 entries</p>
+<p class="meta">289 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
@@ -300,6 +300,13 @@
 <tr><td><a href="Twi289.html"><code>Twi289</code></a></td><td>Edge with neither a 3D curve nor a usable pcurve is REMOVED from the wire (not reconstructed)</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Twi290.html"><code>Twi290</code></a></td><td>Non-closed curve whose two distinct vertices project to an identical parameter (null arc length) is discarded in favor of a straight-line fallback</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Twi291.html"><code>Twi291</code></a></td><td>Two adjacent wire edges&#x27; shared corner is encoded as two distinct `VERTEX_POINT`s coincident within tolerance (not bit-identical)</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Twi292.html"><code>Twi292</code></a></td><td>Short arc straddling a closed curve&#x27;s parameter seam: projected endpoint parameters come back swapped (w1 &gt; w2)</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Twi293.html"><code>Twi293</code></a></td><td>Full-period closed edge nested inside a TRIMMED_CURVE wrapper defeats the closed-curve split entirely</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Twi294.html"><code>Twi294</code></a></td><td>Open chain of two arcs of the same CIRCLE entity (not yet closing to a full circle) should be fused into one arc</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Twi295.html"><code>Twi295</code></a></td><td>Chain of two tangent-continuous cubic Bezier edges should be concatenated under ConcatBSplines mode</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Twi296.html"><code>Twi296</code></a></td><td>Degenerated (&quot;spindle&quot;) torus (major radius &lt; minor radius) missing its apex edge at aPhi = acos(-R/r)</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Twi297.html"><code>Twi297</code></a></td><td>B-spline surface pinched to a single point at its V=0 boundary (bug 24055 path), missing degenerate edge</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Twi298.html"><code>Twi298</code></a></td><td>Two NON-ADJACENT wire edges share a large (&gt;50%) collinear overlap, forcing the 3-edge reconstruction path</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(19) ifc=schema_n/a</code></td></tr>
 </tbody></table>
 </main>
 <footer>

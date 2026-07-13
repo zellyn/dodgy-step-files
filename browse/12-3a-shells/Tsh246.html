@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tsh246 — Two face-hosted candidate edges of unequal length: the longer becomes the parametrization reference</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3a Shells / orientation</a> <span class="sep">/</span> <span class="current">Tsh246</span>
+</nav>
+<header class="title-bar">
+<h1>Tsh246 <span class="sep">—</span> <span class="entry-title">Two face-hosted candidate edges of unequal length: the longer becomes the parametrization reference</span></h1>
+<p class="category">§12.3a shells (sub-class: sewing merge reference selection — `sew-longest-edge-reference-selection`)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3a-shells/Tsh246.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3a-shells/Tsh246.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>occt-coverage PARTIAL audit, `exchange/problems.json` `sew-longest-edge-reference-selection` (`BRepBuilderAPI_Sewing::SameParameterEdge`, `BRepBuilderAPI_Sewing.cxx:573-591`). N148 (the sole existing fixture) presents the same 5.0-vs-4.9mm length pattern but as a faceless `GEOMETRIC_CURVE_SET` (floating-mode-only, authored for `EvaluateDistances` projection, not reference selection) — every face-based merge fixture in the corpus (Twi037, Tfa019, Tfa020, Tsh203, M045) pairs equal-length edges, leaving the length-based reference choice unobservable on real face-hosted geometry.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An `OPEN_SHELL` with TWO `ADVANCED_FACE`s. Face LONG hosts a 5.0mm free edge x:[0,5],y=0. Face SHORT hosts a 4.9mm free edge x:[0.05,4.95],y=1e-4 — a within-tolerance gap, SHORT&#x27;s endpoints both strictly interior to LONG&#x27;s parametric span, comfortably above the `sew-free-edge-gap-merge` min-length floor. `SameParameterEdge`, on its first (top-level) call, computes both candidates&#x27; 3D curve length via arc-length evaluation and assigns the LONGER edge&#x27;s parametrization as the retained merge reference.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Two real, face-hosted, unequal-length (e.g. 5.0mm vs 4.9mm) near-coincident free edges within sewing tolerance, the shorter one&#x27;s endpoints strictly interior to the longer one&#x27;s span (N148&#x27;s length pattern rebuilt on real `ADVANCED_FACE`s instead of a `GEOMETRIC_CURVE_SET`).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>on merge, retain the LONGER candidate edge&#x27;s 3D curve and parametrization as the authoritative reference, re-projecting the shorter edge&#x27;s contribution onto it, rather than arbitrarily picking whichever edge was passed first.</p></section>
+<section><h2>Notes</h2>
+<p>Live-verified (this worktree&#x27;s OCP/OCCT 7.8.1, runtime the sewing stage(tolerance=1.0)` scaffold): after sewing, `NbContigousEdges()==1` (clean single merge); the resulting shared edge&#x27;s `BRep_Tool::Range` is exactly `(0.0, 5.0)` — LONG&#x27;s own original parameter range — not SHORT&#x27;s `(0.0, 4.9)`, directly confirming LONG&#x27;s parametrization/curve identity survived as the merge reference. The two candidates&#x27; VERTEX endpoints DO get tolerance-averaged to `(0.025, 4.975)` — a distinct, separately-cataloged mechanism (`sew-edge-endpoint-tolerance-reconciliation`), not this class; the load-bearing assertion is the retained parameter-range/curve identity, which the vertex averaging does not disturb. Synonyms: &quot;longest edge becomes sewing reference&quot;, &quot;SameParameterEdge length comparison&quot;, &quot;unequal-length edge merge parametrization&quot;, &quot;shorter edge reprojected onto longer&quot;, &quot;arc-length evaluation reference selection&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(14) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;ADVANCED_FACE&#x27;) == 2</code></li>
+<li><code>count_entity_def(b&#x27;OPEN_SHELL&#x27;) == 1</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_faces_total == 2</code></li>
+<li><code>n_edges_total == 6</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tsh246: OPEN_SHELL with TWO ADVANCED_FACEs: Face LONG hosts a 5.0mm free edge x:[0,5],y=0; Face SHORT hosts a 4.9mm free edge x:[0.05,4.95],y=1e-4 (within-tolerance gap, endpoints strictly interior to LONG&#x27;s span) â purpose-built unequal-length face-hosted merge candidate pair (N148&#x27;s length pattern rebuilt on real faces, not a GEOMETRIC_CURVE_SET) exercising BRepBuilderAPI_Sewing::SameParameterEdge&#x27;s longer-edge-becomes-reference selection */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Tsh246&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Tsh246.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">12</span>#3=CARTESIAN_POINT(&#x27;&#x27;,(2.5,40.0,0.0));
+<span class="lineno">13</span>#4=VERTEX_POINT(&#x27;&#x27;,#1);
+<span class="lineno">14</span>#5=VERTEX_POINT(&#x27;&#x27;,#2);
+<span class="lineno">15</span>#6=VERTEX_POINT(&#x27;&#x27;,#3);
+<span class="lineno">16</span>#7=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">17</span>#8=VECTOR(&#x27;&#x27;,#7,5.0);
+<span class="lineno">18</span>#9=LINE(&#x27;&#x27;,#1,#8);
+<span class="lineno">19</span>#10=EDGE_CURVE(&#x27;&#x27;,#4,#5,#9,.T.);
+<span class="lineno">20</span>#11=DIRECTION(&#x27;&#x27;,(-0.0623782861552,0.998052578483,0.0));
+<span class="lineno">21</span>#12=VECTOR(&#x27;&#x27;,#11,40.0780488547);
+<span class="lineno">22</span>#13=LINE(&#x27;&#x27;,#2,#12);
+<span class="lineno">23</span>#14=EDGE_CURVE(&#x27;&#x27;,#5,#6,#13,.T.);
+<span class="lineno">24</span>#15=DIRECTION(&#x27;&#x27;,(-0.0623782861552,-0.998052578483,0.0));
+<span class="lineno">25</span>#16=VECTOR(&#x27;&#x27;,#15,40.0780488547);
+<span class="lineno">26</span>#17=LINE(&#x27;&#x27;,#3,#16);
+<span class="lineno">27</span>#18=EDGE_CURVE(&#x27;&#x27;,#6,#4,#17,.T.);
+<span class="lineno">28</span>#19=ORIENTED_EDGE(&#x27;&#x27;,$,$,#10,.T.);
+<span class="lineno">29</span>#20=ORIENTED_EDGE(&#x27;&#x27;,$,$,#14,.T.);
+<span class="lineno">30</span>#21=ORIENTED_EDGE(&#x27;&#x27;,$,$,#18,.T.);
+<span class="lineno">31</span>#22=EDGE_LOOP(&#x27;&#x27;,(#19,#20,#21));
+<span class="lineno">32</span>#23=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">33</span>#24=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">34</span>#25=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#23,#24);
+<span class="lineno">35</span>#26=PLANE(&#x27;&#x27;,#25);
+<span class="lineno">36</span>#27=FACE_OUTER_BOUND(&#x27;&#x27;,#22,.T.);
+<span class="lineno">37</span><mark>#28=ADVANCED_FACE(</mark>&#x27;&#x27;,(#27),#26,.T.);
+<span class="lineno">38</span>#29=CARTESIAN_POINT(&#x27;&#x27;,(0.05,0.0001,0.0));
+<span class="lineno">39</span>#30=CARTESIAN_POINT(&#x27;&#x27;,(4.95,0.0001,0.0));
+<span class="lineno">40</span>#31=CARTESIAN_POINT(&#x27;&#x27;,(2.5,-39.9999,0.0));
+<span class="lineno">41</span>#32=VERTEX_POINT(&#x27;&#x27;,#29);
+<span class="lineno">42</span>#33=VERTEX_POINT(&#x27;&#x27;,#30);
+<span class="lineno">43</span>#34=VERTEX_POINT(&#x27;&#x27;,#31);
+<span class="lineno">44</span>#35=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">45</span>#36=VECTOR(&#x27;&#x27;,#35,4.9);
+<span class="lineno">46</span>#37=LINE(&#x27;&#x27;,#29,#36);
+<span class="lineno">47</span>#38=EDGE_CURVE(&#x27;&#x27;,#32,#33,#37,.T.);
+<span class="lineno">48</span>#39=DIRECTION(&#x27;&#x27;,(-0.0611354306584,-0.998129480137,0.0));
+<span class="lineno">49</span>#40=VECTOR(&#x27;&#x27;,#39,40.0749610106);
+<span class="lineno">50</span>#41=LINE(&#x27;&#x27;,#30,#40);
+<span class="lineno">51</span>#42=EDGE_CURVE(&#x27;&#x27;,#33,#34,#41,.T.);
+<span class="lineno">52</span>#43=DIRECTION(&#x27;&#x27;,(-0.0611354306584,0.998129480137,0.0));
+<span class="lineno">53</span>#44=VECTOR(&#x27;&#x27;,#43,40.0749610106);
+<span class="lineno">54</span>#45=LINE(&#x27;&#x27;,#31,#44);
+<span class="lineno">55</span>#46=EDGE_CURVE(&#x27;&#x27;,#34,#32,#45,.T.);
+<span class="lineno">56</span>#47=ORIENTED_EDGE(&#x27;&#x27;,$,$,#38,.T.);
+<span class="lineno">57</span>#48=ORIENTED_EDGE(&#x27;&#x27;,$,$,#42,.T.);
+<span class="lineno">58</span>#49=ORIENTED_EDGE(&#x27;&#x27;,$,$,#46,.T.);
+<span class="lineno">59</span>#50=EDGE_LOOP(&#x27;&#x27;,(#47,#48,#49));
+<span class="lineno">60</span>#51=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">61</span>#52=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">62</span>#53=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#29,#51,#52);
+<span class="lineno">63</span>#54=PLANE(&#x27;&#x27;,#53);
+<span class="lineno">64</span>#55=FACE_OUTER_BOUND(&#x27;&#x27;,#50,.T.);
+<span class="lineno">65</span><mark>#56=ADVANCED_FACE(</mark>&#x27;&#x27;,(#55),#54,.T.);
+<span class="lineno">66</span><mark>#57=OPEN_SHELL(</mark>&#x27;tsh246_longest_edge_ref_shell&#x27;,(#28,#56));
+<span class="lineno">67</span>#58=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#57));
+<span class="lineno">68</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">69</span>#9051=PRODUCT(&#x27;Tsh246&#x27;,&#x27;Tsh246&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">70</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">71</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">72</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">73</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">74</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">75</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">76</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">77</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">78</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">79</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#58),#9060);
+<span class="lineno">80</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">81</span>ENDSEC;
+<span class="lineno">82</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tsh245.html">&larr; Tsh245</a> <a class="up" href="index.html">§12.3a Shells / orientation</a> <a class="next" href="Tsh247.html">Tsh247 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

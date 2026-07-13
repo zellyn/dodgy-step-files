@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tsh243 — Within-tolerance gap but candidate edge shorter than the min-length floor: rejected as a spurious sliver</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3a Shells / orientation</a> <span class="sep">/</span> <span class="current">Tsh243</span>
+</nav>
+<header class="title-bar">
+<h1>Tsh243 <span class="sep">—</span> <span class="entry-title">Within-tolerance gap but candidate edge shorter than the min-length floor: rejected as a spurious sliver</span></h1>
+<p class="category">§12.3a shells (sub-class: edge-merging-tolerance — `sew-free-edge-gap-merge`)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3a-shells/Tsh243.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3a-shells/Tsh243.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>occt-coverage PARTIAL audit, `exchange/problems.json` `sew-free-edge-gap-merge` (`BRepBuilderAPI_Sewing::FindCandidates`, `BRepBuilderAPI_Sewing.cxx:1502`). First of the class&#x27;s two missing subvariants — the six existing fixtures (Tfa020, Tsh203, Tsh187, Twi037, Tfa019, Tsh181) all present ordinary-length within-tolerance gap-merge candidates.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An `OPEN_SHELL` with TWO `ADVANCED_FACE`s. Face A hosts a 10mm-long reference free edge E=(0,0,0)-(10,0,0). Face B hosts a genuinely tiny (5e-5mm-long) candidate edge at x:[4.0,4.00005], y=1e-4 (perpendicular gap comfortably within a 1.0mm sewing tolerance, so the gap check alone would pass) — Face B&#x27;s other two (apex) edges are ordinary-sized (2mm), so the whole face&#x27;s free-boundary wire is NOT itself negligible-extent (avoiding the unrelated `sew-degenerate-free-wire-collapse` mechanism firing on the whole face instead). `FindCandidates`: `if (aMaxDist &gt;= 0.0 &amp;&amp; aMaxDist &lt;= myTolerance &amp;&amp; arrLen(i) &gt; myMinTolerance)` — a candidate is accepted only if BOTH the sampled max distance is within tolerance AND the matching span exceeds `myMinTolerance` (internally `myTolerance*1e-4`). At operating tolerance 1.0, `myMinTolerance==1e-4`; Face B&#x27;s candidate span (5e-5) is HALF that floor.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>A long (e.g. 10mm) face-hosted reference free edge, and a second face-hosted candidate edge within-tolerance-gap of it but whose own length is below `myTolerance*1e-4` — with the candidate face&#x27;s OTHER boundary edges kept ordinary-sized so the whole candidate face isn&#x27;t itself negligible-extent.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>reject the candidate as a spurious sliver (do not merge), leaving the reference edge free/unmatched at that location, distinct from an ordinary-length candidate which DOES merge under the same harness (verified separately via Tsh242&#x27;s Face A/B pair).</p></section>
+<section><h2>Notes</h2>
+<p>Live-verified (this worktree&#x27;s OCP/OCCT 7.8.1, runtime the sewing stage(tolerance=1.0)` scaffold — reader-default the reader does not itself invoke Sewing): `NbContigousEdges()==0` for this fixture (no merge). A control build with the candidate&#x27;s length raised to 5e-3mm (100x larger, above the `myMinTolerance` floor at the same tolerance) shows `NbContigousEdges()==1` and a genuine unique-edge-count increase (7→8), confirming length — not distance — is the deciding factor isolated by this pair. Synonyms: &quot;spurious sliver candidate rejection&quot;, &quot;myMinTolerance span floor&quot;, &quot;short candidate edge gap-merge reject&quot;, &quot;FindCandidates arrLen length gate&quot;, &quot;sub-floor sliver edge not merged&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(16) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;ADVANCED_FACE&#x27;) == 2</code></li>
+<li><code>count_entity_def(b&#x27;OPEN_SHELL&#x27;) == 1</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_faces_total == 2</code></li>
+<li><code>n_edges_total == 7</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tsh243: OPEN_SHELL with TWO ADVANCED_FACEs: Face A hosts a 10mm reference free edge E=(0,0,0)-(10,0,0); Face B hosts a genuinely tiny (5e-5mm-long) candidate edge at x:[4.0,4.00005], y=1e-4 (gap well within a 1.0mm sewing tolerance) â purpose-built to fail BRepBuilderAPI_Sewing::FindCandidates&#x27; myMinTolerance span floor (arrLen(i) &gt; myMinTolerance) despite passing the distance-gate, demonstrating the spurious-sliver rejection path */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Tsh243&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Tsh243.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">12</span>#3=CARTESIAN_POINT(&#x27;&#x27;,(10.0,3.0,0.0));
+<span class="lineno">13</span>#4=CARTESIAN_POINT(&#x27;&#x27;,(0.0,3.0,0.0));
+<span class="lineno">14</span>#5=VERTEX_POINT(&#x27;&#x27;,#1);
+<span class="lineno">15</span>#6=VERTEX_POINT(&#x27;&#x27;,#2);
+<span class="lineno">16</span>#7=VERTEX_POINT(&#x27;&#x27;,#3);
+<span class="lineno">17</span>#8=VERTEX_POINT(&#x27;&#x27;,#4);
+<span class="lineno">18</span>#9=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">19</span>#10=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">20</span>#11=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">21</span>#12=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">22</span>#13=VECTOR(&#x27;&#x27;,#9,10.0);
+<span class="lineno">23</span>#14=LINE(&#x27;&#x27;,#1,#13);
+<span class="lineno">24</span>#15=EDGE_CURVE(&#x27;&#x27;,#5,#6,#14,.T.);
+<span class="lineno">25</span>#16=VECTOR(&#x27;&#x27;,#10,3.0);
+<span class="lineno">26</span>#17=LINE(&#x27;&#x27;,#2,#16);
+<span class="lineno">27</span>#18=EDGE_CURVE(&#x27;&#x27;,#6,#7,#17,.T.);
+<span class="lineno">28</span>#19=VECTOR(&#x27;&#x27;,#11,10.0);
+<span class="lineno">29</span>#20=LINE(&#x27;&#x27;,#3,#19);
+<span class="lineno">30</span>#21=EDGE_CURVE(&#x27;&#x27;,#7,#8,#20,.T.);
+<span class="lineno">31</span>#22=VECTOR(&#x27;&#x27;,#12,3.0);
+<span class="lineno">32</span>#23=LINE(&#x27;&#x27;,#4,#22);
+<span class="lineno">33</span>#24=EDGE_CURVE(&#x27;&#x27;,#8,#5,#23,.T.);
+<span class="lineno">34</span>#25=ORIENTED_EDGE(&#x27;&#x27;,$,$,#15,.T.);
+<span class="lineno">35</span>#26=ORIENTED_EDGE(&#x27;&#x27;,$,$,#18,.T.);
+<span class="lineno">36</span>#27=ORIENTED_EDGE(&#x27;&#x27;,$,$,#21,.T.);
+<span class="lineno">37</span>#28=ORIENTED_EDGE(&#x27;&#x27;,$,$,#24,.T.);
+<span class="lineno">38</span>#29=EDGE_LOOP(&#x27;&#x27;,(#25,#26,#27,#28));
+<span class="lineno">39</span>#30=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">40</span>#31=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">41</span>#32=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#30,#31);
+<span class="lineno">42</span>#33=PLANE(&#x27;&#x27;,#32);
+<span class="lineno">43</span>#34=FACE_OUTER_BOUND(&#x27;&#x27;,#29,.T.);
+<span class="lineno">44</span><mark>#35=ADVANCED_FACE(</mark>&#x27;&#x27;,(#34),#33,.T.);
+<span class="lineno">45</span>#36=CARTESIAN_POINT(&#x27;&#x27;,(4.0,0.0001,0.0));
+<span class="lineno">46</span>#37=CARTESIAN_POINT(&#x27;&#x27;,(4.00005,0.0001,0.0));
+<span class="lineno">47</span>#38=CARTESIAN_POINT(&#x27;&#x27;,(4.000025,2.0001,0.0));
+<span class="lineno">48</span>#39=VERTEX_POINT(&#x27;&#x27;,#36);
+<span class="lineno">49</span>#40=VERTEX_POINT(&#x27;&#x27;,#37);
+<span class="lineno">50</span>#41=VERTEX_POINT(&#x27;&#x27;,#38);
+<span class="lineno">51</span>#42=VECTOR(&#x27;&#x27;,#9,5.0E-05);
+<span class="lineno">52</span>#43=LINE(&#x27;&#x27;,#36,#42);
+<span class="lineno">53</span>#44=EDGE_CURVE(&#x27;&#x27;,#39,#40,#43,.T.);
+<span class="lineno">54</span>#45=DIRECTION(&#x27;&#x27;,(-0.0124990235519,0.999921884154,0.0));
+<span class="lineno">55</span>#46=VECTOR(&#x27;&#x27;,#45,0.0020001562439);
+<span class="lineno">56</span>#47=LINE(&#x27;&#x27;,#37,#46);
+<span class="lineno">57</span>#48=EDGE_CURVE(&#x27;&#x27;,#40,#41,#47,.T.);
+<span class="lineno">58</span>#49=DIRECTION(&#x27;&#x27;,(0.0124990235519,-0.999921884154,0.0));
+<span class="lineno">59</span>#50=VECTOR(&#x27;&#x27;,#49,0.0020001562439);
+<span class="lineno">60</span>#51=LINE(&#x27;&#x27;,#38,#50);
+<span class="lineno">61</span>#52=EDGE_CURVE(&#x27;&#x27;,#41,#39,#51,.T.);
+<span class="lineno">62</span>#53=ORIENTED_EDGE(&#x27;&#x27;,$,$,#44,.T.);
+<span class="lineno">63</span>#54=ORIENTED_EDGE(&#x27;&#x27;,$,$,#48,.T.);
+<span class="lineno">64</span>#55=ORIENTED_EDGE(&#x27;&#x27;,$,$,#52,.T.);
+<span class="lineno">65</span>#56=EDGE_LOOP(&#x27;&#x27;,(#53,#54,#55));
+<span class="lineno">66</span>#57=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#36,#30,#31);
+<span class="lineno">67</span>#58=PLANE(&#x27;&#x27;,#57);
+<span class="lineno">68</span>#59=FACE_OUTER_BOUND(&#x27;&#x27;,#56,.T.);
+<span class="lineno">69</span><mark>#60=ADVANCED_FACE(</mark>&#x27;&#x27;,(#59),#58,.T.);
+<span class="lineno">70</span><mark>#61=OPEN_SHELL(</mark>&#x27;tsh243_sliver_reject_shell&#x27;,(#35,#60));
+<span class="lineno">71</span>#62=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#61));
+<span class="lineno">72</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">73</span>#9051=PRODUCT(&#x27;Tsh243&#x27;,&#x27;Tsh243&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">74</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">75</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">76</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">77</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">78</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">79</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">80</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">81</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">82</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">83</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#62),#9060);
+<span class="lineno">84</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">85</span>ENDSEC;
+<span class="lineno">86</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tsh242.html">&larr; Tsh242</a> <a class="up" href="index.html">§12.3a Shells / orientation</a> <a class="next" href="Tsh244.html">Tsh244 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Twi296 — Degenerated (&quot;spindle&quot;) torus (major radius &lt; minor radius) missing its apex edge at aPhi = acos(-R/r)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3b Wires / loops / edges</a> <span class="sep">/</span> <span class="current">Twi296</span>
+</nav>
+<header class="title-bar">
+<h1>Twi296 <span class="sep">—</span> <span class="entry-title">Degenerated (&quot;spindle&quot;) torus (major radius &lt; minor radius) missing its apex edge at aPhi = acos(-R/r)</span></h1>
+<p class="category">§12.3b wire-loop (sub-class: missing degenerate edge, torus singularity)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3b-wires/Twi296.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3b-wires/Twi296.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT `ShapeFix_Face::FixMissingSeam` degenerated-torus apex branch (`ShapeFix_Face.cxx:1640-1650`) @ `bd2a789f15235755ce4d1a3b07379a2e062fdc2e`</li>
+<li>occt-coverage/tkshhealing/problems.json `tkshh-wire-missing-or-bad-degenerated-edge`, subvariant &quot;degenerated torus (major radius &lt; minor radius): apex edge at aPhi = acos(-R/r) (FixMissingSeam)&quot;</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Twi021 demonstrates the missing-degenerate-edge mechanism on a `CONICAL_SURFACE` apex. This fixture covers the torus-specific singularity named as still missing in the problem record&#x27;s notes: when a torus&#x27;s major radius `R` is smaller than its minor (tube) radius `r` (&quot;spindle torus&quot;, self-intersecting in 3D but a legal STEP `TOROIDAL_SURFACE`), the tube radius `R + r*cos(v)` reaches zero at `v = acos(-R/r)` — at that one V-row the ENTIRE U-circle collapses to a single point on the torus&#x27;s own axis, exactly analogous to a cone apex or sphere pole. A face whose wire crosses this V-row needs a degenerate edge bridging it; this fixture&#x27;s wire omits it.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`ADVANCED_FACE` on a `TOROIDAL_SURFACE` (major_radius=2, minor_radius=5); `FACE_OUTER_BOUND` → `EDGE_LOOP` with two meridian `CIRCLE`-arc edges (u=0 and u=π) running from the outer-equator base circle (v=0, radius 7) to the singular row (v≈113.58°, where both meridians converge on the SAME 3D point via TWO SEPARATE `VERTEX_POINT` instances, mirroring Twi021&#x27;s two-separate-apex-vertex pattern), closed by a base semicircle arc; no degenerate `ORIENTED_EDGE` bridges the two apex vertex instances.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>insert a degenerate edge at `aPhi = acos(-R/r)` bridging the singular row (the face-healing stage::missing-seam repair), or reject as malformed.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Twi021 (the analytic-cone-apex sibling of this mechanism), Twi287 (a different torus defect — full-period closed meridian edges on an ORDINARY, R&gt;r torus — not the same mechanism). Verified live: OCCT 7.8.1 auto-heals exactly as it does for Twi021 — `n_edges_total` comes back as **4** (up from the 3 declared), the extra `edge[0]` having near-zero length (`≈4.8e-12`) and near-zero radius: a synthesized degenerate apex edge. `brepcheck.valid==True`, `face[0].surface_type==&quot;torus&quot;`, `face[0].quadric.major_radius==2.0`, `face[0].quadric.minor_radius==5.0`, `shape(1)/shape(1)` — same documented-divergence pattern as Twi021 (OCC&#x27;s auto-repair is stronger than the catalog&#x27;s reject-only stance; conservative kernels should still reject the un-repaired input). Synonyms: &quot;spindle torus missing apex edge&quot;, &quot;major radius less than minor radius torus&quot;, &quot;torus tube radius reaches zero&quot;, &quot;degenerated torus singular row&quot;, &quot;torus self-intersecting apex point&quot;. Provenance tier: bytes-sufficient.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a</code></p></section>
+<section><h2>Closure intent</h2>
+<p><code>sheet</code> — the open shell is the intended final geometry; a solid-only kernel should cleanly refuse.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;TOROIDAL_SURFACE&#x27;) == 1</code></li>
+<li><code>count_entity_def(b&#x27;VERTEX_POINT&#x27;) &gt;= 4</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>face[0].surface_type == &quot;torus&quot;</code></li>
+<li><code>n_edges_total &gt;= 4</code></li>
+<li><code>n_vertices_total &gt;= 8</code></li>
+<li><code>brepcheck.valid == True</code></li>
+<li><code>face[0].quadric.major_radius == 2.0</code></li>
+<li><code>face[0].quadric.minor_radius == 5.0</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Twi021.html">Twi021</a>, <a href="Twi287.html">Twi287</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Twi296: OPEN_SHELL with one ADVANCED_FACE on a TOROIDAL_SURFACE (major_radius=2, minor_radius=5 -- major &lt; minor, a &#x27;spindle&#x27; torus whose tube radius R + r*cos(v) reaches ZERO at v=acos(-R/r), collapsing the entire U-circle at that row to a single point on the torus axis, a genuine surface singularity analogous to a cone apex); FACE_OUTER_BOUND references an EDGE_LOOP with two meridian CIRCLE-arc edges (u=0 and u=pi) running from the outer-equator base circle (v=0) to the singular row (v=acos(-2/5)), plus one base semicircle arc closing u:0-&gt;pi at v=0; NO degenerate ORIENTED_EDGE inserted at the singular row -- the two meridian edges terminate at the SAME 3D point via TWO SEPARATE VERTEX_POINT instances, exactly mirroring Twi021&#x27;s missing-apex-edge cone pattern but on a torus singularity instead; missing apex-bridging degenerate edge IS the mechanism; apex VERTEX_POINTs ARE wired into EDGE_LOOP meridian edges, FACE_OUTER_BOUND, ADVANCED_FACE, OPEN_SHELL; never orphaned; kernel must insert a degenerate edge at aPhi=acos(-R/r) or reject as malformed */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Twi296&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Twi296.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span><mark>#5=TOROIDAL_SURFACE(</mark>&#x27;&#x27;,#4,2.0000000000,5.0000000000);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,4.58257569496));
+<span class="lineno">16</span><mark>#7=VERTEX_POINT(</mark>&#x27;&#x27;,#6);
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,4.58257569496));
+<span class="lineno">18</span><mark>#9=VERTEX_POINT(</mark>&#x27;&#x27;,#8);
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(7.0,0.0,0.0));
+<span class="lineno">20</span><mark>#11=VERTEX_POINT(</mark>&#x27;&#x27;,#10);
+<span class="lineno">21</span>#12=CARTESIAN_POINT(&#x27;&#x27;,(-7.0,0.0,0.0));
+<span class="lineno">22</span><mark>#13=VERTEX_POINT(</mark>&#x27;&#x27;,#12);
+<span class="lineno">23</span>#14=CARTESIAN_POINT(&#x27;&#x27;,(2.0,0.0,0.0));
+<span class="lineno">24</span>#15=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">25</span>#16=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">26</span>#17=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#14,#15,#16);
+<span class="lineno">27</span>#18=CIRCLE(&#x27;&#x27;,#17,5.0000000000);
+<span class="lineno">28</span>#19=EDGE_CURVE(&#x27;&#x27;,#7,#11,#18,.T.);
+<span class="lineno">29</span>#20=ORIENTED_EDGE(&#x27;&#x27;,$,$,#19,.T.);
+<span class="lineno">30</span>#21=CARTESIAN_POINT(&#x27;&#x27;,(-2.0,0.0,0.0));
+<span class="lineno">31</span>#22=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">32</span>#23=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">33</span>#24=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#21,#22,#23);
+<span class="lineno">34</span>#25=CIRCLE(&#x27;&#x27;,#24,5.0000000000);
+<span class="lineno">35</span>#26=EDGE_CURVE(&#x27;&#x27;,#13,#9,#25,.T.);
+<span class="lineno">36</span>#27=ORIENTED_EDGE(&#x27;&#x27;,$,$,#26,.T.);
+<span class="lineno">37</span>#28=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">38</span>#29=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">39</span>#30=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">40</span>#31=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#28,#29,#30);
+<span class="lineno">41</span>#32=CIRCLE(&#x27;&#x27;,#31,7.0000000000);
+<span class="lineno">42</span>#33=EDGE_CURVE(&#x27;&#x27;,#11,#13,#32,.T.);
+<span class="lineno">43</span>#34=ORIENTED_EDGE(&#x27;&#x27;,$,$,#33,.T.);
+<span class="lineno">44</span>#35=EDGE_LOOP(&#x27;&#x27;,(#20,#34,#27));
+<span class="lineno">45</span>#36=FACE_OUTER_BOUND(&#x27;&#x27;,#35,.T.);
+<span class="lineno">46</span>#37=ADVANCED_FACE(&#x27;&#x27;,(#36),#5,.T.);
+<span class="lineno">47</span>#38=OPEN_SHELL(&#x27;&#x27;,(#37));
+<span class="lineno">48</span>#39=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#38));
+<span class="lineno">49</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">50</span>#9051=PRODUCT(&#x27;Twi296&#x27;,&#x27;Twi296&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">51</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">52</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">53</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">54</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">55</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">56</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">57</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">58</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">59</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">60</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#39),#9060);
+<span class="lineno">61</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">62</span>ENDSEC;
+<span class="lineno">63</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Twi295.html">&larr; Twi295</a> <a class="up" href="index.html">§12.3b Wires / loops / edges</a> <a class="next" href="Twi297.html">Twi297 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>
