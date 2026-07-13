@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1>§12.3b Wires / loops / edges</h1>
 <p class="blurb">Wire / loop / edge pathologies: self-intersecting wires, half-edge orphans, misordered loops.</p>
-<p class="meta">289 entries</p>
+<p class="meta">296 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
@@ -307,6 +307,13 @@
 <tr><td><a href="Twi296.html"><code>Twi296</code></a></td><td>Degenerated (&quot;spindle&quot;) torus (major radius &lt; minor radius) missing its apex edge at aPhi = acos(-R/r)</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Twi297.html"><code>Twi297</code></a></td><td>B-spline surface pinched to a single point at its V=0 boundary (bug 24055 path), missing degenerate edge</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Twi298.html"><code>Twi298</code></a></td><td>Two NON-ADJACENT wire edges share a large (&gt;50%) collinear overlap, forcing the 3-edge reconstruction path</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(19) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Twi299.html"><code>Twi299</code></a></td><td>Whole-circle edge whose VERTEX_POINT sits at the circle&#x27;s own center (no unique nearest point for projection)</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Twi300.html"><code>Twi300</code></a></td><td>Edge trimmed onto an unbounded LINE by a vertex enormously far along the line&#x27;s own direction</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Twi301.html"><code>Twi301</code></a></td><td>EDGE_CURVE flagged degenerate but its 3D LINE has positive length, face-hosted on a real ADVANCED_FACE/CONICAL_SURFACE</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Twi302.html"><code>Twi302</code></a></td><td>Small SEAM edge on a periodic face, adjacent to another seam segment: seam-with-seam merge</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Twi303.html"><code>Twi303</code></a></td><td>Small edge at a sharp corner (non-collinear neighbors on both sides): drop-mode-only merge</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Twi304.html"><code>Twi304</code></a></td><td>Multi-face shared full-circle edge that must NOT be collapsed as a &quot;small edge&quot; (protection case)</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(12) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Twi305.html"><code>Twi305</code></a></td><td>Apex-bridging edge already PRESENT at the cone singularity (single, correctly positioned): dgnr/replace input</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a</code></td></tr>
 </tbody></table>
 </main>
 <footer>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ad137 — COMPOSITE_CURVE with one numerically degenerate segment (non-monotonic B-spline knots): segment-dropped-not-whole-curve-aborted catch site</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.11 Adversarial / parser robustness</a> <span class="sep">/</span> <span class="current">Ad137</span>
+</nav>
+<header class="title-bar">
+<h1>Ad137 <span class="sep">—</span> <span class="entry-title">COMPOSITE_CURVE with one numerically degenerate segment (non-monotonic B-spline knots): segment-dropped-not-whole-curve-aborted catch site</span></h1>
+<p class="category">§12.11 adversarial (sub-class: `stp-transfer-exception-to-fail`, PARTIAL, narrow breadth)</p>
+<p class="severity-badge severity-p3">P3 — cosmetic / metadata-only</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-adversarial" href="../by-tag/adversarial/index.html">adversarial</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-11-adversarial/Ad137.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-11-adversarial/Ad137.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>occt-coverage `exchange/problems.json` `stp-transfer-exception-to-fail` (`StepToTopoDS_TranslateCompositeCurve::Init`, `StepToTopoDS_TranslateCompositeCurve.cxx:188-211,243-249`, per-segment 3D-curve/pcurve conversion try/catch, segment dropped on exception). Distinct call site from Ad043 (`STEPControl_ActorRead::TransferShape`, per-ROOT try/catch) and Xp008 (`StepToTopoDS_TranslateEdgeLoop`, per-EDGE try/catch) — this one is nested one level deeper, inside a single edge&#x27;s own composite-curve geometry, at per-segment granularity.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>`StepToTopoDS_TranslateCompositeCurve::Init` wraps EACH segment&#x27;s own 3D-curve/pcurve conversion in its own try/catch; a segment whose underlying geometry throws during construction (as opposed to merely being disconnected from its neighbor — Gp034/Gp188&#x27;s already-covered connectivity-gap warning path) should be dropped, letting the rest of the composite curve&#x27;s segments — and the containing face — still translate. This fixture&#x27;s `COMPOSITE_CURVE` has two segments: `good_composite_segment_line` (an ordinary `LINE`, genuinely constructible) and `degenerate_composite_segment_bspline` (a `B_SPLINE_CURVE_WITH_KNOTS` whose knot vector `(1.0, 0.5, 2.0)` is NOT monotonically non-decreasing — schema-legal Part-21 bytes, but numerically invalid for `Geom_BSplineCurve`&#x27;s constructor, which requires a non-decreasing knot sequence).</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`ADVANCED_FACE` on a `PLANE`; sole boundary is a self-loop `EDGE_CURVE` whose 3D geometry is a `SURFACE_CURVE` wrapping a `COMPOSITE_CURVE` of two `COMPOSITE_CURVE_SEGMENT`s (one good `LINE`, one non-monotonic-knot `B_SPLINE_CURVE_WITH_KNOTS`) — mirrors Gp188&#x27;s proven-working structural pattern (segments reference base curves directly, not `TRIMMED_CURVE`-wrapped; the `COMPOSITE_CURVE` itself wrapped in `SURFACE_CURVE`+`PCURVE`, not used bare as `EDGE_CURVE.edge_geometry`).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>drop the bad segment&#x27;s contribution via the per-segment catch, letting the whole face still translate (`occt=shape(1)`) rather than aborting the whole read.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Ad043, Xp008 (coarser-granularity catch sites for this same task-brief family), Gp034, Gp188 (connectivity-gap sibling, a DIFFERENT defect — disconnection, not a throwing segment). Live-verified (this worktree, OCP/OCCT 7.8.1): reads without crashing, `TransferRoots()==1`, `OneShape()` not null, `occt=shape(1)/shape(1)`, `shape_null=False`, `n_faces_total=1` — matching Gp188&#x27;s own pre-existing &quot;`n_edges_total==0` despite `n_faces_total==1`&quot; tier-3 signature for this single-self-loop `COMPOSITE_CURVE`-edge structural family (confirmed via direct read this is a known, established, ACCEPTED pattern for this construction style in this corpus — see Gp188&#x27;s own notes — not a new concern introduced here). A prior variant of this fixture used `TRIMMED_CURVE`-wrapped segments (Gp063&#x27;s pattern) instead of Gp188&#x27;s plain-LINE-segment style, and used the `COMPOSITE_CURVE` bare as `EDGE_CURVE.edge_geometry` instead of Gp188&#x27;s `SURFACE_CURVE`+`PCURVE` wrapper — both prior variants ALSO read as `shape(1)`/non-null, so the exact sub-pattern choice does not appear load-bearing for reachability; this version follows Gp188&#x27;s own proven convention for consistency. Synonyms: &quot;composite curve segment throws&quot;, &quot;per-segment try catch composite curve&quot;, &quot;non-monotonic knot vector segment&quot;, &quot;segment dropped not curve aborted&quot;, &quot;TranslateCompositeCurve per-segment catch&quot;. Provenance tier: bytes-sufficient.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
+<section><h2>Closure intent</h2>
+<p><code>sheet</code> — the open shell is the intended final geometry; a solid-only kernel should cleanly refuse.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;good_composite_segment_line&#x27;)</code></li>
+<li><code>contains(b&#x27;degenerate_composite_segment_bspline&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;COMPOSITE_CURVE_SEGMENT&#x27;) == 2</code></li>
+<li><code>count_entity_def(b&#x27;COMPOSITE_CURVE&#x27;) == 1</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_faces_total == 1</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Ad043.html">Ad043</a>, <a href="../12-12-cross-product/Xp008.html">Xp008</a>, <a href="../12-2a-pcurves/Gp034.html">Gp034</a>, <a href="../12-2a-pcurves/Gp188.html">Gp188</a>, <a href="../12-2a-pcurves/Gp063.html">Gp063</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Ad137: ADVANCED_FACE on a PLANE (z=0); its sole boundary is a self-loop EDGE_CURVE whose 3D geometry is a SURFACE_CURVE wrapping a COMPOSITE_CURVE (&#x27;mixed_segment_composite_curve&#x27;) of TWO COMPOSITE_CURVE_SEGMENTs: <mark>good_composite_segment_line</mark> (an ordinary LINE, genuinely constructible) and <mark>degenerate_composite_segment_bspline</mark> (a B_SPLINE_CURVE_WITH_KNOTS whose knot vector (1.0,0.5,2.0) is NOT monotonically non-decreasing -- schema-legal bytes, numerically invalid geometry that throws Standard_ConstructionError when Geom_BSplineCurve actually tries to construct it); StepToTopoDS_TranslateCompositeCurve::Init&#x27;s per-segment try/catch IS the mechanism under test -- the bad segment should be dropped, not the whole composite curve/edge/face aborted; EDGE_CURVE IS wired into FACE_OUTER_BOUND, ADVANCED_FACE, OPEN_SHELL; never orphaned */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ad137&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ad137.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=PLANE(&#x27;&#x27;,#4);
+<span class="lineno">15</span>#6=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT(&#x27;UV&#x27;,&#x27;2D&#x27;));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">17</span>#8=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">18</span>#9=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">19</span>#10=VECTOR(&#x27;&#x27;,#9,1.0);
+<span class="lineno">20</span>#11=LINE(&#x27;<mark>good_composite_segment_line</mark>&#x27;,#7,#10);
+<span class="lineno">21</span>#12=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">22</span>#13=CARTESIAN_POINT(&#x27;&#x27;,(1.5,0.3,0.0));
+<span class="lineno">23</span>#14=CARTESIAN_POINT(&#x27;&#x27;,(2.0,0.0,0.0));
+<span class="lineno">24</span>#15=B_SPLINE_CURVE_WITH_KNOTS(&#x27;<mark>degenerate_composite_segment_bspline</mark>&#x27;,2,(#12,#13,#14),.UNSPECIFIED.,.F.,.F.,(3,3),(1.0,0.5,2.0),.UNSPECIFIED.);
+<span class="lineno">25</span><mark>#16=COMPOSITE_CURVE_SEGMENT(</mark>.CONTINUOUS.,.T.,#11);
+<span class="lineno">26</span><mark>#17=COMPOSITE_CURVE_SEGMENT(</mark>.CONTINUOUS.,.T.,#15);
+<span class="lineno">27</span><mark>#18=COMPOSITE_CURVE(</mark>&#x27;mixed_segment_composite_curve&#x27;,(#16,#17),.F.);
+<span class="lineno">28</span>#19=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));
+<span class="lineno">29</span>#20=DIRECTION(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">30</span>#21=VECTOR(&#x27;&#x27;,#20,2.0);
+<span class="lineno">31</span>#22=LINE(&#x27;&#x27;,#19,#21);
+<span class="lineno">32</span>#23=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#22),#6);
+<span class="lineno">33</span>#24=PCURVE(&#x27;&#x27;,#5,#23);
+<span class="lineno">34</span>#25=SURFACE_CURVE(&#x27;&#x27;,#18,(#24),.PCURVE_S1.);
+<span class="lineno">35</span>#26=EDGE_CURVE(&#x27;&#x27;,#8,#8,#25,.T.);
+<span class="lineno">36</span>#27=ORIENTED_EDGE(&#x27;&#x27;,$,$,#26,.T.);
+<span class="lineno">37</span>#28=EDGE_LOOP(&#x27;&#x27;,(#27));
+<span class="lineno">38</span>#29=FACE_OUTER_BOUND(&#x27;&#x27;,#28,.T.);
+<span class="lineno">39</span>#30=ADVANCED_FACE(&#x27;&#x27;,(#29),#5,.T.);
+<span class="lineno">40</span>#31=OPEN_SHELL(&#x27;&#x27;,(#30));
+<span class="lineno">41</span>#32=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#31));
+<span class="lineno">42</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">43</span>#9051=PRODUCT(&#x27;Ad137&#x27;,&#x27;Ad137&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">44</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">45</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">46</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">47</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">48</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">49</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">50</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">51</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">52</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">53</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#32),#9060);
+<span class="lineno">54</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">55</span>ENDSEC;
+<span class="lineno">56</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ad136.html">&larr; Ad136</a> <a class="up" href="index.html">§12.11 Adversarial / parser robustness</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

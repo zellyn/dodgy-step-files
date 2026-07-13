@@ -25,7 +25,7 @@ See [`../../STEP_PROBLEM_CATALOG.md`](../../STEP_PROBLEM_CATALOG.md) (§12.1b) f
 | [Lh017](Lh017.stp) | User-defined entity name with `!` prefix in DATA section |
 | [Lh018](Lh018.stp) | Lower-case keyword (`ifcperson`, `cartesian_point`, `ENTITY` etc.) |
 | [Lh019](Lh019.stp) | FILE_SCHEMA names a schema that disagrees with entity types in DATA |
-| [Lh022](Lh022.stp) | Duplicate instance ID (`#N=...` defined twice within one DATA section) |
+| [Lh022](Lh022.stp) | Duplicate instance ID (`#N=..` defined twice within one DATA section) |
 | [Lh023](Lh023.stp) | Whitespace, tab, or comment between `#` and digits of an instance ID |
 | [Lh024](Lh024.stp) | Reuse of `#NNN` across different DATA sections (Ed.3 multi-section) |
 | [Lh025](Lh025.stp) | Mixing `#NNN` (entity) and `@NNN` (value) namespaces (Ed.3) |
@@ -47,3 +47,13 @@ See [`../../STEP_PROBLEM_CATALOG.md`](../../STEP_PROBLEM_CATALOG.md) (§12.1b) f
 | [Lh041](Lh041.stp) | REFERENCE section with mixed URI schemes including unsupported schemes |
 | [Lh042](Lh042.stp) | SIGNATURE section appearing before DATA (signature-over-empty-content) |
 | [Lh043](Lh043.stp) | Header `FILE_DESCRIPTION` with comments inside string |
+| [Lh044](Lh044.stp) | Cross-section reference resolves through chain (`@s1#10` defined as `@s2#20`) |
+| [Lh045](Lh045.stp) | Cross-section reference to undefined section name |
+| [Lh046](Lh046.stp) | HEADER section contains only `/* */` comments and no required records |
+| [Lh047](Lh047.stp) | Lower-case section keywords (`data;` instead of `DATA;`) |
+| [Lh048](Lh048.stp) | STEP reader cannot consume a non-seekable stream (in-memory / pipe / network) |
+| [Lh049](Lh049.stp) | Big-endian / s390x byte-order in OCCT wrapper drops shapes |
+| [Lh050](Lh050.stp) | STEP header `DATE_AND_TIME` malformed — FreeBSD `timezone` variable declaration conflict |
+| [Lh051](Lh051.stp) | Leading-zero instance-name aliasing collision (`#1` and `#01` are the same name) |
+| [Lh052](Lh052.stp) | Conformant AP203 file rejected at the `DATA;` boundary (independent-parser differential) |
+| [Lh053](Lh053.stp) | FILE_NAME preprocessor_version contains "I-DEAS", plus a real open shell with an adjacent, edge-sharing closing shell |

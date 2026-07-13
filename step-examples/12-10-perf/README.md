@@ -40,3 +40,8 @@ See [`../../STEP_PROBLEM_CATALOG.md`](../../STEP_PROBLEM_CATALOG.md) (§12.10) f
 | [Pf032](Pf032.stp) | Reader hangs during XCAF tree build on deep assembly |
 | [Pf033](Pf033.stp) | Long-running mesh on STEP file load |
 | [Pf034](Pf034.stp) | Shape-divide pass raises end-of-iteration on large shape |
+| [Pf035](Pf035.stp) | Large assembly STEP loads at 100% CPU with unbounded memory growth until OOM |
+| [Pf036](Pf036.stp) | `STEPCAFControl_Reader` hangs in infinite loop on cyclic `MAPPED_ITEM` reference |
+| [Pf037](Pf037.stp) | Two-pass loader: dangling forward-ref subgraph silently truncated (BRL-CAD step-g) |
+| [Pf038](Pf038.stp) | STEP→GLB OOM, memory not released during translation pipeline |
+| [Pf039](Pf039.stp) | STEP→GLB infinite loop on assembly traversal (self-referencing NAUO) |

@@ -70,9 +70,34 @@ See [`../../STEP_PROBLEM_CATALOG.md`](../../STEP_PROBLEM_CATALOG.md) (§12.6) fo
 | [A087](A087.stp) | STEP exporter loses shapes after import-export cycle |
 | [A088](A088.stp) | Empty assembly causes writer to throw |
 | [A089](A089.stp) | Sub-shape names lost in non-manifold STEP output |
+| [A095](A095.stp) | STEP export of a part with a fillet/round generates malformed shape on receiver |
+| [A096](A096.stp) | `STEPCAFControl_Writer` skips a shape when it has identity location and partner shapes have non-identity locations |
+| [A097](A097.stp) | Error transferring `.stp` model from `STEPCAFControl_Reader` to OCAF document |
+| [A098](A098.stp) | Writer-emitted STEP cannot be re-imported by the same writing process (round-trip refused) |
+| [A099](A099.stp) | PartDesign Body export omits last-feature operation when feature is the visible Tip |
+| [A100](A100.stp) | Importer routes Assembly-module assemblies into Part containers (Assembly graph lost) |
+| [A101](A101.stp) | SubShapeBinder-derived Boolean Cut crashes downstream slicers and re-import |
+| [A102](A102.stp) | Cap part exports as STEP that downstream slicers flag as damaged (open shell wrapped as solid) |
+| [A103](A103.stp) | Geometry imports correctly but every face arrives with no colour assigned |
+| [A104](A104.stp) | Exception raised during STEP write with `ExternalReferences` mode in XDE document |
+| [A105](A105.stp) | Regression OCC 6.9.1 → 7.4.0: colours stop appearing on certain STEP files |
+| [A106](A106.stp) | Access violation in `StepVisual_PresentationStyleAssignment` while translating STEP file |
+| [A107](A107.stp) | `BinXCAF` regression: documents with colour cannot be re-loaded after save |
+| [A108](A108.stp) | Draft-mirrored body silently dropped on STEP export (mirror NAUO) |
+| [A109](A109.stp) | Combining STEP files corrupts assembly tree (NAUO wrong parent) |
+| [A110](A110.stp) | Entity STEP id used as element name on serialization |
+| [A111](A111.stp) | VRML→STEP gateway silently drops non-STEP component placeholders |
+| [A112](A112.stp) | NAUO name reuse: dedup-by-name collapses distinct instances |
+| [A115](A115.stp) | CATIA V5 PRODUCT_CATEGORY_RELATIONSHIP across AP214→AP242 schema boundary |
+| [A116](A116.stp) | Duplicate PRODUCT.id in multi-body STEP export |
+| [A117](A117.stp) | PRODUCT_DEFINITION_CONTEXT with null application_context_element |
+| [A118](A118.stp) | SRR reverses the relation defined by NAUO, wired through a real CONTEXT_DEPENDENT_SHAPE_REPRESENTATION |
+| [A119](A119.stp) | `MAPPED_ITEM` with a resolvable `REPRESENTATION_MAP` + real target shape, but an unrecognized-type placement reference |
+| [A120](A120.stp) | `SHAPE_REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION` where only ONE of Origin/Target belongs to its expected representation |
 | [P001](P001.stp) | Schema variant: CONFIG_CONTROL_DESIGN with no PRODUCT entity |
 | [P002](P002.stp) | Non-UTF-8 (GB18030 / locale code page) in string literals |
 | [P003](P003.stp) | Control characters / illegal-XML bytes in name strings corrupt downstream documents |
+| [P004](P004.stp) | `LENGTH_UNIT` declaration disagrees with actual coordinate scale |
 | [P005](P005.stp) | Inverted spherical face on certain sweep orientations |
 | [P006](P006.stp) | 360° revolution of arc-of-ellipse produces self-intersecting solid |
 | [P007](P007.stp) | High-curvature B-spline surface flattens between OCCT versions |

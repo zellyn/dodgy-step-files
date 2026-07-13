@@ -35,3 +35,17 @@ See [`../../STEP_PROBLEM_CATALOG.md`](../../STEP_PROBLEM_CATALOG.md) (§12.5) fo
 | [U036](U036.stp) | `BinXCAF` does not preserve length unit |
 | [U037](U037.stp) | `RescaleGeometry` does not rescale triangulations |
 | [U038](U038.stp) | STEP read produces unexpectedly enormous scaling on parts (MAPPED_ITEM target uses MM while source REPRESENTATION_MAP context uses METRE: cross-context unit composition error) |
+| [U039](U039.stp) | Plane-angle unit declared as DEGREE but values stored as radians (or vice-versa) |
+| [U040](U040.stp) | Pressure unit `Pa` built from a derived-unit chain (`kg / (m * s^2)`) |
+| [U041](U041.stp) | Dynamic-viscosity unit `Pa·s` built from a derived-unit chain (`kg / (m * s)`) |
+| [U042](U042.stp) | Specific-heat-capacity unit `J/(kg·K)` built from a derived-unit chain (`m^2 / (s^2 * K)`) |
+| [U043](U043.stp) | Slicer-side unit-context inversion: STEP says mm, slicer reads as inches |
+| [U044](U044.stp) | `gp_Trsf::SetDisplacement` between two `AXIS2_PLACEMENT_3D` records produces wrong transform |
+| [U045](U045.stp) | `CARTESIAN_TRANSFORMATION_OPERATOR` `scale` attribute parsed but never applied (BRL-CAD step-g) |
+| [U046](U046.stp) | Link scaled with -1 (mirror) not exported correctly to STEP |
+| [U047](U047.stp) | IfcConvert STEP output at wrong scale (LENGTH_UNIT vs coord mismatch) |
+| [U048](U048.stp) | Vendor library AXIS2_PLACEMENT_3D bakes 90° Z rotation into convention |
+| [U049](U049.stp) | Two conflicting length units (MILLI + CENTI metre) in one representation context |
+| [U050](U050.stp) | `CONVERSION_BASED_UNIT('INCH',...)` declared on a live 2-face shell (unit-scaling on real geometry + tolerances) |
+| [U051](U051.stp) | `SHAPE_REPRESENTATION.context_of_items = $` (null) directly governing a live shell |
+| [U052](U052.stp) | `REPRESENTATION_CONTEXT` of the wrong kind (missing unit mixins) directly governing a live shell |

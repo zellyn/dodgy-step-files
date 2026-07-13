@@ -11,7 +11,7 @@ See [`../../STEP_PROBLEM_CATALOG.md`](../../STEP_PROBLEM_CATALOG.md) (§12.1a) f
 | [Le001](Le001.stp) | UTF-8 BOM at start of `ISO-10303-21;` |
 | [Le002](Le002.stp) | Edition-default encoding mismatch (Ed.2 ISO-8859-1 vs Ed.3 UTF-8) |
 | [Le004](Le004.stp) | `\X\` (single-byte ISO-8859) escape with bad hex digit count or non-hex input |
-| [Le005](Le005.stp) | `\X2\…\X0\` (UCS-2) escape: missing terminator, bad digit count, or nesting |
+| [Le005](Le005.stp) | `\X2\…\X0\` (UCS-2) escape: 3 hex digits in one group |
 | [Le006](Le006.stp) | `\X4\…\X0\` (UCS-4) escape with hex run not divisible by 8 or containing surrogate code points |
 | [Le007](Le007.stp) | `\X2\` endianness confusion / lone-surrogate handling |
 | [Le008](Le008.stp) | `\S\X` (8-bit shift) directive: misuse, chaining, or apostrophe-after-`\S\` |
@@ -23,7 +23,7 @@ See [`../../STEP_PROBLEM_CATALOG.md`](../../STEP_PROBLEM_CATALOG.md) (§12.1a) f
 | [Le014](Le014.stp) | Apostrophe inside a `\X2\…\X0\` block decoded as string close |
 | [Le015](Le015.stp) | Unterminated string literal |
 | [Le016](Le016.stp) | Single backslash inside a string literal (Windows path) |
-| [Le017](Le017.stp) | Raw control character (U+0000..U+001F) in string body |
+| [Le017](Le017.stp) | Raw control character (U+0000.U+001F) in string body |
 | [Le018](Le018.stp) | Inline newline inside an unterminated literal silently concatenated |
 | [Le020](Le020.stp) | String literal exceeds Ed.3 32 769-octet limit |
 | [Le021](Le021.stp) | Component name in non-UTF-8 locale encoding (GB18030 / Shift-JIS / cp1251 / DOS850) |
@@ -41,9 +41,9 @@ See [`../../STEP_PROBLEM_CATALOG.md`](../../STEP_PROBLEM_CATALOG.md) (§12.1a) f
 | [Le036](Le036.stp) | Round-trip loss of `\X2\` content through XML / DB layer |
 | [Le037](Le037.stp) | `\PE\` alphabet-extension directive switching to a non-Latin code page mid-string |
 | [Le038](Le038.stp) | Bare `\PE\` directive at end-of-string with no operand letter |
-| [Le039](Le039.stp) | `\PE\` selector letter outside the legal A..I range |
+| [Le039](Le039.stp) | `\PE\` selector letter outside the legal A.I range |
 | [Le040](Le040.stp) | `\Q\` numeric-character-reference at the upper Unicode boundary (U+10FFFF) |
-| [Le041](Le041.stp) | `\Q\` encoding a code point in the UTF-16 surrogate range (U+D800..U+DFFF) |
+| [Le041](Le041.stp) | `\Q\` encoding a code point in the UTF-16 surrogate range (U+D800.U+DFFF) |
 | [Le042](Le042.stp) | `\Q\` payload contains non-decimal characters |
 | [Le043](Le043.stp) | `\X4\` with a valid supplementary-plane code point followed by a short trailing hex run |
 | [Le044](Le044.stp) | `\X2\` payload containing UTF-16 surrogate halves |
@@ -53,3 +53,13 @@ See [`../../STEP_PROBLEM_CATALOG.md`](../../STEP_PROBLEM_CATALOG.md) (§12.1a) f
 | [Le048](Le048.stp) | REAL literal exceeding double range (overflow → +Inf / underflow → 0) |
 | [Le049](Le049.stp) | Carriage-return stripping during STEP file write |
 | [Le050](Le050.stp) | Unicode characters in STEP export silently dropped |
+| [Le051](Le051.stp) | `\X2\…\X0\` (UCS-2) escape: missing `\X0\` terminator |
+| [Le052](Le052.stp) | `\X2\…\X0\` (UCS-2) escape: whitespace splits the hex run |
+| [Le053](Le053.stp) | `\X2\…\X0\` (UCS-2) escape: nested `\X2\` opened without closing the prior |
+| [Le054](Le054.stp) | High-bit byte ambiguous between Windows-1252 and ISO-8859-1 |
+| [Le055](Le055.stp) | Boolean lexeme written as `.TRUE.` / `.FALSE.` instead of canonical `.T.` / `.F.` |
+| [Le056](Le056.stp) | Mixed `.T.` and `.TRUE.` boolean lexemes within one file |
+| [Le057](Le057.stp) | Records terminated with `;\n` plus extra blank lines between records |
+| [Le058](Le058.stp) | Final record before `ENDSEC;` lacks trailing newline at EOF |
+| [Le059](Le059.stp) | German umlauts in `PRODUCT.name` mis-decoded by reader (Latin-1/UTF-8 confusion) |
+| [Le060](Le060.stp) | OCCT #1318: STEP writer infinite loop on oversized raw string with indentation prefix |

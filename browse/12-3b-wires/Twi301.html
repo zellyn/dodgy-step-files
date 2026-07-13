@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Twi301 — EDGE_CURVE flagged degenerate but its 3D LINE has positive length, face-hosted on a real ADVANCED_FACE/CONICAL_SURFACE</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3b Wires / loops / edges</a> <span class="sep">/</span> <span class="current">Twi301</span>
+</nav>
+<header class="title-bar">
+<h1>Twi301 <span class="sep">—</span> <span class="entry-title">EDGE_CURVE flagged degenerate but its 3D LINE has positive length, face-hosted on a real ADVANCED_FACE/CONICAL_SURFACE</span></h1>
+<p class="category">§12.3b wire-loop (sub-class: `bc-invalid-degenerated-flag`, PARTIAL)</p>
+<p class="severity-badge severity-p3">P3 — cosmetic / metadata-only</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3b-wires/Twi301.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3b-wires/Twi301.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>occt-coverage `exchange/problems.json` `bc-invalid-degenerated-flag` (`BRepCheck_Edge::Blind`, `BRepCheck_Edge.cxx:138`, sets `BRepCheck_InvalidDegeneratedFlag`). Face-hosted sibling of Twi083 (which demonstrates the identical byte-level defect pattern but orphaned inside a `GEOMETRIC_CURVE_SET`, so OCC yields empty and BRepCheck never runs on it).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Twi083&#x27;s defect pattern (a positive-length 3D `LINE` wrapped in a curve-on-surface representation whose sole `PCURVE` has a zero-length 2D UV extent — the contradiction that should trip `BRepCheck_Edge::InvalidDegeneratedFlag`) reproduced verbatim, but wired into a real cone-frustum `ADVANCED_FACE`/`CONICAL_SURFACE` wire instead of an orphaned `GEOMETRIC_CURVE_SET`, so the defect-carrying edge is genuinely reachable and part of translated topology.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`CONICAL_SURFACE` frustum face (apex at origin, semi-angle 30°, between z=1 and z=3, apex NOT included). One lateral edge (`flag_lying_lateral_edge`) is a real 2.309-unit-long `LINE` (`positive_length_line`) wrapped in a `SURFACE_CURVE` whose sole `PCURVE` has a zero-magnitude 2D `VECTOR`; the other three edges (opposite lateral, top arc, bottom arc) are ordinary well-formed edges so the face genuinely translates.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>`BRepCheck_Edge::InvalidDegeneratedFlag` should be observable once BRepCheck actually walks the flagged edge (unlike Twi083&#x27;s orphaned host); at minimum the input pattern must reach real, reachable, translated topology.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Twi083 (identical byte pattern, orphaned GCS host, `occt=empty`). Live-verified (this worktree, OCP/OCCT 7.8.1): reads without crashing, `occt=shape(1)/shape(1)`, `brepcheck.valid=True`, face is a cone, `n_edges_total=4`, `n_vertices_total=8`. IMPORTANT honest finding: a direct `BRep_Tool::Degenerated_s()` probe on the resulting shape&#x27;s edges shows ALL FOUR come back `False`, including `flag_lying_lateral_edge` — OCCT&#x27;s default `StepToTopoDS`/`ShapeFix` pipeline recomputes the Degenerated flag from actual 3D geometry rather than trusting a zero-extent pcurve as a degeneracy signal, so it does NOT propagate an incorrect flag through to the final BRep in this configuration. (A `SEAM_CURVE` wrapper — Twi083&#x27;s literal choice — was also tried live: with one pcurve it fails translation outright, `roots=0`; with the same pcurve listed twice it &quot;succeeds&quot; but the resulting shape has zero edges, an empty translate, not a genuine face; `SURFACE_CURVE` with one pcurve was used instead since it survives translation with the wire intact.) This fixture closes the REACHABILITY half of the packet&#x27;s ask (the defect-carrier edge is now provably part of real, translated topology, not orphaned) but does NOT independently prove `BRepCheck_Edge::InvalidDegeneratedFlag` fires at runtime for this input; matches this class&#x27;s existing `detect_only` provenance tier rather than upgrading it to a live-mechanism demonstration. Synonyms: &quot;degenerate flag lies on real face&quot;, &quot;face-hosted flag contradiction&quot;, &quot;positive length edge flagged degenerate&quot;, &quot;BRepCheck InvalidDegeneratedFlag reachable carrier&quot;. Provenance tier: bytes-sufficient (detect_only).</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Closure intent</h2>
+<p><code>sheet</code> — the open shell is the intended final geometry; a solid-only kernel should cleanly refuse.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;positive_length_line&#x27;)</code></li>
+<li><code>contains(b&#x27;flag_lying_lateral_edge&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;CONICAL_SURFACE&#x27;) == 1</code></li>
+<li><code>count_entity_def(b&#x27;ADVANCED_FACE&#x27;) == 1</code></li>
+<li><code>count_entity_def(b&#x27;SURFACE_CURVE&#x27;) == 1</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>face[0].surface_type == &quot;cone&quot;</code></li>
+<li><code>n_edges_total &gt;= 4</code></li>
+<li><code>n_vertices_total &gt;= 8</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Twi083.html">Twi083</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Twi301: OPEN_SHELL with one ADVANCED_FACE on a CONICAL_SURFACE (apex at origin, semi-angle 30Â°, axis +Z); face is a frustum between z=1 and z=3 (apex NOT included -- isolates the flag-lie defect from apex/singularity handling); FACE_OUTER_BOUND references a 4-edge EDGE_LOOP: lateral_A (<mark>flag_lying_lateral_edge</mark>, v_b0-&gt;v_t0, real positive-length 3D LINE &#x27;<mark>positive_length_line</mark>&#x27; wrapped in a SURFACE_CURVE whose PCURVE has a zero-length 2D UV LINE -- the degenerate-flag lie, Twi083&#x27;s exact pattern), top_arc (v_t0-&gt;v_t1, ordinary CIRCLE edge), lateral_B (v_t1-&gt;v_b1, ordinary LINE edge), bottom_arc reversed (v_b1-&gt;v_b0, ordinary CIRCLE edge); BRepCheck_Edge InvalidDegeneratedFlag triggered on lateral_A once BRepCheck actually walks it (unlike Twi083&#x27;s orphaned GCS host); EDGE_LOOP IS wired into FACE_OUTER_BOUND, ADVANCED_FACE, OPEN_SHELL; never orphaned */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Twi301&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Twi301.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span><mark>#5=CONICAL_SURFACE(</mark>&#x27;&#x27;,#4,0.0,0.5235987756);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(0.57735026919,0.0,1.0));
+<span class="lineno">16</span>#7=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(1.73205080757,0.0,3.0));
+<span class="lineno">18</span>#9=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(-1.73205080757,0.0,3.0));
+<span class="lineno">20</span>#11=VERTEX_POINT(&#x27;&#x27;,#10);
+<span class="lineno">21</span>#12=CARTESIAN_POINT(&#x27;&#x27;,(-0.57735026919,0.0,1.0));
+<span class="lineno">22</span>#13=VERTEX_POINT(&#x27;&#x27;,#12);
+<span class="lineno">23</span>#14=DIRECTION(&#x27;&#x27;,(0.5,0.0,0.866025403784));
+<span class="lineno">24</span>#15=VECTOR(&#x27;&#x27;,#14,2.30940107676);
+<span class="lineno">25</span>#16=CARTESIAN_POINT(&#x27;&#x27;,(0.57735026919,0.0,1.0));
+<span class="lineno">26</span>#17=LINE(&#x27;<mark>positive_length_line</mark>&#x27;,#16,#15);
+<span class="lineno">27</span>#18=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));
+<span class="lineno">28</span>#19=DIRECTION(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">29</span>#20=VECTOR(&#x27;&#x27;,#19,0.0);
+<span class="lineno">30</span>#21=LINE(&#x27;&#x27;,#18,#20);
+<span class="lineno">31</span>#22=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT(&#x27;UV&#x27;,&#x27;2D&#x27;));
+<span class="lineno">32</span>#23=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#21),#22);
+<span class="lineno">33</span>#24=PCURVE(&#x27;&#x27;,#5,#23);
+<span class="lineno">34</span><mark>#25=SURFACE_CURVE(</mark>&#x27;&#x27;,#17,(#24),.PCURVE_S1.);
+<span class="lineno">35</span>#26=EDGE_CURVE(&#x27;<mark>flag_lying_lateral_edge</mark>&#x27;,#7,#9,#25,.T.);
+<span class="lineno">36</span>#27=ORIENTED_EDGE(&#x27;&#x27;,*,*,#26,.T.);
+<span class="lineno">37</span>#28=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,3.0));
+<span class="lineno">38</span>#29=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#28,#2,#3);
+<span class="lineno">39</span>#30=CIRCLE(&#x27;&#x27;,#29,1.7320508076);
+<span class="lineno">40</span>#31=EDGE_CURVE(&#x27;&#x27;,#9,#11,#30,.T.);
+<span class="lineno">41</span>#32=ORIENTED_EDGE(&#x27;&#x27;,*,*,#31,.T.);
+<span class="lineno">42</span>#33=DIRECTION(&#x27;&#x27;,(-0.5,0.0,-0.866025403784));
+<span class="lineno">43</span>#34=VECTOR(&#x27;&#x27;,#33,2.30940107676);
+<span class="lineno">44</span>#35=CARTESIAN_POINT(&#x27;&#x27;,(-1.73205080757,0.0,3.0));
+<span class="lineno">45</span>#36=LINE(&#x27;&#x27;,#35,#34);
+<span class="lineno">46</span>#37=EDGE_CURVE(&#x27;&#x27;,#11,#13,#36,.T.);
+<span class="lineno">47</span>#38=ORIENTED_EDGE(&#x27;&#x27;,*,*,#37,.T.);
+<span class="lineno">48</span>#39=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">49</span>#40=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#39,#2,#3);
+<span class="lineno">50</span>#41=CIRCLE(&#x27;&#x27;,#40,0.5773502692);
+<span class="lineno">51</span>#42=EDGE_CURVE(&#x27;&#x27;,#7,#13,#41,.T.);
+<span class="lineno">52</span>#43=ORIENTED_EDGE(&#x27;&#x27;,*,*,#42,.F.);
+<span class="lineno">53</span>#44=EDGE_LOOP(&#x27;&#x27;,(#27,#32,#38,#43));
+<span class="lineno">54</span>#45=FACE_OUTER_BOUND(&#x27;&#x27;,#44,.T.);
+<span class="lineno">55</span><mark>#46=ADVANCED_FACE(</mark>&#x27;&#x27;,(#45),#5,.T.);
+<span class="lineno">56</span>#47=OPEN_SHELL(&#x27;&#x27;,(#46));
+<span class="lineno">57</span>#48=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#47));
+<span class="lineno">58</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">59</span>#9051=PRODUCT(&#x27;Twi301&#x27;,&#x27;Twi301&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">60</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">61</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">62</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">63</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">64</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">65</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">66</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">67</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">68</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">69</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#48),#9060);
+<span class="lineno">70</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">71</span>ENDSEC;
+<span class="lineno">72</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Twi300.html">&larr; Twi300</a> <a class="up" href="index.html">§12.3b Wires / loops / edges</a> <a class="next" href="Twi302.html">Twi302 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

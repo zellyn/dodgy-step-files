@@ -35,3 +35,27 @@ for canonical entries.
 | [Xp020](Xp020.stp) | Tessellated face × BRep face sharing PMI × unit-system inch/mm collision |
 | [Xp021](Xp021.stp) | Disconnected EDGE_LOOP × pcurve missing × wire bypassing seam |
 | [Xp022](Xp022.stp) | Time-bomb tolerance × negative-radius torus × cyclic seam edge |
+| [Xp023](Xp023.stp) | Deeply nested aggregate × overlong string literal in one fixture (Pf × Ad cross-product) |
+| [Xp024](Xp024.stp) | Tessellated topology × shared shell × void containment in one fixture |
+| [Xp025](Xp025.stp) | Onshape→SolidWorks: assembly children snap to origin (placements lost) |
+| [Xp026](Xp026.stp) | Fusion 360 AP242 export rejected by NX 12 (no AP242 import) |
+| [Xp027](Xp027.stp) | Inventor STEP import "stuck at 95%" — long path in FILE_NAME author field |
+| [Xp028](Xp028.stp) | Onshape "imports as one Surface" — missing face yields OPEN_SHELL |
+| [Xp029](Xp029.stp) | Onshape STEP/SLDPRT export drops cosmetic thread metadata |
+| [Xp030](Xp030.stp) | Inventor exports Asian (CJK) characters as raw legacy-codepage bytes |
+| [Xp031](Xp031.stp) | KiCad STEP imports cleanly in FreeCAD but corrupts in SolidWorks (PRODUCT.name de-dup) |
+| [Xp032](Xp032.stp) | CATIA V5 degenerate B-spline surface → Inventor "empty PartBody" |
+| [Xp033](Xp033.stp) | NX-emitted cylinder split into two ADVANCED_FACE halves at the seam |
+| [Xp034](Xp034.stp) | CadQuery RGB shifted by sRGB→linear conversion on STEP export |
+| [Xp035](Xp035.stp) | CadQuery STEP writer emits redundant COLOUR_RGB entities for identical colours |
+| [Xp036](Xp036.stp) | STYLED_ITEM colours dropped by bare STEPControl_Reader (vs XCAF reader) |
+| [Xp037](Xp037.stp) | Creo Parametric assembly STEP with overlapping bodies fails manifold solid |
+| [Xp038](Xp038.stp) | Onshape 2-56 UNC tap drill misclassified as M1.6 metric clearance hole |
+| [Xp039](Xp039.stp) | Inventor "simplified part" loses appearance via empty SURFACE_SIDE_STYLE |
+| [Xp040](Xp040.stp) | Solid Edge import of Creo Elements STEP: "stuck" sub-assemblies |
+| [Xp041](Xp041.stp) | IfcOpenShell rejects valid IFC4X1 file due to lowercase 'x' in schema name |
+| [Xp042](Xp042.stp) | NX → Onshape "translation error" via super-multiplicity B-spline knot |
+| [Xp043](Xp043.stp) | CATIA AP242 → Inventor: top-level PRODUCT_DEFINITION without SDR |
+| [Xp044](Xp044.stp) | KiCad PCB STEP export: missing components / wrong MAPPED_ITEM target |
+| [Xp045](Xp045.stp) | Far-from-origin model collapses in a float32 viewer buffer while double-precision CAD renders it |
+| [Xp046](Xp046.stp) | Valid conical `ADVANCED_FACE` dropped by OCCT 7.7.x `BRepMesh` but present in ≤7.6.1 / desktop CAD (kernel-version differential) |

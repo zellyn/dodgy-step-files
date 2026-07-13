@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Twi299 — Whole-circle edge whose VERTEX_POINT sits at the circle&#x27;s own center (no unique nearest point for projection)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3b Wires / loops / edges</a> <span class="sep">/</span> <span class="current">Twi299</span>
+</nav>
+<header class="title-bar">
+<h1>Twi299 <span class="sep">—</span> <span class="entry-title">Whole-circle edge whose VERTEX_POINT sits at the circle&#x27;s own center (no unique nearest point for projection)</span></h1>
+<p class="category">§12.3b wire-loop (sub-class: `stp-makeedge-validity-fallback`, PARTIAL, missing subvariant &quot;point projection onto the 3D curve fails at all&quot;)</p>
+<p class="severity-badge severity-p3">P3 — cosmetic / metadata-only</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3b-wires/Twi299.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3b-wires/Twi299.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>occt-coverage `exchange/problems.json` `stp-makeedge-validity-fallback` (`StepToTopoDS_TranslateEdge::DecodeMakeEdgeError`, `StepToTopoDS_TranslateEdge.cxx:70-131`</li>
+<li>`MakeFromCurve3D` fallback force-build, `:483-489`). Sibling of Twi086/Bo030/Gs029 (already-covered subvariants) and Bo030 specifically (per-vertex tolerance-underflow evidentiary pattern reused here).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Building a proper OCCT edge from the translated 3D curve, its vertices, and their trim parameters (`BRepLib_MakeEdge`) requires projecting each vertex&#x27;s 3D point onto the curve when no explicit trim parameter is supplied. For a point exactly on a circle&#x27;s own axis of symmetry (its center), every point on the circle is equidistant — there is no unique nearest point, so the projection is genuinely ambiguous/fails, distinct from Bo030&#x27;s off-curve-but-well-defined-nearest-point case and Twi086&#x27;s zero-length-line case. OCCT still force-builds a raw edge directly from curve+vertices+parameters rather than aborting.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`ADVANCED_FACE` on a `PLANE`; `FACE_OUTER_BOUND` is a single whole-circle `EDGE_CURVE` (radius 1, centered at origin) whose shared `VERTEX_POINT` (same entity at both `edge_start`/`edge_end`) sits at `(0,0,0)` — the circle&#x27;s own center — instead of any point on the circle.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>force-build the edge from the curve/vertex/parameter data anyway, logging the point-projection failure as a diagnostic rather than aborting the edge&#x27;s translation; widen the affected vertex&#x27;s tolerance to cover the real gap between the declared point and the curve it nominally bounds.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Twi086, Bo030, Gs029 (the class&#x27;s other subvariants). Live-verified (this worktree, OCP/OCCT 7.8.1): reads without crashing, `occt=shape(1)/shape(1)`, `brepcheck.valid=True`; edge[0]&#x27;s OWN tolerance stays default `1e-07`, but BOTH vertex tolerances are blown out to `1.000001` — essentially the circle&#x27;s radius — confirming `BRepLib_MakeEdge`&#x27;s fallback force-built the edge directly from curve+vertex+params rather than aborting, and the vertex-tolerance-update pass (`BRepLib::UpdateInnerTolerances`, Bo030&#x27;s own citation) had to widen the VERTEX tolerance to cover the true 1.0-unit gap between the declared off-curve vertex and the curve it nominally bounds — the same &quot;force-built anyway, tolerance absorbs the lie&quot; evidentiary pattern as Bo030, now for the point-projection-fails subvariant specifically. Synonyms: &quot;vertex at circle center&quot;, &quot;no unique nearest point on curve&quot;, &quot;ambiguous curve projection&quot;, &quot;point on axis of symmetry&quot;, &quot;MakeEdge point projection failure&quot;. Provenance tier: bytes-sufficient.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
+<section><h2>Closure intent</h2>
+<p><code>sheet</code> — the open shell is the intended final geometry; a solid-only kernel should cleanly refuse.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;off_curve_center_vertex&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;CIRCLE&#x27;) == 1</code></li>
+<li><code>count_entity_def(b&#x27;VERTEX_POINT&#x27;) == 1</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Twi086.html">Twi086</a>, <a href="../12-3a-shells/Bo030.html">Bo030</a>, <a href="../12-2c-surfaces/Gs029.html">Gs029</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Twi299: OPEN_SHELL with one ADVANCED_FACE on a PLANE (z=0, normal +Z); FACE_OUTER_BOUND references an EDGE_LOOP with one whole-circle EDGE_CURVE (radius 1, centered at origin); <mark>off_curve_center_vertex</mark> (the SAME VERTEX_POINT at both edge_start and edge_end) sits at (0,0,0) -- the circle&#x27;s own center, on its axis of symmetry, equidistant (radius 1) from every point of the circle, so there is NO unique nearest point for BRepLib_MakeEdge&#x27;s vertex-to-curve projection to find; point-projection-onto-3D-curve failure IS the mechanism (DecodeMakeEdgeError / MakeFromCurve3D fallback force-build); EDGE_LOOP IS wired into FACE_OUTER_BOUND, ADVANCED_FACE, OPEN_SHELL; never orphaned */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Twi299&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Twi299.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=PLANE(&#x27;&#x27;,#4);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#7=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#6,#2,#3);
+<span class="lineno">17</span><mark>#8=CIRCLE(</mark>&#x27;&#x27;,#7,1.0);
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">19</span><mark>#10=VERTEX_POINT(</mark>&#x27;<mark>off_curve_center_vertex</mark>&#x27;,#9);
+<span class="lineno">20</span>#11=EDGE_CURVE(&#x27;&#x27;,#10,#10,#8,.T.);
+<span class="lineno">21</span>#12=ORIENTED_EDGE(&#x27;&#x27;,*,*,#11,.T.);
+<span class="lineno">22</span>#13=EDGE_LOOP(&#x27;&#x27;,(#12));
+<span class="lineno">23</span>#14=FACE_OUTER_BOUND(&#x27;&#x27;,#13,.T.);
+<span class="lineno">24</span>#15=ADVANCED_FACE(&#x27;&#x27;,(#14),#5,.T.);
+<span class="lineno">25</span>#16=OPEN_SHELL(&#x27;&#x27;,(#15));
+<span class="lineno">26</span>#17=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#16));
+<span class="lineno">27</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">28</span>#9051=PRODUCT(&#x27;Twi299&#x27;,&#x27;Twi299&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">29</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">30</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">31</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">32</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">33</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">34</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">35</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">36</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">37</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">38</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#17),#9060);
+<span class="lineno">39</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">40</span>ENDSEC;
+<span class="lineno">41</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Twi298.html">&larr; Twi298</a> <a class="up" href="index.html">§12.3b Wires / loops / edges</a> <a class="next" href="Twi300.html">Twi300 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

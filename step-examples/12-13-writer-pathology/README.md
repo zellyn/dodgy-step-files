@@ -44,3 +44,25 @@
 | [Wr038](Wr038.stp) | Re-emitted file uses entity-numbering pattern that breaks round-trip equivalence |
 | [Wr039](Wr039.stp) | Re-export re-orders attributes within complex (subtype-stack) records |
 | [Wr040](Wr040.stp) | Empty `name` strings on every entity (writer pre-fills `''` instead of omitting) |
+| [Wr041](Wr041.stp) | Writer emits `.TRUE.` / `.FALSE.` instead of canonical `.T.` / `.F.` |
+| [Wr042](Wr042.stp) | Inconsistent end-of-record terminator: `;\n` and `;\r\n` mixed in same file |
+| [Wr043](Wr043.stp) | Writer emits raw UTF-8 bytes in string literal where Ed.2 mandates `\X\` / `\X2\` escape |
+| [Wr044](Wr044.stp) | Inch unit declared in `LENGTH_UNIT` context but coordinates emitted in millimetres (no conversion) |
+| [Wr045](Wr045.stp) | Unit name in `LENGTH_UNIT` changed without rescaling coordinate values |
+| [Wr046](Wr046.stp) | Body Placement (rotation/translation) not applied during STEP export of a single part |
+| [Wr047](Wr047.stp) | STEP import regressed by `BOPAlog_AlertBadPositioning` warnings (writer emits CSG-residual positions) |
+| [Wr048](Wr048.stp) | Boolean-result body crashes STEP writer in `libTKXDESTEP` color-attribution pass |
+| [Wr049](Wr049.stp) | Subtractive pipe at right-angle joints emits hidden sphere of material in joint |
+| [Wr050](Wr050.stp) | Geometry coordinate values doubled on export (writer applies scale and unit-conversion both) |
+| [Wr051](Wr051.stp) | step-g imports cleanly but downstream `g-stl` tessellator silently writes zero triangles |
+| [Wr052](Wr052.stp) | Writer emits EDGE_CURVE backed by untrimmed LINE entity |
+| [Wr053](Wr053.stp) | Toroidal-surface portion of fused solid corrupted on STEP round-trip |
+| [Wr054](Wr054.stp) | Swept spherical face orientation inverted on STEP export round-trip |
+| [Wr055](Wr055.stp) | Writer regression flips half of ORIENTED_EDGE directions |
+| [Wr056](Wr056.stp) | Writer aliases geometrically-identical entities (shared substructure) |
+| [Wr057](Wr057.stp) | Big-endian (s390x) writer emits empty STEP without diagnostic |
+| [Wr058](Wr058.stp) | XCAF → STEP export crashes on umlaut in label |
+| [Wr059](Wr059.stp) | STEP→BREP→STEP round-trip inflates cylinder analytic surface into B-spline |
+| [Wr060](Wr060.stp) | Solidworks AP214 → OCCT version upgrade mis-locates surfaces |
+| [Wr061](Wr061.stp) | X11 'aliceblue' colour shifted by sRGB→linear conversion on emit |
+| [Wr062](Wr062.stp) | STEP→mesh gateway round-trip loses COLOUR_RGB and assembly hierarchy |

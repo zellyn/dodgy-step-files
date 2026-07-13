@@ -66,3 +66,37 @@ See [`../../STEP_PROBLEM_CATALOG.md`](../../STEP_PROBLEM_CATALOG.md) (§12.11) f
 | [Ad101](Ad101.stp) | Wire edge-curve healing reads past end of edge list after edge removal (open EDGE_LOOP / non-closed 3-edge wire) |
 | [Ad102](Ad102.stp) | Crash transferring HLR-created shapes via STEP writer |
 | [Ad103](Ad103.stp) | Coincident VERTEX_POINTs at identical CARTESIAN_POINT coordinates trigger vertex-merge healing throws on already-absorbed vertex |
+| [Ad104](Ad104.stp) | STEP-XML wrapper carries a DTD with external-entity reference (XXE) |
+| [Ad105](Ad105.stp) | `.stpz` / `.stpx` archive container claims gigabytes of uncompressed data |
+| [Ad106](Ad106.stp) | `EXTERNAL_FILE` URI resolves through a symlink (TOCTOU race) |
+| [Ad107](Ad107.stp) | STEP-XML wrapper carries a billion-laughs entity-expansion bomb |
+| [Ad108](Ad108.stp) | STEP-XML DOCTYPE references an external DTD over the network |
+| [Ad109](Ad109.stp) | STEP-XML parameter-entity injection exfiltrates local file via out-of-band DTD |
+| [Ad110](Ad110.stp) | `.stpz` gzip wrapper expands ratio 1:10000 into multi-gigabyte body |
+| [Ad111](Ad111.stp) | ZIP bomb inside a 3MF / IFCZIP container that wraps a STEP body |
+| [Ad112](Ad112.stp) | Nested gzip-of-gzip-of-..stpz triggers N-level recursive decompression |
+| [Ad113](Ad113.stp) | Symlink swap between read of `.input.stp` and read of `.stp` (sibling-pair TOCTOU) |
+| [Ad114](Ad114.stp) | STEP fixture path is a symlink to `/etc/passwd` or other privileged file |
+| [Ad115](Ad115.stp) | Directory-entry race between `stat()` and `open()` on STEP fixture path |
+| [Ad116](Ad116.stp) | Non-ASCII (Cyrillic / multi-byte) filename or path causes STEP import to fail |
+| [Ad117](Ad117.stp) | STEP reader crashes on minimal file with malformed `STYLED_ITEM` |
+| [Ad118](Ad118.stp) | Forward-compat: STEP files written by an older OCC version no longer open in a newer build |
+| [Ad119](Ad119.stp) | "Unknown ENTITY type" warning is not a hard failure (presentation subgraph silently dropped, BRL-CAD step-g) |
+| [Ad120](Ad120.stp) | SURFACE_OF_REVOLUTION on 3-point-arc profile crashes consumer on import |
+| [Ad121](Ad121.stp) | Corrupted STEP export: CARTESIAN_POINT with mismatched coord count |
+| [Ad122](Ad122.stp) | Damaged STEP export: writer reuses entity-ID slots |
+| [Ad123](Ad123.stp) | Step Export: crash on PCURVE processing (dangling surface ref) |
+| [Ad124](Ad124.stp) | Segfault from malformed step-ids (non-numeric forward-ref payload) |
+| [Ad125](Ad125.stp) | Segfault on malformed STEP-IDs: negative ID after atoi() parse |
+| [Ad126](Ad126.stp) | `add()` with explicit STEP ID causes segfault on auto-ID collision |
+| [Ad127](Ad127.stp) | Corrupted STEP with missing references kills Python process (OSD::SetSignal) |
+| [Ad128](Ad128.stp) | ORIENTED_EDGE mutual circular reference causes stack overflow |
+| [Ad129](Ad129.stp) | Negative-determinant CARTESIAN_TRANSFORMATION_OPERATOR_3D in MAPPED_ITEM |
+| [Ad130](Ad130.stp) | `PRESENTATION_LAYER_ASSIGNMENT` with null (`$`) item in `assigned_items` set |
+| [Ad131](Ad131.stp) | OCCT PR #448: malformed `FILE_SCHEMA` with literal `.` between schema name and version triple (every OCCT-written AP242 file in the wild) |
+| [Ad132](Ad132.stp) | OCCT #383/#407: NIST AP242 Ed.3 datum-axis reader confuses indices vs values → `gp_Dir::CrossCross` zero-norm exception |
+| [Ad133](Ad133.stp) | OCCT #1327 / FreeCAD #30266: OCCT 8.0 STEP writer regression drops curved-surface entities on re-export |
+| [Ad134](Ad134.stp) | `DIRECTION` with an empty `direction_ratios` list used as the axis of the transferred shape's `TOROIDAL_SURFACE` |
+| [Ad135](Ad135.stp) | Degenerate AXIS2_PLACEMENT_3D: axis parallel to ref_direction (x-axis undefined) |
+| [Ad136](Ad136.stp) | Duplicate entity id: `#30` defined twice in DATA |
+| [Ad137](Ad137.stp) | COMPOSITE_CURVE with one numerically degenerate segment (non-monotonic B-spline knots): segment-dropped-not-whole-curve-aborted catch site |

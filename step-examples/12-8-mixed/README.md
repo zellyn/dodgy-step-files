@@ -103,6 +103,114 @@ See [`../../STEP_PROBLEM_CATALOG.md`](../../STEP_PROBLEM_CATALOG.md) (§12.8) fo
 | [M089](M089.stp) | AP210 stackup plies overlap in the Z direction |
 | [M090](M090.stp) | AP210 BoM line item with no PRODUCT_DEFINITION chain |
 | [M091](M091.stp) | AP210 conductor trace exits the board outline |
+| [M092](M092.stp) | AP238 workplan workingsteps in non-executable order |
+| [M093](M093.stp) | AP238 machining_tool referenced without cutting-edge geometry |
+| [M094](M094.stp) | AP238 setup placement inconsistent with workpiece coordinate system |
+| [M095](M095.stp) | AP238 machining_operation declares negative execution time |
+| [M096](M096.stp) | AP238 trajectory missing connecting curves between adjacent segments |
+| [M097](M097.stp) | AP238 workingstep references a feature not on the workpiece |
+| [M098](M098.stp) | AP238 tool feedrate exceeds manufacturer rated maximum |
+| [M099](M099.stp) | AP238 tool feedrate declared as zero |
+| [M100](M100.stp) | AP238 spindle-on issued after first tool-workpiece contact |
+| [M101](M101.stp) | AP238 two5d_milling_operation applied to a 3D-only feature |
+| [M102](M102.stp) | AP238 drilling sequence with coincident hole positions |
+| [M103](M103.stp) | AP238 tool trajectory passes through workpiece body before designated cut |
+| [M104](M104.stp) | AP238 producer emits SETUP where WORKPIECE_SETUP is required |
+| [M105](M105.stp) | AP238 ISO 8601 timestamps on operations going backwards |
+| [M106](M106.stp) | AP238 workplan total execution time exceeds shift length |
+| [M107](M107.stp) | AP238 cutting tool diameter declared as zero or negative |
+| [M108](M108.stp) | AP238 freeform_milling_operation without surface-tolerance attribute |
+| [M109](M109.stp) | AP209 linear_hexahedron with only 4 nodes (should be 8) |
+| [M110](M110.stp) | AP209 ply orientation vector not normalized |
+| [M111](M111.stp) | AP209 single_point_constraint applied to a node not in the mesh |
+| [M112](M112.stp) | AP209 multi_point_constraint chain forms a dependency cycle |
+| [M113](M113.stp) | AP209 element_representation with degenerate jacobian (collapsed corner) |
+| [M114](M114.stp) | AP209 hex element with aspect ratio greater than 10000 |
+| [M115](M115.stp) | AP209 nodal force distribution with negative weights |
+| [M116](M116.stp) | AP209 modal extraction count exceeds DOF rank |
+| [M117](M117.stp) | AP209 anisotropic material with missing tensor components |
+| [M118](M118.stp) | AP209 non-conforming mesh: tet and hex sharing a face with mismatched node counts |
+| [M119](M119.stp) | AP209 shell element with zero plate thickness |
+| [M120](M120.stp) | AP209 symmetry plane not perpendicular to a coordinate axis |
+| [M121](M121.stp) | AP209 time-history loadcase with non-monotonically increasing time vector |
+| [M122](M122.stp) | AP209 ply orientation expressed in wrong reference frame |
+| [M123](M123.stp) | AP209 element references the same node twice in its node list |
+| [M124](M124.stp) | AP209 fea_model includes element referencing a node outside its node-set |
+| [M125](M125.stp) | AP209 node_group declares the same node id twice |
+| [M126](M126.stp) | AP203 effectivity periods overlap with conflicting product configurations |
+| [M127](M127.stp) | AP203 DOCUMENT_FILE referenced with empty URI / path field |
+| [M128](M128.stp) | AP203 design approved AFTER its effectivity start date |
+| [M129](M129.stp) | AP203 new revision references parent not in change-history chain |
+| [M130](M130.stp) | AP203 assembly classified at lower security level than its components |
+| [M131](M131.stp) | AP203 PRODUCT_DEFINITION linked to wrong PRODUCT_CONTEXT frame_of_reference |
+| [M132](M132.stp) | AP203 material-class APPLIED_GROUP_ASSIGNMENT without a material reference |
+| [M133](M133.stp) | AP203 inconsistent ISO 8601 date formats within the same file |
+| [M134](M134.stp) | AP203 two distinct PERSON entities share the same id |
+| [M135](M135.stp) | AP203 declares CONFIG_CONTROL_DESIGN (CC1) but uses CC2-only entities |
+| [M136](M136.stp) | AP203 APPROVED_ITEM points to a product not in the design pool |
+| [M137](M137.stp) | AP203 APPLIED_ACTION_ASSIGNMENT applies to mixed-class object list |
+| [M138](M138.stp) | AP203 APPROVAL_PERSON_ORGANIZATION with empty PERSON field |
+| [M139](M139.stp) | AP203 effectivity start date is AFTER its end date |
+| [M140](M140.stp) | AP203 make-or-buy declaration contradicts external supplier record |
+| [M141](M141.stp) | AP203 PRODUCT_CATEGORY hierarchy contains a cycle |
+| [M142](M142.stp) | AP203 CHANGE_REQUEST targets revision already superseded |
+| [M143](M143.stp) | AP210 vias declared with stack-up positions out of board-layer order |
+| [M144](M144.stp) | AP210 NETWORK_NODE chain forms a cycle (signal feedback path) |
+| [M145](M145.stp) | AP210 fixed-side reference inverts top/bottom semantics |
+| [M146](M146.stp) | AP210 drill diameter exceeds pad diameter (annular ring inverted) |
+| [M147](M147.stp) | AP210 surface-mount component oriented on wrong board side |
+| [M148](M148.stp) | AP210 same NETWORK identifier used for two unrelated nets |
+| [M149](M149.stp) | AP210 component pin numbering doesn't match physical pin sequence |
+| [M150](M150.stp) | AP210 differential-pair traces have > 5 % length mismatch |
+| [M151](M151.stp) | AP210 declared trace impedance contradicts stackup geometry |
+| [M152](M152.stp) | AP210 microvia depth exceeds substrate thickness |
+| [M153](M153.stp) | AP210 buried via has only one terminating layer reference |
+| [M154](M154.stp) | AP210 placement footprint pin count conflicts with library footprint |
+| [M155](M155.stp) | AP210 net connectivity ends at a non-pin element |
+| [M156](M156.stp) | AP210 power net carries only mechanical placement constraint |
+| [M157](M157.stp) | AP210 solder mask covers a pad that should be exposed |
+| [M158](M158.stp) | AP210 assembly footprint pitch conflicts with component-library footprint |
+| [M159](M159.stp) | AP210 connector keying / polarization missing |
+| [M160](M160.stp) | STEP file imports as a near-empty document despite well-formed entities |
+| [M161](M161.stp) | Reader does not validate cross-references; dangling references silently accepted |
+| [M162](M162.stp) | Fillet faces re-import as rounded edge (Onshape/Rhino) but as fillet in producer |
+| [M163](M163.stp) | Imported STEP per-face colours scramble after any unrelated edit operation (style binding instability) |
+| [M164](M164.stp) | Linear pattern of arc-shaped feature emits twisted/corrupted faces in STEP |
+| [M165](M165.stp) | Knurled body exports STEP with holes in surface (slicer reports non-manifold) |
+| [M166](M166.stp) | Heatsink-style fin array crashes export pipeline at faceted sub-shape boundary |
+| [M167](M167.stp) | AP238 turning operation cut depth exceeds workpiece radius |
+| [M168](M168.stp) | AP238 turning_finishing_face with feed direction inverted |
+| [M169](M169.stp) | AP238 turning_roughing stepover exceeds tool nose radius |
+| [M170](M170.stp) | AP238 turning feed-direction ambiguous (radial vs axial conflict) |
+| [M171](M171.stp) | AP238 thread_turning pitch differs from thread-spec pitch |
+| [M172](M172.stp) | AP238 turning_operation on workpiece without rotation axis |
+| [M173](M173.stp) | AP238 milling_toolpath consecutive points spaced beyond tool diameter |
+| [M174](M174.stp) | AP238 milling_feed_rate varies along path with no F-code transition |
+| [M175](M175.stp) | AP238 drilling_operation tool axis not normal to feature face |
+| [M176](M176.stp) | AP238 boring tool diameter exceeds start-hole diameter |
+| [M177](M177.stp) | AP238 coolant_operation requests through-tool flow on tool with no internal cooling |
+| [M178](M178.stp) | AP238 inspection_probing path passes through workpiece body |
+| [M179](M179.stp) | AP238 touch_probing tolerance smaller than probe stylus radius |
+| [M180](M180.stp) | AP238 inspection_result measurement uncertainty exceeds feature tolerance |
+| [M181](M181.stp) | AP238 workpiece_complete_for_nc missing required clamping references |
+| [M182](M182.stp) | AP238 setup_instruction sequence with non-monotonic time stamps |
+| [M183](M183.stp) | AP238 workpiece_setup coordinate system not aligned with machine axes |
+| [M184](M184.stp) | AP238 executable_relationship forms a cycle (A precedes B, B precedes A) |
+| [M185](M185.stp) | AP238 machining_tool_feedspeed product exceeds tool envelope |
+| [M186](M186.stp) | AP238 coolant type incompatible with workpiece material |
+| [M187](M187.stp) | AP238 knurling_operation pitch finer than tool resolution |
+| [M188](M188.stp) | AP238 deburring_operation references edge not present in workpiece |
+| [M189](M189.stp) | AP238 boring tool diameter declared as negative |
+| [M190](M190.stp) | Compound with free VERTEX_POINT silently dropped on STEP export |
+| [M191](M191.stp) | Isolated wireframe: `GEOMETRIC_CURVE_SET` of a cube's 12 edges with no topology (no solid root) |
+| [M192](M192.stp) | Point-set only: `GEOMETRIC_SET` of eight `CARTESIAN_POINT`s with no curves, surfaces, or topology |
+| [M193](M193.stp) | Tessellated face's declared exact-geometry link points at a real but never-built face, reader substitutes a surfaceless mesh face |
+| [M194](M194.stp) | Tessellated shell's declared topological-geometry link points at a real but never-built shell, reader substitutes a fresh shell |
+| [M195](M195.stp) | Tessellated solid's declared exact-geometry link points at a real but never-built solid, reader substitutes a fresh shell-plus-solid |
+| [M196](M196.stp) | Bare geometric set mixing a supported curve with an unsupported placement entity: the placement is silently skipped, the curve translates normally |
+| [M197](M197.stp) | Faceted polygon boundary repeats the same point reference twice in a row; the reader skips the resulting zero-length segment instead of building a degenerate edge |
+| [M198](M198.stp) | Triangle-strip index list repeats a vertex within one triple; the reader silently excludes the collapsed triangle instead of misreading or crashing on it |
+| [M199](M199.stp) | Tessellated face's per-face normal row has the wrong number of components; the reader silently leaves every node's normal unset rather than misreading the row |
 | [Os001](Os001.stp) | Offset of a surface whose normals flip sign |
 | [Os002](Os002.stp) | Inward offset by a distance equal to a cylinder's radius (face collapses to axis) |
 | [Os003](Os003.stp) | Inward offset by a distance greater than a cylinder's radius (face inverts) |
