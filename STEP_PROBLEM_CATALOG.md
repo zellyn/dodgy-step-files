@@ -31203,6 +31203,176 @@ Planar surface with U-iso degenerate edge. U-constant pcurve lacks coordinate-ax
 - **Model impact**: The pcurve for the free-form edge is a sampled B-spline approximation rather than an exact projection; its fidelity depends on the sample count, so downstream trimming, meshing, and Boolean operations inherit approximation error along the edge, and any residual endpoint gap left uncorrected surfaces as a `SameParameter` inconsistency at the vertices.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 
+### Gp175 — Missing pcurve on one edge of an otherwise-healthy closed 4-edge wire (crash-free isolation of Gp001/Gp042)
+- **Category**: §12.2a pcurve (sub-class: no-curve-on-surface, crash-confounder isolation — `bc-no-curve-on-surface`)
+- **Sources**: occt-coverage GAP audit, `exchange/problems.json` `bc-no-curve-on-surface` (`BRepCheck_Edge::InContext`, `BRepCheck_Edge.cxx:437` — sets `BRepCheck_NoCurveOnSurface`); `exchange/COVERED_FULL_REVERIFY.md` downgrade note: all 4 previously-cited fixtures (Gp001, Gp042, Gp019, Xp002) show `occt=signal(11)` — OCCT crashes before `BRepCheck` can ever run, so none of them actually demonstrate the `BRepCheck_NoCurveOnSurface` mechanism live.
+- **Sender**: STEP exporters in 3D-only mode; IGES BRep round-trips that drop pcurves entirely.
+- **Description**: An `EDGE_CURVE` bounding an `ADVANCED_FACE` on a `PLANE` has only its 3D curve populated — no pcurve accompanies it — while the rest of the wire (3 other edges) is fully healthy. Isolated empirically from Gp001/Gp042's crash: both of those fixtures wrap their defective edge's 3D `LINE` in a `SURFACE_CURVE` whose `associated_geometry` list is empty (`()`) while `master_representation` is still `.PCURVE_S1.` — a self-contradictory pairing (the enum says "use `associated_geometry[0]`" but that list has zero elements) that segfaults OCCT regardless of wire topology (verified directly: swapping `master_representation` to `.CURVE_3D.` while keeping the empty-list `SURFACE_CURVE` wrapper still crashes). This fixture instead lets the defective edge's `edge_geometry` slot reference the bare 3D `LINE` directly — no `SURFACE_CURVE` wrapper at all, which is the schema-clean way to say "this edge has no parametric representation whatsoever."
+- **Reproducer recipe**: Standard 4-edge rectangular wire on a `PLANE` (cf. Gp034/Gp045); the bottom `EDGE_CURVE`'s `edge_geometry` is a bare 3D `LINE` (not wrapped in `SURFACE_CURVE`), while the other three edges each carry a healthy `SURFACE_CURVE` + `PCURVE` pair.
+- **Expected kernel behavior**: synthesise the missing pcurve by projecting the 3D curve onto the host surface, or reject the input as malformed; never crash.
+- **Notes**: **See also**: Gp001, Gp042 (both crash via the confounder described above, not the missing-pcurve mechanism itself), Gp035 (missing-pcurve-requiring-projection sibling, different host surface). Synonyms: "missing pcurve on edge between two surfaces, no crash", "edge stored without 2D parameter curve on an otherwise valid wire", "no-curve-on-surface check reachable without a translator crash", "edge bounds a face with no associated pcurve geometry, wire is closed", "bare 3D curve as edge_geometry with no SURFACE_CURVE wrapper".
+- **Byte assertion**: contains(b'EDGE_CURVE')
+- **Byte assertion**: contains(b'PLANE')
+- **Byte assertion**: count_entity_def(b'PCURVE') == 3
+- **Byte assertion**: count_entity_def(b'SURFACE_CURVE') == 3
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_faces_total == 1
+- **Tier-3 assertion**: n_edges_total == 4
+- **Tier-3 assertion**: n_vertices_total == 8
+- **Tier-3 assertion**: face[0].surface_type == "plane"
+- **OCC behavior**: heals (catalog allowed: {heal, reject}). The healer reconstructs the missing pcurve by projecting the 3D `LINE` onto the `PLANE`; OCCT returns `shape(1)` with a full 4-edge, 8-vertex, area-50 face (heal on/off identical — the projection is trivial on a plane). gmsh triangulates to `shape(9)`.
+- **Severity**: P2
+- **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+
+### Gp176 — `COMPOSITE_CURVE` segment list out of connected geometric order (segment 2 before segment 1)
+- **Category**: §12.2a pcurve (sub-class: composite-curve segment reordering — `stp-compcurve-reorder`)
+- **Sources**: occt-coverage GAP audit, `exchange/problems.json` `stp-compcurve-reorder` (`StepToTopoDS_TranslateCompositeCurve::Init`, `StepToTopoDS_TranslateCompositeCurve.cxx:265-274` — `sfw->FixReorder()`, `StatusReorder(DONE)` triggers a "Segments were disordered; fixed" warning). Distinguished explicitly from Twi007, which scrambles an `EDGE_LOOP`'s edge list — a different translation path (wire-level `ShapeFix` after `TranslateEdgeLoop`), not `TranslateCompositeCurve`'s segment-level `FixReorder`.
+- **Sender**: STEP translators/exporters that serialise a composite curve's segment list in construction order rather than connectivity order.
+- **Description**: A `COMPOSITE_CURVE` used as the 3D curve of a single bottom `EDGE_CURVE` (on the standard rectangular `PLANE` wire, cf. Gp034) lists its two `LINE`-backed `COMPOSITE_CURVE_SEGMENT`s out of connected order: the segment spanning `(5,0,0)->(10,0,0)` (which should come second) is listed before the segment spanning `(0,0,0)->(5,0,0)` (which should come first). Unlike Gp034 (which uses a genuine 5mm positional gap between segments), here the two segments connect EXACTLY — both meet at `(5,0,0)` — so a correct reordering pass recovers a perfectly continuous curve; the sole defect is list order.
+- **Reproducer recipe**: `COMPOSITE_CURVE('',(seg_B,seg_A),.F.)` where `seg_A` and `seg_B` are `COMPOSITE_CURVE_SEGMENT`s wrapping two `LINE`s that connect exactly end-to-end once read in the order `(seg_A,seg_B)`; the composite curve is the `edge_geometry` (via `SURFACE_CURVE`) of one `EDGE_CURVE` bounding an `ADVANCED_FACE`.
+- **Expected kernel behavior**: detect the disorder by connectivity (matching endpoints, not list position), reorder the segments, and assemble a single continuous wire edge; or reject with a specific disorder diagnostic.
+- **Notes**: **See also**: Gp034 (same `COMPOSITE_CURVE_SEGMENT`/`LINE` construction, but a positional gap defect instead of an ordering defect), Twi007 (negative space — scrambles `EDGE_LOOP`, not `COMPOSITE_CURVE`, a different translation path entirely). **OCC behavior**: a correctly-ordered control fixture (segments listed `(seg_A,seg_B)`, otherwise byte-identical) produces the *same* signature as this reordered fixture — both `shape(1)` with `n_edges_total == 0` and an unbounded (`~2e100`-extent) face — indicating OCCT's translator drops the wire construction for `COMPOSITE_CURVE`-based edges in this configuration regardless of segment order, the same "dropped on the floor without diagnostic" behavior documented on Gp034. The reordering defect is genuinely encoded in the bytes; the live oracle currently cannot distinguish it from the well-ordered case because neither reaches a bounded wire. Synonyms: "composite curve segments listed out of order", "COMPOSITE_CURVE segment 2 given before segment 1", "composite-curve segment reordering not exercised by EDGE_LOOP scrambling", "composite curve reorder-on-import", "segment list order mismatches connectivity".
+- **Byte assertion**: contains(b'COMPOSITE_CURVE')
+- **Byte assertion**: count_entity_def(b'COMPOSITE_CURVE_SEGMENT') == 2
+- **Byte assertion**: contains(b'EDGE_CURVE')
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_faces_total == 1
+- **Tier-3 assertion**: n_edges_total == 0
+- **OCC behavior**: silent-accept, no diagnostic (catalog allowed: {heal, reject}); OCCT returns `shape(1)` but the face's boundary wire is dropped entirely (0 edges, unbounded/placeholder extent) rather than either healing to the correct 2-segment rectangle edge or rejecting with a disorder diagnostic. gmsh likewise returns `shape(1)` with no usable boundary.
+- **Severity**: P2
+- **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+
+### Gp177 — Edge's interior 3D curve passes directly over a sphere pole, strictly between its endpoints
+- **Category**: §12.2a pcurve (sub-class: edge crossing a surface singularity in its interior — `tkshh-edge-crossing-surface-singularity`, subvariant a)
+- **Sources**: occt-coverage GAP audit, `tkshhealing/problems.json` `tkshh-edge-crossing-surface-singularity` (`ShapeFix_Wire::FixEdgeCurves` singularity split, `ShapeFix_Wire.cxx:566-694` — projects each surface singularity onto the 3D curve at :578-599, splits the edge at interior singularity parameters at :632-689).
+- **Sender**: Translators/exporters that represent a meridian-crossing edge as a single curve without pre-splitting at the pole, relying on the receiver's healer to do it.
+- **Description**: A `SPHERICAL_SURFACE` (radius 1) face has one edge (`polar_edge`) whose 3D curve is the great-circle `CIRCLE` lying in the XZ-plane, running from equator vertex `A=(1,0,0)` through the NORTH POLE `(0,0,1)` — strictly the parameter-range MIDPOINT, not an endpoint — down to equator vertex `B=(-1,0,0)`. This is the case Xp013 and Gp048 do not cover: both of those touch the singularity only at an edge ENDPOINT (a vertex sits exactly at the apex/pole). The edge's pcurve is a single straight UV line `v=0` constant from `(u=0,v=0)` to `(u=pi,v=0)` — the naive "apex-adjacent" patch job the work packet calls insufficient: it treats the edge as though it stayed on the equator the whole way, when the true path needs `u` to jump `0->pi` exactly at `v=pi/2` (the pole), which one pcurve cannot represent. A second, healthy edge closes the loop via the equator's *other* semicircle (through the back, negative-Y side, touching neither pole), giving a real 2-edge lune face with non-degenerate area.
+- **Reproducer recipe**: `SPHERICAL_SURFACE` radius 1; `EDGE_CURVE` whose 3D curve is a great-circle `CIRCLE` oriented so its parameter range's midpoint lands exactly on the pole (not an endpoint); its `PCURVE` is a single straight line that does not reflect the pole crossing; a second `EDGE_CURVE` (equatorial semicircle avoiding both poles) closes a 2-edge `EDGE_LOOP`.
+- **Expected kernel behavior**: detect that the 3D curve's interior crosses the surface singularity, split the edge into two sub-edges at the singularity parameter (inserting a degenerate vertex at the pole), and give each sub-edge its own clean pcurve — not patch a single pcurve near the apex.
+- **Notes**: **See also**: Xp013 (apex touched only at a shared, non-manifold vertex — an endpoint case), Gp048 (apex is an edge endpoint, degenerate pcurve construction), Gp178 (companion subvariant: pole + periodic seam together). **OCC behavior**: heals, but not into a clean 2-sub-edge split — OCCT fragments the single input edge into many small sub-edges with escalating vertex tolerance as they approach the pole (18 edges across 3 faces from 1 input edge and 1 input face in this run), rather than the idealized single split at the singularity parameter. `shape(1)` (root count) on both heal on/off; `brepcheck` reports valid. gmsh triangulates the fragmented result to `shape(32)` (provisional — the fragmentation is a floating-point-sensitive tessellation artifact and this exact face/edge count may drift across OCCT versions/platforms). Synonyms: "edge interior crosses cone apex or sphere pole", "single pcurve cannot represent a pole-crossing edge", "apex-adjacent pcurve patch insufficient for interior singularity", "edge must be split at singularity parameter not just re-pcurved", "great-circle edge passes through pole at its midpoint".
+- **Byte assertion**: contains(b'SPHERICAL_SURFACE')
+- **Byte assertion**: contains(b'CIRCLE')
+- **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 2
+- **Byte assertion**: count_entity_def(b'PCURVE') == 2
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_faces_total == 3
+- **Tier-3 assertion**: face[0].surface_type == "sphere"
+- **OCC behavior**: heals by fragmentation rather than a clean singularity split (see Notes); `brepcheck.valid == True` despite the fragmentation. Provisional live-oracle result — the exact sub-edge/sub-face count is a floating-point-sensitive artifact of the healer's iterative splitting, verified on this OCCT/gmsh build only.
+- **Severity**: P2
+- **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(32) ifc=schema_n/a`
+
+### Gp178 — Contour wrapping both a degenerated pole and the periodic seam, missing half its seam pcurve pair
+- **Category**: §12.2a pcurve (sub-class: pole + seam contour, pcurve rebuild — `tkshh-edge-crossing-surface-singularity`, subvariant b)
+- **Sources**: occt-coverage GAP audit, `tkshhealing/problems.json` `tkshh-edge-crossing-surface-singularity` (`ShapeFix_Wire::FixEdgeCurves` over-degenerated pole+seam branch, `ShapeFix_Wire.cxx:696-719` — detects a contour spanning the full U-range, rebuilds the pcurve with `AdjustOverDegenMode=false`).
+- **Sender**: Translators/exporters emitting a spherical-cap-style face whose seam edge is only partially pcurve'd.
+- **Description**: A `SPHERICAL_SURFACE` (radius 1) spherical-cap face is bounded by the classic UV-rectangle contour: `u` spans the full `[0, 2*pi]` (wrapping the periodic seam) and `v` spans `[v0, pi/2]` (reaching the degenerate pole row). The contour has three geometrically distinct edges: a healthy latitude-circle bottom rim (self-loop, `v=v0`), a degenerate zero-radius `CIRCLE` at the pole (self-loop, `v=pi/2`), and a meridian-arc seam edge at `u=0` that — per Gp013's CATIA-seam idiom — is referenced TWICE in the loop (once for the `u=0` bank, once for the `u=2*pi` bank). THE DEFECT: unlike Gp013 (which gives its shared seam edge both pcurves, one per bank), this seam edge's `SURFACE_CURVE` carries only ONE pcurve; the second (`u=2*pi`) occurrence in the loop has no matching pcurve at all.
+- **Reproducer recipe**: `SPHERICAL_SURFACE`; 4-edge `EDGE_LOOP` = [bottom rim (fwd), seam edge (fwd), pole edge (rev), seam edge (rev)] where the seam `EDGE_CURVE`'s `SURFACE_CURVE.associated_geometry` holds a single `PCURVE`, not two.
+- **Expected kernel behavior**: detect that the contour wraps both a degenerate pole and the periodic seam, and rebuild the missing seam-bank pcurve from the 3D curve (with over-degenerate adjustment disabled) rather than leaving the second occurrence unresolved.
+- **Notes**: **See also**: Gp013 (the fully-pcurve'd U-direction seam idiom this fixture deliberately under-supplies), Gp177 (companion subvariant: interior pole crossing without a seam). **OCC behavior**: heals fully — OCCT rebuilds the missing pcurve and returns a correct, non-degenerate 4-edge, 8-vertex spherical cap whose area (`4.4264`) matches the closed-form cap area `2*pi*(1-sin(v0))` for `v0=0.3` to 4 decimal places. `shape(1)` heal on/off identical; gmsh triangulates to `shape(6)`, matching Gp013's own gmsh count. Synonyms: "contour wraps degenerate pole and periodic seam", "seam edge missing one of two required pcurves", "spherical cap UV-rectangle boundary with under-pcurve'd seam", "AdjustOverDegenMode pcurve rebuild", "half a seam pcurve pair forces reconstruction".
+- **Byte assertion**: contains(b'SPHERICAL_SURFACE')
+- **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 3
+- **Byte assertion**: count_entity_def(b'PCURVE') == 3
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_faces_total == 1
+- **Tier-3 assertion**: n_edges_total == 4
+- **Tier-3 assertion**: n_vertices_total == 8
+- **Tier-3 assertion**: face[0].surface_type == "sphere"
+- **OCC behavior**: heals (catalog allowed: {heal}); the missing seam-bank pcurve is rebuilt and the cap area matches the analytic value.
+- **Severity**: P2
+- **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
+
+### Gp179 — 3D-curve endpoint disagrees with vertex position beyond tolerance; pcurve is trustworthy (`FixRemoveCurve3d` mirror of Gp064)
+- **Category**: §12.2a pcurve (sub-class: 3D-curve-side inconsistent-representation removal — `tkshh-edge-curve-inconsistent-with-vertex-removed`)
+- **Sources**: occt-coverage GAP audit, `tkshhealing/problems.json` `tkshh-edge-curve-inconsistent-with-vertex-removed` (`ShapeFix_Edge::FixRemoveCurve3d`, `ShapeFix_Edge.cxx:116-123`, using `ShapeAnalysis_Edge::CheckVerticesWithCurve3d`, `ShapeAnalysis_Edge.cxx:485-521`); mirror of `ShapeFix_Edge::FixRemovePCurve` (`ShapeAnalysis_Edge::CheckVerticesWithPCurve`), the mechanism Gp064 demonstrates on the pcurve side.
+- **Sender**: Translators that recompute a 3D curve for a different placement/instance without re-validating it against the edge's already-fixed vertex positions.
+- **Description**: The standard 4-edge rectangular `PLANE` wire's bottom `EDGE_CURVE` (`A=(0,0,0) -> B=(10,0,0)`) has a 3D `LINE` shifted `+0.5` in Y (`start=(0,0.5,0)`, direction `(1,0,0)`) so NEITHER endpoint of the curve lies within tolerance of its `VERTEX_POINT` — the closest point on the 3D line to vertex A is `(0,0.5,0)`, 0.5 units away (five hundred thousand times the fixture's `1e-7` tolerance); same for vertex B. The edge's `PCURVE`, by contrast, is the correct, trustworthy straight line `(0,0)->(10,0)` in the plane's UV space, matching the true rectangle geometry exactly. This is the exact mirror image of Gp064 (where the pcurve is degenerate/wrong and the 3D curve is trustworthy): here the 3D curve is the stale representation and the pcurve is trusted.
+- **Reproducer recipe**: `EDGE_CURVE` on a `PLANE`-bound face whose 3D `LINE`'s closest approach to both `VERTEX_POINT`s exceeds vertex tolerance by several orders of magnitude, while its `PCURVE` (lifted through the surface) lands exactly on the true vertex positions.
+- **Expected kernel behavior**: detect that the 3D curve is inconsistent with the vertices, discard it, and rebuild it fresh by lifting the trustworthy pcurve through the host surface — not attempt an in-place repair of the stale curve.
+- **Notes**: **See also**: Gp064 (pcurve-side mirror: the 3D curve is trusted, the pcurve is discarded and rebuilt), Gp047/Gp058/Gp086/Gp103/Gp108/Gp123/Gp151 (related out-of-domain pcurve-range removal, a distinct but sibling defect). **OCC behavior**: heals fully — OCCT discards the bogus, Y-shifted 3D curve and rebuilds it from the pcurve; the resulting bottom edge has length exactly `10.0` (matching the TRUE vertex-to-vertex distance, not any length implied by the bogus curve) and the face area is exactly `50.0`. `shape(1)` heal on/off identical; gmsh triangulates to `shape(9)`. Synonyms: "3D curve endpoint disagrees with vertex position beyond tolerance", "stale 3D curve discarded, pcurve trusted", "3D-curve-side removal mirror of pcurve-side removal", "curve computed for a different placement than its vertices", "edge rebuilt from trustworthy pcurve after 3D curve removal".
+- **Byte assertion**: contains(b'EDGE_CURVE')
+- **Byte assertion**: contains(b'PLANE')
+- **Byte assertion**: count_entity_def(b'PCURVE') == 4
+- **Byte assertion**: count_entity_def(b'SURFACE_CURVE') == 4
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_faces_total == 1
+- **Tier-3 assertion**: n_edges_total == 4
+- **Tier-3 assertion**: n_vertices_total == 8
+- **Tier-3 assertion**: face[0].surface_type == "plane"
+- **Tier-3 assertion**: edge[0].length == 10.0
+- **OCC behavior**: heals (catalog allowed: {heal}); the rebuilt edge length (10.0) and face area (50.0) match the true rectangle geometry, confirming the bogus 3D curve was discarded rather than kept/patched.
+- **Severity**: P2
+- **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+
+### Gp180 — 2D pcurve knot vector with a near-zero-length span after Bezier decomposition (2D-curve sibling of Gn042)
+- **Category**: §12.2a pcurve (sub-class: near-zero knot-interval thin-arc filter, 2D-curve side — `tkshh-near-zero-knot-span-thin-patch-filter`)
+- **Sources**: occt-coverage GAP audit, `tkshhealing/problems.json` `tkshh-near-zero-knot-span-thin-patch-filter` (`ShapeUpgrade_ConvertCurve2dToBezier::Compute()` near-zero knot-interval filter, `ShapeUpgrade_ConvertCurve2dToBezier.cxx:188-209`); surface-side sibling `ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute()` thin-patch filter (`.cxx:157-191`) is what Gn042 demonstrates.
+- **Sender**: Translators that emit a pcurve knot vector with an interior knot one multiplicity short of full (degree), inherited unmodified from an internal B-spline-fitting step.
+- **Description**: The standard 4-edge rectangular `PLANE` wire's bottom edge has a healthy 3D `LINE`, but its `PCURVE` is a degree-3 `B_SPLINE_CURVE_WITH_KNOTS` with 6 evenly-spaced, exactly collinear control points along `(0,0)->(10,0)` and Gn042's exact knot pattern: knots `(0.0, 0.5, 1.0)`, multiplicities `(4, 2, 4)` — the interior knot at `0.5` sits at multiplicity 2, one short of the degree-3 full-multiplicity value of 3. Bezier decomposition must insert one more copy of `0.5` to raise it to full multiplicity, producing a knot interval `[0.5, 0.5]` of literally zero width — a degenerate Bezier arc the thin-arc filter is supposed to drop from the decomposed segment set. Because the 6 control points are exactly collinear, the pcurve traces the identical straight path as the healthy 3D curve regardless of the pathological knot vector, isolating the defect to the knot structure alone.
+- **Reproducer recipe**: `PCURVE` whose `DEFINITIONAL_REPRESENTATION` item is a `B_SPLINE_CURVE_WITH_KNOTS` (degree 3, knots `(0.0,0.5,1.0)`, multiplicities `(4,2,4)`) on an otherwise-healthy edge (real 3D `LINE`, correctly-matching vertices).
+- **Expected kernel behavior**: during Bezier decomposition, detect that raising the interior knot to full multiplicity produces a zero-width span, and drop the resulting degenerate arc from the segment set rather than emitting it.
+- **Notes**: **See also**: Gn042 (surface-side sibling: the identical `(4,2,4)`-over-`(0.0,0.5,1.0)` knot pattern on a `B_SPLINE_SURFACE_WITH_KNOTS`'s U direction instead of a 2D pcurve). **OCC behavior**: silent-accept, healed correctly (catalog allowed: {heal}) — OCCT loads a full, correct `shape(1)` rectangle (area exactly `50.0`, 4 edges, 8 vertices); the zero-width Bezier arc is filtered out with no visible artifact, matching the filter's intended behavior. gmsh triangulates to `shape(9)`. Synonyms: "2D pcurve knot vector has near-zero-length span", "interior knot one multiplicity short of full degree", "ConvertCurve2dToBezier zero-width Bezier arc filtered", "Gn042 knot pattern mirrored onto a pcurve instead of a surface", "thin-arc filter drops degenerate Bezier segment".
+- **Byte assertion**: contains(b'B_SPLINE_CURVE_WITH_KNOTS')
+- **Byte assertion**: contains(b'PLANE')
+- **Byte assertion**: count_entity_def(b'PCURVE') == 4
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_faces_total == 1
+- **Tier-3 assertion**: n_edges_total == 4
+- **Tier-3 assertion**: n_vertices_total == 8
+- **Tier-3 assertion**: face[0].surface_type == "plane"
+- **OCC behavior**: silent-accept, healed correctly; face area exactly 50.0, matching the true rectangle (no degenerate-arc artifact survives to the final shape).
+- **Severity**: P3
+- **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+
+### Gp181 — CATIA-style near-closed non-periodic B-spline seam-like edge, mirrored onto the V direction (Gp013 is the U-direction original)
+- **Category**: §12.2a pcurve (sub-class: nonperiodic-B-spline seam-like edge, V-direction subvariant — `tkshh-nonperiodic-bspline-seamlike-edge`, subvariant a)
+- **Sources**: occt-coverage GAP audit, `tkshhealing/problems.json` `tkshh-nonperiodic-bspline-seamlike-edge` (`ShapeUpgrade_UnifySameDomain::IntUnifyFaces`, `ShapeUpgrade_UnifySameDomain.cxx:3221` — `myConcatBSplines && EdgeWith2pcurves && !SeamFound` detection; `:3242-3246` `aToMakeUPeriodic`/`aToMakeVPeriodic`; `:3264`/`:3269` `SetUPeriodic`/`SetVPeriodic`).
+- **Sender**: CATIA and similar exporters that encode a closed cylinder as a near-closed but non-periodic B-spline, oriented so the seam runs in V rather than U.
+- **Description**: Identical unit cylinder (radius 1, height 1) to Gp013, but with the roles of U and V transposed throughout: the `B_SPLINE_SURFACE_WITH_KNOTS` here has degree 1 in U (2 control-point rows spanning height) and degree 2 in V (the same 9-point near-closed angular discretization Gp013 used for U). The shared seam `EDGE_CURVE` now runs along U (height) at `v=0`/`v=1` (both physically angle 0) and carries two pcurves on the same non-periodic surface — Gp013's CATIA idiom, just declared periodic in V instead of U once healed.
+- **Reproducer recipe**: `B_SPLINE_SURFACE_WITH_KNOTS` (u_degree=1, v_degree=2, 2x9 control-point grid tracing a unit cylinder, `u_closed=.F.`, `v_closed=.F.`); a shared `EDGE_CURVE` carrying two pcurves at `v=0` and `v=1` on that surface, used twice (opposite orientations) in a 4-edge `FACE_OUTER_BOUND` alongside two full-circle cap edges.
+- **Expected kernel behavior**: detect the near-closed, non-periodic surface in the V direction, treat the shared edge as a seam, and reconcile both pcurves — declaring the surface V-periodic (approximating first if needed).
+- **Notes**: **See also**: Gp013 (the canonical U-direction original this fixture transposes), Gp182 (companion subvariant: non-B-spline base surface). **OCC behavior**: heals — OCCT reports the rebuilt surface as `is_v_periodic == True` / `is_u_periodic == False` (the exact V-direction mirror of Gp013's own `is_u_periodic == True`), 4 edges, 8 vertices, a non-degenerate cylindrical-wall area. `shape(1)` heal on/off identical; gmsh triangulates to `shape(6)`, matching Gp013's own gmsh count exactly. Synonyms: "CATIA cylinder seam in V direction", "V-periodic branch of near-closed B-spline seam healing", "two pcurves on non-periodic surface, V-direction variant", "Gp013 transposed onto the orthogonal parametric axis", "near-closed non-periodic B-spline seam-like edge, V bank".
+- **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS')
+- **Byte assertion**: count_entity_def(b'PCURVE') == 4
+- **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 3
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_faces_total == 1
+- **Tier-3 assertion**: n_edges_total == 4
+- **Tier-3 assertion**: n_vertices_total == 8
+- **Tier-3 assertion**: face[0].surface_type == "bspline"
+- **Tier-3 assertion**: face[0].bspline.is_v_periodic == True
+- **Tier-3 assertion**: face[0].bspline.is_u_periodic == False
+- **OCC behavior**: heals (catalog allowed: {heal}); `is_v_periodic` flips to `True`, the V-direction mirror of Gp013's `is_u_periodic == True`.
+- **Severity**: P2
+- **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
+
+### Gp182 — CATIA-style seam-like edge (two pcurves on one surface) on a non-B-spline (`CYLINDRICAL_SURFACE`) base
+- **Category**: §12.2a pcurve (sub-class: nonperiodic-B-spline seam-like edge, non-B-spline-base subvariant — `tkshh-nonperiodic-bspline-seamlike-edge`, subvariant b)
+- **Sources**: occt-coverage GAP audit, `tkshhealing/problems.json` `tkshh-nonperiodic-bspline-seamlike-edge` (`ShapeUpgrade_UnifySameDomain::IntUnifyFaces`, `ShapeUpgrade_UnifySameDomain.cxx:3221` detection, `:3258` `GeomConvert_ApproxSurface` for a non-B-spline base surface, `:3264`/`:3269` `SetUPeriodic`/`SetVPeriodic` on the approximated result).
+- **Sender**: Exporters that apply the CATIA-style two-pcurve seam idiom uniformly to elementary surfaces, not only B-spline approximations of them.
+- **Description**: A genuine unit cylinder (radius 1, height 1) is represented directly as a `CYLINDRICAL_SURFACE` — an elementary, non-B-spline surface type — rather than as a near-closed B-spline approximation of one (contrast Gp013/Gp181). The shared seam `EDGE_CURVE` runs the height direction at `u=0`/`u=2*pi` (both physically angle 0) and carries two pcurves on the SAME `CYLINDRICAL_SURFACE` instance — Gp013's exact "two pcurves on one surface acting like a seam" idiom, just on an elementary surface class that cannot be marked periodic in place, so a correct healer must approximate it to a B-spline surface first, before it can declare the result periodic.
+- **Reproducer recipe**: `CYLINDRICAL_SURFACE` radius 1; a shared `EDGE_CURVE` carrying two pcurves at `u=0` and `u=2*pi` on that surface, used twice (opposite orientations) in a 4-edge `FACE_OUTER_BOUND` alongside two full-circle cap edges — otherwise structurally identical to Gp013/Gp181.
+- **Expected kernel behavior**: detect the seam-like duplicate-pcurve edge on the elementary surface, approximate the surface to a B-spline, migrate the pcurves, and declare the result periodic.
+- **Notes**: **See also**: Gp013 (B-spline-host original), Gp181 (V-direction B-spline-host mirror). **OCC behavior**: silent-accept — because a `CYLINDRICAL_SURFACE` is already natively periodic in its angular direction, and this fixture is a single already-well-formed `ADVANCED_FACE` (not two faces requiring a face-unification merge pass), the file loads directly as a correct unit-cylinder-wall face without visibly exercising the approximate-then-periodize path: `shape(1)` heal on/off identical, 4 edges, 8 vertices, `face[0].surface_type == "cylinder"` (retained, not converted to a B-spline), area exactly `2*pi` (`6.283185...`, the true cylinder side area). gmsh triangulates to `shape(6)`, matching Gp013's own gmsh count. The byte-level defect (duplicate-seam-pcurve idiom on an elementary surface) is genuinely encoded; this run shows it resolved without visible drama because the single-face case doesn't require the multi-face unify pass the mechanism targets. Synonyms: "CATIA seam idiom on CYLINDRICAL_SURFACE instead of B-spline", "non-B-spline seam host requires approximation before periodicity", "two pcurves on elementary surface acting like a seam", "seam-like edge on an already-periodic analytic surface", "non-B-spline base surface periodicity approximation".
+- **Byte assertion**: contains(b'CYLINDRICAL_SURFACE')
+- **Byte assertion**: count_entity_def(b'PCURVE') == 4
+- **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 3
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_faces_total == 1
+- **Tier-3 assertion**: n_edges_total == 4
+- **Tier-3 assertion**: n_vertices_total == 8
+- **Tier-3 assertion**: face[0].surface_type == "cylinder"
+- **OCC behavior**: silent-accept, loads correctly as a single-face cylinder wall (see Notes for why the approximate-then-periodize path is not visibly exercised in the single-face case).
+- **Severity**: P3
+- **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
+
 ### A105 — Regression OCC 6.9.1 → 7.4.0: colours stop appearing on certain STEP files
 - **Category**: §12.6 assembly hierarchy (sub-class: appearance regression across kernel versions)
 - **Sources**: OCCT MANTIS#0031809; bug-reporter language: "regression v.6.9.1-7.4.0 colors no longer showing on certain STEP files", "files that displayed colour in 6.9.1 are grey in 7.4.0", "appearance regression". (OCCT MANTIS tracker 502 as of 2026-05-02)
