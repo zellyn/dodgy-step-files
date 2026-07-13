@@ -36403,6 +36403,147 @@ exercised against CGAL PMP / MeshFix.
 - **Model impact**: The model loads as loose vertices only; booleans, meshing, and mass-property pipelines have no bounded geometry, and any validation expecting edges/faces/solids fails.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a`
 
+### M193 — Tessellated face's declared exact-geometry link points at a real but never-built face, reader substitutes a surfaceless mesh face
+- **Category**: §12.8 (sub-class: tessellation / mesh-as-brep)
+- **Sources**: 04-occt-translation.md; StepToTopoDS_TranslateFace.cxx:718-738 (unresolved geometric_link falls back to a fresh empty face with the has-geometry flag cleared, via a lookup against the transient-process binder map rather than a recursive translate of the linked entity); BRepCheck_Face.cxx:106 (NoSurface status).
+- **Description**: A tessellated face declares a link to its exact-geometry counterpart, but that counterpart, while a real and well-formed face entity present in the file, is never itself built as part of the model because nothing else in the model's shell/solid structure reaches it. The declared link therefore resolves to nothing at read time, and the reader quietly substitutes an empty face carrying only the mesh data in its place — a face with triangle geometry attached but no underlying continuous surface at all.
+- **Reproducer recipe**: `TRIANGULATED_FACE` whose `geometric_link` attribute is populated with a reference to a syntactically valid `ADVANCED_FACE` entity that is fully defined in the file (its own `PLANE`/`EDGE_LOOP` boundary) but never appears inside any `CLOSED_SHELL`/`OPEN_SHELL`/`MANIFOLD_SOLID_BREP` reachable from the model's shape representation; own `COORDINATES_LIST` for the tessellated item (not shared with any other tessellated item); wired directly as the sole item of a `MANIFOLD_SURFACE_SHAPE_REPRESENTATION` rather than nested inside a `GEOMETRIC_SET`/`GEOMETRIC_CURVE_SET` wrapper, which independently destabilizes this reader build for any tessellated content regardless of link resolution (live-verified on a minimal control).
+- **Expected kernel behavior**: reject a tessellated face whose declared exact-geometry link cannot be resolved, or heal by substituting a diagnosed placeholder surface; never silently emit a mesh-bearing face with no surface behind it and no diagnostic distinguishing it from a legitimately surfaceless mesh.
+- **Notes**: Synonyms: "tessellated face dangling geometric link", "unresolved exact-geometry counterpart falls back to empty face", "mesh face with no B-rep surface behind it", "surfaceless face from unbound tessellation link". Live-verified: loads cleanly as a single face whose surface kind reports as unrecognized and whose validity check reports invalid for lacking a surface, confirming the fallback path fires exactly as described. A minimal control with the identical layout but an entirely absent link (rather than a populated-but-unresolvable one) reaches the identical unrecognized-surface, invalid-check outcome — since any tessellated face with no attached exact-geometry counterpart takes this same empty-face path, the unresolvable-versus-absent distinction only shows up in the file bytes, never downstream. The independent mesh-processing oracle used alongside the primary kernel crashes on this fixture and on the absent-link control identically — that crash is a property of any surfaceless mesh-only face reaching that oracle at all, not of the unresolvable-link mechanism this entry targets (isolated by testing both variants). See also: M022 (absent link, not unresolvable; also shares one coordinate list across six faces, which independently crashes this build regardless of link content).
+- **Byte assertion**: contains(b'TRIANGULATED_FACE')
+- **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
+- **Byte assertion**: count_entity_def(b'TRIANGULATED_FACE') == 1
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_faces_total == 1
+- **Tier-3 assertion**: face[0].surface_type == "other"
+- **Tier-3 assertion**: brepcheck.valid == False
+- **OCC behavior**: accepts and transfers to a single face carrying the mesh triangle but no surface (validity check reports invalid for the missing surface); the independent mesh-processing oracle crashes on this input. Kernel-bug witnessed: a face with no surface at all is delivered without a diagnostic that distinguishes it from a legitimately empty mesh.
+- **Severity**: P1
+- **Model impact**: A downstream operation that assumes every face carries a continuous surface (offsetting, filleting, boolean, curvature analysis) receives a face it cannot evaluate; silent substitution means the failure surfaces far from its actual cause.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=signal(11) ifc=schema_n/a`
+- **Fixture path**: step-examples/12-8-mixed/M193.stp
+
+### M194 — Tessellated shell's declared topological-geometry link points at a real but never-built shell, reader substitutes a fresh shell
+- **Category**: §12.8 (sub-class: tessellation / mesh-as-brep)
+- **Sources**: 04-occt-translation.md; StepToTopoDS_TranslateShell.cxx:140-157 (unresolved topological_link falls back to a fresh shell built from the shell's own tessellated items, has-geometry flag cleared).
+- **Description**: A tessellated shell declares a link to its exact-topology counterpart, but that counterpart, though a real and well-formed shell entity present in the file, is never itself built as part of the model because it is not wired into anything the model's shape representation reaches. The declared link resolves to nothing at read time, and the reader quietly builds a brand-new shell from the tessellated shell's own mesh items instead of substituting the intended precise topology.
+- **Reproducer recipe**: `TESSELLATED_SHELL` whose `topological_link` attribute is populated with a reference to a syntactically valid `OPEN_SHELL` entity, fully defined in the file, that is never referenced by any `MANIFOLD_SOLID_BREP` or shape representation reachable from the model; the tessellated shell's one `TRIANGULATED_FACE` item carries its own `COORDINATES_LIST`; wired directly as the sole item of a `MANIFOLD_SURFACE_SHAPE_REPRESENTATION`.
+- **Expected kernel behavior**: reject a tessellated shell whose declared topological link cannot be resolved, or heal by substituting a diagnosed placeholder shell; never silently rebuild an unrelated fresh shell from mesh data alone without flagging that the intended precise topology was never actually used.
+- **Notes**: Synonyms: "tessellated shell dangling topological link", "unresolved exact-topology counterpart falls back to fresh shell", "shell rebuilt from mesh items when topology link is unbound", "surfaceless shell from unbound tessellation link". Live-verified: loads cleanly as a fresh single-face shell whose face reports as unrecognized surface kind and whose validity check reports invalid, confirming the fallback path fires exactly as described (companion finding to M193's face-level mechanism, same code family one level up in the topology tree). Mirrors Pmi164's overall single-shared-coordinate-list layout but gives the tessellated shell an actual unresolvable topological link and its own private coordinate list rather than leaving Pmi164's shell-level construct as a dead scaffold never reached from that file's real shape representation. See also: M193.
+- **Byte assertion**: contains(b'TESSELLATED_SHELL')
+- **Byte assertion**: count_entity_def(b'OPEN_SHELL') == 1
+- **Byte assertion**: count_entity_def(b'TESSELLATED_SHELL') == 1
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_faces_total == 1
+- **Tier-3 assertion**: face[0].surface_type == "other"
+- **Tier-3 assertion**: brepcheck.valid == False
+- **OCC behavior**: accepts and transfers to a fresh single-face shell carrying the mesh triangle but no surface (validity check reports invalid); the independent mesh-processing oracle crashes on this input. Kernel-bug witnessed: a freshly-fabricated shell substituted for the declared exact-topology counterpart is delivered without a diagnostic distinguishing it from the intended precise shell.
+- **Severity**: P1
+- **Model impact**: A consumer expecting the shell to carry the producer's precise topology instead receives a rebuilt shell with none of the original surface data, silently diverging from the source model.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=signal(11) ifc=schema_n/a`
+- **Fixture path**: step-examples/12-8-mixed/M194.stp
+
+### M195 — Tessellated solid's declared exact-geometry link points at a real but never-built solid, reader substitutes a fresh shell-plus-solid
+- **Category**: §12.8 (sub-class: tessellation / mesh-as-brep)
+- **Sources**: 04-occt-translation.md; StepToTopoDS_TranslateSolid.cxx:67-82 (unresolved geometric_link, checked both for presence and for binding before lookup, falls back to a fresh shell wrapped in a fresh solid, has-geometry flag cleared).
+- **Description**: A tessellated solid declares a link to its exact-geometry counterpart, but that counterpart, though a real and well-formed solid entity present in the file, is never itself built as part of the model because it is not wired into anything the model's shape representation reaches. The declared link resolves to nothing at read time, and the reader quietly fabricates a brand-new shell-and-solid pair from the tessellated solid's own mesh items instead of substituting the intended precise geometry.
+- **Reproducer recipe**: `TESSELLATED_SOLID` whose `geometric_link` attribute is populated with a reference to a syntactically valid `MANIFOLD_SOLID_BREP` entity, fully defined in the file (own `CLOSED_SHELL`/`ADVANCED_FACE`), that is never referenced by any shape representation reachable from the model; the tessellated solid's one `TRIANGULATED_FACE` item carries its own `COORDINATES_LIST`; wired directly as the sole item of a `MANIFOLD_SURFACE_SHAPE_REPRESENTATION`.
+- **Expected kernel behavior**: reject a tessellated solid whose declared exact-geometry link cannot be resolved, or heal by substituting a diagnosed placeholder solid; never silently fabricate an unrelated fresh solid from mesh data alone without flagging that the intended precise geometry was never actually used.
+- **Notes**: Synonyms: "tessellated solid dangling geometric link", "unresolved exact-geometry counterpart falls back to fresh shell and solid", "solid rebuilt from mesh items when geometric link is unbound", "surfaceless solid from unbound tessellation link". Live-verified: loads cleanly as a fresh solid wrapping a single-face shell whose face reports as unrecognized surface kind and whose validity check reports invalid, confirming the fallback path fires exactly as described (companion finding to M193/M194's face- and shell-level mechanisms, same code family one further level up the topology tree). Mirrors Tsh065, whose tessellated-shell construct is a dead scaffold never reached from that file's actual precise-geometry shape representation, by making the tessellated construct itself the live model and giving it a genuinely unresolvable link. See also: M193, M194.
+- **Byte assertion**: contains(b'TESSELLATED_SOLID')
+- **Byte assertion**: count_entity_def(b'MANIFOLD_SOLID_BREP') == 1
+- **Byte assertion**: count_entity_def(b'TESSELLATED_SOLID') == 1
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_faces_total == 1
+- **Tier-3 assertion**: face[0].surface_type == "other"
+- **Tier-3 assertion**: brepcheck.valid == False
+- **OCC behavior**: accepts and transfers to a fresh solid whose sole face carries the mesh triangle but no surface (validity check reports invalid); the independent mesh-processing oracle crashes on this input. Kernel-bug witnessed: a freshly-fabricated shell-and-solid pair substituted for the declared exact-geometry counterpart is delivered without a diagnostic distinguishing it from the intended precise solid.
+- **Severity**: P1
+- **Model impact**: A consumer expecting the solid to carry the producer's precise geometry instead receives a rebuilt solid with none of the original surface data; volume, mass, and manufacturing calculations run against a fabricated stand-in.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=signal(11) ifc=schema_n/a`
+- **Fixture path**: step-examples/12-8-mixed/M195.stp
+
+### M196 — Bare geometric set mixing a supported curve with an unsupported placement entity: the placement is silently skipped, the curve translates normally
+- **Category**: §12.8 (sub-class: mesh-as-brep / wireframe)
+- **Sources**: 04-occt-translation.md (Q030); StepToTopoDS_Builder.cxx:636-775 (per-item type dispatch inside the geometric-set builder: curve/point/surface each get a dedicated path; anything else that is still a generic geometry-representation item is routed through a last-resort general-purpose transfer, and a bare placement entity produces no shape there, so it is silently omitted from the result with only a warning).
+- **Description**: A bare geometric set aggregates items beyond curve/surface/point — here a placement entity alongside an ordinary curve. Per-item type dispatch inside the reader recognizes the curve and builds a live edge from it; the placement entity matches none of the directly-supported kinds, falls through to a last-resort general path that has no way to turn a bare placement into geometry, and is silently dropped with nothing surfaced to the consumer about the item that went missing.
+- **Reproducer recipe**: `GEOMETRIC_CURVE_SET` whose items list mixes one `CIRCLE` (a supported curve, bounded/periodic so it survives the reader's curve path without incident) and one `AXIS2_PLACEMENT_3D` (a placement entity, not a geometric_select member); wired directly as the sole item of a `MANIFOLD_SURFACE_SHAPE_REPRESENTATION`.
+- **Expected kernel behavior**: accept the supported item, but surface a diagnostic naming which item(s) in the set could not be interpreted as geometry rather than dropping them without a trace; never report a partial result as a complete transfer.
+- **Notes**: Synonyms: "geometric set mixed item silently skipped", "unsupported representation item dropped from geometric set", "placement entity in geometric curve set produces no shape", "bare geometric set partial transfer no diagnostic". Live-verified: the result is exactly the circle's one edge and nothing attributable to the placement — the mixed-dispatch mechanism fires cleanly. Mirrors M051, whose supported item was an unbounded line: an unbounded line placed bare inside this kind of set crashes this reader build on its own, with or without a second mixed-in item (isolated by testing an unbounded-line-only set against this same wrapper, independently of any placement entity) — an unrelated instability in how the reader turns an untrimmed infinite line into an edge inside this context, not a symptom of the mixed-item dispatch this entry targets. Swapping in a bounded curve isolates the dispatch-skip behavior cleanly.
+- **Byte assertion**: contains(b'GEOMETRIC_CURVE_SET')
+- **Byte assertion**: contains(b'CIRCLE')
+- **Byte assertion**: count_entity_def(b'AXIS2_PLACEMENT_3D') == 2
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_faces_total == 0
+- **Tier-3 assertion**: n_edges_total == 1
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: brepcheck.valid == True
+- **OCC behavior**: accepts and transfers to a single free edge from the circle; the placement entity contributes nothing to the result and no diagnostic distinguishes "item silently unsupported" from "item legitimately absent". Kernel-bug witnessed: partial transfer is reported as a plain success.
+- **Severity**: P2
+- **Model impact**: A producer that relied on the placement entity carrying meaning (a reference frame, a datum) loses it silently; a consumer comparing item counts between source and transferred model has no signal that anything was dropped.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a`
+- **Fixture path**: step-examples/12-8-mixed/M196.stp
+
+### M197 — Faceted polygon boundary repeats the same point reference twice in a row; the reader skips the resulting zero-length segment instead of building a degenerate edge
+- **Category**: §12.8 (sub-class: mesh-as-brep)
+- **Sources**: 04-occt-translation.md (Q020); StepToTopoDS_TranslatePolyLoop.cxx:117-119 (consecutive-point comparison is by entity identity, not coordinate equality; a repeat is skipped with a bare loop continue, leaving the running "previous point" unmoved so the next distinct point closes the gap cleanly).
+- **Description**: A faceted polygon boundary lists its points as a flat, closable loop. When the very same point entity appears twice in a row, building an edge between that pair would produce a zero-length edge with no useful geometry. Instead of doing that, the reader recognizes the immediate repeat and simply omits that one segment, so the resulting boundary is the honest polygon with the redundant vertex silently absorbed rather than a polygon with a degenerate stub edge in it.
+- **Reproducer recipe**: `FACETED_BREP` referencing a `CLOSED_SHELL` containing one `ADVANCED_FACE` on a `PLANE` whose `FACE_OUTER_BOUND` is a `POLY_LOOP` listing five point references for a four-corner unit square, where the second corner's point entity is listed twice in immediate succession (positions 2 and 3 of the flat point list both cite the same `CARTESIAN_POINT`).
+- **Expected kernel behavior**: recognize and skip the degenerate repeated-point segment, closing the loop across the gap; or reject the boundary as malformed if zero-length segments are not tolerated at all — either way, never silently build a zero-length edge into the result.
+- **Notes**: Synonyms: "faceted polygon repeats a point twice in a row", "degenerate polygon segment silently skipped", "same point entity referenced consecutively in a poly loop", "faceted brep avoids a zero-length edge from a duplicate vertex reference". Live-verified: the resulting boundary has exactly four edges (not five), area exactly matching the intended unit square, and the validity check reports the face as fully valid — confirming the redundant reference was cleanly absorbed rather than producing a corrupt loop. Mirrors M055, which uses four distinct points on a deliberately non-planar surface to test a different problem (the schema-illegal non-planar-face path); this entry keeps the surface planar and duplicates one point reference instead, isolating the degenerate-segment skip from the non-planar check.
+- **Byte assertion**: contains(b'POLY_LOOP')
+- **Byte assertion**: matches(rb"POLY_LOOP\('dup_point_loop',\(#6,#7,#7,#8,#9\)\)")
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_faces_total == 1
+- **Tier-3 assertion**: n_edges_total == 4
+- **Tier-3 assertion**: face[0].surface_type == "plane"
+- **Tier-3 assertion**: face[0].area == 1.0
+- **Tier-3 assertion**: brepcheck.valid == True
+- **OCC behavior**: accepts and transfers to a fully valid four-edge planar face; the redundant consecutive point reference produces no edge and no diagnostic. Documented divergence: this is correct, desired robustness — included as a positive-control demonstration of the skip guard rather than a bug, matching the catalog's "reader must not build a degenerate edge" expectation exactly.
+- **Severity**: P3
+- **Model impact**: None when the skip fires correctly (this fixture); a reader that instead built the zero-length stub edge would hand every downstream consumer a degenerate edge that trips length-based sanity checks and complicates offset/fillet operations near that corner.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+- **Fixture path**: step-examples/12-8-mixed/M197.stp
+
+### M198 — Triangle-strip index list repeats a vertex within one triple; the reader silently excludes the collapsed triangle instead of misreading or crashing on it
+- **Category**: §12.8 (sub-class: tessellation)
+- **Sources**: 04-occt-translation.md; StepToTopoDS_TranslateFace.cxx:181-198,341-356 (strip processing walks the index array pairwise, checking each new vertex against both of its immediate predecessors in the strip before emitting a triangle; the array-sizing pass that runs first reapplies the identical check, so the allocated triangle count matches what actually gets filled, leaving no uninitialized slot).
+- **Description**: Tessellated triangle geometry can be packed as a strip — a running list of vertex indices where each new index combines with the previous two to form one triangle — rather than as a flat list of independent triangles. When a strip's running window repeats a vertex, the candidate triangle it would form has zero area. The reader detects this collapse and leaves that one triangle out of the built mesh entirely, while the rest of the strip continues to build normally.
+- **Reproducer recipe**: `COMPLEX_TRIANGULATED_FACE` (the strip/fan-capable tessellated-face variant, not the plain-list variant) over a four-node unit-square `COORDINATES_LIST`, with one `triangle_strips` entry `(1,2,3,3)` — a strip whose last two positions repeat vertex index 3.
+- **Expected kernel behavior**: detect and exclude the collapsed triangle from the built mesh, leaving the rest of the strip intact; never emit a zero-area triangle or leave an uninitialized triangle slot in its place.
+- **Notes**: Synonyms: "triangle strip repeats a vertex index", "collapsed strip triangle silently excluded", "degenerate triangle omitted from packed strip mesh", "tessellated strip skip guard". Live-verified by inspecting the built mesh directly: it carries exactly one triangle, the well-formed one from the strip's first three indices, with the collapsed second candidate cleanly absent rather than present with garbage data. Mirrors M005, a plain flat-list tessellated face (the wrong packing mode entirely) whose repeated-index triple reaches no such guard at all and instead crashes downstream from an undefined per-vertex normal; rebuilt here in the packed strip form so the skip guard genuinely has something to fire on. A triangle-fan encoding of the same idea was tried and rejected: the fan variant's array-sizing pass does not reapply the same skip check the fill pass uses, so a collapsed fan triangle leaves an uninitialized triangle slot behind rather than being cleanly excluded — the strip encoding avoids that confound.
+- **Byte assertion**: contains(b'COMPLEX_TRIANGULATED_FACE')
+- **Byte assertion**: matches(rb"\(\(1,2,3,3\)\)")
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_faces_total == 1
+- **Tier-3 assertion**: face[0].surface_type == "other"
+- **Tier-3 assertion**: face[0].area == 0.5
+- **Tier-3 assertion**: brepcheck.valid == False
+- **OCC behavior**: accepts and transfers to a single mesh-bearing face containing exactly one triangle (the collapsed second candidate cleanly excluded, not corrupted); the face itself carries no surface, matching the ordinary no-exact-geometry tessellated-face path (unrelated to the strip mechanism this entry targets). Documented divergence: correct, desired robustness in the strip-index handling itself.
+- **Severity**: P3
+- **Model impact**: None when the exclusion fires correctly (this fixture); a reader that instead built the zero-area triangle or left a garbage slot would corrupt the mesh's triangle count and could crash downstream normal/area computations.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=signal(11) ifc=schema_n/a`
+- **Fixture path**: step-examples/12-8-mixed/M198.stp
+
+### M199 — Tessellated face's per-face normal row has the wrong number of components; the reader silently leaves every node's normal unset rather than misreading the row
+- **Category**: §12.8 (sub-class: tessellation)
+- **Sources**: 04-occt-translation.md; StepToTopoDS_TranslateFace.cxx:123-131 (the normals table's row width is checked once, up front, against the required three components; any other width returns immediately, before the per-node assignment loop that would otherwise copy the row's values into the mesh ever runs).
+- **Description**: A tessellated face can declare a single per-face normal (one row, applied to every node) instead of one normal per node. When that one row does not have exactly the three components an XYZ vector needs, the reader does not try to interpret whatever values are present, nor does it reject the face — it simply leaves the mesh's per-node normal storage allocated but never actually filled with the row's values, so every node keeps its zero-initialized default rather than the malformed vector.
+- **Reproducer recipe**: `TRIANGULATED_FACE` whose normals table is a single row of four components `(0.,0.,1.,0.)` instead of three, over a three-point `COORDINATES_LIST` triangle; wired directly as the sole item of a `MANIFOLD_SURFACE_SHAPE_REPRESENTATION`.
+- **Expected kernel behavior**: detect the malformed row width and either reject the face or clearly diagnose that normals were dropped; never silently allocate normal storage that is never actually populated, since a consumer that checks "has normals" without checking the values gets a false positive.
+- **Notes**: Synonyms: "tessellated normals row wrong component count", "malformed normal row silently ignored", "per-node normal storage allocated but never filled", "four-component normal row dropped without diagnostic". Live-verified by inspecting the built mesh directly: it reports normals as present, but reading any individual node's normal value raises a construction error because the stored vector is still all zeros — direct confirmation that the malformed row was never actually copied in, only its presence flag survived. Mirrors Bo027, whose per-vertex normal rows are well-formed three-component rows that merely disagree in value across a shared edge — a different defect (value disagreement, not row width) — by malforming the row's component count instead of its value.
+- **Byte assertion**: contains(b'TRIANGULATED_FACE')
+- **Byte assertion**: contains(b'(0.,0.,1.,0.)')
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_faces_total == 1
+- **Tier-3 assertion**: face[0].surface_type == "other"
+- **Tier-3 assertion**: brepcheck.valid == False
+- **OCC behavior**: accepts and transfers to a single mesh-bearing face whose triangle geometry is intact but whose per-node normals report as present while every value is the zero-initialized default (not the malformed row's values). Kernel-bug witnessed: a "has normals" flag that lies about whether usable normal data actually exists.
+- **Severity**: P2
+- **Model impact**: A renderer or analysis tool that trusts the has-normals flag without validating individual values gets zero vectors passed to shading or curvature calculations, producing black/undefined results instead of a clear "no normals" fallback.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=signal(11) ifc=schema_n/a`
+- **Fixture path**: step-examples/12-8-mixed/M199.stp
+
 ### Wr053 — Toroidal-surface portion of fused solid corrupted on STEP round-trip
 - **Category**: §12.13 writer-pathology (sub-class: torus-surface write corruption)
 - **Sources**: Pattern-mined from OCCT/tests/bugs/step/bug32556 (LGPL-clean — pattern only, no bytes copied). OCCT regression: torus(5, 3) fused with cylinder(radius 2, height 10) should round-trip to a 12-edge / 7-vertex result; OCCT-pre-fix produced a corrupted shape with non-matching counts.

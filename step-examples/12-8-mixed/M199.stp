@@ -1,0 +1,26 @@
+ISO-10303-21;
+/* M199: TRIANGULATED_FACE normals table with a single row of 4 components (0.,0.,1.,0.) instead of the required 3 (a flat-shading whole-face normal padded with a spurious 4th value); input: AP242 file whose tessellated face declares one normal row for the entire face but the row's component count does not match XYZ; StepToTopoDS_TranslateFace.cxx's SetNormals (StepToTopoDS_TranslateFace.cxx:128-131) checks theNormals->RowLength()!=3 BEFORE looking at theNormNum at all and returns immediately on any mismatch -- the mesh is still built with per-node normal storage allocated (Poly_Triangulation::HasNormals()==True, since aNormNum>0 governs allocation) but every node's normal value is left at its zero-initialized default because SetNormals's early return means the per-node Normal() assignment loop never runs; the malformed row is silently ignored rather than misread or rejected, exactly as the problem describes; mirrors Bo027 (per-vertex normal DIRECTIONS that are well-formed 3-component rows but inconsistent in VALUE across a shared edge -- a different defect, value disagreement, not row arity) fixed by malforming the row's component COUNT instead of its value; covers stp-tess-malformed-normals; synonyms: tessellated normals row arity mismatch, normal table wrong column count silently ignored, four-component normal row skipped, triangulated face normals guard early return */
+HEADER;
+FILE_DESCRIPTION(('M199'),'2;1');
+FILE_NAME('M199.stp','2026-07-12T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=COORDINATES_LIST('coords',3,((0.,0.,0.),(1.,0.,0.),(0.,1.,0.)));
+#2=TRIANGULATED_FACE('malformed_normals_face',#1,3,((0.,0.,1.,0.)),$,(),((1,2,3)));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M199','M199','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+ENDSEC;
+END-ISO-10303-21;

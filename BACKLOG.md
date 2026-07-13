@@ -1125,6 +1125,25 @@ than a fresh GAP fixture.
 #### `exchange/brepcheck` (7)
 
 - [ ] `bc-check-fail`: The underlying geometric evaluation for a specific sub-check (e.g. curve/surface projection, intersection)...
+      **Wave-3 packet JL attempt (2026-07-12): NO REPRODUCER FOUND, dropped from that packet's delivery
+      (7/8 fixtures shipped instead of 8/8) — quality over count.** Tried live against the pinned
+      OCCT 7.8.1 source: near-zero-radius (1e-9..1e-14) circles as outer boundary, as inner hole
+      (alone and duplicated), near-zero-radius/major-radius tori, near-zero-radius spheres, extreme
+      coordinate magnitude (1e150-1e300) circles round-tripped through STEP, and a nested-solids
+      compound at extreme relative scale — all either load cleanly and validate valid, or return a
+      clean `IsValid()==False` through ordinary status codes, never a caught exception. Source-level
+      read of `BRepCheck_Wire.cxx`/`BRepCheck_Face.cxx`/`BRepCheck_Analyzer.cxx`: the analyzer itself
+      has no direct throw sites; every `catch(Standard_Failure)` guards a call into `gp`/`Geom`/
+      `Extrema`, and the one unguarded zero-vector-direction construction found
+      (`BRepCheck_Wire.cxx:1363`, wire self-intersection-near-vertex path) is already protected by a
+      `Distance() <= gp::Resolution()` short-circuit just above it. Also confirmed via
+      `_oracle_workers.py`: the harness's own `occt=shape(N)` Expected-validation field never invokes
+      `BRepCheck_Analyzer` at all (only `tier3_geometric.py`'s `brepcheck` helper does, and it already
+      catches exceptions into a null verdict rather than propagating). Next attempt should try
+      solid-level checks (`BRepCheck_Solid` imbrication/void containment) with extreme geometry, or a
+      B-spline curve/surface with pathologically near-duplicate knots used as actual edge/face
+      geometry reached via STEP (not direct `BRepBuilderAPI` construction, which rejects some of these
+      earlier via a different, stricter validation path than the STEP reader).
 - [ ] `bc-intersecting-wires`: Two distinct wires bounding the same face cross each other in parametric space.
 - [ ] `bc-invalid-degenerated-flag`: An edge marked as 'degenerated' does not actually collapse to a single point (or a genuinely-degenerate edge...
 - [ ] `bc-invalid-imbrication-of-shells`: Shell nesting within a solid is topologically inconsistent (shells improperly nested).

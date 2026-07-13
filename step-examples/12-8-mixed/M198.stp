@@ -1,0 +1,26 @@
+ISO-10303-21;
+/* M198: COMPLEX_TRIANGULATED_FACE using STRIP index encoding (triangle_strips, not the plain triangle list) with one repeated-vertex-index triple; input: AP242 file whose tessellated face packs a single triangle_strip (1,2,3,3) over a 4-node unit-square COORDINATES_LIST; StepToTopoDS_TranslateFace.cxx's SetTriangles (StepToTopoDS_TranslateFace.cxx:181-198) walks the strip pairwise and checks each new vertex against BOTH of its two immediate predecessors in the strip array before building a triangle -- vertex index 3 repeats at strip positions 3 and 4, so the second candidate triangle (2,3,3) collapses (Value(4)==Value(3)) and is silently excluded from the built Poly_Triangulation, while the first candidate triangle (1,3,2) is unaffected and built normally; the matching CreatePolyTriangulation counting pass (StepToTopoDS_TranslateFace.cxx:341-356) reapplies the identical skip check when sizing the triangle array, so the allocated count matches what actually gets filled -- no uninitialized triangle slot, unlike triangle_fans (whose counting pass at line 361 does NOT reapply the skip guard, only Length()-2, making fans an unsafe choice for this mechanism); the plain triangle-list path (SetTriangles's aTrianStripsNum==0 branch) copies indices verbatim with no such guard at all -- mirrors M005 (a plain TRIANGULATED_FACE list, the wrong encoding mode entirely, whose repeated-index triple (3,3,4) reaches no skip guard and instead crashes via a downstream NaN normal); rebuilt here as COMPLEX_TRIANGULATED_FACE strip encoding so the skip guard genuinely fires; covers stp-tess-degenerate-triangles; synonyms: triangle strip repeated vertex index, degenerate triangle silently excluded, complex triangulated face strip skip guard, tessellated strip collapsed triangle omitted */
+HEADER;
+FILE_DESCRIPTION(('M198'),'2;1');
+FILE_NAME('M198.stp','2026-07-12T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=COORDINATES_LIST('strip_coords',4,((0.,0.,0.),(1.,0.,0.),(1.,1.,0.),(0.,1.,0.)));
+#2=COMPLEX_TRIANGULATED_FACE('strip_repeated_index_face',#1,4,(),$,(),((1,2,3,3)),());
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('M198','M198','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+ENDSEC;
+END-ISO-10303-21;
