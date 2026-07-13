@@ -1354,3 +1354,57 @@ re-run twice post-edit, byte-identical output both times.
   add a real `carve_out: true`-style field (and teach `merge_coverage.py` to honor it per-class,
   not just per-domain) so all four STEP-inexpressible items are mechanically, not just textually,
   removed from the fillable denominator.
+
+### (e) Wave-4 packet A2 session (2026-07-12) — sew-cutting-hanging-vertex-split re-audit needed
+
+Packet A2 (sewing core mechanisms, `12-3a-shells`) landed 6 of the planned 8 fixtures, IDs
+Tsh242-Tsh247 (contiguous — a `sew-cutting-hanging-vertex-split` attempt was built and withdrawn
+under a working ID before this range was assigned, so it consumed no permanent ID; see below).
+`sew-degenerate-free-wire-collapse` (Tsh242, post-merge variant), `sew-free-edge-gap-merge`
+subvariants (a)+(b) (Tsh243 min-length-floor rejection, Tsh244 low-coverage rejection),
+`sew-candidate-tiebreak-reciprocity` (Tsh245, both named subcases in one fixture),
+`sew-longest-edge-reference-selection` (Tsh246), and the bonus `sew-merged-edge-continuity-
+encoding` (Tsh247, closes the class GAP — see §(d) above) all shipped live-verified via this
+worktree's OCP/OCCT 7.8.1 (byte assertions checked against actual bytes, tier-3 assertions
+live-computed, `_structural_oracle.lint_file` clean, `_fixture_source_check` byte-stable).
+
+- [ ] **`sew-cutting-hanging-vertex-split` — mechanism NOT reproducible live; class evidence may be
+      stale.** Both planned fixtures for this PARTIAL class (the two "hanging vertex T-junction"
+      subvariants: snap-vs-new-cut threshold + non-manifold-vertex preservation; seam-edge
+      dual-pcurve propagation) were WITHDRAWN after extensive live testing failed to reproduce
+      `BRepBuilderAPI_Sewing::Cutting` firing at all. Read the actual `BRepBuilderAPI_Sewing.cxx`
+      source line-by-line (available on disk in this environment, pinned OCCT 7.8.1 checkout) to
+      confirm every documented precondition (`isBound` gating in `FindFreeBoundaries`, box-tree
+      candidate selection in `Cutting`, distance/snap thresholds in `CreateCuttingNodes`,
+      `ProjectPointsOnCurve`'s extrema/clamping logic) and built geometry satisfying all of them —
+      a face-bound free reference edge with a face-bound free candidate vertex genuinely (distance
+      0) on its interior, `myCutting` at its default-`True` constructor value. Tested across
+      tolerance 0.01-5.0, all 4 constructor boolean-option combinations, `FloatingEdgesMode`/
+      `NonManifoldMode` explicitly toggled both ways, raw in-memory `BRepBuilderAPI_MakeFace`/
+      `BRepBuilderAPI_Sewing` construction bypassing STEP entirely (ruling out a translation-layer
+      confound), and a close structural mimic of M045's own 3-shell T-junction geometry (neighbor-
+      left/neighbor-right/tab pattern, `NonManifoldMode` on). `BRepBuilderAPI_Sewing::Perform()`
+      never produced a genuine edge split in any configuration (`IsModified` stayed `False` for
+      every candidate edge; **unique**-shape-counted edge totals — via `TopTools_IndexedMapOfShape`,
+      not raw `TopExp_Explorer` traversal — never increased).
+      **Re-audit finding: M045 itself, the class's cited sole existing (incidental-hit) fixture,
+      shows NO genuine edge split either** under the same rigorous unique-shape-counting
+      methodology (12→12 unique edges before/after `Perform()`; only 2 exactly-coincident corner
+      vertices get tolerance-glued 12→10, an unrelated `GlueVertices` mechanism — raw
+      `TopExp_Explorer` traversal counts appeared to show a change, 12 edges → 15, but that is a
+      double-counting artifact of shared sub-shapes being visited once per parent face, NOT a real
+      topology change; this same artifact likely explains why the class was scored PARTIAL rather
+      than GAP in the original audit). Recommend: (1) re-verify the `sew-cutting-hanging-vertex
+      -split` `coverage_verdict`/M045 evidence citation in `exchange/problems.json` using
+      unique-shape counting before trusting it again; (2) if a maintainer can access a debug OCCT
+      build (this environment's pinned checkout at `/private/tmp/cad-occt-781/` has
+      `#ifdef OCCT_DEBUG` diagnostic prints in `Cutting()`/`CreateCuttingNodes()` that would show
+      candidate-selection details directly, but requires a recompile not attempted here), that
+      would settle whether the trigger condition is version-specific, requires an OCCT-internal
+      call path not reachable via the public API OCP binds, or was simply never real; (3) until
+      then, treat this class as GAP-adjacent-but-unconfirmed rather than a straightforward "just
+      needs purpose-built geometry" PARTIAL fill. The withdrawn attempt was built and deleted
+      under a working `Tsh243` ID before this packet's real fixtures were numbered, so it did not
+      consume a permanent ID — `Tsh243` in the shipped range above is unrelated (the
+      `sew-free-edge-gap-merge` min-length-floor fixture). Next packet touching `12-3a-shells`
+      should start fresh from Tsh248.
