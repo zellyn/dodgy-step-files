@@ -1458,3 +1458,40 @@ live-computed, `_structural_oracle.lint_file` clean, `_fixture_source_check` byt
       consume a permanent ID — `Tsh243` in the shipped range above is unrelated (the
       `sew-free-edge-gap-merge` min-length-floor fixture). Next packet touching `12-3a-shells`
       should start fresh from Tsh248.
+
+**Resolution (Wave-4 adjudication, 2026-07-12, `WAVE4_VERIFY.md`):** item (1) above is DONE — an
+independent adversarial re-verification (separate from the packet-A2 authoring session) reproduced
+the same 12→12-unique-edges / 12→15-naive-traversal-double-counting result against
+`step-examples/12-8-mixed/M045.stp`, and a further independent probe (in-memory
+`BRepBuilderAPI_MakeFace` + free edge with endpoint exactly on the interior of the face's own
+boundary edge, `NonManifoldMode` on, 6 tolerances) also found no split — no counter-example found
+across two independent sessions. `sew-cutting-hanging-vertex-split.coverage_verdict` flipped
+PARTIAL → **GAP** and M045 removed from `fixture_ids` in `occt-coverage/exchange/problems.json`.
+Items (2) (debug-OCCT recompile of `Cutting()`/`CreateCuttingNodes()`) and (3) (accept a
+runtime-scaffold demonstration if one is ever produced) remain open maintainer decisions — the
+class stays annotated GAP-adjacent-but-unconfirmed, not a routine "write a fixture" GAP.
+
+### (f) Wave-4 verification session (2026-07-12) — new crash-class lead
+
+`WAVE4_VERIFY.md` (adversarial pre-merge verification of packets A2 `Tsh242-247` and B2
+`Twi292-298`) surfaced a new, previously-undocumented crash-class candidate while probing Claim 2
+(the B2 packet's drop of `sew-malformed-subshape-tolerance`'s null-vertex subvariant — see that
+class's Wave-4 note in `occt-coverage/exchange/problems.json` for the full disposition, which
+stayed an ordinary PARTIAL/no-carve-out).
+
+- [ ] **New crash-class fixture candidate: schema-legal 2-coordinate `CARTESIAN_POINT` under a
+      `VERTEX_POINT` segfaults `STEPControl_Reader::TransferRoots()` at translate time.** A
+      `CARTESIAN_POINT` with only 2 coordinates is schema-legal per EXPRESS
+      (`coordinates: LIST [2:3] OF LENGTH_MEASURE`), so it survives the parse-time schema
+      conformance that kills the 5 documented `sew-malformed-subshape-tolerance` null-vertex
+      attempts, and instead reaches OCCT's own translator with a vertex that never gets a full 3D
+      point. Result, reproduced twice independently and isolated to a minimal single-face file:
+      **`STEPControl_Reader::TransferRoots()` segfaults (exit 139)** — a third, previously
+      undocumented failure mode (crash at translate time, before any `TopoDS_Shape` exists), distinct
+      from the 5 parse-time-rejected variants and from the existing
+      `sew-malformed-subshape-tolerance` skip-and-continue mechanism (which requires a live shape
+      to reach `FindFreeBoundaries`'s `vFirst/vLast.IsNull()` guard — this crash never gets that
+      far). No fixture was authored (out of the verifier's scope; this was a byproduct of Claim-2
+      probing, not a planned fixture build). Candidate for the crash-fixture backlog alongside the
+      existing known-crash entries (e.g. the empty-pcurve-list `SURFACE_CURVE` crash noted in §(d)
+      above). Reproducer recipe is in `WAVE4_VERIFY.md` Part 4 item 3.
