@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M196 — Bare geometric set mixing a supported curve with an unsupported placement entity: the placement is silently skipped, the curve translates normally</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M196</span>
+</nav>
+<header class="title-bar">
+<h1>M196 <span class="sep">—</span> <span class="entry-title">Bare geometric set mixing a supported curve with an unsupported placement entity: the placement is silently skipped, the curve translates normally</span></h1>
+<p class="category">§12.8 (sub-class: mesh-as-brep / wireframe)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M196.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M196.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>04-occt-translation.md (Q030)</li>
+<li>StepToTopoDS_Builder.cxx:636-775 (per-item type dispatch inside the geometric-set builder: curve/point/surface each get a dedicated path</li>
+<li>anything else that is still a generic geometry-representation item is routed through a last-resort general-purpose transfer, and a bare placement entity produces no shape there, so it is silently omitted from the result with only a warning).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A bare geometric set aggregates items beyond curve/surface/point — here a placement entity alongside an ordinary curve. Per-item type dispatch inside the reader recognizes the curve and builds a live edge from it; the placement entity matches none of the directly-supported kinds, falls through to a last-resort general path that has no way to turn a bare placement into geometry, and is silently dropped with nothing surfaced to the consumer about the item that went missing.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`GEOMETRIC_CURVE_SET` whose items list mixes one `CIRCLE` (a supported curve, bounded/periodic so it survives the reader&#x27;s curve path without incident) and one `AXIS2_PLACEMENT_3D` (a placement entity, not a geometric_select member); wired directly as the sole item of a `MANIFOLD_SURFACE_SHAPE_REPRESENTATION`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>accept the supported item, but surface a diagnostic naming which item(s) in the set could not be interpreted as geometry rather than dropping them without a trace; never report a partial result as a complete transfer.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;geometric set mixed item silently skipped&quot;, &quot;unsupported representation item dropped from geometric set&quot;, &quot;placement entity in geometric curve set produces no shape&quot;, &quot;bare geometric set partial transfer no diagnostic&quot;. Live-verified: the result is exactly the circle&#x27;s one edge and nothing attributable to the placement — the mixed-dispatch mechanism fires cleanly. Mirrors M051, whose supported item was an unbounded line: an unbounded line placed bare inside this kind of set crashes this reader build on its own, with or without a second mixed-in item (isolated by testing an unbounded-line-only set against this same wrapper, independently of any placement entity) — an unrelated instability in how the reader turns an untrimmed infinite line into an edge inside this context, not a symptom of the mixed-item dispatch this entry targets. Swapping in a bounded curve isolates the dispatch-skip behavior cleanly.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;GEOMETRIC_CURVE_SET&#x27;)</code></li>
+<li><code>contains(b&#x27;CIRCLE&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;AXIS2_PLACEMENT_3D&#x27;) == 2</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_faces_total == 0</code></li>
+<li><code>n_edges_total == 1</code></li>
+<li><code>edge[0].curve_type == &quot;circle&quot;</code></li>
+<li><code>brepcheck.valid == True</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="M051.html">M051</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M196: <mark>GEOMETRIC_CURVE_SET</mark> mixing a supported item (<mark>CIRCLE</mark>, a StepGeom_Curve) with a generic GeometricRepresentationItem (AXIS2_PLACEMENT_3D, none of curve/point/surface) in one items list; input: AP242/AP214 file whose bare GEOMETRIC_SET aggregates heterogeneous geometric_set_select members -- StepToTopoDS_Builder::Init(GeometricSet) dispatches each item by type: the <mark>CIRCLE</mark> hits the StepGeom_Curve branch and is translated to a live edge; the AXIS2_PLACEMENT_3D matches none of curve/point/surface, falls through to the generic GeometricRepresentationItem fallback (routed through STEPControl_ActorRead::TransferShape), which has no recognized translation for a bare placement entity and produces no shape, silently skipped with only a warning; the mixed set therefore yields exactly the circle&#x27;s edge, nothing from the placement; mirrors M051 (which used an unbounded LINE for the supported item) fixed per design note: M051&#x27;s crash (occt=signal(11)) is independently reproducible with ANY bare, untrimmed LINE inside a <mark>GEOMETRIC_CURVE_SET</mark> regardless of what else shares the set (isolated live: LINE-only set crashes identically to the LINE+AXIS2_PLACEMENT_3D mix; <mark>CIRCLE</mark>-only and <mark>CIRCLE</mark>+AXIS2_PLACEMENT_3D both load cleanly) -- the crash trigger is StepToGeom::MakeCurve on an infinite Geom_Line reaching BRepBuilderAPI_MakeEdge with unbounded parameters in this pinned build, an unrelated bug, not the mixed-item dispatch mechanism this fixture targets; using a bounded/periodic <mark>CIRCLE</mark> isolates the dispatch-skip behavior cleanly; covers stp-geomset-gri-fallback; synonyms: geometric set mixed item type dispatch, unsupported representation item silently skipped in geometric set, AXIS2_PLACEMENT_3D routed to generic actor fallback, bare placement entity in geometric curve set produces no shape */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;M196&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;M196.stp&#x27;,&#x27;2026-07-12T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;circ_center&#x27;,(0.,0.,0.));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;circ_z&#x27;,(0.,0.,1.));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;circ_x&#x27;,(1.,0.,0.));
+<span class="lineno">13</span><mark>#4=AXIS2_PLACEMENT_3D(</mark>&#x27;circ_ax&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=<mark>CIRCLE</mark>(&#x27;supported_curve_item&#x27;,#4,5.);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;placement_origin&#x27;,(10.,0.,0.));
+<span class="lineno">16</span>#7=DIRECTION(&#x27;placement_z&#x27;,(0.,0.,1.));
+<span class="lineno">17</span>#8=DIRECTION(&#x27;placement_x&#x27;,(1.,0.,0.));
+<span class="lineno">18</span><mark>#9=AXIS2_PLACEMENT_3D(</mark>&#x27;unsupported_gri_fallback_item&#x27;,#6,#7,#8);
+<span class="lineno">19</span>#10=<mark>GEOMETRIC_CURVE_SET</mark>(&#x27;mixed-supported-curve-and-generic-gri&#x27;,(#5,#9));
+<span class="lineno">20</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">21</span>#9051=PRODUCT(&#x27;M196&#x27;,&#x27;M196&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">22</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">23</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">24</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">25</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">26</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">27</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">28</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">29</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">30</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">31</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#10),#9060);
+<span class="lineno">32</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">33</span>ENDSEC;
+<span class="lineno">34</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="M195.html">&larr; M195</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="M197.html">M197 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

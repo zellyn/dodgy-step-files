@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1>§12.4 Tolerance &amp; numerical precision</h1>
 <p class="blurb">Tolerance and numerical-precision defects: vertex tolerances exceeding edge length, near-coincident loops.</p>
-<p class="meta">194 entries</p>
+<p class="meta">197 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
@@ -188,6 +188,9 @@
 <tr><td><a href="N169.html"><code>N169</code></a></td><td>GetTolerance mixed-precision accumulation | BRep_Tool | tolerance | BRep_Tool::GetTolerance | accumulates vertex/edge tolerances without precision normalization | precision-tolerance-mismatch | reproducible | true</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></td></tr>
 <tr><td><a href="N170.html"><code>N170</code></a></td><td>Sewing unevaluated distance filter bypass | BRepBuilderAPI_Sewing | tolerance | BRepBuilderAPI_Sewing.AnalysisNearestEdges.unevaluated_distance_filter_first_pass | first-pass distance check bypassed, over-tolerance edges enter candidate pool | kernel-pair | reproducible | true</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="N171.html"><code>N171</code></a></td><td>Shared CIRCLE basis between EDGE_CURVEs at different scales (radius derivation defect)</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N172.html"><code>N172</code></a></td><td>`seq-set-tolerance` &quot;outside acceptable band&quot; clamp, on a live face</td><td><code>runtime-only</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N173.html"><code>N173</code></a></td><td>Per-entity vertex-tolerance bumps ACCUMULATE across several edges of one shell (multi-edge tolerance-ceiling clamp)</td><td><code>runtime-only</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="N174.html"><code>N174</code></a></td><td>`stp-vertex-tol-gap`, displaced-line-with-correct-direction subvariant (PCB/FPX export quirk)</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Tb001.html"><code>Tb001</code></a></td><td>Sub-tolerance vertex gap that closes at 1e-3 but yawns open at 1e-7</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Tb002.html"><code>Tb002</code></a></td><td>Sub-tolerance vertex gap that closes at 1e-7 but inflates at 1e-3</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Tb003.html"><code>Tb003</code></a></td><td>Vertex-edge-face tolerance hierarchy holds in mm but inverts in m</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>

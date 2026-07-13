@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M193 — Tessellated face&#x27;s declared exact-geometry link points at a real but never-built face, reader substitutes a surfaceless mesh face</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M193</span>
+</nav>
+<header class="title-bar">
+<h1>M193 <span class="sep">—</span> <span class="entry-title">Tessellated face&#x27;s declared exact-geometry link points at a real but never-built face, reader substitutes a surfaceless mesh face</span></h1>
+<p class="category">§12.8 (sub-class: tessellation / mesh-as-brep)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M193.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M193.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>04-occt-translation.md</li>
+<li>StepToTopoDS_TranslateFace.cxx:718-738 (unresolved geometric_link falls back to a fresh empty face with the has-geometry flag cleared, via a lookup against the transient-process binder map rather than a recursive translate of the linked entity)</li>
+<li>BRepCheck_Face.cxx:106 (NoSurface status).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A tessellated face declares a link to its exact-geometry counterpart, but that counterpart, while a real and well-formed face entity present in the file, is never itself built as part of the model because nothing else in the model&#x27;s shell/solid structure reaches it. The declared link therefore resolves to nothing at read time, and the reader quietly substitutes an empty face carrying only the mesh data in its place — a face with triangle geometry attached but no underlying continuous surface at all.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`TRIANGULATED_FACE` whose `geometric_link` attribute is populated with a reference to a syntactically valid `ADVANCED_FACE` entity that is fully defined in the file (its own `PLANE`/`EDGE_LOOP` boundary) but never appears inside any `CLOSED_SHELL`/`OPEN_SHELL`/`MANIFOLD_SOLID_BREP` reachable from the model&#x27;s shape representation; own `COORDINATES_LIST` for the tessellated item (not shared with any other tessellated item); wired directly as the sole item of a `MANIFOLD_SURFACE_SHAPE_REPRESENTATION` rather than nested inside a `GEOMETRIC_SET`/`GEOMETRIC_CURVE_SET` wrapper, which independently destabilizes this reader build for any tessellated content regardless of link resolution (live-verified on a minimal control).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>reject a tessellated face whose declared exact-geometry link cannot be resolved, or heal by substituting a diagnosed placeholder surface; never silently emit a mesh-bearing face with no surface behind it and no diagnostic distinguishing it from a legitimately surfaceless mesh.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;tessellated face dangling geometric link&quot;, &quot;unresolved exact-geometry counterpart falls back to empty face&quot;, &quot;mesh face with no B-rep surface behind it&quot;, &quot;surfaceless face from unbound tessellation link&quot;. Live-verified: loads cleanly as a single face whose surface kind reports as unrecognized and whose validity check reports invalid for lacking a surface, confirming the fallback path fires exactly as described. A minimal control with the identical layout but an entirely absent link (rather than a populated-but-unresolvable one) reaches the identical unrecognized-surface, invalid-check outcome — since any tessellated face with no attached exact-geometry counterpart takes this same empty-face path, the unresolvable-versus-absent distinction only shows up in the file bytes, never downstream. The independent mesh-processing oracle used alongside the primary kernel crashes on this fixture and on the absent-link control identically — that crash is a property of any surfaceless mesh-only face reaching that oracle at all, not of the unresolvable-link mechanism this entry targets (isolated by testing both variants). See also: M022 (absent link, not unresolvable; also shares one coordinate list across six faces, which independently crashes this build regardless of link content).</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;TRIANGULATED_FACE&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;ADVANCED_FACE&#x27;) == 1</code></li>
+<li><code>count_entity_def(b&#x27;TRIANGULATED_FACE&#x27;) == 1</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_faces_total == 1</code></li>
+<li><code>face[0].surface_type == &quot;other&quot;</code></li>
+<li><code>brepcheck.valid == False</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="M022.html">M022</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M193: <mark>TRIANGULATED_FACE</mark> whose geometric_link references a real ADVANCED_FACE entity (#37, own PLANE/EDGE_LOOP geometry) that is never itself wired into any CLOSED_SHELL/OPEN_SHELL/MANIFOLD_SOLID_BREP reachable from the shape representation; input: AP242 file where a tessellated face declares an exact-BRep counterpart that the reader transfer graph never visits, so the geometric_link entity is syntactically present but never bound in the transient-process map; wired as a direct shape_representation item (own COORDINATES_LIST, no GEOMETRIC_CURVE_SET wrapper) to isolate the fallback from the GEOMETRIC_SET GRI-fallback-path instability that crashes OCCT for M022/Pmi164/probe-equivalent bare-GEOMETRIC_CURVE_SET layouts regardless of geometric_link content; StepToTopoDS_TranslateFace.cxx:718-738 looks up the link via aTP-&gt;Find() (a lookup, not a recursive translate), finds no binder, and falls back to a fresh empty TopoDS_Face with theHasGeom cleared -- a face genuinely lacking a B-Rep surface, giving BRepCheck_Face::Blind NoSurface check a live target; mirrors M022 (which used geometric_link=$, the absent case, not the unresolvable-reference case); covers stp-tess-dangling-brep-link (face subvariant) + bc-no-surface in one fixture; live-verified: occt=shape(1)/shape(1) clean (face[0].surface_type==&quot;other&quot;, brepcheck.valid==False -- NoSurface genuinely fires), gmsh=signal(11) on BOTH this fixture and a minimal fully-resolved control (geometric_link=$, no dangling ref) -- the gmsh crash is inherent to gmsh independent-OCC-build processing of any surfaceless tessellated-only face, not an artifact of the unresolved-link defect itself; synonyms: tessellated face dangling geometric_link, unresolved exact-BRep counterpart, fresh empty face on unbound link, TESSELLATED_FACE geometric_link unbound, NoSurface fallback face from tessellation */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;M193&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;M193.stp&#x27;,&#x27;2026-07-12T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=COORDINATES_LIST(&#x27;tess_face_coords&#x27;,3,((0.,0.,0.),(1.,0.,0.),(0.,1.,0.)));
+<span class="lineno">11</span>#2=CARTESIAN_POINT(&#x27;&#x27;,(0.,0.,5.));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(0.,0.,1.));
+<span class="lineno">13</span>#4=DIRECTION(&#x27;&#x27;,(1.,0.,0.));
+<span class="lineno">14</span>#5=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#2,#3,#4);
+<span class="lineno">15</span>#6=PLANE(&#x27;&#x27;,#5);
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(0.,0.,5.));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(1.,0.,5.));
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(1.,1.,5.));
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.,1.,5.));
+<span class="lineno">20</span>#11=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">21</span>#12=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">22</span>#13=VERTEX_POINT(&#x27;&#x27;,#9);
+<span class="lineno">23</span>#14=VERTEX_POINT(&#x27;&#x27;,#10);
+<span class="lineno">24</span>#15=DIRECTION(&#x27;&#x27;,(1.,0.,0.));
+<span class="lineno">25</span>#16=VECTOR(&#x27;&#x27;,#15,1.);
+<span class="lineno">26</span>#17=LINE(&#x27;&#x27;,#7,#16);
+<span class="lineno">27</span>#18=EDGE_CURVE(&#x27;&#x27;,#11,#12,#17,.T.);
+<span class="lineno">28</span>#19=DIRECTION(&#x27;&#x27;,(0.,1.,0.));
+<span class="lineno">29</span>#20=VECTOR(&#x27;&#x27;,#19,1.);
+<span class="lineno">30</span>#21=LINE(&#x27;&#x27;,#8,#20);
+<span class="lineno">31</span>#22=EDGE_CURVE(&#x27;&#x27;,#12,#13,#21,.T.);
+<span class="lineno">32</span>#23=DIRECTION(&#x27;&#x27;,(-1.,0.,0.));
+<span class="lineno">33</span>#24=VECTOR(&#x27;&#x27;,#23,1.);
+<span class="lineno">34</span>#25=LINE(&#x27;&#x27;,#9,#24);
+<span class="lineno">35</span>#26=EDGE_CURVE(&#x27;&#x27;,#13,#14,#25,.T.);
+<span class="lineno">36</span>#27=DIRECTION(&#x27;&#x27;,(0.,-1.,0.));
+<span class="lineno">37</span>#28=VECTOR(&#x27;&#x27;,#27,1.);
+<span class="lineno">38</span>#29=LINE(&#x27;&#x27;,#10,#28);
+<span class="lineno">39</span>#30=EDGE_CURVE(&#x27;&#x27;,#14,#11,#29,.T.);
+<span class="lineno">40</span>#31=ORIENTED_EDGE(&#x27;&#x27;,$,$,#18,.T.);
+<span class="lineno">41</span>#32=ORIENTED_EDGE(&#x27;&#x27;,$,$,#22,.T.);
+<span class="lineno">42</span>#33=ORIENTED_EDGE(&#x27;&#x27;,$,$,#26,.T.);
+<span class="lineno">43</span>#34=ORIENTED_EDGE(&#x27;&#x27;,$,$,#30,.T.);
+<span class="lineno">44</span>#35=EDGE_LOOP(&#x27;&#x27;,(#31,#32,#33,#34));
+<span class="lineno">45</span>#36=FACE_OUTER_BOUND(&#x27;&#x27;,#35,.T.);
+<span class="lineno">46</span><mark>#37=ADVANCED_FACE(</mark>&#x27;unreachable_target_face&#x27;,(#36),#6,.T.);
+<span class="lineno">47</span><mark>#40=TRIANGULATED_FACE(</mark>&#x27;dangling_link_face&#x27;,#1,3,(),#37,(),((1,2,3)));
+<span class="lineno">48</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">49</span>#9051=PRODUCT(&#x27;M193&#x27;,&#x27;M193&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">50</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">51</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">52</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">53</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">54</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">55</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">56</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">57</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">58</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">59</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#40),#9060);
+<span class="lineno">60</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">61</span>ENDSEC;
+<span class="lineno">62</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="M192.html">&larr; M192</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="M194.html">M194 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

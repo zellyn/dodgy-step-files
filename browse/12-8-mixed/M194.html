@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M194 — Tessellated shell&#x27;s declared topological-geometry link points at a real but never-built shell, reader substitutes a fresh shell</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M194</span>
+</nav>
+<header class="title-bar">
+<h1>M194 <span class="sep">—</span> <span class="entry-title">Tessellated shell&#x27;s declared topological-geometry link points at a real but never-built shell, reader substitutes a fresh shell</span></h1>
+<p class="category">§12.8 (sub-class: tessellation / mesh-as-brep)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M194.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M194.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>04-occt-translation.md</li>
+<li>StepToTopoDS_TranslateShell.cxx:140-157 (unresolved topological_link falls back to a fresh shell built from the shell&#x27;s own tessellated items, has-geometry flag cleared).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A tessellated shell declares a link to its exact-topology counterpart, but that counterpart, though a real and well-formed shell entity present in the file, is never itself built as part of the model because it is not wired into anything the model&#x27;s shape representation reaches. The declared link resolves to nothing at read time, and the reader quietly builds a brand-new shell from the tessellated shell&#x27;s own mesh items instead of substituting the intended precise topology.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`TESSELLATED_SHELL` whose `topological_link` attribute is populated with a reference to a syntactically valid `OPEN_SHELL` entity, fully defined in the file, that is never referenced by any `MANIFOLD_SOLID_BREP` or shape representation reachable from the model; the tessellated shell&#x27;s one `TRIANGULATED_FACE` item carries its own `COORDINATES_LIST`; wired directly as the sole item of a `MANIFOLD_SURFACE_SHAPE_REPRESENTATION`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>reject a tessellated shell whose declared topological link cannot be resolved, or heal by substituting a diagnosed placeholder shell; never silently rebuild an unrelated fresh shell from mesh data alone without flagging that the intended precise topology was never actually used.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: M195. Synonyms: &quot;tessellated shell dangling topological link&quot;, &quot;unresolved exact-topology counterpart falls back to fresh shell&quot;, &quot;shell rebuilt from mesh items when topology link is unbound&quot;, &quot;surfaceless shell from unbound tessellation link&quot;. Live-verified: loads cleanly as a fresh single-face shell whose face reports as unrecognized surface kind and whose validity check reports invalid, confirming the fallback path fires exactly as described (companion finding to M193&#x27;s face-level mechanism, same code family one level up in the topology tree). Mirrors Pmi164&#x27;s overall single-shared-coordinate-list layout but gives the tessellated shell an actual unresolvable topological link and its own private coordinate list rather than leaving Pmi164&#x27;s shell-level construct as a dead scaffold never reached from that file&#x27;s real shape representation. See also: M193.- **Byte assertion**: contains(b&#x27;TESSELLATED_SHELL&#x27;)</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;OPEN_SHELL&#x27;) == 1</code></li>
+<li><code>count_entity_def(b&#x27;TESSELLATED_SHELL&#x27;) == 1</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_faces_total == 1</code></li>
+<li><code>face[0].surface_type == &quot;other&quot;</code></li>
+<li><code>brepcheck.valid == False</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="M195.html">M195</a>, <a href="M193.html">M193</a>, <a href="../12-7-pmi/Pmi164.html">Pmi164</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M194: TESSELLATED_SHELL whose topological_link references a real OPEN_SHELL entity (#38, own PLANE/EDGE_LOOP face) that is never itself wired into a MANIFOLD_SOLID_BREP or shape representation reachable from the model; input: AP242 file where a tessellated shell declares an exact-BRep counterpart the reader transfer graph never visits, so the topological_link entity is syntactically present but never bound in the transient-process map; wired as a direct shape_representation item (own COORDINATES_LIST, no GEOMETRIC_CURVE_SET wrapper) per the M193 finding that the GEOMETRIC_SET GRI-fallback path crashes OCCT independent of link content; StepToTopoDS_TranslateShell.cxx:140-157 looks up the link via aTP-&gt;Find() (a lookup, not a recursive translate), finds no binder, and falls back to a fresh TopoDS_Shell built from the shell own tessellated items with theHasGeom cleared; covers stp-tess-dangling-brep-link (shell subvariant); mirrors Pmi164 (single shared COORDINATES_LIST across 6 faces, no topological_link at all) fixed by using one face with its own coordinate list and an actual unresolvable topological_link; synonyms: tessellated shell dangling topological_link, unresolved exact-BRep shell counterpart, fresh shell on unbound link, TESSELLATED_SHELL topological_link unbound */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;M194&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;M194.stp&#x27;,&#x27;2026-07-12T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=COORDINATES_LIST(&#x27;shell_face_coords&#x27;,3,((0.,0.,0.),(1.,0.,0.),(0.,1.,0.)));
+<span class="lineno">11</span>#2=CARTESIAN_POINT(&#x27;&#x27;,(0.,0.,5.));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(0.,0.,1.));
+<span class="lineno">13</span>#4=DIRECTION(&#x27;&#x27;,(1.,0.,0.));
+<span class="lineno">14</span>#5=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#2,#3,#4);
+<span class="lineno">15</span>#6=PLANE(&#x27;&#x27;,#5);
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(0.,0.,5.));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(1.,0.,5.));
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(1.,1.,5.));
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.,1.,5.));
+<span class="lineno">20</span>#11=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">21</span>#12=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">22</span>#13=VERTEX_POINT(&#x27;&#x27;,#9);
+<span class="lineno">23</span>#14=VERTEX_POINT(&#x27;&#x27;,#10);
+<span class="lineno">24</span>#15=DIRECTION(&#x27;&#x27;,(1.,0.,0.));
+<span class="lineno">25</span>#16=VECTOR(&#x27;&#x27;,#15,1.);
+<span class="lineno">26</span>#17=LINE(&#x27;&#x27;,#7,#16);
+<span class="lineno">27</span>#18=EDGE_CURVE(&#x27;&#x27;,#11,#12,#17,.T.);
+<span class="lineno">28</span>#19=DIRECTION(&#x27;&#x27;,(0.,1.,0.));
+<span class="lineno">29</span>#20=VECTOR(&#x27;&#x27;,#19,1.);
+<span class="lineno">30</span>#21=LINE(&#x27;&#x27;,#8,#20);
+<span class="lineno">31</span>#22=EDGE_CURVE(&#x27;&#x27;,#12,#13,#21,.T.);
+<span class="lineno">32</span>#23=DIRECTION(&#x27;&#x27;,(-1.,0.,0.));
+<span class="lineno">33</span>#24=VECTOR(&#x27;&#x27;,#23,1.);
+<span class="lineno">34</span>#25=LINE(&#x27;&#x27;,#9,#24);
+<span class="lineno">35</span>#26=EDGE_CURVE(&#x27;&#x27;,#13,#14,#25,.T.);
+<span class="lineno">36</span>#27=DIRECTION(&#x27;&#x27;,(0.,-1.,0.));
+<span class="lineno">37</span>#28=VECTOR(&#x27;&#x27;,#27,1.);
+<span class="lineno">38</span>#29=LINE(&#x27;&#x27;,#10,#28);
+<span class="lineno">39</span>#30=EDGE_CURVE(&#x27;&#x27;,#14,#11,#29,.T.);
+<span class="lineno">40</span>#31=ORIENTED_EDGE(&#x27;&#x27;,$,$,#18,.T.);
+<span class="lineno">41</span>#32=ORIENTED_EDGE(&#x27;&#x27;,$,$,#22,.T.);
+<span class="lineno">42</span>#33=ORIENTED_EDGE(&#x27;&#x27;,$,$,#26,.T.);
+<span class="lineno">43</span>#34=ORIENTED_EDGE(&#x27;&#x27;,$,$,#30,.T.);
+<span class="lineno">44</span>#35=EDGE_LOOP(&#x27;&#x27;,(#31,#32,#33,#34));
+<span class="lineno">45</span>#36=FACE_OUTER_BOUND(&#x27;&#x27;,#35,.T.);
+<span class="lineno">46</span>#37=ADVANCED_FACE(&#x27;unreachable_target_face&#x27;,(#36),#6,.T.);
+<span class="lineno">47</span><mark>#38=OPEN_SHELL(</mark>&#x27;unreachable_target_shell&#x27;,(#37));
+<span class="lineno">48</span>#40=TRIANGULATED_FACE(&#x27;shell_face&#x27;,#1,3,(),$,(),((1,2,3)));
+<span class="lineno">49</span><mark>#41=TESSELLATED_SHELL(</mark>&#x27;dangling_topo_link_shell&#x27;,(#40),#38);
+<span class="lineno">50</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">51</span>#9051=PRODUCT(&#x27;M194&#x27;,&#x27;M194&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">52</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">53</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">54</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">55</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">56</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">57</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">58</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">59</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">60</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">61</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#41),#9060);
+<span class="lineno">62</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">63</span>ENDSEC;
+<span class="lineno">64</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="M193.html">&larr; M193</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="M195.html">M195 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

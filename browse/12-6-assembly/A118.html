@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A118 — SRR reverses the relation defined by NAUO, wired through a real CONTEXT_DEPENDENT_SHAPE_REPRESENTATION</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.6 Assembly hierarchy</a> <span class="sep">/</span> <span class="current">A118</span>
+</nav>
+<header class="title-bar">
+<h1>A118 <span class="sep">—</span> <span class="entry-title">SRR reverses the relation defined by NAUO, wired through a real CONTEXT_DEPENDENT_SHAPE_REPRESENTATION</span></h1>
+<p class="category">§12.6 assembly (sub-class: assembly relation direction, live CDSR)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-assembly" href="../by-tag/assembly/index.html">assembly</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-6-assembly/A118.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-6-assembly/A118.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>occt-coverage GAP audit, `exchange/problems.json` `stp-srr-nauo-reversed`</li>
+<li>`STEPControl_ActorRead::TransferEntity(StepRepr_NextAssemblyUsageOccurrence)`, STEPControl_ActorRead.cxx:701-730 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e</li>
+<li>`STEPConstruct_Assembly::CheckSRRReversesNAUO`, STEPConstruct_Assembly.cxx:171-217</li>
+<li>`STEPConstruct_Assembly::MakeRelationship`, STEPConstruct_Assembly.cxx:76-122 (OCCT&#x27;s own writer convention for the non-reversed case).</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — OCCT uncovered-class sweep</p></section>
+<section><h2>Description</h2>
+<p>A `NEXT_ASSEMBLY_USAGE_OCCURRENCE` declares Parent as relating (assembly) and Child as related (component). A `CONTEXT_DEPENDENT_SHAPE_REPRESENTATION` wraps a `SHAPE_REPRESENTATION_RELATIONSHIP` whose `rep_1`/`rep_2` are wired OPPOSITE to OCCT&#x27;s own writer convention for that NAUO direction (`rep_1`=Parent&#x27;s representation, `rep_2`=Child&#x27;s — `STEPConstruct_Assembly::MakeRelationship` always emits `rep_1`=child, `rep_2`=parent). Both Parent and Child carry real, distinguishable geometry via their own independent `PRODUCT_DEFINITION`→...→`SHAPE_DEFINITION_REPRESENTATION` chains (Parent: 1×1 marker face at the origin; Child: 5×5 marker face at x∈[100,105]) — unlike M062, whose NAUO/SRR pair sits inside a `GEOMETRIC_CURVE_SET` with EMPTY `SHAPE_REPRESENTATION` items, so the reversal there is bytes-present but shape-unobservable (empty either way). `TransferEntity(NAUO)` walks `graph.Sharings(NAUO)`→PDS→`graph.Sharings(PDS)`→CDSR and calls `CheckSRRReversesNAUO`, which detects the swap and returns True; the reader emits `AddWarning(SRR, &quot;SRR reverses relation defined by NAUO; NAUO definition is taken&quot;)` and silently resolves using NAUO&#x27;s direction rather than rejecting the conflicting file.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`NEXT_ASSEMBLY_USAGE_OCCURRENCE(&#x27;1&#x27;,&#x27;&#x27;,&#x27;uses&#x27;,#parent_pd,#child_pd,$)`; `CONTEXT_DEPENDENT_SHAPE_REPRESENTATION(#srr,#pds)` where `#pds=PRODUCT_DEFINITION_SHAPE(&#x27;Placement&#x27;,&#x27;Placement of an item&#x27;,#nauo)` and `#srr=SHAPE_REPRESENTATION_RELATIONSHIP(&#x27;rel&#x27;,&#x27;&#x27;,#parent_rep,#child_rep)` (opposite of the writer&#x27;s own `#child_rep,#parent_rep` convention).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>reject the conflict with a diagnostic (the SRR and NAUO disagree on parent/child direction — one of the two is authored wrong); or trust NAUO by convention and make the choice explicit in a loud warning. Must not silently resolve without surfacing the conflict to the caller.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: M062 (byte-only precedent — this fixture is the live-shape-observable upgrade). Root-reachability finding: a bare, unreferenced CDSR does not independently transfer via `TransferRoots()` in this OCCT build (see U051&#x27;s Notes) — the CDSR here is instead discovered via the standard NAUO-root walk (`TransferEntity(NAUO)`&#x27;s internal `graph.Sharings` traversal), which requires both Parent and Child to carry their own real, independently-reachable representations. Live-verified (2026-07-12, OCP 7.8.1, direct `STEPControl_Reader` probing — not mirrored/guessed): `shape_null=False`; the transferred compound carries geometry from BOTH the Parent&#x27;s own SDR chain and the Child&#x27;s own SDR chain PLUS an additional CDSR-driven contribution (`n_faces_total=4`, `n_edges_total=16`, `n_vertices_total=32` — twice the 2-face/8-edge/16-vertex baseline of either SDR alone, confirming the CDSR&#x27;s own `TransferEntity` call independently produced a live shape rather than being skipped or erroring). Provenance tier: bytes-sufficient. Synonyms: &quot;assembly direction conflict&quot;, &quot;SRR vs NAUO direction mismatch&quot;, &quot;parent/child conflict in STEP&quot;, &quot;assembly relation reversed&quot;, &quot;CDSR silently resolved reversal&quot;, &quot;NAUO definition is taken&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;NEXT_ASSEMBLY_USAGE_OCCURRENCE&#x27;)</code></li>
+<li><code>contains(b&#x27;CONTEXT_DEPENDENT_SHAPE_REPRESENTATION&#x27;)</code></li>
+<li><code>contains(b&quot;SHAPE_REPRESENTATION_RELATIONSHIP(&#x27;rel&#x27;,&#x27;&#x27;,#39,#82)&quot;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_faces_total == 4</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-8-mixed/M062.html">M062</a>, <a href="../12-5-units/U051.html">U051</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* A118: NAUO + SRR wired through a real CDSR, SRR direction OPPOSITE to NAUO */
+<span class="lineno">3</span>/* DEFECT: CheckSRRReversesNAUO detects the reversal; TransferEntity(NAUO) warns */
+<span class="lineno">4</span>/* &#x27;SRR reverses relation defined by NAUO; NAUO definition is taken&#x27; and silently */
+<span class="lineno">5</span>/* resolves via NAUO&#x27;s direction instead of rejecting the file -- both Parent/Child */
+<span class="lineno">6</span>/* carry real, distinguishable geometry (unlike M062&#x27;s empty-items curve-set orphan) */
+<span class="lineno">7</span>HEADER;
+<span class="lineno">8</span>FILE_DESCRIPTION((&#x27;A118: SRR reverses NAUO direction, wired through a real CDSR&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">9</span>FILE_NAME(&#x27;A118.stp&#x27;,&#x27;2026-07-12T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">10</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">11</span>ENDSEC;
+<span class="lineno">12</span>DATA;
+<span class="lineno">13</span>#100=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">14</span>#101=(GEOMETRIC_REPRESENTATION_CONTEXT(3)REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">15</span>/* ---- Parent product: small 1x1 marker face at the origin ---- */
+<span class="lineno">16</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">17</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">18</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">19</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">20</span>#5=PLANE(&#x27;&#x27;,#4);
+<span class="lineno">21</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">22</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">23</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
+<span class="lineno">24</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">25</span>#10=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">26</span>#11=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">27</span>#12=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">28</span>#13=VERTEX_POINT(&#x27;&#x27;,#9);
+<span class="lineno">29</span>#14=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">30</span>#15=VECTOR(&#x27;&#x27;,#14,1.0);
+<span class="lineno">31</span>#16=LINE(&#x27;&#x27;,#6,#15);
+<span class="lineno">32</span>#17=EDGE_CURVE(&#x27;&#x27;,#10,#11,#16,.T.);
+<span class="lineno">33</span>#18=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">34</span>#19=VECTOR(&#x27;&#x27;,#18,1.0);
+<span class="lineno">35</span>#20=LINE(&#x27;&#x27;,#7,#19);
+<span class="lineno">36</span>#21=EDGE_CURVE(&#x27;&#x27;,#11,#12,#20,.T.);
+<span class="lineno">37</span>#22=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">38</span>#23=VECTOR(&#x27;&#x27;,#22,1.0);
+<span class="lineno">39</span>#24=LINE(&#x27;&#x27;,#8,#23);
+<span class="lineno">40</span>#25=EDGE_CURVE(&#x27;&#x27;,#12,#13,#24,.T.);
+<span class="lineno">41</span>#26=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">42</span>#27=VECTOR(&#x27;&#x27;,#26,1.0);
+<span class="lineno">43</span>#28=LINE(&#x27;&#x27;,#9,#27);
+<span class="lineno">44</span>#29=EDGE_CURVE(&#x27;&#x27;,#13,#10,#28,.T.);
+<span class="lineno">45</span>#30=ORIENTED_EDGE(&#x27;&#x27;,$,$,#17,.T.);
+<span class="lineno">46</span>#31=ORIENTED_EDGE(&#x27;&#x27;,$,$,#21,.T.);
+<span class="lineno">47</span>#32=ORIENTED_EDGE(&#x27;&#x27;,$,$,#25,.T.);
+<span class="lineno">48</span>#33=ORIENTED_EDGE(&#x27;&#x27;,$,$,#29,.T.);
+<span class="lineno">49</span>#34=EDGE_LOOP(&#x27;&#x27;,(#30,#31,#32,#33));
+<span class="lineno">50</span>#35=FACE_OUTER_BOUND(&#x27;&#x27;,#34,.T.);
+<span class="lineno">51</span>#36=ADVANCED_FACE(&#x27;&#x27;,(#35),#5,.T.);
+<span class="lineno">52</span>#37=OPEN_SHELL(&#x27;&#x27;,(#36));
+<span class="lineno">53</span>#38=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#37));
+<span class="lineno">54</span>#39=SHAPE_REPRESENTATION(&#x27;parent_rep&#x27;,(#38),#101);
+<span class="lineno">55</span>#40=PRODUCT_CONTEXT(&#x27;&#x27;,#100,&#x27;mechanical&#x27;);
+<span class="lineno">56</span>#41=PRODUCT(&#x27;Parent&#x27;,&#x27;Parent&#x27;,&#x27;&#x27;,(#40));
+<span class="lineno">57</span>#42=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#41);
+<span class="lineno">58</span>#43=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#100,&#x27;design&#x27;);
+<span class="lineno">59</span>#44=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#42,#43);
+<span class="lineno">60</span>#45=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#44);
+<span class="lineno">61</span>#46=SHAPE_DEFINITION_REPRESENTATION(#45,#39);
+<span class="lineno">62</span>/* ---- Child product: bigger 5x5 marker face at (100,0,0) ---- */
+<span class="lineno">63</span>#50=CARTESIAN_POINT(&#x27;&#x27;,(100.0,0.0,0.0));
+<span class="lineno">64</span>#51=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#50,#2,#3);
+<span class="lineno">65</span>#52=PLANE(&#x27;&#x27;,#51);
+<span class="lineno">66</span>#53=CARTESIAN_POINT(&#x27;&#x27;,(100.0,0.0,0.0));
+<span class="lineno">67</span>#54=CARTESIAN_POINT(&#x27;&#x27;,(105.0,0.0,0.0));
+<span class="lineno">68</span>#55=CARTESIAN_POINT(&#x27;&#x27;,(105.0,5.0,0.0));
+<span class="lineno">69</span>#56=CARTESIAN_POINT(&#x27;&#x27;,(100.0,5.0,0.0));
+<span class="lineno">70</span>#57=VERTEX_POINT(&#x27;&#x27;,#53);
+<span class="lineno">71</span>#58=VERTEX_POINT(&#x27;&#x27;,#54);
+<span class="lineno">72</span>#59=VERTEX_POINT(&#x27;&#x27;,#55);
+<span class="lineno">73</span>#60=VERTEX_POINT(&#x27;&#x27;,#56);
+<span class="lineno">74</span>#61=VECTOR(&#x27;&#x27;,#14,5.0);
+<span class="lineno">75</span>#62=LINE(&#x27;&#x27;,#53,#61);
+<span class="lineno">76</span>#63=EDGE_CURVE(&#x27;&#x27;,#57,#58,#62,.T.);
+<span class="lineno">77</span>#64=VECTOR(&#x27;&#x27;,#18,5.0);
+<span class="lineno">78</span>#65=LINE(&#x27;&#x27;,#54,#64);
+<span class="lineno">79</span>#66=EDGE_CURVE(&#x27;&#x27;,#58,#59,#65,.T.);
+<span class="lineno">80</span>#67=VECTOR(&#x27;&#x27;,#22,5.0);
+<span class="lineno">81</span>#68=LINE(&#x27;&#x27;,#55,#67);
+<span class="lineno">82</span>#69=EDGE_CURVE(&#x27;&#x27;,#59,#60,#68,.T.);
+<span class="lineno">83</span>#70=VECTOR(&#x27;&#x27;,#26,5.0);
+<span class="lineno">84</span>#71=LINE(&#x27;&#x27;,#56,#70);
+<span class="lineno">85</span>#72=EDGE_CURVE(&#x27;&#x27;,#60,#57,#71,.T.);
+<span class="lineno">86</span>#73=ORIENTED_EDGE(&#x27;&#x27;,$,$,#63,.T.);
+<span class="lineno">87</span>#74=ORIENTED_EDGE(&#x27;&#x27;,$,$,#66,.T.);
+<span class="lineno">88</span>#75=ORIENTED_EDGE(&#x27;&#x27;,$,$,#69,.T.);
+<span class="lineno">89</span>#76=ORIENTED_EDGE(&#x27;&#x27;,$,$,#72,.T.);
+<span class="lineno">90</span>#77=EDGE_LOOP(&#x27;&#x27;,(#73,#74,#75,#76));
+<span class="lineno">91</span>#78=FACE_OUTER_BOUND(&#x27;&#x27;,#77,.T.);
+<span class="lineno">92</span>#79=ADVANCED_FACE(&#x27;&#x27;,(#78),#52,.T.);
+<span class="lineno">93</span>#80=OPEN_SHELL(&#x27;&#x27;,(#79));
+<span class="lineno">94</span>#81=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#80));
+<span class="lineno">95</span>#82=SHAPE_REPRESENTATION(&#x27;child_rep&#x27;,(#81),#101);
+<span class="lineno">96</span>#83=PRODUCT_CONTEXT(&#x27;&#x27;,#100,&#x27;mechanical&#x27;);
+<span class="lineno">97</span>#84=PRODUCT(&#x27;Child&#x27;,&#x27;Child&#x27;,&#x27;&#x27;,(#83));
+<span class="lineno">98</span>#85=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#84);
+<span class="lineno">99</span>#86=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#85,#43);
+<span class="lineno">100</span>#87=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#86);
+<span class="lineno">101</span>#88=SHAPE_DEFINITION_REPRESENTATION(#87,#82);
+<span class="lineno">102</span>/* ---- NAUO: Parent(#44) relating (parent), Child(#86) related (child) ---- */
+<span class="lineno">103</span>#90=<mark>NEXT_ASSEMBLY_USAGE_OCCURRENCE</mark>(&#x27;1&#x27;,&#x27;&#x27;,&#x27;uses&#x27;,#44,#86,$);
+<span class="lineno">104</span>#91=PRODUCT_DEFINITION_SHAPE(&#x27;Placement&#x27;,&#x27;Placement of an item&#x27;,#90);
+<span class="lineno">105</span>/* DEFECT: SRR wired OPPOSITE the NAUO direction -- Rep1=parent_rep(#39), Rep2=child_rep(#82); */
+<span class="lineno">106</span>/* OCCT&#x27;s own writer convention (STEPConstruct_Assembly::MakeRelationship) always emits */
+<span class="lineno">107</span>/* Rep1=child,Rep2=parent for this NAUO direction -- this file swaps them. */
+<span class="lineno">108</span>#92=<mark>SHAPE_REPRESENTATION_RELATIONSHIP(&#x27;rel&#x27;,&#x27;&#x27;,#39,#82)</mark>;
+<span class="lineno">109</span>#93=<mark>CONTEXT_DEPENDENT_SHAPE_REPRESENTATION</mark>(#92,#91);
+<span class="lineno">110</span>ENDSEC;
+<span class="lineno">111</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="A117.html">&larr; A117</a> <a class="up" href="index.html">§12.6 Assembly hierarchy</a> <a class="next" href="A119.html">A119 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M199 — Tessellated face&#x27;s per-face normal row has the wrong number of components; the reader silently leaves every node&#x27;s normal unset rather than misreading the row</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M199</span>
+</nav>
+<header class="title-bar">
+<h1>M199 <span class="sep">—</span> <span class="entry-title">Tessellated face&#x27;s per-face normal row has the wrong number of components; the reader silently leaves every node&#x27;s normal unset rather than misreading the row</span></h1>
+<p class="category">§12.8 (sub-class: tessellation)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M199.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M199.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>04-occt-translation.md</li>
+<li>StepToTopoDS_TranslateFace.cxx:123-131 (the normals table&#x27;s row width is checked once, up front, against the required three components</li>
+<li>any other width returns immediately, before the per-node assignment loop that would otherwise copy the row&#x27;s values into the mesh ever runs).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A tessellated face can declare a single per-face normal (one row, applied to every node) instead of one normal per node. When that one row does not have exactly the three components an XYZ vector needs, the reader does not try to interpret whatever values are present, nor does it reject the face — it simply leaves the mesh&#x27;s per-node normal storage allocated but never actually filled with the row&#x27;s values, so every node keeps its zero-initialized default rather than the malformed vector.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`TRIANGULATED_FACE` whose normals table is a single row of four components `(0.,0.,1.,0.)` instead of three, over a three-point `COORDINATES_LIST` triangle; wired directly as the sole item of a `MANIFOLD_SURFACE_SHAPE_REPRESENTATION`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>detect the malformed row width and either reject the face or clearly diagnose that normals were dropped; never silently allocate normal storage that is never actually populated, since a consumer that checks &quot;has normals&quot; without checking the values gets a false positive.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;tessellated normals row wrong component count&quot;, &quot;malformed normal row silently ignored&quot;, &quot;per-node normal storage allocated but never filled&quot;, &quot;four-component normal row dropped without diagnostic&quot;. Live-verified by inspecting the built mesh directly: it reports normals as present, but reading any individual node&#x27;s normal value raises a construction error because the stored vector is still all zeros — direct confirmation that the malformed row was never actually copied in, only its presence flag survived. Mirrors Bo027, whose per-vertex normal rows are well-formed three-component rows that merely disagree in value across a shared edge — a different defect (value disagreement, not row width) — by malforming the row&#x27;s component count instead of its value.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;TRIANGULATED_FACE&#x27;)</code></li>
+<li><code>contains(b&#x27;(0.,0.,1.,0.)&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_faces_total == 1</code></li>
+<li><code>face[0].surface_type == &quot;other&quot;</code></li>
+<li><code>brepcheck.valid == False</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-3a-shells/Bo027.html">Bo027</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M199: <mark>TRIANGULATED_FACE</mark> normals table with a single row of 4 components <mark>(0.,0.,1.,0.)</mark> instead of the required 3 (a flat-shading whole-face normal padded with a spurious 4th value); input: AP242 file whose tessellated face declares one normal row for the entire face but the row&#x27;s component count does not match XYZ; StepToTopoDS_TranslateFace.cxx&#x27;s SetNormals (StepToTopoDS_TranslateFace.cxx:128-131) checks theNormals-&gt;RowLength()!=3 BEFORE looking at theNormNum at all and returns immediately on any mismatch -- the mesh is still built with per-node normal storage allocated (Poly_Triangulation::HasNormals()==True, since aNormNum&gt;0 governs allocation) but every node&#x27;s normal value is left at its zero-initialized default because SetNormals&#x27;s early return means the per-node Normal() assignment loop never runs; the malformed row is silently ignored rather than misread or rejected, exactly as the problem describes; mirrors Bo027 (per-vertex normal DIRECTIONS that are well-formed 3-component rows but inconsistent in VALUE across a shared edge -- a different defect, value disagreement, not row arity) fixed by malforming the row&#x27;s component COUNT instead of its value; covers stp-tess-malformed-normals; synonyms: tessellated normals row arity mismatch, normal table wrong column count silently ignored, four-component normal row skipped, triangulated face normals guard early return */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;M199&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;M199.stp&#x27;,&#x27;2026-07-12T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=COORDINATES_LIST(&#x27;coords&#x27;,3,((0.,0.,0.),(1.,0.,0.),(0.,1.,0.)));
+<span class="lineno">11</span>#2=<mark>TRIANGULATED_FACE</mark>(&#x27;malformed_normals_face&#x27;,#1,3,(<mark>(0.,0.,1.,0.)</mark>),$,(),((1,2,3)));
+<span class="lineno">12</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">13</span>#9051=PRODUCT(&#x27;M199&#x27;,&#x27;M199&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">14</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">15</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">16</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">17</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">18</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">19</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">20</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">21</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">22</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">23</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#2),#9060);
+<span class="lineno">24</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">25</span>ENDSEC;
+<span class="lineno">26</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="M198.html">&larr; M198</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="Os001.html">Os001 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

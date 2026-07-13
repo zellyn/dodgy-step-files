@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A120 — `SHAPE_REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION` where only ONE of Origin/Target belongs to its expected representation</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.6 Assembly hierarchy</a> <span class="sep">/</span> <span class="current">A120</span>
+</nav>
+<header class="title-bar">
+<h1>A120 <span class="sep">—</span> <span class="entry-title">`SHAPE_REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION` where only ONE of Origin/Target belongs to its expected representation</span></h1>
+<p class="category">§12.6 assembly (sub-class: SRRWT axis-placement membership check, half-resolved subvariant)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-assembly" href="../by-tag/assembly/index.html">assembly</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-6-assembly/A120.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-6-assembly/A120.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>occt-coverage PARTIAL audit, `exchange/problems.json` `stp-srrwt-axis-swap`</li>
+<li>`STEPControl_ActorRead::ComputeTransformation`, STEPControl_ActorRead.cxx:1886-1946 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e.</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — OCCT uncovered-class sweep</p></section>
+<section><h2>Description</h2>
+<p>A007 demonstrates the FULLY-repairable case: both Origin and Target axis placements are found cross-referenced (Origin sits in Target&#x27;s representation&#x27;s item list, Target sits in Origin&#x27;s), so `ComputeTransformation` transparently swaps them and computes a repaired transform. This fixture is the narrower, distinct half-resolved case: Origin (`Ax1`) genuinely belongs to its OWN representation&#x27;s item list (`isOKOrigin=True`), but Target (`Ax2`) belongs to NEITHER representation&#x27;s item list — a completely foreign placement (`isOKTarget=False`, and neither `isSwapOrigin` nor `isSwapTarget` is True since Ax1/Ax2 never cross-appear). The membership check cannot determine a consistent swap, so OCCT falls through to the unrepairable `&quot;Axis placement used by SRRWT does not belong to corresponding representation&quot;` branch and silently computes a transform from the inconsistent org/trg pair anyway, rather than rejecting the file.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`ITEM_DEFINED_TRANSFORMATION(&#x27;&#x27;,&#x27;&#x27;,#Ax1,#Ax2)` inside a `SHAPE_REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION(&#x27;srrwt&#x27;,&#x27;&#x27;,#rep1,#rep2,#idt)` where `#Ax1` is listed in `#rep1.items` but `#Ax2` is listed in neither `#rep1.items` nor `#rep2.items`, wrapped via `NEXT_ASSEMBLY_USAGE_OCCURRENCE` + `CONTEXT_DEPENDENT_SHAPE_REPRESENTATION` (same NAUO/CDSR wiring as A118).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>reject the SRRWT as malformed (an axis placement that belongs to neither declared representation cannot be trusted to compute a correct transform), or clearly flag the resulting transform as unreliable rather than silently using it.</p></section>
+<section><h2>Notes</h2>
+<p>Structure note: Origin/Target are wired through DEDICATED placement-only representations (`parent_placement_rep`/`child_placement_rep`), mirroring A007&#x27;s own `asm_rep`/`cmp_rep` split, rather than the parts&#x27; real geometry-bearing representations — mixing a bare `AXIS2_PLACEMENT_3D` item into a geometry-bearing `SHAPE_REPRESENTATION`&#x27;s item list was independently tested and found to break the Parent-PD root&#x27;s own normal shape transfer; A007&#x27;s established split avoids that. The parts&#x27; REAL geometry (Parent&#x27;s 1×1 face, Child&#x27;s 5×5 face) each transfer via their own normal, independent product chain, exactly like A007. Live-verified (2026-07-12, OCP 7.8.1, direct probing — not mirrored/guessed): `shape_null=False`, `n_faces_total=1` (Parent&#x27;s own face, bbox `[0,1]×[0,1]` at the origin, confirmed un-transformed via its own SDR chain). Since the placement-only representations carry no geometry (`Recognize()` does not accept a bare `AXIS2_PLACEMENT_3D` item), `TransferEntity(CDSR)`&#x27;s own contribution resolves to a null/empty shape and is silently absent from the compound — the SRRWT/NAUO/CDSR defect bytes are present, well-formed, and structurally correct (the same epistemic status as A007&#x27;s own already-shipped SRRWT fixture, which has the identical placement-only-representation limitation); the specific membership-check outcome is confirmed via source-level mechanism analysis rather than an observable shape-count difference. Provenance tier: bytes-sufficient. **See also**: A007 (fully-swapped, repairable sibling), A118 (CDSR/NAUO wiring precedent). Synonyms: &quot;SRRWT axis placement does not belong&quot;, &quot;half-swapped SRRWT&quot;, &quot;unrepairable axis-placement mismatch&quot;, &quot;ComputeTransformation membership check fails one side&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;SHAPE_REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION&#x27;)</code></li>
+<li><code>contains(b&#x27;ITEM_DEFINED_TRANSFORMATION&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_faces_total == 1</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="A007.html">A007</a>, <a href="A118.html">A118</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* A120: SRRWT where only ONE of Origin/Target belongs to its expected representation */
+<span class="lineno">3</span>/* DEFECT: Origin(Ax1) IS in Parent&#x27;s items; Target(Ax2) is in NEITHER rep&#x27;s items -- */
+<span class="lineno">4</span>/* the unrepairable &#x27;does not belong&#x27; branch (A007 is the FULLY-swapped, repairable case) */
+<span class="lineno">5</span>HEADER;
+<span class="lineno">6</span>FILE_DESCRIPTION((&#x27;A120: SRRWT half-swap, only Origin resolves to its own representation&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">7</span>FILE_NAME(&#x27;A120.stp&#x27;,&#x27;2026-07-12T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">8</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">9</span>ENDSEC;
+<span class="lineno">10</span>DATA;
+<span class="lineno">11</span>#100=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">12</span>#101=(GEOMETRIC_REPRESENTATION_CONTEXT(3)REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">13</span>/* ---- Parent product: 1x1 marker face at the origin ---- */
+<span class="lineno">14</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">15</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">16</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">17</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">18</span>#5=PLANE(&#x27;&#x27;,#4);
+<span class="lineno">19</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">20</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">21</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
+<span class="lineno">22</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">23</span>#10=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">24</span>#11=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">25</span>#12=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">26</span>#13=VERTEX_POINT(&#x27;&#x27;,#9);
+<span class="lineno">27</span>#14=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">28</span>#15=VECTOR(&#x27;&#x27;,#14,1.0);
+<span class="lineno">29</span>#16=LINE(&#x27;&#x27;,#6,#15);
+<span class="lineno">30</span>#17=EDGE_CURVE(&#x27;&#x27;,#10,#11,#16,.T.);
+<span class="lineno">31</span>#18=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">32</span>#19=VECTOR(&#x27;&#x27;,#18,1.0);
+<span class="lineno">33</span>#20=LINE(&#x27;&#x27;,#7,#19);
+<span class="lineno">34</span>#21=EDGE_CURVE(&#x27;&#x27;,#11,#12,#20,.T.);
+<span class="lineno">35</span>#22=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">36</span>#23=VECTOR(&#x27;&#x27;,#22,1.0);
+<span class="lineno">37</span>#24=LINE(&#x27;&#x27;,#8,#23);
+<span class="lineno">38</span>#25=EDGE_CURVE(&#x27;&#x27;,#12,#13,#24,.T.);
+<span class="lineno">39</span>#26=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">40</span>#27=VECTOR(&#x27;&#x27;,#26,1.0);
+<span class="lineno">41</span>#28=LINE(&#x27;&#x27;,#9,#27);
+<span class="lineno">42</span>#29=EDGE_CURVE(&#x27;&#x27;,#13,#10,#28,.T.);
+<span class="lineno">43</span>#30=ORIENTED_EDGE(&#x27;&#x27;,$,$,#17,.T.);
+<span class="lineno">44</span>#31=ORIENTED_EDGE(&#x27;&#x27;,$,$,#21,.T.);
+<span class="lineno">45</span>#32=ORIENTED_EDGE(&#x27;&#x27;,$,$,#25,.T.);
+<span class="lineno">46</span>#33=ORIENTED_EDGE(&#x27;&#x27;,$,$,#29,.T.);
+<span class="lineno">47</span>#34=EDGE_LOOP(&#x27;&#x27;,(#30,#31,#32,#33));
+<span class="lineno">48</span>#35=FACE_OUTER_BOUND(&#x27;&#x27;,#34,.T.);
+<span class="lineno">49</span>#36=ADVANCED_FACE(&#x27;&#x27;,(#35),#5,.T.);
+<span class="lineno">50</span>#37=OPEN_SHELL(&#x27;&#x27;,(#36));
+<span class="lineno">51</span>#38=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#37));
+<span class="lineno">52</span>#40=SHAPE_REPRESENTATION(&#x27;parent_rep&#x27;,(#38),#101);
+<span class="lineno">53</span>#41=PRODUCT_CONTEXT(&#x27;&#x27;,#100,&#x27;mechanical&#x27;);
+<span class="lineno">54</span>#42=PRODUCT(&#x27;Parent&#x27;,&#x27;Parent&#x27;,&#x27;&#x27;,(#41));
+<span class="lineno">55</span>#43=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#42);
+<span class="lineno">56</span>#44=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#100,&#x27;design&#x27;);
+<span class="lineno">57</span>#45=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#43,#44);
+<span class="lineno">58</span>#46=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#45);
+<span class="lineno">59</span>#47=SHAPE_DEFINITION_REPRESENTATION(#46,#40);
+<span class="lineno">60</span>/* DEFECT setup: a SEPARATE placement-only representation for the assembly relationship -- */
+<span class="lineno">61</span>/* Ax1 (Origin) IS included in ITS items, so isOKOrigin=True for the SRRWT membership check */
+<span class="lineno">62</span>#39=CARTESIAN_POINT(&#x27;ax1_origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">63</span>#60=AXIS2_PLACEMENT_3D(&#x27;Ax1_Origin&#x27;,#39,#2,#3);
+<span class="lineno">64</span>#48=SHAPE_REPRESENTATION(&#x27;parent_placement_rep&#x27;,(#60),#101);
+<span class="lineno">65</span>/* ---- Child product: 5x5 marker face at (100,0,0) ---- */
+<span class="lineno">66</span>#50=CARTESIAN_POINT(&#x27;&#x27;,(100.0,0.0,0.0));
+<span class="lineno">67</span>#51=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#50,#2,#3);
+<span class="lineno">68</span>#52=PLANE(&#x27;&#x27;,#51);
+<span class="lineno">69</span>#53=CARTESIAN_POINT(&#x27;&#x27;,(100.0,0.0,0.0));
+<span class="lineno">70</span>#54=CARTESIAN_POINT(&#x27;&#x27;,(105.0,0.0,0.0));
+<span class="lineno">71</span>#55=CARTESIAN_POINT(&#x27;&#x27;,(105.0,5.0,0.0));
+<span class="lineno">72</span>#56=CARTESIAN_POINT(&#x27;&#x27;,(100.0,5.0,0.0));
+<span class="lineno">73</span>#57=VERTEX_POINT(&#x27;&#x27;,#53);
+<span class="lineno">74</span>#58=VERTEX_POINT(&#x27;&#x27;,#54);
+<span class="lineno">75</span>#59=VERTEX_POINT(&#x27;&#x27;,#55);
+<span class="lineno">76</span>#61=VERTEX_POINT(&#x27;&#x27;,#56);
+<span class="lineno">77</span>#62=VECTOR(&#x27;&#x27;,#14,5.0);
+<span class="lineno">78</span>#63=LINE(&#x27;&#x27;,#53,#62);
+<span class="lineno">79</span>#64=EDGE_CURVE(&#x27;&#x27;,#57,#58,#63,.T.);
+<span class="lineno">80</span>#65=VECTOR(&#x27;&#x27;,#18,5.0);
+<span class="lineno">81</span>#66=LINE(&#x27;&#x27;,#54,#65);
+<span class="lineno">82</span>#67=EDGE_CURVE(&#x27;&#x27;,#58,#59,#66,.T.);
+<span class="lineno">83</span>#68=VECTOR(&#x27;&#x27;,#22,5.0);
+<span class="lineno">84</span>#69=LINE(&#x27;&#x27;,#55,#68);
+<span class="lineno">85</span>#70=EDGE_CURVE(&#x27;&#x27;,#59,#61,#69,.T.);
+<span class="lineno">86</span>#71=VECTOR(&#x27;&#x27;,#26,5.0);
+<span class="lineno">87</span>#72=LINE(&#x27;&#x27;,#56,#71);
+<span class="lineno">88</span>#73=EDGE_CURVE(&#x27;&#x27;,#61,#57,#72,.T.);
+<span class="lineno">89</span>#74=ORIENTED_EDGE(&#x27;&#x27;,$,$,#64,.T.);
+<span class="lineno">90</span>#75=ORIENTED_EDGE(&#x27;&#x27;,$,$,#67,.T.);
+<span class="lineno">91</span>#76=ORIENTED_EDGE(&#x27;&#x27;,$,$,#70,.T.);
+<span class="lineno">92</span>#77=ORIENTED_EDGE(&#x27;&#x27;,$,$,#73,.T.);
+<span class="lineno">93</span>#78=EDGE_LOOP(&#x27;&#x27;,(#74,#75,#76,#77));
+<span class="lineno">94</span>#79=FACE_OUTER_BOUND(&#x27;&#x27;,#78,.T.);
+<span class="lineno">95</span>#80=ADVANCED_FACE(&#x27;&#x27;,(#79),#52,.T.);
+<span class="lineno">96</span>#81=OPEN_SHELL(&#x27;&#x27;,(#80));
+<span class="lineno">97</span>#82=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#81));
+<span class="lineno">98</span>#83=SHAPE_REPRESENTATION(&#x27;child_rep&#x27;,(#82),#101);
+<span class="lineno">99</span>#84=PRODUCT_CONTEXT(&#x27;&#x27;,#100,&#x27;mechanical&#x27;);
+<span class="lineno">100</span>#85=PRODUCT(&#x27;Child&#x27;,&#x27;Child&#x27;,&#x27;&#x27;,(#84));
+<span class="lineno">101</span>#86=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#85);
+<span class="lineno">102</span>#87=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#86,#44);
+<span class="lineno">103</span>#88=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#87);
+<span class="lineno">104</span>#89=SHAPE_DEFINITION_REPRESENTATION(#88,#83);
+<span class="lineno">105</span>/* Child&#x27;s SEPARATE placement-only representation for the assembly relationship -- */
+<span class="lineno">106</span>/* DEFECT: Ax2 (Target) is NOT included in ITS items (nor Parent&#x27;s placement rep&#x27;s) -- */
+<span class="lineno">107</span>/* a completely foreign, unreferenced placement -- isOKTarget=False, isSwapTarget=False */
+<span class="lineno">108</span>#97=SHAPE_REPRESENTATION(&#x27;child_placement_rep&#x27;,(),#101);
+<span class="lineno">109</span>#90=CARTESIAN_POINT(&#x27;ax2_foreign_origin&#x27;,(200.0,200.0,200.0));
+<span class="lineno">110</span>#91=AXIS2_PLACEMENT_3D(&#x27;Ax2_Target_foreign&#x27;,#90,#2,#3);
+<span class="lineno">111</span>/* ---- NAUO: Parent relating, Child related ---- */
+<span class="lineno">112</span>#92=NEXT_ASSEMBLY_USAGE_OCCURRENCE(&#x27;1&#x27;,&#x27;&#x27;,&#x27;uses&#x27;,#45,#87,$);
+<span class="lineno">113</span>#93=PRODUCT_DEFINITION_SHAPE(&#x27;Placement&#x27;,&#x27;Placement of an item&#x27;,#92);
+<span class="lineno">114</span>/* DEFECT: SRRWT relates the two PLACEMENT-ONLY reps; Ax1 genuinely belongs to Rep1 */
+<span class="lineno">115</span>/* (parent_placement_rep), but Ax2 belongs to NEITHER Rep1 nor Rep2 (child_placement_rep) */
+<span class="lineno">116</span>#94=<mark>ITEM_DEFINED_TRANSFORMATION</mark>(&#x27;&#x27;,&#x27;&#x27;,#60,#91);
+<span class="lineno">117</span>#95=<mark>SHAPE_REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION</mark>(&#x27;srrwt&#x27;,&#x27;&#x27;,#48,#97,#94);
+<span class="lineno">118</span>#96=CONTEXT_DEPENDENT_SHAPE_REPRESENTATION(#95,#93);
+<span class="lineno">119</span>ENDSEC;
+<span class="lineno">120</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="A119.html">&larr; A119</a> <a class="up" href="index.html">§12.6 Assembly hierarchy</a> <a class="next" href="P001.html">P001 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1><span class="tag tag-units">units</span></h1>
 <p class="blurb">mm / inch / context / unit-conversion defect.</p>
-<p class="meta">135 entries</p>
+<p class="meta">138 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Section</th><th>Expected validation</th></tr></thead><tbody>
@@ -105,6 +105,7 @@
 <tr><td><a href="../../12-4-tolerance/N069.html"><code>N069</code></a></td><td>ShapeAnalysis_Edge.CheckOverlapping parameter vs arc-length scale</td><td><a href="../../12-4-tolerance/index.html">§12.4 Tolerance &amp; numerical precision</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-4-tolerance/N163.html"><code>N163</code></a></td><td>`precision_tolerance` — mixed-unit-scale mismatch</td><td><a href="../../12-4-tolerance/index.html">§12.4 Tolerance &amp; numerical precision</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-4-tolerance/N171.html"><code>N171</code></a></td><td>Shared CIRCLE basis between EDGE_CURVEs at different scales (radius derivation defect)</td><td><a href="../../12-4-tolerance/index.html">§12.4 Tolerance &amp; numerical precision</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="../../12-4-tolerance/N173.html"><code>N173</code></a></td><td>Per-entity vertex-tolerance bumps ACCUMULATE across several edges of one shell (multi-edge tolerance-ceiling clamp)</td><td><a href="../../12-4-tolerance/index.html">§12.4 Tolerance &amp; numerical precision</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-8-mixed/Os022.html"><code>Os022</code></a></td><td>FindContigousEdges: paired LINEs/VECTORs from sewing have unequal parameter lengths (unit vs non-unit DIRECTION) for the same 3D extent</td><td><a href="../../12-8-mixed/index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-4-tolerance/Tb003.html"><code>Tb003</code></a></td><td>Vertex-edge-face tolerance hierarchy holds in mm but inverts in m</td><td><a href="../../12-4-tolerance/index.html">§12.4 Tolerance &amp; numerical precision</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-4-tolerance/Tb008.html"><code>Tb008</code></a></td><td>NURBS knot-difference quantum scaled by parametric range</td><td><a href="../../12-4-tolerance/index.html">§12.4 Tolerance &amp; numerical precision</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
@@ -153,6 +154,8 @@
 <tr><td><a href="../../12-5-units/U048.html"><code>U048</code></a></td><td>Vendor library AXIS2_PLACEMENT_3D bakes 90° Z rotation into convention</td><td><a href="../../12-5-units/index.html">§12.5 Units &amp; coordinate systems</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-5-units/U049.html"><code>U049</code></a></td><td>Two conflicting length units (MILLI + CENTI metre) in one representation context</td><td><a href="../../12-5-units/index.html">§12.5 Units &amp; coordinate systems</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-5-units/U050.html"><code>U050</code></a></td><td>`CONVERSION_BASED_UNIT(&#x27;INCH&#x27;,...)` declared on a live 2-face shell (unit-scaling on real geometry + tolerances)</td><td><a href="../../12-5-units/index.html">§12.5 Units &amp; coordinate systems</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="../../12-5-units/U051.html"><code>U051</code></a></td><td>`SHAPE_REPRESENTATION.context_of_items = $` (null) directly governing a live shell</td><td><a href="../../12-5-units/index.html">§12.5 Units &amp; coordinate systems</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="../../12-5-units/U052.html"><code>U052</code></a></td><td>`REPRESENTATION_CONTEXT` of the wrong kind (missing unit mixins) directly governing a live shell</td><td><a href="../../12-5-units/index.html">§12.5 Units &amp; coordinate systems</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
 </tbody></table>
 </main>
 <footer>

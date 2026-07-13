@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>N174 — `stp-vertex-tol-gap`, displaced-line-with-correct-direction subvariant (PCB/FPX export quirk)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.4 Tolerance &amp; numerical precision</a> <span class="sep">/</span> <span class="current">N174</span>
+</nav>
+<header class="title-bar">
+<h1>N174 <span class="sep">—</span> <span class="entry-title">`stp-vertex-tol-gap`, displaced-line-with-correct-direction subvariant (PCB/FPX export quirk)</span></h1>
+<p class="category">§12.4 tolerance (sub-class: vertex-tolerance-gap repair, line-shift subvariant)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-4-tolerance/N174.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-4-tolerance/N174.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>occt-coverage PARTIAL audit, `exchange/problems.json` `stp-vertex-tol-gap`</li>
+<li>`StepToTopoDS_TranslateEdge::MakeFromCurve3D`, StepToTopoDS_TranslateEdge.cxx:392-431 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (bug 25415 — &quot;FPX Expert 2013 (PCB design system)&quot; line-shift special case).</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — OCCT uncovered-class sweep; upstream bug attributed to FPX Expert (PCB design system) exports</p></section>
+<section><h2>Description</h2>
+<p>The bottom edge of a live quad face is authored as a `LINE` from `(0,0,0)` to `(10,0,0)`, but BOTH its `VERTEX_POINT` endpoints sit at `(0,0.001,0)` and `(10,0.001,0)` — an IDENTICAL 0.001mm perpendicular offset at both ends, preserving the vertex-to-vertex distance (unlike N007, which displaces only ONE endpoint). `StepToTopoDS_TranslateEdge`&#x27;s line-shift gate — `Abs(temp1-temp2)&lt;preci` AND `Abs(U2-U1-dist(pnt1,pnt2))&lt;Precision::Confusion()` AND the curve `IsKind(Geom_Line)` — is satisfied by this &quot;correct direction, wrong position&quot; signature, so instead of merely enlarging vertex tolerance, OCCT RIGIDLY SHIFTS the `LINE` along its own direction so it passes exactly through the displaced vertices.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>an `EDGE_CURVE` whose `LINE` is authored at the nominal (undisplaced) position, but both of whose `VERTEX_POINT` endpoints are offset by the SAME perpendicular amount, preserving the segment length, wired into a live `ADVANCED_FACE`/`OPEN_SHELL`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>reject the inconsistent curve/vertex data, or heal it while flagging that the AUTHORED curve geometry (not just a tolerance value) was altered — silently rewriting the curve&#x27;s location changes the model&#x27;s geometric record without any visible trace in the output beyond the shifted numbers.</p></section>
+<section><h2>Notes</h2>
+<p>Live-verified (2026-07-12, OCP 7.8.1, direct `BRep_Tool::Curve`/`BRep_Tool::Tolerance` probing on the transferred edge — not mirrored/guessed): the bottom edge&#x27;s bound 3D curve after transfer is a `Geom_Line` whose location is `(0.0, 0.001, 0.0)` — genuinely shifted off the authored `(0,0,0)` origin to pass through the displaced vertices, confirming the line-shift branch (not the generic per-vertex-bump branch) fired. Both endpoint vertices&#x27; tolerance is `0.001000001` (== `1.000001*0.001`) — the SAME bump formula N007 uses, applied even though the underlying curve was rigidly repositioned; the two untouched vertices retain the file&#x27;s declared `1.0E-7` tolerance. **See also**: N007 (ordinary-gap sibling — only one endpoint displaced, takes the generic bump branch instead), N172 (single-outlier settol-band sibling). Provenance tier: bytes-sufficient. Synonyms: &quot;displaced line correct direction&quot;, &quot;PCB export line shift&quot;, &quot;FPX Expert line shifted vertex gap&quot;, &quot;rigid line reposition on projection mismatch&quot;, &quot;bug 25415 line displaced true position&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;0.001,0.0)&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;VERTEX_POINT&#x27;) == 4</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_faces_total == 1</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="N007.html">N007</a>, <a href="N172.html">N172</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* N174: LINE displaced from true position but with CORRECT direction (PCB/FPX quirk) */
+<span class="lineno">3</span>/* DEFECT: both edge endpoints show the SAME 0.001 perpendicular offset from the authored */
+<span class="lineno">4</span>/* LINE -- StepToTopoDS_TranslateEdge&#x27;s line-shift branch fires, rigidly repositioning the */
+<span class="lineno">5</span>/* curve instead of merely enlarging vertex tolerance (bug 25415, FPX Expert PCB pattern) */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;N174: displaced-line correct-direction vertex-tol-gap subvariant&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;N174.stp&#x27;,&#x27;2026-07-12T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">13</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">14</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">15</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">16</span>#5=PLANE(&#x27;&#x27;,#4);
+<span class="lineno">17</span>/* Bottom-edge vertices displaced +0.001 in Y from the LINE&#x27;s authored y=0 -- SAME offset both ends */
+<span class="lineno">18</span>#6=CARTESIAN_POINT(&#x27;bottom_left_displaced&#x27;,(0.0,<mark>0.001,0.0)</mark>);
+<span class="lineno">19</span>#7=CARTESIAN_POINT(&#x27;bottom_right_displaced&#x27;,(10.0,<mark>0.001,0.0)</mark>);
+<span class="lineno">20</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(10.0,5.0,0.0));
+<span class="lineno">21</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0,0.0));
+<span class="lineno">22</span><mark>#10=VERTEX_POINT(</mark>&#x27;&#x27;,#6);
+<span class="lineno">23</span><mark>#11=VERTEX_POINT(</mark>&#x27;&#x27;,#7);
+<span class="lineno">24</span><mark>#12=VERTEX_POINT(</mark>&#x27;&#x27;,#8);
+<span class="lineno">25</span><mark>#13=VERTEX_POINT(</mark>&#x27;&#x27;,#9);
+<span class="lineno">26</span>/* DEFECT: LINE&#x27;s own CARTESIAN_POINT origin is at y=0.0 -- NOT the vertices&#x27; y=0.001 */
+<span class="lineno">27</span>#14=CARTESIAN_POINT(&#x27;line_nominal_origin&#x27;,(0.0,0.0,0.0));
+<span class="lineno">28</span>#15=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">29</span>#16=VECTOR(&#x27;&#x27;,#15,10.0);
+<span class="lineno">30</span>#17=LINE(&#x27;bottom_edge_nominal&#x27;,#14,#16);
+<span class="lineno">31</span>#18=EDGE_CURVE(&#x27;bottom_displaced_edge&#x27;,#10,#11,#17,.T.);
+<span class="lineno">32</span>#19=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">33</span>#20=VECTOR(&#x27;&#x27;,#19,5.0);
+<span class="lineno">34</span>#21=CARTESIAN_POINT(&#x27;&#x27;,(10.0,<mark>0.001,0.0)</mark>);
+<span class="lineno">35</span>#22=LINE(&#x27;&#x27;,#21,#20);
+<span class="lineno">36</span>#23=EDGE_CURVE(&#x27;&#x27;,#11,#12,#22,.T.);
+<span class="lineno">37</span>#24=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">38</span>#25=VECTOR(&#x27;&#x27;,#24,10.0);
+<span class="lineno">39</span>#26=LINE(&#x27;&#x27;,#8,#25);
+<span class="lineno">40</span>#27=EDGE_CURVE(&#x27;&#x27;,#12,#13,#26,.T.);
+<span class="lineno">41</span>#28=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">42</span>#29=VECTOR(&#x27;&#x27;,#28,5.0);
+<span class="lineno">43</span>#30=LINE(&#x27;&#x27;,#9,#29);
+<span class="lineno">44</span>#31=EDGE_CURVE(&#x27;&#x27;,#13,#10,#30,.T.);
+<span class="lineno">45</span>#32=ORIENTED_EDGE(&#x27;&#x27;,$,$,#18,.T.);
+<span class="lineno">46</span>#33=ORIENTED_EDGE(&#x27;&#x27;,$,$,#23,.T.);
+<span class="lineno">47</span>#34=ORIENTED_EDGE(&#x27;&#x27;,$,$,#27,.T.);
+<span class="lineno">48</span>#35=ORIENTED_EDGE(&#x27;&#x27;,$,$,#31,.T.);
+<span class="lineno">49</span>#36=EDGE_LOOP(&#x27;&#x27;,(#32,#33,#34,#35));
+<span class="lineno">50</span>#37=FACE_OUTER_BOUND(&#x27;&#x27;,#36,.T.);
+<span class="lineno">51</span>#38=ADVANCED_FACE(&#x27;&#x27;,(#37),#5,.T.);
+<span class="lineno">52</span>#39=OPEN_SHELL(&#x27;&#x27;,(#38));
+<span class="lineno">53</span>#40=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#39));
+<span class="lineno">54</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">55</span>#9001=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">56</span>#9002=PRODUCT(&#x27;N174&#x27;,&#x27;N174&#x27;,&#x27;&#x27;,(#9001));
+<span class="lineno">57</span>#9003=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9002);
+<span class="lineno">58</span>#9004=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">59</span>#9005=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#9003,#9004);
+<span class="lineno">60</span>#9006=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#9005);
+<span class="lineno">61</span>#9007=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">62</span>#9008=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">63</span>#9009=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">64</span>#9010=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9007,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">65</span>#9011=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9010))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9007,#9008,#9009))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">66</span>#9012=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#40),#9011);
+<span class="lineno">67</span>#9013=SHAPE_DEFINITION_REPRESENTATION(#9006,#9012);
+<span class="lineno">68</span>ENDSEC;
+<span class="lineno">69</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="N173.html">&larr; N173</a> <a class="up" href="index.html">§12.4 Tolerance &amp; numerical precision</a> <a class="next" href="Tb001.html">Tb001 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>U052 — `REPRESENTATION_CONTEXT` of the wrong kind (missing unit mixins) directly governing a live shell</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.5 Units &amp; coordinate systems</a> <span class="sep">/</span> <span class="current">U052</span>
+</nav>
+<header class="title-bar">
+<h1>U052 <span class="sep">—</span> <span class="entry-title">`REPRESENTATION_CONTEXT` of the wrong kind (missing unit mixins) directly governing a live shell</span></h1>
+<p class="category">§12.5 units (sub-class: representation context of unusable kind)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-units" href="../by-tag/units/index.html">units</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-5-units/U052.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-5-units/U052.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>occt-coverage GAP audit, `exchange/problems.json` `stp-missing-unit-context-default`, subvariant &quot;representation context null or of unusable kind -&gt; default units&quot;</li>
+<li>`STEPControl_ActorRead::PrepareUnits`, STEPControl_ActorRead.cxx:1798-1859 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e.</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — OCCT uncovered-class sweep</p></section>
+<section><h2>Description</h2>
+<p>The sibling of U051. Here `context_of_items` is **not** null — it references a real, present `REPRESENTATION_CONTEXT(&#x27;wrong_kind_ctx&#x27;,&#x27;3D&#x27;)` entity — but that entity is the plain, non-complex EXPRESS type, lacking the `GeometricRepresentationContext`+`GlobalUnitAssignedContext` mixins every correctly-formed STEP unit context carries. `PrepareUnits` does not hit the null-context &quot;Bad RepresentationContext&quot; branch (the context is present), but its `IsKind(GeometricRepresentationContextAndGlobalUnitAssignedContext)` check fails for both complex-type variants, so `theGUAC` stays null: the `ComputeFactors` unit-factor block is silently skipped entirely (no warning is even emitted for that part), and the uncertainty/precision default path fires (`&quot;No Length Uncertainty, value of read.precision.val is taken&quot;`). The reader still returns a live, correctly-topologized shell.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`SHAPE_REPRESENTATION(&#x27;wrong_kind_shape&#x27;,(#shell),#ctx)` where `#ctx=REPRESENTATION_CONTEXT(&#x27;wrong_kind_ctx&#x27;,&#x27;3D&#x27;)` (the bare, non-complex form) and `#shell` is a real `SHELL_BASED_SURFACE_MODEL`, wrapped by a normal product chain.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>reject as malformed (a `SHAPE_REPRESENTATION` whose context lacks unit declarations is spec-illegal), or warn loudly and require explicit user confirmation of the assumed unit, rather than silently defaulting.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: U051 (sibling subvariant: context slot literally `$`/absent, not merely wrong-kind), M063. Provenance tier: bytes-sufficient. Synonyms: &quot;STEP no units defaulted&quot;, &quot;kernel guessed units&quot;, &quot;representation context of unusable kind&quot;, &quot;bare RepresentationContext missing unit mixins&quot;, &quot;GeometricRepresentationContextAndGlobalUnitAssignedContext kind check fails&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&quot;REPRESENTATION_CONTEXT(&#x27;wrong_kind_ctx&#x27;,&#x27;3D&#x27;)&quot;)</code></li>
+<li><code>contains(b&quot;SHAPE_REPRESENTATION(&#x27;wrong_kind_shape&#x27;&quot;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_faces_total == 1</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="U051.html">U051</a>, <a href="../12-8-mixed/M063.html">M063</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* U052: REPRESENTATION_CONTEXT of the wrong kind (missing unit mixins), directly governing a live shell */
+<span class="lineno">3</span>/* DEFECT: theRepCont is present but neither GeometricRepresentationContextAndGlobalUnitAssignedContext */
+<span class="lineno">4</span>/* nor the +GlobalUncertaintyAssignedContext complex kind -- theGUAC stays Null, units silently default */
+<span class="lineno">5</span>/* Byte assertion: literal form <mark>SHAPE_REPRESENTATION(&#x27;wrong_kind_shape&#x27;</mark>,(#N),#M) */
+<span class="lineno">6</span>HEADER;
+<span class="lineno">7</span>FILE_DESCRIPTION((&#x27;U052: wrong-kind REPRESENTATION_CONTEXT on a live shell&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">8</span>FILE_NAME(&#x27;U052.stp&#x27;,&#x27;2026-07-12T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">9</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">10</span>ENDSEC;
+<span class="lineno">11</span>DATA;
+<span class="lineno">12</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">13</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">14</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">15</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">16</span>#5=PLANE(&#x27;&#x27;,#4);
+<span class="lineno">17</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">18</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">19</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
+<span class="lineno">20</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">21</span>#10=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">22</span>#11=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">23</span>#12=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">24</span>#13=VERTEX_POINT(&#x27;&#x27;,#9);
+<span class="lineno">25</span>#14=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">26</span>#15=VECTOR(&#x27;&#x27;,#14,1.0);
+<span class="lineno">27</span>#16=LINE(&#x27;&#x27;,#6,#15);
+<span class="lineno">28</span>#17=EDGE_CURVE(&#x27;&#x27;,#10,#11,#16,.T.);
+<span class="lineno">29</span>#18=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">30</span>#19=VECTOR(&#x27;&#x27;,#18,1.0);
+<span class="lineno">31</span>#20=LINE(&#x27;&#x27;,#7,#19);
+<span class="lineno">32</span>#21=EDGE_CURVE(&#x27;&#x27;,#11,#12,#20,.T.);
+<span class="lineno">33</span>#22=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">34</span>#23=VECTOR(&#x27;&#x27;,#22,1.0);
+<span class="lineno">35</span>#24=LINE(&#x27;&#x27;,#8,#23);
+<span class="lineno">36</span>#25=EDGE_CURVE(&#x27;&#x27;,#12,#13,#24,.T.);
+<span class="lineno">37</span>#26=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">38</span>#27=VECTOR(&#x27;&#x27;,#26,1.0);
+<span class="lineno">39</span>#28=LINE(&#x27;&#x27;,#9,#27);
+<span class="lineno">40</span>#29=EDGE_CURVE(&#x27;&#x27;,#13,#10,#28,.T.);
+<span class="lineno">41</span>#30=ORIENTED_EDGE(&#x27;&#x27;,$,$,#17,.T.);
+<span class="lineno">42</span>#31=ORIENTED_EDGE(&#x27;&#x27;,$,$,#21,.T.);
+<span class="lineno">43</span>#32=ORIENTED_EDGE(&#x27;&#x27;,$,$,#25,.T.);
+<span class="lineno">44</span>#33=ORIENTED_EDGE(&#x27;&#x27;,$,$,#29,.T.);
+<span class="lineno">45</span>#34=EDGE_LOOP(&#x27;&#x27;,(#30,#31,#32,#33));
+<span class="lineno">46</span>#35=FACE_OUTER_BOUND(&#x27;&#x27;,#34,.T.);
+<span class="lineno">47</span>#36=ADVANCED_FACE(&#x27;&#x27;,(#35),#5,.T.);
+<span class="lineno">48</span>#37=OPEN_SHELL(&#x27;&#x27;,(#36));
+<span class="lineno">49</span>#38=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#37));
+<span class="lineno">50</span>#100=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">51</span>#101=PRODUCT_CONTEXT(&#x27;&#x27;,#100,&#x27;mechanical&#x27;);
+<span class="lineno">52</span>#102=PRODUCT(&#x27;U052&#x27;,&#x27;U052&#x27;,&#x27;&#x27;,(#101));
+<span class="lineno">53</span>#103=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#102);
+<span class="lineno">54</span>#104=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#100,&#x27;design&#x27;);
+<span class="lineno">55</span>#105=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,#103,#104);
+<span class="lineno">56</span>#106=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,#105);
+<span class="lineno">57</span>/* DEFECT: bare REPRESENTATION_CONTEXT -- present but missing GeometricRepresentationContext + */
+<span class="lineno">58</span>/* GlobalUnitAssignedContext mixins -- &#x27;wrong kind&#x27; for PrepareUnits&#x27;s complex-type dispatch */
+<span class="lineno">59</span>#99=<mark>REPRESENTATION_CONTEXT(&#x27;wrong_kind_ctx&#x27;,&#x27;3D&#x27;)</mark>;
+<span class="lineno">60</span>#107=<mark>SHAPE_REPRESENTATION(&#x27;wrong_kind_shape&#x27;</mark>,(#38),#99);
+<span class="lineno">61</span>#108=SHAPE_DEFINITION_REPRESENTATION(#106,#107);
+<span class="lineno">62</span>ENDSEC;
+<span class="lineno">63</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="U051.html">&larr; U051</a> <a class="up" href="index.html">§12.5 Units &amp; coordinate systems</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

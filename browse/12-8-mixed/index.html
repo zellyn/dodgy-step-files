@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1>§12.8 Mixed (tessellation, validation properties, etc.)</h1>
 <p class="blurb">Mixed / auxiliary defects: tessellation, validation properties, schema-version edge cases, AP238 deep-feature.</p>
-<p class="meta">219 entries</p>
+<p class="meta">226 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
@@ -214,6 +214,13 @@
 <tr><td><a href="M190.html"><code>M190</code></a></td><td>Compound with free VERTEX_POINT silently dropped on STEP export</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="M191.html"><code>M191</code></a></td><td>Isolated wireframe: `GEOMETRIC_CURVE_SET` of a cube&#x27;s 12 edges with no topology (no solid root)</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(12) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="M192.html"><code>M192</code></a></td><td>Point-set only: `GEOMETRIC_SET` of eight `CARTESIAN_POINT`s with no curves, surfaces, or topology</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="M193.html"><code>M193</code></a></td><td>Tessellated face&#x27;s declared exact-geometry link points at a real but never-built face, reader substitutes a surfaceless mesh face</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="M194.html"><code>M194</code></a></td><td>Tessellated shell&#x27;s declared topological-geometry link points at a real but never-built shell, reader substitutes a fresh shell</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="M195.html"><code>M195</code></a></td><td>Tessellated solid&#x27;s declared exact-geometry link points at a real but never-built solid, reader substitutes a fresh shell-plus-solid</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="M196.html"><code>M196</code></a></td><td>Bare geometric set mixing a supported curve with an unsupported placement entity: the placement is silently skipped, the curve translates normally</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="M197.html"><code>M197</code></a></td><td>Faceted polygon boundary repeats the same point reference twice in a row; the reader skips the resulting zero-length segment instead of building a degenerate edge</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="M198.html"><code>M198</code></a></td><td>Triangle-strip index list repeats a vertex within one triple; the reader silently excludes the collapsed triangle instead of misreading or crashing on it</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="M199.html"><code>M199</code></a></td><td>Tessellated face&#x27;s per-face normal row has the wrong number of components; the reader silently leaves every node&#x27;s normal unset rather than misreading the row</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Os001.html"><code>Os001</code></a></td><td>Offset of a surface whose normals flip sign</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Os002.html"><code>Os002</code></a></td><td>Inward offset by a distance equal to a cylinder&#x27;s radius (face collapses to axis)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Os003.html"><code>Os003</code></a></td><td>Inward offset by a distance greater than a cylinder&#x27;s radius (face inverts)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>

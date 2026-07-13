@@ -39625,6 +39625,49 @@
   },
   {
     "byte_assertions": [
+      "contains(b'I-DEAS')",
+      "matches(rb\"FILE_NAME\\([^;]*'I-DEAS\")"
+    ],
+    "category": "§12.1b header (sub-class: I-DEAS non-manifold auto-detect, live shell-closing precondition)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "`FILE_NAME.preprocessor_version` contains `'I-DEAS Master Series 11'`, which unconditionally sets `myNMTool.SetIDEASCase(True)`. The DATA section contains real shell topology behind that trigger: a unit cube's bottom+4 side faces form one `OPEN_SHELL` (missing its top face); the 6th (top) face forms a SECOND shell whose 4 boundary `EDGE_CURVE`s are the SAME entities already used by the 4 side faces' top edges — genuine cross-shell entity reuse, the exact structural precondition `IsPureNMShell`/`IsSuspectedAsClosing` require of a candidate closing shell for `computeIDEASClosings`/`closeIDEASShell` to merge it into the open shell and prune any now-redundant face.",
+    "expected_kernel_behavior": "detect non-manifold/closable structure from the entity graph itself (shared-edge adjacency between shells), not from a header substring; merge genuinely-closing adjacent shells by default rather than gating the repair behind both a brittle header heuristic AND an opt-in reader flag.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(26) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-1b-header/Lh053.stp",
+    "id": "Lh053",
+    "notes": "Fixes Lh031's gap: Lh031 triggers the substring auto-detect but its DATA section is only a two-point `GEOMETRIC_CURVE_SET` — no open shells, no closing shells, no real topology for `computeIDEASClosings`/`closeIDEASShell` to act on at all. This fixture supplies that missing topology. Live-verified (2026-07-12, OCP 7.8.1, direct probing — not mirrored/guessed): under this corpus's own default `validate2` oracle settings, the reader loads the two shells VERBATIM (`shape_null=False`, 6 faces, 2 shells, 0 solids — not merged), matching Lh031's own established finding that OCCT's default transfer never engages non-manifold-specific processing. Explicitly driving `read.step.nonmanifold=1` and `read.step.ideas=1` through `Interface_Static` before `ReadFile`/`TransferRoots` on this exact construction was ALSO checked and did not observably merge the shells either (still 2 shells / 0 solids) — recorded honestly (cf. N173's identical finding pattern for a different opt-in mechanism) rather than mirroring an unverified auto-merge claim; what this fixture delivers and live-verifies is the concrete structural precondition (real, adjacent, genuinely edge-sharing open/closing shell topology behind the header trigger) that Lh031 lacked, plus the exact OCCT source call sites a correctly-wired non-manifold transfer path would invoke against this precise topology. Provenance tier: bytes-sufficient. **See also**: Lh031 (header-only precedent this fixture adds real topology behind). Synonyms: \"I-DEAS shell closing\", \"computeIDEASClosings merge\", \"closeIDEASShell prune\", \"non-manifold closing shell adjacent to open shell\", \"I-DEAS preprocessor substring trigger real topology\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`FILE_NAME('...',...,'I-DEAS Master Series 11','','')`; a `SHELL_BASED_SURFACE_MODEL` with two `OPEN_SHELL`s — one missing a face, the other containing exactly that missing face and reusing the same boundary `EDGE_CURVE` entities as the first shell's adjacent faces.",
+    "section": "12.1b",
+    "section_dir": "12-1b-header",
+    "see_also": [
+      "Lh031"
+    ],
+    "sender": "deduced — OCCT uncovered-class sweep",
+    "severity": "P2",
+    "sources": [
+      "occt-coverage PARTIAL audit, `exchange/problems.json` `stp-ideas-shell-closing`",
+      "`STEPControl_ActorRead::Transfer`, STEPControl_ActorRead.cxx:305-334 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (I-DEAS substring detection)",
+      "`STEPControl_ActorRead::computeIDEASClosings`/`closeIDEASShell`, STEPControl_ActorRead.cxx:958-984, 1997-2086",
+      "`StepToTopoDS_NMTool::IsSuspectedAsClosing`/`IsPureNMShell`, StepToTopoDS_NMTool.cxx:148-197."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "syntax"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 6"
+    ],
+    "title": "FILE_NAME preprocessor_version contains \"I-DEAS\", plus a real open shell with an adjacent, edge-sharing closing shell"
+  },
+  {
+    "byte_assertions": [
       "contains(b'DATA;')",
       "contains(b'HEADER;')",
       "count(b'ENDSEC;') >= 2"
@@ -96901,6 +96944,136 @@
   },
   {
     "byte_assertions": [
+      "contains(b'0.05,0.0)')",
+      "count_entity_def(b'VERTEX_POINT') == 4"
+    ],
+    "category": "§12.4 tolerance (sub-class: settol band clamp, live-shape subvariant)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A live 1-face quad whose bottom-left vertex is displaced 0.05mm from its edge's authored `LINE` (only that endpoint — the ordinary per-vertex-bump path, not the line-shift path N174 covers). the edge-translation stage bumps that vertex's tolerance to `1.000001*0.05≈0.0500000500` — three orders of magnitude above the file's declared 1.0E-7 model uncertainty and any realistic `settol` target band. The `ShapeProcess` `\"SetTolerance\"` operator (`settol`) calls the tolerance-limiting pass(shape, val/ratio, val*ratio)`; against this fixture's live, reader-produced tolerance data (not N001's `shape_null==True` scaffold), the outlier genuinely falls outside a realistic band and gets clamped.",
+    "expected_kernel_behavior": "`settol` (or an equivalent tolerance-sanity pass) should be applied by default, or the reader should surface a diagnostic when a repaired tolerance lands far outside any declared-uncertainty-derived band, rather than leaving the outlier silently in place unless a user opts in to `SetTolerance`.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-4-tolerance/N172.stp",
+    "id": "N172",
+    "notes": "Live-verified (2026-07-12, OCP 7.8.1, direct probing — not mirrored/guessed): after the reader.TransferRoots()`, the displaced vertex's tolerance is exactly `0.05000005` (== `1.000001*0.05`). Calling the tolerance-limiting pass().LimitTolerance(shape, 1.0E-4, 1.0E-2)` — the exact API `settol` invokes, band `[val/ratio,val*ratio]` with val=1.0E-3, ratio=10 — on this live shape returns `True` (at least one tolerance modified) and clamps that vertex's tolerance DOWN to `0.01`; the four untouched vertices (at the file's declared `1.0E-7` uncertainty) simultaneously get raised UP to the band floor `0.0001`. `settol` is an opt-in `ShapeProcess` sequence operator (same category as this corpus's `dropsmallsolids`-driven Tsh238/Tsh239), not run by the reader's default transfer. Provenance tier: runtime-only (the operator is opt-in; the fixture delivers a live shape with a genuinely out-of-band tolerance for the operator to act on, demonstrated via a direct, documented API call reproducing `settol`'s own invocation). **See also**: N001 (dead scaffold precedent), N174 (sibling per-vertex-bump mechanism, line-shift subvariant), N173 (multi-vertex/multi-edge sibling). Synonyms: \"tolerance outside acceptable band\", \"settol clamp\", \"the tolerance-limiting pass LimitTolerance band violation\", \"reader-inflated vertex tolerance exceeds target ratio\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "runtime-only",
+    "reproducer": "a 1-face `ADVANCED_FACE`/`OPEN_SHELL` whose bottom-left `VERTEX_POINT` sits 0.05mm off the corresponding edge's authored `LINE` (temp1≠temp2, so the ordinary per-vertex bump fires, not the line-shift branch), wrapped in a normal product chain.",
+    "section": "12.4",
+    "section_dir": "12-4-tolerance",
+    "see_also": [
+      "N001",
+      "N174",
+      "N173"
+    ],
+    "sender": "deduced — OCCT uncovered-class sweep",
+    "severity": "P2",
+    "sources": [
+      "occt-coverage PARTIAL audit, `exchange/problems.json` `seq-set-tolerance`",
+      "VERDICT_AUDIT.md 2026-07-01 overturn (subvariant (a) downgraded because it rested solely on N001, a dead `GEOMETRIC_CURVE_SET` scaffold)",
+      "`static Standard_Boolean settol(...)`, ShapeProcess_OperLibrary.cxx:163-186 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e",
+      "`StepToTopoDS_TranslateEdge::MakeFromCurve3D`, StepToTopoDS_TranslateEdge.cxx:392-431 (per-vertex tolerance-bump mechanism, shared with N007)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 1"
+    ],
+    "title": "`seq-set-tolerance` \"outside acceptable band\" clamp, on a live face"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'0.0001,0.0)')",
+      "contains(b'0.001,0.0,0.0)')",
+      "contains(b'LENGTH_MEASURE(1.0E-7)')"
+    ],
+    "category": "§12.4 tolerance (sub-class: global tolerance-ceiling clamp, multi-edge accumulation)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A 1-face quad whose THREE (of four) edges each carry an ordinary per-vertex tolerance bump (the edge-translation stage's `B.UpdateVertex(V,1.000001*temp)`, same mechanism as N007/N172) at DIFFERENT, growing magnitudes — 1.0E-4, 1.0E-3, 1.0E-2 — so the translated shape carries THREE independently-bumped vertex tolerances at once, not Tb020's single pre-inflated `UNCERTAINTY_MEASURE_WITH_UNIT`. the model-builder stage's `ResetPreci` calls a single, shape-wide the tolerance-limiting pass pass intended to clamp every tolerance in a finished shape to a configured ceiling in one call — this fixture is built so that call has THREE distinct, independently-bumped values to act on simultaneously.",
+    "expected_kernel_behavior": "a global tolerance-ceiling pass — if applied — should be run by default (or its absence loudly diagnosed), rather than leaving arbitrarily-inflated per-entity tolerances in the finished shape as an opt-in-only cleanup.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-4-tolerance/N173.stp",
+    "id": "N173",
+    "notes": "Live-verified (2026-07-12, OCP 7.8.1, direct probing — not mirrored/guessed): after `TransferRoots()`, the shape's distinct vertex tolerances are `[1e-07, 0.0001, 0.001000001, 0.01000001]` — three independently-bumped values plus the file's declared 1.0E-7 baseline. **Correction from the original plan**: driving `read.maxprecision.mode=1`/`read.maxprecision.val=1.0E-7` through `Interface_Static` (this corpus's own `occt_heal_off` oracle recipe, replicated exactly from `_oracle_workers.py`) before `ReadFile`/`TransferRoots` on this fixture does NOT clamp the bumped vertices — checked with both the standard 1.0E-7 ceiling and an extreme 1.0E-9 ceiling, neither changed anything; the static values were confirmed to propagate correctly (`Interface_Static.IVal_s` checked immediately before/after `ReadFile`). So the model-builder stage's auto-triggered ceiling pass does not observably fire through this corpus's existing `occt_heal_on`/`occt_heal_off` harness for this single-face/`SHELL_BASED_SURFACE_MODEL`/product-mode-rooted transfer path in this OCCT/OCP build — recorded honestly rather than mirrored. The underlying mechanism IS independently confirmed live via direct API call: the tolerance-limiting pass().LimitTolerance(shape, 0.0, 1.0E-7)` — the exact call `ResetPreci` makes (`tmin=0` → \"maximum tolerance will be tmax\", per the API's own documented semantics) — collapses all four distinct tolerance values down to the single value `1e-07` in one call, confirming the multi-edge-accumulation-then-single-shape-wide-clamp mechanism genuinely operates on this fixture's live tolerance data. Provenance tier: runtime-only (mechanism demonstrated via a direct, documented API call reproducing `ResetPreci`'s own invocation; the auto-trigger path was checked and does not fire for this construction). **See also**: Tb020 (single pre-inflated `UNCERTAINTY_MEASURE_WITH_UNIT`, contrast case), N152 (structure/framing precedent). Synonyms: \"tolerance ceiling clamp\", \"ReadMaxPrecisionMode global clamp\", \"the tolerance-limiting pass LimitTolerance shape-wide pass\", \"multi-edge tolerance accumulation clamped\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "runtime-only",
+    "reproducer": "a 1-face `ADVANCED_FACE` whose bottom, right, and top edges each have one `VERTEX_POINT` displaced off its edge's authored `LINE` by 1.0E-4, 1.0E-3, and 1.0E-2 respectively (ordinary per-vertex-bump gate, not the line-shift gate), wrapped in a normal product chain.",
+    "section": "12.4",
+    "section_dir": "12-4-tolerance",
+    "see_also": [
+      "Tb020",
+      "N152"
+    ],
+    "sender": "deduced — OCCT uncovered-class sweep",
+    "severity": "P2",
+    "sources": [
+      "occt-coverage PARTIAL audit, `exchange/problems.json` `stp-tolerance-ceiling-clamp`",
+      "`static void ResetPreci(...)`, StepToTopoDS_Builder.cxx:94-102 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (`ShapeFix_ShapeTolerance::LimitTolerance`, called after every `ManifoldSolidBrep`/`BrepWithVoids`/`ShellBasedSurfaceModel`/`EdgeBasedWireframeModel` build)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "units"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 1"
+    ],
+    "title": "Per-entity vertex-tolerance bumps ACCUMULATE across several edges of one shell (multi-edge tolerance-ceiling clamp)"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'0.001,0.0)')",
+      "count_entity_def(b'VERTEX_POINT') == 4"
+    ],
+    "category": "§12.4 tolerance (sub-class: vertex-tolerance-gap repair, line-shift subvariant)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "The bottom edge of a live quad face is authored as a `LINE` from `(0,0,0)` to `(10,0,0)`, but BOTH its `VERTEX_POINT` endpoints sit at `(0,0.001,0)` and `(10,0.001,0)` — an IDENTICAL 0.001mm perpendicular offset at both ends, preserving the vertex-to-vertex distance (unlike N007, which displaces only ONE endpoint). `StepToTopoDS_TranslateEdge`'s line-shift gate — `Abs(temp1-temp2)<preci` AND `Abs(U2-U1-dist(pnt1,pnt2))<Precision::Confusion()` AND the curve `IsKind(Geom_Line)` — is satisfied by this \"correct direction, wrong position\" signature, so instead of merely enlarging vertex tolerance, OCCT RIGIDLY SHIFTS the `LINE` along its own direction so it passes exactly through the displaced vertices.",
+    "expected_kernel_behavior": "reject the inconsistent curve/vertex data, or heal it while flagging that the AUTHORED curve geometry (not just a tolerance value) was altered — silently rewriting the curve's location changes the model's geometric record without any visible trace in the output beyond the shifted numbers.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-4-tolerance/N174.stp",
+    "id": "N174",
+    "notes": "Live-verified (2026-07-12, OCP 7.8.1, direct `BRep_Tool::Curve`/`BRep_Tool::Tolerance` probing on the transferred edge — not mirrored/guessed): the bottom edge's bound 3D curve after transfer is a `Geom_Line` whose location is `(0.0, 0.001, 0.0)` — genuinely shifted off the authored `(0,0,0)` origin to pass through the displaced vertices, confirming the line-shift branch (not the generic per-vertex-bump branch) fired. Both endpoint vertices' tolerance is `0.001000001` (== `1.000001*0.001`) — the SAME bump formula N007 uses, applied even though the underlying curve was rigidly repositioned; the two untouched vertices retain the file's declared `1.0E-7` tolerance. **See also**: N007 (ordinary-gap sibling — only one endpoint displaced, takes the generic bump branch instead), N172 (single-outlier settol-band sibling). Provenance tier: bytes-sufficient. Synonyms: \"displaced line correct direction\", \"PCB export line shift\", \"FPX Expert line shifted vertex gap\", \"rigid line reposition on projection mismatch\", \"bug 25415 line displaced true position\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "an `EDGE_CURVE` whose `LINE` is authored at the nominal (undisplaced) position, but both of whose `VERTEX_POINT` endpoints are offset by the SAME perpendicular amount, preserving the segment length, wired into a live `ADVANCED_FACE`/`OPEN_SHELL`.",
+    "section": "12.4",
+    "section_dir": "12-4-tolerance",
+    "see_also": [
+      "N007",
+      "N172"
+    ],
+    "sender": "deduced — OCCT uncovered-class sweep; upstream bug attributed to FPX Expert (PCB design system) exports",
+    "severity": "P2",
+    "sources": [
+      "occt-coverage PARTIAL audit, `exchange/problems.json` `stp-vertex-tol-gap`",
+      "`StepToTopoDS_TranslateEdge::MakeFromCurve3D`, StepToTopoDS_TranslateEdge.cxx:392-431 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (bug 25415 — \"FPX Expert 2013 (PCB design system)\" line-shift special case)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "spec-violation"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 1"
+    ],
+    "title": "`stp-vertex-tol-gap`, displaced-line-with-correct-direction subvariant (PCB/FPX export quirk)"
+  },
+  {
+    "byte_assertions": [
       "contains(b'1.0E-3')",
       "count_entity_def(b'EDGE_CURVE') == 2",
       "count_entity_def(b'VERTEX_POINT') == 4"
@@ -99359,6 +99532,90 @@
       "n_vertices_total == 16"
     ],
     "title": "`CONVERSION_BASED_UNIT('INCH',...)` declared on a live 2-face shell (unit-scaling on real geometry + tolerances)"
+  },
+  {
+    "byte_assertions": [
+      "contains(b\"SHAPE_REPRESENTATION('no_context_shape'\")",
+      "contains(b\",(#38),$)\")"
+    ],
+    "category": "§12.5 units (sub-class: no unit context reachable through the graph)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A `SHAPE_REPRESENTATION` whose 4th attribute (`context_of_items`) is `$` (null) directly wraps a live `ADVANCED_FACE`/`OPEN_SHELL`/`SHELL_BASED_SURFACE_MODEL` — a genuine `GeometricRepresentationItem` chain, not a `GEOMETRIC_CURVE_SET` escape hatch. `PrepareUnits` calls `rep->ContextOfItems()`, gets a null handle, warns `\"Bad RepresentationContext, default unit taken\"`, and calls `ResetUnits` — the reader silently substitutes default units and still returns a live, non-null shape. Fixes M063's gap: M063's no-unit `SHAPE_REPRESENTATION` sits inside a `GEOMETRIC_CURVE_SET`, which is not a `GeometricRepresentationItem` — `StepToTopoDS`'s item-dispatch silently type-skips it, so M063's `shape(1)` actually comes from an *outer*, correctly-unitted representation, and the no-unit-context fallback never runs live (`COVERED_FULL_REVERIFY.md` downgraded this class COVERED→GAP for exactly that reason).",
+    "expected_kernel_behavior": "reject as malformed (a `SHAPE_REPRESENTATION` with no unit context is spec-illegal), or warn loudly and require explicit user confirmation of the assumed unit, rather than silently defaulting.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-5-units/U051.stp",
+    "id": "U051",
+    "notes": "Root-reachability finding (live-verified 2026-07-12, OCP 7.8.1, direct `STEPControl_Reader`/`Interface_ShareFlags` probing — not mirrored/guessed): a completely bare, unreferenced `FACE_SURFACE`/`SHELL_BASED_SURFACE_MODEL`/`MAPPED_ITEM`/`CONTEXT_DEPENDENT_SHAPE_REPRESENTATION` with **no** enclosing `PRODUCT_DEFINITION` anywhere in the file does **not** get picked up by `TransferRoots()` at all in this OCCT build (`NbRootsForTransfer()==0` even though `STEPControl_ActorRead::Recognize()` textually accepts these types) — confirmed directly against `STEPControl_ActorRead::Recognize`, not assumed. This means the work-packet's most literal framing of this item (\"a standalone `FaceSurface` entity requested for isolated transfer with no reachable `SHAPE_REPRESENTATION` at all\") is not constructible as a fixture that actually reaches `StepToTopoDS` in this OCCT version — M063 itself already needed an enclosing `PRODUCT` chain to be reachable at all. This fixture instead builds the closest true-to-mechanism, live-reachable alternative: a normal product chain whose `SHAPE_REPRESENTATION` itself has `context_of_items=$`, the literal condition `PrepareUnits` checks for. **See also**: U052 (sibling subvariant: context present but wrong kind), M063. Provenance tier: bytes-sufficient. Synonyms: \"STEP no units defaulted\", \"kernel guessed units\", \"model 1000x wrong\", \"SHAPE_REPRESENTATION context_of_items null\", \"Bad RepresentationContext default unit taken\", \"no unit context reachable through the graph\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`SHAPE_REPRESENTATION('no_context_shape',(#shell),$)` where `#shell` is a real `SHELL_BASED_SURFACE_MODEL`, wrapped by a normal `PRODUCT_DEFINITION` → `PRODUCT_DEFINITION_SHAPE` → `SHAPE_DEFINITION_REPRESENTATION` chain (needed for the entity to be a live `TransferRoots()` root at all — see Notes).",
+    "section": "12.5",
+    "section_dir": "12-5-units",
+    "see_also": [
+      "U052",
+      "M063"
+    ],
+    "sender": "deduced — OCCT uncovered-class sweep",
+    "severity": "P1",
+    "sources": [
+      "occt-coverage GAP audit, `exchange/problems.json` `stp-missing-unit-context-default`, subvariant \"entity with no unit context reachable through the graph -> default units\"",
+      "`STEPControl_ActorRead::PrepareUnits`, STEPControl_ActorRead.cxx:1791-1793 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e (\"Bad RepresentationContext, default unit taken\")."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "units"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 1"
+    ],
+    "title": "`SHAPE_REPRESENTATION.context_of_items = $` (null) directly governing a live shell"
+  },
+  {
+    "byte_assertions": [
+      "contains(b\"REPRESENTATION_CONTEXT('wrong_kind_ctx','3D')\")",
+      "contains(b\"SHAPE_REPRESENTATION('wrong_kind_shape'\")"
+    ],
+    "category": "§12.5 units (sub-class: representation context of unusable kind)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "The sibling of U051. Here `context_of_items` is **not** null — it references a real, present `REPRESENTATION_CONTEXT('wrong_kind_ctx','3D')` entity — but that entity is the plain, non-complex EXPRESS type, lacking the `GeometricRepresentationContext`+`GlobalUnitAssignedContext` mixins every correctly-formed STEP unit context carries. `PrepareUnits` does not hit the null-context \"Bad RepresentationContext\" branch (the context is present), but its `IsKind(GeometricRepresentationContextAndGlobalUnitAssignedContext)` check fails for both complex-type variants, so `theGUAC` stays null: the `ComputeFactors` unit-factor block is silently skipped entirely (no warning is even emitted for that part), and the uncertainty/precision default path fires (`\"No Length Uncertainty, value of read.precision.val is taken\"`). The reader still returns a live, correctly-topologized shell.",
+    "expected_kernel_behavior": "reject as malformed (a `SHAPE_REPRESENTATION` whose context lacks unit declarations is spec-illegal), or warn loudly and require explicit user confirmation of the assumed unit, rather than silently defaulting.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-5-units/U052.stp",
+    "id": "U052",
+    "notes": "**See also**: U051 (sibling subvariant: context slot literally `$`/absent, not merely wrong-kind), M063. Provenance tier: bytes-sufficient. Synonyms: \"STEP no units defaulted\", \"kernel guessed units\", \"representation context of unusable kind\", \"bare RepresentationContext missing unit mixins\", \"GeometricRepresentationContextAndGlobalUnitAssignedContext kind check fails\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`SHAPE_REPRESENTATION('wrong_kind_shape',(#shell),#ctx)` where `#ctx=REPRESENTATION_CONTEXT('wrong_kind_ctx','3D')` (the bare, non-complex form) and `#shell` is a real `SHELL_BASED_SURFACE_MODEL`, wrapped by a normal product chain.",
+    "section": "12.5",
+    "section_dir": "12-5-units",
+    "see_also": [
+      "U051",
+      "M063"
+    ],
+    "sender": "deduced — OCCT uncovered-class sweep",
+    "severity": "P1",
+    "sources": [
+      "occt-coverage GAP audit, `exchange/problems.json` `stp-missing-unit-context-default`, subvariant \"representation context null or of unusable kind -> default units\"",
+      "`STEPControl_ActorRead::PrepareUnits`, STEPControl_ActorRead.cxx:1798-1859 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "units"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 1"
+    ],
+    "title": "`REPRESENTATION_CONTEXT` of the wrong kind (missing unit mixins) directly governing a live shell"
   },
   {
     "byte_assertions": [
@@ -102838,6 +103095,133 @@
       "load == \"ok\""
     ],
     "title": "PRODUCT_DEFINITION_CONTEXT with null application_context_element"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')",
+      "contains(b'CONTEXT_DEPENDENT_SHAPE_REPRESENTATION')",
+      "contains(b\"SHAPE_REPRESENTATION_RELATIONSHIP('rel','',#39,#82)\")"
+    ],
+    "category": "§12.6 assembly (sub-class: assembly relation direction, live CDSR)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A `NEXT_ASSEMBLY_USAGE_OCCURRENCE` declares Parent as relating (assembly) and Child as related (component). A `CONTEXT_DEPENDENT_SHAPE_REPRESENTATION` wraps a `SHAPE_REPRESENTATION_RELATIONSHIP` whose `rep_1`/`rep_2` are wired OPPOSITE to OCCT's own writer convention for that NAUO direction (`rep_1`=Parent's representation, `rep_2`=Child's — `STEPConstruct_Assembly::MakeRelationship` always emits `rep_1`=child, `rep_2`=parent). Both Parent and Child carry real, distinguishable geometry via their own independent `PRODUCT_DEFINITION`→...→`SHAPE_DEFINITION_REPRESENTATION` chains (Parent: 1×1 marker face at the origin; Child: 5×5 marker face at x∈[100,105]) — unlike M062, whose NAUO/SRR pair sits inside a `GEOMETRIC_CURVE_SET` with EMPTY `SHAPE_REPRESENTATION` items, so the reversal there is bytes-present but shape-unobservable (empty either way). `TransferEntity(NAUO)` walks `graph.Sharings(NAUO)`→PDS→`graph.Sharings(PDS)`→CDSR and calls `CheckSRRReversesNAUO`, which detects the swap and returns True; the reader emits `AddWarning(SRR, \"SRR reverses relation defined by NAUO; NAUO definition is taken\")` and silently resolves using NAUO's direction rather than rejecting the conflicting file.",
+    "expected_kernel_behavior": "reject the conflict with a diagnostic (the SRR and NAUO disagree on parent/child direction — one of the two is authored wrong); or trust NAUO by convention and make the choice explicit in a loud warning. Must not silently resolve without surfacing the conflict to the caller.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-6-assembly/A118.stp",
+    "id": "A118",
+    "notes": "**See also**: M062 (byte-only precedent — this fixture is the live-shape-observable upgrade). Root-reachability finding: a bare, unreferenced CDSR does not independently transfer via `TransferRoots()` in this OCCT build (see U051's Notes) — the CDSR here is instead discovered via the standard NAUO-root walk (`TransferEntity(NAUO)`'s internal `graph.Sharings` traversal), which requires both Parent and Child to carry their own real, independently-reachable representations. Live-verified (2026-07-12, OCP 7.8.1, direct `STEPControl_Reader` probing — not mirrored/guessed): `shape_null=False`; the transferred compound carries geometry from BOTH the Parent's own SDR chain and the Child's own SDR chain PLUS an additional CDSR-driven contribution (`n_faces_total=4`, `n_edges_total=16`, `n_vertices_total=32` — twice the 2-face/8-edge/16-vertex baseline of either SDR alone, confirming the CDSR's own `TransferEntity` call independently produced a live shape rather than being skipped or erroring). Provenance tier: bytes-sufficient. Synonyms: \"assembly direction conflict\", \"SRR vs NAUO direction mismatch\", \"parent/child conflict in STEP\", \"assembly relation reversed\", \"CDSR silently resolved reversal\", \"NAUO definition is taken\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','','uses',#parent_pd,#child_pd,$)`; `CONTEXT_DEPENDENT_SHAPE_REPRESENTATION(#srr,#pds)` where `#pds=PRODUCT_DEFINITION_SHAPE('Placement','Placement of an item',#nauo)` and `#srr=SHAPE_REPRESENTATION_RELATIONSHIP('rel','',#parent_rep,#child_rep)` (opposite of the writer's own `#child_rep,#parent_rep` convention).",
+    "section": "12.6",
+    "section_dir": "12-6-assembly",
+    "see_also": [
+      "M062"
+    ],
+    "sender": "deduced — OCCT uncovered-class sweep",
+    "severity": "P1",
+    "sources": [
+      "occt-coverage GAP audit, `exchange/problems.json` `stp-srr-nauo-reversed`",
+      "`STEPControl_ActorRead::TransferEntity(StepRepr_NextAssemblyUsageOccurrence)`, STEPControl_ActorRead.cxx:701-730 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e",
+      "`STEPConstruct_Assembly::CheckSRRReversesNAUO`, STEPConstruct_Assembly.cxx:171-217",
+      "`STEPConstruct_Assembly::MakeRelationship`, STEPConstruct_Assembly.cxx:76-122 (OCCT's own writer convention for the non-reversed case)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "assembly"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 4"
+    ],
+    "title": "SRR reverses the relation defined by NAUO, wired through a real CONTEXT_DEPENDENT_SHAPE_REPRESENTATION"
+  },
+  {
+    "byte_assertions": [
+      "contains(b\"MAPPED_ITEM('mapped_inst'\")",
+      "contains(b\"CARTESIAN_POINT('unrecognized_target'\")"
+    ],
+    "category": "§12.6 assembly (sub-class: MAPPED_ITEM placement resolution, unrecognized-type fallback)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A `MAPPED_ITEM` whose `mapping_source` is a genuinely resolvable `REPRESENTATION_MAP` pointing at a real target `SHAPE_REPRESENTATION` with live geometry, but whose `mapping_target` is a plain `CARTESIAN_POINT` — neither a `CartesianTransformationOperator3d` nor an `Axis2Placement3d`. Both of `TransferEntity(MappedItem)`'s placement-resolution branches fail (`ok=False`); the reader emits `\"Mapped Item, case not recognized, location ignored\"` but still binds and returns the already-resolved shape UNTRANSFORMED (identity placement) rather than dropping it.",
+    "expected_kernel_behavior": "reject the `MAPPED_ITEM` as malformed (its placement reference must be one of the two recognized types), or clearly flag that the instance was loaded un-positioned rather than silently defaulting to identity.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-6-assembly/A119.stp",
+    "id": "A119",
+    "notes": "Fixes Tfa248's gap: Tfa248 puts an empty string (`''`) where `mapping_source` belongs and the `REPRESENTATION_MAP` itself in the `mapping_target` slot — a malformed empty-string source slot that risks aborting the transfer before the identity-fallback-with-warning branch this class targets ever runs. This fixture keeps the map+shape fully valid and resolvable; only the placement TYPE is unrecognized. Live-verified (2026-07-12, OCP 7.8.1, direct probing — not mirrored/guessed): `shape_null=False`, `n_faces_total=1`; the mapped face's geometry loads at its own local coordinates (no transform applied), confirming the identity/un-positioned fallback rather than the shape being dropped. Provenance tier: bytes-sufficient. **See also**: Tfa248 (malformed-source precedent this fixture fixes). Synonyms: \"MAPPED_ITEM unrecognized transform type\", \"placement case not recognized\", \"location ignored fallback\", \"MAPPED_ITEM loads unpositioned\", \"mapping_target neither CartesianTransformationOperator3d nor Axis2Placement3d\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`REPRESENTATION_MAP(#origin_placement,#real_target_shape_representation)` (resolvable) plus `MAPPED_ITEM('name',#representation_map,#cartesian_point)` where `#cartesian_point` is an ordinary `CARTESIAN_POINT`, not a placement or transform-operator type.",
+    "section": "12.6",
+    "section_dir": "12-6-assembly",
+    "see_also": [
+      "Tfa248"
+    ],
+    "sender": "deduced — OCCT uncovered-class sweep",
+    "severity": "P2",
+    "sources": [
+      "occt-coverage PARTIAL audit, `exchange/problems.json` `stp-mapped-item-no-transform`",
+      "`STEPControl_ActorRead::TransferEntity(StepRepr_MappedItem)`, STEPControl_ActorRead.cxx:1555-1577 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "assembly"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 1"
+    ],
+    "title": "`MAPPED_ITEM` with a resolvable `REPRESENTATION_MAP` + real target shape, but an unrecognized-type placement reference"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'SHAPE_REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION')",
+      "contains(b'ITEM_DEFINED_TRANSFORMATION')"
+    ],
+    "category": "§12.6 assembly (sub-class: SRRWT axis-placement membership check, half-resolved subvariant)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A007 demonstrates the FULLY-repairable case: both Origin and Target axis placements are found cross-referenced (Origin sits in Target's representation's item list, Target sits in Origin's), so `ComputeTransformation` transparently swaps them and computes a repaired transform. This fixture is the narrower, distinct half-resolved case: Origin (`Ax1`) genuinely belongs to its OWN representation's item list (`isOKOrigin=True`), but Target (`Ax2`) belongs to NEITHER representation's item list — a completely foreign placement (`isOKTarget=False`, and neither `isSwapOrigin` nor `isSwapTarget` is True since Ax1/Ax2 never cross-appear). The membership check cannot determine a consistent swap, so OCCT falls through to the unrepairable `\"Axis placement used by SRRWT does not belong to corresponding representation\"` branch and silently computes a transform from the inconsistent org/trg pair anyway, rather than rejecting the file.",
+    "expected_kernel_behavior": "reject the SRRWT as malformed (an axis placement that belongs to neither declared representation cannot be trusted to compute a correct transform), or clearly flag the resulting transform as unreliable rather than silently using it.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-6-assembly/A120.stp",
+    "id": "A120",
+    "notes": "Structure note: Origin/Target are wired through DEDICATED placement-only representations (`parent_placement_rep`/`child_placement_rep`), mirroring A007's own `asm_rep`/`cmp_rep` split, rather than the parts' real geometry-bearing representations — mixing a bare `AXIS2_PLACEMENT_3D` item into a geometry-bearing `SHAPE_REPRESENTATION`'s item list was independently tested and found to break the Parent-PD root's own normal shape transfer; A007's established split avoids that. The parts' REAL geometry (Parent's 1×1 face, Child's 5×5 face) each transfer via their own normal, independent product chain, exactly like A007. Live-verified (2026-07-12, OCP 7.8.1, direct probing — not mirrored/guessed): `shape_null=False`, `n_faces_total=1` (Parent's own face, bbox `[0,1]×[0,1]` at the origin, confirmed un-transformed via its own SDR chain). Since the placement-only representations carry no geometry (`Recognize()` does not accept a bare `AXIS2_PLACEMENT_3D` item), `TransferEntity(CDSR)`'s own contribution resolves to a null/empty shape and is silently absent from the compound — the SRRWT/NAUO/CDSR defect bytes are present, well-formed, and structurally correct (the same epistemic status as A007's own already-shipped SRRWT fixture, which has the identical placement-only-representation limitation); the specific membership-check outcome is confirmed via source-level mechanism analysis rather than an observable shape-count difference. Provenance tier: bytes-sufficient. **See also**: A007 (fully-swapped, repairable sibling), A118 (CDSR/NAUO wiring precedent). Synonyms: \"SRRWT axis placement does not belong\", \"half-swapped SRRWT\", \"unrepairable axis-placement mismatch\", \"ComputeTransformation membership check fails one side\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`ITEM_DEFINED_TRANSFORMATION('','',#Ax1,#Ax2)` inside a `SHAPE_REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION('srrwt','',#rep1,#rep2,#idt)` where `#Ax1` is listed in `#rep1.items` but `#Ax2` is listed in neither `#rep1.items` nor `#rep2.items`, wrapped via `NEXT_ASSEMBLY_USAGE_OCCURRENCE` + `CONTEXT_DEPENDENT_SHAPE_REPRESENTATION` (same NAUO/CDSR wiring as A118).",
+    "section": "12.6",
+    "section_dir": "12-6-assembly",
+    "see_also": [
+      "A007",
+      "A118"
+    ],
+    "sender": "deduced — OCCT uncovered-class sweep",
+    "severity": "P2",
+    "sources": [
+      "occt-coverage PARTIAL audit, `exchange/problems.json` `stp-srrwt-axis-swap`",
+      "`STEPControl_ActorRead::ComputeTransformation`, STEPControl_ActorRead.cxx:1886-1946 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "assembly"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 1"
+    ],
+    "title": "`SHAPE_REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION` where only ONE of Origin/Target belongs to its expected representation"
   },
   {
     "byte_assertions": [
@@ -110106,7 +110490,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-7-pmi/Pmi164.stp",
     "id": "Pmi164",
-    "notes": "Tessellation carrier: `GEOMETRIC_CURVE_SET` over a `TESSELLATED_SHELL`. This fixture is exempt from the §12.7 PMI-presence lint (no semantic-PMI bytes by design); see `EXEMPT_PMI_PRESENCE`. See also: M004 (per-face lists, no crash), M022 (same shared-list/6-face crash pattern, independently mined). Synonyms: \"shared coordinates_list packed array\", \"1-based tessellation index mis-read as 0-based\", \"tessellated_shell single point list\", \"triangulated_face shared vertex list mis-indexed\", \"AP242 packed point array dropped\", \"shared coordinates_list segfault\", \"tessellated shell crash on shared point list\". Provenance tier: bytes-sufficient — the packed-array / shared-list defect is byte-structural and directly oracle-visible (both OCCT and gmsh crash on it); DRIFT audit 2026-07-12 replaced the original \"provisional... pending nightly oracle rebaseline\" placeholder with the live-verified crash signature.",
+    "notes": "Tessellation carrier: `GEOMETRIC_CURVE_SET` over a `TESSELLATED_SHELL`. This fixture is exempt from the §12.7 PMI-presence lint (no semantic-PMI bytes by design); see `EXEMPT_PMI_PRESENCE`. See also: M004 (per-face lists, no crash), M022 (same shared-list/6-face crash pattern, independently mined). Synonyms: \"shared coordinates_list packed array\", \"1-based tessellation index mis-read as 0-based\", \"tessellated_shell single point list\", \"triangulated_face shared vertex list mis-indexed\", \"AP242 packed point array dropped\", \"shared coordinates_list segfault\", \"tessellated shell crash on shared point list\". Provenance tier: bytes-sufficient — the packed-array / shared-list defect is byte-structural and directly oracle-visible (both OCCT and gmsh crash on it); DRIFT audit 2026-07-12 replaced the original \"provisional... pending nightly oracle rebaseline\" placeholder with the live-verified crash signature. Correction (Wave-3 adversarial verification, 2026-07-12): the abnormal-termination trigger is the GEOMETRIC_SET/GEOMETRIC_CURVE_SET wrapper around the tessellated entity, not COORDINATES_LIST sharing — minimal pair re-verified (identical entity with a private list loads cleanly when wired directly as the sole representation item; the same entity wrapped in a set terminates abnormally regardless of list sharing). Recorded outcome and Expected line remain accurate; see M193-M199 for the direct-wiring fallback fixtures this previously blocked.",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -111150,7 +111534,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-8-mixed/M022.stp",
     "id": "M022",
-    "notes": "Synonyms: \"mesh-only AP242 appears empty\", \"STL-derived tessellation ignored\", \"triangulated_face skipped by importer\", \"B-rep-only reader drops mesh entities\", \"BRL-CAD step-g ignores tessellated solid and triangulated face entities\". **OCC behavior**: silently produces empty results on mesh-only AP242 files (the BRep path consumes nothing) without surfacing that mesh entities were skipped; kernel mishandling; the catalog above forbids silent drop.",
+    "notes": "Synonyms: \"mesh-only AP242 appears empty\", \"STL-derived tessellation ignored\", \"triangulated_face skipped by importer\", \"B-rep-only reader drops mesh entities\", \"BRL-CAD step-g ignores tessellated solid and triangulated face entities\". **OCC behavior**: silently produces empty results on mesh-only AP242 files (the BRep path consumes nothing) without surfacing that mesh entities were skipped; kernel mishandling; the catalog above forbids silent drop. Correction (Wave-3 adversarial verification, 2026-07-12): the abnormal-termination trigger is the GEOMETRIC_SET/GEOMETRIC_CURVE_SET wrapper around the tessellated entity, not COORDINATES_LIST sharing — minimal pair re-verified (identical entity with a private list loads cleanly when wired directly as the sole representation item; the same entity wrapped in a set terminates abnormally regardless of list sharing). Recorded outcome and Expected line remain accurate; see M193-M199 for the direct-wiring fallback fixtures this previously blocked.",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -117816,6 +118200,309 @@
       "n_vertices_total == 8"
     ],
     "title": "Point-set only: `GEOMETRIC_SET` of eight `CARTESIAN_POINT`s with no curves, surfaces, or topology"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'TRIANGULATED_FACE')",
+      "count_entity_def(b'ADVANCED_FACE') == 1",
+      "count_entity_def(b'TRIANGULATED_FACE') == 1"
+    ],
+    "category": "§12.8 (sub-class: tessellation / mesh-as-brep)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A tessellated face declares a link to its exact-geometry counterpart, but that counterpart, while a real and well-formed face entity present in the file, is never itself built as part of the model because nothing else in the model's shell/solid structure reaches it. The declared link therefore resolves to nothing at read time, and the reader quietly substitutes an empty face carrying only the mesh data in its place — a face with triangle geometry attached but no underlying continuous surface at all.",
+    "expected_kernel_behavior": "reject a tessellated face whose declared exact-geometry link cannot be resolved, or heal by substituting a diagnosed placeholder surface; never silently emit a mesh-bearing face with no surface behind it and no diagnostic distinguishing it from a legitimately surfaceless mesh.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=signal(11) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-8-mixed/M193.stp",
+    "id": "M193",
+    "notes": "Synonyms: \"tessellated face dangling geometric link\", \"unresolved exact-geometry counterpart falls back to empty face\", \"mesh face with no B-rep surface behind it\", \"surfaceless face from unbound tessellation link\". Live-verified: loads cleanly as a single face whose surface kind reports as unrecognized and whose validity check reports invalid for lacking a surface, confirming the fallback path fires exactly as described. A minimal control with the identical layout but an entirely absent link (rather than a populated-but-unresolvable one) reaches the identical unrecognized-surface, invalid-check outcome — since any tessellated face with no attached exact-geometry counterpart takes this same empty-face path, the unresolvable-versus-absent distinction only shows up in the file bytes, never downstream. The independent mesh-processing oracle used alongside the primary kernel crashes on this fixture and on the absent-link control identically — that crash is a property of any surfaceless mesh-only face reaching that oracle at all, not of the unresolvable-link mechanism this entry targets (isolated by testing both variants). See also: M022 (absent link, not unresolvable; also shares one coordinate list across six faces, which independently crashes this build regardless of link content).",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`TRIANGULATED_FACE` whose `geometric_link` attribute is populated with a reference to a syntactically valid `ADVANCED_FACE` entity that is fully defined in the file (its own `PLANE`/`EDGE_LOOP` boundary) but never appears inside any `CLOSED_SHELL`/`OPEN_SHELL`/`MANIFOLD_SOLID_BREP` reachable from the model's shape representation; own `COORDINATES_LIST` for the tessellated item (not shared with any other tessellated item); wired directly as the sole item of a `MANIFOLD_SURFACE_SHAPE_REPRESENTATION` rather than nested inside a `GEOMETRIC_SET`/`GEOMETRIC_CURVE_SET` wrapper, which independently destabilizes this reader build for any tessellated content regardless of link resolution (live-verified on a minimal control).",
+    "section": "12.8",
+    "section_dir": "12-8-mixed",
+    "see_also": [],
+    "sender": "",
+    "severity": "P1",
+    "sources": [
+      "04-occt-translation.md",
+      "StepToTopoDS_TranslateFace.cxx:718-738 (unresolved geometric_link falls back to a fresh empty face with the has-geometry flag cleared, via a lookup against the transient-process binder map rather than a recursive translate of the linked entity)",
+      "BRepCheck_Face.cxx:106 (NoSurface status)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "crash"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 1",
+      "face[0].surface_type == \"other\"",
+      "brepcheck.valid == False"
+    ],
+    "title": "Tessellated face's declared exact-geometry link points at a real but never-built face, reader substitutes a surfaceless mesh face"
+  },
+  {
+    "byte_assertions": [
+      "count_entity_def(b'OPEN_SHELL') == 1",
+      "count_entity_def(b'TESSELLATED_SHELL') == 1"
+    ],
+    "category": "§12.8 (sub-class: tessellation / mesh-as-brep)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A tessellated shell declares a link to its exact-topology counterpart, but that counterpart, though a real and well-formed shell entity present in the file, is never itself built as part of the model because it is not wired into anything the model's shape representation reaches. The declared link resolves to nothing at read time, and the reader quietly builds a brand-new shell from the tessellated shell's own mesh items instead of substituting the intended precise topology.",
+    "expected_kernel_behavior": "reject a tessellated shell whose declared topological link cannot be resolved, or heal by substituting a diagnosed placeholder shell; never silently rebuild an unrelated fresh shell from mesh data alone without flagging that the intended precise topology was never actually used.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=signal(11) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-8-mixed/M194.stp",
+    "id": "M194",
+    "notes": "**See also**: M195. Synonyms: \"tessellated shell dangling topological link\", \"unresolved exact-topology counterpart falls back to fresh shell\", \"shell rebuilt from mesh items when topology link is unbound\", \"surfaceless shell from unbound tessellation link\". Live-verified: loads cleanly as a fresh single-face shell whose face reports as unrecognized surface kind and whose validity check reports invalid, confirming the fallback path fires exactly as described (companion finding to M193's face-level mechanism, same code family one level up in the topology tree). Mirrors Pmi164's overall single-shared-coordinate-list layout but gives the tessellated shell an actual unresolvable topological link and its own private coordinate list rather than leaving Pmi164's shell-level construct as a dead scaffold never reached from that file's real shape representation. See also: M193.- **Byte assertion**: contains(b'TESSELLATED_SHELL')",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`TESSELLATED_SHELL` whose `topological_link` attribute is populated with a reference to a syntactically valid `OPEN_SHELL` entity, fully defined in the file, that is never referenced by any `MANIFOLD_SOLID_BREP` or shape representation reachable from the model; the tessellated shell's one `TRIANGULATED_FACE` item carries its own `COORDINATES_LIST`; wired directly as the sole item of a `MANIFOLD_SURFACE_SHAPE_REPRESENTATION`.",
+    "section": "12.8",
+    "section_dir": "12-8-mixed",
+    "see_also": [
+      "M195"
+    ],
+    "sender": "",
+    "severity": "P1",
+    "sources": [
+      "04-occt-translation.md",
+      "StepToTopoDS_TranslateShell.cxx:140-157 (unresolved topological_link falls back to a fresh shell built from the shell's own tessellated items, has-geometry flag cleared)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "crash"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 1",
+      "face[0].surface_type == \"other\"",
+      "brepcheck.valid == False"
+    ],
+    "title": "Tessellated shell's declared topological-geometry link points at a real but never-built shell, reader substitutes a fresh shell"
+  },
+  {
+    "byte_assertions": [
+      "count_entity_def(b'MANIFOLD_SOLID_BREP') == 1",
+      "count_entity_def(b'TESSELLATED_SOLID') == 1"
+    ],
+    "category": "§12.8 (sub-class: tessellation / mesh-as-brep)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A tessellated solid declares a link to its exact-geometry counterpart, but that counterpart, though a real and well-formed solid entity present in the file, is never itself built as part of the model because it is not wired into anything the model's shape representation reaches. The declared link resolves to nothing at read time, and the reader quietly fabricates a brand-new shell-and-solid pair from the tessellated solid's own mesh items instead of substituting the intended precise geometry.",
+    "expected_kernel_behavior": "reject a tessellated solid whose declared exact-geometry link cannot be resolved, or heal by substituting a diagnosed placeholder solid; never silently fabricate an unrelated fresh solid from mesh data alone without flagging that the intended precise geometry was never actually used.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=signal(11) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-8-mixed/M195.stp",
+    "id": "M195",
+    "notes": "**See also**: M194. Synonyms: \"tessellated solid dangling geometric link\", \"unresolved exact-geometry counterpart falls back to fresh shell and solid\", \"solid rebuilt from mesh items when geometric link is unbound\", \"surfaceless solid from unbound tessellation link\". Live-verified: loads cleanly as a fresh solid wrapping a single-face shell whose face reports as unrecognized surface kind and whose validity check reports invalid, confirming the fallback path fires exactly as described (companion finding to M193/M194's face- and shell-level mechanisms, same code family one further level up the topology tree). Mirrors Tsh065, whose tessellated-shell construct is a dead scaffold never reached from that file's actual precise-geometry shape representation, by making the tessellated construct itself the live model and giving it a genuinely unresolvable link. See also: M193, M194.- **Byte assertion**: contains(b'TESSELLATED_SOLID')",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`TESSELLATED_SOLID` whose `geometric_link` attribute is populated with a reference to a syntactically valid `MANIFOLD_SOLID_BREP` entity, fully defined in the file (own `CLOSED_SHELL`/`ADVANCED_FACE`), that is never referenced by any shape representation reachable from the model; the tessellated solid's one `TRIANGULATED_FACE` item carries its own `COORDINATES_LIST`; wired directly as the sole item of a `MANIFOLD_SURFACE_SHAPE_REPRESENTATION`.",
+    "section": "12.8",
+    "section_dir": "12-8-mixed",
+    "see_also": [
+      "M194"
+    ],
+    "sender": "",
+    "severity": "P1",
+    "sources": [
+      "04-occt-translation.md",
+      "StepToTopoDS_TranslateSolid.cxx:67-82 (unresolved geometric_link, checked both for presence and for binding before lookup, falls back to a fresh shell wrapped in a fresh solid, has-geometry flag cleared)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "crash"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 1",
+      "face[0].surface_type == \"other\"",
+      "brepcheck.valid == False"
+    ],
+    "title": "Tessellated solid's declared exact-geometry link points at a real but never-built solid, reader substitutes a fresh shell-plus-solid"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'GEOMETRIC_CURVE_SET')",
+      "contains(b'CIRCLE')",
+      "count_entity_def(b'AXIS2_PLACEMENT_3D') == 2"
+    ],
+    "category": "§12.8 (sub-class: mesh-as-brep / wireframe)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A bare geometric set aggregates items beyond curve/surface/point — here a placement entity alongside an ordinary curve. Per-item type dispatch inside the reader recognizes the curve and builds a live edge from it; the placement entity matches none of the directly-supported kinds, falls through to a last-resort general path that has no way to turn a bare placement into geometry, and is silently dropped with nothing surfaced to the consumer about the item that went missing.",
+    "expected_kernel_behavior": "accept the supported item, but surface a diagnostic naming which item(s) in the set could not be interpreted as geometry rather than dropping them without a trace; never report a partial result as a complete transfer.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-8-mixed/M196.stp",
+    "id": "M196",
+    "notes": "Synonyms: \"geometric set mixed item silently skipped\", \"unsupported representation item dropped from geometric set\", \"placement entity in geometric curve set produces no shape\", \"bare geometric set partial transfer no diagnostic\". Live-verified: the result is exactly the circle's one edge and nothing attributable to the placement — the mixed-dispatch mechanism fires cleanly. Mirrors M051, whose supported item was an unbounded line: an unbounded line placed bare inside this kind of set crashes this reader build on its own, with or without a second mixed-in item (isolated by testing an unbounded-line-only set against this same wrapper, independently of any placement entity) — an unrelated instability in how the reader turns an untrimmed infinite line into an edge inside this context, not a symptom of the mixed-item dispatch this entry targets. Swapping in a bounded curve isolates the dispatch-skip behavior cleanly.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`GEOMETRIC_CURVE_SET` whose items list mixes one `CIRCLE` (a supported curve, bounded/periodic so it survives the reader's curve path without incident) and one `AXIS2_PLACEMENT_3D` (a placement entity, not a geometric_select member); wired directly as the sole item of a `MANIFOLD_SURFACE_SHAPE_REPRESENTATION`.",
+    "section": "12.8",
+    "section_dir": "12-8-mixed",
+    "see_also": [],
+    "sender": "",
+    "severity": "P2",
+    "sources": [
+      "04-occt-translation.md (Q030)",
+      "StepToTopoDS_Builder.cxx:636-775 (per-item type dispatch inside the geometric-set builder: curve/point/surface each get a dedicated path",
+      "anything else that is still a generic geometry-representation item is routed through a last-resort general-purpose transfer, and a bare placement entity produces no shape there, so it is silently omitted from the result with only a warning)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "crash"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 0",
+      "n_edges_total == 1",
+      "edge[0].curve_type == \"circle\"",
+      "brepcheck.valid == True"
+    ],
+    "title": "Bare geometric set mixing a supported curve with an unsupported placement entity: the placement is silently skipped, the curve translates normally"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'POLY_LOOP')",
+      "matches(rb\"POLY_LOOP\\('dup_point_loop',\\(#6,#7,#7,#8,#9\\)\\)\")"
+    ],
+    "category": "§12.8 (sub-class: mesh-as-brep)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A faceted polygon boundary lists its points as a flat, closable loop. When the very same point entity appears twice in a row, building an edge between that pair would produce a zero-length edge with no useful geometry. Instead of doing that, the reader recognizes the immediate repeat and simply omits that one segment, so the resulting boundary is the honest polygon with the redundant vertex silently absorbed rather than a polygon with a degenerate stub edge in it.",
+    "expected_kernel_behavior": "recognize and skip the degenerate repeated-point segment, closing the loop across the gap; or reject the boundary as malformed if zero-length segments are not tolerated at all — either way, never silently build a zero-length edge into the result.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-8-mixed/M197.stp",
+    "id": "M197",
+    "notes": "Synonyms: \"faceted polygon repeats a point twice in a row\", \"degenerate polygon segment silently skipped\", \"same point entity referenced consecutively in a poly loop\", \"faceted brep avoids a zero-length edge from a duplicate vertex reference\". Live-verified: the resulting boundary has exactly four edges (not five), area exactly matching the intended unit square, and the validity check reports the face as fully valid — confirming the redundant reference was cleanly absorbed rather than producing a corrupt loop. Mirrors M055, which uses four distinct points on a deliberately non-planar surface to test a different problem (the schema-illegal non-planar-face path); this entry keeps the surface planar and duplicates one point reference instead, isolating the degenerate-segment skip from the non-planar check.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`FACETED_BREP` referencing a `CLOSED_SHELL` containing one `ADVANCED_FACE` on a `PLANE` whose `FACE_OUTER_BOUND` is a `POLY_LOOP` listing five point references for a four-corner unit square, where the second corner's point entity is listed twice in immediate succession (positions 2 and 3 of the flat point list both cite the same `CARTESIAN_POINT`).",
+    "section": "12.8",
+    "section_dir": "12-8-mixed",
+    "see_also": [],
+    "sender": "",
+    "severity": "P3",
+    "sources": [
+      "04-occt-translation.md (Q020)",
+      "StepToTopoDS_TranslatePolyLoop.cxx:117-119 (consecutive-point comparison is by entity identity, not coordinate equality",
+      "a repeat is skipped with a bare loop continue, leaving the running \"previous point\" unmoved so the next distinct point closes the gap cleanly)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "face[0].surface_type == \"plane\"",
+      "face[0].area == 1.0",
+      "brepcheck.valid == True"
+    ],
+    "title": "Faceted polygon boundary repeats the same point reference twice in a row; the reader skips the resulting zero-length segment instead of building a degenerate edge"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'COMPLEX_TRIANGULATED_FACE')",
+      "matches(rb\"\\(\\(1,2,3,3\\)\\)\")"
+    ],
+    "category": "§12.8 (sub-class: tessellation)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Tessellated triangle geometry can be packed as a strip — a running list of vertex indices where each new index combines with the previous two to form one triangle — rather than as a flat list of independent triangles. When a strip's running window repeats a vertex, the candidate triangle it would form has zero area. The reader detects this collapse and leaves that one triangle out of the built mesh entirely, while the rest of the strip continues to build normally.",
+    "expected_kernel_behavior": "detect and exclude the collapsed triangle from the built mesh, leaving the rest of the strip intact; never emit a zero-area triangle or leave an uninitialized triangle slot in its place.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=signal(11) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-8-mixed/M198.stp",
+    "id": "M198",
+    "notes": "Synonyms: \"triangle strip repeats a vertex index\", \"collapsed strip triangle silently excluded\", \"degenerate triangle omitted from packed strip mesh\", \"tessellated strip skip guard\". Live-verified by inspecting the built mesh directly: it carries exactly one triangle, the well-formed one from the strip's first three indices, with the collapsed second candidate cleanly absent rather than present with garbage data. Mirrors M005, a plain flat-list tessellated face (the wrong packing mode entirely) whose repeated-index triple reaches no such guard at all and instead crashes downstream from an undefined per-vertex normal; rebuilt here in the packed strip form so the skip guard genuinely has something to fire on. A triangle-fan encoding of the same idea was tried and rejected: the fan variant's array-sizing pass does not reapply the same skip check the fill pass uses, so a collapsed fan triangle leaves an uninitialized triangle slot behind rather than being cleanly excluded — the strip encoding avoids that confound.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`COMPLEX_TRIANGULATED_FACE` (the strip/fan-capable tessellated-face variant, not the plain-list variant) over a four-node unit-square `COORDINATES_LIST`, with one `triangle_strips` entry `(1,2,3,3)` — a strip whose last two positions repeat vertex index 3.",
+    "section": "12.8",
+    "section_dir": "12-8-mixed",
+    "see_also": [],
+    "sender": "",
+    "severity": "P3",
+    "sources": [
+      "04-occt-translation.md",
+      "StepToTopoDS_TranslateFace.cxx:181-198,341-356 (strip processing walks the index array pairwise, checking each new vertex against both of its immediate predecessors in the strip before emitting a triangle",
+      "the array-sizing pass that runs first reapplies the identical check, so the allocated triangle count matches what actually gets filled, leaving no uninitialized slot)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "crash"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 1",
+      "face[0].surface_type == \"other\"",
+      "face[0].area == 0.5",
+      "brepcheck.valid == False"
+    ],
+    "title": "Triangle-strip index list repeats a vertex within one triple; the reader silently excludes the collapsed triangle instead of misreading or crashing on it"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'TRIANGULATED_FACE')",
+      "contains(b'(0.,0.,1.,0.)')"
+    ],
+    "category": "§12.8 (sub-class: tessellation)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A tessellated face can declare a single per-face normal (one row, applied to every node) instead of one normal per node. When that one row does not have exactly the three components an XYZ vector needs, the reader does not try to interpret whatever values are present, nor does it reject the face — it simply leaves the mesh's per-node normal storage allocated but never actually filled with the row's values, so every node keeps its zero-initialized default rather than the malformed vector.",
+    "expected_kernel_behavior": "detect the malformed row width and either reject the face or clearly diagnose that normals were dropped; never silently allocate normal storage that is never actually populated, since a consumer that checks \"has normals\" without checking the values gets a false positive.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=signal(11) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-8-mixed/M199.stp",
+    "id": "M199",
+    "notes": "Synonyms: \"tessellated normals row wrong component count\", \"malformed normal row silently ignored\", \"per-node normal storage allocated but never filled\", \"four-component normal row dropped without diagnostic\". Live-verified by inspecting the built mesh directly: it reports normals as present, but reading any individual node's normal value raises a construction error because the stored vector is still all zeros — direct confirmation that the malformed row was never actually copied in, only its presence flag survived. Mirrors Bo027, whose per-vertex normal rows are well-formed three-component rows that merely disagree in value across a shared edge — a different defect (value disagreement, not row width) — by malforming the row's component count instead of its value.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`TRIANGULATED_FACE` whose normals table is a single row of four components `(0.,0.,1.,0.)` instead of three, over a three-point `COORDINATES_LIST` triangle; wired directly as the sole item of a `MANIFOLD_SURFACE_SHAPE_REPRESENTATION`.",
+    "section": "12.8",
+    "section_dir": "12-8-mixed",
+    "see_also": [],
+    "sender": "",
+    "severity": "P2",
+    "sources": [
+      "04-occt-translation.md",
+      "StepToTopoDS_TranslateFace.cxx:123-131 (the normals table's row width is checked once, up front, against the required three components",
+      "any other width returns immediately, before the per-node assignment loop that would otherwise copy the row's values into the mesh ever runs)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "crash",
+      "silent-loss"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 1",
+      "face[0].surface_type == \"other\"",
+      "brepcheck.valid == False"
+    ],
+    "title": "Tessellated face's per-face normal row has the wrong number of components; the reader silently leaves every node's normal unset rather than misreading the row"
   },
   {
     "byte_assertions": [],

@@ -35,7 +35,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>import as mesh object (or convert mesh to lightweight surface); never silently drop.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;mesh-only AP242 appears empty&quot;, &quot;STL-derived tessellation ignored&quot;, &quot;triangulated_face skipped by importer&quot;, &quot;B-rep-only reader drops mesh entities&quot;, &quot;BRL-CAD step-g ignores tessellated solid and triangulated face entities&quot;. **OCC behavior**: silently produces empty results on mesh-only AP242 files (the BRep path consumes nothing) without surfacing that mesh entities were skipped; kernel mishandling; the catalog above forbids silent drop.</p></section>
+<p>Synonyms: &quot;mesh-only AP242 appears empty&quot;, &quot;STL-derived tessellation ignored&quot;, &quot;triangulated_face skipped by importer&quot;, &quot;B-rep-only reader drops mesh entities&quot;, &quot;BRL-CAD step-g ignores tessellated solid and triangulated face entities&quot;. **OCC behavior**: silently produces empty results on mesh-only AP242 files (the BRep path consumes nothing) without surfacing that mesh entities were skipped; kernel mishandling; the catalog above forbids silent drop. Correction (Wave-3 adversarial verification, 2026-07-12): the abnormal-termination trigger is the GEOMETRIC_SET/GEOMETRIC_CURVE_SET wrapper around the tessellated entity, not COORDINATES_LIST sharing — minimal pair re-verified (identical entity with a private list loads cleanly when wired directly as the sole representation item; the same entity wrapped in a set terminates abnormally regardless of list sharing). Recorded outcome and Expected line remain accurate; see M193-M199 for the direct-wiring fallback fixtures this previously blocked.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
@@ -46,6 +46,9 @@
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>shape_null == True</code></li>
 </ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="M193.html">M193</a>, <a href="M199.html">M199</a></p>
+</section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
 </section>

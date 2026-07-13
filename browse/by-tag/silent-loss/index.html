@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1><span class="tag tag-silent-loss">silent-loss</span></h1>
 <p class="blurb">Data silently dropped without a diagnostic (faces, colors, labels, geometry).</p>
-<p class="meta">124 entries</p>
+<p class="meta">125 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Section</th><th>Expected validation</th></tr></thead><tbody>
@@ -97,6 +97,7 @@
 <tr><td><a href="../../12-8-mixed/M048.html"><code>M048</code></a></td><td>Material / appearance / physical attributes silently dropped on STEP export</td><td><a href="../../12-8-mixed/index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a></td><td><code>occt=empty/empty gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-8-mixed/M051.html"><code>M051</code></a></td><td>Bare GEOMETRIC_SET / GEOMETRIC_CURVE_SET with non-geometric children or mesh-as-surfaces</td><td><a href="../../12-8-mixed/index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-8-mixed/M161.html"><code>M161</code></a></td><td>Reader does not validate cross-references; dangling references silently accepted</td><td><a href="../../12-8-mixed/index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="../../12-8-mixed/M199.html"><code>M199</code></a></td><td>Tessellated face&#x27;s per-face normal row has the wrong number of components; the reader silently leaves every node&#x27;s normal unset rather than misreading the row</td><td><a href="../../12-8-mixed/index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a></td><td><code>occt=shape(1)/shape(1) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-4-tolerance/N027.html"><code>N027</code></a></td><td>Small-mm `CYLINDRICAL_SURFACE` with target-unit mismatch (gmsh `OCCTargetUnit` silently ignored on `importShapesNativePointer` path)</td><td><a href="../../12-4-tolerance/index.html">§12.4 Tolerance &amp; numerical precision</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-4-tolerance/N050.html"><code>N050</code></a></td><td>File-supplied `UNCERTAINTY_MEASURE_WITH_UNIT` parsed but never consumed (BRL-CAD step-g)</td><td><a href="../../12-4-tolerance/index.html">§12.4 Tolerance &amp; numerical precision</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-6-assembly/P010.html"><code>P010</code></a></td><td>Standalone AXIS2_PLACEMENT_3D entities silently dropped</td><td><a href="../../12-6-assembly/index.html">§12.6 Assembly hierarchy</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>

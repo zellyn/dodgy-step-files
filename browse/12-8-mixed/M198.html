@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M198 — Triangle-strip index list repeats a vertex within one triple; the reader silently excludes the collapsed triangle instead of misreading or crashing on it</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M198</span>
+</nav>
+<header class="title-bar">
+<h1>M198 <span class="sep">—</span> <span class="entry-title">Triangle-strip index list repeats a vertex within one triple; the reader silently excludes the collapsed triangle instead of misreading or crashing on it</span></h1>
+<p class="category">§12.8 (sub-class: tessellation)</p>
+<p class="severity-badge severity-p3">P3 — cosmetic / metadata-only</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M198.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M198.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>04-occt-translation.md</li>
+<li>StepToTopoDS_TranslateFace.cxx:181-198,341-356 (strip processing walks the index array pairwise, checking each new vertex against both of its immediate predecessors in the strip before emitting a triangle</li>
+<li>the array-sizing pass that runs first reapplies the identical check, so the allocated triangle count matches what actually gets filled, leaving no uninitialized slot).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Tessellated triangle geometry can be packed as a strip — a running list of vertex indices where each new index combines with the previous two to form one triangle — rather than as a flat list of independent triangles. When a strip&#x27;s running window repeats a vertex, the candidate triangle it would form has zero area. The reader detects this collapse and leaves that one triangle out of the built mesh entirely, while the rest of the strip continues to build normally.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`COMPLEX_TRIANGULATED_FACE` (the strip/fan-capable tessellated-face variant, not the plain-list variant) over a four-node unit-square `COORDINATES_LIST`, with one `triangle_strips` entry `(1,2,3,3)` — a strip whose last two positions repeat vertex index 3.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>detect and exclude the collapsed triangle from the built mesh, leaving the rest of the strip intact; never emit a zero-area triangle or leave an uninitialized triangle slot in its place.</p></section>
+<section><h2>Notes</h2>
+<p>Synonyms: &quot;triangle strip repeats a vertex index&quot;, &quot;collapsed strip triangle silently excluded&quot;, &quot;degenerate triangle omitted from packed strip mesh&quot;, &quot;tessellated strip skip guard&quot;. Live-verified by inspecting the built mesh directly: it carries exactly one triangle, the well-formed one from the strip&#x27;s first three indices, with the collapsed second candidate cleanly absent rather than present with garbage data. Mirrors M005, a plain flat-list tessellated face (the wrong packing mode entirely) whose repeated-index triple reaches no such guard at all and instead crashes downstream from an undefined per-vertex normal; rebuilt here in the packed strip form so the skip guard genuinely has something to fire on. A triangle-fan encoding of the same idea was tried and rejected: the fan variant&#x27;s array-sizing pass does not reapply the same skip check the fill pass uses, so a collapsed fan triangle leaves an uninitialized triangle slot behind rather than being cleanly excluded — the strip encoding avoids that confound.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;COMPLEX_TRIANGULATED_FACE&#x27;)</code></li>
+<li><code>matches(rb&quot;\(\(1,2,3,3\)\)&quot;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_faces_total == 1</code></li>
+<li><code>face[0].surface_type == &quot;other&quot;</code></li>
+<li><code>face[0].area == 0.5</code></li>
+<li><code>brepcheck.valid == False</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="M005.html">M005</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M198: <mark>COMPLEX_TRIANGULATED_FACE</mark> using STRIP index encoding (triangle_strips, not the plain triangle list) with one repeated-vertex-index triple; input: AP242 file whose tessellated face packs a single triangle_strip (1,2,3,3) over a 4-node unit-square COORDINATES_LIST; StepToTopoDS_TranslateFace.cxx&#x27;s SetTriangles (StepToTopoDS_TranslateFace.cxx:181-198) walks the strip pairwise and checks each new vertex against BOTH of its two immediate predecessors in the strip array before building a triangle -- vertex index 3 repeats at strip positions 3 and 4, so the second candidate triangle (2,3,3) collapses (Value(4)==Value(3)) and is silently excluded from the built Poly_Triangulation, while the first candidate triangle (1,3,2) is unaffected and built normally; the matching CreatePolyTriangulation counting pass (StepToTopoDS_TranslateFace.cxx:341-356) reapplies the identical skip check when sizing the triangle array, so the allocated count matches what actually gets filled -- no uninitialized triangle slot, unlike triangle_fans (whose counting pass at line 361 does NOT reapply the skip guard, only Length()-2, making fans an unsafe choice for this mechanism); the plain triangle-list path (SetTriangles&#x27;s aTrianStripsNum==0 branch) copies indices verbatim with no such guard at all -- mirrors M005 (a plain TRIANGULATED_FACE list, the wrong encoding mode entirely, whose repeated-index triple (3,3,4) reaches no skip guard and instead crashes via a downstream NaN normal); rebuilt here as <mark>COMPLEX_TRIANGULATED_FACE</mark> strip encoding so the skip guard genuinely fires; covers stp-tess-degenerate-triangles; synonyms: triangle strip repeated vertex index, degenerate triangle silently excluded, complex triangulated face strip skip guard, tessellated strip collapsed triangle omitted */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;M198&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;M198.stp&#x27;,&#x27;2026-07-12T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=COORDINATES_LIST(&#x27;strip_coords&#x27;,4,((0.,0.,0.),(1.,0.,0.),(1.,1.,0.),(0.,1.,0.)));
+<span class="lineno">11</span>#2=<mark>COMPLEX_TRIANGULATED_FACE</mark>(&#x27;strip_repeated_index_face&#x27;,#1,4,(),$,(),<mark>((1,2,3,3))</mark>,());
+<span class="lineno">12</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">13</span>#9051=PRODUCT(&#x27;M198&#x27;,&#x27;M198&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">14</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">15</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">16</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">17</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">18</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">19</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">20</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">21</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">22</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">23</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#2),#9060);
+<span class="lineno">24</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">25</span>ENDSEC;
+<span class="lineno">26</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="M197.html">&larr; M197</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="M199.html">M199 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>
