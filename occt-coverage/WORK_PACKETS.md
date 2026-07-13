@@ -25,7 +25,14 @@ for re-review once the fixture lands," not as self-certifying.
 
 ## 1. Carve-outs and the honest denominator
 
-### 1a. STEP-INEXPRESSIBLE (3 classes, all `exchange/brepcheck`, all `detect_only`)
+### 1a. STEP-INEXPRESSIBLE (4 classes, all `exchange/brepcheck`, all `detect_only`)
+
+> **Wave-3 update (2026-07-12):** a 4th item, `bc-invalid-tolerance-value`, was added to this
+> section after adversarial verification confirmed it is dead code in OCCT 7.8.1 (not merely
+> under-fixtured): `BRepCheck_Analyzer.cxx`'s `isInvalidTolerance` guard is declared
+> `Standard_False` and never reassigned anywhere in the file, and `BRepCheck_Analyzer.hxx` marks
+> the status NYI three times. See `exchange/problems.json`'s `bc-invalid-tolerance-value` entry
+> for the full citation. Honest fillable denominator below revised 171 → 170.
 
 These three are excluded from the fillable denominator because their trigger requires an
 in-memory OCCT B-Rep data structure that no combination of Part-21 STEP bytes can cause the
@@ -56,6 +63,14 @@ after re-deriving the mechanism).
   `TopoDS_Edge` is direct `BRep_Builder` API misuse (calling `UpdateEdge` twice with different
   curves) — no `StepToTopoDS` call site does this; each edge-producing path sets the curve exactly
   once.
+- **`bc-invalid-tolerance-value`** (Wave-3 addition, 2026-07-12) — requires
+  `BRepCheck_Analyzer`'s internal `isInvalidTolerance` flag (`BRepCheck_Analyzer.cxx:157`) to be
+  `Standard_True` before the check at line 253/255; it is declared `Standard_False` and never
+  reassigned anywhere in the file (whole-tree grep finds only the enum, a `Dump` printer, and a
+  DRAW test-command cast elsewhere). `BRepCheck_Analyzer.hxx` marks the status NYI three times
+  (lines 47/52/56) in the class's own docs. No STEP input (nor any input) can set this status in
+  OCCT 7.8.1; revisit only on a version bump that implements the check. Confirmed independently
+  twice (Wave-3 packet GHIK's writer, then the Wave-3 adversarial verifier).
 
 **Three GAP items that looked similar but were reclassified FILLABLE** (re-derived, not assumed):
 `bc-no-curve-on-surface`, `bc-no-surface`, and `bc-self-intersecting-wire` were all downgraded
@@ -106,6 +121,13 @@ Per BACKLOG.md, do not fixture these here; re-check their verdict once the sibli
 | + 3 single-fixture-insurance items (COVERED but resting on exactly one fixture) | 3 |
 | **Total problem classes this plan fixtures** | **20 + 3 + 63 = 86** |
 | **Estimated new fixtures** | **~118** |
+
+> **Wave-3 addendum (2026-07-12):** the table above is the frozen pre-wave-1 baseline and is left
+> as-is for historical comparability. `bc-invalid-tolerance-value` (originally counted in the 63
+> PARTIAL baseline, not this table's 22 GAP baseline) was reclassified GAP + STRUCTURALLY-
+> UNREACHABLE carve-out during Wave-3 adversarial verification (see §1a above), so as of Wave-3
+> the honest fillable denominator is **170**, not 171. Current live tallies (post-Wave-3) are
+> tracked in `occt-coverage/{tkshhealing,exchange}/SUMMARY.md`, not in this baseline table.
 
 ---
 

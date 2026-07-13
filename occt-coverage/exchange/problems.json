@@ -713,10 +713,11 @@
    "Ad045",
    "Gp038",
    "N007",
-   "N009"
+   "N009",
+   "N174"
   ],
-  "coverage_verdict": "PARTIAL",
-  "notes": "The line-shift sub-case (lines 410-424) is a distinct, narrower repair than the generic tolerance bump and is gated on both endpoints showing the same projection error and the curve being a Geom_Line. | VERIFICATION: Bo030 (shape(1), shell-wired) puts VERTEX_POINTs 1e-3 off the EDGE_CURVE's LINE with 1e-7 declared tolerance - genuine ordinary-gap trigger; Ad045 same mechanism at sub-confusion scale. Read N007 bytes: literally the 1.000001x bump scenario, but its edge is rooted in a GEOMETRIC_CURVE_SET (OCC yields empty) so reachability to TranslateEdge is doubtful - counted as weak. Missing variant: displaced-Geom_Line-with-correct-direction rigid line-shift repair (FPX/PCB pattern) has no fixture."
+  "coverage_verdict": "COVERED",
+  "notes": "The line-shift sub-case (lines 410-424) is a distinct, narrower repair than the generic tolerance bump and is gated on both endpoints showing the same projection error and the curve being a Geom_Line. | VERIFICATION: Bo030 (shape(1), shell-wired) puts VERTEX_POINTs 1e-3 off the EDGE_CURVE's LINE with 1e-7 declared tolerance - genuine ordinary-gap trigger; Ad045 same mechanism at sub-confusion scale. Read N007 bytes: literally the 1.000001x bump scenario, but its edge is rooted in a GEOMETRIC_CURVE_SET (OCC yields empty) so reachability to TranslateEdge is doubtful - counted as weak. Missing variant: displaced-Geom_Line-with-correct-direction rigid line-shift repair (FPX/PCB pattern) has no fixture. | Wave-3 (2026-07-12, adversarial verifier): N174 (packet GHIK) supplies the missing displaced-line-correct-direction subvariant. Live-probed: the bottom edge's bound curve after transfer is a Geom_Line at location (0.0, 0.001, 0.0) with direction unchanged (1,0,0) -- genuinely rigidly shifted off the authored origin along its own direction, i.e. the line-shift branch (lines 410-424) fired, not the generic tolerance-bump branch. Endpoint tolerances 0.001000001 (1.000001*0.001), independently re-run by the adversarial verifier. Both subvariants -- ordinary gap (N007/Bo030/Ad045/Gp038) and displaced-line-correct-direction (N174) -- are now live-confirmed. PARTIAL -> COVERED."
  },
  {
   "problem_id": "stp-makeedge-validity-fallback",
@@ -1305,9 +1306,11 @@
    }
   ],
   "subvariants": [],
-  "fixture_ids": [],
-  "coverage_verdict": "GAP",
-  "notes": "VERIFICATION: Corpus-wide grep shows exactly one fixture containing POLY_LOOP (M055), and its loop lists four distinct points - no fixture has the same CARTESIAN_POINT repeated in immediate succession inside a POLY_LOOP, so the skip-degenerate-segment branch is never presented."
+  "fixture_ids": [
+   "M197"
+  ],
+  "coverage_verdict": "COVERED",
+  "notes": "VERIFICATION: Corpus-wide grep shows exactly one fixture containing POLY_LOOP (M055), and its loop lists four distinct points - no fixture has the same CARTESIAN_POINT repeated in immediate succession inside a POLY_LOOP, so the skip-degenerate-segment branch is never presented. | Wave-3 (2026-07-12, adversarial verifier): M197's POLY_LOOP('dup_point_loop',(#6,#7,#7,#8,#9)) carries a genuine consecutive duplicate point on a live ADVANCED_FACE/CLOSED_SHELL/FACETED_BREP path (the sole prior fixture, M055, had four distinct points). Live: 1 face, 4 edges (quad -- the degenerate zero-length segment is skipped, not built as a 5th edge), area=1.0, BRepCheck valid=True. Confirms the P1==P2 skip-degenerate-segment branch fires as claimed. GAP -> COVERED."
  },
  {
   "problem_id": "stp-polyloop-nonplanar-surface",
@@ -1376,10 +1379,11 @@
   "fixture_ids": [
    "Tb020",
    "N040",
-   "N007"
+   "N007",
+   "N173"
   ],
   "coverage_verdict": "PARTIAL",
-  "notes": "LimitTolerance's internals belong to a sibling ShapeFix agent; only the decision to run a global tolerance ceiling pass, and its trigger (accumulated per-entity gap-absorbing tolerance growth), is claimed here. | VERIFICATION: Tb020 (UNCERTAINTY_MEASURE_WITH_UNIT 1.0E+30 on a real edge) and N040 (bloated 1e-3 vs original 1e-6 uncertainty pair) genuinely present inputs where a read-time tolerance ceiling changes the outcome, and N007 presents the gap-absorbing bump that feeds accumulation. But no fixture is built to demonstrate the ReadMaxPrecisionMode global LimitTolerance post-pass on a shape whose tolerances grew through per-entity repairs; the N055-N168 LimitTolerance series targets the ShapeFix API semantics (sibling domain), not the STEP-read trigger."
+  "notes": "LimitTolerance's internals belong to a sibling ShapeFix agent; only the decision to run a global tolerance ceiling pass, and its trigger (accumulated per-entity gap-absorbing tolerance growth), is claimed here. | VERIFICATION: Tb020 (UNCERTAINTY_MEASURE_WITH_UNIT 1.0E+30 on a real edge) and N040 (bloated 1e-3 vs original 1e-6 uncertainty pair) genuinely present inputs where a read-time tolerance ceiling changes the outcome, and N007 presents the gap-absorbing bump that feeds accumulation. But no fixture is built to demonstrate the ReadMaxPrecisionMode global LimitTolerance post-pass on a shape whose tolerances grew through per-entity repairs; the N055-N168 LimitTolerance series targets the ShapeFix API semantics (sibling domain), not the STEP-read trigger. | Wave-3 (2026-07-12, adversarial verifier): N173 (packet GHIK) is the strongest fixture built for this class, and is honest about its limits: the harness's own heal_on/heal_off recipe (read.maxprecision via Interface_Static, checked at 1e-7 and 1e-9 ceilings) does NOT auto-clamp for this construction in this OCCT/OCP build -- confirmed live by both the writer and the adversarial verifier (PASS-WITH-NOTE). The mechanism is instead demonstrated via a direct LimitTolerance(shape, 0.0, 1e-7) call (the exact ResetPreci invocation), labeled 'Provenance tier: runtime-only' in N173's own notes; N173's Expected-validation line reflects the real non-clamping standard-oracle result, not a fabricated auto-fire. Recorded as a sibling fixture rather than flipped to COVERED: applying this project's runtime-scaffold/honest-non-firing precedent conservatively, a class is counted per what observably fires through the intended STEP-read trigger, and N173 confirms this build's intended trigger does not fire on any tested configuration -- distinct from seq-set-tolerance's settol, which does fire once opted into. Verdict stays PARTIAL."
  },
  {
   "problem_id": "stp-ideas-shell-closing",
@@ -1399,10 +1403,11 @@
   ],
   "subvariants": [],
   "fixture_ids": [
-   "Lh031"
+   "Lh031",
+   "Lh053"
   ],
   "coverage_verdict": "PARTIAL",
-  "notes": "Only engaged when the STEP file's FILE_NAME.preprocessor_version string contains 'I-DEAS' (StepToTopoDS_NMTool::IsIDEASCase / STEPControl_ActorRead::Transfer, lines 306-334) and non-manifold reading is enabled. | VERIFICATION: Read Lh031 bytes: FILE_NAME preprocessor_version 'I-DEAS Master Series 11' engages the substring auto-detect gate, but the file deliberately contains only a two-point GEOMETRIC_CURVE_SET (a false-positive probe) - no open shells and no non-manifold closing shells. The actual repair pattern (main open shell plus purely-non-manifold adjacent closing shells to merge and prune) has no fixture anywhere in the corpus; only the detection trigger is exercised."
+  "notes": "Only engaged when the STEP file's FILE_NAME.preprocessor_version string contains 'I-DEAS' (StepToTopoDS_NMTool::IsIDEASCase / STEPControl_ActorRead::Transfer, lines 306-334) and non-manifold reading is enabled. | VERIFICATION: Read Lh031 bytes: FILE_NAME preprocessor_version 'I-DEAS Master Series 11' engages the substring auto-detect gate, but the file deliberately contains only a two-point GEOMETRIC_CURVE_SET (a false-positive probe) - no open shells and no non-manifold closing shells. The actual repair pattern (main open shell plus purely-non-manifold adjacent closing shells to merge and prune) has no fixture anywhere in the corpus; only the detection trigger is exercised. | Wave-3 (2026-07-12, adversarial verifier): Lh053 (packet GHIK) is the strongest-possible fixture built for this class: real topology behind the I-DEAS header -- a main OPEN_SHELL (5 faces) plus a closing OPEN_SHELL (1 face) genuinely sharing the same 4 e_top*_shared EDGE_CURVE entities across shells, satisfying the topology precondition the prior fixture (Lh031) never supplied. Live default read: 2 shells/0 solids/6 faces -- the merge itself does not fire. Adversarial verifier independently drove read.step.nonmanifold=1 + read.step.ideas=1 -- still 2 shells/0 solids, confirming this is a genuine non-merge finding in this OCCT/OCP build, not a missed reader flag. Recorded as a sibling fixture rather than flipped to COVERED: applying the runtime-scaffold/honest-non-firing precedent conservatively, an observable merge is required for COVERED and none of the tested transfer configurations produce one. Minor: OCCT emits a benign 'Incorrect Syntax: Fails Count: 2' stderr diagnostic on this file, while the corpus's strict Part-21 validator accepts it (141 entities, 0 unresolved) -- cosmetic only. Verdict stays PARTIAL."
  },
  {
   "problem_id": "stp-shell-to-solid-promotion",
@@ -1441,10 +1446,11 @@
   "fixture_ids": [
    "A007",
    "Ps007",
-   "Hea014"
+   "Hea014",
+   "A120"
   ],
-  "coverage_verdict": "PARTIAL",
-  "notes": "VERIFICATION: Read A007 bytes: SHAPE_REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION whose ITEM_DEFINED_TRANSFORMATION('swapped',...) deliberately passes the component placement as origin and the assembly placement as target - the genuine fully-swapped membership-cross-check case. Missing variant: the unrepairable case where only one placement resolves to its expected representation ('does not belong' warning); Ps007 (identity same-placement) and Hea014 exercise adjacent SRRWT paths, not that one."
+  "coverage_verdict": "COVERED",
+  "notes": "VERIFICATION: Read A007 bytes: SHAPE_REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION whose ITEM_DEFINED_TRANSFORMATION('swapped',...) deliberately passes the component placement as origin and the assembly placement as target - the genuine fully-swapped membership-cross-check case. Missing variant: the unrepairable case where only one placement resolves to its expected representation ('does not belong' warning); Ps007 (identity same-placement) and Hea014 exercise adjacent SRRWT paths, not that one. | Wave-3 (2026-07-12, adversarial verifier): A120 (packet GHIK) supplies the missing half-swap subvariant: only one of Origin/Target resolves in its expected representation's item list (the unrepairable 'does not belong to corresponding representation' case), with A007 (full-swap sibling) confirmed present for contrast. Live: 1 face, non-null shape. A120's own Notes are candid that the membership-check outcome is source-level-confirmed rather than shape-count-observable -- the same epistemic status as the already-shipped A007. Both subvariants (full-swap A007, half-swap A120) now present. PARTIAL -> COVERED."
  },
  {
   "problem_id": "stp-mapped-item-no-transform",
@@ -1459,10 +1465,11 @@
   ],
   "subvariants": [],
   "fixture_ids": [
-   "Tfa248"
+   "Tfa248",
+   "A119"
   ],
-  "coverage_verdict": "PARTIAL",
-  "notes": "VERIFICATION: Read Tfa248 bytes: MAPPED_ITEM('orthoarray_inst_1','',#9063) puts an empty string where the mapping source belongs and the REPRESENTATION_MAP in the target slot, so neither a CartesianTransformationOperator3d nor an Origin/Target placement pair is resolvable - closest existing input, but the malformed source slot may abort the transfer before the identity-fallback-with-warning branch runs. All other MAPPED_ITEM fixtures (A023, A024, Ad129, A035, P016...) carry recognizable placements; no fixture presents a valid map+shape with a merely unrecognized placement type."
+  "coverage_verdict": "COVERED",
+  "notes": "VERIFICATION: Read Tfa248 bytes: MAPPED_ITEM('orthoarray_inst_1','',#9063) puts an empty string where the mapping source belongs and the REPRESENTATION_MAP in the target slot, so neither a CartesianTransformationOperator3d nor an Origin/Target placement pair is resolvable - closest existing input, but the malformed source slot may abort the transfer before the identity-fallback-with-warning branch runs. All other MAPPED_ITEM fixtures (A023, A024, Ad129, A035, P016...) carry recognizable placements; no fixture presents a valid map+shape with a merely unrecognized placement type. | Wave-3 (2026-07-12, adversarial verifier): A119 (packet GHIK) supplies the narrow case Tfa248 could only approximate: a resolvable REPRESENTATION_MAP with a real target shape, where only the placement TYPE is unrecognized (distinct from Tfa248's malformed empty-string mapping-source slot, which risked aborting the transfer before the identity-fallback branch could run). Live: 1 face, non-null shape -- confirms the identity-transform-with-warning fallback fires cleanly rather than dropping the component. PARTIAL -> COVERED."
  },
  {
   "problem_id": "stp-missing-unit-context-default",
@@ -1496,9 +1503,12 @@
    "context lacks a length uncertainty -> configured default precision taken",
    "unit or uncertainty data fails to decode -> warning, partial defaults"
   ],
-  "fixture_ids": [],
-  "coverage_verdict": "GAP",
-  "notes": "DOWNGRADED COVERED->GAP (COVERED_FULL_REVERIFY.md): M063's no-unit SHAPE_REPRESENTATION #8 is a member of GEOMETRIC_CURVE_SET #9 -- not a GeometricRepresentationItem, silently type-skipped, never independently transferred (its shape(1) comes from the outer, properly-unitted rep); N028/N018 record occt=empty/empty; Xp002 records occt=signal(11). No graceful default-and-continue is ever exercised. Surviving/cited fixtures: (none -- no fixture in the corpus reaches this mechanism live). || Prior COVERED notes (fixture_ids were ['M063', 'N028', 'N018', 'Xp002']): VERIFICATION: Read M063 bytes: SHAPE_REPRESENTATION('no_unit_shape',...) whose context is a bare GEOMETRIC_REPRESENTATION_CONTEXT('no_units',$,3) with no unit mixins anywhere for that representation - the reader must fall back to default units for those items. N028 (angle-only units, no LENGTH_UNIT) and N018 (no uncertainty leaf -> read.precision fallback) present the sibling missing-context defaults; Xp002 combines a unit-context mismatch with geometry.",
+  "fixture_ids": [
+   "U051",
+   "U052"
+  ],
+  "coverage_verdict": "COVERED",
+  "notes": "DOWNGRADED COVERED->GAP (COVERED_FULL_REVERIFY.md): M063's no-unit SHAPE_REPRESENTATION #8 is a member of GEOMETRIC_CURVE_SET #9 -- not a GeometricRepresentationItem, silently type-skipped, never independently transferred (its shape(1) comes from the outer, properly-unitted rep); N028/N018 record occt=empty/empty; Xp002 records occt=signal(11). No graceful default-and-continue is ever exercised. Surviving/cited fixtures: (none -- no fixture in the corpus reaches this mechanism live). || Prior COVERED notes (fixture_ids were ['M063', 'N028', 'N018', 'Xp002']): VERIFICATION: Read M063 bytes: SHAPE_REPRESENTATION('no_unit_shape',...) whose context is a bare GEOMETRIC_REPRESENTATION_CONTEXT('no_units',$,3) with no unit mixins anywhere for that representation - the reader must fall back to default units for those items. N028 (angle-only units, no LENGTH_UNIT) and N018 (no uncertainty leaf -> read.precision fallback) present the sibling missing-context defaults; Xp002 combines a unit-context mismatch with geometry. | Wave-3 (2026-07-12, adversarial verifier): both subvariants now demonstrated live. U051 (a): context_of_items=$ confirmed in bytes on a normal product chain governing a live shell; live shape_null=False, 1 face. U051's own notes document why the packet's most-literal framing (a fully unreferenced FaceSurface root) is not constructible in this build -- NbRootsForTransfer()==0 for orphan roots -- and disclose the substitution honestly (not an M063-style mislabeled orphan). U052 (b): a bare non-complex REPRESENTATION_CONTEXT('wrong_kind_ctx','3D') confirmed in bytes -- wrong-kind context (missing unit mixins), mechanistically distinct from U051's null slot; live shape_null=False, 1 face. Supersedes the prior GAP basis (M063's no-unit rep was a type-skipped GEOMETRIC_CURVE_SET member never independently transferred; N028/N018/Xp002 recorded empty/empty/crash). GAP -> COVERED.",
   "audit": "COVERED_FULL_REVERIFY.md: COVERED->GAP. M063's no-unit SHAPE_REPRESENTATION #8 is a member of GEOMETRIC_CURVE_SET #9 -- not a GeometricRepresentationItem, silently type-skipped, never independently transferred (its shape(1) comes from the outer, properly-unitted rep); N028/N018 record occt=empty/empty; Xp002 records occt=signal(11). No graceful default-and-continue is ever exercised."
  },
  {
@@ -1536,9 +1546,11 @@
    }
   ],
   "subvariants": [],
-  "fixture_ids": [],
-  "coverage_verdict": "GAP",
-  "notes": "DOWNGRADED COVERED->GAP (VERDICT_AUDIT.md): Source-verified at pinned SHA: StepToTopoDS_TranslateFace.cxx::SetTriangles copies plain-list triangles VERBATIM -- the repeated-index skip guards exist only in the strip/fan branches, and M005 is a plain-list TRIANGULATED_FACE with no strips/fans, so the cited skip mechanism cannot execute on it. Surviving/cited fixtures: (none -- no fixture in the corpus reaches this mechanism live). || Prior COVERED notes (fixture_ids were ['M005']): VERIFICATION: Overrides the sweep verdict (which checked only M019 and missed M005). M005 bytes verified: TRIANGULATED_FACE #2 triangle list ((0,1,2),(0,1,3),(0,2,3),(3,3,4)) contains the repeated-index triple (3,3,4); reachability verified #2 -> TESSELLATED_SOLID #3 -> GEOMETRIC_CURVE_SET #5 -> MANIFOLD_SURFACE_SHAPE_REPRESENTATION #9061 -> SDR. Catalog records OCCT/gmsh signal(11) on this fixture, i.e. the degenerate triple genuinely reaches the tessellated-translation path (at fixture scale it evidently gets past the exclusion branch into Poly::ComputeNormals - the input pattern is presented either way).",
+  "fixture_ids": [
+   "M198"
+  ],
+  "coverage_verdict": "COVERED",
+  "notes": "DOWNGRADED COVERED->GAP (VERDICT_AUDIT.md): Source-verified at pinned SHA: StepToTopoDS_TranslateFace.cxx::SetTriangles copies plain-list triangles VERBATIM -- the repeated-index skip guards exist only in the strip/fan branches, and M005 is a plain-list TRIANGULATED_FACE with no strips/fans, so the cited skip mechanism cannot execute on it. Surviving/cited fixtures: (none -- no fixture in the corpus reaches this mechanism live). || Prior COVERED notes (fixture_ids were ['M005']): VERIFICATION: Overrides the sweep verdict (which checked only M019 and missed M005). M005 bytes verified: TRIANGULATED_FACE #2 triangle list ((0,1,2),(0,1,3),(0,2,3),(3,3,4)) contains the repeated-index triple (3,3,4); reachability verified #2 -> TESSELLATED_SOLID #3 -> GEOMETRIC_CURVE_SET #5 -> MANIFOLD_SURFACE_SHAPE_REPRESENTATION #9061 -> SDR. Catalog records OCCT/gmsh signal(11) on this fixture, i.e. the degenerate triple genuinely reaches the tessellated-translation path (at fixture scale it evidently gets past the exclusion branch into Poly::ComputeNormals - the input pattern is presented either way). | Wave-3 (2026-07-12, adversarial verifier): M198 is a genuinely strip-encoded COMPLEX_TRIANGULATED_FACE (strip ((1,2,3,3))), satisfying the kill-check the prior downgrade identified -- M005's plain-list encoding could never reach the strip/fan skip guards, but M198's strip form can and does. Live: NbTriangles()==1, built triangle (1,3,2); the collapsed (2,3,3) candidate is cleanly excluded from the array; area=0.5. Confirms the strip/fan degenerate-triple skip branch fires as claimed. GAP -> COVERED.",
   "audit": "VERDICT_AUDIT.md: COVERED->GAP. Source-verified at pinned SHA: StepToTopoDS_TranslateFace.cxx::SetTriangles copies plain-list triangles VERBATIM -- the repeated-index skip guards exist only in the strip/fan branches, and M005 is a plain-list TRIANGULATED_FACE with no strips/fans, so the cited skip mechanism cannot execute on it."
  },
  {
@@ -1553,9 +1565,11 @@
    }
   ],
   "subvariants": [],
-  "fixture_ids": [],
-  "coverage_verdict": "GAP",
-  "notes": "VERIFICATION: Grepped every tessellated fixture: normals defects that exist (Bo027 inconsistent per-node normal DIRECTIONS across a smooth edge) all use well-formed 3-component rows. No fixture supplies a normals table whose rows have other than three components, so the silently-ignore-normals arity guard is never presented."
+  "fixture_ids": [
+   "M199"
+  ],
+  "coverage_verdict": "COVERED",
+  "notes": "VERIFICATION: Grepped every tessellated fixture: normals defects that exist (Bo027 inconsistent per-node normal DIRECTIONS across a smooth edge) all use well-formed 3-component rows. No fixture supplies a normals table whose rows have other than three components, so the silently-ignore-normals arity guard is never presented. | Wave-3 (2026-07-12, adversarial verifier): M199's normals row (0.,0.,1.,0.) carries 4 components (not 3). Live: HasNormals()==True (the table is allocated) but Normal(1) throws 'gp_Dir() zero norm' -- the malformed row's node normal is left zero-initialized/unset by the row-arity-guard early return, exactly the claimed silently-ignore-normals mechanism rather than misreading the 4th component or failing the face. GAP -> COVERED."
  },
  {
   "problem_id": "stp-tess-dangling-brep-link",
@@ -1583,9 +1597,13 @@
    "tessellated shell link",
    "tessellated solid link"
   ],
-  "fixture_ids": [],
-  "coverage_verdict": "GAP",
-  "notes": "VERIFICATION: Grep-verified all TRIANGULATED_FACE fixtures (M022, Pmi164, Tsh065): the geometric_link slot is always $ (absent) or a boolean/count in variant layouts - none declares a link to an unbound/unresolvable BRep entity, and no tessellated SHELL or SOLID fixture declares a topological link at all. The absent-$ case takes the normal no-exact-geometry path, not the unresolved-link fallback, for all three subvariants."
+  "fixture_ids": [
+   "M193",
+   "M194",
+   "M195"
+  ],
+  "coverage_verdict": "COVERED",
+  "notes": "VERIFICATION: Grep-verified all TRIANGULATED_FACE fixtures (M022, Pmi164, Tsh065): the geometric_link slot is always $ (absent) or a boolean/count in variant layouts - none declares a link to an unbound/unresolvable BRep entity, and no tessellated SHELL or SOLID fixture declares a topological link at all. The absent-$ case takes the normal no-exact-geometry path, not the unresolved-link fallback, for all three subvariants. | Wave-3 (2026-07-12, adversarial verifier): all three subvariants now demonstrated live. M193 (face): geometric_link resolves to a real but never-shelled ADVANCED_FACE #37 -- fresh empty-face fallback fires (1 face, surface=None, invalid). M194 (shell): #38 OPEN_SHELL reachable only via topological_link -- fresh-shell fallback (1 face/1 shell, surface=None, invalid). M195 (solid): #39 MANIFOLD_SOLID_BREP unresolved link -- fresh shell+solid fallback (1 face/1 shell/1 solid, surface=None, invalid). All three live-oracle confirmed against catalog tier-3 assertions with zero drift; none crash. Supersedes the prior GAP basis, where M022/Pmi164/Tsh065 all encoded the link slot as absent ($) rather than genuinely unresolvable. GAP -> COVERED."
  },
  {
   "problem_id": "stp-srr-nauo-reversed",
@@ -1604,9 +1622,11 @@
    }
   ],
   "subvariants": [],
-  "fixture_ids": [],
-  "coverage_verdict": "GAP",
-  "notes": "DOWNGRADED COVERED->GAP (COVERED_FULL_REVERIFY.md): M062 stuffs NAUO/SRR/PRODUCT_DEFINITION entities into a GEOMETRIC_CURVE_SET (type-skipped, occt=empty); A034 demonstrates an unrelated SHAPE_ASPECT-vs-PROPERTY_DEFINITION null-deref crash, not SRR/NAUO direction reversal. Surviving/cited fixtures: (none -- no fixture in the corpus reaches this mechanism live). || Prior COVERED notes (fixture_ids were ['M062', 'A034']): Detection helper lives in STEPConstruct_Assembly. Included as an input-data inconsistency (relationship direction contradicts assembly structure) with a concrete corrective action, affecting where the translated shape ends up. | VERIFICATION: Read M062 bytes: NEXT_ASSEMBLY_USAGE_OCCURRENCE('u1',...,#5,#8) declares A parent-of B while SHAPE_REPRESENTATION_RELATIONSHIP('srr_reversed',...,#12,#11) relates the two shape representations in the opposite direction - exactly the CheckSRRReversesNAUO input pattern (caveat: occt verdict recorded as empty, and no CONTEXT_DEPENDENT_SHAPE_REPRESENTATION wrapper, so the check is reached via the NAUO transfer path). A034 additionally stresses the same check with an SDR/SHAPE_ASPECT malformation.",
+  "fixture_ids": [
+   "A118"
+  ],
+  "coverage_verdict": "COVERED",
+  "notes": "DOWNGRADED COVERED->GAP (COVERED_FULL_REVERIFY.md): M062 stuffs NAUO/SRR/PRODUCT_DEFINITION entities into a GEOMETRIC_CURVE_SET (type-skipped, occt=empty); A034 demonstrates an unrelated SHAPE_ASPECT-vs-PROPERTY_DEFINITION null-deref crash, not SRR/NAUO direction reversal. Surviving/cited fixtures: (none -- no fixture in the corpus reaches this mechanism live). || Prior COVERED notes (fixture_ids were ['M062', 'A034']): Detection helper lives in STEPConstruct_Assembly. Included as an input-data inconsistency (relationship direction contradicts assembly structure) with a concrete corrective action, affecting where the translated shape ends up. | VERIFICATION: Read M062 bytes: NEXT_ASSEMBLY_USAGE_OCCURRENCE('u1',...,#5,#8) declares A parent-of B while SHAPE_REPRESENTATION_RELATIONSHIP('srr_reversed',...,#12,#11) relates the two shape representations in the opposite direction - exactly the CheckSRRReversesNAUO input pattern (caveat: occt verdict recorded as empty, and no CONTEXT_DEPENDENT_SHAPE_REPRESENTATION wrapper, so the check is reached via the NAUO transfer path). A034 additionally stresses the same check with an SDR/SHAPE_ASPECT malformation. | Wave-3 (2026-07-12, adversarial verifier): A118 fixes the prior downgrade's root cause -- zero GEOMETRIC_CURVE_SET entities in the file (grep-confirmed); the NAUO/SRR/CDSR chain (#90/#92/#93) is present and reached via the standard NAUO-root walk, not stuffed into a type-skipped set. Live: shape_null=False, 4 faces/16 edges/32 vertices -- double either SDR's 2-face baseline; bbox spans both parent (x in [0,105]) and child geometry, proving the CDSR's own TransferEntity contributed live geometry rather than being skipped. Supersedes the prior GAP basis (M062 stuffed the chain into a type-skipped GEOMETRIC_CURVE_SET; A034 exercised an unrelated crash). GAP -> COVERED.",
   "audit": "COVERED_FULL_REVERIFY.md: COVERED->GAP. M062 stuffs NAUO/SRR/PRODUCT_DEFINITION entities into a GEOMETRIC_CURVE_SET (type-skipped, occt=empty); A034 demonstrates an unrelated SHAPE_ASPECT-vs-PROPERTY_DEFINITION null-deref crash, not SRR/NAUO direction reversal."
  },
  {
@@ -1621,9 +1641,11 @@
    }
   ],
   "subvariants": [],
-  "fixture_ids": [],
-  "coverage_verdict": "GAP",
-  "notes": "DOWNGRADED COVERED->GAP (COVERED_FULL_REVERIFY.md): Sole fixture M051 records occt=signal(11)/signal(11) -- a crash directly contradicts the claim that the fallback transfer succeeds and 'a shape is still produced'. Surviving/cited fixtures: (none -- no fixture in the corpus reaches this mechanism live). || Prior COVERED notes (fixture_ids were ['M051']): Distinct from pure type-dispatch rejection: a fallback translation is actually attempted and its shape used. | VERIFICATION: Read M051 bytes: a bare GEOMETRIC_SET whose items mix a LINE (supported), an AXIS2_PLACEMENT_3D (a GeometricRepresentationItem that is none of curve/point/surface - exactly the element routed through the general-actor fallback), and a DESCRIPTIVE_REPRESENTATION_ITEM (not a GRI at all, exercising the skip). The set is the model's primary geometry container, so the elements genuinely reach Builder::Init(GeometricSet).",
+  "fixture_ids": [
+   "M196"
+  ],
+  "coverage_verdict": "COVERED",
+  "notes": "DOWNGRADED COVERED->GAP (COVERED_FULL_REVERIFY.md): Sole fixture M051 records occt=signal(11)/signal(11) -- a crash directly contradicts the claim that the fallback transfer succeeds and 'a shape is still produced'. Surviving/cited fixtures: (none -- no fixture in the corpus reaches this mechanism live). || Prior COVERED notes (fixture_ids were ['M051']): Distinct from pure type-dispatch rejection: a fallback translation is actually attempted and its shape used. | VERIFICATION: Read M051 bytes: a bare GEOMETRIC_SET whose items mix a LINE (supported), an AXIS2_PLACEMENT_3D (a GeometricRepresentationItem that is none of curve/point/surface - exactly the element routed through the general-actor fallback), and a DESCRIPTIVE_REPRESENTATION_ITEM (not a GRI at all, exercising the skip). The set is the model's primary geometry container, so the elements genuinely reach Builder::Init(GeometricSet). | Wave-3 (2026-07-12, adversarial verifier): M196 substitutes a bounded/periodic CIRCLE for M051's unbounded LINE while keeping the exact mixed-item-dispatch GEOMETRIC_CURVE_SET(CIRCLE, AXIS2_PLACEMENT_3D) pattern. Live: 0 faces, 1 edge (curve_type=circle), 2 vertices, BRepCheck valid=True, exit 0 -- the unsupported-type element is silently skipped and the supported curve translated through the general-actor fallback, no crash. M051 independently re-run for contrast: still crashes (signal 11), isolating the crash to the unbounded LINE, not the fallback-dispatch mechanism. GAP -> COVERED.",
   "audit": "COVERED_FULL_REVERIFY.md: COVERED->GAP. Sole fixture M051 records occt=signal(11)/signal(11) -- a crash directly contradicts the claim that the fallback transfer succeeds and 'a shape is still produced'."
  },
  {
@@ -1986,9 +2008,11 @@
    }
   ],
   "subvariants": [],
-  "fixture_ids": [],
-  "coverage_verdict": "GAP",
-  "notes": "DOWNGRADED COVERED->GAP (COVERED_FULL_REVERIFY.md): Tfa001/Tfa054's own tier-3 assertion is brepcheck.valid == True, directly contradicting each fixture's embedded 'must be False' comment -- OCCT drops the null-face_geometry face before BRepCheck ever examines it; Sw004 cites BRepBuilderAPI_FastSewing (wrong subsystem) and confirms the same silent-drop (n_faces_total==1 of 2 declared). Surviving/cited fixtures: (none -- no fixture in the corpus reaches this mechanism live). || Prior COVERED notes (fixture_ids were ['Tfa001', 'Tfa054', 'Sw004']): BRepCheck_Status enum value NoSurface. | VERIFICATION: Tfa001/Tfa054 construct ADVANCED_FACEs with $ (null) or unresolvable face_geometry but non-empty bounds \u2014 a face with wires and no surface; Sw004 is the same pattern in a sewing context. OCCT drops/errors the face (shape(1) with ERR), but the input genuinely encodes the surface-less face a faithful translation would flag NoSurface.",
+  "fixture_ids": [
+   "M193"
+  ],
+  "coverage_verdict": "COVERED",
+  "notes": "DOWNGRADED COVERED->GAP (COVERED_FULL_REVERIFY.md): Tfa001/Tfa054's own tier-3 assertion is brepcheck.valid == True, directly contradicting each fixture's embedded 'must be False' comment -- OCCT drops the null-face_geometry face before BRepCheck ever examines it; Sw004 cites BRepBuilderAPI_FastSewing (wrong subsystem) and confirms the same silent-drop (n_faces_total==1 of 2 declared). Surviving/cited fixtures: (none -- no fixture in the corpus reaches this mechanism live). || Prior COVERED notes (fixture_ids were ['Tfa001', 'Tfa054', 'Sw004']): BRepCheck_Status enum value NoSurface. | VERIFICATION: Tfa001/Tfa054 construct ADVANCED_FACEs with $ (null) or unresolvable face_geometry but non-empty bounds \u2014 a face with wires and no surface; Sw004 is the same pattern in a sewing context. OCCT drops/errors the face (shape(1) with ERR), but the input genuinely encodes the surface-less face a faithful translation would flag NoSurface. | Wave-3 (2026-07-12, adversarial verifier): M193 (packet JL) presents a TESSELLATED_FACE whose geometric_link resolves to a real but never-shelled ADVANCED_FACE (#37) -- genuinely dangling, distinct from M022's absent ($) slot. Live: shape_null=False, 1 face, BRep_Tool.Surface_s returns None (truly surfaceless), BRepCheck_Analyzer.IsValid=False, matching the fixture's own tier-3 assertions (n_faces_total==1, surface_type==\"other\", brepcheck.valid==False) exactly. NoSurface has a live target and fires. GAP -> COVERED.",
   "detect_only": true,
   "audit": "COVERED_FULL_REVERIFY.md: COVERED->GAP. Tfa001/Tfa054's own tier-3 assertion is brepcheck.valid == True, directly contradicting each fixture's embedded 'must be False' comment -- OCCT drops the null-face_geometry face before BRepCheck ever examines it; Sw004 cites BRepBuilderAPI_FastSewing (wrong subsystem) and confirms the same silent-drop (n_faces_total==1 of 2 declared)."
  },
@@ -2260,12 +2284,9 @@
    }
   ],
   "subvariants": [],
-  "fixture_ids": [
-   "N001",
-   "N016"
-  ],
-  "coverage_verdict": "PARTIAL",
-  "notes": "BRepCheck_Status enum value InvalidToleranceValue. | VERIFICATION: N001 verified in bytes: three UNCERTAINTY_MEASURE_WITH_UNIT values inverted (vertex 1e-2 > edge 1e-3 > face 1e-7) \u2014 but they sit in one GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT on a GEOMETRIC_CURVE_SET with a single free edge and no face; readers take a single global precision, so no translated shape carries the inverted hierarchy (OCC yields empty). N016 (per-edge precision >> file tolerance) is similarly encoding-level. The status is plausibly reachable via reader tolerance inflation on pcurve-disagreement fixtures, but no fixture verifiably produces a face tolerance smaller than its children's.",
+  "fixture_ids": [],
+  "coverage_verdict": "GAP",
+  "notes": "BRepCheck_Status enum value InvalidToleranceValue. | VERIFICATION: STRUCTURALLY-UNREACHABLE in OCCT 7.8.1 -- the only producer, BRepCheck_Analyzer.cxx:253-255, is gated on `isInvalidTolerance`, declared `Standard_False` at line 157 and never assigned anywhere in the file (whole-tree grep: only the enum, a Dump printer, and a DRAW test-command cast exist elsewhere); BRepCheck_Analyzer.hxx marks the status NYI three times (lines 47/52/56) in the class's own docs. No STEP input (nor any input) can set this status in this build. N001/N016 remain as encoding-level nearest-misses only (N001: inverted UNCERTAINTY_MEASURE_WITH_UNIT hierarchy on a GEOMETRIC_CURVE_SET free edge with no face, occt=empty; N016: per-edge precision far exceeding file tolerance, similarly encoding-level) -- do not count them toward coverage. Carved out per the section-1a STRUCTURALLY-UNREACHABLE convention (matching bc-invalid-point-on-surface / bc-multiple-3d-curve / bc-invalid-polygon-on-triangulation); revisit only on an OCCT version bump that implements the check. | Wave-3 (2026-07-12, adversarial verifier): verified twice (this is the 4th such carve-out). PARTIAL -> GAP (carve-out, not a quality regression).",
   "detect_only": true
  },
  {
@@ -2314,7 +2335,7 @@
    "Ad045"
   ],
   "coverage_verdict": "PARTIAL",
-  "notes": "BRepCheck_Status enum value CheckFail \u2014 the catch-all robustness class: kernel-crash prevention for exception-triggering degenerate geometry during a check. Distinct from the other 30 classes in that it's a meta-class (any of them could theoretically also present as CheckFail if evaluation throws instead of returning cleanly), but it is itself a directly observable, distinctly-coded status a fixture can target (extreme degenerate geometry that makes a checker sub-call throw). | VERIFICATION: The corpus has multiple genuine exception-triggering degenerate-geometry inputs \u2014 In011 (B-spline control points at 1.0E+308 / 5.0E-324, observed transfer-time C++ exception), Gn037 (knot vector collapsing to one unique value, translation throws), Gn003 (empty control_points_list), Ad132 (zero-norm gp_Dir::CrossCross exception), Ad045 (healing throws) \u2014 but in all of them the throw fires during reading/healing so OCC yields empty or crashes; none is verified to reach a BRepCheck-equivalent pass on a built shape and be caught there as CheckFail. Judged REACHABLE in principle (same geometry surviving a laxer translator would make checker evaluation throw), but no fixture demonstrates the checker-side catch.",
+  "notes": "BRepCheck_Status enum value CheckFail \u2014 the catch-all robustness class: kernel-crash prevention for exception-triggering degenerate geometry during a check. Distinct from the other 30 classes in that it's a meta-class (any of them could theoretically also present as CheckFail if evaluation throws instead of returning cleanly), but it is itself a directly observable, distinctly-coded status a fixture can target (extreme degenerate geometry that makes a checker sub-call throw). | VERIFICATION: The corpus has multiple genuine exception-triggering degenerate-geometry inputs \u2014 In011 (B-spline control points at 1.0E+308 / 5.0E-324, observed transfer-time C++ exception), Gn037 (knot vector collapsing to one unique value, translation throws), Gn003 (empty control_points_list), Ad132 (zero-norm gp_Dir::CrossCross exception), Ad045 (healing throws) \u2014 but in all of them the throw fires during reading/healing so OCC yields empty or crashes; none is verified to reach a BRepCheck-equivalent pass on a built shape and be caught there as CheckFail. Judged REACHABLE in principle (same geometry surviving a laxer translator would make checker evaluation throw), but no fixture demonstrates the checker-side catch. | Wave-3 (2026-07-12, adversarial verifier): packet JL made ~25 live probes against the pinned OCCT 7.8.1 source (near-zero/extreme-radius circles, tori, spheres, extreme coordinate magnitudes, a nested-solids compound) -- all either load and validate cleanly or return a clean IsValid()==False through ordinary status codes, never a caught exception (full list in BACKLOG.md). Adversarial verifier ran 2 additional independent spot-probes, both negative: (1) BRepCheck_Analyzer live against near-singular-knot leads Gn042 (clustered-knot near-zero Bezier arc) and Gp033 (C0 interior knot) -- Gn042 returned IsValid()==False cleanly with no exception; Gp033's shape was null (pre-existing, unrelated), so the check never ran; (2) solid-level imbrication lead Bo003 (nested void shells) -- crashes at translate time (signal 11), never reaching check time, the exact failure mode the class must avoid. Consistent with the source-level finding that BRepCheck_Analyzer/Wire/Face have essentially no unguarded throw sites in this build. Mechanism plausibly exists (the catch blocks are live code) but remains undemonstrated from STEP. Verdict stays PARTIAL. Next-attempt leads: extreme near-tangent void geometry short of translate-time crash; STEP-reached pathological knot spacing on face geometry specifically.",
   "detect_only": true
  },
  {
@@ -2408,10 +2429,11 @@
    "Twi048",
    "Twi061",
    "Bo030",
-   "Bo025"
+   "Bo025",
+   "N172"
   ],
-  "coverage_verdict": "PARTIAL",
-  "notes": "DOWNGRADED COVERED->PARTIAL (VERDICT_AUDIT.md): Subvariant (a) 'tolerance outside band' rested solely on N001, a faceless GEOMETRIC_CURVE_SET wireframe with shape_null==True (byte-verified); subvariants (b) (Twi048/Twi061: vertex offset vs tolerance on a live face) and (c) (Bo030/Bo025) are genuine and unaffected. Surviving/cited fixtures: ['Twi048', 'Twi061', 'Bo030', 'Bo025']. || Prior COVERED notes (fixture_ids were ['N001', 'Twi048', 'Twi061', 'Bo030', 'Bo025']): Available-but-not-default. Three distinct sub-behaviors in one operator; the regularity-encoding subvariant is a genuinely separate input pattern (correct geometry, missing continuity annotation). | VERIFICATION: Variant (a) band/hierarchy: N001 vertex tolerance larger than edge/face (hierarchy violation). Variant (b) stale-vs-geometry: Twi048/Twi061/Bo030 vertex tolerance smaller than the deviation it must bound. Variant (c) regularity flags: Bo025 G1-smooth shared edge mis-tagged as sharp crease (EncodeRegularity input pattern).",
+  "coverage_verdict": "COVERED",
+  "notes": "DOWNGRADED COVERED->PARTIAL (VERDICT_AUDIT.md): Subvariant (a) 'tolerance outside band' rested solely on N001, a faceless GEOMETRIC_CURVE_SET wireframe with shape_null==True (byte-verified); subvariants (b) (Twi048/Twi061: vertex offset vs tolerance on a live face) and (c) (Bo030/Bo025) are genuine and unaffected. Surviving/cited fixtures: ['Twi048', 'Twi061', 'Bo030', 'Bo025']. || Prior COVERED notes (fixture_ids were ['N001', 'Twi048', 'Twi061', 'Bo030', 'Bo025']): Available-but-not-default. Three distinct sub-behaviors in one operator; the regularity-encoding subvariant is a genuinely separate input pattern (correct geometry, missing continuity annotation). | VERIFICATION: Variant (a) band/hierarchy: N001 vertex tolerance larger than edge/face (hierarchy violation). Variant (b) stale-vs-geometry: Twi048/Twi061/Bo030 vertex tolerance smaller than the deviation it must bound. Variant (c) regularity flags: Bo025 G1-smooth shared edge mis-tagged as sharp crease (EncodeRegularity input pattern). | Wave-3 (2026-07-12, adversarial verifier): N172 (packet GHIK) live-verified end to end: bumped vertex tolerance 0.05000005 (== 1.000001*0.05) after TransferRoots; ShapeFix_ShapeTolerance().LimitTolerance(shape,1e-4,1e-2) clamps it to 0.01 and raises the untouched 1e-7 vertices to 1e-4 (band floor) -- exact match to the claimed numbers, independently re-run by the adversarial verifier (not taken from the writer's script). Mechanism fires only via the opt-in `settol`/direct-API path (runtime-scaffold) -- same treatment already applied to Tsh238/Tsh239's dropsmallsolids pattern, COVERED under that established precedent. Subvariant (a) 'tolerance outside band' is now genuinely demonstrated by a live-face fixture, replacing the prior faceless/shape_null N001 basis. PARTIAL -> COVERED.",
   "audit": "VERDICT_AUDIT.md: COVERED->PARTIAL. Subvariant (a) 'tolerance outside band' rested solely on N001, a faceless GEOMETRIC_CURVE_SET wireframe with shape_null==True (byte-verified); subvariants (b) (Twi048/Twi061: vertex offset vs tolerance on a live face) and (c) (Bo030/Bo025) are genuine and unaffected."
  },
  {
