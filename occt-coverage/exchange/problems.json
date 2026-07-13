@@ -118,10 +118,11 @@
   ],
   "fixture_ids": [
    "Tsh209",
-   "Gp139"
+   "Gp139",
+   "Gs200"
   ],
   "coverage_verdict": "PARTIAL",
-  "notes": "Called both from AnalysisNearestEdges (non-manifold disambiguation) and from SameParameterEdge's own seam handling (see sew-seam-dual-pcurve-preservation) \u2014 kept as its own class because it is an independently well-defined geometric validity check, not merely a mechanism detail of either caller. | VERIFICATION: Read both: Tsh209 is a real ADVANCED_FACE on a U-closed CYLINDRICAL_SURFACE whose loop contains two geometrically coincident unshared seam-line edges (#25,#29 between the same vertices) \u2014 a genuine U-periodic seam-merge validation input; Gp139 is a torus face whose seam edge carries pcurves and participates in the boundary. Missing variants: no V-periodic seam-merge fixture, and no closure-via-isoline-fallback fixture (trimmed/offset surface not self-reporting closed). N150 ('IsMergedClosed.v_overlap') rejected: cylinder surface + 2 edges in a faceless GEOMETRIC_CURVE_SET, so IsMergedClosed's face/pcurve context never exists."
+  "notes": "Called both from AnalysisNearestEdges (non-manifold disambiguation) and from SameParameterEdge's own seam handling (see sew-seam-dual-pcurve-preservation) \u2014 kept as its own class because it is an independently well-defined geometric validity check, not merely a mechanism detail of either caller. | VERIFICATION: Read both: Tsh209 is a real ADVANCED_FACE on a U-closed CYLINDRICAL_SURFACE whose loop contains two geometrically coincident unshared seam-line edges (#25,#29 between the same vertices) \u2014 a genuine U-periodic seam-merge validation input; Gp139 is a torus face whose seam edge carries pcurves and participates in the boundary. Missing variants: no V-periodic seam-merge fixture, and no closure-via-isoline-fallback fixture (trimmed/offset surface not self-reporting closed). N150 ('IsMergedClosed.v_overlap') rejected: cylinder surface + 2 edges in a faceless GEOMETRIC_CURVE_SET, so IsMergedClosed's face/pcurve context never exists. || WAVE-7 PACKET F2 (2026-07-13): V-periodic (tube-direction) seam-pair subvariant shipped and live-verified. Gs200: torus face, area=118.43525281307257 exactly matching the quarter-wedge-tube formula; Sewing.Perform() reports NbContigousEdges=1, NbFreeEdges=2, NbMultipleEdges=0 - confirms genuine V-periodic seam merge validation (Tsh209 already covered U-periodic). Now 2 of 3 subvariants (U-periodic, V-periodic); isoline-distance-fallback subvariant (trimmed/offset surface not self-reporting closed) confirmed genuinely unreachable by direct read of BRepBuilderAPI_Sewing.cxx IsUClosedSurface/IsVClosedSurface (lines ~239-275, which recurse to the basis surface for Geom_RectangularTrimmedSurface/Geom_OffsetSurface before ever reaching IsClosedByIsos), correctly deferred rather than force-fit. Verdict stays PARTIAL."
  },
  {
   "problem_id": "sew-vertex-coincidence-merge",
@@ -703,10 +704,13 @@
    "Gp171",
    "Twi017",
    "Twi086",
-   "Twi084"
+   "Twi084",
+   "Gs201",
+   "Gs202",
+   "Gs203"
   ],
-  "coverage_verdict": "PARTIAL",
-  "notes": "This is the canonical 'curve parameter range doesn't bound the edge's vertices' defect class named in the task brief; UpdateParam3d is the single function implementing essentially all of its sub-cases. | VERIFICATION: Read Gs029 bytes: TRIMMED_CURVE over CIRCLE with trim 2pi->0 (last<first) wired as EDGE_CURVE curve_3d in a face - genuine reversed/periodic-wrap trim. Gp171/Twi017 (closed CIRCLE, distinct vertices at/near theta=0 vs 2pi-eps, wired into FACE_OUTER_BOUND) exercise the closed-curve origin-crossing projection path; Twi086 presents w1==w2 (both params 0.0). Missing variants: out-of-bounds clamp on a bounded non-periodic curve, B-spline closed-only-by-tolerance curve, and reversed order on an ordinary (non-periodic) curve; Twi084 presents reversed/closed trims but its EDGE_LOOP is rooted in a GEOMETRIC_CURVE_SET so the edge may not reach the translator."
+  "coverage_verdict": "COVERED",
+  "notes": "This is the canonical 'curve parameter range doesn't bound the edge's vertices' defect class named in the task brief; UpdateParam3d is the single function implementing essentially all of its sub-cases. | VERIFICATION: Read Gs029 bytes: TRIMMED_CURVE over CIRCLE with trim 2pi->0 (last<first) wired as EDGE_CURVE curve_3d in a face - genuine reversed/periodic-wrap trim. Gp171/Twi017 (closed CIRCLE, distinct vertices at/near theta=0 vs 2pi-eps, wired into FACE_OUTER_BOUND) exercise the closed-curve origin-crossing projection path; Twi086 presents w1==w2 (both params 0.0). Missing variants: out-of-bounds clamp on a bounded non-periodic curve, B-spline closed-only-by-tolerance curve, and reversed order on an ordinary (non-periodic) curve; Twi084 presents reversed/closed trims but its EDGE_LOOP is rooted in a GEOMETRIC_CURVE_SET so the edge may not reach the translator. || WAVE-7 PACKET F2 (2026-07-13): all 3 previously-missing subvariants shipped and live-verified, class now fully covered (6 of 6 subvariants demonstrated). Gs201 (out-of-bounds clamp): both vertex-projected parameters clamped to the TRIMMED_CURVE's own declared bounds (1.5, 4.5), not left at the raw (1.0, 5.0); face closes correctly, area=16.0. Gs202 (reversed order on an ordinary curve): B-spline curve genuinely reversed and parameters remapped to increasing (0.0, 1.0); curve evaluated at the new bounds matches the file's own vertex coordinates exactly (not just parameter labels swapped); face area=15.0. Gs203 (tolerance-closed near-loop): B-spline closed only within 3D tolerance (not formally Geom_Curve::IsClosed), parameter re-targeted from the curve's naive first parameter to its true last parameter, range (0.49999999999999994, 1.0); curve endpoint at w2=1.0 is (5e-08,0,0), within the declared 1e-7 tolerance of the file's stated vertex; face area=13.8. Verdict PARTIAL -> COVERED."
  },
  {
   "problem_id": "stp-vertex-tol-gap",
@@ -934,10 +938,11 @@
    "Twi281",
    "Twi041",
    "Pf025",
-   "Tfa004"
+   "Tfa004",
+   "Gs199"
   ],
-  "coverage_verdict": "PARTIAL",
-  "notes": "VERIFICATION: Read Gs039 (VERTEX_LOOP as sole FACE_OUTER_BOUND of ADVANCED_FACE on SPHERICAL_SURFACE - the replaced-with-natural-bounds subvariant) and Twi281 (VERTEX_LOOP as sole outer bound on a flat PLANE - the ignored-with-warning subvariant); both wired through SBSM, both genuine. Twi041/Pf025 add VERTEX_LOOP as inner bound on a plane. Missing variant: VERTEX_LOOP bound on a TOROIDAL_SURFACE (silent-skip branch) has no fixture."
+  "coverage_verdict": "COVERED",
+  "notes": "VERIFICATION: Read Gs039 (VERTEX_LOOP as sole FACE_OUTER_BOUND of ADVANCED_FACE on SPHERICAL_SURFACE - the replaced-with-natural-bounds subvariant) and Twi281 (VERTEX_LOOP as sole outer bound on a flat PLANE - the ignored-with-warning subvariant); both wired through SBSM, both genuine. Twi041/Pf025 add VERTEX_LOOP as inner bound on a plane. Missing variant: VERTEX_LOOP bound on a TOROIDAL_SURFACE (silent-skip branch) has no fixture. || WAVE-7 PACKET F2 (2026-07-13): third/third missing subvariant (VERTEX_LOOP sole bound on a TOROIDAL_SURFACE, silent-and-unconditional discard, distinct from sphere's explicit natural-bound-wire construction and plane's explicit warning) shipped and live-verified. Gs199: default read gives shape(1), 1 face, toroidal surface, area=473.7410112522892 - EXACTLY the full-torus formula 4*pi^2*R*r = 4*pi^2*6*2 (bit-for-bit), confirming the VERTEX_LOOP bound contributed nothing and the face silently became the whole torus, no diagnostic emitted. All 3 subvariants now demonstrated. Verdict PARTIAL -> COVERED."
  },
  {
   "problem_id": "stp-face-bound-fail-continue",
@@ -2498,10 +2503,11 @@
   "fixture_ids": [
    "Gn011",
    "Gn009",
-   "Gn026"
+   "Gn026",
+   "Gn177"
   ],
-  "coverage_verdict": "PARTIAL",
-  "notes": "Available-but-not-default. Primarily an exchange-conformance (target-limits) class rather than an invalidity class. | VERIFICATION: Degree-above-cap verified in Gn011 bytes (degree-9 curve + degree (9,7) surface); knot/segment bloat in Gn009; continuity-guaranteed restriction in Gn026. MISSING variant: rational-geometry-where-polynomial-required (no fixture presents rational B-spline specifically as a form the target must re-approximate to polynomial)."
+  "coverage_verdict": "COVERED",
+  "notes": "Available-but-not-default. Primarily an exchange-conformance (target-limits) class rather than an invalidity class. | VERIFICATION: Degree-above-cap verified in Gn011 bytes (degree-9 curve + degree (9,7) surface); knot/segment bloat in Gn009; continuity-guaranteed restriction in Gn026. MISSING variant: rational-geometry-where-polynomial-required (no fixture presents rational B-spline specifically as a form the target must re-approximate to polynomial). || WAVE-7 PACKET F2 (2026-07-13): missing rational-geometry-where-polynomial-required subvariant shipped and live-verified. Gn177: genuinely rational B_SPLINE_SURFACE_WITH_KNOTS (IsURational=False/IsVRational=True pre-conversion, exact quarter-circle profile, area=15.707963267802857 = 5*pi exact) run through ShapeCustom_BSplineRestriction(Rational=True) -> both rational flags become False (degree 2 -> 6, 3 -> 13 U-poles), area=15.707961664740747 (delta ~1.6e-6, genuine polynomial re-approximation, not exact) - confirms the rational-to-polynomial subvariant. Verdict PARTIAL -> COVERED."
  },
  {
   "problem_id": "seq-elementary-to-revolution",
@@ -2516,10 +2522,11 @@
   ],
   "subvariants": [],
   "fixture_ids": [
-   "Gn013"
+   "Gn013",
+   "Gn178"
   ],
-  "coverage_verdict": "PARTIAL",
-  "notes": "Available-but-not-default; representation-normalization class, one fixture suffices. | VERIFICATION: The representation-form-mismatch family is demonstrated only in the elementary<->BSpline directions (Gn013). No fixture targets analytic-elementary-surface-must-become-SURFACE_OF_REVOLUTION conversion specifically. Weak indirect coverage only."
+  "coverage_verdict": "COVERED",
+  "notes": "Available-but-not-default; representation-normalization class, one fixture suffices. | VERIFICATION: The representation-form-mismatch family is demonstrated only in the elementary<->BSpline directions (Gn013). No fixture targets analytic-elementary-surface-must-become-SURFACE_OF_REVOLUTION conversion specifically. Weak indirect coverage only. || WAVE-7 PACKET F2 (2026-07-13): strong, lossless, live-confirmed analytic conversion shipped (prior Gn013 was the only fixture and only weakly/indirectly demonstrated this class). Gn178: analytic CONICAL_SURFACE quarter-wedge (raw read: 1 face, conical surface, area=18.8495559215388 = exact wedge lateral-area formula) run through ConvertToRevolution -> 1 face, Geom_SurfaceOfRevolution with BasisCurve() a Geom_Line along the cone's slant, axis (0,0,1) matching the cone's own axis, IDENTICAL area 18.8495559215388 bit-for-bit (exact analytic re-expression, no approximation error) - confirms genuine elementary-to-revolution conversion. Verdict PARTIAL -> COVERED."
  },
  {
   "problem_id": "seq-swept-to-elementary",
@@ -2535,10 +2542,11 @@
   "subvariants": [],
   "fixture_ids": [
    "N030",
-   "Gn015"
+   "Gn015",
+   "Gn179"
   ],
-  "coverage_verdict": "PARTIAL",
-  "notes": "Available-but-not-default. Dedup: distinct from seq-elementary-to-revolution (opposite direction, different emitting-system habit). | VERIFICATION: Canonical-form recovery is genuinely demonstrated from B-spline sources (N030: quarter cylinder stored as B-spline needing canonical recognition; Gn015: rational B-spline that is exactly a surface of revolution) but not from swept sources (no fixture encodes a cylinder as a revolved line / extruded circle, which is this operator's specific input)."
+  "coverage_verdict": "COVERED",
+  "notes": "Available-but-not-default. Dedup: distinct from seq-elementary-to-revolution (opposite direction, different emitting-system habit). | VERIFICATION: Canonical-form recovery is genuinely demonstrated from B-spline sources (N030: quarter cylinder stored as B-spline needing canonical recognition; Gn015: rational B-spline that is exactly a surface of revolution) but not from swept sources (no fixture encodes a cylinder as a revolved line / extruded circle, which is this operator's specific input). || WAVE-7 PACKET F2 (2026-07-13): missing genuinely-swept-source direction filled and live-verified (N030/Gn015 only covered the B-spline-source direction). Gn179: SURFACE_OF_REVOLUTION sweeping a straight LINE generatrix parallel to its axis (raw read: 1 face, surface of revolution, area=28.274333882308202 = exact quarter-cylinder lateral-area formula) run through SweptToElementary -> 1 face, Geom_CylindricalSurface with Radius()==3.0, IDENTICAL area 28.274333882308202 bit-for-bit - confirms genuine, lossless swept-to-elementary recognition from a truly swept (not B-spline-disguised) source. Inverse direction of Gn178. Verdict PARTIAL -> COVERED."
  },
  {
   "problem_id": "seq-surface-to-bspline",
