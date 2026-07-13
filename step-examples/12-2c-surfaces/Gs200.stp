@@ -1,0 +1,74 @@
+ISO-10303-21;
+/* Gs200: single ADVANCED_FACE on a TOROIDAL_SURFACE (major radius 6.0, minor radius 2.0), a
+   quarter-wedge in the MAJOR (U) angle direction that is FULLY CLOSED in the MINOR (V, tube)
+   direction; loop = tube-circle at u=0 (full circle, V-closed) + outer-equator seam arc (u:0->
+   pi/2, v=0) + tube-circle at u=pi/2 (full circle) + a SECOND, geometrically-coincident but
+   UNSHARED outer-equator arc entity closing back to u=0 -- the two equator-arc edges are the
+   V-periodic seam pair BRepBuilderAPI_Sewing::IsMergedClosed/AnalysisNearestEdges must recognize
+   and merge (V-periodic analogue of Tsh209's U-periodic cylinder seam pair) */
+HEADER;
+FILE_DESCRIPTION(('Gs200'),'2;1');
+FILE_NAME('Gs200.stp','2026-07-13T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('gs200_torus_ax',#1,#2,#3);
+#5=TOROIDAL_SURFACE('gs200_torus',#4,6.0,2.0);
+#6=CARTESIAN_POINT('',(8.0,0.0,0.0));
+#7=VERTEX_POINT('',#6);
+#8=CARTESIAN_POINT('',(0.0,8.0,0.0));
+#9=VERTEX_POINT('',#8);
+#10=CARTESIAN_POINT('',(6.0,0.0,0.0));
+#11=DIRECTION('',(0.0,-1.0,0.0));
+#12=DIRECTION('',(1.0,0.0,0.0));
+#13=AXIS2_PLACEMENT_3D('gs200_tube_u0_ax',#10,#11,#12);
+#14=CIRCLE('gs200_tube_u0',#13,2.0);
+#15=EDGE_CURVE('gs200_tube_u0_edge',#7,#7,#14,.T.);
+#16=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#17=DIRECTION('',(0.0,0.0,1.0));
+#18=DIRECTION('',(1.0,0.0,0.0));
+#19=AXIS2_PLACEMENT_3D('gs200_eq_fwd_ax',#16,#17,#18);
+#20=CIRCLE('gs200_eq_fwd',#19,8.0);
+#21=TRIMMED_CURVE('gs200_eq_fwd_arc',#20,(PARAMETER_VALUE(0.0)),(PARAMETER_VALUE(1.5707963267949)),.T.,.PARAMETER.);
+#22=EDGE_CURVE('gs200_eq_fwd_edge',#7,#9,#21,.T.);
+#23=CARTESIAN_POINT('',(0.0,6.0,0.0));
+#24=DIRECTION('',(1.0,0.0,0.0));
+#25=DIRECTION('',(0.0,1.0,0.0));
+#26=AXIS2_PLACEMENT_3D('gs200_tube_u90_ax',#23,#24,#25);
+#27=CIRCLE('gs200_tube_u90',#26,2.0);
+#28=EDGE_CURVE('gs200_tube_u90_edge',#9,#9,#27,.T.);
+#29=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#30=DIRECTION('',(0.0,0.0,-1.0));
+#31=DIRECTION('',(0.0,1.0,0.0));
+#32=AXIS2_PLACEMENT_3D('gs200_eq_rev_ax',#29,#30,#31);
+#33=CIRCLE('gs200_eq_rev',#32,8.0);
+#34=TRIMMED_CURVE('gs200_eq_rev_arc',#33,(PARAMETER_VALUE(0.0)),(PARAMETER_VALUE(1.5707963267949)),.T.,.PARAMETER.);
+#35=EDGE_CURVE('gs200_eq_rev_edge',#9,#7,#34,.T.);
+#36=ORIENTED_EDGE('',$,$,#15,.T.);
+#37=ORIENTED_EDGE('',$,$,#22,.T.);
+#38=ORIENTED_EDGE('',$,$,#28,.T.);
+#39=ORIENTED_EDGE('',$,$,#35,.T.);
+#40=EDGE_LOOP('',(#36,#37,#38,#39));
+#41=FACE_OUTER_BOUND('',#40,.T.);
+#42=ADVANCED_FACE('gs200_face',(#41),#5,.T.);
+#43=OPEN_SHELL('gs200_shell',(#42));
+#44=SHELL_BASED_SURFACE_MODEL('gs200_sbsm',(#43));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Gs200','Gs200','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#44),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+ENDSEC;
+END-ISO-10303-21;
