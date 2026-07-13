@@ -1,0 +1,70 @@
+ISO-10303-21;
+/* A119: MAPPED_ITEM with resolvable REPRESENTATION_MAP but unrecognized-type mapping_target */
+/* DEFECT: mapping_target (#44) is a plain CARTESIAN_POINT -- neither a */
+/* CartesianTransformationOperator3d nor an Axis2Placement3d -- 'case not recognized, */
+/* location ignored' fires, but the mapped shape (via the REAL, resolvable */
+/* REPRESENTATION_MAP) still loads, un-positioned, rather than being dropped */
+HEADER;
+FILE_DESCRIPTION(('A119: MAPPED_ITEM unrecognized-type mapping_target, shape still loads'),'2;1');
+FILE_NAME('A119.stp','2026-07-12T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#8=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#9=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#10=VERTEX_POINT('',#6);
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+#14=DIRECTION('',(1.0,0.0,0.0));
+#15=VECTOR('',#14,1.0);
+#16=LINE('',#6,#15);
+#17=EDGE_CURVE('',#10,#11,#16,.T.);
+#18=DIRECTION('',(0.0,1.0,0.0));
+#19=VECTOR('',#18,1.0);
+#20=LINE('',#7,#19);
+#21=EDGE_CURVE('',#11,#12,#20,.T.);
+#22=DIRECTION('',(-1.0,0.0,0.0));
+#23=VECTOR('',#22,1.0);
+#24=LINE('',#8,#23);
+#25=EDGE_CURVE('',#12,#13,#24,.T.);
+#26=DIRECTION('',(0.0,-1.0,0.0));
+#27=VECTOR('',#26,1.0);
+#28=LINE('',#9,#27);
+#29=EDGE_CURVE('',#13,#10,#28,.T.);
+#30=ORIENTED_EDGE('',$,$,#17,.T.);
+#31=ORIENTED_EDGE('',$,$,#21,.T.);
+#32=ORIENTED_EDGE('',$,$,#25,.T.);
+#33=ORIENTED_EDGE('',$,$,#29,.T.);
+#34=EDGE_LOOP('',(#30,#31,#32,#33));
+#35=FACE_OUTER_BOUND('',#34,.T.);
+#36=ADVANCED_FACE('',(#35),#5,.T.);
+#37=OPEN_SHELL('',(#36));
+#38=SHELL_BASED_SURFACE_MODEL('',(#37));
+#39=(GEOMETRIC_REPRESENTATION_CONTEXT(3)REPRESENTATION_CONTEXT('','3D'));
+#40=SHAPE_REPRESENTATION('target_rep',(#38),#39);
+#41=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#42=AXIS2_PLACEMENT_3D('map_origin',#41,#2,#3);
+/* Resolvable REPRESENTATION_MAP: origin + a REAL target SHAPE_REPRESENTATION with live geometry */
+#43=REPRESENTATION_MAP(#42,#40);
+/* DEFECT: mapping_target is a plain CARTESIAN_POINT -- unrecognized type for placement resolution */
+#44=CARTESIAN_POINT('unrecognized_target',(5.0,0.0,0.0));
+#45=MAPPED_ITEM('mapped_inst',#43,#44);
+#46=SHAPE_REPRESENTATION('host_rep',(#45),#39);
+#100=APPLICATION_CONTEXT('mechanical design');
+#101=PRODUCT_CONTEXT('',#100,'mechanical');
+#102=PRODUCT('A119','A119','',(#101));
+#103=PRODUCT_DEFINITION_FORMATION('','',#102);
+#104=PRODUCT_DEFINITION_CONTEXT('part definition',#100,'design');
+#105=PRODUCT_DEFINITION('','',#103,#104);
+#106=PRODUCT_DEFINITION_SHAPE('','',#105);
+#107=SHAPE_DEFINITION_REPRESENTATION(#106,#46);
+ENDSEC;
+END-ISO-10303-21;

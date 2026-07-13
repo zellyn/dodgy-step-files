@@ -1,0 +1,77 @@
+ISO-10303-21;
+/* N173: per-entity vertex-tolerance bumps ACCUMULATE across THREE edges of one shell */
+/* DEFECT: three edges each carry a growing (1e-4, 1e-3, 1e-2) reader-inflated vertex */
+/* tolerance; under occt_heal_off's ReadMaxPrecisionMode, ResetPreci clamps ALL of them */
+/* to the same global ceiling in one shape-wide LimitTolerance pass -- not Tb020's single */
+/* pre-inflated UNCERTAINTY_MEASURE_WITH_UNIT */
+HEADER;
+FILE_DESCRIPTION(('N173: multi-edge tolerance-bump accumulation, global ceiling clamp'),'2;1');
+FILE_NAME('N173.stp','2026-07-12T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+/* Corner points -- three are displaced off their edges' authored LINEs by growing amounts */
+/* DEFECT: bottom-left displaced 1.0E-4 off bottom edge's LINE */
+#6=CARTESIAN_POINT('bl_displaced_1e-4',(0.0,0.0001,0.0));
+/* DEFECT: bottom-right/top-right corner displaced 1.0E-3 off right edge's LINE */
+#7=CARTESIAN_POINT('br_displaced_1e-3',(10.001,0.0,0.0));
+/* DEFECT: top-right displaced 1.0E-2 off top edge's LINE */
+#8=CARTESIAN_POINT('tr_displaced_1e-2',(10.0,5.01,0.0));
+#9=CARTESIAN_POINT('tl_clean',(0.0,5.0,0.0));
+#10=VERTEX_POINT('',#6);
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+/* Bottom edge: nominal LINE at y=0.0 -- vertex #10 displaced 1e-4 in Y, #11 clean at y=0 */
+#14=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#15=DIRECTION('',(1.0,0.0,0.0));
+#16=VECTOR('',#15,10.0);
+#17=LINE('bottom_nominal',#14,#16);
+#18=EDGE_CURVE('bottom_edge_1e-4_bump',#10,#11,#17,.T.);
+/* Right edge: nominal LINE at x=10.0 -- vertex #11 displaced 1e-3 in X, #12 clean at x=10 */
+#19=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#20=DIRECTION('',(0.0,1.0,0.0));
+#21=VECTOR('',#20,5.0);
+#22=LINE('right_nominal',#19,#21);
+#23=EDGE_CURVE('right_edge_1e-3_bump',#11,#12,#22,.T.);
+/* Top edge: nominal LINE at y=5.0 -- vertex #12 displaced 1e-2 in Y, #13 clean at y=5 */
+#24=CARTESIAN_POINT('',(10.0,5.0,0.0));
+#25=DIRECTION('',(-1.0,0.0,0.0));
+#26=VECTOR('',#25,10.0);
+#27=LINE('top_nominal',#24,#26);
+#28=EDGE_CURVE('top_edge_1e-2_bump',#12,#13,#27,.T.);
+/* Left edge: clean, no displacement */
+#29=DIRECTION('',(0.0,-1.0,0.0));
+#30=VECTOR('',#29,5.0);
+#31=LINE('',#9,#30);
+#32=EDGE_CURVE('',#13,#10,#31,.T.);
+#33=ORIENTED_EDGE('',$,$,#18,.T.);
+#34=ORIENTED_EDGE('',$,$,#23,.T.);
+#35=ORIENTED_EDGE('',$,$,#28,.T.);
+#36=ORIENTED_EDGE('',$,$,#32,.T.);
+#37=EDGE_LOOP('',(#33,#34,#35,#36));
+#38=FACE_OUTER_BOUND('',#37,.T.);
+#39=ADVANCED_FACE('',(#38),#5,.T.);
+#40=OPEN_SHELL('',(#39));
+#41=SHELL_BASED_SURFACE_MODEL('',(#40));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#9001=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9002=PRODUCT('N173','N173','',(#9001));
+#9003=PRODUCT_DEFINITION_FORMATION('','',#9002);
+#9004=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9005=PRODUCT_DEFINITION('','',#9003,#9004);
+#9006=PRODUCT_DEFINITION_SHAPE('','',#9005);
+#9007=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9008=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9009=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9010=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9007,'distance_accuracy_value','');
+#9011=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9010))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9007,#9008,#9009))REPRESENTATION_CONTEXT('','3D'));
+#9012=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#41),#9011);
+#9013=SHAPE_DEFINITION_REPRESENTATION(#9006,#9012);
+ENDSEC;
+END-ISO-10303-21;
