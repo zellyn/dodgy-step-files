@@ -1,0 +1,149 @@
+ISO-10303-21;
+/* Tsh258: genuinely closed tetrahedron with SHARED (not independently-duplicated per
+   face, unlike Tsh003) EDGE_CURVE/VERTEX_POINT entities, emitted as OPEN_SHELL inside
+   SHELL_BASED_SURFACE_MODEL, alongside a second unrelated planar-face item, both wrapped
+   in one NON_MANIFOLD_SURFACE_SHAPE_REPRESENTATION; live-verified: with
+   read.step.nonmanifold=1 the reader promotes the closed tetrahedron shell to a genuine
+   TopoDS_SOLID (4-face) while the second item's open face stays a bare shell -- silent,
+   type-substituting promotion of a wrong-container closed shell into a solid */
+HEADER;
+FILE_DESCRIPTION(('Tsh258'),'2;1');
+FILE_NAME('Tsh258.stp','2026-07-13T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#9000=APPLICATION_CONTEXT('mechanical design');
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#3=CARTESIAN_POINT('',(0.5,0.866025403784,0.0));
+#4=CARTESIAN_POINT('',(0.5,0.288675134595,0.816496580928));
+#5=VERTEX_POINT('vtx_a',#1);
+#6=VERTEX_POINT('vtx_b',#2);
+#7=VERTEX_POINT('vtx_c',#3);
+#8=VERTEX_POINT('vtx_d',#4);
+/* six shared edges: each referenced by exactly 2 of the 4 faces below */
+#9=DIRECTION('',(1.0,0.0,0.0));
+#10=VECTOR('',#9,1.0);
+#11=LINE('',#1,#10);
+#12=EDGE_CURVE('e_ab',#5,#6,#11,.T.);
+#13=DIRECTION('',(0.5,0.866025403784,0.0));
+#14=VECTOR('',#13,1.0);
+#15=LINE('',#1,#14);
+#16=EDGE_CURVE('e_ac',#5,#7,#15,.T.);
+#17=DIRECTION('',(0.5,0.288675134595,0.816496580928));
+#18=VECTOR('',#17,1.0);
+#19=LINE('',#1,#18);
+#20=EDGE_CURVE('e_ad',#5,#8,#19,.T.);
+#21=DIRECTION('',(-0.5,0.866025403784,0.0));
+#22=VECTOR('',#21,1.0);
+#23=LINE('',#2,#22);
+#24=EDGE_CURVE('e_bc',#6,#7,#23,.T.);
+#25=DIRECTION('',(-0.5,0.288675134595,0.816496580928));
+#26=VECTOR('',#25,1.0);
+#27=LINE('',#2,#26);
+#28=EDGE_CURVE('e_bd',#6,#8,#27,.T.);
+#29=DIRECTION('',(0.0,-0.57735,0.816496580928));
+#30=VECTOR('',#29,1.0);
+#31=LINE('',#3,#30);
+#32=EDGE_CURVE('e_cd',#7,#8,#31,.T.);
+/* face ABC: A->B->C->A = AB(fwd), BC(fwd), AC(rev) */
+#33=ORIENTED_EDGE('',*,*,#12,.T.);
+#34=ORIENTED_EDGE('',*,*,#24,.T.);
+#35=ORIENTED_EDGE('',*,*,#16,.F.);
+#36=EDGE_LOOP('',(#33,#34,#35));
+#37=DIRECTION('',(0.0,0.0,-1.0));
+#38=DIRECTION('',(1.0,0.0,0.0));
+#39=AXIS2_PLACEMENT_3D('',#1,#37,#38);
+#40=PLANE('',#39);
+#41=FACE_OUTER_BOUND('',#36,.T.);
+#42=ADVANCED_FACE('face_abc',(#41),#40,.T.);
+/* face ABD: A->D->B->A = AD(fwd), BD(rev), AB(rev) */
+#43=ORIENTED_EDGE('',*,*,#20,.T.);
+#44=ORIENTED_EDGE('',*,*,#28,.F.);
+#45=ORIENTED_EDGE('',*,*,#12,.F.);
+#46=EDGE_LOOP('',(#43,#44,#45));
+#47=DIRECTION('',(0.0,-0.942809,0.333333));
+#48=DIRECTION('',(1.0,0.0,0.0));
+#49=AXIS2_PLACEMENT_3D('',#1,#47,#48);
+#50=PLANE('',#49);
+#51=FACE_OUTER_BOUND('',#46,.T.);
+#52=ADVANCED_FACE('face_abd',(#51),#50,.T.);
+/* face ACD: A->C->D->A = AC(fwd), CD(fwd), AD(rev) */
+#53=ORIENTED_EDGE('',*,*,#16,.T.);
+#54=ORIENTED_EDGE('',*,*,#32,.T.);
+#55=ORIENTED_EDGE('',*,*,#20,.F.);
+#56=EDGE_LOOP('',(#53,#54,#55));
+#57=DIRECTION('',(0.816497,0.471405,0.333333));
+#58=DIRECTION('',(-0.5,0.866025403784,0.0));
+#59=AXIS2_PLACEMENT_3D('',#2,#57,#58);
+#60=PLANE('',#59);
+#61=FACE_OUTER_BOUND('',#56,.T.);
+#62=ADVANCED_FACE('face_acd',(#61),#60,.T.);
+/* face BCD: B->D->C->B = BD(fwd), CD(rev), BC(rev) */
+#63=ORIENTED_EDGE('',*,*,#28,.T.);
+#64=ORIENTED_EDGE('',*,*,#32,.F.);
+#65=ORIENTED_EDGE('',*,*,#24,.F.);
+#66=EDGE_LOOP('',(#63,#64,#65));
+#67=DIRECTION('',(-0.816497,0.471405,0.333333));
+#68=DIRECTION('',(-0.5,-0.866025403784,0.0));
+#69=AXIS2_PLACEMENT_3D('',#3,#67,#68);
+#70=PLANE('',#69);
+#71=FACE_OUTER_BOUND('',#66,.T.);
+#72=ADVANCED_FACE('face_bcd',(#71),#70,.T.);
+#73=OPEN_SHELL('tsh258_shell',(#42,#52,#62,#72));
+#74=SHELL_BASED_SURFACE_MODEL('tsh258_sbsm',(#73));
+/* second, unrelated item: required so the representation has 2+ items -- the reader's
+   single-item shortcut (nsh==1) binds the pre-reconstruction shape directly and would
+   hide the promotion; with 2+ items the reconstructed/promoted compound is what's bound */
+#75=CARTESIAN_POINT('',(20.0,0.0,0.0));
+#76=CARTESIAN_POINT('',(21.0,0.0,0.0));
+#77=CARTESIAN_POINT('',(21.0,1.0,0.0));
+#78=CARTESIAN_POINT('',(20.0,1.0,0.0));
+#79=VERTEX_POINT('',#75);
+#80=VERTEX_POINT('',#76);
+#81=VERTEX_POINT('',#77);
+#82=VERTEX_POINT('',#78);
+#83=DIRECTION('',(1.0,0.0,0.0));
+#84=VECTOR('',#83,1.0);
+#85=LINE('',#75,#84);
+#86=EDGE_CURVE('',#79,#80,#85,.T.);
+#87=DIRECTION('',(0.0,1.0,0.0));
+#88=VECTOR('',#87,1.0);
+#89=LINE('',#76,#88);
+#90=EDGE_CURVE('',#80,#81,#89,.T.);
+#91=DIRECTION('',(-1.0,0.0,0.0));
+#92=VECTOR('',#91,1.0);
+#93=LINE('',#77,#92);
+#94=EDGE_CURVE('',#81,#82,#93,.T.);
+#95=DIRECTION('',(0.0,-1.0,0.0));
+#96=VECTOR('',#95,1.0);
+#97=LINE('',#78,#96);
+#98=EDGE_CURVE('',#82,#79,#97,.T.);
+#99=ORIENTED_EDGE('',*,*,#86,.T.);
+#100=ORIENTED_EDGE('',*,*,#90,.T.);
+#101=ORIENTED_EDGE('',*,*,#94,.T.);
+#102=ORIENTED_EDGE('',*,*,#98,.T.);
+#103=EDGE_LOOP('',(#99,#100,#101,#102));
+#104=DIRECTION('',(0.0,0.0,1.0));
+#105=DIRECTION('',(1.0,0.0,0.0));
+#106=AXIS2_PLACEMENT_3D('',#75,#104,#105);
+#107=PLANE('',#106);
+#108=FACE_OUTER_BOUND('',#103,.T.);
+#109=ADVANCED_FACE('second_item_face',(#108),#107,.T.);
+#110=OPEN_SHELL('second_item_shell',(#109));
+#111=SHELL_BASED_SURFACE_MODEL('second_item_sbsm',(#110));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Tsh258','Tsh258','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=NON_MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#74,#111),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+ENDSEC;
+END-ISO-10303-21;
