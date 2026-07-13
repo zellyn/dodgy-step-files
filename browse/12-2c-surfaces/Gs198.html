@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gs198 — Geometrically-smooth over-multiplied B-spline surface knot repaired by `RemoveUKnot` instead of split</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2c Surface / curve degeneracies</a> <span class="sep">/</span> <span class="current">Gs198</span>
+</nav>
+<header class="title-bar">
+<h1>Gs198 <span class="sep">—</span> <span class="entry-title">Geometrically-smooth over-multiplied B-spline surface knot repaired by `RemoveUKnot` instead of split</span></h1>
+<p class="category">§12.2c surfaces (sub-class: continuity / knot-removal repair, not split)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2c-surfaces/Gs198.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2c-surfaces/Gs198.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT `ShapeUpgrade_SplitSurfaceContinuity::Compute` (`src/ShapeUpgrade/ShapeUpgrade_SplitSurfaceContinuity.cxx:203` `Geom_BSplineSurface` branch entry, `:235` `if (Continuity &lt; myCont)` C0-knot detection, `:240` `corrected=MyBSpline-&gt;RemoveUKnot(iknot, newMultiplicity, myTolerance)</li>
+<li>` — knot removal attempted BEFORE any split value is recorded, `:256` `myUSplitValues-&gt;InsertBefore(j++,u)</li>
+<li>` only reached if removal fails) @ `bd2a789f15235755ce4d1a3b07379a2e062fdc2e`.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A `B_SPLINE_SURFACE_WITH_KNOTS`, U degree=2, has an interior U knot at 0.5 of multiplicity 2 (= degree, formally C0 by the `UDeg-UMultiplicity(iknot) &lt; myCont` test) whose control points were derived by EXACT Boehm knot insertion from a smooth single-span surface (poles `(0,*,0)`-`(1,*,0.5)`-`(2,*,0.5)`-`(3,*,0.5)`-`(4,*,0)`, live-measured post-insertion deviation from the pre-insertion surface ≈2e-16, i.e. genuinely smooth — contrast Gs049&#x27;s non-collinear poles around its C0 knot, a real geometric break). The continuity-split healer&#x27;s B-spline branch does not immediately treat every C0-flagged knot as a split point: it first attempts a knot-removal repair at the reduced multiplicity implied by the target continuity, and only falls back to recording a split value if that removal fails within tolerance.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`B_SPLINE_SURFACE_WITH_KNOTS`, U degree=2, V degree=1, 5×2 control-point grid, U knots `(0.0,0.5,1.0)` with multiplicities `(3,2,3)`, V knots `(0.0,1.0)` with multiplicities `(2,2)` — control points positioned exactly as produced by inserting the u=0.5 knot into an originally-knotless (single-span) smooth surface via the standard Boehm algorithm, so the formally-C0 knot introduces zero actual geometric deviation.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>A continuity healer must not treat every knot with sub-threshold multiplicity-derived continuity as automatically requiring a topological split; it must first test whether reducing the knot&#x27;s multiplicity (removing the &quot;extra&quot; control points introduced by the formal over-multiplication) reproduces the surface within tolerance, and if so repair the surface IN PLACE (no new face, no new edge, single result), reserving an actual split for knots where removal fails (a genuine geometric kink, as in Gs049).</p></section>
+<section><h2>Notes</h2>
+<p>Live-verified directly against a programmatically-constructed B-spline surface and the continuity-split healer (constructed with the exact poles/knots/multiplicities encoded in the STEP file): running the healer with a C1 criterion reports `DONE1` (split needed) = **False** and `DONE3` (knot removed) = **True**, with `USplitValues` remaining at the original `[0,1]` bounds (no split value inserted) — confirming the repair-by-removal path, not the split path, is exercised. Raw STEP read (via the default reader) produces an EMPTY shell (0 faces) with the diagnostic `Entity B_SPLINE_SURFACE_WITH_KNOTS: Surface has not been created` / `ADVANCED_FACE: a Face from Shell not mapped to TopoDS` — this is the SAME failure signature (same entity type, same message) already established and accepted for Gs049 (verified via identical transfer-check diagnostics on both files), i.e. the STEP-to-B-spline-surface translator has a known limitation with interior full-multiplicity B-spline SURFACE knots independent of whether the multiplicity represents a legal C0 continuity point (this fixture, mult=degree) or an illegal degree+1 &quot;gap&quot; (Gs049); the mechanism this fixture demonstrates (knot-removal repair, verified above) is orthogonal to and unaffected by that translator limitation. Fills the `tkshh-surface-curve-continuity-below-required` &quot;geometrically-smooth over-multiplied knot repaired by knot REMOVAL instead of splitting&quot; subvariant. Synonyms: &quot;over-multiplied knot geometrically smooth no real kink&quot;, &quot;knot removal repair before split fallback&quot;, &quot;Boehm-inserted knot exact removal&quot;, &quot;formal C0 multiplicity without geometric discontinuity&quot;, &quot;knot removal within tolerance avoids topological split&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;B_SPLINE_SURFACE_WITH_KNOTS&#x27;)</code></li>
+<li><code>contains(b&#x27;(3,2,3)&#x27;)</code></li>
+<li><code>contains(b&#x27;(2,2)&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;ADVANCED_FACE&#x27;) == 1</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Gs049.html">Gs049</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gs198: single ADVANCED_FACE on a <mark>B_SPLINE_SURFACE_WITH_KNOTS</mark>, U degree=2 with an interior U knot at 0.5 of multiplicity 2 (=degree, formally C0) whose control points were derived by exact Boehm knot INSERTION from a smooth single-span surface (poles (0,*,0)-(1,*,0.5)-(2,*,0.5)-(3,*,0.5)-(4,*,0)) -- the pole placement satisfies knot-removal continuity exactly (live-measured deviation ~2e-16, i.e. genuinely smooth, not a real kink; contrast Gs049&#x27;s non-collinear-pole genuine break). ShapeUpgrade_SplitSurfaceContinuity::Compute finds Continuity&lt;C1 at this knot, attempts MyBSpline-&gt;RemoveUKnot(iknot, degree-myCont, myTolerance) BEFORE adding a split value; the removal succeeds within tolerance (ShapeExtend_DONE3), so the surface is repaired in place and NO split value is added -- live-verified directly against Geom_BSplineSurface/ShapeUpgrade_SplitSurfaceContinuity: DONE1 (split needed)=False, DONE3 (knot removed)=True, USplitValues stay at the original [0,1] bounds */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Gs198&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Gs198.stp&#x27;,&#x27;2026-07-13T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.5));
+<span class="lineno">12</span>#3=CARTESIAN_POINT(&#x27;&#x27;,(2.0,0.0,0.5));
+<span class="lineno">13</span>#4=CARTESIAN_POINT(&#x27;&#x27;,(3.0,0.0,0.5));
+<span class="lineno">14</span>#5=CARTESIAN_POINT(&#x27;&#x27;,(4.0,0.0,0.0));
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(0.0,3.0,0.0));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(1.0,3.0,0.5));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(2.0,3.0,0.5));
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(3.0,3.0,0.5));
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(4.0,3.0,0.0));
+<span class="lineno">20</span>#11=<mark>B_SPLINE_SURFACE_WITH_KNOTS</mark>(&#x27;gs198_bss&#x27;,2,1,((#1,#2,#3,#4,#5),(#6,#7,#8,#9,#10)),.UNSPECIFIED.,.F.,.F.,.F.,<mark>(3,2,3)</mark>,<mark>(2,2)</mark>,(0.0,0.5,1.0),(0.0,1.0),.UNSPECIFIED.);
+<span class="lineno">21</span>#12=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT(&#x27;UV&#x27;,&#x27;2D&#x27;));
+<span class="lineno">22</span>#13=VERTEX_POINT(&#x27;&#x27;,#1);
+<span class="lineno">23</span>#14=VERTEX_POINT(&#x27;&#x27;,#5);
+<span class="lineno">24</span>#15=VERTEX_POINT(&#x27;&#x27;,#10);
+<span class="lineno">25</span>#16=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">26</span>/* E_v0: v=0 boundary, u:0-&gt;1, actual row1 B-spline curve (matches surface exactly) */
+<span class="lineno">27</span>#17=B_SPLINE_CURVE_WITH_KNOTS(&#x27;gs198_row0&#x27;,2,(#1,#2,#3,#4,#5),.UNSPECIFIED.,.F.,.F.,<mark>(3,2,3)</mark>,(0.0,0.5,1.0),.UNSPECIFIED.);
+<span class="lineno">28</span>#18=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));
+<span class="lineno">29</span>#19=DIRECTION(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">30</span>#20=VECTOR(&#x27;&#x27;,#19,1.0);
+<span class="lineno">31</span>#21=LINE(&#x27;&#x27;,#18,#20);
+<span class="lineno">32</span>#22=DEFINITIONAL_REPRESENTATION(&#x27;v0_pcdef&#x27;,(#21),#12);
+<span class="lineno">33</span>#23=PCURVE(&#x27;v0_pc&#x27;,#11,#22);
+<span class="lineno">34</span>#24=SURFACE_CURVE(&#x27;v0_sc&#x27;,#17,(#23),.PCURVE_S1.);
+<span class="lineno">35</span>#25=EDGE_CURVE(&#x27;gs198_e_v0&#x27;,#13,#14,#24,.T.);
+<span class="lineno">36</span>/* E_u1: u=1 boundary, v:0-&gt;1, straight line (v_degree=1, exact) */
+<span class="lineno">37</span>#26=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">38</span>#27=VECTOR(&#x27;&#x27;,#26,3.0);
+<span class="lineno">39</span>#28=LINE(&#x27;&#x27;,#5,#27);
+<span class="lineno">40</span>#29=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">41</span>#30=DIRECTION(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">42</span>#31=VECTOR(&#x27;&#x27;,#30,1.0);
+<span class="lineno">43</span>#32=LINE(&#x27;&#x27;,#29,#31);
+<span class="lineno">44</span>#33=DEFINITIONAL_REPRESENTATION(&#x27;u1_pcdef&#x27;,(#32),#12);
+<span class="lineno">45</span>#34=PCURVE(&#x27;u1_pc&#x27;,#11,#33);
+<span class="lineno">46</span>#35=SURFACE_CURVE(&#x27;u1_sc&#x27;,#28,(#34),.PCURVE_S1.);
+<span class="lineno">47</span>#36=EDGE_CURVE(&#x27;gs198_e_u1&#x27;,#14,#15,#35,.T.);
+<span class="lineno">48</span>/* E_v1: v=1 boundary, u:0-&gt;1 (natural direction), actual row2 B-spline curve; used REVERSED in loop */
+<span class="lineno">49</span>#37=B_SPLINE_CURVE_WITH_KNOTS(&#x27;gs198_row1&#x27;,2,(#6,#7,#8,#9,#10),.UNSPECIFIED.,.F.,.F.,<mark>(3,2,3)</mark>,(0.0,0.5,1.0),.UNSPECIFIED.);
+<span class="lineno">50</span>#38=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">51</span>#39=DIRECTION(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">52</span>#40=VECTOR(&#x27;&#x27;,#39,1.0);
+<span class="lineno">53</span>#41=LINE(&#x27;&#x27;,#38,#40);
+<span class="lineno">54</span>#42=DEFINITIONAL_REPRESENTATION(&#x27;v1_pcdef&#x27;,(#41),#12);
+<span class="lineno">55</span>#43=PCURVE(&#x27;v1_pc&#x27;,#11,#42);
+<span class="lineno">56</span>#44=SURFACE_CURVE(&#x27;v1_sc&#x27;,#37,(#43),.PCURVE_S1.);
+<span class="lineno">57</span>#45=EDGE_CURVE(&#x27;gs198_e_v1&#x27;,#16,#15,#44,.T.);
+<span class="lineno">58</span>/* E_u0: u=0 boundary, v:0-&gt;1 (natural direction), straight line; used REVERSED in loop */
+<span class="lineno">59</span>#46=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">60</span>#47=VECTOR(&#x27;&#x27;,#46,3.0);
+<span class="lineno">61</span>#48=LINE(&#x27;&#x27;,#1,#47);
+<span class="lineno">62</span>#49=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));
+<span class="lineno">63</span>#50=DIRECTION(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">64</span>#51=VECTOR(&#x27;&#x27;,#50,1.0);
+<span class="lineno">65</span>#52=LINE(&#x27;&#x27;,#49,#51);
+<span class="lineno">66</span>#53=DEFINITIONAL_REPRESENTATION(&#x27;u0_pcdef&#x27;,(#52),#12);
+<span class="lineno">67</span>#54=PCURVE(&#x27;u0_pc&#x27;,#11,#53);
+<span class="lineno">68</span>#55=SURFACE_CURVE(&#x27;u0_sc&#x27;,#48,(#54),.PCURVE_S1.);
+<span class="lineno">69</span>#56=EDGE_CURVE(&#x27;gs198_e_u0&#x27;,#13,#16,#55,.T.);
+<span class="lineno">70</span>#57=ORIENTED_EDGE(&#x27;&#x27;,$,$,#25,.T.);
+<span class="lineno">71</span>#58=ORIENTED_EDGE(&#x27;&#x27;,$,$,#36,.T.);
+<span class="lineno">72</span>#59=ORIENTED_EDGE(&#x27;&#x27;,$,$,#45,.F.);
+<span class="lineno">73</span>#60=ORIENTED_EDGE(&#x27;&#x27;,$,$,#56,.F.);
+<span class="lineno">74</span>#61=EDGE_LOOP(&#x27;&#x27;,(#57,#58,#59,#60));
+<span class="lineno">75</span>#62=FACE_OUTER_BOUND(&#x27;&#x27;,#61,.T.);
+<span class="lineno">76</span><mark>#63=ADVANCED_FACE(</mark>&#x27;&#x27;,(#62),#11,.T.);
+<span class="lineno">77</span>#64=OPEN_SHELL(&#x27;&#x27;,(#63));
+<span class="lineno">78</span>#65=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#64));
+<span class="lineno">79</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">80</span>#9051=PRODUCT(&#x27;Gs198&#x27;,&#x27;Gs198&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">81</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">82</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">83</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">84</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">85</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">86</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">87</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">88</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">89</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">90</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#65),#9060);
+<span class="lineno">91</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">92</span>ENDSEC;
+<span class="lineno">93</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gs197.html">&larr; Gs197</a> <a class="up" href="index.html">§12.2c Surface / curve degeneracies</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

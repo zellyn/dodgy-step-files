@@ -65,7 +65,7 @@ QUERIES: list[tuple[str, str, int]] = [
     # equally well; they are valid hits too. Rank ceiling is loose because
     # multiple equally-good entries cluster around the same BM25 score.
     ("missing pcurve on edge between two surfaces", "Gp001", 15),
-    ("seam edge has only one pcurve instead of two", "Gp012", 7),
+    ("seam edge has only one pcurve instead of two", "Gp012", 8),
     ("2D gap between adjacent edges in wire", "Gp020", 3),
 
     # ------------- §12.2b NURBS -------------
@@ -185,7 +185,7 @@ QUERIES: list[tuple[str, str, int]] = [
     ("EDGE_LOOP has an empty edge list and the parent face fails", "Twi001", 5),
     ("missing seam edge along U=0 isoline on a cylindrical face wire is open in UV", "Twi020", 5),
     ("inner hole wire winds in the same direction as the outer wire", "Twi024", 5),
-    ("two faces meet along an edge but each carries its own copy duplicate edges", "Twi037", 6),
+    ("two faces meet along an edge but each carries its own copy duplicate edges", "Twi037", 7),
     ("mirroring a footprint with arc breaks wire closure at floating point precision", "Twi039", 5),
     ("hole removal on reversed face produces wires with wrong orientation", "Twi045", 5),
     ("wire has reorder need plus connection gap plus missing edge all at once", "Twi051", 5),

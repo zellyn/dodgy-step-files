@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1>§12.3a Shells / orientation</h1>
 <p class="blurb">Shell topology defects: orientation, free bounds, mixed open/closed shells, UnifySameDomain pathologies.</p>
-<p class="meta">278 entries</p>
+<p class="meta">284 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
@@ -296,6 +296,12 @@
 <tr><td><a href="Tsh245.html"><code>Tsh245</code></a></td><td>Purpose-built equidistant candidate tie-break AND reciprocity-asymmetric configuration</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(42) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Tsh246.html"><code>Tsh246</code></a></td><td>Two face-hosted candidate edges of unequal length: the longer becomes the parametrization reference</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(14) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Tsh247.html"><code>Tsh247</code></a></td><td>Two faces sharing one real `EDGE_CURVE` with genuinely tangent (G1) geometry: default read-path continuity encoding</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tsh248.html"><code>Tsh248</code></a></td><td>Three shells (two cylindrical, one planar) meet along one 3D line: N-way non-manifold merge candidate disambiguation</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tsh249.html"><code>Tsh249</code></a></td><td>Three genuinely-fragmented, 50%-overlapping free-edge sections chained into one non-manifold edge via transitive adjacency</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(21) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tsh250.html"><code>Tsh250</code></a></td><td>Two stacked full-period cylindrical shells whose facing seam candidate carries only one explicit 2D curve representation</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(14) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tsh251.html"><code>Tsh251</code></a></td><td>Face-hosted gap candidate whose achieved merge tolerance exceeds a caller-declared cap: the merge is nullified, not returned out-of-spec</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(14) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tsh252.html"><code>Tsh252</code></a></td><td>Partial-overlap (80%-coverage) gap candidate: achieved merge tolerance tracks the inset distance, not the true perpendicular gap</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(14) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tsh253.html"><code>Tsh253</code></a></td><td>Two adjacent (not coincident) coplanar faces whose shared-boundary candidate is traversed in opposite directions on each side</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></td></tr>
 </tbody></table>
 </main>
 <footer>

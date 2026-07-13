@@ -32,7 +32,7 @@ tolerance is `0.0525` (gap-proportional, `BRep_Tool::SameParameter==
 True`). With the SAME geometry but `SetMaxTolerance(0.01)` explicitly
 declared BEFORE `Perform()` (0.01 < the 0.0525 tolerance the merge would
 otherwise achieve) the merge is instead REJECTED entirely —
-`NbContigousEdges()==0`, `NbFreeEdges()==8` (both original edges remain
+`NbContigousEdges()==0`, `NbFreeEdges()==6` (both original edges remain
 unmerged, at their default 1e-7 tolerance) — a directly observable,
 reproducible before/after contrast confirming the hard cap nullifies the
 merge outright rather than returning an edge with an out-of-spec

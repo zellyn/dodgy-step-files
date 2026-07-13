@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gs196 — `CYLINDRICAL_SURFACE` trimmed to within tolerance of a full period forces a half-surface closure probe before splitting</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2c Surface / curve degeneracies</a> <span class="sep">/</span> <span class="current">Gs196</span>
+</nav>
+<header class="title-bar">
+<h1>Gs196 <span class="sep">—</span> <span class="entry-title">`CYLINDRICAL_SURFACE` trimmed to within tolerance of a full period forces a half-surface closure probe before splitting</span></h1>
+<p class="category">§12.2c surfaces (sub-class: closed-surface splitting / near-full-period geometric-closure fallback, no explicit seam)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2c-surfaces/Gs196.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2c-surfaces/Gs196.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT `ShapeUpgrade_ClosedFaceDivide::SplitSurface` (`src/ShapeUpgrade/ShapeUpgrade_ClosedFaceDivide.cxx:161-184`, the U-closure fallback: `:168-169` `toler = GAS.UResolution(Precision())</li>
+<li>if((U2-U1)-(Ul-Uf) &lt; toler)` near-full-period guard, `:170-171` builds a `Geom_RectangularTrimmedSurface` spanning exactly HALF the surface (`U1` to `(U2+U1)/2`), `:173` `if (!sast-&gt;IsUClosed(Precision()))` confirms the half is genuinely not closed before committing to the split) @ `bd2a789f15235755ce4d1a3b07379a2e062fdc2e`.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A single `ADVANCED_FACE` on a `CYLINDRICAL_SURFACE` (radius 5.0) is trimmed to U:[0, 2π−1e-9] — a genuine 1e-9 radian sliver short of the full 2π period — bounded by two structurally DISTINCT (non-shared) near-coincident end edges (the u≈0 and u≈2π sides are two separate `EDGE_CURVE` entities with two separate `VERTEX_POINT`s ~5e-9 mm apart, not the same edge referenced twice), so the seam-detection scan&#x27;s identity-based check never flags a seam. The gap (1e-9 rad) is below the surface adaptor&#x27;s own U-direction resolution tolerance for this radius (empirically measured ≈2e-8 rad), so the face&#x27;s U-trim range is within the closure-test&#x27;s tolerance of the surface&#x27;s full native period.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`CYLINDRICAL_SURFACE` (radius 5.0) with a face bounded by a bottom rim (near-full circle, u:0 -&gt; 2π−1e-9), a top rim (same, offset in Z), and two distinct straight &quot;end&quot; edges at u≈0 and u≈2π−1e-9 connecting them — no edge referenced twice, no `IsSeam` flag anywhere.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Since no seam edge is present, the closed-face splitter must fall through to the geometric-closure test; because the surface itself is unconditionally U-closed for a cylinder and the face&#x27;s actual U-trim range is within resolution tolerance of the surface&#x27;s full period, the implementation must build a half-surface probe patch, confirm it is NOT closed (as a genuine half necessarily is not), and split — as opposed to either skipping the near-full face entirely (leaving it unsplit) or mis-treating the thin residual sliver as itself splittable.</p></section>
+<section><h2>Notes</h2>
+<p>Live-verified directly against the closed-face split healer: raw read is 1 face (a cylinder surface, U-closed and V-open, UV bounds `(0, 2π−1e-9, 0, 3)`); after running the healer, the result is 2 faces (rectangular-trimmed patches, U-halves at the midpoint) — confirming the near-full-period thin-sliver path triggers a genuine split via the half-surface closure test, distinct from Gs193&#x27;s/Gs194&#x27;s explicit-seam path and Gs195&#x27;s basis-curve-closed path. Fills the `tkshh-face-closed-surface-unsplit-at-seam` &quot;face trimmed to within tolerance of a full period (thin near-closed face)&quot; subvariant. Synonyms: &quot;near-full-period cylindrical face no explicit seam&quot;, &quot;RectangularTrimmedSurface half-surface closure probe&quot;, &quot;thin sliver trim below UResolution tolerance&quot;, &quot;geometric closure detection without seam edge&quot;, &quot;almost-closed face forces split not skip&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;CYLINDRICAL_SURFACE&#x27;)</code></li>
+<li><code>contains(b&#x27;6.283185306179586&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;ADVANCED_FACE&#x27;) == 1</code></li>
+<li><code>count_entity_def(b&#x27;EDGE_CURVE&#x27;) == 4</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+<li><code>shape_null == False</code></li>
+<li><code>n_faces_total == 1</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Gs193.html">Gs193</a>, <a href="Gs194.html">Gs194</a>, <a href="Gs195.html">Gs195</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gs196: single ADVANCED_FACE on a <mark>CYLINDRICAL_SURFACE</mark> (radius 5.0) trimmed to U:[0, 2pi-1e-9] -- a genuine 1e-9 radian sliver short of the full period, bounded by two DISTINCT (non-shared) near-coincident end edges, so no seam edge exists. ShapeUpgrade_ClosedFaceDivide::SplitSurface&#x27;s seam scan finds nothing; the geometric-closure fallback sees mySurf-&gt;IsUClosed()==True (cylinder is always U-closed) and (U2-U1)-(Ul-Uf)=1e-9 which is below GeomAdaptor_Surface::UResolution(Precision::Confusion()) (~2e-8 rad for this radius), so it builds a half-period Geom_RectangularTrimmedSurface and confirms that half is NOT closed, forcing the split -- live-verified via ShapeUpgrade_ShapeDivideClosed: 1 face -&gt; 2 faces, split at the U midpoint */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Gs196&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Gs196.stp&#x27;,&#x27;2026-07-13T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;gs196_cyl_ax&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=<mark>CYLINDRICAL_SURFACE</mark>(&#x27;gs196_cyl&#x27;,#4,5.0);
+<span class="lineno">15</span>#6=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT(&#x27;UV&#x27;,&#x27;2D&#x27;));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">17</span>#8=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(5.0,-5.000001638348654E-09,0.0));
+<span class="lineno">19</span>#10=VERTEX_POINT(&#x27;&#x27;,#9);
+<span class="lineno">20</span>#11=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,3.0));
+<span class="lineno">21</span>#12=VERTEX_POINT(&#x27;&#x27;,#11);
+<span class="lineno">22</span>#13=CARTESIAN_POINT(&#x27;&#x27;,(5.0,-5.000001638348654E-09,3.0));
+<span class="lineno">23</span>#14=VERTEX_POINT(&#x27;&#x27;,#13);
+<span class="lineno">24</span>/* bottom rim: V8(u=0) -&gt; V10(u=Ul), almost-full circle at z=0 */
+<span class="lineno">25</span>#15=CIRCLE(&#x27;gs196_bottom_3d&#x27;,#4,5.0);
+<span class="lineno">26</span>#16=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));
+<span class="lineno">27</span>#17=DIRECTION(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">28</span>#18=VECTOR(&#x27;&#x27;,#17,<mark>6.283185306179586</mark>);
+<span class="lineno">29</span>#19=LINE(&#x27;&#x27;,#16,#18);
+<span class="lineno">30</span>#20=DEFINITIONAL_REPRESENTATION(&#x27;bottom_pcdef&#x27;,(#19),#6);
+<span class="lineno">31</span>#21=PCURVE(&#x27;bottom_pc&#x27;,#5,#20);
+<span class="lineno">32</span>#22=SURFACE_CURVE(&#x27;bottom_sc&#x27;,#15,(#21),.PCURVE_S1.);
+<span class="lineno">33</span><mark>#23=EDGE_CURVE(</mark>&#x27;gs196_bottom_rim&#x27;,#8,#10,#22,.T.);
+<span class="lineno">34</span>/* top rim: V12(u=0) -&gt; V14(u=Ul), almost-full circle at z=3 */
+<span class="lineno">35</span>#24=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,3.0));
+<span class="lineno">36</span>#25=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#24,#2,#3);
+<span class="lineno">37</span>#26=CIRCLE(&#x27;gs196_top_3d&#x27;,#25,5.0);
+<span class="lineno">38</span>#27=CARTESIAN_POINT(&#x27;&#x27;,(0.0,3.0));
+<span class="lineno">39</span>#28=DIRECTION(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">40</span>#29=VECTOR(&#x27;&#x27;,#28,<mark>6.283185306179586</mark>);
+<span class="lineno">41</span>#30=LINE(&#x27;&#x27;,#27,#29);
+<span class="lineno">42</span>#31=DEFINITIONAL_REPRESENTATION(&#x27;top_pcdef&#x27;,(#30),#6);
+<span class="lineno">43</span>#32=PCURVE(&#x27;top_pc&#x27;,#5,#31);
+<span class="lineno">44</span>#33=SURFACE_CURVE(&#x27;top_sc&#x27;,#26,(#32),.PCURVE_S1.);
+<span class="lineno">45</span><mark>#34=EDGE_CURVE(</mark>&#x27;gs196_top_rim&#x27;,#12,#14,#33,.T.);
+<span class="lineno">46</span>/* end edge at u=Ul (near-full side): V10 -&gt; V14 */
+<span class="lineno">47</span>#35=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">48</span>#36=VECTOR(&#x27;&#x27;,#35,3.0);
+<span class="lineno">49</span>#37=LINE(&#x27;&#x27;,#9,#36);
+<span class="lineno">50</span>#38=CARTESIAN_POINT(&#x27;&#x27;,(<mark>6.283185306179586</mark>,0.0));
+<span class="lineno">51</span>#39=DIRECTION(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">52</span>#40=VECTOR(&#x27;&#x27;,#39,3.0);
+<span class="lineno">53</span>#41=LINE(&#x27;&#x27;,#38,#40);
+<span class="lineno">54</span>#42=DEFINITIONAL_REPRESENTATION(&#x27;endUl_pcdef&#x27;,(#41),#6);
+<span class="lineno">55</span>#43=PCURVE(&#x27;endUl_pc&#x27;,#5,#42);
+<span class="lineno">56</span>#44=SURFACE_CURVE(&#x27;endUl_sc&#x27;,#37,(#43),.PCURVE_S1.);
+<span class="lineno">57</span><mark>#45=EDGE_CURVE(</mark>&#x27;gs196_end_Ul&#x27;,#10,#14,#44,.T.);
+<span class="lineno">58</span>/* end edge at u=0: V8 -&gt; V12 */
+<span class="lineno">59</span>#46=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">60</span>#47=VECTOR(&#x27;&#x27;,#46,3.0);
+<span class="lineno">61</span>#48=LINE(&#x27;&#x27;,#7,#47);
+<span class="lineno">62</span>#49=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));
+<span class="lineno">63</span>#50=DIRECTION(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">64</span>#51=VECTOR(&#x27;&#x27;,#50,3.0);
+<span class="lineno">65</span>#52=LINE(&#x27;&#x27;,#49,#51);
+<span class="lineno">66</span>#53=DEFINITIONAL_REPRESENTATION(&#x27;end0_pcdef&#x27;,(#52),#6);
+<span class="lineno">67</span>#54=PCURVE(&#x27;end0_pc&#x27;,#5,#53);
+<span class="lineno">68</span>#55=SURFACE_CURVE(&#x27;end0_sc&#x27;,#48,(#54),.PCURVE_S1.);
+<span class="lineno">69</span><mark>#56=EDGE_CURVE(</mark>&#x27;gs196_end_0&#x27;,#8,#12,#55,.T.);
+<span class="lineno">70</span>#57=ORIENTED_EDGE(&#x27;&#x27;,$,$,#23,.T.);
+<span class="lineno">71</span>#58=ORIENTED_EDGE(&#x27;&#x27;,$,$,#45,.T.);
+<span class="lineno">72</span>#59=ORIENTED_EDGE(&#x27;&#x27;,$,$,#34,.F.);
+<span class="lineno">73</span>#60=ORIENTED_EDGE(&#x27;&#x27;,$,$,#56,.F.);
+<span class="lineno">74</span>#61=EDGE_LOOP(&#x27;&#x27;,(#57,#58,#59,#60));
+<span class="lineno">75</span>#62=FACE_OUTER_BOUND(&#x27;&#x27;,#61,.T.);
+<span class="lineno">76</span><mark>#63=ADVANCED_FACE(</mark>&#x27;&#x27;,(#62),#5,.T.);
+<span class="lineno">77</span>#64=OPEN_SHELL(&#x27;&#x27;,(#63));
+<span class="lineno">78</span>#65=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#64));
+<span class="lineno">79</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">80</span>#9051=PRODUCT(&#x27;Gs196&#x27;,&#x27;Gs196&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">81</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">82</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">83</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">84</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">85</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">86</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">87</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">88</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">89</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">90</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#65),#9060);
+<span class="lineno">91</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">92</span>ENDSEC;
+<span class="lineno">93</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gs195.html">&larr; Gs195</a> <a class="up" href="index.html">§12.2c Surface / curve degeneracies</a> <a class="next" href="Gs197.html">Gs197 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

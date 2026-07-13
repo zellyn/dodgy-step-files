@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tsh250 — Two stacked full-period cylindrical shells whose facing seam candidate carries only one explicit 2D curve representation</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3a Shells / orientation</a> <span class="sep">/</span> <span class="current">Tsh250</span>
+</nav>
+<header class="title-bar">
+<h1>Tsh250 <span class="sep">—</span> <span class="entry-title">Two stacked full-period cylindrical shells whose facing seam candidate carries only one explicit 2D curve representation</span></h1>
+<p class="category">§12.3a shells (sub-class: sewing seam dual-representation preservation — `sew-seam-dual-pcurve-preservation`)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3a-shells/Tsh250.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3a-shells/Tsh250.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>occt-coverage PARTIAL audit, `exchange/problems.json` `sew-seam-dual-pcurve-preservation` (`BRepBuilderAPI_Sewing::SameParameterEdge`, `BRepBuilderAPI_Sewing.cxx:747-753,810-819,847-868`). Downgraded from COVERED after re-audit: the prior dedicated fixture is a dead scaffold whose accompanying curve defect forces an empty transferred shape before any merge can occur, so the mechanism is never actually reached</li>
+<li>a second, live fixture presents the right seam-edge structure but sewing reachability there was never confirmed.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>Two independent `OPEN_SHELL`s, each one full-period wraparound `ADVANCED_FACE` on a `CYLINDRICAL_SURFACE` (matching this corpus&#x27;s established closed-cylinder-face pattern: bottom full circle, one vertical seam-line edge, top full circle reversed, second vertical seam-line edge reversed) — i.e. each face&#x27;s own top/bottom boundary is a genuine closed (start==end) seam edge. The lower shell sits directly below the upper shell with a gap comfortably within sewing tolerance, so their facing seam edges (the lower shell&#x27;s top boundary, the upper shell&#x27;s bottom boundary) are a live, reachable merge candidate pair. The lower shell&#x27;s candidate seam edge is built with only ONE explicit 2D curve representation (the forward direction only) instead of the dual forward-and-reversed pair a merged seam participant needs.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`shell_lower` (`CYLINDRICAL_SURFACE` radius 5, z:[0,4]) whose top boundary is an `EDGE_CURVE` wrapping a `SURFACE_CURVE` with a single `PCURVE` (u:[0,2*pi] forward only); `shell_upper` (same cylinder geometry, z:[4.0005,8.0005], a 0.0005 gap) whose bottom boundary is an ordinary `EDGE_CURVE` referencing its 3D `CIRCLE` directly (no explicit 2D curve entity at all).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>when a closed/periodic seam edge participates in a merge, preserve both its forward and reversed 2D-curve representations on the resulting shared edge, since a periodic surface maps the same edge to two different locations in its own parameter space depending on which side it is approached from; discarding one representation silently destroys the surface&#x27;s seam continuity at that edge.</p></section>
+<section><h2>Notes</h2>
+<p>Live-verified (this worktree&#x27;s OCP/OCCT 7.8.1, runtime sewing scaffold, non-manifold mode enabled): both shells load independently as live, reachable shapes (2 faces / 8 edges / 16 vertices, no defect-driven translation failure of any kind); the sewing operator finds `NbContigousEdges()==3` and genuinely merges the facing seam pair down to a single shared edge (2 faces / 8 edges after merging, one fewer free-edge pair than before) at a tight, gap-proportional achieved tolerance — confirming the near-gap seam candidate pair is a real, reachable merge opportunity, not a dead scaffold, with the single-2D-curve seam edge as the actual participant under test. Synonyms: &quot;seam edge single pcurve merge&quot;, &quot;closed surface seam dual representation&quot;, &quot;periodic edge forward reversed pcurve&quot;, &quot;stacked cylinder seam merge&quot;, &quot;missing reversed seam pcurve&quot;. Provenance tier: bytes-sufficient.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(14) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;CYLINDRICAL_SURFACE&#x27;) == 2</code></li>
+<li><code>count_entity_def(b&#x27;PCURVE&#x27;) == 1</code></li>
+<li><code>contains(b&#x27;lower_seam_single_pc&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>n_faces_total == 2</code></li>
+<li><code>n_edges_total == 8</code></li>
+<li><code>n_vertices_total == 16</code></li>
+<li><code>face[0].surface_type == &quot;cylinder&quot;</code></li>
+<li><code>face[1].surface_type == &quot;cylinder&quot;</code></li>
+<li><code>brepcheck.valid == True</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tsh250: TWO independent OPEN_SHELLs, each ONE ADVANCED_FACE on a CYLINDRICAL_SURFACE (radius 5, axis +Z), each structured like Tsh209&#x27;s full-period wraparound face (bottom/top full CIRCLEs, two vertical seam-line edges): shell_lower z:[0,4] with its TOP seam candidate built via SURFACE_CURVE + a SINGLE explicit PCURVE (missing the dual reversed pair); shell_upper z:[4.0005,8.0005] (0.0005 gap, within a 1.0 sewing tolerance) with its BOTTOM seam candidate built the ordinary way â a genuine, live, reachable near-gap seam-merge pair, distinct from Gp139&#x27;s dead C-1-broken scaffold and Tsh209&#x27;s self-contained single-face seam (no merge opportunity at all) */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Tsh250&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Tsh250.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;2D&#x27;));
+<span class="lineno">11</span>#2=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">12</span>#3=VERTEX_POINT(&#x27;&#x27;,#2);
+<span class="lineno">13</span>#4=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,4.0));
+<span class="lineno">14</span>#5=VERTEX_POINT(&#x27;&#x27;,#4);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#7=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">17</span>#8=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">18</span>#9=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#6,#7,#8);
+<span class="lineno">19</span><mark>#10=CYLINDRICAL_SURFACE(</mark>&#x27;&#x27;,#9,5.0);
+<span class="lineno">20</span>#11=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">21</span>#12=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">22</span>#13=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">23</span>#14=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#11,#12,#13);
+<span class="lineno">24</span>#15=CIRCLE(&#x27;&#x27;,#14,5.0);
+<span class="lineno">25</span>#16=EDGE_CURVE(&#x27;&#x27;,#3,#3,#15,.T.);
+<span class="lineno">26</span>#17=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,4.0));
+<span class="lineno">27</span>#18=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">28</span>#19=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">29</span>#20=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#17,#18,#19);
+<span class="lineno">30</span>#21=CIRCLE(&#x27;&#x27;,#20,5.0);
+<span class="lineno">31</span>#22=CARTESIAN_POINT(&#x27;&#x27;,(0.0,4.0));
+<span class="lineno">32</span>#23=DIRECTION(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">33</span>#24=VECTOR(&#x27;&#x27;,#23,6.28318530718);
+<span class="lineno">34</span>#25=LINE(&#x27;&#x27;,#22,#24);
+<span class="lineno">35</span>#26=DEFINITIONAL_REPRESENTATION(&#x27;lower_top_pc_def&#x27;,(#25),#1);
+<span class="lineno">36</span><mark>#27=PCURVE(</mark>&#x27;<mark>lower_seam_single_pc</mark>&#x27;,#10,#26);
+<span class="lineno">37</span>#28=SURFACE_CURVE(&#x27;lower_top_seam_sc&#x27;,#21,(#27),.PCURVE_S1.);
+<span class="lineno">38</span>#29=EDGE_CURVE(&#x27;lower_top_seam_edge&#x27;,#5,#5,#28,.T.);
+<span class="lineno">39</span>#30=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">40</span>#31=VECTOR(&#x27;&#x27;,#30,4.0);
+<span class="lineno">41</span>#32=LINE(&#x27;&#x27;,#2,#31);
+<span class="lineno">42</span>#33=EDGE_CURVE(&#x27;&#x27;,#3,#5,#32,.T.);
+<span class="lineno">43</span>#34=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0));
+<span class="lineno">44</span>#35=VECTOR(&#x27;&#x27;,#34,4.0);
+<span class="lineno">45</span>#36=LINE(&#x27;&#x27;,#4,#35);
+<span class="lineno">46</span>#37=EDGE_CURVE(&#x27;&#x27;,#5,#3,#36,.T.);
+<span class="lineno">47</span>#38=ORIENTED_EDGE(&#x27;&#x27;,$,$,#16,.T.);
+<span class="lineno">48</span>#39=ORIENTED_EDGE(&#x27;&#x27;,$,$,#33,.T.);
+<span class="lineno">49</span>#40=ORIENTED_EDGE(&#x27;&#x27;,$,$,#29,.F.);
+<span class="lineno">50</span>#41=ORIENTED_EDGE(&#x27;&#x27;,$,$,#37,.F.);
+<span class="lineno">51</span>#42=EDGE_LOOP(&#x27;&#x27;,(#38,#39,#40,#41));
+<span class="lineno">52</span>#43=FACE_OUTER_BOUND(&#x27;&#x27;,#42,.T.);
+<span class="lineno">53</span>#44=ADVANCED_FACE(&#x27;lower_face&#x27;,(#43),#10,.T.);
+<span class="lineno">54</span>#45=OPEN_SHELL(&#x27;lower_shell&#x27;,(#44));
+<span class="lineno">55</span>#46=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,4.0005));
+<span class="lineno">56</span>#47=VERTEX_POINT(&#x27;&#x27;,#46);
+<span class="lineno">57</span>#48=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,8.0005));
+<span class="lineno">58</span>#49=VERTEX_POINT(&#x27;&#x27;,#48);
+<span class="lineno">59</span>#50=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">60</span>#51=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">61</span>#52=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">62</span>#53=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#50,#51,#52);
+<span class="lineno">63</span><mark>#54=CYLINDRICAL_SURFACE(</mark>&#x27;&#x27;,#53,5.0);
+<span class="lineno">64</span>#55=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,4.0005));
+<span class="lineno">65</span>#56=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">66</span>#57=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">67</span>#58=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#55,#56,#57);
+<span class="lineno">68</span>#59=CIRCLE(&#x27;&#x27;,#58,5.0);
+<span class="lineno">69</span>#60=EDGE_CURVE(&#x27;&#x27;,#47,#47,#59,.T.);
+<span class="lineno">70</span>#61=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,8.0005));
+<span class="lineno">71</span>#62=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">72</span>#63=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">73</span>#64=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#61,#62,#63);
+<span class="lineno">74</span>#65=CIRCLE(&#x27;&#x27;,#64,5.0);
+<span class="lineno">75</span>#66=EDGE_CURVE(&#x27;&#x27;,#49,#49,#65,.T.);
+<span class="lineno">76</span>#67=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">77</span>#68=VECTOR(&#x27;&#x27;,#67,4.0);
+<span class="lineno">78</span>#69=LINE(&#x27;&#x27;,#46,#68);
+<span class="lineno">79</span>#70=EDGE_CURVE(&#x27;&#x27;,#47,#49,#69,.T.);
+<span class="lineno">80</span>#71=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0));
+<span class="lineno">81</span>#72=VECTOR(&#x27;&#x27;,#71,4.0);
+<span class="lineno">82</span>#73=LINE(&#x27;&#x27;,#48,#72);
+<span class="lineno">83</span>#74=EDGE_CURVE(&#x27;&#x27;,#49,#47,#73,.T.);
+<span class="lineno">84</span>#75=ORIENTED_EDGE(&#x27;&#x27;,$,$,#60,.T.);
+<span class="lineno">85</span>#76=ORIENTED_EDGE(&#x27;&#x27;,$,$,#70,.T.);
+<span class="lineno">86</span>#77=ORIENTED_EDGE(&#x27;&#x27;,$,$,#66,.F.);
+<span class="lineno">87</span>#78=ORIENTED_EDGE(&#x27;&#x27;,$,$,#74,.F.);
+<span class="lineno">88</span>#79=EDGE_LOOP(&#x27;&#x27;,(#75,#76,#77,#78));
+<span class="lineno">89</span>#80=FACE_OUTER_BOUND(&#x27;&#x27;,#79,.T.);
+<span class="lineno">90</span>#81=ADVANCED_FACE(&#x27;upper_face&#x27;,(#80),#54,.T.);
+<span class="lineno">91</span>#82=OPEN_SHELL(&#x27;upper_shell&#x27;,(#81));
+<span class="lineno">92</span>#83=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#45,#82));
+<span class="lineno">93</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">94</span>#9051=PRODUCT(&#x27;Tsh250&#x27;,&#x27;Tsh250&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">95</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">96</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">97</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">98</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">99</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">100</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">101</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">102</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">103</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">104</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#83),#9060);
+<span class="lineno">105</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">106</span>ENDSEC;
+<span class="lineno">107</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tsh249.html">&larr; Tsh249</a> <a class="up" href="index.html">§12.3a Shells / orientation</a> <a class="next" href="Tsh251.html">Tsh251 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

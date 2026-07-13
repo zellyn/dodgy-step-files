@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1>§12.2c Surface / curve degeneracies</h1>
 <p class="blurb">Surface and curve degeneracies, AP242 surface subtypes, geometric-base utilities (Gb).</p>
-<p class="meta">187 entries</p>
+<p class="meta">192 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
@@ -205,6 +205,11 @@
 <tr><td><a href="Gs191.html"><code>Gs191</code></a></td><td>Slicer chord-deflection defect on small-radius `B_SPLINE_SURFACE_WITH_KNOTS`</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Gs192.html"><code>Gs192</code></a></td><td>OCCT STEP export duplicates `B_SPLINE_SURFACE_WITH_KNOTS` entity instances</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Gs193.html"><code>Gs193</code></a></td><td>Fusion 360 → PTC Creo circular chamfer: single 360° `CONICAL_SURFACE` face with internal seam edge</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs194.html"><code>Gs194</code></a></td><td>`TOROIDAL_SURFACE` face closed in both U and V requires a recursive re-split to fully separate</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs195.html"><code>Gs195</code></a></td><td>`SURFACE_OF_REVOLUTION` wedge on a closed profile curve exercises the V-only geometric-closure fallback split</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs196.html"><code>Gs196</code></a></td><td>`CYLINDRICAL_SURFACE` trimmed to within tolerance of a full period forces a half-surface closure probe before splitting</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs197.html"><code>Gs197</code></a></td><td>`SURFACE_OF_REVOLUTION` whose C0 basis CURVE (not the surface itself) forces a continuity-driven split</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs198.html"><code>Gs198</code></a></td><td>Geometrically-smooth over-multiplied B-spline surface knot repaired by `RemoveUKnot` instead of split</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></td></tr>
 </tbody></table>
 </main>
 <footer>
