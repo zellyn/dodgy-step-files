@@ -850,10 +850,12 @@
    "Tsh019",
    "Tsh232",
    "Bo006",
-   "M045"
+   "M045",
+   "Tsh254",
+   "Tsh255"
   ],
-  "coverage_verdict": "PARTIAL",
-  "notes": "VERIFICATION: Grep-verified Tsh019 (one EDGE_CURVE referenced by 4 ORIENTED_EDGEs across face loops of one MANIFOLD_SOLID_BREP) and Tsh232 (same edge in 3 loops) - genuine same-entity multi-context reuse inputs. However M045, the only NON_MANIFOLD_SURFACE_SHAPE_REPRESENTATION multi-OPEN_SHELL fixture, was grep-verified to give each shell its OWN EDGE_CURVE entities (no cross-shell entity sharing), so the cross-shell NM-tool reuse path is only weakly exercised; the I-DEAS name-matched duplicate-entity subvariant has no fixture (Lh031 is header-string only)."
+  "coverage_verdict": "COVERED",
+  "notes": "VERIFICATION: Grep-verified Tsh019 (one EDGE_CURVE referenced by 4 ORIENTED_EDGEs across face loops of one MANIFOLD_SOLID_BREP) and Tsh232 (same edge in 3 loops) - genuine same-entity multi-context reuse inputs. However M045, the only NON_MANIFOLD_SURFACE_SHAPE_REPRESENTATION multi-OPEN_SHELL fixture, was grep-verified to give each shell its OWN EDGE_CURVE entities (no cross-shell entity sharing), so the cross-shell NM-tool reuse path is only weakly exercised; the I-DEAS name-matched duplicate-entity subvariant has no fixture (Lh031 is header-string only). || WAVE-7 PACKET A4 (2026-07-13): both missing subvariants shipped and live-verified. Tsh254: two SEPARATE SHELL_BASED_SURFACE_MODEL items inside one NON_MANIFOLD_SURFACE_SHAPE_REPRESENTATION genuinely share one EDGE_CURVE entity (TranslateEdge.cxx:223-232, entity-identity branch) - live-confirmed edge count drops 8->7 and vertices 8->6 (distinct) under read.step.nonmanifold=1, the identical TopoDS_Edge reused with orientation reversed. Tsh255: two DISTINCT EDGE_CURVE entities sharing one Name string ('ideas_shared_edge') under an I-DEAS preprocessor-version FILE_NAME field - live-confirmed the second entity's own (deliberately wrong) geometry is discarded and the name-matched first entity's shape substituted instead (TranslateEdge.cxx:236-249, gated on read.step.nonmanifold=1 AND read.step.ideas=1 both explicitly set; both default to 0). Verdict PARTIAL -> COVERED."
  },
  {
   "problem_id": "stp-toroidal-neg-radius-orientation",
@@ -1009,10 +1011,12 @@
    "M051",
    "Xp017",
    "Bo001",
-   "Bo002"
+   "Bo002",
+   "Tsh256",
+   "Tsh257"
   ],
   "coverage_verdict": "PARTIAL",
-  "notes": "VERIFICATION: Container-drops-failed-face covered (Xp008 solid, Tsh023 SBSM shell - both read and verified); geometric-set-with-invalid/non-geometric-members covered (M051: GEOMETRIC_SET mixing LINE with AXIS2_PLACEMENT_3D and DESCRIPTIVE_REPRESENTATION_ITEM, read; Xp017 empty set); fatal-outer-shell contrast present (Bo001 empty CLOSED_SHELL, Bo002 dangling outer). Missing variants: BREP_WITH_VOIDS with a FAILING void shell (existing void fixtures Tsh015/Tsh067/Bo003 all have translatable voids), EDGE_BASED_WIREFRAME/FACE_BASED_SURFACE_MODEL member failure (only in _quarantine/early-waves, not live corpus), and a failing RECTANGULAR_COMPOSITE_SURFACE patch."
+  "notes": "VERIFICATION: Container-drops-failed-face covered (Xp008 solid, Tsh023 SBSM shell - both read and verified); geometric-set-with-invalid/non-geometric-members covered (M051: GEOMETRIC_SET mixing LINE with AXIS2_PLACEMENT_3D and DESCRIPTIVE_REPRESENTATION_ITEM, read; Xp017 empty set); fatal-outer-shell contrast present (Bo001 empty CLOSED_SHELL, Bo002 dangling outer). Missing variants: BREP_WITH_VOIDS with a FAILING void shell (existing void fixtures Tsh015/Tsh067/Bo003 all have translatable voids), EDGE_BASED_WIREFRAME/FACE_BASED_SURFACE_MODEL member failure (only in _quarantine/early-waves, not live corpus), and a failing RECTANGULAR_COMPOSITE_SURFACE patch. || WAVE-7 PACKET A4 (2026-07-13): 2 of 3 missing variants shipped and live-verified. Tsh256: FACE_BASED_SURFACE_MODEL with one good ADVANCED_FACE and one failing ADVANCED_FACE (face_geometry left unset $, Xp008's proven null-surface pattern) - live-confirmed the failing face is silently dropped (StepToTopoDS_Builder.cxx:567-590), 1 face survives, brepcheck.valid=True. Tsh257: RECTANGULAR_COMPOSITE_SURFACE with one good SURFACE_PATCH (RECTANGULAR_TRIMMED_SURFACE wrapping a PLANE) and one bad patch (raw unbounded PLANE as parent_surface, illegal type per the surface_patch.parent_surface:bounded_surface attribute) - live-confirmed via PrintCheckLoad ('Entity has illegal type') the bad patch never resolves, and StepToTopoDS_Builder.cxx:742-756's per-patch loop still yields 1 face from the good patch alone. STILL MISSING: BREP_WITH_VOIDS with a genuinely failing void shell - deferred to BACKLOG.md (g): STEPControl_Reader reproducibly segfaults (exit 139) on BREP_WITH_VOIDS constructs in this worktree's venv (reconfirmed against the existing Bo003.stp, not just a new attempt), matching the packet's pre-flagged known landmine; a new BREP_WITH_VOIDS fixture was not attempted live. Verdict stays PARTIAL (1 of 3 requested subvariants remains, blocked on the landmine)."
  },
  {
   "problem_id": "stp-edgeloop-empty",
@@ -1428,10 +1432,11 @@
   ],
   "subvariants": [],
   "fixture_ids": [
-   "Tsh003"
+   "Tsh003",
+   "Tsh258"
   ],
-  "coverage_verdict": "PARTIAL",
-  "notes": "DOWNGRADED COVERED->PARTIAL (COVERED_FULL_REVERIFY.md): Tsh003 (genuinely closed all-vertices-shared 4-face tetrahedron in OPEN_SHELL/SBSM, occt=shape(1)) plausibly supports promotion, though no tier-3 field confirms a TopoDS_Solid was produced; A102 (deliberately open 7/8-face) and P015 ('re-import yields zero solids') demonstrate *failure* to promote; M052 is a broken one-triangle 'placeholder' stub. Surviving/cited fixtures: ['Tsh003']. || Prior COVERED notes (fixture_ids were ['Tsh003', 'M052', 'A102', 'P015']): VERIFICATION: Read Tsh003 bytes: a topologically closed 4-face tetrahedron emitted as SHELL_BASED_SURFACE_MODEL -> OPEN_SHELL with zero MANIFOLD_SOLID_BREP entities - exactly the closed-shell-without-solid-wrapper input the promotion pass targets (gated on non-manifold read mode). M052/A102/P015 repeat the pattern from other producers.",
+  "coverage_verdict": "COVERED",
+  "notes": "DOWNGRADED COVERED->PARTIAL (COVERED_FULL_REVERIFY.md): Tsh003 (genuinely closed all-vertices-shared 4-face tetrahedron in OPEN_SHELL/SBSM, occt=shape(1)) plausibly supports promotion, though no tier-3 field confirms a TopoDS_Solid was produced; A102 (deliberately open 7/8-face) and P015 ('re-import yields zero solids') demonstrate *failure* to promote; M052 is a broken one-triangle 'placeholder' stub. Surviving/cited fixtures: ['Tsh003']. || Prior COVERED notes (fixture_ids were ['Tsh003', 'M052', 'A102', 'P015']): VERIFICATION: Read Tsh003 bytes: a topologically closed 4-face tetrahedron emitted as SHELL_BASED_SURFACE_MODEL -> OPEN_SHELL with zero MANIFOLD_SOLID_BREP entities - exactly the closed-shell-without-solid-wrapper input the promotion pass targets (gated on non-manifold read mode). M052/A102/P015 repeat the pattern from other producers. || WAVE-7 PACKET A4 (2026-07-13): PARTIAL -> COVERED, with an important correction. Direct live testing established: (1) Tsh003's OWN geometry (independently-duplicated per-face edges, no cross-face entity sharing) is NEVER topologically closed (BRep_Tool::IsClosed=False, 12/12 free edges) and can NEVER be promoted under any settings tried - Tsh003's occt=shape(1) was never actually a promoted solid, confirming this record's own prior downgrade was correct. (2) A genuinely-shared-edge closed tetrahedron (Tsh258) DOES promote, but only when (a) wrapped in NON_MANIFOLD_SURFACE_SHAPE_REPRESENTATION with read.step.nonmanifold=1 (the promotion code at STEPControl_ActorRead.cxx:991-1009 is entirely inside the non-manifold branch), AND (b) the representation has 2+ top-level items - with only 1 item, TransferEntity(ShapeRepresentation)'s nsh==1 shortcut binds the PRE-reconstruction OneResult shape directly, silently discarding the promoted result even though the reconstruction ran internally. Tsh258 (tetrahedron + one unrelated open-face anchor item) live-confirms exactly 1 TopoDS_SOLID (4 faces) under read.step.nonmanifold=1; default settings give an ordinary 0-solid compound.",
   "audit": "COVERED_FULL_REVERIFY.md: COVERED->PARTIAL. Tsh003 (genuinely closed all-vertices-shared 4-face tetrahedron in OPEN_SHELL/SBSM, occt=shape(1)) plausibly supports promotion, though no tier-3 field confirms a TopoDS_Solid was produced; A102 (deliberately open 7/8-face) and P015 ('re-import yields zero solids') demonstrate *failure* to promote; M052 is a broken one-triangle 'placeholder' stub."
  },
  {

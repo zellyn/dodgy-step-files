@@ -1530,3 +1530,30 @@ stayed an ordinary PARTIAL/no-carve-out).
       probing, not a planned fixture build). Candidate for the crash-fixture backlog alongside the
       existing known-crash entries (e.g. the empty-pcurve-list `SURFACE_CURVE` crash noted in §(d)
       above). Reproducer recipe is in `WAVE4_VERIFY.md` Part 4 item 3.
+
+### (g) Wave-7 packet A4 session (2026-07-13) — BREP_WITH_VOIDS deferred (confirmed landmine)
+
+`stp-partial-assembly-continuation`'s subvariant (a) — "a `BREP_WITH_VOIDS` with a genuinely
+FAILING void shell (untranslatable) alongside a good outer shell" — was dropped from this packet's
+shipped set (Tsh256/Tsh257 cover subvariants (b) and (c) only; 2 of the requested 3).
+
+- [ ] **`BREP_WITH_VOIDS` construction reproducibly segfaults `STEPControl_Reader` in this
+      worktree's venv — reconfirmed, not just the previously-known Bo003 case.** Directly loading
+      the EXISTING, already-shipped `step-examples/12-3a-shells/Bo003.stp` (itself a
+      `BREP_WITH_VOIDS` fixture) via `STEPControl_Reader().ReadFile(...)` +
+      `.TransferRoots()` crashed the Python subprocess with exit code 139 (SIGSEGV) in this
+      worktree's `validation/.venv` (OCP/OCCT 7.8.1), consistent with the packet brief's
+      pre-flagged "KNOWN LANDMINE: BREP_WITH_VOIDS may segfault in worktree venvs (under
+      adjudication)". Per the brief's own guidance ("if you hit it, avoid that construct and note
+      it rather than fighting it"), no NEW `BREP_WITH_VOIDS`-with-a-failing-void fixture was
+      attempted for this subvariant — building and testing one live was not safe until the
+      underlying segfault (affecting the `BREP_WITH_VOIDS` construct broadly, not just Bo003
+      specifically) is fixed or adjudicated. Once resolved: the target construction is a
+      `BREP_WITH_VOIDS` whose outer `CLOSED_SHELL` translates successfully but whose `VOIDS`
+      list includes one `ORIENTED_CLOSED_SHELL` that cannot translate (e.g. a void shell with a
+      null/unset `$` list element, matching `StepShape_HArray1OfOrientedClosedShell`'s
+      per-element nullability, or a void referencing a face with unresolvable geometry) —
+      `StepToTopoDS_Builder::Init(BrepWithVoids)` (`StepToTopoDS_Builder.cxx:226-246`) should skip
+      the failing void with a warning and still return the solid built from the good outer shell
+      and any other good voids, contrasted with a FAILING outer shell being fatal to the whole
+      solid (`:210-216`).

@@ -1,0 +1,46 @@
+ISO-10303-21;
+/* Tsh257: TEST - RECTANGULAR_COMPOSITE_SURFACE with one good patch (RECTANGULAR_TRIMMED_SURFACE wrapping a PLANE) and one failing patch (raw unbounded PLANE as parent_surface, illegal type for surface_patch.parent_surface) inside a bare GEOMETRIC_SET */
+HEADER;
+FILE_DESCRIPTION(('Tsh257'),'2;1');
+FILE_NAME('Tsh257.stp','2026-07-13T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#9000=APPLICATION_CONTEXT('mechanical design');
+/* good patch: RECTANGULAR_TRIMMED_SURFACE wrapping a PLANE, bounded [0,5]x[0,5] -- a
+   genuine Geom_BoundedSurface, so TranslateBoundedSurf builds a real TopoDS_Face */
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('good_patch_surface',#4);
+#6=RECTANGULAR_TRIMMED_SURFACE('',#5,0.0,5.0,0.0,5.0,.T.,.T.);
+#7=SURFACE_PATCH(#6,.CONTINUOUS.,.CONTINUOUS.,.T.,.T.);
+/* bad patch: raw unbounded PLANE used directly as parent_surface -- illegal type
+   for the surface_patch.parent_surface (bounded_surface) attribute; the low-level
+   STEP reader flags this SURFACE_PATCH with a hard FAIL and the entity never
+   resolves, so RectangularCompositeSurface's per-patch loop simply skips it
+   (TranslateBoundedSurf never even runs for it) while the good patch survives. */
+#8=CARTESIAN_POINT('',(10.0,0.0,0.0));
+#9=DIRECTION('',(0.0,0.0,1.0));
+#10=DIRECTION('',(1.0,0.0,0.0));
+#11=AXIS2_PLACEMENT_3D('',#8,#9,#10);
+#12=PLANE('bad_patch_surface',#11);
+#13=SURFACE_PATCH(#12,.CONTINUOUS.,.CONTINUOUS.,.T.,.T.);
+#14=RECTANGULAR_COMPOSITE_SURFACE('tsh257_rcs',((#7),(#13)));
+#15=GEOMETRIC_SET('tsh257_gs',(#14));
+#9050=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9051=PRODUCT('Tsh257','Tsh257','',(#9050));
+#9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
+#9053=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9054=PRODUCT_DEFINITION('','','',#9052,#9053);
+#9055=PRODUCT_DEFINITION_SHAPE('','','',#9054);
+#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
+#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#15),#9060);
+#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+ENDSEC;
+END-ISO-10303-21;
