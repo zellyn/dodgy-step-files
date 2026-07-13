@@ -73,6 +73,8 @@ EXEMPT_PLACEHOLDER: set[str] = {
     # Catalog claim IS the unbound / out-of-scope face.
     "Tfa002",  # "Unbound ADVANCED_FACE (no FACE_OUTER_BOUND, no FACE_BOUND)"
     "Tfa026",  # OFFSET_SURFACE schema scope; defect is the surface type, not bounds
+    "Tfa252",  # EDGE_CURVE null edge_geometry -> wire drops -> face collapses to
+               # unbounded natural-surface fallback (edge_count==0) IS the defect
 
     # Non-geometric: parser / call-path / round-trip / semantic-attribute claims.
     "Ad064",   # string truncation on name parsing
