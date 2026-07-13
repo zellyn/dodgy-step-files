@@ -1530,3 +1530,41 @@ stayed an ordinary PARTIAL/no-carve-out).
       probing, not a planned fixture build). Candidate for the crash-fixture backlog alongside the
       existing known-crash entries (e.g. the empty-pcurve-list `SURFACE_CURVE` crash noted in §(d)
       above). Reproducer recipe is in `WAVE4_VERIFY.md` Part 4 item 3.
+
+## Q11 — Wave-7 packet F2 (nurbs+surfaces PARTIAL upgrades): 2 items deferred out of 7
+
+Packet F2 (`occt-coverage/WORK_PACKETS.md` Wave 7, `12-2b-nurbs`+`12-2c-surfaces`) asked for 10
+fixtures across 7 problem classes in `occt-coverage/exchange/problems.json`. 8 fixtures shipped
+(Gn177-179, Gs199-203), fully closing 5 of the 7 classes (`seq-bspline-restriction`,
+`seq-elementary-to-revolution`, `seq-swept-to-elementary`, `stp-vertexloop-bound-mismatch`,
+`stp-edge-curve-param-range` — the last now 6/6 subvariants demonstrated). Two items dropped with
+evidence rather than force-fit:
+
+- [ ] **`sew-seam-closed-surface-merge` isoline-distance-fallback subvariant** (missing 1 of 3;
+      Gs200 filled the V-periodic subvariant, leaving this one). Source read
+      (`BRepBuilderAPI_Sewing.cxx:239-289`, `IsUClosedSurface`/`IsVClosedSurface`): the
+      isoline-distance fallback (`IsClosedByIsos`, `:195-233`) is reached ONLY for a surface type
+      that is NEITHER `Geom_RectangularTrimmedSurface` NOR `Geom_OffsetSurface` (those two recurse
+      to their basis surface's own flags instead, bypassing the isoline probe entirely) AND whose
+      own `IsUClosed()`/`IsVClosed()` returns `False`. This makes the packet spec's framing ("a
+      trimmed/offset surface that doesn't self-report closed") not literally realizable — trimmed/
+      offset surfaces take the OTHER branch by construction. A genuine carrier would need an
+      elementary/B-spline/revolution/extrusion surface type whose own closure flag is `False` but
+      whose isoline 3-point distance comparison (`IsClosedByIsos`) finds closure anyway; the
+      clearest candidate found during investigation was a `Geom_SurfaceOfLinearExtrusion` whose
+      basis curve's endpoints are within `Geom_Curve::IsClosed()`'s own tolerance window (a subtlety
+      similar to Gs203's B-spline near-loop, but one level up at the surface-sweep level) — not
+      attempted as a build; flagged here for a future session with fresh time budget rather than
+      force-fit under this session's constraints.
+- [ ] **`sew-degenerate-edge-passthrough` "reframed as a negative control" item.** The packet spec
+      asks to reframe Gs189's cone/sphere-pole degenerate-edge pattern as a "must NOT be altered"
+      negative control rather than a defect fixture. Per this project's own convention (see
+      `feedback_negative_controls` in the maintainer's memory / `control_sources/` +
+      `step-controls/` + `mesh-controls/` directories), negative controls live OUTSIDE the main
+      catalog under a `Ctl<NNN>` prefix — they are not `STEP_PROBLEM_CATALOG.md` entries at all.
+      Reframing Gs189 in place (editing its catalog Notes to claim negative-control status) would
+      violate that separation; authoring a NEW `Ctl<NNN>`-prefixed fixture mirroring Gs189's
+      geometry in `step-controls/` is architecturally the correct move but is a different
+      deliverable shape than the rest of this packet (no catalog entry, no `step-examples/` file) —
+      deferred as a maintainer decision on whether/how to fold it into the existing negative-control
+      set rather than force a mismatched catalog entry into this packet.
