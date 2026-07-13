@@ -1666,7 +1666,6 @@ stayed an ordinary PARTIAL/no-carve-out).
       existing known-crash entries (e.g. the empty-pcurve-list `SURFACE_CURVE` crash noted in §(d)
       above). Reproducer recipe is in `WAVE4_VERIFY.md` Part 4 item 3.
 
-<<<<<<< HEAD
 ### (g) Wave-7 packet A4 session (2026-07-13) — BREP_WITH_VOIDS deferred (confirmed landmine)
 
 `stp-partial-assembly-continuation`'s subvariant (a) — "a `BREP_WITH_VOIDS` with a genuinely
@@ -1693,7 +1692,7 @@ shipped set (Tsh256/Tsh257 cover subvariants (b) and (c) only; 2 of the requeste
       the failing void with a warning and still return the solid built from the good outer shell
       and any other good voids, contrasted with a FAILING outer shell being fatal to the whole
       solid (`:210-216`).
-=======
+
 ## Q11 — Wave-7 packet F2 (nurbs+surfaces PARTIAL upgrades): 2 items deferred out of 7
 
 Packet F2 (`occt-coverage/WORK_PACKETS.md` Wave 7, `12-2b-nurbs`+`12-2c-surfaces`) asked for 10
@@ -1731,4 +1730,3 @@ evidence rather than force-fit:
       deliverable shape than the rest of this packet (no catalog entry, no `step-examples/` file) —
       deferred as a maintainer decision on whether/how to fold it into the existing negative-control
       set rather than force a mismatched catalog entry into this packet.
->>>>>>> worktree-agent-a2de65dd8d9ae2136
