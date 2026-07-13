@@ -536,10 +536,11 @@
     "fixture_ids": [
       "Tfa074",
       "Tfa232",
-      "Tfa209"
+      "Tfa209",
+      "Tfa256"
     ],
-    "coverage_verdict": "PARTIAL",
-    "notes": "Tfa074 verified: 2-edge wire reusing the same EDGE_CURVE twice ([E .T., E .T.]) -- the right defect pattern, but it is the ONLY wire on its face, and the fixer no-ops when nbWires<2, so the repair never actually fires. Tfa232 is a 4-edge loop reusing a curve (filter probe, not the 2-edge slit); Tfa209 is a 5-edge wire with a duplicate pair (outside the NbEdges==2 pattern). Missing: a fixture with a multi-wire face where one wire is exactly the two-coincident-edge slit so the removal path executes.",
+    "coverage_verdict": "COVERED",
+    "notes": "Tfa074 verified: 2-edge wire reusing the same EDGE_CURVE twice ([E .T., E .T.]) -- the right defect pattern, but it is the ONLY wire on its face, and the fixer no-ops when nbWires<2, so the repair never actually fires. Tfa232 is a 4-edge loop reusing a curve (filter probe, not the 2-edge slit); Tfa209 is a 5-edge wire with a duplicate pair (outside the NbEdges==2 pattern). Missing: a fixture with a multi-wire face where one wire is exactly the two-coincident-edge slit so the removal path executes. | Wave-5 (2026-07-13, adversarial verifier): Tfa256 supplies the missing multi-wire slit-drop subvariant. Reachability hand-traced to a live product chain (ADVANCED_FACE #48 -> OPEN_SHELL #49 -> SHELL_BASED_SURFACE_MODEL #50 -> MANIFOLD_SOLID_BREP #9061). Exact subvariant match: inner wire literally [E .T., E .T.] on a face with a second valid wire (nbWires>=2 gate open). Live: 5 authored edges -> 4 loaded, 1 wire -- the slit wire is genuinely dropped (not merely degenerate-present); face area 99.99999999999999 exactly as the catalog claims. Contrast baseline independently re-run on Tfa074 (the class's existing single-wire witness): the identical 2-edge pattern there survives as a 2-edge zero-area sliver face (edge_count=2, area=0.0, one OE flipped REVERSED) because nbWires<2 no-ops the fixer -- confirms the nbWires>=2 gate story is real, with opposite outcomes on either side of it. All 3 byte assertions independently verified true. PARTIAL -> COVERED.",
     "source_group": [
       "E-face-composeshell-intersection"
     ]

@@ -458,6 +458,56 @@ new flaky-CI surface.
 
 ## Smaller queued items
 
+### Q11 — `sew-per-edge-fault-isolation` face-hosted throw variant genuinely unreachable via standard STEP read (packet C2, dropped with evidence)
+
+**Not fixed** — dropped from packet C2 (`occt-coverage/WORK_PACKETS.md` Wave 5, `12-3c-faces`) after
+live investigation confirmed the face-hosted throw-provoking variant cannot be constructed in this
+OCCT 7.8.1 build; independently corroborated during Wave-5 adversarial verification
+(`WAVE5_VERIFY.md`).
+
+The packet asked for a fixture placing a throw-provoking (as opposed to Twi248's null-guard) edge
+in a face-boundary sewing context, so `sew-per-edge-fault-isolation`'s catch-and-continue path
+(`BRepBuilderAPI_Sewing::SameParameterEdge`, `BRepBuilderAPI_Sewing.cxx:876-892`) is demonstrated
+directly rather than only indirectly via Twi247's faceless `GEOMETRIC_CURVE_SET` construction.
+Tried, live, against OCCT 7.8.1 (per commit `09d3bee9`'s own account, "7 separate live
+constructions"):
+
+1-3. Three STEP-encoded 3D-vs-pcurve self-inconsistent pairings (direction-flip, magnitude-mismatch,
+     curve-kind-mismatch) hosted on a face-hosted edge — each recomputed to a self-consistent
+     pcurve by `ShapeFix_Face`'s mandatory default per-face healing pass before reaching `Sewing`.
+4. The same pairing set independently re-tried with `read.stdsameparameter.mode` explicitly
+   toggled — same healed outcome.
+5. A from-scratch hand-built `TopoDS_Edge` (bypassing `STEPControl_Reader` entirely) carrying the
+   same self-inconsistent 3D/2D pairing.
+6. A 2-face `BRepBuilderAPI_Sewing::Perform()` call driven directly on that hand-built shape.
+7. (per the commit's own "7 separate live constructions" count; the full itemized breakdown beyond
+   the 6 categories above was not preserved outside the commit message prose — flagged honestly
+   here rather than inventing false precision.)
+
+Every attempt produced the same result: `area` comes back exactly `36.0` with unchanged `1e-7`
+tolerances — `ShapeFix_Face`'s mandatory per-face healing silently recomputes a fresh,
+self-consistent pcurve from the 3D curve regardless of how badly the declared `PCURVE` disagrees,
+so the pathological input never survives long enough to reach `Sewing`'s own code, let alone throw
+from it. Consistent with this same wave's C1 adjudication finding that `BRepBuilderAPI_Sewing` is
+not part of the default STEP-reading pipeline.
+
+**Independent corroboration (Wave-5 adversarial verifier, `WAVE5_VERIFY.md` §2):** a separate
+1-probe reproduction built Twi247's exact self-inconsistent pairing (3D `LINE` +X vs pcurve +Y)
+hosted on a real `ADVANCED_FACE`/`OPEN_SHELL` (scratchpad-only, not committed). Result: `load=ok`,
+`brepcheck.valid=true`, `face[0].area=36.0` — the exact healed outcome the commit predicts. The
+core unreachability claim is corroborated across two independent sessions; the other 6 attempted
+variants were not independently re-reproduced (not needed — the mechanism explanation covers
+them).
+
+**Recommendation**: leave `PARTIAL`; a maintainer could carve the face-hosted subvariant out
+(GAP-ish/not-STEP-exercisable, annotated `unreachable-in-7.8.1` in
+`occt-coverage/exchange/problems.json`) per the Wave-3 PARTIAL→GAP carve-out precedent, leaving
+Twi248/Twi247 as the class's STEP-exercisable witnesses of the catch-and-continue mechanism.
+Alternatively, (b) a `Provenance tier: runtime-only` fixture built directly via OCP's
+`BRepBuilderAPI_Sewing` API (bypassing `STEPControl_Reader`) could demonstrate the throw-and-catch
+directly — out of scope for a pure STEP-fixture synthesis pass (same category of workaround
+already logged for Q9/Q10).
+
 ### Q10 — `sew-pcurve-parameter-desync-repair` "relaxed second smoothing + revert-on-regression" subvariant not independently verifiable (packet D2, dropped with evidence)
 
 **Not fixed** — dropped from packet D2 (`occt-coverage/WORK_PACKETS.md` Wave 5, `12-2a-pcurves`)
