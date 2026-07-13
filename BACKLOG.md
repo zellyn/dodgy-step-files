@@ -458,6 +458,41 @@ new flaky-CI surface.
 
 ## Smaller queued items
 
+### Q10 — `sew-pcurve-parameter-desync-repair` "relaxed second smoothing + revert-on-regression" subvariant not independently verifiable (packet D2, dropped with evidence)
+
+**Not fixed** — dropped from packet D2 (`occt-coverage/WORK_PACKETS.md` Wave 5, `12-2a-pcurves`)
+after live investigation confirmed this subvariant cannot be distinguished from the class's
+existing witness (Gp040) through this corpus's live-harness verification bar.
+
+The packet asked for 2 of the 4 missing subvariants of `sew-pcurve-parameter-desync-repair`
+(`exchange/problems.json`): (a) "A pcurve needing the relaxed second smoothing attempt after the
+first C0→C1 upgrade doesn't fully resolve, with a deliberate regression so the revert-on-regression
+path fires"; (b) "ill-conditioned (highly non-uniform) knot spacing forcing arc-length
+reparametrization". Subvariant (b) shipped as Gp187 (verified live: knot-interval ratio ~1:10000,
+reachable `shape(1)`). Subvariant (a) was not attempted as a build — it fails at the design stage,
+not the construction stage:
+
+`BRepLib::SameParameter`'s cited internal structure (`BRepLib.cxx:~1368` first C0→C1 upgrade,
+`~1481-1519` knot-ratio anomaly + arc-length reparametrization, with a "second, more relaxed
+attempt" and a "revert if regression" branch per the V3 mining pass) exposes none of this branching
+through OCCT's public API — no counter, flag, or diagnostic enum distinguishes "first pass" from
+"second, more relaxed pass," and no public hook reports whether a revert-on-regression fired. A
+STEP-input-only fixture can encode an INPUT that plausibly *should* need a second, more relaxed
+smoothing pass (e.g. a pcurve with an even more severe C0 kink than Gp040's, or a deliberately
+"almost-fixed-then-regressed" construction), but there is no way to verify — from outside the
+process, against public API surface only — that the resulting edge actually took the second-pass
+branch rather than the first-pass branch Gp040 already demonstrates. Shipping a fixture under this
+subvariant label without that verification would be an unverifiable duplicate of Gp040 dressed up
+with a different Notes claim, which fails this project's "every fixture must genuinely demonstrate
+its claim" bar (see `feedback_quality_over_completeness`).
+
+**Recommendation**: leave `PARTIAL`; this subvariant likely needs either (a) a maintainer decision
+to accept the class at its current 2-of-4-subvariant coverage as the practical ceiling for
+public-API-only verification, or (b) a `Provenance tier: runtime-only` fixture that uses OCP to call
+`BRepLib::SameParameter` directly on a deliberately-regressed curve and captures internal C++ debug
+output (e.g. via a custom build with tracing), which is out of scope for a pure STEP-fixture
+synthesis pass.
+
 ### Q9 — `sew-malformed-subshape-tolerance` null-vertex EDGE_CURVE genuinely unreachable via standard STEP read (packet B2, dropped with evidence)
 
 **Not fixed** — dropped from packet B2 (`occt-coverage/WORK_PACKETS.md` Wave 4, `12-3b-wires`)
