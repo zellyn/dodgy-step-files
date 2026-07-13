@@ -543,6 +543,91 @@ public-API-only verification, or (b) a `Provenance tier: runtime-only` fixture t
 output (e.g. via a custom build with tracing), which is out of scope for a pure STEP-fixture
 synthesis pass.
 
+### Q11 — `bc-subshape-not-in-shape` purpose-built duplicate-reference constructions all resolve clean or hit a different status (packet A3, dropped with evidence)
+
+**Not fixed** — dropped from packet A3 (`occt-coverage/WORK_PACKETS.md` Wave 6, `12-3a-shells`)
+after live investigation across three independent purpose-built constructions failed to
+reproduce `BRepCheck_SubshapeNotInShape`, matching (not resolving) the class's own existing
+`problems.json` hedge: "No purpose-built fixture; the class is a live-TopoDS inconsistency
+essentially unreachable from faithful bottom-up STEP translation (judged
+STRUCTURALLY-UNREACHABLE as a direct target). However Bo007's catalog notes and fixture comment
+record that OCCT's BRepCheck actually flags SubshapeNotInShape on the duplicated-face shell
+after reader dedup — one genuine but incidental producer, hence PARTIAL rather than GAP."
+
+The packet asked for a "purpose-built duplicate-face-dedup scenario mirroring what accidentally
+triggered `SubshapeNotInShape` in Bo007." Tried, live, against OCCT 7.8.1 via
+`STEPControl_Reader`:
+
+1. Bo007's own exact pattern rebuilt standalone (`CLOSED_SHELL` referencing one `ADVANCED_FACE`
+   entity twice in its face list, wrapped in `MANIFOLD_SOLID_BREP`) — result: the reader itself
+   silently deduplicates the reference during shell construction; `TopoDS_Iterator` over the
+   resulting shell's raw children (no explorer-level dedup) confirms exactly ONE face child, not
+   two. `BRepCheck_Analyzer(shape, True).IsValid()` returns `True` with zero nontrivial statuses
+   on any sub-shape. Bo007's own current bytes were independently re-verified live and show the
+   identical clean-dedup outcome (`n_faces_total==1`, `brepcheck.valid==True`) — the class's
+   catalog-cited "fires after dedup" behavior is not reproducible against this OCCT build at all,
+   on Bo007's own bytes, let alone a fresh purpose-built variant.
+2. Same duplicate-reference pattern scaled up to a shell with TWO distinct faces plus one
+   duplicated a second time (`A, B, B` in the face list, 3 references / 2 unique faces) — same
+   clean-dedup result, `IsValid()==True`.
+3. A duplicate `ORIENTED_EDGE` reference within one `EDGE_LOOP` (same edge entity twice in a
+   4-edge loop) — this DOES produce nontrivial `BRepCheck` statuses, but they are
+   `BRepCheck_SelfIntersectingWire` and `BRepCheck_UnorientableShape` — a different, already
+   well-covered defect class, not `SubshapeNotInShape`.
+
+All three variants were read via the identical default `STEPControl_Reader().TransferRoots()/
+.OneShape()` path this corpus's harness uses. The reader's own face/edge-list construction
+appears to genuinely collapse duplicate same-entity references before `BRepCheck` ever runs
+(rather than merely appearing to, per explorer-level dedup) in this OCCT 7.8.1 build, leaving no
+observed path from ordinary Part-21 bytes to a live `SubshapeNotInShape` status.
+**Recommendation**: leave `PARTIAL`/`detect_only`; re-open only if a future OCCT version change
+is suspected, or accept a `runtime-only` (non-STEP-file, direct `TopoDS_Builder` API-misuse)
+demonstration as the class's permanent evidence ceiling, per the existing `problems.json` note's
+own framing.
+
+### Q10 — `bc-invalid-imbrication-of-shells`: `BREP_WITH_VOIDS` crashes this OCCT build unconditionally, independent of void nesting (packet A3, dropped with evidence)
+
+**Not fixed** — dropped from packet A3 (`occt-coverage/WORK_PACKETS.md` Wave 6, `12-3a-shells`)
+after live investigation established the crash Bo003 hits is not specific to nested-void
+geometry at all: `BREP_WITH_VOIDS` reproducibly segfaults this OCCT 7.8.1 / OCP build whenever it
+is the actually-reachable shape root, regardless of how many voids it declares.
+
+The packet asked for "two nested void shells (like Bo003) built to survive translation (avoid
+the signal-11 crash Bo003 hits) so `BRepCheck_Solid::Blind`'s imbrication check actually runs."
+Tried, live, against OCCT 7.8.1 via direct `OCP.STEPControl.STEPControl_Reader` calls (with
+`faulthandler` enabled to confirm the exact crash site, not just the subprocess-isolated
+`signal(11)` outcome this corpus's harness reports):
+
+1. Bo003's exact geometry (two nested boxes, concentric) rebuilt standalone — reproduces the
+   crash (`signal(11)` in both `occt_heal_on`/`occt_heal_off`, and in `gmsh` too).
+2. The same two-void geometry with the inner void OFFSET (non-concentric, still fully nested) —
+   still crashes identically.
+3. Two voids placed SIDE BY SIDE inside the outer shell (not nested in each other at all) —
+   still crashes identically.
+4. A `BREP_WITH_VOIDS` with a SINGLE void (no second/nested shell at all) — still crashes.
+5. A `BREP_WITH_VOIDS` with ZERO voids (`(...)` empty void list, referencing only the outer
+   shell) — still crashes, both via `mode="brep_shape"` (`ADVANCED_BREP_SHAPE_REPRESENTATION`)
+   and via the non-standard `mode="surface_shape"` (`MANIFOLD_SURFACE_SHAPE_REPRESENTATION`)
+   wrapper pairing.
+
+A direct in-process reproduction (`faulthandler.enable()`, no subprocess isolation) confirms the
+segfault happens during `STEPControl_Reader.TransferRoots()` — i.e. inside `StepToTopoDS`'s
+`BREP_WITH_VOIDS` translation path itself, before any `BRepCheck` analysis could ever run — for
+variant 5 (the minimal zero-void case). The SAME outer-shell entity, wired as a plain
+`MANIFOLD_SOLID_BREP` (no `BREP_WITH_VOIDS` wrapper at all) with no void list, loads perfectly
+cleanly (`shape(1)`), ruling out any defect in the shared box-shell-building geometry helper
+itself. Tsh067 (the class's other cited fixture) sidesteps this crash only because its own
+`BREP_WITH_VOIDS` entity is wired as an orphan, disconnected from the actual read root (the
+reader instead follows a separate, reachable `SHELL_BASED_SURFACE_MODEL`) — consistent with the
+existing `problems.json` note that Tsh067 has "no confirmation the named status fires."
+**Recommendation**: `BREP_WITH_VOIDS` translation appears to be unconditionally broken (crashes
+on any content) in this environment's OCCT 7.8.1 build; leave `PARTIAL`, and re-open once a
+newer OCCT build is available to test whether the crash is version-specific. Per project
+discipline (Gp189 precedent), a reproducibly-reader-crashing construction is discarded as
+CI-unsafe rather than shipped.
+
+> **Correction (Wave-6 adversarial verification, 2026-07-13):** the A3 packet's claim that `BREP_WITH_VOIDS` terminates the reader unconditionally was REFUTED. Root cause: Bo003's two `ORIENTED_CLOSED_SHELL` entities are missing a required `*` derived-attribute token (the only shipped fixture with this arity bug); a 2-character fix eliminates the abnormal termination, and Tsh240 (well-formed voids) loads cleanly in every environment tested. The arity-fixed Bo003 fires `SubshapeNotInShape` — live evidence relevant to that class. Bo003 fix + Expected re-verification queued.
+
 ### Q9 — `sew-malformed-subshape-tolerance` null-vertex EDGE_CURVE genuinely unreachable via standard STEP read (packet B2, dropped with evidence)
 
 **Not fixed** — dropped from packet B2 (`occt-coverage/WORK_PACKETS.md` Wave 4, `12-3b-wires`)
