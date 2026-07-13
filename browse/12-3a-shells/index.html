@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1>§12.3a Shells / orientation</h1>
 <p class="blurb">Shell topology defects: orientation, free bounds, mixed open/closed shells, UnifySameDomain pathologies.</p>
-<p class="meta">284 entries</p>
+<p class="meta">290 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
@@ -301,7 +301,13 @@
 <tr><td><a href="Tsh250.html"><code>Tsh250</code></a></td><td>Two stacked full-period cylindrical shells whose facing seam candidate carries only one explicit 2D curve representation</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(14) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Tsh251.html"><code>Tsh251</code></a></td><td>Face-hosted gap candidate whose achieved merge tolerance exceeds a caller-declared cap: the merge is nullified, not returned out-of-spec</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(14) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Tsh252.html"><code>Tsh252</code></a></td><td>Partial-overlap (80%-coverage) gap candidate: achieved merge tolerance tracks the inset distance, not the true perpendicular gap</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(14) ifc=schema_n/a</code></td></tr>
-<tr><td><a href="Tsh253.html"><code>Tsh253</code></a></td><td>Two adjacent (not coincident) coplanar faces whose shared-boundary candidate is traversed in opposite directions on each side</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tsh253.html"><code>Tsh253</code></a></td><td>Two adjacent (not coincident) coplanar faces whose shared-boundary candidate is traversed in opposite directions on each side</td><td><code>bytes-sufficient</code></td><td><code></code></td></tr>
+<tr><td><a href="Tsh254.html"><code>Tsh254</code></a></td><td>Genuine cross-item shared EDGE_CURVE: identical entity reused by two SHELL_BASED_SURFACE_MODEL items in one non-manifold representation, orientation reversed</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tsh255.html"><code>Tsh255</code></a></td><td>I-DEAS-style legacy STP: two distinct EDGE_CURVE entities sharing one Name string, second entity&#x27;s own (wrong) geometry silently discarded in favor of name-matched reuse</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tsh256.html"><code>Tsh256</code></a></td><td>FACE_BASED_SURFACE_MODEL drops one failing member face (null surface), builds the rest</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tsh257.html"><code>Tsh257</code></a></td><td>RECTANGULAR_COMPOSITE_SURFACE drops one failing patch (illegal-type parent_surface), builds the rest</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tsh258.html"><code>Tsh258</code></a></td><td>Closed OPEN_SHELL tetrahedron promoted to a genuine solid under non-manifold read mode (tier-3-confirmed, not just shape(N))</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tsh259.html"><code>Tsh259</code></a></td><td>Small-area internal hole wire removal cascades into removing a whole neighboring face built on the same edges</td><td><code>bytes-sufficient</code></td><td><code></code></td></tr>
 </tbody></table>
 </main>
 <footer>

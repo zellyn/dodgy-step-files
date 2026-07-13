@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gs200 — V-periodic (tube-direction) seam-pair on a `TOROIDAL_SURFACE` requires sewing-stage merge validation</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2c Surface / curve degeneracies</a> <span class="sep">/</span> <span class="current">Gs200</span>
+</nav>
+<header class="title-bar">
+<h1>Gs200 <span class="sep">—</span> <span class="entry-title">V-periodic (tube-direction) seam-pair on a `TOROIDAL_SURFACE` requires sewing-stage merge validation</span></h1>
+<p class="category">§12.2c surfaces (sub-class: sewing / periodic-seam merge validation, fills `sew-seam-closed-surface-merge`&#x27;s missing V-periodic subvariant)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2c-surfaces/Gs200.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2c-surfaces/Gs200.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT `BRepBuilderAPI_Sewing::IsMergedClosed` (`src/BRepBuilderAPI/BRepBuilderAPI_Sewing.cxx:1248-1317`, specifically `:1307-1315` the `isVClosed` branch — `if (isVClosed &amp;&amp; isULongC1 &amp;&amp; isULongC2) { ... if (distOuter &lt;= distInner) return Standard_True</li>
+<li>}`, the 2D-parametric-footprint-overlap test gating a V-periodic merge, mirroring the `isUClosed` branch at `:1298-1306` that Tsh209 (U-periodic cylinder) exercises) and `BRepBuilderAPI_Sewing::IsVClosedSurface` (`:268-289`, the `Geom_ToroidalSurface::IsVClosed()`-driven fast path at `:278`) @ `bd2a789f15235755ce4d1a3b07379a2e062fdc2e` (verified against source at this commit).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A single `ADVANCED_FACE` on a `TOROIDAL_SURFACE` (major radius 6.0, minor radius 2.0) is a quarter-wedge in the MAJOR (U) angle direction (u:0→π/2) that is FULLY CLOSED in the MINOR (V, tube) direction. Its boundary loop is 4 edges: two full-circle tube cross-sections (at u=0 and u=π/2, each genuinely closed since V is periodic — these are the wedge&#x27;s two open U-boundary edges, analogous to Tsh209&#x27;s bottom/top full cylinder-rim circles) and, closing the loop at v=0≡2π, TWO SEPARATE, UNSHARED but geometrically coincident outer-equator arc edges (radius 8 = major+minor, u:0→π/2) — the V-periodic seam pair, built from two distinct `CIRCLE`+`TRIMMED_CURVE` entity chains (opposite-sense local `AXIS2_PLACEMENT_3D` frames) rather than one shared `EDGE_CURVE`. This is the V-periodic (tube-direction) analogue of Tsh209&#x27;s U-periodic (cylinder-axis-direction) seam pair.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`TOROIDAL_SURFACE` (major 6.0, minor 2.0); two full `CIRCLE` edges (radius 2.0) at the u=0 and u=π/2 tube cross-sections (`UIso(0)`/`UIso(π/2)` of the torus, each a genuine closed loop, start==end vertex); two `TRIMMED_CURVE`-over-`CIRCLE` (radius 8.0, u:0→π/2) edges closing the v=0≡2π seam, each a SEPARATE entity chain (opposite local placement sense) sharing only their two endpoint vertices, not the edge itself.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>A sewing pass over this single face&#x27;s boundary must recognize that the two outer-equator arc edges are the SAME physical seam location (2D pcurve footprints on the periodic surface overlap across the V-closed direction, per `IsMergedClosed`&#x27;s footprint-overlap test) and merge them into one shared edge, rather than leaving both as independent free/floating boundary edges (which would misreport the wedge as having 4 free edges instead of the geometrically-correct 2).</p></section>
+<section><h2>Notes</h2>
+<p>Live-verified directly against the fixture&#x27;s own bytes (the reader loads the face, then the sewing stage is run directly on it with a 1e-6 tolerance, matching Tsh209&#x27;s established convention of driving the sewing stage directly since it is not part of the default read): raw read is 1 face, a toroidal surface, face area `118.43525281307257` (exactly the quarter-wedge full-tube torus-segment-area formula `(π/2)·2π·R·r = 118.4352528130723`, confirming the exact wedge geometry); after the sewing pass, exactly 1 contiguous (mergeable) edge pair is reported (the two outer-equator arc edges recognized and matched as a mergeable seam pair) and 2 free edges remain (the two tube cross-section circles, correctly left as genuine open boundary — not seam candidates) — confirming the merge-validation logic&#x27;s V-periodic branch fires specifically on the intended seam pair and nothing else. Fills `sew-seam-closed-surface-merge`&#x27;s previously-missing &quot;V-periodic seam merge validation&quot; subvariant (1 of 2 missing); the isoline-distance-fallback subvariant (closure detected on a surface that doesn&#x27;t self-report `IsUClosed`/`IsVClosed`) remains unfilled — deferred, see `BACKLOG.md`. Synonyms: &quot;V-periodic torus tube-direction seam merge&quot;, &quot;sewing-stage V-closed-surface merge branch&quot;, &quot;two unshared coincident equator arcs seam pair&quot;, &quot;contiguous-edge seam-pair recognition after sewing&quot;, &quot;tube-direction analogue of Tsh209 cylinder axis seam&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;TOROIDAL_SURFACE&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;ADVANCED_FACE&#x27;) == 1</code></li>
+<li><code>count_entity_def(b&#x27;EDGE_CURVE&#x27;) == 4</code></li>
+<li><code>count_entity_def(b&#x27;CIRCLE&#x27;) == 4</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+<li><code>shape_null == False</code></li>
+<li><code>n_faces_total == 1</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-3a-shells/Tsh209.html">Tsh209</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gs200: single ADVANCED_FACE on a <mark>TOROIDAL_SURFACE</mark> (major radius 6.0, minor radius 2.0), a
+<span class="lineno">3</span>   quarter-wedge in the MAJOR (U) angle direction that is FULLY CLOSED in the MINOR (V, tube)
+<span class="lineno">4</span>   direction; loop = tube-circle at u=0 (full circle, V-closed) + outer-equator seam arc (u:0-&gt;
+<span class="lineno">5</span>   pi/2, v=0) + tube-circle at u=pi/2 (full circle) + a SECOND, geometrically-coincident but
+<span class="lineno">6</span>   UNSHARED outer-equator arc entity closing back to u=0 -- the two equator-arc edges are the
+<span class="lineno">7</span>   V-periodic seam pair BRepBuilderAPI_Sewing::IsMergedClosed/AnalysisNearestEdges must recognize
+<span class="lineno">8</span>   and merge (V-periodic analogue of Tsh209&#x27;s U-periodic cylinder seam pair) */
+<span class="lineno">9</span>HEADER;
+<span class="lineno">10</span>FILE_DESCRIPTION((&#x27;Gs200&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">11</span>FILE_NAME(&#x27;Gs200.stp&#x27;,&#x27;2026-07-13T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">12</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">13</span>ENDSEC;
+<span class="lineno">14</span>DATA;
+<span class="lineno">15</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">16</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">17</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">18</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">19</span>#4=AXIS2_PLACEMENT_3D(&#x27;gs200_torus_ax&#x27;,#1,#2,#3);
+<span class="lineno">20</span>#5=<mark>TOROIDAL_SURFACE</mark>(&#x27;gs200_torus&#x27;,#4,6.0,2.0);
+<span class="lineno">21</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(8.0,0.0,0.0));
+<span class="lineno">22</span>#7=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">23</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(0.0,8.0,0.0));
+<span class="lineno">24</span>#9=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">25</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(6.0,0.0,0.0));
+<span class="lineno">26</span>#11=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">27</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">28</span>#13=AXIS2_PLACEMENT_3D(&#x27;gs200_tube_u0_ax&#x27;,#10,#11,#12);
+<span class="lineno">29</span><mark>#14=CIRCLE(</mark>&#x27;gs200_tube_u0&#x27;,#13,2.0);
+<span class="lineno">30</span><mark>#15=EDGE_CURVE(</mark>&#x27;gs200_tube_u0_edge&#x27;,#7,#7,#14,.T.);
+<span class="lineno">31</span>#16=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">32</span>#17=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">33</span>#18=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">34</span>#19=AXIS2_PLACEMENT_3D(&#x27;gs200_eq_fwd_ax&#x27;,#16,#17,#18);
+<span class="lineno">35</span><mark>#20=CIRCLE(</mark>&#x27;gs200_eq_fwd&#x27;,#19,8.0);
+<span class="lineno">36</span>#21=TRIMMED_CURVE(&#x27;gs200_eq_fwd_arc&#x27;,#20,(PARAMETER_VALUE(0.0)),(PARAMETER_VALUE(1.5707963267949)),.T.,.PARAMETER.);
+<span class="lineno">37</span><mark>#22=EDGE_CURVE(</mark>&#x27;gs200_eq_fwd_edge&#x27;,#7,#9,#21,.T.);
+<span class="lineno">38</span>#23=CARTESIAN_POINT(&#x27;&#x27;,(0.0,6.0,0.0));
+<span class="lineno">39</span>#24=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">40</span>#25=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">41</span>#26=AXIS2_PLACEMENT_3D(&#x27;gs200_tube_u90_ax&#x27;,#23,#24,#25);
+<span class="lineno">42</span><mark>#27=CIRCLE(</mark>&#x27;gs200_tube_u90&#x27;,#26,2.0);
+<span class="lineno">43</span><mark>#28=EDGE_CURVE(</mark>&#x27;gs200_tube_u90_edge&#x27;,#9,#9,#27,.T.);
+<span class="lineno">44</span>#29=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">45</span>#30=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0));
+<span class="lineno">46</span>#31=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">47</span>#32=AXIS2_PLACEMENT_3D(&#x27;gs200_eq_rev_ax&#x27;,#29,#30,#31);
+<span class="lineno">48</span><mark>#33=CIRCLE(</mark>&#x27;gs200_eq_rev&#x27;,#32,8.0);
+<span class="lineno">49</span>#34=TRIMMED_CURVE(&#x27;gs200_eq_rev_arc&#x27;,#33,(PARAMETER_VALUE(0.0)),(PARAMETER_VALUE(1.5707963267949)),.T.,.PARAMETER.);
+<span class="lineno">50</span><mark>#35=EDGE_CURVE(</mark>&#x27;gs200_eq_rev_edge&#x27;,#9,#7,#34,.T.);
+<span class="lineno">51</span>#36=ORIENTED_EDGE(&#x27;&#x27;,$,$,#15,.T.);
+<span class="lineno">52</span>#37=ORIENTED_EDGE(&#x27;&#x27;,$,$,#22,.T.);
+<span class="lineno">53</span>#38=ORIENTED_EDGE(&#x27;&#x27;,$,$,#28,.T.);
+<span class="lineno">54</span>#39=ORIENTED_EDGE(&#x27;&#x27;,$,$,#35,.T.);
+<span class="lineno">55</span>#40=EDGE_LOOP(&#x27;&#x27;,(#36,#37,#38,#39));
+<span class="lineno">56</span>#41=FACE_OUTER_BOUND(&#x27;&#x27;,#40,.T.);
+<span class="lineno">57</span><mark>#42=ADVANCED_FACE(</mark>&#x27;gs200_face&#x27;,(#41),#5,.T.);
+<span class="lineno">58</span>#43=OPEN_SHELL(&#x27;gs200_shell&#x27;,(#42));
+<span class="lineno">59</span>#44=SHELL_BASED_SURFACE_MODEL(&#x27;gs200_sbsm&#x27;,(#43));
+<span class="lineno">60</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">61</span>#9051=PRODUCT(&#x27;Gs200&#x27;,&#x27;Gs200&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">62</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">63</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">64</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">65</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">66</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">67</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">68</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">69</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">70</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">71</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#44),#9060);
+<span class="lineno">72</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">73</span>ENDSEC;
+<span class="lineno">74</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gs199.html">&larr; Gs199</a> <a class="up" href="index.html">§12.2c Surface / curve degeneracies</a> <a class="next" href="Gs201.html">Gs201 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

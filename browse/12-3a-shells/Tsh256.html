@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tsh256 — FACE_BASED_SURFACE_MODEL drops one failing member face (null surface), builds the rest</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3a Shells / orientation</a> <span class="sep">/</span> <span class="current">Tsh256</span>
+</nav>
+<header class="title-bar">
+<h1>Tsh256 <span class="sep">—</span> <span class="entry-title">FACE_BASED_SURFACE_MODEL drops one failing member face (null surface), builds the rest</span></h1>
+<p class="category">§12.3a shells (sub-class: step-reader partial-assembly continuation, FaceBasedSurfaceModel subvariant — `stp-partial-assembly-continuation`)</p>
+<p class="severity-badge severity-p3">P3 — cosmetic / metadata-only</p>
+<p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3a-shells/Tsh256.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3a-shells/Tsh256.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>occt-coverage PARTIAL audit, work packet A4 item `stp-partial-assembly-continuation`, `exchange/problems.json` `stp-partial-assembly-continuation` (`StepToTopoDS_Builder::Init(FaceBasedSurfaceModel)`, `StepToTopoDS_Builder.cxx:567-590` — per-face `myTranFace.IsDone()` check, `continue` on failure, shell/compound built from the survivors). Mirror Bo002 demonstrates the analogous fatal-outer-shell case for `MANIFOLD_SOLID_BREP`</li>
+<li>this class&#x27;s `FACE_BASED_SURFACE_MODEL`/`EDGE_BASED_WIREFRAME_MODEL` member-failure subvariant was previously unrepresented in the live corpus (only in `_quarantine`/early-waves per prior audit notes).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A `FACE_BASED_SURFACE_MODEL` wraps one `CONNECTED_FACE_SET` containing two `ADVANCED_FACE`s: `good_face` (a normal 4-edge planar face, `(0,0,0)-(5,0,0)-(5,5,0)-(0,5,0)`) and `bad_face_null_surface` (a second, geometrically well-formed 4-edge loop, `x:[10,15]`) whose `ADVANCED_FACE.face_geometry` attribute is left unset (`$`) — mirroring Xp008&#x27;s proven null-surface pattern, now inside a `FACE_BASED_SURFACE_MODEL` container instead of a `MANIFOLD_SOLID_BREP`.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`CONNECTED_FACE_SET(&#x27;cfs&#x27;,(#35,#66))` where `#35=ADVANCED_FACE(&#x27;good_face&#x27;,(#34),#33,.T.)` (real `PLANE`) and `#66=ADVANCED_FACE(&#x27;bad_face_null_surface&#x27;,(#65),$,.T.)` (surface `$`); `FACE_BASED_SURFACE_MODEL(&#x27;fbsm&#x27;,(#67))` wraps the one connected-face-set.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>the face-translation stage cannot build a face without a surface and reports not-done for `bad_face_null_surface`; the `FaceBasedSurfaceModel` builder&#x27;s per-face loop skips it with a warning and still returns a shell built from the surviving `good_face`, rather than aborting the whole connected-face-set or the whole model.</p></section>
+<section><h2>Notes</h2>
+<p>Live-verified (this worktree&#x27;s OCP/OCCT 7.8.1): the reader&#x27;s root-transfer step on this fixture returns 1 transferred root and 1 output shape, and the resulting shape has exactly 1 face / 4 edges / 8 (raw) vertices — `good_face` alone, confirming `bad_face_null_surface` was silently dropped rather than nulling the whole model or raising a hard failure. `brepcheck.valid == True` on the surviving shape. Synonyms: &quot;FaceBasedSurfaceModel drops failed face&quot;, &quot;connected_face_set null surface skipped&quot;, &quot;partial container continuation surface model&quot;, &quot;one bad face doesn&#x27;t sink the whole model&quot;, &quot;face geometry unset item skipped&quot;. Provenance tier: bytes-sufficient.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;good_face&#x27;)</code></li>
+<li><code>contains(b&#x27;bad_face_null_surface&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;ADVANCED_FACE&#x27;) &gt;= 2</code></li>
+<li><code>contains(b&#x27;FACE_BASED_SURFACE_MODEL&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_faces_total == 1</code></li>
+<li><code>n_edges_total == 4</code></li>
+<li><code>n_vertices_total == 8</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>brepcheck.valid == True</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tsh256: TEST - <mark>FACE_BASED_SURFACE_MODEL</mark> whose CONNECTED_FACE_SET has one good ADVANCED_FACE and one failing ADVANCED_FACE (null surface, Xp008&#x27;s proven null-surface pattern) */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Tsh256&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Tsh256.stp&#x27;,&#x27;2026-07-13T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">12</span>#3=CARTESIAN_POINT(&#x27;&#x27;,(5.0,5.0,0.0));
+<span class="lineno">13</span>#4=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0,0.0));
+<span class="lineno">14</span>#5=VERTEX_POINT(&#x27;&#x27;,#1);
+<span class="lineno">15</span>#6=VERTEX_POINT(&#x27;&#x27;,#2);
+<span class="lineno">16</span>#7=VERTEX_POINT(&#x27;&#x27;,#3);
+<span class="lineno">17</span>#8=VERTEX_POINT(&#x27;&#x27;,#4);
+<span class="lineno">18</span>#9=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">19</span>#10=VECTOR(&#x27;&#x27;,#9,5.0);
+<span class="lineno">20</span>#11=LINE(&#x27;&#x27;,#1,#10);
+<span class="lineno">21</span>#12=EDGE_CURVE(&#x27;good_e1&#x27;,#5,#6,#11,.T.);
+<span class="lineno">22</span>#13=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">23</span>#14=VECTOR(&#x27;&#x27;,#13,5.0);
+<span class="lineno">24</span>#15=LINE(&#x27;&#x27;,#2,#14);
+<span class="lineno">25</span>#16=EDGE_CURVE(&#x27;good_e2&#x27;,#6,#7,#15,.T.);
+<span class="lineno">26</span>#17=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">27</span>#18=VECTOR(&#x27;&#x27;,#17,5.0);
+<span class="lineno">28</span>#19=LINE(&#x27;&#x27;,#3,#18);
+<span class="lineno">29</span>#20=EDGE_CURVE(&#x27;good_e3&#x27;,#7,#8,#19,.T.);
+<span class="lineno">30</span>#21=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">31</span>#22=VECTOR(&#x27;&#x27;,#21,5.0);
+<span class="lineno">32</span>#23=LINE(&#x27;&#x27;,#4,#22);
+<span class="lineno">33</span>#24=EDGE_CURVE(&#x27;good_e4&#x27;,#8,#5,#23,.T.);
+<span class="lineno">34</span>#25=ORIENTED_EDGE(&#x27;&#x27;,*,*,#12,.T.);
+<span class="lineno">35</span>#26=ORIENTED_EDGE(&#x27;&#x27;,*,*,#16,.T.);
+<span class="lineno">36</span>#27=ORIENTED_EDGE(&#x27;&#x27;,*,*,#20,.T.);
+<span class="lineno">37</span>#28=ORIENTED_EDGE(&#x27;&#x27;,*,*,#24,.T.);
+<span class="lineno">38</span>#29=EDGE_LOOP(&#x27;&#x27;,(#25,#26,#27,#28));
+<span class="lineno">39</span>#30=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">40</span>#31=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">41</span>#32=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#30,#31);
+<span class="lineno">42</span>#33=PLANE(&#x27;&#x27;,#32);
+<span class="lineno">43</span>#34=FACE_OUTER_BOUND(&#x27;&#x27;,#29,.T.);
+<span class="lineno">44</span><mark>#35=ADVANCED_FACE(</mark>&#x27;<mark>good_face</mark>&#x27;,(#34),#33,.T.);
+<span class="lineno">45</span>/* Failing member: a second face sharing edge #12/#16/#20/#24&#x27;s loop geometry
+<span class="lineno">46</span>   but ADVANCED_FACE&#x27;s own surface item is left NULL ($) -- StepToTopoDS_TranslateFace
+<span class="lineno">47</span>   cannot build a TopoDS_Face without a surface and reports not-done; the
+<span class="lineno">48</span>   <mark>FACE_BASED_SURFACE_MODEL</mark> builder must skip it and warn rather than aborting
+<span class="lineno">49</span>   the whole connected_face_set. */
+<span class="lineno">50</span>#36=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">51</span>#37=CARTESIAN_POINT(&#x27;&#x27;,(15.0,0.0,0.0));
+<span class="lineno">52</span>#38=CARTESIAN_POINT(&#x27;&#x27;,(15.0,5.0,0.0));
+<span class="lineno">53</span>#39=CARTESIAN_POINT(&#x27;&#x27;,(10.0,5.0,0.0));
+<span class="lineno">54</span>#40=VERTEX_POINT(&#x27;&#x27;,#36);
+<span class="lineno">55</span>#41=VERTEX_POINT(&#x27;&#x27;,#37);
+<span class="lineno">56</span>#42=VERTEX_POINT(&#x27;&#x27;,#38);
+<span class="lineno">57</span>#43=VERTEX_POINT(&#x27;&#x27;,#39);
+<span class="lineno">58</span>#44=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">59</span>#45=VECTOR(&#x27;&#x27;,#44,5.0);
+<span class="lineno">60</span>#46=LINE(&#x27;&#x27;,#36,#45);
+<span class="lineno">61</span>#47=EDGE_CURVE(&#x27;bad_e1&#x27;,#40,#41,#46,.T.);
+<span class="lineno">62</span>#48=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">63</span>#49=VECTOR(&#x27;&#x27;,#48,5.0);
+<span class="lineno">64</span>#50=LINE(&#x27;&#x27;,#37,#49);
+<span class="lineno">65</span>#51=EDGE_CURVE(&#x27;bad_e2&#x27;,#41,#42,#50,.T.);
+<span class="lineno">66</span>#52=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">67</span>#53=VECTOR(&#x27;&#x27;,#52,5.0);
+<span class="lineno">68</span>#54=LINE(&#x27;&#x27;,#38,#53);
+<span class="lineno">69</span>#55=EDGE_CURVE(&#x27;bad_e3&#x27;,#42,#43,#54,.T.);
+<span class="lineno">70</span>#56=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">71</span>#57=VECTOR(&#x27;&#x27;,#56,5.0);
+<span class="lineno">72</span>#58=LINE(&#x27;&#x27;,#39,#57);
+<span class="lineno">73</span>#59=EDGE_CURVE(&#x27;bad_e4&#x27;,#43,#40,#58,.T.);
+<span class="lineno">74</span>#60=ORIENTED_EDGE(&#x27;&#x27;,*,*,#47,.T.);
+<span class="lineno">75</span>#61=ORIENTED_EDGE(&#x27;&#x27;,*,*,#51,.T.);
+<span class="lineno">76</span>#62=ORIENTED_EDGE(&#x27;&#x27;,*,*,#55,.T.);
+<span class="lineno">77</span>#63=ORIENTED_EDGE(&#x27;&#x27;,*,*,#59,.T.);
+<span class="lineno">78</span>#64=EDGE_LOOP(&#x27;&#x27;,(#60,#61,#62,#63));
+<span class="lineno">79</span>#65=FACE_OUTER_BOUND(&#x27;&#x27;,#64,.T.);
+<span class="lineno">80</span><mark>#66=ADVANCED_FACE(</mark>&#x27;<mark>bad_face_null_surface</mark>&#x27;,(#65),$,.T.);
+<span class="lineno">81</span>#67=CONNECTED_FACE_SET(&#x27;cfs&#x27;,(#35,#66));
+<span class="lineno">82</span>#68=<mark>FACE_BASED_SURFACE_MODEL</mark>(&#x27;fbsm&#x27;,(#67));
+<span class="lineno">83</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">84</span>#9051=PRODUCT(&#x27;Tsh256&#x27;,&#x27;Tsh256&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">85</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">86</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">87</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">88</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">89</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">90</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">91</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">92</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">93</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">94</span>#9061=ADVANCED_BREP_SHAPE_REPRESENTATION(&#x27;&#x27;,(#68),#9060);
+<span class="lineno">95</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">96</span>ENDSEC;
+<span class="lineno">97</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tsh255.html">&larr; Tsh255</a> <a class="up" href="index.html">§12.3a Shells / orientation</a> <a class="next" href="Tsh257.html">Tsh257 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

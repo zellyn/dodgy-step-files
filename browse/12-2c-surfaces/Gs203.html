@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gs203 — B-spline curve closed only within 3D tolerance (not formally `.Closed`) forces `UpdateParam3d`&#x27;s near-loop wrong-end reinterpretation</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2c Surface / curve degeneracies</a> <span class="sep">/</span> <span class="current">Gs203</span>
+</nav>
+<header class="title-bar">
+<h1>Gs203 <span class="sep">—</span> <span class="entry-title">B-spline curve closed only within 3D tolerance (not formally `.Closed`) forces `UpdateParam3d`&#x27;s near-loop wrong-end reinterpretation</span></h1>
+<p class="category">§12.2c surfaces (sub-class: edge-curve parameter range, fills `stp-edge-curve-param-range`&#x27;s missing tolerance-closed-B-spline subvariant)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2c-surfaces/Gs203.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2c-surfaces/Gs203.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>OCCT `StepToTopoDS_GeometricTool::UpdateParam3d` (`src/StepToTopoDS/StepToTopoDS_GeometricTool.cxx:294-328`, the `Geom_BSplineCurve`-specific near-closed-tolerance branch: `:298` `if (aBSpline-&gt;StartPoint().Distance(aBSpline-&gt;EndPoint()) &lt;= preci)` — gated on the COARSE tolerance `preci` (the model&#x27;s own declared uncertainty), distinct from `Geom_Curve::IsClosed()`&#x27;s much tighter internal test (`Geom_BSplineCurve_1.cxx:143` `StartPoint().SquareDistance(EndPoint()) &lt;= 1e-16`, i.e. ~1e-8 absolute)</li>
+<li>`:306-309` `if (Abs(w2-cf) &lt; Precision::PConfusion()) w2 = cl</li>
+<li>` — the wrong-end reinterpretation this fixture targets) @ `bd2a789f15235755ce4d1a3b07379a2e062fdc2e` (verified against source at this commit). Distinct from Gs202 (same function, but the plain `w1&gt;w2` reversal fallback reached only when the curve is genuinely NOT closed even within tolerance).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A single `ADVANCED_FACE` on a `PLANE` has one boundary edge whose 3D curve is a clamped, non-periodic degree-3 `B_SPLINE_CURVE_WITH_KNOTS` (4 poles) shaped as a near-loop: its start pole `(0,0,0)` and end pole `(5e-8,0,0)` are only `5e-8` apart — BELOW the fixture&#x27;s own declared `UNCERTAINTY_MEASURE_WITH_UNIT` of `1e-7` (so the curve is &quot;closed&quot; for all practical modeling purposes) but ABOVE `Geom_BSplineCurve::IsClosed()`&#x27;s own much tighter internal `~1e-8` test (so OCCT&#x27;s own geometric-closure flag reports `False` — this is genuinely the &quot;not formally flagged Closed&quot; case). The edge&#x27;s `edge_start` vertex sits at the curve&#x27;s exact MIDPOINT (parameter 0.5, an unambiguous on-curve point, live-computed via `Geom_BSplineCurve::Value(0.5)`); `edge_end` sits at the curve&#x27;s exact START pole `(0,0,0)` (projects exactly to parameter 0). Naive projection therefore yields `w1=0.5 &gt; w2=0.0` on a curve that is neither periodic nor formally closed — the scenario the packet spec&#x27;s &quot;closed only within 3D tolerance&quot; subvariant names.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`B_SPLINE_CURVE_WITH_KNOTS(&#x27;name&#x27;,3,(p0,p1,p2,p3),.UNSPECIFIED.,.F.,.F.,(4,4),(0.0,1.0),.UNSPECIFIED.)` with `p3` positioned `5e-8` from `p0` (a near-loop); `VERTEX_POINT`s at the curve&#x27;s exact midpoint (edge_start) and exactly at `p0` (edge_end).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>Because the curve is near-closed within the model&#x27;s own declared tolerance but not periodic and not formally `.Closed.`, a receiver must NOT treat `w2=0.0` (which naively equals the curve&#x27;s own first parameter) at face value; it must recognize that a point this close to the curve&#x27;s near-coincident start/end poles could legitimately be intended as the curve&#x27;s LAST parameter instead, and re-target `w2` to `cl` (here `1.0`) — producing a well-formed, non-degenerate `[0.5, 1.0]` parameter range — rather than either leaving `w1&gt;w2` unresolved or collapsing both parameters to the same value.</p></section>
+<section><h2>Notes</h2>
+<p>Live-verified directly against the fixture&#x27;s own bytes (default read — this parameter-range repair runs unconditionally as part of ordinary edge translation): the resulting edge&#x27;s 3D curve reports parameter range `(0.49999999999999994, 1.0)` — NOT the naive/raw `(0.5, 0.0)`, confirming `w2` was correctly re-targeted from the curve&#x27;s first parameter to its TRUE last parameter; evaluating the curve at `w2=1.0` gives `(5e-08, 0.0, 0.0)` — the curve&#x27;s real end pole, only `5e-8` from the file&#x27;s stated `edge_end` vertex coordinates `(0,0,0)`, well within the declared `1e-7` tolerance; the resulting face closes as a valid triangle (curved + 2 straight sides), area `13.8`, `shape_null=False`. Fills `stp-edge-curve-param-range`&#x27;s previously-missing &quot;B-spline curve closed only within 3D tolerance&quot; subvariant (the last of 3 missing; see also Gs201, Gs202 — the class is now fully covered, 6 of 6 subvariants demonstrated across Gs029/Gp171/Twi017/Twi086/Gs201/Gs202/Gs203). Synonyms: &quot;B-spline near-loop closed within tolerance not formally Closed&quot;, &quot;edge-parameter-range repair&#x27;s near-closed-curve wrong-end reinterpretation&quot;, &quot;start end poles close but the tight geometric-closure test fails&quot;, &quot;start/end-pole distance below model uncertainty but above the tight closure threshold&quot;, &quot;near-coincident poles reinterpreted as curve&#x27;s true last parameter&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;B_SPLINE_CURVE_WITH_KNOTS&#x27;)</code></li>
+<li><code>contains(b&#x27;0.00000005&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;ADVANCED_FACE&#x27;) == 1</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+<li><code>shape_null == False</code></li>
+<li><code>n_faces_total == 1</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Gs201.html">Gs201</a>, <a href="Gs202.html">Gs202</a>, <a href="Gs029.html">Gs029</a>, <a href="../12-2a-pcurves/Gp171.html">Gp171</a>, <a href="../12-3b-wires/Twi017.html">Twi017</a>, <a href="../12-3b-wires/Twi086.html">Twi086</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gs203: PLANE IS ADVANCED_FACE.face_geometry; defect EDGE_CURVE curve_3d IS a clamped, NON-
+<span class="lineno">3</span>   periodic degree-3 <mark>B_SPLINE_CURVE_WITH_KNOTS</mark> (4 poles) whose start pole (0,0,0) and end pole
+<span class="lineno">4</span>   (5e-8,0,0) are close only WITHIN 3D tolerance (gap 5e-8, below the fixture&#x27;s own declared
+<span class="lineno">5</span>   UNCERTAINTY_MEASURE_WITH_UNIT of 1e-7) but NOT formally .Closed. (Geom_BSplineCurve::IsClosed&#x27;s
+<span class="lineno">6</span>   own tight 1e-8 test reports False); edge_start sits at the curve&#x27;s exact MIDPOINT (t=0.5,
+<span class="lineno">7</span>   unambiguous), edge_end sits at the curve&#x27;s exact START pole (0,0,0, projects exactly to t=0);
+<span class="lineno">8</span>   this yields w1=0.5 &gt; w2=0.0 on a curve that is NOT periodic and NOT formally closed, but IS
+<span class="lineno">9</span>   closed within 3D tolerance -- StepToTopoDS_GeometricTool::UpdateParam3d&#x27;s B-spline
+<span class="lineno">10</span>   near-closed-tolerance branch (distinct from Gs202&#x27;s ordinary-curve reversal fallback) must
+<span class="lineno">11</span>   reinterpret w2 as landing on the wrong (near) end of the near-loop and re-target it to the
+<span class="lineno">12</span>   curve&#x27;s TRUE last parameter (1.0) instead */
+<span class="lineno">13</span>HEADER;
+<span class="lineno">14</span>FILE_DESCRIPTION((&#x27;Gs203&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">15</span>FILE_NAME(&#x27;Gs203.stp&#x27;,&#x27;2026-07-13T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">16</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">17</span>ENDSEC;
+<span class="lineno">18</span>DATA;
+<span class="lineno">19</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">20</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">21</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">22</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">23</span>#4=AXIS2_PLACEMENT_3D(&#x27;gs203_ax&#x27;,#1,#2,#3);
+<span class="lineno">24</span>#5=PLANE(&#x27;gs203_plane&#x27;,#4);
+<span class="lineno">25</span>#6=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT(&#x27;UV&#x27;,&#x27;2D&#x27;));
+<span class="lineno">26</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">27</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(-2.0,4.0,0.0));
+<span class="lineno">28</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(2.0,4.0,0.0));
+<span class="lineno">29</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(<mark>0.00000005</mark>,0.0,0.0));
+<span class="lineno">30</span>#11=<mark>B_SPLINE_CURVE_WITH_KNOTS</mark>(&#x27;gs203_near_loop&#x27;,3,(#7,#8,#9,#10),.UNSPECIFIED.,.F.,.F.,(4,4),(0.0,1.0),.UNSPECIFIED.);
+<span class="lineno">31</span>#12=CARTESIAN_POINT(&#x27;&#x27;,(6.250000017526958E-09,3.0,0.0));
+<span class="lineno">32</span>#13=VERTEX_POINT(&#x27;&#x27;,#12);
+<span class="lineno">33</span>#14=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">34</span>#15=VERTEX_POINT(&#x27;&#x27;,#14);
+<span class="lineno">35</span>#16=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));
+<span class="lineno">36</span>#17=CARTESIAN_POINT(&#x27;&#x27;,(-2.0,4.0));
+<span class="lineno">37</span>#18=CARTESIAN_POINT(&#x27;&#x27;,(2.0,4.0));
+<span class="lineno">38</span>#19=CARTESIAN_POINT(&#x27;&#x27;,(<mark>0.00000005</mark>,0.0));
+<span class="lineno">39</span>#20=<mark>B_SPLINE_CURVE_WITH_KNOTS</mark>(&#x27;gs203_near_loop_pc&#x27;,3,(#16,#17,#18,#19),.UNSPECIFIED.,.F.,.F.,(4,4),(0.0,1.0),.UNSPECIFIED.);
+<span class="lineno">40</span>#21=DEFINITIONAL_REPRESENTATION(&#x27;pcdef_e0&#x27;,(#20),#6);
+<span class="lineno">41</span>#22=PCURVE(&#x27;pc_e0&#x27;,#5,#21);
+<span class="lineno">42</span>#23=SURFACE_CURVE(&#x27;sc_e0&#x27;,#11,(#22),.PCURVE_S1.);
+<span class="lineno">43</span>#24=EDGE_CURVE(&#x27;ec_e0&#x27;,#13,#15,#23,.T.);
+<span class="lineno">44</span>#25=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">45</span>#26=DIRECTION(&#x27;&#x27;,(0.7071067811865475,-0.7071067811865475,0.0));
+<span class="lineno">46</span>#27=VECTOR(&#x27;&#x27;,#26,14.142135623730951);
+<span class="lineno">47</span>#28=LINE(&#x27;&#x27;,#25,#27);
+<span class="lineno">48</span>#29=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));
+<span class="lineno">49</span>#30=DIRECTION(&#x27;&#x27;,(0.7071067811865475,-0.7071067811865475));
+<span class="lineno">50</span>#31=VECTOR(&#x27;&#x27;,#30,14.142135623730951);
+<span class="lineno">51</span>#32=LINE(&#x27;&#x27;,#29,#31);
+<span class="lineno">52</span>#33=DEFINITIONAL_REPRESENTATION(&#x27;pcdef1&#x27;,(#32),#6);
+<span class="lineno">53</span>#34=PCURVE(&#x27;pc1&#x27;,#5,#33);
+<span class="lineno">54</span>#35=SURFACE_CURVE(&#x27;sc1&#x27;,#28,(#34),.PCURVE_S1.);
+<span class="lineno">55</span>#36=CARTESIAN_POINT(&#x27;&#x27;,(10.0,-10.0,0.0));
+<span class="lineno">56</span>#37=VERTEX_POINT(&#x27;&#x27;,#36);
+<span class="lineno">57</span>#38=EDGE_CURVE(&#x27;ec1&#x27;,#15,#37,#35,.T.);
+<span class="lineno">58</span>#39=CARTESIAN_POINT(&#x27;&#x27;,(10.0,-10.0,0.0));
+<span class="lineno">59</span>#40=DIRECTION(&#x27;&#x27;,(-0.6097107606102846,0.79262398928876,0.0));
+<span class="lineno">60</span>#41=VECTOR(&#x27;&#x27;,#40,16.401219463046033);
+<span class="lineno">61</span>#42=LINE(&#x27;&#x27;,#39,#41);
+<span class="lineno">62</span>#43=CARTESIAN_POINT(&#x27;&#x27;,(10.0,-10.0));
+<span class="lineno">63</span>#44=DIRECTION(&#x27;&#x27;,(-0.6097107606102846,0.79262398928876));
+<span class="lineno">64</span>#45=VECTOR(&#x27;&#x27;,#44,16.401219463046033);
+<span class="lineno">65</span>#46=LINE(&#x27;&#x27;,#43,#45);
+<span class="lineno">66</span>#47=DEFINITIONAL_REPRESENTATION(&#x27;pcdef2&#x27;,(#46),#6);
+<span class="lineno">67</span>#48=PCURVE(&#x27;pc2&#x27;,#5,#47);
+<span class="lineno">68</span>#49=SURFACE_CURVE(&#x27;sc2&#x27;,#42,(#48),.PCURVE_S1.);
+<span class="lineno">69</span>#50=EDGE_CURVE(&#x27;ec2&#x27;,#37,#13,#49,.T.);
+<span class="lineno">70</span>#51=ORIENTED_EDGE(&#x27;&#x27;,$,$,#24,.T.);
+<span class="lineno">71</span>#52=ORIENTED_EDGE(&#x27;&#x27;,$,$,#38,.T.);
+<span class="lineno">72</span>#53=ORIENTED_EDGE(&#x27;&#x27;,$,$,#50,.T.);
+<span class="lineno">73</span>#54=EDGE_LOOP(&#x27;&#x27;,(#51,#52,#53));
+<span class="lineno">74</span>#55=FACE_OUTER_BOUND(&#x27;&#x27;,#54,.T.);
+<span class="lineno">75</span><mark>#56=ADVANCED_FACE(</mark>&#x27;&#x27;,(#55),#5,.T.);
+<span class="lineno">76</span>#57=OPEN_SHELL(&#x27;&#x27;,(#56));
+<span class="lineno">77</span>#58=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#57));
+<span class="lineno">78</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">79</span>#9051=PRODUCT(&#x27;Gs203&#x27;,&#x27;Gs203&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">80</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">81</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">82</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">83</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">84</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">85</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">86</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">87</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">88</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">89</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#58),#9060);
+<span class="lineno">90</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">91</span>ENDSEC;
+<span class="lineno">92</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gs202.html">&larr; Gs202</a> <a class="up" href="index.html">§12.2c Surface / curve degeneracies</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>
