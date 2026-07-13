@@ -46317,3 +46317,140 @@ exercised against CGAL PMP / MeshFix.
 - **Notes**: Cross-oracle: trimesh 4.12.2 `trimesh.load()` succeeds with `m.faces == [[0, 1, -1]]` (the `-1` is kept, unvalidated) and `m.triangles` then silently substitutes the vertex at index 4 (`(99.0, 99.0, 99.0)`, deliberately placed far from the other 4 vertices to make the divergence unambiguous) via Python/NumPy negative-index wraparound — no exception, no diagnostic, a plausible-looking but entirely wrong triangle — verified 2026-07-12. Distinct from Ip010 (positive OOB, which trimesh does bounds-check and reject) and from Ip006 (OBJ negative index, which trimesh also rejects with IndexError): OFF's negative-index path is the one variant in the corpus that neither raises nor drops the face, but silently fabricates wrong geometry. Synonyms: "OFF negative face index", "negative index wraparound", "OFF -1 vertex reference", "silent wrong-vertex substitution". Provenance tier: bytes-only.
 - **Severity**: P2
 - **Model impact**: The reconstructed face silently references an unrelated vertex from elsewhere in the file (here, a deliberately distant point) with no error signal — the worst kind of divergence, since the output is plausible-looking geometry rather than an obvious crash or hole.
+
+### Twi292 — Short arc straddling a closed curve's parameter seam: projected endpoint parameters come back swapped (w1 > w2)
+- **Category**: §12.3b wire-loop (sub-class: closed-edge splitting, periodic-parameter-order)
+- **Sources**: OCCT `ShapeAnalysis_TransferParametersProj::TransferRange` (`ShapeAnalysis_TransferParametersProj.cxx:291-297,305-311` @ `bd2a789f15235755ce4d1a3b07379a2e062fdc2e`); occt-coverage/tkshhealing/problems.json `tkshh-closed-edge-full-period-unsplit`, subvariant "Swapped parameter order after projection, with epsilon-safe range reconstruction"
+- **Description**: When a receiver derives an edge's parametric range on a closed/periodic curve by projecting the two endpoint vertices onto the curve's native `[0, 2*pi)` domain, an edge whose short arc crosses the curve's own parameter seam comes back with the START parameter numerically GREATER than the END parameter, even though the edge is a short, ordinary, non-full-period arc. Naive range construction (`w2 - w1`) either yields a negative length or silently takes the long way around; the correct fix adds one period to the smaller parameter (epsilon-safe periodic reconstruction) before computing the range. Distinct from Twi019, whose single edge spans the full 360° (start vertex literally equal to end vertex) — here start and end are two distinct, ordinary vertices bounding a genuine short arc; the defect is purely in the raw projected-parameter order, not in the topology.
+- **Reproducer recipe**: `ADVANCED_FACE` on a `PLANE`; `FACE_OUTER_BOUND` → `EDGE_LOOP` forming a thin pie-slice wedge: one `CIRCLE`-based `EDGE_CURVE` (radius 3) from raw angle 355° (`w≈6.196rad`) to raw angle 5° (`w≈0.0873rad`) — a genuine short 10° arc crossing the circle's own 0/2π seam — plus two radial `LINE` edges from the rim back to the circle centre closing the wedge.
+- **Expected kernel behavior**: add one period to the smaller projected parameter (epsilon-safe periodic range reconstruction) so the short 10° arc is recovered, rather than computing a negative or 350°-long-way range.
+- **Closure intent**: sheet
+- **Notes**: **See also**: Twi019 (the full-period start==end mechanism this fixture is deliberately distinct from). Verified live: OCCT 7.8.1 correctly reconstructs the short arc — `edge[0].curve_type=="circle"`, `edge[0].analytic.radius==3.0`, `edge[0].length≈0.5236` (exactly `radius * 10°-in-radians`, i.e. the SHORT way, not the 350°/`18.33`-long way), `face[0].area≈0.7854` (matching a 10° pie-slice of radius 3), `brepcheck.valid==True`, `shape(1)/shape(1)` — the swapped-parameter-order input is silently and correctly healed. Synonyms: "arc crosses parameter seam", "start parameter greater than end parameter on closed curve", "periodic range needs one-period correction", "swapped w1 w2 on circle projection", "epsilon-safe seam wraparound". Provenance tier: bytes-sufficient.
+- **Byte assertion**: count_entity_def(b'CIRCLE') == 1
+- **Byte assertion**: contains(b'seam_straddle_arc')
+- **Tier-3 assertion**: face[0].surface_type == "plane"
+- **Tier-3 assertion**: n_edges_total >= 3
+- **Tier-3 assertion**: n_vertices_total >= 3
+- **Tier-3 assertion**: brepcheck.valid == True
+- **Tier-3 assertion**: edge[0].curve_type == "circle"
+- **Tier-3 assertion**: edge[0].analytic.radius == 3.0
+- **Tier-3 assertion**: edge[0].length > 0.4
+- **Tier-3 assertion**: edge[0].length < 1.0
+- **Severity**: P2
+- **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
+
+### Twi293 — Full-period closed edge nested inside a TRIMMED_CURVE wrapper defeats the closed-curve split entirely
+- **Category**: §12.3b wire-loop (sub-class: closed-edge splitting, curve-wrapper fallback)
+- **Sources**: OCCT `static CorrectParameter()` Offset/Trimmed-curve knot-snap fallback — `ShapeAnalysis_TransferParametersProj.cxx:234-254` @ `bd2a789f15235755ce4d1a3b07379a2e062fdc2e`; occt-coverage/tkshhealing/problems.json `tkshh-closed-edge-full-period-unsplit`, subvariant "Parameter correction nested inside Offset/Trimmed curve wrappers falls back to nearest true-basis-curve knot"
+- **Description**: Twi019 demonstrates the full-period-edge-needs-splitting defect directly on a bare `CIRCLE` `EDGE_CURVE`. Real STEP exporters sometimes wrap the periodic basis curve in an intermediate `TRIMMED_CURVE` entity instead. This fixture's defect edge references a `TRIMMED_CURVE` (trimmed to the full `[0, 2π]` range) whose `basis_curve` is the full-period `CIRCLE`, rather than referencing the `CIRCLE` directly — start vertex equals end vertex, mirroring Twi019's core pattern but one layer removed.
+- **Reproducer recipe**: `ADVANCED_FACE` on a `PLANE`; single-edge `EDGE_LOOP` (Twi019/Twi017's "closed curve is the entire wire" pattern) whose sole `EDGE_CURVE` has `edge_start == edge_end` and whose curve slot is a `TRIMMED_CURVE(basis_curve=#circle, trim_1=PARAMETER_VALUE(0.0), trim_2=PARAMETER_VALUE(2*pi), .T., .PARAMETER.)`.
+- **Expected kernel behavior**: fall back to the true basis `CIRCLE`'s own closure/knot structure through the `TRIMMED_CURVE` wrapper to compute the seam split point, or reject as malformed.
+- **Closure intent**: sheet
+- **Notes**: **See also**: Twi019 (the bare-`CIRCLE`, unwrapped sibling of this mechanism). Verified live — a STRONGER finding than the wrapper merely defeating the periodic-knot correction: OCCT 7.8.1 fails to translate the `TRIMMED_CURVE`-wrapped full-period `EDGE_CURVE` at all (tested with both a `PARAMETER_VALUE(0, 2π)` trim and a `CARTESIAN_POINT` same-point-both-ends trim; both fail identically), silently drops the entire `EDGE_LOOP`/`FACE_OUTER_BOUND`, and falls through to STEP's "closed surface with no outer bound" rule (Twi091's pattern): the `ADVANCED_FACE` reads as an UNBOUNDED natural plane (`n_edges_total==0`, `n_vertices_total==0`, `face[0].area≈8e100`, `brepcheck.valid==True` regardless). This is a harsher failure than Twi019's bare-`CIRCLE` case (which loads the single closed edge as-is, unsplit, with `brepcheck.valid==False`) — confirming the wrapper genuinely defeats the closed-curve-split path rather than merely leaving it unsplit; there is no true-basis-curve fallback for this shape at all in this OCCT build. A plain (non-full-period) `TRIMMED_CURVE`-wrapped edge translates fine (independently probed), isolating the failure to the full-period-trim combination specifically. Synonyms: "trimmed curve wraps closed circle", "wrapper defeats closed-edge split", "full-period edge inside TRIMMED_CURVE", "face reads as unbounded natural plane", "wire dropped behind curve wrapper". Provenance tier: bytes-sufficient.
+- **Byte assertion**: count_entity_def(b'TRIMMED_CURVE') == 1
+- **Byte assertion**: count_entity_def(b'CIRCLE') == 1
+- **Byte assertion**: contains(b'wrapped_closed_edge')
+- **Tier-3 assertion**: face[0].surface_type == "plane"
+- **Tier-3 assertion**: n_edges_total == 0
+- **Tier-3 assertion**: n_vertices_total == 0
+- **Tier-3 assertion**: brepcheck.valid == True
+- **Severity**: P2
+- **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+
+### Twi294 — Open chain of two arcs of the same CIRCLE entity (not yet closing to a full circle) should be fused into one arc
+- **Category**: §12.3b (sub-class: redundant vertex, same-curve arc fusion)
+- **Sources**: OCCT `ShapeUpgrade_UnifySameDomain::MergeSubSeq` co-circular-arc union (`ShapeUpgrade_UnifySameDomain.cxx:2151`, closed-chain full-circle at `:2206 GC_MakeCircle`) @ `bd2a789f15235755ce4d1a3b07379a2e062fdc2e`; occt-coverage/tkshhealing/problems.json `tkshh-same-curve-fragmented-edges`, subvariant "arcs of the same circle fused into one arc (open chain)"
+- **Description**: A chain of edges joined at a degree-2 vertex lies on the SAME geometric curve, so the interior vertex is topologically unnecessary fragmentation. Twi089 covers the analogous LINE case (two collinear line segments); this fixture covers the ARC case explicitly named as still missing in the problem record's notes — two `EDGE_CURVE`s referencing the IDENTICAL `CIRCLE` entity (the strongest possible same-curve signal), meeting at a shared degree-2 vertex, spanning 90° total (never closing to a full circle, distinct from Twi019's closed-edge mechanism).
+- **Reproducer recipe**: `GEOMETRIC_CURVE_SET` containing one `EDGE_LOOP` (mirrors Twi089's structure): two `EDGE_CURVE`s both referencing the same `CIRCLE` entity (radius 5, origin, XY plane) — arc 1 spans 0°–45°, arc 2 spans 45°–90° — meeting at a shared `VERTEX_POINT` at 45° not used by any other wire/face.
+- **Expected kernel behavior**: fuse the two arcs into one 90° arc edge, removing the spurious midpoint vertex (`ShapeUpgrade_UnifySameDomain`), or leave as-is if downstream needs the split.
+- **Closure intent**: sheet
+- **Notes**: **See also**: Twi089 (the LINE-case sibling of this mechanism, same `GEOMETRIC_CURVE_SET` structural pattern). Verified live: `GEOMETRIC_CURVE_SET` is not a shape-producing entity type for OCCT's STEP translator — `occt=empty/empty` (`accept_silent`, `shape_null==True`, `n_roots==0`), exactly matching Twi089's own verified behavior; the byte-level input pattern (identical-CIRCLE-entity same-curve fragmentation) is the fixture's claim, per this corpus's input-pattern-phrasing convention. Synonyms: "two arcs of same circle not fused", "open arc chain redundant vertex", "identical CIRCLE entity split at midpoint", "co-circular arc union missing", "arc chain short of full circle". Provenance tier: bytes-sufficient.
+- **Byte assertion**: contains(b'arc_chain_loop')
+- **Byte assertion**: contains(b'mid_arc_vertex')
+- **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 2
+- **Byte assertion**: count_entity_def(b'CIRCLE') == 1
+- **Tier-3 assertion**: shape_null == True
+- **Severity**: P2
+- **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+
+### Twi295 — Chain of two tangent-continuous cubic Bezier edges should be concatenated under ConcatBSplines mode
+- **Category**: §12.3b (sub-class: redundant vertex, B-spline/Bezier concatenation)
+- **Sources**: OCCT `ShapeUpgrade_UnifySameDomain::MergeSubSeq` B-spline/Bezier concatenation when `myConcatBSplines` (`ShapeUpgrade_UnifySameDomain.cxx:2262`) @ `bd2a789f15235755ce4d1a3b07379a2e062fdc2e`; occt-coverage/tkshhealing/problems.json `tkshh-same-curve-fragmented-edges`, subvariant "B-spline/Bezier edge chain concatenated into one curve (ConcatBSplines mode)"
+- **Description**: Unlike the LINE case (parallel-direction test) or the CIRCLE case (coincident-centre test, Twi294), B-spline/Bezier edges don't have a single analytic "same curve" predicate — ConcatBSplines mode instead requires the two curves to be geometrically compatible (same degree, and G1/tangent-continuous at the shared vertex) before `GeomConvert`/`BSplCLib` splices their pole and knot sequences into one curve. This fixture's two `EDGE_CURVE`s are distinct `B_SPLINE_CURVE_WITH_KNOTS` entities (degree 3, 4 poles each — ordinary cubic Beziers) positioned so the shared vertex's incoming and outgoing tangent directions agree EXACTLY (`(1,-1,0)` on both sides), meeting at a degree-2 vertex not used by any other wire/face.
+- **Reproducer recipe**: `GEOMETRIC_CURVE_SET` containing one `EDGE_LOOP` (mirrors Twi089/Twi294's structure): two `B_SPLINE_CURVE_WITH_KNOTS`-based `EDGE_CURVE`s — e1 poles `(0,0,0)-(1,1,0)-(2,1,0)-(3,0,0)`; e2 poles `(3,0,0)-(4,-1,0)-(5,-1,0)-(6,0,0)` — sharing a tangent-continuous degree-2 `VERTEX_POINT` at `(3,0,0)`.
+- **Expected kernel behavior**: splice the two pole/knot sequences into one concatenated B-spline edge (`ShapeUpgrade_UnifySameDomain`, `myConcatBSplines` mode), or leave as-is if downstream needs the split.
+- **Closure intent**: sheet
+- **Notes**: **See also**: Twi089 (LINE case), Twi294 (CIRCLE-arc case) — the three same-curve-fragmentation siblings for lines, arcs, and B-splines respectively. Verified live: same `GEOMETRIC_CURVE_SET`-is-not-a-shape convention as Twi089/Twi294 — `occt=empty/empty` (`accept_silent`, `shape_null==True`, `n_roots==0`). Synonyms: "two Bezier edges tangent continuous not merged", "ConcatBSplines missing input", "cubic Bezier chain redundant vertex", "G1 continuous B-spline edges unconcatenated", "same-degree B-spline chain fragmentation". Provenance tier: bytes-sufficient.
+- **Byte assertion**: contains(b'bspline_chain_loop')
+- **Byte assertion**: contains(b'mid_bspline_vertex')
+- **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 2
+- **Byte assertion**: count_entity_def(b'B_SPLINE_CURVE_WITH_KNOTS') == 2
+- **Tier-3 assertion**: shape_null == True
+- **Severity**: P2
+- **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+
+### Twi296 — Degenerated ("spindle") torus (major radius < minor radius) missing its apex edge at aPhi = acos(-R/r)
+- **Category**: §12.3b wire-loop (sub-class: missing degenerate edge, torus singularity)
+- **Sources**: OCCT `ShapeFix_Face::FixMissingSeam` degenerated-torus apex branch (`ShapeFix_Face.cxx:1640-1650`) @ `bd2a789f15235755ce4d1a3b07379a2e062fdc2e`; occt-coverage/tkshhealing/problems.json `tkshh-wire-missing-or-bad-degenerated-edge`, subvariant "degenerated torus (major radius < minor radius): apex edge at aPhi = acos(-R/r) (FixMissingSeam)"
+- **Description**: Twi021 demonstrates the missing-degenerate-edge mechanism on a `CONICAL_SURFACE` apex. This fixture covers the torus-specific singularity named as still missing in the problem record's notes: when a torus's major radius `R` is smaller than its minor (tube) radius `r` ("spindle torus", self-intersecting in 3D but a legal STEP `TOROIDAL_SURFACE`), the tube radius `R + r*cos(v)` reaches zero at `v = acos(-R/r)` — at that one V-row the ENTIRE U-circle collapses to a single point on the torus's own axis, exactly analogous to a cone apex or sphere pole. A face whose wire crosses this V-row needs a degenerate edge bridging it; this fixture's wire omits it.
+- **Reproducer recipe**: `ADVANCED_FACE` on a `TOROIDAL_SURFACE` (major_radius=2, minor_radius=5); `FACE_OUTER_BOUND` → `EDGE_LOOP` with two meridian `CIRCLE`-arc edges (u=0 and u=π) running from the outer-equator base circle (v=0, radius 7) to the singular row (v≈113.58°, where both meridians converge on the SAME 3D point via TWO SEPARATE `VERTEX_POINT` instances, mirroring Twi021's two-separate-apex-vertex pattern), closed by a base semicircle arc; no degenerate `ORIENTED_EDGE` bridges the two apex vertex instances.
+- **Expected kernel behavior**: insert a degenerate edge at `aPhi = acos(-R/r)` bridging the singular row (`ShapeFix_Face::FixMissingSeam`), or reject as malformed.
+- **Closure intent**: sheet
+- **Notes**: **See also**: Twi021 (the analytic-cone-apex sibling of this mechanism), Twi287 (a different torus defect — full-period closed meridian edges on an ORDINARY, R>r torus — not the same mechanism). Verified live: OCCT 7.8.1 auto-heals exactly as it does for Twi021 — `n_edges_total` comes back as **4** (up from the 3 declared), the extra `edge[0]` having near-zero length (`≈4.8e-12`) and near-zero radius: a synthesized degenerate apex edge. `brepcheck.valid==True`, `face[0].surface_type=="torus"`, `face[0].quadric.major_radius==2.0`, `face[0].quadric.minor_radius==5.0`, `shape(1)/shape(1)` — same documented-divergence pattern as Twi021 (OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject the un-repaired input). Synonyms: "spindle torus missing apex edge", "major radius less than minor radius torus", "torus tube radius reaches zero", "degenerated torus singular row", "torus self-intersecting apex point". Provenance tier: bytes-sufficient.
+- **Byte assertion**: count_entity_def(b'TOROIDAL_SURFACE') == 1
+- **Byte assertion**: count_entity_def(b'VERTEX_POINT') >= 4
+- **Tier-3 assertion**: face[0].surface_type == "torus"
+- **Tier-3 assertion**: n_edges_total >= 4
+- **Tier-3 assertion**: n_vertices_total >= 8
+- **Tier-3 assertion**: brepcheck.valid == True
+- **Tier-3 assertion**: face[0].quadric.major_radius == 2.0
+- **Tier-3 assertion**: face[0].quadric.minor_radius == 5.0
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **Severity**: P1
+- **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a`
+
+### Twi297 — B-spline surface pinched to a single point at its V=0 boundary (bug 24055 path), missing degenerate edge
+- **Category**: §12.3b wire-loop (sub-class: missing degenerate edge, B-spline pinch)
+- **Sources**: OCCT `ShapeFix_Face::FixMissingSeam` B-spline V/U pinch branch (`ShapeFix_Face.cxx:1657-1681`) @ `bd2a789f15235755ce4d1a3b07379a2e062fdc2e`; occt-coverage/tkshhealing/problems.json `tkshh-wire-missing-or-bad-degenerated-edge`, subvariant "B-spline surface pinched to a point at a U- or V-boundary: pinch detected by 3D distance test, degenerated edge at the pinch (FixMissingSeam, bug 24055)"
+- **Description**: A `B_SPLINE_SURFACE` has no intrinsic-singularity flag the way an analytic `CONICAL_SURFACE` does (Twi021) — a pinch is purely a property of the control net (an entire row of control points placed at the identical 3D point), which `FixMissingSeam`'s B-spline branch must detect via an explicit 3D-distance test over the boundary's poles. This fixture's `B_SPLINE_SURFACE_WITH_KNOTS` (u_degree=3, v_degree=1) has ALL FOUR of its V=0 control points set to the identical point `(0,0,5)` — a genuine full-row pinch — while its V=1 control points spread into a real curved boundary.
+- **Reproducer recipe**: `ADVANCED_FACE` on a `B_SPLINE_SURFACE_WITH_KNOTS` (u_degree=3, v_degree=1, 4×2 control net, all V=0 poles identical); `FACE_OUTER_BOUND` → `EDGE_LOOP` with two `LINE` lateral edges (u=0 and u=1, isoparametric straight lines since v_degree=1) from the pinch to the V=1 boundary's endpoints, plus one `B_SPLINE_CURVE` base edge that is exactly the surface's own V=1 control polygon (no approximation); the two lateral edges terminate at the same 3D point via TWO SEPARATE `VERTEX_POINT` instances (mirroring Twi021); no degenerate `ORIENTED_EDGE` bridges them.
+- **Expected kernel behavior**: detect the pinch via a 3D-distance test over the boundary's control points and insert a degenerate edge there (`ShapeFix_Face::FixMissingSeam`, bug 24055), or reject as malformed.
+- **Closure intent**: sheet
+- **Notes**: **See also**: Twi021 (the analytic-cone-apex sibling of this mechanism, same missing-degenerate-edge structural pattern applied to a B-spline control-net pinch instead). Verified live: OCCT 7.8.1 auto-heals exactly as it does for Twi021/Twi296 — `n_edges_total` comes back as **4** (up from the 3 declared), the extra `edge[3]` having near-zero length (`≈8.2e-17`, `curve_type=="other"`): a synthesized degenerate pinch edge. `brepcheck.valid==True`, `face[0].surface_type=="bspline"`, `face[0].bspline.u_degree==3`, `face[0].bspline.v_degree==1`, `shape(1)/shape(1)`. Synonyms: "B-spline control net pinch missing degenerate edge", "full row of poles coincident", "bug 24055 pinch detection", "B-spline apex 3D distance test", "collapsed control point row". Provenance tier: bytes-sufficient.
+- **Byte assertion**: count_entity_def(b'B_SPLINE_SURFACE_WITH_KNOTS') == 1
+- **Byte assertion**: count_entity_def(b'VERTEX_POINT') >= 4
+- **Byte assertion**: contains(b'(0.0,0.0,5.0)')
+- **Tier-3 assertion**: face[0].surface_type == "bspline"
+- **Tier-3 assertion**: n_edges_total >= 4
+- **Tier-3 assertion**: n_vertices_total >= 8
+- **Tier-3 assertion**: brepcheck.valid == True
+- **Tier-3 assertion**: face[0].bspline.u_degree == 3
+- **Tier-3 assertion**: face[0].bspline.v_degree == 1
+- **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
+- **Severity**: P1
+- **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a`
+
+### Twi298 — Two NON-ADJACENT wire edges share a large (>50%) collinear overlap, forcing the 3-edge reconstruction path
+- **Category**: §12.3b wires / loops / edges (sub-class: edge overlap, large/non-adjacent)
+- **Sources**: OCCT `ShapeFix_IntersectionTool::FixSelfIntersectWire` large-overlap 3-edge reconstruction (`ShapeFix_IntersectionTool.cxx:1202-1456`) @ `bd2a789f15235755ce4d1a3b07379a2e062fdc2e`; occt-coverage/tkshhealing/problems.json `tkshh-wire-nonadjacent-edges-intersect`, subvariant "collinear overlap over a large (>50%) range (3-edge reconstruction sharing the overlap segment)"
+- **Description**: Twi063 already covers a small (<50%, and reached via a degenerate quasi-adjacent connector) collinear overlap between two edges of one `EDGE_LOOP`. This fixture makes the overlap large (90% of each edge's own length) AND puts three ordinary closure edges between the overlapping pair on EACH side of the cyclic wire — genuinely non-adjacent, not merely separated by one degenerate connector — forcing the large-overlap branch, which must reconstruct multiple edges sharing the overlap segment rather than a simple two-edge cut.
+- **Reproducer recipe**: `ADVANCED_FACE` on a `PLANE`; `EDGE_LOOP` of 8 `EDGE_CURVE`s: `large_overlap_edge_a` `(0,0,0)→(10,0,0)`, a 3-edge detour up-and-over to `(11,0,0)`, `large_overlap_edge_b` `(1,0,0)→(11,0,0)` reversed (same underlying `LINE` direction as edge_a, overlapping `[1,10]` — 90% of each edge's own length), a 3-edge detour back down to `(0,0,0)`.
+- **Expected kernel behavior**: reconstruct the edges sharing the overlap segment (pre-overlap remainder, shared overlap segment, post-overlap remainder) per `ShapeFix_IntersectionTool::FixSelfIntersectWire`'s large-overlap branch, or reject as malformed.
+- **Closure intent**: sheet
+- **Notes**: **See also**: Twi063 (the small-overlap, quasi-adjacent sibling of this mechanism). Verified live: OCCT 7.8.1 does NOT collapse the pair back down to a clean merged wire the way it does for Twi063 (`n_edges_total==5`, down from 6 declared, `brepcheck.valid==True`). Here, with the overlap genuinely large AND the two edges genuinely non-adjacent, OCCT instead SPLITS both edges at the junction parameters (1 and 10) — `n_edges_total` comes back as **10** (up from 8 declared: two ~1-unit remainder edges plus two ~9-unit segments spanning the shared `[1,10]` overlap, kept as separate coincident edges rather than merged into one shared edge) — and `brepcheck.valid` comes back **False** (`face[0].area≈-1.0`, a self-intersecting/invalid result). A clearly different, and clearly worse, outcome than Twi063's, confirming a distinct handling path is exercised for the large/non-adjacent case. Synonyms: "large collinear overlap forces reconstruction", "non-adjacent edges 90 percent overlap", "three edge reconstruction overlap segment", "wire split at overlap junction invalid", "collinear overlap exceeds 50 percent threshold". Provenance tier: bytes-sufficient.
+- **Byte assertion**: contains(b'large_overlap_edge_a')
+- **Byte assertion**: contains(b'large_overlap_edge_b')
+- **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 8
+- **Tier-3 assertion**: face[0].surface_type == "plane"
+- **Tier-3 assertion**: n_edges_total >= 9
+- **Tier-3 assertion**: n_vertices_total >= 10
+- **Tier-3 assertion**: brepcheck.valid == False
+- **Severity**: P2
+- **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(19) ifc=schema_n/a`

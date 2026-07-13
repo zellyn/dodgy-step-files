@@ -458,6 +458,48 @@ new flaky-CI surface.
 
 ## Smaller queued items
 
+### Q9 — `sew-malformed-subshape-tolerance` null-vertex EDGE_CURVE genuinely unreachable via standard STEP read (packet B2, dropped with evidence)
+
+**Not fixed** — dropped from packet B2 (`occt-coverage/WORK_PACKETS.md` Wave 4, `12-3b-wires`)
+after live investigation confirmed the class cannot be demonstrated distinctly from Twi253's
+existing (rejected) scaffold construction through this corpus's standard STEP-read harness.
+
+The packet asked for "An edge with a null vertex reference wired into a real face boundary
+context (not Twi253's dead `shape_null==True` scaffold) so `FindFreeBoundaries`'s
+`vFirst/vLast.IsNull()` guard actually executes" (evidence: `BRepBuilderAPI_Sewing::
+FindFreeBoundaries`, `BRepBuilderAPI_Sewing.cxx:2570`). Tried, live, against OCCT 7.8.1 via
+`STEPControl_Reader`:
+
+1. `EDGE_CURVE('e',#v0,$,#line,.T.)` (literal null, Twi253's own pattern) embedded inside a real
+   `ADVANCED_FACE`/`FACE_OUTER_BOUND`/`OPEN_SHELL` (plus a valid companion face, mirroring Tfa001's
+   "good companion face" trick) — result: `Incorrect Syntax` schema-level hard fail,
+   `n_roots==0`, `shape_null==True` for the WHOLE root (the good companion face is also lost).
+2. `EDGE_CURVE('e',#v0,#999999,#line,.T.)` (dangling ref to a nonexistent entity) in the same
+   context — same result (`Unresolved Reference` hard fail, `n_roots==0`).
+3. `EDGE_CURVE('e',#v0,#<CARTESIAN_POINT>,#line,.T.)` (valid entity, wrong type for the `vertex`
+   slot) — same result (`Incorrect Syntax`, `n_roots==0`).
+4. `EDGE_CURVE('e',#v0,#<VERTEX_LOOP>,#line,.T.)` (valid-per-EXPRESS-supertype but
+   OCCT/AP214-unsupported vertex subtype) — same result.
+5. `VERTEX_POINT('v',$)` (null point geometry, referenced correctly by the edge) — same result.
+
+All five variants hard-fail at the low-level EXPRESS/schema-conformance check inside
+`StepData_StepReaderData` (`Incorrect Syntax`/`Unresolved Reference`, "Fails Count"), which runs
+during the file-wide entity-resolution pass **before** any topology construction and cascades to
+`n_roots==0` / `shape_null==True` for the entire containing root — regardless of whether the
+malformed `EDGE_CURVE` sits in an orphaned `GEOMETRIC_CURVE_SET` (Twi253's construction) or is
+genuinely wired into a live `ADVANCED_FACE`/`OPEN_SHELL` with a healthy companion face. Since no
+`TopoDS_Shape` is ever built, there is nothing for `BRepBuilderAPI_Sewing::FindFreeBoundaries` (a
+post-translation algorithm applied to an already-built shape) to run on — the guard is reachable
+only from inside OCCT's own C++ call graph via direct API misuse, not from any STEP file this
+corpus's `STEPControl_Reader`-based harness can produce. This reproduces and reinforces
+`VERDICT_AUDIT.md`'s original COVERED→PARTIAL downgrade rationale for this class ("the sewing
+null-guards are never reached by either \[Twi253 or Tsh023\]") rather than resolving it.
+**Recommendation**: leave `PARTIAL`; this specific subvariant likely needs either (a) a
+maintainer decision to accept a non-STEP-file demonstration (direct OCP script invoking
+`BRepBuilderAPI_Sewing` on a shape built via the ordinary Python API, documented as
+`Provenance tier: runtime-only`), or (b) reclassification alongside the existing STEP-inexpressible
+carve-outs.
+
 ### Q8 — nightly `validate-full` workflow swallows its own DRIFT list on failure
 
 **Not fixed here** (infra change needs separate review — this is a report-only note per scope
