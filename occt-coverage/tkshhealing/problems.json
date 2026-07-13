@@ -142,10 +142,12 @@
     "fixture_ids": [
       "Xp013",
       "Gp048",
-      "Gp084"
+      "Gp084",
+      "Gp177",
+      "Gp178"
     ],
-    "coverage_verdict": "PARTIAL",
-    "notes": "Xp013 (wire passing through cone apex, combined pathology) and Gp048/Gp084 (apex-degenerate pcurve construction / same-parameter at apex) provide apex-singularity inputs, but no fixture found that specifically demonstrates FixEdgeCurves SPLITTING an edge whose interior crosses the singularity, nor the over-degenerated pole+seam pcurve-rebuild branch. Missing: (a) an edge spanning across the apex interior triggering the split at ShapeFix_Wire.cxx:632-689; (b) the :c0 overdegen rebuild at 696-719.",
+    "coverage_verdict": "COVERED",
+    "notes": "Xp013 (wire passing through cone apex, combined pathology) and Gp048/Gp084 (apex-degenerate pcurve construction / same-parameter at apex) provide apex-singularity inputs, but no fixture found that specifically demonstrates FixEdgeCurves SPLITTING an edge whose interior crosses the singularity, nor the over-degenerated pole+seam pcurve-rebuild branch. Missing: (a) an edge spanning across the apex interior triggering the split at ShapeFix_Wire.cxx:632-689; (b) the :c0 overdegen rebuild at 696-719. | Wave-2 (2026-07-12, adversarial verifier) (D1): Gp177 (interior pole crossing) confirmed live -- circle passes through equator vertex A, north pole, equator vertex B with the pole strictly at the parameter midpoint (hand-derived from AXIS2_PLACEMENT_3D #14); gmsh=shape(32) exact match, tier-3 independently shows 3 faces/18 edges/36 vertices matching the 18-sub-edge fragmentation claim. Gp178 (pole+seam) confirmed live -- seam EDGE_CURVE #37 referenced fwd+rev in the EDGE_LOOP but its SURFACE_CURVE #36 carries only one PCURVE #35 (byte-confirmed); occt=shape(1)/shape(1) gmsh=shape(6), tier-3 area 4.426377 matches analytic cap area 4.4264 to 4 places. Both subvariants now closed. PARTIAL -> COVERED.",
     "source_group": [
       "D-wire"
     ]
@@ -176,10 +178,11 @@
       "Gp103",
       "Gp108",
       "Gp123",
-      "Gp151"
+      "Gp151",
+      "Gp179"
     ],
-    "coverage_verdict": "PARTIAL",
-    "notes": "Absorbed group-B's ConvertCurve2dToBezier range-clamp record: an edge whose declared parameter range exceeds its curve's actual domain is the same input defect detected by ShapeAnalysis_Edge::CheckPCurveRange (fixtured: Gp007/Gp047/Gp086/Gp103 etc.); the Bezier-conversion clamp is downstream machinery of the same defect. Pcurve-side removal (FixRemovePCurve) and range-mismatch detection well covered. MISSING: the 3D-curve-side removal path (FixRemoveCurve3d) with a genuinely-inconsistent (not merely missing) 3D curve. || Source-record notes: [C-edge-vertex-facesplit] The pcurve-side of this problem is well covered: FixRemovePCurve directly (Gp064, Gp136) and the CheckPCurveRange invalid-range path (Gp047, Gp058, Gp086, Gp103, Gp108, Gp123, Gp151) both have multiple fixtures. No fixture was found that specifically demonstrates FixRemoveCurve3d's mirror-image case (a stale/wrong 3D curve discarded because it disagrees with the vertex, with a trustworthy pcurve remaining) \u2014 Gp136's title mentions RemoveCurve3d only as a side-note about orphaned pcurves, not as its primary demonstrated mechanism. | [B-curve-surface-analysis as tkshh-curve-range-exceeds-pcurve-domain-clamp] Gp007/Gp047/Gp086 ('edge range outside pcurve domain' / CheckPCurveRange) test the same conceptual defect at the ShapeAnalysis_Edge level, not through the ShapeUpgrade_ConvertCurve2dToBezier conversion path specifically, so not counted here without stronger evidence of the call path being exercised.",
+    "coverage_verdict": "COVERED",
+    "notes": "Absorbed group-B's ConvertCurve2dToBezier range-clamp record: an edge whose declared parameter range exceeds its curve's actual domain is the same input defect detected by ShapeAnalysis_Edge::CheckPCurveRange (fixtured: Gp007/Gp047/Gp086/Gp103 etc.); the Bezier-conversion clamp is downstream machinery of the same defect. Pcurve-side removal (FixRemovePCurve) and range-mismatch detection well covered. MISSING: the 3D-curve-side removal path (FixRemoveCurve3d) with a genuinely-inconsistent (not merely missing) 3D curve. || Source-record notes: [C-edge-vertex-facesplit] The pcurve-side of this problem is well covered: FixRemovePCurve directly (Gp064, Gp136) and the CheckPCurveRange invalid-range path (Gp047, Gp058, Gp086, Gp103, Gp108, Gp123, Gp151) both have multiple fixtures. No fixture was found that specifically demonstrates FixRemoveCurve3d's mirror-image case (a stale/wrong 3D curve discarded because it disagrees with the vertex, with a trustworthy pcurve remaining) \u2014 Gp136's title mentions RemoveCurve3d only as a side-note about orphaned pcurves, not as its primary demonstrated mechanism. | [B-curve-surface-analysis as tkshh-curve-range-exceeds-pcurve-domain-clamp] Gp007/Gp047/Gp086 ('edge range outside pcurve domain' / CheckPCurveRange) test the same conceptual defect at the ShapeAnalysis_Edge level, not through the ShapeUpgrade_ConvertCurve2dToBezier conversion path specifically, so not counted here without stronger evidence of the call path being exercised. | Wave-2 (2026-07-12, adversarial verifier) (D1): Gp179 closes the missing 3D-curve-side removal subvariant (FixRemoveCurve3d) -- 3D LINE #18 starts at (0,0.5,0), perpendicular distance to both vertices is 0.5 (well beyond 1e-7 tolerance), while PCURVE #24 is the correct (0,0)->(10,0) UV line matching true vertex positions exactly. Independently strengthened beyond tier-3's edge[0].length==10.0: direct BRepAdaptor_Curve query on the loaded shape confirms edge 0's actual 3D curve runs (0,0,0)->(10,0,0), i.e. the bogus Y=0.5 curve was genuinely discarded and rebuilt from the trusted pcurve/vertex data, not coincidentally same-length. PARTIAL -> COVERED.",
     "source_group": [
       "B-curve-surface-analysis",
       "C-edge-vertex-facesplit"
@@ -384,10 +387,12 @@
       "Tfa131",
       "Tfa160",
       "N141",
-      "Twi249"
+      "Twi249",
+      "Tfa253",
+      "Tfa254"
     ],
-    "coverage_verdict": "PARTIAL",
-    "notes": "Tfa039 verified: planar face with two crossing (non-nested) inner FACE_BOUND quads -- the canonical transverse case. Twi250: two wires intersecting at the midpoint of one edge with equidistant endpoints (FindVertAndSplitEdge endpoint-selection). Tfa126: outer and hole wires cross. Tfa131/Tfa160 verified: two wires sharing a coincident collinear segment (segment-overlap input; note OCC yields empty on these GEOMETRIC_CURVE_SET fixtures). N141 exercises vertex-tolerance selection at the junction; Twi249 the CutEdge tiny-range guard. Missing: a fixture demonstrating the large (>50%) overlap 3-edge reconstruction, and a clean endpoint-endpoint UnionVertexes case between two wires of a proper ADVANCED_FACE.",
+    "coverage_verdict": "COVERED",
+    "notes": "Tfa039 verified: planar face with two crossing (non-nested) inner FACE_BOUND quads -- the canonical transverse case. Twi250: two wires intersecting at the midpoint of one edge with equidistant endpoints (FindVertAndSplitEdge endpoint-selection). Tfa126: outer and hole wires cross. Tfa131/Tfa160 verified: two wires sharing a coincident collinear segment (segment-overlap input; note OCC yields empty on these GEOMETRIC_CURVE_SET fixtures). N141 exercises vertex-tolerance selection at the junction; Twi249 the CutEdge tiny-range guard. Missing: a fixture demonstrating the large (>50%) overlap 3-edge reconstruction, and a clean endpoint-endpoint UnionVertexes case between two wires of a proper ADVANCED_FACE. | Wave-2 (2026-07-12, adversarial verifier) (C1): Tfa253 closes the large (>50%) overlap 3-edge-reconstruction subvariant -- outer bottom edge (0,0)-(10,0) and inner-hole bottom edge (2,0)-(9,0) are exactly collinear on y=0 (70%/100% of respective edge lengths, a genuine collinear overlap, not a transverse crossing); live: authored 8 edges -> n_edges_total=10 post-heal (ShapeFix_IntersectionTool's large-overlap 3-edge-reconstruction path adds edges), brepcheck.valid=True, face[0].area=79.0 exactly (100-21), matching every catalog assertion. Tfa254 closes the endpoint-endpoint UnionVertexes subvariant on a proper ADVANCED_FACE -- inner triangle's (0,0) corner is an independent VERTEX_POINT coincident with the outer square's own (0,0) corner (both genuine edge endpoints, never mid-edge); live: 7 authored VERTEX_POINT -> confirmed 6 unique TopoDS_Vertex via TopExp::MapShapes (UnionVertexes fired), n_edges_total=9 matches, direct BRepCheck_Analyzer.Result(face).Status() query shows the single honestly-reported side effect BRepCheck_InvalidImbricationOfWires (not the class's own IntersectingWires target, correctly noted as such). Both were the class's last two listed missing subvariants per WORK_PACKETS.md. PARTIAL -> COVERED.",
     "source_group": [
       "E-face-composeshell-intersection"
     ]
@@ -439,10 +444,11 @@
       "Tfa004",
       "Tfa038",
       "Tfa088",
-      "Tfa101"
+      "Tfa101",
+      "Tfa255"
     ],
-    "coverage_verdict": "PARTIAL",
-    "notes": "Tfa002 (sphere, no bounds at all) and Tfa004/Tfa038 (torus + sphere faces with only inner FACE_BOUNDs, verified from fixture headers) genuinely cover the two main subvariants. Missing: the pole-touching-hole merge subvariant (ShapeFix_Face.cxx:937-983) -- no fixture places a hole with a degenerated pole edge on a sphere with natural bounds. Twi091 (cylinder, inner wire, no outer bound) is related but a cylinder is not doubly-periodic so this exact fixer does not apply to it.",
+    "coverage_verdict": "COVERED",
+    "notes": "Tfa002 (sphere, no bounds at all) and Tfa004/Tfa038 (torus + sphere faces with only inner FACE_BOUNDs, verified from fixture headers) genuinely cover the two main subvariants. Missing: the pole-touching-hole merge subvariant (ShapeFix_Face.cxx:937-983) -- no fixture places a hole with a degenerated pole edge on a sphere with natural bounds. Twi091 (cylinder, inner wire, no outer bound) is related but a cylinder is not doubly-periodic so this exact fixer does not apply to it. | Wave-2 (2026-07-12, adversarial verifier) (C1): Tfa255 closes the pole-touching-hole merge subvariant (ShapeFix_Face.cxx:937-983) -- lune-shaped hole wire on a sphere with no FACE_OUTER_BOUND, closing through an explicit degenerate (zero-length) edge at the pole vertex, genuinely touching the pole and forcing the natural-bound merge path (distinct from Tfa038, whose hole does not touch the pole and instead subtracts area). Live: load=ok, face[0].surface_type=sphere, face[0].area == 314.1592653589792 -- bit-exact match to 4*pi*5^2, i.e. zero area lost to the hole, exactly the claimed mechanism; n_faces_total=1. This was the class's last-listed missing subvariant per WORK_PACKETS.md. PARTIAL -> COVERED.",
     "source_group": [
       "E-face-composeshell-intersection"
     ]
@@ -644,7 +650,7 @@
     ],
     "fixture_ids": [],
     "coverage_verdict": "GAP",
-    "notes": "No catalog fixture exercises an indirect elementary SURFACE or a negative semi-angle cone. Ps004/A024/P018/U046 cover left-handed placements/transforms at assembly level \u2014 a different problem (placement semantics, not surface handedness feeding DirectFaces). Note: raw STEP AXIS2_PLACEMENT_3D frames are right-handed by construction, so the realistic fixture route is a mirroring (negative-determinant) location on the face or a CONICAL_SURFACE with negative half-angle.",
+    "notes": "No catalog fixture exercises an indirect elementary SURFACE or a negative semi-angle cone. Ps004/A024/P018/U046 cover left-handed placements/transforms at assembly level \u2014 a different problem (placement semantics, not surface handedness feeding DirectFaces). Note: raw STEP AXIS2_PLACEMENT_3D frames are right-handed by construction, so the realistic fixture route is a mirroring (negative-determinant) location on the face or a CONICAL_SURFACE with negative half-angle. | VERIFICATION: STRUCTURALLY-UNREACHABLE. Wave-2 (2026-07-12, adversarial verifier) (C1), confirmed independently by two agents (live + OCCT 7.8.1 source, bd2a789f15235755ce4d1a3b07379a2e062fdc2e): (1) StepToGeom.cxx:1139 unconditionally clamps any negative CONICAL_SURFACE semi-angle to Precision::Angular() before Geom_ConicalSurface construction -- live-reproduced by writing semi_angle=-0.5236 and reading it back as 1e-12. (2) StepToGeom.cxx:1884-1930 (MakeTransformation3d, the MAPPED_ITEM / SHAPE_REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION route) builds gp_Ax3(Pgp,D3,D1), which gp_Ax3.hxx:78-89 documents as unconditionally right-handed, and never reads the transform's Scale() at all (zero references), so a mirroring/negative scale factor is silently discarded. (3) StepToGeom.cxx:164-202 (MakeAxis2Placement, used for every raw AXIS2_PLACEMENT_3D on a face, not just the transform-operator route) likewise only ever builds the inherently right-handed gp_Ax2(Pgp,Ngp[,Vxgp]). All three placement-construction routes are covered and all force a direct frame; no Part-21 encoding (raw placement or mirrored transform) can ever hand ShapeCustom_DirectModification an indirect elementary surface or a live negative semi-angle. REPRESENTATION NOTE: this repo's problems.json has no dedicated carve-out verdict/field (see occt-coverage/merge_coverage.py's CARVEOUT_DOMAINS, which only operates at whole-`domain` granularity and only lists exchange/iges-reader; the 3 existing WORK_PACKETS.md Sec.1a STEP-INEXPRESSIBLE carve-outs -- bc-invalid-point-on-surface, bc-invalid-polygon-on-triangulation, bc-multiple-3d-curve -- are represented purely via this same 'VERIFICATION: STRUCTURALLY-UNREACHABLE' notes convention, coverage_verdict left at GAP, and happen to be excluded from the STEP-exercisable tally only because they are also detect_only:true BRepCheck-status classes). This class is a repair-mechanism GAP, not a BRepCheck detection status, so setting detect_only:true here would be factually wrong per that field's own definition -- left unset. Net effect: this carve-out is documented identically to the 3 precedents but, unlike them, is NOT mechanically excluded from the STEP-exercisable GAP tally by the current tooling; flagged to the maintainer as a pre-existing representation gap (the 3 precedents have the same property) rather than invented a new ad hoc field.",
     "source_group": [
       "F-wireframe-unify-split"
     ]
@@ -662,10 +668,11 @@
       "Surface: near-zero-extent U or V patch filtered from the Bezier patch grid (UReject/VReject)"
     ],
     "fixture_ids": [
-      "Gn042"
+      "Gn042",
+      "Gp180"
     ],
-    "coverage_verdict": "PARTIAL",
-    "notes": "Gn042 ('ShapeUpgrade_ConvertSurfaceToBezierBasis double-knot thin patch') is a precise, verified match for the surface subvariant: its comment describes an interior U-knot at multiplicity=2 collapsing to a zero-width patch and explicitly notes the extent filter's behavior on it. No fixture found for the analogous 2D-curve (ShapeUpgrade_ConvertCurve2dToBezier) knot-interval-filter subvariant.",
+    "coverage_verdict": "COVERED",
+    "notes": "Gn042 ('ShapeUpgrade_ConvertSurfaceToBezierBasis double-knot thin patch') is a precise, verified match for the surface subvariant: its comment describes an interior U-knot at multiplicity=2 collapsing to a zero-width patch and explicitly notes the extent filter's behavior on it. No fixture found for the analogous 2D-curve (ShapeUpgrade_ConvertCurve2dToBezier) knot-interval-filter subvariant. | Wave-2 (2026-07-12, adversarial verifier) (D1): Gp180 closes the missing 2D-curve subvariant (ShapeUpgrade_ConvertCurve2dToBezier's near-zero-knot-interval filter) -- PCURVE's B_SPLINE_CURVE_WITH_KNOTS carries knots (0.0,0.5,1.0) mult (4,2,4) deg 3, the exact Gn042 pattern isolated to the pcurve side, with a plain healthy LINE as the 3D curve. Live: occt=shape(1)/shape(1) gmsh=shape(9), tier-3 area exactly 50.0 (no degenerate-arc artifact). PARTIAL -> COVERED.",
     "source_group": [
       "B-curve-surface-analysis"
     ]
@@ -683,10 +690,12 @@
       "non-B-spline base surface requiring approximation before periodicity can be set"
     ],
     "fixture_ids": [
-      "Gp013"
+      "Gp013",
+      "Gp181",
+      "Gp182"
     ],
     "coverage_verdict": "PARTIAL",
-    "notes": "Gp013 is the canonical input (CATIA cylinder as two FACE_SURFACEs on one near-closed non-periodic B_SPLINE_SURFACE_WITH_KNOTS; shared EDGE_CURVE with two pcurves, endpoints within Precision::Confusion()). Covers the U-direction B-spline variant only; V-direction and the approximate-then-periodize path have no fixture. Note this repair only runs with ConcatBSplines mode enabled.",
+    "notes": "Gp013 is the canonical input (CATIA cylinder as two FACE_SURFACEs on one near-closed non-periodic B_SPLINE_SURFACE_WITH_KNOTS; shared EDGE_CURVE with two pcurves, endpoints within Precision::Confusion()). Covers the U-direction B-spline variant only; V-direction and the approximate-then-periodize path have no fixture. Note this repair only runs with ConcatBSplines mode enabled. | Wave-2 (2026-07-12, adversarial verifier) (D1): Gp181 (V-direction subvariant) fully fires and independently confirms the mechanism -- B_SPLINE_SURFACE_WITH_KNOTS confirmed u_degree=1/v_degree=2 (transposed vs Gp013), seam edge carries two pcurves (v=0/v=1 banks); tier-3 confirms is_v_periodic=True, is_u_periodic=False (exact mirror of Gp013's is_u_periodic=True), gmsh=shape(6) matches Gp013. V-direction subvariant now closed. Gp182 (non-B-spline-host subvariant) is byte-genuine -- CYLINDRICAL_SURFACE #5 confirmed (elementary, non-B-spline), seam edge carries two pcurves on the same surface, reproducing the CATIA idiom -- and matches its Expected line (occt=shape(1)/shape(1) gmsh=shape(6)), but honestly does NOT independently demonstrate the approximate-then-periodize (GeomConvert_ApproxSurface + SetUPeriodic/SetVPeriodic) mechanism firing: confirmed face[0].surface_type stays 'cylinder' (never converted), because this is a single already-well-formed ADVANCED_FACE, not the multi-face ShapeUpgrade_UnifySameDomain unify case the mechanism requires. Gp182 is kept in fixture_ids as an honest non-firing sibling (input pattern genuine, mechanism not independently observed at this scale); the class verdict rests on Gp181, not Gp182. Non-B-spline-host and approximate-then-periodize subvariants remain open. Improved but not fully closed: PARTIAL stays PARTIAL.",
     "source_group": [
       "F-wireframe-unify-split"
     ]

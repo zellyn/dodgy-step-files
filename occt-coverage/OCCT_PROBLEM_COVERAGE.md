@@ -10,22 +10,22 @@ Two views are shown. **All** counts every problem class found. **STEP-exercisabl
 
 | view | classes | COVERED | PARTIAL | GAP |
 |---|---:|---:|---:|---:|
-| **All classes** | **205** | 94 (45.9%) | 63 (30.7%) | 48 (23.4%) |
+| **All classes** | **205** | 101 (49.3%) | 58 (28.3%) | 46 (22.4%) |
 
 | view | classes | COVERED | PARTIAL | GAP |
 |---|---:|---:|---:|---:|
-| **STEP-exercisable classes** | **143** | 75 (52.4%) | 56 (39.2%) | 12 (8.4%) |
+| **STEP-exercisable classes** | **143** | 81 (56.6%) | 52 (36.4%) | 10 (7.0%) |
 
 ## Per sub-domain breakdown (all classes)
 
 | sub-domain | classes | COVERED | PARTIAL | GAP | detect-only | carve-out |
 |---|---:|---:|---:|---:|---:|---:|
-| `TKShHealing` | 60 | 42 | 17 | 1 | 0 |  |
-| `exchange/brepcheck` | 31 | 19 | 7 | 5 | 31 |  |
+| `TKShHealing` | 60 | 47 | 12 | 1 | 0 |  |
+| `exchange/brepcheck` | 31 | 20 | 6 | 5 | 31 |  |
 | `exchange/heal-sequence` | 20 | 13 | 7 | 0 | 0 |  |
 | `exchange/iges-reader` | 31 | 0 | 0 | 31 | 0 | yes |
 | `exchange/sewing` | 24 | 6 | 16 | 2 | 0 |  |
-| `exchange/step-reader` | 39 | 14 | 16 | 9 | 0 |  |
+| `exchange/step-reader` | 39 | 15 | 17 | 7 | 0 |  |
 
 ## Ranked GAP list (all domains)
 
@@ -36,51 +36,49 @@ Ranking is a deterministic tiering, not a manual importance judgment: Tier 1 (ST
 | 1 | STEP-exercisable | `tkshh-indirect-elementary-surface-axes` | `TKShHealing` | An elementary surface (plane, cylinder, cone, sphere, torus) is defined on a left-handed ('indirect') axis system — its coordinate frame determinant, combine... |
 | 2 | STEP-exercisable | `sew-degenerate-free-wire-collapse` | `exchange/sewing` | After the main merge pass, some free (still-unmatched) boundary edges may form a closed wire loop whose overall size is geometrically negligible (a leftover ... |
 | 3 | STEP-exercisable | `sew-merged-edge-continuity-encoding` | `exchange/sewing` | After two faces' edges are merged, downstream consumers (e.g. shading, meshing, or further healing steps) often need to know how smoothly the two adjoining f... |
-| 4 | STEP-exercisable | `stp-compcurve-reorder` | `exchange/step-reader` | A COMPOSITE_CURVE's list of segments is not given in connected geometric/topological sequence (successive segments don't follow on from one another in list o... |
-| 5 | STEP-exercisable | `stp-geomset-gri-fallback` | `exchange/step-reader` | A GEOMETRIC_SET element is none of the directly supported kinds (curve, cartesian point, surface) but is still some geometric representation item. Instead of... |
-| 6 | STEP-exercisable | `stp-missing-geometry-definition` | `exchange/step-reader` | A topological entity references its underlying geometric definition (a VERTEX_POINT's point, an EDGE_CURVE's curve, or a FACE_SURFACE's / CURVE_BOUNDED_SURFA... |
-| 7 | STEP-exercisable | `stp-missing-unit-context-default` | `exchange/step-reader` | A geometry entity is translated in a context where OCCT cannot locate a governing SHAPE_REPRESENTATION (and hence its length/angle unit conversion factors) b... |
-| 8 | STEP-exercisable | `stp-polyloop-dup-point` | `exchange/step-reader` | A FACETED_BREP POLY_LOOP (a faceted polygon boundary given as a flat list of cartesian points) lists the very same point twice in immediate succession, which... |
-| 9 | STEP-exercisable | `stp-srr-nauo-reversed` | `exchange/step-reader` | In an assembly, the shape representation relationship attached to a CONTEXT_DEPENDENT_SHAPE_REPRESENTATION relates its two representations in the direction o... |
-| 10 | STEP-exercisable | `stp-tess-dangling-brep-link` | `exchange/step-reader` | A tessellated face/shell/solid declares a geometric or topological link to an exact-BRep counterpart that cannot be resolved (nothing is bound for the refere... |
-| 11 | STEP-exercisable | `stp-tess-degenerate-triangles` | `exchange/step-reader` | Tessellated geometry (TRIANGULATED_FACE / COMPLEX_TRIANGULATED_FACE) whose triangle strips or fans contain index triples that repeat a vertex, i.e. degenerat... |
-| 12 | STEP-exercisable | `stp-tess-malformed-normals` | `exchange/step-reader` | A tessellated item's normals table does not have exactly three components per row (not valid XYZ vectors). The normals are silently ignored and the mesh is b... |
-| 13 | detect-only | `bc-invalid-point-on-surface` | `exchange/brepcheck` | A vertex's stored 3D point does not actually lie on a surface it is registered against (via a point-on-surface representation), beyond tolerance. |
-| 14 | detect-only | `bc-invalid-polygon-on-triangulation` | `exchange/brepcheck` | An edge's associated polygon-on-triangulation representation (indices into a Poly_Triangulation's node array) is malformed or out of range. |
-| 15 | detect-only | `bc-multiple-3d-curve` | `exchange/brepcheck` | An edge carries more than one 3D curve representation, making its geometry ambiguous. |
-| 16 | detect-only | `bc-no-curve-on-surface` | `exchange/brepcheck` | An edge used as a boundary of a face has no pcurve (2D parametric curve) defined for that face's surface. |
-| 17 | detect-only | `bc-no-surface` | `exchange/brepcheck` | A face has no underlying surface geometry at all. |
-| 18 | domain carve-out | `iges-blank-status-entity-filtering` | `exchange/iges-reader` | Directory-entry status digits mark entities as blanked (invisible/subordinate); under the visible-only read mode the reader excludes blanked entities from to... |
-| 19 | domain carve-out | `iges-boundary-3d-2d-representation-inconsistency` | `exchange/iges-reader` | A trimming/boundary construct (Boundary Type 141, CurveOnSurface Type 142, or a Trimmed Surface Type 144 contour) supplies both a 3D model-space representati... |
-| 20 | domain carve-out | `iges-brep-edge-loop-construction-anomalies` | `exchange/iges-reader` | Within the BRep entity family, Loop (508) / EdgeList (504) references can be malformed: null edge pointers, an edge-type flag disagreeing with the referenced... |
-| 21 | domain carve-out | `iges-brep-face-invalid-base-surface` | `exchange/iges-reader` | A BRep Face entity (Type 510) referencing a surface type structurally disallowed as a BRep base (Plane 108, Bounded Surface 143, Trimmed Surface 144, or a pe... |
-| 22 | domain carve-out | `iges-brep-shell-incomplete` | `exchange/iges-reader` | A BRep Shell (Type 514) declaring zero faces (fatal) or containing face references that fail to translate — the shell is then explicitly marked non-closed ra... |
-| 23 | domain carve-out | `iges-bspline-insufficient-poles` | `exchange/iges-reader` | A B-spline curve/surface (Type 126 / 128) declares fewer than two control points in a parametric direction, which cannot define a curve or surface. |
-| 24 | domain carve-out | `iges-bspline-invalid-degree` | `exchange/iges-reader` | A rational B-spline curve or surface entity (Type 126 / 128) declares a polynomial degree that is non-positive or exceeds the supported maximum, making the e... |
-| 25 | domain carve-out | `iges-bspline-malformed-knot-vector` | `exchange/iges-reader` | A B-spline's knot vector is internally inconsistent: descending knots (fatal), near-coincident knots needing collapse, knot multiplicity exceeding the degree... |
-| 26 | domain carve-out | `iges-bspline-rational-weight-anomalies` | `exchange/iges-reader` | Rational B-spline weights that are non-positive (fatal), have an extreme min/max spread making evaluation ill-conditioned, or are all equal despite the entit... |
-| 27 | domain carve-out | `iges-c0-continuity-forced-split-or-conversion` | `exchange/iges-reader` | An IGES curve or surface that is only C0-continuous (tangent breaks at knots) where the topology assembly requires C1: curves are split into multi-edge wires... |
-| 28 | domain carve-out | `iges-circular-arc-closed-ambiguity` | `exchange/iges-reader` | A Circular Arc (Type 100) whose start and end coincide is ambiguous between a zero-length arc (file error) and a full circle; the reader flags the case and d... |
-| 29 | domain carve-out | `iges-composite-curve-member-discontinuity` | `exchange/iges-reader` | A Composite Curve (Type 102) whose member list is malformed relative to itself: the same underlying entity referenced twice consecutively, or successive memb... |
-| 30 | domain carve-out | `iges-composite-multiface-base-surface-unsupported` | `exchange/iges-reader` | A trimming construct (141/142/143/144) whose base surface translates into a multi-face shell (composite/multi-patch) rather than a single untrimmed patch; th... |
-| 31 | domain carve-out | `iges-conic-arc-malformed-definition` | `exchange/iges-reader` | A Conic Arc (Type 104) whose general-conic coefficients do not classify as ellipse/parabola/hyperbola, or whose start/end points map to coincident parameters... |
-| 32 | domain carve-out | `iges-copious-data-duplicate-points` | `exchange/iges-reader` | A Copious Data / linear-path entity (Type 106) containing consecutive duplicate or near-duplicate points, which are filtered; if fewer than two distinct poin... |
-| 33 | domain carve-out | `iges-degenerate-zero-length-line` | `exchange/iges-reader` | A Line entity (Type 110) whose start and end points coincide — a zero-length segment that cannot define a direction and is rejected. |
-| 34 | domain carve-out | `iges-elementary-surface-degenerate-parameters` | `exchange/iges-reader` | A solid-entity analytic surface (Plane 190, Right Circular Cylinder 192, Cone 194, Sphere 196, Torus 198) with degenerate defining data: null location-point ... |
-| 35 | domain carve-out | `iges-erroneous-entity-skip` | `exchange/iges-reader` | Entities flagged as structurally erroneous during low-level directory-entry/parameter-data parsing can be excluded from transfer wholesale (parameter-gated) ... |
-| 36 | domain carve-out | `iges-file-resolution-tolerance-calibration` | `exchange/iges-reader` | The IGES file's own global-section Resolution value drives the reader's working precision (under the default read.precision.mode), so a file declaring a garb... |
-| 37 | domain carve-out | `iges-group-associativity-malformed-members` | `exchange/iges-reader` | Container entities (Subfigure Definition 308, Group 402 forms 1/7, Singular Subfigure Instance 408) referencing members that are null or fail to translate; t... |
-| 38 | domain carve-out | `iges-offset-curve-anomalies` | `exchange/iges-reader` | An Offset Curve (Type 130) with problematic authoring: a variable/function-defined offset distance (flag other than constant — unimplemented, rejected); a ba... |
-| 39 | domain carve-out | `iges-parametric-spline-malformed` | `exchange/iges-reader` | A legacy Parametric Spline Curve (Type 112) or Parametric Spline Surface (Type 114) whose piecewise-polynomial data cannot be converted: fewer than one segme... |
-| 40 | domain carve-out | `iges-plane-bounding-curve-and-hole-anomalies` | `exchange/iges-reader` | A bounded Plane (Type 108), possibly grouped into a perforated plane via Single-Parent associativity (Type 402 form 9), with boundary defects: missing/unsupp... |
-| 41 | domain carve-out | `iges-revolution-construction-fallback` | `exchange/iges-reader` | A Surface of Revolution (Type 120) whose generatrix or axis reference is null/not-a-curve (rejected), or whose data defeats direct analytic surface construct... |
-| 42 | domain carve-out | `iges-ruled-surface-parametrization-mismatch` | `exchange/iges-reader` | A Ruled Surface (Type 118) whose two rail curves translate into different numbers of edges (requiring wire homogenization before ruling), or whose rails are ... |
-| 43 | domain carve-out | `iges-surface-forced-periodic` | `exchange/iges-reader` | A B-spline surface that is geometrically closed in U or V but not declared/constructed periodic, risking an inconsistent seam; the reader forces periodicity ... |
-| 44 | domain carve-out | `iges-tabulated-cylinder-zero-length` | `exchange/iges-reader` | A Tabulated Cylinder (Type 122) whose directrix start and declared terminus coincide, giving a zero-length extrusion direction that cannot define a surface. |
-| 45 | domain carve-out | `iges-transform-non-similarity-rejected` | `exchange/iges-reader` | A Transformation Matrix (Type 124), directly or via composed location, that does not decompose into a rigid similarity (translation + rotation + uniform scal... |
-| 46 | domain carve-out | `iges-trimmed-surface-anisotropic-transform` | `exchange/iges-reader` | A Trimmed Surface (Type 144) whose associated transform carries anisotropic (non-uniform) scaling; instead of rejecting it like the general case, the reader ... |
-| 47 | domain carve-out | `iges-trimmed-surface-outer-contour-fallback` | `exchange/iges-reader` | A Trimmed Surface (Type 144) whose outer contour fails to translate: rather than dropping the face, the reader degrades to the surface's natural restriction ... |
-| 48 | domain carve-out | `iges-unsupported-model-space-only-representation` | `exchange/iges-reader` | A Boundary (Type 141, boundary-type 0) or Bounded Surface (Type 143, representation-type 0) using the legacy model-space-only form with no parameter-space cu... |
+| 4 | STEP-exercisable | `stp-geomset-gri-fallback` | `exchange/step-reader` | A GEOMETRIC_SET element is none of the directly supported kinds (curve, cartesian point, surface) but is still some geometric representation item. Instead of... |
+| 5 | STEP-exercisable | `stp-missing-unit-context-default` | `exchange/step-reader` | A geometry entity is translated in a context where OCCT cannot locate a governing SHAPE_REPRESENTATION (and hence its length/angle unit conversion factors) b... |
+| 6 | STEP-exercisable | `stp-polyloop-dup-point` | `exchange/step-reader` | A FACETED_BREP POLY_LOOP (a faceted polygon boundary given as a flat list of cartesian points) lists the very same point twice in immediate succession, which... |
+| 7 | STEP-exercisable | `stp-srr-nauo-reversed` | `exchange/step-reader` | In an assembly, the shape representation relationship attached to a CONTEXT_DEPENDENT_SHAPE_REPRESENTATION relates its two representations in the direction o... |
+| 8 | STEP-exercisable | `stp-tess-dangling-brep-link` | `exchange/step-reader` | A tessellated face/shell/solid declares a geometric or topological link to an exact-BRep counterpart that cannot be resolved (nothing is bound for the refere... |
+| 9 | STEP-exercisable | `stp-tess-degenerate-triangles` | `exchange/step-reader` | Tessellated geometry (TRIANGULATED_FACE / COMPLEX_TRIANGULATED_FACE) whose triangle strips or fans contain index triples that repeat a vertex, i.e. degenerat... |
+| 10 | STEP-exercisable | `stp-tess-malformed-normals` | `exchange/step-reader` | A tessellated item's normals table does not have exactly three components per row (not valid XYZ vectors). The normals are silently ignored and the mesh is b... |
+| 11 | detect-only | `bc-intersecting-wires` | `exchange/brepcheck` | Two distinct wires bounding the same face cross each other in parametric space. |
+| 12 | detect-only | `bc-invalid-point-on-surface` | `exchange/brepcheck` | A vertex's stored 3D point does not actually lie on a surface it is registered against (via a point-on-surface representation), beyond tolerance. |
+| 13 | detect-only | `bc-invalid-polygon-on-triangulation` | `exchange/brepcheck` | An edge's associated polygon-on-triangulation representation (indices into a Poly_Triangulation's node array) is malformed or out of range. |
+| 14 | detect-only | `bc-multiple-3d-curve` | `exchange/brepcheck` | An edge carries more than one 3D curve representation, making its geometry ambiguous. |
+| 15 | detect-only | `bc-no-surface` | `exchange/brepcheck` | A face has no underlying surface geometry at all. |
+| 16 | domain carve-out | `iges-blank-status-entity-filtering` | `exchange/iges-reader` | Directory-entry status digits mark entities as blanked (invisible/subordinate); under the visible-only read mode the reader excludes blanked entities from to... |
+| 17 | domain carve-out | `iges-boundary-3d-2d-representation-inconsistency` | `exchange/iges-reader` | A trimming/boundary construct (Boundary Type 141, CurveOnSurface Type 142, or a Trimmed Surface Type 144 contour) supplies both a 3D model-space representati... |
+| 18 | domain carve-out | `iges-brep-edge-loop-construction-anomalies` | `exchange/iges-reader` | Within the BRep entity family, Loop (508) / EdgeList (504) references can be malformed: null edge pointers, an edge-type flag disagreeing with the referenced... |
+| 19 | domain carve-out | `iges-brep-face-invalid-base-surface` | `exchange/iges-reader` | A BRep Face entity (Type 510) referencing a surface type structurally disallowed as a BRep base (Plane 108, Bounded Surface 143, Trimmed Surface 144, or a pe... |
+| 20 | domain carve-out | `iges-brep-shell-incomplete` | `exchange/iges-reader` | A BRep Shell (Type 514) declaring zero faces (fatal) or containing face references that fail to translate — the shell is then explicitly marked non-closed ra... |
+| 21 | domain carve-out | `iges-bspline-insufficient-poles` | `exchange/iges-reader` | A B-spline curve/surface (Type 126 / 128) declares fewer than two control points in a parametric direction, which cannot define a curve or surface. |
+| 22 | domain carve-out | `iges-bspline-invalid-degree` | `exchange/iges-reader` | A rational B-spline curve or surface entity (Type 126 / 128) declares a polynomial degree that is non-positive or exceeds the supported maximum, making the e... |
+| 23 | domain carve-out | `iges-bspline-malformed-knot-vector` | `exchange/iges-reader` | A B-spline's knot vector is internally inconsistent: descending knots (fatal), near-coincident knots needing collapse, knot multiplicity exceeding the degree... |
+| 24 | domain carve-out | `iges-bspline-rational-weight-anomalies` | `exchange/iges-reader` | Rational B-spline weights that are non-positive (fatal), have an extreme min/max spread making evaluation ill-conditioned, or are all equal despite the entit... |
+| 25 | domain carve-out | `iges-c0-continuity-forced-split-or-conversion` | `exchange/iges-reader` | An IGES curve or surface that is only C0-continuous (tangent breaks at knots) where the topology assembly requires C1: curves are split into multi-edge wires... |
+| 26 | domain carve-out | `iges-circular-arc-closed-ambiguity` | `exchange/iges-reader` | A Circular Arc (Type 100) whose start and end coincide is ambiguous between a zero-length arc (file error) and a full circle; the reader flags the case and d... |
+| 27 | domain carve-out | `iges-composite-curve-member-discontinuity` | `exchange/iges-reader` | A Composite Curve (Type 102) whose member list is malformed relative to itself: the same underlying entity referenced twice consecutively, or successive memb... |
+| 28 | domain carve-out | `iges-composite-multiface-base-surface-unsupported` | `exchange/iges-reader` | A trimming construct (141/142/143/144) whose base surface translates into a multi-face shell (composite/multi-patch) rather than a single untrimmed patch; th... |
+| 29 | domain carve-out | `iges-conic-arc-malformed-definition` | `exchange/iges-reader` | A Conic Arc (Type 104) whose general-conic coefficients do not classify as ellipse/parabola/hyperbola, or whose start/end points map to coincident parameters... |
+| 30 | domain carve-out | `iges-copious-data-duplicate-points` | `exchange/iges-reader` | A Copious Data / linear-path entity (Type 106) containing consecutive duplicate or near-duplicate points, which are filtered; if fewer than two distinct poin... |
+| 31 | domain carve-out | `iges-degenerate-zero-length-line` | `exchange/iges-reader` | A Line entity (Type 110) whose start and end points coincide — a zero-length segment that cannot define a direction and is rejected. |
+| 32 | domain carve-out | `iges-elementary-surface-degenerate-parameters` | `exchange/iges-reader` | A solid-entity analytic surface (Plane 190, Right Circular Cylinder 192, Cone 194, Sphere 196, Torus 198) with degenerate defining data: null location-point ... |
+| 33 | domain carve-out | `iges-erroneous-entity-skip` | `exchange/iges-reader` | Entities flagged as structurally erroneous during low-level directory-entry/parameter-data parsing can be excluded from transfer wholesale (parameter-gated) ... |
+| 34 | domain carve-out | `iges-file-resolution-tolerance-calibration` | `exchange/iges-reader` | The IGES file's own global-section Resolution value drives the reader's working precision (under the default read.precision.mode), so a file declaring a garb... |
+| 35 | domain carve-out | `iges-group-associativity-malformed-members` | `exchange/iges-reader` | Container entities (Subfigure Definition 308, Group 402 forms 1/7, Singular Subfigure Instance 408) referencing members that are null or fail to translate; t... |
+| 36 | domain carve-out | `iges-offset-curve-anomalies` | `exchange/iges-reader` | An Offset Curve (Type 130) with problematic authoring: a variable/function-defined offset distance (flag other than constant — unimplemented, rejected); a ba... |
+| 37 | domain carve-out | `iges-parametric-spline-malformed` | `exchange/iges-reader` | A legacy Parametric Spline Curve (Type 112) or Parametric Spline Surface (Type 114) whose piecewise-polynomial data cannot be converted: fewer than one segme... |
+| 38 | domain carve-out | `iges-plane-bounding-curve-and-hole-anomalies` | `exchange/iges-reader` | A bounded Plane (Type 108), possibly grouped into a perforated plane via Single-Parent associativity (Type 402 form 9), with boundary defects: missing/unsupp... |
+| 39 | domain carve-out | `iges-revolution-construction-fallback` | `exchange/iges-reader` | A Surface of Revolution (Type 120) whose generatrix or axis reference is null/not-a-curve (rejected), or whose data defeats direct analytic surface construct... |
+| 40 | domain carve-out | `iges-ruled-surface-parametrization-mismatch` | `exchange/iges-reader` | A Ruled Surface (Type 118) whose two rail curves translate into different numbers of edges (requiring wire homogenization before ruling), or whose rails are ... |
+| 41 | domain carve-out | `iges-surface-forced-periodic` | `exchange/iges-reader` | A B-spline surface that is geometrically closed in U or V but not declared/constructed periodic, risking an inconsistent seam; the reader forces periodicity ... |
+| 42 | domain carve-out | `iges-tabulated-cylinder-zero-length` | `exchange/iges-reader` | A Tabulated Cylinder (Type 122) whose directrix start and declared terminus coincide, giving a zero-length extrusion direction that cannot define a surface. |
+| 43 | domain carve-out | `iges-transform-non-similarity-rejected` | `exchange/iges-reader` | A Transformation Matrix (Type 124), directly or via composed location, that does not decompose into a rigid similarity (translation + rotation + uniform scal... |
+| 44 | domain carve-out | `iges-trimmed-surface-anisotropic-transform` | `exchange/iges-reader` | A Trimmed Surface (Type 144) whose associated transform carries anisotropic (non-uniform) scaling; instead of rejecting it like the general case, the reader ... |
+| 45 | domain carve-out | `iges-trimmed-surface-outer-contour-fallback` | `exchange/iges-reader` | A Trimmed Surface (Type 144) whose outer contour fails to translate: rather than dropping the face, the reader degrades to the surface's natural restriction ... |
+| 46 | domain carve-out | `iges-unsupported-model-space-only-representation` | `exchange/iges-reader` | A Boundary (Type 141, boundary-type 0) or Bounded Surface (Type 143, representation-type 0) using the legacy model-space-only form with no parameter-space cu... |
 
 ## Excluded-branches appendix
 

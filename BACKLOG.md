@@ -1256,3 +1256,82 @@ than a fresh GAP fixture.
   list explicitly marks AGREE with no citation issue). Flagging per the task's own instruction to
   "trust the underlying per-class corrections and report the discrepancy rather than forcing" —
   applies to citation-hygiene, not just tallies.
+
+### (d) Wave-2 adjudication follow-ups (2026-07-12)
+
+Applied `WAVE2_D1_VERIFY.md` (pcurves, Gp175–Gp182) and `WAVE2_C1_VERIFY.md` (faces,
+Tfa252–Tfa255) verdict recommendations to `occt-coverage/{tkshhealing,exchange}/problems.json`.
+Recount: TKShHealing 47/12/1 of 60 (was 42/17/1); exchange 54/46/45 of 145 (was 52/46/47);
+combined 101/58/46 of 205 (was 94/63/48); STEP-exercisable 81/52/10 of 143 (was 75/56/12,
+denominator unchanged — see carve-out note below). `python3 occt-coverage/merge_coverage.py`
+re-run twice post-edit, byte-identical output both times.
+
+- [ ] **`sew-merged-edge-continuity-encoding` re-queued as fillable (not a carve-out).** C1's
+      verifier refuted the sibling's carve-out claim: `BRepLib::EncodeRegularity` (the exact
+      per-edge/2-face overload this class targets, `BRepLib.cxx:2331-2348`) IS invoked
+      unconditionally on the harness's default STEP read path, via
+      `XSControl_TransferReader::ShapeResult` → `ShapeFix::EncodeRegularity(sh, tolang)` whenever
+      `read.encoderegularity.angle > 0` — OCCT's own default (`0.01`) and never overridden by this
+      harness (`validate.py`/`_oracle_workers.py` only touch `read.precision.*`,
+      `read.maxprecision.*`, `read.stdsameparameter.mode`, `read.surfacecurve.mode`).
+      Live-verified: a minimal two-face coplanar-square shape sharing one real `EDGE_CURVE`, read
+      through plain `STEPControl_Reader().TransferRoots()`/`.OneShape()`, comes back with the
+      shared edge classified `GeomAbs_CN` (vs. the un-encoded default `GeomAbs_C0`); a control cube
+      built the same way keeps all 12 sharp edges `GeomAbs_C0` (no false positive). Build target:
+      two faces sharing exactly one real `EDGE_CURVE`, one pair genuinely tangent (e.g. a plane
+      tangent to a cylinder, or two coplanar faces via the corpus's existing shared-edge-reuse
+      convention used by dozens of shell/solid fixtures), asserting the post-read
+      `BRep_Tool::Continuity(edge,f1,f2)` differs from the sharp-corner default via a tier-3/scaffold
+      check. `coverage_verdict` kept `GAP` (not downgraded further, not carved out).
+- [ ] **New crash-class fixture candidate: empty-pcurve-list `SURFACE_CURVE` segfaults the reader
+      regardless of `master_representation`.** Confirmed twice independently this wave (D1's
+      verifier, re-deriving Gp001/Gp042's actual trigger): `SURFACE_CURVE('',#33,(),.PCURVE_S1.)`
+      — an `EDGE_CURVE`'s curve wrapped in a `SURFACE_CURVE` whose `associated_geometry` list is
+      empty — crashes OCCT (`signal(11)`, both `occt_heal_on/off` and `gmsh`). A hand-built variant
+      changing only `master_representation` from `.PCURVE_S1.` to `.CURVE_3D.`, keeping the
+      empty-list wrapper, **still crashes identically** — the trigger is the empty list itself, not
+      the enum value. This is a distinct, sharper mechanism than the general "missing pcurve" input
+      pattern and worth its own dedicated crash-class fixture/regression test (current fixtures
+      Gp001/Gp042 already crash and are excluded from `bc-no-curve-on-surface` coverage for exactly
+      this reason — Gp175 was authored instead, deliberately avoiding the empty-list wrapper, to
+      close that class live). Candidate for the crash-fixture backlog alongside existing
+      known-crash entries.
+- [ ] **`bc-intersecting-wires` final-attempt item.** Downgraded PARTIAL→GAP this wave: sole
+      fixture Tfa039 is now *confirmed* non-firing (`BRepCheck_Analyzer.Result(face).Status()` =
+      `BRepCheck_NoError` on both faces, live-queried directly), correcting the prior "firing
+      unconfirmed" language. 8+ construction attempts across two independent agents (this wave's
+      C1 verifier plus the earlier `COVERED_FULL_REVERIFY.md` pass) spanning multiple topology
+      types all either heal fully or produce `BRepCheck_InvalidImbricationOfWires` instead of the
+      target `BRepCheck_IntersectingWires`; disabling
+      `FromSTEP.FixShape.FixIntersectingWiresMode` (forced `0`, vs. default `-1`/auto) before
+      reading Tfa039 did not change the outcome either, and the harness has no fixture-authorable
+      (file-bytes-only) way to reach that override anyway. Treating as a genuinely open question,
+      not a proven impossibility — recommend exactly **one more construction attempt** (e.g.
+      tangent-osculating curves, or an interior crossing at a non-vertex parameter under whatever
+      healing-suppression the reader's own default pass allows) before reclassifying this as a
+      STEP-INEXPRESSIBLE carve-out alongside the three `bc-*` §1a items.
+- **Carve-out representation gap (flagging, not fixing).** `tkshh-indirect-elementary-surface-axes`
+  was adjudicated a STEP-inexpressible carve-out this wave (reader clamps negative
+  `CONICAL_SURFACE` semi-angle pre-construction at `StepToGeom.cxx:1139`; all three
+  placement-construction routes — `MakeAxis2Placement` at `:164-202`, `MakeTransformation3d` at
+  `:1884-1930` via `gp_Ax3`, and the raw `AXIS2_PLACEMENT_3D` route — force right-handed frames;
+  verified live + source by two independent agents). Investigated how the existing three
+  `exchange/brepcheck` §1a carve-outs (`bc-invalid-point-on-surface`,
+  `bc-invalid-polygon-on-triangulation`, `bc-multiple-3d-curve`) are actually represented in
+  `problems.json`: **there is no dedicated carve-out verdict value or field.** They stay
+  `coverage_verdict: GAP` with a `"VERIFICATION: STRUCTURALLY-UNREACHABLE"` prose marker in
+  `notes`, and are excluded from the `STEP-exercisable` tally in `merge_coverage.py` only
+  incidentally, via `detect_only: true` (true for unrelated reasons — they're BRepCheck status
+  codes). `merge_coverage.py`'s only *mechanical* carve-out primitive, `CARVEOUT_DOMAINS`, operates
+  at whole-`domain` granularity (currently just `exchange/iges-reader`) and cannot target a single
+  `problem_id` within a mixed domain. `tkshh-indirect-elementary-surface-axes` is a repair-mechanism
+  GAP (`ShapeCustom_DirectModification`), not a BRepCheck detection status, so setting
+  `detect_only: true` on it to get the same tally effect would misrepresent that field's own
+  documented meaning — left unset. Net effect: this entry now carries the same
+  `"VERIFICATION: STRUCTURALLY-UNREACHABLE"` notes convention as the three §1a precedents, stays
+  `GAP`, and — like them in principle, though they're saved by the `detect_only` coincidence — is
+  **not** mechanically excluded from the STEP-exercisable GAP tally (hence "STEP-exercisable
+  denominator unchanged" above, 143 both before and after this wave). Maintainer decision needed:
+  add a real `carve_out: true`-style field (and teach `merge_coverage.py` to honor it per-class,
+  not just per-domain) so all four STEP-inexpressible items are mechanically, not just textually,
+  removed from the fillable denominator.
