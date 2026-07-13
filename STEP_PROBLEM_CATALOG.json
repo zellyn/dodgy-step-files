@@ -48077,6 +48077,327 @@
   },
   {
     "byte_assertions": [
+      "contains(b'same_range_lie')",
+      "contains(b\"EDGE_CURVE('gp183_edge'\")",
+      "count_entity_def(b'EDGE_CURVE') == 1"
+    ],
+    "category": "§12.2a pcurve (sub-class: invalid same-range flag, face-hosted subvariant — `bc-invalid-same-range-flag`)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "An `EDGE_CURVE` declares `same_range=.T.`, asserting that its 3D-curve parameter range and its pcurve's parameter range are identical, when in fact they genuinely differ: the 3D `LINE` spans `[0,10]` while the paired `PCURVE`'s UV `LINE` spans `[0,5]`. This is Twi082's exact numeric mismatch, but wired into a real `ADVANCED_FACE` on a `PLANE` instead of an orphan `GEOMETRIC_CURVE_SET` — so translation actually binds the pcurve to a face rather than yielding an empty shape.",
+    "expected_kernel_behavior": "detect the range mismatch and flag the same-range validity status, or reject/repair with a diagnostic rather than silently trusting the flag.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp183.stp",
+    "id": "Gp183",
+    "notes": "**See also**: Twi082 (identical numeric defect, orphan `GEOMETRIC_CURVE_SET`, `occt=empty`). **Empirical finding (live-verified, OCP/OCCT 7.8.1)**: this fixture DOES reach a live face (`occt=shape(1)`, unlike Twi082) — that portion of the packet's ask is achieved. However, `BRep_Tool::Range(edge, face)` on the translated shape reads back `(0.0, 10.0)`, NOT the authored `(0.0, 5.0)` — OCCT's the edge-translation stage unconditionally rescales the pcurve's parameter domain to match the 3D curve during ordinary edge construction (confirmed under both `occt_heal_on` and `occt_heal_off` Interface_Static profiles; `BRep_Tool::SameRange(edge)` still reads `True` post-translation, but the underlying ranges have already been silently reconciled). Consequently the edge validity checker (Blind and `InContext(face)`) reports a no-error verdict, not the same-range validity status, on the final the loaded shape — the lie is healed away before any checker could observe it. This is consistent with the class's own `detect_only: true` tag in `problems.json`: the defect is a genuine, byte-level Part-21 malformation (useful for a static/structural linter) but appears to be structurally unobservable as a live `BRepCheck` finding via the standard STEP import pipeline, regardless of face-hosting. No fixture (this one included) has yet demonstrated a translated shape whose the edge validity checker actually flags `InvalidSameRangeFlag`; that remains open. Synonyms: \"same_range flag lies\", \"SameRange assertion violated\", \"the same-range validity status not observable post-translation\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`PLANE`-hosted `EDGE_CURVE`: 3D `LINE` from `(0,0,0)` along `(1,0,0)` length 10; `PCURVE` UV `LINE` from `(0,0)` along `(1,0)` length 5; `EDGE_CURVE(...,.T.)` — `same_range` asserted true despite the 10-vs-5 range mismatch.",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [
+      "Twi082"
+    ],
+    "sender": "deduced — OCCT uncovered-class sweep, work packet D2.",
+    "severity": "P3",
+    "sources": [
+      "occt-coverage GAP audit, work packet D2 item `bc-invalid-same-range-flag`, `exchange/problems.json` `bc-invalid-same-range-flag` (`BRepCheck_Edge::Blind`/`InContext`, `BRepCheck_Edge.cxx:299,336` — sets `BRepCheck_InvalidSameRangeFlag`)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 1",
+      "n_vertices_total == 2",
+      "face[0].surface_type == \"plane\""
+    ],
+    "title": "Edge `same_range` flag claims parametric agreement that does not hold, face-hosted (`bc-invalid-same-range-flag`, PARTIAL)"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'c0_kink_bottom')",
+      "contains(b'B_SPLINE_CURVE_WITH_KNOTS')",
+      "contains(b'(3,2,3)')"
+    ],
+    "category": "§12.2a pcurve (sub-class: curve continuity below required criterion — `seq-split-continuity`, curve subvariant)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "The bottom edge of a rectangular `PLANE` face uses a degree-2 `B_SPLINE_CURVE_WITH_KNOTS`, 5 control points, knot vector `(0,0,0,0.5,0.5,1,1,1)` (multiplicities `(3,2,3)`): interior multiplicity equals the degree, giving genuine C0 continuity — position-continuous, tangent-discontinuous — at `u=0.5`. The control point exactly at the shared knot sits on the straight line between the edge's endpoints (so 3D position stays continuous), but the neighbouring poles are offset in different axes (`+Y` before the knot, `+Z` after), so the incoming and outgoing tangent directions genuinely differ. The edge is wired through a live `EDGE_CURVE`/`PCURVE` into a reachable, 4-edge `ADVANCED_FACE` — unlike Gp033 (`occt=empty`, `shape_null=True`) or Gn172 (orphan pattern, defect curve unreferenced by any live `EDGE_CURVE`/`PCURVE`).",
+    "expected_kernel_behavior": "detect the sub-C1 interior knot and split the curve at the discontinuity (the continuity-splitting stage) so downstream consumers requiring C1 receive two valid pieces instead of one curve with a hidden kink.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp184.stp",
+    "id": "Gp184",
+    "notes": "**See also**: Gp033 (curve subvariant's original attempt, `shape_null=True`), Gn172 (orphan pattern), Gp120 (pcurve subvariant, survives), Gs049/Gs070 (surface subvariant, survives). **Empirical finding (live-verified)**: the packet spec (mirroring Gp033's own recipe) asked for interior multiplicity `= degree+1` (3, for a degree-2 curve). Tested directly against `Geom_BSplineCurve`'s constructor: multiplicity 3 at an INTERIOR knot is rejected outright (\"`BSpline curve: # Poles and degree mismatch`\") — OCCT only permits `degree+1` multiplicity at the first/last knot of a clamped curve, never interior. This is exactly why Gp033 is `shape_null` — the curve entity never constructs, so translation fails before the edge is reachable. This fixture instead uses interior multiplicity `= degree` (2), the textbook C0 case, which OCCT accepts. Live-verified via direct curve evaluation on the translated edge: overall `Continuity() == GeomAbs_C0`, `NbIntervals(GeomAbs_C1) == 2` (exactly one C1-break, located at parameter 0.5), position at the break is `(5,0,0)` on both sides (continuous), but the unit tangent evaluated at `0.5 - 1e-5` is `(0.972, -0.233, 0.0)` while at `0.5 + 1e-5` it is `(0.972, 0.0, 0.233)` — genuinely different directions, confirming a real tangent-discontinuous kink (not an accidental smooth pass-through). An earlier symmetric pole choice (bump `+Z` before, `-Z` after, both offset equally) was tested first and turned out to produce IDENTICAL tangents on both sides (an accidental C1 pass-through despite the double knot) — discarded once live-verified; the asymmetric-axis bump shipped here is the one that live-confirmed a genuine kink.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "Degree-2 `B_SPLINE_CURVE_WITH_KNOTS`, control points `(0,0,0)`, `(2.5,0.6,0)`, `(5,0,0)`, `(7.5,0,0.6)`, `(10,0,0)`; knot multiplicities `(3,2,3)`, knots `(0.0,0.5,1.0)`; wired as one edge of a normal 4-edge rectangular `ADVANCED_FACE` boundary.",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [
+      "Gp033",
+      "Gn172",
+      "Gp120",
+      "Gs049",
+      "Gs070"
+    ],
+    "sender": "deduced — OCCT uncovered-class sweep, work packet D2.",
+    "severity": "P3",
+    "sources": [
+      "occt-coverage GAP audit, work packet D2 item `seq-split-continuity`, `exchange/problems.json` `seq-split-continuity` (`ShapeUpgrade_ShapeDivideContinuity`, static `splitcontinuity`, `ShapeProcess_OperLibrary.cxx:438-475`)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8",
+      "face[0].surface_type == \"plane\""
+    ],
+    "title": "3D B-spline curve with a genuine C0 interior knot, reachable in a live face (`seq-split-continuity`, PARTIAL, missing 1 of 3: curve subvariant)"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'multi_period_pcurve')",
+      "contains(b'125.663706')",
+      "contains(b'CYLINDRICAL_SURFACE')"
+    ],
+    "category": "§12.2a pcurve (sub-class: pcurve/3D-curve consistency, multi-period span subvariant — `seq-xsalgo-pcurve-consistency`)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A unit-radius `CYLINDRICAL_SURFACE` carries a self-closed full-circle `EDGE_CURVE` (start==end vertex) whose 3D `CIRCLE` is a correct, single physical revolution — but whose `PCURVE` is a 2D `LINE` running from `u=0` to `u=40*pi` (20 full periods) instead of the correct single period `[0, 2*pi]`. This is the \"degree-vs-radian confusion\" signature named in the class description: a parametric span vastly exceeding the surface's actual angular domain, not merely a single-period offset (contrast Gs007/Gp023, which are single-period shifts exercising a different repair path).",
+    "expected_kernel_behavior": "`XSAlgo_AlgoContainer::CheckPCurve` detects the multi-period span and drops the pcurve, recomputing a correctly-bounded one.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp185.stp",
+    "id": "Gp185",
+    "notes": "**See also**: Gs007, Gp023 (single-period-shift subvariant, different repair path), Gp022 (a different pcurve-consistency mechanism: same-parameter deviation, not span). **Empirical finding (live-verified, decisive)**: `BRep_Tool::Range(edge, face)` on the translated shape reads back `(0.0, 6.283185307179586)` — exactly one period (`2*pi`), NOT the authored `(0.0, 125.66...)`. Verified identically under `read.surfacecurve.mode` 0 (3D-preferred) and 3 (pcurve-preferred, `occt_heal_on`'s own setting). This is a genuine, decisive live confirmation that the cited mechanism (multi-period span detected, pcurve dropped, a correct one recomputed) fires on this exact input during ordinary STEP import — the file's declared 20-period pcurve never survives to the final shape; the class's own description (\"drops the pcurve\") is exactly what is observed.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`CYLINDRICAL_SURFACE` radius 1; self-closed full-circle `EDGE_CURVE`; `PCURVE` 2D `LINE` from `(0,0)` with direction `(1,0)` and vector magnitude `40*pi` (≈125.6637) instead of `2*pi`.",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [
+      "Gs007",
+      "Gp023",
+      "Gp022"
+    ],
+    "sender": "deduced — OCCT uncovered-class sweep, work packet D2.",
+    "severity": "P3",
+    "sources": [
+      "occt-coverage GAP audit, work packet D2 item `seq-xsalgo-pcurve-consistency`, `exchange/problems.json` `seq-xsalgo-pcurve-consistency` (`XSAlgo_AlgoContainer::CheckPCurve`, `XSAlgo_AlgoContainer.cxx:326-342` — multi-period pcurve span check",
+      "drops the pcurve)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 1",
+      "n_vertices_total == 2",
+      "face[0].surface_type == \"cylinder\""
+    ],
+    "title": "Pcurve winds multiple full periods of a closed surface (`seq-xsalgo-pcurve-consistency`, PARTIAL, missing 1 of 3: multi-period subvariant)"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'faceA_bottom')",
+      "contains(b'faceB_top')",
+      "count_entity_def(b'ADVANCED_FACE') == 2",
+      "count_entity_def(b'EDGE_CURVE') == 8"
+    ],
+    "category": "§12.2a pcurve (sub-class: sewing-time pcurve domain reconciliation — `sew-pcurve-domain-reconciliation`)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Two independent, unstitched coplanar `PLANE` rectangles (Face A upper, Face B lower) share a geometrically coincident but topologically distinct boundary segment. Face A's bottom edge (`A=(0,0,0)` to `B=(1,0,0)`) carries a 3D `LINE` of magnitude 1 (parameter domain `[0,1]`) and a matching-speed pcurve. Face B's top edge (`B'=(1,0,0)` to `A'=(0,0,0)`, distinct `VERTEX_POINT` entities from A's, at the same coordinates) is the SAME physical segment traversed in the OPPOSITE 3D direction, parametrized 4x slower (vector magnitude 0.25, domain `[0,4]`), with its own matching-speed pcurve. Neither face references the other's edge or vertex entities — a genuinely unstitched two-body input, not Gp050/Gp052's single-edge the edge-healing stage probes.",
+    "expected_kernel_behavior": "a sewing pass (the sewing stage) recognizes the two edges as geometrically coincident within tolerance, reverses and rescales the non-reference (Face B) contributor's pcurve onto the reference edge's shared domain, and merges them into one topologically-shared edge.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp186.stp",
+    "id": "Gp186",
+    "notes": "**See also**: Gp050, Gp052 (single-edge the edge-healing stage.same-parameter repair probes — not an actual two-edge merge; this fixture is the correction). **Empirical finding (live-verified, decisive)**: this fixture is NOT stitched by the default the reader (which does not invoke sewing) — the raw translated shape is a compound of the 2 independent `ADVANCED_FACE`s (`n_faces_total=2`, `n_edges_total=8`, no shared edges), exactly as authored. To verify the class's actual claim (that sewing's own merge-time pcurve reconciliation is what this input demands), a standalone the sewing stage(1e-2)` pass was run over the two translated faces (not part of the standard tier-3 harness — a supplementary live check specific to this class). Result, read via `TopExp.MapShapesAndAncestors_s`: the shape drops from 8 distinct boundary edges to 7, with exactly ONE edge shared by both faces — the two independently-parametrized, reversed, 4x-domain-mismatched edges were genuinely merged. On the merged edge: 3D range `(0.0, 1.0)` (Face A's reference domain won), `SameRange=True`, `SameParameter=True`; Face A's pcurve is an unchanged `Geom2d_Line` over `[0,1]`; Face B's pcurve is now a `Geom2d_TrimmedCurve` over `[0,1]` — its original `[0,4]`, reversed-direction curve was reversed and rescaled onto the shared domain, exactly the `Reverse()`+`ReversedParameter`+`SameRange`-rescale codepath this class targets. Both faces retain valid, non-null pcurves post-merge (the `c2d2.IsNull()` skip-on-failure path was NOT taken).",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "Two coplanar `PLANE` rectangles sharing one physical boundary segment via two independent `EDGE_CURVE`s: one traversed forward at unit speed (domain `[0,1]`), the other traversed reversed at quarter speed (domain `[0,4]`), each with its own matching pcurve; wrapped in one `OPEN_SHELL` containing both `ADVANCED_FACE`s (never explicitly sewn in the Part-21 data itself).",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [
+      "Gp050",
+      "Gp052"
+    ],
+    "sender": "deduced — OCCT uncovered-class sweep, work packet D2.",
+    "severity": "P3",
+    "sources": [
+      "occt-coverage GAP audit, work packet D2 item `sew-pcurve-domain-reconciliation`, `exchange/problems.json` `sew-pcurve-domain-reconciliation` (`BRepBuilderAPI_Sewing::SameParameterEdge`, `BRepBuilderAPI_Sewing.cxx:757-784` — `Reverse()`+`ReversedParameter` for a reversed non-reference contributor, then `SameRange` rescale onto `[first,last]`",
+      "`:785` — skip on rescale failure)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 2",
+      "n_edges_total == 8",
+      "n_vertices_total == 16"
+    ],
+    "title": "Two pcurve-bearing edges actually merged by sewing, reversed contributor with a 4x parameter-domain mismatch (`sew-pcurve-domain-reconciliation`, PARTIAL)"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'gp187_ill_conditioned_pcurve')",
+      "contains(b'(0.0,0.0001,0.0002,0.0003,1.0)')"
+    ],
+    "category": "§12.2a pcurve (sub-class: SameParameter repair, ill-conditioned knot-ratio subvariant — `sew-pcurve-parameter-desync-repair`)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A `PLANE`-hosted edge's 3D curve is a plain `LINE` from `(0,0,0)` to `(1,0,0)`, uniformly parametrized over `[0,1]`. Its `PCURVE` is a degree-3 `B_SPLINE_CURVE_WITH_KNOTS` with 7 non-collinear control points tracing a gentle S-wiggle from `(0,0)` to `(1,0)` in UV — but the interior knot vector is `(0.0001, 0.0002, 0.0003)`: three knots crammed into the first three ten-thousandths of the parameter range, leaving a single `~0.9997`-wide span for the rest of the curve. The smallest:largest knot-interval ratio is roughly 1:10000 — the \"severely non-uniform (ill-conditioned) knot spacing\" signature the class description says defeats a polynomial-domain `SameParameter` approximation and forces curvilinear (arc-length) reparametrization.",
+    "expected_kernel_behavior": "`BRepLib::SameParameter` detects the ill-conditioned knot ratio and reparametrizes by arc length rather than attempting a direct polynomial-domain approximation that would be numerically unstable at that scale.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp187.stp",
+    "id": "Gp187",
+    "notes": "**See also**: Gp040 (this class's prior witness — a plain positional pcurve/3D-curve displacement, a different input shape from this fixture's knot-ratio ill-conditioning). This fixture covers the \"ill-conditioned knot-ratio arc-length reparametrization\" subvariant. **Scope note (evidence-based, honest deferral)**: the class is missing 3 of 4 subvariants; the packet asked for 2 of them. The OTHER missing subvariant (\"a pcurve needing the relaxed second smoothing attempt after the first C0→C1 upgrade doesn't fully resolve, with a deliberate regression so the revert-on-regression path fires\") requires distinguishing, from outside, WHICH internal retry branch `BRepLib::SameParameter` takes — no counter or diagnostic enum for \"first pass\" vs. \"second, more relaxed pass\" is exposed through OCCT's public API, so a STEP-input-only fixture cannot be verified (rather than merely asserted) to hit that specific branch instead of the ordinary single-pass smoothing Gp040 already demonstrates. Rather than ship an unverifiable duplicate of Gp040 under a different subvariant label, that item is deferred to `BACKLOG.md` with this same reasoning. Only this one new fixture (of the requested 2) ships from this class in this wave.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "3D `LINE` `(0,0,0)`→`(1,0,0)`, domain `[0,1]`; `PCURVE` degree-3 B-spline, 7 control points, knot multiplicities `(4,1,1,1,4)`, knots `(0.0, 0.0001, 0.0002, 0.0003, 1.0)`.",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [
+      "Gp040"
+    ],
+    "sender": "deduced — OCCT uncovered-class sweep, work packet D2.",
+    "severity": "P3",
+    "sources": [
+      "occt-coverage GAP audit, work packet D2 item `sew-pcurve-parameter-desync-repair`, `exchange/problems.json` `sew-pcurve-parameter-desync-repair` (`BRepLib::SameParameter`, `BRepLib.cxx:~1481-1519` per V3 mining — knot-ratio anomaly + arc-length (curvilinear) reparametrization",
+      "entry guards independently verified at `BRepLib.cxx:1225-1233`)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 1",
+      "n_vertices_total == 2",
+      "face[0].surface_type == \"plane\""
+    ],
+    "title": "Ill-conditioned (highly non-uniform) pcurve knot spacing (`sew-pcurve-parameter-desync-repair`, PARTIAL, subvariant: arc-length reparametrization trigger)"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'triangular_rim_closure_gap')",
+      "contains(b'COMPOSITE_CURVE(')",
+      "contains(b'(0.004,0.0,0.0)')"
+    ],
+    "category": "§12.2a pcurve (sub-class: composite-curve post-reorder connectivity gap, closure-seam subvariant — `stp-compcurve-disconnected`)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A `PLANE`-hosted face's sole boundary is a single self-closed edge whose 3D geometry is a `COMPOSITE_CURVE` with `closed_curve=.T.` (DECLARED closed) built from three `LINE` segments forming an approximate triangular rim: `(0,0,0)`→`(6,0,0)`→`(6,4,0)`→`(0.004,0,0)`. The third segment's actual endpoint `(0.004,0,0)` misses the first segment's true start `(0,0,0)` by 4mm — a genuine post-reorder connectivity gap specifically at the WRAP-AROUND CLOSURE, distinct from Gp034 (a 2-segment, open, `LINE`+`LINE` composite curve used as one edge of a 4-edge rectangle, with a 5mm INTERIOR gap between its two segments, not at a declared closure).",
+    "expected_kernel_behavior": "the composite-curve translation stage::Init` detects the closure-seam gap via `FixConnected`, and either closes it within tolerance, reports the failure with a clear diagnostic, or refuses to declare the wire closed.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp188.stp",
+    "id": "Gp188",
+    "notes": "**See also**: Gp034 (this class's original witness — 2-segment interior gap on an open composite curve inside a larger 4-edge face, distinct geometry and distinct gap location from this fixture). Both fixtures verified to reach the composite-curve translation stage (not orphaned in a `GEOMETRIC_CURVE_SET` per M096's rejected pattern). Tier-3 introspection shows `n_edges_total=0`/`n_vertices_total=0` despite `n_faces_total=1` — the same signature Gp034 already ships with (the composite-curve edge/vertex explorer undercounts relative to the face's own reachability), a pre-existing pattern in this corpus, not a new concern introduced here.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`COMPOSITE_CURVE('...', (seg1, seg2, seg3), .T.)` with three `COMPOSITE_CURVE_SEGMENT`s wrapping `LINE`s `(0,0,0)→(6,0,0)`, `(6,0,0)→(6,4,0)`, `(6,4,0)→(0.004,0,0)`; single self-loop `EDGE_CURVE` (same start/end `VERTEX_POINT` at the true origin) using the composite curve as its 3D geometry, forming the sole `FACE_OUTER_BOUND`.",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [
+      "Gp034"
+    ],
+    "sender": "deduced — OCCT uncovered-class sweep, work packet D2.",
+    "severity": "P3",
+    "sources": [
+      "occt-coverage GAP audit, work packet D2 item `stp-compcurve-disconnected`, `exchange/problems.json` `stp-compcurve-disconnected` (`StepToTopoDS_TranslateCompositeCurve::Init`, `StepToTopoDS_TranslateCompositeCurve.cxx:275-278` — `sfw->FixConnected(preci)",
+      "StatusConnected(FAIL)` → warning only, translation still returns `True`)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 1"
+    ],
+    "title": "Second independent COMPOSITE_CURVE with a genuine closure-seam connectivity gap (`stp-compcurve-disconnected`, PARTIAL, single-fixture-thin)"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'wrong_dim_pcurve_item')",
+      "contains(b'left_malformed_pc')",
+      "count_entity_def(b'PCURVE') == 4"
+    ],
+    "category": "§12.2a pcurve (sub-class: missing/failed pcurve deferred to projection, \"listed pcurve fails to translate\" subvariant — `stp-missing-pcurve-projection`)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A half-cylinder face (u in `[0,pi]`, v in `[0,1]`), the same 4-edge idiom as Gp035. The left seam edge's `SURFACE_CURVE` carries a correct 3D `LINE` plus a real, non-null `PCURVE` in `associated_geometry` — but that `PCURVE`'s `DEFINITIONAL_REPRESENTATION` `items` list references a `LINE` built from 3-coordinate (3D) `CARTESIAN_POINT`/`DIRECTION` entities instead of the 2-coordinate ones a pcurve's UV-space `LINE` requires — a wrong-dimensionality item, the kind of bug a producer's export code genuinely commits when it accidentally wires a 3D curve builder into a 2D pcurve slot. The other three edges (bottom arc, right seam, top arc) are correct `SURFACE_CURVE`s.",
+    "expected_kernel_behavior": "the malformed pcurve item fails its per-item conversion; the edge-loop translation stage defers the edge and computes a correct pcurve by projecting the already-built 3D edge onto the face's surface.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp189.stp",
+    "id": "Gp189",
+    "notes": "**See also**: Gp001, Gp035, Gp042 (the \"no pcurve entity at all\" trigger mode — already solid). Gp012 (struck as a bogus citation for this class per prior audit: its `SEAM_CURVE associated_geometry` contains `(#pc,$)`, a null `$` slot, which is the SAME \"absent pcurve\" mode as Gp001/Gp035/Gp042, not \"a real pcurve reference that fails to translate\"). This fixture is the first to encode the latter. **Empirical finding (live-verified, decisive; includes a discarded unsafe attempt)**: the obvious first construction — a `DEFINITIONAL_REPRESENTATION` item that is a totally wrong entity TYPE (a bare `CARTESIAN_POINT` standing in for a curve) — was built and tested first. It reads and transfers-roots without a caught Python exception, but SEGFAULTS OCCT 7.8.1 (OCP) once that malformed edge sits inside a closed 4-edge loop next to other pcurve'd edges (confirmed reproducible: a single-edge, non-looped minimal repro of the identical item does NOT crash; the same item inside a 4-edge closed loop crashes 100% of the time, under both `healing=True` and `healing=False`). A segfault is not a Python-catchable outcome — it kills the interpreter — so that construction was DISCARDED as unsafe for this corpus's live harness/CI and never shipped. The wrong-dimensionality `LINE` shipped here was verified safe (no crash under either healing profile) and, via `BRep_Tool::CurveOnSurface` on the translated shape, decisively confirmed to demonstrate the intended mechanism: the left seam edge's malformed pcurve item is silently dropped, and OCCT supplies a freshly-computed pcurve instead — sampled at `t=0.0,0.25,0.5,0.75,1.0`, the recovered pcurve is `u=0.0` constant with `v` running `0.0→1.0`, exactly the correct projected result for that physical edge (matching the healthy right-seam edge's own pcurve shape in Gp035).",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "Left seam `SURFACE_CURVE` wraps a correct 3D `LINE` plus one `PCURVE` whose `DEFINITIONAL_REPRESENTATION` item is `LINE('wrong_dim_pcurve_item', <3D point>, <3D vector>)` instead of a 2D `LINE`.",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [
+      "Gp001",
+      "Gp035",
+      "Gp042"
+    ],
+    "sender": "deduced — OCCT uncovered-class sweep, work packet D2.",
+    "severity": "P3",
+    "sources": [
+      "occt-coverage GAP audit, work packet D2 item `stp-missing-pcurve-projection`, `exchange/problems.json` `stp-missing-pcurve-projection` (`StepToTopoDS_TranslateEdgeLoop::Init`, `StepToTopoDS_TranslateEdgeLoop.cxx:475-479,539-557` — pcurve in the `associated_geometry` list fails to translate → `hasPcurve=False`, `aTool.ComputePCurve(True)` defers to projection",
+      "`:690-708` — `ShapeFix_EdgeProjAux` projects",
+      "pcurve removed if projection fails)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "crash",
+      "silent-loss",
+      "geometry"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8",
+      "face[0].surface_type == \"cylinder\""
+    ],
+    "title": "EDGE_CURVE's associated_geometry lists a PCURVE that itself fails to translate, not a null slot (`stp-missing-pcurve-projection`, PARTIAL, missing 1 of 2)"
+  },
+  {
+    "byte_assertions": [
       "contains(b'B_SPLINE_SURFACE')"
     ],
     "category": "§12.2b NURBS/knots",

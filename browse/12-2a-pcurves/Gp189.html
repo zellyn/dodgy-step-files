@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gp189 — EDGE_CURVE&#x27;s associated_geometry lists a PCURVE that itself fails to translate, not a null slot (`stp-missing-pcurve-projection`, PARTIAL, missing 1 of 2)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2a Pcurve defects</a> <span class="sep">/</span> <span class="current">Gp189</span>
+</nav>
+<header class="title-bar">
+<h1>Gp189 <span class="sep">—</span> <span class="entry-title">EDGE_CURVE&#x27;s associated_geometry lists a PCURVE that itself fails to translate, not a null slot (`stp-missing-pcurve-projection`, PARTIAL, missing 1 of 2)</span></h1>
+<p class="category">§12.2a pcurve (sub-class: missing/failed pcurve deferred to projection, &quot;listed pcurve fails to translate&quot; subvariant — `stp-missing-pcurve-projection`)</p>
+<p class="severity-badge severity-p3">P3 — cosmetic / metadata-only</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2a-pcurves/Gp189.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2a-pcurves/Gp189.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>occt-coverage GAP audit, work packet D2 item `stp-missing-pcurve-projection`, `exchange/problems.json` `stp-missing-pcurve-projection` (`StepToTopoDS_TranslateEdgeLoop::Init`, `StepToTopoDS_TranslateEdgeLoop.cxx:475-479,539-557` — pcurve in the `associated_geometry` list fails to translate → `hasPcurve=False`, `aTool.ComputePCurve(True)` defers to projection</li>
+<li>`:690-708` — `ShapeFix_EdgeProjAux` projects</li>
+<li>pcurve removed if projection fails).</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — OCCT uncovered-class sweep, work packet D2.</p></section>
+<section><h2>Description</h2>
+<p>A half-cylinder face (u in `[0,pi]`, v in `[0,1]`), the same 4-edge idiom as Gp035. The left seam edge&#x27;s `SURFACE_CURVE` carries a correct 3D `LINE` plus a real, non-null `PCURVE` in `associated_geometry` — but that `PCURVE`&#x27;s `DEFINITIONAL_REPRESENTATION` `items` list references a `LINE` built from 3-coordinate (3D) `CARTESIAN_POINT`/`DIRECTION` entities instead of the 2-coordinate ones a pcurve&#x27;s UV-space `LINE` requires — a wrong-dimensionality item, the kind of bug a producer&#x27;s export code genuinely commits when it accidentally wires a 3D curve builder into a 2D pcurve slot. The other three edges (bottom arc, right seam, top arc) are correct `SURFACE_CURVE`s.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Left seam `SURFACE_CURVE` wraps a correct 3D `LINE` plus one `PCURVE` whose `DEFINITIONAL_REPRESENTATION` item is `LINE(&#x27;wrong_dim_pcurve_item&#x27;, &lt;3D point&gt;, &lt;3D vector&gt;)` instead of a 2D `LINE`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>the malformed pcurve item fails its per-item conversion; the edge-loop translation stage defers the edge and computes a correct pcurve by projecting the already-built 3D edge onto the face&#x27;s surface.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Gp001, Gp035, Gp042 (the &quot;no pcurve entity at all&quot; trigger mode — already solid). Gp012 (struck as a bogus citation for this class per prior audit: its `SEAM_CURVE associated_geometry` contains `(#pc,$)`, a null `$` slot, which is the SAME &quot;absent pcurve&quot; mode as Gp001/Gp035/Gp042, not &quot;a real pcurve reference that fails to translate&quot;). This fixture is the first to encode the latter. **Empirical finding (live-verified, decisive; includes a discarded unsafe attempt)**: the obvious first construction — a `DEFINITIONAL_REPRESENTATION` item that is a totally wrong entity TYPE (a bare `CARTESIAN_POINT` standing in for a curve) — was built and tested first. It reads and transfers-roots without a caught Python exception, but SEGFAULTS OCCT 7.8.1 (OCP) once that malformed edge sits inside a closed 4-edge loop next to other pcurve&#x27;d edges (confirmed reproducible: a single-edge, non-looped minimal repro of the identical item does NOT crash; the same item inside a 4-edge closed loop crashes 100% of the time, under both `healing=True` and `healing=False`). A segfault is not a Python-catchable outcome — it kills the interpreter — so that construction was DISCARDED as unsafe for this corpus&#x27;s live harness/CI and never shipped. The wrong-dimensionality `LINE` shipped here was verified safe (no crash under either healing profile) and, via `BRep_Tool::CurveOnSurface` on the translated shape, decisively confirmed to demonstrate the intended mechanism: the left seam edge&#x27;s malformed pcurve item is silently dropped, and OCCT supplies a freshly-computed pcurve instead — sampled at `t=0.0,0.25,0.5,0.75,1.0`, the recovered pcurve is `u=0.0` constant with `v` running `0.0→1.0`, exactly the correct projected result for that physical edge (matching the healthy right-seam edge&#x27;s own pcurve shape in Gp035).</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;wrong_dim_pcurve_item&#x27;)</code></li>
+<li><code>contains(b&#x27;left_malformed_pc&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;PCURVE&#x27;) == 4</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_faces_total == 1</code></li>
+<li><code>n_edges_total == 4</code></li>
+<li><code>n_vertices_total == 8</code></li>
+<li><code>face[0].surface_type == &quot;cylinder&quot;</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Gp001.html">Gp001</a>, <a href="Gp035.html">Gp035</a>, <a href="Gp042.html">Gp042</a>, <a href="Gp012.html">Gp012</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gp189: Left seam EDGE_CURVE on CYLINDRICAL_SURFACE: SURFACE_CURVE wraps a correct 3D LINE plus a real (non-null) PCURVE in associated_geometry, but that PCURVE&#x27;s DEFINITIONAL_REPRESENTATION items list references a LINE built from 3-coordinate (3D) point/direction entities -- wrong dimensionality for a 2D pcurve item -- so OCCT&#x27;s pcurve-specific conversion fails and drops it while the 3D LINE stays intact; verified live that OCCT then supplies a projected pcurve instead (u=0 constant, v: 0-&gt;1) -- &#x27;listed pcurve fails to translate&#x27; mode (contrast Gp012&#x27;s null $ slot and Gp035&#x27;s fully absent pcurve) */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Gp189&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Gp189.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=CYLINDRICAL_SURFACE(&#x27;&#x27;,#4,1.0);
+<span class="lineno">15</span>#6=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT(&#x27;UV&#x27;,&#x27;2D&#x27;));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,1.0));
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(-1.0,0.0,1.0));
+<span class="lineno">20</span>#11=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">21</span>#12=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">22</span>#13=VERTEX_POINT(&#x27;&#x27;,#9);
+<span class="lineno">23</span>#14=VERTEX_POINT(&#x27;&#x27;,#10);
+<span class="lineno">24</span>#15=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">25</span>#16=VECTOR(&#x27;&#x27;,#15,1.0);
+<span class="lineno">26</span>#17=LINE(&#x27;&#x27;,#7,#16);
+<span class="lineno">27</span>#18=CARTESIAN_POINT(&#x27;&#x27;,(0.3,0.0,0.0));
+<span class="lineno">28</span>#19=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">29</span>#20=VECTOR(&#x27;&#x27;,#19,1.0);
+<span class="lineno">30</span>#21=LINE(&#x27;<mark>wrong_dim_pcurve_item</mark>&#x27;,#18,#20);
+<span class="lineno">31</span>#22=DEFINITIONAL_REPRESENTATION(&#x27;bad_def&#x27;,(#21),#6);
+<span class="lineno">32</span><mark>#23=PCURVE(</mark>&#x27;left_bad_pc&#x27;,#5,#22);
+<span class="lineno">33</span>#24=SURFACE_CURVE(&#x27;left_seam_malformed_pc&#x27;,#17,(#23),.PCURVE_S1.);
+<span class="lineno">34</span>#25=EDGE_CURVE(&#x27;<mark>left_malformed_pc</mark>&#x27;,#11,#13,#24,.T.);
+<span class="lineno">35</span>#26=LINE(&#x27;&#x27;,#8,#16);
+<span class="lineno">36</span>#27=CARTESIAN_POINT(&#x27;&#x27;,(3.14159265359,0.0));
+<span class="lineno">37</span>#28=DIRECTION(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">38</span>#29=VECTOR(&#x27;&#x27;,#28,1.0);
+<span class="lineno">39</span>#30=LINE(&#x27;&#x27;,#27,#29);
+<span class="lineno">40</span>#31=DEFINITIONAL_REPRESENTATION(&#x27;pc_right&#x27;,(#30),#6);
+<span class="lineno">41</span><mark>#32=PCURVE(</mark>&#x27;right_seam&#x27;,#5,#31);
+<span class="lineno">42</span>#33=SURFACE_CURVE(&#x27;right_seam&#x27;,#26,(#32),.PCURVE_S1.);
+<span class="lineno">43</span>#34=EDGE_CURVE(&#x27;right_seam&#x27;,#12,#14,#33,.T.);
+<span class="lineno">44</span>#35=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">45</span>#36=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">46</span>#37=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">47</span>#38=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#35,#36,#37);
+<span class="lineno">48</span>#39=CIRCLE(&#x27;&#x27;,#38,1.0);
+<span class="lineno">49</span>#40=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));
+<span class="lineno">50</span>#41=DIRECTION(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">51</span>#42=VECTOR(&#x27;&#x27;,#41,3.14159265359);
+<span class="lineno">52</span>#43=LINE(&#x27;&#x27;,#40,#42);
+<span class="lineno">53</span>#44=DEFINITIONAL_REPRESENTATION(&#x27;pc_bot&#x27;,(#43),#6);
+<span class="lineno">54</span><mark>#45=PCURVE(</mark>&#x27;bot_arc&#x27;,#5,#44);
+<span class="lineno">55</span>#46=SURFACE_CURVE(&#x27;bot_arc&#x27;,#39,(#45),.PCURVE_S1.);
+<span class="lineno">56</span>#47=EDGE_CURVE(&#x27;bot_arc&#x27;,#11,#12,#46,.T.);
+<span class="lineno">57</span>#48=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">58</span>#49=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#48,#36,#37);
+<span class="lineno">59</span>#50=CIRCLE(&#x27;&#x27;,#49,1.0);
+<span class="lineno">60</span>#51=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">61</span>#52=DIRECTION(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">62</span>#53=VECTOR(&#x27;&#x27;,#52,3.14159265359);
+<span class="lineno">63</span>#54=LINE(&#x27;&#x27;,#51,#53);
+<span class="lineno">64</span>#55=DEFINITIONAL_REPRESENTATION(&#x27;pc_top&#x27;,(#54),#6);
+<span class="lineno">65</span><mark>#56=PCURVE(</mark>&#x27;top_arc&#x27;,#5,#55);
+<span class="lineno">66</span>#57=SURFACE_CURVE(&#x27;top_arc&#x27;,#50,(#56),.PCURVE_S1.);
+<span class="lineno">67</span>#58=EDGE_CURVE(&#x27;top_arc&#x27;,#13,#14,#57,.T.);
+<span class="lineno">68</span>#59=ORIENTED_EDGE(&#x27;&#x27;,$,$,#47,.T.);
+<span class="lineno">69</span>#60=ORIENTED_EDGE(&#x27;&#x27;,$,$,#34,.T.);
+<span class="lineno">70</span>#61=ORIENTED_EDGE(&#x27;&#x27;,$,$,#58,.F.);
+<span class="lineno">71</span>#62=ORIENTED_EDGE(&#x27;&#x27;,$,$,#25,.F.);
+<span class="lineno">72</span>#63=EDGE_LOOP(&#x27;&#x27;,(#59,#60,#61,#62));
+<span class="lineno">73</span>#64=FACE_OUTER_BOUND(&#x27;&#x27;,#63,.T.);
+<span class="lineno">74</span>#65=ADVANCED_FACE(&#x27;&#x27;,(#64),#5,.T.);
+<span class="lineno">75</span>#66=OPEN_SHELL(&#x27;&#x27;,(#65));
+<span class="lineno">76</span>#67=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#66));
+<span class="lineno">77</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">78</span>#9051=PRODUCT(&#x27;Gp189&#x27;,&#x27;Gp189&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">79</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">80</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">81</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">82</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">83</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">84</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">85</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">86</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">87</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">88</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#67),#9060);
+<span class="lineno">89</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">90</span>ENDSEC;
+<span class="lineno">91</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gp188.html">&larr; Gp188</a> <a class="up" href="index.html">§12.2a Pcurve defects</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

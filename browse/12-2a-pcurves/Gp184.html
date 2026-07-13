@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gp184 — 3D B-spline curve with a genuine C0 interior knot, reachable in a live face (`seq-split-continuity`, PARTIAL, missing 1 of 3: curve subvariant)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2a Pcurve defects</a> <span class="sep">/</span> <span class="current">Gp184</span>
+</nav>
+<header class="title-bar">
+<h1>Gp184 <span class="sep">—</span> <span class="entry-title">3D B-spline curve with a genuine C0 interior knot, reachable in a live face (`seq-split-continuity`, PARTIAL, missing 1 of 3: curve subvariant)</span></h1>
+<p class="category">§12.2a pcurve (sub-class: curve continuity below required criterion — `seq-split-continuity`, curve subvariant)</p>
+<p class="severity-badge severity-p3">P3 — cosmetic / metadata-only</p>
+<p class="tag-pills">
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2a-pcurves/Gp184.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2a-pcurves/Gp184.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>occt-coverage GAP audit, work packet D2 item `seq-split-continuity`, `exchange/problems.json` `seq-split-continuity` (`ShapeUpgrade_ShapeDivideContinuity`, static `splitcontinuity`, `ShapeProcess_OperLibrary.cxx:438-475`).</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>deduced — OCCT uncovered-class sweep, work packet D2.</p></section>
+<section><h2>Description</h2>
+<p>The bottom edge of a rectangular `PLANE` face uses a degree-2 `B_SPLINE_CURVE_WITH_KNOTS`, 5 control points, knot vector `(0,0,0,0.5,0.5,1,1,1)` (multiplicities `(3,2,3)`): interior multiplicity equals the degree, giving genuine C0 continuity — position-continuous, tangent-discontinuous — at `u=0.5`. The control point exactly at the shared knot sits on the straight line between the edge&#x27;s endpoints (so 3D position stays continuous), but the neighbouring poles are offset in different axes (`+Y` before the knot, `+Z` after), so the incoming and outgoing tangent directions genuinely differ. The edge is wired through a live `EDGE_CURVE`/`PCURVE` into a reachable, 4-edge `ADVANCED_FACE` — unlike Gp033 (`occt=empty`, `shape_null=True`) or Gn172 (orphan pattern, defect curve unreferenced by any live `EDGE_CURVE`/`PCURVE`).</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Degree-2 `B_SPLINE_CURVE_WITH_KNOTS`, control points `(0,0,0)`, `(2.5,0.6,0)`, `(5,0,0)`, `(7.5,0,0.6)`, `(10,0,0)`; knot multiplicities `(3,2,3)`, knots `(0.0,0.5,1.0)`; wired as one edge of a normal 4-edge rectangular `ADVANCED_FACE` boundary.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>detect the sub-C1 interior knot and split the curve at the discontinuity (the continuity-splitting stage) so downstream consumers requiring C1 receive two valid pieces instead of one curve with a hidden kink.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Gp033 (curve subvariant&#x27;s original attempt, `shape_null=True`), Gn172 (orphan pattern), Gp120 (pcurve subvariant, survives), Gs049/Gs070 (surface subvariant, survives). **Empirical finding (live-verified)**: the packet spec (mirroring Gp033&#x27;s own recipe) asked for interior multiplicity `= degree+1` (3, for a degree-2 curve). Tested directly against `Geom_BSplineCurve`&#x27;s constructor: multiplicity 3 at an INTERIOR knot is rejected outright (&quot;`BSpline curve: # Poles and degree mismatch`&quot;) — OCCT only permits `degree+1` multiplicity at the first/last knot of a clamped curve, never interior. This is exactly why Gp033 is `shape_null` — the curve entity never constructs, so translation fails before the edge is reachable. This fixture instead uses interior multiplicity `= degree` (2), the textbook C0 case, which OCCT accepts. Live-verified via direct curve evaluation on the translated edge: overall `Continuity() == GeomAbs_C0`, `NbIntervals(GeomAbs_C1) == 2` (exactly one C1-break, located at parameter 0.5), position at the break is `(5,0,0)` on both sides (continuous), but the unit tangent evaluated at `0.5 - 1e-5` is `(0.972, -0.233, 0.0)` while at `0.5 + 1e-5` it is `(0.972, 0.0, 0.233)` — genuinely different directions, confirming a real tangent-discontinuous kink (not an accidental smooth pass-through). An earlier symmetric pole choice (bump `+Z` before, `-Z` after, both offset equally) was tested first and turned out to produce IDENTICAL tangents on both sides (an accidental C1 pass-through despite the double knot) — discarded once live-verified; the asymmetric-axis bump shipped here is the one that live-confirmed a genuine kink.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;c0_kink_bottom&#x27;)</code></li>
+<li><code>contains(b&#x27;B_SPLINE_CURVE_WITH_KNOTS&#x27;)</code></li>
+<li><code>contains(b&#x27;(3,2,3)&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_faces_total == 1</code></li>
+<li><code>n_edges_total == 4</code></li>
+<li><code>n_vertices_total == 8</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Gp033.html">Gp033</a>, <a href="../12-2b-nurbs/Gn172.html">Gn172</a>, <a href="Gp120.html">Gp120</a>, <a href="../12-2c-surfaces/Gs049.html">Gs049</a>, <a href="../12-2c-surfaces/Gs070.html">Gs070</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gp184: Bottom edge 3D curve: degree-2 <mark>B_SPLINE_CURVE_WITH_KNOTS</mark>, 5 control points, knot vector (0,0,0,0.5,0.5,1,1,1) i.e. multiplicities <mark>(3,2,3)</mark> -- interior multiplicity = degree (2) gives genuine C0 continuity (position continuous, tangent discontinuous); poles either side of the shared knot point are non-collinear so the kink is geometrically real; wired through a live EDGE_CURVE/PCURVE into a reachable ADVANCED_FACE (not Gp033&#x27;s unconstructible mult=degree+1 interior knot, which OCCT&#x27;s Geom_BSplineCurve constructor rejects outright, yielding shape_null) */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Gp184&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Gp184.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=PLANE(&#x27;&#x27;,#4);
+<span class="lineno">15</span>#6=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT(&#x27;UV&#x27;,&#x27;2D&#x27;));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(10.0,5.0,0.0));
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0,0.0));
+<span class="lineno">20</span>#11=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">21</span>#12=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">22</span>#13=VERTEX_POINT(&#x27;&#x27;,#9);
+<span class="lineno">23</span>#14=VERTEX_POINT(&#x27;&#x27;,#10);
+<span class="lineno">24</span>#15=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">25</span>#16=CARTESIAN_POINT(&#x27;&#x27;,(2.5,0.6,0.0));
+<span class="lineno">26</span>#17=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">27</span>#18=CARTESIAN_POINT(&#x27;&#x27;,(7.5,0.0,0.6));
+<span class="lineno">28</span>#19=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">29</span>#20=<mark>B_SPLINE_CURVE_WITH_KNOTS</mark>(&#x27;<mark>c0_kink_bottom</mark>&#x27;,2,(#15,#16,#17,#18,#19),.UNSPECIFIED.,.F.,.F.,<mark>(3,2,3)</mark>,(0.0,0.5,1.0),.UNSPECIFIED.);
+<span class="lineno">30</span>#21=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));
+<span class="lineno">31</span>#22=DIRECTION(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">32</span>#23=VECTOR(&#x27;&#x27;,#22,10.0);
+<span class="lineno">33</span>#24=LINE(&#x27;&#x27;,#21,#23);
+<span class="lineno">34</span>#25=DEFINITIONAL_REPRESENTATION(&#x27;pc_bot&#x27;,(#24),#6);
+<span class="lineno">35</span>#26=PCURVE(&#x27;bot_pc&#x27;,#5,#25);
+<span class="lineno">36</span>#27=SURFACE_CURVE(&#x27;c0_bot&#x27;,#20,(#26),.PCURVE_S1.);
+<span class="lineno">37</span>#28=EDGE_CURVE(&#x27;c0_bot&#x27;,#11,#12,#27,.T.);
+<span class="lineno">38</span>#29=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">39</span>#30=VECTOR(&#x27;&#x27;,#29,5.0);
+<span class="lineno">40</span>#31=LINE(&#x27;&#x27;,#8,#30);
+<span class="lineno">41</span>#32=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0));
+<span class="lineno">42</span>#33=DIRECTION(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">43</span>#34=VECTOR(&#x27;&#x27;,#33,5.0);
+<span class="lineno">44</span>#35=LINE(&#x27;&#x27;,#32,#34);
+<span class="lineno">45</span>#36=DEFINITIONAL_REPRESENTATION(&#x27;pc_right&#x27;,(#35),#6);
+<span class="lineno">46</span>#37=PCURVE(&#x27;right_pc&#x27;,#5,#36);
+<span class="lineno">47</span>#38=SURFACE_CURVE(&#x27;right_edge&#x27;,#31,(#37),.PCURVE_S1.);
+<span class="lineno">48</span>#39=EDGE_CURVE(&#x27;right_edge&#x27;,#12,#13,#38,.T.);
+<span class="lineno">49</span>#40=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">50</span>#41=VECTOR(&#x27;&#x27;,#40,10.0);
+<span class="lineno">51</span>#42=LINE(&#x27;&#x27;,#10,#41);
+<span class="lineno">52</span>#43=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0));
+<span class="lineno">53</span>#44=DIRECTION(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">54</span>#45=VECTOR(&#x27;&#x27;,#44,10.0);
+<span class="lineno">55</span>#46=LINE(&#x27;&#x27;,#43,#45);
+<span class="lineno">56</span>#47=DEFINITIONAL_REPRESENTATION(&#x27;pc_top&#x27;,(#46),#6);
+<span class="lineno">57</span>#48=PCURVE(&#x27;top_pc&#x27;,#5,#47);
+<span class="lineno">58</span>#49=SURFACE_CURVE(&#x27;top_edge&#x27;,#42,(#48),.PCURVE_S1.);
+<span class="lineno">59</span>#50=EDGE_CURVE(&#x27;top_edge&#x27;,#14,#13,#49,.T.);
+<span class="lineno">60</span>#51=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">61</span>#52=VECTOR(&#x27;&#x27;,#51,5.0);
+<span class="lineno">62</span>#53=LINE(&#x27;&#x27;,#10,#52);
+<span class="lineno">63</span>#54=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0));
+<span class="lineno">64</span>#55=DIRECTION(&#x27;&#x27;,(0.0,-1.0));
+<span class="lineno">65</span>#56=VECTOR(&#x27;&#x27;,#55,5.0);
+<span class="lineno">66</span>#57=LINE(&#x27;&#x27;,#54,#56);
+<span class="lineno">67</span>#58=DEFINITIONAL_REPRESENTATION(&#x27;pc_left&#x27;,(#57),#6);
+<span class="lineno">68</span>#59=PCURVE(&#x27;left_pc&#x27;,#5,#58);
+<span class="lineno">69</span>#60=SURFACE_CURVE(&#x27;left_edge&#x27;,#53,(#59),.PCURVE_S1.);
+<span class="lineno">70</span>#61=EDGE_CURVE(&#x27;left_edge&#x27;,#14,#11,#60,.T.);
+<span class="lineno">71</span>#62=ORIENTED_EDGE(&#x27;&#x27;,$,$,#28,.T.);
+<span class="lineno">72</span>#63=ORIENTED_EDGE(&#x27;&#x27;,$,$,#39,.T.);
+<span class="lineno">73</span>#64=ORIENTED_EDGE(&#x27;&#x27;,$,$,#50,.F.);
+<span class="lineno">74</span>#65=ORIENTED_EDGE(&#x27;&#x27;,$,$,#61,.T.);
+<span class="lineno">75</span>#66=EDGE_LOOP(&#x27;&#x27;,(#62,#63,#64,#65));
+<span class="lineno">76</span>#67=FACE_OUTER_BOUND(&#x27;&#x27;,#66,.T.);
+<span class="lineno">77</span>#68=ADVANCED_FACE(&#x27;&#x27;,(#67),#5,.T.);
+<span class="lineno">78</span>#69=OPEN_SHELL(&#x27;&#x27;,(#68));
+<span class="lineno">79</span>#70=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#69));
+<span class="lineno">80</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">81</span>#9051=PRODUCT(&#x27;Gp184&#x27;,&#x27;Gp184&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">82</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">83</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">84</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">85</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">86</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">87</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">88</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">89</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">90</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">91</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#70),#9060);
+<span class="lineno">92</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">93</span>ENDSEC;
+<span class="lineno">94</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gp183.html">&larr; Gp183</a> <a class="up" href="index.html">§12.2a Pcurve defects</a> <a class="next" href="Gp185.html">Gp185 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tfa257 — Two independent full-circle boundaries at the same location, closed-edge vertex reconciliation</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa257</span>
+</nav>
+<header class="title-bar">
+<h1>Tfa257 <span class="sep">—</span> <span class="entry-title">Two independent full-circle boundaries at the same location, closed-edge vertex reconciliation</span></h1>
+<p class="category">§12.3c faces (sub-class: `sew-edge-endpoint-tolerance-reconciliation` PARTIAL, missing closed-edge subvariant)</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3c-faces/Tfa257.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa257.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>closes occt-coverage exchange/sewing PARTIAL `sew-edge-endpoint-tolerance-reconciliation` missing subvariant (occt-coverage/exchange audit). OCCT `BRepBuilderAPI_Sewing` static `ComputeToleranceVertex` (2-vertex overload, `BRepBuilderAPI_Sewing.cxx:481-524`, computes a new vertex position/tolerance bounding both original vertices) and `BRepBuilderAPI_Sewing::SameParameterEdge` (`BRepBuilderAPI_Sewing.cxx:669-684`, closed edges — `V11.IsSame(V12)` — route to a distinct 3-point-averaging overload and set both new endpoint vertices to the same computed node). Existing fixtures Tfa020/Tsh203/Tsh187 each encode the plain two-vertex (open-edge) merge precondition at distinct offsets</li>
+<li>none encodes a CLOSED edge (an edge whose own two endpoints are the same vertex — a full-period loop), the precondition for the 3-point-averaging overload.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An `OPEN_SHELL` carries two `ADVANCED_FACE`s on coincident `PLANE` locations (z=0). Each face&#x27;s entire boundary is a single CLOSED `EDGE_CURVE` — its start vertex and end vertex are the identical `VERTEX_POINT` — tracing a full 360° `CIRCLE` of radius 5. `face_a`&#x27;s circle (normal +Z) closes at `VERTEX_POINT` (5,0,0). `face_b`&#x27;s circle (normal -Z, the &quot;other side&quot; of the same disk location) closes at a DISTINCT `VERTEX_POINT` (5.00001,0,0) — offset 1e-5 mm along +X, within a typical sewing tolerance (1e-4) but a genuinely different entity. Two independent, topologically unshared, full-period closed boundaries at (nearly) the same location.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>Two `ADVANCED_FACE`s whose entire boundary is one CLOSED `EDGE_CURVE` each (own start vertex == own end vertex), positioned at coincident locations with their closing vertices offset by a within-tolerance amount and encoded as distinct `VERTEX_POINT` entities — on a live `OPEN_SHELL`/`SHELL_BASED_SURFACE_MODEL` path.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>a sewing/merge pass reconciling these two closed boundaries should use the closed-edge three-point-averaging tolerance computation (not the plain two-point formula) since both of each edge&#x27;s endpoints are the same vertex; the merged result should have a single shared closing vertex whose tolerance sphere bounds both original positions.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Tfa020 (open-edge two-vertex merge precondition, same offset-encoding convention), Tsh203, Tsh187 (same two-vertex subvariant, different offsets). Live-verified (this worktree&#x27;s OCP/OCCT 7.8.1, default import path, heal-on and heal-off identical): `occt=shape(1)/shape(1) gmsh=shape(6)/shape(6)`; `n_faces_total==2`, `n_vertices_total==4` (2 closed edges x 1 vertex, each counted once per edge-endpoint reference pair). Honest caveat, matching this class&#x27;s existing PARTIAL-covering fixtures: the plain default STEP reading path does not itself invoke the sewing/merge algorithm, so no live vertex-reconciling merge is observed on ordinary import — the two closing vertices remain 2 distinct, unmerged `VERTEX_POINT` instances at (5.00001,0,0) and (5,0,0) (confirmed via tier-3 vertex dump), and the two faces load as 2 separate shells inside a compound rather than one merged shell. What IS genuinely demonstrated and live-verified is that the input precondition itself survives translation completely intact and reachable — not orphaned, not dropped, not crashed — unlike a `GEOMETRIC_CURVE_SET`-hosted encoding, which this entry deliberately avoids. Synonyms: &quot;closed edge three point averaging merge&quot;, &quot;two full circles same location unshared&quot;, &quot;closed-edge tolerance-vertex overload&quot;, &quot;closing vertex reconciliation coincident circles&quot;, &quot;closed edge sewing tolerance merge precondition&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;CIRCLE&#x27;) == 2</code></li>
+<li><code>count_entity_def(b&#x27;EDGE_CURVE&#x27;) == 2</code></li>
+<li><code>contains(b&#x27;5.00001&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+<li><code>n_faces_total == 2</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>face[1].surface_type == &quot;plane&quot;</code></li>
+<li><code>n_vertices_total == 4</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Tfa020.html">Tfa020</a>, <a href="../12-3a-shells/Tsh203.html">Tsh203</a>, <a href="../12-3a-shells/Tsh187.html">Tsh187</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tfa257: OPEN_SHELL, two ADVANCED_FACEs on coincident PLANE locations (z=0); face_a: full CIRCLE radius 5 centered at origin, normal +Z, single closed EDGE_CURVE whose start vertex and end vertex ARE the same VERTEX_POINT at (5,0,0); face_b: full CIRCLE radius 5 at the same center, normal -Z (the other side of the same disk location), its own closed EDGE_CURVE whose closing vertex is a DISTINCT VERTEX_POINT at (<mark>5.00001</mark>,0,0) -- offset 1e-5 mm along +X, within typical sewing tolerance but a genuinely different entity; two independent, topologically unshared, full-period CLOSED boundaries at (nearly) the same location IS the precondition for the closed-edge three-point-averaging vertex-tolerance-reconciliation merge; both faces ARE wired into one live OPEN_SHELL/SHELL_BASED_SURFACE_MODEL; never orphaned */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Tfa257&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Tfa257.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=PLANE(&#x27;&#x27;,#4);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">16</span>#7=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">18</span>#9=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">19</span>#10=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">20</span>#11=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#8,#9,#10);
+<span class="lineno">21</span><mark>#12=CIRCLE(</mark>&#x27;&#x27;,#11,5.0);
+<span class="lineno">22</span><mark>#13=EDGE_CURVE(</mark>&#x27;&#x27;,#7,#7,#12,.T.);
+<span class="lineno">23</span>#14=ORIENTED_EDGE(&#x27;&#x27;,$,$,#13,.T.);
+<span class="lineno">24</span>#15=EDGE_LOOP(&#x27;&#x27;,(#14));
+<span class="lineno">25</span>#16=FACE_OUTER_BOUND(&#x27;&#x27;,#15,.T.);
+<span class="lineno">26</span>#17=ADVANCED_FACE(&#x27;&#x27;,(#16),#5,.T.);
+<span class="lineno">27</span>#18=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">28</span>#19=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0));
+<span class="lineno">29</span>#20=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">30</span>#21=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#18,#19,#20);
+<span class="lineno">31</span>#22=PLANE(&#x27;&#x27;,#21);
+<span class="lineno">32</span>#23=CARTESIAN_POINT(&#x27;&#x27;,(<mark>5.00001</mark>,0.0,0.0));
+<span class="lineno">33</span>#24=VERTEX_POINT(&#x27;&#x27;,#23);
+<span class="lineno">34</span>#25=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">35</span>#26=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0));
+<span class="lineno">36</span>#27=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">37</span>#28=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#25,#26,#27);
+<span class="lineno">38</span><mark>#29=CIRCLE(</mark>&#x27;&#x27;,#28,5.0);
+<span class="lineno">39</span><mark>#30=EDGE_CURVE(</mark>&#x27;&#x27;,#24,#24,#29,.T.);
+<span class="lineno">40</span>#31=ORIENTED_EDGE(&#x27;&#x27;,$,$,#30,.T.);
+<span class="lineno">41</span>#32=EDGE_LOOP(&#x27;&#x27;,(#31));
+<span class="lineno">42</span>#33=FACE_OUTER_BOUND(&#x27;&#x27;,#32,.T.);
+<span class="lineno">43</span>#34=ADVANCED_FACE(&#x27;&#x27;,(#33),#22,.T.);
+<span class="lineno">44</span>#35=OPEN_SHELL(&#x27;&#x27;,(#17,#34));
+<span class="lineno">45</span>#36=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#35));
+<span class="lineno">46</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">47</span>#9051=PRODUCT(&#x27;Tfa257&#x27;,&#x27;Tfa257&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">48</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">49</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">50</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">51</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">52</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">53</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">54</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">55</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">56</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">57</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#36),#9060);
+<span class="lineno">58</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">59</span>ENDSEC;
+<span class="lineno">60</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tfa256.html">&larr; Tfa256</a> <a class="up" href="index.html">§12.3c Faces / sewing / free bound</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

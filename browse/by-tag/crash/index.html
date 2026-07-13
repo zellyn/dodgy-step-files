@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1><span class="tag tag-crash">crash</span></h1>
 <p class="blurb">Kernel-side crash (signal-11 / segfault, runtime-error, infinite-loop, OOM).</p>
-<p class="meta">275 entries</p>
+<p class="meta">277 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Section</th><th>Expected validation</th></tr></thead><tbody>
@@ -92,6 +92,7 @@
 <tr><td><a href="../../12-2a-pcurves/Gp140.html"><code>Gp140</code></a></td><td>ShapeFix_ComposeShell.SplitByLine.pcurve-missing-skip</td><td><a href="../../12-2a-pcurves/index.html">§12.2a Pcurve defects</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-2a-pcurves/Gp141.html"><code>Gp141</code></a></td><td>Missing PCurve Extraction Failure</td><td><a href="../../12-2a-pcurves/index.html">§12.2a Pcurve defects</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-2a-pcurves/Gp175.html"><code>Gp175</code></a></td><td>Missing pcurve on one edge of an otherwise-healthy closed 4-edge wire (crash-free isolation of Gp001/Gp042)</td><td><a href="../../12-2a-pcurves/index.html">§12.2a Pcurve defects</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="../../12-2a-pcurves/Gp189.html"><code>Gp189</code></a></td><td>EDGE_CURVE&#x27;s associated_geometry lists a PCURVE that itself fails to translate, not a null slot (`stp-missing-pcurve-projection`, PARTIAL, missing 1 of 2)</td><td><a href="../../12-2a-pcurves/index.html">§12.2a Pcurve defects</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-2c-surfaces/Gs002.html"><code>Gs002</code></a></td><td>Degenerate (lemon/apple) torus where minor_radius &gt;= major_radius</td><td><a href="../../12-2c-surfaces/index.html">§12.2c Surface / curve degeneracies</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-2c-surfaces/Gs026.html"><code>Gs026</code></a></td><td>Helix on `CYLINDRICAL_SURFACE` mis-projected: pcurve missing or BSpline-approximated (analytic line lost)</td><td><a href="../../12-2c-surfaces/index.html">§12.2c Surface / curve degeneracies</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-2c-surfaces/Gs054.html"><code>Gs054</code></a></td><td>Composite curve segment self-cyclic to its containing composite</td><td><a href="../../12-2c-surfaces/index.html">§12.2c Surface / curve degeneracies</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
@@ -195,6 +196,7 @@
 <tr><td><a href="../../12-3c-faces/Tfa187.html"><code>Tfa187</code></a></td><td>ShapeAnalysis_CheckSmallFace.CheckPin pin-with-fillet</td><td><a href="../../12-3c-faces/index.html">§12.3c Faces / sewing / free bound</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-3c-faces/Tfa233.html"><code>Tfa233</code></a></td><td>FixPeriodicDegenerated context transformation</td><td><a href="../../12-3c-faces/index.html">§12.3c Faces / sewing / free bound</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-3c-faces/Tfa252.html"><code>Tfa252</code></a></td><td>EDGE_CURVE null edge_geometry ($) wired into a live, reachable face</td><td><a href="../../12-3c-faces/index.html">§12.3c Faces / sewing / free bound</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="../../12-3c-faces/Tfa257.html"><code>Tfa257</code></a></td><td>Two independent full-circle boundaries at the same location, closed-edge vertex reconciliation</td><td><a href="../../12-3c-faces/index.html">§12.3c Faces / sewing / free bound</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-3a-shells/Tsh023.html"><code>Tsh023</code></a></td><td>Empty `EDGE_LOOP` / empty face list on shells</td><td><a href="../../12-3a-shells/index.html">§12.3a Shells / orientation</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-3a-shells/Tsh024.html"><code>Tsh024</code></a></td><td>`CONNECTED_FACE_SET` containing non-face entities</td><td><a href="../../12-3a-shells/index.html">§12.3a Shells / orientation</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-3a-shells/Tsh049.html"><code>Tsh049</code></a></td><td>Internal edges lost during shell-level face merge</td><td><a href="../../12-3a-shells/index.html">§12.3a Shells / orientation</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
