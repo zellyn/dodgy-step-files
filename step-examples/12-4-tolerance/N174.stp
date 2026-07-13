@@ -1,0 +1,69 @@
+ISO-10303-21;
+/* N174: LINE displaced from true position but with CORRECT direction (PCB/FPX quirk) */
+/* DEFECT: both edge endpoints show the SAME 0.001 perpendicular offset from the authored */
+/* LINE -- StepToTopoDS_TranslateEdge's line-shift branch fires, rigidly repositioning the */
+/* curve instead of merely enlarging vertex tolerance (bug 25415, FPX Expert PCB pattern) */
+HEADER;
+FILE_DESCRIPTION(('N174: displaced-line correct-direction vertex-tol-gap subvariant'),'2;1');
+FILE_NAME('N174.stp','2026-07-12T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=DIRECTION('',(0.0,0.0,1.0));
+#3=DIRECTION('',(1.0,0.0,0.0));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+#5=PLANE('',#4);
+/* Bottom-edge vertices displaced +0.001 in Y from the LINE's authored y=0 -- SAME offset both ends */
+#6=CARTESIAN_POINT('bottom_left_displaced',(0.0,0.001,0.0));
+#7=CARTESIAN_POINT('bottom_right_displaced',(10.0,0.001,0.0));
+#8=CARTESIAN_POINT('',(10.0,5.0,0.0));
+#9=CARTESIAN_POINT('',(0.0,5.0,0.0));
+#10=VERTEX_POINT('',#6);
+#11=VERTEX_POINT('',#7);
+#12=VERTEX_POINT('',#8);
+#13=VERTEX_POINT('',#9);
+/* DEFECT: LINE's own CARTESIAN_POINT origin is at y=0.0 -- NOT the vertices' y=0.001 */
+#14=CARTESIAN_POINT('line_nominal_origin',(0.0,0.0,0.0));
+#15=DIRECTION('',(1.0,0.0,0.0));
+#16=VECTOR('',#15,10.0);
+#17=LINE('bottom_edge_nominal',#14,#16);
+#18=EDGE_CURVE('bottom_displaced_edge',#10,#11,#17,.T.);
+#19=DIRECTION('',(0.0,1.0,0.0));
+#20=VECTOR('',#19,5.0);
+#21=CARTESIAN_POINT('',(10.0,0.001,0.0));
+#22=LINE('',#21,#20);
+#23=EDGE_CURVE('',#11,#12,#22,.T.);
+#24=DIRECTION('',(-1.0,0.0,0.0));
+#25=VECTOR('',#24,10.0);
+#26=LINE('',#8,#25);
+#27=EDGE_CURVE('',#12,#13,#26,.T.);
+#28=DIRECTION('',(0.0,-1.0,0.0));
+#29=VECTOR('',#28,5.0);
+#30=LINE('',#9,#29);
+#31=EDGE_CURVE('',#13,#10,#30,.T.);
+#32=ORIENTED_EDGE('',$,$,#18,.T.);
+#33=ORIENTED_EDGE('',$,$,#23,.T.);
+#34=ORIENTED_EDGE('',$,$,#27,.T.);
+#35=ORIENTED_EDGE('',$,$,#31,.T.);
+#36=EDGE_LOOP('',(#32,#33,#34,#35));
+#37=FACE_OUTER_BOUND('',#36,.T.);
+#38=ADVANCED_FACE('',(#37),#5,.T.);
+#39=OPEN_SHELL('',(#38));
+#40=SHELL_BASED_SURFACE_MODEL('',(#39));
+#9000=APPLICATION_CONTEXT('mechanical design');
+#9001=PRODUCT_CONTEXT('',#9000,'mechanical');
+#9002=PRODUCT('N174','N174','',(#9001));
+#9003=PRODUCT_DEFINITION_FORMATION('','',#9002);
+#9004=PRODUCT_DEFINITION_CONTEXT('part definition',#9000,'design');
+#9005=PRODUCT_DEFINITION('','',#9003,#9004);
+#9006=PRODUCT_DEFINITION_SHAPE('','',#9005);
+#9007=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#9008=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#9009=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#9010=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9007,'distance_accuracy_value','');
+#9011=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9010))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9007,#9008,#9009))REPRESENTATION_CONTEXT('','3D'));
+#9012=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#40),#9011);
+#9013=SHAPE_DEFINITION_REPRESENTATION(#9006,#9012);
+ENDSEC;
+END-ISO-10303-21;
