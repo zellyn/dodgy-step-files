@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tfa254 — Outer/inner wire touch at a clean endpoint-endpoint contact</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa254</span>
+</nav>
+<header class="title-bar">
+<h1>Tfa254 <span class="sep">—</span> <span class="entry-title">Outer/inner wire touch at a clean endpoint-endpoint contact</span></h1>
+<p class="category">§12.3c faces (sub-class: `tkshh-face-intersecting-wires` GAP, endpoint-endpoint subvariant)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3c-faces/Tfa254.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa254.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>closes occt-coverage tkshhealing GAP `tkshh-face-intersecting-wires` missing subvariant (occt-coverage/tkshhealing audit). OCCT `ShapeFix_IntersectionTool::FixIntersectingWires` (`ShapeFix_IntersectionTool.cxx:1598-1604`, both-endpoints branch → `UnionVertexes`). Distinct from Tfa039 (transverse interior crossing) and Twi250 (crossing near one edge&#x27;s endpoint, `FindVertAndSplitEdge`, not a clean both-endpoints touch).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A 10×10 `PLANE` face&#x27;s `FACE_OUTER_BOUND` is the unit square (0,0)-(10,0)-(10,10)-(0,10). Its inner `FACE_BOUND` (hole) is a small right triangle (0,0)-(3,0)-(0,3): its own corner at (0,0) sits at the exact same coordinate as the outer wire&#x27;s own (0,0) corner, but is encoded as an INDEPENDENT `VERTEX_POINT` entity — not the same STEP id reused. Both occurrences of (0,0) are genuine edge ENDPOINTS on their respective wires (never a mid-edge point), so the contact is a clean endpoint-endpoint touch, not a crossing.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`ADVANCED_FACE` whose `FACE_OUTER_BOUND` and inner `FACE_BOUND` each have an edge endpoint at the identical 3D coordinate, encoded as two distinct `VERTEX_POINT` entities — on a live `OPEN_SHELL`/`SHELL_BASED_SURFACE_MODEL` path.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>detect the coincident-but-distinct endpoint vertices and unify them into one shared topological vertex (`UnionVertexes`); classify the resulting wire relationship consistently (hole-touching-boundary is a degenerate but well-defined case) or reject with a clear diagnostic.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Tfa039 (transverse crossing, not endpoint contact), Twi250 (near-endpoint crossing, different repair branch). Live-verified (this worktree&#x27;s OCP/OCCT 7.8.1, default import path, both heal-on/heal-off): shape(1)/shape(1); authored topology has 7 independent `VERTEX_POINT` entities (4 outer + 3 inner) but the live shape carries only 6 unique vertex instances — direct evidence the two independently-authored (0,0) vertices were merged into one shared vertex, the vertex-union path this entry targets. The resulting face fails the overall validity check: the raw wire-crossing test itself reports clean (the touch point is excused as a shared vertex, not flagged as a crossing), but a separate wire-nesting/containment check fails because it cannot cleanly decide the hole is &quot;inside&quot; the outer wire once its corner is unified with the boundary; reported honestly as a genuine, live side effect of the touching-at-a-shared-corner configuration rather than mirrored from an unrelated fixture. Synonyms: &quot;endpoint-endpoint wire contact&quot;, &quot;coincident distinct vertices unified&quot;, &quot;hole touches outer boundary at corner&quot;, &quot;clean vertex-union not crossing&quot;, &quot;wire touch not intersection&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(16) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;FACE_OUTER_BOUND&#x27;)</code></li>
+<li><code>contains(b&#x27;FACE_BOUND(&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+<li><code>n_edges_total == 9</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>brepcheck.valid == False</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Tfa039.html">Tfa039</a>, <a href="../12-3b-wires/Twi250.html">Twi250</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tfa254: OPEN_SHELL: single ADVANCED_FACE on 10x10 PLANE; <mark>FACE_OUTER_BOUND</mark> is the 10x10 square; inner FACE_BOUND is a small right triangle (0,0)-(3,0)-(0,3) whose (0,0) corner is an INDEPENDENT VERTEX_POINT entity coincident with the outer bound&#x27;s own (0,0) corner -- a genuine endpoint-endpoint touch, not a transverse crossing; ShapeFix_IntersectionTool::FixIntersectingWires&#x27; UnionVertexes both-endpoints branch fires: live unique vertex count drops from 7 authored to 6 post-heal; defect IS on live OPEN_SHELL traversal path */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Tfa254&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Tfa254.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=PLANE(&#x27;&#x27;,#4);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(10.0,10.0,0.0));
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(0.0,10.0,0.0));
+<span class="lineno">19</span>#10=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">20</span>#11=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">21</span>#12=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">22</span>#13=VERTEX_POINT(&#x27;&#x27;,#9);
+<span class="lineno">23</span>#14=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">24</span>#15=VECTOR(&#x27;&#x27;,#14,10.0);
+<span class="lineno">25</span>#16=LINE(&#x27;&#x27;,#6,#15);
+<span class="lineno">26</span>#17=EDGE_CURVE(&#x27;&#x27;,#10,#11,#16,.T.);
+<span class="lineno">27</span>#18=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">28</span>#19=VECTOR(&#x27;&#x27;,#18,10.0);
+<span class="lineno">29</span>#20=LINE(&#x27;&#x27;,#7,#19);
+<span class="lineno">30</span>#21=EDGE_CURVE(&#x27;&#x27;,#11,#12,#20,.T.);
+<span class="lineno">31</span>#22=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">32</span>#23=VECTOR(&#x27;&#x27;,#22,10.0);
+<span class="lineno">33</span>#24=LINE(&#x27;&#x27;,#8,#23);
+<span class="lineno">34</span>#25=EDGE_CURVE(&#x27;&#x27;,#12,#13,#24,.T.);
+<span class="lineno">35</span>#26=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">36</span>#27=VECTOR(&#x27;&#x27;,#26,10.0);
+<span class="lineno">37</span>#28=LINE(&#x27;&#x27;,#9,#27);
+<span class="lineno">38</span>#29=EDGE_CURVE(&#x27;&#x27;,#13,#10,#28,.T.);
+<span class="lineno">39</span>#30=ORIENTED_EDGE(&#x27;&#x27;,$,$,#17,.T.);
+<span class="lineno">40</span>#31=ORIENTED_EDGE(&#x27;&#x27;,$,$,#21,.T.);
+<span class="lineno">41</span>#32=ORIENTED_EDGE(&#x27;&#x27;,$,$,#25,.T.);
+<span class="lineno">42</span>#33=ORIENTED_EDGE(&#x27;&#x27;,$,$,#29,.T.);
+<span class="lineno">43</span>#34=EDGE_LOOP(&#x27;&#x27;,(#30,#31,#32,#33));
+<span class="lineno">44</span>#35=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">45</span>#36=CARTESIAN_POINT(&#x27;&#x27;,(3.0,0.0,0.0));
+<span class="lineno">46</span>#37=CARTESIAN_POINT(&#x27;&#x27;,(0.0,3.0,0.0));
+<span class="lineno">47</span>#38=VERTEX_POINT(&#x27;&#x27;,#35);
+<span class="lineno">48</span>#39=VERTEX_POINT(&#x27;&#x27;,#36);
+<span class="lineno">49</span>#40=VERTEX_POINT(&#x27;&#x27;,#37);
+<span class="lineno">50</span>#41=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">51</span>#42=VECTOR(&#x27;&#x27;,#41,3.0);
+<span class="lineno">52</span>#43=LINE(&#x27;&#x27;,#35,#42);
+<span class="lineno">53</span>#44=EDGE_CURVE(&#x27;&#x27;,#38,#39,#43,.T.);
+<span class="lineno">54</span>#45=DIRECTION(&#x27;&#x27;,(-0.707106781187,0.707106781187,0.0));
+<span class="lineno">55</span>#46=VECTOR(&#x27;&#x27;,#45,4.24264068712);
+<span class="lineno">56</span>#47=LINE(&#x27;&#x27;,#36,#46);
+<span class="lineno">57</span>#48=EDGE_CURVE(&#x27;&#x27;,#39,#40,#47,.T.);
+<span class="lineno">58</span>#49=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">59</span>#50=VECTOR(&#x27;&#x27;,#49,3.0);
+<span class="lineno">60</span>#51=LINE(&#x27;&#x27;,#37,#50);
+<span class="lineno">61</span>#52=EDGE_CURVE(&#x27;&#x27;,#40,#38,#51,.T.);
+<span class="lineno">62</span>#53=ORIENTED_EDGE(&#x27;&#x27;,$,$,#44,.T.);
+<span class="lineno">63</span>#54=ORIENTED_EDGE(&#x27;&#x27;,$,$,#48,.T.);
+<span class="lineno">64</span>#55=ORIENTED_EDGE(&#x27;&#x27;,$,$,#52,.T.);
+<span class="lineno">65</span>#56=EDGE_LOOP(&#x27;&#x27;,(#53,#54,#55));
+<span class="lineno">66</span>#57=<mark>FACE_OUTER_BOUND</mark>(&#x27;&#x27;,#34,.T.);
+<span class="lineno">67</span>#58=<mark>FACE_BOUND(</mark>&#x27;&#x27;,#56,.F.);
+<span class="lineno">68</span>#59=ADVANCED_FACE(&#x27;&#x27;,(#57,#58),#5,.T.);
+<span class="lineno">69</span>#60=OPEN_SHELL(&#x27;&#x27;,(#59));
+<span class="lineno">70</span>#61=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#60));
+<span class="lineno">71</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">72</span>#9051=PRODUCT(&#x27;Tfa254&#x27;,&#x27;Tfa254&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">73</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">74</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">75</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">76</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">77</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">78</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">79</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">80</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">81</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">82</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#61),#9060);
+<span class="lineno">83</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">84</span>ENDSEC;
+<span class="lineno">85</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tfa253.html">&larr; Tfa253</a> <a class="up" href="index.html">§12.3c Faces / sewing / free bound</a> <a class="next" href="Tfa255.html">Tfa255 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -47658,6 +47658,382 @@
   },
   {
     "byte_assertions": [
+      "contains(b'EDGE_CURVE')",
+      "contains(b'PLANE')",
+      "count_entity_def(b'PCURVE') == 3",
+      "count_entity_def(b'SURFACE_CURVE') == 3"
+    ],
+    "category": "§12.2a pcurve (sub-class: no-curve-on-surface, crash-confounder isolation — `bc-no-curve-on-surface`)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "An `EDGE_CURVE` bounding an `ADVANCED_FACE` on a `PLANE` has only its 3D curve populated — no pcurve accompanies it — while the rest of the wire (3 other edges) is fully healthy. Isolated empirically from Gp001/Gp042's crash: both of those fixtures wrap their defective edge's 3D `LINE` in a `SURFACE_CURVE` whose `associated_geometry` list is empty (`()`) while `master_representation` is still `.PCURVE_S1.` — a self-contradictory pairing (the enum says \"use `associated_geometry[0]`\" but that list has zero elements) that segfaults OCCT regardless of wire topology (verified directly: swapping `master_representation` to `.CURVE_3D.` while keeping the empty-list `SURFACE_CURVE` wrapper still crashes). This fixture instead lets the defective edge's `edge_geometry` slot reference the bare 3D `LINE` directly — no `SURFACE_CURVE` wrapper at all, which is the schema-clean way to say \"this edge has no parametric representation whatsoever.\"",
+    "expected_kernel_behavior": "synthesise the missing pcurve by projecting the 3D curve onto the host surface, or reject the input as malformed; never crash.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp175.stp",
+    "id": "Gp175",
+    "notes": "**See also**: Gp001, Gp042 (both crash via the confounder described above, not the missing-pcurve mechanism itself), Gp035 (missing-pcurve-requiring-projection sibling, different host surface). Synonyms: \"missing pcurve on edge between two surfaces, no crash\", \"edge stored without 2D parameter curve on an otherwise valid wire\", \"no-curve-on-surface check reachable without a translator crash\", \"edge bounds a face with no associated pcurve geometry, wire is closed\", \"bare 3D curve as edge_geometry with no SURFACE_CURVE wrapper\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "Standard 4-edge rectangular wire on a `PLANE` (cf. Gp034/Gp045); the bottom `EDGE_CURVE`'s `edge_geometry` is a bare 3D `LINE` (not wrapped in `SURFACE_CURVE`), while the other three edges each carry a healthy `SURFACE_CURVE` + `PCURVE` pair.",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [
+      "Gp001",
+      "Gp042",
+      "Gp035"
+    ],
+    "sender": "STEP exporters in 3D-only mode; IGES BRep round-trips that drop pcurves entirely.",
+    "severity": "P2",
+    "sources": [
+      "occt-coverage GAP audit, `exchange/problems.json` `bc-no-curve-on-surface` (`BRepCheck_Edge::InContext`, `BRepCheck_Edge.cxx:437` — sets `BRepCheck_NoCurveOnSurface`)",
+      "`exchange/COVERED_FULL_REVERIFY.md` downgrade note: all 4 previously-cited fixtures (Gp001, Gp042, Gp019, Xp002) show `occt=signal(11)` — OCCT crashes before `BRepCheck` can ever run, so none of them actually demonstrate the `BRepCheck_NoCurveOnSurface` mechanism live."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "crash",
+      "geometry"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8",
+      "face[0].surface_type == \"plane\""
+    ],
+    "title": "Missing pcurve on one edge of an otherwise-healthy closed 4-edge wire (crash-free isolation of Gp001/Gp042)"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'COMPOSITE_CURVE')",
+      "count_entity_def(b'COMPOSITE_CURVE_SEGMENT') == 2",
+      "contains(b'EDGE_CURVE')"
+    ],
+    "category": "§12.2a pcurve (sub-class: composite-curve segment reordering — `stp-compcurve-reorder`)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A `COMPOSITE_CURVE` used as the 3D curve of a single bottom `EDGE_CURVE` (on the standard rectangular `PLANE` wire, cf. Gp034) lists its two `LINE`-backed `COMPOSITE_CURVE_SEGMENT`s out of connected order: the segment spanning `(5,0,0)->(10,0,0)` (which should come second) is listed before the segment spanning `(0,0,0)->(5,0,0)` (which should come first). Unlike Gp034 (which uses a genuine 5mm positional gap between segments), here the two segments connect EXACTLY — both meet at `(5,0,0)` — so a correct reordering pass recovers a perfectly continuous curve; the sole defect is list order.",
+    "expected_kernel_behavior": "detect the disorder by connectivity (matching endpoints, not list position), reorder the segments, and assemble a single continuous wire edge; or reject with a specific disorder diagnostic.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp176.stp",
+    "id": "Gp176",
+    "notes": "**See also**: Gp034 (same `COMPOSITE_CURVE_SEGMENT`/`LINE` construction, but a positional gap defect instead of an ordering defect), Twi007 (negative space — scrambles `EDGE_LOOP`, not `COMPOSITE_CURVE`, a different translation path entirely). **OCC behavior**: a correctly-ordered control fixture (segments listed `(seg_A,seg_B)`, otherwise byte-identical) produces the *same* signature as this reordered fixture — both `shape(1)` with `n_edges_total == 0` and an unbounded (`~2e100`-extent) face — indicating OCCT's translator drops the wire construction for `COMPOSITE_CURVE`-based edges in this configuration regardless of segment order, the same \"dropped on the floor without diagnostic\" behavior documented on Gp034. The reordering defect is genuinely encoded in the bytes; the live oracle currently cannot distinguish it from the well-ordered case because neither reaches a bounded wire. Synonyms: \"composite curve segments listed out of order\", \"COMPOSITE_CURVE segment 2 given before segment 1\", \"composite-curve segment reordering not exercised by EDGE_LOOP scrambling\", \"composite curve reorder-on-import\", \"segment list order mismatches connectivity\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`COMPOSITE_CURVE('',(seg_B,seg_A),.F.)` where `seg_A` and `seg_B` are `COMPOSITE_CURVE_SEGMENT`s wrapping two `LINE`s that connect exactly end-to-end once read in the order `(seg_A,seg_B)`; the composite curve is the `edge_geometry` (via `SURFACE_CURVE`) of one `EDGE_CURVE` bounding an `ADVANCED_FACE`.",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [
+      "Gp034",
+      "Twi007"
+    ],
+    "sender": "STEP translators/exporters that serialise a composite curve's segment list in construction order rather than connectivity order.",
+    "severity": "P2",
+    "sources": [
+      "occt-coverage GAP audit, `exchange/problems.json` `stp-compcurve-reorder` (`StepToTopoDS_TranslateCompositeCurve::Init`, `StepToTopoDS_TranslateCompositeCurve.cxx:265-274` — `sfw->FixReorder()`, `StatusReorder(DONE)` triggers a \"Segments were disordered",
+      "fixed\" warning). Distinguished explicitly from Twi007, which scrambles an `EDGE_LOOP`'s edge list — a different translation path (wire-level `ShapeFix` after `TranslateEdgeLoop`), not `TranslateCompositeCurve`'s segment-level `FixReorder`."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 0"
+    ],
+    "title": "`COMPOSITE_CURVE` segment list out of connected geometric order (segment 2 before segment 1)"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'SPHERICAL_SURFACE')",
+      "contains(b'CIRCLE')",
+      "count_entity_def(b'EDGE_CURVE') == 2",
+      "count_entity_def(b'PCURVE') == 2"
+    ],
+    "category": "§12.2a pcurve (sub-class: edge crossing a surface singularity in its interior — `tkshh-edge-crossing-surface-singularity`, subvariant a)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A `SPHERICAL_SURFACE` (radius 1) face has one edge (`polar_edge`) whose 3D curve is the great-circle `CIRCLE` lying in the XZ-plane, running from equator vertex `A=(1,0,0)` through the NORTH POLE `(0,0,1)` — strictly the parameter-range MIDPOINT, not an endpoint — down to equator vertex `B=(-1,0,0)`. This is the case Xp013 and Gp048 do not cover: both of those touch the singularity only at an edge ENDPOINT (a vertex sits exactly at the apex/pole). The edge's pcurve is a single straight UV line `v=0` constant from `(u=0,v=0)` to `(u=pi,v=0)` — the naive \"apex-adjacent\" patch job the work packet calls insufficient: it treats the edge as though it stayed on the equator the whole way, when the true path needs `u` to jump `0->pi` exactly at `v=pi/2` (the pole), which one pcurve cannot represent. A second, healthy edge closes the loop via the equator's *other* semicircle (through the back, negative-Y side, touching neither pole), giving a real 2-edge lune face with non-degenerate area.",
+    "expected_kernel_behavior": "detect that the 3D curve's interior crosses the surface singularity, split the edge into two sub-edges at the singularity parameter (inserting a degenerate vertex at the pole), and give each sub-edge its own clean pcurve — not patch a single pcurve near the apex.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(32) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp177.stp",
+    "id": "Gp177",
+    "notes": "**See also**: Xp013 (apex touched only at a shared, non-manifold vertex — an endpoint case), Gp048 (apex is an edge endpoint, degenerate pcurve construction), Gp178 (companion subvariant: pole + periodic seam together). **OCC behavior**: heals, but not into a clean 2-sub-edge split — OCCT fragments the single input edge into many small sub-edges with escalating vertex tolerance as they approach the pole (18 edges across 3 faces from 1 input edge and 1 input face in this run), rather than the idealized single split at the singularity parameter. `shape(1)` (root count) on both heal on/off; `brepcheck` reports valid. gmsh triangulates the fragmented result to `shape(32)` (provisional — the fragmentation is a floating-point-sensitive tessellation artifact and this exact face/edge count may drift across OCCT versions/platforms). Synonyms: \"edge interior crosses cone apex or sphere pole\", \"single pcurve cannot represent a pole-crossing edge\", \"apex-adjacent pcurve patch insufficient for interior singularity\", \"edge must be split at singularity parameter not just re-pcurved\", \"great-circle edge passes through pole at its midpoint\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`SPHERICAL_SURFACE` radius 1; `EDGE_CURVE` whose 3D curve is a great-circle `CIRCLE` oriented so its parameter range's midpoint lands exactly on the pole (not an endpoint); its `PCURVE` is a single straight line that does not reflect the pole crossing; a second `EDGE_CURVE` (equatorial semicircle avoiding both poles) closes a 2-edge `EDGE_LOOP`.",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [
+      "Xp013",
+      "Gp048",
+      "Gp178"
+    ],
+    "sender": "Translators/exporters that represent a meridian-crossing edge as a single curve without pre-splitting at the pole, relying on the receiver's healer to do it.",
+    "severity": "P2",
+    "sources": [
+      "occt-coverage GAP audit, `tkshhealing/problems.json` `tkshh-edge-crossing-surface-singularity` (`ShapeFix_Wire::FixEdgeCurves` singularity split, `ShapeFix_Wire.cxx:566-694` — projects each surface singularity onto the 3D curve at :578-599, splits the edge at interior singularity parameters at :632-689)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 3",
+      "face[0].surface_type == \"sphere\""
+    ],
+    "title": "Edge's interior 3D curve passes directly over a sphere pole, strictly between its endpoints"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'SPHERICAL_SURFACE')",
+      "count_entity_def(b'EDGE_CURVE') >= 3",
+      "count_entity_def(b'PCURVE') == 3"
+    ],
+    "category": "§12.2a pcurve (sub-class: pole + seam contour, pcurve rebuild — `tkshh-edge-crossing-surface-singularity`, subvariant b)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A `SPHERICAL_SURFACE` (radius 1) spherical-cap face is bounded by the classic UV-rectangle contour: `u` spans the full `[0, 2*pi]` (wrapping the periodic seam) and `v` spans `[v0, pi/2]` (reaching the degenerate pole row). The contour has three geometrically distinct edges: a healthy latitude-circle bottom rim (self-loop, `v=v0`), a degenerate zero-radius `CIRCLE` at the pole (self-loop, `v=pi/2`), and a meridian-arc seam edge at `u=0` that — per Gp013's CATIA-seam idiom — is referenced TWICE in the loop (once for the `u=0` bank, once for the `u=2*pi` bank). THE DEFECT: unlike Gp013 (which gives its shared seam edge both pcurves, one per bank), this seam edge's `SURFACE_CURVE` carries only ONE pcurve; the second (`u=2*pi`) occurrence in the loop has no matching pcurve at all.",
+    "expected_kernel_behavior": "detect that the contour wraps both a degenerate pole and the periodic seam, and rebuild the missing seam-bank pcurve from the 3D curve (with over-degenerate adjustment disabled) rather than leaving the second occurrence unresolved.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp178.stp",
+    "id": "Gp178",
+    "notes": "**See also**: Gp013 (the fully-pcurve'd U-direction seam idiom this fixture deliberately under-supplies), Gp177 (companion subvariant: interior pole crossing without a seam). **OCC behavior**: heals fully — OCCT rebuilds the missing pcurve and returns a correct, non-degenerate 4-edge, 8-vertex spherical cap whose area (`4.4264`) matches the closed-form cap area `2*pi*(1-sin(v0))` for `v0=0.3` to 4 decimal places. `shape(1)` heal on/off identical; gmsh triangulates to `shape(6)`, matching Gp013's own gmsh count. Synonyms: \"contour wraps degenerate pole and periodic seam\", \"seam edge missing one of two required pcurves\", \"spherical cap UV-rectangle boundary with under-pcurve'd seam\", \"AdjustOverDegenMode pcurve rebuild\", \"half a seam pcurve pair forces reconstruction\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`SPHERICAL_SURFACE`; 4-edge `EDGE_LOOP` = [bottom rim (fwd), seam edge (fwd), pole edge (rev), seam edge (rev)] where the seam `EDGE_CURVE`'s `SURFACE_CURVE.associated_geometry` holds a single `PCURVE`, not two.",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [
+      "Gp013",
+      "Gp177"
+    ],
+    "sender": "Translators/exporters emitting a spherical-cap-style face whose seam edge is only partially pcurve'd.",
+    "severity": "P2",
+    "sources": [
+      "occt-coverage GAP audit, `tkshhealing/problems.json` `tkshh-edge-crossing-surface-singularity` (`ShapeFix_Wire::FixEdgeCurves` over-degenerated pole+seam branch, `ShapeFix_Wire.cxx:696-719` — detects a contour spanning the full U-range, rebuilds the pcurve with `AdjustOverDegenMode=false`)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8",
+      "face[0].surface_type == \"sphere\""
+    ],
+    "title": "Contour wrapping both a degenerated pole and the periodic seam, missing half its seam pcurve pair"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'EDGE_CURVE')",
+      "contains(b'PLANE')",
+      "count_entity_def(b'PCURVE') == 4",
+      "count_entity_def(b'SURFACE_CURVE') == 4"
+    ],
+    "category": "§12.2a pcurve (sub-class: 3D-curve-side inconsistent-representation removal — `tkshh-edge-curve-inconsistent-with-vertex-removed`)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "The standard 4-edge rectangular `PLANE` wire's bottom `EDGE_CURVE` (`A=(0,0,0) -> B=(10,0,0)`) has a 3D `LINE` shifted `+0.5` in Y (`start=(0,0.5,0)`, direction `(1,0,0)`) so NEITHER endpoint of the curve lies within tolerance of its `VERTEX_POINT` — the closest point on the 3D line to vertex A is `(0,0.5,0)`, 0.5 units away (five hundred thousand times the fixture's `1e-7` tolerance); same for vertex B. The edge's `PCURVE`, by contrast, is the correct, trustworthy straight line `(0,0)->(10,0)` in the plane's UV space, matching the true rectangle geometry exactly. This is the exact mirror image of Gp064 (where the pcurve is degenerate/wrong and the 3D curve is trustworthy): here the 3D curve is the stale representation and the pcurve is trusted.",
+    "expected_kernel_behavior": "detect that the 3D curve is inconsistent with the vertices, discard it, and rebuild it fresh by lifting the trustworthy pcurve through the host surface — not attempt an in-place repair of the stale curve.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp179.stp",
+    "id": "Gp179",
+    "notes": "**See also**: Gp064 (pcurve-side mirror: the 3D curve is trusted, the pcurve is discarded and rebuilt), Gp047/Gp058/Gp086/Gp103/Gp108/Gp123/Gp151 (related out-of-domain pcurve-range removal, a distinct but sibling defect). **OCC behavior**: heals fully — OCCT discards the bogus, Y-shifted 3D curve and rebuilds it from the pcurve; the resulting bottom edge has length exactly `10.0` (matching the TRUE vertex-to-vertex distance, not any length implied by the bogus curve) and the face area is exactly `50.0`. `shape(1)` heal on/off identical; gmsh triangulates to `shape(9)`. Synonyms: \"3D curve endpoint disagrees with vertex position beyond tolerance\", \"stale 3D curve discarded, pcurve trusted\", \"3D-curve-side removal mirror of pcurve-side removal\", \"curve computed for a different placement than its vertices\", \"edge rebuilt from trustworthy pcurve after 3D curve removal\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`EDGE_CURVE` on a `PLANE`-bound face whose 3D `LINE`'s closest approach to both `VERTEX_POINT`s exceeds vertex tolerance by several orders of magnitude, while its `PCURVE` (lifted through the surface) lands exactly on the true vertex positions.",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [
+      "Gp064",
+      "Gp047",
+      "Gp058",
+      "Gp086",
+      "Gp103",
+      "Gp108",
+      "Gp123",
+      "Gp151"
+    ],
+    "sender": "Translators that recompute a 3D curve for a different placement/instance without re-validating it against the edge's already-fixed vertex positions.",
+    "severity": "P2",
+    "sources": [
+      "occt-coverage GAP audit, `tkshhealing/problems.json` `tkshh-edge-curve-inconsistent-with-vertex-removed` (`ShapeFix_Edge::FixRemoveCurve3d`, `ShapeFix_Edge.cxx:116-123`, using `ShapeAnalysis_Edge::CheckVerticesWithCurve3d`, `ShapeAnalysis_Edge.cxx:485-521`)",
+      "mirror of `ShapeFix_Edge::FixRemovePCurve` (`ShapeAnalysis_Edge::CheckVerticesWithPCurve`), the mechanism Gp064 demonstrates on the pcurve side."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8",
+      "face[0].surface_type == \"plane\"",
+      "edge[0].length == 10.0"
+    ],
+    "title": "3D-curve endpoint disagrees with vertex position beyond tolerance; pcurve is trustworthy (`FixRemoveCurve3d` mirror of Gp064)"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'B_SPLINE_CURVE_WITH_KNOTS')",
+      "contains(b'PLANE')",
+      "count_entity_def(b'PCURVE') == 4"
+    ],
+    "category": "§12.2a pcurve (sub-class: near-zero knot-interval thin-arc filter, 2D-curve side — `tkshh-near-zero-knot-span-thin-patch-filter`)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "The standard 4-edge rectangular `PLANE` wire's bottom edge has a healthy 3D `LINE`, but its `PCURVE` is a degree-3 `B_SPLINE_CURVE_WITH_KNOTS` with 6 evenly-spaced, exactly collinear control points along `(0,0)->(10,0)` and Gn042's exact knot pattern: knots `(0.0, 0.5, 1.0)`, multiplicities `(4, 2, 4)` — the interior knot at `0.5` sits at multiplicity 2, one short of the degree-3 full-multiplicity value of 3. Bezier decomposition must insert one more copy of `0.5` to raise it to full multiplicity, producing a knot interval `[0.5, 0.5]` of literally zero width — a degenerate Bezier arc the thin-arc filter is supposed to drop from the decomposed segment set. Because the 6 control points are exactly collinear, the pcurve traces the identical straight path as the healthy 3D curve regardless of the pathological knot vector, isolating the defect to the knot structure alone.",
+    "expected_kernel_behavior": "during Bezier decomposition, detect that raising the interior knot to full multiplicity produces a zero-width span, and drop the resulting degenerate arc from the segment set rather than emitting it.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp180.stp",
+    "id": "Gp180",
+    "notes": "**See also**: Gn042 (surface-side sibling: the identical `(4,2,4)`-over-`(0.0,0.5,1.0)` knot pattern on a `B_SPLINE_SURFACE_WITH_KNOTS`'s U direction instead of a 2D pcurve). **OCC behavior**: silent-accept, healed correctly (catalog allowed: {heal}) — OCCT loads a full, correct `shape(1)` rectangle (area exactly `50.0`, 4 edges, 8 vertices); the zero-width Bezier arc is filtered out with no visible artifact, matching the filter's intended behavior. gmsh triangulates to `shape(9)`. Synonyms: \"2D pcurve knot vector has near-zero-length span\", \"interior knot one multiplicity short of full degree\", \"ConvertCurve2dToBezier zero-width Bezier arc filtered\", \"Gn042 knot pattern mirrored onto a pcurve instead of a surface\", \"thin-arc filter drops degenerate Bezier segment\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`PCURVE` whose `DEFINITIONAL_REPRESENTATION` item is a `B_SPLINE_CURVE_WITH_KNOTS` (degree 3, knots `(0.0,0.5,1.0)`, multiplicities `(4,2,4)`) on an otherwise-healthy edge (real 3D `LINE`, correctly-matching vertices).",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [
+      "Gn042"
+    ],
+    "sender": "Translators that emit a pcurve knot vector with an interior knot one multiplicity short of full (degree), inherited unmodified from an internal B-spline-fitting step.",
+    "severity": "P3",
+    "sources": [
+      "occt-coverage GAP audit, `tkshhealing/problems.json` `tkshh-near-zero-knot-span-thin-patch-filter` (`ShapeUpgrade_ConvertCurve2dToBezier::Compute()` near-zero knot-interval filter, `ShapeUpgrade_ConvertCurve2dToBezier.cxx:188-209`)",
+      "surface-side sibling `ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute()` thin-patch filter (`.cxx:157-191`) is what Gn042 demonstrates."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8",
+      "face[0].surface_type == \"plane\""
+    ],
+    "title": "2D pcurve knot vector with a near-zero-length span after Bezier decomposition (2D-curve sibling of Gn042)"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'B_SPLINE_SURFACE_WITH_KNOTS')",
+      "count_entity_def(b'PCURVE') == 4",
+      "count_entity_def(b'EDGE_CURVE') >= 3"
+    ],
+    "category": "§12.2a pcurve (sub-class: nonperiodic-B-spline seam-like edge, V-direction subvariant — `tkshh-nonperiodic-bspline-seamlike-edge`, subvariant a)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Identical unit cylinder (radius 1, height 1) to Gp013, but with the roles of U and V transposed throughout: the `B_SPLINE_SURFACE_WITH_KNOTS` here has degree 1 in U (2 control-point rows spanning height) and degree 2 in V (the same 9-point near-closed angular discretization Gp013 used for U). The shared seam `EDGE_CURVE` now runs along U (height) at `v=0`/`v=1` (both physically angle 0) and carries two pcurves on the same non-periodic surface — Gp013's CATIA idiom, just declared periodic in V instead of U once healed.",
+    "expected_kernel_behavior": "detect the near-closed, non-periodic surface in the V direction, treat the shared edge as a seam, and reconcile both pcurves — declaring the surface V-periodic (approximating first if needed).",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp181.stp",
+    "id": "Gp181",
+    "notes": "**See also**: Gp013 (the canonical U-direction original this fixture transposes), Gp182 (companion subvariant: non-B-spline base surface). **OCC behavior**: heals — OCCT reports the rebuilt surface as `is_v_periodic == True` / `is_u_periodic == False` (the exact V-direction mirror of Gp013's own `is_u_periodic == True`), 4 edges, 8 vertices, a non-degenerate cylindrical-wall area. `shape(1)` heal on/off identical; gmsh triangulates to `shape(6)`, matching Gp013's own gmsh count exactly. Synonyms: \"CATIA cylinder seam in V direction\", \"V-periodic branch of near-closed B-spline seam healing\", \"two pcurves on non-periodic surface, V-direction variant\", \"Gp013 transposed onto the orthogonal parametric axis\", \"near-closed non-periodic B-spline seam-like edge, V bank\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`B_SPLINE_SURFACE_WITH_KNOTS` (u_degree=1, v_degree=2, 2x9 control-point grid tracing a unit cylinder, `u_closed=.F.`, `v_closed=.F.`); a shared `EDGE_CURVE` carrying two pcurves at `v=0` and `v=1` on that surface, used twice (opposite orientations) in a 4-edge `FACE_OUTER_BOUND` alongside two full-circle cap edges.",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [
+      "Gp013",
+      "Gp182"
+    ],
+    "sender": "CATIA and similar exporters that encode a closed cylinder as a near-closed but non-periodic B-spline, oriented so the seam runs in V rather than U.",
+    "severity": "P2",
+    "sources": [
+      "occt-coverage GAP audit, `tkshhealing/problems.json` `tkshh-nonperiodic-bspline-seamlike-edge` (`ShapeUpgrade_UnifySameDomain::IntUnifyFaces`, `ShapeUpgrade_UnifySameDomain.cxx:3221` — `myConcatBSplines && EdgeWith2pcurves && !SeamFound` detection",
+      "`:3242-3246` `aToMakeUPeriodic`/`aToMakeVPeriodic`",
+      "`:3264`/`:3269` `SetUPeriodic`/`SetVPeriodic`)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8",
+      "face[0].surface_type == \"bspline\"",
+      "face[0].bspline.is_v_periodic == True",
+      "face[0].bspline.is_u_periodic == False"
+    ],
+    "title": "CATIA-style near-closed non-periodic B-spline seam-like edge, mirrored onto the V direction (Gp013 is the U-direction original)"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'CYLINDRICAL_SURFACE')",
+      "count_entity_def(b'PCURVE') == 4",
+      "count_entity_def(b'EDGE_CURVE') >= 3"
+    ],
+    "category": "§12.2a pcurve (sub-class: nonperiodic-B-spline seam-like edge, non-B-spline-base subvariant — `tkshh-nonperiodic-bspline-seamlike-edge`, subvariant b)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A genuine unit cylinder (radius 1, height 1) is represented directly as a `CYLINDRICAL_SURFACE` — an elementary, non-B-spline surface type — rather than as a near-closed B-spline approximation of one (contrast Gp013/Gp181). The shared seam `EDGE_CURVE` runs the height direction at `u=0`/`u=2*pi` (both physically angle 0) and carries two pcurves on the SAME `CYLINDRICAL_SURFACE` instance — Gp013's exact \"two pcurves on one surface acting like a seam\" idiom, just on an elementary surface class that cannot be marked periodic in place, so a correct healer must approximate it to a B-spline surface first, before it can declare the result periodic.",
+    "expected_kernel_behavior": "detect the seam-like duplicate-pcurve edge on the elementary surface, approximate the surface to a B-spline, migrate the pcurves, and declare the result periodic.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp182.stp",
+    "id": "Gp182",
+    "notes": "**See also**: Gp013 (B-spline-host original), Gp181 (V-direction B-spline-host mirror). **OCC behavior**: silent-accept — because a `CYLINDRICAL_SURFACE` is already natively periodic in its angular direction, and this fixture is a single already-well-formed `ADVANCED_FACE` (not two faces requiring a face-unification merge pass), the file loads directly as a correct unit-cylinder-wall face without visibly exercising the approximate-then-periodize path: `shape(1)` heal on/off identical, 4 edges, 8 vertices, `face[0].surface_type == \"cylinder\"` (retained, not converted to a B-spline), area exactly `2*pi` (`6.283185...`, the true cylinder side area). gmsh triangulates to `shape(6)`, matching Gp013's own gmsh count. The byte-level defect (duplicate-seam-pcurve idiom on an elementary surface) is genuinely encoded; this run shows it resolved without visible drama because the single-face case doesn't require the multi-face unify pass the mechanism targets. Synonyms: \"CATIA seam idiom on CYLINDRICAL_SURFACE instead of B-spline\", \"non-B-spline seam host requires approximation before periodicity\", \"two pcurves on elementary surface acting like a seam\", \"seam-like edge on an already-periodic analytic surface\", \"non-B-spline base surface periodicity approximation\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`CYLINDRICAL_SURFACE` radius 1; a shared `EDGE_CURVE` carrying two pcurves at `u=0` and `u=2*pi` on that surface, used twice (opposite orientations) in a 4-edge `FACE_OUTER_BOUND` alongside two full-circle cap edges — otherwise structurally identical to Gp013/Gp181.",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [
+      "Gp013",
+      "Gp181"
+    ],
+    "sender": "Exporters that apply the CATIA-style two-pcurve seam idiom uniformly to elementary surfaces, not only B-spline approximations of them.",
+    "severity": "P3",
+    "sources": [
+      "occt-coverage GAP audit, `tkshhealing/problems.json` `tkshh-nonperiodic-bspline-seamlike-edge` (`ShapeUpgrade_UnifySameDomain::IntUnifyFaces`, `ShapeUpgrade_UnifySameDomain.cxx:3221` detection, `:3258` `GeomConvert_ApproxSurface` for a non-B-spline base surface, `:3264`/`:3269` `SetUPeriodic`/`SetVPeriodic` on the approximated result)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 4",
+      "n_vertices_total == 8",
+      "face[0].surface_type == \"cylinder\""
+    ],
+    "title": "CATIA-style seam-like edge (two pcurves on one surface) on a non-B-spline (`CYLINDRICAL_SURFACE`) base"
+  },
+  {
+    "byte_assertions": [
       "contains(b'B_SPLINE_SURFACE')"
     ],
     "category": "§12.2b NURBS/knots",
@@ -90248,6 +90624,184 @@
       "n_vertices_total == 24"
     ],
     "title": "Splitting vertex genuinely unattached: independent vertex sits on another edge's interior (T-junction not expressed as shared topology)"
+  },
+  {
+    "byte_assertions": [
+      "contains(b\"EDGE_CURVE('null_geom_edge',\")",
+      "contains(b'ADVANCED_FACE')"
+    ],
+    "category": "§12.3c faces (sub-class: `stp-missing-geometry-definition` GAP)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A 10×10 `PLANE` face's `FACE_OUTER_BOUND` has 4 edges; edge[2] is `EDGE_CURVE('null_geom_edge',#V2,#V3,$,.T.)` — its `edge_geometry` slot is null (`$`), not absent from the file and not orphaned in a dead entity. The other 3 edges are ordinary `LINE`-based `EDGE_CURVE`s. The reader hits the null curve reference and fails cleanly for that one edge (logged, not crashed); the wire builder cannot assemble a valid closed 4-edge wire with one edge missing, so it drops the whole bound. The face survives translation as a genuinely unbounded natural-surface fallback rather than aborting the whole read or fabricating geometry.",
+    "expected_kernel_behavior": "detect the null `edge_geometry` reference and fail cleanly for that one edge (diagnostic logged); either drop just the malformed bound (this fixture's observed OCCT behavior) or reject the whole face with a clear per-entity diagnostic — never crash and never silently fabricate a curve.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3c-faces/Tfa252.stp",
+    "id": "Tfa252",
+    "notes": "**See also**: Xp008 (face-hosted null-geometry pattern, but unreachable — dead trailing entity), Tfa003 (GEOMETRIC_CURVE_SET-hosted, type-skipped before reaching this code path). Live-verified (this worktree's OCP/OCCT 7.8.1, default import path, both heal-on/heal-off): shape(1)/shape(1), the one `ADVANCED_FACE` survives with its bound fully dropped — `n_edges_total==0`, `n_vertices_total==0` — and `face[0].area` comes back as an unbounded-surface sentinel (~8e100), OCCT's signature for \"face_geometry present, bound list effectively empty\" (matches the natural-unbounded-face fallback, not a crash and not silent garbage). Synonyms: \"EDGE_CURVE null edge_geometry\", \"missing geometry definition clean fail\", \"TranslateEdge null curve\", \"edge_geometry dollar sign null\", \"reader per-entity clean fail on live face\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`EDGE_CURVE('null_geom_edge',#v2,#v3,$,.T.)` wired into an `EDGE_LOOP` that is the sole `FACE_OUTER_BOUND` of a live `ADVANCED_FACE`, itself referenced by a real `OPEN_SHELL`/`SHELL_BASED_SURFACE_MODEL` (not a `GEOMETRIC_CURVE_SET`, not a dead trailing entity).",
+    "section": "12.3c",
+    "section_dir": "12-3c-faces",
+    "see_also": [
+      "Xp008",
+      "Tfa003"
+    ],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "closes occt-coverage exchange/step-reader GAP `stp-missing-geometry-definition` (occt-coverage/exchange audit). OCCT `StepToTopoDS_TranslateEdge::Init` (`StepToTopoDS_TranslateEdge.cxx:254-261`, null `EdgeGeometry` curve → clean fail). Prior candidates were downgraded COVERED→GAP (`COVERED_FULL_REVERIFY.md`): Xp008's null-geometry `ADVANCED_FACE` #138 is never referenced by its `CLOSED_SHELL` #139 (dead trailing entity, unreachable)",
+      "Tfa003's null-geometry `EDGE_CURVE`s sit inside a `GEOMETRIC_CURVE_SET`, whose builder dispatch only accepts `GeometricRepresentationItem`s and never reaches `TranslateEdge::Init`. This fixture places the null-geometry `EDGE_CURVE` directly inside the outer wire of a live `ADVANCED_FACE` that IS referenced by a real `OPEN_SHELL` on the default import path."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "crash",
+      "topology"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\"",
+      "n_faces_total == 1",
+      "face[0].surface_type == \"plane\"",
+      "face[0].edge_count == 0"
+    ],
+    "title": "EDGE_CURVE null edge_geometry ($) wired into a live, reachable face"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'FACE_OUTER_BOUND')",
+      "contains(b'FACE_BOUND(')"
+    ],
+    "category": "§12.3c faces (sub-class: `tkshh-face-intersecting-wires` GAP, large-overlap subvariant)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A 10×10 `PLANE` face's `FACE_OUTER_BOUND` is the unit square (0,0)-(10,0)-(10,10)-(0,10). Its inner `FACE_BOUND` (hole) is a 7×3 rectangle (2,0)-(9,0)-(9,3)-(2,3) whose bottom edge lies exactly on the line y=0 — the same line as the outer wire's bottom edge — for x in [2,9]: a 7-unit overlap against the outer edge's 10-unit length (70%) and the inner edge's own full 7-unit length (100%), both well over the 50% threshold that selects the large-overlap 3-edge reconstruction path over the small-overlap 2-edge split.",
+    "expected_kernel_behavior": "detect the collinear segment overlap between the two wires and reconstruct the boundary (cut the overlapping edges back and rebuild with a shared segment edge), producing a well-formed face; or reject with a clear diagnostic.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(19) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3c-faces/Tfa253.stp",
+    "id": "Tfa253",
+    "notes": "**See also**: Tfa039 (transverse crossing, not overlap), Tfa131/Tfa160 (same overlap *input* pattern, unreachable — `GEOMETRIC_CURVE_SET`-hosted). Live-verified (this worktree's OCP/OCCT 7.8.1, default import path, both heal-on/heal-off): shape(1)/shape(1); authored topology is 8 edges (4 outer + 4 inner) but the live shape carries `n_edges_total==10` (+2 over authored) — direct evidence the overlap-handling repair fired and restructured the collinear-overlap boundary rather than leaving it untouched. `brepcheck.valid==True` after heal (well-formed result); `face[0].area==79.0==100-(7*3)`, confirming the hole geometry survives the repair intact. Synonyms: \"collinear wire overlap large\", \"hole edge overlaps outer boundary\", \"3-edge reconstruction sewing\", \"intersecting wires segment overlap 50 percent\", \"coincident collinear segment repair\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`ADVANCED_FACE` whose `FACE_OUTER_BOUND` and inner `FACE_BOUND` each contain a straight edge collinear with, and >50% overlapping, the other — on a live `OPEN_SHELL`/`SHELL_BASED_SURFACE_MODEL` path.",
+    "section": "12.3c",
+    "section_dir": "12-3c-faces",
+    "see_also": [
+      "Tfa039",
+      "Tfa131",
+      "Tfa160"
+    ],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "closes occt-coverage tkshhealing GAP `tkshh-face-intersecting-wires` missing subvariant (occt-coverage/tkshhealing audit). OCCT `ShapeFix_IntersectionTool::FixIntersectingWires` (`ShapeFix_IntersectionTool.cxx:1607-1939`, segment-overlap handling",
+      "large-overlap 3-edge reconstruction path at `:1740-1913`, selected when the overlap exceeds half the length of either intersecting edge, vs. the small-overlap `SplitEdge2` path at `:1917-1936`). Distinct from Tfa039 (transverse point-crossing, not overlap) and from Tfa131/Tfa160 (collinear-overlap input, but `GEOMETRIC_CURVE_SET`-hosted — OCC yields empty, never reaches a live `ADVANCED_FACE`)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\"",
+      "n_edges_total == 10",
+      "face[0].surface_type == \"plane\"",
+      "brepcheck.valid == True"
+    ],
+    "title": "Outer/inner wire share a >50% collinear overlap segment"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'FACE_OUTER_BOUND')",
+      "contains(b'FACE_BOUND(')"
+    ],
+    "category": "§12.3c faces (sub-class: `tkshh-face-intersecting-wires` GAP, endpoint-endpoint subvariant)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A 10×10 `PLANE` face's `FACE_OUTER_BOUND` is the unit square (0,0)-(10,0)-(10,10)-(0,10). Its inner `FACE_BOUND` (hole) is a small right triangle (0,0)-(3,0)-(0,3): its own corner at (0,0) sits at the exact same coordinate as the outer wire's own (0,0) corner, but is encoded as an INDEPENDENT `VERTEX_POINT` entity — not the same STEP id reused. Both occurrences of (0,0) are genuine edge ENDPOINTS on their respective wires (never a mid-edge point), so the contact is a clean endpoint-endpoint touch, not a crossing.",
+    "expected_kernel_behavior": "detect the coincident-but-distinct endpoint vertices and unify them into one shared topological vertex (`UnionVertexes`); classify the resulting wire relationship consistently (hole-touching-boundary is a degenerate but well-defined case) or reject with a clear diagnostic.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(16) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3c-faces/Tfa254.stp",
+    "id": "Tfa254",
+    "notes": "**See also**: Tfa039 (transverse crossing, not endpoint contact), Twi250 (near-endpoint crossing, different repair branch). Live-verified (this worktree's OCP/OCCT 7.8.1, default import path, both heal-on/heal-off): shape(1)/shape(1); authored topology has 7 independent `VERTEX_POINT` entities (4 outer + 3 inner) but the live shape carries only 6 unique vertex instances — direct evidence the two independently-authored (0,0) vertices were merged into one shared vertex, the vertex-union path this entry targets. The resulting face fails the overall validity check: the raw wire-crossing test itself reports clean (the touch point is excused as a shared vertex, not flagged as a crossing), but a separate wire-nesting/containment check fails because it cannot cleanly decide the hole is \"inside\" the outer wire once its corner is unified with the boundary; reported honestly as a genuine, live side effect of the touching-at-a-shared-corner configuration rather than mirrored from an unrelated fixture. Synonyms: \"endpoint-endpoint wire contact\", \"coincident distinct vertices unified\", \"hole touches outer boundary at corner\", \"clean vertex-union not crossing\", \"wire touch not intersection\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`ADVANCED_FACE` whose `FACE_OUTER_BOUND` and inner `FACE_BOUND` each have an edge endpoint at the identical 3D coordinate, encoded as two distinct `VERTEX_POINT` entities — on a live `OPEN_SHELL`/`SHELL_BASED_SURFACE_MODEL` path.",
+    "section": "12.3c",
+    "section_dir": "12-3c-faces",
+    "see_also": [
+      "Tfa039",
+      "Twi250"
+    ],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "closes occt-coverage tkshhealing GAP `tkshh-face-intersecting-wires` missing subvariant (occt-coverage/tkshhealing audit). OCCT `ShapeFix_IntersectionTool::FixIntersectingWires` (`ShapeFix_IntersectionTool.cxx:1598-1604`, both-endpoints branch → `UnionVertexes`). Distinct from Tfa039 (transverse interior crossing) and Twi250 (crossing near one edge's endpoint, `FindVertAndSplitEdge`, not a clean both-endpoints touch)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\"",
+      "n_edges_total == 9",
+      "face[0].surface_type == \"plane\"",
+      "brepcheck.valid == False"
+    ],
+    "title": "Outer/inner wire touch at a clean endpoint-endpoint contact"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'SPHERICAL_SURFACE')",
+      "contains(b'FACE_BOUND(')",
+      "count_entity_def(b'VERTEX_POINT') >= 4"
+    ],
+    "category": "§12.3c faces (sub-class: `tkshh-face-natural-bound-missing` GAP, pole-touching-hole subvariant)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "An `ADVANCED_FACE` on a `SPHERICAL_SURFACE` (radius 5, centred at origin) has NO `FACE_OUTER_BOUND`. Its single `FACE_BOUND` is a small lune-shaped wire that starts at the north pole (0,0,5), runs down a meridian to a point at 70° latitude, across a short chord to a second point at the same latitude (40° of longitude away), back up another meridian to the pole, and closes via an explicit DEGENERATE edge at the pole itself: `EDGE_CURVE` between two independent `VERTEX_POINT` entities both located at (0,0,5), with a zero-length `LINE` as its curve (the corpus's standard degenerate-edge encoding, per Tfa125). The wire genuinely touches the pole through this degenerate edge, not merely through incidental vertex reuse.",
+    "expected_kernel_behavior": "recognize the pole-touching hole on the doubly-periodic surface and merge it into the synthesized natural (whole-surface) boundary rather than treating it as a separate subtracted hole; the resulting face should cover the full sphere area minus nothing (the lune contributes no area, only a boundary notch).",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3c-faces/Tfa255.stp",
+    "id": "Tfa255",
+    "notes": "**See also**: Tfa002 (no hole at all — empty bounds), Tfa038 (hole wire that does not touch the pole — genuine subtracted hole), Tfa125 (degenerate-edge encoding pattern, different mechanism — U-degenerate south pole). Live-verified (this worktree's OCP/OCCT 7.8.1, default import path, both heal-on/heal-off): shape(1)/shape(1); `n_edges_total==4` (matches the 4 authored edges, 2 of which OCCT marks `Degenerated` after translation, vs. only 1 authored explicitly as zero-length). `face[0].surface_type==\"sphere\"`, `face[0].area==314.1592653589792==4*pi*5^2` — the EXACT full-sphere area: the lune-shaped hole wire contributes zero area loss, confirming `FixAddNaturalBound` genuinely merged it into the natural whole-surface boundary (a real subtracted hole, as in Tfa038, would reduce the area by the lune's extent instead). Synonyms: \"sphere hole touches pole degenerate edge\", \"natural bound merge with pole hole\", \"FixAddNaturalBound pole merge\", \"lune hole absorbed into natural boundary\", \"degenerate pole edge hole merge\".",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`ADVANCED_FACE` on a `SPHERICAL_SURFACE` with no `FACE_OUTER_BOUND`, a single inner `FACE_BOUND` lune wire that reaches the pole and closes via a zero-length degenerate `EDGE_CURVE` at the pole vertex — on a live `OPEN_SHELL`/`SHELL_BASED_SURFACE_MODEL` path.",
+    "section": "12.3c",
+    "section_dir": "12-3c-faces",
+    "see_also": [
+      "Tfa002",
+      "Tfa038",
+      "Tfa125"
+    ],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "closes occt-coverage tkshhealing GAP `tkshh-face-natural-bound-missing` missing subvariant (occt-coverage/tkshhealing audit). OCCT `ShapeFix_Face::FixAddNaturalBound` (`ShapeFix_Face.cxx:937-983`, sphere: hole wire containing a degenerated pole edge is merged into the natural boundary",
+      "gate `isNeedAddNaturalBound` at `:1010-1049` requires a doubly-periodic surface, no outer bound, and (for this subvariant) a hole touching the pole). Distinct from Tfa002 (empty bounds on a full sphere, no hole at all) and Tfa038 (a hole wire that does NOT touch the pole, kept as a genuine subtracted hole)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\"",
+      "face[0].surface_type == \"sphere\"",
+      "face[0].area == 314.1592653589792"
+    ],
+    "title": "Sphere hole wire touches the pole via a degenerated edge: merges into the natural whole-surface boundary"
   },
   {
     "byte_assertions": [

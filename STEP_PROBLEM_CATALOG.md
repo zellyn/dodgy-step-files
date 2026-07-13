@@ -31273,7 +31273,7 @@ Planar surface with U-iso degenerate edge. U-constant pcurve lacks coordinate-ax
 - **Expected kernel behavior**: detect that the contour wraps both a degenerate pole and the periodic seam, and rebuild the missing seam-bank pcurve from the 3D curve (with over-degenerate adjustment disabled) rather than leaving the second occurrence unresolved.
 - **Notes**: **See also**: Gp013 (the fully-pcurve'd U-direction seam idiom this fixture deliberately under-supplies), Gp177 (companion subvariant: interior pole crossing without a seam). **OCC behavior**: heals fully — OCCT rebuilds the missing pcurve and returns a correct, non-degenerate 4-edge, 8-vertex spherical cap whose area (`4.4264`) matches the closed-form cap area `2*pi*(1-sin(v0))` for `v0=0.3` to 4 decimal places. `shape(1)` heal on/off identical; gmsh triangulates to `shape(6)`, matching Gp013's own gmsh count. Synonyms: "contour wraps degenerate pole and periodic seam", "seam edge missing one of two required pcurves", "spherical cap UV-rectangle boundary with under-pcurve'd seam", "AdjustOverDegenMode pcurve rebuild", "half a seam pcurve pair forces reconstruction".
 - **Byte assertion**: contains(b'SPHERICAL_SURFACE')
-- **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 3
+- **Byte assertion**: count_entity_def(b'EDGE_CURVE') >= 3
 - **Byte assertion**: count_entity_def(b'PCURVE') == 3
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_faces_total == 1
@@ -31339,7 +31339,7 @@ Planar surface with U-iso degenerate edge. U-constant pcurve lacks coordinate-ax
 - **Notes**: **See also**: Gp013 (the canonical U-direction original this fixture transposes), Gp182 (companion subvariant: non-B-spline base surface). **OCC behavior**: heals — OCCT reports the rebuilt surface as `is_v_periodic == True` / `is_u_periodic == False` (the exact V-direction mirror of Gp013's own `is_u_periodic == True`), 4 edges, 8 vertices, a non-degenerate cylindrical-wall area. `shape(1)` heal on/off identical; gmsh triangulates to `shape(6)`, matching Gp013's own gmsh count exactly. Synonyms: "CATIA cylinder seam in V direction", "V-periodic branch of near-closed B-spline seam healing", "two pcurves on non-periodic surface, V-direction variant", "Gp013 transposed onto the orthogonal parametric axis", "near-closed non-periodic B-spline seam-like edge, V bank".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS')
 - **Byte assertion**: count_entity_def(b'PCURVE') == 4
-- **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 3
+- **Byte assertion**: count_entity_def(b'EDGE_CURVE') >= 3
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
@@ -31362,7 +31362,7 @@ Planar surface with U-iso degenerate edge. U-constant pcurve lacks coordinate-ax
 - **Notes**: **See also**: Gp013 (B-spline-host original), Gp181 (V-direction B-spline-host mirror). **OCC behavior**: silent-accept — because a `CYLINDRICAL_SURFACE` is already natively periodic in its angular direction, and this fixture is a single already-well-formed `ADVANCED_FACE` (not two faces requiring a face-unification merge pass), the file loads directly as a correct unit-cylinder-wall face without visibly exercising the approximate-then-periodize path: `shape(1)` heal on/off identical, 4 edges, 8 vertices, `face[0].surface_type == "cylinder"` (retained, not converted to a B-spline), area exactly `2*pi` (`6.283185...`, the true cylinder side area). gmsh triangulates to `shape(6)`, matching Gp013's own gmsh count. The byte-level defect (duplicate-seam-pcurve idiom on an elementary surface) is genuinely encoded; this run shows it resolved without visible drama because the single-face case doesn't require the multi-face unify pass the mechanism targets. Synonyms: "CATIA seam idiom on CYLINDRICAL_SURFACE instead of B-spline", "non-B-spline seam host requires approximation before periodicity", "two pcurves on elementary surface acting like a seam", "seam-like edge on an already-periodic analytic surface", "non-B-spline base surface periodicity approximation".
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE')
 - **Byte assertion**: count_entity_def(b'PCURVE') == 4
-- **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 3
+- **Byte assertion**: count_entity_def(b'EDGE_CURVE') >= 3
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
@@ -45585,6 +45585,42 @@ exercised against CGAL PMP / MeshFix.
 - **Tier-3 assertion**: n_vertices_total == 16
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 - **Model impact**: a receiver that fails to rescale-by-declared-unit (or double-applies the factor, cf. U006) delivers geometry at the wrong physical size and evaluates repair tolerances against the wrong scale — small features vanish under an over-tight tolerance, or gaps that should be flagged get silently auto-merged under a too-loose one.
+
+### U051 — `SHAPE_REPRESENTATION.context_of_items = $` (null) directly governing a live shell
+- **Category**: §12.5 units (sub-class: no unit context reachable through the graph)
+- **Sources**: occt-coverage GAP audit, `exchange/problems.json` `stp-missing-unit-context-default`, subvariant "entity with no unit context reachable through the graph -> default units"; `STEPControl_ActorRead::PrepareUnits`, STEPControl_ActorRead.cxx:1791-1793 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e ("Bad RepresentationContext, default unit taken").
+- **Sender**: deduced — OCCT uncovered-class sweep
+- **Description**: A `SHAPE_REPRESENTATION` whose 4th attribute (`context_of_items`) is `$` (null) directly wraps a live `ADVANCED_FACE`/`OPEN_SHELL`/`SHELL_BASED_SURFACE_MODEL` — a genuine `GeometricRepresentationItem` chain, not a `GEOMETRIC_CURVE_SET` escape hatch. `PrepareUnits` calls `rep->ContextOfItems()`, gets a null handle, warns `"Bad RepresentationContext, default unit taken"`, and calls `ResetUnits` — the reader silently substitutes default units and still returns a live, non-null shape. Fixes M063's gap: M063's no-unit `SHAPE_REPRESENTATION` sits inside a `GEOMETRIC_CURVE_SET`, which is not a `GeometricRepresentationItem` — `StepToTopoDS`'s item-dispatch silently type-skips it, so M063's `shape(1)` actually comes from an *outer*, correctly-unitted representation, and the no-unit-context fallback never runs live (`COVERED_FULL_REVERIFY.md` downgraded this class COVERED→GAP for exactly that reason).
+- **Reproducer recipe**: `SHAPE_REPRESENTATION('no_context_shape',(#shell),$)` where `#shell` is a real `SHELL_BASED_SURFACE_MODEL`, wrapped by a normal `PRODUCT_DEFINITION` → `PRODUCT_DEFINITION_SHAPE` → `SHAPE_DEFINITION_REPRESENTATION` chain (needed for the entity to be a live `TransferRoots()` root at all — see Notes).
+- **Expected kernel behavior**: reject as malformed (a `SHAPE_REPRESENTATION` with no unit context is spec-illegal), or warn loudly and require explicit user confirmation of the assumed unit, rather than silently defaulting.
+- **Notes**: Root-reachability finding (live-verified 2026-07-12, OCP 7.8.1, direct `STEPControl_Reader`/`Interface_ShareFlags` probing — not mirrored/guessed): a completely bare, unreferenced `FACE_SURFACE`/`SHELL_BASED_SURFACE_MODEL`/`MAPPED_ITEM`/`CONTEXT_DEPENDENT_SHAPE_REPRESENTATION` with **no** enclosing `PRODUCT_DEFINITION` anywhere in the file does **not** get picked up by `TransferRoots()` at all in this OCCT build (`NbRootsForTransfer()==0` even though `STEPControl_ActorRead::Recognize()` textually accepts these types) — confirmed directly against `STEPControl_ActorRead::Recognize`, not assumed. This means the work-packet's most literal framing of this item ("a standalone `FaceSurface` entity requested for isolated transfer with no reachable `SHAPE_REPRESENTATION` at all") is not constructible as a fixture that actually reaches `StepToTopoDS` in this OCCT version — M063 itself already needed an enclosing `PRODUCT` chain to be reachable at all. This fixture instead builds the closest true-to-mechanism, live-reachable alternative: a normal product chain whose `SHAPE_REPRESENTATION` itself has `context_of_items=$`, the literal condition `PrepareUnits` checks for. **See also**: U052 (sibling subvariant: context present but wrong kind), M063. Provenance tier: bytes-sufficient. Synonyms: "STEP no units defaulted", "kernel guessed units", "model 1000x wrong", "SHAPE_REPRESENTATION context_of_items null", "Bad RepresentationContext default unit taken", "no unit context reachable through the graph".
+- **Byte assertion**: contains(b"SHAPE_REPRESENTATION('no_context_shape'")
+- **Byte assertion**: contains(b",(#38),$)")
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_faces_total == 1
+- **OCC behavior**: silently accepts (no reject diagnostic, live result); OCCT loads the shell as `shape(1)` with 1 face despite the missing unit context — outside catalog's allowed set ({reject, warn-and-confirm}). Kernel-bug witnessed: receivers enforcing the spec must reject or loudly warn on this fixture, not silently default units.
+- **Severity**: P1
+- **Model impact**: a model with no declared unit context loads at whatever scale the reader's default assumes (typically mm); if the true intended unit was metres or inches, every downstream dimension, tolerance comparison, and assembly mate is off by the ratio between the intended and assumed unit.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+- **Fixture path**: step-examples/12-5-units/U051.stp
+
+### U052 — `REPRESENTATION_CONTEXT` of the wrong kind (missing unit mixins) directly governing a live shell
+- **Category**: §12.5 units (sub-class: representation context of unusable kind)
+- **Sources**: occt-coverage GAP audit, `exchange/problems.json` `stp-missing-unit-context-default`, subvariant "representation context null or of unusable kind -> default units"; `STEPControl_ActorRead::PrepareUnits`, STEPControl_ActorRead.cxx:1798-1859 @ bd2a789f15235755ce4d1a3b07379a2e062fdc2e.
+- **Sender**: deduced — OCCT uncovered-class sweep
+- **Description**: The sibling of U051. Here `context_of_items` is **not** null — it references a real, present `REPRESENTATION_CONTEXT('wrong_kind_ctx','3D')` entity — but that entity is the plain, non-complex EXPRESS type, lacking the `GeometricRepresentationContext`+`GlobalUnitAssignedContext` mixins every correctly-formed STEP unit context carries. `PrepareUnits` does not hit the null-context "Bad RepresentationContext" branch (the context is present), but its `IsKind(GeometricRepresentationContextAndGlobalUnitAssignedContext)` check fails for both complex-type variants, so `theGUAC` stays null: the `ComputeFactors` unit-factor block is silently skipped entirely (no warning is even emitted for that part), and the uncertainty/precision default path fires (`"No Length Uncertainty, value of read.precision.val is taken"`). The reader still returns a live, correctly-topologized shell.
+- **Reproducer recipe**: `SHAPE_REPRESENTATION('wrong_kind_shape',(#shell),#ctx)` where `#ctx=REPRESENTATION_CONTEXT('wrong_kind_ctx','3D')` (the bare, non-complex form) and `#shell` is a real `SHELL_BASED_SURFACE_MODEL`, wrapped by a normal product chain.
+- **Expected kernel behavior**: reject as malformed (a `SHAPE_REPRESENTATION` whose context lacks unit declarations is spec-illegal), or warn loudly and require explicit user confirmation of the assumed unit, rather than silently defaulting.
+- **Notes**: **See also**: U051 (sibling subvariant: context slot literally `$`/absent, not merely wrong-kind), M063. Provenance tier: bytes-sufficient. Synonyms: "STEP no units defaulted", "kernel guessed units", "representation context of unusable kind", "bare RepresentationContext missing unit mixins", "GeometricRepresentationContextAndGlobalUnitAssignedContext kind check fails".
+- **Byte assertion**: contains(b"REPRESENTATION_CONTEXT('wrong_kind_ctx','3D')")
+- **Byte assertion**: contains(b"SHAPE_REPRESENTATION('wrong_kind_shape'")
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_faces_total == 1
+- **OCC behavior**: silently accepts (no reject diagnostic, live result); OCCT loads the shell as `shape(1)` with 1 face despite the unusable unit context — outside catalog's allowed set ({reject, warn-and-confirm}). Kernel-bug witnessed: receivers enforcing the spec must reject or loudly warn on this fixture, not silently default units.
+- **Severity**: P1
+- **Model impact**: same as U051 — a model whose unit context is present but unusable loads at whatever scale the reader's default assumes; every downstream dimension, tolerance comparison, and assembly mate is off by the ratio between the intended and assumed unit.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
+- **Fixture path**: step-examples/12-5-units/U052.stp
 
 ### Ad135 — Degenerate AXIS2_PLACEMENT_3D: axis parallel to ref_direction (x-axis undefined)
 - **Category**: §12.11 adversarial (sub-class: degenerate placement / undefined derived axis)

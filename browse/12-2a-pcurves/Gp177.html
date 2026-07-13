@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gp177 — Edge&#x27;s interior 3D curve passes directly over a sphere pole, strictly between its endpoints</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2a Pcurve defects</a> <span class="sep">/</span> <span class="current">Gp177</span>
+</nav>
+<header class="title-bar">
+<h1>Gp177 <span class="sep">—</span> <span class="entry-title">Edge&#x27;s interior 3D curve passes directly over a sphere pole, strictly between its endpoints</span></h1>
+<p class="category">§12.2a pcurve (sub-class: edge crossing a surface singularity in its interior — `tkshh-edge-crossing-surface-singularity`, subvariant a)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2a-pcurves/Gp177.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2a-pcurves/Gp177.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>occt-coverage GAP audit, `tkshhealing/problems.json` `tkshh-edge-crossing-surface-singularity` (`ShapeFix_Wire::FixEdgeCurves` singularity split, `ShapeFix_Wire.cxx:566-694` — projects each surface singularity onto the 3D curve at :578-599, splits the edge at interior singularity parameters at :632-689).</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>Translators/exporters that represent a meridian-crossing edge as a single curve without pre-splitting at the pole, relying on the receiver&#x27;s healer to do it.</p></section>
+<section><h2>Description</h2>
+<p>A `SPHERICAL_SURFACE` (radius 1) face has one edge (`polar_edge`) whose 3D curve is the great-circle `CIRCLE` lying in the XZ-plane, running from equator vertex `A=(1,0,0)` through the NORTH POLE `(0,0,1)` — strictly the parameter-range MIDPOINT, not an endpoint — down to equator vertex `B=(-1,0,0)`. This is the case Xp013 and Gp048 do not cover: both of those touch the singularity only at an edge ENDPOINT (a vertex sits exactly at the apex/pole). The edge&#x27;s pcurve is a single straight UV line `v=0` constant from `(u=0,v=0)` to `(u=pi,v=0)` — the naive &quot;apex-adjacent&quot; patch job the work packet calls insufficient: it treats the edge as though it stayed on the equator the whole way, when the true path needs `u` to jump `0-&gt;pi` exactly at `v=pi/2` (the pole), which one pcurve cannot represent. A second, healthy edge closes the loop via the equator&#x27;s *other* semicircle (through the back, negative-Y side, touching neither pole), giving a real 2-edge lune face with non-degenerate area.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`SPHERICAL_SURFACE` radius 1; `EDGE_CURVE` whose 3D curve is a great-circle `CIRCLE` oriented so its parameter range&#x27;s midpoint lands exactly on the pole (not an endpoint); its `PCURVE` is a single straight line that does not reflect the pole crossing; a second `EDGE_CURVE` (equatorial semicircle avoiding both poles) closes a 2-edge `EDGE_LOOP`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>detect that the 3D curve&#x27;s interior crosses the surface singularity, split the edge into two sub-edges at the singularity parameter (inserting a degenerate vertex at the pole), and give each sub-edge its own clean pcurve — not patch a single pcurve near the apex.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Xp013 (apex touched only at a shared, non-manifold vertex — an endpoint case), Gp048 (apex is an edge endpoint, degenerate pcurve construction), Gp178 (companion subvariant: pole + periodic seam together). **OCC behavior**: heals, but not into a clean 2-sub-edge split — OCCT fragments the single input edge into many small sub-edges with escalating vertex tolerance as they approach the pole (18 edges across 3 faces from 1 input edge and 1 input face in this run), rather than the idealized single split at the singularity parameter. `shape(1)` (root count) on both heal on/off; `brepcheck` reports valid. gmsh triangulates the fragmented result to `shape(32)` (provisional — the fragmentation is a floating-point-sensitive tessellation artifact and this exact face/edge count may drift across OCCT versions/platforms). Synonyms: &quot;edge interior crosses cone apex or sphere pole&quot;, &quot;single pcurve cannot represent a pole-crossing edge&quot;, &quot;apex-adjacent pcurve patch insufficient for interior singularity&quot;, &quot;edge must be split at singularity parameter not just re-pcurved&quot;, &quot;great-circle edge passes through pole at its midpoint&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(32) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;SPHERICAL_SURFACE&#x27;)</code></li>
+<li><code>contains(b&#x27;CIRCLE&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;EDGE_CURVE&#x27;) == 2</code></li>
+<li><code>count_entity_def(b&#x27;PCURVE&#x27;) == 2</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_faces_total == 3</code></li>
+<li><code>face[0].surface_type == &quot;sphere&quot;</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-12-cross-product/Xp013.html">Xp013</a>, <a href="Gp048.html">Gp048</a>, <a href="Gp178.html">Gp178</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gp177: <mark>SPHERICAL_SURFACE</mark> edge whose 3D curve (a great-circle <mark>CIRCLE</mark>) climbs from equator vertex A=(1,0,0) through the NORTH POLE (0,0,1) -- strictly interior to the edge&#x27;s parameter range, not an endpoint -- down to equator vertex B=(-1,0,0). Its pcurve is a single straight UV line v=0 constant (u:0-&gt;pi), naively treating the edge as if it stayed on the equator; the true path needs u to jump 0-&gt;pi exactly at v=pi/2 (the pole), which one pcurve cannot represent -- correct healing requires splitting into two sub-edges at the pole, not patching one apex-adjacent pcurve. */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Gp177&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Gp177.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=<mark>SPHERICAL_SURFACE</mark>(&#x27;&#x27;,#4,1.0);
+<span class="lineno">15</span>#6=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT(&#x27;UV&#x27;,&#x27;2D&#x27;));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">18</span>#9=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">19</span>#10=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">20</span>#11=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">21</span>#12=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">22</span>#13=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">23</span>#14=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#11,#12,#13);
+<span class="lineno">24</span>#15=<mark>CIRCLE</mark>(&#x27;polar_great_circle&#x27;,#14,1.0);
+<span class="lineno">25</span>#16=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));
+<span class="lineno">26</span>#17=DIRECTION(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">27</span>#18=VECTOR(&#x27;&#x27;,#17,3.14159265359);
+<span class="lineno">28</span>#19=LINE(&#x27;&#x27;,#16,#18);
+<span class="lineno">29</span>#20=DEFINITIONAL_REPRESENTATION(&#x27;pc_polar_def&#x27;,(#19),#6);
+<span class="lineno">30</span><mark>#21=PCURVE(</mark>&#x27;pc_polar_wrong&#x27;,#5,#20);
+<span class="lineno">31</span>#22=SURFACE_CURVE(&#x27;polar_edge_sc&#x27;,#15,(#21),.PCURVE_S1.);
+<span class="lineno">32</span><mark>#23=EDGE_CURVE(</mark>&#x27;polar_edge&#x27;,#9,#10,#22,.T.);
+<span class="lineno">33</span>#24=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">34</span>#25=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">35</span>#26=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">36</span>#27=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#24,#25,#26);
+<span class="lineno">37</span>#28=<mark>CIRCLE</mark>(&#x27;equator_back_circle&#x27;,#27,1.0);
+<span class="lineno">38</span>#29=CARTESIAN_POINT(&#x27;&#x27;,(3.14159265359,0.0));
+<span class="lineno">39</span>#30=DIRECTION(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">40</span>#31=VECTOR(&#x27;&#x27;,#30,3.14159265359);
+<span class="lineno">41</span>#32=LINE(&#x27;&#x27;,#29,#31);
+<span class="lineno">42</span>#33=DEFINITIONAL_REPRESENTATION(&#x27;pc_eq_def&#x27;,(#32),#6);
+<span class="lineno">43</span><mark>#34=PCURVE(</mark>&#x27;pc_eq_back&#x27;,#5,#33);
+<span class="lineno">44</span>#35=SURFACE_CURVE(&#x27;equator_back_sc&#x27;,#28,(#34),.PCURVE_S1.);
+<span class="lineno">45</span><mark>#36=EDGE_CURVE(</mark>&#x27;equator_back_edge&#x27;,#10,#9,#35,.T.);
+<span class="lineno">46</span>#37=ORIENTED_EDGE(&#x27;&#x27;,$,$,#23,.T.);
+<span class="lineno">47</span>#38=ORIENTED_EDGE(&#x27;&#x27;,$,$,#36,.T.);
+<span class="lineno">48</span>#39=EDGE_LOOP(&#x27;&#x27;,(#37,#38));
+<span class="lineno">49</span>#40=FACE_OUTER_BOUND(&#x27;&#x27;,#39,.T.);
+<span class="lineno">50</span>#41=ADVANCED_FACE(&#x27;&#x27;,(#40),#5,.T.);
+<span class="lineno">51</span>#42=OPEN_SHELL(&#x27;&#x27;,(#41));
+<span class="lineno">52</span>#43=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#42));
+<span class="lineno">53</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">54</span>#9051=PRODUCT(&#x27;Gp177&#x27;,&#x27;Gp177&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">55</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">56</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">57</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">58</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">59</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">60</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">61</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">62</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">63</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">64</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#43),#9060);
+<span class="lineno">65</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">66</span>ENDSEC;
+<span class="lineno">67</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gp176.html">&larr; Gp176</a> <a class="up" href="index.html">§12.2a Pcurve defects</a> <a class="next" href="Gp178.html">Gp178 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gp179 — 3D-curve endpoint disagrees with vertex position beyond tolerance; pcurve is trustworthy (`FixRemoveCurve3d` mirror of Gp064)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2a Pcurve defects</a> <span class="sep">/</span> <span class="current">Gp179</span>
+</nav>
+<header class="title-bar">
+<h1>Gp179 <span class="sep">—</span> <span class="entry-title">3D-curve endpoint disagrees with vertex position beyond tolerance; pcurve is trustworthy (`FixRemoveCurve3d` mirror of Gp064)</span></h1>
+<p class="category">§12.2a pcurve (sub-class: 3D-curve-side inconsistent-representation removal — `tkshh-edge-curve-inconsistent-with-vertex-removed`)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2a-pcurves/Gp179.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2a-pcurves/Gp179.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>occt-coverage GAP audit, `tkshhealing/problems.json` `tkshh-edge-curve-inconsistent-with-vertex-removed` (`ShapeFix_Edge::FixRemoveCurve3d`, `ShapeFix_Edge.cxx:116-123`, using `ShapeAnalysis_Edge::CheckVerticesWithCurve3d`, `ShapeAnalysis_Edge.cxx:485-521`)</li>
+<li>mirror of `ShapeFix_Edge::FixRemovePCurve` (`ShapeAnalysis_Edge::CheckVerticesWithPCurve`), the mechanism Gp064 demonstrates on the pcurve side.</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>Translators that recompute a 3D curve for a different placement/instance without re-validating it against the edge&#x27;s already-fixed vertex positions.</p></section>
+<section><h2>Description</h2>
+<p>The standard 4-edge rectangular `PLANE` wire&#x27;s bottom `EDGE_CURVE` (`A=(0,0,0) -&gt; B=(10,0,0)`) has a 3D `LINE` shifted `+0.5` in Y (`start=(0,0.5,0)`, direction `(1,0,0)`) so NEITHER endpoint of the curve lies within tolerance of its `VERTEX_POINT` — the closest point on the 3D line to vertex A is `(0,0.5,0)`, 0.5 units away (five hundred thousand times the fixture&#x27;s `1e-7` tolerance); same for vertex B. The edge&#x27;s `PCURVE`, by contrast, is the correct, trustworthy straight line `(0,0)-&gt;(10,0)` in the plane&#x27;s UV space, matching the true rectangle geometry exactly. This is the exact mirror image of Gp064 (where the pcurve is degenerate/wrong and the 3D curve is trustworthy): here the 3D curve is the stale representation and the pcurve is trusted.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`EDGE_CURVE` on a `PLANE`-bound face whose 3D `LINE`&#x27;s closest approach to both `VERTEX_POINT`s exceeds vertex tolerance by several orders of magnitude, while its `PCURVE` (lifted through the surface) lands exactly on the true vertex positions.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>detect that the 3D curve is inconsistent with the vertices, discard it, and rebuild it fresh by lifting the trustworthy pcurve through the host surface — not attempt an in-place repair of the stale curve.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Gp064 (pcurve-side mirror: the 3D curve is trusted, the pcurve is discarded and rebuilt), Gp047/Gp058/Gp086/Gp103/Gp108/Gp123/Gp151 (related out-of-domain pcurve-range removal, a distinct but sibling defect). **OCC behavior**: heals fully — OCCT discards the bogus, Y-shifted 3D curve and rebuilds it from the pcurve; the resulting bottom edge has length exactly `10.0` (matching the TRUE vertex-to-vertex distance, not any length implied by the bogus curve) and the face area is exactly `50.0`. `shape(1)` heal on/off identical; gmsh triangulates to `shape(9)`. Synonyms: &quot;3D curve endpoint disagrees with vertex position beyond tolerance&quot;, &quot;stale 3D curve discarded, pcurve trusted&quot;, &quot;3D-curve-side removal mirror of pcurve-side removal&quot;, &quot;curve computed for a different placement than its vertices&quot;, &quot;edge rebuilt from trustworthy pcurve after 3D curve removal&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;EDGE_CURVE&#x27;)</code></li>
+<li><code>contains(b&#x27;PLANE&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;PCURVE&#x27;) == 4</code></li>
+<li><code>count_entity_def(b&#x27;SURFACE_CURVE&#x27;) == 4</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_faces_total == 1</code></li>
+<li><code>n_edges_total == 4</code></li>
+<li><code>n_vertices_total == 8</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>edge[0].length == 10.0</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Gp064.html">Gp064</a>, <a href="Gp047.html">Gp047</a>, <a href="Gp058.html">Gp058</a>, <a href="Gp086.html">Gp086</a>, <a href="Gp103.html">Gp103</a>, <a href="Gp108.html">Gp108</a>, <a href="Gp123.html">Gp123</a>, <a href="Gp151.html">Gp151</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gp179: Bottom edge of a standard 4-edge rectangular <mark>PLANE</mark> face: 3D LINE is shifted +0.5 in Y (start=(0,0.5,0)) so NEITHER endpoint of the curve is within tolerance of its VERTEX_POINT (A=(0,0,0), B=(10,0,0) -- both 0.5 units off). PCURVE is the correct, trustworthy straight line (0,0)-&gt;(10,0) in UV. Mirror-image of Gp064&#x27;s pcurve-side FixRemovePCurve case: here FixRemoveCurve3d should discard the 3D curve and rebuild it from the pcurve. */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Gp179&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Gp179.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=<mark>PLANE</mark>(&#x27;&#x27;,#4);
+<span class="lineno">15</span>#6=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT(&#x27;UV&#x27;,&#x27;2D&#x27;));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(10.0,5.0,0.0));
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0,0.0));
+<span class="lineno">20</span>#11=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">21</span>#12=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">22</span>#13=VERTEX_POINT(&#x27;&#x27;,#9);
+<span class="lineno">23</span>#14=VERTEX_POINT(&#x27;&#x27;,#10);
+<span class="lineno">24</span>#15=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.5,0.0));
+<span class="lineno">25</span>#16=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">26</span>#17=VECTOR(&#x27;&#x27;,#16,10.0);
+<span class="lineno">27</span>#18=LINE(&#x27;&#x27;,#15,#17);
+<span class="lineno">28</span>#19=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));
+<span class="lineno">29</span>#20=DIRECTION(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">30</span>#21=VECTOR(&#x27;&#x27;,#20,10.0);
+<span class="lineno">31</span>#22=LINE(&#x27;&#x27;,#19,#21);
+<span class="lineno">32</span>#23=DEFINITIONAL_REPRESENTATION(&#x27;pc_bot_correct&#x27;,(#22),#6);
+<span class="lineno">33</span><mark>#24=PCURVE(</mark>&#x27;bot_pc_trustworthy&#x27;,#5,#23);
+<span class="lineno">34</span><mark>#25=SURFACE_CURVE(</mark>&#x27;bottom_curve3d_wrong&#x27;,#18,(#24),.PCURVE_S1.);
+<span class="lineno">35</span>#26=<mark>EDGE_CURVE</mark>(&#x27;bottom_edge&#x27;,#11,#12,#25,.T.);
+<span class="lineno">36</span>#27=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">37</span>#28=VECTOR(&#x27;&#x27;,#27,5.0);
+<span class="lineno">38</span>#29=LINE(&#x27;&#x27;,#8,#28);
+<span class="lineno">39</span>#30=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0));
+<span class="lineno">40</span>#31=DIRECTION(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">41</span>#32=VECTOR(&#x27;&#x27;,#31,5.0);
+<span class="lineno">42</span>#33=LINE(&#x27;&#x27;,#30,#32);
+<span class="lineno">43</span>#34=DEFINITIONAL_REPRESENTATION(&#x27;pc_right&#x27;,(#33),#6);
+<span class="lineno">44</span><mark>#35=PCURVE(</mark>&#x27;right_pc&#x27;,#5,#34);
+<span class="lineno">45</span><mark>#36=SURFACE_CURVE(</mark>&#x27;right_edge&#x27;,#29,(#35),.PCURVE_S1.);
+<span class="lineno">46</span>#37=<mark>EDGE_CURVE</mark>(&#x27;right_edge&#x27;,#12,#13,#36,.T.);
+<span class="lineno">47</span>#38=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">48</span>#39=VECTOR(&#x27;&#x27;,#38,10.0);
+<span class="lineno">49</span>#40=LINE(&#x27;&#x27;,#10,#39);
+<span class="lineno">50</span>#41=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0));
+<span class="lineno">51</span>#42=DIRECTION(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">52</span>#43=VECTOR(&#x27;&#x27;,#42,10.0);
+<span class="lineno">53</span>#44=LINE(&#x27;&#x27;,#41,#43);
+<span class="lineno">54</span>#45=DEFINITIONAL_REPRESENTATION(&#x27;pc_top&#x27;,(#44),#6);
+<span class="lineno">55</span><mark>#46=PCURVE(</mark>&#x27;top_pc&#x27;,#5,#45);
+<span class="lineno">56</span><mark>#47=SURFACE_CURVE(</mark>&#x27;top_edge&#x27;,#40,(#46),.PCURVE_S1.);
+<span class="lineno">57</span>#48=<mark>EDGE_CURVE</mark>(&#x27;top_edge&#x27;,#14,#13,#47,.T.);
+<span class="lineno">58</span>#49=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">59</span>#50=VECTOR(&#x27;&#x27;,#49,5.0);
+<span class="lineno">60</span>#51=LINE(&#x27;&#x27;,#10,#50);
+<span class="lineno">61</span>#52=CARTESIAN_POINT(&#x27;&#x27;,(0.0,5.0));
+<span class="lineno">62</span>#53=DIRECTION(&#x27;&#x27;,(0.0,-1.0));
+<span class="lineno">63</span>#54=VECTOR(&#x27;&#x27;,#53,5.0);
+<span class="lineno">64</span>#55=LINE(&#x27;&#x27;,#52,#54);
+<span class="lineno">65</span>#56=DEFINITIONAL_REPRESENTATION(&#x27;pc_left&#x27;,(#55),#6);
+<span class="lineno">66</span><mark>#57=PCURVE(</mark>&#x27;left_pc&#x27;,#5,#56);
+<span class="lineno">67</span><mark>#58=SURFACE_CURVE(</mark>&#x27;left_edge&#x27;,#51,(#57),.PCURVE_S1.);
+<span class="lineno">68</span>#59=<mark>EDGE_CURVE</mark>(&#x27;left_edge&#x27;,#14,#11,#58,.T.);
+<span class="lineno">69</span>#60=ORIENTED_EDGE(&#x27;&#x27;,$,$,#26,.T.);
+<span class="lineno">70</span>#61=ORIENTED_EDGE(&#x27;&#x27;,$,$,#37,.T.);
+<span class="lineno">71</span>#62=ORIENTED_EDGE(&#x27;&#x27;,$,$,#48,.F.);
+<span class="lineno">72</span>#63=ORIENTED_EDGE(&#x27;&#x27;,$,$,#59,.T.);
+<span class="lineno">73</span>#64=EDGE_LOOP(&#x27;&#x27;,(#60,#61,#62,#63));
+<span class="lineno">74</span>#65=FACE_OUTER_BOUND(&#x27;&#x27;,#64,.T.);
+<span class="lineno">75</span>#66=ADVANCED_FACE(&#x27;&#x27;,(#65),#5,.T.);
+<span class="lineno">76</span>#67=OPEN_SHELL(&#x27;&#x27;,(#66));
+<span class="lineno">77</span>#68=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#67));
+<span class="lineno">78</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">79</span>#9051=PRODUCT(&#x27;Gp179&#x27;,&#x27;Gp179&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">80</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">81</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">82</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">83</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">84</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">85</span>#9057=(NAMED_UNIT(*)<mark>PLANE</mark>_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">86</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">87</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">88</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">89</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#68),#9060);
+<span class="lineno">90</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">91</span>ENDSEC;
+<span class="lineno">92</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gp178.html">&larr; Gp178</a> <a class="up" href="index.html">§12.2a Pcurve defects</a> <a class="next" href="Gp180.html">Gp180 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

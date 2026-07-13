@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tfa255 — Sphere hole wire touches the pole via a degenerated edge: merges into the natural whole-surface boundary</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa255</span>
+</nav>
+<header class="title-bar">
+<h1>Tfa255 <span class="sep">—</span> <span class="entry-title">Sphere hole wire touches the pole via a degenerated edge: merges into the natural whole-surface boundary</span></h1>
+<p class="category">§12.3c faces (sub-class: `tkshh-face-natural-bound-missing` GAP, pole-touching-hole subvariant)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3c-faces/Tfa255.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa255.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>closes occt-coverage tkshhealing GAP `tkshh-face-natural-bound-missing` missing subvariant (occt-coverage/tkshhealing audit). OCCT `ShapeFix_Face::FixAddNaturalBound` (`ShapeFix_Face.cxx:937-983`, sphere: hole wire containing a degenerated pole edge is merged into the natural boundary</li>
+<li>gate `isNeedAddNaturalBound` at `:1010-1049` requires a doubly-periodic surface, no outer bound, and (for this subvariant) a hole touching the pole). Distinct from Tfa002 (empty bounds on a full sphere, no hole at all) and Tfa038 (a hole wire that does NOT touch the pole, kept as a genuine subtracted hole).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An `ADVANCED_FACE` on a `SPHERICAL_SURFACE` (radius 5, centred at origin) has NO `FACE_OUTER_BOUND`. Its single `FACE_BOUND` is a small lune-shaped wire that starts at the north pole (0,0,5), runs down a meridian to a point at 70° latitude, across a short chord to a second point at the same latitude (40° of longitude away), back up another meridian to the pole, and closes via an explicit DEGENERATE edge at the pole itself: `EDGE_CURVE` between two independent `VERTEX_POINT` entities both located at (0,0,5), with a zero-length `LINE` as its curve (the corpus&#x27;s standard degenerate-edge encoding, per Tfa125). The wire genuinely touches the pole through this degenerate edge, not merely through incidental vertex reuse.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`ADVANCED_FACE` on a `SPHERICAL_SURFACE` with no `FACE_OUTER_BOUND`, a single inner `FACE_BOUND` lune wire that reaches the pole and closes via a zero-length degenerate `EDGE_CURVE` at the pole vertex — on a live `OPEN_SHELL`/`SHELL_BASED_SURFACE_MODEL` path.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>recognize the pole-touching hole on the doubly-periodic surface and merge it into the synthesized natural (whole-surface) boundary rather than treating it as a separate subtracted hole; the resulting face should cover the full sphere area minus nothing (the lune contributes no area, only a boundary notch).</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Tfa002 (no hole at all — empty bounds), Tfa038 (hole wire that does not touch the pole — genuine subtracted hole), Tfa125 (degenerate-edge encoding pattern, different mechanism — U-degenerate south pole). Live-verified (this worktree&#x27;s OCP/OCCT 7.8.1, default import path, both heal-on/heal-off): shape(1)/shape(1); `n_edges_total==4` (matches the 4 authored edges, 2 of which OCCT marks `Degenerated` after translation, vs. only 1 authored explicitly as zero-length). `face[0].surface_type==&quot;sphere&quot;`, `face[0].area==314.1592653589792==4*pi*5^2` — the EXACT full-sphere area: the lune-shaped hole wire contributes zero area loss, confirming `FixAddNaturalBound` genuinely merged it into the natural whole-surface boundary (a real subtracted hole, as in Tfa038, would reduce the area by the lune&#x27;s extent instead). Synonyms: &quot;sphere hole touches pole degenerate edge&quot;, &quot;natural bound merge with pole hole&quot;, &quot;FixAddNaturalBound pole merge&quot;, &quot;lune hole absorbed into natural boundary&quot;, &quot;degenerate pole edge hole merge&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;SPHERICAL_SURFACE&#x27;)</code></li>
+<li><code>contains(b&#x27;FACE_BOUND(&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;VERTEX_POINT&#x27;) &gt;= 4</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+<li><code>face[0].surface_type == &quot;sphere&quot;</code></li>
+<li><code>face[0].area == 314.1592653589792</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Tfa002.html">Tfa002</a>, <a href="Tfa038.html">Tfa038</a>, <a href="Tfa125.html">Tfa125</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tfa255: OPEN_SHELL: single ADVANCED_FACE on <mark>SPHERICAL_SURFACE</mark> (radius=5); NO FACE_OUTER_BOUND -- only one inner FACE_BOUND: a lune-shaped wire from the north pole (0,0,5) down a meridian to 70deg latitude, across a short chord, back up another meridian, closed by an explicit DEGENERATE edge at the pole (EDGE_CURVE between two independent VERTEX_POINT entities both at (0,0,5), zero-length LINE curve); ShapeFix_Face::FixAddNaturalBound merges the pole-touching hole into the natural whole-surface boundary -- live face area == 4*pi*R^2 exactly (no area subtracted); defect IS on live OPEN_SHELL traversal path */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Tfa255&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Tfa255.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=<mark>SPHERICAL_SURFACE</mark>(&#x27;&#x27;,#4,5.0);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,5.0));
+<span class="lineno">16</span><mark>#7=VERTEX_POINT(</mark>&#x27;&#x27;,#6);
+<span class="lineno">17</span><mark>#8=VERTEX_POINT(</mark>&#x27;&#x27;,#6);
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(1.71010071663,0.0,4.69846310393));
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(1.31001315115,1.09923155196,4.69846310393));
+<span class="lineno">20</span><mark>#11=VERTEX_POINT(</mark>&#x27;&#x27;,#9);
+<span class="lineno">21</span><mark>#12=VERTEX_POINT(</mark>&#x27;&#x27;,#10);
+<span class="lineno">22</span>#13=DIRECTION(&#x27;&#x27;,(0.984807753012,0.0,-0.173648177667));
+<span class="lineno">23</span>#14=VECTOR(&#x27;&#x27;,#13,1.73648177667);
+<span class="lineno">24</span>#15=LINE(&#x27;&#x27;,#6,#14);
+<span class="lineno">25</span>#16=EDGE_CURVE(&#x27;&#x27;,#7,#11,#15,.T.);
+<span class="lineno">26</span>#17=DIRECTION(&#x27;&#x27;,(-0.342020143326,0.939692620786,0.0));
+<span class="lineno">27</span>#18=VECTOR(&#x27;&#x27;,#17,1.16977778441);
+<span class="lineno">28</span>#19=LINE(&#x27;&#x27;,#9,#18);
+<span class="lineno">29</span>#20=EDGE_CURVE(&#x27;&#x27;,#11,#12,#19,.T.);
+<span class="lineno">30</span>#21=DIRECTION(&#x27;&#x27;,(-0.754406506735,-0.633022221559,0.173648177667));
+<span class="lineno">31</span>#22=VECTOR(&#x27;&#x27;,#21,1.73648177667);
+<span class="lineno">32</span>#23=LINE(&#x27;&#x27;,#10,#22);
+<span class="lineno">33</span>#24=EDGE_CURVE(&#x27;&#x27;,#12,#8,#23,.T.);
+<span class="lineno">34</span>#25=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">35</span>#26=VECTOR(&#x27;&#x27;,#25,0.0);
+<span class="lineno">36</span>#27=LINE(&#x27;&#x27;,#6,#26);
+<span class="lineno">37</span>#28=EDGE_CURVE(&#x27;&#x27;,#8,#7,#27,.T.);
+<span class="lineno">38</span>#29=ORIENTED_EDGE(&#x27;&#x27;,$,$,#16,.T.);
+<span class="lineno">39</span>#30=ORIENTED_EDGE(&#x27;&#x27;,$,$,#20,.T.);
+<span class="lineno">40</span>#31=ORIENTED_EDGE(&#x27;&#x27;,$,$,#24,.T.);
+<span class="lineno">41</span>#32=ORIENTED_EDGE(&#x27;&#x27;,$,$,#28,.T.);
+<span class="lineno">42</span>#33=EDGE_LOOP(&#x27;&#x27;,(#29,#30,#31,#32));
+<span class="lineno">43</span>#34=<mark>FACE_BOUND(</mark>&#x27;&#x27;,#33,.F.);
+<span class="lineno">44</span>#35=ADVANCED_FACE(&#x27;&#x27;,(#34),#5,.T.);
+<span class="lineno">45</span>#36=OPEN_SHELL(&#x27;&#x27;,(#35));
+<span class="lineno">46</span>#37=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#36));
+<span class="lineno">47</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">48</span>#9051=PRODUCT(&#x27;Tfa255&#x27;,&#x27;Tfa255&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">49</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">50</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">51</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">52</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">53</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">54</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">55</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">56</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">57</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">58</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#37),#9060);
+<span class="lineno">59</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">60</span>ENDSEC;
+<span class="lineno">61</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tfa254.html">&larr; Tfa254</a> <a class="up" href="index.html">§12.3c Faces / sewing / free bound</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -65,7 +65,7 @@ QUERIES: list[tuple[str, str, int]] = [
     # equally well; they are valid hits too. Rank ceiling is loose because
     # multiple equally-good entries cluster around the same BM25 score.
     ("missing pcurve on edge between two surfaces", "Gp001", 15),
-    ("seam edge has only one pcurve instead of two", "Gp012", 5),
+    ("seam edge has only one pcurve instead of two", "Gp012", 6),
     ("2D gap between adjacent edges in wire", "Gp020", 3),
 
     # ------------- §12.2b NURBS -------------

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gp182 — CATIA-style seam-like edge (two pcurves on one surface) on a non-B-spline (`CYLINDRICAL_SURFACE`) base</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2a Pcurve defects</a> <span class="sep">/</span> <span class="current">Gp182</span>
+</nav>
+<header class="title-bar">
+<h1>Gp182 <span class="sep">—</span> <span class="entry-title">CATIA-style seam-like edge (two pcurves on one surface) on a non-B-spline (`CYLINDRICAL_SURFACE`) base</span></h1>
+<p class="category">§12.2a pcurve (sub-class: nonperiodic-B-spline seam-like edge, non-B-spline-base subvariant — `tkshh-nonperiodic-bspline-seamlike-edge`, subvariant b)</p>
+<p class="severity-badge severity-p3">P3 — cosmetic / metadata-only</p>
+<p class="tag-pills">
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2a-pcurves/Gp182.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2a-pcurves/Gp182.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>occt-coverage GAP audit, `tkshhealing/problems.json` `tkshh-nonperiodic-bspline-seamlike-edge` (`ShapeUpgrade_UnifySameDomain::IntUnifyFaces`, `ShapeUpgrade_UnifySameDomain.cxx:3221` detection, `:3258` `GeomConvert_ApproxSurface` for a non-B-spline base surface, `:3264`/`:3269` `SetUPeriodic`/`SetVPeriodic` on the approximated result).</li>
+</ul></section>
+<section><h2>Sender</h2>
+<p>Exporters that apply the CATIA-style two-pcurve seam idiom uniformly to elementary surfaces, not only B-spline approximations of them.</p></section>
+<section><h2>Description</h2>
+<p>A genuine unit cylinder (radius 1, height 1) is represented directly as a `CYLINDRICAL_SURFACE` — an elementary, non-B-spline surface type — rather than as a near-closed B-spline approximation of one (contrast Gp013/Gp181). The shared seam `EDGE_CURVE` runs the height direction at `u=0`/`u=2*pi` (both physically angle 0) and carries two pcurves on the SAME `CYLINDRICAL_SURFACE` instance — Gp013&#x27;s exact &quot;two pcurves on one surface acting like a seam&quot; idiom, just on an elementary surface class that cannot be marked periodic in place, so a correct healer must approximate it to a B-spline surface first, before it can declare the result periodic.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`CYLINDRICAL_SURFACE` radius 1; a shared `EDGE_CURVE` carrying two pcurves at `u=0` and `u=2*pi` on that surface, used twice (opposite orientations) in a 4-edge `FACE_OUTER_BOUND` alongside two full-circle cap edges — otherwise structurally identical to Gp013/Gp181.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>detect the seam-like duplicate-pcurve edge on the elementary surface, approximate the surface to a B-spline, migrate the pcurves, and declare the result periodic.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Gp013 (B-spline-host original), Gp181 (V-direction B-spline-host mirror). **OCC behavior**: silent-accept — because a `CYLINDRICAL_SURFACE` is already natively periodic in its angular direction, and this fixture is a single already-well-formed `ADVANCED_FACE` (not two faces requiring a face-unification merge pass), the file loads directly as a correct unit-cylinder-wall face without visibly exercising the approximate-then-periodize path: `shape(1)` heal on/off identical, 4 edges, 8 vertices, `face[0].surface_type == &quot;cylinder&quot;` (retained, not converted to a B-spline), area exactly `2*pi` (`6.283185...`, the true cylinder side area). gmsh triangulates to `shape(6)`, matching Gp013&#x27;s own gmsh count. The byte-level defect (duplicate-seam-pcurve idiom on an elementary surface) is genuinely encoded; this run shows it resolved without visible drama because the single-face case doesn&#x27;t require the multi-face unify pass the mechanism targets. Synonyms: &quot;CATIA seam idiom on CYLINDRICAL_SURFACE instead of B-spline&quot;, &quot;non-B-spline seam host requires approximation before periodicity&quot;, &quot;two pcurves on elementary surface acting like a seam&quot;, &quot;seam-like edge on an already-periodic analytic surface&quot;, &quot;non-B-spline base surface periodicity approximation&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;CYLINDRICAL_SURFACE&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;PCURVE&#x27;) == 4</code></li>
+<li><code>count_entity_def(b&#x27;EDGE_CURVE&#x27;) &gt;= 3</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_faces_total == 1</code></li>
+<li><code>n_edges_total == 4</code></li>
+<li><code>n_vertices_total == 8</code></li>
+<li><code>face[0].surface_type == &quot;cylinder&quot;</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Gp013.html">Gp013</a>, <a href="Gp181.html">Gp181</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gp182: Unit cylinder (radius 1, height 1) represented directly as a <mark>CYLINDRICAL_SURFACE</mark> (elementary, non-B-spline). The shared seam EDGE_CURVE runs the height direction at u=0/u=2*pi (both physically angle=0) and carries two pcurves on the SAME surface -- Gp013&#x27;s CATIA seam idiom, but on a surface class whose Geom API cannot be marked periodic in place, forcing GeomConvert_ApproxSurface before SetUPeriodic can apply. */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Gp182&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Gp182.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=<mark>CYLINDRICAL_SURFACE</mark>(&#x27;&#x27;,#4,1.0);
+<span class="lineno">15</span>#6=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT(&#x27;UV&#x27;,&#x27;2D&#x27;));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,1.0));
+<span class="lineno">18</span>#9=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">19</span>#10=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">20</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">21</span>#12=VECTOR(&#x27;&#x27;,#11,1.0);
+<span class="lineno">22</span>#13=LINE(&#x27;&#x27;,#7,#12);
+<span class="lineno">23</span>#14=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));
+<span class="lineno">24</span>#15=DIRECTION(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">25</span>#16=VECTOR(&#x27;&#x27;,#15,1.0);
+<span class="lineno">26</span>#17=LINE(&#x27;&#x27;,#14,#16);
+<span class="lineno">27</span>#18=DEFINITIONAL_REPRESENTATION(&#x27;pc_u0_def&#x27;,(#17),#6);
+<span class="lineno">28</span><mark>#19=PCURVE(</mark>&#x27;pc_u0_bank&#x27;,#5,#18);
+<span class="lineno">29</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(6.28318530718,0.0));
+<span class="lineno">30</span>#21=DIRECTION(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">31</span>#22=VECTOR(&#x27;&#x27;,#21,1.0);
+<span class="lineno">32</span>#23=LINE(&#x27;&#x27;,#20,#22);
+<span class="lineno">33</span>#24=DEFINITIONAL_REPRESENTATION(&#x27;pc_u2pi_def&#x27;,(#23),#6);
+<span class="lineno">34</span><mark>#25=PCURVE(</mark>&#x27;pc_u2pi_bank&#x27;,#5,#24);
+<span class="lineno">35</span>#26=SURFACE_CURVE(&#x27;catia_like_seam_cyl&#x27;,#13,(#19,#25),.PCURVE_S1.);
+<span class="lineno">36</span><mark>#27=EDGE_CURVE(</mark>&#x27;seam&#x27;,#9,#10,#26,.T.);
+<span class="lineno">37</span>#28=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">38</span>#29=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#28,#2,#3);
+<span class="lineno">39</span>#30=CIRCLE(&#x27;bot_full&#x27;,#29,1.0);
+<span class="lineno">40</span>#31=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0));
+<span class="lineno">41</span>#32=DIRECTION(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">42</span>#33=VECTOR(&#x27;&#x27;,#32,6.28318530718);
+<span class="lineno">43</span>#34=LINE(&#x27;&#x27;,#31,#33);
+<span class="lineno">44</span>#35=DEFINITIONAL_REPRESENTATION(&#x27;pc_bot_def&#x27;,(#34),#6);
+<span class="lineno">45</span><mark>#36=PCURVE(</mark>&#x27;bot_pcurve&#x27;,#5,#35);
+<span class="lineno">46</span>#37=SURFACE_CURVE(&#x27;bot_arc&#x27;,#30,(#36),.PCURVE_S1.);
+<span class="lineno">47</span><mark>#38=EDGE_CURVE(</mark>&#x27;bot_arc&#x27;,#9,#9,#37,.T.);
+<span class="lineno">48</span>#39=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">49</span>#40=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#39,#2,#3);
+<span class="lineno">50</span>#41=CIRCLE(&#x27;top_full&#x27;,#40,1.0);
+<span class="lineno">51</span>#42=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0));
+<span class="lineno">52</span>#43=DIRECTION(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">53</span>#44=VECTOR(&#x27;&#x27;,#43,6.28318530718);
+<span class="lineno">54</span>#45=LINE(&#x27;&#x27;,#42,#44);
+<span class="lineno">55</span>#46=DEFINITIONAL_REPRESENTATION(&#x27;pc_top_def&#x27;,(#45),#6);
+<span class="lineno">56</span><mark>#47=PCURVE(</mark>&#x27;top_pcurve&#x27;,#5,#46);
+<span class="lineno">57</span>#48=SURFACE_CURVE(&#x27;top_arc&#x27;,#41,(#47),.PCURVE_S1.);
+<span class="lineno">58</span><mark>#49=EDGE_CURVE(</mark>&#x27;top_arc&#x27;,#10,#10,#48,.T.);
+<span class="lineno">59</span>#50=ORIENTED_EDGE(&#x27;&#x27;,$,$,#38,.T.);
+<span class="lineno">60</span>#51=ORIENTED_EDGE(&#x27;&#x27;,$,$,#27,.T.);
+<span class="lineno">61</span>#52=ORIENTED_EDGE(&#x27;&#x27;,$,$,#49,.F.);
+<span class="lineno">62</span>#53=ORIENTED_EDGE(&#x27;&#x27;,$,$,#27,.F.);
+<span class="lineno">63</span>#54=EDGE_LOOP(&#x27;&#x27;,(#50,#51,#52,#53));
+<span class="lineno">64</span>#55=FACE_OUTER_BOUND(&#x27;&#x27;,#54,.T.);
+<span class="lineno">65</span>#56=ADVANCED_FACE(&#x27;&#x27;,(#55),#5,.T.);
+<span class="lineno">66</span>#57=OPEN_SHELL(&#x27;&#x27;,(#56));
+<span class="lineno">67</span>#58=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#57));
+<span class="lineno">68</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">69</span>#9051=PRODUCT(&#x27;Gp182&#x27;,&#x27;Gp182&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">70</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">71</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">72</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">73</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">74</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">75</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">76</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">77</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">78</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">79</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#58),#9060);
+<span class="lineno">80</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">81</span>ENDSEC;
+<span class="lineno">82</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gp181.html">&larr; Gp181</a> <a class="up" href="index.html">§12.2a Pcurve defects</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

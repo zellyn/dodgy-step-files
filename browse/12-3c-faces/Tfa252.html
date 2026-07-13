@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tfa252 — EDGE_CURVE null edge_geometry ($) wired into a live, reachable face</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa252</span>
+</nav>
+<header class="title-bar">
+<h1>Tfa252 <span class="sep">—</span> <span class="entry-title">EDGE_CURVE null edge_geometry ($) wired into a live, reachable face</span></h1>
+<p class="category">§12.3c faces (sub-class: `stp-missing-geometry-definition` GAP)</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3c-faces/Tfa252.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa252.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>closes occt-coverage exchange/step-reader GAP `stp-missing-geometry-definition` (occt-coverage/exchange audit). OCCT `StepToTopoDS_TranslateEdge::Init` (`StepToTopoDS_TranslateEdge.cxx:254-261`, null `EdgeGeometry` curve → clean fail). Prior candidates were downgraded COVERED→GAP (`COVERED_FULL_REVERIFY.md`): Xp008&#x27;s null-geometry `ADVANCED_FACE` #138 is never referenced by its `CLOSED_SHELL` #139 (dead trailing entity, unreachable)</li>
+<li>Tfa003&#x27;s null-geometry `EDGE_CURVE`s sit inside a `GEOMETRIC_CURVE_SET`, whose builder dispatch only accepts `GeometricRepresentationItem`s and never reaches `TranslateEdge::Init`. This fixture places the null-geometry `EDGE_CURVE` directly inside the outer wire of a live `ADVANCED_FACE` that IS referenced by a real `OPEN_SHELL` on the default import path.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A 10×10 `PLANE` face&#x27;s `FACE_OUTER_BOUND` has 4 edges; edge[2] is `EDGE_CURVE(&#x27;null_geom_edge&#x27;,#V2,#V3,$,.T.)` — its `edge_geometry` slot is null (`$`), not absent from the file and not orphaned in a dead entity. The other 3 edges are ordinary `LINE`-based `EDGE_CURVE`s. The reader hits the null curve reference and fails cleanly for that one edge (logged, not crashed); the wire builder cannot assemble a valid closed 4-edge wire with one edge missing, so it drops the whole bound. The face survives translation as a genuinely unbounded natural-surface fallback rather than aborting the whole read or fabricating geometry.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`EDGE_CURVE(&#x27;null_geom_edge&#x27;,#v2,#v3,$,.T.)` wired into an `EDGE_LOOP` that is the sole `FACE_OUTER_BOUND` of a live `ADVANCED_FACE`, itself referenced by a real `OPEN_SHELL`/`SHELL_BASED_SURFACE_MODEL` (not a `GEOMETRIC_CURVE_SET`, not a dead trailing entity).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>detect the null `edge_geometry` reference and fail cleanly for that one edge (diagnostic logged); either drop just the malformed bound (this fixture&#x27;s observed OCCT behavior) or reject the whole face with a clear per-entity diagnostic — never crash and never silently fabricate a curve.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Xp008 (face-hosted null-geometry pattern, but unreachable — dead trailing entity), Tfa003 (GEOMETRIC_CURVE_SET-hosted, type-skipped before reaching this code path). Live-verified (this worktree&#x27;s OCP/OCCT 7.8.1, default import path, both heal-on/heal-off): shape(1)/shape(1), the one `ADVANCED_FACE` survives with its bound fully dropped — `n_edges_total==0`, `n_vertices_total==0` — and `face[0].area` comes back as an unbounded-surface sentinel (~8e100), OCCT&#x27;s signature for &quot;face_geometry present, bound list effectively empty&quot; (matches the natural-unbounded-face fallback, not a crash and not silent garbage). Synonyms: &quot;EDGE_CURVE null edge_geometry&quot;, &quot;missing geometry definition clean fail&quot;, &quot;TranslateEdge null curve&quot;, &quot;edge_geometry dollar sign null&quot;, &quot;reader per-entity clean fail on live face&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&quot;EDGE_CURVE(&#x27;null_geom_edge&#x27;,&quot;)</code></li>
+<li><code>contains(b&#x27;ADVANCED_FACE&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+<li><code>n_faces_total == 1</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>face[0].edge_count == 0</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-12-cross-product/Xp008.html">Xp008</a>, <a href="Tfa003.html">Tfa003</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tfa252: OPEN_SHELL: single <mark>ADVANCED_FACE</mark> on a 10x10 PLANE; outer wire has 4 edges, edge[2] is <mark>EDGE_CURVE(&#x27;null_geom_edge&#x27;,</mark>#V2,#V3,$,.T.) -- edge_geometry is null ($), not a GEOMETRIC_CURVE_SET orphan and not a dead trailing entity; StepToTopoDS_TranslateEdge::Init hits the null curve and fails cleanly for that one edge; wire translation drops the whole bound and the face survives as an unbounded natural-surface fallback (edge_count==0), not a crash; defect IS on live OPEN_SHELL traversal path */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Tfa252&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Tfa252.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=PLANE(&#x27;&#x27;,#4);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(10.0,10.0,0.0));
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(0.0,10.0,0.0));
+<span class="lineno">19</span>#10=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">20</span>#11=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">21</span>#12=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">22</span>#13=VERTEX_POINT(&#x27;&#x27;,#9);
+<span class="lineno">23</span>#14=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">24</span>#15=VECTOR(&#x27;&#x27;,#14,10.0);
+<span class="lineno">25</span>#16=LINE(&#x27;&#x27;,#6,#15);
+<span class="lineno">26</span>#17=EDGE_CURVE(&#x27;&#x27;,#10,#11,#16,.T.);
+<span class="lineno">27</span>#18=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">28</span>#19=VECTOR(&#x27;&#x27;,#18,10.0);
+<span class="lineno">29</span>#20=LINE(&#x27;&#x27;,#7,#19);
+<span class="lineno">30</span>#21=EDGE_CURVE(&#x27;&#x27;,#11,#12,#20,.T.);
+<span class="lineno">31</span>#22=<mark>EDGE_CURVE(&#x27;null_geom_edge&#x27;,</mark>#12,#13,$,.T.);
+<span class="lineno">32</span>#23=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">33</span>#24=VECTOR(&#x27;&#x27;,#23,10.0);
+<span class="lineno">34</span>#25=LINE(&#x27;&#x27;,#9,#24);
+<span class="lineno">35</span>#26=EDGE_CURVE(&#x27;&#x27;,#13,#10,#25,.T.);
+<span class="lineno">36</span>#27=ORIENTED_EDGE(&#x27;&#x27;,$,$,#17,.T.);
+<span class="lineno">37</span>#28=ORIENTED_EDGE(&#x27;&#x27;,$,$,#21,.T.);
+<span class="lineno">38</span>#29=ORIENTED_EDGE(&#x27;&#x27;,$,$,#22,.T.);
+<span class="lineno">39</span>#30=ORIENTED_EDGE(&#x27;&#x27;,$,$,#26,.T.);
+<span class="lineno">40</span>#31=EDGE_LOOP(&#x27;&#x27;,(#27,#28,#29,#30));
+<span class="lineno">41</span>#32=FACE_OUTER_BOUND(&#x27;&#x27;,#31,.T.);
+<span class="lineno">42</span>#33=<mark>ADVANCED_FACE</mark>(&#x27;&#x27;,(#32),#5,.T.);
+<span class="lineno">43</span>#34=OPEN_SHELL(&#x27;&#x27;,(#33));
+<span class="lineno">44</span>#35=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#34));
+<span class="lineno">45</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">46</span>#9051=PRODUCT(&#x27;Tfa252&#x27;,&#x27;Tfa252&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">47</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">48</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">49</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">50</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">51</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">52</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">53</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">54</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">55</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">56</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#35),#9060);
+<span class="lineno">57</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">58</span>ENDSEC;
+<span class="lineno">59</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tfa249.html">&larr; Tfa249</a> <a class="up" href="index.html">§12.3c Faces / sewing / free bound</a> <a class="next" href="Tfa253.html">Tfa253 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>
