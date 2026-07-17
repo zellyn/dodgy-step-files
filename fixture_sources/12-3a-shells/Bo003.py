@@ -6,10 +6,32 @@ is fully enclosed by the other (nested cavities / imbricated shells).
 Mechanism IS the BREP_WITH_VOIDS shell topology: two ORIENTED_CLOSED_SHELLs
 (inner 1x1x1 cube fully inside outer 3x3x3 cube) are both listed as voids of
 the same solid. The geometric nesting IS wired into the shell/face structure.
-BRepCheck_Solid fires InvalidImbricationOfShells.
+
+Live-verified 2026-07-16 (this worktree's OCP/OCCT 7.8.1): this fixture does
+NOT fire BRepCheck_InvalidImbricationOfShells -- BRepCheck_Solid::Blind(), the
+method that sets that status, is a no-op in this OCCT build. The real
+imbrication check lives in BRepCheck_Solid::Minimum() and only fires
+InvalidImbricationOfShells when the SAME TopoDS_Face is shared by two
+different shells within one solid -- a different pattern than nested-but-
+disjoint void shells. What this fixture's nested-void topology actually fires
+is BRepCheck_SubshapeNotInShape, raised via Minimum()'s nested-solid IsOut()
+classification path (confirmed live: BRepCheck_Analyzer(shape,
+True).IsValid() == False, with exactly one status on the solid,
+BRepCheck_SubshapeNotInShape). See occt-coverage/exchange/problems.json
+(bc-invalid-imbrication-of-shells, bc-subshape-not-in-shape) and BACKLOG.md
+Q10/Q11 for the investigation trail.
+
+Byte-history: this fixture originally omitted the required `*` derived-
+attribute placeholder on both ORIENTED_CLOSED_SHELL instances (3-arg instead
+of the correct 4-arg EXPRESS form: name, *, closed_shell_element,
+orientation -- cfs_faces is DERIVE'd in ORIENTED_CLOSED_SHELL, redeclared
+from connected_face_set). That arity bug crashed STEPControl_Reader.
+TransferRoots() (signal 11) before BRepCheck ever ran. Fixed 2026-07-16;
+purely syntactic, no geometry change. Corpus-wide grep confirmed Bo003 was
+the only shipped fixture with this pattern.
 
 Tier-3 assertions: face[0].surface_type == "plane", face[5].surface_type == "plane"
-Expected: occt=shape(1)/shape(1)
+Expected: occt=shape(1)/shape(1) gmsh=shape(79) ifc=schema_n/a
 """
 from step_corpus.step_builder import StepFile
 
@@ -18,7 +40,10 @@ f = StepFile(
     defect=(
         "BREP_WITH_VOIDS with two ORIENTED_CLOSED_SHELL voids nested inside each "
         "other; inner 1x1x1 box fully enclosed by outer 3x3x3 box IS wired into "
-        "shell/face topology; OCCT fires InvalidImbricationOfShells"
+        "shell/face topology; live-verified OCCT 7.8.1 fires "
+        "BRepCheck_SubshapeNotInShape (nested-solid IsOut() classification in "
+        "BRepCheck_Solid::Minimum), NOT InvalidImbricationOfShells -- "
+        "BRepCheck_Solid::Blind() is a no-op in this build"
     ),
 )
 
@@ -98,8 +123,11 @@ void2_shell = make_box_closed_shell(-0.5, -0.5, -0.5, 1.0, 1.0, 1.0, "void2")
 msb = f._emit_raw(f"MANIFOLD_SOLID_BREP('outer_body',#{outer_shell.eid})")
 
 # BREP_WITH_VOIDS: both void shells listed — inner void2 is nested inside void1
-ocs1 = f._emit_raw(f"ORIENTED_CLOSED_SHELL('',#{void1_shell.eid},.F.)")
-ocs2 = f._emit_raw(f"ORIENTED_CLOSED_SHELL('',#{void2_shell.eid},.F.)")
+# NOTE: cfs_faces is DERIVE'd in ORIENTED_CLOSED_SHELL (redeclared from
+# connected_face_set), so the Part-21 attribute list must carry a `*`
+# placeholder for it: (name, *, closed_shell_element, orientation).
+ocs1 = f._emit_raw(f"ORIENTED_CLOSED_SHELL('',*,#{void1_shell.eid},.F.)")
+ocs2 = f._emit_raw(f"ORIENTED_CLOSED_SHELL('',*,#{void2_shell.eid},.F.)")
 bwv  = f._emit_raw(
     f"BREP_WITH_VOIDS('bo003_nested_voids',#{outer_shell.eid},(#{ocs1.eid},#{ocs2.eid}))"
 )

@@ -1,5 +1,5 @@
 ISO-10303-21;
-/* Bo003: BREP_WITH_VOIDS with two ORIENTED_CLOSED_SHELL voids nested inside each other; inner 1x1x1 box fully enclosed by outer 3x3x3 box IS wired into shell/face topology; OCCT fires InvalidImbricationOfShells */
+/* Bo003: BREP_WITH_VOIDS with two ORIENTED_CLOSED_SHELL voids nested inside each other; inner 1x1x1 box fully enclosed by outer 3x3x3 box IS wired into shell/face topology; live-verified OCCT 7.8.1 fires BRepCheck_SubshapeNotInShape (nested-solid IsOut() classification in BRepCheck_Solid::Minimum), NOT InvalidImbricationOfShells -- BRepCheck_Solid::Blind() is a no-op in this build */
 HEADER;
 FILE_DESCRIPTION(('Bo003'),'2;1');
 FILE_NAME('Bo003.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
@@ -419,8 +419,8 @@ DATA;
 #410=ADVANCED_FACE('',(#409),#368,.T.);
 #411=CLOSED_SHELL('void2',(#375,#382,#389,#396,#403,#410));
 #412=MANIFOLD_SOLID_BREP('outer_body',#137);
-#413=ORIENTED_CLOSED_SHELL('',#274,.F.);
-#414=ORIENTED_CLOSED_SHELL('',#411,.F.);
+#413=ORIENTED_CLOSED_SHELL('',*,#274,.F.);
+#414=ORIENTED_CLOSED_SHELL('',*,#411,.F.);
 #415=BREP_WITH_VOIDS('bo003_nested_voids',#137,(#413,#414));
 #9050=PRODUCT_CONTEXT('',#9000,'mechanical');
 #9051=PRODUCT('Bo003','Bo003','',(#9050));

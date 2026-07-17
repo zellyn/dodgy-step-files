@@ -458,6 +458,33 @@ new flaky-CI surface.
 
 ## Smaller queued items
 
+### Q12 — IGES scoping decision (RESOLVED 2026-07-16): IGES is formally out of scope for this corpus
+
+**Maintainer decision, recorded here as the authoritative reference.** IGES is format-specific
+reader domain and is now formally OUT OF SCOPE for this corpus: the corpus targets generic
+shape/surface repair knowledge plus STEP as the standard exchange-format carrier, not
+IGES-reader-specific parsing/repair paths. This is a permanent scoping decision, not a placeholder
+pending a future "add an IGES fixture section" effort — closes the open question that
+`occt-coverage/exchange/problems.json`'s 31 `iges-*` records had each been carrying since they were
+written ("Covering this sub-domain requires adding an IGES fixture section (or explicitly scoping
+the corpus to STEP-only and removing these classes from the active denominator)").
+
+Applied:
+- `occt-coverage/merge_coverage.py`: `CARVEOUT_DOMAINS` comment block and the headline-table prose
+  in `build_report()` both now state the exclusion is a dated maintainer scoping decision, not a
+  TODO. The carve-out mechanism itself (`exchange/iges-reader` excluded from the STEP-exercisable
+  denominator) is unchanged — this was already correct; only the framing changed.
+- `occt-coverage/exchange/problems.json`: all 31 `iges-*` records got a one-line scoping note
+  appended to `notes` (coverage_verdict left as-is for the historical record — these classes stay
+  documented as GAP/structural, they are just not counted toward closable work).
+- This closes the ambiguity flagged in the Wave-6 audit note below (~line 1470, "a scope decision
+  for whoever owns the merge script's contract") as far as IGES's *inclusion in the corpus* goes;
+  that note's narrower point (two different STEP-exercisable denominators, 143 vs. 174, across
+  `merge_coverage.py` vs. the domain audit docs) is a separate documentation-consistency issue,
+  still open.
+- Track C's "IGES-native defects" future-mining candidate (~line 1090, `## Wave-12` new-veins list)
+  is struck — see that line's own annotation.
+
 ### Q11 — `sew-per-edge-fault-isolation` face-hosted throw variant genuinely unreachable via standard STEP read (packet C2, dropped with evidence)
 
 **Not fixed** — dropped from packet C2 (`occt-coverage/WORK_PACKETS.md` Wave 5, `12-3c-faces`) after
@@ -1087,8 +1114,9 @@ EXCLUDE n-gon/polygon-soup (unbuildable in triangle-only format).
   maintainer call: open a new "model-structure/PDQ" section?**
 - **openNURBS/Rhino3dm source** — staged IsValidTopology→IsValidGeometry→IsValidTolerancesAndFlags
   + IsCorrupt; free greppable C++. 0 coverage, immediately minable.
-- Parasolid PK_*_state fault codes; IGES-native defects (not OCCT byproduct); 3MF/lib3mf; academic
-  taxonomies (Contero arXiv 1611.01765). (full list in scratch vein_new.)
+- Parasolid PK_*_state fault codes; ~~IGES-native defects (not OCCT byproduct)~~ **struck 2026-07-16
+  — IGES is formally out of scope for this corpus, maintainer decision, see Q12**; 3MF/lib3mf;
+  academic taxonomies (Contero arXiv 1611.01765). (full list in scratch vein_new.)
 
 ### Execution order (proposed)
 1. Harvest ready in-format candidates now (OCCT top-3 + BRepCheck pilots, Mesh top-4) via
@@ -1476,7 +1504,11 @@ than a fresh GAP fixture.
   that way. This is a pre-existing terminology mismatch between the merge script and the domain
   audit docs, not something introduced by this pass; flagging rather than silently changing
   `merge_coverage.py`'s `is_exercisable()` semantics, since that's a scope decision for whoever
-  owns the merge script's contract.
+  owns the merge script's contract. **Partial resolution (2026-07-16, see Q12):** the IGES-carve-out
+  half of `is_exercisable()`'s stricter definition is now confirmed correct and permanent — IGES is
+  formally out of scope for the corpus per maintainer decision, not a documentation quirk. The
+  `detect_only`-exclusion half of the 143-vs-174 mismatch (`bc-*` BRepCheck status classes) is
+  untouched by that decision and remains open.
 - **Tsh023 contradiction between the two exchange audit documents.** `VERDICT_AUDIT.md` (sampled
   pass) calls Tsh023 "a documented OCC signal-11 crash" (used to downgrade
   `sew-malformed-subshape-tolerance`). `COVERED_FULL_REVERIFY.md` (unaudited-43 pass) calls Tsh023

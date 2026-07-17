@@ -6,11 +6,11 @@ Domains merged: **exchange, tkshhealing**.
 
 ## Headline
 
-Two views are shown. **All** counts every problem class found. **STEP-exercisable** additionally excludes `detect_only` classes (validity-*detection* status codes, not repair behaviors) and any classes belonging to a documented domain-level structural carve-out (currently: the IGES-reader sub-domain, since this corpus is STEP-only and contains zero `.igs`/`.iges` fixtures).
+Two views are shown. **All** counts every problem class found. **STEP-exercisable** additionally excludes `detect_only` classes (validity-*detection* status codes, not repair behaviors) and any classes belonging to a documented domain-level structural carve-out (currently: the IGES-reader sub-domain. IGES is formally out of scope for this corpus per a maintainer scoping decision (2026-07-16): the corpus targets generic shape/surface repair knowledge plus STEP as the standard exchange-format carrier, and IGES is reader-format-specific -- not a placeholder pending an IGES fixture section. This corpus is STEP-only and contains zero `.igs`/`.iges` fixtures).
 
 | view | classes | COVERED | PARTIAL | GAP |
 |---|---:|---:|---:|---:|
-| **All classes** | **205** | 145 (70.7%) | 22 (10.7%) | 38 (18.5%) |
+| **All classes** | **205** | 146 (71.2%) | 21 (10.2%) | 38 (18.5%) |
 
 | view | classes | COVERED | PARTIAL | GAP |
 |---|---:|---:|---:|---:|
@@ -21,7 +21,7 @@ Two views are shown. **All** counts every problem class found. **STEP-exercisabl
 | sub-domain | classes | COVERED | PARTIAL | GAP | detect-only | carve-out |
 |---|---:|---:|---:|---:|---:|---:|
 | `TKShHealing` | 60 | 55 | 4 | 1 | 0 |  |
-| `exchange/brepcheck` | 31 | 21 | 5 | 5 | 31 |  |
+| `exchange/brepcheck` | 31 | 22 | 4 | 5 | 31 |  |
 | `exchange/heal-sequence` | 20 | 19 | 1 | 0 | 0 |  |
 | `exchange/iges-reader` | 31 | 0 | 0 | 31 | 0 | yes |
 | `exchange/sewing` | 24 | 18 | 5 | 1 | 0 |  |

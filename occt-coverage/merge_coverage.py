@@ -54,8 +54,15 @@ VALID_VERDICTS = ("COVERED", "PARTIAL", "GAP")
 # field for it). Extend this set as sibling domains land their own
 # documented structural carve-outs -- do not add an entry here without a
 # corresponding SUMMARY.md explanation in that domain's directory.
+#
+# exchange/iges-reader: MAINTAINER SCOPING DECISION (2026-07-16) -- IGES is
+# formally out of scope for this corpus. The corpus targets generic
+# shape/surface repair knowledge plus STEP as the standard exchange-format
+# carrier; IGES is reader-format-specific and will not gain its own fixture
+# section. This resolves the carve-out permanently (not a placeholder
+# pending an IGES fixture section -- see BACKLOG.md for the closed item).
 CARVEOUT_DOMAINS = {
-    "exchange/iges-reader",  # corpus-wide: zero .igs/.iges fixtures exist (verified)
+    "exchange/iges-reader",  # out of scope per maintainer decision (2026-07-16); corpus-wide: zero .igs/.iges fixtures exist (verified)
 }
 
 
@@ -283,8 +290,13 @@ def build_report():
         "**STEP-exercisable** additionally excludes `detect_only` classes "
         "(validity-*detection* status codes, not repair behaviors) and any "
         "classes belonging to a documented domain-level structural carve-out "
-        "(currently: the IGES-reader sub-domain, since this corpus is "
-        "STEP-only and contains zero `.igs`/`.iges` fixtures)."
+        "(currently: the IGES-reader sub-domain. IGES is formally out of "
+        "scope for this corpus per a maintainer scoping decision "
+        "(2026-07-16): the corpus targets generic shape/surface repair "
+        "knowledge plus STEP as the standard exchange-format carrier, and "
+        "IGES is reader-format-specific -- not a placeholder pending an "
+        "IGES fixture section. This corpus is STEP-only and contains zero "
+        "`.igs`/`.iges` fixtures)."
     )
     out.append("")
     out.append(render_headline_table("All classes", all_entries_sorted))
